@@ -1,9 +1,10 @@
-package com.jetbrains.rider.run.configurations.godot
+package com.jetbrains.rider.plugins.godot.run
 
 import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.project.Project
 import com.jetbrains.rdclient.util.idea.ProtocolSubscribedProjectComponent
+import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 

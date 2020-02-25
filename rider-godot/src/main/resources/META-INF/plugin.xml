@@ -10,8 +10,8 @@
   </extensions>
 
   <project-components>
-    <component><implementation-class>com.jetbrains.rider.run.configurations.godot.GodotProjectDiscoverer</implementation-class></component>
-    <component><implementation-class>com.jetbrains.rider.run.configurations.godot.GodotRunConfigurationGenerator</implementation-class></component>
+    <component><implementation-class>com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer</implementation-class></component>
+    <component><implementation-class>com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator</implementation-class></component>
   </project-components>
 
 

@@ -1,4 +1,4 @@
-package com.jetbrains.rider.run.configurations.godot
+package com.jetbrains.rider.plugins.godot
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
