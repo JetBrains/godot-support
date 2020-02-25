@@ -6,11 +6,26 @@ Please sign the CLA before sending the PR: https://www.jetbrains.com/agreements/
 
 ## How do I change, compile and run the plugin locally?
 
-1. Check out main branch
-2. Run build.sh
-SDK will be downloaded, packages restored, etc. and everything should compile without errors.
-3. In Intellij IDEA open "rider" folder
-Give it some time to run gradle scripts
-5. In the Gradle toolwindow find and run "runIDE" task. 
-It starts an experimental instance of Rider with locally compiled plugin.
-[![](https://user-images.githubusercontent.com/1482681/40919579-32795f52-680a-11e8-8656-89a5275e8570.png)]()
+### Requirements
+
+* [.NET Core SDK 3.0.100](https://www.microsoft.com/net/download/windows)
+
+### Optional
+
+* [IntelliJ IDEA](https://www.jetbrains.com/idea/)
+
+### Building the plugin and launching Rider in a sandbox 
+
+1. Install SDK and prepare backend plugin build using Gradle
+    * if using IntelliJ IDEA:
+
+	     Open the `rider-godot` project in IntelliJ IDEA. When suggested to import Gradle projects, accept the suggestion: Gradle will download Rider SDK and set up all necessary dependencies. `rider-godot` uses the [gradle-intellij-plugin](https://github.com/JetBrains/gradle-intellij-plugin) Gradle plugin that downloads the IntelliJ Platform SDK, packs the Godot plugin and installs it into a sandboxed IDE or its test shell, which allows testing the plugin in a separate environment.
+
+	     Open the *Gradle* tool window in IntelliJ IDEA (*View | Tool Windows | Gradle*), and execute the `rider-godot/runIde` task.
+
+    * if using Gradle command line:
+
+        ```
+        $ cd ./rider-godot
+        $ ./gradlew runIde
+        ```
