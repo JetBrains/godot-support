@@ -6,11 +6,7 @@ Please sign the CLA before sending the PR: https://www.jetbrains.com/agreements/
 
 ## How do I change, compile and run the plugin locally?
 
-### Requirements
-
-* [.NET Core SDK 3.0.100](https://www.microsoft.com/net/download/windows)
-
-### Optional
+### Optional requirements
 
 * [IntelliJ IDEA](https://www.jetbrains.com/idea/)
 
