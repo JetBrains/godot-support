@@ -3,6 +3,7 @@ package com.jetbrains.rider.plugins.godot
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rdclient.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rider.debugger.util.isExistingFile
 import com.jetbrains.rider.model.RdExistingSolution
@@ -10,7 +11,7 @@ import com.jetbrains.rider.projectView.solutionDescription
 import com.jetbrains.rider.projectView.solutionFile
 import com.jetbrains.rider.util.idea.getComponent
 
-class GodotProjectDiscoverer(project: Project) : ProtocolSubscribedProjectComponent(project) {
+class GodotProjectDiscoverer(project: Project) : LifetimedProjectComponent(project) {
 
     private val projectGodotFile = project.projectDir.findChild("project.godot")
 
