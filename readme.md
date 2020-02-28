@@ -9,3 +9,7 @@ Rider is JetBrains' cross platform .NET IDE, based on ReSharper and the IntelliJ
 # Features
 
 Autogenerates "Attach to Godot Player" run-configuration for Godot project
+
+# Related issues in Rider
+
+- RIDER-40297 Plugin recommendation by references in project
