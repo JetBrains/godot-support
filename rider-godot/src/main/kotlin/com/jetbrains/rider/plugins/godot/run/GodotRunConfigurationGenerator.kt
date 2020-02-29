@@ -1,5 +1,6 @@
 package com.jetbrains.rider.plugins.godot.run
 
+import com.intellij.execution.ExecutionTargetManager
 import com.intellij.execution.RunManager
 import com.intellij.execution.RunManagerEx
 import com.intellij.execution.configurations.ConfigurationTypeUtil
@@ -8,7 +9,6 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotServer
-import com.jetbrains.rider.projectView.SolutionConfigurationManager
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
@@ -44,8 +44,9 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 val runConfiguration = runManager.createConfiguration(RUN_CONFIGURATION_NAME, configurationType.factory)
                 val config = runConfiguration.configuration as ExeConfiguration
                 config.parameters.exePath = "C:/Windows/System32/cmd.exe"
-                config.parameters.programParameters = "/c start \"\" \"${GodotServer.getPath(project)}\" --path \"${project.basePath}\""
+                config.parameters.programParameters = "/c start \"\" \"${GodotServer.getPath(project)}\" \"--path\" \"${project.basePath}\""
                 config.parameters.workingDirectory = "${project.basePath}"
+                config.hideDisabledExecutorButtons()
                 runManager.addConfiguration(runConfiguration)
             }
 
@@ -60,8 +61,14 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
 
                 // add before run task
                 val provider = RunConfigurationBeforeRunProvider.getProvider(project, RunConfigurationBeforeRunProvider.ID)
-                val exeRunConfiguration = runManager.findConfigurationByTypeAndName(ConfigurationTypeUtil.findConfigurationType(ExeConfigurationType::class.java), RUN_CONFIGURATION_NAME)
-                val task = provider?.createTask(exeRunConfiguration!!.configuration)
+                val exeRunConfigurationType = ConfigurationTypeUtil.findConfigurationType(ExeConfigurationType::class.java)
+                val exeRunConfigurationSettings = runManager.findConfigurationByTypeAndName(exeRunConfigurationType, RUN_CONFIGURATION_NAME)!!
+                val exeRunConfiguration = exeRunConfigurationSettings.configuration
+                val task = provider?.createTask(exeRunConfiguration)
+                task!!.isEnabled = true
+                val target = ExecutionTargetManager.getInstance(project).activeTarget
+                task.setSettingsWithTarget(exeRunConfigurationSettings, target)
+                task.settings!!.isActivateToolWindowBeforeRun = false
                 RunManagerEx.getInstanceEx(project).setBeforeRunTasks(remoteConfig, listOf(task))
             }
 

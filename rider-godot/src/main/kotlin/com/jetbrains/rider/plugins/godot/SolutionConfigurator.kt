@@ -9,7 +9,7 @@ import com.jetbrains.rider.projectView.solution
 class SolutionConfigurator(project: Project) : ProtocolSubscribedProjectComponent(project) {
 
     init {
-        project.solution.isLoaded.advise(componentLifetime){
+        project.solution.isLoading.advise(componentLifetime){
             if (it) {
                 val projectDiscoverer = GodotProjectDiscoverer.getInstance(project)
                 if (projectDiscoverer.getIsGodotProject) {
