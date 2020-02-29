@@ -13,7 +13,6 @@ class SolutionConfigurator(project: Project) : ProtocolSubscribedProjectComponen
             if (it) {
                 val projectDiscoverer = GodotProjectDiscoverer.getInstance(project)
                 if (projectDiscoverer.getIsGodotProject) {
-                    val runManager = RunManager.getInstance(project)
                     // Tools solution configuration is a default one in Godot Editor
                     val solutionManager = SolutionConfigurationManager.getInstance(project)
                     val active = solutionManager.activeConfigurationAndPlatform

@@ -29,16 +29,6 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
         val projectDiscoverer = GodotProjectDiscoverer.getInstance(project)
         if (projectDiscoverer.getIsGodotProject) {
             val runManager = RunManager.getInstance(project)
-            // Tools solution configuration is a default one in Godot Editor
-            val solutionManager = SolutionConfigurationManager.getInstance(project)
-            val active = solutionManager.activeConfigurationAndPlatform
-            if (active == null || !active.configuration.contains("Tools")) {
-                val tools = solutionManager.solutionConfigurationsAndPlatforms.firstOrNull { it.configuration.contains("Tools") }
-                if (tools != null) {
-                    solutionManager.activeConfigurationAndPlatform = tools
-                }
-            }
-
             // Add configuration, if it doesn't exist
             if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }) {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
