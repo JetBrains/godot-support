@@ -1,11 +1,14 @@
 package com.jetbrains.rider.plugins.godot.run
 
 import com.intellij.execution.RunManager
+import com.intellij.execution.RunManagerEx
 import com.intellij.execution.configurations.ConfigurationTypeUtil
+import com.intellij.execution.impl.RunConfigurationBeforeRunProvider
 import com.intellij.openapi.project.Project
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotServer
+import com.jetbrains.rider.projectView.SolutionConfigurationManager
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
@@ -24,10 +27,20 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
 
     init {
         val projectDiscoverer = GodotProjectDiscoverer.getInstance(project)
-        val runManager = RunManager.getInstance(project)
         if (projectDiscoverer.getIsGodotProject) {
+            val runManager = RunManager.getInstance(project)
+            // Tools solution configuration is a default one in Godot Editor
+            val solutionManager = SolutionConfigurationManager.getInstance(project)
+            val active = solutionManager.activeConfigurationAndPlatform
+            if (active == null || !active.configuration.contains("Tools")) {
+                val tools = solutionManager.solutionConfigurationsAndPlatforms.firstOrNull { it.configuration.contains("Tools") }
+                if (tools != null) {
+                    solutionManager.activeConfigurationAndPlatform = tools
+                }
+            }
+
             // Add configuration, if it doesn't exist
-            if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME}) {
+            if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }) {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
                 val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
                 val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
@@ -36,7 +49,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 runManager.addConfiguration(runConfiguration)
             }
 
-            if (!runManager.allSettings.any { it.type is ExeConfigurationType && it.name == RUN_CONFIGURATION_NAME}) {
+            if (!runManager.allSettings.any { it.type is ExeConfigurationType && it.name == RUN_CONFIGURATION_NAME }) {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(ExeConfigurationType::class.java)
                 val runConfiguration = runManager.createConfiguration(RUN_CONFIGURATION_NAME, configurationType.factory)
                 val config = runConfiguration.configuration as ExeConfiguration
@@ -46,16 +59,23 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 runManager.addConfiguration(runConfiguration)
             }
 
-            if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == DEBUG_CONFIGURATION_NAME}) {
+            if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == DEBUG_CONFIGURATION_NAME }) {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
-                val runConfiguration = runManager.createConfiguration(DEBUG_CONFIGURATION_NAME, configurationType.factory)
-                val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
+                val runnerAndConfigurationSettings = runManager.createConfiguration(DEBUG_CONFIGURATION_NAME, configurationType.factory)
+                val remoteConfig = runnerAndConfigurationSettings.configuration as DotNetRemoteConfiguration
                 remoteConfig.port = projectDiscoverer.port
+
                 // Not shared, as that requires the entire team to have same port
-                runManager.addConfiguration(runConfiguration)
+                runManager.addConfiguration(runnerAndConfigurationSettings)
+
+                // add before run task
+                val provider = RunConfigurationBeforeRunProvider.getProvider(project, RunConfigurationBeforeRunProvider.ID)
+                val exeRunConfiguration = runManager.findConfigurationByTypeAndName(ConfigurationTypeUtil.findConfigurationType(ExeConfigurationType::class.java), RUN_CONFIGURATION_NAME)
+                val task = provider?.createTask(exeRunConfiguration!!.configuration)
+                RunManagerEx.getInstanceEx(project).setBeforeRunTasks(remoteConfig, listOf(task))
             }
 
-            if (!runManager.allSettings.any { it.type is DotNetExeConfigurationType && it.name == PROFILE_CONFIGURATION_NAME}) {
+            if (!runManager.allSettings.any { it.type is DotNetExeConfigurationType && it.name == PROFILE_CONFIGURATION_NAME }) {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(DotNetExeConfigurationType::class.java)
                 val runConfiguration = runManager.createConfiguration(PROFILE_CONFIGURATION_NAME, configurationType.factory)
                 val config = runConfiguration.configuration as DotNetExeConfiguration

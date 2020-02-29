@@ -12,6 +12,7 @@
   <project-components>
     <component><implementation-class>com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer</implementation-class></component>
     <component><implementation-class>com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator</implementation-class></component>
+    <component><implementation-class>com.jetbrains.rider.plugins.godot.SolutionConfigurator</implementation-class></component>
   </project-components>
 
 
