@@ -13,7 +13,6 @@ Automatically changes active solution configuration to Tools
 
 Autogenerates run configurations: "Attach to Godot Player" run-configuration for Godot project
  - Attach to already started player
- - Debug, which starts player and attaches to it
  - Run, which starts player
  - Profile, which starts player with profiler
 
