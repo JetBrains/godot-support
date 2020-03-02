@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
-import com.jetbrains.rdclient.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rider.debugger.util.isExistingFile
 import com.jetbrains.rider.model.RdExistingSolution
 import com.jetbrains.rider.projectView.solutionDescription

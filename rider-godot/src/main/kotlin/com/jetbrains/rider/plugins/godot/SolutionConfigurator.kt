@@ -1,6 +1,5 @@
 package com.jetbrains.rider.plugins.godot
 
-import com.intellij.execution.RunManager
 import com.intellij.openapi.project.Project
 import com.jetbrains.rdclient.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rider.projectView.SolutionConfigurationManager
