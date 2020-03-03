@@ -1,8 +1,6 @@
-# Contributing to rider-godot
+# Contributing
 
-## What should I know before I get started?
-
-Please sign the CLA before sending the PR: https://www.jetbrains.com/agreements/cla/.
+This project welcomes contributions and suggestions. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. Please sign the CLA before sending the PR: https://www.jetbrains.com/agreements/cla/.
 
 ## How do I change, compile and run the plugin locally?
 

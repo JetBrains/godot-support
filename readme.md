@@ -2,7 +2,6 @@
 
 # Godot Support for Rider
 
-
 The "Godot Support" plugin adds specific functionality for the [Godot game engine](https://godotengine.org/) to [Rider](https://www.jetbrains.com/rider/).
 
 Rider is JetBrains' cross platform .NET IDE, based on ReSharper and the IntelliJ Platform. It can be used on Windows, Mac and Linux providing rich code navigation, inspections and refactorings.
@@ -19,3 +18,8 @@ Autogenerates run configurations: "Attach to Godot Player" run-configuration for
 # Related issues in Rider
 
 - RIDER-40297 Plugin recommendation by references in project
+
+# Contributing
+
+This project welcomes contributions and suggestions.
+Please have a look at our [Guidelines](CONTRIBUTING.md) for contributing.
