@@ -1,5 +1,3 @@
-import org.jetbrains.intellij.IntelliJPlugin
-import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -118,6 +116,10 @@ tasks {
             logger.lifecycle("Plugin version: $version")
             logger.lifecycle("##teamcity[buildNumber '$version']")
         }
+    }
+
+    "buildSearchableOptions" {
+        enabled = false
     }
 
     task("listrepos"){

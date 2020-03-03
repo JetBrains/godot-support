@@ -5,5 +5,3 @@ pluginManagement {
 }
 
 rootProject.name = "rider-godot"
-
-include("protocol")
