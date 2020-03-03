@@ -20,10 +20,11 @@
 
   <description><![CDATA[
 <p>Adds support for the Godot engine.</p>
+
 <strong>Links</strong>
 <ul>
-  <li><a href="https://github.com/van800/rider-godot">GitHub</a>
-  <li><a href="https://github.com/van800/rider-godot/issues">Issues</a>
+  <li><a href="https://github.com/JetBrains/godot-support">GitHub</a>
+  <li><a href="https://github.com/JetBrains/godot-support/issues">Issues</a>
 </ul>
 </p>
 ]]>
