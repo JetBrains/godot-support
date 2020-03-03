@@ -7,7 +7,7 @@ class GodotServer {
     companion object {
         fun getPath(project: Project): String {
             val basePath = project.basePath ?: return ""
-            val metaFile = File(basePath,".mono\\metadata\\ide_server_meta.txt")
+            val metaFile = File(basePath,".mono/metadata/ide_server_meta.txt")
             if (!metaFile.exists())
                 return ""
             val lines = metaFile.readLines()
