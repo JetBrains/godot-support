@@ -41,7 +41,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(ExeConfigurationType::class.java)
                 val runConfiguration = runManager.createConfiguration(RUN_CONFIGURATION_NAME, configurationType.factory)
                 val config = runConfiguration.configuration as ExeConfiguration
-                config.parameters.exePath = GodotServer.getPath(project)
+                config.parameters.exePath = godotPath.absolutePath
                 config.parameters.programParameters = "--path \"${project.basePath}\""
                 config.parameters.workingDirectory = "${project.basePath}"
                 runManager.addConfiguration(runConfiguration)
@@ -51,7 +51,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(DotNetExeConfigurationType::class.java)
                 val runConfiguration = runManager.createConfiguration(PROFILE_CONFIGURATION_NAME, configurationType.factory)
                 val config = runConfiguration.configuration as DotNetExeConfiguration
-                config.parameters.exePath = GodotServer.getPath(project)
+                config.parameters.exePath = godotPath.absolutePath
                 config.parameters.programParameters = "--path \"${project.basePath}\""
                 config.parameters.workingDirectory = "${project.basePath}"
                 config.parameters.useMonoRuntime = true
