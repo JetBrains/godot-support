@@ -19,14 +19,9 @@
 
 
   <description><![CDATA[
-<p>Adds support for the Godot engine.</p>
-
-<strong>Links</strong>
-<ul>
-  <li><a href="https://github.com/JetBrains/godot-support">GitHub</a>
-  <li><a href="https://github.com/JetBrains/godot-support/issues">Issues</a>
-</ul>
-</p>
+<strong>Adds support for the Godot engine</strong>
+<p>Further information on <a href="https://github.com/JetBrains/godot-support">github</a></p>
+<p>Submit issues <a href="https://github.com/JetBrains/godot-support/issues">here</a></p>
 ]]>
   </description>
 </idea-plugin>
