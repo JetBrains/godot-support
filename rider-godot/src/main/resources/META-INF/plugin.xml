@@ -20,13 +20,6 @@
 
   <description><![CDATA[
 <p>Adds support for the Godot engine.</p>
-<p>
-<strong>Features</strong>
-<ul>
-  <li>Autogenerates run-configuration for debugging player.</li>
-</ul>
-</p>
-<p>
 <strong>Links</strong>
 <ul>
   <li><a href="https://github.com/van800/rider-godot">GitHub</a>
@@ -35,9 +28,4 @@
 </p>
 ]]>
   </description>
-  <change-notes>
-<![CDATA[
-Initial version added.
-]]>
-  </change-notes>
 </idea-plugin>
