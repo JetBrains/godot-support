@@ -4,6 +4,8 @@
   <version>2020.1.0.9999</version>
   <vendor url="https://www.jetbrains.com">JetBrains</vendor>
 
+  <idea-version since-build="2019.3" />
+
   <depends>com.intellij.modules.rider</depends>
 
   <extensions defaultExtensionNs="com.intellij">
