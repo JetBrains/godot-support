@@ -1,4 +1,4 @@
-<idea-plugin>
+<idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot</id>
   <name>Godot Support</name>
   <version>2020.1.0.9999</version>
