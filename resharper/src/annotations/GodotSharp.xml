@@ -1,0 +1,7 @@
+<assembly name="GodotSharp">
+  <!-- Attribute usage. Grouped by namespace -->
+  <!-- N:Godot -->
+  <member name="T:Godot.ExportAttribute">
+    <attribute ctor="M:JetBrains.Annotations.MeansImplicitUseAttribute.#ctor" />
+  </member>
+</assembly>
