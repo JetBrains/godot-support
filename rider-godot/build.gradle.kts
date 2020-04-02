@@ -103,7 +103,7 @@ fun File.writeTextIfChanged(content: String) {
 tasks {
     withType<org.jetbrains.intellij.tasks.PrepareSandboxTask> {
 
-        into("${intellij.pluginName}/dotnet/Extensions/com.jetbrains.rider.plugins.godot/annotations") {
+        into("${intellij.pluginName}/dotnet/Extensions/com.intellij.rider.godot/annotations") {
             from("../resharper/src/annotations")
         }
 
