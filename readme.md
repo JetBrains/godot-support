@@ -16,6 +16,8 @@ Autogenerates run configurations: "Attach to Godot Player" run-configuration for
  - Run, which starts player
  - Profile, which starts player with profiler
 
+Fields marked with [Export] attribute would not be marked as not-initialized.
+
 # Related issues in Rider
 
 - RIDER-40297 Plugin recommendation by references in project
