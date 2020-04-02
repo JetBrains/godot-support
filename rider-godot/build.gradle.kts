@@ -101,6 +101,14 @@ fun File.writeTextIfChanged(content: String) {
 }
 
 tasks {
+    withType<org.jetbrains.intellij.tasks.PrepareSandboxTask> {
+
+        into("${intellij.pluginName}/dotnet/Extensions/com.jetbrains.rider.plugins.godot/annotations") {
+            from("../resharper/src/annotations")
+        }
+
+    }
+
     withType<RunIdeTask> {
         // IDEs from SDK are launched with 512m by default, which is not enough for Rider.
         // Rider uses this value when launched not from SDK.
