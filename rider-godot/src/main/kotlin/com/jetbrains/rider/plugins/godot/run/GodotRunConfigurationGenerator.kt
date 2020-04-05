@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotServer
+import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugConfigurationType
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
@@ -34,6 +35,13 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
                 remoteConfig.port = projectDiscoverer.port
                 // Not shared, as that requires the entire team to have same port
+                runManager.addConfiguration(runConfiguration)
+            }
+
+            if (!runManager.allSettings.any { it.type is GodotDebugConfigurationType })
+            {
+                val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugConfigurationType::class.java)
+                val runConfiguration = runManager.createConfiguration(configurationType.displayName, configurationType.debugFactory)
                 runManager.addConfiguration(runConfiguration)
             }
 
