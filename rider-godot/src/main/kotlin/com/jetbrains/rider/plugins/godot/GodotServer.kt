@@ -36,13 +36,15 @@ class GodotServer {
             val projectPath = project.basePath
             val md5 = projectPath?.md5()
             val projectSettingsPath = projectsSettingsPath.resolve("$projectName-$md5")
-            val projectMetadataCfg = projectSettingsPath.resolve("project_metadata.cfg")
+            val projectMetadataCfg = projectSettingsPath.resolve("project_metadata.cfg").toFile()
 
-            val line = projectMetadataCfg.toFile().readLines().filter { it.startsWith("executable_path") }.single()
-            val path = line.substring("executable_path=\"".length, line.trimEnd().length - 1)
-            if (!File(path).exists())
-                return getFromMonoMetadataPath(project)
-            return path
+            if (projectMetadataCfg.exists()){
+                val line = projectMetadataCfg.readLines().filter { it.startsWith("executable_path") }.single()
+                val path = line.substring("executable_path=\"".length, line.trimEnd().length - 1)
+                return path
+            }
+
+            return getFromMonoMetadataPath(project)
         }
 
         private fun getFromMonoMetadataPath(project: Project): String {
