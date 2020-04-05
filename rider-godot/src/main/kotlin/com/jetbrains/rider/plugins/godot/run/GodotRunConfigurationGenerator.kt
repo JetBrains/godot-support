@@ -26,7 +26,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
         val projectDiscoverer = GodotProjectDiscoverer.getInstance(project)
         if (projectDiscoverer.getIsGodotProject) {
             val runManager = RunManager.getInstance(project)
-            val godotPath = File(GodotServer.getPath(project))
+            val godotPath = File(GodotServer.getPathFromProjectSettings(project))
             // Add configuration, if it doesn't exist
             if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }) {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)

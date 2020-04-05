@@ -1,11 +1,51 @@
 package com.jetbrains.rider.plugins.godot
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.SystemInfo
 import java.io.File
+import java.math.BigInteger
+import java.nio.file.Paths
+import java.security.MessageDigest
 
 class GodotServer {
     companion object {
-        fun getPath(project: Project): String {
+        // https://github.com/godotengine/godot-proposals/issues/555#issuecomment-595242973
+        fun getPathFromProjectSettings(project:Project):String {
+            //Windows: %APPDATA%\Godot\projects\{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}\
+            //macOS: $XDG_DATA_HOME/Godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/ or $HOME/Library/Application Support/Godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/
+            //Linux: $XDG_DATA_HOME/godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/ or $HOME/.local/share/godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/
+
+
+            val projectsSettingsPath = if (SystemInfo.isMac)
+            {
+                val home = Paths.get(System.getenv("HOME"))
+                home.resolve("Library/Application Support/Godot/projects")
+            }
+            else if (SystemInfo.isLinux) {
+                val home = Paths.get(System.getenv("HOME"))
+                home.resolve(".local/share/godot/projects")
+            }
+            else if (SystemInfo.isWindows) {
+                val appData = Paths.get(System.getenv("APPDATA"))
+                appData.resolve("Godot/projects")
+            }
+            else
+                throw Exception("Unexpected OS.")
+
+            val projectName = project.name
+            val projectPath = project.basePath
+            val md5 = projectPath?.md5()
+            val projectSettingsPath = projectsSettingsPath.resolve("$projectName-$md5")
+            val projectMetadataCfg = projectSettingsPath.resolve("project_metadata.cfg")
+
+            val line = projectMetadataCfg.toFile().readLines().filter { it.startsWith("executable_path") }.single()
+            val path = line.substring("executable_path=\"".length, line.trimEnd().length - 1)
+            if (!File(path).exists())
+                return getFromMonoMetadataPath(project)
+            return path
+        }
+
+        private fun getFromMonoMetadataPath(project: Project): String {
             val basePath = project.basePath ?: return ""
             val metaFile = File(basePath,".mono/metadata/ide_server_meta.txt")
             if (!metaFile.exists())
@@ -15,6 +55,11 @@ class GodotServer {
                 return ""
 
             return lines[1]
+        }
+
+        fun String.md5(): String {
+            val md = MessageDigest.getInstance("MD5")
+            return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
         }
     }
 }
