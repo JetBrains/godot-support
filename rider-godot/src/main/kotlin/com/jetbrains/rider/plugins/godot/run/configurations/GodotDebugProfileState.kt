@@ -25,6 +25,17 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
     private val project = executionEnvironment.project
 
     override fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler, lifetime: Lifetime): ExecutionResult {
+
+        application.executeOnPooledThread {
+            Thread.sleep(3000)
+            val path = GodotServer.getPathFromProjectSettings(project)
+            val args = mutableListOf(path, "--path", project.basePath.toString())
+            val processBuilder = ProcessBuilder(args)
+            val godotPort = remoteConfiguration.port
+            processBuilder.environment().set("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:$godotPort,server=n")
+            processBuilder.directory(File(path).parentFile)
+            processBuilder.start()
+        }
         return super.execute(executor, runner, workerProcessHandler)
     }
 
@@ -34,12 +45,6 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
         application.executeOnPooledThread {
             try {
                 val godotPort = NetUtils.findFreePort(500013)
-                val path = GodotServer.getPathFromProjectSettings(project)
-                val args = mutableListOf(path, "--path", project.basePath.toString())
-                val processBuilder = ProcessBuilder(args)
-                processBuilder.environment().set("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:$godotPort,server=n")
-                processBuilder.directory(File(path).parentFile)
-                processBuilder.start()
 
                 remoteConfiguration.listenPortForConnections = true
                 remoteConfiguration.port = godotPort
