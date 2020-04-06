@@ -38,7 +38,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 runManager.addConfiguration(runConfiguration)
             }
 
-            if (godotPath.exists() && !runManager.allSettings.any { it.type is GodotDebugConfigurationType })
+            if (!runManager.allSettings.any { it.type is GodotDebugConfigurationType })
             {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugConfigurationType::class.java)
                 val runConfiguration = runManager.createConfiguration(configurationType.displayName, configurationType.debugFactory)
