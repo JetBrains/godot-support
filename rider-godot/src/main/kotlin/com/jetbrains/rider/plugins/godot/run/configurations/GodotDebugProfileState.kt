@@ -29,7 +29,7 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
 
         application.executeOnPooledThread {
             Thread.sleep(3000)
-            val path = GodotServer.getPathFromProjectSettings(project)
+            val path = GodotServer.getGodotPath(project)
             val args = mutableListOf(path, "--path", project.basePath.toString())
             val processBuilder = ProcessBuilder(args)
             val godotPort = remoteConfiguration.port
