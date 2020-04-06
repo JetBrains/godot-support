@@ -13,7 +13,7 @@ open class GodotDebugFactory(type: ConfigurationType)
     override fun getIcon() = GodotIcons.RunConfigurations.StartAndDebug
 
     // This value gets written to the config file. By default it defers to getName, which is what happened pre-2018.3.
-    // Keep the "Godot Debug" value so that we can load configs created by earlier versions, and earlier versions can
+    // Keep the "GodotDebug" value so that we can load configs created by earlier versions, and earlier versions can
     // load this config
-    override fun getId() = "Godot Debug"
+    override fun getId() = "GodotDebug"
 }
