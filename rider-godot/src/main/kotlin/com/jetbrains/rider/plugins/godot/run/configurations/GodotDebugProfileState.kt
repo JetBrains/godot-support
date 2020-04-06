@@ -8,6 +8,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.ui.UIUtil
 import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.util.lifetime.Lifetime
+import com.jetbrains.rd.util.lifetime.onTermination
 import com.jetbrains.rider.debugger.DebuggerHelperHost
 import com.jetbrains.rider.debugger.DebuggerWorkerProcessHandler
 import com.jetbrains.rider.plugins.godot.GodotServer
@@ -34,7 +35,10 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
             val godotPort = remoteConfiguration.port
             processBuilder.environment().set("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:$godotPort,server=n")
             processBuilder.directory(File(path).parentFile)
-            processBuilder.start()
+            val process = processBuilder.start()
+            lifetime.onTermination {
+                if (process.isAlive) process.destroyForcibly()
+            }
         }
         return super.execute(executor, runner, workerProcessHandler)
     }
