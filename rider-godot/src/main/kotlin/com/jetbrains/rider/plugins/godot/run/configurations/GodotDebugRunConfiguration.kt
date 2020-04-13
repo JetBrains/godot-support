@@ -9,7 +9,6 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.RunConfigurationWithSuppressedDefaultRunAction
 import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.annotations.Transient
-import com.jetbrains.rider.plugins.unity.run.configurations.GodotDebugProfileState
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
 import org.jdom.Element
