@@ -32,7 +32,7 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
             val args = mutableListOf(path, "--path", project.basePath.toString())
             val processBuilder = ProcessBuilder(args)
             val godotPort = remoteConfiguration.port
-            processBuilder.environment().set("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:$godotPort,server=n")
+            processBuilder.environment().set("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:$godotPort,server=n,suspend=y")
             processBuilder.directory(File(path).parentFile)
             val process = processBuilder.start()
             lifetime.onTermination {
@@ -49,7 +49,6 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
             try {
                 val godotPort = NetUtils.findFreePort(500013)
 
-                remoteConfiguration.listenPortForConnections = true
                 remoteConfiguration.port = godotPort
 
                 UIUtil.invokeLaterIfNeeded {
