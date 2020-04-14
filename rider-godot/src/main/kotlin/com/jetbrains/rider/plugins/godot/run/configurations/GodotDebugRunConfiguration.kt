@@ -9,7 +9,6 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.RunConfigurationWithSuppressedDefaultRunAction
 import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.annotations.Transient
-import com.jetbrains.rider.plugins.unity.run.configurations.GodotDebugProfileState
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
 import org.jdom.Element
@@ -22,7 +21,7 @@ class GodotDebugRunConfiguration(project: Project, factory: ConfigurationFactory
 
     @Transient override var port: Int = -1
     @Transient override var address: String = "127.0.0.1"
-
+    @Transient var godotPath: String = ""
 
     override fun hideDisabledExecutorButtons(): Boolean {
         return true
