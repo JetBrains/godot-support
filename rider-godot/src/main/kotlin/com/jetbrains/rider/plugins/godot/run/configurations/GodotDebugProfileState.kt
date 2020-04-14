@@ -9,6 +9,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.util.ui.UIUtil
 import com.jetbrains.rd.platform.util.application
 import com.jetbrains.rd.util.lifetime.Lifetime
+import com.jetbrains.rdclient.util.idea.toIOFile
 import com.jetbrains.rider.debugger.DebuggerHelperHost
 import com.jetbrains.rider.debugger.DebuggerWorkerProcessHandler
 import com.jetbrains.rider.plugins.godot.GodotServer
@@ -28,7 +29,7 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
     override fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler, lifetime: Lifetime): ExecutionResult {
 
         application.executeOnPooledThread {
-            val path = GodotServer.getGodotPath(project)
+            val path = remoteConfiguration.godotPath
             val args = mutableListOf(path, "--path", project.basePath.toString())
             val godotPort = remoteConfiguration.port
             val commandLine = GeneralCommandLine(args)
@@ -52,13 +53,20 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
         val result = AsyncPromise<WorkerRunInfo>()
         application.executeOnPooledThread {
             try {
-                val godotPort = NetUtils.findFreePort(500013, setOf(port))
-                remoteConfiguration.port = godotPort
+                val path = GodotServer.getGodotPath(project)
+                if (path.isEmpty() || !path.toIOFile().exists())
+                    result.setError("Failed to determine path to Godot executable.")
+                else {
+                    remoteConfiguration.godotPath = path
 
-                UIUtil.invokeLaterIfNeeded {
-                    logger.trace("DebuggerWorker port: $port")
-                    logger.trace("Connecting to Godot with port: ${remoteConfiguration.port}")
-                    super.createWorkerRunCmd(lifetime, helper, port).onSuccess { result.setResult(it) }.onError { result.setError(it) }
+                    val godotPort = NetUtils.findFreePort(500013, setOf(port))
+                    remoteConfiguration.port = godotPort
+
+                    UIUtil.invokeLaterIfNeeded {
+                        logger.trace("DebuggerWorker port: $port")
+                        logger.trace("Connecting to Godot with port: ${remoteConfiguration.port}")
+                        super.createWorkerRunCmd(lifetime, helper, port).onSuccess { result.setResult(it) }.onError { result.setError(it) }
+                    }
                 }
             }
             catch (e: Exception) {
