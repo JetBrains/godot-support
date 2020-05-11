@@ -3,7 +3,6 @@ package com.jetbrains.rider.plugins.godot.run.configurations
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.RunProfileState
-import com.intellij.execution.configurations.WithoutOwnBeforeRunSteps
 import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.RunConfigurationWithSuppressedDefaultRunAction
@@ -16,8 +15,7 @@ import org.jdom.Element
 class GodotDebugRunConfiguration(project: Project, factory: ConfigurationFactory )
     : DotNetRemoteConfiguration(project, factory, "Debug (Start and Attach)"),
         RunConfigurationWithSuppressedDefaultRunAction,
-        RemoteConfiguration,
-        WithoutOwnBeforeRunSteps {
+        RemoteConfiguration {
 
     @Transient override var port: Int = -1
     @Transient override var address: String = "127.0.0.1"
