@@ -53,14 +53,14 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
         val monoConnectResult = super.execute(executor, runner, workerProcessHandler)
 
         godotProcessHandler.addProcessListener(object : ProcessListener {
-            override fun onTextAvailable(p0: ProcessEvent, p1: Key<*>) {
+            override fun onTextAvailable(processEvent: ProcessEvent, key: Key<*>) {
                 monoConnectResult.executionConsole.tryWriteMessageToConsoleView(
-                        OutputMessageWithSubject(p0.text, OutputType.Info, OutputSubject.Default)
+                        OutputMessageWithSubject(processEvent.text, OutputType.Info, OutputSubject.Default)
                 )
             }
 
-            override fun processTerminated(p0: ProcessEvent) {}
-            override fun startNotified(p0: ProcessEvent) {}
+            override fun processTerminated(processEvent: ProcessEvent) {}
+            override fun startNotified(processEvent: ProcessEvent) {}
         })
 
         application.executeOnPooledThread {
@@ -74,7 +74,6 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
     }
 
     override fun createWorkerRunCmd(lifetime: Lifetime, helper: DebuggerHelperHost, port: Int): Promise<WorkerRunInfo> {
-
         val result = AsyncPromise<WorkerRunInfo>()
         application.executeOnPooledThread {
             try {
