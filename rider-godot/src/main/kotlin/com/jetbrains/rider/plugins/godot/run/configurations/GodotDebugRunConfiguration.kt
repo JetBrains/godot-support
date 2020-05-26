@@ -20,6 +20,7 @@ class GodotDebugRunConfiguration(project: Project, factory: ConfigurationFactory
     @Transient override var port: Int = -1
     @Transient override var address: String = "127.0.0.1"
     @Transient var godotPath: String = ""
+    var godotScene: String? = null
 
     override fun hideDisabledExecutorButtons(): Boolean {
         return true

@@ -38,6 +38,9 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
         val path = remoteConfiguration.godotPath
         val args = mutableListOf(path, "--path", project.basePath.toString())
         val godotPort = remoteConfiguration.port
+        val scene = remoteConfiguration.godotScene
+        if (scene != null)
+            args.add(scene)
         val commandLine = GeneralCommandLine(args)
         commandLine.environment.set("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:$godotPort,server=n,suspend=y")
         commandLine.workDirectory = File(path).parentFile
