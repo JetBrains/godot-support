@@ -4,6 +4,7 @@ import com.intellij.execution.ExecutionResult
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.KillableProcessHandler
+import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessListener
 import com.intellij.execution.runners.ExecutionEnvironment
@@ -42,38 +43,46 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
         commandLine.environment.set("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:$godotPort,server=n,suspend=y")
         commandLine.workDirectory = File(path).parentFile
 
-        val godotProcessHandler = KillableProcessHandler(commandLine, true)
-
-        lifetime.onTermination {
-            if (!godotProcessHandler.isProcessTerminated) {
-                godotProcessHandler.destroyProcess()
-            }
-        }
-
         val monoConnectResult = super.execute(executor, runner, workerProcessHandler)
 
-        godotProcessHandler.addProcessListener(object : ProcessListener {
-            override fun onTextAvailable(processEvent: ProcessEvent, key: Key<*>) {
-                monoConnectResult.executionConsole.tryWriteMessageToConsoleView(
-                        OutputMessageWithSubject(processEvent.text, OutputType.Info, OutputSubject.Default)
-                )
-            }
+        workerProcessHandler.debuggerWorkerRealHandler.addProcessListener(object : ProcessAdapter() {
+            override fun startNotified(event: ProcessEvent) {
+                val godotProcessHandler = KillableProcessHandler(commandLine) // starts a process
 
-            override fun processTerminated(processEvent: ProcessEvent) {
-                monoConnectResult.executionConsole.tryWriteMessageToConsoleView(OutputMessageWithSubject("Godot player terminated with exit code " + processEvent.exitCode, OutputType.Warning, OutputSubject.Default))
-                application.invokeLater {
-                    monoConnectResult.processHandler.detachProcess()
+                lifetime.onTermination {
+                    if (!godotProcessHandler.isProcessTerminated) {
+                        godotProcessHandler.destroyProcess()
+                    }
                 }
-            }
-            override fun startNotified(processEvent: ProcessEvent) {}
-        })
 
-        application.executeOnPooledThread {
-            // This is needed to avoid messages from the MonoConnectRemote
-            // run configuration being mixed with the output of Godot Engine.
-            Thread.sleep(2000)
-            godotProcessHandler.startNotify()
-        }
+                godotProcessHandler.addProcessListener(object : ProcessListener {
+                    override fun onTextAvailable(processEvent: ProcessEvent, key: Key<*>) {
+                        monoConnectResult.executionConsole.tryWriteMessageToConsoleView(
+                                OutputMessageWithSubject(processEvent.text, OutputType.Info, OutputSubject.Default)
+                        )
+                    }
+
+                    override fun processTerminated(processEvent: ProcessEvent) {
+                        monoConnectResult.executionConsole.tryWriteMessageToConsoleView(OutputMessageWithSubject("Godot player terminated with exit code " + processEvent.exitCode, OutputType.Warning, OutputSubject.Default))
+                        application.invokeLater {
+                            monoConnectResult.processHandler.detachProcess()
+                        }
+                    }
+
+                    override fun startNotified(processEvent: ProcessEvent) {
+                        monoConnectResult.executionConsole.tryWriteMessageToConsoleView(OutputMessageWithSubject("Godot player started." + "\r\n", OutputType.Info, OutputSubject.Default))
+                    }
+                })
+
+                application.executeOnPooledThread {
+                    // This is needed to avoid messages from the MonoConnectRemote
+                    // run configuration being mixed with the output of Godot Engine.
+                    Thread.sleep(2000)
+                    godotProcessHandler.startNotify()
+                }
+                super.startNotified(event)
+            }
+        })
 
         return monoConnectResult
     }
