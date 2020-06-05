@@ -74,12 +74,7 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
                     }
                 })
 
-                application.executeOnPooledThread {
-                    // This is needed to avoid messages from the MonoConnectRemote
-                    // run configuration being mixed with the output of Godot Engine.
-                    Thread.sleep(2000)
-                    godotProcessHandler.startNotify()
-                }
+                godotProcessHandler.startNotify()
                 super.startNotified(event)
             }
         })
