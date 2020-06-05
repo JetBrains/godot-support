@@ -42,7 +42,7 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
         commandLine.environment.set("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:$godotPort,server=n,suspend=y")
         commandLine.workDirectory = File(path).parentFile
 
-        val godotProcessHandler = KillableProcessHandler(commandLine)
+        val godotProcessHandler = KillableProcessHandler(commandLine, true)
 
         lifetime.onTermination {
             if (!godotProcessHandler.isProcessTerminated) {
@@ -59,7 +59,12 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
                 )
             }
 
-            override fun processTerminated(processEvent: ProcessEvent) {}
+            override fun processTerminated(processEvent: ProcessEvent) {
+                monoConnectResult.executionConsole.tryWriteMessageToConsoleView(OutputMessageWithSubject("Godot player terminated with exit code " + processEvent.exitCode, OutputType.Warning, OutputSubject.Default))
+                application.invokeLater {
+                    monoConnectResult.processHandler.detachProcess()
+                }
+            }
             override fun startNotified(processEvent: ProcessEvent) {}
         })
 
