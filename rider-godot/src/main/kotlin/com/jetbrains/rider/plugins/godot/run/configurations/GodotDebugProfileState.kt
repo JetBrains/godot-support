@@ -35,12 +35,12 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
     private val project = executionEnvironment.project
 
     override fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler, lifetime: Lifetime): ExecutionResult {
-        val path = remoteConfiguration.godotPath
+        val path = remoteConfiguration.exeConfigurationParameters.exePath
         val args = mutableListOf(path, "--path", project.basePath.toString())
         val godotPort = remoteConfiguration.port
         val commandLine = GeneralCommandLine(args)
         commandLine.environment.set("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:$godotPort,server=n,suspend=y")
-        commandLine.workDirectory = File(path).parentFile
+        commandLine.workDirectory = File(remoteConfiguration.exeConfigurationParameters.workingDirectory)
 
         val godotProcessHandler = KillableProcessHandler(commandLine)
 
@@ -77,12 +77,18 @@ class GodotDebugProfileState(private val remoteConfiguration: GodotDebugRunConfi
         val result = AsyncPromise<WorkerRunInfo>()
         application.executeOnPooledThread {
             try {
-                val path = GodotServer.getGodotPath(project)
+                var path = remoteConfiguration.exeConfigurationParameters.exePath
                 if (path.isEmpty() || !path.toIOFile().exists())
-                    result.setError("Failed to determine path to Godot executable.")
-                else {
-                    remoteConfiguration.godotPath = path
+                {
+                    path = GodotServer.getGodotPath(project)
+                }
 
+                if (path.isEmpty() || !path.toIOFile().exists())
+                {
+                    result.setError("Failed to determine path to Godot executable.")
+                }
+                else {
+                    remoteConfiguration.exeConfigurationParameters.exePath = path
                     val godotPort = NetUtils.findFreePort(500013, setOf(port))
                     remoteConfiguration.port = godotPort
 
