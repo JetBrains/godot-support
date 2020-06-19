@@ -30,9 +30,9 @@ class GodotServer {
             else
                 throw Exception("Unexpected OS.")
 
-            val projectPath = project.basePath
-            val md5 = projectPath?.md5()
-            val projectSettingsPath = projectsSettingsPath.resolve("${File(projectPath).name}-$md5")
+            val projectPath = project.basePath!!
+            val md5 = projectPath.md5()
+            val projectSettingsPath = projectsSettingsPath.resolve("${Paths.get(projectPath).fileName}-$md5")
             val projectMetadataCfg = projectSettingsPath.resolve("project_metadata.cfg").toFile()
 
             if (projectMetadataCfg.exists()){
