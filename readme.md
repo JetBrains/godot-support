@@ -19,10 +19,6 @@ Autogenerates multiple run configurations:
 
 Fields marked with [Export] attribute would not be marked as not-initialized.
 
-# Related issues in Rider
-
-- RIDER-40297 Plugin recommendation by references in project
-
 # Contributing
 
 This project welcomes contributions and suggestions.
