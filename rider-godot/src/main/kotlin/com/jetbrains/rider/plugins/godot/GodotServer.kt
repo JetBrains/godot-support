@@ -21,7 +21,7 @@ class GodotServer {
             }
             else if (SystemInfo.isLinux) {
                 val home = Paths.get(System.getenv("HOME"))
-                home.resolve(".local/share/godot/projects")
+                home.resolve(".config/godot/projects")
             }
             else if (SystemInfo.isWindows) {
                 val appData = Paths.get(System.getenv("APPDATA"))
@@ -30,10 +30,9 @@ class GodotServer {
             else
                 throw Exception("Unexpected OS.")
 
-            val projectName = project.name
-            val projectPath = project.basePath
-            val md5 = projectPath?.md5()
-            val projectSettingsPath = projectsSettingsPath.resolve("$projectName-$md5")
+            val projectPath = project.basePath!!
+            val md5 = projectPath.md5()
+            val projectSettingsPath = projectsSettingsPath.resolve("${Paths.get(projectPath).fileName}-$md5")
             val projectMetadataCfg = projectSettingsPath.resolve("project_metadata.cfg").toFile()
 
             if (projectMetadataCfg.exists()){
