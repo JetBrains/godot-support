@@ -28,6 +28,9 @@ open class GodotDebugRunFactory(type: ConfigurationType) : ConfigurationFactory(
         )
     }
 
+    override fun createConfiguration(name: String?, template: RunConfiguration): RunConfiguration =
+            GodotDebugRunConfiguration(name ?: this.name, template.project, this, createParameters())
+
     override fun createTemplateConfiguration(@NotNull project: Project): RunConfiguration =
             GodotDebugRunConfiguration(this.name, project, this, createParameters())
 }
