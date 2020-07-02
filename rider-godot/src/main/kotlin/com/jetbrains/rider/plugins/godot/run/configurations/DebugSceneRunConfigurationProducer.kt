@@ -20,18 +20,24 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
     override fun setupConfigurationFromContext(configuration: GodotDebugRunConfiguration,
                                                context: ConfigurationContext,
                                                sourceElement: Ref<PsiElement>): Boolean {
+        val file = getContainingFile(context) ?: return false
         val sceneName = extractSceneName(context) ?: return false
         configuration.godotScene = sceneName
-        configuration.name = "Scene $sceneName"
+        configuration.name = file.name
         return true
     }
 
     private fun extractSceneName(context: ConfigurationContext): String? {
-        val location = context.psiLocation ?: return null
-        val file = location.containingFile as? TscnFile ?: return null
+        val file = getContainingFile(context) ?: return null
         val project = context.project ?: return null
         val root = ProjectRootManager.getInstance(project).fileIndex.getContentRootForFile(file.virtualFile) ?: return null
         val filename = FileUtil.getRelativePath(root.path, file.virtualFile.path, '/')
         return "res://$filename"
+    }
+
+    private fun getContainingFile(context: ConfigurationContext):TscnFile? {
+        val location = context.psiLocation ?: return null
+        val file = location.containingFile as? TscnFile ?: return null
+        return file
     }
 }
