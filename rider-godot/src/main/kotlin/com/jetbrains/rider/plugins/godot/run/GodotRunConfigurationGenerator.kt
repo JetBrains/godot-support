@@ -8,6 +8,7 @@ import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotServer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
+import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
@@ -26,57 +27,63 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
     }
 
     init {
-        val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-        if (godotDiscoverer.getIsGodotProject) {
-            val runManager = RunManager.getInstance(project)
-            val godotPath = File(GodotServer.getGodotPath(project))
-
-            // Clean up old generated configurations
-            val toRemove = runManager.allSettings.filter {
-                it.type is ExeConfigurationType && it.name == RUN_CONFIGURATION_NAME
-                        || it.type is DotNetExeConfigurationType && it.name == PROFILE_CONFIGURATION_NAME
-            }
-            for (value in toRemove) {
-                runManager.removeConfiguration(value)
+        project.solution.isLoaded.advise(componentLifetime){
+            if (!it) {
+                return@advise
             }
 
-            // Add configuration, if it doesn't exist
-            if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }) {
-                val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
-                val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
-                val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
-                remoteConfig.port = godotDiscoverer.port
-                runConfiguration.storeInLocalWorkspace()
-                runManager.addConfiguration(runConfiguration)
-            }
+            val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
+            if (godotDiscoverer.getIsGodotProject) {
+                val runManager = RunManager.getInstance(project)
+                val godotPath = File(GodotServer.getGodotPath(project))
 
-            if (!runManager.allSettings.any { it.type is GodotDebugRunConfigurationType && it.name == PLAYER_CONFIGURATION_NAME }) {
-                val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java)
-                val runConfiguration = runManager.createConfiguration(PLAYER_CONFIGURATION_NAME, configurationType.factory)
-                val config = runConfiguration.configuration as GodotDebugRunConfiguration
-                config.parameters.exePath = godotPath.absolutePath
-                config.parameters.programParameters = "--path \"${project.basePath}\""
-                config.parameters.workingDirectory = "${project.basePath}"
-                runConfiguration.storeInLocalWorkspace()
-                runManager.addConfiguration(runConfiguration)
-            }
+                // Clean up old generated configurations
+                val toRemove = runManager.allSettings.filter {
+                    it.type is ExeConfigurationType && it.name == RUN_CONFIGURATION_NAME
+                            || it.type is DotNetExeConfigurationType && it.name == PROFILE_CONFIGURATION_NAME
+                }
+                for (value in toRemove) {
+                    runManager.removeConfiguration(value)
+                }
 
-            if (!runManager.allSettings.any { it.type is GodotDebugRunConfigurationType && it.name == EDITOR_CONFIGURATION_NAME }) {
-                val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java)
-                val runConfiguration = runManager.createConfiguration(EDITOR_CONFIGURATION_NAME, configurationType.factory)
-                val config = runConfiguration.configuration as GodotDebugRunConfiguration
-                config.parameters.exePath = godotPath.absolutePath
-                config.parameters.programParameters = "--path \"${project.basePath}\" --editor"
-                config.parameters.workingDirectory = "${project.basePath}"
-                runConfiguration.storeInLocalWorkspace()
-                runManager.addConfiguration(runConfiguration)
-            }
+                // Add configuration, if it doesn't exist
+                if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }) {
+                    val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
+                    val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
+                    val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
+                    remoteConfig.port = godotDiscoverer.port
+                    runConfiguration.storeInLocalWorkspace()
+                    runManager.addConfiguration(runConfiguration)
+                }
 
-            // make configuration selected if nothing is selected
-            if (runManager.selectedConfiguration == null) {
-                val runConfiguration = runManager.findConfigurationByName(PLAYER_CONFIGURATION_NAME)
-                if (runConfiguration != null) {
-                    runManager.selectedConfiguration = runConfiguration
+                if (!runManager.allSettings.any { it.type is GodotDebugRunConfigurationType && it.name == PLAYER_CONFIGURATION_NAME }) {
+                    val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java)
+                    val runConfiguration = runManager.createConfiguration(PLAYER_CONFIGURATION_NAME, configurationType.factory)
+                    val config = runConfiguration.configuration as GodotDebugRunConfiguration
+                    config.parameters.exePath = godotPath.absolutePath
+                    config.parameters.programParameters = "--path \"${project.basePath}\""
+                    config.parameters.workingDirectory = "${project.basePath}"
+                    runConfiguration.storeInLocalWorkspace()
+                    runManager.addConfiguration(runConfiguration)
+                }
+
+                if (!runManager.allSettings.any { it.type is GodotDebugRunConfigurationType && it.name == EDITOR_CONFIGURATION_NAME }) {
+                    val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java)
+                    val runConfiguration = runManager.createConfiguration(EDITOR_CONFIGURATION_NAME, configurationType.factory)
+                    val config = runConfiguration.configuration as GodotDebugRunConfiguration
+                    config.parameters.exePath = godotPath.absolutePath
+                    config.parameters.programParameters = "--path \"${project.basePath}\" --editor"
+                    config.parameters.workingDirectory = "${project.basePath}"
+                    runConfiguration.storeInLocalWorkspace()
+                    runManager.addConfiguration(runConfiguration)
+                }
+
+                // make configuration selected if nothing is selected
+                if (runManager.selectedConfiguration == null) {
+                    val runConfiguration = runManager.findConfigurationByName(PLAYER_CONFIGURATION_NAME)
+                    if (runConfiguration != null) {
+                        runManager.selectedConfiguration = runConfiguration
+                    }
                 }
             }
         }
