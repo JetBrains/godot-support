@@ -46,7 +46,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
                 val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
                 remoteConfig.port = projectDiscoverer.port
-                // Not shared, as that requires the entire team to have same port
+                runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }
 
@@ -57,6 +57,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 config.parameters.exePath = godotPath.absolutePath
                 config.parameters.programParameters = "--path \"${project.basePath}\""
                 config.parameters.workingDirectory = "${project.basePath}"
+                runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }
 
@@ -67,6 +68,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 config.parameters.exePath = godotPath.absolutePath
                 config.parameters.programParameters = "--path \"${project.basePath}\" --editor"
                 config.parameters.workingDirectory = "${project.basePath}"
+                runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }
 
