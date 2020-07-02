@@ -1,22 +1,35 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot</id>
   <name>Godot Support</name>
-  <version>2020.1.0.9999</version>
+  <version>2020.2.0.9999</version>
   <vendor url="https://www.jetbrains.com">JetBrains</vendor>
 
-  <idea-version since-build="201.5616" />
+  <idea-version since-build="202.5793" /> <!--Valid for 2020.1 EAP5 + -->
 
   <depends>com.intellij.modules.rider</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugConfigurationType" />
+    <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
+
+    <!-- TSCN support -->
+    <fileType name="TSCN"
+              language="TSCN"
+              fieldName="INSTANCE"
+              implementationClass="com.jetbrains.rider.plugins.godot.ideaInterop.fileTypes.tscn.TscnFileType"
+              extensions="tscn" />
+    <lang.parserDefinition language="TSCN" implementationClass="com.jetbrains.rider.plugins.godot.ideaInterop.fileTypes.tscn.TscnParserDefinition" />
+
+    <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />
   </extensions>
 
   <project-components>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer</implementation-class></component>
     <component><implementation-class>com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator</implementation-class></component>
     <component><implementation-class>com.jetbrains.rider.plugins.godot.SolutionConfigurator</implementation-class></component>
   </project-components>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <projectService serviceImplementation="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer"/>
+  </extensions>
 
 
   <description><![CDATA[

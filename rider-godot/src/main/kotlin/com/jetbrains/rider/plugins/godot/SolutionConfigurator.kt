@@ -10,8 +10,7 @@ class SolutionConfigurator(project: Project) : ProtocolSubscribedProjectComponen
     init {
         project.solution.isLoaded.advise(componentLifetime){
             if (it) {
-                val projectDiscoverer = GodotProjectDiscoverer.getInstance(project)
-                if (projectDiscoverer.getIsGodotProject) {
+                GodotProjectDiscoverer.getInstance(project).isGodotProject.advise(componentLifetime) {
                     // Tools solution configuration is a default one in Godot Editor
                     val solutionManager = SolutionConfigurationManager.getInstance(project)
                     val active = solutionManager.activeConfigurationAndPlatform

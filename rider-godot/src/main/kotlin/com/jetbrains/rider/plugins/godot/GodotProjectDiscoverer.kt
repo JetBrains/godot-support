@@ -3,25 +3,31 @@ package com.jetbrains.rider.plugins.godot
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
-import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
+import com.jetbrains.rd.platform.util.idea.LifetimedProjectService
+import com.jetbrains.rd.util.reactive.IProperty
+import com.jetbrains.rd.util.reactive.Property
 import com.jetbrains.rider.debugger.util.isExistingFile
 import com.jetbrains.rider.model.RdExistingSolution
 import com.jetbrains.rider.projectView.solutionDescription
 import com.jetbrains.rider.projectView.solutionFile
-import com.jetbrains.rider.util.idea.getComponent
+import com.jetbrains.rider.util.idea.getService
 
-class GodotProjectDiscoverer(project: Project) : LifetimedProjectComponent(project) {
-
+class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project) {
     private val projectGodotFile = project.projectDir.findChild("project.godot")
+    val isGodotProject: IProperty<Boolean> = Property(false)
+
+    init {
+        isGodotProject.value = getIsGodotProject()
+    }
 
     // It's a Godot project, but not necessarily loaded correctly (e.g. it might be opened as folder)
-    val getIsGodotProject: Boolean
-        get() {
-            if (projectGodotFile != null) {
-                return projectGodotFile.isExistingFile() && isCorrectlyLoadedSolution(project)
-            }
-            return false
+    private fun getIsGodotProject() : Boolean
+    {
+        if (projectGodotFile != null) {
+            return projectGodotFile.isExistingFile() && isCorrectlyLoadedSolution(project)
         }
+        return false
+    }
 
     val port: Int = 23685 // default value, //todo: read custom value from project.godot file
 
@@ -32,7 +38,7 @@ class GodotProjectDiscoverer(project: Project) : LifetimedProjectComponent(proje
     }
 
     companion object {
-        fun getInstance(project: Project) = project.getComponent<GodotProjectDiscoverer>()
+        fun getInstance(project: Project) = project.getService<GodotProjectDiscoverer>()
     }
 }
 
