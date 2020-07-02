@@ -2,42 +2,29 @@ package com.jetbrains.rider.plugins.godot.run.configurations
 
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.runners.ExecutionEnvironment
-import com.intellij.execution.runners.RunConfigurationWithSuppressedDefaultRunAction
 import com.intellij.openapi.project.Project
-import com.intellij.util.xmlb.annotations.Transient
+import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
+import com.jetbrains.rider.run.configurations.exe.ExeConfigurationParameters
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
-import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
-import org.jdom.Element
+import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 
-class GodotDebugRunConfiguration(project: Project, factory: ConfigurationFactory )
-    : DotNetRemoteConfiguration(project, factory, "Debug (Start and Attach)"),
-        RunConfigurationWithSuppressedDefaultRunAction,
-        RemoteConfiguration {
+class GodotDebugRunConfiguration(name:String, project: Project, factory: ConfigurationFactory, params: ExeConfigurationParameters)
+    : ExeConfiguration(name, project, factory, params) {
 
-    @Transient override var port: Int = -1
-    @Transient override var address: String = "127.0.0.1"
-    @Transient var godotPath: String = ""
-    var godotScene: String? = null
-
-    override fun hideDisabledExecutorButtons(): Boolean {
-        return true
+    override fun isNative(): Boolean {
+        return false
     }
 
-    override var listenPortForConnections: Boolean = true
+    override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState{
+        val executorId = executor.id
 
-    override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState? {
-        if (executor.id == DefaultDebugExecutor.EXECUTOR_ID)
-            return GodotDebugProfileState(this, environment)
+        if (executorId == DefaultDebugExecutor.EXECUTOR_ID)
+            return GodotDebugProfileState(this, DotNetRemoteConfiguration(project, ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java).factory, name), environment)
+
         return super.getState(executor, environment)
-    }
-
-    override fun readExternal(element: Element) {
-        super.readExternal(element)
-        // Reset pid, address + port to defaults. It makes no sense to persist the pid across sessions.
-        port = -1
-        address = "127.0.0.1"
     }
 }
