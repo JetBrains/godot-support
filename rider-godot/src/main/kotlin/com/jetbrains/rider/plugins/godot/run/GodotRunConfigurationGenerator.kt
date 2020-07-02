@@ -33,7 +33,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
             }
 
             val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-            if (godotDiscoverer.getIsGodotProject) {
+            GodotProjectDiscoverer.getInstance(project).isGodotProject.advise(componentLifetime) {
                 val runManager = RunManager.getInstance(project)
                 val godotPath = File(GodotServer.getGodotPath(project))
 

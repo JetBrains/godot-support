@@ -16,7 +16,7 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
     override fun getConfigurationFactory() = runConfigurationType<GodotDebugRunConfigurationType>().factory
 
     override fun isConfigurationFromContext(configuration: GodotDebugRunConfiguration, context: ConfigurationContext): Boolean {
-        if (!GodotProjectDiscoverer.getInstance(context.project).getIsGodotProject) return false
+        if (!GodotProjectDiscoverer.getInstance(context.project).isGodotProject.value) return false
 
         val resPath = extractResPath(context) ?: return false
         return configuration.parameters.programParameters.contains(resPath)
