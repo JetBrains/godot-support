@@ -10,7 +10,7 @@ import com.intellij.psi.PsiElement
 import com.jetbrains.rider.plugins.godot.ideaInterop.fileTypes.tscn.TscnFile
 
 class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDebugRunConfiguration>() {
-    override fun getConfigurationFactory() = runConfigurationType<GodotDebugConfigurationType>().debugFactory
+    override fun getConfigurationFactory() = runConfigurationType<GodotDebugRunConfigurationType>().factory
 
     override fun isConfigurationFromContext(configuration: GodotDebugRunConfiguration, context: ConfigurationContext): Boolean {
         val sceneName = extractSceneName(context) ?: return false

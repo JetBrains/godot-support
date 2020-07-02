@@ -15,6 +15,8 @@ import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 class GodotDebugRunConfiguration(name:String, project: Project, factory: ConfigurationFactory, params: ExeConfigurationParameters)
     : ExeConfiguration(name, project, factory, params) {
 
+    var godotScene: String? = null
+
     override fun isNative(): Boolean {
         return false
     }

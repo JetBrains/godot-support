@@ -54,6 +54,10 @@ class GodotDebugProfileState(private val exeConfiguration : GodotDebugRunConfigu
                 .withWorkDirectory(exeConfiguration.parameters.workingDirectory)
                 .withRawParameters(exeConfiguration.parameters.programParameters)
 
+        val scene = exeConfiguration.godotScene
+        if (scene != null)
+            runCommandLine.parametersList.add(scene)
+
         val commandLineString = runCommandLine.commandLineString
         val monoConnectResult = super.execute(executor, runner, workerProcessHandler)
         workerProcessHandler.debuggerWorkerRealHandler.addProcessListener(object : ProcessAdapter() {
