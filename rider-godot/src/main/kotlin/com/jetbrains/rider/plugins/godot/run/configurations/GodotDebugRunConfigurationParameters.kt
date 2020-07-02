@@ -2,7 +2,7 @@ package com.jetbrains.rider.plugins.godot.run.configurations
 
 import com.jetbrains.rider.run.configurations.exe.ExeConfigurationParameters
 
-open class GodotDebugRunConfigurationParameters(
+class GodotDebugRunConfigurationParameters(
     exePath: String,
     programParameters: String,
     workingDirectory: String,
