@@ -15,6 +15,6 @@ class GodotDebugRunConfigurationType : ConfigurationTypeBase(id,
     }
 
     companion object {
-        val id = "GODOT_DEBUG_RUN_CONFIGURATION"
+        const val id = "GODOT_DEBUG_RUN_CONFIGURATION"
     }
 }

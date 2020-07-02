@@ -26,8 +26,8 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
     }
 
     init {
-        val projectDiscoverer = GodotProjectDiscoverer.getInstance(project)
-        if (projectDiscoverer.getIsGodotProject) {
+        val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
+        if (godotDiscoverer.getIsGodotProject) {
             val runManager = RunManager.getInstance(project)
             val godotPath = File(GodotServer.getGodotPath(project))
 
@@ -45,7 +45,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
                 val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
                 val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
-                remoteConfig.port = projectDiscoverer.port
+                remoteConfig.port = godotDiscoverer.port
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }
