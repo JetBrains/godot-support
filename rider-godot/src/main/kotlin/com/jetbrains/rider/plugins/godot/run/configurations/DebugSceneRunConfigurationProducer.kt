@@ -28,10 +28,15 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
         val file = getContainingFile(context) ?: return false
         val resPath = extractResPath(context) ?: return false
 
-        val runManager = RunManager.getInstance(context.project)
-        val playerSettings = runManager.allSettings.firstOrNull { it.type is GodotDebugRunConfigurationType && it.name == GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME } ?: return false
-        val config = playerSettings.configuration as GodotDebugRunConfiguration
-        configuration.parameters.exePath = config.parameters.exePath
+        val path = GodotProjectDiscoverer.getInstance(context.project).godotPath.value
+        if (path == null) {
+            val runManager = RunManager.getInstance(context.project)
+            val playerSettings = runManager.allSettings.firstOrNull { it.type is GodotDebugRunConfigurationType && it.name == GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME }
+                    ?: return false
+            val config = playerSettings.configuration as GodotDebugRunConfiguration
+            configuration.parameters.exePath = config.parameters.exePath
+        }
+        configuration.parameters.exePath = path!!
         configuration.parameters.programParameters = "--path \"${context.project.basePath}\" \"$resPath\""
 
         configuration.parameters.workingDirectory = "${context.project.basePath}"
