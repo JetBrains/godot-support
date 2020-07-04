@@ -14,6 +14,8 @@ import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import java.io.File
+import com.intellij.openapi.diagnostic.Logger
+import com.jetbrains.rd.util.reactive.whenTrue
 
 class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectComponent(project) {
 
@@ -24,16 +26,16 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
 
         const val PLAYER_CONFIGURATION_NAME = "Player"
         const val EDITOR_CONFIGURATION_NAME = "Editor"
+
+        private val logger = Logger.getInstance(GodotRunConfigurationGenerator::class.java)
     }
 
     init {
-        project.solution.isLoaded.advise(componentLifetime){
-            if (!it) {
-                return@advise
-            }
-
+        project.solution.isLoaded.whenTrue(componentLifetime){
+            logger.info("project.solution.isLoaded = true")
             val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-            GodotProjectDiscoverer.getInstance(project).isGodotProject.advise(componentLifetime) {
+            GodotProjectDiscoverer.getInstance(project).isGodotProject.whenTrue(componentLifetime) {
+                logger.info("isGodotProject = true")
                 val runManager = RunManager.getInstance(project)
                 val godotPath = File(GodotServer.getGodotPath(project))
 
