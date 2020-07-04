@@ -11,6 +11,7 @@ import com.intellij.psi.PsiElement
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.ideaInterop.fileTypes.tscn.TscnFile
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
+import java.io.File
 
 class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDebugRunConfiguration>() {
     override fun getConfigurationFactory() = runConfigurationType<GodotDebugRunConfigurationType>().factory
@@ -29,7 +30,7 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
         val resPath = extractResPath(context) ?: return false
 
         val path = GodotProjectDiscoverer.getInstance(context.project).godotPath.value
-        if (path == null) {
+        if (path == null || !File(path).exists()) {
             val runManager = RunManager.getInstance(context.project)
             val playerSettings = runManager.allSettings.firstOrNull { it.type is GodotDebugRunConfigurationType && it.name == GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME }
                     ?: return false
