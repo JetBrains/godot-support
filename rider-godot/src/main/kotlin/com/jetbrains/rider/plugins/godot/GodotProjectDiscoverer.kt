@@ -4,27 +4,25 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.util.io.exists
 import com.jetbrains.rd.platform.util.idea.LifetimedProjectService
 import com.jetbrains.rd.util.reactive.IProperty
 import com.jetbrains.rd.util.reactive.Property
-import com.jetbrains.rd.util.reactive.whenTrue
-import com.jetbrains.rider.debugger.util.isExistingFile
 import com.jetbrains.rider.model.RdExistingSolution
 import com.jetbrains.rider.projectView.solutionDescription
 import com.jetbrains.rider.projectView.solutionFile
 import com.jetbrains.rider.util.idea.getService
+import java.nio.file.Paths
 
 class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project) {
-    private val projectGodotFile = project.projectDir.findChild("project.godot")
+    private val projectGodotFile = Paths.get(project.basePath!!).resolve("project.godot")
     val isGodotProject: IProperty<Boolean> = Property(false)
     val godotPath : IProperty<String?> = Property(null)
 
     init {
         val isGodot = getIsGodotProject()
-        if (isGodot)
-            logger.info("Project was identified as Godot.")
-        isGodotProject.set(isGodot)
-        isGodotProject.whenTrue(projectServiceLifetime){
+        if (isGodot) {
+            isGodotProject.set(isGodot)
             godotPath.set(GodotServer.getGodotPath(project))
         }
     }
@@ -32,10 +30,8 @@ class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project
     // It's a Godot project, but not necessarily loaded correctly (e.g. it might be opened as folder)
     private fun getIsGodotProject() : Boolean
     {
-        if (projectGodotFile != null) {
-            return projectGodotFile.isExistingFile() && isCorrectlyLoadedSolution(project)
-        }
-        return false
+        logger.info("projectGodotFile.exists = ${projectGodotFile.exists()} and isCorrectlyLoadedSolution = ${isCorrectlyLoadedSolution(project)}")
+        return projectGodotFile.exists() && isCorrectlyLoadedSolution(project)
     }
 
     val port: Int = 23685 // default value, //todo: read custom value from project.godot file

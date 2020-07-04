@@ -34,10 +34,10 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
         project.solution.isLoaded.whenTrue(componentLifetime){
             logger.info("project.solution.isLoaded = true")
             val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-            GodotProjectDiscoverer.getInstance(project).isGodotProject.whenTrue(componentLifetime) {
+            godotDiscoverer.isGodotProject.whenTrue(componentLifetime) {
                 logger.info("isGodotProject = true")
                 val runManager = RunManager.getInstance(project)
-                val godotPath = File(GodotServer.getGodotPath(project))
+                val godotPath = godotDiscoverer.godotPath.value
 
                 // Clean up old generated configurations
                 val toRemove = runManager.allSettings.filter {
@@ -62,7 +62,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                     val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java)
                     val runConfiguration = runManager.createConfiguration(PLAYER_CONFIGURATION_NAME, configurationType.factory)
                     val config = runConfiguration.configuration as GodotDebugRunConfiguration
-                    config.parameters.exePath = godotPath.absolutePath
+                    config.parameters.exePath = godotPath ?: ""
                     config.parameters.programParameters = "--path \"${project.basePath}\""
                     config.parameters.workingDirectory = "${project.basePath}"
                     runConfiguration.storeInLocalWorkspace()
@@ -73,7 +73,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                     val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java)
                     val runConfiguration = runManager.createConfiguration(EDITOR_CONFIGURATION_NAME, configurationType.factory)
                     val config = runConfiguration.configuration as GodotDebugRunConfiguration
-                    config.parameters.exePath = godotPath.absolutePath
+                    config.parameters.exePath = godotPath ?: ""
                     config.parameters.programParameters = "--path \"${project.basePath}\" --editor"
                     config.parameters.workingDirectory = "${project.basePath}"
                     runConfiguration.storeInLocalWorkspace()
