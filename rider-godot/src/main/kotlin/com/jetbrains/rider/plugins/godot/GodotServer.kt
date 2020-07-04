@@ -13,7 +13,7 @@ class GodotServer {
         //Windows: %APPDATA%\Godot\projects\{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}\
         //macOS: $XDG_DATA_HOME/Godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/ or $HOME/Library/Application Support/Godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/
         //Linux: $XDG_DATA_HOME/godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/ or $HOME/.local/share/godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/
-        fun getGodotPath(project:Project):String {
+        fun getGodotPath(project:Project):String? {
             val projectsSettingsPath = if (SystemInfo.isMac)
             {
                 val home = Paths.get(System.getenv("HOME"))
@@ -47,14 +47,14 @@ class GodotServer {
             return getFromMonoMetadataPath(project)
         }
 
-        private fun getFromMonoMetadataPath(project: Project): String {
-            val basePath = project.basePath ?: return ""
+        private fun getFromMonoMetadataPath(project: Project): String? {
+            val basePath = project.basePath ?: return null
             val metaFile = File(basePath,".mono/metadata/ide_server_meta.txt")
             if (!metaFile.exists())
-                return ""
+                return null
             val lines = metaFile.readLines()
             if (lines.count()<2)
-                return ""
+                return null
 
             return lines[1]
         }
