@@ -30,7 +30,6 @@ class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project
     // It's a Godot project, but not necessarily loaded correctly (e.g. it might be opened as folder)
     private fun getIsGodotProject() : Boolean
     {
-        logger.info("projectGodotFile.exists = ${projectGodotFile.exists()} and isCorrectlyLoadedSolution = ${isCorrectlyLoadedSolution(project)}")
         return projectGodotFile.exists() && isCorrectlyLoadedSolution(project)
     }
 

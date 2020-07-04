@@ -32,7 +32,6 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
 
     init {
         project.solution.isLoaded.whenTrue(componentLifetime){
-            logger.info("project.solution.isLoaded = true")
             val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
             godotDiscoverer.isGodotProject.whenTrue(componentLifetime) {
                 logger.info("isGodotProject = true")
