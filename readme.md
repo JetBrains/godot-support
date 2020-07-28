@@ -10,11 +10,17 @@ Rider is JetBrains' cross platform .NET IDE, based on ReSharper and the IntelliJ
 # Features
 
 Autogenerates multiple run configurations:
- - `Player` to Run/Debug or Profile game in one click. [Video](https://youtu.be/FmaYKONV5NY?t=78)
+ - `Player` to Run/Debug or Profile game in one click. [Demo](https://youtu.be/FmaYKONV5NY?t=78)
  - `Editor` to Run/Debug or Profile Godot Editor in one click
  - `Attach` to debug already started player
+ 
+Context menu on a scene file allows running game directly to that scene.
 
 Fields marked with [Export] attribute would not be marked as not-initialized.
+
+# Recomendations
+
+Consider using `cs` and `tscn` includes in your project as demonstrated [here](https://github.com/van800/GodotSample2/blob/master/New%20Game%20Project.csproj#L59-L62)
 
 # Contributing
 
