@@ -22,6 +22,14 @@ Fields marked with [Export] attribute would not be marked as not-initialized.
 
 Consider using `cs` and `tscn` includes in your project as demonstrated [here](https://github.com/van800/GodotSample2/blob/master/New%20Game%20Project.csproj#L59-L62)
 
+# Demo
+
+<div align="left">
+      <a href="https://www.youtube.com/watch?v=FmaYKONV5NY">
+         <img src="https://img.youtube.com/vi/FmaYKONV5NY/0.jpg" style="width:100%;">
+      </a>
+</div>
+
 # Contributing
 
 This project welcomes contributions and suggestions.
