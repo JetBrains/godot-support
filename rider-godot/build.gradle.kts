@@ -87,7 +87,22 @@ repositories.forEach {
 }
 
 val repoRoot = projectDir.parentFile!!
+val resharperPluginPath = File(repoRoot, "resharper")
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
+
+val libFiles = listOf<String>()
+val pluginFiles = listOf<String>(
+    "bin/$buildConfiguration/net461/JetBrains.ReSharper.Plugins.Godot")
+
+val dotNetSdkPath by lazy {
+    val sdkPath = intellij.ideaDependency.classes.resolve("lib").resolve("DotNetSdkForRdPlugins")
+    if (sdkPath.isDirectory.not()) error("$sdkPath does not exist or not a directory")
+
+    println("SDK path: $sdkPath")
+    return@lazy sdkPath
+}
+
+val dotNetSdkPathPropsPath = File("build", "DotNetSdkPath.generated.props")
 
 val riderGodotTargetsGroup = "rider-godot"
 
@@ -102,21 +117,51 @@ fun File.writeTextIfChanged(content: String) {
 
 tasks {
     withType<org.jetbrains.intellij.tasks.PrepareSandboxTask> {
+        var files = libFiles + pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
+        files = files.map { "$resharperPluginPath/src/$it" }
+
+        files.forEach {
+            from(it) { into("${intellij.pluginName}/dotnet") }
+        }
 
         into("${intellij.pluginName}/dotnet/Extensions/com.intellij.rider.godot/annotations") {
             from("../resharper/src/annotations")
         }
-
+        
+        doLast {
+            files.forEach {
+                val file = file(it)
+                if (!file.exists()) throw RuntimeException("File $file does not exist")
+                logger.warn("$name: ${file.name} -> $destinationDir/${intellij.pluginName}/dotnet")
+            }
+        }
     }
 
     withType<RunIdeTask> {
         // IDEs from SDK are launched with 512m by default, which is not enough for Rider.
         // Rider uses this value when launched not from SDK.
         maxHeapSize = "1500m"
+        dependsOn("prepare")
     }
 
     withType<KotlinCompile> {
         kotlinOptions.jvmTarget = "1.8"
+    }
+
+    create("writeDotNetSdkPathProps") {
+        group = riderGodotTargetsGroup
+        doLast {
+            dotNetSdkPathPropsPath.writeTextIfChanged("""<Project>
+  <PropertyGroup>
+    <DotNetSdkPath>$dotNetSdkPath</DotNetSdkPath>
+  </PropertyGroup>
+</Project>
+""")
+        }
+
+        getByName("buildSearchableOptions") {
+            enabled = buildConfiguration == "Release"
+        }
     }
 
     getByName("assemble") {
@@ -124,6 +169,11 @@ tasks {
             logger.lifecycle("Plugin version: $version")
             logger.lifecycle("##teamcity[buildNumber '$version']")
         }
+    }
+
+    create("prepare") {
+        group = riderGodotTargetsGroup
+        dependsOn("writeDotNetSdkPathProps")
     }
 
     "buildSearchableOptions" {
