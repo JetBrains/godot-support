@@ -13,5 +13,31 @@
     <DefineConstants>TRACE;RIDER;$(CommandLineConstants)</DefineConstants>
   </PropertyGroup>
     
+  <ItemGroup>
+    <!-- TSCN language -->
+    <PsiLanguageNames Include="TSCN">
+      <Visible>False</Visible>
+    </PsiLanguageNames>
+    <CsLex Include="Tscn\Psi\Parsing\Tscn.lex" />
+    <None Remove="Tscn\Psi\Parsing\Tscn_lex.depends" />
+    <Compile Update="Tscn\Psi\Parsing\Tscn_lex.cs">
+      <DependentUpon>Tscn.lex</DependentUpon>
+    </Compile>
+    <TokenGenerator Include="Tscn\Psi\Parsing\TokenNodeTypes\TscnTokenNodeTypes.Tokens.xml">
+      <OutputFile>Tscn\Psi\Parsing\TokenNodeTypes\TscnTokenNodeTypes.Tokens.generated.cs</OutputFile>
+    </TokenGenerator>
+    <!--
+    <ParserGen Include="Tscn\Psi\Parsing\Tscn.psi" />
+    <ErrorsGen Include="Tscn\Daemon\Errors\TscnErrors.xml">
+      <Namespace>JetBrains.ReSharper.Plugins.Godot.Tscn.Daemon.Errors</Namespace>
+      <OutputFile>Tscn\Daemon\Errors\TscnErrors.generated.cs</OutputFile>
+      <Mode>ERRORS</Mode>
+    </ErrorsGen>
+    <Compile Update="Tscn\Daemon\Errors\TscnErrors.generated.cs">
+      <DependentUpon>TscnErrors.xml</DependentUpon>
+    </Compile>
+    -->
+  </ItemGroup>
+
   <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.ReSharperAutomationTools_src_ReSharperHost.Props" Condition="Exists('$(DotNetSdkPath)\Build\SubplatformReference.ReSharperAutomationTools_src_ReSharperHost.Props')" />
 </Project>
