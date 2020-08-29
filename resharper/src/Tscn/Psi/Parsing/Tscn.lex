@@ -1,4 +1,5 @@
 using System;
+using JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodeTypes;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.Text;
 using JetBrains.Util;
@@ -33,7 +34,7 @@ NOT_NEW_LINE=([^\u0085\u2028\u2029\u000D\u000A])
 
 INPUT_CHARACTER={NOT_NEW_LINE}
 
-SINGLE_LINE_COMMENT=(";"{INPUT_CHARACTER}*)
+COMMENT=(";"{INPUT_CHARACTER}*)
 
 SIMPLE_ESCAPE_SEQUENCE=(\\{NOT_NEW_LINE})
 HEXADECIMAL_ESCAPE_SEQUENCE=(\\x{HEX_DIGIT}({HEX_DIGIT}|{HEX_DIGIT}{HEX_DIGIT}|{HEX_DIGIT}{HEX_DIGIT}{HEX_DIGIT})?)
@@ -91,11 +92,11 @@ IDENTIFIER=({IDENTIFIER_START_CHARACTER}({IDENTIFIER_PART_CHARACTER}*))
 <YYINITIAL> "." { return TscnTokenNodeTypes.PERIOD; }
 <YYINITIAL> "=" { return TscnTokenNodeTypes.EQUALS; }
 
-<YYINITIAL> {SINGLE_LINE_COMMENT}  { return TscnTokenNodeTypes.SINGLE_LINE_COMMENT; }
+<YYINITIAL> {COMMENT}  { return TscnTokenNodeTypes.COMMENT; }
 <YYINITIAL> {NUMERIC_LITERAL}  { return TscnTokenNodeTypes.NUMERIC_LITERAL; }
 <YYINITIAL> {IDENTIFIER}  { return TscnTokenNodeTypes.IDENTIFIER; }
 <YYINITIAL> {STRING_NAME_LITERAL}  { return TscnTokenNodeTypes.STRING_NAME_LITERAL; }
 <YYINITIAL> {STRING_LITERAL}  { return TscnTokenNodeTypes.STRING_LITERAL; }
-<YYINITIAL> {COLOR_LITERAL}  { return TscnTokenNodeTypes.HEXADECIMAL_COLOR_LITERAL; }
+<YYINITIAL> {COLOR_LITERAL}  { return TscnTokenNodeTypes.COLOR_LITERAL; }
 
-<YYINITIAL> . { return JsonNewTokenNodeTypes.EOF; }
+<YYINITIAL> . { return TscnTokenNodeTypes.EOF; }

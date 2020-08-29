@@ -6,7 +6,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodeTypes
     {
         public static readonly TokenNodeType BAD_CHARACTER = new TscnGenericTokenNodeType("BAD_CHARACTER", LAST_GENERATED_TOKEN_TYPE_INDEX + 1, "�");
         
-        public static readonly TokenNodeType WHITESPACE = new TscnWhitespaceTokenNodeType(LAST_GENERATED_TOKEN_TYPE_INDEX + 2);
+        public static readonly TokenNodeType WHITE_SPACE = new TscnWhitespaceTokenNodeType(LAST_GENERATED_TOKEN_TYPE_INDEX + 2);
         
         public static readonly TokenNodeType NEW_LINE = new TscnNewLineTokenNodeType(LAST_GENERATED_TOKEN_TYPE_INDEX + 3);
         
