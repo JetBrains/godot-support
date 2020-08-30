@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
+using JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.ExtensionsAPI.Caches2;
+using JetBrains.ReSharper.Psi.Impl;
 using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.Text;
+using JetBrains.Util;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi
 {
@@ -17,12 +20,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi
 
         public override ILexerFactory GetPrimaryLexerFactory()
         {
-            throw new System.NotImplementedException();
+            return new TscnLexerFactory();
         }
 
         public override ILexer CreateFilteringLexer(ILexer lexer)
         {
-            throw new System.NotImplementedException();
+            return new TscnFilteringLexer(lexer);
         }
 
         public override IParser CreateParser(ILexer lexer, IPsiModule module, IPsiSourceFile sourceFile)
@@ -32,19 +35,20 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi
 
         public override IEnumerable<ITypeDeclaration> FindTypeDeclarations(IFile file)
         {
-            throw new System.NotImplementedException();
+            return EmptyList<ITypeDeclaration>.Enumerable;
         }
 
-        public override ILanguageCacheProvider CacheProvider { get; }
-        public override bool IsCaseSensitive { get; }
-        public override bool SupportTypeMemberCache { get; }
-        public override ITypePresenter TypePresenter { get; }
+        // TODO: Do we need this?
+        public override ILanguageCacheProvider CacheProvider => null;
+        public override bool IsCaseSensitive => true;
+        public override bool SupportTypeMemberCache => false;
+        public override ITypePresenter TypePresenter => DefaultTypePresenter.Instance;
 
         private class TscnLexerFactory : ILexerFactory
         {
             public ILexer CreateLexer(IBuffer buffer)
             {
-                throw new System.NotImplementedException();
+                return new TscnLexerGenerated(buffer);
             }
         }
     }
