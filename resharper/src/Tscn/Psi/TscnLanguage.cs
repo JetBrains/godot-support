@@ -3,6 +3,9 @@ using JetBrains.ReSharper.Psi;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi
 {
+    /// <summary>
+    /// The language used by Godot for text scene files and resources in general.
+    /// </summary>
     [LanguageDefinition(Name)]
     public class TscnLanguage : KnownLanguage
     {

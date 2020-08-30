@@ -27,6 +27,9 @@ using JetBrains.Util;
 
 %include Chars.lex
 
+%{ /* Based on code-defined lexing from Godot's VariantParser::get_token() */
+%}
+
 CARRIAGE_RETURN_CHAR=\u000D
 LINE_FEED_CHAR=\u000A
 NEW_LINE_PAIR=({CARRIAGE_RETURN_CHAR}?{LINE_FEED_CHAR}|{CARRIAGE_RETURN_CHAR}|(\u0085)|(\u2028)|(\u2029))
