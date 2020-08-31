@@ -37,6 +37,9 @@
     
   <FileDescriptorKeywords NodeType="TscnKeywordTokenNodeType" TokenElement="TscnFixedLengthTokenNode">
     <Keyword name="SCENE_KEYWORD" representation="gd_scene" contextual="true" />
+    <Keyword name="FORMAT_KEYWORD" representation="format" contextual="true" />
+    <Keyword name="LOAD_STEPS_KEYWORD" representation="load_steps" contextual="true" />
+    <Keyword name="TYPE_KEYWORD" representation="type" contextual="true" />
     <Keyword name="RESOURCE_KEYWORD" representation="gd_resource" contextual="true" />
   </FileDescriptorKeywords>
     
