@@ -1,3 +1,4 @@
+using JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodeTypes;
 using JetBrains.ReSharper.Psi.Parsing;
 using JetBrains.Text;
 
@@ -5,6 +6,26 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing
 {
     public partial class TscnLexerGenerated
     {
+        private static readonly LexerDictionary<TokenNodeType> ourKeywords = new LexerDictionary<TokenNodeType>();
+        private readonly ReusableBufferRange myBuffer = new ReusableBufferRange();
+
+        static TscnLexerGenerated()
+        {
+            foreach (var nodeType in TscnTokenNodeTypes.KEYWORDS)
+            {
+                var keyword = (TokenNodeType) nodeType;
+                if (!TscnTokenNodeTypes.CONTEXTUAL_KEYWORDS[keyword])
+                {
+                    ourKeywords[keyword.TokenRepresentation] = keyword;
+                }
+            }
+        }
+
+        private TokenNodeType FindKeywordByCurrentToken()
+        {
+            return ourKeywords.GetValueSafe(myBuffer, yy_buffer, yy_buffer_start, yy_buffer_end);
+        }
+
         private TokenNodeType myCurrentTokenType = null;
 
         private struct TokenPosition

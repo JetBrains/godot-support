@@ -18,10 +18,11 @@
 
   <!-- Default is 1000 -->
   <BaseTokenNodeTypeIndex>1000</BaseTokenNodeTypeIndex>
+  <Import>JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodes</Import>
   <TokenTypeNamespace>JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodeTypes</TokenTypeNamespace>
   <TokenTypeClass>TscnTokenNodeTypes</TokenTypeClass>
 
-  <Tokens NodeType="TscnFixedLengthTokenNodeType">
+  <Tokens NodeType="TscnFixedLengthTokenNodeType" TokenElement="TscnFixedLengthTokenNode">
     <Token name="LBRACE" representation="{" />
     <Token name="RBRACE" representation="}" />
     <Token name="LPAREN" representation="(" />
@@ -33,5 +34,17 @@
     <Token name="PERIOD" representation="." />
     <Token name="EQUALS" representation="=" />
   </Tokens>
-  
+    
+  <FileDescriptorKeywords NodeType="TscnKeywordTokenNodeType" TokenElement="TscnFixedLengthTokenNode">
+    <Keyword name="SCENE_KEYWORD" representation="gd_scene" contextual="true" />
+    <Keyword name="RESOURCE_KEYWORD" representation="gd_resource" contextual="true" />
+  </FileDescriptorKeywords>
+    
+  <HeadingKeywords NodeType="TscnKeywordTokenNodeType" TokenElement="TscnFixedLengthTokenNode">
+    <Keyword name="EXT_RESOURCE_KEYWORD" representation="ext_resource" contextual="true" />
+    <Keyword name="SUB_RESOURCE_KEYWORD" representation="sub_resource" contextual="true" />
+    <Keyword name="NODE_KEYWORD" representation="node" contextual="true" />
+    <Keyword name="CONNECTION_KEYWORD" representation="connection" contextual="true" />
+  </HeadingKeywords>
+
 </TscnTokens>

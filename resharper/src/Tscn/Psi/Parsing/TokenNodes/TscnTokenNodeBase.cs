@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text;
 using JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Tree;
 using JetBrains.ReSharper.Psi;
@@ -21,7 +22,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodes
         {
             return $"{base.ToString()}(type:{NodeType}, text:{GetText()})";
         }
-
+        
         public override StringBuilder GetText(StringBuilder to)
         {
             to.Append(GetText());

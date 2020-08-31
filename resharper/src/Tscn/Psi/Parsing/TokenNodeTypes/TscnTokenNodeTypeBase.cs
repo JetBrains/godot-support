@@ -17,5 +17,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodeTypes
         public override bool IsConstantLiteral => false;
         public override bool IsIdentifier => false;
         public override bool IsKeyword => false;
+        public virtual bool IsContextualKeyword => false;
     }
 }

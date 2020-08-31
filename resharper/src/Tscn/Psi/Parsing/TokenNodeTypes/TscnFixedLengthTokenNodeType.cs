@@ -5,15 +5,10 @@ using JetBrains.Text;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodeTypes
 {
-    internal class TscnFixedLengthTokenNodeType : TscnGenericTokenNodeType
+    internal abstract class TscnFixedLengthTokenNodeType : TscnGenericTokenNodeType
     {
-        public TscnFixedLengthTokenNodeType(string s, int index, string representation) : base(s, index, representation)
+        protected TscnFixedLengthTokenNodeType(string s, int index, string representation) : base(s, index, representation)
         {
-        }
-
-        public override LeafElementBase Create(IBuffer buffer, TreeOffset startOffset, TreeOffset endOffset)
-        {
-            return new TscnFixedLengthTokenNode(this);
         }
     }
 }

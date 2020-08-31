@@ -24,7 +24,8 @@
       <DependentUpon>Tscn.lex</DependentUpon>
     </Compile>
     <TokenGenerator Include="Tscn\Psi\Parsing\TokenNodeTypes\TscnTokenNodeTypes.Tokens.xml">
-      <OutputFile>Tscn\Psi\Parsing\TokenNodeTypes\TscnTokenNodeTypes.Tokens.generated.cs</OutputFile>
+      <OutputFile>Tscn\Psi\Parsing\TokenNodeTypes\TscnTokenNodeTypes.generated.cs</OutputFile>
+      <SubType>Designer</SubType>
     </TokenGenerator>
     <!--
     <ParserGen Include="Tscn\Psi\Parsing\Tscn.psi" />
