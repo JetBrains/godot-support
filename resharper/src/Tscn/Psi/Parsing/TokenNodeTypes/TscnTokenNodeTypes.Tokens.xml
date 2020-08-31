@@ -46,6 +46,7 @@
   <HeadingKeywords NodeType="TscnKeywordTokenNodeType" TokenElement="TscnFixedLengthTokenNode">
     <Keyword name="EXT_RESOURCE_KEYWORD" representation="ext_resource" contextual="true" />
     <Keyword name="SUB_RESOURCE_KEYWORD" representation="sub_resource" contextual="true" />
+    <Keyword name="MAIN_RESOURCE_KEYWORD" representation="resource" contextual="true" />
     <Keyword name="NODE_KEYWORD" representation="node" contextual="true" />
     <Keyword name="CONNECTION_KEYWORD" representation="connection" contextual="true" />
   </HeadingKeywords>
