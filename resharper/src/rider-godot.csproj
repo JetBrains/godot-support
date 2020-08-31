@@ -27,8 +27,8 @@
       <OutputFile>Tscn\Psi\Parsing\TokenNodeTypes\TscnTokenNodeTypes.generated.cs</OutputFile>
       <SubType>Designer</SubType>
     </TokenGenerator>
-    <!--
     <ParserGen Include="Tscn\Psi\Parsing\Tscn.psi" />
+    <!--
     <ErrorsGen Include="Tscn\Daemon\Errors\TscnErrors.xml">
       <Namespace>JetBrains.ReSharper.Plugins.Godot.Tscn.Daemon.Errors</Namespace>
       <OutputFile>Tscn\Daemon\Errors\TscnErrors.generated.cs</OutputFile>

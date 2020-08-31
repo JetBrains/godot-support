@@ -34,8 +34,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodes
             return new StringBuffer(GetText());
         }
 
-        // TODO: Uncomment
-        /*
         public void Accept(TreeNodeVisitor visitor)
         {
             visitor.VisitNode(this);
@@ -50,6 +48,5 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodes
         {
             return visitor.VisitNode(this, context);
         }
-        */
     }
 }
