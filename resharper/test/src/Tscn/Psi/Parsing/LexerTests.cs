@@ -37,6 +37,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tests.Tscn.Psi.Parsing
 
         [TestCase("full_scene")]
         [TestCase("comments")]
+        [TestCase("strings")]
         public void TestLexer(string name) => DoOneTest(name);
     }
 }
