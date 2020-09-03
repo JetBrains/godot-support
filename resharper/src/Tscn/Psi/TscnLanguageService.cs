@@ -12,6 +12,7 @@ using JetBrains.Util;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi
 {
+    [Language(typeof(TscnLanguage))]
     public class TscnLanguageService : LanguageService
     {
         public TscnLanguageService([NotNull] PsiLanguageType psiLanguageType, [NotNull] IConstantValueService constantValueService) : base(psiLanguageType, constantValueService)
@@ -30,7 +31,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi
 
         public override IParser CreateParser(ILexer lexer, IPsiModule module, IPsiSourceFile sourceFile)
         {
-            throw new System.NotImplementedException();
+            return new TscnParser(lexer as ILexer<int> ?? lexer.ToCachingLexer());
         }
 
         public override IEnumerable<ITypeDeclaration> FindTypeDeclarations(IFile file)
