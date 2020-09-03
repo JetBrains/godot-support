@@ -259,21 +259,21 @@ options {
 
 errorhandling sceneDescriptor
 :
-  LBRACE
+  LBRACKET
   SCENE_KEYWORD`SceneKeyword
   loadStepsKeyValuePair<LOAD_STEPS_PAIR, LoadStepsPair>?
   formatKeyValuePair<FORMAT_PAIR, FormatPair>
-  RBRACE
+  RBRACKET
 ;
 
 errorhandling resourceDescriptor
 :
-  LBRACE
+  LBRACKET
   RESOURCE_KEYWORD`ResourceKeyword
   typeKeyValuePair<TYPE_PAIR, TypePair>
   loadStepsKeyValuePair<LOAD_STEPS_PAIR, LoadStepsPair>?
   formatKeyValuePair<FORMAT_PAIR, FormatPair>
-  RBRACE
+  RBRACKET
 ;
 
 errorhandling formatKeyValuePair
@@ -301,10 +301,10 @@ errorhandling loadStepsKeyValuePair
 
 errorhandling extResource
 :
-  LBRACE
+  LBRACKET
   EXT_RESOURCE_KEYWORD`ExtResourceKeyword
   LIST (keyValuePair<HEADING_VALUE, HeadingValues>?) SEP COMMA
-  RBRACE
+  RBRACKET
   LIST (keyValuePair<BODY_VALUE, Values>?) SEP COMMA
 ;
 
@@ -312,19 +312,19 @@ errorhandling extResource
 
 errorhandling subResource
 :
-  LBRACE
+  LBRACKET
   SUB_RESOURCE_KEYWORD`SubResourceKeyword
   LIST (keyValuePair<HEADING_VALUE, HeadingValues>?) SEP COMMA
-  RBRACE
+  RBRACKET
   LIST (keyValuePair<BODY_VALUE, Values>?) SEP COMMA
 ;
 
 errorhandling mainResource
 :
-  LBRACE
+  LBRACKET
   MAIN_RESOURCE_KEYWORD`MainResourceKeyword
   LIST (keyValuePair<HEADING_VALUE, HeadingValues>?) SEP COMMA
-  RBRACE
+  RBRACKET
   LIST (keyValuePair<BODY_VALUE, Values>?) SEP COMMA
 ;
 
@@ -332,10 +332,10 @@ errorhandling mainResource
 
 errorhandling node
 :
-  LBRACE
+  LBRACKET
   NODE_KEYWORD`NodeKeyword
   LIST (keyValuePair<HEADING_VALUE, HeadingValues>?) SEP COMMA
-  RBRACE
+  RBRACKET
   LIST (keyValuePair<BODY_VALUE, Values>?) SEP COMMA
 ;
 
@@ -343,10 +343,10 @@ errorhandling node
 
 errorhandling connection
 :
-  LBRACE
+  LBRACKET
   CONNECTION_KEYWORD`ConnectionKeyword
   LIST (keyValuePair<HEADING_VALUE, HeadingValues>?) SEP COMMA
-  RBRACE
+  RBRACKET
   LIST (keyValuePair<BODY_VALUE, Values>?) SEP COMMA
 ;
 

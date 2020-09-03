@@ -61,10 +61,10 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing
             => ExpectContextualKeyword(TscnTokenNodeTypes.CONNECTION_KEYWORD);
 
         protected override TreeElement MatchExtResourceKeyword()
-            => MatchContextualKeyword(TscnTokenNodeTypes.RESOURCE_KEYWORD);
+            => MatchContextualKeyword(TscnTokenNodeTypes.EXT_RESOURCE_KEYWORD);
 
         protected override bool ExpectExtResourceKeyword()
-            => ExpectContextualKeyword(TscnTokenNodeTypes.RESOURCE_KEYWORD);
+            => ExpectContextualKeyword(TscnTokenNodeTypes.EXT_RESOURCE_KEYWORD);
 
         protected override TreeElement MatchFormatKeyword()
             => MatchContextualKeyword(TscnTokenNodeTypes.FORMAT_KEYWORD);
