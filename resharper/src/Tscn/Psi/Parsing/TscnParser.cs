@@ -14,7 +14,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing
         // TODO: Consider interning identifiers and literals
         public TscnParser([NotNull] ILexer<int> lexer)
         {
-            SetLexer(lexer);
+            SetLexer(new TscnFilteringLexer(lexer));
         }
 
         public IFile ParseFile()
@@ -37,8 +37,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing
 
         private TreeElement MatchContextualKeyword(TokenNodeType tokenType)
         {
-            if (myLexer.TokenType == TscnTokenNodeTypes.IDENTIFIER &&
-                myLexer.CompareTokenText(tokenType.TokenRepresentation))
+            if (ExpectContextualKeyword(tokenType))
             {
                 return CreateToken(tokenType);
             }

@@ -17,8 +17,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodes
 
         public override string GetText() => myText;
 
-        public override NodeType NodeType => TscnTokenNodeTypes.NEW_LINE;
+        public override NodeType NodeType => TscnTokenNodeTypes.WHITE_SPACE;
 
-        public bool IsNewLine => true;
+        public bool IsNewLine => false;
     }
 }
