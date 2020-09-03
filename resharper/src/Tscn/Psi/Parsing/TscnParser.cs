@@ -112,5 +112,41 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing
 
         protected override bool ExpectTypeKeyword()
             => ExpectContextualKeyword(TscnTokenNodeTypes.TYPE_KEYWORD);
+
+        protected override TreeElement MatchFalseKeyword()
+            => MatchContextualKeyword(TscnTokenNodeTypes.FALSE_KEYWORD);
+
+        protected override bool ExpectFalseKeyword()
+            => ExpectContextualKeyword(TscnTokenNodeTypes.FALSE_KEYWORD);
+
+        protected override TreeElement MatchTrueKeyword()
+            => MatchContextualKeyword(TscnTokenNodeTypes.TRUE_KEYWORD);
+
+        protected override bool ExpectTrueKeyword()
+            => ExpectContextualKeyword(TscnTokenNodeTypes.TRUE_KEYWORD);
+
+        protected override TreeElement MatchNullKeyword()
+            => MatchContextualKeyword(TscnTokenNodeTypes.NULL_KEYWORD);
+
+        protected override bool ExpectNullKeyword()
+            => ExpectContextualKeyword(TscnTokenNodeTypes.NULL_KEYWORD);
+
+        protected override TreeElement MatchNilKeyword()
+            => MatchContextualKeyword(TscnTokenNodeTypes.NIL_KEYWORD);
+
+        protected override bool ExpectNilKeyword()
+            => ExpectContextualKeyword(TscnTokenNodeTypes.NIL_KEYWORD);
+
+        protected override TreeElement MatchInfKeyword()
+            => MatchContextualKeyword(TscnTokenNodeTypes.INF_KEYWORD);
+
+        protected override bool ExpectInfKeyword()
+            => ExpectContextualKeyword(TscnTokenNodeTypes.INF_KEYWORD);
+
+        protected override TreeElement MatchNaNKeyword()
+            => MatchContextualKeyword(TscnTokenNodeTypes.NAN_KEYWORD);
+
+        protected override bool ExpectNaNKeyword()
+            => ExpectContextualKeyword(TscnTokenNodeTypes.NAN_KEYWORD);
     }
 }

@@ -239,8 +239,8 @@ options
 //  - file descriptor
 //  - external resources
 //  - internal resources (last one is the main resource in a resource file)
-//  - nodes (scenes)
-//  - connections (scenes)
+//  - nodes (only in scenes)
+//  - connections (only in scenes)
 
 errorhandling tscnFile
 options {
@@ -419,16 +419,27 @@ errorhandling variantArray
 
 interface variantValue
 :
+  // The order here matters. The variantLiteral has to go before variantConstructor
+  // as the literal includes contextual keywords (identifiers) as some of the options.
+  // The constructor always starts with an identifier, so it would capture the contextual
+  // keyword as an identifier and the result would be an error element. However, since the
+  // literals are always a single token, we can easily check for those first to avoid this issue.
   variantObject
     | variantArray
-    | variantConstructor
     | variantLiteral
+    | variantConstructor
 ;
 
 errorhandling variantLiteral
 :
-  NUMERIC_LITERAL<LITERAL, Literal> |
-  STRING_LITERAL<LITERAL, Literal> |
-  STRING_NAME_LITERAL<LITERAL, Literal> |
-  COLOR_LITERAL<LITERAL, Literal>
+  NUMERIC_LITERAL<LITERAL, Literal>
+  | STRING_LITERAL<LITERAL, Literal>
+  | STRING_NAME_LITERAL<LITERAL, Literal>
+  | COLOR_LITERAL<LITERAL, Literal>
+  | FALSE_KEYWORD`FalseKeyword<LITERAL, Literal>
+  | TRUE_KEYWORD`TrueKeyword<LITERAL, Literal>
+  | NULL_KEYWORD`NullKeyword<LITERAL, Literal>
+  | NIL_KEYWORD`NilKeyword<LITERAL, Literal>
+  | INF_KEYWORD`InfKeyword<LITERAL, Literal> 
+  | NAN_KEYWORD`NaNKeyword<LITERAL, Literal>
 ;

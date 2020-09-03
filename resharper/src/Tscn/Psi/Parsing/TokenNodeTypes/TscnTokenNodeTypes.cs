@@ -36,7 +36,13 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodeTypes
                 CONNECTION_KEYWORD,
                 FORMAT_KEYWORD,
                 LOAD_STEPS_KEYWORD,
-                TYPE_KEYWORD
+                TYPE_KEYWORD,
+                FALSE_KEYWORD,
+                TRUE_KEYWORD,
+                NULL_KEYWORD,
+                NIL_KEYWORD,
+                INF_KEYWORD,
+                NAN_KEYWORD
             );
             
             CONTEXTUAL_KEYWORDS = new NodeTypeSet(
@@ -49,7 +55,13 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing.TokenNodeTypes
                 CONNECTION_KEYWORD,
                 FORMAT_KEYWORD,
                 LOAD_STEPS_KEYWORD,
-                TYPE_KEYWORD
+                TYPE_KEYWORD,
+                FALSE_KEYWORD,
+                TRUE_KEYWORD,
+                NULL_KEYWORD,
+                NIL_KEYWORD,
+                INF_KEYWORD,
+                NAN_KEYWORD
             );
         }
     }
