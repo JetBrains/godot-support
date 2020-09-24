@@ -21,7 +21,7 @@ Classes marked with [Tool] attribute would not be marked as unused.
 
 # Recomendations
 
-Consider using `cs` and `tscn` includes in your project as demonstrated [here](https://github.com/van800/GodotSample2/blob/master/New%20Game%20Project.csproj#L59-L62)
+Consider including `tscn` in your project as demonstrated [here](https://github.com/van800/GodotSample2/blob/master/New%20Game%20Project.csproj#L7)
 
 # Contributing
 

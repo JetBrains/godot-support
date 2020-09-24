@@ -14,7 +14,6 @@ import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.onTermination
 import com.jetbrains.rider.debugger.DebuggerHelperHost
-import com.jetbrains.rider.debugger.DebuggerWorkerPlatform
 import com.jetbrains.rider.debugger.DebuggerWorkerProcessHandler
 import com.jetbrains.rider.debugger.tryWriteMessageToConsoleView
 import com.jetbrains.rider.model.debuggerWorker.OutputMessageWithSubject
@@ -27,8 +26,6 @@ import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
 import com.jetbrains.rider.run.createEmptyConsoleCommandLine
 import com.jetbrains.rider.run.withRawParameters
 import com.jetbrains.rider.util.NetUtils
-import com.jetbrains.rider.util.idea.createNestedAsyncPromise
-import org.jetbrains.concurrency.Promise
 
 class GodotDebugProfileState(private val exeConfiguration : GodotDebugRunConfiguration, private val remoteConfiguration: RemoteConfiguration, executionEnvironment: ExecutionEnvironment)
     : MonoConnectRemoteProfileState(remoteConfiguration, executionEnvironment) {
@@ -93,13 +90,13 @@ class GodotDebugProfileState(private val exeConfiguration : GodotDebugRunConfigu
         return monoConnectResult
     }
 
-    override fun createWorkerRunCmd(lifetime: Lifetime, helper: DebuggerHelperHost, port: Int): Promise<WorkerRunInfo> {
+    override suspend fun createWorkerRunInfo(lifetime: Lifetime, helper: DebuggerHelperHost, port: Int): WorkerRunInfo {
+        val runCmd = super.createWorkerRunInfo(lifetime, helper, port)
+
         remoteConfiguration.listenPortForConnections = true
         remoteConfiguration.port = NetUtils.findFreePort(500013, setOf(port))
         remoteConfiguration.address = "127.0.0.1"
 
-        val result = lifetime.createNestedAsyncPromise<WorkerRunInfo>()
-        result.setResult(createWorkerRunInfoFor(port, DebuggerWorkerPlatform.AnyCpu))
-        return result
+        return runCmd
     }
 }
