@@ -3,12 +3,11 @@ package com.jetbrains.rider.plugins.godot.run.configurations
 import com.intellij.execution.ExecutionResult
 import com.intellij.execution.Executor
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.execution.process.KillableProcessHandler
-import com.intellij.execution.process.ProcessAdapter
-import com.intellij.execution.process.ProcessEvent
-import com.intellij.execution.process.ProcessListener
+import com.intellij.execution.process.*
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
+import com.intellij.execution.ui.ConsoleView
+import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.openapi.util.Key
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -27,8 +26,10 @@ import com.jetbrains.rider.run.createEmptyConsoleCommandLine
 import com.jetbrains.rider.run.withRawParameters
 import com.jetbrains.rider.util.NetUtils
 
-class GodotDebugProfileState(private val exeConfiguration : GodotDebugRunConfiguration, private val remoteConfiguration: RemoteConfiguration, executionEnvironment: ExecutionEnvironment)
+class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfiguration, private val remoteConfiguration: RemoteConfiguration, executionEnvironment: ExecutionEnvironment)
     : MonoConnectRemoteProfileState(remoteConfiguration, executionEnvironment) {
+    private val ansiEscapeDecoder = AnsiEscapeDecoder()
+
     override fun execute(executor: Executor?, runner: ProgramRunner<*>): ExecutionResult? {
         throw UnsupportedOperationException("Should use overload with session")
     }
@@ -68,9 +69,10 @@ class GodotDebugProfileState(private val exeConfiguration : GodotDebugRunConfigu
 
                 targetProcessHandler.addProcessListener(object : ProcessListener {
                     override fun onTextAvailable(processEvent: ProcessEvent, key: Key<*>) {
-                        monoConnectResult.executionConsole.tryWriteMessageToConsoleView(
-                                OutputMessageWithSubject(processEvent.text, OutputType.Info, OutputSubject.Default)
-                        )
+                        ansiEscapeDecoder.escapeText(processEvent.text, ProcessOutputTypes.STDOUT) { textChunk, attributes ->
+                            val chunkContentType = ConsoleViewContentType.getConsoleViewType(attributes)
+                            (monoConnectResult.executionConsole as? ConsoleView)?.print(textChunk, chunkContentType)
+                        }
                     }
 
                     override fun processTerminated(processEvent: ProcessEvent) {
