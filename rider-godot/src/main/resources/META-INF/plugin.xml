@@ -12,12 +12,12 @@
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
 
     <!-- TSCN support -->
-    <fileType name="TSCN"
-              language="TSCN"
+    <fileType name="Rider_TSCN"
+              language="Rider_TSCN"
               fieldName="INSTANCE"
               implementationClass="com.jetbrains.rider.plugins.godot.ideaInterop.fileTypes.tscn.TscnFileType"
               extensions="tscn" />
-    <lang.parserDefinition language="TSCN" implementationClass="com.jetbrains.rider.plugins.godot.ideaInterop.fileTypes.tscn.TscnParserDefinition" />
+    <lang.parserDefinition language="Rider_TSCN" implementationClass="com.jetbrains.rider.plugins.godot.ideaInterop.fileTypes.tscn.TscnParserDefinition" />
 
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />
   </extensions>
