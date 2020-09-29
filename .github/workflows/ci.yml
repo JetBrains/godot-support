@@ -3,11 +3,17 @@ name: CI
 on: [pull_request]
 
 jobs:
-  macos:
-    runs-on: macos-latest
+  build:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Build
+      - name: Build Plugin
         shell: bash
         working-directory: rider-godot
-        run: ./gradlew build
+        run: ./gradlew buildPlugin
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1.0.0
+        with:
+          name: rider-godot
+          path: build/distributions
+          working-directory: rider-godot
