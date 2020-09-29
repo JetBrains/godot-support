@@ -5,7 +5,7 @@ import com.intellij.openapi.util.IconLoader
 class GodotIcons {
     class Icons {
         companion object {
-            val GodotLogo = IconLoader.getIcon("/Icons/Godot.svg")
+            val GodotLogo = IconLoader.getIcon("/Icons/Godot.svg", GodotIcons::class.java)
         }
     }
 
