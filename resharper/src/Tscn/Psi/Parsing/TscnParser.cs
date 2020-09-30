@@ -14,6 +14,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Tscn.Psi.Parsing
         // TODO: Consider interning identifiers and literals
         public TscnParser([NotNull] ILexer<int> lexer)
         {
+            // TODO: Add a MissingTokenInserter
             SetLexer(new TscnFilteringLexer(lexer));
         }
 

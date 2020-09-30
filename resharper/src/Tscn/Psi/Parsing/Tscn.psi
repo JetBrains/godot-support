@@ -266,9 +266,9 @@ errorhandling resourceElement
 :
   !(#lbr:LBRACKET)
   ( 
-    extResource<EXT_RESOURCES, ExternalResources>[lbr]
-    | subResource<SUB_RESOURCES, InternalResources>[lbr]
-    | mainResource<MAIN_RESOURCE, MainResource>[lbr]
+    extResource<ELEMENT, Element>[lbr]
+    | subResource<ELEMENT, Element>[lbr]
+    | mainResource<ELEMENT, Element>[lbr]
   )
 ;
 
@@ -276,10 +276,10 @@ errorhandling sceneElement
 :
   !(#lbr:LBRACKET)
   ( 
-    extResource<EXT_RESOURCES, ExternalResources>[lbr]
-    | subResource<SUB_RESOURCES, InternalResources>[lbr]
-    | node<NODES, Nodes>[lbr]
-    | connection<CONNECTIONS, Connections>[lbr]
+    extResource<ELEMENT, Element>[lbr]
+    | subResource<ELEMENT, Element>[lbr]
+    | node<ELEMENT, Element>[lbr]
+    | connection<ELEMENT, Element>[lbr]
   )
 ;
 
@@ -333,6 +333,7 @@ errorhandling extResource[LBRACKET lbr]
   EXT_RESOURCE_KEYWORD`ExtResourceKeyword
   keyValuePair<HEADING_VALUE, HeadingValues>*
   RBRACKET
+  // TODO: Can external resources have a body?
   keyValuePair<BODY_VALUE, Values>*
 ;
 
@@ -359,6 +360,10 @@ errorhandling mainResource[LBRACKET lbr]
 // Nodes
 
 errorhandling node[LBRACKET lbr]
+options {
+  customInterface;
+  stubBase = "TscnDeclarationBase";
+}
 :
   &lbr
   NODE_KEYWORD`NodeKeyword
