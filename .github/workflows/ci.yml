@@ -12,7 +12,7 @@ jobs:
         working-directory: rider-godot
         run: ./gradlew buildPlugin
       - name: Upload artifact
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v1
         with:
           name: rider-godot
           path: build/distributions
