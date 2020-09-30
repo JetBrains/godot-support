@@ -8,8 +8,8 @@ import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.psi.PsiElement
+import com.intellij.psi.impl.source.PsiPlainTextFileImpl
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
-import com.jetbrains.rider.plugins.godot.ideaInterop.fileTypes.tscn.TscnFile
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import java.io.File
 
@@ -49,13 +49,14 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
         val file = getContainingFile(context) ?: return null
         val project = context.project ?: return null
         val root = ProjectRootManager.getInstance(project).fileIndex.getContentRootForFile(file.virtualFile) ?: return null
-        val filename = FileUtil.getRelativePath(root.path, file.virtualFile.path, '/')
-        return "res://$filename"
+        val relPath = FileUtil.getRelativePath(root.path, file.virtualFile.path, '/')
+        return "res://$relPath"
     }
 
-    private fun getContainingFile(context: ConfigurationContext):TscnFile? {
+    private fun getContainingFile(context: ConfigurationContext): PsiPlainTextFileImpl? {
         val location = context.psiLocation ?: return null
-        val file = location.containingFile as? TscnFile ?: return null
+        val file = location.containingFile as? PsiPlainTextFileImpl ?: return null
+        if (file.virtualFile.extension != "tscn") return null
         return file
     }
 }
