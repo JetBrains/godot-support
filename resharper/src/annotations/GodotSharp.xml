@@ -7,4 +7,7 @@
   <member name="T:Godot.ToolAttribute">
     <attribute ctor="M:JetBrains.Annotations.MeansImplicitUseAttribute.#ctor" />
   </member>
+  <member name="T:Godot.SignalAttribute">
+    <attribute ctor="M:JetBrains.Annotations.MeansImplicitUseAttribute.#ctor" />
+  </member>
 </assembly>
