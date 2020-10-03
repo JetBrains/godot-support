@@ -18,6 +18,7 @@ Context menu on a scene file allows running game directly to that scene.
 
 Fields marked with [Export] attribute would not be marked as not-initialized.
 Classes marked with [Tool] attribute would not be marked as unused.
+Delegates marked with [Signal] attribute would not be marked as unused.
 
 # Recomendations
 

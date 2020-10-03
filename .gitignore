@@ -1,2 +1,8 @@
 **/.idea
 **/.DS_Store
+
+**/.gradle
+**/*.iml
+
+rider-godot/build
+rider-godot/classes
