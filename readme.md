@@ -22,7 +22,7 @@ Delegates marked with [Signal] attribute would not be marked as unused.
 
 # Recomendations
 
-Consider including `tscn` in your project as demonstrated [here](https://github.com/van800/GodotSample2/blob/master/New%20Game%20Project.csproj#L7)
+Consider including `tscn` in your project as demonstrated [here](https://github.com/van800/godot-demo-projects/pull/2/files#diff-d6ab4c56e3f79be158a2dbd5b9ae8eb8R7)
 
 # Contributing
 
