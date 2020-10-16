@@ -3,7 +3,7 @@ import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
-import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationParameters
+import com.jetbrains.rider.run.configurations.exe.ExeConfigurationParameters
 import org.jetbrains.annotations.NotNull
 
 open class GodotDebugRunFactory(type: ConfigurationType) : ConfigurationFactory(type) {
@@ -13,20 +13,13 @@ open class GodotDebugRunFactory(type: ConfigurationType) : ConfigurationFactory(
         return true
     }
 
-    fun createParameters(): GodotDebugRunConfigurationParameters {
-        return GodotDebugRunConfigurationParameters(
-                "",
-                "",
-                "",
-                hashMapOf(),
-                true,
-                false
-        )
-    }
-
-    override fun createConfiguration(name: String?, template: RunConfiguration): RunConfiguration =
-            GodotDebugRunConfiguration(name ?: this.name, template.project, this, createParameters())
-
     override fun createTemplateConfiguration(@NotNull project: Project): RunConfiguration =
-            GodotDebugRunConfiguration(this.name, project, this, createParameters())
+            GodotDebugRunConfiguration(this.name, project, this, ExeConfigurationParameters(
+                exePath = "",
+                programParameters = "",
+                workingDirectory = "",
+                envs = hashMapOf(),
+                isPassParentEnvs = true,
+                useExternalConsole = false
+            ))
 }
