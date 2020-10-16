@@ -21,7 +21,7 @@ class GodotDebugRunConfiguration(name:String, project: Project, factory: Configu
     }
 
     override fun clone(): RunConfiguration {
-        val newConfiguration = GodotDebugRunConfiguration(name, project, factory!!, parameters)
+        val newConfiguration = GodotDebugRunConfiguration(name, project, factory!!, parameters.copy())
         newConfiguration.doCopyOptionsFrom(this)
         copyCopyableDataTo(newConfiguration)
         return newConfiguration
