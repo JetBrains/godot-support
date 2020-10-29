@@ -26,6 +26,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
 
         const val PLAYER_CONFIGURATION_NAME = "Player"
         const val EDITOR_CONFIGURATION_NAME = "Editor"
+        const val WAT_UNIT_TESTING = "WATSharpGui"
 
         private val logger = Logger.getInstance(GodotRunConfigurationGenerator::class.java)
     }
@@ -74,6 +75,17 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                     val config = runConfiguration.configuration as GodotDebugRunConfiguration
                     config.parameters.exePath = godotPath ?: ""
                     config.parameters.programParameters = "--path \"${project.basePath}\" --editor"
+                    config.parameters.workingDirectory = "${project.basePath}"
+                    runConfiguration.storeInLocalWorkspace()
+                    runManager.addConfiguration(runConfiguration)
+                }
+
+                if (godotDiscoverer.isGodotUnitTesting.value && !runManager.allSettings.any { it.type is GodotDebugRunConfigurationType && it.name == WAT_UNIT_TESTING }) {
+                    val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java)
+                    val runConfiguration = runManager.createConfiguration(WAT_UNIT_TESTING, configurationType.factory)
+                    val config = runConfiguration.configuration as GodotDebugRunConfiguration
+                    config.parameters.exePath = godotPath ?: ""
+                    config.parameters.programParameters = "--path \"${project.basePath}\" \"res://addons/WAT/gui.tscn\""
                     config.parameters.workingDirectory = "${project.basePath}"
                     runConfiguration.storeInLocalWorkspace()
                     runManager.addConfiguration(runConfiguration)

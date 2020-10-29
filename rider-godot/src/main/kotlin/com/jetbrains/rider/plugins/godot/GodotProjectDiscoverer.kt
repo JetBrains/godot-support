@@ -15,13 +15,18 @@ import com.jetbrains.rider.util.idea.getService
 import java.nio.file.Paths
 
 class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project) {
-    private val projectGodotFile = Paths.get(project.basePath!!).resolve("project.godot")
+    private val projectGodotPath = Paths.get(project.basePath!!).resolve("project.godot")
     val isGodotProject: IProperty<Boolean> = Property(false)
+    val isGodotUnitTesting: IProperty<Boolean> = Property(false)
     val godotPath : IProperty<String?> = Property(null)
 
     init {
         val isGodot = getIsGodotProject()
         if (isGodot) {
+            if (projectGodotPath.toFile().readLines()
+                    .any { it.startsWith("enabled=PoolStringArray") && it.contains("WAT") })
+                        isGodotUnitTesting.set(Paths.get(project.basePath!!).resolve("addons/WAT/gui.tscn").exists())
+
             isGodotProject.set(isGodot)
             godotPath.set(GodotServer.getGodotPath(project))
         }
@@ -30,7 +35,7 @@ class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project
     // It's a Godot project, but not necessarily loaded correctly (e.g. it might be opened as folder)
     private fun getIsGodotProject() : Boolean
     {
-        return projectGodotFile.exists() && isCorrectlyLoadedSolution(project)
+        return projectGodotPath.exists() && isCorrectlyLoadedSolution(project)
     }
 
     val port: Int = 23685 // default value, //todo: read custom value from project.godot file
