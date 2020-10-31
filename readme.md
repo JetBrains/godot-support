@@ -13,6 +13,7 @@ Autogenerates multiple run configurations:
  - `Player` to Run/Debug or Profile game in one click. [Demo](https://youtu.be/FmaYKONV5NY?t=78)
  - `Editor` to Run/Debug or Profile Godot Editor in one click
  - `Attach` to debug already started player
+ - `WATSharp` to start the test-runner. [More](https://www.reddit.com/r/godot/comments/jl547k/official_jetbrains_godot_support_plugin_for_rider/)
  
 Context menu on a scene file allows running game directly to that scene.
 
