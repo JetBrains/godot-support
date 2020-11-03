@@ -196,23 +196,13 @@ tasks {
         enabled = buildConfiguration == "Release"
     }
 
-    create("restore"){
+    create("buildReSharperPlugin") {
         group = riderGodotTargetsGroup
+        dependsOn("prepare")
         doLast {
             exec {
                 executable = "dotnet"
-                args = listOf("restore", "$resharperPluginPath/rider-godot.sln", "--no-cache", "--force" )
-            }
-        }
-    }
-
-    create("buildReSharperPlugin") {
-        group = riderGodotTargetsGroup
-        dependsOn("prepare", "restore")
-        doLast {
-            exec {
-                executable = "msbuild"
-                args = listOf("$resharperPluginPath/rider-godot.sln")
+                args = listOf("build", "$resharperPluginPath/rider-godot.sln", "--nologo")
             }
         }
     }
