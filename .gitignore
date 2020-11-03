@@ -7,7 +7,7 @@
 **/obj
 **/bin
 
-rider-godot/build
-rider-godot/classes
+rider/build
+rider/classes
 
 *generated*
