@@ -11,3 +11,5 @@ rider/build
 rider/classes
 
 *generated*
+
+NuGet.Config
