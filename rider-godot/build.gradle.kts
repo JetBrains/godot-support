@@ -174,7 +174,7 @@ tasks {
 
     create("prepare") {
         group = riderGodotTargetsGroup
-        dependsOn( "buildReSharperPlugin", "writeDotNetSdkPathProps")
+        dependsOn("writeDotNetSdkPathProps")
     }
 
     "buildSearchableOptions" {
