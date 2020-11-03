@@ -121,7 +121,7 @@ tasks {
     withType<PrepareSandboxTask> {
         dependsOn("buildReSharperPlugin")
         var files = libFiles + pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
-        files = files.map { "$resharperPluginPath/build/rider/$it" }
+        files = files.map { "$resharperPluginPath/build/rider-godot/$it" }
 
         files.forEach {
             from(it) { into("${intellij.pluginName}/dotnet") }

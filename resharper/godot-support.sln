@@ -4,6 +4,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rider-godot", "src\rider-go
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gradle-launcher", "gradle-launcher\gradle-launcher.csproj", "{A0CA2638-35EE-4034-B1FA-F13345121485}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Run Configurations", "Run Configurations", "{41110F19-B84E-43B3-8D19-193937DFB1F4}"
+ProjectSection(SolutionItems) = preProject
+	.run\runIde.run.xml = .run\runIde.run.xml
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
