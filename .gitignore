@@ -5,6 +5,7 @@
 **/*.iml
 
 **/obj
+**/bin
 
 rider-godot/build
 rider-godot/classes

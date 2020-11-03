@@ -103,7 +103,6 @@ val dotNetSdkPath by lazy {
     return@lazy sdkPath
 }
 
-val nugetConfigPath = File(repoRoot, "NuGet.Config")
 val dotNetSdkPathPropsPath = File("build", "DotNetSdkPath.generated.props")
 
 val riderGodotTargetsGroup = "rider-godot"
@@ -165,19 +164,6 @@ tasks {
         }
     }
 
-    create("writeNuGetConfig") {
-        group = riderGodotTargetsGroup
-        doLast {
-            nugetConfigPath.writeTextIfChanged("""<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <packageSources>
-    <add key="resharper-sdk" value="$dotNetSdkPath" />
-  </packageSources>
-</configuration>
-""")
-        }
-    }
-
 
     getByName("assemble") {
         doLast {
@@ -188,7 +174,7 @@ tasks {
 
     create("prepare") {
         group = riderGodotTargetsGroup
-        dependsOn("writeNuGetConfig", "writeDotNetSdkPathProps")
+        dependsOn( "buildReSharperPlugin", "writeDotNetSdkPathProps")
     }
 
     "buildSearchableOptions" {
