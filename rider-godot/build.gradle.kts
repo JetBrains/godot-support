@@ -118,6 +118,7 @@ fun File.writeTextIfChanged(content: String) {
 
 tasks {
     withType<PrepareSandboxTask> {
+        dependsOn("buildReSharperPlugin")
         var files = libFiles + pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
         files = files.map { "$resharperPluginPath/src/$it" }
 
