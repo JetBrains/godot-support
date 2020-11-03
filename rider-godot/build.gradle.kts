@@ -152,6 +152,7 @@ tasks {
     create("writeDotNetSdkPathProps") {
         group = riderGodotTargetsGroup
         doLast {
+            dotNetSdkPathPropsPath.parentFile?.mkdir()
             dotNetSdkPathPropsPath.writeTextIfChanged("""<Project>
   <PropertyGroup>
     <DotNetSdkPath>$dotNetSdkPath</DotNetSdkPath>
