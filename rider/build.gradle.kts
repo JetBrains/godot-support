@@ -1,3 +1,4 @@
+import com.jetbrains.rd.generator.gradle.RdGenExtension
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
@@ -9,9 +10,11 @@ buildscript {
         maven { setUrl("https://cache-redirector.jetbrains.com/www.myget.org/F/rd-snapshots/maven") }
         maven { setUrl("https://cache-redirector.jetbrains.com/dl.bintray.com/kotlin/kotlin-eap") }
         maven { setUrl("https://cache-redirector.jetbrains.com/repo.maven.apache.org/maven2")}
+        maven { setUrl("https://jetbrains.bintray.com/intellij-plugin-service") }
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50")
+        // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
+        classpath("com.jetbrains.rd:rd-gen:0.203.148")
     }
 }
 
@@ -21,13 +24,16 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.13"
+    id("org.jetbrains.intellij") version "0.6.1"
     id("org.jetbrains.grammarkit") version "2018.1.7"
     id("me.filippov.gradle.jvm.wrapper") version "0.9.3"
+    kotlin("jvm") version "1.4.10"
 }
 
 apply {
     plugin("kotlin")
+    plugin("com.jetbrains.rdgen")
+    plugin("org.jetbrains.grammarkit")
 }
 
 java {
@@ -117,6 +123,40 @@ fun File.writeTextIfChanged(content: String) {
     }
 }
 
+configure<RdGenExtension> {
+    val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/BackendGodot")
+    val godotEditorCsOutDir = File(repoRoot, "godot/build/generated/Model/BackendGodot")
+
+    verbose = true
+    hashFolder = "build/rdgen"
+    logger.info("Configuring rdgen params")
+    classpath({
+        logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${intellij.ideaDependency}")
+        val sdkPath = intellij.ideaDependency.classes
+        val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
+
+        "$rdLibDirectory/rider-model.jar"
+    })
+    sources(File(repoRoot, "rider/protocol/src/kotlin/model"))
+    packages = "model"
+
+    generator {
+        language = "csharp"
+        transform = "asis"
+        root = "model.BackendGodotModel"
+        namespace = "JetBrains.ReSharper.Plugins.Godot.Protocol"
+        directory = "$backendCsOutDir"
+    }
+
+    generator {
+        language = "csharp"
+        transform = "reversed"
+        root = "model.BackendGodotModel"
+        namespace = "JetBrains.ReSharper.Plugins.Godot.Protocol"
+        directory = "$godotEditorCsOutDir"
+    }
+}
+
 tasks {
     withType<PrepareSandboxTask> {
         dependsOn("buildReSharperPlugin")
@@ -189,7 +229,7 @@ tasks {
 
     create("prepare") {
         group = riderGodotTargetsGroup
-        dependsOn("writeNuGetConfig", "writeDotNetSdkPathProps")
+        dependsOn("rdgen", "writeNuGetConfig", "writeDotNetSdkPathProps")
     }
 
     "buildSearchableOptions" {
