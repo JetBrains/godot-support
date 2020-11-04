@@ -5,13 +5,13 @@ using JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates.Scope;
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
 {
     [ScopeCategoryUIProvider(Priority = Priority)]
-    public class GodotScopeCategoryUIProvider : ScopeCategoryUIProvider
+    public class GodotScopeCategoryUiProvider : ScopeCategoryUIProvider
     {
         // Needs to be less than other priorities in R#'s built in ScopeCategoryUIProvider
         // to push it to the end of the list
         private const int Priority = -200;
 
-        public GodotScopeCategoryUIProvider() : base()
+        public GodotScopeCategoryUiProvider() : base()
         {
             MainPoint = new InGodotCSharpProject();
         }
