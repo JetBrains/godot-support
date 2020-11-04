@@ -1,3 +1,4 @@
+import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -87,7 +88,23 @@ repositories.forEach {
 }
 
 val repoRoot = projectDir.parentFile!!
+val resharperPluginPath = File(repoRoot, "resharper")
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
+
+val libFiles = listOf<String>()
+val pluginFiles = listOf(
+    "bin/$buildConfiguration/net461/JetBrains.ReSharper.Plugins.Godot")
+
+val dotNetSdkPath by lazy {
+    val sdkPath = intellij.ideaDependency.classes.resolve("lib").resolve("DotNetSdkForRdPlugins")
+    if (sdkPath.isDirectory.not()) error("$sdkPath does not exist or not a directory")
+
+    println("SDK path: $sdkPath")
+    return@lazy sdkPath
+}
+
+val nugetConfigPath = File(repoRoot, "NuGet.Config")
+val dotNetSdkPathPropsPath = File(project.projectDir, "../resharper/build/DotNetSdkPath.generated.props")
 
 val riderGodotTargetsGroup = "rider-godot"
 
@@ -101,12 +118,26 @@ fun File.writeTextIfChanged(content: String) {
 }
 
 tasks {
-    withType<org.jetbrains.intellij.tasks.PrepareSandboxTask> {
+    withType<PrepareSandboxTask> {
+        dependsOn("buildReSharperPlugin")
+        var files = libFiles + pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
+        files = files.map { "$resharperPluginPath/build/rider-godot/$it" }
+
+        files.forEach {
+            from(it) { into("${intellij.pluginName}/dotnet") }
+        }
 
         into("${intellij.pluginName}/dotnet/Extensions/com.intellij.rider.godot/annotations") {
             from("../resharper/src/annotations")
         }
 
+        doLast {
+            files.forEach {
+                val file = file(it)
+                if (!file.exists()) throw RuntimeException("File $file does not exist")
+                logger.warn("$name: ${file.name} -> $destinationDir/${intellij.pluginName}/dotnet")
+            }
+        }
     }
 
     withType<RunIdeTask> {
@@ -119,6 +150,36 @@ tasks {
         kotlinOptions.jvmTarget = "1.8"
     }
 
+    create("writeDotNetSdkPathProps") {
+        group = riderGodotTargetsGroup
+        doLast {
+            dotNetSdkPathPropsPath.parentFile?.mkdir()
+            dotNetSdkPathPropsPath.writeTextIfChanged("""<Project>
+  <PropertyGroup>
+    <DotNetSdkPath>$dotNetSdkPath</DotNetSdkPath>
+  </PropertyGroup>
+</Project>
+""")
+        }
+
+        getByName("buildSearchableOptions") {
+            enabled = buildConfiguration == "Release"
+        }
+    }
+
+    create("writeNuGetConfig") {
+        group = riderGodotTargetsGroup
+        doLast {
+            nugetConfigPath.writeTextIfChanged("""<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <packageSources>
+    <add key="resharper-sdk" value="$dotNetSdkPath" />
+  </packageSources>
+</configuration>
+""")
+        }
+    }
+
     getByName("assemble") {
         doLast {
             logger.lifecycle("Plugin version: $version")
@@ -126,8 +187,24 @@ tasks {
         }
     }
 
+    create("prepare") {
+        group = riderGodotTargetsGroup
+        dependsOn("writeNuGetConfig", "writeDotNetSdkPathProps")
+    }
+
     "buildSearchableOptions" {
-        enabled = false
+        enabled = buildConfiguration == "Release"
+    }
+
+    create("buildReSharperPlugin") {
+        group = riderGodotTargetsGroup
+        dependsOn("prepare")
+        doLast {
+            exec {
+                executable = "dotnet"
+                args = listOf("build", "$resharperPluginPath/godot-support.sln")
+            }
+        }
     }
 
     task("listrepos"){

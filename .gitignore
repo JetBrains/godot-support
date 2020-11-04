@@ -4,5 +4,12 @@
 **/.gradle
 **/*.iml
 
-rider-godot/build
-rider-godot/classes
+**/obj
+**/bin
+
+rider/build
+rider/classes
+
+*generated*
+
+NuGet.Config

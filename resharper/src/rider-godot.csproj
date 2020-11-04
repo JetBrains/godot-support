@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <AssemblyName>JetBrains.ReSharper.Plugins.Godot</AssemblyName>
+    <RootNamespace>JetBrains.ReSharper.Plugins.Godot</RootNamespace>
+    <LangVersion>7.3</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;JET_MODE_ASSERT;JET_MODE_REPORT_EXCEPTIONS;RIDER;$(CommandLineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;RIDER;$(CommandLineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <!-- ********** -->
+  <ItemGroup Label="Live templates">
+    <LiveTemplate Include="Templates\**\*.md">
+      <OutputFile>Templates\templates.generated.dotSettings</OutputFile>
+      <ReadmeFile>Templates\README.md</ReadmeFile>
+    </LiveTemplate>
+    <EmbeddedResource Include="Templates\templates.generated.dotSettings">
+      <LogicalName>JetBrains.ReSharper.Plugins.Godot.Templates.templates.dotSettings</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <!-- ********** -->
+  <ItemGroup Label="References">
+    <PackageReference Include="CitizenMatt.ReSharper.LiveTemplateCompiler" Version="2.6.0" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  
+  <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.ReSharperAutomationTools_src_ReSharperHost.Props" Condition="Exists('$(DotNetSdkPath)\Build\SubplatformReference.ReSharperAutomationTools_src_ReSharperHost.Props')" />
+</Project>

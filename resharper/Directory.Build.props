@@ -1,0 +1,35 @@
+<Project>
+  <Import Project="$(MSBuildThisFileDirectory)\build\DotNetSdkPath.generated.props"
+          Condition="Exists('$(MSBuildThisFileDirectory)\build\DotNetSdkPath.generated.props')" />
+  <!-- TODO: Test what happens without the condition if props are not generated yet -->
+  
+    <!-- We have multiple projects in the same folder, so need to rename the bin and obj
+       folders so that they are unique and we don't overwrite anything. We can do this
+       in the project files for the bin folders, but not for the obj folders, because
+       the Sdk attribute indirectly imports Microsoft.Common.props before we have a
+       chance to set any properties. Microsoft.Common.props defines the BaseIntermediateOutputPath
+       value, and then immediately uses it to include props files from the obj folder,
+       before we've had a chance to override it. Fortunately, this Directory.Build.props
+       file gets automatically imported first, so we can override it here.
+       We also have to set it to something outside of the source tree, or the default
+       wildcard includes only exclude bin and obj for the current project, and we'd
+       pick up extra files.
+       See:
+       * https://github.com/Microsoft/msbuild/issues/1603
+       * https://github.com/dotnet/sdk/issues/803
+       * https://github.com/dotnet/sdk/issues/802 -->
+  <PropertyGroup>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Build tests and production to a common bin folder to reduce unnecessary duplication and copies. By default,
+         production would skip copying @(JetContent) and should skip @(JetReference) but because we're not using the
+         standard SDK entry point, which would set JetReferencesPrivate=False, production gets all @(JetReference)
+         assemblies. It also gets all nuget assemblies. Combining test and production means we only get a single copy
+         of @(JetReference), nuget assemblies and @(JetContent) for each build - rider and resharper.
+         Note that obj folders are kept separate because per-project files are saved there, e.g. nuget restore details
+         and generated source files. -->
+    <OutputPath>$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName.Replace("tests.", ""))\bin\$(Configuration)</OutputPath>
+  </PropertyGroup>
+</Project>
