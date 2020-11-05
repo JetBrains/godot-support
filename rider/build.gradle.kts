@@ -161,7 +161,7 @@ configure<RdGenExtension> {
 
 configure<RdGenExtension> {
     val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/FrontendBackend")
-    val frontendKtOutDir = File(repoRoot, "rider/src/main/gen/kotlin/com/jetbrains/rider/plugins/godot/model/frontendBackend")
+    val frontendKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
 
     verbose = true
     hashFolder = "$hashBaseDir/frontendBackend"

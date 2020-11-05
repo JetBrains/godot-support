@@ -20,9 +20,9 @@ namespace JetBrains.Rider.Godot.Editor
         {
             var lifetimeDefinition = Lifetime.Define(Lifetime.Eternal);
             var lifetime = lifetimeDefinition.Lifetime;
-            
-            MainThreadDispatcher.Instance.EnablePlugin();
-            var editorSettings = MainThreadDispatcher.Instance.GetEditorInterface().GetEditorSettings();
+
+            TestDispatcher.Instance.Start();
+            var editorSettings = TestEditorPlugin.Instance.GetEditorInterface().GetEditorSettings();
 
             var protocolInstanceJsonPath = Path.GetFullPath(".mono/ProtocolInstance.json");
             InitializeProtocol(lifetime, protocolInstanceJsonPath);
@@ -91,7 +91,7 @@ namespace JetBrains.Rider.Godot.Editor
         {
             try
             {
-                var dispatcher = MainThreadDispatcher.Instance;
+                var dispatcher = TestDispatcher.Instance;
                 var currentWireAndProtocolLifetimeDef = lifetime.CreateNested();
                 var currentWireAndProtocolLifetime = currentWireAndProtocolLifetimeDef.Lifetime;
 
@@ -100,9 +100,9 @@ namespace JetBrains.Rider.Godot.Editor
                 var serializers = new Serializers(lifetime, null, null);
                 var identities = new Identities(IdKind.Server);
 
-                MainThreadDispatcher.AssertThread();
+                TestDispatcher.AssertThread();
                 var protocol = new Protocol("GodotEditorPlugin" + solutionName, serializers, identities,
-                    MainThreadDispatcher.Instance, riderProtocolController.Wire, currentWireAndProtocolLifetime);
+                    TestDispatcher.Instance, riderProtocolController.Wire, currentWireAndProtocolLifetime);
                 riderProtocolController.Wire.Connected.WhenTrue(currentWireAndProtocolLifetime, connectionLifetime =>
                 {
                     ourLogger.Log(LoggingLevel.VERBOSE, "Create UnityModel and advise for new sessions...");
