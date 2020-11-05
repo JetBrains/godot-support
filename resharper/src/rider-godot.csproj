@@ -27,7 +27,7 @@
 
   <ItemGroup Label="Model">
     <Compile Include="../build/generated/Model/**/*" LinkBase="Model">
-      <Visible>False</Visible>
+      <Visible>True</Visible>
     </Compile>
   </ItemGroup>
   
