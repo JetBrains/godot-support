@@ -123,12 +123,15 @@ fun File.writeTextIfChanged(content: String) {
     }
 }
 
+val modelSrcDir = File(repoRoot, "rider/protocol/src/kotlin/model")
+val hashBaseDir = File(repoRoot, "rider/build/rdgen")
+
 configure<RdGenExtension> {
     val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/BackendGodot")
     val godotEditorCsOutDir = File(repoRoot, "godot/build/generated/Model/BackendGodot")
 
     verbose = true
-    hashFolder = "build/rdgen"
+    hashFolder = "$hashBaseDir/backendGodot"
     logger.info("Configuring rdgen params")
     classpath({
         logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${intellij.ideaDependency}")
@@ -137,23 +140,54 @@ configure<RdGenExtension> {
 
         "$rdLibDirectory/rider-model.jar"
     })
-    sources(File(repoRoot, "rider/protocol/src/kotlin/model"))
+    sources(File("$modelSrcDir/backendGodot"))
     packages = "model"
 
     generator {
         language = "csharp"
         transform = "asis"
-        root = "model.BackendGodotModel"
-        namespace = "JetBrains.ReSharper.Plugins.Godot.Protocol"
+        root = "model.backendGodot.BackendGodotModel"
         directory = "$backendCsOutDir"
     }
 
     generator {
         language = "csharp"
         transform = "reversed"
-        root = "model.BackendGodotModel"
-        namespace = "JetBrains.ReSharper.Plugins.Godot.Protocol"
+        root = "model.backendGodot.BackendGodotModel"
         directory = "$godotEditorCsOutDir"
+    }
+}
+
+
+configure<RdGenExtension> {
+    val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/FrontendBackend")
+    val frontendKtOutDir = File(repoRoot, "rider/src/main/gen/kotlin/com/jetbrains/rider/plugins/godot/model/frontendBackend")
+
+    verbose = true
+    hashFolder = "$hashBaseDir/frontendBackend"
+    logger.info("Configuring rdgen params")
+    classpath({
+        logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${intellij.ideaDependency}")
+        val sdkPath = intellij.ideaDependency.classes
+        val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
+
+        "$rdLibDirectory/rider-model.jar"
+    })
+    sources(File("$modelSrcDir/frontendBackend"))
+    packages = "model"
+
+    generator {
+        language = "csharp"
+        transform = "reversed"
+        root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
+        directory = "$backendCsOutDir"
+    }
+
+    generator {
+        language = "kotlin"
+        transform = "asis"
+        root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
+        directory = "$frontendKtOutDir"
     }
 }
 

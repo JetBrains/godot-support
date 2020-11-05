@@ -1,6 +1,5 @@
-package model
+package model.backendGodot
 
-import com.jetbrains.rider.model.nova.ide.SolutionModel
 import com.jetbrains.rd.generator.nova.*
 import com.jetbrains.rd.generator.nova.PredefinedType.*
 import com.jetbrains.rd.generator.nova.csharp.CSharp50Generator
@@ -16,9 +15,10 @@ object BackendGodotModel : Root()  {
     }
 
     init {
+        setting(Kotlin11Generator.Namespace, "JetBrains.ReSharper.Plugins.Godot.Protocol")
+        setting(CSharp50Generator.Namespace, "JetBrains.ReSharper.Plugins.Godot.Protocol")
 
         // Actions called from Godot to the backend
         callback("openFileLineCol", RdOpenFileArgs, bool).documentation = "Called from Godot to quickly open a file in an existing Rider instance"
-
     }
 }
