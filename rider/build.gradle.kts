@@ -1,3 +1,4 @@
+import com.jetbrains.rd.generator.gradle.RdGenExtension
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
@@ -9,9 +10,11 @@ buildscript {
         maven { setUrl("https://cache-redirector.jetbrains.com/www.myget.org/F/rd-snapshots/maven") }
         maven { setUrl("https://cache-redirector.jetbrains.com/dl.bintray.com/kotlin/kotlin-eap") }
         maven { setUrl("https://cache-redirector.jetbrains.com/repo.maven.apache.org/maven2")}
+        maven { setUrl("https://jetbrains.bintray.com/intellij-plugin-service") }
     }
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50")
+        // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
+        classpath("com.jetbrains.rd:rd-gen:0.203.148")
     }
 }
 
@@ -21,13 +24,16 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.13"
+    id("org.jetbrains.intellij") version "0.6.1"
     id("org.jetbrains.grammarkit") version "2018.1.7"
     id("me.filippov.gradle.jvm.wrapper") version "0.9.3"
+    kotlin("jvm") version "1.4.10"
 }
 
 apply {
     plugin("kotlin")
+    plugin("com.jetbrains.rdgen")
+    plugin("org.jetbrains.grammarkit")
 }
 
 java {
@@ -117,6 +123,74 @@ fun File.writeTextIfChanged(content: String) {
     }
 }
 
+val modelSrcDir = File(repoRoot, "rider/protocol/src/kotlin/model")
+val hashBaseDir = File(repoRoot, "rider/build/rdgen")
+
+configure<RdGenExtension> {
+    val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/BackendGodot")
+    val godotEditorCsOutDir = File(repoRoot, "godot/build/generated/Model/BackendGodot")
+
+    verbose = true
+    hashFolder = "$hashBaseDir/backendGodot"
+    logger.info("Configuring rdgen params")
+    classpath({
+        logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${intellij.ideaDependency}")
+        val sdkPath = intellij.ideaDependency.classes
+        val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
+
+        "$rdLibDirectory/rider-model.jar"
+    })
+    sources(File("$modelSrcDir/backendGodot"))
+    packages = "model"
+
+    generator {
+        language = "csharp"
+        transform = "asis"
+        root = "model.backendGodot.BackendGodotModel"
+        directory = "$backendCsOutDir"
+    }
+
+    generator {
+        language = "csharp"
+        transform = "reversed"
+        root = "model.backendGodot.BackendGodotModel"
+        directory = "$godotEditorCsOutDir"
+    }
+}
+
+
+configure<RdGenExtension> {
+    val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/FrontendBackend")
+    val frontendKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
+
+    verbose = true
+    hashFolder = "$hashBaseDir/frontendBackend"
+    logger.info("Configuring rdgen params")
+    classpath({
+        logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${intellij.ideaDependency}")
+        val sdkPath = intellij.ideaDependency.classes
+        val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
+
+        "$rdLibDirectory/rider-model.jar"
+    })
+    sources(File("$modelSrcDir/frontendBackend"))
+    packages = "model"
+
+    generator {
+        language = "csharp"
+        transform = "reversed"
+        root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
+        directory = "$backendCsOutDir"
+    }
+
+    generator {
+        language = "kotlin"
+        transform = "asis"
+        root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
+        directory = "$frontendKtOutDir"
+    }
+}
+
 tasks {
     withType<PrepareSandboxTask> {
         dependsOn("buildReSharperPlugin")
@@ -189,7 +263,7 @@ tasks {
 
     create("prepare") {
         group = riderGodotTargetsGroup
-        dependsOn("writeNuGetConfig", "writeDotNetSdkPathProps")
+        dependsOn("rdgen", "writeNuGetConfig", "writeDotNetSdkPathProps")
     }
 
     "buildSearchableOptions" {
