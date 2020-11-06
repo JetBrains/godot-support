@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using Godot;
 using JetBrains.Annotations;
 using JetBrains.Collections.Viewable;
 using JetBrains.Diagnostics;
@@ -9,9 +7,6 @@ using JetBrains.Lifetimes;
 using JetBrains.Rd;
 using JetBrains.Rd.Impl;
 using JetBrains.ReSharper.Plugins.Godot.Protocol;
-using Directory = System.IO.Directory;
-using File = System.IO.File;
-using Path = System.IO.Path;
 
 namespace JetBrains.Rider.Godot.Editor
 {
@@ -20,16 +15,17 @@ namespace JetBrains.Rider.Godot.Editor
     {
         private static readonly ILog ourLogger = Log.GetLog("EntryPoint");
         
-        private static readonly string EditorPathSettingName = "mono/editor/editor_path_optional";
-
+        public static string RiderPath;
+        public static string SolutionName;
+        
         static EntryPoint()
         {
             var lifetimeDefinition = Lifetime.Define(Lifetime.Eternal);
             var lifetime = lifetimeDefinition.Lifetime;
 
             TimerBasedDispatcher.Instance.Start();
-            var editorSettings = new EditorPlugin().GetEditorInterface().GetEditorSettings();
-            var riderPath = editorSettings.GetSetting(EditorPathSettingName);
+//            var editorSettings = new EditorPlugin().GetEditorInterface().GetEditorSettings();
+//            var riderPath = editorSettings.GetSetting(EditorPathSettingName);
 
             var protocolInstanceJsonPath = Path.GetFullPath(".mono/metadata/ProtocolInstance.json");
             InitializeProtocol(lifetime, protocolInstanceJsonPath);
@@ -42,13 +38,11 @@ namespace JetBrains.Rider.Godot.Editor
         {
             lifetime.Bracket(() =>
             {
-                var solutionName = (string) ProjectSettings.GetSetting("application/config/name");
-
                 var allProtocolsLifetimeDefinition = lifetime.CreateNested();
-                var port = CreateProtocolForSolution(allProtocolsLifetimeDefinition.Lifetime, solutionName,
+                var port = CreateProtocolForSolution(allProtocolsLifetimeDefinition.Lifetime, SolutionName,
                     () => { allProtocolsLifetimeDefinition.Terminate(); });
 
-                var protocol = new ProtocolInstance(solutionName, port);
+                var protocol = new ProtocolInstance(SolutionName, port);
 
                 var result = ProtocolInstance.ToJson(new[] {protocol});
                 File.WriteAllText(protocolInstancePath, result);

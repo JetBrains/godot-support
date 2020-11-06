@@ -17,14 +17,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="GodotSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\godot-demo-projects\mono\dodge_the_creeps\.mono\assemblies\Debug\GodotSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="GodotSharpEditor, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\..\..\godot-demo-projects\mono\dodge_the_creeps\.mono\assemblies\Debug\GodotSharpEditor.dll</HintPath>
-    </Reference>
-  </ItemGroup>
 
   <ItemGroup Label="Model">
     <Compile Include="../../godot/build/generated/Model/BackendGodot/**/*" LinkBase="Model">
