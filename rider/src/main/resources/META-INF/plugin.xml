@@ -4,7 +4,7 @@
   <version>2020.3.0.9999</version>
   <vendor url="https://www.jetbrains.com">JetBrains</vendor>
 
-  <idea-version since-build="203.5251.8" />
+  <idea-version since-build="203.5391.95" />
 
   <depends>com.intellij.modules.rider</depends>
 
@@ -15,6 +15,7 @@
 
   <project-components>
     <component><implementation-class>com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator</implementation-class></component>
+    <component><implementation-class>com.jetbrains.rider.plugins.godot.FrontendBackendHost</implementation-class></component>
   </project-components>
 
   <extensions defaultExtensionNs="com.intellij">

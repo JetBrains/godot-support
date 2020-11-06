@@ -24,6 +24,13 @@
     </EmbeddedResource>
   </ItemGroup>
   <!-- ********** -->
+
+  <ItemGroup Label="Model">
+    <Compile Include="../../resharper/build/generated/Model/**/*" LinkBase="Model">
+      <Visible>True</Visible>
+    </Compile>
+  </ItemGroup>
+  
   <ItemGroup Label="References">
     <PackageReference Include="CitizenMatt.ReSharper.LiveTemplateCompiler" Version="2.6.0" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net461" Version="1.0.0">
