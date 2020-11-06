@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Godot;
 using JetBrains.Annotations;
 using JetBrains.Collections.Viewable;
 using JetBrains.Diagnostics;
@@ -8,6 +9,9 @@ using JetBrains.Lifetimes;
 using JetBrains.Rd;
 using JetBrains.Rd.Impl;
 using JetBrains.ReSharper.Plugins.Godot.Protocol;
+using Directory = System.IO.Directory;
+using File = System.IO.File;
+using Path = System.IO.Path;
 
 namespace JetBrains.Rider.Godot.Editor
 {
@@ -16,17 +20,20 @@ namespace JetBrains.Rider.Godot.Editor
     {
         private static readonly ILog ourLogger = Log.GetLog("EntryPoint");
         
+        private static readonly string EditorPathSettingName = "mono/editor/editor_path_optional";
+
         static EntryPoint()
         {
             var lifetimeDefinition = Lifetime.Define(Lifetime.Eternal);
             var lifetime = lifetimeDefinition.Lifetime;
 
-            TestDispatcher.Instance.Start();
-            var editorSettings = TestEditorPlugin.Instance.GetEditorInterface().GetEditorSettings();
+            TimerBasedDispatcher.Instance.Start();
+            var editorSettings = new EditorPlugin().GetEditorInterface().GetEditorSettings();
+            var riderPath = editorSettings.GetSetting(EditorPathSettingName);
 
-            var protocolInstanceJsonPath = Path.GetFullPath(".mono/ProtocolInstance.json");
+            var protocolInstanceJsonPath = Path.GetFullPath(".mono/metadata/ProtocolInstance.json");
             InitializeProtocol(lifetime, protocolInstanceJsonPath);
-            //ourLogger.Verbose("InitializeProtocol");
+            ourLogger.Verbose("InitializeProtocol");
 
             AppDomain.CurrentDomain.DomainUnload += (sender, args) => { lifetimeDefinition.Terminate(); };
         }
@@ -35,63 +42,28 @@ namespace JetBrains.Rider.Godot.Editor
         {
             lifetime.Bracket(() =>
             {
-                var currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-                var solutionNames = new List<string>() {currentDirectory.Name};
+                var solutionName = (string) ProjectSettings.GetSetting("application/config/name");
 
-                var solutionFiles = currentDirectory.GetFiles("*.sln", SearchOption.TopDirectoryOnly);
-                foreach (var solutionFile in solutionFiles)
-                {
-                    var solutionName = Path.GetFileNameWithoutExtension(solutionFile.FullName);
-                    if (!solutionName.Equals(currentDirectory.Name))
-                    {
-                        solutionNames.Add(solutionName);
-                    }
-                }
-
-                var protocols = new List<ProtocolInstance>();
-
-                // if any protocol connection losts, we will drop all protocol and recreate them
                 var allProtocolsLifetimeDefinition = lifetime.CreateNested();
-                foreach (var solutionName in solutionNames)
-                {
-                    var port = CreateProtocolForSolution(allProtocolsLifetimeDefinition.Lifetime, solutionName,
-                        () => { allProtocolsLifetimeDefinition.Terminate(); });
+                var port = CreateProtocolForSolution(allProtocolsLifetimeDefinition.Lifetime, solutionName,
+                    () => { allProtocolsLifetimeDefinition.Terminate(); });
 
-                    if (port == -1)
-                        continue;
+                var protocol = new ProtocolInstance(solutionName, port);
 
-                    protocols.Add(new ProtocolInstance(solutionName, port));
-                }
-
-                allProtocolsLifetimeDefinition.Lifetime.OnTermination(() =>
-                {
-                    if (lifetime.IsAlive)
-                    {
-                        ourLogger.Verbose("Recreating protocol, project lifetime is alive");
-                        InitializeProtocol(lifetime, protocolInstancePath);
-                    }
-                    else
-                    {
-                        ourLogger.Verbose("Protocol will be recreating on next domain load, project lifetime is not alive");
-                    }
-                });
-
-
-                var result = ProtocolInstance.ToJson(protocols);
+                var result = ProtocolInstance.ToJson(new[] {protocol});
                 File.WriteAllText(protocolInstancePath, result);
             }, () =>
             {
-                ourLogger.Verbose("Deleting Library/ProtocolInstance.json");
+                ourLogger.Verbose("Deleting ProtocolInstance.json");
                 File.Delete(protocolInstancePath);
             });
-
         }
 
         private static int CreateProtocolForSolution(Lifetime lifetime, string solutionName, Action onDisconnected)
         {
             try
             {
-                var dispatcher = TestDispatcher.Instance;
+                var dispatcher = TimerBasedDispatcher.Instance;
                 var currentWireAndProtocolLifetimeDef = lifetime.CreateNested();
                 var currentWireAndProtocolLifetime = currentWireAndProtocolLifetimeDef.Lifetime;
 
@@ -100,18 +72,22 @@ namespace JetBrains.Rider.Godot.Editor
                 var serializers = new Serializers(lifetime, null, null);
                 var identities = new Identities(IdKind.Server);
 
-                TestDispatcher.AssertThread();
+                TimerBasedDispatcher.AssertThread();
                 var protocol = new Protocol("GodotEditorPlugin" + solutionName, serializers, identities,
-                    TestDispatcher.Instance, riderProtocolController.Wire, currentWireAndProtocolLifetime);
+                    TimerBasedDispatcher.Instance, riderProtocolController.Wire, currentWireAndProtocolLifetime);
                 riderProtocolController.Wire.Connected.WhenTrue(currentWireAndProtocolLifetime, connectionLifetime =>
                 {
-                    ourLogger.Log(LoggingLevel.VERBOSE, "Create UnityModel and advise for new sessions...");
+                    ourLogger.Log(LoggingLevel.VERBOSE, "Create godotModel and advise for new sessions...");
                     var model = new BackendGodotModel(connectionLifetime, protocol);
                     
-                    ourLogger.Verbose("UnityModel initialized.");
+                    // todo: need a callback from Godot to open script
+                    // Can be called like: 
+                    // model.OpenFileLineCol.Start(modelLifetime.Lifetime, new RdOpenFileArgs(assetFilePath, line, column));
+
+                    ourLogger.Verbose("godotModel initialized.");
                     // var pair = new ModelWithLifetime(model, connectionLifetime);
-                    // connectionLifetime.OnTermination(() => { UnityModels.Remove(pair); });
-                    // UnityModels.Add(pair);
+                    // connectionLifetime.OnTermination(() => { godotModels.Remove(pair); });
+                    // godotModels.Add(pair);
 
                     connectionLifetime.OnTermination(() =>
                     {

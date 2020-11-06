@@ -19,31 +19,31 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 {
     public interface IGodotReferenceChangeHandler
     {
-        // This is guaranteed to be called on all handlers before any handler receives OnUnityProjectAdded
-        void OnHasUnityReference();
-        void OnUnityProjectAdded(Lifetime projectLifetime, IProject project);
+        // This is guaranteed to be called on all handlers before any handler receives OnGodotProjectAdded
+        void OnHasGodotReference();
+        void OnGodotProjectAdded(Lifetime projectLifetime, IProject project);
     }
 
     [SolutionComponent]
     public class GodotReferencesTracker : IChangeProvider
     {
-        // Unity 2017.3 split UnityEngine into modules. The copy in the Managed folder is the original monolithic build.
-        // The Managed/UnityEngine/ folder contains the version split into modules, and generated projects reference the
-        // UnityEngine.dll in this folder, as well as the modules. Managed/UnityEngine/UnityEngine.dll has a load of
+        // Godot 2017.3 split GodotEngine into modules. The copy in the Managed folder is the original monolithic build.
+        // The Managed/GodotEngine/ folder contains the version split into modules, and generated projects reference the
+        // GodotEngine.dll in this folder, as well as the modules. Managed/GodotEngine/GodotEngine.dll has a load of
         // type forwards to the new modules. Non-generated/manually maintained projects can still reference the original
-        // Managed/UnityEngine.dll, and the type forwards will fix things up at runtime.
-        // We check for references to UnityEngine.dll, UnityEngine.CoreModule.dll and (just in case)
-        // UnityEngine.ShaderInternalsModule.dll
-        // Unity 2020.2 similarly splits UnityEditor.dll, primarily to allow packages to override implementations, such
+        // Managed/GodotEngine.dll, and the type forwards will fix things up at runtime.
+        // We check for references to GodotEngine.dll, GodotEngine.CoreModule.dll and (just in case)
+        // GodotEngine.ShaderInternalsModule.dll
+        // Godot 2020.2 similarly splits GodotEditor.dll, primarily to allow packages to override implementations, such
         // as UIElements.
-        private static readonly JetHashSet<string> ourUnityReferenceNames = new JetHashSet<string>
+        private static readonly JetHashSet<string> ourGodotReferenceNames = new JetHashSet<string>
         {
             "GodotSharp",
             "GodotSharpEditor",
             "GodotTools"
         };
 
-        private static readonly ICollection<AssemblyNameInfo> ourUnityReferenceNameInfos;
+        private static readonly ICollection<AssemblyNameInfo> ourGodotReferenceNameInfos;
 
         private readonly Lifetime myLifetime;
         private readonly ILogger myLogger;
@@ -53,19 +53,19 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
         private readonly IViewableProjectsCollection myProjects;
         private readonly ICollection<IGodotReferenceChangeHandler> myHandlers;
         private readonly Dictionary<IProject, Lifetime> myAllProjectLifetimes;
-        private readonly HashSet<IProject> myUnityProjects;
+        private readonly HashSet<IProject> myGodotProjects;
 
-        // If you only want to be notified that we're a Unity solution, advise this.
-        // If all you're interested in is being notified that we're a Unity solution, advise this. If you need to know
-        // we're a Unity solution *and*/or know about Unity projects (and get a per-project lifetime), implement
-        // IUnityReferenceChangeHandler
+        // If you only want to be notified that we're a Godot solution, advise this.
+        // If all you're interested in is being notified that we're a Godot solution, advise this. If you need to know
+        // we're a Godot solution *and*/or know about Godot projects (and get a per-project lifetime), implement
+        // IGodotReferenceChangeHandler
         public readonly ViewableProperty<bool> HasGodotReference = new ViewableProperty<bool>(false);
 
         static GodotReferencesTracker()
         {
-            ourUnityReferenceNameInfos = new List<AssemblyNameInfo>();
-            foreach (var name in ourUnityReferenceNames)
-                ourUnityReferenceNameInfos.Add(AssemblyNameInfoFactory.Create2(name, null));
+            ourGodotReferenceNameInfos = new List<AssemblyNameInfo>();
+            foreach (var name in ourGodotReferenceNames)
+                ourGodotReferenceNameInfos.Add(AssemblyNameInfoFactory.Create2(name, null));
         }
 
         public GodotReferencesTracker(
@@ -79,7 +79,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             ILogger logger)
         {
             myAllProjectLifetimes = new Dictionary<IProject, Lifetime>();
-            myUnityProjects = new HashSet<IProject>();
+            myGodotProjects = new HashSet<IProject>();
 
             myHandlers = handlers.ToList();
             myLifetime = lifetime;
@@ -89,7 +89,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             myChangeManager = changeManager;
             myProjects = projects;
 
-            // At PreparePsiModules, we know what references we have, so we know if we're a Unity project. This is where
+            // At PreparePsiModules, we know what references we have, so we know if we're a Godot project. This is where
             // we'll initialise our custom PSI module. We have to initialise our PSI module before Done, or the
             // PersistentIndexManager will clean out the "orphaned" external (YAML) files and we'll have to reparse all
             // files on every startup
@@ -107,34 +107,34 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 (projectLifetime, project) =>
                 {
                     myAllProjectLifetimes.Add(projectLifetime, project, projectLifetime);
-                    if (HasUnityReferenceOrFlavour(project))
-                        myUnityProjects.Add(projectLifetime, project);
+                    if (HasGodotReferenceOrFlavour(project))
+                        myGodotProjects.Add(projectLifetime, project);
                 });
 
-            var unityProjectLifetimes = myAllProjectLifetimes.Where(pair => HasUnityReferenceOrFlavour(pair.Key)).ToList();
-            if (unityProjectLifetimes.Count == 0)
+            var godotProjectLifetimes = myAllProjectLifetimes.Where(pair => HasGodotReferenceOrFlavour(pair.Key)).ToList();
+            if (godotProjectLifetimes.Count == 0)
                 return;
 
-            NotifyHasUnityReference();
-            NotifyOnUnityProjectAdded(unityProjectLifetimes);
+            NotifyHasGodotReference();
+            NotifyOnGodotProjectAdded(godotProjectLifetimes);
         }
 
-        private void NotifyHasUnityReference()
+        private void NotifyHasGodotReference()
         {
             if (!HasGodotReference.Value)
             {
                 HasGodotReference.SetValue(true);
-                foreach (var handler in myHandlers) handler.OnHasUnityReference();
+                foreach (var handler in myHandlers) handler.OnHasGodotReference();
             }
         }
 
-        private void NotifyOnUnityProjectAdded(List<KeyValuePair<IProject, Lifetime>> unityProjectLifetimes)
+        private void NotifyOnGodotProjectAdded(List<KeyValuePair<IProject, Lifetime>> godotProjectLifetimes)
         {
             foreach (var handler in myHandlers)
             {
-                foreach (var (project, lifetime) in unityProjectLifetimes)
+                foreach (var (project, lifetime) in godotProjectLifetimes)
                 {
-                   handler.OnUnityProjectAdded(lifetime, project);
+                   handler.OnGodotProjectAdded(lifetime, project);
                 }
             }
         }
@@ -146,55 +146,55 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 return null;
 
             var changes = ReferencedAssembliesService.TryGetAssemblyReferenceChanges(projectModelChange,
-                ourUnityReferenceNameInfos, myLogger.Trace());
+                ourGodotReferenceNameInfos, myLogger.Trace());
 
-            var newUnityProjects = new List<KeyValuePair<IProject, Lifetime>>();
+            var newGodotProjects = new List<KeyValuePair<IProject, Lifetime>>();
             foreach (var change in changes)
             {
                 if (change.IsAdded)
                 {
                     var project = change.GetNewProject();
-                    if (HasUnityReferenceOrFlavour(project))
+                    if (HasGodotReferenceOrFlavour(project))
                     {
                         Assertion.Assert(myAllProjectLifetimes.ContainsKey(project), "project is not added");
                         if (myAllProjectLifetimes.TryGetValue(project, out var projectLifetime))
                         {
-                            newUnityProjects.Add(JetKeyValuePair.Of(project, projectLifetime));
-                            if (!myUnityProjects.Contains(project))
-                                myUnityProjects.Add(projectLifetime, project);
+                            newGodotProjects.Add(JetKeyValuePair.Of(project, projectLifetime));
+                            if (!myGodotProjects.Contains(project))
+                                myGodotProjects.Add(projectLifetime, project);
                         }
                     }
                 }
             }
 
-            if (newUnityProjects.Count > 0)
+            if (newGodotProjects.Count > 0)
             {
                 myChangeManager.ExecuteAfterChange(() =>
                 {
-                    NotifyHasUnityReference();
-                    NotifyOnUnityProjectAdded(newUnityProjects);
+                    NotifyHasGodotReference();
+                    NotifyOnGodotProjectAdded(newGodotProjects);
                 });
             }
 
             return null;
         }
 
-        public bool IsUnityProject(IProject project)
+        public bool IsGodotProject(IProject project)
         {
-            return myUnityProjects.Contains(project);
+            return myGodotProjects.Contains(project);
         }
 
-        private static bool HasUnityReferenceOrFlavour([NotNull] IProject project)
+        private static bool HasGodotReferenceOrFlavour([NotNull] IProject project)
         {
-            return project.HasFlavour<GodotProjectFlavor>() || ReferencesUnity(project);
+            return project.HasFlavour<GodotProjectFlavor>() || ReferencesGodot(project);
         }
 
-        public static bool ReferencesUnity(IProject project)
+        public static bool ReferencesGodot(IProject project)
         {
             var targetFrameworkId = project.GetCurrentTargetFrameworkId();
             foreach (var reference in project.GetModuleReferences(targetFrameworkId))
             {
-                if (ourUnityReferenceNames.Contains(reference.Name))
+                if (ourGodotReferenceNames.Contains(reference.Name))
                     return true;
             }
             return false;

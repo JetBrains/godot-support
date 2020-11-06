@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Model">
-    <Compile Include="../build/generated/Model/BackendGodot/**/*" LinkBase="Model">
+    <Compile Include="../../godot/build/generated/Model/BackendGodot/**/*" LinkBase="Model">
       <Visible>False</Visible>
     </Compile>
   </ItemGroup>

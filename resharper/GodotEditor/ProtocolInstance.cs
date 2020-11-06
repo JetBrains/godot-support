@@ -17,13 +17,12 @@ namespace JetBrains.Rider.Godot.Editor
             Port = port;
         }
 
-        public static string ToJson(List<ProtocolInstance> connections)
+        public static string ToJson(ProtocolInstance[] connections)
         {
-            //return JsonConvert.SerializeObject(connections); //turns out to be slow https://github.com/JetBrains/resharper-unity/issues/728 
             var sb = new StringBuilder("[");
 
             sb.Append(connections
-                .Select(connection=> "{" + $"\"Port\":{connection.Port},\"SolutionName\":\"{connection.SolutionName}\",\"ProtocolGuid\":\"{ProtocolCompatibility.ProtocolGuid}\"" + "}")
+                .Select(connection=> "{" + $"\"Port\":{connection.Port},\"SolutionName\":\"{connection.SolutionName}\",\"ProtocolCompatibilityGuid\":\"{ProtocolCompatibility.ProtocolGuid}\"" + "}")
                 .Aggregate((a, b) => a + "," + b));
 
             sb.Append("]");

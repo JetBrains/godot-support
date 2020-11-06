@@ -26,7 +26,7 @@
   <!-- ********** -->
 
   <ItemGroup Label="Model">
-    <Compile Include="../build/generated/Model/**/*" LinkBase="Model">
+    <Compile Include="../../resharper/build/generated/Model/**/*" LinkBase="Model">
       <Visible>True</Visible>
     </Compile>
   </ItemGroup>

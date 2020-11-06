@@ -13,6 +13,9 @@ object FrontendBackendModel : Ext(SolutionModel.Solution) {
         setting(Kotlin11Generator.Namespace, "com.jetbrains.rider.model.godot.frontendBackend")
         setting(CSharp50Generator.Namespace, "JetBrains.Rider.Model.Godot.FrontendBackend")
 
+        // Actions called from the backend to the frontend
+        sink("activateRider", void).documentation = "Tell Rider to bring itself to the foreground. Called when opening a file from Godot"
+
         // Misc backend/fronted context
         property("hasGodotReference", bool).documentation = "True when the current project is a Godot project. Either full Godot project or class library"
     }

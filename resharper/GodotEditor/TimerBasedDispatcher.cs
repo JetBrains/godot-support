@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using Godot;
 using JetBrains.Collections.Viewable;
 using JetBrains.Diagnostics;
 using Thread = System.Threading.Thread;
 
 namespace JetBrains.Rider.Godot.Editor
 {
-    public class TestDispatcher : IScheduler
+    public class TimerBasedDispatcher : IScheduler
     {
         private System.Timers.Timer myTimer;
 
@@ -25,7 +24,7 @@ namespace JetBrains.Rider.Godot.Editor
         }
 
         private static Thread ourUIThread;
-        internal static readonly TestDispatcher Instance = new TestDispatcher();
+        internal static readonly TimerBasedDispatcher Instance = new TimerBasedDispatcher();
 
         /// <summary>
         /// The queue of tasks that are being requested for the next time DispatchTasks is called
@@ -70,7 +69,7 @@ namespace JetBrains.Rider.Godot.Editor
                 }
                 catch (Exception e)
                 {
-                    Log.GetLog<TestDispatcher>().Error(e);
+                    Log.GetLog<TimerBasedDispatcher>().Error(e);
                 }
             }
         }

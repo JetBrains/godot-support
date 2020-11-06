@@ -17,7 +17,7 @@ namespace JetBrains.Rider.Godot.Editor
             {
                 ourLogger.Verbose("Start ControllerTask...");
 
-                Wire = new SocketWire.Server(lifetime, mainThreadScheduler, null, "UnityServer");
+                Wire = new SocketWire.Server(lifetime, mainThreadScheduler, null, "GodotServer");
                 Wire.BackwardsCompatibleWireFormat = true;
         
                 ourLogger.Verbose($"Created SocketWire with port = {Wire.Port}");
