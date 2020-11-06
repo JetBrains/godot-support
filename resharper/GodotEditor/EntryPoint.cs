@@ -15,8 +15,7 @@ namespace JetBrains.Rider.Godot.Editor
     {
         private static readonly ILog ourLogger = Log.GetLog("EntryPoint");
         
-        public static string RiderPath;
-        public static string SolutionName;
+        public static string SolutionName = "Dodge the Creeps with C#"; // todo: should be set by reflection
         
         static EntryPoint()
         {
@@ -24,8 +23,6 @@ namespace JetBrains.Rider.Godot.Editor
             var lifetime = lifetimeDefinition.Lifetime;
 
             TimerBasedDispatcher.Instance.Start();
-//            var editorSettings = new EditorPlugin().GetEditorInterface().GetEditorSettings();
-//            var riderPath = editorSettings.GetSetting(EditorPathSettingName);
 
             var protocolInstanceJsonPath = Path.GetFullPath(".mono/metadata/ProtocolInstance.json");
             InitializeProtocol(lifetime, protocolInstanceJsonPath);
