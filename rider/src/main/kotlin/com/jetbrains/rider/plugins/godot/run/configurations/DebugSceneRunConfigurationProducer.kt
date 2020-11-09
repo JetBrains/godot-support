@@ -8,7 +8,7 @@ import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.psi.PsiElement
-import com.intellij.psi.impl.source.PsiPlainTextFileImpl
+import com.intellij.psi.PsiFile
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import java.io.File
@@ -53,9 +53,9 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
         return "res://$relPath"
     }
 
-    private fun getContainingFile(context: ConfigurationContext): PsiPlainTextFileImpl? {
+    private fun getContainingFile(context: ConfigurationContext): PsiFile? {
         val location = context.psiLocation ?: return null
-        val file = location.containingFile as? PsiPlainTextFileImpl ?: return null
+        val file = location.containingFile ?: return null
         if (file.virtualFile.extension != "tscn") return null
         return file
     }
