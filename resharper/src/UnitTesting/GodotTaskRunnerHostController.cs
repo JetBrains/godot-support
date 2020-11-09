@@ -15,11 +15,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, IUnitTestRun run, ILogger logger)
         {
+            run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
             var godotProcessStartInfo =
-                new ProcessStartInfo(
-                    "/home/ivan-shakhov/Downloads/Godot_v3.2.3-stable_mono_x11_64/Godot_v3.2.3-stable_mono_x11.64");
-            godotProcessStartInfo.Arguments = $"--path \"/home/ivan-shakhov/Work/godot-demo-projects/mono/dodge_the_creeps\" --unit_test_assembly \"{startInfo.FileName}\" --unit_test_args \"{startInfo.Arguments}\"";
-
+                new ProcessStartInfo("/home/ivan-shakhov/Downloads/Godot_v3.2.3-stable_mono_x11_64/Godot_v3.2.3-stable_mono_x11.64");
+            godotProcessStartInfo.Arguments = $"--path \"/home/ivan-shakhov/Work/godot-demo-projects/mono/dodge_the_creeps\" --unit_test_assembly \"{startInfo.FileName}\" --unit_test_args \"{startInfo.Arguments}\""; 
+            //godotProcessStartInfo.EnvironmentVariables.Add("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:23685,server=n,suspend=y");
             
             var rawProcessInfo = new JetProcessStartInfo(godotProcessStartInfo);
       
