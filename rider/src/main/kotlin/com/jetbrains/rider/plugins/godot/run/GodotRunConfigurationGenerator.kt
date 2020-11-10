@@ -14,6 +14,7 @@ import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationTy
 import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
+import java.io.File
 
 class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectComponent(project) {
 
@@ -39,8 +40,14 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
 
                 // Clean up old generated configurations
                 val toRemove = runManager.allSettings.filter {
-                    it.type is ExeConfigurationType && it.name == RUN_CONFIGURATION_NAME
-                            || it.type is DotNetExeConfigurationType && it.name == PROFILE_CONFIGURATION_NAME
+                    (it.type is ExeConfigurationType && it.name == RUN_CONFIGURATION_NAME
+                            || it.type is DotNetExeConfigurationType && it.name == PROFILE_CONFIGURATION_NAME)
+                        ||
+                        (it.configuration is GodotDebugRunConfiguration
+                            && (it.name == PLAYER_CONFIGURATION_NAME
+                            ||it.name == EDITOR_CONFIGURATION_NAME
+                            ||it.name == WAT_UNIT_TESTING)
+                            && !File((it.configuration as GodotDebugRunConfiguration).parameters.exePath).exists())
                 }
                 for (value in toRemove) {
                     runManager.removeConfiguration(value)
