@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
+import com.jetbrains.rider.plugins.godot.FrontendBackendHost
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
@@ -36,7 +37,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
             godotDiscoverer.isGodotProject.whenTrue(componentLifetime) {
                 logger.info("isGodotProject = true")
                 val runManager = RunManager.getInstance(project)
-                val godotPath = godotDiscoverer.godotPath.value
+                val godotPath = FrontendBackendHost.getInstance(project).model.godotPath.valueOrNull
 
                 // Clean up old generated configurations
                 val toRemove = runManager.allSettings.filter {

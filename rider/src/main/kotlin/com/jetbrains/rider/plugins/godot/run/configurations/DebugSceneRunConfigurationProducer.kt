@@ -1,6 +1,5 @@
 package com.jetbrains.rider.plugins.godot.run.configurations
 
-import com.intellij.execution.RunManager
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.runConfigurationType
@@ -9,8 +8,8 @@ import com.intellij.openapi.util.Ref
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.jetbrains.rider.plugins.godot.FrontendBackendHost
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
-import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import java.io.File
 
 class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDebugRunConfiguration>() {
@@ -29,7 +28,7 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
         val file = getContainingFile(context) ?: return false
         val resPath = extractResPath(context) ?: return false
 
-        val path = GodotProjectDiscoverer.getInstance(context.project).godotPath.value
+        val path = FrontendBackendHost.getInstance(context.project).model.godotPath.valueOrNull
         if (path == null || !File(path).exists()) {
             return false
         }

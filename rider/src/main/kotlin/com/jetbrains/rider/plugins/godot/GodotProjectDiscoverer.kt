@@ -23,7 +23,6 @@ class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project
     private val projectGodotPath = Paths.get(project.basePath!!).resolve("project.godot")
     val isGodotProject: IProperty<Boolean> = Property(false)
     val isGodotUnitTesting: IProperty<Boolean> = Property(false)
-    val godotPath : IProperty<String?> = Property(null)
 
     init {
         val isGodot = getIsGodotProject()
@@ -34,7 +33,8 @@ class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project
 
             isGodotProject.set(isGodot)
             val path = getGodotPathFromPlayerRunConfiguration(project) ?: GodotServer.getGodotPath(project)
-            godotPath.set(path)
+            if (path!=null)
+                FrontendBackendHost.getInstance(project).model.godotPath.set(path)
         }
     }
 

@@ -17,6 +17,7 @@ object FrontendBackendModel : Ext(SolutionModel.Solution) {
         sink("activateRider", void).documentation = "Tell Rider to bring itself to the foreground. Called when opening a file from Godot"
 
         // Misc backend/fronted context
+        property("godotPath", string).documentation = "Path to GodotEditor"
         property("hasGodotReference", bool).documentation = "True when the current project is a Godot project. Either full Godot project or class library"
     }
 }
