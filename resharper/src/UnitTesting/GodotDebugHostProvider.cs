@@ -33,11 +33,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         protected override DebugSessionDescriptor PrepareDebugSessionDescriptor(IUnitTestRun run, ProcessStartInfo startInfo)
         {
             run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
-            var fileName = startInfo.FileName;
-            var args = startInfo.Arguments;
-            
-            startInfo.FileName = "/home/ivan-shakhov/Downloads/Godot_v3.2.3-stable_mono_x11_64/Godot_v3.2.3-stable_mono_x11.64";
-            startInfo.Arguments = $"--path \"/home/ivan-shakhov/Work/godot-demo-projects/mono/dodge_the_creeps\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\""; 
+            GodotTaskRunnerHostController.PatchStartInfoForGodot(startInfo, run);
             startInfo.EnvironmentVariables.Add("GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:23685,server=n,suspend=y");
 
             return base.PrepareDebugSessionDescriptor(run, startInfo);
