@@ -28,17 +28,17 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, IUnitTestRun run, ILogger logger)
         {
             run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
-            PatchStartInfoForGodot(startInfo, run);
+            var solution = run.Launch.Solution;
+            PatchStartInfoForGodot(startInfo, solution);
             var rawProcessInfo = new JetProcessStartInfo(startInfo);
             return new PreparedProcess(rawProcessInfo, logger);
         }
 
-        internal static void PatchStartInfoForGodot(ProcessStartInfo startInfo, IUnitTestRun run)
+        internal static void PatchStartInfoForGodot(ProcessStartInfo startInfo, ISolution solution)
         {
             var fileName = startInfo.FileName;
             var args = startInfo.Arguments;
-
-            var solution = run.Launch.Solution;
+            
             var solutionDir = solution.SolutionDirectory.QuoteIfNeeded();
             var model = solution.GetComponent<FrontendBackendHost>().Model;
             if (model == null)

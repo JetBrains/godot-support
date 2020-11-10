@@ -15,6 +15,7 @@ object FrontendBackendModel : Ext(SolutionModel.Solution) {
 
         // Actions called from the backend to the frontend
         sink("activateRider", void).documentation = "Tell Rider to bring itself to the foreground. Called when opening a file from Godot"
+        callback("startDebuggerServer", void, int).documentation = "Tell the frontend to start listening for debugger. Returns port. Used for debugging unit tests"
 
         // Misc backend/fronted context
         property("godotPath", string).documentation = "Path to GodotEditor"
