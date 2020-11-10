@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using JetBrains.Application.Threading;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
-using JetBrains.Metadata.Access;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Plugins.Godot.Protocol;
 using JetBrains.ReSharper.UnitTestFramework;
@@ -22,17 +21,17 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         public bool RequiresProjectBuild(IProject project) { return true; }
         public bool RequiresProjectExplorationAfterBuild(IProject project) { return true; }
         public bool RequiresProjectPropertiesRefreshBeforeLaunch() { return true; }
+
+        public IRuntimeEnvironment GetRuntimeEnvironment(IUnitTestLaunch launch, IProject project, TargetFrameworkId targetFrameworkId, IUnitTestElement element)
+        {
+            return myNUnitTestRunnerRunStrategy.GetRuntimeEnvironment(launch, project, targetFrameworkId, element);
+        }
+
         public int DebugPort;
 
         public GodotUnitTestRunStrategy(ISolution solution)
         {
             myNUnitTestRunnerRunStrategy = solution.GetComponent<NUnitTestRunnerRunStrategy>();
-        }
-        
-        public IRuntimeEnvironment GetRuntimeEnvironment(IUnitTestLaunch launch, IProject project, TargetFrameworkId targetFrameworkId, IUnitTestElement element)
-        {
-            var targetPlatform = TargetPlatformCalculator.GetTargetPlatform(launch, project, targetFrameworkId);
-            return new GodotRuntimeEnvironment(targetPlatform, project);
         }
 
         public Task Run(IUnitTestRun run)
@@ -91,46 +90,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         public void Abort(IUnitTestRun run)
         { 
             myNUnitTestRunnerRunStrategy.Abort(run);
-        }
-        
-        private class GodotRuntimeEnvironment : IRuntimeEnvironment
-        {
-            public GodotRuntimeEnvironment(TargetPlatform targetPlatform, IProject project)
-            {
-                TargetPlatform = targetPlatform;
-                Project = project;
-            }
-
-            public TargetPlatform TargetPlatform { get; }
-            public IProject Project { get; }
-
-            private bool Equals(GodotRuntimeEnvironment other)
-            {
-                return TargetPlatform == other.TargetPlatform && Equals(Project, other.Project);
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != GetType()) return false;
-                return Equals((GodotRuntimeEnvironment) obj);
-            }
-
-            public override int GetHashCode()
-            {
-                return (int) TargetPlatform;
-            }
-
-            public static bool operator ==(GodotRuntimeEnvironment left, GodotRuntimeEnvironment right)
-            {
-                return Equals(left, right);
-            }
-
-            public static bool operator !=(GodotRuntimeEnvironment left, GodotRuntimeEnvironment right)
-            {
-                return !Equals(left, right);
-            }
         }
     }
 }
