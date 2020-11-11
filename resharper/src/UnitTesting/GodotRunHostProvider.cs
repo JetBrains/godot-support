@@ -1,13 +1,9 @@
-using System;
 using JetBrains.Application.Processes;
-using JetBrains.ProjectModel;
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.ReSharper.UnitTestFramework.Launch;
 using JetBrains.Util.Logging;
 using System.Diagnostics;
 using JetBrains.Annotations;
-using JetBrains.Collections.Viewable;
-using JetBrains.ReSharper.Plugins.Godot.Protocol;
 using JetBrains.ReSharper.UnitTestFramework.Processes;
 using JetBrains.Util;
 
@@ -29,26 +25,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         {
             run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
             var solution = run.Launch.Solution;
-            PatchStartInfoForGodot(startInfo, solution);
+            GodotUnitTestRunStrategy.PatchStartInfoForGodot(startInfo, solution);
             var rawProcessInfo = new JetProcessStartInfo(startInfo);
             return new PreparedProcess(rawProcessInfo, logger);
-        }
-
-        internal static void PatchStartInfoForGodot(ProcessStartInfo startInfo, ISolution solution)
-        {
-            var fileName = startInfo.FileName;
-            var args = startInfo.Arguments;
-            
-            var solutionDir = solution.SolutionDirectory.QuoteIfNeeded();
-            var model = solution.GetComponent<FrontendBackendHost>().Model;
-            if (model == null)
-                throw new InvalidOperationException("Missing connection to frontend.");
-            if (!model.GodotPath.HasValue())
-                throw new InvalidOperationException("GodotPath is unknown.");
-            var godotPath = model.GodotPath.Value.QuoteIfNeeded();
-
-            startInfo.FileName = godotPath;
-            startInfo.Arguments = $"--path {solutionDir} --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"";
         }
 
         public override string HostId => "GodotProcess";

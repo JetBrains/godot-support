@@ -1,6 +1,8 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using JetBrains.Application.Threading;
+using JetBrains.Collections.Viewable;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
@@ -9,6 +11,7 @@ using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.ReSharper.UnitTestFramework.Launch;
 using JetBrains.ReSharper.UnitTestFramework.Strategy;
 using JetBrains.ReSharper.UnitTestProvider.nUnit.v30;
+using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
 namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
@@ -75,6 +78,23 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             }
 
             return tcs.Task.ContinueWith(_ => myNUnitTestRunnerRunStrategy.Run(run)).Unwrap();
+        }
+        
+        public static void PatchStartInfoForGodot(ProcessStartInfo startInfo, ISolution solution)
+        {
+            var fileName = startInfo.FileName;
+            var args = startInfo.Arguments;
+            
+            var solutionDir = solution.SolutionDirectory.QuoteIfNeeded();
+            var model = solution.GetComponent<FrontendBackendHost>().Model;
+            if (model == null)
+                throw new InvalidOperationException("Missing connection to frontend.");
+            if (!model.GodotPath.HasValue())
+                throw new InvalidOperationException("GodotPath is unknown.");
+            var godotPath = model.GodotPath.Value.QuoteIfNeeded();
+
+            startInfo.FileName = godotPath;
+            startInfo.Arguments = $"--path {solutionDir} --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"";
         }
 
         public void Cancel(IUnitTestRun run)
