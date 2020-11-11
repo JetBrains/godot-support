@@ -53,7 +53,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                 var taskLifetime = taskLifetimeDef.Lifetime;
 
                 var solution = run.Launch.Solution;
-                var model = solution.GetProtocolSolution().GetFrontendBackendModel();
+                var model = solution.GetProtocolSolution().GetFrontendBackendGodotModel();
                 solution.Locks.ExecuteOrQueueEx(taskLifetime, "AttachDebuggerToUnityEditor", () =>
                 {
                     if (!taskLifetime.IsAlive || model == null)

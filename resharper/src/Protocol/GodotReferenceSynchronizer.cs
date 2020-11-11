@@ -12,7 +12,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Protocol
     {
         public GodotReferenceSynchronizer(Lifetime lifetime, ISolution solution, GodotReferencesTracker referencesTracker)
         {
-            var model = solution.GetProtocolSolution().GetFrontendBackendModel();
+            var model = solution.GetProtocolSolution().GetFrontendBackendGodotModel();
             referencesTracker.HasGodotReference.Advise(lifetime,
                 res => { model.HasGodotReference.SetValue(res); });
         }

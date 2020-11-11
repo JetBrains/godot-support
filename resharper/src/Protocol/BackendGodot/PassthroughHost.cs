@@ -35,7 +35,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Protocol.BackendGodot
 
             godotReferencesTracker.HasGodotReference.View(lifetime, (godotProjectLifetime , args) =>
             {
-                var model = solution.GetProtocolSolution().GetFrontendBackendModel();
+                var model = solution.GetProtocolSolution().GetFrontendBackendGodotModel();
                 if (args && model != null)
                 {
                     // Advise the backend/Godot model as high priority so we can add our subscriptions first
@@ -74,12 +74,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.Protocol.BackendGodot
             //
             // *********************************************************************************************************
 
-            var model = mySolution.GetProtocolSolution().GetFrontendBackendModel();
+            var model = mySolution.GetProtocolSolution().GetFrontendBackendGodotModel();
             var frontendBackendModel = model.NotNull("frontendBackendModel != null");
             AdviseOpenFile(backendGodotModel, frontendBackendModel);
         }
 
-        private void AdviseOpenFile(BackendGodotModel backendGodotModel, FrontendBackendModel frontendBackendModel)
+        private void AdviseOpenFile(BackendGodotModel backendGodotModel, FrontendBackendGodotModel frontendBackendModel)
         {
             backendGodotModel.OpenFileLineCol.Set(args =>
             {

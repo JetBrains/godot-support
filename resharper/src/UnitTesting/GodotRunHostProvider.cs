@@ -9,7 +9,6 @@ using JetBrains.Collections.Viewable;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Host.Features;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel.Flavours;
-using JetBrains.ReSharper.Plugins.Godot.Protocol;
 using JetBrains.ReSharper.UnitTestFramework.Processes;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.Util;
@@ -32,7 +31,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             var args = startInfo.Arguments;
             
             var solutionDir = solution.SolutionDirectory.QuoteIfNeeded();
-            var model = solution.GetProtocolSolution().GetFrontendBackendModel();
+            var model = solution.GetProtocolSolution().GetFrontendBackendGodotModel();
             if (model == null)
                 throw new InvalidOperationException("Missing connection to frontend.");
             if (!model.GodotPath.HasValue())
