@@ -86,7 +86,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             
             run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
             var solution = run.Launch.Solution;
-            var strategy = solution.GetComponent<GodotUnitTestRunStrategy>();
             GodotRunHostProvider.PatchStartInfoForGodot(startInfo, solution);
             startInfo.EnvironmentVariables.Add("GODOT_MONO_DEBUGGER_AGENT", $"--debugger-agent=transport=dt_socket,address=127.0.0.1:{myDebugPort},server=n,suspend=y");
             var rawProcessInfo = new JetProcessStartInfo(startInfo);
