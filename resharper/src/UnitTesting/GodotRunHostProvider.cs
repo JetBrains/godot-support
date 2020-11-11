@@ -37,7 +37,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             var godotPath = model.GodotPath.Value.QuoteIfNeeded();
 
             startInfo.FileName = godotPath;
-            startInfo.Arguments = $"--path {solutionDir} --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"";
+            startInfo.Arguments = $"--path {solutionDir} \"res://test_runner/runner.tscn\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"";
         }
     }
     
