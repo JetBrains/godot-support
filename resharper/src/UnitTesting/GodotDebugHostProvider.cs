@@ -43,6 +43,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         protected override Task PrepareForRunCore(IUnitTestRun run)
         {
+            if (!(run.RunStrategy is GodotUnitTestRunStrategy))
+                return base.PrepareForRunCore(run);
+            
             var tcs = new TaskCompletionSource<bool>();
             var taskLifetimeDef = Lifetime.Define(run.Lifetime);
             taskLifetimeDef.SynchronizeWith(tcs);
@@ -78,6 +81,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, IUnitTestRun run, ILogger logger)
         {
+            if (!(run.RunStrategy is GodotUnitTestRunStrategy))
+                return base.StartProcess(startInfo, run, logger);
+            
             run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
             var solution = run.Launch.Solution;
             var strategy = solution.GetComponent<GodotUnitTestRunStrategy>();
