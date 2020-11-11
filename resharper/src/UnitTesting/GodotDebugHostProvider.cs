@@ -44,16 +44,5 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             var rawProcessInfo = new JetProcessStartInfo(startInfo);
             return new PreparedProcess(rawProcessInfo, logger);
         }
-
-        private FileSystemPath[] GetAssembliesUnderDebug(
-            IRuntimeEnvironment runtimeEnvironment)
-        {
-            if (!(runtimeEnvironment is IModuleRuntimeEnvironment runtimeEnvironment1) || !runtimeEnvironment1.TargetFrameworkId.IsNetCoreApp)
-                return EmptyArray<FileSystemPath>.Instance;
-            return new FileSystemPath[1]
-            {
-                runtimeEnvironment1.Project.GetOutputFilePath(runtimeEnvironment1.TargetFrameworkId)
-            };
-        }
     }
 }

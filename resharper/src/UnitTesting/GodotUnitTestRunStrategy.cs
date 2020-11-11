@@ -10,7 +10,6 @@ using JetBrains.ReSharper.UnitTestFramework.Launch;
 using JetBrains.ReSharper.UnitTestFramework.Strategy;
 using JetBrains.ReSharper.UnitTestProvider.nUnit.v30;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
-using JetBrains.Util.Threading;
 
 namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 {
@@ -43,9 +42,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             var solution = run.Launch.Solution;
             var model = solution.GetComponent<FrontendBackendHost>();
             
-            var waitingLifetimeDefinition = Lifetime.Define(taskLifetime);
-            var waitingLifetime = waitingLifetimeDefinition.Lifetime;
-
             var hostId = run.HostController.HostId;
             switch (hostId)
             {
@@ -64,22 +60,21 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                             if (!run.Lifetime.IsAlive)
                                 tcs.TrySetCanceled();
                             else if (result.Result <= 0)
-                                tcs.SetException(new Exception("Unable to attach debugger."));
+                                tcs.SetException(new Exception("Unable to start debugger."));
                             else
                             {
                                 DebugPort = result.Result;
-                                waitingLifetimeDefinition.Terminate();
+                                tcs.SetResult(true);
                             }
                         });
                     });
                     break;
                 default:
-                    waitingLifetimeDefinition.Terminate();
+                    tcs.SetResult(true);
                     break;
             }
 
-            return JetTaskEx.While(() => waitingLifetime.IsAlive)
-                .ContinueWith(_ => myNUnitTestRunnerRunStrategy.Run(run)).Unwrap();
+            return tcs.Task.ContinueWith(_ => myNUnitTestRunnerRunStrategy.Run(run)).Unwrap();
         }
 
         public void Cancel(IUnitTestRun run)
