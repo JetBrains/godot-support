@@ -9,6 +9,7 @@ using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.DotNetCore;
 using JetBrains.ReSharper.Feature.Services.DebuggerFacade;
 using JetBrains.ReSharper.Host.Features.UnitTesting;
+using JetBrains.ReSharper.Plugins.Godot.ProjectModel.Flavours;
 using JetBrains.ReSharper.Plugins.Godot.Protocol;
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.ReSharper.UnitTestFramework.Launch;
@@ -43,53 +44,59 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         protected override Task PrepareForRunCore(IUnitTestRun run)
         {
-            if (!(run.RunStrategy is GodotUnitTestRunStrategy))
-                return base.PrepareForRunCore(run);
-            
-            var tcs = new TaskCompletionSource<bool>();
-            var taskLifetimeDef = Lifetime.Define(run.Lifetime);
-            taskLifetimeDef.SynchronizeWith(tcs);
-            var taskLifetime = taskLifetimeDef.Lifetime;
-
-            var solution = run.Launch.Solution;
-            var model = solution.GetComponent<FrontendBackendHost>();
-            solution.Locks.ExecuteOrQueueEx(taskLifetime, "AttachDebuggerToUnityEditor", () =>
+            if (run.RuntimeEnvironment is IModuleRuntimeEnvironment environment && environment.Project.HasFlavour<GodotProjectFlavor>())
             {
-                if (!taskLifetime.IsAlive || model.Model == null)
-                {
-                    tcs.TrySetCanceled();
-                    return;
-                }
+                
+                var tcs = new TaskCompletionSource<bool>();
+                var taskLifetimeDef = Lifetime.Define(run.Lifetime);
+                taskLifetimeDef.SynchronizeWith(tcs);
+                var taskLifetime = taskLifetimeDef.Lifetime;
 
-                var task = model.Model.StartDebuggerServer.Start(taskLifetime, Unit.Instance);
-                task.Result.Advise(taskLifetime, result =>
+                var solution = run.Launch.Solution;
+                var model = solution.GetComponent<FrontendBackendHost>();
+                solution.Locks.ExecuteOrQueueEx(taskLifetime, "AttachDebuggerToUnityEditor", () =>
                 {
-                    if (!run.Lifetime.IsAlive)
-                        tcs.TrySetCanceled();
-                    else if (result.Result <= 0)
-                        tcs.SetException(new Exception("Unable to start debugger."));
-                    else
+                    if (!taskLifetime.IsAlive || model.Model == null)
                     {
-                        myDebugPort = result.Result;
-                        tcs.SetResult(true);
+                        tcs.TrySetCanceled();
+                        return;
                     }
-                });
-            });
 
-            return  tcs.Task.ContinueWith(_ => base.PrepareForRunCore(run)).Unwrap();
+                    var task = model.Model.StartDebuggerServer.Start(taskLifetime, Unit.Instance);
+                    task.Result.Advise(taskLifetime, result =>
+                    {
+                        if (!run.Lifetime.IsAlive)
+                            tcs.TrySetCanceled();
+                        else if (result.Result <= 0)
+                            tcs.SetException(new Exception("Unable to start debugger."));
+                        else
+                        {
+                            myDebugPort = result.Result;
+                            tcs.SetResult(true);
+                        }
+                    });
+                });
+
+                return  tcs.Task.ContinueWith(_ => base.PrepareForRunCore(run)).Unwrap();
+            }
+            
+            
+            return base.PrepareForRunCore(run);
         }
 
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, IUnitTestRun run, ILogger logger)
         {
-            if (!(run.RunStrategy is GodotUnitTestRunStrategy))
-                return base.StartProcess(startInfo, run, logger);
+            if (run.RuntimeEnvironment is IModuleRuntimeEnvironment environment && environment.Project.HasFlavour<GodotProjectFlavor>())
+            {
+                            run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
+                            var solution = run.Launch.Solution;
+                            GodotRunHostProvider.PatchStartInfoForGodot(startInfo, solution);
+                            startInfo.EnvironmentVariables.Add("GODOT_MONO_DEBUGGER_AGENT", $"--debugger-agent=transport=dt_socket,address=127.0.0.1:{myDebugPort},server=n,suspend=y");
+                            var rawProcessInfo = new JetProcessStartInfo(startInfo);
+                            return new PreparedProcess(rawProcessInfo, logger);
+            }    
             
-            run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
-            var solution = run.Launch.Solution;
-            GodotRunHostProvider.PatchStartInfoForGodot(startInfo, solution);
-            startInfo.EnvironmentVariables.Add("GODOT_MONO_DEBUGGER_AGENT", $"--debugger-agent=transport=dt_socket,address=127.0.0.1:{myDebugPort},server=n,suspend=y");
-            var rawProcessInfo = new JetProcessStartInfo(startInfo);
-            return new PreparedProcess(rawProcessInfo, logger);
+            return base.StartProcess(startInfo, run, logger);
         }
     }
 }

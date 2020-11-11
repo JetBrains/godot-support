@@ -7,6 +7,7 @@ using System.Diagnostics;
 using JetBrains.Annotations;
 using JetBrains.Collections.Viewable;
 using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Plugins.Godot.ProjectModel.Flavours;
 using JetBrains.ReSharper.Plugins.Godot.Protocol;
 using JetBrains.ReSharper.UnitTestFramework.Processes;
 using JetBrains.Util;
@@ -45,14 +46,15 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
     {
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, IUnitTestRun run, ILogger logger)
         {
-            if (!(run.RunStrategy is GodotUnitTestRunStrategy))
-                return base.StartProcess(startInfo, run, logger);
-            
-            run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
-            var solution = run.Launch.Solution;
-            GodotRunHostProvider.PatchStartInfoForGodot(startInfo, solution);
-            var rawProcessInfo = new JetProcessStartInfo(startInfo);
-            return new PreparedProcess(rawProcessInfo, logger);
+            if (run.RuntimeEnvironment is IModuleRuntimeEnvironment environment && environment.Project.HasFlavour<GodotProjectFlavor>())
+            {
+                run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
+                var solution = run.Launch.Solution;
+                GodotRunHostProvider.PatchStartInfoForGodot(startInfo, solution);
+                var rawProcessInfo = new JetProcessStartInfo(startInfo);
+                return new PreparedProcess(rawProcessInfo, logger);
+            }
+            return base.StartProcess(startInfo, run, logger);
         }
 
         public GodotTaskRunnerHostController([NotNull] IUnitTestLaunch launch, [NotNull] ISolutionProcessStartInfoPatcher processStartInfoPatcher, [NotNull] ILogger logger) 
