@@ -1,6 +1,7 @@
 using JetBrains.Application.Settings;
 using JetBrains.Application.Settings.Extentions;
 using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Plugins.Godot.ProjectModel.Flavours;
 using JetBrains.ReSharper.Plugins.Godot.Protocol;
 using JetBrains.ReSharper.Psi.Caches;
 using JetBrains.ReSharper.Psi.Modules;
@@ -37,7 +38,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         public override IUnitTestRunStrategy GetRunStrategy(IUnitTestElement element)
         {
-            return mySolution.GetComponent<GodotUnitTestRunStrategy>();
+            return element.Id.Project.HasFlavour<GodotProjectFlavor>() ? mySolution.GetComponent<GodotUnitTestRunStrategy>() : base.GetRunStrategy(element);
         }
     }
 }
