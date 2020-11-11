@@ -6,6 +6,7 @@ using JetBrains.IDE;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Tasks;
+using JetBrains.ReSharper.Host.Features;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.TextControl;
@@ -20,24 +21,21 @@ namespace JetBrains.ReSharper.Plugins.Godot.Protocol.BackendGodot
         private readonly ISolution mySolution;
         private readonly IThreading myThreading;
         private readonly IEditorManager myEditorManager;
-        private readonly FrontendBackendHost myFrontendBackendHost;
 
         public PassthroughHost(Lifetime lifetime,
                                ISolution solution,
                                IThreading threading,
                                IEditorManager editorManager,
                                GodotReferencesTracker godotReferencesTracker,
-                               BackendGodotHost backendGodotHost,
-                               FrontendBackendHost frontendBackendHost)
+                               BackendGodotHost backendGodotHost)
         {
             mySolution = solution;
             myThreading = threading;
             myEditorManager = editorManager;
-            myFrontendBackendHost = frontendBackendHost;
 
             godotReferencesTracker.HasGodotReference.View(lifetime, (godotProjectLifetime , args) =>
             {
-                var model = frontendBackendHost.Model;
+                var model = solution.GetProtocolSolution().GetFrontendBackendModel();
                 if (args && model != null)
                 {
                     // Advise the backend/Godot model as high priority so we can add our subscriptions first
@@ -76,7 +74,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.Protocol.BackendGodot
             //
             // *********************************************************************************************************
 
-            var frontendBackendModel = myFrontendBackendHost.Model.NotNull("frontendBackendModel != null");
+            var model = mySolution.GetProtocolSolution().GetFrontendBackendModel();
+            var frontendBackendModel = model.NotNull("frontendBackendModel != null");
             AdviseOpenFile(backendGodotModel, frontendBackendModel);
         }
 

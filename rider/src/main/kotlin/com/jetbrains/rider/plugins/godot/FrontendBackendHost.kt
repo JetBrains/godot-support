@@ -13,7 +13,7 @@ import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rd.util.reactive.AddRemove
 import com.jetbrains.rider.debugger.DebuggerInitializingState
 import com.jetbrains.rider.debugger.RiderDebugActiveDotNetSessionsTracker
-import com.jetbrains.rider.model.godot.frontendBackend.frontendBackendModel
+import com.jetbrains.rider.model.godot.frontendBackend.frontendBackendGodotModel
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
@@ -22,7 +22,7 @@ import com.jetbrains.rider.util.NetUtils
 import java.awt.Frame
 
 class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent(project) {
-    val model = project.solution.frontendBackendModel
+    val model = project.solution.frontendBackendGodotModel
 
     init {
         model.activateRider.advise(projectComponentLifetime) {

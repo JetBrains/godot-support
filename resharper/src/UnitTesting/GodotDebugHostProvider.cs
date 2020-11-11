@@ -5,15 +5,15 @@ using JetBrains.Application.Processes;
 using JetBrains.Application.Threading;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
-using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.DotNetCore;
 using JetBrains.ReSharper.Feature.Services.DebuggerFacade;
+using JetBrains.ReSharper.Host.Features;
 using JetBrains.ReSharper.Host.Features.UnitTesting;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel.Flavours;
-using JetBrains.ReSharper.Plugins.Godot.Protocol;
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.ReSharper.UnitTestFramework.Launch;
 using JetBrains.ReSharper.UnitTestFramework.Processes;
+using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 
@@ -53,16 +53,16 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                 var taskLifetime = taskLifetimeDef.Lifetime;
 
                 var solution = run.Launch.Solution;
-                var model = solution.GetComponent<FrontendBackendHost>();
+                var model = solution.GetProtocolSolution().GetFrontendBackendModel();
                 solution.Locks.ExecuteOrQueueEx(taskLifetime, "AttachDebuggerToUnityEditor", () =>
                 {
-                    if (!taskLifetime.IsAlive || model.Model == null)
+                    if (!taskLifetime.IsAlive || model == null)
                     {
                         tcs.TrySetCanceled();
                         return;
                     }
 
-                    var task = model.Model.StartDebuggerServer.Start(taskLifetime, Unit.Instance);
+                    var task = model.StartDebuggerServer.Start(taskLifetime, Unit.Instance);
                     task.Result.Advise(taskLifetime, result =>
                     {
                         if (!run.Lifetime.IsAlive)
