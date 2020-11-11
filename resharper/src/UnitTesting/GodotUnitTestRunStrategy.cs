@@ -1,17 +1,9 @@
-using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using JetBrains.Application.Threading;
-using JetBrains.Collections.Viewable;
-using JetBrains.Core;
-using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Plugins.Godot.Protocol;
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.ReSharper.UnitTestFramework.Launch;
 using JetBrains.ReSharper.UnitTestFramework.Strategy;
 using JetBrains.ReSharper.UnitTestProvider.nUnit.v30;
-using JetBrains.Util;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
 namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
@@ -28,9 +20,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         {
             return myNUnitTestRunnerRunStrategy.GetRuntimeEnvironment(launch, project, targetFrameworkId, element);
         }
-
-        public int DebugPort;
-
+        
         public GodotUnitTestRunStrategy(ISolution solution)
         {
             myNUnitTestRunnerRunStrategy = solution.GetComponent<NUnitTestRunnerRunStrategy>();
@@ -38,63 +28,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         public Task Run(IUnitTestRun run)
         {
-            var tcs = new TaskCompletionSource<bool>();
-            var taskLifetimeDef = Lifetime.Define(run.Lifetime);
-            taskLifetimeDef.SynchronizeWith(tcs);
-            var taskLifetime = taskLifetimeDef.Lifetime;
-            var solution = run.Launch.Solution;
-            var model = solution.GetComponent<FrontendBackendHost>();
-            
-            var hostId = run.HostController.HostId;
-            switch (hostId)
-            {
-                case WellKnownHostProvidersIds.DebugProviderId:
-                    solution.Locks.ExecuteOrQueueEx(taskLifetime, "AttachDebuggerToUnityEditor", () =>
-                    {
-                        if (!taskLifetime.IsAlive || model.Model == null)
-                        {
-                            tcs.TrySetCanceled();
-                            return;
-                        }
-
-                        var task = model.Model.StartDebuggerServer.Start(taskLifetime, Unit.Instance);
-                        task.Result.Advise(taskLifetime, result =>
-                        {
-                            if (!run.Lifetime.IsAlive)
-                                tcs.TrySetCanceled();
-                            else if (result.Result <= 0)
-                                tcs.SetException(new Exception("Unable to start debugger."));
-                            else
-                            {
-                                DebugPort = result.Result;
-                                tcs.SetResult(true);
-                            }
-                        });
-                    });
-                    break;
-                default:
-                    tcs.SetResult(true);
-                    break;
-            }
-
-            return tcs.Task.ContinueWith(_ => myNUnitTestRunnerRunStrategy.Run(run)).Unwrap();
-        }
-        
-        public static void PatchStartInfoForGodot(ProcessStartInfo startInfo, ISolution solution)
-        {
-            var fileName = startInfo.FileName;
-            var args = startInfo.Arguments;
-            
-            var solutionDir = solution.SolutionDirectory.QuoteIfNeeded();
-            var model = solution.GetComponent<FrontendBackendHost>().Model;
-            if (model == null)
-                throw new InvalidOperationException("Missing connection to frontend.");
-            if (!model.GodotPath.HasValue())
-                throw new InvalidOperationException("GodotPath is unknown.");
-            var godotPath = model.GodotPath.Value.QuoteIfNeeded();
-
-            startInfo.FileName = godotPath;
-            startInfo.Arguments = $"--path {solutionDir} --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"";
+            return myNUnitTestRunnerRunStrategy.Run(run);
         }
 
         public void Cancel(IUnitTestRun run)
