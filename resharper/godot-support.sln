@@ -9,11 +9,7 @@ ProjectSection(SolutionItems) = preProject
 	.run\runIde.run.xml = .run\runIde.run.xml
 EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GodotEditor", "GodotEditor", "{E05FC3C9-52A4-4696-8E36-7D3DF814383A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RiderHost", "RiderHost", "{609BB37F-C547-4463-805E-329CB4AE7168}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GodotEditor", "GodotEditor\GodotEditor.csproj", "{53AFD758-65FF-4DEC-A033-DC0EB59D23C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,13 +25,8 @@ Global
 		{A0CA2638-35EE-4034-B1FA-F13345121485}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0CA2638-35EE-4034-B1FA-F13345121485}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0CA2638-35EE-4034-B1FA-F13345121485}.Release|Any CPU.Build.0 = Release|Any CPU
-		{53AFD758-65FF-4DEC-A033-DC0EB59D23C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{53AFD758-65FF-4DEC-A033-DC0EB59D23C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{53AFD758-65FF-4DEC-A033-DC0EB59D23C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{53AFD758-65FF-4DEC-A033-DC0EB59D23C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E5F98D56-13E6-41B1-A70A-E1E1F81866C8} = {609BB37F-C547-4463-805E-329CB4AE7168}
-		{53AFD758-65FF-4DEC-A033-DC0EB59D23C9} = {E05FC3C9-52A4-4696-8E36-7D3DF814383A}
 	EndGlobalSection
 EndGlobal
