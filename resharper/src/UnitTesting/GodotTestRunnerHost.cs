@@ -25,9 +25,16 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
     {
         [NotNull] public new static readonly ITestRunnerHost Instance = new GodotTestRunnerHost();
         private int myDebugPort;
+        private const string pluginDirectory = "RiderTestRunner";
+        private const string runnerScene = "Runner.tscn";
 
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, ITestRunnerContext context)
         {
+            var solution = context.RuntimeEnvironment.Project.GetSolution();
+            var solutionDirectory = solution.SolutionDirectory;
+            if (!solutionDirectory.Combine(pluginDirectory).ExistsDirectory || !solutionDirectory.Combine(pluginDirectory).Combine(runnerScene).ExistsFile)
+                throw new Exception("Please manually put folder with files from https://github.com/van800/godot-demo-projects/tree/3b193ba6d6d3d5bac7ec2145cd5b4a0628d9202b/mono/dodge_the_creeps/RiderTestRunner to your project.");
+            
             context.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
 
             if (context is ITestRunnerExecutionContext executionContext &&
@@ -39,7 +46,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             }
 
             var rawStartInfo = new JetProcessStartInfo(startInfo);
-            var patcher = new GodotPatcher(context.RuntimeEnvironment.Project.GetSolution());
+            var patcher = new GodotPatcher(solution);
             var request = context.RuntimeEnvironment.ToJetProcessRuntimeRequest();
             var patch = new JetProcessStartInfoPatch(patcher, request);
             return new PreparedProcess(rawStartInfo, patch);
@@ -107,7 +114,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                 var godotPath = myModel.GodotPath.Value.QuoteIfNeeded();
 
                 var patchedInfo = startInfo.Patch(godotPath,
-                    $"--path {solutionDir} \"res://RiderTestRunner/Runner.tscn\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
+                    $"--path {solutionDir} \"res://{pluginDirectory}/Runner.tscn\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
                     EnvironmentVariableMutator.Empty);
 
                 return ProcessStartInfoPatchResult.CreateSuccess(startInfo, request, patchedInfo);
