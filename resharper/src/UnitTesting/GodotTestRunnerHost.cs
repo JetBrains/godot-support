@@ -46,7 +46,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         public override IEnumerable<Assembly> InProcessAssemblies => EmptyArray<Assembly>.Instance;
 
-
         private Task PrepareDebuggerServer(IUnitTestRun run)
         {
             var tcs = new TaskCompletionSource<bool>();
