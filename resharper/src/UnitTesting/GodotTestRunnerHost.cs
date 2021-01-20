@@ -33,7 +33,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             if (context is ITestRunnerExecutionContext executionContext &&
                 executionContext.Run.HostController.HostId == WellKnownHostProvidersIds.DebugProviderId)
             {
-                PrepareForRunCore(executionContext.Run).Wait();
+                PrepareDebuggerServer(executionContext.Run).Wait();
                 startInfo.EnvironmentVariables.Add("GODOT_MONO_DEBUGGER_AGENT", $"--debugger-agent=transport=dt_socket,address=127.0.0.1:{myDebugPort},server=n,suspend=y");
             }
 
@@ -47,7 +47,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         public override IEnumerable<Assembly> InProcessAssemblies => EmptyArray<Assembly>.Instance;
 
 
-        private Task PrepareForRunCore(IUnitTestRun run)
+        private Task PrepareDebuggerServer(IUnitTestRun run)
         {
             var tcs = new TaskCompletionSource<bool>();
             var taskLifetimeDef = Lifetime.Define(run.Lifetime);
