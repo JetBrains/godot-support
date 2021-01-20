@@ -107,7 +107,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                 var godotPath = myModel.GodotPath.Value.QuoteIfNeeded();
 
                 var patchedInfo = startInfo.Patch(godotPath,
-                    $"--path {solutionDir} \"res://test_runner/runner.tscn\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
+                    $"--path {solutionDir} \"res://RiderTestRunner/Runner.tscn\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
                     EnvironmentVariableMutator.Empty);
 
                 return ProcessStartInfoPatchResult.CreateSuccess(startInfo, request, patchedInfo);
