@@ -20,7 +20,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
         public override IEnumerable<ITemplateScopePoint> ProvideScopePoints(TemplateAcceptanceContext context)
         {
             var project = context.GetProject();
-            if (project != null && !project.IsGodotProject())
+            if (!project.IsGodotProject())
                 yield break;
 
             // We could check for C# here, like InRazorCSharpProject, but we only really support C# Godot projects

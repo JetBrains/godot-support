@@ -107,11 +107,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 (projectLifetime, project) =>
                 {
                     myAllProjectLifetimes.Add(projectLifetime, project, projectLifetime);
-                    if (HasGodotReferenceOrFlavour(project))
+                    if (IsGodotProjectOrHasGodotReference(project))
                         myGodotProjects.Add(projectLifetime, project);
                 });
 
-            var godotProjectLifetimes = myAllProjectLifetimes.Where(pair => HasGodotReferenceOrFlavour(pair.Key)).ToList();
+            var godotProjectLifetimes = myAllProjectLifetimes.Where(pair => IsGodotProjectOrHasGodotReference(pair.Key)).ToList();
             if (godotProjectLifetimes.Count == 0)
                 return;
 
@@ -154,7 +154,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 if (change.IsAdded)
                 {
                     var project = change.GetNewProject();
-                    if (HasGodotReferenceOrFlavour(project))
+                    if (IsGodotProjectOrHasGodotReference(project))
                     {
                         Assertion.Assert(myAllProjectLifetimes.ContainsKey(project), "project is not added");
                         if (myAllProjectLifetimes.TryGetValue(project, out var projectLifetime))
@@ -184,9 +184,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             return myGodotProjects.Contains(project);
         }
 
-        private static bool HasGodotReferenceOrFlavour([NotNull] IProject project)
+        private static bool IsGodotProjectOrHasGodotReference([NotNull] IProject project)
         {
-            return project.HasFlavour<GodotProjectFlavor>() || ReferencesGodot(project);
+            return project.IsGodotProject() || ReferencesGodot(project);
         }
 
         public static bool ReferencesGodot(IProject project)

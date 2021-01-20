@@ -9,7 +9,7 @@ using JetBrains.ProjectModel.DotNetCore;
 using JetBrains.ReSharper.Feature.Services.DebuggerFacade;
 using JetBrains.ReSharper.Host.Features;
 using JetBrains.ReSharper.Host.Features.UnitTesting;
-using JetBrains.ReSharper.Plugins.Godot.ProjectModel.Flavours;
+using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.ReSharper.UnitTestFramework.Launch;
 using JetBrains.ReSharper.UnitTestFramework.Processes;
@@ -44,7 +44,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         protected override Task PrepareForRunCore(IUnitTestRun run)
         {
-            if (run.RuntimeEnvironment is IModuleRuntimeEnvironment environment && environment.Project.HasFlavour<GodotProjectFlavor>())
+            if (run.RuntimeEnvironment is IModuleRuntimeEnvironment environment && environment.Project.IsGodotProject())
             {
                 
                 var tcs = new TaskCompletionSource<bool>();
@@ -86,7 +86,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, IUnitTestRun run, ILogger logger)
         {
-            if (run.RuntimeEnvironment is IModuleRuntimeEnvironment environment && environment.Project.HasFlavour<GodotProjectFlavor>())
+            if (run.RuntimeEnvironment is IModuleRuntimeEnvironment environment && environment.Project.IsGodotProject())
             {
                             run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
                             var solution = run.Launch.Solution;

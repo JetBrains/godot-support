@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using JetBrains.Collections.Viewable;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Host.Features;
-using JetBrains.ReSharper.Plugins.Godot.ProjectModel.Flavours;
+using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.ReSharper.UnitTestFramework.Processes;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.Util;
@@ -47,7 +47,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
     {
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, IUnitTestRun run, ILogger logger)
         {
-            if (run.RuntimeEnvironment is IModuleRuntimeEnvironment environment && environment.Project.HasFlavour<GodotProjectFlavor>())
+            if (run.RuntimeEnvironment is IModuleRuntimeEnvironment environment && environment.Project.IsGodotProject())
             {
                 run.Launch.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
                 var solution = run.Launch.Solution;
