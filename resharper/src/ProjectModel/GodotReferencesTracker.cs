@@ -11,7 +11,6 @@ using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Assemblies.Impl;
 using JetBrains.ProjectModel.Tasks;
 using JetBrains.Rd.Base;
-using JetBrains.ReSharper.Plugins.Godot.ProjectModel.Flavours;
 using JetBrains.Util;
 using JetBrains.Util.Reflection;
 
