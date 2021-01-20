@@ -15,16 +15,9 @@ using JetBrains.Util;
 
 namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 {
-    public class GodotTestRunnerHost : ITestRunnerHost
+    public class GodotTestRunnerHost : DefaultTestRunnerHost
     {
-        public IEnumerable<IMessageHandlerMarker> GetMessageHandlers(ITestRunnerContext ctx)
-        {
-            return new IMessageHandlerMarker[]
-            {
-            };
-        }
-
-        public IPreparedProcess StartProcess(ProcessStartInfo startInfo, ITestRunnerContext context)
+        public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, ITestRunnerContext context)
         {
             context.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
             
@@ -35,7 +28,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             return new PreparedProcess(rawStartInfo, patch);
         }
 
-        public IEnumerable<Assembly> InProcessAssemblies => EmptyArray<Assembly>.Instance;
+        public override IEnumerable<Assembly> InProcessAssemblies => EmptyArray<Assembly>.Instance;
     }
 
     public class GodotPatcher : IProcessStartInfoPatcher
@@ -62,7 +55,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             var patchedInfo = startInfo.Patch(godotPath,
                 $"--path {solutionDir} \"res://test_runner/runner.tscn\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
                 EnvironmentVariableMutator.Empty);
-            
+
             return ProcessStartInfoPatchResult.CreateSuccess(startInfo, request, patchedInfo);
         }
     }
