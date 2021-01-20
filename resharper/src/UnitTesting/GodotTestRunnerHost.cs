@@ -34,7 +34,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                 executionContext.Run.HostController.HostId == WellKnownHostProvidersIds.DebugProviderId)
             {
                 PrepareDebuggerServer(executionContext.Run).Wait();
-                startInfo.EnvironmentVariables.Add("GODOT_MONO_DEBUGGER_AGENT", $"--debugger-agent=transport=dt_socket,address=127.0.0.1:{myDebugPort},server=n,suspend=y");
+                startInfo.EnvironmentVariables.Add("GODOT_MONO_DEBUGGER_AGENT",
+                    $"--debugger-agent=transport=dt_socket,address=127.0.0.1:{myDebugPort},server=n,suspend=y");
             }
 
             var rawStartInfo = new JetProcessStartInfo(startInfo);
@@ -80,34 +81,37 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
             return tcs.Task;
         }
-    }
 
-    public class GodotPatcher : IProcessStartInfoPatcher
-    {
-        private readonly ISolution mySolution;
-
-        public GodotPatcher(ISolution solution)
+        private class GodotPatcher : IProcessStartInfoPatcher
         {
-            mySolution = solution;
-        }
-        public ProcessStartInfoPatchResult Patch(JetProcessStartInfo startInfo, JetProcessRuntimeRequest request)
-        {
-            var fileName = startInfo.FileName;
-            var args = startInfo.Arguments;
-            
-            var solutionDir = mySolution.SolutionDirectory.QuoteIfNeeded();
-            var model = mySolution.GetProtocolSolution().GetFrontendBackendGodotModel();
-            if (model == null)
-                throw new InvalidOperationException("Missing connection to frontend.");
-            if (!model.GodotPath.HasValue())
-                throw new InvalidOperationException("GodotPath is unknown.");
-            var godotPath = model.GodotPath.Value.QuoteIfNeeded();
+            private readonly ISolution mySolution;
+            private readonly FrontendBackendGodotModel myModel;
 
-            var patchedInfo = startInfo.Patch(godotPath,
-                $"--path {solutionDir} \"res://test_runner/runner.tscn\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
-                EnvironmentVariableMutator.Empty);
+            public GodotPatcher(ISolution solution)
+            {
+                mySolution = solution;
+                myModel = mySolution.GetProtocolSolution().GetFrontendBackendGodotModel();
+            }
 
-            return ProcessStartInfoPatchResult.CreateSuccess(startInfo, request, patchedInfo);
+            public ProcessStartInfoPatchResult Patch(JetProcessStartInfo startInfo, JetProcessRuntimeRequest request)
+            {
+                var fileName = startInfo.FileName;
+                var args = startInfo.Arguments;
+
+                var solutionDir = mySolution.SolutionDirectory.QuoteIfNeeded();
+
+                if (myModel == null)
+                    throw new InvalidOperationException("Missing connection to frontend.");
+                if (!myModel.GodotPath.HasValue())
+                    throw new InvalidOperationException("GodotPath is unknown.");
+                var godotPath = myModel.GodotPath.Value.QuoteIfNeeded();
+
+                var patchedInfo = startInfo.Patch(godotPath,
+                    $"--path {solutionDir} \"res://test_runner/runner.tscn\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
+                    EnvironmentVariableMutator.Empty);
+
+                return ProcessStartInfoPatchResult.CreateSuccess(startInfo, request, patchedInfo);
+            }
         }
     }
 }
