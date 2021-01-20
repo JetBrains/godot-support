@@ -10,7 +10,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
     {
         public ITestRunnerHost TryGetHost(IProject project, TargetFrameworkId targetFrameworkId)
         {
-            return project.IsGodotProject() ? new GodotTestRunnerHost() : null;
+            return project.IsGodotProject() ? GodotTestRunnerHost.Instance : null;
         }
     }
 }

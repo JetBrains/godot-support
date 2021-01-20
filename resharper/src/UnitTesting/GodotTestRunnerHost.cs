@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using JetBrains.Annotations;
 using JetBrains.Application.Processes;
 using JetBrains.Collections.Viewable;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Host.Features;
-using JetBrains.ReSharper.TestRunner.Abstractions;
 using JetBrains.ReSharper.UnitTestFramework.Extensions;
 using JetBrains.ReSharper.UnitTestFramework.Processes;
 using JetBrains.ReSharper.UnitTestFramework.TestRunner;
@@ -17,6 +17,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 {
     public class GodotTestRunnerHost : DefaultTestRunnerHost
     {
+        [NotNull] public new static readonly ITestRunnerHost Instance = new GodotTestRunnerHost();
+
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, ITestRunnerContext context)
         {
             context.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
