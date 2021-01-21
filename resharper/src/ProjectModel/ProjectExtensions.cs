@@ -1,6 +1,7 @@
+using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Plugins.Godot.ProjectModel.Flavours;
+using JetBrains.ProjectModel.Propoerties;
 
 namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 {
@@ -11,7 +12,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             if (project == null || !project.IsValid())
                 return false;
 
-            return project.HasFlavour<GodotProjectFlavor>();
+            return project.ProjectProperties.ActiveConfigurations.Configurations.Any(a => a is CSharpProjectConfiguration configuration &&
+                configuration.DefineConstants.Contains("GODOT;"));
         }
     }
 }

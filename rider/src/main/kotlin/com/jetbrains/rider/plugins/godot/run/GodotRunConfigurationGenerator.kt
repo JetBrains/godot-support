@@ -2,10 +2,12 @@ package com.jetbrains.rider.plugins.godot.run
 
 import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.ConfigurationTypeUtil
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
+import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
+import com.jetbrains.rider.plugins.godot.FrontendBackendHost
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
-import com.jetbrains.rider.plugins.godot.GodotServer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.projectView.solution
@@ -14,8 +16,6 @@ import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import java.io.File
-import com.intellij.openapi.diagnostic.Logger
-import com.jetbrains.rd.util.reactive.whenTrue
 
 class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectComponent(project) {
 
@@ -37,12 +37,18 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
             godotDiscoverer.isGodotProject.whenTrue(componentLifetime) {
                 logger.info("isGodotProject = true")
                 val runManager = RunManager.getInstance(project)
-                val godotPath = godotDiscoverer.godotPath.value
+                val godotPath = FrontendBackendHost.getInstance(project).model.godotPath.valueOrNull
 
                 // Clean up old generated configurations
                 val toRemove = runManager.allSettings.filter {
-                    it.type is ExeConfigurationType && it.name == RUN_CONFIGURATION_NAME
-                            || it.type is DotNetExeConfigurationType && it.name == PROFILE_CONFIGURATION_NAME
+                    (it.type is ExeConfigurationType && it.name == RUN_CONFIGURATION_NAME
+                            || it.type is DotNetExeConfigurationType && it.name == PROFILE_CONFIGURATION_NAME)
+                        ||
+                        (it.configuration is GodotDebugRunConfiguration
+                            && (it.name == PLAYER_CONFIGURATION_NAME
+                            ||it.name == EDITOR_CONFIGURATION_NAME
+                            ||it.name == WAT_UNIT_TESTING)
+                            && !File((it.configuration as GodotDebugRunConfiguration).parameters.exePath).exists())
                 }
                 for (value in toRemove) {
                     runManager.removeConfiguration(value)
