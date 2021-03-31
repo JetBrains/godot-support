@@ -33,7 +33,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             var solution = context.RuntimeEnvironment.Project.GetSolution();
             var solutionDirectory = solution.SolutionDirectory;
             if (!solutionDirectory.Combine(pluginDirectory).ExistsDirectory || !solutionDirectory.Combine(pluginDirectory).Combine(runnerScene).ExistsFile)
-                throw new Exception("Please manually put folder with files from https://github.com/van800/godot-demo-projects/tree/3b193ba6d6d3d5bac7ec2145cd5b4a0628d9202b/mono/dodge_the_creeps/RiderTestRunner to your project.");
+                throw new Exception("Please manually put folder with files from https://github.com/van800/godot-demo-projects/tree/nunit/mono/dodge_the_creeps/RiderTestRunner to your project.");
             
             context.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
 
