@@ -1,5 +1,5 @@
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Host.Features;
+using JetBrains.RdBackend.Common.Features;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.ReSharper.UnitTestFramework.TestRunner;
 using JetBrains.Rider.Model.Godot.FrontendBackend;

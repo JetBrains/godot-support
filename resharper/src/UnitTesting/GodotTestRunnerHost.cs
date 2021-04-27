@@ -10,7 +10,7 @@ using JetBrains.Collections.Viewable;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Host.Features;
+using JetBrains.RdBackend.Common.Features;
 using JetBrains.ReSharper.UnitTestFramework;
 using JetBrains.ReSharper.UnitTestFramework.Extensions;
 using JetBrains.ReSharper.UnitTestFramework.Launch;

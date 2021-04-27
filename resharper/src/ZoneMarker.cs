@@ -1,8 +1,8 @@
 using JetBrains.Application.BuildScript.Application.Zones;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Host.Product;
 using JetBrains.ReSharper.Resources.Shell;
+using JetBrains.Rider.Backend.Product;
 using JetBrains.Rider.Model;
 
 namespace JetBrains.ReSharper.Plugins.Godot
