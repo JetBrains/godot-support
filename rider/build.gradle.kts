@@ -99,7 +99,7 @@ val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
 val libFiles = listOf<String>()
 val pluginFiles = listOf(
-    "bin/$buildConfiguration/net461/JetBrains.ReSharper.Plugins.Godot")
+    "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot")
 
 val dotNetSdkPath by lazy {
     val sdkPath = intellij.ideaDependency.classes.resolve("lib").resolve("DotNetSdkForRdPlugins")
