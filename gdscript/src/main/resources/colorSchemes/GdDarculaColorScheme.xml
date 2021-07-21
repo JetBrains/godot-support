@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<list>
+    <option name="GD_KEYWORD">
+        <value>
+            <option name="FOREGROUND" value="ff7085" />
+        </value>
+    </option>
+    <option name="GD_FLOW_KEYWORDS">
+        <value>
+            <option name="FOREGROUND" value="ff8ccc" />
+        </value>
+    </option>
+    <option name="GD_NUMBER">
+        <value>
+            <option name="FOREGROUND" value="a1ffe0" />
+        </value>
+    </option>
+    <option name="GD_IDENTIFIER">
+        <value>
+            <option name="FOREGROUND" value="cdcfd2" />
+        </value>
+    </option>
+    <option name="GD_COMMENT">
+        <value>
+            <option name="FOREGROUND" value="cdcfd280" />
+        </value>
+    </option>
+    <option name="GD_STRING">
+        <value>
+            <option name="FOREGROUND" value="ffeca1" />
+        </value>
+    </option>
+    <option name="GD_ANNOTATION">
+        <value>
+            <option name="FOREGROUND" value="7d9b60" />
+        </value>
+    </option>
+    <option name="GD_BAD_CHARACTER">
+        <value>
+            <option name="FOREGROUND" value="ff786b" />
+        </value>
+    </option>
+</list>

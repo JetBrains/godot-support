@@ -1,0 +1,127 @@
+{
+  parserClass="gdscript.parser.GdParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Gd"
+  psiImplClassSuffix="Impl"
+  psiPackage="gdscript.psi"
+  psiImplPackage="gdscript.psi.impl"
+
+  elementTypeHolderClass="gdscript.psi.GdTypes"
+  elementTypeClass="gdscript.psi.GdElementType"
+  tokenTypeClass="gdscript.psi.GdTokenType"
+
+  psiImplUtilClass="gdscript.psi.impl.GdPsiUtils"
+
+  mixin(".*_nm")="GdNamedElementImpl"
+  implements(".*_nm")="GdNamedElement"
+  methods(".*_nm")=[getName setName getNameIdentifier]
+
+  extends(".*_tl")=topLevelDecl
+//  extends(".*Expression")=expr
+
+  tokens = [
+//    /* Keywords */
+//    class='class'
+//    class_name='class_name'
+//    extends='extends'
+//    tool='tool'
+//    enum='enum'
+//    self='self'
+//    func='func'
+//    const='const'
+//    if='if'
+//    else='else'
+//    elif='elif'
+//    var='var'
+//    int='int'
+//    true='true'
+//    false='false'
+//    null='null'
+//    pass='pass'
+//    setget='setget'
+//    signal='signal'
+//    static='static'
+//    ret='->'
+//    init='_init'
+//    breakpoint='breakpoint'
+//    while='while'
+//    for='for'
+//    in='in'
+//    match='match'
+//    under='_'
+//    continue='continue'
+//    break='break'
+//    return='return'
+//    assert='assert'
+//    yield='yield'
+//    preload='preload'
+//    as='as'
+//    and='and'
+//    or='or'
+//    not='not'
+//    pi='PI'
+//    tau='TAU'
+//    nan='NAN'
+//    inf='INF'
+//
+//    /* Annotations */
+//    onready='@onready'
+//    export='@export'
+//
+//    /* Syntax */
+//    lcbr='{'
+//    rcbr='}'
+//    lrbr='('
+//    rrbr=')'
+//    lsbr='['
+//    rsbr=']'
+//    semicon=';'
+//    comma=','
+//    colon=':'
+//    ternary='?'
+//    dotdot='..'
+//    dot='.'
+//    eq='='
+//
+//    new_line='regexp:[\n\r]+'
+//    identifier='regexp:[a-zA-Z_][a-zA-Z_0-9]*'
+    string='regexp:"[^"]*?"'
+//    number='regexp:[0-9]+(\.)?[0-9]*'
+    comment='regexp:#.*'
+//    space='regexp:\s+'
+    bad_character='regexp:[\^]'
+  ]
+}
+
+gdfile ::= inheritance classNaming? (TOOL NEW_LINE)? topLevelDecl*
+
+inheritance ::= EXTENDS inheritanceId (DOT IDENTIFIER)? NEW_LINE {methods=[getParentClassName] pin=1 recoverWhile=inheritance_r}
+inheritanceId ::= IDENTIFIER
+private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC)
+//private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC | annotation | CONST)
+
+// TODO resource
+classNaming ::= CLASS_NAME className_nm (COMMA STRING)? NEW_LINE {pin=1 recoverWhile=classNaming_r}
+className_nm ::= IDENTIFIER
+private classNaming_r ::= !(TOOL) & topLevelDecl_r
+
+topLevelDecl ::=
+    methodDecl_tl
+private topLevelDecl_r ::= !(FUNC)
+//private topLevelDecl_r ::= !(VAR | CONST | (STATIC? FUNC) | annotation | SIGNAL | ENUM | CLASS)
+
+methodDecl_tl ::= FUNC IDENTIFIER COLON stmtOrSuite {methods=[getMethodName] pin=1 recoverWhile=topLevelDecl_r} // TODO recover nesmí mít func -> inline lambdy by to porušily
+
+
+stmtOrSuite ::= stmt | (NEW_LINE INDENT suite DEDENT)
+//stmtOrSuite ::= stmt | (NEW_LINE suite)
+suite ::= stmt*
+
+stmt ::=
+    PASS endStmt
+
+//expr ::= PASS
+
+endStmt ::= SEMICON | NEW_LINE

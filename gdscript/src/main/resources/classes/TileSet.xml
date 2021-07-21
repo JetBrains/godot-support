@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="TileSet" inherits="Resource" version="4.0">
+	<brief_description>
+		Tile library for tilemaps.
+	</brief_description>
+	<description>
+		A TileSet is a library of tiles for a [TileMap]. It contains a list of tiles, each consisting of a sprite and optional collision shapes.
+		Tiles are referenced by a unique integer ID.
+	</description>
+	<tutorials>
+		<link title="Using Tilemaps">https://docs.godotengine.org/en/latest/tutorials/2d/using_tilemaps.html</link>
+		<link title="2D Platformer Demo">https://godotengine.org/asset-library/asset/120</link>
+		<link title="2D Isometric Demo">https://godotengine.org/asset-library/asset/112</link>
+		<link title="2D Hexagonal Demo">https://godotengine.org/asset-library/asset/111</link>
+		<link title="2D Navigation Astar Demo">https://godotengine.org/asset-library/asset/519</link>
+		<link title="2D Role Playing Game Demo">https://godotengine.org/asset-library/asset/520</link>
+		<link title="2D Kinematic Character Demo">https://godotengine.org/asset-library/asset/113</link>
+	</tutorials>
+	<methods>
+		<method name="add_source">
+			<return type="int">
+			</return>
+			<argument index="0" name="atlas_source_id_override" type="TileSetSource">
+			</argument>
+			<argument index="1" name="arg1" type="int" default="-1">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_navigation_layer_layers" qualifiers="const">
+			<return type="int">
+			</return>
+			<argument index="0" name="layer_index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_next_source_id" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_occlusion_layer_light_mask" qualifiers="const">
+			<return type="int">
+			</return>
+			<argument index="0" name="arg0" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_occlusion_layer_sdf_collision" qualifiers="const">
+			<return type="bool">
+			</return>
+			<argument index="0" name="arg0" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_physics_layer_collision_layer" qualifiers="const">
+			<return type="int">
+			</return>
+			<argument index="0" name="layer_index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_physics_layer_collision_mask" qualifiers="const">
+			<return type="int">
+			</return>
+			<argument index="0" name="layer_index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_physics_layer_physics_material" qualifiers="const">
+			<return type="PhysicsMaterial">
+			</return>
+			<argument index="0" name="layer_index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_source" qualifiers="const">
+			<return type="TileSetSource">
+			</return>
+			<argument index="0" name="index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_source_count" qualifiers="const">
+			<return type="int">
+			</return>
+			<description>
+			</description>
+		</method>
+		<method name="get_source_id" qualifiers="const">
+			<return type="int">
+			</return>
+			<argument index="0" name="index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_terrain_color" qualifiers="const">
+			<return type="Color">
+			</return>
+			<argument index="0" name="terrain_set" type="int">
+			</argument>
+			<argument index="1" name="terrain_index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_terrain_name" qualifiers="const">
+			<return type="String">
+			</return>
+			<argument index="0" name="terrain_set" type="int">
+			</argument>
+			<argument index="1" name="terrain_index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_terrain_set_mode" qualifiers="const">
+			<return type="int" enum="TileSet.TerrainMode">
+			</return>
+			<argument index="0" name="terrain_set" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_terrains_count" qualifiers="const">
+			<return type="int">
+			</return>
+			<argument index="0" name="terrain_set" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="has_source" qualifiers="const">
+			<return type="bool">
+			</return>
+			<argument index="0" name="index" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="remove_source">
+			<return type="void">
+			</return>
+			<argument index="0" name="source_id" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_navigation_layer_layers">
+			<return type="void">
+			</return>
+			<argument index="0" name="layer_index" type="int">
+			</argument>
+			<argument index="1" name="layers" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_occlusion_layer_light_mask">
+			<return type="void">
+			</return>
+			<argument index="0" name="layer_index" type="int">
+			</argument>
+			<argument index="1" name="light_mask" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_occlusion_layer_sdf_collision">
+			<return type="void">
+			</return>
+			<argument index="0" name="layer_index" type="int">
+			</argument>
+			<argument index="1" name="sdf_collision" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_physics_layer_collision_layer">
+			<return type="void">
+			</return>
+			<argument index="0" name="layer_index" type="int">
+			</argument>
+			<argument index="1" name="layer" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_physics_layer_collision_mask">
+			<return type="void">
+			</return>
+			<argument index="0" name="layer_index" type="int">
+			</argument>
+			<argument index="1" name="mask" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_physics_layer_physics_material">
+			<return type="void">
+			</return>
+			<argument index="0" name="layer_index" type="int">
+			</argument>
+			<argument index="1" name="physics_material" type="PhysicsMaterial">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_source_id">
+			<return type="void">
+			</return>
+			<argument index="0" name="source_id" type="int">
+			</argument>
+			<argument index="1" name="arg1" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_terrain_color">
+			<return type="void">
+			</return>
+			<argument index="0" name="terrain_set" type="int">
+			</argument>
+			<argument index="1" name="terrain_index" type="int">
+			</argument>
+			<argument index="2" name="color" type="Color">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_terrain_name">
+			<return type="void">
+			</return>
+			<argument index="0" name="terrain_set" type="int">
+			</argument>
+			<argument index="1" name="terrain_index" type="int">
+			</argument>
+			<argument index="2" name="name" type="String">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_terrain_set_mode">
+			<return type="void">
+			</return>
+			<argument index="0" name="terrain_set" type="int">
+			</argument>
+			<argument index="1" name="mode" type="int" enum="TileSet.TerrainMode">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="set_terrains_count">
+			<return type="void">
+			</return>
+			<argument index="0" name="terrain_set" type="int">
+			</argument>
+			<argument index="1" name="terrains_count" type="int">
+			</argument>
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="custom_data_layers_count" type="int" setter="set_custom_data_layers_count" getter="get_custom_data_layers_count" default="0">
+		</member>
+		<member name="navigation_layers_count" type="int" setter="set_navigation_layers_count" getter="get_navigation_layers_count" default="0">
+		</member>
+		<member name="occlusion_layers_count" type="int" setter="set_occlusion_layers_count" getter="get_occlusion_layers_count" default="0">
+		</member>
+		<member name="physics_layers_count" type="int" setter="set_physics_layers_count" getter="get_physics_layers_count" default="0">
+		</member>
+		<member name="terrains_sets_count" type="int" setter="set_terrain_sets_count" getter="get_terrain_sets_count" default="0">
+		</member>
+		<member name="tile_layout" type="int" setter="set_tile_layout" getter="get_tile_layout" enum="TileSet.TileLayout" default="0">
+		</member>
+		<member name="tile_offset_axis" type="int" setter="set_tile_offset_axis" getter="get_tile_offset_axis" enum="TileSet.TileOffsetAxis" default="0">
+		</member>
+		<member name="tile_shape" type="int" setter="set_tile_shape" getter="get_tile_shape" enum="TileSet.TileShape" default="0">
+		</member>
+		<member name="tile_size" type="Vector2i" setter="set_tile_size" getter="get_tile_size" default="Vector2i(16, 16)">
+		</member>
+		<member name="uv_clipping" type="bool" setter="set_uv_clipping" getter="is_uv_clipping" default="false">
+		</member>
+		<member name="y_sorting" type="bool" setter="set_y_sorting" getter="is_y_sorting" default="false">
+		</member>
+	</members>
+	<constants>
+		<constant name="TILE_SHAPE_SQUARE" value="0" enum="TileShape">
+			Orthogonal orientation mode.
+		</constant>
+		<constant name="TILE_SHAPE_ISOMETRIC" value="1" enum="TileShape">
+			Isometric orientation mode.
+		</constant>
+		<constant name="TILE_SHAPE_HALF_OFFSET_SQUARE" value="2" enum="TileShape">
+		</constant>
+		<constant name="TILE_SHAPE_HEXAGON" value="3" enum="TileShape">
+			Hexagon orientation mode.
+		</constant>
+		<constant name="TILE_LAYOUT_STACKED" value="0" enum="TileLayout">
+		</constant>
+		<constant name="TILE_LAYOUT_STACKED_OFFSET" value="1" enum="TileLayout">
+		</constant>
+		<constant name="TILE_LAYOUT_STAIRS_RIGHT" value="2" enum="TileLayout">
+		</constant>
+		<constant name="TILE_LAYOUT_STAIRS_DOWN" value="3" enum="TileLayout">
+		</constant>
+		<constant name="TILE_LAYOUT_DIAMOND_RIGHT" value="4" enum="TileLayout">
+		</constant>
+		<constant name="TILE_LAYOUT_DIAMOND_DOWN" value="5" enum="TileLayout">
+		</constant>
+		<constant name="TILE_OFFSET_AXIS_HORIZONTAL" value="0" enum="TileOffsetAxis">
+		</constant>
+		<constant name="TILE_OFFSET_AXIS_VERTICAL" value="1" enum="TileOffsetAxis">
+		</constant>
+		<constant name="CELL_NEIGHBOR_RIGHT_SIDE" value="0" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_RIGHT_CORNER" value="1" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE" value="2" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER" value="3" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_BOTTOM_SIDE" value="4" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_BOTTOM_CORNER" value="5" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_BOTTOM_LEFT_SIDE" value="6" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_BOTTOM_LEFT_CORNER" value="7" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_LEFT_SIDE" value="8" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_LEFT_CORNER" value="9" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_TOP_LEFT_SIDE" value="10" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_TOP_LEFT_CORNER" value="11" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_TOP_SIDE" value="12" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_TOP_CORNER" value="13" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_TOP_RIGHT_SIDE" value="14" enum="CellNeighbor">
+		</constant>
+		<constant name="CELL_NEIGHBOR_TOP_RIGHT_CORNER" value="15" enum="CellNeighbor">
+		</constant>
+		<constant name="TERRAIN_MODE_MATCH_CORNERS_AND_SIDES" value="0" enum="TerrainMode">
+		</constant>
+		<constant name="TERRAIN_MODE_MATCH_CORNERS" value="1" enum="TerrainMode">
+		</constant>
+		<constant name="TERRAIN_MODE_MATCH_SIDES" value="2" enum="TerrainMode">
+		</constant>
+	</constants>
+</class>

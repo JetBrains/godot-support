@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="TileMap" inherits="Node2D" version="4.0">
+	<brief_description>
+		Node for 2D tile-based maps.
+	</brief_description>
+	<description>
+		Node for 2D tile-based maps. Tilemaps use a [TileSet] which contain a list of tiles (textures plus optional collision, navigation, and/or occluder shapes) which are used to create grid-based maps.
+		When doing physics queries against the tilemap, the cell coordinates are encoded as [code]metadata[/code] for each detected collision shape returned by methods such as [method PhysicsDirectSpaceState2D.intersect_shape], [method PhysicsDirectBodyState2D.get_contact_collider_shape_metadata] etc.
+	</description>
+	<tutorials>
+		<link title="Using Tilemaps">https://docs.godotengine.org/en/latest/tutorials/2d/using_tilemaps.html</link>
+		<link title="2D Platformer Demo">https://godotengine.org/asset-library/asset/120</link>
+		<link title="2D Isometric Demo">https://godotengine.org/asset-library/asset/112</link>
+		<link title="2D Hexagonal Demo">https://godotengine.org/asset-library/asset/111</link>
+		<link title="2D Navigation Astar Demo">https://godotengine.org/asset-library/asset/519</link>
+		<link title="2D Role Playing Game Demo">https://godotengine.org/asset-library/asset/520</link>
+		<link title="2D Kinematic Character Demo">https://godotengine.org/asset-library/asset/113</link>
+	</tutorials>
+	<methods>
+		<method name="clear">
+			<return type="void">
+			</return>
+			<description>
+				Clears all cells.
+			</description>
+		</method>
+		<method name="fix_invalid_tiles">
+			<return type="void">
+			</return>
+			<description>
+				Clears cells that do not exist in the tileset.
+			</description>
+		</method>
+		<method name="get_cell_alternative_tile" qualifiers="const">
+			<return type="int">
+			</return>
+			<argument index="0" name="coords" type="Vector2i">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_cell_atlas_coords" qualifiers="const">
+			<return type="Vector2i">
+			</return>
+			<argument index="0" name="coords" type="Vector2i">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_cell_source_id" qualifiers="const">
+			<return type="int">
+			</return>
+			<argument index="0" name="coords" type="Vector2i">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_neighbor_cell" qualifiers="const">
+			<return type="Vector2i">
+			</return>
+			<argument index="0" name="coords" type="Vector2i">
+			</argument>
+			<argument index="1" name="neighbor" type="int" enum="TileSet.CellNeighbor">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_surrounding_tiles">
+			<return type="Vector2i[]">
+			</return>
+			<argument index="0" name="coords" type="Vector2i">
+			</argument>
+			<description>
+			</description>
+		</method>
+		<method name="get_used_cells" qualifiers="const">
+			<return type="Vector2i[]">
+			</return>
+			<description>
+				Returns a [Vector2] array with the positions of all cells containing a tile from the tileset (i.e. a tile index different from [code]-1[/code]).
+			</description>
+		</method>
+		<method name="get_used_rect">
+			<return type="Rect2">
+			</return>
+			<description>
+				Returns a rectangle enclosing the used (non-empty) tiles of the map.
+			</description>
+		</method>
+		<method name="map_to_world" qualifiers="const">
+			<return type="Vector2">
+			</return>
+			<argument index="0" name="map_position" type="Vector2i">
+			</argument>
+			<description>
+				Returns the local position corresponding to the given tilemap (grid-based) coordinates.
+			</description>
+		</method>
+		<method name="set_cell">
+			<return type="void">
+			</return>
+			<argument index="0" name="coords" type="Vector2i">
+			</argument>
+			<argument index="1" name="source_id" type="int" default="-1">
+			</argument>
+			<argument index="2" name="atlas_coords" type="Vector2i" default="Vector2i(-1, -1)">
+			</argument>
+			<argument index="3" name="alternative_tile" type="int" default="-1">
+			</argument>
+			<description>
+				Sets the tile index for the cell given by a Vector2i.
+			</description>
+		</method>
+		<method name="update_dirty_quadrants">
+			<return type="void">
+			</return>
+			<description>
+				Updates the tile map's quadrants, allowing things such as navigation and collision shapes to be immediately used if modified.
+			</description>
+		</method>
+		<method name="world_to_map" qualifiers="const">
+			<return type="Vector2i">
+			</return>
+			<argument index="0" name="world_position" type="Vector2">
+			</argument>
+			<description>
+				Returns the tilemap (grid-based) coordinates corresponding to the given local position.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="cell_quadrant_size" type="int" setter="set_quadrant_size" getter="get_quadrant_size" default="16">
+			The TileMap's quadrant size. Optimizes drawing by batching, using chunks of this size.
+		</member>
+		<member name="show_collision" type="int" setter="set_collision_visibility_mode" getter="get_collision_visibility_mode" enum="TileMap.VisibilityMode" default="0">
+		</member>
+		<member name="show_navigation" type="int" setter="set_navigation_visibility_mode" getter="get_navigation_visibility_mode" enum="TileMap.VisibilityMode" default="0">
+		</member>
+		<member name="tile_set" type="TileSet" setter="set_tileset" getter="get_tileset">
+			The assigned [TileSet].
+		</member>
+	</members>
+	<signals>
+		<signal name="changed">
+			<description>
+				Emitted when the [TileSet] of this TileMap changes.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="VISIBILITY_MODE_DEFAULT" value="0" enum="VisibilityMode">
+		</constant>
+		<constant name="VISIBILITY_MODE_FORCE_HIDE" value="2" enum="VisibilityMode">
+		</constant>
+		<constant name="VISIBILITY_MODE_FORCE_SHOW" value="1" enum="VisibilityMode">
+		</constant>
+	</constants>
+</class>

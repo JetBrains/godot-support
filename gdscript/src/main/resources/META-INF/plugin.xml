@@ -1,0 +1,46 @@
+<idea-plugin>
+  <id>ice.explosive.gdscript</id>
+  <name>GdScript</name>
+  <version>0.1</version>
+  <vendor email="h.raven@centrumcz" url="">IceExplosive</vendor>
+
+  <description>GdScript language plugin</description>
+
+  <change-notes>
+  </change-notes>
+
+  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="203.0"/>
+
+  <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.java</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileType name="GdScript File" implementationClass="gdscript.GdFileType"
+              fieldName="INSTANCE" language="GdScript" extensions="gd"/>
+    <lang.parserDefinition language="GdScript" implementationClass="gdscript.GdParserDefinition"/>
+    <lang.syntaxHighlighterFactory language="GdScript" implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
+    <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
+    <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
+    <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
+
+    <!-- Completions -->
+    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdRootCompletionContributor"/>
+    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdClassNameCompletionContributor"/>
+    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdMethodNameCompletionContributor"/>
+
+    <!-- Annotators -->
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdRootAnnotator"/>
+
+    <!-- Indices -->
+    <fileBasedIndex implementation="gdscript.index.FilenameIndex" />
+<!--    <fileBasedIndex implementation="com.intellij.psi.search.FilenameIndex" />-->
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>

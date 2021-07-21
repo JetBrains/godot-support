@@ -1,0 +1,75 @@
+buildscript {
+    ext.kotlin_version = '1.5.20'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id 'java'
+    id 'org.jetbrains.intellij' version '1.1.3'
+}
+
+group 'ice.explosive'
+version '1.0'
+
+//buildscript {
+//    kotlin
+//}
+
+sourceSets {
+    main {
+        java {
+            srcDirs += ["src/main/gen"]
+        }
+    }
+}
+//sourceSets {
+//    main {
+//        java {
+//            srcDirs = []
+//        }
+//        java {
+//            srcDirs += ["src/main/gen"]
+//        }
+//        kotlin {
+//            srcDirs += ['src/main/java', 'src/main/gen']
+//        }
+//    }
+//}
+
+// apply the kotlin-gradle plugin
+apply plugin: "kotlin"
+apply plugin: 'application'
+
+// add kotlin-stdlib dependencies.
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version = '2021.1.3'
+    plugins = ['com.intellij.java']
+}
+
+patchPluginXml {
+    changeNotes = """
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>"""
+}
+
+test {
+    useJUnitPlatform()
+}
