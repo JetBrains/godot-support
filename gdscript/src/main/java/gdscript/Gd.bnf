@@ -103,7 +103,7 @@ private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC)
 //private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC | annotation | CONST)
 
 // TODO resource
-classNaming ::= CLASS_NAME className_nm (COMMA STRING)? NEW_LINE {pin=1 recoverWhile=classNaming_r}
+classNaming ::= CLASS_NAME className_nm (COMMA STRING)? NEW_LINE {pin=1 recoverWhile=classNaming_r stubClass="gdscript.index.stub.GdClassNamingStub"  elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance" methods=[getClassname]}
 className_nm ::= IDENTIFIER
 private classNaming_r ::= !(TOOL) & topLevelDecl_r
 

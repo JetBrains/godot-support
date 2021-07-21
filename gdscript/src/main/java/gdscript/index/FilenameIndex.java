@@ -12,7 +12,7 @@ public final class FilenameIndex extends ScalarIndexExtension<String> {
 
     @Override
     public @NotNull ID<String, Void> getName() {
-        return Indices.FILE_NAMES;
+        return Indices.INSTANCE.getFILE_NAMES();
     }
 
     @Override

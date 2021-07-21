@@ -30,13 +30,13 @@ public class GdStmtOrSuiteImpl extends ASTWrapperPsiElement implements GdStmtOrS
   @Override
   @Nullable
   public GdStmt getStmt() {
-    return findChildByClass(GdStmt.class);
+    return PsiTreeUtil.getChildOfType(this, GdStmt.class);
   }
 
   @Override
   @Nullable
   public GdSuite getSuite() {
-    return findChildByClass(GdSuite.class);
+    return PsiTreeUtil.getChildOfType(this, GdSuite.class);
   }
 
 }

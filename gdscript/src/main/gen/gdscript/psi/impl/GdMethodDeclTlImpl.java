@@ -30,7 +30,7 @@ public class GdMethodDeclTlImpl extends GdTopLevelDeclImpl implements GdMethodDe
   @Override
   @Nullable
   public GdStmtOrSuite getStmtOrSuite() {
-    return findChildByClass(GdStmtOrSuite.class);
+    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
   }
 
   @Override

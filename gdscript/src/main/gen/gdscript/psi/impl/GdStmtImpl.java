@@ -30,7 +30,7 @@ public class GdStmtImpl extends ASTWrapperPsiElement implements GdStmt {
   @Override
   @NotNull
   public GdEndStmt getEndStmt() {
-    return findNotNullChildByClass(GdEndStmt.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdEndStmt.class));
   }
 
 }

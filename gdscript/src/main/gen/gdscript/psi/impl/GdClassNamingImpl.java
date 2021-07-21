@@ -8,13 +8,24 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.intellij.extapi.psi.StubBasedPsiElementBase;
+import gdscript.index.stub.GdClassNamingStub;
 import gdscript.psi.*;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.tree.IElementType;
 
-public class GdClassNamingImpl extends ASTWrapperPsiElement implements GdClassNaming {
+public class GdClassNamingImpl extends StubBasedPsiElementBase<GdClassNamingStub> implements GdClassNaming {
+
+  public GdClassNamingImpl(@NotNull GdClassNamingStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    super(stub, nodeType);
+  }
 
   public GdClassNamingImpl(@NotNull ASTNode node) {
     super(node);
+  }
+
+  public GdClassNamingImpl(GdClassNamingStub stub, IElementType type, ASTNode node) {
+    super(stub, type, node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
@@ -30,7 +41,13 @@ public class GdClassNamingImpl extends ASTWrapperPsiElement implements GdClassNa
   @Override
   @Nullable
   public GdClassNameNm getClassNameNm() {
-    return findChildByClass(GdClassNameNm.class);
+    return PsiTreeUtil.getChildOfType(this, GdClassNameNm.class);
+  }
+
+  @Override
+  @NotNull
+  public String getClassname() {
+    return GdPsiUtils.getClassname(this);
   }
 
 }

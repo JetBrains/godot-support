@@ -2,6 +2,7 @@ package gdscript.psi.impl
 
 import com.intellij.psi.PsiElement
 import gdscript.psi.GdClassNameNm
+import gdscript.psi.GdClassNaming
 import gdscript.psi.GdInheritance
 import gdscript.psi.GdMethodDeclTl
 
@@ -26,6 +27,11 @@ object GdPsiUtils {
     @JvmStatic
     fun getParentClassName(element: GdInheritance?): String? {
         return GdPsiClassNameUtil.getParentClassName(element)
+    }
+
+    @JvmStatic
+    fun getClassname(element: GdClassNaming?): String {
+        return GdClassNamingElementType.getClassname(element);
     }
 
     /** GdPsiMethodUtil  */

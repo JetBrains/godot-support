@@ -9,7 +9,9 @@ import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
+import com.intellij.psi.stubs.PsiFileStub;
 import com.intellij.psi.tree.IFileElementType;
+import com.intellij.psi.tree.IStubFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import gdscript.parser.GdParser;
 import gdscript.psi.GdFile;
@@ -22,7 +24,7 @@ public class GdParserDefinition implements ParserDefinition {
     public static final TokenSet COMMENTS = TokenSet.create(GdTypes.COMMENT);
     public static final TokenSet STRING_LITERALS = TokenSet.create(GdTypes.STRING);
 
-    public static final IFileElementType FILE = new IFileElementType(GdLanguage.INSTANCE);
+    public static final IStubFileElementType FILE = new IStubFileElementType(GdLanguage.INSTANCE);
 
     @NotNull
     @Override

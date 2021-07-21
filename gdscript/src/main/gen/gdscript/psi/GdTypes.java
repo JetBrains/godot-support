@@ -4,12 +4,13 @@ package gdscript.psi;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import gdscript.psi.impl.GdClassNamingElementType;
 import gdscript.psi.impl.*;
 
 public interface GdTypes {
 
   IElementType CLASS_NAME_NM = new GdElementType("CLASS_NAME_NM");
-  IElementType CLASS_NAMING = new GdElementType("CLASS_NAMING");
+  IElementType CLASS_NAMING = GdClassNamingElementType.getInstance("CLASS_NAMING");
   IElementType END_STMT = new GdElementType("END_STMT");
   IElementType INHERITANCE = new GdElementType("INHERITANCE");
   IElementType INHERITANCE_ID = new GdElementType("INHERITANCE_ID");

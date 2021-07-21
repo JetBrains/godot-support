@@ -7,6 +7,7 @@ import gdscript.competion.staticLoader.StaticClassLoader;
 import gdscript.competion.utils.CompletionPriority;
 import gdscript.competion.utils.FileCompletionUtil;
 import gdscript.competion.utils.PositionUtil;
+import gdscript.psi.GdClassNaming;
 import gdscript.psi.GdFile;
 import gdscript.psi.GdTypes;
 import gdscript.psi.utils.PsiGdFileUtil;
@@ -16,6 +17,10 @@ public class GdClassNameCompletionContributor extends CompletionContributor {
 
     @Override
     public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet resultSet) {
+        GdClassNaming ar = (GdClassNaming) parameters.getPosition().getParent().getParent();
+
+        var asd = ar.getClassname();
+
         // After EXTENDS keyword
         if (PositionUtil.isLeafPreceded(parameters, GdTypes.EXTENDS)) {
             String myName = PsiGdFileUtil.INSTANCE.myFilename(parameters);

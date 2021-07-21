@@ -30,7 +30,7 @@ public class GdInheritanceImpl extends ASTWrapperPsiElement implements GdInherit
   @Override
   @Nullable
   public GdInheritanceId getInheritanceId() {
-    return findChildByClass(GdInheritanceId.class);
+    return PsiTreeUtil.getChildOfType(this, GdInheritanceId.class);
   }
 
   @Override

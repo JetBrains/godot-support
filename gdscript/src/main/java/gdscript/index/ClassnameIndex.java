@@ -12,7 +12,7 @@ public final class ClassnameIndex extends ScalarIndexExtension<String> {
 
     @Override
     public @NotNull ID<String, Void> getName() {
-        return Indices.CLASS_NAMES;
+        return Indices.INSTANCE.getCLASS_NAMES();
     }
 
     @Override
