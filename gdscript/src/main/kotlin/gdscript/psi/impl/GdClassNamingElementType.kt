@@ -37,7 +37,7 @@ object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNam
     }
 
     override fun createPsi(stub: GdClassNamingStub): GdClassNaming =
-        GdClassNamingImpl(stub, stub.stubType)
+            GdClassNamingImpl(stub, stub.stubType)
 
     override fun createStub(psi: GdClassNaming, parentStub: StubElement<*>?): GdClassNamingStub {
         return GdClassNamingStubImpl(parentStub, psi.classNameNm?.name)

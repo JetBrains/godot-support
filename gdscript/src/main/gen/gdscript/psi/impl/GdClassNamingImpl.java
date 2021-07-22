@@ -8,24 +8,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
-import com.intellij.extapi.psi.StubBasedPsiElementBase;
-import gdscript.index.stub.GdClassNamingStub;
 import gdscript.psi.*;
+import gdscript.index.stub.GdClassNamingStub;
 import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.tree.IElementType;
 
-public class GdClassNamingImpl extends StubBasedPsiElementBase<GdClassNamingStub> implements GdClassNaming {
-
-  public GdClassNamingImpl(@NotNull GdClassNamingStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
-  }
+public class GdClassNamingImpl extends GdClassNamingElementImpl implements GdClassNaming {
 
   public GdClassNamingImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  public GdClassNamingImpl(GdClassNamingStub stub, IElementType type, ASTNode node) {
-    super(stub, type, node);
+  public GdClassNamingImpl(@NotNull GdClassNamingStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    super(stub, nodeType);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
