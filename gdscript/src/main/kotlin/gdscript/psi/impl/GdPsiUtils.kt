@@ -30,7 +30,7 @@ object GdPsiUtils {
     }
 
     @JvmStatic
-    fun getClassname(element: GdClassNaming?): String {
+    fun getClassname(element: GdClassNamingImpl?): String {
         return GdClassNamingElementType.getClassname(element);
     }
 

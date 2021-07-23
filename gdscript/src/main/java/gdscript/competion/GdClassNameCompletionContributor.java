@@ -2,6 +2,12 @@ package gdscript.competion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiManager;
+import com.intellij.psi.search.FileTypeIndex;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
+import gdscript.GdFileType;
 import gdscript.GdIcon;
 import gdscript.competion.staticLoader.StaticClassLoader;
 import gdscript.competion.utils.CompletionPriority;
@@ -10,6 +16,7 @@ import gdscript.competion.utils.PositionUtil;
 import gdscript.psi.GdClassNaming;
 import gdscript.psi.GdFile;
 import gdscript.psi.GdTypes;
+import gdscript.psi.impl.GdClassNamingImpl;
 import gdscript.psi.utils.PsiGdFileUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,6 +24,17 @@ public class GdClassNameCompletionContributor extends CompletionContributor {
 
     @Override
     public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet resultSet) {
+
+        var project = parameters.getPosition().getProject();
+        var  virtualFiles =
+                FileTypeIndex.getFiles(GdFileType.INSTANCE, GlobalSearchScope.allScope(project));
+        for (VirtualFile it : virtualFiles) {
+                var gdf = (GdFile) PsiManager.getInstance(project).findFile(it);
+                var properties = (GdClassNamingImpl) PsiTreeUtil.findChildOfType(gdf, GdClassNamingImpl.class);
+                var ss = properties.getGreenStub();
+                var asd=  546;
+            }
+
         GdClassNaming ar = (GdClassNaming) parameters.getPosition().getParent().getParent();
 
         var asd = ar.getClassname();
