@@ -17,6 +17,7 @@ import gdscript.psi.GdClassNaming;
 import gdscript.psi.GdFile;
 import gdscript.psi.GdTypes;
 import gdscript.psi.impl.GdClassNamingImpl;
+import gdscript.psi.utils.PsiGdClassNamingUtil;
 import gdscript.psi.utils.PsiGdFileUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,20 +25,27 @@ public class GdClassNameCompletionContributor extends CompletionContributor {
 
     @Override
     public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet resultSet) {
-
+        // TODO
         var project = parameters.getPosition().getProject();
+        //PsiGdClassNamingUtil.INSTANCE.listClassNameNm(project);
+
+
         var  virtualFiles =
                 FileTypeIndex.getFiles(GdFileType.INSTANCE, GlobalSearchScope.allScope(project));
         for (VirtualFile it : virtualFiles) {
                 var gdf = (GdFile) PsiManager.getInstance(project).findFile(it);
+
+                var sdf = gdf.getStubTree();
+
+
                 var properties = (GdClassNamingImpl) PsiTreeUtil.findChildOfType(gdf, GdClassNamingImpl.class);
                 var ss = properties.getGreenStub();
                 var asd=  546;
             }
 
-        GdClassNaming ar = (GdClassNaming) parameters.getPosition().getParent().getParent();
+//        GdClassNaming ar = (GdClassNaming) parameters.getPosition().getParent().getParent();
 
-        var asd = ar.getClassname();
+//        var asd = ar.getClassname();
 
         // After EXTENDS keyword
         if (PositionUtil.isLeafPreceded(parameters, GdTypes.EXTENDS)) {

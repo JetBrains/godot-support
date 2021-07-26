@@ -12,7 +12,7 @@
   elementTypeClass="gdscript.psi.GdElementType"
   tokenTypeClass="gdscript.psi.GdTokenType"
 
-  psiImplUtilClass="gdscript.psi.impl.GdPsiUtils"
+  psiImplUtilClass="gdscript.psi.GdPsiUtils"
 
   extends(".*Expression")=expr
   extends(".*_TL")=topLevelDecl

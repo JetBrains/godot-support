@@ -6,7 +6,7 @@ import com.intellij.psi.stubs.StubElement
 import gdscript.psi.GdClassNameNm
 
 class ClassNameNmImpl : StubBase<GdClassNameNm> {
-
+// TODO rename
     constructor(parent: StubElement<*>?, elementType: IStubElementType<*, *>?) : super(parent, elementType)
 
 }

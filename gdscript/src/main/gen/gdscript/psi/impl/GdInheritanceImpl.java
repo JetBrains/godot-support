@@ -8,13 +8,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
+import gdscript.index.stub.GdInheritanceStub;
+import com.intellij.psi.stubs.IStubElementType;
 
-public class GdInheritanceImpl extends ASTWrapperPsiElement implements GdInheritance {
+public class GdInheritanceImpl extends GdInheritanceElementImpl implements GdInheritance {
 
   public GdInheritanceImpl(@NotNull ASTNode node) {
     super(node);
+  }
+
+  public GdInheritanceImpl(@NotNull GdInheritanceStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    super(stub, nodeType);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
@@ -29,14 +34,14 @@ public class GdInheritanceImpl extends ASTWrapperPsiElement implements GdInherit
 
   @Override
   @Nullable
-  public GdInheritanceId getInheritanceId() {
-    return PsiTreeUtil.getChildOfType(this, GdInheritanceId.class);
+  public GdInheritanceIdNm getInheritanceIdNm() {
+    return PsiTreeUtil.getChildOfType(this, GdInheritanceIdNm.class);
   }
 
   @Override
   @Nullable
-  public String getParentClassName() {
-    return GdPsiUtils.getParentClassName(this);
+  public String getInheritanceName() {
+    return GdPsiUtils.getInheritanceName(this);
   }
 
 }

@@ -5,13 +5,16 @@ import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.ID
 import gdscript.psi.GdClassNaming
+import gdscript.psi.GdInheritance
 
 object Indices {
 
     private val index = FileBasedIndex.getInstance()
 
     val CLASS_NAMING_INDEX = StubIndexKey.createIndexKey<String, GdClassNaming>("gdscript.classNaming")
+    val INHERITANCE_INDEX = StubIndexKey.createIndexKey<String, GdInheritance>("gdscript.inheritance")
 
+    // TODO provětrat
     // TODO simplicity
     //    public static<K, V> List values(@NotNull ID<K, V> indexId, @NotNull K dataKey, @NotNull GlobalSearchScope filter) {
     //        return FileBasedIndex.getInstance().getValues(indexId, dataKey, filter);

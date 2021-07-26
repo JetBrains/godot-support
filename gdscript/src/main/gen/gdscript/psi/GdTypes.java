@@ -5,6 +5,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
 import gdscript.psi.impl.GdClassNamingElementType;
+import gdscript.psi.impl.GdInheritanceElementType;
 import gdscript.psi.impl.*;
 
 public interface GdTypes {
@@ -12,8 +13,8 @@ public interface GdTypes {
   IElementType CLASS_NAME_NM = new GdElementType("CLASS_NAME_NM");
   IElementType CLASS_NAMING = GdClassNamingElementType.getInstance("CLASS_NAMING");
   IElementType END_STMT = new GdElementType("END_STMT");
-  IElementType INHERITANCE = new GdElementType("INHERITANCE");
-  IElementType INHERITANCE_ID = new GdElementType("INHERITANCE_ID");
+  IElementType INHERITANCE = GdInheritanceElementType.getInstance("INHERITANCE");
+  IElementType INHERITANCE_ID_NM = new GdElementType("INHERITANCE_ID_NM");
   IElementType METHOD_DECL_TL = new GdElementType("METHOD_DECL_TL");
   IElementType STMT = new GdElementType("STMT");
   IElementType STMT_OR_SUITE = new GdElementType("STMT_OR_SUITE");
@@ -52,8 +53,8 @@ public interface GdTypes {
       else if (type == INHERITANCE) {
         return new GdInheritanceImpl(node);
       }
-      else if (type == INHERITANCE_ID) {
-        return new GdInheritanceIdImpl(node);
+      else if (type == INHERITANCE_ID_NM) {
+        return new GdInheritanceIdNmImpl(node);
       }
       else if (type == METHOD_DECL_TL) {
         return new GdMethodDeclTlImpl(node);

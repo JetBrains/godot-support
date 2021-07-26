@@ -27,9 +27,10 @@
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
 
     <!-- Completions -->
-    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdRootCompletionContributor"/>
-    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdClassNameCompletionContributor"/>
-    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdMethodNameCompletionContributor"/>
+<!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdRootCompletionContributor"/>-->
+<!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdClassNameCompletionContributor"/>-->
+<!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdMethodNameCompletionContributor"/>-->
+    <completion.contributor language="GdScript" implementationClass="gdscript.completion.contributor.GdRootContributor"/>
 
     <!-- Annotators -->
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdRootAnnotator"/>
@@ -39,6 +40,10 @@
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
 <!--    <fileBasedIndex implementation="com.intellij.psi.search.FilenameIndex" />-->
+
+    <psi.referenceContributor implementation="gdscript.completion.contributor.GdClassNameReferenceContributor" />
+
+    <lang.refactoringSupport implementationClass="gdscript.psi.GdRefactoringSupportProvider" />
   </extensions>
 
   <actions>

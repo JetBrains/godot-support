@@ -1,10 +1,11 @@
-package gdscript.psi.impl
+package gdscript.psi
 
 import com.intellij.psi.PsiElement
-import gdscript.psi.GdClassNameNm
-import gdscript.psi.GdClassNaming
-import gdscript.psi.GdInheritance
-import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.impl.GdClassNamingElementType
+import gdscript.psi.impl.GdClassNamingImpl
+import gdscript.psi.impl.GdPsiClassNameUtil
+import gdscript.psi.impl.GdPsiMethodUtil
+import gdscript.psi.utils.PsiGdInheritanceUtil
 
 object GdPsiUtils {
 
@@ -13,25 +14,37 @@ object GdPsiUtils {
     fun getName(element: GdClassNameNm?): String? {
         return GdPsiClassNameUtil.getName(element)
     }
-
     @JvmStatic
     fun setName(element: GdClassNameNm?, newName: String?): PsiElement? {
         return GdPsiClassNameUtil.setName(element, newName)
     }
-
     @JvmStatic
     fun getNameIdentifier(element: GdClassNameNm?): PsiElement? {
         return GdPsiClassNameUtil.getNameIdentifier(element)
     }
 
     @JvmStatic
-    fun getParentClassName(element: GdInheritance?): String? {
-        return GdPsiClassNameUtil.getParentClassName(element)
+    fun getInheritanceName(element: GdInheritance?): String? {
+        return GdPsiClassNameUtil.getInheritanceName(element)
     }
 
     @JvmStatic
     fun getClassname(element: GdClassNamingImpl?): String {
         return GdClassNamingElementType.getClassname(element);
+    }
+
+    /** PsiGdInheritanceUtil  */
+    @JvmStatic
+    fun getName(element: GdInheritanceIdNm): String {
+        return PsiGdInheritanceUtil.getName(element)
+    }
+    @JvmStatic
+    fun setName(element: GdInheritanceIdNm, newName: String?): PsiElement {
+        return PsiGdInheritanceUtil.setName(element, newName)
+    }
+    @JvmStatic
+    fun getNameIdentifier(element: GdInheritanceIdNm): PsiElement? {
+        return PsiGdInheritanceUtil.getNameIdentifier(element)
     }
 
     /** GdPsiMethodUtil  */

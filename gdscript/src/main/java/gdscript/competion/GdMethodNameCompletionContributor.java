@@ -19,7 +19,7 @@ public class GdMethodNameCompletionContributor extends CompletionContributor {
         if (PositionUtil.isLeafPreceded(parameters, GdTypes.FUNC)) {
             GdInheritance inheritance = PsiTreeUtil.findChildOfType(FileCompletionUtil.currentFile(parameters), GdInheritance.class);
             if (inheritance != null) {
-                MethodCompletionUtil.parentMethods(inheritance.getParentClassName(), resultSet);
+               // MethodCompletionUtil.parentMethods(inheritance.getParentClassName(), resultSet);
             }
         }
 

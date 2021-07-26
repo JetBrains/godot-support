@@ -179,14 +179,14 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // EXTENDS inheritanceId (DOT IDENTIFIER)? NEW_LINE
+  // EXTENDS inheritanceId_nm (DOT IDENTIFIER)? NEW_LINE
   public static boolean inheritance(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inheritance")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, INHERITANCE, "<inheritance>");
     r = consumeToken(b, EXTENDS);
     p = r; // pin = 1
-    r = r && report_error_(b, inheritanceId(b, l + 1));
+    r = r && report_error_(b, inheritanceId_nm(b, l + 1));
     r = p && report_error_(b, inheritance_2(b, l + 1)) && r;
     r = p && consumeToken(b, NEW_LINE) && r;
     exit_section_(b, l, m, r, p, GdParser::inheritance_r);
@@ -212,13 +212,13 @@ public class GdParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // IDENTIFIER
-  public static boolean inheritanceId(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "inheritanceId")) return false;
+  public static boolean inheritanceId_nm(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "inheritanceId_nm")) return false;
     if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, IDENTIFIER);
-    exit_section_(b, m, INHERITANCE_ID, r);
+    exit_section_(b, m, INHERITANCE_ID_NM, r);
     return r;
   }
 
