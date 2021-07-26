@@ -19,6 +19,7 @@ public interface GdTypes {
   IElementType STMT = new GdElementType("STMT");
   IElementType STMT_OR_SUITE = new GdElementType("STMT_OR_SUITE");
   IElementType SUITE = new GdElementType("SUITE");
+  IElementType TOOLLINE = new GdElementType("TOOLLINE");
   IElementType TOP_LEVEL_DECL = new GdElementType("TOP_LEVEL_DECL");
 
   IElementType BAD_CHARACTER = new GdTokenType("bad_character");
@@ -67,6 +68,9 @@ public interface GdTypes {
       }
       else if (type == SUITE) {
         return new GdSuiteImpl(node);
+      }
+      else if (type == TOOLLINE) {
+        return new GdToollineImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

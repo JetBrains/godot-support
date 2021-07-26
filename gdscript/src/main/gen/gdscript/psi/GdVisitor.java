@@ -43,6 +43,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitToolline(@NotNull GdToolline o) {
+    visitPsiElement(o);
+  }
+
   public void visitTopLevelDecl(@NotNull GdTopLevelDecl o) {
     visitPsiElement(o);
   }

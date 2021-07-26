@@ -38,6 +38,7 @@
     <!-- Indices -->
     <fileBasedIndex implementation="gdscript.index.FilenameIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
+    <stubIndex implementation="gdscript.index.impl.GdInheritanceIndex" />
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
 <!--    <fileBasedIndex implementation="com.intellij.psi.search.FilenameIndex" />-->
 

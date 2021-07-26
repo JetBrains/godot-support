@@ -95,17 +95,20 @@
   ]
 }
 
-gdfile ::= inheritance classNaming? (TOOL NEW_LINE)? topLevelDecl*
+gdfile ::= inheritance classNaming? toolline? topLevelDecl*
 
 inheritance ::= EXTENDS inheritanceId_nm (DOT IDENTIFIER)? NEW_LINE {methods=[getInheritanceName] pin=1 recoverWhile=inheritance_r mixin="gdscript.psi.impl.GdInheritanceElementImpl" stubClass="gdscript.index.stub.GdInheritanceStub" elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"}
 inheritanceId_nm ::= IDENTIFIER
-private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC)
+private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC | IDENTIFIER)
 //private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC | annotation | CONST)
 
 // TODO resource
 classNaming ::= CLASS_NAME className_nm (COMMA STRING)? NEW_LINE {methods=[getClassname] pin=1 recoverWhile=classNaming_r mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub" elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"}
 className_nm ::= IDENTIFIER
-private classNaming_r ::= !(TOOL) & topLevelDecl_r
+private classNaming_r ::= !(TOOL | IDENTIFIER) & topLevelDecl_r
+
+toolline ::= TOOL NEW_LINE {pin=1 recoverWhile=toolline_r}
+private toolline_r ::= !(IDENTIFIER) & topLevelDecl_r
 
 topLevelDecl ::=
     methodDecl_tl

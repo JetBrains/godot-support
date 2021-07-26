@@ -84,7 +84,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(TOOL) & topLevelDecl_r
+  // !(TOOL | IDENTIFIER) & topLevelDecl_r
   static boolean classNaming_r(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classNaming_r")) return false;
     boolean r;
@@ -95,13 +95,22 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // !(TOOL)
+  // !(TOOL | IDENTIFIER)
   private static boolean classNaming_r_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classNaming_r_0")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
-    r = !consumeToken(b, TOOL);
+    r = !classNaming_r_0_0(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // TOOL | IDENTIFIER
+  private static boolean classNaming_r_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classNaming_r_0_0")) return false;
+    boolean r;
+    r = consumeToken(b, TOOL);
+    if (!r) r = consumeToken(b, IDENTIFIER);
     return r;
   }
 
@@ -129,7 +138,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inheritance classNaming? (TOOL NEW_LINE)? topLevelDecl*
+  // inheritance classNaming? toolline? topLevelDecl*
   static boolean gdfile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gdfile")) return false;
     if (!nextTokenIs(b, EXTENDS)) return false;
@@ -150,21 +159,11 @@ public class GdParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (TOOL NEW_LINE)?
+  // toolline?
   private static boolean gdfile_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gdfile_2")) return false;
-    gdfile_2_0(b, l + 1);
+    toolline(b, l + 1);
     return true;
-  }
-
-  // TOOL NEW_LINE
-  private static boolean gdfile_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "gdfile_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, TOOL, NEW_LINE);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   // topLevelDecl*
@@ -223,7 +222,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(CLASS_NAME | TOOL | FUNC)
+  // !(CLASS_NAME | TOOL | FUNC | IDENTIFIER)
   static boolean inheritance_r(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inheritance_r")) return false;
     boolean r;
@@ -233,13 +232,14 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // CLASS_NAME | TOOL | FUNC
+  // CLASS_NAME | TOOL | FUNC | IDENTIFIER
   private static boolean inheritance_r_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "inheritance_r_0")) return false;
     boolean r;
     r = consumeToken(b, CLASS_NAME);
     if (!r) r = consumeToken(b, TOOL);
     if (!r) r = consumeToken(b, FUNC);
+    if (!r) r = consumeToken(b, IDENTIFIER);
     return r;
   }
 
@@ -306,6 +306,50 @@ public class GdParser implements PsiParser, LightPsiParser {
     }
     exit_section_(b, l, m, true, false, null);
     return true;
+  }
+
+  /* ********************************************************** */
+  // TOOL NEW_LINE
+  public static boolean toolline(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "toolline")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, TOOLLINE, "<toolline>");
+    r = consumeTokens(b, 1, TOOL, NEW_LINE);
+    p = r; // pin = 1
+    exit_section_(b, l, m, r, p, GdParser::toolline_r);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // !(IDENTIFIER) & topLevelDecl_r
+  static boolean toolline_r(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "toolline_r")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = toolline_r_0(b, l + 1);
+    r = r && toolline_r_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // !(IDENTIFIER)
+  private static boolean toolline_r_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "toolline_r_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, IDENTIFIER);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // & topLevelDecl_r
+  private static boolean toolline_r_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "toolline_r_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _AND_);
+    r = topLevelDecl_r(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */

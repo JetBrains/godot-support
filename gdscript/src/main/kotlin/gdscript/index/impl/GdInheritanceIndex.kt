@@ -3,10 +3,10 @@ package gdscript.index.impl
 import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndexKey
 import gdscript.index.Indices
-import gdscript.psi.GdClassNaming
+import gdscript.psi.GdInheritance
 
-object GdClassNamingIndex : StringStubIndexExtension<GdClassNaming>() {
-    override fun getKey(): StubIndexKey<String, GdClassNaming> = Indices.CLASS_NAMING_INDEX;
+object GdInheritanceIndex : StringStubIndexExtension<GdInheritance>() {
+    override fun getKey(): StubIndexKey<String, GdInheritance> = Indices.INHERITANCE_INDEX;
 
     // TODO simplicity
 //    override fun get(key: String, project: Project, scope: GlobalSearchScope): MutableCollection<GdClassNaming> {
