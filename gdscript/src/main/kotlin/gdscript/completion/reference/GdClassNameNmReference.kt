@@ -16,6 +16,7 @@ class GdClassNameNmReference : PsiReferenceBase<PsiElement>, PsiPolyVariantRefer
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult?> {
+        return arrayOfNulls(0);
         val project: Project = myElement.project;
         val classNames = PsiGdClassNamingUtil.listClassNameNm(project);
 
@@ -25,6 +26,7 @@ class GdClassNameNmReference : PsiReferenceBase<PsiElement>, PsiPolyVariantRefer
     }
 
     override fun resolve(): PsiElement? {
+        return null;
         val resolveResults = multiResolve(false)
 
         return if (resolveResults.size == 1) resolveResults[0]!!.element else null
