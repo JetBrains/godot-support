@@ -17,6 +17,11 @@ public interface GdHighlighterColors {
     );
 
     // Teal
+    TextAttributesKey CLASS_TYPE = TextAttributesKey.createTextAttributesKey(
+            "GD_CLASS_TYPE", DefaultLanguageHighlighterColors.KEYWORD
+    );
+
+    // Teal
     TextAttributesKey NUMBER = TextAttributesKey.createTextAttributesKey(
             "GD_NUMBER", DefaultLanguageHighlighterColors.NUMBER
     );

@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
 
-public class GdClassNameNmImpl extends GdNamedElementImpl implements GdClassNameNm {
+public class GdConstIdNmiImpl extends GdNamedIdElementImpl implements GdConstIdNmi {
 
-  public GdClassNameNmImpl(ASTNode node) {
+  public GdConstIdNmiImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitClassNameNm(this);
+    visitor.visitConstIdNmi(this);
   }
 
   @Override
@@ -27,15 +27,21 @@ public class GdClassNameNmImpl extends GdNamedElementImpl implements GdClassName
   }
 
   @Override
-  @Nullable
+  @NotNull
   public String getName() {
     return GdPsiUtils.getName(this);
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement setName(@Nullable String newName) {
     return GdPsiUtils.setName(this, newName);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNameIdentifier() {
+    return GdPsiUtils.getNameIdentifier(this);
   }
 
 }

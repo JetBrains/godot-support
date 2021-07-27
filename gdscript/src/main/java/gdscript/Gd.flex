@@ -61,15 +61,15 @@ DIGIT = [0-9]
 //CHAR_CH = [^'\r\n\\]
 //PRINTABLE = [\ -~]
 //HEX = [0-9a-f]
-//FLIT1 = [0-9]+ \. [0-9]*
-//FLIT2 = \. [0-9]+
-//FLIT3 = [0-9]+
-//
+FLIT1 = [0-9]+ \. [0-9]*
+FLIT2 = \. [0-9]+
+FLIT3 = [0-9]+
+
 NEW_LINE = [\r\n]+
 INDENT = [ \t]+
 //WHITE_SPACE = {NEW_LINE} | {INDENT}
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
-//NUMBER = {FLIT1}|{FLIT2}|{FLIT3}
+NUMBER = {FLIT1}|{FLIT2}|{FLIT3}
 STRING = \"(.)*\"
 COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 
@@ -90,13 +90,20 @@ COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
     "class_name"   { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CLASS_NAME); }
     "func"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC); }
     "tool"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.TOOL); }
+    "const"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CONST); }
+
     "pass"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.PASS); }
+    "true"         { return dedentRoot(GdTypes.TRUE); }
+    "false"        { return dedentRoot(GdTypes.FALSE); }
+    "null"         { return dedentRoot(GdTypes.NULL); }
+    "int"          { return dedentRoot(GdTypes.INT); }
 
     ","            { return dedentRoot(GdTypes.COMMA); }
     ":"            { return dedentRoot(GdTypes.COLON); }
     ";"            { yybegin(YYINITIAL); return dedentRoot(GdTypes.SEMICON); }
-
+    "="            { return dedentRoot(GdTypes.EQ); }
     {IDENTIFIER}   { return dedentRoot(GdTypes.IDENTIFIER); }
+    {NUMBER}       { return dedentRoot(GdTypes.NUMBER); }
     {STRING}       { return dedentRoot(GdTypes.STRING); }
     {COMMENT}      { return GdTypes.COMMENT; }
 
@@ -127,31 +134,15 @@ COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 }
 
 //<AWAIT_NEW_LINE, AWAIT_STMT_END> {
-//    {NEW_LINE} { yybegin(YYINITIAL); return GdTypes.NEW_LINE; }
-//    <<EOF>>    { yybegin(YYINITIAL); return GdTypes.NEW_LINE; }
-//
-//        <AWAIT_STMT_END> {
-//          ";"  { yybegin(YYINITIAL); return GdTypes.SEMICON; }
-//        }
-//}
-//
 //<YYINITIAL, AWAIT_NEW_LINE, AWAIT_STMT_END> {
-//    "class_name"  { yybegin(AWAIT_NEW_LINE); return GdTypes.CLASS_NAME; }
-//    "extends"     { yybegin(AWAIT_NEW_LINE); return GdTypes.EXTENDS; }
-//    "tool"        { yybegin(AWAIT_NEW_LINE); return GdTypes.TOOL; }
 //    "var"         { yybegin(AWAIT_STMT_END); return GdTypes.VAR; }
 //
 //    "class" { return GdTypes.CLASS; }
 //    "enum" { return GdTypes.ENUM; }
 //    "self" { return GdTypes.SELF; }
-//    "const" { return GdTypes.CONST; }
 //    "if" { return GdTypes.IF; }
 //    "else" { return GdTypes.ELSE; }
 //    "elif" { return GdTypes.ELIF; }
-//    "int" { return GdTypes.INT; }
-//    "true" { return GdTypes.TRUE; }
-//    "false" { return GdTypes.FALSE; }
-//    "null" { return GdTypes.NULL; }
 //
 //    "setget" { return GdTypes.SETGET; }
 //    "signal" { return GdTypes.SIGNAL; }
@@ -192,16 +183,11 @@ COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 //    "?" { return GdTypes.TERNARY; }
 //    ".." { return GdTypes.DOTDOT; }
 //    "." { return GdTypes.DOT; }
-//    "=" { return GdTypes.EQ; }
+//
 //
 //    {OPERATOR} { return GdTypes.OPERATOR; }
 //    {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
 //    {ASSIGN} { return GdTypes.ASSIGN; }
-//    {STRING} { return GdTypes.STRING; }
-//    {NUMBER} { return GdTypes.NUMBER; }
-//    {IDENTIFIER} { return GdTypes.IDENTIFIER; }
-//    {WHITE_SPACE} { return TokenType.WHITE_SPACE; }
-//    {COMMENT} { return GdTypes.COMMENT; }
 //}
 
 [^] { return GdTypes.BAD_CHARACTER; }

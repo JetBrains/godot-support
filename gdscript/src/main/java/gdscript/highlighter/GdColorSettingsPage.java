@@ -16,6 +16,7 @@ import java.util.Map;
 public class GdColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Keywords", GdHighlighterColors.KEYWORD),
+            new AttributesDescriptor("Class types", GdHighlighterColors.CLASS_TYPE),
             new AttributesDescriptor("Flow control", GdHighlighterColors.FLOW_KEYWORDS),
             new AttributesDescriptor("Numbers", GdHighlighterColors.NUMBER),
             new AttributesDescriptor("Variables", GdHighlighterColors.IDENTIFIER),

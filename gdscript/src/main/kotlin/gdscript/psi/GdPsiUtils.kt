@@ -1,15 +1,13 @@
 package gdscript.psi
 
 import com.intellij.psi.PsiElement
-import gdscript.psi.impl.GdClassNamingElementType
-import gdscript.psi.impl.GdClassNamingImpl
-import gdscript.psi.impl.GdPsiClassNameUtil
-import gdscript.psi.impl.GdPsiMethodUtil
+import gdscript.psi.impl.*
+import gdscript.psi.utils.PsiGdConstDeclUtil
 import gdscript.psi.utils.PsiGdInheritanceUtil
 
 object GdPsiUtils {
 
-    /** GdPsiClassNameUtil  */
+    /** ClassName  */
     @JvmStatic
     fun getName(element: GdClassNameNm?): String? {
         return GdPsiClassNameUtil.getName(element)
@@ -17,10 +15,6 @@ object GdPsiUtils {
     @JvmStatic
     fun setName(element: GdClassNameNm?, newName: String?): PsiElement? {
         return GdPsiClassNameUtil.setName(element, newName)
-    }
-    @JvmStatic
-    fun getNameIdentifier(element: GdClassNameNm?): PsiElement? {
-        return GdPsiClassNameUtil.getNameIdentifier(element)
     }
 
     @JvmStatic
@@ -33,7 +27,7 @@ object GdPsiUtils {
         return GdClassNamingElementType.getClassname(element);
     }
 
-    /** PsiGdInheritanceUtil  */
+    /** Inheritance  */
     @JvmStatic
     fun getName(element: GdInheritanceIdNmi): String {
         return PsiGdInheritanceUtil.getName(element)
@@ -47,10 +41,24 @@ object GdPsiUtils {
         return PsiGdInheritanceUtil.getNameIdentifier(element)
     }
 
-    /** GdPsiMethodUtil  */
+    /** Const   */
     @JvmStatic
-    fun getMethodName(element: GdMethodDeclTl?): String? {
-        return GdPsiMethodUtil.getMethodName(element)
+    fun getName(element: GdConstIdNmiImpl): String {
+        return PsiGdConstDeclUtil.getName(element)
     }
+    @JvmStatic
+    fun setName(element: GdConstIdNmiImpl, newName: String?): PsiElement {
+        return PsiGdConstDeclUtil.setName(element, newName)
+    }
+    @JvmStatic
+    fun getNameIdentifier(element: GdConstIdNmiImpl): PsiElement? {
+        return PsiGdConstDeclUtil.getNameIdentifier(element)
+    }
+
+    /** Method  */
+//    @JvmStatic
+//    fun getMethodName(element: GdMethodDeclTl?): String? {
+//        return GdPsiMethodUtil.getMethodName(element)
+//    }
 
 }

@@ -4,6 +4,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
+import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdInheritanceIdNmi
@@ -36,7 +37,7 @@ class GdInheritanceNmReference : PsiReferenceBase<GdInheritanceIdNmi> {
         return classNames.mapNotNull {
             val name = it.name.orEmpty();
             if (name !== "") {
-                GdLookup.text(name)
+                GdLookup.create(name, GdLookup.STATIC, GdIcon.OBJECT)
             } else {
                 null
             }

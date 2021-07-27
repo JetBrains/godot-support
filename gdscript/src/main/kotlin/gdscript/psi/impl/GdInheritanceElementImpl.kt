@@ -2,8 +2,6 @@ package gdscript.psi.impl
 
 import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiReference
-import com.intellij.psi.impl.source.resolve.reference.ReferenceProvidersRegistryImpl
 import com.intellij.psi.stubs.IStubElementType
 import gdscript.index.stub.GdInheritanceStub
 

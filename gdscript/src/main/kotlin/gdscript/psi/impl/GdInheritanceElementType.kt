@@ -10,10 +10,6 @@ import gdscript.psi.GdInheritance
 
 object GdInheritanceElementType : IStubElementType<GdInheritanceStub, GdInheritance>("inheritance", GdLanguage.INSTANCE) {
 
-    fun getInheritanceName(element: GdInheritanceImpl?): String {
-        return element?.inheritanceIdNmi?.name.toString();
-    }
-
     @JvmStatic
     fun getInstance(debugName: String): GdInheritanceElementType {
         return GdInheritanceElementType

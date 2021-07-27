@@ -55,10 +55,10 @@ class GdLexer implements FlexLexer {
 
   /* The ZZ_CMAP_A table has 320 entries */
   static final char ZZ_CMAP_A[] = zzUnpackCMap(
-    "\11\0\1\5\1\7\2\10\1\4\22\0\1\5\1\0\1\6\1\11\10\0\1\33\1\0\1\3\1\0\12\2\1"+
-    "\34\1\35\1\0\1\36\3\0\32\1\4\0\1\23\1\0\1\22\1\1\1\20\1\16\1\12\1\25\2\1\1"+
-    "\32\2\1\1\21\1\24\1\15\1\27\1\30\1\1\1\31\1\17\1\14\1\26\2\1\1\13\2\1\1\0"+
-    "\1\1\10\0\1\10\242\0\2\10\26\0");
+    "\11\0\1\5\1\7\2\10\1\4\22\0\1\5\1\0\1\6\1\11\10\0\1\32\1\0\1\3\1\0\12\2\1"+
+    "\33\1\34\1\0\1\35\3\0\32\1\4\0\1\23\1\0\1\22\1\1\1\20\1\16\1\12\1\25\5\1\1"+
+    "\21\1\24\1\15\1\27\1\30\1\1\1\31\1\17\1\14\1\26\2\1\1\13\2\1\1\0\1\1\10\0"+
+    "\1\10\242\0\2\10\26\0");
 
   /** 
    * Translates DFA states to action switch labels.
@@ -67,13 +67,13 @@ class GdLexer implements FlexLexer {
 
   private static final String ZZ_ACTION_PACKED_0 =
     "\2\0\1\1\1\2\1\3\1\1\1\4\1\5\1\1"+
-    "\1\6\7\2\1\7\1\10\1\11\1\12\1\13\1\3"+
-    "\1\0\1\14\2\6\23\2\1\15\1\2\1\16\1\17"+
-    "\1\20\3\2\1\21\1\22\2\2\1\23\1\24\2\2"+
-    "\1\25\3\2\1\26";
+    "\1\6\6\2\1\7\1\10\1\11\1\12\1\13\1\3"+
+    "\1\0\1\14\2\6\23\2\1\15\1\16\1\17\3\2"+
+    "\1\20\1\21\2\2\1\22\1\23\2\2\1\24\3\2"+
+    "\1\25";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[67];
+    int [] result = new int[64];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -98,18 +98,17 @@ class GdLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\37\0\76\0\135\0\174\0\233\0\272\0\331"+
-    "\0\370\0\u0117\0\u0136\0\u0155\0\u0174\0\u0193\0\u01b2\0\u01d1"+
-    "\0\u01f0\0\76\0\76\0\76\0\76\0\u020f\0\233\0\370"+
-    "\0\370\0\u022e\0\76\0\u024d\0\u026c\0\u028b\0\u02aa\0\u02c9"+
-    "\0\u02e8\0\u0307\0\u0326\0\u0345\0\u0364\0\u0383\0\u03a2\0\u03c1"+
-    "\0\u03e0\0\u03ff\0\u041e\0\u043d\0\u045c\0\u047b\0\135\0\u049a"+
-    "\0\135\0\135\0\135\0\u04b9\0\u04d8\0\u04f7\0\135\0\135"+
-    "\0\u0516\0\u0535\0\135\0\135\0\u0554\0\u0573\0\135\0\u0592"+
-    "\0\u05b1\0\u05d0\0\135";
+    "\0\0\0\36\0\74\0\132\0\170\0\226\0\264\0\322"+
+    "\0\360\0\u010e\0\u012c\0\u014a\0\u0168\0\u0186\0\u01a4\0\u01c2"+
+    "\0\74\0\74\0\74\0\74\0\u01e0\0\226\0\360\0\360"+
+    "\0\u01fe\0\74\0\u021c\0\u023a\0\u0258\0\u0276\0\u0294\0\u02b2"+
+    "\0\u02d0\0\u02ee\0\u030c\0\u032a\0\u0348\0\u0366\0\u0384\0\u03a2"+
+    "\0\u03c0\0\u03de\0\u03fc\0\u041a\0\u0438\0\132\0\132\0\132"+
+    "\0\u0456\0\u0474\0\u0492\0\132\0\132\0\u04b0\0\u04ce\0\132"+
+    "\0\132\0\u04ec\0\u050a\0\132\0\u0528\0\u0546\0\u0564\0\132";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[67];
+    int [] result = new int[64];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -135,45 +134,43 @@ class GdLexer implements FlexLexer {
     "\1\3\1\4\1\5\1\6\1\7\1\10\1\11\1\7"+
     "\1\3\1\12\1\13\1\4\1\14\1\15\2\4\1\16"+
     "\4\4\1\17\2\4\1\20\1\4\1\21\1\22\1\23"+
-    "\1\24\1\25\1\3\1\4\1\5\1\6\1\26\1\10"+
-    "\1\11\1\26\1\3\1\12\1\13\1\4\1\14\1\15"+
-    "\2\4\1\16\4\4\1\17\2\4\1\20\1\4\1\21"+
-    "\1\22\1\23\1\24\1\25\40\0\2\4\7\0\21\4"+
-    "\6\0\1\5\1\27\35\0\1\27\40\0\1\7\2\0"+
-    "\1\7\34\0\1\10\31\0\4\30\1\0\1\30\1\31"+
-    "\2\0\26\30\4\12\1\32\2\12\1\33\27\12\1\0"+
-    "\2\4\7\0\1\4\1\34\17\4\5\0\2\4\7\0"+
-    "\15\4\1\35\1\4\1\36\1\4\5\0\2\4\7\0"+
-    "\14\4\1\37\4\4\5\0\2\4\7\0\7\4\1\40"+
-    "\5\4\1\41\3\4\5\0\2\4\7\0\10\4\1\42"+
-    "\3\4\1\43\4\4\5\0\2\4\7\0\10\4\1\44"+
-    "\10\4\5\0\2\4\7\0\3\4\1\45\15\4\10\0"+
-    "\1\26\2\0\1\26\36\0\1\33\30\0\2\4\7\0"+
-    "\2\4\1\46\16\4\5\0\2\4\7\0\15\4\1\47"+
-    "\3\4\5\0\2\4\7\0\14\4\1\50\4\4\5\0"+
-    "\2\4\7\0\7\4\1\51\11\4\5\0\2\4\7\0"+
-    "\10\4\1\52\10\4\5\0\2\4\7\0\3\4\1\53"+
-    "\15\4\5\0\2\4\7\0\7\4\1\54\11\4\5\0"+
-    "\2\4\7\0\3\4\1\55\15\4\5\0\2\4\7\0"+
-    "\5\4\1\56\13\4\5\0\2\4\7\0\2\4\1\57"+
-    "\16\4\5\0\2\4\7\0\1\60\20\4\5\0\2\4"+
-    "\7\0\7\4\1\61\11\4\5\0\2\4\7\0\1\62"+
-    "\20\4\5\0\2\4\7\0\7\4\1\63\11\4\5\0"+
-    "\2\4\7\0\5\4\1\64\13\4\5\0\2\4\7\0"+
-    "\5\4\1\65\13\4\5\0\2\4\7\0\5\4\1\66"+
-    "\13\4\5\0\2\4\7\0\6\4\1\67\12\4\5\0"+
-    "\2\4\7\0\5\4\1\70\13\4\5\0\2\4\7\0"+
-    "\3\4\1\71\15\4\5\0\2\4\7\0\5\4\1\72"+
-    "\13\4\5\0\2\4\7\0\2\4\1\73\16\4\5\0"+
-    "\2\4\7\0\1\74\20\4\5\0\2\4\7\0\4\4"+
-    "\1\75\14\4\5\0\2\4\7\0\11\4\1\76\7\4"+
-    "\5\0\2\4\7\0\5\4\1\77\13\4\5\0\2\4"+
-    "\7\0\3\4\1\100\15\4\5\0\2\4\7\0\10\4"+
-    "\1\101\10\4\5\0\2\4\7\0\12\4\1\102\6\4"+
-    "\5\0\2\4\7\0\1\103\20\4\4\0";
+    "\1\24\1\3\1\4\1\5\1\6\1\25\1\10\1\11"+
+    "\1\25\1\3\1\12\1\13\1\4\1\14\1\15\2\4"+
+    "\1\16\4\4\1\17\2\4\1\20\1\4\1\21\1\22"+
+    "\1\23\1\24\37\0\2\4\7\0\20\4\6\0\1\5"+
+    "\1\26\34\0\1\26\37\0\1\7\2\0\1\7\33\0"+
+    "\1\10\30\0\4\27\1\0\1\27\1\30\2\0\25\27"+
+    "\4\12\1\31\2\12\1\32\26\12\1\0\2\4\7\0"+
+    "\1\4\1\33\16\4\5\0\2\4\7\0\15\4\1\34"+
+    "\1\4\1\35\5\0\2\4\7\0\14\4\1\36\3\4"+
+    "\5\0\2\4\7\0\7\4\1\37\5\4\1\40\2\4"+
+    "\5\0\2\4\7\0\10\4\1\41\3\4\1\42\3\4"+
+    "\5\0\2\4\7\0\10\4\1\43\7\4\10\0\1\25"+
+    "\2\0\1\25\35\0\1\32\27\0\2\4\7\0\2\4"+
+    "\1\44\15\4\5\0\2\4\7\0\15\4\1\45\2\4"+
+    "\5\0\2\4\7\0\14\4\1\46\3\4\5\0\2\4"+
+    "\7\0\7\4\1\47\10\4\5\0\2\4\7\0\10\4"+
+    "\1\50\7\4\5\0\2\4\7\0\3\4\1\51\14\4"+
+    "\5\0\2\4\7\0\7\4\1\52\10\4\5\0\2\4"+
+    "\7\0\3\4\1\53\14\4\5\0\2\4\7\0\5\4"+
+    "\1\54\12\4\5\0\2\4\7\0\1\55\17\4\5\0"+
+    "\2\4\7\0\7\4\1\56\10\4\5\0\2\4\7\0"+
+    "\1\57\17\4\5\0\2\4\7\0\7\4\1\60\10\4"+
+    "\5\0\2\4\7\0\5\4\1\61\12\4\5\0\2\4"+
+    "\7\0\5\4\1\62\12\4\5\0\2\4\7\0\5\4"+
+    "\1\63\12\4\5\0\2\4\7\0\6\4\1\64\11\4"+
+    "\5\0\2\4\7\0\5\4\1\65\12\4\5\0\2\4"+
+    "\7\0\3\4\1\66\14\4\5\0\2\4\7\0\5\4"+
+    "\1\67\12\4\5\0\2\4\7\0\2\4\1\70\15\4"+
+    "\5\0\2\4\7\0\1\71\17\4\5\0\2\4\7\0"+
+    "\4\4\1\72\13\4\5\0\2\4\7\0\11\4\1\73"+
+    "\6\4\5\0\2\4\7\0\5\4\1\74\12\4\5\0"+
+    "\2\4\7\0\3\4\1\75\14\4\5\0\2\4\7\0"+
+    "\10\4\1\76\7\4\5\0\2\4\7\0\12\4\1\77"+
+    "\5\4\5\0\2\4\7\0\1\100\17\4\4\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[1519];
+    int [] result = new int[1410];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -211,11 +208,11 @@ class GdLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\2\0\1\11\16\1\4\11\2\1\1\0\2\1\1\11"+
-    "\50\1";
+    "\2\0\1\11\15\1\4\11\2\1\1\0\2\1\1\11"+
+    "\46\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[67];
+    int [] result = new int[64];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -628,22 +625,22 @@ class GdLexer implements FlexLexer {
             { return GdTypes.BAD_CHARACTER;
             } 
             // fall through
-          case 23: break;
+          case 22: break;
           case 2: 
             { return dedentRoot(GdTypes.IDENTIFIER);
             } 
             // fall through
-          case 24: break;
+          case 23: break;
           case 3: 
             { return dedentRoot(GdTypes.NUMBER);
             } 
             // fall through
-          case 25: break;
+          case 24: break;
           case 4: 
             { return TokenType.WHITE_SPACE;
             } 
             // fall through
-          case 26: break;
+          case 25: break;
           case 5: 
             { if (zzAtBOL) {
             int spaces = yytext().length();
@@ -662,92 +659,87 @@ class GdLexer implements FlexLexer {
         return TokenType.WHITE_SPACE;
             } 
             // fall through
-          case 27: break;
+          case 26: break;
           case 6: 
             { return GdTypes.COMMENT;
             } 
             // fall through
-          case 28: break;
+          case 27: break;
           case 7: 
             { return dedentRoot(GdTypes.COMMA);
             } 
             // fall through
-          case 29: break;
+          case 28: break;
           case 8: 
             { return dedentRoot(GdTypes.COLON);
             } 
             // fall through
-          case 30: break;
+          case 29: break;
           case 9: 
             { yybegin(YYINITIAL); return dedentRoot(GdTypes.SEMICON);
             } 
             // fall through
-          case 31: break;
+          case 30: break;
           case 10: 
             { return dedentRoot(GdTypes.EQ);
             } 
             // fall through
-          case 32: break;
+          case 31: break;
           case 11: 
             { yybegin(YYINITIAL); return GdTypes.NEW_LINE;
             } 
             // fall through
-          case 33: break;
+          case 32: break;
           case 12: 
             { return dedentRoot(GdTypes.STRING);
             } 
             // fall through
-          case 34: break;
+          case 33: break;
           case 13: 
-            { return dedentRoot(GdTypes.INT);
-            } 
-            // fall through
-          case 35: break;
-          case 14: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.TOOL);
             } 
             // fall through
-          case 36: break;
-          case 15: 
+          case 34: break;
+          case 14: 
             { return dedentRoot(GdTypes.TRUE);
             } 
             // fall through
-          case 37: break;
-          case 16: 
+          case 35: break;
+          case 15: 
             { return dedentRoot(GdTypes.NULL);
             } 
             // fall through
-          case 38: break;
-          case 17: 
+          case 36: break;
+          case 16: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC);
             } 
             // fall through
-          case 39: break;
-          case 18: 
+          case 37: break;
+          case 17: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.PASS);
             } 
             // fall through
-          case 40: break;
-          case 19: 
+          case 38: break;
+          case 18: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CONST);
             } 
             // fall through
-          case 41: break;
-          case 20: 
+          case 39: break;
+          case 19: 
             { return dedentRoot(GdTypes.FALSE);
             } 
             // fall through
-          case 42: break;
-          case 21: 
+          case 40: break;
+          case 20: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.EXTENDS);
             } 
             // fall through
-          case 43: break;
-          case 22: 
+          case 41: break;
+          case 21: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CLASS_NAME);
             } 
             // fall through
-          case 44: break;
+          case 42: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

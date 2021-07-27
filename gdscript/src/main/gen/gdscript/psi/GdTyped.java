@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdMethodDeclTl extends GdTopLevelDecl {
+public interface GdTyped extends PsiElement {
 
-  @Nullable
-  GdStmtOrSuite getStmtOrSuite();
-
-  @Nullable
-  String getMethodName();
+  @NotNull
+  GdTypeHint getTypeHint();
 
 }

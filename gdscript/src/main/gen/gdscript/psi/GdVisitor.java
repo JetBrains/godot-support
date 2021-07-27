@@ -7,6 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public class GdVisitor extends PsiElementVisitor {
 
+  public void visitBuiltInType(@NotNull GdBuiltInType o) {
+    visitPsiElement(o);
+  }
+
   public void visitClassNameNm(@NotNull GdClassNameNm o) {
     visitNamedElement(o);
   }
@@ -15,7 +19,19 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitConstDeclTl(@NotNull GdConstDeclTl o) {
+    visitTopLevelDecl(o);
+  }
+
+  public void visitConstIdNmi(@NotNull GdConstIdNmi o) {
+    visitNamedIdElement(o);
+  }
+
   public void visitEndStmt(@NotNull GdEndStmt o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExpr(@NotNull GdExpr o) {
     visitPsiElement(o);
   }
 
@@ -27,8 +43,8 @@ public class GdVisitor extends PsiElementVisitor {
     visitNamedIdElement(o);
   }
 
-  public void visitMethodDeclTl(@NotNull GdMethodDeclTl o) {
-    visitTopLevelDecl(o);
+  public void visitLiteral(@NotNull GdLiteral o) {
+    visitPsiElement(o);
   }
 
   public void visitStmt(@NotNull GdStmt o) {
@@ -48,6 +64,14 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitTopLevelDecl(@NotNull GdTopLevelDecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTypeHint(@NotNull GdTypeHint o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTyped(@NotNull GdTyped o) {
     visitPsiElement(o);
   }
 

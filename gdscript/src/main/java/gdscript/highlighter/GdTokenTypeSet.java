@@ -14,12 +14,12 @@ public interface GdTokenTypeSet
         GdTypes.TOOL,
 //        GdTypes.ENUM,
 //        GdTypes.SELF,
-//        GdTypes.CONST,
+        GdTypes.CONST,
 //        GdTypes.VAR,
 //        GdTypes.SELF,
-//        GdTypes.INT,
-//        GdTypes.TRUE,
-//        GdTypes.FALSE,
+        GdTypes.INT,
+        GdTypes.TRUE,
+        GdTypes.FALSE,
 //        GdTypes.WHILE,
 //        GdTypes.BREAKPOINT,
 //        GdTypes.STATIC,
@@ -39,8 +39,8 @@ public interface GdTokenTypeSet
 //        GdTypes.TAU,
 //        GdTypes.NAN,
 //        GdTypes.INF,
-//        GdTypes.NULL
-          GdTypes.FUNC
+        GdTypes.NULL,
+        GdTypes.FUNC
     );
 
     // Pink
@@ -56,6 +56,10 @@ public interface GdTokenTypeSet
 
     // Yellow
     TokenSet STRINGS = TokenSet.create(GdTypes.STRING);
+
+    // Teal
+    TokenSet CLASS_TYPE = TokenSet.create(
+    );
 
     // Teal
     TokenSet NUMBERS = TokenSet.create(

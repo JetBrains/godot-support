@@ -31,10 +31,14 @@
 <!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdClassNameCompletionContributor"/>-->
 <!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdMethodNameCompletionContributor"/>-->
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
+    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
+    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>
     <psi.referenceContributor implementation="gdscript.completion.GdInheritanceReferenceContributor" />
 
     <!-- Annotators -->
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdRootAnnotator"/>
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdRootAnnotator"/>-->
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdTypeHintAnnotator" />
 
     <!-- Indices TODO remove file based index-->
     <fileBasedIndex implementation="gdscript.index.FilenameIndex" />
@@ -44,6 +48,8 @@
 <!--    <fileBasedIndex implementation="com.intellij.psi.search.FilenameIndex" />-->
 
 <!--    <lang.refactoringSupport implementationClass="gdscript.psi.GdRefactoringSupportProvider" />-->
+    <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.GdUsageProvider" />
+
   </extensions>
 
   <actions>

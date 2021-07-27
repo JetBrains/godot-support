@@ -17,6 +17,7 @@ public class GdSyntaxHighlighter extends SyntaxHighlighterBase {
     static {
         fillMap(ATTRIBUTES, GdTokenTypeSet.KEYWORDS, GdHighlighterColors.KEYWORD);
         fillMap(ATTRIBUTES, GdTokenTypeSet.FLOW_KEYWORDS, GdHighlighterColors.FLOW_KEYWORDS);
+        fillMap(ATTRIBUTES, GdTokenTypeSet.CLASS_TYPE, GdHighlighterColors.CLASS_TYPE);
         fillMap(ATTRIBUTES, GdTokenTypeSet.IDENTIFIERS, GdHighlighterColors.IDENTIFIER);
         fillMap(ATTRIBUTES, GdTokenTypeSet.NUMBERS, GdHighlighterColors.NUMBER);
         fillMap(ATTRIBUTES, GdTokenTypeSet.STRINGS, GdHighlighterColors.STRING);

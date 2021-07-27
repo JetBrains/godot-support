@@ -1,20 +1,3 @@
-ClassName unique
-Extends correct
-Method unique (+completion removal)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 2.0 syntax
 
 typed array
@@ -39,17 +22,14 @@ var x = Color.html_is_valid("00ffff") # true
 ```
 
 TODO
-7. annotator
-8
-10
-11
-12
-13
-14
-15
-16
-18
-19
+8 line marker
+12 folding
+13 go to
+14 structure
+15 formatter
+16 code style
+18 quick fix
+19 doc
 
 Completions:
 - fn names (parent, own, privacy)

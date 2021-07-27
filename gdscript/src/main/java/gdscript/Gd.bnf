@@ -92,7 +92,7 @@
 //    new_line='regexp:[\n\r]+'
 //    identifier='regexp:[a-zA-Z_][a-zA-Z_0-9]*'
     string='regexp:"[^"]*?"'
-//    number='regexp:[0-9]+(\.)?[0-9]*'
+    number='regexp:[0-9]+(\.)?[0-9]*'
     comment='regexp:#.*'
 //    space='regexp:\s+'
     bad_character='regexp:[\^]'
@@ -115,11 +115,18 @@ toolline ::= TOOL NEW_LINE {pin=1 recoverWhile=toolline_r}
 private toolline_r ::= !(IDENTIFIER) & topLevelDecl_r
 
 topLevelDecl ::=
-    methodDecl_tl
-private topLevelDecl_r ::= !(FUNC)
+    constDecl_tl
+//    methodDecl_tl
+
+private topLevelDecl_r ::= !(FUNC | CONST | IDENTIFIER)
+
+constDecl_tl ::= CONST constId_nmi typed? EQ expr endStmt {methods=[] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
+constId_nmi ::= IDENTIFIER
+
+
 //private topLevelDecl_r ::= !(VAR | CONST | (STATIC? FUNC) | annotation | SIGNAL | ENUM | CLASS)
 
-methodDecl_tl ::= FUNC IDENTIFIER COLON stmtOrSuite {methods=[getMethodName] pin=1 recoverWhile=topLevelDecl_r} // TODO recover nesmí mít func -> inline lambdy by to porušily
+//methodDecl_tl ::= FUNC IDENTIFIER COLON stmtOrSuite {methods=[getMethodName] pin=1 recoverWhile=topLevelDecl_r} // TODO recover nesmí mít func -> inline lambdy by to porušily
 
 
 stmtOrSuite ::= stmt | (NEW_LINE INDENT suite DEDENT)
@@ -129,6 +136,11 @@ suite ::= stmt*
 stmt ::=
     PASS endStmt
 
-//expr ::= PASS
+expr ::=
+    literal
 
+typed ::= COLON typeHint
+typeHint ::= builtInType | IDENTIFIER
+literal ::= TRUE | FALSE | STRING | NUMBER | NULL
+builtInType ::= INT
 endStmt ::= SEMICON | NEW_LINE

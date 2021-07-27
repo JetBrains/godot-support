@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdMethodDeclTlImpl extends GdTopLevelDeclImpl implements GdMethodDeclTl {
+public class GdTypeHintImpl extends ASTWrapperPsiElement implements GdTypeHint {
 
-  public GdMethodDeclTlImpl(@NotNull ASTNode node) {
+  public GdTypeHintImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitMethodDeclTl(this);
+    visitor.visitTypeHint(this);
   }
 
   @Override
@@ -29,14 +29,8 @@ public class GdMethodDeclTlImpl extends GdTopLevelDeclImpl implements GdMethodDe
 
   @Override
   @Nullable
-  public GdStmtOrSuite getStmtOrSuite() {
-    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
-  }
-
-  @Override
-  @Nullable
-  public String getMethodName() {
-    return GdPsiUtils.getMethodName(this);
+  public GdBuiltInType getBuiltInType() {
+    return PsiTreeUtil.getChildOfType(this, GdBuiltInType.class);
   }
 
 }
