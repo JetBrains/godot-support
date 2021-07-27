@@ -1,13 +1,12 @@
 // This is a generated file. Not intended for manual editing.
 package gdscript.psi.impl;
 
-import java.util.List;
+import com.intellij.model.psi.PsiSymbolDeclaration;
+import gdscript.psi.utils.PsiGdClassNamingUtil;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
 
 public class GdClassNameNmImpl extends GdNamedElementImpl implements GdClassNameNm {
@@ -19,7 +18,7 @@ public class GdClassNameNmImpl extends GdNamedElementImpl implements GdClassName
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitClassNameNm(this);
   }
-
+  
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
@@ -36,12 +35,6 @@ public class GdClassNameNmImpl extends GdNamedElementImpl implements GdClassName
   @Nullable
   public PsiElement setName(@Nullable String newName) {
     return GdPsiUtils.setName(this, newName);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNameIdentifier() {
-    return GdPsiUtils.getNameIdentifier(this);
   }
 
 }

@@ -3,18 +3,15 @@ package gdscript.psi.impl
 import com.intellij.psi.stubs.*
 import gdscript.GdLanguage
 import gdscript.index.Indices
-import gdscript.index.stub.GdClassNamingStub
-import gdscript.index.stub.GdClassNamingStubImpl
 import gdscript.index.stub.GdInheritanceStub
 import gdscript.index.stub.GdInheritanceStubImpl
-import gdscript.psi.GdClassNaming
 import gdscript.psi.GdInheritance
 
 
 object GdInheritanceElementType : IStubElementType<GdInheritanceStub, GdInheritance>("inheritance", GdLanguage.INSTANCE) {
 
     fun getInheritanceName(element: GdInheritanceImpl?): String {
-        return element?.inheritanceIdNm?.name.toString();
+        return element?.inheritanceIdNmi?.name.toString();
     }
 
     @JvmStatic
@@ -32,14 +29,14 @@ object GdInheritanceElementType : IStubElementType<GdInheritanceStub, GdInherita
         GdInheritanceStubImpl(parentStub, dataStream.readName()?.string);
 
     override fun indexStub(stub: GdInheritanceStub, sink: IndexSink) {
-        sink.occurrence(Indices.INHERITANCE_INDEX, stub.name())
+        sink.occurrence(Indices.INHERITANCE_INDEX, stub.name());
     }
 
     override fun createPsi(stub: GdInheritanceStub): GdInheritance =
-        GdInheritanceImpl(stub, stub.stubType)
+        GdInheritanceImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdInheritance, parentStub: StubElement<*>?): GdInheritanceStub {
-        return GdInheritanceStubImpl(parentStub, psi.inheritanceIdNm?.name)
+        return GdInheritanceStubImpl(parentStub, psi.inheritanceIdNmi?.name);
     }
 
 }

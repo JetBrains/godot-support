@@ -13,7 +13,4 @@ public interface GdClassNameNm extends GdNamedElement {
   @Nullable
   PsiElement setName(@Nullable String newName);
 
-  @Nullable
-  PsiElement getNameIdentifier();
-
 }

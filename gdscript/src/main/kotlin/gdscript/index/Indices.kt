@@ -1,6 +1,7 @@
 package gdscript.index
 
 import com.intellij.openapi.project.Project
+import com.intellij.psi.stubs.AbstractStubIndex
 import com.intellij.psi.stubs.StubIndexKey
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.ID
@@ -9,7 +10,7 @@ import gdscript.psi.GdInheritance
 
 object Indices {
 
-    private val index = FileBasedIndex.getInstance()
+//    private val index = FileBasedIndex.getInstance()
 
     val CLASS_NAMING_INDEX = StubIndexKey.createIndexKey<String, GdClassNaming>("gdscript.classNaming")
     val INHERITANCE_INDEX = StubIndexKey.createIndexKey<String, GdInheritance>("gdscript.inheritance")
@@ -24,9 +25,13 @@ object Indices {
     //        return FileBasedIndex.getInstance().getValues(indexId, dataKey, filter);
     //    }
 
-    fun <K, V> keys(indexId: ID<K, V>, project: Project): Collection<K> {
-        return index.getAllKeys(indexId, project)
-    }
+//    fun <K, V> keys(indexId: ID<K, V>, project: Project): Collection<K> {
+//        return index.getAllKeys(indexId, project)
+//    }
+
+//    fun <K, V> get() {
+//        AbstractStubIndex
+//    }
 
     val FILE_NAMES = ID.create<String, Void>("gdscript.filename")
     val CLASS_NAMES = ID.create<String, Void>("gdscript.classname") // TODO remove

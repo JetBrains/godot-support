@@ -14,7 +14,7 @@ public interface GdTypes {
   IElementType CLASS_NAMING = GdClassNamingElementType.getInstance("CLASS_NAMING");
   IElementType END_STMT = new GdElementType("END_STMT");
   IElementType INHERITANCE = GdInheritanceElementType.getInstance("INHERITANCE");
-  IElementType INHERITANCE_ID_NM = new GdElementType("INHERITANCE_ID_NM");
+  IElementType INHERITANCE_ID_NMI = new GdElementType("INHERITANCE_ID_NMI");
   IElementType METHOD_DECL_TL = new GdElementType("METHOD_DECL_TL");
   IElementType STMT = new GdElementType("STMT");
   IElementType STMT_OR_SUITE = new GdElementType("STMT_OR_SUITE");
@@ -54,8 +54,8 @@ public interface GdTypes {
       else if (type == INHERITANCE) {
         return new GdInheritanceImpl(node);
       }
-      else if (type == INHERITANCE_ID_NM) {
-        return new GdInheritanceIdNmImpl(node);
+      else if (type == INHERITANCE_ID_NMI) {
+        return new GdInheritanceIdNmiImpl(node);
       }
       else if (type == METHOD_DECL_TL) {
         return new GdMethodDeclTlImpl(node);

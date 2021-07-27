@@ -35,15 +35,15 @@ object GdPsiUtils {
 
     /** PsiGdInheritanceUtil  */
     @JvmStatic
-    fun getName(element: GdInheritanceIdNm): String {
+    fun getName(element: GdInheritanceIdNmi): String {
         return PsiGdInheritanceUtil.getName(element)
     }
     @JvmStatic
-    fun setName(element: GdInheritanceIdNm, newName: String?): PsiElement {
+    fun setName(element: GdInheritanceIdNmi, newName: String?): PsiElement {
         return PsiGdInheritanceUtil.setName(element, newName)
     }
     @JvmStatic
-    fun getNameIdentifier(element: GdInheritanceIdNm): PsiElement? {
+    fun getNameIdentifier(element: GdInheritanceIdNmi): PsiElement? {
         return PsiGdInheritanceUtil.getNameIdentifier(element)
     }
 

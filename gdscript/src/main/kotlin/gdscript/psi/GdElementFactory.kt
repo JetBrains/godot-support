@@ -12,8 +12,7 @@ object GdElementFactory {
     }
 
     fun inheritanceName(project: Project, name: String): PsiElement {
-        val asd = createFile(project, "extends $name\n");
-        return createFile(project, "extends $name\n").firstChild.nextSibling.firstChild;
+        return createFile(project, "extends $name\n").firstChild.firstChild.nextSibling.nextSibling.firstChild;
     }
 
     private fun createFile(project: Project, text: String) =

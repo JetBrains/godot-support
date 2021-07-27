@@ -30,21 +30,20 @@
 <!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdRootCompletionContributor"/>-->
 <!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdClassNameCompletionContributor"/>-->
 <!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdMethodNameCompletionContributor"/>-->
-    <completion.contributor language="GdScript" implementationClass="gdscript.completion.contributor.GdRootContributor"/>
+    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
+    <psi.referenceContributor implementation="gdscript.completion.GdInheritanceReferenceContributor" />
 
     <!-- Annotators -->
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdRootAnnotator"/>
 
-    <!-- Indices -->
+    <!-- Indices TODO remove file based index-->
     <fileBasedIndex implementation="gdscript.index.FilenameIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
     <stubIndex implementation="gdscript.index.impl.GdInheritanceIndex" />
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
 <!--    <fileBasedIndex implementation="com.intellij.psi.search.FilenameIndex" />-->
 
-    <psi.referenceContributor implementation="gdscript.completion.contributor.GdClassNameReferenceContributor" />
-
-    <lang.refactoringSupport implementationClass="gdscript.psi.GdRefactoringSupportProvider" />
+<!--    <lang.refactoringSupport implementationClass="gdscript.psi.GdRefactoringSupportProvider" />-->
   </extensions>
 
   <actions>

@@ -2,12 +2,12 @@ package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
 import gdscript.psi.GdElementFactory.inheritanceName
-import gdscript.psi.GdInheritanceIdNm
+import gdscript.psi.GdInheritanceIdNmi
 import gdscript.psi.GdTypes
 
 object PsiGdInheritanceUtil {
 
-    fun setName(element: GdInheritanceIdNm, newName: String?): PsiElement {
+    fun setName(element: GdInheritanceIdNmi, newName: String?): PsiElement {
         val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
         if (keyNode != null) {
             val id = inheritanceName(element.project, newName!!)
@@ -16,12 +16,12 @@ object PsiGdInheritanceUtil {
         return element
     }
 
-    fun getName(element: GdInheritanceIdNm): String {
+    fun getName(element: GdInheritanceIdNmi): String {
         val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
         return valueNode?.text ?: ""
     }
 
-    fun getNameIdentifier(element: GdInheritanceIdNm): PsiElement? {
+    fun getNameIdentifier(element: GdInheritanceIdNmi): PsiElement? {
         val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
         return keyNode?.psi
     }

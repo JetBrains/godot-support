@@ -23,8 +23,8 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitInheritanceIdNm(@NotNull GdInheritanceIdNm o) {
-    visitNamedElement(o);
+  public void visitInheritanceIdNmi(@NotNull GdInheritanceIdNmi o) {
+    visitNamedIdElement(o);
   }
 
   public void visitMethodDeclTl(@NotNull GdMethodDeclTl o) {
@@ -52,6 +52,10 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitNamedElement(@NotNull GdNamedElement o) {
+    visitPsiElement(o);
+  }
+
+  public void visitNamedIdElement(@NotNull GdNamedIdElement o) {
     visitPsiElement(o);
   }
 

@@ -10,7 +10,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.impl.source.tree.PsiErrorElementImpl;
 import gdscript.competion.utils.*;
 import gdscript.psi.GdClassNameNm;
-import gdscript.psi.impl.GdInheritanceIdNmImpl;
+import gdscript.psi.impl.GdInheritanceIdNmiImpl;
 import org.jetbrains.annotations.NotNull;
 
 public class GdRootCompletionContributor extends CompletionContributor {
@@ -31,7 +31,7 @@ public class GdRootCompletionContributor extends CompletionContributor {
             return;
         }
 
-        if (PositionUtil.isPreceded(parameters, GdInheritanceIdNmImpl.class, precedor)) {
+        if (PositionUtil.isPreceded(parameters, GdInheritanceIdNmiImpl.class, precedor)) {
             resultSet.addElement(PrioritizedLookupElement.withPriority(
                     GdLookupElementBuilder
                             .create("class_name", " ")

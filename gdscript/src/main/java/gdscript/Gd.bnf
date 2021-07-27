@@ -16,7 +16,11 @@
 
   mixin(".*_nm")="GdNamedElementImpl"
   implements(".*_nm")="GdNamedElement"
-  methods(".*_nm")=[getName setName getNameIdentifier]
+  methods(".*_nm")=[getName setName]
+
+  mixin(".*_nmi")="GdNamedIdElementImpl"
+  implements(".*_nmi")="GdNamedIdElement"
+  methods(".*_nmi")=[getName setName getNameIdentifier]
 
   extends(".*_tl")=topLevelDecl
 //  extends(".*Expression")=expr
@@ -97,8 +101,8 @@
 
 gdfile ::= inheritance classNaming? toolline? topLevelDecl*
 
-inheritance ::= EXTENDS inheritanceId_nm (DOT IDENTIFIER)? NEW_LINE {methods=[getInheritanceName] pin=1 recoverWhile=inheritance_r mixin="gdscript.psi.impl.GdInheritanceElementImpl" stubClass="gdscript.index.stub.GdInheritanceStub" elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"}
-inheritanceId_nm ::= IDENTIFIER
+inheritance ::= EXTENDS inheritanceId_nmi (DOT IDENTIFIER)? NEW_LINE {methods=[getInheritanceName] pin=1 recoverWhile=inheritance_r mixin="gdscript.psi.impl.GdInheritanceElementImpl" stubClass="gdscript.index.stub.GdInheritanceStub" elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"}
+inheritanceId_nmi ::= IDENTIFIER
 private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC | IDENTIFIER)
 //private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC | annotation | CONST)
 
