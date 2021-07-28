@@ -1,5 +1,4 @@
 2.0 syntax
-
 typed array
 - var my_array: Array[int] = [1, 2, 3]
 - var inferred_array := [1, 2, 3] # This is Array[int].
@@ -22,6 +21,9 @@ var x = Color.html_is_valid("00ffff") # true
 ```
 
 TODO
+
+sdk -> lepší impl
+
 8 line marker
 12 folding
 13 go to

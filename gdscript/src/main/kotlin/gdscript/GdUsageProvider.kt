@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
 import gdscript.highlighter.GdTokenTypeSet
 import gdscript.psi.GdClassNameNm
+import gdscript.psi.GdTypeHintNm
 
 class GdUsageProvider : FindUsagesProvider {
 
@@ -20,7 +21,8 @@ class GdUsageProvider : FindUsagesProvider {
     }
 
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
-        return psiElement is GdClassNameNm;
+        return psiElement is GdClassNameNm
+                || psiElement is GdTypeHintNm
     }
 
     override fun getHelpId(psiElement: PsiElement): String? {

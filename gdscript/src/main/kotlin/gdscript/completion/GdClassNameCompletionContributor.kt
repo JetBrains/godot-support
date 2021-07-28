@@ -14,6 +14,7 @@ class GdClassNameCompletionContributor : CompletionContributor() {
     val CLASS_NAME_NM = psiElement().afterLeaf(psiElement().withText(GdKeywords.CLASS_NAME))
         .withSuperParent(2, GdClassNaming::class.java);
 
+    // TODO unused
     val INHERITANCE_ID = psiElement().afterLeaf(psiElement().withText(GdKeywords.EXTENDS))
         .withSuperParent(2, GdInheritance::class.java);
 
@@ -25,8 +26,6 @@ class GdClassNameCompletionContributor : CompletionContributor() {
             );
             result.stopHere();
             return;
-        } else if (INHERITANCE_ID.accepts(parameters.position)) {
-            GdClassCompletionUtil.statics(result);
         }
     }
 

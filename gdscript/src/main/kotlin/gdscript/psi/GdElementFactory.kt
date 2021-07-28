@@ -11,7 +11,12 @@ object GdElementFactory {
         return createFile(project, "extends a\nclass_name $name\n").lastChild.firstChild.nextSibling.nextSibling.firstChild;
     }
 
+    // TODO required?
     fun inheritanceName(project: Project, name: String): PsiElement {
+        return createFile(project, "extends $name\n").firstChild.firstChild.nextSibling.nextSibling.firstChild;
+    }
+
+    fun identifier(project: Project, name: String): PsiElement {
         return createFile(project, "extends $name\n").firstChild.firstChild.nextSibling.nextSibling.firstChild;
     }
 

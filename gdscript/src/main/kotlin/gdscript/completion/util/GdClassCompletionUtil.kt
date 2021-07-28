@@ -11,7 +11,7 @@ object GdClassCompletionUtil {
         StaticClassLoader.getClasses().forEach {
             val className = it.value.name;
             result.addElement(
-                GdLookup.create(className, GdLookup.USER_DEFINED, GdIcon.getEditorIcon(className))
+                GdLookup.create(className, priority = GdLookup.USER_DEFINED, icon = GdIcon.getEditorIcon(className))
             );
         };
     }

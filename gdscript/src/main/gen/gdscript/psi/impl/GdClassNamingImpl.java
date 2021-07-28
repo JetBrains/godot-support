@@ -44,4 +44,10 @@ public class GdClassNamingImpl extends GdClassNamingElementImpl implements GdCla
     return GdPsiUtils.getClassname(this);
   }
 
+  @Override
+  @Nullable
+  public String getParentName() {
+    return GdPsiUtils.getParentName(this);
+  }
+
 }

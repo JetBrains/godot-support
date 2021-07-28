@@ -1,27 +1,25 @@
 package gdscript.psi.utils
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.psi.GdClassNameNm
+import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
 import gdscript.psi.impl.GdClassNamingElementType
 
 object PsiGdClassNamingUtil {
 
-    fun listClassNameNm(project: Project): List<GdClassNameNm> {
+    fun listClassNaming(project: Project): List<GdClassNaming> {
         return mapFiles(PsiGdFileUtil.gdFiles(project));
     }
 
-    private fun mapFiles(files: Collection<GdFile>): List<GdClassNameNm> {
+    private fun mapFiles(files: Collection<GdFile>): List<GdClassNaming> {
         return files.map {
             val stub = it.getGreenStub();
             if (stub !== null) {
                 val naming = stub.findChildStubByType(GdClassNamingElementType)
-                naming?.psi?.classNameNm
+                naming?.psi
             } else {
-                PsiTreeUtil.findChildOfType(it, GdClassNameNm::class.java)
+                PsiTreeUtil.findChildOfType(it, GdClassNaming::class.java)
             }
         }.filterNotNull();
     }

@@ -21,14 +21,14 @@ class GdClassNameAnnotator : Annotator {
                 .textAttributes(GdHighlighterColors.CLASS_TYPE)
                 .create();
 
-            if (GdClassNamingIndex.get(element.name, element.project, GlobalSearchScope.projectScope(element.project))
+            if (GdClassNamingIndex.get(element.name, element.project, GlobalSearchScope.allScope(element.project))
                     .isNotEmpty()
             ) {
                 return;
             }
-            if (StaticClassLoader.getClasses()[element.name] !== null) {
-                return;
-            }
+//            if (StaticClassLoader.getClasses()[element.name] !== null) {
+//                return;
+//            }
 
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Unknown class")
@@ -40,7 +40,7 @@ class GdClassNameAnnotator : Annotator {
                         GlobalSearchScope.fileScope(element.containingFile)
                     )
                 ).isEmpty()
-                && StaticClassLoader.getClasses()[element.name] === null
+//                && StaticClassLoader.getClasses()[element.name] === null
             ) {
                 return;
             }

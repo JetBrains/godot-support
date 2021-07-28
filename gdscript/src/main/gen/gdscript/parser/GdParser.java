@@ -197,18 +197,24 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inheritance classNaming? toolline? topLevelDecl*
+  // inheritance? classNaming? toolline? topLevelDecl*
   static boolean gdfile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gdfile")) return false;
-    if (!nextTokenIs(b, EXTENDS)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = inheritance(b, l + 1);
+    r = gdfile_0(b, l + 1);
     r = r && gdfile_1(b, l + 1);
     r = r && gdfile_2(b, l + 1);
     r = r && gdfile_3(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // inheritance?
+  private static boolean gdfile_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gdfile_0")) return false;
+    inheritance(b, l + 1);
+    return true;
   }
 
   // classNaming?
@@ -448,11 +454,11 @@ public class GdParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // builtInType | IDENTIFIER
-  public static boolean typeHint(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "typeHint")) return false;
-    if (!nextTokenIs(b, "<type hint>", IDENTIFIER, INT)) return false;
+  public static boolean typeHint_nm(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typeHint_nm")) return false;
+    if (!nextTokenIs(b, "<type hint nm>", IDENTIFIER, INT)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, TYPE_HINT, "<type hint>");
+    Marker m = enter_section_(b, l, _NONE_, TYPE_HINT_NM, "<type hint nm>");
     r = builtInType(b, l + 1);
     if (!r) r = consumeToken(b, IDENTIFIER);
     exit_section_(b, l, m, r, false, null);
@@ -460,14 +466,14 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COLON typeHint
+  // COLON typeHint_nm
   public static boolean typed(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typed")) return false;
     if (!nextTokenIs(b, COLON)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COLON);
-    r = r && typeHint(b, l + 1);
+    r = r && typeHint_nm(b, l + 1);
     exit_section_(b, m, TYPED, r);
     return r;
   }

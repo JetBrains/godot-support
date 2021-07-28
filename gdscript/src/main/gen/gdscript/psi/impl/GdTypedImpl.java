@@ -29,8 +29,8 @@ public class GdTypedImpl extends ASTWrapperPsiElement implements GdTyped {
 
   @Override
   @NotNull
-  public GdTypeHint getTypeHint() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdTypeHint.class));
+  public GdTypeHintNm getTypeHintNm() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdTypeHintNm.class));
   }
 
 }

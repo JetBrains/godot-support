@@ -19,10 +19,6 @@ class GdTypeHintCompletionContributor : CompletionContributor() {
         }
 
         GdLiteralCompletionUtil.builtInTypes(result);
-        GdClassCompletionUtil.statics(result);
-
-        // TODO Reference na vlastní class
-        result.stopHere();
     }
 
 }

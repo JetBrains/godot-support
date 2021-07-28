@@ -9,12 +9,12 @@ import gdscript.GdKeywords
 import gdscript.competion.staticLoader.StaticClassLoader
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdClassNamingIndex
-import gdscript.psi.GdTypeHint
+import gdscript.psi.GdTypeHintNm
 
 class GdTypeHintAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element !is GdTypeHint) {
+        if (element !is GdTypeHintNm) {
             return;
         }
 
@@ -23,19 +23,19 @@ class GdTypeHintAnnotator : Annotator {
             return;
         }
 
-        if (StaticClassLoader.getClasses()[name] !== null) {
-            holder
-                .newSilentAnnotation(HighlightSeverity.INFORMATION)
-                .range(element.textRange)
-                .textAttributes(GdHighlighterColors.CLASS_TYPE)
-                .create()
-            return;
-        }
+//        if (StaticClassLoader.getClasses()[name] !== null) {
+//            holder
+//                .newSilentAnnotation(HighlightSeverity.INFORMATION)
+//                .range(element.textRange)
+//                .textAttributes(GdHighlighterColors.CLASS_TYPE)
+//                .create()
+//            return;
+//        }
 
         if (GdClassNamingIndex.get(
                 name,
                 element.project,
-                GlobalSearchScope.projectScope(element.project)
+                GlobalSearchScope.allScope(element.project)
             ).isNotEmpty()
         ) {
             return;

@@ -5,7 +5,6 @@
   <vendor email="h.raven@centrumcz" url="">IceExplosive</vendor>
 
   <description>GdScript language plugin</description>
-
   <change-notes>
   </change-notes>
 
@@ -25,6 +24,7 @@
     <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
+    <sdkType implementation="gdscript.GdSdk" />
 
     <!-- Completions -->
 <!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdRootCompletionContributor"/>-->
@@ -34,6 +34,7 @@
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>
     <psi.referenceContributor implementation="gdscript.completion.GdInheritanceReferenceContributor" />
+    <psi.referenceContributor implementation="gdscript.completion.GdTypeHintReferenceContributor" />
 
     <!-- Annotators -->
 <!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdRootAnnotator"/>-->

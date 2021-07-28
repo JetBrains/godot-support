@@ -27,7 +27,7 @@ public interface GdTypes {
   IElementType TOOLLINE = new GdElementType("TOOLLINE");
   IElementType TOP_LEVEL_DECL = new GdElementType("TOP_LEVEL_DECL");
   IElementType TYPED = new GdElementType("TYPED");
-  IElementType TYPE_HINT = new GdElementType("TYPE_HINT");
+  IElementType TYPE_HINT_NM = new GdElementType("TYPE_HINT_NM");
 
   IElementType BAD_CHARACTER = new GdTokenType("bad_character");
   IElementType CLASS_NAME = new GdTokenType("CLASS_NAME");
@@ -101,8 +101,8 @@ public interface GdTypes {
       else if (type == TYPED) {
         return new GdTypedImpl(node);
       }
-      else if (type == TYPE_HINT) {
-        return new GdTypeHintImpl(node);
+      else if (type == TYPE_HINT_NM) {
+        return new GdTypeHintNmImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

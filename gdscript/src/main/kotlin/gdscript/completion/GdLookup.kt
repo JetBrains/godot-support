@@ -15,51 +15,26 @@ object GdLookup {
     const val USER_DEFINED = 200.0;
     const val STATIC_TOP = 500.0;
 
-    // text + lookup, priority, icon
-    fun create(text: String): LookupElement =
-        LookupElementBuilder.create(text)
-
-    fun create(text: String, lookup: String): LookupElement =
-        GdLookupElementBuilder
-            .create(text, lookup)
-            .withInsertHandler(GdLookupInsertHandler.INSTANCE);
-
-    fun create(text: String, priority: Double): LookupElement =
-        PrioritizedLookupElement.withPriority(
-            this.create(text),
-            priority
-        );
-
-    fun create(text: String, icon: Icon): LookupElement =
-        GdLookupElementBuilder
-            .create(text)
-            .withIcon(icon);
-
-    // text, lookup + priority, icon
-    fun create(text: String, lookup: String, icon: Icon): LookupElement =
-        GdLookupElementBuilder
-            .create(text, lookup)
+    fun create(
+        text: String,
+        lookup: String? = null,
+        typed: String? = null,
+        priority: Double? = null,
+        icon: Icon? = null
+    ): LookupElement {
+        val builder = GdLookupElementBuilder
+            .create(text, if (lookup !== null) lookup else text)
+            .withTypeText(typed)
             .withIcon(icon)
-            .withInsertHandler(GdLookupInsertHandler.INSTANCE);
 
-    fun create(text: String, lookup: String, priority: Double): LookupElement =
-        PrioritizedLookupElement.withPriority(
-            this.create(text, lookup),
+        if (priority === null) {
+            return builder
+        }
+
+        return PrioritizedLookupElement.withPriority(
+            builder,
             priority
         );
-
-    // text, priority, icon
-    fun create(text: String, priority: Double, icon: Icon): LookupElement =
-        PrioritizedLookupElement.withPriority(
-            this.create(text, icon),
-            priority
-        );
-
-    // text, lookup, priority, icon
-    fun create(text: String, lookup: String, priority: Double, icon: Icon): LookupElement =
-        PrioritizedLookupElement.withPriority(
-            this.create(text, lookup, icon),
-            priority
-        );
+    }
 
 }

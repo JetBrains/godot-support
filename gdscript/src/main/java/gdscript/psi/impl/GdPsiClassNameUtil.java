@@ -34,6 +34,10 @@ public class GdPsiClassNameUtil {
     }
 
     public static String getInheritanceName(GdInheritance element) {
+        if (element == null) {
+            return "";
+        }
+
         ASTNode valueNode = element.getNode().findChildByType(GdTypes.INHERITANCE_ID_NMI);
         if (valueNode != null) {
             return valueNode.getText();

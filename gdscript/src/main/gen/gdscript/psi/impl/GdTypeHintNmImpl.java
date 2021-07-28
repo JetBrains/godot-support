@@ -8,17 +8,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdTypeHintImpl extends ASTWrapperPsiElement implements GdTypeHint {
+public class GdTypeHintNmImpl extends GdNamedElementImpl implements GdTypeHintNm {
 
-  public GdTypeHintImpl(@NotNull ASTNode node) {
+  public GdTypeHintNmImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitTypeHint(this);
+    visitor.visitTypeHintNm(this);
   }
 
   @Override
@@ -31,6 +30,18 @@ public class GdTypeHintImpl extends ASTWrapperPsiElement implements GdTypeHint {
   @Nullable
   public GdBuiltInType getBuiltInType() {
     return PsiTreeUtil.getChildOfType(this, GdBuiltInType.class);
+  }
+
+  @Override
+  @NotNull
+  public String getName() {
+    return GdPsiUtils.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement setName(@Nullable String newName) {
+    return GdPsiUtils.setName(this, newName);
   }
 
 }
