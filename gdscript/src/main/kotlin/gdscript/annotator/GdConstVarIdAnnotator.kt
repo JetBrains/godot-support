@@ -50,7 +50,7 @@ class GdConstVarIdAnnotator : Annotator {
             if (checkName === thisName) {
                 holder
                     .newAnnotation(HighlightSeverity.ERROR,
-                        String.format("Field with name [%s] already defined above", element.name))
+                        "Field with name [${element.name}] already defined above")
                     .range(element.textRange)
                     .create();
                 return false;
@@ -82,7 +82,7 @@ class GdConstVarIdAnnotator : Annotator {
             ) {
                 holder
                     .newAnnotation(HighlightSeverity.ERROR,
-                        String.format("Field with name [%s] defined in parent class", element.name))
+                        "Field with name [${element.name}] defined in parent class")
                     .range(element.textRange)
                     .create();
                 return false;

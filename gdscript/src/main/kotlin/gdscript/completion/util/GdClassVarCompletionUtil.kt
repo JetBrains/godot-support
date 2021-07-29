@@ -10,7 +10,7 @@ object GdClassVarCompletionUtil {
         GdKeywords.ANNOTATIONS.forEach {
             result
                 .addElement(
-                    GdLookup.create(String.format("@%s", it),
+                    GdLookup.create("@$it",
                         lookup = " ",
                         color = GdLookup.ANNOTATOR_COLOR)
                 );

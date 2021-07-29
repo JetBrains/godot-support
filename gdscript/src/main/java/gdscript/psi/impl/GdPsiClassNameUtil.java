@@ -9,7 +9,7 @@ public class GdPsiClassNameUtil {
     public static PsiElement setName(GdClassNameNm element, String newName) {
         ASTNode keyNode = element.getNode().findChildByType(GdTypes.IDENTIFIER);
         if (keyNode != null) {
-            PsiElement id = GdElementFactory.INSTANCE.createClassName(element.getProject(), newName);
+            PsiElement id = GdElementFactory.INSTANCE.identifier(element.getProject(), newName);
             element.getNode().replaceChild(keyNode, id.getNode());
         }
         return element;

@@ -22,7 +22,11 @@ var x = Color.html_is_valid("00ffff") # true
 
 TODO
 
+Known issues
 annotation insert
+endofstmt -> nutnost prázdý řádek/; na konci souboru
+
+
 sdk -> lepší impl
 
 8 line marker

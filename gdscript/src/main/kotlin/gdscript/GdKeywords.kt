@@ -9,6 +9,7 @@ object GdKeywords {
     const val CONST = "const"
     const val VAR = "var"
     const val SETGET = "setget"
+    const val SELF = "self"
 
     const val TRUE = "true"
     const val FALSE = "false"

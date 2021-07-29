@@ -45,12 +45,16 @@ class GdClassVarCompletionContributor : CompletionContributor() {
             addMethodName("set", parameters.position, result);
         } else if (GET_METHOD.accepts(parameters.position)) {
             addMethodName("get", parameters.position, result);
+        } else {
+            return;
         }
+
+        result.stopHere();
     }
 
     private fun addMethodName(prefix: String, element: PsiElement, result: CompletionResultSet) {
         val name = PsiTreeUtil.getParentOfType(element, GdClassVarDeclTl::class.java)?.varName;
-        result.addElement(GdLookup.create(String.format("%s_%s", prefix, name)));
+        result.addElement(GdLookup.create("${prefix}_$name"));
     }
 
 }

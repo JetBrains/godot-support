@@ -20,7 +20,7 @@ object PsiGdConstDeclUtil {
     fun setName(element: GdConstIdNmiImpl, newName: String?): PsiElement {
         val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
         if (keyNode != null) {
-            val id = GdElementFactory.inheritanceName(element.project, newName!!);
+            val id = GdElementFactory.identifier(element.project, newName!!);
             element.node.replaceChild(keyNode, id.node);
         }
 
