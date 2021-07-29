@@ -30,4 +30,7 @@ public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<Gd
   @Nullable
   String getVarName();
 
+  @Nullable
+  String getReturnType();
+
 }

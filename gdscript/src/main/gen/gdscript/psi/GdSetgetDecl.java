@@ -10,7 +10,7 @@ public interface GdSetgetDecl extends PsiElement {
   @Nullable
   GdGetMethodIdNm getGetMethodIdNm();
 
-  @NotNull
+  @Nullable
   GdSetMethodIdNm getSetMethodIdNm();
 
 }

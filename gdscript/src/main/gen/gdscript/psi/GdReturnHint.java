@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdStmt extends PsiElement {
+public interface GdReturnHint extends PsiElement {
 
   @Nullable
-  GdEndStmt getEndStmt();
+  GdTypeHintNm getTypeHintNm();
 
 }

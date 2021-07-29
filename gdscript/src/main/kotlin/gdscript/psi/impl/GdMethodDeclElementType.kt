@@ -18,10 +18,31 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
 
     override fun serialize(stub: GdMethodDeclStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name());
+        dataStream.writeName(stub.returnType());
+        dataStream.writeName(stub.parameters().toString());
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): GdMethodDeclStub =
-        GdMethodDeclStubImpl(parentStub, dataStream.readName()?.string);
+        GdMethodDeclStubImpl(parentStub,
+            dataStream.readNameString(),
+            dataStream.readNameString(),
+            paramsFromString(dataStream.readNameString()));
+
+    private fun paramsFromString(data: String?): HashMap<String, String?> {
+        val params = HashMap<String, String?>();
+        if (data == null) {
+            return params;
+        }
+
+        data.trim('{', '}').split(' ').forEach {
+            val parts = it.split('=');
+            if (parts.size == 2) {
+                params[parts[0]] = if (parts[1] == "null") null else parts[1];
+            }
+        }
+
+        return params;
+    }
 
     override fun indexStub(stub: GdMethodDeclStub, sink: IndexSink) {
         sink.occurrence(Indices.METHOD_DECL, stub.name());
@@ -31,7 +52,7 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
         GdMethodDeclTlImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdMethodDeclTl, parentStub: StubElement<*>?): GdMethodDeclStub {
-        return GdMethodDeclStubImpl(parentStub, psi.methodName);
+        return GdMethodDeclStubImpl(parentStub, psi.methodName, psi.returnType, psi.parameters);
     }
 
 }

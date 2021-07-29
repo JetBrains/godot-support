@@ -10,7 +10,8 @@ import gdscript.psi.GdInheritance
 
 class GdClassNameCompletionContributor : CompletionContributor() {
 
-    val CLASS_NAME_NM = psiElement().afterLeaf(psiElement().withText(GdKeywords.CLASS_NAME))
+    val CLASS_NAME_NM = psiElement()
+        .afterLeaf(psiElement().withText(GdKeywords.CLASS_NAME))
         .withSuperParent(2, GdClassNaming::class.java);
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
@@ -20,7 +21,6 @@ class GdClassNameCompletionContributor : CompletionContributor() {
                 GdLookup.create(filename.substring(0, filename.length - 3))
             );
             result.stopHere();
-            return;
         }
     }
 

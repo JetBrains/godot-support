@@ -48,6 +48,10 @@ object GdPsiUtils {
         return PsiGdConstDeclUtil.getName(element)
     }
     @JvmStatic
+    fun getReturnType(element: GdConstDeclTl): String? {
+        return PsiGdConstDeclUtil.getReturnType(element)
+    }
+    @JvmStatic
     fun setName(element: GdConstIdNmiImpl, newName: String?): PsiElement {
         return PsiGdConstDeclUtil.setName(element, newName)
     }
@@ -74,6 +78,10 @@ object GdPsiUtils {
     @JvmStatic
     fun getVarName(element: GdClassVarDeclTl): String? {
         return PsiGdClassVarUtil.getVarName(element)
+    }
+    @JvmStatic
+    fun getReturnType(element: GdClassVarDeclTl): String? {
+        return PsiGdClassVarUtil.getReturnType(element)
     }
     @JvmStatic
     fun getName(element: GdClassVarIdNmi): String {
@@ -108,6 +116,14 @@ object GdPsiUtils {
     @JvmStatic
     fun getMethodName(element: GdMethodDeclTl): String? {
         return PsiGdMethodDeclUtil.getMethodName(element)
+    }
+    @JvmStatic
+    fun getReturnType(element: GdMethodDeclTl): String? {
+        return PsiGdMethodDeclUtil.getReturnType(element)
+    }
+    @JvmStatic
+    fun getParameters(element: GdMethodDeclTl): HashMap<String, String?> {
+        return PsiGdMethodDeclUtil.getParameters(element)
     }
     @JvmStatic
     fun getName(element: GdMethodIdNmi): String {

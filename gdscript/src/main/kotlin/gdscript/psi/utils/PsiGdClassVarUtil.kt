@@ -2,7 +2,6 @@ package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
 import gdscript.psi.*
-import gdscript.psi.impl.GdConstIdNmiImpl
 
 object PsiGdClassVarUtil {
 
@@ -13,6 +12,15 @@ object PsiGdClassVarUtil {
         }
 
         return element.classVarIdNmi?.name;
+    }
+
+    fun getReturnType(element: GdClassVarDeclTl): String? {
+        val stub = element.stub;
+        if (stub !== null) {
+            return stub.returnType();
+        }
+
+        return element.typed?.typeHintNm?.name;
     }
 
     fun setName(element: GdClassVarIdNmi, newName: String?): PsiElement {

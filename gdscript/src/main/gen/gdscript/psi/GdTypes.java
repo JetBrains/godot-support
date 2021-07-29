@@ -30,6 +30,9 @@ public interface GdTypes {
   IElementType METHOD_DECL_TL = GdMethodDeclElementType.getInstance("METHOD_DECL_TL");
   IElementType METHOD_ID_NMI = new GdElementType("METHOD_ID_NMI");
   IElementType NEW_LINE_END = new GdElementType("NEW_LINE_END");
+  IElementType PARAM = new GdElementType("PARAM");
+  IElementType PARAM_LIST = new GdElementType("PARAM_LIST");
+  IElementType RETURN_HINT = new GdElementType("RETURN_HINT");
   IElementType SETGET_DECL = new GdElementType("SETGET_DECL");
   IElementType SET_METHOD_ID_NM = new GdElementType("SET_METHOD_ID_NM");
   IElementType STMT = new GdElementType("STMT");
@@ -42,11 +45,13 @@ public interface GdTypes {
 
   IElementType ANNOTATOR = new GdTokenType("ANNOTATOR");
   IElementType BAD_CHARACTER = new GdTokenType("bad_character");
+  IElementType BREAK = new GdTokenType("BREAK");
   IElementType CLASS_NAME = new GdTokenType("CLASS_NAME");
   IElementType COLON = new GdTokenType("COLON");
   IElementType COMMA = new GdTokenType("COMMA");
   IElementType COMMENT = new GdTokenType("comment");
   IElementType CONST = new GdTokenType("CONST");
+  IElementType CONTINUE = new GdTokenType("CONTINUE");
   IElementType DEDENT = new GdTokenType("DEDENT");
   IElementType DOT = new GdTokenType("DOT");
   IElementType EQ = new GdTokenType("EQ");
@@ -56,16 +61,23 @@ public interface GdTypes {
   IElementType IDENTIFIER = new GdTokenType("IDENTIFIER");
   IElementType INDENT = new GdTokenType("INDENT");
   IElementType INT = new GdTokenType("INT");
+  IElementType LRBR = new GdTokenType("LRBR");
   IElementType NEW_LINE = new GdTokenType("NEW_LINE");
   IElementType NULL = new GdTokenType("NULL");
   IElementType NUMBER = new GdTokenType("NUMBER");
   IElementType PASS = new GdTokenType("PASS");
+  IElementType RET = new GdTokenType("RET");
+  IElementType RETURN = new GdTokenType("RETURN");
+  IElementType RRBR = new GdTokenType("RRBR");
+  IElementType SELF = new GdTokenType("SELF");
   IElementType SEMICON = new GdTokenType("SEMICON");
   IElementType SETGET = new GdTokenType("SETGET");
+  IElementType STR = new GdTokenType("STR");
   IElementType STRING = new GdTokenType("STRING");
   IElementType TOOL = new GdTokenType("TOOL");
   IElementType TRUE = new GdTokenType("TRUE");
   IElementType VAR = new GdTokenType("VAR");
+  IElementType VOID = new GdTokenType("VOID");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
@@ -120,6 +132,15 @@ public interface GdTypes {
       }
       else if (type == NEW_LINE_END) {
         return new GdNewLineEndImpl(node);
+      }
+      else if (type == PARAM) {
+        return new GdParamImpl(node);
+      }
+      else if (type == PARAM_LIST) {
+        return new GdParamListImpl(node);
+      }
+      else if (type == RETURN_HINT) {
+        return new GdReturnHintImpl(node);
       }
       else if (type == SETGET_DECL) {
         return new GdSetgetDeclImpl(node);

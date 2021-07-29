@@ -62,4 +62,10 @@ public class GdConstDeclTlImpl extends GdConstDeclElementImpl implements GdConst
     return GdPsiUtils.getConstName(this);
   }
 
+  @Override
+  @Nullable
+  public String getReturnType() {
+    return GdPsiUtils.getReturnType(this);
+  }
+
 }

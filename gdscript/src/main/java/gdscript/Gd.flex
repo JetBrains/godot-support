@@ -62,7 +62,7 @@ FLIT1 = [0-9]+ \. [0-9]*
 FLIT2 = \. [0-9]+
 FLIT3 = [0-9]+
 
-NEW_LINE = [\r\n]+
+NEW_LINE = [\r\n]
 INDENT = [ \t]+
 //WHITE_SPACE = {NEW_LINE} | {INDENT}
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
@@ -97,11 +97,21 @@ ANNOTATOR = "@"[a-z|A-Z]*
     "false"        { return dedentRoot(GdTypes.FALSE); }
     "null"         { return dedentRoot(GdTypes.NULL); }
     "int"          { return dedentRoot(GdTypes.INT); }
+    "String"       { return dedentRoot(GdTypes.STR); }
+    "self"         { return dedentRoot(GdTypes.SELF); }
+    "continue"     { return dedentRoot(GdTypes.CONTINUE); }
+    "break"        { return dedentRoot(GdTypes.BREAK); }
+    "return"       { return dedentRoot(GdTypes.RETURN); }
+    "void"         { return GdTypes.VOID; }
 
+    "."            { return GdTypes.DOT; }
     ","            { return dedentRoot(GdTypes.COMMA); }
     ":"            { return dedentRoot(GdTypes.COLON); }
     ";"            { yybegin(YYINITIAL); return dedentRoot(GdTypes.SEMICON); }
     "="            { return dedentRoot(GdTypes.EQ); }
+    "->"           { return GdTypes.RET; }
+    "("            { return dedentRoot(GdTypes.LRBR); }
+    ")"            { return dedentRoot(GdTypes.RRBR); }
 
     {ANNOTATOR}    { return GdTypes.ANNOTATOR; }
     {IDENTIFIER}   { return dedentRoot(GdTypes.IDENTIFIER); }
@@ -142,14 +152,12 @@ ANNOTATOR = "@"[a-z|A-Z]*
 //
 //    "class" { return GdTypes.CLASS; }
 //    "enum" { return GdTypes.ENUM; }
-//    "self" { return GdTypes.SELF; }
 //    "if" { return GdTypes.IF; }
 //    "else" { return GdTypes.ELSE; }
 //    "elif" { return GdTypes.ELIF; }
 //
 //    "signal" { return GdTypes.SIGNAL; }
 //    "static" { return GdTypes.STATIC; }
-//    "->" { return GdTypes.RET; }
 //    "_init" { return GdTypes.INIT; }
 //    "breakpoint" { return GdTypes.BREAKPOINT; }
 //    "while" { return GdTypes.WHILE; }
@@ -157,9 +165,6 @@ ANNOTATOR = "@"[a-z|A-Z]*
 //    "in" { return GdTypes.IN; }
 //    "match" { return GdTypes.MATCH; }
 //    "_" { return GdTypes.UNDER; }
-//    "continue" { return GdTypes.CONTINUE; }
-//    "break" { return GdTypes.BREAK; }
-//    "return" { return GdTypes.RETURN; }
 //    "assert" { return GdTypes.ASSERT; }
 //    "yield" { return GdTypes.YIELD; }
 //    "preload" { return GdTypes.PRELOAD; }
@@ -174,13 +179,10 @@ ANNOTATOR = "@"[a-z|A-Z]*
 //    /* Syntax */
 //    "{" { return GdTypes.LCBR; }
 //    "}" { return GdTypes.RCBR; }
-//    "(" { return GdTypes.LRBR; }
-//    ")" { return GdTypes.RRBR; }
 //    "[" { return GdTypes.LSBR; }
 //    "]" { return GdTypes.RSBR; }
 //    "?" { return GdTypes.TERNARY; }
 //    ".." { return GdTypes.DOTDOT; }
-//    "." { return GdTypes.DOT; }
 //
 //
 //    {OPERATOR} { return GdTypes.OPERATOR; }

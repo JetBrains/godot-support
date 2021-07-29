@@ -74,4 +74,10 @@ public class GdClassVarDeclTlImpl extends GdClassVarDeclElementImpl implements G
     return GdPsiUtils.getVarName(this);
   }
 
+  @Override
+  @Nullable
+  public String getReturnType() {
+    return GdPsiUtils.getReturnType(this);
+  }
+
 }

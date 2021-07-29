@@ -6,7 +6,7 @@ import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiWhiteSpace
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.endOffset
 
 class GdCreateMethodAction : BaseIntentionAction {
@@ -45,11 +45,7 @@ class GdCreateMethodAction : BaseIntentionAction {
             return;
         }
 
-        var after = file.lastChild;
-        while (after is PsiWhiteSpace) {
-            after = after.prevSibling;
-        }
-
+        val after = PsiTreeUtil.getDeepestVisibleLast(file) ?: return;
         editor.caretModel.moveToOffset(after.endOffset);
 
         val method = StringBuilder("\n\n\n");

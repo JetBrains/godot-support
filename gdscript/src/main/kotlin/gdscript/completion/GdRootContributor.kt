@@ -5,43 +5,42 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PsiJavaPatterns.psiElement
 import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.completion.util.GdClassVarCompletionUtil
-import gdscript.psi.GdFile
-import gdscript.psi.GdTypes
+import gdscript.completion.util.GdCompletionUtil
+import gdscript.psi.*
 
 class GdRootContributor : CompletionContributor() {
 
-    val AFTER_INHERITANCE =
-        psiElement().withParent(psiElement(PsiErrorElement::class.java).afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java),
-            psiElement(GdTypes.INHERITANCE))
+    val AFTER_INHERITANCE = psiElement()
+        .withParent(
+            psiElement(PsiErrorElement::class.java)
+                .withParent(GdInheritance::class.java)
+                .afterSibling(psiElement(GdNewLineEnd::class.java)))
+    val AFTER_CLASS_NAMING = psiElement()
+        .withParent(
+            psiElement(PsiErrorElement::class.java)
+                .withParent(GdClassNaming::class.java)
+                .afterSibling(psiElement(GdNewLineEnd::class.java)))
+    val AFTER_TOOL = psiElement()
+        .withParent(
+            psiElement(PsiErrorElement::class.java)
+                .withParent(GdToolline::class.java)
+                .afterSibling(psiElement(GdNewLineEnd::class.java)))
+    val AFTER_CONST = psiElement()
+        .withParent(psiElement(PsiErrorElement::class.java)
+            .withParent(psiElement(GdConstDeclTl::class.java)
+                .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdEndStmt::class.java)))
         );
-    val AFTER_CLASS_NAMING =
-        psiElement().withParent(psiElement(PsiErrorElement::class.java).afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java),
-            psiElement(GdTypes.CLASS_NAMING))
-        );
-    val AFTER_TOOL =
-        psiElement().withParent(psiElement(PsiErrorElement::class.java).afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java),
-            psiElement(GdTypes.TOOLLINE))
-        );
-    val AFTER_CONST =
-        psiElement().withParent(psiElement(PsiErrorElement::class.java).afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java),
-            psiElement(GdTypes.CONST_DECL_TL))
-        );
-    val AFTER_VAR =
-        psiElement().withParent(psiElement(PsiErrorElement::class.java).afterSiblingSkipping(psiElement(PsiWhiteSpace::class.java),
-            psiElement(GdTypes.CLASS_VAR_DECL_TL))
+    val AFTER_VAR = psiElement()
+        .withParent(psiElement(PsiErrorElement::class.java)
+            .withParent(psiElement(GdClassVarDeclTl::class.java)
+                .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdEndStmt::class.java)))
         );
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         val position = parameters.position;
-
-        if (!psiElement().withParents(PsiErrorElement::class.java, GdFile::class.java).accepts(position)) {
-            return;
-        }
-
         val previous = PsiTreeUtil.prevCodeLeaf(position.originalElement);
 
         if (previous === null) {
@@ -58,10 +57,11 @@ class GdRootContributor : CompletionContributor() {
             || AFTER_VAR.accepts(position)
         ) {
             addTopLvlDecl(result);
+        } else {
+            return;
         }
 
         result.stopHere();
-        return;
     }
 
     private fun addTopLvlDecl(result: CompletionResultSet) {

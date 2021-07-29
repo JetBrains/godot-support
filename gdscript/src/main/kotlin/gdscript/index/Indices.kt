@@ -12,6 +12,4 @@ object Indices {
     val CLASS_VAR_INDEX = StubIndexKey.createIndexKey<String, GdClassVarDeclTl>("gdscript.classVarDecl")
     val METHOD_DECL = StubIndexKey.createIndexKey<String, GdMethodDeclTl>("gdscript.methodDecl")
 
-    val FILE_NAMES = ID.create<String, Void>("gdscript.filename") // TODO remove
-    val CLASS_NAMES = ID.create<String, Void>("gdscript.classname") // TODO remove
 }

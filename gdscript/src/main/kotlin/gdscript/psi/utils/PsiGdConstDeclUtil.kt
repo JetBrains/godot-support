@@ -1,6 +1,7 @@
 package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
+import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdConstDeclTl
 import gdscript.psi.GdElementFactory
 import gdscript.psi.GdTypes
@@ -15,6 +16,15 @@ object PsiGdConstDeclUtil {
         }
 
         return element.constIdNmi?.name;
+    }
+
+    fun getReturnType(element: GdConstDeclTl): String? {
+        val stub = element.stub;
+        if (stub !== null) {
+            return stub.returnType();
+        }
+
+        return element.typed?.typeHintNm?.name;
     }
 
     fun setName(element: GdConstIdNmiImpl, newName: String?): PsiElement {

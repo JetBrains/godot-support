@@ -25,14 +25,17 @@
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
     <sdkType implementation="gdscript.GdSdk" />
+    <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.GdUsageProvider" />
 
     <!-- Completions -->
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdClassVarCompletionContributor"/>
+    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdMethodDeclCompletionContributor"/>
     <psi.referenceContributor implementation="gdscript.completion.GdInheritanceReferenceContributor" />
     <psi.referenceContributor implementation="gdscript.completion.GdTypeHintReferenceContributor" />
+    <psi.referenceContributor implementation="gdscript.completion.GdSetGetMethodIdReferenceContributor" />
 
     <!-- Annotators -->
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />
@@ -41,18 +44,19 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdSetGetAnnotator" />
 
-    <!-- Indices TODO remove file based index-->
-    <fileBasedIndex implementation="gdscript.index.FilenameIndex" />
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
     <stubIndex implementation="gdscript.index.impl.GdInheritanceIndex" />
     <stubIndex implementation="gdscript.index.impl.GdConstDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassVarDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdMethodDeclIndex" />
-<!--    <fileBasedIndex implementation="com.intellij.psi.search.FilenameIndex" />-->
 
-<!--    <lang.refactoringSupport implementationClass="gdscript.psi.GdRefactoringSupportProvider" />-->
-    <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.GdUsageProvider" />
+    <!-- Actions -->
+    <intentionAction>
+      <className>gdscript.action.GdRemoveSetGetAction</className>
+      <bundleName>messages.gdscript</bundleName>
+      <categoryKey>intention.category</categoryKey>
+    </intentionAction>
 
   </extensions>
 

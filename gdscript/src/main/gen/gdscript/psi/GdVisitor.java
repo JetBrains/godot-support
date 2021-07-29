@@ -75,6 +75,18 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitParam(@NotNull GdParam o) {
+    visitPsiElement(o);
+  }
+
+  public void visitParamList(@NotNull GdParamList o) {
+    visitPsiElement(o);
+  }
+
+  public void visitReturnHint(@NotNull GdReturnHint o) {
+    visitPsiElement(o);
+  }
+
   public void visitSetMethodIdNm(@NotNull GdSetMethodIdNm o) {
     visitNamedElement(o);
   }

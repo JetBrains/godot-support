@@ -14,7 +14,7 @@ object GdLookup {
     const val KEYWORDS = 90.0;
     const val PRIORITY_KEYWORDS = 95.0;
     const val USER_DEFINED = 200.0;
-    const val STATIC_TOP = 500.0;
+    const val TOP = 500.0;
 
     val ANNOTATOR_COLOR = Color(255, 179,115);
 

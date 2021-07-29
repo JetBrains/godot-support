@@ -17,8 +17,7 @@ object PsiGdTypeHintUtil {
     }
 
     fun getName(element: GdTypeHintNm): String {
-        val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
-        return valueNode?.text ?: ""
+        return element.text ?: "";
     }
 
 }

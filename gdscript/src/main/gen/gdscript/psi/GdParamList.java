@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdStmt extends PsiElement {
+public interface GdParamList extends PsiElement {
 
-  @Nullable
-  GdEndStmt getEndStmt();
+  @NotNull
+  List<GdParam> getParamList();
 
 }

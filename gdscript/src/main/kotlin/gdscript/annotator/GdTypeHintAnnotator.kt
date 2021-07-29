@@ -6,7 +6,6 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import gdscript.GdKeywords
-import gdscript.competion.staticLoader.StaticClassLoader
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdTypeHintNm
@@ -19,7 +18,7 @@ class GdTypeHintAnnotator : Annotator {
         }
 
         val name = element.text;
-        if (GdKeywords.BUILT_TYPES.contains(name)) {
+        if (GdKeywords.BUILT_TYPES.contains(name) || name == GdKeywords.VOID) {
             return;
         }
 

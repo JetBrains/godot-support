@@ -18,10 +18,11 @@ object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassV
 
     override fun serialize(stub: GdClassVarDeclStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name());
+        dataStream.writeName(stub.returnType().orEmpty());
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): GdClassVarDeclStub =
-        GdClassVarDeclStubImpl(parentStub, dataStream.readName()?.string);
+        GdClassVarDeclStubImpl(parentStub, dataStream.readNameString(), dataStream.readNameString());
 
     override fun indexStub(stub: GdClassVarDeclStub, sink: IndexSink) {
         sink.occurrence(Indices.CLASS_VAR_INDEX, stub.name());
@@ -31,7 +32,7 @@ object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassV
         GdClassVarDeclTlImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdClassVarDeclTl, parentStub: StubElement<*>?): GdClassVarDeclStub {
-        return GdClassVarDeclStubImpl(parentStub, psi.varName);
+        return GdClassVarDeclStubImpl(parentStub, psi.varName, psi.returnType);
     }
 
 }

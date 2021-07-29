@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
+import java.util.HashMap;
 import gdscript.index.stub.GdMethodDeclStub;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -40,6 +41,18 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
 
   @Override
   @Nullable
+  public GdParamList getParamList() {
+    return PsiTreeUtil.getChildOfType(this, GdParamList.class);
+  }
+
+  @Override
+  @Nullable
+  public GdReturnHint getReturnHint() {
+    return PsiTreeUtil.getChildOfType(this, GdReturnHint.class);
+  }
+
+  @Override
+  @Nullable
   public GdStmtOrSuite getStmtOrSuite() {
     return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
   }
@@ -48,6 +61,18 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
   @Nullable
   public String getMethodName() {
     return GdPsiUtils.getMethodName(this);
+  }
+
+  @Override
+  @Nullable
+  public String getReturnType() {
+    return GdPsiUtils.getReturnType(this);
+  }
+
+  @Override
+  @NotNull
+  public HashMap<String, String> getParameters() {
+    return GdPsiUtils.getParameters(this);
   }
 
 }

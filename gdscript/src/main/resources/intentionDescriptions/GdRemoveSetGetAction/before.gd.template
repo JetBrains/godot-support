@@ -1,0 +1,10 @@
+extends Node
+
+var myValue: int = 4 setget set_myValue, get_myValue;
+
+func set_myValue(value: int) -> void:
+    this.myValue = value;
+
+
+func set_myValue() -> int:
+    return this.myValue;

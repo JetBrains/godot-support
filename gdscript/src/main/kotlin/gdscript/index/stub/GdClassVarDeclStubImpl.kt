@@ -7,14 +7,20 @@ import gdscript.psi.impl.GdClassVarDeclElementType
 
 class GdClassVarDeclStubImpl : StubBase<GdClassVarDeclTl>, GdClassVarDeclStub {
     private var name: String = "";
+    private var returnType: String? = null;
 
-    constructor(parent: StubElement<*>?, name: String?): super(parent, GdClassVarDeclElementType) {
+    constructor(parent: StubElement<*>?, name: String?, returnType: String?): super(parent, GdClassVarDeclElementType) {
         if (name != null) {
             this.name = name
         };
+        this.returnType = if (returnType == "") null else returnType;
     }
 
     override fun name(): String {
         return name;
+    }
+
+    override fun returnType(): String? {
+        return returnType;
     }
 }

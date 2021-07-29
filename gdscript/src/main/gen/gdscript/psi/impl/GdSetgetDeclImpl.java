@@ -34,9 +34,9 @@ public class GdSetgetDeclImpl extends ASTWrapperPsiElement implements GdSetgetDe
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdSetMethodIdNm getSetMethodIdNm() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdSetMethodIdNm.class));
+    return PsiTreeUtil.getChildOfType(this, GdSetMethodIdNm.class);
   }
 
 }

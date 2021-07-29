@@ -14,13 +14,14 @@ public interface GdTokenTypeSet
         GdTypes.TOOL,
         GdTypes.FUNC,
 //        GdTypes.ENUM,
-//        GdTypes.SELF,
+        GdTypes.SELF,
         GdTypes.CONST,
         GdTypes.VAR,
-//        GdTypes.SELF,
         GdTypes.INT,
+        GdTypes.STR,
         GdTypes.TRUE,
         GdTypes.FALSE,
+        GdTypes.VOID,
 //        GdTypes.WHILE,
 //        GdTypes.BREAKPOINT,
 //        GdTypes.STATIC,
@@ -48,9 +49,9 @@ public interface GdTokenTypeSet
 //        GdTypes.IF,
 //        GdTypes.ELSE,
 //        GdTypes.ELIF,
-//        GdTypes.CONTINUE,
-//        GdTypes.BREAK,
-//        GdTypes.RETURN,
+        GdTypes.CONTINUE,
+        GdTypes.BREAK,
+        GdTypes.RETURN,
         GdTypes.PASS
     );
 
@@ -63,7 +64,7 @@ public interface GdTokenTypeSet
 
     // Teal
     TokenSet NUMBERS = TokenSet.create(
-//            GdTypes.NUMBER
+            GdTypes.NUMBER
     );
 
     // White
@@ -71,12 +72,9 @@ public interface GdTokenTypeSet
             GdTypes.IDENTIFIER
     );
 
-    // TODO correct color
     // Green
     TokenSet ANNOTATIONS = TokenSet.create(
             GdTypes.ANNOTATOR
-//            GdTypes.EXPORT,
-//            GdTypes.ONREADY
     );
 
     // Red
