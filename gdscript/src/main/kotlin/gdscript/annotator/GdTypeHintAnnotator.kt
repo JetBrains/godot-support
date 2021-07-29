@@ -23,21 +23,17 @@ class GdTypeHintAnnotator : Annotator {
             return;
         }
 
-//        if (StaticClassLoader.getClasses()[name] !== null) {
-//            holder
-//                .newSilentAnnotation(HighlightSeverity.INFORMATION)
-//                .range(element.textRange)
-//                .textAttributes(GdHighlighterColors.CLASS_TYPE)
-//                .create()
-//            return;
-//        }
-
         if (GdClassNamingIndex.get(
                 name,
                 element.project,
                 GlobalSearchScope.allScope(element.project)
             ).isNotEmpty()
         ) {
+            holder
+                .newSilentAnnotation(HighlightSeverity.INFORMATION)
+                .range(element.textRange)
+                .textAttributes(GdHighlighterColors.CLASS_TYPE)
+                .create()
             return;
         }
 

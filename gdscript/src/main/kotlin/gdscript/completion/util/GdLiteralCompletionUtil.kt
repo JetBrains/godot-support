@@ -9,7 +9,7 @@ object GdLiteralCompletionUtil {
     fun builtIns(result: CompletionResultSet) {
         GdKeywords.LITERALS.forEach {
             result.addElement(
-                GdLookup.create(it, priority = GdLookup.STATIC)
+                GdLookup.create(it, priority = GdLookup.KEYWORDS)
             )
         }
     }
@@ -17,7 +17,7 @@ object GdLiteralCompletionUtil {
     fun builtInTypes(result: CompletionResultSet) {
         GdKeywords.BUILT_TYPES.forEach {
             result.addElement(
-                GdLookup.create(it, priority = GdLookup.STATIC)
+                GdLookup.create(it, priority = GdLookup.KEYWORDS)
             )
         }
     }

@@ -6,6 +6,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
+import gdscript.completion.util.GdClassNameCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdTypeHintNm
 import gdscript.psi.utils.PsiGdClassNamingUtil
@@ -31,18 +32,16 @@ class GdTypeHintReference : PsiReferenceBase<GdTypeHintNm> {
     }
 
     override fun getVariants(): Array<Any> {
-        return arrayOf(); // TODO
-//        val project = myElement.project;
-//        val classNames = PsiGdClassNamingUtil.listClassNameNm(project);
-//
-//        return classNames.mapNotNull {
-//            val name = it.name.orEmpty();
-//            if (name !== "") {
-//                GdLookup.create(name, priority = GdLookup.USER_DEFINED, icon = GdIcon.OBJECT)
-//            } else {
-//                null
-//            }
-//        }.toTypedArray()
+        val project = myElement.project;
+        val classNames = PsiGdClassNamingUtil.listClassNaming(project);
+
+        return classNames.mapNotNull {
+            if (it.classname !== "") {
+                GdClassNameCompletionUtil.toLookup(it);
+            } else {
+                null
+            }
+        }.toTypedArray()
     }
 
 }

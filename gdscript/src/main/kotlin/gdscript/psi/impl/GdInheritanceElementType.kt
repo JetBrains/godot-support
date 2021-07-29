@@ -7,7 +7,6 @@ import gdscript.index.stub.GdInheritanceStub
 import gdscript.index.stub.GdInheritanceStubImpl
 import gdscript.psi.GdInheritance
 
-
 object GdInheritanceElementType : IStubElementType<GdInheritanceStub, GdInheritance>("inheritance", GdLanguage.INSTANCE) {
 
     @JvmStatic

@@ -12,10 +12,11 @@ public interface GdTokenTypeSet
 //        GdTypes.CLASS,
         GdTypes.EXTENDS,
         GdTypes.TOOL,
+        GdTypes.FUNC,
 //        GdTypes.ENUM,
 //        GdTypes.SELF,
         GdTypes.CONST,
-//        GdTypes.VAR,
+        GdTypes.VAR,
 //        GdTypes.SELF,
         GdTypes.INT,
         GdTypes.TRUE,
@@ -24,7 +25,7 @@ public interface GdTokenTypeSet
 //        GdTypes.BREAKPOINT,
 //        GdTypes.STATIC,
 //        GdTypes.SIGNAL,
-//        GdTypes.SETGET,
+        GdTypes.SETGET,
 //        GdTypes.FOR,
 //        GdTypes.IN,
 //        GdTypes.MATCH,
@@ -39,8 +40,7 @@ public interface GdTokenTypeSet
 //        GdTypes.TAU,
 //        GdTypes.NAN,
 //        GdTypes.INF,
-        GdTypes.NULL,
-        GdTypes.FUNC
+        GdTypes.NULL
     );
 
     // Pink
@@ -74,6 +74,7 @@ public interface GdTokenTypeSet
     // TODO correct color
     // Green
     TokenSet ANNOTATIONS = TokenSet.create(
+            GdTypes.ANNOTATOR
 //            GdTypes.EXPORT,
 //            GdTypes.ONREADY
     );

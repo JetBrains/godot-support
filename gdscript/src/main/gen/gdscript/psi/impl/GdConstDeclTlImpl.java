@@ -56,4 +56,10 @@ public class GdConstDeclTlImpl extends GdConstDeclElementImpl implements GdConst
     return PsiTreeUtil.getChildOfType(this, GdTyped.class);
   }
 
+  @Override
+  @Nullable
+  public String getConstName() {
+    return GdPsiUtils.getConstName(this);
+  }
+
 }

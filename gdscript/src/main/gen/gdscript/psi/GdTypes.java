@@ -5,22 +5,33 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
 import gdscript.psi.impl.GdClassNamingElementType;
+import gdscript.psi.impl.GdClassVarDeclElementType;
 import gdscript.psi.impl.GdConstDeclElementType;
 import gdscript.psi.impl.GdInheritanceElementType;
+import gdscript.psi.impl.GdMethodDeclElementType;
 import gdscript.psi.impl.*;
 
 public interface GdTypes {
 
+  IElementType ANNOTATION = new GdElementType("ANNOTATION");
   IElementType BUILT_IN_TYPE = new GdElementType("BUILT_IN_TYPE");
   IElementType CLASS_NAME_NM = new GdElementType("CLASS_NAME_NM");
   IElementType CLASS_NAMING = GdClassNamingElementType.getInstance("CLASS_NAMING");
+  IElementType CLASS_VAR_DECL_TL = GdClassVarDeclElementType.getInstance("CLASS_VAR_DECL_TL");
+  IElementType CLASS_VAR_ID_NMI = new GdElementType("CLASS_VAR_ID_NMI");
   IElementType CONST_DECL_TL = GdConstDeclElementType.getInstance("CONST_DECL_TL");
   IElementType CONST_ID_NMI = new GdElementType("CONST_ID_NMI");
   IElementType END_STMT = new GdElementType("END_STMT");
   IElementType EXPR = new GdElementType("EXPR");
+  IElementType GET_METHOD_ID_NM = new GdElementType("GET_METHOD_ID_NM");
   IElementType INHERITANCE = GdInheritanceElementType.getInstance("INHERITANCE");
   IElementType INHERITANCE_ID_NMI = new GdElementType("INHERITANCE_ID_NMI");
   IElementType LITERAL = new GdElementType("LITERAL");
+  IElementType METHOD_DECL_TL = GdMethodDeclElementType.getInstance("METHOD_DECL_TL");
+  IElementType METHOD_ID_NMI = new GdElementType("METHOD_ID_NMI");
+  IElementType NEW_LINE_END = new GdElementType("NEW_LINE_END");
+  IElementType SETGET_DECL = new GdElementType("SETGET_DECL");
+  IElementType SET_METHOD_ID_NM = new GdElementType("SET_METHOD_ID_NM");
   IElementType STMT = new GdElementType("STMT");
   IElementType STMT_OR_SUITE = new GdElementType("STMT_OR_SUITE");
   IElementType SUITE = new GdElementType("SUITE");
@@ -29,6 +40,7 @@ public interface GdTypes {
   IElementType TYPED = new GdElementType("TYPED");
   IElementType TYPE_HINT_NM = new GdElementType("TYPE_HINT_NM");
 
+  IElementType ANNOTATOR = new GdTokenType("ANNOTATOR");
   IElementType BAD_CHARACTER = new GdTokenType("bad_character");
   IElementType CLASS_NAME = new GdTokenType("CLASS_NAME");
   IElementType COLON = new GdTokenType("COLON");
@@ -49,14 +61,19 @@ public interface GdTypes {
   IElementType NUMBER = new GdTokenType("NUMBER");
   IElementType PASS = new GdTokenType("PASS");
   IElementType SEMICON = new GdTokenType("SEMICON");
+  IElementType SETGET = new GdTokenType("SETGET");
   IElementType STRING = new GdTokenType("STRING");
   IElementType TOOL = new GdTokenType("TOOL");
   IElementType TRUE = new GdTokenType("TRUE");
+  IElementType VAR = new GdTokenType("VAR");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-      if (type == BUILT_IN_TYPE) {
+      if (type == ANNOTATION) {
+        return new GdAnnotationImpl(node);
+      }
+      else if (type == BUILT_IN_TYPE) {
         return new GdBuiltInTypeImpl(node);
       }
       else if (type == CLASS_NAME_NM) {
@@ -64,6 +81,12 @@ public interface GdTypes {
       }
       else if (type == CLASS_NAMING) {
         return new GdClassNamingImpl(node);
+      }
+      else if (type == CLASS_VAR_DECL_TL) {
+        return new GdClassVarDeclTlImpl(node);
+      }
+      else if (type == CLASS_VAR_ID_NMI) {
+        return new GdClassVarIdNmiImpl(node);
       }
       else if (type == CONST_DECL_TL) {
         return new GdConstDeclTlImpl(node);
@@ -77,6 +100,9 @@ public interface GdTypes {
       else if (type == EXPR) {
         return new GdExprImpl(node);
       }
+      else if (type == GET_METHOD_ID_NM) {
+        return new GdGetMethodIdNmImpl(node);
+      }
       else if (type == INHERITANCE) {
         return new GdInheritanceImpl(node);
       }
@@ -85,6 +111,21 @@ public interface GdTypes {
       }
       else if (type == LITERAL) {
         return new GdLiteralImpl(node);
+      }
+      else if (type == METHOD_DECL_TL) {
+        return new GdMethodDeclTlImpl(node);
+      }
+      else if (type == METHOD_ID_NMI) {
+        return new GdMethodIdNmiImpl(node);
+      }
+      else if (type == NEW_LINE_END) {
+        return new GdNewLineEndImpl(node);
+      }
+      else if (type == SETGET_DECL) {
+        return new GdSetgetDeclImpl(node);
+      }
+      else if (type == SET_METHOD_ID_NM) {
+        return new GdSetMethodIdNmImpl(node);
       }
       else if (type == STMT) {
         return new GdStmtImpl(node);

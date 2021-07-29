@@ -9,7 +9,6 @@ import gdscript.index.stub.GdClassNamingStubImpl
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdInheritance
 
-
 object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNaming>("classNaming", GdLanguage.INSTANCE) {
 
     fun getClassname(element: GdClassNamingImpl?): String {

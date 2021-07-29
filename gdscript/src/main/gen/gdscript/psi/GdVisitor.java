@@ -7,6 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public class GdVisitor extends PsiElementVisitor {
 
+  public void visitAnnotation(@NotNull GdAnnotation o) {
+    visitPsiElement(o);
+  }
+
   public void visitBuiltInType(@NotNull GdBuiltInType o) {
     visitPsiElement(o);
   }
@@ -17,6 +21,14 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitClassNaming(@NotNull GdClassNaming o) {
     visitPsiElement(o);
+  }
+
+  public void visitClassVarDeclTl(@NotNull GdClassVarDeclTl o) {
+    visitTopLevelDecl(o);
+  }
+
+  public void visitClassVarIdNmi(@NotNull GdClassVarIdNmi o) {
+    visitNamedIdElement(o);
   }
 
   public void visitConstDeclTl(@NotNull GdConstDeclTl o) {
@@ -35,6 +47,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitGetMethodIdNm(@NotNull GdGetMethodIdNm o) {
+    visitNamedElement(o);
+  }
+
   public void visitInheritance(@NotNull GdInheritance o) {
     visitPsiElement(o);
   }
@@ -44,6 +60,26 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitLiteral(@NotNull GdLiteral o) {
+    visitPsiElement(o);
+  }
+
+  public void visitMethodDeclTl(@NotNull GdMethodDeclTl o) {
+    visitTopLevelDecl(o);
+  }
+
+  public void visitMethodIdNmi(@NotNull GdMethodIdNmi o) {
+    visitNamedIdElement(o);
+  }
+
+  public void visitNewLineEnd(@NotNull GdNewLineEnd o) {
+    visitPsiElement(o);
+  }
+
+  public void visitSetMethodIdNm(@NotNull GdSetMethodIdNm o) {
+    visitNamedElement(o);
+  }
+
+  public void visitSetgetDecl(@NotNull GdSetgetDecl o) {
     visitPsiElement(o);
   }
 

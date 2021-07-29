@@ -6,6 +6,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
+import gdscript.completion.util.GdClassNameCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdInheritanceIdNmi
 import gdscript.psi.utils.PsiGdClassNamingUtil
@@ -35,9 +36,8 @@ class GdInheritanceNmReference : PsiReferenceBase<GdInheritanceIdNmi> {
         val classNames = PsiGdClassNamingUtil.listClassNaming(project);
 
         return classNames.mapNotNull {
-            val name = it.classname;
-            if (name !== "") {
-                GdLookup.create(name, priority = GdLookup.USER_DEFINED, icon = GdIcon.OBJECT, typed = it.parentName)
+            if (it.classname !== "") {
+                GdClassNameCompletionUtil.toLookup(it);
             } else {
                 null
             }

@@ -26,9 +26,6 @@ class GdClassNameAnnotator : Annotator {
             ) {
                 return;
             }
-//            if (StaticClassLoader.getClasses()[element.name] !== null) {
-//                return;
-//            }
 
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Unknown class")
@@ -40,7 +37,6 @@ class GdClassNameAnnotator : Annotator {
                         GlobalSearchScope.fileScope(element.containingFile)
                     )
                 ).isEmpty()
-//                && StaticClassLoader.getClasses()[element.name] === null
             ) {
                 return;
             }

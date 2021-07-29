@@ -27,4 +27,10 @@ public class GdToollineImpl extends ASTWrapperPsiElement implements GdToolline {
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public GdNewLineEnd getNewLineEnd() {
+    return PsiTreeUtil.getChildOfType(this, GdNewLineEnd.class);
+  }
+
 }

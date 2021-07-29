@@ -13,6 +13,9 @@ public interface GdInheritance extends PsiElement, StubBasedPsiElement<GdInherit
   GdInheritanceIdNmi getInheritanceIdNmi();
 
   @Nullable
+  GdNewLineEnd getNewLineEnd();
+
+  @Nullable
   String getInheritanceName();
 
 }

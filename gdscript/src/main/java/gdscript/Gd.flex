@@ -13,7 +13,6 @@ import java.util.Stack;
 %unicode
 %function advance
 %type IElementType
-%line
 %column
 %eof{  return;
 %eof}
@@ -21,6 +20,7 @@ import java.util.Stack;
 %{
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
+    int yycolumn;
 
     public IElementType dedentRoot(IElementType type) {
         if (yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
@@ -50,9 +50,6 @@ import java.util.Stack;
     private void dedent() {
         indent = Math.max(0, indent - indentSizes.pop());
     }
-
-    int yyline;
-    int yycolumn;
 %}
 
 LETTER = [a-z|A-Z|_]
@@ -72,6 +69,7 @@ IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 NUMBER = {FLIT1}|{FLIT2}|{FLIT3}
 STRING = \"(.)*\"
 COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
+ANNOTATOR = "@"[a-z|A-Z]*
 
 //ASSIGN = "=" | ":=" | "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 //TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -91,6 +89,8 @@ COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
     "func"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC); }
     "tool"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.TOOL); }
     "const"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CONST); }
+    "var"          { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.VAR); }
+    "setget"       { return GdTypes.SETGET; }
 
     "pass"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.PASS); }
     "true"         { return dedentRoot(GdTypes.TRUE); }
@@ -102,14 +102,16 @@ COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
     ":"            { return dedentRoot(GdTypes.COLON); }
     ";"            { yybegin(YYINITIAL); return dedentRoot(GdTypes.SEMICON); }
     "="            { return dedentRoot(GdTypes.EQ); }
+
+    {ANNOTATOR}    { return GdTypes.ANNOTATOR; }
     {IDENTIFIER}   { return dedentRoot(GdTypes.IDENTIFIER); }
     {NUMBER}       { return dedentRoot(GdTypes.NUMBER); }
     {STRING}       { return dedentRoot(GdTypes.STRING); }
     {COMMENT}      { return GdTypes.COMMENT; }
 
     {INDENT}  {
-        if (zzAtBOL) {
-            int spaces = yytext().length();
+        int spaces = yytext().length();
+        if (yycolumn <= spaces) {
             if (spaces == 1) spaces = 0;
 
             if (spaces > indent) {
@@ -130,12 +132,13 @@ COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 <<EOF>> {
     if (dedentSpaces()) {
         return GdTypes.DEDENT;
-    } else return null;
+    } else {
+        return null;
+    }
 }
 
 //<AWAIT_NEW_LINE, AWAIT_STMT_END> {
 //<YYINITIAL, AWAIT_NEW_LINE, AWAIT_STMT_END> {
-//    "var"         { yybegin(AWAIT_STMT_END); return GdTypes.VAR; }
 //
 //    "class" { return GdTypes.CLASS; }
 //    "enum" { return GdTypes.ENUM; }
@@ -144,7 +147,6 @@ COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 //    "else" { return GdTypes.ELSE; }
 //    "elif" { return GdTypes.ELIF; }
 //
-//    "setget" { return GdTypes.SETGET; }
 //    "signal" { return GdTypes.SIGNAL; }
 //    "static" { return GdTypes.STATIC; }
 //    "->" { return GdTypes.RET; }
@@ -168,10 +170,6 @@ COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 //    "TAU" { return GdTypes.TAU; }
 //    "NAN" { return GdTypes.NAN; }
 //    "INF" { return GdTypes.INF; }
-//
-//    /* Annotations */
-//    "@onready" { return GdTypes.ONREADY; }
-//    "@export" { return GdTypes.EXPORT; }
 //
 //    /* Syntax */
 //    "{" { return GdTypes.LCBR; }

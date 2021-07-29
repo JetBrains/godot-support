@@ -101,33 +101,38 @@
 
 gdfile ::= inheritance? classNaming? toolline? topLevelDecl*
 
-inheritance ::= EXTENDS inheritanceId_nmi (DOT IDENTIFIER)? NEW_LINE {methods=[getInheritanceName] pin=1 recoverWhile=inheritance_r mixin="gdscript.psi.impl.GdInheritanceElementImpl" stubClass="gdscript.index.stub.GdInheritanceStub" elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"}
+inheritance ::= EXTENDS inheritanceId_nmi (DOT IDENTIFIER)? newLineEnd {methods=[getInheritanceName] pin=1 recoverWhile=inheritance_r mixin="gdscript.psi.impl.GdInheritanceElementImpl" stubClass="gdscript.index.stub.GdInheritanceStub" elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"}
 inheritanceId_nmi ::= IDENTIFIER
-private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC | IDENTIFIER)
-//private inheritance_r ::= !(CLASS_NAME | TOOL | FUNC | annotation | CONST)
+private inheritance_r ::= !(CLASS_NAME | TOOL) & topLevelDecl_r
 
 // TODO resource
-classNaming ::= CLASS_NAME className_nm (COMMA STRING)? NEW_LINE {methods=[getClassname getParentName] pin=1 recoverWhile=classNaming_r mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub" elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"}
+classNaming ::= CLASS_NAME className_nm (COMMA STRING)? newLineEnd {methods=[getClassname getParentName] pin=1 recoverWhile=classNaming_r mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub" elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"}
 className_nm ::= IDENTIFIER
-private classNaming_r ::= !(TOOL | IDENTIFIER) & topLevelDecl_r
+private classNaming_r ::= !(TOOL) & topLevelDecl_r
 
-toolline ::= TOOL NEW_LINE {pin=1 recoverWhile=toolline_r}
-private toolline_r ::= !(IDENTIFIER) & topLevelDecl_r
+toolline ::= TOOL newLineEnd {pin=1 recoverWhile=topLevelDecl_r}
 
 topLevelDecl ::=
-    constDecl_tl
-//    methodDecl_tl
+    constDecl_tl |
+    classVarDecl_tl |
+    methodDecl_tl
 
-private topLevelDecl_r ::= !(FUNC | CONST | IDENTIFIER)
+private topLevelDecl_r ::= !(FUNC | CONST | IDENTIFIER | VAR | annotation)
 
-constDecl_tl ::= CONST constId_nmi typed? EQ expr endStmt {methods=[] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
+constDecl_tl ::= CONST constId_nmi typed? EQ expr endStmt {methods=[getConstName] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
 constId_nmi ::= IDENTIFIER
 
+classVarDecl_tl ::= annotation* VAR classVarId_nmi typed? (EQ expr)? setgetDecl? endStmt {methods=[getVarName] pin=2 recoverWhile=topLevelDecl_r  mixin="gdscript.psi.impl.GdClassVarDeclElementImpl" stubClass="gdscript.index.stub.GdClassVarDeclStub" elementTypeFactory="gdscript.psi.impl.GdClassVarDeclElementType.getInstance"}
+classVarId_nmi ::= IDENTIFIER
+setgetDecl ::= SETGET setMethodId_nm (COMMA getMethodId_nm)?
+setMethodId_nm ::= IDENTIFIER
+getMethodId_nm ::= IDENTIFIER
 
 //private topLevelDecl_r ::= !(VAR | CONST | (STATIC? FUNC) | annotation | SIGNAL | ENUM | CLASS)
 
-//methodDecl_tl ::= FUNC IDENTIFIER COLON stmtOrSuite {methods=[getMethodName] pin=1 recoverWhile=topLevelDecl_r} // TODO recover nesmí mít func -> inline lambdy by to porušily
-
+// TODO recover nesmí mít func -> inline lambdy by to porušily
+methodDecl_tl ::= FUNC methodId_nmi COLON stmtOrSuite {methods=[getMethodName] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub" elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"}
+methodId_nmi ::= IDENTIFIER
 
 stmtOrSuite ::= stmt | (NEW_LINE INDENT suite DEDENT)
 //stmtOrSuite ::= stmt | (NEW_LINE suite)
@@ -143,4 +148,6 @@ typed ::= COLON typeHint_nm
 typeHint_nm ::= builtInType | IDENTIFIER
 literal ::= TRUE | FALSE | STRING | NUMBER | NULL
 builtInType ::= INT
-endStmt ::= SEMICON | NEW_LINE
+endStmt ::= SEMICON | newLineEnd
+newLineEnd ::= NEW_LINE | <<eof>>
+annotation ::= ANNOTATOR // TODO params

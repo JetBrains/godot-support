@@ -10,11 +10,6 @@
             <option name="FOREGROUND" value="8effda" />
         </value>
     </option>
-
-
-
-
-
     <option name="GD_FLOW_KEYWORDS">
         <value>
             <option name="FOREGROUND" value="ff8ccc" />
@@ -42,7 +37,7 @@
     </option>
     <option name="GD_ANNOTATION">
         <value>
-            <option name="FOREGROUND" value="7d9b60" />
+            <option name="FOREGROUND" value="ffb373" />
         </value>
     </option>
     <option name="GD_BAD_CHARACTER">

@@ -21,4 +21,7 @@ public interface GdConstDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdCon
   @Nullable
   GdTyped getTyped();
 
+  @Nullable
+  String getConstName();
+
 }

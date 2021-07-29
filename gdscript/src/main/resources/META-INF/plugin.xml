@@ -27,25 +27,27 @@
     <sdkType implementation="gdscript.GdSdk" />
 
     <!-- Completions -->
-<!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdRootCompletionContributor"/>-->
-<!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdClassNameCompletionContributor"/>-->
-<!--    <completion.contributor language="GdScript" implementationClass="gdscript.competion.GdMethodNameCompletionContributor"/>-->
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>
+    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdClassVarCompletionContributor"/>
     <psi.referenceContributor implementation="gdscript.completion.GdInheritanceReferenceContributor" />
     <psi.referenceContributor implementation="gdscript.completion.GdTypeHintReferenceContributor" />
 
     <!-- Annotators -->
-<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdRootAnnotator"/>-->
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdTypeHintAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstVarIdAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator" />
 
     <!-- Indices TODO remove file based index-->
     <fileBasedIndex implementation="gdscript.index.FilenameIndex" />
+    <stubElementTypeHolder class="gdscript.psi.GdTypes" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
     <stubIndex implementation="gdscript.index.impl.GdInheritanceIndex" />
-    <stubElementTypeHolder class="gdscript.psi.GdTypes" />
+    <stubIndex implementation="gdscript.index.impl.GdConstDeclIndex" />
+    <stubIndex implementation="gdscript.index.impl.GdClassVarDeclIndex" />
+    <stubIndex implementation="gdscript.index.impl.GdMethodDeclIndex" />
 <!--    <fileBasedIndex implementation="com.intellij.psi.search.FilenameIndex" />-->
 
 <!--    <lang.refactoringSupport implementationClass="gdscript.psi.GdRefactoringSupportProvider" />-->

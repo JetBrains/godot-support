@@ -2,9 +2,7 @@ package gdscript.psi
 
 import com.intellij.psi.PsiElement
 import gdscript.psi.impl.*
-import gdscript.psi.utils.PsiGdConstDeclUtil
-import gdscript.psi.utils.PsiGdInheritanceUtil
-import gdscript.psi.utils.PsiGdTypeHintUtil
+import gdscript.psi.utils.*
 
 object GdPsiUtils {
 
@@ -57,6 +55,10 @@ object GdPsiUtils {
     fun getNameIdentifier(element: GdConstIdNmiImpl): PsiElement? {
         return PsiGdConstDeclUtil.getNameIdentifier(element)
     }
+    @JvmStatic
+    fun getConstName(element: GdConstDeclTl): String? {
+        return PsiGdConstDeclUtil.getConstName(element);
+    }
 
     /** Type hint   */
     @JvmStatic
@@ -68,10 +70,56 @@ object GdPsiUtils {
         return PsiGdTypeHintUtil.setName(element, newName)
     }
 
+    /** Class variable  */
+    @JvmStatic
+    fun getVarName(element: GdClassVarDeclTl): String? {
+        return PsiGdClassVarUtil.getVarName(element)
+    }
+    @JvmStatic
+    fun getName(element: GdClassVarIdNmi): String {
+        return PsiGdClassVarUtil.getName(element)
+    }
+    @JvmStatic
+    fun setName(element: GdClassVarIdNmi, newName: String?): PsiElement {
+        return PsiGdClassVarUtil.setName(element, newName)
+    }
+    @JvmStatic
+    fun getNameIdentifier(element: GdClassVarIdNmi): PsiElement? {
+        return PsiGdClassVarUtil.getNameIdentifier(element)
+    }
+    @JvmStatic
+    fun getName(element: GdSetMethodIdNm): String {
+        return PsiGdClassVarUtil.getName(element)
+    }
+    @JvmStatic
+    fun setName(element: GdSetMethodIdNm, newName: String?): PsiElement {
+        return PsiGdClassVarUtil.setName(element, newName)
+    }
+    @JvmStatic
+    fun getName(element: GdGetMethodIdNm): String {
+        return PsiGdClassVarUtil.getName(element)
+    }
+    @JvmStatic
+    fun setName(element: GdGetMethodIdNm, newName: String?): PsiElement {
+        return PsiGdClassVarUtil.setName(element, newName)
+    }
+
     /** Method  */
-//    @JvmStatic
-//    fun getMethodName(element: GdMethodDeclTl?): String? {
-//        return GdPsiMethodUtil.getMethodName(element)
-//    }
+    @JvmStatic
+    fun getMethodName(element: GdMethodDeclTl): String? {
+        return PsiGdMethodDeclUtil.getMethodName(element)
+    }
+    @JvmStatic
+    fun getName(element: GdMethodIdNmi): String {
+        return PsiGdMethodDeclUtil.getName(element)
+    }
+    @JvmStatic
+    fun setName(element: GdMethodIdNmi, newName: String?): PsiElement {
+        return PsiGdMethodDeclUtil.setName(element, newName)
+    }
+    @JvmStatic
+    fun getNameIdentifier(element: GdMethodIdNmi): PsiElement? {
+        return PsiGdMethodDeclUtil.getNameIdentifier(element)
+    }
 
 }

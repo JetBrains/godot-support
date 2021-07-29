@@ -1,15 +1,11 @@
 package gdscript.psi.impl
 
-import com.intellij.psi.PsiElement
 import com.intellij.psi.stubs.*
 import gdscript.GdLanguage
 import gdscript.index.Indices
 import gdscript.index.stub.GdConstDeclStub
 import gdscript.index.stub.GdConstDeclStubImpl
 import gdscript.psi.GdConstDeclTl
-import gdscript.psi.GdElementFactory
-import gdscript.psi.GdTypes
-
 
 object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>("constDecl", GdLanguage.INSTANCE) {
 
@@ -28,14 +24,14 @@ object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>
         GdConstDeclStubImpl(parentStub, dataStream.readName()?.string);
 
     override fun indexStub(stub: GdConstDeclStub, sink: IndexSink) {
-        sink.occurrence(Indices.INHERITANCE_INDEX, stub.name());
+        sink.occurrence(Indices.CONST_DECL_INDEX, stub.name());
     }
 
     override fun createPsi(stub: GdConstDeclStub): GdConstDeclTl =
         GdConstDeclTlImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdConstDeclTl, parentStub: StubElement<*>?): GdConstDeclStub {
-        return GdConstDeclStubImpl(parentStub, psi.constIdNmi?.name);
+        return GdConstDeclStubImpl(parentStub, psi.constName);
     }
 
 }

@@ -19,7 +19,11 @@ public class GdIcon {
         if (icon == null) {
             try {
                 Icon loaded = IconLoader.getIcon(String.format("icons/godot_editor/%s.svg", className), GdIcon.class);
-                editorIcons.put(className, loaded);
+                if (loaded.getIconHeight() > 1) {
+                    editorIcons.put(className, loaded);
+                } else {
+                    editorIcons.put(className, OBJECT);
+                }
             } catch (Exception e) {
                 editorIcons.put(className, OBJECT);
             }

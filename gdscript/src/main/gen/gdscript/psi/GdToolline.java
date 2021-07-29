@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface GdToolline extends PsiElement {
 
+  @Nullable
+  GdNewLineEnd getNewLineEnd();
+
 }

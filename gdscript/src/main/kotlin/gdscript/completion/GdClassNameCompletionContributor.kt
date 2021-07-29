@@ -5,7 +5,6 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PsiJavaPatterns.psiElement
 import gdscript.GdKeywords
-import gdscript.completion.util.GdClassCompletionUtil
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdInheritance
 

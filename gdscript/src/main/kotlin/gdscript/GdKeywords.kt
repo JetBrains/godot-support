@@ -7,6 +7,8 @@ object GdKeywords {
     const val TOOL = "tool"
     const val FUNC = "func"
     const val CONST = "const"
+    const val VAR = "var"
+    const val SETGET = "setget"
 
     const val TRUE = "true"
     const val FALSE = "false"
@@ -15,5 +17,7 @@ object GdKeywords {
 
     const val INT = "int"
     val BUILT_TYPES = arrayOf(INT);
+
+    val ANNOTATIONS = arrayOf("export", "onready");
 
 }
