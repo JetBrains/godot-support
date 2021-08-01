@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import gdscript.GdKeywords
-import gdscript.action.GdRemoveAnnotationAction
+import gdscript.action.quickFix.GdRemoveAnnotationAction
 import gdscript.psi.GdAnnotation
 
 class GdAnnotationAnnotator : Annotator {

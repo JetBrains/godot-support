@@ -6,6 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdClassVarDeclStub;
+import com.intellij.navigation.ItemPresentation;
 
 public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdClassVarDeclStub> {
 
@@ -28,9 +29,12 @@ public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<Gd
   GdTyped getTyped();
 
   @Nullable
-  String getVarName();
+  String getName();
 
-  @Nullable
+  @NotNull
   String getReturnType();
+
+  @NotNull
+  ItemPresentation getPresentation();
 
 }

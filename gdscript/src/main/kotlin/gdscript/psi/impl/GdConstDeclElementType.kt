@@ -18,11 +18,11 @@ object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>
 
     override fun serialize(stub: GdConstDeclStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name());
-        dataStream.writeName(stub.returnType().orEmpty());
+        dataStream.writeName(stub.returnType());
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): GdConstDeclStub =
-        GdConstDeclStubImpl(parentStub, dataStream.readNameString(), dataStream.readNameString());
+        GdConstDeclStubImpl(parentStub, dataStream.readNameString(), dataStream.readNameString() ?: "");
 
     override fun indexStub(stub: GdConstDeclStub, sink: IndexSink) {
         sink.occurrence(Indices.CONST_DECL_INDEX, stub.name());

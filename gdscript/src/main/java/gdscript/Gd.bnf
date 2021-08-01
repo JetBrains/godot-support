@@ -48,7 +48,6 @@
 //    signal='signal'
 //    static='static'
 //    ret='->'
-//    init='_init'
 //    breakpoint='breakpoint'
 //    while='while'
 //    for='for'
@@ -113,27 +112,29 @@ private classNaming_r ::= !(TOOL) & topLevelDecl_r
 toolline ::= TOOL newLineEnd {pin=1 recoverWhile=topLevelDecl_r}
 
 topLevelDecl ::=
-    constDecl_tl |
-    classVarDecl_tl |
-    methodDecl_tl
+    constDecl_tl
+    | classVarDecl_tl
+    | methodDecl_tl
 
 private topLevelDecl_r ::= !(FUNC | CONST | VAR | annotation)
 
-constDecl_tl ::= CONST constId_nmi typed? EQ expr endStmt {methods=[getConstName getReturnType] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
+constDecl_tl ::= CONST constId_nmi typed? EQ expr endStmt {methods=[getConstName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
 constId_nmi ::= IDENTIFIER
 
-classVarDecl_tl ::= annotation* VAR classVarId_nmi typed? (EQ expr)? setgetDecl? endStmt {methods=[getVarName getReturnType] pin=2 recoverWhile=topLevelDecl_r  mixin="gdscript.psi.impl.GdClassVarDeclElementImpl" stubClass="gdscript.index.stub.GdClassVarDeclStub" elementTypeFactory="gdscript.psi.impl.GdClassVarDeclElementType.getInstance"}
+classVarDecl_tl ::= annotation* VAR classVarId_nmi typed? (EQ expr)? setgetDecl? endStmt {methods=[getName getReturnType getPresentation] pin=2 recoverWhile=topLevelDecl_r  mixin="gdscript.psi.impl.GdClassVarDeclElementImpl" stubClass="gdscript.index.stub.GdClassVarDeclStub" elementTypeFactory="gdscript.psi.impl.GdClassVarDeclElementType.getInstance"}
 classVarId_nmi ::= IDENTIFIER
 setgetDecl ::= SETGET setMethodId_nm? (COMMA getMethodId_nm)?
 setMethodId_nm ::= IDENTIFIER
 getMethodId_nm ::= IDENTIFIER
 
 // TODO recover nesmí mít func -> inline lambdy by to porušily
-methodDecl_tl ::= FUNC methodId_nmi LRBR paramList? RRBR returnHint? COLON stmtOrSuite {methods=[getMethodName getReturnType getParameters] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub" elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"}
+methodDecl_tl ::= FUNC methodId_nmi LRBR paramList? RRBR parentMethodCall? returnHint? COLON stmtOrSuite {methods=[getName getReturnType getParameters getPresentation isConstructor] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub" elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"}
 methodId_nmi ::= IDENTIFIER
 paramList ::= param (COMMA param)*
 param ::= VAR? IDENTIFIER typed? (EQ expr)?
 returnHint ::= RET (typeHint_nm | VOID)
+parentMethodCall ::= DOT LRBR argList? RRBR
+argList ::= expr (COMMA expr)*
 
 stmtOrSuite ::= stmt | (NEW_LINE INDENT suite DEDENT?)
 suite ::= stmt*
@@ -147,7 +148,7 @@ expr ::=
 
 typed ::= COLON typeHint_nm
 typeHint_nm ::= builtInType | IDENTIFIER
-literal ::= TRUE | FALSE | STRING | NUMBER | NULL
+literal ::= TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF
 builtInType ::= INT | STR
 endStmt ::= SEMICON | newLineEnd
 newLineEnd ::= NEW_LINE | <<eof>>

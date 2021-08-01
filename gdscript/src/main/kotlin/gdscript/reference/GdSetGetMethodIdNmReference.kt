@@ -35,7 +35,7 @@ class GdSetGetMethodIdNmReference : PsiReferenceBase<GdNamedElement> {
             PsiTreeUtil.findChildrenOfType(myElement.containingFile.originalElement, GdMethodDeclTl::class.java);
 
         return methods.mapNotNull {
-            it.methodName?.let { it1 -> GdLookup.create(it1) }
+            it.name?.let { it1 -> GdLookup.create(it1) }
         }.toTypedArray()
     }
 

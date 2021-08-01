@@ -37,10 +37,10 @@ public interface GdTokenTypeSet
 //        GdTypes.AND,
 //        GdTypes.OR,
 //        GdTypes.NOT,
-//        GdTypes.PI,
-//        GdTypes.TAU,
-//        GdTypes.NAN,
-//        GdTypes.INF,
+        GdTypes.PI,
+        GdTypes.TAU,
+        GdTypes.NAN,
+        GdTypes.INF,
         GdTypes.NULL
     );
 

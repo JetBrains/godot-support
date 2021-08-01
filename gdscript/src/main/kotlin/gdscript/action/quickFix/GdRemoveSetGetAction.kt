@@ -1,4 +1,4 @@
-package gdscript.action
+package gdscript.action.quickFix
 
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.openapi.editor.Editor

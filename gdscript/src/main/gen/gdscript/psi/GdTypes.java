@@ -14,6 +14,7 @@ import gdscript.psi.impl.*;
 public interface GdTypes {
 
   IElementType ANNOTATION = new GdElementType("ANNOTATION");
+  IElementType ARG_LIST = new GdElementType("ARG_LIST");
   IElementType BUILT_IN_TYPE = new GdElementType("BUILT_IN_TYPE");
   IElementType CLASS_NAME_NM = new GdElementType("CLASS_NAME_NM");
   IElementType CLASS_NAMING = GdClassNamingElementType.getInstance("CLASS_NAMING");
@@ -32,6 +33,7 @@ public interface GdTypes {
   IElementType NEW_LINE_END = new GdElementType("NEW_LINE_END");
   IElementType PARAM = new GdElementType("PARAM");
   IElementType PARAM_LIST = new GdElementType("PARAM_LIST");
+  IElementType PARENT_METHOD_CALL = new GdElementType("PARENT_METHOD_CALL");
   IElementType RETURN_HINT = new GdElementType("RETURN_HINT");
   IElementType SETGET_DECL = new GdElementType("SETGET_DECL");
   IElementType SET_METHOD_ID_NM = new GdElementType("SET_METHOD_ID_NM");
@@ -60,12 +62,15 @@ public interface GdTypes {
   IElementType FUNC = new GdTokenType("FUNC");
   IElementType IDENTIFIER = new GdTokenType("IDENTIFIER");
   IElementType INDENT = new GdTokenType("INDENT");
+  IElementType INF = new GdTokenType("INF");
   IElementType INT = new GdTokenType("INT");
   IElementType LRBR = new GdTokenType("LRBR");
+  IElementType NAN = new GdTokenType("NAN");
   IElementType NEW_LINE = new GdTokenType("NEW_LINE");
   IElementType NULL = new GdTokenType("NULL");
   IElementType NUMBER = new GdTokenType("NUMBER");
   IElementType PASS = new GdTokenType("PASS");
+  IElementType PI = new GdTokenType("PI");
   IElementType RET = new GdTokenType("RET");
   IElementType RETURN = new GdTokenType("RETURN");
   IElementType RRBR = new GdTokenType("RRBR");
@@ -74,6 +79,7 @@ public interface GdTypes {
   IElementType SETGET = new GdTokenType("SETGET");
   IElementType STR = new GdTokenType("STR");
   IElementType STRING = new GdTokenType("STRING");
+  IElementType TAU = new GdTokenType("TAU");
   IElementType TOOL = new GdTokenType("TOOL");
   IElementType TRUE = new GdTokenType("TRUE");
   IElementType VAR = new GdTokenType("VAR");
@@ -84,6 +90,9 @@ public interface GdTypes {
       IElementType type = node.getElementType();
       if (type == ANNOTATION) {
         return new GdAnnotationImpl(node);
+      }
+      else if (type == ARG_LIST) {
+        return new GdArgListImpl(node);
       }
       else if (type == BUILT_IN_TYPE) {
         return new GdBuiltInTypeImpl(node);
@@ -138,6 +147,9 @@ public interface GdTypes {
       }
       else if (type == PARAM_LIST) {
         return new GdParamListImpl(node);
+      }
+      else if (type == PARENT_METHOD_CALL) {
+        return new GdParentMethodCallImpl(node);
       }
       else if (type == RETURN_HINT) {
         return new GdReturnHintImpl(node);

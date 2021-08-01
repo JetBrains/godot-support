@@ -1,8 +1,10 @@
 package gdscript.psi
 
+import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
 import gdscript.psi.impl.*
 import gdscript.psi.utils.*
+import gdscript.structureView.GdPresentationUtil
 
 object GdPsiUtils {
 
@@ -48,7 +50,11 @@ object GdPsiUtils {
         return PsiGdConstDeclUtil.getName(element)
     }
     @JvmStatic
-    fun getReturnType(element: GdConstDeclTl): String? {
+    fun getPresentation(element: GdConstDeclTl): ItemPresentation {
+        return GdPresentationUtil.presentation(element)
+    }
+    @JvmStatic
+    fun getReturnType(element: GdConstDeclTl): String {
         return PsiGdConstDeclUtil.getReturnType(element)
     }
     @JvmStatic
@@ -76,11 +82,15 @@ object GdPsiUtils {
 
     /** Class variable  */
     @JvmStatic
-    fun getVarName(element: GdClassVarDeclTl): String? {
-        return PsiGdClassVarUtil.getVarName(element)
+    fun getName(element: GdClassVarDeclTl): String? {
+        return PsiGdClassVarUtil.getName(element)
     }
     @JvmStatic
-    fun getReturnType(element: GdClassVarDeclTl): String? {
+    fun getPresentation(element: GdClassVarDeclTl): ItemPresentation {
+        return GdPresentationUtil.presentation(element)
+    }
+    @JvmStatic
+    fun getReturnType(element: GdClassVarDeclTl): String {
         return PsiGdClassVarUtil.getReturnType(element)
     }
     @JvmStatic
@@ -114,11 +124,15 @@ object GdPsiUtils {
 
     /** Method  */
     @JvmStatic
-    fun getMethodName(element: GdMethodDeclTl): String? {
+    fun getName(element: GdMethodDeclTl): String? {
         return PsiGdMethodDeclUtil.getMethodName(element)
     }
     @JvmStatic
-    fun getReturnType(element: GdMethodDeclTl): String? {
+    fun getPresentation(element: GdMethodDeclTl): ItemPresentation {
+        return GdPresentationUtil.presentation(element)
+    }
+    @JvmStatic
+    fun getReturnType(element: GdMethodDeclTl): String {
         return PsiGdMethodDeclUtil.getReturnType(element)
     }
     @JvmStatic
@@ -136,6 +150,10 @@ object GdPsiUtils {
     @JvmStatic
     fun getNameIdentifier(element: GdMethodIdNmi): PsiElement? {
         return PsiGdMethodDeclUtil.getNameIdentifier(element)
+    }
+    @JvmStatic
+    fun isConstructor(element: GdMethodDeclTl): Boolean {
+        return PsiGdMethodDeclUtil.isConstructor(element)
     }
 
 }

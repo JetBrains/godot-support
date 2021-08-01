@@ -6,6 +6,7 @@ import gdscript.index.Indices
 import gdscript.index.stub.GdMethodDeclStub
 import gdscript.index.stub.GdMethodDeclStubImpl
 import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.utils.PsiGdParameterUtil
 
 object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDeclTl>("methodDecl", GdLanguage.INSTANCE) {
 
@@ -25,24 +26,8 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): GdMethodDeclStub =
         GdMethodDeclStubImpl(parentStub,
             dataStream.readNameString(),
-            dataStream.readNameString(),
-            paramsFromString(dataStream.readNameString()));
-
-    private fun paramsFromString(data: String?): HashMap<String, String?> {
-        val params = HashMap<String, String?>();
-        if (data == null) {
-            return params;
-        }
-
-        data.trim('{', '}').split(' ').forEach {
-            val parts = it.split('=');
-            if (parts.size == 2) {
-                params[parts[0]] = if (parts[1] == "null") null else parts[1];
-            }
-        }
-
-        return params;
-    }
+            dataStream.readNameString() ?: "",
+            PsiGdParameterUtil.fromString(dataStream.readNameString()));
 
     override fun indexStub(stub: GdMethodDeclStub, sink: IndexSink) {
         sink.occurrence(Indices.METHOD_DECL, stub.name());
@@ -52,7 +37,7 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
         GdMethodDeclTlImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdMethodDeclTl, parentStub: StubElement<*>?): GdMethodDeclStub {
-        return GdMethodDeclStubImpl(parentStub, psi.methodName, psi.returnType, psi.parameters);
+        return GdMethodDeclStubImpl(parentStub, psi.name, psi.returnType, psi.parameters);
     }
 
 }

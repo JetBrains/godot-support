@@ -6,6 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdMethodDeclStub;
+import com.intellij.navigation.ItemPresentation;
 import java.util.HashMap;
 
 public interface GdMethodDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdMethodDeclStub> {
@@ -17,18 +18,26 @@ public interface GdMethodDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdMe
   GdParamList getParamList();
 
   @Nullable
+  GdParentMethodCall getParentMethodCall();
+
+  @Nullable
   GdReturnHint getReturnHint();
 
   @Nullable
   GdStmtOrSuite getStmtOrSuite();
 
   @Nullable
-  String getMethodName();
+  String getName();
 
-  @Nullable
+  @NotNull
   String getReturnType();
 
   @NotNull
   HashMap<String, String> getParameters();
+
+  @NotNull
+  ItemPresentation getPresentation();
+
+  boolean isConstructor();
 
 }

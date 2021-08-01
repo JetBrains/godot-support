@@ -103,6 +103,10 @@ ANNOTATOR = "@"[a-z|A-Z]*
     "break"        { return dedentRoot(GdTypes.BREAK); }
     "return"       { return dedentRoot(GdTypes.RETURN); }
     "void"         { return GdTypes.VOID; }
+    "PI"           { return dedentRoot(GdTypes.PI); }
+    "TAU"          { return dedentRoot(GdTypes.TAU); }
+    "NAN"          { return dedentRoot(GdTypes.NAN); }
+    "INF"          { return dedentRoot(GdTypes.INF); }
 
     "."            { return GdTypes.DOT; }
     ","            { return dedentRoot(GdTypes.COMMA); }
@@ -158,7 +162,6 @@ ANNOTATOR = "@"[a-z|A-Z]*
 //
 //    "signal" { return GdTypes.SIGNAL; }
 //    "static" { return GdTypes.STATIC; }
-//    "_init" { return GdTypes.INIT; }
 //    "breakpoint" { return GdTypes.BREAKPOINT; }
 //    "while" { return GdTypes.WHILE; }
 //    "for" { return GdTypes.FOR; }
@@ -171,10 +174,6 @@ ANNOTATOR = "@"[a-z|A-Z]*
 //    "as" { return GdTypes.AS; }
 //    "and" { return GdTypes.AND; }
 //    "or" { return GdTypes.OR; }
-//    "PI" { return GdTypes.PI; }
-//    "TAU" { return GdTypes.TAU; }
-//    "NAN" { return GdTypes.NAN; }
-//    "INF" { return GdTypes.INF; }
 //
 //    /* Syntax */
 //    "{" { return GdTypes.LCBR; }

@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import gdscript.index.stub.GdConstDeclStub;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -63,9 +64,15 @@ public class GdConstDeclTlImpl extends GdConstDeclElementImpl implements GdConst
   }
 
   @Override
-  @Nullable
+  @NotNull
   public String getReturnType() {
     return GdPsiUtils.getReturnType(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return GdPsiUtils.getPresentation(this);
   }
 
 }

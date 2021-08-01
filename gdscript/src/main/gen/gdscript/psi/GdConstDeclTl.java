@@ -6,6 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdConstDeclStub;
+import com.intellij.navigation.ItemPresentation;
 
 public interface GdConstDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdConstDeclStub> {
 
@@ -24,7 +25,10 @@ public interface GdConstDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdCon
   @Nullable
   String getConstName();
 
-  @Nullable
+  @NotNull
   String getReturnType();
+
+  @NotNull
+  ItemPresentation getPresentation();
 
 }

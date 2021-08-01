@@ -5,7 +5,7 @@ import gdscript.psi.*
 
 object PsiGdClassVarUtil {
 
-    fun getVarName(element: GdClassVarDeclTl): String? {
+    fun getName(element: GdClassVarDeclTl): String? {
         val stub = element.stub;
         if (stub !== null) {
             return stub.name();
@@ -14,13 +14,13 @@ object PsiGdClassVarUtil {
         return element.classVarIdNmi?.name;
     }
 
-    fun getReturnType(element: GdClassVarDeclTl): String? {
+    fun getReturnType(element: GdClassVarDeclTl): String {
         val stub = element.stub;
         if (stub !== null) {
             return stub.returnType();
         }
 
-        return element.typed?.typeHintNm?.name;
+        return element.typed?.typeHintNm?.name ?: "";
     }
 
     fun setName(element: GdClassVarIdNmi, newName: String?): PsiElement {

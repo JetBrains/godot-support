@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import gdscript.index.stub.GdClassVarDeclStub;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -70,14 +71,20 @@ public class GdClassVarDeclTlImpl extends GdClassVarDeclElementImpl implements G
 
   @Override
   @Nullable
-  public String getVarName() {
-    return GdPsiUtils.getVarName(this);
+  public String getName() {
+    return GdPsiUtils.getName(this);
   }
 
   @Override
-  @Nullable
+  @NotNull
   public String getReturnType() {
     return GdPsiUtils.getReturnType(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return GdPsiUtils.getPresentation(this);
   }
 
 }

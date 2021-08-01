@@ -7,14 +7,14 @@ import gdscript.psi.impl.GdMethodDeclElementType
 
 class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
     private var name: String = "";
-    private var returnType: String? = null;
+    private var returnType: String = "";
     private var parameters: HashMap<String, String?> = HashMap();
 
-    constructor(parent: StubElement<*>?, name: String?, returnType: String?, parameters: HashMap<String, String?>): super(parent, GdMethodDeclElementType) {
+    constructor(parent: StubElement<*>?, name: String?, returnType: String, parameters: HashMap<String, String?>): super(parent, GdMethodDeclElementType) {
         if (name != null) {
             this.name = name
         };
-        this.returnType = if (returnType == "") null else returnType;
+        this.returnType = returnType;
         this.parameters = parameters;
     }
 
@@ -22,7 +22,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
         return name;
     }
 
-    override fun returnType(): String? {
+    override fun returnType(): String {
         return returnType;
     }
 

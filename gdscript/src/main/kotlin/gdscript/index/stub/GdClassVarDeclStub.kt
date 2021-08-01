@@ -5,5 +5,5 @@ import gdscript.psi.GdClassVarDeclTl
 
 interface GdClassVarDeclStub : StubElement<GdClassVarDeclTl> {
     fun name(): String;
-    fun returnType(): String?;
+    fun returnType(): String;
 }

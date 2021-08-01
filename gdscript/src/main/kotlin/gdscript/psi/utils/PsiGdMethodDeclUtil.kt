@@ -1,9 +1,10 @@
 package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiIdentifier
-import com.intellij.psi.util.PsiTreeUtil
-import gdscript.psi.*
+import gdscript.psi.GdElementFactory
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdMethodIdNmi
+import gdscript.psi.GdTypes
 
 object PsiGdMethodDeclUtil {
 
@@ -16,13 +17,13 @@ object PsiGdMethodDeclUtil {
         return element.methodIdNmi?.name;
     }
 
-    fun getReturnType(element: GdMethodDeclTl): String? {
+    fun getReturnType(element: GdMethodDeclTl): String {
         val stub = element.stub;
         if (stub !== null) {
             return stub.returnType();
         }
 
-        return element.returnHint?.typeHintNm?.name;
+        return element.returnHint?.typeHintNm?.name ?: "";
     }
 
     fun getParameters(element: GdMethodDeclTl): HashMap<String, String?> {
@@ -30,17 +31,8 @@ object PsiGdMethodDeclUtil {
         if (stub !== null) {
             return stub.parameters();
         }
-        val params = HashMap<String, String?>();
-        var child = element.paramList?.firstChild;
-        while (child != null) {
-            if (child is GdParam) {
-                val id = child.firstChild?.text;
-                params[id.orEmpty()] = child.typed?.typeHintNm?.name;
-            }
-            child = child.nextSibling;
-        }
 
-        return params;
+        return PsiGdParameterUtil.toHashMap(element.paramList)
     }
 
     fun setName(element: GdMethodIdNmi, newName: String?): PsiElement {
@@ -64,5 +56,7 @@ object PsiGdMethodDeclUtil {
 
         return keyNode?.psi;
     }
+
+    fun isConstructor(element: GdMethodDeclTl): Boolean = element.name == "_init";
 
 }

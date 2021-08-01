@@ -5,6 +5,6 @@ import gdscript.psi.GdMethodDeclTl
 
 interface GdMethodDeclStub : StubElement<GdMethodDeclTl> {
     fun name(): String;
-    fun returnType(): String?;
+    fun returnType(): String;
     fun parameters(): HashMap<String, String?>;
 }

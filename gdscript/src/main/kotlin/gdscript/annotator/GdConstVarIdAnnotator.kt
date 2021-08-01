@@ -35,7 +35,7 @@ class GdConstVarIdAnnotator : Annotator {
             if (previous is GdConstDeclTl) {
                 checkName = previous.constName;
             } else if (previous is GdClassVarDeclTl) {
-                checkName = previous.varName;
+                checkName = previous.name;
             } else if ( // variables cant be above those
                 previous is GdToolline
                 || previous is GdClassNaming

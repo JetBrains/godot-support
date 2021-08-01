@@ -11,6 +11,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitArgList(@NotNull GdArgList o) {
+    visitPsiElement(o);
+  }
+
   public void visitBuiltInType(@NotNull GdBuiltInType o) {
     visitPsiElement(o);
   }
@@ -80,6 +84,10 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitParamList(@NotNull GdParamList o) {
+    visitPsiElement(o);
+  }
+
+  public void visitParentMethodCall(@NotNull GdParentMethodCall o) {
     visitPsiElement(o);
   }
 

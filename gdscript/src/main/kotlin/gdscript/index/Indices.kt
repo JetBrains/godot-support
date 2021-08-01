@@ -1,7 +1,6 @@
 package gdscript.index
 
 import com.intellij.psi.stubs.StubIndexKey
-import com.intellij.util.indexing.ID
 import gdscript.psi.*
 
 object Indices {

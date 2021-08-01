@@ -25,17 +25,14 @@ TODO
 Known issues
 annotation insert
 endofstmt -> nutnost prázdý řádek/; na konci souboru
-
+structure view - filters for variable/const/methods? ... separate groups somehow
 
 sdk -> lepší impl
 
 8 line marker
-12 folding
 13 go to
-14 structure
 15 formatter
 16 code style
-18 quick fix
 19 doc
 
 Completions:
@@ -53,14 +50,3 @@ parent method call:
 func loso():
     .loso()
 ```
-
-recovery
-
-#Done:
-
-- syntax highlights + settings
-- commenter
-
-Completions:
-- extends <className>
-- parent function names

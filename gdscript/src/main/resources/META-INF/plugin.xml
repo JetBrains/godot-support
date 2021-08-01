@@ -43,6 +43,7 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstVarIdAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdSetGetAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstructorAnnotator" />
 
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
@@ -53,11 +54,14 @@
 
     <!-- Actions -->
     <intentionAction>
-      <className>gdscript.action.GdRemoveSetGetAction</className>
+      <className>gdscript.action.quickFix.GdRemoveSetGetAction</className>
       <bundleName>messages.gdscript</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>
 
+    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.GdFoldingBuilder" />
+    <lang.psiStructureViewFactory language="GdScript" implementationClass="gdscript.structureView.GdStructureViewFactory" />
+    <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler" />
   </extensions>
 
   <actions>

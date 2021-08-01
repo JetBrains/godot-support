@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import java.util.HashMap;
 import gdscript.index.stub.GdMethodDeclStub;
 import com.intellij.psi.stubs.IStubElementType;
@@ -47,6 +48,12 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
 
   @Override
   @Nullable
+  public GdParentMethodCall getParentMethodCall() {
+    return PsiTreeUtil.getChildOfType(this, GdParentMethodCall.class);
+  }
+
+  @Override
+  @Nullable
   public GdReturnHint getReturnHint() {
     return PsiTreeUtil.getChildOfType(this, GdReturnHint.class);
   }
@@ -59,12 +66,12 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
 
   @Override
   @Nullable
-  public String getMethodName() {
-    return GdPsiUtils.getMethodName(this);
+  public String getName() {
+    return GdPsiUtils.getName(this);
   }
 
   @Override
-  @Nullable
+  @NotNull
   public String getReturnType() {
     return GdPsiUtils.getReturnType(this);
   }
@@ -73,6 +80,17 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
   @NotNull
   public HashMap<String, String> getParameters() {
     return GdPsiUtils.getParameters(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return GdPsiUtils.getPresentation(this);
+  }
+
+  @Override
+  public boolean isConstructor() {
+    return GdPsiUtils.isConstructor(this);
   }
 
 }
