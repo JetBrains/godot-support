@@ -8,23 +8,35 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public abstract class GdExprImpl extends ASTWrapperPsiElement implements GdExpr {
+public class GdExprStImpl extends GdStmtImpl implements GdExprSt {
 
-  public GdExprImpl(@NotNull ASTNode node) {
+  public GdExprStImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitExpr(this);
+    visitor.visitExprSt(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public GdEndStmt getEndStmt() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdEndStmt.class));
+  }
+
+  @Override
+  @NotNull
+  public GdExpr getExpr() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
   }
 
 }

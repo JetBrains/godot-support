@@ -1,0 +1,38 @@
+{
+  extends(".*expr")=expr
+  tokens=[number="regexp:[0-9]+" id="regexp:[a-z][a-z0-9]*"]
+}
+// the root expression rule
+expr ::= assign_expr
+  | add_group
+  | mul_group
+  | unary_group
+  | exp_expr
+  | qualification_expr
+  | primary_group
+
+// private rules to define operators with the same priority
+private unary_group ::= unary_plus_expr | unary_min_expr
+private mul_group ::= mul_expr | div_expr
+private add_group ::= plus_expr | minus_expr
+private primary_group ::= simple_ref_expr | literal_expr | paren_expr
+
+// public rules for each expression
+assign_expr ::= expr '=' expr { rightAssociative=true }
+unary_min_expr ::= '-' expr
+unary_plus_expr ::= '+' expr
+div_expr ::= expr '/' expr
+mul_expr ::= expr '*' expr
+minus_expr ::= expr '-' expr
+plus_expr ::= expr '+' expr
+exp_expr ::= expr ('^' expr) + // N-ary variant, the "(<op> expr ) +" syntax is mandatory.
+paren_expr ::= '(' expr ')'
+
+// introduce fake rule with @Nullable qualifier getter and
+// let qualified and simple references have its elementType
+fake ref_expr ::= expr? '.' identifier
+simple_ref_expr ::= identifier {extends=ref_expr elementType=ref_expr}
+qualification_expr ::= expr '.' identifier {extends=ref_expr elementType=ref_expr}
+
+literal_expr ::= number
+identifier ::= id

@@ -10,5 +10,6 @@ object Indices {
     val CONST_DECL_INDEX = StubIndexKey.createIndexKey<String, GdConstDeclTl>("gdscript.constDecl")
     val CLASS_VAR_INDEX = StubIndexKey.createIndexKey<String, GdClassVarDeclTl>("gdscript.classVarDecl")
     val METHOD_DECL = StubIndexKey.createIndexKey<String, GdMethodDeclTl>("gdscript.methodDecl")
+    val SIGNAL_DECL = StubIndexKey.createIndexKey<String, GdSignalDeclTl>("gdscript.signal")
 
 }

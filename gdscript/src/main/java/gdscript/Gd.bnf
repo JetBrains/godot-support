@@ -23,7 +23,10 @@
   methods(".*_nmi")=[getName setName getNameIdentifier]
 
   extends(".*_tl")=topLevelDecl
-//  extends(".*Expression")=expr
+  extends(".*_ex")=expr
+  extends(".*_st")=stmt
+
+  consumeTokenMethod(".*_ex|expr|stmt|.*_st|topLevelDecl|.*_tl")="consumeTokenFast"
 
   tokens = [
 //    /* Keywords */
@@ -115,8 +118,9 @@ topLevelDecl ::=
     constDecl_tl
     | classVarDecl_tl
     | methodDecl_tl
+    | signalDecl_tl
 
-private topLevelDecl_r ::= !(FUNC | CONST | VAR | annotation)
+private topLevelDecl_r ::= !(FUNC | CONST | SIGNAL | VAR | annotation)
 
 constDecl_tl ::= CONST constId_nmi typed? EQ expr endStmt {methods=[getConstName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
 constId_nmi ::= IDENTIFIER
@@ -126,6 +130,10 @@ classVarId_nmi ::= IDENTIFIER
 setgetDecl ::= SETGET setMethodId_nm? (COMMA getMethodId_nm)?
 setMethodId_nm ::= IDENTIFIER
 getMethodId_nm ::= IDENTIFIER
+
+signalDecl_tl ::= SIGNAL signalId_nmi signalParList? endStmt {methods=[getName getParameters] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdSignalDeclElementImpl" stubClass="gdscript.index.stub.GdSignalDeclStub" elementTypeFactory="gdscript.psi.impl.GdSignalDeclElementType.getInstance"}
+signalParList ::= LRBR IDENTIFIER (COMMA IDENTIFIER)* RRBR
+signalId_nmi ::= IDENTIFIER
 
 // TODO recover nesmí mít func -> inline lambdy by to porušily
 methodDecl_tl ::= FUNC methodId_nmi LRBR paramList? RRBR parentMethodCall? returnHint? COLON stmtOrSuite {methods=[getName getReturnType getParameters getPresentation isConstructor] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub" elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"}
@@ -140,15 +148,34 @@ stmtOrSuite ::= stmt | (NEW_LINE INDENT suite DEDENT?)
 suite ::= stmt*
 
 stmt ::=
-    PASS endStmt |
-    CONTINUE | BREAK | RETURN | SELF // TODO
+    assign_st
+    | expr_st
+    | flow_st
+
+assign_st ::= expr (EQ | ASSIGN) expr endStmt
+expr_st ::= expr endStmt
+flow_st ::=
+    CONTINUE endStmt
+    | BREAK endStmt
+    | PASS endStmt
+    | BREAKPOINT endStmt
+    | RETURN expr? endStmt
 
 expr ::=
-    literal
+    plusMinus_ex
+    | plusMinusPre_ex
+    | attribute_ex
+    | literal_ex
+
+literal_ex ::= EXCLA? (TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF | refId_nm)
+plusMinus_ex ::= expr (PPLUS | MMINUS)
+plusMinusPre_ex ::= (PPLUS | MMINUS) expr
+attribute_ex ::= expr DOT attEx_nm
+attEx_nm ::= IDENTIFIER
+refId_nm ::= (IDENTIFIER | SELF)
 
 typed ::= COLON typeHint_nm
 typeHint_nm ::= builtInType | IDENTIFIER
-literal ::= TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF
 builtInType ::= INT | STR
 endStmt ::= SEMICON | newLineEnd
 newLineEnd ::= NEW_LINE | <<eof>>

@@ -143,12 +143,14 @@ stmt ::=
     | matchStmt
     | flowStmt
 //    | assignmentStmt
-    | exprStmt
     | assertStmt
     | yieldStmt
     | preloadStmt
+
     | BREAKPOINT endStmt
     | PASS endStmt
+    | exprStmt
+
 
 ifStmt ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)?
 whileStmt ::= WHILE expr COLON stmtOrSuite
@@ -185,20 +187,21 @@ expr ::=
     | conditionalExpression
     | roundBracketExpression
     | computeExpression
+    | testExpression
+    | referenceExpression
+
     | plusMinusExpression
     | plusMinusRevExpression
-    | referenceExpression
-    | testExpression
     | literalExpression
 
 assignExpression ::= expr ASSIGN (expr | lambda)expr
-conditionalExpression ::= expr TERNARY expr COLON exprexpr
-roundBracketExpression ::=LRBR expr* RRBRexpr
-computeExpression ::= expr OPERATOR exprexpr
-plusMinusExpression ::= ("++"|"--") exprexpr
+conditionalExpression ::= expr TERNARY expr COLON expr
+roundBracketExpression ::=LRBR expr* RRBR
+computeExpression ::= expr OPERATOR expr
+plusMinusExpression ::= ("++"|"--") expr
 plusMinusRevExpression ::= expr ("++"|"--")expr
 referenceExpression ::= "!"? (IDENTIFIER | SELF) (DOT? ((LRBR argList? RRBR) | IDENTIFIER))?expr
-testExpression ::= expr TEST_OPERATOR exprexpr
+testExpression ::= expr TEST_OPERATOR expr
 literalExpression ::= "!"? literal
 // TODO
 

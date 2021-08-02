@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface GdExpr extends PsiElement {
 
-  @NotNull
-  GdLiteral getLiteral();
-
 }

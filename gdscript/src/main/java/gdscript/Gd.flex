@@ -18,11 +18,13 @@ import java.util.Stack;
 %eof}
 
 %{
+    boolean lineEnded = false;
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     int yycolumn;
 
     public IElementType dedentRoot(IElementType type) {
+        lineEnded = false;
         if (yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
             return type;
         }
@@ -71,28 +73,45 @@ STRING = \"(.)*\"
 COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 ANNOTATOR = "@"[a-z|A-Z]*
 
-//ASSIGN = "=" | ":=" | "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
+ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 //TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 //OPERATOR = "+" | "-" | "*" | "/" | "%" | "^" | "&" | "|"
 //    | "<<" | ">>" | "!" | "&&" | "||"
 
 %state AWAIT_NEW_LINE
+%state AWAIT_NEW_LINE_ONCE
 
 %%
 
-<AWAIT_NEW_LINE> {
-    {NEW_LINE}     { yybegin(YYINITIAL); return GdTypes.NEW_LINE; }
+<AWAIT_NEW_LINE_ONCE> {
+    {NEW_LINE}     {
+          yybegin(YYINITIAL);
+          if (lineEnded) { // For signal, etc.
+              return TokenType.WHITE_SPACE;
+          }
+          return GdTypes.NEW_LINE;
+      }
 }
 
-    "extends"      { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.EXTENDS); }
-    "class_name"   { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CLASS_NAME); }
-    "func"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC); }
-    "tool"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.TOOL); }
-    "const"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CONST); }
-    "var"          { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.VAR); }
+<AWAIT_NEW_LINE> {
+    {NEW_LINE}     {
+          if (!lineEnded) {
+              lineEnded = true;
+              return GdTypes.NEW_LINE;
+          }
+          return TokenType.WHITE_SPACE;
+      }
+}
+
+    "extends"      { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.EXTENDS); }
+    "class_name"   { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CLASS_NAME); }
+    "tool"         { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.TOOL); }
+    "var"          { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.VAR); }
+    "const"        { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CONST); }
     "setget"       { return GdTypes.SETGET; }
 
-    "pass"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.PASS); }
+    "func"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC); }
+    "pass"         { return dedentRoot(GdTypes.PASS); }
     "true"         { return dedentRoot(GdTypes.TRUE); }
     "false"        { return dedentRoot(GdTypes.FALSE); }
     "null"         { return dedentRoot(GdTypes.NULL); }
@@ -100,23 +119,31 @@ ANNOTATOR = "@"[a-z|A-Z]*
     "String"       { return dedentRoot(GdTypes.STR); }
     "self"         { return dedentRoot(GdTypes.SELF); }
     "continue"     { return dedentRoot(GdTypes.CONTINUE); }
+    "breakpoint"   { return dedentRoot(GdTypes.BREAKPOINT); }
     "break"        { return dedentRoot(GdTypes.BREAK); }
     "return"       { return dedentRoot(GdTypes.RETURN); }
-    "void"         { return GdTypes.VOID; }
+    "void"         { return dedentRoot(GdTypes.VOID); }
     "PI"           { return dedentRoot(GdTypes.PI); }
     "TAU"          { return dedentRoot(GdTypes.TAU); }
     "NAN"          { return dedentRoot(GdTypes.NAN); }
     "INF"          { return dedentRoot(GdTypes.INF); }
+    "signal"       { yybegin(AWAIT_NEW_LINE_ONCE); return GdTypes.SIGNAL; }
 
+//    "+"            { return GdTypes.PLUS; }
+//    "-"            { return GdTypes.MINUS; }
+    "++"           { return dedentRoot(GdTypes.PPLUS); }
+    "--"           { return dedentRoot(GdTypes.MMINUS); }
     "."            { return GdTypes.DOT; }
-    ","            { return dedentRoot(GdTypes.COMMA); }
-    ":"            { return dedentRoot(GdTypes.COLON); }
-    ";"            { yybegin(YYINITIAL); return dedentRoot(GdTypes.SEMICON); }
-    "="            { return dedentRoot(GdTypes.EQ); }
+    ","            { return GdTypes.COMMA; }
+    ":"            { return GdTypes.COLON; }
+    ";"            { lineEnded = true; return GdTypes.SEMICON; }
+    "!"            { return GdTypes.EXCLA; }
+    "="            { return GdTypes.EQ; }
     "->"           { return GdTypes.RET; }
     "("            { return dedentRoot(GdTypes.LRBR); }
     ")"            { return dedentRoot(GdTypes.RRBR); }
 
+    {ASSIGN}       { return GdTypes.ASSIGN; }
     {ANNOTATOR}    { return GdTypes.ANNOTATOR; }
     {IDENTIFIER}   { return dedentRoot(GdTypes.IDENTIFIER); }
     {NUMBER}       { return dedentRoot(GdTypes.NUMBER); }
@@ -160,9 +187,7 @@ ANNOTATOR = "@"[a-z|A-Z]*
 //    "else" { return GdTypes.ELSE; }
 //    "elif" { return GdTypes.ELIF; }
 //
-//    "signal" { return GdTypes.SIGNAL; }
 //    "static" { return GdTypes.STATIC; }
-//    "breakpoint" { return GdTypes.BREAKPOINT; }
 //    "while" { return GdTypes.WHILE; }
 //    "for" { return GdTypes.FOR; }
 //    "in" { return GdTypes.IN; }
@@ -186,7 +211,6 @@ ANNOTATOR = "@"[a-z|A-Z]*
 //
 //    {OPERATOR} { return GdTypes.OPERATOR; }
 //    {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
-//    {ASSIGN} { return GdTypes.ASSIGN; }
 //}
 
 [^] { return GdTypes.BAD_CHARACTER; }

@@ -51,6 +51,7 @@
     <stubIndex implementation="gdscript.index.impl.GdConstDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassVarDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdMethodDeclIndex" />
+    <stubIndex implementation="gdscript.index.impl.GdSignalDeclIndex" />
 
     <!-- Actions -->
     <intentionAction>
@@ -58,6 +59,7 @@
       <bundleName>messages.gdscript</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>
+<!--    <editorActionHandler action="Generate" implementationClass="" /> -->
 
     <lang.foldingBuilder language="GdScript" implementationClass="gdscript.GdFoldingBuilder" />
     <lang.psiStructureViewFactory language="GdScript" implementationClass="gdscript.structureView.GdStructureViewFactory" />

@@ -11,11 +11,11 @@ import gdscript.psi.GdInheritance
 
 object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNaming>("classNaming", GdLanguage.INSTANCE) {
 
-    fun getClassname(element: GdClassNamingImpl?): String {
+    fun getClassname(element: GdClassNaming?): String {
         return element?.classNameNm?.name.toString();
     }
 
-    fun getParentName(element: GdClassNamingImpl?): String? {
+    fun getParentName(element: GdClassNaming?): String? {
         val inh = PsiTreeUtil.getPrevSiblingOfType(element, GdInheritance::class.java)
 
         return inh?.inheritanceName

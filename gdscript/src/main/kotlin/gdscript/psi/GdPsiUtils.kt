@@ -18,11 +18,11 @@ object GdPsiUtils {
         return GdPsiClassNameUtil.setName(element, newName)
     }
     @JvmStatic
-    fun getClassname(element: GdClassNamingImpl?): String {
+    fun getClassname(element: GdClassNaming?): String {
         return GdClassNamingElementType.getClassname(element);
     }
     @JvmStatic
-    fun getParentName(element: GdClassNamingImpl?): String? {
+    fun getParentName(element: GdClassNaming?): String? {
         return GdClassNamingElementType.getParentName(element);
     }
 
@@ -72,11 +72,11 @@ object GdPsiUtils {
 
     /** Type hint   */
     @JvmStatic
-    fun getName(element: GdTypeHintNmImpl): String {
+    fun getName(element: GdTypeHintNm): String {
         return PsiGdTypeHintUtil.getName(element)
     }
     @JvmStatic
-    fun setName(element: GdTypeHintNmImpl, newName: String?): PsiElement {
+    fun setName(element: GdTypeHintNm, newName: String?): PsiElement {
         return PsiGdTypeHintUtil.setName(element, newName)
     }
 
@@ -154,6 +154,48 @@ object GdPsiUtils {
     @JvmStatic
     fun isConstructor(element: GdMethodDeclTl): Boolean {
         return PsiGdMethodDeclUtil.isConstructor(element)
+    }
+
+    /** Reference expression   */
+    @JvmStatic
+    fun getName(element: GdRefIdNm): String {
+        return PsiGdRefIdUtil.getName(element)
+    }
+    @JvmStatic
+    fun setName(element: GdRefIdNm, newName: String?): PsiElement {
+        return PsiGdRefIdUtil.setName(element, newName)
+    }
+
+    /** Attribute expression   */
+    @JvmStatic
+    fun getName(element: GdAttExNm): String {
+        return PsiGdAttExUtil.getName(element)
+    }
+    @JvmStatic
+    fun setName(element: GdAttExNm, newName: String?): PsiElement {
+        return PsiGdAttExUtil.setName(element, newName)
+    }
+
+    /** Signal   */
+    @JvmStatic
+    fun getName(element: GdSignalDeclTl): String {
+        return PsiGdSignalUtil.getName(element)
+    }
+    @JvmStatic
+    fun getParameters(element: GdSignalDeclTl): Array<String> {
+        return PsiGdSignalUtil.getParameters(element)
+    }
+    @JvmStatic
+    fun getName(element: GdSignalIdNmi): String {
+        return PsiGdSignalUtil.getName(element)
+    }
+    @JvmStatic
+    fun setName(element: GdSignalIdNmi, newName: String?): PsiElement {
+        return PsiGdSignalUtil.setName(element, newName)
+    }
+    @JvmStatic
+    fun getNameIdentifier(element: GdSignalIdNmi): PsiElement? {
+        return PsiGdSignalUtil.getNameIdentifier(element)
     }
 
 }

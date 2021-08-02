@@ -11,14 +11,14 @@ import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public abstract class GdExprImpl extends ASTWrapperPsiElement implements GdExpr {
+public class GdSignalParListImpl extends ASTWrapperPsiElement implements GdSignalParList {
 
-  public GdExprImpl(@NotNull ASTNode node) {
+  public GdSignalParListImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitExpr(this);
+    visitor.visitSignalParList(this);
   }
 
   @Override

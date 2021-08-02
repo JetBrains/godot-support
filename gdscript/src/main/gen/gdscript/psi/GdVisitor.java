@@ -15,6 +15,18 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitAssignSt(@NotNull GdAssignSt o) {
+    visitStmt(o);
+  }
+
+  public void visitAttExNm(@NotNull GdAttExNm o) {
+    visitNamedElement(o);
+  }
+
+  public void visitAttributeEx(@NotNull GdAttributeEx o) {
+    visitExpr(o);
+  }
+
   public void visitBuiltInType(@NotNull GdBuiltInType o) {
     visitPsiElement(o);
   }
@@ -51,6 +63,14 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitExprSt(@NotNull GdExprSt o) {
+    visitStmt(o);
+  }
+
+  public void visitFlowSt(@NotNull GdFlowSt o) {
+    visitStmt(o);
+  }
+
   public void visitGetMethodIdNm(@NotNull GdGetMethodIdNm o) {
     visitNamedElement(o);
   }
@@ -63,8 +83,8 @@ public class GdVisitor extends PsiElementVisitor {
     visitNamedIdElement(o);
   }
 
-  public void visitLiteral(@NotNull GdLiteral o) {
-    visitPsiElement(o);
+  public void visitLiteralEx(@NotNull GdLiteralEx o) {
+    visitExpr(o);
   }
 
   public void visitMethodDeclTl(@NotNull GdMethodDeclTl o) {
@@ -91,6 +111,18 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitPlusMinusPreEx(@NotNull GdPlusMinusPreEx o) {
+    visitExpr(o);
+  }
+
+  public void visitPlusMinusEx(@NotNull GdPlusMinusEx o) {
+    visitExpr(o);
+  }
+
+  public void visitRefIdNm(@NotNull GdRefIdNm o) {
+    visitNamedElement(o);
+  }
+
   public void visitReturnHint(@NotNull GdReturnHint o) {
     visitPsiElement(o);
   }
@@ -100,6 +132,18 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitSetgetDecl(@NotNull GdSetgetDecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitSignalDeclTl(@NotNull GdSignalDeclTl o) {
+    visitTopLevelDecl(o);
+  }
+
+  public void visitSignalIdNmi(@NotNull GdSignalIdNmi o) {
+    visitNamedIdElement(o);
+  }
+
+  public void visitSignalParList(@NotNull GdSignalParList o) {
     visitPsiElement(o);
   }
 
