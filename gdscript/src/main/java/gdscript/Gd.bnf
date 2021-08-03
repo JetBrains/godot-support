@@ -149,8 +149,42 @@ suite ::= stmt*
 
 stmt ::=
     assign_st
+    | if_st
     | expr_st
     | flow_st
+//stmt
+//    | forStmt
+//    | whileStmt
+//    | matchStmt
+//    | exprStmt
+//    | assertStmt
+//    | yieldStmt
+//    | preloadStmt
+//    | "breakpoint" stmtEnd
+//    | "pass" stmtEnd
+
+if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)?
+//whileStmt = "while" expression ":" stmtOrSuite;
+//forStmt = "for" IDENTIFIER "in" expression ":" stmtOrSuite ;
+//
+//matchStmt = "match" expression ":" NEWLINE INDENT matchBlock DEDENT;
+//matchBlock = patternList ":" stmtOrSuite { patternList ":" stmtOrSuite };
+//patternList = pattern { "," pattern } ;
+//(* Note: you can't have a binding in a pattern list, but to not complicate the
+//grammar more it won't be restricted syntactically *)
+//pattern = literal | BUILTINTYPE | CONSTANT | "_" | bindingPattern
+//    | arrayPattern | dictPattern ;
+//bindingPattern = "var" IDENTIFIER ;
+//arrayPattern = "[" [ pattern { "," pattern } [ ".." ] ] "]" ;
+//dictPattern = "{" [ keyValuePattern ] { "," keyValuePattern } [ ".." ] "}" ;
+//keyValuePattern = STRING [ ":" pattern ] ;
+//
+//assertStmt = "assert" "(" expression [ "," STRING ] ")" stmtEnd ;
+//yieldStmt = "yield" "(" [ expression "," expression ] ")" ;
+//preloadStmt = "preload" "(" CONSTANT ")" ;
+
+
+
 
 assign_st ::= expr (EQ | ASSIGN) expr endStmt
 expr_st ::= expr endStmt
@@ -163,11 +197,42 @@ flow_st ::=
 
 expr ::=
     plusMinus_ex
+    | cast_ex
+    | ternary_ex
+    | logic_ex
+    | negate_ex
+    | in_ex
+    | comparison_ex
+    | bitAnd_ex
+    | shift_ex
+    | plus_ex
+    | factor_ex
+    | sign_ex
+    | bitNot_ex
     | plusMinusPre_ex
     | attribute_ex
+    | is_ex
     | literal_ex
 
-literal_ex ::= EXCLA? (TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF | refId_nm)
+//expression = cast [ "[" expression "]" ] ;
+cast_ex ::= expr AS expr
+ternary_ex ::= expr IF expr ELSE expr
+logic_ex ::= expr (ANDAND | OROR) expr
+negate_ex ::= NEGATE expr;
+in_ex ::= expr IN expr
+comparison_ex ::= expr TEST_OPERATOR expr
+bitAnd_ex ::= expr (AND | XOR | OR) expr
+shift_ex ::= expr (LBSHIFT | RBSHIFT) expr
+plus_ex ::= expr (PLUS | MINUS) expr
+factor_ex ::= expr (MUL | DIV | MOD) expr
+sign_ex ::= (MINUS | PLUS ) expr
+bitNot_ex ::= NOT expr
+is_ex ::= expr IS (IDENTIFIER | BUILTINTYPE)
+//call = attribute [ "(" [ argList ] ")" ];
+//subscription = primary [ "[" expression "]" ] ;
+//primary =  arrayDecl | dictDecl | "(" expression ")" ;
+
+literal_ex ::= TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF | refId_nm
 plusMinus_ex ::= expr (PPLUS | MMINUS)
 plusMinusPre_ex ::= (PPLUS | MMINUS) expr
 attribute_ex ::= expr DOT attEx_nm

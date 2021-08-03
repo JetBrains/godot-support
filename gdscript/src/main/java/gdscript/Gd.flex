@@ -74,7 +74,7 @@ COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 ANNOTATOR = "@"[a-z|A-Z]*
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
-//TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
+TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 //OPERATOR = "+" | "-" | "*" | "/" | "%" | "^" | "&" | "|"
 //    | "<<" | ">>" | "!" | "&&" | "||"
 
@@ -128,27 +128,48 @@ ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
     "NAN"          { return dedentRoot(GdTypes.NAN); }
     "INF"          { return dedentRoot(GdTypes.INF); }
     "signal"       { yybegin(AWAIT_NEW_LINE_ONCE); return GdTypes.SIGNAL; }
+    "in"           { return GdTypes.IN; }
+    "if"           { return GdTypes.IF; }
+    "else"         { return GdTypes.ELSE; }
+    "elif"         { return GdTypes.ELIF; }
+    "as"           { return GdTypes.AS; }
+    "is"           { return GdTypes.IS; }
 
-//    "+"            { return GdTypes.PLUS; }
-//    "-"            { return GdTypes.MINUS; }
+    "*"            { return GdTypes.MUL; }
+    "/"            { return GdTypes.DIV; }
+    "%"            { return GdTypes.MOD; }
+    "+"            { return GdTypes.PLUS; }
+    "-"            { return GdTypes.MINUS; }
     "++"           { return dedentRoot(GdTypes.PPLUS); }
     "--"           { return dedentRoot(GdTypes.MMINUS); }
     "."            { return GdTypes.DOT; }
     ","            { return GdTypes.COMMA; }
     ":"            { return GdTypes.COLON; }
     ";"            { lineEnded = true; return GdTypes.SEMICON; }
-    "!"            { return GdTypes.EXCLA; }
+    "!"            { return GdTypes.NEGATE; }
+    "not"          { return GdTypes.NEGATE; }
     "="            { return GdTypes.EQ; }
     "->"           { return GdTypes.RET; }
+    ">>"           { return GdTypes.RBSHIFT; }
+    "<<"           { return GdTypes.LBSHIFT; }
     "("            { return dedentRoot(GdTypes.LRBR); }
     ")"            { return dedentRoot(GdTypes.RRBR); }
+    "&"            { return GdTypes.AND; }
+    "&&"           { return GdTypes.ANDAND; }
+    "and"          { return GdTypes.ANDAND; }
+    "|"            { return GdTypes.OR; }
+    "||"           { return GdTypes.OROR; }
+    "or"           { return GdTypes.OROR; }
+    "^"            { return GdTypes.XOR; }
+    "~"            { return GdTypes.NOT; }
 
-    {ASSIGN}       { return GdTypes.ASSIGN; }
-    {ANNOTATOR}    { return GdTypes.ANNOTATOR; }
-    {IDENTIFIER}   { return dedentRoot(GdTypes.IDENTIFIER); }
-    {NUMBER}       { return dedentRoot(GdTypes.NUMBER); }
-    {STRING}       { return dedentRoot(GdTypes.STRING); }
-    {COMMENT}      { return GdTypes.COMMENT; }
+    {ASSIGN}        { return GdTypes.ASSIGN; }
+    {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
+    {ANNOTATOR}     { return GdTypes.ANNOTATOR; }
+    {IDENTIFIER}    { return dedentRoot(GdTypes.IDENTIFIER); }
+    {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }
+    {STRING}        { return dedentRoot(GdTypes.STRING); }
+    {COMMENT}       { return GdTypes.COMMENT; }
 
     {INDENT}  {
         int spaces = yytext().length();
@@ -183,9 +204,6 @@ ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 //
 //    "class" { return GdTypes.CLASS; }
 //    "enum" { return GdTypes.ENUM; }
-//    "if" { return GdTypes.IF; }
-//    "else" { return GdTypes.ELSE; }
-//    "elif" { return GdTypes.ELIF; }
 //
 //    "static" { return GdTypes.STATIC; }
 //    "while" { return GdTypes.WHILE; }
@@ -196,8 +214,6 @@ ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 //    "assert" { return GdTypes.ASSERT; }
 //    "yield" { return GdTypes.YIELD; }
 //    "preload" { return GdTypes.PRELOAD; }
-//    "as" { return GdTypes.AS; }
-//    "and" { return GdTypes.AND; }
 //    "or" { return GdTypes.OR; }
 //
 //    /* Syntax */

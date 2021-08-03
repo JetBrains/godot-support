@@ -27,8 +27,20 @@ public class GdVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
+  public void visitBitAndEx(@NotNull GdBitAndEx o) {
+    visitExpr(o);
+  }
+
+  public void visitBitNotEx(@NotNull GdBitNotEx o) {
+    visitExpr(o);
+  }
+
   public void visitBuiltInType(@NotNull GdBuiltInType o) {
     visitPsiElement(o);
+  }
+
+  public void visitCastEx(@NotNull GdCastEx o) {
+    visitExpr(o);
   }
 
   public void visitClassNameNm(@NotNull GdClassNameNm o) {
@@ -45,6 +57,10 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitClassVarIdNmi(@NotNull GdClassVarIdNmi o) {
     visitNamedIdElement(o);
+  }
+
+  public void visitComparisonEx(@NotNull GdComparisonEx o) {
+    visitExpr(o);
   }
 
   public void visitConstDeclTl(@NotNull GdConstDeclTl o) {
@@ -67,12 +83,24 @@ public class GdVisitor extends PsiElementVisitor {
     visitStmt(o);
   }
 
+  public void visitFactorEx(@NotNull GdFactorEx o) {
+    visitExpr(o);
+  }
+
   public void visitFlowSt(@NotNull GdFlowSt o) {
     visitStmt(o);
   }
 
   public void visitGetMethodIdNm(@NotNull GdGetMethodIdNm o) {
     visitNamedElement(o);
+  }
+
+  public void visitIfSt(@NotNull GdIfSt o) {
+    visitStmt(o);
+  }
+
+  public void visitInEx(@NotNull GdInEx o) {
+    visitExpr(o);
   }
 
   public void visitInheritance(@NotNull GdInheritance o) {
@@ -83,7 +111,15 @@ public class GdVisitor extends PsiElementVisitor {
     visitNamedIdElement(o);
   }
 
+  public void visitIsEx(@NotNull GdIsEx o) {
+    visitExpr(o);
+  }
+
   public void visitLiteralEx(@NotNull GdLiteralEx o) {
+    visitExpr(o);
+  }
+
+  public void visitLogicEx(@NotNull GdLogicEx o) {
     visitExpr(o);
   }
 
@@ -93,6 +129,10 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitMethodIdNmi(@NotNull GdMethodIdNmi o) {
     visitNamedIdElement(o);
+  }
+
+  public void visitNegateEx(@NotNull GdNegateEx o) {
+    visitExpr(o);
   }
 
   public void visitNewLineEnd(@NotNull GdNewLineEnd o) {
@@ -119,6 +159,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
+  public void visitPlusEx(@NotNull GdPlusEx o) {
+    visitExpr(o);
+  }
+
   public void visitRefIdNm(@NotNull GdRefIdNm o) {
     visitNamedElement(o);
   }
@@ -133,6 +177,14 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitSetgetDecl(@NotNull GdSetgetDecl o) {
     visitPsiElement(o);
+  }
+
+  public void visitShiftEx(@NotNull GdShiftEx o) {
+    visitExpr(o);
+  }
+
+  public void visitSignEx(@NotNull GdSignEx o) {
+    visitExpr(o);
   }
 
   public void visitSignalDeclTl(@NotNull GdSignalDeclTl o) {
@@ -157,6 +209,10 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitSuite(@NotNull GdSuite o) {
     visitPsiElement(o);
+  }
+
+  public void visitTernaryEx(@NotNull GdTernaryEx o) {
+    visitExpr(o);
   }
 
   public void visitToolline(@NotNull GdToolline o) {
