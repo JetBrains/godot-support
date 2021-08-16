@@ -5,28 +5,17 @@ import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
 
-buildscript {
-    repositories {
-        maven { setUrl("https://cache-redirector.jetbrains.com/www.myget.org/F/rd-snapshots/maven") }
-        maven { setUrl("https://cache-redirector.jetbrains.com/dl.bintray.com/kotlin/kotlin-eap") }
-        maven { setUrl("https://cache-redirector.jetbrains.com/repo.maven.apache.org/maven2")}
-        maven { setUrl("https://jetbrains.bintray.com/intellij-plugin-service") }
-    }
-    dependencies {
-        // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
-        classpath("com.jetbrains.rd:rd-gen:0.203.148")
-    }
-}
-
 repositories {
-    maven { setUrl("https://cache-redirector.jetbrains.com/repo.maven.org/maven2")}
-    maven { setUrl("https://cache-redirector.jetbrains.com/repo.maven.apache.org/maven2")}
+    maven { setUrl("https://cache-redirector.jetbrains.com/plugins.gradle.org")}
+    maven { setUrl("https://cache-redirector.jetbrains.com/dl.bintray.com/kotlin/kotlin-eap") }
+    maven { setUrl("https://cache-redirector.jetbrains.com/myget.org.rd-snapshots.maven")}
 }
 
 plugins {
     id("org.jetbrains.intellij") version "0.7.2"
     id("org.jetbrains.grammarkit") version "2018.1.7"
     id("me.filippov.gradle.jvm.wrapper") version "0.9.3"
+    id ("com.jetbrains.rdgen") version "0.211.278"
     kotlin("jvm") version "1.5.21"
 }
 
