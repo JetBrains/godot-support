@@ -1,13 +1,10 @@
 package com.jetbrains.rider.plugins.godot
 
 import com.intellij.execution.RunManager
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.LocalFileSystem
-import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.io.exists
 import com.jetbrains.rd.ide.model.RdExistingSolution
-import com.jetbrains.rd.platform.util.idea.LifetimedProjectService
+import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.reactive.IProperty
 import com.jetbrains.rd.util.reactive.Property
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
@@ -19,13 +16,13 @@ import com.jetbrains.rider.util.idea.getService
 import java.io.File
 import java.nio.file.Paths
 
-class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project) {
+class GodotProjectDiscoverer(project: Project) : LifetimedService() {
     private val projectGodotPath = Paths.get(project.basePath!!).resolve("project.godot")
     val isGodotProject: IProperty<Boolean> = Property(false)
     val isGodotUnitTesting: IProperty<Boolean> = Property(false)
 
     init {
-        val isGodot = getIsGodotProject()
+        val isGodot = getIsGodotProject(project)
         if (isGodot) {
             if (projectGodotPath.toFile().readLines()
                     .any { it.startsWith("enabled=PoolStringArray") && it.contains("WAT") })
@@ -44,7 +41,7 @@ class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project
         if (playerSettings != null) {
             val config = playerSettings.configuration as GodotDebugRunConfiguration
             val path = config.parameters.exePath
-            if (path.length > 0 && File(path).exists()) {
+            if (path.isNotEmpty() && File(path).exists()) {
                 return path
             }
         }
@@ -52,7 +49,7 @@ class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project
     }
 
     // It's a Godot project, but not necessarily loaded correctly (e.g. it might be opened as folder)
-    private fun getIsGodotProject() : Boolean
+    private fun getIsGodotProject(project:Project) : Boolean
     {
         return projectGodotPath.exists() && isCorrectlyLoadedSolution(project)
     }
@@ -67,9 +64,5 @@ class GodotProjectDiscoverer(project: Project) : LifetimedProjectService(project
 
     companion object {
         fun getInstance(project: Project) = project.getService<GodotProjectDiscoverer>()
-        private val logger = Logger.getInstance(GodotProjectDiscoverer::class.java)
     }
 }
-
-val Project.projectDir: VirtualFile
-    get() = LocalFileSystem.getInstance().findFileByPath(this.basePath!!)!!

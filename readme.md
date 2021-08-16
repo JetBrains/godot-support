@@ -21,6 +21,8 @@ Fields marked with [Export] attribute would not be marked as not-initialized.
 Classes marked with [Tool] attribute would not be marked as unused.
 Delegates marked with [Signal] attribute would not be marked as unused.
 
+Support running NUnit tests inside the game process. [More](https://github.com/JetBrains/godot-support/pull/58)
+
 # Recomendations
 
 Add `.idea` to [.gitignore](https://github.com/van800/godot-demo-projects/pull/2/files#diff-a084b794bc0759e7a6b77810e01874f2R22) 
