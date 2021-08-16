@@ -24,10 +24,10 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.intellij") version "0.6.1"
+    id("org.jetbrains.intellij") version "0.7.2"
     id("org.jetbrains.grammarkit") version "2018.1.7"
     id("me.filippov.gradle.jvm.wrapper") version "0.9.3"
-    kotlin("jvm") version "1.4.20"
+    kotlin("jvm") version "1.5.21"
 }
 
 apply {
