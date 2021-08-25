@@ -9,6 +9,8 @@
     </PropertyGroup>
     <ItemGroup>
         <Compile Include="..\..\..\resharper\build\generated\Model\DebuggerWorker\**\*" LinkBase="Model" />
+        <Compile Remove="Values\ValueReferences\ExtraDetailValueReferenceDecorator.cs" />
+        <Compile Remove="Values\ValueReferences\TextValueReference.cs" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.0">

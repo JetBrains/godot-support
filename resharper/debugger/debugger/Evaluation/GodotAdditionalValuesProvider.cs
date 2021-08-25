@@ -7,6 +7,7 @@ using Mono.Debugger.Soft;
 using Mono.Debugging.Autofac;
 using Mono.Debugging.Backend.Values;
 using Mono.Debugging.Backend.Values.ValueReferences;
+using Mono.Debugging.Backend.Values.ValueRoles;
 using Mono.Debugging.Client;
 using Mono.Debugging.Client.CallStacks;
 using Mono.Debugging.Client.Values;
@@ -73,27 +74,37 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         return null;
                     }
 
-                    var getActiveSceneMethod = type.MetadataType.GetMethods()
+                    var getMainLoop = type.MetadataType.GetMethods()
                         .FirstOrDefault(m => m.IsStatic && m.Parameters.Length == 0 && m.Name == "GetMainLoop");
-                    if (getActiveSceneMethod == null)
+                    if (getMainLoop == null)
                     {
                         myLogger.Warn("Unable to find Engine.GetMainLoop method");
                         return null;
                     }
 
                     // GetMainLoop can throw a exception if we call it from the wrong location
-                    var activeScene = type.CallStaticMethod(frame, mySession.EvaluationOptions, getActiveSceneMethod);
-                    if (activeScene == null)
+                    var mainLoop = type.CallStaticMethod(frame, mySession.EvaluationOptions, getMainLoop);
+                    if (mainLoop == null)
                     {
                         myLogger.Warn("Unexpected response: Engine.GetMainLoop() == null");
                         return null;
                     }
+                    
+                    var sceneTreeType = myValueServices.GetReifiedType(frame, "Godot.SceneTree, GodotSharp");
+                    if (sceneTreeType == null)
+                    {
+                        myLogger.Warn("Unable to get typeof(SceneTree).");
+                        return null;
+                    }
+                    
+                    // get CurrentScene property // Godot.SceneTree.CurrentScene
 
                     // Don't show type presentation. We know it's a scene, the clue's in the name
-                    return new SimpleValueReference<TValue>(activeScene, type.MetadataType,
-                        "Tree", ValueOriginKind.Property,
+                    var reference = new SimpleValueReference<TValue>(mainLoop, type.MetadataType,
+                        "MainLoop", ValueOriginKind.Property,
                         ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsDefaultTypePresentation, frame,
                         myValueServices.RoleFactory);
+                    return reference;
                 }, exception => { });
         }
         //
