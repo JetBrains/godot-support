@@ -86,9 +86,11 @@ val repoRoot = projectDir.parentFile!!
 val resharperPluginPath = File(repoRoot, "resharper")
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
-val libFiles = listOf<String>()
 val pluginFiles = listOf(
     "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot")
+
+val debuggerPluginFiles = listOf(
+    "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.Rider.Debugger")
 
 val dotNetSdkPath by lazy {
     val sdkPath = intellij.ideaDependency.classes.resolve("lib").resolve("DotNetSdkForRdPlugins")
@@ -165,11 +167,17 @@ configure<RdGenExtension> {
 tasks {
     withType<PrepareSandboxTask> {
         dependsOn("buildReSharperPlugin")
-        var files = libFiles + pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
+        var files = pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
         files = files.map { "$resharperPluginPath/build/rider-godot/$it" }
-
         files.forEach {
             from(it) { into("${intellij.pluginName}/dotnet") }
+        }
+
+        var debuggerFiles = debuggerPluginFiles.map { "$it.dll" } + debuggerPluginFiles.map{ "$it.pdb"}
+        debuggerFiles = debuggerFiles.map { "$resharperPluginPath/build/debugger/$it" }
+
+        debuggerFiles.forEach {
+            from(it) { into("${intellij.pluginName}/dotnetDebuggerWorker") }
         }
 
         into("${intellij.pluginName}/dotnet/Extensions/com.intellij.rider.godot/annotations") {
