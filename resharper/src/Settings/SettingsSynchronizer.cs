@@ -6,10 +6,11 @@ using JetBrains.DataFlow;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Reflection;
+using JetBrains.ReSharper.Plugins.Godot.Protocol;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 
-namespace JetBrains.ReSharper.Plugins.Unity.Rider
+namespace JetBrains.ReSharper.Plugins.Godot.Settings
 {
     [SolutionComponent]
     public class SettingsSynchronizer
@@ -20,7 +21,7 @@ namespace JetBrains.ReSharper.Plugins.Unity.Rider
             var boundStore = settingsStore.BoundSettingsStore;
             
             BindSettingToProperty(lifetime, solution, host, boundStore,
-                (BackendSettings s) => s.EnableDebuggerExtensions,
+                (GodotSettings s) => s.EnableDebuggerExtensions,
                 (model, args) => model.BackendSettings.EnableDebuggerExtensions.Value = args.New);
         }
 

@@ -81,10 +81,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         return null;
                     }
 
-                    // GetActiveScene can throw a UnityException if we call it from the wrong location, such as the
-                    // constructor of a MonoBehaviour
-                    var activeScene =
-                        type.CallStaticMethod(frame, mySession.EvaluationOptions, getActiveSceneMethod);
+                    // GetMainLoop can throw a exception if we call it from the wrong location
+                    var activeScene = type.CallStaticMethod(frame, mySession.EvaluationOptions, getActiveSceneMethod);
                     if (activeScene == null)
                     {
                         myLogger.Warn("Unexpected response: Engine.GetMainLoop() == null");
