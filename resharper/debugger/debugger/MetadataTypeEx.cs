@@ -1,7 +1,7 @@
 using JetBrains.Annotations;
 using MetadataLite.API;
 
-namespace JetBrains.ReSharper.Plugins.Godot.debugger
+namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger
 {
     // TODO move into platform
     public static class MetadataTypeEx

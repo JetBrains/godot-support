@@ -6,7 +6,7 @@ using Mono.Debugging.Client.CallStacks;
 using Mono.Debugging.Client.Values.Render;
 using TypeSystem;
 
-namespace JetBrains.ReSharper.Plugins.Godot.debugger.Values
+namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values
 {
     public static class Util
     {

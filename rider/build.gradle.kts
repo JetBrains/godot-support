@@ -120,7 +120,7 @@ configure<RdGenExtension> {
     val frontendKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
 
     val debuggerCsOutDir = File(repoRoot, "resharper/build/generated/Model/DebuggerWorker")
-    val debuggerKtOutDir = File(repoRoot, "rider/src/main/gen/kotlin/com/jetbrains/rider/plugins/godot/model/debuggerWorker")
+    val debuggerKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
 
     verbose = true
     hashFolder = File(repoRoot, "rider/build/rdgen").path

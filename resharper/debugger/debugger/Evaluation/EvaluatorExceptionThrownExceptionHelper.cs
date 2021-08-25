@@ -8,7 +8,7 @@ using Mono.Debugging.Client.CallStacks;
 using Mono.Debugging.Client.Values.Render;
 using Mono.Debugging.Evaluation;
 
-namespace JetBrains.ReSharper.Plugins.Godot.debugger.Evaluation
+namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
 {
     public static class EvaluatorExceptionThrownExceptionHelper
     {

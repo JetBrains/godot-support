@@ -7,7 +7,7 @@ import com.jetbrains.rd.generator.nova.csharp.CSharp50Generator
 import com.jetbrains.rd.generator.nova.kotlin.Kotlin11Generator
 
 @Suppress("unused")
-object FrontendBackendGodotModel : Ext(SolutionModel.Solution) {
+object FrontendBackendModel : Ext(SolutionModel.Solution) {
 
     init {
         setting(Kotlin11Generator.Namespace, "com.jetbrains.rider.model.godot.frontendBackend")

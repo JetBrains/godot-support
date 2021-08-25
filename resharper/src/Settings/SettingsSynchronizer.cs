@@ -1,0 +1,45 @@
+﻿using System;
+using System.Linq.Expressions;
+using JetBrains.Application.Settings;
+using JetBrains.Application.Threading;
+using JetBrains.DataFlow;
+using JetBrains.Lifetimes;
+using JetBrains.ProjectModel;
+using JetBrains.Reflection;
+using JetBrains.ReSharper.Psi.Util;
+using JetBrains.Rider.Model.Godot.FrontendBackend;
+
+namespace JetBrains.ReSharper.Plugins.Unity.Rider
+{
+    [SolutionComponent]
+    public class SettingsSynchronizer
+    {
+        public SettingsSynchronizer(Lifetime lifetime, ISolution solution, FrontendBackendHost host,
+                                         IApplicationWideContextBoundSettingStore settingsStore)
+        {
+            var boundStore = settingsStore.BoundSettingsStore;
+            
+            BindSettingToProperty(lifetime, solution, host, boundStore,
+                (BackendSettings s) => s.EnableDebuggerExtensions,
+                (model, args) => model.BackendSettings.EnableDebuggerExtensions.Value = args.New);
+        }
+
+        private static void BindSettingToProperty<TKeyClass, TEntryMemberType>(
+            Lifetime lifetime, ISolution solution, FrontendBackendHost frontendBackendHost,
+            IContextBoundSettingsStoreLive boundStore,
+            Expression<Func<TKeyClass, TEntryMemberType>> entry,
+            Action<FrontendBackendModel, PropertyChangedEventArgs<TEntryMemberType>> action)
+        {
+            var name = entry.GetInstanceMemberName();
+            var setting = boundStore.Schema.GetScalarEntry(entry);
+            boundStore.GetValueProperty<TEntryMemberType>(lifetime, setting, null).Change.Advise_HasNew(lifetime,
+                args =>
+                {
+                    solution.Locks.ExecuteOrQueueEx(lifetime, name, () =>
+                    {
+                        frontendBackendHost.Do(m => action(m, args));
+                    });
+                });
+        }
+    }
+}
