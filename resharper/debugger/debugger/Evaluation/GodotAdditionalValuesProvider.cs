@@ -47,7 +47,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.debugger.Evaluation
             // Evaluation is always allowed in the first step, but depends on user options for the second. This allows
             // evaluation to calculate children, e.g. expanding the Results node of IEnumerable, but presentation might
             // require clicking "refresh". We should be returning un-evaluated value references here.
-            // TODO: Make "Active Scene" and "this.gameObject" lazy in 212
+            // TODO: Make lazy
             if (!mySession.EvaluationOptions.AllowTargetInvoke) //!myUnityOptions.ExtensionsEnabled || 
                 yield break;
 
