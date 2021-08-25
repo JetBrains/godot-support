@@ -91,7 +91,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
 
                     // Don't show type presentation. We know it's a scene, the clue's in the name
                     return new SimpleValueReference<TValue>(activeScene, type.MetadataType,
-                        "Active scene", ValueOriginKind.Property,
+                        "Tree", ValueOriginKind.Property,
                         ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsDefaultTypePresentation, frame,
                         myValueServices.RoleFactory);
                 }, exception => { });

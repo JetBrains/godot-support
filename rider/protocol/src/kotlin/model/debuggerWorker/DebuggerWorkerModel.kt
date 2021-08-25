@@ -11,7 +11,7 @@ object GodotDebuggerWorkerModel : Ext(DebuggerWorkerModel) {
 
     init {
         setting(Kotlin11Generator.Namespace, "com.jetbrains.rider.plugins.godot.model.debuggerWorker")
-        setting(CSharp50Generator.Namespace, "JetBrains.Rider.Model.Godot.DebuggerWorker")
+        setting(CSharp50Generator.Namespace, "JetBrains.Debugger.Model.Plugins.Godot")
 
         property("showCustomRenderers", bool)
     }

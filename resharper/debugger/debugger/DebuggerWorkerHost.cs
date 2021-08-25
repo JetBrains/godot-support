@@ -1,6 +1,6 @@
 using Autofac;
+using JetBrains.Debugger.Model.Plugins.Godot;
 using JetBrains.Debugger.Worker;
-using JetBrains.Rider.Model.Godot.DebuggerWorker;
 using Mono.Debugging.Autofac;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger
