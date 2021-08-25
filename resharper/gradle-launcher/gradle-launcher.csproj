@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\debugger\debugger\debugger.csproj" />
     <ProjectReference Include="..\src\rider-godot.csproj" />
   </ItemGroup>
 </Project>
