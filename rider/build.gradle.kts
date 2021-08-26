@@ -86,9 +86,11 @@ val repoRoot = projectDir.parentFile!!
 val resharperPluginPath = File(repoRoot, "resharper")
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
-val libFiles = listOf<String>()
 val pluginFiles = listOf(
     "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot")
+
+val debuggerPluginFiles = listOf(
+    "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.Rider.Debugger")
 
 val dotNetSdkPath by lazy {
     val sdkPath = intellij.ideaDependency.classes.resolve("lib").resolve("DotNetSdkForRdPlugins")
@@ -112,48 +114,16 @@ fun File.writeTextIfChanged(content: String) {
     }
 }
 
-val modelSrcDir = File(repoRoot, "rider/protocol/src/kotlin/model")
-val hashBaseDir = File(repoRoot, "rider/build/rdgen")
-
-configure<RdGenExtension> {
-    val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/BackendGodot")
-    val godotEditorCsOutDir = File(repoRoot, "godot/build/generated/Model/BackendGodot")
-
-    verbose = true
-    hashFolder = "$hashBaseDir/backendGodot"
-    logger.info("Configuring rdgen params")
-    classpath({
-        logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${intellij.ideaDependency}")
-        val sdkPath = intellij.ideaDependency.classes
-        val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
-
-        "$rdLibDirectory/rider-model.jar"
-    })
-    sources(File("$modelSrcDir/backendGodot"))
-    packages = "model"
-
-    generator {
-        language = "csharp"
-        transform = "asis"
-        root = "model.backendGodot.BackendGodotModel"
-        directory = "$backendCsOutDir"
-    }
-
-    generator {
-        language = "csharp"
-        transform = "reversed"
-        root = "model.backendGodot.BackendGodotModel"
-        directory = "$godotEditorCsOutDir"
-    }
-}
-
 
 configure<RdGenExtension> {
     val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/FrontendBackend")
     val frontendKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
 
+    val debuggerCsOutDir = File(repoRoot, "resharper/build/generated/Model/DebuggerWorker")
+    val debuggerKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
+
     verbose = true
-    hashFolder = "$hashBaseDir/frontendBackend"
+    hashFolder = File(repoRoot, "rider/build/rdgen").path
     logger.info("Configuring rdgen params")
     classpath({
         logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${intellij.ideaDependency}")
@@ -162,7 +132,7 @@ configure<RdGenExtension> {
 
         "$rdLibDirectory/rider-model.jar"
     })
-    sources(File("$modelSrcDir/frontendBackend"))
+    sources(File(repoRoot, "rider/protocol/src/kotlin/model"))
     packages = "model"
 
     generator {
@@ -178,16 +148,36 @@ configure<RdGenExtension> {
         root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
         directory = "$frontendKtOutDir"
     }
+
+    generator {
+        language = "csharp"
+        transform = "reversed"
+        root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
+        directory = "$debuggerCsOutDir"
+    }
+
+    generator {
+        language = "kotlin"
+        transform = "asis"
+        root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
+        directory = "$debuggerKtOutDir"
+    }
 }
 
 tasks {
     withType<PrepareSandboxTask> {
         dependsOn("buildReSharperPlugin")
-        var files = libFiles + pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
+        var files = pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
         files = files.map { "$resharperPluginPath/build/rider-godot/$it" }
-
         files.forEach {
             from(it) { into("${intellij.pluginName}/dotnet") }
+        }
+
+        var debuggerFiles = debuggerPluginFiles.map { "$it.dll" } + debuggerPluginFiles.map{ "$it.pdb"}
+        debuggerFiles = debuggerFiles.map { "$resharperPluginPath/build/debugger/$it" }
+
+        debuggerFiles.forEach {
+            from(it) { into("${intellij.pluginName}/dotnetDebuggerWorker") }
         }
 
         into("${intellij.pluginName}/dotnet/Extensions/com.intellij.rider.godot/annotations") {

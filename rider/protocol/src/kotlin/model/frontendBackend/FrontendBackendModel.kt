@@ -7,7 +7,7 @@ import com.jetbrains.rd.generator.nova.csharp.CSharp50Generator
 import com.jetbrains.rd.generator.nova.kotlin.Kotlin11Generator
 
 @Suppress("unused")
-object FrontendBackendGodotModel : Ext(SolutionModel.Solution) {
+object FrontendBackendModel : Ext(SolutionModel.Solution) {
 
     init {
         setting(Kotlin11Generator.Namespace, "com.jetbrains.rider.model.godot.frontendBackend")
@@ -19,5 +19,10 @@ object FrontendBackendGodotModel : Ext(SolutionModel.Solution) {
 
         // Misc backend/fronted context
         property("godotPath", string).documentation = "Path to GodotEditor"
+
+        // Settings stored in the backend
+        field("backendSettings", aggregatedef("BackendSettings") {
+            property("enableDebuggerExtensions", bool)
+        })
     }
 }

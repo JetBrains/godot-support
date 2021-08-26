@@ -12,12 +12,17 @@ import com.intellij.openapi.util.Key
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.onTermination
+import com.jetbrains.rd.util.reactive.flowInto
 import com.jetbrains.rider.debugger.DebuggerHelperHost
 import com.jetbrains.rider.debugger.DebuggerWorkerProcessHandler
 import com.jetbrains.rider.debugger.tryWriteMessageToConsoleView
+import com.jetbrains.rider.model.debuggerWorker.DebuggerWorkerModel
 import com.jetbrains.rider.model.debuggerWorker.OutputMessageWithSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputType
+import com.jetbrains.rider.model.godot.frontendBackend.frontendBackendModel
+import com.jetbrains.rider.plugins.godot.model.debuggerWorker.godotDebuggerWorkerModel
+import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.run.ExternalConsoleMediator
 import com.jetbrains.rider.run.WorkerRunInfo
 import com.jetbrains.rider.run.configurations.remote.MonoConnectRemoteProfileState
@@ -29,6 +34,26 @@ import com.jetbrains.rider.util.NetUtils
 class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfiguration, private val remoteConfiguration: RemoteConfiguration, executionEnvironment: ExecutionEnvironment)
     : MonoConnectRemoteProfileState(remoteConfiguration, executionEnvironment) {
     private val ansiEscapeDecoder = AnsiEscapeDecoder()
+
+    final override suspend fun createDebuggerWorker(
+        workerCmd: GeneralCommandLine,
+        protocolModel: DebuggerWorkerModel,
+        protocolServerPort: Int,
+        projectLifetime: Lifetime
+    ): DebuggerWorkerProcessHandler {
+
+        val debuggerWorkerLifetime = projectLifetime.createNested()
+
+        val frontendBackendModel = executionEnvironment.project.solution.frontendBackendModel
+        frontendBackendModel.backendSettings.enableDebuggerExtensions.flowInto(debuggerWorkerLifetime,
+            protocolModel.godotDebuggerWorkerModel.showCustomRenderers)
+
+        return super.createDebuggerWorker(workerCmd, protocolModel, protocolServerPort, projectLifetime).apply {
+            addProcessListener(object : ProcessAdapter() {
+                override fun processTerminated(event: ProcessEvent) { debuggerWorkerLifetime.terminate() }
+            })
+        }
+    }
 
     override fun execute(executor: Executor?, runner: ProgramRunner<*>): ExecutionResult? {
         throw UnsupportedOperationException("Should use overload with session")
