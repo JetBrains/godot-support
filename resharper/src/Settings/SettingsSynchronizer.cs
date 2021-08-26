@@ -29,7 +29,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Settings
             Lifetime lifetime, ISolution solution, FrontendBackendHost frontendBackendHost,
             IContextBoundSettingsStoreLive boundStore,
             Expression<Func<TKeyClass, TEntryMemberType>> entry,
-            Action<FrontendBackendModel, PropertyChangedEventArgs<TEntryMemberType>> action)
+            Action<GodotFrontendBackendModel, PropertyChangedEventArgs<TEntryMemberType>> action)
         {
             var name = entry.GetInstanceMemberName();
             var setting = boundStore.Schema.GetScalarEntry(entry);

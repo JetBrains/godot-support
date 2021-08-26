@@ -20,7 +20,8 @@ import com.jetbrains.rider.model.debuggerWorker.DebuggerWorkerModel
 import com.jetbrains.rider.model.debuggerWorker.OutputMessageWithSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputType
-import com.jetbrains.rider.model.godot.frontendBackend.frontendBackendModel
+
+import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.model.debuggerWorker.godotDebuggerWorkerModel
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.run.ExternalConsoleMediator
@@ -44,7 +45,7 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
 
         val debuggerWorkerLifetime = projectLifetime.createNested()
 
-        val frontendBackendModel = executionEnvironment.project.solution.frontendBackendModel
+        val frontendBackendModel = executionEnvironment.project.solution.godotFrontendBackendModel
         frontendBackendModel.backendSettings.enableDebuggerExtensions.flowInto(debuggerWorkerLifetime,
             protocolModel.godotDebuggerWorkerModel.showCustomRenderers)
 

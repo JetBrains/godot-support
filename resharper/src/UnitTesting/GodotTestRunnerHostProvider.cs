@@ -12,7 +12,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
     {
         public GodotTestRunnerHostProvider(ISolution solution)
         {
-            var model = solution.GetProtocolSolution().GetFrontendBackendModel(); // do not remove - would brake calling the same in GodotPatcher
+            var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel(); // do not remove - would brake calling the same in GodotPatcher
         }
         
         public ITestRunnerHost TryGetHost(IProject project, TargetFrameworkId targetFrameworkId)

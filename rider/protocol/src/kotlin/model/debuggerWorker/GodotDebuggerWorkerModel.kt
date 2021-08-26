@@ -1,4 +1,4 @@
-package model.debuggerWorker
+package model.debuggerWorkerGodot
 
 import com.jetbrains.rd.generator.nova.*
 import com.jetbrains.rd.generator.nova.PredefinedType.*

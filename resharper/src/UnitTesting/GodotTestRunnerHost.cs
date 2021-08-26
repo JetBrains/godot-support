@@ -62,7 +62,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             var taskLifetime = taskLifetimeDef.Lifetime;
 
             var solution = run.Launch.Solution;
-            var model = solution.GetProtocolSolution().GetFrontendBackendModel();
+            var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
             solution.Locks.ExecuteOrQueueEx(taskLifetime, "AttachDebuggerToGodotEditor", () =>
             {
                 if (!taskLifetime.IsAlive || model == null)
@@ -92,12 +92,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         private class GodotPatcher : IProcessStartInfoPatcher
         {
             private readonly ISolution mySolution;
-            private readonly FrontendBackendModel myModel;
+            private readonly GodotFrontendBackendModel myModel;
 
             public GodotPatcher(ISolution solution)
             {
                 mySolution = solution;
-                myModel = mySolution.GetProtocolSolution().GetFrontendBackendModel();
+                myModel = mySolution.GetProtocolSolution().GetGodotFrontendBackendModel();
             }
 
             public ProcessStartInfoPatchResult Patch(JetProcessStartInfo startInfo, JetProcessRuntimeRequest request)

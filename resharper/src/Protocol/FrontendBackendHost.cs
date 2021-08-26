@@ -15,7 +15,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Protocol
 
         // This will only ever be null when running tests. The value does not change for the lifetime of the solution.
         // Prefer using this field over calling GetFrontendBackendModel(), as that method will throw in tests
-        [CanBeNull] public readonly FrontendBackendModel Model;
+        [CanBeNull] public readonly GodotFrontendBackendModel Model;
 
         public FrontendBackendHost(Lifetime lifetime, ISolution solution, IShellLocks shellLocks,
             bool isInTests = false)
@@ -25,7 +25,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Protocol
                 return;
 
             // This will throw in tests, as GetProtocolSolution will return null
-            var model = solution.GetProtocolSolution().GetFrontendBackendModel();
+            var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
             Model = model;
         }
 
@@ -36,7 +36,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Protocol
         // be null.
         // There is not a Do that takes in a Func to return a value, as that cannot be called reliably in tests. Use
         // Model directly in this case, check for null and do whatever is appropriate for the callsite.
-        public void Do(Action<FrontendBackendModel> action)
+        public void Do(Action<GodotFrontendBackendModel> action)
         {
             if (myIsInTests)
                 return;
