@@ -14,7 +14,7 @@ repositories {
 plugins {
     id("org.jetbrains.intellij") version "0.7.2"
     id("org.jetbrains.grammarkit") version "2018.1.7"
-    id("me.filippov.gradle.jvm.wrapper") version "0.9.3"
+    id("me.filippov.gradle.jvm.wrapper") version "0.10.0"
     id ("com.jetbrains.rdgen") version "0.211.278" // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
     kotlin("jvm") version "1.5.21"
 }
