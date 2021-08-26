@@ -121,8 +121,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         return null;
                     }
 
-                    return new SimpleValueReference<TValue>(currentSceneReference.GetValue(mySession.EvaluationOptions), nodeType.MetadataType,
-                        "CurrentScene", ValueOriginKind.Property,
+                    return new SimpleValueReference<TValue>(currentSceneReference.GetValue(mySession.EvaluationOptions),
+                        nodeType.MetadataType, "CurrentScene", ValueOriginKind.Property,
                         ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsDefaultTypePresentation, frame,
                         myValueServices.RoleFactory);
                 }, exception => { });
