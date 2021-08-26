@@ -66,8 +66,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
         {
             return myLogger.CatchEvaluatorException<TValue, IValueReference<TValue>>(() =>
                 {
-                    var type = myValueServices.GetReifiedType(frame,
-                                               "Godot.Engine, GodotSharp");
+                    var type = myValueServices.GetReifiedType(frame, "Godot.Engine, GodotSharp");
                     if (type == null)
                     {
                         myLogger.Warn("Unable to get typeof(Engine). Not a Godot project?");
@@ -96,12 +95,21 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         myLogger.Warn("Unable to get typeof(SceneTree).");
                         return null;
                     }
+
+                    var property = sceneTreeType.MetadataType.GetProperties()
+                        .FirstOrDefault(m => m.Type.IsClassLike && m.Name == "CurrentScene");
                     
-                    // get CurrentScene property // Godot.SceneTree.CurrentScene
+                    var nodeType = myValueServices.GetReifiedType(frame, "Godot.Node, GodotSharp");
+                    if (nodeType == null)
+                    {
+                        myLogger.Warn("Unable to get typeof(Node).");
+                        return null;
+                    }
+
 
                     // Don't show type presentation. We know it's a scene, the clue's in the name
-                    var reference = new SimpleValueReference<TValue>(mainLoop, type.MetadataType,
-                        "MainLoop", ValueOriginKind.Property,
+                    var reference = new SimpleValueReference<TValue>(mainLoop, nodeType.MetadataType,
+                        "CurrentScene", ValueOriginKind.Property,
                         ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsDefaultTypePresentation, frame,
                         myValueServices.RoleFactory);
                     return reference;

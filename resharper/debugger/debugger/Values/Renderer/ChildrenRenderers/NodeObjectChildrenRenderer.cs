@@ -5,7 +5,6 @@ using JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.ValueReferences;
 using JetBrains.Util;
 using MetadataLite.API;
 using Mono.Debugging.Autofac;
-using Mono.Debugging.Backend.Values;
 using Mono.Debugging.Backend.Values.Render.ChildrenRenderers;
 using Mono.Debugging.Backend.Values.ValueReferences;
 using Mono.Debugging.Backend.Values.ValueRoles;
@@ -18,14 +17,13 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.Renderer.Child
     // Adds a "Children" group to Godot.Node.
     [DebuggerSessionComponent(typeof(SoftDebuggerType))]
     public class NodeObjectChildrenRenderer<TValue> : ChildrenRendererBase<TValue, IObjectValueRole<TValue>>
-    where TValue : class
+        where TValue : class
     {
         private readonly IOptions myOptions;
         private readonly ILogger myLogger;
 
         public NodeObjectChildrenRenderer(IOptions options, ILogger logger)
         {
-            logger.Info("NodeObjectChildrenRenderer ctor.");
             myOptions = options;
             myLogger = logger;
         }
@@ -38,96 +36,63 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.Renderer.Child
         public override bool IsExclusive => false;
 
         protected override bool IsApplicable(IObjectValueRole<TValue> role, IMetadataTypeLite type,
-                                            IPresentationOptions options, IUserDataHolder dataHolder)
+            IPresentationOptions options, IUserDataHolder dataHolder)
         {
-            myLogger.Info("NodeObjectChildrenRenderer.IsApplicable.");
             return myOptions.ExtensionsEnabled && type.FindTypeThroughHierarchy("Godot.Node") != null;
         }
-
+        
         protected override IEnumerable<IValueEntity> GetChildren(IObjectValueRole<TValue> valueRole,
-                                                                 IMetadataTypeLite instanceType,
-                                                                 IPresentationOptions options,
-                                                                 IUserDataHolder dataHolder,
-                                                                 CancellationToken token)
+            IMetadataTypeLite instanceType,
+            IPresentationOptions options,
+            IUserDataHolder dataHolder,
+            CancellationToken token)
         {
-            return new[] {new ChildrenGroup(valueRole, ValueServices, myLogger)};
+            return myLogger.CatchEvaluatorException<TValue, IEnumerable<IValueEntity>>(
+                () => GetChildrenImpl(valueRole, options),
+                exception => { myLogger.Error(exception); }) ?? Array.Empty<IValueEntity>();
         }
 
-        private class ChildrenGroup : ValueGroupBase
+        private IValueEntity[] GetChildrenImpl(IObjectValueRole<TValue> valueRole, IValueFetchOptions options)
         {
-            private readonly IObjectValueRole<TValue> myRole;
-            private readonly IValueServicesFacade<TValue> myValueServices;
-            private readonly ILogger myLogger;
+            if (!TryInvokeGetChildren(valueRole, options, out var role))
+                return EmptyArray<IValueEntity>.Instance;
 
-            public ChildrenGroup(IObjectValueRole<TValue> role,
-                                 IValueServicesFacade<TValue> valueServices,
-                                 ILogger logger)
-                : base("Children")
+            var name = role.GetInstancePropertyReference("Name")
+                ?.AsStringSafe(options)?.GetString() ?? "Children";
+
+            // Tell the value presenter to hide the name field, as we're using it for the key name. Also hide the type presentation
+            return new IValueEntity[]
             {
-                myRole = role;
-                myValueServices = valueServices;
-                myLogger = logger;
+                new CalculatedValueReferenceDecorator<TValue>(role.ValueReference,
+                    ValueServices.RoleFactory, name, false, false).ToValue(ValueServices)
+            };
+        }
+
+        private bool TryInvokeGetChildren(IObjectValueRole<TValue> role,
+            IValueFetchOptions options,
+            out IObjectValueRole<TValue> returnedPropertyRole)
+        {
+            returnedPropertyRole = null;
+
+            var method = MetadataTypeLiteEx.LookupInstanceMethodSafe(role.ReifiedType.MetadataType,
+                MethodSelectors.NodeObject_GetChildren);
+            if (method == null)
+            {
+                myLogger.Warn("Cannot find GetChildren method on NodeObject");
+                return false;
             }
 
-            public override IEnumerable<IValueEntity> GetChildren(IPresentationOptions options,
-                                                                  CancellationToken token = new CancellationToken())
+            returnedPropertyRole = new SimpleValueReference<TValue>(
+                    role.CallInstanceMethod(method),
+                    role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)
+                .AsObjectSafe(options);
+            if (returnedPropertyRole == null)
             {
-                return myLogger.CatchEvaluatorException<TValue, IEnumerable<IValueEntity>>(
-                    () => GetChildrenImpl(options),
-                    exception =>
-                    {
-                        myLogger.Error(exception);
-                    }) ?? Array.Empty<IValueEntity>();
+                myLogger.Warn("Unable to invoke GetChildren");
+                return false;
             }
 
-            private IValueEntity[] GetChildrenImpl(IValueFetchOptions options)
-            {
-                if (!TryInvokeGetIterator(myRole, options, out var role))
-                    return EmptyArray<IValueEntity>.Instance;
-
-                var name = role.GetInstancePropertyReference("name")
-                    ?.AsStringSafe(options)?.GetString() ?? "Child";
-
-                // Tell the value presenter to hide the name field, as we're using it for the key name. Also hide the
-                // type presentation - of course it's a SerializedProperty
-                return new IValueEntity[]
-                {
-                    new CalculatedValueReferenceDecorator<TValue>(role.ValueReference,
-                        myValueServices.RoleFactory, name, false, false).ToValue(myValueServices)
-                };
-
-                // Technically, we should now repeatedly call Copy() and Next(false) until Next returns false so that we
-                // show all child properties of the SerializedObject. But empirically, there is only one direct child of
-                // SerializedObject, called "Base", with a depth of -1. We'll avoid the unnecessary method invocations,
-                // unless it turns out to be an actual issue.
-            }
-
-            private bool TryInvokeGetIterator(IObjectValueRole<TValue> role,
-                                              IValueFetchOptions options,
-                                              out IObjectValueRole<TValue> returnedPropertyRole)
-            {
-                returnedPropertyRole = null;
-
-                var method = MetadataTypeLiteEx.LookupInstanceMethodSafe(role.ReifiedType.MetadataType,
-                    MethodSelectors.NodeObject_GetChildren);
-                if (method == null)
-                {
-                    myLogger.Warn("Cannot find GetChildren method on NodeObject");
-                    return false;
-                }
-
-                returnedPropertyRole = new SimpleValueReference<TValue>(
-                        role.CallInstanceMethod(method),
-                        role.ValueReference.OriginatingFrame, myValueServices.RoleFactory)
-                    .AsObjectSafe(options);
-                if (returnedPropertyRole == null)
-                {
-                    myLogger.Warn("Unable to invoke GetChildren");
-                    return false;
-                }
-
-                return true;
-            }
+            return true;
         }
     }
 }
