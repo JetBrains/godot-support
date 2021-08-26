@@ -21,7 +21,7 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
         property("godotPath", string).documentation = "Path to GodotEditor"
 
         // Settings stored in the backend
-        field("backendSettings", aggregatedef("BackendSettings") {
+        field("backendSettings", aggregatedef("GodotBackendSettings") {
             property("enableDebuggerExtensions", bool)
         })
     }
