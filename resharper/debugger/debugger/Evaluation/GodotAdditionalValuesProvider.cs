@@ -66,14 +66,14 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
         {
             return myLogger.CatchEvaluatorException<TValue, IValueReference<TValue>>(() =>
                 {
-                    var type = myValueServices.GetReifiedType(frame, "Godot.Engine, GodotSharp");
-                    if (type == null)
+                    var engineType = myValueServices.GetReifiedType(frame, "Godot.Engine, GodotSharp");
+                    if (engineType == null)
                     {
                         myLogger.Warn("Unable to get typeof(Engine). Not a Godot project?");
                         return null;
                     }
 
-                    var getMainLoop = type.MetadataType.GetMethods()
+                    var getMainLoop = engineType.MetadataType.GetMethods()
                         .FirstOrDefault(m => m.IsStatic && m.Parameters.Length == 0 && m.Name == "GetMainLoop");
                     if (getMainLoop == null)
                     {
@@ -82,7 +82,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                     }
 
                     // GetMainLoop can throw a exception if we call it from the wrong location
-                    var mainLoop = type.CallStaticMethod(frame, mySession.EvaluationOptions, getMainLoop);
+                    var mainLoop = engineType.CallStaticMethod(frame, mySession.EvaluationOptions, getMainLoop);
                     if (mainLoop == null)
                     {
                         myLogger.Warn("Unexpected response: Engine.GetMainLoop() == null");
@@ -95,9 +95,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         myLogger.Warn("Unable to get typeof(SceneTree).");
                         return null;
                     }
-
-                    var property = sceneTreeType.MetadataType.GetProperties()
-                        .FirstOrDefault(m => m.Type.IsClassLike && m.Name == "CurrentScene");
                     
                     var nodeType = myValueServices.GetReifiedType(frame, "Godot.Node, GodotSharp");
                     if (nodeType == null)
@@ -105,14 +102,29 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         myLogger.Warn("Unable to get typeof(Node).");
                         return null;
                     }
+                    
+                    var reference = new SimpleValueReference<TValue>(mainLoop, sceneTreeType.MetadataType,
+                        "MainLoop", ValueOriginKind.Property,
+                        ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsDefaultTypePresentation, frame,
+                        myValueServices.RoleFactory);
 
+                    if (!(reference.GetPrimaryRole(mySession.EvaluationOptions) is IObjectValueRole<TValue> role1))
+                    {
+                        myLogger.Warn("Unable to get 'MainLoop' as object value");
+                        return null;
+                    }
 
-                    // Don't show type presentation. We know it's a scene, the clue's in the name
-                    var reference = new SimpleValueReference<TValue>(mainLoop, nodeType.MetadataType,
+                    var currentSceneReference = role1.GetInstancePropertyReference(new[] { "CurrentScene" });
+                    if (currentSceneReference == null)
+                    {
+                        myLogger.Warn("Unexpected response: CurrentScene == null");
+                        return null;
+                    }
+
+                    return new SimpleValueReference<TValue>(currentSceneReference.GetValue(mySession.EvaluationOptions), nodeType.MetadataType,
                         "CurrentScene", ValueOriginKind.Property,
                         ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsDefaultTypePresentation, frame,
                         myValueServices.RoleFactory);
-                    return reference;
                 }, exception => { });
         }
         //
