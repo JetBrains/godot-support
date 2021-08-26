@@ -55,7 +55,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
             if (!myOptions.ExtensionsEnabled || !mySession.EvaluationOptions.AllowTargetInvoke)
                 yield break;
 
-            // Add "Active Scene" as a top level item to mimic the Hierarchy window in Godot
+            // Add "Current Scene" as a top level item to mimic the Hierarchy window in Godot
             var activeScene = GetCurrentScene(frame);
             if (activeScene != null)
                 yield return activeScene.ToValue(myValueServices);
@@ -127,41 +127,5 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         myValueServices.RoleFactory);
                 }, exception => { });
         }
-        //
-        // [CanBeNull]
-        // private IValueReference<TValue> GetThisGameObjectForMonoBehaviour(IStackFrame frame)
-        // {
-        //     return myLogger.CatchEvaluatorException<TValue, IValueReference<TValue>>(() =>
-        //         {
-        //             var thisObj = frame.GetThis(mySession.EvaluationOptions);
-        //             if (thisObj?.DeclaredType?.FindTypeThroughHierarchy("Godot.Node") == null)
-        //                 return null;
-        //
-        //             if (!(thisObj.GetPrimaryRole(mySession.EvaluationOptions) is IObjectValueRole<TValue> role))
-        //             {
-        //                 myLogger.Warn("Unable to get 'this' as object value");
-        //                 return null;
-        //             }
-        //
-        //             var gameObjectReference = role.GetInstanceMethodInvocationReference(new MethodSelector(m => m.Name == "GetTree" && m.Parameters.Length == 0));
-        //             if (gameObjectReference == null)
-        //             {
-        //                 myLogger.Warn("Unable to find 'this.gameObject' as a property reference");
-        //                 return null;
-        //             }
-        //
-        //             // var gameObject = gameObjectReference..GetValue(mySession.EvaluationOptions);
-        //             // var gameObjectType = gameObjectReference.GetValueType(mySession.EvaluationOptions,
-        //             //     myValueServices.ValueMetadataProvider);
-        //
-        //             // Don't show type for each child game object. It's always "GameObject", and we know they're game
-        //             // objects from the synthetic group.
-        //             // return new SimpleValueReference<TValue>(gameObject, gameObjectType, "this.gameObject",
-        //             //     ValueOriginKind.Property,
-        //             //     ValueFlags.None | ValueFlags.IsDefaultTypePresentation | ValueFlags.IsReadOnly, frame,
-        //             //     myValueServices.RoleFactory);
-        //             return null;
-        //         });
-        // }
     }
 }
