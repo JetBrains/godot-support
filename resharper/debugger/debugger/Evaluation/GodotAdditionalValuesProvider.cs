@@ -56,13 +56,13 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                 yield break;
 
             // Add "Active Scene" as a top level item to mimic the Hierarchy window in Godot
-            var activeScene = GetActiveScene(frame);
+            var activeScene = GetCurrentScene(frame);
             if (activeScene != null)
                 yield return activeScene.ToValue(myValueServices);
         }
 
         [CanBeNull]
-        private IValueReference<TValue> GetActiveScene(IStackFrame frame)
+        private IValueReference<TValue> GetCurrentScene(IStackFrame frame)
         {
             return myLogger.CatchEvaluatorException<TValue, IValueReference<TValue>>(() =>
                 {
