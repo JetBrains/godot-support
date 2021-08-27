@@ -103,18 +103,18 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         return null;
                     }
                     
-                    var reference = new SimpleValueReference<TValue>(mainLoop, sceneTreeType.MetadataType,
+                    var mainLoopReference = new SimpleValueReference<TValue>(mainLoop, sceneTreeType.MetadataType,
                         "MainLoop", ValueOriginKind.Property,
                         ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsDefaultTypePresentation, frame,
                         myValueServices.RoleFactory);
 
-                    if (!(reference.GetPrimaryRole(mySession.EvaluationOptions) is IObjectValueRole<TValue> role1))
+                    if (!(mainLoopReference.GetPrimaryRole(mySession.EvaluationOptions) is IObjectValueRole<TValue> role))
                     {
-                        myLogger.Warn("Unable to get 'MainLoop' as object value");
+                        myLogger.Warn("Unable to get role from 'MainLoop' reference");
                         return null;
                     }
 
-                    var currentSceneReference = role1.GetInstancePropertyReference(new[] { "CurrentScene" });
+                    var currentSceneReference = role.GetInstancePropertyReference(new[] { "CurrentScene" });
                     if (currentSceneReference == null)
                     {
                         myLogger.Warn("Unexpected response: CurrentScene == null");
