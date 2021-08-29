@@ -1,12 +1,37 @@
 package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
-import gdscript.psi.GdElementFactory
-import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdMethodIdNmi
-import gdscript.psi.GdTypes
+import com.intellij.psi.PsiFile
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.index.impl.GdClassNamingIndex
+import gdscript.psi.*
 
 object PsiGdMethodDeclUtil {
+
+    fun collectParentsMethods(file: PsiFile): MutableMap<String, GdMethodDeclTl> {
+        val methods: MutableMap<String, GdMethodDeclTl> = mutableMapOf();
+        var parentName: String? = PsiTreeUtil.getChildOfType(file, GdInheritance::class.java)?.inheritanceName;
+
+        while (parentName !== null) {
+            val parent = GdClassNamingIndex.get(parentName, file.project, GlobalSearchScope.allScope(file.project))
+                .firstOrNull();
+            if (parent === null) {
+                break;
+            }
+
+            PsiTreeUtil.findChildrenOfType(parent.containingFile, GdMethodDeclTl::class.java).forEach {
+                val name = it.name.orEmpty();
+                if (!methods.containsKey(name)) {
+                    methods[name] = it;
+                }
+            }
+
+            parentName = parent.parentName;
+        }
+
+        return methods;
+    }
 
     fun getMethodName(element: GdMethodDeclTl): String? {
         val stub = element.stub;
@@ -23,7 +48,7 @@ object PsiGdMethodDeclUtil {
             return stub.returnType();
         }
 
-        return element.returnHint?.typeHintNm?.name ?: "";
+        return element.returnHint?.returnHintVal?.text ?: "";
     }
 
     fun getParameters(element: GdMethodDeclTl): HashMap<String, String?> {

@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.index.impl.GdMethodDeclIndex
 import gdscript.psi.GdMethodDeclTl
@@ -35,7 +36,7 @@ class GdSetGetMethodIdNmReference : PsiReferenceBase<GdNamedElement> {
             PsiTreeUtil.findChildrenOfType(myElement.containingFile.originalElement, GdMethodDeclTl::class.java);
 
         return methods.mapNotNull {
-            it.name?.let { it1 -> GdLookup.create(it1) }
+            it.name?.let { it1 -> GdLookup.create(it1, icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER)) }
         }.toTypedArray()
     }
 

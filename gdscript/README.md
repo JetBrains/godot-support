@@ -3,6 +3,8 @@ typed array
 - var my_array: Array[int] = [1, 2, 3]
 - var inferred_array := [1, 2, 3] # This is Array[int].
 
+
+
 lambda
 ```
 func _ready():
@@ -26,6 +28,16 @@ Known issues
 annotation insert
 endofstmt -> nutnost prázdý řádek/; na konci souboru
 structure view - filters for variable/const/methods? ... separate groups somehow
+
+# String format:
+var format_string = "We're waiting for %s."
+
+// Using the '%' operator, the placeholder is replaced with the desired value
+
+var actual_string = format_string % "Godot"
+
+
+
 
 sdk -> lepší impl
 

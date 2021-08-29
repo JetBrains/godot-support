@@ -3,7 +3,7 @@ package gdscript;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import gdscript.psi.GdTypes;
+import gdscript.psi.GdTokenType;import gdscript.psi.GdTypes;
 import java.util.Stack;
 
 %%
@@ -18,6 +18,8 @@ import java.util.Stack;
 %eof}
 
 %{
+    String oppening = "";
+    int lastState = YYINITIAL;
     boolean lineEnded = false;
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
@@ -68,8 +70,16 @@ NEW_LINE = [\r\n]
 INDENT = [ \t]+
 //WHITE_SPACE = {NEW_LINE} | {INDENT}
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
-NUMBER = {FLIT1}|{FLIT2}|{FLIT3}
-STRING = \"(.)*\"
+NUMBER = [0-9][0-9_]*(\.[0-9_]+)?
+HEX_NUMBER = 0x[0-9_a-f]+
+BIN_NUMBER = 0b[01_]+
+REAL_NUMBER = {NUMBER}e-[0-9]+
+
+STRING = \"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'
+STRING_MARKER = \"\"\"|\"|\'
+STRING_MARKER_REV = [^\"\'\n\r]*
+//ML_STRING = \"\"\"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'\"\"\"
+
 COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 ANNOTATOR = "@"[a-z|A-Z]*
 
@@ -80,8 +90,30 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 
 %state AWAIT_NEW_LINE
 %state AWAIT_NEW_LINE_ONCE
+%xstate STRING
 
 %%
+
+<STRING> {
+    // Stringers
+    {STRING_MARKER} {
+        if (oppening.equals(yytext().toString())) {
+            yybegin(lastState);
+            return GdTypes.STRING;
+        }
+    }
+
+    {NEW_LINE} {
+        if (!oppening.equals("\"\"\"")) {
+            yybegin(lastState);
+            return TokenType.BAD_CHARACTER;
+        }
+    }
+
+    {STRING_MARKER_REV} {
+        continue;
+    }
+}
 
 <AWAIT_NEW_LINE_ONCE> {
     {NEW_LINE}     {
@@ -110,30 +142,38 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "const"        { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CONST); }
     "setget"       { return GdTypes.SETGET; }
 
+//    "enum"         { yybegin(AWAIT_NEW_LINE); return GdTypes.ENUM; }
     "func"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC); }
-    "pass"         { return dedentRoot(GdTypes.PASS); }
+    "pass"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.PASS); }
     "true"         { return dedentRoot(GdTypes.TRUE); }
     "false"        { return dedentRoot(GdTypes.FALSE); }
     "null"         { return dedentRoot(GdTypes.NULL); }
     "int"          { return dedentRoot(GdTypes.INT); }
     "String"       { return dedentRoot(GdTypes.STR); }
     "self"         { return dedentRoot(GdTypes.SELF); }
-    "continue"     { return dedentRoot(GdTypes.CONTINUE); }
-    "breakpoint"   { return dedentRoot(GdTypes.BREAKPOINT); }
-    "break"        { return dedentRoot(GdTypes.BREAK); }
-    "return"       { return dedentRoot(GdTypes.RETURN); }
+    "continue"     { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CONTINUE); }
+    "breakpoint"   { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.BREAKPOINT); }
+    "break"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.BREAK); }
+    "return"       { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.RETURN); }
     "void"         { return dedentRoot(GdTypes.VOID); }
     "PI"           { return dedentRoot(GdTypes.PI); }
     "TAU"          { return dedentRoot(GdTypes.TAU); }
     "NAN"          { return dedentRoot(GdTypes.NAN); }
     "INF"          { return dedentRoot(GdTypes.INF); }
     "signal"       { yybegin(AWAIT_NEW_LINE_ONCE); return GdTypes.SIGNAL; }
-    "in"           { return GdTypes.IN; }
-    "if"           { return GdTypes.IF; }
-    "else"         { return GdTypes.ELSE; }
-    "elif"         { return GdTypes.ELIF; }
-    "as"           { return GdTypes.AS; }
-    "is"           { return GdTypes.IS; }
+    "in"           { return dedentRoot(GdTypes.IN); }
+    "if"           { return dedentRoot(GdTypes.IF); }
+    "else"         { return dedentRoot(GdTypes.ELSE); }
+    "elif"         { return dedentRoot(GdTypes.ELIF); }
+    "as"           { return dedentRoot(GdTypes.AS); }
+    "is"           { return dedentRoot(GdTypes.IS); }
+    "while"        { return dedentRoot(GdTypes.WHILE); }
+    "for"          { return dedentRoot(GdTypes.FOR); }
+    "in"           { return dedentRoot(GdTypes.IN); }
+    "match"        { return dedentRoot(GdTypes.MATCH); }
+    "assert"       { return dedentRoot(GdTypes.ASSERT); }
+    "yield"        { return dedentRoot(GdTypes.YIELD); }
+    "preload"      { return dedentRoot(GdTypes.PRELOAD); }
 
     "*"            { return GdTypes.MUL; }
     "/"            { return GdTypes.DIV; }
@@ -154,6 +194,10 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "<<"           { return GdTypes.LBSHIFT; }
     "("            { return dedentRoot(GdTypes.LRBR); }
     ")"            { return dedentRoot(GdTypes.RRBR); }
+    "["            { return dedentRoot(GdTypes.LSBR); }
+    "]"            { return dedentRoot(GdTypes.RSBR); }
+    "{"            { return dedentRoot(GdTypes.LCBR); }
+    "}"            { return dedentRoot(GdTypes.RCBR); }
     "&"            { return GdTypes.AND; }
     "&&"           { return GdTypes.ANDAND; }
     "and"          { return GdTypes.ANDAND; }
@@ -163,12 +207,15 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "^"            { return GdTypes.XOR; }
     "~"            { return GdTypes.NOT; }
 
+    {STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
     {ANNOTATOR}     { return GdTypes.ANNOTATOR; }
     {IDENTIFIER}    { return dedentRoot(GdTypes.IDENTIFIER); }
+    {REAL_NUMBER}   { return dedentRoot(GdTypes.NUMBER); }
     {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }
-    {STRING}        { return dedentRoot(GdTypes.STRING); }
+    {HEX_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
+    {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {COMMENT}       { return GdTypes.COMMENT; }
 
     {INDENT}  {
@@ -192,41 +239,27 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {NEW_LINE}     { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
-    if (dedentSpaces()) {
-        return GdTypes.DEDENT;
-    } else {
+//    if (yystate() == AWAIT_NEW_LINE) {
+//        yybegin(YYINITIAL);
+//        return GdTypes.NEW_LINE;
+//    } else if (dedentSpaces()) {
+//        return GdTypes.DEDENT;
+//    } else {
         return null;
-    }
+//    }
 }
 
 //<AWAIT_NEW_LINE, AWAIT_STMT_END> {
 //<YYINITIAL, AWAIT_NEW_LINE, AWAIT_STMT_END> {
 //
 //    "class" { return GdTypes.CLASS; }
-//    "enum" { return GdTypes.ENUM; }
 //
 //    "static" { return GdTypes.STATIC; }
-//    "while" { return GdTypes.WHILE; }
-//    "for" { return GdTypes.FOR; }
-//    "in" { return GdTypes.IN; }
-//    "match" { return GdTypes.MATCH; }
 //    "_" { return GdTypes.UNDER; }
-//    "assert" { return GdTypes.ASSERT; }
-//    "yield" { return GdTypes.YIELD; }
-//    "preload" { return GdTypes.PRELOAD; }
-//    "or" { return GdTypes.OR; }
 //
 //    /* Syntax */
-//    "{" { return GdTypes.LCBR; }
-//    "}" { return GdTypes.RCBR; }
-//    "[" { return GdTypes.LSBR; }
-//    "]" { return GdTypes.RSBR; }
 //    "?" { return GdTypes.TERNARY; }
 //    ".." { return GdTypes.DOTDOT; }
-//
-//
-//    {OPERATOR} { return GdTypes.OPERATOR; }
-//    {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
 //}
 
 [^] { return GdTypes.BAD_CHARACTER; }

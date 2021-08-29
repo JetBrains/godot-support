@@ -7,6 +7,8 @@ import com.intellij.psi.PsiElement
 import gdscript.GdKeywords
 import gdscript.action.quickFix.GdRemoveAnnotationAction
 import gdscript.psi.GdAnnotation
+import gdscript.psi.GdLiteralEx
+import gdscript.psi.GdTypes
 
 class GdAnnotationAnnotator : Annotator {
 

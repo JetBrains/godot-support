@@ -24,12 +24,19 @@ object GdLookup {
         typed: String? = null,
         priority: Double? = null,
         icon: Icon? = null,
-        color: Color? = null
+        color: Color? = null,
+        presentable: String? = null,
+        tail: String? = null
     ): LookupElement {
         var builder = GdLookupElementBuilder
             .create(text, if (lookup !== null) lookup else text)
+            .withTailText(tail)
             .withTypeText(typed)
             .withIcon(icon)
+
+        if (presentable !== null) {
+            builder = builder.withPresentableText(presentable);
+        }
 
         if (lookup !== null) {
             builder = builder.withInsertHandler(GdLookupInsertHandler.INSTANCE);

@@ -5,11 +5,13 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
+import gdscript.action.GdFileClassNameAction
 import gdscript.competion.staticLoader.StaticClassLoader
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdClassNameNm
 import gdscript.psi.GdInheritanceIdNmi
+import gdscript.psi.utils.PsiGdFileUtil
 
 class GdClassNameAnnotator : Annotator {
 
@@ -32,8 +34,18 @@ class GdClassNameAnnotator : Annotator {
                 .range(element.textRange)
                 .create();
         } else if (element is GdClassNameNm) {
+            val name = element.name.orEmpty();
+            val filename = PsiGdFileUtil.filename(element.containingFile);
+            if (filename.lowercase() != name.lowercase()) {
+                holder
+                    .newAnnotation(HighlightSeverity.WEAK_WARNING, "Class name does not match filename")
+                    .range(element.textRange)
+                    .withFix(GdFileClassNameAction(filename, element))
+                    .create();
+            }
+
             if (GdClassNamingIndex.get(
-                    element.name.orEmpty(), element.project, GlobalSearchScope.notScope(
+                    name, element.project, GlobalSearchScope.notScope(
                         GlobalSearchScope.fileScope(element.containingFile)
                     )
                 ).isEmpty()
@@ -44,6 +56,7 @@ class GdClassNameAnnotator : Annotator {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Class already exists")
                 .range(element.textRange)
+                .withFix(GdFileClassNameAction(filename, element))
                 .create();
         }
     }

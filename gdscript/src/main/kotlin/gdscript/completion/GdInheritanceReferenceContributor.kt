@@ -9,19 +9,15 @@ import gdscript.reference.GdInheritanceNmReference
 
 class GdInheritanceReferenceContributor : PsiReferenceContributor() {
 
-    override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        registrar.registerReferenceProvider(
+    override fun registerReferenceProviders(register: PsiReferenceRegistrar) {
+        register.registerReferenceProvider(
             psiElement(GdTypes.INHERITANCE_ID_NMI),
-            GdInheritanceReferenceProvider()
+            object : PsiReferenceProvider() {
+                override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
+                    return arrayOf(GdInheritanceNmReference(element, TextRange(0, element.textLength)));
+                }
+            }
         );
-    }
-
-}
-
-class GdInheritanceReferenceProvider : PsiReferenceProvider() {
-
-    override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-        return arrayOf(GdInheritanceNmReference(element, TextRange(0, element.textLength)));
     }
 
 }

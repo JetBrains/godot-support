@@ -37,7 +37,7 @@ class GdChangeReturnType : BaseIntentionAction {
         }
         val caret = editor.caretModel;
 
-        val hint = element.typeHintNm;
+        val hint = element.returnHintVal.typeHintNm;
         if (hint != null) {
             caret.moveToOffset(hint.startOffset);
             hint.delete();

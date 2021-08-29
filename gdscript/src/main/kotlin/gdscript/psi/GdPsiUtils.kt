@@ -198,4 +198,18 @@ object GdPsiUtils {
         return PsiGdSignalUtil.getNameIdentifier(element)
     }
 
+    /** Local variable   */
+    @JvmStatic
+    fun getName(element: GdVarNmi): String {
+        return PsiGdVarNmiUtil.getName(element)
+    }
+    @JvmStatic
+    fun setName(element: GdVarNmi, newName: String?): PsiElement {
+        return PsiGdVarNmiUtil.setName(element, newName)
+    }
+    @JvmStatic
+    fun getNameIdentifier(element: GdVarNmi): PsiElement? {
+        return PsiGdVarNmiUtil.getNameIdentifier(element)
+    }
+
 }

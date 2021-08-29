@@ -9,19 +9,15 @@ import gdscript.reference.GdTypeHintReference
 
 class GdTypeHintReferenceContributor : PsiReferenceContributor() {
 
-    override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        registrar.registerReferenceProvider(
+    override fun registerReferenceProviders(register: PsiReferenceRegistrar) {
+        register.registerReferenceProvider(
             psiElement(GdTypes.TYPE_HINT_NM),
-            GdTypeHintReferenceProvider()
+            object : PsiReferenceProvider() {
+                override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
+                    return arrayOf(GdTypeHintReference(element, TextRange(0, element.textLength)));
+                }
+            }
         );
-    }
-
-}
-
-class GdTypeHintReferenceProvider : PsiReferenceProvider() {
-
-    override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-        return arrayOf(GdTypeHintReference(element, TextRange(0, element.textLength)));
     }
 
 }

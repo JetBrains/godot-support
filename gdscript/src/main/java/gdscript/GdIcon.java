@@ -11,6 +11,9 @@ public class GdIcon {
 
     // Godot editor icons
     public static final Icon OBJECT = IconLoader.getIcon("icons/godot_editor/Object.svg", GdIcon.class);
+    public static final String METHOD_MARKER = "Forward-sq";
+    public static final String VAR_MARKER = "KeyBezierSelected";
+    public static final String CONST_MARKER = "KeyXform";
 
     public static HashMap<String, Icon> editorIcons = new HashMap<>();
 

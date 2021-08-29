@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdIcon
 import gdscript.GdKeywords
 import gdscript.completion.util.GdClassVarCompletionUtil
 import gdscript.psi.GdClassVarDeclTl
@@ -30,7 +31,7 @@ class GdClassVarCompletionContributor : CompletionContributor() {
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         if (AFTER_ANNOTATION.accepts(parameters.position)) {
-            result.addElement(GdLookup.create(GdKeywords.VAR, " "));
+            result.addElement(GdLookup.create(GdKeywords.VAR, " ", priority = GdLookup.TOP));
             GdClassVarCompletionUtil.annotations(result);
             result.stopHere();
         } else if (AFTER_TYPED.accepts(parameters.position)) {
@@ -45,7 +46,11 @@ class GdClassVarCompletionContributor : CompletionContributor() {
 
     private fun addMethodName(prefix: String, element: PsiElement, result: CompletionResultSet) {
         val name = PsiTreeUtil.getParentOfType(element, GdClassVarDeclTl::class.java)?.name;
-        result.addElement(GdLookup.create("${prefix}_$name", priority = GdLookup.TOP));
+        result.addElement(GdLookup.create(
+            "${prefix}_$name",
+            priority = GdLookup.TOP,
+            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+        ));
     }
 
 }

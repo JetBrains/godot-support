@@ -4,12 +4,8 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.PsiTreeUtil
-import gdscript.index.impl.GdClassNamingIndex
-import gdscript.index.impl.GdClassVarDeclIndex
-import gdscript.index.impl.GdConstDeclIndex
 import gdscript.psi.*
+import gdscript.psi.utils.PsiGdNamedUtil
 
 class GdConstVarIdAnnotator : Annotator {
 
@@ -63,32 +59,15 @@ class GdConstVarIdAnnotator : Annotator {
     }
 
     private fun isParentallyUnique(element: GdNamedIdElement, holder: AnnotationHolder): Boolean {
-        var parentName: String? =
-            PsiTreeUtil.getChildOfType(element.containingFile, GdInheritance::class.java)?.inheritanceName;
-        val thisName = element.name.orEmpty();
+        val exists = PsiGdNamedUtil.isParentallyUnique(element);
+        if (exists != null) {
+            holder
+                .newAnnotation(HighlightSeverity.ERROR,
+                    "[${element.name}] is already defined in parent class")
+                .range(element.textRange)
+                .create();
 
-        while (parentName !== null) {
-            val parent =
-                GdClassNamingIndex.get(parentName, element.project, GlobalSearchScope.allScope(element.project))
-                    .firstOrNull();
-            if (parent === null) {
-                return true;
-            }
-
-            if (!GdConstDeclIndex.get(thisName, element.project, GlobalSearchScope.fileScope(parent.containingFile))
-                    .isEmpty()
-                || !GdClassVarDeclIndex.get(thisName, element.project, GlobalSearchScope.fileScope(parent.containingFile))
-                    .isEmpty()
-            ) {
-                holder
-                    .newAnnotation(HighlightSeverity.ERROR,
-                        "Field with name [${element.name}] defined in parent class")
-                    .range(element.textRange)
-                    .create();
-                return false;
-            }
-
-            parentName = parent.parentName;
+            return false;
         }
 
         return true;

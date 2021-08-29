@@ -10,22 +10,18 @@ import gdscript.reference.GdSetGetMethodIdNmReference
 
 class GdSetGetMethodIdReferenceContributor : PsiReferenceContributor() {
 
-    override fun registerReferenceProviders(registrar: PsiReferenceRegistrar) {
-        registrar.registerReferenceProvider(
+    override fun registerReferenceProviders(register: PsiReferenceRegistrar) {
+        register.registerReferenceProvider(
             PlatformPatterns.or(
                 psiElement(GdTypes.SET_METHOD_ID_NM),
                 psiElement(GdTypes.GET_METHOD_ID_NM)
             ),
-            GdSetGetMethodIdReferenceProvider()
+            object : PsiReferenceProvider() {
+                override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
+                    return arrayOf(GdSetGetMethodIdNmReference(element, TextRange(0, element.textLength)));
+                }
+            }
         );
-    }
-
-}
-
-class GdSetGetMethodIdReferenceProvider : PsiReferenceProvider() {
-
-    override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-        return arrayOf(GdSetGetMethodIdNmReference(element, TextRange(0, element.textLength)));
     }
 
 }

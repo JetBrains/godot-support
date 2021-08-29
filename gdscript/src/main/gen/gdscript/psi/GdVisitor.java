@@ -15,6 +15,18 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitArrEx(@NotNull GdArrEx o) {
+    visitExpr(o);
+  }
+
+  public void visitArrayDecl(@NotNull GdArrayDecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitAssertSt(@NotNull GdAssertSt o) {
+    visitStmt(o);
+  }
+
   public void visitAssignSt(@NotNull GdAssignSt o) {
     visitStmt(o);
   }
@@ -37,6 +49,10 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitBuiltInType(@NotNull GdBuiltInType o) {
     visitPsiElement(o);
+  }
+
+  public void visitCallEx(@NotNull GdCallEx o) {
+    visitExpr(o);
   }
 
   public void visitCastEx(@NotNull GdCastEx o) {
@@ -71,6 +87,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitNamedIdElement(o);
   }
 
+  public void visitDictDecl(@NotNull GdDictDecl o) {
+    visitPsiElement(o);
+  }
+
   public void visitEndStmt(@NotNull GdEndStmt o) {
     visitPsiElement(o);
   }
@@ -88,6 +108,10 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitFlowSt(@NotNull GdFlowSt o) {
+    visitStmt(o);
+  }
+
+  public void visitForSt(@NotNull GdForSt o) {
     visitStmt(o);
   }
 
@@ -115,12 +139,20 @@ public class GdVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
+  public void visitKeyValue(@NotNull GdKeyValue o) {
+    visitPsiElement(o);
+  }
+
   public void visitLiteralEx(@NotNull GdLiteralEx o) {
     visitExpr(o);
   }
 
   public void visitLogicEx(@NotNull GdLogicEx o) {
     visitExpr(o);
+  }
+
+  public void visitMatchSt(@NotNull GdMatchSt o) {
+    visitStmt(o);
   }
 
   public void visitMethodDeclTl(@NotNull GdMethodDeclTl o) {
@@ -163,11 +195,23 @@ public class GdVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
+  public void visitPreloadSt(@NotNull GdPreloadSt o) {
+    visitStmt(o);
+  }
+
+  public void visitPrimaryEx(@NotNull GdPrimaryEx o) {
+    visitExpr(o);
+  }
+
   public void visitRefIdNm(@NotNull GdRefIdNm o) {
     visitNamedElement(o);
   }
 
   public void visitReturnHint(@NotNull GdReturnHint o) {
+    visitPsiElement(o);
+  }
+
+  public void visitReturnHintVal(@NotNull GdReturnHintVal o) {
     visitPsiElement(o);
   }
 
@@ -229,6 +273,22 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitTyped(@NotNull GdTyped o) {
     visitPsiElement(o);
+  }
+
+  public void visitVarDeclSt(@NotNull GdVarDeclSt o) {
+    visitStmt(o);
+  }
+
+  public void visitVarNmi(@NotNull GdVarNmi o) {
+    visitNamedIdElement(o);
+  }
+
+  public void visitWhileSt(@NotNull GdWhileSt o) {
+    visitStmt(o);
+  }
+
+  public void visitYieldSt(@NotNull GdYieldSt o) {
+    visitStmt(o);
   }
 
   public void visitNamedElement(@NotNull GdNamedElement o) {

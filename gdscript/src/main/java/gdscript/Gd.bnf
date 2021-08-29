@@ -29,74 +29,9 @@
   consumeTokenMethod(".*_ex|expr|stmt|.*_st|topLevelDecl|.*_tl")="consumeTokenFast"
 
   tokens = [
-//    /* Keywords */
-//    class='class'
-//    class_name='class_name'
-//    extends='extends'
-//    tool='tool'
-//    enum='enum'
-//    self='self'
-//    func='func'
-//    const='const'
-//    if='if'
-//    else='else'
-//    elif='elif'
-//    var='var'
-//    int='int'
-//    true='true'
-//    false='false'
-//    null='null'
-//    pass='pass'
-//    setget='setget'
-//    signal='signal'
-//    static='static'
-//    ret='->'
-//    breakpoint='breakpoint'
-//    while='while'
-//    for='for'
-//    in='in'
-//    match='match'
-//    under='_'
-//    continue='continue'
-//    break='break'
-//    return='return'
-//    assert='assert'
-//    yield='yield'
-//    preload='preload'
-//    as='as'
-//    and='and'
-//    or='or'
-//    not='not'
-//    pi='PI'
-//    tau='TAU'
-//    nan='NAN'
-//    inf='INF'
-//
-//    /* Annotations */
-//    onready='@onready'
-//    export='@export'
-//
-//    /* Syntax */
-//    lcbr='{'
-//    rcbr='}'
-//    lrbr='('
-//    rrbr=')'
-//    lsbr='['
-//    rsbr=']'
-//    semicon=';'
-//    comma=','
-//    colon=':'
-//    ternary='?'
-//    dotdot='..'
-//    dot='.'
-//    eq='='
-//
-//    new_line='regexp:[\n\r]+'
-//    identifier='regexp:[a-zA-Z_][a-zA-Z_0-9]*'
     string='regexp:"[^"]*?"'
     number='regexp:[0-9]+(\.)?[0-9]*'
     comment='regexp:#.*'
-//    space='regexp:\s+'
     bad_character='regexp:[\^]'
   ]
 }
@@ -118,6 +53,7 @@ topLevelDecl ::=
     constDecl_tl
     | classVarDecl_tl
     | methodDecl_tl
+//    | enumDecl_tl
     | signalDecl_tl
 
 private topLevelDecl_r ::= !(FUNC | CONST | SIGNAL | VAR | annotation)
@@ -135,39 +71,47 @@ signalDecl_tl ::= SIGNAL signalId_nmi signalParList? endStmt {methods=[getName g
 signalParList ::= LRBR IDENTIFIER (COMMA IDENTIFIER)* RRBR
 signalId_nmi ::= IDENTIFIER
 
+// TODO
+//enumDecl_tl ::= ENUM [ IDENTIFIER ] "{" [ IDENTIFIER [ "=" INTEGER ]
+//    { "," IDENTIFIER [ "=" INTEGER ] } [ "," ] ] "}" NEWLINE ;
+
 // TODO recover nesmí mít func -> inline lambdy by to porušily
 methodDecl_tl ::= FUNC methodId_nmi LRBR paramList? RRBR parentMethodCall? returnHint? COLON stmtOrSuite {methods=[getName getReturnType getParameters getPresentation isConstructor] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub" elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"}
 methodId_nmi ::= IDENTIFIER
 paramList ::= param (COMMA param)*
-param ::= VAR? IDENTIFIER typed? (EQ expr)?
-returnHint ::= RET (typeHint_nm | VOID)
+param ::= VAR? var_nmi typed? (EQ expr)?
+returnHint ::= RET returnHintVal
+returnHintVal ::= typeHint_nm | VOID
 parentMethodCall ::= DOT LRBR argList? RRBR
 argList ::= expr (COMMA expr)*
 
-stmtOrSuite ::= stmt | (NEW_LINE INDENT suite DEDENT?)
-suite ::= stmt*
+var_nmi ::= IDENTIFIER
+
+// TODO inner class
+
+stmtOrSuite ::= stmt | suite
+suite ::= NEW_LINE INDENT stmt+ DEDENT?
 
 stmt ::=
     assign_st
+    | varDecl_st
     | if_st
+    | while_st
+    | for_st
+    | match_st
     | expr_st
     | flow_st
-//stmt
-//    | forStmt
-//    | whileStmt
-//    | matchStmt
-//    | exprStmt
-//    | assertStmt
-//    | yieldStmt
-//    | preloadStmt
-//    | "breakpoint" stmtEnd
-//    | "pass" stmtEnd
+    | assert_st
+    | yield_st
+    | preload_st
+private stmt_r ::= !(stmt)
 
+varDecl_st ::= VAR var_nmi typed? (EQ expr)? endStmt
 if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)?
-//whileStmt = "while" expression ":" stmtOrSuite;
-//forStmt = "for" IDENTIFIER "in" expression ":" stmtOrSuite ;
-//
-//matchStmt = "match" expression ":" NEWLINE INDENT matchBlock DEDENT;
+while_st ::= WHILE expr COLON stmtOrSuite
+for_st ::= FOR var_nmi IN expr COLON stmtOrSuite
+
+match_st ::= MATCH //expression ":" NEWLINE INDENT matchBlock DEDENT;
 //matchBlock = patternList ":" stmtOrSuite { patternList ":" stmtOrSuite };
 //patternList = pattern { "," pattern } ;
 //(* Note: you can't have a binding in a pattern list, but to not complicate the
@@ -178,22 +122,19 @@ if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON s
 //arrayPattern = "[" [ pattern { "," pattern } [ ".." ] ] "]" ;
 //dictPattern = "{" [ keyValuePattern ] { "," keyValuePattern } [ ".." ] "}" ;
 //keyValuePattern = STRING [ ":" pattern ] ;
-//
-//assertStmt = "assert" "(" expression [ "," STRING ] ")" stmtEnd ;
-//yieldStmt = "yield" "(" [ expression "," expression ] ")" ;
-//preloadStmt = "preload" "(" CONSTANT ")" ;
 
-
-
+assert_st ::= ASSERT LRBR expr (COMMA STRING)? RRBR endStmt
+yield_st ::= YIELD LRBR (expr COMMA expr)? RRBR
+preload_st ::= PRELOAD LRBR STRING RRBR // TODO resource
 
 assign_st ::= expr (EQ | ASSIGN) expr endStmt
 expr_st ::= expr endStmt
 flow_st ::=
-    CONTINUE endStmt
-    | BREAK endStmt
-    | PASS endStmt
-    | BREAKPOINT endStmt
-    | RETURN expr? endStmt
+    (CONTINUE endStmt)
+    | (BREAK endStmt)
+    | (PASS endStmt)
+    | (BREAKPOINT endStmt)
+    | (RETURN expr? endStmt)
 
 expr ::=
     plusMinus_ex
@@ -212,9 +153,11 @@ expr ::=
     | plusMinusPre_ex
     | attribute_ex
     | is_ex
+    | call_ex
+    | arr_ex
+    | primary_ex
     | literal_ex
 
-//expression = cast [ "[" expression "]" ] ;
 cast_ex ::= expr AS expr
 ternary_ex ::= expr IF expr ELSE expr
 logic_ex ::= expr (ANDAND | OROR) expr
@@ -228,16 +171,22 @@ factor_ex ::= expr (MUL | DIV | MOD) expr
 sign_ex ::= (MINUS | PLUS ) expr
 bitNot_ex ::= NOT expr
 is_ex ::= expr IS (IDENTIFIER | BUILTINTYPE)
-//call = attribute [ "(" [ argList ] ")" ];
-//subscription = primary [ "[" expression "]" ] ;
-//primary =  arrayDecl | dictDecl | "(" expression ")" ;
-
+call_ex ::= expr LRBR argList? RRBR
+arr_ex ::= expr LSBR expr RSBR
+primary_ex ::=  arrayDecl | dictDecl | (LRBR expr RRBR)
 literal_ex ::= TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF | refId_nm
+
+//@"Node/Label"
+//NodePath or StringName
+
+//$NodePath
+//Shorthand for get_node("NodePath")
+
 plusMinus_ex ::= expr (PPLUS | MMINUS)
 plusMinusPre_ex ::= (PPLUS | MMINUS) expr
 attribute_ex ::= expr DOT attEx_nm
 attEx_nm ::= IDENTIFIER
-refId_nm ::= (IDENTIFIER | SELF)
+refId_nm ::= IDENTIFIER | SELF
 
 typed ::= COLON typeHint_nm
 typeHint_nm ::= builtInType | IDENTIFIER
@@ -245,3 +194,7 @@ builtInType ::= INT | STR
 endStmt ::= SEMICON | newLineEnd
 newLineEnd ::= NEW_LINE | <<eof>>
 annotation ::= ANNOTATOR // TODO params
+
+arrayDecl ::= LSBR (expr (COMMA expr)* COMMA?)? RSBR
+dictDecl ::= LCBR (keyValue (COMMA keyValue)* COMMA?)? RCBR
+keyValue ::= (expr COLON expr) | (IDENTIFIER EQ expr)

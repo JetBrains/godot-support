@@ -28,13 +28,9 @@ class GdCreateMethodAction : BaseIntentionAction {
         this.bodyLines = bodyLines;
     }
 
-    override fun getText(): String {
-        return "Create method";
-    }
+    override fun getText(): String = "Create method"
 
-    override fun getFamilyName(): String {
-        return "Create method";
-    }
+    override fun getFamilyName(): String = "Create method"
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         return true;
