@@ -59,7 +59,7 @@ class GdConstVarIdAnnotator : Annotator {
     }
 
     private fun isParentallyUnique(element: GdNamedIdElement, holder: AnnotationHolder): Boolean {
-        val exists = PsiGdNamedUtil.isParentallyUnique(element);
+        val exists = PsiGdNamedUtil.findInParent(element);
         if (exists != null) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR,

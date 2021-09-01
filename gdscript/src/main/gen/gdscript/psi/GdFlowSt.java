@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface GdFlowSt extends GdStmt {
 
-  @NotNull
+  @Nullable
   GdEndStmt getEndStmt();
 
   @Nullable
-  GdExpr getExpr();
+  GdReturnStmt getReturnStmt();
 
 }

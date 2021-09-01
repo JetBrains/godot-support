@@ -81,7 +81,8 @@ STRING_MARKER_REV = [^\"\'\n\r]*
 //ML_STRING = \"\"\"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'\"\"\"
 
 COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
-ANNOTATOR = "@"[a-z|A-Z]*
+ANNOTATOR = "@"[a-zA-Z]*
+NODE_PATH_LEX = "$"[a-zA-Z0-9_]*
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -149,6 +150,8 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "false"        { return dedentRoot(GdTypes.FALSE); }
     "null"         { return dedentRoot(GdTypes.NULL); }
     "int"          { return dedentRoot(GdTypes.INT); }
+    "float"        { return dedentRoot(GdTypes.FLOAT); }
+    "bool"         { return dedentRoot(GdTypes.BOOL); }
     "String"       { return dedentRoot(GdTypes.STR); }
     "self"         { return dedentRoot(GdTypes.SELF); }
     "continue"     { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CONTINUE); }
@@ -211,6 +214,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
     {ANNOTATOR}     { return GdTypes.ANNOTATOR; }
+    {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
     {IDENTIFIER}    { return dedentRoot(GdTypes.IDENTIFIER); }
     {REAL_NUMBER}   { return dedentRoot(GdTypes.NUMBER); }
     {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }
@@ -221,11 +225,11 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {INDENT}  {
         int spaces = yytext().length();
         if (yycolumn <= spaces) {
-            if (spaces == 1) spaces = 0;
+            //if (spaces == 1) spaces = 0;
 
             if (spaces > indent) {
                 indentSizes.push(spaces - indent);
-                indent += spaces;
+                indent = spaces;
                 return GdTypes.INDENT;
             } else if (indent > spaces) {
                 dedentSpaces();
@@ -239,19 +243,16 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {NEW_LINE}     { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
-//    if (yystate() == AWAIT_NEW_LINE) {
-//        yybegin(YYINITIAL);
-//        return GdTypes.NEW_LINE;
-//    } else if (dedentSpaces()) {
-//        return GdTypes.DEDENT;
-//    } else {
+    if (yystate() == AWAIT_NEW_LINE && !lineEnded) {
+        yybegin(YYINITIAL);
+        return GdTypes.NEW_LINE;
+    } else if (dedentSpaces()) {
+        return GdTypes.DEDENT;
+    } else {
         return null;
-//    }
+    }
 }
 
-//<AWAIT_NEW_LINE, AWAIT_STMT_END> {
-//<YYINITIAL, AWAIT_NEW_LINE, AWAIT_STMT_END> {
-//
 //    "class" { return GdTypes.CLASS; }
 //
 //    "static" { return GdTypes.STATIC; }
@@ -260,6 +261,5 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 //    /* Syntax */
 //    "?" { return GdTypes.TERNARY; }
 //    ".." { return GdTypes.DOTDOT; }
-//}
 
 [^] { return GdTypes.BAD_CHARACTER; }

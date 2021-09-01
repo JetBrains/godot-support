@@ -23,9 +23,10 @@ public class GdColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Comments", GdHighlighterColors.COMMENT),
             new AttributesDescriptor("Strings", GdHighlighterColors.STRING),
             new AttributesDescriptor("Annotations", GdHighlighterColors.ANNOTATION),
+            new AttributesDescriptor("NodePath", GdHighlighterColors.NODE_PATH),
             new AttributesDescriptor("Errors", GdHighlighterColors.BAD_CHARACTER),
     };
-    
+
     @Override
     public @Nullable Icon getIcon() {
         return GdIcon.FILE;
@@ -44,7 +45,7 @@ public class GdColorSettingsPage implements ColorSettingsPage {
                 "class_name MyClass, \"res://path/to/optional/icon.svg\"\n" +
                 "\n" +
                 "\n" +
-                "var a = 5\n" +
+                "var a = $NodePath\n" +
                 "var s = \"Hello\"\n" +
                 "var arr = [1, 2, 3]\n" +
                 "var dict = {\"key\": \"value\", 2: 3}\n" +

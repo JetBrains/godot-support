@@ -5,9 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdExpr extends PsiElement {
+public interface GdReturnStmt extends PsiElement {
 
   @NotNull
-  String getReturnType();
+  GdEndStmt getEndStmt();
+
+  @Nullable
+  GdExpr getExpr();
 
 }

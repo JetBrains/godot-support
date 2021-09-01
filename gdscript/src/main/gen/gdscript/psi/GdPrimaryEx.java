@@ -16,4 +16,7 @@ public interface GdPrimaryEx extends GdExpr {
   @Nullable
   GdExpr getExpr();
 
+  @Nullable
+  GdNodePath getNodePath();
+
 }

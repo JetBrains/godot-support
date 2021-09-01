@@ -33,4 +33,10 @@ public class GdIsExImpl extends GdExprImpl implements GdIsEx {
     return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
   }
 
+  @Override
+  @NotNull
+  public GdTypeHintNm getTypeHintNm() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdTypeHintNm.class));
+  }
+
 }

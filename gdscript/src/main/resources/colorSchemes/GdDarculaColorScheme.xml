@@ -40,6 +40,11 @@
             <option name="FOREGROUND" value="ffb373" />
         </value>
     </option>
+    <option name="GD_NODE_PATH">
+        <value>
+            <option name="FOREGROUND" value="63c259" />
+        </value>
+    </option>
     <option name="GD_BAD_CHARACTER">
         <value>
             <option name="FOREGROUND" value="ff786b" />

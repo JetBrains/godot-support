@@ -44,7 +44,9 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdSetGetAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstructorAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdReturnTypeAnnotator" />
 
+    <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
     <stubIndex implementation="gdscript.index.impl.GdInheritanceIndex" />

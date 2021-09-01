@@ -90,7 +90,7 @@ var_nmi ::= IDENTIFIER
 // TODO inner class
 
 stmtOrSuite ::= stmt | suite
-suite ::= NEW_LINE INDENT stmt+ DEDENT
+suite ::= NEW_LINE INDENT stmt+ DEDENT?
 
 stmt ::=
     assign_st
@@ -157,9 +157,8 @@ expr ::=
     | arr_ex
     | primary_ex
     | literal_ex
-    {methods=[getReturnType]}
 
-cast_ex ::= expr AS typeHint_nm
+cast_ex ::= expr AS expr
 ternary_ex ::= expr IF expr ELSE expr
 logic_ex ::= expr (ANDAND | OROR) expr
 negate_ex ::= NEGATE expr;
@@ -171,10 +170,10 @@ plus_ex ::= expr (PLUS | MINUS) expr
 factor_ex ::= expr (MUL | DIV | MOD) expr
 sign_ex ::= (MINUS | PLUS ) expr
 bitNot_ex ::= NOT expr
-is_ex ::= expr IS typeHint_nm
+is_ex ::= expr IS (IDENTIFIER | BUILTINTYPE)
 call_ex ::= expr LRBR argList? RRBR
 arr_ex ::= expr LSBR expr RSBR
-primary_ex ::= nodePath | arrayDecl | dictDecl | (LRBR expr RRBR)
+primary_ex ::=  arrayDecl | dictDecl | (LRBR expr RRBR) | nodePath
 literal_ex ::= TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF | refId_nm
 
 //@"Node/Label"
@@ -185,17 +184,17 @@ literal_ex ::= TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF | re
 
 plusMinus_ex ::= expr (PPLUS | MMINUS)
 plusMinusPre_ex ::= (PPLUS | MMINUS) expr
-attribute_ex ::= expr DOT attEx_nm //TODO
+attribute_ex ::= expr DOT attEx_nm
 attEx_nm ::= IDENTIFIER
 refId_nm ::= IDENTIFIER | SELF
 
 typed ::= COLON typeHint_nm
 typeHint_nm ::= builtInType | IDENTIFIER
-builtInType ::= INT | STR | FLOAT | BOOL
+builtInType ::= INT | STR
 endStmt ::= SEMICON | newLineEnd
 newLineEnd ::= NEW_LINE | <<eof>>
 annotation ::= ANNOTATOR // TODO params
-nodePath ::= NODE_PATH_LEX
+nodePath ::= NODE_PATH
 
 arrayDecl ::= LSBR (expr (COMMA expr)* COMMA?)? RSBR
 dictDecl ::= LCBR (keyValue (COMMA keyValue)* COMMA?)? RCBR

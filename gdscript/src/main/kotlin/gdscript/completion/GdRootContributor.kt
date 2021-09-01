@@ -3,6 +3,7 @@ package gdscript.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PsiJavaPatterns.psiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiFile
@@ -41,6 +42,11 @@ class GdRootContributor : CompletionContributor() {
             .withParent(psiElement(GdClassVarDeclTl::class.java)
                 .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdEndStmt::class.java)))
         );
+    val AFTER_FUNC = psiElement()
+        .withParent(psiElement(PsiErrorElement::class.java)
+            .withParent(psiElement(GdMethodDeclTl::class.java)
+                .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdTypes.NEW_LINE)))
+        );
     val ANNOTATOR_DECL = psiElement(GdTypes.ANNOTATOR)
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
@@ -60,6 +66,7 @@ class GdRootContributor : CompletionContributor() {
         } else if (AFTER_TOOL.accepts(position)
             || AFTER_CONST.accepts(position)
             || AFTER_VAR.accepts(position)
+            || AFTER_FUNC.accepts(position)
         ) {
             addTopLvlDecl(result, parameters);
         } else if (ANNOTATOR_DECL.accepts(position)) {

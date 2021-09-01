@@ -5,6 +5,7 @@ import com.intellij.patterns.PsiJavaPatterns.psiElement
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiWhiteSpace
+import gdscript.psi.GdTypes
 
 object GdCompletionUtil {
 

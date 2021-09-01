@@ -55,6 +55,7 @@ public interface GdTypes {
   IElementType METHOD_ID_NMI = new GdElementType("METHOD_ID_NMI");
   IElementType NEGATE_EX = new GdElementType("NEGATE_EX");
   IElementType NEW_LINE_END = new GdElementType("NEW_LINE_END");
+  IElementType NODE_PATH = new GdElementType("NODE_PATH");
   IElementType PARAM = new GdElementType("PARAM");
   IElementType PARAM_LIST = new GdElementType("PARAM_LIST");
   IElementType PARENT_METHOD_CALL = new GdElementType("PARENT_METHOD_CALL");
@@ -66,6 +67,7 @@ public interface GdTypes {
   IElementType REF_ID_NM = new GdElementType("REF_ID_NM");
   IElementType RETURN_HINT = new GdElementType("RETURN_HINT");
   IElementType RETURN_HINT_VAL = new GdElementType("RETURN_HINT_VAL");
+  IElementType RETURN_STMT = new GdElementType("RETURN_STMT");
   IElementType SETGET_DECL = new GdElementType("SETGET_DECL");
   IElementType SET_METHOD_ID_NM = new GdElementType("SET_METHOD_ID_NM");
   IElementType SHIFT_EX = new GdElementType("SHIFT_EX");
@@ -93,9 +95,9 @@ public interface GdTypes {
   IElementType ASSERT = new GdTokenType("ASSERT");
   IElementType ASSIGN = new GdTokenType("ASSIGN");
   IElementType BAD_CHARACTER = new GdTokenType("bad_character");
+  IElementType BOOL = new GdTokenType("BOOL");
   IElementType BREAK = new GdTokenType("BREAK");
   IElementType BREAKPOINT = new GdTokenType("BREAKPOINT");
-  IElementType BUILTINTYPE = new GdTokenType("BUILTINTYPE");
   IElementType CLASS_NAME = new GdTokenType("CLASS_NAME");
   IElementType COLON = new GdTokenType("COLON");
   IElementType COMMA = new GdTokenType("COMMA");
@@ -110,6 +112,7 @@ public interface GdTypes {
   IElementType EQ = new GdTokenType("EQ");
   IElementType EXTENDS = new GdTokenType("EXTENDS");
   IElementType FALSE = new GdTokenType("FALSE");
+  IElementType FLOAT = new GdTokenType("FLOAT");
   IElementType FOR = new GdTokenType("FOR");
   IElementType FUNC = new GdTokenType("FUNC");
   IElementType IDENTIFIER = new GdTokenType("IDENTIFIER");
@@ -131,6 +134,7 @@ public interface GdTypes {
   IElementType NAN = new GdTokenType("NAN");
   IElementType NEGATE = new GdTokenType("NEGATE");
   IElementType NEW_LINE = new GdTokenType("NEW_LINE");
+  IElementType NODE_PATH_LEX = new GdTokenType("NODE_PATH_LEX");
   IElementType NOT = new GdTokenType("NOT");
   IElementType NULL = new GdTokenType("NULL");
   IElementType NUMBER = new GdTokenType("NUMBER");
@@ -286,6 +290,9 @@ public interface GdTypes {
       else if (type == NEW_LINE_END) {
         return new GdNewLineEndImpl(node);
       }
+      else if (type == NODE_PATH) {
+        return new GdNodePathImpl(node);
+      }
       else if (type == PARAM) {
         return new GdParamImpl(node);
       }
@@ -318,6 +325,9 @@ public interface GdTypes {
       }
       else if (type == RETURN_HINT_VAL) {
         return new GdReturnHintValImpl(node);
+      }
+      else if (type == RETURN_STMT) {
+        return new GdReturnStmtImpl(node);
       }
       else if (type == SETGET_DECL) {
         return new GdSetgetDeclImpl(node);

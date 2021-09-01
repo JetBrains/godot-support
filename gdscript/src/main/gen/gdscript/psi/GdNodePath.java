@@ -5,9 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdExpr extends PsiElement {
-
-  @NotNull
-  String getReturnType();
+public interface GdNodePath extends PsiElement {
 
 }

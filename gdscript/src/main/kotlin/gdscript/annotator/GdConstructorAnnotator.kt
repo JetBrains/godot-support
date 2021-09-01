@@ -26,7 +26,7 @@ class GdConstructorAnnotator : Annotator {
                 holder
                     .newAnnotation(HighlightSeverity.ERROR, "Constructor can return only void")
                     .range(hintEl.textRange)
-                    .withFix(GdChangeReturnType(hintEl, "void"))
+                    .withFix(GdChangeReturnType(hintEl.returnHintVal, "void"))
                     .create()
                 }
             }

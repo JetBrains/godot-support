@@ -7,14 +7,14 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.startOffset
-import gdscript.psi.GdReturnHint
+import gdscript.psi.GdReturnHintVal
 
 class GdChangeReturnType : BaseIntentionAction {
 
-    private val element: GdReturnHint;
+    private val element: GdReturnHintVal;
     private val desired: String;
 
-    constructor(element: GdReturnHint, desired: String) {
+    constructor(element: GdReturnHintVal, desired: String) {
         this.element = element;
         this.desired = desired;
     }
@@ -37,7 +37,7 @@ class GdChangeReturnType : BaseIntentionAction {
         }
         val caret = editor.caretModel;
 
-        val hint = element.returnHintVal.typeHintNm;
+        val hint = element.typeHintNm;
         if (hint != null) {
             caret.moveToOffset(hint.startOffset);
             hint.delete();
@@ -49,7 +49,8 @@ class GdChangeReturnType : BaseIntentionAction {
             }
         }
 
-        EditorModificationUtil.insertStringAtCaret(editor, " $desired")
+        PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document);
+        EditorModificationUtil.insertStringAtCaret(editor, desired)
         PsiDocumentManager.getInstance(project).commitDocument(editor.document)
     }
 }

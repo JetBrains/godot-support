@@ -17,9 +17,16 @@ object GdKeywords {
     val LITERALS = arrayOf(TRUE, FALSE, NULL);
 
     const val INT = "int"
+    const val FLOAT = "float"
+    const val BOOL = "bool"
     const val STR = "String"
-    val BUILT_TYPES = arrayOf(INT, STR);
+    val BUILT_TYPES = arrayOf(INT, STR, FLOAT, BOOL);
     const val VOID = "void"
+
+    const val NAN = "NAN"
+    const val INF = "INF"
+    const val TAU = "TAU"
+    const val PI = "PI"
 
     val ANNOTATIONS = arrayOf("export", "onready");
 

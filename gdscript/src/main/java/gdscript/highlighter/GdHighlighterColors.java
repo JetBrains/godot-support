@@ -46,6 +46,11 @@ public interface GdHighlighterColors {
             "GD_ANNOTATION", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP
     );
 
+    // Green
+    TextAttributesKey NODE_PATH = TextAttributesKey.createTextAttributesKey(
+            "GD_NODE_PATH", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG
+    );
+
     // Red
     TextAttributesKey BAD_CHARACTER = TextAttributesKey.createTextAttributesKey(
             "GD_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER

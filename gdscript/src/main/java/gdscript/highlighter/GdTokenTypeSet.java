@@ -18,6 +18,8 @@ public interface GdTokenTypeSet
         GdTypes.CONST,
         GdTypes.VAR,
         GdTypes.INT,
+        GdTypes.FLOAT,
+        GdTypes.BOOL,
         GdTypes.STR,
         GdTypes.TRUE,
         GdTypes.FALSE,
@@ -77,6 +79,11 @@ public interface GdTokenTypeSet
     // Green
     TokenSet ANNOTATIONS = TokenSet.create(
             GdTypes.ANNOTATOR
+    );
+
+    // Green
+    TokenSet NODE_PATH = TokenSet.create(
+            GdTypes.NODE_PATH_LEX
     );
 
     // Red

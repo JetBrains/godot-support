@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GdCastEx extends GdExpr {
 
   @NotNull
-  List<GdExpr> getExprList();
+  GdExpr getExpr();
+
+  @NotNull
+  GdTypeHintNm getTypeHintNm();
 
 }
