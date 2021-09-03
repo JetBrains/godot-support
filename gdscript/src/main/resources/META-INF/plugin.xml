@@ -65,7 +65,9 @@
 
     <!-- Formatters -->
     <lang.braceMatcher language="GdScript" implementationClass="gdscript.formatter.GdBraceMatcher" />
-<!--    <typedHandler implementation="gdscript.formatter.typedHandler.GdAnnotationTypedHandler" />-->
+    <lang.formatter language="GdScript" implementationClass="gdscript.formatter.GdFormattingModelBuilder" />
+    <codeStyleSettingsProvider implementation="gdscript.formatter.GdCodeStyleSettingsProvider" />
+    <langCodeStyleSettingsProvider implementation="gdscript.formatter.GdLanguageCodeStyleSettingsProvider" />
 
     <lang.foldingBuilder language="GdScript" implementationClass="gdscript.GdFoldingBuilder" />
     <lang.psiStructureViewFactory language="GdScript" implementationClass="gdscript.structureView.GdStructureViewFactory" />

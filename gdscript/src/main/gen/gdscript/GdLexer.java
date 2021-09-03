@@ -825,10 +825,8 @@ class GdLexer implements FlexLexer {
             // fall through
           case 88: break;
           case 7: 
-            { int spaces = yytext().length();
-        if (yycolumn <= spaces) {
-            //if (spaces == 1) spaces = 0;
-
+            { if (yycolumn == 0) {
+            int spaces = yytext().length();
             if (spaces > indent) {
                 indentSizes.push(spaces - indent);
                 indent = spaces;
@@ -971,8 +969,10 @@ class GdLexer implements FlexLexer {
           case 33: 
             { if (!lineEnded) {
               lineEnded = true;
+              yypushback(yylength());
               return GdTypes.NEW_LINE;
           }
+
           return TokenType.WHITE_SPACE;
             } 
             // fall through
@@ -982,6 +982,8 @@ class GdLexer implements FlexLexer {
           if (lineEnded) { // For signal, etc.
               return TokenType.WHITE_SPACE;
           }
+          yypushback(yylength());
+
           return GdTypes.NEW_LINE;
             } 
             // fall through

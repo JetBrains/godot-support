@@ -782,7 +782,7 @@ class GdLexer implements FlexLexer {
         zzAtEOF = true;
         zzDoEOF();
               {
-                if (yystate() == AWAIT_NEW_LINE) {
+                if (yystate() == AWAIT_NEW_LINE && !lineEnded) {
         yybegin(YYINITIAL);
         return GdTypes.NEW_LINE;
     } else if (dedentSpaces()) {
@@ -825,10 +825,8 @@ class GdLexer implements FlexLexer {
             // fall through
           case 88: break;
           case 7: 
-            { int spaces = yytext().length();
-        if (yycolumn <= spaces) {
-            //if (spaces == 1) spaces = 0;
-
+            { if (yycolumn == 0) {
+            int spaces = yytext().length();
             if (spaces > indent) {
                 indentSizes.push(spaces - indent);
                 indent = spaces;
@@ -971,8 +969,10 @@ class GdLexer implements FlexLexer {
           case 33: 
             { if (!lineEnded) {
               lineEnded = true;
-              return GdTypes.NEW_LINE;
+              yypushback(yylength());
+              return GdTypes.END_STMT;
           }
+
           return TokenType.WHITE_SPACE;
             } 
             // fall through
@@ -982,7 +982,9 @@ class GdLexer implements FlexLexer {
           if (lineEnded) { // For signal, etc.
               return TokenType.WHITE_SPACE;
           }
-          return GdTypes.NEW_LINE;
+          yypushback(yylength());
+
+          return GdTypes.END_STMT;
             } 
             // fall through
           case 116: break;

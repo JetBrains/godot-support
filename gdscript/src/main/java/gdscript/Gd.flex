@@ -122,6 +122,8 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
           if (lineEnded) { // For signal, etc.
               return TokenType.WHITE_SPACE;
           }
+          yypushback(yylength());
+
           return GdTypes.NEW_LINE;
       }
 }
@@ -130,8 +132,10 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {NEW_LINE}     {
           if (!lineEnded) {
               lineEnded = true;
+              yypushback(yylength());
               return GdTypes.NEW_LINE;
           }
+
           return TokenType.WHITE_SPACE;
       }
 }
@@ -143,7 +147,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "const"        { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CONST); }
     "setget"       { return GdTypes.SETGET; }
 
-//    "enum"         { yybegin(AWAIT_NEW_LINE); return GdTypes.ENUM; }
+    //"enum"         { yybegin(AWAIT_NEW_LINE); return GdTypes.ENUM; }
     "func"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC); }
     "pass"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.PASS); }
     "true"         { return dedentRoot(GdTypes.TRUE); }
@@ -223,10 +227,8 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {COMMENT}       { return GdTypes.COMMENT; }
 
     {INDENT}  {
-        int spaces = yytext().length();
-        if (yycolumn <= spaces) {
-            //if (spaces == 1) spaces = 0;
-
+        if (yycolumn == 0) {
+            int spaces = yytext().length();
             if (spaces > indent) {
                 indentSizes.push(spaces - indent);
                 indent = spaces;

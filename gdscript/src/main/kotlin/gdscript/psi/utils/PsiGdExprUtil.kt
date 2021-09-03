@@ -8,6 +8,16 @@ import org.intellij.markdown.flavours.gfm.table.GitHubTableMarkerProvider.Compan
 object PsiGdExprUtil {
 
     fun getReturnType(expr: GdExpr): String {
+        // TODO
+//        when(view) {
+//            is EditText, is TextView -> {
+//                println("view is either EditText or TextView")
+//            }
+//            else -> {
+//                println("view is something else")
+//            }
+//        }
+
         if (expr is GdPlusMinusEx) {
             return expr.expr.returnType;
         } else if (expr is GdCastEx) {

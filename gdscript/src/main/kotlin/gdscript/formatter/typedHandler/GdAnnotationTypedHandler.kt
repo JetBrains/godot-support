@@ -11,6 +11,7 @@ import com.intellij.psi.PsiKeyword
 
 class GdAnnotationTypedHandler : TypedHandlerDelegate() {
 
+    // TODO smazat
     override fun charTyped(c: Char, project: Project, editor: Editor, file: PsiFile): Result {
         if (c == '@') {
 
