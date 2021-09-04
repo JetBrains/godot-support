@@ -22,6 +22,8 @@ class GdUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
         return psiElement is GdClassNameNm
                 || psiElement is GdMethodIdNmi
+                || psiElement is GdClassVarIdNmi
+                || psiElement is GdConstIdNmi
     }
 
     override fun getHelpId(psiElement: PsiElement): String? {
@@ -29,26 +31,26 @@ class GdUsageProvider : FindUsagesProvider {
     }
 
     override fun getType(element: PsiElement): String {
-        return if (element is GdClassNameNm) {
-            "class";
-        } else {
-            "";
+        return when(element) {
+            is GdClassNameNm -> "class"
+            is GdMethodIdNmi -> "method"
+            is GdClassVarIdNmi -> "variable"
+            is GdConstIdNmi -> "constant"
+            else -> ""
         }
     }
 
     override fun getDescriptiveName(element: PsiElement): String {
-        return if (element is GdClassNameNm) {
-            element.name.orEmpty();
-        } else {
-            "";
+        return when(element) {
+            is GdNamedElement -> element.name.orEmpty()
+            else -> ""
         }
     }
 
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
-        return if (element is GdClassNameNm) {
-            element.name.orEmpty();
-        } else {
-            "";
+        return when(element) {
+            is GdNamedElement -> element.name.orEmpty()
+            else -> ""
         }
     }
 

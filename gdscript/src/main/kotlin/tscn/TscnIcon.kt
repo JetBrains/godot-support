@@ -1,0 +1,4 @@
+package tscn
+
+class TscnIcon {
+}

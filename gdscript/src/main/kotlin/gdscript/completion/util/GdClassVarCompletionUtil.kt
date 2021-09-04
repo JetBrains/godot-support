@@ -1,8 +1,11 @@
 package gdscript.completion.util
 
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.lookup.LookupElement
+import gdscript.GdIcon
 import gdscript.GdKeywords
 import gdscript.completion.GdLookup
+import gdscript.psi.GdClassVarDeclTl
 
 object GdClassVarCompletionUtil {
 
@@ -10,7 +13,8 @@ object GdClassVarCompletionUtil {
         GdKeywords.ANNOTATIONS.forEach {
             result
                 .addElement(
-                    GdLookup.create(if (withPrefix) "@$it" else it,
+                    GdLookup.create(
+                        if (withPrefix) "@$it" else it,
                         lookup = " ",
                         color = GdLookup.ANNOTATOR_COLOR,
                         priority = GdLookup.USER_DEFINED,
@@ -18,5 +22,11 @@ object GdClassVarCompletionUtil {
                 );
         }
     }
+
+    fun lookup(variable: GdClassVarDeclTl): LookupElement =
+        GdLookup.create(variable.name.orEmpty(),
+            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            typed = variable.returnType
+        )
 
 }

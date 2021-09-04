@@ -4,12 +4,10 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
-import gdscript.GdIcon
-import gdscript.completion.GdLookup
 import gdscript.completion.util.GdClassNameCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdInheritanceIdNmi
-import gdscript.psi.utils.PsiGdClassNamingUtil
+import gdscript.psi.utils.PsiGdClassUtil
 
 class GdInheritanceNmReference : PsiReferenceBase<GdInheritanceIdNmi> {
 
@@ -33,7 +31,7 @@ class GdInheritanceNmReference : PsiReferenceBase<GdInheritanceIdNmi> {
 
     override fun getVariants(): Array<Any> {
         val project = myElement.project;
-        val classNames = PsiGdClassNamingUtil.listClassNaming(project);
+        val classNames = PsiGdClassUtil.listClassNaming(project);
 
         return classNames.mapNotNull {
             if (it.classname !== "") {

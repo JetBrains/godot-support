@@ -1,0 +1,27 @@
+{
+  parserClass="tscn.parser.TscnParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Tscn"
+  psiImplClassSuffix="Impl"
+  psiPackage="tscn.psi"
+  psiImplPackage="tscn.psi.impl"
+
+  elementTypeHolderClass="tscn.psi.TscnTypes"
+  elementTypeClass="tscn.psi.TscnElementType"
+  tokenTypeClass="tscn.psi.TscnTokenType"
+
+  //psiImplUtilClass="tscn.psi.TscnPsiUtils"
+
+  tokens = [
+    comment='regexp:;.*'
+    bad_character='regexp:[\^]'
+  ]
+}
+
+tscnfile ::= (header DATA_LINE*)+
+
+header ::= LSBR type headerValue* RSBR
+type ::= GD_SCENE | EXT_RESOURCE | SUB_RESOURCE | NODE | CONNECTION
+headerValue ::= IDENTIFIER EQ VALUE

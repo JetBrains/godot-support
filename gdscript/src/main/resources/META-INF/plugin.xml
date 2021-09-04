@@ -17,8 +17,7 @@
   <depends>com.intellij.java</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileType name="GdScript File" implementationClass="gdscript.GdFileType"
-              fieldName="INSTANCE" language="GdScript" extensions="gd"/>
+    <fileType name="GdScript File" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd"/>
     <lang.parserDefinition language="GdScript" implementationClass="gdscript.GdParserDefinition"/>
     <lang.syntaxHighlighterFactory language="GdScript" implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
@@ -26,16 +25,20 @@
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
     <sdkType implementation="gdscript.GdSdk" />
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.GdUsageProvider" />
+    <!-- Tscn -->
+    <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
+    <lang.parserDefinition language="Tscn" implementationClass="tscn.TscnParserDefinition"/>
 
     <!-- Completions -->
-    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
-    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
-    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>
-    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdClassVarCompletionContributor"/>
-    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdMethodDeclCompletionContributor"/>
-    <psi.referenceContributor implementation="gdscript.completion.GdInheritanceReferenceContributor" />
-    <psi.referenceContributor implementation="gdscript.completion.GdTypeHintReferenceContributor" />
-    <psi.referenceContributor implementation="gdscript.completion.GdSetGetMethodIdReferenceContributor" />
+    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
+    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
+    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>
+    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdClassVarCompletionContributor"/>
+    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdMethodDeclCompletionContributor"/>
+    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdInheritanceReferenceContributor" />
+    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdTypeHintReferenceContributor" />
+    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdSetGetMethodIdReferenceContributor" />
+    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdClassMemberReferenceContributor" />
 
     <!-- Annotators -->
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />

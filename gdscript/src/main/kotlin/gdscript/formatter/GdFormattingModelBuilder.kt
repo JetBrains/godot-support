@@ -18,26 +18,29 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
                 GdFileBlock(formattingContext.node,
                     Wrap.createWrap(WrapType.NONE, false),
                     Alignment.createAlignment(),
-                    createSpaceBuilder(settings)),
+                    createSpaceBuilder(settings)
+                ),
                 settings)
     }
 
     private fun createSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
         val custom = settings.getCustomSettings(GdCodeStyleSettings::class.java);
 
-        // TODO tohle předělat -> mezery mezi var/const různé + grouping
+        // TODO grouping
         return SpacingBuilder(settings, GdLanguage.INSTANCE)
             .before(GdTypes.CLASS_NAME_NM).spaces(1)
             .before(GdTypes.INHERITANCE_ID_NMI).spaces(1)
             .before(GdTypes.CLASS_NAMING).spacing(0, 0, 1, false, 0)
             .before(GdTypes.TOOLLINE).spacing(0, 0, 1, false, 0)
 
-            .between(GdTypes.CONST_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 0, false, 1)
-            .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 0, false, 1)
             .between(GdTypes.CONST_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 0)
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 0)
+            .between(GdTypes.CONST_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 0, false, 1)
+            .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 0, false, 1)
 
-            .between(GdTypes.METHOD_DECL_TL, GdTypes.METHOD_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 2)
+            .between(GdTypes.METHOD_DECL_TL, GdTypes.METHOD_DECL_TL).spacing(0, Int.MAX_VALUE, 0, false, 2)
+
+            //.after(GdTypes.STMT_OR_SUITE).spacing(0, Int.MAX_VALUE, 0, false, 1)
 //            .before(GdTypes.CONST_DECL_TL).spacing(0, 0, 1, false, 0)
 //            .before(GdTypes.CLASS_VAR_DECL_TL).spacing(0, 0, 1, false, 0)
     }
