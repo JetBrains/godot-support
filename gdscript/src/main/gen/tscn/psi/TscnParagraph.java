@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TscnHeaderValue extends PsiElement {
+public interface TscnParagraph extends PsiElement {
 
   @NotNull
-  TscnHeaderValueNm getHeaderValueNm();
-
-  @NotNull
-  TscnHeaderValueVal getHeaderValueVal();
+  TscnHeader getHeader();
 
 }

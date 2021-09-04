@@ -7,10 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface TscnHeader extends PsiElement {
 
-  @NotNull
-  List<TscnHeaderValue> getHeaderValueList();
-
-  @NotNull
-  TscnType getType();
-
 }

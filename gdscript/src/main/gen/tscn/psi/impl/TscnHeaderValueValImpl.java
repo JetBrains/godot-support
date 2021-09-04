@@ -11,32 +11,20 @@ import static tscn.psi.TscnTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tscn.psi.*;
 
-public class TscnHeaderValueImpl extends ASTWrapperPsiElement implements TscnHeaderValue {
+public class TscnHeaderValueValImpl extends ASTWrapperPsiElement implements TscnHeaderValueVal {
 
-  public TscnHeaderValueImpl(@NotNull ASTNode node) {
+  public TscnHeaderValueValImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull TscnVisitor visitor) {
-    visitor.visitHeaderValue(this);
+    visitor.visitHeaderValueVal(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof TscnVisitor) accept((TscnVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public TscnHeaderValueNm getHeaderValueNm() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnHeaderValueNm.class));
-  }
-
-  @Override
-  @NotNull
-  public TscnHeaderValueVal getHeaderValueVal() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnHeaderValueVal.class));
   }
 
 }

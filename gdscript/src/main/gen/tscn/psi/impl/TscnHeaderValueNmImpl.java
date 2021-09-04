@@ -11,14 +11,14 @@ import static tscn.psi.TscnTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tscn.psi.*;
 
-public class TscnTypeImpl extends ASTWrapperPsiElement implements TscnType {
+public class TscnHeaderValueNmImpl extends ASTWrapperPsiElement implements TscnHeaderValueNm {
 
-  public TscnTypeImpl(@NotNull ASTNode node) {
+  public TscnHeaderValueNmImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull TscnVisitor visitor) {
-    visitor.visitType(this);
+    visitor.visitHeaderValueNm(this);
   }
 
   @Override

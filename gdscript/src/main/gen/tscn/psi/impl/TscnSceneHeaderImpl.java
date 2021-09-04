@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static tscn.psi.TscnTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tscn.psi.*;
 
-public class TscnHeaderValueImpl extends ASTWrapperPsiElement implements TscnHeaderValue {
+public class TscnSceneHeaderImpl extends TscnHeaderImpl implements TscnSceneHeader {
 
-  public TscnHeaderValueImpl(@NotNull ASTNode node) {
+  public TscnSceneHeaderImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull TscnVisitor visitor) {
-    visitor.visitHeaderValue(this);
+    visitor.visitSceneHeader(this);
   }
 
   @Override
@@ -29,14 +29,8 @@ public class TscnHeaderValueImpl extends ASTWrapperPsiElement implements TscnHea
 
   @Override
   @NotNull
-  public TscnHeaderValueNm getHeaderValueNm() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnHeaderValueNm.class));
-  }
-
-  @Override
-  @NotNull
-  public TscnHeaderValueVal getHeaderValueVal() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnHeaderValueVal.class));
+  public List<TscnHeaderValue> getHeaderValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TscnHeaderValue.class);
   }
 
 }

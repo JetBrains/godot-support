@@ -57,6 +57,9 @@
     <stubIndex implementation="gdscript.index.impl.GdClassVarDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdMethodDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdSignalDeclIndex" />
+    <!-- Tscn -->
+    <stubIndex implementation="tscn.index.impl.TscnScriptIndex" />
+    <stubIndex implementation="tscn.index.impl.TscnNodeIndex" />
 
     <!-- Actions -->
     <intentionAction>

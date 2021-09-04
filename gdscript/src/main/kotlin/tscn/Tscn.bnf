@@ -12,7 +12,9 @@
   elementTypeClass="tscn.psi.TscnElementType"
   tokenTypeClass="tscn.psi.TscnTokenType"
 
-  //psiImplUtilClass="tscn.psi.TscnPsiUtils"
+  psiImplUtilClass="tscn.psi.TscnPsiUtils"
+
+  extends(".*_header")=header
 
   tokens = [
     comment='regexp:;.*'
@@ -20,8 +22,20 @@
   ]
 }
 
-tscnfile ::= (header DATA_LINE*)+
+tscnfile ::= paragraph+
 
-header ::= LSBR type headerValue* RSBR
-type ::= GD_SCENE | EXT_RESOURCE | SUB_RESOURCE | NODE | CONNECTION
-headerValue ::= IDENTIFIER EQ VALUE
+paragraph ::= header DATA_LINE*
+
+header ::=
+    scene_header
+    | node_header
+    | ext_header
+    | sub_header
+
+scene_header ::= LSBR GD_SCENE headerValue* RSBR
+node_header ::= LSBR NODE headerValue* RSBR {methods=[getName getType getParentPath] mixin="tscn.psi.impl.TscnNodeHeaderElementImpl" stubClass="tscn.index.stub.TscnNodeHeaderStub" elementTypeFactory="tscn.psi.impl.TscnNodeHeaderElementType.getInstance"}
+ext_header ::= LSBR EXT_RESOURCE headerValue* RSBR {methods=[getPath getType] mixin="tscn.psi.impl.TscnExtHeaderElementImpl" stubClass="tscn.index.stub.TscnExtHeaderStub" elementTypeFactory="tscn.psi.impl.TscnExtHeaderElementType.getInstance"}
+sub_header ::= LSBR (SUB_RESOURCE | CONNECTION) headerValue* RSBR
+headerValue ::= headerValue_nm EQ headerValue_val
+headerValue_nm ::= IDENTIFIER
+headerValue_val ::= VALUE
