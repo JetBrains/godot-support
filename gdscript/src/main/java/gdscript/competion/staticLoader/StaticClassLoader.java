@@ -1,13 +1,9 @@
 package gdscript.competion.staticLoader;
 
 import gdscript.competion.staticLoader.model.GdClass;
-import org.apache.commons.io.FileUtils;
 
 import java.io.*;
-import java.net.URL;
-import java.security.CodeSource;
 import java.util.*;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -17,7 +13,7 @@ public class StaticClassLoader {
 
     static {
         try {
-            String folder = "classes_test";
+            String folder = "_classes_test";
             GdClassParser parser = new GdClassParser();
             ClassLoader loader = StaticClassLoader.class.getClassLoader();
             var directory = loader.getResource(folder).getPath();

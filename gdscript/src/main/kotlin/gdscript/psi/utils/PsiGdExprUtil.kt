@@ -62,9 +62,10 @@ object PsiGdExprUtil {
 
                         return node?.type ?: "";
                     }
+                    is GdDictDecl -> return "Dictionary";
+                    is GdArrayDecl -> return "Array";
+                    else -> expr.expr?.returnType ?: "";
                 }
-                // TODO arraydelc, dictDecl, ( expr )
-                return "";
             };
             is GdLiteralEx -> {
                 val text = expr.text;

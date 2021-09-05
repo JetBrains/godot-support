@@ -42,7 +42,7 @@ inheritance ::= EXTENDS inheritanceId_nmi (DOT IDENTIFIER)? newLineEnd {methods=
 inheritanceId_nmi ::= IDENTIFIER
 private inheritance_r ::= !(CLASS_NAME | TOOL) & topLevelDecl_r
 
-// TODO resource
+// TODO ."resource"
 classNaming ::= CLASS_NAME className_nm (COMMA STRING)? newLineEnd {methods=[getClassname getParentName] pin=1 recoverWhile=classNaming_r mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub" elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"}
 className_nm ::= IDENTIFIER
 private classNaming_r ::= !(TOOL) & topLevelDecl_r

@@ -1,3 +1,34 @@
+resources: onready check
+
+TopLevel: enumDecl, innerClass
+syntax: @"Node/Label"
+
+obarvení stringu """ """ při změně -> out of bounds
+quote matcher -> multiline
+
+smart enter -> odsazení -> možná spíš índent ve formatteru
+
+attribute_ex -> reference completion
+
+method decl validation + params validation (parent)
+method: parent call ._init()
+
+getter/setter:
+GenerateGetterHandler - GenerateGetterSetterHandlerBase
+
+validace: attribute_ex
+construcotr annotator -> args parent validace
+
+file rename:
+https://intellij-support.jetbrains.com/hc/en-us/community/posts/206760415-Renaming-files-in-IDE
+
+extends inner class extends "losos.gd".inner
+barvy definice/volání/parentVolání
+set,get validation - param, return type
+var a: Node = 4; // chybí kontrola typu hodnoty
+projít dostupné annotatce -> něco má extra options !!!
+
+
 2.0 syntax
 typed array
 - var my_array: Array[int] = [1, 2, 3]
@@ -48,11 +79,9 @@ sdk -> lepší impl
 19 doc
 
 Completions:
-- fn names (parent, own, privacy)
+- fn names privacy?
 - variable
-- constant (PI, TAU, ...)
 - public/private settings
-- method calls
 - method params
 - if else /...  flow hints
 - flow templates

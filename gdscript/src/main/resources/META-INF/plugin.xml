@@ -25,6 +25,8 @@
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
     <sdkType implementation="gdscript.GdSdk" />
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.GdUsageProvider" />
+    <configurationType implementation="gdscript.run.GdRunConfigurationType" />
+    <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer" />
     <!-- Tscn -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
     <lang.parserDefinition language="Tscn" implementationClass="tscn.TscnParserDefinition"/>

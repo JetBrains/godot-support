@@ -1,0 +1,14 @@
+extends Resource
+class_name CameraEffects
+
+
+var dof_blur_amount: float setget set_dof_blur_amount, get_dof_blur_amount;
+var dof_blur_far_distance: float setget set_dof_blur_far_distance, get_dof_blur_far_distance;
+var dof_blur_far_enabled: bool setget set_dof_blur_far_enabled, is_dof_blur_far_enabled;
+var dof_blur_far_transition: float setget set_dof_blur_far_transition, get_dof_blur_far_transition;
+var dof_blur_near_distance: float setget set_dof_blur_near_distance, get_dof_blur_near_distance;
+var dof_blur_near_enabled: bool setget set_dof_blur_near_enabled, is_dof_blur_near_enabled;
+var dof_blur_near_transition: float setget set_dof_blur_near_transition, get_dof_blur_near_transition;
+var override_exposure: float setget set_override_exposure, get_override_exposure;
+var override_exposure_enabled: bool setget set_override_exposure_enabled, is_override_exposure_enabled;
+

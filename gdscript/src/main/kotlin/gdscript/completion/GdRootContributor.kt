@@ -17,37 +17,39 @@ import gdscript.psi.utils.PsiGdMethodDeclUtil
 
 class GdRootContributor : CompletionContributor() {
 
-    val AFTER_INHERITANCE = psiElement()
-        .withParent(
-            psiElement(PsiErrorElement::class.java)
-                .withParent(GdInheritance::class.java)
-                .afterSibling(psiElement(GdNewLineEnd::class.java)))
-    val AFTER_CLASS_NAMING = psiElement()
-        .withParent(
-            psiElement(PsiErrorElement::class.java)
-                .withParent(GdClassNaming::class.java)
-                .afterSibling(psiElement(GdNewLineEnd::class.java)))
-    val AFTER_TOOL = psiElement()
-        .withParent(
-            psiElement(PsiErrorElement::class.java)
-                .withParent(GdToolline::class.java)
-                .afterSibling(psiElement(GdNewLineEnd::class.java)))
-    val AFTER_CONST = psiElement()
-        .withParent(psiElement(PsiErrorElement::class.java)
-            .withParent(psiElement(GdConstDeclTl::class.java)
-                .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdEndStmt::class.java)))
-        );
-    val AFTER_VAR = psiElement()
-        .withParent(psiElement(PsiErrorElement::class.java)
-            .withParent(psiElement(GdClassVarDeclTl::class.java)
-                .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdEndStmt::class.java)))
-        );
-    val AFTER_FUNC = psiElement()
-        .withParent(psiElement(PsiErrorElement::class.java)
-            .withParent(psiElement(GdMethodDeclTl::class.java)
-                .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdTypes.NEW_LINE)))
-        );
-    val ANNOTATOR_DECL = psiElement(GdTypes.ANNOTATOR)
+    companion object {
+        val AFTER_INHERITANCE = psiElement()
+            .withParent(
+                psiElement(PsiErrorElement::class.java)
+                    .withParent(GdInheritance::class.java)
+                    .afterSibling(psiElement(GdNewLineEnd::class.java)))
+        val AFTER_CLASS_NAMING = psiElement()
+            .withParent(
+                psiElement(PsiErrorElement::class.java)
+                    .withParent(GdClassNaming::class.java)
+                    .afterSibling(psiElement(GdNewLineEnd::class.java)))
+        val AFTER_TOOL = psiElement()
+            .withParent(
+                psiElement(PsiErrorElement::class.java)
+                    .withParent(GdToolline::class.java)
+                    .afterSibling(psiElement(GdNewLineEnd::class.java)))
+        val AFTER_CONST = psiElement()
+            .withParent(psiElement(PsiErrorElement::class.java)
+                .withParent(psiElement(GdConstDeclTl::class.java)
+                    .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdEndStmt::class.java)))
+            );
+        val AFTER_VAR = psiElement()
+            .withParent(psiElement(PsiErrorElement::class.java)
+                .withParent(psiElement(GdClassVarDeclTl::class.java)
+                    .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdEndStmt::class.java)))
+            );
+        val AFTER_FUNC = psiElement()
+            .withParent(psiElement(PsiErrorElement::class.java)
+                .withParent(psiElement(GdMethodDeclTl::class.java)
+                    .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdTypes.STMT_OR_SUITE)))
+            );
+        val ANNOTATOR_DECL = psiElement(GdTypes.ANNOTATOR)
+    }
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         val position = parameters.position;

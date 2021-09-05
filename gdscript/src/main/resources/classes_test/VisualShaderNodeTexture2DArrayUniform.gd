@@ -1,0 +1,5 @@
+extends VisualShaderNodeTextureUniform
+class_name VisualShaderNodeTexture2DArrayUniform
+
+
+
