@@ -11,7 +11,7 @@ object GdClassNameCompletionUtil {
         GdLookup.create(className.classname,
             priority = GdLookup.USER_DEFINED,
             icon = GdIcon.getEditorIcon(className.classname),
-            typed = className.parentName
+            //typed = className.parentName
         )
 
 }

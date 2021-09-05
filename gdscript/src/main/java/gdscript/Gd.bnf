@@ -94,7 +94,7 @@ var_nmi ::= IDENTIFIER
 // TODO inner class
 
 stmtOrSuite ::= stmt | suite
-suite ::= NEW_LINE INDENT stmt+ DEDENT
+suite ::= NEW_LINE INDENT stmt+ DEDENT {pin=3}
 
 stmt ::=
     assign_st
@@ -131,7 +131,8 @@ yield_st ::= YIELD LRBR (expr COMMA expr)? RRBR
 preload_st ::= PRELOAD LRBR STRING RRBR // TODO resource
 
 assign_st ::= expr (EQ | ASSIGN) expr endStmt
-expr_st ::= expr endStmt
+expr_st ::= expr endStmt {pin=1}
+
 flow_st ::=
     (CONTINUE endStmt)
     | (BREAK endStmt)

@@ -56,4 +56,10 @@ public class TscnNodeHeaderImpl extends TscnNodeHeaderElementImpl implements Tsc
     return TscnPsiUtils.getParentPath(this);
   }
 
+  @Override
+  @NotNull
+  public String getNodePath() {
+    return TscnPsiUtils.getNodePath(this);
+  }
+
 }

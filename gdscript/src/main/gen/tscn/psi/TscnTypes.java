@@ -16,7 +16,6 @@ public interface TscnTypes {
   IElementType HEADER_VALUE_NM = new TscnElementType("HEADER_VALUE_NM");
   IElementType HEADER_VALUE_VAL = new TscnElementType("HEADER_VALUE_VAL");
   IElementType NODE_HEADER = TscnNodeHeaderElementType.getInstance("NODE_HEADER");
-  IElementType PARAGRAPH = new TscnElementType("PARAGRAPH");
   IElementType SCENE_HEADER = new TscnElementType("SCENE_HEADER");
   IElementType SUB_HEADER = new TscnElementType("SUB_HEADER");
 
@@ -51,9 +50,6 @@ public interface TscnTypes {
       }
       else if (type == NODE_HEADER) {
         return new TscnNodeHeaderImpl(node);
-      }
-      else if (type == PARAGRAPH) {
-        return new TscnParagraphImpl(node);
       }
       else if (type == SCENE_HEADER) {
         return new TscnSceneHeaderImpl(node);

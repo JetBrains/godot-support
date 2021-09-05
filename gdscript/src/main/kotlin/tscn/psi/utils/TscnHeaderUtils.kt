@@ -1,6 +1,7 @@
 package tscn.psi.utils
 
 import tscn.psi.TscnHeaderValue
+import tscn.psi.TscnNodeHeader
 
 object TscnHeaderUtils {
 
@@ -16,6 +17,17 @@ object TscnHeaderUtils {
         val path = getValue(values, "path");
 
         return path.removePrefix("res://");
+    }
+
+    fun getNodePath(element: TscnNodeHeader): String {
+        val stub = element.stub
+        if (stub != null) {
+            return stub.nodePath()
+        }
+
+        val isRoot = element.parentPath == ".";
+
+        return "${if (isRoot) "" else "${element.parentPath}/"}${element.name}"
     }
 
 }

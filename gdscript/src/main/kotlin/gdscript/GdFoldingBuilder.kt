@@ -12,7 +12,6 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdStmtOrSuite
 
-
 class GdFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {

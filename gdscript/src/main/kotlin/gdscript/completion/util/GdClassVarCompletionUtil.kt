@@ -26,7 +26,8 @@ object GdClassVarCompletionUtil {
     fun lookup(variable: GdClassVarDeclTl): LookupElement =
         GdLookup.create(variable.name.orEmpty(),
             icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
-            typed = variable.returnType
+            typed = variable.returnType,
+            priority = GdLookup.USER_DEFINED,
         )
 
 }

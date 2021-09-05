@@ -21,4 +21,7 @@ public interface TscnNodeHeader extends TscnHeader, StubBasedPsiElement<TscnNode
   @NotNull
   String getParentPath();
 
+  @NotNull
+  String getNodePath();
+
 }

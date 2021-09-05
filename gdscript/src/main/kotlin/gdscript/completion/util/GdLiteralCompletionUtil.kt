@@ -7,9 +7,9 @@ import gdscript.completion.GdLookup
 object GdLiteralCompletionUtil {
 
     fun builtIns(result: CompletionResultSet) {
-        GdKeywords.LITERALS.forEach {
+        GdKeywords.LITERALS.forEachIndexed { i, it ->
             result.addElement(
-                GdLookup.create(it, priority = GdLookup.KEYWORDS)
+                GdLookup.create(it, priority = GdLookup.KEYWORDS, typed = GdKeywords.LITERAL_TYPES[i])
             )
         }
     }

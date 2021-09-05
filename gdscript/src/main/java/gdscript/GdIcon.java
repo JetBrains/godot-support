@@ -1,6 +1,8 @@
 package gdscript;
 
 import com.intellij.openapi.util.IconLoader;
+import com.intellij.ui.RowIcon;
+import com.intellij.util.IconUtil;
 
 import javax.swing.*;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ public class GdIcon {
             try {
                 Icon loaded = IconLoader.getIcon(String.format("icons/godot_editor/%s.svg", className), GdIcon.class);
                 if (loaded.getIconHeight() > 1) {
+                    loaded = IconUtil.toSize(loaded, 16, 16);
                     editorIcons.put(className, loaded);
                 } else {
                     editorIcons.put(className, OBJECT);

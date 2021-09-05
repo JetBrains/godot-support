@@ -17,6 +17,6 @@ class TscnFileType : LanguageFileType {
 
     override fun getDefaultExtension(): String = "tscn";
 
-    override fun getIcon(): Icon? = null;
+    override fun getIcon(): Icon = TscnIcon.FILE;
 
 }

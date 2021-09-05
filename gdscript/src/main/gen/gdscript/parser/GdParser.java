@@ -502,12 +502,13 @@ public class GdParser implements PsiParser, LightPsiParser {
   // expr endStmt
   public static boolean expr_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr_st")) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, EXPR_ST, "<expr st>");
     r = expr(b, l + 1, -1);
+    p = r; // pin = 1
     r = r && endStmt(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -1254,17 +1255,49 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // !(VAR | IF | WHILE | FOR | MATCH | CONTINUE | BREAK | PASS | BREAKPOINT | RETURN | ASSERT | YIELD | PRELOAD)
+  static boolean stmt_r(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmt_r")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !stmt_r_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // VAR | IF | WHILE | FOR | MATCH | CONTINUE | BREAK | PASS | BREAKPOINT | RETURN | ASSERT | YIELD | PRELOAD
+  private static boolean stmt_r_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmt_r_0")) return false;
+    boolean r;
+    r = consumeToken(b, VAR);
+    if (!r) r = consumeToken(b, IF);
+    if (!r) r = consumeToken(b, WHILE);
+    if (!r) r = consumeToken(b, FOR);
+    if (!r) r = consumeToken(b, MATCH);
+    if (!r) r = consumeToken(b, CONTINUE);
+    if (!r) r = consumeToken(b, BREAK);
+    if (!r) r = consumeToken(b, PASS);
+    if (!r) r = consumeToken(b, BREAKPOINT);
+    if (!r) r = consumeToken(b, RETURN);
+    if (!r) r = consumeToken(b, ASSERT);
+    if (!r) r = consumeToken(b, YIELD);
+    if (!r) r = consumeToken(b, PRELOAD);
+    return r;
+  }
+
+  /* ********************************************************** */
   // NEW_LINE INDENT stmt+ DEDENT
   public static boolean suite(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "suite")) return false;
     if (!nextTokenIs(b, NEW_LINE)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, SUITE, null);
     r = consumeTokens(b, 0, NEW_LINE, INDENT);
     r = r && suite_2(b, l + 1);
+    p = r; // pin = 3
     r = r && consumeToken(b, DEDENT);
-    exit_section_(b, m, SUITE, r);
-    return r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // stmt+

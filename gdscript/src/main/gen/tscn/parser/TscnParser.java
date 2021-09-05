@@ -148,14 +148,14 @@ public class TscnParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // header DATA_LINE*
-  public static boolean paragraph(PsiBuilder b, int l) {
+  static boolean paragraph(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "paragraph")) return false;
     if (!nextTokenIs(b, LSBR)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = header(b, l + 1);
     r = r && paragraph_1(b, l + 1);
-    exit_section_(b, m, PARAGRAPH, r);
+    exit_section_(b, m, null, r);
     return r;
   }
 

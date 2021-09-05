@@ -28,14 +28,12 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
         return myElement;
     }
 
-    override fun resolve(): PsiElement? {
-        val element = PsiGdNamedUtil.findInParent(myElement, includingSelf = true);
-        return when (element) {
+    override fun resolve(): PsiElement? =
+        when (val element = PsiGdNamedUtil.findInParent(myElement, includingSelf = true)) {
             is GdClassVarDeclTl -> element.classVarIdNmi
             is GdConstDeclTl -> element.constIdNmi
             else -> null
         }
-    }
 
     override fun getVariants(): Array<Any> {
         val files: ArrayList<PsiFile> = ArrayList();

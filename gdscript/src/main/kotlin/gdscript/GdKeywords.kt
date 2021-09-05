@@ -14,7 +14,10 @@ object GdKeywords {
     const val TRUE = "true"
     const val FALSE = "false"
     const val NULL = "null"
-    val LITERALS = arrayOf(TRUE, FALSE, NULL);
+    const val NAN = "NAN"
+    const val INF = "INF"
+    const val TAU = "TAU"
+    const val PI = "PI"
 
     const val INT = "int"
     const val FLOAT = "float"
@@ -23,11 +26,8 @@ object GdKeywords {
     val BUILT_TYPES = arrayOf(INT, STR, FLOAT, BOOL);
     const val VOID = "void"
 
-    const val NAN = "NAN"
-    const val INF = "INF"
-    const val TAU = "TAU"
-    const val PI = "PI"
-
     val ANNOTATIONS = arrayOf("export", "onready");
 
+    val LITERALS = arrayOf(TRUE, FALSE, NULL, NAN, INF, TAU, PI);
+    val LITERAL_TYPES = arrayOf(BOOL, BOOL, NULL, FLOAT, FLOAT, FLOAT, FLOAT);
 }

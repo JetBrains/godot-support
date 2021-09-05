@@ -8,6 +8,7 @@ object TscnPsiUtils {
     @JvmStatic fun getName(element: TscnNodeHeader): String = TscnHeaderUtils.getValue(element.headerValueList, "name");
     @JvmStatic fun getType(element: TscnNodeHeader): String = TscnHeaderUtils.getValue(element.headerValueList, "type");
     @JvmStatic fun getParentPath(element: TscnNodeHeader): String = TscnHeaderUtils.getValue(element.headerValueList, "parent");
+    @JvmStatic fun getNodePath(element: TscnNodeHeader): String = TscnHeaderUtils.getNodePath(element);
 
     /** Ext resource */
     @JvmStatic fun getType(element: TscnExtHeader): String = TscnHeaderUtils.getValue(element.headerValueList, "type");

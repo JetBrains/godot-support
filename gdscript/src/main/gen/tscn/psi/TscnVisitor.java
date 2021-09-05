@@ -31,10 +31,6 @@ public class TscnVisitor extends PsiElementVisitor {
     visitHeader(o);
   }
 
-  public void visitParagraph(@NotNull TscnParagraph o) {
-    visitPsiElement(o);
-  }
-
   public void visitSceneHeader(@NotNull TscnSceneHeader o) {
     visitHeader(o);
   }

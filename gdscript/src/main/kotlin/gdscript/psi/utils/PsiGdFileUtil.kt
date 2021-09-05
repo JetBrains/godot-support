@@ -11,6 +11,7 @@ import gdscript.GdFileType
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdConstDeclTl
 import gdscript.psi.GdFile
+import java.io.File
 
 object PsiGdFileUtil {
 
@@ -30,6 +31,16 @@ object PsiGdFileUtil {
         val name = file.name;
 
         return name.substring(0, name.length - 3);
+    }
+
+    fun filepath(element: PsiElement): String {
+        val basePath = element.project.basePath ?: return "";
+        val file = element.containingFile.originalFile;
+        val directory = file.containingDirectory.toString().removePrefix("PsiDirectory:");
+
+        val path = "${directory.substring(basePath.length + 1)}${File.separator}${file.name}";
+
+        return path.replace(File.separator, "/");
     }
 
 }

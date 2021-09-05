@@ -1,7 +1,7 @@
 package gdscript.completion
 
 import com.intellij.openapi.util.TextRange
-import com.intellij.patterns.PsiJavaPatterns
+import com.intellij.patterns.PsiJavaPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import gdscript.psi.GdTypes
@@ -11,7 +11,7 @@ class GdClassMemberReferenceContributor  : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(register: PsiReferenceRegistrar) {
         register.registerReferenceProvider(
-            PsiJavaPatterns.psiElement(GdTypes.REF_ID_NM),
+            psiElement(GdTypes.REF_ID_NM),
             object : PsiReferenceProvider() {
                 override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
                     return arrayOf(GdClassMemberReference(element, TextRange(0, element.textLength)));
@@ -19,4 +19,5 @@ class GdClassMemberReferenceContributor  : PsiReferenceContributor() {
             }
         );
     }
+
 }

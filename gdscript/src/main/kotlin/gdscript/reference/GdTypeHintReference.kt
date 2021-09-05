@@ -7,9 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import gdscript.completion.util.GdClassNameCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdNamedElement
-import gdscript.psi.GdTypeHintNm
 import gdscript.psi.utils.PsiGdClassUtil
-import org.jetbrains.annotations.NotNull
 
 class GdTypeHintReference : PsiReferenceBase<GdNamedElement> {
 
