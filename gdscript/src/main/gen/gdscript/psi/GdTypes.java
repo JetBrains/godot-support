@@ -36,6 +36,10 @@ public interface GdTypes {
   IElementType CONST_ID_NMI = new GdElementType("CONST_ID_NMI");
   IElementType DICT_DECL = new GdElementType("DICT_DECL");
   IElementType END_STMT = new GdElementType("END_STMT");
+  IElementType ENUM_DECL_NMI = new GdElementType("ENUM_DECL_NMI");
+  IElementType ENUM_DECL_TL = new GdElementType("ENUM_DECL_TL");
+  IElementType ENUM_VALUE = new GdElementType("ENUM_VALUE");
+  IElementType ENUM_VALUE_NMI = new GdElementType("ENUM_VALUE_NMI");
   IElementType EXPR = new GdElementType("EXPR");
   IElementType EXPR_ST = new GdElementType("EXPR_ST");
   IElementType FACTOR_EX = new GdElementType("FACTOR_EX");
@@ -109,6 +113,7 @@ public interface GdTypes {
   IElementType DOT = new GdTokenType("DOT");
   IElementType ELIF = new GdTokenType("ELIF");
   IElementType ELSE = new GdTokenType("ELSE");
+  IElementType ENUM = new GdTokenType("ENUM");
   IElementType EQ = new GdTokenType("EQ");
   IElementType EXTENDS = new GdTokenType("EXTENDS");
   IElementType FALSE = new GdTokenType("FALSE");
@@ -235,6 +240,18 @@ public interface GdTypes {
       }
       else if (type == END_STMT) {
         return new GdEndStmtImpl(node);
+      }
+      else if (type == ENUM_DECL_NMI) {
+        return new GdEnumDeclNmiImpl(node);
+      }
+      else if (type == ENUM_DECL_TL) {
+        return new GdEnumDeclTlImpl(node);
+      }
+      else if (type == ENUM_VALUE) {
+        return new GdEnumValueImpl(node);
+      }
+      else if (type == ENUM_VALUE_NMI) {
+        return new GdEnumValueNmiImpl(node);
       }
       else if (type == EXPR_ST) {
         return new GdExprStImpl(node);

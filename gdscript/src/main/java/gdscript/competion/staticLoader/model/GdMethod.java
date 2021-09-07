@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+@Deprecated
 public class GdMethod {
 
     public final String name;

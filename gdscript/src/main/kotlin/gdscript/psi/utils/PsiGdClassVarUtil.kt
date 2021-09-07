@@ -1,6 +1,5 @@
 package gdscript.psi.utils
 
-import com.intellij.psi.PsiElement
 import gdscript.psi.*
 
 object PsiGdClassVarUtil {
@@ -21,53 +20,6 @@ object PsiGdClassVarUtil {
         }
 
         return element.typed?.typeHintNm?.name ?: "";
-    }
-
-    fun setName(element: GdClassVarIdNmi, newName: String?): PsiElement {
-        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
-        if (keyNode != null) {
-            val id = GdElementFactory.identifier(element.project, newName!!)
-            element.node.replaceChild(keyNode, id.node)
-        }
-        return element
-    }
-
-    fun getName(element: GdClassVarIdNmi): String {
-        val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
-        return valueNode?.text ?: ""
-    }
-
-    fun getNameIdentifier(element: GdClassVarIdNmi): PsiElement? {
-        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER);
-        return keyNode?.psi;
-    }
-
-    fun setName(element: GdSetMethodIdNm, newName: String?): PsiElement {
-        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
-        if (keyNode != null) {
-            val id = GdElementFactory.identifier(element.project, newName!!)
-            element.node.replaceChild(keyNode, id.node)
-        }
-        return element
-    }
-
-    fun getName(element: GdSetMethodIdNm): String {
-        val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
-        return valueNode?.text ?: ""
-    }
-
-    fun setName(element: GdGetMethodIdNm, newName: String?): PsiElement {
-        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
-        if (keyNode != null) {
-            val id = GdElementFactory.identifier(element.project, newName!!)
-            element.node.replaceChild(keyNode, id.node)
-        }
-        return element
-    }
-
-    fun getName(element: GdGetMethodIdNm): String {
-        val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
-        return valueNode?.text ?: ""
     }
 
 }

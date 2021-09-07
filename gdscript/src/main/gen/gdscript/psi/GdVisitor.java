@@ -95,6 +95,22 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitEnumDeclNmi(@NotNull GdEnumDeclNmi o) {
+    visitNamedIdElement(o);
+  }
+
+  public void visitEnumDeclTl(@NotNull GdEnumDeclTl o) {
+    visitTopLevelDecl(o);
+  }
+
+  public void visitEnumValue(@NotNull GdEnumValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitEnumValueNmi(@NotNull GdEnumValueNmi o) {
+    visitNamedIdElement(o);
+  }
+
   public void visitExpr(@NotNull GdExpr o) {
     visitPsiElement(o);
   }

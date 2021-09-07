@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+@Deprecated
 public class GdClass {
 
     public final String name;

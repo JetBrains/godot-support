@@ -2,8 +2,9 @@ package gdscript.formatter
 
 import com.intellij.formatting.*
 import com.intellij.psi.codeStyle.CodeStyleSettings
+import com.intellij.psi.tree.TokenSet
 import gdscript.GdLanguage
-import gdscript.formatter.block.GdFileBlock
+import gdscript.formatter.block.GdRootLineBlock
 import gdscript.psi.GdTypes
 
 class GdFormattingModelBuilder : FormattingModelBuilder {
@@ -15,9 +16,10 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
         return FormattingModelProvider
             .createFormattingModelForPsiFile(formattingContext.containingFile,
-                GdFileBlock(formattingContext.node,
+                GdRootLineBlock(formattingContext.node,
                     Wrap.createWrap(WrapType.NONE, false),
                     Alignment.createAlignment(),
+                    customSettings,
                     createSpaceBuilder(settings)
                 ),
                 settings)
@@ -28,21 +30,23 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
         // TODO grouping
         return SpacingBuilder(settings, GdLanguage.INSTANCE)
-            .before(GdTypes.CLASS_NAME_NM).spaces(1)
-            .before(GdTypes.INHERITANCE_ID_NMI).spaces(1)
-            .before(GdTypes.CLASS_NAMING).spacing(0, 0, 1, false, 0)
-            .before(GdTypes.TOOLLINE).spacing(0, 0, 1, false, 0)
+            /** Root lines */
+            .before(NAMINGS).spacing(0, 0, 1, false, 0)
+            .before(TokenSet.create(GdTypes.INHERITANCE_ID_NMI, GdTypes.CLASS_NAME_NM)).spaces(1)
+            .beforeInside(GdTypes.DEDENT, GdTypes.SUITE).spacing(0, Int.MAX_VALUE, 1, false, 0)
+            .between(NAMINGS, ROOTS).spacing(0, 0, 1, false, 1)
 
             .between(GdTypes.CONST_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 0)
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 0)
-            .between(GdTypes.CONST_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 0, false, 1)
-            .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 0, false, 1)
+            .between(GdTypes.CONST_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
+            .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
 
-            .between(GdTypes.METHOD_DECL_TL, GdTypes.METHOD_DECL_TL).spacing(0, Int.MAX_VALUE, 0, false, 2)
+            .before(GdTypes.METHOD_DECL_TL).spacing(0, Int.MAX_VALUE, custom.LINES_BEFORE_FUNC + 1, false, custom.LINES_BEFORE_FUNC)
+    }
 
-            //.after(GdTypes.STMT_OR_SUITE).spacing(0, Int.MAX_VALUE, 0, false, 1)
-//            .before(GdTypes.CONST_DECL_TL).spacing(0, 0, 1, false, 0)
-//            .before(GdTypes.CLASS_VAR_DECL_TL).spacing(0, 0, 1, false, 0)
+    private companion object {
+        val NAMINGS = TokenSet.create(GdTypes.INHERITANCE, GdTypes.CLASS_NAMING)
+        val ROOTS = TokenSet.create(GdTypes.CONST_DECL_TL, GdTypes.CLASS_VAR_DECL_TL)
     }
 
 }

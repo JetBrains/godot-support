@@ -13,7 +13,7 @@ public interface GdTokenTypeSet
         GdTypes.EXTENDS,
         GdTypes.TOOL,
         GdTypes.FUNC,
-//        GdTypes.ENUM,
+        GdTypes.ENUM,
         GdTypes.SELF,
         GdTypes.CONST,
         GdTypes.VAR,

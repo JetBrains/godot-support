@@ -28,12 +28,12 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
         } else if (settingsType == SettingsType.INDENT_SETTINGS) {
             consumer.showAllStandardOptions()
         } else if (settingsType == SettingsType.BLANK_LINES_SETTINGS) {
-            /*consumer.showCustomOption(
+            consumer.showCustomOption(
                 GdCodeStyleSettings::class.java,
-                "LINES_BEFORE_CLASS_NAME",
-                "Before class_name",
+                "LINES_BEFORE_FUNC",
+                "Before func declaration",
                 "Keep maximum blank lines"
-            )*/
+            )
         }
     }
 

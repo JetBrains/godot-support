@@ -9,9 +9,7 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdClassVarDeclIndex
 import gdscript.index.impl.GdConstDeclIndex
 import gdscript.index.impl.GdMethodDeclIndex
-import gdscript.psi.GdClassNaming
-import gdscript.psi.GdInheritance
-import gdscript.psi.GdNamedElement
+import gdscript.psi.*
 
 object PsiGdNamedUtil {
 
@@ -92,6 +90,25 @@ object PsiGdNamedUtil {
         }
 
         return null;
+    }
+
+    fun setName(element: GdNamedElement, newName: String?): PsiElement {
+        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
+        if (keyNode != null) {
+            val id = GdElementFactory.identifier(element.project, newName!!)
+            element.node.replaceChild(keyNode, id.node)
+        }
+        return element
+    }
+
+    fun getName(element: GdNamedElement): String {
+        val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
+        return valueNode?.text ?: ""
+    }
+
+    fun getNameIdentifier(element: GdNamedIdElement): PsiElement? {
+        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER);
+        return keyNode?.psi;
     }
 
 }

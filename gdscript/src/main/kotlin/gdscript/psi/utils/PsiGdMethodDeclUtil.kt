@@ -1,6 +1,5 @@
 package gdscript.psi.utils
 
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
@@ -58,28 +57,6 @@ object PsiGdMethodDeclUtil {
         }
 
         return PsiGdParameterUtil.toHashMap(element.paramList)
-    }
-
-    fun setName(element: GdMethodIdNmi, newName: String?): PsiElement {
-        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
-        if (keyNode != null) {
-            val id = GdElementFactory.identifier(element.project, newName!!);
-            element.node.replaceChild(keyNode, id.node);
-        }
-
-        return element;
-    }
-
-    fun getName(element: GdMethodIdNmi): String {
-        val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER);
-
-        return valueNode?.text ?: "";
-    }
-
-    fun getNameIdentifier(element: GdMethodIdNmi): PsiElement? {
-        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER);
-
-        return keyNode?.psi;
     }
 
     fun isConstructor(element: GdMethodDeclTl): Boolean = element.name == "_init";

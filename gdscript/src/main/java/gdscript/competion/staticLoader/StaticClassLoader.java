@@ -7,13 +7,14 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+@Deprecated
 public class StaticClassLoader {
 
     private static final HashMap<String, GdClass> classes = new HashMap<>();
 
     static {
         try {
-            String folder = "_classes_test";
+            String folder = "classes_test";
             GdClassParser parser = new GdClassParser();
             ClassLoader loader = StaticClassLoader.class.getClassLoader();
             var directory = loader.getResource(folder).getPath();

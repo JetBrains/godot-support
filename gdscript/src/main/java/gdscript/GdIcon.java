@@ -12,6 +12,7 @@ public class GdIcon {
     public static final Icon FILE = IconLoader.getIcon("icons/file.png", GdIcon.class);
 
     // Godot editor icons
+    @Deprecated
     public static final Icon OBJECT = IconLoader.getIcon("icons/godot_editor/Object.svg", GdIcon.class);
     public static final String METHOD_MARKER = "Forward-sq";
     public static final String VAR_MARKER = "KeyBezierSelected";

@@ -53,10 +53,9 @@ topLevelDecl ::=
     constDecl_tl
     | classVarDecl_tl
     | methodDecl_tl
-//    | enumDecl_tl
+    | enumDecl_tl
     | signalDecl_tl
-
-private topLevelDecl_r ::= !(FUNC | CONST | SIGNAL | VAR | annotation)
+private topLevelDecl_r ::= !(FUNC | CONST | SIGNAL | VAR | ENUM | annotation)
 
 constDecl_tl ::= CONST constId_nmi typed? EQ expr endStmt {methods=[getConstName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
 constId_nmi ::= IDENTIFIER
@@ -71,13 +70,10 @@ signalDecl_tl ::= SIGNAL signalId_nmi signalParList? endStmt {methods=[getName g
 signalParList ::= LRBR IDENTIFIER (COMMA IDENTIFIER)* RRBR
 signalId_nmi ::= IDENTIFIER
 
-// TODO
-//enum {UNIT_NEUTRAL, UNIT_ENEMY, UNIT_ALLY}
-//enum Named {THING_1, THING_2, ANOTHER_THING = -1}
-
-//enumDecl_tl ::= ENUM enumId_nmi "{" [ IDENTIFIER [ "=" INTEGER ]
-//    { "," IDENTIFIER [ "=" INTEGER ] } [ "," ] ] "}" NEWLINE ;
-//enumId_nmi ::= IDENTIFIER
+enumDecl_tl ::= ENUM enumDecl_nmi? LCBR enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR endStmt {pin=1 recoverWhile=topLevelDecl_r}
+enumDecl_nmi ::= IDENTIFIER
+enumValue ::= enumValue_nmi (EQ NUMBER)?
+enumValue_nmi ::= IDENTIFIER
 
 // TODO recover nesmí mít func -> inline lambdy by to porušily
 methodDecl_tl ::= FUNC methodId_nmi LRBR paramList? RRBR parentMethodCall? returnHint? COLON stmtOrSuite {methods=[getName getReturnType getParameters getPresentation isConstructor] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub" elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"}

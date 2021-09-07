@@ -6,11 +6,9 @@ syntax: @"Node/Label"
 obarvení stringu """ """ při změně -> out of bounds
 quote matcher -> multiline
 
-smart enter -> odsazení -> možná spíš índent ve formatteru
-
 attribute_ex -> reference completion
 
-method decl validation + params validation (parent)
+method decl unique validation + params validation (parent)
 method: parent call ._init()
 
 getter/setter:
@@ -68,19 +66,14 @@ var format_string = "We're waiting for %s."
 var actual_string = format_string % "Godot"
 
 
-
-
 sdk -> lepší impl
 
-8 line marker
+8 line marker (něco jako signals z godotu?)
 13 go to
-15 formatter
-16 code style
 19 doc
 
 Completions:
 - fn names privacy?
-- variable
 - public/private settings
 - method params
 - if else /...  flow hints

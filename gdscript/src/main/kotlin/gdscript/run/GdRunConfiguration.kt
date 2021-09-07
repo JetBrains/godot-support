@@ -14,8 +14,13 @@ import gdscript.psi.utils.PsiGdFileUtil
 
 class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions> {
 
+
     constructor(project: Project, factory: ConfigurationFactory, name: String) :
         super(project, factory, name);
+
+    override fun getActionName(): String {
+        return getTscn().split("/").last().split(".")[0];
+    }
 
     override fun getOptions(): GdRunConfigurationOptions =
          super.getOptions() as GdRunConfigurationOptions
@@ -34,6 +39,10 @@ class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions>
 
     fun setTscn(file: String) {
         options.setTscn(file)
+    }
+
+    override fun suggestedName(): String {
+        return getTscn().split("/").last().split(".")[0];
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> =

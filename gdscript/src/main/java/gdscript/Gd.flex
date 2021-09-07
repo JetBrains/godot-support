@@ -21,6 +21,8 @@ import java.util.Stack;
     String oppening = "";
     int lastState = YYINITIAL;
     boolean lineEnded = false;
+    boolean enumValEnded = false;
+    boolean indented = false;
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     int yycolumn;
@@ -42,6 +44,7 @@ import java.util.Stack;
             return false;
         }
 
+        indented = false;
         dedent();
 
         if (indent > yylength()) {
@@ -91,6 +94,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 
 %state AWAIT_NEW_LINE
 %state AWAIT_NEW_LINE_ONCE
+%state AWAIT_ENUM_SEPARATOR
 %xstate STRING
 
 %%
@@ -113,6 +117,35 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 
     {STRING_MARKER_REV} {
         continue;
+    }
+}
+
+<AWAIT_ENUM_SEPARATOR> {
+    {NEW_LINE}     {
+          if (enumValEnded) {
+              return TokenType.WHITE_SPACE;
+          }
+          enumValEnded = true;
+
+          return GdTypes.NEW_LINE;
+    }
+    {IDENTIFIER} {
+          enumValEnded = false;
+          return GdTypes.IDENTIFIER;
+    }
+    "," {
+          enumValEnded = true;
+          return GdTypes.COMMA;
+    }
+    "{" {
+          enumValEnded = true;
+          return GdTypes.LCBR;
+    }
+    "}" {
+          yybegin(AWAIT_NEW_LINE_ONCE);
+          enumValEnded = false;
+          lineEnded = false;
+          return GdTypes.RCBR;
     }
 }
 
@@ -147,7 +180,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "const"        { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CONST); }
     "setget"       { return GdTypes.SETGET; }
 
-    //"enum"         { yybegin(AWAIT_NEW_LINE); return GdTypes.ENUM; }
+    "enum"         { yybegin(AWAIT_ENUM_SEPARATOR); enumValEnded = true; return GdTypes.ENUM; }
     "func"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC); }
     "pass"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.PASS); }
     "true"         { return dedentRoot(GdTypes.TRUE); }
@@ -182,37 +215,37 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "yield"        { return dedentRoot(GdTypes.YIELD); }
     "preload"      { return dedentRoot(GdTypes.PRELOAD); }
 
-    "*"            { return GdTypes.MUL; }
-    "/"            { return GdTypes.DIV; }
-    "%"            { return GdTypes.MOD; }
-    "+"            { return GdTypes.PLUS; }
-    "-"            { return GdTypes.MINUS; }
+    "*"            { return dedentRoot(GdTypes.MUL); }
+    "/"            { return dedentRoot(GdTypes.DIV); }
+    "%"            { return dedentRoot(GdTypes.MOD); }
+    "+"            { return dedentRoot(GdTypes.PLUS); }
+    "-"            { return dedentRoot(GdTypes.MINUS); }
     "++"           { return dedentRoot(GdTypes.PPLUS); }
     "--"           { return dedentRoot(GdTypes.MMINUS); }
-    "."            { return GdTypes.DOT; }
-    ","            { return GdTypes.COMMA; }
-    ":"            { return GdTypes.COLON; }
+    "."            { return dedentRoot(GdTypes.DOT); }
+    ","            { return dedentRoot(GdTypes.COMMA); }
+    ":"            { return dedentRoot(GdTypes.COLON); }
     ";"            { lineEnded = true; return GdTypes.SEMICON; }
-    "!"            { return GdTypes.NEGATE; }
-    "not"          { return GdTypes.NEGATE; }
-    "="            { return GdTypes.EQ; }
-    "->"           { return GdTypes.RET; }
-    ">>"           { return GdTypes.RBSHIFT; }
-    "<<"           { return GdTypes.LBSHIFT; }
+    "!"            { return dedentRoot(GdTypes.NEGATE); }
+    "not"          { return dedentRoot(GdTypes.NEGATE); }
+    "="            { return dedentRoot(GdTypes.EQ); }
+    "->"           { return dedentRoot(GdTypes.RET); }
+    ">>"           { return dedentRoot(GdTypes.RBSHIFT); }
+    "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "("            { return dedentRoot(GdTypes.LRBR); }
     ")"            { return dedentRoot(GdTypes.RRBR); }
     "["            { return dedentRoot(GdTypes.LSBR); }
     "]"            { return dedentRoot(GdTypes.RSBR); }
     "{"            { return dedentRoot(GdTypes.LCBR); }
     "}"            { return dedentRoot(GdTypes.RCBR); }
-    "&"            { return GdTypes.AND; }
-    "&&"           { return GdTypes.ANDAND; }
-    "and"          { return GdTypes.ANDAND; }
-    "|"            { return GdTypes.OR; }
-    "||"           { return GdTypes.OROR; }
-    "or"           { return GdTypes.OROR; }
-    "^"            { return GdTypes.XOR; }
-    "~"            { return GdTypes.NOT; }
+    "&"            { return dedentRoot(GdTypes.AND); }
+    "&&"           { return dedentRoot(GdTypes.ANDAND); }
+    "and"          { return dedentRoot(GdTypes.ANDAND); }
+    "|"            { return dedentRoot(GdTypes.OR); }
+    "||"           { return dedentRoot(GdTypes.OROR); }
+    "or"           { return dedentRoot(GdTypes.OROR); }
+    "^"            { return dedentRoot(GdTypes.XOR); }
+    "~"            { return dedentRoot(GdTypes.NOT); }
 
     {STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }
     {ASSIGN}        { return GdTypes.ASSIGN; }
@@ -229,15 +262,20 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {INDENT}  {
         if (yycolumn == 0) {
             int spaces = yytext().length();
-            if (spaces > indent) {
+            if (spaces > indent && !indented) {
                 indentSizes.push(spaces - indent);
                 indent = spaces;
+                yypushback(yylength());
+                indented = true;
+
                 return GdTypes.INDENT;
             } else if (indent > spaces) {
+                indented = false;
                 dedentSpaces();
                 return GdTypes.DEDENT;
             }
         }
+        indented = false;
 
         return TokenType.WHITE_SPACE;
     }

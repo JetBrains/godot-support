@@ -21,6 +21,7 @@ class GdRunConfigurationProducer : LazyRunConfigurationProducer<GdRunConfigurati
         }
 
         configuration.setTscn(PsiGdFileUtil.filepath(psi));
+        configuration.name = configuration.actionName;
 
         return true;
     }

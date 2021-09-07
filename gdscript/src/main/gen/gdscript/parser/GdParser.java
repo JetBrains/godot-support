@@ -36,8 +36,8 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(CLASS_VAR_DECL_TL, CONST_DECL_TL, METHOD_DECL_TL, SIGNAL_DECL_TL,
-      TOP_LEVEL_DECL),
+    create_token_set_(CLASS_VAR_DECL_TL, CONST_DECL_TL, ENUM_DECL_TL, METHOD_DECL_TL,
+      SIGNAL_DECL_TL, TOP_LEVEL_DECL),
     create_token_set_(ASSERT_ST, ASSIGN_ST, EXPR_ST, FLOW_ST,
       FOR_ST, IF_ST, MATCH_ST, PRELOAD_ST,
       STMT, VAR_DECL_ST, WHILE_ST, YIELD_ST),
@@ -495,6 +495,133 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, SEMICON);
     if (!r) r = newLineEnd(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // IDENTIFIER
+  public static boolean enumDecl_nmi(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumDecl_nmi")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, m, ENUM_DECL_NMI, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ENUM enumDecl_nmi? LCBR enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR endStmt
+  public static boolean enumDecl_tl(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumDecl_tl")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, ENUM_DECL_TL, "<enum decl tl>");
+    r = consumeTokenFast(b, ENUM);
+    p = r; // pin = 1
+    r = r && report_error_(b, enumDecl_tl_1(b, l + 1));
+    r = p && report_error_(b, consumeToken(b, LCBR)) && r;
+    r = p && report_error_(b, enumValue(b, l + 1)) && r;
+    r = p && report_error_(b, enumDecl_tl_4(b, l + 1)) && r;
+    r = p && report_error_(b, enumDecl_tl_5(b, l + 1)) && r;
+    r = p && report_error_(b, consumeToken(b, RCBR)) && r;
+    r = p && endStmt(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, GdParser::topLevelDecl_r);
+    return r || p;
+  }
+
+  // enumDecl_nmi?
+  private static boolean enumDecl_tl_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumDecl_tl_1")) return false;
+    enumDecl_nmi(b, l + 1);
+    return true;
+  }
+
+  // ((COMMA | NEW_LINE) enumValue)*
+  private static boolean enumDecl_tl_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumDecl_tl_4")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!enumDecl_tl_4_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "enumDecl_tl_4", c)) break;
+    }
+    return true;
+  }
+
+  // (COMMA | NEW_LINE) enumValue
+  private static boolean enumDecl_tl_4_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumDecl_tl_4_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = enumDecl_tl_4_0_0(b, l + 1);
+    r = r && enumValue(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // COMMA | NEW_LINE
+  private static boolean enumDecl_tl_4_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumDecl_tl_4_0_0")) return false;
+    boolean r;
+    r = consumeTokenFast(b, COMMA);
+    if (!r) r = consumeTokenFast(b, NEW_LINE);
+    return r;
+  }
+
+  // (COMMA | NEW_LINE)?
+  private static boolean enumDecl_tl_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumDecl_tl_5")) return false;
+    enumDecl_tl_5_0(b, l + 1);
+    return true;
+  }
+
+  // COMMA | NEW_LINE
+  private static boolean enumDecl_tl_5_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumDecl_tl_5_0")) return false;
+    boolean r;
+    r = consumeTokenFast(b, COMMA);
+    if (!r) r = consumeTokenFast(b, NEW_LINE);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // enumValue_nmi (EQ NUMBER)?
+  public static boolean enumValue(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumValue")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = enumValue_nmi(b, l + 1);
+    r = r && enumValue_1(b, l + 1);
+    exit_section_(b, m, ENUM_VALUE, r);
+    return r;
+  }
+
+  // (EQ NUMBER)?
+  private static boolean enumValue_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumValue_1")) return false;
+    enumValue_1_0(b, l + 1);
+    return true;
+  }
+
+  // EQ NUMBER
+  private static boolean enumValue_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumValue_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, EQ, NUMBER);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // IDENTIFIER
+  public static boolean enumValue_nmi(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumValue_nmi")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, m, ENUM_VALUE_NMI, r);
     return r;
   }
 
@@ -1255,37 +1382,6 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(VAR | IF | WHILE | FOR | MATCH | CONTINUE | BREAK | PASS | BREAKPOINT | RETURN | ASSERT | YIELD | PRELOAD)
-  static boolean stmt_r(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stmt_r")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
-    r = !stmt_r_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // VAR | IF | WHILE | FOR | MATCH | CONTINUE | BREAK | PASS | BREAKPOINT | RETURN | ASSERT | YIELD | PRELOAD
-  private static boolean stmt_r_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stmt_r_0")) return false;
-    boolean r;
-    r = consumeToken(b, VAR);
-    if (!r) r = consumeToken(b, IF);
-    if (!r) r = consumeToken(b, WHILE);
-    if (!r) r = consumeToken(b, FOR);
-    if (!r) r = consumeToken(b, MATCH);
-    if (!r) r = consumeToken(b, CONTINUE);
-    if (!r) r = consumeToken(b, BREAK);
-    if (!r) r = consumeToken(b, PASS);
-    if (!r) r = consumeToken(b, BREAKPOINT);
-    if (!r) r = consumeToken(b, RETURN);
-    if (!r) r = consumeToken(b, ASSERT);
-    if (!r) r = consumeToken(b, YIELD);
-    if (!r) r = consumeToken(b, PRELOAD);
-    return r;
-  }
-
-  /* ********************************************************** */
   // NEW_LINE INDENT stmt+ DEDENT
   public static boolean suite(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "suite")) return false;
@@ -1332,7 +1428,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   // constDecl_tl
   //     | classVarDecl_tl
   //     | methodDecl_tl
-  // //    | enumDecl_tl
+  //     | enumDecl_tl
   //     | signalDecl_tl
   public static boolean topLevelDecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "topLevelDecl")) return false;
@@ -1341,13 +1437,14 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = constDecl_tl(b, l + 1);
     if (!r) r = classVarDecl_tl(b, l + 1);
     if (!r) r = methodDecl_tl(b, l + 1);
+    if (!r) r = enumDecl_tl(b, l + 1);
     if (!r) r = signalDecl_tl(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // !(FUNC | CONST | SIGNAL | VAR | annotation)
+  // !(FUNC | CONST | SIGNAL | VAR | ENUM | annotation)
   static boolean topLevelDecl_r(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "topLevelDecl_r")) return false;
     boolean r;
@@ -1357,7 +1454,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FUNC | CONST | SIGNAL | VAR | annotation
+  // FUNC | CONST | SIGNAL | VAR | ENUM | annotation
   private static boolean topLevelDecl_r_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "topLevelDecl_r_0")) return false;
     boolean r;
@@ -1365,6 +1462,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, CONST);
     if (!r) r = consumeToken(b, SIGNAL);
     if (!r) r = consumeToken(b, VAR);
+    if (!r) r = consumeToken(b, ENUM);
     if (!r) r = annotation(b, l + 1);
     return r;
   }

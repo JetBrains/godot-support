@@ -3,7 +3,11 @@ package gdscript.run
 import com.intellij.execution.configurations.LocatableRunConfigurationOptions
 import com.intellij.openapi.components.StoredProperty
 
-class GdRunConfigurationOptions : LocatableRunConfigurationOptions() {
+class GdRunConfigurationOptions : LocatableRunConfigurationOptions {
+
+    constructor() : super() {
+        isNameGenerated = true;
+    }
 
     private val godotExe: StoredProperty<String?> =
         string("").provideDelegate(this, "godotExe")

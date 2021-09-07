@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+@Deprecated
 public class GdClassParser {
 
     public GdClass parseXmlClass(@NotNull InputStream input) throws IOException {

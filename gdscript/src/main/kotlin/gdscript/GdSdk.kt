@@ -10,7 +10,7 @@ class GdSdk : SdkType("GdScript Sdk") {
     }
 
     override fun suggestHomePath(): String? {
-        val folder = "_classes_test"
+        val folder = "classes_test"
         val loader = StaticClassLoader::class.java.classLoader
         val directory = loader.getResource(folder).path
 
