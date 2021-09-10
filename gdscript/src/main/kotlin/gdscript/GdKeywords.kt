@@ -26,7 +26,8 @@ object GdKeywords {
     val BUILT_TYPES = arrayOf(INT, STR, FLOAT, BOOL);
     const val VOID = "void"
 
-    val ANNOTATIONS = arrayOf("export", "onready");
+    val ANNOTATIONS = arrayOf("export", "onready", "icon");
+    val ANNOTATIONS_PARAMETRIZED = arrayOf("icon");
 
     val LITERALS = arrayOf(TRUE, FALSE, NULL, NAN, INF, TAU, PI);
     val LITERAL_TYPES = arrayOf(BOOL, BOOL, NULL, FLOAT, FLOAT, FLOAT, FLOAT);

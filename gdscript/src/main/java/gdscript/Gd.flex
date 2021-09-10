@@ -175,7 +175,6 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 
     "extends"      { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.EXTENDS); }
     "class_name"   { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CLASS_NAME); }
-    "tool"         { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.TOOL); }
     "var"          { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.VAR); }
     "const"        { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CONST); }
     "setget"       { return GdTypes.SETGET; }
@@ -212,7 +211,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "in"           { return dedentRoot(GdTypes.IN); }
     "match"        { return dedentRoot(GdTypes.MATCH); }
     "assert"       { return dedentRoot(GdTypes.ASSERT); }
-    "yield"        { return dedentRoot(GdTypes.YIELD); }
+    "await"        { return dedentRoot(GdTypes.AWAIT); }
     "preload"      { return dedentRoot(GdTypes.PRELOAD); }
 
     "*"            { return dedentRoot(GdTypes.MUL); }

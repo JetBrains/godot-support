@@ -7,6 +7,6 @@ import gdscript.psi.GdClassVarDeclTl
 
 object GdClassVarDeclIndex : StringStubIndexExtension<GdClassVarDeclTl>() {
 
-    override fun getKey(): StubIndexKey<String, GdClassVarDeclTl> = Indices.CLASS_VAR_INDEX;
+    override fun getKey(): StubIndexKey<String, GdClassVarDeclTl> = Indices.CLASS_VAR;
 
 }

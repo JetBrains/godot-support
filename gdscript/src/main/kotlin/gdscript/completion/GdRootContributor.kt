@@ -28,11 +28,6 @@ class GdRootContributor : CompletionContributor() {
                 psiElement(PsiErrorElement::class.java)
                     .withParent(GdClassNaming::class.java)
                     .afterSibling(psiElement(GdNewLineEnd::class.java)))
-        val AFTER_TOOL = psiElement()
-            .withParent(
-                psiElement(PsiErrorElement::class.java)
-                    .withParent(GdToolline::class.java)
-                    .afterSibling(psiElement(GdNewLineEnd::class.java)))
         val AFTER_CONST = psiElement()
             .withParent(psiElement(PsiErrorElement::class.java)
                 .withParent(psiElement(GdConstDeclTl::class.java)
@@ -65,8 +60,8 @@ class GdRootContributor : CompletionContributor() {
         } else if (AFTER_CLASS_NAMING.accepts(position)) {
             result.addElement(GdLookup.create(GdKeywords.TOOL, "\n"));
             addTopLvlDecl(result, parameters);
-        } else if (AFTER_TOOL.accepts(position)
-            || AFTER_CONST.accepts(position)
+        } else if (//AFTER_TOOL.accepts(position) TODO after annotation
+            AFTER_CONST.accepts(position)
             || AFTER_VAR.accepts(position)
             || AFTER_FUNC.accepts(position)
         ) {

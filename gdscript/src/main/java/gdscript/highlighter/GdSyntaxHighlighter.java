@@ -4,7 +4,7 @@ import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
-import gdscript.GdLexerAdapter;
+import gdscript.GdLexerHighlighterAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public class GdSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new GdLexerAdapter();
+        return new GdLexerHighlighterAdapter();
     }
 
     @NotNull

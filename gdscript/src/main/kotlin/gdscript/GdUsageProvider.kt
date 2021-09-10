@@ -24,6 +24,8 @@ class GdUsageProvider : FindUsagesProvider {
                 || psiElement is GdMethodIdNmi
                 || psiElement is GdClassVarIdNmi
                 || psiElement is GdConstIdNmi
+                || psiElement is GdEnumDeclNmi
+                || psiElement is GdEnumValueNmi
     }
 
     override fun getHelpId(psiElement: PsiElement): String? {
@@ -36,6 +38,8 @@ class GdUsageProvider : FindUsagesProvider {
             is GdMethodIdNmi -> "method"
             is GdClassVarIdNmi -> "variable"
             is GdConstIdNmi -> "constant"
+            is GdEnumDeclNmi -> "enum"
+            is GdEnumValueNmi -> "enum const"
             else -> ""
         }
     }

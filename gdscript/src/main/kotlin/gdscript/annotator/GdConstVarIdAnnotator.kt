@@ -27,6 +27,7 @@ class GdConstVarIdAnnotator : Annotator {
         val constDecl = element.parent;
         var checkName: String?;
 
+        // TODO tady chybí enum check -> chtělo by to rozšířit an ten parentaly... :/
         var previous = constDecl.prevSibling;
         while (previous !== null) {
             if (previous is GdConstDeclTl) {
@@ -34,8 +35,8 @@ class GdConstVarIdAnnotator : Annotator {
             } else if (previous is GdClassVarDeclTl) {
                 checkName = previous.name;
             } else if ( // variables cant be above those
-                previous is GdToolline
-                || previous is GdClassNaming
+                //previous is GdToolline TODO
+                previous is GdClassNaming
                 || previous is GdInheritance
             ) {
                 return true;

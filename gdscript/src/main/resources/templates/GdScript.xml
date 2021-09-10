@@ -1,0 +1,21 @@
+<templateSet group="GdScript">
+  <template name="if" value="if $EXPR$:&#10;    $END$" description="if" toReformat="false" toShortenFQNames="true">
+    <variable name="EXPR" expression="" defaultValue="expr" alwaysStopAt="true" />
+    <context>
+      <option name="GDSCRIPT" value="true"/>
+    </context>
+  </template>
+  <template name="else" value="if $EXPR$:&#10;    $END$&#10;else:" description="if / else" toReformat="false" toShortenFQNames="true">
+    <variable name="EXPR" expression="" defaultValue="expr" alwaysStopAt="true" />
+    <context>
+      <option name="GDSCRIPT" value="true"/>
+    </context>
+  </template>
+  <template name="elif" value="if $EXPR1$:&#10;    $END$&#10;elif $EXPR2$:" description="if / elseif" toReformat="false" toShortenFQNames="true">
+    <variable name="EXPR1" expression="" defaultValue="expr" alwaysStopAt="true" />
+    <variable name="EXPR2" expression="" defaultValue="expr" alwaysStopAt="true" />
+    <context>
+      <option name="GDSCRIPT" value="true"/>
+    </context>
+  </template>
+</templateSet>

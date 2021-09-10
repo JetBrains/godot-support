@@ -27,6 +27,8 @@
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.GdUsageProvider" />
     <configurationType implementation="gdscript.run.GdRunConfigurationType" />
     <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer" />
+    <defaultLiveTemplates file="/templates/GdScript.xml" />
+    <liveTemplateContext implementation="gdscript.GdTemplateContextType" />
     <!-- Tscn -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
     <lang.parserDefinition language="Tscn" implementationClass="tscn.TscnParserDefinition"/>
@@ -60,6 +62,7 @@
     <stubIndex implementation="gdscript.index.impl.GdClassVarDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdMethodDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdSignalDeclIndex" />
+    <stubIndex implementation="gdscript.index.impl.GdEnumDeclIndex" />
     <!-- Tscn -->
     <stubIndex implementation="tscn.index.impl.TscnScriptIndex" />
     <stubIndex implementation="tscn.index.impl.TscnNodeIndex" />

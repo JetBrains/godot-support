@@ -25,7 +25,7 @@ object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>
         GdConstDeclStubImpl(parentStub, dataStream.readNameString(), dataStream.readNameString() ?: "");
 
     override fun indexStub(stub: GdConstDeclStub, sink: IndexSink) {
-        sink.occurrence(Indices.CONST_DECL_INDEX, stub.name());
+        sink.occurrence(Indices.CONST_DECL, stub.name());
     }
 
     override fun createPsi(stub: GdConstDeclStub): GdConstDeclTl =

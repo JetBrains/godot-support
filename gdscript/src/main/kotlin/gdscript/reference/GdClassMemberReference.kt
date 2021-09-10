@@ -1,14 +1,14 @@
 package gdscript.reference
 
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import gdscript.completion.util.GdClassVarCompletionUtil
 import gdscript.completion.util.GdConstCompletionUtil
-import gdscript.psi.GdClassVarDeclTl
-import gdscript.psi.GdConstDeclTl
-import gdscript.psi.GdNamedElement
+import gdscript.completion.util.GdEnumCompletionUtil
+import gdscript.psi.*
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.psi.utils.PsiGdNamedUtil
 
@@ -30,8 +30,10 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
     override fun resolve(): PsiElement? =
         when (val element = PsiGdNamedUtil.findInParent(myElement, includingSelf = true)) {
-            is GdClassVarDeclTl -> element.classVarIdNmi
-            is GdConstDeclTl -> element.constIdNmi
+            is GdClassVarDeclTl -> element.classVarIdNmi;
+            is GdConstDeclTl -> element.constIdNmi;
+            is GdEnumDeclTl -> element.enumDeclNmi;
+            is GdEnumValue -> element.enumValueNmi;
             else -> null
         }
 
@@ -41,14 +43,17 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
         files.addAll(PsiGdNamedUtil.listParents(myElement).map { it.containingFile });
 
         val members = files.flatMap { PsiGdFileUtil.listMembers(it) }
+        val results = ArrayList<LookupElement>();
 
-        return members.mapNotNull {
+        members.forEach {
             when (it) {
-                is GdClassVarDeclTl -> GdClassVarCompletionUtil.lookup(it)
-                is GdConstDeclTl -> GdConstCompletionUtil.lookup(it)
-                else -> null
+                is GdClassVarDeclTl -> results.add(GdClassVarCompletionUtil.lookup(it))
+                is GdConstDeclTl -> results.add(GdConstCompletionUtil.lookup(it))
+                is GdEnumDeclTl -> results.addAll(GdEnumCompletionUtil.lookup(it))
             }
-        }.toTypedArray();
+        };
+
+        return results.toArray();
     }
 
 }

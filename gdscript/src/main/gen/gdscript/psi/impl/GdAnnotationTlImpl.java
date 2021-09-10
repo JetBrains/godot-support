@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdToollineImpl extends ASTWrapperPsiElement implements GdToolline {
+public class GdAnnotationTlImpl extends GdTopLevelDeclImpl implements GdAnnotationTl {
 
-  public GdToollineImpl(@NotNull ASTNode node) {
+  public GdAnnotationTlImpl(@NotNull ASTNode node) {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitToolline(this);
+    visitor.visitAnnotationTl(this);
   }
 
   @Override
@@ -28,9 +28,15 @@ public class GdToollineImpl extends ASTWrapperPsiElement implements GdToolline {
   }
 
   @Override
-  @Nullable
-  public GdNewLineEnd getNewLineEnd() {
-    return PsiTreeUtil.getChildOfType(this, GdNewLineEnd.class);
+  @NotNull
+  public GdAnnotation getAnnotation() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdAnnotation.class));
+  }
+
+  @Override
+  @NotNull
+  public List<GdLiteralEx> getLiteralExList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdLiteralEx.class);
   }
 
 }

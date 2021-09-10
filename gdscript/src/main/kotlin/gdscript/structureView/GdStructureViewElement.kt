@@ -32,6 +32,11 @@ class GdStructureViewElement : StructureViewTreeElement, SortableTreeElement {
                 GdStructureViewElement(it as NavigatablePsiElement)
             })
 
+            val enums = PsiTreeUtil.getChildrenOfTypeAsList(myElement, GdEnumDeclTl::class.java);
+            elements.addAll(enums.map {
+                GdStructureViewElement(it as NavigatablePsiElement)
+            })
+
             val methods = PsiTreeUtil.getChildrenOfTypeAsList(myElement, GdMethodDeclTl::class.java);
             elements.addAll(methods.map {
                 GdStructureViewElement(it as NavigatablePsiElement)

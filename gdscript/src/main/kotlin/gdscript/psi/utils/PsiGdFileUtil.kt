@@ -10,13 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdFileType
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdFile
 import java.io.File
 
 object PsiGdFileUtil {
 
     fun listMembers(gdFile: PsiFile): List<PsiElement> {
-        return PsiTreeUtil.getChildrenOfAnyType(gdFile, GdClassVarDeclTl::class.java, GdConstDeclTl::class.java);
+        return PsiTreeUtil.getChildrenOfAnyType(gdFile, GdClassVarDeclTl::class.java, GdConstDeclTl::class.java, GdEnumDeclTl::class.java);
     }
 
     fun gdFiles(project: Project): Collection<GdFile> {

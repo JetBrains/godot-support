@@ -17,6 +17,10 @@ object GdPsiUtils {
     /** Inheritance  */
     @JvmStatic fun getInheritanceName(element: GdInheritance?): String? = GdPsiClassNameUtil.getInheritanceName(element);
 
+    /** Enum  */
+    @JvmStatic fun getValues(element: GdEnumDeclTl): HashMap<String, Int> = PsiGdEnumUtil.values(element);
+    @JvmStatic fun getPresentation(element: GdEnumDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
+
     /** Const   */
     @JvmStatic fun getPresentation(element: GdConstDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
     @JvmStatic fun getReturnType(element: GdConstDeclTl): String = PsiGdConstDeclUtil.getReturnType(element);

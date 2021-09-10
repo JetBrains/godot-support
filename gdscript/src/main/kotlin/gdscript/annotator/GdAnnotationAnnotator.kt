@@ -4,11 +4,10 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiWhiteSpace
 import gdscript.GdKeywords
 import gdscript.action.quickFix.GdRemoveAnnotationAction
 import gdscript.psi.GdAnnotation
-import gdscript.psi.GdLiteralEx
-import gdscript.psi.GdTypes
 
 class GdAnnotationAnnotator : Annotator {
 
@@ -38,6 +37,8 @@ class GdAnnotationAnnotator : Annotator {
                         .create();
                     return;
                 }
+            } else if (previous !is PsiWhiteSpace) {
+                break;
             }
 
             previous = previous.prevSibling;

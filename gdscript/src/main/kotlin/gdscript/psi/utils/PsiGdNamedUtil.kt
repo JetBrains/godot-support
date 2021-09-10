@@ -38,13 +38,14 @@ object PsiGdNamedUtil {
         method: Boolean = true,
         variable: Boolean = true,
         constant: Boolean = true,
+        enum: Boolean = true,
         includingSelf: Boolean = false,
     ): PsiElement? {
         var parentName: String? =
             PsiTreeUtil.getChildOfType(element.containingFile, GdInheritance::class.java)?.inheritanceName;
         val thisName = element.name.orEmpty();
         if (includingSelf) {
-            lookFor(element.containingFile, thisName, element.project, constant, variable, method)?.let {
+            lookFor(element.containingFile, thisName, element.project, constant, variable, method, enum)?.let {
                 return it
             }
         }
@@ -57,7 +58,7 @@ object PsiGdNamedUtil {
                 return null;
             }
 
-            lookFor(parent.containingFile, thisName, element.project, constant, variable, method)?.let {
+            lookFor(parent.containingFile, thisName, element.project, constant, variable, method, enum)?.let {
                 return it
             }
 
@@ -67,7 +68,15 @@ object PsiGdNamedUtil {
         return null;
     }
 
-    private fun lookFor(file: PsiFile, thisName: String, project: Project, constant: Boolean, variable: Boolean, method: Boolean): PsiElement? {
+    private fun lookFor(
+        file: PsiFile,
+        thisName: String,
+        project: Project,
+        constant: Boolean,
+        variable: Boolean,
+        method: Boolean,
+        enum: Boolean,
+    ): PsiElement? {
         if (constant) {
             val parentConst = GdConstDeclIndex.get(thisName, project, GlobalSearchScope.fileScope(file));
             if (!parentConst.isEmpty()) {
@@ -86,6 +95,24 @@ object PsiGdNamedUtil {
             val parentMethod = GdMethodDeclIndex.get(thisName, project, GlobalSearchScope.fileScope(file));
             if (!parentMethod.isEmpty()) {
                 return parentMethod.first();
+            }
+        }
+
+        if (enum) {
+            val enums = PsiTreeUtil.getChildrenOfType(file, GdEnumDeclTl::class.java);
+            enums?.forEach {
+                val name = PsiGdEnumUtil.name(it);
+                if (name != null) {
+                    if (name == thisName) {
+                        return it;
+                    }
+                } else {
+                    it.enumValueList.forEach { value ->
+                        if (value.enumValueNmi.name == thisName) {
+                            return value;
+                        }
+                    }
+                }
             }
         }
 

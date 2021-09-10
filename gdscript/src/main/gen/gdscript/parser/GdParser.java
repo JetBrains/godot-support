@@ -36,11 +36,12 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(CLASS_VAR_DECL_TL, CONST_DECL_TL, ENUM_DECL_TL, METHOD_DECL_TL,
-      SIGNAL_DECL_TL, TOP_LEVEL_DECL),
-    create_token_set_(ASSERT_ST, ASSIGN_ST, EXPR_ST, FLOW_ST,
-      FOR_ST, IF_ST, MATCH_ST, PRELOAD_ST,
-      STMT, VAR_DECL_ST, WHILE_ST, YIELD_ST),
+    create_token_set_(ANNOTATION_TL, CLASS_VAR_DECL_TL, CONST_DECL_TL, ENUM_DECL_TL,
+      METHOD_DECL_TL, SIGNAL_DECL_TL, TOP_LEVEL_DECL),
+    create_token_set_(ASSERT_ST, ASSIGN_ST, AWAIT_ST, CONST_DECL_ST,
+      EXPR_ST, FLOW_ST, FOR_ST, IF_ST,
+      MATCH_ST, PRELOAD_ST, STMT, VAR_DECL_ST,
+      WHILE_ST),
     create_token_set_(ARR_EX, ATTRIBUTE_EX, BIT_AND_EX, BIT_NOT_EX,
       CALL_EX, CAST_EX, COMPARISON_EX, EXPR,
       FACTOR_EX, IN_EX, IS_EX, LITERAL_EX,
@@ -58,6 +59,61 @@ public class GdParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, ANNOTATOR);
     exit_section_(b, m, ANNOTATION, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // annotation (LRBR literal_ex (COMMA literal_ex)* RRBR)?
+  public static boolean annotation_tl(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "annotation_tl")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, ANNOTATION_TL, "<annotation tl>");
+    r = annotation(b, l + 1);
+    p = r; // pin = 1
+    r = r && annotation_tl_1(b, l + 1);
+    exit_section_(b, l, m, r, p, GdParser::topLevelDecl_r);
+    return r || p;
+  }
+
+  // (LRBR literal_ex (COMMA literal_ex)* RRBR)?
+  private static boolean annotation_tl_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "annotation_tl_1")) return false;
+    annotation_tl_1_0(b, l + 1);
+    return true;
+  }
+
+  // LRBR literal_ex (COMMA literal_ex)* RRBR
+  private static boolean annotation_tl_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "annotation_tl_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenFast(b, LRBR);
+    r = r && literal_ex(b, l + 1);
+    r = r && annotation_tl_1_0_2(b, l + 1);
+    r = r && consumeToken(b, RRBR);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (COMMA literal_ex)*
+  private static boolean annotation_tl_1_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "annotation_tl_1_0_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!annotation_tl_1_0_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "annotation_tl_1_0_2", c)) break;
+    }
+    return true;
+  }
+
+  // COMMA literal_ex
+  private static boolean annotation_tl_1_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "annotation_tl_1_0_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenFast(b, COMMA);
+    r = r && literal_ex(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -226,6 +282,39 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // AWAIT LRBR (expr COMMA expr)? RRBR
+  public static boolean await_st(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "await_st")) return false;
+    if (!nextTokenIsFast(b, AWAIT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, AWAIT, LRBR);
+    r = r && await_st_2(b, l + 1);
+    r = r && consumeToken(b, RRBR);
+    exit_section_(b, m, AWAIT_ST, r);
+    return r;
+  }
+
+  // (expr COMMA expr)?
+  private static boolean await_st_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "await_st_2")) return false;
+    await_st_2_0(b, l + 1);
+    return true;
+  }
+
+  // expr COMMA expr
+  private static boolean await_st_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "await_st_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = expr(b, l + 1, -1);
+    r = r && consumeToken(b, COMMA);
+    r = r && expr(b, l + 1, -1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // INT | STR | FLOAT | BOOL
   public static boolean builtInType(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "builtInType")) return false;
@@ -316,51 +405,39 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // annotation* VAR classVarId_nmi typed? (EQ expr)? setgetDecl? endStmt
+  // VAR classVarId_nmi typed? (EQ expr)? setgetDecl? endStmt
   public static boolean classVarDecl_tl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classVarDecl_tl")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, CLASS_VAR_DECL_TL, "<class var decl tl>");
-    r = classVarDecl_tl_0(b, l + 1);
-    r = r && consumeToken(b, VAR);
-    p = r; // pin = 2
+    r = consumeTokenFast(b, VAR);
+    p = r; // pin = 1
     r = r && report_error_(b, classVarId_nmi(b, l + 1));
+    r = p && report_error_(b, classVarDecl_tl_2(b, l + 1)) && r;
     r = p && report_error_(b, classVarDecl_tl_3(b, l + 1)) && r;
     r = p && report_error_(b, classVarDecl_tl_4(b, l + 1)) && r;
-    r = p && report_error_(b, classVarDecl_tl_5(b, l + 1)) && r;
     r = p && endStmt(b, l + 1) && r;
     exit_section_(b, l, m, r, p, GdParser::topLevelDecl_r);
     return r || p;
   }
 
-  // annotation*
-  private static boolean classVarDecl_tl_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classVarDecl_tl_0")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!annotation(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "classVarDecl_tl_0", c)) break;
-    }
-    return true;
-  }
-
   // typed?
-  private static boolean classVarDecl_tl_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classVarDecl_tl_3")) return false;
+  private static boolean classVarDecl_tl_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classVarDecl_tl_2")) return false;
     typed(b, l + 1);
     return true;
   }
 
   // (EQ expr)?
-  private static boolean classVarDecl_tl_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classVarDecl_tl_4")) return false;
-    classVarDecl_tl_4_0(b, l + 1);
+  private static boolean classVarDecl_tl_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classVarDecl_tl_3")) return false;
+    classVarDecl_tl_3_0(b, l + 1);
     return true;
   }
 
   // EQ expr
-  private static boolean classVarDecl_tl_4_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classVarDecl_tl_4_0")) return false;
+  private static boolean classVarDecl_tl_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classVarDecl_tl_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenFast(b, EQ);
@@ -370,8 +447,8 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   // setgetDecl?
-  private static boolean classVarDecl_tl_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classVarDecl_tl_5")) return false;
+  private static boolean classVarDecl_tl_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classVarDecl_tl_4")) return false;
     setgetDecl(b, l + 1);
     return true;
   }
@@ -385,6 +462,47 @@ public class GdParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, IDENTIFIER);
     exit_section_(b, m, CLASS_VAR_ID_NMI, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // CONST var_nmi typed? (EQ expr)? endStmt
+  public static boolean constDecl_st(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "constDecl_st")) return false;
+    if (!nextTokenIsFast(b, CONST)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenFast(b, CONST);
+    r = r && var_nmi(b, l + 1);
+    r = r && constDecl_st_2(b, l + 1);
+    r = r && constDecl_st_3(b, l + 1);
+    r = r && endStmt(b, l + 1);
+    exit_section_(b, m, CONST_DECL_ST, r);
+    return r;
+  }
+
+  // typed?
+  private static boolean constDecl_st_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "constDecl_st_2")) return false;
+    typed(b, l + 1);
+    return true;
+  }
+
+  // (EQ expr)?
+  private static boolean constDecl_st_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "constDecl_st_3")) return false;
+    constDecl_st_3_0(b, l + 1);
+    return true;
+  }
+
+  // EQ expr
+  private static boolean constDecl_st_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "constDecl_st_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenFast(b, EQ);
+    r = r && expr(b, l + 1, -1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -584,7 +702,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // enumValue_nmi (EQ NUMBER)?
+  // enumValue_nmi (EQ (PLUS | MINUS)? NUMBER)?
   public static boolean enumValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "enumValue")) return false;
     if (!nextTokenIs(b, IDENTIFIER)) return false;
@@ -596,20 +714,38 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (EQ NUMBER)?
+  // (EQ (PLUS | MINUS)? NUMBER)?
   private static boolean enumValue_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "enumValue_1")) return false;
     enumValue_1_0(b, l + 1);
     return true;
   }
 
-  // EQ NUMBER
+  // EQ (PLUS | MINUS)? NUMBER
   private static boolean enumValue_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "enumValue_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, EQ, NUMBER);
+    r = consumeToken(b, EQ);
+    r = r && enumValue_1_0_1(b, l + 1);
+    r = r && consumeToken(b, NUMBER);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (PLUS | MINUS)?
+  private static boolean enumValue_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumValue_1_0_1")) return false;
+    enumValue_1_0_1_0(b, l + 1);
+    return true;
+  }
+
+  // PLUS | MINUS
+  private static boolean enumValue_1_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumValue_1_0_1_0")) return false;
+    boolean r;
+    r = consumeToken(b, PLUS);
+    if (!r) r = consumeToken(b, MINUS);
     return r;
   }
 
@@ -719,7 +855,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // inheritance? classNaming? toolline? topLevelDecl*
+  // inheritance? classNaming?  topLevelDecl*
   static boolean gdfile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gdfile")) return false;
     boolean r;
@@ -727,7 +863,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = gdfile_0(b, l + 1);
     r = r && gdfile_1(b, l + 1);
     r = r && gdfile_2(b, l + 1);
-    r = r && gdfile_3(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -746,20 +881,13 @@ public class GdParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // toolline?
+  // topLevelDecl*
   private static boolean gdfile_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gdfile_2")) return false;
-    toolline(b, l + 1);
-    return true;
-  }
-
-  // topLevelDecl*
-  private static boolean gdfile_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "gdfile_3")) return false;
     while (true) {
       int c = current_position_(b);
       if (!topLevelDecl(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "gdfile_3", c)) break;
+      if (!empty_element_parsed_guard_(b, "gdfile_2", c)) break;
     }
     return true;
   }
@@ -1341,6 +1469,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   /* ********************************************************** */
   // assign_st
   //     | varDecl_st
+  //     | constDecl_st
   //     | if_st
   //     | while_st
   //     | for_st
@@ -1348,7 +1477,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   //     | expr_st
   //     | flow_st
   //     | assert_st
-  //     | yield_st
+  //     | await_st
   //     | preload_st
   public static boolean stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stmt")) return false;
@@ -1356,6 +1485,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _COLLAPSE_, STMT, "<stmt>");
     r = assign_st(b, l + 1);
     if (!r) r = varDecl_st(b, l + 1);
+    if (!r) r = constDecl_st(b, l + 1);
     if (!r) r = if_st(b, l + 1);
     if (!r) r = while_st(b, l + 1);
     if (!r) r = for_st(b, l + 1);
@@ -1363,7 +1493,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = expr_st(b, l + 1);
     if (!r) r = flow_st(b, l + 1);
     if (!r) r = assert_st(b, l + 1);
-    if (!r) r = yield_st(b, l + 1);
+    if (!r) r = await_st(b, l + 1);
     if (!r) r = preload_st(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -1412,39 +1542,28 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // TOOL newLineEnd
-  public static boolean toolline(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "toolline")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, TOOLLINE, "<toolline>");
-    r = consumeToken(b, TOOL);
-    p = r; // pin = 1
-    r = r && newLineEnd(b, l + 1);
-    exit_section_(b, l, m, r, p, GdParser::topLevelDecl_r);
-    return r || p;
-  }
-
-  /* ********************************************************** */
   // constDecl_tl
-  //     | classVarDecl_tl
   //     | methodDecl_tl
   //     | enumDecl_tl
   //     | signalDecl_tl
+  //     | classVarDecl_tl
+  //     | annotation_tl
   public static boolean topLevelDecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "topLevelDecl")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, TOP_LEVEL_DECL, "<top level decl>");
     r = constDecl_tl(b, l + 1);
-    if (!r) r = classVarDecl_tl(b, l + 1);
     if (!r) r = methodDecl_tl(b, l + 1);
     if (!r) r = enumDecl_tl(b, l + 1);
     if (!r) r = signalDecl_tl(b, l + 1);
+    if (!r) r = classVarDecl_tl(b, l + 1);
+    if (!r) r = annotation_tl(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // !(FUNC | CONST | SIGNAL | VAR | ENUM | annotation)
+  // !(FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR)
   static boolean topLevelDecl_r(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "topLevelDecl_r")) return false;
     boolean r;
@@ -1454,7 +1573,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FUNC | CONST | SIGNAL | VAR | ENUM | annotation
+  // FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR
   private static boolean topLevelDecl_r_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "topLevelDecl_r_0")) return false;
     boolean r;
@@ -1463,7 +1582,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, SIGNAL);
     if (!r) r = consumeToken(b, VAR);
     if (!r) r = consumeToken(b, ENUM);
-    if (!r) r = annotation(b, l + 1);
+    if (!r) r = consumeToken(b, ANNOTATOR);
     return r;
   }
 
@@ -1557,39 +1676,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && consumeToken(b, COLON);
     r = r && stmtOrSuite(b, l + 1);
     exit_section_(b, m, WHILE_ST, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // YIELD LRBR (expr COMMA expr)? RRBR
-  public static boolean yield_st(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "yield_st")) return false;
-    if (!nextTokenIsFast(b, YIELD)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, YIELD, LRBR);
-    r = r && yield_st_2(b, l + 1);
-    r = r && consumeToken(b, RRBR);
-    exit_section_(b, m, YIELD_ST, r);
-    return r;
-  }
-
-  // (expr COMMA expr)?
-  private static boolean yield_st_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "yield_st_2")) return false;
-    yield_st_2_0(b, l + 1);
-    return true;
-  }
-
-  // expr COMMA expr
-  private static boolean yield_st_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "yield_st_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = expr(b, l + 1, -1);
-    r = r && consumeToken(b, COMMA);
-    r = r && expr(b, l + 1, -1);
-    exit_section_(b, m, null, r);
     return r;
   }
 

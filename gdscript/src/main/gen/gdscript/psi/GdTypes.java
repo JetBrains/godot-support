@@ -7,6 +7,7 @@ import com.intellij.lang.ASTNode;
 import gdscript.psi.impl.GdClassNamingElementType;
 import gdscript.psi.impl.GdClassVarDeclElementType;
 import gdscript.psi.impl.GdConstDeclElementType;
+import gdscript.psi.impl.GdEnumDeclElementType;
 import gdscript.psi.impl.GdInheritanceElementType;
 import gdscript.psi.impl.GdMethodDeclElementType;
 import gdscript.psi.impl.GdSignalDeclElementType;
@@ -15,6 +16,7 @@ import gdscript.psi.impl.*;
 public interface GdTypes {
 
   IElementType ANNOTATION = new GdElementType("ANNOTATION");
+  IElementType ANNOTATION_TL = new GdElementType("ANNOTATION_TL");
   IElementType ARG_LIST = new GdElementType("ARG_LIST");
   IElementType ARRAY_DECL = new GdElementType("ARRAY_DECL");
   IElementType ARR_EX = new GdElementType("ARR_EX");
@@ -22,6 +24,7 @@ public interface GdTypes {
   IElementType ASSIGN_ST = new GdElementType("ASSIGN_ST");
   IElementType ATTRIBUTE_EX = new GdElementType("ATTRIBUTE_EX");
   IElementType ATT_EX_NM = new GdElementType("ATT_EX_NM");
+  IElementType AWAIT_ST = new GdElementType("AWAIT_ST");
   IElementType BIT_AND_EX = new GdElementType("BIT_AND_EX");
   IElementType BIT_NOT_EX = new GdElementType("BIT_NOT_EX");
   IElementType BUILT_IN_TYPE = new GdElementType("BUILT_IN_TYPE");
@@ -32,12 +35,13 @@ public interface GdTypes {
   IElementType CLASS_VAR_DECL_TL = GdClassVarDeclElementType.getInstance("CLASS_VAR_DECL_TL");
   IElementType CLASS_VAR_ID_NMI = new GdElementType("CLASS_VAR_ID_NMI");
   IElementType COMPARISON_EX = new GdElementType("COMPARISON_EX");
+  IElementType CONST_DECL_ST = new GdElementType("CONST_DECL_ST");
   IElementType CONST_DECL_TL = GdConstDeclElementType.getInstance("CONST_DECL_TL");
   IElementType CONST_ID_NMI = new GdElementType("CONST_ID_NMI");
   IElementType DICT_DECL = new GdElementType("DICT_DECL");
   IElementType END_STMT = new GdElementType("END_STMT");
   IElementType ENUM_DECL_NMI = new GdElementType("ENUM_DECL_NMI");
-  IElementType ENUM_DECL_TL = new GdElementType("ENUM_DECL_TL");
+  IElementType ENUM_DECL_TL = GdEnumDeclElementType.getInstance("ENUM_DECL_TL");
   IElementType ENUM_VALUE = new GdElementType("ENUM_VALUE");
   IElementType ENUM_VALUE_NMI = new GdElementType("ENUM_VALUE_NMI");
   IElementType EXPR = new GdElementType("EXPR");
@@ -83,14 +87,12 @@ public interface GdTypes {
   IElementType STMT_OR_SUITE = new GdElementType("STMT_OR_SUITE");
   IElementType SUITE = new GdElementType("SUITE");
   IElementType TERNARY_EX = new GdElementType("TERNARY_EX");
-  IElementType TOOLLINE = new GdElementType("TOOLLINE");
   IElementType TOP_LEVEL_DECL = new GdElementType("TOP_LEVEL_DECL");
   IElementType TYPED = new GdElementType("TYPED");
   IElementType TYPE_HINT_NM = new GdElementType("TYPE_HINT_NM");
   IElementType VAR_DECL_ST = new GdElementType("VAR_DECL_ST");
   IElementType VAR_NMI = new GdElementType("VAR_NMI");
   IElementType WHILE_ST = new GdElementType("WHILE_ST");
-  IElementType YIELD_ST = new GdElementType("YIELD_ST");
 
   IElementType AND = new GdTokenType("AND");
   IElementType ANDAND = new GdTokenType("ANDAND");
@@ -98,6 +100,7 @@ public interface GdTypes {
   IElementType AS = new GdTokenType("AS");
   IElementType ASSERT = new GdTokenType("ASSERT");
   IElementType ASSIGN = new GdTokenType("ASSIGN");
+  IElementType AWAIT = new GdTokenType("AWAIT");
   IElementType BAD_CHARACTER = new GdTokenType("bad_character");
   IElementType BOOL = new GdTokenType("BOOL");
   IElementType BREAK = new GdTokenType("BREAK");
@@ -170,13 +173,15 @@ public interface GdTypes {
   IElementType VOID = new GdTokenType("VOID");
   IElementType WHILE = new GdTokenType("WHILE");
   IElementType XOR = new GdTokenType("XOR");
-  IElementType YIELD = new GdTokenType("YIELD");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
       if (type == ANNOTATION) {
         return new GdAnnotationImpl(node);
+      }
+      else if (type == ANNOTATION_TL) {
+        return new GdAnnotationTlImpl(node);
       }
       else if (type == ARG_LIST) {
         return new GdArgListImpl(node);
@@ -198,6 +203,9 @@ public interface GdTypes {
       }
       else if (type == ATT_EX_NM) {
         return new GdAttExNmImpl(node);
+      }
+      else if (type == AWAIT_ST) {
+        return new GdAwaitStImpl(node);
       }
       else if (type == BIT_AND_EX) {
         return new GdBitAndExImpl(node);
@@ -228,6 +236,9 @@ public interface GdTypes {
       }
       else if (type == COMPARISON_EX) {
         return new GdComparisonExImpl(node);
+      }
+      else if (type == CONST_DECL_ST) {
+        return new GdConstDeclStImpl(node);
       }
       else if (type == CONST_DECL_TL) {
         return new GdConstDeclTlImpl(node);
@@ -376,9 +387,6 @@ public interface GdTypes {
       else if (type == TERNARY_EX) {
         return new GdTernaryExImpl(node);
       }
-      else if (type == TOOLLINE) {
-        return new GdToollineImpl(node);
-      }
       else if (type == TYPED) {
         return new GdTypedImpl(node);
       }
@@ -393,9 +401,6 @@ public interface GdTypes {
       }
       else if (type == WHILE_ST) {
         return new GdWhileStImpl(node);
-      }
-      else if (type == YIELD_ST) {
-        return new GdYieldStImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

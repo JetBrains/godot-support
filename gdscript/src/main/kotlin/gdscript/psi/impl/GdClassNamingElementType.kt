@@ -38,7 +38,7 @@ object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNam
     }
 
     override fun indexStub(stub: GdClassNamingStub, sink: IndexSink) {
-        sink.occurrence(Indices.CLASS_NAMING_INDEX, stub.name())
+        sink.occurrence(Indices.CLASS_NAMING, stub.name())
     }
 
     override fun createPsi(stub: GdClassNamingStub): GdClassNaming =

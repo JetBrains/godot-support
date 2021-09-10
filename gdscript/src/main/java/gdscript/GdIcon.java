@@ -17,6 +17,7 @@ public class GdIcon {
     public static final String METHOD_MARKER = "Forward-sq";
     public static final String VAR_MARKER = "KeyBezierSelected";
     public static final String CONST_MARKER = "KeyXform";
+    public static final String ENUM_MARKER = "Enum";
 
     public static HashMap<String, Icon> editorIcons = new HashMap<>();
 

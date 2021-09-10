@@ -24,7 +24,7 @@ object GdInheritanceElementType : IStubElementType<GdInheritanceStub, GdInherita
         GdInheritanceStubImpl(parentStub, dataStream.readName()?.string);
 
     override fun indexStub(stub: GdInheritanceStub, sink: IndexSink) {
-        sink.occurrence(Indices.INHERITANCE_INDEX, stub.name());
+        sink.occurrence(Indices.INHERITANCE, stub.name());
     }
 
     override fun createPsi(stub: GdInheritanceStub): GdInheritance =

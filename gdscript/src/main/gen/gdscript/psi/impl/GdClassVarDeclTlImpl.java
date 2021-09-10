@@ -34,12 +34,6 @@ public class GdClassVarDeclTlImpl extends GdClassVarDeclElementImpl implements G
   }
 
   @Override
-  @NotNull
-  public List<GdAnnotation> getAnnotationList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdAnnotation.class);
-  }
-
-  @Override
   @Nullable
   public GdClassVarIdNmi getClassVarIdNmi() {
     return PsiTreeUtil.getChildOfType(this, GdClassVarIdNmi.class);

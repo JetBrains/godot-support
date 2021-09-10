@@ -33,7 +33,7 @@ public interface GdTokenTypeSet
         GdTypes.IN,
         GdTypes.MATCH,
         GdTypes.ASSERT,
-        GdTypes.YIELD,
+        GdTypes.AWAIT,
 //        GdTypes.PRELOAD,
         GdTypes.AS,
         GdTypes.IS,

@@ -15,7 +15,7 @@ object PsiGdParameterUtil {
         data.trim('{', '}').split(' ').forEach {
             val parts = it.split('=');
             if (parts.size == 2) {
-                params[parts[0]] = if (parts[1] == "null") null else parts[1];
+                params[parts[0]] = if (parts[1] == "null") null else parts[1].trim(' ', ',');
             }
         }
 

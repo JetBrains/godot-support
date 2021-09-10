@@ -1,7 +1,9 @@
 package gdscript.structureView
 
 import com.intellij.navigation.ItemPresentation
+import com.jetbrains.rd.util.firstOrNull
 import gdscript.GdIcon
+import gdscript.GdKeywords
 import gdscript.psi.*
 import javax.swing.Icon
 
@@ -28,6 +30,14 @@ object GdPresentationUtil {
             override fun getPresentableText(): String? = method.name;
             override fun getLocationString(): String = method.returnType;
             override fun getIcon(unused: Boolean): Icon? = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER);
+        }
+    }
+
+    fun presentation(enum: GdEnumDeclTl): ItemPresentation {
+        return object : ItemPresentation {
+            override fun getPresentableText(): String = enum.enumDeclNmi?.name ?: "(${enum.values.firstOrNull()?.key}, ...)";
+            override fun getLocationString(): String = GdKeywords.INT;
+            override fun getIcon(unused: Boolean): Icon? = GdIcon.getEditorIcon(GdIcon.ENUM_MARKER);
         }
     }
 

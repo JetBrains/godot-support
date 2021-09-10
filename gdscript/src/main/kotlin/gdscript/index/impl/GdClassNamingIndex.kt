@@ -7,6 +7,6 @@ import gdscript.psi.GdClassNaming
 
 object GdClassNamingIndex : StringStubIndexExtension<GdClassNaming>() {
 
-    override fun getKey(): StubIndexKey<String, GdClassNaming> = Indices.CLASS_NAMING_INDEX;
+    override fun getKey(): StubIndexKey<String, GdClassNaming> = Indices.CLASS_NAMING;
 
 }

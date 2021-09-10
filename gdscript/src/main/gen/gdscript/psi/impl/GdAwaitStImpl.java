@@ -10,15 +10,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
 
-public class GdYieldStImpl extends GdStmtImpl implements GdYieldSt {
+public class GdAwaitStImpl extends GdStmtImpl implements GdAwaitSt {
 
-  public GdYieldStImpl(@NotNull ASTNode node) {
+  public GdAwaitStImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitYieldSt(this);
+    visitor.visitAwaitSt(this);
   }
 
   @Override

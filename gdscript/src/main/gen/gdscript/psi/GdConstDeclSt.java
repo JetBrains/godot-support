@@ -5,9 +5,18 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdToolline extends PsiElement {
+public interface GdConstDeclSt extends GdStmt {
+
+  @NotNull
+  GdEndStmt getEndStmt();
 
   @Nullable
-  GdNewLineEnd getNewLineEnd();
+  GdExpr getExpr();
+
+  @Nullable
+  GdTyped getTyped();
+
+  @NotNull
+  GdVarNmi getVarNmi();
 
 }

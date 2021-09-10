@@ -9,14 +9,21 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
+import com.intellij.navigation.ItemPresentation;
+import java.util.HashMap;
+import gdscript.index.stub.GdEnumDeclStub;
+import com.intellij.psi.stubs.IStubElementType;
 
-public class GdEnumDeclTlImpl extends GdTopLevelDeclImpl implements GdEnumDeclTl {
+public class GdEnumDeclTlImpl extends GdEnumDeclElementImpl implements GdEnumDeclTl {
 
   public GdEnumDeclTlImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
+  public GdEnumDeclTlImpl(@NotNull GdEnumDeclStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    super(stub, nodeType);
+  }
+
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitEnumDeclTl(this);
   }
@@ -43,6 +50,18 @@ public class GdEnumDeclTlImpl extends GdTopLevelDeclImpl implements GdEnumDeclTl
   @NotNull
   public List<GdEnumValue> getEnumValueList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, GdEnumValue.class);
+  }
+
+  @Override
+  @NotNull
+  public HashMap<String, Integer> getValues() {
+    return GdPsiUtils.getValues(this);
+  }
+
+  @Override
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return GdPsiUtils.getPresentation(this);
   }
 
 }

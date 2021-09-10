@@ -36,12 +36,20 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .beforeInside(GdTypes.DEDENT, GdTypes.SUITE).spacing(0, Int.MAX_VALUE, 1, false, 0)
             .between(NAMINGS, ROOTS).spacing(0, 0, 1, false, 1)
 
+            .between(GdTypes.ENUM_DECL_TL, GdTypes.ENUM_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 0)
             .between(GdTypes.CONST_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 0)
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 0)
             .between(GdTypes.CONST_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
+            .between(GdTypes.CONST_DECL_TL, GdTypes.ENUM_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
+            .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.ENUM_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
+            .between(GdTypes.ENUM_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
+            .between(GdTypes.ENUM_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
 
             .before(GdTypes.METHOD_DECL_TL).spacing(0, Int.MAX_VALUE, custom.LINES_BEFORE_FUNC + 1, false, custom.LINES_BEFORE_FUNC)
+
+            /** Operators */
+            .around(TokenSet.create(GdTypes.TEST_OPERATOR, GdTypes.ASSIGN, GdTypes.EQ)).spaces(1)
     }
 
     private companion object {

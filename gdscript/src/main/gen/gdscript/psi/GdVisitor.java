@@ -11,6 +11,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitAnnotationTl(@NotNull GdAnnotationTl o) {
+    visitTopLevelDecl(o);
+  }
+
   public void visitArgList(@NotNull GdArgList o) {
     visitPsiElement(o);
   }
@@ -37,6 +41,10 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitAttributeEx(@NotNull GdAttributeEx o) {
     visitExpr(o);
+  }
+
+  public void visitAwaitSt(@NotNull GdAwaitSt o) {
+    visitStmt(o);
   }
 
   public void visitBitAndEx(@NotNull GdBitAndEx o) {
@@ -77,6 +85,10 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitComparisonEx(@NotNull GdComparisonEx o) {
     visitExpr(o);
+  }
+
+  public void visitConstDeclSt(@NotNull GdConstDeclSt o) {
+    visitStmt(o);
   }
 
   public void visitConstDeclTl(@NotNull GdConstDeclTl o) {
@@ -283,10 +295,6 @@ public class GdVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
-  public void visitToolline(@NotNull GdToolline o) {
-    visitPsiElement(o);
-  }
-
   public void visitTopLevelDecl(@NotNull GdTopLevelDecl o) {
     visitPsiElement(o);
   }
@@ -308,10 +316,6 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitWhileSt(@NotNull GdWhileSt o) {
-    visitStmt(o);
-  }
-
-  public void visitYieldSt(@NotNull GdYieldSt o) {
     visitStmt(o);
   }
 

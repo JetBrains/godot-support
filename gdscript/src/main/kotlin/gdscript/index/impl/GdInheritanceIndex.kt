@@ -7,6 +7,6 @@ import gdscript.psi.GdInheritance
 
 object GdInheritanceIndex : StringStubIndexExtension<GdInheritance>() {
 
-    override fun getKey(): StubIndexKey<String, GdInheritance> = Indices.INHERITANCE_INDEX;
+    override fun getKey(): StubIndexKey<String, GdInheritance> = Indices.INHERITANCE;
 
 }

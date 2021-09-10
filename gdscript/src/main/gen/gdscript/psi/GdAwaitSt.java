@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdYieldSt extends GdStmt {
+public interface GdAwaitSt extends GdStmt {
 
   @NotNull
   List<GdExpr> getExprList();
