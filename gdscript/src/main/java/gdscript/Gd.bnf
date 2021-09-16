@@ -36,29 +36,29 @@
   ]
 }
 
-gdfile ::= inheritance? classNaming?  topLevelDecl*
+gdfile ::= inheritance? classNaming? topLevelDecl*
 
+//TODO DOT IDENTIFIER -> inner class?
 inheritance ::= EXTENDS inheritanceId_nmi (DOT IDENTIFIER)? newLineEnd {methods=[getInheritanceName] pin=1 recoverWhile=inheritance_r mixin="gdscript.psi.impl.GdInheritanceElementImpl" stubClass="gdscript.index.stub.GdInheritanceStub" elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"}
 inheritanceId_nmi ::= IDENTIFIER
 private inheritance_r ::= !(CLASS_NAME | TOOL) & topLevelDecl_r
 
-classNaming ::= CLASS_NAME className_nm (COMMA STRING)? newLineEnd {methods=[getClassname getParentName] pin=1 recoverWhile=classNaming_r mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub" elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"}
+classNaming ::= CLASS_NAME className_nm (COMMA STRING)? newLineEnd {methods=[getClassname getParentName] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub" elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"}
 className_nm ::= IDENTIFIER
-private classNaming_r ::= !(TOOL) & topLevelDecl_r
 
 topLevelDecl ::=
     constDecl_tl
-    | methodDecl_tl
     | enumDecl_tl
     | signalDecl_tl
     | classVarDecl_tl
     | annotation_tl
-private topLevelDecl_r ::= !(FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR)
+    | methodDecl_tl
+private topLevelDecl_r ::= !(FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | CLASS_NAME)
 
 constDecl_tl ::= CONST constId_nmi typed? EQ expr endStmt {methods=[getConstName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
-constId_nmi ::= IDENTIFIER
+constId_nmi ::= IDENTIFIER | INF
 
-annotation_tl ::= annotation (LRBR literal_ex (COMMA literal_ex)* RRBR)? {pin=1 recoverWhile=topLevelDecl_r}
+annotation_tl ::= ANNOTATOR (LRBR literal_ex (COMMA literal_ex)* RRBR)? {pin=1 recoverWhile=topLevelDecl_r}
 classVarDecl_tl ::= VAR classVarId_nmi typed? (EQ expr)? setgetDecl? endStmt {methods=[getName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r  mixin="gdscript.psi.impl.GdClassVarDeclElementImpl" stubClass="gdscript.index.stub.GdClassVarDeclStub" elementTypeFactory="gdscript.psi.impl.GdClassVarDeclElementType.getInstance"}
 classVarId_nmi ::= IDENTIFIER
 setgetDecl ::= SETGET setMethodId_nm? (COMMA getMethodId_nm)?
@@ -84,12 +84,12 @@ returnHintVal ::= typeHint_nm | VOID
 parentMethodCall ::= DOT LRBR argList? RRBR
 argList ::= expr (COMMA expr)*
 
-var_nmi ::= IDENTIFIER
+var_nmi ::= IDENTIFIER | SIGNAL | FUNC // func - Array.gd, signal: Vector2.gd
 
 // TODO inner class
 
 stmtOrSuite ::= stmt | suite
-suite ::= NEW_LINE INDENT stmt+ DEDENT {pin=3}
+suite ::= NEW_LINE? INDENT stmt+ DEDENT {pin=2}
 
 stmt ::=
     assign_st
@@ -99,19 +99,21 @@ stmt ::=
     | while_st
     | for_st
     | match_st
-    | expr_st
     | flow_st
     | assert_st
     | await_st
     | preload_st
+    | expr_st
+//    | (expr endStmt)
+private stmt_r ::= !(VAR | CONST | IF | PASS | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH | RETURN | AWAIT | ASSET | PRELOAD | INDENT | DEDENT | IDENTIFIER | literal_ex)
 
-varDecl_st ::= VAR var_nmi typed? (EQ expr)? endStmt
-constDecl_st ::= CONST var_nmi typed? (EQ expr)? endStmt
-if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)?
-while_st ::= WHILE expr COLON stmtOrSuite
-for_st ::= FOR var_nmi IN expr COLON stmtOrSuite
+varDecl_st ::= VAR var_nmi typed? (EQ expr)? endStmt //{pin=1 recoverWhile=stmt_r}
+constDecl_st ::= CONST var_nmi typed? (EQ expr)? endStmt //{pin=1 recoverWhile=stmt_r}
+if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? //{pin=1 recoverWhile=stmt_r}
+while_st ::= WHILE expr COLON stmtOrSuite //{pin=1 recoverWhile=stmt_r}
+for_st ::= FOR var_nmi IN expr COLON stmtOrSuite //{pin=1 recoverWhile=stmt_r}
 
-match_st ::= MATCH //expression ":" NEWLINE INDENT matchBlock DEDENT;
+match_st ::= MATCH //expression ":" NEWLINE INDENT matchBlock DEDENT; {pin=1 recoverWhile=stmt_r}
 //matchBlock = patternList ":" stmtOrSuite { patternList ":" stmtOrSuite };
 //patternList = pattern { "," pattern } ;
 //(* Note: you can't have a binding in a pattern list, but to not complicate the
@@ -123,12 +125,12 @@ match_st ::= MATCH //expression ":" NEWLINE INDENT matchBlock DEDENT;
 //dictPattern = "{" [ keyValuePattern ] { "," keyValuePattern } [ ".." ] "}" ;
 //keyValuePattern = STRING [ ":" pattern ] ;
 
-assert_st ::= ASSERT LRBR expr (COMMA STRING)? RRBR endStmt
-await_st ::= AWAIT LRBR (expr COMMA expr)? RRBR // TODO
-preload_st ::= PRELOAD LRBR STRING RRBR // TODO resource
+assert_st ::= ASSERT LRBR expr (COMMA STRING)? RRBR endStmt //{pin=1 recoverWhile=stmt_r}
+await_st ::= AWAIT LRBR (expr COMMA expr)? RRBR //{pin=1 recoverWhile=stmt_r}
+preload_st ::= PRELOAD LRBR STRING RRBR //{pin=1 recoverWhile=stmt_r}
 
-assign_st ::= expr (EQ | ASSIGN) expr endStmt
-expr_st ::= expr endStmt {pin=1}
+assign_st ::= expr (EQ | ASSIGN) expr endStmt //{pin=2 recoverWhile=stmt_r}
+expr_st ::= expr endStmt {pin=1 recoverWhile=stmt_r}
 
 flow_st ::=
     (CONTINUE endStmt)
@@ -136,11 +138,14 @@ flow_st ::=
     | (PASS endStmt)
     | (BREAKPOINT endStmt)
     | returnStmt
-returnStmt ::= RETURN expr? endStmt
+returnStmt ::= RETURN expr? endStmt {pin=1 recoverWhile=stmt_r}
 
 expr ::=
     plusMinus_ex
+    | attribute_ex
     | cast_ex
+    | arr_ex
+    | call_ex
     | ternary_ex
     | logic_ex
     | negate_ex
@@ -153,15 +158,12 @@ expr ::=
     | sign_ex
     | bitNot_ex
     | plusMinusPre_ex
-    | attribute_ex
     | is_ex
-    | call_ex
-    | arr_ex
     | primary_ex
     | literal_ex
     {methods=[getReturnType]}
 
-cast_ex ::= expr AS typeHint_nm
+cast_ex ::= expr AS isTyped
 ternary_ex ::= expr IF expr ELSE expr
 logic_ex ::= expr (ANDAND | OROR) expr
 negate_ex ::= NEGATE expr;
@@ -173,8 +175,8 @@ plus_ex ::= expr (PLUS | MINUS) expr
 factor_ex ::= expr (MUL | DIV | MOD) expr
 sign_ex ::= (MINUS | PLUS ) expr
 bitNot_ex ::= NOT expr
-is_ex ::= expr IS typeHint_nm
-call_ex ::= expr LRBR argList? RRBR
+is_ex ::= expr IS isTyped
+call_ex ::= expr LRBR argList? RRBR // TODO reference
 arr_ex ::= expr LSBR expr RSBR
 primary_ex ::= nodePath | arrayDecl | dictDecl | (LRBR expr RRBR)
 literal_ex ::= TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF | refId_nm
@@ -182,22 +184,19 @@ literal_ex ::= TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF | re
 //@"Node/Label"
 //NodePath or StringName
 
-//$NodePath
-//Shorthand for get_node("NodePath")
-
 plusMinus_ex ::= expr (PPLUS | MMINUS)
 plusMinusPre_ex ::= (PPLUS | MMINUS) expr
-attribute_ex ::= expr DOT attEx_nm //TODO
-attEx_nm ::= IDENTIFIER
+attribute_ex ::= expr DOT expr
 refId_nm ::= IDENTIFIER | SELF
 
-typed ::= COLON typeHint_nm
+isTyped ::= typeHint_nm (LSBR typeHintArray_nm RSBR)?
+typed ::= COLON typeHint_nm (LSBR typeHintArray_nm RSBR)?
 typeHint_nm ::= builtInType | IDENTIFIER
+typeHintArray_nm ::= builtInType | IDENTIFIER
 builtInType ::= INT | STR | FLOAT | BOOL
 endStmt ::= SEMICON | newLineEnd
 newLineEnd ::= NEW_LINE | <<eof>>
 nodePath ::= NODE_PATH_LEX
-annotation ::= ANNOTATOR
 
 arrayDecl ::= LSBR (expr (COMMA expr)* COMMA?)? RSBR
 dictDecl ::= LCBR (keyValue (COMMA keyValue)* COMMA?)? RCBR

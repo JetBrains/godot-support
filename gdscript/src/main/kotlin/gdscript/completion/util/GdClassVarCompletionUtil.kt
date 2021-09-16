@@ -15,7 +15,7 @@ object GdClassVarCompletionUtil {
                 .addElement(
                     GdLookup.create(
                         if (withPrefix) "@$it" else it,
-                        lookup = if (GdKeywords.ANNOTATIONS_PARAMETRIZED.contains(it)) "" else " ",
+                        //lookup = if (GdKeywords.ANNOTATIONS_PARAMETRIZED.contains(it)) "" else " ",
                         color = GdLookup.ANNOTATOR_COLOR,
                         priority = GdLookup.USER_DEFINED,
                     )

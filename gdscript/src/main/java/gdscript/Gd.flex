@@ -71,7 +71,7 @@ FLIT3 = [0-9]+
 
 NEW_LINE = [\r\n]
 INDENT = [ \t]+
-//WHITE_SPACE = {NEW_LINE} | {INDENT}
+ENPTY_LINE = [ \t]+\n
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 NUMBER = [0-9][0-9_]*(\.[0-9_]+)?
 HEX_NUMBER = 0x[0-9_a-f]+
@@ -84,7 +84,7 @@ STRING_MARKER_REV = [^\"\'\n\r]*
 //ML_STRING = \"\"\"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'\"\"\"
 
 COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
-ANNOTATOR = "@"[a-zA-Z]*
+ANNOTATOR = "@"[a-zA-Z_]*
 NODE_PATH_LEX = "$"[a-zA-Z0-9_]*
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
@@ -175,8 +175,8 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 
     "extends"      { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.EXTENDS); }
     "class_name"   { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CLASS_NAME); }
-    "var"          { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.VAR); }
-    "const"        { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CONST); }
+    "var"          { if (yycolumn == 0) { yybegin(AWAIT_NEW_LINE_ONCE); } else { yybegin(AWAIT_NEW_LINE); } return dedentRoot(GdTypes.VAR); }
+    "const"        { if (yycolumn == 0) { yybegin(AWAIT_NEW_LINE_ONCE); } else { yybegin(AWAIT_NEW_LINE); } return dedentRoot(GdTypes.CONST); }
     "setget"       { return GdTypes.SETGET; }
 
     "enum"         { yybegin(AWAIT_ENUM_SEPARATOR); enumValEnded = true; return GdTypes.ENUM; }
@@ -256,8 +256,22 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }
     {HEX_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
-    {COMMENT}       { return GdTypes.COMMENT; }
+    {COMMENT}       {
+          if (!lineEnded) {
+              if (yystate() == AWAIT_NEW_LINE || yystate() == AWAIT_NEW_LINE_ONCE) {
+                  if (yystate() == AWAIT_NEW_LINE_ONCE) {
+                      yybegin(YYINITIAL);
+                  }
+                  lineEnded = true;
+                  yypushback(yylength());
+                  return GdTypes.NEW_LINE;
+              }
+          }
 
+          return GdTypes.COMMENT;
+    }
+
+    {ENPTY_LINE}  { return TokenType.WHITE_SPACE; }
     {INDENT}  {
         if (yycolumn == 0) {
             int spaces = yytext().length();

@@ -1,6 +1,5 @@
 extends VisualShaderNode
 class_name VisualShaderNodeFloatFunc
-
 const FUNC_SIN = 0;
 const FUNC_COS = 1;
 const FUNC_TAN = 2;
@@ -34,5 +33,5 @@ const FUNC_ROUNDEVEN = 29;
 const FUNC_TRUNC = 30;
 const FUNC_ONEMINUS = 31;
 
-var function: int setget set_function, get_function;
+var function: int;
 

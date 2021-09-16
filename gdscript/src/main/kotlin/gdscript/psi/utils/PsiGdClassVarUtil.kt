@@ -19,7 +19,7 @@ object PsiGdClassVarUtil {
             return stub.returnType();
         }
 
-        return element.typed?.typeHintNm?.name ?: "";
+        return PsiGdExprUtil.fromTyped(element.typed);
     }
 
 }

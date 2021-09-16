@@ -76,29 +76,29 @@ class GdConstVarIdAnnotator : Annotator {
     }
 
     private fun hasReturnType(element: PsiElement, holder: AnnotationHolder) {
-        if (element is GdClassVarDeclTl || element is GdConstDeclTl) {
-            val returnTypes = when (element) {
-                is GdConstDeclTl -> Pair(element.typed, element.expr)
-                is GdClassVarDeclTl -> Pair(element.typed, element.expr)
-                else -> Pair(null, null);
-            }
-
-            val returnType = returnTypes.first?.typeHintNm?.text;
-            val expr = returnTypes.second;
-            if (returnType != null || expr == null) {
-                return;
-            }
-            val realType = expr.returnType;
-            if (realType.isEmpty()) {
-                return;
-            }
-
-            holder
-                .newAnnotation(HighlightSeverity.WEAK_WARNING, "Field's return type can be specified as [$realType]")
-                .range(expr.textRange)
-                .withFix(GdAddReturnType(element, realType))
-                .create()
+        val returnTypes = when (element) {
+            is GdConstDeclTl -> Pair(element.typed, element.expr)
+            is GdClassVarDeclTl -> Pair(element.typed, element.expr)
+            is GdVarDeclSt -> Pair(element.typed, element.expr)
+            is GdConstDeclSt -> Pair(element.typed, element.expr)
+            else -> return;
         }
+
+        val returnType = returnTypes.first?.typeHintNm?.text;
+        val expr = returnTypes.second;
+        if (returnType != null || expr == null) {
+            return;
+        }
+        val realType = expr.returnType;
+        if (realType.isEmpty()) {
+            return;
+        }
+
+        holder
+            .newAnnotation(HighlightSeverity.WEAK_WARNING, "Field's return type can be specified as [$realType]")
+            .range(expr.textRange)
+            .withFix(GdAddReturnType(element, realType))
+            .create()
     }
 
 }

@@ -1,6 +1,5 @@
 extends RefCounted
 class_name Tween
-
 const TWEEN_PROCESS_PHYSICS = 0;
 const TWEEN_PROCESS_IDLE = 1;
 const TWEEN_PAUSE_BOUND = 0;
@@ -25,67 +24,45 @@ const EASE_OUT_IN = 3;
 
 func bind_node(node: Node) -> Tween:
     pass;
-
 func chain() -> Tween:
     pass;
-
 func custom_step(delta: float) -> bool:
     pass;
-
 func interpolate_value(trans_type: Variant, ease_type: Variant, elapsed_time: float, initial_value: float, delta_value: int, duration: int) -> Variant:
     pass;
-
 func is_running() -> bool:
     pass;
-
 func is_valid() -> bool:
     pass;
-
 func kill() -> void:
     pass;
-
 func parallel() -> Tween:
     pass;
-
 func pause() -> void:
     pass;
-
 func play() -> void:
     pass;
-
 func set_ease(ease: int) -> Tween:
     pass;
-
 func set_loops(loops: int) -> Tween:
     pass;
-
 func set_parallel(parallel: bool) -> Tween:
     pass;
-
 func set_pause_mode(mode: int) -> Tween:
     pass;
-
 func set_process_mode(mode: int) -> Tween:
     pass;
-
 func set_speed_scale(speed: float) -> Tween:
     pass;
-
 func set_trans(trans: int) -> Tween:
     pass;
-
 func stop() -> void:
     pass;
-
 func tween_callback(callback: Callable) -> CallbackTweener:
     pass;
-
 func tween_interval(time: float) -> IntervalTweener:
     pass;
-
 func tween_method(method: Callable, from: float, to: float, duration: float) -> MethodTweener:
     pass;
-
 func tween_property(object: Object, property: NodePath, final_val: Variant, duration: float) -> PropertyTweener:
     pass;
-

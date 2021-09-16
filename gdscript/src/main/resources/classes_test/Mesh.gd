@@ -1,6 +1,5 @@
 extends Resource
 class_name Mesh
-
 const PRIMITIVE_POINTS = 0;
 const PRIMITIVE_LINES = 1;
 const PRIMITIVE_LINE_STRIP = 2;
@@ -56,38 +55,27 @@ const ARRAY_FLAG_USE_8_BONE_WEIGHTS = 134217728;
 const BLEND_SHAPE_MODE_NORMALIZED = 0;
 const BLEND_SHAPE_MODE_RELATIVE = 1;
 
-var lightmap_size_hint: Vector2i setget set_lightmap_size_hint, get_lightmap_size_hint;
+var lightmap_size_hint: Vector2i;
 
 func create_convex_shape(clean: bool, simplify: bool) -> Shape3D:
     pass;
-
 func create_outline(margin: float) -> Mesh:
     pass;
-
 func create_trimesh_shape() -> Shape3D:
     pass;
-
 func generate_triangle_mesh() -> TriangleMesh:
     pass;
-
 func get_aabb() -> AABB:
     pass;
-
 func get_faces() -> PackedVector3Array:
     pass;
-
 func get_surface_count() -> int:
     pass;
-
 func surface_get_arrays(surf_idx: int) -> Array:
     pass;
-
 func surface_get_blend_shape_arrays(surf_idx: int) -> Array:
     pass;
-
 func surface_get_material(surf_idx: int) -> Material:
     pass;
-
 func surface_set_material(surf_idx: int, material: Material) -> void:
     pass;
-

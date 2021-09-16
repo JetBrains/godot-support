@@ -4,7 +4,6 @@ object GdKeywords {
 
     const val EXTENDS = "extends"
     const val CLASS_NAME = "class_name"
-    const val TOOL = "tool"
     const val FUNC = "func"
     const val CONST = "const"
     const val VAR = "var"
@@ -26,7 +25,11 @@ object GdKeywords {
     val BUILT_TYPES = arrayOf(INT, STR, FLOAT, BOOL);
     const val VOID = "void"
 
-    val ANNOTATIONS = arrayOf("export", "onready", "icon");
+    val ANNOTATIONS = arrayOf("export", "onready", "icon", "tool", "master", "puppet", "remote", "mastersync", "puppetsync", "remotesync",
+        "export_enum", "export_file", "export_dir", "export_global_file", "export_global_dir", "export_multiline", "export_placeholder",
+        "export_range", "export_exp_range", "export_exp_easing", "export_color_no_alpha", "export_node_path", "export_flags",
+        "export_flags_2d_render", "export_flags_2d_physics", "export_flags_3d_render", "export_flags_3d_physics");
+
     val ANNOTATIONS_PARAMETRIZED = arrayOf("icon");
 
     val LITERALS = arrayOf(TRUE, FALSE, NULL, NAN, INF, TAU, PI);

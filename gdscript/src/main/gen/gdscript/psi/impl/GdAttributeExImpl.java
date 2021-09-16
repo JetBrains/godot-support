@@ -29,14 +29,8 @@ public class GdAttributeExImpl extends GdExprImpl implements GdAttributeEx {
 
   @Override
   @NotNull
-  public GdAttExNm getAttExNm() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdAttExNm.class));
-  }
-
-  @Override
-  @NotNull
-  public GdExpr getExpr() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
+  public List<GdExpr> getExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdExpr.class);
   }
 
 }

@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdAttExNm extends GdNamedElement {
+public interface GdIsTyped extends PsiElement {
+
+  @Nullable
+  GdTypeHintArrayNm getTypeHintArrayNm();
 
   @NotNull
-  String getName();
-
-  @NotNull
-  PsiElement setName(@Nullable String newName);
+  GdTypeHintNm getTypeHintNm();
 
 }

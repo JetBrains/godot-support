@@ -2,4 +2,3 @@ extends VisualShaderNodeTextureUniform
 class_name VisualShaderNodeCubemapUniform
 
 
-

@@ -1,6 +1,5 @@
 extends Control
 class_name LineEdit
-
 const ALIGN_LEFT = 0;
 const ALIGN_CENTER = 1;
 const ALIGN_RIGHT = 2;
@@ -35,70 +34,57 @@ const MENU_INSERT_WJ = 26;
 const MENU_INSERT_SHY = 27;
 const MENU_MAX = 28;
 
-var align: int setget set_align, get_align;
-var caret_blink: bool setget set_caret_blink_enabled, is_caret_blink_enabled;
-var caret_blink_speed: float setget set_caret_blink_speed, get_caret_blink_speed;
-var caret_column: int setget set_caret_column, get_caret_column;
-var caret_force_displayed: bool setget set_caret_force_displayed, is_caret_force_displayed;
-var caret_mid_grapheme: bool setget set_caret_mid_grapheme_enabled, is_caret_mid_grapheme_enabled;
-var clear_button_enabled: bool setget set_clear_button_enabled, is_clear_button_enabled;
-var context_menu_enabled: bool setget set_context_menu_enabled, is_context_menu_enabled;
-var draw_control_chars: bool setget set_draw_control_chars, get_draw_control_chars;
-var editable: bool setget set_editable, is_editable;
-var expand_to_text_length: bool setget set_expand_to_text_length_enabled, is_expand_to_text_length_enabled;
-var focus_mode: int setget set_focus_mode, get_focus_mode;
-var language: String setget set_language, get_language;
-var max_length: int setget set_max_length, get_max_length;
-var mouse_default_cursor_shape: int setget set_default_cursor_shape, get_default_cursor_shape;
-var placeholder_alpha: float setget set_placeholder_alpha, get_placeholder_alpha;
-var placeholder_text: String setget set_placeholder, get_placeholder;
-var right_icon: Texture2D setget set_right_icon, get_right_icon;
-var secret: bool setget set_secret, is_secret;
-var secret_character: String setget set_secret_character, get_secret_character;
-var selecting_enabled: bool setget set_selecting_enabled, is_selecting_enabled;
-var shortcut_keys_enabled: bool setget set_shortcut_keys_enabled, is_shortcut_keys_enabled;
-var structured_text_bidi_override: int setget set_structured_text_bidi_override, get_structured_text_bidi_override;
-var structured_text_bidi_override_options: Array setget set_structured_text_bidi_override_options, get_structured_text_bidi_override_options;
-var text: String setget set_text, get_text;
-var text_direction: int setget set_text_direction, get_text_direction;
-var virtual_keyboard_enabled: bool setget set_virtual_keyboard_enabled, is_virtual_keyboard_enabled;
+var align: int;
+var caret_blink: bool;
+var caret_blink_speed: float;
+var caret_column: int;
+var caret_force_displayed: bool;
+var caret_mid_grapheme: bool;
+var clear_button_enabled: bool;
+var context_menu_enabled: bool;
+var draw_control_chars: bool;
+var editable: bool;
+var expand_to_text_length: bool;
+var focus_mode: int;
+var language: String;
+var max_length: int;
+var mouse_default_cursor_shape: int;
+var placeholder_alpha: float;
+var placeholder_text: String;
+var right_icon: Texture2D;
+var secret: bool;
+var secret_character: String;
+var selecting_enabled: bool;
+var shortcut_keys_enabled: bool;
+var structured_text_bidi_override: int;
+var structured_text_bidi_override_options: Array;
+var text: String;
+var text_direction: int;
+var virtual_keyboard_enabled: bool;
 
 func clear() -> void:
     pass;
-
 func clear_opentype_features() -> void:
     pass;
-
 func delete_char_at_caret() -> void:
     pass;
-
 func delete_text(from_column: int, to_column: int) -> void:
     pass;
-
 func deselect() -> void:
     pass;
-
 func get_menu() -> PopupMenu:
     pass;
-
 func get_opentype_feature(tag: String) -> int:
     pass;
-
 func get_scroll_offset() -> int:
     pass;
-
 func insert_text_at_caret(text: String) -> void:
     pass;
-
 func menu_option(option: int) -> void:
     pass;
-
 func select(from: int, to: int) -> void:
     pass;
-
 func select_all() -> void:
     pass;
-
 func set_opentype_feature(tag: String, value: int) -> void:
     pass;
-

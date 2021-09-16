@@ -32,6 +32,9 @@ public class GdLookupInsertHandler implements InsertHandler<LookupElement> {
             if ((valueToInsert.length() - matched) > 0) {
                 EditorModificationUtil.insertStringAtCaret(editor, valueToInsert.substring(matched));
                 PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument());
+                if (valueToInsert == "()") {
+                    model.moveToOffset(model.getOffset() - 1);
+                }
             }
         }
     }

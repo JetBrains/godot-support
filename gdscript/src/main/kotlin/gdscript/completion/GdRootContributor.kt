@@ -18,31 +18,11 @@ import gdscript.psi.utils.PsiGdMethodDeclUtil
 class GdRootContributor : CompletionContributor() {
 
     companion object {
-        val AFTER_INHERITANCE = psiElement()
-            .withParent(
-                psiElement(PsiErrorElement::class.java)
-                    .withParent(GdInheritance::class.java)
-                    .afterSibling(psiElement(GdNewLineEnd::class.java)))
-        val AFTER_CLASS_NAMING = psiElement()
-            .withParent(
-                psiElement(PsiErrorElement::class.java)
-                    .withParent(GdClassNaming::class.java)
-                    .afterSibling(psiElement(GdNewLineEnd::class.java)))
-        val AFTER_CONST = psiElement()
-            .withParent(psiElement(PsiErrorElement::class.java)
-                .withParent(psiElement(GdConstDeclTl::class.java)
-                    .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdEndStmt::class.java)))
-            );
-        val AFTER_VAR = psiElement()
-            .withParent(psiElement(PsiErrorElement::class.java)
-                .withParent(psiElement(GdClassVarDeclTl::class.java)
-                    .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdEndStmt::class.java)))
-            );
-        val AFTER_FUNC = psiElement()
-            .withParent(psiElement(PsiErrorElement::class.java)
-                .withParent(psiElement(GdMethodDeclTl::class.java)
-                    .withLastChildSkipping(GdCompletionUtil.WHITE_OR_ERROR, psiElement(GdTypes.STMT_OR_SUITE)))
-            );
+        val ROOT_POSITION = psiElement(GdTypes.IDENTIFIER)
+            .withParents(
+                PsiErrorElement::class.java,
+                GdFile::class.java,
+            )
         val ANNOTATOR_DECL = psiElement(GdTypes.ANNOTATOR)
     }
 
@@ -53,18 +33,7 @@ class GdRootContributor : CompletionContributor() {
         if (previous === null) {
             result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
             return result.stopHere();
-        } else if (AFTER_INHERITANCE.accepts(position)) {
-            result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " "));
-            result.addElement(GdLookup.create(GdKeywords.TOOL, "\n"));
-            addTopLvlDecl(result, parameters);
-        } else if (AFTER_CLASS_NAMING.accepts(position)) {
-            result.addElement(GdLookup.create(GdKeywords.TOOL, "\n"));
-            addTopLvlDecl(result, parameters);
-        } else if (//AFTER_TOOL.accepts(position) TODO after annotation
-            AFTER_CONST.accepts(position)
-            || AFTER_VAR.accepts(position)
-            || AFTER_FUNC.accepts(position)
-        ) {
+        } else if (ROOT_POSITION.accepts(position)) {
             addTopLvlDecl(result, parameters);
         } else if (ANNOTATOR_DECL.accepts(position)) {
             GdClassVarCompletionUtil.annotations(result, false);
@@ -73,11 +42,12 @@ class GdRootContributor : CompletionContributor() {
     }
 
     private fun addTopLvlDecl(result: CompletionResultSet, parameters: CompletionParameters) {
-        val list = PsiGdMethodDeclUtil.collectParentsMethods(parameters.originalFile);
+        val list = PsiGdMethodDeclUtil.collectParentsMethods(parameters.position.containingFile);
         GdMethodCompletionUtil.addMethods(list, result, true);
         result.addElement(GdLookup.create(GdKeywords.FUNC, " ", priority = GdLookup.KEYWORDS));
         result.addElement(GdLookup.create(GdKeywords.CONST, " ", priority = GdLookup.KEYWORDS));
         result.addElement(GdLookup.create(GdKeywords.VAR, " ", priority = GdLookup.KEYWORDS));
+        result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " "));
         GdClassVarCompletionUtil.annotations(result);
     }
 

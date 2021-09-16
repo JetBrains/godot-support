@@ -2,4 +2,3 @@ extends VisualShaderNodeExpression
 class_name VisualShaderNodeGlobalExpression
 
 
-

@@ -1,6 +1,5 @@
 extends Control
 class_name TextEdit
-
 const SEARCH_MATCH_CASE = 1;
 const SEARCH_WHOLE_WORDS = 2;
 const SEARCH_BACKWARDS = 4;
@@ -42,257 +41,183 @@ const MENU_INSERT_WJ = 26;
 const MENU_INSERT_SHY = 27;
 const MENU_MAX = 28;
 
-var caret_blink: bool setget cursor_set_blink_enabled, cursor_get_blink_enabled;
-var caret_blink_speed: float setget cursor_set_blink_speed, cursor_get_blink_speed;
-var caret_block_mode: bool setget cursor_set_block_mode, cursor_is_block_mode;
-var caret_mid_grapheme: bool setget set_mid_grapheme_caret_enabled, get_mid_grapheme_caret_enabled;
-var caret_moving_by_right_click: bool setget set_right_click_moves_caret, is_right_click_moving_caret;
-var context_menu_enabled: bool setget set_context_menu_enabled, is_context_menu_enabled;
-var draw_control_chars: bool setget set_draw_control_chars, get_draw_control_chars;
-var draw_spaces: bool setget set_draw_spaces, is_drawing_spaces;
-var draw_tabs: bool setget set_draw_tabs, is_drawing_tabs;
-var focus_mode: int setget set_focus_mode, get_focus_mode;
-var highlight_all_occurrences: bool setget set_highlight_all_occurrences, is_highlight_all_occurrences_enabled;
-var highlight_current_line: bool setget set_highlight_current_line, is_highlight_current_line_enabled;
-var language: String setget set_language, get_language;
-var minimap_draw: bool setget draw_minimap, is_drawing_minimap;
-var minimap_width: int setget set_minimap_width, get_minimap_width;
-var mouse_default_cursor_shape: int setget set_default_cursor_shape, get_default_cursor_shape;
-var override_selected_font_color: bool setget set_override_selected_font_color, is_overriding_selected_font_color;
-var readonly: bool setget set_readonly, is_readonly;
-var scroll_horizontal: int setget set_h_scroll, get_h_scroll;
-var scroll_vertical: float setget set_v_scroll, get_v_scroll;
-var selecting_enabled: bool setget set_selecting_enabled, is_selecting_enabled;
-var shortcut_keys_enabled: bool setget set_shortcut_keys_enabled, is_shortcut_keys_enabled;
-var smooth_scrolling: bool setget set_smooth_scroll_enable, is_smooth_scroll_enabled;
-var structured_text_bidi_override: int setget set_structured_text_bidi_override, get_structured_text_bidi_override;
-var structured_text_bidi_override_options: Array setget set_structured_text_bidi_override_options, get_structured_text_bidi_override_options;
-var syntax_highlighter: SyntaxHighlighter setget set_syntax_highlighter, get_syntax_highlighter;
-var text: String setget set_text, get_text;
-var text_direction: int setget set_text_direction, get_text_direction;
-var v_scroll_speed: float setget set_v_scroll_speed, get_v_scroll_speed;
-var virtual_keyboard_enabled: bool setget set_virtual_keyboard_enabled, is_virtual_keyboard_enabled;
-var wrap_enabled: bool setget set_wrap_enabled, is_wrap_enabled;
+var caret_blink: bool;
+var caret_blink_speed: float;
+var caret_block_mode: bool;
+var caret_mid_grapheme: bool;
+var caret_moving_by_right_click: bool;
+var context_menu_enabled: bool;
+var draw_control_chars: bool;
+var draw_spaces: bool;
+var draw_tabs: bool;
+var focus_mode: int;
+var highlight_all_occurrences: bool;
+var highlight_current_line: bool;
+var language: String;
+var minimap_draw: bool;
+var minimap_width: int;
+var mouse_default_cursor_shape: int;
+var override_selected_font_color: bool;
+var readonly: bool;
+var scroll_horizontal: int;
+var scroll_vertical: float;
+var selecting_enabled: bool;
+var shortcut_keys_enabled: bool;
+var smooth_scrolling: bool;
+var structured_text_bidi_override: int;
+var structured_text_bidi_override_options: Array;
+var syntax_highlighter: SyntaxHighlighter;
+var text: String;
+var text_direction: int;
+var v_scroll_speed: float;
+var virtual_keyboard_enabled: bool;
+var wrap_enabled: bool;
 
 func _backspace() -> void:
     pass;
-
 func add_gutter(at: int) -> void:
     pass;
-
 func backspace() -> void:
     pass;
-
 func center_viewport_to_cursor() -> void:
     pass;
-
 func clear_opentype_features() -> void:
     pass;
-
 func clear_undo_history() -> void:
     pass;
-
 func copy() -> void:
     pass;
-
 func cursor_get_column() -> int:
     pass;
-
 func cursor_get_line() -> int:
     pass;
-
 func cursor_set_column(column: int, adjust_viewport: bool) -> void:
     pass;
-
 func cursor_set_line(line: int, adjust_viewport: bool, can_be_hidden: bool, wrap_index: int) -> void:
     pass;
-
 func cut() -> void:
     pass;
-
 func delete_selection() -> void:
     pass;
-
 func deselect() -> void:
     pass;
-
 func get_caret_draw_pos() -> Vector2:
     pass;
-
 func get_first_non_whitespace_column(line: int) -> int:
     pass;
-
 func get_gutter_count() -> int:
     pass;
-
 func get_gutter_name(gutter: int) -> String:
     pass;
-
 func get_gutter_type(gutter: int) -> int:
     pass;
-
 func get_gutter_width(gutter: int) -> int:
     pass;
-
 func get_indent_level(line: int) -> int:
     pass;
-
 func get_line(line: int) -> String:
     pass;
-
 func get_line_background_color(line: int) -> Color:
     pass;
-
 func get_line_count() -> int:
     pass;
-
 func get_line_gutter_icon(line: int, gutter: int) -> Texture2D:
     pass;
-
 func get_line_gutter_item_color(line: int, gutter: int) -> Color:
     pass;
-
 func get_line_gutter_metadata(line: int, gutter: int) -> Variant:
     pass;
-
 func get_line_gutter_text(line: int, gutter: int) -> String:
     pass;
-
 func get_menu() -> PopupMenu:
     pass;
-
 func get_opentype_feature(tag: String) -> int:
     pass;
-
 func get_selection_column() -> int:
     pass;
-
 func get_selection_from_column() -> int:
     pass;
-
 func get_selection_from_line() -> int:
     pass;
-
 func get_selection_line() -> int:
     pass;
-
 func get_selection_mode() -> int:
     pass;
-
 func get_selection_text() -> String:
     pass;
-
 func get_selection_to_column() -> int:
     pass;
-
 func get_selection_to_line() -> int:
     pass;
-
 func get_tab_size() -> int:
     pass;
-
 func get_visible_line_count() -> int:
     pass;
-
 func get_word_under_cursor() -> String:
     pass;
-
 func insert_text_at_cursor(text: String) -> void:
     pass;
-
 func is_caret_visible() -> bool:
     pass;
-
 func is_gutter_clickable(gutter: int) -> bool:
     pass;
-
 func is_gutter_drawn(gutter: int) -> bool:
     pass;
-
 func is_gutter_overwritable(gutter: int) -> bool:
     pass;
-
 func is_line_gutter_clickable(line: int, gutter: int) -> bool:
     pass;
-
 func is_selection_active() -> bool:
     pass;
-
 func menu_option(option: int) -> void:
     pass;
-
 func merge_gutters(from_line: int, to_line: int) -> void:
     pass;
-
 func paste() -> void:
     pass;
-
 func redo() -> void:
     pass;
-
 func remove_gutter(gutter: int) -> void:
     pass;
-
 func search(key: String, flags: int, from_line: int, from_column: int) -> Dictionary:
     pass;
-
 func select(from_line: int, from_column: int, to_line: int, to_column: int) -> void:
     pass;
-
 func select_all() -> void:
     pass;
-
 func set_gutter_clickable(gutter: int, clickable: bool) -> void:
     pass;
-
 func set_gutter_custom_draw(column: int, object: Object, callback: StringName) -> void:
     pass;
-
 func set_gutter_draw(gutter: int, draw: bool) -> void:
     pass;
-
 func set_gutter_name(gutter: int, name: String) -> void:
     pass;
-
 func set_gutter_overwritable(gutter: int, overwritable: bool) -> void:
     pass;
-
 func set_gutter_type(gutter: int, type: int) -> void:
     pass;
-
 func set_gutter_width(gutter: int, width: int) -> void:
     pass;
-
 func set_line(line: int, new_text: String) -> void:
     pass;
-
 func set_line_background_color(line: int, color: Color) -> void:
     pass;
-
 func set_line_gutter_clickable(line: int, gutter: int, clickable: bool) -> void:
     pass;
-
 func set_line_gutter_icon(line: int, gutter: int, icon: Texture2D) -> void:
     pass;
-
 func set_line_gutter_item_color(line: int, gutter: int, color: Color) -> void:
     pass;
-
 func set_line_gutter_metadata(line: int, gutter: int, metadata: Variant) -> void:
     pass;
-
 func set_line_gutter_text(line: int, gutter: int, text: String) -> void:
     pass;
-
 func set_opentype_feature(tag: String, value: int) -> void:
     pass;
-
 func set_selection_mode(mode: int, line: int, column: int) -> void:
     pass;
-
 func set_tab_size(size: int) -> void:
     pass;
-
 func undo() -> void:
     pass;
-

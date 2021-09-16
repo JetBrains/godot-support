@@ -1,6 +1,6 @@
 resources: onready check
 
-TopLevel: enumDecl, innerClass
+TopLevel: innerClass
 syntax: @"Node/Label"
 
 obarvení stringu """ """ při změně -> out of bounds

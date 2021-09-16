@@ -9,10 +9,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.endOffset
-import gdscript.psi.GdClassVarDeclTl
-import gdscript.psi.GdConstDeclTl
-import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdTypes
+import gdscript.psi.*
 
 class GdAddReturnType : BaseIntentionAction {
 
@@ -39,6 +36,8 @@ class GdAddReturnType : BaseIntentionAction {
             is GdMethodDeclTl -> methodDecl();
             is GdClassVarDeclTl -> classVarDecl();
             is GdConstDeclTl -> constDecl();
+            is GdConstDeclSt -> constDeclSt();
+            is GdVarDeclSt -> varDeclSt();
             else -> null;
         } ?: return;
 
@@ -75,6 +74,20 @@ class GdAddReturnType : BaseIntentionAction {
     private fun constDecl(): Pair<Int, String>? {
         val el = element as GdConstDeclTl;
         val offset = el.constIdNmi?.endOffset ?: return null;
+
+        return Pair(offset, ": $desired");
+    }
+
+    private fun varDeclSt(): Pair<Int, String> {
+        val el = element as GdVarDeclSt;
+        val offset = el.varNmi.endOffset;
+
+        return Pair(offset, ": $desired");
+    }
+
+    private fun constDeclSt(): Pair<Int, String> {
+        val el = element as GdConstDeclSt;
+        val offset = el.varNmi.endOffset;
 
         return Pair(offset, ": $desired");
     }

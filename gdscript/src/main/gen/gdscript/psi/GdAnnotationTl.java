@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface GdAnnotationTl extends GdTopLevelDecl {
 
   @NotNull
-  GdAnnotation getAnnotation();
-
-  @NotNull
   List<GdLiteralEx> getLiteralExList();
 
 }

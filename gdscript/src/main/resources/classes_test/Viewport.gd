@@ -1,6 +1,5 @@
 extends Node
 class_name Viewport
-
 const SHADOW_ATLAS_QUADRANT_SUBDIV_DISABLED = 0;
 const SHADOW_ATLAS_QUADRANT_SUBDIV_1 = 1;
 const SHADOW_ATLAS_QUADRANT_SUBDIV_4 = 2;
@@ -68,97 +67,77 @@ const SDF_SCALE_50_PERCENT = 1;
 const SDF_SCALE_25_PERCENT = 2;
 const SDF_SCALE_MAX = 3;
 
-var audio_listener_enable_2d: bool setget set_as_audio_listener_2d, is_audio_listener_2d;
-var audio_listener_enable_3d: bool setget set_as_audio_listener, is_audio_listener;
-var canvas_item_default_texture_filter: int setget set_default_canvas_item_texture_filter, get_default_canvas_item_texture_filter;
-var canvas_item_default_texture_repeat: int setget set_default_canvas_item_texture_repeat, get_default_canvas_item_texture_repeat;
-var canvas_transform: Transform2D setget set_canvas_transform, get_canvas_transform;
-var debug_draw: int setget set_debug_draw, get_debug_draw;
-var disable_3d: bool setget set_disable_3d, is_3d_disabled;
-var global_canvas_transform: Transform2D setget set_global_canvas_transform, get_global_canvas_transform;
-var gui_disable_input: bool setget set_disable_input, is_input_disabled;
-var gui_embed_subwindows: bool setget set_embed_subwindows_hint, get_embed_subwindows_hint;
-var gui_snap_controls_to_pixels: bool setget set_snap_controls_to_pixels, is_snap_controls_to_pixels_enabled;
-var handle_input_locally: bool setget set_handle_input_locally, is_handling_input_locally;
-var lod_threshold: float setget set_lod_threshold, get_lod_threshold;
-var msaa: int setget set_msaa, get_msaa;
-var own_world_3d: bool setget set_use_own_world_3d, is_using_own_world_3d;
-var physics_object_picking: bool setget set_physics_object_picking, get_physics_object_picking;
-var screen_space_aa: int setget set_screen_space_aa, get_screen_space_aa;
-var sdf_oversize: int setget set_sdf_oversize, get_sdf_oversize;
-var sdf_scale: int setget set_sdf_scale, get_sdf_scale;
-var shadow_atlas_16_bits: bool setget set_shadow_atlas_16_bits, get_shadow_atlas_16_bits;
-var shadow_atlas_quad_0: int setget set_shadow_atlas_quadrant_subdiv, get_shadow_atlas_quadrant_subdiv;
-var shadow_atlas_quad_1: int setget set_shadow_atlas_quadrant_subdiv, get_shadow_atlas_quadrant_subdiv;
-var shadow_atlas_quad_2: int setget set_shadow_atlas_quadrant_subdiv, get_shadow_atlas_quadrant_subdiv;
-var shadow_atlas_quad_3: int setget set_shadow_atlas_quadrant_subdiv, get_shadow_atlas_quadrant_subdiv;
-var shadow_atlas_size: int setget set_shadow_atlas_size, get_shadow_atlas_size;
-var snap_2d_transforms_to_pixel: bool setget set_snap_2d_transforms_to_pixel, is_snap_2d_transforms_to_pixel_enabled;
-var snap_2d_vertices_to_pixel: bool setget set_snap_2d_vertices_to_pixel, is_snap_2d_vertices_to_pixel_enabled;
-var transparent_bg: bool setget set_transparent_background, has_transparent_background;
-var use_debanding: bool setget set_use_debanding, is_using_debanding;
-var use_occlusion_culling: bool setget set_use_occlusion_culling, is_using_occlusion_culling;
-var use_xr: bool setget set_use_xr, is_using_xr;
-var world_2d: World2D setget set_world_2d, get_world_2d;
-var world_3d: World3D setget set_world_3d, get_world_3d;
+var audio_listener_enable_2d: bool;
+var audio_listener_enable_3d: bool;
+var canvas_item_default_texture_filter: int;
+var canvas_item_default_texture_repeat: int;
+var canvas_transform: Transform2D;
+var debug_draw: int;
+var disable_3d: bool;
+var global_canvas_transform: Transform2D;
+var gui_disable_input: bool;
+var gui_embed_subwindows: bool;
+var gui_snap_controls_to_pixels: bool;
+var handle_input_locally: bool;
+var lod_threshold: float;
+var msaa: int;
+var own_world_3d: bool;
+var physics_object_picking: bool;
+var screen_space_aa: int;
+var sdf_oversize: int;
+var sdf_scale: int;
+var shadow_atlas_16_bits: bool;
+var shadow_atlas_quad_0: int;
+var shadow_atlas_quad_1: int;
+var shadow_atlas_quad_2: int;
+var shadow_atlas_quad_3: int;
+var shadow_atlas_size: int;
+var snap_2d_transforms_to_pixel: bool;
+var snap_2d_vertices_to_pixel: bool;
+var transparent_bg: bool;
+var use_debanding: bool;
+var use_occlusion_culling: bool;
+var use_xr: bool;
+var world_2d: World2D;
+var world_3d: World3D;
 
 func find_world_2d() -> World2D:
     pass;
-
 func find_world_3d() -> World3D:
     pass;
-
 func get_camera() -> Camera3D:
     pass;
-
 func get_final_transform() -> Transform2D:
     pass;
-
 func get_mouse_position() -> Vector2:
     pass;
-
 func get_render_info(type: int, info: int) -> int:
     pass;
-
 func get_shadow_atlas_quadrant_subdiv(quadrant: int) -> int:
     pass;
-
 func get_texture() -> ViewportTexture:
     pass;
-
 func get_viewport_rid() -> RID:
     pass;
-
 func get_visible_rect() -> Rect2:
     pass;
-
 func gui_get_drag_data() -> Variant:
     pass;
-
 func gui_is_dragging() -> bool:
     pass;
-
 func input(event: InputEvent, in_local_coords: bool) -> void:
     pass;
-
 func input_text(text: String) -> void:
     pass;
-
 func is_embedding_subwindows() -> bool:
     pass;
-
 func is_input_handled() -> bool:
     pass;
-
 func set_input_as_handled() -> void:
     pass;
-
 func set_shadow_atlas_quadrant_subdiv(quadrant: int, subdiv: int) -> void:
     pass;
-
 func unhandled_input(event: InputEvent, in_local_coords: bool) -> void:
     pass;
-
 func warp_mouse(to_position: Vector2) -> void:
     pass;
-

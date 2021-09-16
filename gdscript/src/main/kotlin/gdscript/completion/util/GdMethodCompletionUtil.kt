@@ -1,6 +1,7 @@
 package gdscript.completion.util
 
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.lookup.LookupElement
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.GdMethodDeclTl
@@ -20,6 +21,17 @@ object GdMethodCompletionUtil {
                 priority = GdLookup.USER_DEFINED,
             ))
         }
+    }
+
+    fun lookup(method: GdMethodDeclTl): LookupElement {
+        return GdLookup.create(
+            method.name.orEmpty(),
+            lookup = "()",
+            presentable = method.name.orEmpty(),
+            typed = method.returnType,
+            icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
+            priority = GdLookup.USER_DEFINED,
+        );
     }
 
 }

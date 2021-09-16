@@ -11,6 +11,6 @@ public interface GdIsEx extends GdExpr {
   GdExpr getExpr();
 
   @NotNull
-  GdTypeHintNm getTypeHintNm();
+  GdIsTyped getIsTyped();
 
 }

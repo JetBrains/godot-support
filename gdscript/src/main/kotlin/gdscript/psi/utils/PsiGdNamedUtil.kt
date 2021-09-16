@@ -40,12 +40,15 @@ object PsiGdNamedUtil {
         constant: Boolean = true,
         enum: Boolean = true,
         includingSelf: Boolean = false,
+        containingFile: PsiFile? = null,
     ): PsiElement? {
+        val psiFile = containingFile ?: element.containingFile;
+
         var parentName: String? =
-            PsiTreeUtil.getChildOfType(element.containingFile, GdInheritance::class.java)?.inheritanceName;
+            PsiTreeUtil.getChildOfType(psiFile, GdInheritance::class.java)?.inheritanceName;
         val thisName = element.name.orEmpty();
         if (includingSelf) {
-            lookFor(element.containingFile, thisName, element.project, constant, variable, method, enum)?.let {
+            lookFor(psiFile.originalFile, thisName, element.project, constant, variable, method, enum)?.let {
                 return it
             }
         }
@@ -58,7 +61,7 @@ object PsiGdNamedUtil {
                 return null;
             }
 
-            lookFor(parent.containingFile, thisName, element.project, constant, variable, method, enum)?.let {
+            lookFor(parent.containingFile.originalFile, thisName, element.project, constant, variable, method, enum)?.let {
                 return it
             }
 
@@ -120,6 +123,7 @@ object PsiGdNamedUtil {
     }
 
     fun setName(element: GdNamedElement, newName: String?): PsiElement {
+        // TODO INF u const + signal u param name
         val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
         if (keyNode != null) {
             val id = GdElementFactory.identifier(element.project, newName!!)
@@ -129,8 +133,9 @@ object PsiGdNamedUtil {
     }
 
     fun getName(element: GdNamedElement): String {
-        val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
-        return valueNode?.text ?: ""
+        /*val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
+        return valueNode?.text ?: ""*/
+        return element.text;
     }
 
     fun getNameIdentifier(element: GdNamedIdElement): PsiElement? {

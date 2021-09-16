@@ -47,7 +47,7 @@ STRING_MARKER_REV = [^\"\'\n\r]*
 //ML_STRING = \"\"\"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'\"\"\"
 
 COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
-ANNOTATOR = "@"[a-zA-Z]*
+ANNOTATOR = "@"[a-zA-Z_]*
 NODE_PATH_LEX = "$"[a-zA-Z0-9_]*
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="

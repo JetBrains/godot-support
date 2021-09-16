@@ -1,6 +1,5 @@
 extends RefCounted
 class_name HTTPClient
-
 const METHOD_GET = 0;
 const METHOD_HEAD = 1;
 const METHOD_POST = 2;
@@ -83,49 +82,35 @@ const RESPONSE_LOOP_DETECTED = 508;
 const RESPONSE_NOT_EXTENDED = 510;
 const RESPONSE_NETWORK_AUTH_REQUIRED = 511;
 
-var blocking_mode_enabled: bool setget set_blocking_mode, is_blocking_mode_enabled;
-var connection: StreamPeer setget set_connection, get_connection;
-var read_chunk_size: int setget set_read_chunk_size, get_read_chunk_size;
+var blocking_mode_enabled: bool;
+var connection: StreamPeer;
+var read_chunk_size: int;
 
 func close() -> void:
     pass;
-
 func connect_to_host(host: String, port: int, use_ssl: bool, verify_host: bool) -> int:
     pass;
-
 func get_response_body_length() -> int:
     pass;
-
 func get_response_code() -> int:
     pass;
-
 func get_response_headers() -> PackedStringArray:
     pass;
-
 func get_response_headers_as_dictionary() -> Dictionary:
     pass;
-
 func get_status() -> int:
     pass;
-
 func has_response() -> bool:
     pass;
-
 func is_response_chunked() -> bool:
     pass;
-
 func poll() -> int:
     pass;
-
 func query_string_from_dict(fields: Dictionary) -> String:
     pass;
-
 func read_response_body_chunk() -> PackedByteArray:
     pass;
-
 func request(method: int, url: String, headers: PackedStringArray, body: String) -> int:
     pass;
-
 func request_raw(method: int, url: String, headers: PackedStringArray, body: PackedByteArray) -> int:
     pass;
-

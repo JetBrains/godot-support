@@ -8,23 +8,40 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdAnnotationImpl extends ASTWrapperPsiElement implements GdAnnotation {
+public class GdTypeHintArrayNmImpl extends GdNamedElementImpl implements GdTypeHintArrayNm {
 
-  public GdAnnotationImpl(@NotNull ASTNode node) {
+  public GdTypeHintArrayNmImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitAnnotation(this);
+    visitor.visitTypeHintArrayNm(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public GdBuiltInType getBuiltInType() {
+    return PsiTreeUtil.getChildOfType(this, GdBuiltInType.class);
+  }
+
+  @Override
+  @NotNull
+  public String getName() {
+    return GdPsiUtils.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement setName(@Nullable String newName) {
+    return GdPsiUtils.setName(this, newName);
   }
 
 }

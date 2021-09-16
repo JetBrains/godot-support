@@ -1,6 +1,5 @@
 extends VisualShaderNode
 class_name VisualShaderNodeCompare
-
 const CTYPE_SCALAR = 0;
 const CTYPE_SCALAR_INT = 1;
 const CTYPE_VECTOR = 2;
@@ -15,7 +14,7 @@ const FUNC_LESS_THAN_EQUAL = 5;
 const COND_ALL = 0;
 const COND_ANY = 1;
 
-var condition: int setget set_condition, get_condition;
-var function: int setget set_function, get_function;
-var type: int setget set_comparison_type, get_comparison_type;
+var condition: int;
+var function: int;
+var type: int;
 

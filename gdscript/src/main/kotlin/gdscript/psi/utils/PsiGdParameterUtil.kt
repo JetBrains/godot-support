@@ -28,7 +28,8 @@ object PsiGdParameterUtil {
         while (child != null) {
             if (child is GdParam) {
                 val id = child.firstChild?.text;
-                params[id.orEmpty()] = child.typed?.typeHintNm?.name;
+                params[id.orEmpty()] = PsiGdExprUtil.fromTyped(child.typed);
+                // params[id.orEmpty()] = child.typed?.typeHintNm?.name;
             }
             child = child.nextSibling;
         }

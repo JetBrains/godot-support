@@ -35,8 +35,8 @@ public class GdCastExImpl extends GdExprImpl implements GdCastEx {
 
   @Override
   @NotNull
-  public GdTypeHintNm getTypeHintNm() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdTypeHintNm.class));
+  public GdIsTyped getIsTyped() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdIsTyped.class));
   }
 
 }

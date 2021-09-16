@@ -1,5 +1,4 @@
 class_name Vector3i
-
 const AXIS_X = 0;
 const AXIS_Y = 1;
 const AXIS_Z = 2;
@@ -12,91 +11,25 @@ const DOWN = Vector3i(0, -1, 0);
 const FORWARD = Vector3i(0, 0, -1);
 const BACK = Vector3i(0, 0, 1);
 
-var x: int setget , ;
-var y: int setget , ;
-var z: int setget , ;
+var x: int;
+var y: int;
+var z: int;
 
 func Vector3i() -> Vector3i:
     pass;
-
 func Vector3i(from: Vector3i) -> Vector3i:
     pass;
-
 func Vector3i(from: Vector3) -> Vector3i:
     pass;
-
 func Vector3i(x: int, y: int, z: int) -> Vector3i:
     pass;
-
 func abs() -> Vector3i:
     pass;
-
 func clamp(min: Vector3i, max: Vector3i) -> Vector3i:
     pass;
-
 func max_axis() -> int:
     pass;
-
 func min_axis() -> int:
     pass;
-
-func operator !=(right: Vector3i) -> bool:
-    pass;
-
-func operator %(right: Vector3i) -> Vector3i:
-    pass;
-
-func operator %(right: int) -> Vector3i:
-    pass;
-
-func operator *(right: Vector3i) -> Vector3i:
-    pass;
-
-func operator *(right: float) -> Vector3i:
-    pass;
-
-func operator *(right: int) -> Vector3i:
-    pass;
-
-func operator +(right: Vector3i) -> Vector3i:
-    pass;
-
-func operator -(right: Vector3i) -> Vector3i:
-    pass;
-
-func operator /(right: Vector3i) -> Vector3i:
-    pass;
-
-func operator /(right: float) -> Vector3i:
-    pass;
-
-func operator /(right: int) -> Vector3i:
-    pass;
-
-func operator <(right: Vector3i) -> bool:
-    pass;
-
-func operator <=(right: Vector3i) -> bool:
-    pass;
-
-func operator ==(right: Vector3i) -> bool:
-    pass;
-
-func operator >(right: Vector3i) -> bool:
-    pass;
-
-func operator >=(right: Vector3i) -> bool:
-    pass;
-
-func operator [](index: int) -> int:
-    pass;
-
-func operator unary+() -> Vector3i:
-    pass;
-
-func operator unary-() -> Vector3i:
-    pass;
-
 func sign() -> Vector3i:
     pass;
-

@@ -1,6 +1,5 @@
 extends Resource
 class_name Image
-
 const MAX_WIDTH = 16777216;
 const MAX_HEIGHT = 16777216;
 const FORMAT_L8 = 0;
@@ -66,167 +65,113 @@ const COMPRESS_SOURCE_GENERIC = 0;
 const COMPRESS_SOURCE_SRGB = 1;
 const COMPRESS_SOURCE_NORMAL = 2;
 
-var data: Dictionary setget _set_data, _get_data;
+var data: Dictionary;
 
 func adjust_bcs(brightness: float, contrast: float, saturation: float) -> void:
     pass;
-
 func blend_rect(src: Image, src_rect: Rect2, dst: Vector2) -> void:
     pass;
-
 func blend_rect_mask(src: Image, mask: Image, src_rect: Rect2, dst: Vector2) -> void:
     pass;
-
 func blit_rect(src: Image, src_rect: Rect2, dst: Vector2) -> void:
     pass;
-
 func blit_rect_mask(src: Image, mask: Image, src_rect: Rect2, dst: Vector2) -> void:
     pass;
-
 func bump_map_to_normal_map(bump_scale: float) -> void:
     pass;
-
 func clear_mipmaps() -> void:
     pass;
-
 func compress(mode: int, source: int, lossy_quality: float) -> int:
     pass;
-
 func compress_from_channels(mode: int, channels: int, lossy_quality: float) -> int:
     pass;
-
 func convert(format: int) -> void:
     pass;
-
 func copy_from(src: Image) -> void:
     pass;
-
 func create(width: int, height: int, use_mipmaps: bool, format: int) -> void:
     pass;
-
 func create_from_data(width: int, height: int, use_mipmaps: bool, format: int, data: PackedByteArray) -> void:
     pass;
-
 func crop(width: int, height: int) -> void:
     pass;
-
 func decompress() -> int:
     pass;
-
 func detect_alpha() -> int:
     pass;
-
 func detect_used_channels(source: int) -> int:
     pass;
-
 func fill(color: Color) -> void:
     pass;
-
 func fix_alpha_edges() -> void:
     pass;
-
 func flip_x() -> void:
     pass;
-
 func flip_y() -> void:
     pass;
-
 func generate_mipmaps(renormalize: bool) -> int:
     pass;
-
 func get_data() -> PackedByteArray:
     pass;
-
 func get_format() -> int:
     pass;
-
 func get_height() -> int:
     pass;
-
 func get_mipmap_offset(mipmap: int) -> int:
     pass;
-
 func get_pixel(x: int, y: int) -> Color:
     pass;
-
 func get_pixelv(point: Vector2i) -> Color:
     pass;
-
 func get_rect(rect: Rect2) -> Image:
     pass;
-
 func get_size() -> Vector2:
     pass;
-
 func get_used_rect() -> Rect2:
     pass;
-
 func get_width() -> int:
     pass;
-
 func has_mipmaps() -> bool:
     pass;
-
 func is_compressed() -> bool:
     pass;
-
 func is_empty() -> bool:
     pass;
-
 func is_invisible() -> bool:
     pass;
-
 func load(path: String) -> int:
     pass;
-
 func load_bmp_from_buffer(buffer: PackedByteArray) -> int:
     pass;
-
 func load_jpg_from_buffer(buffer: PackedByteArray) -> int:
     pass;
-
 func load_png_from_buffer(buffer: PackedByteArray) -> int:
     pass;
-
 func load_tga_from_buffer(buffer: PackedByteArray) -> int:
     pass;
-
 func load_webp_from_buffer(buffer: PackedByteArray) -> int:
     pass;
-
 func normal_map_to_xy() -> void:
     pass;
-
 func premultiply_alpha() -> void:
     pass;
-
 func resize(width: int, height: int, interpolation: int) -> void:
     pass;
-
 func resize_to_po2(square: bool, interpolation: int) -> void:
     pass;
-
 func rgbe_to_srgb() -> Image:
     pass;
-
 func save_exr(path: String, grayscale: bool) -> int:
     pass;
-
 func save_png(path: String) -> int:
     pass;
-
 func save_png_to_buffer() -> PackedByteArray:
     pass;
-
 func set_pixel(x: int, y: int, color: Color) -> void:
     pass;
-
 func set_pixelv(point: Vector2i, color: Color) -> void:
     pass;
-
 func shrink_x2() -> void:
     pass;
-
 func srgb_to_linear() -> void:
     pass;
-

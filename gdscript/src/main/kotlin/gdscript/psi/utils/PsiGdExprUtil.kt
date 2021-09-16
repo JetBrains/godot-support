@@ -3,6 +3,7 @@ package gdscript.psi.utils
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
+import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import org.intellij.markdown.flavours.gfm.table.GitHubTableMarkerProvider.Companion.contains
 import tscn.index.impl.TscnNodeIndex
@@ -13,7 +14,7 @@ object PsiGdExprUtil {
     fun getReturnType(expr: GdExpr): String {
         return when (expr) {
             is GdPlusMinusEx -> expr.expr.returnType;
-            is GdCastEx -> expr.typeHintNm.text;
+            is GdCastEx -> fromTyped(expr.isTyped);
             is GdTernaryEx -> {
                 val a = expr.exprList.getOrNull(0)?.returnType ?: "";
                 val b = expr.exprList.getOrNull(2)?.returnType ?: "";
@@ -41,10 +42,10 @@ object PsiGdExprUtil {
             is GdSignEx -> expr.expr?.returnType ?: "";
             is GdBitNotEx -> GdKeywords.INT;
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT;
-            is GdAttributeEx -> ""; // TODO gramatika
-            is GdIsEx -> expr.typeHintNm.text;
-            is GdCallEx -> ""; // TODO
-            is GdArrEx -> ""; // TODO
+            is GdAttributeEx -> expr.exprList.lastOrNull()?.returnType ?: "";
+            is GdIsEx -> fromTyped(expr.isTyped)
+            is GdCallEx -> expr.expr.returnType;
+            is GdArrEx -> fromTyped(expr.exprList.firstOrNull()?.returnType ?: "");
             is GdPrimaryEx -> {
                 when (expr.firstChild) {
                     is GdNodePath -> {
@@ -63,7 +64,24 @@ object PsiGdExprUtil {
                         return node?.type ?: "";
                     }
                     is GdDictDecl -> return "Dictionary";
-                    is GdArrayDecl -> return "Array";
+                    is GdArrayDecl -> {
+                        var type = "";
+                        expr.arrayDecl?.exprList?.forEach {
+                            val itType = it.returnType;
+                            type = if (type == itType || type == "") {
+                                itType
+                            } else {
+                                "Array";
+                            }
+                        }
+                        type = if (type.isNotEmpty() && type != "Array") {
+                            "Array[$type]";
+                        } else {
+                            "Array";
+                        }
+
+                        return type;
+                    }
                     else -> expr.expr?.returnType ?: "";
                 }
             };
@@ -77,8 +95,6 @@ object PsiGdExprUtil {
                     GdKeywords.TAU -> return GdKeywords.FLOAT;
                     GdKeywords.NAN -> return GdKeywords.NAN;
                     GdKeywords.INF -> return GdKeywords.FLOAT;
-                    // TODO
-                    //"ref" -> return "bool";
                 }
 
                 val elementType = expr.firstChild?.elementType;
@@ -94,12 +110,78 @@ object PsiGdExprUtil {
                     return GdKeywords.INT;
                 } else if (elementType == GdTypes.STRING) {
                     return GdKeywords.STR;
+                } else if (elementType == GdTypes.REF_ID_NM) {
+                    val named: GdNamedElement = expr.refIdNm ?: return "";
+                    var parentFile = expr.containingFile;
+
+                    when (val parent = expr.parent) {
+                        is GdAttributeEx -> {
+                            val first = parent.exprList.first();
+                            if (first != expr) {
+                                val parReturn = first?.returnType ?: return "";
+                                parentFile = GdClassNamingIndex
+                                    .get(parReturn, expr.project, GlobalSearchScope.allScope(expr.project))
+                                    .firstOrNull()?.containingFile ?: return "";
+                            }
+                        }
+                        // TODO
+                        /*is GdCallEx -> {
+                            val parReturn = parent.expr.returnType;
+                            named = GdClassNamingIndex
+                                .get(parReturn, expr.project, GlobalSearchScope.allScope(expr.project))
+                                .firstOrNull()?.classNameNm;
+                        }*/
+                    }
+
+                    return when (val element = PsiGdNamedUtil.findInParent(named, includingSelf = true, containingFile = parentFile)) {
+                        // TODO resolve local
+                        is GdMethodDeclTl -> element.returnType;
+                        is GdClassVarDeclTl -> element.returnType;
+                        is GdConstDeclTl -> element.returnType;
+                        is GdEnumDeclTl -> GdKeywords.INT;
+                        is GdEnumValue -> GdKeywords.INT;
+                        else -> {
+                            GdClassNamingIndex.get(text, expr.project, GlobalSearchScope.allScope(expr.project))
+                                .firstOrNull()?.classname ?: "";
+                        }
+                    }
                 }
 
                 return "";
             };
             else -> "";
         }
+    }
+
+    fun fromTyped(typed: GdTyped?): String {
+        return typed?.text?.trim(':', ' ') ?: "";
+        /*val main = typed?.typeHintNm?.text ?: return "";
+        if (main != "Array") {
+            return main;
+        }
+
+        return if (typed.typeHintArrayNm != null) {
+            "Array[${typed.typeHintArrayNm?.text}]"
+        } else {
+            main;
+        }*/
+    }
+
+    private fun fromTyped(typed: String): String {
+        if (typed.startsWith("Array")) {
+            return typed.substring(5).trim('[', ']');
+        }
+
+        return typed;
+    }
+
+    private fun fromTyped(typed: GdIsTyped): String {
+        val main = typed.typeHintNm.text;
+        if (main != "Array") {
+            return main;
+        }
+
+        return typed.typeHintArrayNm?.text ?: "";
     }
 
 }

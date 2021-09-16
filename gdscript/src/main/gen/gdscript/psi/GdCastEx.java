@@ -11,6 +11,6 @@ public interface GdCastEx extends GdExpr {
   GdExpr getExpr();
 
   @NotNull
-  GdTypeHintNm getTypeHintNm();
+  GdIsTyped getIsTyped();
 
 }

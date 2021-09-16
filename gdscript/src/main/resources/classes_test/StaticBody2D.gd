@@ -1,10 +1,9 @@
 extends PhysicsBody2D
 class_name StaticBody2D
 
-
-var constant_angular_velocity: float setget set_constant_angular_velocity, get_constant_angular_velocity;
-var constant_linear_velocity: Vector2 setget set_constant_linear_velocity, get_constant_linear_velocity;
-var kinematic_motion: bool setget set_kinematic_motion_enabled, is_kinematic_motion_enabled;
-var physics_material_override: PhysicsMaterial setget set_physics_material_override, get_physics_material_override;
-var sync_to_physics: bool setget set_sync_to_physics, is_sync_to_physics_enabled;
+var constant_angular_velocity: float;
+var constant_linear_velocity: Vector2;
+var kinematic_motion: bool;
+var physics_material_override: PhysicsMaterial;
+var sync_to_physics: bool;
 

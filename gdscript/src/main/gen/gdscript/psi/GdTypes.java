@@ -15,7 +15,6 @@ import gdscript.psi.impl.*;
 
 public interface GdTypes {
 
-  IElementType ANNOTATION = new GdElementType("ANNOTATION");
   IElementType ANNOTATION_TL = new GdElementType("ANNOTATION_TL");
   IElementType ARG_LIST = new GdElementType("ARG_LIST");
   IElementType ARRAY_DECL = new GdElementType("ARRAY_DECL");
@@ -23,7 +22,6 @@ public interface GdTypes {
   IElementType ASSERT_ST = new GdElementType("ASSERT_ST");
   IElementType ASSIGN_ST = new GdElementType("ASSIGN_ST");
   IElementType ATTRIBUTE_EX = new GdElementType("ATTRIBUTE_EX");
-  IElementType ATT_EX_NM = new GdElementType("ATT_EX_NM");
   IElementType AWAIT_ST = new GdElementType("AWAIT_ST");
   IElementType BIT_AND_EX = new GdElementType("BIT_AND_EX");
   IElementType BIT_NOT_EX = new GdElementType("BIT_NOT_EX");
@@ -55,6 +53,7 @@ public interface GdTypes {
   IElementType INHERITANCE_ID_NMI = new GdElementType("INHERITANCE_ID_NMI");
   IElementType IN_EX = new GdElementType("IN_EX");
   IElementType IS_EX = new GdElementType("IS_EX");
+  IElementType IS_TYPED = new GdElementType("IS_TYPED");
   IElementType KEY_VALUE = new GdElementType("KEY_VALUE");
   IElementType LITERAL_EX = new GdElementType("LITERAL_EX");
   IElementType LOGIC_EX = new GdElementType("LOGIC_EX");
@@ -89,6 +88,7 @@ public interface GdTypes {
   IElementType TERNARY_EX = new GdElementType("TERNARY_EX");
   IElementType TOP_LEVEL_DECL = new GdElementType("TOP_LEVEL_DECL");
   IElementType TYPED = new GdElementType("TYPED");
+  IElementType TYPE_HINT_ARRAY_NM = new GdElementType("TYPE_HINT_ARRAY_NM");
   IElementType TYPE_HINT_NM = new GdElementType("TYPE_HINT_NM");
   IElementType VAR_DECL_ST = new GdElementType("VAR_DECL_ST");
   IElementType VAR_NMI = new GdElementType("VAR_NMI");
@@ -99,6 +99,7 @@ public interface GdTypes {
   IElementType ANNOTATOR = new GdTokenType("ANNOTATOR");
   IElementType AS = new GdTokenType("AS");
   IElementType ASSERT = new GdTokenType("ASSERT");
+  IElementType ASSET = new GdTokenType("ASSET");
   IElementType ASSIGN = new GdTokenType("ASSIGN");
   IElementType AWAIT = new GdTokenType("AWAIT");
   IElementType BAD_CHARACTER = new GdTokenType("bad_character");
@@ -177,10 +178,7 @@ public interface GdTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-      if (type == ANNOTATION) {
-        return new GdAnnotationImpl(node);
-      }
-      else if (type == ANNOTATION_TL) {
+      if (type == ANNOTATION_TL) {
         return new GdAnnotationTlImpl(node);
       }
       else if (type == ARG_LIST) {
@@ -200,9 +198,6 @@ public interface GdTypes {
       }
       else if (type == ATTRIBUTE_EX) {
         return new GdAttributeExImpl(node);
-      }
-      else if (type == ATT_EX_NM) {
-        return new GdAttExNmImpl(node);
       }
       else if (type == AWAIT_ST) {
         return new GdAwaitStImpl(node);
@@ -293,6 +288,9 @@ public interface GdTypes {
       }
       else if (type == IS_EX) {
         return new GdIsExImpl(node);
+      }
+      else if (type == IS_TYPED) {
+        return new GdIsTypedImpl(node);
       }
       else if (type == KEY_VALUE) {
         return new GdKeyValueImpl(node);
@@ -389,6 +387,9 @@ public interface GdTypes {
       }
       else if (type == TYPED) {
         return new GdTypedImpl(node);
+      }
+      else if (type == TYPE_HINT_ARRAY_NM) {
+        return new GdTypeHintArrayNmImpl(node);
       }
       else if (type == TYPE_HINT_NM) {
         return new GdTypeHintNmImpl(node);

@@ -1,6 +1,5 @@
 extends Object
 class_name Performance
-
 const TIME_FPS = 0;
 const TIME_PROCESS = 1;
 const TIME_PHYSICS_PROCESS = 2;
@@ -29,22 +28,15 @@ const MONITOR_MAX = 23;
 
 func add_custom_monitor(id: StringName, callable: Callable, arguments: Array) -> void:
     pass;
-
 func get_custom_monitor(id: StringName) -> Variant:
     pass;
-
 func get_custom_monitor_names() -> Array:
     pass;
-
 func get_monitor(monitor: int) -> float:
     pass;
-
 func get_monitor_modification_time() -> int:
     pass;
-
 func has_custom_monitor(id: StringName) -> bool:
     pass;
-
 func remove_custom_monitor(id: StringName) -> void:
     pass;
-

@@ -1,6 +1,5 @@
 extends VisualShaderNode
 class_name VisualShaderNodeVectorFunc
-
 const FUNC_NORMALIZE = 0;
 const FUNC_SATURATE = 1;
 const FUNC_NEGATE = 2;
@@ -37,5 +36,5 @@ const FUNC_TANH = 32;
 const FUNC_TRUNC = 33;
 const FUNC_ONEMINUS = 34;
 
-var function: int setget set_function, get_function;
+var function: int;
 

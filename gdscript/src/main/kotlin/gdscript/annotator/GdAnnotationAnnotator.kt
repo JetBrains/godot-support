@@ -7,12 +7,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiWhiteSpace
 import gdscript.GdKeywords
 import gdscript.action.quickFix.GdRemoveAnnotationAction
-import gdscript.psi.GdAnnotation
 
 class GdAnnotationAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element !is GdAnnotation) {
+        // TODO předělat
+        /*if (element !is GdAnnotation) {
             return;
         }
 
@@ -42,7 +42,7 @@ class GdAnnotationAnnotator : Annotator {
             }
 
             previous = previous.prevSibling;
-        }
+        }*/
     }
 
 }

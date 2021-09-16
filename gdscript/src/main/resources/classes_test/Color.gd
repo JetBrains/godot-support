@@ -1,5 +1,4 @@
 class_name Color
-
 const ALICE_BLUE = Color(0.94, 0.97, 1, 1);
 const ANTIQUE_WHITE = Color(0.98, 0.92, 0.84, 1);
 const AQUA = Color(0, 1, 1, 1);
@@ -147,147 +146,77 @@ const WHITE_SMOKE = Color(0.96, 0.96, 0.96, 1);
 const YELLOW = Color(1, 1, 0, 1);
 const YELLOW_GREEN = Color(0.6, 0.8, 0.2, 1);
 
-var a: float setget , ;
-var a8: int setget , ;
-var b: float setget , ;
-var b8: int setget , ;
-var g: float setget , ;
-var g8: int setget , ;
-var h: float setget , ;
-var r: float setget , ;
-var r8: int setget , ;
-var s: float setget , ;
-var v: float setget , ;
+var a: float;
+var a8: int;
+var b: float;
+var b8: int;
+var g: float;
+var g8: int;
+var h: float;
+var r: float;
+var r8: int;
+var s: float;
+var v: float;
 
 func Color() -> Color:
     pass;
-
 func Color(from: Color) -> Color:
     pass;
-
 func Color(from: Color, alpha: float) -> Color:
     pass;
-
 func Color(code: String) -> Color:
     pass;
-
 func Color(code: String, alpha: float) -> Color:
     pass;
-
 func Color(r: float, g: float, b: float, a: float) -> Color:
     pass;
-
 func Color(r: float, g: float, b: float) -> Color:
     pass;
-
 func blend(over: Color) -> Color:
     pass;
-
 func clamp(min: Color, max: Color) -> Color:
     pass;
-
 func darkened(amount: float) -> Color:
     pass;
-
 func find_named_color(name: String) -> int:
     pass;
-
 func from_rgbe9995(rgbe: int) -> Color:
     pass;
-
 func from_string(str: String, default: Color) -> Color:
     pass;
-
 func get_named_color(idx: int) -> Color:
     pass;
-
 func get_named_color_count() -> int:
     pass;
-
 func get_named_color_name(idx: int) -> String:
     pass;
-
 func hex(hex: int) -> Color:
     pass;
-
 func hex64(hex: int) -> Color:
     pass;
-
 func html(rgba: String) -> Color:
     pass;
-
 func html_is_valid(color: String) -> bool:
     pass;
-
 func inverted() -> Color:
     pass;
-
 func is_equal_approx(to: Color) -> bool:
     pass;
-
 func lerp(to: Color, weight: float) -> Color:
     pass;
-
 func lightened(amount: float) -> Color:
     pass;
-
-func operator !=(right: Color) -> bool:
-    pass;
-
-func operator *(right: Color) -> Color:
-    pass;
-
-func operator *(right: float) -> Color:
-    pass;
-
-func operator *(right: int) -> Color:
-    pass;
-
-func operator +(right: Color) -> Color:
-    pass;
-
-func operator -(right: Color) -> Color:
-    pass;
-
-func operator /(right: Color) -> Color:
-    pass;
-
-func operator /(right: float) -> Color:
-    pass;
-
-func operator /(right: int) -> Color:
-    pass;
-
-func operator ==(right: Color) -> bool:
-    pass;
-
-func operator [](index: int) -> float:
-    pass;
-
-func operator unary+() -> Color:
-    pass;
-
-func operator unary-() -> Color:
-    pass;
-
 func to_abgr32() -> int:
     pass;
-
 func to_abgr64() -> int:
     pass;
-
 func to_argb32() -> int:
     pass;
-
 func to_argb64() -> int:
     pass;
-
 func to_html(with_alpha: bool) -> String:
     pass;
-
 func to_rgba32() -> int:
     pass;
-
 func to_rgba64() -> int:
     pass;
-

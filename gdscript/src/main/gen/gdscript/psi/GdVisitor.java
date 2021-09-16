@@ -7,10 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public class GdVisitor extends PsiElementVisitor {
 
-  public void visitAnnotation(@NotNull GdAnnotation o) {
-    visitPsiElement(o);
-  }
-
   public void visitAnnotationTl(@NotNull GdAnnotationTl o) {
     visitTopLevelDecl(o);
   }
@@ -33,10 +29,6 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitAssignSt(@NotNull GdAssignSt o) {
     visitStmt(o);
-  }
-
-  public void visitAttExNm(@NotNull GdAttExNm o) {
-    visitNamedElement(o);
   }
 
   public void visitAttributeEx(@NotNull GdAttributeEx o) {
@@ -161,6 +153,10 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitInheritanceIdNmi(@NotNull GdInheritanceIdNmi o) {
     visitNamedIdElement(o);
+  }
+
+  public void visitIsTyped(@NotNull GdIsTyped o) {
+    visitPsiElement(o);
   }
 
   public void visitIsEx(@NotNull GdIsEx o) {
@@ -297,6 +293,10 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitTopLevelDecl(@NotNull GdTopLevelDecl o) {
     visitPsiElement(o);
+  }
+
+  public void visitTypeHintArrayNm(@NotNull GdTypeHintArrayNm o) {
+    visitNamedElement(o);
   }
 
   public void visitTypeHintNm(@NotNull GdTypeHintNm o) {

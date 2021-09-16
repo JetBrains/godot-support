@@ -28,9 +28,9 @@ public class GdReturnStmtImpl extends ASTWrapperPsiElement implements GdReturnSt
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdEndStmt getEndStmt() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdEndStmt.class));
+    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
   }
 
   @Override

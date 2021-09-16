@@ -29,12 +29,6 @@ public class GdAnnotationTlImpl extends GdTopLevelDeclImpl implements GdAnnotati
 
   @Override
   @NotNull
-  public GdAnnotation getAnnotation() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdAnnotation.class));
-  }
-
-  @Override
-  @NotNull
   public List<GdLiteralEx> getLiteralExList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, GdLiteralEx.class);
   }

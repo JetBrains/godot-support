@@ -5,7 +5,6 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PsiJavaPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
-import gdscript.psi.GdRefIdNm
 import gdscript.psi.GdTypes
 import gdscript.reference.GdTypeHintReference
 
@@ -15,10 +14,13 @@ class GdTypeHintReferenceContributor : PsiReferenceContributor() {
         register.registerReferenceProvider(
             PlatformPatterns.or(
                 psiElement(GdTypes.TYPE_HINT_NM),
-                psiElement(GdTypes.REF_ID_NM),
+                //GdRefIdCompletionUtil.DIRECT_REF,
             ),
             object : PsiReferenceProvider() {
-                override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
+                override fun getReferencesByElement(
+                    element: PsiElement,
+                    context: ProcessingContext,
+                ): Array<PsiReference> {
                     return arrayOf(GdTypeHintReference(element, TextRange(0, element.textLength)));
                 }
             }

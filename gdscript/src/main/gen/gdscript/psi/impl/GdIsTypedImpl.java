@@ -8,16 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdAttExNmImpl extends GdNamedElementImpl implements GdAttExNm {
+public class GdIsTypedImpl extends ASTWrapperPsiElement implements GdIsTyped {
 
-  public GdAttExNmImpl(ASTNode node) {
+  public GdIsTypedImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitAttExNm(this);
+    visitor.visitIsTyped(this);
   }
 
   @Override
@@ -27,15 +28,15 @@ public class GdAttExNmImpl extends GdNamedElementImpl implements GdAttExNm {
   }
 
   @Override
-  @NotNull
-  public String getName() {
-    return GdPsiUtils.getName(this);
+  @Nullable
+  public GdTypeHintArrayNm getTypeHintArrayNm() {
+    return PsiTreeUtil.getChildOfType(this, GdTypeHintArrayNm.class);
   }
 
   @Override
   @NotNull
-  public PsiElement setName(@Nullable String newName) {
-    return GdPsiUtils.setName(this, newName);
+  public GdTypeHintNm getTypeHintNm() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdTypeHintNm.class));
   }
 
 }

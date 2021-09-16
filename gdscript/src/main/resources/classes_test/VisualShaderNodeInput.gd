@@ -1,9 +1,7 @@
 extends VisualShaderNode
 class_name VisualShaderNodeInput
 
-
-var input_name: String setget set_input_name, get_input_name;
+var input_name: String;
 
 func get_input_real_name() -> String:
     pass;
-
