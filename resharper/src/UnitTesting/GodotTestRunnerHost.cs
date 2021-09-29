@@ -11,11 +11,11 @@ using JetBrains.Core;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features;
-using JetBrains.ReSharper.UnitTestFramework;
-using JetBrains.ReSharper.UnitTestFramework.Extensions;
-using JetBrains.ReSharper.UnitTestFramework.Launch;
-using JetBrains.ReSharper.UnitTestFramework.Processes;
-using JetBrains.ReSharper.UnitTestFramework.TestRunner;
+using JetBrains.ReSharper.UnitTestFramework.Common.Extensions;
+using JetBrains.ReSharper.UnitTestFramework.Common.Processes;
+using JetBrains.ReSharper.UnitTestFramework.Execution.Hosting;
+using JetBrains.ReSharper.UnitTestFramework.Execution.Launch;
+using JetBrains.ReSharper.UnitTestFramework.Execution.TestRunner;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.Util;
 

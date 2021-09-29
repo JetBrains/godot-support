@@ -1,7 +1,7 @@
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
-using JetBrains.ReSharper.UnitTestFramework.TestRunner;
+using JetBrains.ReSharper.UnitTestFramework.Execution.TestRunner;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
