@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -32,8 +33,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         {
             var solution = context.RuntimeEnvironment.Project.GetSolution();
             var solutionDirectory = solution.SolutionDirectory;
-            if (!solutionDirectory.Combine(pluginDirectory).ExistsDirectory || !solutionDirectory.Combine(pluginDirectory).Combine(runnerScene).ExistsFile)
+            var scenePaths = solutionDirectory.GetChildDirectories(pluginDirectory,
+                PathSearchFlags.ExcludeFiles | PathSearchFlags.RecurseIntoSubdirectories).Select(a=>a.Combine(runnerScene)).Where(a => a.ExistsFile).ToArray();
+            if (!scenePaths.Any())
                 throw new Exception("Please manually put folder with files from https://github.com/van800/godot-demo-projects/tree/nunit/mono/dodge_the_creeps/RiderTestRunner to your project.");
+            if (scenePaths.Length > 1)
+                throw new Exception($"Make sure you have only 1 {pluginDirectory}/{runnerScene} in your project.");
             
             context.Settings.TestRunner.NoIsolationNetFramework.SetValue(true);
 
@@ -46,7 +51,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             }
 
             var rawStartInfo = new JetProcessStartInfo(startInfo);
-            var patcher = new GodotPatcher(solution);
+            var patcher = new GodotPatcher(solution, scenePaths.Single().MakeRelativeTo(solutionDirectory));
             var request = context.RuntimeEnvironment.ToJetProcessRuntimeRequest();
             var patch = new JetProcessStartInfoPatch(patcher, request);
             return new PreparedProcess(rawStartInfo, patch);
@@ -92,11 +97,13 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         private class GodotPatcher : IProcessStartInfoPatcher
         {
             private readonly ISolution mySolution;
+            private readonly RelativePath mySceneRelPath;
             private readonly GodotFrontendBackendModel myModel;
 
-            public GodotPatcher(ISolution solution)
+            public GodotPatcher(ISolution solution, RelativePath sceneRelPath)
             {
                 mySolution = solution;
+                mySceneRelPath = sceneRelPath;
                 myModel = mySolution.GetProtocolSolution().GetGodotFrontendBackendModel();
             }
 
@@ -112,9 +119,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                 if (!myModel.GodotPath.HasValue())
                     throw new InvalidOperationException("GodotPath is unknown.");
                 var godotPath = myModel.GodotPath.Value.QuoteIfNeeded();
-
+                
                 var patchedInfo = startInfo.Patch(godotPath,
-                    $"--path {solutionDir} \"res://{pluginDirectory}/Runner.tscn\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
+                    $"--path {solutionDir} \"res://{mySceneRelPath}\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
                     EnvironmentVariableMutator.Empty);
 
                 return ProcessStartInfoPatchResult.CreateSuccess(startInfo, request, patchedInfo);
