@@ -37,7 +37,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
             godotDiscoverer.isGodotProject.whenTrue(componentLifetime) {
                 logger.info("isGodotProject = true")
                 val runManager = RunManager.getInstance(project)
-                val godotPath = FrontendBackendHost.getInstance(project).model.godotPath.valueOrNull
+                val godotPath = GodotProjectDiscoverer.getInstance(project).godotPath.value
 
                 // Clean up old generated configurations
                 val toRemove = runManager.allSettings.filter {

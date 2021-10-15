@@ -20,6 +20,7 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
     private val projectGodotPath = Paths.get(project.basePath!!).resolve("project.godot")
     val isGodotProject: IProperty<Boolean> = Property(false)
     val isGodotUnitTesting: IProperty<Boolean> = Property(false)
+    val godotPath : IProperty<String?> = Property(null)
 
     init {
         val isGodot = getIsGodotProject(project)
@@ -29,9 +30,7 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
                         isGodotUnitTesting.set(Paths.get(project.basePath!!).resolve("addons/WAT/gui.tscn").exists())
 
             isGodotProject.set(isGodot)
-            val path = getGodotPathFromPlayerRunConfiguration(project) ?: GodotServer.getGodotPath(project)
-            if (path!=null)
-                FrontendBackendHost.getInstance(project).model.godotPath.set(path)
+            godotPath.set(getGodotPathFromPlayerRunConfiguration(project) ?: GodotServer.getGodotPath(project))
         }
     }
 

@@ -11,6 +11,7 @@ import com.intellij.util.BitUtil
 import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rd.util.reactive.AddRemove
+import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rider.debugger.DebuggerInitializingState
 import com.jetbrains.rider.debugger.RiderDebugActiveDotNetSessionsTracker
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
@@ -38,13 +39,17 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             val task = RdTask<Int>()
             val runManager = RunManager.getInstance(project)
             val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
-            val runConfiguration = runManager.createConfiguration(GodotRunConfigurationGenerator.ATTACH_CONFIGURATION_NAME, configurationType.factory)
+            val runConfiguration = runManager.createConfiguration(
+                GodotRunConfigurationGenerator.ATTACH_CONFIGURATION_NAME,
+                configurationType.factory
+            )
             val remoteConfiguration = runConfiguration.configuration as DotNetRemoteConfiguration
             remoteConfiguration.listenPortForConnections = true
             remoteConfiguration.port = NetUtils.findFreePort(500013)
             remoteConfiguration.address = "127.0.0.1"
 
-            val processTracker: RiderDebugActiveDotNetSessionsTracker = RiderDebugActiveDotNetSessionsTracker.getInstance(project)
+            val processTracker: RiderDebugActiveDotNetSessionsTracker =
+                RiderDebugActiveDotNetSessionsTracker.getInstance(project)
             processTracker.dotNetDebugProcesses.change.advise(projectComponentLifetime) { (event, debugProcess) ->
                 if (event == AddRemove.Add) {
                     debugProcess.initializeDebuggerTask.debuggerInitializingState.advise(lt) {
@@ -59,6 +64,10 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             ProgramRunnerUtil.executeConfiguration(runConfiguration, DefaultDebugExecutor.getDebugExecutorInstance())
 
             task
+        }
+
+        GodotProjectDiscoverer.getInstance(project).godotPath.adviseNotNull(projectComponentLifetime){
+            model.godotPath.set(it)
         }
     }
 
