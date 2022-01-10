@@ -20,20 +20,19 @@ import com.jetbrains.rider.model.debuggerWorker.DebuggerWorkerModel
 import com.jetbrains.rider.model.debuggerWorker.OutputMessageWithSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputType
-
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.model.debuggerWorker.godotDebuggerWorkerModel
 import com.jetbrains.rider.projectView.solution
-import com.jetbrains.rider.run.*
-import com.jetbrains.rider.run.configurations.remote.MonoConnectRemoteProfileState
+import com.jetbrains.rider.run.ExternalConsoleMediator
+import com.jetbrains.rider.run.WorkerRunInfo
 import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
+import com.jetbrains.rider.run.createEmptyConsoleCommandLine
+import com.jetbrains.rider.run.withRawParameters
 import com.jetbrains.rider.util.NetUtils
 
 class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfiguration, private val remoteConfiguration: RemoteConfiguration, executionEnvironment: ExecutionEnvironment)
-    : MonoConnectRemoteProfileState(remoteConfiguration, executionEnvironment) {
+    : GodotMonoConnectRemoteProfileState(remoteConfiguration, executionEnvironment) {
     private val ansiEscapeDecoder = AnsiEscapeDecoder()
-
-    override val consoleKind: ConsoleKind = ConsoleKind.Normal
 
     override suspend fun createDebuggerWorker(
         workerCmd: GeneralCommandLine,
