@@ -10,9 +10,10 @@ import com.intellij.openapi.wm.WindowManager
 import com.intellij.util.BitUtil
 import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
-import com.jetbrains.rd.util.reactive.AddRemove
-import com.jetbrains.rd.util.reactive.adviseNotNull
+import com.jetbrains.rd.util.lifetime.onTermination
+import com.jetbrains.rd.util.reactive.*
 import com.jetbrains.rider.debugger.DebuggerInitializingState
+import com.jetbrains.rider.debugger.DotNetDebugProcess
 import com.jetbrains.rider.debugger.RiderDebugActiveDotNetSessionsTracker
 import com.jetbrains.rider.debugger.tryWriteMessageToConsoleView
 import com.jetbrains.rider.model.debuggerWorker.OutputMessageWithSubject
@@ -29,7 +30,8 @@ import com.jetbrains.rider.util.NetUtils
 import java.awt.Frame
 
 class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent(project) {
-    val model = project.solution.godotFrontendBackendModel
+    private val model = project.solution.godotFrontendBackendModel
+    private val myDebugProcessProperty: IProperty<DotNetDebugProcess?> = Property(null)
 
     init {
         model.activateRider.advise(projectComponentLifetime) {
@@ -41,23 +43,17 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             }
         }
 
-        model.onGameOutputEvent.advise(projectComponentLifetime){
-            val processTracker: RiderDebugActiveDotNetSessionsTracker =
-                RiderDebugActiveDotNetSessionsTracker.getInstance(project)
-            processTracker.dotNetDebugProcesses.advise(projectComponentLifetime){(event, debugProcess) ->
-                if (event != AddRemove.Add) return@advise
-                val infoType = when (it.type) {
-                    GameOutputEventType.Message -> OutputType.Info
-                    GameOutputEventType.Error -> OutputType.Error
-                }
-                debugProcess.console.tryWriteMessageToConsoleView(
-                    OutputMessageWithSubject(
-                        output = "${it.message}\r\n",
-                        type = infoType,
-                        subject = OutputSubject.Default
-                    )
+        model.onGameOutputEvent.advise(projectComponentLifetime) {
+            myDebugProcessProperty.value?.console?.tryWriteMessageToConsoleView(
+                OutputMessageWithSubject(
+                    output = "${it.message}\r\n",
+                    type = when (it.type) {
+                        GameOutputEventType.Message -> OutputType.Info
+                        GameOutputEventType.Error -> OutputType.Error
+                    },
+                    subject = OutputSubject.Default
                 )
-            }
+            )
         }
 
         model.startDebuggerServer.set { lt, _ ->
@@ -78,8 +74,11 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             processTracker.dotNetDebugProcesses.change.advise(lt) { (event, debugProcess) ->
                 if (event == AddRemove.Add) {
                     debugProcess.initializeDebuggerTask.debuggerInitializingState.advise(lt) {
-                        if (it == DebuggerInitializingState.Initialized)
+                        if (it == DebuggerInitializingState.Initialized) {
+                            myDebugProcessProperty.set(debugProcess)
+                            debugProcess.sessionLifetime.onTermination { myDebugProcessProperty.set(null) }
                             task.set(remoteConfiguration.port)
+                        }
                         if (it == DebuggerInitializingState.Canceled)
                             task.set(0)
                     }
