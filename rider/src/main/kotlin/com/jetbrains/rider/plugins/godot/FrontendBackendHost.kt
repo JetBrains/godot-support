@@ -41,7 +41,6 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             }
         }
 
-        // todo: move into startDebuggerServer
         model.onGameOutputEvent.advise(projectComponentLifetime){
             val processTracker: RiderDebugActiveDotNetSessionsTracker =
                 RiderDebugActiveDotNetSessionsTracker.getInstance(project)
