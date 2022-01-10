@@ -103,16 +103,16 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                 executionContext.Run.HostController.HostId == WellKnownHostProvidersIds.DebugProviderId)
             {
                 var solution = context.RuntimeEnvironment.Project.GetSolution();
-                process.ErrorLineRead += line => { Send(solution, context.Lifetime, line, GameOutputEventType.Error); };
-                process.OutputLineRead += line => { Send(solution, context.Lifetime, line, GameOutputEventType.Message); };
+                process.ErrorLineRead += line => { Send(solution, context.Lifetime, line, TestRunnerOutputEventType.Error); };
+                process.OutputLineRead += line => { Send(solution, context.Lifetime, line, TestRunnerOutputEventType.Message); };
             }
         }
 
-        private static void Send(ISolution solution, Lifetime lifetime, string line, GameOutputEventType gameOutputEventType)
+        private static void Send(ISolution solution, Lifetime lifetime, string line, TestRunnerOutputEventType gameOutputEventType)
         {
             if (line == null) return;
             var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
-            solution.Locks.ExecuteOrQueueEx(lifetime, "GameOutputEvent", () => model.OnGameOutputEvent(new GameOutputEvent(gameOutputEventType, line)));
+            solution.Locks.ExecuteOrQueueEx(lifetime, "GameOutputEvent", () => model.OnTestRunnerOutputEvent(new TestRunnerOutputEvent(gameOutputEventType, line)));
         }
 
         private class GodotPatcher : IProcessStartInfoPatcher

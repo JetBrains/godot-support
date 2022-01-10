@@ -19,7 +19,7 @@ import com.jetbrains.rider.debugger.tryWriteMessageToConsoleView
 import com.jetbrains.rider.model.debuggerWorker.OutputMessageWithSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputType
-import com.jetbrains.rider.model.godot.frontendBackend.GameOutputEventType
+import com.jetbrains.rider.model.godot.frontendBackend.TestRunnerOutputEventType
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfiguration
@@ -43,13 +43,13 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             }
         }
 
-        model.onGameOutputEvent.advise(projectComponentLifetime) {
+        model.onTestRunnerOutputEvent.advise(projectComponentLifetime) {
             myDebugProcessProperty.value?.console?.tryWriteMessageToConsoleView(
                 OutputMessageWithSubject(
                     output = "${it.message}\r\n",
                     type = when (it.type) {
-                        GameOutputEventType.Message -> OutputType.Info
-                        GameOutputEventType.Error -> OutputType.Error
+                        TestRunnerOutputEventType.Message -> OutputType.Info
+                        TestRunnerOutputEventType.Error -> OutputType.Error
                     },
                     subject = OutputSubject.Default
                 )
