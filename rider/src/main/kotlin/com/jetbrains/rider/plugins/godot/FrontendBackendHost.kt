@@ -10,6 +10,7 @@ import com.intellij.openapi.wm.WindowManager
 import com.intellij.util.BitUtil
 import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
+import com.jetbrains.rd.util.firstOrNull
 import com.jetbrains.rd.util.lifetime.onTermination
 import com.jetbrains.rd.util.reactive.*
 import com.jetbrains.rider.debugger.DebuggerInitializingState
@@ -31,7 +32,7 @@ import java.awt.Frame
 
 class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent(project) {
     private val model = project.solution.godotFrontendBackendModel
-    private val myDebugProcessProperty: IProperty<DotNetDebugProcess?> = Property(null)
+    private val debugProcesses = mutableMapOf<Int, DotNetDebugProcess>()
 
     init {
         model.activateRider.advise(projectComponentLifetime) {
@@ -43,11 +44,11 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             }
         }
 
-        model.onTestRunnerOutputEvent.advise(projectComponentLifetime) {
-            myDebugProcessProperty.value?.console?.tryWriteMessageToConsoleView(
+        model.onTestRunnerOutputEvent.advise(projectComponentLifetime) { output->
+            debugProcesses.filter{it.key == output.pid}.firstOrNull()?.value?.console?.tryWriteMessageToConsoleView(
                 OutputMessageWithSubject(
-                    output = "${it.message}\r\n",
-                    type = when (it.type) {
+                    output = "${output.message}\r\n",
+                    type = when (output.type) {
                         TestRunnerOutputEventType.Message -> OutputType.Info
                         TestRunnerOutputEventType.Error -> OutputType.Error
                     },
@@ -72,13 +73,15 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             val processTracker: RiderDebugActiveDotNetSessionsTracker =
                 RiderDebugActiveDotNetSessionsTracker.getInstance(project)
             processTracker.dotNetDebugProcesses.change.advise(lt) { (event, debugProcess) ->
+                debugProcess.sessionInfo.advise(lt){
+                    debugProcesses.put(it.processId, debugProcess)
+                    debugProcess.sessionLifetime.onTermination { debugProcesses.remove(it.processId) }
+                }
                 if (event == AddRemove.Add) {
+
                     debugProcess.initializeDebuggerTask.debuggerInitializingState.advise(lt) {
-                        if (it == DebuggerInitializingState.Initialized) {
-                            myDebugProcessProperty.set(debugProcess)
-                            debugProcess.sessionLifetime.onTermination { myDebugProcessProperty.set(null) }
+                        if (it == DebuggerInitializingState.Initialized)
                             task.set(remoteConfiguration.port)
-                        }
                         if (it == DebuggerInitializingState.Canceled)
                             task.set(0)
                     }
