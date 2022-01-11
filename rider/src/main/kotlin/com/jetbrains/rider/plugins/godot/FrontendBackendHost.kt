@@ -45,7 +45,7 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
         }
 
         model.onTestRunnerOutputEvent.advise(projectComponentLifetime) { output->
-            debugProcesses.filter{it.key == output.pid}.firstOrNull()?.value?.console?.tryWriteMessageToConsoleView(
+            debugProcesses.filter{it.key == output.port}.firstOrNull()?.value?.console?.tryWriteMessageToConsoleView(
                 OutputMessageWithSubject(
                     output = "${output.message}\r\n",
                     type = when (output.type) {
@@ -73,12 +73,9 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             val processTracker: RiderDebugActiveDotNetSessionsTracker =
                 RiderDebugActiveDotNetSessionsTracker.getInstance(project)
             processTracker.dotNetDebugProcesses.change.advise(lt) { (event, debugProcess) ->
-                debugProcess.sessionInfo.advise(lt){
-                    debugProcesses.put(it.processId, debugProcess)
-                    debugProcess.sessionLifetime.onTermination { debugProcesses.remove(it.processId) }
-                }
                 if (event == AddRemove.Add) {
-
+                    debugProcesses[remoteConfiguration.port] = debugProcess
+                    debugProcess.sessionLifetime.onTermination { debugProcesses.remove(remoteConfiguration.port) }
                     debugProcess.initializeDebuggerTask.debuggerInitializingState.advise(lt) {
                         if (it == DebuggerInitializingState.Initialized)
                             task.set(remoteConfiguration.port)

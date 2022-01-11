@@ -10,7 +10,7 @@ import com.jetbrains.rd.generator.nova.kotlin.Kotlin11Generator
 object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
 
     val TestRunnerOutputEvent = structdef("TestRunnerOutputEvent"){
-        field("pid", int)
+        field("port", int)
         field("type", enum("TestRunnerOutputEventType") {
             +"Error"
             +"Message"
