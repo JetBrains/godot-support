@@ -10,20 +10,29 @@ import com.intellij.openapi.wm.WindowManager
 import com.intellij.util.BitUtil
 import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
-import com.jetbrains.rd.util.reactive.AddRemove
-import com.jetbrains.rd.util.reactive.adviseNotNull
+import com.jetbrains.rd.util.firstOrNull
+import com.jetbrains.rd.util.lifetime.onTermination
+import com.jetbrains.rd.util.reactive.*
 import com.jetbrains.rider.debugger.DebuggerInitializingState
+import com.jetbrains.rider.debugger.DotNetDebugProcess
 import com.jetbrains.rider.debugger.RiderDebugActiveDotNetSessionsTracker
+import com.jetbrains.rider.debugger.tryWriteMessageToConsoleView
+import com.jetbrains.rider.model.debuggerWorker.OutputMessageWithSubject
+import com.jetbrains.rider.model.debuggerWorker.OutputSubject
+import com.jetbrains.rider.model.debuggerWorker.OutputType
+import com.jetbrains.rider.model.godot.frontendBackend.TestRunnerOutputEventType
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
+import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfiguration
+import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfigurationFactory
 import com.jetbrains.rider.projectView.solution
-import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.util.NetUtils
 import java.awt.Frame
 
 class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent(project) {
-    val model = project.solution.godotFrontendBackendModel
+    private val model = project.solution.godotFrontendBackendModel
+    private val debugProcesses = mutableMapOf<Int, DotNetDebugProcess>()
 
     init {
         model.activateRider.advise(projectComponentLifetime) {
@@ -35,23 +44,38 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             }
         }
 
+        model.onTestRunnerOutputEvent.advise(projectComponentLifetime) { output->
+            debugProcesses.filter{it.key == output.port}.firstOrNull()?.value?.console?.tryWriteMessageToConsoleView(
+                OutputMessageWithSubject(
+                    output = "${output.message}\r\n",
+                    type = when (output.type) {
+                        TestRunnerOutputEventType.Message -> OutputType.Info
+                        TestRunnerOutputEventType.Error -> OutputType.Error
+                    },
+                    subject = OutputSubject.Default
+                )
+            )
+        }
+
         model.startDebuggerServer.set { lt, _ ->
             val task = RdTask<Int>()
             val runManager = RunManager.getInstance(project)
             val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
             val runConfiguration = runManager.createConfiguration(
                 GodotRunConfigurationGenerator.ATTACH_CONFIGURATION_NAME,
-                configurationType.factory
+                GodotDotNetRemoteConfigurationFactory(configurationType)
             )
-            val remoteConfiguration = runConfiguration.configuration as DotNetRemoteConfiguration
+            val remoteConfiguration = runConfiguration.configuration as GodotDotNetRemoteConfiguration
             remoteConfiguration.listenPortForConnections = true
             remoteConfiguration.port = NetUtils.findFreePort(500013)
             remoteConfiguration.address = "127.0.0.1"
 
             val processTracker: RiderDebugActiveDotNetSessionsTracker =
                 RiderDebugActiveDotNetSessionsTracker.getInstance(project)
-            processTracker.dotNetDebugProcesses.change.advise(projectComponentLifetime) { (event, debugProcess) ->
+            processTracker.dotNetDebugProcesses.change.advise(lt) { (event, debugProcess) ->
                 if (event == AddRemove.Add) {
+                    debugProcesses[remoteConfiguration.port] = debugProcess
+                    debugProcess.sessionLifetime.onTermination { debugProcesses.remove(remoteConfiguration.port) }
                     debugProcess.initializeDebuggerTask.debuggerInitializingState.advise(lt) {
                         if (it == DebuggerInitializingState.Initialized)
                             task.set(remoteConfiguration.port)

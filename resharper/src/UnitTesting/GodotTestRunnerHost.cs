@@ -54,7 +54,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             var patcher = new GodotPatcher(solution, scenePaths.Single().MakeRelativeTo(solutionDirectory));
             var request = context.RuntimeEnvironment.ToJetProcessRuntimeRequest();
             var patch = new JetProcessStartInfoPatch(patcher, request);
-            return new PreparedProcess(rawStartInfo, patch);
+            var preparedProcess = new PreparedProcess(rawStartInfo, patch);
+            CaptureOutputIfRequired(preparedProcess, context);
+            return preparedProcess;
         }
 
         public override IEnumerable<Assembly> InProcessAssemblies => EmptyArray<Assembly>.Instance;
@@ -92,6 +94,26 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             });
 
             return tcs.Task;
+        }
+        
+        private void CaptureOutputIfRequired(IPreparedProcess process, ITestRunnerContext context)
+        {
+            // in debug redirect output to 
+            if (context is ITestRunnerExecutionContext executionContext &&
+                executionContext.Run.HostController.HostId == WellKnownHostProvidersIds.DebugProviderId)
+            {
+                var solution = context.RuntimeEnvironment.Project.GetSolution();
+                process.ErrorLineRead += line => { Send(solution, context.Lifetime, myDebugPort, line, TestRunnerOutputEventType.Error); };
+                process.OutputLineRead += line => { Send(solution, context.Lifetime, myDebugPort, line, TestRunnerOutputEventType.Message); };
+            }
+        }
+
+        private static void Send(ISolution solution, Lifetime lifetime, int port, string line,
+            TestRunnerOutputEventType gameOutputEventType)
+        {
+            if (line == null) return;
+            var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
+            solution.Locks.ExecuteOrQueueEx(lifetime, "GameOutputEvent", () => model.OnTestRunnerOutputEvent(new TestRunnerOutputEvent(port, gameOutputEventType, line)));
         }
 
         private class GodotPatcher : IProcessStartInfoPatcher
