@@ -1,3 +1,4 @@
+rootProject.name = "rider-godot"
 
 pluginManagement {
     repositories {
@@ -19,4 +20,3 @@ pluginManagement {
 
 include(":protocol")
 
-rootProject.name = "rider-godot"

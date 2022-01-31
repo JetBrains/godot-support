@@ -1,4 +1,5 @@
 import com.jetbrains.rd.generator.gradle.RdGenExtension
+import org.jetbrains.intellij.tasks.IntelliJInstrumentCodeTask
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
@@ -10,11 +11,11 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.intellij") version "0.7.2"
+    id("org.jetbrains.intellij") version "1.3.1" // https://github.com/JetBrains/gradle-intellij-plugin/releases
     id("org.jetbrains.grammarkit") version "2021.1.3"
     id("me.filippov.gradle.jvm.wrapper") version "0.10.0"
-    id ("com.jetbrains.rdgen") version "2021.3.4" // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
-    kotlin("jvm") version "1.5.21"
+    id("com.jetbrains.rdgen") version "2022.1.2" // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
+    kotlin("jvm") version "1.6.10"
 }
 
 apply {
@@ -24,17 +25,16 @@ apply {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
-
-val baseVersion = "2021.3"
+val baseVersion = "2022.1"
 val buildCounter = ext.properties["build.number"] ?: "9999"
 version = "$baseVersion.$buildCounter"
 
 intellij {
-    type = "RD"
+    type.set("RD")
 
     // Download a version of Rider to compile and run with. Either set `version` to
     // 'LATEST-TRUNK-SNAPSHOT' or 'LATEST-EAP-SNAPSHOT' or a known version.
@@ -48,18 +48,18 @@ intellij {
     val dir = file("build/rider")
     if (dir.exists()) {
         logger.lifecycle("*** Using Rider SDK from local path " + dir.absolutePath)
-        localPath = dir.absolutePath
+        localPath.set(dir.absolutePath)
     } else {
         logger.lifecycle("*** Using Rider SDK from intellij-snapshots repository")
-        version = "$baseVersion-SNAPSHOT"
+        version.set("$baseVersion-SNAPSHOT")
     }
 
-    instrumentCode = false
-    downloadSources = false
-    updateSinceUntilBuild = false
+    instrumentCode.set(false)
+    downloadSources.set(false)
+    updateSinceUntilBuild.set(false)
 
     // Workaround for https://youtrack.jetbrains.com/issue/IDEA-179607
-    setPlugins("rider-plugins-appender")
+    plugins.set(listOf("rider-plugins-appender"))
 }
 
 repositories.forEach {
@@ -90,14 +90,6 @@ val pluginFiles = listOf(
 val debuggerPluginFiles = listOf(
     "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.Rider.Debugger")
 
-val dotNetSdkPath by lazy {
-    val sdkPath = intellij.ideaDependency.classes.resolve("lib").resolve("DotNetSdkForRdPlugins")
-    if (sdkPath.isDirectory.not()) error("$sdkPath does not exist or not a directory")
-
-    println("SDK path: $sdkPath")
-    return@lazy sdkPath
-}
-
 val nugetConfigPath = File(repoRoot, "NuGet.Config")
 val dotNetSdkPathPropsPath = File(project.projectDir, "../resharper/build/DotNetSdkPath.generated.props")
 
@@ -113,56 +105,78 @@ fun File.writeTextIfChanged(content: String) {
 }
 
 
-configure<RdGenExtension> {
-    val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/FrontendBackend")
-    val frontendKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
-
-    val debuggerCsOutDir = File(repoRoot, "resharper/build/generated/Model/DebuggerWorker")
-    val debuggerKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
-
-    verbose = true
-    hashFolder = File(repoRoot, "rider/build/rdgen").path
-    logger.info("Configuring rdgen params")
-    classpath({
-        logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${intellij.ideaDependency}")
-        val sdkPath = intellij.ideaDependency.classes
-        val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
-
-        "$rdLibDirectory/rider-model.jar"
-    })
-    sources(File(repoRoot, "rider/protocol/src/kotlin/model"))
-    packages = "model"
-
-    generator {
-        language = "csharp"
-        transform = "reversed"
-        root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-        directory = "$backendCsOutDir"
-    }
-
-    generator {
-        language = "kotlin"
-        transform = "asis"
-        root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-        directory = "$frontendKtOutDir"
-    }
-
-    generator {
-        language = "csharp"
-        transform = "reversed"
-        root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
-        directory = "$debuggerCsOutDir"
-    }
-
-    generator {
-        language = "kotlin"
-        transform = "asis"
-        root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
-        directory = "$debuggerKtOutDir"
-    }
-}
-
 tasks {
+    configure<RdGenExtension> {
+        val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/FrontendBackend")
+        val frontendKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
+
+        val debuggerCsOutDir = File(repoRoot, "resharper/build/generated/Model/DebuggerWorker")
+        val debuggerKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
+
+        verbose = true
+        hashFolder = File(repoRoot, "rider/build/rdgen").path
+        logger.info("Configuring rdgen params")
+        classpath({
+            logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${setupDependencies.get().idea.get()}")
+            val sdkPath = setupDependencies.get().idea.get().classes
+            val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
+
+            "$rdLibDirectory/rider-model.jar"
+        })
+        sources(File(repoRoot, "rider/protocol/src/kotlin/model"))
+        packages = "model"
+
+        generator {
+            language = "csharp"
+            transform = "reversed"
+            root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
+            directory = "$backendCsOutDir"
+        }
+
+        generator {
+            language = "kotlin"
+            transform = "asis"
+            root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
+            directory = "$frontendKtOutDir"
+        }
+
+        generator {
+            language = "csharp"
+            transform = "reversed"
+            root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
+            directory = "$debuggerCsOutDir"
+        }
+
+        generator {
+            language = "kotlin"
+            transform = "asis"
+            root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
+            directory = "$debuggerKtOutDir"
+        }
+    }
+
+    val dotNetSdkPath by lazy {
+        val sdkPath = setupDependencies.get().idea.get().classes.resolve("lib").resolve("DotNetSdkForRdPlugins")
+        if (sdkPath.isDirectory.not()) error("$sdkPath does not exist or not a directory")
+
+        println("SDK path: $sdkPath")
+        return@lazy sdkPath
+    }
+
+    withType<IntelliJInstrumentCodeTask> {
+        val bundledMavenArtifacts = file("build/maven-artifacts")
+        if (bundledMavenArtifacts.exists()) {
+            logger.lifecycle("Use ant compiler artifacts from local folder: $bundledMavenArtifacts")
+            compilerClassPathFromMaven.set(
+                bundledMavenArtifacts.walkTopDown()
+                    .filter { it.extension == "jar" && !it.name.endsWith("-sources.jar") }
+                    .toList() + File("${ideaDependency.get().classes}/lib/util.jar")
+            )
+        } else {
+            logger.lifecycle("Use ant compiler artifacts from maven")
+        }
+    }
+
     withType<PrepareSandboxTask> {
         dependsOn("buildReSharperPlugin")
         var files = pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
@@ -198,7 +212,7 @@ tasks {
     }
 
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "1.8"
+        kotlinOptions.jvmTarget = "11"
     }
 
     create("writeDotNetSdkPathProps") {
