@@ -182,17 +182,17 @@ tasks {
         var files = pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
         files = files.map { "$resharperPluginPath/build/rider-godot/$it" }
         files.forEach {
-            from(it) { into("${intellij.pluginName}/dotnet") }
+            from(it) { into("${intellij.pluginName.get()}/dotnet") }
         }
 
         var debuggerFiles = debuggerPluginFiles.map { "$it.dll" } + debuggerPluginFiles.map{ "$it.pdb"}
         debuggerFiles = debuggerFiles.map { "$resharperPluginPath/build/debugger/$it" }
 
         debuggerFiles.forEach {
-            from(it) { into("${intellij.pluginName}/dotnetDebuggerWorker") }
+            from(it) { into("${intellij.pluginName.get()}/dotnetDebuggerWorker") }
         }
 
-        into("${intellij.pluginName}/dotnet/Extensions/com.intellij.rider.godot/annotations") {
+        into("${intellij.pluginName.get()}/dotnet/Extensions/com.intellij.rider.godot/annotations") {
             from("../resharper/src/annotations")
         }
 
@@ -200,7 +200,7 @@ tasks {
             files.forEach {
                 val file = file(it)
                 if (!file.exists()) throw RuntimeException("File $file does not exist")
-                logger.warn("$name: ${file.name} -> $destinationDir/${intellij.pluginName}/dotnet")
+                logger.warn("$name: ${file.name} -> $destinationDir/${intellij.pluginName.get()}/dotnet")
             }
         }
     }
