@@ -11,7 +11,7 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.intellij") version "1.3.1" // https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id("org.jetbrains.intellij") version "1.5.3" // https://github.com/JetBrains/gradle-intellij-plugin/releases
     id("org.jetbrains.grammarkit") version "2021.1.3"
     id("me.filippov.gradle.jvm.wrapper") version "0.10.0"
     id("com.jetbrains.rdgen") version "2022.1.2" // https://www.myget.org/feed/rd-snapshots/package/maven/com.jetbrains.rd/rd-gen
