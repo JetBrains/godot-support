@@ -8,7 +8,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger
     [DebuggerGlobalComponent]
     public class DebuggerWorkerHost : IStartable
     {
-        public DebuggerWorkerHost(DebuggerWorker debuggerWorker)
+        public DebuggerWorkerHost(RiderDebuggerWorker debuggerWorker)
         {
             // Get/create the model. This registers serialisers for all types in the model, including the start info
             // derived types used in the root protocol, not in our extension
