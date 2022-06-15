@@ -19,7 +19,7 @@ import java.nio.file.Paths
 class GodotProjectDiscoverer(project: Project) : LifetimedService() {
     private val projectGodotPath = Paths.get(project.basePath!!).resolve("project.godot")
     val isGodotProject: IProperty<Boolean> = Property(false)
-    val isGodotUnitTesting: IProperty<Boolean> = Property(false)
+    val hasWATAddon: IProperty<Boolean> = Property(false)
     val godotPath : IProperty<String?> = Property(null)
 
     init {
@@ -27,10 +27,10 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
         if (isGodot) {
             if (projectGodotPath.toFile().readLines()
                     .any { it.startsWith("enabled=PoolStringArray") && it.contains("WAT") })
-                        isGodotUnitTesting.set(Paths.get(project.basePath!!).resolve("addons/WAT/gui.tscn").exists())
+                        hasWATAddon.set(Paths.get(project.basePath!!).resolve("addons/WAT/gui.tscn").exists())
 
             isGodotProject.set(isGodot)
-            godotPath.set(getGodotPathFromPlayerRunConfiguration(project) ?: GodotServer.getGodotPath(project))
+            godotPath.set(getGodotPathFromPlayerRunConfiguration(project) ?: MetadataFileWatcher.getGodotPath(project))
         }
     }
 
