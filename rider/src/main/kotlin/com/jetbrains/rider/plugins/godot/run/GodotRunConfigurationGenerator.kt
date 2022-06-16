@@ -44,10 +44,10 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 }
 
                 GodotProjectDiscoverer.getInstance(project).godotPath.adviseNotNull(lt){ path ->
-                    createOrUpdateConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${project.basePath}\"", runManager, path, project)
-                    createOrUpdateConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${project.basePath}\" --editor", runManager, path, project)
+                    createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${project.basePath}\"", runManager, path, project)
+                    createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${project.basePath}\" --editor", runManager, path, project)
                     if (godotDiscoverer.hasWATAddon.value)
-                        createOrUpdateConfiguration(WAT_UNIT_TESTING, "--path \"${project.basePath}\" \"res://addons/WAT/gui.tscn\"", runManager, path, project)
+                        createOrUpdateRunConfiguration(WAT_UNIT_TESTING, "--path \"${project.basePath}\" \"res://addons/WAT/gui.tscn\"", runManager, path, project)
                 }
 
                 // make configuration selected if nothing is selected
@@ -61,14 +61,19 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
         }
     }
 
-    private fun createOrUpdateConfiguration(
+    private fun createOrUpdateRunConfiguration(
         configurationName: String,
         programParameters:String,
         runManager: RunManager,
         godotPath: String,
         project: Project
     ) {
-        if (!runManager.allSettings.any { it.type is GodotDebugRunConfigurationType && it.name == configurationName }) {
+        val configs = runManager.allSettings.filter { it.type is GodotDebugRunConfigurationType && it.name == configurationName }
+        if (configs.any()) {
+            configs.forEach{
+                (it.configuration as GodotDebugRunConfiguration).parameters.exePath = godotPath
+            }
+        } else {
             val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java)
             val runConfiguration = runManager.createConfiguration(configurationName, configurationType.factory)
             val config = runConfiguration.configuration as GodotDebugRunConfiguration
@@ -77,11 +82,6 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
             config.parameters.workingDirectory = "${project.basePath}"
             runConfiguration.storeInLocalWorkspace()
             runManager.addConfiguration(runConfiguration)
-        }
-        else{
-            runManager.allSettings.filter { it.type is GodotDebugRunConfigurationType && it.name == configurationName }.forEach{
-                (it.configuration as GodotDebugRunConfiguration).parameters.exePath = godotPath
-            }
         }
     }
 }
