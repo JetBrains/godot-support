@@ -87,7 +87,7 @@ class MetadataFileWatcher(project: Project) : LifetimedProjectComponent(project)
     init {
         project.solution.isLoaded.whenTrue(componentLifetime) {
             val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-            godotDiscoverer.isGodotProject.whenTrue(componentLifetime) { lt ->
+            godotDiscoverer.isGodotProject.whenTrue(it) { lt ->
                 thread(name = "MetadataFileWatcher") {
                     val watchService: WatchService = FileSystems.getDefault().newWatchService()
                     val metaFileDir = project.solutionDirectory.resolve(metaFileDir).toPath()
@@ -97,7 +97,7 @@ class MetadataFileWatcher(project: Project) : LifetimedProjectComponent(project)
 
                     metaFileDir.register(watchService, ENTRY_CREATE, ENTRY_MODIFY)
 
-                    it.onTerminationIfAlive {
+                    lt.onTerminationIfAlive {
                         watchService.close() // releases watchService.take()
                     }
 
