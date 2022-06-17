@@ -1,7 +1,9 @@
 package com.jetbrains.rider.plugins.godot
 
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
+import com.intellij.util.application
 import com.intellij.util.io.exists
 import com.intellij.util.io.isDirectory
 import com.jetbrains.rd.util.lifetime.isAlive
@@ -24,6 +26,7 @@ class MetadataFileWatcher(project: Project) : LifetimedProjectComponent(project)
         const val metaFileDir = ".mono/metadata"
         const val metaFileName = "ide_messaging_meta.txt"
         const val oldMetaFileName = "ide_server_meta.txt"
+        private val logger = Logger.getInstance(MetadataFileWatcher::class.java)
 
         // https://github.com/godotengine/godot-proposals/issues/555#issuecomment-595242973
         //Windows: %APPDATA%\Godot\projects\{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}\
@@ -60,8 +63,7 @@ class MetadataFileWatcher(project: Project) : LifetimedProjectComponent(project)
                         return path
                 }
             }
-
-            return getFromMonoMetadataPath(project)
+            return null
         }
 
         private fun String.md5(): String {
@@ -80,14 +82,16 @@ class MetadataFileWatcher(project: Project) : LifetimedProjectComponent(project)
             if (lines.count()<2)
                 return null
 
-            return lines[1]
+            if (Paths.get(lines[1]).exists())
+                return lines[1]
+            return null
         }
     }
 
     init {
-        project.solution.isLoaded.whenTrue(componentLifetime) {
+        project.solution.isLoaded.whenTrue(componentLifetime) {l->
             val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-            godotDiscoverer.isGodotProject.whenTrue(it) { lt ->
+            godotDiscoverer.isGodotProject.whenTrue(l) { lt ->
                 thread(name = "MetadataFileWatcher") {
                     val watchService: WatchService = FileSystems.getDefault().newWatchService()
                     val metaFileDir = project.solutionDirectory.resolve(metaFileDir).toPath()
@@ -103,12 +107,17 @@ class MetadataFileWatcher(project: Project) : LifetimedProjectComponent(project)
 
                     var key: WatchKey
                     try {
-                        while (watchService.take().also { key = it } != null && it.isAlive) {
+                        while (watchService.take().also { key = it } != null && lt.isAlive) {
                             for (event in key.pollEvents()) {
                                 val context = event.context() ?: continue
                                 if (context.toString() == metaFileName || context.toString() == oldMetaFileName) {
-                                    val newPath = getFromMonoMetadataPath(project) ?: return@thread
-                                    GodotProjectDiscoverer.getInstance(project).godotPath.set(newPath)
+                                    logger.info("GodotProjectDiscoverer.getInstance(project).godotPath.set()")
+                                    val newPath = getFromMonoMetadataPath(project) ?: continue
+                                    logger.info("GodotProjectDiscoverer.getInstance(project).godotPath.set($newPath)")
+                                    application.invokeLater {
+                                        logger.info("application.invokeLater GodotProjectDiscoverer.getInstance(project).godotPath.set($newPath)")
+                                        GodotProjectDiscoverer.getInstance(project).godotPath.set(newPath)
+                                    }
                                 }
                             }
                             key.reset()

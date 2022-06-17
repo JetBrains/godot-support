@@ -30,7 +30,7 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
                         hasWATAddon.set(Paths.get(project.basePath!!).resolve("addons/WAT/gui.tscn").exists())
 
             isGodotProject.set(isGodot)
-            godotPath.set(getGodotPathFromPlayerRunConfiguration(project) ?: MetadataFileWatcher.getGodotPath(project))
+            godotPath.set(MetadataFileWatcher.getFromMonoMetadataPath(project) ?: MetadataFileWatcher.getGodotPath(project) ?: getGodotPathFromPlayerRunConfiguration(project))
         }
     }
 
