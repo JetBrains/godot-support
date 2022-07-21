@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface GdReturnHint extends PsiElement {
 
-  @NotNull
+  @Nullable
   GdReturnHintVal getReturnHintVal();
 
 }

@@ -16,12 +16,10 @@ public class GdWhileStImpl extends GdStmtImpl implements GdWhileSt {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitWhileSt(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
@@ -34,9 +32,9 @@ public class GdWhileStImpl extends GdStmtImpl implements GdWhileSt {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdStmtOrSuite getStmtOrSuite() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class));
+    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
   }
 
 }

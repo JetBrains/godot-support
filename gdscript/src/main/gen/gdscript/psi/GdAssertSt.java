@@ -7,10 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface GdAssertSt extends GdStmt {
 
-  @NotNull
-  GdEndStmt getEndStmt();
-
-  @NotNull
-  GdExpr getExpr();
-
 }

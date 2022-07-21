@@ -175,7 +175,11 @@ object PsiGdExprUtil {
         return typed;
     }
 
-    private fun fromTyped(typed: GdIsTyped): String {
+    private fun fromTyped(typed: GdIsTyped?): String {
+        if (typed == null) {
+            return "";
+        }
+
         val main = typed.typeHintNm.text;
         if (main != "Array") {
             return main;

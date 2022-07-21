@@ -21,7 +21,6 @@ public class GdIsTypedImpl extends ASTWrapperPsiElement implements GdIsTyped {
     visitor.visitIsTyped(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

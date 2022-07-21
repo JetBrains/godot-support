@@ -21,22 +21,15 @@ public class GdTypedImpl extends ASTWrapperPsiElement implements GdTyped {
     visitor.visitTyped(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
-  public GdTypeHintArrayNm getTypeHintArrayNm() {
-    return PsiTreeUtil.getChildOfType(this, GdTypeHintArrayNm.class);
-  }
-
-  @Override
   @NotNull
-  public GdTypeHintNm getTypeHintNm() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdTypeHintNm.class));
+  public List<GdTypeHintNm> getTypeHintNmList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdTypeHintNm.class);
   }
 
 }

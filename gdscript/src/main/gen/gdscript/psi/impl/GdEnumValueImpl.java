@@ -21,7 +21,6 @@ public class GdEnumValueImpl extends ASTWrapperPsiElement implements GdEnumValue
     visitor.visitEnumValue(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

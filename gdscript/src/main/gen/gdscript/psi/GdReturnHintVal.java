@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface GdReturnHintVal extends PsiElement {
 
-  @Nullable
-  GdTypeHintNm getTypeHintNm();
+  @NotNull
+  List<GdTypeHintNm> getTypeHintNmList();
 
 }

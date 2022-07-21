@@ -21,16 +21,15 @@ public class GdReturnHintValImpl extends ASTWrapperPsiElement implements GdRetur
     visitor.visitReturnHintVal(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
-  public GdTypeHintNm getTypeHintNm() {
-    return PsiTreeUtil.getChildOfType(this, GdTypeHintNm.class);
+  @NotNull
+  public List<GdTypeHintNm> getTypeHintNmList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdTypeHintNm.class);
   }
 
 }

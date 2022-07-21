@@ -26,7 +26,6 @@ public class GdClassNamingImpl extends GdClassNamingElementImpl implements GdCla
     visitor.visitClassNaming(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

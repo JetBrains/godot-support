@@ -16,27 +16,19 @@ public class GdForStImpl extends GdStmtImpl implements GdForSt {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitForSt(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
-  @NotNull
-  public GdExpr getExpr() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
-  }
-
-  @Override
-  @NotNull
+  @Nullable
   public GdStmtOrSuite getStmtOrSuite() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class));
+    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
   }
 
   @Override

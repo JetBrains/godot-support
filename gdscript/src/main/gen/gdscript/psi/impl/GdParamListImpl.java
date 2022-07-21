@@ -21,7 +21,6 @@ public class GdParamListImpl extends ASTWrapperPsiElement implements GdParamList
     visitor.visitParamList(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

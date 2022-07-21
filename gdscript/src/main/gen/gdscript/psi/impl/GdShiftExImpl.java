@@ -16,12 +16,10 @@ public class GdShiftExImpl extends GdExprImpl implements GdShiftEx {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitShiftEx(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

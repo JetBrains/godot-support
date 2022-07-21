@@ -13,7 +13,7 @@ public interface GdParam extends PsiElement {
   @Nullable
   GdTyped getTyped();
 
-  @NotNull
+  @Nullable
   GdVarNmi getVarNmi();
 
 }

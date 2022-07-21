@@ -27,7 +27,6 @@ public class GdConstDeclTlImpl extends GdConstDeclElementImpl implements GdConst
     visitor.visitConstDeclTl(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

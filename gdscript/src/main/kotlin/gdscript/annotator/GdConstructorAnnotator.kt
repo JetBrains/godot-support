@@ -23,11 +23,14 @@ class GdConstructorAnnotator : Annotator {
             if (hint != "" && hint != "void") {
                 val hintEl = element.returnHint;
                 if (hintEl != null) {
-                holder
-                    .newAnnotation(HighlightSeverity.ERROR, "Constructor can return only void")
-                    .range(hintEl.textRange)
-                    .withFix(GdChangeReturnType(hintEl.returnHintVal, "void"))
-                    .create()
+                    val hintVal = hintEl.returnHintVal;
+                    if (hintVal != null) {
+                        holder
+                            .newAnnotation(HighlightSeverity.ERROR, "Constructor can return only void")
+                            .range(hintEl.textRange)
+                            .withFix(GdChangeReturnType(hintVal, "void"))
+                            .create()
+                    }
                 }
             }
         } else {

@@ -20,7 +20,6 @@ public class GdConstIdNmiImpl extends GdNamedIdElementImpl implements GdConstIdN
     visitor.visitConstIdNmi(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

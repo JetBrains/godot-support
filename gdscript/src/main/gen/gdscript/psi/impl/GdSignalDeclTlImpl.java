@@ -26,7 +26,6 @@ public class GdSignalDeclTlImpl extends GdSignalDeclElementImpl implements GdSig
     visitor.visitSignalDeclTl(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

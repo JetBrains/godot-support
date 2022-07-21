@@ -84,7 +84,9 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "class_name"   { return GdTypes.CLASS_NAME; }
     "var"          { return GdTypes.VAR; }
     "const"        { return GdTypes.CONST; }
-    "setget"       { return GdTypes.SETGET; }
+    //"setget"       { return GdTypes.SETGET; }
+    "get"          { return GdTypes.GET; }
+    "set"          { return GdTypes.SET; }
 
     "enum"         { return GdTypes.ENUM; }
     "func"         { return GdTypes.FUNC; }

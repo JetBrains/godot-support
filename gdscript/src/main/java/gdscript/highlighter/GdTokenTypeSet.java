@@ -28,7 +28,6 @@ public interface GdTokenTypeSet
         GdTypes.BREAKPOINT,
 //        GdTypes.STATIC,
         GdTypes.SIGNAL,
-        GdTypes.SETGET,
         GdTypes.FOR,
         GdTypes.IN,
         GdTypes.MATCH,
@@ -45,7 +44,9 @@ public interface GdTokenTypeSet
         GdTypes.TAU,
         GdTypes.NAN,
         GdTypes.INF,
-        GdTypes.NULL
+        GdTypes.NULL,
+        GdTypes.GET,
+        GdTypes.SET
     );
 
     // Pink

@@ -21,7 +21,6 @@ public class GdNodePathImpl extends ASTWrapperPsiElement implements GdNodePath {
     visitor.visitNodePath(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

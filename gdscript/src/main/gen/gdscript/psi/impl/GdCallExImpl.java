@@ -16,12 +16,10 @@ public class GdCallExImpl extends GdExprImpl implements GdCallEx {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitCallEx(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

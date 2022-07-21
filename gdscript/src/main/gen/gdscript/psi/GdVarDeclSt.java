@@ -7,12 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface GdVarDeclSt extends GdStmt {
 
-  @NotNull
-  GdEndStmt getEndStmt();
-
-  @Nullable
-  GdExpr getExpr();
-
   @Nullable
   GdTyped getTyped();
 

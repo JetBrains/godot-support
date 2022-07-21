@@ -135,6 +135,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitStmt(o);
   }
 
+  public void visitGetDecl(@NotNull GdGetDecl o) {
+    visitPsiElement(o);
+  }
+
   public void visitGetMethodIdNm(@NotNull GdGetMethodIdNm o) {
     visitNamedElement(o);
   }
@@ -244,6 +248,10 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitReturnStmt(@NotNull GdReturnStmt o) {
+    visitPsiElement(o);
+  }
+
+  public void visitSetDecl(@NotNull GdSetDecl o) {
     visitPsiElement(o);
   }
 

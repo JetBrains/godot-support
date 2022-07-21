@@ -7,10 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface GdTyped extends PsiElement {
 
-  @Nullable
-  GdTypeHintArrayNm getTypeHintArrayNm();
-
   @NotNull
-  GdTypeHintNm getTypeHintNm();
+  List<GdTypeHintNm> getTypeHintNmList();
 
 }

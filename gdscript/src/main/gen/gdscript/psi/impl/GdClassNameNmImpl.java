@@ -20,7 +20,6 @@ public class GdClassNameNmImpl extends GdNamedElementImpl implements GdClassName
     visitor.visitClassNameNm(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

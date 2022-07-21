@@ -23,13 +23,14 @@ import java.util.Stack;
     boolean lineEnded = false;
     boolean enumValEnded = false;
     boolean indented = false;
+    boolean ignoreIndent = false;
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     int yycolumn;
 
     public IElementType dedentRoot(IElementType type) {
         lineEnded = false;
-        if (yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
+        if (ignoreIndent || yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
             return type;
         }
 
@@ -70,6 +71,7 @@ FLIT2 = \. [0-9]+
 FLIT3 = [0-9]+
 
 NEW_LINE = [\r\n]
+IGNORE_NEW_LINE = \\[\r\n]
 INDENT = [ \t]+
 ENPTY_LINE = [ \t]+\n
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
@@ -83,7 +85,7 @@ STRING_MARKER = \"\"\"|\"|\'
 STRING_MARKER_REV = [^\"\'\n\r]*
 //ML_STRING = \"\"\"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'\"\"\"
 
-COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
+COMMENT = [ \t]*"#"[^\r\n]*(\n|\r|\r\n)?
 ANNOTATOR = "@"[a-zA-Z_]*
 NODE_PATH_LEX = "$"[a-zA-Z0-9_]*
 
@@ -108,6 +110,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
         }
     }
 
+    {IGNORE_NEW_LINE} { return TokenType.WHITE_SPACE; }
     {NEW_LINE} {
         if (!oppening.equals("\"\"\"")) {
             yybegin(lastState);
@@ -163,7 +166,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 
 <AWAIT_NEW_LINE> {
     {NEW_LINE}     {
-          if (!lineEnded) {
+          if (!ignoreIndent && !lineEnded) {
               lineEnded = true;
               yypushback(yylength());
               return GdTypes.NEW_LINE;
@@ -177,7 +180,9 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "class_name"   { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CLASS_NAME); }
     "var"          { if (yycolumn == 0) { yybegin(AWAIT_NEW_LINE_ONCE); } else { yybegin(AWAIT_NEW_LINE); } return dedentRoot(GdTypes.VAR); }
     "const"        { if (yycolumn == 0) { yybegin(AWAIT_NEW_LINE_ONCE); } else { yybegin(AWAIT_NEW_LINE); } return dedentRoot(GdTypes.CONST); }
-    "setget"       { return GdTypes.SETGET; }
+    //"setget"       { return GdTypes.SETGET; }
+    "get"          { return dedentRoot(GdTypes.GET); }
+    "set"          { return dedentRoot(GdTypes.SET); }
 
     "enum"         { yybegin(AWAIT_ENUM_SEPARATOR); enumValEnded = true; return GdTypes.ENUM; }
     "func"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC); }
@@ -231,8 +236,9 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "->"           { return dedentRoot(GdTypes.RET); }
     ">>"           { return dedentRoot(GdTypes.RBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
-    "("            { return dedentRoot(GdTypes.LRBR); }
-    ")"            { return dedentRoot(GdTypes.RRBR); }
+    "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
+    "("            { ignoreIndent = true; return dedentRoot(GdTypes.LRBR); }
+    ")"            { ignoreIndent = false; return dedentRoot(GdTypes.RRBR); }
     "["            { return dedentRoot(GdTypes.LSBR); }
     "]"            { return dedentRoot(GdTypes.RSBR); }
     "{"            { return dedentRoot(GdTypes.LCBR); }
@@ -249,7 +255,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
-    {ANNOTATOR}     { return GdTypes.ANNOTATOR; }
+    {ANNOTATOR}     { return dedentRoot(GdTypes.ANNOTATOR); }
     {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
     {IDENTIFIER}    { return dedentRoot(GdTypes.IDENTIFIER); }
     {REAL_NUMBER}   { return dedentRoot(GdTypes.NUMBER); }
@@ -273,7 +279,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 
     {ENPTY_LINE}  { return TokenType.WHITE_SPACE; }
     {INDENT}  {
-        if (yycolumn == 0) {
+        if (!ignoreIndent && yycolumn == 0) {
             int spaces = yytext().length();
             if (spaces > indent && !indented) {
                 indentSizes.push(spaces - indent);
@@ -293,7 +299,8 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
         return TokenType.WHITE_SPACE;
     }
 
-    {NEW_LINE}     { return TokenType.WHITE_SPACE; }
+    {NEW_LINE}        { return TokenType.WHITE_SPACE; }
+    {IGNORE_NEW_LINE} { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
     if (yystate() == AWAIT_NEW_LINE && !lineEnded) {

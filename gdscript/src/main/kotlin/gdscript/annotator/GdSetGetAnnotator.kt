@@ -67,7 +67,7 @@ class GdSetGetAnnotator : Annotator {
         // TODO add hint to var decl stub & util
         val typed = PsiTreeUtil.getChildOfType(varDecl, GdTyped::class.java);
 
-        return typed?.typeHintNm?.text;
+        return typed?.typeHintNmList?.first()?.text;
     }
 
 }

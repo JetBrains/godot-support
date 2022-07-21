@@ -84,3 +84,24 @@ parent method call:
 func loso():
     .loso()
 ```
+
+
+
+
+Array.gd
+methody typu constructor Array(from: ...)
+:=  .. variace bez typu
+setget - odstranit
+
+
+Enum
+// TODO tady chybí enum check -> chtělo by to rozšířit an ten parentaly... :/
+unique name
+unique value
+
+Match, ...
+
+Formatter
+
+Run - reuse context not working
+Debug

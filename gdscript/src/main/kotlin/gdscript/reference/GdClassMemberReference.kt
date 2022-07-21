@@ -52,6 +52,8 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
         val members = files.flatMap { PsiGdFileUtil.listMembers(it) }
 
+        val names = members.map { it.text }
+
         members.forEach {
             when (it) {
                 is GdClassVarDeclTl -> results.add(GdClassVarCompletionUtil.lookup(it))

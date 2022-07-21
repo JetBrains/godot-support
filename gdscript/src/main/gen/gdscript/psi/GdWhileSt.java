@@ -10,7 +10,7 @@ public interface GdWhileSt extends GdStmt {
   @NotNull
   GdExpr getExpr();
 
-  @NotNull
+  @Nullable
   GdStmtOrSuite getStmtOrSuite();
 
 }

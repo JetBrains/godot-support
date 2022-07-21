@@ -16,21 +16,13 @@ public class GdAssignStImpl extends GdStmtImpl implements GdAssignSt {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitAssignSt(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public GdEndStmt getEndStmt() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdEndStmt.class));
   }
 
   @Override

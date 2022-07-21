@@ -16,12 +16,10 @@ public class GdIsExImpl extends GdExprImpl implements GdIsEx {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitIsEx(this);
   }
 
-  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
@@ -34,9 +32,9 @@ public class GdIsExImpl extends GdExprImpl implements GdIsEx {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdIsTyped getIsTyped() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdIsTyped.class));
+    return PsiTreeUtil.getChildOfType(this, GdIsTyped.class);
   }
 
 }
