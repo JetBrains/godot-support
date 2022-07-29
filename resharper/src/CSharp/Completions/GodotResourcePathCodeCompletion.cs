@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.Metadata.Reader.Impl;
@@ -16,18 +15,14 @@ using JetBrains.ReSharper.Features.Intellisense.CodeCompletion.CSharp.Rules;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
-using JetBrains.ReSharper.Psi.CSharp.Util;
 using JetBrains.ReSharper.Psi.CSharp.Util.Literals;
 using JetBrains.ReSharper.Psi.ExpectedTypes;
 using JetBrains.ReSharper.Psi.Resources;
 using JetBrains.ReSharper.Psi.Tree;
-using JetBrains.ReSharper.Psi.Util;
-using JetBrains.ReSharper.PsiGen;
 using JetBrains.TextControl;
 using JetBrains.UI.Icons;
 using JetBrains.UI.RichText;
 using JetBrains.Util;
-using JetBrains.Util.Special;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 {
@@ -66,88 +61,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                     return false;
                 }
 
-                // Populate completions
-                var completions = Enumerable.Empty<string>();
-
-                // Scenes
-                completions = ConcatFullPathCompletionsForType(completions, context, searchPath, GodotTypes.PackedScene, "tscn");
-
-                // Crypto keys
-                // https://github.com/godotengine/godot/blob/297241f368632dd91a3e7df47da3d9e5197e4f1e/core/crypto/crypto.cpp#L168
-                completions = ConcatFullPathCompletionsForType(completions, context, searchPath, GodotTypes.X509Certificate, "crt");
-                completions = ConcatFullPathCompletionsForType(completions, context, searchPath, GodotTypes.CryptoKey, "key", "pub");
-
-                // AudioStreamMP3 (.mp3)
-                // https://github.com/godotengine/godot/blob/a5bc65bbadad814a157283749c1ef8552f1663c4/modules/minimp3/resource_importer_mp3.cpp#L50
-                completions = ConcatFullPathCompletionsForType(completions, context, searchPath, GodotTypes.AudioStreamMP3, "mp3");
-
-                // AudioStreamWAV (.wav)
-                // https://github.com/godotengine/godot/blob/1c820f19b1a0ba72316896ad354cb31391638a3b/editor/import/resource_importer_wav.cpp#L50
-                // AudioStreamSample is older type name: https://github.com/godotengine/godot/blob/1c0d9eef7a697af1e9142a2a95c824c9554a6ca1/editor/import/resource_importer_wav.cpp#L58
-                completions = ConcatFullPathCompletionsForTypes(completions, context, searchPath, new[] { GodotTypes.AudioStreamWAV, GodotTypes.AudioStreamSample }, "wav");
-
-                // AudioStreamOggVorbis (.ogg)
-                // https://github.com/godotengine/godot/blob/2bf8c4a6d0c553d450695d1988fac39df638ad9a/modules/vorbis/resource_importer_ogg_vorbis.cpp#L52
-                completions = ConcatFullPathCompletionsForType(completions, context, searchPath, GodotTypes.AudioStreamOggVorbis, "ogg");
-
-                // AudioStream
-                completions = ConcatFullPathCompletionsForType(completions, context, searchPath, GodotTypes.AudioStream,
-                    "mp3",
-                    "wav",
-                    "ogg");
-
-                // Images
-                // PNG     (.png):        https://github.com/godotengine/godot/blob/dcdc6954f89876249bd0600b154a900e5bf83d36/drivers/png/image_loader_png.cpp#L55
-                // JPG     (.jpg, .jpeg): https://github.com/godotengine/godot/blob/40c360b8703449bb6a3299878600fab45abf9f86/modules/jpg/image_loader_jpegd.cpp#L122
-                // BMP     (.bmp)         https://github.com/godotengine/godot/blob/dcdc6954f89876249bd0600b154a900e5bf83d36/modules/bmp/image_loader_bmp.cpp#L290
-                // SVG     (.svg):        https://github.com/godotengine/godot/blob/79463aa5defb083569d193658a62755223f14dc4/modules/svg/image_loader_svg.cpp#L136
-                // WebP    (.webp):       https://github.com/godotengine/godot/blob/c18d0f20357a11bd9cfa2f57b8b9b500763413bc/modules/webp/image_loader_webp.cpp#L66
-                // HDR     (.hdr):        https://github.com/godotengine/godot/blob/d27f60f0e8d78059f8d075e16f0d242a7673bba0/modules/hdr/image_loader_hdr.cpp#L149
-                // OpenEXR (.exr):        https://github.com/godotengine/godot/blob/d27f60f0e8d78059f8d075e16f0d242a7673bba0/modules/tinyexr/image_loader_tinyexr.cpp#L292
-                // TGA     (.tga):        https://github.com/godotengine/godot/blob/dcdc6954f89876249bd0600b154a900e5bf83d36/modules/tga/image_loader_tga.cpp#L337
-                completions = ConcatFullPathCompletionsForTypes(completions, context, searchPath, 
-                    new[] {
-                        GodotTypes.Texture,
-                        GodotTypes.StreamTexture,
-                    }, 
-                    "png", 
-                    "jpg", "jpeg",
-                    "bmp",
-                    "svg",
-                    "webp", 
-                    "hdr",
-                    "exr",
-                    "tga");
-
-                // DDS (.dds): https://github.com/godotengine/godot/blob/d26442e709f6361af9ac755ec9291bb43f2cd69b/modules/dds/texture_loader_dds.cpp#L431
-                completions = ConcatFullPathCompletionsForTypes(completions, context, searchPath, 
-                    new[] {
-                        GodotTypes.Texture,
-                        GodotTypes.ImageTexture,
-                    }, 
-                    "dds");
-
-                // VideoStreamTheora
-                // https://github.com/godotengine/godot/blob/d26442e709f6361af9ac755ec9291bb43f2cd69b/modules/theora/video_stream_theora.cpp#L694
-                completions = ConcatFullPathCompletionsForTypes(completions, context, searchPath, 
-                    new[] {
-                        GodotTypes.VideoStreamTheora,
-                        GodotTypes.VideoStream
-                    },
-                    "ogv");
-
-                // Translations
-                // https://github.com/godotengine/godot/blob/297241f368632dd91a3e7df47da3d9e5197e4f1e/core/io/translation_loader_po.cpp#L359
-                completions = ConcatFullPathCompletionsForType(completions, context, searchPath, GodotTypes.Translation, "po", "mo");
-
-                // Scripts
-                // GodotScript (.gd): https://github.com/godotengine/godot/blob/ba3734e69a2f2a4f6c4f908958268762fd805cd2/modules/gdscript/gdscript.cpp#L2410
-                completions = ConcatFullPathCompletionsForType(completions, context, searchPath, GodotTypes.GDScript, "gd");
-                // C#          (.cs): https://github.com/godotengine/godot/blob/14d021287bced6a7f5ab9db24936bd07b4cfdfd0/modules/mono/csharp_script.cpp#L1238
-                completions = ConcatFullPathCompletionsForType(completions, context, searchPath, GodotTypes.CSharpScript, "cs");
-
-
-                completions = completions.Concat(PathCompletions(searchPath));
+                var completions =
+                    FullPathCompletions(context, searchPath)
+                        .Concat(OneLevelPathCompletions(searchPath));
 
                 var items = 
                     (from completion in completions.Distinct() 
@@ -165,57 +81,93 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             }
         }
 
-        private static bool ExpectsResource(CSharpCodeCompletionContext context, IClrTypeName resourceType)
+        static GodotResourcePathCodeCompletion()
         {
-            // Get invocation which is using the string being completed
-            if (!(
-                InvocationExpressionNavigator.GetByArgument(
-                    CSharpArgumentNavigator.GetByValue(
-                        context.NodeInFile.Parent as ICSharpLiteralExpression))
-                is IInvocationExpression invocation))
-            {
-                return false;
-            }
+            ourFileExtensionsByType = new Dictionary<IClrTypeName, IList<string>>();
+            // Scenes
+            ourFileExtensionsByType.InsertOrAppend(GodotTypes.PackedScene, "tscn");
 
-            // GD.Load or ResourceLoader.Load expecting given resource type
-            if (invocation.IsGodotLoad(resourceType))
-            {
-                return true;
-            }
+            // Crypto keys
+            // https://github.com/godotengine/godot/blob/297241f368632dd91a3e7df47da3d9e5197e4f1e/core/crypto/crypto.cpp#L168
+            ourFileExtensionsByType.InsertOrAppend(GodotTypes.X509Certificate, "crt");
+            ourFileExtensionsByType.InsertOrAppend(GodotTypes.CryptoKey, "key", "pub");
 
-            // Load with no generic type argument but being assigned to given resource type
-            return AssignmentExpressionNavigator.GetBySource(invocation)
-                    is IAssignmentExpression assignment 
-                   && assignment.Dest.Type() is IDeclaredType lhsType
-                   && GodotTypes.PackedScene.Equals(lhsType.GetClrName())
-                   && invocation.IsGodotLoad(null);
+            // AudioStreamMP3 (.mp3)
+            // https://github.com/godotengine/godot/blob/a5bc65bbadad814a157283749c1ef8552f1663c4/modules/minimp3/resource_importer_mp3.cpp#L50
+            ourFileExtensionsByType.InsertOrAppend(GodotTypes.AudioStreamMP3, "mp3");
+
+            // AudioStreamWAV (.wav)
+            // https://github.com/godotengine/godot/blob/1c820f19b1a0ba72316896ad354cb31391638a3b/editor/import/resource_importer_wav.cpp#L50
+            // AudioStreamSample is older type name: https://github.com/godotengine/godot/blob/1c0d9eef7a697af1e9142a2a95c824c9554a6ca1/editor/import/resource_importer_wav.cpp#L58
+            ourFileExtensionsByType.InsertOrAppendAtEach(new[] { GodotTypes.AudioStreamWAV, GodotTypes.AudioStreamSample }, "wav");
+
+            // AudioStreamOggVorbis (.ogg)
+            // https://github.com/godotengine/godot/blob/2bf8c4a6d0c553d450695d1988fac39df638ad9a/modules/vorbis/resource_importer_ogg_vorbis.cpp#L52
+            ourFileExtensionsByType.InsertOrAppend(GodotTypes.AudioStreamOggVorbis, "ogg");
+
+            // AudioStream
+            ourFileExtensionsByType.InsertOrAppend(GodotTypes.AudioStream, "mp3", "wav", "ogg");
+
+            // Images
+            // PNG     (.png):        https://github.com/godotengine/godot/blob/dcdc6954f89876249bd0600b154a900e5bf83d36/drivers/png/image_loader_png.cpp#L55
+            // JPG     (.jpg, .jpeg): https://github.com/godotengine/godot/blob/40c360b8703449bb6a3299878600fab45abf9f86/modules/jpg/image_loader_jpegd.cpp#L122
+            // BMP     (.bmp)         https://github.com/godotengine/godot/blob/dcdc6954f89876249bd0600b154a900e5bf83d36/modules/bmp/image_loader_bmp.cpp#L290
+            // SVG     (.svg):        https://github.com/godotengine/godot/blob/79463aa5defb083569d193658a62755223f14dc4/modules/svg/image_loader_svg.cpp#L136
+            // WebP    (.webp):       https://github.com/godotengine/godot/blob/c18d0f20357a11bd9cfa2f57b8b9b500763413bc/modules/webp/image_loader_webp.cpp#L66
+            // HDR     (.hdr):        https://github.com/godotengine/godot/blob/d27f60f0e8d78059f8d075e16f0d242a7673bba0/modules/hdr/image_loader_hdr.cpp#L149
+            // OpenEXR (.exr):        https://github.com/godotengine/godot/blob/d27f60f0e8d78059f8d075e16f0d242a7673bba0/modules/tinyexr/image_loader_tinyexr.cpp#L292
+            // TGA     (.tga):        https://github.com/godotengine/godot/blob/dcdc6954f89876249bd0600b154a900e5bf83d36/modules/tga/image_loader_tga.cpp#L337
+            ourFileExtensionsByType.InsertOrAppendAtEach(
+                new[] { GodotTypes.Texture, GodotTypes.StreamTexture, }, 
+                "png", 
+                "jpg", "jpeg",
+                "bmp",
+                "svg",
+                "webp", 
+                "hdr",
+                "exr",
+                "tga");
+
+            // DDS (.dds): https://github.com/godotengine/godot/blob/d26442e709f6361af9ac755ec9291bb43f2cd69b/modules/dds/texture_loader_dds.cpp#L431
+            ourFileExtensionsByType.InsertOrAppendAtEach(new[] { GodotTypes.Texture, GodotTypes.ImageTexture, }, "dds");
+
+            // VideoStreamTheora
+            // https://github.com/godotengine/godot/blob/d26442e709f6361af9ac755ec9291bb43f2cd69b/modules/theora/video_stream_theora.cpp#L694
+            ourFileExtensionsByType.InsertOrAppendAtEach(new[] { GodotTypes.VideoStreamTheora, GodotTypes.VideoStream }, "ogv");
+
+            // Translations
+            // https://github.com/godotengine/godot/blob/297241f368632dd91a3e7df47da3d9e5197e4f1e/core/io/translation_loader_po.cpp#L359
+            ourFileExtensionsByType.InsertOrAppend(GodotTypes.Translation, "po", "mo");
+
+            // Scripts
+            // GodotScript (.gd): https://github.com/godotengine/godot/blob/ba3734e69a2f2a4f6c4f908958268762fd805cd2/modules/gdscript/gdscript.cpp#L2410
+            ourFileExtensionsByType.InsertOrAppend(GodotTypes.GDScript, "gd");
+            // C#          (.cs): https://github.com/godotengine/godot/blob/14d021287bced6a7f5ab9db24936bd07b4cfdfd0/modules/mono/csharp_script.cpp#L1238
+            ourFileExtensionsByType.InsertOrAppend(GodotTypes.CSharpScript, "cs");
+            ourFileExtensionsByType.InsertOrAppend(GodotTypes.Script, "gd", "cs");
         }
 
-        private static IEnumerable<string> ConcatFullPathCompletionsForType(
-            IEnumerable<string> completions,
-            CSharpCodeCompletionContext context, 
-            VirtualFileSystemPath path,
-            IClrTypeName typeName,
-            params string[] extensions)
-        =>
-            ExpectsResource(context, typeName)
-                ? completions.Concat(ResourceFiles(path, extensions)) 
-                : completions;
-        private static IEnumerable<string> ConcatFullPathCompletionsForTypes(
-            IEnumerable<string> completions,
-            CSharpCodeCompletionContext context, 
-            VirtualFileSystemPath path,
-            IEnumerable<IClrTypeName> typeNames,
-            params string[] extensions)
-        =>
-            typeNames.Aggregate(completions, (c, type) =>
-                ConcatFullPathCompletionsForType(c, context, path, type, extensions));
+        private static readonly Dictionary<IClrTypeName, IList<string>> ourFileExtensionsByType;
+
+        // Suggests full paths to resource files based on the string completion's context --
+        // in particular, if the string is an argument to a Godot load (GD.Load or ResourceLoader.Load).
+        // Resource type is inferred based on Load's type argument or assignment destination.
+        private static IEnumerable<string> FullPathCompletions(CSharpCodeCompletionContext context, VirtualFileSystemPath searchPath)
+        {
+            if (!(context.IfGodotLoadGetResourceType() is IClrTypeName resourceType))
+                return Enumerable.Empty<string>();
+
+            ourFileExtensionsByType.TryGetValue(resourceType, out var matchingFileExtensions);
+            return matchingFileExtensions is null 
+                ? Enumerable.Empty<string>()
+                : ResourceFiles(searchPath, matchingFileExtensions);
+        }
 
         // Suggests child files or directories of the given path
         // with the aim of completing a path to any existing regular file.
         // If path is an existing regular file, the path is complete, so no suggestions are returned.
         // Otherwise, lists the entries of the last directory in the path.
-        private static IEnumerable<string> PathCompletions(VirtualFileSystemPath path)
+        private static IEnumerable<string> OneLevelPathCompletions(VirtualFileSystemPath path)
         {
             var searchDir = SearchDir(path);
             if (searchDir is null)
@@ -238,7 +190,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             }
         }
 
-        private static IEnumerable<string> ResourceFiles(VirtualFileSystemPath path, string[] extensions)
+        private static IEnumerable<string> ResourceFiles(VirtualFileSystemPath path, IList<string> extensions)
         {
             var searchDir = SearchDir(path);
             if (searchDir is null)
@@ -251,7 +203,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 select p.MakeRelativeTo(path).ToString().Replace('\\', '/');
         }
 
-        private static IEnumerable<VirtualFileSystemPath> ResourceFilesInner(VirtualFileSystemPath path, string[] extensions)
+        private static IEnumerable<VirtualFileSystemPath> ResourceFilesInner(VirtualFileSystemPath path, IList<string> extensions)
         {
             if (path.ExistsFile && extensions.Any(ext => ext.Equals(path.ExtensionNoDot)))
             {
@@ -323,6 +275,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
         public static readonly IClrTypeName Translation           = GodotTypeName("Translation");
         public static readonly IClrTypeName VideoStream           = GodotTypeName("VideoStream");
         public static readonly IClrTypeName VideoStreamTheora     = GodotTypeName("VideoStreamTheora");
+        public static readonly IClrTypeName Script                = GodotTypeName("Script");
         public static readonly IClrTypeName GDScript              = GodotTypeName("GDScript");
         public static readonly IClrTypeName CSharpScript          = GodotTypeName("CSharpScript");
     }
@@ -343,37 +296,75 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             => path.FullPath.StartsWith(other.FullPath);
 
 
-        public static bool IsGodotLoad(
-            this IInvocationExpression invocation,
-            [CanBeNull] IClrTypeName typeArg)
+        public static bool IsGodotLoad(this IInvocationExpression invocation)
         {
-            var typeArgs = 
-                typeArg is IClrTypeName ta
-                    ? new[] { ta } 
-                    : new IClrTypeName[] { };
-            return invocation.InvokesMethod(GodotTypes.GD,             "Load", typeArgs)
-                || invocation.InvokesMethod(GodotTypes.ResourceLoader, "Load", typeArgs);
+            var containingType = invocation.InvokedMethodContainingType();
+            return (GodotTypes.ResourceLoader.Equals(containingType)
+                    || GodotTypes.GD.Equals(containingType))
+                   && "Load".Equals(invocation.InvokedMethodName());
         }
 
-        public static bool InvokesMethod(
-            this IInvocationExpression invocationExpression, 
-            IClrTypeName typeName,
-            string name,
-            params IClrTypeName[] expectedTypeArgs)
+        public static IClrTypeName InvokedMethodContainingType(this IInvocationExpression invocation)
+            => invocation.Reference.Resolve().DeclaredElement is IMethod method
+               && method.ContainingType is ITypeElement type
+                ? type.GetClrName()
+                : null;
+
+        public static string InvokedMethodName(this IInvocationExpression invocation)
+            => invocation.Reference.Resolve().DeclaredElement is IMethod method
+               ? method.ShortName
+               : null;
+
+        public static IClrTypeName InvokedMethodFirstTypeArgument(this IInvocationExpression invocation)
         {
-            var actualTypeArgs = invocationExpression.Reference.Invocation.TypeArguments;
-            var typeArgsMatch = 
-                actualTypeArgs.Count == expectedTypeArgs.Length
-                 && Enumerable.Range(0, expectedTypeArgs.Length)
-                    .All(i =>
-                        actualTypeArgs[i] is IDeclaredType dt
-                         && dt.GetClrName().Equals(expectedTypeArgs[i]));
-            return invocationExpression.Reference.Resolve().DeclaredElement is IMethod method
-                   && name.Equals(method.ShortName)
-                   && method.ContainingType is ITypeElement type
-                   && type.GetClrName().Equals(typeName)
-                   && typeArgsMatch;
+            var typeArgs = invocation.Reference.Invocation.TypeArguments;
+            return typeArgs.Count == 1
+                   && typeArgs[0] is IDeclaredType t
+                ? t.GetClrName()
+                : null;
         }
+
+        public static IClrTypeName AssignmentDestType(this IInvocationExpression invocation)
+            => AssignmentExpressionNavigator.GetBySource(invocation) is IAssignmentExpression assignment 
+               && assignment.Dest.Type() is IDeclaredType lhsType
+               ? lhsType.GetClrName()
+               : null;
+
+        public static IClrTypeName IfGodotLoadGetResourceType(this CSharpCodeCompletionContext context)
+        {
+            if (!(
+                InvocationExpressionNavigator.GetByArgument(
+                    CSharpArgumentNavigator.GetByValue(
+                        context.NodeInFile.Parent as ICSharpLiteralExpression))
+                is IInvocationExpression invocation
+                && invocation.IsGodotLoad()))
+            {
+                return null;
+            }
+
+            return invocation.InvokedMethodFirstTypeArgument()
+                ?? invocation.AssignmentDestType();
+        }
+
+        public static void InsertOrAppendAtEach<K, V>(this IDictionary<K, IList<V>> d, IEnumerable<K> keys, params V[] value)
+        {
+            foreach (var key in keys)
+            {
+                d.InsertOrAppend(key, value);
+            }
+        }
+        public static void InsertOrAppend<K, V>(this IDictionary<K, IList<V>> d, K key, params V[] value)
+        {
+            if (d.ContainsKey(key))
+            {
+                d[key].AddRange(value);
+            }
+            else
+            {
+                d[key] = new List<V>(value);
+            }
+        }
+
     }
 
 }
