@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using JetBrains.DocumentModel;
 using JetBrains.Metadata.Reader.API;
@@ -12,6 +11,7 @@ using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupI
 using JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.Lookup;
 using JetBrains.ReSharper.Features.Intellisense.CodeCompletion.CSharp.Rules;
+using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
@@ -23,6 +23,7 @@ using JetBrains.TextControl;
 using JetBrains.UI.Icons;
 using JetBrains.UI.RichText;
 using JetBrains.Util;
+using JetBrains.Util.Logging;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 {
@@ -36,9 +37,19 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
         protected override bool AddLookupItems(CSharpCodeCompletionContext context, IItemsCollector collector)
         {
-            try
+            if (!IsAvailable(context))
+                return false;
+
+            var project = context.NodeInFile.GetProject();
+            if (project is null)
+                return false;
+
+            if (!project.IsGodotProject())
+                return false;
+
+            return Logger.CatchSilent(() =>
             {
-                var projectPath = context.ProjectPath();
+                var projectPath = project.ProjectLocationLive.Value;
                 if (projectPath is null) 
                     return false;
                 var stringLiteral = context.StringLiteral();
@@ -74,11 +85,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                     collector.Add(item);
                 }
                 return !items.IsEmpty();
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            });
         }
 
         static GodotResourcePathCodeCompletion()
@@ -177,7 +184,19 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
             return
                 from child in searchDir.GetChildren()
+                where !ShouldIgnore(child.GetAbsolutePath())
                 select child.GetAbsolutePath().Name;
+        }
+
+        private static bool ShouldIgnore(VirtualFileSystemPath path)
+        {
+            // Do not check or suggest:
+            // - dotfiles or directories starting with "."
+            // - Godot .import files
+            // - project.godot
+            return path.Name.StartsWith(".")
+                || "import".Equals(path.ExtensionNoDot)
+                || "project.godot".Equals(path.Name);
         }
 
         private static VirtualFileSystemPath SearchDir(VirtualFileSystemPath path)
@@ -205,6 +224,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
         private static IEnumerable<VirtualFileSystemPath> ResourceFilesInner(VirtualFileSystemPath path, IList<string> extensions)
         {
+            if (ShouldIgnore(path))
+            {
+                return Enumerable.Empty<VirtualFileSystemPath>();
+            }
+
             if (path.ExistsFile && extensions.Any(ext => ext.Equals(path.ExtensionNoDot)))
             {
                 return new[] { path };
@@ -282,9 +306,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
     static class CompletionExtensions
     {
-        public static VirtualFileSystemPath ProjectPath(this CSharpCodeCompletionContext context)
-            => context.BasicContext.Solution.SolutionProject.ProjectLocationLive.Value;
-
         public static ICSharpLiteralExpression StringLiteral(this CSharpCodeCompletionContext context)
             => context.NodeInFile is ITokenNode nodeInFile
                && nodeInFile.Parent is ICSharpLiteralExpression literalExpression
