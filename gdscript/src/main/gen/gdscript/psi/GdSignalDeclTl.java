@@ -13,10 +13,10 @@ public interface GdSignalDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdSi
   GdEndStmt getEndStmt();
 
   @Nullable
-  GdSignalIdNmi getSignalIdNmi();
+  GdParamList getParamList();
 
   @Nullable
-  GdSignalParList getSignalParList();
+  GdSignalIdNmi getSignalIdNmi();
 
   @NotNull
   String getName();

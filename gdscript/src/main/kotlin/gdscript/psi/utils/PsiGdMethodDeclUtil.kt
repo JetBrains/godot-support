@@ -32,6 +32,15 @@ object PsiGdMethodDeclUtil {
         return methods;
     }
 
+    fun isStatic(element: GdMethodDeclTl): Boolean {
+        val stub = element.stub;
+        if (stub !== null) {
+            return stub.isStatic();
+        }
+
+        return element.firstChild.text.equals("static");
+    }
+
     fun getMethodName(element: GdMethodDeclTl): String? {
         val stub = element.stub;
         if (stub !== null) {

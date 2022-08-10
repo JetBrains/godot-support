@@ -16,10 +16,12 @@ public class GdTernaryExImpl extends GdExprImpl implements GdTernaryEx {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitTernaryEx(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

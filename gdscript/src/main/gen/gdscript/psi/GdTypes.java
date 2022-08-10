@@ -21,6 +21,7 @@ public interface GdTypes {
   IElementType ARR_EX = new GdElementType("ARR_EX");
   IElementType ASSERT_ST = new GdElementType("ASSERT_ST");
   IElementType ASSIGN_ST = new GdElementType("ASSIGN_ST");
+  IElementType ASSIGN_TYPED = new GdElementType("ASSIGN_TYPED");
   IElementType ATTRIBUTE_EX = new GdElementType("ATTRIBUTE_EX");
   IElementType AWAIT_ST = new GdElementType("AWAIT_ST");
   IElementType BIT_AND_EX = new GdElementType("BIT_AND_EX");
@@ -82,7 +83,6 @@ public interface GdTypes {
   IElementType SHIFT_EX = new GdElementType("SHIFT_EX");
   IElementType SIGNAL_DECL_TL = GdSignalDeclElementType.getInstance("SIGNAL_DECL_TL");
   IElementType SIGNAL_ID_NMI = new GdElementType("SIGNAL_ID_NMI");
-  IElementType SIGNAL_PAR_LIST = new GdElementType("SIGNAL_PAR_LIST");
   IElementType SIGN_EX = new GdElementType("SIGN_EX");
   IElementType STMT = new GdElementType("STMT");
   IElementType STMT_OR_SUITE = new GdElementType("STMT_OR_SUITE");
@@ -108,6 +108,7 @@ public interface GdTypes {
   IElementType BOOL = new GdTokenType("BOOL");
   IElementType BREAK = new GdTokenType("BREAK");
   IElementType BREAKPOINT = new GdTokenType("BREAKPOINT");
+  IElementType CEQ = new GdTokenType("CEQ");
   IElementType CLASS_NAME = new GdTokenType("CLASS_NAME");
   IElementType COLON = new GdTokenType("COLON");
   IElementType COMMA = new GdTokenType("COMMA");
@@ -167,6 +168,7 @@ public interface GdTypes {
   IElementType SEMICON = new GdTokenType("SEMICON");
   IElementType SET = new GdTokenType("SET");
   IElementType SIGNAL = new GdTokenType("SIGNAL");
+  IElementType STATIC = new GdTokenType("STATIC");
   IElementType STR = new GdTokenType("STR");
   IElementType STRING = new GdTokenType("STRING");
   IElementType TAU = new GdTokenType("TAU");
@@ -198,6 +200,9 @@ public interface GdTypes {
       }
       else if (type == ASSIGN_ST) {
         return new GdAssignStImpl(node);
+      }
+      else if (type == ASSIGN_TYPED) {
+        return new GdAssignTypedImpl(node);
       }
       else if (type == ATTRIBUTE_EX) {
         return new GdAttributeExImpl(node);
@@ -261,9 +266,6 @@ public interface GdTypes {
       }
       else if (type == ENUM_VALUE_NMI) {
         return new GdEnumValueNmiImpl(node);
-      }
-      else if (type == EXPR) {
-        return new GdExprImpl(node);
       }
       else if (type == EXPR_ST) {
         return new GdExprStImpl(node);
@@ -381,9 +383,6 @@ public interface GdTypes {
       }
       else if (type == SIGNAL_ID_NMI) {
         return new GdSignalIdNmiImpl(node);
-      }
-      else if (type == SIGNAL_PAR_LIST) {
-        return new GdSignalParListImpl(node);
       }
       else if (type == SIGN_EX) {
         return new GdSignExImpl(node);

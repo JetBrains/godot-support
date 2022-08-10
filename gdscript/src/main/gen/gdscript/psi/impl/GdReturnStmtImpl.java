@@ -21,6 +21,7 @@ public class GdReturnStmtImpl extends ASTWrapperPsiElement implements GdReturnSt
     visitor.visitReturnStmt(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

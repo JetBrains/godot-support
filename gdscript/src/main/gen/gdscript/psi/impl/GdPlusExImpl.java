@@ -16,10 +16,12 @@ public class GdPlusExImpl extends GdExprImpl implements GdPlusEx {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitPlusEx(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

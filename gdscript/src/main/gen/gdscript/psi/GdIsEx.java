@@ -10,7 +10,7 @@ public interface GdIsEx extends GdExpr {
   @NotNull
   GdExpr getExpr();
 
-  @Nullable
+  @NotNull
   GdIsTyped getIsTyped();
 
 }

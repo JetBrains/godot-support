@@ -122,6 +122,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "assert"       { return GdTypes.ASSERT; }
     "await"        { return GdTypes.AWAIT; }
     "preload"      { return GdTypes.PRELOAD; }
+    "static"       { return GdTypes.STATIC; }
 
     "*"            { return GdTypes.MUL; }
     "/"            { return GdTypes.DIV; }
@@ -132,6 +133,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "--"           { return GdTypes.MMINUS; }
     "."            { return GdTypes.DOT; }
     ","            { return GdTypes.COMMA; }
+    ":="           { return GdTypes.CEQ; }
     ":"            { return GdTypes.COLON; }
     ";"            { return GdTypes.SEMICON; }
     "!"            { return GdTypes.NEGATE; }

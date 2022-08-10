@@ -11,7 +11,7 @@ import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdExprImpl extends ASTWrapperPsiElement implements GdExpr {
+public abstract class GdExprImpl extends ASTWrapperPsiElement implements GdExpr {
 
   public GdExprImpl(@NotNull ASTNode node) {
     super(node);
@@ -21,6 +21,7 @@ public class GdExprImpl extends ASTWrapperPsiElement implements GdExpr {
     visitor.visitExpr(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GdVarDeclSt extends GdStmt {
 
   @Nullable
+  GdAssignTyped getAssignTyped();
+
+  @Nullable
   GdTyped getTyped();
 
   @NotNull

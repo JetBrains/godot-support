@@ -11,6 +11,9 @@ import com.intellij.navigation.ItemPresentation;
 public interface GdConstDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdConstDeclStub> {
 
   @Nullable
+  GdAssignTyped getAssignTyped();
+
+  @Nullable
   GdConstIdNmi getConstIdNmi();
 
   @Nullable

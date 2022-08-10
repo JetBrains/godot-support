@@ -19,17 +19,24 @@ public class GdClassVarDeclTlImpl extends GdClassVarDeclElementImpl implements G
     super(node);
   }
 
-  public GdClassVarDeclTlImpl(@NotNull GdClassVarDeclStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public GdClassVarDeclTlImpl(@NotNull GdClassVarDeclStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitClassVarDeclTl(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public GdAssignTyped getAssignTyped() {
+    return PsiTreeUtil.getChildOfType(this, GdAssignTyped.class);
   }
 
   @Override

@@ -16,10 +16,12 @@ public class GdMatchStImpl extends GdStmtImpl implements GdMatchSt {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitMatchSt(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

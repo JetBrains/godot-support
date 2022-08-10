@@ -3,8 +3,10 @@ package gdscript.annotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import gdscript.action.quickFix.GdAddReturnType
+import gdscript.action.quickFix.GdRemoveElementAction
 import gdscript.psi.*
 import gdscript.psi.utils.PsiGdNamedUtil
 
@@ -77,15 +79,29 @@ class GdConstVarIdAnnotator : Annotator {
 
     private fun hasReturnType(element: PsiElement, holder: AnnotationHolder) {
         val returnTypes = when (element) {
-            is GdConstDeclTl -> Pair(element.typed, element.expr)
-            is GdClassVarDeclTl -> Pair(element.typed, element.expr)
-            is GdVarDeclSt -> Pair(element.typed, element.expr)
-            is GdConstDeclSt -> Pair(element.typed, element.expr)
+            is GdConstDeclTl -> Triple(element.assignTyped, element.typed, element.expr)
+            is GdClassVarDeclTl -> Triple(element.assignTyped, element.typed, element.expr)
+            is GdVarDeclSt -> Triple(element.assignTyped, element.typed, element.expr)
+            is GdConstDeclSt -> Triple(element.assignTyped, element.typed, element.expr)
             else -> return;
         }
 
-        val returnType = returnTypes.first?.typeHintNmList?.first()?.text;
-        val expr = returnTypes.second;
+        val assigment = returnTypes.first;
+        if (assigment !== null && assigment.text.equals(":=")) { // := assigment does not specify the type
+            if (returnTypes.second === null) {
+                return;
+            }
+
+            holder
+                .newAnnotation(HighlightSeverity.ERROR, ":= assigment cannot have return type")
+                .range(TextRange.create(returnTypes.second!!.textRange.startOffset, assigment.textRange.endOffset))
+                .withFix(GdRemoveElementAction(returnTypes.second!!))
+                .create()
+            return;
+        }
+
+        val returnType = returnTypes.second?.typeHintNmList?.first()?.text;
+        val expr = returnTypes.third;
         if (returnType != null || expr == null) {
             return;
         }

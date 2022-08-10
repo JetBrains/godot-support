@@ -26,6 +26,8 @@ public interface GdMethodDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdMe
   @Nullable
   GdStmtOrSuite getStmtOrSuite();
 
+  boolean isStatic();
+
   @Nullable
   String getName();
 

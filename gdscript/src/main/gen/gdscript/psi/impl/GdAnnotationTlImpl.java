@@ -16,10 +16,12 @@ public class GdAnnotationTlImpl extends GdTopLevelDeclImpl implements GdAnnotati
     super(node);
   }
 
+  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitAnnotationTl(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

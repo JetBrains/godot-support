@@ -27,6 +27,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitStmt(o);
   }
 
+  public void visitAssignTyped(@NotNull GdAssignTyped o) {
+    visitPsiElement(o);
+  }
+
   public void visitAssignSt(@NotNull GdAssignSt o) {
     visitStmt(o);
   }
@@ -277,10 +281,6 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitSignalIdNmi(@NotNull GdSignalIdNmi o) {
     visitNamedIdElement(o);
-  }
-
-  public void visitSignalParList(@NotNull GdSignalParList o) {
-    visitPsiElement(o);
   }
 
   public void visitStmt(@NotNull GdStmt o) {

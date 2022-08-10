@@ -1,5 +1,7 @@
 resources: onready check
 
+oddělit static metody
+
 TopLevel: innerClass
 syntax: @"Node/Label"
 
@@ -64,6 +66,9 @@ var format_string = "We're waiting for %s."
 // Using the '%' operator, the placeholder is replaced with the desired value
 
 var actual_string = format_string % "Godot"
+
+signal - argumenty
+signal - napovídat jména + kontrolovat params
 
 
 sdk -> lepší impl

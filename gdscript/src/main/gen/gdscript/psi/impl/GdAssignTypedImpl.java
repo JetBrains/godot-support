@@ -11,16 +11,17 @@ import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdSignalParListImpl extends ASTWrapperPsiElement implements GdSignalParList {
+public class GdAssignTypedImpl extends ASTWrapperPsiElement implements GdAssignTyped {
 
-  public GdSignalParListImpl(@NotNull ASTNode node) {
+  public GdAssignTypedImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitSignalParList(this);
+    visitor.visitAssignTyped(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

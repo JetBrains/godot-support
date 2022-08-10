@@ -13,4 +13,10 @@ public interface GdSetDecl extends PsiElement {
   @Nullable
   GdStmtOrSuite getStmtOrSuite();
 
+  @Nullable
+  GdTyped getTyped();
+
+  @Nullable
+  GdVarNmi getVarNmi();
+
 }

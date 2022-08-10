@@ -21,6 +21,7 @@ public class GdStmtOrSuiteImpl extends ASTWrapperPsiElement implements GdStmtOrS
     visitor.visitStmtOrSuite(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

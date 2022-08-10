@@ -20,14 +20,15 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
     super(node);
   }
 
-  public GdMethodDeclTlImpl(@NotNull GdMethodDeclStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public GdMethodDeclTlImpl(@NotNull GdMethodDeclStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitMethodDeclTl(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
@@ -61,6 +62,11 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
   @Nullable
   public GdStmtOrSuite getStmtOrSuite() {
     return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
+  }
+
+  @Override
+  public boolean isStatic() {
+    return GdPsiUtils.isStatic(this);
   }
 
   @Override

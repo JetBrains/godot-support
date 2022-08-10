@@ -20,14 +20,15 @@ public class GdEnumDeclTlImpl extends GdEnumDeclElementImpl implements GdEnumDec
     super(node);
   }
 
-  public GdEnumDeclTlImpl(@NotNull GdEnumDeclStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public GdEnumDeclTlImpl(@NotNull GdEnumDeclStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitEnumDeclTl(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

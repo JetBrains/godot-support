@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface GdSetgetDecl extends PsiElement {
 
-  @Nullable
-  GdGetDecl getGetDecl();
+  @NotNull
+  List<GdGetDecl> getGetDeclList();
 
-  @Nullable
-  GdSetDecl getSetDecl();
+  @NotNull
+  List<GdSetDecl> getSetDeclList();
 
 }

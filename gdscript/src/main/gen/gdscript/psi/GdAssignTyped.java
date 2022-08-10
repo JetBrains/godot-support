@@ -5,15 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdConstDeclSt extends GdStmt {
-
-  @Nullable
-  GdAssignTyped getAssignTyped();
-
-  @Nullable
-  GdTyped getTyped();
-
-  @NotNull
-  GdVarNmi getVarNmi();
+public interface GdAssignTyped extends PsiElement {
 
 }

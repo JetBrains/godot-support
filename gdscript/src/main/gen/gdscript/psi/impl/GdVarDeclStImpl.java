@@ -16,13 +16,21 @@ public class GdVarDeclStImpl extends GdStmtImpl implements GdVarDeclSt {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitVarDeclSt(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public GdAssignTyped getAssignTyped() {
+    return PsiTreeUtil.getChildOfType(this, GdAssignTyped.class);
   }
 
   @Override

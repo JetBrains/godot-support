@@ -19,7 +19,11 @@ object PsiGdConstDeclUtil {
             return stub.returnType();
         }
 
-        return PsiGdExprUtil.fromTyped(element.typed);
+        if (element.typed !== null) {
+            return PsiGdExprUtil.fromTyped(element.typed);
+        }
+
+        return element.expr?.returnType ?: "";
     }
 
 }

@@ -21,6 +21,7 @@ public class GdArrayDeclImpl extends ASTWrapperPsiElement implements GdArrayDecl
     visitor.visitArrayDecl(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

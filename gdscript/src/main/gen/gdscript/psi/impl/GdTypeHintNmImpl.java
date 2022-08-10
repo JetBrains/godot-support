@@ -20,6 +20,7 @@ public class GdTypeHintNmImpl extends GdNamedElementImpl implements GdTypeHintNm
     visitor.visitTypeHintNm(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

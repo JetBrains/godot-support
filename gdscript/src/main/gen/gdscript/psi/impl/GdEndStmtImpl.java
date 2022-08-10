@@ -21,6 +21,7 @@ public class GdEndStmtImpl extends ASTWrapperPsiElement implements GdEndStmt {
     visitor.visitEndStmt(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

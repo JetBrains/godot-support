@@ -21,6 +21,7 @@ public class GdSetDeclImpl extends ASTWrapperPsiElement implements GdSetDecl {
     visitor.visitSetDecl(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
@@ -36,6 +37,18 @@ public class GdSetDeclImpl extends ASTWrapperPsiElement implements GdSetDecl {
   @Nullable
   public GdStmtOrSuite getStmtOrSuite() {
     return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
+  }
+
+  @Override
+  @Nullable
+  public GdTyped getTyped() {
+    return PsiTreeUtil.getChildOfType(this, GdTyped.class);
+  }
+
+  @Override
+  @Nullable
+  public GdVarNmi getVarNmi() {
+    return PsiTreeUtil.getChildOfType(this, GdVarNmi.class);
   }
 
 }

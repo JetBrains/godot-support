@@ -21,7 +21,7 @@ object PsiGdSignalUtil {
             return stub.parameters();
         }
 
-        return PsiTreeUtil.findChildrenOfType(element.signalParList, PsiIdentifier::class.java).map {
+        return PsiTreeUtil.findChildrenOfType(element.paramList, PsiIdentifier::class.java).map {
             it.text
         }.toTypedArray()
     }

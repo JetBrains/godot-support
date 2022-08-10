@@ -21,6 +21,7 @@ public class GdParamImpl extends ASTWrapperPsiElement implements GdParam {
     visitor.visitParam(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
@@ -39,9 +40,9 @@ public class GdParamImpl extends ASTWrapperPsiElement implements GdParam {
   }
 
   @Override
-  @Nullable
+  @NotNull
   public GdVarNmi getVarNmi() {
-    return PsiTreeUtil.getChildOfType(this, GdVarNmi.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi.class));
   }
 
 }

@@ -20,6 +20,7 @@ public class GdSetMethodIdNmImpl extends GdNamedElementImpl implements GdSetMeth
     visitor.visitSetMethodIdNm(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

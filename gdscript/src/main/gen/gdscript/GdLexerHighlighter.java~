@@ -941,7 +941,7 @@ class GdLexerHighlighter implements FlexLexer {
             // fall through
           case 128: break;
           case 47: 
-            { return GdTypes.CEQ;
+            { return dedentRoot(GdTypes.CEQ);
             } 
             // fall through
           case 129: break;

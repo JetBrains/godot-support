@@ -20,6 +20,7 @@ public class GdSignalIdNmiImpl extends GdNamedIdElementImpl implements GdSignalI
     visitor.visitSignalIdNmi(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

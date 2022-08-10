@@ -16,19 +16,21 @@ public class GdAwaitStImpl extends GdStmtImpl implements GdAwaitSt {
     super(node);
   }
 
+  @Override
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitAwaitSt(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
-  @NotNull
-  public List<GdExpr> getExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdExpr.class);
+  @Nullable
+  public GdExprSt getExprSt() {
+    return PsiTreeUtil.getChildOfType(this, GdExprSt.class);
   }
 
 }

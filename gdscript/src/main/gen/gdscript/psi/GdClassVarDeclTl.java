@@ -11,6 +11,9 @@ import com.intellij.navigation.ItemPresentation;
 public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdClassVarDeclStub> {
 
   @Nullable
+  GdAssignTyped getAssignTyped();
+
+  @Nullable
   GdClassVarIdNmi getClassVarIdNmi();
 
   @Nullable

@@ -21,6 +21,7 @@ public class GdSuiteImpl extends ASTWrapperPsiElement implements GdSuite {
     visitor.visitSuite(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);

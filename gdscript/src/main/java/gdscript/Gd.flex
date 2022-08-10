@@ -181,8 +181,8 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "var"          { if (yycolumn == 0) { yybegin(AWAIT_NEW_LINE_ONCE); } else { yybegin(AWAIT_NEW_LINE); } return dedentRoot(GdTypes.VAR); }
     "const"        { if (yycolumn == 0) { yybegin(AWAIT_NEW_LINE_ONCE); } else { yybegin(AWAIT_NEW_LINE); } return dedentRoot(GdTypes.CONST); }
     //"setget"       { return GdTypes.SETGET; }
-    "get"          { return dedentRoot(GdTypes.GET); }
-    "set"          { return dedentRoot(GdTypes.SET); }
+    "get"          { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.GET); }
+    "set"          { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.SET); }
 
     "enum"         { yybegin(AWAIT_ENUM_SEPARATOR); enumValEnded = true; return GdTypes.ENUM; }
     "func"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC); }
@@ -218,6 +218,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "assert"       { return dedentRoot(GdTypes.ASSERT); }
     "await"        { return dedentRoot(GdTypes.AWAIT); }
     "preload"      { return dedentRoot(GdTypes.PRELOAD); }
+    "static"       { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.STATIC); }
 
     "*"            { return dedentRoot(GdTypes.MUL); }
     "/"            { return dedentRoot(GdTypes.DIV); }
@@ -228,6 +229,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "--"           { return dedentRoot(GdTypes.MMINUS); }
     "."            { return dedentRoot(GdTypes.DOT); }
     ","            { return dedentRoot(GdTypes.COMMA); }
+    ":="           { return dedentRoot(GdTypes.CEQ); }
     ":"            { return dedentRoot(GdTypes.COLON); }
     ";"            { lineEnded = true; return GdTypes.SEMICON; }
     "!"            { return dedentRoot(GdTypes.NEGATE); }
@@ -315,7 +317,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 
 //    "class" { return GdTypes.CLASS; }
 //
-//    "static" { return GdTypes.STATIC; }
+
 //    "_" { return GdTypes.UNDER; }
 //
 //    /* Syntax */

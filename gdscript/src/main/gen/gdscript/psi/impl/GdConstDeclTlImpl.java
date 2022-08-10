@@ -19,17 +19,24 @@ public class GdConstDeclTlImpl extends GdConstDeclElementImpl implements GdConst
     super(node);
   }
 
-  public GdConstDeclTlImpl(@NotNull GdConstDeclStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public GdConstDeclTlImpl(@NotNull GdConstDeclStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitConstDeclTl(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public GdAssignTyped getAssignTyped() {
+    return PsiTreeUtil.getChildOfType(this, GdAssignTyped.class);
   }
 
   @Override

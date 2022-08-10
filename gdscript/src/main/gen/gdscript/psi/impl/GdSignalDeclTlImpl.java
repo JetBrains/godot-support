@@ -18,14 +18,15 @@ public class GdSignalDeclTlImpl extends GdSignalDeclElementImpl implements GdSig
     super(node);
   }
 
-  public GdSignalDeclTlImpl(@NotNull GdSignalDeclStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public GdSignalDeclTlImpl(@NotNull GdSignalDeclStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
     visitor.visitSignalDeclTl(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
@@ -39,14 +40,14 @@ public class GdSignalDeclTlImpl extends GdSignalDeclElementImpl implements GdSig
 
   @Override
   @Nullable
-  public GdSignalIdNmi getSignalIdNmi() {
-    return PsiTreeUtil.getChildOfType(this, GdSignalIdNmi.class);
+  public GdParamList getParamList() {
+    return PsiTreeUtil.getChildOfType(this, GdParamList.class);
   }
 
   @Override
   @Nullable
-  public GdSignalParList getSignalParList() {
-    return PsiTreeUtil.getChildOfType(this, GdSignalParList.class);
+  public GdSignalIdNmi getSignalIdNmi() {
+    return PsiTreeUtil.getChildOfType(this, GdSignalIdNmi.class);
   }
 
   @Override

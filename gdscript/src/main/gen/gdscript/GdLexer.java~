@@ -1154,7 +1154,7 @@ class GdLexer implements FlexLexer {
             // fall through
           case 146: break;
           case 57: 
-            { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.SET);
+            { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.SET);
             } 
             // fall through
           case 147: break;
@@ -1164,7 +1164,7 @@ class GdLexer implements FlexLexer {
             // fall through
           case 148: break;
           case 59: 
-            { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.GET);
+            { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.GET);
             } 
             // fall through
           case 149: break;

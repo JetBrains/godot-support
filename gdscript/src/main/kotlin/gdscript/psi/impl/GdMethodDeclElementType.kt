@@ -18,6 +18,7 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
     override fun getExternalId(): String = "GdScript.methodDecl";
 
     override fun serialize(stub: GdMethodDeclStub, dataStream: StubOutputStream) {
+        dataStream.writeBoolean(stub.isStatic());
         dataStream.writeName(stub.name());
         dataStream.writeName(stub.returnType());
         dataStream.writeName(stub.parameters().toString());
@@ -25,6 +26,7 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): GdMethodDeclStub =
         GdMethodDeclStubImpl(parentStub,
+            dataStream.readBoolean(),
             dataStream.readNameString(),
             dataStream.readNameString() ?: "",
             PsiGdParameterUtil.fromString(dataStream.readNameString()));
@@ -37,7 +39,7 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
         GdMethodDeclTlImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdMethodDeclTl, parentStub: StubElement<*>?): GdMethodDeclStub {
-        return GdMethodDeclStubImpl(parentStub, psi.name, psi.returnType, psi.parameters);
+        return GdMethodDeclStubImpl(parentStub, psi.firstChild.text.equals("static"), psi.name, psi.returnType, psi.parameters);
     }
 
 }
