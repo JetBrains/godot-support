@@ -94,6 +94,7 @@ suite ::= NEW_LINE? INDENT stmt+ DEDENT {pin=2}
 
 stmt ::=
     assign_st
+    | parent_st
     | varDecl_st
     | constDecl_st
     | if_st
@@ -108,6 +109,7 @@ stmt ::=
     | (expr endStmt)
 private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH | RETURN | AWAIT | ASSET | PRELOAD | INDENT | DEDENT | IDENTIFIER | literal_ex)
 
+parent_st ::= DOT call_ex endStmt?
 varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt {pin=2 recoverWhile=stmt_r}
 constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {pin=2 recoverWhile=stmt_r}
 if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? {pin=2 recoverWhile=stmt_r}

@@ -2,8 +2,6 @@ package gdscript.formatter.block
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
-import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.formatter.common.AbstractBlock
 import gdscript.formatter.GdCodeStyleSettings
 
 class GdRootVarBlock : GdAbstractBlock {

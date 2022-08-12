@@ -698,9 +698,16 @@ class GdLexerHighlighter implements FlexLexer {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
         zzDoEOF();
+        switch (zzLexicalState) {
+            case STRING: {
+              return GdTypes.STRING;
+            }  // fall though
+            case 220: break;
+            default:
               {
                 return null;
               }
+        }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
@@ -941,7 +948,7 @@ class GdLexerHighlighter implements FlexLexer {
             // fall through
           case 128: break;
           case 47: 
-            { return dedentRoot(GdTypes.CEQ);
+            { return GdTypes.CEQ;
             } 
             // fall through
           case 129: break;

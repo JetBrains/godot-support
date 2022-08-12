@@ -219,6 +219,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitParentSt(@NotNull GdParentSt o) {
+    visitStmt(o);
+  }
+
   public void visitPlusMinusPreEx(@NotNull GdPlusMinusPreEx o) {
     visitExpr(o);
   }

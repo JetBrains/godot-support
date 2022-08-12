@@ -21,9 +21,11 @@ import gdscript.psi.utils.PsiGdNamedUtil
 class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
     private var key: String = "";
+    private var methodOnly: Boolean = false;
 
-    constructor(element: PsiElement, textRange: TextRange) : super(element as GdNamedElement, textRange) {
-        key = element.text.substring(textRange.startOffset, textRange.endOffset)
+    constructor(element: PsiElement, textRange: TextRange, methodOnly: Boolean = false) : super(element as GdNamedElement, textRange) {
+        key = element.text.substring(textRange.startOffset, textRange.endOffset);
+        this.methodOnly = methodOnly;
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
@@ -52,13 +54,11 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
         val members = files.flatMap { PsiGdFileUtil.listMembers(it) }
 
-        val names = members.map { it.text }
-
         members.forEach {
             when (it) {
-                is GdClassVarDeclTl -> results.add(GdClassVarCompletionUtil.lookup(it))
-                is GdConstDeclTl -> results.add(GdConstCompletionUtil.lookup(it))
-                is GdEnumDeclTl -> results.addAll(GdEnumCompletionUtil.lookup(it))
+                is GdClassVarDeclTl -> !methodOnly && results.add(GdClassVarCompletionUtil.lookup(it))
+                is GdConstDeclTl -> !methodOnly && results.add(GdConstCompletionUtil.lookup(it))
+                is GdEnumDeclTl -> !methodOnly && results.addAll(GdEnumCompletionUtil.lookup(it))
                 is GdMethodDeclTl -> results.add(GdMethodCompletionUtil.lookup(it))
             }
         };

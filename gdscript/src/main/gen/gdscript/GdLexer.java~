@@ -803,6 +803,12 @@ class GdLexer implements FlexLexer {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
         zzDoEOF();
+        switch (zzLexicalState) {
+            case STRING: {
+              return GdTypes.STRING;
+            }  // fall though
+            case 233: break;
+            default:
               {
                 if (yystate() == AWAIT_NEW_LINE && !lineEnded) {
         yybegin(YYINITIAL);
@@ -813,6 +819,7 @@ class GdLexer implements FlexLexer {
         return null;
     }
               }
+        }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
@@ -1154,7 +1161,7 @@ class GdLexer implements FlexLexer {
             // fall through
           case 146: break;
           case 57: 
-            { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.SET);
+            { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.SET);
             } 
             // fall through
           case 147: break;
@@ -1164,7 +1171,7 @@ class GdLexer implements FlexLexer {
             // fall through
           case 148: break;
           case 59: 
-            { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.GET);
+            { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.GET);
             } 
             // fall through
           case 149: break;

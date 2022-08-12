@@ -78,6 +78,11 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {STRING_MARKER_REV} {
         continue;
     }
+
+    <<EOF>> {
+        yybegin(YYINITIAL);
+        return GdTypes.STRING;
+    }
 }
 
     "extends"      { return GdTypes.EXTENDS; }

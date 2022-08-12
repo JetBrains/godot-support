@@ -22,12 +22,24 @@ class GdClassMemberReferenceContributor  : PsiReferenceContributor() {
         );
 
         register.registerReferenceProvider(
-            GdRefIdCompletionUtil.DIRECT_REF,
+            GdRefIdCompletionUtil.DIRECT_REF.andNot(GdRefIdCompletionUtil.PARENT_ST_REF),
             object : PsiReferenceProvider() {
                 override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
                     return arrayOf(
                         GdClassMemberReference(element, TextRange(0, element.textLength)),
                         GdTypeHintReference(element, TextRange(0, element.textLength)),
+                    );
+                }
+            }
+        );
+
+        // parent method calls f.e.: ._init();
+        register.registerReferenceProvider(
+            GdRefIdCompletionUtil.DIRECT_REF.and(GdRefIdCompletionUtil.PARENT_ST_REF),
+            object : PsiReferenceProvider() {
+                override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
+                    return arrayOf(
+                        GdClassMemberReference(element, TextRange(0, element.textLength), true),
                     );
                 }
             }

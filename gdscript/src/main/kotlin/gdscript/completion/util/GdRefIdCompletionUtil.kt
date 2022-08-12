@@ -9,8 +9,12 @@ object GdRefIdCompletionUtil {
     val REMOTE_REF = PsiJavaPatterns.psiElement().withSuperParent(2, PlatformPatterns.or(
         PsiJavaPatterns.psiElement(GdTypes.ATTRIBUTE_EX),
         PsiJavaPatterns.psiElement(GdTypes.CALL_EX),
-    ))
+    ));
 
-    val DIRECT_REF = PsiJavaPatterns.psiElement(GdTypes.REF_ID_NM).andNot(REMOTE_REF)
+    val PARENT_ST_REF = PsiJavaPatterns
+        .psiElement()
+        .withSuperParent(2, PsiJavaPatterns.psiElement(GdTypes.PARENT_ST));
+
+    val DIRECT_REF = PsiJavaPatterns.psiElement(GdTypes.REF_ID_NM).andNot(REMOTE_REF);
 
 }

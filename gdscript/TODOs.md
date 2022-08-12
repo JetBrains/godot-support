@@ -5,8 +5,7 @@ oddělit static metody
 TopLevel: innerClass
 syntax: @"Node/Label"
 
-obarvení stringu """ """ při změně -> out of bounds
-quote matcher -> multiline
+quote matcher -> multiline string  """ """
 
 attribute_ex -> reference completion
 
@@ -27,12 +26,6 @@ barvy definice/volání/parentVolání
 set,get validation - param, return type
 var a: Node = 4; // chybí kontrola typu hodnoty
 projít dostupné annotatce -> něco má extra options !!!
-
-
-2.0 syntax
-typed array
-- var my_array: Array[int] = [1, 2, 3]
-- var inferred_array := [1, 2, 3] # This is Array[int].
 
 
 
@@ -57,19 +50,11 @@ TODO
 
 Known issues
 annotation insert
-endofstmt -> nutnost prázdý řádek/; na konci souboru
 structure view - filters for variable/const/methods? ... separate groups somehow
 
 # String format:
-var format_string = "We're waiting for %s."
-
-// Using the '%' operator, the placeholder is replaced with the desired value
-
-var actual_string = format_string % "Godot"
-
 signal - argumenty
 signal - napovídat jména + kontrolovat params
-
 
 sdk -> lepší impl
 
@@ -84,19 +69,14 @@ Completions:
 - if else /...  flow hints
 - flow templates
 
-parent method call:
 ```
-func loso():
-    .loso()
+func _init(e=null, m=null).(e):
+    # Do something with 'e'.
 ```
-
-
 
 
 Array.gd
 methody typu constructor Array(from: ...)
-:=  .. variace bez typu
-setget - odstranit
 
 
 Enum

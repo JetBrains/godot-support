@@ -698,9 +698,17 @@ class GdLexerHighlighter implements FlexLexer {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
         zzDoEOF();
+        switch (zzLexicalState) {
+            case STRING: {
+              yybegin(YYINITIAL);
+        return GdTypes.STRING;
+            }  // fall though
+            case 220: break;
+            default:
               {
                 return null;
               }
+        }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {

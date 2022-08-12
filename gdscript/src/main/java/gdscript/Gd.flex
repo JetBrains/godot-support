@@ -121,6 +121,11 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {STRING_MARKER_REV} {
         continue;
     }
+
+    <<EOF>> {
+        yybegin(YYINITIAL);
+        return GdTypes.STRING;
+    }
 }
 
 <AWAIT_ENUM_SEPARATOR> {

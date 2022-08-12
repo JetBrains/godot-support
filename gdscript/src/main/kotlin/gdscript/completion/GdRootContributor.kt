@@ -47,7 +47,8 @@ class GdRootContributor : CompletionContributor() {
         result.addElement(GdLookup.create(GdKeywords.FUNC, " ", priority = GdLookup.KEYWORDS));
         result.addElement(GdLookup.create(GdKeywords.CONST, " ", priority = GdLookup.KEYWORDS));
         result.addElement(GdLookup.create(GdKeywords.VAR, " ", priority = GdLookup.KEYWORDS));
-        result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " "));
+        val filename = parameters.originalFile.name;
+        result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " ${filename.substring(0, filename.length - 3)}\n"));
         GdClassVarCompletionUtil.annotations(result);
     }
 

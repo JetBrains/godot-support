@@ -803,6 +803,13 @@ class GdLexer implements FlexLexer {
       if (zzInput == YYEOF && zzStartRead == zzCurrentPos) {
         zzAtEOF = true;
         zzDoEOF();
+        switch (zzLexicalState) {
+            case STRING: {
+              yybegin(YYINITIAL);
+        return GdTypes.STRING;
+            }  // fall though
+            case 233: break;
+            default:
               {
                 if (yystate() == AWAIT_NEW_LINE && !lineEnded) {
         yybegin(YYINITIAL);
@@ -813,6 +820,7 @@ class GdLexer implements FlexLexer {
         return null;
     }
               }
+        }
       }
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {

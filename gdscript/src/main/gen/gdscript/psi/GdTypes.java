@@ -68,6 +68,7 @@ public interface GdTypes {
   IElementType PARAM = new GdElementType("PARAM");
   IElementType PARAM_LIST = new GdElementType("PARAM_LIST");
   IElementType PARENT_METHOD_CALL = new GdElementType("PARENT_METHOD_CALL");
+  IElementType PARENT_ST = new GdElementType("PARENT_ST");
   IElementType PLUS_EX = new GdElementType("PLUS_EX");
   IElementType PLUS_MINUS_EX = new GdElementType("PLUS_MINUS_EX");
   IElementType PLUS_MINUS_PRE_EX = new GdElementType("PLUS_MINUS_PRE_EX");
@@ -338,6 +339,9 @@ public interface GdTypes {
       }
       else if (type == PARENT_METHOD_CALL) {
         return new GdParentMethodCallImpl(node);
+      }
+      else if (type == PARENT_ST) {
+        return new GdParentStImpl(node);
       }
       else if (type == PLUS_EX) {
         return new GdPlusExImpl(node);
