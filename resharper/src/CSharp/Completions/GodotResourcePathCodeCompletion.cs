@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Application.UI.Icons.Shell;
 using JetBrains.DocumentModel;
 using JetBrains.Metadata.Reader.API;
-using JetBrains.Metadata.Reader.Impl;
 using JetBrains.ProjectModel;
+using JetBrains.ProjectModel.Resources;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
@@ -14,10 +16,7 @@ using JetBrains.ReSharper.Features.Intellisense.CodeCompletion.CSharp.Rules;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
-using JetBrains.ReSharper.Psi.CSharp.Tree;
-using JetBrains.ReSharper.Psi.CSharp.Util.Literals;
 using JetBrains.ReSharper.Psi.ExpectedTypes;
-using JetBrains.ReSharper.Psi.Resources;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl;
 using JetBrains.UI.Icons;
@@ -30,6 +29,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
     [Language(typeof(CSharpLanguage))]
     public class GodotResourcePathCodeCompletion : CSharpItemsProviderBase<CSharpCodeCompletionContext>
     {
+        private const string Prefix = "res://";
+
         protected override bool IsAvailable(CSharpCodeCompletionContext context)
         {
             return context.BasicContext.CodeCompletionType == CodeCompletionType.BasicCompletion;
@@ -56,18 +57,17 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 if (stringLiteral is null)
                     return false;
 
-                var prefix = "res://";
                 if (!(stringLiteral.ConstantValue.AsString() is string originalString
-                      && originalString.StartsWith(prefix)))
+                      && originalString.StartsWith(Prefix)))
                 {
                     return false;
                 }
 
-                var relativePathString = originalString.Substring(prefix.Length);
+                var relativePathString = originalString.Substring(Prefix.Length);
                 var searchPath = VirtualFileSystemPath.ParseRelativelyTo(relativePathString, projectPath);
 
                 // If path leads outside project (e.g., due to `..` going up too many levels), don't provide completions.
-                if (!searchPath.IsDescendantOf(projectPath))
+                if (!projectPath.IsPrefixOf(searchPath))
                 {
                     return false;
                 }
@@ -78,7 +78,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
                 var items = 
                     (from completion in completions.Distinct() 
-                     select new ResourcePathItem(originalString, completion, context.CompletionRanges))
+                     select new ResourcePathItem(projectPath, completion, context.CompletionRanges))
                     .ToList();
                 foreach (var item in items)
                 {
@@ -159,14 +159,14 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
         // Suggests full paths to resource files based on the string completion's context --
         // in particular, if the string is an argument to a Godot load (GD.Load or ResourceLoader.Load).
         // Resource type is inferred based on Load's type argument or assignment destination.
-        private static IEnumerable<string> FullPathCompletions(CSharpCodeCompletionContext context, VirtualFileSystemPath searchPath)
+        private IEnumerable<CompletionItem> FullPathCompletions(CSharpCodeCompletionContext context, VirtualFileSystemPath searchPath)
         {
             if (!(context.IfGodotLoadGetResourceType() is IClrTypeName resourceType))
-                return Enumerable.Empty<string>();
+                return Enumerable.Empty<CompletionItem>();
 
             ourFileExtensionsByType.TryGetValue(resourceType, out var matchingFileExtensions);
             return matchingFileExtensions is null 
-                ? Enumerable.Empty<string>()
+                ? Enumerable.Empty<CompletionItem>()
                 : ResourceFiles(searchPath, matchingFileExtensions);
         }
 
@@ -174,18 +174,18 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
         // with the aim of completing a path to any existing regular file.
         // If path is an existing regular file, the path is complete, so no suggestions are returned.
         // Otherwise, lists the entries of the last directory in the path.
-        private static IEnumerable<string> OneLevelPathCompletions(VirtualFileSystemPath path)
+        private IEnumerable<CompletionItem> OneLevelPathCompletions(VirtualFileSystemPath path)
         {
             var searchDir = SearchDir(path);
             if (searchDir is null)
             {
-                return Enumerable.Empty<string>();
+                return Enumerable.Empty<CompletionItem>();
             }
 
             return
                 from child in searchDir.GetChildren()
                 where !ShouldIgnore(child.GetAbsolutePath())
-                select child.GetAbsolutePath().Name;
+                select new CompletionItem(child.IsDirectory, searchDir, child.GetAbsolutePath(), child.GetAbsolutePath().ExtensionWithDot);
         }
 
         private static bool ShouldIgnore(VirtualFileSystemPath path)
@@ -193,10 +193,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             // Do not check or suggest:
             // - dotfiles or directories starting with "."
             // - Godot .import files
+            // - iml - some subsidiary file, which Rider creates
             // - project.godot
             return path.Name.StartsWith(".")
-                || "import".Equals(path.ExtensionNoDot)
-                || "project.godot".Equals(path.Name);
+                || "import".Equals(path.ExtensionNoDot, StringComparison.OrdinalIgnoreCase)
+                || "iml".Equals(path.ExtensionNoDot, StringComparison.OrdinalIgnoreCase)
+                || "project.godot".Equals(path.Name, StringComparison.OrdinalIgnoreCase);
         }
 
         private static VirtualFileSystemPath SearchDir(VirtualFileSystemPath path)
@@ -209,17 +211,17 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             }
         }
 
-        private static IEnumerable<string> ResourceFiles(VirtualFileSystemPath path, IList<string> extensions)
+        private IEnumerable<CompletionItem> ResourceFiles(VirtualFileSystemPath path, IList<string> extensions)
         {
             var searchDir = SearchDir(path);
             if (searchDir is null)
             {
-                return Enumerable.Empty<string>();
+                return Enumerable.Empty<CompletionItem>();
             }
 
             return
                 from p in ResourceFilesInner(searchDir, extensions)
-                select p.MakeRelativeTo(path).ToString().Replace('\\', '/');
+                select new CompletionItem(p.ExistsDirectory, searchDir,p, p.ExtensionWithDot) ;
         }
 
         private static IEnumerable<VirtualFileSystemPath> ResourceFilesInner(VirtualFileSystemPath path, IList<string> extensions)
@@ -229,7 +231,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 return Enumerable.Empty<VirtualFileSystemPath>();
             }
 
-            if (path.ExistsFile && extensions.Any(ext => ext.Equals(path.ExtensionNoDot)))
+            if (path.ExistsFile && extensions.Any(ext => ext.Equals(path.ExtensionNoDot, StringComparison.OrdinalIgnoreCase)))
             {
                 return new[] { path };
             }
@@ -244,21 +246,39 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             return Enumerable.Empty<VirtualFileSystemPath>();
         }
 
+        private class CompletionItem
+        {
+            public readonly bool IsDirectory;
+            public readonly VirtualFileSystemPath OriginalFolder;
+            public readonly VirtualFileSystemPath Completion;
+            public readonly string ExtensionWithDot;
+
+            public CompletionItem(bool isDirectory, VirtualFileSystemPath originalFolder ,VirtualFileSystemPath completion, string extensionWithDot)
+            {
+                OriginalFolder = originalFolder;
+                IsDirectory = isDirectory;
+                Completion = completion;
+                ExtensionWithDot = extensionWithDot;
+            }
+        }
+
         private sealed class ResourcePathItem : TextLookupItemBase
         {
-            private readonly string myDisplayName;
-
-            public ResourcePathItem(string originalFilePathString, string completion, TextLookupRanges ranges)
+            private readonly CompletionItem myCompletionItem;
+            
+            public ResourcePathItem(VirtualFileSystemPath projectPath,
+                CompletionItem completionItem, TextLookupRanges ranges)
             {
-                myDisplayName = completion;
+                myCompletionItem = completionItem;
                 Ranges = ranges;
-                var text = $"\"{originalFilePathString}{completion}\"";
-                Text = text;
+                Text = $"\"{Prefix}{completionItem.Completion.MakeRelativeTo(projectPath).NormalizeSeparators(FileSystemPathEx.SeparatorStyle.Unix)}\"";
             }
 
-            protected override RichText GetDisplayName() => LookupUtil.FormatLookupString(myDisplayName, TextColor);
+            protected override RichText GetDisplayName() => LookupUtil.FormatLookupString(myCompletionItem.Completion.MakeRelativeTo(myCompletionItem.OriginalFolder).NormalizeSeparators(FileSystemPathEx.SeparatorStyle.Unix), TextColor);
 
-            public override IconId Image => PsiSymbolsThemedIcons.Const.Id;
+            public override IconId Image => myCompletionItem.IsDirectory
+                ? ProjectModelThemedIcons.Directory.Id
+                : ShellFileIcon.Create(myCompletionItem.ExtensionWithDot);
 
             protected override void OnAfterComplete(ITextControl textControl, ref DocumentRange nameRange, ref DocumentRange decorationRange,
                 TailType tailType, ref Suffix suffix, ref IRangeMarker caretPositionRangeMarker)
@@ -277,115 +297,4 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             }
         }
     }
-
-    static class GodotTypes
-    {
-        private static IClrTypeName GodotTypeName(string typeName)
-            => new ClrTypeName($"Godot.{typeName}");
-
-        public static readonly IClrTypeName GD                    = GodotTypeName("GD");
-        public static readonly IClrTypeName ResourceLoader        = GodotTypeName("ResourceLoader");
-        public static readonly IClrTypeName PackedScene           = GodotTypeName("PackedScene");
-        public static readonly IClrTypeName X509Certificate       = GodotTypeName("X509Certificate");
-        public static readonly IClrTypeName CryptoKey             = GodotTypeName("CryptoKey");
-        public static readonly IClrTypeName StreamTexture         = GodotTypeName("StreamTexture");
-        public static readonly IClrTypeName ImageTexture          = GodotTypeName("ImageTexture");
-        public static readonly IClrTypeName Texture               = GodotTypeName("Texture");
-        public static readonly IClrTypeName AudioStreamMP3        = GodotTypeName("AudioStreamMP3");
-        public static readonly IClrTypeName AudioStreamWAV        = GodotTypeName("AudioStreamWAV");
-        public static readonly IClrTypeName AudioStreamSample     = GodotTypeName("AudioStreamSample");
-        public static readonly IClrTypeName AudioStreamOggVorbis  = GodotTypeName("AudioStreamOggVorbis");
-        public static readonly IClrTypeName AudioStream           = GodotTypeName("AudioStream");
-        public static readonly IClrTypeName Translation           = GodotTypeName("Translation");
-        public static readonly IClrTypeName VideoStream           = GodotTypeName("VideoStream");
-        public static readonly IClrTypeName VideoStreamTheora     = GodotTypeName("VideoStreamTheora");
-        public static readonly IClrTypeName Script                = GodotTypeName("Script");
-        public static readonly IClrTypeName GDScript              = GodotTypeName("GDScript");
-        public static readonly IClrTypeName CSharpScript          = GodotTypeName("CSharpScript");
-    }
-
-    static class CompletionExtensions
-    {
-        public static ICSharpLiteralExpression StringLiteral(this CSharpCodeCompletionContext context)
-            => context.NodeInFile is ITokenNode nodeInFile
-               && nodeInFile.Parent is ICSharpLiteralExpression literalExpression
-               && literalExpression.Literal.IsAnyStringLiteral()
-                    ? literalExpression
-                    : null;
-
-        public static bool IsDescendantOf(this VirtualFileSystemPath path, VirtualFileSystemPath other)
-            => path.FullPath.StartsWith(other.FullPath);
-
-
-        public static bool IsGodotLoad(this IInvocationExpression invocation)
-        {
-            var containingType = invocation.InvokedMethodContainingType();
-            return (GodotTypes.ResourceLoader.Equals(containingType)
-                    || GodotTypes.GD.Equals(containingType))
-                   && "Load".Equals(invocation.InvokedMethodName());
-        }
-
-        public static IClrTypeName InvokedMethodContainingType(this IInvocationExpression invocation)
-            => invocation.Reference.Resolve().DeclaredElement is IMethod method
-               && method.ContainingType is ITypeElement type
-                ? type.GetClrName()
-                : null;
-
-        public static string InvokedMethodName(this IInvocationExpression invocation)
-            => invocation.Reference.Resolve().DeclaredElement is IMethod method
-               ? method.ShortName
-               : null;
-
-        public static IClrTypeName InvokedMethodFirstTypeArgument(this IInvocationExpression invocation)
-        {
-            var typeArgs = invocation.Reference.Invocation.TypeArguments;
-            return typeArgs.Count == 1
-                   && typeArgs[0] is IDeclaredType t
-                ? t.GetClrName()
-                : null;
-        }
-
-        public static IClrTypeName AssignmentDestType(this IInvocationExpression invocation)
-            => AssignmentExpressionNavigator.GetBySource(invocation) is IAssignmentExpression assignment 
-               && assignment.Dest.Type() is IDeclaredType lhsType
-               ? lhsType.GetClrName()
-               : null;
-
-        public static IClrTypeName IfGodotLoadGetResourceType(this CSharpCodeCompletionContext context)
-        {
-            if (!(
-                InvocationExpressionNavigator.GetByArgument(
-                    CSharpArgumentNavigator.GetByValue(
-                        context.NodeInFile.Parent as ICSharpLiteralExpression))
-                is IInvocationExpression invocation
-                && invocation.IsGodotLoad()))
-            {
-                return null;
-            }
-
-            return invocation.InvokedMethodFirstTypeArgument()
-                ?? invocation.AssignmentDestType();
-        }
-
-        public static void InsertOrAppendAtEach<K, V>(this IDictionary<K, IList<V>> d, IEnumerable<K> keys, params V[] value)
-        {
-            foreach (var key in keys)
-            {
-                d.InsertOrAppend(key, value);
-            }
-        }
-        public static void InsertOrAppend<K, V>(this IDictionary<K, IList<V>> d, K key, params V[] value)
-        {
-            if (d.ContainsKey(key))
-            {
-                d[key].AddRange(value);
-            }
-            else
-            {
-                d[key] = new List<V>(value);
-            }
-        }
-
-    }
-
 }
