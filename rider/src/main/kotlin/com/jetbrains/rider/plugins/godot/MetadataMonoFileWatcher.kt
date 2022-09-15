@@ -20,13 +20,13 @@ import kotlin.concurrent.thread
 import kotlin.io.path.readLines
 
 
-class MetadataFileWatcher(project: Project) : LifetimedProjectComponent(project) {
+class MetadataMonoFileWatcher(project: Project) : LifetimedProjectComponent(project) {
 
     companion object {
         const val metaFileDir = ".mono/metadata"
         const val metaFileName = "ide_messaging_meta.txt"
         const val oldMetaFileName = "ide_server_meta.txt"
-        private val logger = Logger.getInstance(MetadataFileWatcher::class.java)
+        private val logger = Logger.getInstance(MetadataMonoFileWatcher::class.java)
 
         // https://github.com/godotengine/godot-proposals/issues/555#issuecomment-595242973
         //Windows: %APPDATA%\Godot\projects\{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}\
@@ -116,7 +116,7 @@ class MetadataFileWatcher(project: Project) : LifetimedProjectComponent(project)
                                     logger.info("GodotProjectDiscoverer.getInstance(project).godotPath.set($newPath)")
                                     application.invokeLater {
                                         logger.info("application.invokeLater GodotProjectDiscoverer.getInstance(project).godotPath.set($newPath)")
-                                        GodotProjectDiscoverer.getInstance(project).godotPath.set(newPath)
+                                        GodotProjectDiscoverer.getInstance(project).godotMonoPath.set(newPath)
                                     }
                                 }
                             }

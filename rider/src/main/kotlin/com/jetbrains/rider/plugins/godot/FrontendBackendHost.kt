@@ -11,7 +11,6 @@ import com.intellij.util.BitUtil
 import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rd.util.firstOrNull
-import com.jetbrains.rd.util.lifetime.onTermination
 import com.jetbrains.rd.util.reactive.*
 import com.jetbrains.rider.debugger.DebuggerInitializingState
 import com.jetbrains.rider.debugger.DotNetDebugProcess
@@ -90,8 +89,13 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
             task
         }
 
-        GodotProjectDiscoverer.getInstance(project).godotPath.adviseNotNull(projectComponentLifetime){
+        GodotProjectDiscoverer.getInstance(project).godotMonoPath.adviseNotNull(projectComponentLifetime){
             model.godotPath.set(it)
+        }
+
+        GodotProjectDiscoverer.getInstance(project).godotCorePath.adviseNotNull(projectComponentLifetime){
+            model.godotPath.set(it)
+            model.isNet6Plus.set(true)
         }
     }
 

@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot</id>
   <name>Godot Support</name>
-  <version>2023.2.0.9999</version>
+  <version>2022.3.0.9999</version>
   <vendor url="https://www.jetbrains.com">JetBrains</vendor>
 
   <idea-version since-build="223.0.0" until-build="224.0.0" />
@@ -16,7 +16,8 @@
   <project-components>
     <component><implementation-class>com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator</implementation-class></component>
     <component><implementation-class>com.jetbrains.rider.plugins.godot.FrontendBackendHost</implementation-class></component>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.MetadataFileWatcher</implementation-class></component>
+    <component><implementation-class>com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher</implementation-class></component>
+    <component><implementation-class>com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher</implementation-class></component>
   </project-components>
 
   <extensions defaultExtensionNs="com.intellij">

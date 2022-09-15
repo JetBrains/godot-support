@@ -11,10 +11,10 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.intellij") version "1.8.0" // https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id("org.jetbrains.intellij") version "1.9.0" // https://github.com/JetBrains/gradle-intellij-plugin/releases
     id("org.jetbrains.grammarkit") version "2021.2.2"
     id("me.filippov.gradle.jvm.wrapper") version "0.11.0"
-    id("com.jetbrains.rdgen") version "2022.3.1"
+    id("com.jetbrains.rdgen") version "2022.3.2"
     kotlin("jvm") version "1.7.0"
 }
 
