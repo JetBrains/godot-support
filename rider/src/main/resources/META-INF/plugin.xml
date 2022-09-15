@@ -16,7 +16,8 @@
   <project-components>
     <component><implementation-class>com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator</implementation-class></component>
     <component><implementation-class>com.jetbrains.rider.plugins.godot.FrontendBackendHost</implementation-class></component>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.MetadataFileWatcher</implementation-class></component>
+    <component><implementation-class>com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher</implementation-class></component>
+    <component><implementation-class>com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher</implementation-class></component>
   </project-components>
 
   <extensions defaultExtensionNs="com.intellij">

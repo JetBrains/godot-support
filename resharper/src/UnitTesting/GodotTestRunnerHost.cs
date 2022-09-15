@@ -134,16 +134,16 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                 var fileName = startInfo.FileName;
                 var args = startInfo.Arguments;
 
-                var solutionDir = mySolution.SolutionDirectory.QuoteIfNeeded();
+                var solutionDir = mySolution.SolutionDirectory;
 
                 if (myModel == null)
                     throw new InvalidOperationException("Missing connection to frontend.");
                 if (!myModel.GodotPath.HasValue())
                     throw new InvalidOperationException("GodotPath is unknown.");
-                var godotPath = myModel.GodotPath.Value.QuoteIfNeeded();
+                var godotPath = myModel.GodotPath.Value;
                 
                 var patchedInfo = startInfo.Patch(godotPath,
-                    $"--path {solutionDir} \"res://{mySceneRelPath}\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
+                    $"--path \"{solutionDir}\" \"res://{mySceneRelPath}\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{args}\"",
                     EnvironmentVariableMutator.Empty);
 
                 return ProcessStartInfoPatchResult.CreateSuccess(startInfo, request, patchedInfo);

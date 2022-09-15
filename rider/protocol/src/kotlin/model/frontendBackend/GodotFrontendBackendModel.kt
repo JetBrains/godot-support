@@ -29,6 +29,7 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
 
         // Misc backend/fronted context
         property("godotPath", string).documentation = "Path to GodotEditor"
+        property("isNet6Plus", bool).documentation = "Is net6+"
 
         // Settings stored in the backend
         field("backendSettings", aggregatedef("GodotBackendSettings") {

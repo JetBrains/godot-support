@@ -20,7 +20,8 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
     private val projectGodotPath = Paths.get(project.basePath!!).resolve("project.godot")
     val isGodotProject: IProperty<Boolean> = Property(false)
     val hasWATAddon: IProperty<Boolean> = Property(false)
-    val godotPath : IProperty<String?> = Property(null)
+    val godotMonoPath : IProperty<String?> = Property(null)
+    val godotCorePath : IProperty<String?> = Property(null)
 
     init {
         val isGodot = getIsGodotProject(project)
@@ -30,7 +31,8 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
                         hasWATAddon.set(Paths.get(project.basePath!!).resolve("addons/WAT/gui.tscn").exists())
 
             isGodotProject.set(isGodot)
-            godotPath.set(MetadataFileWatcher.getFromMonoMetadataPath(project) ?: MetadataFileWatcher.getGodotPath(project) ?: getGodotPathFromPlayerRunConfiguration(project))
+            godotMonoPath.set(MetadataMonoFileWatcher.getFromMonoMetadataPath(project) ?: MetadataMonoFileWatcher.getGodotPath(project) ?: getGodotPathFromPlayerRunConfiguration(project))
+            godotCorePath.set(MetadataCoreFileWatcher.getGodotPath(project))
         }
     }
 
