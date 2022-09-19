@@ -11,17 +11,18 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
     [SolutionInstanceComponent]
     public class GodotRiderProcessStartInfoPatcher : RiderProcessStartInfoPatcher
     {
-        private readonly ISolution mySolution;
+        private IViewableProperty<bool> MyIsNet6Property;
+        private IViewableProperty<string> myGodotPathProperty;
 
         public GodotRiderProcessStartInfoPatcher(ILogger logger, ISolutionToolset solutionToolset, RiderProcessStartInfoEnvironment environment, ISolution solution) : base(logger, solutionToolset, environment)
         {
-            mySolution = solution;
+            MyIsNet6Property = solution.GetProtocolSolution().GetGodotFrontendBackendModel().IsNet6Plus;
+            myGodotPathProperty = solution.GetProtocolSolution().GetGodotFrontendBackendModel().GodotPath;
         }
 
         public override ProcessStartInfoPatchResult Patch(JetProcessStartInfo info, JetProcessRuntimeRequest request)
         {
-            if (mySolution.GetProtocolSolution().GetGodotFrontendBackendModel().IsNet6Plus.HasTrueValue()
-                && mySolution.GetProtocolSolution().GetGodotFrontendBackendModel().GodotPath.Value == info.FileName)
+            if (MyIsNet6Property.HasTrueValue() && myGodotPathProperty.Value == info.FileName)
                 return base.Patch(new JetProcessStartInfo(info.FileName, info.Arguments, info.WorkingDirectory, info.ToProcessStartInfo().Environment), 
                     JetProcessRuntimeRequest.CreateDirect(request.EnvironmentVariableMutator));
             return base.Patch(info, request);
