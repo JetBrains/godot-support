@@ -22,7 +22,8 @@ apply {
     plugin("kotlin")
 }
 
-val baseVersion = "2022.3"
+val baseVersionSDK = "2022.3"
+val baseVersion = "223.9999"
 val buildCounter = ext.properties["build.number"] ?: "9999"
 version = "$baseVersion.$buildCounter"
 
@@ -44,7 +45,7 @@ intellij {
         localPath.set(dir.absolutePath)
     } else {
         logger.lifecycle("*** Using Rider SDK from intellij-snapshots repository")
-        version.set("$baseVersion-SNAPSHOT")
+        version.set("$baseVersionSDK-SNAPSHOT")
     }
 
     instrumentCode.set(false)
