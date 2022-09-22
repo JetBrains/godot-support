@@ -1,3 +1,4 @@
+using JetBrains.Collections.Viewable;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
@@ -17,6 +18,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         
         public ITestRunnerHost TryGetHost(IProject project, TargetFrameworkId targetFrameworkId)
         {
+            if (project.IsGodotProject() && project.GetSolution().GetProtocolSolution().GetGodotFrontendBackendModel().IsNet6Plus.HasTrueValue()) return GodotCoreTestRunnerHost.Instance;
             return project.IsGodotProject() ? GodotTestRunnerHost.Instance : null;
         }
     }
