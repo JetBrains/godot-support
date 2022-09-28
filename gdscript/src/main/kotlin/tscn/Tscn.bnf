@@ -24,7 +24,7 @@
 
 tscnfile ::= paragraph+
 
-private paragraph ::= header DATA_LINE*
+private paragraph ::= header dataLine*
 
 header ::=
     scene_header
@@ -33,9 +33,13 @@ header ::=
     | sub_header
 
 scene_header ::= LSBR GD_SCENE headerValue* RSBR
-node_header ::= LSBR NODE headerValue* RSBR {methods=[getName getType getParentPath getNodePath] mixin="tscn.psi.impl.TscnNodeHeaderElementImpl" stubClass="tscn.index.stub.TscnNodeHeaderStub" elementTypeFactory="tscn.psi.impl.TscnNodeHeaderElementType.getInstance"}
+node_header ::= LSBR NODE headerValue* RSBR {methods=[getName getType getParentPath getNodePath isUniqueNameOwner] mixin="tscn.psi.impl.TscnNodeHeaderElementImpl" stubClass="tscn.index.stub.TscnNodeHeaderStub" elementTypeFactory="tscn.psi.impl.TscnNodeHeaderElementType.getInstance"}
 ext_header ::= LSBR EXT_RESOURCE headerValue* RSBR {methods=[getPath getType] mixin="tscn.psi.impl.TscnExtHeaderElementImpl" stubClass="tscn.index.stub.TscnExtHeaderStub" elementTypeFactory="tscn.psi.impl.TscnExtHeaderElementType.getInstance"}
 sub_header ::= LSBR (SUB_RESOURCE | CONNECTION) headerValue* RSBR
 headerValue ::= headerValue_nm EQ headerValue_val
-headerValue_nm ::= IDENTIFIER
+headerValue_nm ::= IDENTIFIER // TODO _nm extend
 headerValue_val ::= VALUE
+
+dataLine ::= dataLine_nm EQ dataLine_value
+dataLine_nm ::= IDENTIFIER // TODO _nm extend
+dataLine_value ::= VALUE

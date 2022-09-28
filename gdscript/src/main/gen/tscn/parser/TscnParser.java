@@ -41,6 +41,44 @@ public class TscnParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
+  // dataLine_nm EQ dataLine_value
+  public static boolean dataLine(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLine")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = dataLine_nm(b, l + 1);
+    r = r && consumeToken(b, EQ);
+    r = r && dataLine_value(b, l + 1);
+    exit_section_(b, m, DATA_LINE, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // IDENTIFIER
+  public static boolean dataLine_nm(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLine_nm")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, m, DATA_LINE_NM, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // VALUE
+  public static boolean dataLine_value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLine_value")) return false;
+    if (!nextTokenIs(b, VALUE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, VALUE);
+    exit_section_(b, m, DATA_LINE_VALUE, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // LSBR EXT_RESOURCE headerValue* RSBR
   public static boolean ext_header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ext_header")) return false;
@@ -147,7 +185,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // header DATA_LINE*
+  // header dataLine*
   static boolean paragraph(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "paragraph")) return false;
     if (!nextTokenIs(b, LSBR)) return false;
@@ -159,12 +197,12 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // DATA_LINE*
+  // dataLine*
   private static boolean paragraph_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "paragraph_1")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!consumeToken(b, DATA_LINE)) break;
+      if (!dataLine(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "paragraph_1", c)) break;
     }
     return true;

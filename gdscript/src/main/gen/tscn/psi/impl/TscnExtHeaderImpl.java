@@ -18,8 +18,8 @@ public class TscnExtHeaderImpl extends TscnExtHeaderElementImpl implements TscnE
     super(node);
   }
 
-  public TscnExtHeaderImpl(@NotNull TscnExtHeaderStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public TscnExtHeaderImpl(@NotNull TscnExtHeaderStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public void accept(@NotNull TscnVisitor visitor) {

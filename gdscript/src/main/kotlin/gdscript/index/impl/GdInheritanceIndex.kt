@@ -9,4 +9,6 @@ object GdInheritanceIndex : StringStubIndexExtension<GdInheritance>() {
 
     override fun getKey(): StubIndexKey<String, GdInheritance> = Indices.INHERITANCE;
 
+    override fun getVersion(): Int = Indices.VERSION;
+
 }

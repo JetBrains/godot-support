@@ -7,6 +7,18 @@ import com.intellij.psi.PsiElement;
 
 public class TscnVisitor extends PsiElementVisitor {
 
+  public void visitDataLine(@NotNull TscnDataLine o) {
+    visitPsiElement(o);
+  }
+
+  public void visitDataLineNm(@NotNull TscnDataLineNm o) {
+    visitPsiElement(o);
+  }
+
+  public void visitDataLineValue(@NotNull TscnDataLineValue o) {
+    visitPsiElement(o);
+  }
+
   public void visitExtHeader(@NotNull TscnExtHeader o) {
     visitHeader(o);
   }

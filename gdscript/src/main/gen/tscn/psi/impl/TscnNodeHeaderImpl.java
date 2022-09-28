@@ -18,8 +18,8 @@ public class TscnNodeHeaderImpl extends TscnNodeHeaderElementImpl implements Tsc
     super(node);
   }
 
-  public TscnNodeHeaderImpl(@NotNull TscnNodeHeaderStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public TscnNodeHeaderImpl(@NotNull TscnNodeHeaderStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public void accept(@NotNull TscnVisitor visitor) {
@@ -60,6 +60,11 @@ public class TscnNodeHeaderImpl extends TscnNodeHeaderElementImpl implements Tsc
   @NotNull
   public String getNodePath() {
     return TscnPsiUtils.getNodePath(this);
+  }
+
+  @Override
+  public boolean isUniqueNameOwner() {
+    return TscnPsiUtils.isUniqueNameOwner(this);
   }
 
 }

@@ -9,5 +9,6 @@ interface TscnNodeHeaderStub : StubElement<TscnNodeHeader> {
     fun type(): String;
     fun parentPath(): String;
     fun nodePath(): String;
+    fun isUniqueNameOwner(): Boolean;
 
 }

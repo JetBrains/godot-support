@@ -6,13 +6,13 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.IconUtil
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
-import gdscript.psi.GdAnnotationTl
 import gdscript.psi.GdClassNaming
 import java.io.File
 
 object GdClassNameCompletionUtil {
 
     fun toLookup(className: GdClassNaming): LookupElement {
+        // TODO
         /*val annotations = PsiTreeUtil.getChildrenOfType(className.parent, GdAnnotationTl::class.java);
         val iconResource = annotations?.find {
             it.annotation.text.startsWith("@icon")

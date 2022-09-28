@@ -20,6 +20,7 @@ object TscnNodeHeaderElementType : IStubElementType<TscnNodeHeaderStub, TscnNode
         dataStream.writeName(stub.name());
         dataStream.writeName(stub.type());
         dataStream.writeName(stub.parentPath());
+        dataStream.writeBoolean(stub.isUniqueNameOwner());
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): TscnNodeHeaderStub =
@@ -28,6 +29,7 @@ object TscnNodeHeaderElementType : IStubElementType<TscnNodeHeaderStub, TscnNode
             dataStream.readName()?.string ?: "",
             dataStream.readName()?.string ?: "",
             dataStream.readName()?.string ?: "",
+            dataStream.readBoolean(),
         )
 
     override fun indexStub(stub: TscnNodeHeaderStub, sink: IndexSink) {
@@ -38,7 +40,7 @@ object TscnNodeHeaderElementType : IStubElementType<TscnNodeHeaderStub, TscnNode
         TscnNodeHeaderImpl(stub, stub.stubType);
 
     override fun createStub(psi: TscnNodeHeader, parentStub: StubElement<out PsiElement>?): TscnNodeHeaderStub =
-        TscnNodeHeaderStubImpl(parentStub, psi.name, psi.type, psi.parentPath);
+        TscnNodeHeaderStubImpl(parentStub, psi.name, psi.type, psi.parentPath, psi.isUniqueNameOwner);
 
     override fun shouldCreateStub(node: ASTNode): Boolean {
         val element = node.psi as TscnNodeHeader;

@@ -9,4 +9,6 @@ object GdClassNamingIndex : StringStubIndexExtension<GdClassNaming>() {
 
     override fun getKey(): StubIndexKey<String, GdClassNaming> = Indices.CLASS_NAMING;
 
+    override fun getVersion(): Int = Indices.VERSION;
+
 }

@@ -5,9 +5,11 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PsiJavaPatterns.psiElement
 import com.intellij.psi.search.FilenameIndex
+import gdscript.GdFileType
 import gdscript.completion.util.GdFileVisitor
 import gdscript.completion.util.GdRefIdCompletionUtil
 import gdscript.completion.util.GdResourceCompletionUtil
+import gdscript.psi.GdFile
 import gdscript.psi.GdRefIdNm
 import gdscript.psi.GdTypes
 import java.io.File
@@ -17,11 +19,14 @@ import java.nio.file.Paths
 class GdResourceCompletionContributor : CompletionContributor() {
 
     val NODE_PATH = psiElement(GdTypes.NODE_PATH_LEX);
+    val NODE_PATH_ROOT = NODE_PATH.withSuperParent(3, psiElement(GdFile::class.java));
     val RESOURCE_STRING = psiElement(GdTypes.STRING);
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         if (GdRefIdCompletionUtil.DIRECT_REF.accepts(parameters.position)) {
             GdResourceCompletionUtil.resources(parameters.position.originalElement, result);
+        } else if (NODE_PATH_ROOT.accepts(parameters.position)) {
+            GdResourceCompletionUtil.fullVarResources(parameters.position.originalElement, result);
         } else if (NODE_PATH.accepts(parameters.position)) {
             GdResourceCompletionUtil.resources(parameters.position.originalElement, result);
         } else if (RESOURCE_STRING.accepts(parameters.position)) {

@@ -26,7 +26,7 @@ object GdMethodCompletionUtil {
     fun lookup(method: GdMethodDeclTl): LookupElement {
         return GdLookup.create(
             method.name.orEmpty(),
-            lookup = "()",
+            lookup = "()${if (method.paramList?.paramList?.isNotEmpty() == true) "_" else ""}",
             presentable = method.name.orEmpty(),
             typed = method.returnType,
             icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),

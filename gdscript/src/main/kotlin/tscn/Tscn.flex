@@ -35,6 +35,8 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 
 %xstate HEADER
 %xstate VALUE
+%xstate DATA_LINE
+%xstate DATA_VALUE
 
 %%
 
@@ -54,6 +56,17 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
     {VALUE}        { yybegin(HEADER); return TscnTypes.VALUE; }
 }
 
+<DATA_LINE> {
+    {IDENTIFIER}   { return TscnTypes.IDENTIFIER; }
+    {WHITE_SPACE}  { return TokenType.WHITE_SPACE; }
+    "="            { yybegin(DATA_VALUE); return TscnTypes.EQ; }
+}
+
+<DATA_VALUE> {
+    {WHITE_SPACE}  { return TokenType.WHITE_SPACE; }
+    {DATA_LINE}    { yybegin(YYINITIAL); return TscnTypes.VALUE; }
+}
+
 "["                { yybegin(HEADER); return TscnTypes.LSBR; }
 {DATA_LINE}        {
                       if (yytext().charAt(0) == '[') {
@@ -62,7 +75,10 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 
                           return TscnTypes.LSBR;
                       } else {
-                          return TscnTypes.DATA_LINE;
+                          yypushback(yylength() - 1);
+                          yybegin(DATA_LINE);
+
+                          continue;
                       }
                    }
 {COMMENT}          { return TscnTypes.COMMENT; }

@@ -5,6 +5,7 @@ object GdKeywords {
     const val EXTENDS = "extends"
     const val CLASS_NAME = "class_name"
     const val FUNC = "func"
+    const val STATIC = "static"
     const val CONST = "const"
     const val VAR = "var"
     const val SETGET = "setget"

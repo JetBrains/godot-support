@@ -9,4 +9,6 @@ object GdSignalDeclIndex : StringStubIndexExtension<GdSignalDeclTl>() {
 
     override fun getKey(): StubIndexKey<String, GdSignalDeclTl> = Indices.SIGNAL_DECL;
 
+    override fun getVersion(): Int = Indices.VERSION;
+
 }

@@ -1,4 +1,5 @@
 class_name Color
+
 const ALICE_BLUE = Color(0.94, 0.97, 1, 1);
 const ANTIQUE_WHITE = Color(0.98, 0.92, 0.84, 1);
 const AQUA = Color(0, 1, 1, 1);

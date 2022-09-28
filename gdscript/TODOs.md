@@ -7,6 +7,9 @@ syntax: @"Node/Label"
 
 quote matcher -> multiline string  """ """
 
+obarvit resource $"%Name"
+resource $"...  zda existuje
+
 attribute_ex -> reference completion
 
 method decl unique validation + params validation (parent)
@@ -50,7 +53,6 @@ TODO
 
 Known issues
 annotation insert
-structure view - filters for variable/const/methods? ... separate groups somehow
 
 # String format:
 signal - argumenty
@@ -80,7 +82,7 @@ methody typu constructor Array(from: ...)
 
 
 Enum
-// TODO tady chybí enum check -> chtělo by to rozšířit an ten parentaly... :/
+// TODO tady chybí enum check -> chtělo by to rozšířit na ten parentaly... :/
 unique name
 unique value
 

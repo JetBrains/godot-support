@@ -53,6 +53,8 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdSetGetAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstructorAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdReturnTypeAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdMethodNameAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdResourceTypeAnnotator" />
 
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
@@ -73,7 +75,6 @@
       <bundleName>messages.gdscript</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>
-<!--    <editorActionHandler action="Generate" implementationClass="" /> -->
 
     <!-- Formatters -->
     <lang.braceMatcher language="GdScript" implementationClass="gdscript.formatter.GdBraceMatcher" />
@@ -87,7 +88,7 @@
   </extensions>
 
   <actions>
-    <!-- Add your actions here -->
+    <action id="GdGenerateGetterAndSetter" class="gdscript.action.GdGenerateGetSetAction"/>
   </actions>
 
 </idea-plugin>

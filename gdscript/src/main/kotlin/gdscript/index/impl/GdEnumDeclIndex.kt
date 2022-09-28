@@ -9,4 +9,6 @@ object GdEnumDeclIndex : StringStubIndexExtension<GdEnumDeclTl>() {
 
     override fun getKey(): StubIndexKey<String, GdEnumDeclTl> = Indices.ENUM;
 
+    override fun getVersion(): Int = Indices.VERSION;
+
 }

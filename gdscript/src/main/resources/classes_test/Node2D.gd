@@ -1,4 +1,4 @@
-extends CanvasItem
+extends Vector2i
 class_name Node2D
 
 var global_position: Vector2;

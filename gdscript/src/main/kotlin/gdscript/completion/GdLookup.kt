@@ -14,6 +14,7 @@ object GdLookup {
     const val KEYWORDS = 90.0;
     const val PRIORITY_KEYWORDS = 95.0;
     const val USER_DEFINED = 200.0;
+    const val LOCAL_USER_DEFINED = 250.0;
     const val TOP = 500.0;
 
     // TODO from settings?

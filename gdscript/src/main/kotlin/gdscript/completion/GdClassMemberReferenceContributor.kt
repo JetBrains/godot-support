@@ -1,11 +1,9 @@
 package gdscript.completion
 
 import com.intellij.openapi.util.TextRange
-import com.intellij.patterns.PsiJavaPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import gdscript.completion.util.GdRefIdCompletionUtil
-import gdscript.psi.GdTypes
 import gdscript.reference.GdClassMemberReference
 import gdscript.reference.GdTypeHintReference
 

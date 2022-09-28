@@ -29,7 +29,7 @@ class GdReturnTypeAnnotator : Annotator {
         val returnType = element.text;
         val method = PsiTreeUtil.getStubOrPsiParentOfType(element, GdMethodDeclTl::class.java)?.methodIdNmi ?: return;
 
-        val parentMethod = PsiGdNamedUtil.findInParent(method, variable = false, constant = false, enum = false);
+        val parentMethod = PsiGdNamedUtil.findInParent(method, variable = false, constant = false, enum = false, withLocalScopes = true);
         if (parentMethod !== null && parentMethod is GdMethodDeclTl) {
             val parentReturnType = parentMethod.returnType;
             if (parentReturnType != "" && returnType != parentReturnType && !extraAllowed(parentReturnType, returnType)) {
@@ -52,8 +52,10 @@ class GdReturnTypeAnnotator : Annotator {
         }
 
         if (returnType.isNotEmpty()) {
-
-            if (myType != returnType && !extraAllowed(myType, returnType)) {
+            if (myType != returnType
+                && !extraAllowed(myType, returnType)
+                && !PsiGdNamedUtil.hasParent(myType, returnType, element.project)
+            ) {
                 holder
                     .newAnnotation(HighlightSeverity.ERROR, "Returns a type [$myType] which does not match function's [$returnType]")
                     .range(element.textRange)

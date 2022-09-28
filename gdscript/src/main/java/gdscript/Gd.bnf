@@ -110,8 +110,8 @@ stmt ::=
 private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH | RETURN | AWAIT | ASSET | PRELOAD | INDENT | DEDENT | IDENTIFIER | literal_ex)
 
 parent_st ::= DOT call_ex endStmt?
-varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt {pin=2 recoverWhile=stmt_r}
-constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {pin=2 recoverWhile=stmt_r}
+varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt {pin=2 recoverWhile=stmt_r methods=[getName getReturnType]}
+constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {pin=2 recoverWhile=stmt_r methods=[getName getReturnType]}
 if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? {pin=2 recoverWhile=stmt_r}
 while_st ::= WHILE expr COLON stmtOrSuite {pin=2 recoverWhile=stmt_r}
 for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=2 recoverWhile=stmt_r}

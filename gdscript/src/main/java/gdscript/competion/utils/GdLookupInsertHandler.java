@@ -20,6 +20,10 @@ public class GdLookupInsertHandler implements InsertHandler<LookupElement> {
         Editor editor = context.getEditor();
         Project project = editor.getProject();
         String valueToInsert = item.getObject().toString();
+        boolean move = valueToInsert.equals("()_");
+        if (move) {
+            valueToInsert = "()";
+        }
 
         if (project != null) {
             CaretModel model = editor.getCaretModel();
@@ -32,7 +36,7 @@ public class GdLookupInsertHandler implements InsertHandler<LookupElement> {
             if ((valueToInsert.length() - matched) > 0) {
                 EditorModificationUtil.insertStringAtCaret(editor, valueToInsert.substring(matched));
                 PsiDocumentManager.getInstance(project).commitDocument(editor.getDocument());
-                if (valueToInsert == "()") {
+                if (valueToInsert.equals("()") && move) {
                     model.moveToOffset(model.getOffset() - 1);
                 }
             }

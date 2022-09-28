@@ -7,7 +7,7 @@ import gdscript.psi.impl.GdClassNamingElementType
 
 class GdClassNamingStubImpl : StubBase<GdClassNaming>, GdClassNamingStub {
     private var myClassname: String = "";
-    private var myParentName: String = "";
+    private var myParentName: String? = null;
 
     constructor(parent: StubElement<*>?, name: String?, parentName: String?): super(parent, GdClassNamingElementType) {
         if (name != null) {
@@ -22,7 +22,7 @@ class GdClassNamingStubImpl : StubBase<GdClassNaming>, GdClassNamingStub {
         return myClassname;
     }
 
-    override fun parent(): String {
+    override fun parent(): String? {
         return myParentName;
     }
 }

@@ -16,4 +16,10 @@ public interface GdVarDeclSt extends GdStmt {
   @NotNull
   GdVarNmi getVarNmi();
 
+  @NotNull
+  String getName();
+
+  @NotNull
+  String getReturnType();
+
 }

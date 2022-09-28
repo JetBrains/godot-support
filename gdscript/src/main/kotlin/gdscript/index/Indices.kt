@@ -5,6 +5,8 @@ import gdscript.psi.*
 
 object Indices {
 
+    val VERSION = 3;
+
     val CLASS_NAMING = StubIndexKey.createIndexKey<String, GdClassNaming>("gdscript.classNaming")
     val INHERITANCE = StubIndexKey.createIndexKey<String, GdInheritance>("gdscript.inheritance")
     val CONST_DECL = StubIndexKey.createIndexKey<String, GdConstDeclTl>("gdscript.constDecl")

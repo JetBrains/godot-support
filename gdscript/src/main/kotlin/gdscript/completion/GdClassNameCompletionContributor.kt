@@ -6,7 +6,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PsiJavaPatterns.psiElement
 import gdscript.GdKeywords
 import gdscript.psi.GdClassNaming
-import gdscript.psi.GdInheritance
 
 class GdClassNameCompletionContributor : CompletionContributor() {
 

@@ -8,6 +8,18 @@ import gdscript.structureView.GdPresentationUtil
 
 object GdPsiUtils {
 
+    fun returnType(element: PsiElement?): String {
+        return when(element) {
+            is GdConstDeclTl -> element.returnType;
+            is GdClassVarDeclTl -> element.returnType;
+            is GdVarDeclSt -> element.returnType;
+            is GdConstDeclSt -> element.returnType;
+            is GdMethodDeclTl -> element.returnType;
+            is GdExpr -> element.returnType;
+            else -> "";
+        }
+    }
+
     /** ClassName  */
     @JvmStatic fun getName(element: GdClassNameNm?): String? = GdPsiClassNameUtil.getName(element);
     @JvmStatic fun setName(element: GdClassNameNm?, newName: String?): PsiElement? = GdPsiClassNameUtil.setName(element, newName);
@@ -39,6 +51,14 @@ object GdPsiUtils {
     @JvmStatic fun getName(element: GdClassVarDeclTl): String? = PsiGdClassVarUtil.getName(element);
     @JvmStatic fun getPresentation(element: GdClassVarDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
     @JvmStatic fun getReturnType(element: GdClassVarDeclTl): String = PsiGdClassVarUtil.getReturnType(element);
+
+    /** Local variable  */
+    @JvmStatic fun getName(element: GdVarDeclSt): String = PsiGdLocalVarUtil.getName(element);
+    @JvmStatic fun getReturnType(element: GdVarDeclSt): String = PsiGdLocalVarUtil.getReturnType(element);
+
+    /** Local constant  */
+    @JvmStatic fun getName(element: GdConstDeclSt): String = PsiGdLocalConstUtil.getName(element);
+    @JvmStatic fun getReturnType(element: GdConstDeclSt): String = PsiGdLocalConstUtil.getReturnType(element);
 
     /** Method  */
     @JvmStatic fun isStatic(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isStatic(element);

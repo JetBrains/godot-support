@@ -10,6 +10,9 @@ import tscn.psi.impl.*;
 
 public interface TscnTypes {
 
+  IElementType DATA_LINE = new TscnElementType("DATA_LINE");
+  IElementType DATA_LINE_NM = new TscnElementType("DATA_LINE_NM");
+  IElementType DATA_LINE_VALUE = new TscnElementType("DATA_LINE_VALUE");
   IElementType EXT_HEADER = TscnExtHeaderElementType.getInstance("EXT_HEADER");
   IElementType HEADER = new TscnElementType("HEADER");
   IElementType HEADER_VALUE = new TscnElementType("HEADER_VALUE");
@@ -22,7 +25,6 @@ public interface TscnTypes {
   IElementType BAD_CHARACTER = new TscnTokenType("bad_character");
   IElementType COMMENT = new TscnTokenType("comment");
   IElementType CONNECTION = new TscnTokenType("CONNECTION");
-  IElementType DATA_LINE = new TscnTokenType("DATA_LINE");
   IElementType EQ = new TscnTokenType("EQ");
   IElementType EXT_RESOURCE = new TscnTokenType("EXT_RESOURCE");
   IElementType GD_SCENE = new TscnTokenType("GD_SCENE");
@@ -36,7 +38,16 @@ public interface TscnTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-      if (type == EXT_HEADER) {
+      if (type == DATA_LINE) {
+        return new TscnDataLineImpl(node);
+      }
+      else if (type == DATA_LINE_NM) {
+        return new TscnDataLineNmImpl(node);
+      }
+      else if (type == DATA_LINE_VALUE) {
+        return new TscnDataLineValueImpl(node);
+      }
+      else if (type == EXT_HEADER) {
         return new TscnExtHeaderImpl(node);
       }
       else if (type == HEADER_VALUE) {

@@ -9,4 +9,6 @@ object GdMethodDeclIndex : StringStubIndexExtension<GdMethodDeclTl>() {
 
     override fun getKey(): StubIndexKey<String, GdMethodDeclTl> = Indices.METHOD_DECL;
 
+    override fun getVersion(): Int = Indices.VERSION;
+
 }

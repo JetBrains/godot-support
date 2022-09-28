@@ -45,4 +45,16 @@ public class GdConstDeclStImpl extends GdStmtImpl implements GdConstDeclSt {
     return notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi.class));
   }
 
+  @Override
+  @NotNull
+  public String getName() {
+    return GdPsiUtils.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public String getReturnType() {
+    return GdPsiUtils.getReturnType(this);
+  }
+
 }

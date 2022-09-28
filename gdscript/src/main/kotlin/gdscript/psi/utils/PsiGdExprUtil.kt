@@ -1,6 +1,7 @@
 package gdscript.psi.utils
 
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
@@ -113,31 +114,56 @@ object PsiGdExprUtil {
                 } else if (elementType == GdTypes.REF_ID_NM) {
                     val named: GdNamedElement = expr.refIdNm ?: return "";
                     var parentFile = expr.containingFile;
+                    if (text == GdKeywords.SELF) {
+                        val clName = PsiGdClassUtil.getClassName(expr);
+                        if (clName != null) {
+                            return clName;
+                        }
+                        val inheritance = PsiTreeUtil.getChildOfType(parentFile, GdInheritance::class.java);
+                        if (inheritance != null) {
+                            return inheritance.inheritanceName ?: "";
+                        }
+
+                        return GdKeywords.SELF;
+                    }
 
                     when (val parent = expr.parent) {
                         is GdAttributeEx -> {
-                            val first = parent.exprList.first();
-                            if (first != expr) {
+                            if (expr.prevSibling != null) {
+                                val first = parent.exprList.first();
                                 val parReturn = first?.returnType ?: return "";
-                                parentFile = GdClassNamingIndex
-                                    .get(parReturn, expr.project, GlobalSearchScope.allScope(expr.project))
-                                    .firstOrNull()?.containingFile ?: return "";
+                                if (parReturn != GdKeywords.SELF) {
+                                    parentFile = GdClassNamingIndex
+                                        .get(parReturn, expr.project, GlobalSearchScope.allScope(expr.project))
+                                        .firstOrNull()?.containingFile ?: return "";
+                                }
                             }
                         }
-                        // TODO
-                        /*is GdCallEx -> {
-                            val parReturn = parent.expr.returnType;
-                            named = GdClassNamingIndex
-                                .get(parReturn, expr.project, GlobalSearchScope.allScope(expr.project))
-                                .firstOrNull()?.classNameNm;
-                        }*/
+                        is GdCallEx -> {
+                            val prev = parent.parent;
+                            if (prev.text != GdKeywords.SELF
+                                && prev is GdAttributeEx
+                            ) {
+                                if (parent.prevSibling != null) {
+                                    val first = prev.exprList.first();
+                                    val parReturn = first?.returnType ?: return "";
+                                    parentFile = GdClassNamingIndex
+                                        .get(parReturn, expr.project, GlobalSearchScope.allScope(expr.project))
+                                        .firstOrNull()?.containingFile ?: return "";
+                                }
+                            }
+                        }
                     }
 
                     return when (val element = PsiGdNamedUtil.findInParent(named, includingSelf = true, containingFile = parentFile)) {
-                        // TODO resolve local
                         is GdMethodDeclTl -> element.returnType;
                         is GdClassVarDeclTl -> element.returnType;
                         is GdConstDeclTl -> element.returnType;
+                        is GdVarDeclSt -> {
+                            val sdf = element.returnType;
+                            return sdf;
+                        };
+                        is GdConstDeclSt -> element.returnType;
                         is GdEnumDeclTl -> GdKeywords.INT;
                         is GdEnumValue -> GdKeywords.INT;
                         else -> {
@@ -155,16 +181,10 @@ object PsiGdExprUtil {
 
     fun fromTyped(typed: GdTyped?): String {
         return typed?.text?.trim(':', ' ') ?: "";
-        /*val main = typed?.typeHintNm?.text ?: return "";
-        if (main != "Array") {
-            return main;
-        }
+    }
 
-        return if (typed.typeHintArrayNm != null) {
-            "Array[${typed.typeHintArrayNm?.text}]"
-        } else {
-            main;
-        }*/
+    fun getContainingClass(expr: GdExpr): String {
+        return "";// TODO
     }
 
     private fun fromTyped(typed: String): String {

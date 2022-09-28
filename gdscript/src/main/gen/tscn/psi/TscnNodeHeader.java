@@ -24,4 +24,6 @@ public interface TscnNodeHeader extends TscnHeader, StubBasedPsiElement<TscnNode
   @NotNull
   String getNodePath();
 
+  boolean isUniqueNameOwner();
+
 }

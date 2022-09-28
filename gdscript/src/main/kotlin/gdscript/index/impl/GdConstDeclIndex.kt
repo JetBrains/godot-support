@@ -9,4 +9,6 @@ object GdConstDeclIndex : StringStubIndexExtension<GdConstDeclTl>() {
 
     override fun getKey(): StubIndexKey<String, GdConstDeclTl> = Indices.CONST_DECL;
 
+    override fun getVersion(): Int = Indices.VERSION;
+
 }

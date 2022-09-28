@@ -87,7 +87,7 @@ STRING_MARKER_REV = [^\"\'\n\r]*
 
 COMMENT = [ \t]*"#"[^\r\n]*(\n|\r|\r\n)?
 ANNOTATOR = "@"[a-zA-Z_]*
-NODE_PATH_LEX = "$"[a-zA-Z0-9_]*
+NODE_PATH_LEX = ("$"[a-zA-Z0-9_]*)|("$"\"\%[a-zA-Z0-9_\.]*\")
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -259,11 +259,11 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "^"            { return dedentRoot(GdTypes.XOR); }
     "~"            { return dedentRoot(GdTypes.NOT); }
 
+    {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
     {STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
     {ANNOTATOR}     { return dedentRoot(GdTypes.ANNOTATOR); }
-    {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
     {IDENTIFIER}    { return dedentRoot(GdTypes.IDENTIFIER); }
     {REAL_NUMBER}   { return dedentRoot(GdTypes.NUMBER); }
     {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }

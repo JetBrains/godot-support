@@ -8,4 +8,5 @@ interface GdMethodDeclStub : StubElement<GdMethodDeclTl> {
     fun name(): String;
     fun returnType(): String;
     fun parameters(): HashMap<String, String?>;
+    fun isConstructor(): Boolean;
 }

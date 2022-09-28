@@ -47,10 +47,10 @@ class GdConstVarIdAnnotator : Annotator {
                 continue;
             }
 
-            if (checkName === thisName) {
+            if (checkName == thisName) {
                 holder
                     .newAnnotation(HighlightSeverity.ERROR,
-                        "Field with name [${element.name}] already defined above")
+                        "Field with name [${element.name}] already defined")
                     .range(element.textRange)
                     .create();
                 return false;

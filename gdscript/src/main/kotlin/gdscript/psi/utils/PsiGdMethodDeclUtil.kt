@@ -68,6 +68,9 @@ object PsiGdMethodDeclUtil {
         return PsiGdParameterUtil.toHashMap(element.paramList)
     }
 
-    fun isConstructor(element: GdMethodDeclTl): Boolean = element.name == "_init";
+    fun isConstructor(element: GdMethodDeclTl): Boolean {
+        return element.name == "_init"
+                || PsiGdClassUtil.getClassName(element) == element.name;
+    };
 
 }

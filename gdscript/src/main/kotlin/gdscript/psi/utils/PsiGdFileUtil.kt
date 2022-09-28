@@ -40,9 +40,13 @@ object PsiGdFileUtil {
     fun filepath(element: PsiElement): String {
         val basePath = element.project.basePath ?: return "";
         val file = element.containingFile.originalFile;
-        val directory = file.containingDirectory.toString().removePrefix("PsiDirectory:");
+        val directory = file.containingDirectory?.toString()?.removePrefix("PsiDirectory:") ?: return "";
 
-        val path = "${directory.substring(basePath.length + 1)}${File.separator}${file.name}";
+        var d = "";
+        if (directory.length > basePath.length) {
+            d = directory.substring(basePath.length + 1) + File.separator;
+        }
+        val path = "$d${file.name}";
 
         return path.replace(File.separator, "/");
     }

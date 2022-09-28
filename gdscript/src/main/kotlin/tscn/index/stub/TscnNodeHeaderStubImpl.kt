@@ -10,12 +10,20 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
     private var name: String = "";
     private var type: String = "";
     private var parentPath: String = "";
+    private var isUniqueNameOwner: Boolean = false;
 
-    constructor(parent: StubElement<*>?, name: String, type: String, parentPath: String) : super(parent,
+    constructor(
+        parent: StubElement<*>?,
+        name: String,
+        type: String,
+        parentPath: String,
+        isUniqueNameOwner: Boolean,
+    ) : super(parent,
         TscnNodeHeaderElementType) {
         this.name = name;
         this.type = type;
         this.parentPath = parentPath;
+        this.isUniqueNameOwner = isUniqueNameOwner;
     }
 
     override fun name(): String = name;
@@ -27,6 +35,8 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
 
         return "${if (isRoot) "" else "$parentPath/"}${name}"
     }
+
+    override fun isUniqueNameOwner(): Boolean = isUniqueNameOwner;
 
     override fun parentPath(): String = parentPath;
 
