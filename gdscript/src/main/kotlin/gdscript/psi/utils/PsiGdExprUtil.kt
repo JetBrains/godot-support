@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
@@ -183,8 +184,21 @@ object PsiGdExprUtil {
         return typed?.text?.trim(':', ' ') ?: "";
     }
 
-    fun getContainingClass(expr: GdExpr): String {
-        return "";// TODO
+    fun getAttrOrCallParentClass(element: PsiElement): String? {
+        if (element is GdRefIdNm
+            && element.parent != null
+            && element.parent is GdLiteralEx
+        ) {
+            val root = element.parent.parent ?: null;
+            if (root != null
+                && (root is GdAttributeEx || root is GdCallEx)
+                && element.parent.prevSibling != null
+            ) {
+                return GdPsiUtils.returnType(root.firstChild);
+            }
+        }
+
+        return null;
     }
 
     private fun fromTyped(typed: String): String {

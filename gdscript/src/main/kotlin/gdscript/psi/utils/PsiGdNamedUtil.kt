@@ -223,8 +223,6 @@ object PsiGdNamedUtil {
     }
 
     fun getName(element: GdNamedElement): String {
-        /*val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
-        return valueNode?.text ?: ""*/
         return element.text;
     }
 

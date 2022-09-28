@@ -6,7 +6,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.completion.util.GdClassVarCompletionUtil
@@ -15,6 +14,7 @@ import gdscript.completion.util.GdEnumCompletionUtil
 import gdscript.completion.util.GdMethodCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
+import gdscript.psi.utils.PsiGdExprUtil
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.psi.utils.PsiGdNamedUtil
 
@@ -41,17 +41,25 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        // TODO attrExp.. tohle se musí zobecnit spolu s PsiGdExprUtil
-        val direct = when (val element = PsiGdNamedUtil.findInParent(myElement, includingSelf = true)) {
-            is GdClassVarDeclTl -> element.classVarIdNmi;
-            is GdVarDeclSt -> element.varNmi;
-            is GdConstDeclSt -> element.varNmi;
-            is GdConstDeclTl -> element.constIdNmi;
-            is GdEnumDeclTl -> element.enumDeclNmi;
-            is GdEnumValue -> element.enumValueNmi;
-            is GdMethodDeclTl -> element.methodIdNmi;
-            else -> null
+        var file = element.containingFile;
+        val fromClass = PsiGdExprUtil.getAttrOrCallParentClass(element);
+        if (fromClass != null) {
+            file = GdClassNamingIndex
+                .get(fromClass, element.project, GlobalSearchScope.allScope(element.project))
+                .firstOrNull()?.containingFile;
         }
+
+        val direct =
+            when (val element = PsiGdNamedUtil.findInParent(myElement, includingSelf = true, containingFile = file)) {
+                is GdClassVarDeclTl -> element.classVarIdNmi;
+                is GdVarDeclSt -> element.varNmi;
+                is GdConstDeclSt -> element.varNmi;
+                is GdConstDeclTl -> element.constIdNmi;
+                is GdEnumDeclTl -> element.enumDeclNmi;
+                is GdEnumValue -> element.enumValueNmi;
+                is GdMethodDeclTl -> element.methodIdNmi;
+                else -> null
+            }
         if (direct != null) return direct;
 
         return GdClassNamingIndex
@@ -106,7 +114,8 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     }
 
     private fun getBaseFile(element: PsiElement): PsiFile? {
-        val parent = element.parent?.parent; // TODO tohle by mělo jít odstranit -> potřeba vyřešit return file class_name
+        val parent =
+            element.parent?.parent; // TODO tohle by mělo jít odstranit -> potřeba vyřešit return file class_name
         if (parent != null) {
             val type = parent.elementType;
             if (type == GdTypes.ATTRIBUTE_EX || type == GdTypes.CALL_EX) {

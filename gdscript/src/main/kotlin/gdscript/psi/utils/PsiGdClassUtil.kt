@@ -4,10 +4,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
-import gdscript.psi.GdClassNameNm
-import gdscript.psi.GdClassNaming
-import gdscript.psi.GdFile
+import gdscript.psi.*
 import gdscript.psi.impl.GdClassNamingElementType
 
 object PsiGdClassUtil {
