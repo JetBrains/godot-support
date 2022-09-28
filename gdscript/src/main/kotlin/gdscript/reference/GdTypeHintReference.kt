@@ -13,8 +13,9 @@ class GdTypeHintReference : PsiReferenceBase<GdNamedElement> {
 
     private var key: String = "";
 
-    constructor(element: PsiElement, textRange: TextRange) : super(element as GdNamedElement, textRange) {
-        key = element.text.substring(textRange.startOffset, textRange.endOffset)
+    constructor(element: PsiElement, textRange: TextRange? = null) : super(element as GdNamedElement, textRange) {
+        val range = textRange ?: TextRange(0, element.textLength);
+        key = element.text.substring(range.startOffset, range.endOffset)
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {

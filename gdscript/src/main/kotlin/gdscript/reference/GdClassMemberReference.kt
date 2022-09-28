@@ -8,10 +8,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
-import gdscript.completion.util.GdClassVarCompletionUtil
-import gdscript.completion.util.GdConstCompletionUtil
-import gdscript.completion.util.GdEnumCompletionUtil
-import gdscript.completion.util.GdMethodCompletionUtil
+import gdscript.completion.util.*
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.psi.utils.PsiGdExprUtil
@@ -27,10 +24,11 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
     constructor(
         element: PsiElement,
-        textRange: TextRange,
+        textRange: TextRange? = null,
         methodOnly: Boolean = false,
     ) : super(element as GdNamedElement, textRange) {
-        key = element.text.substring(textRange.startOffset, textRange.endOffset);
+        val range = textRange ?: TextRange(0, element.textLength);
+        key = element.text.substring(range.startOffset, range.endOffset);
         this.methodOnly = methodOnly;
     }
 
@@ -58,6 +56,8 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                 is GdEnumDeclTl -> element.enumDeclNmi;
                 is GdEnumValue -> element.enumValueNmi;
                 is GdMethodDeclTl -> element.methodIdNmi;
+                is GdParam -> element.varNmi;
+                is GdVarNmi -> element;
                 else -> null
             }
         if (direct != null) return direct;
@@ -92,6 +92,8 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                         results.add(GdMethodCompletionUtil.lookup(it))
                     }
                 }
+                is GdParam -> !methodOnly && !static && results.add(GdMethodCompletionUtil.lookup(it))
+                is GdForSt -> !methodOnly && !static && results.add(GdForLoopCompletionUtil.lookup(it))
             }
         };
 

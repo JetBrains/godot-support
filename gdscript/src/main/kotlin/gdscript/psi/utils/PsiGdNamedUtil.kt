@@ -64,49 +64,53 @@ object PsiGdNamedUtil {
     fun findLocalDecl(
         element: GdNamedElement,
     ): PsiElement? {
-        // TODO stejný offset jako dole?
         val thisName = element.name.orEmpty();
-        var suited = false;
-        var parent = PsiTreeUtil.getParentOfType(element.parent, GdSuite::class.java, GdAttributeEx::class.java, GdCallEx::class.java);
-        while (parent != null) {
-            if (parent is GdSuite) {
-                suited = true;
-            } else if (suited) {
-                break;
+        var parent: PsiElement = element;
+        while (true) {
+            parent = parent.prevSibling ?: parent.parent ?: return null;
+            val match = when (parent) {
+                is GdConstDeclSt -> if (parent.name == thisName) parent else null;
+                is GdVarDeclSt -> if (parent.name == thisName) parent else null;
+                is GdForSt -> if (parent.varNmi.name == thisName) parent.varNmi else null;
+                is GdSetDecl -> if (parent.varNmi?.name == thisName) parent.varNmi else null;
+                is GdMethodDeclTl -> {
+                    return parent.paramList?.paramList?.find {
+                        it.varNmi.text == thisName
+                    }
+                };
+                else -> null;
             }
-            val locals = PsiTreeUtil.getChildrenOfAnyType(parent, GdVarDeclSt::class.java, GdConstDeclSt::class.java);
-            val local = locals.find {
-                when (it) {
-                    is GdVarDeclSt -> it.name == thisName;
-                    is GdConstDeclSt -> it.name== thisName;
-                    else -> false
-                }
-            };
-            if (local != null) {
-                return local;
-            }
-            parent = PsiTreeUtil.getParentOfType(parent, GdSuite::class.java, GdAttributeEx::class.java, GdCallEx::class.java);
-        }
 
-        return null;
+            if (match != null) return match;
+        }
     }
 
     fun listLocalDecls(
         element: PsiElement,
     ): MutableList<PsiElement> {
-        val startOffset = element.textOffset;
-        var parent = PsiTreeUtil.getParentOfType(element.parent, GdSuite::class.java, GdAttributeEx::class.java, GdCallEx::class.java);
         val list = mutableListOf<PsiElement>();
-        while (parent != null && parent is GdSuite) {
-            list.addAll(
-                PsiTreeUtil
-                    .getChildrenOfAnyType(parent, GdVarDeclSt::class.java, GdConstDeclSt::class.java)
-                    .filter { it.startOffset <= startOffset }
-            );
-            parent = PsiTreeUtil.getParentOfType(parent, GdSuite::class.java, GdAttributeEx::class.java, GdCallEx::class.java);
+        var parent: PsiElement = element;
+        while (true) {
+            parent = parent.prevSibling ?: parent.parent ?: return list;
+            when (parent) {
+                is GdConstDeclSt, is GdVarDeclSt, is GdForSt -> list.add(parent);
+                is GdMethodDeclTl -> {
+                    list.addAll(parent.paramList?.paramList?.toList() ?: emptyList());
+                    return list;
+                };
+            }
         }
 
-        return list;
+//        val startOffset = element.textOffset;
+//        var parent = PsiTreeUtil.getParentOfType(element.parent, GdSuite::class.java, GdAttributeEx::class.java, GdCallEx::class.java);
+//        while (parent != null && parent is GdSuite) {
+//            list.addAll(
+//                PsiTreeUtil
+//                    .getChildrenOfAnyType(parent, GdVarDeclSt::class.java, GdConstDeclSt::class.java)
+//                    .filter { it.startOffset <= startOffset }
+//            );
+//            parent = PsiTreeUtil.getParentOfType(parent, GdSuite::class.java, GdAttributeEx::class.java, GdCallEx::class.java);
+//        }
     }
 
     fun findInParent(

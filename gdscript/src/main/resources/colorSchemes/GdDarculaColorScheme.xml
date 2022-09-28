@@ -10,6 +10,16 @@
             <option name="FOREGROUND" value="8effda" />
         </value>
     </option>
+    <option name="GD_METHOD_DECLARATION">
+        <value>
+            <option name="FOREGROUND" value="66e6ff" />
+        </value>
+    </option>
+    <option name="GD_METHOD_CALL">
+        <value>
+            <option name="FOREGROUND" value="66a3cf" />
+        </value>
+    </option>
     <option name="GD_FLOW_KEYWORDS">
         <value>
             <option name="FOREGROUND" value="ff8ccc" />
@@ -23,6 +33,11 @@
     <option name="GD_IDENTIFIER">
         <value>
             <option name="FOREGROUND" value="cdcfd2" />
+        </value>
+    </option>
+    <option name="GD_MEMBER">
+        <value>
+            <option name="FOREGROUND" value="8adde6" />
         </value>
     </option>
     <option name="GD_COMMENT">

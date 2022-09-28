@@ -1,7 +1,5 @@
 resources: onready check
 
-oddělit static metody
-
 TopLevel: innerClass
 syntax: @"Node/Label"
 
@@ -53,6 +51,9 @@ TODO
 
 Known issues
 annotation insert
+
+params - pokud je param další callExpr, tak to už na jméně napovídá ten vnitřní  
+kontrala refIdAnnotator -> že metoda je metoda  
 
 # String format:
 signal - argumenty

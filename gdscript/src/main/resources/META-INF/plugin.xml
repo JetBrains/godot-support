@@ -29,6 +29,8 @@
     <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer" />
     <defaultLiveTemplates file="/templates/GdScript.xml" />
     <liveTemplateContext implementation="gdscript.GdTemplateContextType" />
+    <codeInsight.parameterInfo language="GdScript" id="GdParameterInfoHandler" implementationClass="gdscript.codeInsight.GdParameterInfoHandler" />
+
     <!-- Tscn -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
     <lang.parserDefinition language="Tscn" implementationClass="tscn.TscnParserDefinition"/>
@@ -55,6 +57,7 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdReturnTypeAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdMethodNameAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdResourceTypeAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdRefIdAnnotator" />
 
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />

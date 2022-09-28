@@ -16,9 +16,24 @@ public interface GdHighlighterColors {
             "GD_FLOW_KEYWORDS", DefaultLanguageHighlighterColors.KEYWORD
     );
 
+    // Blue
+    TextAttributesKey METHOD_DECLARATION = TextAttributesKey.createTextAttributesKey(
+            "GD_METHOD_DECLARATION", DefaultLanguageHighlighterColors.INSTANCE_METHOD
+    );
+
+    // Blue
+    TextAttributesKey METHOD_CALL = TextAttributesKey.createTextAttributesKey(
+            "GD_METHOD_CALL", DefaultLanguageHighlighterColors.INSTANCE_METHOD
+    );
+
     // Teal
     TextAttributesKey CLASS_TYPE = TextAttributesKey.createTextAttributesKey(
             "GD_CLASS_TYPE", DefaultLanguageHighlighterColors.KEYWORD
+    );
+
+    // Teal
+    TextAttributesKey MEMBER = TextAttributesKey.createTextAttributesKey(
+            "GD_MEMBER", DefaultLanguageHighlighterColors.CONSTANT
     );
 
     // Teal

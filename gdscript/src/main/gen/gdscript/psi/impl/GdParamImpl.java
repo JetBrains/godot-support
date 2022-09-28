@@ -45,4 +45,10 @@ public class GdParamImpl extends ASTWrapperPsiElement implements GdParam {
     return notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi.class));
   }
 
+  @Override
+  @NotNull
+  public String getReturnType() {
+    return GdPsiUtils.getReturnType(this);
+  }
+
 }

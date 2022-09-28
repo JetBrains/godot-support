@@ -7,6 +7,7 @@ import gdscript.GdKeywords
 import gdscript.completion.GdLookup
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdVarDeclSt
+import gdscript.psi.GdVarNmi
 
 object GdClassVarCompletionUtil {
 
@@ -35,6 +36,13 @@ object GdClassVarCompletionUtil {
         GdLookup.create(variable.name,
             icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
             typed = variable.returnType,
+            priority = GdLookup.LOCAL_USER_DEFINED,
+        )
+
+    fun lookup(variable: GdVarNmi): LookupElement =
+        GdLookup.create(variable.name,
+            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+//            typed = variable.returnType, // TODO
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
 

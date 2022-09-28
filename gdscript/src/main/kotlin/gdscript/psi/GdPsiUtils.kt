@@ -68,6 +68,9 @@ object GdPsiUtils {
     @JvmStatic fun getParameters(element: GdMethodDeclTl): HashMap<String, String?> = PsiGdMethodDeclUtil.getParameters(element);
     @JvmStatic fun isConstructor(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isConstructor(element);
 
+    /** Method param */
+    @JvmStatic fun getReturnType(element: GdParam): String = PsiGdMethodDeclUtil.getReturnType(element);
+
     /** Signal   */
     @JvmStatic fun getName(element: GdSignalDeclTl): String = PsiGdSignalUtil.getName(element);
     @JvmStatic fun getParameters(element: GdSignalDeclTl): Array<String> = PsiGdSignalUtil.getParameters(element);

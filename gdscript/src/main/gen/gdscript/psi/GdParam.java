@@ -16,4 +16,7 @@ public interface GdParam extends PsiElement {
   @NotNull
   GdVarNmi getVarNmi();
 
+  @NotNull
+  String getReturnType();
+
 }

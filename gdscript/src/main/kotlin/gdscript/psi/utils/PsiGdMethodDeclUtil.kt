@@ -59,6 +59,10 @@ object PsiGdMethodDeclUtil {
         return element.returnHint?.returnHintVal?.text ?: "";
     }
 
+    fun getReturnType(element: GdParam): String {
+        return element.typed?.typeHintNmList?.first()?.text ?: "";
+    }
+
     fun getParameters(element: GdMethodDeclTl): HashMap<String, String?> {
         val stub = element.stub;
         if (stub !== null) {
@@ -71,6 +75,6 @@ object PsiGdMethodDeclUtil {
     fun isConstructor(element: GdMethodDeclTl): Boolean {
         return element.name == "_init"
                 || PsiGdClassUtil.getClassName(element) == element.name;
-    };
+    }
 
 }

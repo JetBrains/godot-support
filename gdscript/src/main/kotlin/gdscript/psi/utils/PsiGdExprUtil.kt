@@ -189,12 +189,12 @@ object PsiGdExprUtil {
             && element.parent != null
             && element.parent is GdLiteralEx
         ) {
-            val root = element.parent.parent ?: null;
-            if (root != null
-                && (root is GdAttributeEx || root is GdCallEx)
-                && element.parent.prevSibling != null
-            ) {
+            val root = element.parent.parent ?: return null;
+            if (root is GdAttributeEx && element.parent.prevSibling != null) {
                 return GdPsiUtils.returnType(root.firstChild);
+            }
+            if (root is GdCallEx && root.prevSibling != null && root.parent is GdAttributeEx) {
+                return GdPsiUtils.returnType(root.parent.firstChild);
             }
         }
 

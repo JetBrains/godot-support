@@ -5,6 +5,7 @@ import com.intellij.codeInsight.lookup.LookupElement
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdParam
 
 object GdMethodCompletionUtil {
 
@@ -31,6 +32,15 @@ object GdMethodCompletionUtil {
             typed = method.returnType,
             icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
             priority = GdLookup.USER_DEFINED,
+        );
+    }
+
+    fun lookup(param: GdParam): LookupElement {
+        return GdLookup.create(
+            param.varNmi.name,
+            typed = param.returnType,
+            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            priority = GdLookup.LOCAL_USER_DEFINED,
         );
     }
 

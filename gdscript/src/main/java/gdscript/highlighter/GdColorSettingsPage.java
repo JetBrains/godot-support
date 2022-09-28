@@ -16,11 +16,14 @@ import java.util.Map;
 public class GdColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Keywords", GdHighlighterColors.KEYWORD),
+            new AttributesDescriptor("Method declaration", GdHighlighterColors.METHOD_DECLARATION),
+            new AttributesDescriptor("Method call", GdHighlighterColors.METHOD_CALL),
             new AttributesDescriptor("Class types", GdHighlighterColors.CLASS_TYPE),
             new AttributesDescriptor("Flow control", GdHighlighterColors.FLOW_KEYWORDS),
             new AttributesDescriptor("Numbers", GdHighlighterColors.NUMBER),
             new AttributesDescriptor("Variables", GdHighlighterColors.IDENTIFIER),
             new AttributesDescriptor("Comments", GdHighlighterColors.COMMENT),
+            new AttributesDescriptor("Member reference", GdHighlighterColors.MEMBER),
             new AttributesDescriptor("Strings", GdHighlighterColors.STRING),
             new AttributesDescriptor("Annotations", GdHighlighterColors.ANNOTATION),
             new AttributesDescriptor("NodePath", GdHighlighterColors.NODE_PATH),

@@ -79,7 +79,7 @@ enumValue_nmi ::= IDENTIFIER
 methodDecl_tl ::= STATIC? FUNC methodId_nmi LRBR paramList? RRBR parentMethodCall? returnHint? COLON stmtOrSuite {methods=[isStatic getName getReturnType getParameters getPresentation isConstructor] pin=2 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub" elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"}
 methodId_nmi ::= IDENTIFIER | GET | SET
 paramList ::= param (COMMA param)*
-param ::= VAR? var_nmi typed? (EQ expr)?
+param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
 returnHint ::= RET returnHintVal
 returnHintVal ::= typedVal | VOID // typeHint_nm | VOID
 parentMethodCall ::= DOT LRBR argList? RRBR

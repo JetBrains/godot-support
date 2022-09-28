@@ -4,16 +4,23 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
+import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.*
 import gdscript.psi.utils.PsiGdClassUtil
 
 class GdMethodNameAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element is GdMethodIdNmi) {
-            if (!isLocallyUnique(element, holder)) {
-                return;
-            }
+        if (element !is GdMethodIdNmi) return
+
+        holder
+            .newSilentAnnotation(HighlightSeverity.INFORMATION)
+            .range(element.textRange)
+            .textAttributes(GdHighlighterColors.METHOD_DECLARATION)
+            .create();
+
+        if (!isLocallyUnique(element, holder)) {
+            return;
         }
     }
 

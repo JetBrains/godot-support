@@ -27,9 +27,7 @@ object PsiGdParameterUtil {
         var child = paramList?.firstChild;
         while (child != null) {
             if (child is GdParam) {
-                val id = child.firstChild?.text;
-                params[id.orEmpty()] = PsiGdExprUtil.fromTyped(child.typed);
-                // params[id.orEmpty()] = child.typed?.typeHintNm?.name;
+                params[child.varNmi.text] = PsiGdExprUtil.fromTyped(child.typed);
             }
             child = child.nextSibling;
         }

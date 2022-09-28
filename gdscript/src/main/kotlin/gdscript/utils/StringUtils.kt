@@ -25,4 +25,12 @@ object StringUtils {
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     }
 
+    fun String.parseFromSquare(): String {
+        val start = this.indexOf('[');
+        val end = this.indexOf(']', start);
+
+        if (start < 0 || end < 1) return this;
+        return this.substring(start + 1, end);
+    }
+
 }
