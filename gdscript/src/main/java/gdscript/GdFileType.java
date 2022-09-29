@@ -35,7 +35,7 @@ public class GdFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return GdIcon.FILE;
+        return GdIcon.INSTANCE.getFILE();
     }
 
 }

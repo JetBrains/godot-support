@@ -21,13 +21,13 @@ object GdPsiUtils {
     }
 
     /** ClassName  */
-    @JvmStatic fun getName(element: GdClassNameNm?): String? = GdPsiClassNameUtil.getName(element);
-    @JvmStatic fun setName(element: GdClassNameNm?, newName: String?): PsiElement? = GdPsiClassNameUtil.setName(element, newName);
+    @JvmStatic fun getName(element: GdClassNameNm?): String = PsiGdClassUtil.getName(element);
+    @JvmStatic fun setName(element: GdClassNameNm?, newName: String?): PsiElement? = PsiGdClassUtil.setName(element, newName);
     @JvmStatic fun getClassname(element: GdClassNaming?): String = GdClassNamingElementType.getClassname(element);
     @JvmStatic fun getParentName(element: GdClassNaming?): String? = GdClassNamingElementType.getParentName(element);
 
     /** Inheritance  */
-    @JvmStatic fun getInheritanceName(element: GdInheritance?): String? = GdPsiClassNameUtil.getInheritanceName(element);
+    @JvmStatic fun getInheritanceName(element: GdInheritance?): String = PsiGdClassUtil.getInheritanceName(element);
 
     /** Enum  */
     @JvmStatic fun getValues(element: GdEnumDeclTl): HashMap<String, Int> = PsiGdEnumUtil.values(element);
