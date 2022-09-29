@@ -3,7 +3,7 @@ package gdscript.formatter;
 import com.intellij.psi.codeStyle.CodeStyleSettings;
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 
-// Could not get kotlin version working -> fields were not visible
+// TODO Could not get kotlin version working -> fields were not visible
 // TODO companion object ??
 public class GdCodeStyleSettings extends CustomCodeStyleSettings {
 

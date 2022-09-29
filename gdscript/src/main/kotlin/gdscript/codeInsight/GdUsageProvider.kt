@@ -1,10 +1,11 @@
-package gdscript
+package gdscript.codeInsight
 
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner
 import com.intellij.lang.cacheBuilder.WordsScanner
 import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
+import gdscript.GdLexerAdapter
 import gdscript.highlighter.GdTokenTypeSet
 import gdscript.psi.*
 

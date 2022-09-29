@@ -24,7 +24,7 @@
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
     <sdkType implementation="gdscript.GdSdk" />
-    <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.GdUsageProvider" />
+    <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider" />
     <configurationType implementation="gdscript.run.GdRunConfigurationType" />
     <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer" />
     <defaultLiveTemplates file="/templates/GdScript.xml" />
@@ -85,7 +85,7 @@
     <codeStyleSettingsProvider implementation="gdscript.formatter.GdCodeStyleSettingsProvider" />
     <langCodeStyleSettingsProvider implementation="gdscript.formatter.GdLanguageCodeStyleSettingsProvider" />
 
-    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.GdFoldingBuilder" />
+    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdFoldingBuilder" />
     <lang.psiStructureViewFactory language="GdScript" implementationClass="gdscript.structureView.GdStructureViewFactory" />
     <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler" />
   </extensions>
