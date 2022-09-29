@@ -68,7 +68,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
         // TODO zkontrolovat, jestli se nevrací Array[String]
         var file = PsiGdExprUtil.getAttrOrCallParentFile(element);
-        val local = file != null;
+        val local = file == null;
         file = file ?: element.containingFile;
         files.add(file!!);
         files.addAll(PsiGdNamedUtil.listParents(file).map { it.containingFile });

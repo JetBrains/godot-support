@@ -31,14 +31,15 @@ class GdBlock : AbstractBlock {
         var child: ASTNode? = node.firstChildNode;
         while (child != null) {
             val nextBlock = when (child.elementType) {
-                TokenType.WHITE_SPACE -> null;
-                GdTypes.SUITE -> GdBlock(
+                TokenType.WHITE_SPACE, GdTypes.DEDENT -> null;
+//                GdTypes.GET_DECL, GdTypes.SET_DECL -> GdBlock(
+                GdTypes.INDENT -> GdBlock(
                     child,
                     Wrap.createWrap(WrapType.NONE, false),
                     Alignment.createAlignment(),
                     settings,
                     spacing,
-                    Indent.getNormalIndent(),
+//                    Indent.getNormalIndent(),
                 )
                 else -> GdBlock(
                         child,
@@ -67,7 +68,7 @@ class GdBlock : AbstractBlock {
         return blocks;
     }
 
-    override fun getIndent(): Indent = myIndent;
+    override fun getIndent(): Indent = Indent.getNoneIndent();
 
     override fun getSpacing(child1: Block?, child2: Block): Spacing? = this.spacing.getSpacing(this, child1, child2);
 

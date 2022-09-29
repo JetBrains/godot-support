@@ -38,6 +38,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
     private fun createSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
         val custom = settings.getCustomSettings(GdCodeStyleSettings::class.java);
+        return SpacingBuilder(settings, GdLanguage.INSTANCE);
 
         // TODO grouping
         return SpacingBuilder(settings, GdLanguage.INSTANCE)

@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface GdClassNameNm extends GdNamedElement {
 
-  @Nullable
+  @NotNull
   String getName();
 
   @Nullable

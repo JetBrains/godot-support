@@ -17,7 +17,6 @@ import com.intellij.psi.tree.TokenSet
 import gdscript.parser.GdParser
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
-import tscn.TscnLanguage
 
 class GdParserDefinition : ParserDefinition {
 
@@ -25,7 +24,7 @@ class GdParserDefinition : ParserDefinition {
         val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
         val COMMENTS = TokenSet.create(GdTypes.COMMENT)
         val STRING_LITERALS = TokenSet.create(GdTypes.STRING)
-        val FILE = IStubFileElementType<PsiFileStub<GdFile>>(TscnLanguage.INSTANCE);
+        val FILE = IStubFileElementType<PsiFileStub<GdFile>>(GdLanguage.INSTANCE);
     }
 
     override fun createLexer(project: Project): Lexer {

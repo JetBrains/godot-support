@@ -27,7 +27,7 @@ public class GdClassNameNmImpl extends GdNamedElementImpl implements GdClassName
   }
 
   @Override
-  @Nullable
+  @NotNull
   public String getName() {
     return GdPsiUtils.getName(this);
   }
