@@ -10,7 +10,7 @@
 - ❌ Create get/set Alt+Insert
 
 ### References
-- ❌ Colors of reference by type (Var/Const/Class/...)
+- Colors of reference by type (Var/Const/Class/...)
 
 ### Resources
 - autocomplete both `$Path/Node` && `$"%Name"`
@@ -27,4 +27,4 @@
 - ❌ Optional semicolons (add/remove based on settings)
 
 ### Others
-- ❌ check ref_id (method, var, const, ...) exists
+- check ref_id (method, var, const, ...) exists

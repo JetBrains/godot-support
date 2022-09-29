@@ -23,7 +23,6 @@ file rename:
 https://intellij-support.jetbrains.com/hc/en-us/community/posts/206760415-Renaming-files-in-IDE
 
 extends inner class extends "losos.gd".inner
-barvy definice/volání/parentVolání
 set,get validation - param, return type
 var a: Node = 4; // chybí kontrola typu hodnoty
 projít dostupné annotatce -> něco má extra options !!!
@@ -87,9 +86,9 @@ Enum
 unique name
 unique value
 
-Match, ...
-
 Formatter
 
 Run - reuse context not working
 Debug
+
+optional ";" ... hledej "// +;" kde to bylo použito

@@ -40,7 +40,7 @@ object GdResourceCompletionUtil {
                 result
                     .addElement(
                         GdLookup.create(
-                            "@onready var ${it.name.camelToSnakeCase()}: ${it.type} = $$nodePath;",
+                            "@onready var ${it.name.camelToSnakeCase()}: ${it.type} = $$nodePath", // +;
                             color = GdLookup.RESOURCE_COLOR,
                             priority = GdLookup.USER_DEFINED,
                             typed = it.type,
