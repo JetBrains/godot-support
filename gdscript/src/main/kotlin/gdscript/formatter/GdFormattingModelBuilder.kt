@@ -4,6 +4,7 @@ import com.intellij.formatting.*
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
 import gdscript.GdLanguage
+import gdscript.formatter.block.GdBlock
 import gdscript.formatter.block.GdRootLineBlock
 import gdscript.psi.GdTypes
 
@@ -14,9 +15,19 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
         // TODO tohle je pro bloky
         val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java);
 
+//        return FormattingModelProvider
+//            .createFormattingModelForPsiFile(formattingContext.containingFile,
+//                GdRootLineBlock(formattingContext.node,
+//                    Wrap.createWrap(WrapType.NONE, false),
+//                    Alignment.createAlignment(),
+//                    customSettings,
+//                    createSpaceBuilder(settings)
+//                ),
+//                settings)
+
         return FormattingModelProvider
             .createFormattingModelForPsiFile(formattingContext.containingFile,
-                GdRootLineBlock(formattingContext.node,
+                GdBlock(formattingContext.node,
                     Wrap.createWrap(WrapType.NONE, false),
                     Alignment.createAlignment(),
                     customSettings,
