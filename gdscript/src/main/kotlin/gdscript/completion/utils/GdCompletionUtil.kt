@@ -31,6 +31,7 @@ object GdCompletionUtil {
             is GdMethodDeclTl -> arrayOf(lookup(element));
             is GdForSt -> arrayOf(lookup(element));
             is GdParam -> arrayOf(lookup(element));
+            is GdSetDecl -> arrayOf(lookup(element));
             else -> emptyArray();
         }
     }
@@ -108,6 +109,14 @@ object GdCompletionUtil {
         GdLookup.create(
             param.varNmi.name,
             typed = param.returnType,
+            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            priority = GdLookup.LOCAL_USER_DEFINED,
+        )
+
+    fun lookup(decl: GdSetDecl): LookupElement =
+        GdLookup.create(
+            decl.varNmi?.name ?: "",
+            typed = decl.typed?.text ?: "",
             icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
             priority = GdLookup.LOCAL_USER_DEFINED,
         )

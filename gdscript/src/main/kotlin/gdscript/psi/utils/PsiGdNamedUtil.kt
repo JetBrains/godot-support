@@ -93,24 +93,13 @@ object PsiGdNamedUtil {
         while (true) {
             parent = parent.prevSibling ?: parent.parent ?: return list;
             when (parent) {
-                is GdConstDeclSt, is GdVarDeclSt, is GdForSt -> list.add(parent);
+                is GdConstDeclSt, is GdVarDeclSt, is GdForSt, is GdSetDecl -> list.add(parent);
                 is GdMethodDeclTl -> {
                     list.addAll(parent.paramList?.paramList?.toList() ?: emptyList());
                     return list;
                 };
             }
         }
-
-//        val startOffset = element.textOffset;
-//        var parent = PsiTreeUtil.getParentOfType(element.parent, GdSuite::class.java, GdAttributeEx::class.java, GdCallEx::class.java);
-//        while (parent != null && parent is GdSuite) {
-//            list.addAll(
-//                PsiTreeUtil
-//                    .getChildrenOfAnyType(parent, GdVarDeclSt::class.java, GdConstDeclSt::class.java)
-//                    .filter { it.startOffset <= startOffset }
-//            );
-//            parent = PsiTreeUtil.getParentOfType(parent, GdSuite::class.java, GdAttributeEx::class.java, GdCallEx::class.java);
-//        }
     }
 
     fun findInParent(

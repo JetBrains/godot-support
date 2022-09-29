@@ -1,11 +1,11 @@
 package gdscript.index.impl
 
-import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndexKey
+import common.index.StringStubIndexExtensionExt
 import gdscript.index.Indices
 import gdscript.psi.GdInheritance
 
-object GdInheritanceIndex : StringStubIndexExtension<GdInheritance>() {
+object GdInheritanceIndex : StringStubIndexExtensionExt<GdInheritance>() {
 
     override fun getKey(): StubIndexKey<String, GdInheritance> = Indices.INHERITANCE;
 

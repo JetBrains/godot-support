@@ -22,9 +22,7 @@ class GdClassNameAnnotator : Annotator {
                 .textAttributes(GdHighlighterColors.CLASS_TYPE)
                 .create();
 
-            if (GdClassNamingIndex.get(element.name, element.project, GlobalSearchScope.allScope(element.project))
-                    .isNotEmpty()
-            ) {
+            if (GdClassNamingIndex.getGlobally(element).isNotEmpty()) {
                 return;
             }
 

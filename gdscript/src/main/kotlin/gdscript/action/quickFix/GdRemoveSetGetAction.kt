@@ -4,7 +4,6 @@ import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdMethodDeclIndex
 import gdscript.psi.GdGetMethodIdNm
@@ -43,16 +42,12 @@ class GdRemoveSetGetAction : BaseIntentionAction() {
 
         val setName = PsiTreeUtil.getChildOfType(element, GdSetMethodIdNm::class.java);
         if (setName != null) {
-            GdMethodDeclIndex.get(setName.name,
-                element.project,
-                GlobalSearchScope.fileScope(element.containingFile)).firstOrNull()?.delete()
+            GdMethodDeclIndex.getInFile(setName).firstOrNull()?.delete()
         }
 
         val getName = PsiTreeUtil.getChildOfType(element, GdGetMethodIdNm::class.java);
         if (getName != null) {
-            GdMethodDeclIndex.get(getName.name,
-                element.project,
-                GlobalSearchScope.fileScope(element.containingFile)).firstOrNull()?.delete()
+            GdMethodDeclIndex.getInFile(getName).firstOrNull()?.delete()
         }
 
         element.delete();

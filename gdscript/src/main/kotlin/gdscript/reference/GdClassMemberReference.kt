@@ -72,11 +72,24 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
         val results = ArrayList<LookupElement>();
         val static = referencesClassName(myElement);
 
-        val file = getBaseFile(myElement) ?: return results.toArray();
+        // TODO val file = getBaseFile(myElement) ?: return results.toArray();
+
+        // TODO zkontrolovat, jestli se nevrací Array[String]
+        var file = myElement.containingFile;
+        val fromClass = PsiGdExprUtil.getAttrOrCallParentClass(myElement);
+        if (fromClass != null) {
+            file = GdClassNamingIndex
+                .get(fromClass, element.project, GlobalSearchScope.allScope(element.project))
+                .firstOrNull()?.containingFile ?: return results.toArray();
+        }
+
         files.add(file);
         files.addAll(PsiGdNamedUtil.listParents(file).map { it.containingFile });
 
-        val members = PsiGdNamedUtil.listLocalDecls(myElement);
+        // TODO je tohle ok?
+        val members =
+            if (fromClass == null) PsiGdNamedUtil.listLocalDecls(myElement)
+            else mutableListOf();
         members.addAll(files.flatMap { PsiGdFileUtil.listMembers(it) });
 
         members.forEach {
@@ -95,7 +108,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                 }
 
                 is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl,
-                is GdParam, is GdForSt, is GdEnumDeclTl -> {
+                is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl -> {
                     if (!methodOnly && !static) {
                         results.addAll(GdCompletionUtil.lookups(it));
                     }
@@ -121,33 +134,33 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
         return false;
     }
 
-    private fun getBaseFile(element: PsiElement): PsiFile? {
-        val parent =
-            element.parent?.parent; // TODO tohle by mělo jít odstranit -> potřeba vyřešit return file class_name
-        if (parent != null) {
-            val type = parent.elementType;
-            if (type == GdTypes.ATTRIBUTE_EX || type == GdTypes.CALL_EX) {
-                if (parent.firstChild.text == GdKeywords.SELF) {
-                    return element.containingFile;
-                }
-
-                var typed = (parent.firstChild as GdExpr).returnType;
-                if (typed.isEmpty()) {
-                    // TODO resolve call/attr expr to get hint
-                    return null;
-                } else if (typed.startsWith("Array")) { // TODO někam vykopnout
-                    typed = "Array";
-                }
-
-                val gdClass = GdClassNamingIndex
-                    .get(typed, element.project, GlobalSearchScope.allScope(element.project))
-                    .firstOrNull();
-
-                return gdClass?.containingFile;
-            }
-        }
-
-        return element.containingFile;
-    }
+//    private fun getBaseFile(element: PsiElement): PsiFile? {
+//        // TODO tohle by mělo jít odstranit -> potřeba vyřešit return file class_name
+//        val parent = element.parent?.parent;
+//        if (parent != null) {
+//            val type = parent.elementType;
+//            if (type == GdTypes.ATTRIBUTE_EX || type == GdTypes.CALL_EX) {
+//                if (parent.firstChild.text == GdKeywords.SELF) {
+//                    return element.containingFile;
+//                }
+//
+//                var typed = (parent.firstChild as GdExpr).returnType;
+//                if (typed.isEmpty()) {
+//                    // TODO resolve call/attr expr to get hint
+//                    return null;
+//                } else if (typed.startsWith("Array")) { // TODO někam vykopnout
+//                    typed = "Array";
+//                }
+//
+//                val gdClass = GdClassNamingIndex
+//                    .get(typed, element.project, GlobalSearchScope.allScope(element.project))
+//                    .firstOrNull();
+//
+//                return gdClass?.containingFile;
+//            }
+//        }
+//
+//        return element.containingFile;
+//    }
 
 }
