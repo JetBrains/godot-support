@@ -50,7 +50,7 @@ class GdCreateMethodAction : BaseIntentionAction {
             method.append(" -> $returnType")
         }
         method.appendLine(":")
-        val indent = "    "; // TODO read from settings;
+        val indent = "    "; // TODO read from settings; , nebo to umí nahradit formatter? Přidat formátování programově
         bodyLines.forEach {
             method.append("$indent$it");
         }

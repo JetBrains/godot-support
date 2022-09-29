@@ -35,7 +35,7 @@ class GdClassNameAnnotator : Annotator {
         } else if (element is GdClassNameNm) {
             val name = element.name.orEmpty();
             val filename = PsiGdFileUtil.filename(element.containingFile);
-            if (filename.lowercase() != name.lowercase()) {
+            if (filename.toLowerCase() != name.toLowerCase()) {
                 holder
                     .newAnnotation(HighlightSeverity.WEAK_WARNING, "Class name does not match filename")
                     .range(element.textRange)

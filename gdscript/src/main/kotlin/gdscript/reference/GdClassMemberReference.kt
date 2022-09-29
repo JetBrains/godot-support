@@ -81,19 +81,25 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
         members.forEach {
             when (it) {
-                // TODO je potřeba methodOnly? -> není to len pre static
-                is GdVarDeclSt -> !methodOnly && !static && results.add(GdClassVarCompletionUtil.lookup(it))
-                is GdConstDeclSt -> !methodOnly && !static && results.add(GdConstCompletionUtil.lookup(it))
-                is GdClassVarDeclTl -> !methodOnly && !static && results.add(GdClassVarCompletionUtil.lookup(it))
-                is GdConstDeclTl -> !methodOnly && results.add(GdConstCompletionUtil.lookup(it))
-                is GdEnumDeclTl -> !methodOnly && !static && results.addAll(GdEnumCompletionUtil.lookup(it))
                 is GdMethodDeclTl -> {
+                    // TODO constructor to asi bude chtít napovídat...
                     if (it.isStatic == static && !it.isConstructor) {
-                        results.add(GdMethodCompletionUtil.lookup(it))
+                        results.add(GdCompletionUtil.lookup(it))
                     }
                 }
-                is GdParam -> !methodOnly && !static && results.add(GdMethodCompletionUtil.lookup(it))
-                is GdForSt -> !methodOnly && !static && results.add(GdForLoopCompletionUtil.lookup(it))
+
+                is GdConstDeclTl -> {
+                    if (!methodOnly) {
+                        results.add(GdCompletionUtil.lookup(it));
+                    }
+                }
+
+                is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl,
+                is GdParam, is GdForSt, is GdEnumDeclTl -> {
+                    if (!methodOnly && !static) {
+                        results.addAll(GdCompletionUtil.lookups(it));
+                    }
+                }
             }
         };
 
@@ -125,8 +131,6 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                     return element.containingFile;
                 }
 
-                val sdg = parent.firstChild;
-                val sdsdg = parent.firstChild.text;
                 var typed = (parent.firstChild as GdExpr).returnType;
                 if (typed.isEmpty()) {
                     // TODO resolve call/attr expr to get hint

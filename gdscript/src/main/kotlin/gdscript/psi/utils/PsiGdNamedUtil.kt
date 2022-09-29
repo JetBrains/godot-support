@@ -128,7 +128,7 @@ object PsiGdNamedUtil {
         if (withLocalScopes) {
             val local = this.findLocalDecl(element);
             if (local != null) {
-                return local; // TODO tohle rozbije nápovědu
+                return local;
             }
         }
 

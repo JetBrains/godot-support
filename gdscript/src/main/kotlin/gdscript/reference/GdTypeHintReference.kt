@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
-import gdscript.completion.utils.GdClassNameCompletionUtil
+import gdscript.completion.utils.GdCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdNamedElement
 import gdscript.psi.utils.PsiGdClassUtil
@@ -36,7 +36,7 @@ class GdTypeHintReference : PsiReferenceBase<GdNamedElement> {
 
         return classNames.mapNotNull {
             if (it.classname !== "") {
-                GdClassNameCompletionUtil.toLookup(it);
+                GdCompletionUtil.lookup(it);
             } else {
                 null
             }

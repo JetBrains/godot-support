@@ -17,8 +17,16 @@ import com.intellij.psi.tree.TokenSet
 import gdscript.parser.GdParser
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
+import tscn.TscnLanguage
 
 class GdParserDefinition : ParserDefinition {
+
+    companion object {
+        val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
+        val COMMENTS = TokenSet.create(GdTypes.COMMENT)
+        val STRING_LITERALS = TokenSet.create(GdTypes.STRING)
+        val FILE = IStubFileElementType<PsiFileStub<GdFile>>(TscnLanguage.INSTANCE);
+    }
 
     override fun createLexer(project: Project): Lexer {
         return GdLexerAdapter()
@@ -54,14 +62,6 @@ class GdParserDefinition : ParserDefinition {
 
     override fun createElement(node: ASTNode): PsiElement {
         return GdTypes.Factory.createElement(node)
-    }
-
-    companion object {
-        val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
-        val COMMENTS = TokenSet.create(GdTypes.COMMENT)
-        val STRING_LITERALS = TokenSet.create(GdTypes.STRING)
-        // TODO dořešit generický typ
-        val FILE: IStubFileElementType<*> = IStubFileElementType<PsiFileStub<*>>(GdLanguage.INSTANCE)
     }
 
 }

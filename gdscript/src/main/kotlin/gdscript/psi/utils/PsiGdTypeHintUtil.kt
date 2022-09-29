@@ -14,7 +14,6 @@ object PsiGdTypeHintUtil {
             element.node.replaceChild(keyNode, id.node)
         } else {
             // TODO built-in type
-
         }
 
         return element

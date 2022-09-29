@@ -9,6 +9,7 @@ import com.intellij.patterns.PsiJavaPatterns
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiKeyword
 
+// TODO smazat ??
 class GdAnnotationTypedHandler : TypedHandlerDelegate() {
 
     // TODO smazat
