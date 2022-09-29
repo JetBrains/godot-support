@@ -1,6 +1,7 @@
 package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
@@ -199,6 +200,13 @@ object PsiGdExprUtil {
         }
 
         return null;
+    }
+
+    fun getAttrOrCallParentFile(element: PsiElement): PsiFile? {
+        val className = getAttrOrCallParentClass(element) ?: return null;
+        // TODO zkontrolovat, jestli se nevrací Array[String]
+        return GdClassNamingIndex.get(className, element.project, GlobalSearchScope.allScope(element.project))
+            .firstOrNull()?.containingFile;
     }
 
     private fun fromTyped(typed: String): String {

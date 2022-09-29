@@ -39,13 +39,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        var file = element.containingFile;
-        val fromClass = PsiGdExprUtil.getAttrOrCallParentClass(element);
-        if (fromClass != null) {
-            file = GdClassNamingIndex
-                .get(fromClass, element.project, GlobalSearchScope.allScope(element.project))
-                .firstOrNull()?.containingFile;
-        }
+        val file = PsiGdExprUtil.getAttrOrCallParentFile(element) ?: element.containingFile;
 
         val direct =
             when (val element = PsiGdNamedUtil.findInParent(myElement, includingSelf = true, containingFile = file)) {
@@ -63,33 +57,24 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
         if (direct != null) return direct;
 
         return GdClassNamingIndex
-            .get(myElement.text, myElement.project, GlobalSearchScope.allScope(myElement.project))
+            .get(element.text, element.project, GlobalSearchScope.allScope(element.project))
             .firstOrNull()?.containingFile;
     }
 
     override fun getVariants(): Array<Any> {
         val files: ArrayList<PsiFile> = ArrayList();
         val results = ArrayList<LookupElement>();
-        val static = referencesClassName(myElement);
-
-        // TODO val file = getBaseFile(myElement) ?: return results.toArray();
+        val static = referencesClassName(element);
 
         // TODO zkontrolovat, jestli se nevrací Array[String]
-        var file = myElement.containingFile;
-        val fromClass = PsiGdExprUtil.getAttrOrCallParentClass(myElement);
-        if (fromClass != null) {
-            file = GdClassNamingIndex
-                .get(fromClass, element.project, GlobalSearchScope.allScope(element.project))
-                .firstOrNull()?.containingFile ?: return results.toArray();
-        }
-
-        files.add(file);
+        var file = PsiGdExprUtil.getAttrOrCallParentFile(element);
+        val local = file != null;
+        file = file ?: element.containingFile;
+        files.add(file!!);
         files.addAll(PsiGdNamedUtil.listParents(file).map { it.containingFile });
 
         // TODO je tohle ok?
-        val members =
-            if (fromClass == null) PsiGdNamedUtil.listLocalDecls(myElement)
-            else mutableListOf();
+        val members = if (local) PsiGdNamedUtil.listLocalDecls(element) else mutableListOf();
         members.addAll(files.flatMap { PsiGdFileUtil.listMembers(it) });
 
         members.forEach {
