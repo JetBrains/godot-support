@@ -1,13 +1,9 @@
-package gdscript.completion.util
+package gdscript.completion.utils
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.openapi.util.IconLoader
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.util.IconUtil
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.GdClassNaming
-import java.io.File
 
 object GdClassNameCompletionUtil {
 

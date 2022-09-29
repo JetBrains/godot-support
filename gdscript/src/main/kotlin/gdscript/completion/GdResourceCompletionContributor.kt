@@ -4,13 +4,10 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PsiJavaPatterns.psiElement
-import com.intellij.psi.search.FilenameIndex
-import gdscript.GdFileType
-import gdscript.completion.util.GdFileVisitor
-import gdscript.completion.util.GdRefIdCompletionUtil
-import gdscript.completion.util.GdResourceCompletionUtil
+import gdscript.completion.utils.GdFileVisitor
+import gdscript.completion.utils.GdRefIdCompletionUtil
+import gdscript.completion.utils.GdResourceCompletionUtil
 import gdscript.psi.GdFile
-import gdscript.psi.GdRefIdNm
 import gdscript.psi.GdTypes
 import java.io.File
 import java.nio.file.Files

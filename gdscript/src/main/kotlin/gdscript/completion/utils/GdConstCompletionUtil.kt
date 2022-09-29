@@ -1,4 +1,4 @@
-package gdscript.completion.util
+package gdscript.completion.utils
 
 import com.intellij.codeInsight.lookup.LookupElement
 import gdscript.GdIcon

@@ -11,7 +11,7 @@ import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdIcon
 import gdscript.GdKeywords
-import gdscript.completion.util.GdClassVarCompletionUtil
+import gdscript.completion.utils.GdClassVarCompletionUtil
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdTypes
 

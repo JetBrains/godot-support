@@ -1,4 +1,4 @@
-package gdscript.completion.util
+package gdscript.completion.utils
 
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
@@ -6,7 +6,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.completion.GdLookup
 import gdscript.psi.utils.PsiGdFileUtil
-import gdscript.utils.StringUtils
 import gdscript.utils.StringUtils.camelToSnakeCase
 import tscn.index.impl.TscnScriptIndex
 import tscn.psi.TscnNodeHeader

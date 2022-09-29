@@ -3,7 +3,7 @@ package gdscript.completion
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
-import gdscript.completion.util.GdRefIdCompletionUtil
+import gdscript.completion.utils.GdRefIdCompletionUtil
 import gdscript.reference.GdClassMemberReference
 import gdscript.reference.GdTypeHintReference
 

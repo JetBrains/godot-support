@@ -3,19 +3,13 @@ package gdscript.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.PsiJavaPatterns
 import com.intellij.patterns.PsiJavaPatterns.psiElement
 import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
-import gdscript.completion.util.*
+import gdscript.completion.utils.*
 import gdscript.psi.*
 import gdscript.psi.utils.PsiGdMethodDeclUtil
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
 
 class GdRootContributor : CompletionContributor() {
 

@@ -1,4 +1,4 @@
-package gdscript.completion.util
+package gdscript.completion.utils
 
 import java.io.IOException
 import java.nio.file.FileVisitResult

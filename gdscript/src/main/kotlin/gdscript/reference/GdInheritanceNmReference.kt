@@ -4,7 +4,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
-import gdscript.completion.util.GdClassNameCompletionUtil
+import gdscript.completion.utils.GdClassNameCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdInheritanceIdNmi
 import gdscript.psi.utils.PsiGdClassUtil

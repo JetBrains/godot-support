@@ -8,7 +8,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
-import gdscript.completion.util.*
+import gdscript.completion.utils.*
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.psi.utils.PsiGdExprUtil

@@ -4,11 +4,9 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PsiJavaPatterns.psiElement
-import gdscript.completion.util.GdLiteralCompletionUtil
-import gdscript.completion.util.GdRefIdCompletionUtil
-import gdscript.psi.GdRefIdNm
+import gdscript.completion.utils.GdLiteralCompletionUtil
+import gdscript.completion.utils.GdRefIdCompletionUtil
 import gdscript.psi.GdTyped
-import gdscript.psi.GdTypes
 
 class GdTypeHintCompletionContributor : CompletionContributor() {
 
