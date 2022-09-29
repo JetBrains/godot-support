@@ -1,6 +1,7 @@
 package gdscript.codeInsight
 
 import com.intellij.lang.documentation.AbstractDocumentationProvider
+import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import gdscript.index.impl.GdClassNamingIndex
@@ -52,6 +53,13 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
                 .replace("[/b]", "</strong>")
                 .replace("[code]", "<i>")
                 .replace("[/code]", "</i>")
+                .replace("[codeblocks]", DocumentationMarkup.DEFINITION_START)
+                .replace("[/codeblocks]", DocumentationMarkup.DEFINITION_END)
+
+                .replace("[gdscript]", "${DocumentationMarkup.CONTENT_START}<strong>GdScript</strong>")
+                .replace("[csharp]", "${DocumentationMarkup.CONTENT_START}<strong>C#</strong>")
+                .replace("[/gdscript]", DocumentationMarkup.CONTENT_END)
+                .replace("[/csharp]", DocumentationMarkup.CONTENT_END)
 
             sb.append(line);
             sb.append("<br />");

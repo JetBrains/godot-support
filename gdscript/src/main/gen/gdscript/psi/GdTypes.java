@@ -18,12 +18,14 @@ public interface GdTypes {
   IElementType ANNOTATION_TL = new GdElementType("ANNOTATION_TL");
   IElementType ARG_LIST = new GdElementType("ARG_LIST");
   IElementType ARRAY_DECL = new GdElementType("ARRAY_DECL");
+  IElementType ARRAY_PATTERN = new GdElementType("ARRAY_PATTERN");
   IElementType ARR_EX = new GdElementType("ARR_EX");
   IElementType ASSERT_ST = new GdElementType("ASSERT_ST");
   IElementType ASSIGN_ST = new GdElementType("ASSIGN_ST");
   IElementType ASSIGN_TYPED = new GdElementType("ASSIGN_TYPED");
   IElementType ATTRIBUTE_EX = new GdElementType("ATTRIBUTE_EX");
   IElementType AWAIT_ST = new GdElementType("AWAIT_ST");
+  IElementType BINDING_PATTERN = new GdElementType("BINDING_PATTERN");
   IElementType BIT_AND_EX = new GdElementType("BIT_AND_EX");
   IElementType BIT_NOT_EX = new GdElementType("BIT_NOT_EX");
   IElementType BUILT_IN_TYPE = new GdElementType("BUILT_IN_TYPE");
@@ -38,6 +40,7 @@ public interface GdTypes {
   IElementType CONST_DECL_TL = GdConstDeclElementType.getInstance("CONST_DECL_TL");
   IElementType CONST_ID_NMI = new GdElementType("CONST_ID_NMI");
   IElementType DICT_DECL = new GdElementType("DICT_DECL");
+  IElementType DICT_PATTERN = new GdElementType("DICT_PATTERN");
   IElementType END_STMT = new GdElementType("END_STMT");
   IElementType ENUM_DECL_NMI = new GdElementType("ENUM_DECL_NMI");
   IElementType ENUM_DECL_TL = GdEnumDeclElementType.getInstance("ENUM_DECL_TL");
@@ -57,8 +60,10 @@ public interface GdTypes {
   IElementType IS_EX = new GdElementType("IS_EX");
   IElementType IS_TYPED = new GdElementType("IS_TYPED");
   IElementType KEY_VALUE = new GdElementType("KEY_VALUE");
+  IElementType KEY_VALUE_PATTERN = new GdElementType("KEY_VALUE_PATTERN");
   IElementType LITERAL_EX = new GdElementType("LITERAL_EX");
   IElementType LOGIC_EX = new GdElementType("LOGIC_EX");
+  IElementType MATCH_BLOCK = new GdElementType("MATCH_BLOCK");
   IElementType MATCH_ST = new GdElementType("MATCH_ST");
   IElementType METHOD_DECL_TL = GdMethodDeclElementType.getInstance("METHOD_DECL_TL");
   IElementType METHOD_ID_NMI = new GdElementType("METHOD_ID_NMI");
@@ -69,6 +74,8 @@ public interface GdTypes {
   IElementType PARAM_LIST = new GdElementType("PARAM_LIST");
   IElementType PARENT_METHOD_CALL = new GdElementType("PARENT_METHOD_CALL");
   IElementType PARENT_ST = new GdElementType("PARENT_ST");
+  IElementType PATTERN = new GdElementType("PATTERN");
+  IElementType PATTERN_LIST = new GdElementType("PATTERN_LIST");
   IElementType PLUS_EX = new GdElementType("PLUS_EX");
   IElementType PLUS_MINUS_EX = new GdElementType("PLUS_MINUS_EX");
   IElementType PLUS_MINUS_PRE_EX = new GdElementType("PLUS_MINUS_PRE_EX");
@@ -119,6 +126,7 @@ public interface GdTypes {
   IElementType DEDENT = new GdTokenType("DEDENT");
   IElementType DIV = new GdTokenType("DIV");
   IElementType DOT = new GdTokenType("DOT");
+  IElementType DOTDOT = new GdTokenType("DOTDOT");
   IElementType ELIF = new GdTokenType("ELIF");
   IElementType ELSE = new GdTokenType("ELSE");
   IElementType ENUM = new GdTokenType("ENUM");
@@ -176,6 +184,7 @@ public interface GdTypes {
   IElementType TEST_OPERATOR = new GdTokenType("TEST_OPERATOR");
   IElementType TOOL = new GdTokenType("TOOL");
   IElementType TRUE = new GdTokenType("TRUE");
+  IElementType UNDER = new GdTokenType("UNDER");
   IElementType VAR = new GdTokenType("VAR");
   IElementType VOID = new GdTokenType("VOID");
   IElementType WHILE = new GdTokenType("WHILE");
@@ -192,6 +201,9 @@ public interface GdTypes {
       }
       else if (type == ARRAY_DECL) {
         return new GdArrayDeclImpl(node);
+      }
+      else if (type == ARRAY_PATTERN) {
+        return new GdArrayPatternImpl(node);
       }
       else if (type == ARR_EX) {
         return new GdArrExImpl(node);
@@ -210,6 +222,9 @@ public interface GdTypes {
       }
       else if (type == AWAIT_ST) {
         return new GdAwaitStImpl(node);
+      }
+      else if (type == BINDING_PATTERN) {
+        return new GdBindingPatternImpl(node);
       }
       else if (type == BIT_AND_EX) {
         return new GdBitAndExImpl(node);
@@ -252,6 +267,9 @@ public interface GdTypes {
       }
       else if (type == DICT_DECL) {
         return new GdDictDeclImpl(node);
+      }
+      else if (type == DICT_PATTERN) {
+        return new GdDictPatternImpl(node);
       }
       else if (type == END_STMT) {
         return new GdEndStmtImpl(node);
@@ -307,11 +325,17 @@ public interface GdTypes {
       else if (type == KEY_VALUE) {
         return new GdKeyValueImpl(node);
       }
+      else if (type == KEY_VALUE_PATTERN) {
+        return new GdKeyValuePatternImpl(node);
+      }
       else if (type == LITERAL_EX) {
         return new GdLiteralExImpl(node);
       }
       else if (type == LOGIC_EX) {
         return new GdLogicExImpl(node);
+      }
+      else if (type == MATCH_BLOCK) {
+        return new GdMatchBlockImpl(node);
       }
       else if (type == MATCH_ST) {
         return new GdMatchStImpl(node);
@@ -342,6 +366,12 @@ public interface GdTypes {
       }
       else if (type == PARENT_ST) {
         return new GdParentStImpl(node);
+      }
+      else if (type == PATTERN) {
+        return new GdPatternImpl(node);
+      }
+      else if (type == PATTERN_LIST) {
+        return new GdPatternListImpl(node);
       }
       else if (type == PLUS_EX) {
         return new GdPlusExImpl(node);

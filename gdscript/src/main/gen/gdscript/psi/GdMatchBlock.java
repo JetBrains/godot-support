@@ -5,9 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdMatchSt extends GdStmt {
+public interface GdMatchBlock extends PsiElement {
 
-  @Nullable
-  GdMatchBlock getMatchBlock();
+  @NotNull
+  List<GdPatternList> getPatternListList();
+
+  @NotNull
+  List<GdStmtOrSuite> getStmtOrSuiteList();
 
 }

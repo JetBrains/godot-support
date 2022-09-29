@@ -23,6 +23,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitArrayPattern(@NotNull GdArrayPattern o) {
+    visitPsiElement(o);
+  }
+
   public void visitAssertSt(@NotNull GdAssertSt o) {
     visitStmt(o);
   }
@@ -41,6 +45,10 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitAwaitSt(@NotNull GdAwaitSt o) {
     visitStmt(o);
+  }
+
+  public void visitBindingPattern(@NotNull GdBindingPattern o) {
+    visitPsiElement(o);
   }
 
   public void visitBitAndEx(@NotNull GdBitAndEx o) {
@@ -96,6 +104,10 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitDictDecl(@NotNull GdDictDecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitDictPattern(@NotNull GdDictPattern o) {
     visitPsiElement(o);
   }
 
@@ -175,12 +187,20 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitKeyValuePattern(@NotNull GdKeyValuePattern o) {
+    visitPsiElement(o);
+  }
+
   public void visitLiteralEx(@NotNull GdLiteralEx o) {
     visitExpr(o);
   }
 
   public void visitLogicEx(@NotNull GdLogicEx o) {
     visitExpr(o);
+  }
+
+  public void visitMatchBlock(@NotNull GdMatchBlock o) {
+    visitPsiElement(o);
   }
 
   public void visitMatchSt(@NotNull GdMatchSt o) {
@@ -221,6 +241,14 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitParentSt(@NotNull GdParentSt o) {
     visitStmt(o);
+  }
+
+  public void visitPattern(@NotNull GdPattern o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPatternList(@NotNull GdPatternList o) {
+    visitPsiElement(o);
   }
 
   public void visitPlusMinusPreEx(@NotNull GdPlusMinusPreEx o) {

@@ -231,7 +231,7 @@ ANY = .+
     "while"        { return dedentRoot(GdTypes.WHILE); }
     "for"          { return dedentRoot(GdTypes.FOR); }
     "in"           { return dedentRoot(GdTypes.IN); }
-    "match"        { return dedentRoot(GdTypes.MATCH); }
+    "match"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.MATCH); }
     "assert"       { return dedentRoot(GdTypes.ASSERT); }
     "await"        { return dedentRoot(GdTypes.AWAIT); }
     "preload"      { return dedentRoot(GdTypes.PRELOAD); }
@@ -270,6 +270,8 @@ ANY = .+
     "or"           { return dedentRoot(GdTypes.OROR); }
     "^"            { return dedentRoot(GdTypes.XOR); }
     "~"            { return dedentRoot(GdTypes.NOT); }
+    "_"            { return dedentRoot(GdTypes.UNDER); }
+    ".."           { return dedentRoot(GdTypes.DOTDOT); }
 
     {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
     {STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }
@@ -300,7 +302,8 @@ ANY = .+
     {INDENT}  {
         if (!ignoreIndent && yycolumn == 0) {
             int spaces = yytext().length();
-            if (spaces > indent && !indented) {
+//            if (spaces > indent && !indented) {
+            if (spaces > indent) {
                 indentSizes.push(spaces - indent);
                 indent = spaces;
                 //yypushback(yylength());
@@ -339,10 +342,8 @@ ANY = .+
 //    "class" { return GdTypes.CLASS; }
 //
 
-//    "_" { return GdTypes.UNDER; }
 //
 //    /* Syntax */
 //    "?" { return GdTypes.TERNARY; }
-//    ".." { return GdTypes.DOTDOT; }
 
 [^] { return GdTypes.BAD_CHARACTER; }

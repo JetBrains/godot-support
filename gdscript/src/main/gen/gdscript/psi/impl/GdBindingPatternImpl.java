@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdMatchStImpl extends GdStmtImpl implements GdMatchSt {
+public class GdBindingPatternImpl extends ASTWrapperPsiElement implements GdBindingPattern {
 
-  public GdMatchStImpl(@NotNull ASTNode node) {
+  public GdBindingPatternImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitMatchSt(this);
+    visitor.visitBindingPattern(this);
   }
 
   @Override
@@ -28,9 +28,9 @@ public class GdMatchStImpl extends GdStmtImpl implements GdMatchSt {
   }
 
   @Override
-  @Nullable
-  public GdMatchBlock getMatchBlock() {
-    return PsiTreeUtil.getChildOfType(this, GdMatchBlock.class);
+  @NotNull
+  public GdVarNmi getVarNmi() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi.class));
   }
 
 }

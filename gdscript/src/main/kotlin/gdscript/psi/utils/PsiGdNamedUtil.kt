@@ -63,9 +63,14 @@ object PsiGdNamedUtil {
 
     fun findLocalDecl(
         element: GdNamedElement,
+        containingFile: PsiFile? = null,
     ): PsiElement? {
         val thisName = element.name.orEmpty();
         var parent: PsiElement = element;
+        if (containingFile != null && containingFile != element.containingFile) {
+            parent = containingFile.lastChild;
+        }
+
         while (true) {
             parent = parent.prevSibling ?: parent.parent ?: return null;
             val match = when (parent) {
@@ -115,7 +120,7 @@ object PsiGdNamedUtil {
         val thisName = element.name.orEmpty();
 
         if (withLocalScopes) {
-            val local = this.findLocalDecl(element);
+            val local = this.findLocalDecl(element, containingFile);
             if (local != null) {
                 return local;
             }

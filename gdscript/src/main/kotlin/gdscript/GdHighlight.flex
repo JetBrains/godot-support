@@ -162,6 +162,8 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "or"           { return GdTypes.OROR; }
     "^"            { return GdTypes.XOR; }
     "~"            { return GdTypes.NOT; }
+    "_"            { return GdTypes.UNDER; }
+    ".."           { return GdTypes.DOTDOT; }
 
     {NODE_PATH_LEX} { return GdTypes.NODE_PATH_LEX; }
     {STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }

@@ -94,6 +94,11 @@ Enum
 unique name
 unique value
 
+match -> expression in match pattern must be CONST!! annotátor
+
+abs() je v global (ty nejsou) ale i ve Vector 
+-> více funkcí v jednom scope -> pořešit hinty, annotatároy
+
 Formatter
 
 Run - reuse context not working
