@@ -1,5 +1,7 @@
 resources: onready check
 
+const func ... qualifiers ?? Je to i v xml
+
 TopLevel: innerClass
 syntax: @"Node/Label"
 

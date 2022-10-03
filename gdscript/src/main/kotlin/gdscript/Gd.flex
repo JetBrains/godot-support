@@ -73,7 +73,7 @@ FLIT3 = [0-9]+
 NEW_LINE = [\r\n]
 IGNORE_NEW_LINE = \\[\r\n]
 INDENT = [ \t]+
-ENPTY_LINE = [ \t]+\n
+EMPTY_LINE = [ \t]+\n
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 NUMBER = [0-9][0-9_]*(\.[0-9_]+)?
 HEX_NUMBER = 0x[0-9_a-f]+
@@ -93,13 +93,24 @@ ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 //OPERATOR = "+" | "-" | "*" | "/" | "%" | "^" | "&" | "|"
 //    | "<<" | ">>" | "!" | "&&" | "||"
+ANY = .+
 
 %state AWAIT_NEW_LINE
 %state AWAIT_NEW_LINE_ONCE
 %state AWAIT_ENUM_SEPARATOR
+%state CREATE_INDENT
 %xstate STRING
 
 %%
+
+<CREATE_INDENT> {
+    {ANY} {
+        yybegin(lastState);
+        yypushback(yylength());
+
+        return GdTypes.INDENT;
+    }
+}
 
 <STRING> {
     // Stringers
@@ -284,17 +295,21 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
           return GdTypes.COMMENT;
     }
 
-    {ENPTY_LINE}  { return TokenType.WHITE_SPACE; }
+    {EMPTY_LINE}  { return TokenType.WHITE_SPACE; }
     {INDENT}  {
         if (!ignoreIndent && yycolumn == 0) {
             int spaces = yytext().length();
             if (spaces > indent && !indented) {
                 indentSizes.push(spaces - indent);
                 indent = spaces;
-                yypushback(yylength());
+                //yypushback(yylength());
                 indented = true;
 
-                return GdTypes.INDENT;
+                lastState = yystate();
+                yybegin(CREATE_INDENT);
+
+                // return GdTypes.INDENT;
+                return TokenType.WHITE_SPACE;
             } else if (indent > spaces) {
                 indented = false;
                 dedentSpaces();
