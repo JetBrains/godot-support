@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A boolean comparison operator to be used within the visual shader graph.
 #desc Returns the boolean result of the comparison between [code]INF[/code] or [code]NaN[/code] and a scalar parameter.
 class_name VisualShaderNodeIs

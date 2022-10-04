@@ -1,3 +1,4 @@
+extends Control
 #brief Base node for containers.
 #desc Base node for containers. A [Container] contains other controls and automatically arranges them in a certain way.
 #desc A Control can inherit this to create custom container classes.
@@ -16,12 +17,12 @@ var mouse_filter: int;
 
 #desc Implement to return a list of allowed horizontal [enum Control.SizeFlags] for child nodes. This doesn't technically prevent the usages of any other size flags, if your implementation requires that. This only limits the options available to the user in the inspector dock.
 #desc [b]Note:[/b] Having no size flags is equal to having [constant Control.SIZE_SHRINK_BEGIN]. As such, this value is always implicitly allowed.
-virtual const func _get_allowed_size_flags_horizontal() -> PackedInt32Array:
+func _get_allowed_size_flags_horizontal() -> PackedInt32Array:
 	pass;
 
 #desc Implement to return a list of allowed vertical [enum Control.SizeFlags] for child nodes. This doesn't technically prevent the usages of any other size flags, if your implementation requires that. This only limits the options available to the user in the inspector dock.
 #desc [b]Note:[/b] Having no size flags is equal to having [constant Control.SIZE_SHRINK_BEGIN]. As such, this value is always implicitly allowed.
-virtual const func _get_allowed_size_flags_vertical() -> PackedInt32Array:
+func _get_allowed_size_flags_vertical() -> PackedInt32Array:
 	pass;
 
 #desc Fit a child control in a given rect. This is mainly a helper for creating custom container classes.

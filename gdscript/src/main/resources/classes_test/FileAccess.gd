@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Type to handle file reading and writing operations.
 #desc File type. This is used to permanently store data into the user device's file system and to read from it. This can be used to store game save data or player configuration files, for example.
 #desc Here's a sample on how to write and read from a file:

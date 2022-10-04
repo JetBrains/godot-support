@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Low-level class for creating parsers for [url=https://en.wikipedia.org/wiki/XML]XML[/url] files.
 #desc This class can serve as base to make custom XML parsers. Since XML is a very flexible standard, this interface is low-level so it can be applied to any possible schema.
 class_name XMLParser

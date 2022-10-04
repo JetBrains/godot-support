@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief Audio effect used for recording the sound from an audio bus.
 #desc Allows the user to record the sound from an audio bus. This can include all audio output by Godot when used on the "Master" audio bus.
 #desc Can be used (with an [AudioStreamMicrophone]) to record from a microphone.

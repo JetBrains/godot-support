@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Parameters to be sent to a 3D point physics query.
 #desc This class contains the position and other parameters to be used for [method PhysicsDirectSpaceState3D.intersect_point].
 class_name PhysicsPointQueryParameters3D

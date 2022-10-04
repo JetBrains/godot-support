@@ -1,3 +1,4 @@
+extends ConfirmationDialog
 #brief Godot editor's command palette.
 #desc Object that holds all the available Commands and their shortcuts text. These Commands can be accessed through [b]Editor > Command Palette[/b] menu.
 #desc Command key names use slash delimiters to distinguish sections Example: [code]"example/command1"[/code] then [code]example[/code] will be the section name.

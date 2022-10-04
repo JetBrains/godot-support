@@ -1,3 +1,4 @@
+extends Object
 #brief Server interface for low-level audio access.
 #desc [AudioServer] is a low-level server interface for audio access. It is in charge of creating sample data (playable audio) as well as its playback via a voice interface.
 class_name AudioServer

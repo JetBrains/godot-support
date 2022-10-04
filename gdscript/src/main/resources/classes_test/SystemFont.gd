@@ -1,3 +1,4 @@
+extends Font
 #brief Font loaded from a system font.
 #brief [b]Note:[/b] This class is implemented on iOS, Linux, macOS and Windows, on other platforms it will fallback to default theme font.
 #desc [SystemFont] loads a font from a system font with the first matching name from [member font_names].

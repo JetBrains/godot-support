@@ -1,3 +1,4 @@
+extends Node2D
 #brief A parallax scrolling layer to be used with [ParallaxBackground].
 #desc A ParallaxLayer must be the child of a [ParallaxBackground] node. Each ParallaxLayer can be set to move at different speeds relative to the camera movement or the [member ParallaxBackground.scroll_offset] value.
 #desc This node's children will be affected by its scroll offset.

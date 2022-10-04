@@ -1,3 +1,4 @@
+extends CollisionObject3D
 #brief 3D area for detection and physics and audio influence.
 #desc 3D area that detects [CollisionObject3D] nodes overlapping, entering, or exiting. Can also alter or override local physics parameters (gravity, damping) and route audio to custom audio buses.
 #desc To give the area its shape, add a [CollisionShape3D] or a [CollisionPolygon3D] node as a [i]direct[/i] child (or add multiple such nodes as direct children) of the area.

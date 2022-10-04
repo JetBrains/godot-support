@@ -1,3 +1,4 @@
+extends Node
 #brief Used by the editor to extend its functionality.
 #desc Plugins are used by the editor to extend functionality. The most common types of plugins are those which edit a given node or resource type, import plugins and export plugins. See also [EditorScript] to add functions to the editor.
 class_name EditorPlugin
@@ -59,28 +60,28 @@ const AFTER_GUI_INPUT_CUSTOM = 2;
 
 #desc This method is called when the editor is about to save the project, switch to another tab, etc. It asks the plugin to apply any pending state changes to ensure consistency.
 #desc This is used, for example, in shader editors to let the plugin know that it must apply the shader code being written by the user to the object.
-virtual func _apply_changes() -> void:
+func _apply_changes() -> void:
 	pass;
 
 #desc This method is called when the editor is about to run the project. The plugin can then perform required operations before the project runs.
 #desc This method must return a boolean. If this method returns [code]false[/code], the project will not run. The run is aborted immediately, so this also prevents all other plugins' [method _build] methods from running.
-virtual func _build() -> bool:
+func _build() -> bool:
 	pass;
 
 #desc Clear all the state and reset the object being edited to zero. This ensures your plugin does not keep editing a currently existing node, or a node from the wrong scene.
-virtual func _clear() -> void:
+func _clear() -> void:
 	pass;
 
 #desc Called by the engine when the user disables the [EditorPlugin] in the Plugin tab of the project settings window.
-virtual func _disable_plugin() -> void:
+func _disable_plugin() -> void:
 	pass;
 
 #desc This function is used for plugins that edit specific object types (nodes or resources). It requests the editor to edit the given object.
-virtual func _edit(object: Variant) -> void:
+func _edit(object: Variant) -> void:
 	pass;
 
 #desc Called by the engine when the user enables the [EditorPlugin] in the Plugin tab of the project settings window.
-virtual func _enable_plugin() -> void:
+func _enable_plugin() -> void:
 	pass;
 
 #desc Called by the engine when the 3D editor's viewport is updated. Use the [code]overlay[/code] [Control] for drawing. You can update the viewport manually by calling [method update_overlays].
@@ -115,12 +116,12 @@ virtual func _enable_plugin() -> void:
 #desc return EditorPlugin.AFTER_GUI_INPUT_PASS;
 #desc [/csharp]
 #desc [/codeblocks]
-virtual func _forward_3d_draw_over_viewport(viewport_control: Control) -> void:
+func _forward_3d_draw_over_viewport(viewport_control: Control) -> void:
 	pass;
 
 #desc This method is the same as [method _forward_3d_draw_over_viewport], except it draws on top of everything. Useful when you need an extra layer that shows over anything else.
 #desc You need to enable calling of this method by using [method set_force_draw_over_forwarding_enabled].
-virtual func _forward_3d_force_draw_over_viewport(viewport_control: Control) -> void:
+func _forward_3d_force_draw_over_viewport(viewport_control: Control) -> void:
 	pass;
 
 #desc Called when there is a root node in the current edited scene, [method _handles] is implemented, and an [InputEvent] happens in the 3D viewport. The return value decides whether the [InputEvent] is consumed or forwarded to other [EditorPlugin]s. See [enum AfterGUIInput] for options. Example:
@@ -153,7 +154,7 @@ virtual func _forward_3d_force_draw_over_viewport(viewport_control: Control) -> 
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual func _forward_3d_gui_input(viewport_camera: Camera3D, event: InputEvent) -> int:
+func _forward_3d_gui_input(viewport_camera: Camera3D, event: InputEvent) -> int:
 	pass;
 
 #desc Called by the engine when the 2D editor's viewport is updated. Use the [code]overlay[/code] [Control] for drawing. You can update the viewport manually by calling [method update_overlays].
@@ -188,12 +189,12 @@ virtual func _forward_3d_gui_input(viewport_camera: Camera3D, event: InputEvent)
 #desc return false;
 #desc [/csharp]
 #desc [/codeblocks]
-virtual func _forward_canvas_draw_over_viewport(viewport_control: Control) -> void:
+func _forward_canvas_draw_over_viewport(viewport_control: Control) -> void:
 	pass;
 
 #desc This method is the same as [method _forward_canvas_draw_over_viewport], except it draws on top of everything. Useful when you need an extra layer that shows over anything else.
 #desc You need to enable calling of this method by using [method set_force_draw_over_forwarding_enabled].
-virtual func _forward_canvas_force_draw_over_viewport(viewport_control: Control) -> void:
+func _forward_canvas_force_draw_over_viewport(viewport_control: Control) -> void:
 	pass;
 
 #desc Called when there is a root node in the current edited scene, [method _handles] is implemented and an [InputEvent] happens in the 2D viewport. Intercepts the [InputEvent], if [code]return true[/code] [EditorPlugin] consumes the [param event], otherwise forwards [param event] to other Editor classes. Example:
@@ -231,11 +232,11 @@ virtual func _forward_canvas_force_draw_over_viewport(viewport_control: Control)
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual func _forward_canvas_gui_input(event: InputEvent) -> bool:
+func _forward_canvas_gui_input(event: InputEvent) -> bool:
 	pass;
 
 #desc This is for editors that edit script-based objects. You can return a list of breakpoints in the format ([code]script:line[/code]), for example: [code]res://path_to_script.gd:25[/code].
-virtual const func _get_breakpoints() -> PackedStringArray:
+func _get_breakpoints() -> PackedStringArray:
 	pass;
 
 #desc Override this method in your plugin to return a [Texture2D] in order to give it an icon.
@@ -259,12 +260,12 @@ virtual const func _get_breakpoints() -> PackedStringArray:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual const func _get_plugin_icon() -> Texture2D:
+func _get_plugin_icon() -> Texture2D:
 	pass;
 
 #desc Override this method in your plugin to provide the name of the plugin when displayed in the Godot editor.
 #desc For main screen plugins, this appears at the top of the screen, to the right of the "2D", "3D", "Script", and "AssetLib" buttons.
-virtual const func _get_plugin_name() -> String:
+func _get_plugin_name() -> String:
 	pass;
 
 #desc Override this method to provide a state data you want to be saved, like view position, grid settings, folding, etc. This is used when saving the scene (so state is kept when opening it again) and for switching tabs (so state can be restored when the tab returns). This data is automatically saved for each scene in an [code]editstate[/code] file in the editor metadata folder. If you want to store global (scene-independent) editor data for your plugin, you can use [method _get_window_layout] instead.
@@ -276,7 +277,7 @@ virtual const func _get_plugin_name() -> String:
 #desc var state = {"zoom": zoom, "preferred_color": my_color}
 #desc return state
 #desc [/codeblock]
-virtual const func _get_state() -> Dictionary:
+func _get_state() -> Dictionary:
 	pass;
 
 #desc Override this method to provide the GUI layout of the plugin or any other data you want to be stored. This is used to save the project's editor layout when [method queue_save_layout] is called or the editor layout was changed (for example changing the position of a dock). The data is stored in the [code]editor_layout.cfg[/code] file in the editor metadata directory.
@@ -286,11 +287,11 @@ virtual const func _get_state() -> Dictionary:
 #desc configuration.set_value("MyPlugin", "window_position", $Window.position)
 #desc configuration.set_value("MyPlugin", "icon_color", $Icon.modulate)
 #desc [/codeblock]
-virtual func _get_window_layout(configuration: ConfigFile) -> void:
+func _get_window_layout(configuration: ConfigFile) -> void:
 	pass;
 
 #desc Implement this function if your plugin edits a specific type of object (Resource or Node). If you return [code]true[/code], then you will get the functions [method _edit] and [method _make_visible] called when the editor requests them. If you have declared the methods [method _forward_canvas_gui_input] and [method _forward_3d_gui_input] these will be called too.
-virtual const func _handles(object: Variant) -> bool:
+func _handles(object: Variant) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this is a main screen editor plugin (it goes in the workspace selector together with [b]2D[/b], [b]3D[/b], [b]Script[/b] and [b]AssetLib[/b]).
@@ -316,16 +317,16 @@ virtual const func _handles(object: Variant) -> bool:
 #desc func _get_plugin_icon():
 #desc return get_editor_interface().get_base_control().get_theme_icon("Node", "EditorIcons")
 #desc [/codeblock]
-virtual const func _has_main_screen() -> bool:
+func _has_main_screen() -> bool:
 	pass;
 
 #desc This function will be called when the editor is requested to become visible. It is used for plugins that edit a specific object type.
 #desc Remember that you have to manage the visibility of all your editor controls manually.
-virtual func _make_visible(visible: bool) -> void:
+func _make_visible(visible: bool) -> void:
 	pass;
 
 #desc This method is called after the editor saves the project or when it's closed. It asks the plugin to save edited external scenes/resources.
-virtual func _save_external_data() -> void:
+func _save_external_data() -> void:
 	pass;
 
 #desc Restore the state saved by [method _get_state]. This method is called when the current scene tab is changed in the editor.
@@ -335,7 +336,7 @@ virtual func _save_external_data() -> void:
 #desc zoom = data.get("zoom", 1.0)
 #desc preferred_color = data.get("my_color", Color.white)
 #desc [/codeblock]
-virtual func _set_state(state: Dictionary) -> void:
+func _set_state(state: Dictionary) -> void:
 	pass;
 
 #desc Restore the plugin GUI layout and data saved by [method _get_window_layout]. This method is called for every plugin on editor startup. Use the provided [param configuration] file to read your saved data.
@@ -344,7 +345,7 @@ virtual func _set_state(state: Dictionary) -> void:
 #desc $Window.position = configuration.get_value("MyPlugin", "window_position", Vector2())
 #desc $Icon.modulate = configuration.get_value("MyPlugin", "icon_color", Color.white)
 #desc [/codeblock]
-virtual func _set_window_layout(configuration: ConfigFile) -> void:
+func _set_window_layout(configuration: ConfigFile) -> void:
 	pass;
 
 #desc Adds a script at [param path] to the Autoload list as [param name].

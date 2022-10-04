@@ -1,3 +1,4 @@
+extends VisualShaderNodeVectorBase
 #brief A vector function to be used within the visual shader graph.
 #desc A visual shader node able to perform different functions using vectors.
 class_name VisualShaderNodeVectorFunc

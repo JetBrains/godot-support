@@ -1,3 +1,4 @@
+extends Occluder3D
 #brief Cuboid shape for use with occlusion culling in [OccluderInstance3D].
 #desc [BoxOccluder3D] stores a cuboid shape that can be used by the engine's occlusion culling system.
 #desc See [OccluderInstance3D]'s documentation for instructions on setting up occlusion culling.

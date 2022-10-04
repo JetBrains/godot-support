@@ -1,3 +1,4 @@
+extends GeometryInstance3D
 #brief 2D sprite node in 3D environment.
 #desc A node that displays 2D texture information in a 3D environment. See also [Sprite3D] where many other properties are defined.
 class_name SpriteBase3D

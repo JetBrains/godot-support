@@ -1,3 +1,4 @@
+extends Material
 #brief A material that uses a custom [Shader] program.
 #desc A material that uses a custom [Shader] program to render either items to screen or process particles. You can create multiple materials for the same shader but configure different values for the uniforms defined in the shader.
 class_name ShaderMaterial

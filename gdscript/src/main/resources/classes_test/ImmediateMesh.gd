@@ -1,3 +1,4 @@
+extends Mesh
 #brief Mesh optimized for creating geometry manually.
 #desc Mesh optimized for creating geometry manually, similar to OpenGL1.x immediate mode.
 class_name ImmediateMesh

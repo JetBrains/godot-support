@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A [Color] operator to be used within the visual shader graph.
 #desc Applies [member operator] to two color inputs.
 class_name VisualShaderNodeColorOp

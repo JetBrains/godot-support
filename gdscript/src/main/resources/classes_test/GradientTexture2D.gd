@@ -1,3 +1,4 @@
+extends Texture2D
 #brief Gradient-filled 2D texture.
 #desc The texture uses a [Gradient] to fill the texture data in 2D space. The gradient is filled according to the specified [member fill] and [member repeat] types using colors obtained from the gradient. The texture does not necessarily represent an exact copy of the gradient, but instead an interpolation of samples obtained from the gradient at fixed steps (see [member width] and [member height]). See also [GradientTexture1D], [CurveTexture] and [CurveXYZTexture].
 class_name GradientTexture2D

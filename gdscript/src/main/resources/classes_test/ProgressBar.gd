@@ -1,3 +1,4 @@
+extends Range
 #brief General-purpose progress bar.
 #desc General-purpose progress bar. Shows fill percentage from right to left.
 class_name ProgressBar

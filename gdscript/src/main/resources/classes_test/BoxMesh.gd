@@ -1,3 +1,4 @@
+extends PrimitiveMesh
 #brief Generate an axis-aligned box [PrimitiveMesh].
 #desc Generate an axis-aligned box [PrimitiveMesh].
 #desc The box's UV layout is arranged in a 3×2 layout that allows texturing each face individually. To apply the same texture on all faces, change the material's UV property to [code]Vector3(3, 2, 1)[/code].

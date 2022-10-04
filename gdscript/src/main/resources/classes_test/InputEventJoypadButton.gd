@@ -1,3 +1,4 @@
+extends InputEvent
 #brief Input event for gamepad buttons.
 #desc Input event type for gamepad buttons. For gamepad analog sticks and joysticks, see [InputEventJoypadMotion].
 class_name InputEventJoypadButton

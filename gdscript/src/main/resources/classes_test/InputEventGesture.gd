@@ -1,3 +1,4 @@
+extends InputEventWithModifiers
 #brief Base class for touch control gestures.
 class_name InputEventGesture
 

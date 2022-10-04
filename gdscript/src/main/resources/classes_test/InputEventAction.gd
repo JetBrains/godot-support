@@ -1,3 +1,4 @@
+extends InputEvent
 #brief Input event type for actions.
 #desc Contains a generic action which can be targeted from several types of inputs. Actions can be created from the [b]Input Map[/b] tab in the [b]Project > Project Settings[/b] menu. See [method Node._input].
 class_name InputEventAction

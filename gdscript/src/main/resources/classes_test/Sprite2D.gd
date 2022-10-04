@@ -1,3 +1,4 @@
+extends Node2D
 #brief General-purpose sprite node.
 #desc A node that displays a 2D texture. The texture displayed can be a region from a larger atlas texture, or a frame from a sprite sheet animation.
 class_name Sprite2D

@@ -1,3 +1,4 @@
+extends GPUParticlesCollision3D
 #brief Baked signed distance field 3D particle attractor affecting [GPUParticles3D] nodes.
 #desc Baked signed distance field 3D particle attractor affecting [GPUParticles3D] nodes.
 #desc Signed distance fields (SDF) allow for efficiently representing approximate collision shapes for convex and concave objects of any shape. This is more flexible than [GPUParticlesCollisionHeightField3D], but it requires a baking step.

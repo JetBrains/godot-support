@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Imports scenes from third-parties' 3D files.
 #desc [EditorSceneFormatImporter] allows to define an importer script for a third-party 3D format.
 #desc To use [EditorSceneFormatImporter], register it using the [method EditorPlugin.add_scene_format_importer_plugin] method first.
@@ -18,19 +19,19 @@ const IMPORT_DISCARD_MESHES_AND_MATERIALS = 32;
 
 
 
-virtual const func _get_extensions() -> PackedStringArray:
+func _get_extensions() -> PackedStringArray:
 	pass;
 
-virtual const func _get_import_flags() -> int:
+func _get_import_flags() -> int:
 	pass;
 
-virtual func _get_import_options(path: String) -> void:
+func _get_import_options(path: String) -> void:
 	pass;
 
-virtual const func _get_option_visibility(path: String, for_animation: bool, option: String) -> Variant:
+func _get_option_visibility(path: String, for_animation: bool, option: String) -> Variant:
 	pass;
 
-virtual func _import_scene(path: String, flags: int, options: Dictionary, bake_fps: int) -> Object:
+func _import_scene(path: String, flags: int, options: Dictionary, bake_fps: int) -> Object:
 	pass;
 
 

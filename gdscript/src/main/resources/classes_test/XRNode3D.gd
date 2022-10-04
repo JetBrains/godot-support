@@ -1,3 +1,4 @@
+extends Node3D
 #brief A spatial node that has its position automatically updated by the [XRServer].
 #desc This node can be bound to a specific pose of a [XRPositionalTracker] and will automatically have its [member Node3D.transform] updated by the [XRServer]. Nodes of this type must be added as children of the [XROrigin3D] node.
 class_name XRNode3D

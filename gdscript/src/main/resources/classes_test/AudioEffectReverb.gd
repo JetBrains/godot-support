@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief Adds a reverberation audio effect to an Audio bus.
 #desc Simulates the sound of acoustic environments such as rooms, concert halls, caverns, or an open spaces.
 class_name AudioEffectReverb

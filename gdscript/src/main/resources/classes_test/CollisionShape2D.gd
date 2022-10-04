@@ -1,3 +1,4 @@
+extends Node2D
 #brief Node that represents collision shape data in 2D space.
 #desc Editor facility for creating and editing collision shapes in 2D space. Set the [member shape] property to configure the shape. [b]IMPORTANT[/b]: this is an Editor-only helper to create shapes, use [method CollisionObject2D.shape_owner_get_shape] to get the actual shape.
 #desc You can use this node to represent all sorts of collision shapes, for example, add this to an [Area2D] to give it a detection shape, or add it to a [PhysicsBody2D] to create a solid object.

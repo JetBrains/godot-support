@@ -1,3 +1,4 @@
+extends Node2D
 #brief Base node for all joint constraints in 2D physics.
 #desc Base node for all joint constraints in 2D physics. Joints take 2 bodies and apply a custom constraint.
 class_name Joint2D

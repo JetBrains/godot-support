@@ -1,3 +1,4 @@
+extends Object
 #brief Operating System functions.
 #desc Operating System functions. OS wraps the most common functionality to communicate with the host operating system, such as the clipboard, video driver, date and time, timers, environment variables, execution of binaries, command line, etc.
 class_name OS

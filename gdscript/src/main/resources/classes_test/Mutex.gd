@@ -1,3 +1,4 @@
+extends RefCounted
 #brief A synchronization mutex (mutual exclusion).
 #desc A synchronization mutex (mutual exclusion). This is used to synchronize multiple [Thread]s, and is equivalent to a binary [Semaphore]. It guarantees that only one thread can ever acquire the lock at a time. A mutex can be used to protect a critical section; however, be careful to avoid deadlocks.
 class_name Mutex

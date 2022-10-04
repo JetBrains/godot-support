@@ -1,3 +1,4 @@
+extends Node3D
 #brief A node that will attach to a bone.
 #desc This node will allow you to select a bone for this node to attach to. The BoneAttachment3D node can copy the transform of the select bone, or can override the transform of the selected bone.
 #desc The BoneAttachment3D node must either be a child of a [Skeleton3D] node or be given an external [Skeleton3D] to use in order to function properly.

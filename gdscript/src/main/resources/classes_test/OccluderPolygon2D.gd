@@ -1,3 +1,4 @@
+extends Resource
 #brief Defines a 2D polygon for LightOccluder2D.
 #desc Editor facility that helps you draw a 2D polygon used as resource for [LightOccluder2D].
 class_name OccluderPolygon2D

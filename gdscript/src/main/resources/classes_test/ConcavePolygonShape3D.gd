@@ -1,3 +1,4 @@
+extends Shape3D
 #brief Concave polygon shape resource (also called "trimesh") for 3D physics.
 #desc 3D concave polygon shape resource (also called "trimesh") to be added as a [i]direct[/i] child of a [PhysicsBody3D] or [Area3D] using a [CollisionShape3D] node. This shape is created by feeding a list of triangles. Despite its name, [ConcavePolygonShape3D] can also store convex polygon shapes. However, unlike [ConvexPolygonShape3D], [ConcavePolygonShape3D] is [i]not[/i] limited to storing convex shapes exclusively.
 #desc [b]Note:[/b] When used for collision, [ConcavePolygonShape3D] is intended to work with static [PhysicsBody3D] nodes like [StaticBody3D] and will not work with [CharacterBody3D] or [RigidBody3D] with a mode other than Static.

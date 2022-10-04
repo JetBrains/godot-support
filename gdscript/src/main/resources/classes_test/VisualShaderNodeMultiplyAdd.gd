@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Performs a fused multiply-add operation within the visual shader graph.
 #desc Uses three operands to compute [code](a * b + c)[/code] expression.
 class_name VisualShaderNodeMultiplyAdd

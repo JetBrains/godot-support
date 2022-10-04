@@ -1,3 +1,4 @@
+extends Container
 #brief Simple margin container.
 #desc Adds a top, left, bottom, and right margin to all [Control] nodes that are direct children of the container. To control the [MarginContainer]'s margin, use the [code]margin_*[/code] theme properties listed below.
 #desc [b]Note:[/b] Be careful, [Control] margin values are different from the constant margin values. If you want to change the custom margin values of the [MarginContainer] by code, you should use the following examples:

@@ -1,3 +1,4 @@
+extends Tweener
 #brief Interpolates an [Object]'s property over time.
 #desc [PropertyTweener] is used to interpolate a property in an object. See [method Tween.tween_property] for more usage information.
 #desc [b]Note:[/b] [method Tween.tween_property] is the only correct way to create [PropertyTweener]. Any [PropertyTweener] created manually will not function correctly.

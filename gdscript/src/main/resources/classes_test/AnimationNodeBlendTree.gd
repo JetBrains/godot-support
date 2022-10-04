@@ -1,3 +1,4 @@
+extends AnimationRootNode
 #brief [AnimationTree] node resource that contains many blend type nodes.
 #desc This node may contain a sub-tree of any other blend type nodes, such as [AnimationNodeTransition], [AnimationNodeBlend2], [AnimationNodeBlend3], [AnimationNodeOneShot], etc. This is one of the most commonly used roots.
 #desc An [AnimationNodeOutput] node named [code]output[/code] is created by default.

@@ -1,3 +1,4 @@
+extends AnimationRootNode
 #brief Blends linearly between two of any number of [AnimationNode] of any type placed on a virtual axis.
 #desc A resource to add to an [AnimationNodeBlendTree].
 #desc This is a virtual axis on which you can add any type of [AnimationNode] using [method add_blend_point].

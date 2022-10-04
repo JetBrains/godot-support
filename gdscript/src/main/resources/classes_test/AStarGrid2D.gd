@@ -1,3 +1,4 @@
+extends RefCounted
 #brief A* (or "A-Star") pathfinding tailored to find the shortest paths on 2D grids.
 #desc Compared to [AStar2D] you don't need to manually create points or connect them together. It also supports multiple type of heuristics and modes for diagonal movement. This class also provides a jumping mode which is faster to calculate than without it in the [AStar2D] class.
 #desc In contrast to [AStar2D], you only need set the [member size] of the grid, optionally set the [member cell_size] and then call the [method update] method:
@@ -95,12 +96,12 @@ var size: Vector2i;
 
 #desc Called when computing the cost between two connected points.
 #desc Note that this function is hidden in the default [code]AStarGrid2D[/code] class.
-virtual const func _compute_cost(from_id: Vector2i, to_id: Vector2i) -> float:
+func _compute_cost(from_id: Vector2i, to_id: Vector2i) -> float:
 	pass;
 
 #desc Called when estimating the cost between a point and the path's ending point.
 #desc Note that this function is hidden in the default [code]AStarGrid2D[/code] class.
-virtual const func _estimate_cost(from_id: Vector2i, to_id: Vector2i) -> float:
+func _estimate_cost(from_id: Vector2i, to_id: Vector2i) -> float:
 	pass;
 
 #desc Clears the grid and sets the [member size] to [constant Vector2i.ZERO].

@@ -1,3 +1,4 @@
+extends Control
 #brief Reference frame for GUI.
 #desc A rectangle box that displays only a [member border_color] border color around its rectangle. [ReferenceRect] has no fill [Color]. If you need to display a rectangle filled with a solid color, consider using [ColorRect] instead.
 class_name ReferenceRect

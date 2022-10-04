@@ -1,3 +1,4 @@
+extends InputEventWithModifiers
 #brief Input event type for keyboard events.
 #desc Stores key presses on the keyboard. Supports key presses, key releases and [member echo] events.
 class_name InputEventKey

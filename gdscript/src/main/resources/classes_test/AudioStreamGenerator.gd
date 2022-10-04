@@ -1,3 +1,4 @@
+extends AudioStream
 #brief Audio stream that generates sounds procedurally.
 #desc This audio stream does not play back sounds, but expects a script to generate audio data for it instead. See also [AudioStreamGeneratorPlayback].
 #desc See also [AudioEffectSpectrumAnalyzer] for performing real-time audio spectrum analysis.

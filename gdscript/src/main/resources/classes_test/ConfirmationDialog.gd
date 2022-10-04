@@ -1,3 +1,4 @@
+extends AcceptDialog
 #brief Dialog for confirmation of actions.
 #desc Dialog for confirmation of actions. This dialog inherits from [AcceptDialog], but has by default an OK and Cancel button (in host OS order).
 #desc To get cancel action, you can use:

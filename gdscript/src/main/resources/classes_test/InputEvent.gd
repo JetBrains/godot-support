@@ -1,3 +1,4 @@
+extends Resource
 #brief Generic input event.
 #desc Base class of all sort of input event. See [method Node._input].
 class_name InputEvent

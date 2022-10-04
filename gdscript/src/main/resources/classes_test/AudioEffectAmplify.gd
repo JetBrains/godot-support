@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief Adds an amplifying audio effect to an audio bus.
 #desc Increases or decreases the volume being routed through the audio bus.
 class_name AudioEffectAmplify

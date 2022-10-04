@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Framebuffer pass attachment description.
 #desc This class contains the list of attachment descriptions for a framebuffer pass. Each points with an index to a previously supplied list of texture attachments.
 #desc Multipass framebuffers can optimize some configurations in mobile, on desktop they provide little to no advantage.

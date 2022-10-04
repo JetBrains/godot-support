@@ -1,3 +1,4 @@
+extends Object
 #brief Server interface for low-level 2D navigation access
 #desc NavigationServer2D is the server responsible for all 2D navigation. It handles several objects, namely maps, regions and agents.
 #desc Maps are made up of regions, which are made of navigation polygons. Together, they define the navigable areas in the 2D world.

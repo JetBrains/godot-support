@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A floating-point scalar operator to be used within the visual shader graph.
 #desc Applies [member operator] to two floating-point inputs: [code]a[/code] and [code]b[/code].
 class_name VisualShaderNodeFloatOp

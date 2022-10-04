@@ -1,3 +1,4 @@
+extends GPUParticlesCollision3D
 #brief Real-time heightmap-shaped 3D particle attractor affecting [GPUParticles3D] nodes.
 #desc Real-time heightmap-shaped 3D particle attractor affecting [GPUParticles3D] nodes.
 #desc Heightmap shapes allow for efficiently representing collisions for convex and concave objects with a single "floor" (such as terrain). This is less flexible than [GPUParticlesCollisionSDF3D], but it doesn't require a baking step.

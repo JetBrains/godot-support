@@ -20,9 +20,12 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
 
     override fun generateHoverDoc(element: PsiElement, originalElement: PsiElement?): String? {
         if (originalElement != null && originalElement.parent is PsiNamedElement) {
-            return findDocumentationComment(originalElement.parent as PsiNamedElement, PsiGdCommentUtils.BRIEF_DESCRIPTION)
-                ?: findDocumentationComment(originalElement.parent as PsiNamedElement, PsiGdCommentUtils.DESCRIPTION);
+            val doc = findDocumentationComment(originalElement.parent as PsiNamedElement, PsiGdCommentUtils.BRIEF_DESCRIPTION);
+            if (doc != null && doc.isNotEmpty()) {
+                return doc;
+            }
 
+            return findDocumentationComment(originalElement.parent as PsiNamedElement, PsiGdCommentUtils.DESCRIPTION);
         }
 
         return null;

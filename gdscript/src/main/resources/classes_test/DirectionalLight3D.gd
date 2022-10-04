@@ -1,3 +1,4 @@
+extends Light3D
 #brief Directional light from a distance, as from the Sun.
 #desc A directional light is a type of [Light3D] node that models an infinite number of parallel rays covering the entire scene. It is used for lights with strong intensity that are located far away from the scene to model sunlight or moonlight. The worldspace location of the DirectionalLight3D transform (origin) is ignored. Only the basis is used to determine light direction.
 class_name DirectionalLight3D

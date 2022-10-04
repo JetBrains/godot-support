@@ -1,3 +1,4 @@
+extends VisualInstance3D
 #brief Abstract class for 3D particle collision shapes affecting [GPUParticles3D] nodes.
 #desc Particle collision shapes can be used to make particles stop or bounce against them.
 #desc Particle collision shapes in real-time and can be moved, rotated and scaled during gameplay. Unlike attractors, non-uniform scaling of collision shapes is [i]not[/i] supported.

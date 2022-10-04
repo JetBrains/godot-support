@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Parameters to be sent to a 2D shape physics query.
 #desc This class contains the shape and other parameters for [PhysicsDirectSpaceState2D] intersection/collision queries.
 class_name PhysicsShapeQueryParameters2D

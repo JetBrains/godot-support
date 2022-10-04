@@ -1,3 +1,4 @@
+extends Node2D
 #brief Sprite node that contains multiple textures as frames to play for animation.
 #desc [AnimatedSprite2D] is similar to the [Sprite2D] node, except it carries multiple textures as animation frames. Animations are created using a [SpriteFrames] resource, which allows you to import image files (or a folder containing said files) to provide the animation frames for the sprite. The [SpriteFrames] resource can be configured in the editor via the SpriteFrames bottom panel.
 #desc After setting up [member frames], [method play] may be called. It's also possible to select an [member animation] and toggle [member playing], even within the editor.

@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Performs a 2D texture lookup within the visual shader graph.
 #desc Performs a lookup operation on the provided texture, with support for multiple texture sources to choose from.
 class_name VisualShaderNodeTexture

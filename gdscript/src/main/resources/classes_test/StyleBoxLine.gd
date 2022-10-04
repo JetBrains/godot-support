@@ -1,3 +1,4 @@
+extends StyleBox
 #brief [StyleBox] that displays a single line.
 #desc [StyleBox] that displays a single line of a given color and thickness. It can be used to draw things like separators.
 class_name StyleBoxLine

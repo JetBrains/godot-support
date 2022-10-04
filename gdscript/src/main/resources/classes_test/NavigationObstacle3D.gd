@@ -1,3 +1,4 @@
+extends Node
 #brief 3D Obstacle used in navigation for collision avoidance.
 #desc 3D Obstacle used in navigation for collision avoidance. The obstacle needs navigation data to work correctly. [NavigationObstacle3D] is physics safe.
 #desc [b]Note:[/b] Obstacles are intended as a last resort option for constantly moving objects that cannot be (re)baked to a navigation mesh efficiently.

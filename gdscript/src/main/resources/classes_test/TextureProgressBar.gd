@@ -1,3 +1,4 @@
+extends Range
 #brief Texture-based progress bar. Useful for loading screens and life or stamina bars.
 #desc TextureProgressBar works like [ProgressBar], but uses up to 3 textures instead of Godot's [Theme] resource. It can be used to create horizontal, vertical and radial progress bars.
 class_name TextureProgressBar

@@ -1,3 +1,4 @@
+extends Control
 #brief GraphEdit is a control responsible for displaying and manipulating graph-like data using [GraphNode]s. It provides access to creation, removal, connection, and disconnection of nodes.
 #desc GraphEdit provides tools for creation, manipulation, and display of various graphs. Its main purpose in the engine is to power the visual programming systems, such as visual shaders, but it is also available for use in user projects.
 #desc GraphEdit by itself is only an empty container, representing an infinite grid where [GraphNode]s can be placed. Each [GraphNode] represent a node in the graph, a single unit of data in the connected scheme. GraphEdit, in turn, helps to control various interactions with nodes and between nodes. When the user attempts to connect, disconnect, or close a [GraphNode], a signal is emitted in the GraphEdit, but no action is taken by default. It is the responsibility of the programmer utilizing this control to implement the necessary logic to determine how each request should be handled.
@@ -69,7 +70,7 @@ var zoom_step: float;
 
 
 #desc Virtual method which can be overridden to customize how connections are drawn.
-virtual const func _get_connection_line(from_position: Vector2, to_position: Vector2) -> PackedVector2Array:
+func _get_connection_line(from_position: Vector2, to_position: Vector2) -> PackedVector2Array:
 	pass;
 
 #desc Returns whether the [param mouse_position] is in the input hot zone.
@@ -83,7 +84,7 @@ virtual const func _get_connection_line(from_position: Vector2, to_position: Vec
 #desc 
 #desc return rect.has_point(mouse_position)
 #desc [/codeblock]
-virtual func _is_in_input_hotzone(in_node: Object, in_port: int, mouse_position: Vector2) -> bool:
+func _is_in_input_hotzone(in_node: Object, in_port: int, mouse_position: Vector2) -> bool:
 	pass;
 
 #desc Returns whether the [param mouse_position] is in the output hot zone. For more information on hot zones, see [method _is_in_input_hotzone].
@@ -96,7 +97,7 @@ virtual func _is_in_input_hotzone(in_node: Object, in_port: int, mouse_position:
 #desc 
 #desc return rect.has_point(mouse_position)
 #desc [/codeblock]
-virtual func _is_in_output_hotzone(in_node: Object, in_port: int, mouse_position: Vector2) -> bool:
+func _is_in_output_hotzone(in_node: Object, in_port: int, mouse_position: Vector2) -> bool:
 	pass;
 
 #desc This virtual method can be used to insert additional error detection while the user is dragging a connection over a valid port.
@@ -113,7 +114,7 @@ virtual func _is_in_output_hotzone(in_node: Object, in_port: int, mouse_position
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual func _is_node_hover_valid(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> bool:
+func _is_node_hover_valid(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> bool:
 	pass;
 
 #desc Allows the connection between two different port types. The port type is defined individually for the left and the right port of each slot with the [method GraphNode.set_slot] method.

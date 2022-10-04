@@ -1,3 +1,4 @@
+extends Object
 #brief Data transformation (marshalling) and encoding helpers.
 #desc Provides data transformation and encoding utility functions.
 class_name Marshalls

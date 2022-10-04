@@ -1,3 +1,4 @@
+extends Node2D
 #brief Joint used with [Skeleton2D] to control and animate other nodes.
 #desc Use a hierarchy of [code]Bone2D[/code] bound to a [Skeleton2D] to control, and animate other [Node2D] nodes.
 #desc You can use [code]Bone2D[/code] and [code]Skeleton2D[/code] nodes to animate 2D meshes created with the Polygon 2D UV editor.

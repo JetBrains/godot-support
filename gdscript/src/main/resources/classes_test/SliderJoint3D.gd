@@ -1,3 +1,4 @@
+extends Joint3D
 #brief Slider between two PhysicsBodies in 3D.
 #desc Slides across the X axis of the pivot object. See also [Generic6DOFJoint3D].
 class_name SliderJoint3D

@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A base class for particle emitters.
 class_name VisualShaderNodeParticleEmitter
 

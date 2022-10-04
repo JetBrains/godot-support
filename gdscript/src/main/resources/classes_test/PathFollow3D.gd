@@ -1,3 +1,4 @@
+extends Node3D
 #brief Point sampler for a [Path3D].
 #desc This node takes its parent [Path3D], and returns the coordinates of a point within it, given a distance from the first vertex.
 #desc It is useful for making other nodes follow a path, without coding the movement pattern. For that, the nodes must be children of this node. The descendant nodes will then move accordingly when setting the [member progress] in this node.

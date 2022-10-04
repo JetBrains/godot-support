@@ -1,3 +1,4 @@
+extends Resource
 #brief Holds a pattern to be copied from or pasted into [TileMap]s.
 #desc This resource holds a set of cells to help bulk manipulations of [TileMap].
 #desc A pattern always start at the [code](0,0)[/code] coordinates and cannot have cells with negative coordinates.

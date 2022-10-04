@@ -1,3 +1,4 @@
+extends Control
 #brief Control for drawing textures.
 #desc Used to draw icons and sprites in a user interface. The texture's placement can be controlled with the [member stretch_mode] property. It can scale, tile, or stay centered inside its bounding rectangle.
 class_name TextureRect

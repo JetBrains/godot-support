@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Holds a line of text.
 #desc Abstraction over [TextServer] for handling single line of text.
 class_name TextLine

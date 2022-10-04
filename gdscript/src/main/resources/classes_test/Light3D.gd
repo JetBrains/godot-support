@@ -1,3 +1,4 @@
+extends VisualInstance3D
 #brief Provides a base class for different kinds of light nodes.
 #desc Light3D is the [i]abstract[/i] base class for light nodes. As it can't be instantiated, it shouldn't be used directly. Other types of light nodes inherit from it. Light3D contains the common variables and parameters used for lighting.
 class_name Light3D

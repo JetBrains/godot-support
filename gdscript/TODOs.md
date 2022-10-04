@@ -2,12 +2,16 @@ resources: onready check
 
 const func ... qualifiers ?? Je to i v xml
 
+automatizace refreshe
+
+documentace:
+Vector2.AXIS_X má klíč [method #name#]
+
 TopLevel: innerClass
 syntax: @"Node/Label"
 
 quote matcher -> multiline string  """ """
 
-obarvit resource $"%Name"
 resource $"...  zda existuje
 
 attribute_ex -> reference completion

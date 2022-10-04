@@ -1,3 +1,4 @@
+extends PrimitiveMesh
 #brief Generate an [PrimitiveMesh] from the text.
 #desc Generate an [PrimitiveMesh] from the text.
 #desc TextMesh can be generated only when using dynamic fonts with vector glyph contours. Bitmap fonts (including bitmap data in the TrueType/OpenType containers, like color emoji fonts) are not supported.

@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A [Cubemap] sampling node to be used within the visual shader graph.
 #desc Translated to [code]texture(cubemap, vec3)[/code] in the shader language. Returns a color vector and alpha channel as scalar.
 class_name VisualShaderNodeCubemap

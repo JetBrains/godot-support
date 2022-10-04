@@ -1,3 +1,4 @@
+extends VisualShaderNode
 class_name VisualShaderNodeParticleAccelerator
 
 const MODE_LINEAR = 0;

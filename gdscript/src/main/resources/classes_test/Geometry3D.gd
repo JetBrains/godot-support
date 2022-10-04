@@ -1,3 +1,4 @@
+extends Object
 #brief Helper node to calculate generic geometry operations in 3D space.
 #desc Geometry3D provides users with a set of helper functions to create geometric shapes, compute intersections between shapes, and process various other geometric operations.
 class_name Geometry3D

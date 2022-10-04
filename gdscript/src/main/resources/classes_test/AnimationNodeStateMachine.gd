@@ -1,3 +1,4 @@
+extends AnimationRootNode
 #brief State machine for control of animations.
 #desc Contains multiple nodes representing animation states, connected in a graph. Node transitions can be configured to happen automatically or via code, using a shortest-path algorithm. Retrieve the [AnimationNodeStateMachinePlayback] object from the [AnimationTree] node to control it programmatically.
 #desc [b]Example:[/b]

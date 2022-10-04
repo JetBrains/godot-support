@@ -1,3 +1,4 @@
+extends VisualShaderNodeConstant
 #brief A [Transform3D] constant for use within the visual shader graph.
 #desc A constant [Transform3D], which can be used as an input node.
 class_name VisualShaderNodeTransformConstant

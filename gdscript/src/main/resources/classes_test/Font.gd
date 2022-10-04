@@ -1,3 +1,4 @@
+extends Resource
 #brief Base class for fonts and font variations.
 #desc Font is the abstract base class for font, so it shouldn't be used directly. Other types of fonts inherit from it.
 class_name Font

@@ -1,3 +1,4 @@
+extends Object
 #brief Direct access object to a space in the [PhysicsServer3D].
 #desc Direct access object to a space in the [PhysicsServer3D]. It's used mainly to do queries against objects and areas residing in a given space.
 class_name PhysicsDirectSpaceState3D

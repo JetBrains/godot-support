@@ -1,3 +1,4 @@
+extends Resource
 #brief Playback control for [AnimationNodeStateMachine].
 #desc Allows control of [AnimationTree] state machines created with [AnimationNodeStateMachine]. Retrieve with [code]$AnimationTree.get("parameters/playback")[/code].
 #desc [b]Example:[/b]

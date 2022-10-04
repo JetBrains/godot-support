@@ -1,3 +1,4 @@
+extends Object
 #brief Server interface for low-level physics access.
 #desc PhysicsServer3D is the server responsible for all 3D physics. It can create many kinds of physics objects, but does not insert them on the node tree.
 class_name PhysicsServer3D

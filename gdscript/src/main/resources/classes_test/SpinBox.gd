@@ -1,3 +1,4 @@
+extends Range
 #brief Numerical input text field.
 #desc SpinBox is a numerical input text field. It allows entering integers and floats.
 #desc [b]Example:[/b]

@@ -1,3 +1,4 @@
+extends Container
 #brief A helper node for displaying scrollable elements such as lists.
 #desc A ScrollContainer node meant to contain a [Control] child.
 #desc ScrollContainers will automatically create a scrollbar child ([HScrollBar], [VScrollBar], or both) when needed and will only draw the Control within the ScrollContainer area. Scrollbars will automatically be drawn at the right (for vertical) or bottom (for horizontal) and will enable dragging to move the viewable Control (and its children) within the ScrollContainer. Scrollbars will also automatically resize the grabber based on the [member Control.custom_minimum_size] of the Control relative to the ScrollContainer.

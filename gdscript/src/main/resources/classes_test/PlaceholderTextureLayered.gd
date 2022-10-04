@@ -1,3 +1,4 @@
+extends TextureLayered
 class_name PlaceholderTextureLayered
 
 

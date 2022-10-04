@@ -1,3 +1,4 @@
+extends Font
 #brief Variation of the [Font].
 #desc OpenType variations, simulated bold / slant, and additional font settings like OpenType features and extra spacing.
 #desc 

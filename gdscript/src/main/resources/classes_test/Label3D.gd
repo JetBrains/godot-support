@@ -1,3 +1,4 @@
+extends GeometryInstance3D
 #brief Displays plain text in a 3D world.
 #desc Label3D displays plain text in a 3D world. It gives you control over the horizontal and vertical alignment.
 class_name Label3D

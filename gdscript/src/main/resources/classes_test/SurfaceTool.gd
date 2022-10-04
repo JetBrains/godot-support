@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Helper tool to create geometry.
 #desc The [SurfaceTool] is used to construct a [Mesh] by specifying vertex attributes individually. It can be used to construct a [Mesh] from a script. All properties except indices need to be added before calling [method add_vertex]. For example, to add vertex colors and UVs:
 #desc [codeblocks]

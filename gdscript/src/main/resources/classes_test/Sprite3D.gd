@@ -1,3 +1,4 @@
+extends SpriteBase3D
 #brief 2D sprite node in a 3D world.
 #desc A node that displays a 2D texture in a 3D environment. The texture displayed can be a region from a larger atlas texture, or a frame from a sprite sheet animation. See also [SpriteBase3D] where properties such as the billboard mode are defined.
 class_name Sprite3D

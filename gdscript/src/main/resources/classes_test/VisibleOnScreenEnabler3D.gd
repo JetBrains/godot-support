@@ -1,3 +1,4 @@
+extends VisibleOnScreenNotifier3D
 #brief Enables certain nodes only when approximately visible.
 #desc The VisibleOnScreenEnabler3D will disable [RigidBody3D] and [AnimationPlayer] nodes when they are not visible. It will only affect other nodes within the same scene as the VisibleOnScreenEnabler3D itself.
 #desc If you just want to receive notifications, use [VisibleOnScreenNotifier3D] instead.

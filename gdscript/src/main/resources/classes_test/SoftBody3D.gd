@@ -1,3 +1,4 @@
+extends MeshInstance3D
 #brief A soft mesh physics body.
 #desc A deformable physics body. Used to create elastic or deformable objects such as cloth, rubber, or other flexible materials.
 #desc [b]Note:[/b] There are many known bugs in [SoftBody3D]. Therefore, it's not recommended to use them for things that can affect gameplay (such as a player character made entirely out of soft bodies).

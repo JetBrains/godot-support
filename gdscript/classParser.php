@@ -40,6 +40,11 @@ foreach ($files as $filename) {
 
     $xml = (array) simplexml_load_string($content);
 
+    $att = (array) $xml['@attributes'];
+    if ($att['inherits'] ?? null) {
+        $data .= sprintf("extends %s\n", $att['inherits']);
+    }
+
     $desc = (array) ($xml['brief_description'] ?? []);
     if ($desc) {
         $data .= $formatDesc($desc['0'], "brief");
@@ -102,8 +107,8 @@ foreach ($files as $filename) {
         $ret = (array) ($value['return'] ?? ['@attributes' => [ 'type' => 'void' ]]);
 
         $quali = $att['qualifiers'] ?? "";
-        // TODO Tohle pak smazat, až bude const func implementována
-        if ($quali == "const") {
+        // TODO Tohle pak smazat, až bude const func implementována .. piozor existuje ještě "virtual" .. např _init
+        if ($quali != "static") {
             $quali = "";
         }
 

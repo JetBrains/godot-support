@@ -1,3 +1,4 @@
+extends Resource
 #brief A class stored as a resource.
 #desc A class stored as a resource. A script extends the functionality of all objects that instance it.
 #desc This is the base class for all scripts and should not be used directly. Trying to create a new script with this class will result in an error.

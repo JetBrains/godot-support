@@ -1,3 +1,4 @@
+extends Light3D
 #brief Omnidirectional light, such as a light bulb or a candle.
 #desc An Omnidirectional light is a type of [Light3D] that emits light in all directions. The light is attenuated by distance and this attenuation can be configured by changing its energy, radius, and attenuation parameters.
 class_name OmniLight3D

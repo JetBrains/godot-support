@@ -1,3 +1,4 @@
+extends Control
 #brief A horizontal menu bar, which displays [PopupMenu]s or system global menu.
 #desc New items can be created by adding [PopupMenu] nodes to his node.
 class_name MenuBar

@@ -1,3 +1,4 @@
+extends Object
 #brief Version Control System (VCS) interface, which reads and writes to the local VCS in use.
 #desc Defines the API that the editor uses to extract information from the underlying VCS. The implementation of this API is included in VCS plugins, which are GDExtension plugins that inherit [EditorVCSInterface] and are attached (on demand) to the singleton instance of [EditorVCSInterface]. Instead of performing the task themselves, all the virtual functions listed below are calling the internally overridden functions in the VCS plugins to provide a plug-n-play experience. A custom VCS plugin is supposed to inherit from [EditorVCSInterface] and override each of these virtual functions.
 class_name EditorVCSInterface
@@ -33,95 +34,95 @@ const TREE_AREA_UNSTAGED = 2;
 
 
 #desc Checks out a [code]branch_name[/code] in the VCS.
-virtual func _checkout_branch(branch_name: String) -> bool:
+func _checkout_branch(branch_name: String) -> bool:
 	pass;
 
 #desc Commits the currently staged changes and applies the commit [code]msg[/code] to the resulting commit.
-virtual func _commit(msg: String) -> void:
+func _commit(msg: String) -> void:
 	pass;
 
 #desc Creates a new branch named [code]branch_name[/code] in the VCS.
-virtual func _create_branch(branch_name: String) -> void:
+func _create_branch(branch_name: String) -> void:
 	pass;
 
 #desc Creates a new remote destination with name [code]remote_name[/code] and points it to [code]remote_url[/code]. This can be an HTTPS remote or an SSH remote.
-virtual func _create_remote(remote_name: String, remote_url: String) -> void:
+func _create_remote(remote_name: String, remote_url: String) -> void:
 	pass;
 
 #desc Discards the changes made in a file present at [code]file_path[/code].
-virtual func _discard_file(file_path: String) -> void:
+func _discard_file(file_path: String) -> void:
 	pass;
 
 #desc Fetches new changes from the remote, but doesn't write changes to the current working directory. Equivalent to [code]git fetch[/code].
-virtual func _fetch(remote: String) -> void:
+func _fetch(remote: String) -> void:
 	pass;
 
 #desc Gets an instance of an [Array] of [String]s containing available branch names in the VCS.
-virtual func _get_branch_list() -> Dictionary[]:
+func _get_branch_list() -> Dictionary[]:
 	pass;
 
 #desc Gets the current branch name defined in the VCS.
-virtual func _get_current_branch_name() -> String:
+func _get_current_branch_name() -> String:
 	pass;
 
 #desc Returns an array of [Dictionary] items (see [method create_diff_file], [method create_diff_hunk], [method create_diff_line], [method add_line_diffs_into_diff_hunk] and [method add_diff_hunks_into_diff_file]), each containing information about a diff. If [code]identifier[/code] is a file path, returns a file diff, and if it is a commit identifier, then returns a commit diff.
-virtual func _get_diff(identifier: String, area: int) -> Dictionary[]:
+func _get_diff(identifier: String, area: int) -> Dictionary[]:
 	pass;
 
 #desc Returns an [Array] of [Dictionary] items (see [method create_diff_hunk]), each containing a line diff between a file at [code]file_path[/code] and the [code]text[/code] which is passed in.
-virtual func _get_line_diff(file_path: String, text: String) -> Dictionary[]:
+func _get_line_diff(file_path: String, text: String) -> Dictionary[]:
 	pass;
 
 #desc Returns an [Array] of [Dictionary] items (see [method create_status_file]), each containing the status data of every modified file in the project folder.
-virtual func _get_modified_files_data() -> Dictionary[]:
+func _get_modified_files_data() -> Dictionary[]:
 	pass;
 
 #desc Returns an [Array] of [Dictionary] items (see [method create_commit]), each containing the data for a past commit.
-virtual func _get_previous_commits(max_commits: int) -> Dictionary[]:
+func _get_previous_commits(max_commits: int) -> Dictionary[]:
 	pass;
 
 #desc Returns an [Array] of [String]s, each containing the name of a remote configured in the VCS.
-virtual func _get_remotes() -> Dictionary[]:
+func _get_remotes() -> Dictionary[]:
 	pass;
 
 #desc Returns the name of the underlying VCS provider.
-virtual func _get_vcs_name() -> String:
+func _get_vcs_name() -> String:
 	pass;
 
 #desc Initializes the VCS plugin when called from the editor. Returns whether or not the plugin was successfully initialized. A VCS project is initialized at [code]project_path[/code].
-virtual func _initialize(project_path: String) -> bool:
+func _initialize(project_path: String) -> bool:
 	pass;
 
 #desc Pulls changes from the remote. This can give rise to merge conflicts.
-virtual func _pull(remote: String) -> void:
+func _pull(remote: String) -> void:
 	pass;
 
 #desc Pushes changes to the [code]remote[/code]. Optionally, if [code]force[/code] is set to true, a force push will override the change history already present on the remote.
-virtual func _push(remote: String, force: bool) -> void:
+func _push(remote: String, force: bool) -> void:
 	pass;
 
 #desc Remove a branch from the local VCS.
-virtual func _remove_branch(branch_name: String) -> void:
+func _remove_branch(branch_name: String) -> void:
 	pass;
 
 #desc Remove a remote from the local VCS.
-virtual func _remove_remote(remote_name: String) -> void:
+func _remove_remote(remote_name: String) -> void:
 	pass;
 
 #desc Set user credentials in the underlying VCS. [code]username[/code] and [code]password[/code] are used only during HTTPS authentication unless not already mentioned in the remote URL. [code]ssh_public_key_path[/code], [code]ssh_private_key_path[/code], and [code]ssh_passphrase[/code] are only used during SSH authentication.
-virtual func _set_credentials(username: String, password: String, ssh_public_key_path: String, ssh_private_key_path: String, ssh_passphrase: String) -> void:
+func _set_credentials(username: String, password: String, ssh_public_key_path: String, ssh_private_key_path: String, ssh_passphrase: String) -> void:
 	pass;
 
 #desc Shuts down VCS plugin instance. Called when the user either closes the editor or shuts down the VCS plugin through the editor UI.
-virtual func _shut_down() -> bool:
+func _shut_down() -> bool:
 	pass;
 
 #desc Stages the file present at [code]file_path[/code] to the staged area.
-virtual func _stage_file(file_path: String) -> void:
+func _stage_file(file_path: String) -> void:
 	pass;
 
 #desc Unstages the file present at [code]file_path[/code] from the staged area to the unstaged area.
-virtual func _unstage_file(file_path: String) -> void:
+func _unstage_file(file_path: String) -> void:
 	pass;
 
 #desc Helper function to add an array of [code]diff_hunks[/code] into a [code]diff_file[/code].

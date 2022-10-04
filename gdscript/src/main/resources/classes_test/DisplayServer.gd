@@ -1,3 +1,4 @@
+extends Object
 class_name DisplayServer
 
 const FEATURE_GLOBAL_MENU = 0;

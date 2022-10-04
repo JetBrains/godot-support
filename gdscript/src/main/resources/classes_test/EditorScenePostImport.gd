@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Post-processes scenes after import.
 #desc Imported scenes can be automatically modified right after import by setting their [b]Custom Script[/b] Import property to a [code]tool[/code] script that inherits from this class.
 #desc The [method _post_import] callback receives the imported scene's root node and returns the modified version of the scene. Usage example:
@@ -51,7 +52,7 @@ class_name EditorScenePostImport
 
 
 #desc Called after the scene was imported. This method must return the modified version of the scene.
-virtual func _post_import(scene: Node) -> Object:
+func _post_import(scene: Node) -> Object:
 	pass;
 
 #desc Returns the source file path which got imported (e.g. [code]res://scene.dae[/code]).

@@ -1,3 +1,4 @@
+extends Node3D
 #brief Physics object that simulates the behavior of a wheel.
 #desc This node needs to be used as a child node of [VehicleBody3D] and simulates the behavior of one of its wheels. This node also acts as a collider to detect if the wheel is touching a surface.
 #desc [b]Note:[/b] This class has known issues and isn't designed to provide realistic 3D vehicle physics. If you want advanced vehicle physics, you will probably have to write your own physics integration using another [PhysicsBody3D] class.

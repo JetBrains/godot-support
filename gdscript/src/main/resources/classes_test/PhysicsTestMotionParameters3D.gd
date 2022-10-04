@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Parameters to be sent to a 3D body motion test.
 #desc This class contains parameters used in [method PhysicsServer3D.body_test_motion].
 class_name PhysicsTestMotionParameters3D

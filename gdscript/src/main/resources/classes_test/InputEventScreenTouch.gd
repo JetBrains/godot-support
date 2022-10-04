@@ -1,3 +1,4 @@
+extends InputEventFromWindow
 #brief Input event type for screen touch events.
 #brief (only available on mobile devices)
 #desc Stores multi-touch press/release information. Supports touch press, touch release and [member index] for multi-touch count and order.

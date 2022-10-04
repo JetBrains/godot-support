@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Parameters to be sent to a 2D body motion test.
 #desc This class contains parameters used in [method PhysicsServer2D.body_test_motion].
 class_name PhysicsTestMotionParameters2D

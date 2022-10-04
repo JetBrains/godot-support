@@ -1,3 +1,4 @@
+extends Node3D
 #brief Skeleton for characters and animated objects.
 #desc Skeleton3D provides a hierarchical interface for managing bones, including pose, rest and animation (see [Animation]). It can also use ragdoll physics.
 #desc The overall transform of a bone with respect to the skeleton is determined by the following hierarchical order: rest pose, custom pose and pose.

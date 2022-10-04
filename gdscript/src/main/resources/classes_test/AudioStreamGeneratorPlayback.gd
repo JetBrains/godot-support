@@ -1,3 +1,4 @@
+extends AudioStreamPlaybackResampled
 #brief Plays back audio generated using [AudioStreamGenerator].
 #desc This class is meant to be used with [AudioStreamGenerator] to play back the generated audio in real-time.
 class_name AudioStreamGeneratorPlayback

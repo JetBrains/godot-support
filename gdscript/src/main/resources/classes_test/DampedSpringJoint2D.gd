@@ -1,3 +1,4 @@
+extends Joint2D
 #brief Damped spring constraint for 2D physics.
 #desc Damped spring constraint for 2D physics. This resembles a spring joint that always wants to go back to a given length.
 class_name DampedSpringJoint2D

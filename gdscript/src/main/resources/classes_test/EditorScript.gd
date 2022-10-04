@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Base script that can be used to add extension functions to the editor.
 #desc Scripts extending this class and implementing its [method _run] method can be executed from the Script Editor's [b]File > Run[/b] menu option (or by pressing [kbd]Ctrl + Shift + X[/kbd]) while the editor is running. This is useful for adding custom in-editor functionality to Godot. For more complex additions, consider using [EditorPlugin]s instead.
 #desc [b]Note:[/b] Extending scripts need to have [code]tool[/code] mode enabled.
@@ -31,7 +32,7 @@ class_name EditorScript
 
 
 #desc This method is executed by the Editor when [b]File > Run[/b] is used.
-virtual func _run() -> void:
+func _run() -> void:
 	pass;
 
 #desc Adds [param node] as a child of the root node in the editor context.

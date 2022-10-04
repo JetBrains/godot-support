@@ -1,3 +1,4 @@
+extends Control
 #brief Base class for different kinds of buttons.
 #desc BaseButton is the abstract base class for buttons, so it shouldn't be used directly (it doesn't display anything). Other types of buttons inherit from it.
 class_name BaseButton
@@ -60,11 +61,11 @@ var toggle_mode: bool;
 
 
 #desc Called when the button is pressed. If you need to know the button's pressed state (and [member toggle_mode] is active), use [method _toggled] instead.
-virtual func _pressed() -> void:
+func _pressed() -> void:
 	pass;
 
 #desc Called when the button is toggled (only if [member toggle_mode] is active).
-virtual func _toggled(button_pressed: bool) -> void:
+func _toggled(button_pressed: bool) -> void:
 	pass;
 
 #desc Returns the visual state used to draw the button. This is useful mainly when implementing your own draw code by either overriding _draw() or connecting to "draw" signal. The visual state of the button is defined by the [enum DrawMode] enum.

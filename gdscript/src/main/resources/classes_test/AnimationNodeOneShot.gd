@@ -1,3 +1,4 @@
+extends AnimationNodeSync
 #brief Plays an animation once in [AnimationNodeBlendTree].
 #desc A resource to add to an [AnimationNodeBlendTree]. This node will execute a sub-animation and return once it finishes. Blend times for fading in and out can be customized, as well as filters.
 class_name AnimationNodeOneShot

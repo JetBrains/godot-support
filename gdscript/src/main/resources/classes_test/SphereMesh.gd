@@ -1,3 +1,4 @@
+extends PrimitiveMesh
 #brief Class representing a spherical [PrimitiveMesh].
 #desc Class representing a spherical [PrimitiveMesh].
 class_name SphereMesh

@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Calculates a derivative within the visual shader graph.
 #desc This node is only available in [code]Fragment[/code] and [code]Light[/code] visual shaders.
 class_name VisualShaderNodeDerivativeFunc

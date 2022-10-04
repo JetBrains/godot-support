@@ -1,3 +1,4 @@
+extends Resource
 #brief Provides high-performance drawing of a mesh multiple times using GPU instancing.
 #desc MultiMesh provides low-level mesh instancing. Drawing thousands of [MeshInstance3D] nodes can be slow, since each object is submitted to the GPU then drawn individually.
 #desc MultiMesh is much faster as it can draw thousands of instances with a single draw call, resulting in less API overhead.

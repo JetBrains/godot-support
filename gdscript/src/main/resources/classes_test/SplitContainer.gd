@@ -1,3 +1,4 @@
+extends Container
 #brief Container for splitting and adjusting.
 #desc Container for splitting two [Control]s vertically or horizontally, with a grabber that allows adjusting the split offset or ratio.
 class_name SplitContainer

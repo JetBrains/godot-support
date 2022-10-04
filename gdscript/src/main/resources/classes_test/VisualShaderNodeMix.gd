@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Linearly interpolates between two values within the visual shader graph.
 #desc Translates to [code]mix(a, b, weight)[/code] in the shader language.
 class_name VisualShaderNodeMix

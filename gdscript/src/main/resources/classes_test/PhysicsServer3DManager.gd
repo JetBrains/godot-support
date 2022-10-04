@@ -1,3 +1,4 @@
+extends Object
 #brief Manager for 3D physics server implementations.
 #desc [PhysicsServer3DManager] is the API for registering [PhysicsServer3D] implementations, and for setting the default implementation.
 #desc [b]Note:[/b] It is not possible to switch physics servers at runtime. This class is only used on startup at the server initialization level, by Godot itself and possibly by GDExtensions.

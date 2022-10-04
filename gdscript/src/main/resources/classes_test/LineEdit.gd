@@ -1,3 +1,4 @@
+extends Control
 #brief Control that provides single-line string editing.
 #desc LineEdit provides a single-line string editor, used for text fields.
 #desc It features many built-in shortcuts which will always be available ([kbd]Ctrl[/kbd] here maps to [kbd]Cmd[/kbd] on macOS):

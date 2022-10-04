@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief An audio effect that can be used to adjust the intensity of stereo panning.
 #desc An audio effect that can be used to adjust the intensity of stereo panning.
 class_name AudioEffectStereoEnhance

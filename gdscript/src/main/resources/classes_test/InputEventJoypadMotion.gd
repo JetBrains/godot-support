@@ -1,3 +1,4 @@
+extends InputEvent
 #brief Input event type for gamepad joysticks and other motions. For buttons, see [code]InputEventJoypadButton[/code].
 #desc Stores information about joystick motions. One [InputEventJoypadMotion] represents one axis at a time.
 class_name InputEventJoypadMotion

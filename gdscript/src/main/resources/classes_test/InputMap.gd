@@ -1,3 +1,4 @@
+extends Object
 #brief Singleton that manages [InputEventAction].
 #desc Manages all [InputEventAction] which can be created/modified from the project settings menu [b]Project > Project Settings > Input Map[/b] or in code with [method add_action] and [method action_add_event]. See [method Node._input].
 class_name InputMap

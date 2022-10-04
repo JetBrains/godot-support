@@ -1,3 +1,4 @@
+extends Joint2D
 #brief Pin joint for 2D shapes.
 #desc Pin joint for 2D rigid bodies. It pins two bodies (dynamic or static) together.
 class_name PinJoint2D

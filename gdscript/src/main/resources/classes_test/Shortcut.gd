@@ -1,3 +1,4 @@
+extends Resource
 #brief A shortcut for binding input.
 #desc Shortcuts are commonly used for interacting with a [Control] element from an [InputEvent] (also known as hotkeys).
 #desc One shortcut can contain multiple [InputEvent]'s, allowing the possibility of triggering one action with multiple different inputs.

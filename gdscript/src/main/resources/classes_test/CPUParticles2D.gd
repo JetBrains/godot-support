@@ -1,3 +1,4 @@
+extends Node2D
 #brief CPU-based 2D particle emitter.
 #desc CPU-based 2D particle node used to create a variety of particle systems and effects.
 #desc See also [GPUParticles2D], which provides the same functionality with hardware acceleration, but may not run on older devices.

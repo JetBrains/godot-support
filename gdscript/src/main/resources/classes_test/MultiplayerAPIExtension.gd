@@ -1,3 +1,4 @@
+extends MultiplayerAPI
 #brief Base class used for extending the [MultiplayerAPI].
 #desc This class can be used to augment or replace the default [MultiplayerAPI] implementation via script or extensions.
 #desc The following example augment the default implementation ([SceneMultiplayer]) by logging every RPC being made, and every object being configured for replication.
@@ -71,39 +72,39 @@ class_name MultiplayerAPIExtension
 
 
 #desc Called when the [member MultiplayerAPI.multiplayer_peer] is retrieved.
-virtual func _get_multiplayer_peer() -> MultiplayerPeer:
+func _get_multiplayer_peer() -> MultiplayerPeer:
 	pass;
 
 #desc Callback for [method MultiplayerAPI.get_peers].
-virtual const func _get_peer_ids() -> PackedInt32Array:
+func _get_peer_ids() -> PackedInt32Array:
 	pass;
 
 #desc Callback for [method MultiplayerAPI.get_remote_sender_id].
-virtual const func _get_remote_sender_id() -> int:
+func _get_remote_sender_id() -> int:
 	pass;
 
 #desc Callback for [method MultiplayerAPI.get_unique_id].
-virtual const func _get_unique_id() -> int:
+func _get_unique_id() -> int:
 	pass;
 
 #desc Callback for [method MultiplayerAPI.object_configuration_add].
-virtual func _object_configuration_add(object: Object, configuration: Variant) -> int:
+func _object_configuration_add(object: Object, configuration: Variant) -> int:
 	pass;
 
 #desc Callback for [method MultiplayerAPI.object_configuration_remove].
-virtual func _object_configuration_remove(object: Object, configuration: Variant) -> int:
+func _object_configuration_remove(object: Object, configuration: Variant) -> int:
 	pass;
 
 #desc Callback for [method MultiplayerAPI.poll].
-virtual func _poll() -> int:
+func _poll() -> int:
 	pass;
 
 #desc Callback for [method MultiplayerAPI.rpc].
-virtual func _rpc(peer: int, object: Object, method: StringName, args: Array) -> int:
+func _rpc(peer: int, object: Object, method: StringName, args: Array) -> int:
 	pass;
 
 #desc Called when the [member MultiplayerAPI.multiplayer_peer] is set.
-virtual func _set_multiplayer_peer(multiplayer_peer: MultiplayerPeer) -> void:
+func _set_multiplayer_peer(multiplayer_peer: MultiplayerPeer) -> void:
 	pass;
 
 

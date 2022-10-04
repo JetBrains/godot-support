@@ -1,3 +1,4 @@
+extends Control
 #brief Abstract base class for range-based controls.
 #desc Range is a base class for [Control] nodes that change a floating-point [member value] between a [member min_value] and [member max_value], using a configured [member step] and [member page] size. See e.g. [ScrollBar] and [Slider] for examples of higher level nodes using Range.
 class_name Range
@@ -36,7 +37,7 @@ var value: float;
 
 
 #desc Called when the [Range]'s value is changed (following the same conditions as [signal value_changed]).
-virtual func _value_changed(new_value: float) -> void:
+func _value_changed(new_value: float) -> void:
 	pass;
 
 #desc Binds two [Range]s together along with any ranges previously grouped with either of them. When any of range's member variables change, it will share the new value with all other ranges in its group.

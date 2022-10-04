@@ -1,3 +1,4 @@
+extends BaseButton
 #brief Texture-based button. Supports Pressed, Hover, Disabled and Focused states.
 #desc [TextureButton] has the same functionality as [Button], except it uses sprites instead of Godot's [Theme] resource. It is faster to create, but it doesn't support localization like more complex [Control]s.
 #desc The "normal" state must contain a texture ([member texture_normal]); other textures are optional.

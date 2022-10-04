@@ -1,3 +1,4 @@
+extends Object
 #brief Base class for all [i]scene[/i] objects.
 #desc Nodes are Godot's building blocks. They can be assigned as the child of another node, resulting in a tree arrangement. A given node can contain any number of nodes as children with the requirement that all siblings (direct children of a node) should have unique names.
 #desc A tree of nodes is called a [i]scene[/i]. Scenes can be saved to the disk and then instantiated into other scenes. This allows for very high flexibility in the architecture and data model of Godot projects.
@@ -221,18 +222,18 @@ var unique_name_in_owner: bool;
 
 #desc Called when the node enters the [SceneTree] (e.g. upon instancing, scene changing, or after calling [method add_child] in a script). If the node has children, its [method _enter_tree] callback will be called first, and then that of the children.
 #desc Corresponds to the [constant NOTIFICATION_ENTER_TREE] notification in [method Object._notification].
-virtual func _enter_tree() -> void:
+func _enter_tree() -> void:
 	pass;
 
 #desc Called when the node is about to leave the [SceneTree] (e.g. upon freeing, scene changing, or after calling [method remove_child] in a script). If the node has children, its [method _exit_tree] callback will be called last, after all its children have left the tree.
 #desc Corresponds to the [constant NOTIFICATION_EXIT_TREE] notification in [method Object._notification] and signal [signal tree_exiting]. To get notified when the node has already left the active tree, connect to the [signal tree_exited].
-virtual func _exit_tree() -> void:
+func _exit_tree() -> void:
 	pass;
 
 #desc The elements in the array returned from this method are displayed as warnings in the Scene Dock if the script that overrides it is a [code]tool[/code] script.
 #desc Returning an empty array produces no warnings.
 #desc Call [method update_configuration_warnings] when the warnings need to be updated for this node.
-virtual const func _get_configuration_warnings() -> PackedStringArray:
+func _get_configuration_warnings() -> PackedStringArray:
 	pass;
 
 #desc Called when there is an input event. The input event propagates up through the node tree until a node consumes it.
@@ -240,28 +241,28 @@ virtual const func _get_configuration_warnings() -> PackedStringArray:
 #desc To consume the input event and stop it propagating further to other nodes, [method Viewport.set_input_as_handled] can be called.
 #desc For gameplay input, [method _unhandled_input] and [method _unhandled_key_input] are usually a better fit as they allow the GUI to intercept the events first.
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not an orphan).
-virtual func _input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	pass;
 
 #desc Called during the physics processing step of the main loop. Physics processing means that the frame rate is synced to the physics, i.e. the [param delta] variable should be constant. [param delta] is in seconds.
 #desc It is only called if physics processing is enabled, which is done automatically if this method is overridden, and can be toggled with [method set_physics_process].
 #desc Corresponds to the [constant NOTIFICATION_PHYSICS_PROCESS] notification in [method Object._notification].
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not an orphan).
-virtual func _physics_process(delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	pass;
 
 #desc Called during the processing step of the main loop. Processing happens at every frame and as fast as possible, so the [param delta] time since the previous frame is not constant. [param delta] is in seconds.
 #desc It is only called if processing is enabled, which is done automatically if this method is overridden, and can be toggled with [method set_process].
 #desc Corresponds to the [constant NOTIFICATION_PROCESS] notification in [method Object._notification].
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not an orphan).
-virtual func _process(delta: float) -> void:
+func _process(delta: float) -> void:
 	pass;
 
 #desc Called when the node is "ready", i.e. when both the node and its children have entered the scene tree. If the node has children, their [method _ready] callbacks get triggered first, and the parent node will receive the ready notification afterwards.
 #desc Corresponds to the [constant NOTIFICATION_READY] notification in [method Object._notification]. See also the [code]@onready[/code] annotation for variables.
 #desc Usually used for initialization. For even earlier initialization, [method Object._init] may be used. See also [method _enter_tree].
 #desc [b]Note:[/b] [method _ready] may be called only once for each node. After removing a node from the scene tree and adding it again, [code]_ready[/code] will not be called a second time. This can be bypassed by requesting another call with [method request_ready], which may be called anywhere before adding the node again.
-virtual func _ready() -> void:
+func _ready() -> void:
 	pass;
 
 #desc Called when an [InputEventKey] or [InputEventShortcut] hasn't been consumed by [method _input] or any GUI [Control] item. The input event propagates up through the node tree until a node consumes it.
@@ -269,7 +270,7 @@ virtual func _ready() -> void:
 #desc To consume the input event and stop it propagating further to other nodes, [method Viewport.set_input_as_handled] can be called.
 #desc This method can be used to handle shortcuts.
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not orphan).
-virtual func _shortcut_input(event: InputEvent) -> void:
+func _shortcut_input(event: InputEvent) -> void:
 	pass;
 
 #desc Called when an [InputEvent] hasn't been consumed by [method _input] or any GUI [Control] item. The input event propagates up through the node tree until a node consumes it.
@@ -277,7 +278,7 @@ virtual func _shortcut_input(event: InputEvent) -> void:
 #desc To consume the input event and stop it propagating further to other nodes, [method Viewport.set_input_as_handled] can be called.
 #desc For gameplay input, this and [method _unhandled_key_input] are usually a better fit than [method _input] as they allow the GUI to intercept the events first.
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not an orphan).
-virtual func _unhandled_input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	pass;
 
 #desc Called when an [InputEventKey] or [InputEventShortcut] hasn't been consumed by [method _input] or any GUI [Control] item. The input event propagates up through the node tree until a node consumes it.
@@ -286,7 +287,7 @@ virtual func _unhandled_input(event: InputEvent) -> void:
 #desc This method can be used to handle Unicode character input with [kbd]Alt[/kbd], [kbd]Alt + Ctrl[/kbd], and [kbd]Alt + Shift[/kbd] modifiers, after shortcuts were handled.
 #desc For gameplay input, this and [method _unhandled_input] are usually a better fit than [method _input] as they allow the GUI to intercept the events first.
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not an orphan).
-virtual func _unhandled_key_input(event: InputEvent) -> void:
+func _unhandled_key_input(event: InputEvent) -> void:
 	pass;
 
 #desc Adds a child [param node]. Nodes can have any number of children, but every child must have a unique name. Child nodes are automatically deleted when the parent node is deleted, so an entire scene can be removed by deleting its topmost node.
@@ -649,7 +650,7 @@ func request_ready() -> void:
 
 #desc Sends a remote procedure call request for the given [param method] to peers on the network (and locally), optionally sending all additional arguments as arguments to the method called by the RPC. The call request will only be received by nodes with the same [NodePath], including the exact same node name. Behaviour depends on the RPC configuration for the given method, see [method rpc_config]. Methods are not exposed to RPCs by default. Returns [code]null[/code].
 #desc [b]Note:[/b] You can only safely use RPCs on clients after you received the [code]connected_to_server[/code] signal from the [MultiplayerAPI]. You also need to keep track of the connection state, either by the [MultiplayerAPI] signals like [code]server_disconnected[/code] or by checking [code]get_multiplayer().peer.get_connection_status() == CONNECTION_CONNECTED[/code].
-vararg func rpc(method: StringName) -> int:
+func rpc(method: StringName) -> int:
 	pass;
 
 #desc Changes the RPC mode for the given [param method] with the given [param config] which should be [code]null[/code] (to disable) or a [Dictionary] in the form:
@@ -666,7 +667,7 @@ func rpc_config(method: StringName, config: Variant) -> void:
 	pass;
 
 #desc Sends a [method rpc] to a specific peer identified by [param peer_id] (see [method MultiplayerPeer.set_target_peer]). Returns [code]null[/code].
-vararg func rpc_id(peer_id: int, method: StringName) -> int:
+func rpc_id(peer_id: int, method: StringName) -> int:
 	pass;
 
 #desc Sets the folded state of the node in the Scene dock. This method is only intended for use with editor tooling.

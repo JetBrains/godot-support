@@ -1,3 +1,4 @@
+extends TileSetSource
 #brief Exposes a set of scenes as tiles for a [TileSet] resource.
 #desc When placed on a [TileMap], tiles from [TileSetScenesCollectionSource] will automatically instantiate an associated scene at the cell's position in the TileMap.
 #desc Scenes are instantiated as children of the [TileMap] when it enters the tree. If you add/remove a scene tile in the [TileMap] that is already inside the tree, the [TileMap] will automatically instantiate/free the scene accordingly.

@@ -1,3 +1,4 @@
+extends PrimitiveMesh
 #brief Class representing a prism-shaped [PrimitiveMesh].
 #desc Class representing a prism-shaped [PrimitiveMesh].
 class_name PrismMesh

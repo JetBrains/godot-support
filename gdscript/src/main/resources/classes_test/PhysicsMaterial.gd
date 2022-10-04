@@ -1,3 +1,4 @@
+extends Resource
 #brief A material for physics properties.
 #desc Provides a means of modifying the collision properties of a [PhysicsBody3D].
 class_name PhysicsMaterial

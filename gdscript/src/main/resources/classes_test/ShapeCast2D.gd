@@ -1,3 +1,4 @@
+extends Node2D
 #brief Node for physics collision sweep and immediate overlap queries. Similar to the [RayCast2D] node.
 #desc Shape casting allows to detect collision objects by sweeping the [member shape] along the cast direction determined by [member target_position] (useful for things like beam weapons).
 #desc Immediate collision overlaps can be done with the [member target_position] set to [code]Vector2(0, 0)[/code] and by calling [method force_shapecast_update] within the same [b]physics_frame[/b]. This also helps to overcome some limitations of [Area2D] when used as a continuous detection area, often requiring waiting a couple of frames before collision information is available to [Area2D] nodes, and when using the signals creates unnecessary complexity.

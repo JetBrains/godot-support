@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Clamps a value within the visual shader graph.
 #desc Constrains a value to lie between [code]min[/code] and [code]max[/code] values.
 class_name VisualShaderNodeClamp

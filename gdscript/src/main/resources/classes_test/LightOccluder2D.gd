@@ -1,3 +1,4 @@
+extends Node2D
 #brief Occludes light cast by a Light2D, casting shadows.
 #desc Occludes light cast by a Light2D, casting shadows. The LightOccluder2D must be provided with an [OccluderPolygon2D] in order for the shadow to be computed.
 class_name LightOccluder2D

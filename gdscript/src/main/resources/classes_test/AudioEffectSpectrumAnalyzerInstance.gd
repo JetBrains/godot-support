@@ -1,3 +1,4 @@
+extends AudioEffectInstance
 class_name AudioEffectSpectrumAnalyzerInstance
 
 #desc Use the average value as magnitude.

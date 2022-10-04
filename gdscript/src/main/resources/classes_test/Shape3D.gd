@@ -1,3 +1,4 @@
+extends Resource
 #brief Base class for all 3D shape resources.
 #desc Base class for all 3D shape resources. Nodes that inherit from this can be used as shapes for a [PhysicsBody3D] or [Area3D] objects.
 class_name Shape3D

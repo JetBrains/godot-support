@@ -1,3 +1,4 @@
+extends Resource
 #brief Language Translation.
 #desc Translations are resources that can be loaded and unloaded on demand. They map a string to another string.
 class_name Translation
@@ -9,11 +10,11 @@ var locale: String;
 
 
 #desc Virtual method to override [method get_message].
-virtual const func _get_message(src_message: StringName, context: StringName) -> StringName:
+func _get_message(src_message: StringName, context: StringName) -> StringName:
 	pass;
 
 #desc Virtual method to override [method get_plural_message].
-virtual const func _get_plural_message(src_message: StringName, src_plural_message: StringName, n: int, context: StringName) -> StringName:
+func _get_plural_message(src_message: StringName, src_plural_message: StringName, n: int, context: StringName) -> StringName:
 	pass;
 
 #desc Adds a message if nonexistent, followed by its translation.

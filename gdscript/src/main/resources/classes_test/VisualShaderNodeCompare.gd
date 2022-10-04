@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A comparison function for common types within the visual shader graph.
 #desc Compares [code]a[/code] and [code]b[/code] of [member type] by [member function]. Returns a boolean scalar. Translates to [code]if[/code] instruction in shader code.
 class_name VisualShaderNodeCompare

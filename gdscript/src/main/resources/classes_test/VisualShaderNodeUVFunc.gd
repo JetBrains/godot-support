@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Contains functions to modify texture coordinates ([code]uv[/code]) to be used within the visual shader graph.
 class_name VisualShaderNodeUVFunc
 

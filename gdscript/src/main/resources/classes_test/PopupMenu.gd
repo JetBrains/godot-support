@@ -1,3 +1,4 @@
+extends Popup
 #brief PopupMenu displays a list of options.
 #desc [PopupMenu] is a modal window used to display a list of options. They are popular in toolbars or context menus.
 #desc The size of a [PopupMenu] can be limited by using [member Window.max_size]. If the height of the list of items is larger than the maximum height of the [PopupMenu], a [ScrollContainer] within the popup will allow the user to scroll the contents.

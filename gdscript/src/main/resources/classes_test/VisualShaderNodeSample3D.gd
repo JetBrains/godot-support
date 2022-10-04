@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A base node for nodes which samples 3D textures in the visual shader graph.
 #desc A virtual class, use the descendants instead.
 class_name VisualShaderNodeSample3D

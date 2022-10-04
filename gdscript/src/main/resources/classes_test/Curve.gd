@@ -1,3 +1,4 @@
+extends Resource
 #brief A mathematic curve.
 #desc A curve that can be saved and re-used for other objects. By default, it ranges between [code]0[/code] and [code]1[/code] on the Y axis and positions points relative to the [code]0.5[/code] Y position.
 #desc See also [Gradient] which is designed for color interpolation. See also [Curve2D] and [Curve3D].

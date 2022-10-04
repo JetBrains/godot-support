@@ -1,3 +1,4 @@
+extends Node
 #brief A countdown timer.
 #desc Counts down a specified interval and emits a signal on reaching 0. Can be set to repeat or "one-shot" mode.
 #desc [b]Note:[/b] To create a one-shot timer without instantiating a node, use [method SceneTree.create_timer].

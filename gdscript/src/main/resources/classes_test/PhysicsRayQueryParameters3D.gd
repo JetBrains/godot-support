@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Parameters to be sent to a 3D ray physics query.
 #desc This class contains the ray position and other parameters to be used for [method PhysicsDirectSpaceState3D.intersect_ray].
 class_name PhysicsRayQueryParameters3D

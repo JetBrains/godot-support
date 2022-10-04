@@ -1,3 +1,4 @@
+extends AudioEffectEQ
 #brief Adds a 21-band equalizer audio effect to an Audio bus. Gives you control over frequencies from 22 Hz to 22000 Hz.
 #brief Each frequency can be modulated between -60/+24 dB.
 #desc Frequency bands:

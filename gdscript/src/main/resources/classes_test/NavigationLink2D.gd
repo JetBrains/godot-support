@@ -1,3 +1,4 @@
+extends Node2D
 #brief Creates a link between two locations that [NavigationServer2D] can route agents through.
 #desc Creates a link between two locations that [NavigationServer2D] can route agents through.  Links can be used to express navigation methods that aren't just traveling along the surface of the navigation mesh, like zip-lines, teleporters, or jumping across gaps.
 class_name NavigationLink2D

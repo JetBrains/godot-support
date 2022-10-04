@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Computes a [Transform3D] function within the visual shader graph.
 #desc Computes an inverse or transpose function on the provided [Transform3D].
 class_name VisualShaderNodeTransformFunc

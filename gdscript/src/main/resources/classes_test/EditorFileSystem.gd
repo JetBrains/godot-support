@@ -1,3 +1,4 @@
+extends Node
 #brief Resource filesystem, as the editor sees it.
 #desc This object holds information of all resources in the filesystem, their types, etc.
 #desc [b]Note:[/b] This class shouldn't be instantiated directly. Instead, access the singleton using [method EditorInterface.get_resource_filesystem].

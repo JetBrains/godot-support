@@ -1,3 +1,4 @@
+extends Object
 #brief Abstract class for non-real-time video recording encoders.
 #desc Godot can record videos with non-real-time simulation. Like the [code]--fixed-fps[/code] command line argument, this forces the reported [code]delta[/code] in [method Node._process] functions to be identical across frames, regardless of how long it actually took to render the frame. This can be used to record high-quality videos with perfect frame pacing regardless of your hardware's capabilities.
 #desc Godot has 2 built-in [MovieWriter]s:
@@ -12,11 +13,11 @@ class_name MovieWriter
 
 
 #desc Called when the audio sample rate used for recording the audio is requested by the engine. The value returned must be specified in Hz. Defaults to 48000 Hz if [method _get_audio_mix_rate] is not overridden.
-virtual const func _get_audio_mix_rate() -> int:
+func _get_audio_mix_rate() -> int:
 	pass;
 
 #desc Called when the audio speaker mode used for recording the audio is requested by the engine. This can affect the number of output channels in the resulting audio file/stream. Defaults to [constant AudioServer.SPEAKER_MODE_STEREO] if [method _get_audio_speaker_mode] is not overridden.
-virtual const func _get_audio_speaker_mode() -> int:
+func _get_audio_speaker_mode() -> int:
 	pass;
 
 #desc Called when the engine determines whether this [MovieWriter] is able to handle the file at [param path]. Must return [code]true[/code] if this [MovieWriter] is able to handle the given file path, [code]false[/code] otherwise. Typically, [method _handles_file] is overridden as follows to allow the user to record a file at any path with a given file extension:
@@ -26,20 +27,20 @@ virtual const func _get_audio_speaker_mode() -> int:
 #desc # either in the Project Settings or with the `--write-movie <path>` command line argument.
 #desc return path.get_extension().to_lower() == "mkv"
 #desc [/codeblock]
-virtual const func _handles_file(path: String) -> bool:
+func _handles_file(path: String) -> bool:
 	pass;
 
 #desc Called once before the engine starts writing video and audio data. [param movie_size] is the width and height of the video to save. [param fps] is the number of frames per second specified in the project settings or using the [code]--fixed-fps <fps>[/code] command line argument.
-virtual func _write_begin(movie_size: Vector2i, fps: int, base_path: String) -> int:
+func _write_begin(movie_size: Vector2i, fps: int, base_path: String) -> int:
 	pass;
 
 #desc Called when the engine finishes writing. This occurs when the engine quits by pressing the window manager's close button, or when [method SceneTree.quit] is called.
 #desc [b]Note:[/b] Pressing [kbd]Ctrl + C[/kbd] on the terminal running the editor/project does [i]not[/i] result in [method _write_end] being called.
-virtual func _write_end() -> void:
+func _write_end() -> void:
 	pass;
 
 #desc Called at the end of every rendered frame. The [param frame_image] and [param audio_frame_block] function arguments should be written to.
-virtual func _write_frame(frame_image: Image, audio_frame_block: const void*) -> int:
+func _write_frame(frame_image: Image, audio_frame_block: const void*) -> int:
 	pass;
 
 #desc Adds a writer to be usable by the engine. The supported file extensions can be set by overriding [method _handles_file].

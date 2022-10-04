@@ -1,3 +1,4 @@
+extends StyleBox
 #brief Texture-based nine-patch [StyleBox].
 #desc Texture-based nine-patch [StyleBox], in a way similar to [NinePatchRect]. This stylebox performs a 3×3 scaling of a texture, where only the center cell is fully stretched. This makes it possible to design bordered styles regardless of the stylebox's size.
 class_name StyleBoxTexture

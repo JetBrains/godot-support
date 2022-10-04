@@ -48,42 +48,42 @@ const CONNECT_REFERENCE_COUNTED = 8;
 
 #desc Virtual method which can be overridden to customize the return value of [method get].
 #desc Returns the given property. Returns [code]null[/code] if the [param property] does not exist.
-virtual func _get(property: StringName) -> Variant:
+func _get(property: StringName) -> Variant:
 	pass;
 
 #desc Virtual method which can be overridden to customize the return value of [method get_property_list].
 #desc Returns the object's property list as an [Array] of dictionaries.
 #desc Each property's [Dictionary] must contain at least [code]name: String[/code] and [code]type: int[/code] (see [enum Variant.Type]) entries. Optionally, it can also include [code]hint: int[/code] (see [enum PropertyHint]), [code]hint_string: String[/code], and [code]usage: int[/code] (see [enum PropertyUsageFlags]).
-virtual func _get_property_list() -> Dictionary[]:
+func _get_property_list() -> Dictionary[]:
 	pass;
 
 #desc Called when the object is initialized in memory. Can be defined to take in parameters, that are passed in when constructing.
 #desc [b]Note:[/b] If [method _init] is defined with required parameters, then explicit construction is the only valid means of creating an Object of the class. If any other means (such as [method PackedScene.instantiate]) is used, then initialization will fail.
-virtual func _init() -> void:
+func _init() -> void:
 	pass;
 
 #desc Called whenever the object receives a notification, which is identified in [param what] by a constant. The base [Object] has two constants [constant NOTIFICATION_POSTINITIALIZE] and [constant NOTIFICATION_PREDELETE], but subclasses such as [Node] define a lot more notifications which are also received by this method.
-virtual func _notification(what: int) -> void:
+func _notification(what: int) -> void:
 	pass;
 
 #desc Virtual methods that can be overridden to customize the property revert behavior in the editor.
 #desc Returns [code]true[/code] if the property identified by [code]name[/code] can be reverted to a default value. Override [method _property_get_revert] to return the actual value.
-virtual func _property_can_revert(property: StringName) -> bool:
+func _property_can_revert(property: StringName) -> bool:
 	pass;
 
 #desc Virtual methods that can be overridden to customize the property revert behavior in the editor.
 #desc Returns the default value of the property identified by [code]name[/code]. [method _property_can_revert] must be overridden as well for this method to be called.
-virtual func _property_get_revert(property: StringName) -> Variant:
+func _property_get_revert(property: StringName) -> Variant:
 	pass;
 
 #desc Virtual method which can be overridden to customize the return value of [method set].
 #desc Sets a property. Returns [code]true[/code] if the [param property] exists.
-virtual func _set(property: StringName, value: Variant) -> bool:
+func _set(property: StringName, value: Variant) -> bool:
 	pass;
 
 #desc Virtual method which can be overridden to customize the return value of [method to_string], and thus the object's representation where it is converted to a string, e.g. with [code]print(obj)[/code].
 #desc Returns a [String] representing the object. If not overridden, defaults to [code]"[ClassName:RID]"[/code].
-virtual func _to_string() -> String:
+func _to_string() -> String:
 	pass;
 
 #desc Adds a user-defined [param signal]. Arguments are optional, but can be added as an [Array] of dictionaries, each containing [code]name: String[/code] and [code]type: int[/code] (see [enum Variant.Type]) entries.
@@ -102,7 +102,7 @@ func add_user_signal(signal: String, arguments: Array) -> void:
 #desc [/csharp]
 #desc [/codeblocks]
 #desc [b]Note:[/b] In C#, the method name must be specified as snake_case if it is defined by a built-in Godot node. This doesn't apply to user-defined methods where you should use the same convention as in the C# source (typically PascalCase).
-vararg func call(method: StringName) -> Variant:
+func call(method: StringName) -> Variant:
 	pass;
 
 #desc Calls the [param method] on the object during idle time. This method supports a variable number of arguments, so parameters are passed as a comma separated list. Example:
@@ -117,7 +117,7 @@ vararg func call(method: StringName) -> Variant:
 #desc [/csharp]
 #desc [/codeblocks]
 #desc [b]Note:[/b] In C#, the method name must be specified as snake_case if it is defined by a built-in Godot node. This doesn't apply to user-defined methods where you should use the same convention as in the C# source (typically PascalCase).
-vararg func call_deferred(method: StringName) -> Variant:
+func call_deferred(method: StringName) -> Variant:
 	pass;
 
 #desc Calls the [param method] on the object and returns the result. Contrarily to [method call], this method does not support a variable number of arguments but expects all parameters to be via a single [Array].
@@ -290,7 +290,7 @@ func disconnect(signal: StringName, callable: Callable) -> void:
 #desc EmitSignal("game_over");
 #desc [/csharp]
 #desc [/codeblocks]
-vararg func emit_signal(signal: StringName) -> int:
+func emit_signal(signal: StringName) -> int:
 	pass;
 
 #desc Deletes the object from memory. Any pre-existing reference to the freed object will become invalid, e.g. [code]is_instance_valid(object)[/code] will return [code]false[/code].

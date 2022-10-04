@@ -1,3 +1,4 @@
+extends AnimationRootNode
 #brief Input animation to use in an [AnimationNodeBlendTree].
 #desc A resource to add to an [AnimationNodeBlendTree]. Only features one output set using the [member animation] property. Use it as an input for [AnimationNode] that blend animations together.
 class_name AnimationNodeAnimation

@@ -1,3 +1,4 @@
+extends ScriptLanguage
 class_name ScriptLanguageExtension
 
 const LOOKUP_RESULT_SCRIPT_LOCATION = 0;
@@ -57,181 +58,181 @@ const CODE_COMPLETION_KIND_MAX = 10;
 
 
 
-virtual func _add_global_constant(name: StringName, value: Variant) -> void:
+func _add_global_constant(name: StringName, value: Variant) -> void:
 	pass;
 
-virtual func _add_named_global_constant(name: StringName, value: Variant) -> void:
+func _add_named_global_constant(name: StringName, value: Variant) -> void:
 	pass;
 
-virtual func _alloc_instance_binding_data(object: Object) -> void*:
+func _alloc_instance_binding_data(object: Object) -> void*:
 	pass;
 
-virtual const func _auto_indent_code(code: String, from_line: int, to_line: int) -> String:
+func _auto_indent_code(code: String, from_line: int, to_line: int) -> String:
 	pass;
 
-virtual const func _can_inherit_from_file() -> bool:
+func _can_inherit_from_file() -> bool:
 	pass;
 
-virtual const func _complete_code(code: String, path: String, owner: Object) -> Dictionary:
+func _complete_code(code: String, path: String, owner: Object) -> Dictionary:
 	pass;
 
-virtual const func _create_script() -> Object:
+func _create_script() -> Object:
 	pass;
 
-virtual func _debug_get_current_stack_info() -> Dictionary[]:
+func _debug_get_current_stack_info() -> Dictionary[]:
 	pass;
 
-virtual const func _debug_get_error() -> String:
+func _debug_get_error() -> String:
 	pass;
 
-virtual func _debug_get_globals(max_subitems: int, max_depth: int) -> Dictionary:
+func _debug_get_globals(max_subitems: int, max_depth: int) -> Dictionary:
 	pass;
 
-virtual const func _debug_get_stack_level_count() -> int:
+func _debug_get_stack_level_count() -> int:
 	pass;
 
-virtual const func _debug_get_stack_level_function(level: int) -> String:
+func _debug_get_stack_level_function(level: int) -> String:
 	pass;
 
-virtual func _debug_get_stack_level_instance(level: int) -> void*:
+func _debug_get_stack_level_instance(level: int) -> void*:
 	pass;
 
-virtual const func _debug_get_stack_level_line(level: int) -> int:
+func _debug_get_stack_level_line(level: int) -> int:
 	pass;
 
-virtual func _debug_get_stack_level_locals(level: int, max_subitems: int, max_depth: int) -> Dictionary:
+func _debug_get_stack_level_locals(level: int, max_subitems: int, max_depth: int) -> Dictionary:
 	pass;
 
-virtual func _debug_get_stack_level_members(level: int, max_subitems: int, max_depth: int) -> Dictionary:
+func _debug_get_stack_level_members(level: int, max_subitems: int, max_depth: int) -> Dictionary:
 	pass;
 
-virtual func _debug_parse_stack_level_expression(level: int, expression: String, max_subitems: int, max_depth: int) -> String:
+func _debug_parse_stack_level_expression(level: int, expression: String, max_subitems: int, max_depth: int) -> String:
 	pass;
 
-virtual func _execute_file(path: String) -> int:
+func _execute_file(path: String) -> int:
 	pass;
 
-virtual const func _find_function(class_name: String, function_name: String) -> int:
+func _find_function(class_name: String, function_name: String) -> int:
 	pass;
 
-virtual func _finish() -> void:
+func _finish() -> void:
 	pass;
 
-virtual func _frame() -> void:
+func _frame() -> void:
 	pass;
 
-virtual func _free_instance_binding_data(data: void*) -> void:
+func _free_instance_binding_data(data: void*) -> void:
 	pass;
 
-virtual const func _get_built_in_templates(object: StringName) -> Dictionary[]:
+func _get_built_in_templates(object: StringName) -> Dictionary[]:
 	pass;
 
-virtual const func _get_comment_delimiters() -> PackedStringArray:
+func _get_comment_delimiters() -> PackedStringArray:
 	pass;
 
-virtual const func _get_extension() -> String:
+func _get_extension() -> String:
 	pass;
 
-virtual const func _get_global_class_name(path: String) -> Dictionary:
+func _get_global_class_name(path: String) -> Dictionary:
 	pass;
 
-virtual const func _get_name() -> String:
+func _get_name() -> String:
 	pass;
 
-virtual const func _get_public_annotations() -> Dictionary[]:
+func _get_public_annotations() -> Dictionary[]:
 	pass;
 
-virtual const func _get_public_constants() -> Dictionary:
+func _get_public_constants() -> Dictionary:
 	pass;
 
-virtual const func _get_public_functions() -> Dictionary[]:
+func _get_public_functions() -> Dictionary[]:
 	pass;
 
-virtual const func _get_recognized_extensions() -> PackedStringArray:
+func _get_recognized_extensions() -> PackedStringArray:
 	pass;
 
-virtual const func _get_reserved_words() -> PackedStringArray:
+func _get_reserved_words() -> PackedStringArray:
 	pass;
 
-virtual const func _get_string_delimiters() -> PackedStringArray:
+func _get_string_delimiters() -> PackedStringArray:
 	pass;
 
-virtual const func _get_type() -> String:
+func _get_type() -> String:
 	pass;
 
-virtual const func _handles_global_class_type(type: String) -> bool:
+func _handles_global_class_type(type: String) -> bool:
 	pass;
 
-virtual const func _has_named_classes() -> bool:
+func _has_named_classes() -> bool:
 	pass;
 
-virtual func _init() -> void:
+func _init() -> void:
 	pass;
 
-virtual const func _is_control_flow_keyword(keyword: String) -> bool:
+func _is_control_flow_keyword(keyword: String) -> bool:
 	pass;
 
-virtual func _is_using_templates() -> bool:
+func _is_using_templates() -> bool:
 	pass;
 
-virtual const func _lookup_code(code: String, symbol: String, path: String, owner: Object) -> Dictionary:
+func _lookup_code(code: String, symbol: String, path: String, owner: Object) -> Dictionary:
 	pass;
 
-virtual const func _make_function(class_name: String, function_name: String, function_args: PackedStringArray) -> String:
+func _make_function(class_name: String, function_name: String, function_args: PackedStringArray) -> String:
 	pass;
 
-virtual const func _make_template(template: String, class_name: String, base_class_name: String) -> Script:
+func _make_template(template: String, class_name: String, base_class_name: String) -> Script:
 	pass;
 
-virtual func _open_in_external_editor(script: Script, line: int, column: int) -> int:
+func _open_in_external_editor(script: Script, line: int, column: int) -> int:
 	pass;
 
-virtual func _overrides_external_editor() -> bool:
+func _overrides_external_editor() -> bool:
 	pass;
 
-virtual func _profiling_get_accumulated_data(info_array: ScriptLanguageExtensionProfilingInfo*, info_max: int) -> int:
+func _profiling_get_accumulated_data(info_array: ScriptLanguageExtensionProfilingInfo*, info_max: int) -> int:
 	pass;
 
-virtual func _profiling_get_frame_data(info_array: ScriptLanguageExtensionProfilingInfo*, info_max: int) -> int:
+func _profiling_get_frame_data(info_array: ScriptLanguageExtensionProfilingInfo*, info_max: int) -> int:
 	pass;
 
-virtual func _profiling_start() -> void:
+func _profiling_start() -> void:
 	pass;
 
-virtual func _profiling_stop() -> void:
+func _profiling_stop() -> void:
 	pass;
 
-virtual func _refcount_decremented_instance_binding(object: Object) -> bool:
+func _refcount_decremented_instance_binding(object: Object) -> bool:
 	pass;
 
-virtual func _refcount_incremented_instance_binding(object: Object) -> void:
+func _refcount_incremented_instance_binding(object: Object) -> void:
 	pass;
 
-virtual func _reload_all_scripts() -> void:
+func _reload_all_scripts() -> void:
 	pass;
 
-virtual func _reload_tool_script(script: Script, soft_reload: bool) -> void:
+func _reload_tool_script(script: Script, soft_reload: bool) -> void:
 	pass;
 
-virtual func _remove_named_global_constant(name: StringName) -> void:
+func _remove_named_global_constant(name: StringName) -> void:
 	pass;
 
-virtual const func _supports_builtin_mode() -> bool:
+func _supports_builtin_mode() -> bool:
 	pass;
 
-virtual const func _supports_documentation() -> bool:
+func _supports_documentation() -> bool:
 	pass;
 
-virtual func _thread_enter() -> void:
+func _thread_enter() -> void:
 	pass;
 
-virtual func _thread_exit() -> void:
+func _thread_exit() -> void:
 	pass;
 
-virtual const func _validate(script: String, path: String, validate_functions: bool, validate_errors: bool, validate_warnings: bool, validate_safe_lines: bool) -> Dictionary:
+func _validate(script: String, path: String, validate_functions: bool, validate_errors: bool, validate_warnings: bool, validate_safe_lines: bool) -> Dictionary:
 	pass;
 
-virtual const func _validate_path(path: String) -> String:
+func _validate_path(path: String) -> String:
 	pass;
 
 

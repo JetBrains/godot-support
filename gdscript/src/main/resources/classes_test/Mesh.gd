@@ -1,3 +1,4 @@
+extends Resource
 #brief A [Resource] that contains vertex array-based geometry.
 #desc Mesh is a type of [Resource] that contains vertex array-based geometry, divided in [i]surfaces[/i]. Each surface contains a completely separate array and a material used to draw it. Design wise, a mesh with multiple surfaces is preferred to a single surface, because objects created in 3D editing software commonly contain multiple materials.
 class_name Mesh
@@ -174,46 +175,46 @@ var lightmap_size_hint: Vector2i;
 
 
 
-virtual const func _get_aabb() -> AABB:
+func _get_aabb() -> AABB:
 	pass;
 
-virtual const func _get_blend_shape_count() -> int:
+func _get_blend_shape_count() -> int:
 	pass;
 
-virtual const func _get_blend_shape_name(index: int) -> StringName:
+func _get_blend_shape_name(index: int) -> StringName:
 	pass;
 
-virtual const func _get_surface_count() -> int:
+func _get_surface_count() -> int:
 	pass;
 
-virtual func _set_blend_shape_name(index: int, name: StringName) -> void:
+func _set_blend_shape_name(index: int, name: StringName) -> void:
 	pass;
 
-virtual const func _surface_get_array_index_len(index: int) -> int:
+func _surface_get_array_index_len(index: int) -> int:
 	pass;
 
-virtual const func _surface_get_array_len(index: int) -> int:
+func _surface_get_array_len(index: int) -> int:
 	pass;
 
-virtual const func _surface_get_arrays(index: int) -> Array:
+func _surface_get_arrays(index: int) -> Array:
 	pass;
 
-virtual const func _surface_get_blend_shape_arrays(index: int) -> Array[]:
+func _surface_get_blend_shape_arrays(index: int) -> Array[]:
 	pass;
 
-virtual const func _surface_get_format(index: int) -> int:
+func _surface_get_format(index: int) -> int:
 	pass;
 
-virtual const func _surface_get_lods(index: int) -> Dictionary:
+func _surface_get_lods(index: int) -> Dictionary:
 	pass;
 
-virtual const func _surface_get_material(index: int) -> Material:
+func _surface_get_material(index: int) -> Material:
 	pass;
 
-virtual const func _surface_get_primitive_type(index: int) -> int:
+func _surface_get_primitive_type(index: int) -> int:
 	pass;
 
-virtual func _surface_set_material(index: int, material: Material) -> void:
+func _surface_set_material(index: int, material: Material) -> void:
 	pass;
 
 #desc Calculate a [ConvexPolygonShape3D] from the mesh.

@@ -1,3 +1,4 @@
+extends Container
 #brief Custom control to edit properties for adding into the inspector.
 #desc This control allows property editing for one or multiple properties into [EditorInspector]. It is added via [EditorInspectorPlugin].
 class_name EditorProperty
@@ -27,11 +28,11 @@ var read_only: bool;
 
 
 #desc Called when the read-only status of the property is changed. It may be used to change custom controls into a read-only or modifiable state.
-virtual func _set_read_only(read_only: bool) -> void:
+func _set_read_only(read_only: bool) -> void:
 	pass;
 
 #desc When this virtual function is called, you must update your editor.
-virtual func _update_property() -> void:
+func _update_property() -> void:
 	pass;
 
 #desc If any of the controls added can gain keyboard focus, add it here. This ensures that focus will be restored if the inspector is refreshed.

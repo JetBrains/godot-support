@@ -1,3 +1,4 @@
+extends BoxContainer
 #brief Color picker control.
 #desc Displays a color picker widget. Useful for selecting a color from an RGB/RGBA colorspace.
 #desc [b]Note:[/b] This control is the color picker widget itself. You can use a [ColorPickerButton] instead if you need a button that brings up a [ColorPicker] in a pop-up.

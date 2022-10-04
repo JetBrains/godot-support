@@ -1,3 +1,4 @@
+extends InputEventFromWindow
 #brief Input event type for screen drag events. Only available on mobile devices.
 #desc Contains screen drag information. See [method Node._input].
 class_name InputEventScreenDrag

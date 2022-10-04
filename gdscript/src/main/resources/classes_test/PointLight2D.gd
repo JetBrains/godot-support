@@ -1,3 +1,4 @@
+extends Light2D
 class_name PointLight2D
 
 

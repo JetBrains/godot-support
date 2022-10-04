@@ -1,3 +1,4 @@
+extends VisualShaderNodeSample3D
 #brief Performs a 3D texture lookup within the visual shader graph.
 #desc Performs a lookup operation on the provided texture, with support for multiple texture sources to choose from.
 class_name VisualShaderNodeTexture3D

@@ -1,3 +1,4 @@
+extends VisualInstance3D
 #brief Abstract class for 3D particle attractors affecting [GPUParticles3D] nodes.
 #desc Particle attractors can be used to attract particles towards the attractor's origin, or to push them away from the attractor's origin.
 #desc Particle attractors work in real-time and can be moved, rotated and scaled during gameplay. Unlike collision shapes, non-uniform scaling of attractors is also supported.

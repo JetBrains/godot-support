@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Calculates a SmoothStep function within the visual shader graph.
 #desc Translates to [code]smoothstep(edge0, edge1, x)[/code] in the shader language.
 #desc Returns [code]0.0[/code] if [code]x[/code] is smaller than [code]edge0[/code] and [code]1.0[/code] if [code]x[/code] is larger than [code]edge1[/code]. Otherwise, the return value is interpolated between [code]0.0[/code] and [code]1.0[/code] using Hermite polynomials.

@@ -1,3 +1,4 @@
+extends RefCounted
 #brief A tracked object.
 #desc An instance of this object represents a device that is tracked, such as a controller or anchor point. HMDs aren't represented here as they are handled internally.
 #desc As controllers are turned on and the [XRInterface] detects them, instances of this object are automatically added to this list of active tracking objects accessible through the [XRServer].

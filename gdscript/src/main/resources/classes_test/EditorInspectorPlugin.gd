@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Plugin for adding custom property editors on inspector.
 #desc [EditorInspectorPlugin] allows adding custom property editors to [EditorInspector].
 #desc When an object is edited, the [method _can_handle] function is called and must return [code]true[/code] if the object type is supported.
@@ -12,27 +13,27 @@ class_name EditorInspectorPlugin
 
 
 #desc Returns [code]true[/code] if this object can be handled by this plugin.
-virtual const func _can_handle(object: Variant) -> bool:
+func _can_handle(object: Variant) -> bool:
 	pass;
 
 #desc Called to allow adding controls at the beginning of the property list for [param object].
-virtual func _parse_begin(object: Object) -> void:
+func _parse_begin(object: Object) -> void:
 	pass;
 
 #desc Called to allow adding controls at the beginning of a category in the property list for [param object].
-virtual func _parse_category(object: Object, category: String) -> void:
+func _parse_category(object: Object, category: String) -> void:
 	pass;
 
 #desc Called to allow adding controls at the end of the property list for [param object].
-virtual func _parse_end(object: Object) -> void:
+func _parse_end(object: Object) -> void:
 	pass;
 
 #desc Called to allow adding controls at the beginning of a group or a sub-group in the property list for [param object].
-virtual func _parse_group(object: Object, group: String) -> void:
+func _parse_group(object: Object, group: String) -> void:
 	pass;
 
 #desc Called to allow adding property-specific editors to the property list for [param object]. The added editor control must extend [EditorProperty]. Returning [code]true[/code] removes the built-in editor for this property, otherwise allows to insert a custom editor before the built-in one.
-virtual func _parse_property(object: Object, type: int, name: String, hint_type: int, hint_string: String, usage_flags: int, wide: bool) -> bool:
+func _parse_property(object: Object, type: int, name: String, hint_type: int, hint_string: String, usage_flags: int, wide: bool) -> bool:
 	pass;
 
 #desc Adds a custom control, which is not necessarily a property editor.

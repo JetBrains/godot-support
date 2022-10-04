@@ -1,3 +1,4 @@
+extends VisualShaderNode
 class_name VisualShaderNodeParticleRandomness
 
 #desc A floating-point scalar.

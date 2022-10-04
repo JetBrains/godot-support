@@ -1,3 +1,4 @@
+extends Node2D
 #brief RemoteTransform2D pushes its own [Transform2D] to another [CanvasItem] derived Node in the scene.
 #desc RemoteTransform2D pushes its own [Transform2D] to another [CanvasItem] derived Node (called the remote node) in the scene.
 #desc It can be set to update another Node's position, rotation and/or scale. It can use either global or local coordinates.

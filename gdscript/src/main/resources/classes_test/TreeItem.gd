@@ -1,3 +1,4 @@
+extends Object
 #brief Control for a single item inside a [Tree].
 #desc Control for a single item inside a [Tree]. May have child [TreeItem]s and be styled as well as contain buttons.
 #desc You can remove a [TreeItem] by using [method Object.free].
@@ -38,7 +39,7 @@ func add_button(column: int, button: Texture2D, id: int, disabled: bool, tooltip
 	pass;
 
 #desc Calls the [param method] on the actual TreeItem and its children recursively. Pass parameters as a comma separated list.
-vararg func call_recursive(method: StringName) -> void:
+func call_recursive(method: StringName) -> void:
 	pass;
 
 #desc Resets the background color for the given column to default.

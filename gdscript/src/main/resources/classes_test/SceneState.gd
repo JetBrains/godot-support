@@ -1,3 +1,4 @@
+extends RefCounted
 #brief A script interface to a scene file's data.
 #desc Maintains a list of resources, nodes, exported, and overridden properties, and built-in scripts associated with a scene.
 #desc This class cannot be instantiated directly, it is retrieved for a given scene as the result of [method PackedScene.get_state].

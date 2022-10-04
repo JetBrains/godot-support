@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Creates packages that can be loaded into a running project.
 #desc The [PCKPacker] is used to create packages that can be loaded into a running project using [method ProjectSettings.load_resource_pack].
 #desc [codeblocks]

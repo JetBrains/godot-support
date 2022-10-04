@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Manages undo history of scenes opened in the editor.
 #desc [EditorUndoRedoManager] is a manager for [UndoRedo] objects associated with edited scenes. Each scene has its own undo history and [EditorUndoRedoManager] ensures that each action performed in the editor gets associated with a proper scene. For actions not related to scenes ([ProjectSettings] edits, external resources, etc.), a separate global history is used.
 #desc The usage is mostly the same as [UndoRedo]. You create and commit actions and the manager automatically decides under-the-hood what scenes it belongs to. The scene is deduced based on the first operation in an action, using the object from the operation. The rules are as follows:
@@ -18,7 +19,7 @@ const INVALID_HISTORY = -99;
 
 #desc Register a method that will be called when the action is committed (i.e. the "do" action).
 #desc If this is the first operation, the [param object] will be used to deduce target undo history.
-vararg func add_do_method(object: Object, method: StringName) -> void:
+func add_do_method(object: Object, method: StringName) -> void:
 	pass;
 
 #desc Register a property value change for "do".
@@ -32,7 +33,7 @@ func add_do_reference(object: Object) -> void:
 
 #desc Register a method that will be called when the action is undone (i.e. the "undo" action).
 #desc If this is the first operation, the [param object] will be used to deduce target undo history.
-vararg func add_undo_method(object: Object, method: StringName) -> void:
+func add_undo_method(object: Object, method: StringName) -> void:
 	pass;
 
 #desc Register a property value change for "undo".

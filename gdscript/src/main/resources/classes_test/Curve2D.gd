@@ -1,3 +1,4 @@
+extends Resource
 #brief Describes a Bézier curve in 2D space.
 #desc This class describes a Bézier curve in 2D space. It is mainly used to give a shape to a [Path2D], but can be manually sampled for other purposes.
 #desc It keeps a cache of precalculated points along the curve, to speed up further calculations.

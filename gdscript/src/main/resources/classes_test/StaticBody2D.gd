@@ -1,3 +1,4 @@
+extends PhysicsBody2D
 #brief Physics body for 2D physics which is static or moves only by script. Useful for floor and walls.
 #desc Static body for 2D physics.
 #desc A static body is a simple body that can't be moved by external forces or contacts. It is ideal for implementing objects in the environment, such as walls or platforms. In contrast to [RigidBody2D], it doesn't consume any CPU resources as long as they don't move.

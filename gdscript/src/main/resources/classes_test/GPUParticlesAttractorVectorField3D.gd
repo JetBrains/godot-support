@@ -1,3 +1,4 @@
+extends GPUParticlesAttractor3D
 #brief Box-shaped 3D particle attractor with strength varying within the box, affecting [GPUParticles3D] nodes.
 #desc Box-shaped 3D particle attractor with strength varying within the box, affecting [GPUParticles3D] nodes.
 #desc Unlike [GPUParticlesAttractorBox3D], [GPUParticlesAttractorVectorField3D] uses a [member texture] to affect attraction strength within the box. This can be used to create complex attraction scenarios where particles travel in different directions depending on their location. This can be useful for weather effects such as sandstorms.

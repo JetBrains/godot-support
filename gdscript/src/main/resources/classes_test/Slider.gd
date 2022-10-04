@@ -1,3 +1,4 @@
+extends Range
 #brief Base class for GUI sliders.
 #desc Base class for GUI sliders.
 #desc [b]Note:[/b] The [signal Range.changed] and [signal Range.value_changed] signals are part of the [Range] class which this class inherits from.

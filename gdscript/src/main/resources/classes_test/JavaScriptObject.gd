@@ -1,3 +1,4 @@
+extends RefCounted
 #brief A wrapper class for web native JavaScript objects.
 #desc JavaScriptObject is used to interact with JavaScript objects retrieved or created via [method JavaScriptBridge.get_interface], [method JavaScriptBridge.create_object], or [method JavaScriptBridge.create_callback].
 #desc Example:

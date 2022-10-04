@@ -1,3 +1,4 @@
+extends InputEventFromWindow
 #brief Base class for keys events with modifiers.
 #desc Contains keys events information with modifiers support like [kbd]Shift[/kbd] or [kbd]Alt[/kbd]. See [method Node._input].
 class_name InputEventWithModifiers

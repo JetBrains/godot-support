@@ -1,3 +1,4 @@
+extends PhysicsBody3D
 class_name PhysicalBone3D
 
 #desc In this mode, the body's damping value is added to any value set in areas or the default value.
@@ -72,7 +73,7 @@ var mass: float;
 
 
 #desc Called during physics processing, allowing you to read and safely modify the simulation state for the object. By default, it works in addition to the usual physics behavior, but the [member custom_integrator] property allows you to disable the default behavior and do fully custom force integration for a body.
-virtual func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
+func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	pass;
 
 func apply_central_impulse(impulse: Vector3) -> void:

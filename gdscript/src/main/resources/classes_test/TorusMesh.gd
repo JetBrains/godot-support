@@ -1,3 +1,4 @@
+extends PrimitiveMesh
 #brief Class representing a torus [PrimitiveMesh].
 #desc Class representing a torus [PrimitiveMesh].
 class_name TorusMesh

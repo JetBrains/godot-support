@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A base type for the parameters within the visual shader graph.
 #desc A parameter represents a variable in the shader which is set externally, i.e. from the [ShaderMaterial]. Parameters are exposed as properties in the [ShaderMaterial] and can be assigned from the inspector or from a script.
 class_name VisualShaderNodeParameter

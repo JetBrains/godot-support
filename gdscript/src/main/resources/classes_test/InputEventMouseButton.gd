@@ -1,3 +1,4 @@
+extends InputEventMouse
 #brief Input event type for mouse button events.
 #desc Contains mouse click information. See [method Node._input].
 class_name InputEventMouseButton

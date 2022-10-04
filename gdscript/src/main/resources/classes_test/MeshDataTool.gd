@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Helper tool to access and edit [Mesh] data.
 #desc MeshDataTool provides access to individual vertices in a [Mesh]. It allows users to read and edit vertex data of meshes. It also creates an array of faces and edges.
 #desc To use MeshDataTool, load a mesh with [method create_from_surface]. When you are finished editing the data commit the data to a mesh with [method commit_to_surface].

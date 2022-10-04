@@ -1,3 +1,4 @@
+extends Resource
 #brief Abstract base [Resource] for coloring and shading geometry.
 #desc Material is a base [Resource] used for coloring and shading geometry. All materials inherit from it and almost all [VisualInstance3D] derived nodes carry a Material. A few flags and parameters are shared between all material types and are configured here.
 class_name Material
@@ -20,16 +21,16 @@ var render_priority: int;
 
 
 
-virtual const func _can_do_next_pass() -> bool:
+func _can_do_next_pass() -> bool:
 	pass;
 
-virtual const func _can_use_render_priority() -> bool:
+func _can_use_render_priority() -> bool:
 	pass;
 
-virtual const func _get_shader_mode() -> int:
+func _get_shader_mode() -> int:
 	pass;
 
-virtual const func _get_shader_rid() -> RID:
+func _get_shader_rid() -> RID:
 	pass;
 
 func inspect_native_shader_code() -> void:

@@ -1,3 +1,4 @@
+extends Object
 #brief A singleton that deals with inputs.
 #desc A singleton that deals with inputs. This includes key presses, mouse buttons and movement, joypads, and input actions. Actions and their events can be set in the [b]Input Map[/b] tab in the [b]Project > Project Settings[/b], or with the [InputMap] class.
 class_name Input

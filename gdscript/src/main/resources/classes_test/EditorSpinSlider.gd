@@ -1,3 +1,4 @@
+extends Range
 #brief Godot editor's control for editing numeric values.
 #desc This [Control] node is used in the editor's Inspector dock to allow editing of numeric values. Can be used with [EditorInspectorPlugin] to recreate the same behavior.
 class_name EditorSpinSlider

@@ -1,3 +1,4 @@
+extends Node3DGizmo
 #brief Gizmo for editing Node3D objects.
 #desc Gizmo that is used for providing custom visualization and editing (handles and subgizmos) for Node3D objects. Can be overridden to create custom gizmos, but for simple gizmos creating a [EditorNode3DGizmoPlugin] is usually recommended.
 class_name EditorNode3DGizmo
@@ -8,52 +9,52 @@ class_name EditorNode3DGizmo
 #desc Override this method to commit a handle being edited (handles must have been previously added by [method add_handles]). This usually means creating an [UndoRedo] action for the change, using the current handle value as "do" and the [param restore] argument as "undo".
 #desc If the [param cancel] argument is [code]true[/code], the [param restore] value should be directly set, without any [UndoRedo] action.
 #desc The [param secondary] argument is [code]true[/code] when the committed handle is secondary (see [method add_handles] for more information).
-virtual func _commit_handle(id: int, secondary: bool, restore: Variant, cancel: bool) -> void:
+func _commit_handle(id: int, secondary: bool, restore: Variant, cancel: bool) -> void:
 	pass;
 
 #desc Override this method to commit a group of subgizmos being edited (see [method _subgizmos_intersect_ray] and [method _subgizmos_intersect_frustum]). This usually means creating an [UndoRedo] action for the change, using the current transforms as "do" and the [param restores] transforms as "undo".
 #desc If the [param cancel] argument is [code]true[/code], the [param restores] transforms should be directly set, without any [UndoRedo] action.
-virtual func _commit_subgizmos(ids: PackedInt32Array, restores: Transform3D[], cancel: bool) -> void:
+func _commit_subgizmos(ids: PackedInt32Array, restores: Transform3D[], cancel: bool) -> void:
 	pass;
 
 #desc Override this method to return the name of an edited handle (handles must have been previously added by [method add_handles]). Handles can be named for reference to the user when editing.
 #desc The [param secondary] argument is [code]true[/code] when the requested handle is secondary (see [method add_handles] for more information).
-virtual const func _get_handle_name(id: int, secondary: bool) -> String:
+func _get_handle_name(id: int, secondary: bool) -> String:
 	pass;
 
 #desc Override this method to return the current value of a handle. This value will be requested at the start of an edit and used as the [code]restore[/code] argument in [method _commit_handle].
 #desc The [param secondary] argument is [code]true[/code] when the requested handle is secondary (see [method add_handles] for more information).
-virtual const func _get_handle_value(id: int, secondary: bool) -> Variant:
+func _get_handle_value(id: int, secondary: bool) -> Variant:
 	pass;
 
 #desc Override this method to return the current transform of a subgizmo. This transform will be requested at the start of an edit and used as the [code]restore[/code] argument in [method _commit_subgizmos].
-virtual const func _get_subgizmo_transform(id: int) -> Transform3D:
+func _get_subgizmo_transform(id: int) -> Transform3D:
 	pass;
 
 #desc Override this method to return [code]true[/code] whenever the given handle should be highlighted in the editor.
 #desc The [param secondary] argument is [code]true[/code] when the requested handle is secondary (see [method add_handles] for more information).
-virtual const func _is_handle_highlighted(id: int, secondary: bool) -> bool:
+func _is_handle_highlighted(id: int, secondary: bool) -> bool:
 	pass;
 
 #desc Override this method to add all the gizmo elements whenever a gizmo update is requested. It's common to call [method clear] at the beginning of this method and then add visual elements depending on the node's properties.
-virtual func _redraw() -> void:
+func _redraw() -> void:
 	pass;
 
 #desc Override this method to update the node properties when the user drags a gizmo handle (previously added with [method add_handles]). The provided [param point] is the mouse position in screen coordinates and the [param camera] can be used to convert it to raycasts.
 #desc The [param secondary] argument is [code]true[/code] when the edited handle is secondary (see [method add_handles] for more information).
-virtual func _set_handle(id: int, secondary: bool, camera: Camera3D, point: Vector2) -> void:
+func _set_handle(id: int, secondary: bool, camera: Camera3D, point: Vector2) -> void:
 	pass;
 
 #desc Override this method to update the node properties during subgizmo editing (see [method _subgizmos_intersect_ray] and [method _subgizmos_intersect_frustum]). The [param transform] is given in the Node3D's local coordinate system.
-virtual func _set_subgizmo_transform(id: int, transform: Transform3D) -> void:
+func _set_subgizmo_transform(id: int, transform: Transform3D) -> void:
 	pass;
 
 #desc Override this method to allow selecting subgizmos using mouse drag box selection. Given a [param camera] and a [param frustum], this method should return which subgizmos are contained within the frustum. The [param frustum] argument consists of an [code]Array[/code] with all the [code]Plane[/code]s that make up the selection frustum. The returned value should contain a list of unique subgizmo identifiers, which can have any non-negative value and will be used in other virtual methods like [method _get_subgizmo_transform] or [method _commit_subgizmos].
-virtual const func _subgizmos_intersect_frustum(camera: Camera3D, frustum: Plane[]) -> PackedInt32Array:
+func _subgizmos_intersect_frustum(camera: Camera3D, frustum: Plane[]) -> PackedInt32Array:
 	pass;
 
 #desc Override this method to allow selecting subgizmos using mouse clicks. Given a [param camera] and a [param point] in screen coordinates, this method should return which subgizmo should be selected. The returned value should be a unique subgizmo identifier, which can have any non-negative value and will be used in other virtual methods like [method _get_subgizmo_transform] or [method _commit_subgizmos].
-virtual const func _subgizmos_intersect_ray(camera: Camera3D, point: Vector2) -> int:
+func _subgizmos_intersect_ray(camera: Camera3D, point: Vector2) -> int:
 	pass;
 
 #desc Adds the specified [param segments] to the gizmo's collision shape for picking. Call this method during [method _redraw].

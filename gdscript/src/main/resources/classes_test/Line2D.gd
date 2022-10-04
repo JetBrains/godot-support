@@ -1,3 +1,4 @@
+extends Node2D
 #brief A 2D line.
 #desc A line through several points in 2D space.
 class_name Line2D

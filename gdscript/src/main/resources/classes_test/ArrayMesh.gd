@@ -1,3 +1,4 @@
+extends Mesh
 #brief [Mesh] type that provides utility for constructing a surface from arrays.
 #desc The [ArrayMesh] is used to construct a [Mesh] by specifying the attributes as arrays.
 #desc The most basic example is the creation of a single triangle:

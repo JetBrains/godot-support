@@ -32,7 +32,7 @@ func disconnect(callable: Callable) -> void:
 	pass;
 
 #desc Emits this signal to all connected objects.
-vararg const func emit() -> void:
+func emit() -> void:
 	pass;
 
 #desc Returns the list of [Callable]s connected to this signal.

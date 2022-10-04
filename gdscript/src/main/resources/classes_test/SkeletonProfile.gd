@@ -1,3 +1,4 @@
+extends Resource
 #brief Profile of a virtual skeleton used as a target for retargeting.
 #desc This resource is used in [EditorScenePostImport]. Some parameters are referring to bones in [Skeleton3D], [Skin], [Animation], and some other nodes are rewritten based on the parameters of [SkeletonProfile].
 class_name SkeletonProfile

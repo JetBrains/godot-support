@@ -1,3 +1,4 @@
+extends Button
 #brief Button that pops out a [ColorPicker].
 #desc Encapsulates a [ColorPicker] making it accessible by pressing a button. Pressing the button will toggle the [ColorPicker] visibility.
 #desc See also [BaseButton] which contains common properties and methods associated with this node.

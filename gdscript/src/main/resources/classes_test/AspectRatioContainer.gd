@@ -1,3 +1,4 @@
+extends Container
 #brief Container that preserves its child controls' aspect ratio.
 #desc Arranges child controls in a way to preserve their aspect ratio automatically whenever the container is resized. Solves the problem where the container size is dynamic and the contents' size needs to adjust accordingly without losing proportions.
 class_name AspectRatioContainer

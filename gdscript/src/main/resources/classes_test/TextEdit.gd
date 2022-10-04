@@ -1,3 +1,4 @@
+extends Control
 #brief Multiline text editing control.
 #desc TextEdit is meant for editing large, multiline text. It also has facilities for editing code, such as syntax highlighting support and multiple levels of undo/redo.
 #desc [b]Note:[/b] When holding down [kbd]Alt[/kbd], the vertical scroll wheel will scroll 5 times as fast as it would normally do. This also works in the Godot script editor.
@@ -252,28 +253,28 @@ var wrap_mode: int;
 
 
 #desc Override this method to define what happens when the user presses the backspace key.
-virtual func _backspace() -> void:
+func _backspace() -> void:
 	pass;
 
 #desc Override this method to define what happens when the user performs a copy operation.
-virtual func _copy() -> void:
+func _copy() -> void:
 	pass;
 
 #desc Override this method to define what happens when the user performs a cut operation.
-virtual func _cut() -> void:
+func _cut() -> void:
 	pass;
 
 #desc Override this method to define what happens when the user types in the provided key [param unicode_char].
-virtual func _handle_unicode_input(unicode_char: int) -> void:
+func _handle_unicode_input(unicode_char: int) -> void:
 	pass;
 
 #desc Override this method to define what happens when the user performs a paste operation.
-virtual func _paste() -> void:
+func _paste() -> void:
 	pass;
 
 #desc Override this method to define what happens when the user performs a paste operation with middle mouse button.
 #desc [b]Note:[/b] This method is only implemented on Linux.
-virtual func _paste_primary_clipboard() -> void:
+func _paste_primary_clipboard() -> void:
 	pass;
 
 #desc Register a new gutter to this [TextEdit]. Use [param at] to have a specific gutter order. A value of [code]-1[/code] appends the gutter to the right.

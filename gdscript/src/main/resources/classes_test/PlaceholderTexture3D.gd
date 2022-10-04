@@ -1,3 +1,4 @@
+extends Texture3D
 class_name PlaceholderTexture3D
 
 

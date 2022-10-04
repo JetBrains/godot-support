@@ -1,3 +1,4 @@
+extends VisualShaderNodeParameter
 #brief A [Color] parameter to be used within the visual shader graph.
 #desc Translated to [code]uniform vec4[/code] in the shader language.
 class_name VisualShaderNodeColorParameter

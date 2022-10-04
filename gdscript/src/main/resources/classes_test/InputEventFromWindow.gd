@@ -1,3 +1,4 @@
+extends InputEvent
 class_name InputEventFromWindow
 
 

@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief An integer scalar operator to be used within the visual shader graph.
 #desc Applies [member operator] to two integer inputs: [code]a[/code] and [code]b[/code].
 class_name VisualShaderNodeIntOp

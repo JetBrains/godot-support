@@ -1,3 +1,4 @@
+extends Texture2D
 #brief Gradient-filled texture.
 #desc GradientTexture1D uses a [Gradient] to fill the texture data. The gradient will be filled from left to right using colors obtained from the gradient. This means the texture does not necessarily represent an exact copy of the gradient, but instead an interpolation of samples obtained from the gradient at fixed steps (see [member width]). See also [GradientTexture2D], [CurveTexture] and [CurveXYZTexture].
 class_name GradientTexture1D

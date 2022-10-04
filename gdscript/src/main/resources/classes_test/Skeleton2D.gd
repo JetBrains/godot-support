@@ -1,3 +1,4 @@
+extends Node2D
 #brief Skeleton for 2D characters and animated objects.
 #desc Skeleton2D parents a hierarchy of [Bone2D] objects. It is a requirement of [Bone2D]. Skeleton2D holds a reference to the rest pose of its children and acts as a single point of access to its bones.
 #desc To setup different types of inverse kinematics for the given Skeleton2D, a [SkeletonModificationStack2D] should be created. They can be applied by creating the desired number of modifications, which can be done by increasing [member SkeletonModificationStack2D.modification_count].

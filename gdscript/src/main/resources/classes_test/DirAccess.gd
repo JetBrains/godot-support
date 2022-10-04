@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Type used to handle the filesystem.
 #desc Directory type. It is used to manage directories and their content (not restricted to the project folder).
 #desc [DirAccess] can't be instantiated directly. Instead it is created with a static method that takes a path for which it will be opened.

@@ -1,3 +1,4 @@
+extends Resource
 class_name NativeExtension
 
 const INITIALIZATION_LEVEL_CORE = 0;

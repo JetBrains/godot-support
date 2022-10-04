@@ -1,3 +1,4 @@
+extends Resource
 #brief Background that uses a [Material] to draw a sky.
 #desc The [Sky] class uses a [Material] to draw the background and update the reflection/radiance cubemaps.
 class_name Sky

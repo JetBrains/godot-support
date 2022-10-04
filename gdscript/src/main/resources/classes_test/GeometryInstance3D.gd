@@ -1,3 +1,4 @@
+extends VisualInstance3D
 #brief Base node for geometry-based visual instances.
 #desc Base node for geometry-based visual instances. Shares some common functionality like visibility and custom materials.
 class_name GeometryInstance3D

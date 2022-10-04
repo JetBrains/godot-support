@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A scalar floating-point function to be used within the visual shader graph.
 #desc Accept a floating-point scalar ([code]x[/code]) to the input port and transform it according to [member function].
 class_name VisualShaderNodeFloatFunc

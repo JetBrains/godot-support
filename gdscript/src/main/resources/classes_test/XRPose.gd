@@ -1,3 +1,4 @@
+extends RefCounted
 #brief This object contains all data related to a pose on a tracked object.
 #desc XR runtimes often identify multiple locations on devices such as controllers that are spatially tracked.
 #desc Orientation, location, linear velocity and angular velocity are all provided for each pose by the XR runtime. This object contains this state of a pose.

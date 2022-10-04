@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Controls how an individual character will be displayed in a [RichTextEffect].
 #desc By setting various properties on this object, you can control how individual characters will be displayed in a [RichTextEffect].
 class_name CharFXTransform

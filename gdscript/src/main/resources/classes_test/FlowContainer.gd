@@ -1,3 +1,4 @@
+extends Container
 #brief Base class for flow containers.
 #desc Arranges child [Control] nodes vertically or horizontally in a left-to-right or top-to-bottom flow.
 #desc A line is filled with [Control] nodes until no more fit on the same line, similar to text in an autowrapped label.

@@ -1,24 +1,25 @@
+extends Texture
 class_name Texture3D
 
 
 
 
-virtual const func _get_data() -> Image[]:
+func _get_data() -> Image[]:
 	pass;
 
-virtual const func _get_depth() -> int:
+func _get_depth() -> int:
 	pass;
 
-virtual const func _get_format() -> int:
+func _get_format() -> int:
 	pass;
 
-virtual const func _get_height() -> int:
+func _get_height() -> int:
 	pass;
 
-virtual const func _get_width() -> int:
+func _get_width() -> int:
 	pass;
 
-virtual const func _has_mipmaps() -> bool:
+func _has_mipmaps() -> bool:
 	pass;
 
 func get_data() -> Image[]:

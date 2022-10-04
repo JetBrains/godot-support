@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief Adds a chorus audio effect.
 #desc Adds a chorus audio effect. The effect applies a filter with voices to duplicate the audio source and manipulate it through the filter.
 class_name AudioEffectChorus

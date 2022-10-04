@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Helper class to implement a DTLS server.
 #desc This class is used to store the state of a DTLS server. Upon [method setup] it converts connected [PacketPeerUDP] to [PacketPeerDTLS] accepting them via [method take_connection] as DTLS clients. Under the hood, this class is used to store the DTLS state and cookies of the server. The reason of why the state and cookies are needed is outside of the scope of this documentation.
 #desc Below a small example of how to use it:

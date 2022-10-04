@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief Adds a distortion audio effect to an Audio bus.
 #brief Modify the sound to make it distorted.
 #desc Different types are available: clip, tan, lo-fi (bit crushing), overdrive, or waveshape.

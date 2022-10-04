@@ -1,3 +1,4 @@
+extends Node3D
 #brief Query the closest object intersecting a ray.
 #desc A RayCast represents a line from its origin to its destination position, [member target_position]. It is used to query the 3D space in order to find the closest object along the path of the ray.
 #desc RayCast3D can ignore some objects by adding them to the exception list via [method add_exception] or by setting proper filtering with collision layers and masks.

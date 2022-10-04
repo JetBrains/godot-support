@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A [Color] function to be used within the visual shader graph.
 #desc Accept a [Color] to the input port and transform it according to [member function].
 class_name VisualShaderNodeColorFunc

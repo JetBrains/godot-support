@@ -1,3 +1,4 @@
+extends Texture2D
 class_name CanvasTexture
 
 

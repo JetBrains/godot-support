@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Collision data for [method PhysicsBody3D.move_and_collide] collisions.
 #desc Contains collision data for [method PhysicsBody3D.move_and_collide] collisions. When a [PhysicsBody3D] is moved using [method PhysicsBody3D.move_and_collide], it stops if it detects a collision with another body. If a collision is detected, a [KinematicCollision3D] object is returned.
 #desc This object contains information about the collision, including the colliding object, the remaining motion, and the collision position. This information can be used to calculate a collision response.

@@ -1,3 +1,4 @@
+extends Mesh
 #brief Base class for all primitive meshes. Handles applying a [Material] to a primitive mesh.
 #desc Base class for all primitive meshes. Handles applying a [Material] to a primitive mesh. Examples include [BoxMesh], [CapsuleMesh], [CylinderMesh], [PlaneMesh], [PrismMesh], and [SphereMesh].
 class_name PrimitiveMesh
@@ -15,7 +16,7 @@ var material: Material;
 
 
 
-virtual const func _create_mesh_array() -> Array:
+func _create_mesh_array() -> Array:
 	pass;
 
 #desc Returns mesh arrays used to constitute surface of [Mesh]. The result can be passed to [method ArrayMesh.add_surface_from_arrays] to create a new surface. For example:

@@ -1,3 +1,4 @@
+extends VisualShaderNodeParameter
 #brief A scalar float parameter to be used within the visual shader graph.
 #desc Translated to [code]uniform float[/code] in the shader language.
 class_name VisualShaderNodeFloatParameter

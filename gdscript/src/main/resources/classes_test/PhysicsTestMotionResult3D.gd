@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Result from a 3D body motion test.
 #desc This class contains the motion and collision result from [method PhysicsServer3D.body_test_motion].
 class_name PhysicsTestMotionResult3D

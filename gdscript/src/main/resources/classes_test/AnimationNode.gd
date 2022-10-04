@@ -1,3 +1,4 @@
+extends Resource
 #brief Base resource for [AnimationTree] nodes.
 #desc Base resource for [AnimationTree] nodes. In general, it's not used directly, but you can create custom ones with custom blending formulas.
 #desc Inherit this when creating nodes mainly for use in [AnimationNodeBlendTree], otherwise [AnimationRootNode] should be used instead.
@@ -22,33 +23,33 @@ var filter_enabled: bool;
 
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to override the text caption for this node.
-virtual const func _get_caption() -> String:
+func _get_caption() -> String:
 	pass;
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to return a child node by its [param name].
-virtual const func _get_child_by_name(name: StringName) -> AnimationNode:
+func _get_child_by_name(name: StringName) -> AnimationNode:
 	pass;
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to return all children nodes in order as a [code]name: node[/code] dictionary.
-virtual const func _get_child_nodes() -> Dictionary:
+func _get_child_nodes() -> Dictionary:
 	pass;
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to return the default value of a [param parameter]. Parameters are custom local memory used for your nodes, given a resource can be reused in multiple trees.
-virtual const func _get_parameter_default_value(parameter: StringName) -> Variant:
+func _get_parameter_default_value(parameter: StringName) -> Variant:
 	pass;
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to return a list of the properties on this node. Parameters are custom local memory used for your nodes, given a resource can be reused in multiple trees. Format is similar to [method Object.get_property_list].
-virtual const func _get_parameter_list() -> Array:
+func _get_parameter_list() -> Array:
 	pass;
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to return whether the blend tree editor should display filter editing on this node.
-virtual const func _has_filter() -> bool:
+func _has_filter() -> bool:
 	pass;
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to run some code when this node is processed. The [param time] parameter is a relative delta, unless [param seek] is [code]true[/code], in which case it is absolute.
 #desc Here, call the [method blend_input], [method blend_node] or [method blend_animation] functions. You can also use [method get_parameter] and [method set_parameter] to modify local memory.
 #desc This function should return the time left for the current animation to finish (if unsure, pass the value from the main blend being called).
-virtual const func _process(time: float, seek: bool, seek_root: bool) -> float:
+func _process(time: float, seek: bool, seek_root: bool) -> float:
 	pass;
 
 #desc Adds an input to the node. This is only useful for nodes created for use in an [AnimationNodeBlendTree].

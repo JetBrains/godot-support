@@ -1,3 +1,4 @@
+extends VisualShaderNodeParameter
 class_name VisualShaderNodeIntParameter
 
 const HINT_NONE = 0;

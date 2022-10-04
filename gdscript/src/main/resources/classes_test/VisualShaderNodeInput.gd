@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Represents the input shader parameter within the visual shader graph.
 #desc Gives access to input variables (built-ins) available for the shader. See the shading reference for the list of available built-ins for each shader type (check [code]Tutorials[/code] section for link).
 class_name VisualShaderNodeInput

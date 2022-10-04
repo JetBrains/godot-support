@@ -45,11 +45,11 @@ func Callable(object: Object, method: StringName) -> Callable:
 
 
 #desc Returns a copy of this [Callable] with the arguments bound. Bound arguments are passed after the arguments supplied by [method call].
-vararg const func bind() -> Callable:
+func bind() -> Callable:
 	pass;
 
 #desc Calls the method represented by this [Callable]. Arguments can be passed and should match the method's signature.
-vararg const func call() -> Variant:
+func call() -> Variant:
 	pass;
 
 #desc Calls the method represented by this [Callable] in deferred mode, i.e. during the idle frame. Arguments can be passed and should match the method's signature.
@@ -57,7 +57,7 @@ vararg const func call() -> Variant:
 #desc func _ready():
 #desc grab_focus.call_deferred()
 #desc [/codeblock]
-vararg const func call_deferred() -> void:
+func call_deferred() -> void:
 	pass;
 
 #desc Calls the method represented by this [Callable]. Contrary to [method call], this method does not take a variable number of arguments but expects all arguments to be passed via a single [Array].
@@ -98,11 +98,11 @@ func is_valid() -> bool:
 	pass;
 
 #desc Perform an RPC (Remote Procedure Call). This is used for multiplayer and is normally not available unless the function being called has been marked as [i]RPC[/i]. Calling it on unsupported functions will result in an error.
-vararg const func rpc() -> void:
+func rpc() -> void:
 	pass;
 
 #desc Perform an RPC (Remote Procedure Call) on a specific peer ID (see multiplayer documentation for reference). This is used for multiplayer and is normally not available unless the function being called has been marked as [i]RPC[/i]. Calling it on unsupported functions will result in an error.
-vararg const func rpc_id(peer_id: int) -> void:
+func rpc_id(peer_id: int) -> void:
 	pass;
 
 #desc Returns a copy of this [Callable] with the arguments unbound. Calling the returned [Callable] will call the method without the extra arguments that are supplied in the [Callable] on which you are calling this method.

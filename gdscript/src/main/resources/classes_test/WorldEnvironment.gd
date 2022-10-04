@@ -1,3 +1,4 @@
+extends Node
 #brief Default environment properties for the entire scene (post-processing effects, lighting and background settings).
 #desc The [WorldEnvironment] node is used to configure the default [Environment] for the scene.
 #desc The parameters defined in the [WorldEnvironment] can be overridden by an [Environment] node set on the current [Camera3D]. Additionally, only one [WorldEnvironment] may be instantiated in a given scene at a time.

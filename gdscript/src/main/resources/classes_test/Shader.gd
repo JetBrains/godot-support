@@ -1,3 +1,4 @@
+extends Resource
 #brief A custom shader program.
 #desc This class allows you to define a custom shader program that can be used by a [ShaderMaterial]. Shaders allow you to write your own custom behavior for rendering objects or updating particle information. For a detailed explanation and usage, please see the tutorials linked below.
 class_name Shader

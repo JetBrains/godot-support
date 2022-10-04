@@ -1,3 +1,4 @@
+extends PanelContainer
 #brief Godot editor's script editor.
 #desc [b]Note:[/b] This class shouldn't be instantiated directly. Instead, access the singleton using [method EditorInterface.get_script_editor].
 class_name ScriptEditor

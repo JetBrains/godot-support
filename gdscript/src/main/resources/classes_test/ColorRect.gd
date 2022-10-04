@@ -1,3 +1,4 @@
+extends Control
 #brief Colored rectangle.
 #desc Displays a rectangle filled with a solid [member color]. If you need to display the border alone, consider using [ReferenceRect] instead.
 class_name ColorRect

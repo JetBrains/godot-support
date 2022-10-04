@@ -1,3 +1,4 @@
+extends PacketPeer
 #brief UDP packet peer.
 #desc UDP packet peer. Can be used to send raw UDP packets as well as [Variant]s.
 #desc [b]Note:[/b] When exporting to Android, make sure to enable the [code]INTERNET[/code] permission in the Android export preset before exporting the project or using one-click deploy. Otherwise, network communication of any kind will be blocked by Android.

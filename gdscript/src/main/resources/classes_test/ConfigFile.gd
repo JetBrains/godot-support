@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Helper class to handle INI-style files.
 #desc This helper class can be used to store [Variant] values on the filesystem using INI-style formatting. The stored values are identified by a section and a key:
 #desc [codeblock]

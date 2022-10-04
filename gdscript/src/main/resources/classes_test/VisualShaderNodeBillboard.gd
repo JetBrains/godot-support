@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A node that controls how the object faces the camera to be used within the visual shader graph.
 #desc The output port of this node needs to be connected to [code]Model View Matrix[/code] port of [VisualShaderNodeOutput].
 class_name VisualShaderNodeBillboard

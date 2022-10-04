@@ -1,3 +1,4 @@
+extends Window
 #brief Base dialog for user notification.
 #desc This dialog is useful for small notifications to the user about an event. It can only be accepted or closed, with the same result.
 class_name AcceptDialog

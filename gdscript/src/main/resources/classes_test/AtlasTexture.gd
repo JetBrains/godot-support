@@ -1,3 +1,4 @@
+extends Texture2D
 #brief A texture that crops out part of another Texture2D.
 #desc [Texture2D] resource that draws only part of its [member atlas] texture, as defined by the [member region]. An additional [member margin] can also be set, which is useful for small adjustments.
 #desc Multiple [AtlasTexture] resources can be cropped from the same [member atlas]. Packing many smaller textures into a singular large texture helps to optimize video memory costs and render calls.

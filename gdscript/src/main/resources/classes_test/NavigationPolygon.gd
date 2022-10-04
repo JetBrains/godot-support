@@ -1,3 +1,4 @@
+extends Resource
 #brief A node that has methods to draw outlines or use indices of vertices to create navigation polygons.
 #desc There are two ways to create polygons. Either by using the [method add_outline] method, or using the [method add_polygon] method.
 #desc Using [method add_outline]:

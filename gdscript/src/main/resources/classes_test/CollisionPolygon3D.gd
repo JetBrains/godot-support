@@ -1,3 +1,4 @@
+extends Node3D
 #brief Editor-only node for defining a collision polygon in 3D space.
 #desc Allows editing a concave or convex collision polygon's vertices on a selected plane. Can also set a depth perpendicular to that plane. This class is only available in the editor. It will not appear in the scene tree at run-time. Creates several [ConvexPolygonShape3D]s at run-time to represent the original polygon using convex decomposition.
 #desc [b]Note:[/b] Since this is an editor-only helper, properties modified during gameplay will have no effect.

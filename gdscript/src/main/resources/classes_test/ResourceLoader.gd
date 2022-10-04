@@ -1,3 +1,4 @@
+extends Object
 #brief Singleton used to load resource files.
 #desc Singleton used to load resource files from the filesystem.
 #desc It uses the many [ResourceFormatLoader] classes registered in the engine (either built-in or from a plugin) to load files into memory and convert them to a format that can be used by the engine.

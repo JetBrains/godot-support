@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Helper class for creating and parsing JSON data.
 #desc The [JSON] enables all data types to be converted to and from a JSON string. This useful for serializing data to save to a file or send over the network.
 #desc [method stringify] is used to convert any data type into a JSON string.

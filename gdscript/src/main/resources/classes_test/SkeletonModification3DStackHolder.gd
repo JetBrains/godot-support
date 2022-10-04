@@ -1,3 +1,4 @@
+extends SkeletonModification3D
 #brief A modification that holds and executes a [SkeletonModificationStack3D].
 #desc This [SkeletonModification3D] holds a reference to a [SkeletonModificationStack3D], allowing you to use multiple modification stacks on a single [Skeleton3D].
 #desc [b]Note:[/b] The modifications in the held [SkeletonModificationStack3D] will only be executed if their execution mode matches the execution mode of the SkeletonModification3DStackHolder.

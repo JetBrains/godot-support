@@ -1,3 +1,4 @@
+extends Shape2D
 #brief Separation ray shape resource for 2D physics.
 #desc 2D separation ray shape to be added as a [i]direct[/i] child of a [PhysicsBody2D] or [Area2D] using a [CollisionShape2D] node. A ray is not really a collision body; instead, it tries to separate itself from whatever is touching its far endpoint. It's often useful for characters.
 #desc [b]Performance:[/b] Being a primitive collision shape, [SeparationRayShape2D] is fast to check collisions against.

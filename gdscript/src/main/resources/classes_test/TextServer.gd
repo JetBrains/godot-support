@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Interface for the fonts and complex text layouts.
 #desc [TextServer] is the API backend for managing fonts, and rendering complex text.
 class_name TextServer

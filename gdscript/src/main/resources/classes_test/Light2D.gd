@@ -1,3 +1,4 @@
+extends Node2D
 #brief Casts light in a 2D environment.
 #desc Casts light in a 2D environment. Light is defined by a (usually grayscale) texture, a color, an energy value, a mode (see constants), and various other parameters (range and shadows-related).
 #desc [b]Note:[/b] Light2D can also be used as a mask.

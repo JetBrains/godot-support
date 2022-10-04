@@ -1,3 +1,4 @@
+extends ConfirmationDialog
 #brief A modified version of [FileDialog] used by the editor.
 class_name EditorFileDialog
 

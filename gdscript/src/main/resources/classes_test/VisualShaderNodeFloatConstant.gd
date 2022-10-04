@@ -1,3 +1,4 @@
+extends VisualShaderNodeConstant
 #brief A scalar floating-point constant to be used within the visual shader graph.
 #desc Translated to [code]float[/code] in the shader language.
 class_name VisualShaderNodeFloatConstant

@@ -34,14 +34,14 @@ class GdBlock : AbstractBlock {
 //                TokenType.WHITE_SPACE, GdTypes.DEDENT -> null;
                 TokenType.WHITE_SPACE, GdTypes.INDENT, GdTypes.DEDENT, GdTypes.NEW_LINE, GdTypes.NEW_LINE_END -> null;
 //                GdTypes.GET_DECL -> GdBlock(
-////                GdTypes.INDENT -> GdBlock(
-//                    child,
-//                    Wrap.createWrap(WrapType.NONE, false),
-//                    Alignment.createAlignment(),
-//                    settings,
-//                    spacing,
-//                    Indent.getNormalIndent(),
-//                )
+                GdTypes.SUITE -> GdBlock(
+                    child,
+                    Wrap.createWrap(WrapType.NONE, false),
+                    Alignment.createAlignment(),
+                    settings,
+                    spacing,
+                    Indent.getNormalIndent(),
+                )
                 else -> GdBlock(
                         child,
                         Wrap.createWrap(WrapType.NONE, false),

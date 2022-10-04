@@ -1,3 +1,4 @@
+extends AnimationNodeSync
 #brief Blends two of three animations additively inside of an [AnimationNodeBlendTree].
 #desc A resource to add to an [AnimationNodeBlendTree]. Blends two animations together additively out of three based on a value in the [code][-1.0, 1.0][/code] range.
 #desc This node has three inputs:

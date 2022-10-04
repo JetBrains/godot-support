@@ -1,3 +1,4 @@
+extends Resource
 class_name AnimationNodeStateMachineTransition
 
 #desc Switch to the next state immediately. The current state will end and blend into the beginning of the new one.

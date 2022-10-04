@@ -1,3 +1,4 @@
+extends Tweener
 #brief Interpolates an abstract value and supplies it to a method called over time.
 #desc [MethodTweener] is similar to a combination of [CallbackTweener] and [PropertyTweener]. It calls a method providing an interpolated value as a parameter. See [method Tween.tween_method] for more usage information.
 #desc [b]Note:[/b] [method Tween.tween_method] is the only correct way to create [MethodTweener]. Any [MethodTweener] created manually will not function correctly.

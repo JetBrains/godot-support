@@ -1,3 +1,4 @@
+extends SkeletonModification3D
 #brief A modification that moves two bones to reach the target.
 #desc This [SkeletonModification3D] uses an algorithm typically called TwoBoneIK. This algorithm works by leveraging the law of cosigns and the lengths of the bones to figure out what rotation the bones currently have, and what rotation they need to make a complete triangle, where the first bone, the second bone, and the target form the three vertices of the triangle. Because the algorithm works by making a triangle, it can only operate on two bones.
 #desc TwoBoneIK is great for arms, legs, and really any joints that can be represented by just two bones that bend to reach a target. This solver is more lightweight than [SkeletonModification3DFABRIK], but gives similar, natural looking results.

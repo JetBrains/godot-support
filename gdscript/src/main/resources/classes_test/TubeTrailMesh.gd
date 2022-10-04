@@ -1,3 +1,4 @@
+extends PrimitiveMesh
 class_name TubeTrailMesh
 
 

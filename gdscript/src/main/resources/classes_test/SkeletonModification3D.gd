@@ -1,3 +1,4 @@
+extends Resource
 #brief A resource that operates on bones in a [Skeleton3D].
 #desc This resource provides an interface that can be expanded so code that operates on bones in a [Skeleton3D] can be mixed and matched together to create complex interactions.
 #desc This is used to provide Godot with a flexible and powerful Inverse Kinematics solution that can be adapted for many different uses.
@@ -13,12 +14,12 @@ var execution_mode: int;
 
 
 #desc Executes the given modification. This is where the modification performs whatever function it is designed to do.
-virtual func _execute(delta: float) -> void:
+func _execute(delta: float) -> void:
 	pass;
 
 #desc Sets up the modification so it can be executed. This function should be called automatically by the [SkeletonModificationStack3D] containing this modification.
 #desc If you need to initialize a modification before use, this is the place to do it!
-virtual func _setup_modification(modification_stack: SkeletonModificationStack3D) -> void:
+func _setup_modification(modification_stack: SkeletonModificationStack3D) -> void:
 	pass;
 
 #desc Takes a angle and clamps it so it is within the passed-in [param min] and [param max] range. [param invert] will inversely clamp the angle, clamping it to the range outside of the given bounds.

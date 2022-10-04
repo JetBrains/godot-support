@@ -1,3 +1,4 @@
+extends Resource
 #brief Resource for environment nodes (like [WorldEnvironment]) that define multiple rendering options.
 #desc Resource for environment nodes (like [WorldEnvironment]) that define multiple environment operations (such as background [Sky] or [Color], ambient light, fog, depth-of-field...). These parameters affect the final render of the scene. The order of these operations is:
 #desc - Depth of Field Blur

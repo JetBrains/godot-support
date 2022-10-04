@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Plugin for adding custom parsers to extract strings that are to be translated from custom files (.csv, .json etc.).
 #desc [EditorTranslationParserPlugin] is invoked when a file is being parsed to extract strings that require translation. To define the parsing and string extraction logic, override the [method _parse_file] method in script.
 #desc Add the extracted strings to argument [code]msgids[/code] or [code]msgids_context_plural[/code] if context or plural is used.
@@ -100,11 +101,11 @@ class_name EditorTranslationParserPlugin
 
 
 #desc Gets the list of file extensions to associate with this parser, e.g. [code]["csv"][/code].
-virtual const func _get_recognized_extensions() -> PackedStringArray:
+func _get_recognized_extensions() -> PackedStringArray:
 	pass;
 
 #desc Override this method to define a custom parsing logic to extract the translatable strings.
-virtual func _parse_file(path: String, msgids: String[], msgids_context_plural: Array[]) -> void:
+func _parse_file(path: String, msgids: String[], msgids_context_plural: Array[]) -> void:
 	pass;
 
 

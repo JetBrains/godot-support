@@ -1,3 +1,4 @@
+extends Resource
 #brief Group of Buttons.
 #desc Group of [Button]. All direct and indirect children buttons become radios. Only one allows being pressed.
 #desc [member BaseButton.toggle_mode] should be [code]true[/code].

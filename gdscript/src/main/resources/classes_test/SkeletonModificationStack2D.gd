@@ -1,3 +1,4 @@
+extends Resource
 #brief A resource that holds a stack of [SkeletonModification2D]s.
 #desc This resource is used by the Skeleton and holds a stack of [SkeletonModification2D]s.
 #desc This controls the order of the modifications and how they are applied. Modification order is especially important for full-body IK setups, as you need to execute the modifications in the correct order to get the desired results. For example, you want to execute a modification on the spine [i]before[/i] the arms on a humanoid skeleton.

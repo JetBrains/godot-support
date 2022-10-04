@@ -1,3 +1,4 @@
+extends Node2D
 #brief Plays positional sound in 2D space.
 #desc Plays audio that dampens with distance from a given position.
 #desc By default, audio is heard from the screen center. This can be changed by adding an [AudioListener2D] node to the scene and enabling it by calling [method AudioListener2D.make_current] on it.

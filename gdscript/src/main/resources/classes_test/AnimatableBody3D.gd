@@ -1,3 +1,4 @@
+extends StaticBody3D
 #brief Physics body for 3D physics which moves only by script or animation. Useful for moving platforms and doors.
 #desc Animatable body for 3D physics.
 #desc An animatable body can't be moved by external forces or contacts, but can be moved by script or animation to affect other bodies in its path. It is ideal for implementing moving objects in the environment, such as moving platforms or doors.

@@ -1,3 +1,4 @@
+extends Material
 #brief Particle properties for [GPUParticles3D] and [GPUParticles2D] nodes.
 #desc ParticleProcessMaterial defines particle properties and behavior. It is used in the [code]process_material[/code] of [GPUParticles3D] and [GPUParticles2D] emitter nodes.
 #desc Some of this material's properties are applied to each particle when emitted, while others can have a [CurveTexture] applied to vary values over the lifetime of the particle.

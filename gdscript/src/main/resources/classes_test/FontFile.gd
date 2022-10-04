@@ -1,3 +1,4 @@
+extends Font
 #brief Font source data and prerendered glyph cache, imported from dynamic or bitmap font.
 #desc [FontFile] contains a set of glyphs to represent Unicode characters imported from a font file, as well as a cache of rasterized glyphs, and a set of fallback [Font]s to use.
 #desc Use [FontVariation] to access specific OpenType variation of the font, create simulated bold / slanted version, and draw lines of text.

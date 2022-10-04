@@ -1,3 +1,4 @@
+extends Material
 #brief Default 3D rendering material.
 #desc This provides a default material with a wide variety of rendering features and properties without the need to write shader code. See the tutorial below for details.
 class_name BaseMaterial3D

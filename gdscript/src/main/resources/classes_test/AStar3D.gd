@@ -1,3 +1,4 @@
+extends RefCounted
 #brief An implementation of A* to find the shortest paths among connected points in space.
 #desc A* (A star) is a computer algorithm that is widely used in pathfinding and graph traversal, the process of plotting short paths among vertices (points), passing through a given set of edges (segments). It enjoys widespread use due to its performance and accuracy. Godot's A* implementation uses points in three-dimensional space and Euclidean distances by default.
 #desc You must add points manually with [method add_point] and create segments manually with [method connect_points]. Then you can test if there is a path between two points with the [method are_points_connected] function, get a path containing indices by [method get_id_path], or one containing actual coordinates with [method get_point_path].
@@ -36,12 +37,12 @@ class_name AStar3D
 
 #desc Called when computing the cost between two connected points.
 #desc Note that this function is hidden in the default [code]AStar3D[/code] class.
-virtual const func _compute_cost(from_id: int, to_id: int) -> float:
+func _compute_cost(from_id: int, to_id: int) -> float:
 	pass;
 
 #desc Called when estimating the cost between a point and the path's ending point.
 #desc Note that this function is hidden in the default [code]AStar3D[/code] class.
-virtual const func _estimate_cost(from_id: int, to_id: int) -> float:
+func _estimate_cost(from_id: int, to_id: int) -> float:
 	pass;
 
 #desc Adds a new point at the given position with the given identifier. The [param id] must be 0 or larger, and the [param weight_scale] must be 0.0 or greater.

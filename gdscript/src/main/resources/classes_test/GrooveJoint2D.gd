@@ -1,3 +1,4 @@
+extends Joint2D
 #brief Groove constraint for 2D physics.
 #desc Groove constraint for 2D physics. This is useful for making a body "slide" through a segment placed in another.
 class_name GrooveJoint2D

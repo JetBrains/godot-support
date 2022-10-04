@@ -1,3 +1,4 @@
+extends Object
 #brief Server keeping track of different cameras accessible in Godot.
 #desc The [CameraServer] keeps track of different cameras accessible in Godot. These are external cameras such as webcams or the cameras on your phone.
 #desc It is notably used to provide AR modules with a video feed from the camera.

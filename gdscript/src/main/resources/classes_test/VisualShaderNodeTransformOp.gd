@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A [Transform3D] operator to be used within the visual shader graph.
 #desc Applies [member operator] to two transform (4x4 matrices) inputs.
 class_name VisualShaderNodeTransformOp

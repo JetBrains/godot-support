@@ -1,3 +1,4 @@
+extends PhysicsBody3D
 #brief Physics Body which is moved by 3D physics simulation. Useful for objects that have gravity and can be pushed by other objects.
 #desc This is the node that implements full 3D physics. This means that you do not control a RigidBody3D directly. Instead, you can apply forces to it (gravity, impulses, etc.), and the physics simulation will calculate the resulting movement, collision, bouncing, rotating, etc.
 #desc You can switch the body's behavior using [member lock_rotation], [member freeze], and [member freeze_mode].
@@ -109,7 +110,7 @@ var sleeping: bool;
 
 
 #desc Called during physics processing, allowing you to read and safely modify the simulation state for the object. By default, it works in addition to the usual physics behavior, but the [member custom_integrator] property allows you to disable the default behavior and do fully custom force integration for a body.
-virtual func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
+func _integrate_forces(state: PhysicsDirectBodyState3D) -> void:
 	pass;
 
 #desc Adds a constant directional force without affecting rotation that keeps being applied over time until cleared with [code]constant_force = Vector3(0, 0, 0)[/code].

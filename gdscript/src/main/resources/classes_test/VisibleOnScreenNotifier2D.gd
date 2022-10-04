@@ -1,3 +1,4 @@
+extends Node2D
 #brief Detects when the node extents are visible on screen.
 #desc The VisibleOnScreenNotifier2D detects when it is visible on the screen. It also notifies when its bounding rectangle enters or exits the screen or a viewport.
 #desc If you want nodes to be disabled automatically when they exit the screen, use [VisibleOnScreenEnabler2D] instead.

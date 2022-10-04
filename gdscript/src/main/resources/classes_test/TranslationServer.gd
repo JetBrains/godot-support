@@ -1,3 +1,4 @@
+extends Object
 #brief Server that manages all translations.
 #desc Server that manages all translations. Translations can be set to it and removed from it.
 class_name TranslationServer

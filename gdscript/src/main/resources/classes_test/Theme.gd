@@ -1,3 +1,4 @@
+extends Resource
 #brief Theme resource for styling/skinning [Control]s and [Window]s.
 #desc A theme resource is used for styling/skinning [Control] and [Window] nodes. While individual controls can be styled using their local theme overrides (see [method Control.add_theme_color_override]), theme resources allow you to store and apply the same settings between all controls sharing the same type (e.g. style all [Button]s the same). One theme resource can be used for the entire project, but you can also set a separate theme resource to a branch of control nodes. A theme resources assigned to a control node applies to the control itself, as well as all of its direct and indirect children (as long as a chain of controls is uninterrupted).
 #desc Use [member ProjectSettings.gui/theme/custom] to set up a project-scope theme that will be available to every control in your project.

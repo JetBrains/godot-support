@@ -1,3 +1,4 @@
+extends Texture2D
 #brief Simple texture that uses a mesh to draw itself.
 #desc Simple texture that uses a mesh to draw itself. It's limited because flags can't be changed and region drawing is not supported.
 class_name MeshTexture

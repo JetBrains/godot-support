@@ -1,3 +1,4 @@
+extends CanvasItem
 #brief All user interface nodes inherit from Control. A control's anchors and offsets adapt its position and size relative to its parent.
 #desc Base class for all UI-related nodes. [Control] features a bounding rectangle that defines its extents, an anchor position relative to its parent control or the current viewport, and offsets relative to the anchor. The offsets update automatically when the node, any of its parents, or the screen size change.
 #desc For more information on Godot's UI system, anchors, offsets, and containers, see the related tutorials in the manual. To build flexible UIs, you'll need a mix of UI elements that inherit from [Control] and [Container] nodes.
@@ -392,7 +393,7 @@ var tooltip_text: String;
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual const func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
+func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	pass;
 
 #desc Godot calls this method to pass you the [param data] from a control's [method _get_drag_data] result. Godot first calls [method _can_drop_data] to test if [param data] is allowed to drop at [param at_position] where [param at_position] is local to this control.
@@ -414,7 +415,7 @@ virtual const func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual func _drop_data(at_position: Vector2, data: Variant) -> void:
+func _drop_data(at_position: Vector2, data: Variant) -> void:
 	pass;
 
 #desc Godot calls this method to get data that can be dragged and dropped onto controls that expect drop data. Returns [code]null[/code] if there is no data to drag. Controls that want to receive drop data should implement [method _can_drop_data] and [method _drop_data]. [param at_position] is local to this control. Drag may be forced with [method force_drag].
@@ -435,13 +436,13 @@ virtual func _drop_data(at_position: Vector2, data: Variant) -> void:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual const func _get_drag_data(at_position: Vector2) -> Variant:
+func _get_drag_data(at_position: Vector2) -> Variant:
 	pass;
 
 #desc Virtual method to be implemented by the user. Returns the minimum size for this control. Alternative to [member custom_minimum_size] for controlling minimum size via code. The actual minimum size will be the max value of these two (in each axis separately).
 #desc If not overridden, defaults to [constant Vector2.ZERO].
 #desc [b]Note:[/b] This method will not be called when the script is attached to a [Control] node that already overrides its minimum size (e.g. [Label], [Button], [PanelContainer] etc.). It can only be used with most basic GUI nodes, like [Control], [Container], [Panel] etc.
-virtual const func _get_minimum_size() -> Vector2:
+func _get_minimum_size() -> Vector2:
 	pass;
 
 #desc Virtual method to be implemented by the user. Use this method to process and accept inputs on UI elements. See [method accept_event].
@@ -474,13 +475,13 @@ virtual const func _get_minimum_size() -> Vector2:
 #desc * control's parent has [member mouse_filter] set to [constant MOUSE_FILTER_STOP] or has accepted the event;
 #desc * it happens outside the parent's rectangle and the parent has either [member clip_contents] enabled.
 #desc [b]Note:[/b] Event position is relative to the control origin.
-virtual func _gui_input(event: InputEvent) -> void:
+func _gui_input(event: InputEvent) -> void:
 	pass;
 
 #desc Virtual method to be implemented by the user. Returns whether the given [param position] is inside this control.
 #desc If not overridden, default behavior is checking if the point is within control's Rect.
 #desc [b]Note:[/b] If you want to check if a point is inside the control, you can use [code]get_rect().has_point(point)[/code].
-virtual const func _has_point(position: Vector2) -> bool:
+func _has_point(position: Vector2) -> bool:
 	pass;
 
 #desc Virtual method to be implemented by the user. Returns a [Control] node that should be used as a tooltip instead of the default one. The [param for_text] includes the contents of the [member tooltip_text] property.
@@ -522,12 +523,12 @@ virtual const func _has_point(position: Vector2) -> bool:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual const func _make_custom_tooltip(for_text: String) -> Object:
+func _make_custom_tooltip(for_text: String) -> Object:
 	pass;
 
 #desc User defined BiDi algorithm override function.
 #desc Returns [code]Array[/code] of [code]Vector2i[/code] text ranges, in the left-to-right order. Ranges should cover full source [param text] without overlaps. BiDi algorithm will be used on each range separately.
-virtual const func _structured_text_parser(args: Array, text: String) -> Vector2i[]:
+func _structured_text_parser(args: Array, text: String) -> Vector2i[]:
 	pass;
 
 #desc Marks an input event as handled. Once you accept an input event, it stops propagating, even to nodes listening to [method Node._unhandled_input] or [method Node._unhandled_key_input].

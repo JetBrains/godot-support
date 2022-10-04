@@ -1,3 +1,4 @@
+extends VisualShaderNodeParameter
 #brief A boolean parameter to be used within the visual shader graph.
 #desc Translated to [code]uniform bool[/code] in the shader language.
 class_name VisualShaderNodeBooleanParameter

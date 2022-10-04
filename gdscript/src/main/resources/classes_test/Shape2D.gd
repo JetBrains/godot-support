@@ -1,3 +1,4 @@
+extends Resource
 #brief Base class for all 2D shapes.
 #desc Base class for all 2D shapes. All 2D shape types inherit from this.
 class_name Shape2D

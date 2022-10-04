@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Base class for all resources.
 #desc Resource is the base class for all Godot-specific resource types, serving primarily as data containers. Since they inherit from [RefCounted], resources are reference-counted and freed when no longer in use. They are also cached once loaded from disk, so that any further attempts to load a resource from a given path will return the same reference (all this in contrast to a [Node], which is not reference-counted and can be instantiated from disk as many times as desired). Resources can be saved externally on disk or bundled into another object, such as a [Node] or another resource.
 #desc [b]Note:[/b] In C#, resources will not be freed instantly after they are no longer in use. Instead, garbage collection will run periodically and will free resources that are no longer in use. This means that unused resources will linger on for a while before being removed.
@@ -15,7 +16,7 @@ var resource_path: String;
 
 
 
-virtual func _get_rid() -> RID:
+func _get_rid() -> RID:
 	pass;
 
 #desc Duplicates the resource, returning a new resource with the exported members copied. [b]Note:[/b] To duplicate the resource the constructor is called without arguments. This method will error when the constructor doesn't have default values.

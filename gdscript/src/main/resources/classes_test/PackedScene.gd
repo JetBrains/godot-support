@@ -1,3 +1,4 @@
+extends Resource
 #brief An abstraction of a serialized scene.
 #desc A simplified interface to a scene file. Provides access to operations and checks that can be performed on the scene resource itself.
 #desc Can be used to save a node to a file. When saving, the node as well as all the nodes it owns get saved (see [member Node.owner] property).

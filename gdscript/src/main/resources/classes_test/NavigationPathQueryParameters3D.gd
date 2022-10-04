@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Parameters to be sent to a 3D navigation path query.
 #desc This class contains the start and target position and other parameters to be used with [method NavigationServer3D.query_path].
 class_name NavigationPathQueryParameters3D

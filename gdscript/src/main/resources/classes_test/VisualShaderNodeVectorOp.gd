@@ -1,3 +1,4 @@
+extends VisualShaderNodeVectorBase
 #brief A vector operator to be used within the visual shader graph.
 #desc A visual shader node for use of vector operators. Operates on vector [code]a[/code] and vector [code]b[/code].
 class_name VisualShaderNodeVectorOp

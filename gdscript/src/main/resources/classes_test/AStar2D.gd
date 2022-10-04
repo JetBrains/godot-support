@@ -1,3 +1,4 @@
+extends RefCounted
 #brief AStar class representation that uses 2D vectors as edges.
 #desc This is a wrapper for the [AStar3D] class which uses 2D vectors instead of 3D vectors.
 class_name AStar2D
@@ -7,12 +8,12 @@ class_name AStar2D
 
 #desc Called when computing the cost between two connected points.
 #desc Note that this function is hidden in the default [code]AStar2D[/code] class.
-virtual const func _compute_cost(from_id: int, to_id: int) -> float:
+func _compute_cost(from_id: int, to_id: int) -> float:
 	pass;
 
 #desc Called when estimating the cost between a point and the path's ending point.
 #desc Note that this function is hidden in the default [code]AStar2D[/code] class.
-virtual const func _estimate_cost(from_id: int, to_id: int) -> float:
+func _estimate_cost(from_id: int, to_id: int) -> float:
 	pass;
 
 #desc Adds a new point at the given position with the given identifier. The [param id] must be 0 or larger, and the [param weight_scale] must be 0.0 or greater.

@@ -1,3 +1,4 @@
+extends Node
 #brief Base class of anything 2D.
 #desc Base class of anything 2D. Canvas items are laid out in a tree; children inherit and extend their parent's transform. [CanvasItem] is extended by [Control] for anything GUI-related, and by [Node2D] for anything related to the 2D engine.
 #desc Any [CanvasItem] can draw. For this, [method queue_redraw] is called by the engine, then [constant NOTIFICATION_DRAW] will be received on idle time to request redraw. Because of this, canvas items don't need to be redrawn on every frame, improving the performance significantly. Several functions for drawing on the [CanvasItem] are provided (see [code]draw_*[/code] functions). However, they can only be used inside [method _draw], its corresponding [method Object._notification] or methods connected to the [signal draw] signal.
@@ -104,7 +105,7 @@ var visible: bool;
 
 #desc Called when [CanvasItem] has been requested to redraw (after [method queue_redraw] is called, either manually or by the engine).
 #desc Corresponds to the [constant NOTIFICATION_DRAW] notification in [method Object._notification].
-virtual func _draw() -> void:
+func _draw() -> void:
 	pass;
 
 #desc Subsequent drawing commands will be ignored unless they fall within the specified animation slice. This is a faster way to implement animations that loop on background rather than redrawing constantly.

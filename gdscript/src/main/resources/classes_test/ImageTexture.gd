@@ -1,3 +1,4 @@
+extends Texture2D
 #brief A [Texture2D] based on an [Image].
 #desc A [Texture2D] based on an [Image]. For an image to be displayed, an [ImageTexture] has to be created from it using the [method create_from_image] method:
 #desc [codeblock]

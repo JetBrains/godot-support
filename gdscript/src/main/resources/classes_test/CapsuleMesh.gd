@@ -1,3 +1,4 @@
+extends PrimitiveMesh
 #brief Class representing a capsule-shaped [PrimitiveMesh].
 #desc Class representing a capsule-shaped [PrimitiveMesh].
 class_name CapsuleMesh

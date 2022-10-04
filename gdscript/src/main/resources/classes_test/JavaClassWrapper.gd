@@ -1,3 +1,4 @@
+extends Object
 class_name JavaClassWrapper
 
 

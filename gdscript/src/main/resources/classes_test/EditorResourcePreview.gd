@@ -1,3 +1,4 @@
+extends Node
 #brief Helper to generate previews of resources or files.
 #desc This object is used to generate previews for resources of files.
 #desc [b]Note:[/b] This class shouldn't be instantiated directly. Instead, access the singleton using [method EditorInterface.get_resource_previewer].

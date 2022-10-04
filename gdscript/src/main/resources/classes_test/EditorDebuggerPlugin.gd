@@ -1,3 +1,4 @@
+extends Control
 #brief A base class to implement debugger plugins.
 #desc [EditorDebuggerPlugin] provides functions related to the editor side of the debugger.
 #desc You don't need to instantiate this class; that is automatically handled by the debugger. [Control] nodes can be added as child nodes to provide a GUI for the plugin.

@@ -1,3 +1,4 @@
+extends AnimationRootNode
 #brief Blends linearly between three [AnimationNode] of any type placed in a 2D space.
 #desc A resource to add to an [AnimationNodeBlendTree].
 #desc This node allows you to blend linearly between three animations using a [Vector2] weight.

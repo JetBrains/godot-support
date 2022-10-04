@@ -1,3 +1,4 @@
+extends Node2D
 #brief Node for 2D tile-based maps.
 #desc Node for 2D tile-based maps. Tilemaps use a [TileSet] which contain a list of tiles which are used to create grid-based maps. A TileMap may have several layers, layouting tiles on top of each other.
 class_name TileMap
@@ -34,12 +35,12 @@ var tile_set: TileSet;
 #desc This method is only called if [method _use_tile_data_runtime_update] is implemented and returns [code]true[/code] for the given tile [param coords] and [param layer].
 #desc [b]Warning:[/b] The [param tile_data] object's sub-resources are the same as the one in the TileSet. Modifying them might impact the whole TileSet. Instead, make sure to duplicate those resources.
 #desc [b]Note:[/b] If the properties of [param tile_data] object should change over time, use [method force_update] to trigger a TileMap update.
-virtual func _tile_data_runtime_update(layer: int, coords: Vector2i, tile_data: TileData) -> void:
+func _tile_data_runtime_update(layer: int, coords: Vector2i, tile_data: TileData) -> void:
 	pass;
 
 #desc Should return [code]true[/code] if the tile at coordinates [param coords] on layer [param layer] requires a runtime update.
 #desc [b]Warning:[/b] Make sure this function only return [code]true[/code] when needed. Any tile processed at runtime without a need for it will imply a significant performance penalty.
-virtual func _use_tile_data_runtime_update(layer: int, coords: Vector2i) -> bool:
+func _use_tile_data_runtime_update(layer: int, coords: Vector2i) -> bool:
 	pass;
 
 #desc Adds a layer at the given position [param to_position] in the array. If [param to_position] is negative, the position is counted from the end, with [code]-1[/code] adding the layer at the end of the array.

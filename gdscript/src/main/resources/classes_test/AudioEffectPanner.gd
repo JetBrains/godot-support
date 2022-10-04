@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief Adds a panner audio effect to an audio bus. Pans sound left or right.
 #desc Determines how much of an audio signal is sent to the left and right buses.
 class_name AudioEffectPanner

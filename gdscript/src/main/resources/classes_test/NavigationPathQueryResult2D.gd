@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Result from a [NavigationPathQueryParameters2D] navigation path query.
 #desc This class contains the result of a navigation path query from [method NavigationServer2D.query_path].
 class_name NavigationPathQueryResult2D

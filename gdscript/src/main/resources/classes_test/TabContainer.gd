@@ -1,3 +1,4 @@
+extends Container
 #brief Tabbed container.
 #desc Arranges [Control] children into a tabbed view, creating a tab for each one. The active tab's corresponding [Control] has its [code]visible[/code] property set to [code]true[/code], and all other children's to [code]false[/code].
 #desc Ignores non-[Control] children.

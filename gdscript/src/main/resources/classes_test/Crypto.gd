@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Access to advanced cryptographic functionalities.
 #desc The Crypto class allows you to access some more advanced cryptographic functionalities in Godot.
 #desc For now, this includes generating cryptographically secure random bytes, RSA keys and self-signed X509 certificates generation, asymmetric key encryption/decryption, and signing/verification.

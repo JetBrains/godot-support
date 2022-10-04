@@ -1,3 +1,4 @@
+extends Resource
 #brief A resource that operates on [Bone2D] nodes in a [Skeleton2D].
 #desc This resource provides an interface that can be expanded so code that operates on [Bone2D] nodes in a [Skeleton2D] can be mixed and matched together to create complex interactions.
 #desc This is used to provide Godot with a flexible and powerful Inverse Kinematics solution that can be adapted for many different uses.
@@ -14,15 +15,15 @@ var execution_mode: int;
 
 #desc Used for drawing [b]editor-only[/b] modification gizmos. This function will only be called in the Godot editor and can be overridden to draw custom gizmos.
 #desc [b]Note:[/b] You will need to use the Skeleton2D from [method SkeletonModificationStack2D.get_skeleton] and it's draw functions, as the [SkeletonModification2D] resource cannot draw on its own.
-virtual func _draw_editor_gizmo() -> void:
+func _draw_editor_gizmo() -> void:
 	pass;
 
 #desc Executes the given modification. This is where the modification performs whatever function it is designed to do.
-virtual func _execute(delta: float) -> void:
+func _execute(delta: float) -> void:
 	pass;
 
 #desc Called when the modification is setup. This is where the modification performs initialization.
-virtual func _setup_modification(modification_stack: SkeletonModificationStack2D) -> void:
+func _setup_modification(modification_stack: SkeletonModificationStack2D) -> void:
 	pass;
 
 #desc Takes a angle and clamps it so it is within the passed-in [param min] and [param max] range. [param invert] will inversely clamp the angle, clamping it to the range outside of the given bounds.

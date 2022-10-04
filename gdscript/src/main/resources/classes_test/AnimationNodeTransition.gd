@@ -1,3 +1,4 @@
+extends AnimationNodeSync
 #brief A generic animation transition node for [AnimationTree].
 #desc Simple state machine for cases which don't require a more advanced [AnimationNodeStateMachine]. Animations can be connected to the inputs and transition times can be specified.
 class_name AnimationNodeTransition

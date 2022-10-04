@@ -1,3 +1,4 @@
+extends VisibleOnScreenNotifier2D
 class_name VisibleOnScreenEnabler2D
 
 const ENABLE_MODE_INHERIT = 0;

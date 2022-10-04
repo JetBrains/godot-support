@@ -1,3 +1,4 @@
+extends Object
 #brief Class information repository.
 #desc Provides access to metadata stored for every available class.
 class_name ClassDB

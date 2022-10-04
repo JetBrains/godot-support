@@ -1,3 +1,4 @@
+extends Object
 #brief Singleton for managing a cache of resource UIDs within a project.
 #desc Resources can not only be referenced using their resource paths [code]res://[/code], but alternatively through a unique identifier specified via [code]uid://[/code].
 #desc Using UIDs allows for the engine to keep references between resources intact, even if the files get renamed or moved.

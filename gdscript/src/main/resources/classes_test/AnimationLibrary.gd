@@ -1,3 +1,4 @@
+extends Resource
 #brief Container for [Animation] resources.
 #desc An animation library stores a set of animations accessible through [StringName] keys, for use with [AnimationPlayer] nodes.
 class_name AnimationLibrary

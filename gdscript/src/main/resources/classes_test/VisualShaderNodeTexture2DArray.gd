@@ -1,3 +1,4 @@
+extends VisualShaderNodeSample3D
 #brief A 2D texture uniform array to be used within the visual shader graph.
 #desc Translated to [code]uniform sampler2DArray[/code] in the shader language.
 class_name VisualShaderNodeTexture2DArray

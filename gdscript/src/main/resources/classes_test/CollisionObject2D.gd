@@ -1,3 +1,4 @@
+extends Node2D
 #brief Base node for 2D collision objects.
 #desc CollisionObject2D is the base class for 2D physics objects. It can hold any number of 2D collision [Shape2D]s. Each shape must be assigned to a [i]shape owner[/i]. The CollisionObject2D can have any number of shape owners. Shape owners are not nodes and do not appear in the editor, but are accessible through code using the [code]shape_owner_*[/code] methods.
 #desc [b]Note:[/b] Only collisions between objects within the same canvas ([Viewport] canvas or [CanvasLayer]) are supported. The behavior of collisions between objects in different canvases is undefined.
@@ -36,23 +37,23 @@ var input_pickable: bool;
 
 #desc Accepts unhandled [InputEvent]s. [param shape_idx] is the child index of the clicked [Shape2D]. Connect to the [code]input_event[/code] signal to easily pick up these events.
 #desc [b]Note:[/b] [method _input_event] requires [member input_pickable] to be [code]true[/code] and at least one [member collision_layer] bit to be set.
-virtual func _input_event(viewport: Viewport, event: InputEvent, shape_idx: int) -> void:
+func _input_event(viewport: Viewport, event: InputEvent, shape_idx: int) -> void:
 	pass;
 
 #desc Called when the mouse pointer enters any of this object's shapes. Requires [member input_pickable] to be [code]true[/code] and at least one [member collision_layer] bit to be set. Note that moving between different shapes within a single [CollisionObject2D] won't cause this function to be called.
-virtual func _mouse_enter() -> void:
+func _mouse_enter() -> void:
 	pass;
 
 #desc Called when the mouse pointer exits all this object's shapes. Requires [member input_pickable] to be [code]true[/code] and at least one [member collision_layer] bit to be set. Note that moving between different shapes within a single [CollisionObject2D] won't cause this function to be called.
-virtual func _mouse_exit() -> void:
+func _mouse_exit() -> void:
 	pass;
 
 #desc Called when the mouse pointer enters any of this object's shapes or moves from one shape to another. [param shape_idx] is the child index of the newly entered [Shape2D]. Requires [member input_pickable] to be [code]true[/code] and at least one [member collision_layer] bit to be called.
-virtual func _mouse_shape_enter(shape_idx: int) -> void:
+func _mouse_shape_enter(shape_idx: int) -> void:
 	pass;
 
 #desc Called when the mouse pointer exits any of this object's shapes. [param shape_idx] is the child index of the exited [Shape2D]. Requires [member input_pickable] to be [code]true[/code] and at least one [member collision_layer] bit to be called.
-virtual func _mouse_shape_exit(shape_idx: int) -> void:
+func _mouse_shape_exit(shape_idx: int) -> void:
 	pass;
 
 #desc Creates a new shape owner for the given object. Returns [code]owner_id[/code] of the new owner for future reference.

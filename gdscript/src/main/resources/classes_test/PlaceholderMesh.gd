@@ -1,3 +1,4 @@
+extends Mesh
 class_name PlaceholderMesh
 
 

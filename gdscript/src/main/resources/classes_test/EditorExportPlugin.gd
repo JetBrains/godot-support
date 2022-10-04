@@ -1,3 +1,4 @@
+extends RefCounted
 #brief A script that is executed when exporting the project.
 #desc [EditorExportPlugin]s are automatically invoked whenever the user exports the project. Their most common use is to determine what files are being included in the exported project. For each plugin, [method _export_begin] is called at the beginning of the export process and then [method _export_file] is called for each exported file.
 #desc To use [EditorExportPlugin], register it using the [method EditorPlugin.add_export_plugin] method first.
@@ -7,49 +8,49 @@ class_name EditorExportPlugin
 
 
 #desc Return true if this plugin will customize resources based on the platform and features used.
-virtual const func _begin_customize_resources(platform: EditorExportPlatform, features: PackedStringArray) -> bool:
+func _begin_customize_resources(platform: EditorExportPlatform, features: PackedStringArray) -> bool:
 	pass;
 
 #desc Return true if this plugin will customize scenes based on the platform and features used.
-virtual const func _begin_customize_scenes(platform: EditorExportPlatform, features: PackedStringArray) -> bool:
+func _begin_customize_scenes(platform: EditorExportPlatform, features: PackedStringArray) -> bool:
 	pass;
 
 #desc Customize a resource. If changes are made to it, return the same or a new resource. Otherwise, return [code]null[/code].
 #desc The [i]path[/i] argument is only used when customizing an actual file, otherwise this means that this resource is part of another one and it will be empty.
-virtual func _customize_resource(resource: Resource, path: String) -> Resource:
+func _customize_resource(resource: Resource, path: String) -> Resource:
 	pass;
 
 #desc Customize a scene. If changes are made to it, return the same or a new scene. Otherwise, return [code]null[/code]. If a new scene is returned, it is up to you to dispose of the old one.
-virtual func _customize_scene(scene: Node, path: String) -> Node:
+func _customize_scene(scene: Node, path: String) -> Node:
 	pass;
 
 #desc This is called when the customization process for resources ends.
-virtual func _end_customize_resources() -> void:
+func _end_customize_resources() -> void:
 	pass;
 
 #desc This is called when the customization process for scenes ends.
-virtual func _end_customize_scenes() -> void:
+func _end_customize_scenes() -> void:
 	pass;
 
 #desc Virtual method to be overridden by the user. It is called when the export starts and provides all information about the export. [param features] is the list of features for the export, [param is_debug] is [code]true[/code] for debug builds, [param path] is the target path for the exported project. [param flags] is only used when running a runnable profile, e.g. when using native run on Android.
-virtual func _export_begin(features: PackedStringArray, is_debug: bool, path: String, flags: int) -> void:
+func _export_begin(features: PackedStringArray, is_debug: bool, path: String, flags: int) -> void:
 	pass;
 
 #desc Virtual method to be overridden by the user. Called when the export is finished.
-virtual func _export_end() -> void:
+func _export_end() -> void:
 	pass;
 
 #desc Virtual method to be overridden by the user. Called for each exported file, providing arguments that can be used to identify the file. [param path] is the path of the file, [param type] is the [Resource] represented by the file (e.g. [PackedScene]) and [param features] is the list of features for the export.
 #desc Calling [method skip] inside this callback will make the file not included in the export.
-virtual func _export_file(path: String, type: String, features: PackedStringArray) -> void:
+func _export_file(path: String, type: String, features: PackedStringArray) -> void:
 	pass;
 
 #desc Return a hash based on the configuration passed (for both scenes and resources). This helps keep separate caches for separate export configurations.
-virtual const func _get_customization_configuration_hash() -> int:
+func _get_customization_configuration_hash() -> int:
 	pass;
 
 #desc Return the name identifier of this plugin (for future identification by the exporter).
-virtual const func _get_name() -> String:
+func _get_name() -> String:
 	pass;
 
 #desc Adds a custom file to be exported. [param path] is the virtual path that can be used to load the file, [param file] is the binary data of the file. If [param remap] is [code]true[/code], file will not be exported, but instead remapped to the given [param path].

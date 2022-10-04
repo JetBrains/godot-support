@@ -1,3 +1,4 @@
+extends SkeletonModification2D
 #brief A modification that applies the transforms of [PhysicalBone2D] nodes to [Bone2D] nodes.
 #desc This modification takes the transforms of [PhysicalBone2D] nodes and applies them to [Bone2D] nodes. This allows the [Bone2D] nodes to react to physics thanks to the linked [PhysicalBone2D] nodes.
 #desc Experimental. Physical bones may be changed in the future to perform the position update of [Bone2D] on their own.

@@ -1,3 +1,4 @@
+extends InputEventGesture
 class_name InputEventMagnifyGesture
 
 

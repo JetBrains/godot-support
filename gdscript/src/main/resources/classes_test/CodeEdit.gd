@@ -1,3 +1,4 @@
+extends TextEdit
 #brief Multiline text control intended for editing code.
 #desc CodeEdit is a specialised [TextEdit] designed for editing plain text code files. It contains a bunch of features commonly found in code editors such as line numbers, line folding, code completion, indent management and string / comment management.
 #desc [b]Note:[/b] By default [CodeEdit] always use left-to-right text direction to correctly display source code.
@@ -101,16 +102,16 @@ var text_direction: int;
 
 
 #desc Override this method to define how the selected entry should be inserted. If [param replace] is true, any existing text should be replaced.
-virtual func _confirm_code_completion(replace: bool) -> void:
+func _confirm_code_completion(replace: bool) -> void:
 	pass;
 
 #desc Override this method to define what items in [param candidates] should be displayed.
 #desc Both [param candidates] and the return is a [Array] of [Dictionary], see [method get_code_completion_option] for [Dictionary] content.
-virtual const func _filter_code_completion_candidates(candidates: Dictionary[]) -> Dictionary[]:
+func _filter_code_completion_candidates(candidates: Dictionary[]) -> Dictionary[]:
 	pass;
 
 #desc Override this method to define what happens when the user requests code completion. If [param force] is true, any checks should be bypassed.
-virtual func _request_code_completion(force: bool) -> void:
+func _request_code_completion(force: bool) -> void:
 	pass;
 
 #desc Adds a brace pair.

@@ -1,3 +1,4 @@
+extends GPUParticlesAttractor3D
 #brief Box-shaped 3D particle attractor affecting [GPUParticles3D] nodes.
 #desc Box-shaped 3D particle attractor affecting [GPUParticles3D] nodes.
 #desc [b]Note:[/b] Particle attractors only affect [GPUParticles3D], not [CPUParticles3D].

@@ -1,3 +1,4 @@
+extends Resource
 #brief Base class for audio streams.
 #desc Base class for audio streams. Audio streams are used for sound effects and music playback, and support WAV (via [AudioStreamWAV]) and Ogg (via [AudioStreamOggVorbis]) file formats.
 class_name AudioStream
@@ -5,22 +6,22 @@ class_name AudioStream
 
 
 
-virtual const func _get_beat_count() -> int:
+func _get_beat_count() -> int:
 	pass;
 
-virtual const func _get_bpm() -> float:
+func _get_bpm() -> float:
 	pass;
 
-virtual const func _get_length() -> float:
+func _get_length() -> float:
 	pass;
 
-virtual const func _get_stream_name() -> String:
+func _get_stream_name() -> String:
 	pass;
 
-virtual const func _instantiate_playback() -> AudioStreamPlayback:
+func _instantiate_playback() -> AudioStreamPlayback:
 	pass;
 
-virtual const func _is_monophonic() -> bool:
+func _is_monophonic() -> bool:
 	pass;
 
 #desc Returns the length of the audio stream in seconds.

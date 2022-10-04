@@ -1,3 +1,4 @@
+extends Object
 #brief Direct access object to a physics body in the [PhysicsServer2D].
 #desc Provides direct access to a physics body in the [PhysicsServer2D], allowing safe changes to physics properties. This object is passed via the direct state callback of rigid bodies, and is intended for changing the direct state of that body. See [method RigidBody2D._integrate_forces].
 class_name PhysicsDirectBodyState2D

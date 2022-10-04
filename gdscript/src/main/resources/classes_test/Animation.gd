@@ -1,3 +1,4 @@
+extends Resource
 #brief Contains data used to animate everything in the engine.
 #desc An Animation resource contains data used to animate everything in the engine. Animations are divided into tracks, and each track must be linked to a node. The state of that node can be changed through time, by adding timed keys (events) to the track.
 #desc [codeblocks]

@@ -1,3 +1,4 @@
+extends Object
 class_name NativeExtensionManager
 
 const LOAD_STATUS_OK = 0;

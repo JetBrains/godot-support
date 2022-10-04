@@ -1,3 +1,4 @@
+extends Object
 #brief Server interface for low-level 3D navigation access
 #desc NavigationServer3D is the server responsible for all 3D navigation. It handles several objects, namely maps, regions and agents.
 #desc Maps are made up of regions, which are made of navigation meshes. Together, they define the navigable areas in the 3D world.

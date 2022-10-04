@@ -1,3 +1,4 @@
+extends Node
 #brief Base class for viewports.
 #desc A Viewport creates a different view into the screen, or a sub-view inside another viewport. Children 2D Nodes will display on it, and children Camera3D 3D nodes will render on it too.
 #desc Optionally, a viewport can have its own 2D or 3D world, so they don't share what they draw with other viewports.

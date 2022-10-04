@@ -1,3 +1,4 @@
+extends Control
 #brief Tab bar control.
 #desc Simple tabs control, similar to [TabContainer] but is only in charge of drawing tabs, not interacting with children.
 class_name TabBar

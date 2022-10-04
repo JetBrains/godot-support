@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Interface to low level AES encryption features.
 #desc This class provides access to AES encryption/decryption of raw data. Both AES-ECB and AES-CBC mode are supported.
 #desc [codeblocks]

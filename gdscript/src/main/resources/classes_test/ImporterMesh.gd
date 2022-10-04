@@ -1,3 +1,4 @@
+extends Resource
 #brief A [Resource] that contains vertex array-based geometry during the import process.
 #desc ImporterMesh is a type of [Resource] analogous to [ArrayMesh]. It contains vertex array-based geometry, divided in [i]surfaces[/i]. Each surface contains a completely separate array and a material used to draw it. Design wise, a mesh with multiple surfaces is preferred to a single surface, because objects created in 3D editing software commonly contain multiple materials.
 #desc 

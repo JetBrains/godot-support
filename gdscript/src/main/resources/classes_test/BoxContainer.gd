@@ -1,3 +1,4 @@
+extends Container
 #brief Base class for box containers.
 #desc Arranges child [Control] nodes vertically or horizontally, and rearranges them automatically when their minimum size changes.
 class_name BoxContainer

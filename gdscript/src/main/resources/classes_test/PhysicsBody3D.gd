@@ -1,3 +1,4 @@
+extends CollisionObject3D
 #brief Base class for all objects affected by physics in 3D space.
 #desc PhysicsBody3D is an abstract base class for implementing a physics body. All *Body types inherit from it.
 class_name PhysicsBody3D

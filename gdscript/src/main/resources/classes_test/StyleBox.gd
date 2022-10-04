@@ -1,3 +1,4 @@
+extends Resource
 #brief Base class for drawing stylized boxes for the UI.
 #desc StyleBox is [Resource] that provides an abstract base class for drawing stylized boxes for the UI. StyleBoxes are used for drawing the styles of buttons, line edit backgrounds, tree backgrounds, etc. and also for testing a transparency mask for pointer signals. If mask test fails on a StyleBox assigned as mask to a control, clicks and motion signals will go through it to the one below.
 #desc [b]Note:[/b] For children of [Control] that have [i]Theme Properties[/i], the [code]focus[/code] [StyleBox] is displayed over the [code]normal[/code], [code]hover[/code] or [code]pressed[/code] [StyleBox]. This makes the [code]focus[/code] [StyleBox] more reusable across different nodes.
@@ -24,19 +25,19 @@ var content_margin_top: float;
 
 
 
-virtual const func _draw(to_canvas_item: RID, rect: Rect2) -> void:
+func _draw(to_canvas_item: RID, rect: Rect2) -> void:
 	pass;
 
-virtual const func _get_center_size() -> Vector2:
+func _get_center_size() -> Vector2:
 	pass;
 
-virtual const func _get_draw_rect(rect: Rect2) -> Rect2:
+func _get_draw_rect(rect: Rect2) -> Rect2:
 	pass;
 
-virtual const func _get_style_margin(side: int) -> float:
+func _get_style_margin(side: int) -> float:
 	pass;
 
-virtual const func _test_mask(point: Vector2, rect: Rect2) -> bool:
+func _test_mask(point: Vector2, rect: Rect2) -> bool:
 	pass;
 
 #desc Draws this stylebox using a canvas item identified by the given [RID].

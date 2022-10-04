@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Used to create an HMAC for a message using a key.
 #desc The HMACContext class is useful for advanced HMAC use cases, such as streaming the message as it supports creating the message over time rather than providing it all at once.
 #desc [codeblocks]

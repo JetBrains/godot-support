@@ -1,3 +1,4 @@
+extends Joint3D
 #brief Pin joint for 3D PhysicsBodies.
 #desc Pin joint for 3D rigid bodies. It pins 2 bodies (dynamic or static) together. See also [Generic6DOFJoint3D].
 class_name PinJoint3D

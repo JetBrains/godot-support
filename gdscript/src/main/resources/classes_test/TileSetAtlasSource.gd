@@ -1,3 +1,4 @@
+extends TileSetSource
 #brief Exposes a 2D atlas texture as a set of tiles for a [TileSet] resource.
 #desc An atlas is a grid of tiles laid out on a texture. Each tile in the grid must be exposed using [method create_tile]. Those tiles are then indexed using their coordinates in the grid.
 #desc Each tile can also have a size in the grid coordinates, making it more or less cells in the atlas.

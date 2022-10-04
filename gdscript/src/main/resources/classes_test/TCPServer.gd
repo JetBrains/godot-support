@@ -1,3 +1,4 @@
+extends RefCounted
 #brief A TCP server.
 #desc A TCP server. Listens to connections on a port and returns a [StreamPeerTCP] when it gets an incoming connection.
 #desc [b]Note:[/b] When exporting to Android, make sure to enable the [code]INTERNET[/code] permission in the Android export preset before exporting the project or using one-click deploy. Otherwise, network communication of any kind will be blocked by Android.

@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A selector function for use within the visual shader graph.
 #desc Returns an associated value of the [code]op_type[/code] type if the provided boolean value is [code]true[/code] or [code]false[/code].
 class_name VisualShaderNodeSwitch

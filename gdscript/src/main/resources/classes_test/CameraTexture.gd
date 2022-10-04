@@ -1,3 +1,4 @@
+extends Texture2D
 #brief Texture provided by a [CameraFeed].
 #desc This texture gives access to the camera texture provided by a [CameraFeed].
 #desc [b]Note:[/b] Many cameras supply YCbCr images which need to be converted in a shader.

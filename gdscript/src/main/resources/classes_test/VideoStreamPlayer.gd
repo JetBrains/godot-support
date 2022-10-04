@@ -1,3 +1,4 @@
+extends Control
 #brief Control for playing video streams.
 #desc Control node for playing video streams using [VideoStream] resources.
 #desc Supported video formats are [url=https://www.theora.org/]Ogg Theora[/url] ([code].ogv[/code], [VideoStreamTheora]) and any format exposed via a GDExtension plugin.

@@ -1,3 +1,4 @@
+extends Shader
 #brief A custom shader program with a visual editor.
 #desc This class allows you to define a custom shader program that can be used for various materials to render objects.
 #desc The visual shader editor creates the shader.

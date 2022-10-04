@@ -1,3 +1,4 @@
+extends PhysicsBody2D
 #brief Physics Body which is moved by 2D physics simulation. Useful for objects that have gravity and can be pushed by other objects.
 #desc This node implements simulated 2D physics. You do not control a RigidBody2D directly. Instead, you apply forces to it (gravity, impulses, etc.) and the physics simulation calculates the resulting movement based on its mass, friction, and other physical properties.
 #desc You can switch the body's behavior using [member lock_rotation], [member freeze], and [member freeze_mode].
@@ -119,7 +120,7 @@ var sleeping: bool;
 
 
 #desc Allows you to read and safely modify the simulation state for the object. Use this instead of [method Node._physics_process] if you need to directly change the body's [code]position[/code] or other physics properties. By default, it works in addition to the usual physics behavior, but [member custom_integrator] allows you to disable the default behavior and write custom force integration for a body.
-virtual func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	pass;
 
 #desc Adds a constant directional force without affecting rotation that keeps being applied over time until cleared with [code]constant_force = Vector2(0, 0)[/code].

@@ -1,3 +1,4 @@
+extends Node3D
 #brief Provides occlusion culling for 3D nodes, which improves performance in closed areas.
 #desc Occlusion culling can improve rendering performance in closed/semi-open areas by hiding geometry that is occluded by other objects.
 #desc The occlusion culling system is mostly static. [OccluderInstance3D]s can be moved or hidden at run-time, but doing so will trigger a background recomputation that can take several frames. It is recommended to only move [OccluderInstance3D]s sporadically (e.g. for procedural generation purposes), rather than doing so every frame.

@@ -1,3 +1,4 @@
+extends ScrollContainer
 #brief A control used to edit properties of an object.
 #desc This is the control that implements property editing in the editor's Settings dialogs, the Inspector dock, etc. To get the [EditorInspector] used in the editor's Inspector dock, use [method EditorInterface.get_inspector].
 #desc [EditorInspector] will show properties in the same order as the array returned by [method Object.get_property_list].

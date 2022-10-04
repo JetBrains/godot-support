@@ -1,3 +1,4 @@
+extends VisualInstance3D
 #brief Detects approximately when the node is visible on screen.
 #desc The VisibleOnScreenNotifier3D detects when it is visible on the screen. It also notifies when its bounding rectangle enters or exits the screen or a [Camera3D]'s view.
 #desc If you want nodes to be disabled automatically when they exit the screen, use [VisibleOnScreenEnabler3D] instead.

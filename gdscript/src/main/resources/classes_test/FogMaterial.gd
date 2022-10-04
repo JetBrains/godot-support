@@ -1,3 +1,4 @@
+extends Material
 #brief [Material] used with a [FogVolume] to draw things with the volumetric fog effect.
 #desc A [Material] resource that can be used by [FogVolume]s to draw volumetric effects.
 #desc If you need more advanced effects, use a custom [url=$DOCS_URL/tutorials/shaders/shader_reference/fog_shader.html]fog shader[/url].

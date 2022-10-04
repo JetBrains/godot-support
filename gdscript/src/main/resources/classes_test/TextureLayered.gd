@@ -1,3 +1,4 @@
+extends Texture
 #brief Base class for texture types which contain the data of multiple [Image]s. Each image is of the same size and format.
 #desc Base class for [Texture2DArray], [Cubemap] and [CubemapArray]. Cannot be used directly, but contains all the functions necessary for accessing the derived resource types.
 #desc Data is set on a per-layer basis. For [Texture2DArray]s, the layer specifies the array layer.
@@ -16,25 +17,25 @@ const LAYERED_TYPE_CUBEMAP_ARRAY = 2;
 
 
 
-virtual const func _get_format() -> int:
+func _get_format() -> int:
 	pass;
 
-virtual const func _get_height() -> int:
+func _get_height() -> int:
 	pass;
 
-virtual const func _get_layer_data(layer_index: int) -> Image:
+func _get_layer_data(layer_index: int) -> Image:
 	pass;
 
-virtual const func _get_layered_type() -> int:
+func _get_layered_type() -> int:
 	pass;
 
-virtual const func _get_layers() -> int:
+func _get_layers() -> int:
 	pass;
 
-virtual const func _get_width() -> int:
+func _get_width() -> int:
 	pass;
 
-virtual const func _has_mipmaps() -> bool:
+func _has_mipmaps() -> bool:
 	pass;
 
 #desc Returns the current format being used by this texture. See [enum Image.Format] for details.

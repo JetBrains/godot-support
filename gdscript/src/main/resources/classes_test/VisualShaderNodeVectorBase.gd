@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief A base type for the nodes using different vector types within the visual shader graph.
 class_name VisualShaderNodeVectorBase
 

@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Low-level hyper-text transfer protocol client.
 #desc Hyper-text transfer protocol client (sometimes called "User Agent"). Used to make HTTP requests to download web content, upload files and other data or to communicate with various services, among other use cases.
 #desc See the [HTTPRequest] node for a higher-level alternative.

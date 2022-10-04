@@ -1,3 +1,4 @@
+extends Object
 #brief A directory for the resource filesystem.
 #desc A more generalized, low-level variation of the directory concept.
 class_name EditorFileSystemDirectory

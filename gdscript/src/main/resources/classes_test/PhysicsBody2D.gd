@@ -1,3 +1,4 @@
+extends CollisionObject2D
 #brief Base class for all objects affected by physics in 2D space.
 #desc PhysicsBody2D is an abstract base class for implementing a physics body. All *Body2D types inherit from it.
 class_name PhysicsBody2D

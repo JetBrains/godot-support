@@ -1,3 +1,4 @@
+extends PrimitiveMesh
 #brief Class representing a cylindrical [PrimitiveMesh].
 #desc Class representing a cylindrical [PrimitiveMesh]. This class can be used to create cones by setting either the [member top_radius] or [member bottom_radius] properties to [code]0.0[/code].
 class_name CylinderMesh

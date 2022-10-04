@@ -1,3 +1,4 @@
+extends AudioStream
 #brief Wraps a pool of audio streams with pitch and volume shifting.
 #desc Picks a random AudioStream from the pool, depending on the playback mode, and applies random pitch shifting and volume shifting during playback.
 class_name AudioStreamRandomizer

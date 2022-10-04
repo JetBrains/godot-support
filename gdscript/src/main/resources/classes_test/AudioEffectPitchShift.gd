@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief Adds a pitch-shifting audio effect to an audio bus.
 #brief Raises or lowers the pitch of original sound.
 #desc Allows modulation of pitch independently of tempo. All frequencies can be increased/decreased with minimal effect on transients.

@@ -1,3 +1,4 @@
+extends Object
 #brief Server for anything visible.
 #desc Server for anything visible. The rendering server is the API backend for everything visible. The whole scene system mounts on it to display.
 #desc The rendering server is completely opaque, the internals are entirely implementation specific and cannot be accessed.

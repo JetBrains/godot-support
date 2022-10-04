@@ -1,3 +1,4 @@
+extends SkeletonModification2D
 #brief A modification that holds and executes a [SkeletonModificationStack2D].
 #desc This [SkeletonModification2D] holds a reference to a [SkeletonModificationStack2D], allowing you to use multiple modification stacks on a single [Skeleton2D].
 #desc [b]Note:[/b] The modifications in the held [SkeletonModificationStack2D] will only be executed if their execution mode matches the execution mode of the SkeletonModification2DStackHolder.

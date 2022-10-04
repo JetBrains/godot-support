@@ -1,3 +1,4 @@
+extends PacketPeer
 #brief A high-level network interface to simplify multiplayer interactions.
 #desc Manages the connection to multiplayer peers. Assigns unique IDs to each client connected to the server. See also [MultiplayerAPI].
 #desc [b]Note:[/b] The high-level multiplayer API protocol is an implementation detail and isn't meant to be used by non-Godot servers. It may change without notice.

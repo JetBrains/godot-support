@@ -1,3 +1,4 @@
+extends Object
 #brief Singleton that connects the engine with the browser's JavaScript context in Web export.
 #desc The JavaScriptBridge singleton is implemented only in the Web export. It's used to access the browser's JavaScript context. This allows interaction with embedding pages or calling third-party JavaScript APIs.
 #desc [b]Note:[/b] This singleton can be disabled at build-time to improve security. By default, the JavaScriptBridge singleton is enabled. Official export templates also have the JavaScriptBridge singleton enabled. See [url=$DOCS_URL/development/compiling/compiling_for_web.html]Compiling for the Web[/url] in the documentation for more information.
@@ -11,7 +12,7 @@ func create_callback(callable: Callable) -> JavaScriptObject:
 	pass;
 
 #desc Creates a new JavaScript object using the [code]new[/code] constructor. The [param object] must a valid property of the JavaScript [code]window[/code]. See [JavaScriptObject] for usage.
-vararg func create_object(object: String) -> Variant:
+func create_object(object: String) -> Variant:
 	pass;
 
 #desc Prompts the user to download a file containing the specified [param buffer]. The file will have the given [param name] and [param mime] type.

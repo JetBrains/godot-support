@@ -1,3 +1,4 @@
+extends PhysicsBody2D
 #brief Specialized 2D physics body node for characters moved by script.
 #desc Character bodies are special types of bodies that are meant to be user-controlled. They are not affected by physics at all; to other types of bodies, such as a rigid body, these are the same as a [AnimatableBody2D]. However, they have two main uses:
 #desc [b]Kinematic characters:[/b] Character bodies have an API for moving objects with walls and slopes detection ([method move_and_slide] method), in addition to collision detection (also done with [method PhysicsBody2D.move_and_collide]). This makes them really useful to implement characters that move in specific ways and collide with the world, but don't require advanced physics.

@@ -1,3 +1,4 @@
+extends Shape3D
 #brief Separation ray shape resource for 3D physics.
 #desc 3D separation ray shape to be added as a [i]direct[/i] child of a [PhysicsBody3D] or [Area3D] using a [CollisionShape3D] node. A ray is not really a collision body; instead, it tries to separate itself from whatever is touching its far endpoint. It's often useful for characters.
 #desc [b]Performance:[/b] Being a primitive collision shape, [SeparationRayShape3D] is fast to check collisions against.

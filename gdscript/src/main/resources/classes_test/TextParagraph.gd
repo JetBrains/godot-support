@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Holds a paragraph of text.
 #desc Abstraction over [TextServer] for handling paragraph of text.
 class_name TextParagraph

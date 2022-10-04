@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Calculates a Step function within the visual shader graph.
 #desc Translates to [code]step(edge, x)[/code] in the shader language.
 #desc Returns [code]0.0[/code] if [code]x[/code] is smaller than [code]edge[/code] and [code]1.0[/code] otherwise.

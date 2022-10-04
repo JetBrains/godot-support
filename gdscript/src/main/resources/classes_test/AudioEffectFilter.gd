@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief Adds a filter to the audio bus.
 #desc Allows frequencies other than the [member cutoff_hz] to pass.
 class_name AudioEffectFilter

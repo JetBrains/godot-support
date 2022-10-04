@@ -1,3 +1,4 @@
+extends Object
 #brief Server for AR and VR features.
 #desc The AR/VR server is the heart of our Advanced and Virtual Reality solution and handles all the processing.
 class_name XRServer

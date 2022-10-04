@@ -1,3 +1,4 @@
+extends Node3D
 #brief Base node for collision objects.
 #desc CollisionObject3D is the base class for physics objects. It can hold any number of collision [Shape3D]s. Each shape must be assigned to a [i]shape owner[/i]. The CollisionObject3D can have any number of shape owners. Shape owners are not nodes and do not appear in the editor, but are accessible through code using the [code]shape_owner_*[/code] methods.
 class_name CollisionObject3D
@@ -38,15 +39,15 @@ var input_ray_pickable: bool;
 
 #desc Receives unhandled [InputEvent]s. [param position] is the location in world space of the mouse pointer on the surface of the shape with index [param shape_idx] and [param normal] is the normal vector of the surface at that point. Connect to the [signal input_event] signal to easily pick up these events.
 #desc [b]Note:[/b] [method _input_event] requires [member input_ray_pickable] to be [code]true[/code] and at least one [member collision_layer] bit to be set.
-virtual func _input_event(camera: Camera3D, event: InputEvent, position: Vector3, normal: Vector3, shape_idx: int) -> void:
+func _input_event(camera: Camera3D, event: InputEvent, position: Vector3, normal: Vector3, shape_idx: int) -> void:
 	pass;
 
 #desc Called when the mouse pointer enters any of this object's shapes. Requires [member input_ray_pickable] to be [code]true[/code] and at least one [member collision_layer] bit to be set. Note that moving between different shapes within a single [CollisionObject3D] won't cause this function to be called.
-virtual func _mouse_enter() -> void:
+func _mouse_enter() -> void:
 	pass;
 
 #desc Called when the mouse pointer exits all this object's shapes. Requires [member input_ray_pickable] to be [code]true[/code] and at least one [member collision_layer] bit to be set. Note that moving between different shapes within a single [CollisionObject3D] won't cause this function to be called.
-virtual func _mouse_exit() -> void:
+func _mouse_exit() -> void:
 	pass;
 
 #desc Creates a new shape owner for the given object. Returns [code]owner_id[/code] of the new owner for future reference.

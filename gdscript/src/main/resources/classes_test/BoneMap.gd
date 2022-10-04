@@ -1,3 +1,4 @@
+extends Resource
 #brief Bone map for retargeting.
 #desc This class contains a hashmap that uses a list of bone names in [SkeletonProfile] as key names.
 #desc By assigning the actual [Skeleton3D] bone name as the key value, it maps the [Skeleton3D] to the [SkeletonProfile].

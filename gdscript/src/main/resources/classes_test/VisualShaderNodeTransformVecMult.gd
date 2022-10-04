@@ -1,3 +1,4 @@
+extends VisualShaderNode
 #brief Multiplies a [Transform3D] and a [Vector3] within the visual shader graph.
 #desc A multiplication operation on a transform (4x4 matrix) and a vector, with support for different multiplication operators.
 class_name VisualShaderNodeTransformVecMult

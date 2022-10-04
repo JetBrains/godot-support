@@ -1,3 +1,4 @@
+extends RefCounted
 #brief A synchronization semaphore.
 #desc A synchronization semaphore which can be used to synchronize multiple [Thread]s. Initialized to zero on creation. Be careful to avoid deadlocks. For a binary version, see [Mutex].
 class_name Semaphore

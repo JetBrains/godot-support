@@ -1,3 +1,4 @@
+extends Object
 #brief Base class for reference-counted objects.
 #desc Base class for any object that keeps a reference count. [Resource] and many other helper objects inherit this class.
 #desc Unlike other [Object] types, [RefCounted]s keep an internal reference counter so that they are automatically released when no longer in use, and only then. [RefCounted]s therefore do not need to be freed manually with [method Object.free].

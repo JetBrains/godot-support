@@ -1,3 +1,4 @@
+extends Texture2D
 #brief A [code].ctex[/code] texture.
 #desc A texture that is loaded from a [code].ctex[/code] file.
 class_name CompressedTexture2D

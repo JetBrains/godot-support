@@ -1,3 +1,4 @@
+extends VBoxContainer
 class_name FileSystemDock
 
 

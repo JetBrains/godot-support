@@ -1,3 +1,4 @@
+extends Object
 #brief Internet protocol (IP) support functions such as DNS resolution.
 #desc IP contains support functions for the Internet Protocol (IP). TCP/IP support is in different classes (see [StreamPeerTCP] and [TCPServer]). IP provides DNS hostname resolution support, both blocking and threaded.
 class_name IP

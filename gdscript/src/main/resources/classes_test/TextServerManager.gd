@@ -1,3 +1,4 @@
+extends Object
 #brief Manager for the font and complex text layout servers.
 #desc [TextServerManager] is the API backend for loading, enumeration and switching [TextServer]s.
 #desc [b]Note:[/b] Switching text server at runtime is possible, but will invalidate all fonts and text buffers. Make sure to unload all controls, fonts, and themes before doing so.

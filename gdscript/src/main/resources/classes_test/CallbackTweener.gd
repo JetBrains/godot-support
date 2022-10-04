@@ -1,3 +1,4 @@
+extends Tweener
 #brief Calls the specified method after optional delay.
 #desc [CallbackTweener] is used to call a method in a tweening sequence. See [method Tween.tween_callback] for more usage information.
 #desc [b]Note:[/b] [method Tween.tween_callback] is the only correct way to create [CallbackTweener]. Any [CallbackTweener] created manually will not function correctly.

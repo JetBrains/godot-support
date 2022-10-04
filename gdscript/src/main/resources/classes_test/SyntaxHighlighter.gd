@@ -1,3 +1,4 @@
+extends Resource
 #brief Base Syntax highlighter resource for [TextEdit].
 #desc Base syntax highlighter resource all syntax highlighters extend from, provides syntax highlighting data to [TextEdit].
 #desc The associated [TextEdit] node will call into the [SyntaxHighlighter] on a as needed basis.
@@ -8,16 +9,16 @@ class_name SyntaxHighlighter
 
 
 #desc Virtual method which can be overridden to clear any local caches.
-virtual func _clear_highlighting_cache() -> void:
+func _clear_highlighting_cache() -> void:
 	pass;
 
 #desc Virtual method which can be overridden to return syntax highlighting data.
 #desc See [method get_line_syntax_highlighting] for more details.
-virtual const func _get_line_syntax_highlighting(line: int) -> Dictionary:
+func _get_line_syntax_highlighting(line: int) -> Dictionary:
 	pass;
 
 #desc Virtual method which can be overridden to update any local caches.
-virtual func _update_cache() -> void:
+func _update_cache() -> void:
 	pass;
 
 #desc Clears all cached syntax highlighting data.

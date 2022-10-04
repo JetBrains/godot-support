@@ -1,3 +1,4 @@
+extends MainLoop
 #brief Manages the game loop via a hierarchy of nodes.
 #desc As one of the most important classes, the [SceneTree] manages the hierarchy of nodes in a scene as well as scenes themselves. Nodes can be added, retrieved and removed. The whole scene tree (and thus the current scene) can be paused. Scenes can be loaded, switched and reloaded.
 #desc You can also use the [SceneTree] to organize your nodes into groups: every node can be assigned as many groups as you want to create, e.g. an "enemy" group. You can then iterate these groups or even call methods and set properties on all the group's members at once.
@@ -59,7 +60,7 @@ var root: Window;
 
 #desc Calls [param method] on each member of the given group. You can pass arguments to [param method] by specifying them at the end of the method call. If a node doesn't have the given method or the argument list does not match (either in count or in types), it will be skipped.
 #desc [b]Note:[/b] [method call_group] will call methods immediately on all members at once, which can cause stuttering if an expensive method is called on lots of members. To wait for one frame after [method call_group] was called, use [method call_group_flags] with the [constant GROUP_CALL_DEFERRED] flag.
-vararg func call_group(group: StringName, method: StringName) -> void:
+func call_group(group: StringName, method: StringName) -> void:
 	pass;
 
 #desc Calls [param method] on each member of the given group, respecting the given [enum GroupCallFlags]. You can pass arguments to [param method] by specifying them at the end of the method call. If a node doesn't have the given method or the argument list does not match (either in count or in types), it will be skipped.
@@ -68,7 +69,7 @@ vararg func call_group(group: StringName, method: StringName) -> void:
 #desc get_tree().call_group_flags(SceneTree.GROUP_CALL_DEFERRED | SceneTree.GROUP_CALL_REVERSE)
 #desc [/codeblock]
 #desc [b]Note:[/b] Group call flags are used to control the method calling behavior. By default, methods will be called immediately in a way similar to [method call_group]. However, if the [constant GROUP_CALL_DEFERRED] flag is present in the [param flags] argument, methods will be called with a one-frame delay in a way similar to [method Object.set_deferred].
-vararg func call_group_flags(flags: int, group: StringName, method: StringName) -> void:
+func call_group_flags(flags: int, group: StringName, method: StringName) -> void:
 	pass;
 
 #desc Changes the running scene to the one at the given [param path], after loading it into a [PackedScene] and creating a new instance.

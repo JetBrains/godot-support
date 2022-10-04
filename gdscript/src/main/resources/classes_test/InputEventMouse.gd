@@ -1,3 +1,4 @@
+extends InputEventWithModifiers
 #brief Base input event type for mouse events.
 #desc Stores general mouse events information.
 class_name InputEventMouse

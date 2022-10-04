@@ -1,3 +1,4 @@
+extends Object
 #brief Abstract base class for the game's main loop.
 #desc [MainLoop] is the abstract base class for a Godot project's game loop. It is inherited by [SceneTree], which is the default game loop implementation used in Godot projects, though it is also possible to write and use one's own [MainLoop] subclass instead of the scene tree.
 #desc Upon the application start, a [MainLoop] implementation must be provided to the OS; otherwise, the application will exit. This happens automatically (and a [SceneTree] is created) unless a [MainLoop] [Script] is provided from the command line (with e.g. [code]godot -s my_loop.gd[/code] or the "Main Loop Type" project setting is overwritten.
@@ -95,21 +96,21 @@ const NOTIFICATION_TEXT_SERVER_CHANGED = 2018;
 
 
 #desc Called before the program exits.
-virtual func _finalize() -> void:
+func _finalize() -> void:
 	pass;
 
 #desc Called once during initialization.
-virtual func _initialize() -> void:
+func _initialize() -> void:
 	pass;
 
 #desc Called each physics frame with the time since the last physics frame as argument ([param delta], in seconds). Equivalent to [method Node._physics_process].
 #desc If implemented, the method must return a boolean value. [code]true[/code] ends the main loop, while [code]false[/code] lets it proceed to the next frame.
-virtual func _physics_process(delta: float) -> bool:
+func _physics_process(delta: float) -> bool:
 	pass;
 
 #desc Called each process (idle) frame with the time since the last process frame as argument (in seconds). Equivalent to [method Node._process].
 #desc If implemented, the method must return a boolean value. [code]true[/code] ends the main loop, while [code]false[/code] lets it proceed to the next frame.
-virtual func _process(delta: float) -> bool:
+func _process(delta: float) -> bool:
 	pass;
 
 

@@ -1,3 +1,4 @@
+extends Object
 #brief A helper to handle dictionaries which look like JSONRPC documents.
 #desc [url=https://www.jsonrpc.org/]JSON-RPC[/url] is a standard which wraps a method call in a [JSON] object. The object has a particular structure and identifies which method is called, the parameters to that function, and carries an ID to keep track of responses. This class implements that standard on top of [Dictionary]; you will have to convert between a [Dictionary] and [JSON] with other functions.
 class_name JSONRPC

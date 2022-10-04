@@ -1,3 +1,4 @@
+extends Viewport
 #brief Creates a sub-view into the screen.
 #desc [SubViewport] is a [Viewport] that isn't a [Window], i.e. it doesn't draw anything by itself. To display something, [SubViewport]'s [member size] must be non-zero and it should be either put inside a [SubViewportContainer] or assigned to a [ViewportTexture].
 class_name SubViewport

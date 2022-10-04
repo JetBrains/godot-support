@@ -1,3 +1,4 @@
+extends StreamPeer
 #brief TLS stream peer.
 #desc TLS stream peer. This object can be used to connect to an TLS server or accept a single TLS client connection.
 #desc [b]Note:[/b] When exporting to Android, make sure to enable the [code]INTERNET[/code] permission in the Android export preset before exporting the project or using one-click deploy. Otherwise, network communication of any kind will be blocked by Android.

@@ -1,3 +1,4 @@
+extends HBoxContainer
 #brief Godot editor's control for selecting [Resource] type properties.
 #desc This [Control] node is used in the editor's Inspector dock to allow editing of [Resource] type properties. It provides options for creating, loading, saving and converting resources. Can be used with [EditorInspectorPlugin] to recreate the same behavior.
 #desc [b]Note:[/b] This [Control] does not include any editor for the resource, as editing is controlled by the Inspector dock itself or sub-Inspectors.
@@ -19,12 +20,12 @@ var toggle_mode: bool;
 
 
 #desc This virtual method can be implemented to handle context menu items not handled by default. See [method _set_create_options].
-virtual func _handle_menu_selected(id: int) -> bool:
+func _handle_menu_selected(id: int) -> bool:
 	pass;
 
 #desc This virtual method is called when updating the context menu of [EditorResourcePicker]. Implement this method to override the "New ..." items with your own options. [param menu_node] is a reference to the [PopupMenu] node.
 #desc [b]Note:[/b] Implement [method _handle_menu_selected] to handle these custom items.
-virtual func _set_create_options(menu_node: Object) -> void:
+func _set_create_options(menu_node: Object) -> void:
 	pass;
 
 #desc Returns a list of all allowed types and subtypes corresponding to the [member base_type]. If the [member base_type] is empty, an empty list is returned.

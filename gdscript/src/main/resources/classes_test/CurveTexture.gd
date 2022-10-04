@@ -1,3 +1,4 @@
+extends Texture2D
 #brief A texture that shows a curve.
 #desc Renders a given [Curve] provided to it. Simplifies the task of drawing curves and/or saving them as image files.
 #desc If you need to store up to 3 curves within a single texture, use [CurveXYZTexture] instead. See also [GradientTexture1D] and [GradientTexture2D].

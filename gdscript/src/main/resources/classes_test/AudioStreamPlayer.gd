@@ -1,3 +1,4 @@
+extends Node
 #brief Plays back audio non-positionally.
 #desc Plays an audio stream non-positionally.
 #desc To play audio positionally, use [AudioStreamPlayer2D] or [AudioStreamPlayer3D] instead of [AudioStreamPlayer].

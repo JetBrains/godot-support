@@ -1,3 +1,4 @@
+extends BaseButton
 #brief Simple button used to represent a link to some resource.
 #desc This kind of button is primarily used when the interaction with the button causes a context change (like linking to a web page).
 #desc See also [BaseButton] which contains common properties and methods associated with this node.

@@ -1,3 +1,4 @@
+extends SyntaxHighlighter
 #brief A syntax highlighter for code.
 #desc A syntax highlighter for code.
 class_name CodeHighlighter

@@ -1,3 +1,4 @@
+extends Resource
 #brief Contains baked lightmap and dynamic object probe data for [LightmapGI].
 #desc [LightmapGIData] contains baked lightmap and dynamic object probe data for [LightmapGI]. It is replaced every time lightmaps are baked in [LightmapGI].
 class_name LightmapGIData

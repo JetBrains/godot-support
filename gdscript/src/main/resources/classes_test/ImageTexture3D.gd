@@ -1,3 +1,4 @@
+extends Texture3D
 class_name ImageTexture3D
 
 

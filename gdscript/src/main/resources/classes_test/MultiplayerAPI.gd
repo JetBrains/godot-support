@@ -1,3 +1,4 @@
+extends RefCounted
 #brief High-level multiplayer API interface.
 #desc Base class for high-level multiplayer API implementations. See also [MultiplayerPeer].
 #desc By default, [SceneTree] has a reference to an implementation of this class and uses it to provide multiplayer capabilities (i.e. RPCs) across the whole scene.

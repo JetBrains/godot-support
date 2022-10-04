@@ -1,3 +1,4 @@
+extends Node3D
 #brief Overrides the location sounds are heard from.
 #desc Once added to the scene tree and enabled using [method make_current], this node will override the location sounds are heard from. This can be used to listen from a location different from the [Camera3D].
 class_name AudioListener3D

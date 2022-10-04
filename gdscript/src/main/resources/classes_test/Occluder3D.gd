@@ -1,3 +1,4 @@
+extends Resource
 #brief Occluder shape resource for use with occlusion culling in [OccluderInstance3D].
 #desc [Occluder3D] stores an occluder shape that can be used by the engine's occlusion culling system.
 #desc See [OccluderInstance3D]'s documentation for instructions on setting up occlusion culling.

@@ -1,3 +1,4 @@
+extends RefCounted
 #brief A class for generating pseudo-random numbers.
 #desc RandomNumberGenerator is a class for generating pseudo-random numbers. It currently uses [url=https://www.pcg-random.org/]PCG32[/url].
 #desc [b]Note:[/b] The underlying algorithm is an implementation detail. As a result, it should not be depended upon for reproducible random streams across Godot versions.

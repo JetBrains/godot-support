@@ -1,3 +1,4 @@
+extends Resource
 #brief Object that holds the project-independent editor settings.
 #desc Object that holds the project-independent editor settings. These settings are generally visible in the [b]Editor > Editor Settings[/b] menu.
 #desc Property names use slash delimiters to distinguish sections. Setting values can be of any [Variant] type. It's recommended to use [code]snake_case[/code] for editor settings to be consistent with the Godot editor itself.

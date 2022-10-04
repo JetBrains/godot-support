@@ -1,3 +1,4 @@
+extends StyleBox
 #brief Customizable [StyleBox] with a given set of parameters (no texture required).
 #desc This [StyleBox] can be used to achieve all kinds of looks without the need of a texture. The following properties are customizable:
 #desc - Color

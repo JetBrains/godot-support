@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief Audio effect that can be used for real-time audio visualizations.
 #desc This audio effect does not affect sound output, but can be used for real-time audio visualizations.
 #desc See also [AudioStreamGenerator] for procedurally generating sounds.

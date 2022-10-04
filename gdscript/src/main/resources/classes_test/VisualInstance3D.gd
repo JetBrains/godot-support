@@ -1,3 +1,4 @@
+extends Node3D
 #brief Parent of all visual 3D nodes.
 #desc The [VisualInstance3D] is used to connect a resource to a visual representation. All visual 3D nodes inherit from the [VisualInstance3D]. In general, you should not access the [VisualInstance3D] properties directly as they are accessed and managed by the nodes that inherit from [VisualInstance3D]. [VisualInstance3D] is the node representation of the [RenderingServer] instance.
 class_name VisualInstance3D
@@ -10,7 +11,7 @@ var layers: int;
 
 
 
-virtual const func _get_aabb() -> AABB:
+func _get_aabb() -> AABB:
 	pass;
 
 #desc Returns the [AABB] (also known as the bounding box) for this [VisualInstance3D]. See also [method get_transformed_aabb].

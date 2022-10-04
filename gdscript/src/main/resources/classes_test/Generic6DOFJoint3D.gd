@@ -1,3 +1,4 @@
+extends Joint3D
 #brief The generic 6-degrees-of-freedom joint can implement a variety of joint types by locking certain axes' rotation or translation.
 #desc The first 3 DOF axes are linear axes, which represent translation of Bodies, and the latter 3 DOF axes represent the angular motion. Each axis can be either locked, or limited.
 class_name Generic6DOFJoint3D

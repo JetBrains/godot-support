@@ -1,3 +1,4 @@
+extends ImageTextureLayered
 #brief 6-sided texture typically used in 3D rendering.
 #desc A cubemap is made of 6 textures organized in layers. They are typically used for faking reflections (see [ReflectionProbe]) in 3D rendering. It can be used to make an object look as if it's reflecting its surroundings. This usually delivers much better performance than other reflection methods.
 #desc This resource is typically used as a uniform in custom shaders. Few core Godot methods make use of Cubemap resources.

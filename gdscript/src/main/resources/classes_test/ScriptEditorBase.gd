@@ -1,3 +1,4 @@
+extends VBoxContainer
 #brief Base editor for editing scripts in the [ScriptEditor].
 #desc Base editor for editing scripts in the [ScriptEditor], this does not include documentation items.
 class_name ScriptEditorBase

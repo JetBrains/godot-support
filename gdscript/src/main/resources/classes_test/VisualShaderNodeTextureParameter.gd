@@ -1,3 +1,4 @@
+extends VisualShaderNodeParameter
 #brief Performs a uniform texture lookup within the visual shader graph.
 #desc Performs a lookup operation on the texture provided as a uniform for the shader.
 class_name VisualShaderNodeTextureParameter

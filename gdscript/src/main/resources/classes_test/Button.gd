@@ -1,3 +1,4 @@
+extends BaseButton
 #brief Standard themed Button.
 #desc Button is the standard themed button. It can contain text and an icon, and will display them according to the current [Theme].
 #desc [b]Example of creating a button and assigning an action when pressed by code:[/b]

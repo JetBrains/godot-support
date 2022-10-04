@@ -1,3 +1,4 @@
+extends RefCounted
 #brief Base class for the implementation of core resource importers.
 #desc This is the base class for the resource importers implemented in core. To implement your own resource importers using editor plugins, see [EditorImportPlugin].
 class_name ResourceImporter

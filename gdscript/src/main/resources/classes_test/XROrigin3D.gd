@@ -1,3 +1,4 @@
+extends Node3D
 #brief The origin point in AR/VR.
 #desc This is a special node within the AR/VR system that maps the physical location of the center of our tracking space to the virtual location within our game world.
 #desc There should be only one of these nodes in your scene and you must have one. All the XRCamera3D, XRController3D and XRAnchor3D nodes should be direct children of this node for spatial tracking to work correctly.

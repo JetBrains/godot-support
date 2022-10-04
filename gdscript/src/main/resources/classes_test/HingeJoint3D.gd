@@ -1,3 +1,4 @@
+extends Joint3D
 #brief A hinge between two 3D PhysicsBodies.
 #desc A HingeJoint3D normally uses the Z axis of body A as the hinge axis, another axis can be specified when adding it manually though. See also [Generic6DOFJoint3D].
 class_name HingeJoint3D

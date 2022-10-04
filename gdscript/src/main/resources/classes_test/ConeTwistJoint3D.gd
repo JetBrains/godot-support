@@ -1,3 +1,4 @@
+extends Joint3D
 #brief A twist joint between two 3D PhysicsBodies.
 #desc The joint can rotate the bodies across an axis defined by the local x-axes of the [Joint3D].
 #desc The twist axis is initiated as the X axis of the [Joint3D].

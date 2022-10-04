@@ -1,3 +1,4 @@
+extends PrimitiveMesh
 class_name RibbonTrailMesh
 
 const SHAPE_FLAT = 0;

@@ -1,3 +1,4 @@
+extends Node
 #brief A node with the ability to send HTTP(S) requests.
 #desc A node with the ability to send HTTP requests. Uses [HTTPClient] internally.
 #desc Can be used to make HTTP requests, i.e. download or upload files or web content via HTTP.

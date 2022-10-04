@@ -1,3 +1,4 @@
+extends VisualShaderNode
 class_name VisualShaderNodeParticleEmit
 
 const EMIT_FLAG_POSITION = 1;

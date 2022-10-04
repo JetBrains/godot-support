@@ -1,3 +1,4 @@
+extends Resource
 #brief A cryptographic key (RSA).
 #desc The CryptoKey class represents a cryptographic key. Keys can be loaded and saved like any other [Resource].
 #desc They can be used to generate a self-signed [X509Certificate] via [method Crypto.generate_self_signed_certificate] and as private key in [method StreamPeerTLS.accept_stream] along with the appropriate certificate.

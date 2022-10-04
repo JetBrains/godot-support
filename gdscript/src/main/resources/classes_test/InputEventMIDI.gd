@@ -1,3 +1,4 @@
+extends InputEvent
 #brief Input event for MIDI inputs.
 #desc InputEventMIDI allows receiving input events from MIDI devices such as a piano. MIDI stands for Musical Instrument Digital Interface.
 #desc MIDI signals can be sent over a 5-pin MIDI connector or over USB, if your device supports both be sure to check the settings in the device to see which output it's using.

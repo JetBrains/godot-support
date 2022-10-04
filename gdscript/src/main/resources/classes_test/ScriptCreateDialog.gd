@@ -1,3 +1,4 @@
+extends ConfirmationDialog
 #brief The Editor's popup dialog for creating new [Script] files.
 #desc The [ScriptCreateDialog] creates script files according to a given template for a given scripting language. The standard use is to configure its fields prior to calling one of the [method Window.popup] methods.
 #desc [codeblocks]

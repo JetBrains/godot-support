@@ -1,3 +1,4 @@
+extends Node3D
 #brief Base class for all 3D joints.
 #desc Joints are used to bind together two physics bodies. They have a solver priority and can define if the bodies of the two attached nodes should be able to collide with each other. See also [Generic6DOFJoint3D].
 class_name Joint3D

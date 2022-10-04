@@ -1,3 +1,4 @@
+extends AudioEffect
 #brief Adds a compressor audio effect to an audio bus.
 #brief Reduces sounds that exceed a certain threshold level, smooths out the dynamics and increases the overall volume.
 #desc Dynamic range compressor reduces the level of the sound when the amplitude goes over a certain threshold in Decibels. One of the main uses of a compressor is to increase the dynamic range by clipping as little as possible (when sound goes over 0dB).

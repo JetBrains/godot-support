@@ -1,3 +1,4 @@
+extends Node2D
 #brief Node that instances a [MultiMesh] in 2D.
 #desc [MultiMeshInstance2D] is a specialized node to instance a [MultiMesh] resource in 2D.
 #desc Usage is the same as [MultiMeshInstance3D].

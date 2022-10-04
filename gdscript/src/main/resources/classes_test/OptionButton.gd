@@ -1,3 +1,4 @@
+extends Button
 #brief Button control that provides selectable options when pressed.
 #desc OptionButton is a type button that provides a selectable list of items when pressed. The item selected becomes the "current" item and is displayed as the button text.
 #desc See also [BaseButton] which contains common properties and methods associated with this node.

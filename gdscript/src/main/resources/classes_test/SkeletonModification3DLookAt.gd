@@ -1,3 +1,4 @@
+extends SkeletonModification3D
 #brief A modification that rotates a bone to look at a target.
 #desc This [SkeletonModification3D] rotates a bone to look a target. This is extremely helpful for moving character's heads to look at the player, rotating a turret to look at a target, or any other case where you want to make a bone rotate towards something quickly and easily.
 class_name SkeletonModification3DLookAt

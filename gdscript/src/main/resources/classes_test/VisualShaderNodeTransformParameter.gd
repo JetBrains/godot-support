@@ -1,3 +1,4 @@
+extends VisualShaderNodeParameter
 #brief A [Transform3D] parameter for use within the visual shader graph.
 #desc Translated to [code]uniform mat4[/code] in the shader language.
 class_name VisualShaderNodeTransformParameter
