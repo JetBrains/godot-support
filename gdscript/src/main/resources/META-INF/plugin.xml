@@ -30,6 +30,7 @@
     <defaultLiveTemplates file="/templates/GdScript.xml" />
     <liveTemplateContext implementation="gdscript.GdTemplateContextType" />
     <codeInsight.parameterInfo language="GdScript" id="GdParameterInfoHandler" implementationClass="gdscript.codeInsight.GdParameterInfoHandler" />
+    <lang.documentationProvider language="GdScript" implementationClass="gdscript.codeInsight.GdDocumentationProvider" />
 
     <!-- Tscn -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
