@@ -8,7 +8,6 @@ import com.intellij.psi.PsiWhiteSpace
 import gdscript.psi.GdRefIdNm
 import java.util.*
 
-
 class GdDocumentationProvider : AbstractDocumentationProvider() {
 
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
