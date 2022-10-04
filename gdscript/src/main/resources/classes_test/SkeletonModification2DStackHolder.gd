@@ -11,7 +11,7 @@ func get_held_modification_stack() -> SkeletonModificationStack2D:
 	pass;
 
 #desc Sets the [SkeletonModificationStack2D] that this modification is holding. This modification stack will then be executed when this modification is executed.
-func set_held_modification_stack() -> void:
+func set_held_modification_stack(held_modification_stack: SkeletonModificationStack2D) -> void:
 	pass;
 
 

@@ -89,7 +89,7 @@ func clear_kerning_map(cache_index: int, size: int) -> void:
 	pass;
 
 #desc Removes all font sizes from the cache entry
-func clear_size_cache() -> void:
+func clear_size_cache(cache_index: int) -> void:
 	pass;
 
 #desc Removes all textures from font cache entry.
@@ -118,11 +118,11 @@ func get_cache_underline_thickness(cache_index: int, size: int) -> float:
 	pass;
 
 #desc Returns embolden strength, if is not equal to zero, emboldens the font outlines. Negative values reduce the outline thickness.
-func get_embolden() -> float:
+func get_embolden(cache_index: int) -> float:
 	pass;
 
 #desc Recturns an active face index in the TrueType / OpenType collection.
-func get_face_index() -> int:
+func get_face_index(cache_index: int) -> int:
 	pass;
 
 #desc Returns glyph advance (offset of the next glyph).
@@ -163,7 +163,7 @@ func get_kerning_list(cache_index: int, size: int) -> Vector2i[]:
 	pass;
 
 #desc Returns [code]true[/code] if support override is enabled for the [param language].
-func get_language_support_override() -> bool:
+func get_language_support_override(language: String) -> bool:
 	pass;
 
 #desc Returns list of language support overrides.
@@ -171,7 +171,7 @@ func get_language_support_overrides() -> PackedStringArray:
 	pass;
 
 #desc Returns [code]true[/code] if support override is enabled for the [param script].
-func get_script_support_override() -> bool:
+func get_script_support_override(script: String) -> bool:
 	pass;
 
 #desc Returns list of script support overrides.
@@ -179,7 +179,7 @@ func get_script_support_overrides() -> PackedStringArray:
 	pass;
 
 #desc Returns list of the font sizes in the cache. Each size is [code]Vector2i[/code] with font size and outline size.
-func get_size_cache_list() -> Vector2i[]:
+func get_size_cache_list(cache_index: int) -> Vector2i[]:
 	pass;
 
 #desc Returns number of textures used by font cache entry.
@@ -195,25 +195,25 @@ func get_texture_offsets(cache_index: int, size: Vector2i, texture_index: int) -
 	pass;
 
 #desc Returns 2D transform, applied to the font outlines, can be used for slanting, flipping and rotating glyphs.
-func get_transform() -> Transform2D:
+func get_transform(cache_index: int) -> Transform2D:
 	pass;
 
 #desc Returns variation coordinates for the specified font cache entry. See [method Font.get_supported_variation_list] for more info.
-func get_variation_coordinates() -> Dictionary:
+func get_variation_coordinates(cache_index: int) -> Dictionary:
 	pass;
 
 #desc Loads an AngelCode BMFont (.fnt, .font) bitmap font from file [param path].
 #desc [b]Warning:[/b] This method should only be used in the editor or in cases when you need to load external fonts at run-time, such as fonts located at the [code]user://[/code] directory.
-func load_bitmap_font() -> int:
+func load_bitmap_font(path: String) -> int:
 	pass;
 
 #desc Loads a TrueType (.ttf), OpenType (.otf), WOFF (.woff), WOFF2 (.woff2) or Type 1 (.pfb, .pfm) dynamic font from file [param path].
 #desc [b]Warning:[/b] This method should only be used in the editor or in cases when you need to load external fonts at run-time, such as fonts located at the [code]user://[/code] directory.
-func load_dynamic_font() -> int:
+func load_dynamic_font(path: String) -> int:
 	pass;
 
 #desc Removes specified font cache entry.
-func remove_cache() -> void:
+func remove_cache(cache_index: int) -> void:
 	pass;
 
 #desc Removes specified rendered glyph information from the cache entry.
@@ -226,11 +226,11 @@ func remove_kerning(cache_index: int, size: int, glyph_pair: Vector2i) -> void:
 	pass;
 
 #desc Remove language support override.
-func remove_language_support_override() -> void:
+func remove_language_support_override(language: String) -> void:
 	pass;
 
 #desc Removes script support override.
-func remove_script_support_override() -> void:
+func remove_script_support_override(script: String) -> void:
 	pass;
 
 #desc Removes specified font size from the cache entry.

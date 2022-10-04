@@ -74,7 +74,7 @@ var wall_min_slide_angle: float;
 
 
 #desc Returns the floor's collision angle at the last collision point according to [param up_direction], which is [code]Vector2.UP[/code] by default. This value is always positive and only valid after calling [method move_and_slide] and when [method is_on_floor] returns [code]true[/code].
-func get_floor_angle() -> float:
+func get_floor_angle(up_direction: Vector2) -> float:
 	pass;
 
 #desc Returns the surface normal of the floor at the last collision point. Only valid after calling [method move_and_slide] and when [method is_on_floor] returns [code]true[/code].
@@ -117,7 +117,7 @@ func get_real_velocity() -> Vector2:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-func get_slide_collision() -> KinematicCollision2D:
+func get_slide_collision(slide_idx: int) -> KinematicCollision2D:
 	pass;
 
 #desc Returns the number of times the body collided and changed direction during the last call to [method move_and_slide].

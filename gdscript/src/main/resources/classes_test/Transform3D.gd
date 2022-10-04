@@ -28,14 +28,14 @@ func Transform3D() -> Transform3D:
 	pass;
 
 #desc Constructs a [Transform3D] as a copy of the given [Transform3D].
-func Transform3D() -> Transform3D:
+func Transform3D(from: Transform3D) -> Transform3D:
 	pass;
 
 #desc Constructs a Transform3D from a [Basis] and [Vector3].
 func Transform3D(basis: Basis, origin: Vector3) -> Transform3D:
 	pass;
 
-func Transform3D() -> Transform3D:
+func Transform3D(from: Projection) -> Transform3D:
 	pass;
 
 #desc Constructs a Transform3D from four [Vector3] values (matrix columns). Each axis corresponds to local basis vectors (some of which may be scaled).
@@ -56,7 +56,7 @@ func inverse() -> Transform3D:
 	pass;
 
 #desc Returns [code]true[/code] if this transform and [code]transform[/code] are approximately equal, by calling [code]is_equal_approx[/code] on each component.
-func is_equal_approx() -> bool:
+func is_equal_approx(xform: Transform3D) -> bool:
 	pass;
 
 #desc Returns a copy of the transform rotated such that the forward axis (-Z) points towards the [param target] position.
@@ -88,28 +88,28 @@ func rotated_local(axis: Vector3, angle: float) -> Transform3D:
 #desc This method is an optimized version of multiplying the given transform [code]X[/code]
 #desc with a corresponding scaling transform [code]S[/code] from the left, i.e., [code]S * X[/code].
 #desc This can be seen as transforming with respect to the global/parent frame.
-func scaled() -> Transform3D:
+func scaled(scale: Vector3) -> Transform3D:
 	pass;
 
 #desc Returns a copy of the transform scaled by the given [param scale] factor.
 #desc This method is an optimized version of multiplying the given transform [code]X[/code]
 #desc with a corresponding scaling transform [code]S[/code] from the right, i.e., [code]X * S[/code].
 #desc This can be seen as transforming with respect to the local frame.
-func scaled_local() -> Transform3D:
+func scaled_local(scale: Vector3) -> Transform3D:
 	pass;
 
 #desc Returns a copy of the transform translated by the given [param offset].
 #desc This method is an optimized version of multiplying the given transform [code]X[/code]
 #desc with a corresponding translation transform [code]T[/code] from the left, i.e., [code]T * X[/code].
 #desc This can be seen as transforming with respect to the global/parent frame.
-func translated() -> Transform3D:
+func translated(offset: Vector3) -> Transform3D:
 	pass;
 
 #desc Returns a copy of the transform translated by the given [param offset].
 #desc This method is an optimized version of multiplying the given transform [code]X[/code]
 #desc with a corresponding translation transform [code]T[/code] from the right, i.e., [code]X * T[/code].
 #desc This can be seen as transforming with respect to the local frame.
-func translated_local() -> Transform3D:
+func translated_local(offset: Vector3) -> Transform3D:
 	pass;
 
 

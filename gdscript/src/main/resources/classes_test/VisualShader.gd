@@ -90,21 +90,21 @@ func get_node(type: int, id: int) -> VisualShaderNode:
 	pass;
 
 #desc Returns the list of connected nodes with the specified type.
-func get_node_connections() -> Dictionary[]:
+func get_node_connections(type: int) -> Dictionary[]:
 	pass;
 
 #desc Returns the list of all nodes in the shader with the specified type.
-func get_node_list() -> PackedInt32Array:
+func get_node_list(type: int) -> PackedInt32Array:
 	pass;
 
 #desc Returns the position of the specified node within the shader graph.
 func get_node_position(type: int, id: int) -> Vector2:
 	pass;
 
-func get_valid_node_id() -> int:
+func get_valid_node_id(type: int) -> int:
 	pass;
 
-func has_varying() -> bool:
+func has_varying(name: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the specified node and port connection exist.
@@ -115,7 +115,7 @@ func is_node_connection(type: int, from_node: int, from_port: int, to_node: int,
 func remove_node(type: int, id: int) -> void:
 	pass;
 
-func remove_varying() -> void:
+func remove_varying(name: String) -> void:
 	pass;
 
 #desc Replaces the specified node with a node of new class type.
@@ -123,7 +123,7 @@ func replace_node(type: int, id: int, new_class: StringName) -> void:
 	pass;
 
 #desc Sets the mode of this shader.
-func set_mode() -> void:
+func set_mode(mode: int) -> void:
 	pass;
 
 #desc Sets the position of the specified node.

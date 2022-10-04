@@ -7,7 +7,7 @@ class_name SpriteFrames
 
 
 #desc Adds a new animation to the library.
-func add_animation() -> void:
+func add_animation(anim: StringName) -> void:
 	pass;
 
 #desc Adds a frame to the given animation.
@@ -15,7 +15,7 @@ func add_frame(anim: StringName, frame: Texture2D, at_position: int) -> void:
 	pass;
 
 #desc Removes all frames from the given animation.
-func clear() -> void:
+func clear(anim: StringName) -> void:
 	pass;
 
 #desc Removes all animations. A "default" animation will be created.
@@ -23,7 +23,7 @@ func clear_all() -> void:
 	pass;
 
 #desc Returns [code]true[/code] if the given animation is configured to loop when it finishes playing. Otherwise, returns [code]false[/code].
-func get_animation_loop() -> bool:
+func get_animation_loop(anim: StringName) -> bool:
 	pass;
 
 #desc Returns an array containing the names associated to each animation. Values are placed in alphabetical order.
@@ -31,7 +31,7 @@ func get_animation_names() -> PackedStringArray:
 	pass;
 
 #desc The animation's speed in frames per second.
-func get_animation_speed() -> float:
+func get_animation_speed(anim: StringName) -> float:
 	pass;
 
 #desc Returns the animation's selected frame.
@@ -39,15 +39,15 @@ func get_frame(anim: StringName, idx: int) -> Texture2D:
 	pass;
 
 #desc Returns the number of frames in the animation.
-func get_frame_count() -> int:
+func get_frame_count(anim: StringName) -> int:
 	pass;
 
 #desc If [code]true[/code], the named animation exists.
-func has_animation() -> bool:
+func has_animation(anim: StringName) -> bool:
 	pass;
 
 #desc Removes the given animation.
-func remove_animation() -> void:
+func remove_animation(anim: StringName) -> void:
 	pass;
 
 #desc Removes the animation's selected frame.

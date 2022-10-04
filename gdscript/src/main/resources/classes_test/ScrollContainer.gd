@@ -45,7 +45,7 @@ var vertical_scroll_mode: int;
 #desc await get_tree().process_frame
 #desc ensure_control_visible(child_node)
 #desc [/codeblock]
-func ensure_control_visible() -> void:
+func ensure_control_visible(control: Control) -> void:
 	pass;
 
 #desc Returns the horizontal scrollbar [HScrollBar] of this [ScrollContainer].

@@ -13,10 +13,10 @@ const CACHE_MODE_REPLACE = 2;
 
 
 
-virtual const func _exists() -> bool:
+virtual const func _exists(path: String) -> bool:
 	pass;
 
-virtual const func _get_classes_used() -> PackedStringArray:
+virtual const func _get_classes_used(path: String) -> PackedStringArray:
 	pass;
 
 #desc If implemented, gets the dependencies of a given resource. If [param add_types] is [code]true[/code], paths should be appended [code]::TypeName[/code], where [code]TypeName[/code] is the class name of the dependency.
@@ -30,15 +30,15 @@ virtual const func _get_recognized_extensions() -> PackedStringArray:
 
 #desc Gets the class name of the resource associated with the given path. If the loader cannot handle it, it should return [code]""[/code].
 #desc [b]Note:[/b] Custom resource types defined by scripts aren't known by the [ClassDB], so you might just return [code]"Resource"[/code] for them.
-virtual const func _get_resource_type() -> String:
+virtual const func _get_resource_type(path: String) -> String:
 	pass;
 
-virtual const func _get_resource_uid() -> int:
+virtual const func _get_resource_uid(path: String) -> int:
 	pass;
 
 #desc Tells which resource class this loader can load.
 #desc [b]Note:[/b] Custom resource types defined by scripts aren't known by the [ClassDB], so you might just handle [code]"Resource"[/code] for them.
-virtual const func _handles_type() -> bool:
+virtual const func _handles_type(type: StringName) -> bool:
 	pass;
 
 #desc Loads a resource when the engine finds this loader to be compatible. If the loaded resource is the result of an import, [param original_path] will target the source file. Returns a [Resource] object on success, or an [enum Error] constant in case of failure.

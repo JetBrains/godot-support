@@ -28,7 +28,7 @@ virtual const func _generate_small_preview_automatically() -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if your generator supports the resource of type [param type].
-virtual const func _handles() -> bool:
+virtual const func _handles(type: String) -> bool:
 	pass;
 
 

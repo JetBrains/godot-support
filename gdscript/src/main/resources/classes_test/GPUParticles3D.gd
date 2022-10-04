@@ -125,7 +125,7 @@ func emit_particle(xform: Transform3D, velocity: Vector3, color: Color, custom: 
 	pass;
 
 #desc Returns the [Mesh] that is drawn at index [param pass].
-func get_draw_pass_mesh() -> Mesh:
+func get_draw_pass_mesh(pass: int) -> Mesh:
 	pass;
 
 #desc Restarts the particle emission, clearing existing particles.

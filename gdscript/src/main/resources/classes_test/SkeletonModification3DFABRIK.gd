@@ -22,40 +22,40 @@ var target_nodepath: NodePath;
 
 
 #desc Will attempt to automatically calculate the length of the bone assigned to the FABRIK joint at [param joint_idx].
-func fabrik_joint_auto_calculate_length() -> void:
+func fabrik_joint_auto_calculate_length(joint_idx: int) -> void:
 	pass;
 
 #desc Returns a boolean that indicates whether this modification will attempt to autocalculate the length of the bone assigned to the FABRIK joint at [param joint_idx].
-func get_fabrik_joint_auto_calculate_length() -> bool:
+func get_fabrik_joint_auto_calculate_length(joint_idx: int) -> bool:
 	pass;
 
 #desc Returns the bone index of the bone assigned to the FABRIK joint at [param joint_idx].
-func get_fabrik_joint_bone_index() -> int:
+func get_fabrik_joint_bone_index(joint_idx: int) -> int:
 	pass;
 
 #desc Returns the name of the bone that is assigned to the FABRIK joint at [param joint_idx].
-func get_fabrik_joint_bone_name() -> String:
+func get_fabrik_joint_bone_name(joint_idx: int) -> String:
 	pass;
 
 #desc Returns the length of the FABRIK joint at [param joint_idx].
-func get_fabrik_joint_length() -> float:
+func get_fabrik_joint_length(joint_idx: int) -> float:
 	pass;
 
 #desc Returns the magnet vector of the FABRIK joint at [param joint_idx].
-func get_fabrik_joint_magnet() -> Vector3:
+func get_fabrik_joint_magnet(joint_idx: int) -> Vector3:
 	pass;
 
 #desc Returns the [Node3D]-based node placed at the tip of the FABRIK joint at [param joint_idx], if one has been set.
-func get_fabrik_joint_tip_node() -> NodePath:
+func get_fabrik_joint_tip_node(joint_idx: int) -> NodePath:
 	pass;
 
 #desc Returns a boolean indicating whether the FABRIK joint uses the target's [Basis] for its rotation.
 #desc [b]Note:[/b] This option is only available for the final bone in the FABRIK chain, with this setting being ignored for all other bones.
-func get_fabrik_joint_use_target_basis() -> bool:
+func get_fabrik_joint_use_target_basis(joint_idx: int) -> bool:
 	pass;
 
 #desc Sets the [Node3D]-based node that will be used as the tip of the FABRIK joint at [param joint_idx].
-func get_fabrik_joint_use_tip_node() -> bool:
+func get_fabrik_joint_use_tip_node(joint_idx: int) -> bool:
 	pass;
 
 #desc When [code]true[/code], this modification will attempt to automatically calculate the length of the bone for the FABRIK joint at [param joint_idx]. It does this by either using the tip node assigned, if there is one assigned, or the distance the of the bone's children, if the bone has any. If the bone has no children and no tip node is assigned, then the modification [b]cannot[/b] autocalculate the joint's length. In this case, the joint length should be entered manually or a tip node assigned.

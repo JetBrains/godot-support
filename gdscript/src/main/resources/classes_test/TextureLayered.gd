@@ -22,7 +22,7 @@ virtual const func _get_format() -> int:
 virtual const func _get_height() -> int:
 	pass;
 
-virtual const func _get_layer_data() -> Image:
+virtual const func _get_layer_data(layer_index: int) -> Image:
 	pass;
 
 virtual const func _get_layered_type() -> int:
@@ -46,7 +46,7 @@ func get_height() -> int:
 	pass;
 
 #desc Returns an [Image] resource with the data from specified [param layer].
-func get_layer_data() -> Image:
+func get_layer_data(layer: int) -> Image:
 	pass;
 
 func get_layered_type() -> int:

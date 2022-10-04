@@ -264,7 +264,7 @@ virtual func _cut() -> void:
 	pass;
 
 #desc Override this method to define what happens when the user types in the provided key [param unicode_char].
-virtual func _handle_unicode_input() -> void:
+virtual func _handle_unicode_input(unicode_char: int) -> void:
 	pass;
 
 #desc Override this method to define what happens when the user performs a paste operation.
@@ -277,7 +277,7 @@ virtual func _paste_primary_clipboard() -> void:
 	pass;
 
 #desc Register a new gutter to this [TextEdit]. Use [param at] to have a specific gutter order. A value of [code]-1[/code] appends the gutter to the right.
-func add_gutter() -> void:
+func add_gutter(at: int) -> void:
 	pass;
 
 #desc Adjust the viewport so the caret is visible.
@@ -341,7 +341,7 @@ func get_caret_wrap_index() -> int:
 	pass;
 
 #desc Returns the first column containing a non-whitespace character.
-func get_first_non_whitespace_column() -> int:
+func get_first_non_whitespace_column(line: int) -> int:
 	pass;
 
 #desc Returns the first visible line.
@@ -353,19 +353,19 @@ func get_gutter_count() -> int:
 	pass;
 
 #desc Returns the name of the gutter at the given index.
-func get_gutter_name() -> String:
+func get_gutter_name(gutter: int) -> String:
 	pass;
 
 #desc Returns the type of the gutter at the given index.
-func get_gutter_type() -> int:
+func get_gutter_type(gutter: int) -> int:
 	pass;
 
 #desc Returns the width of the gutter at the given index.
-func get_gutter_width() -> int:
+func get_gutter_width(gutter: int) -> int:
 	pass;
 
 #desc Returns the number of spaces and [code]tab * tab_size[/code] before the first char.
-func get_indent_level() -> int:
+func get_indent_level(line: int) -> int:
 	pass;
 
 #desc Returns the last visible line. Use [method get_last_full_visible_line_wrap_index] for the wrap index.
@@ -381,11 +381,11 @@ func get_last_unhidden_line() -> int:
 	pass;
 
 #desc Returns the text of a specific line.
-func get_line() -> String:
+func get_line(line: int) -> String:
 	pass;
 
 #desc Returns the current background color of the line. [code]Color(0, 0, 0, 0)[/code] is returned if no color is set.
-func get_line_background_color() -> Color:
+func get_line_background_color(line: int) -> Color:
 	pass;
 
 #desc Returns the line and column at the given position. In the returned vector, [code]x[/code] is the column, [code]y[/code] is the line. If [param allow_out_of_bounds] is [code]false[/code] and the position is not over the text, both vector values will be set to [code]-1[/code].
@@ -421,7 +421,7 @@ func get_line_width(line: int, wrap_index: int) -> int:
 	pass;
 
 #desc Returns the number of times the given line is wrapped.
-func get_line_wrap_count() -> int:
+func get_line_wrap_count(line: int) -> int:
 	pass;
 
 #desc Returns the wrap index of the given line column.
@@ -429,7 +429,7 @@ func get_line_wrap_index_at_column(line: int, column: int) -> int:
 	pass;
 
 #desc Returns an array of [String]s representing each wrapped index.
-func get_line_wrapped_text() -> PackedStringArray:
+func get_line_wrapped_text(line: int) -> PackedStringArray:
 	pass;
 
 #desc Returns the local mouse position adjusted for the text direction.
@@ -442,7 +442,7 @@ func get_menu() -> PopupMenu:
 	pass;
 
 #desc Returns the equivalent minimap line at [param position]
-func get_minimap_line_at_pos() -> int:
+func get_minimap_line_at_pos(position: Vector2i) -> int:
 	pass;
 
 #desc Returns the number of lines that may be drawn on the minimap.
@@ -532,7 +532,7 @@ func get_visible_line_count_in_range(from_line: int, to_line: int) -> int:
 	pass;
 
 #desc Returns the word at [param position].
-func get_word_at_pos() -> String:
+func get_word_at_pos(position: Vector2) -> String:
 	pass;
 
 #desc Returns a [String] text with the word under the caret's location.
@@ -560,7 +560,7 @@ func insert_line_at(line: int, text: String) -> void:
 	pass;
 
 #desc Insert the specified text at the caret position.
-func insert_text_at_caret() -> void:
+func insert_text_at_caret(text: String) -> void:
 	pass;
 
 #desc Returns [code]true[/code] if the caret is visible on the screen.
@@ -572,15 +572,15 @@ func is_dragging_cursor() -> bool:
 	pass;
 
 #desc Returns whether the gutter is clickable.
-func is_gutter_clickable() -> bool:
+func is_gutter_clickable(gutter: int) -> bool:
 	pass;
 
 #desc Returns whether the gutter is currently drawn.
-func is_gutter_drawn() -> bool:
+func is_gutter_drawn(gutter: int) -> bool:
 	pass;
 
 #desc Returns whether the gutter is overwritable.
-func is_gutter_overwritable() -> bool:
+func is_gutter_overwritable(gutter: int) -> bool:
 	pass;
 
 #desc Returns whether the gutter on the given line is clickable.
@@ -588,7 +588,7 @@ func is_line_gutter_clickable(line: int, gutter: int) -> bool:
 	pass;
 
 #desc Returns if the given line is wrapped.
-func is_line_wrapped() -> bool:
+func is_line_wrapped(line: int) -> bool:
 	pass;
 
 #desc Returns whether the menu is visible. Use this instead of [code]get_menu().visible[/code] to improve performance (so the creation of the menu is avoided).
@@ -596,7 +596,7 @@ func is_menu_visible() -> bool:
 	pass;
 
 #desc Returns whether the mouse is over selection. If [param edges] is [code]true[/code], the edges are considered part of the selection.
-func is_mouse_over_selection() -> bool:
+func is_mouse_over_selection(edges: bool) -> bool:
 	pass;
 
 #desc Returns whether the user is in overtype mode.
@@ -604,7 +604,7 @@ func is_overtype_mode_enabled() -> bool:
 	pass;
 
 #desc Triggers a right-click menu action by the specified index. See [enum MenuItems] for a list of available indexes.
-func menu_option() -> void:
+func menu_option(option: int) -> void:
 	pass;
 
 #desc Merge the gutters from [param from_line] into [param to_line]. Only overwritable gutters will be copied.
@@ -620,7 +620,7 @@ func redo() -> void:
 	pass;
 
 #desc Removes the gutter from this [TextEdit].
-func remove_gutter() -> void:
+func remove_gutter(gutter: int) -> void:
 	pass;
 
 #desc Removes text between the given positions.
@@ -745,15 +745,15 @@ func set_line_gutter_text(line: int, gutter: int, text: String) -> void:
 	pass;
 
 #desc If [code]true[/code], sets the user into overtype mode. When the user types in this mode, it will override existing text.
-func set_overtype_mode_enabled() -> void:
+func set_overtype_mode_enabled(enabled: bool) -> void:
 	pass;
 
 #desc Sets the search [param flags]. This is used with [method set_search_text] to highlight occurrences of the searched text. Search flags can be specified from the [enum SearchFlags] enum.
-func set_search_flags() -> void:
+func set_search_flags(flags: int) -> void:
 	pass;
 
 #desc Sets the search text. See [method set_search_flags].
-func set_search_text() -> void:
+func set_search_text(search_text: String) -> void:
 	pass;
 
 #desc Sets the current selection mode.
@@ -761,11 +761,11 @@ func set_selection_mode(mode: int, line: int, column: int) -> void:
 	pass;
 
 #desc Sets the tab size for the [TextEdit] to use.
-func set_tab_size() -> void:
+func set_tab_size(size: int) -> void:
 	pass;
 
 #desc Provide custom tooltip text. The callback method must take the following args: [code]hovered_word: String[/code]
-func set_tooltip_request_func() -> void:
+func set_tooltip_request_func(callback: Callable) -> void:
 	pass;
 
 #desc Swaps the two lines.

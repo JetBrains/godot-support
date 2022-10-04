@@ -17,7 +17,7 @@ func close_library() -> void:
 func get_minimum_library_initialization_level() -> int:
 	pass;
 
-func initialize_library() -> void:
+func initialize_library(level: int) -> void:
 	pass;
 
 func is_library_open() -> bool:

@@ -26,7 +26,7 @@ func NodePath() -> NodePath:
 	pass;
 
 #desc Constructs a [NodePath] as a copy of the given [NodePath]. [code]NodePath("example")[/code] is equivalent to [code]^"example"[/code].
-func NodePath() -> NodePath:
+func NodePath(from: NodePath) -> NodePath:
 	pass;
 
 #desc Creates a NodePath from a string, e.g. [code]"Path2D/PathFollow2D/Sprite2D:texture:size"[/code]. A path is absolute if it starts with a slash. Absolute paths are only valid in the global scene tree, not within individual scenes. In a relative path, [code]"."[/code] and [code]".."[/code] indicate the current node and its parent.
@@ -46,7 +46,7 @@ func NodePath() -> NodePath:
 #desc # Absolute path (from "root")
 #desc "/root/Level/Path2D"
 #desc [/codeblock]
-func NodePath() -> NodePath:
+func NodePath(from: String) -> NodePath:
 	pass;
 
 
@@ -103,7 +103,7 @@ func get_concatenated_subnames() -> StringName:
 #desc GD.Print(nodePath.GetName(2)); // Sprite
 #desc [/csharp]
 #desc [/codeblocks]
-func get_name() -> StringName:
+func get_name(idx: int) -> StringName:
 	pass;
 
 #desc Gets the number of node names which make up the path. Subnames (see [method get_subname_count]) are not included.
@@ -124,7 +124,7 @@ func get_name_count() -> int:
 #desc GD.Print(nodePath.GetSubname(1)); // load_path
 #desc [/csharp]
 #desc [/codeblocks]
-func get_subname() -> StringName:
+func get_subname(idx: int) -> StringName:
 	pass;
 
 #desc Gets the number of resource or property names ("subnames") in the path. Each subname is listed after a colon character ([code]:[/code]) in the node path.

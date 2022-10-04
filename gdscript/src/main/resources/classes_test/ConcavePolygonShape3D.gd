@@ -16,7 +16,7 @@ func get_faces() -> PackedVector3Array:
 	pass;
 
 #desc Sets the faces (an array of triangles).
-func set_faces() -> void:
+func set_faces(faces: PackedVector3Array) -> void:
 	pass;
 
 

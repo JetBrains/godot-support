@@ -44,15 +44,15 @@ func get_default_input_values() -> Array:
 	pass;
 
 #desc Returns the default value of the input [param port].
-func get_input_port_default_value() -> Variant:
+func get_input_port_default_value(port: int) -> Variant:
 	pass;
 
 #desc Removes the default value of the input [param port].
-func remove_input_port_default_value() -> void:
+func remove_input_port_default_value(port: int) -> void:
 	pass;
 
 #desc Sets the default input ports values using an [Array] of the form [code][index0, value0, index1, value1, ...][/code]. For example: [code][0, Vector3(0, 0, 0), 1, Vector3(0, 0, 0)][/code].
-func set_default_input_values() -> void:
+func set_default_input_values(values: Array) -> void:
 	pass;
 
 #desc Sets the default [param value] for the selected input [param port].

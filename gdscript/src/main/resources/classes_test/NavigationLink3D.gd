@@ -31,7 +31,7 @@ var travel_cost: float;
 
 
 #desc Returns whether or not the specified layer of the [member navigation_layers] bitmask is enabled, given a [code]layer_number[/code] between 1 and 32.
-func get_navigation_layer_value() -> bool:
+func get_navigation_layer_value(layer_number: int) -> bool:
 	pass;
 
 #desc Based on [code]value[/code], enables or disables the specified layer in the [member navigation_layers] bitmask, given a [code]layer_number[/code] between 1 and 32.

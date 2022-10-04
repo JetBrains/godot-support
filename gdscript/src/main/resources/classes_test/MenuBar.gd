@@ -31,23 +31,23 @@ func get_menu_count() -> int:
 	pass;
 
 #desc Returns [PopupMenu] associated with menu item.
-func get_menu_popup() -> PopupMenu:
+func get_menu_popup(menu: int) -> PopupMenu:
 	pass;
 
 #desc Returns menu item title.
-func get_menu_title() -> String:
+func get_menu_title(menu: int) -> String:
 	pass;
 
 #desc Returns menu item tooltip.
-func get_menu_tooltip() -> String:
+func get_menu_tooltip(menu: int) -> String:
 	pass;
 
 #desc Returns [code]true[/code], if menu item is disabled.
-func is_menu_disabled() -> bool:
+func is_menu_disabled(menu: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code], if menu item is hidden.
-func is_menu_hidden() -> bool:
+func is_menu_hidden(menu: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code], if system global menu is supported and used by this [MenuBar].
@@ -55,7 +55,7 @@ func is_native_menu() -> bool:
 	pass;
 
 #desc If [code]true[/code], shortcuts are disabled and cannot be used to trigger the button.
-func set_disable_shortcuts() -> void:
+func set_disable_shortcuts(disabled: bool) -> void:
 	pass;
 
 #desc If [code]true[/code], menu item is disabled.

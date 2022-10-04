@@ -32,7 +32,7 @@ func add_item(label: String, id: int) -> void:
 	pass;
 
 #desc Adds a separator to the list of items. Separators help to group items, and can optionally be given a [param text] header. A separator also gets an index assigned, and is appended at the end of the item list.
-func add_separator() -> void:
+func add_separator(text: String) -> void:
 	pass;
 
 #desc Clears all the items in the [OptionButton].
@@ -40,27 +40,27 @@ func clear() -> void:
 	pass;
 
 #desc Returns the icon of the item at index [param idx].
-func get_item_icon() -> Texture2D:
+func get_item_icon(idx: int) -> Texture2D:
 	pass;
 
 #desc Returns the ID of the item at index [param idx].
-func get_item_id() -> int:
+func get_item_id(idx: int) -> int:
 	pass;
 
 #desc Returns the index of the item with the given [param id].
-func get_item_index() -> int:
+func get_item_index(id: int) -> int:
 	pass;
 
 #desc Retrieves the metadata of an item. Metadata may be any type and can be used to store extra information about an item, such as an external string ID.
-func get_item_metadata() -> Variant:
+func get_item_metadata(idx: int) -> Variant:
 	pass;
 
 #desc Returns the text of the item at index [param idx].
-func get_item_text() -> String:
+func get_item_text(idx: int) -> String:
 	pass;
 
 #desc Returns the tooltip of the item at index [param idx].
-func get_item_tooltip() -> String:
+func get_item_tooltip(idx: int) -> String:
 	pass;
 
 #desc Returns the [PopupMenu] contained in this button.
@@ -68,7 +68,7 @@ func get_item_tooltip() -> String:
 func get_popup() -> PopupMenu:
 	pass;
 
-func get_selectable_item() -> int:
+func get_selectable_item(from_last: bool) -> int:
 	pass;
 
 #desc Returns the ID of the selected item, or [code]-1[/code] if no item is selected.
@@ -83,19 +83,19 @@ func has_selectable_items() -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the item at index [param idx] is disabled.
-func is_item_disabled() -> bool:
+func is_item_disabled(idx: int) -> bool:
 	pass;
 
-func is_item_separator() -> bool:
+func is_item_separator(idx: int) -> bool:
 	pass;
 
 #desc Removes the item at index [param idx].
-func remove_item() -> void:
+func remove_item(idx: int) -> void:
 	pass;
 
 #desc Selects an item by index and makes it the current item. This will work even if the item is disabled.
 #desc Passing [code]-1[/code] as the index deselects any currently selected item.
-func select() -> void:
+func select(idx: int) -> void:
 	pass;
 
 #desc Sets whether the item at index [param idx] is disabled.

@@ -148,7 +148,7 @@ func setup(key: CryptoKey, certificate: X509Certificate, chain: X509Certificate)
 
 #desc Try to initiate the DTLS handshake with the given [param udp_peer] which must be already connected (see [method PacketPeerUDP.connect_to_host]).
 #desc [b]Note:[/b] You must check that the state of the return PacketPeerUDP is [constant PacketPeerDTLS.STATUS_HANDSHAKING], as it is normal that 50% of the new connections will be invalid due to cookie exchange.
-func take_connection() -> PacketPeerDTLS:
+func take_connection(udp_peer: PacketPeerUDP) -> PacketPeerDTLS:
 	pass;
 
 

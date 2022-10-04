@@ -39,7 +39,7 @@ func is_stopped() -> bool:
 
 #desc Starts the timer. Sets [member wait_time] to [param time_sec] if [code]time_sec > 0[/code]. This also resets the remaining time to [member wait_time].
 #desc [b]Note:[/b] This method will not resume a paused timer. See [member paused].
-func start() -> void:
+func start(time_sec: float) -> void:
 	pass;
 
 #desc Stops the timer.

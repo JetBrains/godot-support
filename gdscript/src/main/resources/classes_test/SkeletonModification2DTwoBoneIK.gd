@@ -35,19 +35,19 @@ func get_joint_two_bone_idx() -> int:
 	pass;
 
 #desc Sets the [Bone2D] node that is being used as the first bone in the TwoBoneIK modification.
-func set_joint_one_bone2d_node() -> void:
+func set_joint_one_bone2d_node(bone2d_node: NodePath) -> void:
 	pass;
 
 #desc Sets the index of the [Bone2D] node that is being used as the first bone in the TwoBoneIK modification.
-func set_joint_one_bone_idx() -> void:
+func set_joint_one_bone_idx(bone_idx: int) -> void:
 	pass;
 
 #desc Sets the [Bone2D] node that is being used as the second bone in the TwoBoneIK modification.
-func set_joint_two_bone2d_node() -> void:
+func set_joint_two_bone2d_node(bone2d_node: NodePath) -> void:
 	pass;
 
 #desc Sets the index of the [Bone2D] node that is being used as the second bone in the TwoBoneIK modification.
-func set_joint_two_bone_idx() -> void:
+func set_joint_two_bone_idx(bone_idx: int) -> void:
 	pass;
 
 

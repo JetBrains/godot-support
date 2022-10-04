@@ -117,92 +117,92 @@ func get_focused_item() -> int:
 	pass;
 
 #desc Returns the accelerator of the item at the given [param index]. Accelerators are special combinations of keys that activate the item, no matter which control is focused.
-func get_item_accelerator() -> int:
+func get_item_accelerator(index: int) -> int:
 	pass;
 
 #desc Returns the icon of the item at the given [param index].
-func get_item_icon() -> Texture2D:
+func get_item_icon(index: int) -> Texture2D:
 	pass;
 
 #desc Returns the id of the item at the given [param index]. [code]id[/code] can be manually assigned, while index can not.
-func get_item_id() -> int:
+func get_item_id(index: int) -> int:
 	pass;
 
 #desc Returns the horizontal offset of the item at the given [param index].
-func get_item_indent() -> int:
+func get_item_indent(index: int) -> int:
 	pass;
 
 #desc Returns the index of the item containing the specified [param id]. Index is automatically assigned to each item by the engine and can not be set manually.
-func get_item_index() -> int:
+func get_item_index(id: int) -> int:
 	pass;
 
 #desc Returns item's text language code.
-func get_item_language() -> String:
+func get_item_language(index: int) -> String:
 	pass;
 
 #desc Returns the metadata of the specified item, which might be of any type. You can set it with [method set_item_metadata], which provides a simple way of assigning context data to items.
-func get_item_metadata() -> Variant:
+func get_item_metadata(index: int) -> Variant:
 	pass;
 
 #desc Returns the [Shortcut] associated with the item at the given [param index].
-func get_item_shortcut() -> Shortcut:
+func get_item_shortcut(index: int) -> Shortcut:
 	pass;
 
 #desc Returns the submenu name of the item at the given [param index]. See [method add_submenu_item] for more info on how to add a submenu.
-func get_item_submenu() -> String:
+func get_item_submenu(index: int) -> String:
 	pass;
 
 #desc Returns the text of the item at the given [param index].
-func get_item_text() -> String:
+func get_item_text(index: int) -> String:
 	pass;
 
 #desc Returns item's text base writing direction.
-func get_item_text_direction() -> int:
+func get_item_text_direction(index: int) -> int:
 	pass;
 
 #desc Returns the tooltip associated with the item at the given [param index].
-func get_item_tooltip() -> String:
+func get_item_tooltip(index: int) -> String:
 	pass;
 
 #desc Returns [code]true[/code] if the item at the given [param index] is checkable in some way, i.e. if it has a checkbox or radio button.
 #desc [b]Note:[/b] Checkable items just display a checkmark or radio button, but don't have any built-in checking behavior and must be checked/unchecked manually.
-func is_item_checkable() -> bool:
+func is_item_checkable(index: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the item at the given [param index] is checked.
-func is_item_checked() -> bool:
+func is_item_checked(index: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the item at the given [param index] is disabled. When it is disabled it can't be selected, or its action invoked.
 #desc See [method set_item_disabled] for more info on how to disable an item.
-func is_item_disabled() -> bool:
+func is_item_disabled(index: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the item at the given [param index] has radio button-style checkability.
 #desc [b]Note:[/b] This is purely cosmetic; you must add the logic for checking/unchecking items in radio groups.
-func is_item_radio_checkable() -> bool:
+func is_item_radio_checkable(index: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the item is a separator. If it is, it will be displayed as a line. See [method add_separator] for more info on how to add a separator.
-func is_item_separator() -> bool:
+func is_item_separator(index: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the specified item's shortcut is disabled.
-func is_item_shortcut_disabled() -> bool:
+func is_item_shortcut_disabled(index: int) -> bool:
 	pass;
 
 #desc Removes the item at the given [param index] from the menu.
 #desc [b]Note:[/b] The indices of items after the removed item will be shifted by one.
-func remove_item() -> void:
+func remove_item(index: int) -> void:
 	pass;
 
 #desc Moves the scroll view to make the item at the given [param index] visible.
-func scroll_to_item() -> void:
+func scroll_to_item(index: int) -> void:
 	pass;
 
 #desc Sets the currently focused item as the given [param index].
 #desc Passing [code]-1[/code] as the index makes so that no item is focused.
-func set_focused_item() -> void:
+func set_focused_item(index: int) -> void:
 	pass;
 
 #desc Sets the accelerator of the item at the given [param index]. Accelerators are special combinations of keys that activate the item, no matter which control is focused.
@@ -280,11 +280,11 @@ func set_item_tooltip(index: int, tooltip: String) -> void:
 	pass;
 
 #desc Toggles the check state of the item at the given [param index].
-func toggle_item_checked() -> void:
+func toggle_item_checked(index: int) -> void:
 	pass;
 
 #desc Cycle to the next state of a multistate item. See [method add_multistate_item] for details.
-func toggle_item_multistate() -> void:
+func toggle_item_multistate(index: int) -> void:
 	pass;
 
 

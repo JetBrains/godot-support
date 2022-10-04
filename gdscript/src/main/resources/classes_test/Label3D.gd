@@ -126,7 +126,7 @@ func generate_triangle_mesh() -> TriangleMesh:
 	pass;
 
 #desc Returns the value of the specified flag.
-func get_draw_flag() -> bool:
+func get_draw_flag(flag: int) -> bool:
 	pass;
 
 #desc If [code]true[/code], the specified flag will be enabled. See [enum Label3D.DrawFlags] for a list of flags.

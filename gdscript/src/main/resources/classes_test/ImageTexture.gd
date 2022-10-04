@@ -25,7 +25,7 @@ class_name ImageTexture
 
 
 #desc Creates a new [ImageTexture] and initializes it by allocating and setting the data from an [Image].
-static func create_from_image() -> ImageTexture:
+static func create_from_image(image: Image) -> ImageTexture:
 	pass;
 
 #desc Returns the format of the texture, one of [enum Image.Format].
@@ -34,17 +34,17 @@ func get_format() -> int:
 
 #desc Replaces the texture's data with a new [Image]. This will re-allocate new memory for the texture.
 #desc If you want to update the image, but don't need to change its parameters (format, size), use [method update] instead for better performance.
-func set_image() -> void:
+func set_image(image: Image) -> void:
 	pass;
 
 #desc Resizes the texture to the specified dimensions.
-func set_size_override() -> void:
+func set_size_override(size: Vector2i) -> void:
 	pass;
 
 #desc Replaces the texture's data with a new [Image].
 #desc [b]Note:[/b] The texture has to be created using [method create_from_image] or initialized first with the [method set_image] method before it can be updated. The new image dimensions, format, and mipmaps configuration should match the existing texture's image configuration.
 #desc Use this method over [method set_image] if you need to update the texture frequently, which is faster than allocating additional memory for a new texture each time.
-func update() -> void:
+func update(image: Image) -> void:
 	pass;
 
 

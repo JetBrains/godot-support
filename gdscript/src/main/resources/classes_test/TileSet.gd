@@ -121,17 +121,17 @@ var uv_clipping: bool;
 
 #desc Adds a custom data layer to the TileSet at the given position [param to_position] in the array. If [param to_position] is -1, adds it at the end of the array.
 #desc Custom data layers allow assigning custom properties to atlas tiles.
-func add_custom_data_layer() -> void:
+func add_custom_data_layer(to_position: int) -> void:
 	pass;
 
 #desc Adds a navigation layer to the TileSet at the given position [param to_position] in the array. If [param to_position] is -1, adds it at the end of the array.
 #desc Navigation layers allow assigning a navigable area to atlas tiles.
-func add_navigation_layer() -> void:
+func add_navigation_layer(to_position: int) -> void:
 	pass;
 
 #desc Adds an occlusion layer to the TileSet at the given position [param to_position] in the array. If [param to_position] is -1, adds it at the end of the array.
 #desc Occlusion layers allow assigning occlusion polygons to atlas tiles.
-func add_occlusion_layer() -> void:
+func add_occlusion_layer(to_position: int) -> void:
 	pass;
 
 #desc Adds a [TileMapPattern] to be stored in the TileSet resource. If provided, insert it at the given [param index].
@@ -140,7 +140,7 @@ func add_pattern(pattern: TileMapPattern, index: int) -> int:
 
 #desc Adds a physics layer to the TileSet at the given position [param to_position] in the array. If [param to_position] is -1, adds it at the end of the array.
 #desc Physics layers allow assigning collision polygons to atlas tiles.
-func add_physics_layer() -> void:
+func add_physics_layer(to_position: int) -> void:
 	pass;
 
 #desc Adds a [TileSetSource] to the TileSet. If [param atlas_source_id_override] is not -1, also set its source ID. Otherwise, a unique identifier is automatically generated.
@@ -153,7 +153,7 @@ func add_terrain(terrain_set: int, to_position: int) -> void:
 	pass;
 
 #desc Adds a new terrain set at the given position [param to_position] in the array. If [param to_position] is -1, adds it at the end of the array.
-func add_terrain_set() -> void:
+func add_terrain_set(to_position: int) -> void:
 	pass;
 
 #desc Clears tile proxies pointing to invalid tiles.
@@ -175,15 +175,15 @@ func get_coords_level_tile_proxy(source_from: int, coords_from: Vector2i) -> Arr
 	pass;
 
 #desc Returns the index of the custom data layer identified by the given name.
-func get_custom_data_layer_by_name() -> int:
+func get_custom_data_layer_by_name(layer_name: String) -> int:
 	pass;
 
 #desc Returns the name of the custom data layer identified by the given index.
-func get_custom_data_layer_name() -> String:
+func get_custom_data_layer_name(layer_index: int) -> String:
 	pass;
 
 #desc Returns the type of the custom data layer identified by the given index.
-func get_custom_data_layer_type() -> int:
+func get_custom_data_layer_type(layer_index: int) -> int:
 	pass;
 
 #desc Returns the custom data layers count.
@@ -191,7 +191,7 @@ func get_custom_data_layers_count() -> int:
 	pass;
 
 #desc Returns the navigation layers (as in the Navigation server) of the gives TileSet navigation layer.
-func get_navigation_layer_layers() -> int:
+func get_navigation_layer_layers(layer_index: int) -> int:
 	pass;
 
 #desc Returns the navigation layers count.
@@ -203,11 +203,11 @@ func get_next_source_id() -> int:
 	pass;
 
 #desc Returns the light mask of the occlusion layer.
-func get_occlusion_layer_light_mask() -> int:
+func get_occlusion_layer_light_mask(layer_index: int) -> int:
 	pass;
 
 #desc Returns if the occluders from this layer use [code]sdf_collision[/code].
-func get_occlusion_layer_sdf_collision() -> bool:
+func get_occlusion_layer_sdf_collision(layer_index: int) -> bool:
 	pass;
 
 #desc Returns the occlusion layers count.
@@ -215,7 +215,7 @@ func get_occlusion_layers_count() -> int:
 	pass;
 
 #desc Returns the [TileMapPattern] at the given [param index].
-func get_pattern() -> TileMapPattern:
+func get_pattern(index: int) -> TileMapPattern:
 	pass;
 
 #desc Returns the number of [TileMapPattern] this tile set handles.
@@ -223,15 +223,15 @@ func get_patterns_count() -> int:
 	pass;
 
 #desc Returns the collision layer (as in the physics server) bodies on the given TileSet's physics layer are in.
-func get_physics_layer_collision_layer() -> int:
+func get_physics_layer_collision_layer(layer_index: int) -> int:
 	pass;
 
 #desc Returns the collision mask of bodies on the given TileSet's physics layer.
-func get_physics_layer_collision_mask() -> int:
+func get_physics_layer_collision_mask(layer_index: int) -> int:
 	pass;
 
 #desc Returns the physics material of bodies on the given TileSet's physics layer.
-func get_physics_layer_physics_material() -> PhysicsMaterial:
+func get_physics_layer_physics_material(layer_index: int) -> PhysicsMaterial:
 	pass;
 
 #desc Returns the physics layers count.
@@ -239,7 +239,7 @@ func get_physics_layers_count() -> int:
 	pass;
 
 #desc Returns the [TileSetSource] with ID [param source_id].
-func get_source() -> TileSetSource:
+func get_source(source_id: int) -> TileSetSource:
 	pass;
 
 #desc Returns the number of [TileSetSource] in this TileSet.
@@ -247,12 +247,12 @@ func get_source_count() -> int:
 	pass;
 
 #desc Returns the source ID for source with index [param index].
-func get_source_id() -> int:
+func get_source_id(index: int) -> int:
 	pass;
 
 #desc Returns the source-level proxy for the given source identifier.
 #desc If the TileSet has no proxy for the given identifier, returns -1.
-func get_source_level_tile_proxy() -> int:
+func get_source_level_tile_proxy(source_from: int) -> int:
 	pass;
 
 #desc Returns a terrain's color.
@@ -264,7 +264,7 @@ func get_terrain_name(terrain_set: int, terrain_index: int) -> String:
 	pass;
 
 #desc Returns a terrain set mode.
-func get_terrain_set_mode() -> int:
+func get_terrain_set_mode(terrain_set: int) -> int:
 	pass;
 
 #desc Returns the terrain sets count.
@@ -272,7 +272,7 @@ func get_terrain_sets_count() -> int:
 	pass;
 
 #desc Returns the number of terrains in the given terrain set.
-func get_terrains_count() -> int:
+func get_terrains_count(terrain_set: int) -> int:
 	pass;
 
 #desc Returns if there is and alternative-level proxy for the given identifiers.
@@ -284,11 +284,11 @@ func has_coords_level_tile_proxy(source_from: int, coords_from: Vector2i) -> boo
 	pass;
 
 #desc Returns if this TileSet has a source for the given source ID.
-func has_source() -> bool:
+func has_source(source_id: int) -> bool:
 	pass;
 
 #desc Returns if there is a source-level proxy for the given source ID.
-func has_source_level_tile_proxy() -> bool:
+func has_source_level_tile_proxy(source_from: int) -> bool:
 	pass;
 
 #desc According to the configured proxies, maps the provided indentifiers to a new set of identifiers. The source ID, atlas coordinates ID and alternative tile ID are returned as a 3 elements Array.
@@ -330,31 +330,31 @@ func remove_coords_level_tile_proxy(source_from: int, coords_from: Vector2i) -> 
 	pass;
 
 #desc Removes the custom data layer at index [param layer_index]. Also updates the atlas tiles accordingly.
-func remove_custom_data_layer() -> void:
+func remove_custom_data_layer(layer_index: int) -> void:
 	pass;
 
 #desc Removes the navigation layer at index [param layer_index]. Also updates the atlas tiles accordingly.
-func remove_navigation_layer() -> void:
+func remove_navigation_layer(layer_index: int) -> void:
 	pass;
 
 #desc Removes the occlusion layer at index [param layer_index]. Also updates the atlas tiles accordingly.
-func remove_occlusion_layer() -> void:
+func remove_occlusion_layer(layer_index: int) -> void:
 	pass;
 
 #desc Remove the [TileMapPattern] at the given index.
-func remove_pattern() -> void:
+func remove_pattern(index: int) -> void:
 	pass;
 
 #desc Removes the physics layer at index [param layer_index]. Also updates the atlas tiles accordingly.
-func remove_physics_layer() -> void:
+func remove_physics_layer(layer_index: int) -> void:
 	pass;
 
 #desc Removes the source with the given source ID.
-func remove_source() -> void:
+func remove_source(source_id: int) -> void:
 	pass;
 
 #desc Removes a source-level tile proxy.
-func remove_source_level_tile_proxy() -> void:
+func remove_source_level_tile_proxy(source_from: int) -> void:
 	pass;
 
 #desc Removes the terrain at index [param terrain_index] in the given terrain set [param terrain_set]. Also updates the atlas tiles accordingly.
@@ -362,7 +362,7 @@ func remove_terrain(terrain_set: int, terrain_index: int) -> void:
 	pass;
 
 #desc Removes the terrain set at index [param terrain_set]. Also updates the atlas tiles accordingly.
-func remove_terrain_set() -> void:
+func remove_terrain_set(terrain_set: int) -> void:
 	pass;
 
 #desc Create an alternative-level proxy for the given identifiers. A proxy will map set of tile identifiers to another set of identifiers.

@@ -16,19 +16,19 @@ var target_nodepath: NodePath;
 
 
 #desc Returns the [Bone2D] node assigned to the FABRIK joint at [param joint_idx].
-func get_fabrik_joint_bone2d_node() -> NodePath:
+func get_fabrik_joint_bone2d_node(joint_idx: int) -> NodePath:
 	pass;
 
 #desc Returns the index of the [Bone2D] node assigned to the FABRIK joint at [param joint_idx].
-func get_fabrik_joint_bone_index() -> int:
+func get_fabrik_joint_bone_index(joint_idx: int) -> int:
 	pass;
 
 #desc Returns the magnet position vector for the joint at [param joint_idx].
-func get_fabrik_joint_magnet_position() -> Vector2:
+func get_fabrik_joint_magnet_position(joint_idx: int) -> Vector2:
 	pass;
 
 #desc Returns whether the joint is using the target's rotation rather than allowing FABRIK to rotate the joint. This option only applies to the tip/final joint in the chain.
-func get_fabrik_joint_use_target_rotation() -> bool:
+func get_fabrik_joint_use_target_rotation(joint_idx: int) -> bool:
 	pass;
 
 #desc Sets the [Bone2D] node assigned to the FABRIK joint at [param joint_idx].

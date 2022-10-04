@@ -95,7 +95,7 @@ func eof_reached() -> bool:
 #desc Returns [code]true[/code] if the file exists in the given path.
 #desc [b]Note:[/b] Many resources types are imported (e.g. textures or sound files), and their source asset will not be included in the exported game, as only the imported version is used. See [method ResourceLoader.exists] for an alternative approach that takes resource remapping into account.
 #desc For a non-static, relative equivalent, use [method DirAccess.file_exists].
-static func file_exists() -> bool:
+static func file_exists(path: String) -> bool:
 	pass;
 
 #desc Writes the file's buffer to disk. Flushing is automatically performed when the file is closed. This means you don't need to call [method flush] manually before closing a file. Still, calling [method flush] can be used to ensure the data is safe even if the project crashes instead of being closed gracefully.
@@ -121,11 +121,11 @@ func get_8() -> int:
 
 #desc Returns the whole file as a [String]. Text is interpreted as being UTF-8 encoded.
 #desc If [param skip_cr] is [code]true[/code], carriage return characters ([code]\r[/code], CR) will be ignored when parsing the UTF-8, so that only line feed characters ([code]\n[/code], LF) represent a new line (Unix convention).
-func get_as_text() -> String:
+func get_as_text(skip_cr: bool) -> String:
 	pass;
 
 #desc Returns next [param length] bytes of the file as a [PackedByteArray].
-func get_buffer() -> PackedByteArray:
+func get_buffer(length: int) -> PackedByteArray:
 	pass;
 
 #desc Returns the next value of the file in CSV (Comma-Separated Values) format. You can pass a different delimiter [param delim] to use other than the default [code]","[/code] (comma). This delimiter must be one-character long, and cannot be a double quotation mark.
@@ -137,7 +137,7 @@ func get_buffer() -> PackedByteArray:
 #desc Alice,"I thought you'd reply with ""Hello, world""."
 #desc [/codeblock]
 #desc Note how the second line can omit the enclosing quotes as it does not include the delimiter. However it [i]could[/i] very well use quotes, it was only written without for demonstration purposes. The third line must use [code]""[/code] for each quotation mark that needs to be interpreted as such instead of the end of a text value.
-func get_csv_line() -> PackedStringArray:
+func get_csv_line(delim: String) -> PackedStringArray:
 	pass;
 
 #desc Returns the next 64 bits from the file as a floating-point number.
@@ -162,11 +162,11 @@ func get_line() -> String:
 	pass;
 
 #desc Returns an MD5 String representing the file at the given path or an empty [String] on failure.
-static func get_md5() -> String:
+static func get_md5(path: String) -> String:
 	pass;
 
 #desc Returns the last time the [param file] was modified in Unix timestamp format or returns a [String] "ERROR IN [code]file[/code]". This Unix timestamp can be converted to another format using the [Time] singleton.
-static func get_modified_time() -> int:
+static func get_modified_time(file: String) -> int:
 	pass;
 
 #desc Returns the result of the last [method open] call in the current thread.
@@ -195,12 +195,12 @@ func get_real() -> float:
 	pass;
 
 #desc Returns a SHA-256 [String] representing the file at the given path or an empty [String] on failure.
-static func get_sha256() -> String:
+static func get_sha256(path: String) -> String:
 	pass;
 
 #desc Returns the next [Variant] value from the file. If [param allow_objects] is [code]true[/code], decoding objects is allowed.
 #desc [b]Warning:[/b] Deserialized objects can contain code which gets executed. Do not use this option if the serialized object comes from untrusted sources to avoid potential security threats such as remote code execution.
-func get_var() -> Variant:
+func get_var(allow_objects: bool) -> Variant:
 	pass;
 
 #desc Returns [code]true[/code] if the file is currently opened.
@@ -230,12 +230,12 @@ static func open_encrypted_with_pass(path: String, mode_flags: int, pass: String
 	pass;
 
 #desc Changes the file reading/writing cursor to the specified position (in bytes from the beginning of the file).
-func seek() -> void:
+func seek(position: int) -> void:
 	pass;
 
 #desc Changes the file reading/writing cursor to the specified position (in bytes from the end of the file).
 #desc [b]Note:[/b] This is an offset, so you should use negative numbers or the cursor will be at the end of the file.
-func seek_end() -> void:
+func seek_end(position: int) -> void:
 	pass;
 
 #desc Stores an integer as 16 bits in the file.
@@ -273,28 +273,28 @@ func seek_end() -> void:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-func store_16() -> void:
+func store_16(value: int) -> void:
 	pass;
 
 #desc Stores an integer as 32 bits in the file.
 #desc [b]Note:[/b] The [param value] should lie in the interval [code][0, 2^32 - 1][/code]. Any other value will overflow and wrap around.
 #desc To store a signed integer, use [method store_64], or convert it manually (see [method store_16] for an example).
-func store_32() -> void:
+func store_32(value: int) -> void:
 	pass;
 
 #desc Stores an integer as 64 bits in the file.
 #desc [b]Note:[/b] The [param value] must lie in the interval [code][-2^63, 2^63 - 1][/code] (i.e. be a valid [int] value).
-func store_64() -> void:
+func store_64(value: int) -> void:
 	pass;
 
 #desc Stores an integer as 8 bits in the file.
 #desc [b]Note:[/b] The [param value] should lie in the interval [code][0, 255][/code]. Any other value will overflow and wrap around.
 #desc To store a signed integer, use [method store_64], or convert it manually (see [method store_16] for an example).
-func store_8() -> void:
+func store_8(value: int) -> void:
 	pass;
 
 #desc Stores the given array of bytes in the file.
-func store_buffer() -> void:
+func store_buffer(buffer: PackedByteArray) -> void:
 	pass;
 
 #desc Store the given [PackedStringArray] in the file as a line formatted in the CSV (Comma-Separated Values) format. You can pass a different delimiter [param delim] to use other than the default [code]","[/code] (comma). This delimiter must be one-character long.
@@ -303,29 +303,29 @@ func store_csv_line(values: PackedStringArray, delim: String) -> void:
 	pass;
 
 #desc Stores a floating-point number as 64 bits in the file.
-func store_double() -> void:
+func store_double(value: float) -> void:
 	pass;
 
 #desc Stores a floating-point number as 32 bits in the file.
-func store_float() -> void:
+func store_float(value: float) -> void:
 	pass;
 
 #desc Appends [param line] to the file followed by a line return character ([code]\n[/code]), encoding the text as UTF-8.
-func store_line() -> void:
+func store_line(line: String) -> void:
 	pass;
 
 #desc Stores the given [String] as a line in the file in Pascal format (i.e. also store the length of the string).
 #desc Text will be encoded as UTF-8.
-func store_pascal_string() -> void:
+func store_pascal_string(string: String) -> void:
 	pass;
 
 #desc Stores a floating-point number in the file.
-func store_real() -> void:
+func store_real(value: float) -> void:
 	pass;
 
 #desc Appends [param string] to the file without a line return, encoding the text as UTF-8.
 #desc [b]Note:[/b] This method is intended to be used to write text files. The string is stored as a UTF-8 encoded buffer without string length or terminating zero, which means that it can't be loaded back easily. If you want to store a retrievable string in a binary file, consider using [method store_pascal_string] instead. For retrieving strings from a text file, you can use [code]get_buffer(length).get_string_from_utf8()[/code] (if you know the length) or [method get_as_text].
-func store_string() -> void:
+func store_string(string: String) -> void:
 	pass;
 
 #desc Stores any Variant value in the file. If [param full_objects] is [code]true[/code], encoding objects is allowed (and can potentially include code).

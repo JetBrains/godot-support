@@ -27,7 +27,7 @@ var z_index: int;
 
 
 #desc Adds a collision polygon to the tile on the given TileSet physics layer.
-func add_collision_polygon() -> void:
+func add_collision_polygon(layer_id: int) -> void:
 	pass;
 
 #desc Returns the one-way margin (for one-way platforms) of the polygon at index [param polygon_index] for TileSet physics layer with index [param layer_id].
@@ -39,35 +39,35 @@ func get_collision_polygon_points(layer_id: int, polygon_index: int) -> PackedVe
 	pass;
 
 #desc Returns how many polygons the tile has for TileSet physics layer with index [param layer_id].
-func get_collision_polygons_count() -> int:
+func get_collision_polygons_count(layer_id: int) -> int:
 	pass;
 
 #desc Returns the constant angular velocity applied to objects colliding with this tile.
-func get_constant_angular_velocity() -> float:
+func get_constant_angular_velocity(layer_id: int) -> float:
 	pass;
 
 #desc Returns the constant linear velocity applied to objects colliding with this tile.
-func get_constant_linear_velocity() -> Vector2:
+func get_constant_linear_velocity(layer_id: int) -> Vector2:
 	pass;
 
 #desc Returns the custom data value for custom data layer named [param layer_name].
-func get_custom_data() -> Variant:
+func get_custom_data(layer_name: String) -> Variant:
 	pass;
 
 #desc Returns the custom data value for custom data layer with index [param layer_id].
-func get_custom_data_by_layer_id() -> Variant:
+func get_custom_data_by_layer_id(layer_id: int) -> Variant:
 	pass;
 
 #desc Returns the navigation polygon of the tile for the TileSet navigation layer with index [param layer_id].
-func get_navigation_polygon() -> NavigationPolygon:
+func get_navigation_polygon(layer_id: int) -> NavigationPolygon:
 	pass;
 
 #desc Returns the occluder polygon of the tile for the TileSet occlusion layer with index [param layer_id].
-func get_occluder() -> OccluderPolygon2D:
+func get_occluder(layer_id: int) -> OccluderPolygon2D:
 	pass;
 
 #desc Returns the tile's terrain bit for the given [param peering_bit] direction.
-func get_terrain_peering_bit() -> int:
+func get_terrain_peering_bit(peering_bit: int) -> int:
 	pass;
 
 #desc Returns whether one-way collisions are enabled for the polygon at index [param polygon_index] for TileSet physics layer with index [param layer_id].

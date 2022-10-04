@@ -27,7 +27,7 @@ virtual const func _get_handle_value(id: int, secondary: bool) -> Variant:
 	pass;
 
 #desc Override this method to return the current transform of a subgizmo. This transform will be requested at the start of an edit and used as the [code]restore[/code] argument in [method _commit_subgizmos].
-virtual const func _get_subgizmo_transform() -> Transform3D:
+virtual const func _get_subgizmo_transform(id: int) -> Transform3D:
 	pass;
 
 #desc Override this method to return [code]true[/code] whenever the given handle should be highlighted in the editor.
@@ -57,11 +57,11 @@ virtual const func _subgizmos_intersect_ray(camera: Camera3D, point: Vector2) ->
 	pass;
 
 #desc Adds the specified [param segments] to the gizmo's collision shape for picking. Call this method during [method _redraw].
-func add_collision_segments() -> void:
+func add_collision_segments(segments: PackedVector3Array) -> void:
 	pass;
 
 #desc Adds collision triangles to the gizmo for picking. A [TriangleMesh] can be generated from a regular [Mesh] too. Call this method during [method _redraw].
-func add_collision_triangles() -> void:
+func add_collision_triangles(triangles: TriangleMesh) -> void:
 	pass;
 
 #desc Adds a list of handles (points) which can be used to edit the properties of the gizmo's Node3D. The [param ids] argument can be used to specify a custom identifier for each handle, if an empty [code]Array[/code] is passed, the ids will be assigned automatically from the [param handles] argument order.
@@ -99,15 +99,15 @@ func get_subgizmo_selection() -> PackedInt32Array:
 	pass;
 
 #desc Returns [code]true[/code] if the given subgizmo is currently selected. Can be used to highlight selected elements during [method _redraw].
-func is_subgizmo_selected() -> bool:
+func is_subgizmo_selected(id: int) -> bool:
 	pass;
 
 #desc Sets the gizmo's hidden state. If [code]true[/code], the gizmo will be hidden. If [code]false[/code], it will be shown.
-func set_hidden() -> void:
+func set_hidden(hidden: bool) -> void:
 	pass;
 
 #desc Sets the reference [Node3D] node for the gizmo. [param node] must inherit from [Node3D].
-func set_node_3d() -> void:
+func set_node_3d(node: Node) -> void:
 	pass;
 
 

@@ -122,11 +122,11 @@ func add_valid_connection_type(from_type: int, to_type: int) -> void:
 	pass;
 
 #desc Allows to disconnect nodes when dragging from the left port of the [GraphNode]'s slot if it has the specified type. See also [method remove_valid_left_disconnect_type].
-func add_valid_left_disconnect_type() -> void:
+func add_valid_left_disconnect_type(type: int) -> void:
 	pass;
 
 #desc Allows to disconnect nodes when dragging from the right port of the [GraphNode]'s slot if it has the specified type. See also [method remove_valid_right_disconnect_type].
-func add_valid_right_disconnect_type() -> void:
+func add_valid_right_disconnect_type(type: int) -> void:
 	pass;
 
 #desc Rearranges selected nodes in a layout with minimum crossings between connections and uniform horizontal and vertical gap between nodes.
@@ -179,11 +179,11 @@ func remove_valid_connection_type(from_type: int, to_type: int) -> void:
 	pass;
 
 #desc Disallows to disconnect nodes when dragging from the left port of the [GraphNode]'s slot if it has the specified type. Use this to disable disconnection previously allowed with [method add_valid_left_disconnect_type].
-func remove_valid_left_disconnect_type() -> void:
+func remove_valid_left_disconnect_type(type: int) -> void:
 	pass;
 
 #desc Disallows to disconnect nodes when dragging from the right port of the [GraphNode]'s slot if it has the specified type. Use this to disable disconnection previously allowed with [method add_valid_right_disconnect_type].
-func remove_valid_right_disconnect_type() -> void:
+func remove_valid_right_disconnect_type(type: int) -> void:
 	pass;
 
 #desc Sets the coloration of the connection between [param from_node]'s [param from_port] and [param to_node]'s [param to_port] with the color provided in the [theme_item activity] theme property.
@@ -191,7 +191,7 @@ func set_connection_activity(from_node: StringName, from_port: int, to_node: Str
 	pass;
 
 #desc Sets the specified [param node] as the one selected.
-func set_selected() -> void:
+func set_selected(node: Node) -> void:
 	pass;
 
 

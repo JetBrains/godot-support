@@ -71,11 +71,11 @@ func finish() -> PackedByteArray:
 	pass;
 
 #desc Starts a new hash computation of the given [param type] (e.g. [constant HASH_SHA256] to start computation of a SHA-256).
-func start() -> int:
+func start(type: int) -> int:
 	pass;
 
 #desc Updates the computation with the given [param chunk] of data.
-func update() -> int:
+func update(chunk: PackedByteArray) -> int:
 	pass;
 
 

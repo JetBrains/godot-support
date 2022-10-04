@@ -359,7 +359,7 @@ func get_mouse_position() -> Vector2:
 	pass;
 
 #desc Returns the [enum PositionalShadowAtlasQuadrantSubdiv] of the specified quadrant.
-func get_positional_shadow_atlas_quadrant_subdiv() -> int:
+func get_positional_shadow_atlas_quadrant_subdiv(quadrant: int) -> int:
 	pass;
 
 func get_render_info(type: int, info: int) -> int:
@@ -410,7 +410,7 @@ func is_input_handled() -> bool:
 func push_input(event: InputEvent, in_local_coords: bool) -> void:
 	pass;
 
-func push_text_input() -> void:
+func push_text_input(text: String) -> void:
 	pass;
 
 func push_unhandled_input(event: InputEvent, in_local_coords: bool) -> void:
@@ -425,7 +425,7 @@ func set_positional_shadow_atlas_quadrant_subdiv(quadrant: int, subdiv: int) -> 
 	pass;
 
 #desc Moves the mouse pointer to the specified position in this [Viewport] using the coordinate system of this [Viewport].
-func warp_mouse() -> void:
+func warp_mouse(position: Vector2) -> void:
 	pass;
 
 

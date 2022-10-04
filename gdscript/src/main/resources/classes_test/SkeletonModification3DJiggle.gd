@@ -33,39 +33,39 @@ func get_collision_mask() -> int:
 	pass;
 
 #desc Returns the bone index of the bone assigned to the Jiggle joint at [param joint_idx].
-func get_jiggle_joint_bone_index() -> int:
+func get_jiggle_joint_bone_index(joint_idx: int) -> int:
 	pass;
 
 #desc Returns the name of the bone that is assigned to the Jiggle joint at [param joint_idx].
-func get_jiggle_joint_bone_name() -> String:
+func get_jiggle_joint_bone_name(joint_idx: int) -> String:
 	pass;
 
 #desc Returns the amount of dampening of the Jiggle joint at [param joint_idx].
-func get_jiggle_joint_damping() -> float:
+func get_jiggle_joint_damping(joint_idx: int) -> float:
 	pass;
 
 #desc Returns a [Vector3] representign the amount of gravity the Jiggle joint at [param joint_idx] is influenced by.
-func get_jiggle_joint_gravity() -> Vector3:
+func get_jiggle_joint_gravity(joint_idx: int) -> Vector3:
 	pass;
 
 #desc Returns the amount of mass of the Jiggle joint at [param joint_idx].
-func get_jiggle_joint_mass() -> float:
+func get_jiggle_joint_mass(joint_idx: int) -> float:
 	pass;
 
 #desc Returns a boolean that indicates whether the joint at [param joint_idx] is overriding the default jiggle joint data defined in the modification.
-func get_jiggle_joint_override() -> bool:
+func get_jiggle_joint_override(joint_idx: int) -> bool:
 	pass;
 
 #desc Returns the amount of roll/twist applied to the bone that the Jiggle joint is applied to.
-func get_jiggle_joint_roll() -> float:
+func get_jiggle_joint_roll(joint_idx: int) -> float:
 	pass;
 
 #desc Returns the stiffness of the Jiggle joint at [param joint_idx].
-func get_jiggle_joint_stiffness() -> float:
+func get_jiggle_joint_stiffness(joint_idx: int) -> float:
 	pass;
 
 #desc Returns a boolean that indicates whether the joint at [param joint_idx] is using gravity or not.
-func get_jiggle_joint_use_gravity() -> bool:
+func get_jiggle_joint_use_gravity(joint_idx: int) -> bool:
 	pass;
 
 #desc Returns whether the Jiggle modifier is taking physics colliders into account when solving.
@@ -73,7 +73,7 @@ func get_use_colliders() -> bool:
 	pass;
 
 #desc Sets the collision mask that the Jiggle modifier takes into account when performing physics calculations.
-func set_collision_mask() -> void:
+func set_collision_mask(mask: int) -> void:
 	pass;
 
 #desc Sets the bone index, [param bone_idx], of the Jiggle joint at [param joint_idx]. When possible, this will also update the [code]bone_name[/code] of the Jiggle joint based on data provided by the [Skeleton3D].
@@ -113,7 +113,7 @@ func set_jiggle_joint_use_gravity(joint_idx: int, use_gravity: bool) -> void:
 	pass;
 
 #desc When [code]true[/code], the Jiggle modifier will use raycasting to prevent the Jiggle joints from rotating themselves into collision objects when solving.
-func set_use_colliders() -> void:
+func set_use_colliders(use_colliders: bool) -> void:
 	pass;
 
 

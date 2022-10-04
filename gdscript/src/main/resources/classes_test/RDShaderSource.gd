@@ -15,7 +15,7 @@ var source_vertex: String;
 
 
 
-func get_stage_source() -> String:
+func get_stage_source(stage: int) -> String:
 	pass;
 
 func set_stage_source(stage: int, source: String) -> void:

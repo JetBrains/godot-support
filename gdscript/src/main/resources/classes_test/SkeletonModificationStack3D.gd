@@ -16,15 +16,15 @@ var strength: float;
 
 
 #desc Adds the passed-in [SkeletonModification3D] to the stack.
-func add_modification() -> void:
+func add_modification(modification: SkeletonModification3D) -> void:
 	pass;
 
 #desc Deletes the [SkeletonModification3D] at the index position [param mod_idx], if it exists.
-func delete_modification() -> void:
+func delete_modification(mod_idx: int) -> void:
 	pass;
 
 #desc Enables all [SkeletonModification3D]s in the stack.
-func enable_all_modifications() -> void:
+func enable_all_modifications(enabled: bool) -> void:
 	pass;
 
 #desc Executes all of the [SkeletonModification3D]s in the stack that use the same execution mode as the passed-in [param execution_mode], starting from index [code]0[/code] to [member modification_count].
@@ -37,7 +37,7 @@ func get_is_setup() -> bool:
 	pass;
 
 #desc Returns the [SkeletonModification3D] at the passed-in index, [param mod_idx].
-func get_modification() -> SkeletonModification3D:
+func get_modification(mod_idx: int) -> SkeletonModification3D:
 	pass;
 
 #desc Returns the [Skeleton3D] node that the SkeletonModificationStack3D is bound to.

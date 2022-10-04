@@ -11,11 +11,11 @@ func StringName() -> StringName:
 	pass;
 
 #desc Constructs a [StringName] as a copy of the given [StringName].
-func StringName() -> StringName:
+func StringName(from: StringName) -> StringName:
 	pass;
 
 #desc Creates a new [StringName] from the given [String]. [code]StringName("example")[/code] is equivalent to [code]&"example"[/code].
-func StringName() -> StringName:
+func StringName(from: String) -> StringName:
 	pass;
 
 

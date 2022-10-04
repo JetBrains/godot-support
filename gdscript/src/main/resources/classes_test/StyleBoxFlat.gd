@@ -98,7 +98,7 @@ var skew: Vector2;
 
 
 #desc Returns the specified [enum Side]'s border width.
-func get_border_width() -> int:
+func get_border_width(margin: int) -> int:
 	pass;
 
 #desc Returns the smallest border width out of all four borders.
@@ -106,11 +106,11 @@ func get_border_width_min() -> int:
 	pass;
 
 #desc Returns the given [param corner]'s radius. See [enum Corner] for possible values.
-func get_corner_radius() -> int:
+func get_corner_radius(corner: int) -> int:
 	pass;
 
 #desc Returns the size of the specified [enum Side]'s expand margin.
-func get_expand_margin() -> float:
+func get_expand_margin(margin: int) -> float:
 	pass;
 
 #desc Sets the specified [enum Side]'s border width to [param width] pixels.
@@ -118,7 +118,7 @@ func set_border_width(margin: int, width: int) -> void:
 	pass;
 
 #desc Sets the border width to [param width] pixels for all sides.
-func set_border_width_all() -> void:
+func set_border_width_all(width: int) -> void:
 	pass;
 
 #desc Sets the corner radius to [param radius] pixels for the given [param corner]. See [enum Corner] for possible values.
@@ -126,7 +126,7 @@ func set_corner_radius(corner: int, radius: int) -> void:
 	pass;
 
 #desc Sets the corner radius to [param radius] pixels for all corners.
-func set_corner_radius_all() -> void:
+func set_corner_radius_all(radius: int) -> void:
 	pass;
 
 #desc Sets the expand margin to [param size] pixels for the specified [enum Side].
@@ -134,7 +134,7 @@ func set_expand_margin(margin: int, size: float) -> void:
 	pass;
 
 #desc Sets the expand margin to [param size] pixels for all margins.
-func set_expand_margin_all() -> void:
+func set_expand_margin_all(size: float) -> void:
 	pass;
 
 

@@ -43,7 +43,7 @@ virtual func _use_tile_data_runtime_update(layer: int, coords: Vector2i) -> bool
 	pass;
 
 #desc Adds a layer at the given position [param to_position] in the array. If [param to_position] is negative, the position is counted from the end, with [code]-1[/code] adding the layer at the end of the array.
-func add_layer() -> void:
+func add_layer(to_position: int) -> void:
 	pass;
 
 #desc Clears all cells.
@@ -51,7 +51,7 @@ func clear() -> void:
 	pass;
 
 #desc Clears all cells on the given layer.
-func clear_layer() -> void:
+func clear_layer(layer: int) -> void:
 	pass;
 
 #desc Erases the cell on layer [param layer] at coordinates [param coords].
@@ -65,7 +65,7 @@ func fix_invalid_tiles() -> void:
 #desc Triggers an update of the TileMap. If [param layer] is provided, only updates the given layer.
 #desc [b]Note:[/b] The TileMap node updates automatically when one of its properties is modified. A manual update is only needed if runtime modifications (implemented in [method _tile_data_runtime_update]) need to be applied.
 #desc [b]Warning:[/b] Updating the TileMap is computationally expensive and may impact performance. Try to limit the number of updates and the tiles they impact (by placing frequently updated tiles in a dedicated layer for example).
-func force_update() -> void:
+func force_update(layer: int) -> void:
 	pass;
 
 #desc Returns the tile alternative ID of the cell on layer [param layer] at [param coords]. If [param use_proxies] is [code]false[/code], ignores the [TileSet]'s tile proxies, returning the raw alternative identifier. See [method TileSet.map_tile_proxy].
@@ -86,23 +86,23 @@ func get_cell_tile_data(layer: int, coords: Vector2i, use_proxies: bool) -> Tile
 	pass;
 
 #desc Returns the coordinates of the tile for given physics body RID. Such RID can be retrieved from [method KinematicCollision2D.get_collider_rid], when colliding with a tile.
-func get_coords_for_body_rid() -> Vector2i:
+func get_coords_for_body_rid(body: RID) -> Vector2i:
 	pass;
 
 #desc Returns a TileMap layer's modulate.
-func get_layer_modulate() -> Color:
+func get_layer_modulate(layer: int) -> Color:
 	pass;
 
 #desc Returns a TileMap layer's name.
-func get_layer_name() -> String:
+func get_layer_name(layer: int) -> String:
 	pass;
 
 #desc Returns a TileMap layer's Y sort origin.
-func get_layer_y_sort_origin() -> int:
+func get_layer_y_sort_origin(layer: int) -> int:
 	pass;
 
 #desc Returns a TileMap layer's Z-index value.
-func get_layer_z_index() -> int:
+func get_layer_z_index(layer: int) -> int:
 	pass;
 
 func get_layers_count() -> int:
@@ -117,11 +117,11 @@ func get_pattern(layer: int, coords_array: Vector2i[]) -> TileMapPattern:
 	pass;
 
 #desc Returns the list of all neighbourings cells to the one at [param coords]
-func get_surrounding_tiles() -> Vector2i[]:
+func get_surrounding_tiles(coords: Vector2i) -> Vector2i[]:
 	pass;
 
 #desc Returns a [Vector2] array with the positions of all cells containing a tile in the given layer. A cell is considered empty if its source identifier equals -1, its atlas coordinates identifiers is [code]Vector2(-1, -1)[/code] and its alternative identifier is -1.
-func get_used_cells() -> Vector2i[]:
+func get_used_cells(layer: int) -> Vector2i[]:
 	pass;
 
 #desc Returns a rectangle enclosing the used (non-empty) tiles of the map, including all layers.
@@ -129,15 +129,15 @@ func get_used_rect() -> Rect2i:
 	pass;
 
 #desc Returns if a layer is enabled.
-func is_layer_enabled() -> bool:
+func is_layer_enabled(layer: int) -> bool:
 	pass;
 
 #desc Returns if a layer Y-sorts its tiles.
-func is_layer_y_sort_enabled() -> bool:
+func is_layer_y_sort_enabled(layer: int) -> bool:
 	pass;
 
 #desc Returns the map coordinates of the cell containing the given [param local_position]. If [param local_position] is in global coordinates, consider using [method Node2D.to_local] before passing it to this method. See also [method map_to_local].
-func local_to_map() -> Vector2i:
+func local_to_map(local_position: Vector2) -> Vector2i:
 	pass;
 
 #desc Returns for the given coordinate [param coords_in_pattern] in a [TileMapPattern] the corresponding cell coordinates if the pattern was pasted at the [param position_in_tilemap] coordinates (see [method set_pattern]). This mapping is required as in half-offset tile shapes, the mapping might not work by calculating [code]position_in_tile_map + coords_in_pattern[/code]
@@ -146,7 +146,7 @@ func map_pattern(position_in_tilemap: Vector2i, coords_in_pattern: Vector2i, pat
 
 #desc Returns the centered position of a cell in the TileMap's local coordinate space. To convert the returned value into global coordinates, use [method Node2D.to_global]. See also [method local_to_map].
 #desc [b]Note:[/b] This may not correspond to the visual position of the tile, i.e. it ignores the [member TileData.texture_offset] property of individual tiles.
-func map_to_local() -> Vector2:
+func map_to_local(map_position: Vector2i) -> Vector2:
 	pass;
 
 #desc Moves the layer at index [param layer] to the given position [param to_position] in the array.
@@ -154,7 +154,7 @@ func move_layer(layer: int, to_position: int) -> void:
 	pass;
 
 #desc Removes the layer at index [param layer].
-func remove_layer() -> void:
+func remove_layer(layer: int) -> void:
 	pass;
 
 #desc Sets the tile indentifiers for the cell on layer [param layer] at coordinates [param coords]. Each tile of the [TileSet] is identified using three parts:

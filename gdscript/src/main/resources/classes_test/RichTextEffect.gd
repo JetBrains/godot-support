@@ -18,7 +18,7 @@ class_name RichTextEffect
 
 
 #desc Override this method to modify properties in [param char_fx]. The method must return [code]true[/code] if the character could be transformed successfully. If the method returns [code]false[/code], it will skip transformation to avoid displaying broken text.
-virtual const func _process_custom_fx() -> bool:
+virtual const func _process_custom_fx(char_fx: CharFXTransform) -> bool:
 	pass;
 
 

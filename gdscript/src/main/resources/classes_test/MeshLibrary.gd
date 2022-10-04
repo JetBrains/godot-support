@@ -11,11 +11,11 @@ func clear() -> void:
 
 #desc Creates a new item in the library with the given ID.
 #desc You can get an unused ID from [method get_last_unused_item_id].
-func create_item() -> void:
+func create_item(id: int) -> void:
 	pass;
 
 #desc Returns the first item with the given name.
-func find_item_by_name() -> int:
+func find_item_by_name(name: String) -> int:
 	pass;
 
 #desc Returns the list of item IDs in use.
@@ -23,32 +23,32 @@ func get_item_list() -> PackedInt32Array:
 	pass;
 
 #desc Returns the item's mesh.
-func get_item_mesh() -> Mesh:
+func get_item_mesh(id: int) -> Mesh:
 	pass;
 
 #desc Returns the transform applied to the item's mesh.
-func get_item_mesh_transform() -> Transform3D:
+func get_item_mesh_transform(id: int) -> Transform3D:
 	pass;
 
 #desc Returns the item's name.
-func get_item_name() -> String:
+func get_item_name(id: int) -> String:
 	pass;
 
 #desc Returns the item's navigation mesh.
-func get_item_navmesh() -> NavigationMesh:
+func get_item_navmesh(id: int) -> NavigationMesh:
 	pass;
 
 #desc Returns the transform applied to the item's navigation mesh.
-func get_item_navmesh_transform() -> Transform3D:
+func get_item_navmesh_transform(id: int) -> Transform3D:
 	pass;
 
 #desc When running in the editor, returns a generated item preview (a 3D rendering in isometric perspective). When used in a running project, returns the manually-defined item preview which can be set using [method set_item_preview]. Returns an empty [Texture2D] if no preview was manually set in a running project.
-func get_item_preview() -> Texture2D:
+func get_item_preview(id: int) -> Texture2D:
 	pass;
 
 #desc Returns an item's collision shapes.
 #desc The array consists of each [Shape3D] followed by its [Transform3D].
-func get_item_shapes() -> Array:
+func get_item_shapes(id: int) -> Array:
 	pass;
 
 #desc Gets an unused ID for a new item.
@@ -56,7 +56,7 @@ func get_last_unused_item_id() -> int:
 	pass;
 
 #desc Removes the item.
-func remove_item() -> void:
+func remove_item(id: int) -> void:
 	pass;
 
 #desc Sets the item's mesh.

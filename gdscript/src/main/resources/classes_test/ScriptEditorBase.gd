@@ -6,7 +6,7 @@ class_name ScriptEditorBase
 
 
 #desc Adds a [EditorSyntaxHighlighter] to the open script.
-func add_syntax_highlighter() -> void:
+func add_syntax_highlighter(highlighter: EditorSyntaxHighlighter) -> void:
 	pass;
 
 #desc Returns the underlying [Control] used for editing scripts. For text scripts, this is a [CodeEdit].

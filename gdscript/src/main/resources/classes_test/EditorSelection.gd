@@ -8,7 +8,7 @@ class_name EditorSelection
 
 #desc Adds a node to the selection.
 #desc [b]Note:[/b] The newly selected node will not be automatically edited in the inspector. If you want to edit a node, use [method EditorInterface.edit_node].
-func add_node() -> void:
+func add_node(node: Node) -> void:
 	pass;
 
 #desc Clear the selection.
@@ -24,7 +24,7 @@ func get_transformable_selected_nodes() -> Node[]:
 	pass;
 
 #desc Removes a node from the selection.
-func remove_node() -> void:
+func remove_node(node: Node) -> void:
 	pass;
 
 

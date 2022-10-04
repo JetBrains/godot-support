@@ -354,19 +354,19 @@ var turbulence_noise_strength: float;
 
 
 #desc Returns the maximum value range for the given parameter.
-func get_param_max() -> float:
+func get_param_max(param: int) -> float:
 	pass;
 
 #desc Returns the minimum value range for the given parameter.
-func get_param_min() -> float:
+func get_param_min(param: int) -> float:
 	pass;
 
 #desc Returns the [Texture2D] used by the specified parameter.
-func get_param_texture() -> Texture2D:
+func get_param_texture(param: int) -> Texture2D:
 	pass;
 
 #desc Returns [code]true[/code] if the specified particle flag is enabled. See [enum ParticleFlags] for options.
-func get_particle_flag() -> bool:
+func get_particle_flag(particle_flag: int) -> bool:
 	pass;
 
 #desc Sets the maximum value range for the given parameter.

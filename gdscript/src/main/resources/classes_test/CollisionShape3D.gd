@@ -17,7 +17,7 @@ func make_convex_from_siblings() -> void:
 	pass;
 
 #desc If this method exists within a script it will be called whenever the shape resource has been modified.
-func resource_changed() -> void:
+func resource_changed(resource: Resource) -> void:
 	pass;
 
 

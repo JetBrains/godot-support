@@ -52,11 +52,11 @@ func get_stream_playback() -> AudioStreamPlayback:
 	pass;
 
 #desc Plays the audio from the given [param from_position], in seconds.
-func play() -> void:
+func play(from_position: float) -> void:
 	pass;
 
 #desc Sets the position from which audio will be played, in seconds.
-func seek() -> void:
+func seek(to_position: float) -> void:
 	pass;
 
 #desc Stops the audio.

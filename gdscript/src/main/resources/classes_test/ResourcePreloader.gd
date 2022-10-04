@@ -11,7 +11,7 @@ func add_resource(name: StringName, resource: Resource) -> void:
 	pass;
 
 #desc Returns the resource associated to [param name].
-func get_resource() -> Resource:
+func get_resource(name: StringName) -> Resource:
 	pass;
 
 #desc Returns the list of resources inside the preloader.
@@ -19,11 +19,11 @@ func get_resource_list() -> PackedStringArray:
 	pass;
 
 #desc Returns [code]true[/code] if the preloader contains a resource associated to [param name].
-func has_resource() -> bool:
+func has_resource(name: StringName) -> bool:
 	pass;
 
 #desc Removes the resource associated to [param name] from the preloader.
-func remove_resource() -> void:
+func remove_resource(name: StringName) -> void:
 	pass;
 
 #desc Renames a resource inside the preloader from [param name] to [param newname].

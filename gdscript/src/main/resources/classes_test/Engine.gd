@@ -138,14 +138,14 @@ func get_physics_interpolation_fraction() -> float:
 func get_process_frames() -> int:
 	pass;
 
-func get_script_language() -> ScriptLanguage:
+func get_script_language(index: int) -> ScriptLanguage:
 	pass;
 
 func get_script_language_count() -> int:
 	pass;
 
 #desc Returns a global singleton with given [param name]. Often used for plugins, e.g. GodotPayments.
-func get_singleton() -> Object:
+func get_singleton(name: StringName) -> Object:
 	pass;
 
 func get_singleton_list() -> PackedStringArray:
@@ -188,7 +188,7 @@ func get_write_movie_path() -> String:
 	pass;
 
 #desc Returns [code]true[/code] if a singleton with given [param name] exists in global scope.
-func has_singleton() -> bool:
+func has_singleton(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the script is currently running inside the editor, [code]false[/code] otherwise. This is useful for [code]@tool[/code] scripts to conditionally draw editor helpers, or prevent accidentally running "game" code that would affect the scene state while in the editor:
@@ -215,13 +215,13 @@ func is_editor_hint() -> bool:
 func is_in_physics_frame() -> bool:
 	pass;
 
-func register_script_language() -> void:
+func register_script_language(language: ScriptLanguage) -> void:
 	pass;
 
 func register_singleton(name: StringName, instance: Object) -> void:
 	pass;
 
-func unregister_singleton() -> void:
+func unregister_singleton(name: StringName) -> void:
 	pass;
 
 

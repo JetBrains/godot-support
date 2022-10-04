@@ -27,11 +27,11 @@ var travel_cost: float;
 
 
 #desc Bakes the [NavigationMesh]. If [param on_thread] is set to [code]true[/code] (default), the baking is done on a separate thread. Baking on separate thread is useful because navigation baking is not a cheap operation. When it is completed, it automatically sets the new [NavigationMesh]. Please note that baking on separate thread may be very slow if geometry is parsed from meshes as async access to each mesh involves heavy synchronization. Also, please note that baking on a separate thread is automatically disabled on operating systems that cannot use threads (such as Web with threads disabled).
-func bake_navigation_mesh() -> void:
+func bake_navigation_mesh(on_thread: bool) -> void:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member navigation_layers] bitmask is enabled, given a [param layer_number] between 1 and 32.
-func get_navigation_layer_value() -> bool:
+func get_navigation_layer_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns the [RID] of this region on the [NavigationServer3D]. Combined with [method NavigationServer3D.map_get_closest_point_owner] can be used to identify the [NavigationRegion3D] closest to a point on the merged navigation map.

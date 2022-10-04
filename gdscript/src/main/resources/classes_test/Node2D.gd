@@ -46,24 +46,24 @@ var z_index: int;
 
 
 #desc Multiplies the current scale by the [param ratio] vector.
-func apply_scale() -> void:
+func apply_scale(ratio: Vector2) -> void:
 	pass;
 
 #desc Returns the angle between the node and the [param point] in radians.
 #desc [url=https://raw.githubusercontent.com/godotengine/godot-docs/master/img/node2d_get_angle_to.png]Illustration of the returned angle.[/url]
-func get_angle_to() -> float:
+func get_angle_to(point: Vector2) -> float:
 	pass;
 
 #desc Returns the [Transform2D] relative to this node's parent.
-func get_relative_transform_to_parent() -> Transform2D:
+func get_relative_transform_to_parent(parent: Node) -> Transform2D:
 	pass;
 
 #desc Adds the [param offset] vector to the node's global position.
-func global_translate() -> void:
+func global_translate(offset: Vector2) -> void:
 	pass;
 
 #desc Rotates the node so it points towards the [param point], which is expected to use global coordinates.
-func look_at() -> void:
+func look_at(point: Vector2) -> void:
 	pass;
 
 #desc Applies a local translation on the node's X axis based on the [method Node._process]'s [param delta]. If [param scaled] is [code]false[/code], normalizes the movement.
@@ -75,19 +75,19 @@ func move_local_y(delta: float, scaled: bool) -> void:
 	pass;
 
 #desc Applies a rotation to the node, in radians, starting from its current rotation.
-func rotate() -> void:
+func rotate(radians: float) -> void:
 	pass;
 
 #desc Transforms the provided local position into a position in global coordinate space. The input is expected to be local relative to the [Node2D] it is called on. e.g. Applying this method to the positions of child nodes will correctly transform their positions into the global coordinate space, but applying it to a node's own position will give an incorrect result, as it will incorporate the node's own transformation into its global position.
-func to_global() -> Vector2:
+func to_global(local_point: Vector2) -> Vector2:
 	pass;
 
 #desc Transforms the provided global position into a position in local coordinate space. The output will be local relative to the [Node2D] it is called on. e.g. It is appropriate for determining the positions of child nodes, but it is not appropriate for determining its own position relative to its parent.
-func to_local() -> Vector2:
+func to_local(global_point: Vector2) -> Vector2:
 	pass;
 
 #desc Translates the node by the given [param offset] in local coordinates.
-func translate() -> void:
+func translate(offset: Vector2) -> void:
 	pass;
 
 

@@ -33,15 +33,15 @@ const TREE_AREA_UNSTAGED = 2;
 
 
 #desc Checks out a [code]branch_name[/code] in the VCS.
-virtual func _checkout_branch() -> bool:
+virtual func _checkout_branch(branch_name: String) -> bool:
 	pass;
 
 #desc Commits the currently staged changes and applies the commit [code]msg[/code] to the resulting commit.
-virtual func _commit() -> void:
+virtual func _commit(msg: String) -> void:
 	pass;
 
 #desc Creates a new branch named [code]branch_name[/code] in the VCS.
-virtual func _create_branch() -> void:
+virtual func _create_branch(branch_name: String) -> void:
 	pass;
 
 #desc Creates a new remote destination with name [code]remote_name[/code] and points it to [code]remote_url[/code]. This can be an HTTPS remote or an SSH remote.
@@ -49,11 +49,11 @@ virtual func _create_remote(remote_name: String, remote_url: String) -> void:
 	pass;
 
 #desc Discards the changes made in a file present at [code]file_path[/code].
-virtual func _discard_file() -> void:
+virtual func _discard_file(file_path: String) -> void:
 	pass;
 
 #desc Fetches new changes from the remote, but doesn't write changes to the current working directory. Equivalent to [code]git fetch[/code].
-virtual func _fetch() -> void:
+virtual func _fetch(remote: String) -> void:
 	pass;
 
 #desc Gets an instance of an [Array] of [String]s containing available branch names in the VCS.
@@ -77,7 +77,7 @@ virtual func _get_modified_files_data() -> Dictionary[]:
 	pass;
 
 #desc Returns an [Array] of [Dictionary] items (see [method create_commit]), each containing the data for a past commit.
-virtual func _get_previous_commits() -> Dictionary[]:
+virtual func _get_previous_commits(max_commits: int) -> Dictionary[]:
 	pass;
 
 #desc Returns an [Array] of [String]s, each containing the name of a remote configured in the VCS.
@@ -89,11 +89,11 @@ virtual func _get_vcs_name() -> String:
 	pass;
 
 #desc Initializes the VCS plugin when called from the editor. Returns whether or not the plugin was successfully initialized. A VCS project is initialized at [code]project_path[/code].
-virtual func _initialize() -> bool:
+virtual func _initialize(project_path: String) -> bool:
 	pass;
 
 #desc Pulls changes from the remote. This can give rise to merge conflicts.
-virtual func _pull() -> void:
+virtual func _pull(remote: String) -> void:
 	pass;
 
 #desc Pushes changes to the [code]remote[/code]. Optionally, if [code]force[/code] is set to true, a force push will override the change history already present on the remote.
@@ -101,11 +101,11 @@ virtual func _push(remote: String, force: bool) -> void:
 	pass;
 
 #desc Remove a branch from the local VCS.
-virtual func _remove_branch() -> void:
+virtual func _remove_branch(branch_name: String) -> void:
 	pass;
 
 #desc Remove a remote from the local VCS.
-virtual func _remove_remote() -> void:
+virtual func _remove_remote(remote_name: String) -> void:
 	pass;
 
 #desc Set user credentials in the underlying VCS. [code]username[/code] and [code]password[/code] are used only during HTTPS authentication unless not already mentioned in the remote URL. [code]ssh_public_key_path[/code], [code]ssh_private_key_path[/code], and [code]ssh_passphrase[/code] are only used during SSH authentication.
@@ -117,11 +117,11 @@ virtual func _shut_down() -> bool:
 	pass;
 
 #desc Stages the file present at [code]file_path[/code] to the staged area.
-virtual func _stage_file() -> void:
+virtual func _stage_file(file_path: String) -> void:
 	pass;
 
 #desc Unstages the file present at [code]file_path[/code] from the staged area to the unstaged area.
-virtual func _unstage_file() -> void:
+virtual func _unstage_file(file_path: String) -> void:
 	pass;
 
 #desc Helper function to add an array of [code]diff_hunks[/code] into a [code]diff_file[/code].
@@ -153,7 +153,7 @@ func create_status_file(file_path: String, change_type: int, area: int) -> Dicti
 	pass;
 
 #desc Pops up an error message in the edior which is shown as coming from the underlying VCS. Use this to show VCS specific error messages.
-func popup_error() -> void:
+func popup_error(msg: String) -> void:
 	pass;
 
 

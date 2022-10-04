@@ -26,7 +26,7 @@ virtual const func _get_caption() -> String:
 	pass;
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to return a child node by its [param name].
-virtual const func _get_child_by_name() -> AnimationNode:
+virtual const func _get_child_by_name(name: StringName) -> AnimationNode:
 	pass;
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to return all children nodes in order as a [code]name: node[/code] dictionary.
@@ -34,7 +34,7 @@ virtual const func _get_child_nodes() -> Dictionary:
 	pass;
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to return the default value of a [param parameter]. Parameters are custom local memory used for your nodes, given a resource can be reused in multiple trees.
-virtual const func _get_parameter_default_value() -> Variant:
+virtual const func _get_parameter_default_value(parameter: StringName) -> Variant:
 	pass;
 
 #desc When inheriting from [AnimationRootNode], implement this virtual method to return a list of the properties on this node. Parameters are custom local memory used for your nodes, given a resource can be reused in multiple trees. Format is similar to [method Object.get_property_list].
@@ -52,7 +52,7 @@ virtual const func _process(time: float, seek: bool, seek_root: bool) -> float:
 	pass;
 
 #desc Adds an input to the node. This is only useful for nodes created for use in an [AnimationNodeBlendTree].
-func add_input() -> void:
+func add_input(name: String) -> void:
 	pass;
 
 #desc Blend an animation by [param blend] amount (name must be valid in the linked [AnimationPlayer]). A [param time] and [param delta] may be passed, as well as whether [param seeked] happened.
@@ -72,19 +72,19 @@ func get_input_count() -> int:
 	pass;
 
 #desc Gets the name of an input by index.
-func get_input_name() -> String:
+func get_input_name(input: int) -> String:
 	pass;
 
 #desc Gets the value of a parameter. Parameters are custom local memory used for your nodes, given a resource can be reused in multiple trees.
-func get_parameter() -> Variant:
+func get_parameter(name: StringName) -> Variant:
 	pass;
 
 #desc Returns whether the given path is filtered.
-func is_path_filtered() -> bool:
+func is_path_filtered(path: NodePath) -> bool:
 	pass;
 
 #desc Removes an input, call this only when inactive.
-func remove_input() -> void:
+func remove_input(index: int) -> void:
 	pass;
 
 #desc Adds or removes a path for the filter.

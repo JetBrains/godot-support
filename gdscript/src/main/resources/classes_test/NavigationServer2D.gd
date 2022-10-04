@@ -17,11 +17,11 @@ func agent_create() -> RID:
 	pass;
 
 #desc Returns the navigation map [RID] the requested [param agent] is currently assigned to.
-func agent_get_map() -> RID:
+func agent_get_map(agent: RID) -> RID:
 	pass;
 
 #desc Returns true if the map got changed the previous frame.
-func agent_is_map_changed() -> bool:
+func agent_is_map_changed(agent: RID) -> bool:
 	pass;
 
 #desc Callback called at the end of the RVO process. If a callback is created manually and the agent is placed on a navigation map it will calculate avoidance for the agent and dispatch the calculated [code]safe_velocity[/code] to the [param receiver] object with a signal to the chosen [param method] name.
@@ -66,7 +66,7 @@ func agent_set_velocity(agent: RID, velocity: Vector2) -> void:
 	pass;
 
 #desc Destroys the given RID.
-func free_rid() -> void:
+func free_rid(rid: RID) -> void:
 	pass;
 
 #desc Returns all created navigation map [RID]s on the NavigationServer. This returns both 2D and 3D created navigation maps as there is technically no distinction between them.
@@ -78,31 +78,31 @@ func link_create() -> RID:
 	pass;
 
 #desc Returns the ending location of this [code]link[/code].
-func link_get_end_location() -> Vector2:
+func link_get_end_location(link: RID) -> Vector2:
 	pass;
 
 #desc Returns the [code]enter_cost[/code] of this [code]link[/code].
-func link_get_enter_cost() -> float:
+func link_get_enter_cost(link: RID) -> float:
 	pass;
 
 #desc Returns the navigation map [RID] the requested [code]link[/code] is currently assigned to.
-func link_get_map() -> RID:
+func link_get_map(link: RID) -> RID:
 	pass;
 
 #desc Returns the navigation layers for this [code]link[/code].
-func link_get_navigation_layers() -> int:
+func link_get_navigation_layers(link: RID) -> int:
 	pass;
 
 #desc Returns the starting location of this [code]link[/code].
-func link_get_start_location() -> Vector2:
+func link_get_start_location(link: RID) -> Vector2:
 	pass;
 
 #desc Returns the [code]travel_cost[/code] of this [code]link[/code].
-func link_get_travel_cost() -> float:
+func link_get_travel_cost(link: RID) -> float:
 	pass;
 
 #desc Returns whether this [code]link[/code] can be travelled in both directions.
-func link_is_bidirectional() -> bool:
+func link_is_bidirectional(link: RID) -> bool:
 	pass;
 
 #desc Sets whether this [code]link[/code] can be travelled in both directions.
@@ -141,15 +141,15 @@ func map_create() -> RID:
 #desc Due to technical restrictions the current NavigationServer command queue will be flushed. This means all already queued update commands for this physics frame will be executed, even those intended for other maps, regions and agents not part of the specified map. The expensive computation of the navigation meshes and region connections of a map will only be done for the specified map. Other maps will receive the normal synchronization at the end of the physics frame. Should the specified map receive changes after the forced update it will update again as well when the other maps receive their update.
 #desc Avoidance processing and dispatch of the [code]safe_velocity[/code] signals is untouched by this function and continues to happen for all maps and agents at the end of the physics frame.
 #desc [b]Note:[/b] With great power comes great responsibility. This function should only be used by users that really know what they are doing and have a good reason for it. Forcing an immediate update of a navigation map requires locking the NavigationServer and flushing the entire NavigationServer command queue. Not only can this severely impact the performance of a game but it can also introduce bugs if used inappropriately without much foresight.
-func map_force_update() -> void:
+func map_force_update(map: RID) -> void:
 	pass;
 
 #desc Returns all navigation agents [RID]s that are currently assigned to the requested navigation [param map].
-func map_get_agents() -> RID[]:
+func map_get_agents(map: RID) -> RID[]:
 	pass;
 
 #desc Returns the map cell size.
-func map_get_cell_size() -> float:
+func map_get_cell_size(map: RID) -> float:
 	pass;
 
 #desc Returns the point closest to the provided [param to_point] on the navigation mesh surface.
@@ -161,15 +161,15 @@ func map_get_closest_point_owner(map: RID, to_point: Vector2) -> RID:
 	pass;
 
 #desc Returns the edge connection margin of the map. The edge connection margin is a distance used to connect two regions.
-func map_get_edge_connection_margin() -> float:
+func map_get_edge_connection_margin(map: RID) -> float:
 	pass;
 
 #desc Returns the link connection radius of the map. This distance is the maximum range any link will search for navigation mesh polygons to connect to.
-func map_get_link_connection_radius() -> float:
+func map_get_link_connection_radius(map: RID) -> float:
 	pass;
 
 #desc Returns all navigation link [RID]s that are currently assigned to the requested navigation [code]map[/code].
-func map_get_links() -> RID[]:
+func map_get_links(map: RID) -> RID[]:
 	pass;
 
 #desc Returns the navigation path to reach the destination from the origin. [param navigation_layers] is a bitmask of all region navigation layers that are allowed to be in the path.
@@ -177,11 +177,11 @@ func map_get_path(map: RID, origin: Vector2, destination: Vector2, optimize: boo
 	pass;
 
 #desc Returns all navigation regions [RID]s that are currently assigned to the requested navigation [param map].
-func map_get_regions() -> RID[]:
+func map_get_regions(map: RID) -> RID[]:
 	pass;
 
 #desc Returns true if the map is active.
-func map_is_active() -> bool:
+func map_is_active(map: RID) -> bool:
 	pass;
 
 #desc Sets the map active.
@@ -217,23 +217,23 @@ func region_get_connection_pathway_start(region: RID, connection: int) -> Vector
 	pass;
 
 #desc Returns how many connections this [param region] has with other regions in the map.
-func region_get_connections_count() -> int:
+func region_get_connections_count(region: RID) -> int:
 	pass;
 
 #desc Returns the [code]enter_cost[/code] of this [param region].
-func region_get_enter_cost() -> float:
+func region_get_enter_cost(region: RID) -> float:
 	pass;
 
 #desc Returns the navigation map [RID] the requested [param region] is currently assigned to.
-func region_get_map() -> RID:
+func region_get_map(region: RID) -> RID:
 	pass;
 
 #desc Returns the region's navigation layers.
-func region_get_navigation_layers() -> int:
+func region_get_navigation_layers(region: RID) -> int:
 	pass;
 
 #desc Returns the [code]travel_cost[/code] of this [param region].
-func region_get_travel_cost() -> float:
+func region_get_travel_cost(region: RID) -> float:
 	pass;
 
 #desc Returns [code]true[/code] if the provided [param point] in world space is currently owned by the provided navigation [param region]. Owned in this context means that one of the region's navigation mesh polygon faces has a possible position at the closest distance to this point compared to all other navigation meshes from other navigation regions that are also registered on the navigation map of the provided region.

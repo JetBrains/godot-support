@@ -108,11 +108,11 @@ func force_update_scroll() -> void:
 	pass;
 
 #desc Returns the specified [enum Side]'s margin. See also [member drag_bottom_margin], [member drag_top_margin], [member drag_left_margin], and [member drag_right_margin].
-func get_drag_margin() -> float:
+func get_drag_margin(margin: int) -> float:
 	pass;
 
 #desc Returns the camera limit for the specified [enum Side]. See also [member limit_bottom], [member limit_top], [member limit_left], and [member limit_right].
-func get_limit() -> int:
+func get_limit(margin: int) -> int:
 	pass;
 
 #desc Returns the center of the screen from this camera's point of view, in global coordinates.

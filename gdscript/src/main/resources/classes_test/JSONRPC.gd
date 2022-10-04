@@ -48,7 +48,7 @@ func make_response_error(code: int, message: String, id: Variant) -> Dictionary:
 func process_action(action: Variant, recurse: bool) -> Variant:
 	pass;
 
-func process_string() -> String:
+func process_string(action: String) -> String:
 	pass;
 
 func set_scope(scope: String, target: Object) -> void:

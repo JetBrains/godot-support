@@ -179,7 +179,7 @@ func Dictionary() -> Dictionary:
 	pass;
 
 #desc Constructs a [Dictionary] as a copy of the given [Dictionary].
-func Dictionary() -> Dictionary:
+func Dictionary(from: Dictionary) -> Dictionary:
 	pass;
 
 
@@ -188,17 +188,17 @@ func clear() -> void:
 	pass;
 
 #desc Creates a copy of the dictionary, and returns it. The [param deep] parameter causes inner dictionaries and arrays to be copied recursively, but does not apply to objects.
-func duplicate() -> Dictionary:
+func duplicate(deep: bool) -> Dictionary:
 	pass;
 
 #desc Erase a dictionary key/value pair by key. Returns [code]true[/code] if the given key was present in the dictionary, [code]false[/code] otherwise.
 #desc [b]Note:[/b] Don't erase elements while iterating over the dictionary. You can iterate over the [method keys] array instead.
-func erase() -> bool:
+func erase(key: Variant) -> bool:
 	pass;
 
 #desc Returns the first key whose associated value is equal to [param value], or [code]null[/code] if no such value is found.
 #desc [b]Note:[/b] [code]null[/code] is also a valid key. If you have it in your [Dictionary], the [method find_key] method can give misleading results.
-func find_key() -> Variant:
+func find_key(value: Variant) -> Variant:
 	pass;
 
 #desc Returns the current value for the specified key in the [Dictionary]. If the key does not exist, the method returns the value of the optional default argument, or [code]null[/code] if it is omitted.
@@ -222,11 +222,11 @@ func get(key: Variant, default: Variant) -> Variant:
 #desc [/csharp]
 #desc [/codeblocks]
 #desc This method (like the [code]in[/code] operator) will evaluate to [code]true[/code] as long as the key exists, even if the associated value is [code]null[/code].
-func has() -> bool:
+func has(key: Variant) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the dictionary has all the keys in the given array.
-func has_all() -> bool:
+func has_all(keys: Array) -> bool:
 	pass;
 
 #desc Returns a hashed 32-bit integer value representing the dictionary contents. This can be used to compare dictionaries by value:

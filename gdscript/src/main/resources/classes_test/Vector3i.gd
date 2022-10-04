@@ -53,11 +53,11 @@ func Vector3i() -> Vector3i:
 	pass;
 
 #desc Constructs a [Vector3i] as a copy of the given [Vector3i].
-func Vector3i() -> Vector3i:
+func Vector3i(from: Vector3i) -> Vector3i:
 	pass;
 
 #desc Constructs a new [Vector3i] from [Vector3]. The floating point coordinates will be truncated.
-func Vector3i() -> Vector3i:
+func Vector3i(from: Vector3) -> Vector3i:
 	pass;
 
 #desc Returns a [Vector3i] with the given components.

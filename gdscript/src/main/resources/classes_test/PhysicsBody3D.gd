@@ -24,11 +24,11 @@ var axis_lock_linear_z: bool;
 
 
 #desc Adds a body to the list of bodies that this body can't collide with.
-func add_collision_exception_with() -> void:
+func add_collision_exception_with(body: Node) -> void:
 	pass;
 
 #desc Returns [code]true[/code] if the specified linear or rotational [param axis] is locked.
-func get_axis_lock() -> bool:
+func get_axis_lock(axis: int) -> bool:
 	pass;
 
 #desc Returns an array of nodes that were added as collision exceptions for this body.
@@ -45,7 +45,7 @@ func move_and_collide(distance: Vector3, test_only: bool, safe_margin: float, re
 	pass;
 
 #desc Removes a body from the list of bodies that this body can't collide with.
-func remove_collision_exception_with() -> void:
+func remove_collision_exception_with(body: Node) -> void:
 	pass;
 
 #desc Locks or unlocks the specified linear or rotational [param axis] depending on the value of [param lock].

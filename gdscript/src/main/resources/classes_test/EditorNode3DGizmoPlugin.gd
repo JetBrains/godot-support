@@ -23,7 +23,7 @@ virtual func _commit_subgizmos(gizmo: EditorNode3DGizmo, ids: PackedInt32Array, 
 	pass;
 
 #desc Override this method to return a custom [EditorNode3DGizmo] for the spatial nodes of your choice, return [code]null[/code] for the rest of nodes. See also [method _has_gizmo].
-virtual const func _create_gizmo() -> EditorNode3DGizmo:
+virtual const func _create_gizmo(for_node_3d: Node3D) -> EditorNode3DGizmo:
 	pass;
 
 #desc Override this method to provide the name that will appear in the gizmo visibility menu.
@@ -50,7 +50,7 @@ virtual const func _get_subgizmo_transform(gizmo: EditorNode3DGizmo, subgizmo_id
 	pass;
 
 #desc Override this method to define which Node3D nodes have a gizmo from this plugin. Whenever a [Node3D] node is added to a scene this method is called, if it returns [code]true[/code] the node gets a generic [EditorNode3DGizmo] assigned and is added to this plugin's list of active gizmos.
-virtual const func _has_gizmo() -> bool:
+virtual const func _has_gizmo(for_node_3d: Node3D) -> bool:
 	pass;
 
 #desc Override this method to return [code]true[/code] whenever to given handle should be highlighted in the editor. The [param secondary] argument is [code]true[/code] when the requested handle is secondary (see [method EditorNode3DGizmo.add_handles] for more information). Called for this plugin's active gizmos.
@@ -62,7 +62,7 @@ virtual const func _is_selectable_when_hidden() -> bool:
 	pass;
 
 #desc Override this method to add all the gizmo elements whenever a gizmo update is requested. It's common to call [method EditorNode3DGizmo.clear] at the beginning of this method and then add visual elements depending on the node's properties.
-virtual func _redraw() -> void:
+virtual func _redraw(gizmo: EditorNode3DGizmo) -> void:
 	pass;
 
 #desc Override this method to update the node's properties when the user drags a gizmo handle (previously added with [method EditorNode3DGizmo.add_handles]). The provided [param screen_pos] is the mouse position in screen coordinates and the [param camera] can be used to convert it to raycasts.

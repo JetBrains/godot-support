@@ -26,11 +26,11 @@ func get_size() -> int:
 	pass;
 
 #desc Resizes the [member data_array]. This [i]doesn't[/i] update the cursor.
-func resize() -> void:
+func resize(size: int) -> void:
 	pass;
 
 #desc Moves the cursor to the specified position. [param position] must be a valid index of [member data_array].
-func seek() -> void:
+func seek(position: int) -> void:
 	pass;
 
 

@@ -9,20 +9,20 @@ func String() -> String:
 	pass;
 
 #desc Constructs a [String] as a copy of the given [String].
-func String() -> String:
+func String(from: String) -> String:
 	pass;
 
 #desc Constructs a new String from the given [NodePath].
-func String() -> String:
+func String(from: NodePath) -> String:
 	pass;
 
 #desc Constructs a new String from the given [StringName].
-func String() -> String:
+func String(from: StringName) -> String:
 	pass;
 
 
 #desc Returns [code]true[/code] if the string begins with the given string.
-func begins_with() -> bool:
+func begins_with(text: String) -> bool:
 	pass;
 
 #desc Returns an array containing the bigrams (pairs of consecutive letters) of this string.
@@ -63,7 +63,7 @@ func capitalize() -> String:
 #desc [b]Behavior with different string lengths:[/b] Returns [code]1[/code] if the "base" string is longer than the [param to] string or [code]-1[/code] if the "base" string is shorter than the [param to] string. Keep in mind this length is determined by the number of Unicode codepoints, [i]not[/i] the actual visible characters.
 #desc [b]Behavior with empty strings:[/b] Returns [code]-1[/code] if the "base" string is empty, [code]1[/code] if the [param to] string is empty or [code]0[/code] if both strings are empty.
 #desc To get a boolean result from a string comparison, use the [code]==[/code] operator instead. See also [method nocasecmp_to] and [method naturalnocasecmp_to].
-func casecmp_to() -> int:
+func casecmp_to(to: String) -> int:
 	pass;
 
 #desc Directly converts an decimal integer to a unicode character. Tables of these characters can be found in various locations, for example [url=https://unicodelookup.com/]here.[/url]
@@ -71,11 +71,11 @@ func casecmp_to() -> int:
 #desc print(String.chr(65)) # Prints "A"
 #desc print(String.chr(129302)) # Prints "🤖" (robot face emoji)
 #desc [/codeblock]
-static func chr() -> String:
+static func chr(char: int) -> String:
 	pass;
 
 #desc Returns [code]true[/code] if the string contains the given string.
-func contains() -> bool:
+func contains(what: String) -> bool:
 	pass;
 
 #desc Returns the number of occurrences of substring [param what] between [param from] and [param to] positions. If [param from] and [param to] equals 0 the whole string will be used. If only [param to] equals 0 the remained substring will be used.
@@ -91,7 +91,7 @@ func dedent() -> String:
 	pass;
 
 #desc Returns [code]true[/code] if the string ends with the given string.
-func ends_with() -> bool:
+func ends_with(text: String) -> bool:
 	pass;
 
 #desc Returns the index of the [b]first[/b] case-sensitive occurrence of the specified string in this instance, or [code]-1[/code]. Optionally, the starting search index can be specified, continuing to the end of the string.
@@ -167,7 +167,7 @@ func get_slice(delimiter: String, slice: int) -> String:
 	pass;
 
 #desc Splits a string using a [param delimiter] and returns a number of slices.
-func get_slice_count() -> int:
+func get_slice_count(delimiter: String) -> int:
 	pass;
 
 #desc Splits a string using a Unicode character with code [param delimiter] and returns a substring at index [param slice]. Returns an empty string if the index doesn't exist.
@@ -196,13 +196,13 @@ func hex_to_int() -> int:
 
 #desc Converts an integer representing a number of bytes into a human-readable form.
 #desc Note that this output is in [url=https://en.wikipedia.org/wiki/Binary_prefix#IEC_prefixes]IEC prefix format[/url], and includes [code]B[/code], [code]KiB[/code], [code]MiB[/code], [code]GiB[/code], [code]TiB[/code], [code]PiB[/code], and [code]EiB[/code].
-static func humanize_size() -> String:
+static func humanize_size(size: int) -> String:
 	pass;
 
 #desc Returns a copy of the string with lines indented with [param prefix].
 #desc For example, the string can be indented with two tabs using [code]"\t\t"[/code], or four spaces using [code]"    "[/code]. The prefix can be any string so it can also be used to comment out strings with e.g. [code]"# "[/code]. See also [method dedent] to remove indentation.
 #desc [b]Note:[/b] Empty lines are kept empty.
-func indent() -> String:
+func indent(prefix: String) -> String:
 	pass;
 
 #desc Returns a copy of the string with the substring [param what] inserted at the given [param position].
@@ -222,11 +222,11 @@ func is_relative_path() -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this string is a subsequence of the given string.
-func is_subsequence_of() -> bool:
+func is_subsequence_of(text: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this string is a subsequence of the given string, without considering case.
-func is_subsequence_ofn() -> bool:
+func is_subsequence_ofn(text: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this string is free from characters that aren't allowed in file names, those being:
@@ -245,7 +245,7 @@ func is_valid_float() -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this string contains a valid hexadecimal number. If [param with_prefix] is [code]true[/code], then a validity of the hexadecimal number is determined by [code]0x[/code] prefix, for instance: [code]0xDEADC0DE[/code].
-func is_valid_hex_number() -> bool:
+func is_valid_hex_number(with_prefix: bool) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this string contains a valid color in hexadecimal HTML notation. Other HTML notations such as named colors or [code]hsl()[/code] colors aren't considered valid by this method and will return [code]false[/code].
@@ -286,7 +286,7 @@ func is_valid_ip_address() -> bool:
 #desc GD.Print(String.Join(",", new string[] {"One", "Two", "Three", "Four"}));
 #desc [/csharp]
 #desc [/codeblocks]
-func join() -> String:
+func join(parts: PackedStringArray) -> String:
 	pass;
 
 #desc Returns a copy of the string with special characters escaped using the JSON standard.
@@ -299,7 +299,7 @@ func json_escape() -> String:
 #desc print("sample text".left(3)) #prints "sam"
 #desc print("sample text".left(-3)) #prints "sample t"
 #desc [/codeblock]
-func left() -> String:
+func left(length: int) -> String:
 	pass;
 
 #desc Returns the number of characters in the string.
@@ -312,15 +312,15 @@ func lpad(min_length: int, character: String) -> String:
 
 #desc Returns a copy of the string with characters removed from the left. The [param chars] argument is a string specifying the set of characters to be removed.
 #desc [b]Note:[/b] The [param chars] is not a prefix. See [method trim_prefix] method that will remove a single prefix string rather than a set of characters.
-func lstrip() -> String:
+func lstrip(chars: String) -> String:
 	pass;
 
 #desc Does a simple case-sensitive expression match, where [code]"*"[/code] matches zero or more arbitrary characters and [code]"?"[/code] matches any single character except a period ([code]"."[/code]). An empty string or empty expression always evaluates to [code]false[/code].
-func match() -> bool:
+func match(expr: String) -> bool:
 	pass;
 
 #desc Does a simple case-insensitive expression match, where [code]"*"[/code] matches zero or more arbitrary characters and [code]"?"[/code] matches any single character except a period ([code]"."[/code]). An empty string or empty expression always evaluates to [code]false[/code].
-func matchn() -> bool:
+func matchn(expr: String) -> bool:
 	pass;
 
 #desc Returns the MD5 hash of the string as an array of bytes.
@@ -336,14 +336,14 @@ func md5_text() -> String:
 #desc [b]Behavior with different string lengths:[/b] Returns [code]1[/code] if the "base" string is longer than the [param to] string or [code]-1[/code] if the "base" string is shorter than the [param to] string. Keep in mind this length is determined by the number of Unicode codepoints, [i]not[/i] the actual visible characters.
 #desc [b]Behavior with empty strings:[/b] Returns [code]-1[/code] if the "base" string is empty, [code]1[/code] if the [param to] string is empty or [code]0[/code] if both strings are empty.
 #desc To get a boolean result from a string comparison, use the [code]==[/code] operator instead. See also [method nocasecmp_to] and [method casecmp_to].
-func naturalnocasecmp_to() -> int:
+func naturalnocasecmp_to(to: String) -> int:
 	pass;
 
 #desc Performs a case-insensitive comparison to another string. Returns [code]-1[/code] if less than, [code]1[/code] if greater than, or [code]0[/code] if equal. "less than" or "greater than" are determined by the [url=https://en.wikipedia.org/wiki/List_of_Unicode_characters]Unicode code points[/url] of each string, which roughly matches the alphabetical order. Internally, lowercase characters will be converted to uppercase during the comparison.
 #desc [b]Behavior with different string lengths:[/b] Returns [code]1[/code] if the "base" string is longer than the [param to] string or [code]-1[/code] if the "base" string is shorter than the [param to] string. Keep in mind this length is determined by the number of Unicode codepoints, [i]not[/i] the actual visible characters.
 #desc [b]Behavior with empty strings:[/b] Returns [code]-1[/code] if the "base" string is empty, [code]1[/code] if the [param to] string is empty or [code]0[/code] if both strings are empty.
 #desc To get a boolean result from a string comparison, use the [code]==[/code] operator instead. See also [method casecmp_to] and [method naturalnocasecmp_to].
-func nocasecmp_to() -> int:
+func nocasecmp_to(to: String) -> int:
 	pass;
 
 #desc Converts a [float] to a string representation of a decimal number.
@@ -368,7 +368,7 @@ static func num(number: float, decimals: int) -> String:
 static func num_int64(number: int, base: int, capitalize_hex: bool) -> String:
 	pass;
 
-static func num_scientific() -> String:
+static func num_scientific(number: float) -> String:
 	pass;
 
 #desc Converts a unsigned [int] to a string representation of a number.
@@ -376,19 +376,19 @@ static func num_uint64(number: int, base: int, capitalize_hex: bool) -> String:
 	pass;
 
 #desc Formats a number to have an exact number of [param digits] after the decimal point.
-func pad_decimals() -> String:
+func pad_decimals(digits: int) -> String:
 	pass;
 
 #desc Formats a number to have an exact number of [param digits] before the decimal point.
-func pad_zeros() -> String:
+func pad_zeros(digits: int) -> String:
 	pass;
 
 #desc If the string is a path, this concatenates [param file] at the end of the string as a subpath. E.g. [code]"this/is".path_join("path") == "this/is/path"[/code].
-func path_join() -> String:
+func path_join(file: String) -> String:
 	pass;
 
 #desc Returns original string repeated a number of times. The number of repetitions is given by the argument.
-func repeat() -> String:
+func repeat(count: int) -> String:
 	pass;
 
 #desc Replaces occurrences of a case-sensitive substring with the given one inside the string.
@@ -413,7 +413,7 @@ func rfindn(what: String, from: int) -> int:
 #desc print("sample text".right(3)) #prints "ext"
 #desc print("sample text".right(-3)) #prints "ple text"
 #desc [/codeblock]
-func right() -> String:
+func right(length: int) -> String:
 	pass;
 
 #desc Formats a string to be at least [param min_length] long by adding [param character]s to the right of the string.
@@ -442,7 +442,7 @@ func rsplit(delimiter: String, allow_empty: bool, maxsplit: int) -> PackedString
 
 #desc Returns a copy of the string with characters removed from the right. The [param chars] argument is a string specifying the set of characters to be removed.
 #desc [b]Note:[/b] The [param chars] is not a suffix. See [method trim_suffix] method that will remove a single suffix string rather than a set of characters.
-func rstrip() -> String:
+func rstrip(chars: String) -> String:
 	pass;
 
 #desc Returns the SHA-1 hash of the string as an array of bytes.
@@ -468,7 +468,7 @@ func sha256_text() -> String:
 #desc print("ABC123".similarity("123ABC")) # Prints "0.8"
 #desc print("ABC123".similarity("abc123")) # Prints "0.4"
 #desc [/codeblock]
-func similarity() -> float:
+func similarity(text: String) -> float:
 	pass;
 
 #desc Returns a simplified canonical path.
@@ -573,15 +573,15 @@ func to_utf8_buffer() -> PackedByteArray:
 	pass;
 
 #desc Removes a given string from the start if it starts with it or leaves the string unchanged.
-func trim_prefix() -> String:
+func trim_prefix(prefix: String) -> String:
 	pass;
 
 #desc Removes a given string from the end if it ends with it or leaves the string unchanged.
-func trim_suffix() -> String:
+func trim_suffix(suffix: String) -> String:
 	pass;
 
 #desc Returns the character code at position [param at].
-func unicode_at() -> int:
+func unicode_at(at: int) -> int:
 	pass;
 
 #desc Decodes a string in URL encoded format. This is meant to decode parameters in a URL when receiving an HTTP request.
@@ -613,7 +613,7 @@ func validate_node_name() -> String:
 	pass;
 
 #desc Returns a copy of the string with special characters escaped using the XML standard. If [param escape_quotes] is [code]true[/code], the single quote ([code]'[/code]) and double quote ([code]"[/code]) characters are also escaped.
-func xml_escape() -> String:
+func xml_escape(escape_quotes: bool) -> String:
 	pass;
 
 #desc Returns a copy of the string with escaped characters replaced by their meanings according to the XML standard.

@@ -70,7 +70,7 @@ var include_navigational: bool;
 
 #desc Changes the currently opened directory to the one passed as an argument. The argument can be relative to the current directory (e.g. [code]newdir[/code] or [code]../newdir[/code]), or an absolute path (e.g. [code]/tmp/newdir[/code] or [code]res://somedir/newdir[/code]).
 #desc Returns one of the [enum Error] code constants ([code]OK[/code] on success).
-func change_dir() -> int:
+func change_dir(to_dir: String) -> int:
 	pass;
 
 #desc Copies the [param from] file to the [param to] destination. Both arguments should be paths to files, either relative or absolute. If the destination file exists and is not access-protected, it will be overwritten.
@@ -88,20 +88,20 @@ func current_is_dir() -> bool:
 	pass;
 
 #desc Returns whether the target directory exists. The argument can be relative to the current directory, or an absolute path.
-func dir_exists() -> bool:
+func dir_exists(path: String) -> bool:
 	pass;
 
 #desc Static version of [method dir_exists]. Supports only absolute paths.
-static func dir_exists_absolute() -> bool:
+static func dir_exists_absolute(path: String) -> bool:
 	pass;
 
 #desc Returns whether the target file exists. The argument can be relative to the current directory, or an absolute path.
 #desc For a static equivalent, use [method FileAccess.file_exists].
-func file_exists() -> bool:
+func file_exists(path: String) -> bool:
 	pass;
 
 #desc Returns the absolute path to the currently opened directory (e.g. [code]res://folder[/code] or [code]C:\tmp\folder[/code]).
-func get_current_dir() -> String:
+func get_current_dir(include_drive: bool) -> String:
 	pass;
 
 #desc Returns the currently opened directory's drive index. See [method get_drive_name] to convert returned index to the name of the drive.
@@ -115,7 +115,7 @@ func get_directories() -> PackedStringArray:
 
 #desc Returns a [PackedStringArray] containing filenames of the directory contents, excluding files, at the given [param path]. The array is sorted alphabetically.
 #desc Use [method get_directories] if you want more control of what gets included.
-static func get_directories_at() -> PackedStringArray:
+static func get_directories_at(path: String) -> PackedStringArray:
 	pass;
 
 #desc On Windows, returns the number of drives (partitions) mounted on the current filesystem.
@@ -129,7 +129,7 @@ static func get_drive_count() -> int:
 #desc On macOS, returns the path to the mounted volume passed as an argument.
 #desc On Linux, returns the path to the mounted volume or GTK 3 bookmark passed as an argument.
 #desc On other platforms, or if the requested drive does not exist, the method returns an empty String.
-static func get_drive_name() -> String:
+static func get_drive_name(idx: int) -> String:
 	pass;
 
 #desc Returns a [PackedStringArray] containing filenames of the directory contents, excluding directories. The array is sorted alphabetically.
@@ -139,7 +139,7 @@ func get_files() -> PackedStringArray:
 
 #desc Returns a [PackedStringArray] containing filenames of the directory contents, excluding directories, at the given [param path]. The array is sorted alphabetically.
 #desc Use [method get_files] if you want more control of what gets included.
-static func get_files_at() -> PackedStringArray:
+static func get_files_at(path: String) -> PackedStringArray:
 	pass;
 
 #desc Returns the next element (file or directory) in the current directory.
@@ -167,35 +167,35 @@ func list_dir_end() -> void:
 
 #desc Creates a directory. The argument can be relative to the current directory, or an absolute path. The target directory should be placed in an already existing directory (to create the full path recursively, see [method make_dir_recursive]).
 #desc Returns one of the [enum Error] code constants ([code]OK[/code] on success).
-func make_dir() -> int:
+func make_dir(path: String) -> int:
 	pass;
 
 #desc Static version of [method make_dir]. Supports only absolute paths.
-static func make_dir_absolute() -> int:
+static func make_dir_absolute(path: String) -> int:
 	pass;
 
 #desc Creates a target directory and all necessary intermediate directories in its path, by calling [method make_dir] recursively. The argument can be relative to the current directory, or an absolute path.
 #desc Returns one of the [enum Error] code constants ([code]OK[/code] on success).
-func make_dir_recursive() -> int:
+func make_dir_recursive(path: String) -> int:
 	pass;
 
 #desc Static version of [method make_dir_recursive]. Supports only absolute paths.
-static func make_dir_recursive_absolute() -> int:
+static func make_dir_recursive_absolute(path: String) -> int:
 	pass;
 
 #desc Creates a new [DirAccess] object and opens an existing directory of the filesystem. The [param path] argument can be within the project tree ([code]res://folder[/code]), the user directory ([code]user://folder[/code]) or an absolute path of the user filesystem (e.g. [code]/tmp/folder[/code] or [code]C:\tmp\folder[/code]).
 #desc Returns [code]null[/code] if opening the directory failed. You can use [method get_open_error] to check the error that occurred.
-static func open() -> DirAccess:
+static func open(path: String) -> DirAccess:
 	pass;
 
 #desc Permanently deletes the target file or an empty directory. The argument can be relative to the current directory, or an absolute path. If the target directory is not empty, the operation will fail.
 #desc If you don't want to delete the file/directory permanently, use [method OS.move_to_trash] instead.
 #desc Returns one of the [enum Error] code constants ([code]OK[/code] on success).
-func remove() -> int:
+func remove(path: String) -> int:
 	pass;
 
 #desc Static version of [method remove]. Supports only absolute paths.
-static func remove_absolute() -> int:
+static func remove_absolute(path: String) -> int:
 	pass;
 
 #desc Renames (move) the [param from] file or directory to the [param to] destination. Both arguments should be paths to files or directories, either relative or absolute. If the destination file or directory exists and is not access-protected, it will be overwritten.

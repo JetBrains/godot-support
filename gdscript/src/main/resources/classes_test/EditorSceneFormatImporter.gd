@@ -24,7 +24,7 @@ virtual const func _get_extensions() -> PackedStringArray:
 virtual const func _get_import_flags() -> int:
 	pass;
 
-virtual func _get_import_options() -> void:
+virtual func _get_import_options(path: String) -> void:
 	pass;
 
 virtual const func _get_option_visibility(path: String, for_animation: bool, option: String) -> Variant:

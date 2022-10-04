@@ -54,7 +54,7 @@ func get_nav_path_index() -> int:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member navigation_layers] bitmask is enabled, given a [param layer_number] between 1 and 32.
-func get_navigation_layer_value() -> bool:
+func get_navigation_layer_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns the [RID] of the navigation map for this NavigationAgent node. This function returns always the map set on the NavigationAgent node and not the map of the abstract agent on the NavigationServer. If the agent map is changed directly with the NavigationServer API the NavigationAgent node will not be aware of the map change. Use [method set_navigation_map] to change the navigation map for the NavigationAgent and also update the agent on the NavigationServer.
@@ -90,15 +90,15 @@ func set_navigation_layer_value(layer_number: int, value: bool) -> void:
 	pass;
 
 #desc Sets the [RID] of the navigation map this NavigationAgent node should use and also updates the [code]agent[/code] on the NavigationServer.
-func set_navigation_map() -> void:
+func set_navigation_map(navigation_map: RID) -> void:
 	pass;
 
 #desc Sets the user desired final location. This will clear the current navigation path.
-func set_target_location() -> void:
+func set_target_location(location: Vector2) -> void:
 	pass;
 
 #desc Sends the passed in velocity to the collision avoidance algorithm. It will adjust the velocity to avoid collisions. Once the adjustment to the velocity is complete, it will emit the [signal velocity_computed] signal.
-func set_velocity() -> void:
+func set_velocity(velocity: Vector2) -> void:
 	pass;
 
 

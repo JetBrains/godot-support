@@ -180,7 +180,7 @@ virtual const func _get_aabb() -> AABB:
 virtual const func _get_blend_shape_count() -> int:
 	pass;
 
-virtual const func _get_blend_shape_name() -> StringName:
+virtual const func _get_blend_shape_name(index: int) -> StringName:
 	pass;
 
 virtual const func _get_surface_count() -> int:
@@ -189,28 +189,28 @@ virtual const func _get_surface_count() -> int:
 virtual func _set_blend_shape_name(index: int, name: StringName) -> void:
 	pass;
 
-virtual const func _surface_get_array_index_len() -> int:
+virtual const func _surface_get_array_index_len(index: int) -> int:
 	pass;
 
-virtual const func _surface_get_array_len() -> int:
+virtual const func _surface_get_array_len(index: int) -> int:
 	pass;
 
-virtual const func _surface_get_arrays() -> Array:
+virtual const func _surface_get_arrays(index: int) -> Array:
 	pass;
 
-virtual const func _surface_get_blend_shape_arrays() -> Array[]:
+virtual const func _surface_get_blend_shape_arrays(index: int) -> Array[]:
 	pass;
 
-virtual const func _surface_get_format() -> int:
+virtual const func _surface_get_format(index: int) -> int:
 	pass;
 
-virtual const func _surface_get_lods() -> Dictionary:
+virtual const func _surface_get_lods(index: int) -> Dictionary:
 	pass;
 
-virtual const func _surface_get_material() -> Material:
+virtual const func _surface_get_material(index: int) -> Material:
 	pass;
 
-virtual const func _surface_get_primitive_type() -> int:
+virtual const func _surface_get_primitive_type(index: int) -> int:
 	pass;
 
 virtual func _surface_set_material(index: int, material: Material) -> void:
@@ -224,7 +224,7 @@ func create_convex_shape(clean: bool, simplify: bool) -> Shape3D:
 
 #desc Calculate an outline mesh at a defined offset (margin) from the original mesh.
 #desc [b]Note:[/b] This method typically returns the vertices in reverse order (e.g. clockwise to counterclockwise).
-func create_outline() -> Mesh:
+func create_outline(margin: float) -> Mesh:
 	pass;
 
 #desc Calculate a [ConcavePolygonShape3D] from the mesh.
@@ -249,15 +249,15 @@ func get_surface_count() -> int:
 	pass;
 
 #desc Returns the arrays for the vertices, normals, uvs, etc. that make up the requested surface (see [method ArrayMesh.add_surface_from_arrays]).
-func surface_get_arrays() -> Array:
+func surface_get_arrays(surf_idx: int) -> Array:
 	pass;
 
 #desc Returns the blend shape arrays for the requested surface.
-func surface_get_blend_shape_arrays() -> Array[]:
+func surface_get_blend_shape_arrays(surf_idx: int) -> Array[]:
 	pass;
 
 #desc Returns a [Material] in a given surface. Surface is rendered using this material.
-func surface_get_material() -> Material:
+func surface_get_material(surf_idx: int) -> Material:
 	pass;
 
 #desc Sets a [Material] for a given surface. Surface will be rendered using this material.

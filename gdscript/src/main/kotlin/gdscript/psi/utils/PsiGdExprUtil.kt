@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
@@ -169,8 +170,9 @@ object PsiGdExprUtil {
                         is GdEnumDeclTl -> GdKeywords.INT;
                         is GdEnumValue -> GdKeywords.INT;
                         else -> {
-                            GdClassNamingIndex.get(text, expr.project, GlobalSearchScope.allScope(expr.project))
-                                .firstOrNull()?.classname ?: "";
+                            return if (DumbService.isDumb(expr.project)) text
+                                else GdClassNamingIndex.get(text, expr.project, GlobalSearchScope.allScope(expr.project))
+                                    .firstOrNull()?.classname ?: "";
                         }
                     }
                 }

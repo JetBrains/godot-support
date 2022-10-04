@@ -29,19 +29,19 @@ func get_graph_offset() -> Vector2:
 	pass;
 
 #desc Returns the animation node with the given name.
-func get_node() -> AnimationNode:
+func get_node(name: StringName) -> AnimationNode:
 	pass;
 
 #desc Returns the given animation node's name.
-func get_node_name() -> StringName:
+func get_node_name(node: AnimationNode) -> StringName:
 	pass;
 
 #desc Returns the given node's coordinates. Used for display in the editor.
-func get_node_position() -> Vector2:
+func get_node_position(name: StringName) -> Vector2:
 	pass;
 
 #desc Returns the given transition.
-func get_transition() -> AnimationNodeStateMachineTransition:
+func get_transition(idx: int) -> AnimationNodeStateMachineTransition:
 	pass;
 
 #desc Returns the number of connections in the graph.
@@ -49,15 +49,15 @@ func get_transition_count() -> int:
 	pass;
 
 #desc Returns the given transition's start node.
-func get_transition_from() -> StringName:
+func get_transition_from(idx: int) -> StringName:
 	pass;
 
 #desc Returns the given transition's end node.
-func get_transition_to() -> StringName:
+func get_transition_to(idx: int) -> StringName:
 	pass;
 
 #desc Returns [code]true[/code] if the graph contains the given node.
-func has_node() -> bool:
+func has_node(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if there is a transition between the given nodes.
@@ -65,7 +65,7 @@ func has_transition(from: StringName, to: StringName) -> bool:
 	pass;
 
 #desc Deletes the given node from the graph.
-func remove_node() -> void:
+func remove_node(name: StringName) -> void:
 	pass;
 
 #desc Deletes the transition between the two specified nodes.
@@ -73,7 +73,7 @@ func remove_transition(from: StringName, to: StringName) -> void:
 	pass;
 
 #desc Deletes the given transition by index.
-func remove_transition_by_index() -> void:
+func remove_transition_by_index(idx: int) -> void:
 	pass;
 
 #desc Renames the given node.
@@ -84,7 +84,7 @@ func replace_node(name: StringName, node: AnimationNode) -> void:
 	pass;
 
 #desc Sets the draw offset of the graph. Used for display in the editor.
-func set_graph_offset() -> void:
+func set_graph_offset(offset: Vector2) -> void:
 	pass;
 
 #desc Sets the node's coordinates. Used for display in the editor.

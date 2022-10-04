@@ -10,20 +10,20 @@ func PackedByteArray() -> PackedByteArray:
 	pass;
 
 #desc Constructs a [PackedByteArray] as a copy of the given [PackedByteArray].
-func PackedByteArray() -> PackedByteArray:
+func PackedByteArray(from: PackedByteArray) -> PackedByteArray:
 	pass;
 
 #desc Constructs a new [PackedByteArray]. Optionally, you can pass in a generic [Array] that will be converted.
-func PackedByteArray() -> PackedByteArray:
+func PackedByteArray(from: Array) -> PackedByteArray:
 	pass;
 
 
 #desc Appends an element at the end of the array (alias of [method push_back]).
-func append() -> bool:
+func append(value: int) -> bool:
 	pass;
 
 #desc Appends a [PackedByteArray] at the end of this array.
-func append_array() -> void:
+func append_array(array: PackedByteArray) -> void:
 	pass;
 
 #desc Finds the index of an existing value (or the insertion index that maintains sorting order, if the value is not yet present in the array) using binary search. Optionally, a [param before] specifier can be passed. If [code]false[/code], the returned index comes after all existing entries of the value in the array.
@@ -36,55 +36,55 @@ func clear() -> void:
 	pass;
 
 #desc Returns a new [PackedByteArray] with the data compressed. Set the compression mode using one of [enum FileAccess.CompressionMode]'s constants.
-func compress() -> PackedByteArray:
+func compress(compression_mode: int) -> PackedByteArray:
 	pass;
 
 #desc Returns the number of times an element is in the array.
-func count() -> int:
+func count(value: int) -> int:
 	pass;
 
 #desc Decodes a 64-bit floating point number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0.0[/code] if a valid number can't be decoded.
-func decode_double() -> float:
+func decode_double(byte_offset: int) -> float:
 	pass;
 
 #desc Decodes a 32-bit floating point number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0.0[/code] if a valid number can't be decoded.
-func decode_float() -> float:
+func decode_float(byte_offset: int) -> float:
 	pass;
 
 #desc Decodes a 16-bit floating point number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0.0[/code] if a valid number can't be decoded.
-func decode_half() -> float:
+func decode_half(byte_offset: int) -> float:
 	pass;
 
 #desc Decodes a 16-bit signed integer number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0[/code] if a valid number can't be decoded.
-func decode_s16() -> int:
+func decode_s16(byte_offset: int) -> int:
 	pass;
 
 #desc Decodes a 32-bit signed integer number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0[/code] if a valid number can't be decoded.
-func decode_s32() -> int:
+func decode_s32(byte_offset: int) -> int:
 	pass;
 
 #desc Decodes a 64-bit signed integer number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0[/code] if a valid number can't be decoded.
-func decode_s64() -> int:
+func decode_s64(byte_offset: int) -> int:
 	pass;
 
 #desc Decodes a 8-bit signed integer number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0[/code] if a valid number can't be decoded.
-func decode_s8() -> int:
+func decode_s8(byte_offset: int) -> int:
 	pass;
 
 #desc Decodes a 16-bit unsigned integer number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0[/code] if a valid number can't be decoded.
-func decode_u16() -> int:
+func decode_u16(byte_offset: int) -> int:
 	pass;
 
 #desc Decodes a 32-bit unsigned integer number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0[/code] if a valid number can't be decoded.
-func decode_u32() -> int:
+func decode_u32(byte_offset: int) -> int:
 	pass;
 
 #desc Decodes a 64-bit unsigned integer number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0[/code] if a valid number can't be decoded.
-func decode_u64() -> int:
+func decode_u64(byte_offset: int) -> int:
 	pass;
 
 #desc Decodes a 8-bit unsigned integer number from the bytes starting at [param byte_offset]. Fails if the byte count is insufficient. Returns [code]0[/code] if a valid number can't be decoded.
-func decode_u8() -> int:
+func decode_u8(byte_offset: int) -> int:
 	pass;
 
 #desc Decodes a [Variant] from the bytes starting at [param byte_offset]. Returns [code]null[/code] if a valid variant can't be decoded or the value is [Object]-derived and [param allow_objects] is [code]false[/code].
@@ -158,7 +158,7 @@ func encode_var(byte_offset: int, value: Variant, allow_objects: bool) -> int:
 	pass;
 
 #desc Assigns the given value to all elements in the array. This can typically be used together with [method resize] to create an array with a given size and initialized elements.
-func fill() -> void:
+func fill(value: int) -> void:
 	pass;
 
 #desc Searches the array for a value and returns its index or [code]-1[/code] if not found. Optionally, the initial search index can be passed.
@@ -182,7 +182,7 @@ func get_string_from_utf8() -> String:
 	pass;
 
 #desc Returns [code]true[/code] if the array contains [param value].
-func has() -> bool:
+func has(value: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if a valid [Variant] value can be decoded at the [param byte_offset]. Returns [code]false[/code] othewrise or when the value is [Object]-derived and [param allow_objects] is [code]false[/code].
@@ -212,15 +212,15 @@ func is_empty() -> bool:
 	pass;
 
 #desc Appends an element at the end of the array.
-func push_back() -> bool:
+func push_back(value: int) -> bool:
 	pass;
 
 #desc Removes an element from the array by index.
-func remove_at() -> void:
+func remove_at(index: int) -> void:
 	pass;
 
 #desc Sets the size of the array. If the array is grown, reserves elements at the end of the array. If the array is shrunk, truncates the array to the new size.
-func resize() -> int:
+func resize(new_size: int) -> int:
 	pass;
 
 #desc Reverses the order of the elements in the array.

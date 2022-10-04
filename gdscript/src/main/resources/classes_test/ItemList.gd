@@ -85,7 +85,7 @@ func clear() -> void:
 	pass;
 
 #desc Ensures the item associated with the specified index is not selected.
-func deselect() -> void:
+func deselect(idx: int) -> void:
 	pass;
 
 #desc Ensures there are no items selected.
@@ -102,43 +102,43 @@ func get_item_at_position(position: Vector2, exact: bool) -> int:
 	pass;
 
 #desc Returns the custom background color of the item specified by [param idx] index.
-func get_item_custom_bg_color() -> Color:
+func get_item_custom_bg_color(idx: int) -> Color:
 	pass;
 
 #desc Returns the custom foreground color of the item specified by [param idx] index.
-func get_item_custom_fg_color() -> Color:
+func get_item_custom_fg_color(idx: int) -> Color:
 	pass;
 
 #desc Returns the icon associated with the specified index.
-func get_item_icon() -> Texture2D:
+func get_item_icon(idx: int) -> Texture2D:
 	pass;
 
 #desc Returns a [Color] modulating item's icon at the specified index.
-func get_item_icon_modulate() -> Color:
+func get_item_icon_modulate(idx: int) -> Color:
 	pass;
 
 #desc Returns the region of item's icon used. The whole icon will be used if the region has no area.
-func get_item_icon_region() -> Rect2:
+func get_item_icon_region(idx: int) -> Rect2:
 	pass;
 
 #desc Returns item's text language code.
-func get_item_language() -> String:
+func get_item_language(idx: int) -> String:
 	pass;
 
 #desc Returns the metadata value of the specified index.
-func get_item_metadata() -> Variant:
+func get_item_metadata(idx: int) -> Variant:
 	pass;
 
 #desc Returns the text associated with the specified index.
-func get_item_text() -> String:
+func get_item_text(idx: int) -> String:
 	pass;
 
 #desc Returns item's text base writing direction.
-func get_item_text_direction() -> int:
+func get_item_text_direction(idx: int) -> int:
 	pass;
 
 #desc Returns the tooltip hint associated with the specified index.
-func get_item_tooltip() -> String:
+func get_item_tooltip(idx: int) -> String:
 	pass;
 
 #desc Returns an array with the indexes of the selected items.
@@ -155,23 +155,23 @@ func is_anything_selected() -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the item at the specified index is disabled.
-func is_item_disabled() -> bool:
+func is_item_disabled(idx: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the item icon will be drawn transposed, i.e. the X and Y axes are swapped.
-func is_item_icon_transposed() -> bool:
+func is_item_icon_transposed(idx: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the item at the specified index is selectable.
-func is_item_selectable() -> bool:
+func is_item_selectable(idx: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the tooltip is enabled for specified item index.
-func is_item_tooltip_enabled() -> bool:
+func is_item_tooltip_enabled(idx: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the item at the specified index is currently selected.
-func is_selected() -> bool:
+func is_selected(idx: int) -> bool:
 	pass;
 
 #desc Moves item from index [param from_idx] to [param to_idx].
@@ -179,7 +179,7 @@ func move_item(from_idx: int, to_idx: int) -> void:
 	pass;
 
 #desc Removes the item specified by [param idx] index from the list.
-func remove_item() -> void:
+func remove_item(idx: int) -> void:
 	pass;
 
 #desc Select the item at the specified index.

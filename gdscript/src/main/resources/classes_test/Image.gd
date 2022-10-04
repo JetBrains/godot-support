@@ -211,7 +211,7 @@ func blit_rect_mask(src: Image, mask: Image, src_rect: Rect2i, dst: Vector2i) ->
 	pass;
 
 #desc Converts a bump map to a normal map. A bump map provides a height offset per-pixel, while a normal map provides a normal direction per pixel.
-func bump_map_to_normal_map() -> void:
+func bump_map_to_normal_map(bump_scale: float) -> void:
 	pass;
 
 #desc Removes the image's mipmaps.
@@ -231,11 +231,11 @@ func compute_image_metrics(compared_image: Image, use_luma: bool) -> Dictionary:
 	pass;
 
 #desc Converts the image's format. See [enum Format] constants.
-func convert() -> void:
+func convert(format: int) -> void:
 	pass;
 
 #desc Copies [param src] image to this image.
-func copy_from() -> void:
+func copy_from(src: Image) -> void:
 	pass;
 
 #desc Creates an empty image of given size and format. See [enum Format] constants. If [param use_mipmaps] is [code]true[/code] then generate mipmaps for this image. See the [method generate_mipmaps].
@@ -259,11 +259,11 @@ func decompress() -> int:
 func detect_alpha() -> int:
 	pass;
 
-func detect_used_channels() -> int:
+func detect_used_channels(source: int) -> int:
 	pass;
 
 #desc Fills the image with [param color].
-func fill() -> void:
+func fill(color: Color) -> void:
 	pass;
 
 #desc Fills [param rect] with [param color].
@@ -284,7 +284,7 @@ func flip_y() -> void:
 
 #desc Generates mipmaps for the image. Mipmaps are precalculated lower-resolution copies of the image that are automatically used if the image needs to be scaled down when rendered. They help improve image quality and performance when rendering. This method returns an error if the image is compressed, in a custom format, or if the image's width/height is [code]0[/code].
 #desc [b]Note:[/b] Mipmap generation is done on the CPU, is single-threaded and is [i]always[/i] done on the main thread. This means generating mipmaps will result in noticeable stuttering during gameplay, even if [method generate_mipmaps] is called from a [Thread].
-func generate_mipmaps() -> int:
+func generate_mipmaps(renormalize: bool) -> int:
 	pass;
 
 #desc Returns a copy of the image's raw data.
@@ -300,7 +300,7 @@ func get_height() -> int:
 	pass;
 
 #desc Returns the offset where the image's mipmap with index [param mipmap] is stored in the [code]data[/code] dictionary.
-func get_mipmap_offset() -> int:
+func get_mipmap_offset(mipmap: int) -> int:
 	pass;
 
 #desc Returns the color of the pixel at [code](x, y)[/code].
@@ -310,11 +310,11 @@ func get_pixel(x: int, y: int) -> Color:
 
 #desc Returns the color of the pixel at [param point].
 #desc This is the same as [method get_pixel], but with a [Vector2i] argument instead of two integer arguments.
-func get_pixelv() -> Color:
+func get_pixelv(point: Vector2i) -> Color:
 	pass;
 
 #desc Returns a new image that is a copy of the image's area specified with [param rect].
-func get_rect() -> Image:
+func get_rect(rect: Rect2i) -> Image:
 	pass;
 
 #desc Returns the image's size (width and height).
@@ -348,32 +348,32 @@ func is_invisible() -> bool:
 #desc Loads an image from file [param path]. See [url=$DOCS_URL/tutorials/assets_pipeline/importing_images.html#supported-image-formats]Supported image formats[/url] for a list of supported image formats and limitations.
 #desc [b]Warning:[/b] This method should only be used in the editor or in cases when you need to load external images at run-time, such as images located at the [code]user://[/code] directory, and may not work in exported projects.
 #desc See also [ImageTexture] description for usage examples.
-func load() -> int:
+func load(path: String) -> int:
 	pass;
 
 #desc Loads an image from the binary contents of a BMP file.
 #desc [b]Note:[/b] Godot's BMP module doesn't support 16-bit per pixel images. Only 1-bit, 4-bit, 8-bit, 24-bit, and 32-bit per pixel images are supported.
-func load_bmp_from_buffer() -> int:
+func load_bmp_from_buffer(buffer: PackedByteArray) -> int:
 	pass;
 
 #desc Creates a new [Image] and loads data from the specified file.
-static func load_from_file() -> Image:
+static func load_from_file(path: String) -> Image:
 	pass;
 
 #desc Loads an image from the binary contents of a JPEG file.
-func load_jpg_from_buffer() -> int:
+func load_jpg_from_buffer(buffer: PackedByteArray) -> int:
 	pass;
 
 #desc Loads an image from the binary contents of a PNG file.
-func load_png_from_buffer() -> int:
+func load_png_from_buffer(buffer: PackedByteArray) -> int:
 	pass;
 
 #desc Loads an image from the binary contents of a TGA file.
-func load_tga_from_buffer() -> int:
+func load_tga_from_buffer(buffer: PackedByteArray) -> int:
 	pass;
 
 #desc Loads an image from the binary contents of a WebP file.
-func load_webp_from_buffer() -> int:
+func load_webp_from_buffer(buffer: PackedByteArray) -> int:
 	pass;
 
 #desc Converts the image's data to represent coordinates on a 3D plane. This is used when the image represents a normal map. A normal map can add lots of detail to a 3D surface without increasing the polygon count.
@@ -401,7 +401,7 @@ func rotate_180() -> void:
 	pass;
 
 #desc Rotates the image in the specified [param direction] by [code]90[/code] degrees. The width and height of the image must be greater than [code]1[/code]. If the width and height are not equal, the image will be resized.
-func rotate_90() -> void:
+func rotate_90(direction: int) -> void:
 	pass;
 
 #desc Saves the image as an EXR file to [param path]. If [param grayscale] is [code]true[/code] and the image has only one channel, it will be saved explicitly as monochrome rather than one red channel. This function will return [constant ERR_UNAVAILABLE] if Godot was compiled without the TinyEXR module.
@@ -411,7 +411,7 @@ func save_exr(path: String, grayscale: bool) -> int:
 
 #desc Saves the image as an EXR file to a byte array. If [param grayscale] is [code]true[/code] and the image has only one channel, it will be saved explicitly as monochrome rather than one red channel. This function will return an empty byte array if Godot was compiled without the TinyEXR module.
 #desc [b]Note:[/b] The TinyEXR module is disabled in non-editor builds, which means [method save_exr] will return an empty byte array when it is called from an exported project.
-func save_exr_to_buffer() -> PackedByteArray:
+func save_exr_to_buffer(grayscale: bool) -> PackedByteArray:
 	pass;
 
 #desc Saves the image as a JPEG file to [param path] with the specified [param quality] between [code]0.01[/code] and [code]1.0[/code] (inclusive). Higher [param quality] values result in better-looking output at the cost of larger file sizes. Recommended [param quality] values are between [code]0.75[/code] and [code]0.90[/code]. Even at quality [code]1.00[/code], JPEG compression remains lossy.
@@ -421,11 +421,11 @@ func save_jpg(path: String, quality: float) -> int:
 
 #desc Saves the image as a JPEG file to a byte array with the specified [param quality] between [code]0.01[/code] and [code]1.0[/code] (inclusive). Higher [param quality] values result in better-looking output at the cost of larger byte array sizes (and therefore memory usage). Recommended [param quality] values are between [code]0.75[/code] and [code]0.90[/code]. Even at quality [code]1.00[/code], JPEG compression remains lossy.
 #desc [b]Note:[/b] JPEG does not save an alpha channel. If the [Image] contains an alpha channel, the image will still be saved, but the resulting byte array won't contain the alpha channel.
-func save_jpg_to_buffer() -> PackedByteArray:
+func save_jpg_to_buffer(quality: float) -> PackedByteArray:
 	pass;
 
 #desc Saves the image as a PNG file to the file at [param path].
-func save_png() -> int:
+func save_png(path: String) -> int:
 	pass;
 
 #desc Saves the image as a PNG file to a byte array.

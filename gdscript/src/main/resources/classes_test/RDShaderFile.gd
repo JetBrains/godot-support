@@ -5,7 +5,7 @@ var base_error: String;
 
 
 
-func get_spirv() -> RDShaderSPIRV:
+func get_spirv(version: StringName) -> RDShaderSPIRV:
 	pass;
 
 func get_version_list() -> PackedStringArray:

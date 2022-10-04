@@ -26,7 +26,7 @@ func get_instance() -> RID:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member layers] is enabled, given a [code]layer_number[/code] between 1 and 20.
-func get_layer_mask_value() -> bool:
+func get_layer_mask_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns the transformed [AABB] (also known as the bounding box) for this [VisualInstance3D].
@@ -35,7 +35,7 @@ func get_transformed_aabb() -> AABB:
 	pass;
 
 #desc Sets the resource that is instantiated by this [VisualInstance3D], which changes how the engine handles the [VisualInstance3D] under the hood. Equivalent to [method RenderingServer.instance_set_base].
-func set_base() -> void:
+func set_base(base: RID) -> void:
 	pass;
 
 #desc Based on [param value], enables or disables the specified layer in the [member layers], given a [param layer_number] between 1 and 20.

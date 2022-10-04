@@ -27,45 +27,45 @@ var scale_base_bone: StringName;
 
 
 #desc Returns the bone index that matches [param bone_name] as its name.
-func find_bone() -> int:
+func find_bone(bone_name: StringName) -> int:
 	pass;
 
 #desc Returns the name of the bone at [param bone_idx] that will be the key name in the [BoneMap].
 #desc In the retargeting process, the returned bone name is the bone name of the target skeleton.
-func get_bone_name() -> StringName:
+func get_bone_name(bone_idx: int) -> StringName:
 	pass;
 
 #desc Returns the name of the bone which is the parent to the bone at [param bone_idx]. The result is empty if the bone has no parent.
-func get_bone_parent() -> StringName:
+func get_bone_parent(bone_idx: int) -> StringName:
 	pass;
 
 #desc Returns the name of the bone which is the tail of the bone at [param bone_idx].
-func get_bone_tail() -> StringName:
+func get_bone_tail(bone_idx: int) -> StringName:
 	pass;
 
 #desc Returns the group of the bone at [param bone_idx].
-func get_group() -> StringName:
+func get_group(bone_idx: int) -> StringName:
 	pass;
 
 #desc Returns the name of the group at [param group_idx] that will be the drawing group in the [BoneMap] editor.
-func get_group_name() -> StringName:
+func get_group_name(group_idx: int) -> StringName:
 	pass;
 
 #desc Returns the offset of the bone at [param bone_idx] that will be the button position in the [BoneMap] editor.
 #desc This is the offset with origin at the top left corner of the square.
-func get_handle_offset() -> Vector2:
+func get_handle_offset(bone_idx: int) -> Vector2:
 	pass;
 
 #desc Returns the reference pose transform for bone [param bone_idx].
-func get_reference_pose() -> Transform3D:
+func get_reference_pose(bone_idx: int) -> Transform3D:
 	pass;
 
 #desc Returns the tail direction of the bone at [param bone_idx].
-func get_tail_direction() -> int:
+func get_tail_direction(bone_idx: int) -> int:
 	pass;
 
 #desc Returns the texture of the group at [param group_idx] that will be the drawing group background image in the [BoneMap] editor.
-func get_texture() -> Texture2D:
+func get_texture(group_idx: int) -> Texture2D:
 	pass;
 
 #desc Sets the name of the bone at [param bone_idx] that will be the key name in the [BoneMap].

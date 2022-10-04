@@ -11,7 +11,7 @@ var points: PackedVector2Array;
 
 
 #desc Based on the set of points provided, this creates and assigns the [member points] property using the convex hull algorithm. Removing all unneeded points. See [method Geometry2D.convex_hull] for details.
-func set_point_cloud() -> void:
+func set_point_cloud(point_cloud: PackedVector2Array) -> void:
 	pass;
 
 

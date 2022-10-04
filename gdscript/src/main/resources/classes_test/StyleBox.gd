@@ -30,10 +30,10 @@ virtual const func _draw(to_canvas_item: RID, rect: Rect2) -> void:
 virtual const func _get_center_size() -> Vector2:
 	pass;
 
-virtual const func _get_draw_rect() -> Rect2:
+virtual const func _get_draw_rect(rect: Rect2) -> Rect2:
 	pass;
 
-virtual const func _get_style_margin() -> float:
+virtual const func _get_style_margin(side: int) -> float:
 	pass;
 
 virtual const func _test_mask(point: Vector2, rect: Rect2) -> bool:
@@ -53,12 +53,12 @@ func get_current_item_drawn() -> CanvasItem:
 	pass;
 
 #desc Returns the default margin of the specified [enum Side].
-func get_default_margin() -> float:
+func get_default_margin(margin: int) -> float:
 	pass;
 
 #desc Returns the content margin offset for the specified [enum Side].
 #desc Positive values reduce size inwards, unlike [Control]'s margin values.
-func get_margin() -> float:
+func get_margin(margin: int) -> float:
 	pass;
 
 #desc Returns the minimum size that this stylebox can be shrunk to.
@@ -74,7 +74,7 @@ func set_default_margin(margin: int, offset: float) -> void:
 	pass;
 
 #desc Sets the default margin to [param offset] pixels for all sides.
-func set_default_margin_all() -> void:
+func set_default_margin_all(offset: float) -> void:
 	pass;
 
 #desc Test a position in a rectangle, return whether it passes the mask test.

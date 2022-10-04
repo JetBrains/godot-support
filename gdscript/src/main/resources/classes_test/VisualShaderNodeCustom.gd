@@ -40,7 +40,7 @@ virtual const func _get_func_code(mode: int, type: int) -> String:
 #desc Be careful with this functionality as it can cause name conflicts with other custom nodes, so be sure to give the defined entities unique names.
 #desc You can customize the generated code based on the shader [param mode] (see [enum Shader.Mode]).
 #desc Defining this method is [b]optional[/b].
-virtual const func _get_global_code() -> String:
+virtual const func _get_global_code(mode: int) -> String:
 	pass;
 
 #desc Override this method to define the number of input ports of the associated custom node.
@@ -50,12 +50,12 @@ virtual const func _get_input_port_count() -> int:
 
 #desc Override this method to define the names of input ports of the associated custom node. The names are used both for the input slots in the editor and as identifiers in the shader code, and are passed in the [code]input_vars[/code] array in [method _get_code].
 #desc Defining this method is [b]optional[/b], but recommended. If not overridden, input ports are named as [code]"in" + str(port)[/code].
-virtual const func _get_input_port_name() -> String:
+virtual const func _get_input_port_name(port: int) -> String:
 	pass;
 
 #desc Override this method to define the returned type of each input port of the associated custom node (see [enum VisualShaderNode.PortType] for possible types).
 #desc Defining this method is [b]optional[/b], but recommended. If not overridden, input ports will return the [constant VisualShaderNode.PORT_TYPE_SCALAR] type.
-virtual const func _get_input_port_type() -> int:
+virtual const func _get_input_port_type(port: int) -> int:
 	pass;
 
 #desc Override this method to define the name of the associated custom node in the Visual Shader Editor's members dialog and graph.
@@ -70,12 +70,12 @@ virtual const func _get_output_port_count() -> int:
 
 #desc Override this method to define the names of output ports of the associated custom node. The names are used both for the output slots in the editor and as identifiers in the shader code, and are passed in the [code]output_vars[/code] array in [method _get_code].
 #desc Defining this method is [b]optional[/b], but recommended. If not overridden, output ports are named as [code]"out" + str(port)[/code].
-virtual const func _get_output_port_name() -> String:
+virtual const func _get_output_port_name(port: int) -> String:
 	pass;
 
 #desc Override this method to define the returned type of each output port of the associated custom node (see [enum VisualShaderNode.PortType] for possible types).
 #desc Defining this method is [b]optional[/b], but recommended. If not overridden, output ports will return the [constant VisualShaderNode.PORT_TYPE_SCALAR] type.
-virtual const func _get_output_port_type() -> int:
+virtual const func _get_output_port_type(port: int) -> int:
 	pass;
 
 #desc Override this method to define the return icon of the associated custom node in the Visual Shader Editor's members dialog.

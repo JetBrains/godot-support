@@ -103,7 +103,7 @@ virtual func _rpc(peer: int, object: Object, method: StringName, args: Array) ->
 	pass;
 
 #desc Called when the [member MultiplayerAPI.multiplayer_peer] is set.
-virtual func _set_multiplayer_peer() -> void:
+virtual func _set_multiplayer_peer(multiplayer_peer: MultiplayerPeer) -> void:
 	pass;
 
 

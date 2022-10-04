@@ -26,7 +26,7 @@ virtual const func _get_audio_speaker_mode() -> int:
 #desc # either in the Project Settings or with the `--write-movie <path>` command line argument.
 #desc return path.get_extension().to_lower() == "mkv"
 #desc [/codeblock]
-virtual const func _handles_file() -> bool:
+virtual const func _handles_file(path: String) -> bool:
 	pass;
 
 #desc Called once before the engine starts writing video and audio data. [param movie_size] is the width and height of the video to save. [param fps] is the number of frames per second specified in the project settings or using the [code]--fixed-fps <fps>[/code] command line argument.
@@ -44,7 +44,7 @@ virtual func _write_frame(frame_image: Image, audio_frame_block: const void*) ->
 
 #desc Adds a writer to be usable by the engine. The supported file extensions can be set by overriding [method _handles_file].
 #desc [b]Note:[/b] [method add_writer] must be called early enough in the engine initialization to work, as movie writing is designed to start at the same time as the rest of the engine.
-static func add_writer() -> void:
+static func add_writer(writer: MovieWriter) -> void:
 	pass;
 
 

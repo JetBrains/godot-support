@@ -31,11 +31,11 @@ var target_position: Vector2;
 
 
 #desc Adds a collision exception so the ray does not report collisions with the specified [CollisionObject2D] node.
-func add_exception() -> void:
+func add_exception(node: CollisionObject2D) -> void:
 	pass;
 
 #desc Adds a collision exception so the ray does not report collisions with the specified [RID].
-func add_exception_rid() -> void:
+func add_exception_rid(rid: RID) -> void:
 	pass;
 
 #desc Removes all collision exceptions for this ray.
@@ -60,7 +60,7 @@ func get_collider_shape() -> int:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member collision_mask] is enabled, given a [param layer_number] between 1 and 32.
-func get_collision_mask_value() -> bool:
+func get_collision_mask_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns the normal of the intersecting object's shape at the collision point, or [code]Vector2(0, 0)[/code] if the ray starts inside the shape and [member hit_from_inside] is [code]true[/code].
@@ -77,11 +77,11 @@ func is_colliding() -> bool:
 	pass;
 
 #desc Removes a collision exception so the ray does report collisions with the specified [CollisionObject2D] node.
-func remove_exception() -> void:
+func remove_exception(node: CollisionObject2D) -> void:
 	pass;
 
 #desc Removes a collision exception so the ray does report collisions with the specified [RID].
-func remove_exception_rid() -> void:
+func remove_exception_rid(rid: RID) -> void:
 	pass;
 
 #desc Based on [param value], enables or disables the specified layer in the [member collision_mask], given a [param layer_number] between 1 and 32.

@@ -27,7 +27,7 @@ func add_do_property(object: Object, property: StringName, value: Variant) -> vo
 	pass;
 
 #desc Register a reference for "do" that will be erased if the "do" history is lost. This is useful mostly for new nodes created for the "do" call. Do not use for resources.
-func add_do_reference() -> void:
+func add_do_reference(object: Object) -> void:
 	pass;
 
 #desc Register a method that will be called when the action is undone (i.e. the "undo" action).
@@ -41,11 +41,11 @@ func add_undo_property(object: Object, property: StringName, value: Variant) -> 
 	pass;
 
 #desc Register a reference for "undo" that will be erased if the "undo" history is lost. This is useful mostly for nodes removed with the "do" call (not the "undo" call!).
-func add_undo_reference() -> void:
+func add_undo_reference(object: Object) -> void:
 	pass;
 
 #desc Commit the action. If [param execute] is true (default), all "do" methods/properties are called/set when this function is called.
-func commit_action() -> void:
+func commit_action(execute: bool) -> void:
 	pass;
 
 #desc Create a new action. After this is called, do all your calls to [method add_do_method], [method add_undo_method], [method add_do_property], and [method add_undo_property], then commit the action with [method commit_action].
@@ -57,11 +57,11 @@ func create_action(name: String, merge_mode: int, custom_context: Object) -> voi
 #desc Returns the [UndoRedo] object associated with the given history [param id].
 #desc [param id] above [code]0[/code] are mapped to the opened scene tabs (but it doesn't match their order). [param id] of [code]0[/code] or lower have special meaning (see [enum SpecialHistory]).
 #desc Best used with [method get_object_history_id]. This method is only provided in case you need some more advanced methods of [UndoRedo] (but keep in mind that directly operating on the [UndoRedo] object might affect editor's stability).
-func get_history_undo_redo() -> UndoRedo:
+func get_history_undo_redo(id: int) -> UndoRedo:
 	pass;
 
 #desc Returns the history ID deduced from the given [param object]. It can be used with [method get_history_undo_redo].
-func get_object_history_id() -> int:
+func get_object_history_id(object: Object) -> int:
 	pass;
 
 #desc Returns [code]true[/code] if the [EditorUndoRedoManager] is currently committing the action, i.e. running its "do" method or property change (see [method commit_action]).

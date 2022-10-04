@@ -6,11 +6,11 @@ class_name ClassDB
 
 
 #desc Returns [code]true[/code] if you can instance objects from the specified [param class], [code]false[/code] in other case.
-func can_instantiate() -> bool:
+func can_instantiate(class: StringName) -> bool:
 	pass;
 
 #desc Returns whether the specified [param class] is available or not.
-func class_exists() -> bool:
+func class_exists(class: StringName) -> bool:
 	pass;
 
 #desc Returns an array with all the keys in [param enum] of [param class] or its ancestry.
@@ -79,19 +79,19 @@ func get_class_list() -> PackedStringArray:
 	pass;
 
 #desc Returns the names of all the classes that directly or indirectly inherit from [param class].
-func get_inheriters_from_class() -> PackedStringArray:
+func get_inheriters_from_class(class: StringName) -> PackedStringArray:
 	pass;
 
 #desc Returns the parent class of [param class].
-func get_parent_class() -> StringName:
+func get_parent_class(class: StringName) -> StringName:
 	pass;
 
 #desc Creates an instance of [param class].
-func instantiate() -> Variant:
+func instantiate(class: StringName) -> Variant:
 	pass;
 
 #desc Returns whether this [param class] is enabled or not.
-func is_class_enabled() -> bool:
+func is_class_enabled(class: StringName) -> bool:
 	pass;
 
 #desc Returns whether [param inherits] is an ancestor of [param class] or not.

@@ -24,11 +24,11 @@ func get_packet_error() -> int:
 
 #desc Gets a Variant. If [param allow_objects] is [code]true[/code], decoding objects is allowed.
 #desc [b]Warning:[/b] Deserialized objects can contain code which gets executed. Do not use this option if the serialized object comes from untrusted sources to avoid potential security threats such as remote code execution.
-func get_var() -> Variant:
+func get_var(allow_objects: bool) -> Variant:
 	pass;
 
 #desc Sends a raw packet.
-func put_packet() -> int:
+func put_packet(buffer: PackedByteArray) -> int:
 	pass;
 
 #desc Sends a [Variant] as a packet. If [param full_objects] is [code]true[/code], encoding objects is allowed (and can potentially include code).

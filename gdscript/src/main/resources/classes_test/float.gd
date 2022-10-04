@@ -11,15 +11,15 @@ func float() -> float:
 	pass;
 
 #desc Constructs a [float] as a copy of the given [float].
-func float() -> float:
+func float(from: float) -> float:
 	pass;
 
 #desc Cast a [bool] value to a floating-point value, [code]float(true)[/code] will be equal to 1.0 and [code]float(false)[/code] will be equal to 0.0.
-func float() -> float:
+func float(from: bool) -> float:
 	pass;
 
 #desc Cast an [int] value to a floating-point value, [code]float(1)[/code] will be equal to [code]1.0[/code].
-func float() -> float:
+func float(from: int) -> float:
 	pass;
 
 

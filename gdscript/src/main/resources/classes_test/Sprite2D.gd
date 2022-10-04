@@ -70,7 +70,7 @@ func get_rect() -> Rect2:
 
 #desc Returns [code]true[/code], if the pixel at the given position is opaque and [code]false[/code] in other case.
 #desc [b]Note:[/b] It also returns [code]false[/code], if the sprite's texture is [code]null[/code] or if the given position is invalid.
-func is_pixel_opaque() -> bool:
+func is_pixel_opaque(pos: Vector2) -> bool:
 	pass;
 
 

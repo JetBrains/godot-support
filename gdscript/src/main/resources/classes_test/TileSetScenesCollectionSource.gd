@@ -16,15 +16,15 @@ func get_next_scene_tile_id() -> int:
 	pass;
 
 #desc Returns whether the scene tile with [param id] displays a placeholder in the editor.
-func get_scene_tile_display_placeholder() -> bool:
+func get_scene_tile_display_placeholder(id: int) -> bool:
 	pass;
 
 #desc Returns the scene tile ID of the scene tile at [param index].
-func get_scene_tile_id() -> int:
+func get_scene_tile_id(index: int) -> int:
 	pass;
 
 #desc Returns the [PackedScene] resource of scene tile with [param id].
-func get_scene_tile_scene() -> PackedScene:
+func get_scene_tile_scene(id: int) -> PackedScene:
 	pass;
 
 #desc Returns the number or scene tiles this TileSet source has.
@@ -32,11 +32,11 @@ func get_scene_tiles_count() -> int:
 	pass;
 
 #desc Returns whether this TileSet source has a scene tile with [param id].
-func has_scene_tile_id() -> bool:
+func has_scene_tile_id(id: int) -> bool:
 	pass;
 
 #desc Remove the scene tile with [param id].
-func remove_scene_tile() -> void:
+func remove_scene_tile(id: int) -> void:
 	pass;
 
 #desc Sets whether or not the scene tile with [param id] should display a placeholder in the editor. This might be useful for scenes that are not visible.

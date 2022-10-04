@@ -112,13 +112,13 @@ func has_overlapping_bodies() -> bool:
 
 #desc Returns [code]true[/code] if the given [Area3D] intersects or overlaps this [Area3D], [code]false[/code] otherwise.
 #desc [b]Note:[/b] The result of this test is not immediate after moving objects. For performance, list of overlaps is updated once per frame and before the physics step. Consider using signals instead.
-func overlaps_area() -> bool:
+func overlaps_area(area: Node) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given physics body intersects or overlaps this [Area3D], [code]false[/code] otherwise.
 #desc [b]Note:[/b] The result of this test is not immediate after moving objects. For performance, list of overlaps is updated once per frame and before the physics step. Consider using signals instead.
 #desc The [param body] argument can either be a [PhysicsBody3D] or a [GridMap] instance. While GridMaps are not physics body themselves, they register their tiles with collision shapes as a virtual physics body.
-func overlaps_body() -> bool:
+func overlaps_body(body: Node) -> bool:
 	pass;
 
 

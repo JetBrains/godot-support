@@ -72,7 +72,7 @@ var shadow_item_cull_mask: int;
 func get_height() -> float:
 	pass;
 
-func set_height() -> void:
+func set_height(height: float) -> void:
 	pass;
 
 

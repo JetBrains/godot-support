@@ -2081,15 +2081,15 @@ var xr/shaders/enabled: bool;
 #desc ProjectSettings.AddPropertyInfo(propertyInfo);
 #desc [/csharp]
 #desc [/codeblocks]
-func add_property_info() -> void:
+func add_property_info(hint: Dictionary) -> void:
 	pass;
 
 #desc Clears the whole configuration (not recommended, may break things).
-func clear() -> void:
+func clear(name: String) -> void:
 	pass;
 
 #desc Returns the order of a configuration value (influences when saved to the config file).
-func get_order() -> int:
+func get_order(name: String) -> int:
 	pass;
 
 #desc Returns the value of a setting.
@@ -2102,7 +2102,7 @@ func get_order() -> int:
 #desc GD.Print(ProjectSettings.GetSetting("application/config/name"));
 #desc [/csharp]
 #desc [/codeblocks]
-func get_setting() -> Variant:
+func get_setting(name: String) -> Variant:
 	pass;
 
 #desc Returns the absolute, native OS path corresponding to the localized [param path] (starting with [code]res://[/code] or [code]user://[/code]). The returned path will vary depending on the operating system and user preferences. See [url=$DOCS_URL/tutorials/io/data_paths.html]File paths in Godot projects[/url] to see what those paths convert to. See also [method localize_path].
@@ -2120,11 +2120,11 @@ func get_setting() -> Variant:
 #desc # but is close enough in spirit.
 #desc path = OS.get_executable_path().get_base_dir().path_join("hello.txt")
 #desc [/codeblock]
-func globalize_path() -> String:
+func globalize_path(path: String) -> String:
 	pass;
 
 #desc Returns [code]true[/code] if a configuration value is present.
-func has_setting() -> bool:
+func has_setting(name: String) -> bool:
 	pass;
 
 #desc Loads the contents of the .pck or .zip file specified by [param pack] into the resource filesystem ([code]res://[/code]). Returns [code]true[/code] on success.
@@ -2134,7 +2134,7 @@ func load_resource_pack(pack: String, replace_files: bool, offset: int) -> bool:
 	pass;
 
 #desc Returns the localized path (starting with [code]res://[/code]) corresponding to the absolute, native OS [param path]. See also [method globalize_path].
-func localize_path() -> String:
+func localize_path(path: String) -> String:
 	pass;
 
 #desc Saves the configuration to the [code]project.godot[/code] file.
@@ -2143,7 +2143,7 @@ func save() -> int:
 	pass;
 
 #desc Saves the configuration to a custom file. The file extension must be [code].godot[/code] (to save in text-based [ConfigFile] format) or [code].binary[/code] (to save in binary format). You can also save [code]override.cfg[/code] file, which is also text, but can be used in exported projects unlike other formats.
-func save_custom() -> int:
+func save_custom(file: String) -> int:
 	pass;
 
 #desc Sets the specified property's initial value. This is the value the property reverts to.

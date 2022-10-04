@@ -21,7 +21,7 @@ func get_rid() -> RID:
 	pass;
 
 #desc Sets the [RID] of the navigation map this NavigationObstacle node should use and also updates the [code]agent[/code] on the NavigationServer.
-func set_navigation_map() -> void:
+func set_navigation_map(navigation_map: RID) -> void:
 	pass;
 
 

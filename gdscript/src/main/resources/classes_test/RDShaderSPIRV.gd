@@ -23,10 +23,10 @@ var compile_error_vertex: String;
 
 
 
-func get_stage_bytecode() -> PackedByteArray:
+func get_stage_bytecode(stage: int) -> PackedByteArray:
 	pass;
 
-func get_stage_compile_error() -> String:
+func get_stage_compile_error(stage: int) -> String:
 	pass;
 
 func set_stage_bytecode(stage: int, bytecode: PackedByteArray) -> void:

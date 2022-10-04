@@ -106,7 +106,7 @@ func start(mode: int, key: PackedByteArray, iv: PackedByteArray) -> int:
 
 #desc Run the desired operation for this AES context. Will return a [PackedByteArray] containing the result of encrypting (or decrypting) the given [param src]. See [method start] for mode of operation.
 #desc [b]Note:[/b] The size of [param src] must be a multiple of 16. Apply some padding if needed.
-func update() -> PackedByteArray:
+func update(src: PackedByteArray) -> PackedByteArray:
 	pass;
 
 

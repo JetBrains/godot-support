@@ -55,19 +55,19 @@ func get_aabb() -> AABB:
 	pass;
 
 #desc Gets a specific instance's color multiplier.
-func get_instance_color() -> Color:
+func get_instance_color(instance: int) -> Color:
 	pass;
 
 #desc Returns the custom data that has been set for a specific instance.
-func get_instance_custom_data() -> Color:
+func get_instance_custom_data(instance: int) -> Color:
 	pass;
 
 #desc Returns the [Transform3D] of a specific instance.
-func get_instance_transform() -> Transform3D:
+func get_instance_transform(instance: int) -> Transform3D:
 	pass;
 
 #desc Returns the [Transform2D] of a specific instance.
-func get_instance_transform_2d() -> Transform2D:
+func get_instance_transform_2d(instance: int) -> Transform2D:
 	pass;
 
 #desc Sets the color of a specific instance by [i]multiplying[/i] the mesh's existing vertex colors. This allows for different color tinting per instance.

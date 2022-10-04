@@ -54,7 +54,7 @@ var shadow_mesh: ArrayMesh;
 
 
 #desc Adds name for a blend shape that will be added with [method add_surface_from_arrays]. Must be called before surface is added.
-func add_blend_shape() -> void:
+func add_blend_shape(name: StringName) -> void:
 	pass;
 
 #desc Creates a new surface.
@@ -76,7 +76,7 @@ func get_blend_shape_count() -> int:
 	pass;
 
 #desc Returns the name of the blend shape at this index.
-func get_blend_shape_name() -> StringName:
+func get_blend_shape_name(index: int) -> StringName:
 	pass;
 
 #desc Will perform a UV unwrap on the [ArrayMesh] to prepare the mesh for lightmapping.
@@ -92,27 +92,27 @@ func set_blend_shape_name(index: int, name: StringName) -> void:
 	pass;
 
 #desc Returns the index of the first surface with this name held within this [ArrayMesh]. If none are found, -1 is returned.
-func surface_find_by_name() -> int:
+func surface_find_by_name(name: String) -> int:
 	pass;
 
 #desc Returns the length in indices of the index array in the requested surface (see [method add_surface_from_arrays]).
-func surface_get_array_index_len() -> int:
+func surface_get_array_index_len(surf_idx: int) -> int:
 	pass;
 
 #desc Returns the length in vertices of the vertex array in the requested surface (see [method add_surface_from_arrays]).
-func surface_get_array_len() -> int:
+func surface_get_array_len(surf_idx: int) -> int:
 	pass;
 
 #desc Returns the format mask of the requested surface (see [method add_surface_from_arrays]).
-func surface_get_format() -> int:
+func surface_get_format(surf_idx: int) -> int:
 	pass;
 
 #desc Gets the name assigned to this surface.
-func surface_get_name() -> String:
+func surface_get_name(surf_idx: int) -> String:
 	pass;
 
 #desc Returns the primitive type of the requested surface (see [method add_surface_from_arrays]).
-func surface_get_primitive_type() -> int:
+func surface_get_primitive_type(surf_idx: int) -> int:
 	pass;
 
 #desc Sets a name for a given surface.

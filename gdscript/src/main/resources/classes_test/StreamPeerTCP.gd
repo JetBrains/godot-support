@@ -53,7 +53,7 @@ func poll() -> int:
 
 #desc If [param enabled] is [code]true[/code], packets will be sent immediately. If [param enabled] is [code]false[/code] (the default), packet transfers will be delayed and combined using [url=https://en.wikipedia.org/wiki/Nagle%27s_algorithm]Nagle's algorithm[/url].
 #desc [b]Note:[/b] It's recommended to leave this disabled for applications that send large packets or need to transfer a lot of data, as enabling this can decrease the total available bandwidth.
-func set_no_delay() -> void:
+func set_no_delay(enabled: bool) -> void:
 	pass;
 
 

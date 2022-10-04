@@ -39,15 +39,15 @@ func int() -> int:
 	pass;
 
 #desc Constructs an [int] as a copy of the given [int].
-func int() -> int:
+func int(from: int) -> int:
 	pass;
 
 #desc Cast a [bool] value to an integer value, [code]int(true)[/code] will be equals to 1 and [code]int(false)[/code] will be equals to 0.
-func int() -> int:
+func int(from: bool) -> int:
 	pass;
 
 #desc Cast a float value to an integer value, this method simply removes the number fractions (i.e. rounds [param from] towards zero), so for example [code]int(2.7)[/code] will be equals to 2, [code]int(0.1)[/code] will be equals to 0 and [code]int(-2.7)[/code] will be equals to -2. This operation is also called truncation.
-func int() -> int:
+func int(from: float) -> int:
 	pass;
 
 

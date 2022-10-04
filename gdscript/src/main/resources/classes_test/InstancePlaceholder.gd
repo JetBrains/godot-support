@@ -17,7 +17,7 @@ func get_instance_path() -> String:
 
 #desc Returns the list of properties that will be applied to the node when [method create_instance] is called.
 #desc If [param with_order] is [code]true[/code], a key named [code].order[/code] (note the leading period) is added to the dictionary. This [code].order[/code] key is an [Array] of [String] property names specifying the order in which properties will be applied (with index 0 being the first).
-func get_stored_values() -> Dictionary:
+func get_stored_values(with_order: bool) -> Dictionary:
 	pass;
 
 

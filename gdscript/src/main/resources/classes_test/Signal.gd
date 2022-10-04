@@ -8,7 +8,7 @@ func Signal() -> Signal:
 	pass;
 
 #desc Constructs a [Signal] as a copy of the given [Signal].
-func Signal() -> Signal:
+func Signal(from: Signal) -> Signal:
 	pass;
 
 #desc Creates a new [Signal] with the name [param signal] in the specified [param object].
@@ -28,7 +28,7 @@ func connect(callable: Callable, flags: int) -> int:
 	pass;
 
 #desc Disconnects this signal from the specified [Callable].
-func disconnect() -> void:
+func disconnect(callable: Callable) -> void:
 	pass;
 
 #desc Emits this signal to all connected objects.
@@ -52,7 +52,7 @@ func get_object_id() -> int:
 	pass;
 
 #desc Returns [code]true[/code] if the specified [Callable] is connected to this signal.
-func is_connected() -> bool:
+func is_connected(callable: Callable) -> bool:
 	pass;
 
 func is_null() -> bool:

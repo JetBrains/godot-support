@@ -29,14 +29,14 @@ func get_lock_rotation_to_plane() -> bool:
 	pass;
 
 #desc Sets the amount of extra rotation to be applied after the LookAt modification executes. This allows you to adjust the finished result.
-func set_additional_rotation() -> void:
+func set_additional_rotation(additional_rotation: Vector3) -> void:
 	pass;
 
-func set_lock_rotation_plane() -> void:
+func set_lock_rotation_plane(plane: int) -> void:
 	pass;
 
 #desc When [code]true[/code], the LookAt modification will limit its rotation to a single plane in 3D space. The plane used can be configured using the [code]set_lock_rotation_plane[/code] function.
-func set_lock_rotation_to_plane() -> void:
+func set_lock_rotation_to_plane(lock_to_plane: bool) -> void:
 	pass;
 
 

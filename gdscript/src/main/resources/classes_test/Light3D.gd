@@ -175,7 +175,7 @@ func get_correlated_color() -> Color:
 	pass;
 
 #desc Returns the value of the specified [enum Light3D.Param] parameter.
-func get_param() -> float:
+func get_param(param: int) -> float:
 	pass;
 
 #desc Sets the value of the specified [enum Light3D.Param] parameter.

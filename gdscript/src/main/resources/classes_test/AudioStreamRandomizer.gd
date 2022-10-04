@@ -27,15 +27,15 @@ var streams_count: int;
 
 
 #desc Insert a stream at the specified index.
-func add_stream() -> void:
+func add_stream(index: int) -> void:
 	pass;
 
 #desc Returns the stream at the specified index.
-func get_stream() -> AudioStream:
+func get_stream(index: int) -> AudioStream:
 	pass;
 
 #desc Returns the probability weight associated with the stream at the given index.
-func get_stream_probability_weight() -> float:
+func get_stream_probability_weight(index: int) -> float:
 	pass;
 
 #desc Move a stream from one index to another.
@@ -43,7 +43,7 @@ func move_stream(index_from: int, index_to: int) -> void:
 	pass;
 
 #desc Remove the stream at the specified index.
-func remove_stream() -> void:
+func remove_stream(index: int) -> void:
 	pass;
 
 #desc Set the AudioStream at the specified index.

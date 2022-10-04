@@ -11,7 +11,7 @@ var device: int;
 
 #desc Returns [code]true[/code] if the given input event and this input event can be added together (only for events of type [InputEventMouseMotion]).
 #desc The given input event's position, global position and speed will be copied. The resulting [code]relative[/code] is a sum of both events. Both events' modifiers have to be identical.
-func accumulate() -> bool:
+func accumulate(with_event: InputEvent) -> bool:
 	pass;
 
 #desc Returns a [String] representation of the event.

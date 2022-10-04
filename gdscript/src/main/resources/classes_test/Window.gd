@@ -190,7 +190,7 @@ func get_contents_minimum_size() -> Vector2:
 	pass;
 
 #desc Returns [code]true[/code] if the [param flag] is set.
-func get_flag() -> bool:
+func get_flag(flag: int) -> bool:
 	pass;
 
 #desc Returns layout direction and text writing direction.
@@ -304,12 +304,12 @@ func move_to_foreground() -> void:
 
 #desc Shows the [Window] and makes it transient (see [member transient]). If [param rect] is provided, it will be set as the [Window]'s size.
 #desc Fails if called on the main window.
-func popup() -> void:
+func popup(rect: Rect2i) -> void:
 	pass;
 
 #desc Popups the [Window] at the center of the current screen, with optionally given minimum size.
 #desc If the [Window] is embedded, it will be centered in the parent [Viewport] instead.
-func popup_centered() -> void:
+func popup_centered(minsize: Vector2i) -> void:
 	pass;
 
 #desc Popups the [Window] centered inside its parent [Window].
@@ -318,12 +318,12 @@ func popup_centered_clamped(minsize: Vector2i, fallback_ratio: float) -> void:
 	pass;
 
 #desc Popups the [Window] centered inside its parent [Window] and sets its size as a [param ratio] of parent's size.
-func popup_centered_ratio() -> void:
+func popup_centered_ratio(ratio: float) -> void:
 	pass;
 
 #desc Popups the [Window] with a position shifted by parent [Window]'s position.
 #desc If the [Window] is embedded, has the same effect as [method popup].
-func popup_on_parent() -> void:
+func popup_on_parent(parent_rect: Rect2i) -> void:
 	pass;
 
 #desc Tells the OS that the [Window] needs an attention. This makes the window stand out in some way depending on the system, e.g. it might blink on the task bar.
@@ -339,19 +339,19 @@ func set_flag(flag: int, enabled: bool) -> void:
 	pass;
 
 #desc If [param active] is [code]true[/code], enables system's native IME (Input Method Editor).
-func set_ime_active() -> void:
+func set_ime_active(active: bool) -> void:
 	pass;
 
 #desc Moves IME to the given position.
-func set_ime_position() -> void:
+func set_ime_position(position: Vector2i) -> void:
 	pass;
 
 #desc Sets layout direction and text writing direction. Right-to-left layouts are necessary for certain languages (e.g. Arabic and Hebrew).
-func set_layout_direction() -> void:
+func set_layout_direction(direction: int) -> void:
 	pass;
 
 #desc Enables font oversampling. This makes fonts look better when they are scaled up.
-func set_use_font_oversampling() -> void:
+func set_use_font_oversampling(enable: bool) -> void:
 	pass;
 
 #desc Makes the [Window] appear. This enables interactions with the [Window] and doesn't change any of its property other than visibility (unlike e.g. [method popup]).

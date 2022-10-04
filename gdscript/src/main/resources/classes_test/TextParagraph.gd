@@ -91,7 +91,7 @@ func get_dropcap_size() -> Vector2:
 	pass;
 
 #desc Returns the text line ascent (number of pixels above the baseline for horizontal layout or to the left of baseline for vertical).
-func get_line_ascent() -> float:
+func get_line_ascent(line: int) -> float:
 	pass;
 
 #desc Returns number of lines in the paragraph.
@@ -99,7 +99,7 @@ func get_line_count() -> int:
 	pass;
 
 #desc Returns the text line descent (number of pixels below the baseline for horizontal layout or to the right of baseline for vertical).
-func get_line_descent() -> float:
+func get_line_descent(line: int) -> float:
 	pass;
 
 #desc Returns bounding rectangle of the inline object.
@@ -107,31 +107,31 @@ func get_line_object_rect(line: int, key: Variant) -> Rect2:
 	pass;
 
 #desc Returns array of inline objects in the line.
-func get_line_objects() -> Array:
+func get_line_objects(line: int) -> Array:
 	pass;
 
 #desc Returns character range of the line.
-func get_line_range() -> Vector2i:
+func get_line_range(line: int) -> Vector2i:
 	pass;
 
 #desc Returns TextServer line buffer RID.
-func get_line_rid() -> RID:
+func get_line_rid(line: int) -> RID:
 	pass;
 
 #desc Returns size of the bounding box of the line of text.
-func get_line_size() -> Vector2:
+func get_line_size(line: int) -> Vector2:
 	pass;
 
 #desc Returns pixel offset of the underline below the baseline.
-func get_line_underline_position() -> float:
+func get_line_underline_position(line: int) -> float:
 	pass;
 
 #desc Returns thickness of the underline.
-func get_line_underline_thickness() -> float:
+func get_line_underline_thickness(line: int) -> float:
 	pass;
 
 #desc Returns width (for horizontal layout) or height (for vertical) of the line of text.
-func get_line_width() -> float:
+func get_line_width(line: int) -> float:
 	pass;
 
 #desc Returns the size of the bounding box of the paragraph, without line breaks.
@@ -147,7 +147,7 @@ func get_size() -> Vector2:
 	pass;
 
 #desc Returns caret character offset at the specified coordinates. This function always returns a valid position.
-func hit_test() -> int:
+func hit_test(coords: Vector2) -> int:
 	pass;
 
 #desc Sets new size and alignment of embedded object.
@@ -156,7 +156,7 @@ func resize_object(key: Variant, size: Vector2, inline_align: int) -> bool:
 
 #desc Overrides BiDi for the structured text.
 #desc Override ranges should cover full source text without overlaps. BiDi algorithm will be used on each range separately.
-func set_bidi_override() -> void:
+func set_bidi_override(override: Array) -> void:
 	pass;
 
 #desc Sets drop cap, overrides previously set drop cap. Drop cap (dropped capital) is a decorative element at the beginning of a paragraph that is larger than the rest of the text.
@@ -164,7 +164,7 @@ func set_dropcap(text: String, font: Font, font_size: int, dropcap_margins: Rect
 	pass;
 
 #desc Aligns paragraph to the given tab-stops.
-func tab_align() -> void:
+func tab_align(tab_stops: PackedFloat32Array) -> void:
 	pass;
 
 

@@ -5,7 +5,7 @@ class_name ImageTextureLayered
 
 #desc Creates an [ImageTextureLayered] from an array of [Image]s. The first image decides the width, height, image format and mipmapping setting. The other images must have the same width, height, image format and mipmapping setting.
 #desc Each [Image] represents one [code]layer[/code].
-func create_from_images() -> int:
+func create_from_images(images: Image[]) -> int:
 	pass;
 
 #desc Replaces the existing [Image] data at the given [code]layer[/code] with this new image.

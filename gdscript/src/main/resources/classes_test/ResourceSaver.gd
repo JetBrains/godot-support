@@ -36,11 +36,11 @@ func add_resource_format_saver(format_saver: ResourceFormatSaver, at_front: bool
 	pass;
 
 #desc Returns the list of extensions available for saving a resource of a given type.
-func get_recognized_extensions() -> PackedStringArray:
+func get_recognized_extensions(type: Resource) -> PackedStringArray:
 	pass;
 
 #desc Unregisters the given [ResourceFormatSaver].
-func remove_resource_format_saver() -> void:
+func remove_resource_format_saver(format_saver: ResourceFormatSaver) -> void:
 	pass;
 
 #desc Saves a resource to disk to the given path, using a [ResourceFormatSaver] that recognizes the resource object. If [param path] is empty, [ResourceSaver] will try to use [member Resource.resource_path].

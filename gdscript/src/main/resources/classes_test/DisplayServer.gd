@@ -254,12 +254,12 @@ func clipboard_has() -> bool:
 	pass;
 
 #desc Sets the user's clipboard content to the given string.
-func clipboard_set() -> void:
+func clipboard_set(clipboard: String) -> void:
 	pass;
 
 #desc Sets the user's primary clipboard content to the given string.
 #desc [b]Note:[/b] This method is only implemented on Linux.
-func clipboard_set_primary() -> void:
+func clipboard_set_primary(clipboard_primary: String) -> void:
 	pass;
 
 func create_sub_window(mode: int, vsync_mode: int, flags: int, rect: Rect2i) -> int:
@@ -271,10 +271,10 @@ func cursor_get_shape() -> int:
 func cursor_set_custom_image(cursor: Resource, shape: int, hotspot: Vector2) -> void:
 	pass;
 
-func cursor_set_shape() -> void:
+func cursor_set_shape(shape: int) -> void:
 	pass;
 
-func delete_sub_window() -> void:
+func delete_sub_window(window_id: int) -> void:
 	pass;
 
 func dialog_input_text(title: String, description: String, existing_text: String, callback: Callable) -> int:
@@ -283,7 +283,7 @@ func dialog_input_text(title: String, description: String, existing_text: String
 func dialog_show(title: String, description: String, buttons: PackedStringArray, callback: Callable) -> int:
 	pass;
 
-func enable_for_stealing_focus() -> void:
+func enable_for_stealing_focus(process_id: int) -> void:
 	pass;
 
 func force_process_and_drop_events() -> void:
@@ -312,7 +312,7 @@ func get_screen_count() -> int:
 func get_swap_cancel_ok() -> bool:
 	pass;
 
-func get_window_at_screen_position() -> int:
+func get_window_at_screen_position(position: Vector2i) -> int:
 	pass;
 
 func get_window_list() -> PackedInt32Array:
@@ -428,7 +428,7 @@ func global_menu_add_submenu_item(menu_root: String, label: String, submenu: Str
 #desc "_main" - Main menu (macOS).
 #desc "_dock" - Dock popup menu (macOS).
 #desc [/codeblock]
-func global_menu_clear() -> void:
+func global_menu_clear(menu_root: String) -> void:
 	pass;
 
 #desc Returns the accelerator of the item at index [param idx]. Accelerators are special combinations of keys that activate the item, no matter which control is focused.
@@ -601,7 +601,7 @@ func global_menu_set_item_text(menu_root: String, idx: int, text: String) -> voi
 func global_menu_set_item_tooltip(menu_root: String, idx: int, tooltip: String) -> void:
 	pass;
 
-func has_feature() -> bool:
+func has_feature(feature: int) -> bool:
 	pass;
 
 func ime_get_selection() -> Vector2i:
@@ -627,7 +627,7 @@ func keyboard_get_current_layout() -> int:
 
 #desc Converts a physical (US QWERTY) [param keycode] to one in the active keyboard layout.
 #desc [b]Note:[/b] This method is implemented on Linux, macOS and Windows.
-func keyboard_get_keycode_from_physical() -> int:
+func keyboard_get_keycode_from_physical(keycode: int) -> int:
 	pass;
 
 #desc Returns the number of keyboard layouts.
@@ -637,17 +637,17 @@ func keyboard_get_layout_count() -> int:
 
 #desc Returns the ISO-639/BCP-47 language code of the keyboard layout at position [param index].
 #desc [b]Note:[/b] This method is implemented on Linux, macOS and Windows.
-func keyboard_get_layout_language() -> String:
+func keyboard_get_layout_language(index: int) -> String:
 	pass;
 
 #desc Returns the localized name of the keyboard layout at position [param index].
 #desc [b]Note:[/b] This method is implemented on Linux, macOS and Windows.
-func keyboard_get_layout_name() -> String:
+func keyboard_get_layout_name(index: int) -> String:
 	pass;
 
 #desc Sets active keyboard layout.
 #desc [b]Note:[/b] This method is implemented on Linux, macOS and Windows.
-func keyboard_set_current_layout() -> void:
+func keyboard_set_current_layout(index: int) -> void:
 	pass;
 
 func mouse_get_button_state() -> int:
@@ -660,7 +660,7 @@ func mouse_get_mode() -> int:
 func mouse_get_position() -> Vector2i:
 	pass;
 
-func mouse_set_mode() -> void:
+func mouse_set_mode(mouse_mode: int) -> void:
 	pass;
 
 func process_events() -> void:
@@ -678,7 +678,7 @@ func process_events() -> void:
 #desc xxxhdpi - 640 dpi
 #desc [/codeblock]
 #desc [b]Note:[/b] This method is implemented on Android, Linux, macOS and Windows. Returns [code]72[/code] on unsupported platforms.
-func screen_get_dpi() -> int:
+func screen_get_dpi(screen: int) -> int:
 	pass;
 
 #desc Returns the greatest scale factor of all screens.
@@ -687,10 +687,10 @@ func screen_get_dpi() -> int:
 func screen_get_max_scale() -> float:
 	pass;
 
-func screen_get_orientation() -> int:
+func screen_get_orientation(screen: int) -> int:
 	pass;
 
-func screen_get_position() -> Vector2i:
+func screen_get_position(screen: int) -> Vector2i:
 	pass;
 
 #desc Returns the current refresh rate of the specified screen. If [param screen] is [constant SCREEN_OF_MAIN_WINDOW] (the default value), a screen with the main window will be used.
@@ -701,37 +701,37 @@ func screen_get_position() -> Vector2i:
 #desc if refresh_rate < 0:
 #desc refresh_rate = 60.0
 #desc [/codeblock]
-func screen_get_refresh_rate() -> float:
+func screen_get_refresh_rate(screen: int) -> float:
 	pass;
 
 #desc Returns the scale factor of the specified screen by index.
 #desc [b]Note:[/b] On macOS returned value is [code]2.0[/code] for hiDPI (Retina) screen, and [code]1.0[/code] for all other cases.
 #desc [b]Note:[/b] This method is implemented on macOS.
-func screen_get_scale() -> float:
+func screen_get_scale(screen: int) -> float:
 	pass;
 
-func screen_get_size() -> Vector2i:
+func screen_get_size(screen: int) -> Vector2i:
 	pass;
 
-func screen_get_usable_rect() -> Rect2i:
+func screen_get_usable_rect(screen: int) -> Rect2i:
 	pass;
 
 func screen_is_kept_on() -> bool:
 	pass;
 
-func screen_is_touchscreen() -> bool:
+func screen_is_touchscreen(screen: int) -> bool:
 	pass;
 
-func screen_set_keep_on() -> void:
+func screen_set_keep_on(enable: bool) -> void:
 	pass;
 
 func screen_set_orientation(orientation: int, screen: int) -> void:
 	pass;
 
-func set_icon() -> void:
+func set_icon(image: Image) -> void:
 	pass;
 
-func set_native_icon() -> void:
+func set_native_icon(filename: String) -> void:
 	pass;
 
 #desc Returns current active tablet driver name.
@@ -746,12 +746,12 @@ func tablet_get_driver_count() -> int:
 
 #desc Returns the tablet driver name for the given index.
 #desc [b]Note:[/b] This method is implemented on Windows.
-func tablet_get_driver_name() -> String:
+func tablet_get_driver_name(idx: int) -> String:
 	pass;
 
 #desc Set active tablet driver name.
 #desc [b]Note:[/b] This method is implemented on Windows.
-func tablet_set_current_driver() -> void:
+func tablet_set_current_driver(name: String) -> void:
 	pass;
 
 #desc Returns an [Array] of voice information dictionaries.
@@ -765,7 +765,7 @@ func tts_get_voices() -> Dictionary[]:
 
 #desc Returns an [PackedStringArray] of voice identifiers for the [param language].
 #desc [b]Note:[/b] This method is implemented on Android, iOS, Web, Linux, macOS, and Windows.
-func tts_get_voices_for_language() -> PackedStringArray:
+func tts_get_voices_for_language(language: String) -> PackedStringArray:
 	pass;
 
 #desc Returns [code]true[/code] if the synthesizer is in a paused state.
@@ -833,37 +833,37 @@ func virtual_keyboard_show(existing_text: String, position: Rect2, type: int, ma
 	pass;
 
 #desc Sets the mouse cursor position to the given [param position] relative to an origin at the upper left corner of the currently focused game Window Manager window.
-func warp_mouse() -> void:
+func warp_mouse(position: Vector2i) -> void:
 	pass;
 
 func window_attach_instance_id(instance_id: int, window_id: int) -> void:
 	pass;
 
-func window_can_draw() -> bool:
+func window_can_draw(window_id: int) -> bool:
 	pass;
 
 #desc Returns ID of the active popup window, or [constant INVALID_WINDOW_ID] if there is none.
 func window_get_active_popup() -> int:
 	pass;
 
-func window_get_attached_instance_id() -> int:
+func window_get_attached_instance_id(window_id: int) -> int:
 	pass;
 
-func window_get_current_screen() -> int:
+func window_get_current_screen(window_id: int) -> int:
 	pass;
 
 #desc Returns the current value of the given window's [param flag].
 func window_get_flag(flag: int, window_id: int) -> bool:
 	pass;
 
-func window_get_max_size() -> Vector2i:
+func window_get_max_size(window_id: int) -> Vector2i:
 	pass;
 
-func window_get_min_size() -> Vector2i:
+func window_get_min_size(window_id: int) -> Vector2i:
 	pass;
 
 #desc Returns the mode of the given window.
-func window_get_mode() -> int:
+func window_get_mode(window_id: int) -> int:
 	pass;
 
 #desc Returns internal structure pointers for use in plugins.
@@ -872,25 +872,25 @@ func window_get_native_handle(handle_type: int, window_id: int) -> int:
 	pass;
 
 #desc Returns the bounding box of control, or menu item that was used to open the popup window, in the screen coordinate system.
-func window_get_popup_safe_rect() -> Rect2i:
+func window_get_popup_safe_rect(window: int) -> Rect2i:
 	pass;
 
 #desc Returns the position of the given window to on the screen.
-func window_get_position() -> Vector2i:
+func window_get_position(window_id: int) -> Vector2i:
 	pass;
 
-func window_get_real_size() -> Vector2i:
+func window_get_real_size(window_id: int) -> Vector2i:
 	pass;
 
 #desc Returns left and right margins of the title that are safe to use (contains no buttons or other elements) when [constant WINDOW_FLAG_EXTEND_TO_TITLE] flag is set.
-func window_get_safe_title_margins() -> Vector2i:
+func window_get_safe_title_margins(window_id: int) -> Vector2i:
 	pass;
 
-func window_get_size() -> Vector2i:
+func window_get_size(window_id: int) -> Vector2i:
 	pass;
 
 #desc Returns the V-Sync mode of the given window.
-func window_get_vsync_mode() -> int:
+func window_get_vsync_mode(window_id: int) -> int:
 	pass;
 
 #desc Returns [code]true[/code], if double-click on a window title should maximize it.
@@ -903,10 +903,10 @@ func window_maximize_on_title_dbl_click() -> bool:
 func window_minimize_on_title_dbl_click() -> bool:
 	pass;
 
-func window_move_to_foreground() -> void:
+func window_move_to_foreground(window_id: int) -> void:
 	pass;
 
-func window_request_attention() -> void:
+func window_request_attention(window_id: int) -> void:
 	pass;
 
 func window_set_current_screen(screen: int, window_id: int) -> void:

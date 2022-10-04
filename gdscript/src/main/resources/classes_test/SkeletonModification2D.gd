@@ -18,11 +18,11 @@ virtual func _draw_editor_gizmo() -> void:
 	pass;
 
 #desc Executes the given modification. This is where the modification performs whatever function it is designed to do.
-virtual func _execute() -> void:
+virtual func _execute(delta: float) -> void:
 	pass;
 
 #desc Called when the modification is setup. This is where the modification performs initialization.
-virtual func _setup_modification() -> void:
+virtual func _setup_modification(modification_stack: SkeletonModificationStack2D) -> void:
 	pass;
 
 #desc Takes a angle and clamps it so it is within the passed-in [param min] and [param max] range. [param invert] will inversely clamp the angle, clamping it to the range outside of the given bounds.
@@ -42,11 +42,11 @@ func get_modification_stack() -> SkeletonModificationStack2D:
 	pass;
 
 #desc Sets whether this modification will call [method _draw_editor_gizmo] in the Godot editor to draw modification-specific gizmos.
-func set_editor_draw_gizmo() -> void:
+func set_editor_draw_gizmo(draw_gizmo: bool) -> void:
 	pass;
 
 #desc Manually allows you to set the setup state of the modification. This function should only rarely be used, as the [SkeletonModificationStack2D] the modification is bound to should handle setting the modification up.
-func set_is_setup() -> void:
+func set_is_setup(is_setup: bool) -> void:
 	pass;
 
 

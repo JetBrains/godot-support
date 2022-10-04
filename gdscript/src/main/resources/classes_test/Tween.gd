@@ -153,7 +153,7 @@ const EASE_OUT_IN = 3;
 
 #desc Binds this [Tween] with the given [param node]. [Tween]s are processed directly by the [SceneTree], so they run independently of the animated nodes. When you bind a [Node] with the [Tween], the [Tween] will halt the animation when the object is not inside tree and the [Tween] will be automatically killed when the bound object is freed. Also [constant TWEEN_PAUSE_BOUND] will make the pausing behavior dependent on the bound node.
 #desc For a shorter way to create and bind a [Tween], you can use [method Node.create_tween].
-func bind_node() -> Tween:
+func bind_node(node: Node) -> Tween:
 	pass;
 
 #desc Used to chain two [Tweener]s after [method set_parallel] is called with [code]true[/code].
@@ -177,7 +177,7 @@ func chain() -> Tween:
 #desc Processes the [Tween] by the given [param delta] value, in seconds. This is mostly useful for manual control when the [Tween] is paused. It can also be used to end the [Tween] animation immediately, by setting [param delta] longer than the whole duration of the [Tween] animation.
 #desc Returns [code]true[/code] if the [Tween] still has [Tweener]s that haven't finished.
 #desc [b]Note:[/b] The [Tween] will become invalid in the next processing frame after its animation finishes. Calling [method stop] after performing [method custom_step] instead keeps and resets the [Tween].
-func custom_step() -> bool:
+func custom_step(delta: float) -> bool:
 	pass;
 
 #desc Returns the total time in seconds the [Tween] has been animating (i.e. the time since it started, not counting pauses etc.). The time is affected by [method set_speed_scale], and [method stop] will reset it to [code]0[/code].
@@ -235,35 +235,35 @@ func play() -> void:
 	pass;
 
 #desc Sets the default ease type for [PropertyTweener]s and [MethodTweener]s animated by this [Tween].
-func set_ease() -> Tween:
+func set_ease(ease: int) -> Tween:
 	pass;
 
 #desc Sets the number of times the tweening sequence will be repeated, i.e. [code]set_loops(2)[/code] will run the animation twice.
 #desc Calling this method without arguments will make the [Tween] run infinitely, until either it is killed with [method kill], the [Tween]'s bound node is freed, or all the animated objects have been freed (which makes further animation impossible).
 #desc [b]Warning:[/b] Make sure to always add some duration/delay when using infinite loops. To prevent the game freezing, 0-duration looped animations (e.g. a single [CallbackTweener] with no delay) are stopped after a small number of loops, which may produce unexpected results. If a [Tween]'s lifetime depends on some node, always use [method bind_node].
-func set_loops() -> Tween:
+func set_loops(loops: int) -> Tween:
 	pass;
 
 #desc If [param parallel] is [code]true[/code], the [Tweener]s appended after this method will by default run simultaneously, as opposed to sequentially.
-func set_parallel() -> Tween:
+func set_parallel(parallel: bool) -> Tween:
 	pass;
 
 #desc Determines the behavior of the [Tween] when the [SceneTree] is paused. Check [enum TweenPauseMode] for options.
 #desc Default value is [constant TWEEN_PAUSE_BOUND].
-func set_pause_mode() -> Tween:
+func set_pause_mode(mode: int) -> Tween:
 	pass;
 
 #desc Determines whether the [Tween] should run during idle frame (see [method Node._process]) or physics frame (see [method Node._physics_process].
 #desc Default value is [constant TWEEN_PROCESS_IDLE].
-func set_process_mode() -> Tween:
+func set_process_mode(mode: int) -> Tween:
 	pass;
 
 #desc Scales the speed of tweening. This affects all [Tweener]s and their delays.
-func set_speed_scale() -> Tween:
+func set_speed_scale(speed: float) -> Tween:
 	pass;
 
 #desc Sets the default transition type for [PropertyTweener]s and [MethodTweener]s animated by this [Tween].
-func set_trans() -> Tween:
+func set_trans(trans: int) -> Tween:
 	pass;
 
 #desc Stops the tweening and resets the [Tween] to its initial state. This will not remove any appended [Tweener]s.
@@ -296,7 +296,7 @@ func stop() -> void:
 #desc tween.TweenCallback(new Callable(() => sprite.Modulate = Colors.Blue)).SetDelay(2.0f);
 #desc [/csharp]
 #desc [/codeblocks]
-func tween_callback() -> CallbackTweener:
+func tween_callback(callback: Callable) -> CallbackTweener:
 	pass;
 
 #desc Creates and appends an [IntervalTweener]. This method can be used to create delays in the tween animation, as an alternative to using the delay in other [Tweener]s, or when there's no animation (in which case the [Tween] acts as a timer). [param time] is the length of the interval, in seconds.
@@ -334,7 +334,7 @@ func tween_callback() -> CallbackTweener:
 #desc tween.TweenInterval(2.0f);
 #desc [/csharp]
 #desc [/codeblocks]
-func tween_interval() -> IntervalTweener:
+func tween_interval(time: float) -> IntervalTweener:
 	pass;
 
 #desc Creates and appends a [MethodTweener]. This method is similar to a combination of [method tween_callback] and [method tween_property]. It calls a method over time with a tweened value provided as an argument. The value is tweened between [param from] and [param to] over the time specified by [param duration], in seconds. Use [method Callable.bind] to bind additional arguments for the call. You can use [method MethodTweener.set_ease] and [method MethodTweener.set_trans] to tweak the easing and transition of the value or [method MethodTweener.set_delay] to delay the tweening.

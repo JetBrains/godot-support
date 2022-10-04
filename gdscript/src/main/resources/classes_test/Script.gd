@@ -23,7 +23,7 @@ func get_instance_base_type() -> StringName:
 	pass;
 
 #desc Returns the default value of the specified property.
-func get_property_default_value() -> Variant:
+func get_property_default_value(property: StringName) -> Variant:
 	pass;
 
 #desc Returns a dictionary containing constant names and their values.
@@ -43,7 +43,7 @@ func get_script_signal_list() -> Dictionary[]:
 	pass;
 
 #desc Returns [code]true[/code] if the script, or a base class, defines a signal with the given name.
-func has_script_signal() -> bool:
+func has_script_signal(signal_name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the script contains non-empty source code.
@@ -51,7 +51,7 @@ func has_source_code() -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if [param base_object] is an instance of this script.
-func instance_has() -> bool:
+func instance_has(base_object: Object) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the script is a tool script. A tool script can run in the editor.
@@ -59,7 +59,7 @@ func is_tool() -> bool:
 	pass;
 
 #desc Reloads the script's class implementation. Returns an error code.
-func reload() -> int:
+func reload(keep_state: bool) -> int:
 	pass;
 
 

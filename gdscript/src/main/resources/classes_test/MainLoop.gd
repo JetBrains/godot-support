@@ -104,12 +104,12 @@ virtual func _initialize() -> void:
 
 #desc Called each physics frame with the time since the last physics frame as argument ([param delta], in seconds). Equivalent to [method Node._physics_process].
 #desc If implemented, the method must return a boolean value. [code]true[/code] ends the main loop, while [code]false[/code] lets it proceed to the next frame.
-virtual func _physics_process() -> bool:
+virtual func _physics_process(delta: float) -> bool:
 	pass;
 
 #desc Called each process (idle) frame with the time since the last process frame as argument (in seconds). Equivalent to [method Node._process].
 #desc If implemented, the method must return a boolean value. [code]true[/code] ends the main loop, while [code]false[/code] lets it proceed to the next frame.
-virtual func _process() -> bool:
+virtual func _process(delta: float) -> bool:
 	pass;
 
 

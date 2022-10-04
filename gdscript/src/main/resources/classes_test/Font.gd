@@ -41,7 +41,7 @@ func find_variation(variation_coordinates: Dictionary, face_index: int, strength
 
 #desc Returns the average font ascent (number of pixels above the baseline).
 #desc [b]Note:[/b] Real ascent of the string is context-dependent and can be significantly different from the value returned by this function. Use it only as rough estimate (e.g. as the ascent of empty line).
-func get_ascent() -> float:
+func get_ascent(font_size: int) -> float:
 	pass;
 
 #desc Returns the size of a character, optionally taking kerning into account if the next character is provided.
@@ -51,7 +51,7 @@ func get_char_size(char: int, font_size: int) -> Vector2:
 
 #desc Returns the average font descent (number of pixels below the baseline).
 #desc [b]Note:[/b] Real descent of the string is context-dependent and can be significantly different from the value returned by this function. Use it only as rough estimate (e.g. as the descent of empty line).
-func get_descent() -> float:
+func get_descent(font_size: int) -> float:
 	pass;
 
 #desc Returns number of faces in the TrueType / OpenType collection.
@@ -76,7 +76,7 @@ func get_font_style_name() -> String:
 
 #desc Returns the total average font height (ascent plus descent) in pixels.
 #desc [b]Note:[/b] Real height of the string is context-dependent and can be significantly different from the value returned by this function. Use it only as rough estimate (e.g. as the height of empty line).
-func get_height() -> float:
+func get_height(font_size: int) -> float:
 	pass;
 
 #desc Returns the size of a bounding box of a string broken into the lines, taking kerning and advance into account.
@@ -93,7 +93,7 @@ func get_rids() -> RID[]:
 	pass;
 
 #desc Returns the spacing for the given [code]type[/code] (see [enum TextServer.SpacingType]).
-func get_spacing() -> int:
+func get_spacing(spacing: int) -> int:
 	pass;
 
 #desc Returns the size of a bounding box of a single-line string, taking kerning and advance into account. See also [method get_multiline_string_size] and [method draw_string].
@@ -127,24 +127,24 @@ func get_supported_variation_list() -> Dictionary:
 
 #desc Returns average pixel offset of the underline below the baseline.
 #desc [b]Note:[/b] Real underline position of the string is context-dependent and can be significantly different from the value returned by this function. Use it only as rough estimate.
-func get_underline_position() -> float:
+func get_underline_position(font_size: int) -> float:
 	pass;
 
 #desc Returns average thickness of the underline.
 #desc [b]Note:[/b] Real underline thickness of the string is context-dependent and can be significantly different from the value returned by this function. Use it only as rough estimate.
-func get_underline_thickness() -> float:
+func get_underline_thickness(font_size: int) -> float:
 	pass;
 
 #desc Returns [code]true[/code] if a Unicode [param char] is available in the font.
-func has_char() -> bool:
+func has_char(char: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code], if font supports given language ([url=https://en.wikipedia.org/wiki/ISO_639-1]ISO 639[/url] code).
-func is_language_supported() -> bool:
+func is_language_supported(language: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code], if font supports given script ([url=https://en.wikipedia.org/wiki/ISO_15924]ISO 15924[/url] code).
-func is_script_supported() -> bool:
+func is_script_supported(script: String) -> bool:
 	pass;
 
 #desc Sets LRU cache capacity for [code]draw_*[/code] methods.
@@ -152,7 +152,7 @@ func set_cache_capacity(single_line: int, multi_line: int) -> void:
 	pass;
 
 #desc Sets array of fallback [Font]s.
-func set_fallbacks() -> void:
+func set_fallbacks(fallbacks: Font[]) -> void:
 	pass;
 
 

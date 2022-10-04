@@ -21,10 +21,10 @@ var width: int;
 
 
 
-func add_shareable_format() -> void:
+func add_shareable_format(format: int) -> void:
 	pass;
 
-func remove_shareable_format() -> void:
+func remove_shareable_format(format: int) -> void:
 	pass;
 
 

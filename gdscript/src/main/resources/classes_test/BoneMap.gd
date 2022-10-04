@@ -11,12 +11,12 @@ var profile: SkeletonProfile;
 
 #desc Returns a profile bone name having [param skeleton_bone_name]. If not found, an empty [StringName] will be returned.
 #desc In the retargeting process, the returned bone name is the bone name of the target skeleton.
-func find_profile_bone_name() -> StringName:
+func find_profile_bone_name(skeleton_bone_name: StringName) -> StringName:
 	pass;
 
 #desc Returns a skeleton bone name is mapped to [param profile_bone_name].
 #desc In the retargeting process, the returned bone name is the bone name of the source skeleton.
-func get_skeleton_bone_name() -> StringName:
+func get_skeleton_bone_name(profile_bone_name: StringName) -> StringName:
 	pass;
 
 #desc Maps a skeleton bone name to [param profile_bone_name].

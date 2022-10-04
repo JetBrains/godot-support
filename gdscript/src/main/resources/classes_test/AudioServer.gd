@@ -31,7 +31,7 @@ var playback_speed_scale: float;
 
 
 #desc Adds a bus at [param at_position].
-func add_bus() -> void:
+func add_bus(at_position: int) -> void:
 	pass;
 
 #desc Adds an [AudioEffect] effect to the bus [param bus_idx] at [param at_position].
@@ -48,7 +48,7 @@ func generate_bus_layout() -> AudioBusLayout:
 	pass;
 
 #desc Returns the number of channels of the bus at index [param bus_idx].
-func get_bus_channels() -> int:
+func get_bus_channels(bus_idx: int) -> int:
 	pass;
 
 #desc Returns the [AudioEffect] at position [param effect_idx] in bus [param bus_idx].
@@ -56,7 +56,7 @@ func get_bus_effect(bus_idx: int, effect_idx: int) -> AudioEffect:
 	pass;
 
 #desc Returns the number of effects on the bus at [param bus_idx].
-func get_bus_effect_count() -> int:
+func get_bus_effect_count(bus_idx: int) -> int:
 	pass;
 
 #desc Returns the [AudioEffectInstance] assigned to the given bus and effect indices (and optionally channel).
@@ -64,11 +64,11 @@ func get_bus_effect_instance(bus_idx: int, effect_idx: int, channel: int) -> Aud
 	pass;
 
 #desc Returns the index of the bus with the name [param bus_name].
-func get_bus_index() -> int:
+func get_bus_index(bus_name: StringName) -> int:
 	pass;
 
 #desc Returns the name of the bus with the index [param bus_idx].
-func get_bus_name() -> String:
+func get_bus_name(bus_idx: int) -> String:
 	pass;
 
 #desc Returns the peak volume of the left speaker at bus index [param bus_idx] and channel index [param channel].
@@ -80,11 +80,11 @@ func get_bus_peak_volume_right_db(bus_idx: int, channel: int) -> float:
 	pass;
 
 #desc Returns the name of the bus that the bus at index [param bus_idx] sends to.
-func get_bus_send() -> StringName:
+func get_bus_send(bus_idx: int) -> StringName:
 	pass;
 
 #desc Returns the volume of the bus at index [param bus_idx] in dB.
-func get_bus_volume_db() -> float:
+func get_bus_volume_db(bus_idx: int) -> float:
 	pass;
 
 #desc Returns the names of all audio devices detected on the system.
@@ -112,7 +112,7 @@ func get_time_to_next_mix() -> float:
 	pass;
 
 #desc If [code]true[/code], the bus at index [param bus_idx] is bypassing effects.
-func is_bus_bypassing_effects() -> bool:
+func is_bus_bypassing_effects(bus_idx: int) -> bool:
 	pass;
 
 #desc If [code]true[/code], the effect at index [param effect_idx] on the bus at index [param bus_idx] is enabled.
@@ -120,11 +120,11 @@ func is_bus_effect_enabled(bus_idx: int, effect_idx: int) -> bool:
 	pass;
 
 #desc If [code]true[/code], the bus at index [param bus_idx] is muted.
-func is_bus_mute() -> bool:
+func is_bus_mute(bus_idx: int) -> bool:
 	pass;
 
 #desc If [code]true[/code], the bus at index [param bus_idx] is in solo mode.
-func is_bus_solo() -> bool:
+func is_bus_solo(bus_idx: int) -> bool:
 	pass;
 
 #desc Locks the audio driver's main loop.
@@ -137,7 +137,7 @@ func move_bus(index: int, to_index: int) -> void:
 	pass;
 
 #desc Removes the bus at index [param index].
-func remove_bus() -> void:
+func remove_bus(index: int) -> void:
 	pass;
 
 #desc Removes the effect at index [param effect_idx] from the bus at index [param bus_idx].
@@ -153,7 +153,7 @@ func set_bus_effect_enabled(bus_idx: int, effect_idx: int, enabled: bool) -> voi
 	pass;
 
 #desc Overwrites the currently used [AudioBusLayout].
-func set_bus_layout() -> void:
+func set_bus_layout(bus_layout: AudioBusLayout) -> void:
 	pass;
 
 #desc If [code]true[/code], the bus at index [param bus_idx] is muted.
@@ -176,7 +176,7 @@ func set_bus_solo(bus_idx: int, enable: bool) -> void:
 func set_bus_volume_db(bus_idx: int, volume_db: float) -> void:
 	pass;
 
-func set_enable_tagging_used_audio_streams() -> void:
+func set_enable_tagging_used_audio_streams(enable: bool) -> void:
 	pass;
 
 #desc Swaps the position of two effects in bus [param bus_idx].

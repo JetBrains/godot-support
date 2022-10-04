@@ -101,16 +101,16 @@ var text_direction: int;
 
 
 #desc Override this method to define how the selected entry should be inserted. If [param replace] is true, any existing text should be replaced.
-virtual func _confirm_code_completion() -> void:
+virtual func _confirm_code_completion(replace: bool) -> void:
 	pass;
 
 #desc Override this method to define what items in [param candidates] should be displayed.
 #desc Both [param candidates] and the return is a [Array] of [Dictionary], see [method get_code_completion_option] for [Dictionary] content.
-virtual const func _filter_code_completion_candidates() -> Dictionary[]:
+virtual const func _filter_code_completion_candidates(candidates: Dictionary[]) -> Dictionary[]:
 	pass;
 
 #desc Override this method to define what happens when the user requests code completion. If [param force] is true, any checks should be bypassed.
-virtual func _request_code_completion() -> void:
+virtual func _request_code_completion(force: bool) -> void:
 	pass;
 
 #desc Adds a brace pair.
@@ -136,7 +136,7 @@ func add_string_delimiter(start_key: String, end_key: String, line_only: bool) -
 	pass;
 
 #desc Returns if the given line is foldable, that is, it has indented lines right below it or a comment / string block.
-func can_fold_line() -> bool:
+func can_fold_line(line: int) -> bool:
 	pass;
 
 #desc Cancels the autocomplete menu.
@@ -164,7 +164,7 @@ func clear_string_delimiters() -> void:
 	pass;
 
 #desc Inserts the selected entry into the text. If [param replace] is true, any existing text is replaced rather then merged.
-func confirm_code_completion() -> void:
+func confirm_code_completion(replace: bool) -> void:
 	pass;
 
 #desc Perform an indent as if the user activated the "ui_text_indent" action.
@@ -180,11 +180,11 @@ func fold_all_lines() -> void:
 	pass;
 
 #desc Folds the given line, if possible (see [method can_fold_line]).
-func fold_line() -> void:
+func fold_line(line: int) -> void:
 	pass;
 
 #desc Gets the matching auto brace close key for [param open_key].
-func get_auto_brace_completion_close_key() -> String:
+func get_auto_brace_completion_close_key(open_key: String) -> String:
 	pass;
 
 #desc Gets all bookmarked lines.
@@ -202,7 +202,7 @@ func get_breakpointed_lines() -> PackedInt32Array:
 #desc [code]font_color[/code]: Color of the text on the autocomplete menu.
 #desc [code]icon[/code]: Icon to draw on the autocomplete menu.
 #desc [code]default_value[/code]: Value of the symbol.
-func get_code_completion_option() -> Dictionary:
+func get_code_completion_option(index: int) -> Dictionary:
 	pass;
 
 #desc Gets all completion options, see [method get_code_completion_option] for return content.
@@ -214,7 +214,7 @@ func get_code_completion_selected_index() -> int:
 	pass;
 
 #desc Gets the end key for a string or comment region index.
-func get_delimiter_end_key() -> String:
+func get_delimiter_end_key(delimiter_index: int) -> String:
 	pass;
 
 #desc If [param line] [param column] is in a string or comment, returns the end position of the region. If not or no end could be found, both [Vector2] values will be [code]-1[/code].
@@ -222,7 +222,7 @@ func get_delimiter_end_position(line: int, column: int) -> Vector2:
 	pass;
 
 #desc Gets the start key for a string or comment region index.
-func get_delimiter_start_key() -> String:
+func get_delimiter_start_key(delimiter_index: int) -> String:
 	pass;
 
 #desc If [param line] [param column] is in a string or comment, returns the start position of the region. If not or no start could be found, both [Vector2] values will be [code]-1[/code].
@@ -246,19 +246,19 @@ func get_text_for_symbol_lookup() -> String:
 	pass;
 
 #desc Returns [code]true[/code] if close key [param close_key] exists.
-func has_auto_brace_completion_close_key() -> bool:
+func has_auto_brace_completion_close_key(close_key: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if open key [param open_key] exists.
-func has_auto_brace_completion_open_key() -> bool:
+func has_auto_brace_completion_open_key(open_key: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if comment [param start_key] exists.
-func has_comment_delimiter() -> bool:
+func has_comment_delimiter(start_key: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if string [param start_key] exists.
-func has_string_delimiter() -> bool:
+func has_string_delimiter(start_key: String) -> bool:
 	pass;
 
 #desc Indents selected lines, or in the case of no selection the caret line by one.
@@ -274,43 +274,43 @@ func is_in_string(line: int, column: int) -> int:
 	pass;
 
 #desc Returns whether the line at the specified index is bookmarked or not.
-func is_line_bookmarked() -> bool:
+func is_line_bookmarked(line: int) -> bool:
 	pass;
 
 #desc Returns whether the line at the specified index is breakpointed or not.
-func is_line_breakpointed() -> bool:
+func is_line_breakpointed(line: int) -> bool:
 	pass;
 
 #desc Returns whether the line at the specified index is marked as executing or not.
-func is_line_executing() -> bool:
+func is_line_executing(line: int) -> bool:
 	pass;
 
 #desc Returns whether the line at the specified index is folded or not.
-func is_line_folded() -> bool:
+func is_line_folded(line: int) -> bool:
 	pass;
 
 #desc Removes the comment delimiter with [param start_key].
-func remove_comment_delimiter() -> void:
+func remove_comment_delimiter(start_key: String) -> void:
 	pass;
 
 #desc Removes the string delimiter with [param start_key].
-func remove_string_delimiter() -> void:
+func remove_string_delimiter(start_key: String) -> void:
 	pass;
 
 #desc Emits [signal code_completion_requested], if [param force] is true will bypass all checks. Otherwise will check that the caret is in a word or in front of a prefix. Will ignore the request if all current options are of type file path, node path or signal.
-func request_code_completion() -> void:
+func request_code_completion(force: bool) -> void:
 	pass;
 
 #desc Sets the current selected completion option.
-func set_code_completion_selected_index() -> void:
+func set_code_completion_selected_index(index: int) -> void:
 	pass;
 
 #desc Sets the code hint text. Pass an empty string to clear.
-func set_code_hint() -> void:
+func set_code_hint(code_hint: String) -> void:
 	pass;
 
 #desc Sets if the code hint should draw below the text.
-func set_code_hint_draw_below() -> void:
+func set_code_hint_draw_below(draw_below: bool) -> void:
 	pass;
 
 #desc Sets the line as bookmarked.
@@ -326,11 +326,11 @@ func set_line_as_executing(line: int, executing: bool) -> void:
 	pass;
 
 #desc Sets the symbol emitted by [signal symbol_validate] as a valid lookup.
-func set_symbol_lookup_word_as_valid() -> void:
+func set_symbol_lookup_word_as_valid(valid: bool) -> void:
 	pass;
 
 #desc Toggle the folding of the code block at the given line.
-func toggle_foldable_line() -> void:
+func toggle_foldable_line(line: int) -> void:
 	pass;
 
 #desc Unfolds all lines, folded or not.
@@ -338,7 +338,7 @@ func unfold_all_lines() -> void:
 	pass;
 
 #desc Unfolds all lines that were previously folded.
-func unfold_line() -> void:
+func unfold_line(line: int) -> void:
 	pass;
 
 #desc Unindents selected lines, or in the case of no selection the caret line by one.
@@ -347,7 +347,7 @@ func unindent_lines() -> void:
 
 #desc Submits all completion options added with [method add_code_completion_option]. Will try to force the autoccomplete menu to popup, if [param force] is [code]true[/code].
 #desc [b]Note:[/b] This will replace all current candidates.
-func update_code_completion_options() -> void:
+func update_code_completion_options(force: bool) -> void:
 	pass;
 
 

@@ -70,11 +70,11 @@ func add_animation_library(name: StringName, library: AnimationLibrary) -> int:
 	pass;
 
 #desc Shifts position in the animation timeline and immediately updates the animation. [param delta] is the time in seconds to shift. Events between the current frame and [param delta] are handled.
-func advance() -> void:
+func advance(delta: float) -> void:
 	pass;
 
 #desc Returns the key of the animation which is queued to play after the [param anim_from] animation.
-func animation_get_next() -> StringName:
+func animation_get_next(anim_from: StringName) -> StringName:
 	pass;
 
 #desc Triggers the [param anim_to] animation when the [param anim_from] animation completes.
@@ -90,19 +90,19 @@ func clear_queue() -> void:
 	pass;
 
 #desc Returns the key of [param animation] or an empty [StringName] if not found.
-func find_animation() -> StringName:
+func find_animation(animation: Animation) -> StringName:
 	pass;
 
 #desc Returns the key for the [AnimationLibrary] that contains [param animation] or an empty [StringName] if not found.
-func find_animation_library() -> StringName:
+func find_animation_library(animation: Animation) -> StringName:
 	pass;
 
 #desc Returns the [Animation] with the key [param name]. If the animation does not exist, [code]null[/code] is returned and an error is logged.
-func get_animation() -> Animation:
+func get_animation(name: StringName) -> Animation:
 	pass;
 
 #desc Returns the first [AnimationLibrary] with key [param name] or [code]null[/code] if not found.
-func get_animation_library() -> AnimationLibrary:
+func get_animation_library(name: StringName) -> AnimationLibrary:
 	pass;
 
 #desc Returns the list of stored library keys.
@@ -126,11 +126,11 @@ func get_queue() -> PackedStringArray:
 	pass;
 
 #desc Returns [code]true[/code] if the [AnimationPlayer] stores an [Animation] with key [param name].
-func has_animation() -> bool:
+func has_animation(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the [AnimationPlayer] stores an [AnimationLibrary] with key [param name].
-func has_animation_library() -> bool:
+func has_animation_library(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if playing an animation.
@@ -150,11 +150,11 @@ func play_backwards(name: StringName, custom_blend: float) -> void:
 
 #desc Queues an animation for playback once the current one is done.
 #desc [b]Note:[/b] If a looped animation is currently playing, the queued animation will never play unless the looped animation is stopped somehow.
-func queue() -> void:
+func queue(name: StringName) -> void:
 	pass;
 
 #desc Removes the [AnimationLibrary] associated with the key [param name].
-func remove_animation_library() -> void:
+func remove_animation_library(name: StringName) -> void:
 	pass;
 
 #desc Moves the [AnimationLibrary] associated with the key [param name] to the key [param newname].
@@ -172,7 +172,7 @@ func set_blend_time(anim_from: StringName, anim_to: StringName, sec: float) -> v
 
 #desc Stops or pauses the currently playing animation. If [param reset] is [code]true[/code], the animation position is reset to [code]0[/code] and the playback speed is reset to [code]1.0[/code].
 #desc If [param reset] is [code]false[/code], the [member current_animation_position] will be kept and calling [method play] or [method play_backwards] without arguments or with the same animation name as [member assigned_animation] will resume the animation.
-func stop() -> void:
+func stop(reset: bool) -> void:
 	pass;
 
 

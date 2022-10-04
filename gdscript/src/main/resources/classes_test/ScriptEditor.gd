@@ -22,7 +22,7 @@ func get_open_scripts() -> Script[]:
 	pass;
 
 #desc Goes to the specified line in the current script.
-func goto_line() -> void:
+func goto_line(line_number: int) -> void:
 	pass;
 
 #desc Opens the script create dialog. The script will extend [param base_name]. The file extension can be omitted from [param base_path]. It will be added based on the selected scripting language.
@@ -31,12 +31,12 @@ func open_script_create_dialog(base_name: String, base_path: String) -> void:
 
 #desc Registers the [EditorSyntaxHighlighter] to the editor, the [EditorSyntaxHighlighter] will be available on all open scripts.
 #desc [b]Note:[/b] Does not apply to scripts that are already opened.
-func register_syntax_highlighter() -> void:
+func register_syntax_highlighter(syntax_highlighter: EditorSyntaxHighlighter) -> void:
 	pass;
 
 #desc Unregisters the [EditorSyntaxHighlighter] from the editor.
 #desc [b]Note:[/b] The [EditorSyntaxHighlighter] will still be applied to scripts that are already opened.
-func unregister_syntax_highlighter() -> void:
+func unregister_syntax_highlighter(syntax_highlighter: EditorSyntaxHighlighter) -> void:
 	pass;
 
 

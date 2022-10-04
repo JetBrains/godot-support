@@ -22,7 +22,7 @@ virtual func _get_rid() -> RID:
 #desc By default, sub-resources are shared between resource copies for efficiency. This can be changed by passing [code]true[/code] to the [param subresources] argument which will copy the subresources.
 #desc [b]Note:[/b] If [param subresources] is [code]true[/code], this method will only perform a shallow copy. Nested resources within subresources will not be duplicated and will still be shared.
 #desc [b]Note:[/b] When duplicating a resource, only [code]export[/code]ed properties are copied. Other properties will be set to their default value in the new resource.
-func duplicate() -> Resource:
+func duplicate(subresources: bool) -> Resource:
 	pass;
 
 #desc Emits the [signal changed] signal.
@@ -49,7 +49,7 @@ func setup_local_to_scene() -> void:
 	pass;
 
 #desc Sets the path of the resource, potentially overriding an existing cache entry for this path. This differs from setting [member resource_path], as the latter would error out if another resource was already cached for the given path.
-func take_over_path() -> void:
+func take_over_path(path: String) -> void:
 	pass;
 
 

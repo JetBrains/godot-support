@@ -316,22 +316,22 @@ var linear_spring_z/stiffness: float;
 
 
 
-func get_flag_x() -> bool:
+func get_flag_x(flag: int) -> bool:
 	pass;
 
-func get_flag_y() -> bool:
+func get_flag_y(flag: int) -> bool:
 	pass;
 
-func get_flag_z() -> bool:
+func get_flag_z(flag: int) -> bool:
 	pass;
 
-func get_param_x() -> float:
+func get_param_x(param: int) -> float:
 	pass;
 
-func get_param_y() -> float:
+func get_param_y(param: int) -> float:
 	pass;
 
-func get_param_z() -> float:
+func get_param_z(param: int) -> float:
 	pass;
 
 func set_flag_x(flag: int, value: bool) -> void:

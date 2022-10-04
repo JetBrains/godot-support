@@ -88,7 +88,7 @@ func action_press(action: StringName, strength: float) -> void:
 	pass;
 
 #desc If the specified action is already pressed, this will release it.
-func action_release() -> void:
+func action_release(action: StringName) -> void:
 	pass;
 
 #desc Adds a new mapping entry (in SDL2 format) to the mapping database. Optionally update already connected devices.
@@ -144,19 +144,19 @@ func get_joy_axis(device: int, axis: int) -> float:
 	pass;
 
 #desc Returns a SDL2-compatible device GUID on platforms that use gamepad remapping. Returns [code]"Default Gamepad"[/code] otherwise.
-func get_joy_guid() -> String:
+func get_joy_guid(device: int) -> String:
 	pass;
 
 #desc Returns the name of the joypad at the specified device index.
-func get_joy_name() -> String:
+func get_joy_name(device: int) -> String:
 	pass;
 
 #desc Returns the duration of the current vibration effect in seconds.
-func get_joy_vibration_duration() -> float:
+func get_joy_vibration_duration(device: int) -> float:
 	pass;
 
 #desc Returns the strength of the joypad vibration: x is the strength of the weak motor, and y is the strength of the strong motor.
-func get_joy_vibration_strength() -> Vector2:
+func get_joy_vibration_strength(device: int) -> Vector2:
 	pass;
 
 #desc Returns the last mouse velocity. To provide a precise and jitter-free velocity, mouse velocity is only calculated every 0.1s. Therefore, mouse velocity will lag mouse movements.
@@ -205,23 +205,23 @@ func is_joy_button_pressed(device: int, button: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the system knows the specified device. This means that it sets all button and axis indices. Unknown joypads are not expected to match these constants, but you can still retrieve events from them.
-func is_joy_known() -> bool:
+func is_joy_known(device: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if you are pressing the key in the current keyboard layout. You can pass a [enum Key] constant.
 #desc [method is_key_pressed] is only recommended over [method is_physical_key_pressed] in non-game applications. This ensures that shortcut keys behave as expected depending on the user's keyboard layout, as keyboard shortcuts are generally dependent on the keyboard layout in non-game applications. If in doubt, use [method is_physical_key_pressed].
 #desc [b]Note:[/b] Due to keyboard ghosting, [method is_key_pressed] may return [code]false[/code] even if one of the action's keys is pressed. See [url=$DOCS_URL/tutorials/inputs/input_examples.html#keyboard-events]Input examples[/url] in the documentation for more information.
-func is_key_pressed() -> bool:
+func is_key_pressed(keycode: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if you are pressing the mouse button specified with [enum MouseButton].
-func is_mouse_button_pressed() -> bool:
+func is_mouse_button_pressed(button: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if you are pressing the key in the physical location on the 101/102-key US QWERTY keyboard. You can pass a [enum Key] constant.
 #desc [method is_physical_key_pressed] is recommended over [method is_key_pressed] for in-game actions, as it will make [kbd]W[/kbd]/[kbd]A[/kbd]/[kbd]S[/kbd]/[kbd]D[/kbd] layouts work regardless of the user's keyboard layout. [method is_physical_key_pressed] will also ensure that the top row number keys work on any keyboard layout. If in doubt, use [method is_physical_key_pressed].
 #desc [b]Note:[/b] Due to keyboard ghosting, [method is_physical_key_pressed] may return [code]false[/code] even if one of the action's keys is pressed. See [url=$DOCS_URL/tutorials/inputs/input_examples.html#keyboard-events]Input examples[/url] in the documentation for more information.
-func is_physical_key_pressed() -> bool:
+func is_physical_key_pressed(keycode: int) -> bool:
 	pass;
 
 #desc Feeds an [InputEvent] to the game. Can be used to artificially trigger input events from code. Also generates [method Node._input] calls.
@@ -240,16 +240,16 @@ func is_physical_key_pressed() -> bool:
 #desc Input.ParseInputEvent(cancelEvent);
 #desc [/csharp]
 #desc [/codeblocks]
-func parse_input_event() -> void:
+func parse_input_event(event: InputEvent) -> void:
 	pass;
 
 #desc Removes all mappings from the internal database that match the given GUID.
-func remove_joy_mapping() -> void:
+func remove_joy_mapping(guid: String) -> void:
 	pass;
 
 #desc Sets the acceleration value of the accelerometer sensor. Can be used for debugging on devices without a hardware sensor, for example in an editor on a PC.
 #desc [b]Note:[/b] This value can be immediately overwritten by the hardware sensor value on Android and iOS.
-func set_accelerometer() -> void:
+func set_accelerometer(value: Vector3) -> void:
 	pass;
 
 #desc Sets a custom mouse cursor image, which is only visible inside the game window. The hotspot can also be specified. Passing [code]null[/code] to the image parameter resets to the system cursor. See [enum CursorShape] for the list of shapes.
@@ -263,22 +263,22 @@ func set_custom_mouse_cursor(image: Resource, shape: int, hotspot: Vector2) -> v
 #desc Sets the default cursor shape to be used in the viewport instead of [constant CURSOR_ARROW].
 #desc [b]Note:[/b] If you want to change the default cursor shape for [Control]'s nodes, use [member Control.mouse_default_cursor_shape] instead.
 #desc [b]Note:[/b] This method generates an [InputEventMouseMotion] to update cursor immediately.
-func set_default_cursor_shape() -> void:
+func set_default_cursor_shape(shape: int) -> void:
 	pass;
 
 #desc Sets the gravity value of the accelerometer sensor. Can be used for debugging on devices without a hardware sensor, for example in an editor on a PC.
 #desc [b]Note:[/b] This value can be immediately overwritten by the hardware sensor value on Android and iOS.
-func set_gravity() -> void:
+func set_gravity(value: Vector3) -> void:
 	pass;
 
 #desc Sets the value of the rotation rate of the gyroscope sensor. Can be used for debugging on devices without a hardware sensor, for example in an editor on a PC.
 #desc [b]Note:[/b] This value can be immediately overwritten by the hardware sensor value on Android and iOS.
-func set_gyroscope() -> void:
+func set_gyroscope(value: Vector3) -> void:
 	pass;
 
 #desc Sets the value of the magnetic field of the magnetometer sensor. Can be used for debugging on devices without a hardware sensor, for example in an editor on a PC.
 #desc [b]Note:[/b] This value can be immediately overwritten by the hardware sensor value on Android and iOS.
-func set_magnetometer() -> void:
+func set_magnetometer(value: Vector3) -> void:
 	pass;
 
 #desc Starts to vibrate the joypad. Joypads usually come with two rumble motors, a strong and a weak one. [param weak_magnitude] is the strength of the weak motor (between 0 and 1) and [param strong_magnitude] is the strength of the strong motor (between 0 and 1). [param duration] is the duration of the effect in seconds (a duration of 0 will try to play the vibration indefinitely).
@@ -287,7 +287,7 @@ func start_joy_vibration(device: int, weak_magnitude: float, strong_magnitude: f
 	pass;
 
 #desc Stops the vibration of the joypad.
-func stop_joy_vibration() -> void:
+func stop_joy_vibration(device: int) -> void:
 	pass;
 
 #desc Vibrate handheld devices.
@@ -295,12 +295,12 @@ func stop_joy_vibration() -> void:
 #desc [b]Note:[/b] For Android, it requires enabling the [code]VIBRATE[/code] permission in the export preset.
 #desc [b]Note:[/b] For iOS, specifying the duration is supported in iOS 13 and later.
 #desc [b]Note:[/b] Some web browsers such as Safari and Firefox for Android do not support this method.
-func vibrate_handheld() -> void:
+func vibrate_handheld(duration_ms: int) -> void:
 	pass;
 
 #desc Sets the mouse position to the specified vector, provided in pixels and relative to an origin at the upper left corner of the currently focused Window Manager game window.
 #desc Mouse position is clipped to the limits of the screen resolution, or to the limits of the game window if [enum MouseMode] is set to [code]MOUSE_MODE_CONFINED[/code] or [code]MOUSE_MODE_CONFINED_HIDDEN[/code].
-func warp_mouse() -> void:
+func warp_mouse(position: Vector2) -> void:
 	pass;
 
 

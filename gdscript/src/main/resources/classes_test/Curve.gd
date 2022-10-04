@@ -44,35 +44,35 @@ func clear_points() -> void:
 	pass;
 
 #desc Returns the left [enum TangentMode] for the point at [param index].
-func get_point_left_mode() -> int:
+func get_point_left_mode(index: int) -> int:
 	pass;
 
 #desc Returns the left tangent angle (in degrees) for the point at [param index].
-func get_point_left_tangent() -> float:
+func get_point_left_tangent(index: int) -> float:
 	pass;
 
 #desc Returns the curve coordinates for the point at [param index].
-func get_point_position() -> Vector2:
+func get_point_position(index: int) -> Vector2:
 	pass;
 
 #desc Returns the right [enum TangentMode] for the point at [param index].
-func get_point_right_mode() -> int:
+func get_point_right_mode(index: int) -> int:
 	pass;
 
 #desc Returns the right tangent angle (in degrees) for the point at [param index].
-func get_point_right_tangent() -> float:
+func get_point_right_tangent(index: int) -> float:
 	pass;
 
 #desc Removes the point at [code]index[/code] from the curve.
-func remove_point() -> void:
+func remove_point(index: int) -> void:
 	pass;
 
 #desc Returns the Y value for the point that would exist at the X position [param offset] along the curve.
-func sample() -> float:
+func sample(offset: float) -> float:
 	pass;
 
 #desc Returns the Y value for the point that would exist at the X position [param offset] along the curve using the baked cache. Bakes the curve's points if not already baked.
-func sample_baked() -> float:
+func sample_baked(offset: float) -> float:
 	pass;
 
 #desc Sets the left [enum TangentMode] for the point at [param index] to [param mode].

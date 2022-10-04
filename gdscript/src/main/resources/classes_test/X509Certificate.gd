@@ -7,11 +7,11 @@ class_name X509Certificate
 
 
 #desc Loads a certificate from [param path] ("*.crt" file).
-func load() -> int:
+func load(path: String) -> int:
 	pass;
 
 #desc Saves a certificate to the given [param path] (should be a "*.crt" file).
-func save() -> int:
+func save(path: String) -> int:
 	pass;
 
 

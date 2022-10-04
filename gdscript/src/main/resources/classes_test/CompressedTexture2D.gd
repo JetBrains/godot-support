@@ -9,7 +9,7 @@ var load_path: String;
 
 
 #desc Loads the texture from the given path.
-func load() -> int:
+func load(path: String) -> int:
 	pass;
 
 

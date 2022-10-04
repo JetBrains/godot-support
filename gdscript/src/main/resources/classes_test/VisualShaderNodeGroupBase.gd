@@ -46,23 +46,23 @@ func get_outputs() -> String:
 	pass;
 
 #desc Returns [code]true[/code] if the specified input port exists.
-func has_input_port() -> bool:
+func has_input_port(id: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the specified output port exists.
-func has_output_port() -> bool:
+func has_output_port(id: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the specified port name does not override an existed port name and is valid within the shader.
-func is_valid_port_name() -> bool:
+func is_valid_port_name(name: String) -> bool:
 	pass;
 
 #desc Removes the specified input port.
-func remove_input_port() -> void:
+func remove_input_port(id: int) -> void:
 	pass;
 
 #desc Removes the specified output port.
-func remove_output_port() -> void:
+func remove_output_port(id: int) -> void:
 	pass;
 
 #desc Renames the specified input port.
@@ -74,7 +74,7 @@ func set_input_port_type(id: int, type: int) -> void:
 	pass;
 
 #desc Defines all input ports using a [String] formatted as a colon-separated list: [code]id,type,name;[/code] (see [method add_input_port]).
-func set_inputs() -> void:
+func set_inputs(inputs: String) -> void:
 	pass;
 
 #desc Renames the specified output port.
@@ -86,7 +86,7 @@ func set_output_port_type(id: int, type: int) -> void:
 	pass;
 
 #desc Defines all output ports using a [String] formatted as a colon-separated list: [code]id,type,name;[/code] (see [method add_output_port]).
-func set_outputs() -> void:
+func set_outputs(outputs: String) -> void:
 	pass;
 
 

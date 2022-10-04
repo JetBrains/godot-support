@@ -314,21 +314,21 @@ var tangential_accel_min: float;
 
 
 #desc Sets this node's properties to match a given [GPUParticles3D] node with an assigned [ParticleProcessMaterial].
-func convert_from_particles() -> void:
+func convert_from_particles(particles: Node) -> void:
 	pass;
 
 #desc Returns the [Curve] of the parameter specified by [enum Parameter].
-func get_param_curve() -> Curve:
+func get_param_curve(param: int) -> Curve:
 	pass;
 
-func get_param_max() -> float:
+func get_param_max(param: int) -> float:
 	pass;
 
-func get_param_min() -> float:
+func get_param_min(param: int) -> float:
 	pass;
 
 #desc Returns the enabled state of the given particle flag (see [enum ParticleFlags] for options).
-func get_particle_flag() -> bool:
+func get_particle_flag(particle_flag: int) -> bool:
 	pass;
 
 #desc Restarts the particle emitter.

@@ -153,7 +153,7 @@ virtual const func _get_preset_count() -> int:
 	pass;
 
 #desc Gets the name of the options preset at this index.
-virtual const func _get_preset_name() -> String:
+virtual const func _get_preset_name(preset_index: int) -> String:
 	pass;
 
 #desc Gets the priority of this plugin for the recognized extension. Higher priority plugins will be preferred. The default priority is [code]1.0[/code].

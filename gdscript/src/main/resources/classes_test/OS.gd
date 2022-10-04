@@ -108,13 +108,13 @@ func close_midi_inputs() -> void:
 	pass;
 
 #desc Crashes the engine (or the editor if called within a [code]@tool[/code] script). This should [i]only[/i] be used for testing the system's crash handler, not for any other purpose. For general error reporting, use (in order of preference) [method @GDScript.assert], [method @GlobalScope.push_error] or [method alert]. See also [method kill].
-func crash() -> void:
+func crash(message: String) -> void:
 	pass;
 
 #desc Creates a new instance of Godot that runs independently. The [param arguments] are used in the given order and separated by a space.
 #desc If the process creation succeeds, the method will return the new process ID, which you can use to monitor the process (and potentially terminate it with [method kill]). If the process creation fails, the method will return [code]-1[/code].
 #desc [b]Note:[/b] This method is implemented on Android, iOS, Linux, macOS and Windows.
-func create_instance() -> int:
+func create_instance(arguments: PackedStringArray) -> int:
 	pass;
 
 #desc Creates a new process that runs independently of Godot. It will not terminate if Godot terminates. The path specified in [param path] must exist and be executable file or macOS .app bundle. Platform path resolution will be used. The [param arguments] are used in the given order and separated by a space.
@@ -138,13 +138,13 @@ func create_process(path: String, arguments: PackedStringArray, open_console: bo
 #desc Delays execution of the current thread by [param msec] milliseconds. [param msec] must be greater than or equal to [code]0[/code]. Otherwise, [method delay_msec] will do nothing and will print an error message.
 #desc [b]Note:[/b] [method delay_msec] is a [i]blocking[/i] way to delay code execution. To delay code execution in a non-blocking way, see [method SceneTree.create_timer]. Awaiting with [method SceneTree.create_timer] will delay the execution of code placed below the [code]await[/code] without affecting the rest of the project (or editor, for [EditorPlugin]s and [EditorScript]s).
 #desc [b]Note:[/b] When [method delay_msec] is called on the main thread, it will freeze the project and will prevent it from redrawing and registering input until the delay has passed. When using [method delay_msec] as part of an [EditorPlugin] or [EditorScript], it will freeze the editor but won't freeze the project if it is currently running (since the project is an independent child process).
-func delay_msec() -> void:
+func delay_msec(msec: int) -> void:
 	pass;
 
 #desc Delays execution of the current thread by [param usec] microseconds. [param usec] must be greater than or equal to [code]0[/code]. Otherwise, [method delay_usec] will do nothing and will print an error message.
 #desc [b]Note:[/b] [method delay_usec] is a [i]blocking[/i] way to delay code execution. To delay code execution in a non-blocking way, see [method SceneTree.create_timer]. Awaiting with [method SceneTree.create_timer] will delay the execution of code placed below the [code]await[/code] without affecting the rest of the project (or editor, for [EditorPlugin]s and [EditorScript]s).
 #desc [b]Note:[/b] When [method delay_usec] is called on the main thread, it will freeze the project and will prevent it from redrawing and registering input until the delay has passed. When using [method delay_usec] as part of an [EditorPlugin] or [EditorScript], it will freeze the editor but won't freeze the project if it is currently running (since the project is an independent child process).
-func delay_usec() -> void:
+func delay_usec(usec: int) -> void:
 	pass;
 
 #desc Executes a command. The file specified in [param path] must exist and be executable. Platform path resolution will be used. The [param arguments] are used in the given order and separated by a space. If an [param output] [Array] is provided, the complete shell output of the process will be appended as a single [String] element in [param output]. If [param read_stderr] is [code]true[/code], the output to the standard error stream will be included too.
@@ -182,7 +182,7 @@ func execute(path: String, arguments: PackedStringArray, output: Array, read_std
 	pass;
 
 #desc Returns the keycode of the given string (e.g. "Escape").
-func find_keycode_from_string() -> int:
+func find_keycode_from_string(string: String) -> int:
 	pass;
 
 #desc Returns the [i]global[/i] cache data directory according to the operating system's standards. On desktop platforms, this path can be overridden by setting the [code]XDG_CACHE_HOME[/code] environment variable before starting the project. See [url=$DOCS_URL/tutorials/io/data_paths.html]File paths in Godot projects[/url] in the documentation for more information. See also [method get_config_dir] and [method get_data_dir].
@@ -262,7 +262,7 @@ func get_distribution_name() -> String:
 
 #desc Returns the value of an environment variable. Returns an empty string if the environment variable doesn't exist.
 #desc [b]Note:[/b] Double-check the casing of [param variable]. Environment variable names are case-sensitive on all platforms except Windows.
-func get_environment() -> String:
+func get_environment(variable: String) -> String:
 	pass;
 
 #desc Returns the path to the current engine executable.
@@ -277,7 +277,7 @@ func get_granted_permissions() -> PackedStringArray:
 
 #desc Returns the given keycode as a string (e.g. Return values: [code]"Escape"[/code], [code]"Shift+Escape"[/code]).
 #desc See also [member InputEventKey.keycode] and [method InputEventKey.get_keycode_with_modifiers].
-func get_keycode_string() -> String:
+func get_keycode_string(code: int) -> String:
 	pass;
 
 #desc Returns the host OS locale as a string of the form [code]language_Script_COUNTRY_VARIANT@extra[/code]. If you want only the language code and not the fully specified locale from the OS, you can use [method get_locale_language].
@@ -437,12 +437,12 @@ func get_version() -> String:
 
 #desc Returns [code]true[/code] if the environment variable with the name [param variable] exists.
 #desc [b]Note:[/b] Double-check the casing of [param variable]. Environment variable names are case-sensitive on all platforms except Windows.
-func has_environment() -> bool:
+func has_environment(variable: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the feature for the given feature tag is supported in the currently running instance, depending on the platform, build, etc. Can be used to check whether you're currently running a debug build, on a certain platform or arch, etc. Refer to the [url=$DOCS_URL/getting_started/workflow/export/feature_tags.html]Feature Tags[/url] documentation for more details.
 #desc [b]Note:[/b] Tag names are case-sensitive.
-func has_feature() -> bool:
+func has_feature(tag_name: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the Godot binary used to run the project is a [i]debug[/i] export template, or when running in the editor.
@@ -452,13 +452,13 @@ func is_debug_build() -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the input keycode corresponds to a Unicode character.
-func is_keycode_unicode() -> bool:
+func is_keycode_unicode(code: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the child process ID ([param pid]) is still running or [code]false[/code] if it has terminated.
 #desc Must be a valid ID generated from [method create_process].
 #desc [b]Note:[/b] This method is implemented on Android, iOS, Linux, macOS and Windows.
-func is_process_running() -> bool:
+func is_process_running(pid: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the project will automatically restart when it exits for any reason, [code]false[/code] otherwise. See also [method set_restart_on_exit] and [method get_restart_on_exit_arguments].
@@ -476,7 +476,7 @@ func is_userfs_persistent() -> bool:
 #desc Kill (terminate) the process identified by the given process ID ([param pid]), e.g. the one returned by [method execute] in non-blocking mode. See also [method crash].
 #desc [b]Note:[/b] This method can also be used to kill processes that were not spawned by the game.
 #desc [b]Note:[/b] This method is implemented on Android, iOS, Linux, macOS and Windows.
-func kill() -> int:
+func kill(pid: int) -> int:
 	pass;
 
 #desc Moves the file or directory to the system's recycle bin. See also [method DirAccess.remove].
@@ -492,7 +492,7 @@ func kill() -> int:
 #desc OS.MoveToTrash(ProjectSettings.GlobalizePath(fileToRemove));
 #desc [/csharp]
 #desc [/codeblocks]
-func move_to_trash() -> int:
+func move_to_trash(path: String) -> int:
 	pass;
 
 #desc Initialises the singleton for the system MIDI driver.
@@ -502,11 +502,11 @@ func open_midi_inputs() -> void:
 
 #desc Reads a user input string from the standard input (usually the terminal).
 #desc [b]Note:[/b] This method is implemented on Linux, macOS and Windows. Non-blocking reads are not currently supported on any platform.
-func read_string_from_stdin() -> String:
+func read_string_from_stdin(block: bool) -> String:
 	pass;
 
 #desc At the moment this function is only used by [code]AudioDriverOpenSL[/code] to request permission for [code]RECORD_AUDIO[/code] on Android.
-func request_permission() -> bool:
+func request_permission(name: String) -> bool:
 	pass;
 
 #desc With this function, you can request dangerous permissions since normal permissions are automatically granted at install time in Android applications.
@@ -527,11 +527,11 @@ func set_restart_on_exit(restart: bool, arguments: PackedStringArray) -> void:
 	pass;
 
 #desc Sets the name of the current thread.
-func set_thread_name() -> int:
+func set_thread_name(name: String) -> int:
 	pass;
 
 #desc Enables backup saves if [param enabled] is [code]true[/code].
-func set_use_file_access_save_and_swap() -> void:
+func set_use_file_access_save_and_swap(enabled: bool) -> void:
 	pass;
 
 #desc Requests the OS to open a resource with the most appropriate program. For example:
@@ -540,7 +540,7 @@ func set_use_file_access_save_and_swap() -> void:
 #desc - [code]OS.shell_open("mailto:example@example.com")[/code] opens the default email client with the "To" field set to [code]example@example.com[/code]. See [url=https://datatracker.ietf.org/doc/html/rfc2368]RFC 2368 - The [code]mailto[/code] URL scheme[/url] for a list of fields that can be added.
 #desc Use [method ProjectSettings.globalize_path] to convert a [code]res://[/code] or [code]user://[/code] path into a system path for use with this method.
 #desc [b]Note:[/b] This method is implemented on Android, iOS, Web, Linux, macOS and Windows.
-func shell_open() -> int:
+func shell_open(uri: String) -> int:
 	pass;
 
 

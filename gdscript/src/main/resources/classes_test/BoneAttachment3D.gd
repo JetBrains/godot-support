@@ -30,24 +30,24 @@ func get_use_external_skeleton() -> bool:
 	pass;
 
 #desc A function that is called automatically when the [Skeleton3D] the BoneAttachment3D node is using has a bone that has changed its pose. This function is where the BoneAttachment3D node updates its position so it is correctly bound when it is [i]not[/i] set to override the bone pose.
-func on_bone_pose_update() -> void:
+func on_bone_pose_update(bone_index: int) -> void:
 	pass;
 
 #desc Sets the [NodePath] to the external skeleton that the BoneAttachment3D node should use. The external [Skeleton3D] node is only used when [code]use_external_skeleton[/code] is set to [code]true[/code].
-func set_external_skeleton() -> void:
+func set_external_skeleton(external_skeleton: NodePath) -> void:
 	pass;
 
 #desc Deprecated. Local pose overrides will be removed.
 #desc Sets the override mode for the BoneAttachment3D node (0=global / 1=local). The override mode defines which of the bone poses the BoneAttachment3D node will override.
-func set_override_mode() -> void:
+func set_override_mode(override_mode: int) -> void:
 	pass;
 
 #desc Sets whether the BoneAttachment3D node will override the bone pose of the bone it is attached to. When set to [code]true[/code], the BoneAttachment3D node can change the pose of the bone.
-func set_override_pose() -> void:
+func set_override_pose(override_pose: bool) -> void:
 	pass;
 
 #desc Sets whether the BoneAttachment3D node will use an extenral [Skeleton3D] node rather than attenpting to use its parent node as the [Skeleton3D]. When set to [code]true[/code], the BoneAttachment3D node will use the external [Skeleton3D] node set in [code]set_external_skeleton[/code].
-func set_use_external_skeleton() -> void:
+func set_use_external_skeleton(use_external_skeleton: bool) -> void:
 	pass;
 
 

@@ -74,13 +74,13 @@ vararg func call_group_flags(flags: int, group: StringName, method: StringName) 
 #desc Changes the running scene to the one at the given [param path], after loading it into a [PackedScene] and creating a new instance.
 #desc Returns [constant OK] on success, [constant ERR_CANT_OPEN] if the [param path] cannot be loaded into a [PackedScene], or [constant ERR_CANT_CREATE] if that scene cannot be instantiated.
 #desc [b]Note:[/b] The scene change is deferred, which means that the new scene node is added on the next idle frame. You won't be able to access it immediately after the [method change_scene_to_file] call.
-func change_scene_to_file() -> int:
+func change_scene_to_file(path: String) -> int:
 	pass;
 
 #desc Changes the running scene to a new instance of the given [PackedScene].
 #desc Returns [constant OK] on success or [constant ERR_CANT_CREATE] if the scene cannot be instantiated.
 #desc [b]Note:[/b] The scene change is deferred, which means that the new scene node is added on the next idle frame. You won't be able to access it immediately after the [method change_scene_to_packed] call.
-func change_scene_to_packed() -> int:
+func change_scene_to_packed(packed_scene: PackedScene) -> int:
 	pass;
 
 #desc Returns a [SceneTreeTimer] which will [signal SceneTreeTimer.timeout] after the given time in seconds elapsed in this [SceneTree].
@@ -113,7 +113,7 @@ func create_tween() -> Tween:
 	pass;
 
 #desc Returns the first node in the specified group, or [code]null[/code] if the group is empty or does not exist.
-func get_first_node_in_group() -> Node:
+func get_first_node_in_group(group: StringName) -> Node:
 	pass;
 
 #desc Returns the current frame number, i.e. the total frame count since the application started.
@@ -121,7 +121,7 @@ func get_frame() -> int:
 	pass;
 
 #desc Return the [MultiplayerAPI] configured for the given path, or the default one if [param for_path] is empty.
-func get_multiplayer() -> MultiplayerAPI:
+func get_multiplayer(for_path: NodePath) -> MultiplayerAPI:
 	pass;
 
 #desc Returns the number of nodes in this [SceneTree].
@@ -129,7 +129,7 @@ func get_node_count() -> int:
 	pass;
 
 #desc Returns a list of all nodes assigned to the given group.
-func get_nodes_in_group() -> Node[]:
+func get_nodes_in_group(group: StringName) -> Node[]:
 	pass;
 
 #desc Returns an array of currently existing [Tween]s in the [SceneTree] (both running and paused).
@@ -137,7 +137,7 @@ func get_processed_tweens() -> Tween[]:
 	pass;
 
 #desc Returns [code]true[/code] if the given group exists.
-func has_group() -> bool:
+func has_group(name: StringName) -> bool:
 	pass;
 
 #desc Sends the given notification to all members of the [param group].
@@ -151,14 +151,14 @@ func notify_group_flags(call_flags: int, group: StringName, notification: int) -
 	pass;
 
 #desc Queues the given object for deletion, delaying the call to [method Object.free] to after the current frame.
-func queue_delete() -> void:
+func queue_delete(obj: Object) -> void:
 	pass;
 
 #desc Quits the application at the end of the current iteration. Argument [param exit_code] can optionally be given (defaulting to 0) to customize the exit status code.
 #desc By convention, an exit code of [code]0[/code] indicates success whereas a non-zero exit code indicates an error.
 #desc For portability reasons, the exit code should be set between 0 and 125 (inclusive).
 #desc [b]Note:[/b] On iOS this method doesn't work. Instead, as recommended by the iOS Human Interface Guidelines, the user is expected to close apps via the Home button.
-func quit() -> void:
+func quit(exit_code: int) -> void:
 	pass;
 
 #desc Reloads the currently active scene.

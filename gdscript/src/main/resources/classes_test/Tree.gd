@@ -115,30 +115,30 @@ func ensure_cursor_is_visible() -> void:
 	pass;
 
 #desc Returns the button id at [param position], or -1 if no button is there.
-func get_button_id_at_position() -> int:
+func get_button_id_at_position(position: Vector2) -> int:
 	pass;
 
 #desc Returns the column index at [param position], or -1 if no item is there.
-func get_column_at_position() -> int:
+func get_column_at_position(position: Vector2) -> int:
 	pass;
 
-func get_column_expand_ratio() -> int:
+func get_column_expand_ratio(column: int) -> int:
 	pass;
 
 #desc Returns the column's title.
-func get_column_title() -> String:
+func get_column_title(column: int) -> String:
 	pass;
 
 #desc Returns column title base writing direction.
-func get_column_title_direction() -> int:
+func get_column_title_direction(column: int) -> int:
 	pass;
 
 #desc Returns column title language code.
-func get_column_title_language() -> String:
+func get_column_title_language(column: int) -> String:
 	pass;
 
 #desc Returns the column's width in pixels.
-func get_column_width() -> int:
+func get_column_width(column: int) -> int:
 	pass;
 
 #desc Returns the rectangle for custom popups. Helper to create custom cell controls that display a popup. See [method TreeItem.set_cell_mode].
@@ -148,7 +148,7 @@ func get_custom_popup_rect() -> Rect2:
 #desc Returns the drop section at [param position], or -100 if no item is there.
 #desc Values -1, 0, or 1 will be returned for the "above item", "on item", and "below item" drop sections, respectively. See [enum DropModeFlags] for a description of each drop section.
 #desc To get the item which the returned drop section is relative to, use [method get_item_at_position].
-func get_drop_section_at_position() -> int:
+func get_drop_section_at_position(position: Vector2) -> int:
 	pass;
 
 #desc Returns the currently edited item. Can be used with [signal item_edited] to get the item that was modified.
@@ -184,12 +184,12 @@ func get_item_area_rect(item: TreeItem, column: int, button_index: int) -> Rect2
 	pass;
 
 #desc Returns the tree item at the specified position (relative to the tree origin position).
-func get_item_at_position() -> TreeItem:
+func get_item_at_position(position: Vector2) -> TreeItem:
 	pass;
 
 #desc Returns the next selected [TreeItem] after the given one, or [code]null[/code] if the end is reached.
 #desc If [param from] is [code]null[/code], this returns the first selected item.
-func get_next_selected() -> TreeItem:
+func get_next_selected(from: TreeItem) -> TreeItem:
 	pass;
 
 #desc Returns the last pressed button's index.
@@ -216,10 +216,10 @@ func get_selected() -> TreeItem:
 func get_selected_column() -> int:
 	pass;
 
-func is_column_clipping_content() -> bool:
+func is_column_clipping_content(column: int) -> bool:
 	pass;
 
-func is_column_expanding() -> bool:
+func is_column_expanding(column: int) -> bool:
 	pass;
 
 #desc Causes the [Tree] to jump to the specified [TreeItem].

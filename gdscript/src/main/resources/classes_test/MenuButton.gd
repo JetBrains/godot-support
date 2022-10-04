@@ -27,7 +27,7 @@ func get_popup() -> PopupMenu:
 	pass;
 
 #desc If [code]true[/code], shortcuts are disabled and cannot be used to trigger the button.
-func set_disable_shortcuts() -> void:
+func set_disable_shortcuts(disabled: bool) -> void:
 	pass;
 
 #desc Adjusts popup position and sizing for the [MenuButton], then shows the [PopupMenu]. Prefer this over using [code]get_popup().popup()[/code].

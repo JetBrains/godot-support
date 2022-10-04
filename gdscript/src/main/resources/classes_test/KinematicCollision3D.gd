@@ -11,27 +11,27 @@ func get_angle(collision_index: int, up_direction: Vector3) -> float:
 	pass;
 
 #desc Returns the colliding body's attached [Object] given a collision index (the deepest collision by default).
-func get_collider() -> Object:
+func get_collider(collision_index: int) -> Object:
 	pass;
 
 #desc Returns the unique instance ID of the colliding body's attached [Object] given a collision index (the deepest collision by default). See [method Object.get_instance_id].
-func get_collider_id() -> int:
+func get_collider_id(collision_index: int) -> int:
 	pass;
 
 #desc Returns the colliding body's [RID] used by the [PhysicsServer3D] given a collision index (the deepest collision by default).
-func get_collider_rid() -> RID:
+func get_collider_rid(collision_index: int) -> RID:
 	pass;
 
 #desc Returns the colliding body's shape given a collision index (the deepest collision by default).
-func get_collider_shape() -> Object:
+func get_collider_shape(collision_index: int) -> Object:
 	pass;
 
 #desc Returns the colliding body's shape index given a collision index (the deepest collision by default). See [CollisionObject3D].
-func get_collider_shape_index() -> int:
+func get_collider_shape_index(collision_index: int) -> int:
 	pass;
 
 #desc Returns the colliding body's velocity given a collision index (the deepest collision by default).
-func get_collider_velocity() -> Vector3:
+func get_collider_velocity(collision_index: int) -> Vector3:
 	pass;
 
 #desc Returns the number of detected collisions.
@@ -43,15 +43,15 @@ func get_depth() -> float:
 	pass;
 
 #desc Returns the moving object's colliding shape given a collision index (the deepest collision by default).
-func get_local_shape() -> Object:
+func get_local_shape(collision_index: int) -> Object:
 	pass;
 
 #desc Returns the colliding body's shape's normal at the point of collision given a collision index (the deepest collision by default).
-func get_normal() -> Vector3:
+func get_normal(collision_index: int) -> Vector3:
 	pass;
 
 #desc Returns the point of collision in global coordinates given a collision index (the deepest collision by default).
-func get_position() -> Vector3:
+func get_position(collision_index: int) -> Vector3:
 	pass;
 
 #desc Returns the moving object's remaining movement vector.

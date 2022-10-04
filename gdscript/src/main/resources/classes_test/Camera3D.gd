@@ -79,7 +79,7 @@ var v_offset: float;
 
 
 #desc If this is the current camera, remove it from being current. If [param enable_next] is [code]true[/code], request to make the next camera current, if any.
-func clear_current() -> void:
+func clear_current(enable_next: bool) -> void:
 	pass;
 
 #desc Returns the camera's RID from the [RenderingServer].
@@ -91,7 +91,7 @@ func get_camera_transform() -> Transform3D:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member cull_mask] is enabled, given a [param layer_number] between 1 and 20.
-func get_cull_mask_value() -> bool:
+func get_cull_mask_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns the camera's frustum planes in world space units as an array of [Plane]s in the following order: near, far, left, top, right, bottom. Not to be confused with [member frustum_offset].
@@ -104,11 +104,11 @@ func get_pyramid_shape_rid() -> RID:
 
 #desc Returns [code]true[/code] if the given position is behind the camera (the blue part of the linked diagram). [url=https://raw.githubusercontent.com/godotengine/godot-docs/master/img/camera3d_position_frustum.png]See this diagram[/url] for an overview of position query methods.
 #desc [b]Note:[/b] A position which returns [code]false[/code] may still be outside the camera's field of view.
-func is_position_behind() -> bool:
+func is_position_behind(world_point: Vector3) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given position is inside the camera's frustum (the green part of the linked diagram). [url=https://raw.githubusercontent.com/godotengine/godot-docs/master/img/camera3d_position_frustum.png]See this diagram[/url] for an overview of position query methods.
-func is_position_in_frustum() -> bool:
+func is_position_in_frustum(world_point: Vector3) -> bool:
 	pass;
 
 #desc Makes this camera the current camera for the [Viewport] (see class description). If the camera node is outside the scene tree, it will attempt to become current once it's added.
@@ -116,7 +116,7 @@ func make_current() -> void:
 	pass;
 
 #desc Returns a normal vector from the screen point location directed along the camera. Orthogonal cameras are normalized. Perspective cameras account for perspective, screen width/height, etc.
-func project_local_ray_normal() -> Vector3:
+func project_local_ray_normal(screen_point: Vector2) -> Vector3:
 	pass;
 
 #desc Returns the 3D point in world space that maps to the given 2D coordinate in the [Viewport] rectangle on a plane that is the given [param z_depth] distance into the scene away from the camera.
@@ -124,11 +124,11 @@ func project_position(screen_point: Vector2, z_depth: float) -> Vector3:
 	pass;
 
 #desc Returns a normal vector in world space, that is the result of projecting a point on the [Viewport] rectangle by the inverse camera projection. This is useful for casting rays in the form of (origin, normal) for object intersection or picking.
-func project_ray_normal() -> Vector3:
+func project_ray_normal(screen_point: Vector2) -> Vector3:
 	pass;
 
 #desc Returns a 3D position in world space, that is the result of projecting a point on the [Viewport] rectangle by the inverse camera projection. This is useful for casting rays in the form of (origin, normal) for object intersection or picking.
-func project_ray_origin() -> Vector3:
+func project_ray_origin(screen_point: Vector2) -> Vector3:
 	pass;
 
 #desc Based on [param value], enables or disables the specified layer in the [member cull_mask], given a [param layer_number] between 1 and 20.
@@ -155,7 +155,7 @@ func set_perspective(fov: float, z_near: float, z_far: float) -> void:
 #desc control.visible = not get_viewport().get_camera_3d().is_position_behind(global_transform.origin)
 #desc control.position = get_viewport().get_camera_3d().unproject_position(global_transform.origin)
 #desc [/codeblock]
-func unproject_position() -> Vector2:
+func unproject_position(world_point: Vector3) -> Vector2:
 	pass;
 
 

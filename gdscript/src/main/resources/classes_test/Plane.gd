@@ -35,7 +35,7 @@ func Plane() -> Plane:
 	pass;
 
 #desc Constructs a [Plane] as a copy of the given [Plane].
-func Plane() -> Plane:
+func Plane(from: Plane) -> Plane:
 	pass;
 
 #desc Creates a plane from the four parameters. The three components of the resulting plane's [member normal] are [param a], [param b] and [param c], and the plane has a distance of [param d] from the origin.
@@ -43,7 +43,7 @@ func Plane(a: float, b: float, c: float, d: float) -> Plane:
 	pass;
 
 #desc Creates a plane from the normal vector. The plane will intersect the origin.
-func Plane() -> Plane:
+func Plane(normal: Vector3) -> Plane:
 	pass;
 
 #desc Creates a plane from the normal vector and the plane's distance from the origin.
@@ -64,7 +64,7 @@ func center() -> Vector3:
 	pass;
 
 #desc Returns the shortest distance from the plane to the position [param point]. If the point is above the plane, the distance will be positive. If below, the distance will be negative.
-func distance_to() -> float:
+func distance_to(point: Vector3) -> float:
 	pass;
 
 #desc Returns [code]true[/code] if [param point] is inside the plane. Comparison uses a custom minimum [param tolerance] threshold.
@@ -84,11 +84,11 @@ func intersects_segment(from: Vector3, to: Vector3) -> Variant:
 	pass;
 
 #desc Returns [code]true[/code] if this plane and [param to_plane] are approximately equal, by running [method @GlobalScope.is_equal_approx] on each component.
-func is_equal_approx() -> bool:
+func is_equal_approx(to_plane: Plane) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if [param point] is located above the plane.
-func is_point_over() -> bool:
+func is_point_over(point: Vector3) -> bool:
 	pass;
 
 #desc Returns a copy of the plane, normalized.
@@ -96,7 +96,7 @@ func normalized() -> Plane:
 	pass;
 
 #desc Returns the orthogonal projection of [param point] into a point in the plane.
-func project() -> Vector3:
+func project(point: Vector3) -> Vector3:
 	pass;
 
 

@@ -19,7 +19,7 @@ func has_valid_event() -> bool:
 	pass;
 
 #desc Returns whether any [InputEvent] in [member events] equals [param event].
-func matches_event() -> bool:
+func matches_event(event: InputEvent) -> bool:
 	pass;
 
 

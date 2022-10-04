@@ -48,43 +48,43 @@ func Array(base: Array, type: int, class_name: StringName, script: Variant) -> A
 	pass;
 
 #desc Constructs an [Array] as a copy of the given [Array].
-func Array() -> Array:
+func Array(from: Array) -> Array:
 	pass;
 
 #desc Constructs an array from a [PackedByteArray].
-func Array() -> Array:
+func Array(from: PackedByteArray) -> Array:
 	pass;
 
 #desc Constructs an array from a [PackedColorArray].
-func Array() -> Array:
+func Array(from: PackedColorArray) -> Array:
 	pass;
 
 #desc Constructs an array from a [PackedFloat32Array].
-func Array() -> Array:
+func Array(from: PackedFloat32Array) -> Array:
 	pass;
 
 #desc Constructs an array from a [PackedFloat64Array].
-func Array() -> Array:
+func Array(from: PackedFloat64Array) -> Array:
 	pass;
 
 #desc Constructs an array from a [PackedInt32Array].
-func Array() -> Array:
+func Array(from: PackedInt32Array) -> Array:
 	pass;
 
 #desc Constructs an array from a [PackedInt64Array].
-func Array() -> Array:
+func Array(from: PackedInt64Array) -> Array:
 	pass;
 
 #desc Constructs an array from a [PackedStringArray].
-func Array() -> Array:
+func Array(from: PackedStringArray) -> Array:
 	pass;
 
 #desc Constructs an array from a [PackedVector2Array].
-func Array() -> Array:
+func Array(from: PackedVector2Array) -> Array:
 	pass;
 
 #desc Constructs an array from a [PackedVector3Array].
-func Array() -> Array:
+func Array(from: PackedVector3Array) -> Array:
 	pass;
 
 
@@ -105,7 +105,7 @@ func Array() -> Array:
 #desc See also [method any], [method filter], [method map] and [method reduce].
 #desc [b]Note:[/b] Unlike relying on the size of an array returned by [method filter], this method will return as early as possible to improve performance (especially with large arrays).
 #desc [b]Note:[/b] For an empty array, this method [url=https://en.wikipedia.org/wiki/Vacuous_truth]always[/url] returns [code]true[/code].
-func all() -> bool:
+func all(method: Callable) -> bool:
 	pass;
 
 #desc Calls the provided [Callable] on each element in the array and returns [code]true[/code] if the [Callable] returns [code]true[/code] for [i]one or more[/i] elements in the array. If the [Callable] returns [code]false[/code] for all elements in the array, this method returns [code]false[/code].
@@ -125,11 +125,11 @@ func all() -> bool:
 #desc See also [method all], [method filter], [method map] and [method reduce].
 #desc [b]Note:[/b] Unlike relying on the size of an array returned by [method filter], this method will return as early as possible to improve performance (especially with large arrays).
 #desc [b]Note:[/b] For an empty array, this method always returns [code]false[/code].
-func any() -> bool:
+func any(method: Callable) -> bool:
 	pass;
 
 #desc Appends an element at the end of the array (alias of [method push_back]).
-func append() -> void:
+func append(value: Variant) -> void:
 	pass;
 
 #desc Appends another array at the end of this array.
@@ -139,7 +139,7 @@ func append() -> void:
 #desc array1.append_array(array2)
 #desc print(array1) # Prints [1, 2, 3, 4, 5, 6].
 #desc [/codeblock]
-func append_array() -> void:
+func append_array(array: Array) -> void:
 	pass;
 
 #desc Returns the last element of the array. Prints an error and returns [code]null[/code] if the array is empty.
@@ -162,18 +162,18 @@ func clear() -> void:
 	pass;
 
 #desc Returns the number of times an element is in the array.
-func count() -> int:
+func count(value: Variant) -> int:
 	pass;
 
 #desc Returns a copy of the array.
 #desc If [param deep] is [code]true[/code], a deep copy is performed: all nested arrays and dictionaries are duplicated and will not be shared with the original array. If [code]false[/code], a shallow copy is made and references to the original nested arrays and dictionaries are kept, so that modifying a sub-array or dictionary in the copy will also impact those referenced in the source array.
-func duplicate() -> Array:
+func duplicate(deep: bool) -> Array:
 	pass;
 
 #desc Removes the first occurrence of a value from the array. If the value does not exist in the array, nothing happens. To remove an element by index, use [method remove_at] instead.
 #desc [b]Note:[/b] This method acts in-place and doesn't return a value.
 #desc [b]Note:[/b] On large arrays, this method will be slower if the removed element is close to the beginning of the array (index 0). This is because all elements placed after the removed element have to be reindexed.
-func erase() -> void:
+func erase(value: Variant) -> void:
 	pass;
 
 #desc Assigns the given value to all elements in the array. This can typically be used together with [method resize] to create an array with a given size and initialized elements:
@@ -189,7 +189,7 @@ func erase() -> void:
 #desc array.Fill(0); // Initialize the 10 elements to 0.
 #desc [/csharp]
 #desc [/codeblocks]
-func fill() -> void:
+func fill(value: Variant) -> void:
 	pass;
 
 #desc Calls the provided [Callable] on each element in the array and returns a new array with the elements for which the method returned [code]true[/code].
@@ -203,7 +203,7 @@ func fill() -> void:
 #desc return number != 1
 #desc [/codeblock]
 #desc See also [method any], [method all], [method map] and [method reduce].
-func filter() -> Array:
+func filter(method: Callable) -> Array:
 	pass;
 
 #desc Searches the array for a value and returns its index or [code]-1[/code] if not found. Optionally, the initial search index can be passed.
@@ -211,7 +211,7 @@ func find(what: Variant, from: int) -> int:
 	pass;
 
 #desc Searches the array in reverse order for a value and returns its index or [code]-1[/code] if not found.
-func find_last() -> int:
+func find_last(value: Variant) -> int:
 	pass;
 
 #desc Returns the first element of the array. Prints an error and returns [code]null[/code] if the array is empty.
@@ -262,7 +262,7 @@ func get_typed_script() -> Variant:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-func has() -> bool:
+func has(value: Variant) -> bool:
 	pass;
 
 #desc Returns a hashed 32-bit integer value representing the array and its contents.
@@ -297,7 +297,7 @@ func is_typed() -> bool:
 #desc return -number
 #desc [/codeblock]
 #desc See also [method filter], [method reduce], [method any] and [method all].
-func map() -> Array:
+func map(method: Callable) -> Array:
 	pass;
 
 #desc Returns the maximum value contained in the array if all elements are of comparable types. If the elements can't be compared, [code]null[/code] is returned.
@@ -310,7 +310,7 @@ func min() -> Variant:
 
 #desc Removes and returns the element of the array at index [param position]. If negative, [param position] is considered relative to the end of the array. Leaves the array untouched and returns [code]null[/code] if the array is empty or if it's accessed out of bounds. An error message is printed when the array is accessed out of bounds, but not when the array is empty.
 #desc [b]Note:[/b] On large arrays, this method can be slower than [method pop_back] as it will reindex the array's elements that are located after the removed element. The larger the array and the lower the index of the removed element, the slower [method pop_at] will be.
-func pop_at() -> Variant:
+func pop_at(position: int) -> Variant:
 	pass;
 
 #desc Removes and returns the last element of the array. Returns [code]null[/code] if the array is empty, without printing an error message. See also [method pop_front].
@@ -323,12 +323,12 @@ func pop_front() -> Variant:
 	pass;
 
 #desc Appends an element at the end of the array. See also [method push_front].
-func push_back() -> void:
+func push_back(value: Variant) -> void:
 	pass;
 
 #desc Adds an element at the beginning of the array. See also [method push_back].
 #desc [b]Note:[/b] On large arrays, this method is much slower than [method push_back] as it will reindex all the array's elements every time it's called. The larger the array, the slower [method push_front] will be.
-func push_front() -> void:
+func push_front(value: Variant) -> void:
 	pass;
 
 #desc Calls the provided [Callable] for each element in array and accumulates the result in [param accum].
@@ -348,11 +348,11 @@ func reduce(method: Callable, accum: Variant) -> Variant:
 #desc Removes an element from the array by index. If the index does not exist in the array, nothing happens. To remove an element by searching for its value, use [method erase] instead.
 #desc [b]Note:[/b] This method acts in-place and doesn't return a value.
 #desc [b]Note:[/b] On large arrays, this method will be slower if the removed element is close to the beginning of the array (index 0). This is because all elements placed after the removed element have to be reindexed.
-func remove_at() -> void:
+func remove_at(position: int) -> void:
 	pass;
 
 #desc Resizes the array to contain a different number of elements. If the array size is smaller, elements are cleared, if bigger, new elements are [code]null[/code].
-func resize() -> int:
+func resize(size: int) -> int:
 	pass;
 
 #desc Reverses the order of the elements in the array.
@@ -363,7 +363,7 @@ func reverse() -> void:
 func rfind(what: Variant, from: int) -> int:
 	pass;
 
-func set_read_only() -> void:
+func set_read_only(enable: bool) -> void:
 	pass;
 
 func set_typed(type: int, class_name: StringName, script: Variant) -> void:
@@ -428,10 +428,10 @@ func sort() -> void:
 #desc // There is no custom sort support for Godot.Collections.Array
 #desc [/csharp]
 #desc [/codeblocks]
-func sort_custom() -> void:
+func sort_custom(func: Callable) -> void:
 	pass;
 
-func typed_assign() -> bool:
+func typed_assign(array: Array) -> bool:
 	pass;
 
 

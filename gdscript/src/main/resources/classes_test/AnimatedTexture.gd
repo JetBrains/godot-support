@@ -27,11 +27,11 @@ var speed_scale: float;
 
 
 #desc Returns the given [param frame]'s duration, in seconds.
-func get_frame_duration() -> float:
+func get_frame_duration(frame: int) -> float:
 	pass;
 
 #desc Returns the given frame's [Texture2D].
-func get_frame_texture() -> Texture2D:
+func get_frame_texture(frame: int) -> Texture2D:
 	pass;
 
 #desc Sets the duration of any given [param frame]. The final duration is affected by the [member speed_scale]. If set to [code]0[/code], the frame is skipped during playback.

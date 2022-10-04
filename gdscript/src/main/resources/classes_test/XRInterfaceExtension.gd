@@ -46,7 +46,7 @@ virtual func _get_render_target_size() -> Vector2:
 	pass;
 
 #desc Returns a [PackedStringArray] with pose names configured by this interface. Note that user configuration can override this list.
-virtual const func _get_suggested_pose_names() -> PackedStringArray:
+virtual const func _get_suggested_pose_names(tracker_name: StringName) -> PackedStringArray:
 	pass;
 
 #desc Returns a [PackedStringArray] with tracker names configured by this interface. Note that user configuration can override this list.
@@ -77,7 +77,7 @@ virtual const func _is_initialized() -> bool:
 	pass;
 
 #desc Informs the interface of an applicable system notification.
-virtual func _notification() -> void:
+virtual func _notification(what: int) -> void:
 	pass;
 
 #desc Called after the XR [Viewport] draw logic has completed.
@@ -85,7 +85,7 @@ virtual func _post_draw_viewport(render_target: RID, screen_rect: Rect2) -> void
 	pass;
 
 #desc Called if this is our primary [XRInterfaceExtension] before we start processing a [Viewport] for every active XR [Viewport], returns [code]true[/code] if that viewport should be rendered. An XR interface may return [code]false[/code] if the user has taken off their headset and we can pause rendering.
-virtual func _pre_draw_viewport() -> bool:
+virtual func _pre_draw_viewport(render_target: RID) -> bool:
 	pass;
 
 #desc Called if this [XRInterfaceExtension] is active before rendering starts, most XR interfaces will sync tracking at this point in time.
@@ -97,15 +97,15 @@ virtual func _process() -> void:
 	pass;
 
 #desc Enables anchor detection on this interface if supported.
-virtual func _set_anchor_detection_is_enabled() -> void:
+virtual func _set_anchor_detection_is_enabled(enabled: bool) -> void:
 	pass;
 
 #desc Set the play area mode for this interface.
-virtual const func _set_play_area_mode() -> bool:
+virtual const func _set_play_area_mode(mode: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this interface supports this play area mode.
-virtual const func _supports_play_area_mode() -> bool:
+virtual const func _supports_play_area_mode(mode: int) -> bool:
 	pass;
 
 #desc Triggers a haptic pulse to be emitted on the specified tracker.
@@ -121,7 +121,7 @@ func add_blit(render_target: RID, src_rect: Rect2, dst_rect: Rect2i, use_layer: 
 	pass;
 
 #desc Returns a valid [RID] for a texture to which we should render the current frame if supported by the interface.
-func get_render_target_texture() -> RID:
+func get_render_target_texture(render_target: RID) -> RID:
 	pass;
 
 

@@ -7,11 +7,11 @@ class_name ResourceFormatSaver
 
 
 #desc Returns the list of extensions available for saving the resource object, provided it is recognized (see [method _recognize]).
-virtual const func _get_recognized_extensions() -> PackedStringArray:
+virtual const func _get_recognized_extensions(resource: Resource) -> PackedStringArray:
 	pass;
 
 #desc Returns whether the given resource object can be saved by this saver.
-virtual const func _recognize() -> bool:
+virtual const func _recognize(resource: Resource) -> bool:
 	pass;
 
 #desc Saves the given resource object to a file at the target [param path]. [param flags] is a bitmask composed with [enum ResourceSaver.SaverFlags] constants.

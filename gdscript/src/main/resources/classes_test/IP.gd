@@ -36,11 +36,11 @@ const TYPE_ANY = 3;
 
 
 #desc Removes all of a [param hostname]'s cached references. If no [param hostname] is given, all cached IP addresses are removed.
-func clear_cache() -> void:
+func clear_cache(hostname: String) -> void:
 	pass;
 
 #desc Removes a given item [param id] from the queue. This should be used to free a queue after it has completed to enable more queries to happen.
-func erase_resolve_item() -> void:
+func erase_resolve_item(id: int) -> void:
 	pass;
 
 #desc Returns all the user's current IPv4 and IPv6 addresses as an array.
@@ -61,15 +61,15 @@ func get_local_interfaces() -> Dictionary[]:
 	pass;
 
 #desc Returns a queued hostname's IP address, given its queue [param id]. Returns an empty string on error or if resolution hasn't happened yet (see [method get_resolve_item_status]).
-func get_resolve_item_address() -> String:
+func get_resolve_item_address(id: int) -> String:
 	pass;
 
 #desc Returns resolved addresses, or an empty array if an error happened or resolution didn't happen yet (see [method get_resolve_item_status]).
-func get_resolve_item_addresses() -> Array:
+func get_resolve_item_addresses(id: int) -> Array:
 	pass;
 
 #desc Returns a queued hostname's status as a [enum ResolverStatus] constant, given its queue [param id].
-func get_resolve_item_status() -> int:
+func get_resolve_item_status(id: int) -> int:
 	pass;
 
 #desc Returns a given hostname's IPv4 or IPv6 address when resolved (blocking-type method). The address type returned depends on the [enum Type] constant given as [param ip_type].

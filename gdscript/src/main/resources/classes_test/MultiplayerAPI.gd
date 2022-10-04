@@ -70,7 +70,7 @@ func rpc(peer: int, object: Object, method: StringName, arguments: Array) -> int
 	pass;
 
 #desc Sets the default MultiplayerAPI implementation class. This method can be used by modules and extensions to configure which implementation will be used by [SceneTree] when the engine starts.
-static func set_default_interface() -> void:
+static func set_default_interface(interface_name: StringName) -> void:
 	pass;
 
 

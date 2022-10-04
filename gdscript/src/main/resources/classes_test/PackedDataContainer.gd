@@ -5,7 +5,7 @@ var __data__: PackedByteArray;
 
 
 
-func pack() -> int:
+func pack(value: Variant) -> int:
 	pass;
 
 func size() -> int:

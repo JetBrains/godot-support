@@ -135,7 +135,7 @@ func add_custom_monitor(id: StringName, callable: Callable, arguments: Array) ->
 	pass;
 
 #desc Returns the value of custom monitor with given [param id]. The callable is called to get the value of custom monitor. See also [method has_custom_monitor]. Prints an error if the given [param id] is absent.
-func get_custom_monitor() -> Variant:
+func get_custom_monitor(id: StringName) -> Variant:
 	pass;
 
 #desc Returns the names of active custom monitors in an [Array].
@@ -152,7 +152,7 @@ func get_custom_monitor_names() -> StringName[]:
 #desc [/csharp]
 #desc [/codeblocks]
 #desc See [method get_custom_monitor] to query custom performance monitors' values.
-func get_monitor() -> float:
+func get_monitor(monitor: int) -> float:
 	pass;
 
 #desc Returns the last tick in which custom monitor was added/removed (in microseconds since the engine started). This is set to [method Time.get_ticks_usec] when the monitor is updated.
@@ -160,11 +160,11 @@ func get_monitor_modification_time() -> int:
 	pass;
 
 #desc Returns [code]true[/code] if custom monitor with the given [param id] is present, [code]false[/code] otherwise.
-func has_custom_monitor() -> bool:
+func has_custom_monitor(id: StringName) -> bool:
 	pass;
 
 #desc Removes the custom monitor with given [param id]. Prints an error if the given [param id] is already absent.
-func remove_custom_monitor() -> void:
+func remove_custom_monitor(id: StringName) -> void:
 	pass;
 
 

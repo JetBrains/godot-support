@@ -68,7 +68,7 @@ const MERGE_ALL = 2;
 
 
 #desc Register a [Callable] that will be called when the action is committed.
-func add_do_method() -> void:
+func add_do_method(callable: Callable) -> void:
 	pass;
 
 #desc Register a [param property] that would change its value to [param value] when the action is committed.
@@ -76,11 +76,11 @@ func add_do_property(object: Object, property: StringName, value: Variant) -> vo
 	pass;
 
 #desc Register a reference for "do" that will be erased if the "do" history is lost. This is useful mostly for new nodes created for the "do" call. Do not use for resources.
-func add_do_reference() -> void:
+func add_do_reference(object: Object) -> void:
 	pass;
 
 #desc Register a [Callable] that will be called when the action is undone.
-func add_undo_method() -> void:
+func add_undo_method(callable: Callable) -> void:
 	pass;
 
 #desc Register a [param property] that would change its value to [param value] when the action is undone.
@@ -88,16 +88,16 @@ func add_undo_property(object: Object, property: StringName, value: Variant) -> 
 	pass;
 
 #desc Register a reference for "undo" that will be erased if the "undo" history is lost. This is useful mostly for nodes removed with the "do" call (not the "undo" call!).
-func add_undo_reference() -> void:
+func add_undo_reference(object: Object) -> void:
 	pass;
 
 #desc Clear the undo/redo history and associated references.
 #desc Passing [code]false[/code] to [param increase_version] will prevent the version number from increasing when the history is cleared.
-func clear_history() -> void:
+func clear_history(increase_version: bool) -> void:
 	pass;
 
 #desc Commit the action. If [param execute] is [code]true[/code] (which it is by default), all "do" methods/properties are called/set when this function is called.
-func commit_action() -> void:
+func commit_action(execute: bool) -> void:
 	pass;
 
 #desc Create a new action. After this is called, do all your calls to [method add_do_method], [method add_undo_method], [method add_do_property], and [method add_undo_property], then commit the action with [method commit_action].
@@ -110,7 +110,7 @@ func end_force_keep_in_merge_ends() -> void:
 	pass;
 
 #desc Gets the action name from its index.
-func get_action_name() -> String:
+func get_action_name(id: int) -> String:
 	pass;
 
 #desc Gets the index of the current action.

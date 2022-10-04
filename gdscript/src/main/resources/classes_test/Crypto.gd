@@ -84,11 +84,11 @@ func encrypt(key: CryptoKey, plaintext: PackedByteArray) -> PackedByteArray:
 	pass;
 
 #desc Generates a [PackedByteArray] of cryptographically secure random bytes with given [param size].
-func generate_random_bytes() -> PackedByteArray:
+func generate_random_bytes(size: int) -> PackedByteArray:
 	pass;
 
 #desc Generates an RSA [CryptoKey] that can be used for creating self-signed certificates and passed to [method StreamPeerTLS.accept_stream].
-func generate_rsa() -> CryptoKey:
+func generate_rsa(size: int) -> CryptoKey:
 	pass;
 
 #desc Generates a self-signed [X509Certificate] from the given [CryptoKey] and [param issuer_name]. The certificate validity will be defined by [param not_before] and [param not_after] (first valid date and last valid date). The [param issuer_name] must contain at least "CN=" (common name, i.e. the domain name), "O=" (organization, i.e. your company name), "C=" (country, i.e. 2 lettered ISO-3166 code of the country the organization is based in).

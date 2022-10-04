@@ -125,11 +125,11 @@ func is_in_bounds(x: int, y: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the [param id] vector is a valid grid coordinate.
-func is_in_boundsv() -> bool:
+func is_in_boundsv(id: Vector2i) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if a point is disabled for pathfinding. By default, all points are enabled.
-func is_point_solid() -> bool:
+func is_point_solid(id: Vector2i) -> bool:
 	pass;
 
 #desc Disables or enables the specified point for pathfinding. Useful for making an obstacle. By default, all points are enabled.

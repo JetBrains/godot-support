@@ -29,10 +29,10 @@ var z: Vector4;
 func Projection() -> Projection:
 	pass;
 
-func Projection() -> Projection:
+func Projection(from: Projection) -> Projection:
 	pass;
 
-func Projection() -> Projection:
+func Projection(from: Transform3D) -> Projection:
 	pass;
 
 #desc Constructs a Projection from four [Vector4] values (matrix columns).
@@ -40,10 +40,10 @@ func Projection(x_axis: Vector4, y_axis: Vector4, z_axis: Vector4, w_axis: Vecto
 	pass;
 
 
-static func create_depth_correction() -> Projection:
+static func create_depth_correction(flip_y: bool) -> Projection:
 	pass;
 
-static func create_fit_aabb() -> Projection:
+static func create_fit_aabb(aabb: AABB) -> Projection:
 	pass;
 
 static func create_for_hmd(eye: int, aspect: float, intraocular_dist: float, display_width: float, display_to_lens: float, oversample: float, z_near: float, z_far: float) -> Projection:
@@ -55,7 +55,7 @@ static func create_frustum(left: float, right: float, bottom: float, top: float,
 static func create_frustum_aspect(size: float, aspect: float, offset: Vector2, z_near: float, z_far: float, flip_fov: bool) -> Projection:
 	pass;
 
-static func create_light_atlas_rect() -> Projection:
+static func create_light_atlas_rect(rect: Rect2) -> Projection:
 	pass;
 
 static func create_orthogonal(left: float, right: float, bottom: float, top: float, z_near: float, z_far: float) -> Projection:
@@ -91,10 +91,10 @@ static func get_fovy(fovx: float, aspect: float) -> float:
 func get_lod_multiplier() -> float:
 	pass;
 
-func get_pixels_per_meter() -> int:
+func get_pixels_per_meter(for_pixel_width: int) -> int:
 	pass;
 
-func get_projection_plane() -> Plane:
+func get_projection_plane(plane: int) -> Plane:
 	pass;
 
 func get_viewport_half_extents() -> Vector2:
@@ -112,10 +112,10 @@ func inverse() -> Projection:
 func is_orthogonal() -> bool:
 	pass;
 
-func jitter_offseted() -> Projection:
+func jitter_offseted(offset: Vector2) -> Projection:
 	pass;
 
-func perspective_znear_adjusted() -> Projection:
+func perspective_znear_adjusted(new_znear: float) -> Projection:
 	pass;
 
 

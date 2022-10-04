@@ -87,11 +87,11 @@ func get_point_count() -> int:
 	pass;
 
 #desc Returns the position of the point at index [param index].
-func get_point_position() -> Vector2:
+func get_point_position(index: int) -> Vector2:
 	pass;
 
 #desc Removes the point at index [param index] from the line.
-func remove_point() -> void:
+func remove_point(index: int) -> void:
 	pass;
 
 #desc Overwrites the position of the point at index [param index] with the supplied [param position].

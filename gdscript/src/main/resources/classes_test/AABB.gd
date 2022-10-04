@@ -22,7 +22,7 @@ func AABB() -> AABB:
 	pass;
 
 #desc Constructs an [AABB] as a copy of the given [AABB].
-func AABB() -> AABB:
+func AABB(from: AABB) -> AABB:
 	pass;
 
 #desc Constructs an [AABB] from a position and size.
@@ -35,7 +35,7 @@ func abs() -> AABB:
 	pass;
 
 #desc Returns [code]true[/code] if this [AABB] completely encloses another one.
-func encloses() -> bool:
+func encloses(with: AABB) -> bool:
 	pass;
 
 #desc Returns a copy of this [AABB] expanded to include a given point.
@@ -54,7 +54,7 @@ func encloses() -> bool:
 #desc var box2 = box.Expand(new Vector3(0, -1, 2));
 #desc [/csharp]
 #desc [/codeblocks]
-func expand() -> AABB:
+func expand(to_point: Vector3) -> AABB:
 	pass;
 
 #desc Returns the center of the [AABB], which is equal to [member position] + ([member size] / 2).
@@ -62,7 +62,7 @@ func get_center() -> Vector3:
 	pass;
 
 #desc Gets the position of the 8 endpoints of the [AABB] in space.
-func get_endpoint() -> Vector3:
+func get_endpoint(idx: int) -> Vector3:
 	pass;
 
 #desc Returns the normalized longest axis of the [AABB].
@@ -90,7 +90,7 @@ func get_shortest_axis_size() -> float:
 	pass;
 
 #desc Returns the support point in a given direction. This is useful for collision detection algorithms.
-func get_support() -> Vector3:
+func get_support(dir: Vector3) -> Vector3:
 	pass;
 
 #desc Returns the volume of the [AABB].
@@ -98,12 +98,12 @@ func get_volume() -> float:
 	pass;
 
 #desc Returns a copy of the [AABB] grown a given number of units towards all the sides.
-func grow() -> AABB:
+func grow(by: float) -> AABB:
 	pass;
 
 #desc Returns [code]true[/code] if the [AABB] contains a point. Points on the faces of the AABB are considered included, though float-point precision errors may impact the accuracy of such checks.
 #desc [b]Note:[/b] This method is not reliable for [AABB] with a [i]negative size[/i]. Use [method abs] to get a positive sized equivalent [AABB] to check for contained points.
-func has_point() -> bool:
+func has_point(point: Vector3) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the [AABB] has a surface or a length, and [code]false[/code] if the [AABB] is empty (all components of [member size] are zero or negative).
@@ -115,15 +115,15 @@ func has_volume() -> bool:
 	pass;
 
 #desc Returns the intersection between two [AABB]. An empty AABB (size [code](0, 0, 0)[/code]) is returned on failure.
-func intersection() -> AABB:
+func intersection(with: AABB) -> AABB:
 	pass;
 
 #desc Returns [code]true[/code] if the [AABB] overlaps with another.
-func intersects() -> bool:
+func intersects(with: AABB) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the [AABB] is on both sides of a plane.
-func intersects_plane() -> bool:
+func intersects_plane(plane: Plane) -> bool:
 	pass;
 
 func intersects_ray(from: Vector3, dir: Vector3) -> Variant:
@@ -134,11 +134,11 @@ func intersects_segment(from: Vector3, to: Vector3) -> Variant:
 	pass;
 
 #desc Returns [code]true[/code] if this [AABB] and [param aabb] are approximately equal, by calling [method @GlobalScope.is_equal_approx] on each component.
-func is_equal_approx() -> bool:
+func is_equal_approx(aabb: AABB) -> bool:
 	pass;
 
 #desc Returns a larger [AABB] that contains both this [AABB] and [param with].
-func merge() -> AABB:
+func merge(with: AABB) -> AABB:
 	pass;
 
 

@@ -7,15 +7,15 @@ class_name TextServerManager
 
 
 #desc Registers an [TextServer] interface.
-func add_interface() -> void:
+func add_interface(interface: TextServer) -> void:
 	pass;
 
 #desc Finds an interface by its name.
-func find_interface() -> TextServer:
+func find_interface(name: String) -> TextServer:
 	pass;
 
 #desc Returns the interface registered at a given index.
-func get_interface() -> TextServer:
+func get_interface(idx: int) -> TextServer:
 	pass;
 
 #desc Returns the number of interfaces currently registered.
@@ -31,11 +31,11 @@ func get_primary_interface() -> TextServer:
 	pass;
 
 #desc Removes interface. All fonts and shaped text caches should be freed before removing interface.
-func remove_interface() -> void:
+func remove_interface(interface: TextServer) -> void:
 	pass;
 
 #desc Sets the primary [TextServer] interface.
-func set_primary_interface() -> void:
+func set_primary_interface(index: TextServer) -> void:
 	pass;
 
 

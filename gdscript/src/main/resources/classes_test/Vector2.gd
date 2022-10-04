@@ -44,11 +44,11 @@ func Vector2() -> Vector2:
 	pass;
 
 #desc Constructs a [Vector2] as a copy of the given [Vector2].
-func Vector2() -> Vector2:
+func Vector2(from: Vector2) -> Vector2:
 	pass;
 
 #desc Constructs a new [Vector2] from [Vector2i].
-func Vector2() -> Vector2:
+func Vector2(from: Vector2i) -> Vector2:
 	pass;
 
 #desc Constructs a new [Vector2] from the given [param x] and [param y].
@@ -69,13 +69,13 @@ func angle() -> float:
 
 #desc Returns the angle to the given vector, in radians.
 #desc [url=https://raw.githubusercontent.com/godotengine/godot-docs/master/img/vector2_angle_to.png]Illustration of the returned angle.[/url]
-func angle_to() -> float:
+func angle_to(to: Vector2) -> float:
 	pass;
 
 #desc Returns the angle between the line connecting the two points and the X axis, in radians.
 #desc [code]a.angle_to_point(b)[/code] is equivalent of doing [code](b - a).angle()[/code].
 #desc [url=https://raw.githubusercontent.com/godotengine/godot-docs/master/img/vector2_angle_to_point.png]Illustration of the returned angle.[/url]
-func angle_to_point() -> float:
+func angle_to_point(to: Vector2) -> float:
 	pass;
 
 #desc Returns the aspect ratio of this vector, the ratio of [member x] to [member y].
@@ -87,7 +87,7 @@ func bezier_interpolate(control_1: Vector2, control_2: Vector2, end: Vector2, t:
 	pass;
 
 #desc Returns the vector "bounced off" from a plane defined by the given normal.
-func bounce() -> Vector2:
+func bounce(n: Vector2) -> Vector2:
 	pass;
 
 #desc Returns a new vector with all components rounded up (towards positive infinity).
@@ -101,7 +101,7 @@ func clamp(min: Vector2, max: Vector2) -> Vector2:
 #desc Returns the 2D analog of the cross product for this vector and [param with].
 #desc This is the signed area of the parallelogram formed by the two vectors. If the second vector is clockwise from the first vector, then the cross product is the positive area. If counter-clockwise, the cross product is the negative area.
 #desc [b]Note:[/b] Cross product is not defined in 2D mathematically. This method embeds the 2D vectors in the XY plane of 3D space and uses their cross product's Z component as the analog.
-func cross() -> float:
+func cross(with: Vector2) -> float:
 	pass;
 
 #desc Cubically interpolates between this vector and [param b] using [param pre_a] and [param post_b] as handles, and returns the result at position [param weight]. [param weight] is on the range of 0.0 to 1.0, representing the amount of interpolation.
@@ -114,23 +114,23 @@ func cubic_interpolate_in_time(b: Vector2, pre_a: Vector2, post_b: Vector2, weig
 	pass;
 
 #desc Returns the normalized vector pointing from this vector to [param to]. This is equivalent to using [code](b - a).normalized()[/code].
-func direction_to() -> Vector2:
+func direction_to(to: Vector2) -> Vector2:
 	pass;
 
 #desc Returns the squared distance between this vector and [param to].
 #desc This method runs faster than [method distance_to], so prefer it if you need to compare vectors or need the squared distance for some formula.
-func distance_squared_to() -> float:
+func distance_squared_to(to: Vector2) -> float:
 	pass;
 
 #desc Returns the distance between this vector and [param to].
-func distance_to() -> float:
+func distance_to(to: Vector2) -> float:
 	pass;
 
 #desc Returns the dot product of this vector and [param with]. This can be used to compare the angle between two vectors. For example, this can be used to determine whether an enemy is facing the player.
 #desc The dot product will be [code]0[/code] for a straight angle (90 degrees), greater than 0 for angles narrower than 90 degrees and lower than 0 for angles wider than 90 degrees.
 #desc When using unit (normalized) vectors, the result will always be between [code]-1.0[/code] (180 degree angle) when the vectors are facing opposite directions, and [code]1.0[/code] (0 degree angle) when the vectors are aligned.
 #desc [b]Note:[/b] [code]a.dot(b)[/code] is equivalent to [code]b.dot(a)[/code].
-func dot() -> float:
+func dot(with: Vector2) -> float:
 	pass;
 
 #desc Returns a new vector with all components rounded down (towards negative infinity).
@@ -143,11 +143,11 @@ func floor() -> Vector2:
 #desc print(Vector2(1, 0).angle()) # Prints 0, which is the angle used above.
 #desc print(Vector2.from_angle(PI / 2)) # Prints (0, 1).
 #desc [/codeblock]
-static func from_angle() -> Vector2:
+static func from_angle(angle: float) -> Vector2:
 	pass;
 
 #desc Returns [code]true[/code] if this vector and [code]v[/code] are approximately equal, by running [method @GlobalScope.is_equal_approx] on each component.
-func is_equal_approx() -> bool:
+func is_equal_approx(to: Vector2) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the vector is normalized, [code]false[/code] otherwise.
@@ -173,7 +173,7 @@ func lerp(to: Vector2, weight: float) -> Vector2:
 	pass;
 
 #desc Returns the vector with a maximum length by limiting its length to [param length].
-func limit_length() -> Vector2:
+func limit_length(length: float) -> Vector2:
 	pass;
 
 #desc Returns the axis of the vector's highest value. See [code]AXIS_*[/code] constants. If all components are equal, this method returns [constant AXIS_X].
@@ -197,23 +197,23 @@ func orthogonal() -> Vector2:
 	pass;
 
 #desc Returns a vector composed of the [method @GlobalScope.fposmod] of this vector's components and [param mod].
-func posmod() -> Vector2:
+func posmod(mod: float) -> Vector2:
 	pass;
 
 #desc Returns a vector composed of the [method @GlobalScope.fposmod] of this vector's components and [param modv]'s components.
-func posmodv() -> Vector2:
+func posmodv(modv: Vector2) -> Vector2:
 	pass;
 
 #desc Returns this vector projected onto the vector [code]b[/code].
-func project() -> Vector2:
+func project(b: Vector2) -> Vector2:
 	pass;
 
 #desc Returns the vector reflected (i.e. mirrored, or symmetric) over a line defined by the given direction vector [param n].
-func reflect() -> Vector2:
+func reflect(n: Vector2) -> Vector2:
 	pass;
 
 #desc Returns the vector rotated by [param angle] (in radians). See also [method @GlobalScope.deg_to_rad].
-func rotated() -> Vector2:
+func rotated(angle: float) -> Vector2:
 	pass;
 
 #desc Returns a new vector with all components rounded to the nearest integer, with halfway cases rounded away from zero.
@@ -230,11 +230,11 @@ func slerp(to: Vector2, weight: float) -> Vector2:
 	pass;
 
 #desc Returns this vector slid along a plane defined by the given normal.
-func slide() -> Vector2:
+func slide(n: Vector2) -> Vector2:
 	pass;
 
 #desc Returns this vector with each component snapped to the nearest multiple of [param step]. This can also be used to round to an arbitrary number of decimals.
-func snapped() -> Vector2:
+func snapped(step: Vector2) -> Vector2:
 	pass;
 
 

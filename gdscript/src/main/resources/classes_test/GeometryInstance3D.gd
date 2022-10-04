@@ -100,11 +100,11 @@ var visibility_range_fade_mode: int;
 
 
 
-func get_instance_shader_parameter() -> Variant:
+func get_instance_shader_parameter(name: StringName) -> Variant:
 	pass;
 
 #desc Overrides the bounding box of this node with a custom one. To remove it, set an [AABB] with all fields set to zero.
-func set_custom_aabb() -> void:
+func set_custom_aabb(aabb: AABB) -> void:
 	pass;
 
 func set_instance_shader_parameter(name: StringName, value: Variant) -> void:

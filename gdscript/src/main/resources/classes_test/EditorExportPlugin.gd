@@ -57,38 +57,38 @@ func add_file(path: String, file: PackedByteArray, remap: bool) -> void:
 	pass;
 
 #desc Adds an iOS bundle file from the given [param path] to the exported project.
-func add_ios_bundle_file() -> void:
+func add_ios_bundle_file(path: String) -> void:
 	pass;
 
 #desc Adds a C++ code to the iOS export. The final code is created from the code appended by each active export plugin.
-func add_ios_cpp_code() -> void:
+func add_ios_cpp_code(code: String) -> void:
 	pass;
 
 #desc Adds a dynamic library (*.dylib, *.framework) to Linking Phase in iOS's Xcode project and embeds it into resulting binary.
 #desc [b]Note:[/b] For static libraries (*.a) works in same way as [code]add_ios_framework[/code].
 #desc This method should not be used for System libraries as they are already present on the device.
-func add_ios_embedded_framework() -> void:
+func add_ios_embedded_framework(path: String) -> void:
 	pass;
 
 #desc Adds a static library (*.a) or dynamic library (*.dylib, *.framework) to Linking Phase in iOS's Xcode project.
-func add_ios_framework() -> void:
+func add_ios_framework(path: String) -> void:
 	pass;
 
 #desc Adds linker flags for the iOS export.
-func add_ios_linker_flags() -> void:
+func add_ios_linker_flags(flags: String) -> void:
 	pass;
 
 #desc Adds content for iOS Property List files.
-func add_ios_plist_content() -> void:
+func add_ios_plist_content(plist_content: String) -> void:
 	pass;
 
 #desc Adds a static lib from the given [param path] to the iOS project.
-func add_ios_project_static_lib() -> void:
+func add_ios_project_static_lib(path: String) -> void:
 	pass;
 
 #desc Adds file or directory matching [param path] to [code]PlugIns[/code] directory of macOS app bundle.
 #desc [b]Note:[/b] This is useful only for macOS exports.
-func add_macos_plugin_file() -> void:
+func add_macos_plugin_file(path: String) -> void:
 	pass;
 
 #desc Adds a shared object or a directory containing only shared objects with the given [param tags] and destination [param path].

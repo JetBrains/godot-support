@@ -39,7 +39,7 @@ func add_button(text: String, right: bool, action: String) -> Button:
 
 #desc Adds a button with label [param name] and a cancel action to the dialog and returns the created button.
 #desc You can use [method remove_button] method to remove a button created with this method from the dialog.
-func add_cancel_button() -> Button:
+func add_cancel_button(name: String) -> Button:
 	pass;
 
 #desc Returns the label used for built-in text.
@@ -53,11 +53,11 @@ func get_ok_button() -> Button:
 	pass;
 
 #desc Registers a [LineEdit] in the dialog. When the enter key is pressed, the dialog will be accepted.
-func register_text_enter() -> void:
+func register_text_enter(line_edit: Control) -> void:
 	pass;
 
 #desc Removes the [param button] from the dialog. Does NOT free the [param button]. The [param button] must be a [Button] added with [method add_button] or [method add_cancel_button] method. After removal, pressing the [param button] will no longer emit this dialog's [signal custom_action] or [signal cancelled] signals.
-func remove_button() -> void:
+func remove_button(button: Control) -> void:
 	pass;
 
 

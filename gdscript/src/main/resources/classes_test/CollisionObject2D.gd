@@ -48,23 +48,23 @@ virtual func _mouse_exit() -> void:
 	pass;
 
 #desc Called when the mouse pointer enters any of this object's shapes or moves from one shape to another. [param shape_idx] is the child index of the newly entered [Shape2D]. Requires [member input_pickable] to be [code]true[/code] and at least one [member collision_layer] bit to be called.
-virtual func _mouse_shape_enter() -> void:
+virtual func _mouse_shape_enter(shape_idx: int) -> void:
 	pass;
 
 #desc Called when the mouse pointer exits any of this object's shapes. [param shape_idx] is the child index of the exited [Shape2D]. Requires [member input_pickable] to be [code]true[/code] and at least one [member collision_layer] bit to be called.
-virtual func _mouse_shape_exit() -> void:
+virtual func _mouse_shape_exit(shape_idx: int) -> void:
 	pass;
 
 #desc Creates a new shape owner for the given object. Returns [code]owner_id[/code] of the new owner for future reference.
-func create_shape_owner() -> int:
+func create_shape_owner(owner: Object) -> int:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member collision_layer] is enabled, given a [param layer_number] between 1 and 32.
-func get_collision_layer_value() -> bool:
+func get_collision_layer_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member collision_mask] is enabled, given a [param layer_number] between 1 and 32.
-func get_collision_mask_value() -> bool:
+func get_collision_mask_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns the object's [RID].
@@ -72,7 +72,7 @@ func get_rid() -> RID:
 	pass;
 
 #desc Returns the [code]one_way_collision_margin[/code] of the shape owner identified by given [param owner_id].
-func get_shape_owner_one_way_collision_margin() -> float:
+func get_shape_owner_one_way_collision_margin(owner_id: int) -> float:
 	pass;
 
 #desc Returns an [Array] of [code]owner_id[/code] identifiers. You can use these ids in other methods that take [code]owner_id[/code] as an argument.
@@ -80,15 +80,15 @@ func get_shape_owners() -> PackedInt32Array:
 	pass;
 
 #desc If [code]true[/code], the shape owner and its shapes are disabled.
-func is_shape_owner_disabled() -> bool:
+func is_shape_owner_disabled(owner_id: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if collisions for the shape owner originating from this [CollisionObject2D] will not be reported to collided with [CollisionObject2D]s.
-func is_shape_owner_one_way_collision_enabled() -> bool:
+func is_shape_owner_one_way_collision_enabled(owner_id: int) -> bool:
 	pass;
 
 #desc Removes the given shape owner.
-func remove_shape_owner() -> void:
+func remove_shape_owner(owner_id: int) -> void:
 	pass;
 
 #desc Based on [param value], enables or disables the specified layer in the [member collision_layer], given a [param layer_number] between 1 and 32.
@@ -100,7 +100,7 @@ func set_collision_mask_value(layer_number: int, value: bool) -> void:
 	pass;
 
 #desc Returns the [code]owner_id[/code] of the given shape.
-func shape_find_owner() -> int:
+func shape_find_owner(shape_index: int) -> int:
 	pass;
 
 #desc Adds a [Shape2D] to the shape owner.
@@ -108,11 +108,11 @@ func shape_owner_add_shape(owner_id: int, shape: Shape2D) -> void:
 	pass;
 
 #desc Removes all shapes from the shape owner.
-func shape_owner_clear_shapes() -> void:
+func shape_owner_clear_shapes(owner_id: int) -> void:
 	pass;
 
 #desc Returns the parent object of the given shape owner.
-func shape_owner_get_owner() -> Object:
+func shape_owner_get_owner(owner_id: int) -> Object:
 	pass;
 
 #desc Returns the [Shape2D] with the given id from the given shape owner.
@@ -120,7 +120,7 @@ func shape_owner_get_shape(owner_id: int, shape_id: int) -> Shape2D:
 	pass;
 
 #desc Returns the number of shapes the given shape owner contains.
-func shape_owner_get_shape_count() -> int:
+func shape_owner_get_shape_count(owner_id: int) -> int:
 	pass;
 
 #desc Returns the child index of the [Shape2D] with the given id from the given shape owner.
@@ -128,7 +128,7 @@ func shape_owner_get_shape_index(owner_id: int, shape_id: int) -> int:
 	pass;
 
 #desc Returns the shape owner's [Transform2D].
-func shape_owner_get_transform() -> Transform2D:
+func shape_owner_get_transform(owner_id: int) -> Transform2D:
 	pass;
 
 #desc Removes a shape from the given shape owner.

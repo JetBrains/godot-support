@@ -7,15 +7,15 @@ class_name MethodTweener
 
 
 #desc Sets the time in seconds after which the [MethodTweener] will start interpolating. By default there's no delay.
-func set_delay() -> MethodTweener:
+func set_delay(delay: float) -> MethodTweener:
 	pass;
 
 #desc Sets the type of used easing from [enum Tween.EaseType]. If not set, the default easing is used from the [Tween] that contains this Tweener.
-func set_ease() -> MethodTweener:
+func set_ease(ease: int) -> MethodTweener:
 	pass;
 
 #desc Sets the type of used transition from [enum Tween.TransitionType]. If not set, the default transition is used from the [Tween] that contains this Tweener.
-func set_trans() -> MethodTweener:
+func set_trans(trans: int) -> MethodTweener:
 	pass;
 
 

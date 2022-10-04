@@ -46,7 +46,7 @@ var texture: Texture2D;
 
 
 #desc Returns the size of the margin on the specified [enum Side].
-func get_patch_margin() -> int:
+func get_patch_margin(margin: int) -> int:
 	pass;
 
 #desc Sets the size of the margin on the specified [enum Side] to [param value] pixels.

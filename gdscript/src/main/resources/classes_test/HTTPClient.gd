@@ -343,7 +343,7 @@ func poll() -> int:
 #desc // Returns "single=123&not_valued&multiple=22&multiple=33&multiple=44"
 #desc [/csharp]
 #desc [/codeblocks]
-func query_string_from_dict() -> String:
+func query_string_from_dict(fields: Dictionary) -> String:
 	pass;
 
 #desc Reads one chunk from the response.

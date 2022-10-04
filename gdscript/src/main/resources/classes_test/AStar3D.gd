@@ -117,7 +117,7 @@ func get_closest_point(to_position: Vector3, include_disabled: bool) -> int:
 #desc [/csharp]
 #desc [/codeblocks]
 #desc The result is in the segment that goes from [code]y = 0[/code] to [code]y = 5[/code]. It's the closest position in the segment to the given point.
-func get_closest_position_in_segment() -> Vector3:
+func get_closest_position_in_segment(to_position: Vector3) -> Vector3:
 	pass;
 
 #desc Returns an array with the IDs of the points that form the path found by AStar3D between the given points. The array is ordered from the starting point to the ending point of the path.
@@ -183,7 +183,7 @@ func get_point_capacity() -> int:
 #desc int[] neighbors = astar.GetPointConnections(1); // Returns [2, 3]
 #desc [/csharp]
 #desc [/codeblocks]
-func get_point_connections() -> PackedInt64Array:
+func get_point_connections(id: int) -> PackedInt64Array:
 	pass;
 
 #desc Returns the number of points currently in the points pool.
@@ -200,27 +200,27 @@ func get_point_path(from_id: int, to_id: int) -> PackedVector3Array:
 	pass;
 
 #desc Returns the position of the point associated with the given [param id].
-func get_point_position() -> Vector3:
+func get_point_position(id: int) -> Vector3:
 	pass;
 
 #desc Returns the weight scale of the point associated with the given [param id].
-func get_point_weight_scale() -> float:
+func get_point_weight_scale(id: int) -> float:
 	pass;
 
 #desc Returns whether a point associated with the given [param id] exists.
-func has_point() -> bool:
+func has_point(id: int) -> bool:
 	pass;
 
 #desc Returns whether a point is disabled or not for pathfinding. By default, all points are enabled.
-func is_point_disabled() -> bool:
+func is_point_disabled(id: int) -> bool:
 	pass;
 
 #desc Removes the point associated with the given [param id] from the points pool.
-func remove_point() -> void:
+func remove_point(id: int) -> void:
 	pass;
 
 #desc Reserves space internally for [param num_nodes] points, useful if you're adding a known large number of points at once, for a grid for instance. New capacity must be greater or equals to old capacity.
-func reserve_space() -> void:
+func reserve_space(num_nodes: int) -> void:
 	pass;
 
 #desc Disables or enables the specified point for pathfinding. Useful for making a temporary obstacle.

@@ -25,7 +25,7 @@ func add_file(pck_path: String, source_path: String, encrypt: bool) -> int:
 	pass;
 
 #desc Writes the files specified using all [method add_file] calls since the last flush. If [param verbose] is [code]true[/code], a list of files added will be printed to the console for easier debugging.
-func flush() -> int:
+func flush(verbose: bool) -> int:
 	pass;
 
 #desc Creates a new PCK file with the name [param pck_name]. The [code].pck[/code] file extension isn't added automatically, so it should be part of [param pck_name] (even though it's not required).

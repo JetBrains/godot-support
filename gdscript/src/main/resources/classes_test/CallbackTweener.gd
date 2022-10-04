@@ -11,7 +11,7 @@ class_name CallbackTweener
 #desc var tween = get_tree().create_tween()
 #desc tween.tween_callback(queue_free).set_delay(2) #this will call queue_free() after 2 seconds
 #desc [/codeblock]
-func set_delay() -> CallbackTweener:
+func set_delay(delay: float) -> CallbackTweener:
 	pass;
 
 

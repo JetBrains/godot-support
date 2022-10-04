@@ -40,11 +40,11 @@ func Vector4i() -> Vector4i:
 	pass;
 
 #desc Constructs a [Vector4i] as a copy of the given [Vector4i].
-func Vector4i() -> Vector4i:
+func Vector4i(from: Vector4i) -> Vector4i:
 	pass;
 
 #desc Constructs a new [Vector4i] from the given [Vector4].
-func Vector4i() -> Vector4i:
+func Vector4i(from: Vector4) -> Vector4i:
 	pass;
 
 #desc Returns a [Vector4i] with the given components.

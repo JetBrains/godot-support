@@ -69,7 +69,7 @@ func get_line_count() -> int:
 #desc Returns the height of the line [param line].
 #desc If [param line] is set to [code]-1[/code], returns the biggest line height.
 #desc If there are no lines, returns font size in pixels.
-func get_line_height() -> int:
+func get_line_height(line: int) -> int:
 	pass;
 
 #desc Returns the total number of printable characters in the text (excluding spaces and newlines).

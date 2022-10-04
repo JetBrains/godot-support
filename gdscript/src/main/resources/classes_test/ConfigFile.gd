@@ -97,7 +97,7 @@ func encode_to_text() -> String:
 	pass;
 
 #desc Deletes the specified section along with all the key-value pairs inside. Raises an error if the section does not exist.
-func erase_section() -> void:
+func erase_section(section: String) -> void:
 	pass;
 
 #desc Deletes the specified key in a section. Raises an error if either the section or the key do not exist.
@@ -105,7 +105,7 @@ func erase_section_key(section: String, key: String) -> void:
 	pass;
 
 #desc Returns an array of all defined key identifiers in the specified section. Raises an error and returns an empty array if the section does not exist.
-func get_section_keys() -> PackedStringArray:
+func get_section_keys(section: String) -> PackedStringArray:
 	pass;
 
 #desc Returns an array of all defined section identifiers.
@@ -117,7 +117,7 @@ func get_value(section: String, key: String, default: Variant) -> Variant:
 	pass;
 
 #desc Returns [code]true[/code] if the specified section exists.
-func has_section() -> bool:
+func has_section(section: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the specified section-key pair exists.
@@ -126,7 +126,7 @@ func has_section_key(section: String, key: String) -> bool:
 
 #desc Loads the config file specified as a parameter. The file's contents are parsed and loaded in the [ConfigFile] object which the method was called on.
 #desc Returns one of the [enum Error] code constants ([code]OK[/code] on success).
-func load() -> int:
+func load(path: String) -> int:
 	pass;
 
 #desc Loads the encrypted config file specified as a parameter, using the provided [param key] to decrypt it. The file's contents are parsed and loaded in the [ConfigFile] object which the method was called on.
@@ -141,12 +141,12 @@ func load_encrypted_pass(path: String, password: String) -> int:
 
 #desc Parses the passed string as the contents of a config file. The string is parsed and loaded in the ConfigFile object which the method was called on.
 #desc Returns one of the [enum Error] code constants ([code]OK[/code] on success).
-func parse() -> int:
+func parse(data: String) -> int:
 	pass;
 
 #desc Saves the contents of the [ConfigFile] object to the file specified as a parameter. The output file uses an INI-style structure.
 #desc Returns one of the [enum Error] code constants ([code]OK[/code] on success).
-func save() -> int:
+func save(path: String) -> int:
 	pass;
 
 #desc Saves the contents of the [ConfigFile] object to the AES-256 encrypted file specified as a parameter, using the provided [param key] to encrypt it. The output file uses an INI-style structure.

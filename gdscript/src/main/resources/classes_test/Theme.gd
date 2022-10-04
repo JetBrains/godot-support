@@ -42,7 +42,7 @@ var default_font_size: int;
 
 #desc Adds an empty theme type for every valid data type.
 #desc [b]Note:[/b] Empty types are not saved with the theme. This method only exists to perform in-memory changes to the resource. Use available [code]set_*[/code] methods to add theme items.
-func add_type() -> void:
+func add_type(theme_type: StringName) -> void:
 	pass;
 
 #desc Removes all the theme properties defined on the theme resource.
@@ -86,7 +86,7 @@ func clear_theme_item(data_type: int, name: StringName, theme_type: StringName) 
 	pass;
 
 #desc Unmarks [param theme_type] as being a variation of another theme type. See [method set_type_variation].
-func clear_type_variation() -> void:
+func clear_type_variation(theme_type: StringName) -> void:
 	pass;
 
 #desc Returns the [Color] property defined by [param name] and [param theme_type], if it exists.
@@ -95,7 +95,7 @@ func get_color(name: StringName, theme_type: StringName) -> Color:
 	pass;
 
 #desc Returns a list of names for [Color] properties defined with [param theme_type]. Use [method get_color_type_list] to get a list of possible theme type names.
-func get_color_list() -> PackedStringArray:
+func get_color_list(theme_type: String) -> PackedStringArray:
 	pass;
 
 #desc Returns a list of all unique theme type names for [Color] properties. Use [method get_type_list] to get a list of all unique theme types.
@@ -108,7 +108,7 @@ func get_constant(name: StringName, theme_type: StringName) -> int:
 	pass;
 
 #desc Returns a list of names for constant properties defined with [param theme_type]. Use [method get_constant_type_list] to get a list of possible theme type names.
-func get_constant_list() -> PackedStringArray:
+func get_constant_list(theme_type: String) -> PackedStringArray:
 	pass;
 
 #desc Returns a list of all unique theme type names for constant properties. Use [method get_type_list] to get a list of all unique theme types.
@@ -122,7 +122,7 @@ func get_font(name: StringName, theme_type: StringName) -> Font:
 	pass;
 
 #desc Returns a list of names for [Font] properties defined with [param theme_type]. Use [method get_font_type_list] to get a list of possible theme type names.
-func get_font_list() -> PackedStringArray:
+func get_font_list(theme_type: String) -> PackedStringArray:
 	pass;
 
 #desc Returns the font size property defined by [param name] and [param theme_type], if it exists.
@@ -132,7 +132,7 @@ func get_font_size(name: StringName, theme_type: StringName) -> int:
 	pass;
 
 #desc Returns a list of names for font size properties defined with [param theme_type]. Use [method get_font_size_type_list] to get a list of possible theme type names.
-func get_font_size_list() -> PackedStringArray:
+func get_font_size_list(theme_type: String) -> PackedStringArray:
 	pass;
 
 #desc Returns a list of all unique theme type names for font size properties. Use [method get_type_list] to get a list of all unique theme types.
@@ -149,7 +149,7 @@ func get_icon(name: StringName, theme_type: StringName) -> Texture2D:
 	pass;
 
 #desc Returns a list of names for icon properties defined with [param theme_type]. Use [method get_icon_type_list] to get a list of possible theme type names.
-func get_icon_list() -> PackedStringArray:
+func get_icon_list(theme_type: String) -> PackedStringArray:
 	pass;
 
 #desc Returns a list of all unique theme type names for icon properties. Use [method get_type_list] to get a list of all unique theme types.
@@ -162,7 +162,7 @@ func get_stylebox(name: StringName, theme_type: StringName) -> StyleBox:
 	pass;
 
 #desc Returns a list of names for [StyleBox] properties defined with [param theme_type]. Use [method get_stylebox_type_list] to get a list of possible theme type names.
-func get_stylebox_list() -> PackedStringArray:
+func get_stylebox_list(theme_type: String) -> PackedStringArray:
 	pass;
 
 #desc Returns a list of all unique theme type names for [StyleBox] properties. Use [method get_type_list] to get a list of all unique theme types.
@@ -182,7 +182,7 @@ func get_theme_item_list(data_type: int, theme_type: String) -> PackedStringArra
 
 #desc Returns a list of all unique theme type names for [param data_type] properties. Use [method get_type_list] to get a list of all unique theme types.
 #desc [b]Note:[/b] This method is analogous to calling the corresponding data type specific method, but can be used for more generalized logic.
-func get_theme_item_type_list() -> PackedStringArray:
+func get_theme_item_type_list(data_type: int) -> PackedStringArray:
 	pass;
 
 #desc Returns a list of all unique theme type names. Use the appropriate [code]get_*_type_list[/code] method to get a list of unique theme types for a single data type.
@@ -190,11 +190,11 @@ func get_type_list() -> PackedStringArray:
 	pass;
 
 #desc Returns the name of the base theme type if [param theme_type] is a valid variation type. Returns an empty string otherwise.
-func get_type_variation_base() -> StringName:
+func get_type_variation_base(theme_type: StringName) -> StringName:
 	pass;
 
 #desc Returns a list of all type variations for the given [param base_type].
-func get_type_variation_list() -> PackedStringArray:
+func get_type_variation_list(base_type: StringName) -> PackedStringArray:
 	pass;
 
 #desc Returns [code]true[/code] if the [Color] property defined by [param name] and [param theme_type] exists.
@@ -254,11 +254,11 @@ func is_type_variation(theme_type: StringName, base_type: StringName) -> bool:
 
 #desc Adds missing and overrides existing definitions with values from the [param other] theme resource.
 #desc [b]Note:[/b] This modifies the current theme. If you want to merge two themes together without modifying either one, create a new empty theme and merge the other two into it one after another.
-func merge_with() -> void:
+func merge_with(other: Theme) -> void:
 	pass;
 
 #desc Removes the theme type, gracefully discarding defined theme items. If the type is a variation, this information is also erased. If the type is a base for type variations, those variations lose their base.
-func remove_type() -> void:
+func remove_type(theme_type: StringName) -> void:
 	pass;
 
 #desc Renames the [Color] property defined by [param old_name] and [param theme_type] to [param name], if it exists.

@@ -29,11 +29,11 @@ func add_point(offset: float, color: Color) -> void:
 	pass;
 
 #desc Returns the color of the gradient color at index [param point].
-func get_color() -> Color:
+func get_color(point: int) -> Color:
 	pass;
 
 #desc Returns the offset of the gradient color at index [param point].
-func get_offset() -> float:
+func get_offset(point: int) -> float:
 	pass;
 
 #desc Returns the number of colors in the gradient.
@@ -41,7 +41,7 @@ func get_point_count() -> int:
 	pass;
 
 #desc Removes the color at the index [param point].
-func remove_point() -> void:
+func remove_point(point: int) -> void:
 	pass;
 
 #desc Reverses/mirrors the gradient.
@@ -49,7 +49,7 @@ func reverse() -> void:
 	pass;
 
 #desc Returns the interpolated color specified by [code]offset[/code].
-func sample() -> Color:
+func sample(offset: float) -> Color:
 	pass;
 
 #desc Sets the color of the gradient color at index [param point].

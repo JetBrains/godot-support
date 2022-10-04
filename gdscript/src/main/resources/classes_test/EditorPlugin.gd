@@ -76,7 +76,7 @@ virtual func _disable_plugin() -> void:
 	pass;
 
 #desc This function is used for plugins that edit specific object types (nodes or resources). It requests the editor to edit the given object.
-virtual func _edit() -> void:
+virtual func _edit(object: Variant) -> void:
 	pass;
 
 #desc Called by the engine when the user enables the [EditorPlugin] in the Plugin tab of the project settings window.
@@ -115,12 +115,12 @@ virtual func _enable_plugin() -> void:
 #desc return EditorPlugin.AFTER_GUI_INPUT_PASS;
 #desc [/csharp]
 #desc [/codeblocks]
-virtual func _forward_3d_draw_over_viewport() -> void:
+virtual func _forward_3d_draw_over_viewport(viewport_control: Control) -> void:
 	pass;
 
 #desc This method is the same as [method _forward_3d_draw_over_viewport], except it draws on top of everything. Useful when you need an extra layer that shows over anything else.
 #desc You need to enable calling of this method by using [method set_force_draw_over_forwarding_enabled].
-virtual func _forward_3d_force_draw_over_viewport() -> void:
+virtual func _forward_3d_force_draw_over_viewport(viewport_control: Control) -> void:
 	pass;
 
 #desc Called when there is a root node in the current edited scene, [method _handles] is implemented, and an [InputEvent] happens in the 3D viewport. The return value decides whether the [InputEvent] is consumed or forwarded to other [EditorPlugin]s. See [enum AfterGUIInput] for options. Example:
@@ -188,12 +188,12 @@ virtual func _forward_3d_gui_input(viewport_camera: Camera3D, event: InputEvent)
 #desc return false;
 #desc [/csharp]
 #desc [/codeblocks]
-virtual func _forward_canvas_draw_over_viewport() -> void:
+virtual func _forward_canvas_draw_over_viewport(viewport_control: Control) -> void:
 	pass;
 
 #desc This method is the same as [method _forward_canvas_draw_over_viewport], except it draws on top of everything. Useful when you need an extra layer that shows over anything else.
 #desc You need to enable calling of this method by using [method set_force_draw_over_forwarding_enabled].
-virtual func _forward_canvas_force_draw_over_viewport() -> void:
+virtual func _forward_canvas_force_draw_over_viewport(viewport_control: Control) -> void:
 	pass;
 
 #desc Called when there is a root node in the current edited scene, [method _handles] is implemented and an [InputEvent] happens in the 2D viewport. Intercepts the [InputEvent], if [code]return true[/code] [EditorPlugin] consumes the [param event], otherwise forwards [param event] to other Editor classes. Example:
@@ -231,7 +231,7 @@ virtual func _forward_canvas_force_draw_over_viewport() -> void:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual func _forward_canvas_gui_input() -> bool:
+virtual func _forward_canvas_gui_input(event: InputEvent) -> bool:
 	pass;
 
 #desc This is for editors that edit script-based objects. You can return a list of breakpoints in the format ([code]script:line[/code]), for example: [code]res://path_to_script.gd:25[/code].
@@ -286,11 +286,11 @@ virtual const func _get_state() -> Dictionary:
 #desc configuration.set_value("MyPlugin", "window_position", $Window.position)
 #desc configuration.set_value("MyPlugin", "icon_color", $Icon.modulate)
 #desc [/codeblock]
-virtual func _get_window_layout() -> void:
+virtual func _get_window_layout(configuration: ConfigFile) -> void:
 	pass;
 
 #desc Implement this function if your plugin edits a specific type of object (Resource or Node). If you return [code]true[/code], then you will get the functions [method _edit] and [method _make_visible] called when the editor requests them. If you have declared the methods [method _forward_canvas_gui_input] and [method _forward_3d_gui_input] these will be called too.
-virtual const func _handles() -> bool:
+virtual const func _handles(object: Variant) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this is a main screen editor plugin (it goes in the workspace selector together with [b]2D[/b], [b]3D[/b], [b]Script[/b] and [b]AssetLib[/b]).
@@ -321,7 +321,7 @@ virtual const func _has_main_screen() -> bool:
 
 #desc This function will be called when the editor is requested to become visible. It is used for plugins that edit a specific object type.
 #desc Remember that you have to manage the visibility of all your editor controls manually.
-virtual func _make_visible() -> void:
+virtual func _make_visible(visible: bool) -> void:
 	pass;
 
 #desc This method is called after the editor saves the project or when it's closed. It asks the plugin to save edited external scenes/resources.
@@ -335,7 +335,7 @@ virtual func _save_external_data() -> void:
 #desc zoom = data.get("zoom", 1.0)
 #desc preferred_color = data.get("my_color", Color.white)
 #desc [/codeblock]
-virtual func _set_state() -> void:
+virtual func _set_state(state: Dictionary) -> void:
 	pass;
 
 #desc Restore the plugin GUI layout and data saved by [method _get_window_layout]. This method is called for every plugin on editor startup. Use the provided [param configuration] file to read your saved data.
@@ -344,7 +344,7 @@ virtual func _set_state() -> void:
 #desc $Window.position = configuration.get_value("MyPlugin", "window_position", Vector2())
 #desc $Icon.modulate = configuration.get_value("MyPlugin", "icon_color", Color.white)
 #desc [/codeblock]
-virtual func _set_window_layout() -> void:
+virtual func _set_window_layout(configuration: ConfigFile) -> void:
 	pass;
 
 #desc Adds a script at [param path] to the Autoload list as [param name].
@@ -376,12 +376,12 @@ func add_custom_type(type: String, base: String, script: Script, icon: Texture2D
 	pass;
 
 #desc Adds a [Script] as debugger plugin to the Debugger. The script must extend [EditorDebuggerPlugin].
-func add_debugger_plugin() -> void:
+func add_debugger_plugin(script: Script) -> void:
 	pass;
 
 #desc Registers a new [EditorExportPlugin]. Export plugins are used to perform tasks when the project is being exported.
 #desc See [method add_inspector_plugin] for an example of how to register a plugin.
-func add_export_plugin() -> void:
+func add_export_plugin(plugin: EditorExportPlugin) -> void:
 	pass;
 
 #desc Registers a new [EditorImportPlugin]. Import plugins are used to import custom and unsupported assets as a custom [Resource] type.
@@ -405,12 +405,12 @@ func add_import_plugin(importer: EditorImportPlugin, first_priority: bool) -> vo
 #desc remove_inspector_plugin(inspector_plugin)
 #desc [/gdscript]
 #desc [/codeblocks]
-func add_inspector_plugin() -> void:
+func add_inspector_plugin(plugin: EditorInspectorPlugin) -> void:
 	pass;
 
 #desc Registers a new [EditorNode3DGizmoPlugin]. Gizmo plugins are used to add custom gizmos to the 3D preview viewport for a [Node3D].
 #desc See [method add_inspector_plugin] for an example of how to register a plugin.
-func add_node_3d_gizmo_plugin() -> void:
+func add_node_3d_gizmo_plugin(plugin: EditorNode3DGizmoPlugin) -> void:
 	pass;
 
 #desc Registers a new [EditorSceneFormatImporter]. Scene importers are used to import custom 3D asset formats as scenes.
@@ -432,12 +432,12 @@ func add_tool_submenu_item(name: String, submenu: PopupMenu) -> void:
 	pass;
 
 #desc Registers a custom translation parser plugin for extracting translatable strings from custom files.
-func add_translation_parser_plugin() -> void:
+func add_translation_parser_plugin(parser: EditorTranslationParserPlugin) -> void:
 	pass;
 
 #desc Hooks a callback into the undo/redo action creation when a property is modified in the inspector. This allows, for example, to save other properties that may be lost when a given property is modified.
 #desc The callback should have 4 arguments: [Object] [code]undo_redo[/code], [Object] [code]modified_object[/code], [String] [code]property[/code] and [Variant] [code]new_value[/code]. They are, respectively, the [UndoRedo] object used by the inspector, the currently modified object, the name of the modified property and the new value the property is about to take.
-func add_undo_redo_inspector_hook_callback() -> void:
+func add_undo_redo_inspector_hook_callback(callable: Callable) -> void:
 	pass;
 
 #desc Returns the [EditorInterface] object that gives you control over Godot editor's window and its functionalities.
@@ -463,7 +463,7 @@ func hide_bottom_panel() -> void:
 	pass;
 
 #desc Makes a specific item in the bottom panel visible.
-func make_bottom_panel_item_visible() -> void:
+func make_bottom_panel_item_visible(item: Control) -> void:
 	pass;
 
 #desc Queue save the project's editor layout.
@@ -471,11 +471,11 @@ func queue_save_layout() -> void:
 	pass;
 
 #desc Removes an Autoload [param name] from the list.
-func remove_autoload_singleton() -> void:
+func remove_autoload_singleton(name: String) -> void:
 	pass;
 
 #desc Removes the control from the bottom panel. You have to manually [method Node.queue_free] the control.
-func remove_control_from_bottom_panel() -> void:
+func remove_control_from_bottom_panel(control: Control) -> void:
 	pass;
 
 #desc Removes the control from the specified container. You have to manually [method Node.queue_free] the control.
@@ -483,51 +483,51 @@ func remove_control_from_container(container: int, control: Control) -> void:
 	pass;
 
 #desc Removes the control from the dock. You have to manually [method Node.queue_free] the control.
-func remove_control_from_docks() -> void:
+func remove_control_from_docks(control: Control) -> void:
 	pass;
 
 #desc Removes a custom type added by [method add_custom_type].
-func remove_custom_type() -> void:
+func remove_custom_type(type: String) -> void:
 	pass;
 
 #desc Removes the debugger plugin with given script from the Debugger.
-func remove_debugger_plugin() -> void:
+func remove_debugger_plugin(script: Script) -> void:
 	pass;
 
 #desc Removes an export plugin registered by [method add_export_plugin].
-func remove_export_plugin() -> void:
+func remove_export_plugin(plugin: EditorExportPlugin) -> void:
 	pass;
 
 #desc Removes an import plugin registered by [method add_import_plugin].
-func remove_import_plugin() -> void:
+func remove_import_plugin(importer: EditorImportPlugin) -> void:
 	pass;
 
 #desc Removes an inspector plugin registered by [method add_import_plugin]
-func remove_inspector_plugin() -> void:
+func remove_inspector_plugin(plugin: EditorInspectorPlugin) -> void:
 	pass;
 
 #desc Removes a gizmo plugin registered by [method add_node_3d_gizmo_plugin].
-func remove_node_3d_gizmo_plugin() -> void:
+func remove_node_3d_gizmo_plugin(plugin: EditorNode3DGizmoPlugin) -> void:
 	pass;
 
 #desc Removes a scene format importer registered by [method add_scene_format_importer_plugin].
-func remove_scene_format_importer_plugin() -> void:
+func remove_scene_format_importer_plugin(scene_format_importer: EditorSceneFormatImporter) -> void:
 	pass;
 
 #desc Remove the [EditorScenePostImportPlugin], added with [method add_scene_post_import_plugin].
-func remove_scene_post_import_plugin() -> void:
+func remove_scene_post_import_plugin(scene_import_plugin: EditorScenePostImportPlugin) -> void:
 	pass;
 
 #desc Removes a menu [param name] from [b]Project > Tools[/b].
-func remove_tool_menu_item() -> void:
+func remove_tool_menu_item(name: String) -> void:
 	pass;
 
 #desc Removes a custom translation parser plugin registered by [method add_translation_parser_plugin].
-func remove_translation_parser_plugin() -> void:
+func remove_translation_parser_plugin(parser: EditorTranslationParserPlugin) -> void:
 	pass;
 
 #desc Removes a callback previsously added by [method add_undo_redo_inspector_hook_callback].
-func remove_undo_redo_inspector_hook_callback() -> void:
+func remove_undo_redo_inspector_hook_callback(callable: Callable) -> void:
 	pass;
 
 #desc Enables calling of [method _forward_canvas_force_draw_over_viewport] for the 2D editor and [method _forward_3d_force_draw_over_viewport] for the 3D editor when their viewports are updated. You need to call this method only once and it will work permanently for this plugin.

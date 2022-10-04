@@ -115,7 +115,7 @@ func is_passthrough_supported() -> bool:
 	pass;
 
 #desc Sets the active play area mode, will return [code]false[/code] if the mode can't be used with this interface.
-func set_play_area_mode() -> bool:
+func set_play_area_mode(mode: int) -> bool:
 	pass;
 
 #desc Starts passthrough, will return [code]false[/code] if passthrough couldn't be started.
@@ -128,7 +128,7 @@ func stop_passthrough() -> void:
 	pass;
 
 #desc Call this to find out if a given play area mode is supported by this interface.
-func supports_play_area_mode() -> bool:
+func supports_play_area_mode(mode: int) -> bool:
 	pass;
 
 #desc Triggers a haptic pulse on a device associated with this interface.

@@ -70,11 +70,11 @@ var params/bias: float;
 
 
 #desc Returns the value of the specified flag.
-func get_flag() -> bool:
+func get_flag(flag: int) -> bool:
 	pass;
 
 #desc Returns the value of the specified parameter.
-func get_param() -> float:
+func get_param(param: int) -> float:
 	pass;
 
 #desc If [code]true[/code], enables the specified flag.

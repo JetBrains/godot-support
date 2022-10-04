@@ -20,7 +20,7 @@ virtual func _font_clear_glyphs(font_rid: RID, size: Vector2i) -> void:
 virtual func _font_clear_kerning_map(font_rid: RID, size: int) -> void:
 	pass;
 
-virtual func _font_clear_size_cache() -> void:
+virtual func _font_clear_size_cache(font_rid: RID) -> void:
 	pass;
 
 virtual func _font_clear_textures(font_rid: RID, size: Vector2i) -> void:
@@ -32,7 +32,7 @@ virtual const func _font_draw_glyph(font_rid: RID, canvas: RID, size: int, pos: 
 virtual const func _font_draw_glyph_outline(font_rid: RID, canvas: RID, size: int, outline_size: int, pos: Vector2, index: int, color: Color) -> void:
 	pass;
 
-virtual const func _font_get_antialiasing() -> int:
+virtual const func _font_get_antialiasing(font_rid: RID) -> int:
 	pass;
 
 virtual const func _font_get_ascent(font_rid: RID, size: int) -> float:
@@ -41,19 +41,19 @@ virtual const func _font_get_ascent(font_rid: RID, size: int) -> float:
 virtual const func _font_get_descent(font_rid: RID, size: int) -> float:
 	pass;
 
-virtual const func _font_get_embolden() -> float:
+virtual const func _font_get_embolden(font_rid: RID) -> float:
 	pass;
 
-virtual const func _font_get_face_count() -> int:
+virtual const func _font_get_face_count(font_rid: RID) -> int:
 	pass;
 
-virtual const func _font_get_face_index() -> int:
+virtual const func _font_get_face_index(font_rid: RID) -> int:
 	pass;
 
-virtual const func _font_get_fixed_size() -> int:
+virtual const func _font_get_fixed_size(font_rid: RID) -> int:
 	pass;
 
-virtual const func _font_get_generate_mipmaps() -> bool:
+virtual const func _font_get_generate_mipmaps(font_rid: RID) -> bool:
 	pass;
 
 virtual const func _font_get_global_oversampling() -> float:
@@ -89,7 +89,7 @@ virtual const func _font_get_glyph_texture_size(font_rid: RID, size: Vector2i, g
 virtual const func _font_get_glyph_uv_rect(font_rid: RID, size: Vector2i, glyph: int) -> Rect2:
 	pass;
 
-virtual const func _font_get_hinting() -> int:
+virtual const func _font_get_hinting(font_rid: RID) -> int:
 	pass;
 
 virtual const func _font_get_kerning(font_rid: RID, size: int, glyph_pair: Vector2i) -> Vector2:
@@ -101,22 +101,22 @@ virtual const func _font_get_kerning_list(font_rid: RID, size: int) -> Vector2i[
 virtual func _font_get_language_support_override(font_rid: RID, language: String) -> bool:
 	pass;
 
-virtual func _font_get_language_support_overrides() -> PackedStringArray:
+virtual func _font_get_language_support_overrides(font_rid: RID) -> PackedStringArray:
 	pass;
 
-virtual const func _font_get_msdf_pixel_range() -> int:
+virtual const func _font_get_msdf_pixel_range(font_rid: RID) -> int:
 	pass;
 
-virtual const func _font_get_msdf_size() -> int:
+virtual const func _font_get_msdf_size(font_rid: RID) -> int:
 	pass;
 
-virtual const func _font_get_name() -> String:
+virtual const func _font_get_name(font_rid: RID) -> String:
 	pass;
 
-virtual const func _font_get_opentype_feature_overrides() -> Dictionary:
+virtual const func _font_get_opentype_feature_overrides(font_rid: RID) -> Dictionary:
 	pass;
 
-virtual const func _font_get_oversampling() -> float:
+virtual const func _font_get_oversampling(font_rid: RID) -> float:
 	pass;
 
 virtual const func _font_get_scale(font_rid: RID, size: int) -> float:
@@ -125,22 +125,22 @@ virtual const func _font_get_scale(font_rid: RID, size: int) -> float:
 virtual func _font_get_script_support_override(font_rid: RID, script: String) -> bool:
 	pass;
 
-virtual func _font_get_script_support_overrides() -> PackedStringArray:
+virtual func _font_get_script_support_overrides(font_rid: RID) -> PackedStringArray:
 	pass;
 
-virtual const func _font_get_size_cache_list() -> Vector2i[]:
+virtual const func _font_get_size_cache_list(font_rid: RID) -> Vector2i[]:
 	pass;
 
-virtual const func _font_get_style() -> int:
+virtual const func _font_get_style(font_rid: RID) -> int:
 	pass;
 
-virtual const func _font_get_style_name() -> String:
+virtual const func _font_get_style_name(font_rid: RID) -> String:
 	pass;
 
-virtual const func _font_get_subpixel_positioning() -> int:
+virtual const func _font_get_subpixel_positioning(font_rid: RID) -> int:
 	pass;
 
-virtual const func _font_get_supported_chars() -> String:
+virtual const func _font_get_supported_chars(font_rid: RID) -> String:
 	pass;
 
 virtual const func _font_get_texture_count(font_rid: RID, size: Vector2i) -> int:
@@ -152,7 +152,7 @@ virtual const func _font_get_texture_image(font_rid: RID, size: Vector2i, textur
 virtual const func _font_get_texture_offsets(font_rid: RID, size: Vector2i, texture_index: int) -> PackedInt32Array:
 	pass;
 
-virtual const func _font_get_transform() -> Transform2D:
+virtual const func _font_get_transform(font_rid: RID) -> Transform2D:
 	pass;
 
 virtual const func _font_get_underline_position(font_rid: RID, size: int) -> float:
@@ -161,19 +161,19 @@ virtual const func _font_get_underline_position(font_rid: RID, size: int) -> flo
 virtual const func _font_get_underline_thickness(font_rid: RID, size: int) -> float:
 	pass;
 
-virtual const func _font_get_variation_coordinates() -> Dictionary:
+virtual const func _font_get_variation_coordinates(font_rid: RID) -> Dictionary:
 	pass;
 
 virtual const func _font_has_char(font_rid: RID, char: int) -> bool:
 	pass;
 
-virtual const func _font_is_force_autohinter() -> bool:
+virtual const func _font_is_force_autohinter(font_rid: RID) -> bool:
 	pass;
 
 virtual const func _font_is_language_supported(font_rid: RID, language: String) -> bool:
 	pass;
 
-virtual const func _font_is_multichannel_signed_distance_field() -> bool:
+virtual const func _font_is_multichannel_signed_distance_field(font_rid: RID) -> bool:
 	pass;
 
 virtual const func _font_is_script_supported(font_rid: RID, script: String) -> bool:
@@ -233,7 +233,7 @@ virtual func _font_set_force_autohinter(font_rid: RID, force_autohinter: bool) -
 virtual func _font_set_generate_mipmaps(font_rid: RID, generate_mipmaps: bool) -> void:
 	pass;
 
-virtual func _font_set_global_oversampling() -> void:
+virtual func _font_set_global_oversampling(oversampling: float) -> void:
 	pass;
 
 virtual func _font_set_glyph_advance(font_rid: RID, size: int, glyph: int, advance: Vector2) -> void:
@@ -311,16 +311,16 @@ virtual func _font_set_underline_thickness(font_rid: RID, size: int, underline_t
 virtual func _font_set_variation_coordinates(font_rid: RID, variation_coordinates: Dictionary) -> void:
 	pass;
 
-virtual const func _font_supported_feature_list() -> Dictionary:
+virtual const func _font_supported_feature_list(font_rid: RID) -> Dictionary:
 	pass;
 
-virtual const func _font_supported_variation_list() -> Dictionary:
+virtual const func _font_supported_variation_list(font_rid: RID) -> Dictionary:
 	pass;
 
 virtual const func _format_number(string: String, language: String) -> String:
 	pass;
 
-virtual func _free_rid() -> void:
+virtual func _free_rid(rid: RID) -> void:
 	pass;
 
 virtual const func _get_features() -> int:
@@ -338,25 +338,25 @@ virtual const func _get_support_data_filename() -> String:
 virtual const func _get_support_data_info() -> String:
 	pass;
 
-virtual func _has() -> bool:
+virtual func _has(rid: RID) -> bool:
 	pass;
 
-virtual const func _has_feature() -> bool:
+virtual const func _has_feature(feature: int) -> bool:
 	pass;
 
 virtual const func _is_confusable(string: String, dict: PackedStringArray) -> int:
 	pass;
 
-virtual const func _is_locale_right_to_left() -> bool:
+virtual const func _is_locale_right_to_left(locale: String) -> bool:
 	pass;
 
-virtual const func _is_valid_identifier() -> bool:
+virtual const func _is_valid_identifier(string: String) -> bool:
 	pass;
 
-virtual func _load_support_data() -> bool:
+virtual func _load_support_data(filename: String) -> bool:
 	pass;
 
-virtual const func _name_to_tag() -> int:
+virtual const func _name_to_tag(name: String) -> int:
 	pass;
 
 virtual const func _parse_number(string: String, language: String) -> String:
@@ -365,13 +365,13 @@ virtual const func _parse_number(string: String, language: String) -> String:
 virtual const func _parse_structured_text(parser_type: int, args: Array, text: String) -> Vector2i[]:
 	pass;
 
-virtual const func _percent_sign() -> String:
+virtual const func _percent_sign(language: String) -> String:
 	pass;
 
-virtual const func _save_support_data() -> bool:
+virtual const func _save_support_data(filename: String) -> bool:
 	pass;
 
-virtual const func _shaped_get_span_count() -> int:
+virtual const func _shaped_get_span_count(shaped: RID) -> int:
 	pass;
 
 virtual const func _shaped_get_span_meta(shaped: RID, index: int) -> Variant:
@@ -386,7 +386,7 @@ virtual func _shaped_text_add_object(shaped: RID, key: Variant, size: Vector2, i
 virtual func _shaped_text_add_string(shaped: RID, text: String, fonts: RID[], size: int, opentype_features: Dictionary, language: String, meta: Variant) -> bool:
 	pass;
 
-virtual func _shaped_text_clear() -> void:
+virtual func _shaped_text_clear(shaped: RID) -> void:
 	pass;
 
 virtual const func _shaped_text_draw(shaped: RID, canvas: RID, pos: Vector2, clip_l: float, clip_r: float, color: Color) -> void:
@@ -398,43 +398,43 @@ virtual const func _shaped_text_draw_outline(shaped: RID, canvas: RID, pos: Vect
 virtual func _shaped_text_fit_to_width(shaped: RID, width: float, jst_flags: int) -> float:
 	pass;
 
-virtual const func _shaped_text_get_ascent() -> float:
+virtual const func _shaped_text_get_ascent(shaped: RID) -> float:
 	pass;
 
 virtual const func _shaped_text_get_carets(shaped: RID, position: int, caret: CaretInfo*) -> void:
 	pass;
 
-virtual const func _shaped_text_get_custom_punctuation() -> String:
+virtual const func _shaped_text_get_custom_punctuation(shaped: RID) -> String:
 	pass;
 
-virtual const func _shaped_text_get_descent() -> float:
+virtual const func _shaped_text_get_descent(shaped: RID) -> float:
 	pass;
 
-virtual const func _shaped_text_get_direction() -> int:
+virtual const func _shaped_text_get_direction(shaped: RID) -> int:
 	pass;
 
 virtual const func _shaped_text_get_dominant_direction_in_range(shaped: RID, start: int, end: int) -> int:
 	pass;
 
-virtual const func _shaped_text_get_ellipsis_glyph_count() -> int:
+virtual const func _shaped_text_get_ellipsis_glyph_count(shaped: RID) -> int:
 	pass;
 
-virtual const func _shaped_text_get_ellipsis_glyphs() -> const Glyph*:
+virtual const func _shaped_text_get_ellipsis_glyphs(shaped: RID) -> const Glyph*:
 	pass;
 
-virtual const func _shaped_text_get_ellipsis_pos() -> int:
+virtual const func _shaped_text_get_ellipsis_pos(shaped: RID) -> int:
 	pass;
 
-virtual const func _shaped_text_get_glyph_count() -> int:
+virtual const func _shaped_text_get_glyph_count(shaped: RID) -> int:
 	pass;
 
-virtual const func _shaped_text_get_glyphs() -> const Glyph*:
+virtual const func _shaped_text_get_glyphs(shaped: RID) -> const Glyph*:
 	pass;
 
 virtual const func _shaped_text_get_grapheme_bounds(shaped: RID, pos: int) -> Vector2:
 	pass;
 
-virtual const func _shaped_text_get_inferred_direction() -> int:
+virtual const func _shaped_text_get_inferred_direction(shaped: RID) -> int:
 	pass;
 
 virtual const func _shaped_text_get_line_breaks(shaped: RID, width: float, start: int, break_flags: int) -> PackedInt32Array:
@@ -446,43 +446,43 @@ virtual const func _shaped_text_get_line_breaks_adv(shaped: RID, width: PackedFl
 virtual const func _shaped_text_get_object_rect(shaped: RID, key: Variant) -> Rect2:
 	pass;
 
-virtual const func _shaped_text_get_objects() -> Array:
+virtual const func _shaped_text_get_objects(shaped: RID) -> Array:
 	pass;
 
-virtual const func _shaped_text_get_orientation() -> int:
+virtual const func _shaped_text_get_orientation(shaped: RID) -> int:
 	pass;
 
-virtual const func _shaped_text_get_parent() -> RID:
+virtual const func _shaped_text_get_parent(shaped: RID) -> RID:
 	pass;
 
-virtual const func _shaped_text_get_preserve_control() -> bool:
+virtual const func _shaped_text_get_preserve_control(shaped: RID) -> bool:
 	pass;
 
-virtual const func _shaped_text_get_preserve_invalid() -> bool:
+virtual const func _shaped_text_get_preserve_invalid(shaped: RID) -> bool:
 	pass;
 
-virtual const func _shaped_text_get_range() -> Vector2i:
+virtual const func _shaped_text_get_range(shaped: RID) -> Vector2i:
 	pass;
 
 virtual const func _shaped_text_get_selection(shaped: RID, start: int, end: int) -> PackedVector2Array:
 	pass;
 
-virtual const func _shaped_text_get_size() -> Vector2:
+virtual const func _shaped_text_get_size(shaped: RID) -> Vector2:
 	pass;
 
 virtual const func _shaped_text_get_spacing(shaped: RID, spacing: int) -> int:
 	pass;
 
-virtual const func _shaped_text_get_trim_pos() -> int:
+virtual const func _shaped_text_get_trim_pos(shaped: RID) -> int:
 	pass;
 
-virtual const func _shaped_text_get_underline_position() -> float:
+virtual const func _shaped_text_get_underline_position(shaped: RID) -> float:
 	pass;
 
-virtual const func _shaped_text_get_underline_thickness() -> float:
+virtual const func _shaped_text_get_underline_thickness(shaped: RID) -> float:
 	pass;
 
-virtual const func _shaped_text_get_width() -> float:
+virtual const func _shaped_text_get_width(shaped: RID) -> float:
 	pass;
 
 virtual const func _shaped_text_get_word_breaks(shaped: RID, grapheme_flags: int) -> PackedInt32Array:
@@ -494,7 +494,7 @@ virtual const func _shaped_text_hit_test_grapheme(shaped: RID, coord: float) -> 
 virtual const func _shaped_text_hit_test_position(shaped: RID, coord: float) -> int:
 	pass;
 
-virtual const func _shaped_text_is_ready() -> bool:
+virtual const func _shaped_text_is_ready(shaped: RID) -> bool:
 	pass;
 
 virtual const func _shaped_text_next_grapheme_pos(shaped: RID, pos: int) -> int:
@@ -530,10 +530,10 @@ virtual func _shaped_text_set_preserve_invalid(shaped: RID, enabled: bool) -> vo
 virtual func _shaped_text_set_spacing(shaped: RID, spacing: int, value: int) -> void:
 	pass;
 
-virtual func _shaped_text_shape() -> bool:
+virtual func _shaped_text_shape(shaped: RID) -> bool:
 	pass;
 
-virtual func _shaped_text_sort_logical() -> const Glyph*:
+virtual func _shaped_text_sort_logical(shaped: RID) -> const Glyph*:
 	pass;
 
 virtual const func _shaped_text_substr(shaped: RID, start: int, length: int) -> RID:
@@ -542,13 +542,13 @@ virtual const func _shaped_text_substr(shaped: RID, start: int, length: int) -> 
 virtual func _shaped_text_tab_align(shaped: RID, tab_stops: PackedFloat32Array) -> float:
 	pass;
 
-virtual func _shaped_text_update_breaks() -> bool:
+virtual func _shaped_text_update_breaks(shaped: RID) -> bool:
 	pass;
 
-virtual func _shaped_text_update_justification_ops() -> bool:
+virtual func _shaped_text_update_justification_ops(shaped: RID) -> bool:
 	pass;
 
-virtual const func _spoof_check() -> bool:
+virtual const func _spoof_check(string: String) -> bool:
 	pass;
 
 virtual const func _string_get_word_breaks(string: String, language: String) -> PackedInt32Array:
@@ -560,10 +560,10 @@ virtual const func _string_to_lower(string: String, language: String) -> String:
 virtual const func _string_to_upper(string: String, language: String) -> String:
 	pass;
 
-virtual const func _strip_diacritics() -> String:
+virtual const func _strip_diacritics(string: String) -> String:
 	pass;
 
-virtual const func _tag_to_name() -> String:
+virtual const func _tag_to_name(tag: int) -> String:
 	pass;
 
 

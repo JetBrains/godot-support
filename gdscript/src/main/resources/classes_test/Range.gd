@@ -36,11 +36,11 @@ var value: float;
 
 
 #desc Called when the [Range]'s value is changed (following the same conditions as [signal value_changed]).
-virtual func _value_changed() -> void:
+virtual func _value_changed(new_value: float) -> void:
 	pass;
 
 #desc Binds two [Range]s together along with any ranges previously grouped with either of them. When any of range's member variables change, it will share the new value with all other ranges in its group.
-func share() -> void:
+func share(with: Node) -> void:
 	pass;
 
 #desc Stops the [Range] from sharing its member variables with any other.

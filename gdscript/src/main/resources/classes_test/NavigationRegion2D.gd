@@ -27,7 +27,7 @@ var travel_cost: float;
 
 
 #desc Returns whether or not the specified layer of the [member navigation_layers] bitmask is enabled, given a [param layer_number] between 1 and 32.
-func get_navigation_layer_value() -> bool:
+func get_navigation_layer_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns the [RID] of this region on the [NavigationServer2D]. Combined with [method NavigationServer2D.map_get_closest_point_owner] can be used to identify the [NavigationRegion2D] closest to a point on the merged navigation map.

@@ -90,7 +90,7 @@ var upper_fade: float;
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-func get_texture() -> Texture2D:
+func get_texture(type: int) -> Texture2D:
 	pass;
 
 #desc Sets the [Texture2D] associated with the specified [enum DecalTexture]. This is a convenience method, in most cases you should access the texture directly.

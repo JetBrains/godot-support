@@ -6,11 +6,11 @@ class_name EngineDebugger
 
 
 #desc Returns [code]true[/code] if a capture with the given name is present otherwise [code]false[/code].
-func has_capture() -> bool:
+func has_capture(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if a profiler with the given name is present otherwise [code]false[/code].
-func has_profiler() -> bool:
+func has_profiler(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the debugger is active otherwise [code]false[/code].
@@ -18,7 +18,7 @@ func is_active() -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if a profiler with the given name is present and active otherwise [code]false[/code].
-func is_profiling() -> bool:
+func is_profiling(name: StringName) -> bool:
 	pass;
 
 #desc Calls the [code]add[/code] callable of the profiler with given [param name] and [param data].
@@ -43,11 +43,11 @@ func send_message(message: String, data: Array) -> void:
 	pass;
 
 #desc Unregisters the message capture with given [param name].
-func unregister_message_capture() -> void:
+func unregister_message_capture(name: StringName) -> void:
 	pass;
 
 #desc Unregisters a profiler with given [param name].
-func unregister_profiler() -> void:
+func unregister_profiler(name: StringName) -> void:
 	pass;
 
 

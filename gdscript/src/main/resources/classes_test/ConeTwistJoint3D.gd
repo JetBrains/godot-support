@@ -50,7 +50,7 @@ var twist_span: float;
 
 
 
-func get_param() -> float:
+func get_param(param: int) -> float:
 	pass;
 
 func set_param(param: int, value: float) -> void:

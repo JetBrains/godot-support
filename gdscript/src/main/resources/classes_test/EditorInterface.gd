@@ -10,11 +10,11 @@ var distraction_free_mode: bool;
 
 
 #desc Edits the given [Node]. The node will be also selected if it's inside the scene tree.
-func edit_node() -> void:
+func edit_node(node: Node) -> void:
 	pass;
 
 #desc Edits the given [Resource]. If the resource is a [Script] you can also edit it with [method edit_script] to specify the line and column position.
-func edit_resource() -> void:
+func edit_resource(resource: Resource) -> void:
 	pass;
 
 #desc Edits the given [Script]. The line and column on which to open the script can also be specified. The script will be open with the user-configured editor for the script's language which may be an external editor.
@@ -104,7 +104,7 @@ func is_playing_scene() -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the specified [param plugin] is enabled. The plugin name is the same as its directory name.
-func is_plugin_enabled() -> bool:
+func is_plugin_enabled(plugin: String) -> bool:
 	pass;
 
 #desc Returns mesh previews rendered at the given size as an [Array] of [Texture2D]s.
@@ -112,7 +112,7 @@ func make_mesh_previews(meshes: Mesh[], preview_size: int) -> Texture2D[]:
 	pass;
 
 #desc Opens the scene at the given path.
-func open_scene_from_path() -> void:
+func open_scene_from_path(scene_filepath: String) -> void:
 	pass;
 
 #desc Plays the currently active scene.
@@ -120,7 +120,7 @@ func play_current_scene() -> void:
 	pass;
 
 #desc Plays the scene specified by its filepath.
-func play_custom_scene() -> void:
+func play_custom_scene(scene_filepath: String) -> void:
 	pass;
 
 #desc Plays the main scene.
@@ -128,11 +128,11 @@ func play_main_scene() -> void:
 	pass;
 
 #desc Reloads the scene at the given path.
-func reload_scene_from_path() -> void:
+func reload_scene_from_path(scene_filepath: String) -> void:
 	pass;
 
 #desc Restarts the editor. This closes the editor and then opens the same project. If [param save] is [code]true[/code], the project will be saved before restarting.
-func restart_editor() -> void:
+func restart_editor(save: bool) -> void:
 	pass;
 
 #desc Saves the scene. Returns either [code]OK[/code] or [code]ERR_CANT_CREATE[/code] (see [@GlobalScope] constants).
@@ -144,11 +144,11 @@ func save_scene_as(path: String, with_preview: bool) -> void:
 	pass;
 
 #desc Selects the file, with the path provided by [param file], in the FileSystem dock.
-func select_file() -> void:
+func select_file(file: String) -> void:
 	pass;
 
 #desc Sets the editor's current main screen to the one specified in [param name]. [param name] must match the text of the tab in question exactly ([code]2D[/code], [code]3D[/code], [code]Script[/code], [code]AssetLib[/code]).
-func set_main_screen_editor() -> void:
+func set_main_screen_editor(name: String) -> void:
 	pass;
 
 #desc Sets the enabled status of a plugin. The plugin name is the same as its directory name.

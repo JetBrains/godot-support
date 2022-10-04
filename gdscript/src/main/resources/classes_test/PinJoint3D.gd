@@ -24,7 +24,7 @@ var params/impulse_clamp: float;
 
 
 #desc Returns the value of the specified parameter.
-func get_param() -> float:
+func get_param(param: int) -> float:
 	pass;
 
 #desc Sets the value of the specified parameter.

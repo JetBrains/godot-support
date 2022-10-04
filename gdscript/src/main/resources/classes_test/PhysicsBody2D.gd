@@ -8,7 +8,7 @@ var input_pickable: bool;
 
 
 #desc Adds a body to the list of bodies that this body can't collide with.
-func add_collision_exception_with() -> void:
+func add_collision_exception_with(body: Node) -> void:
 	pass;
 
 #desc Returns an array of nodes that were added as collision exceptions for this body.
@@ -24,7 +24,7 @@ func move_and_collide(distance: Vector2, test_only: bool, safe_margin: float, re
 	pass;
 
 #desc Removes a body from the list of bodies that this body can't collide with.
-func remove_collision_exception_with() -> void:
+func remove_collision_exception_with(body: Node) -> void:
 	pass;
 
 #desc Checks for collisions without moving the body. In order to be frame rate independent in [method Node._physics_process] or [method Node._process], [param distance] should be computed using [code]delta[/code].

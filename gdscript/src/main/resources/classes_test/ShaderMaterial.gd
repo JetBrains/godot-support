@@ -9,7 +9,7 @@ var shader: Shader;
 
 
 #desc Returns the current value set for this material of a uniform in the shader.
-func get_shader_parameter() -> Variant:
+func get_shader_parameter(param: StringName) -> Variant:
 	pass;
 
 #desc Changes the value set for this material of a uniform in the shader.

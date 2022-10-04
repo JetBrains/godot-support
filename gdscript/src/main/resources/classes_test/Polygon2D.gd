@@ -59,7 +59,7 @@ func clear_bones() -> void:
 	pass;
 
 #desc Removes the specified bone from this [Polygon2D].
-func erase_bone() -> void:
+func erase_bone(index: int) -> void:
 	pass;
 
 #desc Returns the number of bones in this [Polygon2D].
@@ -67,11 +67,11 @@ func get_bone_count() -> int:
 	pass;
 
 #desc Returns the path to the node associated with the specified bone.
-func get_bone_path() -> NodePath:
+func get_bone_path(index: int) -> NodePath:
 	pass;
 
 #desc Returns the height values of the specified bone.
-func get_bone_weights() -> PackedFloat32Array:
+func get_bone_weights(index: int) -> PackedFloat32Array:
 	pass;
 
 #desc Sets the path to the node associated with the specified bone.

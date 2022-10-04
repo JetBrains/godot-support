@@ -8,7 +8,7 @@ class_name PhysicsDirectSpaceState2D
 #desc Checks how far a [Shape2D] can move without colliding. All the parameters for the query, including the shape and the motion, are supplied through a [PhysicsShapeQueryParameters2D] object.
 #desc Returns an array with the safe and unsafe proportions (between 0 and 1) of the motion. The safe proportion is the maximum fraction of the motion that can be made without a collision. The unsafe proportion is the minimum fraction of the distance that must be moved for a collision. If no collision is detected a result of [code][1.0, 1.0][/code] will be returned.
 #desc [b]Note:[/b] Any [Shape2D]s that the shape is already colliding with e.g. inside of, will be ignored. Use [method collide_shape] to determine the [Shape2D]s that the shape is already colliding with.
-func cast_motion() -> PackedFloat32Array:
+func cast_motion(parameters: PhysicsShapeQueryParameters2D) -> PackedFloat32Array:
 	pass;
 
 #desc Checks the intersections of a shape, given through a [PhysicsShapeQueryParameters2D] object, against the space. The resulting array contains a list of points where the shape intersects another. Like with [method intersect_shape], the number of returned results can be limited to save processing time.
@@ -24,7 +24,7 @@ func collide_shape(parameters: PhysicsShapeQueryParameters2D, max_results: int) 
 #desc [code]point[/code]: The intersection point.
 #desc [code]rid[/code]: The intersecting object's [RID].
 #desc [code]shape[/code]: The shape index of the colliding shape.
-func get_rest_info() -> Dictionary:
+func get_rest_info(parameters: PhysicsShapeQueryParameters2D) -> Dictionary:
 	pass;
 
 #desc Checks whether a point is inside any solid shape. Position and other parameters are defined through [PhysicsPointQueryParameters2D]. The shapes the point is inside of are returned in an array containing dictionaries with the following fields:
@@ -45,7 +45,7 @@ func intersect_point(parameters: PhysicsPointQueryParameters2D, max_results: int
 #desc [code]rid[/code]: The intersecting object's [RID].
 #desc [code]shape[/code]: The shape index of the colliding shape.
 #desc If the ray did not intersect anything, then an empty dictionary is returned instead.
-func intersect_ray() -> Dictionary:
+func intersect_ray(parameters: PhysicsRayQueryParameters2D) -> Dictionary:
 	pass;
 
 #desc Checks the intersections of a shape, given through a [PhysicsShapeQueryParameters2D] object, against the space. The intersected shapes are returned in an array containing dictionaries with the following fields:

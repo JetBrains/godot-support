@@ -41,7 +41,7 @@ func get_atlas_grid_size() -> Vector2i:
 	pass;
 
 #desc Returns the alternative ID a following call to [method create_alternative_tile] would return.
-func get_next_alternative_tile_id() -> int:
+func get_next_alternative_tile_id(atlas_coords: Vector2i) -> int:
 	pass;
 
 #desc If [member use_texture_padding] is [code]false[/code], returns [member texture]. Otherwise, returns and internal [ImageTexture] created that includes the padding.
@@ -54,7 +54,7 @@ func get_runtime_tile_texture_region(atlas_coords: Vector2i, frame: int) -> Rect
 	pass;
 
 #desc Returns how many columns the tile at [param atlas_coords] has in its animation layout.
-func get_tile_animation_columns() -> int:
+func get_tile_animation_columns(atlas_coords: Vector2i) -> int:
 	pass;
 
 #desc Returns the animation frame duration of frame [param frame_index] for the tile at coordinates [param atlas_coords].
@@ -62,23 +62,23 @@ func get_tile_animation_frame_duration(atlas_coords: Vector2i, frame_index: int)
 	pass;
 
 #desc Returns how many animation frames has the tile at coordinates [param atlas_coords].
-func get_tile_animation_frames_count() -> int:
+func get_tile_animation_frames_count(atlas_coords: Vector2i) -> int:
 	pass;
 
 #desc Returns the separation (as in the atlas grid) between each frame of an animated tile at coordinates [param atlas_coords].
-func get_tile_animation_separation() -> Vector2i:
+func get_tile_animation_separation(atlas_coords: Vector2i) -> Vector2i:
 	pass;
 
 #desc Returns the animation speed of the tile at coordinates [param atlas_coords].
-func get_tile_animation_speed() -> float:
+func get_tile_animation_speed(atlas_coords: Vector2i) -> float:
 	pass;
 
 #desc Returns the sum of the sum of the frame durations of the tile at coordinates [param atlas_coords]. This value needs to be divided by the animation speed to get the actual animation loop duration.
-func get_tile_animation_total_duration() -> float:
+func get_tile_animation_total_duration(atlas_coords: Vector2i) -> float:
 	pass;
 
 #desc If there is a tile covering the [param atlas_coords] coordinates, returns the top-left coordinates of the tile (thus its coordinate ID). Returns [code]Vector2i(-1, -1)[/code] otherwise.
-func get_tile_at_coords() -> Vector2i:
+func get_tile_at_coords(atlas_coords: Vector2i) -> Vector2i:
 	pass;
 
 #desc Returns the [TileData] object for the given atlas coordinates and alternative ID.
@@ -86,7 +86,7 @@ func get_tile_data(atlas_coords: Vector2i, alternative_tile: int) -> TileData:
 	pass;
 
 #desc Returns the size of the tile (in the grid coordinates system) at coordinates [param atlas_coords].
-func get_tile_size_in_atlas() -> Vector2i:
+func get_tile_size_in_atlas(atlas_coords: Vector2i) -> Vector2i:
 	pass;
 
 #desc Returns a tile's texture region in the atlas texture. For animated tiles, a [param frame] argument might be provided for the different frames of the animation.
@@ -113,7 +113,7 @@ func remove_alternative_tile(atlas_coords: Vector2i, alternative_tile: int) -> v
 	pass;
 
 #desc Remove a tile and its alternative at coordinates [param atlas_coords].
-func remove_tile() -> void:
+func remove_tile(atlas_coords: Vector2i) -> void:
 	pass;
 
 #desc Change a tile's alternative ID from [param alternative_tile] to [param new_id].

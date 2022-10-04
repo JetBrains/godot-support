@@ -38,24 +38,24 @@ func add_button(column: int, button: Texture2D, id: int, disabled: bool, tooltip
 	pass;
 
 #desc Calls the [param method] on the actual TreeItem and its children recursively. Pass parameters as a comma separated list.
-vararg func call_recursive() -> void:
+vararg func call_recursive(method: StringName) -> void:
 	pass;
 
 #desc Resets the background color for the given column to default.
-func clear_custom_bg_color() -> void:
+func clear_custom_bg_color(column: int) -> void:
 	pass;
 
 #desc Resets the color for the given column to default.
-func clear_custom_color() -> void:
+func clear_custom_color(column: int) -> void:
 	pass;
 
 #desc Creates an item and adds it as a child.
 #desc The new item will be inserted as position [param idx] (the default value [code]-1[/code] means the last position), or it will be the last child if [param idx] is higher than the child count.
-func create_child() -> TreeItem:
+func create_child(idx: int) -> TreeItem:
 	pass;
 
 #desc Deselects the given column.
-func deselect() -> void:
+func deselect(column: int) -> void:
 	pass;
 
 #desc Removes the button at index [param button_idx] in column [param column].
@@ -71,7 +71,7 @@ func get_button_by_id(column: int, id: int) -> int:
 	pass;
 
 #desc Returns the number of buttons in column [param column].
-func get_button_count() -> int:
+func get_button_count(column: int) -> int:
 	pass;
 
 #desc Returns the id for the button at index [param button_idx] in column [param column].
@@ -83,12 +83,12 @@ func get_button_tooltip_text(column: int, button_idx: int) -> String:
 	pass;
 
 #desc Returns the column's cell mode.
-func get_cell_mode() -> int:
+func get_cell_mode(column: int) -> int:
 	pass;
 
 #desc Returns a child item by its index (see [method get_child_count]). This method is often used for iterating all children of an item.
 #desc Negative indices access the children from the last one.
-func get_child() -> TreeItem:
+func get_child(idx: int) -> TreeItem:
 	pass;
 
 #desc Returns the number of child items.
@@ -100,23 +100,23 @@ func get_children() -> TreeItem[]:
 	pass;
 
 #desc Returns the custom background color of column [param column].
-func get_custom_bg_color() -> Color:
+func get_custom_bg_color(column: int) -> Color:
 	pass;
 
 #desc Returns the custom color of column [param column].
-func get_custom_color() -> Color:
+func get_custom_color(column: int) -> Color:
 	pass;
 
 #desc Returns custom font used to draw text in the column [param column].
-func get_custom_font() -> Font:
+func get_custom_font(column: int) -> Font:
 	pass;
 
 #desc Returns custom font size used to draw text in the column [param column].
-func get_custom_font_size() -> int:
+func get_custom_font_size(column: int) -> int:
 	pass;
 
 #desc Returns [code]true[/code] if [code]expand_right[/code] is set.
-func get_expand_right() -> bool:
+func get_expand_right(column: int) -> bool:
 	pass;
 
 #desc Returns the TreeItem's first child.
@@ -124,19 +124,19 @@ func get_first_child() -> TreeItem:
 	pass;
 
 #desc Returns the given column's icon [Texture2D]. Error if no icon is set.
-func get_icon() -> Texture2D:
+func get_icon(column: int) -> Texture2D:
 	pass;
 
 #desc Returns the column's icon's maximum width.
-func get_icon_max_width() -> int:
+func get_icon_max_width(column: int) -> int:
 	pass;
 
 #desc Returns the [Color] modulating the column's icon.
-func get_icon_modulate() -> Color:
+func get_icon_modulate(column: int) -> Color:
 	pass;
 
 #desc Returns the icon [Texture2D] region as [Rect2].
-func get_icon_region() -> Rect2:
+func get_icon_region(column: int) -> Rect2:
 	pass;
 
 #desc Returns the node's order in the tree. For example, if called on the first child item the position is [code]0[/code].
@@ -144,11 +144,11 @@ func get_index() -> int:
 	pass;
 
 #desc Returns item's text language code.
-func get_language() -> String:
+func get_language(column: int) -> String:
 	pass;
 
 #desc Returns the metadata value that was set for the given column using [method set_metadata].
-func get_metadata() -> Variant:
+func get_metadata(column: int) -> Variant:
 	pass;
 
 #desc Returns the next sibling TreeItem in the tree or a null object if there is none.
@@ -157,7 +157,7 @@ func get_next() -> TreeItem:
 
 #desc Returns the next visible sibling TreeItem in the tree or a null object if there is none.
 #desc If [param wrap] is enabled, the method will wrap around to the first visible element in the tree when called on the last visible element, otherwise it returns [code]null[/code].
-func get_next_visible() -> TreeItem:
+func get_next_visible(wrap: bool) -> TreeItem:
 	pass;
 
 #desc Returns the parent TreeItem or a null object if there is none.
@@ -170,41 +170,41 @@ func get_prev() -> TreeItem:
 
 #desc Returns the previous visible sibling TreeItem in the tree or a null object if there is none.
 #desc If [param wrap] is enabled, the method will wrap around to the last visible element in the tree when called on the first visible element, otherwise it returns [code]null[/code].
-func get_prev_visible() -> TreeItem:
+func get_prev_visible(wrap: bool) -> TreeItem:
 	pass;
 
 #desc Returns the value of a [constant CELL_MODE_RANGE] column.
-func get_range() -> float:
+func get_range(column: int) -> float:
 	pass;
 
 #desc Returns a dictionary containing the range parameters for a given column. The keys are "min", "max", "step", and "expr".
-func get_range_config() -> Dictionary:
+func get_range_config(column: int) -> Dictionary:
 	pass;
 
-func get_structured_text_bidi_override() -> int:
+func get_structured_text_bidi_override(column: int) -> int:
 	pass;
 
-func get_structured_text_bidi_override_options() -> Array:
+func get_structured_text_bidi_override_options(column: int) -> Array:
 	pass;
 
 #desc Gets the suffix string shown after the column value.
-func get_suffix() -> String:
+func get_suffix(column: int) -> String:
 	pass;
 
 #desc Returns the given column's text.
-func get_text() -> String:
+func get_text(column: int) -> String:
 	pass;
 
 #desc Returns the given column's text alignment.
-func get_text_alignment() -> int:
+func get_text_alignment(column: int) -> int:
 	pass;
 
 #desc Returns item's text base writing direction.
-func get_text_direction() -> int:
+func get_text_direction(column: int) -> int:
 	pass;
 
 #desc Returns the given column's tooltip text.
-func get_tooltip_text() -> String:
+func get_tooltip_text(column: int) -> String:
 	pass;
 
 #desc Returns the [Tree] that owns this TreeItem.
@@ -213,7 +213,7 @@ func get_tree() -> Tree:
 
 #desc Returns [code]true[/code] if this [TreeItem], or any of its descendants, is collapsed.
 #desc If [param only_visible] is [code]true[/code] it ignores non-visible [TreeItem]s.
-func is_any_collapsed() -> bool:
+func is_any_collapsed(only_visible: bool) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the button at index [param button_idx] for the given [param column] is disabled.
@@ -221,36 +221,36 @@ func is_button_disabled(column: int, button_idx: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given [param column] is checked.
-func is_checked() -> bool:
+func is_checked(column: int) -> bool:
 	pass;
 
-func is_custom_set_as_button() -> bool:
+func is_custom_set_as_button(column: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given [param column] is editable.
-func is_editable() -> bool:
+func is_editable(column: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given [param column] is indeterminate.
-func is_indeterminate() -> bool:
+func is_indeterminate(column: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given [param column] is selectable.
-func is_selectable() -> bool:
+func is_selectable(column: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given [param column] is selected.
-func is_selected() -> bool:
+func is_selected(column: int) -> bool:
 	pass;
 
 #desc Moves this TreeItem right after the given [param item].
 #desc [b]Note:[/b] You can't move to the root or move the root.
-func move_after() -> void:
+func move_after(item: TreeItem) -> void:
 	pass;
 
 #desc Moves this TreeItem right before the given [param item].
 #desc [b]Note:[/b] You can't move to the root or move the root.
-func move_before() -> void:
+func move_before(item: TreeItem) -> void:
 	pass;
 
 #desc Propagates this item's checked status to its children and parents for the given [param column]. It is possible to process the items affected by this method call by connecting to [signal Tree.check_propagated_to_item]. The order that the items affected will be processed is as follows: the item invoking this method, children of that item, and finally parents of that item. If [param emit_signal] is [code]false[/code], then [signal Tree.check_propagated_to_item] will not be emitted.
@@ -258,11 +258,11 @@ func propagate_check(column: int, emit_signal: bool) -> void:
 	pass;
 
 #desc Removes the given child [TreeItem] and all its children from the [Tree]. Note that it doesn't free the item from memory, so it can be reused later. To completely remove a [TreeItem] use [method Object.free].
-func remove_child() -> void:
+func remove_child(child: TreeItem) -> void:
 	pass;
 
 #desc Selects the given [param column].
-func select() -> void:
+func select(column: int) -> void:
 	pass;
 
 #desc Sets the given column's button [Texture2D] at index [param button_idx] to [param button].
@@ -282,7 +282,7 @@ func set_checked(column: int, checked: bool) -> void:
 	pass;
 
 #desc Collapses or uncollapses this [TreeItem] and all the descendants of this item.
-func set_collapsed_recursive() -> void:
+func set_collapsed_recursive(enable: bool) -> void:
 	pass;
 
 func set_custom_as_button(column: int, enable: bool) -> void:

@@ -51,11 +51,11 @@ func clip_polyline_with_polygon(polyline: PackedVector2Array, polygon: PackedVec
 	pass;
 
 #desc Given an array of [Vector2]s, returns the convex hull as a list of points in counterclockwise order. The last point is the same as the first one.
-func convex_hull() -> PackedVector2Array:
+func convex_hull(points: PackedVector2Array) -> PackedVector2Array:
 	pass;
 
 #desc Decomposes the [param polygon] into multiple convex hulls and returns an array of [PackedVector2Array].
-func decompose_polygon_in_convex() -> PackedVector2Array[]:
+func decompose_polygon_in_convex(polygon: PackedVector2Array) -> PackedVector2Array[]:
 	pass;
 
 #desc Mutually excludes common area defined by intersection of [param polygon_a] and [param polygon_b] (see [method intersect_polygons]) and returns an array of excluded polygons. This performs [constant OPERATION_XOR] between polygons. In other words, returns all but common area between polygons.
@@ -93,7 +93,7 @@ func is_point_in_polygon(point: Vector2, polygon: PackedVector2Array) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if [param polygon]'s vertices are ordered in clockwise order, otherwise returns [code]false[/code].
-func is_polygon_clockwise() -> bool:
+func is_polygon_clockwise(polygon: PackedVector2Array) -> bool:
 	pass;
 
 #desc Checks if the two lines ([param from_a], [param dir_a]) and ([param from_b], [param dir_b]) intersect. If yes, return the point of intersection as [Vector2]. If no intersection takes place, returns [code]null[/code].
@@ -102,7 +102,7 @@ func line_intersects_line(from_a: Vector2, dir_a: Vector2, from_b: Vector2, dir_
 	pass;
 
 #desc Given an array of [Vector2]s representing tiles, builds an atlas. The returned dictionary has two keys: [code]points[/code] is a [PackedVector2Array] that specifies the positions of each tile, [code]size[/code] contains the overall size of the whole atlas as [Vector2i].
-func make_atlas() -> Dictionary:
+func make_atlas(sizes: PackedVector2Array) -> Dictionary:
 	pass;
 
 #desc Merges (combines) [param polygon_a] and [param polygon_b] and returns an array of merged polygons. This performs [constant OPERATION_UNION] between polygons.
@@ -152,11 +152,11 @@ func segment_intersects_segment(from_a: Vector2, to_a: Vector2, from_b: Vector2,
 	pass;
 
 #desc Triangulates the area specified by discrete set of [param points] such that no point is inside the circumcircle of any resulting triangle. Returns a [PackedInt32Array] where each triangle consists of three consecutive point indices into [param points] (i.e. the returned array will have [code]n * 3[/code] elements, with [code]n[/code] being the number of found triangles). If the triangulation did not succeed, an empty [PackedInt32Array] is returned.
-func triangulate_delaunay() -> PackedInt32Array:
+func triangulate_delaunay(points: PackedVector2Array) -> PackedInt32Array:
 	pass;
 
 #desc Triangulates the polygon specified by the points in [param polygon]. Returns a [PackedInt32Array] where each triangle consists of three consecutive point indices into [param polygon] (i.e. the returned array will have [code]n * 3[/code] elements, with [code]n[/code] being the number of found triangles). Output triangles will always be counter clockwise, and the contour will be flipped if it's clockwise. If the triangulation did not succeed, an empty [PackedInt32Array] is returned.
-func triangulate_polygon() -> PackedInt32Array:
+func triangulate_polygon(polygon: PackedVector2Array) -> PackedInt32Array:
 	pass;
 
 

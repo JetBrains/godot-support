@@ -435,7 +435,7 @@ virtual func _drop_data(at_position: Vector2, data: Variant) -> void:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual const func _get_drag_data() -> Variant:
+virtual const func _get_drag_data(at_position: Vector2) -> Variant:
 	pass;
 
 #desc Virtual method to be implemented by the user. Returns the minimum size for this control. Alternative to [member custom_minimum_size] for controlling minimum size via code. The actual minimum size will be the max value of these two (in each axis separately).
@@ -474,13 +474,13 @@ virtual const func _get_minimum_size() -> Vector2:
 #desc * control's parent has [member mouse_filter] set to [constant MOUSE_FILTER_STOP] or has accepted the event;
 #desc * it happens outside the parent's rectangle and the parent has either [member clip_contents] enabled.
 #desc [b]Note:[/b] Event position is relative to the control origin.
-virtual func _gui_input() -> void:
+virtual func _gui_input(event: InputEvent) -> void:
 	pass;
 
 #desc Virtual method to be implemented by the user. Returns whether the given [param position] is inside this control.
 #desc If not overridden, default behavior is checking if the point is within control's Rect.
 #desc [b]Note:[/b] If you want to check if a point is inside the control, you can use [code]get_rect().has_point(point)[/code].
-virtual const func _has_point() -> bool:
+virtual const func _has_point(position: Vector2) -> bool:
 	pass;
 
 #desc Virtual method to be implemented by the user. Returns a [Control] node that should be used as a tooltip instead of the default one. The [param for_text] includes the contents of the [member tooltip_text] property.
@@ -522,7 +522,7 @@ virtual const func _has_point() -> bool:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-virtual const func _make_custom_tooltip() -> Object:
+virtual const func _make_custom_tooltip(for_text: String) -> Object:
 	pass;
 
 #desc User defined BiDi algorithm override function.
@@ -630,7 +630,7 @@ func force_drag(data: Variant, preview: Control) -> void:
 	pass;
 
 #desc Returns the anchor for the specified [enum Side]. A getter method for [member anchor_bottom], [member anchor_left], [member anchor_right] and [member anchor_top].
-func get_anchor() -> float:
+func get_anchor(side: int) -> float:
 	pass;
 
 #desc Returns [member offset_left] and [member offset_top]. See also [member position].
@@ -642,7 +642,7 @@ func get_combined_minimum_size() -> Vector2:
 	pass;
 
 #desc Returns the mouse cursor shape the control displays on mouse hover. See [enum CursorShape].
-func get_cursor_shape() -> int:
+func get_cursor_shape(position: Vector2) -> int:
 	pass;
 
 #desc Returns [member offset_right] and [member offset_bottom].
@@ -650,7 +650,7 @@ func get_end() -> Vector2:
 	pass;
 
 #desc Returns the focus neighbor for the specified [enum Side]. A getter method for [member focus_neighbor_bottom], [member focus_neighbor_left], [member focus_neighbor_right] and [member focus_neighbor_top].
-func get_focus_neighbor() -> NodePath:
+func get_focus_neighbor(side: int) -> NodePath:
 	pass;
 
 #desc Returns the position and size of the control relative to the top-left corner of the screen. See [member position] and [member size].
@@ -662,7 +662,7 @@ func get_minimum_size() -> Vector2:
 	pass;
 
 #desc Returns the anchor for the specified [enum Side]. A getter method for [member offset_bottom], [member offset_left], [member offset_right] and [member offset_top].
-func get_offset() -> float:
+func get_offset(offset: int) -> float:
 	pass;
 
 #desc Returns the width/height occupied in the parent control.
@@ -753,7 +753,7 @@ func get_theme_stylebox(name: StringName, theme_type: StringName) -> StyleBox:
 
 #desc Returns the tooltip text [param at_position] in local coordinates, which will typically appear when the cursor is resting over this control. By default, it returns [member tooltip_text].
 #desc [b]Note:[/b] This method can be overridden to customise its behaviour. If this method returns an empty [String], no tooltip is displayed.
-func get_tooltip() -> String:
+func get_tooltip(at_position: Vector2) -> String:
 	pass;
 
 #desc Creates an [InputEventMouseButton] that attempts to click the control. If the event is received, the control acquires focus.
@@ -788,7 +788,7 @@ func has_theme_color(name: StringName, theme_type: StringName) -> bool:
 
 #desc Returns [code]true[/code] if there is a local override for a theme [Color] with the specified [param name] in this [Control] node.
 #desc See [method add_theme_color_override].
-func has_theme_color_override() -> bool:
+func has_theme_color_override(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if there is a matching [Theme] in the tree that has a constant item with the specified [param name] and [param theme_type].
@@ -798,7 +798,7 @@ func has_theme_constant(name: StringName, theme_type: StringName) -> bool:
 
 #desc Returns [code]true[/code] if there is a local override for a theme constant with the specified [param name] in this [Control] node.
 #desc See [method add_theme_constant_override].
-func has_theme_constant_override() -> bool:
+func has_theme_constant_override(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if there is a matching [Theme] in the tree that has a font item with the specified [param name] and [param theme_type].
@@ -808,7 +808,7 @@ func has_theme_font(name: StringName, theme_type: StringName) -> bool:
 
 #desc Returns [code]true[/code] if there is a local override for a theme [Font] with the specified [param name] in this [Control] node.
 #desc See [method add_theme_font_override].
-func has_theme_font_override() -> bool:
+func has_theme_font_override(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if there is a matching [Theme] in the tree that has a font size item with the specified [param name] and [param theme_type].
@@ -818,7 +818,7 @@ func has_theme_font_size(name: StringName, theme_type: StringName) -> bool:
 
 #desc Returns [code]true[/code] if there is a local override for a theme font size with the specified [param name] in this [Control] node.
 #desc See [method add_theme_font_size_override].
-func has_theme_font_size_override() -> bool:
+func has_theme_font_size_override(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if there is a matching [Theme] in the tree that has an icon item with the specified [param name] and [param theme_type].
@@ -828,7 +828,7 @@ func has_theme_icon(name: StringName, theme_type: StringName) -> bool:
 
 #desc Returns [code]true[/code] if there is a local override for a theme icon with the specified [param name] in this [Control] node.
 #desc See [method add_theme_icon_override].
-func has_theme_icon_override() -> bool:
+func has_theme_icon_override(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if there is a matching [Theme] in the tree that has a stylebox item with the specified [param name] and [param theme_type].
@@ -838,7 +838,7 @@ func has_theme_stylebox(name: StringName, theme_type: StringName) -> bool:
 
 #desc Returns [code]true[/code] if there is a local override for a theme [StyleBox] with the specified [param name] in this [Control] node.
 #desc See [method add_theme_stylebox_override].
-func has_theme_stylebox_override() -> bool:
+func has_theme_stylebox_override(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if a drag operation is successful. Alternative to [method Viewport.gui_is_drag_successful].
@@ -855,27 +855,27 @@ func release_focus() -> void:
 	pass;
 
 #desc Removes a local override for a theme [Color] with the specified [param name] previously added by [method add_theme_color_override] or via the Inspector dock.
-func remove_theme_color_override() -> void:
+func remove_theme_color_override(name: StringName) -> void:
 	pass;
 
 #desc Removes a local override for a theme constant with the specified [param name] previously added by [method add_theme_constant_override] or via the Inspector dock.
-func remove_theme_constant_override() -> void:
+func remove_theme_constant_override(name: StringName) -> void:
 	pass;
 
 #desc Removes a local override for a theme [Font] with the specified [param name] previously added by [method add_theme_font_override] or via the Inspector dock.
-func remove_theme_font_override() -> void:
+func remove_theme_font_override(name: StringName) -> void:
 	pass;
 
 #desc Removes a local override for a theme font size with the specified [param name] previously added by [method add_theme_font_size_override] or via the Inspector dock.
-func remove_theme_font_size_override() -> void:
+func remove_theme_font_size_override(name: StringName) -> void:
 	pass;
 
 #desc Removes a local override for a theme icon with the specified [param name] previously added by [method add_theme_icon_override] or via the Inspector dock.
-func remove_theme_icon_override() -> void:
+func remove_theme_icon_override(name: StringName) -> void:
 	pass;
 
 #desc Removes a local override for a theme [StyleBox] with the specified [param name] previously added by [method add_theme_stylebox_override] or via the Inspector dock.
-func remove_theme_stylebox_override() -> void:
+func remove_theme_stylebox_override(name: StringName) -> void:
 	pass;
 
 #desc Resets the size to [method get_combined_minimum_size]. This is equivalent to calling [code]set_size(Vector2())[/code] (or any size below the minimum).
@@ -902,7 +902,7 @@ func set_anchors_preset(preset: int, keep_offsets: bool) -> void:
 	pass;
 
 #desc Sets [member offset_left] and [member offset_top] at the same time. Equivalent of changing [member position].
-func set_begin() -> void:
+func set_begin(position: Vector2) -> void:
 	pass;
 
 #desc Forwards the handling of this control's drag and drop to [param target] object.
@@ -964,7 +964,7 @@ func set_begin() -> void:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-func set_drag_forwarding() -> void:
+func set_drag_forwarding(target: Object) -> void:
 	pass;
 
 #desc Shows the given control at the mouse pointer. A good time to call this method is in [method _get_drag_data]. The control must not be in the scene tree. You should not free the control, and you should not keep a reference to the control beyond the duration of the drag. It will be deleted automatically after the drag has ended.
@@ -995,11 +995,11 @@ func set_drag_forwarding() -> void:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-func set_drag_preview() -> void:
+func set_drag_preview(control: Control) -> void:
 	pass;
 
 #desc Sets [member offset_right] and [member offset_bottom] at the same time.
-func set_end() -> void:
+func set_end(position: Vector2) -> void:
 	pass;
 
 #desc Sets the anchor for the specified [enum Side] to the [Control] at [param neighbor] node path. A setter method for [member focus_neighbor_bottom], [member focus_neighbor_left], [member focus_neighbor_right] and [member focus_neighbor_top].
@@ -1036,7 +1036,7 @@ func update_minimum_size() -> void:
 	pass;
 
 #desc Moves the mouse cursor to [param position], relative to [member position] of this [Control].
-func warp_mouse() -> void:
+func warp_mouse(position: Vector2) -> void:
 	pass;
 
 

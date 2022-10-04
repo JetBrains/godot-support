@@ -51,7 +51,7 @@ class_name EditorScenePostImport
 
 
 #desc Called after the scene was imported. This method must return the modified version of the scene.
-virtual func _post_import() -> Object:
+virtual func _post_import(scene: Node) -> Object:
 	pass;
 
 #desc Returns the source file path which got imported (e.g. [code]res://scene.dae[/code]).

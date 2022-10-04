@@ -7,15 +7,15 @@ class_name TileMapPattern
 
 
 #desc Returns the tile alternative ID of the cell at [param coords].
-func get_cell_alternative_tile() -> int:
+func get_cell_alternative_tile(coords: Vector2i) -> int:
 	pass;
 
 #desc Returns the tile atlas coordinates ID of the cell at [param coords].
-func get_cell_atlas_coords() -> Vector2i:
+func get_cell_atlas_coords(coords: Vector2i) -> Vector2i:
 	pass;
 
 #desc Returns the tile source ID of the cell at [param coords].
-func get_cell_source_id() -> int:
+func get_cell_source_id(coords: Vector2i) -> int:
 	pass;
 
 #desc Returns the size, in cells, of the pattern.
@@ -27,7 +27,7 @@ func get_used_cells() -> Vector2i[]:
 	pass;
 
 #desc Returns whether the pattern has a tile at the given coordinates.
-func has_cell() -> bool:
+func has_cell(coords: Vector2i) -> bool:
 	pass;
 
 #desc Returns whether the pattern is empty or not.
@@ -43,7 +43,7 @@ func set_cell(coords: Vector2i, source_id: int, atlas_coords: Vector2i, alternat
 	pass;
 
 #desc Sets the size of the pattern.
-func set_size() -> void:
+func set_size(size: Vector2i) -> void:
 	pass;
 
 

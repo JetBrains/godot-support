@@ -9,20 +9,20 @@ func PackedVector2Array() -> PackedVector2Array:
 	pass;
 
 #desc Constructs a [PackedVector2Array] as a copy of the given [PackedVector2Array].
-func PackedVector2Array() -> PackedVector2Array:
+func PackedVector2Array(from: PackedVector2Array) -> PackedVector2Array:
 	pass;
 
 #desc Constructs a new [PackedVector2Array]. Optionally, you can pass in a generic [Array] that will be converted.
-func PackedVector2Array() -> PackedVector2Array:
+func PackedVector2Array(from: Array) -> PackedVector2Array:
 	pass;
 
 
 #desc Appends an element at the end of the array (alias of [method push_back]).
-func append() -> bool:
+func append(value: Vector2) -> bool:
 	pass;
 
 #desc Appends a [PackedVector2Array] at the end of this array.
-func append_array() -> void:
+func append_array(array: PackedVector2Array) -> void:
 	pass;
 
 #desc Finds the index of an existing value (or the insertion index that maintains sorting order, if the value is not yet present in the array) using binary search. Optionally, a [param before] specifier can be passed. If [code]false[/code], the returned index comes after all existing entries of the value in the array.
@@ -35,7 +35,7 @@ func clear() -> void:
 	pass;
 
 #desc Returns the number of times an element is in the array.
-func count() -> int:
+func count(value: Vector2) -> int:
 	pass;
 
 #desc Creates a copy of the array, and returns it.
@@ -43,7 +43,7 @@ func duplicate() -> PackedVector2Array:
 	pass;
 
 #desc Assigns the given value to all elements in the array. This can typically be used together with [method resize] to create an array with a given size and initialized elements.
-func fill() -> void:
+func fill(value: Vector2) -> void:
 	pass;
 
 #desc Searches the array for a value and returns its index or [code]-1[/code] if not found. Optionally, the initial search index can be passed.
@@ -51,7 +51,7 @@ func find(value: Vector2, from: int) -> int:
 	pass;
 
 #desc Returns [code]true[/code] if the array contains [param value].
-func has() -> bool:
+func has(value: Vector2) -> bool:
 	pass;
 
 #desc Inserts a new element at a given position in the array. The position must be valid, or at the end of the array ([code]idx == size()[/code]).
@@ -63,15 +63,15 @@ func is_empty() -> bool:
 	pass;
 
 #desc Inserts a [Vector2] at the end.
-func push_back() -> bool:
+func push_back(value: Vector2) -> bool:
 	pass;
 
 #desc Removes an element from the array by index.
-func remove_at() -> void:
+func remove_at(index: int) -> void:
 	pass;
 
 #desc Sets the size of the array. If the array is grown, reserves elements at the end of the array. If the array is shrunk, truncates the array to the new size.
-func resize() -> int:
+func resize(new_size: int) -> int:
 	pass;
 
 #desc Reverses the order of the elements in the array.

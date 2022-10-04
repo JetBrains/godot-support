@@ -46,11 +46,11 @@ func get_previous_tab() -> int:
 	pass;
 
 #desc Returns the button icon from the tab at index [param tab_idx].
-func get_tab_button_icon() -> Texture2D:
+func get_tab_button_icon(tab_idx: int) -> Texture2D:
 	pass;
 
 #desc Returns the [Control] node from the tab at index [param tab_idx].
-func get_tab_control() -> Control:
+func get_tab_control(tab_idx: int) -> Control:
 	pass;
 
 #desc Returns the number of tabs.
@@ -58,31 +58,31 @@ func get_tab_count() -> int:
 	pass;
 
 #desc Returns the [Texture2D] for the tab at index [param tab_idx] or [code]null[/code] if the tab has no [Texture2D].
-func get_tab_icon() -> Texture2D:
+func get_tab_icon(tab_idx: int) -> Texture2D:
 	pass;
 
 #desc Returns the index of the tab at local coordinates [param point]. Returns [code]-1[/code] if the point is outside the control boundaries or if there's no tab at the queried position.
-func get_tab_idx_at_point() -> int:
+func get_tab_idx_at_point(point: Vector2) -> int:
 	pass;
 
 #desc Returns the index of the tab tied to the given [param control]. The control must be a child of the [TabContainer].
-func get_tab_idx_from_control() -> int:
+func get_tab_idx_from_control(control: Control) -> int:
 	pass;
 
 #desc Returns the title of the tab at index [param tab_idx]. Tab titles default to the name of the indexed child node, but this can be overridden with [method set_tab_title].
-func get_tab_title() -> String:
+func get_tab_title(tab_idx: int) -> String:
 	pass;
 
 #desc Returns [code]true[/code] if the tab at index [param tab_idx] is disabled.
-func is_tab_disabled() -> bool:
+func is_tab_disabled(tab_idx: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the tab at index [param tab_idx] is hidden.
-func is_tab_hidden() -> bool:
+func is_tab_hidden(tab_idx: int) -> bool:
 	pass;
 
 #desc If set on a [Popup] node instance, a popup menu icon appears in the top-right corner of the [TabContainer] (setting it to [code]null[/code] will make it go away). Clicking it will expand the [Popup] node.
-func set_popup() -> void:
+func set_popup(popup: Node) -> void:
 	pass;
 
 #desc Sets the button icon from the tab at index [param tab_idx].

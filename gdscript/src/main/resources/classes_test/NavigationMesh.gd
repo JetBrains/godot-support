@@ -119,7 +119,7 @@ var sample_partition_type: int;
 
 
 #desc Adds a polygon using the indices of the vertices you get when calling [method get_vertices].
-func add_polygon() -> void:
+func add_polygon(polygon: PackedInt32Array) -> void:
 	pass;
 
 #desc Clears the array of polygons, but it doesn't clear the array of vertices.
@@ -128,15 +128,15 @@ func clear_polygons() -> void:
 
 #desc Initializes the navigation mesh by setting the vertices and indices according to a [Mesh].
 #desc [b]Note:[/b] The given [param mesh] must be of type [constant Mesh.PRIMITIVE_TRIANGLES] and have an index array.
-func create_from_mesh() -> void:
+func create_from_mesh(mesh: Mesh) -> void:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member geometry_collision_mask] is enabled, given a [param layer_number] between 1 and 32.
-func get_collision_mask_value() -> bool:
+func get_collision_mask_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns a [PackedInt32Array] containing the indices of the vertices of a created polygon.
-func get_polygon() -> PackedInt32Array:
+func get_polygon(idx: int) -> PackedInt32Array:
 	pass;
 
 #desc Returns the number of polygons in the navigation mesh.
@@ -152,7 +152,7 @@ func set_collision_mask_value(layer_number: int, value: bool) -> void:
 	pass;
 
 #desc Sets the vertices that can be then indexed to create polygons with the [method add_polygon] method.
-func set_vertices() -> void:
+func set_vertices(vertices: PackedVector3Array) -> void:
 	pass;
 
 

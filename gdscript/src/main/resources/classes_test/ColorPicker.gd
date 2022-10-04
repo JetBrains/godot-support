@@ -57,11 +57,11 @@ var vertical: bool;
 
 #desc Adds the given color to a list of color presets. The presets are displayed in the color picker and the user will be able to select them.
 #desc [b]Note:[/b] The presets list is only for [i]this[/i] color picker.
-func add_preset() -> void:
+func add_preset(color: Color) -> void:
 	pass;
 
 #desc Removes the given color from the list of color presets of this color picker.
-func erase_preset() -> void:
+func erase_preset(color: Color) -> void:
 	pass;
 
 #desc Returns the list of colors in the presets of the color picker.

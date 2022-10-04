@@ -9,19 +9,19 @@ virtual func _area_add_shape(area: RID, shape: RID, transform: Transform3D, disa
 virtual func _area_attach_object_instance_id(area: RID, id: int) -> void:
 	pass;
 
-virtual func _area_clear_shapes() -> void:
+virtual func _area_clear_shapes(area: RID) -> void:
 	pass;
 
 virtual func _area_create() -> RID:
 	pass;
 
-virtual const func _area_get_collision_layer() -> int:
+virtual const func _area_get_collision_layer(area: RID) -> int:
 	pass;
 
-virtual const func _area_get_collision_mask() -> int:
+virtual const func _area_get_collision_mask(area: RID) -> int:
 	pass;
 
-virtual const func _area_get_object_instance_id() -> int:
+virtual const func _area_get_object_instance_id(area: RID) -> int:
 	pass;
 
 virtual const func _area_get_param(area: RID, param: int) -> Variant:
@@ -30,16 +30,16 @@ virtual const func _area_get_param(area: RID, param: int) -> Variant:
 virtual const func _area_get_shape(area: RID, shape_idx: int) -> RID:
 	pass;
 
-virtual const func _area_get_shape_count() -> int:
+virtual const func _area_get_shape_count(area: RID) -> int:
 	pass;
 
 virtual const func _area_get_shape_transform(area: RID, shape_idx: int) -> Transform3D:
 	pass;
 
-virtual const func _area_get_space() -> RID:
+virtual const func _area_get_space(area: RID) -> RID:
 	pass;
 
-virtual const func _area_get_transform() -> Transform3D:
+virtual const func _area_get_transform(area: RID) -> Transform3D:
 	pass;
 
 virtual func _area_remove_shape(area: RID, shape_idx: int) -> void:
@@ -117,43 +117,43 @@ virtual func _body_apply_torque_impulse(body: RID, impulse: Vector3) -> void:
 virtual func _body_attach_object_instance_id(body: RID, id: int) -> void:
 	pass;
 
-virtual func _body_clear_shapes() -> void:
+virtual func _body_clear_shapes(body: RID) -> void:
 	pass;
 
 virtual func _body_create() -> RID:
 	pass;
 
-virtual const func _body_get_collision_exceptions() -> RID[]:
+virtual const func _body_get_collision_exceptions(body: RID) -> RID[]:
 	pass;
 
-virtual const func _body_get_collision_layer() -> int:
+virtual const func _body_get_collision_layer(body: RID) -> int:
 	pass;
 
-virtual const func _body_get_collision_mask() -> int:
+virtual const func _body_get_collision_mask(body: RID) -> int:
 	pass;
 
-virtual const func _body_get_collision_priority() -> float:
+virtual const func _body_get_collision_priority(body: RID) -> float:
 	pass;
 
-virtual const func _body_get_constant_force() -> Vector3:
+virtual const func _body_get_constant_force(body: RID) -> Vector3:
 	pass;
 
-virtual const func _body_get_constant_torque() -> Vector3:
+virtual const func _body_get_constant_torque(body: RID) -> Vector3:
 	pass;
 
-virtual const func _body_get_contacts_reported_depth_threshold() -> float:
+virtual const func _body_get_contacts_reported_depth_threshold(body: RID) -> float:
 	pass;
 
-virtual func _body_get_direct_state() -> PhysicsDirectBodyState3D:
+virtual func _body_get_direct_state(body: RID) -> PhysicsDirectBodyState3D:
 	pass;
 
-virtual const func _body_get_max_contacts_reported() -> int:
+virtual const func _body_get_max_contacts_reported(body: RID) -> int:
 	pass;
 
-virtual const func _body_get_mode() -> int:
+virtual const func _body_get_mode(body: RID) -> int:
 	pass;
 
-virtual const func _body_get_object_instance_id() -> int:
+virtual const func _body_get_object_instance_id(body: RID) -> int:
 	pass;
 
 virtual const func _body_get_param(body: RID, param: int) -> Variant:
@@ -162,28 +162,28 @@ virtual const func _body_get_param(body: RID, param: int) -> Variant:
 virtual const func _body_get_shape(body: RID, shape_idx: int) -> RID:
 	pass;
 
-virtual const func _body_get_shape_count() -> int:
+virtual const func _body_get_shape_count(body: RID) -> int:
 	pass;
 
 virtual const func _body_get_shape_transform(body: RID, shape_idx: int) -> Transform3D:
 	pass;
 
-virtual const func _body_get_space() -> RID:
+virtual const func _body_get_space(body: RID) -> RID:
 	pass;
 
 virtual const func _body_get_state(body: RID, state: int) -> Variant:
 	pass;
 
-virtual const func _body_get_user_flags() -> int:
+virtual const func _body_get_user_flags(body: RID) -> int:
 	pass;
 
 virtual const func _body_is_axis_locked(body: RID, axis: int) -> bool:
 	pass;
 
-virtual const func _body_is_continuous_collision_detection_enabled() -> bool:
+virtual const func _body_is_continuous_collision_detection_enabled(body: RID) -> bool:
 	pass;
 
-virtual const func _body_is_omitting_force_integration() -> bool:
+virtual const func _body_is_omitting_force_integration(body: RID) -> bool:
 	pass;
 
 virtual func _body_remove_collision_exception(body: RID, excepted_body: RID) -> void:
@@ -192,7 +192,7 @@ virtual func _body_remove_collision_exception(body: RID, excepted_body: RID) -> 
 virtual func _body_remove_shape(body: RID, shape_idx: int) -> void:
 	pass;
 
-virtual func _body_reset_mass_properties() -> void:
+virtual func _body_reset_mass_properties(body: RID) -> void:
 	pass;
 
 virtual func _body_set_axis_lock(body: RID, axis: int, lock: bool) -> void:
@@ -297,7 +297,7 @@ virtual func _finish() -> void:
 virtual func _flush_queries() -> void:
 	pass;
 
-virtual func _free_rid() -> void:
+virtual func _free_rid(rid: RID) -> void:
 	pass;
 
 virtual const func _generic_6dof_joint_get_flag(joint: RID, axis: int, flag: int) -> bool:
@@ -312,7 +312,7 @@ virtual func _generic_6dof_joint_set_flag(joint: RID, axis: int, flag: int, enab
 virtual func _generic_6dof_joint_set_param(joint: RID, axis: int, param: int, value: float) -> void:
 	pass;
 
-virtual func _get_process_info() -> int:
+virtual func _get_process_info(process_info: int) -> int:
 	pass;
 
 virtual func _heightmap_shape_create() -> RID:
@@ -336,16 +336,16 @@ virtual func _init() -> void:
 virtual const func _is_flushing_queries() -> bool:
 	pass;
 
-virtual func _joint_clear() -> void:
+virtual func _joint_clear(joint: RID) -> void:
 	pass;
 
 virtual func _joint_create() -> RID:
 	pass;
 
-virtual const func _joint_get_solver_priority() -> int:
+virtual const func _joint_get_solver_priority(joint: RID) -> int:
 	pass;
 
-virtual const func _joint_get_type() -> int:
+virtual const func _joint_get_type(joint: RID) -> int:
 	pass;
 
 virtual func _joint_make_cone_twist(joint: RID, body_A: RID, local_ref_A: Transform3D, body_B: RID, local_ref_B: Transform3D) -> void:
@@ -369,10 +369,10 @@ virtual func _joint_make_slider(joint: RID, body_A: RID, local_ref_A: Transform3
 virtual func _joint_set_solver_priority(joint: RID, priority: int) -> void:
 	pass;
 
-virtual const func _pin_joint_get_local_a() -> Vector3:
+virtual const func _pin_joint_get_local_a(joint: RID) -> Vector3:
 	pass;
 
-virtual const func _pin_joint_get_local_b() -> Vector3:
+virtual const func _pin_joint_get_local_b(joint: RID) -> Vector3:
 	pass;
 
 virtual const func _pin_joint_get_param(joint: RID, param: int) -> float:
@@ -390,19 +390,19 @@ virtual func _pin_joint_set_param(joint: RID, param: int, value: float) -> void:
 virtual func _separation_ray_shape_create() -> RID:
 	pass;
 
-virtual func _set_active() -> void:
+virtual func _set_active(active: bool) -> void:
 	pass;
 
-virtual const func _shape_get_custom_solver_bias() -> float:
+virtual const func _shape_get_custom_solver_bias(shape: RID) -> float:
 	pass;
 
-virtual const func _shape_get_data() -> Variant:
+virtual const func _shape_get_data(shape: RID) -> Variant:
 	pass;
 
-virtual const func _shape_get_margin() -> float:
+virtual const func _shape_get_margin(shape: RID) -> float:
 	pass;
 
-virtual const func _shape_get_type() -> int:
+virtual const func _shape_get_type(shape: RID) -> int:
 	pass;
 
 virtual func _shape_set_custom_solver_bias(shape: RID, bias: float) -> void:
@@ -426,43 +426,43 @@ virtual func _soft_body_add_collision_exception(body: RID, body_b: RID) -> void:
 virtual func _soft_body_create() -> RID:
 	pass;
 
-virtual const func _soft_body_get_bounds() -> AABB:
+virtual const func _soft_body_get_bounds(body: RID) -> AABB:
 	pass;
 
-virtual const func _soft_body_get_collision_exceptions() -> RID[]:
+virtual const func _soft_body_get_collision_exceptions(body: RID) -> RID[]:
 	pass;
 
-virtual const func _soft_body_get_collision_layer() -> int:
+virtual const func _soft_body_get_collision_layer(body: RID) -> int:
 	pass;
 
-virtual const func _soft_body_get_collision_mask() -> int:
+virtual const func _soft_body_get_collision_mask(body: RID) -> int:
 	pass;
 
-virtual const func _soft_body_get_damping_coefficient() -> float:
+virtual const func _soft_body_get_damping_coefficient(body: RID) -> float:
 	pass;
 
-virtual const func _soft_body_get_drag_coefficient() -> float:
+virtual const func _soft_body_get_drag_coefficient(body: RID) -> float:
 	pass;
 
-virtual const func _soft_body_get_linear_stiffness() -> float:
+virtual const func _soft_body_get_linear_stiffness(body: RID) -> float:
 	pass;
 
 virtual const func _soft_body_get_point_global_position(body: RID, point_index: int) -> Vector3:
 	pass;
 
-virtual const func _soft_body_get_pressure_coefficient() -> float:
+virtual const func _soft_body_get_pressure_coefficient(body: RID) -> float:
 	pass;
 
-virtual const func _soft_body_get_simulation_precision() -> int:
+virtual const func _soft_body_get_simulation_precision(body: RID) -> int:
 	pass;
 
-virtual const func _soft_body_get_space() -> RID:
+virtual const func _soft_body_get_space(body: RID) -> RID:
 	pass;
 
 virtual const func _soft_body_get_state(body: RID, state: int) -> Variant:
 	pass;
 
-virtual const func _soft_body_get_total_mass() -> float:
+virtual const func _soft_body_get_total_mass(body: RID) -> float:
 	pass;
 
 virtual const func _soft_body_is_point_pinned(body: RID, point_index: int) -> bool:
@@ -474,7 +474,7 @@ virtual func _soft_body_move_point(body: RID, point_index: int, global_position:
 virtual func _soft_body_pin_point(body: RID, point_index: int, pin: bool) -> void:
 	pass;
 
-virtual func _soft_body_remove_all_pinned_points() -> void:
+virtual func _soft_body_remove_all_pinned_points(body: RID) -> void:
 	pass;
 
 virtual func _soft_body_remove_collision_exception(body: RID, body_b: RID) -> void:
@@ -525,19 +525,19 @@ virtual func _soft_body_update_rendering_server(body: RID, rendering_server_hand
 virtual func _space_create() -> RID:
 	pass;
 
-virtual const func _space_get_contact_count() -> int:
+virtual const func _space_get_contact_count(space: RID) -> int:
 	pass;
 
-virtual const func _space_get_contacts() -> PackedVector3Array:
+virtual const func _space_get_contacts(space: RID) -> PackedVector3Array:
 	pass;
 
-virtual func _space_get_direct_state() -> PhysicsDirectSpaceState3D:
+virtual func _space_get_direct_state(space: RID) -> PhysicsDirectSpaceState3D:
 	pass;
 
 virtual const func _space_get_param(space: RID, param: int) -> float:
 	pass;
 
-virtual const func _space_is_active() -> bool:
+virtual const func _space_is_active(space: RID) -> bool:
 	pass;
 
 virtual func _space_set_active(space: RID, active: bool) -> void:
@@ -552,7 +552,7 @@ virtual func _space_set_param(space: RID, param: int, value: float) -> void:
 virtual func _sphere_shape_create() -> RID:
 	pass;
 
-virtual func _step() -> void:
+virtual func _step(step: float) -> void:
 	pass;
 
 virtual func _sync() -> void:

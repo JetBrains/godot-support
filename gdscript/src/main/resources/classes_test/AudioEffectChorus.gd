@@ -86,22 +86,22 @@ var wet: float;
 
 
 
-func get_voice_cutoff_hz() -> float:
+func get_voice_cutoff_hz(voice_idx: int) -> float:
 	pass;
 
-func get_voice_delay_ms() -> float:
+func get_voice_delay_ms(voice_idx: int) -> float:
 	pass;
 
-func get_voice_depth_ms() -> float:
+func get_voice_depth_ms(voice_idx: int) -> float:
 	pass;
 
-func get_voice_level_db() -> float:
+func get_voice_level_db(voice_idx: int) -> float:
 	pass;
 
-func get_voice_pan() -> float:
+func get_voice_pan(voice_idx: int) -> float:
 	pass;
 
-func get_voice_rate_hz() -> float:
+func get_voice_rate_hz(voice_idx: int) -> float:
 	pass;
 
 func set_voice_cutoff_hz(voice_idx: int, cutoff_hz: float) -> void:

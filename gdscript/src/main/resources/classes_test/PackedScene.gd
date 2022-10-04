@@ -99,11 +99,11 @@ func get_state() -> SceneState:
 	pass;
 
 #desc Instantiates the scene's node hierarchy. Triggers child scene instantiation(s). Triggers a [constant Node.NOTIFICATION_SCENE_INSTANTIATED] notification on the root node.
-func instantiate() -> Node:
+func instantiate(edit_state: int) -> Node:
 	pass;
 
 #desc Pack will ignore any sub-nodes not owned by given node. See [member Node.owner].
-func pack() -> int:
+func pack(path: Node) -> int:
 	pass;
 
 

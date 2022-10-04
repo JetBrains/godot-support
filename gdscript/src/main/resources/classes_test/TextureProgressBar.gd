@@ -82,7 +82,7 @@ var tint_under: Color;
 
 
 
-func get_stretch_margin() -> int:
+func get_stretch_margin(margin: int) -> int:
 	pass;
 
 func set_stretch_margin(margin: int, value: int) -> void:

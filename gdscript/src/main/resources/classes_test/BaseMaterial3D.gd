@@ -703,15 +703,15 @@ var vertex_color_use_as_albedo: bool;
 
 
 #desc Returns [code]true[/code], if the specified [enum Feature] is enabled.
-func get_feature() -> bool:
+func get_feature(feature: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code], if the specified flag is enabled. See [enum Flags] enumerator for options.
-func get_flag() -> bool:
+func get_flag(flag: int) -> bool:
 	pass;
 
 #desc Returns the [Texture2D] associated with the specified [enum TextureParam].
-func get_texture() -> Texture2D:
+func get_texture(param: int) -> Texture2D:
 	pass;
 
 #desc If [code]true[/code], enables the specified [enum Feature]. Many features that are available in [BaseMaterial3D]s need to be enabled before use. This way the cost for using the feature is only incurred when specified. Features can also be enabled by setting the corresponding member to [code]true[/code].

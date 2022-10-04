@@ -11,7 +11,7 @@ func execute_modifications(delta: float, execution_mode: int) -> void:
 	pass;
 
 #desc Returns a [Bone2D] from the node hierarchy parented by Skeleton2D. The object to return is identified by the parameter [param idx]. Bones are indexed by descending the node hierarchy from top to bottom, adding the children of each branch before moving to the next sibling.
-func get_bone() -> Bone2D:
+func get_bone(idx: int) -> Bone2D:
 	pass;
 
 #desc Returns the number of [Bone2D] nodes in the node hierarchy parented by Skeleton2D.
@@ -19,7 +19,7 @@ func get_bone_count() -> int:
 	pass;
 
 #desc Returns the local pose override transform for [param bone_idx].
-func get_bone_local_pose_override() -> Transform2D:
+func get_bone_local_pose_override(bone_idx: int) -> Transform2D:
 	pass;
 
 #desc Returns the [SkeletonModificationStack2D] attached to this skeleton, if one exists.
@@ -37,7 +37,7 @@ func set_bone_local_pose_override(bone_idx: int, override_pose: Transform2D, str
 	pass;
 
 #desc Sets the [SkeletonModificationStack2D] attached to this skeleton.
-func set_modification_stack() -> void:
+func set_modification_stack(modification_stack: SkeletonModificationStack2D) -> void:
 	pass;
 
 

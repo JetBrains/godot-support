@@ -32,21 +32,21 @@ func create_multiple_convex_collisions() -> void:
 func create_trimesh_collision() -> void:
 	pass;
 
-func find_blend_shape_by_name() -> int:
+func find_blend_shape_by_name(name: StringName) -> int:
 	pass;
 
 #desc Returns the [Material] that will be used by the [Mesh] when drawing. This can return the [member GeometryInstance3D.material_override], the surface override [Material] defined in this [MeshInstance3D], or the surface [Material] defined in the [Mesh]. For example, if [member GeometryInstance3D.material_override] is used, all surfaces will return the override material.
-func get_active_material() -> Material:
+func get_active_material(surface: int) -> Material:
 	pass;
 
 func get_blend_shape_count() -> int:
 	pass;
 
-func get_blend_shape_value() -> float:
+func get_blend_shape_value(blend_shape_idx: int) -> float:
 	pass;
 
 #desc Returns the override [Material] for the specified surface of the [Mesh] resource.
-func get_surface_override_material() -> Material:
+func get_surface_override_material(surface: int) -> Material:
 	pass;
 
 #desc Returns the number of surface override materials. This is equivalent to [method Mesh.get_surface_count].

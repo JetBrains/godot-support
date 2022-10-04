@@ -28,7 +28,7 @@ func Transform2D() -> Transform2D:
 	pass;
 
 #desc Constructs a [Transform2D] as a copy of the given [Transform2D].
-func Transform2D() -> Transform2D:
+func Transform2D(from: Transform2D) -> Transform2D:
 	pass;
 
 #desc Constructs the transform from a given angle (in radians) and position.
@@ -50,12 +50,12 @@ func affine_inverse() -> Transform2D:
 
 #desc Returns a vector transformed (multiplied) by the basis matrix.
 #desc This method does not account for translation (the origin vector).
-func basis_xform() -> Vector2:
+func basis_xform(v: Vector2) -> Vector2:
 	pass;
 
 #desc Returns a vector transformed (multiplied) by the inverse basis matrix.
 #desc This method does not account for translation (the origin vector).
-func basis_xform_inv() -> Vector2:
+func basis_xform_inv(v: Vector2) -> Vector2:
 	pass;
 
 #desc Returns the transform's origin (translation).
@@ -83,12 +83,12 @@ func inverse() -> Transform2D:
 	pass;
 
 #desc Returns [code]true[/code] if this transform and [code]transform[/code] are approximately equal, by calling [code]is_equal_approx[/code] on each component.
-func is_equal_approx() -> bool:
+func is_equal_approx(xform: Transform2D) -> bool:
 	pass;
 
 #desc Returns a copy of the transform rotated such that it's rotation on the X-axis points towards the [param target] position.
 #desc Operations take place in global space.
-func looking_at() -> Transform2D:
+func looking_at(target: Vector2) -> Transform2D:
 	pass;
 
 #desc Returns the transform with the basis orthogonal (90 degrees), and normalized axis vectors (scale of 1 or -1).
@@ -99,55 +99,55 @@ func orthonormalized() -> Transform2D:
 #desc This method is an optimized version of multiplying the given transform [code]X[/code]
 #desc with a corresponding rotation transform [code]R[/code] from the left, i.e., [code]R * X[/code].
 #desc This can be seen as transforming with respect to the global/parent frame.
-func rotated() -> Transform2D:
+func rotated(angle: float) -> Transform2D:
 	pass;
 
 #desc Returns a copy of the transform rotated by the given [param angle] (in radians).
 #desc This method is an optimized version of multiplying the given transform [code]X[/code]
 #desc with a corresponding rotation transform [code]R[/code] from the right, i.e., [code]X * R[/code].
 #desc This can be seen as transforming with respect to the local frame.
-func rotated_local() -> Transform2D:
+func rotated_local(angle: float) -> Transform2D:
 	pass;
 
 #desc Returns a copy of the transform scaled by the given [param scale] factor.
 #desc This method is an optimized version of multiplying the given transform [code]X[/code]
 #desc with a corresponding scaling transform [code]S[/code] from the left, i.e., [code]S * X[/code].
 #desc This can be seen as transforming with respect to the global/parent frame.
-func scaled() -> Transform2D:
+func scaled(scale: Vector2) -> Transform2D:
 	pass;
 
 #desc Returns a copy of the transform scaled by the given [param scale] factor.
 #desc This method is an optimized version of multiplying the given transform [code]X[/code]
 #desc with a corresponding scaling transform [code]S[/code] from the right, i.e., [code]X * S[/code].
 #desc This can be seen as transforming with respect to the local frame.
-func scaled_local() -> Transform2D:
+func scaled_local(scale: Vector2) -> Transform2D:
 	pass;
 
 #desc Sets the transform's rotation (in radians).
-func set_rotation() -> void:
+func set_rotation(rotation: float) -> void:
 	pass;
 
 #desc Sets the transform's scale.
 #desc [b]Note:[/b] Negative X scales in 2D are not decomposable from the transformation matrix. Due to the way scale is represented with transformation matrices in Godot, negative scales on the X axis will be changed to negative scales on the Y axis and a rotation of 180 degrees when decomposed.
-func set_scale() -> void:
+func set_scale(scale: Vector2) -> void:
 	pass;
 
 #desc Sets the transform's skew (in radians).
-func set_skew() -> void:
+func set_skew(skew: float) -> void:
 	pass;
 
 #desc Returns a copy of the transform translated by the given [param offset].
 #desc This method is an optimized version of multiplying the given transform [code]X[/code]
 #desc with a corresponding translation transform [code]T[/code] from the left, i.e., [code]T * X[/code].
 #desc This can be seen as transforming with respect to the global/parent frame.
-func translated() -> Transform2D:
+func translated(offset: Vector2) -> Transform2D:
 	pass;
 
 #desc Returns a copy of the transform translated by the given [param offset].
 #desc This method is an optimized version of multiplying the given transform [code]X[/code]
 #desc with a corresponding translation transform [code]T[/code] from the right, i.e., [code]X * T[/code].
 #desc This can be seen as transforming with respect to the local frame.
-func translated_local() -> Transform2D:
+func translated_local(offset: Vector2) -> Transform2D:
 	pass;
 
 

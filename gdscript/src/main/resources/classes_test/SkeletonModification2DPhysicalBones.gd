@@ -14,7 +14,7 @@ func fetch_physical_bones() -> void:
 	pass;
 
 #desc Returns the [PhysicalBone2D] node at [param joint_idx].
-func get_physical_bone_node() -> NodePath:
+func get_physical_bone_node(joint_idx: int) -> NodePath:
 	pass;
 
 #desc Sets the [PhysicalBone2D] node at [param joint_idx].
@@ -24,12 +24,12 @@ func set_physical_bone_node(joint_idx: int, physicalbone2d_node: NodePath) -> vo
 
 #desc Tell the [PhysicalBone2D] nodes to start simulating and interacting with the physics world.
 #desc Optionally, an array of bone names can be passed to this function, and that will cause only [PhysicalBone2D] nodes with those names to start simulating.
-func start_simulation() -> void:
+func start_simulation(bones: StringName[]) -> void:
 	pass;
 
 #desc Tell the [PhysicalBone2D] nodes to stop simulating and interacting with the physics world.
 #desc Optionally, an array of bone names can be passed to this function, and that will cause only [PhysicalBone2D] nodes with those names to stop simulating.
-func stop_simulation() -> void:
+func stop_simulation(bones: StringName[]) -> void:
 	pass;
 
 

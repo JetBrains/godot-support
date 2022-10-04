@@ -334,7 +334,7 @@ func font_clear_kerning_map(font_rid: RID, size: int) -> void:
 	pass;
 
 #desc Removes all font sizes from the cache entry.
-func font_clear_size_cache() -> void:
+func font_clear_size_cache(font_rid: RID) -> void:
 	pass;
 
 #desc Removes all textures from font cache entry.
@@ -355,7 +355,7 @@ func font_draw_glyph_outline(font_rid: RID, canvas: RID, size: int, outline_size
 	pass;
 
 #desc Returns font anti-aliasing mode.
-func font_get_antialiasing() -> int:
+func font_get_antialiasing(font_rid: RID) -> int:
 	pass;
 
 #desc Returns the font ascent (number of pixels above the baseline).
@@ -367,23 +367,23 @@ func font_get_descent(font_rid: RID, size: int) -> float:
 	pass;
 
 #desc Returns font embolden strength.
-func font_get_embolden() -> float:
+func font_get_embolden(font_rid: RID) -> float:
 	pass;
 
 #desc Returns number of faces in the TrueType / OpenType collection.
-func font_get_face_count() -> int:
+func font_get_face_count(font_rid: RID) -> int:
 	pass;
 
 #desc Recturns an active face index in the TrueType / OpenType collection.
-func font_get_face_index() -> int:
+func font_get_face_index(font_rid: RID) -> int:
 	pass;
 
 #desc Returns bitmap font fixed size.
-func font_get_fixed_size() -> int:
+func font_get_fixed_size(font_rid: RID) -> int:
 	pass;
 
 #desc Returns [code]true[/code] if font texture mipmap generation is enabled.
-func font_get_generate_mipmaps() -> bool:
+func font_get_generate_mipmaps(font_rid: RID) -> bool:
 	pass;
 
 #desc Returns the font oversampling factor, shared by all fonts in the TextServer.
@@ -437,7 +437,7 @@ func font_get_glyph_uv_rect(font_rid: RID, size: Vector2i, glyph: int) -> Rect2:
 	pass;
 
 #desc Returns the font hinting mode. Used by dynamic fonts only.
-func font_get_hinting() -> int:
+func font_get_hinting(font_rid: RID) -> int:
 	pass;
 
 #desc Returns kerning for the pair of glyphs.
@@ -453,27 +453,27 @@ func font_get_language_support_override(font_rid: RID, language: String) -> bool
 	pass;
 
 #desc Returns list of language support overrides.
-func font_get_language_support_overrides() -> PackedStringArray:
+func font_get_language_support_overrides(font_rid: RID) -> PackedStringArray:
 	pass;
 
 #desc Returns the width of the range around the shape between the minimum and maximum representable signed distance.
-func font_get_msdf_pixel_range() -> int:
+func font_get_msdf_pixel_range(font_rid: RID) -> int:
 	pass;
 
 #desc Returns source font size used to generate MSDF textures.
-func font_get_msdf_size() -> int:
+func font_get_msdf_size(font_rid: RID) -> int:
 	pass;
 
 #desc Returns font family name.
-func font_get_name() -> String:
+func font_get_name(font_rid: RID) -> String:
 	pass;
 
 #desc Returns font OpenType feature set override.
-func font_get_opentype_feature_overrides() -> Dictionary:
+func font_get_opentype_feature_overrides(font_rid: RID) -> Dictionary:
 	pass;
 
 #desc Returns font oversampling factor, if set to [code]0.0[/code] global oversampling factor is used instead. Used by dynamic fonts only.
-func font_get_oversampling() -> float:
+func font_get_oversampling(font_rid: RID) -> float:
 	pass;
 
 #desc Returns scaling factor of the color bitmap font.
@@ -485,27 +485,27 @@ func font_get_script_support_override(font_rid: RID, script: String) -> bool:
 	pass;
 
 #desc Returns list of script support overrides.
-func font_get_script_support_overrides() -> PackedStringArray:
+func font_get_script_support_overrides(font_rid: RID) -> PackedStringArray:
 	pass;
 
 #desc Returns list of the font sizes in the cache. Each size is [code]Vector2i[/code] with font size and outline size.
-func font_get_size_cache_list() -> Vector2i[]:
+func font_get_size_cache_list(font_rid: RID) -> Vector2i[]:
 	pass;
 
 #desc Returns font style flags, see [enum FontStyle].
-func font_get_style() -> int:
+func font_get_style(font_rid: RID) -> int:
 	pass;
 
 #desc Returns font style name.
-func font_get_style_name() -> String:
+func font_get_style_name(font_rid: RID) -> String:
 	pass;
 
 #desc Returns font sub-pixel glyph positioning mode.
-func font_get_subpixel_positioning() -> int:
+func font_get_subpixel_positioning(font_rid: RID) -> int:
 	pass;
 
 #desc Returns a string containing all the characters available in the font.
-func font_get_supported_chars() -> String:
+func font_get_supported_chars(font_rid: RID) -> String:
 	pass;
 
 #desc Returns number of textures used by font cache entry.
@@ -521,7 +521,7 @@ func font_get_texture_offsets(font_rid: RID, size: Vector2i, texture_index: int)
 	pass;
 
 #desc Returns 2D transform applied to the font outlines.
-func font_get_transform() -> Transform2D:
+func font_get_transform(font_rid: RID) -> Transform2D:
 	pass;
 
 #desc Returns pixel offset of the underline below the baseline.
@@ -533,7 +533,7 @@ func font_get_underline_thickness(font_rid: RID, size: int) -> float:
 	pass;
 
 #desc Returns variation coordinates for the specified font cache entry. See [method font_supported_variation_list] for more info.
-func font_get_variation_coordinates() -> Dictionary:
+func font_get_variation_coordinates(font_rid: RID) -> Dictionary:
 	pass;
 
 #desc Returns [code]true[/code] if a Unicode [param char] is available in the font.
@@ -541,7 +541,7 @@ func font_has_char(font_rid: RID, char: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if auto-hinting is supported and preferred over font built-in hinting. Used by dynamic fonts only.
-func font_is_force_autohinter() -> bool:
+func font_is_force_autohinter(font_rid: RID) -> bool:
 	pass;
 
 #desc Returns [code]true[/code], if font supports given language ([url=https://en.wikipedia.org/wiki/ISO_639-1]ISO 639[/url] code).
@@ -549,7 +549,7 @@ func font_is_language_supported(font_rid: RID, language: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if glyphs of all sizes are rendered using single multichannel signed distance field generated from the dynamic font vector data.
-func font_is_multichannel_signed_distance_field() -> bool:
+func font_is_multichannel_signed_distance_field(font_rid: RID) -> bool:
 	pass;
 
 #desc Returns [code]true[/code], if font supports given script (ISO 15924 code).
@@ -628,7 +628,7 @@ func font_set_generate_mipmaps(font_rid: RID, generate_mipmaps: bool) -> void:
 
 #desc Sets oversampling factor, shared by all font in the TextServer.
 #desc [b]Note:[/b] This value can be automatically changed by display server.
-func font_set_global_oversampling() -> void:
+func font_set_global_oversampling(oversampling: float) -> void:
 	pass;
 
 #desc Sets glyph advance (offset of the next glyph).
@@ -735,11 +735,11 @@ func font_set_variation_coordinates(font_rid: RID, variation_coordinates: Dictio
 	pass;
 
 #desc Returns the dictionary of the supported OpenType features.
-func font_supported_feature_list() -> Dictionary:
+func font_supported_feature_list(font_rid: RID) -> Dictionary:
 	pass;
 
 #desc Returns the dictionary of the supported OpenType variation coordinates.
-func font_supported_variation_list() -> Dictionary:
+func font_supported_variation_list(font_rid: RID) -> Dictionary:
 	pass;
 
 #desc Converts a number from the Western Arabic (0..9) to the numeral systems used in [param language].
@@ -747,7 +747,7 @@ func format_number(number: String, language: String) -> String:
 	pass;
 
 #desc Frees an object created by this [TextServer].
-func free_rid() -> void:
+func free_rid(rid: RID) -> void:
 	pass;
 
 #desc Returns text server features, see [enum Feature].
@@ -771,11 +771,11 @@ func get_support_data_info() -> String:
 	pass;
 
 #desc Returns [code]true[/code] if [param rid] is valid resource owned by this text server.
-func has() -> bool:
+func has(rid: RID) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the server supports a feature.
-func has_feature() -> bool:
+func has_feature(feature: int) -> bool:
 	pass;
 
 #desc Returns index of the first string in [param dict] which is visually confusable with the [param string], or [code]-1[/code] if none is found.
@@ -785,7 +785,7 @@ func is_confusable(string: String, dict: PackedStringArray) -> int:
 	pass;
 
 #desc Returns [code]true[/code] if locale is right-to-left.
-func is_locale_right_to_left() -> bool:
+func is_locale_right_to_left(locale: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] is [param string] is a valid identifier.
@@ -797,16 +797,16 @@ func is_locale_right_to_left() -> bool:
 #desc If the [constant FEATURE_UNICODE_IDENTIFIERS] feature is not supported, a valid identifier must:
 #desc - Begin with a Unicode character of class XID_Start or [code]"_"[/code].
 #desc - May contain Unicode characters of class XID_Continue in the other positions.
-func is_valid_identifier() -> bool:
+func is_valid_identifier(string: String) -> bool:
 	pass;
 
 #desc Loads optional TextServer database (e.g. ICU break iterators and dictionaries).
 #desc [b]Note:[/b] This function should be called before any other TextServer functions used, otherwise it won't have any effect.
-func load_support_data() -> bool:
+func load_support_data(filename: String) -> bool:
 	pass;
 
 #desc Converts readable feature, variation, script or language name to OpenType tag.
-func name_to_tag() -> int:
+func name_to_tag(name: String) -> int:
 	pass;
 
 #desc Converts [param number] from the numeral systems used in [param language] to Western Arabic (0..9).
@@ -818,16 +818,16 @@ func parse_structured_text(parser_type: int, args: Array, text: String) -> Vecto
 	pass;
 
 #desc Returns percent sign used in the [param language].
-func percent_sign() -> String:
+func percent_sign(language: String) -> String:
 	pass;
 
 #desc Saves optional TextServer database (e.g. ICU break iterators and dictionaries) to the file.
 #desc [b]Note:[/b] This function is used by during project export, to include TextServer database.
-func save_support_data() -> bool:
+func save_support_data(filename: String) -> bool:
 	pass;
 
 #desc Returns number of text spans added using [method shaped_text_add_string] or [method shaped_text_add_object].
-func shaped_get_span_count() -> int:
+func shaped_get_span_count(shaped: RID) -> int:
 	pass;
 
 #desc Returns text span metadata.
@@ -847,7 +847,7 @@ func shaped_text_add_string(shaped: RID, text: String, fonts: RID[], size: int, 
 	pass;
 
 #desc Clears text buffer (removes text and inline objects).
-func shaped_text_clear() -> void:
+func shaped_text_clear(rid: RID) -> void:
 	pass;
 
 #desc Draw shaped text into a canvas item at a given position, with [param color]. [param pos] specifies the leftmost point of the baseline (for horizontal layout) or topmost point of the baseline (for vertical layout).
@@ -864,7 +864,7 @@ func shaped_text_fit_to_width(shaped: RID, width: float, jst_flags: int) -> floa
 
 #desc Returns the text ascent (number of pixels above the baseline for horizontal layout or to the left of baseline for vertical).
 #desc [b]Note:[/b] Overall ascent can be higher than font ascent, if some glyphs are displaced from the baseline.
-func shaped_text_get_ascent() -> float:
+func shaped_text_get_ascent(shaped: RID) -> float:
 	pass;
 
 #desc Returns shapes of the carets corresponding to the character offset [param position] in the text. Returned caret shape is 1 pixel wide rectangle.
@@ -872,16 +872,16 @@ func shaped_text_get_carets(shaped: RID, position: int) -> Dictionary:
 	pass;
 
 #desc Returns custom punctuation character list, used for word breaking. If set to empty string, server defaults are used.
-func shaped_text_get_custom_punctuation() -> String:
+func shaped_text_get_custom_punctuation(shaped: RID) -> String:
 	pass;
 
 #desc Returns the text descent (number of pixels below the baseline for horizontal layout or to the right of baseline for vertical).
 #desc [b]Note:[/b] Overall descent can be higher than font descent, if some glyphs are displaced from the baseline.
-func shaped_text_get_descent() -> float:
+func shaped_text_get_descent(shaped: RID) -> float:
 	pass;
 
 #desc Returns direction of the text.
-func shaped_text_get_direction() -> int:
+func shaped_text_get_direction(shaped: RID) -> int:
 	pass;
 
 #desc Returns dominant direction of in the range of text.
@@ -889,23 +889,23 @@ func shaped_text_get_dominant_direction_in_range(shaped: RID, start: int, end: i
 	pass;
 
 #desc Returns number of glyphs in the ellipsis.
-func shaped_text_get_ellipsis_glyph_count() -> int:
+func shaped_text_get_ellipsis_glyph_count(shaped: RID) -> int:
 	pass;
 
 #desc Returns array of the glyphs in the ellipsis.
-func shaped_text_get_ellipsis_glyphs() -> Dictionary[]:
+func shaped_text_get_ellipsis_glyphs(shaped: RID) -> Dictionary[]:
 	pass;
 
 #desc Returns position of the ellipsis.
-func shaped_text_get_ellipsis_pos() -> int:
+func shaped_text_get_ellipsis_pos(shaped: RID) -> int:
 	pass;
 
 #desc Returns number of glyphs in the buffer.
-func shaped_text_get_glyph_count() -> int:
+func shaped_text_get_glyph_count(shaped: RID) -> int:
 	pass;
 
 #desc Returns an array of glyphs in the visual order.
-func shaped_text_get_glyphs() -> Dictionary[]:
+func shaped_text_get_glyphs(shaped: RID) -> Dictionary[]:
 	pass;
 
 #desc Returns composite character's bounds as offsets from the start of the line.
@@ -913,7 +913,7 @@ func shaped_text_get_grapheme_bounds(shaped: RID, pos: int) -> Vector2:
 	pass;
 
 #desc Returns direction of the text, inferred by the BiDi algorithm.
-func shaped_text_get_inferred_direction() -> int:
+func shaped_text_get_inferred_direction(shaped: RID) -> int:
 	pass;
 
 #desc Breaks text to the lines and returns character ranges for each line.
@@ -929,28 +929,28 @@ func shaped_text_get_object_rect(shaped: RID, key: Variant) -> Rect2:
 	pass;
 
 #desc Returns array of inline objects.
-func shaped_text_get_objects() -> Array:
+func shaped_text_get_objects(shaped: RID) -> Array:
 	pass;
 
 #desc Returns text orientation.
-func shaped_text_get_orientation() -> int:
+func shaped_text_get_orientation(shaped: RID) -> int:
 	pass;
 
 #desc Returns the parent buffer from which the substring originates.
-func shaped_text_get_parent() -> RID:
+func shaped_text_get_parent(shaped: RID) -> RID:
 	pass;
 
 #desc Returns [code]true[/code] if text buffer is configured to display control characters.
-func shaped_text_get_preserve_control() -> bool:
+func shaped_text_get_preserve_control(shaped: RID) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if text buffer is configured to display hexadecimal codes in place of invalid characters.
 #desc [b]Note:[/b] If set to [code]false[/code], nothing is displayed in place of invalid characters.
-func shaped_text_get_preserve_invalid() -> bool:
+func shaped_text_get_preserve_invalid(shaped: RID) -> bool:
 	pass;
 
 #desc Returns substring buffer character range in the parent buffer.
-func shaped_text_get_range() -> Vector2i:
+func shaped_text_get_range(shaped: RID) -> Vector2i:
 	pass;
 
 #desc Returns selection rectangles for the specified character range.
@@ -958,7 +958,7 @@ func shaped_text_get_selection(shaped: RID, start: int, end: int) -> PackedVecto
 	pass;
 
 #desc Returns size of the text.
-func shaped_text_get_size() -> Vector2:
+func shaped_text_get_size(shaped: RID) -> Vector2:
 	pass;
 
 #desc Returns extra spacing added between glyphs or lines in pixels.
@@ -966,19 +966,19 @@ func shaped_text_get_spacing(shaped: RID, spacing: int) -> int:
 	pass;
 
 #desc Returns the position of the overrun trim.
-func shaped_text_get_trim_pos() -> int:
+func shaped_text_get_trim_pos(shaped: RID) -> int:
 	pass;
 
 #desc Returns pixel offset of the underline below the baseline.
-func shaped_text_get_underline_position() -> float:
+func shaped_text_get_underline_position(shaped: RID) -> float:
 	pass;
 
 #desc Returns thickness of the underline.
-func shaped_text_get_underline_thickness() -> float:
+func shaped_text_get_underline_thickness(shaped: RID) -> float:
 	pass;
 
 #desc Returns width (for horizontal layout) or height (for vertical) of the text.
-func shaped_text_get_width() -> float:
+func shaped_text_get_width(shaped: RID) -> float:
 	pass;
 
 #desc Breaks text into words and returns array of character ranges. Use [param grapheme_flags] to set what characters are used for breaking (see [enum GraphemeFlag]).
@@ -994,7 +994,7 @@ func shaped_text_hit_test_position(shaped: RID, coords: float) -> int:
 	pass;
 
 #desc Returns [code]true[/code] if buffer is successfully shaped.
-func shaped_text_is_ready() -> bool:
+func shaped_text_is_ready(shaped: RID) -> bool:
 	pass;
 
 #desc Returns composite character end position closest to the [param pos].
@@ -1046,11 +1046,11 @@ func shaped_text_set_spacing(shaped: RID, spacing: int, value: int) -> void:
 
 #desc Shapes buffer if it's not shaped. Returns [code]true[/code] if the string is shaped successfully.
 #desc [b]Note:[/b] It is not necessary to call this function manually, buffer will be shaped automatically as soon as any of its output data is requested.
-func shaped_text_shape() -> bool:
+func shaped_text_shape(shaped: RID) -> bool:
 	pass;
 
 #desc Returns text glyphs in the logical order.
-func shaped_text_sort_logical() -> Dictionary[]:
+func shaped_text_sort_logical(shaped: RID) -> Dictionary[]:
 	pass;
 
 #desc Returns text buffer for the substring of the text in the [param shaped] text buffer (including inline objects).
@@ -1063,7 +1063,7 @@ func shaped_text_tab_align(shaped: RID, tab_stops: PackedFloat32Array) -> float:
 
 #desc Returns [code]true[/code] if [param string] is likely to be an attempt at confusing the reader.
 #desc [b]Note:[/b] Always returns [code]false[/code] if the server does not support the [constant FEATURE_UNICODE_SECURITY] feature.
-func spoof_check() -> bool:
+func spoof_check(string: String) -> bool:
 	pass;
 
 #desc Returns array of the word break character offsets.
@@ -1084,11 +1084,11 @@ func string_to_upper(string: String, language: String) -> String:
 
 #desc Strips diacritics from the string.
 #desc [b]Note:[/b] The result may be longer or shorter than the original.
-func strip_diacritics() -> String:
+func strip_diacritics(string: String) -> String:
 	pass;
 
 #desc Converts OpenType tag to readable feature, variation, script or language name.
-func tag_to_name() -> String:
+func tag_to_name(tag: int) -> String:
 	pass;
 
 

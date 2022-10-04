@@ -63,7 +63,7 @@ func poll() -> void:
 
 #desc Sets the peer to which packets will be sent.
 #desc The [param id] can be one of: [constant TARGET_PEER_BROADCAST] to send to all connected peers, [constant TARGET_PEER_SERVER] to send to the peer acting as server, a valid peer ID to send to that specific peer, a negative peer ID to send to all peers except that one. By default, the target peer is [constant TARGET_PEER_BROADCAST].
-func set_target_peer() -> void:
+func set_target_peer(id: int) -> void:
 	pass;
 
 

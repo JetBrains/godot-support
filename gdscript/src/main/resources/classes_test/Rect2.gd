@@ -22,11 +22,11 @@ func Rect2() -> Rect2:
 	pass;
 
 #desc Constructs a [Rect2] as a copy of the given [Rect2].
-func Rect2() -> Rect2:
+func Rect2(from: Rect2) -> Rect2:
 	pass;
 
 #desc Constructs a [Rect2] from a [Rect2i].
-func Rect2() -> Rect2:
+func Rect2(from: Rect2i) -> Rect2:
 	pass;
 
 #desc Constructs a [Rect2] by position and size.
@@ -43,7 +43,7 @@ func abs() -> Rect2:
 	pass;
 
 #desc Returns [code]true[/code] if this [Rect2] completely encloses another one.
-func encloses() -> bool:
+func encloses(b: Rect2) -> bool:
 	pass;
 
 #desc Returns a copy of this [Rect2] expanded to include a given point.
@@ -62,7 +62,7 @@ func encloses() -> bool:
 #desc var rect2 = rect.Expand(new Vector2(0, -1));
 #desc [/csharp]
 #desc [/codeblocks]
-func expand() -> Rect2:
+func expand(to: Vector2) -> Rect2:
 	pass;
 
 #desc Returns the area of the [Rect2]. See also [method has_area].
@@ -74,7 +74,7 @@ func get_center() -> Vector2:
 	pass;
 
 #desc Returns a copy of the [Rect2] grown by the specified [param amount] on all sides.
-func grow() -> Rect2:
+func grow(amount: float) -> Rect2:
 	pass;
 
 #desc Returns a copy of the [Rect2] grown by the specified amount on each side individually.
@@ -91,12 +91,12 @@ func has_area() -> bool:
 
 #desc Returns [code]true[/code] if the [Rect2] contains a point. By convention, the right and bottom edges of the [Rect2] are considered exclusive, so points on these edges are [b]not[/b] included.
 #desc [b]Note:[/b] This method is not reliable for [Rect2] with a [i]negative size[/i]. Use [method abs] to get a positive sized equivalent rectangle to check for contained points.
-func has_point() -> bool:
+func has_point(point: Vector2) -> bool:
 	pass;
 
 #desc Returns the intersection of this [Rect2] and [param b].
 #desc If the rectangles do not intersect, an empty [Rect2] is returned.
-func intersection() -> Rect2:
+func intersection(b: Rect2) -> Rect2:
 	pass;
 
 #desc Returns [code]true[/code] if the [Rect2] overlaps with [code]b[/code] (i.e. they have at least one point in common).
@@ -105,11 +105,11 @@ func intersects(b: Rect2, include_borders: bool) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this [Rect2] and [param rect] are approximately equal, by calling [code]is_equal_approx[/code] on each component.
-func is_equal_approx() -> bool:
+func is_equal_approx(rect: Rect2) -> bool:
 	pass;
 
 #desc Returns a larger [Rect2] that contains this [Rect2] and [param b].
-func merge() -> Rect2:
+func merge(b: Rect2) -> Rect2:
 	pass;
 
 

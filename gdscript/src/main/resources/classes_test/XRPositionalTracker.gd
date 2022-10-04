@@ -34,19 +34,19 @@ var type: int;
 
 
 #desc Returns an input for this tracker. It can return a boolean, float or [Vector2] value depending on whether the input is a button, trigger or thumbstick/thumbpad.
-func get_input() -> Variant:
+func get_input(name: StringName) -> Variant:
 	pass;
 
 #desc Returns the current [XRPose] state object for the bound [param name] pose.
-func get_pose() -> XRPose:
+func get_pose(name: StringName) -> XRPose:
 	pass;
 
 #desc Returns [code]true[/code] if the tracker is available and is currently tracking the bound [param name] pose.
-func has_pose() -> bool:
+func has_pose(name: StringName) -> bool:
 	pass;
 
 #desc Marks this pose as invalid, we don't clear the last reported state but it allows users to decide if trackers need to be hidden if we loose tracking or just remain at their last known position.
-func invalidate_pose() -> void:
+func invalidate_pose(name: StringName) -> void:
 	pass;
 
 #desc Changes the value for the given input. This method is called by a [XRInterface] implementation and should not be used directly.

@@ -215,7 +215,7 @@ func position_track_insert_key(track_idx: int, time: float, position: Vector3) -
 	pass;
 
 #desc Removes a track by specifying the track index.
-func remove_track() -> void:
+func remove_track(track_idx: int) -> void:
 	pass;
 
 func rotation_track_insert_key(track_idx: int, time: float, rotation: Quaternion) -> int:
@@ -229,15 +229,15 @@ func track_find_key(track_idx: int, time: float, exact: bool) -> int:
 	pass;
 
 #desc Returns [code]true[/code] if the track at [param track_idx] wraps the interpolation loop. New tracks wrap the interpolation loop by default.
-func track_get_interpolation_loop_wrap() -> bool:
+func track_get_interpolation_loop_wrap(track_idx: int) -> bool:
 	pass;
 
 #desc Returns the interpolation type of a given track.
-func track_get_interpolation_type() -> int:
+func track_get_interpolation_type(track_idx: int) -> int:
 	pass;
 
 #desc Returns the number of keys in a given track.
-func track_get_key_count() -> int:
+func track_get_key_count(track_idx: int) -> int:
 	pass;
 
 #desc Returns the time at which the key is located.
@@ -253,30 +253,30 @@ func track_get_key_value(track_idx: int, key_idx: int) -> Variant:
 	pass;
 
 #desc Gets the path of a track. For more information on the path format, see [method track_set_path].
-func track_get_path() -> NodePath:
+func track_get_path(track_idx: int) -> NodePath:
 	pass;
 
 #desc Gets the type of a track.
-func track_get_type() -> int:
+func track_get_type(track_idx: int) -> int:
 	pass;
 
 #desc Inserts a generic key in a given track. Returns the key index.
 func track_insert_key(track_idx: int, time: float, key: Variant, transition: float) -> int:
 	pass;
 
-func track_is_compressed() -> bool:
+func track_is_compressed(track_idx: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the track at index [param track_idx] is enabled.
-func track_is_enabled() -> bool:
+func track_is_enabled(track_idx: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given track is imported. Else, return [code]false[/code].
-func track_is_imported() -> bool:
+func track_is_imported(track_idx: int) -> bool:
 	pass;
 
 #desc Moves a track down.
-func track_move_down() -> void:
+func track_move_down(track_idx: int) -> void:
 	pass;
 
 #desc Changes the index position of track [param track_idx] to the one defined in [param to_idx].
@@ -284,7 +284,7 @@ func track_move_to(track_idx: int, to_idx: int) -> void:
 	pass;
 
 #desc Moves a track up.
-func track_move_up() -> void:
+func track_move_up(track_idx: int) -> void:
 	pass;
 
 #desc Removes a key by index in a given track.
@@ -337,7 +337,7 @@ func value_track_get_key_indices(track_idx: int, time_sec: float, delta: float) 
 	pass;
 
 #desc Returns the update mode of a value track.
-func value_track_get_update_mode() -> int:
+func value_track_get_update_mode(track_idx: int) -> int:
 	pass;
 
 #desc Returns the interpolated value at the given time (in seconds). The [param track_idx] must be the index of a value track.

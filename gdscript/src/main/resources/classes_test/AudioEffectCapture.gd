@@ -11,7 +11,7 @@ var buffer_length: float;
 
 
 #desc Returns [code]true[/code] if at least [param frames] audio frames are available to read in the internal ring buffer.
-func can_get_buffer() -> bool:
+func can_get_buffer(frames: int) -> bool:
 	pass;
 
 #desc Clears the internal ring buffer.
@@ -20,7 +20,7 @@ func clear_buffer() -> void:
 
 #desc Gets the next [param frames] audio samples from the internal ring buffer.
 #desc Returns a [PackedVector2Array] containing exactly [param frames] audio samples if available, or an empty [PackedVector2Array] if insufficient data was available.
-func get_buffer() -> PackedVector2Array:
+func get_buffer(frames: int) -> PackedVector2Array:
 	pass;
 
 #desc Returns the total size of the internal ring buffer in frames.

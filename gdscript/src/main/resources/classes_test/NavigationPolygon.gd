@@ -42,7 +42,7 @@ class_name NavigationPolygon
 
 
 #desc Appends a [PackedVector2Array] that contains the vertices of an outline to the internal array that contains all the outlines. You have to call [method make_polygons_from_outlines] in order for this array to be converted to polygons that the engine will use.
-func add_outline() -> void:
+func add_outline(outline: PackedVector2Array) -> void:
 	pass;
 
 #desc Adds a [PackedVector2Array] that contains the vertices of an outline to the internal array that contains all the outlines at a fixed position. You have to call [method make_polygons_from_outlines] in order for this array to be converted to polygons that the engine will use.
@@ -50,7 +50,7 @@ func add_outline_at_index(outline: PackedVector2Array, index: int) -> void:
 	pass;
 
 #desc Adds a polygon using the indices of the vertices you get when calling [method get_vertices].
-func add_polygon() -> void:
+func add_polygon(polygon: PackedInt32Array) -> void:
 	pass;
 
 #desc Clears the array of the outlines, but it doesn't clear the vertices and the polygons that were created by them.
@@ -66,7 +66,7 @@ func get_mesh() -> NavigationMesh:
 	pass;
 
 #desc Returns a [PackedVector2Array] containing the vertices of an outline that was created in the editor or by script.
-func get_outline() -> PackedVector2Array:
+func get_outline(idx: int) -> PackedVector2Array:
 	pass;
 
 #desc Returns the number of outlines that were created in the editor or by script.
@@ -74,7 +74,7 @@ func get_outline_count() -> int:
 	pass;
 
 #desc Returns a [PackedInt32Array] containing the indices of the vertices of a created polygon.
-func get_polygon() -> PackedInt32Array:
+func get_polygon(idx: int) -> PackedInt32Array:
 	pass;
 
 #desc Returns the count of all polygons.
@@ -90,7 +90,7 @@ func make_polygons_from_outlines() -> void:
 	pass;
 
 #desc Removes an outline created in the editor or by script. You have to call [method make_polygons_from_outlines] for the polygons to update.
-func remove_outline() -> void:
+func remove_outline(idx: int) -> void:
 	pass;
 
 #desc Changes an outline created in the editor or by script. You have to call [method make_polygons_from_outlines] for the polygons to update.
@@ -98,7 +98,7 @@ func set_outline(idx: int, outline: PackedVector2Array) -> void:
 	pass;
 
 #desc Sets the vertices that can be then indexed to create polygons with the [method add_polygon] method.
-func set_vertices() -> void:
+func set_vertices(vertices: PackedVector2Array) -> void:
 	pass;
 
 

@@ -35,7 +35,7 @@ var tree_root: AnimationNode;
 
 
 #desc Manually advance the animations by the specified time (in seconds).
-func advance() -> void:
+func advance(delta: float) -> void:
 	pass;
 
 #desc Retrieve the motion of the [member root_motion_track] as a [Transform3D] that can be used elsewhere. If [member root_motion_track] is not a path to a track of type [constant Animation.TYPE_POSITION_3D], [constant Animation.TYPE_SCALE_3D] or [constant Animation.TYPE_ROTATION_3D], returns an identity transformation. See also [member root_motion_track] and [RootMotionView].

@@ -43,11 +43,11 @@ var target_position: Vector3;
 
 
 #desc Adds a collision exception so the shape does not report collisions with the specified [CollisionObject3D] node.
-func add_exception() -> void:
+func add_exception(node: Object) -> void:
 	pass;
 
 #desc Adds a collision exception so the shape does not report collisions with the specified [RID].
-func add_exception_rid() -> void:
+func add_exception_rid(rid: RID) -> void:
 	pass;
 
 #desc Removes all collision exceptions for this [ShapeCast3D].
@@ -68,11 +68,11 @@ func get_closest_collision_unsafe_fraction() -> float:
 	pass;
 
 #desc Returns the collided [Object] of one of the multiple collisions at [param index], or [code]null[/code] if no object is intersecting the shape (i.e. [method is_colliding] returns [code]false[/code]).
-func get_collider() -> Object:
+func get_collider(index: int) -> Object:
 	pass;
 
 #desc Returns the shape ID of the colliding shape of one of the multiple collisions at [param index], or [code]0[/code] if no object is intersecting the shape (i.e. [method is_colliding] returns [code]false[/code]).
-func get_collider_shape() -> int:
+func get_collider_shape(index: int) -> int:
 	pass;
 
 #desc The number of collisions detected at the point of impact. Use this to iterate over multiple collisions as provided by [method get_collider], [method get_collider_shape], [method get_collision_point], and [method get_collision_normal] methods.
@@ -80,16 +80,16 @@ func get_collision_count() -> int:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member collision_mask] is enabled, given a [param layer_number] between 1 and 32.
-func get_collision_mask_value() -> bool:
+func get_collision_mask_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns the normal of one of the multiple collisions at [param index] of the intersecting object.
-func get_collision_normal() -> Vector3:
+func get_collision_normal(index: int) -> Vector3:
 	pass;
 
 #desc Returns the collision point of one of the multiple collisions at [param index] where the shape intersects the colliding object.
 #desc [b]Note:[/b] this point is in the [b]global[/b] coordinate system.
-func get_collision_point() -> Vector3:
+func get_collision_point(index: int) -> Vector3:
 	pass;
 
 #desc Returns whether any object is intersecting with the shape's vector (considering the vector length).
@@ -97,15 +97,15 @@ func is_colliding() -> bool:
 	pass;
 
 #desc Removes a collision exception so the shape does report collisions with the specified [CollisionObject3D] node.
-func remove_exception() -> void:
+func remove_exception(node: Object) -> void:
 	pass;
 
 #desc Removes a collision exception so the shape does report collisions with the specified [RID].
-func remove_exception_rid() -> void:
+func remove_exception_rid(rid: RID) -> void:
 	pass;
 
 #desc This method is used internally to update the debug gizmo in the editor. Any code placed in this function will be called whenever the [member shape] resource is modified.
-func resource_changed() -> void:
+func resource_changed(resource: Resource) -> void:
 	pass;
 
 #desc Based on [param value], enables or disables the specified layer in the [member collision_mask], given a [param layer_number] between 1 and 32.

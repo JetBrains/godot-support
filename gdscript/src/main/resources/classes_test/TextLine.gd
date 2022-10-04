@@ -69,7 +69,7 @@ func get_line_width() -> float:
 	pass;
 
 #desc Returns bounding rectangle of the inline object.
-func get_object_rect() -> Rect2:
+func get_object_rect(key: Variant) -> Rect2:
 	pass;
 
 #desc Returns array of inline objects.
@@ -85,7 +85,7 @@ func get_size() -> Vector2:
 	pass;
 
 #desc Returns caret character offset at the specified pixel offset at the baseline. This function always returns a valid position.
-func hit_test() -> int:
+func hit_test(coords: float) -> int:
 	pass;
 
 #desc Sets new size and alignment of embedded object.
@@ -94,11 +94,11 @@ func resize_object(key: Variant, size: Vector2, inline_align: int) -> bool:
 
 #desc Overrides BiDi for the structured text.
 #desc Override ranges should cover full source text without overlaps. BiDi algorithm will be used on each range separately.
-func set_bidi_override() -> void:
+func set_bidi_override(override: Array) -> void:
 	pass;
 
 #desc Aligns text to the given tab-stops.
-func tab_align() -> void:
+func tab_align(tab_stops: PackedFloat32Array) -> void:
 	pass;
 
 

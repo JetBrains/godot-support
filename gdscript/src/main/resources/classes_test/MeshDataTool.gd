@@ -52,7 +52,7 @@ func clear() -> void:
 	pass;
 
 #desc Adds a new surface to specified [Mesh] with edited data.
-func commit_to_surface() -> int:
+func commit_to_surface(mesh: ArrayMesh) -> int:
 	pass;
 
 #desc Uses specified surface of given [Mesh] to populate data for MeshDataTool.
@@ -65,11 +65,11 @@ func get_edge_count() -> int:
 	pass;
 
 #desc Returns array of faces that touch given edge.
-func get_edge_faces() -> PackedInt32Array:
+func get_edge_faces(idx: int) -> PackedInt32Array:
 	pass;
 
 #desc Returns meta information assigned to given edge.
-func get_edge_meta() -> Variant:
+func get_edge_meta(idx: int) -> Variant:
 	pass;
 
 #desc Returns index of specified vertex connected to given edge.
@@ -87,11 +87,11 @@ func get_face_edge(idx: int, edge: int) -> int:
 	pass;
 
 #desc Returns the metadata associated with the given face.
-func get_face_meta() -> Variant:
+func get_face_meta(idx: int) -> Variant:
 	pass;
 
 #desc Calculates and returns the face normal of the given face.
-func get_face_normal() -> Vector3:
+func get_face_normal(idx: int) -> Vector3:
 	pass;
 
 #desc Returns the specified vertex of the given face.
@@ -109,15 +109,15 @@ func get_material() -> Material:
 	pass;
 
 #desc Returns the vertex at given index.
-func get_vertex() -> Vector3:
+func get_vertex(idx: int) -> Vector3:
 	pass;
 
 #desc Returns the bones of the given vertex.
-func get_vertex_bones() -> PackedInt32Array:
+func get_vertex_bones(idx: int) -> PackedInt32Array:
 	pass;
 
 #desc Returns the color of the given vertex.
-func get_vertex_color() -> Color:
+func get_vertex_color(idx: int) -> Color:
 	pass;
 
 #desc Returns the total number of vertices in [Mesh].
@@ -125,35 +125,35 @@ func get_vertex_count() -> int:
 	pass;
 
 #desc Returns an array of edges that share the given vertex.
-func get_vertex_edges() -> PackedInt32Array:
+func get_vertex_edges(idx: int) -> PackedInt32Array:
 	pass;
 
 #desc Returns an array of faces that share the given vertex.
-func get_vertex_faces() -> PackedInt32Array:
+func get_vertex_faces(idx: int) -> PackedInt32Array:
 	pass;
 
 #desc Returns the metadata associated with the given vertex.
-func get_vertex_meta() -> Variant:
+func get_vertex_meta(idx: int) -> Variant:
 	pass;
 
 #desc Returns the normal of the given vertex.
-func get_vertex_normal() -> Vector3:
+func get_vertex_normal(idx: int) -> Vector3:
 	pass;
 
 #desc Returns the tangent of the given vertex.
-func get_vertex_tangent() -> Plane:
+func get_vertex_tangent(idx: int) -> Plane:
 	pass;
 
 #desc Returns the UV of the given vertex.
-func get_vertex_uv() -> Vector2:
+func get_vertex_uv(idx: int) -> Vector2:
 	pass;
 
 #desc Returns the UV2 of the given vertex.
-func get_vertex_uv2() -> Vector2:
+func get_vertex_uv2(idx: int) -> Vector2:
 	pass;
 
 #desc Returns bone weights of the given vertex.
-func get_vertex_weights() -> PackedFloat32Array:
+func get_vertex_weights(idx: int) -> PackedFloat32Array:
 	pass;
 
 #desc Sets the metadata of the given edge.
@@ -165,7 +165,7 @@ func set_face_meta(idx: int, meta: Variant) -> void:
 	pass;
 
 #desc Sets the material to be used by newly-constructed [Mesh].
-func set_material() -> void:
+func set_material(material: Material) -> void:
 	pass;
 
 #desc Sets the position of the given vertex.

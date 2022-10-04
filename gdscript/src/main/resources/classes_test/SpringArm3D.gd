@@ -25,7 +25,7 @@ var spring_length: float;
 
 
 #desc Adds the [PhysicsBody3D] object with the given [RID] to the list of [PhysicsBody3D] objects excluded from the collision check.
-func add_excluded_object() -> void:
+func add_excluded_object(RID: RID) -> void:
 	pass;
 
 #desc Clears the list of [PhysicsBody3D] objects excluded from the collision check.
@@ -37,7 +37,7 @@ func get_hit_length() -> float:
 	pass;
 
 #desc Removes the given [RID] from the list of [PhysicsBody3D] objects excluded from the collision check.
-func remove_excluded_object() -> bool:
+func remove_excluded_object(RID: RID) -> bool:
 	pass;
 
 

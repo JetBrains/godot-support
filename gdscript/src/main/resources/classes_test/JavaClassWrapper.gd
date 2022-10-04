@@ -3,7 +3,7 @@ class_name JavaClassWrapper
 
 
 
-func wrap() -> JavaClass:
+func wrap(name: String) -> JavaClass:
 	pass;
 
 

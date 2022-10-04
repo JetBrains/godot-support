@@ -21,7 +21,7 @@ func get_user_count() -> int:
 	pass;
 
 #desc Returns the [NodePath] of the baked object at index [param user_idx].
-func get_user_path() -> NodePath:
+func get_user_path(user_idx: int) -> NodePath:
 	pass;
 
 #desc If [code]true[/code], lightmaps were baked with directional information. See also [member LightmapGI.directional].
@@ -30,7 +30,7 @@ func is_using_spherical_harmonics() -> bool:
 
 #desc If [param uses_spherical_harmonics] is [code]true[/code], tells the engine to treat the lightmap data as if it was baked with directional information.
 #desc [b]Note:[/b] Changing this value on already baked lightmaps will not cause them to be baked again. This means the material appearance will look incorrect until lightmaps are baked again, in which case the value set here is discarded as the entire [LightmapGIData] resource is replaced by the lightmapper.
-func set_uses_spherical_harmonics() -> void:
+func set_uses_spherical_harmonics(uses_spherical_harmonics: bool) -> void:
 	pass;
 
 

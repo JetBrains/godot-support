@@ -35,7 +35,7 @@ func get_mode() -> int:
 
 #desc Returns [code]true[/code] if the shader has this param defined as a uniform in its code.
 #desc [b]Note:[/b] [param name] must match the name of the uniform in the code exactly.
-func has_parameter() -> bool:
+func has_parameter(name: StringName) -> bool:
 	pass;
 
 #desc Sets the default texture to be used with a texture uniform. The default is used if a texture is not set in the [ShaderMaterial].

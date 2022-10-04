@@ -45,7 +45,7 @@ var total_mass: float;
 
 
 #desc Adds a body to the list of bodies that this body can't collide with.
-func add_collision_exception_with() -> void:
+func add_collision_exception_with(body: Node) -> void:
 	pass;
 
 #desc Returns an array of nodes that were added as collision exceptions for this body.
@@ -53,26 +53,26 @@ func get_collision_exceptions() -> PhysicsBody3D[]:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member collision_layer] is enabled, given a [param layer_number] between 1 and 32.
-func get_collision_layer_value() -> bool:
+func get_collision_layer_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member collision_mask] is enabled, given a [param layer_number] between 1 and 32.
-func get_collision_mask_value() -> bool:
+func get_collision_mask_value(layer_number: int) -> bool:
 	pass;
 
 func get_physics_rid() -> RID:
 	pass;
 
 #desc Returns local translation of a vertex in the surface array.
-func get_point_transform() -> Vector3:
+func get_point_transform(point_index: int) -> Vector3:
 	pass;
 
 #desc Returns [code]true[/code] if vertex is set to pinned.
-func is_point_pinned() -> bool:
+func is_point_pinned(point_index: int) -> bool:
 	pass;
 
 #desc Removes a body from the list of bodies that this body can't collide with.
-func remove_collision_exception_with() -> void:
+func remove_collision_exception_with(body: Node) -> void:
 	pass;
 
 #desc Based on [code]value[/code], enables or disables the specified layer in the [member collision_layer], given a [param layer_number] between 1 and 32.

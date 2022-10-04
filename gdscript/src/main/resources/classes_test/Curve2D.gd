@@ -31,28 +31,28 @@ func get_baked_points() -> PackedVector2Array:
 
 #desc Returns the closest offset to [param to_point]. This offset is meant to be used in [method sample_baked].
 #desc [param to_point] must be in this curve's local space.
-func get_closest_offset() -> float:
+func get_closest_offset(to_point: Vector2) -> float:
 	pass;
 
 #desc Returns the closest baked point (in curve's local space) to [param to_point].
 #desc [param to_point] must be in this curve's local space.
-func get_closest_point() -> Vector2:
+func get_closest_point(to_point: Vector2) -> Vector2:
 	pass;
 
 #desc Returns the position of the control point leading to the vertex [param idx]. The returned position is relative to the vertex [param idx]. If the index is out of bounds, the function sends an error to the console, and returns [code](0, 0)[/code].
-func get_point_in() -> Vector2:
+func get_point_in(idx: int) -> Vector2:
 	pass;
 
 #desc Returns the position of the control point leading out of the vertex [param idx]. The returned position is relative to the vertex [param idx]. If the index is out of bounds, the function sends an error to the console, and returns [code](0, 0)[/code].
-func get_point_out() -> Vector2:
+func get_point_out(idx: int) -> Vector2:
 	pass;
 
 #desc Returns the position of the vertex [param idx]. If the index is out of bounds, the function sends an error to the console, and returns [code](0, 0)[/code].
-func get_point_position() -> Vector2:
+func get_point_position(idx: int) -> Vector2:
 	pass;
 
 #desc Deletes the point [code]idx[/code] from the curve. Sends an error to the console if [code]idx[/code] is out of bounds.
-func remove_point() -> void:
+func remove_point(idx: int) -> void:
 	pass;
 
 #desc Returns the position between the vertex [param idx] and the vertex [code]idx + 1[/code], where [param t] controls if the point is the first vertex ([code]t = 0.0[/code]), the last vertex ([code]t = 1.0[/code]), or in between. Values of [param t] outside the range ([code]0.0 >= t <=1[/code]) give strange, but predictable results.
@@ -67,7 +67,7 @@ func sample_baked(offset: float, cubic: bool) -> Vector2:
 	pass;
 
 #desc Returns the position at the vertex [param fofs]. It calls [method sample] using the integer part of [param fofs] as [code]idx[/code], and its fractional part as [code]t[/code].
-func samplef() -> Vector2:
+func samplef(fofs: float) -> Vector2:
 	pass;
 
 #desc Sets the position of the control point leading to the vertex [param idx]. If the index is out of bounds, the function sends an error to the console. The position is relative to the vertex.

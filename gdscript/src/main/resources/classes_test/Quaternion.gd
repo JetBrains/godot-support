@@ -30,7 +30,7 @@ func Quaternion() -> Quaternion:
 	pass;
 
 #desc Constructs a [Quaternion] as a copy of the given [Quaternion].
-func Quaternion() -> Quaternion:
+func Quaternion(from: Quaternion) -> Quaternion:
 	pass;
 
 func Quaternion(arc_from: Vector3, arc_to: Vector3) -> Quaternion:
@@ -40,11 +40,11 @@ func Quaternion(arc_from: Vector3, arc_to: Vector3) -> Quaternion:
 func Quaternion(axis: Vector3, angle: float) -> Quaternion:
 	pass;
 
-func Quaternion() -> Quaternion:
+func Quaternion(euler_yxz: Vector3) -> Quaternion:
 	pass;
 
 #desc Constructs a quaternion from the given [Basis].
-func Quaternion() -> Quaternion:
+func Quaternion(from: Basis) -> Quaternion:
 	pass;
 
 #desc Constructs a quaternion defined by the given values.
@@ -54,11 +54,11 @@ func Quaternion(x: float, y: float, z: float, w: float) -> Quaternion:
 
 #desc Returns the angle between this quaternion and [param to]. This is the magnitude of the angle you would need to rotate by to get from one to the other.
 #desc [b]Note:[/b] The magnitude of the floating-point error for this method is abnormally high, so methods such as [code]is_zero_approx[/code] will not work reliably.
-func angle_to() -> float:
+func angle_to(to: Quaternion) -> float:
 	pass;
 
 #desc Returns the dot product of two quaternions.
-func dot() -> float:
+func dot(with: Quaternion) -> float:
 	pass;
 
 func exp() -> Quaternion:
@@ -79,7 +79,7 @@ func inverse() -> Quaternion:
 	pass;
 
 #desc Returns [code]true[/code] if this quaternion and [param to] are approximately equal, by running [method @GlobalScope.is_equal_approx] on each component.
-func is_equal_approx() -> bool:
+func is_equal_approx(to: Quaternion) -> bool:
 	pass;
 
 #desc Returns whether the quaternion is normalized or not.

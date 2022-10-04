@@ -17,10 +17,10 @@ virtual const func _is_playing() -> bool:
 virtual func _mix(buffer: AudioFrame*, rate_scale: float, frames: int) -> int:
 	pass;
 
-virtual func _seek() -> void:
+virtual func _seek(position: float) -> void:
 	pass;
 
-virtual func _start() -> void:
+virtual func _start(from_pos: float) -> void:
 	pass;
 
 virtual func _stop() -> void:

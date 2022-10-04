@@ -941,19 +941,19 @@ func barrier(from: int, to: int) -> void:
 func buffer_clear(buffer: RID, offset: int, size_bytes: int, post_barrier: int) -> int:
 	pass;
 
-func buffer_get_data() -> PackedByteArray:
+func buffer_get_data(buffer: RID) -> PackedByteArray:
 	pass;
 
 func buffer_update(buffer: RID, offset: int, size_bytes: int, data: PackedByteArray, post_barrier: int) -> int:
 	pass;
 
-func capture_timestamp() -> void:
+func capture_timestamp(name: String) -> void:
 	pass;
 
-func compute_list_add_barrier() -> void:
+func compute_list_add_barrier(compute_list: int) -> void:
 	pass;
 
-func compute_list_begin() -> int:
+func compute_list_begin(allow_draw_overlap: bool) -> int:
 	pass;
 
 func compute_list_bind_compute_pipeline(compute_list: int, compute_pipeline: RID) -> void:
@@ -965,7 +965,7 @@ func compute_list_bind_uniform_set(compute_list: int, uniform_set: RID, set_inde
 func compute_list_dispatch(compute_list: int, x_groups: int, y_groups: int, z_groups: int) -> void:
 	pass;
 
-func compute_list_end() -> void:
+func compute_list_end(post_barrier: int) -> void:
 	pass;
 
 func compute_list_set_push_constant(compute_list: int, buffer: PackedByteArray, size_bytes: int) -> void:
@@ -974,7 +974,7 @@ func compute_list_set_push_constant(compute_list: int, buffer: PackedByteArray, 
 func compute_pipeline_create(shader: RID, specialization_constants: RDPipelineSpecializationConstant[]) -> RID:
 	pass;
 
-func compute_pipeline_is_valid() -> bool:
+func compute_pipeline_is_valid(compute_pieline: RID) -> bool:
 	pass;
 
 func create_local_device() -> RenderingDevice:
@@ -1010,7 +1010,7 @@ func draw_list_bind_uniform_set(draw_list: int, uniform_set: RID, set_index: int
 func draw_list_bind_vertex_array(draw_list: int, vertex_array: RID) -> void:
 	pass;
 
-func draw_list_disable_scissor() -> void:
+func draw_list_disable_scissor(draw_list: int) -> void:
 	pass;
 
 func draw_list_draw(draw_list: int, use_indices: bool, instances: int, procedural_vertex_count: int) -> void:
@@ -1019,7 +1019,7 @@ func draw_list_draw(draw_list: int, use_indices: bool, instances: int, procedura
 func draw_list_enable_scissor(draw_list: int, rect: Rect2) -> void:
 	pass;
 
-func draw_list_end() -> void:
+func draw_list_end(post_barrier: int) -> void:
 	pass;
 
 #desc Sets blend constants for draw list, blend constants are used only if the graphics pipeline is created with [code]DYNAMIC_STATE_BLEND_CONSTANTS[/code] flag set.
@@ -1032,7 +1032,7 @@ func draw_list_set_push_constant(draw_list: int, buffer: PackedByteArray, size_b
 func draw_list_switch_to_next_pass() -> int:
 	pass;
 
-func draw_list_switch_to_next_pass_split() -> PackedInt64Array:
+func draw_list_switch_to_next_pass_split(splits: int) -> PackedInt64Array:
 	pass;
 
 func framebuffer_create(textures: RID[], validate_with_format: int, view_count: int) -> RID:
@@ -1047,7 +1047,7 @@ func framebuffer_create_multipass(textures: RID[], passes: RDFramebufferPass[], 
 func framebuffer_format_create(attachments: RDAttachmentFormat[], view_count: int) -> int:
 	pass;
 
-func framebuffer_format_create_empty() -> int:
+func framebuffer_format_create_empty(samples: int) -> int:
 	pass;
 
 func framebuffer_format_create_multipass(attachments: RDAttachmentFormat[], passes: RDFramebufferPass[], view_count: int) -> int:
@@ -1056,25 +1056,25 @@ func framebuffer_format_create_multipass(attachments: RDAttachmentFormat[], pass
 func framebuffer_format_get_texture_samples(format: int, render_pass: int) -> int:
 	pass;
 
-func framebuffer_get_format() -> int:
+func framebuffer_get_format(framebuffer: RID) -> int:
 	pass;
 
-func framebuffer_is_valid() -> bool:
+func framebuffer_is_valid(framebuffer: RID) -> bool:
 	pass;
 
-func free_rid() -> void:
+func free_rid(rid: RID) -> void:
 	pass;
 
 func full_barrier() -> void:
 	pass;
 
-func get_captured_timestamp_cpu_time() -> int:
+func get_captured_timestamp_cpu_time(index: int) -> int:
 	pass;
 
-func get_captured_timestamp_gpu_time() -> int:
+func get_captured_timestamp_gpu_time(index: int) -> int:
 	pass;
 
-func get_captured_timestamp_name() -> String:
+func get_captured_timestamp_name(index: int) -> String:
 	pass;
 
 func get_captured_timestamps_count() -> int:
@@ -1098,7 +1098,7 @@ func get_driver_resource(resource: int, rid: RID, index: int) -> int:
 func get_frame_delay() -> int:
 	pass;
 
-func get_memory_usage() -> int:
+func get_memory_usage(type: int) -> int:
 	pass;
 
 func index_array_create(index_buffer: RID, index_offset: int, index_count: int) -> RID:
@@ -1107,25 +1107,25 @@ func index_array_create(index_buffer: RID, index_offset: int, index_count: int) 
 func index_buffer_create(size_indices: int, format: int, data: PackedByteArray, use_restart_indices: bool) -> RID:
 	pass;
 
-func limit_get() -> int:
+func limit_get(limit: int) -> int:
 	pass;
 
 func render_pipeline_create(shader: RID, framebuffer_format: int, vertex_format: int, primitive: int, rasterization_state: RDPipelineRasterizationState, multisample_state: RDPipelineMultisampleState, stencil_state: RDPipelineDepthStencilState, color_blend_state: RDPipelineColorBlendState, dynamic_state_flags: int, for_render_pass: int, specialization_constants: RDPipelineSpecializationConstant[]) -> RID:
 	pass;
 
-func render_pipeline_is_valid() -> bool:
+func render_pipeline_is_valid(render_pipeline: RID) -> bool:
 	pass;
 
-func sampler_create() -> RID:
+func sampler_create(state: RDSamplerState) -> RID:
 	pass;
 
 func screen_get_framebuffer_format() -> int:
 	pass;
 
-func screen_get_height() -> int:
+func screen_get_height(screen: int) -> int:
 	pass;
 
-func screen_get_width() -> int:
+func screen_get_width(screen: int) -> int:
 	pass;
 
 func set_resource_name(id: RID, name: String) -> void:
@@ -1137,13 +1137,13 @@ func shader_compile_binary_from_spirv(spirv_data: RDShaderSPIRV, name: String) -
 func shader_compile_spirv_from_source(shader_source: RDShaderSource, allow_cache: bool) -> RDShaderSPIRV:
 	pass;
 
-func shader_create_from_bytecode() -> RID:
+func shader_create_from_bytecode(binary_data: PackedByteArray) -> RID:
 	pass;
 
 func shader_create_from_spirv(spirv_data: RDShaderSPIRV, name: String) -> RID:
 	pass;
 
-func shader_get_vertex_input_attribute_mask() -> int:
+func shader_get_vertex_input_attribute_mask(shader: RID) -> int:
 	pass;
 
 func storage_buffer_create(size_bytes: int, data: PackedByteArray, usage: int) -> RID:
@@ -1179,10 +1179,10 @@ func texture_get_data(texture: RID, layer: int) -> PackedByteArray:
 func texture_is_format_supported_for_usage(format: int, usage_flags: int) -> bool:
 	pass;
 
-func texture_is_shared() -> bool:
+func texture_is_shared(texture: RID) -> bool:
 	pass;
 
-func texture_is_valid() -> bool:
+func texture_is_valid(texture: RID) -> bool:
 	pass;
 
 func texture_resolve_multisample(from_texture: RID, to_texture: RID, post_barrier: int) -> int:
@@ -1197,13 +1197,13 @@ func uniform_buffer_create(size_bytes: int, data: PackedByteArray) -> RID:
 func uniform_set_create(uniforms: RDUniform[], shader: RID, shader_set: int) -> RID:
 	pass;
 
-func uniform_set_is_valid() -> bool:
+func uniform_set_is_valid(uniform_set: RID) -> bool:
 	pass;
 
 func vertex_buffer_create(size_bytes: int, data: PackedByteArray, use_as_storage: bool) -> RID:
 	pass;
 
-func vertex_format_create() -> int:
+func vertex_format_create(vertex_descriptions: RDVertexAttribute[]) -> int:
 	pass;
 
 

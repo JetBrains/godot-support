@@ -21,31 +21,31 @@ var tip_nodepath: NodePath;
 
 
 #desc Returns the bone index of the bone assigned to the CCDIK joint at [param joint_idx].
-func get_ccdik_joint_bone_index() -> int:
+func get_ccdik_joint_bone_index(joint_idx: int) -> int:
 	pass;
 
 #desc Returns the name of the bone that is assigned to the CCDIK joint at [param joint_idx].
-func get_ccdik_joint_bone_name() -> String:
+func get_ccdik_joint_bone_name(joint_idx: int) -> String:
 	pass;
 
 #desc Returns the integer representing the joint axis of the CCDIK joint at [param joint_idx].
-func get_ccdik_joint_ccdik_axis() -> int:
+func get_ccdik_joint_ccdik_axis(joint_idx: int) -> int:
 	pass;
 
 #desc Returns the maximum angle constraint for the joint at [param joint_idx]. [b]Note:[/b] This angle is in degrees!
-func get_ccdik_joint_constraint_angle_max() -> float:
+func get_ccdik_joint_constraint_angle_max(joint_idx: int) -> float:
 	pass;
 
 #desc Returns the minimum angle constraint for the joint at [param joint_idx]. [b]Note:[/b] This angle is in degrees!
-func get_ccdik_joint_constraint_angle_min() -> float:
+func get_ccdik_joint_constraint_angle_min(joint_idx: int) -> float:
 	pass;
 
 #desc Returns whether the CCDIK joint at [param joint_idx] uses an inverted joint constraint. See [method set_ccdik_joint_constraint_invert] for details.
-func get_ccdik_joint_constraint_invert() -> bool:
+func get_ccdik_joint_constraint_invert(joint_idx: int) -> bool:
 	pass;
 
 #desc Enables angle constraints to the CCDIK joint at [param joint_idx].
-func get_ccdik_joint_enable_joint_constraint() -> bool:
+func get_ccdik_joint_enable_joint_constraint(joint_idx: int) -> bool:
 	pass;
 
 #desc Sets the bone index, [param bone_index], of the CCDIK joint at [param joint_idx]. When possible, this will also update the [code]bone_name[/code] of the CCDIK joint based on data provided by the linked skeleton.

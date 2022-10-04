@@ -10,7 +10,29 @@ $formatDesc = function($desc, $key) {
     return sprintf("#%s %s\n", $key, implode($desc, sprintf("\n#%s ", $key)));
 };
 
+$parseParams = function($value) {
+    $params = [];
+    $parsed = [];
+    $list = $value['param'] ?? [];
+    if (!is_array($list)) {
+        $list = [$list];
+    }
+
+    foreach ($list as $param) {
+        $param = (array) $param;
+        $p_att = $param['@attributes'];
+        $parsed[$p_att['index']] = [$p_att['name'], $p_att['type']];
+    }
+    foreach ($parsed as $param) {
+        $params[] = sprintf("%s: %s", $param[0], $param[1]);
+    }
+
+    return $params;
+};
+
 foreach ($files as $filename) {
+    // if ($filename != "Vector2.xml") { continue; }
+
     if ($filename == "." || $filename == "..") continue;
     $data = "";
     $class_name = substr($filename, 0, strlen($filename) - 4);
@@ -63,16 +85,7 @@ foreach ($files as $filename) {
         $att = (array) $value['@attributes'];
         $ret = (array) $value['return'];
 
-        $params = [];
-        $parsed = [];
-        foreach ($value['param'] ?? [] as $param) {
-            $param = (array) $param;
-            $p_att = $param['@attributes'];
-            $parsed[$p_att['index']] = [$p_att['name'], $p_att['type']];
-        }
-        foreach ($parsed as $param) {
-            $params[] = sprintf("%s: %s", $param[0], $param[1]);
-        }
+        $params = $parseParams($value);
         $desc = (array) ($value['description'] ?? []);
         if ($desc) {
             $data .= $formatDesc($desc['0'], "desc");
@@ -98,16 +111,7 @@ foreach ($files as $filename) {
             $quali .= " ";
         }
 
-        $params = [];
-        $parsed = [];
-        foreach ($value['param'] ?? [] as $param) {
-            $param = (array) $param;
-            $p_att = $param['@attributes'];
-            $parsed[$p_att['index']] = [$p_att['name'], $p_att['type']];
-        }
-        foreach ($parsed as $param) {
-            $params[] = sprintf("%s: %s", $param[0], $param[1]);
-        }
+        $params = $parseParams($value);
         $desc = (array) ($value['description'] ?? []);
         if ($desc) {
             $data .= $formatDesc($desc['0'], "desc");

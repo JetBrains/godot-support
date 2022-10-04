@@ -33,7 +33,7 @@ func add_command(command_name: String, key_name: String, binded_callable: Callab
 
 #desc Removes the custom command from EditorCommandPalette.
 #desc - [param key_name]: [String] (Name of the key for a particular [b]Command[/b].)
-func remove_command() -> void:
+func remove_command(key_name: String) -> void:
 	pass;
 
 

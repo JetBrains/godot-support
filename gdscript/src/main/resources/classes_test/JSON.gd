@@ -47,11 +47,11 @@ func get_error_message() -> String:
 #desc Attempts to parse the [param json_string] provided.
 #desc Returns an [enum Error]. If the parse was successful, it returns [code]OK[/code] and the result can be retrieved using [member data]. If unsuccessful, use [method get_error_line] and [method get_error_message] for identifying the source of the failure.
 #desc Non-static variant of [method parse_string], if you want custom error handling.
-func parse() -> int:
+func parse(json_string: String) -> int:
 	pass;
 
 #desc Attempts to parse the [param json_string] provided and returns the parsed data. Returns [code]null[/code] if parse failed.
-static func parse_string() -> Variant:
+static func parse_string(json_string: String) -> Variant:
 	pass;
 
 #desc Converts a [Variant] var to JSON text and returns the result. Useful for serializing data to store or send over the network.

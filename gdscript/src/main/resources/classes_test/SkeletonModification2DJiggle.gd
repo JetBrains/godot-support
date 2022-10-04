@@ -33,35 +33,35 @@ func get_collision_mask() -> int:
 	pass;
 
 #desc Returns the [Bone2D] node assigned to the Jiggle joint at [param joint_idx].
-func get_jiggle_joint_bone2d_node() -> NodePath:
+func get_jiggle_joint_bone2d_node(joint_idx: int) -> NodePath:
 	pass;
 
 #desc Returns the index of the [Bone2D] node assigned to the Jiggle joint at [param joint_idx].
-func get_jiggle_joint_bone_index() -> int:
+func get_jiggle_joint_bone_index(joint_idx: int) -> int:
 	pass;
 
 #desc Returns the amount of damping of the Jiggle joint at [param joint_idx].
-func get_jiggle_joint_damping() -> float:
+func get_jiggle_joint_damping(joint_idx: int) -> float:
 	pass;
 
 #desc Returns a [Vector2] representing the amount of gravity the Jiggle joint at [param joint_idx] is influenced by.
-func get_jiggle_joint_gravity() -> Vector2:
+func get_jiggle_joint_gravity(joint_idx: int) -> Vector2:
 	pass;
 
 #desc Returns the amount of mass of the jiggle joint at [param joint_idx].
-func get_jiggle_joint_mass() -> float:
+func get_jiggle_joint_mass(joint_idx: int) -> float:
 	pass;
 
 #desc Returns a boolean that indicates whether the joint at [param joint_idx] is overriding the default Jiggle joint data defined in the modification.
-func get_jiggle_joint_override() -> bool:
+func get_jiggle_joint_override(joint_idx: int) -> bool:
 	pass;
 
 #desc Returns the stiffness of the Jiggle joint at [param joint_idx].
-func get_jiggle_joint_stiffness() -> float:
+func get_jiggle_joint_stiffness(joint_idx: int) -> float:
 	pass;
 
 #desc Returns a boolean that indicates whether the joint at [param joint_idx] is using gravity or not.
-func get_jiggle_joint_use_gravity() -> bool:
+func get_jiggle_joint_use_gravity(joint_idx: int) -> bool:
 	pass;
 
 #desc Returns whether the jiggle modifier is taking physics colliders into account when solving.
@@ -69,7 +69,7 @@ func get_use_colliders() -> bool:
 	pass;
 
 #desc Sets the collision mask that the Jiggle modifier will use when reacting to colliders, if the Jiggle modifier is set to take colliders into account.
-func set_collision_mask() -> void:
+func set_collision_mask(collision_mask: int) -> void:
 	pass;
 
 #desc Sets the [Bone2D] node assigned to the Jiggle joint at [param joint_idx].
@@ -105,7 +105,7 @@ func set_jiggle_joint_use_gravity(joint_idx: int, use_gravity: bool) -> void:
 	pass;
 
 #desc If [code]true[/code], the Jiggle modifier will take colliders into account, keeping them from entering into these collision objects.
-func set_use_colliders() -> void:
+func set_use_colliders(use_colliders: bool) -> void:
 	pass;
 
 

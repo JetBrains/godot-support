@@ -19,7 +19,7 @@ func as_relative() -> PropertyTweener:
 #desc var tween = get_tree().create_tween()
 #desc tween.tween_property(self, "position", Vector2(200, 100), 1).from(Vector2(100, 100) #this will move the node from position (100, 100) to (200, 100)
 #desc [/codeblock]
-func from() -> PropertyTweener:
+func from(value: Variant) -> PropertyTweener:
 	pass;
 
 #desc Makes the [PropertyTweener] use the current property value (i.e. at the time of creating this [PropertyTweener]) as a starting point. This is equivalent of using [method from] with the current value. These two calls will do the same:
@@ -31,15 +31,15 @@ func from_current() -> PropertyTweener:
 	pass;
 
 #desc Sets the time in seconds after which the [PropertyTweener] will start interpolating. By default there's no delay.
-func set_delay() -> PropertyTweener:
+func set_delay(delay: float) -> PropertyTweener:
 	pass;
 
 #desc Sets the type of used easing from [enum Tween.EaseType]. If not set, the default easing is used from the [Tween] that contains this Tweener.
-func set_ease() -> PropertyTweener:
+func set_ease(ease: int) -> PropertyTweener:
 	pass;
 
 #desc Sets the type of used transition from [enum Tween.TransitionType]. If not set, the default transition is used from the [Tween] that contains this Tweener.
-func set_trans() -> PropertyTweener:
+func set_trans(trans: int) -> PropertyTweener:
 	pass;
 
 

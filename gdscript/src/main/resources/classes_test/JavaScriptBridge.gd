@@ -7,11 +7,11 @@ class_name JavaScriptBridge
 
 
 #desc Creates a reference to a [Callable] that can be used as a callback by JavaScript. The reference must be kept until the callback happens, or it won't be called at all. See [JavaScriptObject] for usage.
-func create_callback() -> JavaScriptObject:
+func create_callback(callable: Callable) -> JavaScriptObject:
 	pass;
 
 #desc Creates a new JavaScript object using the [code]new[/code] constructor. The [param object] must a valid property of the JavaScript [code]window[/code]. See [JavaScriptObject] for usage.
-vararg func create_object() -> Variant:
+vararg func create_object(object: String) -> Variant:
 	pass;
 
 #desc Prompts the user to download a file containing the specified [param buffer]. The file will have the given [param name] and [param mime] type.
@@ -27,7 +27,7 @@ func eval(code: String, use_global_execution_context: bool) -> Variant:
 	pass;
 
 #desc Returns an interface to a JavaScript object that can be used by scripts. The [param interface] must be a valid property of the JavaScript [code]window[/code]. The callback must accept a single [Array] argument, which will contain the JavaScript [code]arguments[/code]. See [JavaScriptObject] for usage.
-func get_interface() -> JavaScriptObject:
+func get_interface(interface: String) -> JavaScriptObject:
 	pass;
 
 #desc Returns [code]true[/code] if a new version of the progressive web app is waiting to be activated.

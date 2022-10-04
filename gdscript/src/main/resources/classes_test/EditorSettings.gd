@@ -793,15 +793,15 @@ var text_editor/theme/highlighting/word_highlighted_color: Color;
 #desc settings.AddPropertyInfo(propertyInfo);
 #desc [/csharp]
 #desc [/codeblocks]
-func add_property_info() -> void:
+func add_property_info(info: Dictionary) -> void:
 	pass;
 
 #desc Checks if any settings with the prefix [param setting_prefix] exist in the set of changed settings. See also [method get_changed_settings].
-func check_changed_settings_in_group() -> bool:
+func check_changed_settings_in_group(setting_prefix: String) -> bool:
 	pass;
 
 #desc Erases the setting whose name is specified by [param property].
-func erase() -> void:
+func erase(property: String) -> void:
 	pass;
 
 #desc Gets an array of the settings which have been changed since the last save. Note that internally [code]changed_settings[/code] is cleared after a successful save, so generally the most appropriate place to use this method is when processing [constant NOTIFICATION_EDITOR_SETTINGS_CHANGED]
@@ -821,15 +821,15 @@ func get_recent_dirs() -> PackedStringArray:
 	pass;
 
 #desc Returns the value of the setting specified by [param name]. This is equivalent to using [method Object.get] on the EditorSettings instance.
-func get_setting() -> Variant:
+func get_setting(name: String) -> Variant:
 	pass;
 
 #desc Returns [code]true[/code] if the setting specified by [param name] exists, [code]false[/code] otherwise.
-func has_setting() -> bool:
+func has_setting(name: String) -> bool:
 	pass;
 
 #desc Marks the passed editor setting as being changed, see [method get_changed_settings]. Only settings which exist (see [method has_setting]) will be accepted.
-func mark_setting_changed() -> void:
+func mark_setting_changed(setting: String) -> void:
 	pass;
 
 #desc Overrides the built-in editor action [param name] with the input actions defined in [param actions_list].
@@ -837,7 +837,7 @@ func set_builtin_action_override(name: String, actions_list: InputEvent[]) -> vo
 	pass;
 
 #desc Sets the list of favorite files and directories for this project.
-func set_favorites() -> void:
+func set_favorites(dirs: PackedStringArray) -> void:
 	pass;
 
 #desc Sets the initial value of the setting specified by [param name] to [param value]. This is used to provide a value for the Revert button in the Editor Settings. If [param update_current] is true, the current value of the setting will be set to [param value] as well.
@@ -849,7 +849,7 @@ func set_project_metadata(section: String, key: String, data: Variant) -> void:
 	pass;
 
 #desc Sets the list of recently visited folders in the file dialog for this project.
-func set_recent_dirs() -> void:
+func set_recent_dirs(dirs: PackedStringArray) -> void:
 	pass;
 
 #desc Sets the [param value] of the setting specified by [param name]. This is equivalent to using [method Object.set] on the EditorSettings instance.

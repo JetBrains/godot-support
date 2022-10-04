@@ -41,11 +41,11 @@ func Vector2i() -> Vector2i:
 	pass;
 
 #desc Constructs a [Vector2i] as a copy of the given [Vector2i].
-func Vector2i() -> Vector2i:
+func Vector2i(from: Vector2i) -> Vector2i:
 	pass;
 
 #desc Constructs a new [Vector2i] from [Vector2]. The floating point coordinates will be truncated.
-func Vector2i() -> Vector2i:
+func Vector2i(from: Vector2) -> Vector2i:
 	pass;
 
 #desc Constructs a new [Vector2i] from the given [param x] and [param y].

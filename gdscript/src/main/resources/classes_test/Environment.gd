@@ -387,7 +387,7 @@ var volumetric_fog_temporal_reprojection_enabled: bool;
 
 
 #desc Returns the intensity of the glow level [param idx].
-func get_glow_level() -> float:
+func get_glow_level(idx: int) -> float:
 	pass;
 
 #desc Sets the intensity of the glow level [param idx]. A value above [code]0.0[/code] enables the level. Each level relies on the previous level. This means that enabling higher glow levels will slow down the glow effect rendering, even if previous levels aren't enabled.

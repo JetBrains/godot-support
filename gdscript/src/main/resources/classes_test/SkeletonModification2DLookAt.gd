@@ -35,24 +35,24 @@ func get_enable_constraint() -> bool:
 	pass;
 
 #desc Sets the amount of additional rotation that is to be applied after executing the modification. This allows for offsetting the results by the inputted rotation amount.
-func set_additional_rotation() -> void:
+func set_additional_rotation(rotation: float) -> void:
 	pass;
 
 #desc When [code]true[/code], the modification will use an inverted joint constraint.
 #desc An inverted joint constraint only constraints the [Bone2D] to the angles [i]outside of[/i] the inputted minimum and maximum angles. For this reason, it is referred to as an inverted joint constraint, as it constraints the joint to the outside of the inputted values.
-func set_constraint_angle_invert() -> void:
+func set_constraint_angle_invert(invert: bool) -> void:
 	pass;
 
 #desc Sets the constraint's maximum allowed angle.
-func set_constraint_angle_max() -> void:
+func set_constraint_angle_max(angle_max: float) -> void:
 	pass;
 
 #desc Sets the constraint's minimum allowed angle.
-func set_constraint_angle_min() -> void:
+func set_constraint_angle_min(angle_min: float) -> void:
 	pass;
 
 #desc Sets whether this modification will use constraints or not. When [code]true[/code], constraints will be applied when solving the LookAt modification.
-func set_enable_constraint() -> void:
+func set_enable_constraint(enable_constraint: bool) -> void:
 	pass;
 
 

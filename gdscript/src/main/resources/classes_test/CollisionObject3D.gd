@@ -50,15 +50,15 @@ virtual func _mouse_exit() -> void:
 	pass;
 
 #desc Creates a new shape owner for the given object. Returns [code]owner_id[/code] of the new owner for future reference.
-func create_shape_owner() -> int:
+func create_shape_owner(owner: Object) -> int:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member collision_layer] is enabled, given a [param layer_number] between 1 and 32.
-func get_collision_layer_value() -> bool:
+func get_collision_layer_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member collision_mask] is enabled, given a [param layer_number] between 1 and 32.
-func get_collision_mask_value() -> bool:
+func get_collision_mask_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns the object's [RID].
@@ -70,11 +70,11 @@ func get_shape_owners() -> PackedInt32Array:
 	pass;
 
 #desc If [code]true[/code], the shape owner and its shapes are disabled.
-func is_shape_owner_disabled() -> bool:
+func is_shape_owner_disabled(owner_id: int) -> bool:
 	pass;
 
 #desc Removes the given shape owner.
-func remove_shape_owner() -> void:
+func remove_shape_owner(owner_id: int) -> void:
 	pass;
 
 #desc Based on [param value], enables or disables the specified layer in the [member collision_layer], given a [param layer_number] between 1 and 32.
@@ -86,7 +86,7 @@ func set_collision_mask_value(layer_number: int, value: bool) -> void:
 	pass;
 
 #desc Returns the [code]owner_id[/code] of the given shape.
-func shape_find_owner() -> int:
+func shape_find_owner(shape_index: int) -> int:
 	pass;
 
 #desc Adds a [Shape3D] to the shape owner.
@@ -94,11 +94,11 @@ func shape_owner_add_shape(owner_id: int, shape: Shape3D) -> void:
 	pass;
 
 #desc Removes all shapes from the shape owner.
-func shape_owner_clear_shapes() -> void:
+func shape_owner_clear_shapes(owner_id: int) -> void:
 	pass;
 
 #desc Returns the parent object of the given shape owner.
-func shape_owner_get_owner() -> Object:
+func shape_owner_get_owner(owner_id: int) -> Object:
 	pass;
 
 #desc Returns the [Shape3D] with the given id from the given shape owner.
@@ -106,7 +106,7 @@ func shape_owner_get_shape(owner_id: int, shape_id: int) -> Shape3D:
 	pass;
 
 #desc Returns the number of shapes the given shape owner contains.
-func shape_owner_get_shape_count() -> int:
+func shape_owner_get_shape_count(owner_id: int) -> int:
 	pass;
 
 #desc Returns the child index of the [Shape3D] with the given id from the given shape owner.
@@ -114,7 +114,7 @@ func shape_owner_get_shape_index(owner_id: int, shape_id: int) -> int:
 	pass;
 
 #desc Returns the shape owner's [Transform3D].
-func shape_owner_get_transform() -> Transform3D:
+func shape_owner_get_transform(owner_id: int) -> Transform3D:
 	pass;
 
 #desc Removes a shape from the given shape owner.

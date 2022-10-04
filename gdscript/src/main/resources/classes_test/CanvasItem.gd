@@ -210,7 +210,7 @@ func draw_set_transform(position: Vector2, rotation: float, scale: Vector2) -> v
 	pass;
 
 #desc Sets a custom transform for drawing via matrix. Anything drawn afterwards will be transformed by this.
-func draw_set_transform_matrix() -> void:
+func draw_set_transform_matrix(xform: Transform2D) -> void:
 	pass;
 
 #desc Draws [param text] using the specified [param font] at the [param pos] (bottom-left corner using the baseline of the font). The text will have its color multiplied by [param modulate]. If [param width] is greater than or equal to 0, the text will be clipped if it exceeds the specified width.
@@ -327,11 +327,11 @@ func is_visible_in_tree() -> bool:
 	pass;
 
 #desc Assigns [param screen_point] as this node's new local transform.
-func make_canvas_position_local() -> Vector2:
+func make_canvas_position_local(screen_point: Vector2) -> Vector2:
 	pass;
 
 #desc Transformations issued by [param event]'s inputs are applied in local space instead of global space.
-func make_input_local() -> InputEvent:
+func make_input_local(event: InputEvent) -> InputEvent:
 	pass;
 
 #desc Moves this node to display on top of its siblings. This has more use in [Control], as [Node2D] can be ordered with [member Node2D.z_index].
@@ -344,11 +344,11 @@ func queue_redraw() -> void:
 	pass;
 
 #desc If [param enable] is [code]true[/code], this node will receive [constant NOTIFICATION_LOCAL_TRANSFORM_CHANGED] when its local transform changes.
-func set_notify_local_transform() -> void:
+func set_notify_local_transform(enable: bool) -> void:
 	pass;
 
 #desc If [param enable] is [code]true[/code], this node will receive [constant NOTIFICATION_TRANSFORM_CHANGED] when its global transform changes.
-func set_notify_transform() -> void:
+func set_notify_transform(enable: bool) -> void:
 	pass;
 
 #desc Show the [CanvasItem] if it's currently hidden. This is equivalent to setting [member visible] to [code]true[/code]. For controls that inherit [Popup], the correct way to make them visible is to call one of the multiple [code]popup*()[/code] functions instead.

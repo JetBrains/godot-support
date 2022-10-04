@@ -68,20 +68,20 @@ const WEEKDAY_SATURDAY = 6;
 
 #desc Returns the current date as a dictionary of keys: [code]year[/code], [code]month[/code], [code]day[/code], and [code]weekday[/code].
 #desc The returned values are in the system's local time when [param utc] is [code]false[/code], otherwise they are in UTC.
-func get_date_dict_from_system() -> Dictionary:
+func get_date_dict_from_system(utc: bool) -> Dictionary:
 	pass;
 
 #desc Converts the given Unix timestamp to a dictionary of keys: [code]year[/code], [code]month[/code], [code]day[/code], and [code]weekday[/code].
-func get_date_dict_from_unix_time() -> Dictionary:
+func get_date_dict_from_unix_time(unix_time_val: int) -> Dictionary:
 	pass;
 
 #desc Returns the current date as an ISO 8601 date string (YYYY-MM-DD).
 #desc The returned values are in the system's local time when [param utc] is [code]false[/code], otherwise they are in UTC.
-func get_date_string_from_system() -> String:
+func get_date_string_from_system(utc: bool) -> String:
 	pass;
 
 #desc Converts the given Unix timestamp to an ISO 8601 date string (YYYY-MM-DD).
-func get_date_string_from_unix_time() -> String:
+func get_date_string_from_unix_time(unix_time_val: int) -> String:
 	pass;
 
 #desc Converts the given ISO 8601 date and time string (YYYY-MM-DDTHH:MM:SS) to a dictionary of keys: [code]year[/code], [code]month[/code], [code]day[/code], [code]weekday[/code], [code]hour[/code], [code]minute[/code], and [code]second[/code].
@@ -91,12 +91,12 @@ func get_datetime_dict_from_datetime_string(datetime: String, weekday: bool) -> 
 	pass;
 
 #desc Returns the current date as a dictionary of keys: [code]year[/code], [code]month[/code], [code]day[/code], [code]weekday[/code], [code]hour[/code], [code]minute[/code], [code]second[/code], and [code]dst[/code] (Daylight Savings Time).
-func get_datetime_dict_from_system() -> Dictionary:
+func get_datetime_dict_from_system(utc: bool) -> Dictionary:
 	pass;
 
 #desc Converts the given Unix timestamp to a dictionary of keys: [code]year[/code], [code]month[/code], [code]day[/code], and [code]weekday[/code].
 #desc The returned Dictionary's values will be the same as the [method get_datetime_dict_from_system] if the Unix timestamp is the current time, with the exception of Daylight Savings Time as it cannot be determined from the epoch.
-func get_datetime_dict_from_unix_time() -> Dictionary:
+func get_datetime_dict_from_unix_time(unix_time_val: int) -> Dictionary:
 	pass;
 
 #desc Converts the given dictionary of keys to an ISO 8601 date and time string (YYYY-MM-DDTHH:MM:SS).
@@ -118,7 +118,7 @@ func get_datetime_string_from_unix_time(unix_time_val: int, use_space: bool) -> 
 	pass;
 
 #desc Converts the given timezone offset in minutes to a timezone offset string. For example, -480 returns "-08:00", 345 returns "+05:45", and 0 returns "+00:00".
-func get_offset_string_from_offset_minutes() -> String:
+func get_offset_string_from_offset_minutes(offset_minutes: int) -> String:
 	pass;
 
 #desc Returns the amount of time passed in milliseconds since the engine started.
@@ -133,20 +133,20 @@ func get_ticks_usec() -> int:
 
 #desc Returns the current time as a dictionary of keys: [code]hour[/code], [code]minute[/code], and [code]second[/code].
 #desc The returned values are in the system's local time when [param utc] is [code]false[/code], otherwise they are in UTC.
-func get_time_dict_from_system() -> Dictionary:
+func get_time_dict_from_system(utc: bool) -> Dictionary:
 	pass;
 
 #desc Converts the given time to a dictionary of keys: [code]hour[/code], [code]minute[/code], and [code]second[/code].
-func get_time_dict_from_unix_time() -> Dictionary:
+func get_time_dict_from_unix_time(unix_time_val: int) -> Dictionary:
 	pass;
 
 #desc Returns the current time as an ISO 8601 time string (HH:MM:SS).
 #desc The returned values are in the system's local time when [param utc] is [code]false[/code], otherwise they are in UTC.
-func get_time_string_from_system() -> String:
+func get_time_string_from_system(utc: bool) -> String:
 	pass;
 
 #desc Converts the given Unix timestamp to an ISO 8601 time string (HH:MM:SS).
-func get_time_string_from_unix_time() -> String:
+func get_time_string_from_unix_time(unix_time_val: int) -> String:
 	pass;
 
 #desc Returns the current time zone as a dictionary of keys: [code]bias[/code] and [code]name[/code]. The [code]bias[/code] value is the offset from UTC in minutes, since not all time zones are multiples of an hour from UTC.
@@ -158,13 +158,13 @@ func get_time_zone_from_system() -> Dictionary:
 #desc If the dictionary is empty, [code]0[/code] is returned. If some keys are omitted, they default to the equivalent values for the Unix epoch timestamp 0 (1970-01-01 at 00:00:00).
 #desc You can pass the output from [method get_datetime_dict_from_unix_time] directly into this function and get the same as what was put in.
 #desc [b]Note:[/b] Unix timestamps are often in UTC. This method does not do any timezone conversion, so the timestamp will be in the same timezone as the given datetime dictionary.
-func get_unix_time_from_datetime_dict() -> int:
+func get_unix_time_from_datetime_dict(datetime: Dictionary) -> int:
 	pass;
 
 #desc Converts the given ISO 8601 date and/or time string to a Unix timestamp. The string can contain a date only, a time only, or both.
 #desc [b]Note:[/b] Unix timestamps are often in UTC. This method does not do any timezone conversion, so the timestamp will be in the same timezone as the given datetime string.
 #desc [b]Note:[/b] Any decimal fraction in the time string will be ignored silently.
-func get_unix_time_from_datetime_string() -> int:
+func get_unix_time_from_datetime_string(datetime: String) -> int:
 	pass;
 
 #desc Returns the current Unix timestamp in seconds based on the system time in UTC. This method is implemented by the operating system and always returns the time in UTC.

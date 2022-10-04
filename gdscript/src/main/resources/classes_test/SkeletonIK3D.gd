@@ -63,7 +63,7 @@ func is_running() -> bool:
 	pass;
 
 #desc Starts applying IK effects on each frame to the [Skeleton3D] bones but will only take effect starting on the next frame. If [code]one_time[/code] is [code]true[/code], this will take effect immediately but also reset on the next frame.
-func start() -> void:
+func start(one_time: bool) -> void:
 	pass;
 
 #desc Stops applying IK effects on each frame to the [Skeleton3D] bones and also calls [method Skeleton3D.clear_bones_global_pose_override] to remove existing overrides on all bones.

@@ -14,7 +14,7 @@ func bake(nav_mesh: NavigationMesh, root_node: Node) -> void:
 	pass;
 
 #desc Removes all polygons and vertices from the provided [param nav_mesh] resource.
-func clear() -> void:
+func clear(nav_mesh: NavigationMesh) -> void:
 	pass;
 
 

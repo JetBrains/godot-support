@@ -19,12 +19,12 @@ var toggle_mode: bool;
 
 
 #desc This virtual method can be implemented to handle context menu items not handled by default. See [method _set_create_options].
-virtual func _handle_menu_selected() -> bool:
+virtual func _handle_menu_selected(id: int) -> bool:
 	pass;
 
 #desc This virtual method is called when updating the context menu of [EditorResourcePicker]. Implement this method to override the "New ..." items with your own options. [param menu_node] is a reference to the [PopupMenu] node.
 #desc [b]Note:[/b] Implement [method _handle_menu_selected] to handle these custom items.
-virtual func _set_create_options() -> void:
+virtual func _set_create_options(menu_node: Object) -> void:
 	pass;
 
 #desc Returns a list of all allowed types and subtypes corresponding to the [member base_type]. If the [member base_type] is empty, an empty list is returned.
@@ -32,7 +32,7 @@ func get_allowed_types() -> PackedStringArray:
 	pass;
 
 #desc Sets the toggle mode state for the main button. Works only if [member toggle_mode] is set to [code]true[/code].
-func set_toggle_pressed() -> void:
+func set_toggle_pressed(pressed: bool) -> void:
 	pass;
 
 

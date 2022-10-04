@@ -7,7 +7,7 @@ class_name KinematicCollision2D
 
 
 #desc Returns the collision angle according to [param up_direction], which is [constant Vector2.UP] by default. This value is always positive.
-func get_angle() -> float:
+func get_angle(up_direction: Vector2) -> float:
 	pass;
 
 #desc Returns the colliding body's attached [Object].

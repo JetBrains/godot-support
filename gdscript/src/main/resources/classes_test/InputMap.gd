@@ -14,16 +14,16 @@ func action_erase_event(action: StringName, event: InputEvent) -> void:
 	pass;
 
 #desc Removes all events from an action.
-func action_erase_events() -> void:
+func action_erase_events(action: StringName) -> void:
 	pass;
 
 #desc Returns a deadzone value for the action.
-func action_get_deadzone() -> float:
+func action_get_deadzone(action: StringName) -> float:
 	pass;
 
 #desc Returns an array of [InputEvent]s associated with a given action.
 #desc [b]Note:[/b] When used in the editor (e.g. a tool script or [EditorPlugin]), this method will return events for the editor action. If you want to access your project's input binds from the editor, read the [code]input/*[/code] settings from [ProjectSettings].
-func action_get_events() -> InputEvent[]:
+func action_get_events(action: StringName) -> InputEvent[]:
 	pass;
 
 #desc Returns [code]true[/code] if the action has the given [InputEvent] associated with it.
@@ -40,7 +40,7 @@ func add_action(action: StringName, deadzone: float) -> void:
 	pass;
 
 #desc Removes an action from the [InputMap].
-func erase_action() -> void:
+func erase_action(action: StringName) -> void:
 	pass;
 
 #desc Returns [code]true[/code] if the given event is part of an existing action. This method ignores keyboard modifiers if the given [InputEvent] is not pressed (for proper release detection). See [method action_has_event] if you don't want this behavior.
@@ -53,7 +53,7 @@ func get_actions() -> StringName[]:
 	pass;
 
 #desc Returns [code]true[/code] if the [InputMap] has a registered action with the given name.
-func has_action() -> bool:
+func has_action(action: StringName) -> bool:
 	pass;
 
 #desc Clears all [InputEventAction] in the [InputMap] and load it anew from [ProjectSettings].

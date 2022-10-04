@@ -291,7 +291,7 @@ func has_selection() -> bool:
 	pass;
 
 #desc Inserts [param text] at the caret. If the resulting value is longer than [member max_length], nothing happens.
-func insert_text_at_caret() -> void:
+func insert_text_at_caret(text: String) -> void:
 	pass;
 
 #desc Returns whether the menu is visible. Use this instead of [code]get_menu().visible[/code] to improve performance (so the creation of the menu is avoided).
@@ -299,7 +299,7 @@ func is_menu_visible() -> bool:
 	pass;
 
 #desc Executes a given action as defined in the [enum MenuItems] enum.
-func menu_option() -> void:
+func menu_option(option: int) -> void:
 	pass;
 
 #desc Selects characters inside [LineEdit] between [param from] and [param to]. By default, [param from] is at the beginning and [param to] at the end.

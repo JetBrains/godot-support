@@ -33,15 +33,15 @@ func get_blend_point_count() -> int:
 	pass;
 
 #desc Returns the [AnimationNode] referenced by the point at index [param point].
-func get_blend_point_node() -> AnimationRootNode:
+func get_blend_point_node(point: int) -> AnimationRootNode:
 	pass;
 
 #desc Returns the position of the point at index [param point].
-func get_blend_point_position() -> float:
+func get_blend_point_position(point: int) -> float:
 	pass;
 
 #desc Removes the point at index [param point] from the blend axis.
-func remove_blend_point() -> void:
+func remove_blend_point(point: int) -> void:
 	pass;
 
 #desc Changes the [AnimationNode] referenced by the point at index [param point].

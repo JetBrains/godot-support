@@ -56,35 +56,35 @@ func clear_member_keyword_colors() -> void:
 	pass;
 
 #desc Returns the color for a keyword.
-func get_keyword_color() -> Color:
+func get_keyword_color(keyword: String) -> Color:
 	pass;
 
 #desc Returns the color for a member keyword.
-func get_member_keyword_color() -> Color:
+func get_member_keyword_color(member_keyword: String) -> Color:
 	pass;
 
 #desc Returns [code]true[/code] if the start key exists, else [code]false[/code].
-func has_color_region() -> bool:
+func has_color_region(start_key: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the keyword exists, else [code]false[/code].
-func has_keyword_color() -> bool:
+func has_keyword_color(keyword: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the member keyword exists, else [code]false[/code].
-func has_member_keyword_color() -> bool:
+func has_member_keyword_color(member_keyword: String) -> bool:
 	pass;
 
 #desc Removes the color region that uses that start key.
-func remove_color_region() -> void:
+func remove_color_region(start_key: String) -> void:
 	pass;
 
 #desc Removes the keyword.
-func remove_keyword_color() -> void:
+func remove_keyword_color(keyword: String) -> void:
 	pass;
 
 #desc Removes the member keyword.
-func remove_member_keyword_color() -> void:
+func remove_member_keyword_color(member_keyword: String) -> void:
 	pass;
 
 

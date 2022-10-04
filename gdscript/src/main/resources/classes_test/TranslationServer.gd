@@ -9,7 +9,7 @@ var pseudolocalization_enabled: bool;
 
 
 #desc Adds a [Translation] resource.
-func add_translation() -> void:
+func add_translation(translation: Translation) -> void:
 	pass;
 
 #desc Clears the server from all translations.
@@ -33,11 +33,11 @@ func get_all_scripts() -> PackedStringArray:
 	pass;
 
 #desc Returns readable country name for the [param country] code.
-func get_country_name() -> String:
+func get_country_name(country: String) -> String:
 	pass;
 
 #desc Returns readable language name for the [param language] code.
-func get_language_name() -> String:
+func get_language_name(language: String) -> String:
 	pass;
 
 #desc Returns an array of all loaded locales of the project.
@@ -50,11 +50,11 @@ func get_locale() -> String:
 	pass;
 
 #desc Returns a locale's language and its variant (e.g. [code]"en_US"[/code] would return [code]"English (United States)"[/code]).
-func get_locale_name() -> String:
+func get_locale_name(locale: String) -> String:
 	pass;
 
 #desc Returns readable script name for the [param script] code.
-func get_script_name() -> String:
+func get_script_name(script: String) -> String:
 	pass;
 
 #desc Returns the current locale of the editor.
@@ -64,11 +64,11 @@ func get_tool_locale() -> String:
 
 #desc Returns the [Translation] instance based on the [param locale] passed in.
 #desc It will return [code]null[/code] if there is no [Translation] instance that matches the [param locale].
-func get_translation_object() -> Translation:
+func get_translation_object(locale: String) -> Translation:
 	pass;
 
 #desc Returns the pseudolocalized string based on the [param message] passed in.
-func pseudolocalize() -> StringName:
+func pseudolocalize(message: StringName) -> StringName:
 	pass;
 
 #desc Reparses the pseudolocalization options and reloads the translation.
@@ -76,16 +76,16 @@ func reload_pseudolocalization() -> void:
 	pass;
 
 #desc Removes the given translation from the server.
-func remove_translation() -> void:
+func remove_translation(translation: Translation) -> void:
 	pass;
 
 #desc Sets the locale of the project. The [param locale] string will be standardized to match known locales (e.g. [code]en-US[/code] would be matched to [code]en_US[/code]).
 #desc If translations have been loaded beforehand for the new locale, they will be applied.
-func set_locale() -> void:
+func set_locale(locale: String) -> void:
 	pass;
 
 #desc Returns [param locale] string standardized to match known locales (e.g. [code]en-US[/code] would be matched to [code]en_US[/code]).
-func standardize_locale() -> String:
+func standardize_locale(locale: String) -> String:
 	pass;
 
 #desc Returns the current locale's translation for the given message (key) and context.

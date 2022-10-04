@@ -240,21 +240,21 @@ virtual const func _get_configuration_warnings() -> PackedStringArray:
 #desc To consume the input event and stop it propagating further to other nodes, [method Viewport.set_input_as_handled] can be called.
 #desc For gameplay input, [method _unhandled_input] and [method _unhandled_key_input] are usually a better fit as they allow the GUI to intercept the events first.
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not an orphan).
-virtual func _input() -> void:
+virtual func _input(event: InputEvent) -> void:
 	pass;
 
 #desc Called during the physics processing step of the main loop. Physics processing means that the frame rate is synced to the physics, i.e. the [param delta] variable should be constant. [param delta] is in seconds.
 #desc It is only called if physics processing is enabled, which is done automatically if this method is overridden, and can be toggled with [method set_physics_process].
 #desc Corresponds to the [constant NOTIFICATION_PHYSICS_PROCESS] notification in [method Object._notification].
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not an orphan).
-virtual func _physics_process() -> void:
+virtual func _physics_process(delta: float) -> void:
 	pass;
 
 #desc Called during the processing step of the main loop. Processing happens at every frame and as fast as possible, so the [param delta] time since the previous frame is not constant. [param delta] is in seconds.
 #desc It is only called if processing is enabled, which is done automatically if this method is overridden, and can be toggled with [method set_process].
 #desc Corresponds to the [constant NOTIFICATION_PROCESS] notification in [method Object._notification].
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not an orphan).
-virtual func _process() -> void:
+virtual func _process(delta: float) -> void:
 	pass;
 
 #desc Called when the node is "ready", i.e. when both the node and its children have entered the scene tree. If the node has children, their [method _ready] callbacks get triggered first, and the parent node will receive the ready notification afterwards.
@@ -269,7 +269,7 @@ virtual func _ready() -> void:
 #desc To consume the input event and stop it propagating further to other nodes, [method Viewport.set_input_as_handled] can be called.
 #desc This method can be used to handle shortcuts.
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not orphan).
-virtual func _shortcut_input() -> void:
+virtual func _shortcut_input(event: InputEvent) -> void:
 	pass;
 
 #desc Called when an [InputEvent] hasn't been consumed by [method _input] or any GUI [Control] item. The input event propagates up through the node tree until a node consumes it.
@@ -277,7 +277,7 @@ virtual func _shortcut_input() -> void:
 #desc To consume the input event and stop it propagating further to other nodes, [method Viewport.set_input_as_handled] can be called.
 #desc For gameplay input, this and [method _unhandled_key_input] are usually a better fit than [method _input] as they allow the GUI to intercept the events first.
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not an orphan).
-virtual func _unhandled_input() -> void:
+virtual func _unhandled_input(event: InputEvent) -> void:
 	pass;
 
 #desc Called when an [InputEventKey] or [InputEventShortcut] hasn't been consumed by [method _input] or any GUI [Control] item. The input event propagates up through the node tree until a node consumes it.
@@ -286,7 +286,7 @@ virtual func _unhandled_input() -> void:
 #desc This method can be used to handle Unicode character input with [kbd]Alt[/kbd], [kbd]Alt + Ctrl[/kbd], and [kbd]Alt + Shift[/kbd] modifiers, after shortcuts were handled.
 #desc For gameplay input, this and [method _unhandled_input] are usually a better fit than [method _input] as they allow the GUI to intercept the events first.
 #desc [b]Note:[/b] This method is only called if the node is present in the scene tree (i.e. if it's not an orphan).
-virtual func _unhandled_key_input() -> void:
+virtual func _unhandled_key_input(event: InputEvent) -> void:
 	pass;
 
 #desc Adds a child [param node]. Nodes can have any number of children, but every child must have a unique name. Child nodes are automatically deleted when the parent node is deleted, so an entire scene can be removed by deleting its topmost node.
@@ -346,7 +346,7 @@ func create_tween() -> Tween:
 #desc Duplicates the node, returning a new node.
 #desc You can fine-tune the behavior using the [param flags] (see [enum DuplicateFlags]).
 #desc [b]Note:[/b] It will not work properly if the node contains a script with constructor arguments (i.e. needs to supply arguments to [method Object._init] method). In that case, the node will be duplicated without a script.
-func duplicate() -> Node:
+func duplicate(flags: int) -> Node:
 	pass;
 
 #desc Finds the first descendant of this node whose name matches [param pattern] as in [method String.match].
@@ -373,7 +373,7 @@ func find_children(pattern: String, type: String, recursive: bool, owned: bool) 
 #desc Finds the first parent of the current node whose name matches [param pattern] as in [method String.match].
 #desc [param pattern] does not match against the full path, just against individual node names. It is case-sensitive, with [code]"*"[/code] matching zero or more characters and [code]"?"[/code] matching any single character except [code]"."[/code]).
 #desc [b]Note:[/b] As this method walks upwards in the scene tree, it can be slow in large, deeply nested scene trees. Whenever possible, consider using [method get_node] with unique names instead (see [member unique_name_in_owner]), or caching the node references into variable.
-func find_parent() -> Node:
+func find_parent(pattern: String) -> Node:
 	pass;
 
 #desc Returns a child node by its index (see [method get_child_count]). This method is often used for iterating all children of a node.
@@ -385,12 +385,12 @@ func get_child(idx: int, include_internal: bool) -> Node:
 
 #desc Returns the number of child nodes.
 #desc If [param include_internal] is [code]false[/code], internal children aren't counted (see [code]internal[/code] parameter in [method add_child]).
-func get_child_count() -> int:
+func get_child_count(include_internal: bool) -> int:
 	pass;
 
 #desc Returns an array of references to node's children.
 #desc If [param include_internal] is [code]false[/code], the returned array won't include internal children (see [code]internal[/code] parameter in [method add_child]).
-func get_children() -> Node[]:
+func get_children(include_internal: bool) -> Node[]:
 	pass;
 
 #desc Returns an array listing the groups that the node is a member of.
@@ -419,7 +419,7 @@ func get_groups() -> StringName[]:
 
 #desc Returns the node's order in the scene tree branch. For example, if called on the first child node the position is [code]0[/code].
 #desc If [param include_internal] is [code]false[/code], the index won't take internal children into account, i.e. first non-internal child will have index of 0 (see [code]internal[/code] parameter in [method add_child]).
-func get_index() -> int:
+func get_index(include_internal: bool) -> int:
 	pass;
 
 #desc Returns the peer ID of the multiplayer authority for this node. See [method set_multiplayer_authority].
@@ -454,7 +454,7 @@ func get_multiplayer_authority() -> int:
 #desc GetNode("/root/MyGame");
 #desc [/csharp]
 #desc [/codeblocks]
-func get_node() -> Node:
+func get_node(path: NodePath) -> Node:
 	pass;
 
 #desc Fetches a node and one of its resources as specified by the [NodePath]'s subname (e.g. [code]Area2D/CollisionShape2D:shape[/code]). If several nested resources are specified in the [NodePath], the last one will be fetched.
@@ -472,11 +472,11 @@ func get_node() -> Node:
 #desc GD.Print(GetNodeAndResource("Area2D/CollisionShape2D:shape:extents")); // [[CollisionShape2D:1161], [RectangleShape2D:1156], :extents]
 #desc [/csharp]
 #desc [/codeblocks]
-func get_node_and_resource() -> Array:
+func get_node_and_resource(path: NodePath) -> Array:
 	pass;
 
 #desc Similar to [method get_node], but does not log an error if [param path] does not point to a valid [Node].
-func get_node_or_null() -> Node:
+func get_node_or_null(path: NodePath) -> Node:
 	pass;
 
 #desc Returns the parent node of the current node, or [code]null[/code] if the node lacks a parent.
@@ -488,7 +488,7 @@ func get_path() -> NodePath:
 	pass;
 
 #desc Returns the relative [NodePath] from this node to the specified [param node]. Both nodes must be in the same scene or the function will fail.
-func get_path_to() -> NodePath:
+func get_path_to(node: Node) -> NodePath:
 	pass;
 
 #desc Returns the time elapsed (in seconds) since the last physics-bound frame (see [method _physics_process]). This is always a constant value in physics processing unless the frames per second is changed via [member Engine.physics_ticks_per_second].
@@ -512,15 +512,15 @@ func get_viewport() -> Viewport:
 	pass;
 
 #desc Returns [code]true[/code] if the node that the [NodePath] points to exists.
-func has_node() -> bool:
+func has_node(path: NodePath) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the [NodePath] points to a valid node and its subname points to a valid resource, e.g. [code]Area2D/CollisionShape2D:shape[/code]. Properties with a non-[Resource] type (e.g. nodes or primitive math types) are not considered resources.
-func has_node_and_resource() -> bool:
+func has_node_and_resource(path: NodePath) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given node is a direct or indirect child of the current node.
-func is_ancestor_of() -> bool:
+func is_ancestor_of(node: Node) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the node is folded (collapsed) in the Scene dock. This method is only intended for use with editor tooling.
@@ -528,15 +528,15 @@ func is_displayed_folded() -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if [param node] has editable children enabled relative to this node. This method is only intended for use with editor tooling.
-func is_editable_instance() -> bool:
+func is_editable_instance(node: Node) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given node occurs later in the scene hierarchy than the current node.
-func is_greater_than() -> bool:
+func is_greater_than(node: Node) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this node is in the specified group. See notes in the description, and the group methods in [SceneTree].
-func is_in_group() -> bool:
+func is_in_group(group: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if this node is currently inside a [SceneTree].
@@ -620,7 +620,7 @@ func propagate_call(method: StringName, args: Array, parent_first: bool) -> void
 	pass;
 
 #desc Notifies the current node and all its children recursively by calling [method Object.notification] on all of them.
-func propagate_notification() -> void:
+func propagate_notification(what: int) -> void:
 	pass;
 
 #desc Queues a node for deletion at the end of the current frame. When deleted, all of its child nodes will be deleted as well. This method ensures it's safe to delete the node, contrary to [method Object.free]. Use [method Object.is_queued_for_deletion] to check whether a node will be deleted at the end of the frame.
@@ -629,11 +629,11 @@ func queue_free() -> void:
 
 #desc Removes a child node. The node is NOT deleted and must be deleted manually.
 #desc [b]Note:[/b] This function may set the [member owner] of the removed Node (or its descendants) to be [code]null[/code], if that [member owner] is no longer a parent or ancestor.
-func remove_child() -> void:
+func remove_child(node: Node) -> void:
 	pass;
 
 #desc Removes a node from a group. See notes in the description, and the group methods in [SceneTree].
-func remove_from_group() -> void:
+func remove_from_group(group: StringName) -> void:
 	pass;
 
 #desc Replaces a node in a scene by the given one. Subscriptions that pass through this node will be lost.
@@ -649,7 +649,7 @@ func request_ready() -> void:
 
 #desc Sends a remote procedure call request for the given [param method] to peers on the network (and locally), optionally sending all additional arguments as arguments to the method called by the RPC. The call request will only be received by nodes with the same [NodePath], including the exact same node name. Behaviour depends on the RPC configuration for the given method, see [method rpc_config]. Methods are not exposed to RPCs by default. Returns [code]null[/code].
 #desc [b]Note:[/b] You can only safely use RPCs on clients after you received the [code]connected_to_server[/code] signal from the [MultiplayerAPI]. You also need to keep track of the connection state, either by the [MultiplayerAPI] signals like [code]server_disconnected[/code] or by checking [code]get_multiplayer().peer.get_connection_status() == CONNECTION_CONNECTED[/code].
-vararg func rpc() -> int:
+vararg func rpc(method: StringName) -> int:
 	pass;
 
 #desc Changes the RPC mode for the given [param method] with the given [param config] which should be [code]null[/code] (to disable) or a [Dictionary] in the form:
@@ -670,7 +670,7 @@ vararg func rpc_id(peer_id: int, method: StringName) -> int:
 	pass;
 
 #desc Sets the folded state of the node in the Scene dock. This method is only intended for use with editor tooling.
-func set_display_folded() -> void:
+func set_display_folded(fold: bool) -> void:
 	pass;
 
 #desc Sets the editable children state of [param node] relative to this node. This method is only intended for use with editor tooling.
@@ -682,41 +682,41 @@ func set_multiplayer_authority(id: int, recursive: bool) -> void:
 	pass;
 
 #desc Enables or disables physics (i.e. fixed framerate) processing. When a node is being processed, it will receive a [constant NOTIFICATION_PHYSICS_PROCESS] at a fixed (usually 60 FPS, see [member Engine.physics_ticks_per_second] to change) interval (and the [method _physics_process] callback will be called if exists). Enabled automatically if [method _physics_process] is overridden. Any calls to this before [method _ready] will be ignored.
-func set_physics_process() -> void:
+func set_physics_process(enable: bool) -> void:
 	pass;
 
 #desc Enables or disables internal physics for this node. Internal physics processing happens in isolation from the normal [method _physics_process] calls and is used by some nodes internally to guarantee proper functioning even if the node is paused or physics processing is disabled for scripting ([method set_physics_process]). Only useful for advanced uses to manipulate built-in nodes' behavior.
 #desc [b]Warning:[/b] Built-in Nodes rely on the internal processing for their own logic, so changing this value from your code may lead to unexpected behavior. Script access to this internal logic is provided for specific advanced uses, but is unsafe and not supported.
-func set_physics_process_internal() -> void:
+func set_physics_process_internal(enable: bool) -> void:
 	pass;
 
 #desc Enables or disables processing. When a node is being processed, it will receive a [constant NOTIFICATION_PROCESS] on every drawn frame (and the [method _process] callback will be called if exists). Enabled automatically if [method _process] is overridden. Any calls to this before [method _ready] will be ignored.
-func set_process() -> void:
+func set_process(enable: bool) -> void:
 	pass;
 
 #desc Enables or disables input processing. This is not required for GUI controls! Enabled automatically if [method _input] is overridden. Any calls to this before [method _ready] will be ignored.
-func set_process_input() -> void:
+func set_process_input(enable: bool) -> void:
 	pass;
 
 #desc Enables or disabled internal processing for this node. Internal processing happens in isolation from the normal [method _process] calls and is used by some nodes internally to guarantee proper functioning even if the node is paused or processing is disabled for scripting ([method set_process]). Only useful for advanced uses to manipulate built-in nodes' behavior.
 #desc [b]Warning:[/b] Built-in Nodes rely on the internal processing for their own logic, so changing this value from your code may lead to unexpected behavior. Script access to this internal logic is provided for specific advanced uses, but is unsafe and not supported.
-func set_process_internal() -> void:
+func set_process_internal(enable: bool) -> void:
 	pass;
 
 #desc Enables shortcut processing. Enabled automatically if [method _shortcut_input] is overridden. Any calls to this before [method _ready] will be ignored.
-func set_process_shortcut_input() -> void:
+func set_process_shortcut_input(enable: bool) -> void:
 	pass;
 
 #desc Enables unhandled input processing. This is not required for GUI controls! It enables the node to receive all input that was not previously handled (usually by a [Control]). Enabled automatically if [method _unhandled_input] is overridden. Any calls to this before [method _ready] will be ignored.
-func set_process_unhandled_input() -> void:
+func set_process_unhandled_input(enable: bool) -> void:
 	pass;
 
 #desc Enables unhandled key input processing. Enabled automatically if [method _unhandled_key_input] is overridden. Any calls to this before [method _ready] will be ignored.
-func set_process_unhandled_key_input() -> void:
+func set_process_unhandled_key_input(enable: bool) -> void:
 	pass;
 
 #desc Sets whether this is an instance load placeholder. See [InstancePlaceholder].
-func set_scene_instance_load_placeholder() -> void:
+func set_scene_instance_load_placeholder(load_placeholder: bool) -> void:
 	pass;
 
 #desc Updates the warning displayed for this node in the Scene Dock.

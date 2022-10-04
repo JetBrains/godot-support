@@ -36,20 +36,20 @@ func exists(path: String, type_hint: String) -> bool:
 	pass;
 
 #desc Returns the dependencies for the resource at the given [param path].
-func get_dependencies() -> PackedStringArray:
+func get_dependencies(path: String) -> PackedStringArray:
 	pass;
 
 #desc Returns the list of recognized extensions for a resource type.
-func get_recognized_extensions_for_type() -> PackedStringArray:
+func get_recognized_extensions_for_type(type: String) -> PackedStringArray:
 	pass;
 
 #desc Returns the ID associated with a given resource path, or [code]-1[/code] when no such ID exists.
-func get_resource_uid() -> int:
+func get_resource_uid(path: String) -> int:
 	pass;
 
 #desc Returns whether a cached resource is available for the given [param path].
 #desc Once a resource has been loaded by the engine, it is cached in memory for faster access, and future calls to the [method load] method will use the cached version. The cached resource can be overridden by using [method Resource.take_over_path] on a new resource for that same path.
-func has_cached() -> bool:
+func has_cached(path: String) -> bool:
 	pass;
 
 #desc Loads a resource at the given [param path], caching the result for further access.
@@ -63,7 +63,7 @@ func load(path: String, type_hint: String, cache_mode: int) -> Resource:
 
 #desc Returns the resource loaded by [method load_threaded_request].
 #desc If this is called before the loading thread is done (i.e. [method load_threaded_get_status] is not [constant THREAD_LOAD_LOADED]), the calling thread will be blocked until the resource has finished loading.
-func load_threaded_get() -> Resource:
+func load_threaded_get(path: String) -> Resource:
 	pass;
 
 #desc Returns the status of a threaded loading operation started with [method load_threaded_request] for the resource at [param path]. See [enum ThreadLoadStatus] for possible return values.
@@ -77,11 +77,11 @@ func load_threaded_request(path: String, type_hint: String, use_sub_threads: boo
 	pass;
 
 #desc Unregisters the given [ResourceFormatLoader].
-func remove_resource_format_loader() -> void:
+func remove_resource_format_loader(format_loader: ResourceFormatLoader) -> void:
 	pass;
 
 #desc Changes the behavior on missing sub-resources. The default behavior is to abort loading.
-func set_abort_on_missing_resources() -> void:
+func set_abort_on_missing_resources(abort: bool) -> void:
 	pass;
 
 

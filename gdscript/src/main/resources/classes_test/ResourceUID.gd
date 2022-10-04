@@ -23,20 +23,20 @@ func create_id() -> int:
 
 #desc Returns the path that the given UID value refers to.
 #desc Fails with an error if the UID does not exist, so be sure to check [method has_id] beforehand.
-func get_id_path() -> String:
+func get_id_path(id: int) -> String:
 	pass;
 
 #desc Returns whether the given UID value is known to the cache.
-func has_id() -> bool:
+func has_id(id: int) -> bool:
 	pass;
 
 #desc Converts the given UID to a [code]uid://[/code] string value.
-func id_to_text() -> String:
+func id_to_text(id: int) -> String:
 	pass;
 
 #desc Removes a loaded UID value from the cache.
 #desc Fails with an error if the UID does not exist, so be sure to check [method has_id] beforehand.
-func remove_id() -> void:
+func remove_id(id: int) -> void:
 	pass;
 
 #desc Updates the resource path of an existing UID.
@@ -45,7 +45,7 @@ func set_id(id: int, path: String) -> void:
 	pass;
 
 #desc Extracts the UID value from the given [code]uid://[/code] string.
-func text_to_id() -> int:
+func text_to_id(text_id: String) -> int:
 	pass;
 
 

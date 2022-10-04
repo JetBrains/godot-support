@@ -7,7 +7,7 @@ class_name EngineProfiler
 
 
 #desc Called when data is added to profiler using [method EngineDebugger.profiler_add_frame_data].
-virtual func _add_frame() -> void:
+virtual func _add_frame(data: Array) -> void:
 	pass;
 
 #desc Called once every engine iteration when the profiler is active with information about the current frame. All time values are in seconds. Lower values represent faster processing times and are therefore considered better.

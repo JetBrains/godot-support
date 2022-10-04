@@ -1128,7 +1128,7 @@ func camera_attributes_set_auto_exposure(camera_attributes: RID, enable: bool, m
 func camera_attributes_set_dof_blur(camera_attributes: RID, far_enable: bool, far_distance: float, far_transition: float, near_enable: bool, near_distance: float, near_transition: float, amount: float) -> void:
 	pass;
 
-func camera_attributes_set_dof_blur_bokeh_shape() -> void:
+func camera_attributes_set_dof_blur_bokeh_shape(shape: int) -> void:
 	pass;
 
 func camera_attributes_set_dof_blur_quality(quality: int, use_jitter: bool) -> void:
@@ -1245,7 +1245,7 @@ func canvas_item_add_triangle_array(item: RID, indices: PackedInt32Array, points
 	pass;
 
 #desc Clears the [CanvasItem] and removes all commands in it.
-func canvas_item_clear() -> void:
+func canvas_item_clear(item: RID) -> void:
 	pass;
 
 func canvas_item_create() -> RID:
@@ -1438,7 +1438,7 @@ func canvas_occluder_polygon_set_cull_mode(occluder_polygon: RID, mode: int) -> 
 func canvas_occluder_polygon_set_shape(occluder_polygon: RID, shape: PackedVector2Array, closed: bool) -> void:
 	pass;
 
-func canvas_set_disable_scale() -> void:
+func canvas_set_disable_scale(disable: bool) -> void:
 	pass;
 
 #desc A copy of the canvas item will be drawn with a local offset of the mirroring [Vector2].
@@ -1449,7 +1449,7 @@ func canvas_set_item_mirroring(canvas: RID, item: RID, mirroring: Vector2) -> vo
 func canvas_set_modulate(canvas: RID, color: Color) -> void:
 	pass;
 
-func canvas_set_shadow_texture_size() -> void:
+func canvas_set_shadow_texture_size(size: int) -> void:
 	pass;
 
 func canvas_texture_create() -> RID:
@@ -1500,7 +1500,7 @@ func decal_set_normal_fade(decal: RID, fade: float) -> void:
 func decal_set_texture(decal: RID, type: int, texture: RID) -> void:
 	pass;
 
-func decals_set_filter() -> void:
+func decals_set_filter(filter: int) -> void:
 	pass;
 
 #desc Creates a directional light and adds it to the RenderingServer. It can be accessed with the RID that is returned. This RID can be used in most [code]light_*[/code] RenderingServer functions.
@@ -1512,7 +1512,7 @@ func directional_light_create() -> RID:
 func directional_shadow_atlas_set_size(size: int, is_16bits: bool) -> void:
 	pass;
 
-func directional_soft_shadow_filter_set_quality() -> void:
+func directional_soft_shadow_filter_set_quality(quality: int) -> void:
 	pass;
 
 func environment_bake_panorama(environment: RID, bake_irradiance: bool, size: Vector2i) -> Image:
@@ -1523,10 +1523,10 @@ func environment_bake_panorama(environment: RID, bake_irradiance: bool, size: Ve
 func environment_create() -> RID:
 	pass;
 
-func environment_glow_set_use_bicubic_upscale() -> void:
+func environment_glow_set_use_bicubic_upscale(enable: bool) -> void:
 	pass;
 
-func environment_glow_set_use_high_quality() -> void:
+func environment_glow_set_use_high_quality(enable: bool) -> void:
 	pass;
 
 #desc Sets the values to be used with the "Adjustment" post-process effect. See [Environment] for more details.
@@ -1561,13 +1561,13 @@ func environment_set_glow(env: RID, enable: bool, levels: PackedFloat32Array, in
 func environment_set_sdfgi(env: RID, enable: bool, cascades: int, min_cell_size: float, y_scale: int, use_occlusion: bool, bounce_feedback: float, read_sky: bool, energy: float, normal_bias: float, probe_bias: float) -> void:
 	pass;
 
-func environment_set_sdfgi_frames_to_converge() -> void:
+func environment_set_sdfgi_frames_to_converge(frames: int) -> void:
 	pass;
 
-func environment_set_sdfgi_frames_to_update_light() -> void:
+func environment_set_sdfgi_frames_to_update_light(frames: int) -> void:
 	pass;
 
-func environment_set_sdfgi_ray_count() -> void:
+func environment_set_sdfgi_ray_count(ray_count: int) -> void:
 	pass;
 
 #desc Sets the [Sky] to be used as the environment's background when using [i]BGMode[/i] sky. Equivalent to [member Environment.sky].
@@ -1598,7 +1598,7 @@ func environment_set_ssil_quality(quality: int, half_size: bool, adaptive_target
 func environment_set_ssr(env: RID, enable: bool, max_steps: int, fade_in: float, fade_out: float, depth_tolerance: float) -> void:
 	pass;
 
-func environment_set_ssr_roughness_quality() -> void:
+func environment_set_ssr_roughness_quality(quality: int) -> void:
 	pass;
 
 #desc Sets the variables to be used with the "tonemap" post-process effect. See [Environment] for more details.
@@ -1609,7 +1609,7 @@ func environment_set_volumetric_fog(env: RID, enable: bool, density: float, albe
 	pass;
 
 #desc Enables filtering of the volumetric fog scattering buffer. This results in much smoother volumes with very few under-sampling artifacts.
-func environment_set_volumetric_fog_filter_active() -> void:
+func environment_set_volumetric_fog_filter_active(active: bool) -> void:
 	pass;
 
 #desc Sets the resolution of the volumetric fog's froxel buffer. [param size] is modified by the screen's aspect ratio and then used to set the width and height of the buffer. While [param depth] is directly used to set the depth of the buffer.
@@ -1639,7 +1639,7 @@ func force_sync() -> void:
 	pass;
 
 #desc Tries to free an object in the RenderingServer.
-func free_rid() -> void:
+func free_rid(rid: RID) -> void:
 	pass;
 
 func get_frame_setup_time_cpu() -> float:
@@ -1648,11 +1648,11 @@ func get_frame_setup_time_cpu() -> float:
 func get_rendering_device() -> RenderingDevice:
 	pass;
 
-func get_rendering_info() -> int:
+func get_rendering_info(info: int) -> int:
 	pass;
 
 #desc Returns the parameters of a shader.
-func get_shader_parameter_list() -> Dictionary[]:
+func get_shader_parameter_list(shader: RID) -> Dictionary[]:
 	pass;
 
 #desc Returns the id of the test cube. Creates one if none exists.
@@ -1688,22 +1688,22 @@ func get_white_texture() -> RID:
 	pass;
 
 #desc If [param half_resolution] is [code]true[/code], renders [VoxelGI] and SDFGI ([member Environment.sdfgi_enabled]) buffers at halved resolution (e.g. 960×540 when the viewport size is 1920×1080). This improves performance significantly when VoxelGI or SDFGI is enabled, at the cost of artifacts that may be visible on polygon edges. The loss in quality becomes less noticeable as the viewport resolution increases. [LightmapGI] rendering is not affected by this setting. See also [member ProjectSettings.rendering/global_illumination/gi/use_half_resolution].
-func gi_set_use_half_resolution() -> void:
+func gi_set_use_half_resolution(half_resolution: bool) -> void:
 	pass;
 
 func global_shader_parameter_add(name: StringName, type: int, default_value: Variant) -> void:
 	pass;
 
-func global_shader_parameter_get() -> Variant:
+func global_shader_parameter_get(name: StringName) -> Variant:
 	pass;
 
 func global_shader_parameter_get_list() -> PackedStringArray:
 	pass;
 
-func global_shader_parameter_get_type() -> int:
+func global_shader_parameter_get_type(name: StringName) -> int:
 	pass;
 
-func global_shader_parameter_remove() -> void:
+func global_shader_parameter_remove(name: StringName) -> void:
 	pass;
 
 func global_shader_parameter_set(name: StringName, value: Variant) -> void:
@@ -1717,11 +1717,11 @@ func has_changed() -> bool:
 	pass;
 
 #desc Not yet implemented. Always returns [code]false[/code].
-func has_feature() -> bool:
+func has_feature(feature: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the OS supports a certain [param feature]. Features might be [code]s3tc[/code], [code]etc[/code], and [code]etc2[/code].
-func has_os_feature() -> bool:
+func has_os_feature(feature: String) -> bool:
 	pass;
 
 #desc Attaches a unique Object ID to instance. Object ID must be attached to instance for proper culling with [method instances_cull_aabb], [method instances_cull_convex], and [method instances_cull_ray].
@@ -1749,7 +1749,7 @@ func instance_geometry_get_shader_parameter(instance: RID, parameter: StringName
 func instance_geometry_get_shader_parameter_default_value(instance: RID, parameter: StringName) -> Variant:
 	pass;
 
-func instance_geometry_get_shader_parameter_list() -> Dictionary[]:
+func instance_geometry_get_shader_parameter_list(instance: RID) -> Dictionary[]:
 	pass;
 
 #desc Sets the shadow casting setting to one of [enum ShadowCastingSetting]. Equivalent to [member GeometryInstance3D.cast_shadow].
@@ -1862,7 +1862,7 @@ func light_directional_set_sky_mode(light: RID, mode: int) -> void:
 func light_omni_set_shadow_mode(light: RID, mode: int) -> void:
 	pass;
 
-func light_projectors_set_filter() -> void:
+func light_projectors_set_filter(filter: int) -> void:
 	pass;
 
 func light_set_bake_mode(light: RID, bake_mode: int) -> void:
@@ -1906,16 +1906,16 @@ func light_set_shadow(light: RID, enabled: bool) -> void:
 func lightmap_create() -> RID:
 	pass;
 
-func lightmap_get_probe_capture_bsp_tree() -> PackedInt32Array:
+func lightmap_get_probe_capture_bsp_tree(lightmap: RID) -> PackedInt32Array:
 	pass;
 
-func lightmap_get_probe_capture_points() -> PackedVector3Array:
+func lightmap_get_probe_capture_points(lightmap: RID) -> PackedVector3Array:
 	pass;
 
-func lightmap_get_probe_capture_sh() -> PackedColorArray:
+func lightmap_get_probe_capture_sh(lightmap: RID) -> PackedColorArray:
 	pass;
 
-func lightmap_get_probe_capture_tetrahedra() -> PackedInt32Array:
+func lightmap_get_probe_capture_tetrahedra(lightmap: RID) -> PackedInt32Array:
 	pass;
 
 #desc Used to inform the renderer what exposure normalization value was used while baking the lightmap. This value will be used and modulated at run time to ensure that the lightmap maintains a consistent level of exposure even if the scene-wide exposure normalization is changed at run time. For more information see [method camera_attributes_set_exposure].
@@ -1928,7 +1928,7 @@ func lightmap_set_probe_bounds(lightmap: RID, bounds: AABB) -> void:
 func lightmap_set_probe_capture_data(lightmap: RID, points: PackedVector3Array, point_sh: PackedColorArray, tetrahedra: PackedInt32Array, bsp_tree: PackedInt32Array) -> void:
 	pass;
 
-func lightmap_set_probe_capture_update_speed() -> void:
+func lightmap_set_probe_capture_update_speed(speed: float) -> void:
 	pass;
 
 func lightmap_set_probe_interior(lightmap: RID, interior: bool) -> void:
@@ -1973,7 +1973,7 @@ func mesh_add_surface_from_arrays(mesh: RID, primitive: int, arrays: Array, blen
 	pass;
 
 #desc Removes all surfaces from a mesh.
-func mesh_clear() -> void:
+func mesh_clear(mesh: RID) -> void:
 	pass;
 
 #desc Creates a new mesh and adds it to the RenderingServer. It can be accessed with the RID that is returned. This RID will be used in all [code]mesh_*[/code] RenderingServer functions.
@@ -1986,22 +1986,22 @@ func mesh_create_from_surfaces(surfaces: Dictionary[], blend_shape_count: int) -
 	pass;
 
 #desc Returns a mesh's blend shape count.
-func mesh_get_blend_shape_count() -> int:
+func mesh_get_blend_shape_count(mesh: RID) -> int:
 	pass;
 
 #desc Returns a mesh's blend shape mode.
-func mesh_get_blend_shape_mode() -> int:
+func mesh_get_blend_shape_mode(mesh: RID) -> int:
 	pass;
 
 #desc Returns a mesh's custom aabb.
-func mesh_get_custom_aabb() -> AABB:
+func mesh_get_custom_aabb(mesh: RID) -> AABB:
 	pass;
 
 func mesh_get_surface(mesh: RID, surface: int) -> Dictionary:
 	pass;
 
 #desc Returns a mesh's number of surfaces.
-func mesh_get_surface_count() -> int:
+func mesh_get_surface_count(mesh: RID) -> int:
 	pass;
 
 #desc Sets a mesh's blend shape mode.
@@ -2062,22 +2062,22 @@ func multimesh_create() -> RID:
 	pass;
 
 #desc Calculates and returns the axis-aligned bounding box that encloses all instances within the multimesh.
-func multimesh_get_aabb() -> AABB:
+func multimesh_get_aabb(multimesh: RID) -> AABB:
 	pass;
 
-func multimesh_get_buffer() -> PackedFloat32Array:
+func multimesh_get_buffer(multimesh: RID) -> PackedFloat32Array:
 	pass;
 
 #desc Returns the number of instances allocated for this multimesh.
-func multimesh_get_instance_count() -> int:
+func multimesh_get_instance_count(multimesh: RID) -> int:
 	pass;
 
 #desc Returns the RID of the mesh that will be used in drawing this multimesh.
-func multimesh_get_mesh() -> RID:
+func multimesh_get_mesh(multimesh: RID) -> RID:
 	pass;
 
 #desc Returns the number of visible instances for this multimesh.
-func multimesh_get_visible_instances() -> int:
+func multimesh_get_visible_instances(multimesh: RID) -> int:
 	pass;
 
 #desc Returns the color by which the specified instance will be modulated.
@@ -2138,7 +2138,7 @@ func omni_light_create() -> RID:
 func particles_collision_create() -> RID:
 	pass;
 
-func particles_collision_height_field_update() -> void:
+func particles_collision_height_field_update(particles_collision: RID) -> void:
 	pass;
 
 func particles_collision_set_attractor_attenuation(particles_collision: RID, curve: float) -> void:
@@ -2178,23 +2178,23 @@ func particles_emit(particles: RID, transform: Transform3D, velocity: Vector3, c
 	pass;
 
 #desc Calculates and returns the axis-aligned bounding box that contains all the particles. Equivalent to [method GPUParticles3D.capture_aabb].
-func particles_get_current_aabb() -> AABB:
+func particles_get_current_aabb(particles: RID) -> AABB:
 	pass;
 
 #desc Returns [code]true[/code] if particles are currently set to emitting.
-func particles_get_emitting() -> bool:
+func particles_get_emitting(particles: RID) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if particles are not emitting and particles are set to inactive.
-func particles_is_inactive() -> bool:
+func particles_is_inactive(particles: RID) -> bool:
 	pass;
 
 #desc Add particle system to list of particle systems that need to be updated. Update will take place on the next frame, or on the next call to [method instances_cull_aabb], [method instances_cull_convex], or [method instances_cull_ray].
-func particles_request_process() -> void:
+func particles_request_process(particles: RID) -> void:
 	pass;
 
 #desc Reset the particles on the next update. Equivalent to [method GPUParticles3D.restart].
-func particles_restart() -> void:
+func particles_restart(particles: RID) -> void:
 	pass;
 
 #desc Sets the number of particles to be drawn and allocates the memory for them. Equivalent to [member GPUParticles3D.amount].
@@ -2287,7 +2287,7 @@ func particles_set_transform_align(particles: RID, align: int) -> void:
 func particles_set_use_local_coordinates(particles: RID, enable: bool) -> void:
 	pass;
 
-func positional_soft_shadow_filter_set_quality() -> void:
+func positional_soft_shadow_filter_set_quality(quality: int) -> void:
 	pass;
 
 #desc Creates a reflection probe and adds it to the RenderingServer. It can be accessed with the RID that is returned. This RID will be used in all [code]reflection_probe_*[/code] RenderingServer functions.
@@ -2348,7 +2348,7 @@ func reflection_probe_set_update_mode(probe: RID, mode: int) -> void:
 	pass;
 
 #desc Schedules a callback to the given callable after a frame has been drawn.
-func request_frame_drawn_callback() -> void:
+func request_frame_drawn_callback(callable: Callable) -> void:
 	pass;
 
 #desc Creates a scenario and adds it to the RenderingServer. It can be accessed with the RID that is returned. This RID will be used in all [code]scenario_*[/code] RenderingServer functions.
@@ -2376,11 +2376,11 @@ func set_boot_image(image: Image, color: Color, scale: bool, use_filter: bool) -
 	pass;
 
 #desc If [code]true[/code], the engine will generate wireframes for use with the wireframe debug mode.
-func set_debug_generate_wireframes() -> void:
+func set_debug_generate_wireframes(generate: bool) -> void:
 	pass;
 
 #desc Sets the default clear color which is used when a specific clear color has not been selected.
-func set_default_clear_color() -> void:
+func set_default_clear_color(color: Color) -> void:
 	pass;
 
 #desc Creates an empty shader and adds it to the RenderingServer. It can be accessed with the RID that is returned. This RID will be used in all [code]shader_*[/code] RenderingServer functions.
@@ -2389,7 +2389,7 @@ func shader_create() -> RID:
 	pass;
 
 #desc Returns a shader's code.
-func shader_get_code() -> String:
+func shader_get_code(shader: RID) -> String:
 	pass;
 
 #desc Returns a default texture from a shader searched by name.
@@ -2436,7 +2436,7 @@ func skeleton_create() -> RID:
 	pass;
 
 #desc Returns the number of bones allocated for this skeleton.
-func skeleton_get_bone_count() -> int:
+func skeleton_get_bone_count(skeleton: RID) -> int:
 	pass;
 
 func skeleton_set_base_transform_2d(skeleton: RID, base_transform: Transform2D) -> void:
@@ -2466,16 +2466,16 @@ func sky_set_radiance_size(sky: RID, radiance_size: int) -> void:
 func spot_light_create() -> RID:
 	pass;
 
-func sub_surface_scattering_set_quality() -> void:
+func sub_surface_scattering_set_quality(quality: int) -> void:
 	pass;
 
 func sub_surface_scattering_set_scale(scale: float, depth_scale: float) -> void:
 	pass;
 
-func texture_2d_create() -> RID:
+func texture_2d_create(image: Image) -> RID:
 	pass;
 
-func texture_2d_get() -> Image:
+func texture_2d_get(texture: RID) -> Image:
 	pass;
 
 func texture_2d_layer_get(texture: RID, layer: int) -> Image:
@@ -2484,7 +2484,7 @@ func texture_2d_layer_get(texture: RID, layer: int) -> Image:
 func texture_2d_layered_create(layers: Image[], layered_type: int) -> RID:
 	pass;
 
-func texture_2d_layered_placeholder_create() -> RID:
+func texture_2d_layered_placeholder_create(layered_type: int) -> RID:
 	pass;
 
 func texture_2d_placeholder_create() -> RID:
@@ -2496,7 +2496,7 @@ func texture_2d_update(texture: RID, image: Image, layer: int) -> void:
 func texture_3d_create(format: int, width: int, height: int, depth: int, mipmaps: bool, data: Image[]) -> RID:
 	pass;
 
-func texture_3d_get() -> Image[]:
+func texture_3d_get(texture: RID) -> Image[]:
 	pass;
 
 func texture_3d_placeholder_create() -> RID:
@@ -2505,10 +2505,10 @@ func texture_3d_placeholder_create() -> RID:
 func texture_3d_update(texture: RID, data: Image[]) -> void:
 	pass;
 
-func texture_get_path() -> String:
+func texture_get_path(texture: RID) -> String:
 	pass;
 
-func texture_proxy_create() -> RID:
+func texture_proxy_create(base: RID) -> RID:
 	pass;
 
 func texture_proxy_update(texture: RID, proxy_to: RID) -> void:
@@ -2553,17 +2553,17 @@ func viewport_attach_to_screen(viewport: RID, rect: Rect2, screen: int) -> void:
 func viewport_create() -> RID:
 	pass;
 
-func viewport_get_measured_render_time_cpu() -> float:
+func viewport_get_measured_render_time_cpu(viewport: RID) -> float:
 	pass;
 
-func viewport_get_measured_render_time_gpu() -> float:
+func viewport_get_measured_render_time_gpu(viewport: RID) -> float:
 	pass;
 
 func viewport_get_render_info(viewport: RID, type: int, info: int) -> int:
 	pass;
 
 #desc Returns the viewport's last rendered frame.
-func viewport_get_texture() -> RID:
+func viewport_get_texture(viewport: RID) -> RID:
 	pass;
 
 #desc Detaches a viewport from a canvas and vice versa.
@@ -2627,10 +2627,10 @@ func viewport_set_msaa_2d(viewport: RID, msaa: int) -> void:
 func viewport_set_msaa_3d(viewport: RID, msaa: int) -> void:
 	pass;
 
-func viewport_set_occlusion_culling_build_quality() -> void:
+func viewport_set_occlusion_culling_build_quality(quality: int) -> void:
 	pass;
 
-func viewport_set_occlusion_rays_per_thread() -> void:
+func viewport_set_occlusion_rays_per_thread(rays_per_thread: int) -> void:
 	pass;
 
 #desc Sets the viewport's parent to another viewport.
@@ -2730,22 +2730,22 @@ func voxel_gi_allocate_data(voxel_gi: RID, to_cell_xform: Transform3D, aabb: AAB
 func voxel_gi_create() -> RID:
 	pass;
 
-func voxel_gi_get_data_cells() -> PackedByteArray:
+func voxel_gi_get_data_cells(voxel_gi: RID) -> PackedByteArray:
 	pass;
 
-func voxel_gi_get_distance_field() -> PackedByteArray:
+func voxel_gi_get_distance_field(voxel_gi: RID) -> PackedByteArray:
 	pass;
 
-func voxel_gi_get_level_counts() -> PackedInt32Array:
+func voxel_gi_get_level_counts(voxel_gi: RID) -> PackedInt32Array:
 	pass;
 
-func voxel_gi_get_octree_cells() -> PackedByteArray:
+func voxel_gi_get_octree_cells(voxel_gi: RID) -> PackedByteArray:
 	pass;
 
-func voxel_gi_get_octree_size() -> Vector3i:
+func voxel_gi_get_octree_size(voxel_gi: RID) -> Vector3i:
 	pass;
 
-func voxel_gi_get_to_cell_xform() -> Transform3D:
+func voxel_gi_get_to_cell_xform(voxel_gi: RID) -> Transform3D:
 	pass;
 
 #desc Used to inform the renderer what exposure normalization value was used while baking the voxel gi. This value will be used and modulated at run time to ensure that the voxel gi maintains a consistent level of exposure even if the scene-wide exposure normalization is changed at run time. For more information see [method camera_attributes_set_exposure].
@@ -2770,7 +2770,7 @@ func voxel_gi_set_normal_bias(voxel_gi: RID, bias: float) -> void:
 func voxel_gi_set_propagation(voxel_gi: RID, amount: float) -> void:
 	pass;
 
-func voxel_gi_set_quality() -> void:
+func voxel_gi_set_quality(quality: int) -> void:
 	pass;
 
 func voxel_gi_set_use_two_bounces(voxel_gi: RID, enable: bool) -> void:

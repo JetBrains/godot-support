@@ -7,11 +7,11 @@ class_name EditorResourcePreview
 
 
 #desc Create an own, custom preview generator.
-func add_preview_generator() -> void:
+func add_preview_generator(generator: EditorResourcePreviewGenerator) -> void:
 	pass;
 
 #desc Check if the resource changed, if so, it will be invalidated and the corresponding signal emitted.
-func check_for_invalidation() -> void:
+func check_for_invalidation(path: String) -> void:
 	pass;
 
 #desc Queue the [param resource] being edited for preview. Once the preview is ready, the [param receiver]'s [param receiver_func] will be called. The [param receiver_func] must take the following four arguments: [String] path, [Texture2D] preview, [Texture2D] thumbnail_preview, [Variant] userdata. [param userdata] can be anything, and will be returned when [param receiver_func] is called.
@@ -25,7 +25,7 @@ func queue_resource_preview(path: String, receiver: Object, receiver_func: Strin
 	pass;
 
 #desc Removes a custom preview generator.
-func remove_preview_generator() -> void:
+func remove_preview_generator(generator: EditorResourcePreviewGenerator) -> void:
 	pass;
 
 

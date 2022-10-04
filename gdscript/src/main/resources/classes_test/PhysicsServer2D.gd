@@ -238,26 +238,26 @@ func area_attach_object_instance_id(area: RID, id: int) -> void:
 	pass;
 
 #desc Removes all shapes from an area. It does not delete the shapes, so they can be reassigned later.
-func area_clear_shapes() -> void:
+func area_clear_shapes(area: RID) -> void:
 	pass;
 
 #desc Creates an [Area2D]. After creating an [Area2D] with this method, assign it to a space using [method area_set_space] to use the created [Area2D] in the physics world.
 func area_create() -> RID:
 	pass;
 
-func area_get_canvas_instance_id() -> int:
+func area_get_canvas_instance_id(area: RID) -> int:
 	pass;
 
 #desc Returns the physics layer or layers an area belongs to.
-func area_get_collision_layer() -> int:
+func area_get_collision_layer(area: RID) -> int:
 	pass;
 
 #desc Returns the physics layer or layers an area can contact with.
-func area_get_collision_mask() -> int:
+func area_get_collision_mask(area: RID) -> int:
 	pass;
 
 #desc Gets the instance ID of the object the area is assigned to.
-func area_get_object_instance_id() -> int:
+func area_get_object_instance_id(area: RID) -> int:
 	pass;
 
 #desc Returns an area parameter value. See [enum AreaParameter] for a list of available parameters.
@@ -269,7 +269,7 @@ func area_get_shape(area: RID, shape_idx: int) -> RID:
 	pass;
 
 #desc Returns the number of shapes assigned to an area.
-func area_get_shape_count() -> int:
+func area_get_shape_count(area: RID) -> int:
 	pass;
 
 #desc Returns the transform matrix of a shape within an area.
@@ -277,11 +277,11 @@ func area_get_shape_transform(area: RID, shape_idx: int) -> Transform2D:
 	pass;
 
 #desc Returns the space assigned to the area.
-func area_get_space() -> RID:
+func area_get_space(area: RID) -> RID:
 	pass;
 
 #desc Returns the transform matrix for an area.
-func area_get_transform() -> Transform2D:
+func area_get_transform(area: RID) -> Transform2D:
 	pass;
 
 #desc Removes a shape from an area. It does not delete the shape, so it can be reassigned later.
@@ -396,56 +396,56 @@ func body_attach_object_instance_id(body: RID, id: int) -> void:
 	pass;
 
 #desc Removes all shapes from a body.
-func body_clear_shapes() -> void:
+func body_clear_shapes(body: RID) -> void:
 	pass;
 
 #desc Creates a physics body.
 func body_create() -> RID:
 	pass;
 
-func body_get_canvas_instance_id() -> int:
+func body_get_canvas_instance_id(body: RID) -> int:
 	pass;
 
 #desc Returns the physics layer or layers a body belongs to.
-func body_get_collision_layer() -> int:
+func body_get_collision_layer(body: RID) -> int:
 	pass;
 
 #desc Returns the physics layer or layers a body can collide with.
-func body_get_collision_mask() -> int:
+func body_get_collision_mask(body: RID) -> int:
 	pass;
 
 #desc Returns the body's collision priority.
-func body_get_collision_priority() -> float:
+func body_get_collision_priority(body: RID) -> float:
 	pass;
 
 #desc Returns the body's total constant positional forces applied during each physics update.
 #desc See [method body_add_constant_force] and [method body_add_constant_central_force].
-func body_get_constant_force() -> Vector2:
+func body_get_constant_force(body: RID) -> Vector2:
 	pass;
 
 #desc Returns the body's total constant rotational forces applied during each physics update.
 #desc See [method body_add_constant_torque].
-func body_get_constant_torque() -> float:
+func body_get_constant_torque(body: RID) -> float:
 	pass;
 
 #desc Returns the continuous collision detection mode.
-func body_get_continuous_collision_detection_mode() -> int:
+func body_get_continuous_collision_detection_mode(body: RID) -> int:
 	pass;
 
 #desc Returns the [PhysicsDirectBodyState2D] of the body. Returns [code]null[/code] if the body is destroyed or removed from the physics space.
-func body_get_direct_state() -> PhysicsDirectBodyState2D:
+func body_get_direct_state(body: RID) -> PhysicsDirectBodyState2D:
 	pass;
 
 #desc Returns the maximum contacts that can be reported. See [method body_set_max_contacts_reported].
-func body_get_max_contacts_reported() -> int:
+func body_get_max_contacts_reported(body: RID) -> int:
 	pass;
 
 #desc Returns the body mode.
-func body_get_mode() -> int:
+func body_get_mode(body: RID) -> int:
 	pass;
 
 #desc Gets the instance ID of the object the area is assigned to.
-func body_get_object_instance_id() -> int:
+func body_get_object_instance_id(body: RID) -> int:
 	pass;
 
 #desc Returns the value of a body parameter. See [enum BodyParameter] for a list of available parameters.
@@ -457,7 +457,7 @@ func body_get_shape(body: RID, shape_idx: int) -> RID:
 	pass;
 
 #desc Returns the number of shapes assigned to a body.
-func body_get_shape_count() -> int:
+func body_get_shape_count(body: RID) -> int:
 	pass;
 
 #desc Returns the transform matrix of a body shape.
@@ -465,7 +465,7 @@ func body_get_shape_transform(body: RID, shape_idx: int) -> Transform2D:
 	pass;
 
 #desc Returns the [RID] of the space assigned to a body.
-func body_get_space() -> RID:
+func body_get_space(body: RID) -> RID:
 	pass;
 
 #desc Returns a body state.
@@ -473,7 +473,7 @@ func body_get_state(body: RID, state: int) -> Variant:
 	pass;
 
 #desc Returns whether a body uses a callback function to calculate its own physics (see [method body_set_force_integration_callback]).
-func body_is_omitting_force_integration() -> bool:
+func body_is_omitting_force_integration(body: RID) -> bool:
 	pass;
 
 #desc Removes a body from the list of bodies exempt from collisions.
@@ -485,7 +485,7 @@ func body_remove_shape(body: RID, shape_idx: int) -> void:
 	pass;
 
 #desc Restores the default inertia and center of mass based on shapes to cancel any custom values previously set using [method body_set_param].
-func body_reset_mass_properties() -> void:
+func body_reset_mass_properties(body: RID) -> void:
 	pass;
 
 #desc Sets an axis velocity. The velocity in the given vector axis will be set as the given vector length. This is useful for jumping behavior.
@@ -592,14 +592,14 @@ func damped_spring_joint_set_param(joint: RID, param: int, value: float) -> void
 	pass;
 
 #desc Destroys any of the objects created by PhysicsServer2D. If the [RID] passed is not one of the objects that can be created by PhysicsServer2D, an error will be sent to the console.
-func free_rid() -> void:
+func free_rid(rid: RID) -> void:
 	pass;
 
 #desc Returns information about the current state of the 2D physics engine. See [enum ProcessInfo] for a list of available states.
-func get_process_info() -> int:
+func get_process_info(process_info: int) -> int:
 	pass;
 
-func joint_clear() -> void:
+func joint_clear(joint: RID) -> void:
 	pass;
 
 func joint_create() -> RID:
@@ -610,7 +610,7 @@ func joint_get_param(joint: RID, param: int) -> float:
 	pass;
 
 #desc Returns a joint's type (see [enum JointType]).
-func joint_get_type() -> int:
+func joint_get_type(joint: RID) -> int:
 	pass;
 
 func joint_make_damped_spring(joint: RID, anchor_a: Vector2, anchor_b: Vector2, body_a: RID, body_b: RID) -> void:
@@ -636,15 +636,15 @@ func separation_ray_shape_create() -> RID:
 	pass;
 
 #desc Activates or deactivates the 2D physics engine.
-func set_active() -> void:
+func set_active(active: bool) -> void:
 	pass;
 
 #desc Returns the shape data.
-func shape_get_data() -> Variant:
+func shape_get_data(shape: RID) -> Variant:
 	pass;
 
 #desc Returns a shape's type (see [enum ShapeType]).
-func shape_get_type() -> int:
+func shape_get_type(shape: RID) -> int:
 	pass;
 
 #desc Sets the shape data that defines its shape and size. The data to be passed depends on the kind of shape created [method shape_get_type].
@@ -656,7 +656,7 @@ func space_create() -> RID:
 	pass;
 
 #desc Returns the state of a space, a [PhysicsDirectSpaceState2D]. This object can be used to make collision/intersection queries.
-func space_get_direct_state() -> PhysicsDirectSpaceState2D:
+func space_get_direct_state(space: RID) -> PhysicsDirectSpaceState2D:
 	pass;
 
 #desc Returns the value of a space parameter.
@@ -664,7 +664,7 @@ func space_get_param(space: RID, param: int) -> float:
 	pass;
 
 #desc Returns whether the space is active.
-func space_is_active() -> bool:
+func space_is_active(space: RID) -> bool:
 	pass;
 
 #desc Marks a space as active. It will not have an effect, unless it is assigned to an area or body.

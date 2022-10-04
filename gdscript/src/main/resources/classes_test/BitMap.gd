@@ -10,7 +10,7 @@ func convert_to_image() -> Image:
 	pass;
 
 #desc Creates a bitmap with the specified size, filled with [code]false[/code].
-func create() -> void:
+func create(size: Vector2i) -> void:
 	pass;
 
 #desc Creates a bitmap that matches the given image dimensions, every element of the bitmap is set to [code]false[/code] if the alpha value of the image at that position is equal to [param threshold] or less, and [code]true[/code] in other case.
@@ -22,7 +22,7 @@ func get_bit(x: int, y: int) -> bool:
 	pass;
 
 #desc Returns bitmap's value at the specified position.
-func get_bitv() -> bool:
+func get_bitv(position: Vector2i) -> bool:
 	pass;
 
 #desc Returns bitmap's dimensions.
@@ -47,7 +47,7 @@ func opaque_to_polygons(rect: Rect2i, epsilon: float) -> PackedVector2Array[]:
 	pass;
 
 #desc Resizes the image to [param new_size].
-func resize() -> void:
+func resize(new_size: Vector2i) -> void:
 	pass;
 
 #desc Sets the bitmap's element at the specified position, to the specified value.

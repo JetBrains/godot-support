@@ -38,7 +38,7 @@ func is_playing() -> bool:
 	pass;
 
 #desc Starts playing the given animation.
-func start() -> void:
+func start(node: StringName) -> void:
 	pass;
 
 #desc Stops the currently playing animation.
@@ -46,7 +46,7 @@ func stop() -> void:
 	pass;
 
 #desc Transitions from the current state to another one, following the shortest path.
-func travel() -> void:
+func travel(to_node: StringName) -> void:
 	pass;
 
 

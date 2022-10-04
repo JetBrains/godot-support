@@ -11,7 +11,7 @@ func get_band_count() -> int:
 	pass;
 
 #desc Returns the band's gain at the specified index, in dB.
-func get_band_gain_db() -> float:
+func get_band_gain_db(band_idx: int) -> float:
 	pass;
 
 #desc Sets band's gain at the specified index, in dB.

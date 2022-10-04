@@ -36,7 +36,7 @@ virtual func _run() -> void:
 
 #desc Adds [param node] as a child of the root node in the editor context.
 #desc [b]Warning:[/b] The implementation of this method is currently disabled.
-func add_root_node() -> void:
+func add_root_node(node: Node) -> void:
 	pass;
 
 #desc Returns the [EditorInterface] singleton instance.

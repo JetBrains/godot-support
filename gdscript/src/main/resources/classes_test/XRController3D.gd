@@ -9,7 +9,7 @@ class_name XRController3D
 
 
 #desc Returns a [Vector2] for the input with the given [param name]. This is used for thumbsticks and thumbpads found on many controllers.
-func get_axis() -> Vector2:
+func get_axis(name: StringName) -> Vector2:
 	pass;
 
 #desc Returns the hand holding this controller, if known. See [enum XRPositionalTracker.TrackerHand].
@@ -17,11 +17,11 @@ func get_tracker_hand() -> int:
 	pass;
 
 #desc Returns a numeric value for the input with the given [param name]. This is used for triggers and grip sensors.
-func get_value() -> float:
+func get_value(name: StringName) -> float:
 	pass;
 
 #desc Returns [code]true[/code] if the button with the given [param name] is pressed.
-func is_button_pressed() -> bool:
+func is_button_pressed(name: StringName) -> bool:
 	pass;
 
 

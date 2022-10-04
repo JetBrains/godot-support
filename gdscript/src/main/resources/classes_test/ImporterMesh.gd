@@ -10,7 +10,7 @@ var _data: Dictionary;
 
 
 #desc Adds name for a blend shape that will be added with [method add_surface]. Must be called before surface is added.
-func add_blend_shape() -> void:
+func add_blend_shape(name: String) -> void:
 	pass;
 
 #desc Creates a new surface, analogous to [method ArrayMesh.add_surface_from_arrays].
@@ -39,7 +39,7 @@ func get_blend_shape_mode() -> int:
 	pass;
 
 #desc Returns the name of the blend shape at this index.
-func get_blend_shape_name() -> String:
+func get_blend_shape_name(blend_shape_idx: int) -> String:
 	pass;
 
 #desc Returns the size hint of this mesh for lightmap-unwrapping in UV-space.
@@ -49,11 +49,11 @@ func get_lightmap_size_hint() -> Vector2i:
 #desc Returns the mesh data represented by this [ImporterMesh] as a usable [ArrayMesh].
 #desc This method caches the returned mesh, and subsequent calls will return the cached data until [method clear] is called.
 #desc If not yet cached and [param base_mesh] is provided, [param base_mesh] will be used and mutated.
-func get_mesh() -> ArrayMesh:
+func get_mesh(base_mesh: ArrayMesh) -> ArrayMesh:
 	pass;
 
 #desc Returns the arrays for the vertices, normals, uvs, etc. that make up the requested surface. See [method add_surface].
-func get_surface_arrays() -> Array:
+func get_surface_arrays(surface_idx: int) -> Array:
 	pass;
 
 #desc Returns a single set of blend shape arrays for the requested blend shape index for a surface.
@@ -65,11 +65,11 @@ func get_surface_count() -> int:
 	pass;
 
 #desc Returns the format of the surface that the mesh holds.
-func get_surface_format() -> int:
+func get_surface_format(surface_idx: int) -> int:
 	pass;
 
 #desc Returns the number of lods that the mesh holds on a given surface.
-func get_surface_lod_count() -> int:
+func get_surface_lod_count(surface_idx: int) -> int:
 	pass;
 
 #desc Returns the index buffer of a lod for a surface.
@@ -81,23 +81,23 @@ func get_surface_lod_size(surface_idx: int, lod_idx: int) -> float:
 	pass;
 
 #desc Returns a [Material] in a given surface. Surface is rendered using this material.
-func get_surface_material() -> Material:
+func get_surface_material(surface_idx: int) -> Material:
 	pass;
 
 #desc Gets the name assigned to this surface.
-func get_surface_name() -> String:
+func get_surface_name(surface_idx: int) -> String:
 	pass;
 
 #desc Returns the primitive type of the requested surface (see [method add_surface]).
-func get_surface_primitive_type() -> int:
+func get_surface_primitive_type(surface_idx: int) -> int:
 	pass;
 
 #desc Sets the blend shape mode to one of [enum Mesh.BlendShapeMode].
-func set_blend_shape_mode() -> void:
+func set_blend_shape_mode(mode: int) -> void:
 	pass;
 
 #desc Sets the size hint of this mesh for lightmap-unwrapping in UV-space.
-func set_lightmap_size_hint() -> void:
+func set_lightmap_size_hint(size: Vector2i) -> void:
 	pass;
 
 #desc Sets a [Material] for a given surface. Surface will be rendered using this material.

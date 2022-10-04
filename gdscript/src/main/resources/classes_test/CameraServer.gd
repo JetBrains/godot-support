@@ -20,7 +20,7 @@ const FEED_CBCR_IMAGE = 1;
 
 
 #desc Adds the camera [param feed] to the camera server.
-func add_feed() -> void:
+func add_feed(feed: CameraFeed) -> void:
 	pass;
 
 #desc Returns an array of [CameraFeed]s.
@@ -28,7 +28,7 @@ func feeds() -> CameraFeed[]:
 	pass;
 
 #desc Returns the [CameraFeed] corresponding to the camera with the given [param index].
-func get_feed() -> CameraFeed:
+func get_feed(index: int) -> CameraFeed:
 	pass;
 
 #desc Returns the number of [CameraFeed]s registered.
@@ -36,7 +36,7 @@ func get_feed_count() -> int:
 	pass;
 
 #desc Removes the specified camera [param feed].
-func remove_feed() -> void:
+func remove_feed(feed: CameraFeed) -> void:
 	pass;
 
 

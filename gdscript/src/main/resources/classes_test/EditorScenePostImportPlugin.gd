@@ -22,11 +22,11 @@ const INTERNAL_IMPORT_CATEGORY_MAX = 7;
 
 
 #desc Override to add general import options. These will appear in the main import dock on the editor. Add options via [method add_import_option] and [method add_import_option_advanced].
-virtual func _get_import_options() -> void:
+virtual func _get_import_options(path: String) -> void:
 	pass;
 
 #desc Override to add internal import options. These will appear in the 3D scene import dialog. Add options via [method add_import_option] and [method add_import_option_advanced].
-virtual func _get_internal_import_options() -> void:
+virtual func _get_internal_import_options(category: int) -> void:
 	pass;
 
 #desc Return true whether updating the 3D view of the import dialog needs to be updated if an option has changed.
@@ -46,11 +46,11 @@ virtual func _internal_process(category: int, base_node: Node, node: Node, resou
 	pass;
 
 #desc Post process the scene. This function is called after the final scene has been configured.
-virtual func _post_process() -> void:
+virtual func _post_process(scene: Node) -> void:
 	pass;
 
 #desc Pre Process the scene. This function is called right after the scene format loader loaded the scene and no changes have been made.
-virtual func _pre_process() -> void:
+virtual func _pre_process(scene: Node) -> void:
 	pass;
 
 #desc Add a specific import option (name and default value only). This function can only be called from [method _get_import_options] and [method _get_internal_import_options].
@@ -62,7 +62,7 @@ func add_import_option_advanced(type: int, name: String, default_value: Variant,
 	pass;
 
 #desc Query the value of an option. This function can only be called from those querying visibility, or processing.
-func get_option_value() -> Variant:
+func get_option_value(name: StringName) -> Variant:
 	pass;
 
 

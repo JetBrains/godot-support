@@ -496,11 +496,11 @@ func Color(from: Color, alpha: float) -> Color:
 	pass;
 
 #desc Constructs a [Color] as a copy of the given [Color].
-func Color() -> Color:
+func Color(from: Color) -> Color:
 	pass;
 
 #desc Constructs a [Color] either from an HTML color code or from a standardized color name. Supported color names are the same as the constants.
-func Color() -> Color:
+func Color(code: String) -> Color:
 	pass;
 
 #desc Constructs a [Color] either from an HTML color code or from a standardized color name, with [param alpha] on the range of 0 to 1. Supported color names are the same as the constants.
@@ -545,7 +545,7 @@ func Color(r: float, g: float, b: float, a: float) -> Color:
 #desc Color blendedColor = bg.Blend(fg); // Brown with alpha of 75%
 #desc [/csharp]
 #desc [/codeblocks]
-func blend() -> Color:
+func blend(over: Color) -> Color:
 	pass;
 
 #desc Returns a new color with all components clamped between the components of [param min] and [param max], by running [method @GlobalScope.clamp] on each component.
@@ -563,10 +563,10 @@ func clamp(min: Color, max: Color) -> Color:
 #desc Color darkgreen = green.Darkened(0.2f); // 20% darker than regular green
 #desc [/csharp]
 #desc [/codeblocks]
-func darkened() -> Color:
+func darkened(amount: float) -> Color:
 	pass;
 
-static func find_named_color() -> int:
+static func find_named_color(name: String) -> int:
 	pass;
 
 #desc Constructs a color from an [url=https://en.wikipedia.org/wiki/HSL_and_HSV]HSV profile[/url]. [param h] (hue), [param s] (saturation), and [param v] (value) are typically between 0 and 1.
@@ -593,7 +593,7 @@ static func from_hsv(h: float, s: float, v: float, alpha: float) -> Color:
 static func from_ok_hsl(h: float, s: float, l: float, alpha: float) -> Color:
 	pass;
 
-static func from_rgbe9995() -> Color:
+static func from_rgbe9995(rgbe: int) -> Color:
 	pass;
 
 static func from_string(str: String, default: Color) -> Color:
@@ -605,19 +605,19 @@ static func from_string(str: String, default: Color) -> Color:
 func get_luminance() -> float:
 	pass;
 
-static func get_named_color() -> Color:
+static func get_named_color(idx: int) -> Color:
 	pass;
 
 static func get_named_color_count() -> int:
 	pass;
 
-static func get_named_color_name() -> String:
+static func get_named_color_name(idx: int) -> String:
 	pass;
 
-static func hex() -> Color:
+static func hex(hex: int) -> Color:
 	pass;
 
-static func hex64() -> Color:
+static func hex64(hex: int) -> Color:
 	pass;
 
 #desc Returns a new color from [param rgba], an HTML hexadecimal color string. [param rgba] is not case sensitive, and may be prefixed with a '#' character.
@@ -634,7 +634,7 @@ static func hex64() -> Color:
 #desc var blue = new Color("#0000FF"); // set blue to Color(0.0, 0.0, 1.0, 1.0)
 #desc [/csharp]
 #desc [/codeblocks]
-static func html() -> Color:
+static func html(rgba: String) -> Color:
 	pass;
 
 #desc Returns [code]true[/code] if [param color] is a valid HTML hexadecimal color string. [param color] is not case sensitive, and may be prefixed with a '#' character.
@@ -657,7 +657,7 @@ static func html() -> Color:
 #desc result = Color.HtmlIsValid("#55aaFF5"); // result is false
 #desc [/csharp]
 #desc [/codeblocks]
-static func html_is_valid() -> bool:
+static func html_is_valid(color: String) -> bool:
 	pass;
 
 #desc Returns the inverted color [code](1 - r, 1 - g, 1 - b, a)[/code].
@@ -675,7 +675,7 @@ func inverted() -> Color:
 	pass;
 
 #desc Returns [code]true[/code] if this color and [param to] are approximately equal, by running [method @GlobalScope.is_equal_approx] on each component.
-func is_equal_approx() -> bool:
+func is_equal_approx(to: Color) -> bool:
 	pass;
 
 #desc Returns the linear interpolation with another color. The interpolation factor [param weight] is between 0 and 1.
@@ -705,7 +705,7 @@ func lerp(to: Color, weight: float) -> Color:
 #desc Color lightgreen = green.Lightened(0.2f); // 20% lighter than regular green
 #desc [/csharp]
 #desc [/codeblocks]
-func lightened() -> Color:
+func lightened(amount: float) -> Color:
 	pass;
 
 #desc Returns the color converted to the [url=https://en.wikipedia.org/wiki/SRGB]sRGB[/url] color space. This assumes the original color is in the linear color space. See also [method srgb_to_linear] which performs the opposite operation.
@@ -786,7 +786,7 @@ func to_argb64() -> int:
 #desc String withoutAlpha = color.ToHtml(false); // Returns "ffffff"
 #desc [/csharp]
 #desc [/codeblocks]
-func to_html() -> String:
+func to_html(with_alpha: bool) -> String:
 	pass;
 
 #desc Returns the color converted to a 32-bit integer in RGBA format (each byte represents a color channel). RGBA is Godot's default format.

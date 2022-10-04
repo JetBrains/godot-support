@@ -42,11 +42,11 @@ var world_scale: float;
 
 
 #desc Registers an [XRInterface] object.
-func add_interface() -> void:
+func add_interface(interface: XRInterface) -> void:
 	pass;
 
 #desc Registers a new [XRPositionalTracker] that tracks a spatial location in real space.
-func add_tracker() -> void:
+func add_tracker(tracker: XRPositionalTracker) -> void:
 	pass;
 
 #desc This is an important function to understand correctly. AR and VR platforms all handle positioning slightly differently.
@@ -59,7 +59,7 @@ func center_on_hmd(rotation_mode: int, keep_height: bool) -> void:
 	pass;
 
 #desc Finds an interface by its [param name]. For instance, if your project uses capabilities of an AR/VR platform, you can find the interface for that platform by name and initialize it.
-func find_interface() -> XRInterface:
+func find_interface(name: String) -> XRInterface:
 	pass;
 
 #desc Returns the primary interface's transformation.
@@ -67,7 +67,7 @@ func get_hmd_transform() -> Transform3D:
 	pass;
 
 #desc Returns the interface registered at the given [param idx] index in the list of interfaces.
-func get_interface() -> XRInterface:
+func get_interface(idx: int) -> XRInterface:
 	pass;
 
 #desc Returns the number of interfaces currently registered with the AR/VR server. If your project supports multiple AR/VR platforms, you can look through the available interface, and either present the user with a selection or simply try to initialize each interface and use the first one that returns [code]true[/code].
@@ -83,19 +83,19 @@ func get_reference_frame() -> Transform3D:
 	pass;
 
 #desc Returns the positional tracker with the given [param tracker_name].
-func get_tracker() -> XRPositionalTracker:
+func get_tracker(tracker_name: StringName) -> XRPositionalTracker:
 	pass;
 
 #desc Returns a dictionary of trackers for [param tracker_types].
-func get_trackers() -> Dictionary:
+func get_trackers(tracker_types: int) -> Dictionary:
 	pass;
 
 #desc Removes this [param interface].
-func remove_interface() -> void:
+func remove_interface(interface: XRInterface) -> void:
 	pass;
 
 #desc Removes this positional [param tracker].
-func remove_tracker() -> void:
+func remove_tracker(tracker: XRPositionalTracker) -> void:
 	pass;
 
 

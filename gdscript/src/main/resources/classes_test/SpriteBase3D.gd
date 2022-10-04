@@ -88,7 +88,7 @@ func generate_triangle_mesh() -> TriangleMesh:
 	pass;
 
 #desc Returns the value of the specified flag.
-func get_draw_flag() -> bool:
+func get_draw_flag(flag: int) -> bool:
 	pass;
 
 #desc Returns the rectangle representing this sprite.

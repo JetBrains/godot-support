@@ -44,11 +44,11 @@ func Vector4() -> Vector4:
 	pass;
 
 #desc Constructs a [Vector4] as a copy of the given [Vector4].
-func Vector4() -> Vector4:
+func Vector4(from: Vector4) -> Vector4:
 	pass;
 
 #desc Constructs a new [Vector4] from the given [Vector4i].
-func Vector4() -> Vector4:
+func Vector4(from: Vector4i) -> Vector4:
 	pass;
 
 #desc Returns a [Vector4] with the given components.
@@ -78,20 +78,20 @@ func cubic_interpolate_in_time(b: Vector4, pre_a: Vector4, post_b: Vector4, weig
 	pass;
 
 #desc Returns the normalized vector pointing from this vector to [param to]. This is equivalent to using [code](b - a).normalized()[/code].
-func direction_to() -> Vector4:
+func direction_to(to: Vector4) -> Vector4:
 	pass;
 
 #desc Returns the squared distance between this vector and [param to].
 #desc This method runs faster than [method distance_to], so prefer it if you need to compare vectors or need the squared distance for some formula.
-func distance_squared_to() -> float:
+func distance_squared_to(to: Vector4) -> float:
 	pass;
 
 #desc Returns the distance between this vector and [param to].
-func distance_to() -> float:
+func distance_to(to: Vector4) -> float:
 	pass;
 
 #desc Returns the dot product of this vector and [param with].
-func dot() -> float:
+func dot(with: Vector4) -> float:
 	pass;
 
 #desc Returns a new vector with all components rounded down (towards negative infinity).
@@ -103,7 +103,7 @@ func inverse() -> Vector4:
 	pass;
 
 #desc Returns [code]true[/code] if this vector and [param with] are approximately equal, by running [method @GlobalScope.is_equal_approx] on each component.
-func is_equal_approx() -> bool:
+func is_equal_approx(with: Vector4) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the vector is normalized, i.e. its length is equal to 1.
@@ -140,11 +140,11 @@ func normalized() -> Vector4:
 	pass;
 
 #desc Returns a vector composed of the [method @GlobalScope.fposmod] of this vector's components and [param mod].
-func posmod() -> Vector4:
+func posmod(mod: float) -> Vector4:
 	pass;
 
 #desc Returns a vector composed of the [method @GlobalScope.fposmod] of this vector's components and [param modv]'s components.
-func posmodv() -> Vector4:
+func posmodv(modv: Vector4) -> Vector4:
 	pass;
 
 #desc Returns a new vector with all components rounded to the nearest integer, with halfway cases rounded away from zero.
@@ -156,7 +156,7 @@ func sign() -> Vector4:
 	pass;
 
 #desc Returns this vector with each component snapped to the nearest multiple of [param step]. This can also be used to round to an arbitrary number of decimals.
-func snapped() -> Vector4:
+func snapped(step: Vector4) -> Vector4:
 	pass;
 
 

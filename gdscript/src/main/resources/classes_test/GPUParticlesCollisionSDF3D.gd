@@ -47,7 +47,7 @@ var thickness: float;
 
 
 #desc Returns whether or not the specified layer of the [member bake_mask] is enabled, given a [param layer_number] between 1 and 32.
-func get_bake_mask_value() -> bool:
+func get_bake_mask_value(layer_number: int) -> bool:
 	pass;
 
 #desc Based on [param value], enables or disables the specified layer in the [member bake_mask], given a [param layer_number] between 1 and 32.

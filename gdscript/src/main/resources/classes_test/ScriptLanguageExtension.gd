@@ -63,7 +63,7 @@ virtual func _add_global_constant(name: StringName, value: Variant) -> void:
 virtual func _add_named_global_constant(name: StringName, value: Variant) -> void:
 	pass;
 
-virtual func _alloc_instance_binding_data() -> void*:
+virtual func _alloc_instance_binding_data(object: Object) -> void*:
 	pass;
 
 virtual const func _auto_indent_code(code: String, from_line: int, to_line: int) -> String:
@@ -90,13 +90,13 @@ virtual func _debug_get_globals(max_subitems: int, max_depth: int) -> Dictionary
 virtual const func _debug_get_stack_level_count() -> int:
 	pass;
 
-virtual const func _debug_get_stack_level_function() -> String:
+virtual const func _debug_get_stack_level_function(level: int) -> String:
 	pass;
 
-virtual func _debug_get_stack_level_instance() -> void*:
+virtual func _debug_get_stack_level_instance(level: int) -> void*:
 	pass;
 
-virtual const func _debug_get_stack_level_line() -> int:
+virtual const func _debug_get_stack_level_line(level: int) -> int:
 	pass;
 
 virtual func _debug_get_stack_level_locals(level: int, max_subitems: int, max_depth: int) -> Dictionary:
@@ -108,7 +108,7 @@ virtual func _debug_get_stack_level_members(level: int, max_subitems: int, max_d
 virtual func _debug_parse_stack_level_expression(level: int, expression: String, max_subitems: int, max_depth: int) -> String:
 	pass;
 
-virtual func _execute_file() -> int:
+virtual func _execute_file(path: String) -> int:
 	pass;
 
 virtual const func _find_function(class_name: String, function_name: String) -> int:
@@ -120,10 +120,10 @@ virtual func _finish() -> void:
 virtual func _frame() -> void:
 	pass;
 
-virtual func _free_instance_binding_data() -> void:
+virtual func _free_instance_binding_data(data: void*) -> void:
 	pass;
 
-virtual const func _get_built_in_templates() -> Dictionary[]:
+virtual const func _get_built_in_templates(object: StringName) -> Dictionary[]:
 	pass;
 
 virtual const func _get_comment_delimiters() -> PackedStringArray:
@@ -132,7 +132,7 @@ virtual const func _get_comment_delimiters() -> PackedStringArray:
 virtual const func _get_extension() -> String:
 	pass;
 
-virtual const func _get_global_class_name() -> Dictionary:
+virtual const func _get_global_class_name(path: String) -> Dictionary:
 	pass;
 
 virtual const func _get_name() -> String:
@@ -159,7 +159,7 @@ virtual const func _get_string_delimiters() -> PackedStringArray:
 virtual const func _get_type() -> String:
 	pass;
 
-virtual const func _handles_global_class_type() -> bool:
+virtual const func _handles_global_class_type(type: String) -> bool:
 	pass;
 
 virtual const func _has_named_classes() -> bool:
@@ -168,7 +168,7 @@ virtual const func _has_named_classes() -> bool:
 virtual func _init() -> void:
 	pass;
 
-virtual const func _is_control_flow_keyword() -> bool:
+virtual const func _is_control_flow_keyword(keyword: String) -> bool:
 	pass;
 
 virtual func _is_using_templates() -> bool:
@@ -201,10 +201,10 @@ virtual func _profiling_start() -> void:
 virtual func _profiling_stop() -> void:
 	pass;
 
-virtual func _refcount_decremented_instance_binding() -> bool:
+virtual func _refcount_decremented_instance_binding(object: Object) -> bool:
 	pass;
 
-virtual func _refcount_incremented_instance_binding() -> void:
+virtual func _refcount_incremented_instance_binding(object: Object) -> void:
 	pass;
 
 virtual func _reload_all_scripts() -> void:
@@ -213,7 +213,7 @@ virtual func _reload_all_scripts() -> void:
 virtual func _reload_tool_script(script: Script, soft_reload: bool) -> void:
 	pass;
 
-virtual func _remove_named_global_constant() -> void:
+virtual func _remove_named_global_constant(name: StringName) -> void:
 	pass;
 
 virtual const func _supports_builtin_mode() -> bool:
@@ -231,7 +231,7 @@ virtual func _thread_exit() -> void:
 virtual const func _validate(script: String, path: String, validate_functions: bool, validate_errors: bool, validate_warnings: bool, validate_safe_lines: bool) -> Dictionary:
 	pass;
 
-virtual const func _validate_path() -> String:
+virtual const func _validate_path(path: String) -> String:
 	pass;
 
 

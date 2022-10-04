@@ -92,15 +92,15 @@ func bool() -> bool:
 	pass;
 
 #desc Constructs a [bool] as a copy of the given [bool].
-func bool() -> bool:
+func bool(from: bool) -> bool:
 	pass;
 
 #desc Cast a [float] value to a boolean value, this method will return [code]false[/code] if [code]0.0[/code] is passed in, and [code]true[/code] for all other floats.
-func bool() -> bool:
+func bool(from: float) -> bool:
 	pass;
 
 #desc Cast an [int] value to a boolean value, this method will return [code]false[/code] if [code]0[/code] is passed in, and [code]true[/code] for all other ints.
-func bool() -> bool:
+func bool(from: int) -> bool:
 	pass;
 
 

@@ -54,7 +54,7 @@ func leave_multicast_group(multicast_address: String, interface_name: String) ->
 
 #desc Enable or disable sending of broadcast packets (e.g. [code]set_dest_address("255.255.255.255", 4343)[/code]. This option is disabled by default.
 #desc [b]Note:[/b] Some Android devices might require the [code]CHANGE_WIFI_MULTICAST_STATE[/code] permission and this option to be enabled to receive broadcast packets too.
-func set_broadcast_enabled() -> void:
+func set_broadcast_enabled(enabled: bool) -> void:
 	pass;
 
 #desc Sets the destination address and port for sending packets and variables. A hostname will be resolved using DNS if needed.

@@ -46,7 +46,7 @@ func Basis() -> Basis:
 	pass;
 
 #desc Constructs a [Basis] as a copy of the given [Basis].
-func Basis() -> Basis:
+func Basis(from: Basis) -> Basis:
 	pass;
 
 #desc Constructs a pure rotation basis matrix, rotated around the given [param axis] by [param angle] (in radians). The axis must be a normalized vector.
@@ -54,7 +54,7 @@ func Basis(axis: Vector3, angle: float) -> Basis:
 	pass;
 
 #desc Constructs a pure rotation basis matrix from the given quaternion.
-func Basis() -> Basis:
+func Basis(from: Quaternion) -> Basis:
 	pass;
 
 #desc Constructs a basis matrix from 3 axis vectors (matrix columns).
@@ -71,12 +71,12 @@ static func from_euler(euler: Vector3, order: int) -> Basis:
 	pass;
 
 #desc Constructs a pure scale basis matrix with no rotation or shearing. The scale values are set as the diagonal of the matrix, and the other parts of the matrix are zero.
-static func from_scale() -> Basis:
+static func from_scale(scale: Vector3) -> Basis:
 	pass;
 
 #desc Returns the basis's rotation in the form of Euler angles. The Euler order depends on the [param order] parameter, by default it uses the YXZ convention: when decomposing, first Z, then X, and Y last. The returned vector contains the rotation angles in the format (X angle, Y angle, Z angle).
 #desc Consider using the [method get_rotation_quaternion] method instead, which returns a [Quaternion] quaternion instead of Euler angles.
-func get_euler() -> Vector3:
+func get_euler(order: int) -> Vector3:
 	pass;
 
 #desc Returns the basis's rotation in the form of a quaternion. See [method get_euler] if you need Euler angles, but keep in mind quaternions should generally be preferred to Euler angles.
@@ -92,7 +92,7 @@ func inverse() -> Basis:
 	pass;
 
 #desc Returns [code]true[/code] if this basis and [param b] are approximately equal, by calling [code]is_equal_approx[/code] on each component.
-func is_equal_approx() -> bool:
+func is_equal_approx(b: Basis) -> bool:
 	pass;
 
 #desc Creates a Basis with a rotation such that the forward axis (-Z) points towards the [param target] position.
@@ -109,7 +109,7 @@ func rotated(axis: Vector3, angle: float) -> Basis:
 	pass;
 
 #desc Introduce an additional scaling specified by the given 3D scaling factor.
-func scaled() -> Basis:
+func scaled(scale: Vector3) -> Basis:
 	pass;
 
 #desc Assuming that the matrix is a proper rotation matrix, slerp performs a spherical-linear interpolation with another rotation matrix.
@@ -117,15 +117,15 @@ func slerp(to: Basis, weight: float) -> Basis:
 	pass;
 
 #desc Transposed dot product with the X axis of the matrix.
-func tdotx() -> float:
+func tdotx(with: Vector3) -> float:
 	pass;
 
 #desc Transposed dot product with the Y axis of the matrix.
-func tdoty() -> float:
+func tdoty(with: Vector3) -> float:
 	pass;
 
 #desc Transposed dot product with the Z axis of the matrix.
-func tdotz() -> float:
+func tdotz(with: Vector3) -> float:
 	pass;
 
 #desc Returns the transposed version of the matrix.

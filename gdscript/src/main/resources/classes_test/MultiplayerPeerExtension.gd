@@ -58,23 +58,23 @@ virtual func _put_packet(p_buffer: const uint8_t*, p_buffer_size: int) -> int:
 	pass;
 
 #desc Called when a packet needs to be sent by the [MultiplayerAPI], if [method _put_packet] isn't implemented. Use this when extending this class via GDScript.
-virtual func _put_packet_script() -> int:
+virtual func _put_packet_script(p_buffer: PackedByteArray) -> int:
 	pass;
 
 #desc Called when the "refuse new connections" status is set on this [MultiplayerPeer] (see [member MultiplayerPeer.refuse_new_connections]).
-virtual func _set_refuse_new_connections() -> void:
+virtual func _set_refuse_new_connections(p_enable: bool) -> void:
 	pass;
 
 #desc Called when the target peer to use is set for this [MultiplayerPeer] (see [method MultiplayerPeer.set_target_peer]).
-virtual func _set_target_peer() -> void:
+virtual func _set_target_peer(p_peer: int) -> void:
 	pass;
 
 #desc Called when the channel to use is set for this [MultiplayerPeer] (see [member MultiplayerPeer.transfer_channel]).
-virtual func _set_transfer_channel() -> void:
+virtual func _set_transfer_channel(p_channel: int) -> void:
 	pass;
 
 #desc Called when the transfer mode is set on this [MultiplayerPeer] (see [member MultiplayerPeer.transfer_mode]).
-virtual func _set_transfer_mode() -> void:
+virtual func _set_transfer_mode(p_mode: int) -> void:
 	pass;
 
 

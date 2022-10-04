@@ -161,12 +161,12 @@ func add_image(image: Texture2D, width: int, height: int, color: Color, inline_a
 	pass;
 
 #desc Adds raw non-BBCode-parsed text to the tag stack.
-func add_text() -> void:
+func add_text(text: String) -> void:
 	pass;
 
 #desc Parses [param bbcode] and adds tags to the tag stack as needed.
 #desc [b]Note:[/b] Using this method, you can't close a tag that was opened in a previous [method append_text] call. This is done to improve performance, especially when updating large RichTextLabels since rebuilding the whole BBCode every time would be slower. If you absolutely need to close a tag in a future method call, append the [member text] instead of using [method append_text].
-func append_text() -> void:
+func append_text(bbcode: String) -> void:
 	pass;
 
 #desc Clears the tag stack and sets [member text] to an empty string.
@@ -179,12 +179,12 @@ func deselect() -> void:
 
 #desc Returns the line number of the character position provided.
 #desc [b]Note:[/b] If [member threaded] is enabled, this method returns a value for the loaded part of the document. Use [method is_ready] or [signal finished] to determine whether document is fully loaded.
-func get_character_line() -> int:
+func get_character_line(character: int) -> int:
 	pass;
 
 #desc Returns the paragraph number of the character position provided.
 #desc [b]Note:[/b] If [member threaded] is enabled, this method returns a value for the loaded part of the document. Use [method is_ready] or [signal finished] to determine whether document is fully loaded.
-func get_character_paragraph() -> int:
+func get_character_paragraph(character: int) -> int:
 	pass;
 
 #desc Returns the height of the content.
@@ -204,7 +204,7 @@ func get_line_count() -> int:
 
 #desc Returns the vertical offset of the line found at the provided index.
 #desc [b]Note:[/b] If [member threaded] is enabled, this method returns a value for the loaded part of the document. Use [method is_ready] or [signal finished] to determine whether document is fully loaded.
-func get_line_offset() -> float:
+func get_line_offset(line: int) -> float:
 	pass;
 
 #desc Returns the [PopupMenu] of this [RichTextLabel]. By default, this menu is displayed when right-clicking on the [RichTextLabel].
@@ -218,7 +218,7 @@ func get_paragraph_count() -> int:
 
 #desc Returns the vertical offset of the paragraph found at the provided index.
 #desc [b]Note:[/b] If [member threaded] is enabled, this method returns a value for the loaded part of the document. Use [method is_ready] or [signal finished] to determine whether document is fully loaded.
-func get_paragraph_offset() -> float:
+func get_paragraph_offset(paragraph: int) -> float:
 	pass;
 
 #desc Returns the text without BBCode mark-up.
@@ -257,7 +257,7 @@ func get_visible_paragraph_count() -> int:
 	pass;
 
 #desc Installs a custom effect. [param effect] should be a valid [RichTextEffect].
-func install_effect() -> void:
+func install_effect(effect: Variant) -> void:
 	pass;
 
 #desc Returns whether the menu is visible. Use this instead of [code]get_menu().visible[/code] to improve performance (so the creation of the menu is avoided).
@@ -273,11 +273,11 @@ func newline() -> void:
 	pass;
 
 #desc The assignment version of [method append_text]. Clears the tag stack and inserts the new content.
-func parse_bbcode() -> void:
+func parse_bbcode(bbcode: String) -> void:
 	pass;
 
 #desc Parses BBCode parameter [param expressions] into a dictionary.
-func parse_expressions_for_values() -> Dictionary:
+func parse_expressions_for_values(expressions: PackedStringArray) -> Dictionary:
 	pass;
 
 #desc Terminates the current tag. Use after [code]push_*[/code] methods to close BBCodes manually. Does not need to follow [code]add_*[/code] methods.
@@ -285,7 +285,7 @@ func pop() -> void:
 	pass;
 
 #desc Adds a [code][bgcolor][/code] tag to the tag stack.
-func push_bgcolor() -> void:
+func push_bgcolor(bgcolor: Color) -> void:
 	pass;
 
 #desc Adds a [code][font][/code] tag with a bold font to the tag stack. This is the same as adding a [code][b][/code] tag if not currently in a [code][i][/code] tag.
@@ -301,7 +301,7 @@ func push_cell() -> void:
 	pass;
 
 #desc Adds a [code][color][/code] tag to the tag stack.
-func push_color() -> void:
+func push_color(color: Color) -> void:
 	pass;
 
 #desc Adds a [code][dropcap][/code] tag to the tag stack. Drop cap (dropped capital) is a decorative element at the beginning of a paragraph that is larger than the rest of the text.
@@ -309,22 +309,22 @@ func push_dropcap(string: String, font: Font, size: int, dropcap_margins: Rect2,
 	pass;
 
 #desc Adds a [code][fgcolor][/code] tag to the tag stack.
-func push_fgcolor() -> void:
+func push_fgcolor(fgcolor: Color) -> void:
 	pass;
 
 #desc Adds a [code][font][/code] tag to the tag stack. Overrides default fonts for its duration.
 func push_font(font: Font, font_size: int) -> void:
 	pass;
 
-func push_font_size() -> void:
+func push_font_size(font_size: int) -> void:
 	pass;
 
 #desc Adds a [code][hint][/code] tag to the tag stack. Same as BBCode [code][hint=something]{text}[/hint][/code].
-func push_hint() -> void:
+func push_hint(description: String) -> void:
 	pass;
 
 #desc Adds an [code][indent][/code] tag to the tag stack. Multiplies [param level] by current [member tab_size] to determine new margin length.
-func push_indent() -> void:
+func push_indent(level: int) -> void:
 	pass;
 
 #desc Adds a [code][font][/code] tag with a italics font to the tag stack. This is the same as adding a [code][i][/code] tag if not currently in a [code][b][/code] tag.
@@ -336,7 +336,7 @@ func push_list(level: int, type: int, capitalize: bool) -> void:
 	pass;
 
 #desc Adds a [code][meta][/code] tag to the tag stack. Similar to the BBCode [code][url=something]{text}[/url][/code], but supports non-[String] metadata types.
-func push_meta() -> void:
+func push_meta(data: Variant) -> void:
 	pass;
 
 #desc Adds a [code][font][/code] tag with a monospace font to the tag stack.
@@ -348,11 +348,11 @@ func push_normal() -> void:
 	pass;
 
 #desc Adds a [code][outline_color][/code] tag to the tag stack. Adds text outline for its duration.
-func push_outline_color() -> void:
+func push_outline_color(color: Color) -> void:
 	pass;
 
 #desc Adds a [code][outline_size][/code] tag to the tag stack. Overrides default text outline size for its duration.
-func push_outline_size() -> void:
+func push_outline_size(outline_size: int) -> void:
 	pass;
 
 #desc Adds a [code][p][/code] tag to the tag stack.
@@ -373,15 +373,15 @@ func push_underline() -> void:
 
 #desc Removes a line of content from the label. Returns [code]true[/code] if the line exists.
 #desc The [param line] argument is the index of the line to remove, it can take values in the interval [code][0, get_line_count() - 1][/code].
-func remove_line() -> bool:
+func remove_line(line: int) -> bool:
 	pass;
 
 #desc Scrolls the window's top line to match [param line].
-func scroll_to_line() -> void:
+func scroll_to_line(line: int) -> void:
 	pass;
 
 #desc Scrolls the window's top line to match first line of the [param paragraph].
-func scroll_to_paragraph() -> void:
+func scroll_to_paragraph(paragraph: int) -> void:
 	pass;
 
 #desc Select all the text.
@@ -390,11 +390,11 @@ func select_all() -> void:
 	pass;
 
 #desc Sets color of a table cell border.
-func set_cell_border_color() -> void:
+func set_cell_border_color(color: Color) -> void:
 	pass;
 
 #desc Sets inner padding of a table cell.
-func set_cell_padding() -> void:
+func set_cell_padding(padding: Rect2) -> void:
 	pass;
 
 #desc Sets color of a table cell. Separate colors for alternating rows can be specified.

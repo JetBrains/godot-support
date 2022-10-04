@@ -40,19 +40,19 @@ func disconnect_node(input_node: StringName, input_index: int) -> void:
 	pass;
 
 #desc Returns the sub-node with the specified [param name].
-func get_node() -> AnimationNode:
+func get_node(name: StringName) -> AnimationNode:
 	pass;
 
 #desc Returns the position of the sub-node with the specified [param name].
-func get_node_position() -> Vector2:
+func get_node_position(name: StringName) -> Vector2:
 	pass;
 
 #desc Returns [code]true[/code] if a sub-node with specified [param name] exists.
-func has_node() -> bool:
+func has_node(name: StringName) -> bool:
 	pass;
 
 #desc Removes a sub-node.
-func remove_node() -> void:
+func remove_node(name: StringName) -> void:
 	pass;
 
 #desc Changes the name of a sub-node.

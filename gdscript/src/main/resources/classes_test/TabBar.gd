@@ -68,7 +68,7 @@ func add_tab(title: String, icon: Texture2D) -> void:
 	pass;
 
 #desc Moves the scroll view to make the tab visible.
-func ensure_tab_visible() -> void:
+func ensure_tab_visible(idx: int) -> void:
 	pass;
 
 #desc Returns [code]true[/code] if the offset buttons (the ones that appear when there's not enough space for all tabs) are visible.
@@ -80,19 +80,19 @@ func get_previous_tab() -> int:
 	pass;
 
 #desc Returns the [Texture2D] for the right button of the tab at index [param tab_idx] or [code]null[/code] if the button has no [Texture2D].
-func get_tab_button_icon() -> Texture2D:
+func get_tab_button_icon(tab_idx: int) -> Texture2D:
 	pass;
 
 #desc Returns the [Texture2D] for the tab at index [param tab_idx] or [code]null[/code] if the tab has no [Texture2D].
-func get_tab_icon() -> Texture2D:
+func get_tab_icon(tab_idx: int) -> Texture2D:
 	pass;
 
 #desc Returns the index of the tab at local coordinates [param point]. Returns [code]-1[/code] if the point is outside the control boundaries or if there's no tab at the queried position.
-func get_tab_idx_at_point() -> int:
+func get_tab_idx_at_point(point: Vector2) -> int:
 	pass;
 
 #desc Returns tab title language code.
-func get_tab_language() -> String:
+func get_tab_language(tab_idx: int) -> String:
 	pass;
 
 #desc Returns the number of hidden tabs offsetted to the left.
@@ -100,23 +100,23 @@ func get_tab_offset() -> int:
 	pass;
 
 #desc Returns tab [Rect2] with local position and size.
-func get_tab_rect() -> Rect2:
+func get_tab_rect(tab_idx: int) -> Rect2:
 	pass;
 
 #desc Returns tab title text base writing direction.
-func get_tab_text_direction() -> int:
+func get_tab_text_direction(tab_idx: int) -> int:
 	pass;
 
 #desc Returns the title of the tab at index [param tab_idx].
-func get_tab_title() -> String:
+func get_tab_title(tab_idx: int) -> String:
 	pass;
 
 #desc Returns [code]true[/code] if the tab at index [param tab_idx] is disabled.
-func is_tab_disabled() -> bool:
+func is_tab_disabled(tab_idx: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the tab at index [param tab_idx] is hidden.
-func is_tab_hidden() -> bool:
+func is_tab_hidden(tab_idx: int) -> bool:
 	pass;
 
 #desc Moves a tab from [param from] to [param to].
@@ -124,7 +124,7 @@ func move_tab(from: int, to: int) -> void:
 	pass;
 
 #desc Removes the tab at index [param tab_idx].
-func remove_tab() -> void:
+func remove_tab(tab_idx: int) -> void:
 	pass;
 
 #desc Sets an [param icon] for the button of the tab at index [param tab_idx] (located to the right, before the close button), making it visible and clickable (See [signal tab_button_pressed]). Giving it a [code]null[/code] value will hide the button.

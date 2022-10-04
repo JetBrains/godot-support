@@ -59,7 +59,7 @@ func start(hash_type: int, key: PackedByteArray) -> int:
 	pass;
 
 #desc Updates the message to be HMACed. This can be called multiple times before [method finish] is called to append [param data] to the message, but cannot be called until [method start] has been called.
-func update() -> int:
+func update(data: PackedByteArray) -> int:
 	pass;
 
 

@@ -48,7 +48,7 @@ const CONNECT_REFERENCE_COUNTED = 8;
 
 #desc Virtual method which can be overridden to customize the return value of [method get].
 #desc Returns the given property. Returns [code]null[/code] if the [param property] does not exist.
-virtual func _get() -> Variant:
+virtual func _get(property: StringName) -> Variant:
 	pass;
 
 #desc Virtual method which can be overridden to customize the return value of [method get_property_list].
@@ -63,17 +63,17 @@ virtual func _init() -> void:
 	pass;
 
 #desc Called whenever the object receives a notification, which is identified in [param what] by a constant. The base [Object] has two constants [constant NOTIFICATION_POSTINITIALIZE] and [constant NOTIFICATION_PREDELETE], but subclasses such as [Node] define a lot more notifications which are also received by this method.
-virtual func _notification() -> void:
+virtual func _notification(what: int) -> void:
 	pass;
 
 #desc Virtual methods that can be overridden to customize the property revert behavior in the editor.
 #desc Returns [code]true[/code] if the property identified by [code]name[/code] can be reverted to a default value. Override [method _property_get_revert] to return the actual value.
-virtual func _property_can_revert() -> bool:
+virtual func _property_can_revert(property: StringName) -> bool:
 	pass;
 
 #desc Virtual methods that can be overridden to customize the property revert behavior in the editor.
 #desc Returns the default value of the property identified by [code]name[/code]. [method _property_can_revert] must be overridden as well for this method to be called.
-virtual func _property_get_revert() -> Variant:
+virtual func _property_get_revert(property: StringName) -> Variant:
 	pass;
 
 #desc Virtual method which can be overridden to customize the return value of [method set].
@@ -102,7 +102,7 @@ func add_user_signal(signal: String, arguments: Array) -> void:
 #desc [/csharp]
 #desc [/codeblocks]
 #desc [b]Note:[/b] In C#, the method name must be specified as snake_case if it is defined by a built-in Godot node. This doesn't apply to user-defined methods where you should use the same convention as in the C# source (typically PascalCase).
-vararg func call() -> Variant:
+vararg func call(method: StringName) -> Variant:
 	pass;
 
 #desc Calls the [param method] on the object during idle time. This method supports a variable number of arguments, so parameters are passed as a comma separated list. Example:
@@ -117,7 +117,7 @@ vararg func call() -> Variant:
 #desc [/csharp]
 #desc [/codeblocks]
 #desc [b]Note:[/b] In C#, the method name must be specified as snake_case if it is defined by a built-in Godot node. This doesn't apply to user-defined methods where you should use the same convention as in the C# source (typically PascalCase).
-vararg func call_deferred() -> Variant:
+vararg func call_deferred(method: StringName) -> Variant:
 	pass;
 
 #desc Calls the [param method] on the object and returns the result. Contrarily to [method call], this method does not support a variable number of arguments but expects all parameters to be via a single [Array].
@@ -290,7 +290,7 @@ func disconnect(signal: StringName, callable: Callable) -> void:
 #desc EmitSignal("game_over");
 #desc [/csharp]
 #desc [/codeblocks]
-vararg func emit_signal() -> int:
+vararg func emit_signal(signal: StringName) -> int:
 	pass;
 
 #desc Deletes the object from memory. Any pre-existing reference to the freed object will become invalid, e.g. [code]is_instance_valid(object)[/code] will return [code]false[/code].
@@ -299,7 +299,7 @@ func free() -> void:
 
 #desc Returns the [Variant] value of the given [param property]. If the [param property] doesn't exist, this will return [code]null[/code].
 #desc [b]Note:[/b] In C#, the property name must be specified as snake_case if it is defined by a built-in Godot node. This doesn't apply to user-defined properties where you should use the same convention as in the C# source (typically PascalCase).
-func get() -> Variant:
+func get(property: StringName) -> Variant:
 	pass;
 
 #desc Returns the object's class as a [String]. See also [method is_class].
@@ -317,7 +317,7 @@ func get_incoming_connections() -> Dictionary[]:
 
 #desc Gets the object's property indexed by the given [NodePath]. The node path should be relative to the current object and can use the colon character ([code]:[/code]) to access nested properties. Examples: [code]"position:x"[/code] or [code]"material:next_pass:blend_mode"[/code].
 #desc [b]Note:[/b] Even though the method takes [NodePath] argument, it doesn't support actual paths to [Node]s in the scene tree, only colon-separated sub-property paths. For the purpose of nodes, use [method Node.get_node_and_resource] instead.
-func get_indexed() -> Variant:
+func get_indexed(property: NodePath) -> Variant:
 	pass;
 
 #desc Returns the object's unique instance ID.
@@ -349,7 +349,7 @@ func get_script() -> Variant:
 	pass;
 
 #desc Returns an [Array] of connections for the given [param signal].
-func get_signal_connection_list() -> Dictionary[]:
+func get_signal_connection_list(signal: StringName) -> Dictionary[]:
 	pass;
 
 #desc Returns the list of signals as an [Array] of dictionaries.
@@ -358,19 +358,19 @@ func get_signal_list() -> Dictionary[]:
 
 #desc Returns [code]true[/code] if a metadata entry is found with the given [param name]. See also [method get_meta], [method set_meta] and [method remove_meta].
 #desc [b]Note:[/b] Metadata that has a [param name] starting with an underscore ([code]_[/code]) is considered editor-only. Editor-only metadata is not displayed in the inspector and should not be edited.
-func has_meta() -> bool:
+func has_meta(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the object contains the given [param method].
-func has_method() -> bool:
+func has_method(method: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given [param signal] exists.
-func has_signal() -> bool:
+func has_signal(signal: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the given user-defined [param signal] exists. Only signals added using [method add_user_signal] are taken into account.
-func has_user_signal() -> bool:
+func has_user_signal(signal: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if signal emission blocking is enabled.
@@ -379,7 +379,7 @@ func is_blocking_signals() -> bool:
 
 #desc Returns [code]true[/code] if the object inherits from the given [param class]. See also [method get_class].
 #desc [b]Note:[/b] [method is_class] does not take [code]class_name[/code] declarations into account. If the object has a [code]class_name[/code] defined, [method is_class] will return [code]false[/code] for that name.
-func is_class() -> bool:
+func is_class(class: String) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if a connection exists for a given [param signal] and [param callable].
@@ -401,7 +401,7 @@ func notify_property_list_changed() -> void:
 
 #desc Removes a given entry from the object's metadata. See also [method has_meta], [method get_meta] and [method set_meta].
 #desc [b]Note:[/b] Metadata that has a [param name] starting with an underscore ([code]_[/code]) is considered editor-only. Editor-only metadata is not displayed in the inspector and should not be edited.
-func remove_meta() -> void:
+func remove_meta(name: StringName) -> void:
 	pass;
 
 #desc Assigns a new value to the given property. If the [param property] does not exist or the given value's type doesn't match, nothing will happen.
@@ -410,7 +410,7 @@ func set(property: StringName, value: Variant) -> void:
 	pass;
 
 #desc If set to [code]true[/code], signal emission is blocked.
-func set_block_signals() -> void:
+func set_block_signals(enable: bool) -> void:
 	pass;
 
 #desc Assigns a new value to the given property, after the current frame's physics step. This is equivalent to calling [method set] via [method call_deferred], i.e. [code]call_deferred("set", property, value)[/code].
@@ -437,7 +437,7 @@ func set_indexed(property: NodePath, value: Variant) -> void:
 	pass;
 
 #desc Defines whether the object can translate strings (with calls to [method tr]). Enabled by default.
-func set_message_translation() -> void:
+func set_message_translation(enable: bool) -> void:
 	pass;
 
 #desc Adds, changes or removes a given entry in the object's metadata. Metadata are serialized and can take any [Variant] value.
@@ -448,7 +448,7 @@ func set_meta(name: StringName, value: Variant) -> void:
 
 #desc Assigns a script to the object. Each object can have a single script assigned to it, which are used to extend its functionality.
 #desc If the object already had a script, the previous script instance will be freed and its variables and state will be lost. The new script's [method _init] method will be called.
-func set_script() -> void:
+func set_script(script: Variant) -> void:
 	pass;
 
 #desc Returns a [String] representing the object. If not overridden, defaults to [code]"[ClassName:RID]"[/code].

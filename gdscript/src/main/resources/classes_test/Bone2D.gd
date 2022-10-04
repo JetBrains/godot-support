@@ -41,20 +41,20 @@ func get_skeleton_rest() -> Transform2D:
 	pass;
 
 #desc When set to [code]true[/code], the [code]Bone2D[/code] node will attempt to automatically calculate the bone angle and length using the first child [code]Bone2D[/code] node, if one exists. If none exist, the [code]Bone2D[/code] cannot automatically calculate these values and will print a warning.
-func set_autocalculate_length_and_angle() -> void:
+func set_autocalculate_length_and_angle(auto_calculate: bool) -> void:
 	pass;
 
 #desc Sets the bone angle for the [code]Bone2D[/code] node. This is typically set to the rotation from the [code]Bone2D[/code] node to a child [code]Bone2D[/code] node.
 #desc [b]Note:[/b] This is different from the [code]Bone2D[/code]'s rotation. The bone angle is the rotation of the bone shown by the [code]Bone2D[/code] gizmo, and because [code]Bone2D[/code] bones are based on positions, this can vary from the actual rotation of the [code]Bone2D[/code] node.
-func set_bone_angle() -> void:
+func set_bone_angle(angle: float) -> void:
 	pass;
 
 #desc Deprecated. Please use [code]set_length[/code] instead.
-func set_default_length() -> void:
+func set_default_length(default_length: float) -> void:
 	pass;
 
 #desc Sets the length of the bone in the [code]Bone2D[/code] node.
-func set_length() -> void:
+func set_length(length: float) -> void:
 	pass;
 
 

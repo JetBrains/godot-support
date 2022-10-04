@@ -60,11 +60,11 @@ func clear_all_slots() -> void:
 	pass;
 
 #desc Disables input and output slot whose index is [param slot_index].
-func clear_slot() -> void:
+func clear_slot(slot_index: int) -> void:
 	pass;
 
 #desc Returns the [Color] of the input connection [param port].
-func get_connection_input_color() -> Color:
+func get_connection_input_color(port: int) -> Color:
 	pass;
 
 #desc Returns the number of enabled input slots (connections) to the GraphNode.
@@ -72,23 +72,23 @@ func get_connection_input_count() -> int:
 	pass;
 
 #desc Returns the height of the input connection [param port].
-func get_connection_input_height() -> int:
+func get_connection_input_height(port: int) -> int:
 	pass;
 
 #desc Returns the position of the input connection [param port].
-func get_connection_input_position() -> Vector2:
+func get_connection_input_position(port: int) -> Vector2:
 	pass;
 
 #desc Returns the corresponding slot index of the input connection [param port].
-func get_connection_input_slot() -> int:
+func get_connection_input_slot(port: int) -> int:
 	pass;
 
 #desc Returns the type of the input connection [param port].
-func get_connection_input_type() -> int:
+func get_connection_input_type(port: int) -> int:
 	pass;
 
 #desc Returns the [Color] of the output connection [param port].
-func get_connection_output_color() -> Color:
+func get_connection_output_color(port: int) -> Color:
 	pass;
 
 #desc Returns the number of enabled output slots (connections) of the GraphNode.
@@ -96,47 +96,47 @@ func get_connection_output_count() -> int:
 	pass;
 
 #desc Returns the height of the output connection [param port].
-func get_connection_output_height() -> int:
+func get_connection_output_height(port: int) -> int:
 	pass;
 
 #desc Returns the position of the output connection [param port].
-func get_connection_output_position() -> Vector2:
+func get_connection_output_position(port: int) -> Vector2:
 	pass;
 
 #desc Returns the corresponding slot index of the output connection [param port].
-func get_connection_output_slot() -> int:
+func get_connection_output_slot(port: int) -> int:
 	pass;
 
 #desc Returns the type of the output connection [param port].
-func get_connection_output_type() -> int:
+func get_connection_output_type(port: int) -> int:
 	pass;
 
 #desc Returns the left (input) [Color] of the slot [param slot_index].
-func get_slot_color_left() -> Color:
+func get_slot_color_left(slot_index: int) -> Color:
 	pass;
 
 #desc Returns the right (output) [Color] of the slot [param slot_index].
-func get_slot_color_right() -> Color:
+func get_slot_color_right(slot_index: int) -> Color:
 	pass;
 
 #desc Returns the left (input) type of the slot [param slot_index].
-func get_slot_type_left() -> int:
+func get_slot_type_left(slot_index: int) -> int:
 	pass;
 
 #desc Returns the right (output) type of the slot [param slot_index].
-func get_slot_type_right() -> int:
+func get_slot_type_right(slot_index: int) -> int:
 	pass;
 
 #desc Returns true if the background [StyleBox] of the slot [param slot_index] is drawn.
-func is_slot_draw_stylebox() -> bool:
+func is_slot_draw_stylebox(slot_index: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if left (input) side of the slot [param slot_index] is enabled.
-func is_slot_enabled_left() -> bool:
+func is_slot_enabled_left(slot_index: int) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if right (output) side of the slot [param slot_index] is enabled.
-func is_slot_enabled_right() -> bool:
+func is_slot_enabled_right(slot_index: int) -> bool:
 	pass;
 
 #desc Sets properties of the slot with the [param slot_index] index.

@@ -13,7 +13,7 @@ virtual func _clear_highlighting_cache() -> void:
 
 #desc Virtual method which can be overridden to return syntax highlighting data.
 #desc See [method get_line_syntax_highlighting] for more details.
-virtual const func _get_line_syntax_highlighting() -> Dictionary:
+virtual const func _get_line_syntax_highlighting(line: int) -> Dictionary:
 	pass;
 
 #desc Virtual method which can be overridden to update any local caches.
@@ -39,7 +39,7 @@ func clear_highlighting_cache() -> void:
 #desc }
 #desc [/codeblock]
 #desc This will color columns 0-4 red, and columns 5-eol in green.
-func get_line_syntax_highlighting() -> Dictionary:
+func get_line_syntax_highlighting(line: int) -> Dictionary:
 	pass;
 
 #desc Returns the associated [TextEdit] node.

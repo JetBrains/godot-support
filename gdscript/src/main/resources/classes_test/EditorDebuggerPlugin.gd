@@ -9,7 +9,7 @@ class_name EditorDebuggerPlugin
 
 
 #desc Returns [code]true[/code] if a message capture with given name is present otherwise [code]false[/code].
-func has_capture() -> bool:
+func has_capture(name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if the game is in break state otherwise [code]false[/code].
@@ -34,7 +34,7 @@ func send_message(message: String, data: Array) -> void:
 	pass;
 
 #desc Unregisters the message capture with given name.
-func unregister_message_capture() -> void:
+func unregister_message_capture(name: StringName) -> void:
 	pass;
 
 

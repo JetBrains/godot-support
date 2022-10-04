@@ -53,7 +53,7 @@ var stereo: bool;
 
 #desc Saves the AudioStreamWAV as a WAV file to [param path]. Samples with IMA ADPCM format can't be saved.
 #desc [b]Note:[/b] A [code].wav[/code] extension is automatically appended to [param path] if it is missing.
-func save_to_wav() -> int:
+func save_to_wav(path: String) -> int:
 	pass;
 
 

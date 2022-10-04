@@ -88,7 +88,7 @@ var visible: bool;
 
 
 #desc Attach a gizmo to this [code]Node3D[/code].
-func add_gizmo() -> void:
+func add_gizmo(gizmo: Node3DGizmo) -> void:
 	pass;
 
 #desc Clear all gizmos attached to this [code]Node3D[/code].
@@ -120,11 +120,11 @@ func global_rotate(axis: Vector3, angle: float) -> void:
 	pass;
 
 #desc Scales the global (world) transformation by the given [Vector3] scale factors.
-func global_scale() -> void:
+func global_scale(scale: Vector3) -> void:
 	pass;
 
 #desc Moves the global (world) transformation by [Vector3] offset. The offset is in global coordinate system.
-func global_translate() -> void:
+func global_translate(offset: Vector3) -> void:
 	pass;
 
 #desc Disables rendering of this node. Changes [member visible] to [code]false[/code].
@@ -171,23 +171,23 @@ func rotate_object_local(axis: Vector3, angle: float) -> void:
 	pass;
 
 #desc Rotates the local transformation around the X axis by angle in radians.
-func rotate_x() -> void:
+func rotate_x(angle: float) -> void:
 	pass;
 
 #desc Rotates the local transformation around the Y axis by angle in radians.
-func rotate_y() -> void:
+func rotate_y(angle: float) -> void:
 	pass;
 
 #desc Rotates the local transformation around the Z axis by angle in radians.
-func rotate_z() -> void:
+func rotate_z(angle: float) -> void:
 	pass;
 
 #desc Scales the local transformation by given 3D scale factors in object-local coordinate system.
-func scale_object_local() -> void:
+func scale_object_local(scale: Vector3) -> void:
 	pass;
 
 #desc Sets whether the node uses a scale of [code](1, 1, 1)[/code] or its local transformation scale. Changes to the local transformation scale are preserved.
-func set_disable_scale() -> void:
+func set_disable_scale(disable: bool) -> void:
 	pass;
 
 #desc Reset all transformations for this node (sets its [Transform3D] to the identity matrix).
@@ -195,15 +195,15 @@ func set_identity() -> void:
 	pass;
 
 #desc Sets whether the node ignores notification that its transformation (global or local) changed.
-func set_ignore_transform_notification() -> void:
+func set_ignore_transform_notification(enabled: bool) -> void:
 	pass;
 
 #desc Sets whether the node notifies about its local transformation changes. [Node3D] will not propagate this by default.
-func set_notify_local_transform() -> void:
+func set_notify_local_transform(enable: bool) -> void:
 	pass;
 
 #desc Sets whether the node notifies about its global and local transformation changes. [Node3D] will not propagate this by default, unless it is in the editor context and it has a valid gizmo.
-func set_notify_transform() -> void:
+func set_notify_transform(enable: bool) -> void:
 	pass;
 
 #desc Set subgizmo selection for this node in the editor.
@@ -215,20 +215,20 @@ func show() -> void:
 	pass;
 
 #desc Transforms [param local_point] from this node's local space to world space.
-func to_global() -> Vector3:
+func to_global(local_point: Vector3) -> Vector3:
 	pass;
 
 #desc Transforms [param global_point] from world space to this node's local space.
-func to_local() -> Vector3:
+func to_local(global_point: Vector3) -> Vector3:
 	pass;
 
 #desc Changes the node's position by the given offset [Vector3].
 #desc Note that the translation [param offset] is affected by the node's scale, so if scaled by e.g. [code](10, 1, 1)[/code], a translation by an offset of [code](2, 0, 0)[/code] would actually add 20 ([code]2 * 10[/code]) to the X coordinate.
-func translate() -> void:
+func translate(offset: Vector3) -> void:
 	pass;
 
 #desc Changes the node's position by the given offset [Vector3] in local space.
-func translate_object_local() -> void:
+func translate_object_local(offset: Vector3) -> void:
 	pass;
 
 #desc Updates all the [Node3DGizmo]s attached to this node.

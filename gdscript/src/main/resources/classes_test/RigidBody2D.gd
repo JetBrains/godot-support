@@ -119,12 +119,12 @@ var sleeping: bool;
 
 
 #desc Allows you to read and safely modify the simulation state for the object. Use this instead of [method Node._physics_process] if you need to directly change the body's [code]position[/code] or other physics properties. By default, it works in addition to the usual physics behavior, but [member custom_integrator] allows you to disable the default behavior and write custom force integration for a body.
-virtual func _integrate_forces() -> void:
+virtual func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	pass;
 
 #desc Adds a constant directional force without affecting rotation that keeps being applied over time until cleared with [code]constant_force = Vector2(0, 0)[/code].
 #desc This is equivalent to using [method add_constant_force] at the body's center of mass.
-func add_constant_central_force() -> void:
+func add_constant_central_force(force: Vector2) -> void:
 	pass;
 
 #desc Adds a constant positioned force to the body that keeps being applied over time until cleared with [code]constant_force = Vector2(0, 0)[/code].
@@ -133,18 +133,18 @@ func add_constant_force(force: Vector2, position: Vector2) -> void:
 	pass;
 
 #desc Adds a constant rotational force without affecting position that keeps being applied over time until cleared with [code]constant_torque = 0[/code].
-func add_constant_torque() -> void:
+func add_constant_torque(torque: float) -> void:
 	pass;
 
 #desc Applies a directional force without affecting rotation. A force is time dependent and meant to be applied every physics update.
 #desc This is equivalent to using [method apply_force] at the body's center of mass.
-func apply_central_force() -> void:
+func apply_central_force(force: Vector2) -> void:
 	pass;
 
 #desc Applies a directional impulse without affecting rotation.
 #desc An impulse is time-independent! Applying an impulse every frame would result in a framerate-dependent force. For this reason, it should only be used when simulating one-time impacts (use the "_force" functions otherwise).
 #desc This is equivalent to using [method apply_impulse] at the body's center of mass.
-func apply_central_impulse() -> void:
+func apply_central_impulse(impulse: Vector2) -> void:
 	pass;
 
 #desc Applies a positioned force to the body. A force is time dependent and meant to be applied every physics update.
@@ -159,12 +159,12 @@ func apply_impulse(impulse: Vector2, position: Vector2) -> void:
 	pass;
 
 #desc Applies a rotational force without affecting position. A force is time dependent and meant to be applied every physics update.
-func apply_torque() -> void:
+func apply_torque(torque: float) -> void:
 	pass;
 
 #desc Applies a rotational impulse to the body without affecting the position.
 #desc An impulse is time-independent! Applying an impulse every frame would result in a framerate-dependent force. For this reason, it should only be used when simulating one-time impacts (use the "_force" functions otherwise).
-func apply_torque_impulse() -> void:
+func apply_torque_impulse(torque: float) -> void:
 	pass;
 
 #desc Returns a list of the bodies colliding with this one. Requires [member contact_monitor] to be set to [code]true[/code] and [member max_contacts_reported] to be set high enough to detect all the collisions.
@@ -178,7 +178,7 @@ func get_contact_count() -> int:
 	pass;
 
 #desc Sets the body's velocity on the given axis. The velocity in the given vector axis will be set as the given vector length. This is useful for jumping behavior.
-func set_axis_velocity() -> void:
+func set_axis_velocity(axis_velocity: Vector2) -> void:
 	pass;
 
 

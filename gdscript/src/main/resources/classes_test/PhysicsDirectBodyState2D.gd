@@ -43,7 +43,7 @@ var transform: Transform2D;
 
 #desc Adds a constant directional force without affecting rotation that keeps being applied over time until cleared with [code]constant_force = Vector2(0, 0)[/code].
 #desc This is equivalent to using [method add_constant_force] at the body's center of mass.
-func add_constant_central_force() -> void:
+func add_constant_central_force(force: Vector2) -> void:
 	pass;
 
 #desc Adds a constant positioned force to the body that keeps being applied over time until cleared with [code]constant_force = Vector2(0, 0)[/code].
@@ -52,18 +52,18 @@ func add_constant_force(force: Vector2, position: Vector2) -> void:
 	pass;
 
 #desc Adds a constant rotational force without affecting position that keeps being applied over time until cleared with [code]constant_torque = 0[/code].
-func add_constant_torque() -> void:
+func add_constant_torque(torque: float) -> void:
 	pass;
 
 #desc Applies a directional force without affecting rotation. A force is time dependent and meant to be applied every physics update.
 #desc This is equivalent to using [method apply_force] at the body's center of mass.
-func apply_central_force() -> void:
+func apply_central_force(force: Vector2) -> void:
 	pass;
 
 #desc Applies a directional impulse without affecting rotation.
 #desc An impulse is time-independent! Applying an impulse every frame would result in a framerate-dependent force. For this reason, it should only be used when simulating one-time impacts (use the "_force" functions otherwise).
 #desc This is equivalent to using [method apply_impulse] at the body's center of mass.
-func apply_central_impulse() -> void:
+func apply_central_impulse(impulse: Vector2) -> void:
 	pass;
 
 #desc Applies a positioned force to the body. A force is time dependent and meant to be applied every physics update.
@@ -78,12 +78,12 @@ func apply_impulse(impulse: Vector2, position: Vector2) -> void:
 	pass;
 
 #desc Applies a rotational force without affecting position. A force is time dependent and meant to be applied every physics update.
-func apply_torque() -> void:
+func apply_torque(torque: float) -> void:
 	pass;
 
 #desc Applies a rotational impulse to the body without affecting the position.
 #desc An impulse is time-independent! Applying an impulse every frame would result in a framerate-dependent force. For this reason, it should only be used when simulating one-time impacts (use the "_force" functions otherwise).
-func apply_torque_impulse() -> void:
+func apply_torque_impulse(impulse: float) -> void:
 	pass;
 
 #desc Returns the body's total constant positional forces applied during each physics update.
@@ -97,27 +97,27 @@ func get_constant_torque() -> float:
 	pass;
 
 #desc Returns the collider's [RID].
-func get_contact_collider() -> RID:
+func get_contact_collider(contact_idx: int) -> RID:
 	pass;
 
 #desc Returns the collider's object id.
-func get_contact_collider_id() -> int:
+func get_contact_collider_id(contact_idx: int) -> int:
 	pass;
 
 #desc Returns the collider object. This depends on how it was created (will return a scene node if such was used to create it).
-func get_contact_collider_object() -> Object:
+func get_contact_collider_object(contact_idx: int) -> Object:
 	pass;
 
 #desc Returns the contact position in the collider.
-func get_contact_collider_position() -> Vector2:
+func get_contact_collider_position(contact_idx: int) -> Vector2:
 	pass;
 
 #desc Returns the collider's shape index.
-func get_contact_collider_shape() -> int:
+func get_contact_collider_shape(contact_idx: int) -> int:
 	pass;
 
 #desc Returns the linear velocity vector at the collider's contact point.
-func get_contact_collider_velocity_at_position() -> Vector2:
+func get_contact_collider_velocity_at_position(contact_idx: int) -> Vector2:
 	pass;
 
 #desc Returns the number of contacts this body has with other bodies.
@@ -126,15 +126,15 @@ func get_contact_count() -> int:
 	pass;
 
 #desc Returns the local normal at the contact point.
-func get_contact_local_normal() -> Vector2:
+func get_contact_local_normal(contact_idx: int) -> Vector2:
 	pass;
 
 #desc Returns the local position of the contact point.
-func get_contact_local_position() -> Vector2:
+func get_contact_local_position(contact_idx: int) -> Vector2:
 	pass;
 
 #desc Returns the local shape index of the collision.
-func get_contact_local_shape() -> int:
+func get_contact_local_shape(contact_idx: int) -> int:
 	pass;
 
 #desc Returns the current state of the space, useful for queries.
@@ -142,7 +142,7 @@ func get_space_state() -> PhysicsDirectSpaceState2D:
 	pass;
 
 #desc Returns the body's velocity at the given relative position, including both translation and rotation.
-func get_velocity_at_local_position() -> Vector2:
+func get_velocity_at_local_position(local_position: Vector2) -> Vector2:
 	pass;
 
 #desc Calls the built-in force integration code.
@@ -151,12 +151,12 @@ func integrate_forces() -> void:
 
 #desc Sets the body's total constant positional forces applied during each physics update.
 #desc See [method add_constant_force] and [method add_constant_central_force].
-func set_constant_force() -> void:
+func set_constant_force(force: Vector2) -> void:
 	pass;
 
 #desc Sets the body's total constant rotational forces applied during each physics update.
 #desc See [method add_constant_torque].
-func set_constant_torque() -> void:
+func set_constant_torque(torque: float) -> void:
 	pass;
 
 

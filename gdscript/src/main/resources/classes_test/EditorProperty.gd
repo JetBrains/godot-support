@@ -27,7 +27,7 @@ var read_only: bool;
 
 
 #desc Called when the read-only status of the property is changed. It may be used to change custom controls into a read-only or modifiable state.
-virtual func _set_read_only() -> void:
+virtual func _set_read_only(read_only: bool) -> void:
 	pass;
 
 #desc When this virtual function is called, you must update your editor.
@@ -35,7 +35,7 @@ virtual func _update_property() -> void:
 	pass;
 
 #desc If any of the controls added can gain keyboard focus, add it here. This ensures that focus will be restored if the inspector is refreshed.
-func add_focusable() -> void:
+func add_focusable(control: Control) -> void:
 	pass;
 
 #desc If one or several properties have changed, this must be called. [param field] is used in case your editor can modify fields separately (as an example, Vector3.x). The [param changing] argument avoids the editor requesting this property to be refreshed (leave as [code]false[/code] if unsure).
@@ -51,7 +51,7 @@ func get_edited_property() -> StringName:
 	pass;
 
 #desc Puts the [param editor] control below the property label. The control must be previously added using [method Node.add_child].
-func set_bottom_editor() -> void:
+func set_bottom_editor(editor: Control) -> void:
 	pass;
 
 func update_property() -> void:

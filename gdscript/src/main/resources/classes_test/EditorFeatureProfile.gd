@@ -31,15 +31,15 @@ const FEATURE_MAX = 7;
 
 
 #desc Returns the specified [param feature]'s human-readable name.
-func get_feature_name() -> String:
+func get_feature_name(feature: int) -> String:
 	pass;
 
 #desc Returns [code]true[/code] if the class specified by [param class_name] is disabled. When disabled, the class won't appear in the Create New Node dialog.
-func is_class_disabled() -> bool:
+func is_class_disabled(class_name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if editing for the class specified by [param class_name] is disabled. When disabled, the class will still appear in the Create New Node dialog but the inspector will be read-only when selecting a node that extends the class.
-func is_class_editor_disabled() -> bool:
+func is_class_editor_disabled(class_name: StringName) -> bool:
 	pass;
 
 #desc Returns [code]true[/code] if [param property] is disabled in the class specified by [param class_name]. When a property is disabled, it won't appear in the inspector when selecting a node that extends the class specified by [param class_name].
@@ -47,15 +47,15 @@ func is_class_property_disabled(class_name: StringName, property: StringName) ->
 	pass;
 
 #desc Returns [code]true[/code] if the [param feature] is disabled. When a feature is disabled, it will disappear from the editor entirely.
-func is_feature_disabled() -> bool:
+func is_feature_disabled(feature: int) -> bool:
 	pass;
 
 #desc Loads an editor feature profile from a file. The file must follow the JSON format obtained by using the feature profile manager's [b]Export[/b] button or the [method save_to_file] method.
-func load_from_file() -> int:
+func load_from_file(path: String) -> int:
 	pass;
 
 #desc Saves the editor feature profile to a file in JSON format. It can then be imported using the feature profile manager's [b]Import[/b] button or the [method load_from_file] method.
-func save_to_file() -> int:
+func save_to_file(path: String) -> int:
 	pass;
 
 #desc If [param disable] is [code]true[/code], disables the class specified by [param class_name]. When disabled, the class won't appear in the Create New Node dialog.

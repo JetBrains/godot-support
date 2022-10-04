@@ -54,11 +54,11 @@ func get_blend_point_count() -> int:
 	pass;
 
 #desc Returns the [AnimationRootNode] referenced by the point at index [param point].
-func get_blend_point_node() -> AnimationRootNode:
+func get_blend_point_node(point: int) -> AnimationRootNode:
 	pass;
 
 #desc Returns the position of the point at index [param point].
-func get_blend_point_position() -> Vector2:
+func get_blend_point_position(point: int) -> Vector2:
 	pass;
 
 #desc Returns the number of triangles in the blend space.
@@ -70,11 +70,11 @@ func get_triangle_point(triangle: int, point: int) -> int:
 	pass;
 
 #desc Removes the point at index [param point] from the blend space.
-func remove_blend_point() -> void:
+func remove_blend_point(point: int) -> void:
 	pass;
 
 #desc Removes the triangle at index [param triangle] from the blend space.
-func remove_triangle() -> void:
+func remove_triangle(triangle: int) -> void:
 	pass;
 
 #desc Changes the [AnimationNode] referenced by the point at index [param point].

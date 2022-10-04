@@ -49,7 +49,7 @@ static func is_keeping_all_compressed_buffers() -> bool:
 	pass;
 
 #desc Overrides the flag globally for all textures of this type. This is used primarily by the editor.
-static func set_keep_all_compressed_buffers() -> void:
+static func set_keep_all_compressed_buffers(keep: bool) -> void:
 	pass;
 
 

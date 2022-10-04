@@ -21,11 +21,11 @@ func Rect2i() -> Rect2i:
 	pass;
 
 #desc Constructs a [Rect2i] as a copy of the given [Rect2i].
-func Rect2i() -> Rect2i:
+func Rect2i(from: Rect2i) -> Rect2i:
 	pass;
 
 #desc Constructs a new [Rect2i] from [Rect2]. The floating point coordinates will be truncated.
-func Rect2i() -> Rect2i:
+func Rect2i(from: Rect2) -> Rect2i:
 	pass;
 
 #desc Constructs a [Rect2i] by position and size.
@@ -42,7 +42,7 @@ func abs() -> Rect2i:
 	pass;
 
 #desc Returns [code]true[/code] if this [Rect2i] completely encloses another one.
-func encloses() -> bool:
+func encloses(b: Rect2i) -> bool:
 	pass;
 
 #desc Returns a copy of this [Rect2i] expanded so that the borders align with the given point.
@@ -60,7 +60,7 @@ func encloses() -> bool:
 #desc var rect2 = rect.Expand(new Vector2i(0, -1));
 #desc [/csharp]
 #desc [/codeblocks]
-func expand() -> Rect2i:
+func expand(to: Vector2i) -> Rect2i:
 	pass;
 
 #desc Returns the area of the [Rect2i]. See also [method has_area].
@@ -73,7 +73,7 @@ func get_center() -> Vector2i:
 	pass;
 
 #desc Returns a copy of the [Rect2i] grown by the specified [param amount] on all sides.
-func grow() -> Rect2i:
+func grow(amount: int) -> Rect2i:
 	pass;
 
 #desc Returns a copy of the [Rect2i] grown by the specified amount on each side individually.
@@ -90,20 +90,20 @@ func has_area() -> bool:
 
 #desc Returns [code]true[/code] if the [Rect2i] contains a point. By convention, the right and bottom edges of the [Rect2i] are considered exclusive, so points on these edges are [b]not[/b] included.
 #desc [b]Note:[/b] This method is not reliable for [Rect2i] with a [i]negative size[/i]. Use [method abs] to get a positive sized equivalent rectangle to check for contained points.
-func has_point() -> bool:
+func has_point(point: Vector2i) -> bool:
 	pass;
 
 #desc Returns the intersection of this [Rect2i] and [code]b[/code].
 #desc If the rectangles do not intersect, an empty [Rect2i] is returned.
-func intersection() -> Rect2i:
+func intersection(b: Rect2i) -> Rect2i:
 	pass;
 
 #desc Returns [code]true[/code] if the [Rect2i] overlaps with [code]b[/code] (i.e. they have at least one point in common).
-func intersects() -> bool:
+func intersects(b: Rect2i) -> bool:
 	pass;
 
 #desc Returns a larger [Rect2i] that contains this [Rect2i] and [param b].
-func merge() -> Rect2i:
+func merge(b: Rect2i) -> Rect2i:
 	pass;
 
 

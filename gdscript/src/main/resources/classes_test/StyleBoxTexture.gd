@@ -66,15 +66,15 @@ var texture: Texture2D;
 
 
 #desc Returns the expand margin size of the specified [enum Side].
-func get_expand_margin_size() -> float:
+func get_expand_margin_size(margin: int) -> float:
 	pass;
 
 #desc Returns the margin size of the specified [enum Side].
-func get_margin_size() -> float:
+func get_margin_size(margin: int) -> float:
 	pass;
 
 #desc Sets the expand margin to [param size] pixels for all margins.
-func set_expand_margin_all() -> void:
+func set_expand_margin_all(size: float) -> void:
 	pass;
 
 #desc Sets the expand margin to [param size] pixels for the specified [enum Side].
@@ -86,7 +86,7 @@ func set_margin_size(margin: int, size: float) -> void:
 	pass;
 
 #desc Sets the margin to [param size] pixels for all sides.
-func set_margin_size_all() -> void:
+func set_margin_size_all(size: float) -> void:
 	pass;
 
 

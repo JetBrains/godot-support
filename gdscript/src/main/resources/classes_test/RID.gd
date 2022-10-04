@@ -9,7 +9,7 @@ func RID() -> RID:
 	pass;
 
 #desc Constructs a [RID] as a copy of the given [RID].
-func RID() -> RID:
+func RID(from: RID) -> RID:
 	pass;
 
 

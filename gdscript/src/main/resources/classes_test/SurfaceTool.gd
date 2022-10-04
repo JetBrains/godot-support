@@ -60,7 +60,7 @@ const SKIN_8_WEIGHTS = 1;
 
 
 #desc Adds a vertex to index array if you are using indexed vertices. Does not need to be called before adding vertices.
-func add_index() -> void:
+func add_index(index: int) -> void:
 	pass;
 
 #desc Inserts a triangle fan made of array data into [Mesh] being constructed.
@@ -69,7 +69,7 @@ func add_triangle_fan(vertices: PackedVector3Array, uvs: PackedVector2Array, col
 	pass;
 
 #desc Specifies the position of current vertex. Should be called after specifying other vertex properties (e.g. Color, UV).
-func add_vertex() -> void:
+func add_vertex(vertex: Vector3) -> void:
 	pass;
 
 #desc Append vertices from a given [Mesh] surface onto the current vertex array with specified [Transform3D].
@@ -77,7 +77,7 @@ func append_from(existing: Mesh, surface: int, transform: Transform3D) -> void:
 	pass;
 
 #desc Called before adding any vertices. Takes the primitive type as an argument (e.g. [constant Mesh.PRIMITIVE_TRIANGLES]).
-func begin() -> void:
+func begin(primitive: int) -> void:
 	pass;
 
 #desc Clear all information passed into the surface tool so far.
@@ -112,7 +112,7 @@ func generate_lod(nd_threshold: float, target_index_count: int) -> PackedInt32Ar
 
 #desc Generates normals from vertices so you do not have to do it manually. If [param flip] is [code]true[/code], the resulting normals will be inverted. [method generate_normals] should be called [i]after[/i] generating geometry and [i]before[/i] committing the mesh using [method commit] or [method commit_to_arrays]. For correct display of normal-mapped surfaces, you will also have to generate tangents using [method generate_tangents].
 #desc [b]Note:[/b] [method generate_normals] only works if the primitive type to be set to [constant Mesh.PRIMITIVE_TRIANGLES].
-func generate_normals() -> void:
+func generate_normals(flip: bool) -> void:
 	pass;
 
 #desc Generates a tangent vector for each vertex. Requires that each vertex have UVs and normals set already (see [method generate_normals]).
@@ -124,7 +124,7 @@ func get_aabb() -> AABB:
 	pass;
 
 #desc Returns the format for custom [param channel_index] (currently up to 4). Returns [constant CUSTOM_MAX] if this custom channel is unused.
-func get_custom_format() -> int:
+func get_custom_format(channel_index: int) -> int:
 	pass;
 
 #desc Returns the type of mesh geometry, such as [constant Mesh.PRIMITIVE_TRIANGLES].
@@ -146,12 +146,12 @@ func optimize_indices_for_cache() -> void:
 	pass;
 
 #desc Specifies an array of bones to use for the [i]next[/i] vertex. [param bones] must contain 4 integers.
-func set_bones() -> void:
+func set_bones(bones: PackedInt32Array) -> void:
 	pass;
 
 #desc Specifies a [Color] to use for the [i]next[/i] vertex. If every vertex needs to have this information set and you fail to submit it for the first vertex, this information may not be used at all.
 #desc [b]Note:[/b] The material must have [member BaseMaterial3D.vertex_color_use_as_albedo] enabled for the vertex color to be visible.
-func set_color() -> void:
+func set_color(color: Color) -> void:
 	pass;
 
 #desc Sets the custom value on this vertex for [param channel_index].
@@ -165,37 +165,37 @@ func set_custom_format(channel_index: int, format: int) -> void:
 	pass;
 
 #desc Sets [Material] to be used by the [Mesh] you are constructing.
-func set_material() -> void:
+func set_material(material: Material) -> void:
 	pass;
 
 #desc Specifies a normal to use for the [i]next[/i] vertex. If every vertex needs to have this information set and you fail to submit it for the first vertex, this information may not be used at all.
-func set_normal() -> void:
+func set_normal(normal: Vector3) -> void:
 	pass;
 
 #desc Set to [constant SKIN_8_WEIGHTS] to indicate that up to 8 bone influences per vertex may be used.
 #desc By default, only 4 bone influences are used ([constant SKIN_4_WEIGHTS])
 #desc [b]Note:[/b] This function takes an enum, not the exact number of weights.
-func set_skin_weight_count() -> void:
+func set_skin_weight_count(count: int) -> void:
 	pass;
 
 #desc Specifies whether the current vertex (if using only vertex arrays) or current index (if also using index arrays) should use smooth normals for normal calculation.
-func set_smooth_group() -> void:
+func set_smooth_group(index: int) -> void:
 	pass;
 
 #desc Specifies a tangent to use for the [i]next[/i] vertex. If every vertex needs to have this information set and you fail to submit it for the first vertex, this information may not be used at all.
-func set_tangent() -> void:
+func set_tangent(tangent: Plane) -> void:
 	pass;
 
 #desc Specifies a set of UV coordinates to use for the [i]next[/i] vertex. If every vertex needs to have this information set and you fail to submit it for the first vertex, this information may not be used at all.
-func set_uv() -> void:
+func set_uv(uv: Vector2) -> void:
 	pass;
 
 #desc Specifies an optional second set of UV coordinates to use for the [i]next[/i] vertex. If every vertex needs to have this information set and you fail to submit it for the first vertex, this information may not be used at all.
-func set_uv2() -> void:
+func set_uv2(uv2: Vector2) -> void:
 	pass;
 
 #desc Specifies weight values to use for the [i]next[/i] vertex. [param weights] must contain 4 values. If every vertex needs to have this information set and you fail to submit it for the first vertex, this information may not be used at all.
-func set_weights() -> void:
+func set_weights(weights: PackedFloat32Array) -> void:
 	pass;
 
 

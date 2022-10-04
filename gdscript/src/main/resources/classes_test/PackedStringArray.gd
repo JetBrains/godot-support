@@ -15,20 +15,20 @@ func PackedStringArray() -> PackedStringArray:
 	pass;
 
 #desc Constructs a [PackedStringArray] as a copy of the given [PackedStringArray].
-func PackedStringArray() -> PackedStringArray:
+func PackedStringArray(from: PackedStringArray) -> PackedStringArray:
 	pass;
 
 #desc Constructs a new [PackedStringArray]. Optionally, you can pass in a generic [Array] that will be converted.
-func PackedStringArray() -> PackedStringArray:
+func PackedStringArray(from: Array) -> PackedStringArray:
 	pass;
 
 
 #desc Appends an element at the end of the array (alias of [method push_back]).
-func append() -> bool:
+func append(value: String) -> bool:
 	pass;
 
 #desc Appends a [PackedStringArray] at the end of this array.
-func append_array() -> void:
+func append_array(array: PackedStringArray) -> void:
 	pass;
 
 #desc Finds the index of an existing value (or the insertion index that maintains sorting order, if the value is not yet present in the array) using binary search. Optionally, a [param before] specifier can be passed. If [code]false[/code], the returned index comes after all existing entries of the value in the array.
@@ -41,7 +41,7 @@ func clear() -> void:
 	pass;
 
 #desc Returns the number of times an element is in the array.
-func count() -> int:
+func count(value: String) -> int:
 	pass;
 
 #desc Creates a copy of the array, and returns it.
@@ -49,7 +49,7 @@ func duplicate() -> PackedStringArray:
 	pass;
 
 #desc Assigns the given value to all elements in the array. This can typically be used together with [method resize] to create an array with a given size and initialized elements.
-func fill() -> void:
+func fill(value: String) -> void:
 	pass;
 
 #desc Searches the array for a value and returns its index or [code]-1[/code] if not found. Optionally, the initial search index can be passed.
@@ -57,7 +57,7 @@ func find(value: String, from: int) -> int:
 	pass;
 
 #desc Returns [code]true[/code] if the array contains [param value].
-func has() -> bool:
+func has(value: String) -> bool:
 	pass;
 
 #desc Inserts a new element at a given position in the array. The position must be valid, or at the end of the array ([code]idx == size()[/code]).
@@ -69,15 +69,15 @@ func is_empty() -> bool:
 	pass;
 
 #desc Appends a string element at end of the array.
-func push_back() -> bool:
+func push_back(value: String) -> bool:
 	pass;
 
 #desc Removes an element from the array by index.
-func remove_at() -> void:
+func remove_at(index: int) -> void:
 	pass;
 
 #desc Sets the size of the array. If the array is grown, reserves elements at the end of the array. If the array is shrunk, truncates the array to the new size.
-func resize() -> int:
+func resize(new_size: int) -> int:
 	pass;
 
 #desc Reverses the order of the elements in the array.

@@ -25,7 +25,7 @@ func save(path: String, public_only: bool) -> int:
 	pass;
 
 #desc Returns a string containing the key in PEM format. If [param public_only] is [code]true[/code], only the public key will be included.
-func save_to_string() -> String:
+func save_to_string(public_only: bool) -> String:
 	pass;
 
 

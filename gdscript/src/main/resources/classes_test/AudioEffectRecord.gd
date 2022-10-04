@@ -19,7 +19,7 @@ func is_recording_active() -> bool:
 	pass;
 
 #desc If [code]true[/code], the sound will be recorded. Note that restarting the recording will remove the previously recorded sample.
-func set_recording_active() -> void:
+func set_recording_active(record: bool) -> void:
 	pass;
 
 

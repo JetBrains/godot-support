@@ -22,7 +22,7 @@ var vertical: bool;
 
 
 #desc Adds a [Control] node to the box as a spacer. If [param begin] is [code]true[/code], it will insert the [Control] node in front of all other children.
-func add_spacer() -> Control:
+func add_spacer(begin: bool) -> Control:
 	pass;
 
 
