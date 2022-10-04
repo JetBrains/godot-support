@@ -38,7 +38,7 @@ foreach ($files as $filename) {
 
     $data .= sprintf("class_name %s\n\n", $class_name);
 
-    foreach ($xml['constants'] as $value) {
+    foreach ($xml['constants'] ?? [] as $value) {
         $value = (array) $value;
         $att = (array) $value['@attributes'];
         if ($value['0'] ?? null) {
@@ -48,7 +48,7 @@ foreach ($files as $filename) {
     }
     $data .= "\n";
 
-    foreach ($xml['members'] as $value) {
+    foreach ($xml['members'] ?? [] as $value) {
         $value = (array) $value;
         $att = (array) $value['@attributes'];
         if ($value['0'] ?? null) {
@@ -58,7 +58,7 @@ foreach ($files as $filename) {
     }
     $data .= "\n";
 
-    foreach ($xml['constructors'] as $value) {
+    foreach ($xml['constructors'] ?? [] as $value) {
         $value = (array) $value;
         $att = (array) $value['@attributes'];
         $ret = (array) $value['return'];
@@ -83,12 +83,12 @@ foreach ($files as $filename) {
     }
     $data .= "\n";
 
-    foreach ($xml['methods'] as $value) {
+    foreach ($xml['methods'] ?? [] as $value) {
         $value = (array) $value;
         $att = (array) $value['@attributes'];
-        $ret = (array) $value['return'];
+        $ret = (array) ($value['return'] ?? ['@attributes' => [ 'type' => 'void' ]]);
 
-        $quali = $att['qualifiers'];
+        $quali = $att['qualifiers'] ?? "";
         // TODO Tohle pak smazat, až bude const func implementována
         if ($quali == "const") {
             $quali = "";

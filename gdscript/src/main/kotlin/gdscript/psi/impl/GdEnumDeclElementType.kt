@@ -11,7 +11,7 @@ import gdscript.index.stub.GdEnumDeclStubImpl
 import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.utils.PsiGdEnumUtil
 
-object GdEnumDeclElementType : IStubElementType<GdEnumDeclStub, GdEnumDeclTl>("enumDecl", GdLanguage.INSTANCE) {
+object GdEnumDeclElementType : IStubElementType<GdEnumDeclStub, GdEnumDeclTl>("enumDecl", GdLanguage) {
 
     @JvmStatic
     fun getInstance(debugName: String): GdEnumDeclElementType {

@@ -1,0 +1,6 @@
+class_name VisualShaderNodeUVPolarCoord
+
+
+
+
+

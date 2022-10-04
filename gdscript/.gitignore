@@ -3,3 +3,6 @@
 build/
 classes/
 classesGd/
+godotSource/
+
+src/main/resources/_classes_test

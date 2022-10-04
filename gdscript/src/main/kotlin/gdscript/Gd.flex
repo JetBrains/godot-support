@@ -220,6 +220,7 @@ ANY = .+
     "TAU"          { return dedentRoot(GdTypes.TAU); }
     "NAN"          { return dedentRoot(GdTypes.NAN); }
     "INF"          { return dedentRoot(GdTypes.INF); }
+    "inf"          { return dedentRoot(GdTypes.INF); }
     "signal"       { yybegin(AWAIT_NEW_LINE_ONCE); return GdTypes.SIGNAL; }
     "in"           { return dedentRoot(GdTypes.IN); }
     "if"           { return dedentRoot(GdTypes.IF); }

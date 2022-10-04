@@ -38,10 +38,10 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
     private fun createSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
         val custom = settings.getCustomSettings(GdCodeStyleSettings::class.java);
-        return SpacingBuilder(settings, GdLanguage.INSTANCE);
+        return SpacingBuilder(settings, GdLanguage);
 
         // TODO grouping
-        return SpacingBuilder(settings, GdLanguage.INSTANCE)
+        return SpacingBuilder(settings, GdLanguage)
             /** Root lines */
             .before(NAMINGS).spacing(0, 0, 1, false, 0)
             .before(TokenSet.create(GdTypes.INHERITANCE_ID_NMI, GdTypes.CLASS_NAME_NM)).spaces(1)

@@ -9,7 +9,7 @@ import gdscript.GdLanguage
 class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 
     override fun getLanguage(): Language {
-        return GdLanguage.INSTANCE;
+        return GdLanguage;
     }
 
     override fun getIndentOptionsEditor(): IndentOptionsEditor {

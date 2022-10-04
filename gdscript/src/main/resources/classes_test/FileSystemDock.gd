@@ -1,6 +1,9 @@
-extends VBoxContainer
 class_name FileSystemDock
 
 
-func navigate_to_path(path: String) -> void:
-    pass;
+
+
+func navigate_to_path() -> void:
+	pass;
+
+

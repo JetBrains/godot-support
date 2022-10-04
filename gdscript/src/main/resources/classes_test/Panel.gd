@@ -1,7 +1,8 @@
-extends Control
+#brief Provides an opaque background for [Control] children.
+#desc Panel is a [Control] that displays an opaque background. It's commonly used as a parent and container for other types of [Control] nodes.
 class_name Panel
-const MODE_BACKGROUND = 0;
-const MODE_FOREGROUND = 1;
 
-var mode: int;
+
+
+
 

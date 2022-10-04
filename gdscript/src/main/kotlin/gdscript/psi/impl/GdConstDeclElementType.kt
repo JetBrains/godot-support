@@ -7,7 +7,7 @@ import gdscript.index.stub.GdConstDeclStub
 import gdscript.index.stub.GdConstDeclStubImpl
 import gdscript.psi.GdConstDeclTl
 
-object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>("constDecl", GdLanguage.INSTANCE) {
+object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>("constDecl", GdLanguage) {
 
     @JvmStatic
     fun getInstance(debugName: String): GdConstDeclElementType {

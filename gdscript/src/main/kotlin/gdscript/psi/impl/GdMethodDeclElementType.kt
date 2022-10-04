@@ -9,7 +9,7 @@ import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.utils.PsiGdClassUtil
 import gdscript.psi.utils.PsiGdParameterUtil
 
-object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDeclTl>("methodDecl", GdLanguage.INSTANCE) {
+object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDeclTl>("methodDecl", GdLanguage) {
 
     @JvmStatic
     fun getInstance(debugName: String): GdMethodDeclElementType {

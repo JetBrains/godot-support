@@ -1,8 +1,15 @@
-extends RefCounted
 class_name EditorResourceConversionPlugin
 
 
-func _convert(resource: Resource) -> Resource:
-    pass;
-func _converts_to() -> String:
-    pass;
+
+
+virtual const func _convert() -> Resource:
+	pass;
+
+virtual const func _converts_to() -> String:
+	pass;
+
+virtual const func _handles() -> bool:
+	pass;
+
+

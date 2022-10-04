@@ -1,4 +1,6 @@
-extends VisualShaderNodeParticleEmitter
 class_name VisualShaderNodeParticleBoxEmitter
+
+
+
 
 

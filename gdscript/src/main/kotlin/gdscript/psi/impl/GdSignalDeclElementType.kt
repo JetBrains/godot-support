@@ -7,7 +7,7 @@ import gdscript.index.stub.GdSignalDeclStub
 import gdscript.index.stub.GdSignalDeclStubImpl
 import gdscript.psi.GdSignalDeclTl
 
-object GdSignalDeclElementType : IStubElementType<GdSignalDeclStub, GdSignalDeclTl>("signalDecl", GdLanguage.INSTANCE) {
+object GdSignalDeclElementType : IStubElementType<GdSignalDeclStub, GdSignalDeclTl>("signalDecl", GdLanguage) {
 
     @JvmStatic
     fun getInstance(debugName: String): GdSignalDeclElementType {

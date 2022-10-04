@@ -25,7 +25,7 @@ class GdCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
         /*object : CodeStyleAbstractConfigurable(settings, modelSettings, "GdScript") {
             override fun createPanel(settings: CodeStyleSettings?): CodeStyleAbstractPanel {
                 return object : TabbedLanguageCodeStylePanel(
-                    GdLanguage.INSTANCE,
+                    GdLanguage,
                     currentSettings,
                     settings
                 ) {
@@ -45,6 +45,6 @@ class GdCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
     }
 
     private class GdCodeStyleMainPanel(currentSettings: CodeStyleSettings, settings: CodeStyleSettings) :
-        TabbedLanguageCodeStylePanel(GdLanguage.INSTANCE, currentSettings, settings)
+        TabbedLanguageCodeStylePanel(GdLanguage, currentSettings, settings)
 
 }

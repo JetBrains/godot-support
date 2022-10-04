@@ -1,16 +1,64 @@
-extends RefCounted
+#brief Result from a 3D body motion test.
+#desc This class contains the motion and collision result from [method PhysicsServer3D.body_test_motion].
 class_name PhysicsTestMotionResult3D
 
-var collider: Object;
-var collider_id: int;
-var collider_rid: RID;
-var collider_shape: int;
-var collider_velocity: Vector3;
-var collision_depth: float;
-var collision_normal: Vector3;
-var collision_point: Vector3;
-var collision_safe_fraction: float;
-var collision_unsafe_fraction: float;
-var motion: Vector3;
-var motion_remainder: Vector3;
+
+
+
+#desc Returns the colliding body's attached [Object] given a collision index (the deepest collision by default), if a collision occurred.
+func get_collider() -> Object:
+	pass;
+
+#desc Returns the unique instance ID of the colliding body's attached [Object] given a collision index (the deepest collision by default), if a collision occurred. See [method Object.get_instance_id].
+func get_collider_id() -> int:
+	pass;
+
+#desc Returns the colliding body's [RID] used by the [PhysicsServer3D] given a collision index (the deepest collision by default), if a collision occurred.
+func get_collider_rid() -> RID:
+	pass;
+
+#desc Returns the colliding body's shape index given a collision index (the deepest collision by default), if a collision occurred. See [CollisionObject3D].
+func get_collider_shape() -> int:
+	pass;
+
+#desc Returns the colliding body's velocity given a collision index (the deepest collision by default), if a collision occurred.
+func get_collider_velocity() -> Vector3:
+	pass;
+
+#desc Returns the number of detected collisions.
+func get_collision_count() -> int:
+	pass;
+
+#desc Returns the length of overlap along the collision normal given a collision index (the deepest collision by default), if a collision occurred.
+func get_collision_depth() -> float:
+	pass;
+
+#desc Returns the moving object's colliding shape given a collision index (the deepest collision by default), if a collision occurred.
+func get_collision_local_shape() -> int:
+	pass;
+
+#desc Returns the colliding body's shape's normal at the point of collision given a collision index (the deepest collision by default), if a collision occurred.
+func get_collision_normal() -> Vector3:
+	pass;
+
+#desc Returns the point of collision in global coordinates given a collision index (the deepest collision by default), if a collision occurred.
+func get_collision_point() -> Vector3:
+	pass;
+
+#desc Returns the maximum fraction of the motion that can occur without a collision, between [code]0[/code] and [code]1[/code].
+func get_collision_safe_fraction() -> float:
+	pass;
+
+#desc Returns the minimum fraction of the motion needed to collide, if a collision occurred, between [code]0[/code] and [code]1[/code].
+func get_collision_unsafe_fraction() -> float:
+	pass;
+
+#desc Returns the moving object's remaining movement vector.
+func get_remainder() -> Vector3:
+	pass;
+
+#desc Returns the moving object's travel before collision.
+func get_travel() -> Vector3:
+	pass;
+
 

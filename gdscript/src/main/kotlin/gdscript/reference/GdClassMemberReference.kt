@@ -38,11 +38,15 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
         return myElement;
     }
 
-    override fun resolve(): PsiElement? {
+    fun resolveDeclaration(): PsiElement? {
         val file = PsiGdExprUtil.getAttrOrCallParentFile(element) ?: element.containingFile;
 
+        return PsiGdNamedUtil.findInParent(myElement, includingSelf = true, containingFile = file);
+    }
+
+    override fun resolve(): PsiElement? {
         val direct =
-            when (val element = PsiGdNamedUtil.findInParent(myElement, includingSelf = true, containingFile = file)) {
+            when (val element = resolveDeclaration()) {
                 is GdClassVarDeclTl -> element.classVarIdNmi;
                 is GdVarDeclSt -> element.varNmi;
                 is GdConstDeclSt -> element.varNmi;

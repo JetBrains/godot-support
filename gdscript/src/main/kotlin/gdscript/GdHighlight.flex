@@ -113,6 +113,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "TAU"          { return GdTypes.TAU; }
     "NAN"          { return GdTypes.NAN; }
     "INF"          { return GdTypes.INF; }
+    "inf"          { return GdTypes.INF; }
     "signal"       { return GdTypes.SIGNAL; }
     "in"           { return GdTypes.IN; }
     "if"           { return GdTypes.IF; }

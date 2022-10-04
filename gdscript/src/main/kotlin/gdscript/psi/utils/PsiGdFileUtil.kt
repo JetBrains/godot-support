@@ -24,7 +24,7 @@ object PsiGdFileUtil {
     }
 
     fun gdFiles(project: Project): Collection<GdFile> {
-        val virtualFiles = FileTypeIndex.getFiles(GdFileType.INSTANCE, GlobalSearchScope.allScope(project));
+        val virtualFiles = FileTypeIndex.getFiles(GdFileType, GlobalSearchScope.allScope(project));
 
         return virtualFiles.map {
             PsiManager.getInstance(project).findFile(it) as GdFile

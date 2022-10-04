@@ -7,7 +7,7 @@ import gdscript.index.stub.GdClassVarDeclStub
 import gdscript.index.stub.GdClassVarDeclStubImpl
 import gdscript.psi.GdClassVarDeclTl
 
-object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassVarDeclTl>("classVarDecl", GdLanguage.INSTANCE) {
+object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassVarDeclTl>("classVarDecl", GdLanguage) {
 
     @JvmStatic
     fun getInstance(debugName: String): GdClassVarDeclElementType {
