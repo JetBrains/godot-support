@@ -13,6 +13,7 @@ buildscript {
 plugins {
     id 'java'
     id 'org.jetbrains.intellij' version '1.9.0'
+    id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
 }
 
 group 'ice.explosive'
@@ -34,11 +35,12 @@ repositories {
     mavenCentral()
 }
 
-//dependencies {
+dependencies {
 //    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+//    compile "org.jetbrains.kotlin:kotlin-stdlib:1.6.21"
 //    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
 //    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-//}
+}
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
@@ -52,6 +54,20 @@ patchPluginXml {
       <em>most HTML tags may be used</em>"""
 }
 
-test {
-    useJUnitPlatform()
+//test {
+//    useJUnitPlatform()
+//}
+
+tasks {
+    buildSearchableOptions {
+        enabled = false
+    }
+
+    compileKotlin {
+        kotlinOptions.jvmTarget = "11"
+    }
+
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "11"
+    }
 }
