@@ -33,3 +33,4 @@
 
 inlay
 doc
+formatter
