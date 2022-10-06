@@ -40,8 +40,8 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                     )
                 } ?: emptyList();
             }
-
         }
+
         return emptyList()
     }
 
