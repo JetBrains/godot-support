@@ -4,6 +4,8 @@ const func ... qualifiers ?? Je to i v xml
 
 automatizace refreshe
 
+nefunguje kontrola rekurze / metod definovaných po tom, kde se volají ?? možná ano - chybka mohla být v kanclu bez indexu
+
 documentace:
 Vector2.AXIS_X má klíč [method #name#]
 
