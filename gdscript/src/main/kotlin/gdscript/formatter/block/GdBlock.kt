@@ -19,7 +19,7 @@ class GdBlock : AbstractBlock {
         alignment: Alignment,
         settings: GdCodeStyleSettings,
         spacing: SpacingBuilder,
-        indent: Indent = Indent.getNoneIndent(),
+        indent: Indent = Indent.getIndent(Indent.Type.NONE, true, false),
     ) : super(node, wrap, alignment) {
         this.settings = settings;
         this.spacing = spacing;
@@ -28,13 +28,18 @@ class GdBlock : AbstractBlock {
 
     override fun buildChildren(): MutableList<Block> {
         val blocks = mutableListOf<Block>();
-        var child: ASTNode? = node.firstChildNode;
-        while (child != null) {
+        val children: MutableList<ASTNode> = node.getChildren(null).toMutableList();
+
+        while (!children.isEmpty()) {
+            val child = children.removeFirstOrNull()!!;
             val nextBlock = when (child.elementType) {
-//                TokenType.WHITE_SPACE, GdTypes.DEDENT -> null;
-                TokenType.WHITE_SPACE, GdTypes.INDENT, GdTypes.DEDENT, GdTypes.NEW_LINE, GdTypes.NEW_LINE_END -> null;
-//                GdTypes.GET_DECL -> GdBlock(
-                GdTypes.SUITE -> GdBlock(
+                TokenType.WHITE_SPACE -> null
+                GdTypes.SETGET_DECL -> {
+                    children.addAll(child.getChildren(null));
+                    null;
+                }
+
+                GdTypes.GET_DECL, GdTypes.SET_DECL, GdTypes.INDENT -> GdBlock(
                     child,
                     Wrap.createWrap(WrapType.NONE, false),
                     Alignment.createAlignment(),
@@ -42,13 +47,15 @@ class GdBlock : AbstractBlock {
                     spacing,
                     Indent.getNormalIndent(),
                 )
+
                 else -> GdBlock(
-                        child,
-                        Wrap.createWrap(WrapType.NONE, false),
-                        Alignment.createAlignment(),
-                        settings,
-                        spacing,
-                    )
+                    child,
+                    Wrap.createWrap(WrapType.NONE, false),
+                    Alignment.createAlignment(),
+                    settings,
+                    spacing,
+                    Indent.getNoneIndent(),
+                )
             }
 
             if (nextBlock != null) {
@@ -63,7 +70,7 @@ class GdBlock : AbstractBlock {
                 methodDecl_tl -
              */
 
-            child = child.treeNext;
+//            child = child.treeNext;
         }
 
         return blocks;
@@ -71,7 +78,7 @@ class GdBlock : AbstractBlock {
 
     override fun getIndent(): Indent = myIndent;
 
-//    override fun getSpacing(child1: Block?, child2: Block): Spacing? = this.spacing.getSpacing(this, child1, child2);
+    //    override fun getSpacing(child1: Block?, child2: Block): Spacing? = this.spacing.getSpacing(this, child1, child2);
     override fun getSpacing(child1: Block?, child2: Block): Spacing? = null
 
     override fun isLeaf(): Boolean = myNode.firstChildNode == null;
