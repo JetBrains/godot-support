@@ -7,6 +7,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdTypes
 
+@Deprecated("")
 class GdCodeBlock : GdAbstractBlock {
 
     constructor(node: ASTNode, wrap: Wrap, alignment: Alignment, settings: GdCodeStyleSettings, spacing: SpacingBuilder) :

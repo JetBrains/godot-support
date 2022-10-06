@@ -39,7 +39,7 @@ class GdBlock : AbstractBlock {
                     null;
                 }
 
-                GdTypes.GET_DECL, GdTypes.SET_DECL, GdTypes.INDENT -> GdBlock(
+                GdTypes.GET_DECL, GdTypes.SET_DECL, GdTypes.INDENT, GdTypes.SUITE -> GdBlock(
                     child,
                     Wrap.createWrap(WrapType.NONE, false),
                     Alignment.createAlignment(),
@@ -69,8 +69,6 @@ class GdBlock : AbstractBlock {
                 annotation_tl - oneline
                 methodDecl_tl -
              */
-
-//            child = child.treeNext;
         }
 
         return blocks;
@@ -78,8 +76,7 @@ class GdBlock : AbstractBlock {
 
     override fun getIndent(): Indent = myIndent;
 
-    //    override fun getSpacing(child1: Block?, child2: Block): Spacing? = this.spacing.getSpacing(this, child1, child2);
-    override fun getSpacing(child1: Block?, child2: Block): Spacing? = null
+    override fun getSpacing(child1: Block?, child2: Block): Spacing? = this.spacing.getSpacing(this, child1, child2);
 
     override fun isLeaf(): Boolean = myNode.firstChildNode == null;
 

@@ -4,6 +4,7 @@ import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
 import gdscript.formatter.GdCodeStyleSettings
 
+@Deprecated("")
 class GdRootVarBlock : GdAbstractBlock {
 
     constructor(node: ASTNode, wrap: Wrap, alignment: Alignment, settings: GdCodeStyleSettings, spacing: SpacingBuilder) :

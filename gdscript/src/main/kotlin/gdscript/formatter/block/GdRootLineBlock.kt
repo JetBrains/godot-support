@@ -6,6 +6,7 @@ import com.intellij.psi.TokenType
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdTypes
 
+@Deprecated("")
 class GdRootLineBlock : GdAbstractBlock {
 
     constructor(node: ASTNode, wrap: Wrap, alignment: Alignment, settings: GdCodeStyleSettings, spacing: SpacingBuilder) :

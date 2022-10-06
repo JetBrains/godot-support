@@ -7,6 +7,7 @@ import com.intellij.psi.formatter.common.AbstractBlock
 import gdscript.GdLanguage
 import gdscript.formatter.GdCodeStyleSettings
 
+@Deprecated("")
 abstract class GdAbstractBlock : AbstractBlock {
 
     val settings: GdCodeStyleSettings;
