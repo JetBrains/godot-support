@@ -80,7 +80,12 @@ HEX_NUMBER = 0x[0-9_a-f]+
 BIN_NUMBER = 0b[01_]+
 REAL_NUMBER = {NUMBER}e-[0-9]+
 
-STRING = \"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'
+//STRING = \"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'
+STRING = \"([^\\\"\r\n]|\\.)*\"
+STRING_CHAR = \'([^\\\'\r\n]|\\.)*\'
+STRING_MULTILINE = \"\"\"([^\\\"]|\\.)*\"\"\"
+
+// TODO remove z obojích flexů
 STRING_MARKER = \"\"\"|\"|\'
 STRING_MARKER_REV = [^\"\'\n\r]*
 //ML_STRING = \"\"\"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'\"\"\"
@@ -275,7 +280,10 @@ ANY = .+
     ".."           { return dedentRoot(GdTypes.DOTDOT); }
 
     {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
-    {STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }
+    {STRING}        { return GdTypes.STRING; }
+    {STRING_CHAR}   { return GdTypes.STRING; }
+    {STRING_MULTILINE} { return GdTypes.STRING; }
+//    {STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
     {ANNOTATOR}     { return dedentRoot(GdTypes.ANNOTATOR); }

@@ -1,15 +1,17 @@
 # GdScript
 
 ## Work queue
-### Missing language syntax
-- Match case
+### Top priority
+- Match case (dictionary)
+- Dictionaries
 - Lambdas
 - Signals
 - Inner class
 - Parent method call fe.: ._init()
 - Annotation parameters
+- Formatter into non-disrupt state
 
-### Lower Priority
+### Middle Priority
 - Full feature Formatter
 - Linkable Documentation
 - Check Parameters in function call
@@ -24,6 +26,10 @@
 - Flow templates
 - Enum checks
 - Proper Run/Debug config
+
+### Low Priority
+- type of var binding in match pattern
+- solo string expects endStmt
 
 ## List of features
 ### Auto-completion

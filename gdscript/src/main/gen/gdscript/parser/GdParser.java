@@ -214,7 +214,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LSBR [ pattern { COMMA pattern } [ DOTDOT ] ] RSBR
+  // LSBR ( pattern (COMMA pattern)* (COMMA DOTDOT)? )? RSBR
   public static boolean arrayPattern(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "arrayPattern")) return false;
     if (!nextTokenIs(b, LSBR)) return false;
@@ -227,14 +227,14 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [ pattern { COMMA pattern } [ DOTDOT ] ]
+  // ( pattern (COMMA pattern)* (COMMA DOTDOT)? )?
   private static boolean arrayPattern_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "arrayPattern_1")) return false;
     arrayPattern_1_0(b, l + 1);
     return true;
   }
 
-  // pattern { COMMA pattern } [ DOTDOT ]
+  // pattern (COMMA pattern)* (COMMA DOTDOT)?
   private static boolean arrayPattern_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "arrayPattern_1_0")) return false;
     boolean r;
@@ -246,9 +246,20 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // COMMA pattern
+  // (COMMA pattern)*
   private static boolean arrayPattern_1_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "arrayPattern_1_0_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!arrayPattern_1_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "arrayPattern_1_0_1", c)) break;
+    }
+    return true;
+  }
+
+  // COMMA pattern
+  private static boolean arrayPattern_1_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "arrayPattern_1_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
@@ -257,11 +268,21 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [ DOTDOT ]
+  // (COMMA DOTDOT)?
   private static boolean arrayPattern_1_0_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "arrayPattern_1_0_2")) return false;
-    consumeToken(b, DOTDOT);
+    arrayPattern_1_0_2_0(b, l + 1);
     return true;
+  }
+
+  // COMMA DOTDOT
+  private static boolean arrayPattern_1_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "arrayPattern_1_0_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, COMMA, DOTDOT);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

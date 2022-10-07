@@ -125,7 +125,7 @@ patternList ::= pattern (COMMA pattern)*
 // Asi annotátor
 pattern ::= literal_ex | builtInType | UNDER | bindingPattern | arrayPattern | dictPattern
 bindingPattern ::= VAR var_nmi
-arrayPattern ::= LSBR [ pattern { COMMA pattern } [ DOTDOT ] ] RSBR
+arrayPattern ::= LSBR ( pattern (COMMA pattern)* (COMMA DOTDOT)? )? RSBR
 dictPattern ::= LCBR [ keyValuePattern ] { COMMA keyValuePattern } [ DOTDOT ] RCBR
 keyValuePattern ::= STRING [ COLON pattern ]
 

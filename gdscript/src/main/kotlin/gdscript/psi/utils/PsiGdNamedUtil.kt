@@ -65,6 +65,7 @@ object PsiGdNamedUtil {
         element: GdNamedElement,
         containingFile: PsiFile? = null,
     ): PsiElement? {
+        // TODO use listLocals?
         val thisName = element.name.orEmpty();
         var parent: PsiElement = element;
         if (containingFile != null && containingFile != element.containingFile) {
@@ -78,6 +79,15 @@ object PsiGdNamedUtil {
                 is GdVarDeclSt -> if (parent.name == thisName) parent else null;
                 is GdForSt -> if (parent.varNmi.name == thisName) parent.varNmi else null;
                 is GdSetDecl -> if (parent.varNmi?.name == thisName) parent.varNmi else null;
+                is GdPatternList -> {
+                    val bindings = PsiTreeUtil.findChildrenOfType(parent, GdBindingPattern::class.java);
+                    val patternMatch = bindings.find {
+                        it.varNmi.name == thisName
+                    }?.varNmi;
+                    parent = PsiTreeUtil.getParentOfType(parent, GdMatchSt::class.java)!!;
+
+                    patternMatch
+                };
                 is GdMethodDeclTl -> {
                     return parent.paramList?.paramList?.find {
                         it.varNmi.text == thisName
@@ -99,6 +109,9 @@ object PsiGdNamedUtil {
             parent = parent.prevSibling ?: parent.parent ?: return list;
             when (parent) {
                 is GdConstDeclSt, is GdVarDeclSt, is GdForSt, is GdSetDecl -> list.add(parent);
+                is GdPatternList -> {
+                    list.addAll(PsiTreeUtil.findChildrenOfType(parent, GdBindingPattern::class.java));
+                }
                 is GdMethodDeclTl -> {
                     list.addAll(parent.paramList?.paramList?.toList() ?: emptyList());
                     return list;

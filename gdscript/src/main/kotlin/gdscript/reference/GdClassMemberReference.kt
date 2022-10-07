@@ -101,7 +101,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                 }
 
                 is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl,
-                is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl -> {
+                is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl, is GdBindingPattern -> {
                     if (!methodOnly && !static) {
                         results.addAll(GdCompletionUtil.lookups(it));
                     }
