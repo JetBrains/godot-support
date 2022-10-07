@@ -13,23 +13,24 @@
 
 ### Middle Priority
 - Full feature Formatter
-- Linkable Documentation
 - Check Parameters in function call
 - expr type match
 - Resource exists
 - Double enter -> force dedent
 - Create getter/setter via Alt+Insert
-- Rename file -> rename also class_name
 - Multi-line string bugs
-- Line marker (signals, ...)
 - Don't auto-complete private functions/fields (leading underscore) -> allow it based on settings
-- Flow templates
+- Run configuration - line marker
+- Line marker (signals, ...)
 - Enum checks
-- Proper Run/Debug config
+- Flow templates
 
 ### Low Priority
+- Rename file -> rename also class_name
+- Linkable Documentation
 - type of var binding in match pattern
 - solo string expects endStmt
+- Debug - does it Godot even allow? ...
 
 ## List of features
 ### Auto-completion

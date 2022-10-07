@@ -1,9 +1,11 @@
 package gdscript.run
 
+import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.options.SettingsEditor
-import com.intellij.openapi.ui.LabeledComponent;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import javax.swing.*;
+import com.intellij.openapi.ui.LabeledComponent
+import com.intellij.openapi.ui.TextBrowseFolderListener
+import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import javax.swing.*
 
 class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
 
@@ -25,9 +27,28 @@ class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
 
     private fun createUIComponents() {
         godotExe = LabeledComponent();
-        godotExe.setComponent(TextFieldWithBrowseButton());
+        val godotField = TextFieldWithBrowseButton()
+        godotField.text = "Godot.exe"
+        godotField.toolTipText = "Godot.exe"
+        godotField.addBrowseFolderListener(TextBrowseFolderListener(FileChooserDescriptor(true,
+            false,
+            false,
+            false,
+            false,
+            false)));
+        godotExe.setComponent(godotField);
+
         tscn = LabeledComponent();
-        tscn.setComponent(TextFieldWithBrowseButton());
+        val tscnField = TextFieldWithBrowseButton()
+        tscnField.text = "Node.tscn"
+        tscnField.toolTipText = "Node.tscn"
+        tscnField.addBrowseFolderListener(TextBrowseFolderListener(FileChooserDescriptor(true,
+            false,
+            false,
+            false,
+            false,
+            false)));
+        tscn.setComponent(tscnField);
     }
 
 }

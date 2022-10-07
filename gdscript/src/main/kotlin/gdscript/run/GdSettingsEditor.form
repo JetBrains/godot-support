@@ -8,17 +8,6 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="57eab" class="com.intellij.openapi.ui.LabeledComponent" binding="godotExe" custom-create="true">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="-1" height="20"/>
-          </grid>
-        </constraints>
-        <properties>
-          <labelLocation value="West"/>
-          <text value="Godot Exe"/>
-        </properties>
-      </component>
       <vspacer id="93bd6">
         <constraints>
           <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
@@ -33,6 +22,17 @@
         <properties>
           <labelLocation value="West"/>
           <text value="Scene file"/>
+        </properties>
+      </component>
+      <component id="57eab" class="com.intellij.openapi.ui.LabeledComponent" binding="godotExe" custom-create="true">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="-1" height="20"/>
+          </grid>
+        </constraints>
+        <properties>
+          <labelLocation value="West"/>
+          <text value="Godot Exe"/>
         </properties>
       </component>
     </children>
