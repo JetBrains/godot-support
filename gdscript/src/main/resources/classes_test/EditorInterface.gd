@@ -109,7 +109,7 @@ func is_plugin_enabled(plugin: String) -> bool:
 	pass;
 
 #desc Returns mesh previews rendered at the given size as an [Array] of [Texture2D]s.
-func make_mesh_previews(meshes: Mesh[], preview_size: int) -> Texture2D[]:
+func make_mesh_previews(meshes: Mesh[], preview_size: int) -> Array[Texture2D]:
 	pass;
 
 #desc Opens the scene at the given path.

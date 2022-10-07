@@ -25,7 +25,7 @@ func add_feed(feed: CameraFeed) -> void:
 	pass;
 
 #desc Returns an array of [CameraFeed]s.
-func feeds() -> CameraFeed[]:
+func feeds() -> Array[CameraFeed]:
 	pass;
 
 #desc Returns the [CameraFeed] corresponding to the camera with the given [param index].

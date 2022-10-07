@@ -124,7 +124,7 @@ func _body_clear_shapes(body: RID) -> void:
 func _body_create() -> RID:
 	pass;
 
-func _body_get_collision_exceptions(body: RID) -> RID[]:
+func _body_get_collision_exceptions(body: RID) -> Array[RID]:
 	pass;
 
 func _body_get_collision_layer(body: RID) -> int:
@@ -430,7 +430,7 @@ func _soft_body_create() -> RID:
 func _soft_body_get_bounds(body: RID) -> AABB:
 	pass;
 
-func _soft_body_get_collision_exceptions(body: RID) -> RID[]:
+func _soft_body_get_collision_exceptions(body: RID) -> Array[RID]:
 	pass;
 
 func _soft_body_get_collision_layer(body: RID) -> int:

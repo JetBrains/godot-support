@@ -58,7 +58,7 @@ func get_local_addresses() -> PackedStringArray:
 #desc "addresses": ["192.168.1.101"], # An array of IP addresses associated to this interface.
 #desc }
 #desc [/codeblock]
-func get_local_interfaces() -> Dictionary[]:
+func get_local_interfaces() -> Array[Dictionary]:
 	pass;
 
 #desc Returns a queued hostname's IP address, given its queue [param id]. Returns an empty string on error or if resolution hasn't happened yet (see [method get_resolve_item_status]).

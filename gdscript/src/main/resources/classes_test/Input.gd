@@ -123,7 +123,7 @@ func get_axis(negative_action: StringName, positive_action: StringName) -> float
 	pass;
 
 #desc Returns an [Array] containing the device IDs of all currently connected joypads.
-func get_connected_joypads() -> int[]:
+func get_connected_joypads() -> Array[int]:
 	pass;
 
 #desc Returns the currently assigned cursor shape (see [enum CursorShape]).

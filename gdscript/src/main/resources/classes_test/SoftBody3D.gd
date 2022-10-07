@@ -50,7 +50,7 @@ func add_collision_exception_with(body: Node) -> void:
 	pass;
 
 #desc Returns an array of nodes that were added as collision exceptions for this body.
-func get_collision_exceptions() -> PhysicsBody3D[]:
+func get_collision_exceptions() -> Array[PhysicsBody3D]:
 	pass;
 
 #desc Returns whether or not the specified layer of the [member collision_layer] is enabled, given a [param layer_number] between 1 and 32.

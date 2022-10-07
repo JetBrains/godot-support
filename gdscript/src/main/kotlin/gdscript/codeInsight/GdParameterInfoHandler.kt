@@ -63,6 +63,17 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, GdMethodDeclTl>, D
             i += 1;
         }
 
+        if (i <= 0) {
+            if (declaration?.isVariadic == true) {
+                repeat(currentParam) {
+                    builder.append("$it, ");
+                };
+                builder.append("args...");
+            } else {
+                builder.append("no parameters");
+            }
+        }
+
         context.setupUIComponentPresentation(
             builder.toString(),
             startOffset,
@@ -84,6 +95,6 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, GdMethodDeclTl>, D
 
     private fun getFunctionCall(context: ParameterInfoContext): GdCallEx? {
         val element = context.file.findElementAt(context.offset) ?: return null;
-        return PsiTreeUtil.getParentOfType(element, GdCallEx::class.java) ?: return null;
+        return PsiTreeUtil.getParentOfType(element, GdCallEx::class.java);
     }
 }

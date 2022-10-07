@@ -44,11 +44,11 @@ const END_ROUND = 4;
 
 #desc Clips [param polygon_a] against [param polygon_b] and returns an array of clipped polygons. This performs [constant OPERATION_DIFFERENCE] between polygons. Returns an empty array if [param polygon_b] completely overlaps [param polygon_a].
 #desc If [param polygon_b] is enclosed by [param polygon_a], returns an outer polygon (boundary) and inner polygon (hole) which could be distinguished by calling [method is_polygon_clockwise].
-func clip_polygons(polygon_a: PackedVector2Array, polygon_b: PackedVector2Array) -> PackedVector2Array[]:
+func clip_polygons(polygon_a: PackedVector2Array, polygon_b: PackedVector2Array) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Clips [param polyline] against [param polygon] and returns an array of clipped polylines. This performs [constant OPERATION_DIFFERENCE] between the polyline and the polygon. This operation can be thought of as cutting a line with a closed shape.
-func clip_polyline_with_polygon(polyline: PackedVector2Array, polygon: PackedVector2Array) -> PackedVector2Array[]:
+func clip_polyline_with_polygon(polyline: PackedVector2Array, polygon: PackedVector2Array) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Given an array of [Vector2]s, returns the convex hull as a list of points in counterclockwise order. The last point is the same as the first one.
@@ -56,12 +56,12 @@ func convex_hull(points: PackedVector2Array) -> PackedVector2Array:
 	pass;
 
 #desc Decomposes the [param polygon] into multiple convex hulls and returns an array of [PackedVector2Array].
-func decompose_polygon_in_convex(polygon: PackedVector2Array) -> PackedVector2Array[]:
+func decompose_polygon_in_convex(polygon: PackedVector2Array) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Mutually excludes common area defined by intersection of [param polygon_a] and [param polygon_b] (see [method intersect_polygons]) and returns an array of excluded polygons. This performs [constant OPERATION_XOR] between polygons. In other words, returns all but common area between polygons.
 #desc The operation may result in an outer polygon (boundary) and inner polygon (hole) produced which could be distinguished by calling [method is_polygon_clockwise].
-func exclude_polygons(polygon_a: PackedVector2Array, polygon_b: PackedVector2Array) -> PackedVector2Array[]:
+func exclude_polygons(polygon_a: PackedVector2Array, polygon_b: PackedVector2Array) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Returns the 2D point on the 2D segment ([param s1], [param s2]) that is closest to [param point]. The returned point will always be inside the specified segment.
@@ -78,11 +78,11 @@ func get_closest_points_between_segments(p1: Vector2, q1: Vector2, p2: Vector2, 
 
 #desc Intersects [param polygon_a] with [param polygon_b] and returns an array of intersected polygons. This performs [constant OPERATION_INTERSECTION] between polygons. In other words, returns common area shared by polygons. Returns an empty array if no intersection occurs.
 #desc The operation may result in an outer polygon (boundary) and inner polygon (hole) produced which could be distinguished by calling [method is_polygon_clockwise].
-func intersect_polygons(polygon_a: PackedVector2Array, polygon_b: PackedVector2Array) -> PackedVector2Array[]:
+func intersect_polygons(polygon_a: PackedVector2Array, polygon_b: PackedVector2Array) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Intersects [param polyline] with [param polygon] and returns an array of intersected polylines. This performs [constant OPERATION_INTERSECTION] between the polyline and the polygon. This operation can be thought of as chopping a line with a closed shape.
-func intersect_polyline_with_polygon(polyline: PackedVector2Array, polygon: PackedVector2Array) -> PackedVector2Array[]:
+func intersect_polyline_with_polygon(polyline: PackedVector2Array, polygon: PackedVector2Array) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Returns [code]true[/code] if [param point] is inside the circle or if it's located exactly [i]on[/i] the circle's boundary, otherwise returns [code]false[/code].
@@ -108,7 +108,7 @@ func make_atlas(sizes: PackedVector2Array) -> Dictionary:
 
 #desc Merges (combines) [param polygon_a] and [param polygon_b] and returns an array of merged polygons. This performs [constant OPERATION_UNION] between polygons.
 #desc The operation may result in an outer polygon (boundary) and multiple inner polygons (holes) produced which could be distinguished by calling [method is_polygon_clockwise].
-func merge_polygons(polygon_a: PackedVector2Array, polygon_b: PackedVector2Array) -> PackedVector2Array[]:
+func merge_polygons(polygon_a: PackedVector2Array, polygon_b: PackedVector2Array) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Inflates or deflates [param polygon] by [param delta] units (pixels). If [param delta] is positive, makes the polygon grow outward. If [param delta] is negative, shrinks the polygon inward. Returns an array of polygons because inflating/deflating may result in multiple discrete polygons. Returns an empty array if [param delta] is negative and the absolute value of it approximately exceeds the minimum bounding rectangle dimensions of the polygon.
@@ -130,14 +130,14 @@ func merge_polygons(polygon_a: PackedVector2Array, polygon_b: PackedVector2Array
 #desc //GD.Print(polygon); // prints [Vector2(50, 50), Vector2(150, 50), Vector2(150, 150), Vector2(50, 150)]
 #desc [/csharp]
 #desc [/codeblocks]
-func offset_polygon(polygon: PackedVector2Array, delta: float, join_type: int) -> PackedVector2Array[]:
+func offset_polygon(polygon: PackedVector2Array, delta: float, join_type: int) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Inflates or deflates [param polyline] by [param delta] units (pixels), producing polygons. If [param delta] is positive, makes the polyline grow outward. Returns an array of polygons because inflating/deflating may result in multiple discrete polygons. If [param delta] is negative, returns an empty array.
 #desc Each polygon's vertices will be rounded as determined by [param join_type], see [enum PolyJoinType].
 #desc Each polygon's endpoints will be rounded as determined by [param end_type], see [enum PolyEndType].
 #desc The operation may result in an outer polygon (boundary) and inner polygon (hole) produced which could be distinguished by calling [method is_polygon_clockwise].
-func offset_polyline(polyline: PackedVector2Array, delta: float, join_type: int, end_type: int) -> PackedVector2Array[]:
+func offset_polyline(polyline: PackedVector2Array, delta: float, join_type: int, end_type: int) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Returns if [param point] is inside the triangle specified by [param a], [param b] and [param c].

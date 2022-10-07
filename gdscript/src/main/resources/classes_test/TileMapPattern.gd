@@ -24,7 +24,7 @@ func get_size() -> Vector2i:
 	pass;
 
 #desc Returns the list of used cell coordinates in the pattern.
-func get_used_cells() -> Vector2i[]:
+func get_used_cells() -> Array[Vector2i]:
 	pass;
 
 #desc Returns whether the pattern has a tile at the given coordinates.

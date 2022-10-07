@@ -72,12 +72,12 @@ var priority: float;
 
 #desc Returns a list of intersecting [Area2D]s. The overlapping area's [member CollisionObject2D.collision_layer] must be part of this area's [member CollisionObject2D.collision_mask] in order to be detected.
 #desc For performance reasons (collisions are all processed at the same time) this list is modified once during the physics step, not immediately after objects are moved. Consider using signals instead.
-func get_overlapping_areas() -> Area2D[]:
+func get_overlapping_areas() -> Array[Area2D]:
 	pass;
 
 #desc Returns a list of intersecting [PhysicsBody2D]s and [TileMap]s. The overlapping body's [member CollisionObject2D.collision_layer] must be part of this area's [member CollisionObject2D.collision_mask] in order to be detected.
 #desc For performance reasons (collisions are all processed at the same time) this list is modified once during the physics step, not immediately after objects are moved. Consider using signals instead.
-func get_overlapping_bodies() -> Node2D[]:
+func get_overlapping_bodies() -> Array[Node2D]:
 	pass;
 
 #desc Returns [code]true[/code] if intersecting any [Area2D]s, otherwise returns [code]false[/code]. The overlapping area's [member CollisionObject2D.collision_layer] must be part of this area's [member CollisionObject2D.collision_mask] in order to be detected.

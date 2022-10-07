@@ -13,7 +13,7 @@ func add_collision_exception_with(body: Node) -> void:
 	pass;
 
 #desc Returns an array of nodes that were added as collision exceptions for this body.
-func get_collision_exceptions() -> PhysicsBody2D[]:
+func get_collision_exceptions() -> Array[PhysicsBody2D]:
 	pass;
 
 #desc Moves the body along the vector [param distance]. In order to be frame rate independent in [method Node._physics_process] or [method Node._process], [param distance] should be computed using [code]delta[/code].

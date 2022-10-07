@@ -58,7 +58,7 @@ func _fetch(remote: String) -> void:
 	pass;
 
 #desc Gets an instance of an [Array] of [String]s containing available branch names in the VCS.
-func _get_branch_list() -> Dictionary[]:
+func _get_branch_list() -> Array[Dictionary]:
 	pass;
 
 #desc Gets the current branch name defined in the VCS.
@@ -66,23 +66,23 @@ func _get_current_branch_name() -> String:
 	pass;
 
 #desc Returns an array of [Dictionary] items (see [method create_diff_file], [method create_diff_hunk], [method create_diff_line], [method add_line_diffs_into_diff_hunk] and [method add_diff_hunks_into_diff_file]), each containing information about a diff. If [code]identifier[/code] is a file path, returns a file diff, and if it is a commit identifier, then returns a commit diff.
-func _get_diff(identifier: String, area: int) -> Dictionary[]:
+func _get_diff(identifier: String, area: int) -> Array[Dictionary]:
 	pass;
 
 #desc Returns an [Array] of [Dictionary] items (see [method create_diff_hunk]), each containing a line diff between a file at [code]file_path[/code] and the [code]text[/code] which is passed in.
-func _get_line_diff(file_path: String, text: String) -> Dictionary[]:
+func _get_line_diff(file_path: String, text: String) -> Array[Dictionary]:
 	pass;
 
 #desc Returns an [Array] of [Dictionary] items (see [method create_status_file]), each containing the status data of every modified file in the project folder.
-func _get_modified_files_data() -> Dictionary[]:
+func _get_modified_files_data() -> Array[Dictionary]:
 	pass;
 
 #desc Returns an [Array] of [Dictionary] items (see [method create_commit]), each containing the data for a past commit.
-func _get_previous_commits(max_commits: int) -> Dictionary[]:
+func _get_previous_commits(max_commits: int) -> Array[Dictionary]:
 	pass;
 
 #desc Returns an [Array] of [String]s, each containing the name of a remote configured in the VCS.
-func _get_remotes() -> Dictionary[]:
+func _get_remotes() -> Array[Dictionary]:
 	pass;
 
 #desc Returns the name of the underlying VCS provider.

@@ -15,11 +15,11 @@ func get_current_script() -> Script:
 	pass;
 
 #desc Returns an array with all [ScriptEditorBase] objects which are currently open in editor.
-func get_open_script_editors() -> ScriptEditorBase[]:
+func get_open_script_editors() -> Array[ScriptEditorBase]:
 	pass;
 
 #desc Returns an array with all [Script] objects which are currently open in editor.
-func get_open_scripts() -> Script[]:
+func get_open_scripts() -> Array[Script]:
 	pass;
 
 #desc Goes to the specified line in the current script.

@@ -14,7 +14,7 @@ func cast_motion(parameters: PhysicsShapeQueryParameters2D) -> PackedFloat32Arra
 
 #desc Checks the intersections of a shape, given through a [PhysicsShapeQueryParameters2D] object, against the space. The resulting array contains a list of points where the shape intersects another. Like with [method intersect_shape], the number of returned results can be limited to save processing time.
 #desc Returned points are a list of pairs of contact points. For each pair the first one is in the shape passed in [PhysicsShapeQueryParameters2D] object, second one is in the collided shape from the physics space.
-func collide_shape(parameters: PhysicsShapeQueryParameters2D, max_results: int) -> PackedVector2Array[]:
+func collide_shape(parameters: PhysicsShapeQueryParameters2D, max_results: int) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Checks the intersections of a shape, given through a [PhysicsShapeQueryParameters2D] object, against the space. If it collides with more than one shape, the nearest one is selected. If the shape did not intersect anything, then an empty dictionary is returned instead.
@@ -35,7 +35,7 @@ func get_rest_info(parameters: PhysicsShapeQueryParameters2D) -> Dictionary:
 #desc [code]shape[/code]: The shape index of the colliding shape.
 #desc The number of intersections can be limited with the [param max_results] parameter, to reduce the processing time.
 #desc [b]Note:[/b] [ConcavePolygonShape2D]s and [CollisionPolygon2D]s in [code]Segments[/code] build mode are not solid shapes. Therefore, they will not be detected.
-func intersect_point(parameters: PhysicsPointQueryParameters2D, max_results: int) -> Dictionary[]:
+func intersect_point(parameters: PhysicsPointQueryParameters2D, max_results: int) -> Array[Dictionary]:
 	pass;
 
 #desc Intersects a ray in a given space. Ray position and other parameters are defined through [PhysicsRayQueryParameters2D]. The returned object is a dictionary with the following fields:
@@ -55,7 +55,7 @@ func intersect_ray(parameters: PhysicsRayQueryParameters2D) -> Dictionary:
 #desc [code]rid[/code]: The intersecting object's [RID].
 #desc [code]shape[/code]: The shape index of the colliding shape.
 #desc The number of intersections can be limited with the [param max_results] parameter, to reduce the processing time.
-func intersect_shape(parameters: PhysicsShapeQueryParameters2D, max_results: int) -> Dictionary[]:
+func intersect_shape(parameters: PhysicsShapeQueryParameters2D, max_results: int) -> Array[Dictionary]:
 	pass;
 
 

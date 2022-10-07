@@ -368,7 +368,7 @@ func find_child(pattern: String, recursive: bool, owned: bool) -> Node:
 #desc Returns an empty array if no matching nodes are found.
 #desc [b]Note:[/b] As this method walks through all the descendants of the node, it is the slowest way to get references to other nodes. Whenever possible, consider caching the node references into variables.
 #desc [b]Note:[/b] If you only want to find the first descendant node that matches a pattern, see [method find_child].
-func find_children(pattern: String, type: String, recursive: bool, owned: bool) -> Node[]:
+func find_children(pattern: String, type: String, recursive: bool, owned: bool) -> Array[Node]:
 	pass;
 
 #desc Finds the first parent of the current node whose name matches [param pattern] as in [method String.match].
@@ -391,7 +391,7 @@ func get_child_count(include_internal: bool) -> int:
 
 #desc Returns an array of references to node's children.
 #desc If [param include_internal] is [code]false[/code], the returned array won't include internal children (see [code]internal[/code] parameter in [method add_child]).
-func get_children(include_internal: bool) -> Node[]:
+func get_children(include_internal: bool) -> Array[Node]:
 	pass;
 
 #desc Returns an array listing the groups that the node is a member of.
@@ -415,7 +415,7 @@ func get_children(include_internal: bool) -> Node[]:
 #desc }
 #desc [/csharp]
 #desc [/codeblocks]
-func get_groups() -> StringName[]:
+func get_groups() -> Array[StringName]:
 	pass;
 
 #desc Returns the node's order in the scene tree branch. For example, if called on the first child node the position is [code]0[/code].
@@ -650,7 +650,7 @@ func request_ready() -> void:
 
 #desc Sends a remote procedure call request for the given [param method] to peers on the network (and locally), optionally sending all additional arguments as arguments to the method called by the RPC. The call request will only be received by nodes with the same [NodePath], including the exact same node name. Behaviour depends on the RPC configuration for the given method, see [method rpc_config]. Methods are not exposed to RPCs by default. Returns [code]null[/code].
 #desc [b]Note:[/b] You can only safely use RPCs on clients after you received the [code]connected_to_server[/code] signal from the [MultiplayerAPI]. You also need to keep track of the connection state, either by the [MultiplayerAPI] signals like [code]server_disconnected[/code] or by checking [code]get_multiplayer().peer.get_connection_status() == CONNECTION_CONNECTED[/code].
-func rpc(method: StringName) -> int:
+vararg func rpc(method: StringName) -> int:
 	pass;
 
 #desc Changes the RPC mode for the given [param method] with the given [param config] which should be [code]null[/code] (to disable) or a [Dictionary] in the form:
@@ -667,7 +667,7 @@ func rpc_config(method: StringName, config: Variant) -> void:
 	pass;
 
 #desc Sends a [method rpc] to a specific peer identified by [param peer_id] (see [method MultiplayerPeer.set_target_peer]). Returns [code]null[/code].
-func rpc_id(peer_id: int, method: StringName) -> int:
+vararg func rpc_id(peer_id: int, method: StringName) -> int:
 	pass;
 
 #desc Sets the folded state of the node in the Scene dock. This method is only intended for use with editor tooling.

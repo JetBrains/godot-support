@@ -107,7 +107,7 @@ func _confirm_code_completion(replace: bool) -> void:
 
 #desc Override this method to define what items in [param candidates] should be displayed.
 #desc Both [param candidates] and the return is a [Array] of [Dictionary], see [method get_code_completion_option] for [Dictionary] content.
-func _filter_code_completion_candidates(candidates: Dictionary[]) -> Dictionary[]:
+func _filter_code_completion_candidates(candidates: Dictionary[]) -> Array[Dictionary]:
 	pass;
 
 #desc Override this method to define what happens when the user requests code completion. If [param force] is true, any checks should be bypassed.
@@ -207,7 +207,7 @@ func get_code_completion_option(index: int) -> Dictionary:
 	pass;
 
 #desc Gets all completion options, see [method get_code_completion_option] for return content.
-func get_code_completion_options() -> Dictionary[]:
+func get_code_completion_options() -> Array[Dictionary]:
 	pass;
 
 #desc Gets the index of the current selected completion option.
@@ -235,7 +235,7 @@ func get_executing_lines() -> PackedInt32Array:
 	pass;
 
 #desc Returns all lines that are current folded.
-func get_folded_lines() -> int[]:
+func get_folded_lines() -> Array[int]:
 	pass;
 
 #desc Returns the full text with char [code]0xFFFF[/code] at the caret location.

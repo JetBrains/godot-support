@@ -186,6 +186,7 @@ public interface GdTypes {
   IElementType TRUE = new GdTokenType("TRUE");
   IElementType UNDER = new GdTokenType("UNDER");
   IElementType VAR = new GdTokenType("VAR");
+  IElementType VARARG = new GdTokenType("VARARG");
   IElementType VOID = new GdTokenType("VOID");
   IElementType WHILE = new GdTokenType("WHILE");
   IElementType XOR = new GdTokenType("XOR");

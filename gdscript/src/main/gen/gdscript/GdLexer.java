@@ -86,14 +86,14 @@ class GdLexer implements FlexLexer {
     "\1\74\5\11\1\62\3\11\1\75\2\11\1\76\2\11"+
     "\1\77\1\100\1\11\1\101\1\102\1\11\1\4\2\11"+
     "\1\103\1\11\1\104\1\11\1\105\1\106\1\107\1\16"+
-    "\1\110\1\111\1\112\10\11\1\113\1\11\1\114\3\11"+
+    "\1\110\1\111\1\112\11\11\1\113\1\11\1\114\3\11"+
     "\1\115\1\116\1\117\5\11\1\120\1\11\1\121\1\122"+
-    "\3\11\1\123\2\11\1\124\1\125\2\11\1\126\1\127"+
-    "\1\11\1\130\1\11\1\131\2\11\1\132\2\11\1\133"+
-    "\2\11\1\134\1\135";
+    "\4\11\1\123\2\11\1\124\1\125\2\11\1\126\1\127"+
+    "\1\130\1\11\1\131\1\11\1\132\2\11\1\133\2\11"+
+    "\1\134\2\11\1\135\1\136";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[243];
+    int [] result = new int[246];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -138,20 +138,20 @@ class GdLexer implements FlexLexer {
     "\0\u1a25\0\u1a6a\0\u1aaf\0\u0fa2\0\u0fe7\0\u1af4\0\u1b39\0\u033c"+
     "\0\u1b7e\0\u1bc3\0\u1c08\0\u1c4d\0\u1c92\0\u1cd7\0\u1d1c\0\u1d61"+
     "\0\u1da6\0\u033c\0\u1deb\0\u033c\0\u1e30\0\u1e75\0\u1eba\0\u1eff"+
-    "\0\u1f44\0\u033c\0\u1f89\0\u1fce\0\u2013\0\u033c\0\u2058\0\u209d"+
-    "\0\u033c\0\u20e2\0\u2127\0\u033c\0\u033c\0\u216c\0\u033c\0\u033c"+
-    "\0\u21b1\0\u1aaf\0\u21f6\0\u223b\0\u033c\0\u2280\0\u033c\0\u22c5"+
-    "\0\u033c\0\u033c\0\u033c\0\u019e\0\u033c\0\u033c\0\u033c\0\u230a"+
-    "\0\u234f\0\u2394\0\u23d9\0\u241e\0\u2463\0\u24a8\0\u24ed\0\u033c"+
-    "\0\u2532\0\u033c\0\u2577\0\u25bc\0\u2601\0\u033c\0\u033c\0\u2646"+
-    "\0\u268b\0\u26d0\0\u2715\0\u275a\0\u279f\0\u033c\0\u27e4\0\u033c"+
-    "\0\u033c\0\u2829\0\u286e\0\u28b3\0\u033c\0\u28f8\0\u293d\0\u033c"+
-    "\0\u033c\0\u2982\0\u29c7\0\u033c\0\u033c\0\u2a0c\0\u033c\0\u2a51"+
-    "\0\u033c\0\u2a96\0\u2adb\0\u033c\0\u2b20\0\u2b65\0\u033c\0\u2baa"+
-    "\0\u2bef\0\u033c\0\u033c";
+    "\0\u1f44\0\u033c\0\u1f89\0\u1fce\0\u2013\0\u2058\0\u209d\0\u20e2"+
+    "\0\u033c\0\u2127\0\u216c\0\u033c\0\u033c\0\u21b1\0\u033c\0\u033c"+
+    "\0\u21f6\0\u1aaf\0\u223b\0\u2280\0\u033c\0\u22c5\0\u033c\0\u230a"+
+    "\0\u033c\0\u033c\0\u033c\0\u019e\0\u033c\0\u033c\0\u033c\0\u234f"+
+    "\0\u2394\0\u23d9\0\u241e\0\u2463\0\u24a8\0\u24ed\0\u2532\0\u2577"+
+    "\0\u033c\0\u25bc\0\u033c\0\u2601\0\u2646\0\u268b\0\u033c\0\u033c"+
+    "\0\u26d0\0\u2715\0\u275a\0\u279f\0\u27e4\0\u2829\0\u033c\0\u286e"+
+    "\0\u033c\0\u033c\0\u28b3\0\u28f8\0\u293d\0\u2982\0\u033c\0\u29c7"+
+    "\0\u2a0c\0\u033c\0\u033c\0\u2a51\0\u2a96\0\u033c\0\u033c\0\u033c"+
+    "\0\u2adb\0\u033c\0\u2b20\0\u033c\0\u2b65\0\u2baa\0\u033c\0\u2bef"+
+    "\0\u2c34\0\u033c\0\u2c79\0\u2cbe\0\u033c\0\u033c";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[243];
+    int [] result = new int[246];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -330,63 +330,67 @@ class GdLexer implements FlexLexer {
     "\15\0\32\20\11\0\2\20\5\0\7\20\6\0\1\20"+
     "\15\0\16\20\1\306\13\20\11\0\2\20\5\0\7\20"+
     "\6\0\1\20\15\0\4\20\1\307\25\20\11\0\2\20"+
-    "\5\0\7\20\6\0\1\20\15\0\2\20\1\310\27\20"+
-    "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\14\20"+
-    "\1\311\15\20\11\0\2\20\5\0\7\20\6\0\1\20"+
-    "\15\0\3\20\1\312\26\20\11\0\2\20\5\0\7\20"+
-    "\6\0\1\20\15\0\5\20\1\313\24\20\11\0\2\20"+
-    "\5\0\7\20\6\0\1\20\15\0\16\20\1\314\13\20"+
-    "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\5\20"+
-    "\1\315\24\20\11\0\2\20\5\0\7\20\6\0\1\20"+
-    "\15\0\1\316\31\20\11\0\2\20\5\0\6\20\1\317"+
-    "\6\0\1\20\15\0\32\20\11\0\2\20\5\0\7\20"+
-    "\6\0\1\20\15\0\20\20\1\320\11\20\11\0\2\20"+
-    "\5\0\7\20\6\0\1\20\15\0\1\20\1\321\30\20"+
+    "\5\0\7\20\6\0\1\20\15\0\6\20\1\310\23\20"+
+    "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\2\20"+
+    "\1\311\27\20\11\0\2\20\5\0\7\20\6\0\1\20"+
+    "\15\0\14\20\1\312\15\20\11\0\2\20\5\0\7\20"+
+    "\6\0\1\20\15\0\3\20\1\313\26\20\11\0\2\20"+
+    "\5\0\7\20\6\0\1\20\15\0\5\20\1\314\24\20"+
     "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\16\20"+
-    "\1\322\13\20\11\0\2\20\5\0\7\20\6\0\1\20"+
-    "\15\0\6\20\1\323\23\20\11\0\2\20\5\0\7\20"+
-    "\6\0\1\20\15\0\3\20\1\324\26\20\11\0\2\20"+
-    "\5\0\7\20\6\0\1\20\15\0\16\20\1\325\13\20"+
-    "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\1\326"+
-    "\31\20\11\0\2\20\5\0\7\20\6\0\1\20\15\0"+
-    "\11\20\1\327\20\20\11\0\2\20\5\0\7\20\6\0"+
-    "\1\20\15\0\1\330\31\20\11\0\2\20\5\0\7\20"+
-    "\6\0\1\20\15\0\31\20\1\331\11\0\2\20\5\0"+
-    "\7\20\6\0\1\20\15\0\11\20\1\332\20\20\11\0"+
-    "\2\20\5\0\7\20\6\0\1\20\15\0\12\20\1\333"+
-    "\17\20\11\0\2\20\5\0\7\20\6\0\1\20\15\0"+
-    "\1\20\1\334\30\20\11\0\2\20\5\0\6\20\1\335"+
-    "\6\0\1\20\15\0\32\20\11\0\2\20\5\0\7\20"+
-    "\6\0\1\20\15\0\15\20\1\336\14\20\11\0\2\20"+
-    "\5\0\7\20\6\0\1\20\15\0\2\20\1\337\27\20"+
-    "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\4\20"+
-    "\1\340\25\20\11\0\2\20\5\0\7\20\6\0\1\20"+
-    "\15\0\5\20\1\341\24\20\11\0\2\20\5\0\1\342"+
-    "\6\20\6\0\1\20\15\0\32\20\11\0\2\20\5\0"+
-    "\7\20\6\0\1\20\15\0\1\20\1\343\30\20\11\0"+
-    "\2\20\5\0\7\20\6\0\1\20\15\0\1\344\31\20"+
+    "\1\315\13\20\11\0\2\20\5\0\7\20\6\0\1\20"+
+    "\15\0\5\20\1\316\24\20\11\0\2\20\5\0\7\20"+
+    "\6\0\1\20\15\0\1\317\31\20\11\0\2\20\5\0"+
+    "\6\20\1\320\6\0\1\20\15\0\32\20\11\0\2\20"+
+    "\5\0\7\20\6\0\1\20\15\0\20\20\1\321\11\20"+
     "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\1\20"+
-    "\1\345\30\20\11\0\2\20\5\0\7\20\6\0\1\20"+
-    "\15\0\6\20\1\346\23\20\11\0\2\20\5\0\7\20"+
-    "\6\0\1\20\15\0\13\20\1\347\16\20\11\0\2\20"+
-    "\5\0\7\20\6\0\1\20\15\0\12\20\1\350\17\20"+
-    "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\3\20"+
-    "\1\351\26\20\11\0\2\20\5\0\7\20\6\0\1\20"+
-    "\15\0\1\20\1\352\30\20\11\0\2\20\5\0\7\20"+
-    "\6\0\1\20\15\0\14\20\1\353\15\20\11\0\2\20"+
-    "\5\0\7\20\6\0\1\20\15\0\2\20\1\354\27\20"+
+    "\1\322\30\20\11\0\2\20\5\0\7\20\6\0\1\20"+
+    "\15\0\16\20\1\323\13\20\11\0\2\20\5\0\7\20"+
+    "\6\0\1\20\15\0\6\20\1\324\23\20\11\0\2\20"+
+    "\5\0\7\20\6\0\1\20\15\0\3\20\1\325\26\20"+
     "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\16\20"+
-    "\1\355\13\20\11\0\2\20\5\0\7\20\6\0\1\20"+
-    "\15\0\6\20\1\356\23\20\11\0\2\20\5\0\6\20"+
-    "\1\357\6\0\1\20\15\0\32\20\11\0\2\20\5\0"+
-    "\7\20\6\0\1\20\15\0\1\20\1\360\30\20\11\0"+
-    "\2\20\5\0\7\20\6\0\1\20\15\0\7\20\1\361"+
-    "\22\20\11\0\2\20\5\0\7\20\6\0\1\20\15\0"+
-    "\1\362\31\20\11\0\2\20\5\0\6\20\1\363\6\0"+
-    "\1\20\15\0\32\20\10\0";
+    "\1\326\13\20\11\0\2\20\5\0\7\20\6\0\1\20"+
+    "\15\0\1\327\31\20\11\0\2\20\5\0\7\20\6\0"+
+    "\1\20\15\0\11\20\1\330\20\20\11\0\2\20\5\0"+
+    "\7\20\6\0\1\20\15\0\1\331\31\20\11\0\2\20"+
+    "\5\0\7\20\6\0\1\20\15\0\31\20\1\332\11\0"+
+    "\2\20\5\0\7\20\6\0\1\20\15\0\11\20\1\333"+
+    "\20\20\11\0\2\20\5\0\7\20\6\0\1\20\15\0"+
+    "\11\20\1\334\20\20\11\0\2\20\5\0\7\20\6\0"+
+    "\1\20\15\0\12\20\1\335\17\20\11\0\2\20\5\0"+
+    "\7\20\6\0\1\20\15\0\1\20\1\336\30\20\11\0"+
+    "\2\20\5\0\6\20\1\337\6\0\1\20\15\0\32\20"+
+    "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\15\20"+
+    "\1\340\14\20\11\0\2\20\5\0\7\20\6\0\1\20"+
+    "\15\0\2\20\1\341\27\20\11\0\2\20\5\0\7\20"+
+    "\6\0\1\20\15\0\4\20\1\342\25\20\11\0\2\20"+
+    "\5\0\7\20\6\0\1\20\15\0\5\20\1\343\24\20"+
+    "\11\0\2\20\5\0\1\344\6\20\6\0\1\20\15\0"+
+    "\32\20\11\0\2\20\5\0\7\20\6\0\1\20\15\0"+
+    "\1\20\1\345\30\20\11\0\2\20\5\0\7\20\6\0"+
+    "\1\20\15\0\1\346\31\20\11\0\2\20\5\0\7\20"+
+    "\6\0\1\20\15\0\13\20\1\347\16\20\11\0\2\20"+
+    "\5\0\7\20\6\0\1\20\15\0\1\20\1\350\30\20"+
+    "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\6\20"+
+    "\1\351\23\20\11\0\2\20\5\0\7\20\6\0\1\20"+
+    "\15\0\13\20\1\352\16\20\11\0\2\20\5\0\7\20"+
+    "\6\0\1\20\15\0\12\20\1\353\17\20\11\0\2\20"+
+    "\5\0\7\20\6\0\1\20\15\0\3\20\1\354\26\20"+
+    "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\1\20"+
+    "\1\355\30\20\11\0\2\20\5\0\7\20\6\0\1\20"+
+    "\15\0\14\20\1\356\15\20\11\0\2\20\5\0\7\20"+
+    "\6\0\1\20\15\0\2\20\1\357\27\20\11\0\2\20"+
+    "\5\0\7\20\6\0\1\20\15\0\16\20\1\360\13\20"+
+    "\11\0\2\20\5\0\7\20\6\0\1\20\15\0\6\20"+
+    "\1\361\23\20\11\0\2\20\5\0\6\20\1\362\6\0"+
+    "\1\20\15\0\32\20\11\0\2\20\5\0\7\20\6\0"+
+    "\1\20\15\0\1\20\1\363\30\20\11\0\2\20\5\0"+
+    "\7\20\6\0\1\20\15\0\7\20\1\364\22\20\11\0"+
+    "\2\20\5\0\7\20\6\0\1\20\15\0\1\365\31\20"+
+    "\11\0\2\20\5\0\6\20\1\366\6\0\1\20\15\0"+
+    "\32\20\10\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[11316];
+    int [] result = new int[11523];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -429,10 +433,10 @@ class GdLexer implements FlexLexer {
     "\1\11\2\1\1\11\1\1\1\11\2\0\1\11\2\0"+
     "\11\1\2\11\1\0\1\1\1\11\1\1\1\0\5\11"+
     "\33\1\1\11\1\0\1\1\1\0\14\1\1\0\43\1"+
-    "\1\11\67\1";
+    "\1\11\72\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[243];
+    int [] result = new int[246];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -822,7 +826,7 @@ class GdLexer implements FlexLexer {
               yybegin(YYINITIAL);
         return GdTypes.STRING;
             }  // fall though
-            case 244: break;
+            case 247: break;
             default:
               {
                 if (yystate() == AWAIT_NEW_LINE && !lineEnded) {
@@ -842,32 +846,32 @@ class GdLexer implements FlexLexer {
             { continue;
             } 
             // fall through
-          case 94: break;
+          case 95: break;
           case 2: 
             { return GdTypes.BAD_CHARACTER;
             } 
             // fall through
-          case 95: break;
+          case 96: break;
           case 3: 
             { return dedentRoot(GdTypes.OR);
             } 
             // fall through
-          case 96: break;
+          case 97: break;
           case 4: 
             { return dedentRoot(GdTypes.NUMBER);
             } 
             // fall through
-          case 97: break;
+          case 98: break;
           case 5: 
             { return dedentRoot(GdTypes.DOT);
             } 
             // fall through
-          case 98: break;
+          case 99: break;
           case 6: 
             { return TokenType.WHITE_SPACE;
             } 
             // fall through
-          case 99: break;
+          case 100: break;
           case 7: 
             { if (!ignoreIndent && yycolumn == 0) {
             int spaces = yytext().length();
@@ -894,27 +898,27 @@ class GdLexer implements FlexLexer {
         return TokenType.WHITE_SPACE;
             } 
             // fall through
-          case 100: break;
+          case 101: break;
           case 8: 
             { return dedentRoot(GdTypes.UNDER);
             } 
             // fall through
-          case 101: break;
+          case 102: break;
           case 9: 
             { return dedentRoot(GdTypes.IDENTIFIER);
             } 
             // fall through
-          case 102: break;
+          case 103: break;
           case 10: 
             { return dedentRoot(GdTypes.MINUS);
             } 
             // fall through
-          case 103: break;
+          case 104: break;
           case 11: 
             { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING);
             } 
             // fall through
-          case 104: break;
+          case 105: break;
           case 12: 
             { if (!lineEnded) {
               if (yystate() == AWAIT_NEW_LINE || yystate() == AWAIT_NEW_LINE_ONCE) {
@@ -930,112 +934,112 @@ class GdLexer implements FlexLexer {
           return GdTypes.COMMENT;
             } 
             // fall through
-          case 105: break;
+          case 106: break;
           case 13: 
             { return dedentRoot(GdTypes.ANNOTATOR);
             } 
             // fall through
-          case 106: break;
+          case 107: break;
           case 14: 
             { return dedentRoot(GdTypes.NODE_PATH_LEX);
             } 
             // fall through
-          case 107: break;
+          case 108: break;
           case 15: 
             { return dedentRoot(GdTypes.MOD);
             } 
             // fall through
-          case 108: break;
+          case 109: break;
           case 16: 
             { return dedentRoot(GdTypes.PLUS);
             } 
             // fall through
-          case 109: break;
+          case 110: break;
           case 17: 
             { return dedentRoot(GdTypes.EQ);
             } 
             // fall through
-          case 110: break;
+          case 111: break;
           case 18: 
             { return dedentRoot(GdTypes.MUL);
             } 
             // fall through
-          case 111: break;
+          case 112: break;
           case 19: 
             { return dedentRoot(GdTypes.DIV);
             } 
             // fall through
-          case 112: break;
+          case 113: break;
           case 20: 
             { return dedentRoot(GdTypes.AND);
             } 
             // fall through
-          case 113: break;
+          case 114: break;
           case 21: 
             { return GdTypes.TEST_OPERATOR;
             } 
             // fall through
-          case 114: break;
+          case 115: break;
           case 22: 
             { return dedentRoot(GdTypes.NEGATE);
             } 
             // fall through
-          case 115: break;
+          case 116: break;
           case 23: 
             { return dedentRoot(GdTypes.COMMA);
             } 
             // fall through
-          case 116: break;
+          case 117: break;
           case 24: 
             { return dedentRoot(GdTypes.LCBR);
             } 
             // fall through
-          case 117: break;
+          case 118: break;
           case 25: 
             { return dedentRoot(GdTypes.RCBR);
             } 
             // fall through
-          case 118: break;
+          case 119: break;
           case 26: 
             { return dedentRoot(GdTypes.COLON);
             } 
             // fall through
-          case 119: break;
+          case 120: break;
           case 27: 
             { lineEnded = true; return GdTypes.SEMICON;
             } 
             // fall through
-          case 120: break;
+          case 121: break;
           case 28: 
             { ignoreIndent = true; return dedentRoot(GdTypes.LRBR);
             } 
             // fall through
-          case 121: break;
+          case 122: break;
           case 29: 
             { ignoreIndent = false; return dedentRoot(GdTypes.RRBR);
             } 
             // fall through
-          case 122: break;
+          case 123: break;
           case 30: 
             { return dedentRoot(GdTypes.LSBR);
             } 
             // fall through
-          case 123: break;
+          case 124: break;
           case 31: 
             { return dedentRoot(GdTypes.RSBR);
             } 
             // fall through
-          case 124: break;
+          case 125: break;
           case 32: 
             { return dedentRoot(GdTypes.XOR);
             } 
             // fall through
-          case 125: break;
+          case 126: break;
           case 33: 
             { return dedentRoot(GdTypes.NOT);
             } 
             // fall through
-          case 126: break;
+          case 127: break;
           case 34: 
             { if (!ignoreIndent && !lineEnded) {
               lineEnded = true;
@@ -1046,7 +1050,7 @@ class GdLexer implements FlexLexer {
           return TokenType.WHITE_SPACE;
             } 
             // fall through
-          case 127: break;
+          case 128: break;
           case 35: 
             { yybegin(YYINITIAL);
           if (lineEnded) { // For signal, etc.
@@ -1057,13 +1061,13 @@ class GdLexer implements FlexLexer {
           return GdTypes.NEW_LINE;
             } 
             // fall through
-          case 128: break;
+          case 129: break;
           case 36: 
             { enumValEnded = false;
           return GdTypes.IDENTIFIER;
             } 
             // fall through
-          case 129: break;
+          case 130: break;
           case 37: 
             { if (enumValEnded) {
               return TokenType.WHITE_SPACE;
@@ -1073,19 +1077,19 @@ class GdLexer implements FlexLexer {
           return GdTypes.NEW_LINE;
             } 
             // fall through
-          case 130: break;
+          case 131: break;
           case 38: 
             { enumValEnded = true;
           return GdTypes.COMMA;
             } 
             // fall through
-          case 131: break;
+          case 132: break;
           case 39: 
             { enumValEnded = true;
           return GdTypes.LCBR;
             } 
             // fall through
-          case 132: break;
+          case 133: break;
           case 40: 
             { yybegin(AWAIT_NEW_LINE_ONCE);
           enumValEnded = false;
@@ -1093,7 +1097,7 @@ class GdLexer implements FlexLexer {
           return GdTypes.RCBR;
             } 
             // fall through
-          case 133: break;
+          case 134: break;
           case 41: 
             { yybegin(lastState);
         yypushback(yylength());
@@ -1101,7 +1105,7 @@ class GdLexer implements FlexLexer {
         return GdTypes.INDENT;
             } 
             // fall through
-          case 134: break;
+          case 135: break;
           case 42: 
             { if (!oppening.equals("\"\"\"")) {
             yybegin(lastState);
@@ -1109,7 +1113,7 @@ class GdLexer implements FlexLexer {
         }
             } 
             // fall through
-          case 135: break;
+          case 136: break;
           case 43: 
             { if (oppening.equals(yytext().toString())) {
             yybegin(lastState);
@@ -1117,257 +1121,262 @@ class GdLexer implements FlexLexer {
         }
             } 
             // fall through
-          case 136: break;
+          case 137: break;
           case 44: 
             { return dedentRoot(GdTypes.OROR);
             } 
             // fall through
-          case 137: break;
+          case 138: break;
           case 45: 
             { return GdTypes.ASSIGN;
             } 
             // fall through
-          case 138: break;
+          case 139: break;
           case 46: 
             { return dedentRoot(GdTypes.DOTDOT);
             } 
             // fall through
-          case 139: break;
+          case 140: break;
           case 47: 
             { return dedentRoot(GdTypes.MMINUS);
             } 
             // fall through
-          case 140: break;
+          case 141: break;
           case 48: 
             { return dedentRoot(GdTypes.RET);
             } 
             // fall through
-          case 141: break;
+          case 142: break;
           case 49: 
             { return dedentRoot(GdTypes.PPLUS);
             } 
             // fall through
-          case 142: break;
+          case 143: break;
           case 50: 
             { return dedentRoot(GdTypes.ANDAND);
             } 
             // fall through
-          case 143: break;
+          case 144: break;
           case 51: 
             { return dedentRoot(GdTypes.LBSHIFT);
             } 
             // fall through
-          case 144: break;
+          case 145: break;
           case 52: 
             { return dedentRoot(GdTypes.RBSHIFT);
             } 
             // fall through
-          case 145: break;
+          case 146: break;
           case 53: 
             { return dedentRoot(GdTypes.AS);
             } 
             // fall through
-          case 146: break;
+          case 147: break;
           case 54: 
             { return dedentRoot(GdTypes.IF);
             } 
             // fall through
-          case 147: break;
+          case 148: break;
           case 55: 
             { return dedentRoot(GdTypes.IN);
             } 
             // fall through
-          case 148: break;
+          case 149: break;
           case 56: 
             { return dedentRoot(GdTypes.IS);
             } 
             // fall through
-          case 149: break;
+          case 150: break;
           case 57: 
             { return dedentRoot(GdTypes.PI);
             } 
             // fall through
-          case 150: break;
+          case 151: break;
           case 58: 
             { return dedentRoot(GdTypes.CEQ);
             } 
             // fall through
-          case 151: break;
+          case 152: break;
           case 59: 
             { return dedentRoot(GdTypes.FOR);
             } 
             // fall through
-          case 152: break;
+          case 153: break;
           case 60: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.SET);
             } 
             // fall through
-          case 153: break;
+          case 154: break;
           case 61: 
             { if (yycolumn == 0) { yybegin(AWAIT_NEW_LINE_ONCE); } else { yybegin(AWAIT_NEW_LINE); } return dedentRoot(GdTypes.VAR);
             } 
             // fall through
-          case 154: break;
+          case 155: break;
           case 62: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.GET);
             } 
             // fall through
-          case 155: break;
+          case 156: break;
           case 63: 
             { return dedentRoot(GdTypes.INF);
             } 
             // fall through
-          case 156: break;
+          case 157: break;
           case 64: 
             { return dedentRoot(GdTypes.INT);
             } 
             // fall through
-          case 157: break;
+          case 158: break;
           case 65: 
             { return dedentRoot(GdTypes.TAU);
             } 
             // fall through
-          case 158: break;
+          case 159: break;
           case 66: 
             { return dedentRoot(GdTypes.NAN);
             } 
             // fall through
-          case 159: break;
+          case 160: break;
           case 67: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC);
             } 
             // fall through
-          case 160: break;
+          case 161: break;
           case 68: 
             { return dedentRoot(GdTypes.BOOL);
             } 
             // fall through
-          case 161: break;
+          case 162: break;
           case 69: 
             { yybegin(AWAIT_ENUM_SEPARATOR); enumValEnded = true; return GdTypes.ENUM;
             } 
             // fall through
-          case 162: break;
+          case 163: break;
           case 70: 
             { return dedentRoot(GdTypes.ELSE);
             } 
             // fall through
-          case 163: break;
+          case 164: break;
           case 71: 
             { return dedentRoot(GdTypes.ELIF);
             } 
             // fall through
-          case 164: break;
+          case 165: break;
           case 72: 
             { return dedentRoot(GdTypes.TRUE);
             } 
             // fall through
-          case 165: break;
+          case 166: break;
           case 73: 
             { return dedentRoot(GdTypes.NULL);
             } 
             // fall through
-          case 166: break;
+          case 167: break;
           case 74: 
             { return dedentRoot(GdTypes.SELF);
             } 
             // fall through
-          case 167: break;
+          case 168: break;
           case 75: 
             { return dedentRoot(GdTypes.VOID);
             } 
             // fall through
-          case 168: break;
+          case 169: break;
           case 76: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.PASS);
             } 
             // fall through
-          case 169: break;
+          case 170: break;
           case 77: 
             { return dedentRoot(GdTypes.FLOAT);
             } 
             // fall through
-          case 170: break;
+          case 171: break;
           case 78: 
             { return dedentRoot(GdTypes.FALSE);
             } 
             // fall through
-          case 171: break;
+          case 172: break;
           case 79: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.BREAK);
             } 
             // fall through
-          case 172: break;
+          case 173: break;
           case 80: 
             { if (yycolumn == 0) { yybegin(AWAIT_NEW_LINE_ONCE); } else { yybegin(AWAIT_NEW_LINE); } return dedentRoot(GdTypes.CONST);
             } 
             // fall through
-          case 173: break;
+          case 174: break;
           case 81: 
             { return dedentRoot(GdTypes.AWAIT);
             } 
             // fall through
-          case 174: break;
+          case 175: break;
           case 82: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.MATCH);
             } 
             // fall through
-          case 175: break;
+          case 176: break;
           case 83: 
             { return dedentRoot(GdTypes.WHILE);
             } 
             // fall through
-          case 176: break;
+          case 177: break;
           case 84: 
             { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.STATIC);
             } 
             // fall through
-          case 177: break;
+          case 178: break;
           case 85: 
             { yybegin(AWAIT_NEW_LINE_ONCE); return GdTypes.SIGNAL;
             } 
             // fall through
-          case 178: break;
+          case 179: break;
           case 86: 
             { return dedentRoot(GdTypes.ASSERT);
             } 
             // fall through
-          case 179: break;
-          case 87: 
-            { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.RETURN);
-            } 
-            // fall through
           case 180: break;
-          case 88: 
-            { return dedentRoot(GdTypes.STR);
+          case 87: 
+            { return dedentRoot(GdTypes.VARARG);
             } 
             // fall through
           case 181: break;
-          case 89: 
-            { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.EXTENDS);
+          case 88: 
+            { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.RETURN);
             } 
             // fall through
           case 182: break;
-          case 90: 
-            { return dedentRoot(GdTypes.PRELOAD);
+          case 89: 
+            { return dedentRoot(GdTypes.STR);
             } 
             // fall through
           case 183: break;
-          case 91: 
-            { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CONTINUE);
+          case 90: 
+            { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.EXTENDS);
             } 
             // fall through
           case 184: break;
-          case 92: 
-            { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.BREAKPOINT);
+          case 91: 
+            { return dedentRoot(GdTypes.PRELOAD);
             } 
             // fall through
           case 185: break;
-          case 93: 
-            { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CLASS_NAME);
+          case 92: 
+            { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CONTINUE);
             } 
             // fall through
           case 186: break;
+          case 93: 
+            { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.BREAKPOINT);
+            } 
+            // fall through
+          case 187: break;
+          case 94: 
+            { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CLASS_NAME);
+            } 
+            // fall through
+          case 188: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

@@ -87,15 +87,17 @@ object GdCompletionUtil {
         }
     }
 
-    fun lookup(method: GdMethodDeclTl): LookupElement =
-        GdLookup.create(
+    fun lookup(method: GdMethodDeclTl): LookupElement {
+        return GdLookup.create(
             method.name.orEmpty(),
             lookup = "()${if (method.paramList?.paramList?.isNotEmpty() == true) "_" else ""}",
             presentable = method.name.orEmpty(),
             typed = method.returnType,
             icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
             priority = GdLookup.USER_DEFINED,
-        )
+            tail = GdMethodCompletionUtil.buildParamHint(method),
+        );
+    }
 
     fun lookup(loop: GdForSt): LookupElement =
         GdLookup.create(

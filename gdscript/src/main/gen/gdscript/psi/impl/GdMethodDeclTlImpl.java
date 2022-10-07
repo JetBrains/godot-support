@@ -70,6 +70,11 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
   }
 
   @Override
+  public boolean isVariadic() {
+    return GdPsiUtils.isVariadic(this);
+  }
+
+  @Override
   @Nullable
   public String getName() {
     return GdPsiUtils.getName(this);

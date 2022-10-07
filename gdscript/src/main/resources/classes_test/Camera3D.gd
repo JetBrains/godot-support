@@ -96,7 +96,7 @@ func get_cull_mask_value(layer_number: int) -> bool:
 	pass;
 
 #desc Returns the camera's frustum planes in world space units as an array of [Plane]s in the following order: near, far, left, top, right, bottom. Not to be confused with [member frustum_offset].
-func get_frustum() -> Plane[]:
+func get_frustum() -> Array[Plane]:
 	pass;
 
 #desc Returns the RID of a pyramid shape encompassing the camera's view frustum, ignoring the camera's near plane. The tip of the pyramid represents the position of the camera.

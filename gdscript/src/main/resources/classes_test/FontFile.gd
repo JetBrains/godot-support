@@ -160,7 +160,7 @@ func get_kerning(cache_index: int, size: int, glyph_pair: Vector2i) -> Vector2:
 	pass;
 
 #desc Returns list of the kerning overrides.
-func get_kerning_list(cache_index: int, size: int) -> Vector2i[]:
+func get_kerning_list(cache_index: int, size: int) -> Array[Vector2i]:
 	pass;
 
 #desc Returns [code]true[/code] if support override is enabled for the [param language].
@@ -180,7 +180,7 @@ func get_script_support_overrides() -> PackedStringArray:
 	pass;
 
 #desc Returns list of the font sizes in the cache. Each size is [code]Vector2i[/code] with font size and outline size.
-func get_size_cache_list(cache_index: int) -> Vector2i[]:
+func get_size_cache_list(cache_index: int) -> Array[Vector2i]:
 	pass;
 
 #desc Returns number of textures used by font cache entry.

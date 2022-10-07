@@ -6,10 +6,8 @@
 - Lambdas
 - Signals
 - Inner class
-- Recover from unfinished functions (param hints)
 - Parent method call fe.: ._init()
 - Annotation parameters
-- Globals
 
 ### Lower Priority
 - Full feature Formatter

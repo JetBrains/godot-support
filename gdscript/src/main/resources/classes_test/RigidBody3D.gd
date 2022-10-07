@@ -160,7 +160,7 @@ func apply_torque_impulse(impulse: Vector3) -> void:
 
 #desc Returns a list of the bodies colliding with this one. Requires [member contact_monitor] to be set to [code]true[/code] and [member max_contacts_reported] to be set high enough to detect all the collisions.
 #desc [b]Note:[/b] The result of this test is not immediate after moving objects. For performance, list of collisions is updated once per frame and before the physics step. Consider using signals instead.
-func get_colliding_bodies() -> Node3D[]:
+func get_colliding_bodies() -> Array[Node3D]:
 	pass;
 
 #desc Returns the number of contacts this body has with other bodies. By default, this returns 0 unless bodies are configured to monitor contacts (see [member contact_monitor]).

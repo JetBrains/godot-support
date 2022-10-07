@@ -54,7 +54,7 @@ func _get(property: StringName) -> Variant:
 #desc Virtual method which can be overridden to customize the return value of [method get_property_list].
 #desc Returns the object's property list as an [Array] of dictionaries.
 #desc Each property's [Dictionary] must contain at least [code]name: String[/code] and [code]type: int[/code] (see [enum Variant.Type]) entries. Optionally, it can also include [code]hint: int[/code] (see [enum PropertyHint]), [code]hint_string: String[/code], and [code]usage: int[/code] (see [enum PropertyUsageFlags]).
-func _get_property_list() -> Dictionary[]:
+func _get_property_list() -> Array[Dictionary]:
 	pass;
 
 #desc Called when the object is initialized in memory. Can be defined to take in parameters, that are passed in when constructing.
@@ -102,7 +102,7 @@ func add_user_signal(signal: String, arguments: Array) -> void:
 #desc [/csharp]
 #desc [/codeblocks]
 #desc [b]Note:[/b] In C#, the method name must be specified as snake_case if it is defined by a built-in Godot node. This doesn't apply to user-defined methods where you should use the same convention as in the C# source (typically PascalCase).
-func call(method: StringName) -> Variant:
+vararg func call(method: StringName) -> Variant:
 	pass;
 
 #desc Calls the [param method] on the object during idle time. This method supports a variable number of arguments, so parameters are passed as a comma separated list. Example:
@@ -117,7 +117,7 @@ func call(method: StringName) -> Variant:
 #desc [/csharp]
 #desc [/codeblocks]
 #desc [b]Note:[/b] In C#, the method name must be specified as snake_case if it is defined by a built-in Godot node. This doesn't apply to user-defined methods where you should use the same convention as in the C# source (typically PascalCase).
-func call_deferred(method: StringName) -> Variant:
+vararg func call_deferred(method: StringName) -> Variant:
 	pass;
 
 #desc Calls the [param method] on the object and returns the result. Contrarily to [method call], this method does not support a variable number of arguments but expects all parameters to be via a single [Array].
@@ -290,7 +290,7 @@ func disconnect(signal: StringName, callable: Callable) -> void:
 #desc EmitSignal("game_over");
 #desc [/csharp]
 #desc [/codeblocks]
-func emit_signal(signal: StringName) -> int:
+vararg func emit_signal(signal: StringName) -> int:
 	pass;
 
 #desc Deletes the object from memory. Any pre-existing reference to the freed object will become invalid, e.g. [code]is_instance_valid(object)[/code] will return [code]false[/code].
@@ -312,7 +312,7 @@ func get_class() -> String:
 #desc - [code]source[/code] is a reference to the signal emitter.
 #desc - [code]signal_name[/code] is the name of the connected signal.
 #desc - [code]method_name[/code] is the name of the method to which the signal is connected.
-func get_incoming_connections() -> Dictionary[]:
+func get_incoming_connections() -> Array[Dictionary]:
 	pass;
 
 #desc Gets the object's property indexed by the given [NodePath]. The node path should be relative to the current object and can use the colon character ([code]:[/code]) to access nested properties. Examples: [code]"position:x"[/code] or [code]"material:next_pass:blend_mode"[/code].
@@ -336,12 +336,12 @@ func get_meta_list() -> PackedStringArray:
 	pass;
 
 #desc Returns the object's methods and their signatures as an [Array].
-func get_method_list() -> Dictionary[]:
+func get_method_list() -> Array[Dictionary]:
 	pass;
 
 #desc Returns the object's property list as an [Array] of dictionaries.
 #desc Each property's [Dictionary] contain at least [code]name: String[/code] and [code]type: int[/code] (see [enum Variant.Type]) entries. Optionally, it can also include [code]hint: int[/code] (see [enum PropertyHint]), [code]hint_string: String[/code], and [code]usage: int[/code] (see [enum PropertyUsageFlags]).
-func get_property_list() -> Dictionary[]:
+func get_property_list() -> Array[Dictionary]:
 	pass;
 
 #desc Returns the object's [Script] instance, or [code]null[/code] if none is assigned.
@@ -349,11 +349,11 @@ func get_script() -> Variant:
 	pass;
 
 #desc Returns an [Array] of connections for the given [param signal].
-func get_signal_connection_list(signal: StringName) -> Dictionary[]:
+func get_signal_connection_list(signal: StringName) -> Array[Dictionary]:
 	pass;
 
 #desc Returns the list of signals as an [Array] of dictionaries.
-func get_signal_list() -> Dictionary[]:
+func get_signal_list() -> Array[Dictionary]:
 	pass;
 
 #desc Returns [code]true[/code] if a metadata entry is found with the given [param name]. See also [method get_meta], [method set_meta] and [method remove_meta].

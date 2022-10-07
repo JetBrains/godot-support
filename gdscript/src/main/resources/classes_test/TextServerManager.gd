@@ -24,7 +24,7 @@ func get_interface_count() -> int:
 	pass;
 
 #desc Returns a list of available interfaces the index and name of each interface.
-func get_interfaces() -> Dictionary[]:
+func get_interfaces() -> Array[Dictionary]:
 	pass;
 
 #desc Returns the primary [TextServer] interface currently in use.

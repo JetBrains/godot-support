@@ -446,7 +446,7 @@ func font_get_kerning(font_rid: RID, size: int, glyph_pair: Vector2i) -> Vector2
 	pass;
 
 #desc Returns list of the kerning overrides.
-func font_get_kerning_list(font_rid: RID, size: int) -> Vector2i[]:
+func font_get_kerning_list(font_rid: RID, size: int) -> Array[Vector2i]:
 	pass;
 
 #desc Returns [code]true[/code] if support override is enabled for the [param language].
@@ -490,7 +490,7 @@ func font_get_script_support_overrides(font_rid: RID) -> PackedStringArray:
 	pass;
 
 #desc Returns list of the font sizes in the cache. Each size is [code]Vector2i[/code] with font size and outline size.
-func font_get_size_cache_list(font_rid: RID) -> Vector2i[]:
+func font_get_size_cache_list(font_rid: RID) -> Array[Vector2i]:
 	pass;
 
 #desc Returns font style flags, see [enum FontStyle].
@@ -815,7 +815,7 @@ func parse_number(number: String, language: String) -> String:
 	pass;
 
 #desc Default implementation of the BiDi algorithm override function. See [enum StructuredTextParser] for more info.
-func parse_structured_text(parser_type: int, args: Array, text: String) -> Vector2i[]:
+func parse_structured_text(parser_type: int, args: Array, text: String) -> Array[Vector2i]:
 	pass;
 
 #desc Returns percent sign used in the [param language].
@@ -894,7 +894,7 @@ func shaped_text_get_ellipsis_glyph_count(shaped: RID) -> int:
 	pass;
 
 #desc Returns array of the glyphs in the ellipsis.
-func shaped_text_get_ellipsis_glyphs(shaped: RID) -> Dictionary[]:
+func shaped_text_get_ellipsis_glyphs(shaped: RID) -> Array[Dictionary]:
 	pass;
 
 #desc Returns position of the ellipsis.
@@ -906,7 +906,7 @@ func shaped_text_get_glyph_count(shaped: RID) -> int:
 	pass;
 
 #desc Returns an array of glyphs in the visual order.
-func shaped_text_get_glyphs(shaped: RID) -> Dictionary[]:
+func shaped_text_get_glyphs(shaped: RID) -> Array[Dictionary]:
 	pass;
 
 #desc Returns composite character's bounds as offsets from the start of the line.
@@ -1051,7 +1051,7 @@ func shaped_text_shape(shaped: RID) -> bool:
 	pass;
 
 #desc Returns text glyphs in the logical order.
-func shaped_text_sort_logical(shaped: RID) -> Dictionary[]:
+func shaped_text_sort_logical(shaped: RID) -> Array[Dictionary]:
 	pass;
 
 #desc Returns text buffer for the substring of the text in the [param shaped] text buffer (including inline objects).

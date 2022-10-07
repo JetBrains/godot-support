@@ -129,6 +129,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "await"        { return GdTypes.AWAIT; }
     "preload"      { return GdTypes.PRELOAD; }
     "static"       { return GdTypes.STATIC; }
+    "vararg"       { return GdTypes.VARARG; }
 
     "*"            { return GdTypes.MUL; }
     "/"            { return GdTypes.DIV; }

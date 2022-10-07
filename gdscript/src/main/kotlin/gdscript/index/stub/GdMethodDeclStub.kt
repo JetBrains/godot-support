@@ -5,6 +5,7 @@ import gdscript.psi.GdMethodDeclTl
 
 interface GdMethodDeclStub : StubElement<GdMethodDeclTl> {
     fun isStatic(): Boolean;
+    fun isVariadic(): Boolean;
     fun name(): String;
     fun returnType(): String;
     fun parameters(): HashMap<String, String?>;

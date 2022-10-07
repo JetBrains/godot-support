@@ -14,7 +14,7 @@ func add_id(id: RID) -> void:
 func clear_ids() -> void:
 	pass;
 
-func get_ids() -> RID[]:
+func get_ids() -> Array[RID]:
 	pass;
 
 

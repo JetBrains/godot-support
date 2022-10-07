@@ -60,7 +60,7 @@ var root: Window;
 
 #desc Calls [param method] on each member of the given group. You can pass arguments to [param method] by specifying them at the end of the method call. If a node doesn't have the given method or the argument list does not match (either in count or in types), it will be skipped.
 #desc [b]Note:[/b] [method call_group] will call methods immediately on all members at once, which can cause stuttering if an expensive method is called on lots of members. To wait for one frame after [method call_group] was called, use [method call_group_flags] with the [constant GROUP_CALL_DEFERRED] flag.
-func call_group(group: StringName, method: StringName) -> void:
+vararg func call_group(group: StringName, method: StringName) -> void:
 	pass;
 
 #desc Calls [param method] on each member of the given group, respecting the given [enum GroupCallFlags]. You can pass arguments to [param method] by specifying them at the end of the method call. If a node doesn't have the given method or the argument list does not match (either in count or in types), it will be skipped.
@@ -69,7 +69,7 @@ func call_group(group: StringName, method: StringName) -> void:
 #desc get_tree().call_group_flags(SceneTree.GROUP_CALL_DEFERRED | SceneTree.GROUP_CALL_REVERSE)
 #desc [/codeblock]
 #desc [b]Note:[/b] Group call flags are used to control the method calling behavior. By default, methods will be called immediately in a way similar to [method call_group]. However, if the [constant GROUP_CALL_DEFERRED] flag is present in the [param flags] argument, methods will be called with a one-frame delay in a way similar to [method Object.set_deferred].
-func call_group_flags(flags: int, group: StringName, method: StringName) -> void:
+vararg func call_group_flags(flags: int, group: StringName, method: StringName) -> void:
 	pass;
 
 #desc Changes the running scene to the one at the given [param path], after loading it into a [PackedScene] and creating a new instance.
@@ -130,11 +130,11 @@ func get_node_count() -> int:
 	pass;
 
 #desc Returns a list of all nodes assigned to the given group.
-func get_nodes_in_group(group: StringName) -> Node[]:
+func get_nodes_in_group(group: StringName) -> Array[Node]:
 	pass;
 
 #desc Returns an array of currently existing [Tween]s in the [SceneTree] (both running and paused).
-func get_processed_tweens() -> Tween[]:
+func get_processed_tweens() -> Array[Tween]:
 	pass;
 
 #desc Returns [code]true[/code] if the given group exists.

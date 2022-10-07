@@ -96,7 +96,7 @@ func _font_get_hinting(font_rid: RID) -> int:
 func _font_get_kerning(font_rid: RID, size: int, glyph_pair: Vector2i) -> Vector2:
 	pass;
 
-func _font_get_kerning_list(font_rid: RID, size: int) -> Vector2i[]:
+func _font_get_kerning_list(font_rid: RID, size: int) -> Array[Vector2i]:
 	pass;
 
 func _font_get_language_support_override(font_rid: RID, language: String) -> bool:
@@ -129,7 +129,7 @@ func _font_get_script_support_override(font_rid: RID, script: String) -> bool:
 func _font_get_script_support_overrides(font_rid: RID) -> PackedStringArray:
 	pass;
 
-func _font_get_size_cache_list(font_rid: RID) -> Vector2i[]:
+func _font_get_size_cache_list(font_rid: RID) -> Array[Vector2i]:
 	pass;
 
 func _font_get_style(font_rid: RID) -> int:
@@ -363,7 +363,7 @@ func _name_to_tag(name: String) -> int:
 func _parse_number(string: String, language: String) -> String:
 	pass;
 
-func _parse_structured_text(parser_type: int, args: Array, text: String) -> Vector2i[]:
+func _parse_structured_text(parser_type: int, args: Array, text: String) -> Array[Vector2i]:
 	pass;
 
 func _percent_sign(language: String) -> String:

@@ -36,7 +36,7 @@ func class_get_integer_constant_list(class: StringName, no_inheritance: bool) ->
 
 #desc Returns an array with all the methods of [param class] or its ancestry if [param no_inheritance] is [code]false[/code]. Every element of the array is a [Dictionary] with the following keys: [code]args[/code], [code]default_args[/code], [code]flags[/code], [code]id[/code], [code]name[/code], [code]return: (class_name, hint, hint_string, name, type, usage)[/code].
 #desc [b]Note:[/b] In exported release builds the debug info is not available, so the returned dictionaries will contain only method names.
-func class_get_method_list(class: StringName, no_inheritance: bool) -> Dictionary[]:
+func class_get_method_list(class: StringName, no_inheritance: bool) -> Array[Dictionary]:
 	pass;
 
 #desc Returns the value of [param property] of [param object] or its ancestry.
@@ -44,7 +44,7 @@ func class_get_property(object: Object, property: StringName) -> Variant:
 	pass;
 
 #desc Returns an array with all the properties of [param class] or its ancestry if [param no_inheritance] is [code]false[/code].
-func class_get_property_list(class: StringName, no_inheritance: bool) -> Dictionary[]:
+func class_get_property_list(class: StringName, no_inheritance: bool) -> Array[Dictionary]:
 	pass;
 
 #desc Returns the [param signal] data of [param class] or its ancestry. The returned value is a [Dictionary] with the following keys: [code]args[/code], [code]default_args[/code], [code]flags[/code], [code]id[/code], [code]name[/code], [code]return: (class_name, hint, hint_string, name, type, usage)[/code].
@@ -52,7 +52,7 @@ func class_get_signal(class: StringName, signal: StringName) -> Dictionary:
 	pass;
 
 #desc Returns an array with all the signals of [param class] or its ancestry if [param no_inheritance] is [code]false[/code]. Every element of the array is a [Dictionary] as described in [method class_get_signal].
-func class_get_signal_list(class: StringName, no_inheritance: bool) -> Dictionary[]:
+func class_get_signal_list(class: StringName, no_inheritance: bool) -> Array[Dictionary]:
 	pass;
 
 #desc Returns whether [param class] or its ancestry has an enum called [param name] or not.

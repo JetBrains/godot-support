@@ -79,7 +79,7 @@ func _complete_code(code: String, path: String, owner: Object) -> Dictionary:
 func _create_script() -> Object:
 	pass;
 
-func _debug_get_current_stack_info() -> Dictionary[]:
+func _debug_get_current_stack_info() -> Array[Dictionary]:
 	pass;
 
 func _debug_get_error() -> String:
@@ -124,7 +124,7 @@ func _frame() -> void:
 func _free_instance_binding_data(data: void*) -> void:
 	pass;
 
-func _get_built_in_templates(object: StringName) -> Dictionary[]:
+func _get_built_in_templates(object: StringName) -> Array[Dictionary]:
 	pass;
 
 func _get_comment_delimiters() -> PackedStringArray:
@@ -139,13 +139,13 @@ func _get_global_class_name(path: String) -> Dictionary:
 func _get_name() -> String:
 	pass;
 
-func _get_public_annotations() -> Dictionary[]:
+func _get_public_annotations() -> Array[Dictionary]:
 	pass;
 
 func _get_public_constants() -> Dictionary:
 	pass;
 
-func _get_public_functions() -> Dictionary[]:
+func _get_public_functions() -> Array[Dictionary]:
 	pass;
 
 func _get_recognized_extensions() -> PackedStringArray:

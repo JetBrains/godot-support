@@ -109,7 +109,7 @@ func clear() -> void:
 	pass;
 
 #desc Returns an array with the IDs of the points that form the path found by AStar2D between the given points. The array is ordered from the starting point to the ending point of the path.
-func get_id_path(from_id: Vector2i, to_id: Vector2i) -> Vector2i[]:
+func get_id_path(from_id: Vector2i, to_id: Vector2i) -> Array[Vector2i]:
 	pass;
 
 #desc Returns an array with the points that are in the path found by AStarGrid2D between the given points. The array is ordered from the starting point to the ending point of the path.

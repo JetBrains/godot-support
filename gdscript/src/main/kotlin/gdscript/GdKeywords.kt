@@ -6,6 +6,7 @@ object GdKeywords {
     const val CLASS_NAME = "class_name"
     const val FUNC = "func"
     const val STATIC = "static"
+    const val VARARG = "vararg"
     const val CONST = "const"
     const val VAR = "var"
     const val SETGET = "setget"
@@ -26,6 +27,8 @@ object GdKeywords {
     const val STR = "String"
     val BUILT_TYPES = arrayOf(INT, STR, FLOAT, BOOL);
     const val VOID = "void"
+
+    const val GLOBAL_SCOPE = "_GlobalScope"
 
     val ANNOTATIONS = arrayOf("export", "onready", "icon", "tool", "master", "puppet", "remote", "mastersync", "puppetsync", "remotesync",
         "export_enum", "export_file", "export_dir", "export_global_file", "export_global_dir", "export_multiline", "export_placeholder",

@@ -41,7 +41,10 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     fun resolveDeclaration(): PsiElement? {
         val file = PsiGdExprUtil.getAttrOrCallParentFile(element) ?: element.containingFile;
 
-        return PsiGdNamedUtil.findInParent(myElement, includingSelf = true, containingFile = file);
+        val local = PsiGdNamedUtil.findInParent(myElement, includingSelf = true, containingFile = file);
+        if (local != null) return local;
+
+        return PsiGdNamedUtil.findInParent(myElement, includingSelf = true, containingFile = PsiGdFileUtil.getGlobalFile(element.project));
     }
 
     override fun resolve(): PsiElement? {
@@ -80,6 +83,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
         // TODO je tohle ok?
         val members = if (local) PsiGdNamedUtil.listLocalDecls(element) else mutableListOf();
         members.addAll(files.flatMap { PsiGdFileUtil.listMembers(it) });
+        members.addAll(files.flatMap { PsiGdFileUtil.listMembers(PsiGdFileUtil.getGlobalFile(element.project)) });
 
         members.forEach {
             when (it) {

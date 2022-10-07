@@ -19,7 +19,7 @@ const INVALID_HISTORY = -99;
 
 #desc Register a method that will be called when the action is committed (i.e. the "do" action).
 #desc If this is the first operation, the [param object] will be used to deduce target undo history.
-func add_do_method(object: Object, method: StringName) -> void:
+vararg func add_do_method(object: Object, method: StringName) -> void:
 	pass;
 
 #desc Register a property value change for "do".
@@ -33,7 +33,7 @@ func add_do_reference(object: Object) -> void:
 
 #desc Register a method that will be called when the action is undone (i.e. the "undo" action).
 #desc If this is the first operation, the [param object] will be used to deduce target undo history.
-func add_undo_method(object: Object, method: StringName) -> void:
+vararg func add_undo_method(object: Object, method: StringName) -> void:
 	pass;
 
 #desc Register a property value change for "undo".

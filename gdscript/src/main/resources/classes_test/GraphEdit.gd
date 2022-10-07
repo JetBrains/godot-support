@@ -157,7 +157,7 @@ func get_connection_line(from_node: Vector2, to_node: Vector2) -> PackedVector2A
 	pass;
 
 #desc Returns an Array containing the list of connections. A connection consists in a structure of the form [code]{ from_port: 0, from: "GraphNode name 0", to_port: 1, to: "GraphNode name 1" }[/code].
-func get_connection_list() -> Dictionary[]:
+func get_connection_list() -> Array[Dictionary]:
 	pass;
 
 #desc Gets the [HBoxContainer] that contains the zooming and grid snap controls in the top left of the graph. You can use this method to reposition the toolbar or to add your own custom controls to it.

@@ -61,7 +61,7 @@ func get_author_info() -> Dictionary:
 #desc Returns an Array of copyright information Dictionaries.
 #desc [code]name[/code]    - String, component name
 #desc [code]parts[/code]   - Array of Dictionaries {[code]files[/code], [code]copyright[/code], [code]license[/code]} describing subsections of the component
-func get_copyright_info() -> Dictionary[]:
+func get_copyright_info() -> Array[Dictionary]:
 	pass;
 
 #desc Returns a Dictionary of Arrays of donor names.

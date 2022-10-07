@@ -5,6 +5,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
+import gdscript.utils.ElementTypeUtil
 
 object PsiGdMethodDeclUtil {
 
@@ -38,7 +39,16 @@ object PsiGdMethodDeclUtil {
             return stub.isStatic();
         }
 
-        return element.firstChild.text.equals("static");
+        return ElementTypeUtil.hasChildOfType(element, GdTypes.STATIC);
+    }
+
+    fun isVariadic(element: GdMethodDeclTl): Boolean {
+        val stub = element.stub;
+        if (stub !== null) {
+            return stub.isVariadic();
+        }
+
+        return ElementTypeUtil.hasChildOfType(element, GdTypes.VARARG);
     }
 
     fun getMethodName(element: GdMethodDeclTl): String? {

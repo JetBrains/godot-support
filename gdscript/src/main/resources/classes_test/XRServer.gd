@@ -76,7 +76,7 @@ func get_interface_count() -> int:
 	pass;
 
 #desc Returns a list of available interfaces the ID and name of each interface.
-func get_interfaces() -> Dictionary[]:
+func get_interfaces() -> Array[Dictionary]:
 	pass;
 
 #desc Returns the reference frame transform. Mostly used internally and exposed for GDExtension build interfaces.

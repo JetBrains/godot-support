@@ -236,6 +236,7 @@ ANY = .+
     "await"        { return dedentRoot(GdTypes.AWAIT); }
     "preload"      { return dedentRoot(GdTypes.PRELOAD); }
     "static"       { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.STATIC); }
+    "vararg"       { return dedentRoot(GdTypes.VARARG); }
 
     "*"            { return dedentRoot(GdTypes.MUL); }
     "/"            { return dedentRoot(GdTypes.DIV); }

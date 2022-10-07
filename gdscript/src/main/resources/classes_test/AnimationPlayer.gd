@@ -107,7 +107,7 @@ func get_animation_library(name: StringName) -> AnimationLibrary:
 	pass;
 
 #desc Returns the list of stored library keys.
-func get_animation_library_list() -> StringName[]:
+func get_animation_library_list() -> Array[StringName]:
 	pass;
 
 #desc Returns the list of stored animation keys.

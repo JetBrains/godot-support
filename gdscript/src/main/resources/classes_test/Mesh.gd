@@ -199,7 +199,7 @@ func _surface_get_array_len(index: int) -> int:
 func _surface_get_arrays(index: int) -> Array:
 	pass;
 
-func _surface_get_blend_shape_arrays(index: int) -> Array[]:
+func _surface_get_blend_shape_arrays(index: int) -> Array[Array]:
 	pass;
 
 func _surface_get_format(index: int) -> int:
@@ -254,7 +254,7 @@ func surface_get_arrays(surf_idx: int) -> Array:
 	pass;
 
 #desc Returns the blend shape arrays for the requested surface.
-func surface_get_blend_shape_arrays(surf_idx: int) -> Array[]:
+func surface_get_blend_shape_arrays(surf_idx: int) -> Array[Array]:
 	pass;
 
 #desc Returns a [Material] in a given surface. Surface is rendered using this material.

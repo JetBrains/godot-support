@@ -81,14 +81,14 @@ class GdLexerHighlighter implements FlexLexer {
     "\1\0\1\10\1\25\1\10\1\63\5\10\1\51\3\10"+
     "\1\64\2\10\1\65\2\10\1\66\1\67\1\10\1\70"+
     "\1\71\1\10\1\4\2\10\1\72\1\10\1\73\1\10"+
-    "\1\74\1\75\1\76\1\15\1\77\1\100\1\101\10\10"+
+    "\1\74\1\75\1\76\1\15\1\77\1\100\1\101\11\10"+
     "\1\102\1\10\1\103\3\10\1\104\1\105\1\106\5\10"+
-    "\1\107\1\10\1\110\1\111\3\10\1\112\2\10\1\113"+
-    "\1\114\2\10\1\115\1\116\1\10\1\117\1\10\1\120"+
-    "\2\10\1\121\2\10\1\122\2\10\1\123\1\124";
+    "\1\107\1\10\1\110\1\111\4\10\1\112\2\10\1\113"+
+    "\1\114\2\10\1\115\1\116\1\117\1\10\1\120\1\10"+
+    "\1\121\2\10\1\122\2\10\1\123\2\10\1\124\1\125";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[225];
+    int [] result = new int[228];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -131,20 +131,20 @@ class GdLexerHighlighter implements FlexLexer {
     "\0\u16c5\0\u0c0a\0\u0c4d\0\u1708\0\u174b\0\u01d5\0\u178e\0\u17d1"+
     "\0\u1814\0\u1857\0\u189a\0\u18dd\0\u1920\0\u1963\0\u19a6\0\u01d5"+
     "\0\u19e9\0\u01d5\0\u1a2c\0\u1a6f\0\u1ab2\0\u1af5\0\u1b38\0\u01d5"+
-    "\0\u1b7b\0\u1bbe\0\u1c01\0\u01d5\0\u1c44\0\u1c87\0\u01d5\0\u1cca"+
-    "\0\u1d0d\0\u01d5\0\u01d5\0\u1d50\0\u01d5\0\u01d5\0\u1d93\0\u16c5"+
-    "\0\u1dd6\0\u1e19\0\u01d5\0\u1e5c\0\u01d5\0\u1e9f\0\u01d5\0\u01d5"+
-    "\0\u01d5\0\206\0\u01d5\0\u01d5\0\u01d5\0\u1ee2\0\u1f25\0\u1f68"+
-    "\0\u1fab\0\u1fee\0\u2031\0\u2074\0\u20b7\0\u01d5\0\u20fa\0\u01d5"+
-    "\0\u213d\0\u2180\0\u21c3\0\u01d5\0\u01d5\0\u2206\0\u2249\0\u228c"+
-    "\0\u22cf\0\u2312\0\u2355\0\u01d5\0\u2398\0\u01d5\0\u01d5\0\u23db"+
-    "\0\u241e\0\u2461\0\u01d5\0\u24a4\0\u24e7\0\u01d5\0\u01d5\0\u252a"+
-    "\0\u256d\0\u01d5\0\u01d5\0\u25b0\0\u01d5\0\u25f3\0\u01d5\0\u2636"+
-    "\0\u2679\0\u01d5\0\u26bc\0\u26ff\0\u01d5\0\u2742\0\u2785\0\u01d5"+
-    "\0\u01d5";
+    "\0\u1b7b\0\u1bbe\0\u1c01\0\u1c44\0\u1c87\0\u1cca\0\u01d5\0\u1d0d"+
+    "\0\u1d50\0\u01d5\0\u01d5\0\u1d93\0\u01d5\0\u01d5\0\u1dd6\0\u16c5"+
+    "\0\u1e19\0\u1e5c\0\u01d5\0\u1e9f\0\u01d5\0\u1ee2\0\u01d5\0\u01d5"+
+    "\0\u01d5\0\206\0\u01d5\0\u01d5\0\u01d5\0\u1f25\0\u1f68\0\u1fab"+
+    "\0\u1fee\0\u2031\0\u2074\0\u20b7\0\u20fa\0\u213d\0\u01d5\0\u2180"+
+    "\0\u01d5\0\u21c3\0\u2206\0\u2249\0\u01d5\0\u01d5\0\u228c\0\u22cf"+
+    "\0\u2312\0\u2355\0\u2398\0\u23db\0\u01d5\0\u241e\0\u01d5\0\u01d5"+
+    "\0\u2461\0\u24a4\0\u24e7\0\u252a\0\u01d5\0\u256d\0\u25b0\0\u01d5"+
+    "\0\u01d5\0\u25f3\0\u2636\0\u01d5\0\u01d5\0\u01d5\0\u2679\0\u01d5"+
+    "\0\u26bc\0\u01d5\0\u26ff\0\u2742\0\u01d5\0\u2785\0\u27c8\0\u01d5"+
+    "\0\u280b\0\u284e\0\u01d5\0\u01d5";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[225];
+    int [] result = new int[228];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -291,63 +291,66 @@ class GdLexerHighlighter implements FlexLexer {
     "\2\13\3\0\7\13\6\0\1\13\12\0\16\13\1\264"+
     "\13\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
     "\4\13\1\265\25\13\14\0\2\13\3\0\7\13\6\0"+
-    "\1\13\12\0\2\13\1\266\27\13\14\0\2\13\3\0"+
-    "\7\13\6\0\1\13\12\0\14\13\1\267\15\13\14\0"+
-    "\2\13\3\0\7\13\6\0\1\13\12\0\3\13\1\270"+
-    "\26\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
-    "\5\13\1\271\24\13\14\0\2\13\3\0\7\13\6\0"+
-    "\1\13\12\0\16\13\1\272\13\13\14\0\2\13\3\0"+
-    "\7\13\6\0\1\13\12\0\5\13\1\273\24\13\14\0"+
-    "\2\13\3\0\7\13\6\0\1\13\12\0\1\274\31\13"+
-    "\14\0\2\13\3\0\6\13\1\275\6\0\1\13\12\0"+
-    "\32\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
-    "\20\13\1\276\11\13\14\0\2\13\3\0\7\13\6\0"+
-    "\1\13\12\0\1\13\1\277\30\13\14\0\2\13\3\0"+
-    "\7\13\6\0\1\13\12\0\16\13\1\300\13\13\14\0"+
-    "\2\13\3\0\7\13\6\0\1\13\12\0\6\13\1\301"+
-    "\23\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
-    "\3\13\1\302\26\13\14\0\2\13\3\0\7\13\6\0"+
-    "\1\13\12\0\16\13\1\303\13\13\14\0\2\13\3\0"+
-    "\7\13\6\0\1\13\12\0\1\304\31\13\14\0\2\13"+
-    "\3\0\7\13\6\0\1\13\12\0\11\13\1\305\20\13"+
-    "\14\0\2\13\3\0\7\13\6\0\1\13\12\0\1\306"+
+    "\1\13\12\0\6\13\1\266\23\13\14\0\2\13\3\0"+
+    "\7\13\6\0\1\13\12\0\2\13\1\267\27\13\14\0"+
+    "\2\13\3\0\7\13\6\0\1\13\12\0\14\13\1\270"+
+    "\15\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
+    "\3\13\1\271\26\13\14\0\2\13\3\0\7\13\6\0"+
+    "\1\13\12\0\5\13\1\272\24\13\14\0\2\13\3\0"+
+    "\7\13\6\0\1\13\12\0\16\13\1\273\13\13\14\0"+
+    "\2\13\3\0\7\13\6\0\1\13\12\0\5\13\1\274"+
+    "\24\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
+    "\1\275\31\13\14\0\2\13\3\0\6\13\1\276\6\0"+
+    "\1\13\12\0\32\13\14\0\2\13\3\0\7\13\6\0"+
+    "\1\13\12\0\20\13\1\277\11\13\14\0\2\13\3\0"+
+    "\7\13\6\0\1\13\12\0\1\13\1\300\30\13\14\0"+
+    "\2\13\3\0\7\13\6\0\1\13\12\0\16\13\1\301"+
+    "\13\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
+    "\6\13\1\302\23\13\14\0\2\13\3\0\7\13\6\0"+
+    "\1\13\12\0\3\13\1\303\26\13\14\0\2\13\3\0"+
+    "\7\13\6\0\1\13\12\0\16\13\1\304\13\13\14\0"+
+    "\2\13\3\0\7\13\6\0\1\13\12\0\1\305\31\13"+
+    "\14\0\2\13\3\0\7\13\6\0\1\13\12\0\11\13"+
+    "\1\306\20\13\14\0\2\13\3\0\7\13\6\0\1\13"+
+    "\12\0\1\307\31\13\14\0\2\13\3\0\7\13\6\0"+
+    "\1\13\12\0\31\13\1\310\14\0\2\13\3\0\7\13"+
+    "\6\0\1\13\12\0\11\13\1\311\20\13\14\0\2\13"+
+    "\3\0\7\13\6\0\1\13\12\0\11\13\1\312\20\13"+
+    "\14\0\2\13\3\0\7\13\6\0\1\13\12\0\12\13"+
+    "\1\313\17\13\14\0\2\13\3\0\7\13\6\0\1\13"+
+    "\12\0\1\13\1\314\30\13\14\0\2\13\3\0\6\13"+
+    "\1\315\6\0\1\13\12\0\32\13\14\0\2\13\3\0"+
+    "\7\13\6\0\1\13\12\0\15\13\1\316\14\13\14\0"+
+    "\2\13\3\0\7\13\6\0\1\13\12\0\2\13\1\317"+
+    "\27\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
+    "\4\13\1\320\25\13\14\0\2\13\3\0\7\13\6\0"+
+    "\1\13\12\0\5\13\1\321\24\13\14\0\2\13\3\0"+
+    "\1\322\6\13\6\0\1\13\12\0\32\13\14\0\2\13"+
+    "\3\0\7\13\6\0\1\13\12\0\1\13\1\323\30\13"+
+    "\14\0\2\13\3\0\7\13\6\0\1\13\12\0\1\324"+
     "\31\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
-    "\31\13\1\307\14\0\2\13\3\0\7\13\6\0\1\13"+
-    "\12\0\11\13\1\310\20\13\14\0\2\13\3\0\7\13"+
-    "\6\0\1\13\12\0\12\13\1\311\17\13\14\0\2\13"+
-    "\3\0\7\13\6\0\1\13\12\0\1\13\1\312\30\13"+
-    "\14\0\2\13\3\0\6\13\1\313\6\0\1\13\12\0"+
-    "\32\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
-    "\15\13\1\314\14\13\14\0\2\13\3\0\7\13\6\0"+
-    "\1\13\12\0\2\13\1\315\27\13\14\0\2\13\3\0"+
-    "\7\13\6\0\1\13\12\0\4\13\1\316\25\13\14\0"+
-    "\2\13\3\0\7\13\6\0\1\13\12\0\5\13\1\317"+
-    "\24\13\14\0\2\13\3\0\1\320\6\13\6\0\1\13"+
-    "\12\0\32\13\14\0\2\13\3\0\7\13\6\0\1\13"+
-    "\12\0\1\13\1\321\30\13\14\0\2\13\3\0\7\13"+
-    "\6\0\1\13\12\0\1\322\31\13\14\0\2\13\3\0"+
-    "\7\13\6\0\1\13\12\0\1\13\1\323\30\13\14\0"+
-    "\2\13\3\0\7\13\6\0\1\13\12\0\6\13\1\324"+
-    "\23\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
     "\13\13\1\325\16\13\14\0\2\13\3\0\7\13\6\0"+
-    "\1\13\12\0\12\13\1\326\17\13\14\0\2\13\3\0"+
-    "\7\13\6\0\1\13\12\0\3\13\1\327\26\13\14\0"+
-    "\2\13\3\0\7\13\6\0\1\13\12\0\1\13\1\330"+
-    "\30\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
-    "\14\13\1\331\15\13\14\0\2\13\3\0\7\13\6\0"+
-    "\1\13\12\0\2\13\1\332\27\13\14\0\2\13\3\0"+
-    "\7\13\6\0\1\13\12\0\16\13\1\333\13\13\14\0"+
-    "\2\13\3\0\7\13\6\0\1\13\12\0\6\13\1\334"+
-    "\23\13\14\0\2\13\3\0\6\13\1\335\6\0\1\13"+
-    "\12\0\32\13\14\0\2\13\3\0\7\13\6\0\1\13"+
-    "\12\0\1\13\1\336\30\13\14\0\2\13\3\0\7\13"+
-    "\6\0\1\13\12\0\7\13\1\337\22\13\14\0\2\13"+
-    "\3\0\7\13\6\0\1\13\12\0\1\340\31\13\14\0"+
-    "\2\13\3\0\6\13\1\341\6\0\1\13\12\0\32\13"+
-    "\13\0";
+    "\1\13\12\0\1\13\1\326\30\13\14\0\2\13\3\0"+
+    "\7\13\6\0\1\13\12\0\6\13\1\327\23\13\14\0"+
+    "\2\13\3\0\7\13\6\0\1\13\12\0\13\13\1\330"+
+    "\16\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
+    "\12\13\1\331\17\13\14\0\2\13\3\0\7\13\6\0"+
+    "\1\13\12\0\3\13\1\332\26\13\14\0\2\13\3\0"+
+    "\7\13\6\0\1\13\12\0\1\13\1\333\30\13\14\0"+
+    "\2\13\3\0\7\13\6\0\1\13\12\0\14\13\1\334"+
+    "\15\13\14\0\2\13\3\0\7\13\6\0\1\13\12\0"+
+    "\2\13\1\335\27\13\14\0\2\13\3\0\7\13\6\0"+
+    "\1\13\12\0\16\13\1\336\13\13\14\0\2\13\3\0"+
+    "\7\13\6\0\1\13\12\0\6\13\1\337\23\13\14\0"+
+    "\2\13\3\0\6\13\1\340\6\0\1\13\12\0\32\13"+
+    "\14\0\2\13\3\0\7\13\6\0\1\13\12\0\1\13"+
+    "\1\341\30\13\14\0\2\13\3\0\7\13\6\0\1\13"+
+    "\12\0\7\13\1\342\22\13\14\0\2\13\3\0\7\13"+
+    "\6\0\1\13\12\0\1\343\31\13\14\0\2\13\3\0"+
+    "\6\13\1\344\6\0\1\13\12\0\32\13\13\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[10184];
+    int [] result = new int[10385];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -389,10 +392,10 @@ class GdLexerHighlighter implements FlexLexer {
     "\1\11\1\1\11\11\1\1\1\11\1\1\1\11\1\1"+
     "\1\11\2\0\1\11\2\0\11\1\2\11\1\0\1\1"+
     "\1\11\1\1\1\0\5\11\33\1\1\11\1\0\1\1"+
-    "\1\0\14\1\1\0\43\1\1\11\67\1";
+    "\1\0\14\1\1\0\43\1\1\11\72\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[225];
+    int [] result = new int[228];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -710,7 +713,7 @@ class GdLexerHighlighter implements FlexLexer {
               yybegin(YYINITIAL);
         return GdTypes.STRING;
             }  // fall though
-            case 226: break;
+            case 229: break;
             default:
               {
                 return null;
@@ -723,162 +726,162 @@ class GdLexerHighlighter implements FlexLexer {
             { continue;
             } 
             // fall through
-          case 85: break;
+          case 86: break;
           case 2: 
             { return GdTypes.BAD_CHARACTER;
             } 
             // fall through
-          case 86: break;
+          case 87: break;
           case 3: 
             { return GdTypes.OR;
             } 
             // fall through
-          case 87: break;
+          case 88: break;
           case 4: 
             { return GdTypes.NUMBER;
             } 
             // fall through
-          case 88: break;
+          case 89: break;
           case 5: 
             { return GdTypes.DOT;
             } 
             // fall through
-          case 89: break;
+          case 90: break;
           case 6: 
             { return TokenType.WHITE_SPACE;
             } 
             // fall through
-          case 90: break;
+          case 91: break;
           case 7: 
             { return GdTypes.UNDER;
             } 
             // fall through
-          case 91: break;
+          case 92: break;
           case 8: 
             { return GdTypes.IDENTIFIER;
             } 
             // fall through
-          case 92: break;
+          case 93: break;
           case 9: 
             { return GdTypes.MINUS;
             } 
             // fall through
-          case 93: break;
+          case 94: break;
           case 10: 
             { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING);
             } 
             // fall through
-          case 94: break;
+          case 95: break;
           case 11: 
             { return GdTypes.COMMENT;
             } 
             // fall through
-          case 95: break;
+          case 96: break;
           case 12: 
             { return GdTypes.ANNOTATOR;
             } 
             // fall through
-          case 96: break;
+          case 97: break;
           case 13: 
             { return GdTypes.NODE_PATH_LEX;
             } 
             // fall through
-          case 97: break;
+          case 98: break;
           case 14: 
             { return GdTypes.MOD;
             } 
             // fall through
-          case 98: break;
+          case 99: break;
           case 15: 
             { return GdTypes.PLUS;
             } 
             // fall through
-          case 99: break;
+          case 100: break;
           case 16: 
             { return GdTypes.EQ;
             } 
             // fall through
-          case 100: break;
+          case 101: break;
           case 17: 
             { return GdTypes.MUL;
             } 
             // fall through
-          case 101: break;
+          case 102: break;
           case 18: 
             { return GdTypes.DIV;
             } 
             // fall through
-          case 102: break;
+          case 103: break;
           case 19: 
             { return GdTypes.AND;
             } 
             // fall through
-          case 103: break;
+          case 104: break;
           case 20: 
             { return GdTypes.TEST_OPERATOR;
             } 
             // fall through
-          case 104: break;
+          case 105: break;
           case 21: 
             { return GdTypes.NEGATE;
             } 
             // fall through
-          case 105: break;
+          case 106: break;
           case 22: 
             { return GdTypes.COMMA;
             } 
             // fall through
-          case 106: break;
+          case 107: break;
           case 23: 
             { return GdTypes.COLON;
             } 
             // fall through
-          case 107: break;
+          case 108: break;
           case 24: 
             { return GdTypes.SEMICON;
             } 
             // fall through
-          case 108: break;
+          case 109: break;
           case 25: 
             { return GdTypes.LRBR;
             } 
             // fall through
-          case 109: break;
+          case 110: break;
           case 26: 
             { return GdTypes.RRBR;
             } 
             // fall through
-          case 110: break;
+          case 111: break;
           case 27: 
             { return GdTypes.LSBR;
             } 
             // fall through
-          case 111: break;
+          case 112: break;
           case 28: 
             { return GdTypes.RSBR;
             } 
             // fall through
-          case 112: break;
+          case 113: break;
           case 29: 
             { return GdTypes.LCBR;
             } 
             // fall through
-          case 113: break;
+          case 114: break;
           case 30: 
             { return GdTypes.RCBR;
             } 
             // fall through
-          case 114: break;
+          case 115: break;
           case 31: 
             { return GdTypes.XOR;
             } 
             // fall through
-          case 115: break;
+          case 116: break;
           case 32: 
             { return GdTypes.NOT;
             } 
             // fall through
-          case 116: break;
+          case 117: break;
           case 33: 
             { if (!oppening.equals("\"\"\"")) {
             yybegin(lastState);
@@ -886,7 +889,7 @@ class GdLexerHighlighter implements FlexLexer {
         }
             } 
             // fall through
-          case 117: break;
+          case 118: break;
           case 34: 
             { if (oppening.equals(yytext().toString())) {
             yybegin(lastState);
@@ -894,257 +897,262 @@ class GdLexerHighlighter implements FlexLexer {
         }
             } 
             // fall through
-          case 118: break;
+          case 119: break;
           case 35: 
             { return GdTypes.OROR;
             } 
             // fall through
-          case 119: break;
+          case 120: break;
           case 36: 
             { return GdTypes.ASSIGN;
             } 
             // fall through
-          case 120: break;
+          case 121: break;
           case 37: 
             { return GdTypes.DOTDOT;
             } 
             // fall through
-          case 121: break;
+          case 122: break;
           case 38: 
             { return GdTypes.MMINUS;
             } 
             // fall through
-          case 122: break;
+          case 123: break;
           case 39: 
             { return GdTypes.RET;
             } 
             // fall through
-          case 123: break;
+          case 124: break;
           case 40: 
             { return GdTypes.PPLUS;
             } 
             // fall through
-          case 124: break;
+          case 125: break;
           case 41: 
             { return GdTypes.ANDAND;
             } 
             // fall through
-          case 125: break;
+          case 126: break;
           case 42: 
             { return GdTypes.LBSHIFT;
             } 
             // fall through
-          case 126: break;
+          case 127: break;
           case 43: 
             { return GdTypes.RBSHIFT;
             } 
             // fall through
-          case 127: break;
+          case 128: break;
           case 44: 
             { return GdTypes.AS;
             } 
             // fall through
-          case 128: break;
+          case 129: break;
           case 45: 
             { return GdTypes.IF;
             } 
             // fall through
-          case 129: break;
+          case 130: break;
           case 46: 
             { return GdTypes.IN;
             } 
             // fall through
-          case 130: break;
+          case 131: break;
           case 47: 
             { return GdTypes.IS;
             } 
             // fall through
-          case 131: break;
+          case 132: break;
           case 48: 
             { return GdTypes.PI;
             } 
             // fall through
-          case 132: break;
+          case 133: break;
           case 49: 
             { return GdTypes.CEQ;
             } 
             // fall through
-          case 133: break;
+          case 134: break;
           case 50: 
             { return GdTypes.FOR;
             } 
             // fall through
-          case 134: break;
+          case 135: break;
           case 51: 
             { return GdTypes.SET;
             } 
             // fall through
-          case 135: break;
+          case 136: break;
           case 52: 
             { return GdTypes.VAR;
             } 
             // fall through
-          case 136: break;
+          case 137: break;
           case 53: 
             { return GdTypes.GET;
             } 
             // fall through
-          case 137: break;
+          case 138: break;
           case 54: 
             { return GdTypes.INF;
             } 
             // fall through
-          case 138: break;
+          case 139: break;
           case 55: 
             { return GdTypes.INT;
             } 
             // fall through
-          case 139: break;
+          case 140: break;
           case 56: 
             { return GdTypes.TAU;
             } 
             // fall through
-          case 140: break;
+          case 141: break;
           case 57: 
             { return GdTypes.NAN;
             } 
             // fall through
-          case 141: break;
+          case 142: break;
           case 58: 
             { return GdTypes.FUNC;
             } 
             // fall through
-          case 142: break;
+          case 143: break;
           case 59: 
             { return GdTypes.BOOL;
             } 
             // fall through
-          case 143: break;
+          case 144: break;
           case 60: 
             { return GdTypes.ENUM;
             } 
             // fall through
-          case 144: break;
+          case 145: break;
           case 61: 
             { return GdTypes.ELSE;
             } 
             // fall through
-          case 145: break;
+          case 146: break;
           case 62: 
             { return GdTypes.ELIF;
             } 
             // fall through
-          case 146: break;
+          case 147: break;
           case 63: 
             { return GdTypes.TRUE;
             } 
             // fall through
-          case 147: break;
+          case 148: break;
           case 64: 
             { return GdTypes.NULL;
             } 
             // fall through
-          case 148: break;
+          case 149: break;
           case 65: 
             { return GdTypes.SELF;
             } 
             // fall through
-          case 149: break;
+          case 150: break;
           case 66: 
             { return GdTypes.VOID;
             } 
             // fall through
-          case 150: break;
+          case 151: break;
           case 67: 
             { return GdTypes.PASS;
             } 
             // fall through
-          case 151: break;
+          case 152: break;
           case 68: 
             { return GdTypes.FLOAT;
             } 
             // fall through
-          case 152: break;
+          case 153: break;
           case 69: 
             { return GdTypes.FALSE;
             } 
             // fall through
-          case 153: break;
+          case 154: break;
           case 70: 
             { return GdTypes.BREAK;
             } 
             // fall through
-          case 154: break;
+          case 155: break;
           case 71: 
             { return GdTypes.CONST;
             } 
             // fall through
-          case 155: break;
+          case 156: break;
           case 72: 
             { return GdTypes.AWAIT;
             } 
             // fall through
-          case 156: break;
+          case 157: break;
           case 73: 
             { return GdTypes.MATCH;
             } 
             // fall through
-          case 157: break;
+          case 158: break;
           case 74: 
             { return GdTypes.WHILE;
             } 
             // fall through
-          case 158: break;
+          case 159: break;
           case 75: 
             { return GdTypes.STATIC;
             } 
             // fall through
-          case 159: break;
+          case 160: break;
           case 76: 
             { return GdTypes.SIGNAL;
             } 
             // fall through
-          case 160: break;
+          case 161: break;
           case 77: 
             { return GdTypes.ASSERT;
             } 
             // fall through
-          case 161: break;
-          case 78: 
-            { return GdTypes.RETURN;
-            } 
-            // fall through
           case 162: break;
-          case 79: 
-            { return GdTypes.STR;
+          case 78: 
+            { return GdTypes.VARARG;
             } 
             // fall through
           case 163: break;
-          case 80: 
-            { return GdTypes.EXTENDS;
+          case 79: 
+            { return GdTypes.RETURN;
             } 
             // fall through
           case 164: break;
-          case 81: 
-            { return GdTypes.PRELOAD;
+          case 80: 
+            { return GdTypes.STR;
             } 
             // fall through
           case 165: break;
-          case 82: 
-            { return GdTypes.CONTINUE;
+          case 81: 
+            { return GdTypes.EXTENDS;
             } 
             // fall through
           case 166: break;
-          case 83: 
-            { return GdTypes.BREAKPOINT;
+          case 82: 
+            { return GdTypes.PRELOAD;
             } 
             // fall through
           case 167: break;
-          case 84: 
-            { return GdTypes.CLASS_NAME;
+          case 83: 
+            { return GdTypes.CONTINUE;
             } 
             // fall through
           case 168: break;
+          case 84: 
+            { return GdTypes.BREAKPOINT;
+            } 
+            // fall through
+          case 169: break;
+          case 85: 
+            { return GdTypes.CLASS_NAME;
+            } 
+            // fall through
+          case 170: break;
           default:
             zzScanError(ZZ_NO_MATCH);
           }

@@ -528,7 +528,7 @@ func _make_custom_tooltip(for_text: String) -> Object:
 
 #desc User defined BiDi algorithm override function.
 #desc Returns [code]Array[/code] of [code]Vector2i[/code] text ranges, in the left-to-right order. Ranges should cover full source [param text] without overlaps. BiDi algorithm will be used on each range separately.
-func _structured_text_parser(args: Array, text: String) -> Vector2i[]:
+func _structured_text_parser(args: Array, text: String) -> Array[Vector2i]:
 	pass;
 
 #desc Marks an input event as handled. Once you accept an input event, it stops propagating, even to nodes listening to [method Node._unhandled_input] or [method Node._unhandled_key_input].

@@ -118,11 +118,11 @@ func get_pattern(layer: int, coords_array: Vector2i[]) -> TileMapPattern:
 	pass;
 
 #desc Returns the list of all neighbourings cells to the one at [param coords]
-func get_surrounding_tiles(coords: Vector2i) -> Vector2i[]:
+func get_surrounding_tiles(coords: Vector2i) -> Array[Vector2i]:
 	pass;
 
 #desc Returns a [Vector2] array with the positions of all cells containing a tile in the given layer. A cell is considered empty if its source identifier equals -1, its atlas coordinates identifiers is [code]Vector2(-1, -1)[/code] and its alternative identifier is -1.
-func get_used_cells(layer: int) -> Vector2i[]:
+func get_used_cells(layer: int) -> Array[Vector2i]:
 	pass;
 
 #desc Returns a rectangle enclosing the used (non-empty) tiles of the map, including all layers.

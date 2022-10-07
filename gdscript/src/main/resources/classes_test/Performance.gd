@@ -140,7 +140,7 @@ func get_custom_monitor(id: StringName) -> Variant:
 	pass;
 
 #desc Returns the names of active custom monitors in an [Array].
-func get_custom_monitor_names() -> StringName[]:
+func get_custom_monitor_names() -> Array[StringName]:
 	pass;
 
 #desc Returns the value of one of the available built-in monitors. You should provide one of the [enum Monitor] constants as the argument, like this:

@@ -105,7 +105,7 @@ func force_update_transform() -> void:
 	pass;
 
 #desc Returns all the gizmos attached to this [code]Node3D[/code].
-func get_gizmos() -> Node3DGizmo[]:
+func get_gizmos() -> Array[Node3DGizmo]:
 	pass;
 
 #desc Returns the parent [Node3D], or an empty [Object] if no parent exists or parent is not of type [Node3D].

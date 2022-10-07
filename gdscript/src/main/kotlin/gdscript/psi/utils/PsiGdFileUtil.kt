@@ -8,6 +8,8 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdFileType
+import gdscript.GdKeywords
+import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import java.io.File
 
@@ -49,6 +51,14 @@ object PsiGdFileUtil {
         val path = "$d${file.name}";
 
         return path.replace(File.separator, "/");
+    }
+
+    fun getGlobalFile(project: Project): PsiFile {
+        return GdClassNamingIndex.get(
+            GdKeywords.GLOBAL_SCOPE,
+            project,
+            GlobalSearchScope.allScope(project),
+        ).firstOrNull()?.containingFile!!;
     }
 
 }

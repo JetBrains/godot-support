@@ -7,6 +7,7 @@ import gdscript.psi.impl.GdMethodDeclElementType
 
 class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
     private var isStatic: Boolean = false;
+    private var isVariadic: Boolean = false;
     private var name: String = "";
     private var returnType: String = "";
     private var isConstructor: Boolean = false;
@@ -15,6 +16,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
     constructor(
         parent: StubElement<*>?,
         isStatic: Boolean,
+        isVariadic: Boolean,
         isConstructor: Boolean,
         name: String?,
         returnType: String,
@@ -24,12 +26,15 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
             this.name = name
         };
         this.isStatic = isStatic;
+        this.isVariadic = isVariadic;
         this.isConstructor = isConstructor;
         this.returnType = returnType;
         this.parameters = parameters;
     }
 
     override fun isStatic(): Boolean = isStatic;
+
+    override fun isVariadic(): Boolean = isVariadic;
 
     override fun name(): String = name;
 

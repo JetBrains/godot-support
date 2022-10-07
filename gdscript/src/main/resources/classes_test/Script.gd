@@ -32,15 +32,15 @@ func get_script_constant_map() -> Dictionary:
 	pass;
 
 #desc Returns the list of methods in this [Script].
-func get_script_method_list() -> Dictionary[]:
+func get_script_method_list() -> Array[Dictionary]:
 	pass;
 
 #desc Returns the list of properties in this [Script].
-func get_script_property_list() -> Dictionary[]:
+func get_script_property_list() -> Array[Dictionary]:
 	pass;
 
 #desc Returns the list of user signals defined in this [Script].
-func get_script_signal_list() -> Dictionary[]:
+func get_script_signal_list() -> Array[Dictionary]:
 	pass;
 
 #desc Returns [code]true[/code] if the script, or a base class, defines a signal with the given name.

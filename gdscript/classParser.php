@@ -10,6 +10,16 @@ $formatDesc = function($desc, $key) {
     return sprintf("#%s %s\n", $key, implode($desc, sprintf("\n#%s ", $key)));
 };
 
+$formatType = function($type) {
+    $type = $type['@attributes']['type'];
+    if (substr($type, -2) == "[]") {
+        $type = substr($type, 0, strlen($type) - 2);
+        return sprintf("Array[%s]", $type);
+    }
+
+    return $type;
+};
+
 $parseParams = function($value) {
     $params = [];
     $parsed = [];
@@ -36,6 +46,8 @@ foreach ($files as $filename) {
     if ($filename == "." || $filename == "..") continue;
     $data = "";
     $class_name = substr($filename, 0, strlen($filename) - 4);
+    $class_name = str_replace("@", "_", $class_name);
+
     $content = file_get_contents(sprintf("./classes/%s", $filename));
 
     $xml = (array) simplexml_load_string($content);
@@ -58,12 +70,14 @@ foreach ($files as $filename) {
 //         $parsed[$p_att['index']] = [$p_att['name'], $p_att['type']];
 //     }
 
-    $desc = (array) ($xml['description'] ?? []);
-    if ($desc) {
-        $data .= $formatDesc($desc['0'], "desc");
-    }
+    //if (substr($class_name, 0, 1) != '@') {
+        $desc = (array) ($xml['description'] ?? []);
+        if ($desc) {
+            $data .= $formatDesc($desc['0'], "desc");
+        }
 
-    $data .= sprintf("class_name %s\n\n", $class_name);
+        $data .= sprintf("class_name %s\n\n", $class_name);
+    //}
 
     foreach ($xml['constants'] ?? [] as $value) {
         $value = (array) $value;
@@ -96,7 +110,7 @@ foreach ($files as $filename) {
             $data .= $formatDesc($desc['0'], "desc");
         }
 
-        $data .= sprintf("func %s(%s) -> %s:\n", $att['name'], implode($params, ', '), $ret['@attributes']['type']);
+        $data .= sprintf("func %s(%s) -> %s:\n", $att['name'], implode($params, ', '), $formatType($ret));
         $data .= sprintf("\tpass;\n\n");
     }
     $data .= "\n";
@@ -106,9 +120,10 @@ foreach ($files as $filename) {
         $att = (array) $value['@attributes'];
         $ret = (array) ($value['return'] ?? ['@attributes' => [ 'type' => 'void' ]]);
 
-        $quali = $att['qualifiers'] ?? "";
+        $quali = $att['qualifiers'] ?? ""; // TODO multiple?
         // TODO Tohle pak smazat, až bude const func implementována .. piozor existuje ještě "virtual" .. např _init
-        if ($quali != "static") {
+        $allowed = ["static", "vararg"];
+        if (!in_array($quali, $allowed)) {
             $quali = "";
         }
 
@@ -122,7 +137,7 @@ foreach ($files as $filename) {
             $data .= $formatDesc($desc['0'], "desc");
         }
 
-        $data .= sprintf("%sfunc %s(%s) -> %s:\n", $quali, $att['name'], implode($params, ', '), $ret['@attributes']['type']);
+        $data .= sprintf("%sfunc %s(%s) -> %s:\n", $quali, $att['name'], implode($params, ', '), $formatType($ret));
         $data .= sprintf("\tpass;\n\n");
     }
     $data .= "\n";

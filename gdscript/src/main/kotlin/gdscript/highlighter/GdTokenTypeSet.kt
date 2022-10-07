@@ -26,6 +26,7 @@ interface GdTokenTypeSet {
             GdTypes.WHILE,
             GdTypes.BREAKPOINT,
             GdTypes.STATIC,
+            GdTypes.VARARG,
             GdTypes.SIGNAL,
             GdTypes.FOR,
             GdTypes.IN,

@@ -12,7 +12,7 @@ func create_callback(callable: Callable) -> JavaScriptObject:
 	pass;
 
 #desc Creates a new JavaScript object using the [code]new[/code] constructor. The [param object] must a valid property of the JavaScript [code]window[/code]. See [JavaScriptObject] for usage.
-func create_object(object: String) -> Variant:
+vararg func create_object(object: String) -> Variant:
 	pass;
 
 #desc Prompts the user to download a file containing the specified [param buffer]. The file will have the given [param name] and [param mime] type.

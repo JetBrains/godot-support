@@ -17,7 +17,7 @@ func get_animation(name: StringName) -> Animation:
 	pass;
 
 #desc Returns the keys for the [Animation]s stored in the library.
-func get_animation_list() -> StringName[]:
+func get_animation_list() -> Array[StringName]:
 	pass;
 
 #desc Returns [code]true[/code] if the library stores an [Animation] with [param name] as the key.

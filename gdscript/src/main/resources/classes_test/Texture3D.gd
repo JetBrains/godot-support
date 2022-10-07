@@ -4,7 +4,7 @@ class_name Texture3D
 
 
 
-func _get_data() -> Image[]:
+func _get_data() -> Array[Image]:
 	pass;
 
 func _get_depth() -> int:
@@ -22,7 +22,7 @@ func _get_width() -> int:
 func _has_mipmaps() -> bool:
 	pass;
 
-func get_data() -> Image[]:
+func get_data() -> Array[Image]:
 	pass;
 
 func get_depth() -> int:

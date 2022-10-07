@@ -60,7 +60,7 @@ func get_face_count() -> int:
 	pass;
 
 #desc Returns array of fallback [Font]s.
-func get_fallbacks() -> Font[]:
+func get_fallbacks() -> Array[Font]:
 	pass;
 
 #desc Returns font family name.
@@ -90,7 +90,7 @@ func get_opentype_features() -> Dictionary:
 	pass;
 
 #desc Returns [Array] of valid [Font] [RID]s, which can be passed to the [TextServer] methods.
-func get_rids() -> RID[]:
+func get_rids() -> Array[RID]:
 	pass;
 
 #desc Returns the spacing for the given [code]type[/code] (see [enum TextServer.SpacingType]).

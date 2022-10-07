@@ -139,7 +139,7 @@ func _body_create() -> RID:
 func _body_get_canvas_instance_id(body: RID) -> int:
 	pass;
 
-func _body_get_collision_exceptions(body: RID) -> RID[]:
+func _body_get_collision_exceptions(body: RID) -> Array[RID]:
 	pass;
 
 func _body_get_collision_layer(body: RID) -> int:

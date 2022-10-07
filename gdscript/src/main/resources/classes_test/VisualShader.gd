@@ -91,7 +91,7 @@ func get_node(type: int, id: int) -> VisualShaderNode:
 	pass;
 
 #desc Returns the list of connected nodes with the specified type.
-func get_node_connections(type: int) -> Dictionary[]:
+func get_node_connections(type: int) -> Array[Dictionary]:
 	pass;
 
 #desc Returns the list of all nodes in the shader with the specified type.

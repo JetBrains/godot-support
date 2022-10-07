@@ -93,12 +93,12 @@ var wind_source_path: NodePath;
 
 #desc Returns a list of intersecting [Area3D]s. The overlapping area's [member CollisionObject3D.collision_layer] must be part of this area's [member CollisionObject3D.collision_mask] in order to be detected.
 #desc For performance reasons (collisions are all processed at the same time) this list is modified once during the physics step, not immediately after objects are moved. Consider using signals instead.
-func get_overlapping_areas() -> Area3D[]:
+func get_overlapping_areas() -> Array[Area3D]:
 	pass;
 
 #desc Returns a list of intersecting [PhysicsBody3D]s and [GridMap]s. The overlapping body's [member CollisionObject3D.collision_layer] must be part of this area's [member CollisionObject3D.collision_mask] in order to be detected.
 #desc For performance reasons (collisions are all processed at the same time) this list is modified once during the physics step, not immediately after objects are moved. Consider using signals instead.
-func get_overlapping_bodies() -> Node3D[]:
+func get_overlapping_bodies() -> Array[Node3D]:
 	pass;
 
 #desc Returns [code]true[/code] if intersecting any [Area3D]s, otherwise returns [code]false[/code]. The overlapping area's [member CollisionObject3D.collision_layer] must be part of this area's [member CollisionObject3D.collision_mask] in order to be detected.

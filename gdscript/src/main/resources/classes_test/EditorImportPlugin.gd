@@ -111,7 +111,7 @@ class_name EditorImportPlugin
 
 
 #desc Gets the options and default values for the preset at this index. Returns an Array of Dictionaries with the following keys: [code]name[/code], [code]default_value[/code], [code]property_hint[/code] (optional), [code]hint_string[/code] (optional), [code]usage[/code] (optional).
-func _get_import_options(path: String, preset_index: int) -> Dictionary[]:
+func _get_import_options(path: String, preset_index: int) -> Array[Dictionary]:
 	pass;
 
 #desc Gets the order of this importer to be run when importing resources. Importers with [i]lower[/i] import orders will be called first, and higher values will be called later. Use this to ensure the importer runs after the dependencies are already imported. The default import order is [code]0[/code] unless overridden by a specific importer. See [enum ResourceImporter.ImportOrder] for some predefined values.

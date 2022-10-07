@@ -44,7 +44,7 @@ func grow_mask(pixels: int, rect: Rect2i) -> void:
 #desc Rect2(Vector2(), get_size())
 #desc [/codeblock]
 #desc [param epsilon] is passed to RDP to control how accurately the polygons cover the bitmap: a lower [param epsilon] corresponds to more points in the polygons.
-func opaque_to_polygons(rect: Rect2i, epsilon: float) -> PackedVector2Array[]:
+func opaque_to_polygons(rect: Rect2i, epsilon: float) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Resizes the image to [param new_size].

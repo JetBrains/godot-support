@@ -16,7 +16,7 @@ func _get_base_script() -> Script:
 func _get_constants() -> Dictionary:
 	pass;
 
-func _get_documentation() -> Dictionary[]:
+func _get_documentation() -> Array[Dictionary]:
 	pass;
 
 func _get_instance_base_type() -> StringName:
@@ -28,7 +28,7 @@ func _get_language() -> ScriptLanguage:
 func _get_member_line(member: StringName) -> int:
 	pass;
 
-func _get_members() -> StringName[]:
+func _get_members() -> Array[StringName]:
 	pass;
 
 func _get_method_info(method: StringName) -> Dictionary:
@@ -40,13 +40,13 @@ func _get_property_default_value(property: StringName) -> Variant:
 func _get_rpc_config() -> Variant:
 	pass;
 
-func _get_script_method_list() -> Dictionary[]:
+func _get_script_method_list() -> Array[Dictionary]:
 	pass;
 
-func _get_script_property_list() -> Dictionary[]:
+func _get_script_property_list() -> Array[Dictionary]:
 	pass;
 
-func _get_script_signal_list() -> Dictionary[]:
+func _get_script_signal_list() -> Array[Dictionary]:
 	pass;
 
 func _get_source_code() -> String:

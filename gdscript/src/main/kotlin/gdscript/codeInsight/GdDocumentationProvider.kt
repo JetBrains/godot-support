@@ -46,6 +46,10 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
 
     private fun renderFullDoc(docLines: Array<String>): String {
         val sb = StringBuilder();
+        sb.append(DocumentationMarkup.CONTENT_START);
+//        sb.append(CodeDocumentationUtil.createDocCommentLine(JavaDocumentationProvider.RETURN_TAG,
+//            _comment.getContainingFile(),
+//            commenter))
 
         docLines.forEach {
             val line = it
@@ -53,17 +57,18 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
                 .replace("[/b]", "</strong>")
                 .replace("[code]", "<i>")
                 .replace("[/code]", "</i>")
-                .replace("[codeblocks]", DocumentationMarkup.DEFINITION_START)
-                .replace("[/codeblocks]", DocumentationMarkup.DEFINITION_END)
+                .replace("[codeblocks]", "")
+                .replace("[/codeblocks]", "")
 
-                .replace("[gdscript]", "${DocumentationMarkup.CONTENT_START}<strong>GdScript</strong>")
-                .replace("[csharp]", "${DocumentationMarkup.CONTENT_START}<strong>C#</strong>")
-                .replace("[/gdscript]", DocumentationMarkup.CONTENT_END)
-                .replace("[/csharp]", DocumentationMarkup.CONTENT_END)
+                .replace("[gdscript]", "${DocumentationMarkup.DEFINITION_START}<strong>GdScript</strong>")
+                .replace("[csharp]", "${DocumentationMarkup.DEFINITION_START}<strong>C#</strong>")
+                .replace("[/gdscript]", DocumentationMarkup.DEFINITION_END)
+                .replace("[/csharp]", DocumentationMarkup.DEFINITION_END)
 
             sb.append(line);
             sb.append("<br />");
         }
+        sb.append(DocumentationMarkup.CONTENT_END);
 
         return sb.toString();
     }

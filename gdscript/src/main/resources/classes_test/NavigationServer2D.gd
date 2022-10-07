@@ -71,7 +71,7 @@ func free_rid(rid: RID) -> void:
 	pass;
 
 #desc Returns all created navigation map [RID]s on the NavigationServer. This returns both 2D and 3D created navigation maps as there is technically no distinction between them.
-func get_maps() -> RID[]:
+func get_maps() -> Array[RID]:
 	pass;
 
 #desc Create a new link between two locations on a map.
@@ -146,7 +146,7 @@ func map_force_update(map: RID) -> void:
 	pass;
 
 #desc Returns all navigation agents [RID]s that are currently assigned to the requested navigation [param map].
-func map_get_agents(map: RID) -> RID[]:
+func map_get_agents(map: RID) -> Array[RID]:
 	pass;
 
 #desc Returns the map cell size.
@@ -170,7 +170,7 @@ func map_get_link_connection_radius(map: RID) -> float:
 	pass;
 
 #desc Returns all navigation link [RID]s that are currently assigned to the requested navigation [code]map[/code].
-func map_get_links(map: RID) -> RID[]:
+func map_get_links(map: RID) -> Array[RID]:
 	pass;
 
 #desc Returns the navigation path to reach the destination from the origin. [param navigation_layers] is a bitmask of all region navigation layers that are allowed to be in the path.
@@ -178,7 +178,7 @@ func map_get_path(map: RID, origin: Vector2, destination: Vector2, optimize: boo
 	pass;
 
 #desc Returns all navigation regions [RID]s that are currently assigned to the requested navigation [param map].
-func map_get_regions(map: RID) -> RID[]:
+func map_get_regions(map: RID) -> Array[RID]:
 	pass;
 
 #desc Returns true if the map is active.

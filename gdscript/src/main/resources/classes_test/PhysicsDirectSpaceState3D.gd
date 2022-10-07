@@ -15,7 +15,7 @@ func cast_motion(parameters: PhysicsShapeQueryParameters3D) -> PackedFloat32Arra
 #desc Checks the intersections of a shape, given through a [PhysicsShapeQueryParameters3D] object, against the space. The resulting array contains a list of points where the shape intersects another. Like with [method intersect_shape], the number of returned results can be limited to save processing time.
 #desc Returned points are a list of pairs of contact points. For each pair the first one is in the shape passed in [PhysicsShapeQueryParameters3D] object, second one is in the collided shape from the physics space.
 #desc [b]Note:[/b] This method does not take into account the [code]motion[/code] property of the object.
-func collide_shape(parameters: PhysicsShapeQueryParameters3D, max_results: int) -> PackedVector2Array[]:
+func collide_shape(parameters: PhysicsShapeQueryParameters3D, max_results: int) -> Array[PackedVector2Array]:
 	pass;
 
 #desc Checks the intersections of a shape, given through a [PhysicsShapeQueryParameters3D] object, against the space. If it collides with more than one shape, the nearest one is selected. The returned object is a dictionary containing the following fields:
@@ -36,7 +36,7 @@ func get_rest_info(parameters: PhysicsShapeQueryParameters3D) -> Dictionary:
 #desc [code]rid[/code]: The intersecting object's [RID].
 #desc [code]shape[/code]: The shape index of the colliding shape.
 #desc The number of intersections can be limited with the [param max_results] parameter, to reduce the processing time.
-func intersect_point(parameters: PhysicsPointQueryParameters3D, max_results: int) -> Dictionary[]:
+func intersect_point(parameters: PhysicsPointQueryParameters3D, max_results: int) -> Array[Dictionary]:
 	pass;
 
 #desc Intersects a ray in a given space. Ray position and other parameters are defined through [PhysicsRayQueryParameters3D]. The returned object is a dictionary with the following fields:
@@ -57,7 +57,7 @@ func intersect_ray(parameters: PhysicsRayQueryParameters3D) -> Dictionary:
 #desc [code]shape[/code]: The shape index of the colliding shape.
 #desc The number of intersections can be limited with the [param max_results] parameter, to reduce the processing time.
 #desc [b]Note:[/b] This method does not take into account the [code]motion[/code] property of the object.
-func intersect_shape(parameters: PhysicsShapeQueryParameters3D, max_results: int) -> Dictionary[]:
+func intersect_shape(parameters: PhysicsShapeQueryParameters3D, max_results: int) -> Array[Dictionary]:
 	pass;
 
 

@@ -17,11 +17,11 @@ func clear() -> void:
 	pass;
 
 #desc Gets the list of selected nodes.
-func get_selected_nodes() -> Node[]:
+func get_selected_nodes() -> Array[Node]:
 	pass;
 
 #desc Gets the list of selected nodes, optimized for transform operations (i.e. moving them, rotating, etc). This list avoids situations where a node is selected and also child/grandchild.
-func get_transformable_selected_nodes() -> Node[]:
+func get_transformable_selected_nodes() -> Array[Node]:
 	pass;
 
 #desc Removes a node from the selection.

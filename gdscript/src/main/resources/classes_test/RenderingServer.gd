@@ -1115,7 +1115,7 @@ var render_loop_enabled: bool;
 
 
 
-func bake_render_uv2(base: RID, material_overrides: RID[], image_size: Vector2i) -> Image[]:
+func bake_render_uv2(base: RID, material_overrides: RID[], image_size: Vector2i) -> Array[Image]:
 	pass;
 
 #desc Creates a camera attributes object and adds it to the RenderingServer. It can be accessed with the RID that is returned. This RID will be used in all [code]camera_attributes_[/code] RenderingServer functions.
@@ -1653,7 +1653,7 @@ func get_rendering_info(info: int) -> int:
 	pass;
 
 #desc Returns the parameters of a shader.
-func get_shader_parameter_list(shader: RID) -> Dictionary[]:
+func get_shader_parameter_list(shader: RID) -> Array[Dictionary]:
 	pass;
 
 #desc Returns the id of the test cube. Creates one if none exists.
@@ -1750,7 +1750,7 @@ func instance_geometry_get_shader_parameter(instance: RID, parameter: StringName
 func instance_geometry_get_shader_parameter_default_value(instance: RID, parameter: StringName) -> Variant:
 	pass;
 
-func instance_geometry_get_shader_parameter_list(instance: RID) -> Dictionary[]:
+func instance_geometry_get_shader_parameter_list(instance: RID) -> Array[Dictionary]:
 	pass;
 
 #desc Sets the shadow casting setting to one of [enum ShadowCastingSetting]. Equivalent to [member GeometryInstance3D.cast_shadow].
@@ -2021,7 +2021,7 @@ func mesh_surface_get_arrays(mesh: RID, surface: int) -> Array:
 	pass;
 
 #desc Returns a mesh's surface's arrays for blend shapes.
-func mesh_surface_get_blend_shape_arrays(mesh: RID, surface: int) -> Array[]:
+func mesh_surface_get_blend_shape_arrays(mesh: RID, surface: int) -> Array[Array]:
 	pass;
 
 func mesh_surface_get_format_attribute_stride(format: int, vertex_count: int) -> int:
@@ -2497,7 +2497,7 @@ func texture_2d_update(texture: RID, image: Image, layer: int) -> void:
 func texture_3d_create(format: int, width: int, height: int, depth: int, mipmaps: bool, data: Image[]) -> RID:
 	pass;
 
-func texture_3d_get(texture: RID) -> Image[]:
+func texture_3d_get(texture: RID) -> Array[Image]:
 	pass;
 
 func texture_3d_placeholder_create() -> RID:

@@ -24,7 +24,7 @@ func action_get_deadzone(action: StringName) -> float:
 
 #desc Returns an array of [InputEvent]s associated with a given action.
 #desc [b]Note:[/b] When used in the editor (e.g. a tool script or [EditorPlugin]), this method will return events for the editor action. If you want to access your project's input binds from the editor, read the [code]input/*[/code] settings from [ProjectSettings].
-func action_get_events(action: StringName) -> InputEvent[]:
+func action_get_events(action: StringName) -> Array[InputEvent]:
 	pass;
 
 #desc Returns [code]true[/code] if the action has the given [InputEvent] associated with it.
@@ -50,7 +50,7 @@ func event_is_action(event: InputEvent, action: StringName, exact_match: bool) -
 	pass;
 
 #desc Returns an array of all actions in the [InputMap].
-func get_actions() -> StringName[]:
+func get_actions() -> Array[StringName]:
 	pass;
 
 #desc Returns [code]true[/code] if the [InputMap] has a registered action with the given name.

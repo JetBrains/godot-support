@@ -297,7 +297,7 @@ func get_accent_color() -> Color:
 
 #desc Returns an [Array] of [Rect2], each of which is the bounding rectangle for a display cutout or notch. These are non-functional areas on edge-to-edge screens used by cameras and sensors. Returns an empty array if the device does not have cutouts. See also [method get_display_safe_area].
 #desc [b]Note:[/b] Currently only implemented on Android. Other platforms will return an empty array even if they do have display cutouts or notches.
-func get_display_cutouts() -> Rect2[]:
+func get_display_cutouts() -> Array[Rect2]:
 	pass;
 
 #desc Returns the unobscured area of the display where interactive controls should be rendered. See also [method get_display_cutouts].
@@ -761,7 +761,7 @@ func tablet_set_current_driver(name: String) -> void:
 #desc - [code]id[/code] is voice identifier.
 #desc - [code]language[/code] is language code in [code]lang_Variant[/code] format. [code]lang[/code] part is a 2 or 3-letter code based on the ISO-639 standard, in lowercase. And [code]Variant[/code] part is an engine dependent string describing country, region or/and dialect.
 #desc [b]Note:[/b] This method is implemented on Android, iOS, Web, Linux, macOS, and Windows.
-func tts_get_voices() -> Dictionary[]:
+func tts_get_voices() -> Array[Dictionary]:
 	pass;
 
 #desc Returns an [PackedStringArray] of voice identifiers for the [param language].

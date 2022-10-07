@@ -1,11 +1,13 @@
 package gdscript.psi.impl
 
 import com.intellij.psi.stubs.*
+import com.intellij.psi.util.elementType
 import gdscript.GdLanguage
 import gdscript.index.Indices
 import gdscript.index.stub.GdMethodDeclStub
 import gdscript.index.stub.GdMethodDeclStubImpl
 import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdTypes
 import gdscript.psi.utils.PsiGdClassUtil
 import gdscript.psi.utils.PsiGdParameterUtil
 
@@ -20,6 +22,7 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
 
     override fun serialize(stub: GdMethodDeclStub, dataStream: StubOutputStream) {
         dataStream.writeBoolean(stub.isStatic());
+        dataStream.writeBoolean(stub.isVariadic());
         dataStream.writeBoolean(stub.isConstructor());
         dataStream.writeName(stub.name());
         dataStream.writeName(stub.returnType());
@@ -29,6 +32,7 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): GdMethodDeclStub =
         GdMethodDeclStubImpl(
             parentStub,
+            dataStream.readBoolean(),
             dataStream.readBoolean(),
             dataStream.readBoolean(),
             dataStream.readNameString(),
@@ -45,9 +49,18 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
 
     override fun createStub(psi: GdMethodDeclTl, parentStub: StubElement<*>?): GdMethodDeclStub {
         val className = PsiGdClassUtil.getClassName(psi) ?: "";
+        var isStatic = false;
+        var isVariadic = false;
+        psi.children.forEach {
+            when (it.elementType) {
+                GdTypes.STATIC -> isStatic = true;
+                GdTypes.VARARG -> isVariadic = true;
+            }
+        }
 
         return GdMethodDeclStubImpl(parentStub,
-            psi.firstChild.text.equals("static"),
+            isStatic,
+            isVariadic,
             psi.name == className || psi.name == "_init",
             psi.name,
             psi.returnType,
