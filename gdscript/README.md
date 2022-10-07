@@ -1,36 +1,47 @@
-## GdScript
-### Top level
-- @tool
-- extends ExistingClass
-- class_name - expects filename
+# GdScript
 
-### Var & Const
-- Check uniqueness
-- Alt+Enter add Type
-- ❌ Create get/set Alt+Insert
+## Work queue
+### Missing language syntax
+- Match case
+- Lambdas
+- Signals
+- Inner class
+- recover from unfinished functions (param hints)
 
-### References
-- Colors of reference by type (Var/Const/Class/...)
+### Lower Priority
+- Full feature Formatter
+- Linkable Documentation
+- Check Parameters in function call
+- expr type match
+- Resource exists
+- Double enter -> force dedent
+- Create getter/setter via Alt+Insert
+- Rename file -> rename also class_name
 
-### Resources
-- autocomplete both `$Path/Node` && `$"%Name"`
-- ❌ check that resource exists
+## List of features
+### Auto-completion
+- Inheritance & ClassName
+- Annotations
+- func overrides
+- Resources (`$Path/Node` && `$"%Name"`)
 
-### Methods
-- Alt+Enter return add Type
+### Documentation (Ctrl+Q)
+- Currently only simplified plain-text
+- ❌ Links and visualization like Java doc
 
-### Inner class
-- ❌
+### Other
+- Inlay hints  
+ ![](./screens/inlay.png)
+- Param hints (Ctrl+P)  
+![](./screens/param-hint.png)
 
-## Formatter
-- ❌
+### Formatter
+- Very simplified version - requires major work  
 - ❌ Optional semicolons (add/remove based on settings)
 
-### Others
-- check ref_id (method, var, const, ...) exists
-
-
-
-inlay
-doc
-formatter
+## Actions
+### Quick fixes
+#### Alt+Enter
+- add/change return Type
+- remove annotation
+- change class_name to match filename
