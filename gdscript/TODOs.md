@@ -2,8 +2,6 @@ resources: onready check
 
 const func ... qualifiers ?? Je to i v xml
 
-automatizace refreshe
-
 nefunguje kontrola rekurze / metod definovaných po tom, kde se volají ?? možná ano - chybka mohla být v kanclu bez indexu
 
 documentace:
@@ -68,16 +66,11 @@ signal - napovídat jména + kontrolovat params
 
 sdk -> lepší impl
 
-8 line marker (něco jako signals z godotu?)
 13 go to
-19 doc
 
 Completions:
-- fn names privacy?
-- public/private settings
 - method params
 - if else /...  flow hints
-- flow templates
 
 ```
 func _init(e=null, m=null).(e):

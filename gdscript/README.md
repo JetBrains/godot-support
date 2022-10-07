@@ -6,7 +6,10 @@
 - Lambdas
 - Signals
 - Inner class
-- recover from unfinished functions (param hints)
+- Recover from unfinished functions (param hints)
+- Parent method call fe.: ._init()
+- Annotation parameters
+- Globals
 
 ### Lower Priority
 - Full feature Formatter
@@ -17,6 +20,12 @@
 - Double enter -> force dedent
 - Create getter/setter via Alt+Insert
 - Rename file -> rename also class_name
+- Multi-line string bugs
+- Line marker (signals, ...)
+- Don't auto-complete private functions/fields (leading underscore) -> allow it based on settings
+- Flow templates
+- Enum checks
+- Proper Run/Debug config
 
 ## List of features
 ### Auto-completion
@@ -34,6 +43,8 @@
  ![](./screens/inlay.png)
 - Param hints (Ctrl+P)  
 ![](./screens/param-hint.png)
+- Run configuration - starts the game from Godot exe  
+![](./screens/run-config.png)
 
 ### Formatter
 - Very simplified version - requires major work  
