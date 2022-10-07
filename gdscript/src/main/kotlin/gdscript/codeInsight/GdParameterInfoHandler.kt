@@ -68,7 +68,7 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, GdMethodDeclTl>, D
                 repeat(currentParam) {
                     builder.append("$it, ");
                 };
-                builder.append("args...");
+                builder.append("vararg");
             } else {
                 builder.append("no parameters");
             }

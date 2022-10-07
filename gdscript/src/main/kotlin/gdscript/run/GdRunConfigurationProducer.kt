@@ -30,7 +30,6 @@ class GdRunConfigurationProducer : LazyRunConfigurationProducer<GdRunConfigurati
         return true;
     }
 
-    override fun getConfigurationFactory(): ConfigurationFactory =
-        GdConfigurationFactory.INSTANCE
+    override fun getConfigurationFactory(): ConfigurationFactory = GdConfigurationFactory
 
 }

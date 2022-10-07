@@ -18,9 +18,10 @@
 - Resource exists
 - Double enter -> force dedent
 - Create getter/setter via Alt+Insert
-- Multi-line string bugs
+- Run configuration
+  - remove pop-up to make it single click
+  - tady může být více scriptů (potřeba ověřit ID)
 - Don't auto-complete private functions/fields (leading underscore) -> allow it based on settings
-- Run configuration - line marker
 - Line marker (signals, ...)
 - Enum checks
 - Flow templates

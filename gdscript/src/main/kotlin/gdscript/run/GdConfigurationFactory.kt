@@ -6,13 +6,7 @@ import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.openapi.components.BaseState
 import com.intellij.openapi.project.Project
 
-class GdConfigurationFactory : ConfigurationFactory {
-
-    companion object {
-        val INSTANCE = GdConfigurationFactory(GdRunConfigurationType.INSTANCE);
-    }
-
-    constructor(type: ConfigurationType) : super(type);
+object GdConfigurationFactory : ConfigurationFactory(GdRunConfigurationType) {
 
     override fun getId(): String = GdRunConfigurationType.ID;
 
