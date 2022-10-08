@@ -1,17 +1,15 @@
 # GdScript
 
 ## Work queue
-### Top priority
-- Match case (dictionary)
-- Dictionaries
-- Lambdas
+### Top priority (Alpha)
 - Signals
-- Inner class
-- Parent method call fe.: ._init()
 - Annotation parameters
+- Parent method call fe.: ._init()
+- Lambdas
+- Inner class
 - Formatter into non-disrupt state
 
-### Middle Priority
+### Middle Priority (Betta)
 - Full feature Formatter
 - Check Parameters in function call
 - expr type match
@@ -26,7 +24,7 @@
 - Enum checks
 - Flow templates
 
-### Low Priority
+### Low Priority (Full Release)
 - Rename file -> rename also class_name
 - Linkable Documentation
 - type of var binding in match pattern

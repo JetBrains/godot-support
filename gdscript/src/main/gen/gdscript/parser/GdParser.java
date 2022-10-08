@@ -641,7 +641,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LCBR [ keyValuePattern ] { COMMA keyValuePattern } [ DOTDOT ] RCBR
+  // LCBR keyValuePattern? (COMMA keyValuePattern)* (COMMA DOTDOT)? RCBR
   public static boolean dictPattern(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dictPattern")) return false;
     if (!nextTokenIs(b, LCBR)) return false;
@@ -656,16 +656,27 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [ keyValuePattern ]
+  // keyValuePattern?
   private static boolean dictPattern_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dictPattern_1")) return false;
     keyValuePattern(b, l + 1);
     return true;
   }
 
-  // COMMA keyValuePattern
+  // (COMMA keyValuePattern)*
   private static boolean dictPattern_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dictPattern_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!dictPattern_2_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "dictPattern_2", c)) break;
+    }
+    return true;
+  }
+
+  // COMMA keyValuePattern
+  private static boolean dictPattern_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dictPattern_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
@@ -674,11 +685,21 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [ DOTDOT ]
+  // (COMMA DOTDOT)?
   private static boolean dictPattern_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dictPattern_3")) return false;
-    consumeToken(b, DOTDOT);
+    dictPattern_3_0(b, l + 1);
     return true;
+  }
+
+  // COMMA DOTDOT
+  private static boolean dictPattern_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dictPattern_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, COMMA, DOTDOT);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
