@@ -1,7 +1,9 @@
 package gdscript.psi.utils
 
-import com.intellij.psi.PsiIdentifier
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.search.GlobalSearchScope
+import gdscript.index.impl.GdSignalDeclIndex
+import gdscript.psi.GdCallEx
+import gdscript.psi.GdLiteralEx
 import gdscript.psi.GdSignalDeclTl
 
 object PsiGdSignalUtil {
@@ -21,9 +23,21 @@ object PsiGdSignalUtil {
             return stub.parameters();
         }
 
-        return PsiTreeUtil.findChildrenOfType(element.paramList, PsiIdentifier::class.java).map {
-            it.text
-        }.toTypedArray()
+        return element.paramList?.paramList?.map {
+            it.varNmi.name
+        }?.toTypedArray() ?: emptyArray();
+    }
+
+    fun getDeclaration(element: GdCallEx): GdSignalDeclTl? {
+        val root = element.prevSibling?.prevSibling ?: return null;
+        if (root !is GdLiteralEx) return null;
+
+        val signalName = root.text;
+        val file = PsiGdExprUtil.getAttrOrCallParentFile(root) ?: element.containingFile;
+
+        return GdSignalDeclIndex
+            .get(signalName, element.project, GlobalSearchScope.fileScope(file))
+            .firstOrNull();
     }
 
 }

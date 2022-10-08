@@ -2,7 +2,6 @@
 
 ## Work queue
 ### Top priority (Alpha)
-- Signals
 - Annotation parameters
 - Parent method call fe.: ._init()
 - Lambdas
@@ -10,8 +9,14 @@
 - Formatter into non-disrupt state
 
 ### Middle Priority (Betta)
+- Signals
+  - parameter hint
 - Full feature Formatter
 - Check Parameters in function call
+- Await
+  - check if it is correctly implemented
+  - check if awaiting an async task
+  - check if async task is awaited
 - expr type match
 - Resource exists
 - Double enter -> force dedent
@@ -23,6 +28,7 @@
 - Line marker (signals, ...)
 - Enum checks
 - Flow templates
+- Icon download with class refresh
 
 ### Low Priority (Full Release)
 - Rename file -> rename also class_name

@@ -7,9 +7,12 @@ import com.intellij.codeInsight.hints.InlayParameterHintsProvider
 import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.startOffset
+import com.intellij.util.containers.toArray
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdRefIdNm
+import gdscript.psi.GdSignalDeclTl
+import gdscript.psi.utils.PsiGdSignalUtil
 import gdscript.reference.GdClassMemberReference
 
 class GdInlayParameterHintProvider : InlayParameterHintsProvider {
@@ -17,9 +20,17 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getHintInfo(element: PsiElement): HintInfo? {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return null;
-            val method = GdClassMemberReference(id).resolveDeclaration() ?: return null;
-            if (method is GdMethodDeclTl) {
-                return MethodInfo(method.name.orEmpty(), method.parameters.keys.toList());
+            val declaration = GdClassMemberReference(id).resolveDeclaration() ?: return null;
+            if (declaration is GdMethodDeclTl) {
+                val name = declaration.name.orEmpty();
+                if (name == "emit") {
+                    val signal = PsiGdSignalUtil.getDeclaration(element);
+                    if (signal != null) {
+                        return MethodInfo(name, signal.parameters.toList());
+                    }
+                }
+
+                return MethodInfo(name, declaration.parameters.keys.toList());
             }
         }
         return null
@@ -30,11 +41,18 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
             val id = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return emptyList();
             val method = GdClassMemberReference(id).resolveDeclaration() ?: return emptyList();
             if (method is GdMethodDeclTl) {
-                val params = method.paramList?.paramList ?: return emptyList();
+                val name = method.name.orEmpty();
+                var params = method.parameters.keys.toArray(emptyArray());
+                if (name == "emit") {
+                    val signal = PsiGdSignalUtil.getDeclaration(element);
+                    if (signal != null) {
+                        params = signal.parameters;
+                    }
+                }
 
                 return element.argList?.exprList?.mapIndexed { i, it ->
                     InlayInfo(
-                        params[i]?.varNmi?.name.orEmpty(),
+                        params[i],//?.varNmi?.name.orEmpty(),
                         it.startOffset,
                         false,
                     )

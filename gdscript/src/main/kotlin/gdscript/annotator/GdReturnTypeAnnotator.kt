@@ -29,7 +29,7 @@ class GdReturnTypeAnnotator : Annotator {
         val returnType = element.text;
         val method = PsiTreeUtil.getStubOrPsiParentOfType(element, GdMethodDeclTl::class.java)?.methodIdNmi ?: return;
 
-        val parentMethod = PsiGdNamedUtil.findInParent(method, variable = false, constant = false, enum = false, withLocalScopes = true);
+        val parentMethod = PsiGdNamedUtil.findInParent(method, variables = false, withLocalScopes = true);
         if (parentMethod !== null && parentMethod is GdMethodDeclTl) {
             val parentReturnType = parentMethod.returnType;
             if (parentReturnType != "" && returnType != parentReturnType && !extraAllowed(parentReturnType, returnType)) {

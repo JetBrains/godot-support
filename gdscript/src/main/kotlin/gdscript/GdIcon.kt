@@ -15,6 +15,7 @@ object GdIcon {
     const val VAR_MARKER = "KeyBezierSelected"
     const val CONST_MARKER = "KeyXform"
     const val ENUM_MARKER = "Enum"
+    const val SIGNAL_MARKER = "Signal"
 
     var editorIcons = HashMap<String, Icon>()
 

@@ -57,6 +57,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                 is GdEnumDeclTl -> element.enumDeclNmi;
                 is GdEnumValue -> element.enumValueNmi;
                 is GdMethodDeclTl -> element.methodIdNmi;
+                is GdSignalDeclTl -> element.signalIdNmi;
                 is GdParam -> element.varNmi;
                 is GdVarNmi -> element;
                 else -> null
@@ -100,7 +101,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                     }
                 }
 
-                is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl,
+                is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl, is GdSignalDeclTl,
                 is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl, is GdBindingPattern -> {
                     if (!methodOnly && !static) {
                         results.addAll(GdCompletionUtil.lookups(it));

@@ -161,6 +161,7 @@ object PsiGdExprUtil {
                     return when (val element = PsiGdNamedUtil.findInParent(named, includingSelf = true, containingFile = parentFile)) {
                         is GdMethodDeclTl -> element.returnType;
                         is GdClassVarDeclTl -> element.returnType;
+                        is GdSignalDeclTl -> "Signal";
                         is GdConstDeclTl -> element.returnType;
                         is GdVarDeclSt -> {
                             val sdf = element.returnType;
@@ -171,8 +172,8 @@ object PsiGdExprUtil {
                         is GdEnumValue -> GdKeywords.INT;
                         else -> {
                             return if (DumbService.isDumb(expr.project)) text
-                                else GdClassNamingIndex.get(text, expr.project, GlobalSearchScope.allScope(expr.project))
-                                    .firstOrNull()?.classname ?: "";
+                            else GdClassNamingIndex.get(text, expr.project, GlobalSearchScope.allScope(expr.project))
+                                .firstOrNull()?.classname ?: "";
                         }
                     }
                 }
@@ -205,8 +206,11 @@ object PsiGdExprUtil {
     }
 
     fun getAttrOrCallParentFile(element: PsiElement): PsiFile? {
-        val className = getAttrOrCallParentClass(element) ?: return null;
-        // TODO zkontrolovat, jestli se nevrací Array[String]
+        var className = getAttrOrCallParentClass(element) ?: return null;
+        if (className.startsWith("Array")) {
+            className = "Array";
+        }
+
         return GdClassNamingIndex.get(className, element.project, GlobalSearchScope.allScope(element.project))
             .firstOrNull()?.containingFile;
     }

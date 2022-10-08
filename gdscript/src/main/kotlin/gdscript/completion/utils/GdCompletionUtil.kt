@@ -33,6 +33,7 @@ object GdCompletionUtil {
             is GdParam -> arrayOf(lookup(element));
             is GdSetDecl -> arrayOf(lookup(element));
             is GdBindingPattern -> arrayOf(lookup(element));
+            is GdSignalDeclTl -> arrayOf(lookup(element));
             else -> emptyArray();
         }
     }
@@ -129,6 +130,15 @@ object GdCompletionUtil {
             binding.varNmi.name ?: "",
 //            typed = binding.typed?.text ?: "", TODO dá se v match zjistit typ?
             icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            priority = GdLookup.LOCAL_USER_DEFINED,
+        );
+    }
+
+    fun lookup(signal: GdSignalDeclTl): LookupElement {
+        return GdLookup.create(
+            signal.signalIdNmi?.name ?: "",
+            typed = "signal",
+            icon = GdIcon.getEditorIcon(GdIcon.SIGNAL_MARKER),
             priority = GdLookup.LOCAL_USER_DEFINED,
         );
     }

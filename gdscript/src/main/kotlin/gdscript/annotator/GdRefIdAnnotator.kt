@@ -25,9 +25,9 @@ class GdRefIdAnnotator : Annotator {
             is GdMethodIdNmi -> {
                 GdHighlighterColors.METHOD_CALL;
             }
-            is GdConstIdNmi, is GdVarNmi, is GdClassVarIdNmi -> {
-                GdHighlighterColors.MEMBER;
-            }
+//            is GdConstIdNmi, is GdVarNmi, is GdClassVarIdNmi -> {
+//                GdHighlighterColors.MEMBER;
+//            }
             is PsiFile -> {
                 GdHighlighterColors.CLASS_TYPE;
             }
@@ -38,7 +38,7 @@ class GdRefIdAnnotator : Annotator {
                     .create();
                 return;
             }
-            else -> return;
+            else -> GdHighlighterColors.MEMBER;
         }
 
         holder
