@@ -2,10 +2,8 @@ package gdscript.completion
 
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementBuilder
 import gdscript.competion.utils.GdLookupElementBuilder
 import gdscript.competion.utils.GdLookupInsertHandler
-import gdscript.highlighter.GdHighlighterColors
 import java.awt.Color
 import javax.swing.Icon
 

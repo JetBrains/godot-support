@@ -2,16 +2,16 @@
 
 ## Work queue
 ### Top priority (Alpha)
-- Annotation parameters
-- Parent method call fe.: ._init()
 - Lambdas
 - Inner class
-- Formatter into non-disrupt state
 
 ### Middle Priority (Betta)
+- master/puppet keywords
+- Annotation parameters - checks and hints
+- Full feature Formatter
 - Signals
   - parameter hint
-- Full feature Formatter
+  - parameter check
 - Check Parameters in function call
 - Await
   - check if it is correctly implemented
@@ -31,6 +31,7 @@
 - Icon download with class refresh
 
 ### Low Priority (Full Release)
+- Parent method call fe.: ._init() checks
 - Rename file -> rename also class_name
 - Linkable Documentation
 - type of var binding in match pattern

@@ -47,9 +47,6 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
     private fun renderFullDoc(docLines: Array<String>): String {
         val sb = StringBuilder();
         sb.append(DocumentationMarkup.CONTENT_START);
-//        sb.append(CodeDocumentationUtil.createDocCommentLine(JavaDocumentationProvider.RETURN_TAG,
-//            _comment.getContainingFile(),
-//            commenter))
 
         docLines.forEach {
             val line = it

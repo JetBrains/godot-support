@@ -52,7 +52,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
 
                 return element.argList?.exprList?.mapIndexed { i, it ->
                     InlayInfo(
-                        params[i],//?.varNmi?.name.orEmpty(),
+                        if (params.size > i) params[i] else "",
                         it.startOffset,
                         false,
                     )

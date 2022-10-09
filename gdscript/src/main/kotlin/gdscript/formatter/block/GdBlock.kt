@@ -4,8 +4,14 @@ import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType
 import com.intellij.psi.formatter.common.AbstractBlock
+import com.intellij.psi.util.PsiEditorUtil
 import gdscript.formatter.GdCodeStyleSettings
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdFile
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdStmt
 import gdscript.psi.GdTypes
+
 
 class GdBlock : AbstractBlock {
 
@@ -61,14 +67,6 @@ class GdBlock : AbstractBlock {
             if (nextBlock != null) {
                 blocks.add(nextBlock);
             }
-            /*
-                constDecl_tl - oneline
-                enumDecl_tl - ?? TODO
-                signalDecl_tl - oneline
-                classVarDecl_tl - setget... TODO
-                annotation_tl - oneline
-                methodDecl_tl -
-             */
         }
 
         return blocks;
@@ -79,5 +77,43 @@ class GdBlock : AbstractBlock {
     override fun getSpacing(child1: Block?, child2: Block): Spacing? = this.spacing.getSpacing(this, child1, child2);
 
     override fun isLeaf(): Boolean = myNode.firstChildNode == null;
+
+    override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
+        when (node.psi) {
+            is GdStmt, is GdClassVarDeclTl,
+            is GdMethodDeclTl, is GdFile,
+            -> {
+                val editor = PsiEditorUtil.findEditor(node.psi)!!;
+                val offset = editor.caretModel.offset;
+
+                val text = node.psi.containingFile.text
+                    .substring(0, offset)
+                    .replace(" ", "")
+                    .replace("\t", "");
+
+                var whitespaces = 0;
+                var index = text.length - 1;
+                while (index >= 0 && text.get(index) == '\n') {
+                    whitespaces += 1;
+                    index -= 1;
+                }
+
+                if (whitespaces < 2) {
+                    return ChildAttributes(
+                        Indent.getNormalIndent(),
+                        Alignment.createAlignment(),
+                    );
+                }
+
+
+                return ChildAttributes(
+                    Indent.getNoneIndent(),
+                    Alignment.createAlignment(),
+                );
+            }
+        }
+
+        return super.getChildAttributes(newChildIndex);
+    }
 
 }
