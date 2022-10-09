@@ -1,10 +1,10 @@
 <idea-plugin>
   <id>ice.explosive.gdscript</id>
   <name>GdScript</name>
-  <version>0.1</version>
-  <vendor email="h.raven@centrumcz" url="">IceExplosive</vendor>
+  <version>0.1.0</version>
+  <vendor email="h.raven@centrum.cz" url="">IceExplosive</vendor>
 
-  <description>GdScript language plugin v2 for GdScript v2</description>
+  <description>GdScript2 language plugin for GodotEngine 4.0+</description>
   <change-notes>
   </change-notes>
 

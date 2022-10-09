@@ -50,8 +50,8 @@ intellij {
 
 patchPluginXml {
     changeNotes = """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
+      0.1.0 - alpha release for first tests<br>
+      """
 }
 
 //test {
@@ -69,5 +69,11 @@ tasks {
 
     compileTestKotlin {
         kotlinOptions.jvmTarget = "11"
+    }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
     }
 }
