@@ -3,6 +3,5 @@ download-docs:
 
 refresh-classes:
 	php classParser.php
-	mv ./classesGd/* ./src/main/resources/classes_test
 
 generate: download-docs refresh-classes

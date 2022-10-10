@@ -4,9 +4,9 @@
 ### Top priority (Alpha)
 - Lambdas
 - Inner class
-- Sdk
 
 ### Middle Priority (Betta)
+- Sdk
 - master/puppet keywords
 - Annotation parameters - checks and hints
 - Full feature Formatter

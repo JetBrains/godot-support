@@ -1,7 +1,0 @@
-extends VisualShaderNodeTextureParameter
-class_name VisualShaderNodeTexture2DArrayParameter
-
-
-
-
-

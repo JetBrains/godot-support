@@ -1,7 +1,0 @@
-extends VisualShaderNodeParticleEmitter
-class_name VisualShaderNodeParticleSphereEmitter
-
-
-
-
-
