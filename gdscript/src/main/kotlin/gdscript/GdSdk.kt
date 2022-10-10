@@ -10,11 +10,13 @@ class GdSdk : SdkType("GdScript Sdk") {
     }
 
     override fun suggestHomePath(): String? {
-        val folder = "sdk"
-        val loader = StaticClassLoader::class.java.classLoader
-        val directory = loader.getResource(folder).path;
-
-        return directory.substring(6, directory.length - (folder.length + 2))
+        // TODO
+        return null;
+//        val folder = "sdk"
+//        val loader = StaticClassLoader::class.java.classLoader
+//        val directory = loader.getResource(folder).path;
+//
+//        return directory.substring(6, directory.length - (folder.length + 2))
     }
 
     override fun isValidSdkHome(path: String): Boolean {

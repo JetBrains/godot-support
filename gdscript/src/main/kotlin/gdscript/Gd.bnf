@@ -76,7 +76,11 @@ enumValue ::= enumValue_nmi (EQ (PLUS | MINUS)? NUMBER)?
 enumValue_nmi ::= IDENTIFIER
 
 // TODO recover nesmí mít func -> inline lambdy by to porušily
-methodDecl_tl ::= STATIC? VARARG? FUNC methodId_nmi LRBR paramList? RRBR parentMethodCall? returnHint? COLON stmtOrSuite {methods=[isStatic isVariadic getName getReturnType getParameters getPresentation isConstructor] pin=3 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub" elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"}
+methodDecl_tl ::= STATIC? VARARG? FUNC methodId_nmi LRBR paramList? RRBR parentMethodCall? returnHint? COLON stmtOrSuite {
+    methods=[isStatic isVariadic getName getReturnType getParameters getPresentation isConstructor]
+    pin=3 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"
+}
 methodId_nmi ::= IDENTIFIER | GET | SET
 paramList ::= param (COMMA param)* {pin=1 recoverWhile=argList_r}
 param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
