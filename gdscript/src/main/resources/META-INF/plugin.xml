@@ -2,7 +2,7 @@
   <id>ice.explosive.gdscript</id>
   <name>GdScript</name>
   <version>0.1.0</version>
-  <vendor email="h.raven@centrum.cz" url="">IceExplosive</vendor>
+  <vendor email="h.raven@centrum.cz" url="https://gitlab.com/IceExplosive/gdscript">IceExplosive</vendor>
 
   <description>GdScript2 language plugin for GodotEngine 4.0+</description>
   <change-notes>
