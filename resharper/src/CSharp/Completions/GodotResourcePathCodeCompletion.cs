@@ -196,9 +196,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             // - iml - some subsidiary file, which Rider creates
             // - project.godot
             return path.Name.StartsWith(".")
-                || "import".Equals(path.ExtensionNoDot, StringComparison.OrdinalIgnoreCase)
-                || "iml".Equals(path.ExtensionNoDot, StringComparison.OrdinalIgnoreCase)
-                || "project.godot".Equals(path.Name, StringComparison.OrdinalIgnoreCase);
+                   || "import".Equals(path.ExtensionNoDot, StringComparison.OrdinalIgnoreCase)
+                   || "iml".Equals(path.ExtensionNoDot, StringComparison.OrdinalIgnoreCase)
+                   || "project.godot".Equals(path.Name, StringComparison.OrdinalIgnoreCase)
+                   || path.ExtensionNoDot.Equals("csproj", StringComparison.OrdinalIgnoreCase)
+                   || path.ExtensionNoDot.Equals("sln", StringComparison.OrdinalIgnoreCase);
         }
 
         private static VirtualFileSystemPath SearchDir(VirtualFileSystemPath path)
