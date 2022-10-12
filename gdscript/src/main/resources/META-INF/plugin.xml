@@ -1,20 +1,21 @@
 <idea-plugin>
   <id>ice.explosive.gdscript</id>
   <name>GdScript</name>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <vendor email="h.raven@centrum.cz" url="https://gitlab.com/IceExplosive/gdscript">IceExplosive</vendor>
 
   <description>GdScript2 language plugin for GodotEngine 4.0+</description>
   <change-notes>
   </change-notes>
+  <incompatible-with>gdscript</incompatible-with>
 
   <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="204.0"/>
+<!--  <idea-version since-build="204.0"/>-->
 
   <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->
   <depends>com.intellij.modules.platform</depends>
-  <depends>com.intellij.java</depends>
+<!--  <depends>com.intellij.java</depends>-->
 
   <extensions defaultExtensionNs="com.intellij">
     <fileType name="GdScript File" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd"/>
@@ -94,7 +95,7 @@
   </extensions>
 
   <actions>
-    <action id="GdGenerateGetterAndSetter" class="gdscript.action.GdGenerateGetSetAction"/>
+<!--    <action id="GdGenerateGetterAndSetter" class="gdscript.action.GdGenerateGetSetAction"/>-->
   </actions>
 
 </idea-plugin>

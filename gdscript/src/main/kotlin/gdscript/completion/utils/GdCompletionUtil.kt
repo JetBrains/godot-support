@@ -1,24 +1,13 @@
 package gdscript.completion.utils
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.PsiJavaPatterns.psiElement
-import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.PsiWhiteSpace
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.*
 import gdscript.utils.StringUtils.parseFromSquare
 
 object GdCompletionUtil {
-
-    val WHITE_OR_ERROR = PlatformPatterns.or(
-        psiElement(PsiErrorElement::class.java),
-        psiElement(PsiWhiteSpace::class.java),
-        psiElement(PsiComment::class.java)
-    );
 
     fun lookups(element: PsiElement): Array<LookupElement> {
         return when (element) {

@@ -5,9 +5,7 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.codeInsight.editorActions.TypedHandlerDelegate
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.patterns.PsiJavaPatterns
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiKeyword
 
 // TODO smazat ??
 class GdAnnotationTypedHandler : TypedHandlerDelegate() {
@@ -29,7 +27,7 @@ class GdAnnotationTypedHandler : TypedHandlerDelegate() {
 //                val leaf = it.findElementAt(offset - PsiKeyword.NEW.length)
 //                leaf is PsiKeyword &&
 //                        leaf.textMatches(PsiKeyword.NEW) &&
-//                        !PsiJavaPatterns.psiElement().insideStarting(PsiJavaPatterns.psiExpressionStatement())
+//                        !psiElement().insideStarting(PsiJavaPatterns.psiExpressionStatement())
 //                            .accepts(leaf)
             }
 

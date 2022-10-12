@@ -1,20 +1,19 @@
 package gdscript.completion.utils
 
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.patterns.PsiJavaPatterns
+import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.psi.GdTypes
 
 object GdRefIdCompletionUtil {
 
-    val REMOTE_REF = PsiJavaPatterns.psiElement().withSuperParent(2, PlatformPatterns.or(
-        PsiJavaPatterns.psiElement(GdTypes.ATTRIBUTE_EX),
-        PsiJavaPatterns.psiElement(GdTypes.CALL_EX),
+    val REMOTE_REF = psiElement().withSuperParent(2, PlatformPatterns.or(
+        psiElement(GdTypes.ATTRIBUTE_EX),
+        psiElement(GdTypes.CALL_EX),
     ));
 
-    val PARENT_ST_REF = PsiJavaPatterns
-        .psiElement()
-        .withSuperParent(2, PsiJavaPatterns.psiElement(GdTypes.PARENT_ST));
+    val PARENT_ST_REF = psiElement()
+        .withSuperParent(2, psiElement(GdTypes.PARENT_ST));
 
-    val DIRECT_REF = PsiJavaPatterns.psiElement(GdTypes.REF_ID_NM).andNot(REMOTE_REF);
+    val DIRECT_REF = psiElement(GdTypes.REF_ID_NM).andNot(REMOTE_REF);
 
 }

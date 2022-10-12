@@ -1,7 +1,7 @@
 package gdscript.completion
 
 import com.intellij.openapi.util.TextRange
-import com.intellij.patterns.PsiJavaPatterns.psiElement
+import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import gdscript.psi.GdTypes

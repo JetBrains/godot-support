@@ -3,7 +3,7 @@ package gdscript.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.patterns.PsiJavaPatterns.psiElement
+import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.GdKeywords
 import gdscript.completion.utils.GdLiteralCompletionUtil
 import gdscript.completion.utils.GdMethodCompletionUtil
