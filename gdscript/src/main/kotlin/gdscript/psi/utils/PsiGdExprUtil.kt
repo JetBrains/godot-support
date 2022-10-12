@@ -9,7 +9,6 @@ import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
-import org.intellij.markdown.flavours.gfm.table.GitHubTableMarkerProvider.Companion.contains
 import tscn.index.impl.TscnNodeIndex
 import tscn.index.impl.TscnScriptIndex
 
@@ -124,7 +123,7 @@ object PsiGdExprUtil {
                         }
                         val inheritance = PsiTreeUtil.getChildOfType(parentFile, GdInheritance::class.java);
                         if (inheritance != null) {
-                            return inheritance.inheritanceName ?: "";
+                            return inheritance.inheritanceName;
                         }
 
                         return GdKeywords.SELF;
@@ -158,6 +157,10 @@ object PsiGdExprUtil {
                         }
                     }
 
+                    if (DumbService.isDumb(expr.project)) {
+                        return "";
+                    }
+
                     return when (val element = PsiGdNamedUtil.findInParent(named, includingSelf = true, containingFile = parentFile)) {
                         is GdMethodDeclTl -> element.returnType;
                         is GdClassVarDeclTl -> element.returnType;
@@ -171,9 +174,7 @@ object PsiGdExprUtil {
                         is GdEnumDeclTl -> GdKeywords.INT;
                         is GdEnumValue -> GdKeywords.INT;
                         else -> {
-                            return if (DumbService.isDumb(expr.project)) text
-                            else GdClassNamingIndex.get(text, expr.project, GlobalSearchScope.allScope(expr.project))
-                                .firstOrNull()?.classname ?: "";
+                            return GdClassNamingIndex.getGlobally(text, expr).firstOrNull()?.classname ?: "";
                         }
                     }
                 }

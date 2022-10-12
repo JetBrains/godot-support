@@ -1,7 +1,6 @@
 package gdscript
 
 import com.intellij.openapi.projectRoots.*
-import gdscript.competion.staticLoader.StaticClassLoader
 import org.jdom.Element
 
 class GdSdk : SdkType("GdScript Sdk") {
