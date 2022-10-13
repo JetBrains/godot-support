@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>ice.explosive.gdscript</id>
   <name>GdScript</name>
-  <version>0.1.1</version>
+  <version>0.1.2</version>
   <vendor email="h.raven@centrum.cz" url="https://gitlab.com/IceExplosive/gdscript">IceExplosive</vendor>
 
   <description>GdScript2 language plugin for GodotEngine 4.0+</description>
@@ -87,9 +87,5 @@
     <lang.psiStructureViewFactory language="GdScript" implementationClass="gdscript.structureView.GdStructureViewFactory" />
     <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler" />
   </extensions>
-
-  <actions>
-<!--    <action id="GdGenerateGetterAndSetter" class="gdscript.action.GdGenerateGetSetAction"/>-->
-  </actions>
 
 </idea-plugin>
