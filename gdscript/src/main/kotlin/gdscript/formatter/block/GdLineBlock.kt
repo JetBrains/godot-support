@@ -26,16 +26,9 @@ class GdLineBlock : GdAbstractBlock {
         indent: Indent = Indent.getIndent(Indent.Type.NONE, true, false),
     ) : super(node, wrap, alignment, settings, spacing, indent);
 
-    // TODO když už je i get i set... nebo jen jedno + mezera, tak NoneIndent
     override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
         val next = indentNextBlock(newChildIndex);
         if (next != null) return next;
-//        if (subBlocks[newChildIndex - 1] is GdBlock) { // f.e. var losos: get/set
-//            return ChildAttributes(
-//                Indent.getNormalIndent(),
-//                Alignment.createAlignment(),
-//            );
-//        }
 
         return ChildAttributes(
             Indent.getNoneIndent(),
