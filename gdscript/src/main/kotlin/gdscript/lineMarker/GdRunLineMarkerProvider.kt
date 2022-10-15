@@ -8,11 +8,11 @@ import gdscript.psi.GdInheritanceIdNmi
 class GdRunLineMarkerProvider : RunLineMarkerContributor() {
 
     override fun getInfo(element: PsiElement): Info? {
-        if (element !is GdInheritanceIdNmi) {
+        if (element.parent !is GdInheritanceIdNmi) {
             return null;
         }
 
-        return Info(GdRunAction(element));
+        return Info(GdRunAction(element.parent as GdInheritanceIdNmi));
     }
 
 }
