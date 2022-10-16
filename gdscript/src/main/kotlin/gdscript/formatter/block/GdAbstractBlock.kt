@@ -17,7 +17,7 @@ abstract class GdAbstractBlock : AbstractBlock {
         val EMPTY_TOKENS = arrayOf(
             TokenType.WHITE_SPACE,
             GdTypes.NEW_LINE,
-            GdTypes.NEW_LINE_END,
+//            GdTypes.NEW_LINE_END,
             GdTypes.INDENT,
             GdTypes.DEDENT,
         )
@@ -26,6 +26,7 @@ abstract class GdAbstractBlock : AbstractBlock {
             GdTypes.SETGET_DECL,
             GdTypes.SUITE,
             GdTypes.STMT_OR_SUITE,
+            GdTypes.FUNC_DECL_EX,
         )
 
         val NONE_INDENT: Indent = Indent.getIndent(Indent.Type.NONE, true, false);

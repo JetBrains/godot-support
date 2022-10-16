@@ -8,17 +8,16 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdReturnStmtImpl extends ASTWrapperPsiElement implements GdReturnStmt {
+public class GdFuncDeclIdNmiImpl extends GdNamedIdElementImpl implements GdFuncDeclIdNmi {
 
-  public GdReturnStmtImpl(@NotNull ASTNode node) {
+  public GdFuncDeclIdNmiImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitReturnStmt(this);
+    visitor.visitFuncDeclIdNmi(this);
   }
 
   @Override
@@ -28,15 +27,21 @@ public class GdReturnStmtImpl extends ASTWrapperPsiElement implements GdReturnSt
   }
 
   @Override
-  @Nullable
-  public GdEndStmt getEndStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
+  @NotNull
+  public String getName() {
+    return GdPsiUtils.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement setName(@Nullable String newName) {
+    return GdPsiUtils.setName(this, newName);
   }
 
   @Override
   @Nullable
-  public GdExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
+  public PsiElement getNameIdentifier() {
+    return GdPsiUtils.getNameIdentifier(this);
   }
 
 }

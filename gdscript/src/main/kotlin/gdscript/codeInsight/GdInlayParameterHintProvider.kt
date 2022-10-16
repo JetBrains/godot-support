@@ -9,9 +9,10 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.containers.toArray
 import gdscript.psi.GdCallEx
+import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdRefIdNm
-import gdscript.psi.GdSignalDeclTl
+import gdscript.psi.GdVarDeclSt
 import gdscript.psi.utils.PsiGdSignalUtil
 import gdscript.reference.GdClassMemberReference
 
@@ -31,6 +32,9 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                 }
 
                 return MethodInfo(name, declaration.parameters.keys.toList());
+            } else if (declaration is GdVarDeclSt && declaration.expr is GdFuncDeclEx) {
+                val lambda = declaration.expr as GdFuncDeclEx;
+                return MethodInfo(lambda.funcDeclIdNmi?.text.orEmpty(), lambda.parameters.keys.toList());
             }
         }
         return null
@@ -40,24 +44,37 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return emptyList();
             val method = GdClassMemberReference(id).resolveDeclaration() ?: return emptyList();
-            if (method is GdMethodDeclTl) {
-                val name = method.name.orEmpty();
-                var params = method.parameters.keys.toArray(emptyArray());
-                if (name == "emit") {
-                    val signal = PsiGdSignalUtil.getDeclaration(element);
-                    if (signal != null) {
-                        params = signal.parameters;
+
+            var params: Array<String>;
+            when (method) {
+                is GdMethodDeclTl -> {
+                    params = method.parameters.keys.toArray(emptyArray());
+
+                    if (method.name.orEmpty() == "emit") {
+                        val signal = PsiGdSignalUtil.getDeclaration(element);
+                        if (signal != null) {
+                            params = signal.parameters;
+                        }
                     }
                 }
-
-                return element.argList?.exprList?.mapIndexed { i, it ->
-                    InlayInfo(
-                        if (params.size > i) params[i] else "",
-                        it.startOffset,
-                        false,
-                    )
-                } ?: emptyList();
+                is GdVarDeclSt -> {
+                    if (method.expr is GdFuncDeclEx) {
+                        val lambda = method.expr as GdFuncDeclEx;
+                        params = lambda.parameters.keys.toArray(emptyArray());
+                    } else {
+                        return emptyList();
+                    }
+                }
+                else -> return emptyList();
             }
+
+            return element.argList?.exprList?.mapIndexed { i, it ->
+                InlayInfo(
+                    if (params.size > i) params[i] else "",
+                    it.startOffset,
+                    false,
+                )
+            } ?: emptyList();
         }
 
         return emptyList()

@@ -7,10 +7,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.action.quickFix.GdAddReturnType
-import gdscript.action.quickFix.GdChangeReturnType
-import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdReturnHintVal
-import gdscript.psi.GdReturnStmt
+import gdscript.action.quickFix.GdChangeReturnTypeFix
+import gdscript.psi.*
 import gdscript.psi.utils.PsiGdNamedUtil
 
 class GdReturnTypeAnnotator : Annotator {
@@ -27,7 +25,9 @@ class GdReturnTypeAnnotator : Annotator {
 
     private fun checkParentType(element: GdReturnHintVal, holder: AnnotationHolder) {
         val returnType = element.text;
-        val method = PsiTreeUtil.getStubOrPsiParentOfType(element, GdMethodDeclTl::class.java)?.methodIdNmi ?: return;
+        val methodDecl = getMethodDecl(element) ?: return;
+        if (methodDecl is GdFuncDeclEx) return;
+        val method = (methodDecl as GdMethodDeclTl).methodIdNmi ?: return;
 
         val parentMethod = PsiGdNamedUtil.findInParent(method, variables = false, withLocalScopes = true);
         if (parentMethod !== null && parentMethod is GdMethodDeclTl) {
@@ -37,15 +37,20 @@ class GdReturnTypeAnnotator : Annotator {
                     .newAnnotation(HighlightSeverity.ERROR,
                         "Return type [$returnType] does not match parent's [$parentReturnType]")
                     .range(element.textRange)
-                    .withFix(GdChangeReturnType(element, parentReturnType))
+                    .withFix(GdChangeReturnTypeFix(element, parentReturnType))
                     .create()
             }
         }
     }
 
     private fun checkStmtType(element: GdReturnStmt, holder: AnnotationHolder) {
-        val method = PsiTreeUtil.getStubOrPsiParentOfType(element, GdMethodDeclTl::class.java) ?: return;
-        val returnType = method.returnType;
+        val method = getMethodDecl(element) ?: return;
+        val returnType = when (method) {
+            is GdMethodDeclTl -> method.returnType;
+            is GdFuncDeclEx -> method.returnType;
+            else -> "";
+        }
+
         val myType = element.expr?.returnType ?: GdKeywords.VOID;
         if (myType.isEmpty()) {
             return;
@@ -56,8 +61,14 @@ class GdReturnTypeAnnotator : Annotator {
                 && !extraAllowed(myType, returnType)
                 && !PsiGdNamedUtil.hasParent(myType, returnType, element.project)
             ) {
+                val hint = when (method) {
+                    is GdMethodDeclTl -> method.returnHint?.returnHintVal;
+                    is GdFuncDeclEx -> method.returnHint?.returnHintVal;
+                    else -> null;
+                }
                 holder
-                    .newAnnotation(HighlightSeverity.ERROR, "Returns a type [$myType] which does not match function's [$returnType]")
+                    .newAnnotation(HighlightSeverity.ERROR, "Returns a type [$myType] which do not match function's [$returnType]")
+                    .withFix(GdChangeReturnTypeFix(hint!!, myType))
                     .range(element.textRange)
                     .create()
             }
@@ -81,6 +92,12 @@ class GdReturnTypeAnnotator : Annotator {
         return (NUMBER_MIXED.contains(type1) && NUMBER_MIXED.contains(type2))
                 || (type1 == "Array" && type2.startsWith("Array"))
                 || (type2 == "Array" && type1.startsWith("Array"));
+    }
+
+    private fun getMethodDecl(element: PsiElement): PsiElement? {
+        return PsiTreeUtil.findFirstParent(element) {
+            it is GdMethodDeclTl || it is GdFuncDeclEx
+        };
     }
 
 }

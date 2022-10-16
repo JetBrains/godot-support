@@ -61,10 +61,7 @@ class GdBlock : GdAbstractBlock {
             );
         }
 
-        return ChildAttributes( // TODO tohle nefunguje na odstranění indentu.. :/
-            Indent.getAbsoluteNoneIndent(),
-            null, //Alignment.createAlignment(),
-        );
+        return super.getChildAttributes(newChildIndex);
     }
 
 }

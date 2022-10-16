@@ -1,5 +1,32 @@
 # GdScript
 
+# Installation guide
+## Extra tips:
+- Dedent with Backspace
+```
+func losos():
+    if (true):
+        pass
+        |
+```
+When you hit Backspace at cursor (below pass), IDEa will remove whole line and move you to
+previous line, like this:
+```
+func losos():
+    if (true):
+        pass|
+```
+In order to dedent on backspace, you can change editor's settings under:  
+Editor -> General -> Smart Keys -> Unindent on Backspace  
+![](./screens/unindent.png)  
+Hitting Backspace will then just move cursor to the left like this:
+```
+func losos():
+    if (true):
+        pass
+    |
+```
+
 ## Work queue
 ### Top priority (Alpha)
 - Lambdas
@@ -52,7 +79,7 @@
 
 ### Other
 - Inlay hints  
- ![](./screens/inlay.png)
+![](./screens/inlay.png)
 - Param hints (Ctrl+P)  
 ![](./screens/param-hint.png)
 - Run configuration - starts the game from Godot exe  

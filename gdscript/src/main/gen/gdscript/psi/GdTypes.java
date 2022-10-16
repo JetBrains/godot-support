@@ -51,6 +51,8 @@ public interface GdTypes {
   IElementType FACTOR_EX = new GdElementType("FACTOR_EX");
   IElementType FLOW_ST = new GdElementType("FLOW_ST");
   IElementType FOR_ST = new GdElementType("FOR_ST");
+  IElementType FUNC_DECL_EX = new GdElementType("FUNC_DECL_EX");
+  IElementType FUNC_DECL_ID_NMI = new GdElementType("FUNC_DECL_ID_NMI");
   IElementType GET_DECL = new GdElementType("GET_DECL");
   IElementType GET_METHOD_ID_NM = new GdElementType("GET_METHOD_ID_NM");
   IElementType IF_ST = new GdElementType("IF_ST");
@@ -84,7 +86,6 @@ public interface GdTypes {
   IElementType REF_ID_NM = new GdElementType("REF_ID_NM");
   IElementType RETURN_HINT = new GdElementType("RETURN_HINT");
   IElementType RETURN_HINT_VAL = new GdElementType("RETURN_HINT_VAL");
-  IElementType RETURN_STMT = new GdElementType("RETURN_STMT");
   IElementType SETGET_DECL = new GdElementType("SETGET_DECL");
   IElementType SET_DECL = new GdElementType("SET_DECL");
   IElementType SET_METHOD_ID_NM = new GdElementType("SET_METHOD_ID_NM");
@@ -299,6 +300,12 @@ public interface GdTypes {
       else if (type == FOR_ST) {
         return new GdForStImpl(node);
       }
+      else if (type == FUNC_DECL_EX) {
+        return new GdFuncDeclExImpl(node);
+      }
+      else if (type == FUNC_DECL_ID_NMI) {
+        return new GdFuncDeclIdNmiImpl(node);
+      }
       else if (type == GET_DECL) {
         return new GdGetDeclImpl(node);
       }
@@ -397,9 +404,6 @@ public interface GdTypes {
       }
       else if (type == RETURN_HINT_VAL) {
         return new GdReturnHintValImpl(node);
-      }
-      else if (type == RETURN_STMT) {
-        return new GdReturnStmtImpl(node);
       }
       else if (type == SETGET_DECL) {
         return new GdSetgetDeclImpl(node);

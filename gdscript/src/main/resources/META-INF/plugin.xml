@@ -54,6 +54,7 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstructorAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdReturnTypeAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdMethodNameAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdLambdaAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdResourceTypeAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdRefIdAnnotator" />
 

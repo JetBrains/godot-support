@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.action.quickFix.GdChangeReturnType
+import gdscript.action.quickFix.GdChangeReturnTypeFix
 import gdscript.action.quickFix.GdRemoveElementAction
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdParentMethodCall
@@ -29,7 +29,7 @@ class GdConstructorAnnotator : Annotator {
                         holder
                             .newAnnotation(HighlightSeverity.ERROR, "Constructor can return only Self")
                             .range(hintVal.textRange)
-                            .withFix(GdChangeReturnType(hintVal, "void"))
+                            .withFix(GdChangeReturnTypeFix(hintVal, "void"))
                             .create()
                     }
                 }

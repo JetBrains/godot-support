@@ -3,14 +3,18 @@ package gdscript.codeInsight
 import com.intellij.lang.parameterInfo.*
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.GdCallEx
+import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdMethodIdNmi
 import gdscript.psi.GdTypes
+import gdscript.psi.GdVarNmi
+import gdscript.psi.utils.PsiGdLocalFuncUtil
 import gdscript.reference.GdClassMemberReference
 
-class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, GdMethodDeclTl>, DumbAware {
+class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, PsiElement>, DumbAware {
 
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): GdCallEx? {
         val element = getFunctionCall(context) ?: return null;
@@ -20,6 +24,12 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, GdMethodDeclTl>, D
             is GdMethodIdNmi -> {
                 val decl = PsiTreeUtil.getParentOfType(declId, GdMethodDeclTl::class.java) ?: return element;
                 context.itemsToShow = arrayOf(decl);
+            }
+            is GdVarNmi -> {
+                val lambda = PsiGdLocalFuncUtil.getByVarId(declId);
+                if (lambda != null) {
+                    context.itemsToShow = arrayOf(lambda);
+                }
             }
         }
 
@@ -42,15 +52,24 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, GdMethodDeclTl>, D
         return element;
     }
 
-    override fun updateUI(declaration: GdMethodDeclTl?, context: ParameterInfoUIContext) {
+    override fun updateUI(declaration: PsiElement?, context: ParameterInfoUIContext) {
         val currentParam = context.currentParameterIndex;
         var startOffset = -1;
         var endOffset = -1;
 
+        var isVariadic = false;
         val builder = StringBuilder();
+        val parameters = when(declaration) {
+            is GdMethodDeclTl -> {
+                isVariadic = declaration.isVariadic;
+                declaration.parameters;
+            };
+            is GdFuncDeclEx -> declaration.parameters;
+            else -> emptyMap<String, String>();
+        }
 
         var i = 0;
-        declaration?.parameters?.forEach { it ->
+        parameters.forEach { it ->
             if (i > 0) {
                 builder.append(", ");
             }
@@ -64,7 +83,7 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, GdMethodDeclTl>, D
         }
 
         if (i <= 0) {
-            if (declaration?.isVariadic == true) {
+            if (isVariadic) {
                 repeat(currentParam) {
                     builder.append("$it, ");
                 };

@@ -28,6 +28,8 @@ object GdKeywords {
     val BUILT_TYPES = arrayOf(INT, STR, FLOAT, BOOL);
     const val VOID = "void"
 
+    const val CALLABLE = "Callable"
+
     const val GLOBAL_SCOPE = "_GlobalScope"
 
     val ANNOTATIONS = arrayOf(

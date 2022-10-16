@@ -16,6 +16,7 @@ object PsiGdExprUtil {
 
     fun getReturnType(expr: GdExpr): String {
         return when (expr) {
+            is GdFuncDeclEx -> GdKeywords.CALLABLE;
             is GdPlusMinusEx -> expr.expr.returnType;
             is GdCastEx -> fromTyped(expr.isTyped);
             is GdTernaryEx -> {

@@ -27,10 +27,4 @@ public class GdFlowStImpl extends GdStmtImpl implements GdFlowSt {
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public GdReturnStmt getReturnStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdReturnStmt.class);
-  }
-
 }

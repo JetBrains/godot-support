@@ -70,12 +70,15 @@ getMethodId_nm ::= IDENTIFIER
 signalDecl_tl ::= SIGNAL signalId_nmi (LRBR paramList RRBR)? endStmt {methods=[getName getParameters] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdSignalDeclElementImpl" stubClass="gdscript.index.stub.GdSignalDeclStub" elementTypeFactory="gdscript.psi.impl.GdSignalDeclElementType.getInstance"}
 signalId_nmi ::= IDENTIFIER
 
-enumDecl_tl ::= ENUM enumDecl_nmi? LCBR enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR endStmt {pin=1 methods=[getValues getPresentation] recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdEnumDeclElementImpl" stubClass="gdscript.index.stub.GdEnumDeclStub" elementTypeFactory="gdscript.psi.impl.GdEnumDeclElementType.getInstance"}
+enumDecl_tl ::= ENUM enumDecl_nmi? LCBR enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR endStmt {
+    pin=1 methods=[getValues getPresentation] recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdEnumDeclElementImpl" stubClass="gdscript.index.stub.GdEnumDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdEnumDeclElementType.getInstance"
+}
 enumDecl_nmi ::= IDENTIFIER
 enumValue ::= enumValue_nmi (EQ (PLUS | MINUS)? NUMBER)?
 enumValue_nmi ::= IDENTIFIER
 
-// TODO recover nesmí mít func -> inline lambdy by to porušily
 methodDecl_tl ::= STATIC? VARARG? FUNC methodId_nmi LRBR paramList? RRBR parentMethodCall? returnHint? COLON stmtOrSuite {
     methods=[isStatic isVariadic getName getReturnType getParameters getPresentation isConstructor]
     pin=3 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub"
@@ -91,7 +94,8 @@ argList ::= expr (COMMA expr)* {pin=1 recoverWhile=argList_r}
 private argList_r ::= !(RRBR)
 
 // func - Array.gd, signal: Vector2.gd, class_name - Array.gd
-var_nmi ::= IDENTIFIER | SIGNAL | FUNC | CLASS_NAME // TODO tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě
+// tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě
+var_nmi ::= IDENTIFIER | SIGNAL | FUNC | CLASS_NAME
 
 // TODO inner class
 
@@ -116,7 +120,8 @@ stmt ::=
 private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH | RETURN | AWAIT | ASSET | PRELOAD | INDENT | DEDENT | IDENTIFIER | literal_ex)
 
 parent_st ::= DOT call_ex endStmt?
-varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt {pin=2 recoverWhile=stmt_r methods=[getName getReturnType]}
+// TODO tady je endStmt optional, protože to jinak sežere lambda
+varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {pin=2 recoverWhile=stmt_r methods=[getName getReturnType]}
 constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {pin=2 recoverWhile=stmt_r methods=[getName getReturnType]}
 if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? {pin=2 recoverWhile=stmt_r}
 while_st ::= WHILE expr COLON stmtOrSuite {pin=2 recoverWhile=stmt_r}
@@ -137,7 +142,7 @@ assert_st ::= ASSERT LRBR expr (COMMA STRING)? RRBR endStmt {pin=1 recoverWhile=
 await_st ::= AWAIT expr_st {pin=1 recoverWhile=stmt_r}
 preload_st ::= PRELOAD LRBR STRING RRBR {pin=2 recoverWhile=stmt_r}
 
-assign_st ::= expr (EQ | ASSIGN) expr endStmt //{pin=2 recoverWhile=stmt_r}
+assign_st ::= expr (EQ | ASSIGN) expr endStmt
 expr_st ::= expr endStmt {pin=1 recoverWhile=stmt_r}
 
 flow_st ::=
@@ -146,7 +151,7 @@ flow_st ::=
     | (PASS endStmt)
     | (BREAKPOINT endStmt)
     | returnStmt
-returnStmt ::= RETURN expr? endStmt {pin=1 /*recoverWhile=stmt_r*/}
+private returnStmt ::= RETURN expr? endStmt {pin=1 recoverWhile=stmt_r}
 
 expr ::=
     plusMinus_ex
@@ -169,6 +174,7 @@ expr ::=
     | is_ex
     | primary_ex
     | literal_ex
+    | funcDecl_ex
     {methods=[getReturnType]}
 
 cast_ex ::= expr AS isTyped
@@ -193,6 +199,13 @@ plusMinusPre_ex ::= (PPLUS | MMINUS) expr
 attribute_ex ::= expr DOT expr
 refId_nm ::= IDENTIFIER | SELF
 
+funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
+    methods=[getReturnType getParameters /*getPresentation*/]
+    pin=1 recoverWhile=stmt_r //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"
+    //elementTypeFactory="gdscript.psi.impl.GdLocalFuncDeclElementType.getInstance"
+}
+funcDeclId_nmi ::= IDENTIFIER
+
 //@"Node/Label"
 //NodePath or StringName
 
@@ -205,7 +218,6 @@ builtInType ::= INT | STR | FLOAT | BOOL
 endStmt ::= SEMICON | newLineEnd
 newLineEnd ::= NEW_LINE | <<eof>>
 nodePath ::= NODE_PATH_LEX
-//private id_r ::= !(builtInType | endStmt | refId_nm | COLON | ASSERT | ASSIGN | NEW_LINE | '=') & stmt_r
 
 arrayDecl ::= LSBR (expr (COMMA expr)* COMMA?)? RSBR
 dictDecl ::= LCBR (keyValue (COMMA keyValue)* COMMA?)? RCBR

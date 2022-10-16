@@ -47,16 +47,16 @@ object GdPsiUtils {
     @JvmStatic fun getName(element: GdTypeHintNm): String = PsiGdTypeHintUtil.getName(element);
     @JvmStatic fun setName(element: GdTypeHintNm, newName: String?): PsiElement = PsiGdTypeHintUtil.setName(element, newName);
 
-    /** Class variable  */
+    /** Class variable */
     @JvmStatic fun getName(element: GdClassVarDeclTl): String? = PsiGdClassVarUtil.getName(element);
     @JvmStatic fun getPresentation(element: GdClassVarDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
     @JvmStatic fun getReturnType(element: GdClassVarDeclTl): String = PsiGdClassVarUtil.getReturnType(element);
 
-    /** Local variable  */
+    /** Local variable */
     @JvmStatic fun getName(element: GdVarDeclSt): String = PsiGdLocalVarUtil.getName(element);
     @JvmStatic fun getReturnType(element: GdVarDeclSt): String = PsiGdLocalVarUtil.getReturnType(element);
 
-    /** Local constant  */
+    /** Local constant */
     @JvmStatic fun getName(element: GdConstDeclSt): String = PsiGdLocalConstUtil.getName(element);
     @JvmStatic fun getReturnType(element: GdConstDeclSt): String = PsiGdLocalConstUtil.getReturnType(element);
 
@@ -72,11 +72,15 @@ object GdPsiUtils {
     /** Method param */
     @JvmStatic fun getReturnType(element: GdParam): String = PsiGdMethodDeclUtil.getReturnType(element);
 
-    /** Signal   */
+    /** Signal */
     @JvmStatic fun getName(element: GdSignalDeclTl): String = PsiGdSignalUtil.getName(element);
     @JvmStatic fun getParameters(element: GdSignalDeclTl): Array<String> = PsiGdSignalUtil.getParameters(element);
 
-    /** Expressions   */
+    /** Expressions */
     @JvmStatic fun getReturnType(element: GdExpr): String = PsiGdExprUtil.getReturnType(element);
+
+    /** Lambdas */
+    @JvmStatic fun getReturnType(element: GdFuncDeclEx): String = PsiGdLocalFuncUtil.getReturnType(element);
+    @JvmStatic fun getParameters(element: GdFuncDeclEx): HashMap<String, String?> = PsiGdLocalFuncUtil.getParameters(element);
 
 }
