@@ -83,7 +83,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
         // TODO je tohle ok?
         val members = if (local) PsiGdNamedUtil.listLocalDecls(element) else mutableListOf();
         members.addAll(files.flatMap { PsiGdFileUtil.listMembers(it) });
-        members.addAll(files.flatMap { PsiGdFileUtil.listMembers(PsiGdFileUtil.getGlobalFile(element.project)) });
+        members.addAll(files.flatMap { PsiGdFileUtil.listMembers(PsiGdFileUtil.getGlobalFile(element.project)!!) });
 
         members.forEach {
             when (it) {

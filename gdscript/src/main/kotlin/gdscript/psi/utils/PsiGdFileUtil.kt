@@ -53,12 +53,12 @@ object PsiGdFileUtil {
         return path.replace(File.separator, "/");
     }
 
-    fun getGlobalFile(project: Project): PsiFile {
+    fun getGlobalFile(project: Project): PsiFile? {
         return GdClassNamingIndex.get(
             GdKeywords.GLOBAL_SCOPE,
             project,
             GlobalSearchScope.allScope(project),
-        ).firstOrNull()?.containingFile!!;
+        ).firstOrNull()?.containingFile;
     }
 
 }

@@ -10,9 +10,7 @@ import gdscript.index.impl.utils.GdFileResInputFilter
 
 object GdFileResIndex : ScalarIndexExtensionExt<String>() {
 
-    override fun getName(): ID<String, Void> {
-        return Indices.FILE_RES;
-    }
+    override val id: ID<String, Void> = Indices.FILE_RES;
 
     override fun getIndexer(): DataIndexer<String, Void, FileContent> {
         return GdFileResIndexer;

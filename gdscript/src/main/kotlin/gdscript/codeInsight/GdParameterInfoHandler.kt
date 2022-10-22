@@ -5,12 +5,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.psi.GdCallEx
-import gdscript.psi.GdFuncDeclEx
-import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdMethodIdNmi
-import gdscript.psi.GdTypes
-import gdscript.psi.GdVarNmi
+import gdscript.psi.*
 import gdscript.psi.utils.PsiGdLocalFuncUtil
 import gdscript.reference.GdClassMemberReference
 
@@ -30,6 +25,12 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, PsiElement>, DumbA
                 if (lambda != null) {
                     context.itemsToShow = arrayOf(lambda);
                 }
+            }
+            is GdFile -> {
+                val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(declId, GdMethodDeclTl::class.java);
+                context.itemsToShow = methods.filter {
+                    it.isConstructor
+                }.toTypedArray();
             }
         }
 

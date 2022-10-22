@@ -1,8 +1,4 @@
-resources: onready check
-
 const func ... qualifiers ?? Je to i v xml
-
-nefunguje kontrola rekurze / metod definovaných po tom, kde se volají ?? možná ano - chybka mohla být v kanclu bez indexu
 
 documentace:
 Vector2.AXIS_X má klíč [method #name#]
@@ -10,11 +6,7 @@ Vector2.AXIS_X má klíč [method #name#]
 TopLevel: innerClass
 syntax: @"Node/Label"
 
-quote matcher -> multiline string  """ """
-
 resource $"...  zda existuje
-
-attribute_ex -> reference completion
 
 method decl unique validation + params validation (parent)
 method: parent call ._init()
@@ -32,20 +24,6 @@ extends inner class extends "losos.gd".inner
 set,get validation - param, return type
 var a: Node = 4; // chybí kontrola typu hodnoty
 projít dostupné annotatce -> něco má extra options !!!
-
-
-
-lambda
-```
-func _ready():
-    var my_lambda = func(x):
-    print(x)
-    my_lambda.call("hello")
-```
-```
-func _ready():
-    button_down.connect(func(): print("button was pressed"))
-```
 
 Static methods
 ```
@@ -66,8 +44,6 @@ signal - napovídat jména + kontrolovat params
 
 sdk -> lepší impl
 
-13 go to
-
 Completions:
 - method params
 - if else /...  flow hints
@@ -87,14 +63,7 @@ Enum
 unique name
 unique value
 
-match -> expression in match pattern must be CONST!! annotátor
-
 abs() je v global (ty nejsou) ale i ve Vector 
 -> více funkcí v jednom scope -> pořešit hinty, annotatároy
-
-Formatter
-
-Run - reuse context not working
-Debug
 
 optional ";" ... hledej "// +;" kde to bylo použito

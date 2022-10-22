@@ -8,11 +8,7 @@ import com.intellij.psi.*
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.containers.toArray
-import gdscript.psi.GdCallEx
-import gdscript.psi.GdFuncDeclEx
-import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdRefIdNm
-import gdscript.psi.GdVarDeclSt
+import gdscript.psi.*
 import gdscript.psi.utils.PsiGdSignalUtil
 import gdscript.reference.GdClassMemberReference
 
@@ -35,6 +31,8 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
             } else if (declaration is GdVarDeclSt && declaration.expr is GdFuncDeclEx) {
                 val lambda = declaration.expr as GdFuncDeclEx;
                 return MethodInfo(lambda.funcDeclIdNmi?.text.orEmpty(), lambda.parameters.keys.toList());
+            } else if (declaration is GdFile) {
+                val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(declaration, GdMethodDeclTl::class.java);
             }
         }
         return null
@@ -43,9 +41,9 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getParameterHints(element: PsiElement): List<InlayInfo> {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return emptyList();
-            val method = GdClassMemberReference(id).resolveDeclaration() ?: return emptyList();
+            val method = GdClassMemberReference(id).resolveDeclaration();
 
-            var params: Array<String>;
+            var params: Array<String> = emptyArray();
             when (method) {
                 is GdMethodDeclTl -> {
                     params = method.parameters.keys.toArray(emptyArray());
@@ -65,7 +63,35 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                         return emptyList();
                     }
                 }
-                else -> return emptyList();
+                else -> {
+                    val file = GdClassMemberReference(id).resolve();
+                    if (file !is GdFile) {
+                        return emptyList();
+                    }
+
+                    val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(file, GdMethodDeclTl::class.java);
+                    val usedParams = element.argList?.exprList;
+
+                    for (hint in methods) {
+                        if (!hint.isConstructor) continue;
+                        val hints = hint.paramList?.paramList;
+                        if (hints == null || usedParams == null || hints.size != usedParams.size) continue;
+                        var ok = true;
+                        for (i in 0 until hints.size) {
+                            val t1 = usedParams[i].returnType;
+                            val t2 = hints[i].returnType; // TODO return typ -> dědičnost, number + float a tak..
+                            ok = ok && (t1.isBlank() || t2.isBlank() || t1 == t2);
+                        }
+
+                        if (ok) {
+                            params = hints.map { it.varNmi.name }.toTypedArray();
+                            break;
+                        }
+                    }
+                };
+            }
+            if (params.isEmpty()) {
+                return emptyList();
             }
 
             return element.argList?.exprList?.mapIndexed { i, it ->
