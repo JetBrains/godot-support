@@ -5,33 +5,36 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.elementType
 import gdscript.action.GdFileClassNameAction
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdClassNameNm
 import gdscript.psi.GdInheritanceIdNmi
+import gdscript.psi.GdTypes
 import gdscript.psi.utils.PsiGdFileUtil
+import gdscript.psi.utils.PsiGdInheritanceUtil
 
 class GdClassNameAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element is GdInheritanceIdNmi) {
-            holder
-                .newSilentAnnotation(HighlightSeverity.INFORMATION)
-                .range(element.textRange)
-                .textAttributes(GdHighlighterColors.CLASS_TYPE)
-                .create();
-
-            if (GdClassNamingIndex.getGlobally(element).isNotEmpty()) {
-                return;
+            if (element.firstChild.elementType == GdTypes.IDENTIFIER) {
+                holder
+                    .newSilentAnnotation(HighlightSeverity.INFORMATION)
+                    .range(element.textRange)
+                    .textAttributes(GdHighlighterColors.CLASS_TYPE)
+                    .create();
             }
 
-            holder
-                .newAnnotation(HighlightSeverity.ERROR, "Unknown class")
-                .range(element.textRange)
-                .create();
+            if (PsiGdInheritanceUtil.getPsiFile(element) == null) {
+                holder
+                    .newAnnotation(HighlightSeverity.ERROR, "Unknown class")
+                    .range(element.textRange)
+                    .create();
+            }
         } else if (element is GdClassNameNm) {
-            val name = element.name.orEmpty();
+            val name = element.name;
             val filename = PsiGdFileUtil.filename(element.containingFile);
             if (filename.toLowerCase() != name.toLowerCase()) {
                 holder

@@ -242,6 +242,8 @@ ANY = .+
     "preload"      { return dedentRoot(GdTypes.PRELOAD); }
     "static"       { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.STATIC); }
     "vararg"       { return dedentRoot(GdTypes.VARARG); }
+//    "puppet"       { return dedentRoot(GdTypes.PUPPET); }
+//    "master"       { return dedentRoot(GdTypes.MASTER); }
 
     "*"            { return dedentRoot(GdTypes.MUL); }
     "/"            { return dedentRoot(GdTypes.DIV); }

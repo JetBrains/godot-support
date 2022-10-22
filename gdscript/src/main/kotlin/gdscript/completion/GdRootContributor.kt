@@ -28,6 +28,7 @@ class GdRootContributor : CompletionContributor() {
 
         if (previous === null) {
             result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
+            result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " "));
             return result.stopHere();
         } else if (ROOT_POSITION.accepts(position)) {
             addTopLvlDecl(result, parameters);
@@ -50,6 +51,7 @@ class GdRootContributor : CompletionContributor() {
         GdResourceCompletionUtil.fullVarResources(parameters.position.originalElement, result);
         val filename = parameters.originalFile.name;
         result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " ${filename.substring(0, filename.length - 3)}"));
+        result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
         GdClassVarCompletionUtil.annotations(result);
     }
 

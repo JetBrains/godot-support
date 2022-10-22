@@ -135,6 +135,8 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "preload"      { return GdTypes.PRELOAD; }
     "static"       { return GdTypes.STATIC; }
     "vararg"       { return GdTypes.VARARG; }
+   //"puppet"       { return GdTypes.PUPPET; }
+   //"master"       { return GdTypes.MASTER; }
 
     "*"            { return GdTypes.MUL; }
     "/"            { return GdTypes.DIV; }

@@ -4,8 +4,12 @@ package gdscript.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 
 public interface GdInheritanceIdNmi extends GdNamedIdElement {
+
+  @Nullable
+  PsiFile getPsiFile();
 
   @NotNull
   String getName();

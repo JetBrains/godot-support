@@ -15,21 +15,19 @@ object PsiGdNamedUtil {
     /**
      * List all parent Classes
      */
-    fun listParents(element: PsiElement): MutableList<GdClassNaming> {
+    fun listParents(element: PsiElement): MutableList<PsiFile> {
         var parentName: String? =
             PsiTreeUtil.getChildOfType(element.containingFile, GdInheritance::class.java)?.inheritanceName;
-        val parents = mutableListOf<GdClassNaming>();
+        val parents = mutableListOf<PsiFile>();
 
         while (parentName !== null) {
-            val parent =
-                GdClassNamingIndex.get(parentName, element.project, GlobalSearchScope.allScope(element.project))
-                    .firstOrNull();
+            val parent = PsiGdInheritanceUtil.getPsiFile(parentName, element.project);
             if (parent === null) {
                 return parents;
             }
 
             parents.add(parent);
-            parentName = parent.parentName;
+            parentName = PsiGdInheritanceUtil.getParentName(parent);
         }
 
         return parents;
@@ -42,14 +40,12 @@ object PsiGdNamedUtil {
         var parentName: String? = myType;
 
         while (parentName !== null) {
-            val parent =
-                GdClassNamingIndex.get(parentName, project, GlobalSearchScope.allScope(project))
-                    .firstOrNull();
+            val parent = PsiGdInheritanceUtil.getPsiFile(parentName, project);
             if (parent === null) {
                 return false;
             }
 
-            parentName = parent.parentName;
+            parentName = PsiGdInheritanceUtil.getParentName(parent);
             if (lookFor == parentName) {
                 return true;
             }
@@ -145,14 +141,12 @@ object PsiGdNamedUtil {
         }
 
         while (parentName !== null) {
-            val parent =
-                GdClassNamingIndex.get(parentName, element.project, GlobalSearchScope.allScope(element.project))
-                    .firstOrNull();
+            val parent = PsiGdInheritanceUtil.getPsiFile(parentName, element.project);
             if (parent === null) {
                 return null;
             }
 
-            lookFor(parent.containingFile.originalFile,
+            lookFor(parent,
                 thisName,
                 element.project,
                 variables,
@@ -161,7 +155,7 @@ object PsiGdNamedUtil {
                 return it
             }
 
-            parentName = parent.parentName;
+            parentName = PsiGdInheritanceUtil.getParentName(parent);
         }
 
         return null;

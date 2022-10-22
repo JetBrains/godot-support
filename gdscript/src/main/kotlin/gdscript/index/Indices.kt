@@ -1,6 +1,7 @@
 package gdscript.index
 
 import com.intellij.psi.stubs.StubIndexKey
+import com.intellij.util.indexing.ID
 import gdscript.psi.*
 
 object Indices {
@@ -14,5 +15,7 @@ object Indices {
     val METHOD_DECL = StubIndexKey.createIndexKey<String, GdMethodDeclTl>("gdscript.methodDecl")
     val SIGNAL_DECL = StubIndexKey.createIndexKey<String, GdSignalDeclTl>("gdscript.signal")
     val ENUM = StubIndexKey.createIndexKey<String, GdEnumDeclTl>("gdscript.enum")
+
+    val FILE_RES = ID.create<String, Void>("gdscript.fileResource");
 
 }

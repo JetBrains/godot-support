@@ -10,4 +10,7 @@ public interface GdAnnotationTl extends GdTopLevelDecl {
   @NotNull
   List<GdLiteralEx> getLiteralExList();
 
+  @Nullable
+  GdNewLineEnd getNewLineEnd();
+
 }

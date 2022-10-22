@@ -5,7 +5,6 @@ import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import gdscript.index.impl.GdClassNamingIndex
-import gdscript.psi.*
 import gdscript.psi.utils.PsiGdCommentUtils
 import gdscript.reference.GdClassMemberReference
 

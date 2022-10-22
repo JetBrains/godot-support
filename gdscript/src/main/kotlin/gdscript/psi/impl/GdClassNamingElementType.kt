@@ -16,9 +16,9 @@ object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNam
     }
 
     fun getParentName(element: GdClassNaming?): String? {
-        val inh = PsiTreeUtil.getPrevSiblingOfType(element, GdInheritance::class.java)
+        val inh = PsiTreeUtil.findChildOfType(element, GdInheritance::class.java)
 
-        return inh?.inheritanceName
+        return inh?.inheritanceName;
     }
 
     @JvmStatic

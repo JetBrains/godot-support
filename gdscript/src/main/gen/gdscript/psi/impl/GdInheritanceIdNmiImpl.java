@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
+import com.intellij.psi.PsiFile;
 
 public class GdInheritanceIdNmiImpl extends GdNamedIdElementImpl implements GdInheritanceIdNmi {
 
@@ -24,6 +25,12 @@ public class GdInheritanceIdNmiImpl extends GdNamedIdElementImpl implements GdIn
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public PsiFile getPsiFile() {
+    return GdPsiUtils.getPsiFile(this);
   }
 
   @Override

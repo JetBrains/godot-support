@@ -46,7 +46,7 @@ object PsiGdClassUtil {
         if (element == null) return ""
 
         val valueNode = element.node.findChildByType(GdTypes.INHERITANCE_ID_NMI)
-        return valueNode?.text ?: ""
+        return valueNode?.text?.trim('"') ?: ""
     }
 
     private fun mapFiles(files: Collection<GdFile>): List<GdClassNaming> {

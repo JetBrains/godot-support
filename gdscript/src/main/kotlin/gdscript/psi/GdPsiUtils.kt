@@ -2,6 +2,7 @@ package gdscript.psi
 
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import gdscript.psi.impl.*
 import gdscript.psi.utils.*
 import gdscript.structureView.GdPresentationUtil
@@ -28,6 +29,7 @@ object GdPsiUtils {
 
     /** Inheritance  */
     @JvmStatic fun getInheritanceName(element: GdInheritance?): String = PsiGdClassUtil.getInheritanceName(element);
+    @JvmStatic fun getPsiFile(element: GdInheritanceIdNmi): PsiFile? = PsiGdInheritanceUtil.getPsiFile(element);
 
     /** Enum  */
     @JvmStatic fun getValues(element: GdEnumDeclTl): HashMap<String, Int> = PsiGdEnumUtil.values(element);

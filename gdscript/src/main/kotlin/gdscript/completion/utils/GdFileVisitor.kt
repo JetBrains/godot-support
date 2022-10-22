@@ -6,6 +6,7 @@ import java.nio.file.FileVisitor
 import java.nio.file.Path
 import java.nio.file.attribute.BasicFileAttributes
 
+@Deprecated("replace with FileRes index")
 class GdFileVisitor : FileVisitor<Path> {
 
     val files: ArrayList<String> = ArrayList();
@@ -26,11 +27,10 @@ class GdFileVisitor : FileVisitor<Path> {
 
     override fun visitFile(file: Path?, attrs: BasicFileAttributes?): FileVisitResult {
         val filename = file?.toAbsolutePath().toString();
-        if (!filename.endsWith(".tscn")
-            && !filename.endsWith(".gd")
-            && !filename.endsWith(".import")
+        if (!filename.endsWith(".import")
             && !filename.endsWith(".godot")
-            && !filename.endsWith(".tres")
+            && !filename.endsWith(".gitignore")
+            && !filename.endsWith(".gitattributes")
         ) {
             this.files.add(filename.substring(basePath));
         }

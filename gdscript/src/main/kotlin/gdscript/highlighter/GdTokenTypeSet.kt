@@ -34,6 +34,8 @@ interface GdTokenTypeSet {
             GdTypes.ASSERT,
             GdTypes.AWAIT,
             GdTypes.PRELOAD,
+//            GdTypes.PUPPET,
+//            GdTypes.MASTER,
             GdTypes.AS,
             GdTypes.IS,
             GdTypes.AND,

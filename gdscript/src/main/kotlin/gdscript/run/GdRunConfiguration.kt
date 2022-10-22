@@ -7,10 +7,8 @@ import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessHandlerFactory
 import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
-import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
-import gdscript.psi.utils.PsiGdFileUtil
 
 class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions> {
 

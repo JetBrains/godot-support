@@ -7,7 +7,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.elementType
-import gdscript.GdKeywords
 import gdscript.completion.utils.*
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
@@ -79,7 +78,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
         val local = file == null;
         file = file ?: element.containingFile;
         files.add(file!!);
-        files.addAll(PsiGdNamedUtil.listParents(file).map { it.containingFile });
+        files.addAll(PsiGdNamedUtil.listParents(file));
 
         // TODO je tohle ok?
         val members = if (local) PsiGdNamedUtil.listLocalDecls(element) else mutableListOf();

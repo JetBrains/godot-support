@@ -136,9 +136,7 @@ object PsiGdExprUtil {
                                 val first = parent.exprList.first();
                                 val parReturn = first?.returnType ?: return "";
                                 if (parReturn != GdKeywords.SELF) {
-                                    parentFile = GdClassNamingIndex
-                                        .get(parReturn, expr.project, GlobalSearchScope.allScope(expr.project))
-                                        .firstOrNull()?.containingFile ?: return "";
+                                    parentFile = PsiGdInheritanceUtil.getPsiFile(parReturn, expr.project) ?: return "";
                                 }
                             }
                         }
@@ -150,9 +148,7 @@ object PsiGdExprUtil {
                                 if (parent.prevSibling != null) {
                                     val first = prev.exprList.first();
                                     val parReturn = first?.returnType ?: return "";
-                                    parentFile = GdClassNamingIndex
-                                        .get(parReturn, expr.project, GlobalSearchScope.allScope(expr.project))
-                                        .firstOrNull()?.containingFile ?: return "";
+                                    parentFile = PsiGdInheritanceUtil.getPsiFile(parReturn, expr.project) ?: return "";
                                 }
                             }
                         }
