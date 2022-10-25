@@ -53,11 +53,6 @@ func _init(e=null, m=null).(e):
     # Do something with 'e'.
 ```
 
-
-Array.gd
-methody typu constructor Array(from: ...)
-
-
 Enum
 // TODO tady chybí enum check -> chtělo by to rozšířit na ten parentaly... :/
 unique name

@@ -31,8 +31,6 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
             } else if (declaration is GdVarDeclSt && declaration.expr is GdFuncDeclEx) {
                 val lambda = declaration.expr as GdFuncDeclEx;
                 return MethodInfo(lambda.funcDeclIdNmi?.text.orEmpty(), lambda.parameters.keys.toList());
-            } else if (declaration is GdFile) {
-                val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(declaration, GdMethodDeclTl::class.java);
             }
         }
         return null
