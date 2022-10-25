@@ -21,7 +21,7 @@ class GdUsageProvider : FindUsagesProvider {
     }
 
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
-        return psiElement is GdClassNameNm
+        return psiElement is GdClassNameNmi
                 || psiElement is GdMethodIdNmi
                 || psiElement is GdClassVarIdNmi
                 || psiElement is GdConstIdNmi
@@ -36,7 +36,7 @@ class GdUsageProvider : FindUsagesProvider {
 
     override fun getType(element: PsiElement): String {
         return when(element) {
-            is GdClassNameNm -> "class"
+            is GdClassNameNmi -> "class"
             is GdMethodIdNmi -> "method"
             is GdClassVarIdNmi -> "variable"
             is GdConstIdNmi -> "constant"

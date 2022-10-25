@@ -24,7 +24,8 @@ class GdLineBlock : GdAbstractBlock {
         settings: GdCodeStyleSettings,
         spacing: SpacingBuilder,
         indent: Indent = Indent.getIndent(Indent.Type.NONE, true, false),
-    ) : super(node, wrap, alignment, settings, spacing, indent);
+        inner: Boolean = false,
+    ) : super(node, wrap, alignment, settings, spacing, indent, inner);
 
     override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
         val next = indentNextBlock(newChildIndex);
@@ -43,7 +44,7 @@ class GdLineBlock : GdAbstractBlock {
             Alignment.createAlignment(),
             settings,
             spacing,
-            Indent.getNoneIndent(),
+            this.indent,
         );
     }
 

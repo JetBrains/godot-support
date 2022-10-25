@@ -22,14 +22,20 @@ object GdPsiUtils {
     }
 
     /** ClassName  */
-    @JvmStatic fun getName(element: GdClassNameNm?): String = PsiGdClassUtil.getName(element);
-    @JvmStatic fun setName(element: GdClassNameNm?, newName: String?): PsiElement? = PsiGdClassUtil.setName(element, newName);
+    @JvmStatic fun getName(element: GdClassNameNmi?): String = PsiGdClassUtil.getName(element);
+    @JvmStatic fun setName(element: GdClassNameNmi?, newName: String?): PsiElement? = PsiGdClassUtil.setName(element, newName);
     @JvmStatic fun getClassname(element: GdClassNaming?): String = GdClassNamingElementType.getClassname(element);
     @JvmStatic fun getParentName(element: GdClassNaming?): String? = GdClassNamingElementType.getParentName(element);
 
+    /** ClassId */
+    @JvmStatic fun getClassId(element: GdClassNameNmi): String = GdClassIdElementType.getClassId(element);
+    @JvmStatic fun getParentName(element: GdClassNameNmi): String? = GdClassIdElementType.getParentName(element);
+    @JvmStatic fun isInner(element: GdClassNameNmi): Boolean = PsiGdClassUtil.isInner(element);
+
     /** Inheritance  */
     @JvmStatic fun getInheritanceName(element: GdInheritance?): String = PsiGdClassUtil.getInheritanceName(element);
-    @JvmStatic fun getPsiFile(element: GdInheritanceIdNmi): PsiFile? = PsiGdInheritanceUtil.getPsiFile(element);
+    @JvmStatic fun getPsiFile(element: GdInheritanceIdNm): PsiFile? = PsiGdInheritanceUtil.getPsiFile(element);
+    @JvmStatic fun isClassName(element: GdInheritanceIdNm): Boolean = PsiGdInheritanceUtil.isClassName(element);
 
     /** Enum  */
     @JvmStatic fun getValues(element: GdEnumDeclTl): HashMap<String, Int> = PsiGdEnumUtil.values(element);

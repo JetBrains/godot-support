@@ -3,7 +3,6 @@ package gdscript.reference
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.elementType
@@ -12,6 +11,7 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.psi.utils.PsiGdExprUtil
 import gdscript.psi.utils.PsiGdFileUtil
+import gdscript.psi.utils.PsiGdInheritanceUtil
 import gdscript.psi.utils.PsiGdNamedUtil
 
 // TODO Signals, ...?
@@ -69,21 +69,18 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun getVariants(): Array<Any> {
-        val files: ArrayList<PsiFile> = ArrayList();
+        val classes: ArrayList<PsiElement> = ArrayList();
         val results = ArrayList<LookupElement>();
         val static = referencesClassName(element);
 
-        // TODO zkontrolovat, jestli se nevrací Array[String]
-        var file = PsiGdExprUtil.getAttrOrCallParentFile(element);
+        val file = PsiGdExprUtil.getAttrOrCallParentFile(element);
         val local = file == null;
-        file = file ?: element.containingFile;
-        files.add(file!!);
-        files.addAll(PsiGdNamedUtil.listParents(file));
+        classes.add(file ?: PsiGdInheritanceUtil.getFirstParent(element));
+        classes.addAll(PsiGdNamedUtil.listParents(file ?: element));
 
-        // TODO je tohle ok?
         val members = if (local) PsiGdNamedUtil.listLocalDecls(element) else mutableListOf();
-        members.addAll(files.flatMap { PsiGdFileUtil.listMembers(it) });
-        members.addAll(files.flatMap { PsiGdFileUtil.listMembers(PsiGdFileUtil.getGlobalFile(element.project)!!) });
+        members.addAll(classes.flatMap { PsiGdFileUtil.listMembers(it) });
+        members.addAll(classes.flatMap { PsiGdFileUtil.listMembers(PsiGdFileUtil.getGlobalFile(element.project)!!) });
 
         members.forEach {
             when (it) {
@@ -126,34 +123,5 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
         return false;
     }
-
-//    private fun getBaseFile(element: PsiElement): PsiFile? {
-//        // TODO tohle by mělo jít odstranit -> potřeba vyřešit return file class_name
-//        val parent = element.parent?.parent;
-//        if (parent != null) {
-//            val type = parent.elementType;
-//            if (type == GdTypes.ATTRIBUTE_EX || type == GdTypes.CALL_EX) {
-//                if (parent.firstChild.text == GdKeywords.SELF) {
-//                    return element.containingFile;
-//                }
-//
-//                var typed = (parent.firstChild as GdExpr).returnType;
-//                if (typed.isEmpty()) {
-//                    // TODO resolve call/attr expr to get hint
-//                    return null;
-//                } else if (typed.startsWith("Array")) { // TODO někam vykopnout
-//                    typed = "Array";
-//                }
-//
-//                val gdClass = GdClassNamingIndex
-//                    .get(typed, element.project, GlobalSearchScope.allScope(element.project))
-//                    .firstOrNull();
-//
-//                return gdClass?.containingFile;
-//            }
-//        }
-//
-//        return element.containingFile;
-//    }
 
 }

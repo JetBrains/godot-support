@@ -31,7 +31,7 @@ object GdInheritanceElementType : IStubElementType<GdInheritanceStub, GdInherita
         GdInheritanceImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdInheritance, parentStub: StubElement<*>?): GdInheritanceStub {
-        return GdInheritanceStubImpl(parentStub, psi.inheritanceIdNmi?.name);
+        return GdInheritanceStubImpl(parentStub, psi.inheritanceId?.text);
     }
 
 }

@@ -15,7 +15,7 @@ import java.io.File
 
 object PsiGdFileUtil {
 
-    fun listMembers(gdFile: PsiFile): List<PsiElement> {
+    fun listMembers(gdFile: PsiElement): List<PsiElement> {
         return PsiTreeUtil.getChildrenOfAnyType(
             gdFile,
             GdClassVarDeclTl::class.java,

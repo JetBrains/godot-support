@@ -7,6 +7,7 @@ import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.IFileElementType
 import gdscript.formatter.GdCodeStyleSettings
+import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdStmt
 import gdscript.psi.GdTypes
 import gdscript.utils.PsiElementUtil.precedingNewLines
@@ -35,6 +36,7 @@ abstract class GdAbstractBlock : AbstractBlock {
     val settings: GdCodeStyleSettings;
     val spacing: SpacingBuilder;
     val myIndent: Indent;
+    var inner: Boolean;
 
     constructor(
         node: ASTNode,
@@ -43,10 +45,12 @@ abstract class GdAbstractBlock : AbstractBlock {
         settings: GdCodeStyleSettings,
         spacing: SpacingBuilder,
         indent: Indent = NONE_INDENT,
+        inner: Boolean = false,
     ) : super(node, wrap, alignment) {
         this.settings = settings;
         this.spacing = spacing;
         this.myIndent = indent;
+        this.inner = inner;
     }
 
     override fun buildChildren(): MutableList<Block> {
@@ -56,6 +60,10 @@ abstract class GdAbstractBlock : AbstractBlock {
         while (!children.isEmpty()) {
             val child = children.removeFirstOrNull()!!;
             val t = child.elementType;
+
+            // TODO tohle už chce přerozdělit
+            inner = inner || child.psi is GdClassDeclTl;
+
             val nextBlock =
                 if (EMPTY_TOKENS.contains(t)) {
                     null;
@@ -70,6 +78,7 @@ abstract class GdAbstractBlock : AbstractBlock {
                         settings,
                         spacing,
                         Indent.getNormalIndent(),
+                        inner,
                     );
                 } else if (GdLineBlock.BLOCKS.contains(t)) {
                     GdLineBlock(
@@ -78,7 +87,8 @@ abstract class GdAbstractBlock : AbstractBlock {
                         Alignment.createAlignment(),
                         settings,
                         spacing,
-                        Indent.getNoneIndent(),
+                        if (inner) Indent.getNormalIndent() else Indent.getNoneIndent(),
+                        inner,
                     );
                 } else {
                     this.self(child)
@@ -99,7 +109,8 @@ abstract class GdAbstractBlock : AbstractBlock {
             Alignment.createAlignment(),
             settings,
             spacing,
-            indent,
+            indent, // TODO další hack pro innerClass
+            child.psi is GdClassDeclTl,
         );
     }
 

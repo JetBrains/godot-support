@@ -45,12 +45,19 @@ object PsiGdResourceUtil {
         return null;
     }
 
+    @Deprecated("local path by se měl řešit tady")
     fun resourcePath(file: String): String {
         return "res://${file.trimStart(File.separatorChar).split(File.separatorChar).joinToString(SEPARATOR)}"
     }
 
     fun filePath(resource: String): String {
         return resource.substring("res://".length).replace(SEPARATOR, File.separator);
+    }
+
+    fun absoluteFilePath(resource: String, project: Project): String {
+        val local = filePath(resource);
+
+        return "${project.basePath}${File.separator}$local";
     }
 
 }

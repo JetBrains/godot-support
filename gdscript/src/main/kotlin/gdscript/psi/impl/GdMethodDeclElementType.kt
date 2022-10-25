@@ -48,20 +48,10 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
         GdMethodDeclTlImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdMethodDeclTl, parentStub: StubElement<*>?): GdMethodDeclStub {
-        val className = PsiGdClassUtil.getClassName(psi) ?: "";
-        var isStatic = false;
-        var isVariadic = false;
-        psi.children.forEach {
-            when (it.elementType) {
-                GdTypes.STATIC -> isStatic = true;
-                GdTypes.VARARG -> isVariadic = true;
-            }
-        }
-
         return GdMethodDeclStubImpl(parentStub,
-            isStatic,
-            isVariadic,
-            psi.name == className || psi.name == "_init",
+            psi.isStatic,
+            psi.isVariadic,
+            psi.isConstructor,
             psi.name,
             psi.returnType,
             psi.parameters);

@@ -20,6 +20,18 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
         return get(name, project, GlobalSearchScope.allScope(project));
     }
 
+    fun getGloballyWithoutSelf(element: PsiNamedElement): Collection<Psi> {
+        return get(element.name.orEmpty(), element.project,GlobalSearchScope.notScope(
+            GlobalSearchScope.fileScope(element.containingFile)
+        ));
+    }
+
+    fun getGloballyWithoutSelf(name: String, element: PsiElement): Collection<Psi> {
+        return get(name, element.project, GlobalSearchScope.notScope(
+            GlobalSearchScope.fileScope(element.containingFile)
+        ));
+    }
+
     fun getInFile(element: PsiNamedElement): Collection<Psi> {
         return get(element.name.orEmpty(), element.project, GlobalSearchScope.fileScope(element.containingFile));
     }

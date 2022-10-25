@@ -11,6 +11,9 @@ import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdParentMethodCall
 import gdscript.psi.utils.PsiGdClassUtil
 
+/**
+ * TODO ii celé projít a přepracovat
+ */
 class GdConstructorAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {

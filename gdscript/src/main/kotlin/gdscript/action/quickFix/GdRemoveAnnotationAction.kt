@@ -28,7 +28,7 @@ class GdRemoveAnnotationAction : BaseIntentionAction {
     }
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        val space = element.parent?.prevSibling;
+        val space = element.prevSibling;
         if (space is PsiWhiteSpace) {
             space.delete();
         }

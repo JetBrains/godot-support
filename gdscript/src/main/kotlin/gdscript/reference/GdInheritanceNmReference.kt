@@ -11,15 +11,15 @@ import gdscript.completion.utils.GdCompletionUtil
 import gdscript.completion.utils.GdFileCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
-import gdscript.psi.GdInheritanceIdNmi
+import gdscript.psi.GdInheritanceIdNm
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.PsiGdClassUtil
 
-class GdInheritanceNmReference : PsiReferenceBase<GdInheritanceIdNmi> {
+class GdInheritanceNmReference : PsiReferenceBase<GdInheritanceIdNm> {
 
     private var key: String = "";
 
-    constructor(element: PsiElement, textRange: TextRange) : super(element as GdInheritanceIdNmi, textRange) {
+    constructor(element: PsiElement, textRange: TextRange) : super(element as GdInheritanceIdNm, textRange) {
         key = element.text.substring(textRange.startOffset, textRange.endOffset).trim('"');
     }
 
@@ -42,7 +42,7 @@ class GdInheritanceNmReference : PsiReferenceBase<GdInheritanceIdNmi> {
 
         return GdClassNamingIndex
             .get(key, project, GlobalSearchScope.allScope(project))
-            .firstOrNull()?.classNameNm;
+            .firstOrNull()?.classNameNmi; // TODO ii
     }
 
     override fun getVariants(): Array<LookupElement> {

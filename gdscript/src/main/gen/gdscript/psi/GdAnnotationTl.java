@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface GdAnnotationTl extends GdTopLevelDecl {
 
-  @NotNull
-  List<GdLiteralEx> getLiteralExList();
+  @Nullable
+  GdAnnotationParams getAnnotationParams();
 
   @Nullable
   GdNewLineEnd getNewLineEnd();

@@ -10,15 +10,16 @@ import gdscript.action.quickFix.GdRemoveElementAction
 import gdscript.psi.*
 import gdscript.psi.utils.PsiGdNamedUtil
 
+/**
+ * Checks for uniqueness of variables
+ * Adds quickfix for return type
+ */
 class GdConstVarIdAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element is GdConstIdNmi || element is GdClassVarIdNmi) {
-            if (!isLocallyUnique(element as GdNamedIdElement, holder)) {
-                return;
-            }
-
-            isParentallyUnique(element, holder);
+//            isLocallyUnique(element as GdNamedIdElement, holder);
+            isParentallyUnique(element as GdNamedIdElement, holder);
         } else {
             hasReturnType(element, holder);
         }
@@ -67,7 +68,7 @@ class GdConstVarIdAnnotator : Annotator {
         if (exists != null) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR,
-                    "[${element.name}] is already defined in parent class")
+                    "[${element.name}] is already defined")
                 .range(element.textRange)
                 .create();
 
@@ -87,7 +88,8 @@ class GdConstVarIdAnnotator : Annotator {
         }
 
         val assigment = returnTypes.first;
-        if (assigment !== null && assigment.text.equals(":=")) { // := assigment does not specify the type
+        // := assigment cannot specify the type
+        if (assigment !== null && assigment.text.equals(":=")) {
             if (returnTypes.second === null) {
                 return;
             }

@@ -10,7 +10,7 @@ import gdscript.index.stub.GdInheritanceStub;
 public interface GdInheritance extends PsiElement, StubBasedPsiElement<GdInheritanceStub> {
 
   @Nullable
-  GdInheritanceIdNmi getInheritanceIdNmi();
+  GdInheritanceId getInheritanceId();
 
   @Nullable
   GdNewLineEnd getNewLineEnd();

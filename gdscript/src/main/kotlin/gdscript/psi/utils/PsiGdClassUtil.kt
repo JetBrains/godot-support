@@ -13,13 +13,19 @@ object PsiGdClassUtil {
         return mapFiles(PsiGdFileUtil.gdFiles(project));
     }
 
+    @Deprecated("použij metodu getClass")
     fun getClassName(element: PsiElement): String? {
+        val cl = PsiGdTreeUtil.findFirstPrecedingElement(element) {
+            it is GdClassDeclTl
+        } as GdClassDeclTl?;
+        if (cl != null) return cl.classNameNmi?.name;
+
         return PsiTreeUtil
             .getChildOfType(element.containingFile, GdClassNaming::class.java)
             ?.classname;
     }
 
-    fun setName(element: GdClassNameNm?, newName: String?): PsiElement? {
+    fun setName(element: GdClassNameNmi?, newName: String?): PsiElement? {
         if (element == null) return null;
 
         val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
@@ -30,14 +36,14 @@ object PsiGdClassUtil {
         return element
     }
 
-    fun getName(element: GdClassNameNm?): String {
+    fun getName(element: GdClassNameNmi?): String {
         if (element == null) return "";
 
         val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
         return valueNode?.text ?: ""
     }
 
-    fun getNameIdentifier(element: GdClassNameNm): PsiElement? {
+    fun getNameIdentifier(element: GdClassNameNmi): PsiElement? {
         val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
         return keyNode?.psi
     }
@@ -45,8 +51,41 @@ object PsiGdClassUtil {
     fun getInheritanceName(element: GdInheritance?): String {
         if (element == null) return ""
 
-        val valueNode = element.node.findChildByType(GdTypes.INHERITANCE_ID_NMI)
+        val valueNode = element.node.findChildByType(GdTypes.INHERITANCE_ID_NM)
         return valueNode?.text?.trim('"') ?: ""
+    }
+
+    fun isInner(element: GdClassNameNmi): Boolean {
+        return element.parent is GdClassDeclTl;
+    }
+
+    @Deprecated("")
+    fun getParentContainer(element: PsiElement): PsiElement {
+        if (element is GdClassDeclTl) {
+            return element;
+        }
+
+        return PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassDeclTl::class.java) ?: element.containingFile;
+    }
+
+    /**
+     * Returns one of: GdClassDecl, GdClassNaming, GdFile
+     */
+    fun getParentClassElement(element: PsiElement): PsiElement {
+        val inner = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassDeclTl::class.java);
+        if (inner != null) return inner;
+
+        return PsiTreeUtil.getStubChildOfType(element.containingFile, GdClassNaming::class.java)
+            ?: element.containingFile;
+    }
+
+    fun getClass(element: PsiElement): String? {
+        val container = getParentContainer(element);
+        if (container is GdClassDeclTl) {
+            return container.classNameNmi?.name;
+        }
+
+        return PsiTreeUtil.getStubChildOfType(element, GdClassNaming::class.java)?.classname;
     }
 
     private fun mapFiles(files: Collection<GdFile>): List<GdClassNaming> {

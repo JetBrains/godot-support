@@ -32,7 +32,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
         return SpacingBuilder(settings, GdLanguage)
             /** Root lines */
             .before(NAMINGS).spacing(0, 0, 1, false, 0)
-            .before(TokenSet.create(GdTypes.INHERITANCE_ID_NMI, GdTypes.CLASS_NAME_NM)).spaces(1)
+            .before(TokenSet.create(GdTypes.INHERITANCE_ID_NM, GdTypes.CLASS_NAME_NMI)).spaces(1)
             .beforeInside(GdTypes.DEDENT, GdTypes.SUITE).spacing(0, Int.MAX_VALUE, 1, false, 0)
             .between(NAMINGS, ROOTS).spacing(0, 0, 1, false, 1)
 

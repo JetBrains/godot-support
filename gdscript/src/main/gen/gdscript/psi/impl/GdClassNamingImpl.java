@@ -34,8 +34,8 @@ public class GdClassNamingImpl extends GdClassNamingElementImpl implements GdCla
 
   @Override
   @Nullable
-  public GdClassNameNm getClassNameNm() {
-    return PsiTreeUtil.getChildOfType(this, GdClassNameNm.class);
+  public GdClassNameNmi getClassNameNmi() {
+    return PsiTreeUtil.getStubChildOfType(this, GdClassNameNmi.class);
   }
 
   @Override

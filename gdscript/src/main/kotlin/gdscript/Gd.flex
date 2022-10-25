@@ -244,6 +244,7 @@ ANY = .+
     "vararg"       { return dedentRoot(GdTypes.VARARG); }
 //    "puppet"       { return dedentRoot(GdTypes.PUPPET); }
 //    "master"       { return dedentRoot(GdTypes.MASTER); }
+    "class"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CLASS); }
 
     "*"            { return dedentRoot(GdTypes.MUL); }
     "/"            { return dedentRoot(GdTypes.DIV); }
@@ -350,8 +351,6 @@ ANY = .+
     }
 }
 
-//    "class" { return GdTypes.CLASS; }
-//
 
 //
 //    /* Syntax */

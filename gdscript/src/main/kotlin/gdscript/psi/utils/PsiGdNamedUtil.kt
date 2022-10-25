@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.startOffset
 import gdscript.GdKeywords
@@ -16,8 +17,7 @@ object PsiGdNamedUtil {
      * List all parent Classes
      */
     fun listParents(element: PsiElement): MutableList<PsiFile> {
-        var parentName: String? =
-            PsiTreeUtil.getChildOfType(element.containingFile, GdInheritance::class.java)?.inheritanceName;
+        var parentName = PsiGdInheritanceUtil.getFirstParentName(element);
         val parents = mutableListOf<PsiFile>();
 
         while (parentName !== null) {
@@ -61,13 +61,28 @@ object PsiGdNamedUtil {
         // TODO use listLocals?
         val thisName = element.name.orEmpty();
         var parent: PsiElement = element;
-        if (containingFile != null && containingFile != element.containingFile) {
-            parent = containingFile.lastChild;
+
+        // To avoid matching self
+        when (parent.parent) {
+            is GdClassVarDeclTl,
+            is GdConstDeclTl,
+            is GdConstDeclSt,
+            is GdVarDeclSt,
+            is GdMethodDeclTl,
+            is GdSignalDeclTl -> {
+                parent = parent.parent;
+            }
         }
+        // TODO ii ??
+//        if (containingFile != null && containingFile != element.containingFile) {
+//            parent = containingFile.lastChild;
+//        }
 
         while (true) {
             parent = parent.prevSibling ?: parent.parent ?: return null;
             val match = when (parent) {
+                is GdClassVarDeclTl -> if (parent.name == thisName) parent else null;
+                is GdConstDeclTl -> if (parent.constName == thisName) parent else null;
                 is GdConstDeclSt -> if (parent.name == thisName) parent else null;
                 is GdVarDeclSt -> if (parent.name == thisName) parent else null;
                 is GdForSt -> if (parent.varNmi.name == thisName) parent.varNmi else null;
@@ -86,6 +101,9 @@ object PsiGdNamedUtil {
                     return parent.paramList?.paramList?.find {
                         it.varNmi.text == thisName
                     }
+                };
+                is GdClassDeclTl -> {
+                    return null;
                 };
                 else -> null;
             }
@@ -125,65 +143,59 @@ object PsiGdNamedUtil {
         val thisName = element.name.orEmpty();
 
         if (withLocalScopes) {
-            val local = this.findLocalDecl(element, containingFile);
-            if (local != null) {
-                return local;
-            }
+            val local = this.findLocalDecl(element);//, containingFile);
+            if (local != null) return local;
         }
 
-        val psiFile = containingFile ?: element.containingFile;
-        var parentName: String? =
-            PsiTreeUtil.getChildOfType(psiFile, GdInheritance::class.java)?.inheritanceName;
-        if (includingSelf) {
-            lookFor(psiFile.originalFile, thisName, element.project, variables, method)?.let {
+        var parent: PsiElement? = PsiGdClassUtil.getParentContainer(containingFile ?: element);
+        var parentName = if (parent!= null) PsiGdInheritanceUtil.getFirstParentName(parent).orEmpty() else "";
+
+        if (includingSelf && parent != null) {
+            lookFor(parent, thisName, variables, method)?.let {
                 return it
             }
         }
 
-        while (parentName !== null) {
-            val parent = PsiGdInheritanceUtil.getPsiFile(parentName, element.project);
-            if (parent === null) {
-                return null;
-            }
-
-            lookFor(parent,
-                thisName,
-                element.project,
-                variables,
-                method,
-            )?.let {
-                return it
-            }
-
-            parentName = PsiGdInheritanceUtil.getParentName(parent);
-        }
+        // TODO ii
+//        while (parent !== null) {
+//            parent = PsiGdInheritanceUtil.getPsiFile(parentName, parent.project);
+//            if (parent == null) break;
+//            lookFor(parent,
+//                thisName,
+//                variables,
+//                method,
+//            )?.let {
+//                return it
+//            }
+//
+//            parentName = PsiGdInheritanceUtil.getParentName(parent);
+//        }
 
         return null;
     }
 
     private fun lookFor(
-        file: PsiFile,
+        rootElement: PsiElement,
         thisName: String,
-        project: Project,
         variables: Boolean,
         method: Boolean,
     ): PsiElement? {
         if (variables) {
             // Constants
-            val parentConst = GdConstDeclIndex.get(thisName, project, GlobalSearchScope.fileScope(file));
-            if (!parentConst.isEmpty()) return parentConst.first();
+            val parentConst = PsiTreeUtil.getStubChildrenOfTypeAsList(rootElement, GdConstDeclTl::class.java);
+            parentConst.find { it.constName == thisName }?.let { return it };
 
             // Variables
-            val parentVar = GdClassVarDeclIndex.get(thisName, project, GlobalSearchScope.fileScope(file));
-            if (!parentVar.isEmpty()) return parentVar.first();
+            val parentVar = PsiTreeUtil.getStubChildrenOfTypeAsList(rootElement, GdClassVarDeclTl::class.java);
+            parentVar.find { it.name == thisName }?.let { return it };
 
             // Signals
-            val signalVar = GdSignalDeclIndex.get(thisName, project, GlobalSearchScope.fileScope(file));
-            if (!signalVar.isEmpty()) return signalVar.first();
+            val signalVar = PsiTreeUtil.getStubChildrenOfTypeAsList(rootElement, GdSignalDeclTl::class.java);
+            signalVar.find { it.name == thisName }?.let { return it };
 
             // Enums
-            val enums = PsiTreeUtil.getChildrenOfType(file, GdEnumDeclTl::class.java);
-            enums?.forEach {
+            val enums = PsiTreeUtil.getStubChildrenOfTypeAsList(rootElement, GdEnumDeclTl::class.java);
+            enums.forEach {
                 val name = PsiGdEnumUtil.name(it);
                 if (name != null) {
                     if (name == thisName) {
@@ -200,10 +212,8 @@ object PsiGdNamedUtil {
         }
 
         if (method) {
-            val parentMethod = GdMethodDeclIndex.get(thisName, project, GlobalSearchScope.fileScope(file));
-            if (!parentMethod.isEmpty()) {
-                return parentMethod.first();
-            }
+            val parentMethod = PsiTreeUtil.getStubChildrenOfTypeAsList(rootElement, GdMethodDeclTl::class.java);
+            parentMethod.find { it.name == thisName }?.let { return it };
         }
 
         return null;

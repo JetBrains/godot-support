@@ -4,45 +4,60 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiWhiteSpace
 import gdscript.GdKeywords
 import gdscript.action.quickFix.GdRemoveAnnotationAction
+import gdscript.psi.GdAnnotationTl
+import gdscript.psi.GdFile
 
+/**
+ * Check if annotation exists & tool is not within inner class
+ */
 class GdAnnotationAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        // TODO předělat
-        /*if (element !is GdAnnotation) {
-            return;
-        }
+        if (element !is GdAnnotationTl) return;
 
-        val annotation = element.firstChild?.text.orEmpty();
-        if (annotation != "" && !GdKeywords.ANNOTATIONS.contains(annotation.substring(1))) {
+        val annotation = element.firstChild?.text.orEmpty().trimStart('@');
+
+        exists(annotation, element, holder);
+        hasCorrectParameters(annotation, element, holder);
+        toolValidation(annotation, element, holder);
+    }
+
+    private fun exists(annotation: String, element: GdAnnotationTl, holder: AnnotationHolder) {
+        if (!GdKeywords.ANNOTATIONS_ALL.contains(annotation)) {
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "Unsupported annotation")
+                .newAnnotation(HighlightSeverity.ERROR, "Unknown annotation")
                 .range(element.textRange)
-                .withFix(GdRemoveAnnotationAction(element.firstChild))
+                .withFix(GdRemoveAnnotationAction(element))
+                .create();
+        }
+    }
+
+    private fun hasCorrectParameters(annotation: String, element: GdAnnotationTl, holder: AnnotationHolder) {
+        if (GdKeywords.ANNOTATIONS_STAND_ALONE.containsKey(annotation) && element.firstChild.nextSibling != null) {
+            holder
+                .newAnnotation(
+                    HighlightSeverity.ERROR,
+                    "Standalone annotation [$annotation] cannot be parametrized",
+                )
+                .range(element.textRange)
+                .withFix(GdRemoveAnnotationAction(element))
                 .create();
             return;
         }
 
-        var previous = element.prevSibling;
-        while (previous !== null) {
-            if (previous is GdAnnotation) {
-                if (annotation == previous.firstChild?.text) {
-                    holder
-                        .newAnnotation(HighlightSeverity.ERROR, "Annotation already defined")
-                        .range(element.textRange)
-                        .withFix(GdRemoveAnnotationAction(element.firstChild))
-                        .create();
-                    return;
-                }
-            } else if (previous !is PsiWhiteSpace) {
-                break;
-            }
+        // TODO annotation params - tohle je potřeba prozkoumat a sepsat (něco je navíc parametrized)
+    }
 
-            previous = previous.prevSibling;
-        }*/
+    private fun toolValidation(annotation: String, element: GdAnnotationTl, holder: AnnotationHolder) {
+        if (GdKeywords.ANNOTATIONS_ROOT_ONLY.contains(annotation) && element.parent !is GdFile) {
+            holder
+                .newAnnotation(HighlightSeverity.ERROR, "[$annotation] is not supported in this scope")
+                .range(element.textRange)
+                .withFix(GdRemoveAnnotationAction(element))
+                .create();
+        }
     }
 
 }

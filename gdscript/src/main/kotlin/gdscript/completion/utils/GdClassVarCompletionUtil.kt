@@ -7,7 +7,7 @@ import gdscript.completion.GdLookup
 object GdClassVarCompletionUtil {
 
     fun annotations(result: CompletionResultSet, withPrefix: Boolean = true) {
-        GdKeywords.ANNOTATIONS.forEach {
+        GdKeywords.ANNOTATIONS_ALL.forEach {
             result
                 .addElement(
                     GdLookup.create(

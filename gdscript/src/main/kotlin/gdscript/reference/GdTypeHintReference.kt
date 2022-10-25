@@ -27,7 +27,7 @@ class GdTypeHintReference : PsiReferenceBase<GdNamedElement> {
     override fun resolve(): PsiElement? {
         return GdClassNamingIndex
             .get(key, myElement.project, GlobalSearchScope.allScope(myElement.project))
-            .firstOrNull()?.classNameNm;
+            .firstOrNull()?.classNameNmi; // TODO ii
     }
 
     override fun getVariants(): Array<Any> {

@@ -116,16 +116,19 @@ object PsiGdExprUtil {
                     return GdKeywords.STR;
                 } else if (elementType == GdTypes.REF_ID_NM) {
                     val named: GdNamedElement = expr.refIdNm ?: return "";
+                    val parentName = PsiGdInheritanceUtil.getFirstParentName(expr);
                     var parentFile = expr.containingFile;
-                    if (text == GdKeywords.SELF) {
+                    if (text == GdKeywords.SELF) { // TODO ii
                         val clName = PsiGdClassUtil.getClassName(expr);
                         if (clName != null) {
                             return clName;
                         }
-                        val inheritance = PsiTreeUtil.getChildOfType(parentFile, GdInheritance::class.java);
-                        if (inheritance != null) {
-                            return inheritance.inheritanceName;
-                        }
+                        PsiGdInheritanceUtil.getFirstParentName(expr)
+
+//                        val inheritance = PsiTreeUtil.getChildOfType(parentFile, GdInheritance::class.java);
+//                        if (inheritance != null) {
+//                            return inheritance.inheritanceName; // TODO ii
+//                        }
 
                         return GdKeywords.SELF;
                     }
@@ -136,7 +139,7 @@ object PsiGdExprUtil {
                                 val first = parent.exprList.first();
                                 val parReturn = first?.returnType ?: return "";
                                 if (parReturn != GdKeywords.SELF) {
-                                    parentFile = PsiGdInheritanceUtil.getPsiFile(parReturn, expr.project) ?: return "";
+//                                    parentFile = PsiGdInheritanceUtil.getPsiFile(parReturn, expr.project) ?: return "";
                                 }
                             }
                         }
@@ -148,7 +151,7 @@ object PsiGdExprUtil {
                                 if (parent.prevSibling != null) {
                                     val first = prev.exprList.first();
                                     val parReturn = first?.returnType ?: return "";
-                                    parentFile = PsiGdInheritanceUtil.getPsiFile(parReturn, expr.project) ?: return "";
+//                                    parentFile = PsiGdInheritanceUtil.getPsiFile(parReturn, expr.project) ?: return "";
                                 }
                             }
                         }

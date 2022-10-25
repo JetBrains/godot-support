@@ -8,7 +8,7 @@ interface GdTokenTypeSet {
         // Red
         val KEYWORDS = TokenSet.create(
             GdTypes.CLASS_NAME,
-            // GdTypes.CLASS,
+            GdTypes.CLASS,
             GdTypes.EXTENDS,
             GdTypes.TOOL,
             GdTypes.FUNC,

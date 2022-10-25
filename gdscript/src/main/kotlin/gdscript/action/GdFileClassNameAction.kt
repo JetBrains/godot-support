@@ -4,16 +4,16 @@ import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-import gdscript.psi.GdClassNameNm
+import gdscript.psi.GdClassNameNmi
 
 class GdFileClassNameAction : BaseIntentionAction {
 
     val filename: String;
-    val element: GdClassNameNm;
+    val element: GdClassNameNmi;
 
     constructor(
         filename: String,
-        element: GdClassNameNm
+        element: GdClassNameNmi
     ) {
         this.filename = filename;
         this.element = element;

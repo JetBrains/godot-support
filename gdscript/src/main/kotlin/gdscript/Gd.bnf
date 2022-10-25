@@ -37,13 +37,23 @@
 }
 
 gdfile ::= (inheritance | classNaming)* topLevelDecl* // TODO limit to once
-//TODO DOT IDENTIFIER -> inner class?
-inheritance ::= EXTENDS inheritanceId_nmi (DOT IDENTIFIER)* newLineEnd {methods=[getInheritanceName] pin=1 recoverWhile=inheritance_r mixin="gdscript.psi.impl.GdInheritanceElementImpl" stubClass="gdscript.index.stub.GdInheritanceStub" elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"}
-inheritanceId_nmi ::= STRING | IDENTIFIER {methods=[getPsiFile]}
-private inheritance_r ::= !(TOOL) & topLevelDecl_r // TODO smazat tool - pokud už to nebude klíčové slovo v G4
+// TODO remove getInheritanceName
+inheritance ::= EXTENDS inheritanceId newLineEnd? {methods=[getInheritanceName] pin=1 recoverWhile=inheritance_r mixin="gdscript.psi.impl.GdInheritanceElementImpl" stubClass="gdscript.index.stub.GdInheritanceStub" elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"}
+inheritanceId ::= inheritanceId_nm (DOT inheritanceSubId)*
+inheritanceId_nm ::= STRING | IDENTIFIER {methods=[getPsiFile isClassName]}
+inheritanceSubId ::= IDENTIFIER
+private inheritance_r ::= !(TOOL | COLON) & topLevelDecl_r // TODO smazat tool - pokud už to nebude klíčové slovo v G4
 
-classNaming ::= CLASS_NAME className_nm newLineEnd? {methods=[getClassname getParentName] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub" elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"}
-className_nm ::= IDENTIFIER
+classNaming ::= CLASS_NAME className_nmi newLineEnd? {
+    methods=[getClassname getParentName] pin=1 recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub"
+    elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"
+}
+className_nmi ::= IDENTIFIER {
+    methods=[getClassId getParentName isInner]
+    mixin="gdscript.psi.impl.GdClassIdElementImpl" stubClass="gdscript.index.stub.GdClassIdStub"
+    elementTypeFactory="gdscript.psi.impl.GdClassIdElementType.getInstance"
+}
 
 topLevelDecl ::=
     constDecl_tl
@@ -52,14 +62,16 @@ topLevelDecl ::=
     | classVarDecl_tl
     | annotation_tl
     | methodDecl_tl
+    | classDecl_tl
 private topLevelDecl_r ::= !(
-    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER
-    | CLASS_NAME | STATIC | VARARG | RRBR | RCBR | RSBR | EXTENDS )
+    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT
+    | CLASS_NAME | STATIC | VARARG | RRBR | RCBR | RSBR | EXTENDS | CLASS )
 
 constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {methods=[getConstName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
 constId_nmi ::= IDENTIFIER | INF;
 
-annotation_tl ::= ANNOTATOR (LRBR literal_ex (COMMA literal_ex)* RRBR)? newLineEnd? {pin=1 recoverWhile=topLevelDecl_r}
+annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? newLineEnd? {pin=1 recoverWhile=topLevelDecl_r}
+annotationParams ::= literal_ex (COMMA literal_ex)*
 classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
     methods=[getName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdClassVarDeclElementImpl"
@@ -104,7 +116,10 @@ private argList_r ::= !(RRBR) & topLevelDecl_r
 // tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě
 var_nmi ::= IDENTIFIER | SIGNAL | FUNC | CLASS_NAME
 
-// TODO inner class
+// TODO annotace - single inheritance - jak root tak inner, single class_name
+classDecl_tl ::= CLASS className_nmi inheritance? COLON NEW_LINE INDENT (inheritance | topLevelDecl)+ DEDENT {
+    pin=1 recoverWhile=topLevelDecl_r
+}
 
 stmtOrSuite ::= stmt | suite
 suite ::= NEW_LINE? INDENT stmt+ DEDENT {pin=2}

@@ -19,6 +19,10 @@ class GdRootContributor : CompletionContributor() {
                 PsiErrorElement::class.java,
                 GdFile::class.java,
             )
+        val INNER_CLASS_POSITION = psiElement(GdTypes.IDENTIFIER)
+            .withParents(
+                GdFile::class.java,
+            )
         val ANNOTATOR_DECL = psiElement(GdTypes.ANNOTATOR)
     }
 
@@ -26,13 +30,15 @@ class GdRootContributor : CompletionContributor() {
         val position = parameters.position;
         val previous = PsiTreeUtil.prevCodeLeaf(position.originalElement);
 
-        if (previous === null) {
+        if (previous === null) { // First text in a file
             result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
             result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " "));
             return result.stopHere();
-        } else if (ROOT_POSITION.accepts(position)) {
+        } else if (ROOT_POSITION.accepts(position)) { // Class scope
             addTopLvlDecl(result, parameters);
-        } else if (ANNOTATOR_DECL.accepts(position)) {
+        } else if (INNER_CLASS_POSITION.accepts(position)) { // Inner class
+            addTopLvlDecl(result, parameters, false);
+        } else if (ANNOTATOR_DECL.accepts(position)) { // After "@"
             GdClassVarCompletionUtil.annotations(result, false);
             return result.stopHere();
         } else if (psiElement().withParent(psiElement(GdTypes.REF_ID_NM)).accepts(position)) {
@@ -41,7 +47,7 @@ class GdRootContributor : CompletionContributor() {
         }
     }
 
-    private fun addTopLvlDecl(result: CompletionResultSet, parameters: CompletionParameters) {
+    private fun addTopLvlDecl(result: CompletionResultSet, parameters: CompletionParameters, withClassName: Boolean = true) {
         val list = PsiGdMethodDeclUtil.collectParentsMethods(parameters.position.containingFile);
         GdMethodCompletionUtil.addMethods(list, result, true);
         result.addElement(GdLookup.create(GdKeywords.FUNC, " ", priority = GdLookup.KEYWORDS));
@@ -49,8 +55,11 @@ class GdRootContributor : CompletionContributor() {
         result.addElement(GdLookup.create(GdKeywords.CONST, " ", priority = GdLookup.KEYWORDS));
         result.addElement(GdLookup.create(GdKeywords.VAR, " ", priority = GdLookup.KEYWORDS));
         GdResourceCompletionUtil.fullVarResources(parameters.position.originalElement, result);
-        val filename = parameters.originalFile.name;
-        result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " ${filename.substring(0, filename.length - 3)}"));
+        if (withClassName) {
+            val filename = parameters.originalFile.name;
+            result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " ${filename.substring(0, filename.length - 3)}"));
+        }
+        result.addElement(GdLookup.create(GdKeywords.CLASS, " "));
         result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
         GdClassVarCompletionUtil.annotations(result);
     }

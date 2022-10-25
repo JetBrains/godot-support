@@ -137,6 +137,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "vararg"       { return GdTypes.VARARG; }
    //"puppet"       { return GdTypes.PUPPET; }
    //"master"       { return GdTypes.MASTER; }
+    "class"        { return GdTypes.CLASS; }
 
     "*"            { return GdTypes.MUL; }
     "/"            { return GdTypes.DIV; }
@@ -198,8 +199,6 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     return null;
 }
 
-//    "class" { return GdTypes.CLASS; }
-//
 //    "static" { return GdTypes.STATIC; }
 //    "_" { return GdTypes.UNDER; }
 //

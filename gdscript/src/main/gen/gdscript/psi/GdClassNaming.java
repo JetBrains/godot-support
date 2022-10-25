@@ -10,7 +10,7 @@ import gdscript.index.stub.GdClassNamingStub;
 public interface GdClassNaming extends PsiElement, StubBasedPsiElement<GdClassNamingStub> {
 
   @Nullable
-  GdClassNameNm getClassNameNm();
+  GdClassNameNmi getClassNameNmi();
 
   @Nullable
   GdNewLineEnd getNewLineEnd();

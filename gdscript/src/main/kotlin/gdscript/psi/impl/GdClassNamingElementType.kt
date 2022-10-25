@@ -12,7 +12,7 @@ import gdscript.psi.GdInheritance
 object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNaming>("classNaming", GdLanguage) {
 
     fun getClassname(element: GdClassNaming?): String {
-        return element?.classNameNm?.name.toString();
+        return element?.classNameNmi?.name.toString();
     }
 
     fun getParentName(element: GdClassNaming?): String? {
@@ -45,9 +45,9 @@ object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNam
             GdClassNamingImpl(stub, stub.stubType)
 
     override fun createStub(psi: GdClassNaming, parentStub: StubElement<*>?): GdClassNamingStub {
-        val inheritance = PsiTreeUtil.getPrevSiblingOfType(psi, GdInheritance::class.java);
+        val inheritance = PsiTreeUtil.findChildOfType(psi, GdInheritance::class.java);
 
-        return GdClassNamingStubImpl(parentStub, psi.classNameNm?.name, inheritance?.inheritanceName)
+        return GdClassNamingStubImpl(parentStub, psi.classNameNmi?.name, inheritance?.inheritanceName)
     }
 
 }

@@ -9,6 +9,7 @@ object Indices {
     val VERSION = 4;
 
     val CLASS_NAMING = StubIndexKey.createIndexKey<String, GdClassNaming>("gdscript.classNaming")
+    val CLASS_NAME_ID = StubIndexKey.createIndexKey<String, GdClassNameNmi>("gdscript.classId")
     val INHERITANCE = StubIndexKey.createIndexKey<String, GdInheritance>("gdscript.inheritance")
     val CONST_DECL = StubIndexKey.createIndexKey<String, GdConstDeclTl>("gdscript.constDecl")
     val CLASS_VAR = StubIndexKey.createIndexKey<String, GdClassVarDeclTl>("gdscript.classVarDecl")
@@ -16,6 +17,6 @@ object Indices {
     val SIGNAL_DECL = StubIndexKey.createIndexKey<String, GdSignalDeclTl>("gdscript.signal")
     val ENUM = StubIndexKey.createIndexKey<String, GdEnumDeclTl>("gdscript.enum")
 
-    val FILE_RES = ID.create<String, Void>("gdscript.fileResource");
+    val FILE_RES = ID.create<String, String?>("gdscript.fileResource");
 
 }
