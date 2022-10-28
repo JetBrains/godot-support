@@ -9,7 +9,7 @@ object PsiGdMethodDeclUtil {
 
     fun collectParentsMethods(file: PsiFile): MutableMap<String, GdMethodDeclTl> {
         val methods: MutableMap<String, GdMethodDeclTl> = mutableMapOf();
-        var parentName: String? = PsiTreeUtil.getChildOfType(file, GdInheritance::class.java)?.inheritanceName; // TODO ii
+        var parentName: String? = PsiTreeUtil.getChildOfType(file, GdInheritance::class.java)?.inheritancePath; // TODO ii
 
         while (parentName !== null) {
             val parent = PsiGdInheritanceUtil.getPsiFile(parentName, file.project);
@@ -46,15 +46,6 @@ object PsiGdMethodDeclUtil {
         }
 
         return ElementTypeUtil.hasChildOfType(element, GdTypes.VARARG);
-    }
-
-    fun getMethodName(element: GdMethodDeclTl): String? {
-        val stub = element.stub;
-        if (stub !== null) {
-            return stub.name();
-        }
-
-        return element.methodIdNmi?.name;
     }
 
     fun getReturnType(element: GdMethodDeclTl): String {

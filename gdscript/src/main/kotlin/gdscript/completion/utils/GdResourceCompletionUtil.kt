@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdKeywords
 import gdscript.completion.GdLookup
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.utils.StringUtils.camelToSnakeCase
@@ -53,7 +54,7 @@ object GdResourceCompletionUtil {
 
     private fun resourceList(element: PsiElement): List<TscnNodeHeader> {
         val filename = PsiGdFileUtil.filepath(element);
-        val script = TscnScriptIndex.get(filename, element.project, GlobalSearchScope.allScope(element.project))
+        val script = TscnScriptIndex.get("${GdKeywords.RESOURCE_PREFIX}$filename", element.project, GlobalSearchScope.allScope(element.project))
             .firstOrNull()
             ?: return emptyList();
 

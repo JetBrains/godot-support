@@ -11,9 +11,7 @@ class GdEnumDeclStubImpl : StubBase<GdEnumDeclTl>, GdEnumDeclStub {
     private var values: HashMap<String, Int> = HashMap();
 
     constructor(parent: StubElement<*>?, name: String?, values: HashMap<String, Int>): super(parent, GdEnumDeclElementType) {
-        if (name != null) {
-            this.name = name
-        };
+        this.name = name.orEmpty();
         this.values = values;
     }
 

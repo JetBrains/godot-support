@@ -32,7 +32,7 @@ object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>
         GdConstDeclTlImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdConstDeclTl, parentStub: StubElement<*>?): GdConstDeclStub {
-        return GdConstDeclStubImpl(parentStub, psi.constName, psi.returnType);
+        return GdConstDeclStubImpl(parentStub, psi.name, psi.returnType);
     }
 
 }

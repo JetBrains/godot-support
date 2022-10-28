@@ -6,15 +6,13 @@ import gdscript.psi.GdInheritance
 import gdscript.psi.impl.GdInheritanceElementType
 
 class GdInheritanceStubImpl : StubBase<GdInheritance>, GdInheritanceStub {
-    private var myExtending: String = "";
+    private var inheritancePath: String = "";
 
-    constructor(parent: StubElement<*>?, name: String?): super(parent, GdInheritanceElementType) {
-        if (name != null) {
-            this.myExtending = name
-        };
+    constructor(parent: StubElement<*>?, path: String): super(parent, GdInheritanceElementType) {
+        this.inheritancePath = path;
     }
 
-    override fun name(): String {
-        return myExtending;
+    override fun inheritancePath(): String {
+        return inheritancePath;
     }
 }

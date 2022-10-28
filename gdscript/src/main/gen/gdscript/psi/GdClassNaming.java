@@ -18,7 +18,7 @@ public interface GdClassNaming extends PsiElement, StubBasedPsiElement<GdClassNa
   @NotNull
   String getClassname();
 
-  @Nullable
+  @NotNull
   String getParentName();
 
 }

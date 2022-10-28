@@ -6,8 +6,13 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.*
-import gdscript.psi.utils.PsiGdClassUtil
+import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdClassUtil
 
+/**
+ * Colors method name
+ * Checks for uniqueness
+ */
 class GdMethodNameAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -19,42 +24,36 @@ class GdMethodNameAnnotator : Annotator {
             .textAttributes(GdHighlighterColors.METHOD_DECLARATION)
             .create();
 
-        if (!isLocallyUnique(element, holder)) {
-            return;
-        }
+        isUnique(element, holder);
     }
 
-    private fun isLocallyUnique(element: GdMethodIdNmi, holder: AnnotationHolder): Boolean {
-        val thisName = element.name;
-        if (PsiGdClassUtil.getClassName(element) == thisName) {
-            return true; // Constructors
+    private fun isUnique(element: GdMethodIdNmi, holder: AnnotationHolder) {
+        val name = element.name;
+
+        // Constructors
+        if (GdClassUtil.getOwningClassId(element) == name) {
+            return;
         }
 
-        val constDecl = element.parent;
-        var checkName: String?;
-
-        var previous = constDecl.prevSibling;
-        while (previous !== null) {
-            if (previous is GdMethodDeclTl) {
-                checkName = previous.name;
-            } else {
-                previous = previous.prevSibling;
-                continue;
+        val declaration = GdClassMemberUtil.listLocalDeclarationsUpward(element)[name];
+        if (declaration != null) {
+            val type = when (declaration) {
+                is GdMethodDeclTl -> "method"
+                is GdClassVarDeclTl -> "variable"
+                is GdConstDeclTl -> "constant"
+                is GdSignalDeclTl -> "signal"
+                is GdEnumDeclTl -> "enum"
+                else -> "member"
             }
 
-            if (checkName == thisName) {
-                holder
-                    .newAnnotation(HighlightSeverity.ERROR,
-                        "Method with name [${element.name}] already defined")
-                    .range(element.textRange)
-                    .create();
-                return false;
-            }
-
-            previous = previous.prevSibling;
+            holder
+                .newAnnotation(
+                    HighlightSeverity.ERROR,
+                    "Name [${element.name}] already defined as $type"
+                )
+                .range(element.textRange)
+                .create();
         }
-
-        return true;
     }
 
 }

@@ -5,9 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdParentMethodCall extends PsiElement {
+public interface GdInheritanceSubIdNm extends GdNamedElement {
 
-  @Nullable
-  GdArgList getArgList();
+  @NotNull
+  String getName();
+
+  @NotNull
+  PsiElement setName(@Nullable String newName);
 
 }

@@ -18,9 +18,6 @@ public interface GdMethodDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdMe
   GdParamList getParamList();
 
   @Nullable
-  GdParentMethodCall getParentMethodCall();
-
-  @Nullable
   GdReturnHint getReturnHint();
 
   @Nullable
@@ -30,7 +27,7 @@ public interface GdMethodDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdMe
 
   boolean isVariadic();
 
-  @Nullable
+  @NotNull
   String getName();
 
   @NotNull

@@ -10,15 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
 
-public class GdParentStImpl extends GdStmtImpl implements GdParentSt {
+public class GdInheritanceSubIdNmImpl extends GdNamedElementImpl implements GdInheritanceSubIdNm {
 
-  public GdParentStImpl(@NotNull ASTNode node) {
+  public GdInheritanceSubIdNmImpl(ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitParentSt(this);
+    visitor.visitInheritanceSubIdNm(this);
   }
 
   @Override
@@ -29,8 +28,14 @@ public class GdParentStImpl extends GdStmtImpl implements GdParentSt {
 
   @Override
   @NotNull
-  public GdCallEx getCallEx() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdCallEx.class));
+  public String getName() {
+    return GdPsiUtils.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement setName(@Nullable String newName) {
+    return GdPsiUtils.setName(this, newName);
   }
 
 }

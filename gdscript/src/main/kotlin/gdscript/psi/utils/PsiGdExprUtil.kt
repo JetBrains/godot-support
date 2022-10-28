@@ -1,6 +1,7 @@
 package gdscript.psi.utils
 
 import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
@@ -11,6 +12,7 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import tscn.index.impl.TscnNodeIndex
 import tscn.index.impl.TscnScriptIndex
+import tscn.psi.TscnNodeHeader
 
 object PsiGdExprUtil {
 
@@ -54,6 +56,7 @@ object PsiGdExprUtil {
                 when (expr.firstChild) {
                     is GdNodePath -> {
                         val project = expr.project;
+                        if (DumbService.isDumb(project)) return "";
                         val filename = PsiGdFileUtil.filepath(expr);
                         val script = TscnScriptIndex.get(filename, project, GlobalSearchScope.allScope(project))
                             .firstOrNull()
@@ -161,7 +164,8 @@ object PsiGdExprUtil {
                         return "";
                     }
 
-                    return when (val element = PsiGdNamedUtil.findInParent(named, includingSelf = true, containingFile = parentFile)) {
+                    return when (val element =
+                        PsiGdNamedUtil.findInParent(named, includingSelf = true, containingFile = parentFile)) {
                         is GdMethodDeclTl -> element.returnType;
                         is GdClassVarDeclTl -> element.returnType;
                         is GdSignalDeclTl -> "Signal";

@@ -70,7 +70,7 @@ public class GdClassVarDeclTlImpl extends GdClassVarDeclElementImpl implements G
   }
 
   @Override
-  @Nullable
+  @NotNull
   public String getName() {
     return GdPsiUtils.getName(this);
   }

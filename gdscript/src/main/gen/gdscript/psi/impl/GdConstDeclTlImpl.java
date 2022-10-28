@@ -64,9 +64,9 @@ public class GdConstDeclTlImpl extends GdConstDeclElementImpl implements GdConst
   }
 
   @Override
-  @Nullable
-  public String getConstName() {
-    return GdPsiUtils.getConstName(this);
+  @NotNull
+  public String getName() {
+    return GdPsiUtils.getName(this);
   }
 
   @Override

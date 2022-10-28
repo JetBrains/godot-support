@@ -9,4 +9,8 @@ object TscnScriptIndex : StringStubIndexExtension<TscnExtHeader>() {
 
     override fun getKey(): StubIndexKey<String, TscnExtHeader> = TscnIndices.SCRIPT_INDEX;
 
+    override fun getVersion(): Int {
+        return TscnIndices.VERSION;
+    }
+
 }

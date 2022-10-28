@@ -54,6 +54,12 @@ public class GdEnumDeclTlImpl extends GdEnumDeclElementImpl implements GdEnumDec
 
   @Override
   @NotNull
+  public String getName() {
+    return GdPsiUtils.getName(this);
+  }
+
+  @Override
+  @NotNull
   public HashMap<String, Integer> getValues() {
     return GdPsiUtils.getValues(this);
   }

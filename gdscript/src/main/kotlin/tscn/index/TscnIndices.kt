@@ -6,6 +6,8 @@ import tscn.psi.TscnNodeHeader
 
 object TscnIndices {
 
+    val VERSION = 3;
+
     val SCRIPT_INDEX = StubIndexKey.createIndexKey<String, TscnExtHeader>("tscn.extResource")
     val NODE_INDEX = StubIndexKey.createIndexKey<String, TscnNodeHeader>("tscn.nodeResource")
 

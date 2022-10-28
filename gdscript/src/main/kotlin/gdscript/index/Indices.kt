@@ -9,6 +9,7 @@ object Indices {
     val VERSION = 4;
 
     val CLASS_NAMING = StubIndexKey.createIndexKey<String, GdClassNaming>("gdscript.classNaming")
+    val CLASS_DECL = StubIndexKey.createIndexKey<String, GdClassDeclTl>("gdscript.classDecl")
     val CLASS_NAME_ID = StubIndexKey.createIndexKey<String, GdClassNameNmi>("gdscript.classId")
     val INHERITANCE = StubIndexKey.createIndexKey<String, GdInheritance>("gdscript.inheritance")
     val CONST_DECL = StubIndexKey.createIndexKey<String, GdConstDeclTl>("gdscript.constDecl")

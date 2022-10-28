@@ -14,7 +14,7 @@ object GdKeywords {
     const val VAR = "var"
     const val SETGET = "setget"
     const val SELF = "self"
-    const val THIS = "this"
+    const val SUPER = "super"
 
     /** Constants */
     const val TRUE = "true"
@@ -38,6 +38,8 @@ object GdKeywords {
     const val RESOURCE_PREFIX = "res://"
 
     const val GLOBAL_SCOPE = "_GlobalScope"
+
+    const val INIT_METHOD = "_init";
 
     val LITERALS = arrayOf(TRUE, FALSE, NULL, NAN, INF, TAU, PI);
     val LITERAL_TYPES = arrayOf(BOOL, BOOL, NULL, FLOAT, FLOAT, FLOAT, FLOAT);

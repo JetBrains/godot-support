@@ -48,6 +48,7 @@ object PsiGdClassUtil {
         return keyNode?.psi
     }
 
+    @Deprecated("use .text")
     fun getInheritanceName(element: GdInheritance?): String {
         if (element == null) return ""
 
@@ -59,7 +60,7 @@ object PsiGdClassUtil {
         return element.parent is GdClassDeclTl;
     }
 
-    @Deprecated("")
+    @Deprecated("getParentClassElement")
     fun getParentContainer(element: PsiElement): PsiElement {
         if (element is GdClassDeclTl) {
             return element;

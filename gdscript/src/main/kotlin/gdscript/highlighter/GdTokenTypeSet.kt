@@ -14,6 +14,7 @@ interface GdTokenTypeSet {
             GdTypes.FUNC,
             GdTypes.ENUM,
             GdTypes.SELF,
+            GdTypes.SUPER,
             GdTypes.CONST,
             GdTypes.VAR,
             GdTypes.INT,

@@ -52,7 +52,7 @@ object GdCompletionUtil {
 
     fun lookup(constant: GdConstDeclTl): LookupElement =
         GdLookup.create(
-            constant.constName.orEmpty(),
+            constant.name.orEmpty(),
             icon = GdIcon.getEditorIcon(GdIcon.CONST_MARKER),
             typed = constant.returnType,
             priority = GdLookup.USER_DEFINED,

@@ -4,6 +4,7 @@ package gdscript.psi;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import gdscript.psi.impl.GdClassDeclElementType;
 import gdscript.psi.impl.GdClassIdElementType;
 import gdscript.psi.impl.GdClassNamingElementType;
 import gdscript.psi.impl.GdClassVarDeclElementType;
@@ -33,7 +34,7 @@ public interface GdTypes {
   IElementType BUILT_IN_TYPE = new GdElementType("BUILT_IN_TYPE");
   IElementType CALL_EX = new GdElementType("CALL_EX");
   IElementType CAST_EX = new GdElementType("CAST_EX");
-  IElementType CLASS_DECL_TL = new GdElementType("CLASS_DECL_TL");
+  IElementType CLASS_DECL_TL = GdClassDeclElementType.getInstance("CLASS_DECL_TL");
   IElementType CLASS_NAME_NMI = GdClassIdElementType.getInstance("CLASS_NAME_NMI");
   IElementType CLASS_NAMING = GdClassNamingElementType.getInstance("CLASS_NAMING");
   IElementType CLASS_VAR_DECL_TL = GdClassVarDeclElementType.getInstance("CLASS_VAR_DECL_TL");
@@ -62,7 +63,7 @@ public interface GdTypes {
   IElementType INHERITANCE = GdInheritanceElementType.getInstance("INHERITANCE");
   IElementType INHERITANCE_ID = new GdElementType("INHERITANCE_ID");
   IElementType INHERITANCE_ID_NM = new GdElementType("INHERITANCE_ID_NM");
-  IElementType INHERITANCE_SUB_ID = new GdElementType("INHERITANCE_SUB_ID");
+  IElementType INHERITANCE_SUB_ID_NM = new GdElementType("INHERITANCE_SUB_ID_NM");
   IElementType IN_EX = new GdElementType("IN_EX");
   IElementType IS_EX = new GdElementType("IS_EX");
   IElementType IS_TYPED = new GdElementType("IS_TYPED");
@@ -79,8 +80,6 @@ public interface GdTypes {
   IElementType NODE_PATH = new GdElementType("NODE_PATH");
   IElementType PARAM = new GdElementType("PARAM");
   IElementType PARAM_LIST = new GdElementType("PARAM_LIST");
-  IElementType PARENT_METHOD_CALL = new GdElementType("PARENT_METHOD_CALL");
-  IElementType PARENT_ST = new GdElementType("PARENT_ST");
   IElementType PATTERN = new GdElementType("PATTERN");
   IElementType PATTERN_LIST = new GdElementType("PATTERN_LIST");
   IElementType PLUS_EX = new GdElementType("PLUS_EX");
@@ -187,6 +186,7 @@ public interface GdTypes {
   IElementType STATIC = new GdTokenType("STATIC");
   IElementType STR = new GdTokenType("STR");
   IElementType STRING = new GdTokenType("STRING");
+  IElementType SUPER = new GdTokenType("SUPER");
   IElementType TAU = new GdTokenType("TAU");
   IElementType TEST_OPERATOR = new GdTokenType("TEST_OPERATOR");
   IElementType TOOL = new GdTokenType("TOOL");
@@ -336,8 +336,8 @@ public interface GdTypes {
       else if (type == INHERITANCE_ID_NM) {
         return new GdInheritanceIdNmImpl(node);
       }
-      else if (type == INHERITANCE_SUB_ID) {
-        return new GdInheritanceSubIdImpl(node);
+      else if (type == INHERITANCE_SUB_ID_NM) {
+        return new GdInheritanceSubIdNmImpl(node);
       }
       else if (type == IN_EX) {
         return new GdInExImpl(node);
@@ -386,12 +386,6 @@ public interface GdTypes {
       }
       else if (type == PARAM_LIST) {
         return new GdParamListImpl(node);
-      }
-      else if (type == PARENT_METHOD_CALL) {
-        return new GdParentMethodCallImpl(node);
-      }
-      else if (type == PARENT_ST) {
-        return new GdParentStImpl(node);
       }
       else if (type == PATTERN) {
         return new GdPatternImpl(node);

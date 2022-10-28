@@ -18,7 +18,7 @@ object TscnHeaderUtils {
     fun getPath(values: List<TscnHeaderValue>): String {
         val path = getValue(values, "path");
 
-        return path.removePrefix("res://");
+        return path;
     }
 
     /** Node header specific */

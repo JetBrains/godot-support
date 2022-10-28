@@ -7,19 +7,22 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
-import gdscript.psi.GdClassVarIdNmi
-import gdscript.psi.GdConstIdNmi
 import gdscript.psi.GdMethodIdNmi
 import gdscript.psi.GdRefIdNm
-import gdscript.psi.GdVarNmi
 import gdscript.reference.GdClassMemberReference
 
+/**
+ * TODO ii
+ * Colors references
+ * Checks for existence
+ */
 class GdRefIdAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
+        return;
+
         if (element !is GdRefIdNm) return;
         if (element.text == GdKeywords.SELF) return;
-        if (element.text == GdKeywords.THIS) return;
 
         val attribute = when (GdClassMemberReference(element).resolve()) {
             is GdMethodIdNmi -> {
@@ -33,7 +36,7 @@ class GdRefIdAnnotator : Annotator {
             }
             null -> {
                 holder
-                    .newAnnotation(HighlightSeverity.ERROR, "Member [${element.text}] doesn't exist")
+                    .newAnnotation(HighlightSeverity.ERROR, "Member [${element.text}] not found")
                     .range(element.textRange)
                     .create();
                 return;

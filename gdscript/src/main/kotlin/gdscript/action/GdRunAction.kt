@@ -9,6 +9,7 @@ import com.intellij.ide.actions.runAnything.RunAnythingAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.GlobalSearchScope
+import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.run.GdConfigurationFactory
@@ -60,7 +61,7 @@ class GdRunAction : RunAnythingAction {
         val current = GdRunConfiguration(element.project, GdConfigurationFactory, name);
 
         val filename = PsiGdFileUtil.filepath(element);
-        val script = TscnScriptIndex.get(filename, element.project, GlobalSearchScope.allScope(element.project))
+        val script = TscnScriptIndex.get("${GdKeywords.RESOURCE_PREFIX}$filename", element.project, GlobalSearchScope.allScope(element.project))
             .firstOrNull() ?: return null;
 
         current.setTscn(PsiGdFileUtil.filepath(script.containingFile));

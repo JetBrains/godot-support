@@ -92,7 +92,7 @@ STRING_MARKER_REV = [^\"\'\n\r]*
 
 COMMENT = [ \t]*"#"[^\r\n]*(\n|\r|\r\n)?
 ANNOTATOR = "@"[a-zA-Z_]*
-NODE_PATH_LEX = ("$"[a-zA-Z0-9_/]*)|("$"\"\%[a-zA-Z0-9_\./]*\")
+NODE_PATH_LEX = ("$"[a-zA-Z0-9_/]*)|(\%[a-zA-Z0-9_\./]*)
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -245,6 +245,7 @@ ANY = .+
 //    "puppet"       { return dedentRoot(GdTypes.PUPPET); }
 //    "master"       { return dedentRoot(GdTypes.MASTER); }
     "class"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CLASS); }
+    "super"        { return dedentRoot(GdTypes.SUPER); }
 
     "*"            { return dedentRoot(GdTypes.MUL); }
     "/"            { return dedentRoot(GdTypes.DIV); }

@@ -4,7 +4,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
-import gdscript.action.GdFileClassNameAction
+import gdscript.action.quickFix.GdFileClassNameAction
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdClassNamingIndex
@@ -14,7 +14,7 @@ import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdInheritanceId
 import gdscript.psi.GdInheritanceIdNm
-import gdscript.psi.GdInheritanceSubId
+import gdscript.psi.GdInheritanceSubIdNm
 import gdscript.psi.utils.PsiGdFileUtil
 
 /**
@@ -27,7 +27,7 @@ class GdClassNameAnnotator : Annotator {
         when (element) {
             is GdInheritanceId -> existingInheritance(element, holder);
             is GdInheritanceIdNm -> colorInheritance(element, holder);
-            is GdInheritanceSubId -> colorClass(element, holder);
+            is GdInheritanceSubIdNm -> colorClass(element, holder);
             is GdClassNameNmi -> {
                 alreadyExists(element, holder);
                 classNameToFilename(element, holder);
@@ -36,9 +36,40 @@ class GdClassNameAnnotator : Annotator {
     }
 
     private fun existingInheritance(element: GdInheritanceId, holder: AnnotationHolder) {
-        if (GdClassIdIndex.getGloballyResolved(element.text, element).isEmpty()) {
+        if (GdClassIdIndex.getGloballyResolved(element.text, element.project).isEmpty()
+            // File index when you are extending script without class_name
+            && GdFileResIndex.getFiles(element.text.trim('"'), element.project).isEmpty()
+        ) {
+            // Last case is extending InnerClass within same file which does not require FQN
+            // and can directly use any at lower level
+            /* TODO ii-
+            class Const:
+	func _init(a: int) -> void:
+		pass
+
+	class Const1 extends Const11:
+		func _init() -> void:
+			super();
+
+			pass;
+
+		class Const21 extends Const:
+			func _init() -> void:
+				super(2);
+
+				pass;
+
+
+
+	class Const11 extends Const:
+		func _init() -> void:
+			super(1);
+
+			pass;
+             */
+
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "Unknown class")
+                .newAnnotation(HighlightSeverity.ERROR, "Class not found")
                 .range(element.textRange)
                 .create();
         }

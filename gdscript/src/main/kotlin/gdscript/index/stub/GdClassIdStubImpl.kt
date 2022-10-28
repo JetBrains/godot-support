@@ -6,21 +6,20 @@ import gdscript.psi.GdClassNameNmi
 import gdscript.psi.impl.GdClassIdElementType
 
 class GdClassIdStubImpl : StubBase<GdClassNameNmi>, GdClassIdStub {
+
     private var myClassId: String = "";
-    private var myParentName: String? = null;
+    private var myParentName: String = "";
 
     constructor(parent: StubElement<*>?, name: String, parentName: String?): super(parent, GdClassIdElementType) {
         this.myClassId = name
-        if (parentName != null) {
-            this.myParentName = parentName;
-        };
+        this.myParentName = parentName.orEmpty();
     }
 
     override fun name(): String {
         return myClassId;
     }
 
-    override fun parent(): String? {
+    override fun parent(): String {
         return myParentName;
     }
 

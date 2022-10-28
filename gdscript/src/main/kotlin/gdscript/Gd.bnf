@@ -37,11 +37,15 @@
 }
 
 gdfile ::= (inheritance | classNaming)* topLevelDecl* // TODO limit to once
-// TODO remove getInheritanceName
-inheritance ::= EXTENDS inheritanceId newLineEnd? {methods=[getInheritanceName] pin=1 recoverWhile=inheritance_r mixin="gdscript.psi.impl.GdInheritanceElementImpl" stubClass="gdscript.index.stub.GdInheritanceStub" elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"}
-inheritanceId ::= inheritanceId_nm (DOT inheritanceSubId)*
+inheritance ::= EXTENDS inheritanceId newLineEnd? {
+    methods=[getInheritancePath] pin=1 recoverWhile=inheritance_r
+    mixin="gdscript.psi.impl.GdInheritanceElementImpl"
+    stubClass="gdscript.index.stub.GdInheritanceStub"
+    elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"
+}
+inheritanceId ::= inheritanceId_nm (DOT inheritanceSubId_nm)*
 inheritanceId_nm ::= STRING | IDENTIFIER {methods=[getPsiFile isClassName]}
-inheritanceSubId ::= IDENTIFIER
+inheritanceSubId_nm ::= IDENTIFIER
 private inheritance_r ::= !(TOOL | COLON) & topLevelDecl_r // TODO smazat tool - pokud už to nebude klíčové slovo v G4
 
 classNaming ::= CLASS_NAME className_nmi newLineEnd? {
@@ -50,7 +54,7 @@ classNaming ::= CLASS_NAME className_nmi newLineEnd? {
     elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"
 }
 className_nmi ::= IDENTIFIER {
-    methods=[getClassId getParentName isInner]
+    methods=[getClassId getParentName isInner] // TODO parentname ?!
     mixin="gdscript.psi.impl.GdClassIdElementImpl" stubClass="gdscript.index.stub.GdClassIdStub"
     elementTypeFactory="gdscript.psi.impl.GdClassIdElementType.getInstance"
 }
@@ -67,7 +71,7 @@ private topLevelDecl_r ::= !(
     FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT
     | CLASS_NAME | STATIC | VARARG | RRBR | RCBR | RSBR | EXTENDS | CLASS )
 
-constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {methods=[getConstName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
+constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {methods=[getName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
 constId_nmi ::= IDENTIFIER | INF;
 
 annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? newLineEnd? {pin=1 recoverWhile=topLevelDecl_r}
@@ -90,7 +94,7 @@ signalDecl_tl ::= SIGNAL signalId_nmi (LRBR paramList RRBR)? endStmt {methods=[g
 signalId_nmi ::= IDENTIFIER
 
 enumDecl_tl ::= ENUM enumDecl_nmi? LCBR enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR endStmt {
-    pin=1 methods=[getValues getPresentation] recoverWhile=topLevelDecl_r
+    pin=1 methods=[getName getValues getPresentation] recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdEnumDeclElementImpl" stubClass="gdscript.index.stub.GdEnumDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdEnumDeclElementType.getInstance"
 }
@@ -98,7 +102,7 @@ enumDecl_nmi ::= IDENTIFIER
 enumValue ::= enumValue_nmi (EQ (PLUS | MINUS)? NUMBER)?
 enumValue_nmi ::= IDENTIFIER
 
-methodDecl_tl ::= STATIC? VARARG? FUNC methodId_nmi LRBR paramList? RRBR parentMethodCall? returnHint? COLON stmtOrSuite {
+methodDecl_tl ::= STATIC? VARARG? FUNC methodId_nmi LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[isStatic isVariadic getName getReturnType getParameters getPresentation isConstructor]
     pin=3 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"
@@ -108,7 +112,6 @@ paramList ::= param (COMMA param)* {pin=1 recoverWhile=argList_r}
 param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
 returnHint ::= RET returnHintVal
 returnHintVal ::= typedVal | VOID // typeHint_nm | VOID
-parentMethodCall ::= DOT LRBR argList? RRBR
 argList ::= expr (COMMA expr)* {pin=1 recoverWhile=argList_r}
 private argList_r ::= !(RRBR) & topLevelDecl_r
 
@@ -118,7 +121,9 @@ var_nmi ::= IDENTIFIER | SIGNAL | FUNC | CLASS_NAME
 
 // TODO annotace - single inheritance - jak root tak inner, single class_name
 classDecl_tl ::= CLASS className_nmi inheritance? COLON NEW_LINE INDENT (inheritance | topLevelDecl)+ DEDENT {
-    pin=1 recoverWhile=topLevelDecl_r
+    methods=[getName getParentName] pin=1 recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdClassDeclElementImpl" stubClass="gdscript.index.stub.GdClassDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdClassDeclElementType.getInstance"
 }
 
 stmtOrSuite ::= stmt | suite
@@ -126,7 +131,6 @@ suite ::= NEW_LINE? INDENT stmt+ DEDENT {pin=2}
 
 stmt ::=
     assign_st
-    | parent_st
     | varDecl_st
     | constDecl_st
     | if_st
@@ -144,9 +148,10 @@ private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
     | RETURN | AWAIT | ASSET | PRELOAD | INDENT | DEDENT
     | IDENTIFIER | literal_ex) & topLevelDecl_r
 
-parent_st ::= DOT call_ex endStmt?
 // TODO tady je endStmt optional, protože to jinak sežere lambda
-varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {pin=2 recoverWhile=stmt_r methods=[getName getReturnType]}
+varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
+    pin=2 recoverWhile=stmt_r methods=[getName getReturnType]
+}
 constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {pin=2 recoverWhile=stmt_r methods=[getName getReturnType]}
 if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? {pin=2 recoverWhile=stmt_r}
 while_st ::= WHILE expr COLON stmtOrSuite {pin=2 recoverWhile=stmt_r}
@@ -222,7 +227,7 @@ literal_ex ::= TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF | re
 plusMinus_ex ::= expr (PPLUS | MMINUS)
 plusMinusPre_ex ::= (PPLUS | MMINUS) expr
 attribute_ex ::= expr DOT expr
-refId_nm ::= IDENTIFIER | SELF
+refId_nm ::= IDENTIFIER | SELF | SUPER // TODO super
 
 funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[getReturnType getParameters /*getPresentation*/]
@@ -230,9 +235,6 @@ funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmt
     //elementTypeFactory="gdscript.psi.impl.GdLocalFuncDeclElementType.getInstance"
 }
 funcDeclId_nmi ::= IDENTIFIER
-
-//@"Node/Label"
-//NodePath or StringName
 
 isTyped ::= typeHint_nm (LSBR typeHintArray_nm RSBR)?
 typed ::= COLON typedVal

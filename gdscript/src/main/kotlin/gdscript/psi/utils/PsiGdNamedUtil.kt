@@ -54,9 +54,12 @@ object PsiGdNamedUtil {
         return false;
     }
 
-    fun findLocalDecl(
+    /**
+     * Finds local declaration of NamedElement from its own position
+     */
+    @Deprecated("classmemeber util")
+    private fun findLocalDecl(
         element: GdNamedElement,
-        containingFile: PsiFile? = null,
     ): PsiElement? {
         // TODO use listLocals?
         val thisName = element.name.orEmpty();
@@ -73,16 +76,12 @@ object PsiGdNamedUtil {
                 parent = parent.parent;
             }
         }
-        // TODO ii ??
-//        if (containingFile != null && containingFile != element.containingFile) {
-//            parent = containingFile.lastChild;
-//        }
 
         while (true) {
             parent = parent.prevSibling ?: parent.parent ?: return null;
             val match = when (parent) {
                 is GdClassVarDeclTl -> if (parent.name == thisName) parent else null;
-                is GdConstDeclTl -> if (parent.constName == thisName) parent else null;
+                is GdConstDeclTl -> if (parent.name == thisName) parent else null;
                 is GdConstDeclSt -> if (parent.name == thisName) parent else null;
                 is GdVarDeclSt -> if (parent.name == thisName) parent else null;
                 is GdForSt -> if (parent.varNmi.name == thisName) parent.varNmi else null;
@@ -112,6 +111,7 @@ object PsiGdNamedUtil {
         }
     }
 
+    // TODO ii
     fun listLocalDecls(
         element: PsiElement,
     ): MutableList<PsiElement> {
@@ -132,6 +132,7 @@ object PsiGdNamedUtil {
         }
     }
 
+    @Deprecated("findDeclaration")
     fun findInParent(
         element: GdNamedElement,
         method: Boolean = true,
@@ -143,7 +144,7 @@ object PsiGdNamedUtil {
         val thisName = element.name.orEmpty();
 
         if (withLocalScopes) {
-            val local = this.findLocalDecl(element);//, containingFile);
+            val local = this.findLocalDecl(element);
             if (local != null) return local;
         }
 
@@ -174,6 +175,7 @@ object PsiGdNamedUtil {
         return null;
     }
 
+    @Deprecated("list Decls")
     private fun lookFor(
         rootElement: PsiElement,
         thisName: String,
@@ -183,7 +185,7 @@ object PsiGdNamedUtil {
         if (variables) {
             // Constants
             val parentConst = PsiTreeUtil.getStubChildrenOfTypeAsList(rootElement, GdConstDeclTl::class.java);
-            parentConst.find { it.constName == thisName }?.let { return it };
+            parentConst.find { it.name == thisName }?.let { return it };
 
             // Variables
             val parentVar = PsiTreeUtil.getStubChildrenOfTypeAsList(rootElement, GdClassVarDeclTl::class.java);

@@ -53,7 +53,7 @@ STRING_MARKER_REV = [^\"\'\n\r]*
 
 COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 ANNOTATOR = "@"[a-zA-Z_]*
-NODE_PATH_LEX = ("$"[a-zA-Z0-9_/]*)|("$"\"\%[a-zA-Z0-9_\./]*\")
+NODE_PATH_LEX = ("$"[a-zA-Z0-9_/]*)|(\%[a-zA-Z0-9_\./]*)
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -138,6 +138,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
    //"puppet"       { return GdTypes.PUPPET; }
    //"master"       { return GdTypes.MASTER; }
     "class"        { return GdTypes.CLASS; }
+    "super"        { return GdTypes.SUPER; }
 
     "*"            { return GdTypes.MUL; }
     "/"            { return GdTypes.DIV; }

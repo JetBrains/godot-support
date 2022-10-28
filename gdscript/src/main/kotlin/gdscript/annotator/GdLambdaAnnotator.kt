@@ -6,8 +6,10 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.*
-import gdscript.psi.utils.PsiGdClassUtil
 
+/**
+ * Colors lambda functions
+ */
 class GdLambdaAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {

@@ -16,6 +16,6 @@ public interface GdInheritance extends PsiElement, StubBasedPsiElement<GdInherit
   GdNewLineEnd getNewLineEnd();
 
   @NotNull
-  String getInheritanceName();
+  String getInheritancePath();
 
 }

@@ -195,8 +195,8 @@ public class GdVisitor extends PsiElementVisitor {
     visitNamedElement(o);
   }
 
-  public void visitInheritanceSubId(@NotNull GdInheritanceSubId o) {
-    visitPsiElement(o);
+  public void visitInheritanceSubIdNm(@NotNull GdInheritanceSubIdNm o) {
+    visitNamedElement(o);
   }
 
   public void visitIsTyped(@NotNull GdIsTyped o) {
@@ -257,14 +257,6 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitParamList(@NotNull GdParamList o) {
     visitPsiElement(o);
-  }
-
-  public void visitParentMethodCall(@NotNull GdParentMethodCall o) {
-    visitPsiElement(o);
-  }
-
-  public void visitParentSt(@NotNull GdParentSt o) {
-    visitStmt(o);
   }
 
   public void visitPattern(@NotNull GdPattern o) {

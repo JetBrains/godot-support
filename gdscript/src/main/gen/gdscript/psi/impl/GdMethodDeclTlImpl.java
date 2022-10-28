@@ -48,12 +48,6 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
 
   @Override
   @Nullable
-  public GdParentMethodCall getParentMethodCall() {
-    return PsiTreeUtil.getChildOfType(this, GdParentMethodCall.class);
-  }
-
-  @Override
-  @Nullable
   public GdReturnHint getReturnHint() {
     return PsiTreeUtil.getChildOfType(this, GdReturnHint.class);
   }
@@ -75,7 +69,7 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
   }
 
   @Override
-  @Nullable
+  @NotNull
   public String getName() {
     return GdPsiUtils.getName(this);
   }

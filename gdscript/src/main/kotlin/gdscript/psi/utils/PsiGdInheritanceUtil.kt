@@ -37,10 +37,11 @@ object PsiGdInheritanceUtil {
         return GdClassNamingIndex.getGlobally(inheritance, project).firstOrNull()?.containingFile;
     }
 
+    @Deprecated("tohle se asi už nemá používat")
     fun getParentName(element: PsiFile?): String? {
         val inh = PsiTreeUtil.findChildOfType(element, GdInheritance::class.java)
 
-        return inh?.inheritanceName;
+        return inh?.inheritancePath;
     }
 
     @Deprecated("moved to classUtils") // TODO move others as well

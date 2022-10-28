@@ -46,8 +46,8 @@ public class GdInheritanceImpl extends GdInheritanceElementImpl implements GdInh
 
   @Override
   @NotNull
-  public String getInheritanceName() {
-    return GdPsiUtils.getInheritanceName(this);
+  public String getInheritancePath() {
+    return GdPsiUtils.getInheritancePath(this);
   }
 
 }

@@ -62,6 +62,7 @@
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
     <stubIndex implementation="gdscript.index.impl.GdClassIdIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
+    <stubIndex implementation="gdscript.index.impl.GdClassDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdInheritanceIndex" />
     <stubIndex implementation="gdscript.index.impl.GdConstDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassVarDeclIndex" />

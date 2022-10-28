@@ -5,7 +5,7 @@ import gdscript.psi.GdEnumDeclTl
 
 interface GdEnumDeclStub : StubElement<GdEnumDeclTl> {
 
-    fun name(): String?;
+    fun name(): String;
     fun values(): HashMap<String, Int>;
 
 }

@@ -36,6 +36,7 @@ object GdClassIdElementType : IStubElementType<GdClassIdStub, GdClassNameNmi>("c
         return parents.reversed().joinToString(".");
     }
 
+    @Deprecated("tohle má být u decl, ne tady.. ?")
     fun getParentName(element: GdClassNameNmi): String? {
         val declaration = PsiGdTreeUtil.findFirstPrecedingElement(element) {
             it is GdClassDeclTl || it is GdClassNaming
@@ -43,7 +44,7 @@ object GdClassIdElementType : IStubElementType<GdClassIdStub, GdClassNameNmi>("c
 
         val inh = PsiTreeUtil.findChildOfType(declaration, GdInheritance::class.java)
 
-        return inh?.inheritanceName;
+        return inh?.inheritancePath;
     }
 
     @JvmStatic

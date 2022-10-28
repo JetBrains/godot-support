@@ -11,14 +11,14 @@ import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdParentMethodCallImpl extends ASTWrapperPsiElement implements GdParentMethodCall {
+public class GdAnnotationParamsImpl extends ASTWrapperPsiElement implements GdAnnotationParams {
 
-  public GdParentMethodCallImpl(@NotNull ASTNode node) {
+  public GdAnnotationParamsImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitParentMethodCall(this);
+    visitor.visitAnnotationParams(this);
   }
 
   @Override
@@ -28,9 +28,9 @@ public class GdParentMethodCallImpl extends ASTWrapperPsiElement implements GdPa
   }
 
   @Override
-  @Nullable
-  public GdArgList getArgList() {
-    return PsiTreeUtil.getChildOfType(this, GdArgList.class);
+  @NotNull
+  public List<GdLiteralEx> getLiteralExList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdLiteralEx.class);
   }
 
 }

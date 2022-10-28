@@ -5,9 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdParentSt extends GdStmt {
+public interface GdInheritanceId extends PsiElement {
 
   @NotNull
-  GdCallEx getCallEx();
+  GdInheritanceIdNm getInheritanceIdNm();
+
+  @NotNull
+  List<GdInheritanceSubIdNm> getInheritanceSubIdNmList();
 
 }

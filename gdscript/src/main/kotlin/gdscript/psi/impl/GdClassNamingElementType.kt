@@ -15,10 +15,16 @@ object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNam
         return element?.classNameNmi?.name.toString();
     }
 
-    fun getParentName(element: GdClassNaming?): String? {
-        val inh = PsiTreeUtil.findChildOfType(element, GdInheritance::class.java)
+    /**
+     * @return name of extended class
+     */
+    fun getParentName(element: GdClassNaming): String {
+        val stub = element.stub;
+        if (stub !== null) {
+            return stub.parent();
+        }
 
-        return inh?.inheritanceName;
+        return PsiTreeUtil.getStubChildOfType(element.parent, GdInheritance::class.java)?.inheritancePath.orEmpty();
     }
 
     @JvmStatic
@@ -34,7 +40,7 @@ object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNam
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): GdClassNamingStub {
-        return GdClassNamingStubImpl(parentStub, dataStream.readName()?.string, dataStream.readName()?.string);
+        return GdClassNamingStubImpl(parentStub, dataStream.readNameString().orEmpty(), dataStream.readName()?.string);
     }
 
     override fun indexStub(stub: GdClassNamingStub, sink: IndexSink) {
@@ -45,9 +51,9 @@ object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNam
             GdClassNamingImpl(stub, stub.stubType)
 
     override fun createStub(psi: GdClassNaming, parentStub: StubElement<*>?): GdClassNamingStub {
-        val inheritance = PsiTreeUtil.findChildOfType(psi, GdInheritance::class.java);
+        val inheritance = PsiTreeUtil.getStubChildOfType(psi, GdInheritance::class.java);
 
-        return GdClassNamingStubImpl(parentStub, psi.classNameNmi?.name, inheritance?.inheritanceName)
+        return GdClassNamingStubImpl(parentStub, psi.classNameNmi?.name.orEmpty(), inheritance?.inheritancePath)
     }
 
 }

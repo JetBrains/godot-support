@@ -5,48 +5,36 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.action.quickFix.GdChangeReturnTypeFix
-import gdscript.action.quickFix.GdRemoveElementAction
+import gdscript.GdKeywords
+import gdscript.psi.GdCallEx
 import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdParentMethodCall
-import gdscript.psi.utils.PsiGdClassUtil
+import gdscript.psi.utils.GdInheritanceUtil
+import gdscript.psi.utils.GdMethodUtil
 
 /**
- * TODO ii celé projít a přepracovat
+ * Checks that constructor calls _init if parent requires arguments
  */
 class GdConstructorAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element !is GdMethodDeclTl) {
-            return;
-        }
+        if (element !is GdMethodDeclTl) return;
+        if (element.name != GdKeywords.INIT_METHOD) return;
 
-        if (element.isConstructor) {
-            val hint = element.returnType;
-            if (hint != "" && hint != "void") {
-                val hintEl = element.returnHint;
-                if (hintEl != null) {
-                    val hintVal = hintEl.returnHintVal;
-                    val myClass = PsiGdClassUtil.getClassName(element);
-                    if (hint != myClass) {
-                        holder
-                            .newAnnotation(HighlightSeverity.ERROR, "Constructor can return only Self")
-                            .range(hintVal.textRange)
-                            .withFix(GdChangeReturnTypeFix(hintVal, "void"))
-                            .create()
-                    }
-                }
-            }
-        } else {
-            val parentCall = PsiTreeUtil.getChildOfType(element, GdParentMethodCall::class.java);
-            if (parentCall != null) {
-                holder
-                    .newAnnotation(HighlightSeverity.ERROR, "Parent call allowed only in constructor")
-                    .range(parentCall.textRange)
-                    .withFix(GdRemoveElementAction(parentCall))
-                    .create()
-            }
+        // If parent has parameters - child must call super(args)
+        val parent = GdInheritanceUtil.getExtendedElement(element) ?: return;
+        val parentConstructor = GdMethodUtil.findMethod(parent, GdKeywords.INIT_METHOD) ?: return;
+        if (parentConstructor.parameters.isEmpty()) return;
+
+        val stmts = PsiTreeUtil.findChildrenOfType(element, GdCallEx::class.java)
+            .filter{ it.expr.text == GdKeywords.SUPER };
+
+        if (stmts.isEmpty()) {
+            holder
+                .newAnnotation(HighlightSeverity.ERROR, "Initializing super() constructor is required")
+                .range(element.methodIdNmi?.textRange ?: element.textRange)
+                .create();
         }
+        // TODO kontrola parametrů by měla být přes obecné GdCallExpr... takže se pak ujistit, že to šlape
     }
 
 }

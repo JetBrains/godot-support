@@ -9,4 +9,8 @@ object TscnNodeIndex : StringStubIndexExtension<TscnNodeHeader>() {
 
     override fun getKey(): StubIndexKey<String, TscnNodeHeader> = TscnIndices.NODE_INDEX;
 
+    override fun getVersion(): Int {
+        return TscnIndices.VERSION;
+    }
+
 }
