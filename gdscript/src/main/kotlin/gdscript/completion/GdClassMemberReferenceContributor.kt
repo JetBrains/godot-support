@@ -25,7 +25,7 @@ class GdClassMemberReferenceContributor  : PsiReferenceContributor() {
                 override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
                     return arrayOf(
                         GdClassMemberReference(element, TextRange(0, element.textLength)),
-                        GdTypeHintReference(element, TextRange(0, element.textLength)),
+//                        GdTypeHintReference(element, TextRange(0, element.textLength)),
                     );
                 }
             }

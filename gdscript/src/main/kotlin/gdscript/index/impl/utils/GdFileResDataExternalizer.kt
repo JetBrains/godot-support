@@ -4,17 +4,14 @@ import com.intellij.util.io.DataExternalizer
 import java.io.DataInput
 import java.io.DataOutput
 
-object GdFileResDataExternalizer : DataExternalizer<String?> {
+object GdFileResDataExternalizer : DataExternalizer<String> {
 
-    override fun save(out: DataOutput, value: String?) {
-        out.writeBytes(value ?: "");
+    override fun save(out: DataOutput, value: String) {
+        out.writeBytes(value);
     }
 
-    override fun read(`in`: DataInput): String? {
-        val line = `in`.readLine();
-        if (line.isBlank()) return null;
-
-        return line;
+    override fun read(`in`: DataInput): String {
+        return `in`.readLine();
     }
 
 }

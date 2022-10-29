@@ -1,6 +1,5 @@
 package gdscript.index.impl
 
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndexKey
@@ -17,8 +16,6 @@ object GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
     override fun getVersion(): Int = Indices.VERSION;
 
     fun getGloballyResolved(name: String, project: Project): Collection<GdClassNameNmi> {
-        if (DumbService.isDumb(project)) return emptyList();
-
         val fqn = get(name, project, GlobalSearchScope.allScope(project));
         if (fqn.isNotEmpty()) return fqn;
 

@@ -1,46 +1,35 @@
 package gdscript.reference
 
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.search.GlobalSearchScope
-import gdscript.completion.utils.GdCompletionUtil
+import gdscript.completion.utils.GdClassCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdNamedElement
-import gdscript.psi.utils.PsiGdClassUtil
 
+/**
+ * ReturnType reference to classId
+ */
 class GdTypeHintReference : PsiReferenceBase<GdNamedElement> {
 
     private var key: String = "";
 
-    constructor(element: PsiElement, textRange: TextRange? = null) : super(element as GdNamedElement, textRange) {
-        val range = textRange ?: TextRange(0, element.textLength);
-        key = element.text.substring(range.startOffset, range.endOffset)
+    constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
+        key = element.text;
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        myElement.setName(newElementName);
-
-        return myElement;
+        element.setName(newElementName);
+        return element;
     }
 
     override fun resolve(): PsiElement? {
-        return GdClassNamingIndex
-            .get(key, myElement.project, GlobalSearchScope.allScope(myElement.project))
-            .firstOrNull()?.classNameNmi; // TODO ii
+        return GdClassNamingIndex.getGlobally(key, element).firstOrNull()?.classNameNmi;
     }
 
-    override fun getVariants(): Array<Any> {
-        val project = myElement.project;
-        val classNames = PsiGdClassUtil.listClassNaming(project);
-
-        return classNames.mapNotNull {
-            if (it.classname !== "") {
-                GdCompletionUtil.lookup(it);
-            } else {
-                null
-            }
-        }.toTypedArray()
+    override fun getVariants(): Array<LookupElement> {
+        return GdClassCompletionUtil.allClasses(element.project);
     }
 
 }

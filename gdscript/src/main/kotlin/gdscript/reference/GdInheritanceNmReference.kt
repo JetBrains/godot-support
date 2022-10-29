@@ -3,64 +3,49 @@ package gdscript.reference
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.elementType
-import gdscript.completion.utils.GdCompletionUtil
+import gdscript.completion.utils.GdClassCompletionUtil
 import gdscript.completion.utils.GdFileCompletionUtil
-import gdscript.index.impl.GdClassNamingIndex
-import gdscript.index.impl.GdFileResIndex
+import gdscript.index.impl.GdClassIdIndex
 import gdscript.psi.GdInheritanceIdNm
+import gdscript.psi.GdInheritanceSubIdNm
+import gdscript.psi.GdNamedElement
 import gdscript.psi.GdTypes
-import gdscript.psi.utils.PsiGdClassUtil
 
-class GdInheritanceNmReference : PsiReferenceBase<GdInheritanceIdNm> {
+/**
+ * Inheritance reference to classId
+ */
+class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
 
     private var key: String = "";
 
-    constructor(element: PsiElement, textRange: TextRange) : super(element as GdInheritanceIdNm, textRange) {
-        key = element.text.substring(textRange.startOffset, textRange.endOffset).trim('"');
+    constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
+        key = element.parent.text.substring(0, element.textRangeInParent.endOffset);
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
         // TODO rename resource ??... rename file?
         if (isResource()) return element;
 
-        myElement.name = newElementName;
+        when (element) {
+            is GdInheritanceIdNm -> element.setName(newElementName);
+            is GdInheritanceSubIdNm -> element.setName(newElementName);
+        }
 
         return element;
     }
 
     override fun resolve(): PsiElement? {
-        val project = element.project;
-        if (isResource()) {
-            val virtualFile = GdFileResIndex.getFiles(key, project).firstOrNull() ?: return null;
-
-            return PsiManager.getInstance(project).findFile(virtualFile);
-        }
-
-        return GdClassNamingIndex
-            .get(key, project, GlobalSearchScope.allScope(project))
-            .firstOrNull()?.classNameNmi; // TODO ii
+        return GdClassIdIndex.getGloballyResolved(key, element.project).firstOrNull();
     }
 
     override fun getVariants(): Array<LookupElement> {
-        val project = myElement.project;
-
         if (isResource()) {
-            return GdFileCompletionUtil.listFileResources(project, true, true);
+            return GdFileCompletionUtil.listFileResources(element.project, true, true);
         }
 
-        val classNames = PsiGdClassUtil.listClassNaming(project);
-
-        return classNames.mapNotNull {
-            if (it.classname !== "") {
-                GdCompletionUtil.lookup(it);
-            } else {
-                null
-            }
-        }.toTypedArray()
+        return GdClassCompletionUtil.allClasses(element.project);
     }
 
     private fun isResource(): Boolean {

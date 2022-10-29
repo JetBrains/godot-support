@@ -10,11 +10,11 @@ import gdscript.index.impl.utils.GdFileResDataExternalizer
 import gdscript.index.impl.utils.GdFileResIndexer
 import gdscript.index.impl.utils.GdFileResInputFilter
 
-object GdFileResIndex : FileBasedIndexExtensionExt<String, String?>() {
+object GdFileResIndex : FileBasedIndexExtensionExt<String, String>() {
 
-    override val id: ID<String, String?> = Indices.FILE_RES;
+    override val id: ID<String, String> = Indices.FILE_RES;
 
-    override fun getIndexer(): DataIndexer<String, String?, FileContent> {
+    override fun getIndexer(): DataIndexer<String, String, FileContent> {
         return GdFileResIndexer;
     }
 
@@ -22,7 +22,7 @@ object GdFileResIndex : FileBasedIndexExtensionExt<String, String?>() {
         return EnumeratorStringDescriptor.INSTANCE;
     }
 
-    override fun getValueExternalizer(): DataExternalizer<String?> {
+    override fun getValueExternalizer(): DataExternalizer<String> {
         return GdFileResDataExternalizer;
     }
 

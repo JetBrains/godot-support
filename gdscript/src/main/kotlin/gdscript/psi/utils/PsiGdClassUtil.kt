@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.*
-import gdscript.psi.GdElementFactory.identifier
+import gdscript.psi.GdElementFactory
 import gdscript.psi.impl.GdClassNamingElementType
 
 object PsiGdClassUtil {
@@ -30,7 +30,7 @@ object PsiGdClassUtil {
 
         val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
         if (keyNode != null) {
-            val id = identifier(element.project, newName!!)
+            val id = GdElementFactory.className(element.project, newName!!)
             element.node.replaceChild(keyNode, id.node)
         }
         return element
