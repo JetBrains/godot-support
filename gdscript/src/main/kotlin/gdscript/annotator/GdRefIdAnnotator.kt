@@ -20,8 +20,7 @@ class GdRefIdAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is GdRefIdNm) return;
-        if (element.text == GdKeywords.SELF) return;
-        if (element.text == GdKeywords.SUPER) return;
+        if (element.text == GdKeywords.SELF || element.text == GdKeywords.SUPER) return;
 
         val attribute = when (GdClassMemberUtil.findDeclaration(element)) {
             is GdMethodDeclTl -> GdHighlighterColors.METHOD_CALL;

@@ -179,9 +179,9 @@ flow_st ::=
     (CONTINUE endStmt)
     | (BREAK endStmt)
     | (PASS endStmt)
-    | (BREAKPOINT endStmt)
-    | returnStmt
-private returnStmt ::= RETURN expr? endStmt {pin=1 recoverWhile=stmt_r}
+    | (BREAKPOINT endStmt) // TODO existuje ještě totok?
+    | (RETURN expr? endStmt)
+    {pin=1 recoverWhile=stmt_r methods=[getType]}
 
 expr ::=
     plusMinus_ex

@@ -27,4 +27,16 @@ public class GdFlowStImpl extends GdStmtImpl implements GdFlowSt {
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public GdEndStmt getEndStmt() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdEndStmt.class));
+  }
+
+  @Override
+  @NotNull
+  public String getType() {
+    return GdPsiUtils.getType(this);
+  }
+
 }

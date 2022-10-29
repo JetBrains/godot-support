@@ -33,11 +33,11 @@ class GdAddReturnType : BaseIntentionAction {
         val caret = editor.caretModel;
 
         val typed = when (element) {
-            is GdMethodDeclTl -> methodDecl();
-            is GdClassVarDeclTl -> classVarDecl();
-            is GdConstDeclTl -> constDecl();
-            is GdConstDeclSt -> constDeclSt();
-            is GdVarDeclSt -> varDeclSt();
+            is GdMethodDeclTl -> methodDecl(element);
+            is GdClassVarDeclTl -> classVarDecl(element);
+            is GdConstDeclTl -> constDecl(element);
+            is GdConstDeclSt -> constDeclSt(element);
+            is GdVarDeclSt -> varDeclSt(element);
             else -> null;
         } ?: return;
 
@@ -48,7 +48,8 @@ class GdAddReturnType : BaseIntentionAction {
         caret.moveToOffset(currentOffset + typed.second.length);
     }
 
-    private fun methodDecl(): Pair<Int, String>? {
+    // TODO tohle zobecnit také pro lambdu
+    private fun methodDecl(element: GdMethodDeclTl): Pair<Int, String>? {
         var child = element.firstChild;
         while (child != null) {
             if (child.elementType == GdTypes.COLON) {
@@ -64,30 +65,26 @@ class GdAddReturnType : BaseIntentionAction {
         return Pair(child.textOffset, " -> $desired");
     }
 
-    private fun classVarDecl(): Pair<Int, String>? {
-        val el = element as GdClassVarDeclTl;
-        val offset = el.classVarIdNmi?.endOffset ?: return null;
+    private fun classVarDecl(element: GdClassVarDeclTl): Pair<Int, String>? {
+        val offset = element.classVarIdNmi?.endOffset ?: return null;
 
         return Pair(offset, ": $desired");
     }
 
-    private fun constDecl(): Pair<Int, String>? {
-        val el = element as GdConstDeclTl;
-        val offset = el.constIdNmi?.endOffset ?: return null;
+    private fun constDecl(element: GdConstDeclTl): Pair<Int, String>? {
+        val offset = element.constIdNmi?.endOffset ?: return null;
 
         return Pair(offset, ": $desired");
     }
 
-    private fun varDeclSt(): Pair<Int, String> {
-        val el = element as GdVarDeclSt;
-        val offset = el.varNmi.endOffset;
+    private fun varDeclSt(element: GdVarDeclSt): Pair<Int, String> {
+        val offset = element.varNmi.endOffset;
 
         return Pair(offset, ": $desired");
     }
 
-    private fun constDeclSt(): Pair<Int, String> {
-        val el = element as GdConstDeclSt;
-        val offset = el.varNmi.endOffset;
+    private fun constDeclSt(element: GdConstDeclSt): Pair<Int, String> {
+        val offset = element.varNmi.endOffset;
 
         return Pair(offset, ": $desired");
     }

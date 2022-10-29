@@ -76,7 +76,7 @@
 
     <!-- Actions -->
     <intentionAction>
-      <className>gdscript.action.quickFix.GdRemoveSetGetAction</className>
+      <className>gdscript.action.GdRemoveSetGetAction</className>
       <bundleName>messages.gdscript</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>

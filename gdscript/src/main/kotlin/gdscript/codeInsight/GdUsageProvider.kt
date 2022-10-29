@@ -43,6 +43,7 @@ class GdUsageProvider : FindUsagesProvider {
             is GdEnumDeclNmi -> "enum"
             is GdEnumValueNmi -> "enum const"
             is GdSignalIdNmi -> "signal"
+            is GdVarNmi -> "variable"
             else -> ""
         }
     }

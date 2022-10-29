@@ -1,5 +1,6 @@
 package gdscript.action.quickFix
 
+import com.intellij.codeInsight.actions.ReformatCodeProcessor
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
@@ -9,6 +10,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.startOffset
 import gdscript.psi.GdReturnHintVal
 
+/**
+ * Updates return type
+ */
 class GdChangeReturnTypeFix : BaseIntentionAction {
 
     private val element: GdReturnHintVal;
@@ -32,9 +36,7 @@ class GdChangeReturnTypeFix : BaseIntentionAction {
     }
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if (editor == null || file == null) {
-            return;
-        }
+        if (editor == null || file == null) return;
         val caret = editor.caretModel;
 
         val hint = element.typeHintNmList.first();
@@ -49,8 +51,11 @@ class GdChangeReturnTypeFix : BaseIntentionAction {
             }
         }
 
-        PsiDocumentManager.getInstance(project).doPostponedOperationsAndUnblockDocument(editor.document);
-        EditorModificationUtil.insertStringAtCaret(editor, desired)
-        PsiDocumentManager.getInstance(project).commitDocument(editor.document)
+        val psiManager = PsiDocumentManager.getInstance(project);
+
+        psiManager.doPostponedOperationsAndUnblockDocument(editor.document);
+        EditorModificationUtil.insertStringAtCaret(editor, desired);
+        psiManager.commitDocument(editor.document);
+        ReformatCodeProcessor(file, false).run();
     }
 }

@@ -4,47 +4,41 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.action.GdCreateMethodAction
 import gdscript.index.impl.GdMethodDeclIndex
 import gdscript.psi.*
 
+/**
+ * Checks if referencing method exists
+ * and if not create quick-fix
+ */
 class GdSetGetAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        val type = if (element is GdSetMethodIdNm) {
-            "set"
-        } else if (element is GdGetMethodIdNm) {
-            "get"
-        } else {
-            return;
+        when (element) {
+            is GdSetMethodIdNm, is GdGetMethodIdNm -> methodExists(element as GdNamedElement, holder)
         }
+    }
 
-        if (GdMethodDeclIndex.get(element.text, element.project, GlobalSearchScope.fileScope(element.containingFile))
-                .isEmpty()
-        ) {
-            holder
-                .newAnnotation(HighlightSeverity.ERROR, "Method [${element.text}] does not exist")
-                .range(element.textRange)
-                .withFix(if (type == "set") setMethod(element as GdSetMethodIdNm) else getMethod(element as GdGetMethodIdNm))
-                .create()
-        }
+    private fun methodExists(element: GdNamedElement, holder: AnnotationHolder) {
+        if (GdMethodDeclIndex.getInFile(element).isNotEmpty()) return;
+        holder
+            .newAnnotation(HighlightSeverity.ERROR, "Method [${element.text}] does not exist")
+            .range(element.textRange)
+            .withFix(if (element is GdSetMethodIdNm) setMethod(element) else getMethod(element as GdGetMethodIdNm))
+            .create()
     }
 
     private fun setMethod(element: GdSetMethodIdNm): GdCreateMethodAction {
         val paramType = variableType(element);
-        val param = if (paramType != null) {
-            "value: $paramType"
-        } else {
-            "value"
-        }
+        val param = "value${if (paramType.isNotBlank()) ": $paramType" else ""}";
 
         return GdCreateMethodAction(
             element.name,
             parameters = arrayOf(param),
-            bodyLines = arrayOf("${GdKeywords.SELF}.${variableName(element)} = value") // +;
+            bodyLines = arrayOf("${GdKeywords.SELF}.${variableName(element)} = value") // optional ;
         );
     }
 
@@ -52,22 +46,17 @@ class GdSetGetAnnotator : Annotator {
         return GdCreateMethodAction(
             element.name,
             returnType = variableType(element),
-            bodyLines = arrayOf("return ${GdKeywords.SELF}.${variableName(element)}") // +;
+            bodyLines = arrayOf("return ${variableName(element)}") // optional ;
+            // TODO bodyLines = arrayOf("return ${GdKeywords.SELF}.${variableName(element)}") // optional ;
         );
     }
 
     private fun variableName(element: PsiElement): String? {
-        val varDecl = PsiTreeUtil.getParentOfType(element, GdClassVarDeclTl::class.java);
-
-        return varDecl?.name;
+        return PsiTreeUtil.getParentOfType(element, GdClassVarDeclTl::class.java)?.name;
     }
 
-    private fun variableType(element: PsiElement): String? {
-        val varDecl = PsiTreeUtil.getParentOfType(element, GdClassVarDeclTl::class.java);
-        // TODO add hint to var decl stub & util
-        val typed = PsiTreeUtil.getChildOfType(varDecl, GdTyped::class.java);
-
-        return typed?.typeHintNmList?.first()?.text;
+    private fun variableType(element: PsiElement): String {
+        return PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassVarDeclTl::class.java)?.returnType ?: "";
     }
 
 }

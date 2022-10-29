@@ -91,6 +91,9 @@ object GdPsiUtils {
     @JvmStatic fun getName(element: GdSignalDeclTl): String = PsiGdSignalUtil.getName(element);
     @JvmStatic fun getParameters(element: GdSignalDeclTl): Array<String> = PsiGdSignalUtil.getParameters(element);
 
+    /** Statements */
+    @JvmStatic fun getType(element: GdFlowSt): String = GdStmtUtil.getType(element);
+
     /** Expressions */
     @JvmStatic fun getReturnType(element: GdExpr): String = PsiGdExprUtil.getReturnType(element);
 

@@ -1,12 +1,15 @@
 package gdscript.action.quickFix
 
+import com.intellij.codeInsight.actions.ReformatCodeProcessor
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiWhiteSpace
 
+/**
+ * Removes an annotation
+ */
 class GdRemoveAnnotationAction : BaseIntentionAction {
 
     val element: PsiElement;
@@ -28,10 +31,9 @@ class GdRemoveAnnotationAction : BaseIntentionAction {
     }
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        val space = element.prevSibling;
-        if (space is PsiWhiteSpace) {
-            space.delete();
-        }
+        if (file == null) return;
         element.delete();
+        ReformatCodeProcessor(file, false).run();
     }
+
 }

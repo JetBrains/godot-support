@@ -284,8 +284,8 @@ ANY = .+
     ".."           { return dedentRoot(GdTypes.DOTDOT); }
 
     {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
-    {STRING}        { return GdTypes.STRING; }
-    {STRING_CHAR}   { return GdTypes.STRING; }
+    {STRING}        { return dedentRoot(GdTypes.STRING); }
+    {STRING_CHAR}   { return dedentRoot(GdTypes.STRING); }
     {STRING_MULTILINE} { return GdTypes.STRING; }
 //    {STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }
     {ASSIGN}        { return GdTypes.ASSIGN; }

@@ -9,99 +9,94 @@ import gdscript.GdKeywords
 import gdscript.action.quickFix.GdAddReturnType
 import gdscript.action.quickFix.GdChangeReturnTypeFix
 import gdscript.psi.*
-import gdscript.psi.utils.PsiGdNamedUtil
+import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdExprUtil
 
 /**
- * Checks matching return types
- * TODO ii
+ * Checks matching return types of method, and it's parent method
+ * and existence in method declaration
  */
 class GdReturnTypeAnnotator : Annotator {
 
-    val NUMBER_MIXED = arrayOf(GdKeywords.INT, GdKeywords.FLOAT);
-
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element is GdReturnHintVal) {
-            checkParentType(element, holder);
-        } else if (element is GdReturnStmt) {
-            checkStmtType(element, holder);
+        when (element) {
+            is GdReturnHintVal -> checkParentType(element, holder);
+            is GdFlowSt -> checkStmtType(element, holder);
         }
     }
 
     private fun checkParentType(element: GdReturnHintVal, holder: AnnotationHolder) {
+        if (!isMethod(element)) return;
         val returnType = element.text;
-        val methodDecl = getMethodDecl(element) ?: return;
-        if (methodDecl is GdFuncDeclEx) return;
-        val method = (methodDecl as GdMethodDeclTl).methodIdNmi ?: return;
+        val declaration = PsiTreeUtil.getStubOrPsiParentOfType(element, GdMethodDeclTl::class.java) ?: return;
+        val id = declaration.methodIdNmi ?: return;
+        val parent = GdClassMemberUtil.findDeclaration(id) ?: return;
 
-        val parentMethod = PsiGdNamedUtil.findInParent(method, variables = false, withLocalScopes = true);
-        if (parentMethod !== null && parentMethod is GdMethodDeclTl) {
-            val parentReturnType = parentMethod.returnType;
-            if (parentReturnType != "" && returnType != parentReturnType && !extraAllowed(parentReturnType, returnType)) {
-                holder
-                    .newAnnotation(HighlightSeverity.ERROR,
-                        "Return type [$returnType] does not match parent's [$parentReturnType]")
-                    .range(element.textRange)
-                    .withFix(GdChangeReturnTypeFix(element, parentReturnType))
-                    .create()
-            }
+        val parentReturnType = when (parent) {
+            is GdMethodDeclTl -> parent.returnType;
+            else -> return;
         }
+
+        if (returnType == parentReturnType) return;
+        holder
+            .newAnnotation(
+                HighlightSeverity.ERROR,
+                "Return type [$returnType] does not match parent's [$parentReturnType]"
+            )
+            .range(element.textRange)
+            .withFix(GdChangeReturnTypeFix(element, parentReturnType))
+            .create()
     }
 
-    private fun checkStmtType(element: GdReturnStmt, holder: AnnotationHolder) {
+    private fun checkStmtType(element: GdFlowSt, holder: AnnotationHolder) {
+        if (element.type != GdKeywords.FLOW_RETURN) return;
         val method = getMethodDecl(element) ?: return;
+        val hint: GdReturnHintVal?;
         val returnType = when (method) {
-            is GdMethodDeclTl -> method.returnType;
-            is GdFuncDeclEx -> method.returnType;
-            else -> "";
+            is GdMethodDeclTl -> {
+                hint = method.returnHint?.returnHintVal; method.returnType
+            };
+            is GdFuncDeclEx -> {
+                hint = method.returnHint?.returnHintVal; method.returnType
+            };
+            else -> return;
         }
 
-        val myType = element.expr?.returnType ?: GdKeywords.VOID;
-        if (myType.isEmpty()) {
-            return;
-        }
-
+        val stmtType = element.expr?.returnType ?: GdKeywords.VOID;
         if (returnType.isNotEmpty()) {
-            if (myType != returnType
-                && !extraAllowed(myType, returnType)
-                && !PsiGdNamedUtil.hasParent(myType, returnType, element.project)
-            ) {
-                val hint = when (method) {
-                    is GdMethodDeclTl -> method.returnHint?.returnHintVal;
-                    is GdFuncDeclEx -> method.returnHint?.returnHintVal;
-                    else -> null;
-                }
-                holder
-                    .newAnnotation(HighlightSeverity.ERROR, "Returns a type [$myType] which do not match function's [$returnType]")
-                    .withFix(GdChangeReturnTypeFix(hint!!, myType))
-                    .range(element.textRange)
-                    .create()
-            }
+            if (GdExprUtil.typesMatch(stmtType, returnType)) return;
+            holder
+                .newAnnotation(
+                    HighlightSeverity.ERROR,
+                    "Returns a type [$stmtType] which do not match function's [$returnType]"
+                )
+                .withFix(GdChangeReturnTypeFix(hint!!, stmtType))
+                .range(element.textRange)
+                .create()
         } else {
             var matched = true;
             PsiTreeUtil.findChildrenOfType(method, GdReturnStmt::class.java).forEach {
                 val type = it.expr?.returnType ?: GdKeywords.VOID;
-                matched = matched && type == myType;
+                matched = matched && GdExprUtil.typesMatch(type, stmtType);
             }
             if (matched) {
                 holder
-                    .newAnnotation(HighlightSeverity.WEAK_WARNING, "Function's return type can be specified as [$myType]")
+                    .newAnnotation(HighlightSeverity.WEAK_WARNING, "Function's return type can be specified as [$stmtType]")
                     .range(element.textRange)
-                    .withFix(GdAddReturnType(method, myType))
+                    .withFix(GdAddReturnType(method, stmtType))
                     .create()
             }
         }
-    }
-
-    private fun extraAllowed(type1: String, type2: String): Boolean {
-        return (NUMBER_MIXED.contains(type1) && NUMBER_MIXED.contains(type2))
-                || (type1 == "Array" && type2.startsWith("Array"))
-                || (type2 == "Array" && type1.startsWith("Array"));
     }
 
     private fun getMethodDecl(element: PsiElement): PsiElement? {
         return PsiTreeUtil.findFirstParent(element) {
             it is GdMethodDeclTl || it is GdFuncDeclEx
         };
+    }
+
+    private fun isMethod(element: PsiElement): Boolean {
+        return getMethodDecl(element) is GdMethodDeclTl;
     }
 
 }

@@ -962,8 +962,8 @@ public class GdParser implements PsiParser, LightPsiParser {
   // (CONTINUE endStmt)
   //     | (BREAK endStmt)
   //     | (PASS endStmt)
-  //     | (BREAKPOINT endStmt)
-  //     | returnStmt
+  //     | (BREAKPOINT endStmt) // TODO existuje ještě totok?
+  //     | (RETURN expr? endStmt)
   public static boolean flow_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flow_st")) return false;
     boolean r;
@@ -972,8 +972,8 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = flow_st_1(b, l + 1);
     if (!r) r = flow_st_2(b, l + 1);
     if (!r) r = flow_st_3(b, l + 1);
-    if (!r) r = returnStmt(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    if (!r) r = flow_st_4(b, l + 1);
+    exit_section_(b, l, m, r, false, GdParser::stmt_r);
     return r;
   }
 
@@ -1019,6 +1019,25 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && endStmt(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // RETURN expr? endStmt
+  private static boolean flow_st_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flow_st_4")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenFast(b, RETURN);
+    r = r && flow_st_4_1(b, l + 1);
+    r = r && endStmt(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // expr?
+  private static boolean flow_st_4_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flow_st_4_1")) return false;
+    expr(b, l + 1, -1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -1756,27 +1775,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, VOID);
     exit_section_(b, l, m, r, false, null);
     return r;
-  }
-
-  /* ********************************************************** */
-  // RETURN expr? endStmt
-  static boolean returnStmt(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "returnStmt")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, RETURN);
-    p = r; // pin = 1
-    r = r && report_error_(b, returnStmt_1(b, l + 1));
-    r = p && endStmt(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, GdParser::stmt_r);
-    return r || p;
-  }
-
-  // expr?
-  private static boolean returnStmt_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "returnStmt_1")) return false;
-    expr(b, l + 1, -1);
-    return true;
   }
 
   /* ********************************************************** */
