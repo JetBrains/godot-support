@@ -2,8 +2,7 @@ package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.psi.GdClassDeclTl
-import gdscript.psi.GdClassNaming
+import gdscript.psi.*
 import gdscript.utils.GdVirtualFileUtil.resourcePath
 
 object GdClassUtil {

@@ -11,6 +11,10 @@ import gdscript.action.quickFix.GdChangeReturnTypeFix
 import gdscript.psi.*
 import gdscript.psi.utils.PsiGdNamedUtil
 
+/**
+ * Checks matching return types
+ * TODO ii
+ */
 class GdReturnTypeAnnotator : Annotator {
 
     val NUMBER_MIXED = arrayOf(GdKeywords.INT, GdKeywords.FLOAT);

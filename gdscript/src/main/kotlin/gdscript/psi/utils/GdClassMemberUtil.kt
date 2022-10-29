@@ -2,6 +2,8 @@ package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdKeywords
+import gdscript.index.impl.GdClassIdIndex
 import gdscript.psi.*
 
 object GdClassMemberUtil {
@@ -13,18 +15,48 @@ object GdClassMemberUtil {
         element: GdNamedElement,
     ): PsiElement? {
         val name = element.name.orEmpty();
-        val locals = listLocalDeclarationsUpward(element);
-        if (locals.containsKey(name)) return locals[name];
 
-        // This class is already scanned via localDecl - so move to extended ones
-        var parent: PsiElement = PsiGdClassUtil.getParentClassElement(element);
+        var calledOn: String? = GdKeywords.SELF;
+        when (val parent = element.parent?.parent) {
+            is GdAttributeEx -> {
+                if (element.parent.prevSibling != null) {
+                    calledOn = parent.exprList.first()?.returnType;
+                }
+            }
+            is GdCallEx -> {
+                val prev = parent.parent;
+                if (prev.text != GdKeywords.SELF && prev is GdAttributeEx) {
+                    if (parent.prevSibling != null) {
+                        calledOn = prev.exprList.first()?.returnType;
+                    }
+                }
+            }
+        }
+
+        when (calledOn) {
+            GdKeywords.SELF -> calledOn = null;
+            GdKeywords.SUPER -> calledOn = GdInheritanceUtil.getExtendedClassId(element);
+        }
+
+        // Checks locals only when it's not attribute/call expression moving declaration possibly outside
+        var parent: PsiElement;
+        if (calledOn == null) {
+            val locals = listLocalDeclarationsUpward(element);
+            if (locals.containsKey(name)) return locals[name];
+
+            // This class is already scanned via localDecl - so move to extended one
+            parent = GdInheritanceUtil.getExtendedElement(element) ?: return null;
+        } else {
+            parent = GdClassIdIndex.getGloballyResolved(calledOn, element.project).firstOrNull() ?: return null;
+            parent = GdClassUtil.getOwningClassElement(parent);
+        }
 
         while (true) {
-            parent = GdInheritanceUtil.getExtendedElement(parent) ?: return null;
             val members = listClassMemberDeclarations(parent);
             if (members.containsKey(name)) {
                 return members[name]!!.first();
             }
+            parent = GdInheritanceUtil.getExtendedElement(parent) ?: return null;
         }
     }
 
