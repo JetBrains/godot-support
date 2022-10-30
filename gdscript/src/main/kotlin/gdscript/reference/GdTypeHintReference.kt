@@ -29,7 +29,7 @@ class GdTypeHintReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun getVariants(): Array<LookupElement> {
-        return GdClassCompletionUtil.allClasses(element.project);
+        return GdClassCompletionUtil.allRootClasses(element.project);
     }
 
 }

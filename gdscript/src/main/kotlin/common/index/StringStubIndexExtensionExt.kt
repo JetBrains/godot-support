@@ -40,4 +40,14 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
         return get(name, element.project, GlobalSearchScope.fileScope(element.containingFile));
     }
 
+    fun getNonEmptyKeys(project: Project): Collection<String> {
+        return getAllKeys(project).mapNotNull {
+            if (it.isNotBlank() && getGlobally(it, project).isNotEmpty()) it else null
+        }
+    }
+
+    fun getAllValues(project: Project): Collection<Psi> {
+        return getAllKeys(project).flatMap { getGlobally(it, project) };
+    }
+
 }

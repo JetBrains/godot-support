@@ -29,7 +29,6 @@ func losos():
 
 ## Work queue
 ### Top priority (Alpha)
-- Lambdas
 - Inner class
 
 ### Middle Priority (Betta)
@@ -72,6 +71,7 @@ func losos():
 - Annotations
 - func overrides
 - Resources (`$Path/Node` && `$"%Name"`)
+- hides _prefix as private fields (is optional based on Language settings)
 
 ### Documentation (Ctrl+Q)
 - Currently only simplified plain-text
@@ -95,3 +95,4 @@ func losos():
 - add/change return Type
 - remove annotation
 - change class_name to match filename
+- remove getter & setter

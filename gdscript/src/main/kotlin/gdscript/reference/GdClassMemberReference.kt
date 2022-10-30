@@ -5,45 +5,31 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.elementType
 import gdscript.completion.utils.*
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
-import gdscript.psi.utils.PsiGdExprUtil
-import gdscript.psi.utils.PsiGdFileUtil
-import gdscript.psi.utils.PsiGdInheritanceUtil
-import gdscript.psi.utils.PsiGdNamedUtil
+import gdscript.psi.utils.*
 
-// TODO Signals, ...?
-// Variables, Constants, Enums, Locals
+// TODO Signals, ...? otestovat!!
+/**
+ * RefId reference to ClassNames, Variables, Constants, etc...
+ */
 class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
     private var key: String = "";
-    private var methodOnly: Boolean = false;
 
-    constructor(
-        element: PsiElement,
-        textRange: TextRange? = null,
-        methodOnly: Boolean = false,
-    ) : super(element as GdNamedElement, textRange) {
-        val range = textRange ?: TextRange(0, element.textLength);
-        key = element.text.substring(range.startOffset, range.endOffset);
-        this.methodOnly = methodOnly;
+    constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
+        key = element.text;
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        myElement.setName(newElementName);
+        myElement.setName(newElementName); // TODO ii !! projít všude zda je srávná instance
 
         return myElement;
     }
 
     fun resolveDeclaration(): PsiElement? {
-        val file = PsiGdExprUtil.getAttrOrCallParentFile(element) ?: element.containingFile;
-
-        val local = PsiGdNamedUtil.findInParent(myElement, includingSelf = true, containingFile = file);
-        if (local != null) return local;
-
-        return PsiGdNamedUtil.findInParent(myElement, includingSelf = true, containingFile = PsiGdFileUtil.getGlobalFile(element.project));
+        return GdClassMemberUtil.findDeclaration(element);
     }
 
     override fun resolve(): PsiElement? {
@@ -68,60 +54,22 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
             .firstOrNull()?.containingFile;
     }
 
-    override fun getVariants(): Array<Any> {
-        val classes: ArrayList<PsiElement> = ArrayList();
+    override fun getVariants(): Array<LookupElement> {
+        val members = GdClassMemberUtil.listDeclarations(element);
         val results = ArrayList<LookupElement>();
-        val static = referencesClassName(element);
-
-        val file = PsiGdExprUtil.getAttrOrCallParentFile(element);
-        val local = file == null;
-        classes.add(file ?: PsiGdInheritanceUtil.getFirstParent(element));
-        classes.addAll(PsiGdNamedUtil.listParents(file ?: element));
-
-        val members = if (local) PsiGdNamedUtil.listLocalDecls(element) else mutableListOf();
-        members.addAll(classes.flatMap { PsiGdFileUtil.listMembers(it) });
-        members.addAll(classes.flatMap { PsiGdFileUtil.listMembers(PsiGdFileUtil.getGlobalFile(element.project)!!) });
 
         members.forEach {
             when (it) {
-                is GdMethodDeclTl -> {
-                    // TODO constructor to asi bude chtít napovídat...
-                    if (it.isStatic == static && !it.isConstructor) {
-                        results.add(GdCompletionUtil.lookup(it))
-                    }
-                }
-
-                is GdConstDeclTl -> {
-                    if (!methodOnly) {
-                        results.add(GdCompletionUtil.lookup(it));
-                    }
-                }
-
-                is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl, is GdSignalDeclTl,
+                is GdMethodDeclTl -> results.add(GdCompletionUtil.lookup(it))
+                is GdConstDeclTl -> results.add(GdCompletionUtil.lookup(it));
+                is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl, is GdSignalDeclTl, is GdClassNaming,
                 is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl, is GdBindingPattern -> {
-                    if (!methodOnly && !static) {
-                        results.addAll(GdCompletionUtil.lookups(it));
-                    }
+                    results.addAll(GdCompletionUtil.lookups(it));
                 }
-            }
-        };
-
-        return results.toArray();
-    }
-
-    private fun referencesClassName(element: PsiElement): Boolean {
-        val parent = element.parent?.parent;
-        if (parent != null) {
-            val type = parent.elementType;
-            if (type == GdTypes.ATTRIBUTE_EX || type == GdTypes.CALL_EX) {
-                val txt = parent.firstChild.text;
-                return GdClassNamingIndex
-                    .get(txt, element.project, GlobalSearchScope.allScope(element.project))
-                    .firstOrNull() != null;
             }
         }
 
-        return false;
+        return results.toTypedArray();
     }
 
 }

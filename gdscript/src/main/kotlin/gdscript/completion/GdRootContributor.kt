@@ -41,9 +41,6 @@ class GdRootContributor : CompletionContributor() {
         } else if (ANNOTATOR_DECL.accepts(position)) { // After "@"
             GdClassVarCompletionUtil.annotations(result, false);
             return result.stopHere();
-        } else if (psiElement().withParent(psiElement(GdTypes.REF_ID_NM)).accepts(position)) {
-            // TODO tohle by nemělo být za tečkou
-            addRefKeywords(result);
         }
     }
 
@@ -62,11 +59,6 @@ class GdRootContributor : CompletionContributor() {
         result.addElement(GdLookup.create(GdKeywords.CLASS, " "));
         result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
         GdClassVarCompletionUtil.annotations(result);
-    }
-
-    private fun addRefKeywords(result: CompletionResultSet) {
-        result.addElement(GdLookup.create(GdKeywords.VAR, " ", priority = GdLookup.KEYWORDS));
-        result.addElement(GdLookup.create(GdKeywords.SELF, priority = GdLookup.KEYWORDS));
     }
 
 }

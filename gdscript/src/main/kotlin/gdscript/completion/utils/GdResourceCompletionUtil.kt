@@ -30,6 +30,7 @@ object GdResourceCompletionUtil {
         }
     }
 
+    // TODO ii tady se musí řešit relativní cesta !!
     fun fullVarResources(element: PsiElement, result: CompletionResultSet) {
         this.resourceList(element).forEach {
             if (it.parentPath.isNotEmpty()) {
@@ -45,7 +46,7 @@ object GdResourceCompletionUtil {
                             color = GdLookup.RESOURCE_COLOR,
                             priority = GdLookup.USER_DEFINED,
                             typed = it.type,
-                            presentable = "$${it.name}",
+                            presentable = "$${it.nodePath}",
                         )
                     );
             }

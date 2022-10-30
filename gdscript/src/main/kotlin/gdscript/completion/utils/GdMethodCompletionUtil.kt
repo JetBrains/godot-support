@@ -1,6 +1,7 @@
 package gdscript.completion.utils
 
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.lookup.LookupElement
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.GdMethodDeclTl
@@ -22,11 +23,20 @@ object GdMethodCompletionUtil {
         }
     }
 
-    fun buildParamHint(method: GdMethodDeclTl): String {
-        if (method.isVariadic) {
-            return "(vararg)";
-        }
+    fun GdMethodDeclTl.lookup(omitFuncKeyword: Boolean = false): LookupElement {
+        val params = buildParamHint(this);
+        return GdLookup.create(
+            "${if (omitFuncKeyword) "" else "func "}${this.name}${params}${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}:",
+            tail = params,
+            presentable = this.name,
+            typed = this.returnType,
+            icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
+            priority = GdLookup.USER_DEFINED,
+        )
+    }
 
+    fun buildParamHint(method: GdMethodDeclTl): String {
+        if (method.isVariadic) return "(vararg)";
         return "(${method.paramList?.text ?: ""})";
     }
 

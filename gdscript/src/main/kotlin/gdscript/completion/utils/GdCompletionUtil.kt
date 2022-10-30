@@ -10,7 +10,7 @@ import gdscript.utils.StringUtils.parseFromSquare
 object GdCompletionUtil {
 
     fun lookups(element: PsiElement): Array<LookupElement> {
-        return when (element) {
+        return when (element) { // TODO je tu vše? musí sedět vůši GdClassMemberUtil.listMembers
             is GdClassNaming -> arrayOf(lookup(element));
             is GdClassVarDeclTl -> arrayOf(lookup(element));
             is GdVarDeclSt -> arrayOf(lookup(element));

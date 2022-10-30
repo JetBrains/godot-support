@@ -7,6 +7,9 @@ import gdscript.competion.utils.GdLookupInsertHandler
 import java.awt.Color
 import javax.swing.Icon
 
+/**
+ * Lookup Element factory
+ */
 object GdLookup {
 
     const val KEYWORDS = 90.0;
@@ -48,12 +51,12 @@ object GdLookup {
         }
 
         if (priority === null) {
-            return builder
+            return builder;
         }
 
         return PrioritizedLookupElement.withPriority(
             builder,
-            priority
+            priority,
         );
     }
 

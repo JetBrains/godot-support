@@ -1,3 +1,5 @@
+private sett
+
 const func ... qualifiers ?? Je to i v xml
 
 documentace:

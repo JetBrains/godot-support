@@ -4,14 +4,17 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import gdscript.completion.utils.GdClassCompletionUtil
 import gdscript.completion.utils.GdFileCompletionUtil
 import gdscript.index.impl.GdClassIdIndex
+import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdInheritanceIdNm
 import gdscript.psi.GdInheritanceSubIdNm
 import gdscript.psi.GdNamedElement
 import gdscript.psi.GdTypes
+import gdscript.psi.utils.GdClassUtil
 
 /**
  * Inheritance reference to classId
@@ -41,15 +44,22 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun getVariants(): Array<LookupElement> {
-        if (isResource()) {
+        if (isResource()) { // At Top level "res://Asd.gd" can be used
             return GdFileCompletionUtil.listFileResources(element.project, true, true);
+        } else if (element is GdInheritanceSubIdNm) { // While at nested position, only InnerClasses
+            val classId = GdClassIdIndex.getGloballyResolved(key.substring(0, key.lastIndexOf(".")), element.project)
+                .firstOrNull() ?: return emptyArray();
+            val container = GdClassUtil.getOwningClassElement(classId);
+            val inners = PsiTreeUtil.getStubChildrenOfTypeAsList(container, GdClassDeclTl::class.java);
+
+            return GdClassCompletionUtil.classDecl(*inners.toTypedArray());
         }
 
-        return GdClassCompletionUtil.allClasses(element.project);
+        return GdClassCompletionUtil.allRootClasses(element.project);
     }
 
     private fun isResource(): Boolean {
-        return element.firstChild.elementType == GdTypes.STRING;
+        return key.startsWith('"') && key.endsWith('"');
     }
 
 }

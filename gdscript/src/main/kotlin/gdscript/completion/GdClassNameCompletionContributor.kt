@@ -7,6 +7,9 @@ import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.GdKeywords
 import gdscript.psi.GdClassNaming
 
+/**
+ * Filename to class_name completion
+ */
 class GdClassNameCompletionContributor : CompletionContributor() {
 
     val CLASS_NAME_NM = psiElement()

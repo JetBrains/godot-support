@@ -4,25 +4,30 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
-import gdscript.GdKeywords
-import gdscript.completion.utils.GdLiteralCompletionUtil
-import gdscript.completion.utils.GdMethodCompletionUtil
-import gdscript.psi.GdTypeHintNm
+import com.intellij.psi.PsiElement
+import gdscript.completion.utils.GdMethodCompletionUtil.lookup
 import gdscript.psi.GdTypes
-import gdscript.psi.utils.PsiGdMethodDeclUtil
+import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdClassMemberUtil.methods
+import gdscript.psi.utils.GdInheritanceUtil
 
+/**
+ * Override parent methods (after 'func' keyword)
+ */
 class GdMethodDeclCompletionContributor : CompletionContributor() {
 
-    val RETURN_TYPE = psiElement().withParent(GdTypeHintNm::class.java)
-    val FN_NAME = psiElement().withParent(psiElement(GdTypes.METHOD_ID_NMI));
+    val METHOD_ID = psiElement().withParent(psiElement(GdTypes.METHOD_ID_NMI));
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
-        if (RETURN_TYPE.accepts(parameters.position)) {
-            GdLiteralCompletionUtil.builtInTypes(result);
-            result.addElement(GdLookup.create(GdKeywords.VOID))
-        } else if (FN_NAME.accepts(parameters.position)) {
-            val list = PsiGdMethodDeclUtil.collectParentsMethods(parameters.originalFile);
-            GdMethodCompletionUtil.addMethods(list, result);
+        val element = parameters.originalPosition ?: return;
+        if (METHOD_ID.accepts(parameters.position)) {
+            val parent = GdInheritanceUtil.getExtendedElement(element) ?: return;
+            val list = mutableListOf<PsiElement>()
+            GdClassMemberUtil.collectFromParents(parent, list);
+            list
+                .toTypedArray()
+                .methods()
+                .forEach { result.addElement(it.lookup(true)) };
         }
     }
 

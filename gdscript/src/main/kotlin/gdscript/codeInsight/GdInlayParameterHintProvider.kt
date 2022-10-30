@@ -17,7 +17,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getHintInfo(element: PsiElement): HintInfo? {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return null;
-            val declaration = GdClassMemberReference(id).resolveDeclaration() ?: return null;
+            val declaration = GdClassMemberReference(id).resolveDeclaration() ?: return null;// TODO ii
             if (declaration is GdMethodDeclTl) {
                 val name = declaration.name.orEmpty();
                 if (name == "emit") {
@@ -39,7 +39,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getParameterHints(element: PsiElement): List<InlayInfo> {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return emptyList();
-            val method = GdClassMemberReference(id).resolveDeclaration();
+            val method = GdClassMemberReference(id).resolveDeclaration();// TODO ii
 
             var params: Array<String> = emptyArray();
             when (method) {
@@ -62,7 +62,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                     }
                 }
                 else -> {
-                    val file = GdClassMemberReference(id).resolve();
+                    val file = GdClassMemberReference(id).resolve();// TODO ii
                     if (file !is GdFile) {
                         return emptyList();
                     }

@@ -10,6 +10,7 @@ import gdscript.completion.utils.GdResourceCompletionUtil
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
 
+// TODO tohle rozdělit - resource_string na referenci a zbytek přejmenovat na node_path
 class GdResourceCompletionContributor : CompletionContributor() {
 
     val NODE_PATH = psiElement(GdTypes.NODE_PATH_LEX);

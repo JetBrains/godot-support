@@ -32,6 +32,7 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
     }
 
     private fun findDocumentationComment(property: PsiNamedElement, key: String): String? {
+        // TODO ii
         var declaration = GdClassMemberReference(property).resolveDeclaration();
         if (declaration == null) {
             declaration = GdClassNamingIndex.getGlobally(property)

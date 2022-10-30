@@ -32,9 +32,7 @@ object PsiGdMethodDeclUtil {
 
     fun isStatic(element: GdMethodDeclTl): Boolean {
         val stub = element.stub;
-        if (stub !== null) {
-            return stub.isStatic();
-        }
+        if (stub !== null) return stub.isStatic();
 
         return ElementTypeUtil.hasChildOfType(element, GdTypes.STATIC);
     }
@@ -71,6 +69,9 @@ object PsiGdMethodDeclUtil {
     }
 
     fun isConstructor(element: GdMethodDeclTl): Boolean {
+        val stub = element.stub;
+        if (stub != null) return stub.isConstructor();
+
         return element.name == "_init"
                 || PsiGdClassUtil.getClass(element) == element.name;
 

@@ -1,32 +1,22 @@
 package gdscript.completion
 
-import com.intellij.openapi.util.TextRange
+import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
-import gdscript.completion.utils.GdRefIdCompletionUtil
+import gdscript.psi.GdTypes
 import gdscript.reference.GdClassMemberReference
-import gdscript.reference.GdTypeHintReference
 
+/**
+ * RefId reference to ClassId, Variables, Constants, ...
+ */
 class GdClassMemberReferenceContributor  : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(register: PsiReferenceRegistrar) {
         register.registerReferenceProvider(
-            GdRefIdCompletionUtil.REMOTE_REF,
+            PlatformPatterns.psiElement(GdTypes.REF_ID_NM),
             object : PsiReferenceProvider() {
                 override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-                    return arrayOf(GdClassMemberReference(element, TextRange(0, element.textLength)));
-                }
-            }
-        );
-
-        register.registerReferenceProvider(
-            GdRefIdCompletionUtil.DIRECT_REF,
-            object : PsiReferenceProvider() {
-                override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-                    return arrayOf(
-                        GdClassMemberReference(element, TextRange(0, element.textLength)),
-//                        GdTypeHintReference(element, TextRange(0, element.textLength)),
-                    );
+                    return arrayOf(GdClassMemberReference(element));
                 }
             }
         );

@@ -28,6 +28,13 @@
     <lang.documentationProvider language="GdScript" implementationClass="gdscript.codeInsight.GdDocumentationProvider" />
     <codeInsight.parameterNameHints language="GdScript" implementationClass="gdscript.codeInsight.GdInlayParameterHintProvider" />
     <runLineMarkerContributor language="GdScript" implementationClass="gdscript.lineMarker.GdRunLineMarkerProvider" />
+    <!-- settings -->
+    <applicationService serviceImplementation="gdscript.settings.GdSettingsState"/>
+    <applicationConfigurable
+        parentId="language"
+        instance="gdscript.settings.GdSettingsConfigurable"
+        id="gdscript.settings.GdSettingsConfigurable"
+        displayName="GdScript"/>
 
     <!-- Tscn -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
@@ -37,7 +44,7 @@
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>
-    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdClassVarCompletionContributor"/>
+    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GetterSetterNameCompletion"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdMethodDeclCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdResourceCompletionContributor"/>
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdInheritanceReferenceContributor" />

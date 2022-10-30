@@ -4,7 +4,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassIdIndex
+import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
+import gdscript.settings.GdSettingsState
 
 object GdClassMemberUtil {
 
@@ -14,50 +16,101 @@ object GdClassMemberUtil {
     fun findDeclaration(
         element: GdNamedElement,
     ): PsiElement? {
-        val name = element.name.orEmpty();
+        return listDeclarations(element, element).firstOrNull();
+    }
 
+    /**
+     * List available declarations (const, var, enum, signal, method, ...) from given PsiElement skipping itself
+     * @param searchFor stops and returns matching element
+     */
+    fun listDeclarations(element: PsiElement, searchFor: GdNamedElement? = null): Array<PsiElement> {
+        val search = searchFor != null;
+        val name: String? = searchFor?.name;
+        var static = false;
+
+        val result = mutableListOf<PsiElement>()
         var calledOn: String? = GdKeywords.SELF;
         when (val parent = element.parent?.parent) {
             is GdAttributeEx -> {
                 if (element.parent.prevSibling != null) {
-                    calledOn = parent.exprList.first()?.returnType;
+                    val ex = parent.exprList.first()!!;
+                    calledOn = ex.returnType;
+                    static = calledOn == ex.text;
                 }
             }
             is GdCallEx -> {
                 val prev = parent.parent;
                 if (prev.text != GdKeywords.SELF && prev is GdAttributeEx) {
                     if (parent.prevSibling != null) {
-                        calledOn = prev.exprList.first()?.returnType;
+                        val ex = prev.exprList.first()!!;
+                        calledOn = ex.returnType;
+                        static = calledOn == ex.text;
                     }
                 }
             }
         }
 
+        // TODO STATIC!!
         when (calledOn) {
             GdKeywords.SELF -> calledOn = null;
             GdKeywords.SUPER -> calledOn = GdInheritanceUtil.getExtendedClassId(element);
         }
 
+        var parent: PsiElement?;
+
+        // If it's stand-alone ref_id, adds also _GlobalScope & ClassNames
+        if (calledOn == null) {
+            parent = GdClassIdIndex.getGloballyResolved(GdKeywords.GLOBAL_SCOPE, element.project).firstOrNull();
+            val local = addsParentDeclarations(GdClassUtil.getOwningClassElement(parent!!), result, static, name);
+            if (search && local != null) return arrayOf(local);
+
+            if (search) {
+                val localClass = GdClassNamingIndex.getGlobally(searchFor!!).firstOrNull();
+                if (localClass != null) return arrayOf(localClass);
+            }
+            result.addAll(GdClassNamingIndex.getAllValues(element.project));
+        }
+
         // Checks locals only when it's not attribute/call expression moving declaration possibly outside
-        var parent: PsiElement;
         if (calledOn == null) {
             val locals = listLocalDeclarationsUpward(element);
-            if (locals.containsKey(name)) return locals[name];
+            if (search && locals.containsKey(name)) return arrayOf(locals[name]!!);
+            result.addAll(locals.values);
 
             // This class is already scanned via localDecl - so move to extended one
-            parent = GdInheritanceUtil.getExtendedElement(element) ?: return null;
+            parent = GdInheritanceUtil.getExtendedElement(element);
         } else {
-            parent = GdClassIdIndex.getGloballyResolved(calledOn, element.project).firstOrNull() ?: return null;
-            parent = GdClassUtil.getOwningClassElement(parent);
+            parent = GdClassIdIndex.getGloballyResolved(calledOn, element.project).firstOrNull();
+            if (parent != null)
+                parent = GdClassUtil.getOwningClassElement(parent);
         }
 
-        while (true) {
-            val members = listClassMemberDeclarations(parent);
-            if (members.containsKey(name)) {
-                return members[name]!!.first();
-            }
-            parent = GdInheritanceUtil.getExtendedElement(parent) ?: return null;
+        // Recursively iterate over all extended classes
+        val local = collectFromParents(parent, result, static, name);
+        if (local != null) return arrayOf(local);
+
+        if (search) return emptyArray();
+        return result.toTypedArray();
+    }
+
+    /**
+     * Recursively iterate over all extended classes
+     * Separately used for method overriding completion
+     */
+    fun collectFromParents(
+        parent: PsiElement?,
+        result: MutableList<PsiElement>,
+        static: Boolean? = null,
+        search: String? = null,
+    ): PsiElement? {
+        var par = parent;
+        while (par != null) {
+            val local = addsParentDeclarations(par, result, static, search);
+            if (search != null && local != null) return local;
+            par = GdInheritanceUtil.getExtendedElement(par);
         }
+
+        return null;
     }
 
     /**
@@ -125,6 +178,42 @@ object GdClassMemberUtil {
         return locals;
     }
 
+    // TODO ii
+//    abs() -> Variant:
+//    Tady je potřeba z variant udělat cokoliv? .. resp. to je jako generic?
+
+    /**
+     * Filters out GdMethodsDeclTl & returns typed array
+     */
+    fun Array<PsiElement>.methods(): Array<GdMethodDeclTl> {
+        return this.filterIsInstance<GdMethodDeclTl>().toTypedArray();
+    }
+
+    /**
+     * @param classElement GdClassDecl|GdFile class containing element
+     * @param search String|null if looking for specific declaration
+     *
+     * @return should search param be not null, returns matching element
+     */
+    private fun addsParentDeclarations(
+        classElement: PsiElement,
+        result: MutableList<PsiElement>,
+        static: Boolean? = false,
+        search: String? = null,
+    ): PsiElement? {
+        val members = listClassMemberDeclarations(classElement, static);
+        if (search != null && members.containsKey(search)) {
+            return members[search]!!.first();
+        }
+
+        members.entries.forEach {
+            if (!GdSettingsState.hidePrivate || !it.key.startsWith("_"))
+                result.addAll(it.value)
+        };
+
+        return null;
+    }
+
     /**
      * Finds local declarations from current position upwards
      *
@@ -132,7 +221,10 @@ object GdClassMemberUtil {
      *
      * @return HashMap<name, MutableList<PsiElement>>
      */
-    private fun listClassMemberDeclarations(classElement: PsiElement): HashMap<String, MutableList<PsiElement>> {
+    private fun listClassMemberDeclarations(
+        classElement: PsiElement,
+        static: Boolean? = false,
+    ): HashMap<String, MutableList<PsiElement>> {
         val members: HashMap<String, MutableList<PsiElement>> = hashMapOf();
 
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdConstDeclTl::class.java).forEach {
@@ -140,27 +232,33 @@ object GdClassMemberUtil {
             if (!members.containsKey(name)) members[name] = mutableListOf();
             members[name]!!.add(it)
         }
-        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassVarDeclTl::class.java).forEach {
-            val name = it.name;
-            if (!members.containsKey(name)) members[name] = mutableListOf();
-            members[name]!!.add(it)
+
+        if (static != true) {
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassVarDeclTl::class.java).forEach {
+                val name = it.name;
+                if (!members.containsKey(name)) members[name] = mutableListOf();
+                members[name]!!.add(it)
+            }
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
+                val name = it.name;
+                if (!members.containsKey(name)) members[name] = mutableListOf();
+                members[name]!!.add(it)
+            }
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdSignalDeclTl::class.java).forEach {
+                val name = it.name;
+                if (!members.containsKey(name)) members[name] = mutableListOf();
+                members[name]!!.add(it)
+            }
         }
-        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
-            val name = it.name;
-            if (!members.containsKey(name)) members[name] = mutableListOf();
-            members[name]!!.add(it)
-        }
+
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdMethodDeclTl::class.java).forEach {
-            val name = it.name;
-            if (!members.containsKey(name)) members[name] = mutableListOf();
-            members[name]!!.add(it)
+            if ((static == null || it.isStatic == static) && !it.isConstructor) {
+                val name = it.name;
+                if (!members.containsKey(name)) members[name] = mutableListOf();
+                members[name]!!.add(it);
+            }
         }
-        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdSignalDeclTl::class.java).forEach {
-            val name = it.name;
-            if (!members.containsKey(name)) members[name] = mutableListOf();
-            members[name]!!.add(it)
-        }
-        // TODO ii
+        // TODO ii inner classes musí napovídat také po resource ... :/
         //PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).map { members[it.name] = it; }
 
         return members;

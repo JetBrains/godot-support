@@ -15,24 +15,24 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, PsiElement>, DumbA
         val element = getFunctionCall(context) ?: return null;
 
         val refId = element.firstChild?.firstChild ?: return null;
-        when (val declId = GdClassMemberReference(refId, refId.textRangeInParent).resolve()) {
-            is GdMethodIdNmi -> {
-                val decl = PsiTreeUtil.getParentOfType(declId, GdMethodDeclTl::class.java) ?: return element;
-                context.itemsToShow = arrayOf(decl);
-            }
-            is GdVarNmi -> {
-                val lambda = PsiGdLocalFuncUtil.getByVarId(declId);
-                if (lambda != null) {
-                    context.itemsToShow = arrayOf(lambda);
-                }
-            }
-            is GdFile -> {
-                val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(declId, GdMethodDeclTl::class.java);
-                context.itemsToShow = methods.filter {
-                    it.isConstructor
-                }.toTypedArray();
-            }
-        }
+//        when (val declId = GdClassMemberReference(refId, refId.textRangeInParent).resolve()) {// TODO ii
+//            is GdMethodIdNmi -> {
+//                val decl = PsiTreeUtil.getParentOfType(declId, GdMethodDeclTl::class.java) ?: return element;
+//                context.itemsToShow = arrayOf(decl);
+//            }
+//            is GdVarNmi -> {
+//                val lambda = PsiGdLocalFuncUtil.getByVarId(declId);
+//                if (lambda != null) {
+//                    context.itemsToShow = arrayOf(lambda);
+//                }
+//            }
+//            is GdFile -> {
+//                val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(declId, GdMethodDeclTl::class.java);
+//                context.itemsToShow = methods.filter {
+//                    it.isConstructor
+//                }.toTypedArray();
+//            }
+//        }
 
         return element;
     }
