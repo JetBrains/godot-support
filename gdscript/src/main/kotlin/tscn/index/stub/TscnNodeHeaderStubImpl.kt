@@ -10,6 +10,8 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
     private var name: String = "";
     private var type: String = "";
     private var parentPath: String = "";
+    private var nodePath: String = "";
+    private var scriptResource: String = "";
     private var isUniqueNameOwner: Boolean = false;
 
     constructor(
@@ -17,27 +19,31 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
         name: String,
         type: String,
         parentPath: String,
+        nodePath: String,
         isUniqueNameOwner: Boolean,
+        scriptResource: String,
     ) : super(parent,
         TscnNodeHeaderElementType) {
         this.name = name;
         this.type = type;
         this.parentPath = parentPath;
+        this.nodePath = nodePath;
         this.isUniqueNameOwner = isUniqueNameOwner;
+        this.scriptResource = scriptResource;
     }
 
-    override fun name(): String = name;
+    override fun getName(): String = name;
 
-    override fun type(): String = type;
+    override fun getType(): String = type;
 
-    override fun nodePath(): String {
-        val isRoot = parentPath == ".";
+    override fun getScriptResource(): String = scriptResource;
 
-        return "${if (isRoot) "" else "$parentPath/"}${name}"
-    }
+    override fun getNodePath(): String = nodePath;
 
     override fun isUniqueNameOwner(): Boolean = isUniqueNameOwner;
 
-    override fun parentPath(): String = parentPath;
+    override fun hasScript(): Boolean = scriptResource.isNotBlank();
+
+    override fun getParentPath(): String = parentPath;
 
 }

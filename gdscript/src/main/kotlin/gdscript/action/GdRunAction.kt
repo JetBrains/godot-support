@@ -15,7 +15,7 @@ import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.run.GdConfigurationFactory
 import gdscript.run.GdRunConfiguration
 import gdscript.run.GdRunConfigurationType
-import tscn.index.impl.TscnScriptIndex
+import tscn.index.impl.TscnResourceIndex
 
 class GdRunAction : RunAnythingAction {
     val element: PsiNamedElement;
@@ -61,7 +61,7 @@ class GdRunAction : RunAnythingAction {
         val current = GdRunConfiguration(element.project, GdConfigurationFactory, name);
 
         val filename = PsiGdFileUtil.filepath(element);
-        val script = TscnScriptIndex.get("${GdKeywords.RESOURCE_PREFIX}$filename", element.project, GlobalSearchScope.allScope(element.project))
+        val script = TscnResourceIndex.get("${GdKeywords.RESOURCE_PREFIX}$filename", element.project, GlobalSearchScope.allScope(element.project))
             .firstOrNull() ?: return null;
 
         current.setTscn(PsiGdFileUtil.filepath(script.containingFile));

@@ -1,11 +1,11 @@
 package tscn.index.impl
 
-import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndexKey
+import common.index.StringStubIndexExtensionExt
 import tscn.index.TscnIndices
 import tscn.psi.TscnNodeHeader
 
-object TscnNodeIndex : StringStubIndexExtension<TscnNodeHeader>() {
+object TscnNodeIndex : StringStubIndexExtensionExt<TscnNodeHeader>() {
 
     override fun getKey(): StubIndexKey<String, TscnNodeHeader> = TscnIndices.NODE_INDEX;
 

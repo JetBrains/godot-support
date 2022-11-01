@@ -67,4 +67,15 @@ public class TscnNodeHeaderImpl extends TscnNodeHeaderElementImpl implements Tsc
     return TscnPsiUtils.isUniqueNameOwner(this);
   }
 
+  @Override
+  @NotNull
+  public String getScriptResource() {
+    return TscnPsiUtils.getScriptResource(this);
+  }
+
+  @Override
+  public boolean hasScript() {
+    return TscnPsiUtils.hasScript(this);
+  }
+
 }

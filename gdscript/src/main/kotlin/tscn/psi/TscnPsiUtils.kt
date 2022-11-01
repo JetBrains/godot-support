@@ -1,18 +1,22 @@
 package tscn.psi
 
-import tscn.psi.utils.TscnHeaderUtils
+import tscn.psi.utils.TscnNodeUtil
+import tscn.psi.utils.TscnResourceUtil
 
 object TscnPsiUtils {
 
     /** Node */
-    @JvmStatic fun getName(element: TscnNodeHeader): String = TscnHeaderUtils.getValue(element.headerValueList, "name");
-    @JvmStatic fun getType(element: TscnNodeHeader): String = TscnHeaderUtils.getValue(element.headerValueList, "type");
-    @JvmStatic fun getParentPath(element: TscnNodeHeader): String = TscnHeaderUtils.getValue(element.headerValueList, "parent");
-    @JvmStatic fun getNodePath(element: TscnNodeHeader): String = TscnHeaderUtils.getNodePath(element);
-    @JvmStatic fun isUniqueNameOwner(element: TscnNodeHeader): Boolean = TscnHeaderUtils.isUniqueNameOwner(element);
+    @JvmStatic fun getName(element: TscnNodeHeader): String = TscnNodeUtil.getName(element);
+    @JvmStatic fun getType(element: TscnNodeHeader): String = TscnNodeUtil.getType(element);
+    @JvmStatic fun getParentPath(element: TscnNodeHeader): String = TscnNodeUtil.getParentPath(element);
+    @JvmStatic fun isUniqueNameOwner(element: TscnNodeHeader): Boolean = TscnNodeUtil.isUniqueNameOwner(element);
+    @JvmStatic fun getScriptResource(element: TscnNodeHeader): String = TscnNodeUtil.getScriptResource(element);
+    @JvmStatic fun getNodePath(element: TscnNodeHeader): String = TscnNodeUtil.getNodePath(element);
+    @JvmStatic fun hasScript(element: TscnNodeHeader): Boolean = TscnNodeUtil.hasScript(element);
 
-    /** Ext resource */
-    @JvmStatic fun getType(element: TscnExtHeader): String = TscnHeaderUtils.getValue(element.headerValueList, "type");
-    @JvmStatic fun getPath(element: TscnExtHeader): String = TscnHeaderUtils.getPath(element.headerValueList);
+    /** ext_resource */
+    @JvmStatic fun getType(element: TscnResourceHeader): String = TscnResourceUtil.getType(element);
+    @JvmStatic fun getPath(element: TscnResourceHeader): String = TscnResourceUtil.getPath(element);
+    @JvmStatic fun getId(element: TscnResourceHeader): String = TscnResourceUtil.getId(element);
 
 }

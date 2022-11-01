@@ -36,7 +36,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(EXT_HEADER, HEADER, NODE_HEADER, SCENE_HEADER,
+    create_token_set_(HEADER, NODE_HEADER, RESOURCE_HEADER, SCENE_HEADER,
       SUB_HEADER),
   };
 
@@ -79,34 +79,9 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LSBR EXT_RESOURCE headerValue* RSBR
-  public static boolean ext_header(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ext_header")) return false;
-    if (!nextTokenIs(b, LSBR)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, LSBR, EXT_RESOURCE);
-    r = r && ext_header_2(b, l + 1);
-    r = r && consumeToken(b, RSBR);
-    exit_section_(b, m, EXT_HEADER, r);
-    return r;
-  }
-
-  // headerValue*
-  private static boolean ext_header_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "ext_header_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!headerValue(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "ext_header_2", c)) break;
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
   // scene_header
   //     | node_header
-  //     | ext_header
+  //     | resource_header
   //     | sub_header
   public static boolean header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header")) return false;
@@ -115,7 +90,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _COLLAPSE_, HEADER, null);
     r = scene_header(b, l + 1);
     if (!r) r = node_header(b, l + 1);
-    if (!r) r = ext_header(b, l + 1);
+    if (!r) r = resource_header(b, l + 1);
     if (!r) r = sub_header(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
@@ -186,14 +161,14 @@ public class TscnParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // header dataLine*
-  static boolean paragraph(PsiBuilder b, int l) {
+  public static boolean paragraph(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "paragraph")) return false;
     if (!nextTokenIs(b, LSBR)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = header(b, l + 1);
     r = r && paragraph_1(b, l + 1);
-    exit_section_(b, m, null, r);
+    exit_section_(b, m, PARAGRAPH, r);
     return r;
   }
 
@@ -204,6 +179,31 @@ public class TscnParser implements PsiParser, LightPsiParser {
       int c = current_position_(b);
       if (!dataLine(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "paragraph_1", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // LSBR EXT_RESOURCE headerValue* RSBR
+  public static boolean resource_header(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "resource_header")) return false;
+    if (!nextTokenIs(b, LSBR)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, LSBR, EXT_RESOURCE);
+    r = r && resource_header_2(b, l + 1);
+    r = r && consumeToken(b, RSBR);
+    exit_section_(b, m, RESOURCE_HEADER, r);
+    return r;
+  }
+
+  // headerValue*
+  private static boolean resource_header_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "resource_header_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!headerValue(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "resource_header_2", c)) break;
     }
     return true;
   }

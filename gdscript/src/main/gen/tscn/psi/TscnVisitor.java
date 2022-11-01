@@ -19,10 +19,6 @@ public class TscnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitExtHeader(@NotNull TscnExtHeader o) {
-    visitHeader(o);
-  }
-
   public void visitHeader(@NotNull TscnHeader o) {
     visitPsiElement(o);
   }
@@ -40,6 +36,14 @@ public class TscnVisitor extends PsiElementVisitor {
   }
 
   public void visitNodeHeader(@NotNull TscnNodeHeader o) {
+    visitHeader(o);
+  }
+
+  public void visitParagraph(@NotNull TscnParagraph o) {
+    visitPsiElement(o);
+  }
+
+  public void visitResourceHeader(@NotNull TscnResourceHeader o) {
     visitHeader(o);
   }
 

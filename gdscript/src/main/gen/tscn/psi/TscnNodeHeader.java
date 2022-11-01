@@ -26,4 +26,9 @@ public interface TscnNodeHeader extends TscnHeader, StubBasedPsiElement<TscnNode
 
   boolean isUniqueNameOwner();
 
+  @NotNull
+  String getScriptResource();
+
+  boolean hasScript();
+
 }

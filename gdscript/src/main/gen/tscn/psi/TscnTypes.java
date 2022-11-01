@@ -4,8 +4,9 @@ package tscn.psi;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
-import tscn.psi.impl.TscnExtHeaderElementType;
 import tscn.psi.impl.TscnNodeHeaderElementType;
+import tscn.psi.impl.TscnParagraphElementType;
+import tscn.psi.impl.TscnResourceHeaderElementType;
 import tscn.psi.impl.*;
 
 public interface TscnTypes {
@@ -13,12 +14,13 @@ public interface TscnTypes {
   IElementType DATA_LINE = new TscnElementType("DATA_LINE");
   IElementType DATA_LINE_NM = new TscnElementType("DATA_LINE_NM");
   IElementType DATA_LINE_VALUE = new TscnElementType("DATA_LINE_VALUE");
-  IElementType EXT_HEADER = TscnExtHeaderElementType.getInstance("EXT_HEADER");
   IElementType HEADER = new TscnElementType("HEADER");
   IElementType HEADER_VALUE = new TscnElementType("HEADER_VALUE");
   IElementType HEADER_VALUE_NM = new TscnElementType("HEADER_VALUE_NM");
   IElementType HEADER_VALUE_VAL = new TscnElementType("HEADER_VALUE_VAL");
   IElementType NODE_HEADER = TscnNodeHeaderElementType.getInstance("NODE_HEADER");
+  IElementType PARAGRAPH = TscnParagraphElementType.getInstance("PARAGRAPH");
+  IElementType RESOURCE_HEADER = TscnResourceHeaderElementType.getInstance("RESOURCE_HEADER");
   IElementType SCENE_HEADER = new TscnElementType("SCENE_HEADER");
   IElementType SUB_HEADER = new TscnElementType("SUB_HEADER");
 
@@ -47,9 +49,6 @@ public interface TscnTypes {
       else if (type == DATA_LINE_VALUE) {
         return new TscnDataLineValueImpl(node);
       }
-      else if (type == EXT_HEADER) {
-        return new TscnExtHeaderImpl(node);
-      }
       else if (type == HEADER_VALUE) {
         return new TscnHeaderValueImpl(node);
       }
@@ -61,6 +60,12 @@ public interface TscnTypes {
       }
       else if (type == NODE_HEADER) {
         return new TscnNodeHeaderImpl(node);
+      }
+      else if (type == PARAGRAPH) {
+        return new TscnParagraphImpl(node);
+      }
+      else if (type == RESOURCE_HEADER) {
+        return new TscnResourceHeaderImpl(node);
       }
       else if (type == SCENE_HEADER) {
         return new TscnSceneHeaderImpl(node);

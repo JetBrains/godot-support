@@ -39,6 +39,7 @@ object PsiGdFileUtil {
         return name.substring(0, name.length - 3);
     }
 
+    @Deprecated("resource util?")
     fun filepath(element: PsiElement): String {
         val basePath = element.project.basePath ?: return "";
         val file = element.containingFile.originalFile;

@@ -1,5 +1,6 @@
 package gdscript.completion
 
+import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import gdscript.competion.utils.GdLookupElementBuilder
@@ -30,7 +31,8 @@ object GdLookup {
         icon: Icon? = null,
         color: Color? = null,
         presentable: String? = null,
-        tail: String? = null
+        tail: String? = null,
+        handler: InsertHandler<LookupElement>? = null,
     ): LookupElement {
         var builder = GdLookupElementBuilder
             .create(text, if (lookup !== null) lookup else text)
@@ -42,8 +44,8 @@ object GdLookup {
             builder = builder.withPresentableText(presentable);
         }
 
-        if (lookup !== null) {
-            builder = builder.withInsertHandler(GdLookupInsertHandler.INSTANCE);
+        if (handler !== null || lookup != null) {
+            builder = builder.withInsertHandler(handler ?: GdLookupInsertHandler.INSTANCE);
         }
 
         if (color !== null) {

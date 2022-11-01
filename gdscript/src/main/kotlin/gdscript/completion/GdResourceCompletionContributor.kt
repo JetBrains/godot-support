@@ -10,25 +10,30 @@ import gdscript.completion.utils.GdResourceCompletionUtil
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
 
-// TODO tohle rozdělit - resource_string na referenci a zbytek přejmenovat na node_path
+/**
+ * $NodePath & %NodeName read from .tscn
+ * Resource as string completion (currently it's not as reference, due to user:// but can be later added) TODO
+ */
 class GdResourceCompletionContributor : CompletionContributor() {
 
     val NODE_PATH = psiElement(GdTypes.NODE_PATH_LEX);
     val NODE_PATH_ROOT = NODE_PATH.withSuperParent(3, psiElement(GdFile::class.java));
-    val RESOURCE_STRING = psiElement(GdTypes.STRING);
+    val STRING = psiElement(GdTypes.STRING);
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         val position = parameters.position;
         if (GdRefIdCompletionUtil.DIRECT_REF.accepts(position)) {
-            GdResourceCompletionUtil.resources(position.originalElement, result);
+            // TODO
+            //GdResourceCompletionUtil.resources(position.originalElement, result);
         } else if (NODE_PATH_ROOT.accepts(position)) {
-            GdResourceCompletionUtil.fullVarResources(position.originalElement, result);
+            // TODO
+//            GdResourceCompletionUtil.fullVarResources(position.originalElement, result);
+            result.addAllElements(GdResourceCompletionUtil.listVarResources(position.originalElement));
         } else if (NODE_PATH.accepts(position)) {
-            GdResourceCompletionUtil.resources(position.originalElement, result);
-        } else if (RESOURCE_STRING.accepts(position)) {
-            GdFileCompletionUtil.listFileResources(position.project, false, false).forEach {
-                result.addElement(it)
-            }
+            // TODO
+            //GdResourceCompletionUtil.resources(position.originalElement, result);
+        } else if (STRING.accepts(position)) {
+            GdFileCompletionUtil.listFileResources(position.project).forEach { result.addElement(it) }
         }
     }
 
