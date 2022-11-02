@@ -11,10 +11,13 @@ object GdClassVarCompletionUtil {
             result
                 .addElement(
                     GdLookup.create(
+                        // TODO tohle je aktuálně bug IntelliJ, které hard-code odstraňuje @
+                        // https://intellij-support.jetbrains.com/hc/en-us/community/posts/8389906293394-Completion-contributor-hard-coded-trims-
                         if (withPrefix) "@$it" else it,
+                        // TODO ii params? přidat kdyžtak alespoň závorky
                         //lookup = if (GdKeywords.ANNOTATIONS_PARAMETRIZED.contains(it)) "" else " ",
                         color = GdLookup.ANNOTATOR_COLOR,
-                        priority = GdLookup.USER_DEFINED,
+                        priority = GdLookup.BUILT_IN,
                     )
                 );
         }

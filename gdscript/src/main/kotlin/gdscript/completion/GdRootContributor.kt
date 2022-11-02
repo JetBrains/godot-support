@@ -9,8 +9,14 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.completion.utils.*
 import gdscript.psi.*
+import gdscript.psi.utils.GdNodeUtil
+import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.psi.utils.PsiGdMethodDeclUtil
 
+/**
+ * Root & InnerClass root level completions
+ * keywords, functions (+ overrides), annotations, $NodePaths
+ */
 class GdRootContributor : CompletionContributor() {
 
     companion object {
@@ -19,45 +25,56 @@ class GdRootContributor : CompletionContributor() {
                 PsiErrorElement::class.java,
                 GdFile::class.java,
             )
+
         val INNER_CLASS_POSITION = psiElement(GdTypes.IDENTIFIER)
             .withParents(
                 GdFile::class.java,
             )
+
         val ANNOTATOR_DECL = psiElement(GdTypes.ANNOTATOR)
+
+        val TO_HINT_KEYWORDS = arrayOf(
+            GdKeywords.FUNC,
+            GdKeywords.STATIC,
+            GdKeywords.CONST,
+            GdKeywords.VAR,
+            GdKeywords.CLASS,
+            GdKeywords.EXTENDS,
+        )
     }
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         val position = parameters.position;
         val previous = PsiTreeUtil.prevCodeLeaf(position.originalElement);
 
-        if (previous === null) { // First text in a file
+        if (previous === null) {
+            // First text in a file
             result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
-            result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " "));
-//            return result.stopHere(); // TODO smazat?
-        } else if (ROOT_POSITION.accepts(position)) { // Class scope
-            addTopLvlDecl(result, parameters);
-        } else if (INNER_CLASS_POSITION.accepts(position)) { // Inner class
-            addTopLvlDecl(result, parameters, false);
-        } else if (ANNOTATOR_DECL.accepts(position)) { // After "@"
+            addClassName(parameters, result);
+        } else if (ROOT_POSITION.accepts(position)) {
+            // Main class scope
+            addClassName(parameters, result);
+            addTopLvlDecl(parameters, result);
+        } else if (INNER_CLASS_POSITION.accepts(position)) {
+            // Inner class
+            addTopLvlDecl(parameters, result);
+        } else if (ANNOTATOR_DECL.accepts(position)) {
+            // After "@"
             GdClassVarCompletionUtil.annotations(result, false);
-//            return result.stopHere(); // TODO smazat?
         }
     }
 
-    private fun addTopLvlDecl(result: CompletionResultSet, parameters: CompletionParameters, withClassName: Boolean = true) {
+    private fun addClassName(parameters: CompletionParameters, result: CompletionResultSet) {
+        val className = PsiGdFileUtil.filename(parameters.position.containingFile);
+        result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " $className"));
+    }
+
+    private fun addTopLvlDecl(parameters: CompletionParameters, result: CompletionResultSet) {
+        GdNodeUtil.listNodes(parameters.position).forEach { result.addElement(it.variable_lookup()) }
+        result.addAllElements(TO_HINT_KEYWORDS.map { GdLookup.create(it, " ", priority = GdLookup.KEYWORDS) })
+
         val list = PsiGdMethodDeclUtil.collectParentsMethods(parameters.position.containingFile);
         GdMethodCompletionUtil.addMethods(list, result, true);
-        result.addElement(GdLookup.create(GdKeywords.FUNC, " ", priority = GdLookup.KEYWORDS));
-        result.addElement(GdLookup.create(GdKeywords.STATIC, " ", priority = GdLookup.KEYWORDS));
-        result.addElement(GdLookup.create(GdKeywords.CONST, " ", priority = GdLookup.KEYWORDS));
-        result.addElement(GdLookup.create(GdKeywords.VAR, " ", priority = GdLookup.KEYWORDS));
-        GdResourceCompletionUtil.fullVarResources(parameters.position.originalElement, result);
-        if (withClassName) {
-            val filename = parameters.originalFile.name;
-            result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " ${filename.substring(0, filename.length - 3)}"));
-        }
-        result.addElement(GdLookup.create(GdKeywords.CLASS, " "));
-        result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
         GdClassVarCompletionUtil.annotations(result);
     }
 

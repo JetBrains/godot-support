@@ -7,6 +7,7 @@ import gdscript.utils.ElementTypeUtil
 
 object PsiGdMethodDeclUtil {
 
+    @Deprecated("GdClassMemberUtil")
     fun collectParentsMethods(file: PsiFile): MutableMap<String, GdMethodDeclTl> {
         val methods: MutableMap<String, GdMethodDeclTl> = mutableMapOf();
         var parentName: String? = PsiTreeUtil.getChildOfType(file, GdInheritance::class.java)?.inheritancePath; // TODO ii

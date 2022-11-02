@@ -6,7 +6,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.completion.utils.GdFileCompletionUtil
 import gdscript.completion.utils.GdRefIdCompletionUtil
-import gdscript.completion.utils.GdResourceCompletionUtil
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
@@ -24,21 +23,15 @@ class GdResourceCompletionContributor : CompletionContributor() {
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         val position = parameters.position;
         if (GdRefIdCompletionUtil.DIRECT_REF.accepts(position)) {
-            // TODO
-            //GdResourceCompletionUtil.resources(position.originalElement, result);
-            // TODO decide if under class
-            GdNodeUtil.listNodes(position).forEach {
-                result.addElement(it.lookup())
-            }
-//            result.addAllElements(GdResourceCompletionUtil.listVarResources(position.originalElement));
+            GdNodeUtil.listNodes(position).forEach { result.addElement(it.lookup()) }
         } else if (NODE_PATH_ROOT.accepts(position)) {
-            // TODO
-//            GdResourceCompletionUtil.fullVarResources(position.originalElement, result);
+            GdNodeUtil.listNodes(position).forEach { result.addElement(it.variable_lookup()) }
         } else if (NODE_PATH.accepts(position)) {
-            // TODO decide if under class
-            result.addAllElements(GdResourceCompletionUtil.listVarResources(position.originalElement));
-            // TODO
-            //GdResourceCompletionUtil.resources(position.originalElement, result);
+            if (GdRefIdCompletionUtil.CLASS_ROOT.accepts(position)) {
+                GdNodeUtil.listNodes(position).forEach { result.addElement(it.variable_lookup()) }
+            } else {
+                GdNodeUtil.listNodes(position).forEach { result.addElement(it.lookup()) }
+            }
         } else if (STRING.accepts(position)) {
             GdFileCompletionUtil.listFileResources(position.project).forEach { result.addElement(it) }
         }
