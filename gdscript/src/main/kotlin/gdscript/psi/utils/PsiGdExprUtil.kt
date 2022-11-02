@@ -8,8 +8,6 @@ import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
-import tscn.index.impl.TscnNodeIndex
-import tscn.index.impl.TscnResourceIndex
 
 object PsiGdExprUtil {
 
@@ -52,20 +50,9 @@ object PsiGdExprUtil {
             is GdPrimaryEx -> {
                 when (expr.firstChild) {
                     is GdNodePath -> {
-                        val project = expr.project;
-                        if (DumbService.isDumb(project)) return "";
-                        val filename = PsiGdFileUtil.filepath(expr);
-                        val script = TscnResourceIndex.get(filename, project, GlobalSearchScope.allScope(project))
-                            .firstOrNull()
-                            ?: return "";
+                        val node = GdNodeUtil.findNode(expr.firstChild as GdNodePath);
 
-                        val node = TscnNodeIndex.get(
-                            expr.text.removePrefix("$"),
-                            project,
-                            GlobalSearchScope.fileScope(script.containingFile)
-                        ).firstOrNull();
-
-                        return node?.type ?: "";
+                        return node?.element?.type ?: "";
                     }
                     is GdDictDecl -> return "Dictionary";
                     is GdArrayDecl -> {

@@ -10,12 +10,13 @@ import com.intellij.psi.util.elementType
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdNodePath
 import gdscript.psi.GdTypes
+import gdscript.psi.utils.GdNodeUtil
 import tscn.psi.TscnNodeHeader
 import tscn.psi.utils.TscnScriptUtil
 
 /**
- * Colors named resources
- * Checks for existence
+ * Checks for existence of [res://] resource // TODO user:// ??
+ * Checks for existence of $NodePath, %Unique
  */
 class GdResourceTypeAnnotator : Annotator {
 
@@ -34,32 +35,12 @@ class GdResourceTypeAnnotator : Annotator {
                 .newAnnotation(HighlightSeverity.ERROR, "Resource not found")
                 .range(TextRange.create(element.textRange.startOffset + 1, element.textRange.endOffset - 1))
                 .create();
-        } else if (text.startsWith("%")) {
-            // TODO ii kontrolovat %UniqueName - tohle není var a = %node, ale např. get_node("%node")
         }
     }
 
     private fun resourceExists(element: GdNodePath, holder: AnnotationHolder) {
-        val text = element.text;
-        val name = text.substring(1);
-        val scene = TscnScriptUtil.getSceneFile(element);
-
-        if (scene != null) {
-            val nodes = PsiTreeUtil.getStubChildrenOfTypeAsList(scene.containingFile, TscnNodeHeader::class.java);
-            if (text.startsWith('%')) {
-                nodes.forEach {
-                    if (it.name == name && it.isUniqueNameOwner) {
-                        return;
-                    }
-                }
-            } else {
-                nodes.forEach {
-                    if (it.nodePath == name) {
-                        return;
-                    }
-                }
-            }
-        }
+        val node = GdNodeUtil.findNode(element);
+        if (node != null) return;
 
         holder
             .newAnnotation(HighlightSeverity.ERROR, "Node not found")

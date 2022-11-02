@@ -58,6 +58,7 @@ object GdResourceCompletionUtil {
         }
     }
 
+    @Deprecated("moved")
     fun listVarResources(element: PsiElement): MutableList<LookupElement> {
         val results = mutableListOf<LookupElement>();
         val resource = PsiGdResourceUtil.resourcePath(element.containingFile.originalFile.virtualFile);

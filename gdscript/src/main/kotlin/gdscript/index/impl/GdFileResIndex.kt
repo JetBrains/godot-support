@@ -1,29 +1,23 @@
 package gdscript.index.impl
 
 import com.intellij.util.indexing.*
-import com.intellij.util.io.DataExternalizer
 import com.intellij.util.io.EnumeratorStringDescriptor
 import com.intellij.util.io.KeyDescriptor
-import common.index.FileBasedIndexExtensionExt
+import common.index.ScalarIndexExtensionExt
 import gdscript.index.Indices
-import gdscript.index.impl.utils.GdFileResDataExternalizer
 import gdscript.index.impl.utils.GdFileResIndexer
 import gdscript.index.impl.utils.GdFileResInputFilter
 
-object GdFileResIndex : FileBasedIndexExtensionExt<String, String>() {
+object GdFileResIndex : ScalarIndexExtensionExt<String>() {
 
-    override val id: ID<String, String> = Indices.FILE_RES;
+    override val id: ID<String, Void> = Indices.FILE_RES;
 
-    override fun getIndexer(): DataIndexer<String, String, FileContent> {
+    override fun getIndexer(): DataIndexer<String, Void, FileContent> {
         return GdFileResIndexer;
     }
 
     override fun getKeyDescriptor(): KeyDescriptor<String> {
         return EnumeratorStringDescriptor.INSTANCE;
-    }
-
-    override fun getValueExternalizer(): DataExternalizer<String> {
-        return GdFileResDataExternalizer;
     }
 
     override fun getVersion(): Int {
@@ -35,7 +29,7 @@ object GdFileResIndex : FileBasedIndexExtensionExt<String, String>() {
     }
 
     override fun dependsOnFileContent(): Boolean {
-        return true;
+        return false;
     }
 
 }

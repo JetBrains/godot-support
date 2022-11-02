@@ -1,11 +1,14 @@
 package gdscript.index.impl
 
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndexKey
+import com.intellij.psi.util.PsiTreeUtil
 import common.index.StringStubIndexExtensionExt
 import gdscript.index.Indices
 import gdscript.psi.GdClassNameNmi
+import gdscript.psi.GdClassNaming
 import gdscript.psi.utils.PsiGdResourceUtil
 import gdscript.utils.GdVirtualFileUtil.localPath
 
@@ -24,7 +27,9 @@ object GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
             // Try resource to class_name
             val endIndex = name.indexOf('"', 1);
             val resource = name.substring(1, endIndex);
-            modified = GdFileResIndex.getValues(resource, project).firstOrNull() ?: return emptyList();
+            val resourceFile = GdFileResIndex.getFiles(resource, project).firstOrNull() ?: return emptyList();
+            val psiFile = PsiManager.getInstance(project).findFile(resourceFile);
+            modified = PsiTreeUtil.getStubChildOfType(psiFile, GdClassNaming::class.java)?.classname.orEmpty();
 
             if (name.length > endIndex + 1) {
                 modified = "$modified${name.substring(endIndex + 1)}";

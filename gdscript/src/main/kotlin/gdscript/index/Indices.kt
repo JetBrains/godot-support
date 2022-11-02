@@ -18,6 +18,6 @@ object Indices {
     val SIGNAL_DECL = StubIndexKey.createIndexKey<String, GdSignalDeclTl>("gdscript.signal")
     val ENUM = StubIndexKey.createIndexKey<String, GdEnumDeclTl>("gdscript.enum")
 
-    val FILE_RES = ID.create<String, String?>("gdscript.fileResource");
+    val FILE_RES = ID.create<String, Void>("gdscript.fileResource");
 
 }

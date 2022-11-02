@@ -17,7 +17,7 @@ class GdTypeHintCompletionContributor : CompletionContributor() {
         if (TYPED.accepts(parameters.position)) {
             GdLiteralCompletionUtil.builtInTypes(result);
         } else if (GdRefIdCompletionUtil.DIRECT_REF.accepts(parameters.position)) {
-            GdLiteralCompletionUtil.builtIns(result);
+//            GdLiteralCompletionUtil.builtIns(result);
         }
 
     }

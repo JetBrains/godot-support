@@ -33,14 +33,14 @@ class GdRootContributor : CompletionContributor() {
         if (previous === null) { // First text in a file
             result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
             result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " "));
-            return result.stopHere();
+//            return result.stopHere(); // TODO smazat?
         } else if (ROOT_POSITION.accepts(position)) { // Class scope
             addTopLvlDecl(result, parameters);
         } else if (INNER_CLASS_POSITION.accepts(position)) { // Inner class
             addTopLvlDecl(result, parameters, false);
         } else if (ANNOTATOR_DECL.accepts(position)) { // After "@"
             GdClassVarCompletionUtil.annotations(result, false);
-            return result.stopHere();
+//            return result.stopHere(); // TODO smazat?
         }
     }
 

@@ -8,7 +8,7 @@ import tscn.psi.TscnFile
 
 object TscnScriptUtil {
 
-    @Deprecated("?")
+    @Deprecated("? k čemu to je?")
     fun getSceneFile(element: PsiElement): TscnFile? {
         return TscnResourceIndex.get(
             element.containingFile.virtualFile.resourcePath(),

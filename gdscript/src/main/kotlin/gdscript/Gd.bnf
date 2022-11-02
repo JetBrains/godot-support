@@ -146,7 +146,7 @@ stmt ::=
 private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
     | RETURN | AWAIT | ASSET | PRELOAD | INDENT | DEDENT
-    | IDENTIFIER | literal_ex) & topLevelDecl_r
+    | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
 varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {

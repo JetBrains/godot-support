@@ -9,6 +9,7 @@ import gdscript.completion.utils.GdRefIdCompletionUtil
 import gdscript.completion.utils.GdResourceCompletionUtil
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
+import gdscript.psi.utils.GdNodeUtil
 
 /**
  * $NodePath & %NodeName read from .tscn
@@ -25,11 +26,17 @@ class GdResourceCompletionContributor : CompletionContributor() {
         if (GdRefIdCompletionUtil.DIRECT_REF.accepts(position)) {
             // TODO
             //GdResourceCompletionUtil.resources(position.originalElement, result);
+            // TODO decide if under class
+            GdNodeUtil.listNodes(position).forEach {
+                result.addElement(it.lookup())
+            }
+//            result.addAllElements(GdResourceCompletionUtil.listVarResources(position.originalElement));
         } else if (NODE_PATH_ROOT.accepts(position)) {
             // TODO
 //            GdResourceCompletionUtil.fullVarResources(position.originalElement, result);
-            result.addAllElements(GdResourceCompletionUtil.listVarResources(position.originalElement));
         } else if (NODE_PATH.accepts(position)) {
+            // TODO decide if under class
+            result.addAllElements(GdResourceCompletionUtil.listVarResources(position.originalElement));
             // TODO
             //GdResourceCompletionUtil.resources(position.originalElement, result);
         } else if (STRING.accepts(position)) {

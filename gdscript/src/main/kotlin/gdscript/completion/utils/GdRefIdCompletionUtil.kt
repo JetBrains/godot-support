@@ -11,6 +11,6 @@ object GdRefIdCompletionUtil {
         psiElement(GdTypes.CALL_EX),
     ));
 
-    val DIRECT_REF = psiElement(GdTypes.REF_ID_NM).andNot(REMOTE_REF);
+    val DIRECT_REF = psiElement().withParent(psiElement(GdTypes.REF_ID_NM).andNot(REMOTE_REF));
 
 }
