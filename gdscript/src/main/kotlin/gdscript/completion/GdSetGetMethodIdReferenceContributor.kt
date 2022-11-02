@@ -10,6 +10,7 @@ import gdscript.reference.GdSetGetMethodIdNmReference
 
 class GdSetGetMethodIdReferenceContributor : PsiReferenceContributor() {
 
+    // TODO ii
     override fun registerReferenceProviders(register: PsiReferenceRegistrar) {
         register.registerReferenceProvider(
             PlatformPatterns.or(

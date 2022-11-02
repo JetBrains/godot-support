@@ -57,7 +57,7 @@ object PsiGdMethodDeclUtil {
     }
 
     fun getReturnType(element: GdParam): String {
-        return element.typed?.typeHintNmList?.first()?.text ?: "";
+        return element.typed?.typedVal?.returnType ?: "";
     }
 
     fun getParameters(element: GdMethodDeclTl): HashMap<String, String?> {

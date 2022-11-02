@@ -103,6 +103,8 @@ public interface GdTypes {
   IElementType TERNARY_EX = new GdElementType("TERNARY_EX");
   IElementType TOP_LEVEL_DECL = new GdElementType("TOP_LEVEL_DECL");
   IElementType TYPED = new GdElementType("TYPED");
+  IElementType TYPED_VAL = new GdElementType("TYPED_VAL");
+  IElementType TYPED_VAL_ROOT = new GdElementType("TYPED_VAL_ROOT");
   IElementType TYPE_HINT_ARRAY_NM = new GdElementType("TYPE_HINT_ARRAY_NM");
   IElementType TYPE_HINT_NM = new GdElementType("TYPE_HINT_NM");
   IElementType VAR_DECL_ST = new GdElementType("VAR_DECL_ST");
@@ -452,6 +454,12 @@ public interface GdTypes {
       }
       else if (type == TYPED) {
         return new GdTypedImpl(node);
+      }
+      else if (type == TYPED_VAL) {
+        return new GdTypedValImpl(node);
+      }
+      else if (type == TYPED_VAL_ROOT) {
+        return new GdTypedValRootImpl(node);
       }
       else if (type == TYPE_HINT_ARRAY_NM) {
         return new GdTypeHintArrayNmImpl(node);

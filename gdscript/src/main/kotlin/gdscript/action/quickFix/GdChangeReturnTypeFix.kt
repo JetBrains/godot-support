@@ -39,7 +39,7 @@ class GdChangeReturnTypeFix : BaseIntentionAction {
         if (editor == null || file == null) return;
         val caret = editor.caretModel;
 
-        val hint = element.typeHintNmList.first();
+        val hint = element.typedVal;
         if (hint != null) {
             caret.moveToOffset(hint.startOffset);
             hint.delete();
@@ -54,6 +54,7 @@ class GdChangeReturnTypeFix : BaseIntentionAction {
         val psiManager = PsiDocumentManager.getInstance(project);
 
         psiManager.doPostponedOperationsAndUnblockDocument(editor.document);
+        // TODO replace
         EditorModificationUtil.insertStringAtCaret(editor, desired);
         psiManager.commitDocument(editor.document);
         ReformatCodeProcessor(file, false).run();

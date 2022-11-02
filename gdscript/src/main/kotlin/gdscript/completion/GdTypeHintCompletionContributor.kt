@@ -6,20 +6,25 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.completion.utils.GdLiteralCompletionUtil
 import gdscript.completion.utils.GdRefIdCompletionUtil
-import gdscript.psi.GdTyped
+import gdscript.psi.GdTypes
 
+/**
+ * Built-ins completions
+ * Variable type as int, String, float, ..
+ * Reference to INF, PI, ..
+ */
 class GdTypeHintCompletionContributor : CompletionContributor() {
 
-    val TYPED = psiElement().afterLeaf(psiElement().withText(":"))
-        .withSuperParent(2, GdTyped::class.java);
+    val TYPED = psiElement().withParent(psiElement(GdTypes.TYPE_HINT_NM));
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         if (TYPED.accepts(parameters.position)) {
+            // Type - apart from ClassName add also built-in type like int or String
             GdLiteralCompletionUtil.builtInTypes(result);
         } else if (GdRefIdCompletionUtil.DIRECT_REF.accepts(parameters.position)) {
-//            GdLiteralCompletionUtil.builtIns(result);
+            // RefId position offers built-ins like PI or INF
+            GdLiteralCompletionUtil.builtIns(result);
         }
-
     }
 
 }

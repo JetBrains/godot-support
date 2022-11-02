@@ -27,12 +27,6 @@ public class GdTypeHintNmImpl extends GdNamedElementImpl implements GdTypeHintNm
   }
 
   @Override
-  @Nullable
-  public GdBuiltInType getBuiltInType() {
-    return PsiTreeUtil.getChildOfType(this, GdBuiltInType.class);
-  }
-
-  @Override
   @NotNull
   public String getName() {
     return GdPsiUtils.getName(this);

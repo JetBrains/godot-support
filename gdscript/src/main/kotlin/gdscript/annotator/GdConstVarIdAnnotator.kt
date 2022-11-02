@@ -58,7 +58,7 @@ class GdConstVarIdAnnotator : Annotator {
             return;
         }
 
-        val returnType = returnTypes.second?.typeHintNmList?.first()?.text;
+        val returnType = returnTypes.second?.typedVal?.returnType;
         val expr = returnTypes.third;
         if (returnType != null || expr == null) {
             return;

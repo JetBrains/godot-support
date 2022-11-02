@@ -238,8 +238,9 @@ funcDeclId_nmi ::= IDENTIFIER
 
 isTyped ::= typeHint_nm (LSBR typeHintArray_nm RSBR)?
 typed ::= COLON typedVal
-private typedVal ::= typeHint_nm (LSBR typeHint_nm RSBR)?
-typeHint_nm ::= builtInType | IDENTIFIER
+typedVal ::= typedValRoot (LSBR typeHint_nm RSBR)? {methods=[getReturnType]}
+typedValRoot ::= builtInType | typeHint_nm
+typeHint_nm ::= IDENTIFIER
 typeHintArray_nm ::= builtInType | IDENTIFIER
 builtInType ::= INT | STR | FLOAT | BOOL
 endStmt ::= SEMICON | newLineEnd

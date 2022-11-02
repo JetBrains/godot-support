@@ -61,6 +61,7 @@ object GdPsiUtils {
     /** Type hint   */
     @JvmStatic fun getName(element: GdTypeHintNm): String = PsiGdTypeHintUtil.getName(element);
     @JvmStatic fun setName(element: GdTypeHintNm, newName: String?): PsiElement = PsiGdTypeHintUtil.setName(element, newName);
+    @JvmStatic fun getReturnType(element: GdTypedVal): String = GdTypedUtil.getReturnType(element);
 
     /** Class variable */
     @JvmStatic fun getName(element: GdClassVarDeclTl): String = GdClassVarUtil.getName(element);

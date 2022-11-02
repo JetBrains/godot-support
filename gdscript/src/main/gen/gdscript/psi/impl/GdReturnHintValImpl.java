@@ -28,9 +28,9 @@ public class GdReturnHintValImpl extends ASTWrapperPsiElement implements GdRetur
   }
 
   @Override
-  @NotNull
-  public List<GdTypeHintNm> getTypeHintNmList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdTypeHintNm.class);
+  @Nullable
+  public GdTypedVal getTypedVal() {
+    return PsiTreeUtil.getChildOfType(this, GdTypedVal.class);
   }
 
 }

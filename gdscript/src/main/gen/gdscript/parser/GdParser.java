@@ -1373,11 +1373,12 @@ public class GdParser implements PsiParser, LightPsiParser {
   // typeHint_nm (LSBR typeHintArray_nm RSBR)?
   public static boolean isTyped(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "isTyped")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, IS_TYPED, "<is typed>");
+    Marker m = enter_section_(b);
     r = typeHint_nm(b, l + 1);
     r = r && isTyped_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, IS_TYPED, r);
     return r;
   }
 
@@ -2208,14 +2209,14 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // builtInType | IDENTIFIER
+  // IDENTIFIER
   public static boolean typeHint_nm(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typeHint_nm")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, TYPE_HINT_NM, "<type hint nm>");
-    r = builtInType(b, l + 1);
-    if (!r) r = consumeToken(b, IDENTIFIER);
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, m, TYPE_HINT_NM, r);
     return r;
   }
 
@@ -2233,14 +2234,14 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // typeHint_nm (LSBR typeHint_nm RSBR)?
-  static boolean typedVal(PsiBuilder b, int l) {
+  // typedValRoot (LSBR typeHint_nm RSBR)?
+  public static boolean typedVal(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedVal")) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = typeHint_nm(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, TYPED_VAL, "<typed val>");
+    r = typedValRoot(b, l + 1);
     r = r && typedVal_1(b, l + 1);
-    exit_section_(b, m, null, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -2260,6 +2261,18 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && typeHint_nm(b, l + 1);
     r = r && consumeToken(b, RSBR);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // builtInType | typeHint_nm
+  public static boolean typedValRoot(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typedValRoot")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, TYPED_VAL_ROOT, "<typed val root>");
+    r = builtInType(b, l + 1);
+    if (!r) r = typeHint_nm(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
