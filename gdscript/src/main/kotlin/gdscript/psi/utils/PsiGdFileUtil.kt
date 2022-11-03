@@ -15,16 +15,6 @@ import java.io.File
 
 object PsiGdFileUtil {
 
-    fun listMembers(gdFile: PsiElement): List<PsiElement> {
-        return PsiTreeUtil.getChildrenOfAnyType(
-            gdFile,
-            GdClassVarDeclTl::class.java,
-            GdConstDeclTl::class.java,
-            GdEnumDeclTl::class.java,
-            GdMethodDeclTl::class.java,
-        );
-    }
-
     fun gdFiles(project: Project): Collection<GdFile> {
         val virtualFiles = FileTypeIndex.getFiles(GdFileType, GlobalSearchScope.allScope(project));
 

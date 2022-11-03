@@ -14,9 +14,6 @@ object PsiGdClassVarUtil {
             return PsiGdExprUtil.fromTyped(element.typed);
         }
 
-        val asd = element.expr;
-        val name = element.text;
-
         return element.expr?.returnType ?: "";
     }
 

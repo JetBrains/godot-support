@@ -27,27 +27,6 @@ object PsiGdResourceUtil {
         }.toTypedArray();
     }
 
-    @Deprecated("use index")
-    fun resourceExists(resource: String, project: Project): Boolean {
-        listResourceFiles(project).forEach {
-            if (resource == resourcePath(it)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    fun findResourceFile(resource: String, project: Project): String? {
-        listResourceFiles(project).forEach {
-            if (resource == resourcePath(it)) {
-                return it;
-            }
-        }
-
-        return null;
-    }
-
     @Deprecated("local path by se měl řešit tady - volej metodu rovnou na virtual")
     fun resourcePath(file: String): String {
         return "res://${file.trimStart(File.separatorChar).split(File.separatorChar).joinToString(SEPARATOR)}"
