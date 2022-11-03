@@ -22,7 +22,7 @@ class TscnParserDefinition : ParserDefinition {
     companion object {
         val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
         val COMMENTS = TokenSet.create(TscnTypes.COMMENT);
-        val FILE = IStubFileElementType<PsiFileStub<TscnFile>>(TscnLanguage.INSTANCE);
+        val FILE = IStubFileElementType<PsiFileStub<TscnFile>>(TscnLanguage);
     }
 
     override fun getWhitespaceTokens(): TokenSet = WHITE_SPACES;

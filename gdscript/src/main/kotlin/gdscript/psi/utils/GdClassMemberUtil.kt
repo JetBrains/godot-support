@@ -50,7 +50,6 @@ object GdClassMemberUtil {
             }
         }
 
-        // TODO STATIC!!
         when (calledOn) {
             GdKeywords.SELF -> calledOn = null;
             GdKeywords.SUPER -> calledOn = GdInheritanceUtil.getExtendedClassId(element);
@@ -179,14 +178,21 @@ object GdClassMemberUtil {
     }
 
     // TODO ii
-//    abs() -> Variant:
-//    Tady je potřeba z variant udělat cokoliv? .. resp. to je jako generic?
+    //    abs() -> Variant:
+    //    Tady je potřeba z variant udělat cokoliv? .. resp. to je jako generic?
 
     /**
      * Filters out GdMethodsDeclTl & returns typed array
      */
     fun Array<PsiElement>.methods(): Array<GdMethodDeclTl> {
         return this.filterIsInstance<GdMethodDeclTl>().toTypedArray();
+    }
+
+    /**
+     * List given element's class declarations
+     */
+    fun listClassMemberDeclarations(element: PsiElement, static: Boolean? = false): Array<PsiElement> {
+        return listNamedClassMemberDeclarations(element, static).array();
     }
 
     /**
@@ -201,15 +207,12 @@ object GdClassMemberUtil {
         static: Boolean? = false,
         search: String? = null,
     ): PsiElement? {
-        val members = listClassMemberDeclarations(classElement, static);
+        val members = listNamedClassMemberDeclarations(classElement, static);
         if (search != null && members.containsKey(search)) {
             return members[search]!!.first();
         }
 
-        members.entries.forEach {
-            if (!GdSettingsState.hidePrivate || !it.key.startsWith("_"))
-                result.addAll(it.value)
-        };
+        result.addAll(members.array());
 
         return null;
     }
@@ -217,14 +220,19 @@ object GdClassMemberUtil {
     /**
      * Finds local declarations from current position upwards
      *
-     * @param classElement GdClassDecl|GdFile class containing element
+     * @param element GdClassDecl|GdFile class containing element
      *
      * @return HashMap<name, MutableList<PsiElement>>
      */
-    private fun listClassMemberDeclarations(
-        classElement: PsiElement,
+    private fun listNamedClassMemberDeclarations(
+        element: PsiElement,
         static: Boolean? = false,
     ): HashMap<String, MutableList<PsiElement>> {
+        val classElement = when (element) {
+            is GdFile, is GdClassDeclTl -> element;
+            else -> GdClassUtil.getOwningClassElement(element);
+        }
+
         val members: HashMap<String, MutableList<PsiElement>> = hashMapOf();
 
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdConstDeclTl::class.java).forEach {
@@ -262,6 +270,19 @@ object GdClassMemberUtil {
         //PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).map { members[it.name] = it; }
 
         return members;
+    }
+
+    /**
+     * NamedClassMembers to Array
+     */
+    fun HashMap<String, MutableList<PsiElement>>.array(): Array<PsiElement> {
+        return this.entries.flatMap {
+            if (!GdSettingsState.hidePrivate || !it.key.startsWith("_")) {
+                it.value
+            } else {
+                emptyList()
+            }
+        }.toTypedArray();
     }
 
 }

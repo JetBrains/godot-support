@@ -236,6 +236,7 @@ funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmt
 }
 funcDeclId_nmi ::= IDENTIFIER
 
+// TODO sjednotit isTyped a TypedVal...
 isTyped ::= typeHint_nm (LSBR typeHintArray_nm RSBR)?
 typed ::= COLON typedVal
 typedVal ::= typedValRoot (LSBR typeHint_nm RSBR)? {methods=[getReturnType]}

@@ -53,7 +53,7 @@
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdRefIdReferenceContributor" />
 
     <!-- Annotators -->
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />-->
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdTypeHintAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstVarIdAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator" />
@@ -76,7 +76,7 @@
     <stubIndex implementation="gdscript.index.impl.GdMethodDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdSignalDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdEnumDeclIndex" />
-    <fileBasedIndex implementation="gdscript.index.impl.GdFileResIndex" />
+<!--    <fileBasedIndex implementation="gdscript.index.impl.GdFileResIndex" />-->
     <!-- Tscn -->
     <stubIndex implementation="tscn.index.impl.TscnResourceIndex" />
     <stubIndex implementation="tscn.index.impl.TscnNodeIndex" />

@@ -3,13 +3,7 @@ package tscn
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
-class TscnFileType : LanguageFileType {
-
-    companion object {
-        val INSTANCE = TscnFileType();
-    }
-
-    constructor(): super(TscnLanguage.INSTANCE)
+object TscnFileType : LanguageFileType(TscnLanguage) {
 
     override fun getName(): String = "Tscn file";
 

@@ -3,20 +3,17 @@ package gdscript.reference
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
-import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.PsiTreeUtil
-import gdscript.GdIcon
-import gdscript.completion.GdLookup
-import gdscript.index.impl.GdMethodDeclIndex
-import gdscript.psi.GdMethodDeclTl
+import gdscript.completion.utils.GdMethodCompletionUtil.lookup
 import gdscript.psi.GdNamedElement
+import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdClassMemberUtil.methods
 
 class GdSetGetMethodIdNmReference : PsiReferenceBase<GdNamedElement> {
 
     private var key: String = "";
 
-    constructor(element: PsiElement, textRange: TextRange) : super(element as GdNamedElement, textRange) {
-        key = element.text.substring(textRange.startOffset, textRange.endOffset)
+    constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
+        key = element.text;
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
@@ -26,18 +23,15 @@ class GdSetGetMethodIdNmReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        return GdMethodDeclIndex
-            .get(key, myElement.project, GlobalSearchScope.fileScope(myElement.containingFile))
-            .firstOrNull()?.methodIdNmi;
+        val members = GdClassMemberUtil.listClassMemberDeclarations(element, false);
+
+        return members.methods().find { it.name == key }?.methodIdNmi;
     }
 
     override fun getVariants(): Array<Any> {
-        val methods =
-            PsiTreeUtil.findChildrenOfType(myElement.containingFile.originalElement, GdMethodDeclTl::class.java);
+        val members = GdClassMemberUtil.listClassMemberDeclarations(element, false);
 
-        return methods.mapNotNull {
-            it.name?.let { it1 -> GdLookup.create(it1, icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER)) }
-        }.toTypedArray()
+        return members.methods().map { it.lookup() }.toTypedArray()
     }
 
 }

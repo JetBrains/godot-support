@@ -25,15 +25,15 @@ object PsiGdClassUtil {
             ?.classname;
     }
 
-    fun setName(element: GdClassNameNmi?, newName: String?): PsiElement? {
-        if (element == null) return null;
-
-        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
+    @Deprecated("common util")
+    fun setName(element: GdClassNameNmi, newName: String): PsiElement {
+        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER);
         if (keyNode != null) {
-            val id = GdElementFactory.className(element.project, newName!!)
-            element.node.replaceChild(keyNode, id.node)
+            val id = GdElementFactory.classNameNmi(element.project, newName);
+            element.node.replaceChild(keyNode, id.node);
         }
-        return element
+
+        return element;
     }
 
     fun getName(element: GdClassNameNmi?): String {

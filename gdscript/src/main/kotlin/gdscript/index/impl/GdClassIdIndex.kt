@@ -1,5 +1,6 @@
 package gdscript.index.impl
 
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
@@ -19,6 +20,7 @@ object GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
     override fun getVersion(): Int = Indices.VERSION;
 
     fun getGloballyResolved(name: String, project: Project): Collection<GdClassNameNmi> {
+        if (DumbService.isDumb(project)) return emptyList();
         val fqn = get(name, project, GlobalSearchScope.allScope(project));
         if (fqn.isNotEmpty()) return fqn;
 
@@ -27,6 +29,7 @@ object GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
             // Try resource to class_name
             val endIndex = name.indexOf('"', 1);
             val resource = name.substring(1, endIndex);
+            return emptyList();
             val resourceFile = GdFileResIndex.getFiles(resource, project).firstOrNull() ?: return emptyList();
             val psiFile = PsiManager.getInstance(project).findFile(resourceFile);
             modified = PsiTreeUtil.getStubChildOfType(psiFile, GdClassNaming::class.java)?.classname.orEmpty();

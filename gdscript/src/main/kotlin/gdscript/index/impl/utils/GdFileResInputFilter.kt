@@ -16,6 +16,7 @@ object GdFileResInputFilter : FileBasedIndex.InputFilter {
     );
 
     override fun acceptInput(file: VirtualFile): Boolean {
+        return false;
         val filename = file.localPath();
         if (filename.isBlank()) {
             return false;

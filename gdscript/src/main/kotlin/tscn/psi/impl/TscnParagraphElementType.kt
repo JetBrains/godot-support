@@ -9,7 +9,7 @@ import tscn.index.stub.TscnParagraphStubImpl
 import tscn.psi.TscnParagraph
 
 object TscnParagraphElementType :
-    IStubElementType<TscnParagraphStub, TscnParagraph>("paragraph", TscnLanguage.INSTANCE) {
+    IStubElementType<TscnParagraphStub, TscnParagraph>("paragraph", TscnLanguage) {
 
     @JvmStatic
     fun getInstance(debugName: String): TscnParagraphElementType = TscnParagraphElementType

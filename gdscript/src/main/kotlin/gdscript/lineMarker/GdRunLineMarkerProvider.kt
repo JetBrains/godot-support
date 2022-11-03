@@ -7,6 +7,7 @@ import gdscript.psi.GdInheritanceIdNm
 
 class GdRunLineMarkerProvider : RunLineMarkerContributor() {
 
+    // TODO nemůže být na inner class
     override fun getInfo(element: PsiElement): Info? {
         if (element.parent !is GdInheritanceIdNm) {
             return null;

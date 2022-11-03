@@ -8,9 +8,9 @@ import tscn.TscnLanguage
 
 class TscnFile : PsiFileBase {
 
-    constructor(viewProvider: FileViewProvider) : super(viewProvider, TscnLanguage.INSTANCE)
+    constructor(viewProvider: FileViewProvider) : super(viewProvider, TscnLanguage)
 
-    override fun getFileType(): FileType = TscnFileType.INSTANCE;
+    override fun getFileType(): FileType = TscnFileType;
 
     override fun toString(): String = "GodotScene file"
 

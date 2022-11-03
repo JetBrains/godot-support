@@ -13,9 +13,9 @@ object GdMethodCompletionUtil {
             val item = it.value;
             val params = buildParamHint(item);
             result.addElement(GdLookup.create(
-                "${if (withFunc) "func " else ""}${item.name.orEmpty()}${params}${if (item.returnType.isNotEmpty()) " -> ${item.returnType}" else ""}:",
+                "${if (withFunc) "func " else ""}${item.name}${params}${if (item.returnType.isNotEmpty()) " -> ${item.returnType}" else ""}:",
                 tail = params,
-                presentable = item.name.orEmpty(),
+                presentable = item.name,
                 typed = item.returnType,
                 icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
                 priority = GdLookup.USER_DEFINED,
@@ -23,7 +23,18 @@ object GdMethodCompletionUtil {
         }
     }
 
-    fun GdMethodDeclTl.lookup(omitFuncKeyword: Boolean = false): LookupElement {
+    fun GdMethodDeclTl.lookup(): LookupElement {
+        val params = buildParamHint(this);
+        return GdLookup.create(
+            this.name,
+            tail = params,
+            typed = this.returnType,
+            icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
+            priority = GdLookup.USER_DEFINED,
+        )
+    }
+
+    fun GdMethodDeclTl.lookupDeclaration(omitFuncKeyword: Boolean = false): LookupElement {
         val params = buildParamHint(this);
         return GdLookup.create(
             "${if (omitFuncKeyword) "" else "func "}${this.name}${params}${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}:",

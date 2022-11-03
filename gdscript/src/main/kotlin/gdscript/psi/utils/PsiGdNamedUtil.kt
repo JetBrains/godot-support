@@ -3,6 +3,7 @@ package gdscript.psi.utils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.LocalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
@@ -221,14 +222,41 @@ object PsiGdNamedUtil {
         return null;
     }
 
-    fun setName(element: GdNamedElement, newName: String?): PsiElement {
-        // TODO INF u const + signal u param name
-        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
+//    fun setName(element: GdNamedElement, newName: String?): PsiElement {
+//        // TODO INF u const + signal u param name
+//        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER)
+//        if (keyNode != null) {
+//            val id = GdElementFactory.identifier(element.project, newName!!)
+//            element.node.replaceChild(keyNode, id.node)
+//        }
+//        return element
+//    }
+
+    fun setName(element: PsiNamedElement, newName: String): PsiElement {
+        val keyNode = element.node.firstChildNode;
         if (keyNode != null) {
-            val id = GdElementFactory.identifier(element.project, newName!!)
-            element.node.replaceChild(keyNode, id.node)
+            val id = when(element) {
+                is GdClassVarIdNmi -> GdElementFactory.classVarIdNmi(element.project, newName);
+                is GdConstIdNmi -> GdElementFactory.constIdNmi(element.project, newName);
+                is GdEnumDeclNmi -> GdElementFactory.enumDeclNmi(element.project, newName);
+                is GdEnumValueNmi -> GdElementFactory.enumValueNmi(element.project, newName);
+                is GdFuncDeclIdNmi -> GdElementFactory.funcDeclIdNmi(element.project, newName);
+                is GdGetMethodIdNm -> GdElementFactory.getMethodIdNm(element.project, newName);
+                is GdInheritanceIdNm -> GdElementFactory.inheritanceIdNm(element.project, newName);
+                is GdInheritanceSubIdNm -> GdElementFactory.inheritanceSubIdNm(element.project, newName);
+                is GdMethodIdNmi -> GdElementFactory.methodIdNmi(element.project, newName);
+                is GdRefIdNm -> GdElementFactory.refIdNm(element.project, newName);
+                is GdSetMethodIdNm -> GdElementFactory.setMethodIdNm(element.project, newName);
+                is GdSignalIdNmi -> GdElementFactory.signalIdNmi(element.project, newName);
+                is GdTypeHintArrayNm -> GdElementFactory.typeHintArrayNm(element.project, newName);
+                is GdTypeHintNm -> GdElementFactory.typeHintNm(element.project, newName);
+                is GdVarNmi -> GdElementFactory.varNmi(element.project, newName);
+                else -> return element;
+            }
+            element.node.replaceChild(keyNode, id.node);
         }
-        return element
+
+        return element;
     }
 
     fun getName(element: GdNamedElement): String {

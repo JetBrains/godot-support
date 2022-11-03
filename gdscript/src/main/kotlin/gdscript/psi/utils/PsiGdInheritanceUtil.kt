@@ -19,6 +19,7 @@ object PsiGdInheritanceUtil {
     fun getPsiFile(inheritance: GdInheritanceIdNm): PsiFile? {
         val key = inheritance.text.trim('"');
         if (key.startsWith("res://")) {
+            return null;
             val virtual = GdFileResIndex.getFiles(key, inheritance.project).first();
 
             return PsiManager.getInstance(inheritance.project).findFile(virtual);
@@ -29,6 +30,7 @@ object PsiGdInheritanceUtil {
 
     fun getPsiFile(inheritance: String, project: Project): PsiFile? {
         if (inheritance.startsWith("res://")) {
+            return null;
             val virtual = GdFileResIndex.getFiles(inheritance, project).firstOrNull() ?: return null;
 
             return PsiManager.getInstance(project).findFile(virtual);

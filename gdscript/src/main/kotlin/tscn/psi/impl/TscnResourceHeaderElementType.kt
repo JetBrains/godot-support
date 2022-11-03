@@ -13,12 +13,12 @@ import tscn.psi.TscnResourceHeader
  * Resource line (storing only scripts)
  * [ext_resource type="Script" path="res://Asd.gd" id="1_3apro"]
  */
-object TscnResourceHeaderElementType : IStubElementType<TscnResourceHeaderStub, TscnResourceHeader>("resourceHeader", TscnLanguage.INSTANCE) {
+object TscnResourceHeaderElementType : IStubElementType<TscnResourceHeaderStub, TscnResourceHeader>("extResource", TscnLanguage) {
 
     @JvmStatic
     fun getInstance(debugName: String): TscnResourceHeaderElementType = TscnResourceHeaderElementType
 
-    override fun getExternalId(): String = "tscn.resourceHeader"
+    override fun getExternalId(): String = "tscn.extResource"
 
     override fun serialize(stub: TscnResourceHeaderStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.getId());

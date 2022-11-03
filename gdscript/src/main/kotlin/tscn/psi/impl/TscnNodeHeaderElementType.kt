@@ -9,7 +9,7 @@ import tscn.index.stub.TscnNodeHeaderStubImpl
 import tscn.psi.TscnNodeHeader
 
 object TscnNodeHeaderElementType :
-    IStubElementType<TscnNodeHeaderStub, TscnNodeHeader>("nodeHeader", TscnLanguage.INSTANCE) {
+    IStubElementType<TscnNodeHeaderStub, TscnNodeHeader>("nodeHeader", TscnLanguage) {
 
     @JvmStatic
     fun getInstance(debugName: String): TscnNodeHeaderElementType = TscnNodeHeaderElementType

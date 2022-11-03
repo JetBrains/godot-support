@@ -5,7 +5,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiElement
-import gdscript.completion.utils.GdMethodCompletionUtil.lookup
+import gdscript.completion.utils.GdMethodCompletionUtil.lookupDeclaration
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.methods
@@ -27,7 +27,7 @@ class GdMethodDeclCompletionContributor : CompletionContributor() {
             list
                 .toTypedArray()
                 .methods()
-                .forEach { result.addElement(it.lookup(true)) };
+                .forEach { result.addElement(it.lookupDeclaration(true)) };
         }
     }
 

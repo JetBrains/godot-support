@@ -21,11 +21,11 @@ object GdPsiUtils {
         }
     }
 
-    // TODO projít vše, co není z elementType a překopat
+    // TODO projít vše, co není z elementType? a překopat
 
     /** ClassName  */
     @JvmStatic fun getName(element: GdClassNameNmi?): String = PsiGdClassUtil.getName(element);
-    @JvmStatic fun setName(element: GdClassNameNmi?, newName: String?): PsiElement? = PsiGdClassUtil.setName(element, newName);
+//    @JvmStatic fun setName(element: GdClassNameNmi, newName: String): PsiElement = PsiGdClassUtil.setName(element, newName);
     @JvmStatic fun getClassname(element: GdClassNaming): String = GdClassNamingElementType.getClassname(element);
     @JvmStatic fun getParentName(element: GdClassNaming): String = GdClassNamingElementType.getParentName(element);
 
@@ -53,14 +53,14 @@ object GdPsiUtils {
     @JvmStatic fun getReturnType(element: GdConstDeclTl): String = PsiGdConstDeclUtil.getReturnType(element);
     @JvmStatic fun getName(element: GdConstDeclTl): String = GdConstDeclUtil.getName(element);
 
-    /** Named   */
+    /** Named */
     @JvmStatic fun getName(element: GdNamedElement): String = PsiGdNamedUtil.getName(element);
-    @JvmStatic fun setName(element: GdNamedElement, newName: String?): PsiElement = PsiGdNamedUtil.setName(element, newName);
+    @JvmStatic fun setName(element: GdNamedElement, newName: String): PsiElement = PsiGdNamedUtil.setName(element, newName);
     @JvmStatic fun getNameIdentifier(element: GdNamedIdElement): PsiElement? = PsiGdNamedUtil.getNameIdentifier(element);
 
-    /** Type hint   */
+    /** Type hint */
     @JvmStatic fun getName(element: GdTypeHintNm): String = PsiGdTypeHintUtil.getName(element);
-    @JvmStatic fun setName(element: GdTypeHintNm, newName: String?): PsiElement = PsiGdTypeHintUtil.setName(element, newName);
+//    @JvmStatic fun setName(element: GdTypeHintNm, newName: String?): PsiElement = PsiGdTypeHintUtil.setName(element, newName);
     @JvmStatic fun getReturnType(element: GdTypedVal): String = GdTypedUtil.getReturnType(element);
 
     /** Class variable */
