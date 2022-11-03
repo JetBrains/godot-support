@@ -5,7 +5,6 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.elementType
 import gdscript.completion.utils.GdClassCompletionUtil
 import gdscript.completion.utils.GdFileCompletionUtil
 import gdscript.index.impl.GdClassIdIndex
@@ -13,7 +12,6 @@ import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdInheritanceIdNm
 import gdscript.psi.GdInheritanceSubIdNm
 import gdscript.psi.GdNamedElement
-import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdClassUtil
 
 /**

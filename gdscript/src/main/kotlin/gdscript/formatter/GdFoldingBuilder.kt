@@ -8,27 +8,31 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdStmtOrSuite
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.nextLeaf
+import com.intellij.refactoring.suggested.endOffset
+import com.intellij.refactoring.suggested.startOffset
+import gdscript.psi.GdClassDeclTl
+import gdscript.psi.GdSuite
+import gdscript.psi.GdTypes
 
+/**
+ * Folding for:
+ * Suite, ClassDecl
+ */
 class GdFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        //val group = FoldingGroup.newGroup("GdScript");
-        val descriptors: MutableList<FoldingDescriptor> = ArrayList()
-        val methods = PsiTreeUtil.findChildrenOfType(root, GdMethodDeclTl::class.java);
+        val members = PsiTreeUtil.findChildrenOfAnyType(root, GdSuite::class.java, GdClassDeclTl::class.java);
 
-        methods.forEach {
-            val stmt = PsiTreeUtil.getChildOfType(it, GdStmtOrSuite::class.java);
-
-            if (stmt != null) {
-                val endOffset: Int =stmt.textRange.endOffset
-                    PsiTreeUtil.prevVisibleLeaf(stmt.lastChild)?.textRange?.endOffset ?: stmt.textRange.endOffset;
-
-                descriptors.add(FoldingDescriptor(stmt.node, TextRange(stmt.textRange.startOffset, endOffset)));
+        // TODO suite ? for if/else and such?
+        return members.mapNotNull {
+            when (it) {
+                is GdSuite -> mapSuite(it)
+                is GdClassDeclTl -> mapClassDecl(it)
+                else -> null
             }
-        }
-        return descriptors.toTypedArray()
+        }.toTypedArray();
     }
 
     override fun getPlaceholderText(node: ASTNode): String {
@@ -37,6 +41,19 @@ class GdFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
         return false;
+    }
+
+    private fun mapSuite(element: GdSuite): FoldingDescriptor? {
+        val ending = PsiTreeUtil.getDeepestVisibleLast(element) ?: return null;
+
+        return FoldingDescriptor(element.node, TextRange(element.startOffset, ending.endOffset));
+    }
+
+    private fun mapClassDecl(element: GdClassDeclTl): FoldingDescriptor? {
+        val start = element.classNameNmi?.nextLeaf { it.elementType == GdTypes.COLON } ?: return null;
+        val ending = PsiTreeUtil.getDeepestVisibleLast(element) ?: return null;
+
+        return FoldingDescriptor(element.node, TextRange(start.startOffset + 1, ending.endOffset));
     }
 
 }

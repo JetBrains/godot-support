@@ -18,7 +18,6 @@ class GetterSetterNameCompletion : CompletionContributor() {
     val SET_METHOD = psiElement().withParent(psiElement(GdTypes.SET_METHOD_ID_NM))
     val GET_METHOD = psiElement().withParent(psiElement(GdTypes.GET_METHOD_ID_NM))
 
-    // TODO offer existing methods - to je SetGetMethodIdRef ??
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         if (SET_METHOD.accepts(parameters.position)) {
             addMethodName("set", parameters.position, result);
