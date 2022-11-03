@@ -189,6 +189,13 @@ object GdClassMemberUtil {
     }
 
     /**
+     * Filters out GdMethodsDeclTl & returns typed array
+     */
+    fun List<PsiElement>.methods(): Array<GdMethodDeclTl> {
+        return this.filterIsInstance<GdMethodDeclTl>().toTypedArray();
+    }
+
+    /**
      * List given element's class declarations
      */
     fun listClassMemberDeclarations(element: PsiElement, static: Boolean? = false): Array<PsiElement> {

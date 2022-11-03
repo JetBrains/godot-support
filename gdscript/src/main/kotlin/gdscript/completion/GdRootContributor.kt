@@ -4,11 +4,15 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.completion.utils.*
+import gdscript.completion.utils.GdMethodCompletionUtil.lookupDeclaration
 import gdscript.psi.*
+import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdNodeUtil
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.psi.utils.PsiGdMethodDeclUtil
@@ -72,10 +76,11 @@ class GdRootContributor : CompletionContributor() {
     private fun addTopLvlDecl(parameters: CompletionParameters, result: CompletionResultSet) {
         GdNodeUtil.listNodes(parameters.position).forEach { result.addElement(it.variable_lookup()) }
         result.addAllElements(TO_HINT_KEYWORDS.map { GdLookup.create(it, " ", priority = GdLookup.KEYWORDS) })
-
-        val list = PsiGdMethodDeclUtil.collectParentsMethods(parameters.position.containingFile);
-        GdMethodCompletionUtil.addMethods(list, result, true);
         GdClassVarCompletionUtil.annotations(result);
+
+        val members = mutableListOf<PsiElement>();
+        GdClassMemberUtil.collectFromParents(parameters.position, members, false);
+        result.addAllElements(members.methods().map { it.lookupDeclaration() });
     }
 
 }

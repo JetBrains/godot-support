@@ -1,35 +1,9 @@
 package gdscript.psi.utils
 
-import com.intellij.psi.PsiFile
-import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.*
 import gdscript.utils.ElementTypeUtil
 
 object PsiGdMethodDeclUtil {
-
-    @Deprecated("GdClassMemberUtil")
-    fun collectParentsMethods(file: PsiFile): MutableMap<String, GdMethodDeclTl> {
-        val methods: MutableMap<String, GdMethodDeclTl> = mutableMapOf();
-        var parentName: String? = PsiTreeUtil.getChildOfType(file, GdInheritance::class.java)?.inheritancePath; // TODO ii
-
-        while (parentName !== null) {
-            val parent = PsiGdInheritanceUtil.getPsiFile(parentName, file.project);
-            if (parent === null) {
-                break;
-            }
-
-            PsiTreeUtil.findChildrenOfType(parent, GdMethodDeclTl::class.java).forEach {
-                val name = it.name.orEmpty();
-                if (!methods.containsKey(name)) {
-                    methods[name] = it;
-                }
-            }
-
-            parentName = PsiGdInheritanceUtil.getParentName(parent);
-        }
-
-        return methods;
-    }
 
     fun isStatic(element: GdMethodDeclTl): Boolean {
         val stub = element.stub;

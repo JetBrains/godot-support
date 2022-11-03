@@ -9,6 +9,7 @@ import gdscript.structureView.GdPresentationUtil
 
 object GdPsiUtils {
 
+    // TODO ii ??
     fun returnType(element: PsiElement?): String {
         return when(element) {
             is GdConstDeclTl -> element.returnType;
@@ -25,7 +26,6 @@ object GdPsiUtils {
 
     /** ClassName  */
     @JvmStatic fun getName(element: GdClassNameNmi?): String = PsiGdClassUtil.getName(element);
-//    @JvmStatic fun setName(element: GdClassNameNmi, newName: String): PsiElement = PsiGdClassUtil.setName(element, newName);
     @JvmStatic fun getClassname(element: GdClassNaming): String = GdClassNamingElementType.getClassname(element);
     @JvmStatic fun getParentName(element: GdClassNaming): String = GdClassNamingElementType.getParentName(element);
 
@@ -54,13 +54,12 @@ object GdPsiUtils {
     @JvmStatic fun getName(element: GdConstDeclTl): String = GdConstDeclUtil.getName(element);
 
     /** Named */
-    @JvmStatic fun getName(element: GdNamedElement): String = PsiGdNamedUtil.getName(element);
-    @JvmStatic fun setName(element: GdNamedElement, newName: String): PsiElement = PsiGdNamedUtil.setName(element, newName);
+    @JvmStatic fun getName(element: GdNamedElement): String = GdCommonUtil.getName(element);
+    @JvmStatic fun setName(element: GdNamedElement, newName: String): PsiElement = GdCommonUtil.setName(element, newName);
     @JvmStatic fun getNameIdentifier(element: GdNamedIdElement): PsiElement? = PsiGdNamedUtil.getNameIdentifier(element);
 
     /** Type hint */
     @JvmStatic fun getName(element: GdTypeHintNm): String = PsiGdTypeHintUtil.getName(element);
-//    @JvmStatic fun setName(element: GdTypeHintNm, newName: String?): PsiElement = PsiGdTypeHintUtil.setName(element, newName);
     @JvmStatic fun getReturnType(element: GdTypedVal): String = GdTypedUtil.getReturnType(element);
 
     /** Class variable */
