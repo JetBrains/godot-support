@@ -36,7 +36,7 @@ class GdResourceLineMarkerContributor : RelatedItemLineMarkerProvider() {
             GdIcon.getEditorIcon(GdIcon.RESOURCE)!!
         )
             .setTargets(*usages)
-            .setPopupTitle("Resource Mentioned")
+            .setPopupTitle("Resource Usage")
             .setTooltipText("Navigate resource usages")
             .setCellRenderer {
                 object : PsiElementListCellRenderer<PsiElement>() {

@@ -69,6 +69,10 @@ func losos():
 - Resources (`$Path/Node` && `$"%Name"`)
 - hides _prefix as private fields (is optional based on Language settings)
 
+### Line markers
+- Resource usages
+![](./screens/resource_usage.png)
+
 ### Documentation (Ctrl+Q)
 - Currently only simplified plain-text
 - ❌ Links and visualization like Java doc
