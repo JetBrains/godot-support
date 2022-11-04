@@ -5,14 +5,11 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdNodePath
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
-import tscn.psi.TscnNodeHeader
-import tscn.psi.utils.TscnScriptUtil
 
 /**
  * Checks for existence of [res://] resource // TODO user:// ??
@@ -30,8 +27,7 @@ class GdResourceTypeAnnotator : Annotator {
 
     private fun stringResourceExists(element: PsiElement, holder: AnnotationHolder) {
         val text = element.text.trim('"');
-//        if (text.startsWith("res://") && GdFileResIndex.getFiles(text, element.project).isEmpty()) {
-        if (text.startsWith("res://")) {
+        if (text.startsWith("res://") && GdFileResIndex.getFiles(text, element.project).isEmpty()) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Resource not found")
                 .range(TextRange.create(element.textRange.startOffset + 1, element.textRange.endOffset - 1))

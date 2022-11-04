@@ -32,7 +32,9 @@ object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassV
         GdClassVarDeclTlImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdClassVarDeclTl, parentStub: StubElement<*>?): GdClassVarDeclStub {
-        return GdClassVarDeclStubImpl(parentStub, psi.name, psi.returnType);
+        // TODO cannot use indices while indexing error
+        // https://intellij-support.jetbrains.com/hc/en-us/community/posts/8407508105362-Indexing-process-should-not-rely-on-non-indexed-file-data
+        return GdClassVarDeclStubImpl(parentStub, psi.name, "_");
     }
 
 }

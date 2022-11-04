@@ -31,6 +31,7 @@ class GdClassNameAnnotator : Annotator {
             is GdClassNameNmi -> {
                 alreadyExists(element, holder);
                 classNameToFilename(element, holder);
+                resourceHasNoInnerClass(element, holder);
             }
         }
     }
@@ -38,7 +39,7 @@ class GdClassNameAnnotator : Annotator {
     private fun existingInheritance(element: GdInheritanceId, holder: AnnotationHolder) {
         if (GdClassIdIndex.getGloballyResolved(element.text, element.project).isEmpty()
             // File index when you are extending script without class_name
-//            && GdFileResIndex.getFiles(element.text.trim('"'), element.project).isEmpty()
+            && GdFileResIndex.getFiles(element.text.trim('"'), element.project).isEmpty()
         ) {
             // Last case is extending InnerClass within same file which does not require FQN
             // and can directly use any at lower level
@@ -130,6 +131,20 @@ class GdClassNameAnnotator : Annotator {
                 .withFix(GdFileClassNameAction(filename, element))
                 .create();
         }
+    }
+
+    private fun resourceHasNoInnerClass(element: GdClassNameNmi, holder: AnnotationHolder) {
+        if (element.parent !is GdClassDeclTl) return;
+// TODO ii
+//        val name = element.name;
+//        val filename = PsiGdFileUtil.filename(element.containingFile);
+//        if (filename.lowercase() != name.lowercase()) {
+//            holder
+//                .newAnnotation(HighlightSeverity.WEAK_WARNING, "Resource cannot have InnerClass")
+//                .range(element.textRange)
+//                .withFix(GdFileClassNameAction(filename, element))
+//                .create();
+//        }
     }
 
 }

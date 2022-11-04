@@ -55,7 +55,6 @@ object GdInheritanceUtil {
             }
         }
 
-        return null;
         // In case of unnamed "res://Item.gd" check for the resource itself
         val file = GdFileResIndex.getFiles(classId.trim('"'), project).firstOrNull() ?: return null;
 
