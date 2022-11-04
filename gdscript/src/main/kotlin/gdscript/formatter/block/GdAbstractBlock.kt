@@ -30,6 +30,10 @@ abstract class GdAbstractBlock : AbstractBlock {
             GdTypes.FUNC_DECL_EX,
         )
 
+        val INNER_SKIP_TOKENS = arrayOf(
+            GdTypes.CLASS_VAR_DECL_TL,
+        )
+
         val NONE_INDENT: Indent = Indent.getIndent(Indent.Type.NONE, true, false);
     }
 

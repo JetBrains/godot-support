@@ -14,6 +14,7 @@ class GdLineBlock : GdAbstractBlock {
             GdTypes.ANNOTATION_TL,
             GdTypes.CONST_DECL_TL,
             GdTypes.CLASS_VAR_DECL_TL,
+            GdTypes.METHOD_DECL_TL,
         );
     }
 
@@ -44,7 +45,7 @@ class GdLineBlock : GdAbstractBlock {
             Alignment.createAlignment(),
             settings,
             spacing,
-            this.indent,
+            Indent.getNoneIndent() //this.indent,
         );
     }
 
