@@ -46,7 +46,7 @@ class GdCreateMethodAction : BaseIntentionAction {
 
         val method = StringBuilder("\n\n\n");
         method.append("func $name(${parameters.joinToString()})");
-        if (returnType != null) {
+        if (returnType != null && returnType.isNotBlank()) {
             method.append(" -> $returnType")
         }
         method.appendLine(":")
