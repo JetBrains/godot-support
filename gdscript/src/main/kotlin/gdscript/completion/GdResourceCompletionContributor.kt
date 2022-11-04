@@ -6,9 +6,12 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.completion.utils.GdFileCompletionUtil
 import gdscript.completion.utils.GdRefIdCompletionUtil
+import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
+import gdscript.psi.utils.GdResourceUtil
+import tscn.index.impl.TscnResourceIndex
 
 /**
  * $NodePath & %NodeName read from .tscn
@@ -33,7 +36,14 @@ class GdResourceCompletionContributor : CompletionContributor() {
                 GdNodeUtil.listNodes(position).forEach { result.addElement(it.lookup()) }
             }
         } else if (STRING.accepts(position)) {
-            GdFileCompletionUtil.listFileResources(position.project).forEach { result.addElement(it) }
+            GdFileResIndex.getNonEmptyKeys(position.project).forEach {
+                result.addElement(
+                    GdLookup.create(
+                        it,
+                        priority = GdLookup.REMOTE_DEFINED,
+                    )
+                )
+            }
         }
     }
 

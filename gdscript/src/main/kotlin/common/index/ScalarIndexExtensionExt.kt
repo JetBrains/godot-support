@@ -18,6 +18,19 @@ abstract class ScalarIndexExtensionExt<K : Any> : ScalarIndexExtension<K>() {
         return FileBasedIndex.getInstance().getContainingFiles(id, key, GlobalSearchScope.allScope(project));
     }
 
+    fun getNonEmptyKeys(project: Project): List<K> {
+        val inst = FileBasedIndex.getInstance();
+        val scope = GlobalSearchScope.allScope(project);
+
+        return inst.getAllKeys(id, project).mapNotNull {
+            if (inst.getContainingFiles(id, it, scope).isNotEmpty()) {
+                it
+            } else {
+                null
+            }
+        };
+    }
+
     override fun getName(): ID<K, Void> {
         return id;
     }

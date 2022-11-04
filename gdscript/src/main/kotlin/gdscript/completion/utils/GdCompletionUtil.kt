@@ -5,7 +5,7 @@ import com.intellij.psi.PsiElement
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.*
-import gdscript.utils.StringUtils.parseFromSquare
+import gdscript.utils.StringUtil.parseFromSquare
 
 object GdCompletionUtil {
 

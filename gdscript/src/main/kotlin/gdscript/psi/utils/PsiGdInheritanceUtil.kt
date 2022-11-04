@@ -1,11 +1,11 @@
 package gdscript.psi.utils
 
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiManager
 import com.intellij.psi.util.elementType
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.*
+import gdscript.utils.VirtualFileUtil.getPsiFile
 
 object PsiGdInheritanceUtil {
 
@@ -18,7 +18,7 @@ object PsiGdInheritanceUtil {
         if (key.startsWith("res://")) {
             val virtual = GdFileResIndex.getFiles(key, inheritance.project).first();
 
-            return PsiManager.getInstance(inheritance.project).findFile(virtual);
+            return virtual.getPsiFile(inheritance.project);
         }
 
         return GdClassNamingIndex.getGlobally(inheritance).firstOrNull()?.containingFile;

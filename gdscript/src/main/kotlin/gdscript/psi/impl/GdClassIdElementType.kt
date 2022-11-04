@@ -10,7 +10,7 @@ import gdscript.psi.*
 import gdscript.psi.utils.PsiGdClassUtil
 import gdscript.psi.utils.PsiGdResourceUtil
 import gdscript.psi.utils.PsiGdTreeUtil
-import gdscript.utils.GdVirtualFileUtil.localPath
+import gdscript.utils.VirtualFileUtil.localPath
 
 object GdClassIdElementType : IStubElementType<GdClassIdStub, GdClassNameNmi>("classId", GdLanguage) {
 

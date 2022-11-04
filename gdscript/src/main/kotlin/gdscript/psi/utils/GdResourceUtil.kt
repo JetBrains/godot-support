@@ -9,7 +9,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdFileType
 import gdscript.psi.GdLiteralEx
 import gdscript.psi.GdPreloadNm
-import gdscript.utils.GdVirtualFileUtil.resourcePath
+import gdscript.utils.VirtualFileUtil.resourcePath
 
 /**
  * Resource "res://Losos.gd" utils

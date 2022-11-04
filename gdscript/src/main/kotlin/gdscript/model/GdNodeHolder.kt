@@ -3,7 +3,7 @@ package gdscript.model
 import com.intellij.codeInsight.lookup.LookupElement
 import gdscript.completion.GdLookup
 import gdscript.completion.handler.GdReplaceInsertHandler
-import gdscript.utils.StringUtils.camelToSnakeCase
+import gdscript.utils.StringUtil.camelToSnakeCase
 import tscn.psi.TscnNodeHeader
 
 /**

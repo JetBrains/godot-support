@@ -2,18 +2,20 @@ package gdscript.lineMarker
 
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import gdscript.action.GdRunAction
 import gdscript.psi.GdInheritanceIdNm
+import gdscript.psi.utils.GdInheritanceUtil
 
+/**
+ * Run current scene LineMarker
+ */
 class GdRunLineMarkerProvider : RunLineMarkerContributor() {
 
-    // TODO nemůže být na inner class
     override fun getInfo(element: PsiElement): Info? {
-        // TODO pouze tam, kde je připojen script ke scéně
-        return null;
-        if (element.parent !is GdInheritanceIdNm) {
+        if (element.parent !is GdInheritanceIdNm || GdInheritanceUtil.isExtending(element, "Resource"))
             return null;
-        }
+        if (GdInheritanceUtil.getExtendedElement(element) !is PsiFile) return null;
 
         return Info(GdRunAction(element.parent as GdInheritanceIdNm));
     }

@@ -1,18 +1,11 @@
 package gdscript.psi.utils
 
-import com.intellij.openapi.project.DumbService
-import com.intellij.openapi.util.Computable
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiManager
-import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.model.GdNodeHolder
 import gdscript.psi.GdNodePath
-import tscn.TscnFileType
 import tscn.index.impl.TscnResourceIndex
 import tscn.psi.TscnNodeHeader
-import tscn.psi.TscnResourceHeader
 
 /**
  * Node utils for available nodes from given script
@@ -33,16 +26,7 @@ object GdNodeUtil {
      * List all available nodes for given file with parsed relative paths
      */
     fun listNodes(element: PsiElement): Array<GdNodeHolder> {
-        if (DumbService.isDumb(element.project)) return emptyArray();
         val resource = PsiGdResourceUtil.resourcePath(element.containingFile.originalFile.virtualFile);
-
-//        TscnResourceIndex.processAllKeys(element.project) { true }
-//        val csc = GlobalSearchScope.getScopeRestrictedByFileTypes(
-//            GlobalSearchScope.allScope(element.project),
-//            TscnFileType,
-//        )
-//        val asd = TscnResourceIndex.get(resource, element.project, csc);
-
 
         val script = TscnResourceIndex.getGlobally(resource, element).firstOrNull() ?: return emptyArray();
         val nodes = PsiTreeUtil.findChildrenOfType(script.containingFile, TscnNodeHeader::class.java);

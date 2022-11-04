@@ -3,25 +3,12 @@ package gdscript.psi.utils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiManager
-import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
-import com.intellij.psi.util.PsiTreeUtil
-import gdscript.GdFileType
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
-import gdscript.psi.*
 import java.io.File
 
 object PsiGdFileUtil {
-
-    fun gdFiles(project: Project): Collection<GdFile> {
-        val virtualFiles = FileTypeIndex.getFiles(GdFileType, GlobalSearchScope.allScope(project));
-
-        return virtualFiles.map {
-            PsiManager.getInstance(project).findFile(it) as GdFile
-        };
-    }
 
     fun filename(file: PsiFile): String {
         val name = file.name;

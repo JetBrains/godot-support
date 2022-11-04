@@ -2,7 +2,7 @@ package gdscript.index.impl.utils
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.util.indexing.FileBasedIndex
-import gdscript.utils.GdVirtualFileUtil.localPath
+import gdscript.utils.VirtualFileUtil.localPath
 
 object GdFileResInputFilter : FileBasedIndex.InputFilter {
 

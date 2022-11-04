@@ -3,7 +3,7 @@ package gdscript.psi.utils
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import gdscript.completion.utils.GdFileVisitor
-import gdscript.utils.GdVirtualFileUtil.localPath
+import gdscript.utils.VirtualFileUtil.localPath
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths

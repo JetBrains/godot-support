@@ -11,6 +11,7 @@ class GdSignalLineMarkerContributor : RelatedItemLineMarkerProvider() {
 //    override fun getIcon(): Icon? {
 //        GdIcon.SIGNAL_MARKER;
 //    }
+    // TODO ii
 
     override fun collectNavigationMarkers(
         element: PsiElement,

@@ -11,7 +11,7 @@ import gdscript.psi.GdPreloadNm
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdInheritanceUtil
 import gdscript.psi.utils.GdResourceUtil
-import gdscript.utils.GdVirtualFileUtil.localPath
+import gdscript.utils.VirtualFileUtil.localPath
 import javax.swing.Icon
 
 /**

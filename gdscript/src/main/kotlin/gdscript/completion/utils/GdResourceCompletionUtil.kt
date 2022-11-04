@@ -7,7 +7,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.completion.GdLookup
 import gdscript.completion.handler.GdReplaceInsertHandler
 import gdscript.psi.utils.PsiGdResourceUtil
-import gdscript.utils.StringUtils.camelToSnakeCase
+import gdscript.utils.StringUtil.camelToSnakeCase
 import tscn.index.impl.TscnResourceIndex
 import tscn.psi.TscnNodeHeader
 

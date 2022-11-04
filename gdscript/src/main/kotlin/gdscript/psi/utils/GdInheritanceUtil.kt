@@ -2,7 +2,6 @@ package gdscript.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdFileResIndex
@@ -10,6 +9,7 @@ import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
 import gdscript.psi.GdInheritance
+import gdscript.utils.VirtualFileUtil.getPsiFile
 
 object GdInheritanceUtil {
 
@@ -69,7 +69,7 @@ object GdInheritanceUtil {
         // In case of unnamed "res://Item.gd" check for the resource itself
         val file = GdFileResIndex.getFiles(classId.trim('"'), project).firstOrNull() ?: return null;
 
-        return PsiManager.getInstance(project).findFile(file);
+        return file.getPsiFile(project);
     }
 
 }
