@@ -188,6 +188,31 @@ object GdClassMemberUtil {
         return locals;
     }
 
+    fun firstNamedDeclaration(element: PsiElement): PsiElement? {
+        return PsiTreeUtil.findFirstParent(element) {
+            it is GdClassVarDeclTl
+                    || it is GdVarDeclSt
+                    || it is GdConstDeclTl
+                    || it is GdConstDeclSt
+                    || it is GdMethodDeclTl
+                    || it is GdClassDeclTl
+                    || it is GdParam
+        }
+    }
+
+    fun firstNamedDeclarationName(element: PsiElement): String? {
+        return when (val it = firstNamedDeclaration(element)) {
+            is GdClassVarDeclTl -> it.name
+            is GdVarDeclSt -> it.name
+            is GdConstDeclTl -> it.name
+            is GdConstDeclSt -> it.name
+            is GdMethodDeclTl -> it.name
+            is GdClassDeclTl -> it.name
+            is GdParam -> it.varNmi.name
+            else -> null
+        }
+    }
+
     // TODO ii
     //    abs() -> Variant:
     //    Tady je potřeba z variant udělat cokoliv? .. resp. to je jako generic?

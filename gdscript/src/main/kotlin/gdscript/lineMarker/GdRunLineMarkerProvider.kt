@@ -9,6 +9,8 @@ class GdRunLineMarkerProvider : RunLineMarkerContributor() {
 
     // TODO nemůže být na inner class
     override fun getInfo(element: PsiElement): Info? {
+        // TODO pouze tam, kde je připojen script ke scéně
+        return null;
         if (element.parent !is GdInheritanceIdNm) {
             return null;
         }

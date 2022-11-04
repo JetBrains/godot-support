@@ -11,11 +11,15 @@ object GdIcon {
     @Deprecated("")
     val OBJECT = IconLoader.getIcon("icons/godot_editor/Object.svg", GdIcon::class.java)
 
-    const val METHOD_MARKER = "Forward-sq"
-    const val VAR_MARKER = "KeyBezierSelected"
-    const val CONST_MARKER = "KeyXform"
-    const val ENUM_MARKER = "Enum"
-    const val SIGNAL_MARKER = "Signal"
+    const val METHOD_MARKER = "MemberMethod"
+    const val VAR_MARKER = "MemberProperty"
+    const val CONST_MARKER = "MemberConstant"
+    const val ENUM_MARKER = "MemberEnum"
+    const val SIGNAL_MARKER = "MemberSignal"
+
+    const val SLOT = "Slot"
+    const val RESOURCE = "Mesh"
+    const val STRING = "String"
 
     var editorIcons = HashMap<String, Icon>()
 

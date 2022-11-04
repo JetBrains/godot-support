@@ -1728,6 +1728,18 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // STRING
+  public static boolean preload_nm(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "preload_nm")) return false;
+    if (!nextTokenIs(b, STRING)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, STRING);
+    exit_section_(b, m, PRELOAD_NM, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // !(NEW_LINE | COLON) & stmt_r
   static boolean preload_r(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "preload_r")) return false;
@@ -2507,14 +2519,16 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (PRELOAD | LOAD) LRBR STRING RRBR
+  // (PRELOAD | LOAD) LRBR preload_nm RRBR
   public static boolean preload_ex(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "preload_ex")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, PRELOAD_EX, "<preload ex>");
     r = preload_ex_0(b, l + 1);
     p = r; // pin = 1
-    r = r && report_error_(b, consumeTokensSmart(b, -1, LRBR, STRING, RRBR));
+    r = r && report_error_(b, consumeToken(b, LRBR));
+    r = p && report_error_(b, preload_nm(b, l + 1)) && r;
+    r = p && consumeToken(b, RRBR) && r;
     exit_section_(b, l, m, r, p, GdParser::preload_r);
     return r || p;
   }

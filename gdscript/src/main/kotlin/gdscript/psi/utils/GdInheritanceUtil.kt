@@ -39,6 +39,17 @@ object GdInheritanceUtil {
         );
     }
 
+    fun isExtending(element: PsiElement, classId: String): Boolean {
+        var parentId = getExtendedClassId(element);
+        while (parentId.isNotBlank()) {
+            if (parentId == classId) return true;
+            val parent = GdClassIdIndex.getGlobally(parentId, element).firstOrNull() ?: return false;
+            parentId = getExtendedClassId(parent);
+        }
+
+        return false;
+    }
+
     /**
      * @param classId FQN like MyClass.DataClass or "res://Item.gd"
      *

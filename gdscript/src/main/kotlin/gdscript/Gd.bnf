@@ -207,7 +207,8 @@ expr ::=
     | funcDecl_ex
     {methods=[getReturnType]}
 
-preload_ex ::= (PRELOAD | LOAD) LRBR STRING RRBR {pin=1 recoverWhile=preload_r}
+preload_ex ::= (PRELOAD | LOAD) LRBR preload_nm RRBR {pin=1 recoverWhile=preload_r}
+preload_nm ::= STRING
 private preload_r ::= !(NEW_LINE | COLON) & stmt_r
 cast_ex ::= expr AS isTyped
 ternary_ex ::= expr IF expr ELSE expr

@@ -32,6 +32,7 @@ object GdCommonUtil {
                 is GdTypeHintArrayNm -> GdElementFactory.typeHintArrayNm(element.project, newName);
                 is GdTypeHintNm -> GdElementFactory.typeHintNm(element.project, newName);
                 is GdVarNmi -> GdElementFactory.varNmi(element.project, newName);
+                is GdPreloadNm -> GdElementFactory.preloadNm(element.project, newName);
                 else -> return element;
             }
             element.node.replaceChild(keyNode, id.node);

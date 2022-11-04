@@ -1,4 +1,6 @@
-inner class
+res line marker
+
+
 
 
 const func ... qualifiers ?? Je to i v xml
