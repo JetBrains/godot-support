@@ -11,7 +11,7 @@ public interface GdFuncDeclIdNmi extends GdNamedIdElement {
   String getName();
 
   @NotNull
-  PsiElement setName(@Nullable String newName);
+  PsiElement setName(@NotNull String newName);
 
   @Nullable
   PsiElement getNameIdentifier();

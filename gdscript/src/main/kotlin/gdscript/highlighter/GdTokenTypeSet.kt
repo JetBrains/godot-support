@@ -34,6 +34,7 @@ interface GdTokenTypeSet {
             GdTypes.MATCH,
             GdTypes.ASSERT,
             GdTypes.AWAIT,
+            GdTypes.LOAD,
             GdTypes.PRELOAD,
 //            GdTypes.PUPPET,
 //            GdTypes.MASTER,

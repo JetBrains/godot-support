@@ -25,7 +25,6 @@ class GdFoldingBuilder : FoldingBuilderEx(), DumbAware {
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
         val members = PsiTreeUtil.findChildrenOfAnyType(root, GdSuite::class.java, GdClassDeclTl::class.java);
 
-        // TODO suite ? for if/else and such?
         return members.mapNotNull {
             when (it) {
                 is GdSuite -> mapSuite(it)

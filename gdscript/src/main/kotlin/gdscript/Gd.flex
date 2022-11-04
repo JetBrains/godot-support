@@ -239,6 +239,7 @@ ANY = .+
     "match"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.MATCH); }
     "assert"       { return dedentRoot(GdTypes.ASSERT); }
     "await"        { return dedentRoot(GdTypes.AWAIT); }
+    "load"         { return dedentRoot(GdTypes.LOAD); }
     "preload"      { return dedentRoot(GdTypes.PRELOAD); }
     "static"       { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.STATIC); }
     "vararg"       { return dedentRoot(GdTypes.VARARG); }

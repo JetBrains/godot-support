@@ -140,12 +140,12 @@ stmt ::=
     | flow_st
     | assert_st
     | await_st
-    | preload_st
     | expr_st
     | (expr endStmt)
 private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
     | RETURN | AWAIT | ASSET | PRELOAD | INDENT | DEDENT
+    | LOAD
     | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
@@ -170,7 +170,6 @@ keyValuePattern ::= STRING [ COLON pattern ]
 
 assert_st ::= ASSERT LRBR expr (COMMA STRING)? RRBR endStmt {pin=1 recoverWhile=stmt_r}
 await_st ::= AWAIT expr_st {pin=1 recoverWhile=stmt_r}
-preload_st ::= PRELOAD LRBR STRING RRBR {pin=2 recoverWhile=stmt_r}
 
 assign_st ::= expr (EQ | ASSIGN) expr endStmt
 expr_st ::= expr endStmt {pin=1 recoverWhile=stmt_r}
@@ -185,6 +184,7 @@ flow_st ::=
 
 expr ::=
     plusMinus_ex
+    | preload_ex
     | attribute_ex
     | cast_ex
     | arr_ex
@@ -207,10 +207,12 @@ expr ::=
     | funcDecl_ex
     {methods=[getReturnType]}
 
+preload_ex ::= (PRELOAD | LOAD) LRBR STRING RRBR {pin=1 recoverWhile=preload_r}
+private preload_r ::= !(NEW_LINE | COLON) & stmt_r
 cast_ex ::= expr AS isTyped
 ternary_ex ::= expr IF expr ELSE expr
 logic_ex ::= expr (ANDAND | OROR) expr
-negate_ex ::= NEGATE expr;
+negate_ex ::= NEGATE expr
 in_ex ::= expr IN expr
 comparison_ex ::= expr TEST_OPERATOR expr
 bitAnd_ex ::= expr (AND | XOR | OR) expr

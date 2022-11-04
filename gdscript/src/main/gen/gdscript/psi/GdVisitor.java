@@ -279,8 +279,8 @@ public class GdVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
-  public void visitPreloadSt(@NotNull GdPreloadSt o) {
-    visitStmt(o);
+  public void visitPreloadEx(@NotNull GdPreloadEx o) {
+    visitExpr(o);
   }
 
   public void visitPrimaryEx(@NotNull GdPrimaryEx o) {

@@ -34,7 +34,7 @@ public class GdClassVarIdNmiImpl extends GdNamedIdElementImpl implements GdClass
 
   @Override
   @NotNull
-  public PsiElement setName(@Nullable String newName) {
+  public PsiElement setName(@NotNull String newName) {
     return GdPsiUtils.setName(this, newName);
   }
 

@@ -34,7 +34,7 @@ public class GdEnumValueNmiImpl extends GdNamedIdElementImpl implements GdEnumVa
 
   @Override
   @NotNull
-  public PsiElement setName(@Nullable String newName) {
+  public PsiElement setName(@NotNull String newName) {
     return GdPsiUtils.setName(this, newName);
   }
 

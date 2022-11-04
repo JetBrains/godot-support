@@ -85,7 +85,7 @@ public interface GdTypes {
   IElementType PLUS_EX = new GdElementType("PLUS_EX");
   IElementType PLUS_MINUS_EX = new GdElementType("PLUS_MINUS_EX");
   IElementType PLUS_MINUS_PRE_EX = new GdElementType("PLUS_MINUS_PRE_EX");
-  IElementType PRELOAD_ST = new GdElementType("PRELOAD_ST");
+  IElementType PRELOAD_EX = new GdElementType("PRELOAD_EX");
   IElementType PRIMARY_EX = new GdElementType("PRIMARY_EX");
   IElementType REF_ID_NM = new GdElementType("REF_ID_NM");
   IElementType RETURN_HINT = new GdElementType("RETURN_HINT");
@@ -154,6 +154,7 @@ public interface GdTypes {
   IElementType IS = new GdTokenType("IS");
   IElementType LBSHIFT = new GdTokenType("LBSHIFT");
   IElementType LCBR = new GdTokenType("LCBR");
+  IElementType LOAD = new GdTokenType("LOAD");
   IElementType LRBR = new GdTokenType("LRBR");
   IElementType LSBR = new GdTokenType("LSBR");
   IElementType MATCH = new GdTokenType("MATCH");
@@ -404,8 +405,8 @@ public interface GdTypes {
       else if (type == PLUS_MINUS_PRE_EX) {
         return new GdPlusMinusPreExImpl(node);
       }
-      else if (type == PRELOAD_ST) {
-        return new GdPreloadStImpl(node);
+      else if (type == PRELOAD_EX) {
+        return new GdPreloadExImpl(node);
       }
       else if (type == PRIMARY_EX) {
         return new GdPrimaryExImpl(node);

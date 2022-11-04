@@ -132,6 +132,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "match"        { return GdTypes.MATCH; }
     "assert"       { return GdTypes.ASSERT; }
     "await"        { return GdTypes.AWAIT; }
+    "load"         { return GdTypes.LOAD; }
     "preload"      { return GdTypes.PRELOAD; }
     "static"       { return GdTypes.STATIC; }
     "vararg"       { return GdTypes.VARARG; }

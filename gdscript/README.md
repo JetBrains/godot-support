@@ -28,14 +28,13 @@ func losos():
 ```
 
 ## Work queue
-### Top priority (Alpha)
-- Inner class
+### Top priority
 
-### Middle Priority (Betta)
+
+### Middle Priority
 - Sdk
 - master/puppet keywords
 - Annotation parameters - checks and hints
-- Full feature Formatter
 - Signals
   - parameter hint
   - parameter check
@@ -45,19 +44,16 @@ func losos():
   - check if awaiting an async task
   - check if async task is awaited
 - expr type match
-- Resource exists
 - Double enter -> force dedent
 - Create getter/setter via Alt+Insert
 - Run configuration
-  - remove pop-up to make it single click
   - tady může být více scriptů (potřeba ověřit ID)
-- Don't auto-complete private functions/fields (leading underscore) -> allow it based on settings
 - Line marker (signals, ...)
 - Enum checks
 - Flow templates
 - Icon download with class refresh
 
-### Low Priority (Full Release)
+### Low Priority
 - Parent method call fe.: ._init() checks
 - Rename file -> rename also class_name
 - Linkable Documentation
@@ -93,6 +89,7 @@ func losos():
 ### Quick fixes
 #### Alt+Enter
 - add/change return Type
+- generate get_set methods
 - remove annotation
 - change class_name to match filename
 - remove getter & setter
