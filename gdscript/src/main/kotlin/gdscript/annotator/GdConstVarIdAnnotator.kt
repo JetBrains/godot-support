@@ -17,7 +17,7 @@ import gdscript.psi.utils.GdClassMemberUtil
 class GdConstVarIdAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element is GdConstIdNmi || element is GdClassVarIdNmi) {
+        if (element is GdConstIdNmi || element is GdClassVarIdNmi || element is GdVarNmi) {
             isUnique(element as GdNamedIdElement, holder);
         } else {
             hasReturnType(element, holder);
@@ -25,7 +25,7 @@ class GdConstVarIdAnnotator : Annotator {
     }
 
     private fun isUnique(element: GdNamedIdElement, holder: AnnotationHolder) {
-        if (GdClassMemberUtil.findDeclaration(element) != null) {
+        if (GdClassMemberUtil.findDeclaration(element, true) != null) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR,
                     "[${element.name}] is already defined")

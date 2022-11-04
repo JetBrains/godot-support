@@ -8,8 +8,6 @@ import gdscript.psi.utils.PsiGdResourceUtil
 object GdFileCompletionUtil {
 
     fun listFileResources(project: Project, onlyGdFiles: Boolean = false, withQuotes: Boolean = false): Array<LookupElement> {
-
-
         return PsiGdResourceUtil.listResourceFiles(project, onlyGdFiles).map {
             var str = PsiGdResourceUtil.resourcePath(it);
             if (withQuotes) {

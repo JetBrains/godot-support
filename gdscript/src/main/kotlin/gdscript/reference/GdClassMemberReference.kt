@@ -29,8 +29,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     }
 
     fun resolveDeclaration(): PsiElement? {
-        // TODO nmi
-        return GdClassMemberUtil.findDeclaration(element);
+        return GdClassMemberUtil.findDeclaration(element, false);
     }
 
     override fun resolve(): PsiElement? {

@@ -44,6 +44,7 @@ class GdFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     private fun mapSuite(element: GdSuite): FoldingDescriptor? {
         val ending = PsiTreeUtil.getDeepestVisibleLast(element) ?: return null;
+        if (ending.endOffset <= element.startOffset) return null;
 
         return FoldingDescriptor(element.node, TextRange(element.startOffset, ending.endOffset));
     }
@@ -51,6 +52,7 @@ class GdFoldingBuilder : FoldingBuilderEx(), DumbAware {
     private fun mapClassDecl(element: GdClassDeclTl): FoldingDescriptor? {
         val start = element.classNameNmi?.nextLeaf { it.elementType == GdTypes.COLON } ?: return null;
         val ending = PsiTreeUtil.getDeepestVisibleLast(element) ?: return null;
+        if (ending.endOffset <= start.startOffset + 1) return null;
 
         return FoldingDescriptor(element.node, TextRange(start.startOffset + 1, ending.endOffset));
     }

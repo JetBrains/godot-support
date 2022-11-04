@@ -1,3 +1,6 @@
+inner class
+
+
 const func ... qualifiers ?? Je to i v xml
 
 documentace:
@@ -20,22 +23,15 @@ construcotr annotator -> args parent validace
 file rename:
 https://intellij-support.jetbrains.com/hc/en-us/community/posts/206760415-Renaming-files-in-IDE
 
-extends inner class extends "losos.gd".inner
 set,get validation - param, return type
 var a: Node = 4; // chybí kontrola typu hodnoty
-projít dostupné annotatce -> něco má extra options !!!
+projít dostupné annotatce -> něco má extra options
 
 Static methods
 ```
 var x = Color.html_is_valid("00ffff") # true
 ```
 
-TODO
-
-Known issues
-annotation insert
-
-params - pokud je param další callExpr, tak to už na jméně napovídá ten vnitřní  
 kontrala refIdAnnotator -> že metoda je metoda  
 
 # String format:

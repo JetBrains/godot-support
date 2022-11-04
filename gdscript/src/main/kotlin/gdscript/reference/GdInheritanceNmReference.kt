@@ -26,7 +26,7 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        // TODO rename resource ??... rename file?
+        // TODO rename resource -> rename file
         if (isResource()) return element;
 
         when (element) {

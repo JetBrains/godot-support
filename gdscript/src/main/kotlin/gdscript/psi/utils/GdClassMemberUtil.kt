@@ -15,15 +15,20 @@ object GdClassMemberUtil {
      */
     fun findDeclaration(
         element: GdNamedElement,
+        onlyPreceding: Boolean = false,
     ): PsiElement? {
-        return listDeclarations(element, element).firstOrNull();
+        return listDeclarations(element, element, onlyPreceding).firstOrNull();
     }
 
     /**
      * List available declarations (const, var, enum, signal, method, ...) from given PsiElement skipping itself
      * @param searchFor stops and returns matching element
      */
-    fun listDeclarations(element: PsiElement, searchFor: GdNamedElement? = null): Array<PsiElement> {
+    fun listDeclarations(
+        element: PsiElement,
+        searchFor: GdNamedElement? = null,
+        onlyPreceding: Boolean = false,
+    ): Array<PsiElement> {
         val search = searchFor != null;
         val name: String? = searchFor?.name;
         var static = false;
@@ -59,8 +64,9 @@ object GdClassMemberUtil {
 
         // If it's stand-alone ref_id, adds also _GlobalScope & ClassNames
         if (calledOn == null) {
-            parent = GdClassIdIndex.getGloballyResolved(GdKeywords.GLOBAL_SCOPE, element.project).firstOrNull();
-            val local = addsParentDeclarations(GdClassUtil.getOwningClassElement(parent!!), result, static, name);
+            parent = GdClassIdIndex.getGloballyResolved(GdKeywords.GLOBAL_SCOPE, element.project).firstOrNull()
+                ?: return result.toTypedArray();
+            val local = addsParentDeclarations(GdClassUtil.getOwningClassElement(parent), result, static, name);
             if (search && local != null) return arrayOf(local);
 
             if (search) {
@@ -77,7 +83,11 @@ object GdClassMemberUtil {
             result.addAll(locals.values);
 
             // This class is already scanned via localDecl - so move to extended one
-            parent = GdInheritanceUtil.getExtendedElement(element);
+            parent = if (onlyPreceding) {
+                GdInheritanceUtil.getExtendedElement(element);
+            } else {
+                GdClassUtil.getOwningClassElement(element);
+            }
         } else {
             parent = GdClassIdIndex.getGloballyResolved(calledOn, element.project).firstOrNull();
             if (parent != null)
@@ -133,6 +143,9 @@ object GdClassMemberUtil {
             is GdSetDecl,
             is GdSignalDeclTl,
             is GdMethodDeclTl,
+            is GdParam,
+            is GdForSt, // todo neodzkoušeno
+            is GdBindingPattern, // todo neodzkoušeno
             -> {
                 it = it.parent;
             }
@@ -148,9 +161,12 @@ object GdClassMemberUtil {
                 is GdConstDeclSt -> locals[it.name] = it;
                 is GdEnumDeclTl -> locals[it.name] = it;
                 is GdSignalDeclTl -> locals[it.name] = it;
+                is GdParam -> {
+                    locals[it.varNmi.name] = it;
+                };
                 is GdForSt -> if (movedToParent) locals[it.varNmi.name] = it;
                 is GdPatternList -> {
-                    if (movedToParent) {
+                    if (movedToParent) { // TODO potřeba?
                         PsiTreeUtil.getChildrenOfType(it, GdBindingPattern::class.java)
                             ?.map { b -> locals[b.varNmi.name] = b }
                     }
@@ -161,12 +177,7 @@ object GdClassMemberUtil {
                     }
                 };
                 is GdMethodDeclTl -> {
-                    if (movedToParent) {
-                        it.paramList?.paramList?.toList()
-                            ?.map { p -> locals[p.varNmi.name] = p }
-                    } else {
-                        locals[it.name] = it;
-                    }
+                    locals[it.name] = it;
                 }
 
                 // End of scope

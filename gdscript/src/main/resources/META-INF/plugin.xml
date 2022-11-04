@@ -53,7 +53,7 @@
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdRefIdReferenceContributor" />
 
     <!-- Annotators -->
-<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />-->
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdTypeHintAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstVarIdAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator" />
