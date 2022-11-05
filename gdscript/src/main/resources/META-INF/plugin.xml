@@ -38,6 +38,7 @@
     <!-- Line markers -->
     <runLineMarkerContributor language="GdScript" implementationClass="gdscript.lineMarker.GdRunLineMarkerProvider" />
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdResourceLineMarkerContributor" />
+    <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdSignalLineMarkerContributor" />
 
     <!-- Tscn -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
@@ -85,6 +86,7 @@
     <stubIndex implementation="tscn.index.impl.TscnResourceIndex" />
     <stubIndex implementation="tscn.index.impl.TscnNodeIndex" />
     <stubIndex implementation="tscn.index.impl.TscnParagraphIndex" />
+    <stubIndex implementation="tscn.index.impl.TscnConnectionIndex" />
 
     <!-- Actions -->
     <intentionAction>

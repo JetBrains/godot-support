@@ -33,11 +33,12 @@ header ::=
     scene_header
     | node_header
     | resource_header
-    | sub_header
+    | connection_header
+    | unknown_header
 
 scene_header ::= LSBR GD_SCENE headerValue* RSBR
 node_header ::= LSBR NODE headerValue* RSBR {
-    methods=[getName getType getParentPath getNodePath isUniqueNameOwner getScriptResource hasScript]
+    methods=[getName getType getParentPath getNodePath isUniqueNameOwner getScriptResource hasScript getDirectParentPath]
     mixin="tscn.psi.impl.TscnNodeHeaderElementImpl"
     stubClass="tscn.index.stub.TscnNodeHeaderStub"
     elementTypeFactory="tscn.psi.impl.TscnNodeHeaderElementType.getInstance"
@@ -48,7 +49,14 @@ resource_header ::= LSBR EXT_RESOURCE headerValue* RSBR {
     stubClass="tscn.index.stub.TscnResourceHeaderStub"
     elementTypeFactory="tscn.psi.impl.TscnResourceHeaderElementType.getInstance"
 }
-sub_header ::= LSBR (SUB_RESOURCE | CONNECTION) headerValue* RSBR
+connection_header ::= LSBR CONNECTION headerValue* RSBR {
+    methods=[getFrom getTo getSignal getMethod]
+    mixin="tscn.psi.impl.TscnConnectionHeaderElementImpl"
+    stubClass="tscn.index.stub.TscnConnectionHeaderStub"
+    elementTypeFactory="tscn.psi.impl.TscnConnectionHeaderElementType.getInstance"
+}
+
+unknown_header ::= LSBR IDENTIFIER headerValue* RSBR
 headerValue ::= headerValue_nm EQ headerValue_val
 headerValue_nm ::= IDENTIFIER // TODO _nm extend
 headerValue_val ::= VALUE

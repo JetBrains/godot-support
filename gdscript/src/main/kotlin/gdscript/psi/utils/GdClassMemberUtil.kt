@@ -209,6 +209,7 @@ object GdClassMemberUtil {
             is GdMethodDeclTl -> it.name
             is GdClassDeclTl -> it.name
             is GdParam -> it.varNmi.name
+            is GdSignalDeclTl -> it.name
             else -> null
         }
     }

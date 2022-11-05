@@ -73,7 +73,9 @@ func losos():
 
 ### Line markers
 - Resource usages
-![](./screens/resource_usage.png)
+![](./screens/resource-marker.png)
+- Signal
+![](./screens/signal-marker.png)
 
 ### Documentation (Ctrl+Q)
 - Currently only simplified plain-text

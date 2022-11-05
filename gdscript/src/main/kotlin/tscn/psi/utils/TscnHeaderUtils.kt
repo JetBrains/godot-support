@@ -16,6 +16,10 @@ object TscnHeaderUtils {
     val HL_TYPE = "type";
     val HL_PATH = "path";
     val HL_PARENT = "parent";
+    val HL_FROM = "from";
+    val HL_TO = "to";
+    val HL_SIGNAL = "signal";
+    val HL_METHOD = "method";
 
     /** Data line keys */
     val DL_UNIQUE = "unique_name_in_owner";

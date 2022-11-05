@@ -17,6 +17,7 @@ object GdIcon {
     const val ENUM_MARKER = "MemberEnum"
     const val SIGNAL_MARKER = "MemberSignal"
 
+    const val SIGNAL = "Signal"
     const val SLOT = "Slot"
     const val RESOURCE = "Mesh"
     const val STRING = "String"

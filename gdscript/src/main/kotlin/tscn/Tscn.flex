@@ -43,7 +43,7 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 <HEADER> {
     "gd_scene"     { return TscnTypes.GD_SCENE; }
     "ext_resource" { return TscnTypes.EXT_RESOURCE; }
-    "sub_resource" { return TscnTypes.SUB_RESOURCE; }
+//    "sub_resource" { return TscnTypes.SUB_RESOURCE; }
     "node"         { return TscnTypes.NODE; }
     "connection"   { return TscnTypes.CONNECTION; }
     {IDENTIFIER}   { return TscnTypes.IDENTIFIER; }

@@ -75,6 +75,14 @@ object TscnNodeUtil {
         }
     }
 
+    fun getDirectParentPath(element: TscnNodeHeader): String {
+        return when(val parentPath = element.parentPath) {
+            "" -> ".";
+            "." -> element.name;
+            else -> "$parentPath/${element.name}";
+        }
+    }
+
     fun hasScript(element: TscnNodeHeader): Boolean {
         val stub = element.stub;
         if (stub != null) return stub.hasScript();
