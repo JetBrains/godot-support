@@ -5,6 +5,6 @@ refresh-classes:
 	php classParser.php
 
 zip:
-	zip -r GD_SDK-0.3.7z classesGd
+	zip -r GD_SDK-0.4.7z classesGd
 
 generate: download-docs refresh-classes zip

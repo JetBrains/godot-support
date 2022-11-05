@@ -62,6 +62,8 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
                 .replace("[/gdscript]", DocumentationMarkup.DEFINITION_END)
                 .replace("[/csharp]", DocumentationMarkup.DEFINITION_END)
 
+                //.replace("\\[method (.+?)]".toRegex(), "{@link $1}")
+
             sb.append(line);
             sb.append("<br />");
         }

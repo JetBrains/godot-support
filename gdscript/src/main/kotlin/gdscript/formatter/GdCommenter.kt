@@ -4,7 +4,7 @@ import com.intellij.lang.Commenter
 
 class GdCommenter : Commenter {
 
-    override fun getLineCommentPrefix(): String? {
+    override fun getLineCommentPrefix(): String {
         return "#"
     }
 
