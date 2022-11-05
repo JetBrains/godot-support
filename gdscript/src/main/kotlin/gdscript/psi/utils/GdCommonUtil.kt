@@ -13,6 +13,11 @@ object GdCommonUtil {
         return element.text;
     }
 
+    fun getNameIdentifier(element: GdNamedIdElement): PsiElement? {
+        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER);
+        return keyNode?.psi;
+    }
+
     fun setName(element: PsiNamedElement, newName: String): PsiElement {
         val keyNode = element.node.firstChildNode;
         if (keyNode != null) {

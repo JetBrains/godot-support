@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import gdscript.psi.GdConstDeclSt
 import gdscript.psi.GdConstDeclTl
 
 object GdConstDeclUtil {
@@ -11,6 +12,12 @@ object GdConstDeclUtil {
         }
 
         return element.constIdNmi?.name.orEmpty();
+    }
+
+    /** Local */
+
+    fun getName(element: GdConstDeclSt): String {
+        return element.varNmi.name;
     }
 
 }

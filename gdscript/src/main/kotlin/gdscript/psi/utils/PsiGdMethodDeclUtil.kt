@@ -49,9 +49,6 @@ object PsiGdMethodDeclUtil {
 
         return element.name == "_init"
                 || PsiGdClassUtil.getClass(element) == element.name;
-
-//        return element.name == "_init"
-//                || PsiGdClassUtil.getClassName(element) == element.name;
     }
 
 }

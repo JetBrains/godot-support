@@ -2,6 +2,36 @@ res line marker
 signal line marker
 
 
+## Work queue
+### Top priority
+
+### Middle Priority
+- master/puppet keywords
+- Annotation parameters - checks and hints
+- Signals
+    - parameter hint
+    - parameter check
+- Check Parameters in function call
+- Await
+    - check if it is correctly implemented
+    - check if awaiting an async task
+    - check if async task is awaited
+- expr type match
+- Double enter -> force dedent
+- Create getter/setter via Alt+Insert
+- Run configuration
+    - tady může být více scriptů (potřeba ověřit ID)
+- Enum checks
+- Flow templates
+- Icon download with class refresh
+
+### Low Priority
+- Parent method call fe.: ._init() checks
+- Rename file -> rename also class_name
+- Linkable Documentation
+- type of var binding in match pattern
+- solo string expects endStmt
+- Debug - does it Godot even allow? ...
 
 
 const func ... qualifiers ?? Je to i v xml

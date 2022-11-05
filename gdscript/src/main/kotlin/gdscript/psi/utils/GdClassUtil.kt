@@ -37,6 +37,7 @@ object GdClassUtil {
     fun getName(element: GdClassDeclTl): String {
         val stub = element.stub;
         if (stub != null) return stub.name();
+
         return element.classNameNmi?.name.orEmpty();
     }
 

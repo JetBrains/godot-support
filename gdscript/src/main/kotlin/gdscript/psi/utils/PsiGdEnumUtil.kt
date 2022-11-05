@@ -2,7 +2,6 @@ package gdscript.psi.utils
 
 import com.intellij.psi.util.elementType
 import gdscript.psi.GdEnumDeclTl
-import gdscript.psi.GdEnumValue
 import gdscript.psi.GdTypes
 
 object PsiGdEnumUtil {

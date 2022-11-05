@@ -25,7 +25,6 @@ object GdPsiUtils {
     // TODO projít vše, co není z elementType? a překopat
 
     /** ClassName  */
-    @JvmStatic fun getName(element: GdClassNameNmi?): String = PsiGdClassUtil.getName(element);
     @JvmStatic fun getClassname(element: GdClassNaming): String = GdClassNamingElementType.getClassname(element);
     @JvmStatic fun getParentName(element: GdClassNaming): String = GdClassNamingElementType.getParentName(element);
 
@@ -56,10 +55,9 @@ object GdPsiUtils {
     /** Named */
     @JvmStatic fun getName(element: GdNamedElement): String = GdCommonUtil.getName(element);
     @JvmStatic fun setName(element: GdNamedElement, newName: String): PsiElement = GdCommonUtil.setName(element, newName);
-    @JvmStatic fun getNameIdentifier(element: GdNamedIdElement): PsiElement? = PsiGdNamedUtil.getNameIdentifier(element);
+    @JvmStatic fun getNameIdentifier(element: GdNamedIdElement): PsiElement? = GdCommonUtil.getNameIdentifier(element);
 
     /** Type hint */
-    @JvmStatic fun getName(element: GdTypeHintNm): String = PsiGdTypeHintUtil.getName(element);
     @JvmStatic fun getReturnType(element: GdTypedVal): String = GdTypedUtil.getReturnType(element);
 
     /** Class variable */
@@ -72,7 +70,7 @@ object GdPsiUtils {
     @JvmStatic fun getReturnType(element: GdVarDeclSt): String = PsiGdLocalVarUtil.getReturnType(element);
 
     /** Local constant */
-    @JvmStatic fun getName(element: GdConstDeclSt): String = PsiGdLocalConstUtil.getName(element);
+    @JvmStatic fun getName(element: GdConstDeclSt): String = GdConstDeclUtil.getName(element);
     @JvmStatic fun getReturnType(element: GdConstDeclSt): String = PsiGdLocalConstUtil.getReturnType(element);
 
     /** Method  */
@@ -88,7 +86,7 @@ object GdPsiUtils {
     @JvmStatic fun getReturnType(element: GdParam): String = PsiGdMethodDeclUtil.getReturnType(element);
 
     /** Signal */
-    @JvmStatic fun getName(element: GdSignalDeclTl): String = PsiGdSignalUtil.getName(element);
+    @JvmStatic fun getName(element: GdSignalDeclTl): String = GdSignalUtil.getName(element);
     @JvmStatic fun getParameters(element: GdSignalDeclTl): Array<String> = PsiGdSignalUtil.getParameters(element);
 
     /** Statements */

@@ -16,9 +16,7 @@ object GdMethodUtil {
 
     fun getName(element: GdMethodDeclTl): String {
         val stub = element.stub;
-        if (stub !== null) {
-            return stub.name();
-        }
+        if (stub !== null) stub.name();
 
         return element.methodIdNmi?.name.orEmpty();
     }

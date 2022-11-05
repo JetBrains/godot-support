@@ -1,11 +1,7 @@
 package gdscript.psi.utils
 
-import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.search.GlobalSearchScope
-import gdscript.GdKeywords
-import gdscript.index.impl.GdClassNamingIndex
 import java.io.File
 
 object PsiGdFileUtil {
@@ -29,14 +25,6 @@ object PsiGdFileUtil {
         val path = "$d${file.name}";
 
         return path.replace(File.separator, "/");
-    }
-
-    fun getGlobalFile(project: Project): PsiFile? {
-        return GdClassNamingIndex.get(
-            GdKeywords.GLOBAL_SCOPE,
-            project,
-            GlobalSearchScope.allScope(project),
-        ).firstOrNull()?.containingFile;
     }
 
 }

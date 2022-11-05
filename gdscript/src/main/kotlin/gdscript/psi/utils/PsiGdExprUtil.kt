@@ -104,59 +104,11 @@ object PsiGdExprUtil {
                     return GdKeywords.STR;
                 } else if (elementType == GdTypes.REF_ID_NM) {
                     if (text == GdKeywords.SELF) {
-                        // TODO ii
-//                        return text;
-                        // TODO tohle je také na přeparsování
                         return GdClassUtil.getOwningClassId(expr)
                     } else if (text == GdKeywords.SUPER) {
                         // TODO tohle může vrátit zanoření... :/ Losos.InnerClass -> nějak se to musí vyparsovat
-                        // GdClassIdIndex.get()
                         return GdInheritanceUtil.getExtendedClassId(expr);
                     }
-
-
-//                    val declaration = GdClassMemberUtil.findDeclaration(named);
-//                    val parentName = PsiGdInheritanceUtil.getFirstParentName(expr);
-//                    val ppp = declaration?.text;
-//                    var parentFile = expr.containingFile;
-//                    if (text == GdKeywords.SELF) { // TODO ii super
-//                        val clName = PsiGdClassUtil.getClassName(expr);
-//                        if (clName != null) {
-//                            return clName;
-//                        }
-//                        PsiGdInheritanceUtil.getFirstParentName(expr)
-//
-//                        val inheritance = PsiTreeUtil.getChildOfType(parentFile, GdInheritance::class.java);
-//                        if (inheritance != null) {
-//                            return inheritance.inheritancePath; // TODO ii
-//                        }
-//
-//                        return GdKeywords.SELF;
-//                    }
-
-//                    when (val parent = expr.parent) {
-//                        is GdAttributeEx -> {
-//                            if (expr.prevSibling != null) {
-//                                val first = parent.exprList.first();
-//                                val parReturn = first?.returnType ?: return "";
-//                                if (parReturn != GdKeywords.SELF) {
-////                                    parentFile = PsiGdInheritanceUtil.getPsiFile(parReturn, expr.project) ?: return "";
-//                                }
-//                            }
-//                        }
-//                        is GdCallEx -> {
-//                            val prev = parent.parent;
-//                            if (prev.text != GdKeywords.SELF
-//                                && prev is GdAttributeEx
-//                            ) {
-//                                if (parent.prevSibling != null) {
-//                                    val first = prev.exprList.first();
-//                                    val parReturn = first?.returnType ?: return "";
-////                                    parentFile = PsiGdInheritanceUtil.getPsiFile(parReturn, expr.project) ?: return "";
-//                                }
-//                            }
-//                        }
-//                    }
 
                     if (DumbService.isDumb(expr.project)) {
                         return "";
@@ -164,7 +116,6 @@ object PsiGdExprUtil {
 
                     val named: GdNamedElement = expr.refIdNm ?: return "";
                     return when (val element =
-//                        PsiGdNamedUtil.findInParent(named, includingSelf = true, containingFile = parentFile)) {
                         GdClassMemberUtil.findDeclaration(named)) {
                         is GdClassVarDeclTl -> element.returnType;
                         is GdVarDeclSt -> element.returnType;
@@ -174,10 +125,7 @@ object PsiGdExprUtil {
                         is GdSignalDeclTl -> "Signal";
                         is GdEnumDeclTl -> GdKeywords.INT;
                         is GdEnumValue -> GdKeywords.INT;
-                        else -> {
-                            text
-                            // TODO ii return GdClassNamingIndex.getGlobally(text, expr).firstOrNull()?.classname ?: "";
-                        }
+                        else -> text;
                     }
                 }
 
