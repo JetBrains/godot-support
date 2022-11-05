@@ -1,6 +1,8 @@
 # GdScript
 
 # Installation guide
+
+
 ## Extra tips:
 - Dedent with Backspace
 ```

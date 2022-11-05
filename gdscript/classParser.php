@@ -7,7 +7,7 @@ $formatDesc = function($desc, $key) {
     $desc = trim($desc);
     $desc = explode("\n", $desc);
     $desc = array_map(function ($it) { return trim($it); }, $desc);
-    return sprintf("#%s %s\n", $key, implode($desc, sprintf("\n#%s ", $key)));
+    return sprintf("#%s %s\n", $key, implode(sprintf("\n#%s ", $key), $desc));
 };
 
 $formatType = function($type) {
@@ -110,7 +110,7 @@ foreach ($files as $filename) {
             $data .= $formatDesc($desc['0'], "desc");
         }
 
-        $data .= sprintf("func %s(%s) -> %s:\n", $att['name'], implode($params, ', '), $formatType($ret));
+        $data .= sprintf("func %s(%s) -> %s:\n", $att['name'], implode(', ', $params), $formatType($ret));
         $data .= sprintf("\tpass;\n\n");
     }
     $data .= "\n";
@@ -137,7 +137,7 @@ foreach ($files as $filename) {
             $data .= $formatDesc($desc['0'], "desc");
         }
 
-        $data .= sprintf("%sfunc %s(%s) -> %s:\n", $quali, $att['name'], implode($params, ', '), $formatType($ret));
+        $data .= sprintf("%sfunc %s(%s) -> %s:\n", $quali, $att['name'], implode(', ', $params), $formatType($ret));
         $data .= sprintf("\tpass;\n\n");
     }
     $data .= "\n";

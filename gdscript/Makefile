@@ -4,4 +4,7 @@ download-docs:
 refresh-classes:
 	php classParser.php
 
-generate: download-docs refresh-classes
+zip:
+	zip -r GD_SDK-0.3.7z classesGd
+
+generate: download-docs refresh-classes zip
