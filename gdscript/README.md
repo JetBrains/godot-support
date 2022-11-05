@@ -72,9 +72,9 @@ func losos():
 - hides _prefix as private fields (is optional based on Language settings)
 
 ### Line markers
-- Resource usages
+- Resource usages  
 ![](./screens/resource-marker.png)
-- Signal
+- Signal  
 ![](./screens/signal-marker.png)
 
 ### Documentation (Ctrl+Q)
