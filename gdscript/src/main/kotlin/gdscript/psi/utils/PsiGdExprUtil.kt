@@ -13,7 +13,7 @@ object PsiGdExprUtil {
 
     fun getReturnType(expr: GdExpr): String {
         return when (expr) {
-//            is GdPreloadEx -> {}; // TODO jaký má tohle typ?
+            is GdPreloadEx -> "PackedScene";
             is GdFuncDeclEx -> GdKeywords.CALLABLE;
             is GdPlusMinusEx -> expr.expr.returnType;
             is GdCastEx -> fromTyped(expr.isTyped);
@@ -46,7 +46,17 @@ object PsiGdExprUtil {
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT;
             is GdAttributeEx -> expr.exprList.lastOrNull()?.returnType ?: "";
             is GdIsEx -> fromTyped(expr.isTyped)
-            is GdCallEx -> expr.expr.returnType;
+            is GdCallEx -> {
+                if (expr.text == "new()") { // TODO může to mít params?
+                    if (expr.parent is GdAttributeEx) {
+                        GdPsiUtils.returnType(expr.parent.firstChild);
+                    } else {
+                        ""
+                    }
+                } else {
+                    expr.expr.returnType
+                }
+            };
             is GdArrEx -> fromTyped(expr.exprList.firstOrNull()?.returnType ?: "");
             is GdPrimaryEx -> {
                 when (expr.firstChild) {

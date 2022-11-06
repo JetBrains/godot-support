@@ -9,7 +9,7 @@ import gdscript.structureView.GdPresentationUtil
 
 object GdPsiUtils {
 
-    // TODO ii ??
+    @Deprecated("TODO move to common")
     fun returnType(element: PsiElement?): String {
         return when(element) {
             is GdConstDeclTl -> element.returnType;

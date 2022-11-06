@@ -6,8 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.*
-import gdscript.psi.utils.PsiGdLocalFuncUtil
-import gdscript.reference.GdClassMemberReference
+import gdscript.psi.utils.GdClassMemberUtil
 
 class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, PsiElement>, DumbAware {
 
@@ -15,24 +14,21 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, PsiElement>, DumbA
         val element = getFunctionCall(context) ?: return null;
 
         val refId = element.firstChild?.firstChild ?: return null;
-//        when (val declId = GdClassMemberReference(refId, refId.textRangeInParent).resolve()) {// TODO ii
-//            is GdMethodIdNmi -> {
-//                val decl = PsiTreeUtil.getParentOfType(declId, GdMethodDeclTl::class.java) ?: return element;
-//                context.itemsToShow = arrayOf(decl);
-//            }
-//            is GdVarNmi -> {
-//                val lambda = PsiGdLocalFuncUtil.getByVarId(declId);
-//                if (lambda != null) {
-//                    context.itemsToShow = arrayOf(lambda);
-//                }
-//            }
-//            is GdFile -> {
-//                val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(declId, GdMethodDeclTl::class.java);
-//                context.itemsToShow = methods.filter {
-//                    it.isConstructor
-//                }.toTypedArray();
-//            }
-//        }
+        when (val declaration = GdClassMemberUtil.findDeclaration(refId as GdNamedElement)) {
+            is GdMethodDeclTl -> {
+                context.itemsToShow = arrayOf(declaration);
+            }
+            is GdVarDeclSt ->
+                if (declaration.expr is GdFuncDeclEx) {
+                    context.itemsToShow = arrayOf(declaration.expr as GdFuncDeclEx);
+                }
+            is GdFile -> {
+                val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(declaration, GdMethodDeclTl::class.java);
+                context.itemsToShow = methods.filter {
+                    it.isConstructor
+                }.toTypedArray();
+            }
+        }
 
         return element;
     }

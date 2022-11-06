@@ -31,10 +31,14 @@ $parseParams = function($value) {
     foreach ($list as $param) {
         $param = (array) $param;
         $p_att = $param['@attributes'];
-        $parsed[$p_att['index']] = [$p_att['name'], $p_att['type']];
+        $parsed[$p_att['index']] = [$p_att['name'], $p_att['type'], $p_att['default'] ?? null];
     }
     foreach ($parsed as $param) {
-        $params[] = sprintf("%s: %s", $param[0], $param[1]);
+        $p = sprintf("%s: %s", $param[0], $param[1]);
+        if (($param[2] ?? null) !== null) {
+            $p = sprintf("%s = %s", $p, $param[2]);
+        }
+        $params[] = $p;
     }
 
     return $params;

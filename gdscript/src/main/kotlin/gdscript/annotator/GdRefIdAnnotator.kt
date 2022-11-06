@@ -26,11 +26,14 @@ class GdRefIdAnnotator : Annotator {
             is GdMethodDeclTl -> GdHighlighterColors.METHOD_CALL;
             is PsiFile, is GdClassDeclTl -> GdHighlighterColors.CLASS_TYPE;
             null -> {
-                holder
-                    .newAnnotation(HighlightSeverity.ERROR, "Reference [${element.text}] not found")
-                    .range(element.textRange)
-                    .create();
-                return;
+                if (element.text != "new") {
+                    holder
+                        .newAnnotation(HighlightSeverity.ERROR, "Reference [${element.text}] not found")
+                        .range(element.textRange)
+                        .create();
+                    return;
+                }
+                GdHighlighterColors.MEMBER;
             }
             else -> GdHighlighterColors.MEMBER;
         }

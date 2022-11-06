@@ -54,6 +54,7 @@ class GdRootContributor : CompletionContributor() {
         if (previous === null) {
             // First text in a file
             result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
+            result.addElement(GdLookup.create("@tool"));
             addClassName(parameters, result);
         } else if (ROOT_POSITION.accepts(position)) {
             // Main class scope

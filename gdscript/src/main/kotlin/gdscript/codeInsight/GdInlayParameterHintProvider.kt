@@ -19,7 +19,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
             val id = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return null;
             val declaration = GdClassMemberReference(id).resolveDeclaration() ?: return null;// TODO ii
             if (declaration is GdMethodDeclTl) {
-                val name = declaration.name.orEmpty();
+                val name = declaration.name;
                 if (name == "emit") {
                     val signal = PsiGdSignalUtil.getDeclaration(element);
                     if (signal != null) {
@@ -46,7 +46,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                 is GdMethodDeclTl -> {
                     params = method.parameters.keys.toArray(emptyArray());
 
-                    if (method.name.orEmpty() == "emit") {
+                    if (method.name == "emit") {
                         val signal = PsiGdSignalUtil.getDeclaration(element);
                         if (signal != null) {
                             params = signal.parameters;

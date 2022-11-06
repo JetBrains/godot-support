@@ -36,7 +36,7 @@
   ]
 }
 
-gdfile ::= (inheritance | classNaming)* topLevelDecl* // TODO limit to once
+gdfile ::= (inheritance | classNaming | topLevelDecl)* // TODO limit to once
 inheritance ::= EXTENDS inheritanceId newLineEnd? {
     methods=[getInheritancePath] pin=1 recoverWhile=inheritance_r
     mixin="gdscript.psi.impl.GdInheritanceElementImpl"
