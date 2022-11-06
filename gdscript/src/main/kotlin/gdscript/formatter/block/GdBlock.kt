@@ -2,7 +2,11 @@ package gdscript.formatter.block
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
+import com.intellij.psi.formatter.FormatterUtil
+import com.intellij.psi.util.PsiEditorUtil
 import gdscript.formatter.GdCodeStyleSettings
+import gdscript.formatter.GdFormattingModelBuilder
+import gdscript.formatter.GdLanguageCodeStyleSettingsProvider
 import gdscript.psi.*
 import gdscript.utils.PsiElementUtil.precedingNewLines
 
@@ -40,7 +44,8 @@ class GdBlock : GdAbstractBlock {
 
         when (node.psi) {
             is GdStmt, is GdClassVarDeclTl,
-            is GdMethodDeclTl, is GdFile -> {
+            is GdMethodDeclTl,
+            -> {
                 if (node.psi.precedingNewLines() < 3) {
                     return ChildAttributes(
                         Indent.getNormalIndent(),
@@ -50,6 +55,26 @@ class GdBlock : GdAbstractBlock {
 
                 return ChildAttributes(
                     Indent.getNoneIndent(),
+                    Alignment.createAlignment(),
+                );
+            }
+            is GdFile -> {
+                val editor = PsiEditorUtil.findEditor(node.psi)!!;
+                val caretOffset = editor.caretModel.offset;
+                val local = node.psi.findElementAt(caretOffset - 1);
+
+                var text = local?.text ?: "";
+                text = text.trimEnd('\n');
+                var count = maxOf(0, text.length);
+                if (text.startsWith(' ')) {
+                    count /= GdFormattingModelBuilder.INDENT_SIZE;
+                }
+                if ((local?.precedingNewLines() ?: 0) >= 3) {
+                    count -= 1;
+                }
+
+                return ChildAttributes(
+                    Indent.getSpaceIndent(count * GdFormattingModelBuilder.INDENT_SIZE),
                     Alignment.createAlignment(),
                 );
             }

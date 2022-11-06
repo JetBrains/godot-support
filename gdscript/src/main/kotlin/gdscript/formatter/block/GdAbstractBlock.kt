@@ -4,7 +4,6 @@ import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
 import com.intellij.psi.TokenType
 import com.intellij.psi.formatter.common.AbstractBlock
-import com.intellij.psi.tree.IElementType
 import com.intellij.psi.tree.IFileElementType
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdClassDeclTl
@@ -128,6 +127,18 @@ abstract class GdAbstractBlock : AbstractBlock {
             val pos = subBlocks[newChildIndex - 1] as GdAbstractBlock;
             index = pos.subBlocks.size;
             children = pos.subBlocks;
+        } else if (node.elementType == GdTypes.METHOD_DECL_TL) {
+            if (node.psi.precedingNewLines() < 3) {
+                return ChildAttributes(
+                    Indent.getNormalIndent(),
+                    Alignment.createAlignment(),
+                );
+            }
+
+            return ChildAttributes(
+                Indent.getNoneIndent(),
+                Alignment.createAlignment(),
+            );
         }
 
         var prev: GdBlock? = null;

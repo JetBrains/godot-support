@@ -14,7 +14,8 @@ class GdLineBlock : GdAbstractBlock {
             GdTypes.ANNOTATION_TL,
             GdTypes.CONST_DECL_TL,
             GdTypes.CLASS_VAR_DECL_TL,
-            GdTypes.METHOD_DECL_TL,
+            GdTypes.SIGNAL_DECL_TL,
+            GdTypes.ENUM_DECL_TL,
         );
     }
 

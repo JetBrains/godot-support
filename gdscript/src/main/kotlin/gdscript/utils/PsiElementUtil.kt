@@ -18,7 +18,7 @@ object PsiElementUtil {
         for (ch in partial.toCharArray().reversed()) {
             if (ch == '\n') {
                 c += 1;
-            } else if (ch != ' ') {
+            } else if (ch != ' ' && ch != '\t') {
                 break;
             }
         }

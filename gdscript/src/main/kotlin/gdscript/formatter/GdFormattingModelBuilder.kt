@@ -3,8 +3,10 @@ package gdscript.formatter
 import com.intellij.formatting.*
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
+import gdscript.GdFileType
 import gdscript.GdLanguage
 import gdscript.formatter.block.GdBlock
+import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
 
 class GdFormattingModelBuilder : FormattingModelBuilder {
@@ -27,6 +29,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
     private fun createSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
         val custom = settings.getCustomSettings(GdCodeStyleSettings::class.java);
+        INDENT_SIZE = settings.getIndentSize(GdFileType);
 
         // TODO grouping
         return SpacingBuilder(settings, GdLanguage)
@@ -52,9 +55,10 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .around(TokenSet.create(GdTypes.TEST_OPERATOR, GdTypes.ASSIGN, GdTypes.EQ)).spaces(1)
     }
 
-    private companion object {
+    companion object {
         val NAMINGS = TokenSet.create(GdTypes.INHERITANCE, GdTypes.CLASS_NAMING)
         val ROOTS = TokenSet.create(GdTypes.CONST_DECL_TL, GdTypes.CLASS_VAR_DECL_TL)
+        var INDENT_SIZE = 4;
     }
 
 }

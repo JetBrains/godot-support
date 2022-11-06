@@ -13,7 +13,6 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
     }
 
     override fun getIndentOptionsEditor(): IndentOptionsEditor {
-        // TODO
         return SmartIndentOptionsEditor();
     }
 
