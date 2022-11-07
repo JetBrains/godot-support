@@ -15,7 +15,6 @@ import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdNodeUtil
 import gdscript.psi.utils.PsiGdFileUtil
-import gdscript.psi.utils.PsiGdMethodDeclUtil
 
 /**
  * Root & InnerClass root level completions

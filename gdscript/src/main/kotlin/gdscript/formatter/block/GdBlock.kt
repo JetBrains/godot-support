@@ -2,11 +2,9 @@ package gdscript.formatter.block
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
-import com.intellij.psi.formatter.FormatterUtil
 import com.intellij.psi.util.PsiEditorUtil
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.formatter.GdFormattingModelBuilder
-import gdscript.formatter.GdLanguageCodeStyleSettingsProvider
 import gdscript.psi.*
 import gdscript.utils.PsiElementUtil.precedingNewLines
 
@@ -38,7 +36,7 @@ class GdBlock : GdAbstractBlock {
         if (newChildIndex > 0 && subBlocks[newChildIndex - 1] is GdLineBlock) {
             return ChildAttributes(
                 Indent.getNoneIndent(),
-                Alignment.createAlignment(),
+                Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
             );
         }
 
@@ -49,13 +47,13 @@ class GdBlock : GdAbstractBlock {
                 if (node.psi.precedingNewLines() < 3) {
                     return ChildAttributes(
                         Indent.getNormalIndent(),
-                        Alignment.createAlignment(),
+                        Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
                     );
                 }
 
                 return ChildAttributes(
                     Indent.getNoneIndent(),
-                    Alignment.createAlignment(),
+                    Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
                 );
             }
             is GdFile -> {
@@ -75,7 +73,7 @@ class GdBlock : GdAbstractBlock {
 
                 return ChildAttributes(
                     Indent.getSpaceIndent(count * GdFormattingModelBuilder.INDENT_SIZE),
-                    Alignment.createAlignment(),
+                    Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
                 );
             }
         }
@@ -83,7 +81,7 @@ class GdBlock : GdAbstractBlock {
         if (node.psi.precedingNewLines() < 3) {
             return ChildAttributes(
                 Indent.getNoneIndent(),
-                Alignment.createAlignment(),
+                Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
             );
         }
 

@@ -52,7 +52,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .before(GdTypes.METHOD_DECL_TL).spacing(0, Int.MAX_VALUE, custom.LINES_BEFORE_FUNC + 1, false, custom.LINES_BEFORE_FUNC)
 
             /** Operators */
-            .around(TokenSet.create(GdTypes.TEST_OPERATOR, GdTypes.ASSIGN, GdTypes.EQ)).spaces(1)
+            .around(TokenSet.create(GdTypes.TEST_OPERATOR, GdTypes.ASSIGN, GdTypes.EQ, GdTypes.ASSIGN_TYPED)).spacing(1, Int.MAX_VALUE, 0, false, 1)
     }
 
     companion object {
