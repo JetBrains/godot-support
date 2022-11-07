@@ -30,9 +30,19 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                 throw new Exception($"Make sure you have only 1 {pluginDirectory}/{runnerScene} in your project.");
             
             var args = CommandLineUtil.ToArray(startInfo.Arguments);
-            var fileName = args[9];
             
-            var usefulArgs = CommandLineUtil.ToString(args.Skip(10));
+            var testRunnerItem = args.Select((item, i) => new { Item = item, Index = i })
+                .First(x =>
+                {
+                    var possiblePathToTestRunner = FileSystemPath.TryParse(x.Item);
+                    return possiblePathToTestRunner.IsAbsolute &&
+                           possiblePathToTestRunner.NameWithoutExtension.StartsWith("ReSharperTestRunner") &&
+                           possiblePathToTestRunner.ExtensionNoDot == "dll";
+                });
+
+            var fileName = testRunnerItem.Item;
+
+            var usefulArgs = CommandLineUtil.ToString(args.Skip(testRunnerItem.Index + 1));
 
             var solutionDir = solution.SolutionDirectory;
             var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
