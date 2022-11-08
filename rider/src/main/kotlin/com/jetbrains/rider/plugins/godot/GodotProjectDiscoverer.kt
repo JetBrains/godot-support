@@ -12,6 +12,8 @@ import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigu
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.projectView.solutionDescription
 import com.jetbrains.rider.projectView.solutionFile
+import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
+import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.util.idea.getService
 import java.io.File
 import java.nio.file.Paths
@@ -27,13 +29,26 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
         val isGodot = getIsGodotProject(project)
         if (isGodot) {
             if (projectGodotPath.toFile().readLines()
-                    .any { it.startsWith("enabled=PoolStringArray") && it.contains("WAT") })
+                    .any { it.startsWith("enabled=PoolStringArray") && it.contains("WAT") }) // todo: in Godot 4 it is PackedStringArray
                         hasWATAddon.set(Paths.get(project.basePath!!).resolve("addons/WAT/gui.tscn").exists())
 
             isGodotProject.set(isGodot)
             godotMonoPath.set(MetadataMonoFileWatcher.getFromMonoMetadataPath(project) ?: MetadataMonoFileWatcher.getGodotPath(project) ?: getGodotPathFromPlayerRunConfiguration(project))
-            godotCorePath.set(MetadataCoreFileWatcher.getGodotPath(project))
+            godotCorePath.set(MetadataCoreFileWatcher.getGodotPath(project) ?: getGodotPathFromCorePlayerRunConfiguration(project))
         }
+    }
+
+    private fun getGodotPathFromCorePlayerRunConfiguration(project: Project):String? {
+        val runManager = RunManager.getInstance(project)
+        val playerSettings = runManager.allSettings.firstOrNull { it.type is DotNetExeConfigurationType && it.name == GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME }
+        if (playerSettings != null) {
+            val config = playerSettings.configuration as DotNetExeConfiguration
+            val path = config.parameters.exePath
+            if (path.isNotEmpty() && File(path).exists()) {
+                return path
+            }
+        }
+        return null
     }
 
     private fun getGodotPathFromPlayerRunConfiguration(project: Project):String? {
