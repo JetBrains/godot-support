@@ -6,15 +6,11 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.ide.util.PsiElementListCellRenderer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.childrenOfType
 import gdscript.GdIcon
 import gdscript.index.impl.GdFileResIndex
 import gdscript.index.impl.GdSignalDeclIndex
 import gdscript.psi.GdMethodIdNmi
-import gdscript.psi.GdPreloadNm
 import gdscript.psi.GdSignalDeclTl
-import gdscript.psi.utils.GdClassMemberUtil
-import gdscript.psi.utils.GdResourceUtil
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.localPath
 import gdscript.utils.VirtualFileUtil.resourcePath
@@ -22,7 +18,6 @@ import tscn.index.impl.TscnConnectionIndex
 import tscn.index.impl.TscnResourceIndex
 import tscn.psi.TscnConnectionHeader
 import tscn.psi.TscnNodeHeader
-import tscn.psi.TscnParagraph
 import javax.swing.Icon
 
 /**

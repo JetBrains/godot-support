@@ -87,12 +87,20 @@ object GdClassMemberUtil {
 
         var parent: PsiElement?;
 
-        // If it's stand-alone ref_id, adds also _GlobalScope & ClassNames - those are added as last due to matching name of some GlobalVars with class_name
+        // If it's stand-alone ref_id, adds also _Global & ClassNames - Classes are added as last due to matching name of some GlobalVars with class_name
         if (calledOn == null) {
-            parent = GdClassIdIndex.getGloballyResolved(GdKeywords.GLOBAL_SCOPE, element.project).firstOrNull()
-                ?: return result.toTypedArray();
-            val local = addsParentDeclarations(GdClassUtil.getOwningClassElement(parent), result, static, searchFor);
-            if (searchFor != null && local != null) return arrayOf(local);
+            arrayOf(GdKeywords.GLOBAL_SCOPE, GdKeywords.GLOBAL_GD_SCRIPT).forEach {
+                val globalParent = GdClassIdIndex.getGloballyResolved(it, element.project).firstOrNull();
+                if (globalParent != null) {
+                    val local = addsParentDeclarations(
+                        GdClassUtil.getOwningClassElement(globalParent),
+                        result,
+                        static,
+                        searchFor
+                    );
+                    if (searchFor != null && local != null) return arrayOf(local);
+                }
+            }
         }
 
         // Checks locals only when it's not attribute/call expression moving declaration possibly outside

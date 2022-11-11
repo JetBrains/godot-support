@@ -110,12 +110,6 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdVarNmi::class.java)!!.firstChild;
     }
 
-    fun preloadNm(project: Project, name: String): PsiElement {
-        val file = createFile(project, "extends Node\nvar variable = preload($name)\n");
-
-        return PsiTreeUtil.findChildOfType(file, GdPreloadNm::class.java)!!.firstChild;
-    }
-
     private fun createFile(project: Project, text: String) =
             PsiFileFactory.getInstance(project).createFileFromText("dum.gd", GdFileType, text) as GdFile
 }

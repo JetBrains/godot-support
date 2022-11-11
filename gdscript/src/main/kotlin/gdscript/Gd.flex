@@ -217,11 +217,8 @@ ANY = .+
     "break"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.BREAK); }
     "return"       { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.RETURN); }
     "void"         { return dedentRoot(GdTypes.VOID); }
-    "PI"           { return dedentRoot(GdTypes.PI); }
-    "TAU"          { return dedentRoot(GdTypes.TAU); }
-    "NAN"          { return dedentRoot(GdTypes.NAN); }
-    "INF"          { return dedentRoot(GdTypes.INF); }
     "inf"          { return dedentRoot(GdTypes.INF); }
+    "nan"          { return dedentRoot(GdTypes.NAN); }
     "signal"       { yybegin(AWAIT_NEW_LINE_ONCE); return GdTypes.SIGNAL; }
     "in"           { return dedentRoot(GdTypes.IN); }
     "if"           { return dedentRoot(GdTypes.IF); }
@@ -233,10 +230,7 @@ ANY = .+
     "for"          { return dedentRoot(GdTypes.FOR); }
     "in"           { return dedentRoot(GdTypes.IN); }
     "match"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.MATCH); }
-    "assert"       { return dedentRoot(GdTypes.ASSERT); }
     "await"        { return dedentRoot(GdTypes.AWAIT); }
-    "load"         { return dedentRoot(GdTypes.LOAD); }
-    "preload"      { return dedentRoot(GdTypes.PRELOAD); }
     "static"       { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.STATIC); }
     "vararg"       { return dedentRoot(GdTypes.VARARG); }
 //    "puppet"       { return dedentRoot(GdTypes.PUPPET); }

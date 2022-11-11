@@ -13,7 +13,6 @@ object PsiGdExprUtil {
 
     fun getReturnType(expr: GdExpr): String {
         return when (expr) {
-            is GdPreloadEx -> "PackedScene";
             is GdFuncDeclEx -> GdKeywords.CALLABLE;
             is GdPlusMinusEx -> expr.expr.returnType;
             is GdCastEx -> fromTyped(expr.isTyped);
@@ -93,10 +92,8 @@ object PsiGdExprUtil {
                     GdKeywords.TRUE -> return GdKeywords.BOOL;
                     GdKeywords.FALSE -> return GdKeywords.BOOL;
                     GdKeywords.NULL -> return GdKeywords.NULL;
-                    GdKeywords.PI -> return GdKeywords.FLOAT;
-                    GdKeywords.TAU -> return GdKeywords.FLOAT;
-                    GdKeywords.NAN -> return GdKeywords.NAN;
-                    GdKeywords.INF -> return GdKeywords.FLOAT;
+                    GdKeywords.NAN -> return "inf";
+                    GdKeywords.INF -> return "nan";
                 }
 
                 val elementType = expr.firstChild?.elementType;

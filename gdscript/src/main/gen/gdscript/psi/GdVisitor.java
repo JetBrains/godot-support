@@ -31,10 +31,6 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitAssertSt(@NotNull GdAssertSt o) {
-    visitStmt(o);
-  }
-
   public void visitAssignTyped(@NotNull GdAssignTyped o) {
     visitPsiElement(o);
   }
@@ -273,14 +269,6 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitPlusEx(@NotNull GdPlusEx o) {
     visitExpr(o);
-  }
-
-  public void visitPreloadEx(@NotNull GdPreloadEx o) {
-    visitExpr(o);
-  }
-
-  public void visitPreloadNm(@NotNull GdPreloadNm o) {
-    visitNamedElement(o);
   }
 
   public void visitPrimaryEx(@NotNull GdPrimaryEx o) {

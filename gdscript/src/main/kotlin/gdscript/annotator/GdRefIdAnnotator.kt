@@ -20,7 +20,17 @@ class GdRefIdAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is GdRefIdNm) return;
-        if (element.text == GdKeywords.SELF || element.text == GdKeywords.SUPER) return;
+        val txt = element.text;
+
+        if (txt == GdKeywords.SELF || txt == GdKeywords.SUPER) return;
+        if (arrayOf(GdKeywords.PI, GdKeywords.TAU, GdKeywords.INF, GdKeywords.NAN).contains(txt)) {
+            holder
+                .newSilentAnnotation(HighlightSeverity.INFORMATION)
+                .range(element.textRange)
+                .textAttributes(GdHighlighterColors.KEYWORD)
+                .create()
+            return
+        }
 
         val attribute = when (GdClassMemberUtil.findDeclaration(element)) {
             is GdMethodDeclTl -> GdHighlighterColors.METHOD_CALL;

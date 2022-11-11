@@ -7,7 +7,6 @@ import com.intellij.ide.util.PsiElementListCellRenderer
 import com.intellij.psi.PsiElement
 import gdscript.GdIcon
 import gdscript.psi.GdInheritanceIdNm
-import gdscript.psi.GdPreloadNm
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdInheritanceUtil
 import gdscript.psi.utils.GdResourceUtil
@@ -41,10 +40,7 @@ class GdResourceLineMarkerContributor : RelatedItemLineMarkerProvider() {
             .setCellRenderer {
                 object : PsiElementListCellRenderer<PsiElement>() {
                     override fun getIcon(element: PsiElement?): Icon {
-                        if (element is GdPreloadNm)
-                            return GdIcon.getEditorIcon(GdIcon.SLOT)!!;
-
-                        return GdIcon.getEditorIcon(GdIcon.STRING)!!;
+                        return GdIcon.getEditorIcon(GdIcon.SLOT)!!;
                     }
 
                     override fun getToolTipText(): String? {

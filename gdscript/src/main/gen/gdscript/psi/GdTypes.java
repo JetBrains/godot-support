@@ -23,7 +23,6 @@ public interface GdTypes {
   IElementType ARRAY_DECL = new GdElementType("ARRAY_DECL");
   IElementType ARRAY_PATTERN = new GdElementType("ARRAY_PATTERN");
   IElementType ARR_EX = new GdElementType("ARR_EX");
-  IElementType ASSERT_ST = new GdElementType("ASSERT_ST");
   IElementType ASSIGN_ST = new GdElementType("ASSIGN_ST");
   IElementType ASSIGN_TYPED = new GdElementType("ASSIGN_TYPED");
   IElementType ATTRIBUTE_EX = new GdElementType("ATTRIBUTE_EX");
@@ -84,8 +83,6 @@ public interface GdTypes {
   IElementType PLUS_EX = new GdElementType("PLUS_EX");
   IElementType PLUS_MINUS_EX = new GdElementType("PLUS_MINUS_EX");
   IElementType PLUS_MINUS_PRE_EX = new GdElementType("PLUS_MINUS_PRE_EX");
-  IElementType PRELOAD_EX = new GdElementType("PRELOAD_EX");
-  IElementType PRELOAD_NM = new GdElementType("PRELOAD_NM");
   IElementType PRIMARY_EX = new GdElementType("PRIMARY_EX");
   IElementType REF_ID_NM = new GdElementType("REF_ID_NM");
   IElementType RETURN_HINT = new GdElementType("RETURN_HINT");
@@ -115,7 +112,6 @@ public interface GdTypes {
   IElementType ANDAND = new GdTokenType("ANDAND");
   IElementType ANNOTATOR = new GdTokenType("ANNOTATOR");
   IElementType AS = new GdTokenType("AS");
-  IElementType ASSERT = new GdTokenType("ASSERT");
   IElementType ASSET = new GdTokenType("ASSET");
   IElementType ASSIGN = new GdTokenType("ASSIGN");
   IElementType AWAIT = new GdTokenType("AWAIT");
@@ -151,7 +147,6 @@ public interface GdTypes {
   IElementType IS = new GdTokenType("IS");
   IElementType LBSHIFT = new GdTokenType("LBSHIFT");
   IElementType LCBR = new GdTokenType("LCBR");
-  IElementType LOAD = new GdTokenType("LOAD");
   IElementType LRBR = new GdTokenType("LRBR");
   IElementType LSBR = new GdTokenType("LSBR");
   IElementType MATCH = new GdTokenType("MATCH");
@@ -169,10 +164,8 @@ public interface GdTypes {
   IElementType OR = new GdTokenType("OR");
   IElementType OROR = new GdTokenType("OROR");
   IElementType PASS = new GdTokenType("PASS");
-  IElementType PI = new GdTokenType("PI");
   IElementType PLUS = new GdTokenType("PLUS");
   IElementType PPLUS = new GdTokenType("PPLUS");
-  IElementType PRELOAD = new GdTokenType("PRELOAD");
   IElementType RBSHIFT = new GdTokenType("RBSHIFT");
   IElementType RCBR = new GdTokenType("RCBR");
   IElementType RET = new GdTokenType("RET");
@@ -186,7 +179,6 @@ public interface GdTypes {
   IElementType STATIC = new GdTokenType("STATIC");
   IElementType STRING = new GdTokenType("STRING");
   IElementType SUPER = new GdTokenType("SUPER");
-  IElementType TAU = new GdTokenType("TAU");
   IElementType TEST_OPERATOR = new GdTokenType("TEST_OPERATOR");
   IElementType TOOL = new GdTokenType("TOOL");
   IElementType TRUE = new GdTokenType("TRUE");
@@ -217,9 +209,6 @@ public interface GdTypes {
       }
       else if (type == ARR_EX) {
         return new GdArrExImpl(node);
-      }
-      else if (type == ASSERT_ST) {
-        return new GdAssertStImpl(node);
       }
       else if (type == ASSIGN_ST) {
         return new GdAssignStImpl(node);
@@ -397,12 +386,6 @@ public interface GdTypes {
       }
       else if (type == PLUS_MINUS_PRE_EX) {
         return new GdPlusMinusPreExImpl(node);
-      }
-      else if (type == PRELOAD_EX) {
-        return new GdPreloadExImpl(node);
-      }
-      else if (type == PRELOAD_NM) {
-        return new GdPreloadNmImpl(node);
       }
       else if (type == PRIMARY_EX) {
         return new GdPrimaryExImpl(node);

@@ -13,19 +13,20 @@ import gdscript.reference.GdResourceReference
 class GdResourceReferenceContributor : PsiReferenceContributor() {
 
     override fun registerReferenceProviders(register: PsiReferenceRegistrar) {
-        register.registerReferenceProvider(
-            psiElement(GdTypes.PRELOAD_NM).withText(
-                string().startsWith("\"res://").endsWith(".gd\"")
-            ),
-            object : PsiReferenceProvider() {
-                override fun getReferencesByElement(
-                    element: PsiElement,
-                    context: ProcessingContext,
-                ): Array<PsiReference> {
-                    return arrayOf(GdResourceReference(element));
-                }
-            }
-        );
+        // TODO
+//        register.registerReferenceProvider(
+//            psiElement(GdTypes.PRELOAD_NM).withText(
+//                string().startsWith("\"res://").endsWith(".gd\"")
+//            ),
+//            object : PsiReferenceProvider() {
+//                override fun getReferencesByElement(
+//                    element: PsiElement,
+//                    context: ProcessingContext,
+//                ): Array<PsiReference> {
+//                    return arrayOf(GdResourceReference(element));
+//                }
+//            }
+//        );
     }
 
 }

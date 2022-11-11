@@ -8,7 +8,6 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdFileType
 import gdscript.psi.GdLiteralEx
-import gdscript.psi.GdPreloadNm
 import gdscript.utils.VirtualFileUtil.resourcePath
 
 /**
@@ -18,7 +17,7 @@ object GdResourceUtil {
 
     /**
      * Search whole project for positions of given resource "res://" element
-     * @return String | GdPreloadNm
+     * @return String
      */
     fun findResourcesByName(resourceFile: PsiElement): Array<PsiElement> {
         val project = resourceFile.project;
@@ -30,7 +29,6 @@ object GdResourceUtil {
                 PsiTreeUtil.findChildrenOfAnyType(
                     manager.findFile(file),
                     GdLiteralEx::class.java,
-                    GdPreloadNm::class.java,
                 ).mapNotNull {
                     val text = it.text.trim('"');
                     if (text == search) {

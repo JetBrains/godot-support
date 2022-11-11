@@ -110,10 +110,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "break"        { return GdTypes.BREAK; }
     "return"       { return GdTypes.RETURN; }
     "void"         { return GdTypes.VOID; }
-    "PI"           { return GdTypes.PI; }
-    "TAU"          { return GdTypes.TAU; }
-    "NAN"          { return GdTypes.NAN; }
-    "INF"          { return GdTypes.INF; }
+    "nan"          { return GdTypes.NAN; }
     "inf"          { return GdTypes.INF; }
     "signal"       { return GdTypes.SIGNAL; }
     "in"           { return GdTypes.IN; }
@@ -126,10 +123,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "for"          { return GdTypes.FOR; }
     "in"           { return GdTypes.IN; }
     "match"        { return GdTypes.MATCH; }
-    "assert"       { return GdTypes.ASSERT; }
     "await"        { return GdTypes.AWAIT; }
-    "load"         { return GdTypes.LOAD; }
-    "preload"      { return GdTypes.PRELOAD; }
     "static"       { return GdTypes.STATIC; }
     "vararg"       { return GdTypes.VARARG; }
    //"puppet"       { return GdTypes.PUPPET; }

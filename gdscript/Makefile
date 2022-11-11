@@ -1,5 +1,6 @@
 download-docs:
 	wget -O - https://github.com/godotengine/godot/archive/master.tar.gz | tar -xz --strip=2 godot-master/doc/classes
+	cp build_files/@GdScript.xml classes/@GdScript.xml
 
 refresh-classes:
 	php classParser.php
