@@ -61,6 +61,7 @@ foreach ($files as $filename) {
         $data .= sprintf("extends %s\n", $att['inherits']);
     }
 
+    /** Description */
     $desc = (array) ($xml['brief_description'] ?? []);
     if ($desc) {
         $data .= $formatDesc($desc['0'], "brief");
@@ -83,6 +84,26 @@ foreach ($files as $filename) {
         $data .= sprintf("class_name %s\n\n", $class_name);
     //}
 
+    /** Signals */
+    foreach ($xml['signals'] ?? [] as $value) {
+        $value = (array) $value;
+        $att = (array) $value['@attributes'];
+
+        $params = $parseParams($value);
+        $desc = (array) ($value['description'] ?? []);
+        if ($desc) {
+            $data .= $formatDesc($desc['0'], "desc");
+        }
+
+        $paramsStr = implode(', ', $params);
+        if ($paramsStr) {
+            $paramsStr = sprintf("(%s)", $paramsStr);
+        }
+
+        $data .= sprintf("signal %s%s\n", $att['name'], $paramsStr);
+    }
+
+    /** Constants */
     foreach ($xml['constants'] ?? [] as $value) {
         $value = (array) $value;
         $att = (array) $value['@attributes'];
@@ -93,6 +114,7 @@ foreach ($files as $filename) {
     }
     $data .= "\n";
 
+    /** Variables */
     foreach ($xml['members'] ?? [] as $value) {
         $value = (array) $value;
         $att = (array) $value['@attributes'];
@@ -103,6 +125,7 @@ foreach ($files as $filename) {
     }
     $data .= "\n";
 
+    /** Constructor methods */
     foreach ($xml['constructors'] ?? [] as $value) {
         $value = (array) $value;
         $att = (array) $value['@attributes'];
@@ -119,6 +142,7 @@ foreach ($files as $filename) {
     }
     $data .= "\n";
 
+    /** Methods */
     foreach ($xml['methods'] ?? [] as $value) {
         $value = (array) $value;
         $att = (array) $value['@attributes'];
