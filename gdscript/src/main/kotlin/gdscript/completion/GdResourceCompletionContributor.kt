@@ -4,14 +4,11 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
-import gdscript.completion.utils.GdFileCompletionUtil
 import gdscript.completion.utils.GdRefIdCompletionUtil
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
-import gdscript.psi.utils.GdResourceUtil
-import tscn.index.impl.TscnResourceIndex
 
 /**
  * $NodePath & %NodeName read from .tscn

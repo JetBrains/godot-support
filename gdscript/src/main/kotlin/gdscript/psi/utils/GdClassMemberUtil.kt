@@ -54,7 +54,7 @@ object GdClassMemberUtil {
                 if (element.parent.prevSibling != null) {
                     val ex = parent.exprList.first()!!;
                     calledOn = ex.returnType;
-                    static = calledOn == ex.text;
+                    static = (calledOn == ex.text) && checkGlobalStaticMatch(element, calledOn);
                 }
             }
             is GdCallEx -> {
@@ -63,18 +63,7 @@ object GdClassMemberUtil {
                     if (parent.prevSibling != null) {
                         val ex = prev.exprList.first()!!;
                         calledOn = ex.returnType;
-                        static = calledOn == ex.text;
-                        if (static) { // _GlobalScope has matching variables with classes
-                            val virtualFile = FilenameIndex.getVirtualFilesByName("${GdKeywords.GLOBAL_SCOPE}.gd", GlobalSearchScope.allScope(element.project)).firstOrNull();
-                            if (virtualFile != null) {
-                                val psiFile = PsiManager.getInstance(element.project).findFile(virtualFile);
-                                static = GdClassVarDeclIndex.get(
-                                    calledOn,
-                                    element.project,
-                                    GlobalSearchScope.fileScope(psiFile!!),
-                                ).isEmpty();
-                            }
-                        }
+                        static = (calledOn == ex.text) && checkGlobalStaticMatch(element, calledOn);
                     }
                 }
             }
@@ -362,6 +351,23 @@ object GdClassMemberUtil {
                 emptyList()
             }
         }.toTypedArray();
+    }
+
+    /**
+     * _GlobalScope has matching variables with classes
+     */
+    private fun checkGlobalStaticMatch(element: PsiElement, name: String): Boolean {
+        val virtualFile = FilenameIndex.getVirtualFilesByName(
+            "${GdKeywords.GLOBAL_SCOPE}.gd",
+            GlobalSearchScope.allScope(element.project)
+        ).firstOrNull() ?: return true;
+        val psiFile = PsiManager.getInstance(element.project).findFile(virtualFile) ?: return true;
+
+        return GdClassVarDeclIndex.get(
+            name,
+            element.project,
+            GlobalSearchScope.fileScope(psiFile),
+        ).isEmpty();
     }
 
 }

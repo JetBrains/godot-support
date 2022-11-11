@@ -29,6 +29,12 @@ public class GdMatchStImpl extends GdStmtImpl implements GdMatchSt {
 
   @Override
   @Nullable
+  public GdExpr getExpr() {
+    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
+  }
+
+  @Override
+  @Nullable
   public GdMatchBlock getMatchBlock() {
     return PsiTreeUtil.getChildOfType(this, GdMatchBlock.class);
   }

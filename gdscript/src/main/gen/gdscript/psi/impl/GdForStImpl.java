@@ -29,6 +29,12 @@ public class GdForStImpl extends GdStmtImpl implements GdForSt {
 
   @Override
   @Nullable
+  public GdExpr getExpr() {
+    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
+  }
+
+  @Override
+  @Nullable
   public GdStmtOrSuite getStmtOrSuite() {
     return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
   }

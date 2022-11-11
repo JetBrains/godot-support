@@ -39,7 +39,7 @@ public class GdEnumValueNmiImpl extends GdNamedIdElementImpl implements GdEnumVa
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getNameIdentifier() {
     return GdPsiUtils.getNameIdentifier(this);
   }

@@ -62,7 +62,7 @@ public class GdClassNameNmiImpl extends GdClassIdElementImpl implements GdClassN
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getNameIdentifier() {
     return GdPsiUtils.getNameIdentifier(this);
   }

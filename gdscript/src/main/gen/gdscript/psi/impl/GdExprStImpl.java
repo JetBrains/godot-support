@@ -28,6 +28,12 @@ public class GdExprStImpl extends GdStmtImpl implements GdExprSt {
   }
 
   @Override
+  @Nullable
+  public GdEndStmt getEndStmt() {
+    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
+  }
+
+  @Override
   @NotNull
   public GdExpr getExpr() {
     return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));

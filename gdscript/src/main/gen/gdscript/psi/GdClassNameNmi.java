@@ -23,7 +23,7 @@ public interface GdClassNameNmi extends GdNamedIdElement, StubBasedPsiElement<Gd
   @NotNull
   PsiElement setName(@NotNull String newName);
 
-  @Nullable
+  @NotNull
   PsiElement getNameIdentifier();
 
 }

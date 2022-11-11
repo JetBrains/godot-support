@@ -39,7 +39,7 @@ public class GdSignalIdNmiImpl extends GdNamedIdElementImpl implements GdSignalI
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getNameIdentifier() {
     return GdPsiUtils.getNameIdentifier(this);
   }

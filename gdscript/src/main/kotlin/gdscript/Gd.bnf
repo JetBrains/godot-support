@@ -113,7 +113,7 @@ param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
 returnHint ::= RET returnHintVal
 returnHintVal ::= typedVal | VOID // typeHint_nm | VOID
 argList ::= expr (COMMA expr)* {pin=1 recoverWhile=argList_r}
-private argList_r ::= !(RRBR) & topLevelDecl_r
+private argList_r ::= !(RRBR)
 var_nmi ::= identifierEx
 
 // TODO annotace - single inheritance - jak root tak inner, single class_name
@@ -137,7 +137,6 @@ stmt ::=
     | flow_st
     | await_st
     | expr_st
-    | (expr endStmt)
 private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
     | RETURN | AWAIT | ASSET | INDENT | DEDENT
@@ -167,7 +166,7 @@ keyValuePattern ::= STRING [ COLON pattern ]
 await_st ::= AWAIT expr_st {pin=1 recoverWhile=stmt_r}
 
 assign_st ::= expr (EQ | ASSIGN) expr endStmt
-expr_st ::= expr endStmt {pin=1 recoverWhile=stmt_r}
+expr_st ::= expr endStmt?
 
 flow_st ::=
     (CONTINUE endStmt)

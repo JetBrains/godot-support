@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GdForSt extends GdStmt {
 
   @Nullable
+  GdExpr getExpr();
+
+  @Nullable
   GdStmtOrSuite getStmtOrSuite();
 
   @NotNull

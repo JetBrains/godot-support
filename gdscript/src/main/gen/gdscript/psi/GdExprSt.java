@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface GdExprSt extends GdStmt {
 
+  @Nullable
+  GdEndStmt getEndStmt();
+
   @NotNull
   GdExpr getExpr();
 

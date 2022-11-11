@@ -6,6 +6,7 @@ import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.impl.GdMethodDeclElementType
 
 class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
+
     private var isStatic: Boolean = false;
     private var isVariadic: Boolean = false;
     private var name: String = "";
@@ -43,4 +44,5 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
     override fun parameters(): HashMap<String, String?> = parameters;
 
     override fun isConstructor(): Boolean = isConstructor;
+
 }

@@ -13,7 +13,7 @@ public interface GdMethodIdNmi extends GdNamedIdElement {
   @NotNull
   PsiElement setName(@NotNull String newName);
 
-  @Nullable
+  @NotNull
   PsiElement getNameIdentifier();
 
 }

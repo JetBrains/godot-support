@@ -35,6 +35,18 @@ public class GdVarDeclStImpl extends GdStmtImpl implements GdVarDeclSt {
 
   @Override
   @Nullable
+  public GdEndStmt getEndStmt() {
+    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
+  }
+
+  @Override
+  @Nullable
+  public GdExpr getExpr() {
+    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
+  }
+
+  @Override
+  @Nullable
   public GdTyped getTyped() {
     return PsiTreeUtil.getChildOfType(this, GdTyped.class);
   }

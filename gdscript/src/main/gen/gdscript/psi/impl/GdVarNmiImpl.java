@@ -39,7 +39,7 @@ public class GdVarNmiImpl extends GdNamedIdElementImpl implements GdVarNmi {
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getNameIdentifier() {
     return GdPsiUtils.getNameIdentifier(this);
   }

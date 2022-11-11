@@ -11,6 +11,12 @@ public interface GdConstDeclSt extends GdStmt {
   GdAssignTyped getAssignTyped();
 
   @Nullable
+  GdEndStmt getEndStmt();
+
+  @Nullable
+  GdExpr getExpr();
+
+  @Nullable
   GdTyped getTyped();
 
   @NotNull

@@ -5,5 +5,4 @@ import gdscript.psi.GdConstDeclTl
 
 interface GdConstDeclStub : StubElement<GdConstDeclTl> {
     fun name(): String;
-    fun returnType(): String;
 }

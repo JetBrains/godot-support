@@ -37,6 +37,9 @@ object PsiGdExprUtil {
             is GdFactorEx -> {
                 val a = expr.exprList.getOrNull(0)?.returnType ?: GdKeywords.FLOAT;
                 val b = expr.exprList.getOrNull(1)?.returnType ?: GdKeywords.FLOAT;
+                if (a == "String") { // String template
+                    return b;
+                }
 
                 return if (a == b) a else GdKeywords.FLOAT;
             };

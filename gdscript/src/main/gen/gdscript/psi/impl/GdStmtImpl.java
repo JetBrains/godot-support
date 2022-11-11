@@ -11,7 +11,7 @@ import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdStmtImpl extends ASTWrapperPsiElement implements GdStmt {
+public abstract class GdStmtImpl extends ASTWrapperPsiElement implements GdStmt {
 
   public GdStmtImpl(@NotNull ASTNode node) {
     super(node);
@@ -25,18 +25,6 @@ public class GdStmtImpl extends ASTWrapperPsiElement implements GdStmt {
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public GdEndStmt getEndStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
-  }
-
-  @Override
-  @Nullable
-  public GdExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
   }
 
 }

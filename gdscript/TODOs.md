@@ -1,3 +1,9 @@
+Video preview
+Resources
+NodePath
+Set/Get
+Signal/Resource line marker
+private members
 
 
 res line marker

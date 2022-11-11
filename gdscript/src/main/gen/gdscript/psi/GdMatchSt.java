@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GdMatchSt extends GdStmt {
 
   @Nullable
+  GdExpr getExpr();
+
+  @Nullable
   GdMatchBlock getMatchBlock();
 
 }

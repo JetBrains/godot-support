@@ -34,6 +34,12 @@ public class GdFlowStImpl extends GdStmtImpl implements GdFlowSt {
   }
 
   @Override
+  @Nullable
+  public GdExpr getExpr() {
+    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
+  }
+
+  @Override
   @NotNull
   public String getType() {
     return GdPsiUtils.getType(this);

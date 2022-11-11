@@ -39,7 +39,7 @@ public class GdConstIdNmiImpl extends GdNamedIdElementImpl implements GdConstIdN
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getNameIdentifier() {
     return GdPsiUtils.getNameIdentifier(this);
   }
