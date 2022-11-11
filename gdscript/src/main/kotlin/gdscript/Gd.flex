@@ -76,7 +76,7 @@ INDENT = [ \t]+
 EMPTY_LINE = [ \t]+\n
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 NUMBER = [0-9][0-9_]*(\.[0-9_]+)?
-HEX_NUMBER = 0x[0-9_a-f]+
+HEX_NUMBER = 0x[0-9_a-fA-F]+
 BIN_NUMBER = 0b[01_]+
 REAL_NUMBER = {NUMBER}e-[0-9]+
 

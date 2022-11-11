@@ -36,7 +36,7 @@ class GdBlock : GdAbstractBlock {
         if (newChildIndex > 0 && subBlocks[newChildIndex - 1] is GdLineBlock) {
             return ChildAttributes(
                 Indent.getNoneIndent(),
-                Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+                if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) EQ_ALIGN else Alignment.createAlignment(),
             );
         }
 
@@ -47,13 +47,13 @@ class GdBlock : GdAbstractBlock {
                 if (node.psi.precedingNewLines() < 3) {
                     return ChildAttributes(
                         Indent.getNormalIndent(),
-                        Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+                        if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) EQ_ALIGN else Alignment.createAlignment(),
                     );
                 }
 
                 return ChildAttributes(
                     Indent.getNoneIndent(),
-                    Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+                    if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) EQ_ALIGN else Alignment.createAlignment(),
                 );
             }
             is GdFile -> {
@@ -73,7 +73,7 @@ class GdBlock : GdAbstractBlock {
 
                 return ChildAttributes(
                     Indent.getSpaceIndent(count * GdFormattingModelBuilder.INDENT_SIZE),
-                    Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+                    if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) EQ_ALIGN else Alignment.createAlignment(),
                 );
             }
         }
@@ -81,7 +81,7 @@ class GdBlock : GdAbstractBlock {
         if (node.psi.precedingNewLines() < 3) {
             return ChildAttributes(
                 Indent.getNoneIndent(),
-                Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+                if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) EQ_ALIGN else Alignment.createAlignment(),
             );
         }
 

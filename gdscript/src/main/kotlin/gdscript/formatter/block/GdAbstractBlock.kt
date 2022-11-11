@@ -133,13 +133,13 @@ abstract class GdAbstractBlock : AbstractBlock {
             if (node.psi.precedingNewLines() < 3) {
                 return ChildAttributes(
                     Indent.getNormalIndent(),
-                    Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+                    if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) EQ_ALIGN else Alignment.createAlignment(),
                 );
             }
 
             return ChildAttributes(
                 Indent.getNoneIndent(),
-                Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+                if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) EQ_ALIGN else Alignment.createAlignment(),
             );
         }
 
@@ -162,13 +162,13 @@ abstract class GdAbstractBlock : AbstractBlock {
                 if (prev.node.psi.precedingNewLines() < 3) {
                     return ChildAttributes(
                         Indent.getNormalIndent(),
-                        Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+                        if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) EQ_ALIGN else Alignment.createAlignment(),
                     );
                 }
 
                 return ChildAttributes(
                     Indent.getNoneIndent(),
-                    Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+                    if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) EQ_ALIGN else Alignment.createAlignment(),
                 );
             }
             GdTypes.GET_DECL, GdTypes.SET_DECL -> {
@@ -180,7 +180,7 @@ abstract class GdAbstractBlock : AbstractBlock {
                 if (definitions.size < 2 && prev.node.psi.precedingNewLines() < 2) {
                     return ChildAttributes(
                         Indent.getNormalIndent(),
-                        Alignment.createAlignment(), //if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+                        if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) EQ_ALIGN else Alignment.createAlignment(),
                     );
                 }
             }
