@@ -145,7 +145,7 @@ stmt ::=
 private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
     | RETURN | AWAIT | ASSET | PRELOAD | INDENT | DEDENT
-    | LOAD
+    | LOAD | NEGATE
     | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
@@ -184,6 +184,7 @@ flow_st ::=
 
 expr ::=
     plusMinus_ex
+    | negate_ex
     | preload_ex
     | attribute_ex
     | cast_ex
@@ -191,7 +192,6 @@ expr ::=
     | call_ex
     | ternary_ex
     | logic_ex
-    | negate_ex
     | in_ex
     | comparison_ex
     | bitAnd_ex

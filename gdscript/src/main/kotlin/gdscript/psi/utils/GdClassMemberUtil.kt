@@ -1,10 +1,14 @@
 package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiManager
+import com.intellij.psi.search.FilenameIndex
+import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdClassNamingIndex
+import gdscript.index.impl.GdClassVarDeclIndex
 import gdscript.psi.*
 import gdscript.settings.GdSettingsState
 
@@ -26,11 +30,21 @@ object GdClassMemberUtil {
      */
     fun listDeclarations(
         element: PsiElement,
-        searchFor: GdNamedElement? = null,
+        searchFor: GdNamedElement,
         onlyPreceding: Boolean = false,
     ): Array<PsiElement> {
-        val search = searchFor != null;
-        val name: String? = searchFor?.name;
+        return listDeclarations(element, searchFor.name, onlyPreceding);
+    }
+
+    /**
+     * List available declarations (const, var, enum, signal, method, ...) from given PsiElement skipping itself
+     * @param searchFor stops and returns matching element
+     */
+    fun listDeclarations(
+        element: PsiElement,
+        searchFor: String? = null,
+        onlyPreceding: Boolean = false,
+    ): Array<PsiElement> {
         var static = false;
 
         val result = mutableListOf<PsiElement>()
@@ -50,6 +64,17 @@ object GdClassMemberUtil {
                         val ex = prev.exprList.first()!!;
                         calledOn = ex.returnType;
                         static = calledOn == ex.text;
+                        if (static) { // _GlobalScope has matching variables with classes
+                            val virtualFile = FilenameIndex.getVirtualFilesByName("${GdKeywords.GLOBAL_SCOPE}.gd", GlobalSearchScope.allScope(element.project)).firstOrNull();
+                            if (virtualFile != null) {
+                                val psiFile = PsiManager.getInstance(element.project).findFile(virtualFile);
+                                static = GdClassVarDeclIndex.get(
+                                    calledOn,
+                                    element.project,
+                                    GlobalSearchScope.fileScope(psiFile!!),
+                                ).isEmpty();
+                            }
+                        }
                     }
                 }
             }
@@ -62,24 +87,18 @@ object GdClassMemberUtil {
 
         var parent: PsiElement?;
 
-        // If it's stand-alone ref_id, adds also _GlobalScope & ClassNames
+        // If it's stand-alone ref_id, adds also _GlobalScope & ClassNames - those are added as last due to matching name of some GlobalVars with class_name
         if (calledOn == null) {
             parent = GdClassIdIndex.getGloballyResolved(GdKeywords.GLOBAL_SCOPE, element.project).firstOrNull()
                 ?: return result.toTypedArray();
-            val local = addsParentDeclarations(GdClassUtil.getOwningClassElement(parent), result, static, name);
-            if (search && local != null) return arrayOf(local);
-
-            if (search) {
-                val localClass = GdClassNamingIndex.getGlobally(searchFor!!).firstOrNull();
-                if (localClass != null) return arrayOf(localClass);
-            }
-            result.addAll(GdClassNamingIndex.getAllValues(element.project));
+            val local = addsParentDeclarations(GdClassUtil.getOwningClassElement(parent), result, static, searchFor);
+            if (searchFor != null && local != null) return arrayOf(local);
         }
 
         // Checks locals only when it's not attribute/call expression moving declaration possibly outside
         if (calledOn == null) {
             val locals = listLocalDeclarationsUpward(element);
-            if (search && locals.containsKey(name)) return arrayOf(locals[name]!!);
+            if (searchFor != null && locals.containsKey(searchFor)) return arrayOf(locals[searchFor]!!);
             result.addAll(locals.values);
 
             // This class is already scanned via localDecl - so move to extended one
@@ -95,10 +114,18 @@ object GdClassMemberUtil {
         }
 
         // Recursively iterate over all extended classes
-        val local = collectFromParents(parent, result, static, name);
+        val local = collectFromParents(parent, result, static, searchFor);
         if (local != null) return arrayOf(local);
 
-        if (search) return emptyArray();
+        if (calledOn == null) {
+            if (searchFor != null) {
+                val localClass = GdClassNamingIndex.getGlobally(searchFor, element).firstOrNull();
+                if (localClass != null) return arrayOf(localClass);
+            }
+            result.addAll(GdClassNamingIndex.getAllValues(element.project));
+        }
+
+        if (searchFor != null) return emptyArray();
         return result.toTypedArray();
     }
 

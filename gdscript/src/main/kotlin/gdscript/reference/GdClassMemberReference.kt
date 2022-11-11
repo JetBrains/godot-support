@@ -60,11 +60,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
         members.forEach {
             when (it) {
-                is GdMethodDeclTl -> {
-                    val name = it.name;
-                    val txt = it.text;
-                    results.add(GdCompletionUtil.lookup(it));
-                }
+                is GdMethodDeclTl -> results.add(GdCompletionUtil.lookup(it));
                 is GdConstDeclTl -> results.add(GdCompletionUtil.lookup(it));
                 is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl, is GdSignalDeclTl, is GdClassNaming,
                 is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl, is GdBindingPattern -> {
