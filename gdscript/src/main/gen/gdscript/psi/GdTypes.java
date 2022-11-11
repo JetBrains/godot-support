@@ -31,7 +31,6 @@ public interface GdTypes {
   IElementType BINDING_PATTERN = new GdElementType("BINDING_PATTERN");
   IElementType BIT_AND_EX = new GdElementType("BIT_AND_EX");
   IElementType BIT_NOT_EX = new GdElementType("BIT_NOT_EX");
-  IElementType BUILT_IN_TYPE = new GdElementType("BUILT_IN_TYPE");
   IElementType CALL_EX = new GdElementType("CALL_EX");
   IElementType CAST_EX = new GdElementType("CAST_EX");
   IElementType CLASS_DECL_TL = GdClassDeclElementType.getInstance("CLASS_DECL_TL");
@@ -121,7 +120,6 @@ public interface GdTypes {
   IElementType ASSIGN = new GdTokenType("ASSIGN");
   IElementType AWAIT = new GdTokenType("AWAIT");
   IElementType BAD_CHARACTER = new GdTokenType("bad_character");
-  IElementType BOOL = new GdTokenType("BOOL");
   IElementType BREAK = new GdTokenType("BREAK");
   IElementType BREAKPOINT = new GdTokenType("BREAKPOINT");
   IElementType CEQ = new GdTokenType("CEQ");
@@ -142,7 +140,6 @@ public interface GdTypes {
   IElementType EQ = new GdTokenType("EQ");
   IElementType EXTENDS = new GdTokenType("EXTENDS");
   IElementType FALSE = new GdTokenType("FALSE");
-  IElementType FLOAT = new GdTokenType("FLOAT");
   IElementType FOR = new GdTokenType("FOR");
   IElementType FUNC = new GdTokenType("FUNC");
   IElementType GET = new GdTokenType("GET");
@@ -151,7 +148,6 @@ public interface GdTypes {
   IElementType IN = new GdTokenType("IN");
   IElementType INDENT = new GdTokenType("INDENT");
   IElementType INF = new GdTokenType("INF");
-  IElementType INT = new GdTokenType("INT");
   IElementType IS = new GdTokenType("IS");
   IElementType LBSHIFT = new GdTokenType("LBSHIFT");
   IElementType LCBR = new GdTokenType("LCBR");
@@ -188,7 +184,6 @@ public interface GdTypes {
   IElementType SET = new GdTokenType("SET");
   IElementType SIGNAL = new GdTokenType("SIGNAL");
   IElementType STATIC = new GdTokenType("STATIC");
-  IElementType STR = new GdTokenType("STR");
   IElementType STRING = new GdTokenType("STRING");
   IElementType SUPER = new GdTokenType("SUPER");
   IElementType TAU = new GdTokenType("TAU");
@@ -246,9 +241,6 @@ public interface GdTypes {
       }
       else if (type == BIT_NOT_EX) {
         return new GdBitNotExImpl(node);
-      }
-      else if (type == BUILT_IN_TYPE) {
-        return new GdBuiltInTypeImpl(node);
       }
       else if (type == CALL_EX) {
         return new GdCallExImpl(node);

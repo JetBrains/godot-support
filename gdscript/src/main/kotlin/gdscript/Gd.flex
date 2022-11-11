@@ -211,10 +211,6 @@ ANY = .+
     "true"         { return dedentRoot(GdTypes.TRUE); }
     "false"        { return dedentRoot(GdTypes.FALSE); }
     "null"         { return dedentRoot(GdTypes.NULL); }
-    "int"          { return dedentRoot(GdTypes.INT); }
-    "float"        { return dedentRoot(GdTypes.FLOAT); }
-    "bool"         { return dedentRoot(GdTypes.BOOL); }
-    "String"       { return dedentRoot(GdTypes.STR); }
     "self"         { return dedentRoot(GdTypes.SELF); }
     "continue"     { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CONTINUE); }
     "breakpoint"   { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.BREAKPOINT); }

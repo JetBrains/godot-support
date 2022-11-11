@@ -14,12 +14,4 @@ object GdLiteralCompletionUtil {
         }
     }
 
-    fun builtInTypes(result: CompletionResultSet) {
-        GdKeywords.BUILT_TYPES.forEach {
-            result.addElement(
-                GdLookup.create(it, priority = GdLookup.KEYWORDS)
-            )
-        }
-    }
-
 }

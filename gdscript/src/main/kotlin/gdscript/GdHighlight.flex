@@ -104,10 +104,6 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "true"         { return GdTypes.TRUE; }
     "false"        { return GdTypes.FALSE; }
     "null"         { return GdTypes.NULL; }
-    "int"          { return GdTypes.INT; }
-    "float"        { return GdTypes.FLOAT; }
-    "bool"         { return GdTypes.BOOL; }
-    "String"       { return GdTypes.STR; }
     "self"         { return GdTypes.SELF; }
     "continue"     { return GdTypes.CONTINUE; }
     "breakpoint"   { return GdTypes.BREAKPOINT; }

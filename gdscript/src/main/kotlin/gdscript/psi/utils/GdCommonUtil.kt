@@ -13,9 +13,8 @@ object GdCommonUtil {
         return element.text;
     }
 
-    fun getNameIdentifier(element: GdNamedIdElement): PsiElement? {
-        val keyNode = element.node.findChildByType(GdTypes.IDENTIFIER);
-        return keyNode?.psi;
+    fun getNameIdentifier(element: GdNamedIdElement): PsiElement {
+        return element.firstChild;
     }
 
     fun setName(element: PsiNamedElement, newName: String): PsiElement {

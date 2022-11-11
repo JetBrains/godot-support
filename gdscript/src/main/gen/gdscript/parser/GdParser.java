@@ -427,20 +427,6 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // INT | STR | FLOAT | BOOL
-  public static boolean builtInType(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "builtInType")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, BUILT_IN_TYPE, "<built in type>");
-    r = consumeToken(b, INT);
-    if (!r) r = consumeToken(b, STR);
-    if (!r) r = consumeToken(b, FLOAT);
-    if (!r) r = consumeToken(b, BOOL);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
   // CLASS className_nmi inheritance? COLON NEW_LINE INDENT (inheritance | topLevelDecl)+ DEDENT
   public static boolean classDecl_tl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classDecl_tl")) return false;
@@ -1167,6 +1153,18 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // IDENTIFIER | GET | SET | MATCH
+  static boolean identifierEx(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "identifierEx")) return false;
+    boolean r;
+    r = consumeToken(b, IDENTIFIER);
+    if (!r) r = consumeToken(b, GET);
+    if (!r) r = consumeToken(b, SET);
+    if (!r) r = consumeToken(b, MATCH);
+    return r;
+  }
+
+  /* ********************************************************** */
   // IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)?
   public static boolean if_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "if_st")) return false;
@@ -1539,14 +1537,12 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER | GET | SET
+  // identifierEx
   public static boolean methodId_nmi(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "methodId_nmi")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, METHOD_ID_NMI, "<method id nmi>");
-    r = consumeToken(b, IDENTIFIER);
-    if (!r) r = consumeToken(b, GET);
-    if (!r) r = consumeToken(b, SET);
+    r = identifierEx(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1657,13 +1653,12 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // literal_ex | builtInType | UNDER | bindingPattern | arrayPattern | dictPattern
+  // literal_ex | UNDER | bindingPattern | arrayPattern | dictPattern
   public static boolean pattern(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "pattern")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, PATTERN, "<pattern>");
     r = literal_ex(b, l + 1);
-    if (!r) r = builtInType(b, l + 1);
     if (!r) r = consumeToken(b, UNDER);
     if (!r) r = bindingPattern(b, l + 1);
     if (!r) r = arrayPattern(b, l + 1);
@@ -1760,12 +1755,12 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER | SELF | SUPER
+  // identifierEx | SELF | SUPER
   public static boolean refId_nm(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "refId_nm")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, REF_ID_NM, "<ref id nm>");
-    r = consumeToken(b, IDENTIFIER);
+    r = identifierEx(b, l + 1);
     if (!r) r = consumeToken(b, SELF);
     if (!r) r = consumeToken(b, SUPER);
     exit_section_(b, l, m, r, false, null);
@@ -1789,6 +1784,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   // typedVal | VOID
   public static boolean returnHintVal(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "returnHintVal")) return false;
+    if (!nextTokenIs(b, "<return hint val>", IDENTIFIER, VOID)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, RETURN_HINT_VAL, "<return hint val>");
     r = typedVal(b, l + 1);
@@ -2218,14 +2214,14 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // builtInType | IDENTIFIER
+  // IDENTIFIER
   public static boolean typeHintArray_nm(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typeHintArray_nm")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, TYPE_HINT_ARRAY_NM, "<type hint array nm>");
-    r = builtInType(b, l + 1);
-    if (!r) r = consumeToken(b, IDENTIFIER);
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IDENTIFIER);
+    exit_section_(b, m, TYPE_HINT_ARRAY_NM, r);
     return r;
   }
 
@@ -2258,11 +2254,12 @@ public class GdParser implements PsiParser, LightPsiParser {
   // typedValRoot (LSBR typeHint_nm RSBR)?
   public static boolean typedVal(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedVal")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, TYPED_VAL, "<typed val>");
+    Marker m = enter_section_(b);
     r = typedValRoot(b, l + 1);
     r = r && typedVal_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, m, TYPED_VAL, r);
     return r;
   }
 
@@ -2286,14 +2283,14 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // builtInType | typeHint_nm
+  // typeHint_nm
   public static boolean typedValRoot(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedValRoot")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, TYPED_VAL_ROOT, "<typed val root>");
-    r = builtInType(b, l + 1);
-    if (!r) r = typeHint_nm(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    Marker m = enter_section_(b);
+    r = typeHint_nm(b, l + 1);
+    exit_section_(b, m, TYPED_VAL_ROOT, r);
     return r;
   }
 

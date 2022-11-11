@@ -41,12 +41,6 @@ public class GdPatternImpl extends ASTWrapperPsiElement implements GdPattern {
 
   @Override
   @Nullable
-  public GdBuiltInType getBuiltInType() {
-    return PsiTreeUtil.getChildOfType(this, GdBuiltInType.class);
-  }
-
-  @Override
-  @Nullable
   public GdDictPattern getDictPattern() {
     return PsiTreeUtil.getChildOfType(this, GdDictPattern.class);
   }

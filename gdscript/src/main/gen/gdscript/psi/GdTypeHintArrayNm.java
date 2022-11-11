@@ -7,9 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface GdTypeHintArrayNm extends GdNamedElement {
 
-  @Nullable
-  GdBuiltInType getBuiltInType();
-
   @NotNull
   String getName();
 

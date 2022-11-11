@@ -63,10 +63,6 @@ public class GdVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
-  public void visitBuiltInType(@NotNull GdBuiltInType o) {
-    visitPsiElement(o);
-  }
-
   public void visitCallEx(@NotNull GdCallEx o) {
     visitExpr(o);
   }

@@ -7,10 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface GdTypedValRoot extends PsiElement {
 
-  @Nullable
-  GdBuiltInType getBuiltInType();
-
-  @Nullable
+  @NotNull
   GdTypeHintNm getTypeHintNm();
 
 }

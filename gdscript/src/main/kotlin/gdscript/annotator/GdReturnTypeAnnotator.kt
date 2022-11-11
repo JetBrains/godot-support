@@ -75,9 +75,11 @@ class GdReturnTypeAnnotator : Annotator {
                 .create()
         } else {
             var matched = true;
-            PsiTreeUtil.findChildrenOfType(method, GdReturnStmt::class.java).forEach {
-                val type = it.expr?.returnType ?: GdKeywords.VOID;
-                matched = matched && GdExprUtil.typesMatch(type, stmtType);
+            PsiTreeUtil.findChildrenOfType(method, GdFlowSt::class.java).forEach {
+                if (it.type == GdKeywords.FLOW_RETURN) {
+                    val type = it.expr?.returnType ?: GdKeywords.VOID;
+                    matched = matched && GdExprUtil.typesMatch(type, stmtType);
+                }
             }
             if (matched) {
                 holder

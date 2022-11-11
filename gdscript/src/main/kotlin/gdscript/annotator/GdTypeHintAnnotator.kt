@@ -18,13 +18,18 @@ class GdTypeHintAnnotator : Annotator {
         if (element !is GdTypeHintNm) return;
 
         val name = element.text;
-        if (GdKeywords.BUILT_TYPES.contains(name) || name == GdKeywords.VOID) return;
+        if (name == GdKeywords.VOID) return;
+
+        var color = GdHighlighterColors.CLASS_TYPE;
+        if (GdKeywords.BUILT_TYPES.contains(name)) {
+            color = GdHighlighterColors.KEYWORD;
+        }
 
         if (GdClassNamingIndex.getGlobally(name, element).isNotEmpty()) {
             holder
                 .newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .range(element.textRange)
-                .textAttributes(GdHighlighterColors.CLASS_TYPE)
+                .textAttributes(color)
                 .create()
         } else {
             holder

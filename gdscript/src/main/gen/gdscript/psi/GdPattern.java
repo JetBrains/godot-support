@@ -14,9 +14,6 @@ public interface GdPattern extends PsiElement {
   GdBindingPattern getBindingPattern();
 
   @Nullable
-  GdBuiltInType getBuiltInType();
-
-  @Nullable
   GdDictPattern getDictPattern();
 
   @Nullable

@@ -107,7 +107,7 @@ methodDecl_tl ::= STATIC? VARARG? FUNC methodId_nmi LRBR paramList? RRBR returnH
     pin=3 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"
 }
-methodId_nmi ::= IDENTIFIER | GET | SET
+methodId_nmi ::= identifierEx
 paramList ::= param (COMMA param)* {pin=1 recoverWhile=argList_r}
 param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
 returnHint ::= RET returnHintVal
@@ -162,7 +162,7 @@ matchBlock ::= (patternList COLON stmtOrSuite)+
 patternList ::= pattern (COMMA pattern)*
 //TODO (* Note: you can't have a binding in a pattern list, but to not complicate the grammar more it won't be restricted syntactically *)
 // Asi annotátor
-pattern ::= literal_ex | builtInType | UNDER | bindingPattern | arrayPattern | dictPattern
+pattern ::= literal_ex | UNDER | bindingPattern | arrayPattern | dictPattern
 bindingPattern ::= VAR var_nmi
 arrayPattern ::= LSBR ( pattern (COMMA pattern)* (COMMA DOTDOT)? )? RSBR
 dictPattern ::= LCBR keyValuePattern? (COMMA keyValuePattern)* (COMMA DOTDOT)? RCBR
@@ -230,7 +230,7 @@ literal_ex ::= TRUE | FALSE | STRING | NUMBER | NULL | PI | TAU | NAN | INF | re
 plusMinus_ex ::= expr (PPLUS | MMINUS)
 plusMinusPre_ex ::= (PPLUS | MMINUS) expr
 attribute_ex ::= expr DOT expr
-refId_nm ::= IDENTIFIER | SELF | SUPER // TODO super
+refId_nm ::= identifierEx | SELF | SUPER // TODO super
 
 funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[getReturnType getParameters /*getPresentation*/]
@@ -243,10 +243,9 @@ funcDeclId_nmi ::= IDENTIFIER
 isTyped ::= typeHint_nm (LSBR typeHintArray_nm RSBR)?
 typed ::= COLON typedVal
 typedVal ::= typedValRoot (LSBR typeHint_nm RSBR)? {methods=[getReturnType]}
-typedValRoot ::= builtInType | typeHint_nm
+typedValRoot ::= typeHint_nm
 typeHint_nm ::= IDENTIFIER
-typeHintArray_nm ::= builtInType | IDENTIFIER
-builtInType ::= INT | STR | FLOAT | BOOL
+typeHintArray_nm ::= IDENTIFIER
 endStmt ::= SEMICON | newLineEnd
 newLineEnd ::= NEW_LINE | <<eof>>
 nodePath ::= NODE_PATH_LEX
@@ -256,3 +255,4 @@ dictDecl ::= LCBR (keyValue (COMMA keyValue)* COMMA?)? RCBR
 keyValue ::= (expr COLON expr) | (IDENTIFIER EQ expr)
 
 assignTyped ::= EQ | CEQ
+private identifierEx ::= IDENTIFIER | GET | SET | MATCH
