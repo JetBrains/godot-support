@@ -114,10 +114,7 @@ returnHint ::= RET returnHintVal
 returnHintVal ::= typedVal | VOID // typeHint_nm | VOID
 argList ::= expr (COMMA expr)* {pin=1 recoverWhile=argList_r}
 private argList_r ::= !(RRBR) & topLevelDecl_r
-
-// func - Array.gd, signal: Vector2.gd, class_name - Array.gd
-// tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě
-var_nmi ::= IDENTIFIER | SIGNAL | FUNC | CLASS_NAME
+var_nmi ::= identifierEx
 
 // TODO annotace - single inheritance - jak root tak inner, single class_name
 classDecl_tl ::= CLASS className_nmi inheritance? COLON NEW_LINE INDENT (inheritance | topLevelDecl)+ DEDENT {
@@ -255,4 +252,7 @@ dictDecl ::= LCBR (keyValue (COMMA keyValue)* COMMA?)? RCBR
 keyValue ::= (expr COLON expr) | (IDENTIFIER EQ expr)
 
 assignTyped ::= EQ | CEQ
-private identifierEx ::= IDENTIFIER | GET | SET | MATCH
+
+// func - Array.gd, signal: Vector2.gd, class_name - Array.gd, FileAccess - pass
+// tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě, stejně jako metody
+private identifierEx ::= IDENTIFIER | GET | SET | MATCH | SIGNAL | FUNC | CLASS_NAME | PASS

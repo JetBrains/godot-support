@@ -1153,7 +1153,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER | GET | SET | MATCH
+  // IDENTIFIER | GET | SET | MATCH | SIGNAL | FUNC | CLASS_NAME | PASS
   static boolean identifierEx(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifierEx")) return false;
     boolean r;
@@ -1161,6 +1161,10 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, GET);
     if (!r) r = consumeToken(b, SET);
     if (!r) r = consumeToken(b, MATCH);
+    if (!r) r = consumeToken(b, SIGNAL);
+    if (!r) r = consumeToken(b, FUNC);
+    if (!r) r = consumeToken(b, CLASS_NAME);
+    if (!r) r = consumeToken(b, PASS);
     return r;
   }
 
@@ -2344,15 +2348,12 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER | SIGNAL | FUNC | CLASS_NAME
+  // identifierEx
   public static boolean var_nmi(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "var_nmi")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, VAR_NMI, "<var nmi>");
-    r = consumeToken(b, IDENTIFIER);
-    if (!r) r = consumeToken(b, SIGNAL);
-    if (!r) r = consumeToken(b, FUNC);
-    if (!r) r = consumeToken(b, CLASS_NAME);
+    r = identifierEx(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
