@@ -47,30 +47,14 @@ object GdClassMemberUtil {
         onlyPreceding: Boolean = false,
     ): Array<PsiElement> {
         var static = false;
-        var calledOnPsi: PsiElement? = null;
 
         val result = mutableListOf<PsiElement>()
         var calledOn: String? = GdKeywords.SELF;
-        when (val parent = element.parent?.parent) {
-            is GdAttributeEx -> {
-                if (element.parent.prevSibling != null) {
-                    val ex = parent.exprList.first()!!;
-                    calledOn = ex.returnType;
-                    calledOnPsi = ex;
-                    static = (calledOn == ex.text) && checkGlobalStaticMatch(element, calledOn);
-                }
-            }
-            is GdCallEx -> {
-                val prev = parent.parent;
-                if (prev.text != GdKeywords.SELF && prev is GdAttributeEx) {
-                    if (parent.prevSibling != null) {
-                        val ex = prev.exprList.first()!!;
-                        calledOn = ex.returnType;
-                        calledOnPsi = ex;
-                        static = (calledOn == ex.text) && checkGlobalStaticMatch(element, calledOn);
-                    }
-                }
-            }
+
+        val calledOnPsi: GdExpr? = calledUpon(element);
+        if (calledOnPsi != null) {
+            calledOn = calledOnPsi.returnType;
+            static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn);
         }
 
         when (calledOn) {
@@ -375,6 +359,26 @@ object GdClassMemberUtil {
                 emptyList()
             }
         }.toTypedArray();
+    }
+
+    fun calledUpon(element: PsiElement): GdExpr? {
+        when (val parent = element.parent?.parent) {
+            is GdAttributeEx -> {
+                if (element.parent.prevSibling != null) {
+                    return parent.exprList.first()!!;
+                }
+            }
+            is GdCallEx -> {
+                val prev = parent.parent;
+                if (prev.text != GdKeywords.SELF && prev is GdAttributeEx) {
+                    if (parent.prevSibling != null) {
+                        return prev.exprList.first()!!;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**

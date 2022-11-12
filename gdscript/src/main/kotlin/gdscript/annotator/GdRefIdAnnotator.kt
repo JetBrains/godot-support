@@ -35,15 +35,18 @@ class GdRefIdAnnotator : Annotator {
         val attribute = when (GdClassMemberUtil.findDeclaration(element)) {
             is GdMethodDeclTl -> GdHighlighterColors.METHOD_CALL;
             is PsiFile, is GdClassDeclTl -> GdHighlighterColors.CLASS_TYPE;
-            null -> {
-                if (element.text != "new") {
-                    holder
-                        .newAnnotation(HighlightSeverity.ERROR, "Reference [${element.text}] not found")
-                        .range(element.textRange)
-                        .create();
-                    return;
+            null -> run {
+                if (element.text == "new"
+                    || GdClassMemberUtil.calledUpon(element)?.returnType == "Dictionary"
+                ) {
+                    return@run GdHighlighterColors.MEMBER;
                 }
-                GdHighlighterColors.MEMBER;
+
+                holder
+                    .newAnnotation(HighlightSeverity.ERROR, "Reference [${element.text}] not found")
+                    .range(element.textRange)
+                    .create();
+                return;
             }
             else -> GdHighlighterColors.MEMBER;
         }
