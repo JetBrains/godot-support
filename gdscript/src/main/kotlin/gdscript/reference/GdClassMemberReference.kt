@@ -23,7 +23,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        myElement.setName(newElementName); // TODO ii !! projít všude zda je srávná instance
+        myElement.setName(newElementName);
 
         return myElement;
     }
@@ -41,6 +41,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                 is GdConstDeclTl -> element.constIdNmi;
                 is GdEnumDeclTl -> element.enumDeclNmi;
                 is GdEnumValue -> element.enumValueNmi;
+                is GdKeyValue -> element.firstChild;
                 is GdMethodDeclTl -> element.methodIdNmi;
                 is GdSignalDeclTl -> element.signalIdNmi;
                 is GdParam -> element.varNmi;
@@ -63,9 +64,10 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                 is GdMethodDeclTl -> results.add(GdCompletionUtil.lookup(it));
                 is GdConstDeclTl -> results.add(GdCompletionUtil.lookup(it));
                 is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl, is GdSignalDeclTl, is GdClassNaming,
-                is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl, is GdBindingPattern -> {
+                is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl, is GdBindingPattern,
+                is GdEnumValue, is GdKeyValue,
+                ->
                     results.addAll(GdCompletionUtil.lookups(it));
-                }
             }
         }
 

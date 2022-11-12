@@ -5,6 +5,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdClassNamingIndex
@@ -46,6 +47,7 @@ object GdClassMemberUtil {
         onlyPreceding: Boolean = false,
     ): Array<PsiElement> {
         var static = false;
+        var calledOnPsi: PsiElement? = null;
 
         val result = mutableListOf<PsiElement>()
         var calledOn: String? = GdKeywords.SELF;
@@ -54,6 +56,7 @@ object GdClassMemberUtil {
                 if (element.parent.prevSibling != null) {
                     val ex = parent.exprList.first()!!;
                     calledOn = ex.returnType;
+                    calledOnPsi = ex;
                     static = (calledOn == ex.text) && checkGlobalStaticMatch(element, calledOn);
                 }
             }
@@ -63,6 +66,7 @@ object GdClassMemberUtil {
                     if (parent.prevSibling != null) {
                         val ex = prev.exprList.first()!!;
                         calledOn = ex.returnType;
+                        calledOnPsi = ex;
                         static = (calledOn == ex.text) && checkGlobalStaticMatch(element, calledOn);
                     }
                 }
@@ -105,6 +109,26 @@ object GdClassMemberUtil {
                 GdClassUtil.getOwningClassElement(element);
             }
         } else {
+            // For Dictionary (& Enum) add also all it's fields
+            if (calledOn.endsWith("Dictionary") && calledOnPsi != null && calledOnPsi.firstChild is GdRefIdNm) {
+                val dictDecl = findDeclaration(calledOnPsi.firstChild as GdRefIdNm);
+                when (dictDecl) {
+                    is GdEnumDeclTl -> {
+                        if (searchFor != null) {
+                            val localVal = dictDecl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor };
+                            if (localVal != null) return arrayOf(localVal);
+                        }
+                        result.addAll(dictDecl.enumValueList);
+                    }
+                    else -> {
+                        val localDictDecl = PsiTreeUtil.findChildOfAnyType(dictDecl, GdDictDecl::class.java);
+                        if (localDictDecl != null) {
+                            result.addAll(localDictDecl.keyValueList)
+                        }
+                    }
+                }
+            }
+
             parent = GdClassIdIndex.getGloballyResolved(calledOn, element.project).firstOrNull();
             if (parent != null)
                 parent = GdClassUtil.getOwningClassElement(parent);

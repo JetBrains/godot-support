@@ -33,4 +33,10 @@ public class GdDictDeclImpl extends ASTWrapperPsiElement implements GdDictDecl {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, GdKeyValue.class);
   }
 
+  @Override
+  @Nullable
+  public GdNewLineEnd getNewLineEnd() {
+    return PsiTreeUtil.getChildOfType(this, GdNewLineEnd.class);
+  }
+
 }

@@ -974,12 +974,12 @@ class GdLexer implements FlexLexer {
             // fall through
           case 111: break;
           case 23: 
-            { ignoreIndent = true; return dedentRoot(GdTypes.LCBR);
+            { return dedentRoot(GdTypes.LCBR);
             } 
             // fall through
           case 112: break;
           case 24: 
-            { ignoreIndent = false; return dedentRoot(GdTypes.RCBR);
+            { return dedentRoot(GdTypes.RCBR);
             } 
             // fall through
           case 113: break;

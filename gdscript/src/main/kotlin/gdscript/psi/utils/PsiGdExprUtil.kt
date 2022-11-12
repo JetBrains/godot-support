@@ -133,7 +133,7 @@ object PsiGdExprUtil {
                         is GdConstDeclSt -> element.returnType;
                         is GdMethodDeclTl -> element.returnType;
                         is GdSignalDeclTl -> "Signal";
-                        is GdEnumDeclTl -> GdKeywords.INT;
+                        is GdEnumDeclTl -> "EnumDictionary";
                         is GdEnumValue -> GdKeywords.INT;
                         else -> text;
                     }

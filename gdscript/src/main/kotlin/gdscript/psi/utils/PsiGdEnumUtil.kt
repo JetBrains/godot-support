@@ -27,21 +27,20 @@ object PsiGdEnumUtil {
         if (stub != null) return stub.values();
 
         val values = HashMap<String, Int>();
-        var i = 1;
+        var currentVal = 0;
 
         enum.enumValueList.forEach {
-            // TODO zkontrolovat, co generuje Godot
-            var value = i++;
+            currentVal += 1;
             var child = it.lastChild;
             while (child != null) {
                 if (child.elementType == GdTypes.NUMBER) {
-                    value = child.text.toInt()
+                    currentVal = child.text.toInt()
                     break;
                 }
                 child = child.prevSibling;
             }
 
-            values[it.enumValueNmi.name] = value;
+            values[it.enumValueNmi.name] = currentVal;
         }
 
         return values;

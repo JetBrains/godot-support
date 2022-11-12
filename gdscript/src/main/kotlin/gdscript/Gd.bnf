@@ -241,8 +241,8 @@ newLineEnd ::= NEW_LINE | <<eof>>
 nodePath ::= NODE_PATH_LEX
 
 arrayDecl ::= LSBR (expr (COMMA expr)* COMMA?)? RSBR
-dictDecl ::= LCBR (keyValue (COMMA keyValue)* COMMA?)? RCBR
-keyValue ::= (expr COLON expr) | (IDENTIFIER EQ expr)
+dictDecl ::= LCBR newLineEnd? (keyValue (COMMA keyValue)* COMMA?)? RCBR
+keyValue ::= (expr COLON expr) | (IDENTIFIER EQ expr) newLineEnd?
 
 assignTyped ::= EQ | CEQ
 

@@ -5,8 +5,10 @@ import com.intellij.psi.PsiElement
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.*
+import gdscript.psi.utils.PsiGdExprUtil
 import gdscript.utils.StringUtil.parseFromSquare
 
+@Deprecated("move into assigned methods")
 object GdCompletionUtil {
 
     fun lookups(element: PsiElement): Array<LookupElement> {
@@ -17,6 +19,8 @@ object GdCompletionUtil {
             is GdConstDeclTl -> arrayOf(lookup(element));
             is GdConstDeclSt -> arrayOf(lookup(element));
             is GdEnumDeclTl -> lookup(element);
+            is GdEnumValue -> arrayOf(GdEnumCompletionUtil.lookup(element));
+            is GdKeyValue -> arrayOf(lookup(element));
             is GdMethodDeclTl -> arrayOf(lookup(element));
             is GdForSt -> arrayOf(lookup(element));
             is GdParam -> arrayOf(lookup(element));
@@ -36,7 +40,7 @@ object GdCompletionUtil {
 
     fun lookup(variable: GdClassVarDeclTl): LookupElement =
         GdLookup.create(
-            variable.name.orEmpty(),
+            variable.name,
             icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
             typed = variable.returnType,
             priority = GdLookup.USER_DEFINED,
@@ -52,7 +56,7 @@ object GdCompletionUtil {
 
     fun lookup(constant: GdConstDeclTl): LookupElement =
         GdLookup.create(
-            constant.name.orEmpty(),
+            constant.name,
             icon = GdIcon.getEditorIcon(GdIcon.CONST_MARKER),
             typed = constant.returnType,
             priority = GdLookup.USER_DEFINED,
@@ -70,10 +74,12 @@ object GdCompletionUtil {
         val name = enum.enumDeclNmi;
 
         return if (name != null) {
-            arrayOf(GdEnumCompletionUtil.createElement(name.name));
+            arrayOf(GdEnumCompletionUtil.lookup(
+                name.name,
+            ));
         } else {
             enum.values.map {
-                GdEnumCompletionUtil.createElement(it.key, it.value)
+                GdEnumCompletionUtil.lookup(it.key, it.value)
             }.toTypedArray();
         }
     }
@@ -116,7 +122,7 @@ object GdCompletionUtil {
 
     fun lookup(binding: GdBindingPattern): LookupElement {
         return GdLookup.create(
-            binding.varNmi.name ?: "",
+            binding.varNmi.name,
 //            typed = binding.typed?.text ?: "", TODO dá se v match zjistit typ?
             icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
             priority = GdLookup.LOCAL_USER_DEFINED,
@@ -128,6 +134,23 @@ object GdCompletionUtil {
             signal.signalIdNmi?.name ?: "",
             typed = "signal",
             icon = GdIcon.getEditorIcon(GdIcon.SIGNAL_MARKER),
+            priority = GdLookup.LOCAL_USER_DEFINED,
+        );
+    }
+
+    fun lookup(element: GdKeyValue): LookupElement {
+        val id = element.firstChild;
+        val _val = element.lastChild;
+        var tail: String? = null;
+        if (_val is GdLiteralEx) {
+            tail = "(${_val.text})";
+        }
+
+        return GdLookup.create(
+            id.text.orEmpty(),
+            typed = GdPsiUtils.returnType(_val),
+            icon = GdIcon.getEditorIcon(GdIcon.CONST_MARKER),
+            tail = tail,
             priority = GdLookup.LOCAL_USER_DEFINED,
         );
     }

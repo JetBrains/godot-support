@@ -14,7 +14,7 @@ object GdIcon {
     const val METHOD_MARKER = "MemberMethod"
     const val VAR_MARKER = "MemberProperty"
     const val CONST_MARKER = "MemberConstant"
-    const val ENUM_MARKER = "MemberEnum"
+    const val ENUM_MARKER = "Enum"
     const val SIGNAL_MARKER = "MemberSignal"
 
     const val SIGNAL = "Signal"

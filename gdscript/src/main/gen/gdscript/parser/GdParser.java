@@ -594,7 +594,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LCBR (keyValue (COMMA keyValue)* COMMA?)? RCBR
+  // LCBR newLineEnd? (keyValue (COMMA keyValue)* COMMA?)? RCBR
   public static boolean dictDecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dictDecl")) return false;
     if (!nextTokenIs(b, LCBR)) return false;
@@ -602,44 +602,52 @@ public class GdParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, LCBR);
     r = r && dictDecl_1(b, l + 1);
+    r = r && dictDecl_2(b, l + 1);
     r = r && consumeToken(b, RCBR);
     exit_section_(b, m, DICT_DECL, r);
     return r;
   }
 
-  // (keyValue (COMMA keyValue)* COMMA?)?
+  // newLineEnd?
   private static boolean dictDecl_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dictDecl_1")) return false;
-    dictDecl_1_0(b, l + 1);
+    newLineEnd(b, l + 1);
+    return true;
+  }
+
+  // (keyValue (COMMA keyValue)* COMMA?)?
+  private static boolean dictDecl_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dictDecl_2")) return false;
+    dictDecl_2_0(b, l + 1);
     return true;
   }
 
   // keyValue (COMMA keyValue)* COMMA?
-  private static boolean dictDecl_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "dictDecl_1_0")) return false;
+  private static boolean dictDecl_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dictDecl_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = keyValue(b, l + 1);
-    r = r && dictDecl_1_0_1(b, l + 1);
-    r = r && dictDecl_1_0_2(b, l + 1);
+    r = r && dictDecl_2_0_1(b, l + 1);
+    r = r && dictDecl_2_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // (COMMA keyValue)*
-  private static boolean dictDecl_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "dictDecl_1_0_1")) return false;
+  private static boolean dictDecl_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dictDecl_2_0_1")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!dictDecl_1_0_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "dictDecl_1_0_1", c)) break;
+      if (!dictDecl_2_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "dictDecl_2_0_1", c)) break;
     }
     return true;
   }
 
   // COMMA keyValue
-  private static boolean dictDecl_1_0_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "dictDecl_1_0_1_0")) return false;
+  private static boolean dictDecl_2_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dictDecl_2_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
@@ -649,8 +657,8 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   // COMMA?
-  private static boolean dictDecl_1_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "dictDecl_1_0_2")) return false;
+  private static boolean dictDecl_2_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dictDecl_2_0_2")) return false;
     consumeToken(b, COMMA);
     return true;
   }
@@ -1332,7 +1340,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (expr COLON expr) | (IDENTIFIER EQ expr)
+  // (expr COLON expr) | (IDENTIFIER EQ expr) newLineEnd?
   public static boolean keyValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "keyValue")) return false;
     boolean r;
@@ -1355,15 +1363,33 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // IDENTIFIER EQ expr
+  // (IDENTIFIER EQ expr) newLineEnd?
   private static boolean keyValue_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "keyValue_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = keyValue_1_0(b, l + 1);
+    r = r && keyValue_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // IDENTIFIER EQ expr
+  private static boolean keyValue_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "keyValue_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, IDENTIFIER, EQ);
     r = r && expr(b, l + 1, -1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // newLineEnd?
+  private static boolean keyValue_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "keyValue_1_1")) return false;
+    newLineEnd(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */

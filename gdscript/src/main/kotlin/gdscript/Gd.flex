@@ -261,8 +261,8 @@ ANY = .+
     ")"            { ignoreIndent = false; return dedentRoot(GdTypes.RRBR); }
     "["            { return dedentRoot(GdTypes.LSBR); }
     "]"            { return dedentRoot(GdTypes.RSBR); }
-    "{"            { return dedentRoot(GdTypes.LCBR); }
-    "}"            { return dedentRoot(GdTypes.RCBR); }
+    "{"            { ignoreIndent = true; return dedentRoot(GdTypes.LCBR); }
+    "}"            { ignoreIndent = false; return dedentRoot(GdTypes.RCBR); }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
@@ -278,7 +278,6 @@ ANY = .+
     {STRING}        { return dedentRoot(GdTypes.STRING); }
     {STRING_CHAR}   { return dedentRoot(GdTypes.STRING); }
     {STRING_MULTILINE} { return GdTypes.STRING; }
-//    {STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
     {ANNOTATOR}     { return dedentRoot(GdTypes.ANNOTATOR); }
