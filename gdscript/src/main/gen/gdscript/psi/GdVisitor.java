@@ -191,10 +191,6 @@ public class GdVisitor extends PsiElementVisitor {
     visitNamedElement(o);
   }
 
-  public void visitIsTyped(@NotNull GdIsTyped o) {
-    visitPsiElement(o);
-  }
-
   public void visitIsEx(@NotNull GdIsEx o) {
     visitExpr(o);
   }
@@ -333,10 +329,6 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitTopLevelDecl(@NotNull GdTopLevelDecl o) {
     visitPsiElement(o);
-  }
-
-  public void visitTypeHintArrayNm(@NotNull GdTypeHintArrayNm o) {
-    visitNamedElement(o);
   }
 
   public void visitTypeHintNm(@NotNull GdTypeHintNm o) {

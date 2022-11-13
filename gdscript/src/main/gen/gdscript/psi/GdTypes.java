@@ -64,7 +64,6 @@ public interface GdTypes {
   IElementType INHERITANCE_SUB_ID_NM = new GdElementType("INHERITANCE_SUB_ID_NM");
   IElementType IN_EX = new GdElementType("IN_EX");
   IElementType IS_EX = new GdElementType("IS_EX");
-  IElementType IS_TYPED = new GdElementType("IS_TYPED");
   IElementType KEY_VALUE = new GdElementType("KEY_VALUE");
   IElementType KEY_VALUE_PATTERN = new GdElementType("KEY_VALUE_PATTERN");
   IElementType LITERAL_EX = new GdElementType("LITERAL_EX");
@@ -102,7 +101,6 @@ public interface GdTypes {
   IElementType TYPED = new GdElementType("TYPED");
   IElementType TYPED_VAL = new GdElementType("TYPED_VAL");
   IElementType TYPED_VAL_ROOT = new GdElementType("TYPED_VAL_ROOT");
-  IElementType TYPE_HINT_ARRAY_NM = new GdElementType("TYPE_HINT_ARRAY_NM");
   IElementType TYPE_HINT_NM = new GdElementType("TYPE_HINT_NM");
   IElementType VAR_DECL_ST = new GdElementType("VAR_DECL_ST");
   IElementType VAR_NMI = new GdElementType("VAR_NMI");
@@ -330,9 +328,6 @@ public interface GdTypes {
       else if (type == IS_EX) {
         return new GdIsExImpl(node);
       }
-      else if (type == IS_TYPED) {
-        return new GdIsTypedImpl(node);
-      }
       else if (type == KEY_VALUE) {
         return new GdKeyValueImpl(node);
       }
@@ -437,9 +432,6 @@ public interface GdTypes {
       }
       else if (type == TYPED_VAL_ROOT) {
         return new GdTypedValRootImpl(node);
-      }
-      else if (type == TYPE_HINT_ARRAY_NM) {
-        return new GdTypeHintArrayNmImpl(node);
       }
       else if (type == TYPE_HINT_NM) {
         return new GdTypeHintNmImpl(node);

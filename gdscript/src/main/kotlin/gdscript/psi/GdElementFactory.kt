@@ -92,12 +92,6 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdSignalIdNmi::class.java)!!.firstChild;
     }
 
-    fun typeHintArrayNm(project: Project, name: String): PsiElement {
-        val file = createFile(project, "extends Node\nvar variable = 123 as Array[$name]\n");
-
-        return PsiTreeUtil.findChildOfType(file, GdTypeHintArrayNm::class.java)!!.firstChild;
-    }
-
     fun typeHintNm(project: Project, name: String): PsiElement {
         val file = createFile(project, "extends Node\nvar variable: $name\n");
 

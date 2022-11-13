@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.*
-import gdscript.psi.utils.PsiGdExprUtil
 import gdscript.utils.StringUtil.parseFromSquare
 
 @Deprecated("move into assigned methods")
@@ -20,7 +19,6 @@ object GdCompletionUtil {
             is GdConstDeclSt -> arrayOf(lookup(element));
             is GdEnumDeclTl -> lookup(element);
             is GdEnumValue -> arrayOf(GdEnumCompletionUtil.lookup(element));
-            is GdKeyValue -> arrayOf(lookup(element));
             is GdMethodDeclTl -> arrayOf(lookup(element));
             is GdForSt -> arrayOf(lookup(element));
             is GdParam -> arrayOf(lookup(element));
@@ -86,9 +84,9 @@ object GdCompletionUtil {
 
     fun lookup(method: GdMethodDeclTl): LookupElement {
         return GdLookup.create(
-            method.name.orEmpty(),
+            method.name,
             lookup = "()${if (method.paramList?.paramList?.isNotEmpty() == true) "_" else ""}",
-            presentable = method.name.orEmpty(),
+            presentable = method.name,
             typed = method.returnType,
             icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
             priority = GdLookup.USER_DEFINED,
@@ -134,23 +132,6 @@ object GdCompletionUtil {
             signal.signalIdNmi?.name ?: "",
             typed = "signal",
             icon = GdIcon.getEditorIcon(GdIcon.SIGNAL_MARKER),
-            priority = GdLookup.LOCAL_USER_DEFINED,
-        );
-    }
-
-    fun lookup(element: GdKeyValue): LookupElement {
-        val id = element.firstChild;
-        val _val = element.lastChild;
-        var tail: String? = null;
-        if (_val is GdLiteralEx) {
-            tail = "(${_val.text})";
-        }
-
-        return GdLookup.create(
-            id.text.orEmpty(),
-            typed = GdPsiUtils.returnType(_val),
-            icon = GdIcon.getEditorIcon(GdIcon.CONST_MARKER),
-            tail = tail,
             priority = GdLookup.LOCAL_USER_DEFINED,
         );
     }

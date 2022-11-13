@@ -5,13 +5,13 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdClassVarDeclIndex
 import gdscript.psi.*
 import gdscript.settings.GdSettingsState
+import gdscript.model.BoolVal
 
 object GdClassMemberUtil {
 
@@ -20,9 +20,9 @@ object GdClassMemberUtil {
      */
     fun findDeclaration(
         element: GdNamedElement,
-        onlyPreceding: Boolean = false,
+        onlyLocalScope: Boolean = false,
     ): PsiElement? {
-        return listDeclarations(element, element, onlyPreceding).firstOrNull();
+        return listDeclarations(element, element, onlyLocalScope).firstOrNull();
     }
 
     /**
@@ -32,9 +32,9 @@ object GdClassMemberUtil {
     fun listDeclarations(
         element: PsiElement,
         searchFor: GdNamedElement,
-        onlyPreceding: Boolean = false,
+        onlyLocalScope: Boolean = false,
     ): Array<PsiElement> {
-        return listDeclarations(element, searchFor.name, onlyPreceding);
+        return listDeclarations(element, searchFor.name, onlyLocalScope);
     }
 
     /**
@@ -44,7 +44,7 @@ object GdClassMemberUtil {
     fun listDeclarations(
         element: PsiElement,
         searchFor: String? = null,
-        onlyPreceding: Boolean = false,
+        onlyLocalScope: Boolean = false,
     ): Array<PsiElement> {
         var static = false;
 
@@ -80,36 +80,29 @@ object GdClassMemberUtil {
             }
         }
 
+        val hitLocal = BoolVal.new();
         // Checks locals only when it's not attribute/call expression moving declaration possibly outside
         if (calledOn == null) {
-            val locals = listLocalDeclarationsUpward(element);
+            val locals = listLocalDeclarationsUpward(element, onlyLocalScope, hitLocal);
             if (searchFor != null && locals.containsKey(searchFor)) return arrayOf(locals[searchFor]!!);
             result.addAll(locals.values);
 
             // This class is already scanned via localDecl - so move to extended one
-            parent = if (onlyPreceding) {
+            parent = if (onlyLocalScope) {
                 GdInheritanceUtil.getExtendedElement(element);
             } else {
                 GdClassUtil.getOwningClassElement(element);
             }
         } else {
-            // For Dictionary (& Enum) add also all it's fields
+            // For Enum add also all it's values
             if (calledOn.endsWith("Dictionary") && calledOnPsi != null && calledOnPsi.firstChild is GdRefIdNm) {
                 val dictDecl = findDeclaration(calledOnPsi.firstChild as GdRefIdNm);
-                when (dictDecl) {
-                    is GdEnumDeclTl -> {
-                        if (searchFor != null) {
-                            val localVal = dictDecl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor };
-                            if (localVal != null) return arrayOf(localVal);
-                        }
-                        result.addAll(dictDecl.enumValueList);
+                if (dictDecl is GdEnumDeclTl) {
+                    if (searchFor != null) {
+                        val localVal = dictDecl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor };
+                        if (localVal != null) return arrayOf(localVal);
                     }
-                    else -> {
-                        val localDictDecl = PsiTreeUtil.findChildOfAnyType(dictDecl, GdDictDecl::class.java);
-                        if (localDictDecl != null) {
-                            result.addAll(localDictDecl.keyValueList)
-                        }
-                    }
+                    result.addAll(dictDecl.enumValueList);
                 }
             }
 
@@ -119,8 +112,10 @@ object GdClassMemberUtil {
         }
 
         // Recursively iterate over all extended classes
-        val local = collectFromParents(parent, result, static, searchFor);
-        if (local != null) return arrayOf(local);
+        if (onlyLocalScope && !hitLocal.value) {
+            val local = collectFromParents(parent, result, static, searchFor);
+            if (local != null) return arrayOf(local);
+        }
 
         if (calledOn == null) {
             if (searchFor != null) {
@@ -161,6 +156,8 @@ object GdClassMemberUtil {
      */
     fun listLocalDeclarationsUpward(
         element: PsiElement,
+        onlyLocalScope: Boolean = false,
+        hitLocal: BoolVal? = null,
     ): HashMap<String, PsiElement> {
         val locals: HashMap<String, PsiElement> = hashMapOf();
         var it: PsiElement = element;
@@ -182,6 +179,14 @@ object GdClassMemberUtil {
                 it = it.parent;
             }
         }
+        var isParam = false;
+        when (it) {
+            is GdParam,
+            -> {
+                isParam = true;
+                it = it.prevSibling ?: it.parent;
+            }
+        }
 
         while (true) {
             val movedToParent = it.prevSibling == null;
@@ -198,7 +203,7 @@ object GdClassMemberUtil {
                 };
                 is GdForSt -> if (movedToParent) locals[it.varNmi.name] = it;
                 is GdPatternList -> {
-                    if (movedToParent) { // TODO potřeba?
+                    if (movedToParent) {
                         PsiTreeUtil.getChildrenOfType(it, GdBindingPattern::class.java)
                             ?.map { b -> locals[b.varNmi.name] = b }
                     }
@@ -209,6 +214,15 @@ object GdClassMemberUtil {
                     }
                 };
                 is GdMethodDeclTl -> {
+                    if (onlyLocalScope) {
+                        if (!isParam) {
+                            it.parameters.forEach { p ->
+                                locals[p.key] = it;
+                            }
+                        }
+                        if (hitLocal != null) hitLocal.value = true;
+                        break;
+                    };
                     locals[it.name] = it;
                 }
 

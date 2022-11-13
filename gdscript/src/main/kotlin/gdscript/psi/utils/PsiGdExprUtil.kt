@@ -15,7 +15,7 @@ object PsiGdExprUtil {
         return when (expr) {
             is GdFuncDeclEx -> GdKeywords.CALLABLE;
             is GdPlusMinusEx -> expr.expr.returnType;
-            is GdCastEx -> fromTyped(expr.isTyped);
+            is GdCastEx -> fromTyped(expr.typedVal);
             is GdTernaryEx -> {
                 val a = expr.exprList.getOrNull(0)?.returnType ?: "";
                 val b = expr.exprList.getOrNull(2)?.returnType ?: "";
@@ -47,7 +47,7 @@ object PsiGdExprUtil {
             is GdBitNotEx -> GdKeywords.INT;
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT;
             is GdAttributeEx -> expr.exprList.lastOrNull()?.returnType ?: "";
-            is GdIsEx -> fromTyped(expr.isTyped)
+            is GdIsEx -> fromTyped(expr.typedVal)
             is GdCallEx -> {
                 if (expr.text == "new()") { // TODO může to mít params?
                     if (expr.parent is GdAttributeEx) {
@@ -184,15 +184,15 @@ object PsiGdExprUtil {
         return typed;
     }
 
-    private fun fromTyped(typed: GdIsTyped?): String {
+    private fun fromTyped(typed: GdTypedVal?): String {
         if (typed == null) return "";
 
-        val main = typed.typeHintNm.text;
+        val main = typed.typedValRoot.text;
         if (main != "Array") {
             return main;
         }
 
-        return typed.typeHintArrayNm?.text ?: "";
+        return typed.typeHintNm?.text ?: "";
     }
 
 }

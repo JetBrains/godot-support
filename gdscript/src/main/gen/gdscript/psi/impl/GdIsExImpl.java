@@ -35,8 +35,8 @@ public class GdIsExImpl extends GdExprImpl implements GdIsEx {
 
   @Override
   @NotNull
-  public GdIsTyped getIsTyped() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdIsTyped.class));
+  public GdTypedVal getTypedVal() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdTypedVal.class));
   }
 
 }
