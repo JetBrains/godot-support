@@ -1,3 +1,5 @@
++ file templates
+
 Video preview
 Resources
 NodePath

@@ -102,9 +102,26 @@
     <codeStyleSettingsProvider implementation="gdscript.formatter.GdCodeStyleSettingsProvider" />
     <langCodeStyleSettingsProvider implementation="gdscript.formatter.GdLanguageCodeStyleSettingsProvider" />
 
+    <!-- File templates -->
+    <internalFileTemplate name="Node default" />
+    <internalFileTemplate name="Object empty" />
+    <internalFileTemplate name="CharacterBody2D basic_movement" />
+    <internalFileTemplate name="CharacterBody3D basic_movement" />
+    <internalFileTemplate name="EditorPlugin plugin" />
+    <internalFileTemplate name="EditorScenePostImport basic_import_script" />
+    <internalFileTemplate name="EditorScenePostImport no_comments" />
+    <internalFileTemplate name="EditorScript basic_editor_script" />
+    <internalFileTemplate name="VisualShaderNodeCustom basic" />
+
     <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdFoldingBuilder" />
     <lang.psiStructureViewFactory language="GdScript" implementationClass="gdscript.structureView.GdStructureViewFactory" />
     <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler" />
   </extensions>
+
+  <actions>
+    <action id="gdscript.action.GdCreateFileAction" class="gdscript.action.GdCreateFileAction" >
+      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile" />
+    </action>
+  </actions>
 
 </idea-plugin>
