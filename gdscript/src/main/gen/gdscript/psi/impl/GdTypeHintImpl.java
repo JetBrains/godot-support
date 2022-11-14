@@ -11,14 +11,14 @@ import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdTypedValRootImpl extends ASTWrapperPsiElement implements GdTypedValRoot {
+public class GdTypeHintImpl extends ASTWrapperPsiElement implements GdTypeHint {
 
-  public GdTypedValRootImpl(@NotNull ASTNode node) {
+  public GdTypeHintImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitTypedValRoot(this);
+    visitor.visitTypeHint(this);
   }
 
   @Override
@@ -29,8 +29,8 @@ public class GdTypedValRootImpl extends ASTWrapperPsiElement implements GdTypedV
 
   @Override
   @NotNull
-  public GdTypeHintNm getTypeHintNm() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdTypeHintNm.class));
+  public List<GdTypeHintNm> getTypeHintNmList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdTypeHintNm.class);
   }
 
 }

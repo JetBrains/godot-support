@@ -2093,6 +2093,41 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // typeHint_nm (DOT typeHint_nm)*
+  public static boolean typeHint(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typeHint")) return false;
+    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = typeHint_nm(b, l + 1);
+    r = r && typeHint_1(b, l + 1);
+    exit_section_(b, m, TYPE_HINT, r);
+    return r;
+  }
+
+  // (DOT typeHint_nm)*
+  private static boolean typeHint_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typeHint_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!typeHint_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "typeHint_1", c)) break;
+    }
+    return true;
+  }
+
+  // DOT typeHint_nm
+  private static boolean typeHint_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typeHint_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOT);
+    r = r && typeHint_nm(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // IDENTIFIER
   public static boolean typeHint_nm(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typeHint_nm")) return false;
@@ -2118,46 +2153,34 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // typedValRoot (LSBR typeHint_nm RSBR)?
+  // typeHint (LSBR typeHint RSBR)?
   public static boolean typedVal(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedVal")) return false;
     if (!nextTokenIs(b, IDENTIFIER)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = typedValRoot(b, l + 1);
+    r = typeHint(b, l + 1);
     r = r && typedVal_1(b, l + 1);
     exit_section_(b, m, TYPED_VAL, r);
     return r;
   }
 
-  // (LSBR typeHint_nm RSBR)?
+  // (LSBR typeHint RSBR)?
   private static boolean typedVal_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedVal_1")) return false;
     typedVal_1_0(b, l + 1);
     return true;
   }
 
-  // LSBR typeHint_nm RSBR
+  // LSBR typeHint RSBR
   private static boolean typedVal_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedVal_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LSBR);
-    r = r && typeHint_nm(b, l + 1);
+    r = r && typeHint(b, l + 1);
     r = r && consumeToken(b, RSBR);
     exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // typeHint_nm
-  public static boolean typedValRoot(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "typedValRoot")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = typeHint_nm(b, l + 1);
-    exit_section_(b, m, TYPED_VAL_ROOT, r);
     return r;
   }
 

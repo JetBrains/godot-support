@@ -331,6 +331,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitTypeHint(@NotNull GdTypeHint o) {
+    visitPsiElement(o);
+  }
+
   public void visitTypeHintNm(@NotNull GdTypeHintNm o) {
     visitNamedElement(o);
   }
@@ -340,10 +344,6 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitTypedVal(@NotNull GdTypedVal o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTypedValRoot(@NotNull GdTypedValRoot o) {
     visitPsiElement(o);
   }
 

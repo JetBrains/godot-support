@@ -5,7 +5,7 @@ import gdscript.psi.GdTypedVal
 object GdTypedUtil {
 
     fun getReturnType(element: GdTypedVal): String {
-        return element.typedValRoot.text;
+        return element.typeHintList.firstOrNull()?.text ?: "";
     }
 
 }

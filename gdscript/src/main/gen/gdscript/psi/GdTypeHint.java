@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdTypedValRoot extends PsiElement {
+public interface GdTypeHint extends PsiElement {
 
   @NotNull
-  GdTypeHintNm getTypeHintNm();
+  List<GdTypeHintNm> getTypeHintNmList();
 
 }

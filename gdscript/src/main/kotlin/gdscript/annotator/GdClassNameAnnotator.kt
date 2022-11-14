@@ -43,7 +43,8 @@ class GdClassNameAnnotator : Annotator {
         ) {
             // Last case is extending InnerClass within same file which does not require FQN
             // and can directly use any at lower level
-            /* TODO ii-
+            /* TODO ii
+            // Tohle je copy-paste i v TypeHint, tak vyřešit společně
             class Const:
 	func _init(a: int) -> void:
 		pass

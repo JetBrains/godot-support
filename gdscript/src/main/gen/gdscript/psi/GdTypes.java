@@ -100,7 +100,7 @@ public interface GdTypes {
   IElementType TOP_LEVEL_DECL = new GdElementType("TOP_LEVEL_DECL");
   IElementType TYPED = new GdElementType("TYPED");
   IElementType TYPED_VAL = new GdElementType("TYPED_VAL");
-  IElementType TYPED_VAL_ROOT = new GdElementType("TYPED_VAL_ROOT");
+  IElementType TYPE_HINT = new GdElementType("TYPE_HINT");
   IElementType TYPE_HINT_NM = new GdElementType("TYPE_HINT_NM");
   IElementType VAR_DECL_ST = new GdElementType("VAR_DECL_ST");
   IElementType VAR_NMI = new GdElementType("VAR_NMI");
@@ -430,8 +430,8 @@ public interface GdTypes {
       else if (type == TYPED_VAL) {
         return new GdTypedValImpl(node);
       }
-      else if (type == TYPED_VAL_ROOT) {
-        return new GdTypedValRootImpl(node);
+      else if (type == TYPE_HINT) {
+        return new GdTypeHintImpl(node);
       }
       else if (type == TYPE_HINT_NM) {
         return new GdTypeHintNmImpl(node);

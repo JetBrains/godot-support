@@ -187,12 +187,12 @@ object PsiGdExprUtil {
     private fun fromTyped(typed: GdTypedVal?): String {
         if (typed == null) return "";
 
-        val main = typed.typedValRoot.text;
+        val main = typed.typeHintList.first().text;
         if (main != "Array") {
             return main;
         }
 
-        return typed.typeHintNm?.text ?: "";
+        return typed.typeHintList.last().text;
     }
 
 }

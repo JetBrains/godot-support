@@ -28,15 +28,9 @@ public class GdTypedValImpl extends ASTWrapperPsiElement implements GdTypedVal {
   }
 
   @Override
-  @Nullable
-  public GdTypeHintNm getTypeHintNm() {
-    return PsiTreeUtil.getChildOfType(this, GdTypeHintNm.class);
-  }
-
-  @Override
   @NotNull
-  public GdTypedValRoot getTypedValRoot() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdTypedValRoot.class));
+  public List<GdTypeHint> getTypeHintList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdTypeHint.class);
   }
 
   @Override
