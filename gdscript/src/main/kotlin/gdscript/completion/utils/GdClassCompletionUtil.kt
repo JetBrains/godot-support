@@ -18,10 +18,6 @@ object GdClassCompletionUtil {
         }.toTypedArray();
     }
 
-    fun classDecl(vararg elements: GdClassDeclTl): Array<LookupElement> {
-        return elements.map { it.lookup() }.toTypedArray();
-    }
-
     fun GdClassDeclTl.lookup(): LookupElement {
         val name = this.name;
         return GdLookup.create(name, priority = GdLookup.USER_DEFINED, icon = GdIcon.getEditorIcon(name))

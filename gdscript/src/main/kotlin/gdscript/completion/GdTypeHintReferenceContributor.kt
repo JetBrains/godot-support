@@ -4,7 +4,7 @@ import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import gdscript.psi.GdTypes
-import gdscript.reference.GdTypeHintReference
+import gdscript.reference.GdTypeHintNmReference
 
 /**
  * ReturnType reference to classId
@@ -19,7 +19,7 @@ class GdTypeHintReferenceContributor : PsiReferenceContributor() {
                     element: PsiElement,
                     context: ProcessingContext,
                 ): Array<PsiReference> {
-                    return arrayOf(GdTypeHintReference(element));
+                    return arrayOf(GdTypeHintNmReference(element));
                 }
             }
         );

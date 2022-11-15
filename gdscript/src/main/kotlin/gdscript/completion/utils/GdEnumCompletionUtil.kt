@@ -15,7 +15,9 @@ object GdEnumCompletionUtil {
             name,
             icon = GdIcon.getEditorIcon(GdIcon.ENUM_MARKER),
             typed = GdKeywords.INT,
-            tail = if (value != null) "($value)" else {""},
+            tail = if (value != null) "($value)" else {
+                ""
+            },
             priority = GdLookup.USER_DEFINED,
         )
     }
@@ -29,7 +31,20 @@ object GdEnumCompletionUtil {
             name,
             icon = GdIcon.getEditorIcon(GdIcon.ENUM_MARKER),
             typed = GdKeywords.INT,
-            tail = if (values != null) "(${values[name] ?: ""})" else {""},
+            tail = if (values != null) "(${values[name] ?: ""})" else {
+                ""
+            },
+            priority = GdLookup.LOCAL_USER_DEFINED,
+        )
+    }
+
+    fun GdEnumDeclTl.lookup(): LookupElement? {
+        if (name.isBlank()) return null;
+
+        return GdLookup.create(
+            name,
+            icon = GdIcon.getEditorIcon(GdIcon.ENUM_MARKER),
+            typed = GdKeywords.INT,
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
     }

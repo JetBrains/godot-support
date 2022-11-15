@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.completion.utils.GdClassCompletionUtil
+import gdscript.completion.utils.GdClassCompletionUtil.lookup
 import gdscript.completion.utils.GdFileCompletionUtil
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.psi.GdClassDeclTl
@@ -29,11 +30,7 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
         // TODO rename resource -> rename file
         if (isResource()) return element;
 
-        when (element) {
-            is GdInheritanceIdNm -> element.setName(newElementName);
-            is GdInheritanceSubIdNm -> element.setName(newElementName);
-        }
-
+        element.setName(newElementName)
         return element;
     }
 
@@ -50,7 +47,7 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
             val container = GdClassUtil.getOwningClassElement(classId);
             val inners = PsiTreeUtil.getStubChildrenOfTypeAsList(container, GdClassDeclTl::class.java);
 
-            return GdClassCompletionUtil.classDecl(*inners.toTypedArray());
+            return inners.map { it.lookup() }.toTypedArray();
         }
 
         return GdClassCompletionUtil.allRootClasses(element.project);
