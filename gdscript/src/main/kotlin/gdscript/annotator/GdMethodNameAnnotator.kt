@@ -31,7 +31,7 @@ class GdMethodNameAnnotator : Annotator {
         val name = element.name;
 
         // Constructors
-        if (GdClassUtil.getOwningClassId(element) == name) {
+        if (GdClassUtil.getOwningClassName(element) == name) {
             return;
         }
 

@@ -39,10 +39,12 @@ object GdInheritanceUtil {
         );
     }
 
-    fun isExtending(element: PsiElement, classId: String): Boolean {
+    fun isExtending(element: PsiElement, className: String): Boolean {
+        if (GdClassUtil.getOwningClassName(element) == className) return true;
+
         var parentId = getExtendedClassId(element);
         while (parentId.isNotBlank()) {
-            if (parentId == classId) return true;
+            if (parentId == className) return true;
             val parent = GdClassIdIndex.getGlobally(parentId, element).firstOrNull() ?: return false;
             parentId = getExtendedClassId(parent);
         }

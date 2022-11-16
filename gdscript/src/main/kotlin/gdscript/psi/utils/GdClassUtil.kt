@@ -3,6 +3,7 @@ package gdscript.psi.utils
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.*
+import gdscript.utils.VirtualFileUtil.localPath
 import gdscript.utils.VirtualFileUtil.resourcePath
 
 object GdClassUtil {
@@ -10,9 +11,9 @@ object GdClassUtil {
     /**
      * @param element current element
      *
-     * @return String owning classId (resource if not named)
+     * @return String owning className (resource if not named)
      */
-    fun getOwningClassId(element: PsiElement): String {
+    fun getOwningClassName(element: PsiElement): String {
         return when(val it = getOwningClassElement(element)) {
             is GdClassDeclTl -> it.name;
             else -> {
@@ -21,6 +22,26 @@ object GdClassUtil {
 
                 element.containingFile.virtualFile.resourcePath();
             }
+        }
+    }
+
+    /**
+     * @param element GdClassDecl|GdFile
+     * @return Full classId to given class "Class.Inner" (can be resource)
+     */
+    fun getFullClassId(element: PsiElement): String {
+        // TODO ii autoloads?
+        return when (element) {
+            is GdClassDeclTl -> element.classNameNmi?.classId ?: ""
+            is GdFile -> {
+                val named = PsiTreeUtil.getStubChildOfType(element, GdClassNaming::class.java);
+                if (named != null) {
+                    named.classNameNmi?.classId ?: ""
+                } else {
+                    "\"${PsiGdResourceUtil.resourcePath(element.virtualFile.localPath())}\""
+                }
+            }
+            else -> getFullClassId(getOwningClassElement(element))
         }
     }
 

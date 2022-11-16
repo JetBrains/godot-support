@@ -10,6 +10,6 @@ abstract class GdClassIdElementImpl : StubBasedPsiElementBase<GdClassIdStub> {
     constructor(node: ASTNode) : super(node)
     constructor(stub: GdClassIdStub, nodeType: IStubElementType<*, *>) : super(stub, nodeType)
 
-    override fun toString() = "GdClasId"
+    override fun toString() = "GdClassId"
 
 }

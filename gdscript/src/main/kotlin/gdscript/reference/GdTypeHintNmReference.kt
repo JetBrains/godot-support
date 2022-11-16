@@ -73,8 +73,12 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
     }
 
     private fun getOwnerClass(): PsiElement? {
-        return GdClassIdIndex.getGloballyResolved(key.substring(0, key.lastIndexOf(".")), element.project)
-            .firstOrNull();
+        val withoutLast = key.substring(0, key.lastIndexOf("."));
+        val global = GdClassIdIndex.getGloballyResolved(withoutLast, element.project).firstOrNull();
+        if (global != null) return global;
+
+        val myId = GdClassUtil.getFullClassId(element)
+        return GdClassIdIndex.getGloballyResolved("${myId}.${withoutLast}", element.project).firstOrNull();
     }
 
     private fun enums(ownerClass: PsiElement): List<GdEnumDeclTl> {

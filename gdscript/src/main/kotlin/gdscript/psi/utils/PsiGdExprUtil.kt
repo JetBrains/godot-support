@@ -114,7 +114,7 @@ object PsiGdExprUtil {
                     return GdKeywords.STR;
                 } else if (elementType == GdTypes.REF_ID_NM) {
                     if (text == GdKeywords.SELF) {
-                        return GdClassUtil.getOwningClassId(expr)
+                        return GdClassUtil.getOwningClassName(expr)
                     } else if (text == GdKeywords.SUPER) {
                         // TODO tohle může vrátit zanoření... :/ Losos.InnerClass -> nějak se to musí vyparsovat
                         return GdInheritanceUtil.getExtendedClassId(expr);
