@@ -17,6 +17,6 @@ public interface GdPattern extends PsiElement {
   GdDictPattern getDictPattern();
 
   @Nullable
-  GdLiteralEx getLiteralEx();
+  GdExpr getExpr();
 
 }

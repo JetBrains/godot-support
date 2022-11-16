@@ -1,15 +1,10 @@
-+ file templates
-
 Video preview
 Resources
 NodePath
 Set/Get
 Signal/Resource line marker
 private members
-
-
-res line marker
-signal line marker
+file templates
 
 
 const func ... qualifiers ?? Je to i v xml

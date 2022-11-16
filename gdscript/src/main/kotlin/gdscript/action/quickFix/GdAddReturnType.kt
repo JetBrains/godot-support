@@ -41,11 +41,9 @@ class GdAddReturnType : BaseIntentionAction {
             else -> null;
         } ?: return;
 
-        val currentOffset = caret.offset;
         caret.moveToOffset(typed.first);
         EditorModificationUtil.insertStringAtCaret(editor, typed.second)
         PsiDocumentManager.getInstance(project).commitDocument(editor.document)
-        caret.moveToOffset(currentOffset + typed.second.length);
     }
 
     // TODO tohle zobecnit také pro lambdu

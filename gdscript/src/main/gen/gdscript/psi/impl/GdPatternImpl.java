@@ -47,8 +47,8 @@ public class GdPatternImpl extends ASTWrapperPsiElement implements GdPattern {
 
   @Override
   @Nullable
-  public GdLiteralEx getLiteralEx() {
-    return PsiTreeUtil.getChildOfType(this, GdLiteralEx.class);
+  public GdExpr getExpr() {
+    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
   }
 
 }

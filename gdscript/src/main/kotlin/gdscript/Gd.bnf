@@ -157,7 +157,7 @@ matchBlock ::= (patternList COLON stmtOrSuite)+
 patternList ::= pattern (COMMA pattern)*
 //TODO (* Note: you can't have a binding in a pattern list, but to not complicate the grammar more it won't be restricted syntactically *)
 // Asi annotátor
-pattern ::= literal_ex | UNDER | bindingPattern | arrayPattern | dictPattern
+pattern ::= UNDER | bindingPattern | arrayPattern | dictPattern | expr
 bindingPattern ::= VAR var_nmi
 arrayPattern ::= LSBR ( pattern (COMMA pattern)* (COMMA DOTDOT)? )? RSBR
 dictPattern ::= LCBR keyValuePattern? (COMMA keyValuePattern)* (COMMA DOTDOT)? RCBR

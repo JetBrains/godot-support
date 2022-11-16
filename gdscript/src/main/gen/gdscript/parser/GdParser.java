@@ -1601,16 +1601,16 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // literal_ex | UNDER | bindingPattern | arrayPattern | dictPattern
+  // UNDER | bindingPattern | arrayPattern | dictPattern | expr
   public static boolean pattern(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "pattern")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, PATTERN, "<pattern>");
-    r = literal_ex(b, l + 1);
-    if (!r) r = consumeToken(b, UNDER);
+    r = consumeToken(b, UNDER);
     if (!r) r = bindingPattern(b, l + 1);
     if (!r) r = arrayPattern(b, l + 1);
     if (!r) r = dictPattern(b, l + 1);
+    if (!r) r = expr(b, l + 1, -1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
