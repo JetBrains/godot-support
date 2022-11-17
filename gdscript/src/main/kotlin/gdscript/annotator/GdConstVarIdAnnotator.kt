@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiTreeUtil
 import gdscript.action.quickFix.GdAddReturnType
 import gdscript.action.quickFix.GdRemoveElementAction
 import gdscript.psi.*
@@ -25,7 +26,11 @@ class GdConstVarIdAnnotator : Annotator {
     }
 
     private fun isUnique(element: GdNamedIdElement, holder: AnnotationHolder) {
-        if (GdClassMemberUtil.findDeclaration(element, true) != null) {
+        val inMethod = PsiTreeUtil.findFirstParent(element) {
+            it is GdClassDeclTl || it is GdMethodDeclTl || it is GdFile
+        } is GdMethodDeclTl;
+
+        if (GdClassMemberUtil.findDeclaration(element, true, inMethod) != null) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR,
                     "[${element.name}] is already defined")

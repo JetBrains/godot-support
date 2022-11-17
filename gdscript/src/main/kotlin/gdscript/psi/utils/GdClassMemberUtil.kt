@@ -21,8 +21,9 @@ object GdClassMemberUtil {
     fun findDeclaration(
         element: GdNamedElement,
         onlyLocalScope: Boolean = false,
+        ignoreParents: Boolean = false,
     ): PsiElement? {
-        return listDeclarations(element, element, onlyLocalScope).firstOrNull();
+        return listDeclarations(element, element, onlyLocalScope, ignoreParents).firstOrNull();
     }
 
     /**
@@ -33,8 +34,9 @@ object GdClassMemberUtil {
         element: PsiElement,
         searchFor: GdNamedElement,
         onlyLocalScope: Boolean = false,
+        ignoreParents: Boolean = false,
     ): Array<PsiElement> {
-        return listDeclarations(element, searchFor.name, onlyLocalScope);
+        return listDeclarations(element, searchFor.name, onlyLocalScope, ignoreParents);
     }
 
     /**
@@ -45,6 +47,7 @@ object GdClassMemberUtil {
         element: PsiElement,
         searchFor: String? = null,
         onlyLocalScope: Boolean = false,
+        ignoreParents: Boolean = false,
     ): Array<PsiElement> {
         var static = false;
 
@@ -106,13 +109,14 @@ object GdClassMemberUtil {
                 }
             }
 
+            // TODO ii resolve enums val calledOnRef = PsiTreeUtil.findChildrenOfType(calledOnPsi, GdRefIdNm::class.java).lastOrNull();
             parent = GdClassIdIndex.getGloballyResolved(calledOn, element.project).firstOrNull();
             if (parent != null)
                 parent = GdClassUtil.getOwningClassElement(parent);
         }
 
         // Recursively iterate over all extended classes
-        if (onlyLocalScope && !hitLocal.value) {
+        if (!ignoreParents && !hitLocal.value) {
             val local = collectFromParents(parent, result, static, searchFor);
             if (local != null) return arrayOf(local);
         }
@@ -279,10 +283,58 @@ object GdClassMemberUtil {
     }
 
     /**
-     * List given element's class declarations
+     * Finds local declarations from current position upwards
+     *
+     * @param element GdClassDecl|GdFile class containing element
+     *
+     * @return HashMap<name, MutableList<PsiElement>>
      */
-    fun listClassMemberDeclarations(element: PsiElement, static: Boolean? = false): Array<PsiElement> {
-        return listNamedClassMemberDeclarations(element, static).array();
+    fun listClassMemberDeclarations(
+        element: PsiElement,
+        static: Boolean? = false,
+        search: String? = null,
+    ): MutableList<PsiElement> {
+        val classElement = when (element) {
+            is GdFile, is GdClassDeclTl -> element;
+            else -> GdClassUtil.getOwningClassElement(element);
+        }
+
+        val members = mutableListOf<PsiElement>();
+
+        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdConstDeclTl::class.java).forEach {
+            if (search != null && it.name == search) return mutableListOf(it);
+            members.add(it)
+        }
+        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
+            if (search != null && it.name == search) return mutableListOf(it);
+            members.add(it)
+        }
+        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdSignalDeclTl::class.java).forEach {
+            if (search != null && it.name == search) return mutableListOf(it);
+            members.add(it)
+        }
+        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
+            if (search != null && it.name == search) return mutableListOf(it);
+            members.add(it)
+            members.addAll(listClassMemberDeclarations(it, static, search))
+        }
+
+        if (static != true) {
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassVarDeclTl::class.java).forEach {
+                if (search != null && it.name == search) return mutableListOf(it);
+                members.add(it)
+            }
+        }
+
+        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdMethodDeclTl::class.java).forEach {
+            if ((static == null || it.isStatic == static) && !it.isConstructor) {
+                if (search != null && it.name == search) return mutableListOf(it);
+                members.add(it)
+            }
+        }
+        if (search != null) return mutableListOf();
+
+        return members;
     }
 
     /**
@@ -297,69 +349,11 @@ object GdClassMemberUtil {
         static: Boolean? = false,
         search: String? = null,
     ): PsiElement? {
-        val members = listNamedClassMemberDeclarations(classElement, static);
-        if (search != null && members.containsKey(search)) {
-            return members[search]!!.first();
-        }
-
-        result.addAll(members.array());
+        val list = listClassMemberDeclarations(classElement, static, search);
+        if (search != null) return list.firstOrNull();
+        result.addAll(list);
 
         return null;
-    }
-
-    /**
-     * Finds local declarations from current position upwards
-     *
-     * @param element GdClassDecl|GdFile class containing element
-     *
-     * @return HashMap<name, MutableList<PsiElement>>
-     */
-    private fun listNamedClassMemberDeclarations(
-        element: PsiElement,
-        static: Boolean? = false,
-    ): HashMap<String, MutableList<PsiElement>> {
-        val classElement = when (element) {
-            is GdFile, is GdClassDeclTl -> element;
-            else -> GdClassUtil.getOwningClassElement(element);
-        }
-
-        val members: HashMap<String, MutableList<PsiElement>> = hashMapOf();
-
-        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdConstDeclTl::class.java).forEach {
-            val name = it.name;
-            if (!members.containsKey(name)) members[name] = mutableListOf();
-            members[name]!!.add(it)
-        }
-
-        if (static != true) {
-            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassVarDeclTl::class.java).forEach {
-                val name = it.name;
-                if (!members.containsKey(name)) members[name] = mutableListOf();
-                members[name]!!.add(it)
-            }
-            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
-                val name = it.name;
-                if (!members.containsKey(name)) members[name] = mutableListOf();
-                members[name]!!.add(it)
-            }
-            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdSignalDeclTl::class.java).forEach {
-                val name = it.name;
-                if (!members.containsKey(name)) members[name] = mutableListOf();
-                members[name]!!.add(it)
-            }
-        }
-
-        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdMethodDeclTl::class.java).forEach {
-            if ((static == null || it.isStatic == static) && !it.isConstructor) {
-                val name = it.name;
-                if (!members.containsKey(name)) members[name] = mutableListOf();
-                members[name]!!.add(it);
-            }
-        }
-        // TODO ii inner classes musí napovídat také po resource ... :/
-        //PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).map { members[it.name] = it; }
-
-        return members;
     }
 
     /**

@@ -1,3 +1,5 @@
+match template
+
 Video preview
 Resources
 NodePath
@@ -24,5 +26,3 @@ construcotr annotator -> args parent validace
 
 file rename:
 https://intellij-support.jetbrains.com/hc/en-us/community/posts/206760415-Renaming-files-in-IDE
-
-abs() je v global (ty nejsou) ale i ve Vector 

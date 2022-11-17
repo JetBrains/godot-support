@@ -4,6 +4,7 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.psi.PsiElement
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
+import gdscript.completion.utils.GdClassCompletionUtil.lookup
 import gdscript.psi.*
 import gdscript.utils.StringUtil.parseFromSquare
 
@@ -11,7 +12,8 @@ import gdscript.utils.StringUtil.parseFromSquare
 object GdCompletionUtil {
 
     fun lookups(element: PsiElement): Array<LookupElement> {
-        return when (element) { // TODO je tu vše? musí sedět vůši GdClassMemberUtil.listMembers
+        return when (element) {
+            is GdClassDeclTl -> arrayOf(element.lookup());
             is GdClassNaming -> arrayOf(lookup(element));
             is GdClassVarDeclTl -> arrayOf(lookup(element));
             is GdVarDeclSt -> arrayOf(lookup(element));

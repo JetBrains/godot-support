@@ -29,13 +29,14 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     }
 
     fun resolveDeclaration(): PsiElement? {
-        return GdClassMemberUtil.findDeclaration(element, false);
+        return GdClassMemberUtil.findDeclaration(element);
     }
 
     override fun resolve(): PsiElement? {
         val direct =
             when (val element = resolveDeclaration()) {
                 is GdClassVarDeclTl -> element.classVarIdNmi;
+                is GdClassDeclTl -> element.classNameNmi;
                 is GdVarDeclSt -> element.varNmi;
                 is GdConstDeclSt -> element.varNmi;
                 is GdConstDeclTl -> element.constIdNmi;
@@ -64,7 +65,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                 is GdConstDeclTl -> results.add(GdCompletionUtil.lookup(it));
                 is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl, is GdSignalDeclTl, is GdClassNaming,
                 is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl, is GdBindingPattern,
-                is GdEnumValue,
+                is GdEnumValue, is GdClassDeclTl,
                 ->
                     results.addAll(GdCompletionUtil.lookups(it));
             }

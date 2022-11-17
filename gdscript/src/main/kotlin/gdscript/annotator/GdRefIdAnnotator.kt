@@ -23,7 +23,9 @@ class GdRefIdAnnotator : Annotator {
         val txt = element.text;
 
         if (txt == GdKeywords.SELF || txt == GdKeywords.SUPER) return;
-        if (arrayOf(GdKeywords.PI, GdKeywords.TAU, GdKeywords.INF, GdKeywords.NAN).contains(txt)) {
+        if (GdKeywords.BUILT_TYPES.contains(txt)
+            || arrayOf(GdKeywords.PI, GdKeywords.TAU, GdKeywords.INF, GdKeywords.NAN).contains(txt)
+        ) {
             holder
                 .newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .range(element.textRange)
