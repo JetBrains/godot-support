@@ -1,0 +1,29 @@
+{
+  parserClass="project.parser.ProjectParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Project"
+  psiImplClassSuffix="Impl"
+  psiPackage="project.psi"
+  psiImplPackage="project.psi.impl"
+
+  elementTypeHolderClass="project.psi.ProjectTypes"
+  elementTypeClass="project.psi.ProjectElementType"
+  tokenTypeClass="project.psi.ProjectTokenType"
+
+  psiImplUtilClass="project.psi.ProjectPsiUtils"
+
+  tokens = [
+    comment='regexp:;[^\r\n]*'
+    bad_character='regexp:[\^]'
+  ]
+}
+
+file ::= section+
+section ::= section_nm? data+
+section_nm ::= SECTION_KEY
+data ::= dataKey EQ dataValue
+
+dataKey ::= KEY
+dataValue ::= VALUE+
