@@ -8,13 +8,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static project.psi.ProjectTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import project.psi.*;
+import project.index.stub.ProjectSectionStub;
+import com.intellij.psi.stubs.IStubElementType;
 
-public class ProjectSectionImpl extends ASTWrapperPsiElement implements ProjectSection {
+public class ProjectSectionImpl extends ProjectSectionElementImpl implements ProjectSection {
 
   public ProjectSectionImpl(@NotNull ASTNode node) {
     super(node);
+  }
+
+  public ProjectSectionImpl(@NotNull ProjectSectionStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public void accept(@NotNull ProjectVisitor visitor) {
@@ -30,13 +35,19 @@ public class ProjectSectionImpl extends ASTWrapperPsiElement implements ProjectS
   @Override
   @NotNull
   public List<ProjectData> getDataList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, ProjectData.class);
+    return PsiTreeUtil.getStubChildrenOfTypeAsList(this, ProjectData.class);
   }
 
   @Override
   @Nullable
   public ProjectSectionNm getSectionNm() {
-    return findChildByClass(ProjectSectionNm.class);
+    return PsiTreeUtil.getChildOfType(this, ProjectSectionNm.class);
+  }
+
+  @Override
+  @NotNull
+  public String getName() {
+    return ProjectPsiUtils.getName(this);
   }
 
 }

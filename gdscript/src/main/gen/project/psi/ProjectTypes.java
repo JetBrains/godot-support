@@ -4,14 +4,16 @@ package project.psi;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import project.psi.impl.ProjectDataElementType;
+import project.psi.impl.ProjectSectionElementType;
 import project.psi.impl.*;
 
 public interface ProjectTypes {
 
-  IElementType DATA = new ProjectElementType("DATA");
+  IElementType DATA = ProjectDataElementType.getInstance("DATA");
   IElementType DATA_KEY = new ProjectElementType("DATA_KEY");
   IElementType DATA_VALUE = new ProjectElementType("DATA_VALUE");
-  IElementType SECTION = new ProjectElementType("SECTION");
+  IElementType SECTION = ProjectSectionElementType.getInstance("SECTION");
   IElementType SECTION_NM = new ProjectElementType("SECTION_NM");
 
   IElementType BAD_CHARACTER = new ProjectTokenType("bad_character");

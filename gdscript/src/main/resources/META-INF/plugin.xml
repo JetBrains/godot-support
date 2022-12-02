@@ -86,11 +86,13 @@
     <stubIndex implementation="gdscript.index.impl.GdSignalDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdEnumDeclIndex" />
     <fileBasedIndex implementation="gdscript.index.impl.GdFileResIndex" />
-    <!-- Tscn -->
+    <!-- Tscn & Project -->
     <stubIndex implementation="tscn.index.impl.TscnResourceIndex" />
     <stubIndex implementation="tscn.index.impl.TscnNodeIndex" />
     <stubIndex implementation="tscn.index.impl.TscnParagraphIndex" />
     <stubIndex implementation="tscn.index.impl.TscnConnectionIndex" />
+    <stubIndex implementation="project.index.impl.ProjectSectionIndex" />
+    <stubIndex implementation="project.index.impl.ProjectDataIndex" />
 
     <!-- Actions -->
     <intentionAction>

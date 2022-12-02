@@ -21,9 +21,20 @@
 }
 
 file ::= section+
-section ::= section_nm? data+
+section ::= section_nm? data+ {
+    methods=[getName]
+    mixin="project.psi.impl.ProjectSectionElementImpl"
+    stubClass="project.index.stub.ProjectSectionStub"
+    elementTypeFactory="project.psi.impl.ProjectSectionElementType.getInstance"
+}
+
 section_nm ::= SECTION_KEY
-data ::= dataKey EQ dataValue
+data ::= dataKey EQ dataValue {
+    methods=[getKey getValue]
+    mixin="project.psi.impl.ProjectDataElementImpl"
+    stubClass="project.index.stub.ProjectDataStub"
+    elementTypeFactory="project.psi.impl.ProjectDataElementType.getInstance"
+}
 
 dataKey ::= KEY
 dataValue ::= VALUE+

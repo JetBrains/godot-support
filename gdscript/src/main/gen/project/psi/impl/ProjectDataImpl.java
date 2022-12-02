@@ -8,13 +8,18 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static project.psi.ProjectTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import project.psi.*;
+import project.index.stub.ProjectDataStub;
+import com.intellij.psi.stubs.IStubElementType;
 
-public class ProjectDataImpl extends ASTWrapperPsiElement implements ProjectData {
+public class ProjectDataImpl extends ProjectDataElementImpl implements ProjectData {
 
   public ProjectDataImpl(@NotNull ASTNode node) {
     super(node);
+  }
+
+  public ProjectDataImpl(@NotNull ProjectDataStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public void accept(@NotNull ProjectVisitor visitor) {
@@ -30,13 +35,25 @@ public class ProjectDataImpl extends ASTWrapperPsiElement implements ProjectData
   @Override
   @NotNull
   public ProjectDataKey getDataKey() {
-    return findNotNullChildByClass(ProjectDataKey.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ProjectDataKey.class));
   }
 
   @Override
   @NotNull
   public ProjectDataValue getDataValue() {
-    return findNotNullChildByClass(ProjectDataValue.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, ProjectDataValue.class));
+  }
+
+  @Override
+  @NotNull
+  public String getKey() {
+    return ProjectPsiUtils.getKey(this);
+  }
+
+  @Override
+  @NotNull
+  public String getValue() {
+    return ProjectPsiUtils.getValue(this);
   }
 
 }
