@@ -11,7 +11,7 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.intellij") version "1.9.0" // https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id("org.jetbrains.intellij") version "1.10.1" // https://github.com/JetBrains/gradle-intellij-plugin/releases
     id("org.jetbrains.grammarkit") version "2021.2.2"
     id("me.filippov.gradle.jvm.wrapper") version "0.11.0"
     id("com.jetbrains.rdgen") version "2022.3.2"
@@ -202,6 +202,7 @@ tasks {
         // IDEs from SDK are launched with 512m by default, which is not enough for Rider.
         // Rider uses this value when launched not from SDK.
         maxHeapSize = "1500m"
+        // jvmArgs("-Didea.l10n=true")
     }
 
     withType<KotlinCompile> {

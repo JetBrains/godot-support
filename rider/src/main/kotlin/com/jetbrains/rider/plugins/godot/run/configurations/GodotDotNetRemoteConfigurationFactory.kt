@@ -7,10 +7,6 @@ import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 
 class GodotDotNetRemoteConfigurationFactory(monoRemoteConfigType: MonoRemoteConfigType) : DotNetConfigurationFactoryBase<DotNetRemoteConfiguration>(monoRemoteConfigType){
-    override fun getId(): String {
-        // super.getId() does the same, but prints a deprecation message
-        return name
-    }
-
+    override fun getId() = ".NET Start and Debug"
     override fun createTemplateConfiguration(project: Project): RunConfiguration = GodotDotNetRemoteConfiguration(project, this, "")
 }
