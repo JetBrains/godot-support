@@ -111,7 +111,7 @@ abstract class GdAbstractBlock : AbstractBlock {
         return GdBlock(
             child,
             Wrap.createWrap(WrapType.NONE, false),
-            if (child.elementType == GdTypes.ASSIGN_TYPED || child.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
+            if (child.treeParent.elementType == GdTypes.ASSIGN_TYPED || child.elementType == GdTypes.ASSIGN) EQ_ALIGN else Alignment.createAlignment(),
             settings,
             spacing,
             indent, // TODO další hack pro innerClass

@@ -15,6 +15,7 @@ class GdBlock : GdAbstractBlock {
             GdTypes.COLON,
             GdTypes.GET_DECL,
             GdTypes.SET_DECL,
+            GdTypes.ENUM_VALUE,
             // statements are added via "is" check
         );
     }
