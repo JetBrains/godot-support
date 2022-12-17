@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>ice.explosive.gdscript</id>
   <name>GdScript</name>
-  <version>0.4.2</version>
+  <version>0.4.3</version>
   <vendor email="h.raven@centrum.cz" url="https://gitlab.com/IceExplosive/gdscript">IceExplosive</vendor>
 
   <description>GdScript2 language plugin for GodotEngine 4.0+</description>
@@ -10,6 +10,7 @@
   <incompatible-with>gdscript</incompatible-with>
 
   <depends>com.intellij.modules.platform</depends>
+  <depends>com.intellij.modules.lang</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <fileType name="GdScript File" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd"/>
@@ -18,7 +19,7 @@
     <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
-    <sdkType implementation="gdscript.GdSdk" />
+    <sdkType implementation="gdscript.sdk.GdSdkType" />
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider" />
     <configurationType implementation="gdscript.run.GdRunConfigurationType" />
     <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer" />

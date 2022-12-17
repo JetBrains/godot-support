@@ -42,8 +42,8 @@ class GdAddReturnType : BaseIntentionAction {
         } ?: return;
 
         caret.moveToOffset(typed.first);
-        EditorModificationUtil.insertStringAtCaret(editor, typed.second)
-        PsiDocumentManager.getInstance(project).commitDocument(editor.document)
+        EditorModificationUtil.insertStringAtCaret(editor, typed.second);
+        PsiDocumentManager.getInstance(project).commitDocument(editor.document);
     }
 
     // TODO tohle zobecnit také pro lambdu

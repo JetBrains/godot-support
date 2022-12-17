@@ -9,6 +9,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 object GdSettingsState : PersistentStateComponent<GdSettingsState> {
 
     var hidePrivate = true;
+    var sdkPath: String? = null;
 
     override fun getState(): GdSettingsState {
         return this;
