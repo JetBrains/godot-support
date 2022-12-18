@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.7.21'
 
     repositories {
         mavenCentral()
@@ -11,7 +11,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.jetbrains.intellij' version '1.9.0'
+    id 'org.jetbrains.intellij' version '1.11.0'
     id 'org.jetbrains.kotlin.jvm' version "$kotlin_version"
 }
 
@@ -43,14 +43,14 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2022.2.3'
+    version = '2022.3'
 }
 
 patchPluginXml {
     changeNotes = """
       0.4+ - beta release<br>
       """
-    sinceBuild = '221'
+    sinceBuild = '223'
     untilBuild = ''
 }
 
@@ -64,10 +64,10 @@ tasks {
     }
 
     compileKotlin {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = "17"
     }
 
     compileTestKotlin {
-        kotlinOptions.jvmTarget = "11"
+        kotlinOptions.jvmTarget = "17"
     }
 }

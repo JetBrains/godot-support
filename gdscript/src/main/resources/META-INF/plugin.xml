@@ -9,7 +9,6 @@
   </change-notes>
   <incompatible-with>gdscript</incompatible-with>
 
-  <depends>com.intellij.modules.platform</depends>
   <depends>com.intellij.modules.lang</depends>
 
   <extensions defaultExtensionNs="com.intellij">
@@ -24,7 +23,7 @@
     <configurationType implementation="gdscript.run.GdRunConfigurationType" />
     <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer" />
     <defaultLiveTemplates file="/templates/GdScript.xml" />
-    <liveTemplateContext implementation="gdscript.GdTemplateContextType" />
+    <liveTemplateContext contextId="GDSCRIPT" implementation="gdscript.GdTemplateContextType" />
     <codeInsight.parameterInfo language="GdScript" id="GdParameterInfoHandler" implementationClass="gdscript.codeInsight.GdParameterInfoHandler" />
     <lang.documentationProvider language="GdScript" implementationClass="gdscript.codeInsight.GdDocumentationProvider" />
     <codeInsight.parameterNameHints language="GdScript" implementationClass="gdscript.codeInsight.GdInlayParameterHintProvider" />
