@@ -2,10 +2,12 @@ package gdscript.sdk
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runWriteAction
+import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.projectRoots.ProjectJdkTable
 import com.intellij.openapi.projectRoots.impl.ProjectJdkImpl
 import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil
 import com.intellij.openapi.roots.OrderRootType
+import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFileManager
 
@@ -38,6 +40,9 @@ object GdSdkManager {
             sdk.addRoot(pathUrl, OrderRootType.CLASSES);
         }
         sdk.commitChanges();
+
+        val project = ProjectManager.getInstance().defaultProject;
+        ProjectRootManager.getInstance(project).projectSdk = sdk;
     }
 
 }
