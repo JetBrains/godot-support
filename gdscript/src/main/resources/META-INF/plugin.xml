@@ -7,7 +7,7 @@
   <description>GdScript2 language plugin for GodotEngine 4.0+</description>
   <change-notes>
   </change-notes>
-  <incompatible-with>gdscript</incompatible-with>
+<!--  <incompatible-with>gdscript</incompatible-with>-->
 
   <depends>com.intellij.modules.lang</depends>
 
