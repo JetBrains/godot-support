@@ -44,6 +44,7 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version = '2022.3'
+//    type = "RD"
 }
 //rider {
 //    version = '2022.3'

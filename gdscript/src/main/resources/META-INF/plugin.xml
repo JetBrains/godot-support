@@ -7,7 +7,7 @@
   <description>GdScript2 language plugin for GodotEngine 4.0+</description>
   <change-notes>
   </change-notes>
-<!--  <incompatible-with>gdscript</incompatible-with>-->
+  <incompatible-with>gdscript</incompatible-with>
 
   <depends>com.intellij.modules.lang</depends>
 
@@ -43,7 +43,7 @@
 
     <!-- Tscn & Project -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
-    <fileType name="Project file" implementationClass="project.ProjectFileType" fieldName="INSTANCE" language="GodotProject" extensions="godot"/>
+    <fileType name="GodotProject file" implementationClass="project.ProjectFileType" fieldName="INSTANCE" language="GodotProject" extensions="godot"/>
     <lang.parserDefinition language="Tscn" implementationClass="tscn.TscnParserDefinition"/>
     <lang.parserDefinition language="GodotProject" implementationClass="project.ProjectParserDefinition"/>
 
