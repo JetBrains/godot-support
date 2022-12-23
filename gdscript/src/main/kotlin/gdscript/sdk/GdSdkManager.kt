@@ -37,12 +37,9 @@ object GdSdkManager {
         sdk.removeAllRoots();
         if (path != null && path.isNotBlank()) {
             val pathUrl = VirtualFileManager.constructUrl(LocalFileSystem.PROTOCOL, path);
-            sdk.addRoot(pathUrl, OrderRootType.CLASSES);
+            sdk.addRoot(pathUrl, OrderRootType.SOURCES);
         }
         sdk.commitChanges();
-
-        val project = ProjectManager.getInstance().defaultProject;
-        ProjectRootManager.getInstance(project).projectSdk = sdk;
     }
 
 }
