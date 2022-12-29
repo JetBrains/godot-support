@@ -11,6 +11,7 @@ import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFileManager
 
+@Deprecated("lib")
 object GdSdkManager {
 
     fun setupSdkIfNeeded() {

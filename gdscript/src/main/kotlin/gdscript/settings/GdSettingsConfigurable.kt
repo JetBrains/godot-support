@@ -1,6 +1,7 @@
 package gdscript.settings
 
 import com.intellij.openapi.options.Configurable
+import gdscript.library.GdLibraryManager
 import gdscript.sdk.GdSdkManager
 import javax.swing.JComponent
 
@@ -36,8 +37,9 @@ class GdSettingsConfigurable : Configurable {
         settings.sdkPath = component?.sdkPath;
 
         if (oldSdk == settings.sdkPath) return;
-        GdSdkManager.setupSdkIfNeeded();
-        GdSdkManager.setClassPath(settings.sdkPath);
+        GdLibraryManager.setUpLibrary(settings.sdkPath);
+//        GdSdkManager.setupSdkIfNeeded();
+//        GdSdkManager.setClassPath(settings.sdkPath);
     }
 
     override fun reset() {

@@ -3,6 +3,7 @@ package gdscript.sdk
 import com.intellij.openapi.projectRoots.*
 import org.jdom.Element
 
+@Deprecated("lib")
 object GdSdkType : SdkType("GdScript Sdk") {
 
     override fun saveAdditionalData(additionalData: SdkAdditionalData, additional: Element) {
