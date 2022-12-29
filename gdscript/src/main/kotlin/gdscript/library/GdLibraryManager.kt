@@ -16,18 +16,18 @@ object GdLibraryManager {
         val project = ProjectManager.getInstance().defaultProject;
         val table = LibraryTablesRegistrar.getInstance().getLibraryTable(project);
 
-        var lib = table.getLibraryByName(LIBRARY_NAME);
+        val lib = table.getLibraryByName(LIBRARY_NAME);
         if (lib != null) {
             // Haven't found out how to clear old roots
             table.removeLibrary(lib);
         }
-        lib = table.createLibrary(LIBRARY_NAME);
 
         if (!path.isNullOrBlank()) {
             val pathUrl = VirtualFileManager.constructUrl(LocalFileSystem.PROTOCOL, path);
             ApplicationManager.getApplication().invokeAndWait {
                 runWriteAction {
-                    val libModel = lib.modifiableModel;
+                    val newLib = table.createLibrary(LIBRARY_NAME);
+                    val libModel = newLib.modifiableModel;
                     libModel.addRoot(pathUrl, OrderRootType.SOURCES);
                     libModel.commit();
                 }
