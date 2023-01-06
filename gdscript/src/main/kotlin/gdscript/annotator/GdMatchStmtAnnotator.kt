@@ -18,7 +18,6 @@ import gdscript.reference.GdTypeHintNmReference
 class GdMatchStmtAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        return; // TODO ii
         if (element !is GdExpr || element.parent !is GdMatchSt) return;
 
         val id = PsiTreeUtil.getDeepestLast(element).parent;

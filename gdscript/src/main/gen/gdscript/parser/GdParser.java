@@ -750,7 +750,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ENUM enumDecl_nmi? LCBR INDENT? enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR ((NEW_LINE DEDENT) | endStmt)
+  // ENUM enumDecl_nmi? LCBR INDENT? enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR (endStmt | (NEW_LINE DEDENT))
   public static boolean enumDecl_tl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "enumDecl_tl")) return false;
     boolean r, p;
@@ -830,20 +830,20 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (NEW_LINE DEDENT) | endStmt
+  // endStmt | (NEW_LINE DEDENT)
   private static boolean enumDecl_tl_8(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "enumDecl_tl_8")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = enumDecl_tl_8_0(b, l + 1);
-    if (!r) r = endStmt(b, l + 1);
+    r = endStmt(b, l + 1);
+    if (!r) r = enumDecl_tl_8_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // NEW_LINE DEDENT
-  private static boolean enumDecl_tl_8_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "enumDecl_tl_8_0")) return false;
+  private static boolean enumDecl_tl_8_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "enumDecl_tl_8_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, NEW_LINE, DEDENT);

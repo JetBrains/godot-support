@@ -98,21 +98,31 @@ object GdClassMemberUtil {
             }
         } else {
             // For Enum add also all it's values
-            if (calledOn.endsWith("Dictionary") && calledOnPsi != null && calledOnPsi.firstChild is GdRefIdNm) {
-                val dictDecl = findDeclaration(calledOnPsi.firstChild as GdRefIdNm);
-                if (dictDecl is GdEnumDeclTl) {
-                    if (searchFor != null) {
-                        val localVal = dictDecl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor };
-                        if (localVal != null) return arrayOf(localVal);
+            if (calledOn.endsWith("Dictionary") && calledOnPsi != null /*&& calledOnPsi.firstChild is GdRefIdNm*/) {
+                val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdNm::class.java).lastOrNull();
+                if (firstChild != null) {
+                    val dictDecl = findDeclaration(firstChild);
+                    if (dictDecl is GdEnumDeclTl) {
+                        if (searchFor != null) {
+                            val localVal = dictDecl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor };
+                            if (localVal != null) return arrayOf(localVal);
+                        }
+                        result.addAll(dictDecl.enumValueList);
                     }
-                    result.addAll(dictDecl.enumValueList);
                 }
             }
 
-            // TODO ii resolve enums val calledOnRef = PsiTreeUtil.findChildrenOfType(calledOnPsi, GdRefIdNm::class.java).lastOrNull();
             parent = GdClassIdIndex.getGloballyResolved(calledOn, element.project).firstOrNull();
-            if (parent != null)
+            if (parent == null) {
+                parent = GdClassIdIndex.getGloballyResolved(
+                    "${GdClassUtil.getFullClassId(element)}.${calledOn}",
+                    element.project,
+                ).firstOrNull();
+            }
+
+            if (parent != null) {
                 parent = GdClassUtil.getOwningClassElement(parent);
+            }
         }
 
         // Recursively iterate over all extended classes

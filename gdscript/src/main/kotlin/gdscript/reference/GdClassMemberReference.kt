@@ -10,7 +10,6 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.psi.utils.*
 
-// TODO Signals, ...? otestovat!!
 /**
  * RefId reference to ClassNames, Variables, Constants, etc...
  */

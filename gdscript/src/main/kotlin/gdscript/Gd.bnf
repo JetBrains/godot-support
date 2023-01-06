@@ -93,7 +93,7 @@ getMethodId_nm ::= IDENTIFIER
 signalDecl_tl ::= SIGNAL signalId_nmi (LRBR paramList RRBR)? endStmt {methods=[getName getParameters] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdSignalDeclElementImpl" stubClass="gdscript.index.stub.GdSignalDeclStub" elementTypeFactory="gdscript.psi.impl.GdSignalDeclElementType.getInstance"}
 signalId_nmi ::= IDENTIFIER
 
-enumDecl_tl ::= ENUM enumDecl_nmi? LCBR INDENT? enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR ((NEW_LINE DEDENT) | endStmt) {
+enumDecl_tl ::= ENUM enumDecl_nmi? LCBR INDENT? enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR (endStmt | (NEW_LINE DEDENT)) {
     pin=1 methods=[getName getValues getPresentation] recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdEnumDeclElementImpl" stubClass="gdscript.index.stub.GdEnumDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdEnumDeclElementType.getInstance"
