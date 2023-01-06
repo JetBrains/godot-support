@@ -8,6 +8,7 @@ import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFileManager
 
+@Deprecated("sdk")
 object GdLibraryManager {
 
     val LIBRARY_NAME = "GdScript_SDK"

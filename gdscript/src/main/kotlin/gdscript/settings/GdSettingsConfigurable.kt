@@ -37,9 +37,9 @@ class GdSettingsConfigurable : Configurable {
         settings.sdkPath = component?.sdkPath;
 
         if (oldSdk == settings.sdkPath) return;
-        GdLibraryManager.setUpLibrary(settings.sdkPath);
-//        GdSdkManager.setupSdkIfNeeded();
-//        GdSdkManager.setClassPath(settings.sdkPath);
+//        GdLibraryManager.setUpLibrary(settings.sdkPath);
+        GdSdkManager.setupSdkIfNeeded();
+        GdSdkManager.setClassPath(settings.sdkPath);
     }
 
     override fun reset() {
