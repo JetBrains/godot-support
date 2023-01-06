@@ -20,11 +20,11 @@ import java.util.Stack;
 %{
 %}
 
-LETTER = [a-z|A-Z|_]
+LETTER = [a-z|A-Z_\-0-9]
 DIGIT = [0-9]
 
 NEW_LINE = [\r\n]
-IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
+IDENTIFIER = {LETTER}({LETTER}|{DIGIT}|\/)*
 
 //VALUE = [^\r\n\s\]]+
 VALUE = [^\r\n\]\s\(]+(\([^\r\n\]\(]+\))?

@@ -19,6 +19,8 @@ object GdIcon {
 
     const val SIGNAL = "Signal"
     const val SLOT = "Slot"
+    const val LINK = "LinkButton"
+    const val ERROR = "StatusError"
     const val RESOURCE = "Mesh"
     const val STRING = "String"
 

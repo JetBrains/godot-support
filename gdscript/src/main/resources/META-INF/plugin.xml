@@ -40,6 +40,7 @@
     <runLineMarkerContributor language="GdScript" implementationClass="gdscript.lineMarker.GdRunLineMarkerProvider" />
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdResourceLineMarkerContributor" />
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdSignalLineMarkerContributor" />
+    <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdTraitLineMarkerContributor" />
 
     <!-- Tscn & Project -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
@@ -100,6 +101,11 @@
       <bundleName>messages.gdscript</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>
+    <intentionAction>
+      <className>gdscript.action.GdPropageTraitChangesAction</className>
+      <bundleName>messages.gdscript</bundleName>
+      <categoryKey>intention.category</categoryKey>
+    </intentionAction>
 
     <!-- Formatters -->
     <lang.braceMatcher language="GdScript" implementationClass="gdscript.formatter.GdBraceMatcher" />
@@ -119,6 +125,7 @@
     <internalFileTemplate name="VisualShaderNodeCustom basic" />
 
     <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdFoldingBuilder" />
+    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdTraitFoldingBuilder" />
     <lang.psiStructureViewFactory language="GdScript" implementationClass="gdscript.structureView.GdStructureViewFactory" />
     <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler" />
   </extensions>
@@ -126,6 +133,9 @@
   <actions>
     <action id="gdscript.action.GdCreateFileAction" class="gdscript.action.GdCreateFileAction" >
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile" />
+    </action>
+    <action id="gdscript.action.GdAddTraitAction" class="gdscript.action.GdAddTraitAction" text="Add GdScript Trait">
+      <add-to-group group-id="GenerateGroup" anchor="first" />
     </action>
   </actions>
 

@@ -17,7 +17,6 @@ object GdResourceUtil {
 
     /**
      * Search whole project for positions of given resource "res://" element
-     * @return String
      */
     fun findResourcesByName(resourceFile: PsiElement): Array<PsiElement> {
         val project = resourceFile.project;
