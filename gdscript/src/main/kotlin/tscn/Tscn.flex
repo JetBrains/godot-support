@@ -18,6 +18,8 @@ import java.util.Stack;
 %eof}
 
 %{
+    boolean dataJson = false;
+    StringBuilder dataJsonValue = new StringBuilder();
 %}
 
 LETTER = [a-z|A-Z_\-0-9]
@@ -31,12 +33,14 @@ VALUE = [^\r\n\]\s\(]+(\([^\r\n\]\(]+\))?
 DATA_LINE = [^\r\n]+
 
 WHITE_SPACE = [ \t]+
+WHITE_SPACE_ANY = {WHITE_SPACE}|{NEW_LINE}
 COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 
 %xstate HEADER
 %xstate VALUE
 %xstate DATA_LINE
 %xstate DATA_VALUE
+%xstate DATA_VALUE_JSON
 
 %%
 
@@ -63,8 +67,34 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 }
 
 <DATA_VALUE> {
-    {WHITE_SPACE}  { return TokenType.WHITE_SPACE; }
-    {DATA_LINE}    { yybegin(YYINITIAL); return TscnTypes.VALUE; }
+    {WHITE_SPACE_ANY}  {
+          if (dataJson) {
+              dataJsonValue.append(yytext());
+          } else {
+              return TokenType.WHITE_SPACE;
+          }
+    }
+    {DATA_LINE}    {
+          char firstChar = yytext().toString().trim().charAt(0);
+          if (dataJson) {
+              dataJsonValue.append(yytext());
+              if (firstChar == '}') {
+                  dataJson = false;
+                  yybegin(YYINITIAL);
+                  return TscnTypes.VALUE;
+              }
+              continue;
+          } else {
+              if (firstChar == '{') {
+                  dataJson = true;
+                  dataJsonValue = new StringBuilder(yytext());
+                  continue;
+              } else {
+                  yybegin(YYINITIAL);
+                  return TscnTypes.VALUE;
+              }
+          }
+    }
 }
 
 "["                { yybegin(HEADER); return TscnTypes.LSBR; }

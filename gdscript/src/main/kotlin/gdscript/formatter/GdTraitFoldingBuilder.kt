@@ -12,6 +12,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import gdscript.lineMarker.GdTraitLineMarkerContributor
+import gdscript.utils.GdTraitUtil
 
 /**
  * Folding for Trait comments
@@ -35,15 +36,9 @@ class GdTraitFoldingBuilder : FoldingBuilderEx(), DumbAware {
     }
 
     private fun mapRegion(element: PsiComment): FoldingDescriptor? {
-        var next = element.nextSibling;
-        while (next != null) {
-            if (next is PsiComment && next.text.startsWith(GdTraitLineMarkerContributor.SUFFIX)) break;
-            next = next.nextSibling;
-        }
+        val footer = GdTraitUtil.endComment(element) ?: return null;
 
-        if (next == null) return null;
-
-        return FoldingDescriptor(element.node, TextRange(element.startOffset, next.endOffset - 1));
+        return FoldingDescriptor(element.node, TextRange(element.startOffset, footer.endOffset - 1));
     }
 
 }
