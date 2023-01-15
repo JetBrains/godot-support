@@ -11,6 +11,9 @@ import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.openapi.wm.IdeFocusManager
+import com.intellij.openapi.wm.IdeFrame
+import com.intellij.openapi.wm.impl.IdeFrameImpl
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -21,21 +24,24 @@ object GdLibraryManager {
     val LIBRARY_NAME = "GdScript_SDK"
 
     fun setUpLibrary(path: String?) {
-        val project = ProjectManager.getInstance().defaultProject;
+//        val project = ProjectManager.getInstance().defaultProject;
+        val frame = IdeFocusManager.getGlobalInstance().lastFocusedFrame;
+        val project = frame!!.project!!;
+
         val table = LibraryTablesRegistrar.getInstance().getLibraryTable(project);
         val virtualFile = VfsUtil.findFileByIoFile(File(path!!), true);
 
         ApplicationManager.getApplication().invokeAndWait {
             runWriteAction {
-                val newLib = table.createLibrary("vbc");
+                val newLib = table.createLibrary("ntzj56");
                 val libModel = newLib.modifiableModel;
                 libModel.addRoot(virtualFile!!.url, OrderRootType.SOURCES);
                 libModel.commit();
 
-                val man = ModuleManager.getInstance(project);
-                val newMod = man.newModule(path, "JAVA_MODULE");
+//                val man = ModuleManager.getInstance(project);
+//                val newMod = man.newModule(path, "JAVA_MODULE");
                 val module = ModuleManager.getInstance(project).modules.first()
-                val rootModel = ModuleRootManager.getInstance(newMod).modifiableModel
+                val rootModel = ModuleRootManager.getInstance(module).modifiableModel
                 rootModel.addLibraryEntry(newLib)
                 rootModel.commit()
             }

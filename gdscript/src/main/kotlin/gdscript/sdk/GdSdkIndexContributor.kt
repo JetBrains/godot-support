@@ -13,10 +13,10 @@ object GdSdkIndexContributor : IndexableSetContributor() {
 
     override fun getAdditionalProjectRootsToIndex(project: Project): MutableSet<VirtualFile> {
         val path = GdSettingsState.getInstance().state.sdkPath;
-        if (!path.isNullOrBlank()) {
-            val virtualFile = VfsUtil.findFileByIoFile(File(path), true);
-            roots.add(virtualFile!!);
-        }
+//        if (!path.isNullOrBlank()) {
+//            val virtualFile = VfsUtil.findFileByIoFile(File(path), true);
+//            roots.add(virtualFile!!);
+//        }
 
         return roots;
     }
