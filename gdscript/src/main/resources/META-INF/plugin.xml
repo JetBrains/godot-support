@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>ice.explosive.gdscript</id>
   <name>GdScript</name>
-  <version>0.4.4</version>
+  <version>0.4.5</version>
   <vendor email="h.raven@centrum.cz" url="https://gitlab.com/IceExplosive/gdscript">IceExplosive</vendor>
 
   <description>GdScript2 language plugin for GodotEngine 4.0+</description>
@@ -18,7 +18,6 @@
     <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
-    <sdkType implementation="gdscript.sdk.GdSdkType" />
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider" />
     <configurationType implementation="gdscript.run.GdRunConfigurationType" />
     <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer" />
@@ -30,7 +29,7 @@
 
     <!-- settings -->
     <applicationService serviceImplementation="gdscript.settings.GdSettingsState" />
-    <applicationConfigurable
+    <projectConfigurable
         parentId="language"
         instance="gdscript.settings.GdSettingsConfigurable"
         id="gdscript.settings.GdSettingsConfigurable"
@@ -78,7 +77,6 @@
 
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
-    <indexedRootsProvider implementation="gdscript.sdk.GdSdkIndexContributor" />
     <stubIndex implementation="gdscript.index.impl.GdClassIdIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassDeclIndex" />
