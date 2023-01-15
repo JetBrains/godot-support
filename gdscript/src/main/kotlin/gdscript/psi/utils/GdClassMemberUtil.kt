@@ -371,7 +371,7 @@ object GdClassMemberUtil {
      */
     fun HashMap<String, MutableList<PsiElement>>.array(): Array<PsiElement> {
         return this.entries.flatMap {
-            if (!GdSettingsState.hidePrivate || !it.key.startsWith("_")) {
+            if (!GdSettingsState.getInstance().state.hidePrivate || !it.key.startsWith("_")) {
                 it.value
             } else {
                 emptyList()

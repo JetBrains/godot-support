@@ -1,22 +1,27 @@
 package gdscript.settings
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.PersistentStateComponent
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.util.xmlb.XmlSerializerUtil
 
-@State(name = "gdscript.settings.GdSettingsState", storages = [Storage("gdscript.GdScriptSettingsPlugin.xml")])
-object GdSettingsState : PersistentStateComponent<GdSettingsState> {
+@State(name = "GdSettingsState", storages = [Storage("gdSettings.xml")])
+class GdSettingsState : PersistentStateComponent<GdState> {
 
-    var hidePrivate = true;
-    var sdkPath: String? = null;
+    var gdState = GdState();
 
-    override fun getState(): GdSettingsState {
-        return this;
+    companion object {
+        fun getInstance(): GdSettingsState {
+            return ApplicationManager.getApplication().getService(GdSettingsState::class.java)!!
+        }
     }
 
-    override fun loadState(state: GdSettingsState) {
-        XmlSerializerUtil.copyBean(state, this)
+    override fun getState(): GdState {
+        return gdState;
+    }
+
+    override fun loadState(state: GdState) {
+        gdState = state;
     }
 
 }

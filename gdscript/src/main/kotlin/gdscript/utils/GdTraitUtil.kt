@@ -9,6 +9,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdFileType
 import gdscript.lineMarker.GdTraitLineMarkerContributor
+import gdscript.utils.VirtualFileUtil.resourcePath
 
 object GdTraitUtil {
 
@@ -37,7 +38,7 @@ object GdTraitUtil {
                     manager.findFile(file),
                     PsiComment::class.java,
                 ).filter {
-                    it.text.startsWith(GdTraitLineMarkerContributor.PREFIX)
+                    it.text.trim() == "${GdTraitLineMarkerContributor.PREFIX}$resource"
                 }
             }
             .toTypedArray();

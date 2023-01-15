@@ -46,11 +46,11 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
         var sourceFile = file.originalFile.virtualFile;
 
         if (isTraitFile(file)) {
-            source = file.containingFile.text + "\n";
+            source = file.containingFile.text;
         } else {
             val header = traitRegionLabel(editor, file) ?: return;
             val footer = GdTraitUtil.endComment(header) ?: return;
-            source = editor.document.getText(TextRange.create(header.endOffset, footer.startOffset));
+            source = editor.document.getText(TextRange.create(header.endOffset, footer.startOffset-1));
 
             val traitFile = header.text.substring(GdTraitLineMarkerContributor.PREFIX.length).trim();
             sourceFile = GdFileResIndex.getFiles("res://$traitFile", project)
@@ -67,7 +67,7 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
                 val footer = GdTraitUtil.endComment(header);
                 val doc = dm.getDocument(f)
                 if (footer != null && doc != null) {
-                    doc.replaceString(header.endOffset, footer.startOffset, source);
+                    doc.replaceString(header.endOffset, footer.startOffset, source + "\n");
                 }
             }
         }

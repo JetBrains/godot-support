@@ -29,12 +29,13 @@
     <codeInsight.parameterNameHints language="GdScript" implementationClass="gdscript.codeInsight.GdInlayParameterHintProvider" />
 
     <!-- settings -->
-    <applicationService serviceImplementation="gdscript.settings.GdSettingsState"/>
+    <applicationService serviceImplementation="gdscript.settings.GdSettingsState" />
     <applicationConfigurable
         parentId="language"
         instance="gdscript.settings.GdSettingsConfigurable"
         id="gdscript.settings.GdSettingsConfigurable"
-        displayName="GdScript"/>
+        displayName="GdScript"
+    />
 
     <!-- Line markers -->
     <runLineMarkerContributor language="GdScript" implementationClass="gdscript.lineMarker.GdRunLineMarkerProvider" />
@@ -77,6 +78,7 @@
 
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
+    <indexedRootsProvider implementation="gdscript.sdk.GdSdkIndexContributor" />
     <stubIndex implementation="gdscript.index.impl.GdClassIdIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassDeclIndex" />
