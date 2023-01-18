@@ -215,7 +215,7 @@ object GdClassMemberUtil {
                 is GdParam -> {
                     locals[it.varNmi.name] = it;
                 };
-                is GdForSt -> if (movedToParent) locals[it.varNmi.name] = it;
+                is GdForSt -> if (movedToParent) locals[it.varNmi?.name ?: ""] = it;
                 is GdPatternList -> {
                     if (movedToParent) {
                         PsiTreeUtil.getChildrenOfType(it, GdBindingPattern::class.java)

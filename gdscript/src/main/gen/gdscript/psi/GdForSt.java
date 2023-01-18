@@ -13,7 +13,7 @@ public interface GdForSt extends GdStmt {
   @Nullable
   GdStmtOrSuite getStmtOrSuite();
 
-  @NotNull
+  @Nullable
   GdVarNmi getVarNmi();
 
 }

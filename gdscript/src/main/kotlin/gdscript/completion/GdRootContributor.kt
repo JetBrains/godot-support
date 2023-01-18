@@ -35,15 +35,6 @@ class GdRootContributor : CompletionContributor() {
             )
 
         val ANNOTATOR_DECL = psiElement(GdTypes.ANNOTATOR)
-
-        val TO_HINT_KEYWORDS = arrayOf(
-            GdKeywords.FUNC,
-            GdKeywords.STATIC,
-            GdKeywords.CONST,
-            GdKeywords.VAR,
-            GdKeywords.CLASS,
-            GdKeywords.EXTENDS,
-        )
     }
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
@@ -75,7 +66,6 @@ class GdRootContributor : CompletionContributor() {
 
     private fun addTopLvlDecl(parameters: CompletionParameters, result: CompletionResultSet) {
         GdNodeUtil.listNodes(parameters.position).forEach { result.addElement(it.variable_lookup()) }
-        result.addAllElements(TO_HINT_KEYWORDS.map { GdLookup.create(it, " ", priority = GdLookup.KEYWORDS) })
         GdClassVarCompletionUtil.annotations(result);
 
         val members = mutableListOf<PsiElement>();

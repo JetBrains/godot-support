@@ -82,7 +82,7 @@ class GdAddReturnType : BaseIntentionAction {
     }
 
     private fun constDeclSt(element: GdConstDeclSt): Pair<Int, String> {
-        val offset = element.varNmi.endOffset;
+        val offset = element.varNmi?.endOffset ?: 0;
 
         return Pair(offset, ": $desired");
     }

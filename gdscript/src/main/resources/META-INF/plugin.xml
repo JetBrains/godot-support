@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>ice.explosive.gdscript</id>
   <name>GdScript</name>
-  <version>0.4.5</version>
+  <version>0.4.6</version>
   <vendor email="h.raven@centrum.cz" url="https://gitlab.com/IceExplosive/gdscript">IceExplosive</vendor>
 
   <description>GdScript2 language plugin for GodotEngine 4.0+</description>
@@ -49,6 +49,7 @@
     <lang.parserDefinition language="GodotProject" implementationClass="project.ProjectParserDefinition"/>
 
     <!-- Completions -->
+    <completion.contributor   language="GdScript" order="first" implementationClass="gdscript.completion.GdKeywordContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>

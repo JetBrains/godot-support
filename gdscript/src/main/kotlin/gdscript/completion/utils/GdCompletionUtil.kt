@@ -98,7 +98,7 @@ object GdCompletionUtil {
 
     fun lookup(loop: GdForSt): LookupElement =
         GdLookup.create(
-            loop.varNmi.name,
+            loop.varNmi?.name ?: "",
             icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
             typed = loop.expr?.returnType?.parseFromSquare() ?: "",
             priority = GdLookup.LOCAL_USER_DEFINED,

@@ -40,9 +40,9 @@ public class GdForStImpl extends GdStmtImpl implements GdForSt {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdVarNmi getVarNmi() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi.class));
+    return PsiTreeUtil.getChildOfType(this, GdVarNmi.class);
   }
 
 }

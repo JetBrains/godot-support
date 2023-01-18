@@ -140,17 +140,17 @@ stmt ::=
 private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
     | RETURN | AWAIT | ASSET | INDENT | DEDENT
-    | NEGATE
+    | NEGATE | endStmt
     | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
 varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
     pin=2 recoverWhile=stmt_r methods=[getName getReturnType]
 }
-constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {pin=2 recoverWhile=stmt_r methods=[getName getReturnType]}
-if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? {pin=2 recoverWhile=stmt_r}
-while_st ::= WHILE expr COLON stmtOrSuite {pin=2 recoverWhile=stmt_r}
-for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=2 recoverWhile=stmt_r}
+constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {pin=1 recoverWhile=stmt_r methods=[getName getReturnType]}
+if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? {pin=1 recoverWhile=stmt_r}
+while_st ::= WHILE expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
+for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
 
 match_st ::= MATCH expr COLON NEW_LINE INDENT matchBlock DEDENT {pin=1 recoverWhile=stmt_r}
 matchBlock ::= (patternList COLON stmtOrSuite)+
@@ -174,7 +174,7 @@ flow_st ::=
     | (PASS endStmt)
     | (BREAKPOINT endStmt) // TODO existuje ještě totok?
     | (RETURN expr? endStmt)
-    {pin=1 recoverWhile=stmt_r methods=[getType]}
+    {/*pin=1 recoverWhile=stmt_r*/ methods=[getType]}
 
 expr ::=
     plusMinus_ex

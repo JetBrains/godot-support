@@ -524,9 +524,9 @@ public class GdParser implements PsiParser, LightPsiParser {
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, CONST_DECL_ST, "<const decl st>");
     r = consumeTokenFast(b, CONST);
-    r = r && var_nmi(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, constDecl_st_2(b, l + 1));
+    p = r; // pin = 1
+    r = r && report_error_(b, var_nmi(b, l + 1));
+    r = p && report_error_(b, constDecl_st_2(b, l + 1)) && r;
     r = p && report_error_(b, constDecl_st_3(b, l + 1)) && r;
     r = p && endStmt(b, l + 1) && r;
     exit_section_(b, l, m, r, p, GdParser::stmt_r);
@@ -945,7 +945,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = flow_st_2(b, l + 1);
     if (!r) r = flow_st_3(b, l + 1);
     if (!r) r = flow_st_4(b, l + 1);
-    exit_section_(b, l, m, r, false, GdParser::stmt_r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -1019,9 +1019,9 @@ public class GdParser implements PsiParser, LightPsiParser {
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, FOR_ST, "<for st>");
     r = consumeTokenFast(b, FOR);
-    r = r && var_nmi(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, consumeToken(b, IN));
+    p = r; // pin = 1
+    r = r && report_error_(b, var_nmi(b, l + 1));
+    r = p && report_error_(b, consumeToken(b, IN)) && r;
     r = p && report_error_(b, expr(b, l + 1, -1)) && r;
     r = p && report_error_(b, consumeToken(b, COLON)) && r;
     r = p && stmtOrSuite(b, l + 1) && r;
@@ -1162,9 +1162,9 @@ public class GdParser implements PsiParser, LightPsiParser {
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, IF_ST, "<if st>");
     r = consumeTokenFast(b, IF);
-    r = r && expr(b, l + 1, -1);
-    p = r; // pin = 2
-    r = r && report_error_(b, consumeToken(b, COLON));
+    p = r; // pin = 1
+    r = r && report_error_(b, expr(b, l + 1, -1));
+    r = p && report_error_(b, consumeToken(b, COLON)) && r;
     r = p && report_error_(b, stmtOrSuite(b, l + 1)) && r;
     r = p && report_error_(b, if_st_4(b, l + 1)) && r;
     r = p && if_st_5(b, l + 1) && r;
@@ -1955,7 +1955,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   // !(SET | GET | VAR | CONST | IF | PASS
   //     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
   //     | RETURN | AWAIT | ASSET | INDENT | DEDENT
-  //     | NEGATE
+  //     | NEGATE | endStmt
   //     | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
   static boolean stmt_r(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stmt_r")) return false;
@@ -1970,7 +1970,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   // !(SET | GET | VAR | CONST | IF | PASS
   //     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
   //     | RETURN | AWAIT | ASSET | INDENT | DEDENT
-  //     | NEGATE
+  //     | NEGATE | endStmt
   //     | IDENTIFIER | literal_ex | primary_ex)
   private static boolean stmt_r_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stmt_r_0")) return false;
@@ -1984,7 +1984,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   // SET | GET | VAR | CONST | IF | PASS
   //     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
   //     | RETURN | AWAIT | ASSET | INDENT | DEDENT
-  //     | NEGATE
+  //     | NEGATE | endStmt
   //     | IDENTIFIER | literal_ex | primary_ex
   private static boolean stmt_r_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stmt_r_0_0")) return false;
@@ -2007,6 +2007,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, INDENT);
     if (!r) r = consumeToken(b, DEDENT);
     if (!r) r = consumeToken(b, NEGATE);
+    if (!r) r = endStmt(b, l + 1);
     if (!r) r = consumeToken(b, IDENTIFIER);
     if (!r) r = literal_ex(b, l + 1);
     if (!r) r = primary_ex(b, l + 1);
@@ -2279,9 +2280,9 @@ public class GdParser implements PsiParser, LightPsiParser {
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, WHILE_ST, "<while st>");
     r = consumeTokenFast(b, WHILE);
-    r = r && expr(b, l + 1, -1);
-    p = r; // pin = 2
-    r = r && report_error_(b, consumeToken(b, COLON));
+    p = r; // pin = 1
+    r = r && report_error_(b, expr(b, l + 1, -1));
+    r = p && report_error_(b, consumeToken(b, COLON)) && r;
     r = p && stmtOrSuite(b, l + 1) && r;
     exit_section_(b, l, m, r, p, GdParser::stmt_r);
     return r || p;
