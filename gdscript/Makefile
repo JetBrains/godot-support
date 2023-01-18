@@ -7,6 +7,6 @@ refresh-classes:
 	cp build_files/@GdScript.xml classes/@GdScript.xml
 
 zip:
-	zip -r GD_SDK-0.4.11.7z classesGd
+	zip -r GD_SDK-0.4.13.7z classesGd
 
 generate: download-docs refresh-classes zip
