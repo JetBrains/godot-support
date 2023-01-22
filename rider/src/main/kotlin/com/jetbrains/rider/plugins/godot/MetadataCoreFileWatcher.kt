@@ -3,7 +3,6 @@ package com.jetbrains.rider.plugins.godot
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.util.application
-import com.intellij.util.io.exists
 import com.intellij.util.io.isDirectory
 import com.jetbrains.rd.util.lifetime.isAlive
 import com.jetbrains.rd.util.reactive.whenTrue
@@ -32,7 +31,7 @@ class MetadataCoreFileWatcher(project: Project) : LifetimedProjectComponent(proj
                 if (line != null)
                 {
                     val path = line.substring("executable_path=\"".length, line.trimEnd().length - 1)
-                    if (Paths.get(path).exists())
+                    if (Paths.get(path).toFile().exists())
                         return path
                 }
             }

@@ -75,7 +75,7 @@ PUSHD "%JVM_TARGET_DIR%"
 if errorlevel 1 goto fail
 
 echo Extracting %BUILD_DIR%\%JVM_TEMP_FILE% to %JVM_TARGET_DIR%
-tar -x -f "..\%JVM_TEMP_FILE%" -C .
+"%POWERSHELL%" -nologo -noprofile -command "Set-StrictMode -Version 3.0; $ErrorActionPreference = \"Stop\"; Add-Type -A 'System.IO.Compression.FileSystem'; [IO.Compression.ZipFile]::ExtractToDirectory('..\\%JVM_TEMP_FILE%', '.');"
 if errorlevel 1 goto fail
 
 DEL /F "..\%JVM_TEMP_FILE%"

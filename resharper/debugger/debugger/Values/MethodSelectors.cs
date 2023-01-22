@@ -1,4 +1,4 @@
-using MetadataLite.API.Selectors;
+using Mono.Debugging.MetadataLite.API.Selectors;
 
 // ReSharper disable InconsistentNaming
 

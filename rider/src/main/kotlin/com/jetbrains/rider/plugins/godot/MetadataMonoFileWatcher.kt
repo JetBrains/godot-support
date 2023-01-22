@@ -4,7 +4,6 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.application
-import com.intellij.util.io.exists
 import com.intellij.util.io.isDirectory
 import com.jetbrains.rd.util.lifetime.isAlive
 import com.jetbrains.rd.util.reactive.whenTrue
@@ -17,7 +16,6 @@ import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
 import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
 import java.security.MessageDigest
 import kotlin.concurrent.thread
-import kotlin.io.path.readLines
 
 
 class MetadataMonoFileWatcher(project: Project) : LifetimedProjectComponent(project) {
@@ -59,7 +57,7 @@ class MetadataMonoFileWatcher(project: Project) : LifetimedProjectComponent(proj
                 if (line != null)
                 {
                     val path = line.substring("executable_path=\"".length, line.trimEnd().length - 1)
-                    if (Paths.get(path).exists())
+                    if (Paths.get(path).toFile().exists())
                         return path
                 }
             }
@@ -72,17 +70,17 @@ class MetadataMonoFileWatcher(project: Project) : LifetimedProjectComponent(proj
         }
 
         fun getFromMonoMetadataPath(project: Project): String? {
-            val basePath = project.basePath ?: return null
-            var metaFile = Paths.get(basePath, metaFileDir, metaFileName)
+            val basePath = project.solutionDirectory
+            var metaFile = basePath.resolve(metaFileDir).resolve(metaFileName)
             if (!metaFile.exists())
-                metaFile = Paths.get(basePath, metaFileDir, oldMetaFileName)
+                metaFile = basePath.resolve(metaFileDir).resolve(oldMetaFileName)
             if (!metaFile.exists()) return null
 
             val lines = metaFile.readLines()
             if (lines.count()<2)
                 return null
 
-            if (Paths.get(lines[1]).exists())
+            if (Paths.get(lines[1]).toFile().exists())
                 return lines[1]
             return null
         }
