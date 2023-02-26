@@ -34,9 +34,9 @@ public class GdConstDeclStImpl extends GdStmtImpl implements GdConstDeclSt {
   }
 
   @Override
-  @Nullable
+  @NotNull
   public GdEndStmt getEndStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdEndStmt.class));
   }
 
   @Override
@@ -52,9 +52,9 @@ public class GdConstDeclStImpl extends GdStmtImpl implements GdConstDeclSt {
   }
 
   @Override
-  @Nullable
+  @NotNull
   public GdVarNmi getVarNmi() {
-    return PsiTreeUtil.getChildOfType(this, GdVarNmi.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi.class));
   }
 
   @Override

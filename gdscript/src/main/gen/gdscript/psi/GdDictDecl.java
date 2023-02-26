@@ -10,7 +10,7 @@ public interface GdDictDecl extends PsiElement {
   @NotNull
   List<GdKeyValue> getKeyValueList();
 
-  @Nullable
-  GdNewLineEnd getNewLineEnd();
+  @NotNull
+  List<GdNewLineEnd> getNewLineEndList();
 
 }

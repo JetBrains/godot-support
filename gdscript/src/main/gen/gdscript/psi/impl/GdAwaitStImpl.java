@@ -28,9 +28,9 @@ public class GdAwaitStImpl extends GdStmtImpl implements GdAwaitSt {
   }
 
   @Override
-  @Nullable
+  @NotNull
   public GdExprSt getExprSt() {
-    return PsiTreeUtil.getChildOfType(this, GdExprSt.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExprSt.class));
   }
 
 }

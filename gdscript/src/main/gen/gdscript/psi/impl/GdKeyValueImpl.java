@@ -33,10 +33,4 @@ public class GdKeyValueImpl extends ASTWrapperPsiElement implements GdKeyValue {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, GdExpr.class);
   }
 
-  @Override
-  @Nullable
-  public GdNewLineEnd getNewLineEnd() {
-    return PsiTreeUtil.getChildOfType(this, GdNewLineEnd.class);
-  }
-
 }

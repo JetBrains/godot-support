@@ -203,7 +203,7 @@ object GdClassMemberUtil {
         }
 
         while (true) {
-            val movedToParent = it.prevSibling == null;
+            val movedToParent = it?.prevSibling == null;
             it = it.prevSibling ?: it.parent ?: break;
             when (it) {
                 is GdClassVarDeclTl -> locals[it.name] = it;
@@ -230,14 +230,20 @@ object GdClassMemberUtil {
                 is GdMethodDeclTl -> {
                     if (onlyLocalScope) {
                         if (!isParam) {
-                            it.parameters.forEach { p ->
-                                locals[p.key] = it;
+                            it.paramList?.paramList?.forEach { p ->
+                                locals[p.varNmi.name] = p;
                             }
                         }
                         if (hitLocal != null) hitLocal.value = true;
                         break;
-                    };
-                    locals[it.name] = it;
+                    }
+                    if (movedToParent) {
+                        it.paramList?.paramList?.forEach { p ->
+                            locals[p.varNmi.name] = p;
+                        }
+                    } else {
+                        locals[it.name] = it;
+                    }
                 }
 
                 // End of scope

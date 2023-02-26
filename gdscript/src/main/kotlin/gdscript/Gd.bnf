@@ -140,19 +140,19 @@ stmt ::=
 private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
     | RETURN | AWAIT | ASSET | INDENT | DEDENT
-    | NEGATE | endStmt
+    | NEGATE /*| endStmt*/
     | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
 varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
-    pin=2 recoverWhile=stmt_r methods=[getName getReturnType]
+    /*pin=2 recoverWhile=stmt_r*/ methods=[getName getReturnType]
 }
-constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {pin=1 recoverWhile=stmt_r methods=[getName getReturnType]}
-if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? {pin=1 recoverWhile=stmt_r}
-while_st ::= WHILE expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
-for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
+constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {/*pin=1 recoverWhile=stmt_r*/ methods=[getName getReturnType]}
+if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? //{pin=1 recoverWhile=stmt_r}
+while_st ::= WHILE expr COLON stmtOrSuite //{pin=1 recoverWhile=stmt_r}
+for_st ::= FOR var_nmi IN expr COLON stmtOrSuite //{pin=1 recoverWhile=stmt_r}
 
-match_st ::= MATCH expr COLON NEW_LINE INDENT matchBlock DEDENT {pin=1 recoverWhile=stmt_r}
+match_st ::= MATCH expr COLON NEW_LINE INDENT matchBlock DEDENT //{pin=1 recoverWhile=stmt_r}
 matchBlock ::= (patternList COLON stmtOrSuite)+
 patternList ::= pattern (COMMA pattern)*
 //TODO (* Note: you can't have a binding in a pattern list, but to not complicate the grammar more it won't be restricted syntactically *)
@@ -163,7 +163,7 @@ arrayPattern ::= LSBR ( pattern (COMMA pattern)* (COMMA DOTDOT)? )? RSBR
 dictPattern ::= LCBR keyValuePattern? (COMMA keyValuePattern)* (COMMA DOTDOT)? RCBR
 keyValuePattern ::= STRING [ COLON pattern ]
 
-await_st ::= AWAIT expr_st {pin=1 recoverWhile=stmt_r}
+await_st ::= AWAIT expr_st //{pin=1 recoverWhile=stmt_r}
 
 assign_st ::= expr (EQ | ASSIGN) expr endStmt
 expr_st ::= expr endStmt?
@@ -224,7 +224,7 @@ refId_nm ::= identifierEx | SELF | SUPER // TODO super
 
 funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[getReturnType getParameters /*getPresentation*/]
-    pin=1 recoverWhile=stmt_r //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"
+    /*pin=1 recoverWhile=stmt_r*/ //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"
     //elementTypeFactory="gdscript.psi.impl.GdLocalFuncDeclElementType.getInstance"
 }
 funcDeclId_nmi ::= IDENTIFIER
@@ -238,8 +238,8 @@ newLineEnd ::= NEW_LINE | <<eof>>
 nodePath ::= NODE_PATH_LEX
 
 arrayDecl ::= LSBR (expr (COMMA expr)* COMMA?)? RSBR
-dictDecl ::= LCBR newLineEnd? (keyValue (COMMA keyValue)* COMMA?)? RCBR
-keyValue ::= (expr COLON expr) | (IDENTIFIER EQ expr) newLineEnd?
+dictDecl ::= LCBR newLineEnd? INDENT? (keyValue (COMMA newLineEnd? keyValue)* COMMA? newLineEnd?)? DEDENT? RCBR
+keyValue ::= (expr COLON expr) | (IDENTIFIER EQ expr)
 
 assignTyped ::= EQ | CEQ
 

@@ -47,9 +47,9 @@ public class GdFuncDeclExImpl extends GdExprImpl implements GdFuncDeclEx {
   }
 
   @Override
-  @Nullable
+  @NotNull
   public GdStmtOrSuite getStmtOrSuite() {
-    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class));
   }
 
   @Override

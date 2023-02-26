@@ -23,14 +23,14 @@ import java.util.Stack;
     boolean lineEnded = false;
     boolean enumValEnded = false;
     boolean indented = false;
-    boolean ignoreIndent = false;
+    int ignoreIndent = 0;
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     int yycolumn;
 
     public IElementType dedentRoot(IElementType type) {
         lineEnded = false;
-        if (ignoreIndent || yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
+        if (ignoreIndent == 0 || yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
             return type;
         }
 
@@ -187,7 +187,7 @@ ANY = .+
 
 <AWAIT_NEW_LINE> {
     {NEW_LINE}     {
-          if (!ignoreIndent && !lineEnded) {
+          if (ignoreIndent > 0 && !lineEnded) {
               lineEnded = true;
               yypushback(yylength());
               return GdTypes.NEW_LINE;
@@ -257,12 +257,13 @@ ANY = .+
     ">>"           { return dedentRoot(GdTypes.RBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
-    "("            { ignoreIndent = true; return dedentRoot(GdTypes.LRBR); }
-    ")"            { ignoreIndent = false; return dedentRoot(GdTypes.RRBR); }
+    "("            { ignoreIndent++; return dedentRoot(GdTypes.LRBR); }
+    ")"            { ignoreIndent--; return dedentRoot(GdTypes.RRBR); }
     "["            { return dedentRoot(GdTypes.LSBR); }
     "]"            { return dedentRoot(GdTypes.RSBR); }
-    "{"            { ignoreIndent = true; return dedentRoot(GdTypes.LCBR); }
-    "}"            { ignoreIndent = false; return dedentRoot(GdTypes.RCBR); }
+      // TODO await_new_line je potřeba zpacifikovat
+    "{"            { ignoreIndent++; yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.LCBR); }
+    "}"            { ignoreIndent--; return dedentRoot(GdTypes.RCBR); }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
@@ -303,7 +304,7 @@ ANY = .+
 
     {EMPTY_LINE}  { return TokenType.WHITE_SPACE; }
     {INDENT}  {
-        if (!ignoreIndent && yycolumn == 0) {
+        if (ignoreIndent > 0 && yycolumn == 0) {
             int spaces = yytext().length();
 //            if (spaces > indent && !indented) {
             if (spaces > indent) {

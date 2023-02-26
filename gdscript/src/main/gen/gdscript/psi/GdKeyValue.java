@@ -10,7 +10,4 @@ public interface GdKeyValue extends PsiElement {
   @NotNull
   List<GdExpr> getExprList();
 
-  @Nullable
-  GdNewLineEnd getNewLineEnd();
-
 }

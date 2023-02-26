@@ -28,15 +28,15 @@ public class GdWhileStImpl extends GdStmtImpl implements GdWhileSt {
   }
 
   @Override
-  @Nullable
+  @NotNull
   public GdExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
   }
 
   @Override
-  @Nullable
+  @NotNull
   public GdStmtOrSuite getStmtOrSuite() {
-    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class));
   }
 
 }

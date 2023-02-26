@@ -14,6 +14,9 @@ object GdKeywordContributor : CompletionContributor() {
         GdKeywords.VAR,
         GdKeywords.CLASS,
         GdKeywords.EXTENDS,
+        "pass",
+        "continue",
+        "break",
     )
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
