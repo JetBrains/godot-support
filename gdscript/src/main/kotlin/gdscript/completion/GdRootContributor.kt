@@ -41,12 +41,9 @@ class GdRootContributor : CompletionContributor() {
         val position = parameters.position;
         val previous = PsiTreeUtil.prevCodeLeaf(position.originalElement);
 
-        if (previous === null) {
-            // First text in a file
-            result.addElement(GdLookup.create(GdKeywords.EXTENDS, " "));
+        if (previous === null || ROOT_POSITION.accepts(position)) {
+            result.addElement(GdLookup.create(GdKeywords.EXTENDS));
             result.addElement(GdLookup.create("@tool"));
-            addClassName(parameters, result);
-        } else if (ROOT_POSITION.accepts(position)) {
             // Main class scope
             addClassName(parameters, result);
             addTopLvlDecl(parameters, result);

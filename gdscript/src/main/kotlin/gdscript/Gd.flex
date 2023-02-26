@@ -22,15 +22,13 @@ import java.util.Stack;
     int lastState = YYINITIAL;
     boolean lineEnded = false;
     boolean enumValEnded = false;
-    boolean indented = false;
-    int ignoreIndent = 0;
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     int yycolumn;
 
     public IElementType dedentRoot(IElementType type) {
         lineEnded = false;
-        if (ignoreIndent == 0 || yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
+        if (yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
             return type;
         }
 
@@ -45,7 +43,6 @@ import java.util.Stack;
             return false;
         }
 
-        indented = false;
         dedent();
 
         if (indent > yylength()) {
@@ -62,25 +59,16 @@ import java.util.Stack;
 
 LETTER = [a-z|A-Z|_]
 DIGIT = [0-9]
-//STRING_CH = [^\"\r\n\\]
-//CHAR_CH = [^'\r\n\\]
-//PRINTABLE = [\ -~]
-//HEX = [0-9a-f]
-FLIT1 = [0-9]+ \. [0-9]*
-FLIT2 = \. [0-9]+
-FLIT3 = [0-9]+
 
 NEW_LINE = [\r\n]
 IGNORE_NEW_LINE = \\[\r\n]
 INDENT = [ \t]+
-EMPTY_LINE = [ \t]+\n
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 NUMBER = [0-9][0-9_]*(\.[0-9_]+)?
 HEX_NUMBER = 0x[0-9_a-fA-F]+
 BIN_NUMBER = 0b[01_]+
 REAL_NUMBER = {NUMBER}e-[0-9]+
 
-//STRING = \"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'
 STRING = \"([^\\\"\r\n]|\\.)*\"
 STRING_CHAR = \'([^\\\'\r\n]|\\.)*\'
 STRING_MULTILINE = \"\"\"([^\\\"]|\\.)*\"\"\"
@@ -88,7 +76,6 @@ STRING_MULTILINE = \"\"\"([^\\\"]|\\.)*\"\"\"
 // TODO remove z obojích flexů
 STRING_MARKER = \"\"\"|\"|\'
 STRING_MARKER_REV = [^\"\'\n\r]*
-//ML_STRING = \"\"\"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'\"\"\"
 
 COMMENT = [ \t]*"#"[^\r\n]*(\n|\r|\r\n)?
 ANNOTATOR = "@"[a-zA-Z_]*
@@ -100,8 +87,6 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 //    | "<<" | ">>" | "!" | "&&" | "||"
 ANY = .+
 
-%state AWAIT_NEW_LINE
-%state AWAIT_NEW_LINE_ONCE
 %state AWAIT_ENUM_SEPARATOR
 %state CREATE_INDENT
 %xstate STRING
@@ -145,14 +130,6 @@ ANY = .+
 }
 
 <AWAIT_ENUM_SEPARATOR> {
-    {NEW_LINE}     {
-          if (enumValEnded) {
-              return TokenType.WHITE_SPACE;
-          }
-          enumValEnded = true;
-
-          return GdTypes.NEW_LINE;
-    }
     {IDENTIFIER} {
           enumValEnded = false;
           return GdTypes.IDENTIFIER;
@@ -166,60 +143,34 @@ ANY = .+
           return GdTypes.LCBR;
     }
     "}" {
-          yybegin(AWAIT_NEW_LINE_ONCE);
           enumValEnded = false;
           lineEnded = false;
           return GdTypes.RCBR;
     }
 }
 
-<AWAIT_NEW_LINE_ONCE> {
-    {NEW_LINE}     {
-          yybegin(YYINITIAL);
-          if (lineEnded) { // For signal, etc.
-              return TokenType.WHITE_SPACE;
-          }
-          yypushback(yylength());
-
-          return GdTypes.NEW_LINE;
-      }
-}
-
-<AWAIT_NEW_LINE> {
-    {NEW_LINE}     {
-          if (ignoreIndent > 0 && !lineEnded) {
-              lineEnded = true;
-              yypushback(yylength());
-              return GdTypes.NEW_LINE;
-          }
-
-          return TokenType.WHITE_SPACE;
-      }
-}
-
-    "extends"      { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.EXTENDS); }
-    "class_name"   { yybegin(AWAIT_NEW_LINE_ONCE); return dedentRoot(GdTypes.CLASS_NAME); }
-    "var"          { if (yycolumn == 0) { yybegin(AWAIT_NEW_LINE_ONCE); } else { yybegin(AWAIT_NEW_LINE); } return dedentRoot(GdTypes.VAR); }
-    "const"        { if (yycolumn == 0) { yybegin(AWAIT_NEW_LINE_ONCE); } else { yybegin(AWAIT_NEW_LINE); } return dedentRoot(GdTypes.CONST); }
-    //"setget"       { return GdTypes.SETGET; }
-    "get"          { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.GET); }
-    "set"          { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.SET); }
+    "extends"      { return dedentRoot(GdTypes.EXTENDS); }
+    "class_name"   { return dedentRoot(GdTypes.CLASS_NAME); }
+    "var"          { return dedentRoot(GdTypes.VAR); }
+    "const"        { return dedentRoot(GdTypes.CONST); }
+    "get"          { return dedentRoot(GdTypes.GET); }
+    "set"          { return dedentRoot(GdTypes.SET); }
 
     "enum"         { yybegin(AWAIT_ENUM_SEPARATOR); enumValEnded = true; return GdTypes.ENUM; }
-    "func"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.FUNC); }
-    "pass"         { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.PASS); }
+    "func"         { return dedentRoot(GdTypes.FUNC); }
+    "pass"         { return dedentRoot(GdTypes.PASS); }
     "true"         { return dedentRoot(GdTypes.TRUE); }
     "false"        { return dedentRoot(GdTypes.FALSE); }
     "null"         { return dedentRoot(GdTypes.NULL); }
     "self"         { return dedentRoot(GdTypes.SELF); }
-    "continue"     { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CONTINUE); }
-    "breakpoint"   { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.BREAKPOINT); }
-    "break"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.BREAK); }
-    "return"       { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.RETURN); }
+    "continue"     { return dedentRoot(GdTypes.CONTINUE); }
+    "breakpoint"   { return dedentRoot(GdTypes.BREAKPOINT); }
+    "break"        { return dedentRoot(GdTypes.BREAK); }
+    "return"       { return dedentRoot(GdTypes.RETURN); }
     "void"         { return dedentRoot(GdTypes.VOID); }
     "inf"          { return dedentRoot(GdTypes.INF); }
     "nan"          { return dedentRoot(GdTypes.NAN); }
-    "signal"       { yybegin(AWAIT_NEW_LINE_ONCE); return GdTypes.SIGNAL; }
+    "signal"       { return GdTypes.SIGNAL; }
     "in"           { return dedentRoot(GdTypes.IN); }
     "if"           { return dedentRoot(GdTypes.IF); }
     "else"         { return dedentRoot(GdTypes.ELSE); }
@@ -229,13 +180,11 @@ ANY = .+
     "while"        { return dedentRoot(GdTypes.WHILE); }
     "for"          { return dedentRoot(GdTypes.FOR); }
     "in"           { return dedentRoot(GdTypes.IN); }
-    "match"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.MATCH); }
+    "match"        { return dedentRoot(GdTypes.MATCH); }
     "await"        { return dedentRoot(GdTypes.AWAIT); }
-    "static"       { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.STATIC); }
+    "static"       { return dedentRoot(GdTypes.STATIC); }
     "vararg"       { return dedentRoot(GdTypes.VARARG); }
-//    "puppet"       { return dedentRoot(GdTypes.PUPPET); }
-//    "master"       { return dedentRoot(GdTypes.MASTER); }
-    "class"        { yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.CLASS); }
+    "class"        { return dedentRoot(GdTypes.CLASS); }
     "super"        { return dedentRoot(GdTypes.SUPER); }
 
     "*"            { return dedentRoot(GdTypes.MUL); }
@@ -257,13 +206,12 @@ ANY = .+
     ">>"           { return dedentRoot(GdTypes.RBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
-    "("            { ignoreIndent++; return dedentRoot(GdTypes.LRBR); }
-    ")"            { ignoreIndent--; return dedentRoot(GdTypes.RRBR); }
+    "("            { return dedentRoot(GdTypes.LRBR); }
+    ")"            { return dedentRoot(GdTypes.RRBR); }
     "["            { return dedentRoot(GdTypes.LSBR); }
     "]"            { return dedentRoot(GdTypes.RSBR); }
-      // TODO await_new_line je potřeba zpacifikovat
-    "{"            { ignoreIndent++; yybegin(AWAIT_NEW_LINE); return dedentRoot(GdTypes.LCBR); }
-    "}"            { ignoreIndent--; return dedentRoot(GdTypes.RCBR); }
+    "{"            { return dedentRoot(GdTypes.LCBR); }
+    "}"            { return dedentRoot(GdTypes.RCBR); }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
@@ -287,65 +235,41 @@ ANY = .+
     {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }
     {HEX_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
-    {COMMENT}       {
-          if (!lineEnded) {
-              if (yystate() == AWAIT_NEW_LINE || yystate() == AWAIT_NEW_LINE_ONCE) {
-                  if (yystate() == AWAIT_NEW_LINE_ONCE) {
-                      yybegin(YYINITIAL);
-                  }
-                  lineEnded = true;
-                  yypushback(yylength());
-                  return GdTypes.NEW_LINE;
-              }
-          }
-
-          return GdTypes.COMMENT;
+    {COMMENT}       { return GdTypes.COMMENT; }
+    {NEW_LINE}      {
+        if (yycolumn == 0) {
+            return TokenType.WHITE_SPACE;
+        }
+        return GdTypes.NEW_LINE;
     }
-
-    {EMPTY_LINE}  { return TokenType.WHITE_SPACE; }
     {INDENT}  {
-        if (ignoreIndent > 0 && yycolumn == 0) {
+        if (yycolumn == 0) {
             int spaces = yytext().length();
-//            if (spaces > indent && !indented) {
             if (spaces > indent) {
                 indentSizes.push(spaces - indent);
                 indent = spaces;
-                //yypushback(yylength());
-                indented = true;
 
                 lastState = yystate();
                 yybegin(CREATE_INDENT);
 
-                // return GdTypes.INDENT;
                 return TokenType.WHITE_SPACE;
             } else if (indent > spaces) {
-                indented = false;
                 dedentSpaces();
                 return GdTypes.DEDENT;
             }
         }
-        indented = false;
 
         return TokenType.WHITE_SPACE;
     }
 
-    {NEW_LINE}        { return TokenType.WHITE_SPACE; }
     {IGNORE_NEW_LINE} { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
-    if (yystate() == AWAIT_NEW_LINE && !lineEnded) {
-        yybegin(YYINITIAL);
-        return GdTypes.NEW_LINE;
-    } else if (dedentSpaces()) {
+    if (dedentSpaces()) {
         return GdTypes.DEDENT;
     } else {
         return null;
     }
 }
-
-
-//
-//    /* Syntax */
-//    "?" { return GdTypes.TERNARY; }
 
 [^] { return GdTypes.BAD_CHARACTER; }

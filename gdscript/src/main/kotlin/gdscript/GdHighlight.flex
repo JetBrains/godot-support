@@ -24,24 +24,15 @@ import java.util.Stack;
 
 LETTER = [a-z|A-Z|_]
 DIGIT = [0-9]
-//STRING_CH = [^\"\r\n\\]
-//CHAR_CH = [^'\r\n\\]
-//PRINTABLE = [\ -~]
-//HEX = [0-9a-f]
-FLIT1 = [0-9]+ \. [0-9]*
-FLIT2 = \. [0-9]+
-FLIT3 = [0-9]+
 
 NEW_LINE = [\r\n]
 INDENT = [ \t]+
-//WHITE_SPACE = {NEW_LINE} | {INDENT}
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 NUMBER = [0-9][0-9_]*(\.[0-9_]+)?
 HEX_NUMBER = 0x[0-9_a-fA-F]+
 BIN_NUMBER = 0b[01_]+
 REAL_NUMBER = {NUMBER}e-[0-9]+
 
-//STRING = \"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'
 STRING = \"([^\\\"\r\n]|\\.)*\"
 STRING_CHAR = \'([^\\\'\r\n]|\\.)*\'
 STRING_MULTILINE = \"\"\"([^\\\"]|\\.)*\"\"\"
@@ -49,7 +40,6 @@ STRING_MULTILINE = \"\"\"([^\\\"]|\\.)*\"\"\"
 // TODO remove z obojích flexů
 STRING_MARKER = \"\"\"|\"|\'
 STRING_MARKER_REV = [^\"\'\n\r]*
-//ML_STRING = \"\"\"([^\\\"]|\\.)*\"|\'([^\\\"]|\\.)*\'\"\"\"
 
 COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
 ANNOTATOR = "@"[a-zA-Z_]*
@@ -94,7 +84,6 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "class_name"   { return GdTypes.CLASS_NAME; }
     "var"          { return GdTypes.VAR; }
     "const"        { return GdTypes.CONST; }
-    //"setget"       { return GdTypes.SETGET; }
     "get"          { return GdTypes.GET; }
     "set"          { return GdTypes.SET; }
 
@@ -126,8 +115,6 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "await"        { return GdTypes.AWAIT; }
     "static"       { return GdTypes.STATIC; }
     "vararg"       { return GdTypes.VARARG; }
-   //"puppet"       { return GdTypes.PUPPET; }
-   //"master"       { return GdTypes.MASTER; }
     "class"        { return GdTypes.CLASS; }
     "super"        { return GdTypes.SUPER; }
 
@@ -170,7 +157,6 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {STRING}           { return GdTypes.STRING; }
     {STRING_CHAR}      { return GdTypes.STRING; }
     {STRING_MULTILINE} { return GdTypes.STRING; }
-    //{STRING_MARKER} { oppening = yytext().toString(); lastState = yystate(); yybegin(STRING); }
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
     {ANNOTATOR}     { return GdTypes.ANNOTATOR; }
@@ -180,22 +166,11 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     {HEX_NUMBER}    { return GdTypes.NUMBER; }
     {BIN_NUMBER}    { return GdTypes.NUMBER; }
     {COMMENT}       { return GdTypes.COMMENT; }
-
-    {INDENT}  {
-        return TokenType.WHITE_SPACE;
-    }
-
-    {NEW_LINE}     { return TokenType.WHITE_SPACE; }
+    {INDENT}        { return TokenType.WHITE_SPACE; }
+    {NEW_LINE}      { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
     return null;
 }
-
-//    "static" { return GdTypes.STATIC; }
-//    "_" { return GdTypes.UNDER; }
-//
-//    /* Syntax */
-//    "?" { return GdTypes.TERNARY; }
-//    ".." { return GdTypes.DOTDOT; }
 
 [^] { return GdTypes.BAD_CHARACTER; }

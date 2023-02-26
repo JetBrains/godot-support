@@ -6,13 +6,13 @@ object GdKeywords {
 
     const val EXTENDS = "extends"
     const val CLASS = "class"
+    const val SIGNAL = "signal"
     const val CLASS_NAME = "class_name"
     const val FUNC = "func"
     const val STATIC = "static"
     const val VARARG = "vararg"
     const val CONST = "const"
     const val VAR = "var"
-    const val SETGET = "setget"
     const val SELF = "self"
     const val SUPER = "super"
 

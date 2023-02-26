@@ -758,14 +758,27 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // SEMICON | newLineEnd
+  // (SEMICON | newLineEnd)+
   public static boolean endStmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "endStmt")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, END_STMT, "<end stmt>");
+    r = endStmt_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!endStmt_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "endStmt", c)) break;
+    }
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // SEMICON | newLineEnd
+  private static boolean endStmt_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "endStmt_0")) return false;
+    boolean r;
     r = consumeToken(b, SEMICON);
     if (!r) r = newLineEnd(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -1074,7 +1087,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (inheritance | classNaming | topLevelDecl)*
+  // (NEW_LINE | inheritance | classNaming | topLevelDecl)*
   static boolean gdfile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gdfile")) return false;
     while (true) {
@@ -1085,12 +1098,13 @@ public class GdParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // inheritance | classNaming | topLevelDecl
+  // NEW_LINE | inheritance | classNaming | topLevelDecl
   private static boolean gdfile_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gdfile_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = inheritance(b, l + 1);
+    r = consumeToken(b, NEW_LINE);
+    if (!r) r = inheritance(b, l + 1);
     if (!r) r = classNaming(b, l + 1);
     if (!r) r = topLevelDecl(b, l + 1);
     exit_section_(b, m, null, r);

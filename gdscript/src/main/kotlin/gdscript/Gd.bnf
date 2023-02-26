@@ -36,7 +36,7 @@
   ]
 }
 
-gdfile ::= (inheritance | classNaming | topLevelDecl)* // TODO limit to once
+gdfile ::= (NEW_LINE | inheritance | classNaming | topLevelDecl)* // TODO limit to once
 inheritance ::= EXTENDS inheritanceId newLineEnd? {
     methods=[getInheritancePath] pin=1 recoverWhile=inheritance_r
     mixin="gdscript.psi.impl.GdInheritanceElementImpl"
@@ -233,7 +233,7 @@ typed ::= COLON typedVal
 typedVal ::= typeHint (LSBR typeHint RSBR)? {methods=[getReturnType]}
 typeHint ::= typeHint_nm (DOT typeHint_nm)*
 typeHint_nm ::= IDENTIFIER
-endStmt ::= SEMICON | newLineEnd
+endStmt ::= (SEMICON | newLineEnd)+ // TODO SEMICON? newLineEnd
 newLineEnd ::= NEW_LINE | <<eof>>
 nodePath ::= NODE_PATH_LEX
 

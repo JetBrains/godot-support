@@ -13,7 +13,7 @@ object GdKeywordContributor : CompletionContributor() {
         GdKeywords.CONST,
         GdKeywords.VAR,
         GdKeywords.CLASS,
-        GdKeywords.EXTENDS,
+        GdKeywords.SIGNAL,
         "pass",
         "continue",
         "break",
