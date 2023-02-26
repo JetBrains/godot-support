@@ -863,10 +863,12 @@ class GdLexer implements FlexLexer {
                 indentSizes.push(spaces - indent);
                 indent = spaces;
 
-                lastState = yystate();
-                yybegin(CREATE_INDENT);
+                return GdTypes.INDENT;
 
-                return TokenType.WHITE_SPACE;
+                //lastState = yystate();
+                //yybegin(CREATE_INDENT);
+
+                //return TokenType.WHITE_SPACE;
             } else if (indent > spaces) {
                 dedentSpaces();
                 return GdTypes.DEDENT;

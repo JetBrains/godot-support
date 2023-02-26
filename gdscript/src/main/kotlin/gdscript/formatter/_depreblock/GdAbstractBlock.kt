@@ -1,4 +1,4 @@
-package gdscript.formatter.block
+package gdscript.formatter.depreblock
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
@@ -11,6 +11,7 @@ import gdscript.psi.GdStmt
 import gdscript.psi.GdTypes
 import gdscript.utils.PsiElementUtil.precedingNewLines
 
+@Deprecated("depre")
 abstract class GdAbstractBlock : AbstractBlock {
 
     companion object {

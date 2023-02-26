@@ -6,7 +6,6 @@ import com.intellij.psi.tree.TokenSet
 import gdscript.GdFileType
 import gdscript.GdLanguage
 import gdscript.formatter.block.GdBlock
-import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
 
 class GdFormattingModelBuilder : FormattingModelBuilder {
@@ -22,7 +21,8 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
                     Wrap.createWrap(WrapType.NONE, false),
                     Alignment.createAlignment(),
                     customSettings,
-                    createSpaceBuilder(settings)
+                    createSpaceBuilder(settings),
+                    Indent.getNoneIndent(),
                 ),
                 settings)
     }
@@ -33,8 +33,12 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
         // TODO grouping
         return SpacingBuilder(settings, GdLanguage)
+            .before(NAMINGS).spacing(0, 0, 0, false, 0)
+            .after(NAMINGS).spacing(0, 0, 1, false, 0)
+
+
+
             /** Root lines */
-            .before(NAMINGS).spacing(0, 0, 1, false, 0)
             .before(TokenSet.create(GdTypes.INHERITANCE_ID_NM, GdTypes.CLASS_NAME_NMI)).spaces(1)
             .beforeInside(GdTypes.DEDENT, GdTypes.SUITE).spacing(0, Int.MAX_VALUE, 1, false, 0)
             .between(NAMINGS, ROOTS).spacing(0, 0, 1, false, 1)

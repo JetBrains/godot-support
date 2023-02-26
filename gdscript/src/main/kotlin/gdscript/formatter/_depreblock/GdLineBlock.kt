@@ -1,10 +1,11 @@
-package gdscript.formatter.block
+package gdscript.formatter.depreblock
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdTypes
 
+@Deprecated("depre")
 class GdLineBlock : GdAbstractBlock {
 
     companion object {
