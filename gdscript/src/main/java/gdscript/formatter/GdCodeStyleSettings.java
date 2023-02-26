@@ -8,6 +8,7 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 public class GdCodeStyleSettings extends CustomCodeStyleSettings {
 
     public int LINES_BEFORE_FUNC = 2;
+    public int LINES_AFTER_HEADER = 1;
 
     GdCodeStyleSettings(CodeStyleSettings settings) {
         super("GdCodeStyleSettings", settings);

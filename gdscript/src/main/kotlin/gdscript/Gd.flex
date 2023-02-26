@@ -25,6 +25,7 @@ import java.util.Stack;
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     int yycolumn;
+    boolean eofFinished = false;
 
     public IElementType dedentRoot(IElementType type) {
         lineEnded = false;
@@ -238,8 +239,10 @@ ANY = .+
     {COMMENT}       { return GdTypes.COMMENT; }
     {NEW_LINE}      {
         if (yycolumn == 0) {
+            //return dedentRoot(TokenType.WHITE_SPACE);
             return TokenType.WHITE_SPACE;
         }
+
         return GdTypes.NEW_LINE;
     }
     {INDENT}  {
@@ -267,11 +270,18 @@ ANY = .+
     {IGNORE_NEW_LINE} { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
-    if (dedentSpaces()) {
-        return GdTypes.DEDENT;
-    } else {
+    if (yycolumn > 0 && !eofFinished) {
+        eofFinished = true;
+        return GdTypes.NEW_LINE;
+    }
+
+    if (indentSizes.empty()) {
         return null;
     }
+
+    indentSizes.pop();
+    yypushback(yylength());
+    return GdTypes.DEDENT;
 }
 
 [^] { return GdTypes.BAD_CHARACTER; }

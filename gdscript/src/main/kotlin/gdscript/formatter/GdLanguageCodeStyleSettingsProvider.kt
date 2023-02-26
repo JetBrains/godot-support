@@ -32,7 +32,13 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
                 "LINES_BEFORE_FUNC",
                 "Before func declaration",
                 "Keep maximum blank lines"
-            )
+            );
+            consumer.showCustomOption(
+                GdCodeStyleSettings::class.java,
+                "LINES_AFTER_HEADER",
+                "After class_name/extends header",
+                "Keep maximum blank lines"
+            );
         }
     }
 
