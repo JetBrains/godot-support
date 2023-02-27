@@ -124,7 +124,7 @@ classDecl_tl ::= CLASS className_nmi inheritance? COLON NEW_LINE INDENT (inherit
 }
 
 stmtOrSuite ::= stmt | suite
-suite ::= NEW_LINE? INDENT stmt+ DEDENT {pin=2}
+suite ::= NEW_LINE? INDENT (NEW_LINE | stmt)+ DEDENT {pin=2}
 
 stmt ::=
     assign_st

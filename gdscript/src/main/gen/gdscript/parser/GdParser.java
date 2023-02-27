@@ -2052,7 +2052,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // NEW_LINE? INDENT stmt+ DEDENT
+  // NEW_LINE? INDENT (NEW_LINE | stmt)+ DEDENT
   public static boolean suite(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "suite")) return false;
     if (!nextTokenIs(b, "<suite>", INDENT, NEW_LINE)) return false;
@@ -2074,18 +2074,27 @@ public class GdParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // stmt+
+  // (NEW_LINE | stmt)+
   private static boolean suite_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "suite_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = stmt(b, l + 1);
+    r = suite_2_0(b, l + 1);
     while (r) {
       int c = current_position_(b);
-      if (!stmt(b, l + 1)) break;
+      if (!suite_2_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "suite_2", c)) break;
     }
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // NEW_LINE | stmt
+  private static boolean suite_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "suite_2_0")) return false;
+    boolean r;
+    r = consumeToken(b, NEW_LINE);
+    if (!r) r = stmt(b, l + 1);
     return r;
   }
 

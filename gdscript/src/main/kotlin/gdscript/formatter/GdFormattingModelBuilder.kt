@@ -6,7 +6,6 @@ import com.intellij.psi.tree.TokenSet
 import gdscript.GdFileType
 import gdscript.GdLanguage
 import gdscript.formatter.block.GdBlock
-import gdscript.psi.GdTokenType
 import gdscript.psi.GdTypes
 
 class GdFormattingModelBuilder : FormattingModelBuilder {
@@ -39,8 +38,15 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .after(NAMINGS).spacing(0, 0, custom.LINES_AFTER_HEADER, false, 0)
 
             /* Method & Classes */
+            .between(GdTypes.ANNOTATION_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 0, false, 0)
             .before(ROOT_BLOCKS).spacing(0, 0, custom.LINES_BEFORE_FUNC, false, 0)
 
+            /* Const & Vars */
+            .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, custom.LINES_IN_BETWEEN_VARIABLE_GROUP, false, custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
+            .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.ANNOTATION_TL).spacing(0, Int.MAX_VALUE, custom.LINES_IN_BETWEEN_VARIABLE_GROUP, false, custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
+            .between(GdTypes.CONST_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, custom.LINES_IN_BETWEEN_VARIABLE_GROUP, false, custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
+
+            .after(ROOT_VARIABLES).spacing(0, Int.MAX_VALUE, custom.LINES_AFTER_VARIABLE_GROUP, false, custom.LINES_AFTER_VARIABLE_GROUP)
 
 
             /** Root lines */
@@ -49,8 +55,6 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 //            .between(NAMINGS, ROOTS).spacing(0, 0, 1, false, 1)
 //
 //            .between(GdTypes.ENUM_DECL_TL, GdTypes.ENUM_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 0)
-//            .between(GdTypes.CONST_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 0)
-//            .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 1, false, 1)
 //            .between(GdTypes.CONST_DECL_TL, GdTypes.CLASS_VAR_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
 //            .between(GdTypes.CONST_DECL_TL, GdTypes.ENUM_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
 //            .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.CONST_DECL_TL).spacing(0, Int.MAX_VALUE, 2, false, 1)
@@ -66,7 +70,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
     companion object {
         val NAMINGS = TokenSet.create(GdTypes.INHERITANCE, GdTypes.CLASS_NAMING)
-        val ROOTS = TokenSet.create(GdTypes.CONST_DECL_TL, GdTypes.CLASS_VAR_DECL_TL)
+        val ROOT_VARIABLES = TokenSet.create(GdTypes.CONST_DECL_TL, GdTypes.CLASS_VAR_DECL_TL)
         val ROOT_BLOCKS = TokenSet.create(GdTypes.METHOD_DECL_TL, GdTypes.CLASS_DECL_TL)
         var INDENT_SIZE = 4;
     }

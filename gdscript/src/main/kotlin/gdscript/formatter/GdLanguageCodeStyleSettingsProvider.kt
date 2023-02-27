@@ -39,6 +39,18 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
                 "After class_name/extends header",
                 "Keep maximum blank lines"
             );
+            consumer.showCustomOption(
+                GdCodeStyleSettings::class.java,
+                "LINES_IN_BETWEEN_VARIABLE_GROUP",
+                "Between variables, constants, ...",
+                "Keep maximum blank lines"
+            );
+            consumer.showCustomOption(
+                GdCodeStyleSettings::class.java,
+                "LINES_AFTER_VARIABLE_GROUP",
+                "Below variables, constants, ...",
+                "Keep maximum blank lines"
+            );
         }
     }
 
