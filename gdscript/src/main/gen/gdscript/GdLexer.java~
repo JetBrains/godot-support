@@ -491,7 +491,12 @@ class GdLexer implements FlexLexer {
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     int yycolumn;
-    boolean eofFinished = false;
+    boolean eofFinished = false; // TODO remove?
+
+    boolean newLineEncountered = false;
+    // For signals and such, where Indents/NewLines do not matter
+    boolean ignoreIndent = false;
+    int ignored = 0;
 
     public IElementType dedentRoot(IElementType type) {
         lineEnded = false;
@@ -821,7 +826,7 @@ class GdLexer implements FlexLexer {
               {
                 if (yycolumn > 0 && !eofFinished) {
         eofFinished = true;
-        return GdTypes.END_STMT;
+        return GdTypes.NEW_LINE;
     }
 
     if (indentSizes.empty()) {
@@ -858,11 +863,23 @@ class GdLexer implements FlexLexer {
           case 91: break;
           case 5: 
             { if (yycolumn == 0) {
-            //return dedentRoot(TokenType.WHITE_SPACE);
-            return TokenType.WHITE_SPACE;
+            return dedentRoot(TokenType.WHITE_SPACE);
+        } else if (ignoreIndent) {
+            if (ignored == 0) {
+                ignoreIndent = false;
+                return GdTypes.NEW_LINE;
+            } else {
+                return TokenType.WHITE_SPACE;
+            }
         }
 
-        return GdTypes.NEW_LINE;
+        newLineEncountered = !newLineEncountered;
+        if (newLineEncountered) {
+            yypushback(yylength());
+            return GdTypes.NEW_LINE;
+        }
+
+        return dedentRoot(TokenType.WHITE_SPACE);
             } 
             // fall through
           case 92: break;
@@ -870,6 +887,10 @@ class GdLexer implements FlexLexer {
             { if (yycolumn == 0) {
             int spaces = yytext().length();
             if (spaces > indent) {
+                if (ignoreIndent) {
+                    return TokenType.WHITE_SPACE;
+                }
+
                 indentSizes.push(spaces - indent);
                 indent = spaces;
 
@@ -990,12 +1011,12 @@ class GdLexer implements FlexLexer {
             // fall through
           case 113: break;
           case 27: 
-            { return dedentRoot(GdTypes.LRBR);
+            { if (ignoreIndent) { ignored++; } return dedentRoot(GdTypes.LRBR);
             } 
             // fall through
           case 114: break;
           case 28: 
-            { return dedentRoot(GdTypes.RRBR);
+            { if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } } return dedentRoot(GdTypes.RRBR);
             } 
             // fall through
           case 115: break;
@@ -1274,7 +1295,7 @@ class GdLexer implements FlexLexer {
             // fall through
           case 167: break;
           case 81: 
-            { return GdTypes.SIGNAL;
+            { ignoreIndent = true; ignored = 0; return GdTypes.SIGNAL;
             } 
             // fall through
           case 168: break;

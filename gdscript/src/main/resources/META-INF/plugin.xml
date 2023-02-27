@@ -112,7 +112,7 @@
     <lang.braceMatcher language="GdScript" implementationClass="gdscript.formatter.GdBraceMatcher" />
     <lang.formatter language="GdScript" implementationClass="gdscript.formatter.GdFormattingModelBuilder" />
     <codeStyleSettingsProvider implementation="gdscript.formatter.GdCodeStyleSettingsProvider" />
-    <langCodeStyleSettingsProvider implementation="gdscript.formatter.GdLanguageCodeStyleSettingsProvider" />
+    <langCodeStyleSettingsProvider implementation="gdscript.formatter.settings.GdLanguageCodeStyleSettingsProvider" />
 
     <!-- File templates -->
     <internalFileTemplate name="Node default" />

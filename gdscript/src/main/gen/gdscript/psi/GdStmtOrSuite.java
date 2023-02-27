@@ -10,7 +10,7 @@ public interface GdStmtOrSuite extends PsiElement {
   @Nullable
   GdStmt getStmt();
 
-  @Nullable
-  GdSuite getSuite();
+  @NotNull
+  List<GdSuite> getSuiteList();
 
 }
