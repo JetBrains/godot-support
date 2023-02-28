@@ -123,14 +123,15 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // expr (COMMA expr)*
+  // expr (COMMA expr)* COMMA?
   public static boolean argList(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "argList")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, ARG_LIST, "<arg list>");
     r = expr(b, l + 1, -1);
     p = r; // pin = 1
-    r = r && argList_1(b, l + 1);
+    r = r && report_error_(b, argList_1(b, l + 1));
+    r = p && argList_2(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
@@ -155,6 +156,13 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && expr(b, l + 1, -1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // COMMA?
+  private static boolean argList_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argList_2")) return false;
+    consumeToken(b, COMMA);
+    return true;
   }
 
   /* ********************************************************** */
@@ -365,7 +373,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // CLASS className_nmi inheritance? COLON NEW_LINE INDENT (inheritance | topLevelDecl)+ DEDENT
+  // CLASS className_nmi inheritance? COLON NEW_LINE (INDENT (inheritance | topLevelDecl)* DEDENT)+
   public static boolean classDecl_tl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classDecl_tl")) return false;
     boolean r, p;
@@ -374,9 +382,8 @@ public class GdParser implements PsiParser, LightPsiParser {
     p = r; // pin = 1
     r = r && report_error_(b, className_nmi(b, l + 1));
     r = p && report_error_(b, classDecl_tl_2(b, l + 1)) && r;
-    r = p && report_error_(b, consumeTokens(b, -1, COLON, NEW_LINE, INDENT)) && r;
-    r = p && report_error_(b, classDecl_tl_6(b, l + 1)) && r;
-    r = p && consumeToken(b, DEDENT) && r;
+    r = p && report_error_(b, consumeTokens(b, -1, COLON, NEW_LINE)) && r;
+    r = p && classDecl_tl_5(b, l + 1) && r;
     exit_section_(b, l, m, r, p, GdParser::topLevelDecl_r);
     return r || p;
   }
@@ -388,24 +395,47 @@ public class GdParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (inheritance | topLevelDecl)+
-  private static boolean classDecl_tl_6(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classDecl_tl_6")) return false;
+  // (INDENT (inheritance | topLevelDecl)* DEDENT)+
+  private static boolean classDecl_tl_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classDecl_tl_5")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = classDecl_tl_6_0(b, l + 1);
+    r = classDecl_tl_5_0(b, l + 1);
     while (r) {
       int c = current_position_(b);
-      if (!classDecl_tl_6_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "classDecl_tl_6", c)) break;
+      if (!classDecl_tl_5_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "classDecl_tl_5", c)) break;
     }
     exit_section_(b, m, null, r);
     return r;
   }
 
+  // INDENT (inheritance | topLevelDecl)* DEDENT
+  private static boolean classDecl_tl_5_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classDecl_tl_5_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenFast(b, INDENT);
+    r = r && classDecl_tl_5_0_1(b, l + 1);
+    r = r && consumeToken(b, DEDENT);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (inheritance | topLevelDecl)*
+  private static boolean classDecl_tl_5_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classDecl_tl_5_0_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!classDecl_tl_5_0_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "classDecl_tl_5_0_1", c)) break;
+    }
+    return true;
+  }
+
   // inheritance | topLevelDecl
-  private static boolean classDecl_tl_6_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classDecl_tl_6_0")) return false;
+  private static boolean classDecl_tl_5_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classDecl_tl_5_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = inheritance(b, l + 1);
@@ -1080,7 +1110,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (NEW_LINE | inheritance | classNaming | topLevelDecl)*
+  // (inheritance | classNaming | topLevelDecl)*
   static boolean gdfile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gdfile")) return false;
     while (true) {
@@ -1091,13 +1121,12 @@ public class GdParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // NEW_LINE | inheritance | classNaming | topLevelDecl
+  // inheritance | classNaming | topLevelDecl
   private static boolean gdfile_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gdfile_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, NEW_LINE);
-    if (!r) r = inheritance(b, l + 1);
+    r = inheritance(b, l + 1);
     if (!r) r = classNaming(b, l + 1);
     if (!r) r = topLevelDecl(b, l + 1);
     exit_section_(b, m, null, r);
@@ -2115,8 +2144,9 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // constDecl_tl
-  //     | enumDecl_tl // TODO <-- tady pokračovat s formatter
+  // NEW_LINE
+  //     | constDecl_tl
+  //     | enumDecl_tl
   //     | signalDecl_tl
   //     | classVarDecl_tl
   //     | annotation_tl
@@ -2126,7 +2156,8 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "topLevelDecl")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, TOP_LEVEL_DECL, "<top level decl>");
-    r = constDecl_tl(b, l + 1);
+    r = consumeTokenFast(b, NEW_LINE);
+    if (!r) r = constDecl_tl(b, l + 1);
     if (!r) r = enumDecl_tl(b, l + 1);
     if (!r) r = signalDecl_tl(b, l + 1);
     if (!r) r = classVarDecl_tl(b, l + 1);

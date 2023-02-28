@@ -27,6 +27,7 @@ object GdBlocks {
 
     val ALWAYS_INDENTED_TOKENS = arrayOf(
         GdTypes.PARAM_LIST,
+        GdTypes.ARG_LIST,
         GdTypes.ENUM_VALUE,
         GdTypes.ARRAY_DECL,
         GdTypes.DICT_DECL,
@@ -38,6 +39,8 @@ object GdBlocks {
         GdTypes.ENUM_DECL_TL,
         GdTypes.ARRAY_DECL,
         GdTypes.DICT_DECL,
+        GdTypes.CLASS_DECL_TL,
+        GdTypes.METHOD_DECL_TL,
     )
 
     // TODO clear up

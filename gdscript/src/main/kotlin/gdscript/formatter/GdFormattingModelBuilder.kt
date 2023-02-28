@@ -36,16 +36,12 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             settings.getIndentSize(GdFileType); // TODO u tabů se to posere, když je za stmt volné odsazení tak se převede na mezery a konec
 
         val builder = SpacingBuilder(settings, GdLanguage)
-//            .before(GdTypes.COMMENT).blankLines(0)
-//            .after(GdTypes.COMMENT).blankLines(0)
-
             /* Spacings */
             .before(GdTypes.COMMA).spaceIf(custom.SPACE_BEFORE_COMMA)
             .after(GdTypes.COMMA).spaceIf(custom.SPACE_AFTER_COMMA)
             .before(GdTypes.COLON).spaceIf(custom.SPACE_BEFORE_COLON)
             .before(GdTypes.TYPED).spaceIf(custom.SPACE_BEFORE_COLON)
             .after(GdTypes.COLON).spaceIf(custom.SPACE_AFTER_COLON)
-
             .after(GdTypes.ANNOTATION_TL).spaces(1)
 
             /* Extends & ClassName */
@@ -53,12 +49,12 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .after(NAMINGS).forcedLines(custom.LINES_AFTER_HEADER)
 
             /* Method & Classes */
-            .between(GdTypes.ANNOTATION_TL, GdTypes.CLASS_VAR_DECL_TL).forcedLines(0)
+            .between(GdTypes.ANNOTATION_TL, GdTypes.CLASS_VAR_DECL_TL).forcedLines(0, 1)
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.ANNOTATION_TL)
             .forcedLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
 
             //.between(GdTypes.COMMENT, ROOT_BLOCKS).forcedLines(0)
-            .before(ROOT_BLOCKS).forcedLines(2)
+            .before(ROOT_BLOCKS).forcedLines(custom.LINES_BEFORE_FUNC)
 
         // Separate groups
         ROOT_VARIABLES.types.forEachIndexed { iLeft, left ->

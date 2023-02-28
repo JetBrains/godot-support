@@ -59,10 +59,15 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
         return """extends Node2D
             |class_name MyClass
             |
-            |var vari: int = 1;
-            |var var2: String = "";
-            |
-            |const cc = "cc";
+            |@export
+            |var vari: int = 1
+            |var var2: String = ""
+            |var arrayVar := [
+            |    {
+            |        "vb": "asd",
+            |    },
+            |]
+            |const cc = "cc"
             |
             |func fn1():
             |   pass;

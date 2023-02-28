@@ -65,6 +65,9 @@ class GdBlock : AbstractBlock {
 //            if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) GdAbstractBlock.EQ_ALIGN else Alignment.createAlignment(),
 
         if (GdBlocks.INDENT_CHILDREN_ATTRIBUTE.contains(node.elementType)) {
+            // TODO double line space
+
+
             return ChildAttributes(
                 Indent.getNormalIndent(),
                 null,

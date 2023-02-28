@@ -26,14 +26,15 @@ import java.util.Stack;
     int yycolumn;
     boolean eofFinished = false; // TODO remove?
 
-    boolean newLineEncountered = false;
+    boolean newLineProcessed = false;
     // For signals and such, where Indents/NewLines do not matter
     boolean ignoreIndent = false;
     int ignored = 0;
 
     public IElementType dedentRoot(IElementType type) {
+        newLineProcessed = false;
         lineEnded = false;
-        if (yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
+        if (ignored > 0 || yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
             return type;
         }
 
@@ -44,7 +45,8 @@ import java.util.Stack;
     }
 
     public boolean dedentSpaces() {
-        if (indent <= 0 || indentSizes.empty()) { // For EOF rule
+        newLineProcessed = false;
+        if (ignored > 0 || indent <= 0 || indentSizes.empty()) { // For EOF rule
             return false;
         }
 
@@ -68,6 +70,7 @@ DIGIT = [0-9]
 NEW_LINE = [\r\n]
 IGNORE_NEW_LINE = \\[\r\n]
 INDENT = [ \t]+
+EMPTY_INDENT = [ \t]+{NEW_LINE}
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 NUMBER = [0-9][0-9_]*(\.[0-9_]+)?
 HEX_NUMBER = 0x[0-9_a-fA-F]+
@@ -191,12 +194,12 @@ ANY = .+
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "("            { /*if (ignoreIndent) { ignored++; }*/ ignored++; return dedentRoot(GdTypes.LRBR); }
-    ")"            { /*if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } }*/ ignored--; return dedentRoot(GdTypes.RRBR); }
+    ")"            { /*if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } }*/ ignored--; return GdTypes.RRBR; }
     "["            { ignored++; return dedentRoot(GdTypes.LSBR); }
-    "]"            { ignored--; return dedentRoot(GdTypes.RSBR); }
+    "]"            { ignored--; return GdTypes.RSBR; }
       // TODO resetovat ignored, když bude chybět uzavírací závorka? např. nedopsaný call fn
     "{"            { /*if (ignoreIndent) { ignored++; }*/ignored++; return dedentRoot(GdTypes.LCBR); }
-    "}"            { /*if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } } */ignored--; return dedentRoot(GdTypes.RCBR); }
+    "}"            { /*if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } } */ignored--; return GdTypes.RCBR; }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
@@ -233,8 +236,14 @@ ANY = .+
             }
         }
 
+        if (newLineProcessed) {
+            return TokenType.WHITE_SPACE;
+        }
+
+        newLineProcessed = true;
         return GdTypes.NEW_LINE;
     }
+    {EMPTY_INDENT} { return TokenType.WHITE_SPACE; }
     {INDENT}  {
         if (yycolumn == 0) {
             int spaces = yytext().length();

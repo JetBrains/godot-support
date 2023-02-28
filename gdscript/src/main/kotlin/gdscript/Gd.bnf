@@ -36,7 +36,7 @@
   ]
 }
 
-gdfile ::= (NEW_LINE | inheritance | classNaming | topLevelDecl)* // TODO limit to once
+gdfile ::= (inheritance | classNaming | topLevelDecl)* // TODO limit to once
 inheritance ::= EXTENDS inheritanceId newLineEnd? {
     methods=[getInheritancePath] pin=1 recoverWhile=inheritance_r
     mixin="gdscript.psi.impl.GdInheritanceElementImpl"
@@ -60,8 +60,9 @@ className_nmi ::= IDENTIFIER {
 }
 
 topLevelDecl ::=
-    constDecl_tl
-    | enumDecl_tl // TODO <-- tady pokračovat s formatter
+    NEW_LINE
+    | constDecl_tl
+    | enumDecl_tl
     | signalDecl_tl
     | classVarDecl_tl
     | annotation_tl
@@ -74,6 +75,7 @@ private topLevelDecl_r ::= !(
 constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {methods=[getName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
 constId_nmi ::= identifierEx;
 
+ // TODO <-- tady pokračovat s formatter
 annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? {pin=1 recoverWhile=topLevelDecl_r}
 annotationParams ::= literal_ex (COMMA literal_ex)*
 classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
@@ -112,12 +114,12 @@ paramList ::= param (COMMA param)* COMMA? {pin=1 /*recoverWhile=argList_r*/}
 param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
 returnHint ::= RET returnHintVal
 returnHintVal ::= typedVal | VOID // typeHint_nm | VOID
-argList ::= expr (COMMA expr)* {pin=1 /*recoverWhile=argList_r*/}
+argList ::= expr (COMMA expr)* COMMA? {pin=1 /*recoverWhile=argList_r*/}
 private argList_r ::= !(RRBR)
 var_nmi ::= identifierEx
 
 // TODO annotace - single inheritance - jak root tak inner, single class_name
-classDecl_tl ::= CLASS className_nmi inheritance? COLON NEW_LINE INDENT (inheritance | topLevelDecl)+ DEDENT {
+classDecl_tl ::= CLASS className_nmi inheritance? COLON NEW_LINE (INDENT (inheritance | topLevelDecl)* DEDENT)+ {
     methods=[getName getParentName] pin=1 recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdClassDeclElementImpl" stubClass="gdscript.index.stub.GdClassDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdClassDeclElementType.getInstance"
