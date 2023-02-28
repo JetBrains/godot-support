@@ -47,7 +47,7 @@ class GdBlock : AbstractBlock {
                     GdBlock(
                         child,
                         Wrap.createWrap(WrapType.NONE, false),
-                        null,
+                        GdAlignments.getAlignment(type, settings),
                         settings,
                         spacing,
                         if (toIndent) Indent.getNormalIndent() else Indent.getNoneIndent(),
@@ -64,7 +64,10 @@ class GdBlock : AbstractBlock {
 //        if (next != null) return next;
 //            if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) GdAbstractBlock.EQ_ALIGN else Alignment.createAlignment(),
 
-        if (GdBlocks.INDENT_CHILDREN_ATTRIBUTE.contains(node.elementType)) {
+        if (
+            GdBlocks.INDENT_CHILDREN_ATTRIBUTE.contains(node.elementType)
+            || this.node.treeParent?.elementType == GdTypes.SUITE
+        ) {
             // TODO double line space
 
 

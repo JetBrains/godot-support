@@ -1085,16 +1085,17 @@ public class GdParser implements PsiParser, LightPsiParser {
   public static boolean for_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "for_st")) return false;
     if (!nextTokenIsFast(b, FOR)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, FOR_ST, null);
     r = consumeTokenFast(b, FOR);
-    r = r && var_nmi(b, l + 1);
-    r = r && consumeToken(b, IN);
-    r = r && expr(b, l + 1, -1);
-    r = r && consumeToken(b, COLON);
-    r = r && stmtOrSuite(b, l + 1);
-    exit_section_(b, m, FOR_ST, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, var_nmi(b, l + 1));
+    r = p && report_error_(b, consumeToken(b, IN)) && r;
+    r = p && report_error_(b, expr(b, l + 1, -1)) && r;
+    r = p && report_error_(b, consumeToken(b, COLON)) && r;
+    r = p && stmtOrSuite(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */

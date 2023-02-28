@@ -27,6 +27,14 @@ object GdSettings {
         ),
     );
 
+    val WRAPPING_AND_BRACES: HashMap<String, HashMap<String, String>> = hashMapOf(
+        Pair(
+            "Comments", hashMapOf(
+                Pair("ALIGN_COMMENTS", "Align"),
+            )
+        ),
+    );
+
     fun HashMap<String, HashMap<String, String>>.consume(consumer: CodeStyleSettingsCustomizable) {
         this.forEach { (group, fields) ->
             fields.forEach { (field, title) ->

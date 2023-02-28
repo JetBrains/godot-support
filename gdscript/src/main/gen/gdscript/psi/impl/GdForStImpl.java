@@ -28,21 +28,21 @@ public class GdForStImpl extends GdStmtImpl implements GdForSt {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdExpr getExpr() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
+    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdStmtOrSuite getStmtOrSuite() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class));
+    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdVarNmi getVarNmi() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi.class));
+    return PsiTreeUtil.getChildOfType(this, GdVarNmi.class);
   }
 
 }

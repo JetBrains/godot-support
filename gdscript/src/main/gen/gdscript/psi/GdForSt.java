@@ -7,13 +7,13 @@ import com.intellij.psi.PsiElement;
 
 public interface GdForSt extends GdStmt {
 
-  @NotNull
+  @Nullable
   GdExpr getExpr();
 
-  @NotNull
+  @Nullable
   GdStmtOrSuite getStmtOrSuite();
 
-  @NotNull
+  @Nullable
   GdVarNmi getVarNmi();
 
 }

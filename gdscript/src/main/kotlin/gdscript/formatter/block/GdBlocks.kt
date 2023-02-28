@@ -1,6 +1,5 @@
 package gdscript.formatter.block
 
-import com.intellij.formatting.Alignment
 import com.intellij.formatting.Indent
 import com.intellij.psi.TokenType
 import gdscript.psi.GdTypes
@@ -56,6 +55,5 @@ object GdBlocks {
 
     val NONE_INDENT: Indent = Indent.getIndent(Indent.Type.NONE, true, false);
 
-    val EQ_ALIGN = Alignment.createAlignment(true);
 
 }

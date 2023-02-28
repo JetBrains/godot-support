@@ -18,6 +18,9 @@ public class GdCodeStyleSettings extends CustomCodeStyleSettings {
     public boolean SPACE_BEFORE_COLON = false;
     public boolean SPACE_AFTER_COLON = true;
 
+    /* Wrapping and Spaces */
+    public boolean ALIGN_COMMENTS = true;
+
     public GdCodeStyleSettings(CodeStyleSettings settings) {
         super("GdCodeStyleSettings", settings);
     }

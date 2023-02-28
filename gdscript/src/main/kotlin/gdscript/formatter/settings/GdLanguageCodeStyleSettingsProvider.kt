@@ -42,7 +42,7 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
             }
 
             SettingsType.WRAPPING_AND_BRACES_SETTINGS -> {
-                /* TODO */
+                GdSettings.WRAPPING_AND_BRACES.consume(consumer);
             }
 
             SettingsType.COMMENTER_SETTINGS -> {
@@ -60,8 +60,8 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
             |class_name MyClass
             |
             |@export
-            |var vari: int = 1
-            |var var2: String = ""
+            |var vari: int = 1 # Comment
+            |var var2: String = "" # Comment
             |var arrayVar := [
             |    {
             |        "vb": "asd",
