@@ -33,10 +33,4 @@ public class GdAnnotationTlImpl extends GdTopLevelDeclImpl implements GdAnnotati
     return PsiTreeUtil.getChildOfType(this, GdAnnotationParams.class);
   }
 
-  @Override
-  @Nullable
-  public GdNewLineEnd getNewLineEnd() {
-    return PsiTreeUtil.getChildOfType(this, GdNewLineEnd.class);
-  }
-
 }

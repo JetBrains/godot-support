@@ -24,8 +24,16 @@ class GdBlock : AbstractBlock {
             GdTypes.FUNC_DECL_EX,
         )
 
+        val ALWAYS_INDENTED_TOKENS = arrayOf(
+            GdTypes.PARAM_LIST,
+        )
+
         val INNER_SKIP_TOKENS = arrayOf(
             GdTypes.CLASS_VAR_DECL_TL,
+        )
+
+        val INDENT_CHILDREN_ATTRIBUTE = arrayOf(
+            GdTypes.SIGNAL_DECL_TL,
         )
 
         val NONE_INDENT: Indent = Indent.getIndent(Indent.Type.NONE, true, false);
@@ -66,6 +74,8 @@ class GdBlock : AbstractBlock {
             } else if (SKIP_TOKENS.contains(type)) {
                 children.addAll(child.getChildren(null));
             } else {
+                val toIndent = indented || ALWAYS_INDENTED_TOKENS.contains(type);
+
                 blocks.add(
                     GdBlock(
                         child,
@@ -73,7 +83,7 @@ class GdBlock : AbstractBlock {
                         null,
                         settings,
                         spacing,
-                        if (indented) Indent.getNormalIndent() else Indent.getNoneIndent(),
+                        if (toIndent) Indent.getNormalIndent() else Indent.getNoneIndent(),
                     )
                 );
             }
@@ -86,6 +96,13 @@ class GdBlock : AbstractBlock {
 //        val next = indentNextBlock(newChildIndex);
 //        if (next != null) return next;
 //            if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) GdAbstractBlock.EQ_ALIGN else Alignment.createAlignment(),
+
+        if (INDENT_CHILDREN_ATTRIBUTE.contains(node.elementType)) {
+            return ChildAttributes(
+                Indent.getNormalIndent(),
+                null,
+            );
+        }
 
         return ChildAttributes(
             Indent.getNoneIndent(),

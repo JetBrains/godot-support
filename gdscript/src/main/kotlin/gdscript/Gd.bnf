@@ -69,12 +69,12 @@ topLevelDecl ::=
     | classDecl_tl
 private topLevelDecl_r ::= !(
     FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT
-    | CLASS_NAME | STATIC | VARARG | RRBR | RCBR | RSBR | EXTENDS | CLASS )
+    | CLASS_NAME | STATIC | VARARG | RRBR | RCBR | RSBR | EXTENDS | CLASS | NEW_LINE )
 
 constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {methods=[getName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
 constId_nmi ::= identifierEx;
 
-annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? newLineEnd? {pin=1 recoverWhile=topLevelDecl_r}
+annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? {pin=1 recoverWhile=topLevelDecl_r}
 annotationParams ::= literal_ex (COMMA literal_ex)*
 classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
     methods=[getName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r
