@@ -6,21 +6,25 @@ import gdscript.formatter.GdCodeStyleSettings
 object GdSettings {
 
     val SPACING: HashMap<String, HashMap<String, String>> = hashMapOf(
-        Pair("Spacing", hashMapOf(
-            Pair("SPACE_AFTER_COMMA", "After ,"),
-            Pair("SPACE_BEFORE_COMMA", "Before ,"),
-            Pair("SPACE_AFTER_COLON", "After :"),
-            Pair("SPACE_BEFORE_COLON", "Before :"),
-        )),
+        Pair(
+            "Spacing", hashMapOf(
+                Pair("SPACE_AFTER_COMMA", "After ,"),
+                Pair("SPACE_BEFORE_COMMA", "Before ,"),
+                Pair("SPACE_AFTER_COLON", "After :"),
+                Pair("SPACE_BEFORE_COLON", "Before :"),
+            )
+        ),
     );
 
     val BLANK_LINES: HashMap<String, HashMap<String, String>> = hashMapOf(
-        Pair("Keep maximum blank lines", hashMapOf(
-            Pair("LINES_AFTER_HEADER", "After class_name/extends header"),
-            Pair("LINES_IN_BETWEEN_VARIABLE_GROUP", "Between variables, constants, etc."),
-            Pair("LINES_AFTER_VARIABLE_GROUP", "Below variables, constants, etc."),
-            Pair("LINES_BEFORE_FUNC", "Before func declaration"),
-        )),
+        Pair(
+            "Keep maximum blank lines", hashMapOf(
+                Pair("LINES_AFTER_HEADER", "After class_name/extends header"),
+                Pair("LINES_IN_BETWEEN_VARIABLE_GROUP", "Between variables, constants, etc."),
+                Pair("LINES_AFTER_VARIABLE_GROUP", "Below variables, constants, etc."),
+                Pair("LINES_BEFORE_FUNC", "Before func declaration"),
+            )
+        ),
     );
 
     fun HashMap<String, HashMap<String, String>>.consume(consumer: CodeStyleSettingsCustomizable) {

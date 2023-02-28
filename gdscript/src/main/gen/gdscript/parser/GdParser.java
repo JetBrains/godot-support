@@ -2116,7 +2116,7 @@ public class GdParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // constDecl_tl
-  //     | enumDecl_tl
+  //     | enumDecl_tl // TODO <-- tady pokračovat s formatter
   //     | signalDecl_tl
   //     | classVarDecl_tl
   //     | annotation_tl

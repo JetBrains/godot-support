@@ -36,6 +36,9 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             settings.getIndentSize(GdFileType); // TODO u tabů se to posere, když je za stmt volné odsazení tak se převede na mezery a konec
 
         val builder = SpacingBuilder(settings, GdLanguage)
+//            .before(GdTypes.COMMENT).blankLines(0)
+//            .after(GdTypes.COMMENT).blankLines(0)
+
             /* Spacings */
             .before(GdTypes.COMMA).spaceIf(custom.SPACE_BEFORE_COMMA)
             .after(GdTypes.COMMA).spaceIf(custom.SPACE_AFTER_COMMA)
@@ -53,7 +56,9 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .between(GdTypes.ANNOTATION_TL, GdTypes.CLASS_VAR_DECL_TL).forcedLines(0)
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.ANNOTATION_TL)
             .forcedLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
-            .before(ROOT_BLOCKS).forcedLines(2);
+
+            //.between(GdTypes.COMMENT, ROOT_BLOCKS).forcedLines(0)
+            .before(ROOT_BLOCKS).forcedLines(2)
 
         // Separate groups
         ROOT_VARIABLES.types.forEachIndexed { iLeft, left ->
@@ -62,10 +67,13 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
                     builder.between(left, right).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP);
                 }
             }
+            //builder.between(left, GdTypes.COMMENT).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP);
         }
 
         // Then within group
         builder.between(ROOT_VARIABLES, ROOT_VARIABLES).forcedLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
+
+//        builder.after(ROOT_VARIABLES).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP);
 
         // operators
         builder.around(TokenSet.create(GdTypes.TEST_OPERATOR, GdTypes.ASSIGN, GdTypes.EQ, GdTypes.ASSIGN_TYPED))
@@ -81,6 +89,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             GdTypes.CLASS_VAR_DECL_TL,
             GdTypes.SIGNAL_DECL_TL,
             GdTypes.ANNOTATION_TL,
+            GdTypes.ENUM_DECL_TL,
         )
         val ROOT_BLOCKS = TokenSet.create(GdTypes.METHOD_DECL_TL, GdTypes.CLASS_DECL_TL)
         var INDENT_SIZE = 4;

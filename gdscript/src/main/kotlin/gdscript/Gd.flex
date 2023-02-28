@@ -21,7 +21,6 @@ import java.util.Stack;
     String oppening = "";
     int lastState = YYINITIAL;
     boolean lineEnded = false;
-    boolean enumValEnded = false;
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     int yycolumn;
@@ -93,7 +92,6 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 //    | "<<" | ">>" | "!" | "&&" | "||"
 ANY = .+
 
-%state AWAIT_ENUM_SEPARATOR
 %state CREATE_INDENT
 %xstate STRING
 
@@ -135,26 +133,6 @@ ANY = .+
     }
 }
 
-<AWAIT_ENUM_SEPARATOR> {
-    {IDENTIFIER} {
-          enumValEnded = false;
-          return GdTypes.IDENTIFIER;
-    }
-    "," {
-          enumValEnded = true;
-          return GdTypes.COMMA;
-    }
-    "{" {
-          enumValEnded = true;
-          return GdTypes.LCBR;
-    }
-    "}" {
-          enumValEnded = false;
-          lineEnded = false;
-          return GdTypes.RCBR;
-    }
-}
-
     "extends"      { return dedentRoot(GdTypes.EXTENDS); }
     "class_name"   { return dedentRoot(GdTypes.CLASS_NAME); }
     "var"          { return dedentRoot(GdTypes.VAR); }
@@ -162,7 +140,7 @@ ANY = .+
     "get"          { return dedentRoot(GdTypes.GET); }
     "set"          { return dedentRoot(GdTypes.SET); }
 
-    "enum"         { yybegin(AWAIT_ENUM_SEPARATOR); enumValEnded = true; return GdTypes.ENUM; }
+    "enum"         { return GdTypes.ENUM; }
     "func"         { return dedentRoot(GdTypes.FUNC); }
     "pass"         { return dedentRoot(GdTypes.PASS); }
     "true"         { return dedentRoot(GdTypes.TRUE); }
@@ -176,7 +154,7 @@ ANY = .+
     "void"         { return dedentRoot(GdTypes.VOID); }
     "inf"          { return dedentRoot(GdTypes.INF); }
     "nan"          { return dedentRoot(GdTypes.NAN); }
-    "signal"       { ignoreIndent = true; ignored = 0; return GdTypes.SIGNAL; }
+    "signal"       { return GdTypes.SIGNAL; }
     "in"           { return dedentRoot(GdTypes.IN); }
     "if"           { return dedentRoot(GdTypes.IF); }
     "else"         { return dedentRoot(GdTypes.ELSE); }
@@ -212,12 +190,13 @@ ANY = .+
     ">>"           { return dedentRoot(GdTypes.RBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
-    "("            { if (ignoreIndent) { ignored++; } return dedentRoot(GdTypes.LRBR); }
-    ")"            { if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } } return dedentRoot(GdTypes.RRBR); }
-    "["            { return dedentRoot(GdTypes.LSBR); }
-    "]"            { return dedentRoot(GdTypes.RSBR); }
-    "{"            { return dedentRoot(GdTypes.LCBR); }
-    "}"            { return dedentRoot(GdTypes.RCBR); }
+    "("            { /*if (ignoreIndent) { ignored++; }*/ ignored++; return dedentRoot(GdTypes.LRBR); }
+    ")"            { /*if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } }*/ ignored--; return dedentRoot(GdTypes.RRBR); }
+    "["            { ignored++; return dedentRoot(GdTypes.LSBR); }
+    "]"            { ignored--; return dedentRoot(GdTypes.RSBR); }
+      // TODO resetovat ignored, když bude chybět uzavírací závorka? např. nedopsaný call fn
+    "{"            { /*if (ignoreIndent) { ignored++; }*/ignored++; return dedentRoot(GdTypes.LCBR); }
+    "}"            { /*if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } } */ignored--; return dedentRoot(GdTypes.RCBR); }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
@@ -245,7 +224,7 @@ ANY = .+
     {NEW_LINE}      {
         if (yycolumn == 0) {
             return dedentRoot(TokenType.WHITE_SPACE);
-        } else if (ignoreIndent) {
+        } else if (ignored > 0) {
             if (ignored == 0) {
                 ignoreIndent = false;
                 return GdTypes.NEW_LINE;
@@ -255,19 +234,12 @@ ANY = .+
         }
 
         return GdTypes.NEW_LINE;
-//        newLineEncountered = !newLineEncountered;
-//        if (newLineEncountered) {
-//            yypushback(yylength());
-//            return GdTypes.NEW_LINE;
-//        }
-//
-//        return dedentRoot(TokenType.WHITE_SPACE);
     }
     {INDENT}  {
         if (yycolumn == 0) {
             int spaces = yytext().length();
             if (spaces > indent) {
-                if (ignoreIndent) {
+                if (ignored > 0) {
                     return TokenType.WHITE_SPACE;
                 }
 
@@ -275,11 +247,6 @@ ANY = .+
                 indent = spaces;
 
                 return GdTypes.INDENT;
-
-                //lastState = yystate();
-                //yybegin(CREATE_INDENT);
-
-                //return TokenType.WHITE_SPACE;
             } else if (indent > spaces) {
                 dedentSpaces();
                 return GdTypes.DEDENT;
