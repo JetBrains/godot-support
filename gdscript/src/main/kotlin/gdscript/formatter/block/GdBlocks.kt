@@ -23,6 +23,8 @@ object GdBlocks {
         GdTypes.SUITE,
         GdTypes.STMT_OR_SUITE,
         GdTypes.FUNC_DECL_EX,
+        GdTypes.NEW_LINE_END,
+        GdTypes.END_STMT,
     )
 
     val ALWAYS_INDENTED_TOKENS = arrayOf(
@@ -32,6 +34,8 @@ object GdBlocks {
         GdTypes.ARRAY_DECL,
         GdTypes.DICT_DECL,
         GdTypes.KEY_VALUE,
+        GdTypes.GET_DECL,
+        GdTypes.SET_DECL,
     )
 
     val INDENT_CHILDREN_ATTRIBUTE = arrayOf(
@@ -41,6 +45,8 @@ object GdBlocks {
         GdTypes.DICT_DECL,
         GdTypes.CLASS_DECL_TL,
         GdTypes.METHOD_DECL_TL,
+        GdTypes.GET_DECL,
+        GdTypes.SET_DECL,
     )
 
     // TODO clear up

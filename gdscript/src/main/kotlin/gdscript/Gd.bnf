@@ -75,7 +75,6 @@ private topLevelDecl_r ::= !(
 constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {methods=[getName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
 constId_nmi ::= identifierEx;
 
- // TODO <-- tady pokračovat s formatter
 annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? {pin=1 recoverWhile=topLevelDecl_r}
 annotationParams ::= literal_ex (COMMA literal_ex)*
 classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
@@ -104,6 +103,7 @@ enumDecl_nmi ::= IDENTIFIER
 enumValue ::= enumValue_nmi (EQ (PLUS | MINUS)? NUMBER)?
 enumValue_nmi ::= IDENTIFIER
 
+// TODO <-- tady pokračovat s formatter
 methodDecl_tl ::= STATIC? VARARG? FUNC methodId_nmi LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[isStatic isVariadic getName getReturnType getParameters getPresentation isConstructor]
     pin=3 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub"

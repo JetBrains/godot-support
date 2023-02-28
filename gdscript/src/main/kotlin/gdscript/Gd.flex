@@ -52,9 +52,9 @@ import java.util.Stack;
 
         dedent();
 
-        if (indent > yylength()) {
+//        if (indent > yylength()) {
             yypushback(yylength());
-        }
+//        }
 
         return true;
     }
