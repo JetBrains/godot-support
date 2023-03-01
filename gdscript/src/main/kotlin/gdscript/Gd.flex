@@ -86,8 +86,9 @@ STRING_MARKER = \"\"\"|\"|\'
 STRING_MARKER_REV = [^\"\'\n\r]*
 
 COMMENT = "#"[^\r\n]*
+INDENTED_COMMENT = {INDENT}"#"
 ANNOTATOR = "@"[a-zA-Z_]*
-NODE_PATH_LEX = ("$"[a-zA-Z0-9_/]*) | ("$"\"[a-zA-Z0-9_/\.]*\") | (\%[a-zA-Z0-9_\./]*)
+NODE_PATH_LEX = ("$"[a-zA-Z0-9_/]*) | ("$"\"\%?[a-zA-Z0-9_/\.]*\") | (\%[a-zA-Z0-9_\./]*)
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -224,6 +225,11 @@ ANY = .+
     {HEX_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {COMMENT}       { return GdTypes.COMMENT; }
+
+    {INDENTED_COMMENT} {
+        yypushback(1);
+        return TokenType.WHITE_SPACE;
+    }
     {NEW_LINE}      {
         if (yycolumn == 0) {
             return dedentRoot(TokenType.WHITE_SPACE);

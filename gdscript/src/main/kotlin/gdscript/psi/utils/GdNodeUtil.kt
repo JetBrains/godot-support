@@ -17,7 +17,10 @@ object GdNodeUtil {
      */
     fun findNode(element: GdNodePath): GdNodeHolder? {
         val nodes = listNodes(element);
-        val path = element.text;
+        var path = element.text;
+        if (path.startsWith("$\"%")) {
+            path = path.removePrefix("$\"").removeSuffix("\"");
+        }
 
         return nodes.find { it.relativePath == path || it.uniqueId == path };
     }
