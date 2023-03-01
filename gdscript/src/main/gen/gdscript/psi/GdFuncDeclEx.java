@@ -23,6 +23,9 @@ public interface GdFuncDeclEx extends GdExpr {
   @NotNull
   String getReturnType();
 
+  @Nullable
+  PsiElement getReturnExpr();
+
   @NotNull
   HashMap<String, String> getParameters();
 

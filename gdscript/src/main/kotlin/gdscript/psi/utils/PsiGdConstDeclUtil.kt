@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import com.intellij.psi.PsiElement
 import gdscript.psi.GdConstDeclTl
 
 object PsiGdConstDeclUtil {
@@ -10,6 +11,10 @@ object PsiGdConstDeclUtil {
         }
 
         return element.expr?.returnType ?: "";
+    }
+
+    fun getReturnExpr(element: GdConstDeclTl): PsiElement? {
+        return GdClassUtil.getClassIdElement(element.returnType, element)
     }
 
 }

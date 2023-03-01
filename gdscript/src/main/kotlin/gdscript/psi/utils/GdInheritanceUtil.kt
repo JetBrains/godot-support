@@ -58,7 +58,7 @@ object GdInheritanceUtil {
      * @return GdClassDeclTL|GdFile
      */
     fun getExtendedElement(classId: String, project: Project): PsiElement? {
-        val classEl = GdClassIdIndex.getGloballyResolved(classId, project).firstOrNull();
+        val classEl = GdClassUtil.getClassIdElement(classId, project);
         // Extending directly named class (includes "res://Item.gd".InnerClass)
         if (classEl != null) {
             return if (classEl.parent is GdClassDeclTl) {

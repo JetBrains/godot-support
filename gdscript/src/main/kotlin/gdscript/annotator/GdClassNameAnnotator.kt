@@ -15,6 +15,7 @@ import gdscript.psi.GdClassNaming
 import gdscript.psi.GdInheritanceId
 import gdscript.psi.GdInheritanceIdNm
 import gdscript.psi.GdInheritanceSubIdNm
+import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.PsiGdFileUtil
 
 /**
@@ -37,7 +38,7 @@ class GdClassNameAnnotator : Annotator {
     }
 
     private fun existingInheritance(element: GdInheritanceId, holder: AnnotationHolder) {
-        if (GdClassIdIndex.getGloballyResolved(element.text, element.project).isEmpty()
+        if (GdClassUtil.getClassIdElement(element.text, element) == null
             // File index when you are extending script without class_name
             && GdFileResIndex.getFiles(element.text.trim('"'), element.project).isEmpty()
         ) {

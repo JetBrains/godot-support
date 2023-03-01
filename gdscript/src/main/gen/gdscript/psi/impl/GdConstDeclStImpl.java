@@ -69,4 +69,10 @@ public class GdConstDeclStImpl extends GdStmtImpl implements GdConstDeclSt {
     return GdPsiUtils.getReturnType(this);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getReturnExpr() {
+    return GdPsiUtils.getReturnExpr(this);
+  }
+
 }

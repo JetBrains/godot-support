@@ -59,6 +59,12 @@ public class GdFuncDeclExImpl extends GdExprImpl implements GdFuncDeclEx {
   }
 
   @Override
+  @Nullable
+  public PsiElement getReturnExpr() {
+    return GdPsiUtils.getReturnExpr(this);
+  }
+
+  @Override
   @NotNull
   public HashMap<String, String> getParameters() {
     return GdPsiUtils.getParameters(this);

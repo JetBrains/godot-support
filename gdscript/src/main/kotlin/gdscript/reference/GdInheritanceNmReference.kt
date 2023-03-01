@@ -35,15 +35,15 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        return GdClassIdIndex.getGloballyResolved(key, element.project).firstOrNull();
+        return GdClassUtil.getClassIdElement(key, element);
     }
 
     override fun getVariants(): Array<LookupElement> {
         if (isResource()) { // At Top level "res://Asd.gd" can be used
             return GdFileCompletionUtil.listFileResources(element.project, true, true);
         } else if (element is GdInheritanceSubIdNm) { // While at nested position, only InnerClasses
-            val classId = GdClassIdIndex.getGloballyResolved(key.substring(0, key.lastIndexOf(".")), element.project)
-                .firstOrNull() ?: return emptyArray();
+            val classId = GdClassUtil.getClassIdElement(key.substring(0, key.lastIndexOf(".")), element)
+                ?: return emptyArray();
             val container = GdClassUtil.getOwningClassElement(classId);
             val inners = PsiTreeUtil.getStubChildrenOfTypeAsList(container, GdClassDeclTl::class.java);
 

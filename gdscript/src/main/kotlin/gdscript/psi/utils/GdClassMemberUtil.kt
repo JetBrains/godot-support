@@ -70,7 +70,7 @@ object GdClassMemberUtil {
         // If it's stand-alone ref_id, adds also _Global & ClassNames - Classes are added as last due to matching name of some GlobalVars with class_name
         if (calledOn == null) {
             arrayOf(GdKeywords.GLOBAL_SCOPE, GdKeywords.GLOBAL_GD_SCRIPT).forEach {
-                val globalParent = GdClassIdIndex.getGloballyResolved(it, element.project).firstOrNull();
+                val globalParent = GdClassUtil.getClassIdElement(it, element)
                 if (globalParent != null) {
                     val local = addsParentDeclarations(
                         GdClassUtil.getOwningClassElement(globalParent),
@@ -112,12 +112,12 @@ object GdClassMemberUtil {
                 }
             }
 
-            parent = GdClassIdIndex.getGloballyResolved(calledOn, element.project).firstOrNull();
+            parent = GdClassUtil.getClassIdElement(calledOn, element)
             if (parent == null) {
-                parent = GdClassIdIndex.getGloballyResolved(
+                parent = GdClassUtil.getClassIdElement(
                     "${GdClassUtil.getFullClassId(element)}.${calledOn}",
-                    element.project,
-                ).firstOrNull();
+                    element,
+                );
             }
 
             if (parent != null) {

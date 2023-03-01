@@ -28,4 +28,7 @@ public interface GdConstDeclSt extends GdStmt {
   @NotNull
   String getReturnType();
 
+  @Nullable
+  PsiElement getReturnExpr();
+
 }

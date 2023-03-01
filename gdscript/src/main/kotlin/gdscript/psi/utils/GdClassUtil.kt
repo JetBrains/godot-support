@@ -1,12 +1,22 @@
 package gdscript.psi.utils
 
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.index.impl.GdClassIdIndex
 import gdscript.psi.*
 import gdscript.utils.VirtualFileUtil.localPath
 import gdscript.utils.VirtualFileUtil.resourcePath
 
 object GdClassUtil {
+
+    fun getClassIdElement(name: String, project: Project): PsiElement? {
+        return GdClassIdIndex.getGloballyResolved(name, project).firstOrNull();
+    }
+
+    fun getClassIdElement(name: String, element: PsiElement): PsiElement? {
+        return getClassIdElement(name, element);
+    }
 
     /**
      * @param element current element

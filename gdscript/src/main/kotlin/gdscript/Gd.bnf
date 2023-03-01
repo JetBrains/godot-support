@@ -149,7 +149,7 @@ private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
 varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
     /*pin=2 recoverWhile=stmt_r*/ methods=[getName getReturnType]
 }
-constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {/*pin=1 recoverWhile=stmt_r*/ methods=[getName getReturnType]}
+constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {/*pin=1 recoverWhile=stmt_r*/ methods=[getName getReturnType getReturnExpr]}
 if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? //{pin=1 recoverWhile=stmt_r}
 while_st ::= WHILE expr COLON stmtOrSuite {pin=1 /*recoverWhile=stmt_r*/}
 for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=1 /*recoverWhile=stmt_r*/}
@@ -225,7 +225,7 @@ attribute_ex ::= expr DOT expr
 refId_nm ::= identifierEx | SELF | SUPER // TODO super
 
 funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
-    methods=[getReturnType getParameters /*getPresentation*/]
+    methods=[getReturnType getReturnExpr getParameters /*getPresentation*/]
     /*pin=1 recoverWhile=stmt_r*/ //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"
     //elementTypeFactory="gdscript.psi.impl.GdLocalFuncDeclElementType.getInstance"
 }

@@ -50,6 +50,7 @@ object GdPsiUtils {
     /** Const */
     @JvmStatic fun getPresentation(element: GdConstDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
     @JvmStatic fun getReturnType(element: GdConstDeclTl): String = PsiGdConstDeclUtil.getReturnType(element);
+    @JvmStatic fun getReturnExpr(element: GdConstDeclTl): PsiElement? = PsiGdConstDeclUtil.getReturnExpr(element);
     @JvmStatic fun getName(element: GdConstDeclTl): String = GdConstDeclUtil.getName(element);
 
     /** Named */
@@ -72,6 +73,7 @@ object GdPsiUtils {
     /** Local constant */
     @JvmStatic fun getName(element: GdConstDeclSt): String = GdConstDeclUtil.getName(element);
     @JvmStatic fun getReturnType(element: GdConstDeclSt): String = PsiGdLocalConstUtil.getReturnType(element);
+    @JvmStatic fun getReturnExpr(element: GdConstDeclSt): PsiElement? = PsiGdLocalConstUtil.getReturnExpr(element);
 
     /** Method  */
     @JvmStatic fun isStatic(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isStatic(element);
@@ -94,9 +96,11 @@ object GdPsiUtils {
 
     /** Expressions */
     @JvmStatic fun getReturnType(element: GdExpr): String = PsiGdExprUtil.getReturnType(element);
+    @JvmStatic fun getReturnExpr(element: GdExpr): PsiElement? = GdExprUtil.getReturnType(element);
 
     /** Lambdas */
     @JvmStatic fun getReturnType(element: GdFuncDeclEx): String = PsiGdLocalFuncUtil.getReturnType(element);
+    @JvmStatic fun getReturnExpr(element: GdFuncDeclEx): PsiElement? = PsiGdLocalFuncUtil.getReturnExpr(element);
     @JvmStatic fun getParameters(element: GdFuncDeclEx): HashMap<String, String?> = PsiGdLocalFuncUtil.getParameters(element);
 
 }
