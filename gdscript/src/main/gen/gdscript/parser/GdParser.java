@@ -1836,7 +1836,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // COLON (NEW_LINE INDENT)? (getDecl | setDecl)+ DEDENT?
+  // COLON (NEW_LINE INDENT)? (INDENT? (getDecl | setDecl | NEW_LINE) DEDENT?)+ DEDENT?
   public static boolean setgetDecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "setgetDecl")) return false;
     if (!nextTokenIs(b, COLON)) return false;
@@ -1867,7 +1867,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (getDecl | setDecl)+
+  // (INDENT? (getDecl | setDecl | NEW_LINE) DEDENT?)+
   private static boolean setgetDecl_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "setgetDecl_2")) return false;
     boolean r;
@@ -1882,15 +1882,42 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // getDecl | setDecl
+  // INDENT? (getDecl | setDecl | NEW_LINE) DEDENT?
   private static boolean setgetDecl_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "setgetDecl_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = getDecl(b, l + 1);
-    if (!r) r = setDecl(b, l + 1);
+    r = setgetDecl_2_0_0(b, l + 1);
+    r = r && setgetDecl_2_0_1(b, l + 1);
+    r = r && setgetDecl_2_0_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // INDENT?
+  private static boolean setgetDecl_2_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "setgetDecl_2_0_0")) return false;
+    consumeToken(b, INDENT);
+    return true;
+  }
+
+  // getDecl | setDecl | NEW_LINE
+  private static boolean setgetDecl_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "setgetDecl_2_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = getDecl(b, l + 1);
+    if (!r) r = setDecl(b, l + 1);
+    if (!r) r = consumeToken(b, NEW_LINE);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // DEDENT?
+  private static boolean setgetDecl_2_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "setgetDecl_2_0_2")) return false;
+    consumeToken(b, DEDENT);
+    return true;
   }
 
   // DEDENT?

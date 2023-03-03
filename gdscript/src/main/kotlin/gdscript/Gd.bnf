@@ -94,7 +94,7 @@ classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | 
 }
 classVarId_nmi ::= IDENTIFIER
 
-setgetDecl ::= COLON (NEW_LINE INDENT)? (getDecl | setDecl)+ DEDENT?
+setgetDecl ::= COLON (NEW_LINE INDENT)? (INDENT? (getDecl | setDecl | NEW_LINE) DEDENT?)+ DEDENT?
 getDecl ::= GET ((COLON stmtOrSuite) | (EQ getMethodId_nm COMMA?)) {
     pin=1 recoverWhile=setget_r
 }
