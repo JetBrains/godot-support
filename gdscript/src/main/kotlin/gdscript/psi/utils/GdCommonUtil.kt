@@ -22,6 +22,7 @@ object GdCommonUtil {
         if (keyNode != null) {
             val id = when(element) {
                 is GdClassVarIdNmi -> GdElementFactory.classVarIdNmi(element.project, newName);
+                is GdClassNameNmi -> GdElementFactory.classNameNmi(element.project, newName);
                 is GdConstIdNmi -> GdElementFactory.constIdNmi(element.project, newName);
                 is GdEnumDeclNmi -> GdElementFactory.enumDeclNmi(element.project, newName);
                 is GdEnumValueNmi -> GdElementFactory.enumValueNmi(element.project, newName);

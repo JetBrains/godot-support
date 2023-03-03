@@ -144,7 +144,7 @@ ANY = .+
     "get"          { return dedentRoot(GdTypes.GET); }
     "set"          { return dedentRoot(GdTypes.SET); }
 
-    "enum"         { return GdTypes.ENUM; }
+    "enum"         { return dedentRoot(GdTypes.ENUM); }
     "func"         { return dedentRoot(GdTypes.FUNC); }
     "pass"         { return dedentRoot(GdTypes.PASS); }
     "true"         { return dedentRoot(GdTypes.TRUE); }
@@ -158,7 +158,7 @@ ANY = .+
     "void"         { return dedentRoot(GdTypes.VOID); }
     "inf"          { return dedentRoot(GdTypes.INF); }
     "nan"          { return dedentRoot(GdTypes.NAN); }
-    "signal"       { return GdTypes.SIGNAL; }
+    "signal"       { return dedentRoot(GdTypes.SIGNAL); }
     "in"           { return dedentRoot(GdTypes.IN); }
     "if"           { return dedentRoot(GdTypes.IF); }
     "else"         { return dedentRoot(GdTypes.ELSE); }

@@ -49,7 +49,7 @@
     <lang.parserDefinition language="GodotProject" implementationClass="project.ProjectParserDefinition"/>
 
     <!-- Completions -->
-    <completion.contributor   language="GdScript" order="first" implementationClass="gdscript.completion.GdKeywordContributor"/>
+    <completion.contributor   language="GdScript" order="last" implementationClass="gdscript.completion.GdKeywordContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>

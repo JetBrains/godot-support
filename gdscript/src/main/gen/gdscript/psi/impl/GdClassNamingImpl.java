@@ -39,12 +39,6 @@ public class GdClassNamingImpl extends GdClassNamingElementImpl implements GdCla
   }
 
   @Override
-  @Nullable
-  public GdNewLineEnd getNewLineEnd() {
-    return PsiTreeUtil.getChildOfType(this, GdNewLineEnd.class);
-  }
-
-  @Override
   @NotNull
   public String getClassname() {
     return GdPsiUtils.getClassname(this);

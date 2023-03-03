@@ -1165,7 +1165,7 @@ class GdLexer implements FlexLexer {
             // fall through
           case 142: break;
           case 59: 
-            { return GdTypes.ENUM;
+            { return dedentRoot(GdTypes.ENUM);
             } 
             // fall through
           case 143: break;
@@ -1260,7 +1260,7 @@ class GdLexer implements FlexLexer {
             // fall through
           case 161: break;
           case 78: 
-            { return GdTypes.SIGNAL;
+            { return dedentRoot(GdTypes.SIGNAL);
             } 
             // fall through
           case 162: break;

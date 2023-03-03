@@ -10,7 +10,6 @@ interface GdTokenTypeSet {
             GdTypes.CLASS_NAME,
             GdTypes.CLASS,
             GdTypes.EXTENDS,
-            GdTypes.TOOL,
             GdTypes.FUNC,
             GdTypes.ENUM,
             GdTypes.SELF,

@@ -15,7 +15,7 @@ object GdClassUtil {
     }
 
     fun getClassIdElement(name: String, element: PsiElement): PsiElement? {
-        return getClassIdElement(name, element);
+        return getClassIdElement(name, element.project);
     }
 
     /**

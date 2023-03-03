@@ -36,8 +36,8 @@
   ]
 }
 
-gdfile ::= (inheritance | classNaming | topLevelDecl)* // TODO limit to once
-inheritance ::= EXTENDS inheritanceId newLineEnd? {
+gdfile ::= (topLevelDecl | inheritance | classNaming)* // TODO limit to once
+inheritance ::= EXTENDS inheritanceId SEMICON? {
     methods=[getInheritancePath] pin=1 recoverWhile=inheritance_r
     mixin="gdscript.psi.impl.GdInheritanceElementImpl"
     stubClass="gdscript.index.stub.GdInheritanceStub"
@@ -46,10 +46,10 @@ inheritance ::= EXTENDS inheritanceId newLineEnd? {
 inheritanceId ::= inheritanceId_nm (DOT inheritanceSubId_nm)*
 inheritanceId_nm ::= STRING | IDENTIFIER {methods=[getPsiFile isClassName]}
 inheritanceSubId_nm ::= IDENTIFIER
-private inheritance_r ::= !(TOOL | COLON) & topLevelDecl_r // TODO smazat tool - pokud už to nebude klíčové slovo v G4
+private inheritance_r ::= !(NEW_LINE | CLASS_NAME)
 
-classNaming ::= CLASS_NAME className_nmi newLineEnd? {
-    methods=[getClassname getParentName] pin=1 recoverWhile=topLevelDecl_r
+classNaming ::= CLASS_NAME className_nmi SEMICON? {
+    methods=[getClassname getParentName] pin=1 recoverWhile=newLine_r
     mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub"
     elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"
 }
@@ -58,6 +58,8 @@ className_nmi ::= IDENTIFIER {
     mixin="gdscript.psi.impl.GdClassIdElementImpl" stubClass="gdscript.index.stub.GdClassIdStub"
     elementTypeFactory="gdscript.psi.impl.GdClassIdElementType.getInstance"
 }
+
+private newLine_r ::= !(NEW_LINE)
 
 topLevelDecl ::=
     NEW_LINE
@@ -72,8 +74,15 @@ private topLevelDecl_r ::= !(
     FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT
     | CLASS_NAME | STATIC | VARARG | RRBR | RCBR | RSBR | EXTENDS | CLASS | NEW_LINE )
 
-constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {methods=[getName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdConstDeclElementImpl" stubClass="gdscript.index.stub.GdConstDeclStub" elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"}
-constId_nmi ::= identifierEx;
+constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {
+    methods=[getName getReturnType getPresentation]
+    pin=1
+    recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdConstDeclElementImpl"
+    stubClass="gdscript.index.stub.GdConstDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"
+}
+constId_nmi ::= identifierEx
 
 annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? {pin=1 recoverWhile=topLevelDecl_r}
 annotationParams ::= literal_ex (COMMA literal_ex)*
@@ -139,11 +148,11 @@ stmt ::=
     | flow_st
     | await_st
     | expr_st
-private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
-    | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
-    | RETURN | AWAIT | ASSET | INDENT | DEDENT
-    | NEGATE /*| endStmt*/
-    | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
+//private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
+//    | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
+//    | RETURN | AWAIT | ASSET | INDENT | DEDENT
+//    | NEGATE /*| endStmt*/
+//    | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
 varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
@@ -201,6 +210,7 @@ expr ::=
     | literal_ex
     | funcDecl_ex
     {methods=[getReturnType]}
+private expr_r ::= !(NEW_LINE)
 
 cast_ex ::= expr AS typedVal
 ternary_ex ::= expr IF expr ELSE expr

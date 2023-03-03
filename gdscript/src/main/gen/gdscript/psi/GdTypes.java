@@ -110,7 +110,6 @@ public interface GdTypes {
   IElementType ANDAND = new GdTokenType("ANDAND");
   IElementType ANNOTATOR = new GdTokenType("ANNOTATOR");
   IElementType AS = new GdTokenType("AS");
-  IElementType ASSET = new GdTokenType("ASSET");
   IElementType ASSIGN = new GdTokenType("ASSIGN");
   IElementType AWAIT = new GdTokenType("AWAIT");
   IElementType BAD_CHARACTER = new GdTokenType("bad_character");
@@ -178,7 +177,6 @@ public interface GdTypes {
   IElementType STRING = new GdTokenType("STRING");
   IElementType SUPER = new GdTokenType("SUPER");
   IElementType TEST_OPERATOR = new GdTokenType("TEST_OPERATOR");
-  IElementType TOOL = new GdTokenType("TOOL");
   IElementType TRUE = new GdTokenType("TRUE");
   IElementType UNDER = new GdTokenType("UNDER");
   IElementType VAR = new GdTokenType("VAR");

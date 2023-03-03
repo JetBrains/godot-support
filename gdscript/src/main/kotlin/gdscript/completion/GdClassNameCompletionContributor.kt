@@ -22,7 +22,7 @@ class GdClassNameCompletionContributor : CompletionContributor() {
             result.addElement(
                 GdLookup.create(filename.substring(0, filename.length - 3))
             );
-//            result.stopHere(); // TODO smazat?
+            result.stopHere();
         }
     }
 

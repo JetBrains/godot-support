@@ -39,12 +39,6 @@ public class GdInheritanceImpl extends GdInheritanceElementImpl implements GdInh
   }
 
   @Override
-  @Nullable
-  public GdNewLineEnd getNewLineEnd() {
-    return PsiTreeUtil.getChildOfType(this, GdNewLineEnd.class);
-  }
-
-  @Override
   @NotNull
   public String getInheritancePath() {
     return GdPsiUtils.getInheritancePath(this);
