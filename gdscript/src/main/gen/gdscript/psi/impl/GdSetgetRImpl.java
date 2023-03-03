@@ -11,14 +11,14 @@ import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdStmtImpl extends ASTWrapperPsiElement implements GdStmt {
+public class GdSetgetRImpl extends ASTWrapperPsiElement implements GdSetgetR {
 
-  public GdStmtImpl(@NotNull ASTNode node) {
+  public GdSetgetRImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitStmt(this);
+    visitor.visitSetgetR(this);
   }
 
   @Override

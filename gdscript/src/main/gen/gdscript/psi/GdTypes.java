@@ -87,6 +87,7 @@ public interface GdTypes {
   IElementType RETURN_HINT = new GdElementType("RETURN_HINT");
   IElementType RETURN_HINT_VAL = new GdElementType("RETURN_HINT_VAL");
   IElementType SETGET_DECL = new GdElementType("SETGET_DECL");
+  IElementType SETGET_R = new GdElementType("SETGET_R");
   IElementType SET_DECL = new GdElementType("SET_DECL");
   IElementType SET_METHOD_ID_NM = new GdElementType("SET_METHOD_ID_NM");
   IElementType SHIFT_EX = new GdElementType("SHIFT_EX");
@@ -395,6 +396,9 @@ public interface GdTypes {
       else if (type == SETGET_DECL) {
         return new GdSetgetDeclImpl(node);
       }
+      else if (type == SETGET_R) {
+        return new GdSetgetRImpl(node);
+      }
       else if (type == SET_DECL) {
         return new GdSetDeclImpl(node);
       }
@@ -412,6 +416,9 @@ public interface GdTypes {
       }
       else if (type == SIGN_EX) {
         return new GdSignExImpl(node);
+      }
+      else if (type == STMT) {
+        return new GdStmtImpl(node);
       }
       else if (type == STMT_OR_SUITE) {
         return new GdStmtOrSuiteImpl(node);

@@ -295,6 +295,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitSetgetR(@NotNull GdSetgetR o) {
+    visitPsiElement(o);
+  }
+
   public void visitShiftEx(@NotNull GdShiftEx o) {
     visitExpr(o);
   }

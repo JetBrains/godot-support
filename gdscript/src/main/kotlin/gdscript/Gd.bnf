@@ -71,7 +71,7 @@ topLevelDecl ::=
     | methodDecl_tl
     | classDecl_tl
 private topLevelDecl_r ::= !(
-    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT
+    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT
     | CLASS_NAME | STATIC | VARARG | RRBR | RCBR | RSBR | EXTENDS | CLASS | NEW_LINE )
 
 constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {
@@ -95,10 +95,15 @@ classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | 
 classVarId_nmi ::= IDENTIFIER
 
 setgetDecl ::= COLON (NEW_LINE INDENT)? (getDecl | setDecl)+ DEDENT?
-getDecl ::= GET ((COLON stmtOrSuite) | (EQ getMethodId_nm COMMA? NEW_LINE?))
-setDecl ::= SET ((LRBR var_nmi typed? RRBR COLON stmtOrSuite) | (EQ setMethodId_nm COMMA? NEW_LINE?))
+getDecl ::= GET ((COLON stmtOrSuite) | (EQ getMethodId_nm COMMA?)) {
+    pin=1 recoverWhile=setget_r
+}
+setDecl ::= SET ((LRBR var_nmi typed? RRBR COLON stmtOrSuite) | (EQ setMethodId_nm COMMA?)) {
+    pin=1 recoverWhile=setget_r
+}
 setMethodId_nm ::= IDENTIFIER
 getMethodId_nm ::= IDENTIFIER
+setget_r ::= !(SET | GET) & topLevelDecl_r
 
 signalDecl_tl ::= SIGNAL signalId_nmi (LRBR paramList RRBR)? endStmt {methods=[getName getParameters] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdSignalDeclElementImpl" stubClass="gdscript.index.stub.GdSignalDeclStub" elementTypeFactory="gdscript.psi.impl.GdSignalDeclElementType.getInstance"}
 signalId_nmi ::= IDENTIFIER
@@ -112,10 +117,11 @@ enumDecl_nmi ::= IDENTIFIER
 enumValue ::= enumValue_nmi (EQ (PLUS | MINUS)? NUMBER)?
 enumValue_nmi ::= IDENTIFIER
 
-// TODO <-- tady pokračovat s formatter
 methodDecl_tl ::= STATIC? VARARG? FUNC methodId_nmi LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[isStatic isVariadic getName getReturnType getParameters getPresentation isConstructor]
-    pin=3 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdMethodDeclElementImpl" stubClass="gdscript.index.stub.GdMethodDeclStub"
+    pin=3 recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdMethodDeclElementImpl"
+    stubClass="gdscript.index.stub.GdMethodDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"
 }
 methodId_nmi ::= identifierEx
@@ -124,7 +130,6 @@ param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
 returnHint ::= RET returnHintVal
 returnHintVal ::= typedVal | VOID // typeHint_nm | VOID
 argList ::= expr (COMMA expr)* COMMA? {pin=1 /*recoverWhile=argList_r*/}
-private argList_r ::= !(RRBR)
 var_nmi ::= identifierEx
 
 // TODO annotace - single inheritance - jak root tak inner, single class_name
@@ -148,6 +153,16 @@ stmt ::=
     | flow_st
     | await_st
     | expr_st
+    { recoverWhile=stmt_rr }
+private stmt_rr ::= !(
+    EXTENDS | CLASS_NAME | VAR | CONST | GET | SET | ENUM |
+    FUNC | PASS | TRUE | FALSE | NULL | SELF | CONTINUE | BREAKPOINT |
+    BREAK | RETURN | VOID | INF | NAN | SIGNAL | IF | ELSE | ELIF |
+    WHILE | FOR | MATCH | AWAIT | STATIC | VARARG | CLASS | SUPER |
+    NEGATE | PPLUS | MMINUS | COLON | LRBR | RRBR | LSBR | RSBR |
+    LCBR | RCBR | XOR | NOT | NODE_PATH_LEX | STRING |
+    ANNOTATOR | IDENTIFIER | NUMBER | INDENT | DEDENT | NEW_LINE
+)
 //private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
 //    | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
 //    | RETURN | AWAIT | ASSET | INDENT | DEDENT
