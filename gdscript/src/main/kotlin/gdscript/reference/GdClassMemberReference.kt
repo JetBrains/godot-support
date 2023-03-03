@@ -64,7 +64,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                 is GdConstDeclTl -> results.add(GdCompletionUtil.lookup(it));
                 is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl, is GdSignalDeclTl, is GdClassNaming,
                 is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl, is GdBindingPattern,
-                is GdEnumValue, is GdClassDeclTl,
+                is GdEnumValue, is GdClassDeclTl, is GdVarNmi,
                 ->
                     results.addAll(GdCompletionUtil.lookups(it));
             }

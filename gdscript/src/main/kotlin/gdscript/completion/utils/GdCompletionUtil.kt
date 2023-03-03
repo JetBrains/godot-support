@@ -2,10 +2,12 @@ package gdscript.completion.utils
 
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdClassCompletionUtil.lookup
 import gdscript.psi.*
+import gdscript.psi.utils.PsiGdExprUtil
 import gdscript.utils.StringUtil.parseFromSquare
 
 @Deprecated("move into assigned methods")
@@ -27,6 +29,7 @@ object GdCompletionUtil {
             is GdSetDecl -> arrayOf(lookup(element));
             is GdBindingPattern -> arrayOf(lookup(element));
             is GdSignalDeclTl -> arrayOf(lookup(element));
+            is GdVarNmi -> arrayOf(lookup(element));
             else -> emptyArray();
         }
     }
@@ -111,6 +114,21 @@ object GdCompletionUtil {
             icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
+
+    fun lookup(variable: GdVarNmi): LookupElement {
+        var typed: GdTyped? = null;
+        val next = variable.nextSibling
+        if (next is GdTyped) {
+            typed = next;
+        }
+
+        return GdLookup.create(
+            variable.name,
+            typed = PsiGdExprUtil.fromTyped(typed),
+            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            priority = GdLookup.LOCAL_USER_DEFINED,
+        )
+    }
 
     fun lookup(decl: GdSetDecl): LookupElement =
         GdLookup.create(

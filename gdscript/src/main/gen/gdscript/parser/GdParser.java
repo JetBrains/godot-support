@@ -316,14 +316,15 @@ public class GdParser implements PsiParser, LightPsiParser {
   // expr (EQ | ASSIGN) expr endStmt
   public static boolean assign_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "assign_st")) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, ASSIGN_ST, "<assign st>");
     r = expr(b, l + 1, -1);
     r = r && assign_st_1(b, l + 1);
-    r = r && expr(b, l + 1, -1);
-    r = r && endStmt(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
+    p = r; // pin = 2
+    r = r && report_error_(b, expr(b, l + 1, -1));
+    r = p && endStmt(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
   // EQ | ASSIGN

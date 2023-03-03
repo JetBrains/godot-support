@@ -191,7 +191,7 @@ keyValuePattern ::= STRING [ COLON pattern ]
 
 await_st ::= AWAIT expr_st //{pin=1 recoverWhile=stmt_r}
 
-assign_st ::= expr (EQ | ASSIGN) expr endStmt
+assign_st ::= expr (EQ | ASSIGN) expr endStmt { pin=2 }
 expr_st ::= expr endStmt?
 
 flow_st ::=

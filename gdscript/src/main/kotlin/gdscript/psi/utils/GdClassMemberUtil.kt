@@ -224,7 +224,7 @@ object GdClassMemberUtil {
                 }
                 is GdSetDecl -> {
                     if (movedToParent) {
-                        locals[it.varNmi?.name.orEmpty()] = it
+                        locals[it.varNmi?.name.orEmpty()] = it.varNmi!!
                     }
                 };
                 is GdMethodDeclTl -> {
