@@ -1,7 +1,6 @@
 refresh-sdk:
   stage: build
   image: php
-  when: manual
   script:
     - apt-get update
     - apt-get install wget
