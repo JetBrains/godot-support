@@ -1112,20 +1112,31 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (topLevelDecl | inheritance | classNaming)*
+  // (topLevelDecl | inheritance | classNaming)* (INDENT NEW_LINE? DEDENT?)?
   static boolean gdfile(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "gdfile")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = gdfile_0(b, l + 1);
+    r = r && gdfile_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (topLevelDecl | inheritance | classNaming)*
+  private static boolean gdfile_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gdfile_0")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!gdfile_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "gdfile", c)) break;
+      if (!gdfile_0_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "gdfile_0", c)) break;
     }
     return true;
   }
 
   // topLevelDecl | inheritance | classNaming
-  private static boolean gdfile_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "gdfile_0")) return false;
+  private static boolean gdfile_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gdfile_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = topLevelDecl(b, l + 1);
@@ -1133,6 +1144,39 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = classNaming(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // (INDENT NEW_LINE? DEDENT?)?
+  private static boolean gdfile_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gdfile_1")) return false;
+    gdfile_1_0(b, l + 1);
+    return true;
+  }
+
+  // INDENT NEW_LINE? DEDENT?
+  private static boolean gdfile_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gdfile_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, INDENT);
+    r = r && gdfile_1_0_1(b, l + 1);
+    r = r && gdfile_1_0_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // NEW_LINE?
+  private static boolean gdfile_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gdfile_1_0_1")) return false;
+    consumeToken(b, NEW_LINE);
+    return true;
+  }
+
+  // DEDENT?
+  private static boolean gdfile_1_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gdfile_1_0_2")) return false;
+    consumeToken(b, DEDENT);
+    return true;
   }
 
   /* ********************************************************** */

@@ -36,7 +36,9 @@
   ]
 }
 
-gdfile ::= (topLevelDecl | inheritance | classNaming)* // TODO limit to once
+ // TODO limit to once
+ // TODO indent dedent je když např hned pod extends je indent -> emptyIndent není match, protože je eof místo /r
+gdfile ::= (topLevelDecl | inheritance | classNaming)* (INDENT NEW_LINE? DEDENT?)?
 inheritance ::= EXTENDS inheritanceId SEMICON? {
     methods=[getInheritancePath] pin=1 recoverWhile=inheritance_r
     mixin="gdscript.psi.impl.GdInheritanceElementImpl"

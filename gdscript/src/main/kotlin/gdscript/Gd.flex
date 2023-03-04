@@ -70,7 +70,7 @@ DIGIT = [0-9]
 NEW_LINE = [\r\n]
 IGNORE_NEW_LINE = \\[\r\n]
 INDENT = [ \t]+
-EMPTY_INDENT = \^[ \t]+{NEW_LINE}
+EMPTY_INDENT = [ \t]+{NEW_LINE}
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 NUMBER = [0-9][0-9_]*(\.[0-9_]+)?
 HEX_NUMBER = 0x[0-9_a-fA-F]+
@@ -230,7 +230,8 @@ ANY = .+
         yypushback(1);
         return TokenType.WHITE_SPACE;
     }
-    {NEW_LINE}      {
+    {EMPTY_INDENT} { return TokenType.WHITE_SPACE; }
+    {NEW_LINE}     {
         if (yycolumn == 0) {
             return dedentRoot(TokenType.WHITE_SPACE);
         } else if (ignored > 0) {
@@ -249,7 +250,6 @@ ANY = .+
         newLineProcessed = true;
         return GdTypes.NEW_LINE;
     }
-    {EMPTY_INDENT} { return TokenType.WHITE_SPACE; }
     {INDENT}  {
         if (yycolumn == 0) {
             int spaces = yytext().length();
