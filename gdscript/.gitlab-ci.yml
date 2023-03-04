@@ -3,14 +3,11 @@ refresh-sdk:
   image: php
   before_script:
     - apt-get update
-    - apt-get install -y wget make zip curl
+    - apt-get install -y wget make zip git
   script:
     - make generate
-    - CONTENT=`cat GD_SDK.7z`
-    - >
-      curl
-      --request PUT
-      --header 'PRIVATE-TOKEN: ${ACCESS_TOKEN}'
-      --header "Content-Type: application/json"
-      --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname","content": "$CONTENT", "commit_message": "update file" }'
-      "https://gitlab.com/api/v4/projects/28295487/repository/files/GD_SDK.7z"
+    - git init
+    - git remote set-url origin https://gitlab.com/IceExplosive/gdscript.git
+    - git add GD_SDK.7z
+    - git commit -m "refresh SDK"
+    - git push https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git
