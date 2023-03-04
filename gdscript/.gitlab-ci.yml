@@ -1,6 +1,7 @@
 refresh-sdk:
   stage: build
   image: php
+  when: manual
   before_script:
     - apt-get update
     - apt-get install -y wget make zip git
@@ -10,4 +11,4 @@ refresh-sdk:
     - make generate
     - git add GD_SDK.7z
     - git commit -m "refresh SDK"
-    - git push https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git HEAD:master
+    - git push https://h.raven%40centrum.cz:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git HEAD:master
