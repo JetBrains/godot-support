@@ -3,6 +3,7 @@ download-docs:
 	wget -O - https://github.com/godotengine/godot/archive/master.tar.gz | tar -xz --strip=2 godot-master/doc/classes
 
 refresh-classes:
+	mkdir classesGd || true
 	php classParser.php
 	#php templateParser.php
 	cp build_files/@GdScript.xml classes/@GdScript.xml

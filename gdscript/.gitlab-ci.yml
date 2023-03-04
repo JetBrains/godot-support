@@ -1,5 +1,4 @@
 refresh-sdk:
-  stage: build
   image: php
   script:
     - apt-get update
