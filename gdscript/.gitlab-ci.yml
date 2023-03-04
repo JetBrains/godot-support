@@ -1,5 +1,6 @@
 refresh-sdk:
   stage: build
+  image: php
   script:
     - make generate
 
