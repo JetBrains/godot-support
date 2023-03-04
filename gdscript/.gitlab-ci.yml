@@ -1,0 +1,5 @@
+refresh-sdk:
+  stage: build
+  script:
+    - make generate
+
