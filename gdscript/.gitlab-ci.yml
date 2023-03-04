@@ -10,4 +10,4 @@ refresh-sdk:
     - make generate
     - git add GD_SDK.7z
     - git commit -m "refresh SDK"
-    - git push origin master https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git
+    - git push https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git
