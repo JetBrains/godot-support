@@ -1,7 +1,16 @@
 refresh-sdk:
   stage: build
   image: php
-  script:
+  before_script:
     - apt-get update
-    - apt-get install -y wget make zip
+    - apt-get install -y wget make zip curl
+  script:
     - make generate
+    - CONTENT=`cat GD_SDK.7z`
+    - >
+      curl
+      --request PUT
+      --header 'PRIVATE-TOKEN: ${ACCESS_TOKEN}'
+      --header "Content-Type: application/json"
+      --data '{"branch": "master", "author_email": "author@example.com", "author_name": "Firstname Lastname","content": "$CONTENT", "commit_message": "update file" }'
+      "https://gitlab.com/api/v4/projects/28295487/repository/files/GD_SDK.7z"
