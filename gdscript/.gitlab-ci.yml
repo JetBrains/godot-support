@@ -3,8 +3,5 @@ refresh-sdk:
   image: php
   script:
     - apt-get update
-    - apt-get install wget
-    - apt-get install make
-    - apt-get install zip
+    - apt-get install -y wget make zip
     - make generate
-
