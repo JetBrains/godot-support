@@ -39,10 +39,11 @@ class GdResourceTypeAnnotator : Annotator {
         val node = GdNodeUtil.findNode(element);
         if (node != null) return;
 
-        holder
-            .newAnnotation(HighlightSeverity.ERROR, "Node not found")
-            .range(element.textRange)
-            .create();
+        // TODO přepsat validaci - zakomponovat i attrs... "Child/Node:template:value"
+//        holder
+//            .newAnnotation(HighlightSeverity.ERROR, "Node not found")
+//            .range(element.textRange)
+//            .create();
     }
 
 }
