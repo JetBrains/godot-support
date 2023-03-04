@@ -8,7 +8,6 @@ refresh-sdk:
     - git config --global user.name "CI runner"
   script:
     - make generate
-    - git remote set-url origin https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git
     - git add GD_SDK.7z
     - git commit -m "refresh SDK"
-    - git push origin master
+    - git push https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git
