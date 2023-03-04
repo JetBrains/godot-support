@@ -1,8 +1,10 @@
 refresh-sdk:
+  stage: build
   image: php
   script:
     - apt-get update
     - apt-get install wget
     - apt-get install make
+    - apt-get install zip
     - make generate
 
