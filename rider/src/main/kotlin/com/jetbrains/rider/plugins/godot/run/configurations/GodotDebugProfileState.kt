@@ -11,7 +11,6 @@ import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.openapi.util.Key
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rd.util.lifetime.onTermination
 import com.jetbrains.rd.util.reactive.flowInto
 import com.jetbrains.rider.debugger.DebuggerHelperHost
 import com.jetbrains.rider.debugger.DebuggerWorkerProcessHandler
@@ -36,7 +35,7 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
 
     override suspend fun createDebuggerWorker(
         workerCmd: GeneralCommandLine,
-        protocolModel: DebuggerWorkerModel,
+        debuggerWorkerModel: DebuggerWorkerModel,
         protocolServerPort: Int,
         projectLifetime: Lifetime
     ): DebuggerWorkerProcessHandler {
@@ -45,9 +44,9 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
 
         val frontendBackendModel = executionEnvironment.project.solution.godotFrontendBackendModel
         frontendBackendModel.backendSettings.enableDebuggerExtensions.flowInto(debuggerWorkerLifetime,
-            protocolModel.godotDebuggerWorkerModel.showCustomRenderers)
+            debuggerWorkerModel.godotDebuggerWorkerModel.showCustomRenderers)
 
-        return super.createDebuggerWorker(workerCmd, protocolModel, protocolServerPort, projectLifetime).apply {
+        return super.createDebuggerWorker(workerCmd, debuggerWorkerModel, protocolServerPort, projectLifetime).apply {
             addProcessListener(object : ProcessAdapter() {
                 override fun processTerminated(event: ProcessEvent) { debuggerWorkerLifetime.terminate() }
             })

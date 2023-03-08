@@ -81,10 +81,23 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.Renderer.Child
                 return false;
             }
 
-            returnedPropertyRole = new SimpleValueReference<TValue>(
-                    role.CallInstanceMethod(method),
-                    role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)
-                .AsObjectSafe(options);
+            if (method.Parameters.Any())
+            {
+                var frame = role.ValueReference.OriginatingFrame;
+                var param = ValueServices.ValueFactory.CreatePrimitive(frame, options, false); // todo: how to read param default value?
+                returnedPropertyRole = new SimpleValueReference<TValue>(
+                        role.CallInstanceMethod(method, param),
+                        role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)
+                    .AsObjectSafe(options);    
+            }
+            else
+            {
+                returnedPropertyRole = new SimpleValueReference<TValue>(
+                        role.CallInstanceMethod(method),
+                        role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)
+                    .AsObjectSafe(options);    
+            }
+            
             if (returnedPropertyRole == null)
             {
                 myLogger.Warn("Unable to invoke GetChildren");
