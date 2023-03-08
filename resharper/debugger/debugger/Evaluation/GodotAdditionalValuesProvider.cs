@@ -16,7 +16,7 @@ using Mono.Debugging.Evaluation;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
 {
-    [DebuggerSessionComponent]
+    // [DebuggerSessionComponent]
     public class GodotAdditionalValuesProvider : GodotAdditionalValuesProvider<Value>
     {
         public GodotAdditionalValuesProvider(IDebuggerSession session, IValueServicesFacade<Value> valueServices,
