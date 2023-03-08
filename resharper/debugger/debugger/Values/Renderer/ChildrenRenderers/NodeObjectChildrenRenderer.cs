@@ -10,12 +10,11 @@ using Mono.Debugging.Backend.Values.ValueRoles;
 using Mono.Debugging.Client.Values;
 using Mono.Debugging.Client.Values.Render;
 using Mono.Debugging.MetadataLite.API;
-using Mono.Debugging.Soft;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.Renderer.ChildrenRenderers
 {
     // Adds a "Children" group to Godot.Node.
-    [DebuggerSessionComponent(typeof(SoftDebuggerType))]
+    [DebuggerSessionComponent]
     public class NodeObjectChildrenRenderer<TValue> : ChildrenRendererBase<TValue, IObjectValueRole<TValue>>
         where TValue : class
     {

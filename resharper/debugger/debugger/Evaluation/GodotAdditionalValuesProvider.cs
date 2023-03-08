@@ -13,11 +13,10 @@ using Mono.Debugging.Client.CallStacks;
 using Mono.Debugging.Client.Values;
 using Mono.Debugging.Client.Values.Render;
 using Mono.Debugging.Evaluation;
-using Mono.Debugging.Soft;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
 {
-    [DebuggerSessionComponent(typeof(SoftDebuggerType))]
+    [DebuggerSessionComponent]
     public class GodotAdditionalValuesProvider : GodotAdditionalValuesProvider<Value>
     {
         public GodotAdditionalValuesProvider(IDebuggerSession session, IValueServicesFacade<Value> valueServices,
