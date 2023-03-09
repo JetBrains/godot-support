@@ -11,6 +11,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />
+    <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducerCor" />
   </extensions>
 
   <project-components>

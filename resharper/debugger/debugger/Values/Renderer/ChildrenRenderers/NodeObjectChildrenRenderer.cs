@@ -10,12 +10,11 @@ using Mono.Debugging.Backend.Values.ValueRoles;
 using Mono.Debugging.Client.Values;
 using Mono.Debugging.Client.Values.Render;
 using Mono.Debugging.MetadataLite.API;
-using Mono.Debugging.Soft;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.Renderer.ChildrenRenderers
 {
     // Adds a "Children" group to Godot.Node.
-    [DebuggerSessionComponent(typeof(SoftDebuggerType))]
+    [DebuggerSessionComponent]
     public class NodeObjectChildrenRenderer<TValue> : ChildrenRendererBase<TValue, IObjectValueRole<TValue>>
         where TValue : class
     {
@@ -82,10 +81,23 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.Renderer.Child
                 return false;
             }
 
-            returnedPropertyRole = new SimpleValueReference<TValue>(
-                    role.CallInstanceMethod(method),
-                    role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)
-                .AsObjectSafe(options);
+            if (method.Parameters.Any())
+            {
+                var frame = role.ValueReference.OriginatingFrame;
+                var param = ValueServices.ValueFactory.CreatePrimitive(frame, options, false); // todo: RIDER-90793
+                returnedPropertyRole = new SimpleValueReference<TValue>(
+                        role.CallInstanceMethod(method, param),
+                        role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)
+                    .AsObjectSafe(options);
+            }
+            else
+            {
+                returnedPropertyRole = new SimpleValueReference<TValue>(
+                        role.CallInstanceMethod(method),
+                        role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)
+                    .AsObjectSafe(options);    
+            }
+            
             if (returnedPropertyRole == null)
             {
                 myLogger.Warn("Unable to invoke GetChildren");

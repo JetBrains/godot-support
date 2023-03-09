@@ -14,14 +14,25 @@ using Mono.Debugging.Client.Values;
 using Mono.Debugging.Client.Values.Render;
 using Mono.Debugging.Evaluation;
 using Mono.Debugging.Soft;
+using Mono.Debugging.Win32;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
 {
     [DebuggerSessionComponent(typeof(SoftDebuggerType))]
-    public class GodotAdditionalValuesProvider : GodotAdditionalValuesProvider<Value>
+    public class MonoGodotAdditionalValuesProvider : GodotAdditionalValuesProvider<Value>
     {
-        public GodotAdditionalValuesProvider(IDebuggerSession session, IValueServicesFacade<Value> valueServices,
+        public MonoGodotAdditionalValuesProvider(IDebuggerSession session, IValueServicesFacade<Value> valueServices,
                                              IOptions options, ILogger logger)
+            : base(session, valueServices, options, logger)
+        {
+        }
+    }
+    
+    [DebuggerSessionComponent(typeof(CorDebuggerType))]
+    public class CorGodotAdditionalValuesProvider : GodotAdditionalValuesProvider<ICorValue>
+    {
+        public CorGodotAdditionalValuesProvider(IDebuggerSession session, IValueServicesFacade<ICorValue> valueServices,
+            IOptions options, ILogger logger)
             : base(session, valueServices, options, logger)
         {
         }

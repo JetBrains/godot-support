@@ -11,16 +11,16 @@ import com.intellij.util.BitUtil
 import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.platform.util.idea.ProtocolSubscribedProjectComponent
 import com.jetbrains.rd.util.firstOrNull
-import com.jetbrains.rd.util.reactive.*
-import com.jetbrains.rider.debugger.DebuggerInitializingState
-import com.jetbrains.rider.debugger.DotNetDebugProcess
-import com.jetbrains.rider.debugger.RiderDebugActiveDotNetSessionsTracker
-import com.jetbrains.rider.debugger.tryWriteMessageToConsoleView
+import com.jetbrains.rd.util.reactive.AddRemove
+import com.jetbrains.rd.util.reactive.adviseNotNull
+import com.jetbrains.rd.util.reactive.flowInto
+import com.jetbrains.rider.debugger.*
 import com.jetbrains.rider.model.debuggerWorker.OutputMessageWithSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputType
 import com.jetbrains.rider.model.godot.frontendBackend.TestRunnerOutputEventType
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
+import com.jetbrains.rider.plugins.godot.model.debuggerWorker.godotDebuggerWorkerModel
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfigurationFactory
@@ -94,6 +94,13 @@ class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent
         }
 
         GodotProjectDiscoverer.getInstance(project).godotCorePath.adviseNotNull(projectComponentLifetime){
+
+            RiderDebuggerWorkerModelManager.getModels().adviseNotNull(projectComponentLifetime){
+                model.backendSettings.enableDebuggerExtensions.flowInto(projectComponentLifetime,
+                    it.value.godotDebuggerWorkerModel.showCustomRenderers)
+
+            }
+
             model.godotPath.set(it)
         }
     }
