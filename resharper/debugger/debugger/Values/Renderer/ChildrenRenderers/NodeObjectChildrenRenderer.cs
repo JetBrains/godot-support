@@ -84,11 +84,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.Renderer.Child
             if (method.Parameters.Any())
             {
                 var frame = role.ValueReference.OriginatingFrame;
-                var param = ValueServices.ValueFactory.CreatePrimitive(frame, options, false); // todo: how to read param default value?
+                var param = ValueServices.ValueFactory.CreatePrimitive(frame, options, false); // todo: RIDER-90793
                 returnedPropertyRole = new SimpleValueReference<TValue>(
                         role.CallInstanceMethod(method, param),
                         role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)
-                    .AsObjectSafe(options);    
+                    .AsObjectSafe(options);
             }
             else
             {
