@@ -59,7 +59,7 @@ class ResCompletionTest : BaseTestWithSolution() {
     fun test_PrimitiveCompletion2() {
         withOpenedEditor(File("scripts").resolve("NewScript.cs").path, "ResCompletionTest2.cs") {
             callBasicCompletion()
-            assertLookupContains("\"res://scenes/sample.tscn\"", checkFocus = false)
+            assertLookupContains("res://", "\"res://scenes/sample.tscn\"", checkFocus = false)
         }
     }
 
