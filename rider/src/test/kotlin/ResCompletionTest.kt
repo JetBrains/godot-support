@@ -9,6 +9,7 @@ import com.jetbrains.rider.test.enums.CoreVersion
 import com.jetbrains.rider.test.enums.ToolsetVersion
 import com.jetbrains.rider.test.framework.persistAllFilesOnDisk
 import com.jetbrains.rider.test.scriptingApi.assertLookupContains
+import com.jetbrains.rider.test.scriptingApi.callBasicCompletion
 import com.jetbrains.rider.test.scriptingApi.typeWithLatency
 import com.jetbrains.rider.test.scriptingApi.withOpenedEditor
 import org.testng.annotations.AfterMethod
@@ -51,6 +52,14 @@ class ResCompletionTest : BaseTestWithSolution() {
         withOpenedEditor(File("scripts").resolve("NewScript.cs").path, "ResCompletionTest1.cs") {
             typeWithLatency("/")
             assertLookupContains(*lookupExpectedContents, checkFocus = false)
+        }
+    }
+
+    @Test
+    fun test_PrimitiveCompletion2() {
+        withOpenedEditor(File("scripts").resolve("NewScript.cs").path, "ResCompletionTest2.cs") {
+            callBasicCompletion()
+            assertLookupContains("res://", "\"res://scenes/sample.tscn\"", checkFocus = false)
         }
     }
 

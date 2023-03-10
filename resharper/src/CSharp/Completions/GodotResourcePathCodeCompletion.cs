@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using JetBrains.Application.UI.Icons.Shell;
 using JetBrains.DocumentModel;
 using JetBrains.Metadata.Reader.API;
@@ -10,6 +11,7 @@ using JetBrains.ReSharper.Feature.Services.CodeCompletion;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems;
 using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.LookupItems.Impl;
+using JetBrains.ReSharper.Feature.Services.CodeCompletion.Infrastructure.Match;
 using JetBrains.ReSharper.Feature.Services.CSharp.CodeCompletion.Infrastructure;
 using JetBrains.ReSharper.Feature.Services.Lookup;
 using JetBrains.ReSharper.Features.Intellisense.CodeCompletion.CSharp.Rules;
@@ -17,6 +19,7 @@ using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.ExpectedTypes;
+using JetBrains.ReSharper.Psi.Resources;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl;
 using JetBrains.UI.Icons;
@@ -48,7 +51,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             if (!project.IsGodotProject())
                 return false;
 
-            return Logger.CatchSilent(() =>
+            //return Logger.CatchSilent(() =>
             {
                 var projectPath = project.ProjectLocationLive.Value;
                 if (projectPath is null) 
@@ -57,14 +60,18 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 if (stringLiteral is null)
                     return false;
 
-                if (!(stringLiteral.ConstantValue.AsString() is string originalString
-                      && originalString.StartsWith(Prefix)))
+                var originalString = string.Empty;
+                if (stringLiteral.ConstantValue.AsString() is string os)
                 {
-                    return false;
+                    originalString = os;
                 }
 
-                var relativePathString = originalString.Substring(Prefix.Length);
+                var relativePathString = string.Empty;
+                if (originalString.StartsWith(Prefix)) 
+                    relativePathString = originalString.Substring(Prefix.Length);
                 var searchPath = VirtualFileSystemPath.ParseRelativelyTo(relativePathString, projectPath);
+
+                var completions = FullPathCompletions(context, searchPath).ToList();
 
                 // If path leads outside project (e.g., due to `..` going up too many levels), don't provide completions.
                 if (!projectPath.IsPrefixOf(searchPath))
@@ -72,10 +79,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                     return false;
                 }
 
-                var completions =
-                    FullPathCompletions(context, searchPath)
-                        .Concat(OneLevelPathCompletions(searchPath));
-
+                if (originalString.StartsWith(Prefix))
+                {
+                    completions.AddRange(OneLevelPathCompletions(searchPath));
+                }
+                
                 var items = 
                     (from completion in completions.Distinct() 
                      select new ResourcePathItem(projectPath, completion, context.CompletionRanges))
@@ -84,8 +92,24 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 {
                     collector.Add(item);
                 }
+                
+                if (!originalString.StartsWith(Prefix) && completions.Any())
+                {
+                    // workarounds RIDER-90857
+                    var resItem = new StringLiteralItem(Prefix);
+                    var ranges = context.CompletionRanges;
+                    var range = new TextLookupRanges(new DocumentRange(ranges.InsertRange.StartOffset + 1,
+                            ranges.InsertRange.EndOffset + 1),
+                        new DocumentRange(ranges.ReplaceRange.StartOffset + 1,
+                            ranges.ReplaceRange.EndOffset - 1)
+                    );
+
+                    resItem.InitializeRanges(range, context.BasicContext);
+                    collector.Add(resItem);
+                }
                 return !items.IsEmpty();
-            });
+            }
+                //);
         }
 
         static GodotResourcePathCodeCompletion()
@@ -297,6 +321,33 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 // Force replace + keep caret still in order to place caret at consistent position (see override of OnAfterComplete)
                 base.Accept(textControl, nameRange, LookupItemInsertType.Replace, suffix, solution, true);
             }
+        }
+        
+        private sealed class StringLiteralItem : TextLookupItemBase, IMLSortingAwareItem
+        {
+            public StringLiteralItem([NotNull] string text)
+            {
+                Text = text;
+            }
+
+            public override IconId Image => PsiSymbolsThemedIcons.Const.Id;
+
+            public override MatchingResult Match(PrefixMatcher prefixMatcher)
+            {
+                var matchingResult = prefixMatcher.Match(Text);
+                if (matchingResult == null)
+                    return null;
+                return new MatchingResult(matchingResult.MatchedIndices, matchingResult.AdjustedScore - 100, matchingResult.OriginalScore);
+            }
+
+            public override void Accept(
+                ITextControl textControl, DocumentRange nameRange, LookupItemInsertType insertType,
+                Suffix suffix, ISolution solution, bool keepCaretStill)
+            {
+                base.Accept(textControl, nameRange, LookupItemInsertType.Replace, suffix, solution, keepCaretStill);
+            }
+
+            public bool UseMLSort() => false;
         }
     }
 }
