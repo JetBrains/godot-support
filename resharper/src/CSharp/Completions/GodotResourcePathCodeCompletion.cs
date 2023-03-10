@@ -57,25 +57,30 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 if (stringLiteral is null)
                     return false;
 
-                if (!(stringLiteral.ConstantValue.AsString() is string originalString
-                      && originalString.StartsWith(Prefix)))
+                var originalString = string.Empty;
+                if (stringLiteral.ConstantValue.AsString() is string os)
                 {
-                    return false;
+                    originalString = os;
                 }
 
-                var relativePathString = originalString.Substring(Prefix.Length);
+                var relativePathString = string.Empty;
+                if (originalString.StartsWith(Prefix)) 
+                    relativePathString = originalString.Substring(Prefix.Length);
                 var searchPath = VirtualFileSystemPath.ParseRelativelyTo(relativePathString, projectPath);
 
+                var completions = FullPathCompletions(context, searchPath).ToList();
+                
                 // If path leads outside project (e.g., due to `..` going up too many levels), don't provide completions.
                 if (!projectPath.IsPrefixOf(searchPath))
                 {
                     return false;
                 }
 
-                var completions =
-                    FullPathCompletions(context, searchPath)
-                        .Concat(OneLevelPathCompletions(searchPath));
-
+                if (originalString.StartsWith(Prefix))
+                {
+                    completions.AddRange(OneLevelPathCompletions(searchPath));
+                }
+                
                 var items = 
                     (from completion in completions.Distinct() 
                      select new ResourcePathItem(projectPath, completion, context.CompletionRanges))
