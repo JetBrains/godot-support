@@ -1,7 +1,9 @@
 refresh-sdk:
   stage: build
   image: php
-  when: manual
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: always
   before_script:
     - apt-get update
     - apt-get install -y wget make zip git
