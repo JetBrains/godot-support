@@ -846,7 +846,8 @@ class GdLexer implements FlexLexer {
           case 88: break;
           case 5: 
             { if (yycolumn == 0) {
-            return dedentRoot(TokenType.WHITE_SPACE);
+            return TokenType.WHITE_SPACE;
+//            return dedentRoot(TokenType.WHITE_SPACE);
         } else if (ignored > 0) {
             if (ignored == 0) {
                 ignoreIndent = false;

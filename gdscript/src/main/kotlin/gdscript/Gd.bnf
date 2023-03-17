@@ -48,7 +48,6 @@ inheritance ::= EXTENDS inheritanceId endStmt? {
 inheritanceId ::= inheritanceId_nm (DOT inheritanceSubId_nm)*
 inheritanceId_nm ::= STRING | IDENTIFIER {methods=[getPsiFile isClassName]}
 inheritanceSubId_nm ::= IDENTIFIER
-private inheritance_r ::= !(NEW_LINE | CLASS_NAME)
 
 classNaming ::= CLASS_NAME className_nmi endStmt? {
     methods=[getClassname getParentName] pin=1

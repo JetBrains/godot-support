@@ -233,7 +233,8 @@ ANY = .+
     {EMPTY_INDENT} { return TokenType.WHITE_SPACE; }
     {NEW_LINE}     {
         if (yycolumn == 0) {
-            return dedentRoot(TokenType.WHITE_SPACE);
+            return TokenType.WHITE_SPACE;
+//            return dedentRoot(TokenType.WHITE_SPACE);
         } else if (ignored > 0) {
             if (ignored == 0) {
                 ignoreIndent = false;
