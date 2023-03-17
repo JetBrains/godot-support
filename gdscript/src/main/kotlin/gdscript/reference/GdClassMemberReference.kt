@@ -43,6 +43,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
                 is GdEnumValue -> element.enumValueNmi;
                 is GdMethodDeclTl -> element.methodIdNmi;
                 is GdSignalDeclTl -> element.signalIdNmi;
+                is GdForSt -> element.varNmi;
                 is GdParam -> element.varNmi;
                 is GdVarNmi -> element;
                 else -> null

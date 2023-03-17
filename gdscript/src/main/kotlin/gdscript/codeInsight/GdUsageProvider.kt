@@ -29,6 +29,7 @@ class GdUsageProvider : FindUsagesProvider {
                 || psiElement is GdEnumValueNmi
                 || psiElement is GdSignalIdNmi
                 || psiElement is GdVarNmi
+                || psiElement is GdForSt
     }
 
     override fun getHelpId(psiElement: PsiElement): String? {
