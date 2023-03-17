@@ -34,6 +34,12 @@ public class GdInheritanceImpl extends GdInheritanceElementImpl implements GdInh
 
   @Override
   @Nullable
+  public GdEndStmt getEndStmt() {
+    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
+  }
+
+  @Override
+  @Nullable
   public GdInheritanceId getInheritanceId() {
     return PsiTreeUtil.getChildOfType(this, GdInheritanceId.class);
   }

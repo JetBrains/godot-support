@@ -39,8 +39,8 @@
  // TODO limit to once
  // TODO indent dedent je když např hned pod extends je indent -> emptyIndent není match, protože je eof místo /r
 gdfile ::= (topLevelDecl | inheritance | classNaming)* (INDENT NEW_LINE? DEDENT?)?
-inheritance ::= EXTENDS inheritanceId SEMICON? {
-    methods=[getInheritancePath] pin=1 recoverWhile=inheritance_r
+inheritance ::= EXTENDS inheritanceId endStmt? {
+    methods=[getInheritancePath] pin=1
     mixin="gdscript.psi.impl.GdInheritanceElementImpl"
     stubClass="gdscript.index.stub.GdInheritanceStub"
     elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"
@@ -50,8 +50,8 @@ inheritanceId_nm ::= STRING | IDENTIFIER {methods=[getPsiFile isClassName]}
 inheritanceSubId_nm ::= IDENTIFIER
 private inheritance_r ::= !(NEW_LINE | CLASS_NAME)
 
-classNaming ::= CLASS_NAME className_nmi SEMICON? {
-    methods=[getClassname getParentName] pin=1 recoverWhile=newLine_r
+classNaming ::= CLASS_NAME className_nmi endStmt? {
+    methods=[getClassname getParentName] pin=1
     mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub"
     elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"
 }
@@ -60,8 +60,6 @@ className_nmi ::= IDENTIFIER {
     mixin="gdscript.psi.impl.GdClassIdElementImpl" stubClass="gdscript.index.stub.GdClassIdStub"
     elementTypeFactory="gdscript.psi.impl.GdClassIdElementType.getInstance"
 }
-
-private newLine_r ::= !(NEW_LINE)
 
 topLevelDecl ::=
     NEW_LINE
