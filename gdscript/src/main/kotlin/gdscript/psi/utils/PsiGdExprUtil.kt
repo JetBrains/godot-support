@@ -135,8 +135,13 @@ object PsiGdExprUtil {
                         is GdSignalDeclTl -> "Signal";
                         is GdEnumDeclTl -> "EnumDictionary";
                         is GdEnumValue -> GdKeywords.INT;
-                        is GdForSt -> element.expr?.returnType?.removePrefix("Array[")?.removeSuffix("]") ?: ""
-                        else -> text;
+                        is GdForSt -> {
+                            var type = element.expr?.returnType?.removePrefix("Array[")?.removeSuffix("]") ?: ""
+                            if (type == "Array") type = ""
+
+                            return type;
+                        }
+                        else -> "";
                     }
                 }
 

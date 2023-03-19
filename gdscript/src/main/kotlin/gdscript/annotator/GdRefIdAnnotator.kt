@@ -44,6 +44,10 @@ class GdRefIdAnnotator : Annotator {
                     return@run GdHighlighterColors.MEMBER;
                 }
 
+                val calledUponType = GdClassMemberUtil.calledUpon(element);
+                val asd = calledUponType?.returnType;
+                if (calledUponType != null && calledUponType.returnType == "") return
+
                 holder
                     .newAnnotation(HighlightSeverity.ERROR, "Reference [${element.text}] not found")
                     .range(element.textRange)

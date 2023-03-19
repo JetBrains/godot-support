@@ -847,7 +847,6 @@ class GdLexer implements FlexLexer {
           case 5: 
             { if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;
-//            return dedentRoot(TokenType.WHITE_SPACE);
         } else if (ignored > 0) {
             if (ignored == 0) {
                 ignoreIndent = false;
@@ -909,7 +908,7 @@ class GdLexer implements FlexLexer {
             // fall through
           case 94: break;
           case 11: 
-            { return GdTypes.COMMENT;
+            { lineEnded = true; return GdTypes.COMMENT;
             } 
             // fall through
           case 95: break;

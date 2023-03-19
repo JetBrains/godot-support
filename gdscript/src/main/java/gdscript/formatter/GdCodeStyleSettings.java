@@ -20,6 +20,7 @@ public class GdCodeStyleSettings extends CustomCodeStyleSettings {
 
     /* Wrapping and Spaces */
     public boolean ALIGN_COMMENTS = true;
+    public boolean ALIGN_ASSIGNMENTS = true;
 
     public GdCodeStyleSettings(CodeStyleSettings settings) {
         super("GdCodeStyleSettings", settings);

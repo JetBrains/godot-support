@@ -224,7 +224,7 @@ ANY = .+
     {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }
     {HEX_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
-    {COMMENT}       { return GdTypes.COMMENT; }
+    {COMMENT}       { lineEnded = true; return GdTypes.COMMENT; }
 
     {INDENTED_COMMENT} {
         yypushback(1);
@@ -234,7 +234,6 @@ ANY = .+
     {NEW_LINE}     {
         if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;
-//            return dedentRoot(TokenType.WHITE_SPACE);
         } else if (ignored > 0) {
             if (ignored == 0) {
                 ignoreIndent = false;

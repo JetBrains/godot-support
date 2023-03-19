@@ -29,6 +29,10 @@ class GdBlock : AbstractBlock {
         val blocks = mutableListOf<Block>();
         val children: MutableList<ASTNode> = node.getChildren(null).toMutableList();
 
+        // TODO alignment
+        val standardAlignment = Alignment.createAlignment();
+        val afterAlignment = Alignment.createAlignment();
+
         var indented = false;
         while (!children.isEmpty()) {
             val child = children.removeFirstOrNull()!!;
@@ -47,7 +51,7 @@ class GdBlock : AbstractBlock {
                     GdBlock(
                         child,
                         Wrap.createWrap(WrapType.NONE, false),
-                        GdAlignments.getAlignment(type, settings),
+                        null, // GdAlignments.getAlignment(type, settings),
                         settings,
                         spacing,
                         if (toIndent) Indent.getNormalIndent() else Indent.getNoneIndent(),

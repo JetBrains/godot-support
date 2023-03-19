@@ -29,9 +29,14 @@ object GdSettings {
 
     val WRAPPING_AND_BRACES: HashMap<String, HashMap<String, String>> = hashMapOf(
         Pair(
+            "Code", hashMapOf(
+                Pair("ALIGN_ASSIGNMENTS", "Align assignments"),
+            ),
+        ),
+        Pair(
             "Comments", hashMapOf(
                 Pair("ALIGN_COMMENTS", "Align"),
-            )
+            ),
         ),
     );
 
