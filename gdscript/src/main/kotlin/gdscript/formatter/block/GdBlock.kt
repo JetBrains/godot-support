@@ -11,6 +11,7 @@ class GdBlock : AbstractBlock {
     val settings: GdCodeStyleSettings;
     val myIndent: Indent;
     val spacing: SpacingBuilder;
+    val alignments: Alignments;
 
     constructor(
         node: ASTNode,
@@ -19,30 +20,37 @@ class GdBlock : AbstractBlock {
         settings: GdCodeStyleSettings,
         spacing: SpacingBuilder,
         indent: Indent,
+        alignments: Alignments,
     ) : super(node, wrap, alignment) {
         this.settings = settings;
         this.spacing = spacing;
         this.myIndent = indent;
+        this.alignments = alignments;
     }
 
     override fun buildChildren(): MutableList<Block> {
         val blocks = mutableListOf<Block>();
         val children: MutableList<ASTNode> = node.getChildren(null).toMutableList();
 
-        // TODO alignment
-        val standardAlignment = Alignment.createAlignment();
-        val afterAlignment = Alignment.createAlignment();
-
+        var suited = false;
         var indented = false;
         while (!children.isEmpty()) {
             val child = children.removeFirstOrNull()!!;
             val type = child.elementType;
+            if (suited) {
+                alignments.reset(type);
+            }
 
             if (GdBlocks.EMPTY_TOKENS.contains(type)) {
                 if (type == GdTypes.INDENT) {
                     indented = true;
                 }
             } else if (GdBlocks.SKIP_TOKENS.contains(type)) {
+                if (type == GdTypes.SUITE) {
+                    suited = true;
+                    alignments.initialize();
+                }
+
                 children.addAll(child.getChildren(null));
             } else {
                 val toIndent = indented || GdBlocks.ALWAYS_INDENTED_TOKENS.contains(type);
@@ -51,10 +59,11 @@ class GdBlock : AbstractBlock {
                     GdBlock(
                         child,
                         Wrap.createWrap(WrapType.NONE, false),
-                        null, // GdAlignments.getAlignment(type, settings),
+                        alignments.getAlignment(type),
                         settings,
                         spacing,
                         if (toIndent) Indent.getNormalIndent() else Indent.getNoneIndent(),
+                        alignments.clone(type),
                     )
                 );
             }
@@ -97,6 +106,10 @@ class GdBlock : AbstractBlock {
 
     override fun isLeaf(): Boolean {
         return myNode.firstChildNode == null;
+    }
+
+    private fun getChildAlignment(): Alignment? {
+        return null;
     }
 
 }

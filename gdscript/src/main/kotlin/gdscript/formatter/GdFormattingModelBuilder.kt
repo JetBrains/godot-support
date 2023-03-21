@@ -5,6 +5,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
 import gdscript.GdFileType
 import gdscript.GdLanguage
+import gdscript.formatter.block.Alignments
 import gdscript.formatter.block.GdBlock
 import gdscript.formatter.settings.GdSpacingUtil.forcedLines
 import gdscript.psi.GdTypes
@@ -25,6 +26,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
                     customSettings,
                     createSpaceBuilder(settings),
                     Indent.getNoneIndent(),
+                    Alignments(customSettings),
                 ),
                 settings
             )

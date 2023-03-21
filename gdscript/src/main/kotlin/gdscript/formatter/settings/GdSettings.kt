@@ -31,6 +31,7 @@ object GdSettings {
         Pair(
             "Code", hashMapOf(
                 Pair("ALIGN_ASSIGNMENTS", "Align assignments"),
+                Pair("ALIGN_AFTER_ASSIGNMENTS", "Align after assignments"),
             ),
         ),
         Pair(
