@@ -11,9 +11,11 @@ import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectory
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.time.withTimeout
 import java.nio.file.*
 import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
 import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
+import java.time.Duration
 
 
 class MetadataCoreFileWatcher(project: Project) : LifetimedProjectComponent(project) {
@@ -47,10 +49,15 @@ class MetadataCoreFileWatcher(project: Project) : LifetimedProjectComponent(proj
                     val watchService: WatchService = FileSystems.getDefault().newWatchService()
                     val metaFileDir = project.solutionDirectory.resolve(cfgDir).toPath()
 
-                    while (!(metaFileDir.isDirectory())) {
-                        // wait for folder to appear
-                        delay(1000)
+                    withTimeout(Duration.ofMinutes(5)) {
+                        while (!(metaFileDir.isDirectory())) {
+                            // wait for folder to appear
+                            delay(3000)
+                        }
                     }
+
+                    if (!(metaFileDir.isDirectory()))
+                        return@launchBackground
 
                     metaFileDir.register(watchService, ENTRY_CREATE, ENTRY_MODIFY)
 
