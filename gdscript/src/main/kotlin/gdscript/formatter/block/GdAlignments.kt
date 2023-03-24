@@ -5,6 +5,7 @@ import com.intellij.psi.tree.IElementType
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdTypes
 
+// TODO clean up
 object GdAlignments {
 
     val ALIGN_SCOPE = arrayOf(

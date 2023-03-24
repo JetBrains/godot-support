@@ -80,6 +80,11 @@ interface GdTokenTypeSet {
             GdTypes.NODE_PATH_LEX
         )
 
+        // Green
+        val BLOCK_COMMENT = TokenSet.create(
+            GdTypes.BLOCK_COMMENT
+        )
+
         // Red
         val BAD_CHARACTERS = TokenSet.create(GdTypes.BAD_CHARACTER)
 

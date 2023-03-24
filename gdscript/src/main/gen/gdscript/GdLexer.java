@@ -908,7 +908,7 @@ class GdLexer implements FlexLexer {
             // fall through
           case 94: break;
           case 11: 
-            { lineEnded = true; return GdTypes.COMMENT;
+            { lineEnded = true; IElementType ret = dedentRoot(GdTypes.COMMENT); newLineProcessed = true; return ret;
             } 
             // fall through
           case 95: break;

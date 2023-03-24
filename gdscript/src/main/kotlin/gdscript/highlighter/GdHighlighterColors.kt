@@ -66,6 +66,11 @@ interface GdHighlighterColors {
             "GD_NODE_PATH", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG
         )
 
+        // Green
+        val BLOCK_COMMENT = TextAttributesKey.createTextAttributesKey(
+            "GD_BLOCK_COMMENT", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG
+        )
+
         // Red
         val BAD_CHARACTER = TextAttributesKey.createTextAttributesKey(
             "GD_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER

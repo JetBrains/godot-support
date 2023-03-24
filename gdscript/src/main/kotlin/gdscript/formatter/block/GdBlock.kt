@@ -54,35 +54,29 @@ class GdBlock : AbstractBlock {
                 children.addAll(child.getChildren(null));
             } else {
                 val toIndent = indented || GdBlocks.ALWAYS_INDENTED_TOKENS.contains(type);
+                val currentBlock = GdBlock(
+                    child,
+                    Wrap.createWrap(WrapType.NONE, false),
+                    alignments.getAlignment(type),
+                    settings,
+                    spacing,
+                    if (toIndent) Indent.getNormalIndent() else Indent.getNoneIndent(),
+                    alignments.clone(type),
+                )
 
-                blocks.add(
-                    GdBlock(
-                        child,
-                        Wrap.createWrap(WrapType.NONE, false),
-                        alignments.getAlignment(type),
-                        settings,
-                        spacing,
-                        if (toIndent) Indent.getNormalIndent() else Indent.getNoneIndent(),
-                        alignments.clone(type),
-                    )
-                );
+                blocks.add(currentBlock);
             }
         }
 
-        return blocks;
+        return blocks
     }
 
     override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
-//        val next = indentNextBlock(newChildIndex);
-//        if (next != null) return next;
-//            if (node.elementType == GdTypes.ASSIGN_TYPED || node.elementType == GdTypes.ASSIGN || node.elementType == GdTypes.EQ) GdAbstractBlock.EQ_ALIGN else Alignment.createAlignment(),
-
         if (
             GdBlocks.INDENT_CHILDREN_ATTRIBUTE.contains(node.elementType)
             || this.node.treeParent?.elementType == GdTypes.SUITE
         ) {
             // TODO double line space
-
 
             return ChildAttributes(
                 Indent.getNormalIndent(),
@@ -97,6 +91,10 @@ class GdBlock : AbstractBlock {
     }
 
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
+//        arrayOf(child1, child2).forEach {
+//            if (it is GdBlock && it.node.elementType == GdTypes.COMMENT) return null;
+//        }
+//
         return this.spacing.getSpacing(this, child1, child2);
     }
 
@@ -106,10 +104,6 @@ class GdBlock : AbstractBlock {
 
     override fun isLeaf(): Boolean {
         return myNode.firstChildNode == null;
-    }
-
-    private fun getChildAlignment(): Alignment? {
-        return null;
     }
 
 }

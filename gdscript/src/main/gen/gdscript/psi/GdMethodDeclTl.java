@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public interface GdMethodDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdMethodDeclStub> {
 
-  @Nullable
+  @NotNull
   GdMethodIdNmi getMethodIdNmi();
 
   @Nullable

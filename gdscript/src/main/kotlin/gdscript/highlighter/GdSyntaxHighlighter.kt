@@ -29,6 +29,7 @@ class GdSyntaxHighlighter : SyntaxHighlighterBase() {
             fillMap(ATTRIBUTES, GdTokenTypeSet.ANNOTATIONS, GdHighlighterColors.ANNOTATION)
             fillMap(ATTRIBUTES, GdTokenTypeSet.NODE_PATH, GdHighlighterColors.NODE_PATH)
             fillMap(ATTRIBUTES, GdTokenTypeSet.COMMENT, GdHighlighterColors.COMMENT)
+            fillMap(ATTRIBUTES, GdTokenTypeSet.BLOCK_COMMENT, GdHighlighterColors.BLOCK_COMMENT)
         }
     }
 }

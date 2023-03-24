@@ -70,7 +70,7 @@ topLevelDecl ::=
     | methodDecl_tl
     | classDecl_tl
 private topLevelDecl_r ::= !(
-    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT
+    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT | BLOCK_COMMENT
     | CLASS_NAME | STATIC | VARARG | RRBR | RCBR | RSBR | EXTENDS | CLASS | NEW_LINE )
 
 constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {
@@ -102,7 +102,7 @@ setDecl ::= SET ((LRBR var_nmi typed? RRBR COLON stmtOrSuite) | (EQ setMethodId_
 }
 setMethodId_nm ::= IDENTIFIER
 getMethodId_nm ::= IDENTIFIER
-setget_r ::= !(SET | GET) & topLevelDecl_r
+private setget_r ::= !(SET | GET) & topLevelDecl_r
 
 signalDecl_tl ::= SIGNAL signalId_nmi (LRBR paramList RRBR)? endStmt {methods=[getName getParameters] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdSignalDeclElementImpl" stubClass="gdscript.index.stub.GdSignalDeclStub" elementTypeFactory="gdscript.psi.impl.GdSignalDeclElementType.getInstance"}
 signalId_nmi ::= IDENTIFIER
@@ -118,7 +118,7 @@ enumValue_nmi ::= IDENTIFIER
 
 methodDecl_tl ::= STATIC? VARARG? FUNC methodId_nmi LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[isStatic isVariadic getName getReturnType getParameters getPresentation isConstructor]
-    pin=3 recoverWhile=topLevelDecl_r
+    pin=4 recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdMethodDeclElementImpl"
     stubClass="gdscript.index.stub.GdMethodDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"
@@ -160,7 +160,9 @@ private stmt_rr ::= !(
     WHILE | FOR | MATCH | AWAIT | STATIC | VARARG | CLASS | SUPER |
     NEGATE | PPLUS | MMINUS | COLON | LRBR | RRBR | LSBR | RSBR |
     LCBR | RCBR | XOR | NOT | NODE_PATH_LEX | STRING |
-    ANNOTATOR | IDENTIFIER | NUMBER | INDENT | DEDENT | NEW_LINE
+    ANNOTATOR | IDENTIFIER | NUMBER | INDENT | DEDENT | NEW_LINE |
+    BLOCK_COMMENT
+    // TODO extend by topLevel_r
 )
 //private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
 //    | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
@@ -194,11 +196,12 @@ assign_st ::= expr (EQ | ASSIGN) expr endStmt { pin=2 }
 expr_st ::= expr endStmt?
 
 flow_st ::=
-    (CONTINUE endStmt)
-    | (BREAK endStmt)
-    | (PASS endStmt)
-    | (BREAKPOINT endStmt) // TODO existuje ještě totok?
-    | (RETURN expr? endStmt)
+    (CONTINUE
+    | BREAK
+    | PASS
+    | BREAKPOINT // TODO existuje ještě totok?
+    | (RETURN expr?))
+    endStmt
     {/*pin=1 recoverWhile=stmt_r*/ methods=[getType]}
 
 expr ::=

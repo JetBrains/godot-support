@@ -41,7 +41,7 @@ STRING_MULTILINE = \"\"\"([^\\\"]|\\.)*\"\"\"
 STRING_MARKER = \"\"\"|\"|\'
 STRING_MARKER_REV = [^\"\'\n\r]*
 
-COMMENT = "#"[^\r\n]*(\n|\r|\r\n)?
+COMMENT = "#"[^\r\n]*
 ANNOTATOR = "@"[a-zA-Z_]*
 NODE_PATH_LEX = ("$"|"%")[\"\%a-zA-Z0-9_/:\.]*
 

@@ -15,19 +15,20 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
     override fun createModel(formattingContext: FormattingContext): FormattingModel {
         val settings = formattingContext.codeStyleSettings;
         val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java);
+        val initialBlock = GdBlock(
+            formattingContext.node,
+            Wrap.createWrap(WrapType.NONE, false),
+            Alignment.createAlignment(),
+            customSettings,
+            createSpaceBuilder(settings),
+            Indent.getNoneIndent(),
+            Alignments(customSettings),
+        )
 
         return FormattingModelProvider
             .createFormattingModelForPsiFile(
                 formattingContext.containingFile,
-                GdBlock(
-                    formattingContext.node,
-                    Wrap.createWrap(WrapType.NONE, false),
-                    Alignment.createAlignment(),
-                    customSettings,
-                    createSpaceBuilder(settings),
-                    Indent.getNoneIndent(),
-                    Alignments(customSettings),
-                ),
+                initialBlock,
                 settings
             )
     }
@@ -55,17 +56,17 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.ANNOTATION_TL)
             .forcedLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
 
-            //.between(GdTypes.COMMENT, ROOT_BLOCKS).forcedLines(0)
+            .between(GdTypes.COMMENT, ROOT_BLOCKS).forcedLines(0) // TODO
             .before(ROOT_BLOCKS).forcedLines(custom.LINES_BEFORE_FUNC)
 
         // Separate groups
         ROOT_VARIABLES.types.forEachIndexed { iLeft, left ->
             ROOT_VARIABLES.types.forEachIndexed { iRight, right ->
                 if (iLeft != iRight) {
-                    builder.between(left, right).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP);
+                    builder.between(left, right).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP)
                 }
             }
-            //builder.between(left, GdTypes.COMMENT).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP);
+            builder.between(left, GdTypes.COMMENT).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP) // TODO
         }
 
         // Then within group

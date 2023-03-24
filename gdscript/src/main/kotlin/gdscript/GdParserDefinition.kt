@@ -9,7 +9,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.TokenType
 import com.intellij.psi.stubs.PsiFileStub
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.IStubFileElementType
@@ -21,7 +20,6 @@ import gdscript.psi.GdTypes
 class GdParserDefinition : ParserDefinition {
 
     companion object {
-        val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
         val COMMENTS = TokenSet.create(GdTypes.COMMENT)
         val STRING_LITERALS = TokenSet.create(GdTypes.STRING)
         val FILE = IStubFileElementType<PsiFileStub<GdFile>>(GdLanguage);
@@ -29,10 +27,6 @@ class GdParserDefinition : ParserDefinition {
 
     override fun createLexer(project: Project): Lexer {
         return GdLexerAdapter()
-    }
-
-    override fun getWhitespaceTokens(): TokenSet {
-        return WHITE_SPACES
     }
 
     override fun getCommentTokens(): TokenSet {

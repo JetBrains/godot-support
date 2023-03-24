@@ -224,7 +224,7 @@ ANY = .+
     {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }
     {HEX_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
-    {COMMENT}       { lineEnded = true; return GdTypes.COMMENT; }
+    {COMMENT}       { lineEnded = true; IElementType ret = dedentRoot(GdTypes.COMMENT); newLineProcessed = true; return ret; }
 
     {INDENTED_COMMENT} {
         yypushback(1);

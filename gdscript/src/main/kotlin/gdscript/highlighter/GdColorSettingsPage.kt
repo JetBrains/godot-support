@@ -94,7 +94,8 @@ class Something:
             AttributesDescriptor("Strings", GdHighlighterColors.STRING),
             AttributesDescriptor("Annotations", GdHighlighterColors.ANNOTATION),
             AttributesDescriptor("NodePath", GdHighlighterColors.NODE_PATH),
-            AttributesDescriptor("Errors", GdHighlighterColors.BAD_CHARACTER)
+            AttributesDescriptor("Errors", GdHighlighterColors.BAD_CHARACTER),
+            AttributesDescriptor("Doc comments", GdHighlighterColors.BLOCK_COMMENT),
         )
     }
 }
