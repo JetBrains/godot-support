@@ -56,7 +56,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.ANNOTATION_TL)
             .forcedLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
 
-            .between(GdTypes.COMMENT, ROOT_BLOCKS).forcedLines(0) // TODO
+//            .between(GdTypes.COMMENT, ROOT_BLOCKS).forcedLines(0) // TODO
             .before(ROOT_BLOCKS).forcedLines(custom.LINES_BEFORE_FUNC)
 
         // Separate groups
@@ -66,7 +66,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
                     builder.between(left, right).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP)
                 }
             }
-            builder.between(left, GdTypes.COMMENT).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP) // TODO
+//            builder.between(left, GdTypes.COMMENT).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP) // TODO
         }
 
         // Then within group

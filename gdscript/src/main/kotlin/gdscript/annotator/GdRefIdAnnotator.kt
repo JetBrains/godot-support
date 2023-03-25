@@ -45,7 +45,6 @@ class GdRefIdAnnotator : Annotator {
                 }
 
                 val calledUponType = GdClassMemberUtil.calledUpon(element);
-                val asd = calledUponType?.returnType;
                 if (calledUponType != null && calledUponType.returnType == "") return
 
                 holder

@@ -40,7 +40,9 @@ interface GdTokenTypeSet {
             GdTypes.INF,
             GdTypes.NULL,
             GdTypes.GET,
-            GdTypes.SET
+            GdTypes.SET,
+            GdTypes.ANDAND,
+            GdTypes.OROR,
         )
 
         // Pink

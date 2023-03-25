@@ -2426,12 +2426,12 @@ public class GdParser implements PsiParser, LightPsiParser {
   // Operator priority table:
   // 0: POSTFIX(plusMinus_ex)
   // 1: PREFIX(negate_ex)
-  // 2: BINARY(attribute_ex)
-  // 3: POSTFIX(cast_ex)
-  // 4: BINARY(arr_ex)
-  // 5: POSTFIX(call_ex)
-  // 6: BINARY(ternary_ex)
-  // 7: BINARY(logic_ex)
+  // 2: BINARY(logic_ex)
+  // 3: BINARY(attribute_ex)
+  // 4: POSTFIX(cast_ex)
+  // 5: BINARY(arr_ex)
+  // 6: POSTFIX(call_ex)
+  // 7: BINARY(ternary_ex)
   // 8: BINARY(in_ex)
   // 9: BINARY(comparison_ex)
   // 10: BINARY(bitAnd_ex)
@@ -2472,31 +2472,31 @@ public class GdParser implements PsiParser, LightPsiParser {
         r = true;
         exit_section_(b, l, m, PLUS_MINUS_EX, r, true, null);
       }
-      else if (g < 2 && consumeTokenSmart(b, DOT)) {
+      else if (g < 2 && logic_ex_0(b, l + 1)) {
         r = expr(b, l, 2);
+        exit_section_(b, l, m, LOGIC_EX, r, true, null);
+      }
+      else if (g < 3 && consumeTokenSmart(b, DOT)) {
+        r = expr(b, l, 3);
         exit_section_(b, l, m, ATTRIBUTE_EX, r, true, null);
       }
-      else if (g < 3 && cast_ex_0(b, l + 1)) {
+      else if (g < 4 && cast_ex_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, CAST_EX, r, true, null);
       }
-      else if (g < 4 && consumeTokenSmart(b, LSBR)) {
-        r = report_error_(b, expr(b, l, 4));
+      else if (g < 5 && consumeTokenSmart(b, LSBR)) {
+        r = report_error_(b, expr(b, l, 5));
         r = consumeToken(b, RSBR) && r;
         exit_section_(b, l, m, ARR_EX, r, true, null);
       }
-      else if (g < 5 && call_ex_0(b, l + 1)) {
+      else if (g < 6 && call_ex_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, CALL_EX, r, true, null);
       }
-      else if (g < 6 && consumeTokenSmart(b, IF)) {
-        r = report_error_(b, expr(b, l, 6));
+      else if (g < 7 && consumeTokenSmart(b, IF)) {
+        r = report_error_(b, expr(b, l, 7));
         r = ternary_ex_1(b, l + 1) && r;
         exit_section_(b, l, m, TERNARY_EX, r, true, null);
-      }
-      else if (g < 7 && logic_ex_0(b, l + 1)) {
-        r = expr(b, l, 7);
-        exit_section_(b, l, m, LOGIC_EX, r, true, null);
       }
       else if (g < 8 && consumeTokenSmart(b, IN)) {
         r = expr(b, l, 8);
@@ -2555,6 +2555,15 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
+  // ANDAND | OROR
+  private static boolean logic_ex_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "logic_ex_0")) return false;
+    boolean r;
+    r = consumeTokenSmart(b, ANDAND);
+    if (!r) r = consumeTokenSmart(b, OROR);
+    return r;
+  }
+
   // AS typedVal
   private static boolean cast_ex_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "cast_ex_0")) return false;
@@ -2593,15 +2602,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = consumeTokenFast(b, ELSE);
     r = r && expr(b, l + 1, -1);
     exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ANDAND | OROR
-  private static boolean logic_ex_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "logic_ex_0")) return false;
-    boolean r;
-    r = consumeTokenSmart(b, ANDAND);
-    if (!r) r = consumeTokenSmart(b, OROR);
     return r;
   }
 

@@ -91,10 +91,16 @@ class GdBlock : AbstractBlock {
     }
 
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
-//        arrayOf(child1, child2).forEach {
-//            if (it is GdBlock && it.node.elementType == GdTypes.COMMENT) return null;
-//        }
-//
+        if (child1 == null || child1 !is GdBlock || child2 !is GdBlock) {
+            return this.spacing.getSpacing(this, child1, child2);
+        }
+        val comment1 = child1.node.elementType == GdTypes.COMMENT
+        val comment2 = child2.node.elementType == GdTypes.COMMENT
+
+        if (comment1 && comment2) {
+            return null;
+        }
+
         return this.spacing.getSpacing(this, child1, child2);
     }
 
