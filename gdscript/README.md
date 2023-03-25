@@ -5,19 +5,8 @@ This plugin is still under development and serious bugs are bubbling up. I very 
 !!! IMPORTANT !!!  
 
 # Installation guide
-1) Download GdScript plugin from marketplace (from IceExplosive)  
-![](./screens/install/01.png)  
-2) Download SDK zip from this repository and extract it somewhere (current version 0.x matches Godot's beta x)  
-3) GoTo File -> Project Structure settings  
-4) Select SDK tabs and create new GdScript SDK  
-![](./screens/install/02.png)  
-5) Select extracted folder  
-   - *Ignore the error about cannot read SDK version*  
-![](./screens/install/03.png)  
-6) Add again the same folder as a Classpath  
-![](./screens/install/04.png)  
-7) Under Project tab select created GdScript SDK  
-![](./screens/install/05.png)
+
+![Instalation](https://youtu.be/5utE9E0D5ZE)
 
 ## Extra tips:
 - Dedent with Backspace
