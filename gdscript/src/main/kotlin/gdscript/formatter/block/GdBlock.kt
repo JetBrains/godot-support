@@ -8,10 +8,11 @@ import gdscript.psi.GdTypes
 
 class GdBlock : AbstractBlock {
 
-    val settings: GdCodeStyleSettings;
-    val myIndent: Indent;
-    val spacing: SpacingBuilder;
-    val alignments: Alignments;
+    val settings: GdCodeStyleSettings
+    val myIndent: Indent
+    val spacing: SpacingBuilder
+    val alignments: Alignments
+    var nextBlock: GdBlock? = null
 
     constructor(
         node: ASTNode,
@@ -34,6 +35,7 @@ class GdBlock : AbstractBlock {
 
         var suited = false;
         var indented = false;
+        var lastBlock: GdBlock? = null
         while (!children.isEmpty()) {
             val child = children.removeFirstOrNull()!!;
             val type = child.elementType;
@@ -63,8 +65,12 @@ class GdBlock : AbstractBlock {
                     if (toIndent) Indent.getNormalIndent() else Indent.getNoneIndent(),
                     alignments.clone(type),
                 )
+                if (lastBlock != null) {
+                    lastBlock.nextBlock = currentBlock
+                }
 
                 blocks.add(currentBlock);
+                lastBlock = currentBlock
             }
         }
 
@@ -94,14 +100,18 @@ class GdBlock : AbstractBlock {
         if (child1 == null || child1 !is GdBlock || child2 !is GdBlock) {
             return this.spacing.getSpacing(this, child1, child2);
         }
-        val comment1 = child1.node.elementType == GdTypes.COMMENT
-        val comment2 = child2.node.elementType == GdTypes.COMMENT
 
-        if (comment1 && comment2) {
+        if (child1.node.elementType == GdTypes.COMMENT) {
             return null;
         }
 
-        return this.spacing.getSpacing(this, child1, child2);
+        var block2: GdBlock? = child2
+        while (block2 != null && block2.node.elementType == GdTypes.COMMENT) {
+            block2 = block2.nextBlock
+        }
+        if (block2 == null) return null
+
+        return this.spacing.getSpacing(this, child1, block2);
     }
 
     override fun getIndent(): Indent {
