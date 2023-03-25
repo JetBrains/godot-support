@@ -13,6 +13,9 @@ import java.awt.Image
 
 class GdDocumentationProvider : AbstractDocumentationProvider() {
 
+    private val dynamicReference = "\\[(member|constant|method) (.+?)]".toRegex()
+    private val freeReference = "\\[([A-Z].+?)]".toRegex()
+
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
         if (originalElement != null && originalElement.parent is PsiNamedElement) {
             return findDocumentationComment(originalElement.parent as PsiNamedElement, PsiGdCommentUtils.DESCRIPTION);
@@ -57,10 +60,6 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
         val sb = StringBuilder();
         sb.append(DocumentationMarkup.CONTENT_START);
 
-        val dynamicReference = "\\[(member|constant|method) (.+)]".toRegex()
-
-//        sb.append(GdDocumentationUtil.createElementLink(sb))
-
         /*
         [member position]
         [method _local]
@@ -77,7 +76,7 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
          */
 
         docLines.forEach {
-            val line = it
+            var line = it
                 .replace("[b]", "<strong>")
                 .replace("[/b]", "</strong>")
                 .replace("[code]", "<i>")
@@ -89,20 +88,30 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
                 .replace("[csharp]", "${DocumentationMarkup.DEFINITION_START}<strong>C#</strong>")
                 .replace("[/gdscript]", DocumentationMarkup.DEFINITION_END)
                 .replace("[/csharp]", DocumentationMarkup.DEFINITION_END)
-            val references = dynamicReference.findAll(line)
-            references.forEach { match ->
-                val value = match.groups[2]?.value ?: ""
-                sb.append(
-                    GdDocumentationUtil.createElementLink(
-                        value.split(".").last(),
-                        value.replace("@", "_"),
-                    ),
-                )
-            }
-            //.replace("\\[method (.+?)]".toRegex(), "{@link $1}")
 
-            sb.append(line);
-            sb.append("<br />");
+            // Replace specific references [member|constant|method _name]
+            dynamicReference.findAll(line).forEach matched@{ match ->
+                val value = match.groups[2]?.value ?: return@matched
+                val link = GdDocumentationUtil.createElementLink(
+                    value.split(".").last(),
+                    value.replace("@", "_"),
+                )
+                line = line.replace(match.groups[0]?.value!!, link.toString())
+            }
+
+            // Try to replace unspecified references like [Object] or [Node]
+            freeReference.findAll(line).forEach matched@{ match ->
+                val value = match.groups[1]?.value?.replace("@", "_") ?: return@matched
+                val link = GdDocumentationUtil.createElementLink(
+                    value,
+                    value,
+                )
+                line = line.replace(match.groups[0]?.value!!, link.toString())
+            }
+
+            sb.append(line)
+            sb.append("<br />")
+            sb.append("<br />")
         }
         sb.append(DocumentationMarkup.CONTENT_END);
 

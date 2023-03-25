@@ -10,12 +10,11 @@ object GdDocumentationUtil {
             return sb
         }
 
-        sb.append("&nbsp;&nbsp;<a href=\"" + DocumentationManagerProtocol.PSI_ELEMENT_PROTOCOL)
+        sb.append("&nbsp;<a href=\"" + DocumentationManagerProtocol.PSI_ELEMENT_PROTOCOL)
         sb.append(reference)
         sb.append("\">")
         sb.append(label)
-        sb.append("</a>")
-        sb.append("<br>")
+        sb.append("</a>&nbsp;")
 
         return sb
     }
