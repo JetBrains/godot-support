@@ -4,9 +4,9 @@
 This plugin is still under development and serious bugs are bubbling up. I very much appreciate all tests and do please report any bugs you find, but keep in mind it's not production ready yet.  
 !!! IMPORTANT !!!  
 
-# Video guides and explanations
+# Installation
 
-![Installation](./video/installation.mp4)
+![](./video/installation.mp4)
 
 ## Extra tips:
 - Dedent with Backspace
