@@ -135,13 +135,6 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
         ).firstOrNull()
     }
 
-
-
-    override fun getLocalImageForElement(element: PsiElement, imageSpec: String): Image? {
-        return super.getLocalImageForElement(element, imageSpec)
-    }
-
-
     // TODO ctrl hover nad referencí
 //    override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
 //        return super.getQuickNavigateInfo(element, originalElement)
