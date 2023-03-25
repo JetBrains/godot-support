@@ -1,5 +1,9 @@
 # GdScript
 
+!!! IMPORTANT !!!
+This plugin is still under development and serious bugs are bubbling up. I very much appreciate all tests and do please report any bugs you find, but keep in mind it's not production ready yet.
+!!! IMPORTANT !!!
+
 # Installation guide
 1) Download GdScript plugin from marketplace (from IceExplosive)  
 ![](./screens/install/01.png)  
