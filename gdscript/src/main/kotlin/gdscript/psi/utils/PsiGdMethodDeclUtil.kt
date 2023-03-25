@@ -48,7 +48,7 @@ object PsiGdMethodDeclUtil {
         if (stub != null) return stub.isConstructor();
 
         return element.name == "_init"
-                || PsiGdClassUtil.getClass(element) == element.name;
+                || GdClassUtil.getOwningClassName(element) == element.name;
     }
 
 }

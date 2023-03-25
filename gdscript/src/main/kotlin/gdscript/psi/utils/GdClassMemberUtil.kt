@@ -280,22 +280,46 @@ object GdClassMemberUtil {
         }
     }
 
-    // TODO ii
-    //    abs() -> Variant:
-    //    Tady je potřeba z variant udělat cokoliv? .. resp. to je jako generic?
-
     /**
-     * Filters out GdMethodsDeclTl & returns typed array
+     * Filters out GdMethodsDeclTl
      */
     fun Array<PsiElement>.methods(): Array<GdMethodDeclTl> {
         return this.filterIsInstance<GdMethodDeclTl>().toTypedArray();
     }
 
     /**
-     * Filters out GdMethodsDeclTl & returns typed array
+     * Filters out GdMethodsDeclTl
      */
     fun List<PsiElement>.methods(): Array<GdMethodDeclTl> {
         return this.filterIsInstance<GdMethodDeclTl>().toTypedArray();
+    }
+
+    /**
+     * Filters out GdClassVarDeclTl
+     */
+    fun List<PsiElement>.variables(): Array<GdClassVarDeclTl> {
+        return this.filterIsInstance<GdClassVarDeclTl>().toTypedArray();
+    }
+
+    /**
+     * Filters out GdEnumDeclTl
+     */
+    fun List<PsiElement>.enums(): Array<GdEnumDeclTl> {
+        return this.filterIsInstance<GdEnumDeclTl>().toTypedArray();
+    }
+
+    /**
+     * Filters out GdConstDeclTl
+     */
+    fun List<PsiElement>.constants(): Array<GdConstDeclTl> {
+        return this.filterIsInstance<GdConstDeclTl>().toTypedArray();
+    }
+
+    /**
+     * Filters out GdSignalDeclTl
+     */
+    fun List<PsiElement>.signals(): Array<GdSignalDeclTl> {
+        return this.filterIsInstance<GdSignalDeclTl>().toTypedArray();
     }
 
     /**
@@ -309,6 +333,7 @@ object GdClassMemberUtil {
         element: PsiElement,
         static: Boolean? = false,
         search: String? = null,
+        constructors: Boolean = false,
     ): MutableList<PsiElement> {
         val classElement = when (element) {
             is GdFile, is GdClassDeclTl -> element;
@@ -343,9 +368,11 @@ object GdClassMemberUtil {
         }
 
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdMethodDeclTl::class.java).forEach {
-            if ((static == null || it.isStatic == static) && !it.isConstructor) {
-                if (search != null && it.name == search) return mutableListOf(it);
-                members.add(it)
+            if ((static == null || it.isStatic == static)) {
+                if (constructors || !it.isConstructor) {
+                    if (search != null && it.name == search) return mutableListOf(it);
+                    members.add(it)
+                }
             }
         }
         if (search != null) return mutableListOf();

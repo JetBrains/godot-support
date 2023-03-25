@@ -10,6 +10,7 @@ object PsiGdCommentUtils {
 
     val DESCRIPTION = "desc";
     val BRIEF_DESCRIPTION = "brief";
+    val ENUM = "enum";
 
     fun collectDescriptions(element: PsiElement?, key: String = DESCRIPTION): Array<String> {
         val descs = mutableListOf<String>();

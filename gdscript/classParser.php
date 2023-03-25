@@ -67,21 +67,23 @@ foreach ($files as $filename) {
         $data .= $formatDesc($desc['0'], "brief");
     }
 
-// TODO lze někam nacpat linky? -> resolve $DOCS_URL
-//     $desc = (array) ($xml['tutorials'] ?? []);
-//     foreach ($desc['link'] ?? [] as $param) {
-//         $param = (array) $param;
-//         $p_att = $param['@attributes'];
-//         $parsed[$p_att['index']] = [$p_att['name'], $p_att['type']];
-//     }
-
     //if (substr($class_name, 0, 1) != '@') {
         $desc = (array) ($xml['description'] ?? []);
         if ($desc) {
             $data .= $formatDesc($desc['0'], "desc");
         }
 
-        $data .= sprintf("class_name %s\n\n", $class_name);
+    // Tutorial links
+    $baseUrl = 'https://docs.godotengine.org/en/stable';
+    $links = (array) ($xml['tutorials'] ?? []);
+    foreach ($xml['tutorials'] as $link) {
+        $link = (array) $link;
+        $p_att = $link['@attributes'];
+        $value = str_replace('$DOCS_URL', $baseUrl, $link[0]);
+        $data .= $formatDesc(sprintf("[link %s]%s[/link]", $p_att['title'], $value), "desc");
+    }
+
+    $data .= sprintf("class_name %s\n\n", $class_name);
     //}
 
     /** Signals */
@@ -103,6 +105,8 @@ foreach ($files as $filename) {
         $data .= sprintf("signal %s%s\n", $att['name'], $paramsStr);
     }
 
+    $enums = [];
+
     /** Constants */
     foreach ($xml['constants'] ?? [] as $value) {
         $value = (array) $value;
@@ -110,9 +114,23 @@ foreach ($files as $filename) {
         if ($value['0'] ?? null) {
             $data .= $formatDesc($value['0'], "desc");
         }
-        $data .= sprintf("const %s = %s;\n\n", $att['name'], $att['value']);
+        $enum = $att['enum'] ?? null;
+        if ($enum) {
+            $enums[$enum][] = sprintf("%s = %s,\n", $att['name'], $att['value']);
+        } else {
+            $data .= sprintf("const %s = %s;\n\n", $att['name'], $att['value']);
+        }
     }
     $data .= "\n";
+
+    foreach ($enums as $key => $values) {
+        $data .= "#enum $key\n";
+        $data .= "enum {\n";
+        foreach ($values as $value) {
+            $data .= "    $value";
+        }
+        $data .= "}\n";
+    }
 
     /** Variables */
     foreach ($xml['members'] ?? [] as $value) {

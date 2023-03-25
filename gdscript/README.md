@@ -60,8 +60,6 @@ func losos():
 ![](./screens/signal-marker.png)
 
 ### Documentation (Ctrl+Q)
-- Currently only simplified plain-text
-- ❌ Links and visualization like Java doc
 
 ### Other
 - Inlay hints  
