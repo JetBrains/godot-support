@@ -1214,7 +1214,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER | GET | SET | MATCH | SIGNAL | FUNC | CLASS_NAME | PASS
+  // IDENTIFIER | GET | SET | MATCH | SIGNAL | FUNC | CLASS_NAME | PASS | CLASS
   static boolean identifierEx(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifierEx")) return false;
     boolean r;
@@ -1226,6 +1226,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, FUNC);
     if (!r) r = consumeToken(b, CLASS_NAME);
     if (!r) r = consumeToken(b, PASS);
+    if (!r) r = consumeToken(b, CLASS);
     return r;
   }
 

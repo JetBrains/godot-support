@@ -274,4 +274,4 @@ assignTyped ::= EQ | CEQ
 
 // func - Array.gd, signal: Vector2.gd, class_name - Array.gd, FileAccess - pass
 // tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě, stejně jako metody
-private identifierEx ::= IDENTIFIER | GET | SET | MATCH | SIGNAL | FUNC | CLASS_NAME | PASS
+private identifierEx ::= IDENTIFIER | GET | SET | MATCH | SIGNAL | FUNC | CLASS_NAME | PASS | CLASS
