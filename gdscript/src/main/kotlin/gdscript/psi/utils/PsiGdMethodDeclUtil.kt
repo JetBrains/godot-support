@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import com.intellij.psi.util.elementType
 import gdscript.psi.*
 import gdscript.utils.ElementTypeUtil
 
@@ -9,7 +10,7 @@ object PsiGdMethodDeclUtil {
         val stub = element.stub;
         if (stub !== null) return stub.isStatic();
 
-        return ElementTypeUtil.hasChildOfType(element, GdTypes.STATIC);
+        return element.methodSpecifierList.any { it.elementType == GdTypes.STATIC }
     }
 
     fun isVariadic(element: GdMethodDeclTl): Boolean {
@@ -18,7 +19,7 @@ object PsiGdMethodDeclUtil {
             return stub.isVariadic();
         }
 
-        return ElementTypeUtil.hasChildOfType(element, GdTypes.VARARG);
+        return element.methodSpecifierList.any { it.elementType == GdTypes.VARARG }
     }
 
     fun getReturnType(element: GdMethodDeclTl): String {

@@ -12,6 +12,10 @@ object GdKeywordContributor : CompletionContributor() {
     val TO_HINT_KEYWORDS = arrayOf(
         GdKeywords.FUNC,
         GdKeywords.STATIC,
+        GdKeywords.MASTER,
+        GdKeywords.PUPPET,
+        GdKeywords.REMOTE,
+        GdKeywords.REMOTE_SYNC,
         GdKeywords.CONST,
         GdKeywords.VAR,
         GdKeywords.CLASS,

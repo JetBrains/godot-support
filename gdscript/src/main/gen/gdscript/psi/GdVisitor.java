@@ -227,6 +227,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitNamedIdElement(o);
   }
 
+  public void visitMethodSpecifier(@NotNull GdMethodSpecifier o) {
+    visitPsiElement(o);
+  }
+
   public void visitNegateEx(@NotNull GdNegateEx o) {
     visitExpr(o);
   }

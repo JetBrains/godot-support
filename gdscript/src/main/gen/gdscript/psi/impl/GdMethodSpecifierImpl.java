@@ -11,14 +11,14 @@ import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public abstract class GdTopLevelDeclImpl extends ASTWrapperPsiElement implements GdTopLevelDecl {
+public class GdMethodSpecifierImpl extends ASTWrapperPsiElement implements GdMethodSpecifier {
 
-  public GdTopLevelDeclImpl(@NotNull ASTNode node) {
+  public GdMethodSpecifierImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitTopLevelDecl(this);
+    visitor.visitMethodSpecifier(this);
   }
 
   @Override

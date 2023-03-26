@@ -174,6 +174,10 @@ ANY = .+
     "vararg"       { return dedentRoot(GdTypes.VARARG); }
     "class"        { return dedentRoot(GdTypes.CLASS); }
     "super"        { return dedentRoot(GdTypes.SUPER); }
+    "master"       { return dedentRoot(GdTypes.MASTER); }
+    "pupper"       { return dedentRoot(GdTypes.PUPPET); }
+    "remote"       { return dedentRoot(GdTypes.REMOTE); }
+    "remotesync"   { return dedentRoot(GdTypes.REMOTESYNC); }
 
     "*"            { return dedentRoot(GdTypes.MUL); }
     "/"            { return dedentRoot(GdTypes.DIV); }
@@ -288,4 +292,4 @@ ANY = .+
     return GdTypes.DEDENT;
 }
 
-[^] { return GdTypes.BAD_CHARACTER; }
+[^] { return TokenType.BAD_CHARACTER; }

@@ -61,8 +61,7 @@ className_nmi ::= IDENTIFIER {
 }
 
 topLevelDecl ::=
-    NEW_LINE
-    | constDecl_tl
+    constDecl_tl
     | enumDecl_tl
     | signalDecl_tl
     | classVarDecl_tl
@@ -71,7 +70,8 @@ topLevelDecl ::=
     | classDecl_tl
 private topLevelDecl_r ::= !(
     FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT | BLOCK_COMMENT
-    | CLASS_NAME | STATIC | VARARG | RRBR | RCBR | RSBR | EXTENDS | CLASS | NEW_LINE )
+    | REMOET | REMOTESYNC | MASTER | PUPPET | STATIC | VARARG
+    | CLASS_NAME | RRBR | RCBR | RSBR | EXTENDS | CLASS | NEW_LINE )
 
 constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {
     methods=[getName getReturnType getPresentation]
@@ -116,13 +116,14 @@ enumDecl_nmi ::= IDENTIFIER
 enumValue ::= enumValue_nmi (EQ (PLUS | MINUS)? NUMBER)?
 enumValue_nmi ::= IDENTIFIER
 
-methodDecl_tl ::= STATIC? VARARG? FUNC methodId_nmi LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
+methodDecl_tl ::= methodSpecifier* FUNC methodId_nmi LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[isStatic isVariadic getName getReturnType getParameters getPresentation isConstructor]
-    pin=4 recoverWhile=topLevelDecl_r
+    pin=2 recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdMethodDeclElementImpl"
     stubClass="gdscript.index.stub.GdMethodDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"
 }
+methodSpecifier ::= STATIC | VARARG | MASTER | PUPPET | REMOTE | REMOTESYNC
 methodId_nmi ::= identifierEx
 paramList ::= param (COMMA param)* COMMA? {pin=1 /*recoverWhile=argList_r*/}
 param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
@@ -152,7 +153,7 @@ stmt ::=
     | flow_st
     | await_st
     | expr_st
-    { recoverWhile=stmt_rr }
+    | BAD_CHARACTER // tohle je hack aby GdStmtImpl nebyl abstract class při token např. Ł to jinak nevyparsuje
 private stmt_rr ::= !(
     EXTENDS | CLASS_NAME | VAR | CONST | GET | SET | ENUM |
     FUNC | PASS | TRUE | FALSE | NULL | SELF | CONTINUE | BREAKPOINT |
@@ -160,22 +161,24 @@ private stmt_rr ::= !(
     WHILE | FOR | MATCH | AWAIT | STATIC | VARARG | CLASS | SUPER |
     NEGATE | PPLUS | MMINUS | COLON | LRBR | RRBR | LSBR | RSBR |
     LCBR | RCBR | XOR | NOT | NODE_PATH_LEX | STRING |
-    ANNOTATOR | IDENTIFIER | NUMBER | INDENT | DEDENT | NEW_LINE |
-    BLOCK_COMMENT
+    ANNOTATOR | IDENTIFIER | NUMBER | INDENT | DEDENT | NEW_LINE
     // TODO extend by topLevel_r
 )
-//private stmt_r ::= !(SET | GET | VAR | CONST | IF | PASS
-//    | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
-//    | RETURN | AWAIT | ASSET | INDENT | DEDENT
-//    | NEGATE /*| endStmt*/
-//    | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
+//    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT | BLOCK_COMMENT
+//    | REMOET | REMOTESYNC | MASTER | PUPPET | STATIC | VARARG
+//    | CLASS_NAME | RRBR | RCBR | RSBR | EXTENDS | CLASS | NEW_LINE )
+private stmt_r ::= !(SET | GET | IF | PASS
+    | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
+    | RETURN | AWAIT | ASSET | INDENT | DEDENT
+    | NEGATE
+    | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
 varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
     /*pin=2 recoverWhile=stmt_r*/ methods=[getName getReturnType]
 }
 constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {/*pin=1 recoverWhile=stmt_r*/ methods=[getName getReturnType getReturnExpr]}
-if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? //{pin=1 recoverWhile=stmt_r}
+if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? {pin=1 recoverWhile=stmt_r}
 while_st ::= WHILE expr COLON stmtOrSuite {pin=1 /*recoverWhile=stmt_r*/}
 for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=1 /*recoverWhile=stmt_r*/}
 

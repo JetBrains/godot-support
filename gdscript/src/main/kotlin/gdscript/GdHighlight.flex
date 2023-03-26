@@ -117,6 +117,10 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "vararg"       { return GdTypes.VARARG; }
     "class"        { return GdTypes.CLASS; }
     "super"        { return GdTypes.SUPER; }
+    "master"       { return GdTypes.MASTER; }
+    "pupper"       { return GdTypes.PUPPET; }
+    "remote"       { return GdTypes.REMOTE; }
+    "remotesync"   { return GdTypes.REMOTESYNC; }
 
     "*"            { return GdTypes.MUL; }
     "/"            { return GdTypes.DIV; }
@@ -173,4 +177,4 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     return null;
 }
 
-[^] { return GdTypes.BAD_CHARACTER; }
+[^] { return TokenType.BAD_CHARACTER; }

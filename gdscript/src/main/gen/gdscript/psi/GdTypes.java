@@ -72,6 +72,7 @@ public interface GdTypes {
   IElementType MATCH_ST = new GdElementType("MATCH_ST");
   IElementType METHOD_DECL_TL = GdMethodDeclElementType.getInstance("METHOD_DECL_TL");
   IElementType METHOD_ID_NMI = new GdElementType("METHOD_ID_NMI");
+  IElementType METHOD_SPECIFIER = new GdElementType("METHOD_SPECIFIER");
   IElementType NEGATE_EX = new GdElementType("NEGATE_EX");
   IElementType NEW_LINE_END = new GdElementType("NEW_LINE_END");
   IElementType NODE_PATH = new GdElementType("NODE_PATH");
@@ -110,9 +111,10 @@ public interface GdTypes {
   IElementType ANDAND = new GdTokenType("ANDAND");
   IElementType ANNOTATOR = new GdTokenType("ANNOTATOR");
   IElementType AS = new GdTokenType("AS");
+  IElementType ASSET = new GdTokenType("ASSET");
   IElementType ASSIGN = new GdTokenType("ASSIGN");
   IElementType AWAIT = new GdTokenType("AWAIT");
-  IElementType BAD_CHARACTER = new GdTokenType("bad_character");
+  IElementType BAD_CHARACTER = new GdTokenType("BAD_CHARACTER");
   IElementType BLOCK_COMMENT = new GdTokenType("BLOCK_COMMENT");
   IElementType BREAK = new GdTokenType("BREAK");
   IElementType BREAKPOINT = new GdTokenType("BREAKPOINT");
@@ -147,6 +149,7 @@ public interface GdTypes {
   IElementType LCBR = new GdTokenType("LCBR");
   IElementType LRBR = new GdTokenType("LRBR");
   IElementType LSBR = new GdTokenType("LSBR");
+  IElementType MASTER = new GdTokenType("MASTER");
   IElementType MATCH = new GdTokenType("MATCH");
   IElementType MINUS = new GdTokenType("MINUS");
   IElementType MMINUS = new GdTokenType("MMINUS");
@@ -164,8 +167,12 @@ public interface GdTypes {
   IElementType PASS = new GdTokenType("PASS");
   IElementType PLUS = new GdTokenType("PLUS");
   IElementType PPLUS = new GdTokenType("PPLUS");
+  IElementType PUPPET = new GdTokenType("PUPPET");
   IElementType RBSHIFT = new GdTokenType("RBSHIFT");
   IElementType RCBR = new GdTokenType("RCBR");
+  IElementType REMOET = new GdTokenType("REMOET");
+  IElementType REMOTE = new GdTokenType("REMOTE");
+  IElementType REMOTESYNC = new GdTokenType("REMOTESYNC");
   IElementType RET = new GdTokenType("RET");
   IElementType RETURN = new GdTokenType("RETURN");
   IElementType RRBR = new GdTokenType("RRBR");
@@ -351,6 +358,9 @@ public interface GdTypes {
       else if (type == METHOD_ID_NMI) {
         return new GdMethodIdNmiImpl(node);
       }
+      else if (type == METHOD_SPECIFIER) {
+        return new GdMethodSpecifierImpl(node);
+      }
       else if (type == NEGATE_EX) {
         return new GdNegateExImpl(node);
       }
@@ -425,9 +435,6 @@ public interface GdTypes {
       }
       else if (type == TERNARY_EX) {
         return new GdTernaryExImpl(node);
-      }
-      else if (type == TOP_LEVEL_DECL) {
-        return new GdTopLevelDeclImpl(node);
       }
       else if (type == TYPED) {
         return new GdTypedImpl(node);

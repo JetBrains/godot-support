@@ -3,10 +3,23 @@ package gdscript.formatter.block
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
 import com.intellij.psi.formatter.common.AbstractBlock
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
 import gdscript.formatter.GdCodeStyleSettings
+import gdscript.psi.GdForSt
+import gdscript.psi.GdIfSt
+import gdscript.psi.GdTopLevelDecl
 import gdscript.psi.GdTypes
+import gdscript.psi.GdWhileSt
+import gdscript.utils.PsiElementUtil.precedingNewLines
 
 class GdBlock : AbstractBlock {
+
+    companion object {
+        val CHILD_INDENT_NONE = ChildAttributes(Indent.getNoneIndent(), null)
+        val CHILD_INDENT_NORMAL = ChildAttributes(Indent.getNormalIndent(true), null)
+        val CHILD_INDENT_CONTINUATION = ChildAttributes(Indent.getContinuationIndent(true), null)
+    }
 
     val settings: GdCodeStyleSettings
     val myIndent: Indent
@@ -56,6 +69,10 @@ class GdBlock : AbstractBlock {
                 children.addAll(child.getChildren(null));
             } else {
                 val toIndent = indented || GdBlocks.ALWAYS_INDENTED_TOKENS.contains(type);
+//                if (child is PsiErrorElement && child.prevSibling.elementType == GdTypes.COLON) {
+//                    toIndent = true
+//                }
+
                 val currentBlock = GdBlock(
                     child,
                     Wrap.createWrap(WrapType.NONE, false),
@@ -82,18 +99,61 @@ class GdBlock : AbstractBlock {
             GdBlocks.INDENT_CHILDREN_ATTRIBUTE.contains(node.elementType)
             || this.node.treeParent?.elementType == GdTypes.SUITE
         ) {
-            // TODO double line space
+            if (newChildIndex > 0) {
+                val previousBlock = this.subBlocks[newChildIndex - 1]
+                if (previousBlock is GdBlock && previousBlock.node.lastChildNode?.elementType == GdTypes.STMT_OR_SUITE) {
+                    // TODO
+                    if (PsiTreeUtil.getDeepestLast(previousBlock.node.lastChildNode.psi).precedingNewLines() > 10) {
+                        return CHILD_INDENT_NORMAL
+                    }
 
-            return ChildAttributes(
-                Indent.getNormalIndent(),
-                null,
-            );
+                    return CHILD_INDENT_CONTINUATION
+                }
+
+            }
+
+            return CHILD_INDENT_NORMAL
         }
 
-        return ChildAttributes(
-            Indent.getNoneIndent(),
-            null,
-        );
+        var index = newChildIndex - 1
+        while (index > 0) {
+            val previousBlock = this.subBlocks[index]
+            if (previousBlock is GdBlock) {
+                if (previousBlock.node.text == "\n") {
+                    index--
+                    continue
+                }
+
+                if (GdBlocks.INDENT_CHILDREN_ATTRIBUTE.contains((previousBlock).node.elementType)) {
+                    val lastNode = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)
+
+                    if (lastNode?.elementType == GdTypes.COLON) {
+                        return CHILD_INDENT_CONTINUATION
+                    }
+
+                    // TODO
+                    val lines = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)?.precedingNewLines() ?: 0
+                    if (lines > 10) {
+                        return CHILD_INDENT_NONE
+                    }
+
+                    val lastNodeParent = PsiTreeUtil.getParentOfType(lastNode,
+                        GdIfSt::class.java,
+                        GdForSt::class.java,
+                        GdWhileSt::class.java,
+                        GdTopLevelDecl::class.java
+                    )
+                    if (lastNodeParent != null && lastNodeParent !is GdTopLevelDecl) {
+                        return CHILD_INDENT_CONTINUATION
+                    }
+
+                    return CHILD_INDENT_NORMAL
+                }
+            }
+            break
+        }
+
+        return CHILD_INDENT_NONE
     }
 
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {

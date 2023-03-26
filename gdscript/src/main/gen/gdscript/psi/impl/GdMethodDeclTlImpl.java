@@ -35,9 +35,15 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdMethodIdNmi getMethodIdNmi() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdMethodIdNmi.class));
+    return PsiTreeUtil.getChildOfType(this, GdMethodIdNmi.class);
+  }
+
+  @Override
+  @NotNull
+  public List<GdMethodSpecifier> getMethodSpecifierList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdMethodSpecifier.class);
   }
 
   @Override
