@@ -19,7 +19,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             formattingContext.node,
             Wrap.createWrap(WrapType.NONE, false),
             Alignment.createAlignment(),
-            customSettings,
+            settings,
             createSpaceBuilder(settings),
             Indent.getNoneIndent(),
             Alignments(customSettings),

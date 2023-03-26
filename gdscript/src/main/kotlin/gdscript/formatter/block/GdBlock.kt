@@ -2,6 +2,7 @@ package gdscript.formatter.block
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
+import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
@@ -21,7 +22,7 @@ class GdBlock : AbstractBlock {
         val CHILD_INDENT_CONTINUATION = ChildAttributes(Indent.getContinuationIndent(true), null)
     }
 
-    val settings: GdCodeStyleSettings
+    val settings: CodeStyleSettings
     val myIndent: Indent
     val spacing: SpacingBuilder
     val alignments: Alignments
@@ -31,7 +32,7 @@ class GdBlock : AbstractBlock {
         node: ASTNode,
         wrap: Wrap,
         alignment: Alignment?,
-        settings: GdCodeStyleSettings,
+        settings: CodeStyleSettings,
         spacing: SpacingBuilder,
         indent: Indent,
         alignments: Alignments,
@@ -106,8 +107,11 @@ class GdBlock : AbstractBlock {
                     if (PsiTreeUtil.getDeepestLast(previousBlock.node.lastChildNode.psi).precedingNewLines() > 10) {
                         return CHILD_INDENT_NORMAL
                     }
+                    // TODO settings.getIndentSize()
 
-                    return CHILD_INDENT_CONTINUATION
+//                    return ChildAttributes(Indent.getSpaceIndent(2), null)
+                    return ChildAttributes(Indent.getContinuationIndent(
+                        true), null)
                 }
 
             }
@@ -128,7 +132,7 @@ class GdBlock : AbstractBlock {
                     val lastNode = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)
 
                     if (lastNode?.elementType == GdTypes.COLON) {
-                        return CHILD_INDENT_CONTINUATION
+                        return ChildAttributes(Indent.getContinuationIndent(true), null)
                     }
 
                     // TODO
@@ -144,7 +148,7 @@ class GdBlock : AbstractBlock {
                         GdTopLevelDecl::class.java
                     )
                     if (lastNodeParent != null && lastNodeParent !is GdTopLevelDecl) {
-                        return CHILD_INDENT_CONTINUATION
+                        return ChildAttributes(Indent.getContinuationIndent(true), null)
                     }
 
                     return CHILD_INDENT_NORMAL

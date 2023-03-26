@@ -8,59 +8,27 @@ This plugin is still under development and serious bugs are bubbling up. I very 
 
 ![](./video/installation.mp4)
 
-## Extra tips:
-- Dedent with Backspace
-```
-func losos():
-    if (true):
-        pass
-        |
-```
-When you hit Backspace at cursor (below pass), IDEa will remove whole line and move you to
-previous line, like this:
-```
-func losos():
-    if (true):
-        pass|
-```
-In order to dedent on backspace, you can change editor's settings under:  
-Editor -> General -> Smart Keys -> Unindent on Backspace  
-![](./screens/unindent.png)  
-Hitting Backspace will then just move cursor to the left like this:
-```
-func losos():
-    if (true):
-        pass
-    |
-```
+## Recommended settings:
+In order to dedent on backspace instead of deletin a line, you can change editor's settings under:  
+Editor -> General -> Smart Keys -> Unindent on Backspace
 
 ## List of features
-### Auto-completion
-- Inheritance & ClassName
-- Annotations
-- func overrides
-- Resources (`$Path/Node` && `$"%Name"`)
-- hides _prefix as private fields (is optional based on Language settings)
-
-### Line markers
-- Resource usages  
-![](./screens/resource-marker.png)
-- Signal  
-![](./screens/signal-marker.png)
-
-### Documentation (Ctrl+Q)
-
-### Other
+- Auto-completion
+  - Inheritance & ClassName
+  - Annotations
+  - func overrides
+  - Resources (`$Path/Node` && `$"%Name"`)
+- Refactoring
+- Go to declaration / usages
+- Hides _prefix as private fields (optional based on Language settings)
+- Built-in documentation (Ctrl+Q)
+- Line markers
+  - Resource usages  
+  - Signals  
 - Inlay hints  
-![](./screens/inlay.png)
 - Param hints (Ctrl+P)  
-![](./screens/param-hint.png)
-- Run configuration - starts the game from Godot exe  
-![](./screens/run-config.png)
-
-### Formatter
-- Very simplified version - requires major work  
-- ❌ Optional semicolons (add/remove based on settings)
+- Run configuration - start game from Editor
+- Formatter
 
 ## Actions
 ### Quick fixes
