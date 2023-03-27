@@ -4,14 +4,17 @@ import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
+import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
-import gdscript.formatter.GdCodeStyleSettings
+import com.intellij.refactoring.suggested.endOffset
+import com.intellij.refactoring.suggested.startOffset
 import gdscript.psi.GdForSt
 import gdscript.psi.GdIfSt
 import gdscript.psi.GdTopLevelDecl
 import gdscript.psi.GdTypes
 import gdscript.psi.GdWhileSt
+import gdscript.utils.GdSettingsUtil.indentToSpaces
 import gdscript.utils.PsiElementUtil.precedingNewLines
 
 class GdBlock : AbstractBlock {
@@ -70,10 +73,6 @@ class GdBlock : AbstractBlock {
                 children.addAll(child.getChildren(null));
             } else {
                 val toIndent = indented || GdBlocks.ALWAYS_INDENTED_TOKENS.contains(type);
-//                if (child is PsiErrorElement && child.prevSibling.elementType == GdTypes.COLON) {
-//                    toIndent = true
-//                }
-
                 val currentBlock = GdBlock(
                     child,
                     Wrap.createWrap(WrapType.NONE, false),
@@ -103,15 +102,18 @@ class GdBlock : AbstractBlock {
             if (newChildIndex > 0) {
                 val previousBlock = this.subBlocks[newChildIndex - 1]
                 if (previousBlock is GdBlock && previousBlock.node.lastChildNode?.elementType == GdTypes.STMT_OR_SUITE) {
-                    // TODO
-                    if (PsiTreeUtil.getDeepestLast(previousBlock.node.lastChildNode.psi).precedingNewLines() > 10) {
+                    val preceding = previousBlock.node.lastChildNode.psi
+                    if (PsiTreeUtil.getDeepestLast(preceding).precedingNewLines() > 10) {
                         return CHILD_INDENT_NORMAL
                     }
-                    // TODO settings.getIndentSize()
 
-//                    return ChildAttributes(Indent.getSpaceIndent(2), null)
-                    return ChildAttributes(Indent.getContinuationIndent(
-                        true), null)
+                    // TODO tady by to chtělo doladit - problém, když je enter v zanoření, ale kód už pokračuje níže
+                    val document = PsiEditorUtil.findEditor(preceding)!!.document
+                    val line = document.getLineNumber(preceding.endOffset)
+                    val indentedLine =
+                        document.text.substring(document.getLineStartOffset(line), document.getLineEndOffset(line))
+
+                    return ChildAttributes(settings.indentToSpaces(indentedLine), null)
                 }
 
             }
@@ -141,7 +143,8 @@ class GdBlock : AbstractBlock {
                         return CHILD_INDENT_NONE
                     }
 
-                    val lastNodeParent = PsiTreeUtil.getParentOfType(lastNode,
+                    val lastNodeParent = PsiTreeUtil.getParentOfType(
+                        lastNode,
                         GdIfSt::class.java,
                         GdForSt::class.java,
                         GdWhileSt::class.java,

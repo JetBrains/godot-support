@@ -20,6 +20,7 @@ Editor -> General -> Smart Keys -> Unindent on Backspace
   - Resources (`$Path/Node` && `$"%Name"`)
 - Refactoring
 - Go to declaration / usages
+- File templates taken from Godot's source
 - Hides _prefix as private fields (optional based on Language settings)
 - Built-in documentation (Ctrl+Q)
 - Line markers
