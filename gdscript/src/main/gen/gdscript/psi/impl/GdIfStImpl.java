@@ -29,14 +29,26 @@ public class GdIfStImpl extends GdStmtImpl implements GdIfSt {
 
   @Override
   @NotNull
-  public List<GdExpr> getExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdExpr.class);
+  public List<GdElifSt> getElifStList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdElifSt.class);
   }
 
   @Override
-  @NotNull
-  public List<GdStmtOrSuite> getStmtOrSuiteList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdStmtOrSuite.class);
+  @Nullable
+  public GdElseSt getElseSt() {
+    return PsiTreeUtil.getChildOfType(this, GdElseSt.class);
+  }
+
+  @Override
+  @Nullable
+  public GdExpr getExpr() {
+    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
+  }
+
+  @Override
+  @Nullable
+  public GdStmtOrSuite getStmtOrSuite() {
+    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
   }
 
 }

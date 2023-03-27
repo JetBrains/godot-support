@@ -43,6 +43,8 @@ public interface GdTypes {
   IElementType CONST_ID_NMI = new GdElementType("CONST_ID_NMI");
   IElementType DICT_DECL = new GdElementType("DICT_DECL");
   IElementType DICT_PATTERN = new GdElementType("DICT_PATTERN");
+  IElementType ELIF_ST = new GdElementType("ELIF_ST");
+  IElementType ELSE_ST = new GdElementType("ELSE_ST");
   IElementType END_STMT = new GdElementType("END_STMT");
   IElementType ENUM_DECL_NMI = new GdElementType("ENUM_DECL_NMI");
   IElementType ENUM_DECL_TL = GdEnumDeclElementType.getInstance("ENUM_DECL_TL");
@@ -273,6 +275,12 @@ public interface GdTypes {
       }
       else if (type == DICT_PATTERN) {
         return new GdDictPatternImpl(node);
+      }
+      else if (type == ELIF_ST) {
+        return new GdElifStImpl(node);
+      }
+      else if (type == ELSE_ST) {
+        return new GdElseStImpl(node);
       }
       else if (type == END_STMT) {
         return new GdEndStmtImpl(node);

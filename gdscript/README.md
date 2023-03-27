@@ -30,6 +30,7 @@ Editor -> General -> Smart Keys -> Unindent on Backspace
 - Param hints (Ctrl+P)  
 - Run configuration - start game from Editor
 - Formatter
+- IS conditioned type for validations
 
 ## Actions
 ### Quick fixes

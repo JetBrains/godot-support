@@ -30,7 +30,8 @@ object GdClassUtil {
                 val cln = PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java);
                 if (cln != null) return cln.classname;
 
-                element.containingFile.virtualFile.resourcePath();
+                (element.containingFile.virtualFile ?: element.containingFile.originalFile.virtualFile)
+                    .resourcePath();
             }
         }
     }

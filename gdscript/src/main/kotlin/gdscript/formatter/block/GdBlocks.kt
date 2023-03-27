@@ -37,6 +37,14 @@ object GdBlocks {
         GdTypes.SET_DECL,
     )
 
+    val DEDENT_TOKEN_PARENTS = arrayOf(
+        GdTypes.IF_ST,
+    )
+    val DEDENT_TOKENS = arrayOf(
+        GdTypes.ELIF_ST,
+        GdTypes.ELSE_ST,
+    )
+
     val INDENT_CHILDREN_ATTRIBUTE = arrayOf(
         GdTypes.SIGNAL_DECL_TL,
         GdTypes.ENUM_DECL_TL,

@@ -6,7 +6,6 @@ import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
-import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdClassVarDeclIndex
 import gdscript.psi.*
@@ -56,7 +55,8 @@ object GdClassMemberUtil {
 
         val calledOnPsi: GdExpr? = calledUpon(element);
         if (calledOnPsi != null) {
-            calledOn = calledOnPsi.returnType;
+            // Check if there is an assertion check 'if (node is Node3D):'
+            calledOn = findIsTypeCheck(calledOnPsi) ?: calledOnPsi.returnType
             static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn);
         }
 
@@ -447,6 +447,46 @@ object GdClassMemberUtil {
             element.project,
             GlobalSearchScope.fileScope(psiFile),
         ).isEmpty();
+    }
+
+    /**
+     * Looks for statements of type checks
+     *  if node is Node3D:
+     *  while next is Node3D:
+     * and returns correct type for hint & validation
+     */
+    private fun findIsTypeCheck(element: PsiElement): String? {
+        val getParent = fun (stmt: PsiElement?): PsiElement? {
+            return PsiTreeUtil.getParentOfType(stmt, GdIfSt::class.java, GdWhileSt::class.java, GdElifSt::class.java)
+        }
+        val getIsType = fun (element: PsiElement, stmt: PsiElement?): String? {
+            val expr = PsiTreeUtil.findChildOfType(stmt, GdIsEx::class.java) ?: return null
+            if (element.text == expr.expr.text) return expr.returnType
+            return null
+        }
+
+        var parent = getParent(element)
+        while (parent != null) {
+            when (parent) {
+                is GdIfSt -> {
+                    val typed = getIsType(element, parent.expr)
+                    if (typed != null) return typed
+                }
+                is GdElifSt -> {
+                    val typed = getIsType(element, parent.expr)
+                    if (typed != null) return typed
+                    // To avoid matching from base condition that is not part of this suite
+                    parent = PsiTreeUtil.getParentOfType(parent, GdIfSt::class.java)
+                }
+                is GdWhileSt -> {
+                    val typed = getIsType(element, parent.expr)
+                    if (typed != null) return typed
+                }
+            }
+            parent = getParent(parent)
+        }
+
+        return null
     }
 
 }

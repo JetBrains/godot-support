@@ -8,7 +8,9 @@ import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.refactoring.suggested.endOffset
-import com.intellij.refactoring.suggested.startOffset
+import com.jetbrains.rd.util.forEachReversed
+import gdscript.psi.GdElifSt
+import gdscript.psi.GdElseSt
 import gdscript.psi.GdForSt
 import gdscript.psi.GdIfSt
 import gdscript.psi.GdTopLevelDecl
@@ -18,12 +20,6 @@ import gdscript.utils.GdSettingsUtil.indentToSpaces
 import gdscript.utils.PsiElementUtil.precedingNewLines
 
 class GdBlock : AbstractBlock {
-
-    companion object {
-        val CHILD_INDENT_NONE = ChildAttributes(Indent.getNoneIndent(), null)
-        val CHILD_INDENT_NORMAL = ChildAttributes(Indent.getNormalIndent(true), null)
-        val CHILD_INDENT_CONTINUATION = ChildAttributes(Indent.getContinuationIndent(true), null)
-    }
 
     val settings: CodeStyleSettings
     val myIndent: Indent
@@ -47,32 +43,36 @@ class GdBlock : AbstractBlock {
     }
 
     override fun buildChildren(): MutableList<Block> {
-        val blocks = mutableListOf<Block>();
-        val children: MutableList<ASTNode> = node.getChildren(null).toMutableList();
+        val blocks = mutableListOf<Block>()
+        val children: MutableList<ASTNode> = node.getChildren(null).toMutableList()
 
-        var suited = false;
-        var indented = false;
+        var suited = false
+        var indented = false
         var lastBlock: GdBlock? = null
         while (!children.isEmpty()) {
-            val child = children.removeFirstOrNull()!!;
-            val type = child.elementType;
+            val child = children.removeFirstOrNull()!!
+            val type = child.elementType
             if (suited) {
-                alignments.reset(type);
+                alignments.reset(type)
             }
+
+            // Due to elif & else being siblings and not children
+            if (GdBlocks.DEDENT_TOKENS.contains(type)) indented = false
 
             if (GdBlocks.EMPTY_TOKENS.contains(type)) {
                 if (type == GdTypes.INDENT) {
-                    indented = true;
+                    indented = true
                 }
             } else if (GdBlocks.SKIP_TOKENS.contains(type)) {
                 if (type == GdTypes.SUITE) {
-                    suited = true;
-                    alignments.initialize();
+                    suited = true
+                    alignments.initialize()
                 }
 
-                children.addAll(child.getChildren(null));
+                child.getChildren(null).forEachReversed { children.add(0, it) }
             } else {
-                val toIndent = indented || GdBlocks.ALWAYS_INDENTED_TOKENS.contains(type);
+                val toIndent = indented || GdBlocks.ALWAYS_INDENTED_TOKENS.contains(type)
+
                 val currentBlock = GdBlock(
                     child,
                     Wrap.createWrap(WrapType.NONE, false),
@@ -86,7 +86,7 @@ class GdBlock : AbstractBlock {
                     lastBlock.nextBlock = currentBlock
                 }
 
-                blocks.add(currentBlock);
+                blocks.add(currentBlock)
                 lastBlock = currentBlock
             }
         }
@@ -95,16 +95,21 @@ class GdBlock : AbstractBlock {
     }
 
     override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
+        var treeParent = this.node.treeParent
+        if (GdBlocks.DEDENT_TOKEN_PARENTS.contains(treeParent?.elementType)) {
+            treeParent = treeParent.treeParent
+        }
+
         if (
             GdBlocks.INDENT_CHILDREN_ATTRIBUTE.contains(node.elementType)
-            || this.node.treeParent?.elementType == GdTypes.SUITE
+            || treeParent?.elementType == GdTypes.SUITE
         ) {
             if (newChildIndex > 0) {
                 val previousBlock = this.subBlocks[newChildIndex - 1]
                 if (previousBlock is GdBlock && previousBlock.node.lastChildNode?.elementType == GdTypes.STMT_OR_SUITE) {
                     val preceding = previousBlock.node.lastChildNode.psi
                     if (PsiTreeUtil.getDeepestLast(preceding).precedingNewLines() > 10) {
-                        return CHILD_INDENT_NORMAL
+                        return ChildAttributes(Indent.getNormalIndent(true), null)
                     }
 
                     // TODO tady by to chtělo doladit - problém, když je enter v zanoření, ale kód už pokračuje níže
@@ -118,7 +123,7 @@ class GdBlock : AbstractBlock {
 
             }
 
-            return CHILD_INDENT_NORMAL
+            return ChildAttributes(Indent.getNormalIndent(true), null)
         }
 
         var index = newChildIndex - 1
@@ -140,12 +145,15 @@ class GdBlock : AbstractBlock {
                     // TODO
                     val lines = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)?.precedingNewLines() ?: 0
                     if (lines > 10) {
-                        return CHILD_INDENT_NONE
+                        return ChildAttributes(Indent.getNoneIndent(), null)
                     }
 
+                    // TODO upravit a bvyhodit do objecktu GdBlcoks
                     val lastNodeParent = PsiTreeUtil.getParentOfType(
                         lastNode,
                         GdIfSt::class.java,
+                        GdElifSt::class.java,
+                        GdElseSt::class.java,
                         GdForSt::class.java,
                         GdWhileSt::class.java,
                         GdTopLevelDecl::class.java
@@ -154,13 +162,13 @@ class GdBlock : AbstractBlock {
                         return ChildAttributes(Indent.getContinuationIndent(true), null)
                     }
 
-                    return CHILD_INDENT_NORMAL
+                    return ChildAttributes(Indent.getNormalIndent(true), null)
                 }
             }
             break
         }
 
-        return CHILD_INDENT_NONE
+        return ChildAttributes(Indent.getNoneIndent(), null)
     }
 
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {

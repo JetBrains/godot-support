@@ -8,9 +8,15 @@ import com.intellij.psi.PsiElement;
 public interface GdIfSt extends GdStmt {
 
   @NotNull
-  List<GdExpr> getExprList();
+  List<GdElifSt> getElifStList();
 
-  @NotNull
-  List<GdStmtOrSuite> getStmtOrSuiteList();
+  @Nullable
+  GdElseSt getElseSt();
+
+  @Nullable
+  GdExpr getExpr();
+
+  @Nullable
+  GdStmtOrSuite getStmtOrSuite();
 
 }

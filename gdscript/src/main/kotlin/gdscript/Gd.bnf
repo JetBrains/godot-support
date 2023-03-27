@@ -71,7 +71,7 @@ topLevelDecl ::=
 private topLevelDecl_r ::= !(
     FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT | BLOCK_COMMENT
     | REMOET | REMOTESYNC | MASTER | PUPPET | STATIC | VARARG
-    | CLASS_NAME | RRBR | RCBR | RSBR | EXTENDS | CLASS | NEW_LINE )
+    | CLASS_NAME | RRBR | RCBR | RSBR | EXTENDS | CLASS )
 
 constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {
     methods=[getName getReturnType getPresentation]
@@ -83,7 +83,7 @@ constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {
 }
 constId_nmi ::= identifierEx
 
-annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? {pin=1 recoverWhile=topLevelDecl_r}
+annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? endStmt? {pin=1 recoverWhile=topLevelDecl_r}
 annotationParams ::= literal_ex (COMMA literal_ex)*
 classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
     methods=[getName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r
@@ -170,7 +170,7 @@ private stmt_rr ::= !(
 private stmt_r ::= !(SET | GET | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
     | RETURN | AWAIT | ASSET | INDENT | DEDENT
-    | NEGATE
+    | NEGATE | ELIF | ELSE
     | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
@@ -178,7 +178,9 @@ varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
     /*pin=2 recoverWhile=stmt_r*/ methods=[getName getReturnType]
 }
 constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {/*pin=1 recoverWhile=stmt_r*/ methods=[getName getReturnType getReturnExpr]}
-if_st ::= IF expr COLON stmtOrSuite (ELIF expr COLON stmtOrSuite)* (ELSE COLON stmtOrSuite)? {pin=1 recoverWhile=stmt_r}
+if_st ::= IF expr COLON stmtOrSuite elif_st* else_st? {pin=1 recoverWhile=stmt_r}
+elif_st ::= ELIF expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
+else_st ::= ELSE COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
 while_st ::= WHILE expr COLON stmtOrSuite {pin=1 /*recoverWhile=stmt_r*/}
 for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=1 /*recoverWhile=stmt_r*/}
 
