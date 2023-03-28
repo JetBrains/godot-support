@@ -17,6 +17,7 @@ import gdscript.psi.GdTopLevelDecl
 import gdscript.psi.GdTypes
 import gdscript.psi.GdWhileSt
 import gdscript.utils.GdSettingsUtil.indentToSpaces
+import gdscript.utils.PsiElementUtil.getCaretOffsetIfSingle
 import gdscript.utils.PsiElementUtil.precedingNewLines
 
 class GdBlock : AbstractBlock {
@@ -108,13 +109,16 @@ class GdBlock : AbstractBlock {
                 val previousBlock = this.subBlocks[newChildIndex - 1]
                 if (previousBlock is GdBlock && previousBlock.node.lastChildNode?.elementType == GdTypes.STMT_OR_SUITE) {
                     val preceding = previousBlock.node.lastChildNode.psi
-                    if (PsiTreeUtil.getDeepestLast(preceding).precedingNewLines() > 10) {
-                        return ChildAttributes(Indent.getNormalIndent(true), null)
+                    val caretOffset = preceding.getCaretOffsetIfSingle()
+                    if (caretOffset != null) {
+                        if (PsiTreeUtil.getDeepestLast(preceding).precedingNewLines(caretOffset) > 2) {
+                            return ChildAttributes(Indent.getNormalIndent(true), null)
+                        }
                     }
 
-                    // TODO tady by to chtělo doladit - problém, když je enter v zanoření, ale kód už pokračuje níže
-                    val document = PsiEditorUtil.findEditor(preceding)!!.document
-                    val line = document.getLineNumber(preceding.endOffset)
+                    val lastVisible = PsiTreeUtil.getDeepestVisibleLast(preceding) ?: preceding
+                    val document = PsiEditorUtil.findEditor(lastVisible)!!.document
+                    val line = document.getLineNumber(lastVisible.endOffset)
                     val indentedLine =
                         document.text.substring(document.getLineStartOffset(line), document.getLineEndOffset(line))
 
@@ -142,10 +146,11 @@ class GdBlock : AbstractBlock {
                         return ChildAttributes(Indent.getContinuationIndent(true), null)
                     }
 
-                    // TODO
-                    val lines = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)?.precedingNewLines() ?: 0
-                    if (lines > 10) {
-                        return ChildAttributes(Indent.getNoneIndent(), null)
+                    val caretOffset = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)?.getCaretOffsetIfSingle()
+                    if (caretOffset != null) {
+                        if (previousBlock.node.psi.precedingNewLines(caretOffset) > 2) {
+                            return ChildAttributes(Indent.getNoneIndent(), null)
+                        }
                     }
 
                     // TODO upravit a bvyhodit do objecktu GdBlcoks
