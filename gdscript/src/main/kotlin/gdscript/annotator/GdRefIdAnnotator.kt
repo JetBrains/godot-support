@@ -47,8 +47,9 @@ class GdRefIdAnnotator : Annotator {
                 val calledUponType = GdClassMemberUtil.calledUpon(element)
                 // For undefined types do not mark it as error
                 if (calledUponType != null && calledUponType.returnType == "") return@run GdHighlighterColors.MEMBER
-                // For get_node() to ignore unknown types
-                if (calledUponType is GdCallEx && calledUponType.expr.text == "get_node") {
+                // For get_node(), ... to ignore unknown types
+                val ignoreTypes = arrayOf("get_node", "get_parent", "get_node_or_null")
+                if (ignoreTypes.contains(calledUponType?.text)) {
                     val prev = PsiTreeUtil.nextVisibleLeaf(element)
                     if (prev?.elementType == GdTypes.LRBR && prev?.parent is GdCallEx) {
                         return@run GdHighlighterColors.METHOD_CALL

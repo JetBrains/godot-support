@@ -185,6 +185,7 @@ public interface GdTypes {
   IElementType SIGNAL = new GdTokenType("SIGNAL");
   IElementType STATIC = new GdTokenType("STATIC");
   IElementType STRING = new GdTokenType("STRING");
+  IElementType STRING_NAME = new GdTokenType("STRING_NAME");
   IElementType SUPER = new GdTokenType("SUPER");
   IElementType TEST_OPERATOR = new GdTokenType("TEST_OPERATOR");
   IElementType TRUE = new GdTokenType("TRUE");

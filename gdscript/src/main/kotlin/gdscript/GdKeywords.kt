@@ -34,6 +34,7 @@ object GdKeywords {
     const val FLOAT = "float"
     const val BOOL = "bool"
     const val STR = "String"
+    const val STR_NAME = "StringName"
     val BUILT_TYPES = arrayOf(INT, STR, FLOAT, BOOL);
     const val VOID = "void"
     const val CALLABLE = "Callable"

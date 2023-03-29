@@ -33,7 +33,7 @@ HEX_NUMBER = 0x[0-9_a-fA-F]+
 BIN_NUMBER = 0b[01_]+
 REAL_NUMBER = {NUMBER}e-[0-9]+
 
-STRING = \"([^\\\"\r\n]|\\.)*\"
+STRING = "&"?\"([^\\\"\r\n]|\\.)*\"
 STRING_CHAR = \'([^\\\'\r\n]|\\.)*\'
 STRING_MULTILINE = \"\"\"([^\\\"]|\\.)*\"\"\"
 
@@ -50,35 +50,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 //OPERATOR = "+" | "-" | "*" | "/" | "%" | "^" | "&" | "|"
 //    | "<<" | ">>" | "!" | "&&" | "||"
 
-%xstate STRING
-
 %%
-
-<STRING> {
-    // Stringers
-    {STRING_MARKER} {
-        if (oppening.equals(yytext().toString())) {
-            yybegin(lastState);
-            return GdTypes.STRING;
-        }
-    }
-
-    {NEW_LINE} {
-        if (!oppening.equals("\"\"\"")) {
-            yybegin(lastState);
-            return TokenType.BAD_CHARACTER;
-        }
-    }
-
-    {STRING_MARKER_REV} {
-        continue;
-    }
-
-    <<EOF>> {
-        yybegin(YYINITIAL);
-        return GdTypes.STRING;
-    }
-}
 
     "extends"      { return GdTypes.EXTENDS; }
     "class_name"   { return GdTypes.CLASS_NAME; }
@@ -158,7 +130,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     ".."           { return GdTypes.DOTDOT; }
 
     {NODE_PATH_LEX}    { return GdTypes.NODE_PATH_LEX; }
-    {STRING}           { return GdTypes.STRING; }
+    {STRING}           { if (yytext().charAt(0) == '&') { return GdTypes.STRING_NAME; } return GdTypes.STRING; }
     {STRING_CHAR}      { return GdTypes.STRING; }
     {STRING_MULTILINE} { return GdTypes.STRING; }
     {ASSIGN}        { return GdTypes.ASSIGN; }

@@ -77,7 +77,7 @@ HEX_NUMBER = 0x[0-9_a-fA-F]+
 BIN_NUMBER = 0b[01_]+
 REAL_NUMBER = {NUMBER}e-[0-9]+
 
-STRING = \"([^\\\"\r\n]|\\.)*\"
+STRING = "&"?\"([^\\\"\r\n]|\\.)*\"
 STRING_CHAR = \'([^\\\'\r\n]|\\.)*\'
 STRING_MULTILINE = \"\"\"([^\\\"]|\\.)*\"\"\"
 
@@ -97,7 +97,6 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 ANY = .+
 
 %state CREATE_INDENT
-%xstate STRING
 
 %%
 
@@ -107,33 +106,6 @@ ANY = .+
         yypushback(yylength());
 
         return GdTypes.INDENT;
-    }
-}
-
-<STRING> {
-    // Stringers
-    {STRING_MARKER} {
-        if (oppening.equals(yytext().toString())) {
-            yybegin(lastState);
-            return GdTypes.STRING;
-        }
-    }
-
-    {IGNORE_NEW_LINE} { return TokenType.WHITE_SPACE; }
-    {NEW_LINE} {
-        if (!oppening.equals("\"\"\"")) {
-            yybegin(lastState);
-            return TokenType.BAD_CHARACTER;
-        }
-    }
-
-    {STRING_MARKER_REV} {
-        continue;
-    }
-
-    <<EOF>> {
-        yybegin(YYINITIAL);
-        return GdTypes.STRING;
     }
 }
 
@@ -217,7 +189,7 @@ ANY = .+
     ".."           { return dedentRoot(GdTypes.DOTDOT); }
 
     {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
-    {STRING}        { return dedentRoot(GdTypes.STRING); }
+    {STRING}        { if (yytext().charAt(0) == '&') { return dedentRoot(GdTypes.STRING_NAME); } return dedentRoot(GdTypes.STRING); }
     {STRING_CHAR}   { return dedentRoot(GdTypes.STRING); }
     {STRING_MULTILINE} { return GdTypes.STRING; }
     {ASSIGN}        { return GdTypes.ASSIGN; }

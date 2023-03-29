@@ -133,15 +133,18 @@ foreach ($files as $filename) {
     }
 
     /** Variables */
-    foreach ($xml['members'] ?? [] as $value) {
-        $value = (array) $value;
-        $att = (array) $value['@attributes'];
-        if ($value['0'] ?? null) {
-            $data .= $formatDesc($value['0'], "desc");
+    // TODO tohle by se mělo začlenit do hintů?
+    if ($filename != 'ProjectSettings.xml') {
+        foreach ($xml['members'] ?? [] as $value) {
+            $value = (array) $value;
+            $att = (array) $value['@attributes'];
+            if ($value['0'] ?? null) {
+                $data .= $formatDesc($value['0'], "desc");
+            }
+            $data .= sprintf("var %s: %s;\n\n", $att['name'], $att['type']);
         }
-        $data .= sprintf("var %s: %s;\n\n", $att['name'], $att['type']);
+        $data .= "\n";
     }
-    $data .= "\n";
 
     /** Constructor methods */
     foreach ($xml['constructors'] ?? [] as $value) {
