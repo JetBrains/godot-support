@@ -5,11 +5,11 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
-import gdscript.psi.GdClassDeclTl
-import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdRefIdNm
+import gdscript.psi.*
 import gdscript.psi.utils.GdClassMemberUtil
 
 /**
@@ -44,8 +44,17 @@ class GdRefIdAnnotator : Annotator {
                     return@run GdHighlighterColors.MEMBER
                 }
 
-                val calledUponType = GdClassMemberUtil.calledUpon(element);
-                if (calledUponType != null && calledUponType.returnType == "") return
+                val calledUponType = GdClassMemberUtil.calledUpon(element)
+                // For undefined types do not mark it as error
+                if (calledUponType != null && calledUponType.returnType == "") return@run GdHighlighterColors.MEMBER
+                // For get_node() to ignore unknown types
+                if (calledUponType is GdCallEx && calledUponType.expr.text == "get_node") {
+                    val prev = PsiTreeUtil.nextVisibleLeaf(element)
+                    if (prev?.elementType == GdTypes.LRBR && prev?.parent is GdCallEx) {
+                        return@run GdHighlighterColors.METHOD_CALL
+                    }
+                    return@run GdHighlighterColors.MEMBER
+                }
 
                 holder
                     .newAnnotation(HighlightSeverity.ERROR, "Reference [${element.text}] not found")

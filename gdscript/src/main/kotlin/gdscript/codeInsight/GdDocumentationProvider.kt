@@ -8,6 +8,7 @@ import com.intellij.psi.PsiNamedElement
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdNamedElement
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.constants
 import gdscript.psi.utils.GdClassMemberUtil.enums
@@ -24,8 +25,8 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
     private val freeReference = "\\[([A-Z].+?)]".toRegex()
 
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
-        if (originalElement != null && originalElement.parent is PsiNamedElement) {
-            return findDocumentationComment(originalElement.parent as PsiNamedElement, PsiGdCommentUtils.DESCRIPTION);
+        if (originalElement != null && originalElement.parent is GdNamedElement) {
+            return findDocumentationComment(originalElement.parent as GdNamedElement, PsiGdCommentUtils.DESCRIPTION);
         }
 
         return renderDocumentationForDeclaration(element, PsiGdCommentUtils.DESCRIPTION);

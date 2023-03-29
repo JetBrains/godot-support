@@ -68,6 +68,7 @@ topLevelDecl ::=
     | annotation_tl
     | methodDecl_tl
     | classDecl_tl
+    | BAD_CHARACTER
 private topLevelDecl_r ::= !(
     FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT | BLOCK_COMMENT
     | REMOET | REMOTESYNC | MASTER | PUPPET | STATIC | VARARG
@@ -75,8 +76,7 @@ private topLevelDecl_r ::= !(
 
 constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {
     methods=[getName getReturnType getPresentation]
-    pin=1
-    recoverWhile=topLevelDecl_r
+    pin=1 recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdConstDeclElementImpl"
     stubClass="gdscript.index.stub.GdConstDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"
@@ -86,7 +86,8 @@ constId_nmi ::= identifierEx
 annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? endStmt? {pin=1 recoverWhile=topLevelDecl_r}
 annotationParams ::= literal_ex (COMMA literal_ex)*
 classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
-    methods=[getName getReturnType getPresentation] pin=1 recoverWhile=topLevelDecl_r
+    methods=[getName getReturnType getPresentation]
+    pin=1 recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdClassVarDeclElementImpl"
     stubClass="gdscript.index.stub.GdClassVarDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdClassVarDeclElementType.getInstance"
@@ -213,7 +214,6 @@ expr ::=
     plusMinus_ex
     | negate_ex
     | logic_ex
-    | attribute_ex
     | cast_ex
     | arr_ex
     | call_ex
@@ -224,6 +224,7 @@ expr ::=
     | shift_ex
     | plus_ex
     | factor_ex
+    | attribute_ex
     | sign_ex
     | bitNot_ex
     | plusMinusPre_ex

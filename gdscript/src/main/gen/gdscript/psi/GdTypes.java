@@ -444,6 +444,9 @@ public interface GdTypes {
       else if (type == TERNARY_EX) {
         return new GdTernaryExImpl(node);
       }
+      else if (type == TOP_LEVEL_DECL) {
+        return new GdTopLevelDeclImpl(node);
+      }
       else if (type == TYPED) {
         return new GdTypedImpl(node);
       }

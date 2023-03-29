@@ -5,6 +5,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdClassVarDeclIndex
@@ -204,6 +205,7 @@ object GdClassMemberUtil {
 
         while (true) {
             val movedToParent = it?.prevSibling == null;
+            if (it is GdFile) break
             it = it.prevSibling ?: it.parent ?: break;
             when (it) {
                 is GdClassVarDeclTl -> locals[it.name] = it;
@@ -413,6 +415,24 @@ object GdClassMemberUtil {
     }
 
     fun calledUpon(element: PsiElement): GdExpr? {
+        val getAttrIfAny = fun (el: PsiElement): GdExpr? {
+            val previous = PsiTreeUtil.prevVisibleLeaf(element)
+            if (previous?.elementType == GdTypes.DOT && previous?.parent?.elementType == GdTypes.ATTRIBUTE_EX) {
+                return (previous!!.parent as GdAttributeEx).exprList.first()
+            }
+            return null
+        }
+
+        val attr = getAttrIfAny(element)
+        if (attr != null) return attr
+
+        val next = PsiTreeUtil.nextVisibleLeaf(element)
+        if (next?.elementType == GdTypes.LRBR && next?.parent?.elementType == GdTypes.CALL_EX) {
+            return getAttrIfAny(next!!.parent)
+        }
+
+        return null
+
         when (val parent = element.parent?.parent) {
             is GdAttributeEx -> {
                 if (element.parent.prevSibling != null) {

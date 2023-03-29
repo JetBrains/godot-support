@@ -11,7 +11,7 @@ import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public abstract class GdTopLevelDeclImpl extends ASTWrapperPsiElement implements GdTopLevelDecl {
+public class GdTopLevelDeclImpl extends ASTWrapperPsiElement implements GdTopLevelDecl {
 
   public GdTopLevelDeclImpl(@NotNull ASTNode node) {
     super(node);

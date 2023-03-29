@@ -479,15 +479,16 @@ public class GdParser implements PsiParser, LightPsiParser {
   // VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt)
   public static boolean classVarDecl_tl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classVarDecl_tl")) return false;
+    if (!nextTokenIsFast(b, VAR)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CLASS_VAR_DECL_TL, "<class var decl tl>");
+    Marker m = enter_section_(b, l, _NONE_, CLASS_VAR_DECL_TL, null);
     r = consumeTokenFast(b, VAR);
     p = r; // pin = 1
     r = r && report_error_(b, classVarId_nmi(b, l + 1));
     r = p && report_error_(b, classVarDecl_tl_2(b, l + 1)) && r;
     r = p && report_error_(b, classVarDecl_tl_3(b, l + 1)) && r;
     r = p && classVarDecl_tl_4(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, GdParser::topLevelDecl_r);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -2292,6 +2293,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   //     | annotation_tl
   //     | methodDecl_tl
   //     | classDecl_tl
+  //     | BAD_CHARACTER
   public static boolean topLevelDecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "topLevelDecl")) return false;
     boolean r;
@@ -2303,6 +2305,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = annotation_tl(b, l + 1);
     if (!r) r = methodDecl_tl(b, l + 1);
     if (!r) r = classDecl_tl(b, l + 1);
+    if (!r) r = consumeTokenFast(b, BAD_CHARACTER);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -2525,17 +2528,17 @@ public class GdParser implements PsiParser, LightPsiParser {
   // 0: POSTFIX(plusMinus_ex)
   // 1: PREFIX(negate_ex)
   // 2: BINARY(logic_ex)
-  // 3: BINARY(attribute_ex)
-  // 4: POSTFIX(cast_ex)
-  // 5: BINARY(arr_ex)
-  // 6: POSTFIX(call_ex)
-  // 7: BINARY(ternary_ex)
-  // 8: BINARY(in_ex)
-  // 9: BINARY(comparison_ex)
-  // 10: BINARY(bitAnd_ex)
-  // 11: BINARY(shift_ex)
-  // 12: BINARY(plus_ex)
-  // 13: BINARY(factor_ex)
+  // 3: POSTFIX(cast_ex)
+  // 4: BINARY(arr_ex)
+  // 5: POSTFIX(call_ex)
+  // 6: BINARY(ternary_ex)
+  // 7: BINARY(in_ex)
+  // 8: BINARY(comparison_ex)
+  // 9: BINARY(bitAnd_ex)
+  // 10: BINARY(shift_ex)
+  // 11: BINARY(plus_ex)
+  // 12: BINARY(factor_ex)
+  // 13: BINARY(attribute_ex)
   // 14: PREFIX(sign_ex)
   // 15: PREFIX(bitNot_ex)
   // 16: PREFIX(plusMinusPre_ex)
@@ -2574,51 +2577,51 @@ public class GdParser implements PsiParser, LightPsiParser {
         r = expr(b, l, 2);
         exit_section_(b, l, m, LOGIC_EX, r, true, null);
       }
-      else if (g < 3 && consumeTokenSmart(b, DOT)) {
-        r = expr(b, l, 3);
-        exit_section_(b, l, m, ATTRIBUTE_EX, r, true, null);
-      }
-      else if (g < 4 && cast_ex_0(b, l + 1)) {
+      else if (g < 3 && cast_ex_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, CAST_EX, r, true, null);
       }
-      else if (g < 5 && consumeTokenSmart(b, LSBR)) {
-        r = report_error_(b, expr(b, l, 5));
+      else if (g < 4 && consumeTokenSmart(b, LSBR)) {
+        r = report_error_(b, expr(b, l, 4));
         r = consumeToken(b, RSBR) && r;
         exit_section_(b, l, m, ARR_EX, r, true, null);
       }
-      else if (g < 6 && call_ex_0(b, l + 1)) {
+      else if (g < 5 && call_ex_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, CALL_EX, r, true, null);
       }
-      else if (g < 7 && consumeTokenSmart(b, IF)) {
-        r = report_error_(b, expr(b, l, 7));
+      else if (g < 6 && consumeTokenSmart(b, IF)) {
+        r = report_error_(b, expr(b, l, 6));
         r = ternary_ex_1(b, l + 1) && r;
         exit_section_(b, l, m, TERNARY_EX, r, true, null);
       }
-      else if (g < 8 && consumeTokenSmart(b, IN)) {
-        r = expr(b, l, 8);
+      else if (g < 7 && consumeTokenSmart(b, IN)) {
+        r = expr(b, l, 7);
         exit_section_(b, l, m, IN_EX, r, true, null);
       }
-      else if (g < 9 && consumeTokenSmart(b, TEST_OPERATOR)) {
-        r = expr(b, l, 9);
+      else if (g < 8 && consumeTokenSmart(b, TEST_OPERATOR)) {
+        r = expr(b, l, 8);
         exit_section_(b, l, m, COMPARISON_EX, r, true, null);
       }
-      else if (g < 10 && bitAnd_ex_0(b, l + 1)) {
-        r = expr(b, l, 10);
+      else if (g < 9 && bitAnd_ex_0(b, l + 1)) {
+        r = expr(b, l, 9);
         exit_section_(b, l, m, BIT_AND_EX, r, true, null);
       }
-      else if (g < 11 && shift_ex_0(b, l + 1)) {
-        r = expr(b, l, 11);
+      else if (g < 10 && shift_ex_0(b, l + 1)) {
+        r = expr(b, l, 10);
         exit_section_(b, l, m, SHIFT_EX, r, true, null);
       }
-      else if (g < 12 && plus_ex_0(b, l + 1)) {
-        r = expr(b, l, 12);
+      else if (g < 11 && plus_ex_0(b, l + 1)) {
+        r = expr(b, l, 11);
         exit_section_(b, l, m, PLUS_EX, r, true, null);
       }
-      else if (g < 13 && factor_ex_0(b, l + 1)) {
-        r = expr(b, l, 13);
+      else if (g < 12 && factor_ex_0(b, l + 1)) {
+        r = expr(b, l, 12);
         exit_section_(b, l, m, FACTOR_EX, r, true, null);
+      }
+      else if (g < 13 && consumeTokenSmart(b, DOT)) {
+        r = expr(b, l, 13);
+        exit_section_(b, l, m, ATTRIBUTE_EX, r, true, null);
       }
       else if (g < 17 && is_ex_0(b, l + 1)) {
         r = true;
