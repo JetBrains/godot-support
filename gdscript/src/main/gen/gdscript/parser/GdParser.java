@@ -479,15 +479,16 @@ public class GdParser implements PsiParser, LightPsiParser {
   // VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt)
   public static boolean classVarDecl_tl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classVarDecl_tl")) return false;
+    if (!nextTokenIsFast(b, VAR)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CLASS_VAR_DECL_TL, "<class var decl tl>");
+    Marker m = enter_section_(b, l, _NONE_, CLASS_VAR_DECL_TL, null);
     r = consumeTokenFast(b, VAR);
     p = r; // pin = 1
     r = r && report_error_(b, classVarId_nmi(b, l + 1));
     r = p && report_error_(b, classVarDecl_tl_2(b, l + 1)) && r;
     r = p && report_error_(b, classVarDecl_tl_3(b, l + 1)) && r;
     r = p && classVarDecl_tl_4(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, GdParser::topLevelDecl_r);
+    exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
@@ -2833,7 +2834,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // TRUE | FALSE | STRING_NAME | STRING | NUMBER | NULL | NAN | INF | refId_nm
+  // TRUE | FALSE | STRING_NAME | NODE_PATH_LIT | STRING | NUMBER | NULL | NAN | INF | refId_nm
   public static boolean literal_ex(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "literal_ex")) return false;
     boolean r;
@@ -2841,6 +2842,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = consumeTokenSmart(b, TRUE);
     if (!r) r = consumeTokenSmart(b, FALSE);
     if (!r) r = consumeTokenSmart(b, STRING_NAME);
+    if (!r) r = consumeTokenSmart(b, NODE_PATH_LIT);
     if (!r) r = consumeTokenSmart(b, STRING);
     if (!r) r = consumeTokenSmart(b, NUMBER);
     if (!r) r = consumeTokenSmart(b, NULL);

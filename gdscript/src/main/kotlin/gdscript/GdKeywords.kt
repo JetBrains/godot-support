@@ -35,6 +35,7 @@ object GdKeywords {
     const val BOOL = "bool"
     const val STR = "String"
     const val STR_NAME = "StringName"
+    const val NODE_PATH = "NodePath"
     val BUILT_TYPES = arrayOf(INT, STR, FLOAT, BOOL);
     const val VOID = "void"
     const val CALLABLE = "Callable"

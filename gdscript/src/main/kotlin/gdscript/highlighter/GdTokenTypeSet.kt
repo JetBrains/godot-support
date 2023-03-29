@@ -59,7 +59,11 @@ interface GdTokenTypeSet {
         )
 
         // Yellow
-        val STRINGS = TokenSet.create(GdTypes.STRING)
+        val STRINGS = TokenSet.create(
+            GdTypes.STRING,
+            GdTypes.NODE_PATH,
+            GdTypes.STRING_NAME,
+        )
 
         // Teal
         val CLASS_TYPE = TokenSet.create()

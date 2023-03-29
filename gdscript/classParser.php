@@ -45,7 +45,7 @@ $parseParams = function($value) {
 };
 
 foreach ($files as $filename) {
-    // if ($filename != "Vector2.xml") { continue; }
+//     if ($filename != "CanvasItem.xml") { continue; }
 
     if ($filename == "." || $filename == "..") continue;
     $data = "";
@@ -133,6 +133,7 @@ foreach ($files as $filename) {
     }
 
     /** Variables */
+    $getSetMethods = "";
     // TODO tohle by se mělo začlenit do hintů?
     if ($filename != 'ProjectSettings.xml') {
         foreach ($xml['members'] ?? [] as $value) {
@@ -141,8 +142,26 @@ foreach ($files as $filename) {
             if ($value['0'] ?? null) {
                 $data .= $formatDesc($value['0'], "desc");
             }
-            $data .= sprintf("var %s: %s;\n\n", $att['name'], $att['type']);
+            $data .= sprintf("var %s: %s", $att['name'], $att['type']);
+
+            $getter = $att['getter'] ?? null ? sprintf("get = %s", $att['getter']) : null;
+            $setter = $att['setter'] ?? null ? sprintf("set = %s", $att['setter']) : null;
+            $getSet = [];
+            if ($getter) {
+                $getSet[] = $getter;
+                $getSetMethods .= sprintf("func %s() -> %s:\n\treturn %s\n\n", $att['getter'], $att['type'], $att['name']);
+            }
+            if ($setter) {
+                $getSet[] = $setter;
+                $getSetMethods .= sprintf("func %s(value: %s) -> void:\n\t%s = value\n\n", $att['setter'], $att['type'], $att['name']);
+            }
+            if ($getSet) {
+                $data .= ":\n\t";
+                $data .= implode(', ', $getSet);
+            }
+            $data .= "\n\n";
         }
+
         $data .= "\n";
     }
 
@@ -190,6 +209,7 @@ foreach ($files as $filename) {
         $data .= sprintf("\tpass;\n\n");
     }
     $data .= "\n";
+    $data .= $getSetMethods;
 
     file_put_contents(sprintf($target, $class_name), $data);
 }

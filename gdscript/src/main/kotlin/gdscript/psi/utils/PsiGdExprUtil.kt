@@ -114,6 +114,8 @@ object PsiGdExprUtil {
                     return GdKeywords.STR;
                 } else if (elementType == GdTypes.STRING_NAME) {
                     return GdKeywords.STR_NAME;
+                } else if (elementType == GdTypes.NODE_PATH) {
+                    return GdKeywords.NODE_PATH;
                 } else if (elementType == GdTypes.REF_ID_NM) {
                     if (text == GdKeywords.SELF) {
                         return GdClassUtil.getOwningClassName(expr)

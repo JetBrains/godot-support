@@ -161,6 +161,7 @@ public interface GdTypes {
   IElementType NEGATE = new GdTokenType("NEGATE");
   IElementType NEW_LINE = new GdTokenType("NEW_LINE");
   IElementType NODE_PATH_LEX = new GdTokenType("NODE_PATH_LEX");
+  IElementType NODE_PATH_LIT = new GdTokenType("NODE_PATH_LIT");
   IElementType NOT = new GdTokenType("NOT");
   IElementType NULL = new GdTokenType("NULL");
   IElementType NUMBER = new GdTokenType("NUMBER");

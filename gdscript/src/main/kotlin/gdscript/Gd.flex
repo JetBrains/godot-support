@@ -88,6 +88,7 @@ STRING_MARKER_REV = [^\"\'\n\r]*
 COMMENT = "#"[^\r\n]*
 INDENTED_COMMENT = {INDENT}"#"
 ANNOTATOR = "@"[a-zA-Z_]*
+NODE_PATH = "^"\"([^\\\"\r\n]|\\.)*\"
 NODE_PATH_LEX = ("$"|"%")[\"\%a-zA-Z0-9_/:\.]*
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
@@ -188,6 +189,7 @@ ANY = .+
     "_"            { return dedentRoot(GdTypes.UNDER); }
     ".."           { return dedentRoot(GdTypes.DOTDOT); }
 
+    {NODE_PATH}     { return dedentRoot(GdTypes.NODE_PATH_LIT); }
     {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
     {STRING}        { if (yytext().charAt(0) == '&') { return dedentRoot(GdTypes.STRING_NAME); } return dedentRoot(GdTypes.STRING); }
     {STRING_CHAR}   { return dedentRoot(GdTypes.STRING); }
@@ -200,7 +202,7 @@ ANY = .+
     {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }
     {HEX_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
-    {COMMENT}       { lineEnded = true; IElementType ret = dedentRoot(GdTypes.COMMENT); newLineProcessed = true; return ret; }
+    {COMMENT}       { lineEnded = true; IElementType ret = dedentRoot(GdTypes.COMMENT); newLineProcessed = yycolumn == 0; return ret; }
 
     {INDENTED_COMMENT} {
         yypushback(1);

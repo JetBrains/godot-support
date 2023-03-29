@@ -43,6 +43,7 @@ STRING_MARKER_REV = [^\"\'\n\r]*
 
 COMMENT = "#"[^\r\n]*
 ANNOTATOR = "@"[a-zA-Z_]*
+NODE_PATH = "^"\"([^\\\"\r\n]|\\.)*\"
 NODE_PATH_LEX = ("$"|"%")[\"\%a-zA-Z0-9_/:\.]*
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
@@ -129,6 +130,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "_"            { return GdTypes.UNDER; }
     ".."           { return GdTypes.DOTDOT; }
 
+    {NODE_PATH}        { return GdTypes.NODE_PATH_LIT; }
     {NODE_PATH_LEX}    { return GdTypes.NODE_PATH_LEX; }
     {STRING}           { if (yytext().charAt(0) == '&') { return GdTypes.STRING_NAME; } return GdTypes.STRING; }
     {STRING_CHAR}      { return GdTypes.STRING; }
