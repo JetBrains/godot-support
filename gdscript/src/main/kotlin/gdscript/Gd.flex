@@ -188,6 +188,7 @@ ANY = .+
     "~"            { return dedentRoot(GdTypes.NOT); }
     "_"            { return dedentRoot(GdTypes.UNDER); }
     ".."           { return dedentRoot(GdTypes.DOTDOT); }
+    "\\"           { newLineProcessed = true; ignoreIndent = true; return GdTypes.BACKSLASH; }
 
     {NODE_PATH}     { return dedentRoot(GdTypes.NODE_PATH_LIT); }
     {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
@@ -223,12 +224,12 @@ ANY = .+
         if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;
         } else if (ignored > 0) {
-            if (ignored == 0) {
-                ignoreIndent = false;
-                return GdTypes.NEW_LINE;
-            } else {
+//            if (ignored == 0) {
+//                ignoreIndent = false;
+//                return GdTypes.NEW_LINE;
+//            } else {
                 return TokenType.WHITE_SPACE;
-            }
+//            }
         }
 
         if (newLineProcessed) {
@@ -239,7 +240,7 @@ ANY = .+
         return GdTypes.NEW_LINE;
     }
     {INDENT}  {
-        if (yycolumn == 0) {
+        if (yycolumn == 0 && !ignoreIndent) {
             int spaces = yytext().length();
             if (spaces > indent) {
                 if (ignored > 0) {
@@ -255,11 +256,12 @@ ANY = .+
                 return GdTypes.DEDENT;
             }
         }
+        ignoreIndent = false;
 
         return TokenType.WHITE_SPACE;
     }
 
-    {IGNORE_NEW_LINE} { return TokenType.WHITE_SPACE; }
+//    {IGNORE_NEW_LINE} { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
     if (yycolumn > 0 && !eofFinished) {

@@ -29,9 +29,13 @@ object PsiGdExprUtil {
             is GdBitAndEx -> GdKeywords.INT;
             is GdShiftEx -> GdKeywords.INT;
             is GdPlusEx -> {
+                return GdKeywords.VARIANT
+                // TODO Vector * float or vice-versa... requires to parse operators
+                // TODO [] array accesor tu je také -> např. Basis je také přístupný -> potřeba překopat Array access
                 return expr.exprList.getOrNull(1)?.returnType ?: GdKeywords.VARIANT
             };
             is GdFactorEx -> {
+                return GdKeywords.VARIANT
                 return expr.exprList.getOrNull(1)?.returnType ?: GdKeywords.VARIANT
             };
             is GdSignEx -> expr.expr?.returnType ?: "";

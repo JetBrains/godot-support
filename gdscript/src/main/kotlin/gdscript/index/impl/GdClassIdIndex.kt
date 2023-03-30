@@ -31,7 +31,7 @@ object GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
             val resource = name.substring(1, endIndex);
             val resourceFile = GdFileResIndex.getFiles(resource, project).firstOrNull() ?: return emptyList();
             val psiFile = resourceFile.getPsiFile(project);
-            modified = PsiTreeUtil.getStubChildOfType(psiFile, GdClassNaming::class.java)?.classname.orEmpty();
+            modified = PsiTreeUtil.getStubChildOfType(psiFile, GdClassNaming::class.java)?.classname.orEmpty()
 
             if (name.length > endIndex + 1) {
                 modified = "$modified${name.substring(endIndex + 1)}";

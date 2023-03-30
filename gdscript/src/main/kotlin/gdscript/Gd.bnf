@@ -32,6 +32,7 @@
     string='regexp:"[^"]*?"'
     number='regexp:[0-9]+(\.)?[0-9]*'
     comment='regexp:#.*'
+    backslash='\'
     bad_character='regexp:[\^]'
   ]
 }
@@ -70,7 +71,7 @@ topLevelDecl ::=
     | classDecl_tl
     | BAD_CHARACTER
 private topLevelDecl_r ::= !(
-    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT | BLOCK_COMMENT
+    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT
     | REMOET | REMOTESYNC | MASTER | PUPPET | STATIC | VARARG
     | CLASS_NAME | RRBR | RCBR | RSBR | EXTENDS | CLASS )
 
@@ -105,7 +106,13 @@ setMethodId_nm ::= IDENTIFIER
 getMethodId_nm ::= IDENTIFIER
 private setget_r ::= !(SET | GET) & topLevelDecl_r
 
-signalDecl_tl ::= SIGNAL signalId_nmi (LRBR paramList RRBR)? endStmt {methods=[getName getParameters] pin=1 recoverWhile=topLevelDecl_r mixin="gdscript.psi.impl.GdSignalDeclElementImpl" stubClass="gdscript.index.stub.GdSignalDeclStub" elementTypeFactory="gdscript.psi.impl.GdSignalDeclElementType.getInstance"}
+signalDecl_tl ::= SIGNAL signalId_nmi (LRBR paramList RRBR)? endStmt {
+    methods=[getName getParameters]
+    pin=1 recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdSignalDeclElementImpl"
+    stubClass="gdscript.index.stub.GdSignalDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdSignalDeclElementType.getInstance"
+}
 signalId_nmi ::= IDENTIFIER
 
 enumDecl_tl ::= ENUM enumDecl_nmi? LCBR INDENT? enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR (endStmt | (NEW_LINE DEDENT)) {
@@ -126,12 +133,13 @@ methodDecl_tl ::= methodSpecifier* FUNC methodId_nmi LRBR paramList? RRBR return
 }
 methodSpecifier ::= STATIC | VARARG | MASTER | PUPPET | REMOTE | REMOTESYNC
 methodId_nmi ::= identifierEx
-paramList ::= param (COMMA param)* COMMA? {pin=1 /*recoverWhile=argList_r*/}
+paramList ::= param (COMMA param)* COMMA? { pin=1 recoverWhile=argList_r }
 param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
 returnHint ::= RET returnHintVal
 returnHintVal ::= typedVal | VOID // typeHint_nm | VOID
-argList ::= expr (COMMA expr)* COMMA? {pin=1 /*recoverWhile=argList_r*/}
+argList ::= expr (COMMA expr)* COMMA? { pin=1 recoverWhile=argList_r }
 var_nmi ::= identifierEx
+private argList_r ::= !(RRBR | endStmt)
 
 // TODO annotace - single inheritance - jak root tak inner, single class_name
 classDecl_tl ::= CLASS className_nmi inheritance? COLON NEW_LINE (INDENT (inheritance | topLevelDecl)* DEDENT)+ {
@@ -155,19 +163,6 @@ stmt ::=
     | await_st
     | expr_st
     | BAD_CHARACTER // tohle je hack aby GdStmtImpl nebyl abstract class při token např. Ł to jinak nevyparsuje
-private stmt_rr ::= !(
-    EXTENDS | CLASS_NAME | VAR | CONST | GET | SET | ENUM |
-    FUNC | PASS | TRUE | FALSE | NULL | SELF | CONTINUE | BREAKPOINT |
-    BREAK | RETURN | VOID | INF | NAN | SIGNAL | IF | ELSE | ELIF |
-    WHILE | FOR | MATCH | AWAIT | STATIC | VARARG | CLASS | SUPER |
-    NEGATE | PPLUS | MMINUS | COLON | LRBR | RRBR | LSBR | RSBR |
-    LCBR | RCBR | XOR | NOT | NODE_PATH_LEX | STRING |
-    ANNOTATOR | IDENTIFIER | NUMBER | INDENT | DEDENT | NEW_LINE
-    // TODO extend by topLevel_r
-)
-//    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT | BLOCK_COMMENT
-//    | REMOET | REMOTESYNC | MASTER | PUPPET | STATIC | VARARG
-//    | CLASS_NAME | RRBR | RCBR | RSBR | EXTENDS | CLASS | NEW_LINE )
 private stmt_r ::= !(SET | GET | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
     | RETURN | AWAIT | ASSET | INDENT | DEDENT
@@ -233,7 +228,6 @@ expr ::=
     | literal_ex
     | funcDecl_ex
     {methods=[getReturnType]}
-private expr_r ::= !(NEW_LINE)
 
 cast_ex ::= expr AS typedVal
 ternary_ex ::= expr IF expr ELSE expr

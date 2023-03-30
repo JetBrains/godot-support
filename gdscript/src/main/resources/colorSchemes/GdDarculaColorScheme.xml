@@ -60,11 +60,6 @@
             <option name="FOREGROUND" value="63c259" />
         </value>
     </option>
-    <option name="GD_BLOCK_COMMENT">
-        <value>
-            <option name="FOREGROUND" value="63c259" />
-        </value>
-    </option>
     <option name="GD_BAD_CHARACTER">
         <value>
             <option name="FOREGROUND" value="ff786b" />

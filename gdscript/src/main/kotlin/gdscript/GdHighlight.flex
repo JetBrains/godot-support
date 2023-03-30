@@ -129,6 +129,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "~"            { return GdTypes.NOT; }
     "_"            { return GdTypes.UNDER; }
     ".."           { return GdTypes.DOTDOT; }
+    "\\"           { return GdTypes.BACKSLASH; }
 
     {NODE_PATH}        { return GdTypes.NODE_PATH_LIT; }
     {NODE_PATH_LEX}    { return GdTypes.NODE_PATH_LEX; }

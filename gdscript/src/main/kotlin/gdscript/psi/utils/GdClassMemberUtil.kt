@@ -55,7 +55,7 @@ object GdClassMemberUtil {
         var calledOn: String? = GdKeywords.SELF;
 
         val calledOnPsi: GdExpr? = calledUpon(element);
-        if (calledOnPsi != null) {
+        if (calledOnPsi != null && calledOnPsi.text != GdKeywords.SELF) {
             // Check if there is an assertion check 'if (node is Node3D):'
             calledOn = findIsTypeCheck(calledOnPsi) ?: calledOnPsi.returnType
             static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn);
@@ -205,7 +205,6 @@ object GdClassMemberUtil {
 
         while (true) {
             val movedToParent = it?.prevSibling == null;
-            if (it is GdFile) break
             it = it.prevSibling ?: it.parent ?: break;
             when (it) {
                 is GdClassVarDeclTl -> locals[it.name] = it;

@@ -34,7 +34,7 @@ object GdEnumCompletionUtil {
             tail = if (values != null) "(${values[name] ?: ""})" else {
                 ""
             },
-            priority = GdLookup.LOCAL_USER_DEFINED,
+            priority = GdLookup.BUILT_IN,
         )
     }
 

@@ -20,7 +20,7 @@ import gdscript.psi.GdTypes
 class GdParserDefinition : ParserDefinition {
 
     companion object {
-        val COMMENTS = TokenSet.create(GdTypes.COMMENT)
+        val COMMENTS = TokenSet.create(GdTypes.COMMENT, GdTypes.BACKSLASH)
         val STRING_LITERALS = TokenSet.create(GdTypes.STRING)
         val FILE = IStubFileElementType<PsiFileStub<GdFile>>(GdLanguage);
     }

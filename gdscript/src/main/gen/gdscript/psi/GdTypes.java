@@ -116,8 +116,8 @@ public interface GdTypes {
   IElementType ASSET = new GdTokenType("ASSET");
   IElementType ASSIGN = new GdTokenType("ASSIGN");
   IElementType AWAIT = new GdTokenType("AWAIT");
+  IElementType BACKSLASH = new GdTokenType("\\");
   IElementType BAD_CHARACTER = new GdTokenType("BAD_CHARACTER");
-  IElementType BLOCK_COMMENT = new GdTokenType("BLOCK_COMMENT");
   IElementType BREAK = new GdTokenType("BREAK");
   IElementType BREAKPOINT = new GdTokenType("BREAKPOINT");
   IElementType CEQ = new GdTokenType("CEQ");
