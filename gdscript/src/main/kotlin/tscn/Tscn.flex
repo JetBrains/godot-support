@@ -5,7 +5,7 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import tscn.psi.TscnTokenType;
 import tscn.psi.TscnTypes;
-import java.util.Stack;
+import java.util.HashMap;import java.util.Stack;
 
 %%
 
@@ -19,8 +19,15 @@ import java.util.Stack;
 
 %{
     boolean dataJson = false;
+    Character endingChar = '{';
+    HashMap<Character, Character> endings = new HashMap<>();
     StringBuilder dataJsonValue = new StringBuilder();
 %}
+
+%init{
+    endings.put('{', '}');
+    endings.put('"', '"');
+%init}
 
 LETTER = [a-z|A-Z_\-0-9]
 DIGIT = [0-9]
@@ -40,7 +47,6 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 %xstate VALUE
 %xstate DATA_LINE
 %xstate DATA_VALUE
-%xstate DATA_VALUE_JSON
 
 %%
 
@@ -75,17 +81,26 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
           }
     }
     {DATA_LINE}    {
-          char firstChar = yytext().toString().trim().charAt(0);
+          String text = yytext().toString().trim();
+          char firstChar = text.charAt(0);
           if (dataJson) {
               dataJsonValue.append(yytext());
-              if (firstChar == '}') {
+              if (firstChar == endingChar) {
                   dataJson = false;
                   yybegin(YYINITIAL);
                   return TscnTypes.VALUE;
               }
               continue;
           } else {
-              if (firstChar == '{') {
+              if (firstChar == '{' || firstChar == '"') {
+                  endingChar = endings.get(firstChar);
+                  char lastChar = text.charAt(text.length() - 1);
+                  // Check oneliners
+                  if (lastChar == endingChar) {
+                      yybegin(YYINITIAL);
+                      return TscnTypes.VALUE;
+                  }
+
                   dataJson = true;
                   dataJsonValue = new StringBuilder(yytext());
                   continue;

@@ -2,6 +2,10 @@ package gdscript.utils
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiEditorUtil
+import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
+import gdscript.psi.GdCallEx
+import gdscript.psi.GdTypes
 
 object PsiElementUtil {
 
@@ -30,6 +34,15 @@ object PsiElementUtil {
         }
 
         return editor.caretModel.currentCaret.offset
+    }
+
+    fun PsiElement.getCallExpr(): GdCallEx? {
+        val next = PsiTreeUtil.nextVisibleLeaf(this) ?: return null
+        if (next.elementType == GdTypes.LRBR && next.parent?.elementType == GdTypes.CALL_EX) {
+            return next.parent as GdCallEx
+        }
+
+        return null
     }
 
 }

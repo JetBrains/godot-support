@@ -423,14 +423,10 @@ object GdClassMemberUtil {
 
     fun calledUpon(element: PsiElement): GdExpr? {
         val getAttrIfAny = fun (el: PsiElement): GdExpr? {
-            val previous = PsiTreeUtil.prevVisibleLeaf(element)
-            if (previous?.elementType == GdTypes.DOT && previous?.parent?.elementType == GdTypes.ATTRIBUTE_EX) {
-                val nestedLast = PsiTreeUtil.collectElementsOfType(
-                    (previous!!.parent as GdAttributeEx).exprList.first(),
-                    GdExpr::class.java,
-                )
-                return nestedLast.last()
-                //return (previous!!.parent as GdAttributeEx).exprList.first()
+            val previous = PsiTreeUtil.prevVisibleLeaf(element) ?: return null
+            val parent = previous.parent ?: return null
+            if (previous.elementType == GdTypes.DOT && parent is GdAttributeEx) {
+                return parent.exprList.first()
             }
             return null
         }

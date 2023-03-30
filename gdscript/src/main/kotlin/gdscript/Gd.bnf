@@ -212,23 +212,23 @@ flow_st ::=
 
 expr ::=
     plusMinus_ex
-    | negate_ex
-    | logic_ex
     | cast_ex
-    | arr_ex
-    | call_ex
     | ternary_ex
+    | logic_ex
+    | negate_ex
     | in_ex
     | comparison_ex
     | bitAnd_ex
     | shift_ex
     | plus_ex
+    | plusMinusPre_ex
     | factor_ex
-    | attribute_ex
     | sign_ex
     | bitNot_ex
-    | plusMinusPre_ex
     | is_ex
+    | call_ex
+    | attribute_ex
+    | arr_ex
     | primary_ex
     | literal_ex
     | funcDecl_ex

@@ -6,6 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdKeywords
 import gdscript.action.quickFix.GdAddReturnType
 import gdscript.action.quickFix.GdRemoveElementAction
 import gdscript.psi.*
@@ -65,13 +66,11 @@ class GdConstVarIdAnnotator : Annotator {
 
         val returnType = returnTypes.second?.typedVal?.returnType;
         val expr = returnTypes.third;
-        if (returnType != null || expr == null) {
-            return;
-        }
-        val realType = expr.returnType;
-        if (realType.isEmpty()) {
-            return;
-        }
+        if (returnType != null || expr == null) return
+
+        val realType = expr.returnType
+        if (realType.isEmpty()) return
+        if (realType == GdKeywords.VARIANT) return
 
         holder
             .newAnnotation(HighlightSeverity.WEAK_WARNING, "Field's return type can be specified as [$realType]")

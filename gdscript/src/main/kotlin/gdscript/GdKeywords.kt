@@ -19,6 +19,7 @@ object GdKeywords {
     const val VAR = "var"
     const val SELF = "self"
     const val SUPER = "super"
+    const val VARIANT = "Variant"
 
     /** Constants */
     const val TRUE = "true"

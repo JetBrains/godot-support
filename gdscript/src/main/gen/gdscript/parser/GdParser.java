@@ -2525,23 +2525,23 @@ public class GdParser implements PsiParser, LightPsiParser {
   // Expression root: expr
   // Operator priority table:
   // 0: POSTFIX(plusMinus_ex)
-  // 1: PREFIX(negate_ex)
-  // 2: BINARY(logic_ex)
-  // 3: POSTFIX(cast_ex)
-  // 4: BINARY(arr_ex)
-  // 5: POSTFIX(call_ex)
-  // 6: BINARY(ternary_ex)
-  // 7: BINARY(in_ex)
-  // 8: BINARY(comparison_ex)
-  // 9: BINARY(bitAnd_ex)
-  // 10: BINARY(shift_ex)
-  // 11: BINARY(plus_ex)
-  // 12: BINARY(factor_ex)
-  // 13: BINARY(attribute_ex)
-  // 14: PREFIX(sign_ex)
-  // 15: PREFIX(bitNot_ex)
-  // 16: PREFIX(plusMinusPre_ex)
-  // 17: POSTFIX(is_ex)
+  // 1: POSTFIX(cast_ex)
+  // 2: BINARY(ternary_ex)
+  // 3: BINARY(logic_ex)
+  // 4: PREFIX(negate_ex)
+  // 5: BINARY(in_ex)
+  // 6: BINARY(comparison_ex)
+  // 7: BINARY(bitAnd_ex)
+  // 8: BINARY(shift_ex)
+  // 9: BINARY(plus_ex)
+  // 10: PREFIX(plusMinusPre_ex)
+  // 11: BINARY(factor_ex)
+  // 12: PREFIX(sign_ex)
+  // 13: PREFIX(bitNot_ex)
+  // 14: POSTFIX(is_ex)
+  // 15: POSTFIX(call_ex)
+  // 16: BINARY(attribute_ex)
+  // 17: BINARY(arr_ex)
   // 18: ATOM(primary_ex)
   // 19: ATOM(literal_ex)
   // 20: ATOM(funcDecl_ex)
@@ -2551,9 +2551,9 @@ public class GdParser implements PsiParser, LightPsiParser {
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, "<expr>");
     r = negate_ex(b, l + 1);
+    if (!r) r = plusMinusPre_ex(b, l + 1);
     if (!r) r = sign_ex(b, l + 1);
     if (!r) r = bitNot_ex(b, l + 1);
-    if (!r) r = plusMinusPre_ex(b, l + 1);
     if (!r) r = primary_ex(b, l + 1);
     if (!r) r = literal_ex(b, l + 1);
     if (!r) r = funcDecl_ex(b, l + 1);
@@ -2572,59 +2572,59 @@ public class GdParser implements PsiParser, LightPsiParser {
         r = true;
         exit_section_(b, l, m, PLUS_MINUS_EX, r, true, null);
       }
-      else if (g < 2 && logic_ex_0(b, l + 1)) {
-        r = expr(b, l, 2);
-        exit_section_(b, l, m, LOGIC_EX, r, true, null);
-      }
-      else if (g < 3 && cast_ex_0(b, l + 1)) {
+      else if (g < 1 && cast_ex_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, CAST_EX, r, true, null);
       }
-      else if (g < 4 && consumeTokenSmart(b, LSBR)) {
-        r = report_error_(b, expr(b, l, 4));
-        r = consumeToken(b, RSBR) && r;
-        exit_section_(b, l, m, ARR_EX, r, true, null);
-      }
-      else if (g < 5 && call_ex_0(b, l + 1)) {
-        r = true;
-        exit_section_(b, l, m, CALL_EX, r, true, null);
-      }
-      else if (g < 6 && consumeTokenSmart(b, IF)) {
-        r = report_error_(b, expr(b, l, 6));
+      else if (g < 2 && consumeTokenSmart(b, IF)) {
+        r = report_error_(b, expr(b, l, 2));
         r = ternary_ex_1(b, l + 1) && r;
         exit_section_(b, l, m, TERNARY_EX, r, true, null);
       }
-      else if (g < 7 && consumeTokenSmart(b, IN)) {
-        r = expr(b, l, 7);
+      else if (g < 3 && logic_ex_0(b, l + 1)) {
+        r = expr(b, l, 3);
+        exit_section_(b, l, m, LOGIC_EX, r, true, null);
+      }
+      else if (g < 5 && consumeTokenSmart(b, IN)) {
+        r = expr(b, l, 5);
         exit_section_(b, l, m, IN_EX, r, true, null);
       }
-      else if (g < 8 && consumeTokenSmart(b, TEST_OPERATOR)) {
-        r = expr(b, l, 8);
+      else if (g < 6 && consumeTokenSmart(b, TEST_OPERATOR)) {
+        r = expr(b, l, 6);
         exit_section_(b, l, m, COMPARISON_EX, r, true, null);
       }
-      else if (g < 9 && bitAnd_ex_0(b, l + 1)) {
-        r = expr(b, l, 9);
+      else if (g < 7 && bitAnd_ex_0(b, l + 1)) {
+        r = expr(b, l, 7);
         exit_section_(b, l, m, BIT_AND_EX, r, true, null);
       }
-      else if (g < 10 && shift_ex_0(b, l + 1)) {
-        r = expr(b, l, 10);
+      else if (g < 8 && shift_ex_0(b, l + 1)) {
+        r = expr(b, l, 8);
         exit_section_(b, l, m, SHIFT_EX, r, true, null);
       }
-      else if (g < 11 && plus_ex_0(b, l + 1)) {
-        r = expr(b, l, 11);
+      else if (g < 9 && plus_ex_0(b, l + 1)) {
+        r = expr(b, l, 9);
         exit_section_(b, l, m, PLUS_EX, r, true, null);
       }
-      else if (g < 12 && factor_ex_0(b, l + 1)) {
-        r = expr(b, l, 12);
+      else if (g < 11 && factor_ex_0(b, l + 1)) {
+        r = expr(b, l, 11);
         exit_section_(b, l, m, FACTOR_EX, r, true, null);
       }
-      else if (g < 13 && consumeTokenSmart(b, DOT)) {
-        r = expr(b, l, 13);
-        exit_section_(b, l, m, ATTRIBUTE_EX, r, true, null);
-      }
-      else if (g < 17 && is_ex_0(b, l + 1)) {
+      else if (g < 14 && is_ex_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, IS_EX, r, true, null);
+      }
+      else if (g < 15 && call_ex_0(b, l + 1)) {
+        r = true;
+        exit_section_(b, l, m, CALL_EX, r, true, null);
+      }
+      else if (g < 16 && consumeTokenSmart(b, DOT)) {
+        r = expr(b, l, 16);
+        exit_section_(b, l, m, ATTRIBUTE_EX, r, true, null);
+      }
+      else if (g < 17 && consumeTokenSmart(b, LSBR)) {
+        r = report_error_(b, expr(b, l, 17));
+        r = consumeToken(b, RSBR) && r;
+        exit_section_(b, l, m, ARR_EX, r, true, null);
       }
       else {
         exit_section_(b, l, m, null, false, false, null);
@@ -2643,27 +2643,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  public static boolean negate_ex(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "negate_ex")) return false;
-    if (!nextTokenIsSmart(b, NEGATE)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
-    r = consumeTokenSmart(b, NEGATE);
-    p = r;
-    r = p && expr(b, l, 1);
-    exit_section_(b, l, m, NEGATE_EX, r, p, null);
-    return r || p;
-  }
-
-  // ANDAND | OROR
-  private static boolean logic_ex_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "logic_ex_0")) return false;
-    boolean r;
-    r = consumeTokenSmart(b, ANDAND);
-    if (!r) r = consumeTokenSmart(b, OROR);
-    return r;
-  }
-
   // AS typedVal
   private static boolean cast_ex_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "cast_ex_0")) return false;
@@ -2675,25 +2654,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // LRBR argList? RRBR
-  private static boolean call_ex_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "call_ex_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokenSmart(b, LRBR);
-    r = r && call_ex_0_1(b, l + 1);
-    r = r && consumeToken(b, RRBR);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // argList?
-  private static boolean call_ex_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "call_ex_0_1")) return false;
-    argList(b, l + 1);
-    return true;
-  }
-
   // ELSE expr
   private static boolean ternary_ex_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "ternary_ex_1")) return false;
@@ -2703,6 +2663,27 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && expr(b, l + 1, -1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // ANDAND | OROR
+  private static boolean logic_ex_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "logic_ex_0")) return false;
+    boolean r;
+    r = consumeTokenSmart(b, ANDAND);
+    if (!r) r = consumeTokenSmart(b, OROR);
+    return r;
+  }
+
+  public static boolean negate_ex(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "negate_ex")) return false;
+    if (!nextTokenIsSmart(b, NEGATE)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeTokenSmart(b, NEGATE);
+    p = r;
+    r = p && expr(b, l, 4);
+    exit_section_(b, l, m, NEGATE_EX, r, p, null);
+    return r || p;
   }
 
   // AND | XOR | OR
@@ -2733,6 +2714,27 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
+  public static boolean plusMinusPre_ex(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "plusMinusPre_ex")) return false;
+    if (!nextTokenIsSmart(b, MMINUS, PPLUS)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = plusMinusPre_ex_0(b, l + 1);
+    p = r;
+    r = p && expr(b, l, 10);
+    exit_section_(b, l, m, PLUS_MINUS_PRE_EX, r, p, null);
+    return r || p;
+  }
+
+  // PPLUS | MMINUS
+  private static boolean plusMinusPre_ex_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "plusMinusPre_ex_0")) return false;
+    boolean r;
+    r = consumeTokenSmart(b, PPLUS);
+    if (!r) r = consumeTokenSmart(b, MMINUS);
+    return r;
+  }
+
   // MUL | DIV | MOD
   private static boolean factor_ex_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "factor_ex_0")) return false;
@@ -2750,7 +2752,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = sign_ex_0(b, l + 1);
     p = r;
-    r = p && expr(b, l, 14);
+    r = p && expr(b, l, 12);
     exit_section_(b, l, m, SIGN_EX, r, p, null);
     return r || p;
   }
@@ -2771,30 +2773,9 @@ public class GdParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeTokenSmart(b, NOT);
     p = r;
-    r = p && expr(b, l, 15);
+    r = p && expr(b, l, 13);
     exit_section_(b, l, m, BIT_NOT_EX, r, p, null);
     return r || p;
-  }
-
-  public static boolean plusMinusPre_ex(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "plusMinusPre_ex")) return false;
-    if (!nextTokenIsSmart(b, MMINUS, PPLUS)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
-    r = plusMinusPre_ex_0(b, l + 1);
-    p = r;
-    r = p && expr(b, l, 16);
-    exit_section_(b, l, m, PLUS_MINUS_PRE_EX, r, p, null);
-    return r || p;
-  }
-
-  // PPLUS | MMINUS
-  private static boolean plusMinusPre_ex_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "plusMinusPre_ex_0")) return false;
-    boolean r;
-    r = consumeTokenSmart(b, PPLUS);
-    if (!r) r = consumeTokenSmart(b, MMINUS);
-    return r;
   }
 
   // IS typedVal
@@ -2806,6 +2787,25 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && typedVal(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // LRBR argList? RRBR
+  private static boolean call_ex_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "call_ex_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenSmart(b, LRBR);
+    r = r && call_ex_0_1(b, l + 1);
+    r = r && consumeToken(b, RRBR);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // argList?
+  private static boolean call_ex_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "call_ex_0_1")) return false;
+    argList(b, l + 1);
+    return true;
   }
 
   // nodePath | arrayDecl | dictDecl | (LRBR expr RRBR)

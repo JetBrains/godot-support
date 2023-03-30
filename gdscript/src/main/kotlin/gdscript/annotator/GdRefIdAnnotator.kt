@@ -11,6 +11,7 @@ import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.utils.PsiElementUtil.getCallExpr
 
 /**
  * Colors references
@@ -34,7 +35,7 @@ class GdRefIdAnnotator : Annotator {
             return
         }
 
-        val attribute = when (GdClassMemberUtil.findDeclaration(element)) {
+        var attribute = when (GdClassMemberUtil.findDeclaration(element)) {
             is GdMethodDeclTl -> GdHighlighterColors.METHOD_CALL
             is PsiFile, is GdClassDeclTl -> GdHighlighterColors.CLASS_TYPE
             null -> run {
@@ -46,7 +47,9 @@ class GdRefIdAnnotator : Annotator {
 
                 val calledUponType = GdClassMemberUtil.calledUpon(element)
                 // For undefined types do not mark it as error
-                if (calledUponType != null && calledUponType.returnType == "") return@run GdHighlighterColors.MEMBER
+                if (calledUponType != null &&
+                    (calledUponType.returnType == "" || calledUponType.returnType == GdKeywords.VARIANT)
+                ) return@run GdHighlighterColors.MEMBER
                 // For get_node(), ... to ignore unknown types
                 val ignoreTypes = arrayOf("get_node", "get_parent", "get_node_or_null")
                 if (ignoreTypes.contains(calledUponType?.text)) {
@@ -65,6 +68,10 @@ class GdRefIdAnnotator : Annotator {
             }
 
             else -> GdHighlighterColors.MEMBER
+        }
+
+        if (element.getCallExpr() != null) {
+            attribute = GdHighlighterColors.METHOD_CALL
         }
 
         holder

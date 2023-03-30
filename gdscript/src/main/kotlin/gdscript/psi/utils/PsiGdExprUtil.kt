@@ -29,19 +29,10 @@ object PsiGdExprUtil {
             is GdBitAndEx -> GdKeywords.INT;
             is GdShiftEx -> GdKeywords.INT;
             is GdPlusEx -> {
-                val a = expr.exprList.getOrNull(0)?.returnType ?: GdKeywords.FLOAT;
-                val b = expr.exprList.getOrNull(1)?.returnType ?: GdKeywords.FLOAT;
-
-                return if (a == b) a else GdKeywords.FLOAT;
+                return expr.exprList.getOrNull(1)?.returnType ?: GdKeywords.VARIANT
             };
             is GdFactorEx -> {
-                val a = expr.exprList.getOrNull(0)?.returnType ?: GdKeywords.FLOAT;
-                val b = expr.exprList.getOrNull(1)?.returnType ?: GdKeywords.FLOAT;
-                if (a == "String") { // String template
-                    return b;
-                }
-
-                return if (a == b) a else GdKeywords.FLOAT;
+                return expr.exprList.getOrNull(1)?.returnType ?: GdKeywords.VARIANT
             };
             is GdSignEx -> expr.expr?.returnType ?: "";
             is GdBitNotEx -> GdKeywords.INT;
