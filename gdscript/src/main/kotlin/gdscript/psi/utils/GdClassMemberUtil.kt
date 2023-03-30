@@ -349,8 +349,15 @@ object GdClassMemberUtil {
             members.add(it)
         }
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
-            if (search != null && it.name == search) return mutableListOf(it);
-            members.add(it)
+            if (it.enumDeclNmi != null) {
+                if (search != null && it.name == search) return mutableListOf(it)
+                members.add(it)
+            } else {
+                it.enumValueList.forEach { value ->
+                    if (search != null && value.enumValueNmi.name == search) return mutableListOf(value)
+                    members.add(value)
+                }
+            }
         }
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdSignalDeclTl::class.java).forEach {
             if (search != null && it.name == search) return mutableListOf(it);
@@ -370,6 +377,9 @@ object GdClassMemberUtil {
         }
 
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdMethodDeclTl::class.java).forEach {
+            if (it.name == "from_euler") {
+                var asd = 11
+            }
             if ((static == null || it.isStatic == static)) {
                 if (constructors || !it.isConstructor) {
                     if (search != null && it.name == search) return mutableListOf(it);
