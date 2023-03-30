@@ -377,9 +377,6 @@ object GdClassMemberUtil {
         }
 
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdMethodDeclTl::class.java).forEach {
-            if (it.name == "from_euler") {
-                var asd = 11
-            }
             if ((static == null || it.isStatic == static)) {
                 if (constructors || !it.isConstructor) {
                     if (search != null && it.name == search) return mutableListOf(it);

@@ -923,7 +923,11 @@ class GdLexer implements FlexLexer {
             // fall through
           case 97: break;
           case 11: 
-            { lineEnded = true; IElementType ret = dedentRoot(GdTypes.COMMENT); newLineProcessed = yycolumn() == 0; return ret;
+            { lineEnded = true;
+          boolean alreadyDone = newLineProcessed;
+          IElementType ret = dedentRoot(GdTypes.COMMENT);
+          newLineProcessed = alreadyDone || yycolumn == 0;
+          return ret;
             } 
             // fall through
           case 98: break;
@@ -1052,6 +1056,8 @@ class GdLexer implements FlexLexer {
           case 122: break;
           case 36: 
             { yypushback(1);
+        newLineProcessed = true;
+
         return TokenType.WHITE_SPACE;
             } 
             // fall through

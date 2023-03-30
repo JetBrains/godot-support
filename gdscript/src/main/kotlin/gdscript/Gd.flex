@@ -202,10 +202,20 @@ ANY = .+
     {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }
     {HEX_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
-    {COMMENT}       { lineEnded = true; IElementType ret = dedentRoot(GdTypes.COMMENT); newLineProcessed = yycolumn == 0; return ret; }
+    {COMMENT}       {
+          lineEnded = true;
+          boolean alreadyDone = newLineProcessed;
+          IElementType ret = dedentRoot(GdTypes.COMMENT);
+          newLineProcessed = alreadyDone || yycolumn == 0;
+          return ret;
+      }
 
     {INDENTED_COMMENT} {
         yypushback(1);
+        if (yycolumn == 0) {
+            newLineProcessed = true;
+        }
+
         return TokenType.WHITE_SPACE;
     }
     {EMPTY_INDENT} { return TokenType.WHITE_SPACE; }
