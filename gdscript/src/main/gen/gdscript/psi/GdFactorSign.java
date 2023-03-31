@@ -5,12 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdComparisonEx extends GdExpr {
-
-  @NotNull
-  List<GdExpr> getExprList();
-
-  @NotNull
-  GdOperator getOperator();
+public interface GdFactorSign extends PsiElement {
 
 }

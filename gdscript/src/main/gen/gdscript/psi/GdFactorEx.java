@@ -10,4 +10,7 @@ public interface GdFactorEx extends GdExpr {
   @NotNull
   List<GdExpr> getExprList();
 
+  @NotNull
+  GdFactorSign getFactorSign();
+
 }

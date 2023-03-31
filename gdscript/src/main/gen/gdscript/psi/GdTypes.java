@@ -53,6 +53,7 @@ public interface GdTypes {
   IElementType EXPR = new GdElementType("EXPR");
   IElementType EXPR_ST = new GdElementType("EXPR_ST");
   IElementType FACTOR_EX = new GdElementType("FACTOR_EX");
+  IElementType FACTOR_SIGN = new GdElementType("FACTOR_SIGN");
   IElementType FLOW_ST = new GdElementType("FLOW_ST");
   IElementType FOR_ST = new GdElementType("FOR_ST");
   IElementType FUNC_DECL_EX = new GdElementType("FUNC_DECL_EX");
@@ -78,6 +79,7 @@ public interface GdTypes {
   IElementType NEGATE_EX = new GdElementType("NEGATE_EX");
   IElementType NEW_LINE_END = new GdElementType("NEW_LINE_END");
   IElementType NODE_PATH = new GdElementType("NODE_PATH");
+  IElementType OPERATOR = new GdElementType("OPERATOR");
   IElementType PARAM = new GdElementType("PARAM");
   IElementType PARAM_LIST = new GdElementType("PARAM_LIST");
   IElementType PATTERN = new GdElementType("PATTERN");
@@ -93,6 +95,7 @@ public interface GdTypes {
   IElementType SET_DECL = new GdElementType("SET_DECL");
   IElementType SET_METHOD_ID_NM = new GdElementType("SET_METHOD_ID_NM");
   IElementType SHIFT_EX = new GdElementType("SHIFT_EX");
+  IElementType SIGN = new GdElementType("SIGN");
   IElementType SIGNAL_DECL_TL = GdSignalDeclElementType.getInstance("SIGNAL_DECL_TL");
   IElementType SIGNAL_ID_NMI = new GdElementType("SIGNAL_ID_NMI");
   IElementType SIGN_EX = new GdElementType("SIGN_EX");
@@ -305,6 +308,9 @@ public interface GdTypes {
       else if (type == FACTOR_EX) {
         return new GdFactorExImpl(node);
       }
+      else if (type == FACTOR_SIGN) {
+        return new GdFactorSignImpl(node);
+      }
       else if (type == FLOW_ST) {
         return new GdFlowStImpl(node);
       }
@@ -380,6 +386,9 @@ public interface GdTypes {
       else if (type == NODE_PATH) {
         return new GdNodePathImpl(node);
       }
+      else if (type == OPERATOR) {
+        return new GdOperatorImpl(node);
+      }
       else if (type == PARAM) {
         return new GdParamImpl(node);
       }
@@ -424,6 +433,9 @@ public interface GdTypes {
       }
       else if (type == SHIFT_EX) {
         return new GdShiftExImpl(node);
+      }
+      else if (type == SIGN) {
+        return new GdSignImpl(node);
       }
       else if (type == SIGNAL_DECL_TL) {
         return new GdSignalDeclTlImpl(node);

@@ -33,4 +33,10 @@ public class GdFactorExImpl extends GdExprImpl implements GdFactorEx {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, GdExpr.class);
   }
 
+  @Override
+  @NotNull
+  public GdFactorSign getFactorSign() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdFactorSign.class));
+  }
+
 }

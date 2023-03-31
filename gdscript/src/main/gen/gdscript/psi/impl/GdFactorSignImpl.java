@@ -8,35 +8,23 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdPlusExImpl extends GdExprImpl implements GdPlusEx {
+public class GdFactorSignImpl extends ASTWrapperPsiElement implements GdFactorSign {
 
-  public GdPlusExImpl(@NotNull ASTNode node) {
+  public GdFactorSignImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitPlusEx(this);
+    visitor.visitFactorSign(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<GdExpr> getExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdExpr.class);
-  }
-
-  @Override
-  @NotNull
-  public GdSign getSign() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdSign.class));
   }
 
 }

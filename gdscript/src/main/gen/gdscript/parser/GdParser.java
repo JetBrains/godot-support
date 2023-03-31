@@ -1045,6 +1045,19 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // MUL | DIV | MOD
+  public static boolean factorSign(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "factorSign")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, FACTOR_SIGN, "<factor sign>");
+    r = consumeToken(b, MUL);
+    if (!r) r = consumeToken(b, DIV);
+    if (!r) r = consumeToken(b, MOD);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
   // (CONTINUE
   //     | BREAK
   //     | PASS
@@ -1600,6 +1613,18 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // TEST_OPERATOR
+  public static boolean operator(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "operator")) return false;
+    if (!nextTokenIs(b, TEST_OPERATOR)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, TEST_OPERATOR);
+    exit_section_(b, m, OPERATOR, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // VAR? var_nmi typed? (EQ expr)?
   public static boolean param(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "param")) return false;
@@ -1981,6 +2006,19 @@ public class GdParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _AND_);
     r = topLevelDecl_r(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // PLUS | MINUS
+  public static boolean sign(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "sign")) return false;
+    if (!nextTokenIs(b, "<sign>", MINUS, PLUS)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, SIGN, "<sign>");
+    r = consumeToken(b, PLUS);
+    if (!r) r = consumeToken(b, MINUS);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -2512,7 +2550,7 @@ public class GdParser implements PsiParser, LightPsiParser {
         r = expr(b, l, 5);
         exit_section_(b, l, m, IN_EX, r, true, null);
       }
-      else if (g < 6 && consumeTokenSmart(b, TEST_OPERATOR)) {
+      else if (g < 6 && operator(b, l + 1)) {
         r = expr(b, l, 6);
         exit_section_(b, l, m, COMPARISON_EX, r, true, null);
       }
@@ -2524,11 +2562,11 @@ public class GdParser implements PsiParser, LightPsiParser {
         r = expr(b, l, 8);
         exit_section_(b, l, m, SHIFT_EX, r, true, null);
       }
-      else if (g < 9 && plus_ex_0(b, l + 1)) {
+      else if (g < 9 && sign(b, l + 1)) {
         r = expr(b, l, 9);
         exit_section_(b, l, m, PLUS_EX, r, true, null);
       }
-      else if (g < 11 && factor_ex_0(b, l + 1)) {
+      else if (g < 11 && factorSign(b, l + 1)) {
         r = expr(b, l, 11);
         exit_section_(b, l, m, FACTOR_EX, r, true, null);
       }
@@ -2628,15 +2666,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // PLUS | MINUS
-  private static boolean plus_ex_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "plus_ex_0")) return false;
-    boolean r;
-    r = consumeTokenSmart(b, PLUS);
-    if (!r) r = consumeTokenSmart(b, MINUS);
-    return r;
-  }
-
   public static boolean plusMinusPre_ex(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "plusMinusPre_ex")) return false;
     if (!nextTokenIsSmart(b, MMINUS, PPLUS)) return false;
@@ -2655,16 +2684,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     boolean r;
     r = consumeTokenSmart(b, PPLUS);
     if (!r) r = consumeTokenSmart(b, MMINUS);
-    return r;
-  }
-
-  // MUL | DIV | MOD
-  private static boolean factor_ex_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "factor_ex_0")) return false;
-    boolean r;
-    r = consumeTokenSmart(b, MUL);
-    if (!r) r = consumeTokenSmart(b, DIV);
-    if (!r) r = consumeTokenSmart(b, MOD);
     return r;
   }
 

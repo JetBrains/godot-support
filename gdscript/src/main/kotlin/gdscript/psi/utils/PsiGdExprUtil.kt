@@ -6,8 +6,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
+import gdscript.GdOperand
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
+import gdscript.utils.GdExprUtil.left
+import gdscript.utils.GdExprUtil.right
 
 object PsiGdExprUtil {
 
@@ -25,20 +28,18 @@ object PsiGdExprUtil {
             is GdLogicEx -> GdKeywords.BOOL;
             is GdNegateEx -> GdKeywords.BOOL;
             is GdInEx -> GdKeywords.BOOL;
-            is GdComparisonEx -> GdKeywords.BOOL;
-            is GdBitAndEx -> GdKeywords.INT;
             is GdShiftEx -> GdKeywords.INT;
-            is GdPlusEx -> {
-                return GdKeywords.VARIANT
-                // TODO Vector * float or vice-versa... requires to parse operators
-                // TODO [] array accesor tu je také -> např. Basis je také přístupný -> potřeba překopat Array access
-                return expr.exprList.getOrNull(1)?.returnType ?: GdKeywords.VARIANT
-            };
-            is GdFactorEx -> {
-                return GdKeywords.VARIANT
-                return expr.exprList.getOrNull(1)?.returnType ?: GdKeywords.VARIANT
-            };
-            is GdSignEx -> expr.expr?.returnType ?: "";
+            is GdBitAndEx -> GdKeywords.INT;
+            is GdComparisonEx -> GdOperand.getReturnType(
+                expr.exprList.left(), expr.exprList.right(), expr.operator.text,
+            )
+            is GdPlusEx -> GdOperand.getReturnType(
+                expr.exprList.left(), expr.exprList.right(), expr.sign.text,
+            )
+            is GdFactorEx ->GdOperand.getReturnType(
+                expr.exprList.left(), expr.exprList.right(), expr.factorSign.text,
+            )
+            is GdSignEx -> expr.expr?.returnType ?: ""
             is GdBitNotEx -> GdKeywords.INT;
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT;
             is GdAttributeEx -> expr.exprList.lastOrNull()?.returnType ?: "";
@@ -53,7 +54,8 @@ object PsiGdExprUtil {
                 } else {
                     expr.expr.returnType
                 }
-            };
+            }
+            // TODO [] array accesor tu je také -> např. Basis je také přístupný -> potřeba překopat Array access
             is GdArrEx -> fromTyped(expr.exprList.firstOrNull()?.returnType ?: "");
             is GdPrimaryEx -> {
                 when (expr.firstChild) {

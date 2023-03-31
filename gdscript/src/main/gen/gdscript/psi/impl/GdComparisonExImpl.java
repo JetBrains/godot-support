@@ -33,4 +33,10 @@ public class GdComparisonExImpl extends GdExprImpl implements GdComparisonEx {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, GdExpr.class);
   }
 
+  @Override
+  @NotNull
+  public GdOperator getOperator() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdOperator.class));
+  }
+
 }

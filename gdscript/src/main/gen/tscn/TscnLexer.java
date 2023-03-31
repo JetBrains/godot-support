@@ -599,9 +599,10 @@ class TscnLexer implements FlexLexer {
           case 9: 
             { String text = yytext().toString().trim();
           char firstChar = text.charAt(0);
+          char lastChar = text.charAt(text.length() - 1);
           if (dataJson) {
               dataJsonValue.append(yytext());
-              if (firstChar == endingChar) {
+              if (firstChar == endingChar || lastChar == endingChar) {
                   dataJson = false;
                   yybegin(YYINITIAL);
                   return TscnTypes.VALUE;
@@ -610,7 +611,6 @@ class TscnLexer implements FlexLexer {
           } else {
               if (firstChar == '{' || firstChar == '"') {
                   endingChar = endings.get(firstChar);
-                  char lastChar = text.charAt(text.length() - 1);
                   // Check oneliners
                   if (lastChar == endingChar) {
                       yybegin(YYINITIAL);

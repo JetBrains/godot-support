@@ -10,4 +10,7 @@ public interface GdPlusEx extends GdExpr {
   @NotNull
   List<GdExpr> getExprList();
 
+  @NotNull
+  GdSign getSign();
+
 }

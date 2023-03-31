@@ -6,6 +6,10 @@ package gdscript
  */
 object GdOperand {
 
+    fun getReturnType(left: String, right: String, operator: String): String {
+        return OPERANDS.get(left)?.get(operator)?.get(right) ?: ""
+    }
+
     // Left -> Operand -> Right -> Result
     val OPERANDS = mapOf(
         "AABB" to mapOf(
