@@ -9,9 +9,9 @@ import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdClassVarDeclIndex
+import gdscript.model.BoolVal
 import gdscript.psi.*
 import gdscript.settings.GdSettingsState
-import gdscript.model.BoolVal
 
 object GdClassMemberUtil {
 
@@ -465,30 +465,51 @@ object GdClassMemberUtil {
      * and returns correct type for hint & validation
      */
     private fun findIsTypeCheck(element: PsiElement): String? {
+        // TODO je to dost na hrubo a nekontroluje to negace a pod
+        return getConditioned(element) { el, stmt ->
+            val expr = PsiTreeUtil.findChildOfType(stmt, GdIsEx::class.java)
+            if (expr != null && el.text == expr.expr.text) return@getConditioned expr.returnType
+            null
+        }
+    }
+
+    /**
+     * Looks for statements of has_method
+     *  if node.has_method("asd"):
+     */
+    fun hasMethodCheck(element: PsiElement): Boolean {
+        // TODO je to dost na hrubo a nekontroluje to negace a pod
+        return getConditioned(element) { el, stmt ->
+            val expr = PsiTreeUtil.findChildOfType(stmt, GdCallEx::class.java)
+            if (expr != null && expr.expr.text == "has_method") {
+                if (expr.argList?.exprList?.firstOrNull()?.text == "\"${el.text}\"") {
+                    return@getConditioned true
+                }
+            }
+            null
+        } ?: false
+    }
+
+    private fun<T> getConditioned(element: PsiElement, action: (element: PsiElement, stmt: PsiElement?) -> T?): T? {
         val getParent = fun (stmt: PsiElement?): PsiElement? {
             return PsiTreeUtil.getParentOfType(stmt, GdIfSt::class.java, GdWhileSt::class.java, GdElifSt::class.java)
-        }
-        val getIsType = fun (element: PsiElement, stmt: PsiElement?): String? {
-            val expr = PsiTreeUtil.findChildOfType(stmt, GdIsEx::class.java) ?: return null
-            if (element.text == expr.expr.text) return expr.returnType
-            return null
         }
 
         var parent = getParent(element)
         while (parent != null) {
             when (parent) {
                 is GdIfSt -> {
-                    val typed = getIsType(element, parent.expr)
+                    val typed = action(element, parent.expr)
                     if (typed != null) return typed
                 }
                 is GdElifSt -> {
-                    val typed = getIsType(element, parent.expr)
+                    val typed = action(element, parent.expr)
                     if (typed != null) return typed
                     // To avoid matching from base condition that is not part of this suite
                     parent = PsiTreeUtil.getParentOfType(parent, GdIfSt::class.java)
                 }
                 is GdWhileSt -> {
-                    val typed = getIsType(element, parent.expr)
+                    val typed = action(element, parent.expr)
                     if (typed != null) return typed
                 }
             }

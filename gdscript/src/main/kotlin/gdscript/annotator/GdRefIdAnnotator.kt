@@ -49,6 +49,9 @@ class GdRefIdAnnotator : Annotator {
                     (calledUponType.returnType == "" || calledUponType.returnType == GdKeywords.VARIANT)
                 ) return@run GdHighlighterColors.MEMBER
 
+                if (element.getCallExpr() != null && GdClassMemberUtil.hasMethodCheck(element))
+                    return@run GdHighlighterColors.METHOD_CALL
+
                 holder
                     .newAnnotation(HighlightSeverity.ERROR, "Reference [${element.text}] not found")
                     .range(element.textRange)
@@ -59,7 +62,7 @@ class GdRefIdAnnotator : Annotator {
             else -> GdHighlighterColors.MEMBER
         }
 
-        if (element.getCallExpr() != null) {
+        if (attribute == GdHighlighterColors.MEMBER && element.getCallExpr() != null) {
             attribute = GdHighlighterColors.METHOD_CALL
         }
 
