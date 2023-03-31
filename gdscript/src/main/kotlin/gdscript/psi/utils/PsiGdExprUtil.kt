@@ -52,6 +52,14 @@ object PsiGdExprUtil {
                         ""
                     }
                 } else {
+                    val method = expr.expr.text
+                    if (method == "get_node" || method == "get_node_or_null") {
+                        //TODO zkusit vyparsovat Node z .tscn
+                        return GdKeywords.VARIANT
+                    } else if (method == "get_parent") {
+                        //TODO zkusit vyparsovat Node z .tscn
+                        return GdKeywords.VARIANT
+                    }
                     expr.expr.returnType
                 }
             }
