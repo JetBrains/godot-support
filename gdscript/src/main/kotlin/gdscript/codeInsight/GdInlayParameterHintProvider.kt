@@ -44,7 +44,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
             var params: Array<String> = emptyArray();
             when (method) {
                 is GdMethodDeclTl -> {
-                    params = method.paramList?.paramList?.map { it.varNmi.text }?.toTypedArray() ?: arrayOf<String>()
+                    params = method.parameters.keys.toArray(emptyArray());
 
                     if (method.name == "emit") {
                         val signal = PsiGdSignalUtil.getDeclaration(element);
@@ -56,7 +56,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                 is GdVarDeclSt -> {
                     if (method.expr is GdFuncDeclEx) {
                         val lambda = method.expr as GdFuncDeclEx;
-                        params = lambda.paramList?.paramList?.map { it.varNmi.text }?.toTypedArray() ?: arrayOf<String>()
+                        params = lambda.parameters.keys.toArray(emptyArray())
                     } else {
                         return emptyList();
                     }

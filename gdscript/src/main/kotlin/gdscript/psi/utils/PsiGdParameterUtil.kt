@@ -6,8 +6,8 @@ import java.lang.StringBuilder
 
 object PsiGdParameterUtil {
 
-    fun fromString(data: String?): HashMap<String, String?> {
-        val params = HashMap<String, String?>();
+    fun fromString(data: String?): LinkedHashMap<String, String?> {
+        val params = LinkedHashMap<String, String?>();
         if (data == null) {
             return params;
         }
@@ -22,12 +22,12 @@ object PsiGdParameterUtil {
         return params;
     }
 
-    fun toHashMap(paramList: GdParamList?): HashMap<String, String?> {
-        val params = HashMap<String, String?>();
+    fun toHashMap(paramList: GdParamList?): LinkedHashMap<String, String?> {
+        val params = LinkedHashMap<String, String?>();
         var child = paramList?.firstChild;
         while (child != null) {
             if (child is GdParam) {
-                params[child.varNmi.text] = PsiGdExprUtil.fromTyped(child.typed);
+                params[child.varNmi.text] = PsiGdExprUtil.fromTyped(child.typed)
             }
             child = child.nextSibling;
         }

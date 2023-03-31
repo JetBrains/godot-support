@@ -81,7 +81,7 @@ object GdPsiUtils {
     @JvmStatic fun getName(element: GdMethodDeclTl): String = GdMethodUtil.getName(element);
     @JvmStatic fun getPresentation(element: GdMethodDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
     @JvmStatic fun getReturnType(element: GdMethodDeclTl): String = PsiGdMethodDeclUtil.getReturnType(element);
-    @JvmStatic fun getParameters(element: GdMethodDeclTl): HashMap<String, String?> = PsiGdMethodDeclUtil.getParameters(element);
+    @JvmStatic fun getParameters(element: GdMethodDeclTl): LinkedHashMap<String, String?> = PsiGdMethodDeclUtil.getParameters(element);
     @JvmStatic fun isConstructor(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isConstructor(element);
 
     /** Method param */

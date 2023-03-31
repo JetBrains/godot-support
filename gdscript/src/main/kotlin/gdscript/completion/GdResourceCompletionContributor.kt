@@ -9,6 +9,7 @@ import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
+import project.psi.util.ProjectInputUtil
 
 /**
  * $NodePath & %NodeName read from .tscn
@@ -38,6 +39,14 @@ class GdResourceCompletionContributor : CompletionContributor() {
                     GdLookup.create(
                         it,
                         priority = GdLookup.REMOTE_DEFINED,
+                    )
+                )
+            }
+            ProjectInputUtil.listActions(position).forEach {
+                result.addElement(
+                    GdLookup.create(
+                        it,
+                        priority = GdLookup.USER_DEFINED,
                     )
                 )
             }

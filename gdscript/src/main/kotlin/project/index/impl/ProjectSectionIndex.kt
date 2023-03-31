@@ -7,6 +7,8 @@ import project.psi.ProjectSection
 
 object ProjectSectionIndex : StringStubIndexExtensionExt<ProjectSection>() {
 
+    val INPUT_SECTION = "[input]"
+
     override fun getKey(): StubIndexKey<String, ProjectSection> = ProjectIndices.SECTION_INDEX;
 
     override fun getVersion(): Int {

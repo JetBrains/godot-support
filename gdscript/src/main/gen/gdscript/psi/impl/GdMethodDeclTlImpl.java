@@ -10,7 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
 import com.intellij.navigation.ItemPresentation;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import gdscript.index.stub.GdMethodDeclStub;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -88,7 +88,7 @@ public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMet
 
   @Override
   @NotNull
-  public HashMap<String, String> getParameters() {
+  public LinkedHashMap<String, String> getParameters() {
     return GdPsiUtils.getParameters(this);
   }
 

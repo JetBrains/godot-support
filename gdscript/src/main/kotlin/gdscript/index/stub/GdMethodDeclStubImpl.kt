@@ -12,7 +12,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
     private var name: String = "";
     private var returnType: String = "";
     private var isConstructor: Boolean = false;
-    private var parameters: HashMap<String, String?> = HashMap();
+    private var parameters: LinkedHashMap<String, String?> = LinkedHashMap();
 
     constructor(
         parent: StubElement<*>?,
@@ -21,7 +21,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
         isConstructor: Boolean,
         name: String?,
         returnType: String,
-        parameters: HashMap<String, String?>,
+        parameters: LinkedHashMap<String, String?>,
     ) : super(parent, GdMethodDeclElementType) {
         if (name != null) {
             this.name = name
@@ -41,7 +41,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
 
     override fun returnType(): String = returnType;
 
-    override fun parameters(): HashMap<String, String?> = parameters;
+    override fun parameters(): LinkedHashMap<String, String?> = parameters;
 
     override fun isConstructor(): Boolean = isConstructor;
 

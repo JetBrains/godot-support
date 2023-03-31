@@ -34,7 +34,7 @@ object PsiGdMethodDeclUtil {
         return element.typed?.typedVal?.returnType ?: "";
     }
 
-    fun getParameters(element: GdMethodDeclTl): HashMap<String, String?> {
+    fun getParameters(element: GdMethodDeclTl): LinkedHashMap<String, String?> {
         val stub = element.stub;
         if (stub !== null) {
             return stub.parameters();
