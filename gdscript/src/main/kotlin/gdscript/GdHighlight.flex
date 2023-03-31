@@ -44,7 +44,7 @@ STRING_MARKER_REV = [^\"\'\n\r]*
 COMMENT = "#"[^\r\n]*
 ANNOTATOR = "@"[a-zA-Z_]*
 NODE_PATH = "^"\"([^\\\"\r\n]|\\.)*\"
-NODE_PATH_LEX = ("$"|"%")[\"\%a-zA-Z0-9_/:\.]*
+NODE_PATH_LEX = ("$"|"%")[\"\%a-zA-Z0-9_/\.]*
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="

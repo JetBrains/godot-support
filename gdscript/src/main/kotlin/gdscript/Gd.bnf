@@ -221,8 +221,8 @@ expr ::=
     | sign_ex
     | bitNot_ex
     | is_ex
-    | call_ex
     | attribute_ex
+    | call_ex
     | arr_ex
     | primary_ex
     | literal_ex

@@ -5,8 +5,6 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.*
@@ -50,15 +48,6 @@ class GdRefIdAnnotator : Annotator {
                 if (calledUponType != null &&
                     (calledUponType.returnType == "" || calledUponType.returnType == GdKeywords.VARIANT)
                 ) return@run GdHighlighterColors.MEMBER
-                // For get_node(), ... to ignore unknown types
-//                val ignoreTypes = arrayOf("get_node", "get_parent", "get_node_or_null")
-//                if (ignoreTypes.contains(calledUponType?.text)) {
-//                    val prev = PsiTreeUtil.nextVisibleLeaf(element)
-//                    if (prev?.elementType == GdTypes.LRBR && prev?.parent is GdCallEx) {
-//                        return@run GdHighlighterColors.METHOD_CALL
-//                    }
-//                    return@run GdHighlighterColors.MEMBER
-//                }
 
                 holder
                     .newAnnotation(HighlightSeverity.ERROR, "Reference [${element.text}] not found")

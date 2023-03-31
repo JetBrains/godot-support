@@ -857,12 +857,12 @@ class GdLexer implements FlexLexer {
             { if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;
         } else if (ignored > 0) {
-            if (ignored == 0) {
-                ignoreIndent = false;
-                return GdTypes.NEW_LINE;
-            } else {
+//            if (ignored == 0) {
+//                ignoreIndent = false;
+//                return GdTypes.NEW_LINE;
+//            } else {
                 return TokenType.WHITE_SPACE;
-            }
+//            }
         }
 
         if (newLineProcessed) {

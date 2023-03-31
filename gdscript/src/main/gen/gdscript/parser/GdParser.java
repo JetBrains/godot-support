@@ -2500,8 +2500,8 @@ public class GdParser implements PsiParser, LightPsiParser {
   // 12: PREFIX(sign_ex)
   // 13: PREFIX(bitNot_ex)
   // 14: POSTFIX(is_ex)
-  // 15: POSTFIX(call_ex)
-  // 16: BINARY(attribute_ex)
+  // 15: BINARY(attribute_ex)
+  // 16: POSTFIX(call_ex)
   // 17: BINARY(arr_ex)
   // 18: ATOM(primary_ex)
   // 19: ATOM(literal_ex)
@@ -2574,13 +2574,13 @@ public class GdParser implements PsiParser, LightPsiParser {
         r = true;
         exit_section_(b, l, m, IS_EX, r, true, null);
       }
-      else if (g < 15 && call_ex_0(b, l + 1)) {
+      else if (g < 15 && consumeTokenSmart(b, DOT)) {
+        r = expr(b, l, 15);
+        exit_section_(b, l, m, ATTRIBUTE_EX, r, true, null);
+      }
+      else if (g < 16 && call_ex_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, CALL_EX, r, true, null);
-      }
-      else if (g < 16 && consumeTokenSmart(b, DOT)) {
-        r = expr(b, l, 16);
-        exit_section_(b, l, m, ATTRIBUTE_EX, r, true, null);
       }
       else if (g < 17 && consumeTokenSmart(b, LSBR)) {
         r = report_error_(b, expr(b, l, 17));
