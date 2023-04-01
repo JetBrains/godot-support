@@ -5,11 +5,11 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.completion.utils.GdRefIdCompletionUtil
+import gdscript.completion.utils.GdStringCompletionUtil
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
-import project.psi.util.ProjectInputUtil
 
 /**
  * $NodePath & %NodeName read from .tscn
@@ -42,14 +42,7 @@ class GdResourceCompletionContributor : CompletionContributor() {
                     )
                 )
             }
-            ProjectInputUtil.listActions(position).forEach {
-                result.addElement(
-                    GdLookup.create(
-                        it,
-                        priority = GdLookup.USER_DEFINED,
-                    )
-                )
-            }
+            GdStringCompletionUtil.addInputs(position, result)
         }
     }
 

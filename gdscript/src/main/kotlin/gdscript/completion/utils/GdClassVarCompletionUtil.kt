@@ -17,7 +17,7 @@ object GdClassVarCompletionUtil {
                         "@$it",
                         // TODO ii params? přidat kdyžtak alespoň závorky
                         //lookup = if (GdKeywords.ANNOTATIONS_PARAMETRIZED.contains(it)) "" else " ",
-                        color = GdLookup.ANNOTATOR_COLOR,
+                        color = GdLookup.COLOR_ANNOTATION,
                         priority = GdLookup.BUILT_IN,
                     )
                 );

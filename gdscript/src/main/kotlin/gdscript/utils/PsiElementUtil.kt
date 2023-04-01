@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
+import gdscript.psi.GdArgList
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdTypes
 import gdscript.utils.ElementTypeUtil.isSkipable
@@ -42,6 +43,13 @@ object PsiElementUtil {
         if (next.elementType == GdTypes.LRBR && next.parent?.elementType == GdTypes.CALL_EX) {
             return next.parent as GdCallEx
         }
+
+        return null
+    }
+
+    fun PsiElement.getCallExprOfParam(): GdCallEx? {
+        val argList = PsiTreeUtil.getParentOfType(this, GdArgList::class.java) ?: return null
+        if (argList.parent is GdCallEx) return argList.parent as GdCallEx
 
         return null
     }

@@ -20,7 +20,7 @@ data class GdNodeHolder(
     fun lookup(): LookupElement {
         return GdLookup.create(
             readableNodePath,
-            color = GdLookup.RESOURCE_COLOR,
+            color = GdLookup.COLOR_RESOURCE,
             priority = GdLookup.REMOTE_DEFINED,
             typed = element.type,
             tail = extraInfo,
@@ -36,7 +36,7 @@ data class GdNodeHolder(
 
         return GdLookup.create(
             readableNodePath,
-            color = GdLookup.RESOURCE_COLOR,
+            color = GdLookup.COLOR_RESOURCE,
             priority = GdLookup.REMOTE_DEFINED,
             typed = element.type,
             tail = extraInfo,

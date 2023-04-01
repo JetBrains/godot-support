@@ -18,12 +18,12 @@ object GdLookup {
     const val BUILT_IN = 100.0;
     const val USER_DEFINED = 200.0;
     const val REMOTE_DEFINED = 220.0; // resources
-    const val LOCAL_USER_DEFINED = 250.0;
-    const val TOP = 500.0;
+    const val LOCAL_USER_DEFINED = 250.0
+    const val TOP = 500.0
 
     // TODO from settings?
-    val ANNOTATOR_COLOR = Color(255, 179,115);
-    val RESOURCE_COLOR = Color(99, 194,89);
+    val COLOR_ANNOTATION = Color(255, 179,115);
+    val COLOR_RESOURCE = Color(99, 194,89);
 
     fun create(
         text: String,

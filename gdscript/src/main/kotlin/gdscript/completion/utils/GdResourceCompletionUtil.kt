@@ -21,7 +21,7 @@ object GdResourceCompletionUtil {
                     .addElement(
                         GdLookup.create(
                             "$$nodePath",
-                            color = GdLookup.RESOURCE_COLOR,
+                            color = GdLookup.COLOR_RESOURCE,
                             priority = GdLookup.USER_DEFINED,
                             typed = it.type,
                         )
@@ -47,7 +47,7 @@ object GdResourceCompletionUtil {
             GdLookup.create(
 //              "@onready var ${it.name.camelToSnakeCase()}: ${it.type} = $$nodePath", // +;
                 localPath,
-                color = GdLookup.RESOURCE_COLOR,
+                color = GdLookup.COLOR_RESOURCE,
                 priority = GdLookup.USER_DEFINED,
                 typed = it.type,
                 presentable = absolutePath,
@@ -100,7 +100,7 @@ object GdResourceCompletionUtil {
             results.add(
                 GdLookup.create(
                     "$$hint",
-                    color = GdLookup.RESOURCE_COLOR,
+                    color = GdLookup.COLOR_RESOURCE,
                     priority = GdLookup.USER_DEFINED,
                     typed = it.type,
                     tail = tail,
