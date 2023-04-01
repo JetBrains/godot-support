@@ -1,6 +1,7 @@
 package gdscript.utils
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.TokenType
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
@@ -43,6 +44,15 @@ object PsiElementUtil {
         }
 
         return null
+    }
+
+    fun PsiElement.nextNonWhiteCommentToken(): PsiElement? {
+        var next = this.nextSibling
+        while (next != null && (next.elementType == TokenType.WHITE_SPACE || next.elementType == GdTypes.COMMENT)) {
+            next = next.nextSibling
+        }
+
+        return next
     }
 
 }

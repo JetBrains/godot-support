@@ -46,6 +46,10 @@ object GdBlocks {
     )
 
     val INDENT_CHILDREN_ATTRIBUTE = arrayOf(
+        GdTypes.IF_ST,
+        GdTypes.WHILE_ST,
+        GdTypes.ELIF_ST,
+        GdTypes.ELSE_ST,
         GdTypes.SIGNAL_DECL_TL,
         GdTypes.ENUM_DECL_TL,
         GdTypes.ARRAY_DECL,
@@ -54,6 +58,7 @@ object GdBlocks {
         GdTypes.METHOD_DECL_TL,
         GdTypes.GET_DECL,
         GdTypes.SET_DECL,
+        GdTypes.SUITE,
     )
 
     // TODO clear up
