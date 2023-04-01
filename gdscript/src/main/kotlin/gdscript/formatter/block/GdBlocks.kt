@@ -43,6 +43,7 @@ object GdBlocks {
     val DEDENT_TOKENS = arrayOf(
         GdTypes.ELIF_ST,
         GdTypes.ELSE_ST,
+        GdTypes.PATTERN_LIST,
     )
 
     val INDENT_CHILDREN_ATTRIBUTE = arrayOf(
