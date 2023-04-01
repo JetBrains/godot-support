@@ -11,7 +11,6 @@ $formatDesc = function($desc, $key) {
 };
 
 $formatType = function($type) {
-    $type = $type['@attributes']['type'];
     if (substr($type, -2) == "[]") {
         $type = substr($type, 0, strlen($type) - 2);
         return sprintf("Array[%s]", $type);
@@ -142,18 +141,18 @@ foreach ($files as $filename) {
             if ($value['0'] ?? null) {
                 $data .= $formatDesc($value['0'], "desc");
             }
-            $data .= sprintf("var %s: %s", $att['name'], $att['type']);
+            $data .= sprintf("var %s: %s", $att['name'], $formatType($att['type']));
 
             $getter = $att['getter'] ?? null ? sprintf("get = %s", $att['getter']) : null;
             $setter = $att['setter'] ?? null ? sprintf("set = %s", $att['setter']) : null;
             $getSet = [];
             if ($getter) {
                 $getSet[] = $getter;
-                $getSetMethods .= sprintf("func %s() -> %s:\n\treturn %s\n\n", $att['getter'], $att['type'], $att['name']);
+                $getSetMethods .= sprintf("func %s() -> %s:\n\treturn %s\n\n", $att['getter'], $formatType($att['type']), $att['name']);
             }
             if ($setter) {
                 $getSet[] = $setter;
-                $getSetMethods .= sprintf("func %s(value: %s) -> void:\n\t%s = value\n\n", $att['setter'], $att['type'], $att['name']);
+                $getSetMethods .= sprintf("func %s(value: %s) -> void:\n\t%s = value\n\n", $att['setter'], $formatType($att['type']), $att['name']);
             }
             if ($getSet) {
                 $data .= ":\n\t";
@@ -177,7 +176,7 @@ foreach ($files as $filename) {
             $data .= $formatDesc($desc['0'], "desc");
         }
 
-        $data .= sprintf("func %s(%s) -> %s:\n", $att['name'], implode(', ', $params), $formatType($ret));
+        $data .= sprintf("func %s(%s) -> %s:\n", $att['name'], implode(', ', $params), $formatType($ret['@attributes']['type']));
         $data .= sprintf("\tpass;\n\n");
     }
     $data .= "\n";
@@ -205,7 +204,7 @@ foreach ($files as $filename) {
             $data .= $formatDesc($desc['0'], "desc");
         }
 
-        $data .= sprintf("%sfunc %s(%s) -> %s:\n", $quali, $att['name'], implode(', ', $params), $formatType($ret));
+        $data .= sprintf("%sfunc %s(%s) -> %s:\n", $quali, $att['name'], implode(', ', $params), $formatType($ret['@attributes']['type']));
         $data .= sprintf("\tpass;\n\n");
     }
     $data .= "\n";

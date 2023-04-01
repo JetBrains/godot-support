@@ -56,6 +56,8 @@ object PsiGdExprUtil {
                     if (method == "get_node" || method == "get_node_or_null") {
                         //TODO zkusit vyparsovat Node z .tscn
                         return GdKeywords.VARIANT
+                    } else if (method == "instantiate") {
+                        return GdKeywords.VARIANT
                     } else if (method == "get_child") {
                         return GdKeywords.VARIANT
                     } else if (method == "get_parent") {
