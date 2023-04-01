@@ -13,8 +13,8 @@ import gdscript.psi.GdTypes
 class GdFormattingModelBuilder : FormattingModelBuilder {
 
     override fun createModel(formattingContext: FormattingContext): FormattingModel {
-        val settings = formattingContext.codeStyleSettings;
-        val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java);
+        val settings = formattingContext.codeStyleSettings
+        val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java)
         val initialBlock = GdBlock(
             formattingContext.node,
             Wrap.createWrap(WrapType.NONE, false),
@@ -56,7 +56,6 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.ANNOTATION_TL)
             .forcedLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
 
-//            .between(GdTypes.COMMENT, ROOT_BLOCKS).forcedLines(0) // TODO
             .before(ROOT_BLOCKS).forcedLines(custom.LINES_BEFORE_FUNC)
 
         // Separate groups
@@ -66,13 +65,10 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
                     builder.between(left, right).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP)
                 }
             }
-//            builder.between(left, GdTypes.COMMENT).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP) // TODO
         }
 
         // Then within group
         builder.between(ROOT_VARIABLES, ROOT_VARIABLES).forcedLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
-
-//        builder.after(ROOT_VARIABLES).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP);
 
         // operators
         builder.around(TokenSet.create(GdTypes.TEST_OPERATOR, GdTypes.ASSIGN, GdTypes.EQ, GdTypes.ASSIGN_TYPED))

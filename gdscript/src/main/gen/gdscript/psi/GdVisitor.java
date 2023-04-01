@@ -11,6 +11,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitAnnotationType(@NotNull GdAnnotationType o) {
+    visitPsiElement(o);
+  }
+
   public void visitAnnotationTl(@NotNull GdAnnotationTl o) {
     visitTopLevelDecl(o);
   }

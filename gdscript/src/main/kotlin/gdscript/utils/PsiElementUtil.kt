@@ -1,12 +1,12 @@
 package gdscript.utils
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.TokenType
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdTypes
+import gdscript.utils.ElementTypeUtil.isSkipable
 
 object PsiElementUtil {
 
@@ -48,11 +48,20 @@ object PsiElementUtil {
 
     fun PsiElement.nextNonWhiteCommentToken(): PsiElement? {
         var next = this.nextSibling
-        while (next != null && (next.elementType == TokenType.WHITE_SPACE || next.elementType == GdTypes.COMMENT)) {
+        while (next != null && next.elementType.isSkipable()) {
             next = next.nextSibling
         }
 
         return next
+    }
+
+    fun PsiElement.prevNonWhiteCommentToken(): PsiElement? {
+        var prev = this.prevSibling
+        while (prev != null && prev.elementType.isSkipable()) {
+            prev = prev.prevSibling
+        }
+
+        return prev
     }
 
 }

@@ -65,6 +65,7 @@ object GdPsiUtils {
     @JvmStatic fun getName(element: GdClassVarDeclTl): String = GdClassVarUtil.getName(element);
     @JvmStatic fun getPresentation(element: GdClassVarDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
     @JvmStatic fun getReturnType(element: GdClassVarDeclTl): String = PsiGdClassVarUtil.getReturnType(element);
+    @JvmStatic fun isAnnotated(element: GdClassVarDeclTl, annotator: String): Boolean = PsiGdClassVarUtil.isAnnotated(element, annotator);
 
     /** Local variable */
     @JvmStatic fun getName(element: GdVarDeclSt): String = GdVarDeclStUtil.getName(element);

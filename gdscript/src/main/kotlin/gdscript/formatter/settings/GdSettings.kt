@@ -23,6 +23,7 @@ object GdSettings {
                 Pair("LINES_IN_BETWEEN_VARIABLE_GROUP", "Between variables, constants, etc."),
                 Pair("LINES_AFTER_VARIABLE_GROUP", "Below variables, constants, etc."),
                 Pair("LINES_BEFORE_FUNC", "Before func declaration"),
+                Pair("LINES_BETWEEN_EXPORT_GROUPS", "Before @onready, @export"),
             )
         ),
     );

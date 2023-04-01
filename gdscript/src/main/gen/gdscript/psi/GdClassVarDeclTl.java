@@ -37,4 +37,6 @@ public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<Gd
   @NotNull
   ItemPresentation getPresentation();
 
+  boolean isAnnotated(@NotNull String annotator);
+
 }

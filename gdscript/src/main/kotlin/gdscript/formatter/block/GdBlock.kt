@@ -8,6 +8,9 @@ import com.intellij.psi.impl.source.tree.FileElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.jetbrains.rd.util.forEachReversed
+import gdscript.formatter.GdCodeStyleSettings
+import gdscript.psi.GdAnnotationTl
+import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdTypes
 import gdscript.utils.GdSettingsUtil.calculateSpaceIndents
 import gdscript.utils.PsiElementUtil.getCaretOffsetIfSingle
@@ -104,7 +107,7 @@ class GdBlock : AbstractBlock {
             val lastNode = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)
             if (lastNode?.elementType == GdTypes.COLON) {
                 if (atEndOfStmt && preceding != null) {
-                    return ChildAttributes(settings.calculateSpaceIndents(preceding, true), null)
+                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 1), null)
                 }
                 return ChildAttributes(Indent.getNormalIndent(), null)
             }
@@ -113,8 +116,9 @@ class GdBlock : AbstractBlock {
         if (previousBlock is GdBlock && preceding != null && previousBlock.node.lastChildNode?.elementType == GdTypes.STMT_OR_SUITE) {
             val caretOffset = preceding.getCaretOffsetIfSingle()
             if (caretOffset != null) {
-                if (PsiTreeUtil.getDeepestLast(preceding).precedingNewLines(caretOffset) > 2) {
-                    return ChildAttributes(Indent.getNormalIndent(true), null)
+                val emptyLines = PsiTreeUtil.getDeepestLast(preceding).precedingNewLines(caretOffset)
+                if (emptyLines > 2) {
+                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 2 - emptyLines), null)
                 }
             }
 
@@ -148,6 +152,24 @@ class GdBlock : AbstractBlock {
             block2 = block2.nextBlock
         }
         if (block2 == null) return null
+
+        // Separation of @onready & @export variables
+        if (child1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block2.node.elementType == GdTypes.ANNOTATION_TL) {
+            val node1 = child1.node.psi as GdClassVarDeclTl
+            var node2 = block2.node.psi
+            val annotations = mutableListOf<String>()
+            while (node2 is GdAnnotationTl) {
+                annotations.add(node2.annotationType.text)
+                node2 = node2.nextNonWhiteCommentToken()
+            }
+
+            for (annotator in GdBlocks.SEPARATE_ANNOTATOR_GROUPS) {
+                if (node1.isAnnotated(annotator).xor(annotations.contains(annotator))) {
+                    val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java);
+                    return Spacing.createSpacing(0, 0, customSettings.LINES_BETWEEN_EXPORT_GROUPS + 1, false, 0)
+                }
+            }
+        }
 
         return this.spacing.getSpacing(this, child1, block2);
     }

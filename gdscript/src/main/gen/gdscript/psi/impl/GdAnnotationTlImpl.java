@@ -34,6 +34,12 @@ public class GdAnnotationTlImpl extends GdTopLevelDeclImpl implements GdAnnotati
   }
 
   @Override
+  @NotNull
+  public GdAnnotationType getAnnotationType() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdAnnotationType.class));
+  }
+
+  @Override
   @Nullable
   public GdEndStmt getEndStmt() {
     return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);

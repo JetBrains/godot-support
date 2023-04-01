@@ -84,10 +84,11 @@ constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {
 }
 constId_nmi ::= identifierEx
 
-annotation_tl ::= ANNOTATOR (LRBR annotationParams? RRBR)? endStmt? {pin=1 recoverWhile=topLevelDecl_r}
+annotation_tl ::= annotationType (LRBR annotationParams? RRBR)? endStmt? {pin=1 recoverWhile=topLevelDecl_r}
+annotationType ::= ANNOTATOR
 annotationParams ::= literal_ex (COMMA literal_ex)*
 classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
-    methods=[getName getReturnType getPresentation]
+    methods=[getName getReturnType getPresentation isAnnotated]
     pin=1 recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdClassVarDeclElementImpl"
     stubClass="gdscript.index.stub.GdClassVarDeclStub"

@@ -85,12 +85,24 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ANNOTATOR (LRBR annotationParams? RRBR)? endStmt?
+  // ANNOTATOR
+  public static boolean annotationType(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "annotationType")) return false;
+    if (!nextTokenIs(b, ANNOTATOR)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, ANNOTATOR);
+    exit_section_(b, m, ANNOTATION_TYPE, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // annotationType (LRBR annotationParams? RRBR)? endStmt?
   public static boolean annotation_tl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotation_tl")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, ANNOTATION_TL, "<annotation tl>");
-    r = consumeTokenFast(b, ANNOTATOR);
+    r = annotationType(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, annotation_tl_1(b, l + 1));
     r = p && annotation_tl_2(b, l + 1) && r;

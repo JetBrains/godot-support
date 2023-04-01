@@ -7,13 +7,14 @@ import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.endOffset
 import gdscript.GdFileType
+import kotlin.math.max
 
 object GdSettingsUtil {
 
-    fun CodeStyleSettings.indentToSpaces(indent: String, continuation: Boolean = false): Indent {
+    fun CodeStyleSettings.indentToSpaces(indent: String, offset: Int = 0): Indent {
         val whiteSpace = indent.first()
         val tabSize = this.getTabSize(GdFileType)
-        val baseSize = if (continuation) tabSize else 0
+        val baseSize = offset * tabSize
         var size = 0
         if (!whiteSpace.isWhitespace()) return Indent.getSpaceIndent(baseSize)
 
@@ -21,21 +22,21 @@ object GdSettingsUtil {
             size++
         }
 
-        if (whiteSpace == ' ') {
-            return Indent.getSpaceIndent(size + baseSize)
+        if (whiteSpace != ' ') {
+            size *= tabSize
         }
 
-        return Indent.getSpaceIndent(size * tabSize + baseSize)
+        return Indent.getSpaceIndent(max(size + baseSize, 0))
     }
 
-    fun CodeStyleSettings.calculateSpaceIndents(element: PsiElement, continuation: Boolean = false): Indent {
+    fun CodeStyleSettings.calculateSpaceIndents(element: PsiElement, offset: Int = 0): Indent {
         val lastVisible = PsiTreeUtil.getDeepestVisibleLast(element) ?: element
         val document = PsiEditorUtil.findEditor(lastVisible)!!.document
         val line = document.getLineNumber(lastVisible.endOffset)
         val indentedLine =
             document.text.substring(document.getLineStartOffset(line), document.getLineEndOffset(line))
 
-        return this.indentToSpaces(indentedLine, continuation)
+        return this.indentToSpaces(indentedLine, offset)
     }
 
 }

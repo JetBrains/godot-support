@@ -19,6 +19,7 @@ public interface GdTypes {
 
   IElementType ANNOTATION_PARAMS = new GdElementType("ANNOTATION_PARAMS");
   IElementType ANNOTATION_TL = new GdElementType("ANNOTATION_TL");
+  IElementType ANNOTATION_TYPE = new GdElementType("ANNOTATION_TYPE");
   IElementType ARG_LIST = new GdElementType("ARG_LIST");
   IElementType ARRAY_DECL = new GdElementType("ARRAY_DECL");
   IElementType ARRAY_PATTERN = new GdElementType("ARRAY_PATTERN");
@@ -208,6 +209,9 @@ public interface GdTypes {
       }
       else if (type == ANNOTATION_TL) {
         return new GdAnnotationTlImpl(node);
+      }
+      else if (type == ANNOTATION_TYPE) {
+        return new GdAnnotationTypeImpl(node);
       }
       else if (type == ARG_LIST) {
         return new GdArgListImpl(node);

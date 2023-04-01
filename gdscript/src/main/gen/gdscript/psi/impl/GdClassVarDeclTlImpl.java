@@ -87,4 +87,9 @@ public class GdClassVarDeclTlImpl extends GdClassVarDeclElementImpl implements G
     return GdPsiUtils.getPresentation(this);
   }
 
+  @Override
+  public boolean isAnnotated(@NotNull String annotator) {
+    return GdPsiUtils.isAnnotated(this, annotator);
+  }
+
 }
