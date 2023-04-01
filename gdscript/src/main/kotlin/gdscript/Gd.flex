@@ -153,6 +153,7 @@ ANY = .+
     "remotesync"   { return dedentRoot(GdTypes.REMOTESYNC); }
 
     "*"            { return dedentRoot(GdTypes.MUL); }
+    "**"           { return dedentRoot(GdTypes.POWER); }
     "/"            { return dedentRoot(GdTypes.DIV); }
     "%"            { return dedentRoot(GdTypes.MOD); }
     "+"            { return dedentRoot(GdTypes.PLUS); }

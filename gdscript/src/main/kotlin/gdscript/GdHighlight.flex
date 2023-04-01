@@ -96,6 +96,7 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
     "remotesync"   { return GdTypes.REMOTESYNC; }
 
     "*"            { return GdTypes.MUL; }
+    "**"           { return GdTypes.POWER; }
     "/"            { return GdTypes.DIV; }
     "%"            { return GdTypes.MOD; }
     "+"            { return GdTypes.PLUS; }

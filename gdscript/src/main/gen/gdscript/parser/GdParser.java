@@ -1067,7 +1067,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // MUL | DIV | MOD
+  // MUL | DIV | MOD | POWER
   public static boolean factorSign(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "factorSign")) return false;
     boolean r;
@@ -1075,6 +1075,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, MUL);
     if (!r) r = consumeToken(b, DIV);
     if (!r) r = consumeToken(b, MOD);
+    if (!r) r = consumeToken(b, POWER);
     exit_section_(b, l, m, r, false, null);
     return r;
   }

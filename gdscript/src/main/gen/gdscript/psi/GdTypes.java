@@ -174,6 +174,7 @@ public interface GdTypes {
   IElementType OROR = new GdTokenType("OROR");
   IElementType PASS = new GdTokenType("PASS");
   IElementType PLUS = new GdTokenType("PLUS");
+  IElementType POWER = new GdTokenType("POWER");
   IElementType PPLUS = new GdTokenType("PPLUS");
   IElementType PUPPET = new GdTokenType("PUPPET");
   IElementType RBSHIFT = new GdTokenType("RBSHIFT");
