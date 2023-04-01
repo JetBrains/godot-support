@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdArgList extends PsiElement {
+public interface GdArgExpr extends PsiElement {
 
   @NotNull
-  List<GdArgExpr> getArgExprList();
+  GdExpr getExpr();
 
 }

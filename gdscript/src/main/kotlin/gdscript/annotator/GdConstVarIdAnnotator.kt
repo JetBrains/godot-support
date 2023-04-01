@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.action.quickFix.GdAddReturnType
-import gdscript.action.quickFix.GdRemoveElementAction
+import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassMemberUtil
 
@@ -59,7 +59,7 @@ class GdConstVarIdAnnotator : Annotator {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, ":= assigment cannot have return type")
                 .range(TextRange.create(returnTypes.second!!.textRange.startOffset, assigment.textRange.endOffset))
-                .withFix(GdRemoveElementAction(returnTypes.second!!))
+                .withFix(GdRemoveElementsAction(returnTypes.second!!))
                 .create()
             return;
         }

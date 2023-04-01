@@ -17,7 +17,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getHintInfo(element: PsiElement): HintInfo? {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return null;
-            val declaration = GdClassMemberReference(id).resolveDeclaration() ?: return null;// TODO ii
+            val declaration = GdClassMemberReference(id).resolveDeclaration() ?: return null
             if (declaration is GdMethodDeclTl) {
                 val name = declaration.name;
                 if (name == "emit") {
@@ -39,7 +39,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getParameterHints(element: PsiElement): List<InlayInfo> {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return emptyList();
-            val method = GdClassMemberReference(id).resolveDeclaration();// TODO ii
+            val method = GdClassMemberReference(id).resolveDeclaration()
 
             var params: Array<String> = emptyArray();
             when (method) {
@@ -62,43 +62,45 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                     }
                 }
                 else -> {
-                    val file = GdClassMemberReference(id).resolve();// TODO ii
+                    val file = GdClassMemberReference(id).resolve()
                     if (file !is GdFile) {
-                        return emptyList();
+                        return emptyList()
                     }
 
-                    val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(file, GdMethodDeclTl::class.java);
-                    val usedParams = element.argList?.exprList;
+                    val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(file, GdMethodDeclTl::class.java)
+                    val usedParams = element.argList?.argExprList
 
                     for (hint in methods) {
-                        if (!hint.isConstructor) continue;
-                        val hints = hint.paramList?.paramList;
-                        if (hints == null || usedParams == null || hints.size != usedParams.size) continue;
+                        if (!hint.isConstructor) continue
+                        val hints = hint.paramList?.paramList
+                        if (hints == null || usedParams == null || hints.size != usedParams.size) continue
                         var ok = true;
                         for (i in 0 until hints.size) {
-                            val t1 = usedParams[i].returnType;
-                            val t2 = hints[i].returnType; // TODO return typ -> dědičnost, number + float a tak..
+                            val t1 = usedParams[i].expr.returnType
+                            val t2 = hints[i].returnType // TODO return typ -> dědičnost, number + float a tak..
                             ok = ok && (t1.isBlank() || t2.isBlank() || t1 == t2);
                         }
 
                         if (ok) {
                             params = hints.map { it.varNmi.name }.toTypedArray();
-                            break;
+                            break
                         }
                     }
-                };
+                }
             }
             if (params.isEmpty()) {
-                return emptyList();
+                return emptyList()
             }
 
-            return element.argList?.exprList?.mapIndexed { i, it ->
+            val args = element.argList?.argExprList
+            return params.mapIndexedNotNull { i, it ->
+                val param = args?.get(i) ?: return@mapIndexedNotNull null
                 InlayInfo(
-                    if (params.size > i) params[i] else "",
-                    it.startOffset,
+                    it,
+                    param.startOffset,
                     false,
                 )
-            } ?: emptyList();
+            }
         }
 
         return emptyList()

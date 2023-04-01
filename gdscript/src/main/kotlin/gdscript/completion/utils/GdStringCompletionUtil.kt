@@ -3,7 +3,6 @@ package gdscript.completion.utils
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
 import gdscript.completion.GdLookup
-import gdscript.psi.GdCallEx
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.utils.PsiElementUtil.getCallExprOfParam
 import project.psi.util.ProjectInputUtil

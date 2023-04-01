@@ -11,14 +11,14 @@ import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
-public class GdArgListImpl extends ASTWrapperPsiElement implements GdArgList {
+public class GdArgExprImpl extends ASTWrapperPsiElement implements GdArgExpr {
 
-  public GdArgListImpl(@NotNull ASTNode node) {
+  public GdArgExprImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitArgList(this);
+    visitor.visitArgExpr(this);
   }
 
   @Override
@@ -29,8 +29,8 @@ public class GdArgListImpl extends ASTWrapperPsiElement implements GdArgList {
 
   @Override
   @NotNull
-  public List<GdArgExpr> getArgExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdArgExpr.class);
+  public GdExpr getExpr() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
   }
 
 }

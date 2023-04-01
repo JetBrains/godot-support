@@ -19,6 +19,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitTopLevelDecl(o);
   }
 
+  public void visitArgExpr(@NotNull GdArgExpr o) {
+    visitPsiElement(o);
+  }
+
   public void visitArgList(@NotNull GdArgList o) {
     visitPsiElement(o);
   }

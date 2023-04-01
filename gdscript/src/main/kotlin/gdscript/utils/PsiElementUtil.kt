@@ -1,6 +1,7 @@
 package gdscript.utils
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
@@ -63,9 +64,9 @@ object PsiElementUtil {
         return next
     }
 
-    fun PsiElement.prevNonWhiteCommentToken(): PsiElement? {
+    fun PsiElement.prevNonWhiteCommentToken(vararg skip: IElementType): PsiElement? {
         var prev = this.prevSibling
-        while (prev != null && prev.elementType.isSkipable()) {
+        while (prev != null && (prev.elementType.isSkipable() || skip.contains(prev.elementType))) {
             prev = prev.prevSibling
         }
 

@@ -144,12 +144,23 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // expr (COMMA expr)* COMMA?
+  // expr
+  public static boolean argExpr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argExpr")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, ARG_EXPR, "<arg expr>");
+    r = expr(b, l + 1, -1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // argExpr (COMMA argExpr)* COMMA?
   public static boolean argList(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "argList")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, ARG_LIST, "<arg list>");
-    r = expr(b, l + 1, -1);
+    r = argExpr(b, l + 1);
     p = r; // pin = 1
     r = r && report_error_(b, argList_1(b, l + 1));
     r = p && argList_2(b, l + 1) && r;
@@ -157,7 +168,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // (COMMA expr)*
+  // (COMMA argExpr)*
   private static boolean argList_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "argList_1")) return false;
     while (true) {
@@ -168,13 +179,13 @@ public class GdParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // COMMA expr
+  // COMMA argExpr
   private static boolean argList_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "argList_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
-    r = r && expr(b, l + 1, -1);
+    r = r && argExpr(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

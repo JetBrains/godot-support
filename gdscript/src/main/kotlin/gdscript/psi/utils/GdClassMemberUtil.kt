@@ -482,7 +482,7 @@ object GdClassMemberUtil {
         return getConditioned(element) { el, stmt ->
             val expr = PsiTreeUtil.findChildOfType(stmt, GdCallEx::class.java)
             if (expr != null && expr.expr.text == "has_method") {
-                if (expr.argList?.exprList?.firstOrNull()?.text == "\"${el.text}\"") {
+                if (expr.argList?.argExprList?.firstOrNull()?.text == "\"${el.text}\"") {
                     return@getConditioned true
                 }
             }

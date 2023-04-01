@@ -8,6 +8,11 @@ import gdscript.psi.GdMethodDeclTl
 
 object GdMethodCompletionUtil {
 
+    fun GdMethodDeclTl.methodHeader(): String {
+        val params = buildParamHint(this)
+        return "func ${this.name}${params}${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}"
+    }
+
     fun addMethods(methods: Map<String, GdMethodDeclTl>, result: CompletionResultSet, withFunc: Boolean = false) {
         methods.forEach {
             val item = it.value;
