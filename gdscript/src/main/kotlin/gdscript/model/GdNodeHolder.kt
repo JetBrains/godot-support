@@ -29,13 +29,18 @@ data class GdNodeHolder(
     }
 
     fun variable_lookup(): LookupElement {
+        var type = element.type
+        if (type.isNotBlank()) {
+            type = ": $type"
+        }
+
         return GdLookup.create(
             readableNodePath,
             color = GdLookup.RESOURCE_COLOR,
             priority = GdLookup.REMOTE_DEFINED,
             typed = element.type,
             tail = extraInfo,
-            handler = GdReplaceInsertHandler("@onready var ${element.name.camelToSnakeCase()}: ${element.type} = ${uniqueId ?: relativePath}"), // +;
+            handler = GdReplaceInsertHandler("@onready var ${element.name.camelToSnakeCase()}$type = ${uniqueId ?: relativePath}"), // +;
         );
     }
 

@@ -37,8 +37,8 @@ object GdNodeUtil {
         val scriptPath = nodes.find { it.scriptResource == resource }?.nodePath?.split("/") ?: return emptyArray();
 
         return nodes.map {
-            val nodePath = it.nodePath;
-            val path = nodePath.split("/");
+            val nodePath = it.nodePath
+            val path = nodePath.split("/")
 
             var relativePath = if (path.size == scriptPath.size) {
                 "."
@@ -49,22 +49,22 @@ object GdNodeUtil {
             }
 
             if (relativePath.contains(".")) {
-                relativePath = "\"$relativePath\"";
+                relativePath = "\"$relativePath\""
             }
 
-            var hint = nodePath.removePrefix("../");
-            var tail: String? = null;
+            var hint = nodePath.removePrefix("../")
+            var tail: String? = null
             if (hint == "..") {
-                hint = it.name;
-                tail = "(root)";
+                hint = it.name
+                tail = "(root)"
             }
 
-            var uniqueId: String? = null;
+            var uniqueId: String? = null
             if (it.isUniqueNameOwner) {
-                uniqueId = "%${it.name}";
-                tail = relativePath;
+                uniqueId = "%${it.name}"
+                tail = " ${it.name}"
             } else {
-                relativePath = "$$relativePath";
+                relativePath = "$$relativePath"
             }
 
             GdNodeHolder(it, relativePath, uniqueId, tail, "$$hint")
