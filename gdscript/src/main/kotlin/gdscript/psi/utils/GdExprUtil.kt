@@ -180,6 +180,7 @@ object GdExprUtil {
 
         val classId = GdClassUtil.getClassIdElement(left, project) ?: return true
         val classElement = GdClassUtil.getOwningClassElement(classId)
+
         // Constructor
         GdClassMemberUtil
             .listClassMemberDeclarations(classElement, constructors = true)
@@ -189,6 +190,10 @@ object GdExprUtil {
             }
 
         // Inheritance
+        val currentClassId = GdClassUtil.getClassIdElement(right, project) ?: return true
+        val currentClassElement = GdClassUtil.getOwningClassElement(currentClassId)
+
+        if (GdInheritanceUtil.isExtending(currentClassElement, left)) return true
 
         return false
     }

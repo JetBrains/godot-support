@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.GdKeywords
 import gdscript.psi.GdTypes
+import gdscript.psi.utils.GdClassMemberUtil
 
 object GdKeywordContributor : CompletionContributor() {
 
@@ -26,8 +27,10 @@ object GdKeywordContributor : CompletionContributor() {
     )
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
-        if (psiElement(GdTypes.COMMENT).accepts(parameters.position)) return;
+        if (psiElement(GdTypes.COMMENT).accepts(parameters.position)) return
+        if (GdClassMemberUtil.calledUpon(parameters.position) != null) return
 
-        result.addAllElements(TO_HINT_KEYWORDS.map { GdLookup.create(it, priority = GdLookup.KEYWORDS) })
+        result.addAllElements(TO_HINT_KEYWORDS.map { GdLookup.create(it, priority = 0.0) })
     }
+
 }
