@@ -8,11 +8,12 @@ import gdscript.completion.utils.GdClassCompletionUtil.lookup
 import gdscript.psi.*
 import gdscript.psi.utils.PsiGdExprUtil
 import gdscript.utils.StringUtil.parseFromSquare
+import project.psi.model.GdAutoload
 
 @Deprecated("move into assigned methods")
 object GdCompletionUtil {
 
-    fun lookups(element: PsiElement): Array<LookupElement> {
+    fun lookups(element: Any): Array<LookupElement> {
         return when (element) {
             is GdClassDeclTl -> arrayOf(element.lookup());
             is GdClassNaming -> arrayOf(lookup(element));
@@ -29,6 +30,7 @@ object GdCompletionUtil {
             is GdBindingPattern -> arrayOf(lookup(element));
             is GdSignalDeclTl -> arrayOf(lookup(element));
             is GdVarNmi -> arrayOf(lookup(element));
+            is GdAutoload -> arrayOf(lookup(element));
             else -> emptyArray();
         }
     }
@@ -143,7 +145,7 @@ object GdCompletionUtil {
 //            typed = binding.typed?.text ?: "", TODO dá se v match zjistit typ?
             icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
             priority = GdLookup.LOCAL_USER_DEFINED,
-        );
+        )
     }
 
     fun lookup(signal: GdSignalDeclTl): LookupElement {
@@ -152,7 +154,14 @@ object GdCompletionUtil {
             typed = "signal",
             icon = GdIcon.getEditorIcon(GdIcon.SIGNAL_MARKER),
             priority = GdLookup.LOCAL_USER_DEFINED,
-        );
+        )
     }
+
+    fun lookup(file: GdAutoload): LookupElement =
+        GdLookup.create(
+            file.key,
+            priority = GdLookup.REMOTE_DEFINED,
+            icon = GdIcon.OBJECT,
+        )
 
 }

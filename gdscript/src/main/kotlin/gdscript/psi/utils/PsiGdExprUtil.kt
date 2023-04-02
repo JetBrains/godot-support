@@ -11,6 +11,7 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
+import project.psi.model.GdAutoload
 
 object PsiGdExprUtil {
 
@@ -142,28 +143,29 @@ object PsiGdExprUtil {
                     val named: GdNamedElement = expr.refIdNm ?: return "";
                     return when (val element =
                         GdClassMemberUtil.findDeclaration(named)) {
-                        is GdClassVarDeclTl -> element.returnType;
-                        is GdVarDeclSt -> element.returnType;
-                        is GdConstDeclTl -> element.returnType;
-                        is GdConstDeclSt -> element.returnType;
-                        is GdMethodDeclTl -> element.returnType;
-                        is GdSignalDeclTl -> "Signal";
-                        is GdEnumDeclTl -> "EnumDictionary";
-                        is GdEnumValue -> GdKeywords.INT;
+                        is GdClassVarDeclTl -> element.returnType
+                        is GdVarDeclSt -> element.returnType
+                        is GdConstDeclTl -> element.returnType
+                        is GdConstDeclSt -> element.returnType
+                        is GdMethodDeclTl -> element.returnType
+                        is GdSignalDeclTl -> "Signal"
+                        is GdEnumDeclTl -> "EnumDictionary"
+                        is GdEnumValue -> GdKeywords.INT
                         is GdClassNaming -> text
                         is GdForSt -> {
                             var type = element.expr?.returnType?.removePrefix("Array[")?.removeSuffix("]") ?: ""
                             if (type == "Array") type = ""
 
-                            return type;
+                            return type
                         }
-                        else -> "";
+                        is GdAutoload -> element.key
+                        else -> ""
                     }
                 }
 
-                return "";
-            };
-            else -> "";
+                return ""
+            }
+            else -> ""
         }
     }
 

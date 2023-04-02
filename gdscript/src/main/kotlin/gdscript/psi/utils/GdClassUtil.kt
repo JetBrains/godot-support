@@ -41,7 +41,6 @@ object GdClassUtil {
      * @return Full classId to given class "Class.Inner" (can be resource)
      */
     fun getFullClassId(element: PsiElement): String {
-        // TODO ii autoloads?
         return when (element) {
             is GdClassDeclTl -> element.classNameNmi?.classId ?: ""
             is GdFile -> {

@@ -11,8 +11,8 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdClassVarDeclIndex
 import gdscript.model.BoolVal
 import gdscript.psi.*
-import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.settings.GdSettingsState
+import project.psi.util.ProjectAutoloadUtil
 
 object GdClassMemberUtil {
 
@@ -23,7 +23,7 @@ object GdClassMemberUtil {
         element: GdNamedElement,
         onlyLocalScope: Boolean = false,
         ignoreParents: Boolean = false,
-    ): PsiElement? {
+    ): Any? {
         return listDeclarations(element, element, onlyLocalScope, ignoreParents).firstOrNull();
     }
 
@@ -36,7 +36,7 @@ object GdClassMemberUtil {
         searchFor: GdNamedElement,
         onlyLocalScope: Boolean = false,
         ignoreParents: Boolean = false,
-    ): Array<PsiElement> {
+    ): Array<Any> {
         return listDeclarations(element, searchFor.name, onlyLocalScope, ignoreParents);
     }
 
@@ -49,11 +49,11 @@ object GdClassMemberUtil {
         searchFor: String? = null,
         onlyLocalScope: Boolean = false,
         ignoreParents: Boolean = false,
-    ): Array<PsiElement> {
-        var static = false;
+    ): Array<Any> {
+        var static = false
 
-        val result = mutableListOf<PsiElement>()
-        var calledOn: String? = GdKeywords.SELF;
+        val result = mutableListOf<Any>()
+        var calledOn: String? = GdKeywords.SELF
 
         val calledOnPsi: GdExpr? = calledUpon(element);
         if (calledOnPsi != null && calledOnPsi.text != GdKeywords.SELF) {
@@ -67,7 +67,7 @@ object GdClassMemberUtil {
             GdKeywords.SUPER -> calledOn = GdInheritanceUtil.getExtendedClassId(element);
         }
 
-        var parent: PsiElement?;
+        var parent: PsiElement?
 
         // If it's stand-alone ref_id, adds also _Global & ClassNames - Classes are added as last due to matching name of some GlobalVars with class_name
         if (calledOn == null) {
@@ -79,8 +79,8 @@ object GdClassMemberUtil {
                         result,
                         static,
                         searchFor
-                    );
-                    if (searchFor != null && local != null) return arrayOf(local);
+                    )
+                    if (searchFor != null && local != null) return arrayOf(local)
                 }
             }
         }
@@ -100,6 +100,7 @@ object GdClassMemberUtil {
             }
         } else {
             // For Enum add also all it's values
+            // TODO je to ještě potřeba?
             if (calledOn.endsWith("Dictionary") && calledOnPsi != null /*&& calledOnPsi.firstChild is GdRefIdNm*/) {
                 val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdNm::class.java).lastOrNull();
                 if (firstChild != null) {
@@ -116,33 +117,43 @@ object GdClassMemberUtil {
 
             parent = GdClassUtil.getClassIdElement(calledOn, element)
             if (parent == null) {
+                val classId = GdClassUtil.getFullClassId(element)
                 parent = GdClassUtil.getClassIdElement(
-                    "${GdClassUtil.getFullClassId(element)}.${calledOn}",
+                    "$classId.${calledOn}",
                     element,
-                );
+                )
+                // Try autoload classes
+                if (parent == null) {
+                    parent = ProjectAutoloadUtil.findFromResource(classId, element)
+                    if (parent != null) static = false
+                }
             }
 
             if (parent != null) {
-                parent = GdClassUtil.getOwningClassElement(parent);
+                parent = GdClassUtil.getOwningClassElement(parent)
             }
         }
 
         // Recursively iterate over all extended classes
         if (!ignoreParents && !hitLocal.value) {
-            val local = collectFromParents(parent, result, static, searchFor);
-            if (local != null) return arrayOf(local);
+            val local = collectFromParents(parent, result, static, searchFor)
+            if (local != null) return arrayOf(local)
         }
 
         if (calledOn == null) {
+            val autoloads = ProjectAutoloadUtil.listGlobals(element)
             if (searchFor != null) {
-                val localClass = GdClassNamingIndex.getGlobally(searchFor, element).firstOrNull();
-                if (localClass != null) return arrayOf(localClass);
+                val localClass = GdClassNamingIndex.getGlobally(searchFor, element).firstOrNull()
+                if (localClass != null) return arrayOf(localClass)
+                val autoloaded = autoloads.find { it.key == searchFor }
+                if (autoloaded != null) return arrayOf(autoloaded)
             }
-            result.addAll(GdClassNamingIndex.getAllValues(element.project));
+            result.addAll(GdClassNamingIndex.getAllValues(element.project))
+            result.addAll(autoloads)
         }
 
-        if (searchFor != null) return emptyArray();
-        return result.toTypedArray();
+        if (searchFor != null) return emptyArray()
+        return result.toTypedArray()
     }
 
     /**
@@ -151,7 +162,7 @@ object GdClassMemberUtil {
      */
     fun collectFromParents(
         parent: PsiElement?,
-        result: MutableList<PsiElement>,
+        result: MutableList<Any>,
         static: Boolean? = null,
         search: String? = null,
     ): PsiElement? {
@@ -189,8 +200,8 @@ object GdClassMemberUtil {
             is GdSignalDeclTl,
             is GdMethodDeclTl,
             is GdParam,
-            is GdForSt, // todo neodzkoušeno
-            is GdBindingPattern, // todo neodzkoušeno
+            is GdForSt,
+            is GdBindingPattern,
             -> {
                 it = it.parent;
             }
@@ -200,7 +211,7 @@ object GdClassMemberUtil {
             is GdParam,
             -> {
                 isParam = true;
-                it = it.prevSibling ?: it.parent;
+                it = it.prevSibling ?: it.parent
             }
         }
 
@@ -285,14 +296,14 @@ object GdClassMemberUtil {
     /**
      * Filters out GdMethodsDeclTl
      */
-    fun Array<PsiElement>.methods(): Array<GdMethodDeclTl> {
+    fun Array<Any>.methods(): Array<GdMethodDeclTl> {
         return this.filterIsInstance<GdMethodDeclTl>().toTypedArray();
     }
 
     /**
      * Filters out GdMethodsDeclTl
      */
-    fun List<PsiElement>.methods(): Array<GdMethodDeclTl> {
+    fun List<Any>.methods(): Array<GdMethodDeclTl> {
         return this.filterIsInstance<GdMethodDeclTl>().toTypedArray();
     }
 
@@ -404,7 +415,7 @@ object GdClassMemberUtil {
      */
     private fun addsParentDeclarations(
         classElement: PsiElement,
-        result: MutableList<PsiElement>,
+        result: MutableList<Any>,
         static: Boolean? = false,
         search: String? = null,
     ): PsiElement? {

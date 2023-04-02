@@ -6,7 +6,7 @@ import com.intellij.psi.FileViewProvider
 import gdscript.GdFileType
 import gdscript.GdLanguage
 
-class GdFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, GdLanguage) {
+open class GdFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, GdLanguage) {
     override fun getFileType(): FileType {
         return GdFileType
     }

@@ -22,10 +22,9 @@ class GdMethodDeclCompletionContributor : CompletionContributor() {
         val element = parameters.originalPosition ?: return;
         if (METHOD_ID.accepts(parameters.position)) {
             val parent = GdInheritanceUtil.getExtendedElement(element) ?: return;
-            val list = mutableListOf<PsiElement>()
+            val list = mutableListOf<Any>()
             GdClassMemberUtil.collectFromParents(parent, list);
             list
-                .toTypedArray()
                 .methods()
                 .forEach { result.addElement(it.lookupDeclaration(true)) };
         }

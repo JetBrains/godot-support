@@ -17,6 +17,7 @@ import gdscript.psi.utils.GdClassMemberUtil.signals
 import gdscript.psi.utils.GdClassMemberUtil.variables
 import gdscript.psi.utils.PsiGdCommentUtils
 import gdscript.reference.GdClassMemberReference
+import gdscript.utils.PsiElementUtil.psi
 
 class GdDocumentationProvider : AbstractDocumentationProvider() {
 
@@ -161,7 +162,7 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
         return GdClassMemberUtil.listDeclarations(
             context,
             link,
-        ).firstOrNull()
+        ).firstOrNull()?.psi()
     }
 
     // TODO ctrl hover nad referencí

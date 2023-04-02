@@ -9,6 +9,7 @@ import gdscript.psi.GdArgList
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdTypes
 import gdscript.utils.ElementTypeUtil.isSkipable
+import project.psi.model.GdAutoload
 
 object PsiElementUtil {
 
@@ -71,6 +72,13 @@ object PsiElementUtil {
         }
 
         return prev
+    }
+
+    fun Any.psi(): PsiElement {
+        return when (this) {
+            is GdAutoload -> this.element
+            else -> this as PsiElement
+        }
     }
 
 }
