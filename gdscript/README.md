@@ -17,8 +17,7 @@ Editor -> General -> Smart Keys -> Unindent on Backspace
   - Inheritance & ClassName
   - Annotations
   - func overrides
-  - Resources (`$Path/Node` && `$"%Name"`)
-  - Inputs
+  - Resources (`$Path/Node` && `$"%Name"`) + inputs, user files
 - Refactoring
 - Go to declaration / usages
 - File templates taken from Godot's source

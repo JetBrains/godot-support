@@ -9,34 +9,27 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
+import gdscript.index.stub.GdStringValStub;
+import com.intellij.psi.stubs.IStubElementType;
 
-public class GdLiteralExImpl extends GdExprImpl implements GdLiteralEx {
+public class GdStringValImpl extends GdStringValElementImpl implements GdStringVal {
 
-  public GdLiteralExImpl(@NotNull ASTNode node) {
+  public GdStringValImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  @Override
+  public GdStringValImpl(@NotNull GdStringValStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
+  }
+
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitLiteralEx(this);
+    visitor.visitStringVal(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public GdRefIdNm getRefIdNm() {
-    return PsiTreeUtil.getChildOfType(this, GdRefIdNm.class);
-  }
-
-  @Override
-  @Nullable
-  public GdStringVal getStringVal() {
-    return PsiTreeUtil.getChildOfType(this, GdStringVal.class);
   }
 
 }

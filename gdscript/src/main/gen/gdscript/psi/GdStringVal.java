@@ -4,13 +4,9 @@ package gdscript.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.StubBasedPsiElement;
+import gdscript.index.stub.GdStringValStub;
 
-public interface GdLiteralEx extends GdExpr {
-
-  @Nullable
-  GdRefIdNm getRefIdNm();
-
-  @Nullable
-  GdStringVal getStringVal();
+public interface GdStringVal extends PsiElement, StubBasedPsiElement<GdStringValStub> {
 
 }

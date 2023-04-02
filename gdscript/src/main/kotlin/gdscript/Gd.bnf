@@ -252,11 +252,16 @@ is_ex ::= expr IS typedVal
 call_ex ::= expr LRBR argList? RRBR
 arr_ex ::= expr LSBR expr RSBR
 primary_ex ::= nodePath | arrayDecl | dictDecl | (LRBR expr RRBR)
-literal_ex ::= TRUE | FALSE | STRING_NAME | NODE_PATH_LIT | STRING | NUMBER | NULL | NAN | INF | refId_nm
 plusMinus_ex ::= expr (PPLUS | MMINUS)
 plusMinusPre_ex ::= (PPLUS | MMINUS) expr
 attribute_ex ::= expr DOT expr
-refId_nm ::= identifierEx | SELF | SUPER // TODO super
+refId_nm ::= identifierEx | SELF | SUPER
+literal_ex ::= TRUE | FALSE | STRING_NAME | NODE_PATH_LIT | stringVal | NUMBER | NULL | NAN | INF | refId_nm
+stringVal ::= STRING {
+    mixin="gdscript.psi.impl.GdStringValElementImpl"
+    stubClass="gdscript.index.stub.GdStringValStub"
+    elementTypeFactory="gdscript.psi.impl.GdStringValElementType.getInstance"
+}
 
 funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[getReturnType getReturnExpr getParameters /*getPresentation*/]

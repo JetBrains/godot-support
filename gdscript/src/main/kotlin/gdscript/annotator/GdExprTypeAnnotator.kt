@@ -69,6 +69,7 @@ class GdExprTypeAnnotator : Annotator {
         element: PsiElement,
         holder: AnnotationHolder,
     ) {
+        if (left == right) return
         if (left.isDynamicType() || right.isDynamicType()) return
         if (GdOperand.isAllowed(left, operator, right)) return
 

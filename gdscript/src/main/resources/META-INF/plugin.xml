@@ -25,6 +25,7 @@
     <codeInsight.parameterInfo language="GdScript" id="GdParameterInfoHandler" implementationClass="gdscript.codeInsight.GdParameterInfoHandler" />
     <lang.documentationProvider language="GdScript" implementationClass="gdscript.codeInsight.GdDocumentationProvider" />
     <codeInsight.parameterNameHints language="GdScript" implementationClass="gdscript.codeInsight.GdInlayParameterHintProvider" />
+    <lang.refactoringSupport language="GdScript" implementationClass="gdscript.psi.GdRefactoringSupportProvider" />
 
     <!-- settings -->
     <applicationService serviceImplementation="gdscript.settings.GdSettingsState" />
@@ -88,6 +89,7 @@
     <stubIndex implementation="gdscript.index.impl.GdMethodDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdSignalDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdEnumDeclIndex" />
+    <stubIndex implementation="gdscript.index.impl.GdUserFileIndex" />
     <fileBasedIndex implementation="gdscript.index.impl.GdFileResIndex" />
     <!-- Tscn & Project -->
     <stubIndex implementation="tscn.index.impl.TscnResourceIndex" />

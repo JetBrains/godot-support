@@ -2241,6 +2241,18 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // STRING
+  public static boolean stringVal(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stringVal")) return false;
+    if (!nextTokenIs(b, STRING)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, STRING);
+    exit_section_(b, m, STRING_VAL, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // NEW_LINE? INDENT (NEW_LINE | stmt)+ DEDENT
   public static boolean suite(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "suite")) return false;
@@ -2844,7 +2856,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // TRUE | FALSE | STRING_NAME | NODE_PATH_LIT | STRING | NUMBER | NULL | NAN | INF | refId_nm
+  // TRUE | FALSE | STRING_NAME | NODE_PATH_LIT | stringVal | NUMBER | NULL | NAN | INF | refId_nm
   public static boolean literal_ex(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "literal_ex")) return false;
     boolean r;
@@ -2853,7 +2865,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeTokenSmart(b, FALSE);
     if (!r) r = consumeTokenSmart(b, STRING_NAME);
     if (!r) r = consumeTokenSmart(b, NODE_PATH_LIT);
-    if (!r) r = consumeTokenSmart(b, STRING);
+    if (!r) r = stringVal(b, l + 1);
     if (!r) r = consumeTokenSmart(b, NUMBER);
     if (!r) r = consumeTokenSmart(b, NULL);
     if (!r) r = consumeTokenSmart(b, NAN);

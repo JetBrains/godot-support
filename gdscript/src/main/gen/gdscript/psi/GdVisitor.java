@@ -359,6 +359,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitStringVal(@NotNull GdStringVal o) {
+    visitPsiElement(o);
+  }
+
   public void visitSuite(@NotNull GdSuite o) {
     visitPsiElement(o);
   }

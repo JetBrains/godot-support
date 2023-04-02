@@ -38,11 +38,12 @@ class GdResourceCompletionContributor : CompletionContributor() {
                 result.addElement(
                     GdLookup.create(
                         it,
-                        priority = GdLookup.REMOTE_DEFINED,
+                        priority = GdLookup.BUILT_IN,
                     )
                 )
             }
             GdStringCompletionUtil.addInputs(position, result)
+            GdStringCompletionUtil.addUserFiles(position, result)
         }
     }
 
