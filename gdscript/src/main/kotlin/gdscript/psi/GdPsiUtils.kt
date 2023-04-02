@@ -25,83 +25,84 @@ object GdPsiUtils {
     // TODO projít vše, co není z elementType? a překopat
 
     /** ClassName  */
-    @JvmStatic fun getClassname(element: GdClassNaming): String = GdClassNamingElementType.getClassname(element);
-    @JvmStatic fun getParentName(element: GdClassNaming): String = GdClassNamingElementType.getParentName(element);
+    @JvmStatic fun getClassname(element: GdClassNaming): String = GdClassNamingElementType.getClassname(element)
+    @JvmStatic fun getParentName(element: GdClassNaming): String = GdClassNamingElementType.getParentName(element)
 
     /** ClassDeclTl */
-    @JvmStatic fun getName(element: GdClassDeclTl): String = GdClassUtil.getName(element);
-    @JvmStatic fun getParentName(element: GdClassDeclTl): String = GdClassDeclElementType.getParentName(element);
+    @JvmStatic fun getName(element: GdClassDeclTl): String = GdClassUtil.getName(element)
+    @JvmStatic fun getParentName(element: GdClassDeclTl): String = GdClassDeclElementType.getParentName(element)
 
     /** ClassId */
-    @JvmStatic fun getClassId(element: GdClassNameNmi): String = GdClassIdElementType.getClassId(element);
-    @JvmStatic fun getParentName(element: GdClassNameNmi): String? = GdClassIdElementType.getParentName(element);
-    @JvmStatic fun isInner(element: GdClassNameNmi): Boolean = PsiGdClassUtil.isInner(element);
+    @JvmStatic fun getClassId(element: GdClassNameNmi): String = GdClassIdElementType.getClassId(element)
+    @JvmStatic fun getParentName(element: GdClassNameNmi): String? = GdClassIdElementType.getParentName(element)
+    @JvmStatic fun isInner(element: GdClassNameNmi): Boolean = PsiGdClassUtil.isInner(element)
 
     /** Inheritance */
-    @JvmStatic fun getInheritancePath(element: GdInheritance): String = GdInheritanceElementType.inheritancePath(element);
-    @JvmStatic fun getPsiFile(element: GdInheritanceIdNm): PsiFile? = PsiGdInheritanceUtil.getPsiFile(element);
-    @JvmStatic fun isClassName(element: GdInheritanceIdNm): Boolean = PsiGdInheritanceUtil.isClassName(element);
+    @JvmStatic fun getInheritancePath(element: GdInheritance): String = GdInheritanceElementType.inheritancePath(element)
+    @JvmStatic fun getPsiFile(element: GdInheritanceIdNm): PsiFile? = PsiGdInheritanceUtil.getPsiFile(element)
+    @JvmStatic fun isClassName(element: GdInheritanceIdNm): Boolean = PsiGdInheritanceUtil.isClassName(element)
 
     /** Enum  */
-    @JvmStatic fun getName(element: GdEnumDeclTl): String = GdEnumUtil.getName(element);
-    @JvmStatic fun getValues(element: GdEnumDeclTl): HashMap<String, Int> = PsiGdEnumUtil.values(element);
-    @JvmStatic fun getPresentation(element: GdEnumDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
+    @JvmStatic fun getName(element: GdEnumDeclTl): String = GdEnumUtil.getName(element)
+    @JvmStatic fun getValues(element: GdEnumDeclTl): HashMap<String, Int> = PsiGdEnumUtil.values(element)
+    @JvmStatic fun getPresentation(element: GdEnumDeclTl): ItemPresentation = GdPresentationUtil.presentation(element)
 
     /** Const */
-    @JvmStatic fun getPresentation(element: GdConstDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
-    @JvmStatic fun getReturnType(element: GdConstDeclTl): String = PsiGdConstDeclUtil.getReturnType(element);
-    @JvmStatic fun getReturnExpr(element: GdConstDeclTl): PsiElement? = PsiGdConstDeclUtil.getReturnExpr(element);
-    @JvmStatic fun getName(element: GdConstDeclTl): String = GdConstDeclUtil.getName(element);
+    @JvmStatic fun getPresentation(element: GdConstDeclTl): ItemPresentation = GdPresentationUtil.presentation(element)
+    @JvmStatic fun getReturnType(element: GdConstDeclTl): String = PsiGdConstDeclUtil.getReturnType(element)
+    @JvmStatic fun getReturnExpr(element: GdConstDeclTl): PsiElement? = PsiGdConstDeclUtil.getReturnExpr(element)
+    @JvmStatic fun getName(element: GdConstDeclTl): String = GdConstDeclUtil.getName(element)
 
     /** Named */
-    @JvmStatic fun getName(element: GdNamedElement): String = GdCommonUtil.getName(element);
-    @JvmStatic fun setName(element: GdNamedElement, newName: String): PsiElement = GdCommonUtil.setName(element, newName);
-    @JvmStatic fun getNameIdentifier(element: GdNamedIdElement): PsiElement = GdCommonUtil.getNameIdentifier(element);
+    @JvmStatic fun getName(element: GdNamedElement): String = GdCommonUtil.getName(element)
+    @JvmStatic fun setName(element: GdNamedElement, newName: String): PsiElement = GdCommonUtil.setName(element, newName)
+    @JvmStatic fun getNameIdentifier(element: GdNamedIdElement): PsiElement = GdCommonUtil.getNameIdentifier(element)
 
     /** Type hint */
-    @JvmStatic fun getReturnType(element: GdTypedVal): String = GdTypedUtil.getReturnType(element);
+    @JvmStatic fun getReturnType(element: GdTypedVal): String = GdTypedUtil.getReturnType(element)
 
     /** Class variable */
-    @JvmStatic fun getName(element: GdClassVarDeclTl): String = GdClassVarUtil.getName(element);
-    @JvmStatic fun getPresentation(element: GdClassVarDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
-    @JvmStatic fun getReturnType(element: GdClassVarDeclTl): String = PsiGdClassVarUtil.getReturnType(element);
-    @JvmStatic fun isAnnotated(element: GdClassVarDeclTl, annotator: String): Boolean = PsiGdClassVarUtil.isAnnotated(element, annotator);
+    @JvmStatic fun getName(element: GdClassVarDeclTl): String = GdClassVarUtil.getName(element)
+    @JvmStatic fun getPresentation(element: GdClassVarDeclTl): ItemPresentation = GdPresentationUtil.presentation(element)
+    @JvmStatic fun getReturnType(element: GdClassVarDeclTl): String = PsiGdClassVarUtil.getReturnType(element)
+    @JvmStatic fun isAnnotated(element: GdClassVarDeclTl, annotator: String): Boolean = PsiGdClassVarUtil.isAnnotated(element, annotator)
 
     /** Local variable */
-    @JvmStatic fun getName(element: GdVarDeclSt): String = GdVarDeclStUtil.getName(element);
-    @JvmStatic fun getReturnType(element: GdVarDeclSt): String = PsiGdLocalVarUtil.getReturnType(element);
+    @JvmStatic fun getName(element: GdVarDeclSt): String = GdVarDeclStUtil.getName(element)
+    @JvmStatic fun getReturnType(element: GdVarDeclSt): String = PsiGdLocalVarUtil.getReturnType(element)
 
     /** Local constant */
-    @JvmStatic fun getName(element: GdConstDeclSt): String = GdConstDeclUtil.getName(element);
-    @JvmStatic fun getReturnType(element: GdConstDeclSt): String = PsiGdLocalConstUtil.getReturnType(element);
-    @JvmStatic fun getReturnExpr(element: GdConstDeclSt): PsiElement? = PsiGdLocalConstUtil.getReturnExpr(element);
+    @JvmStatic fun getName(element: GdConstDeclSt): String = GdConstDeclUtil.getName(element)
+    @JvmStatic fun getReturnType(element: GdConstDeclSt): String = PsiGdLocalConstUtil.getReturnType(element)
+    @JvmStatic fun getReturnExpr(element: GdConstDeclSt): PsiElement? = PsiGdLocalConstUtil.getReturnExpr(element)
 
     /** Method  */
-    @JvmStatic fun isStatic(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isStatic(element);
-    @JvmStatic fun isVariadic(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isVariadic(element);
-    @JvmStatic fun getName(element: GdMethodDeclTl): String = GdMethodUtil.getName(element);
-    @JvmStatic fun getPresentation(element: GdMethodDeclTl): ItemPresentation = GdPresentationUtil.presentation(element);
-    @JvmStatic fun getReturnType(element: GdMethodDeclTl): String = PsiGdMethodDeclUtil.getReturnType(element);
-    @JvmStatic fun getParameters(element: GdMethodDeclTl): LinkedHashMap<String, String?> = PsiGdMethodDeclUtil.getParameters(element);
-    @JvmStatic fun isConstructor(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isConstructor(element);
+    @JvmStatic fun isStatic(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isStatic(element)
+    @JvmStatic fun isVariadic(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isVariadic(element)
+    @JvmStatic fun getName(element: GdMethodDeclTl): String = GdMethodUtil.getName(element)
+    @JvmStatic fun getPresentation(element: GdMethodDeclTl): ItemPresentation = GdPresentationUtil.presentation(element)
+    @JvmStatic fun getReturnType(element: GdMethodDeclTl): String = PsiGdMethodDeclUtil.getReturnType(element)
+    @JvmStatic fun getParameters(element: GdMethodDeclTl): LinkedHashMap<String, String?> = PsiGdMethodDeclUtil.getParameters(element)
+    @JvmStatic fun isConstructor(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isConstructor(element)
 
     /** Method param */
-    @JvmStatic fun getReturnType(element: GdParam): String = PsiGdMethodDeclUtil.getReturnType(element);
+    @JvmStatic fun getReturnType(element: GdParam): String = PsiGdMethodDeclUtil.getReturnType(element)
 
     /** Signal */
-    @JvmStatic fun getName(element: GdSignalDeclTl): String = GdSignalUtil.getName(element);
-    @JvmStatic fun getParameters(element: GdSignalDeclTl): Array<String> = PsiGdSignalUtil.getParameters(element);
+    @JvmStatic fun getName(element: GdSignalDeclTl): String = GdSignalUtil.getName(element)
+    @JvmStatic fun getParameters(element: GdSignalDeclTl): LinkedHashMap<String, String?> = PsiGdSignalUtil.getParameters(element)
 
     /** Statements */
-    @JvmStatic fun getType(element: GdFlowSt): String = GdStmtUtil.getType(element);
+    @JvmStatic fun getType(element: GdFlowSt): String = GdStmtUtil.getType(element)
 
     /** Expressions */
-    @JvmStatic fun getReturnType(element: GdExpr): String = PsiGdExprUtil.getReturnType(element);
-    @JvmStatic fun getReturnExpr(element: GdExpr): PsiElement? = GdExprUtil.getReturnType(element);
+    @JvmStatic fun getReturnType(element: GdExpr): String = PsiGdExprUtil.getReturnType(element)
+    @JvmStatic fun getReturnType(element: GdArgExpr): String = PsiGdExprUtil.getReturnType(element.expr)
+    @JvmStatic fun getReturnExpr(element: GdExpr): PsiElement? = GdExprUtil.getReturnType(element)
 
     /** Lambdas */
-    @JvmStatic fun getReturnType(element: GdFuncDeclEx): String = PsiGdLocalFuncUtil.getReturnType(element);
-    @JvmStatic fun getReturnExpr(element: GdFuncDeclEx): PsiElement? = PsiGdLocalFuncUtil.getReturnExpr(element);
-    @JvmStatic fun getParameters(element: GdFuncDeclEx): HashMap<String, String?> = PsiGdLocalFuncUtil.getParameters(element);
+    @JvmStatic fun getReturnType(element: GdFuncDeclEx): String = PsiGdLocalFuncUtil.getReturnType(element)
+    @JvmStatic fun getReturnExpr(element: GdFuncDeclEx): PsiElement? = PsiGdLocalFuncUtil.getReturnExpr(element)
+    @JvmStatic fun getParameters(element: GdFuncDeclEx): LinkedHashMap<String, String?> = PsiGdLocalFuncUtil.getParameters(element)
 
 }

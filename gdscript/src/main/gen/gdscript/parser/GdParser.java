@@ -2527,8 +2527,8 @@ public class GdParser implements PsiParser, LightPsiParser {
   // 16: POSTFIX(call_ex)
   // 17: BINARY(arr_ex)
   // 18: ATOM(primary_ex)
-  // 19: ATOM(literal_ex)
-  // 20: ATOM(funcDecl_ex)
+  // 19: ATOM(funcDecl_ex)
+  // 20: ATOM(literal_ex)
   public static boolean expr(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "expr")) return false;
     addVariant(b, "<expr>");
@@ -2539,8 +2539,8 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!r) r = sign_ex(b, l + 1);
     if (!r) r = bitNot_ex(b, l + 1);
     if (!r) r = primary_ex(b, l + 1);
-    if (!r) r = literal_ex(b, l + 1);
     if (!r) r = funcDecl_ex(b, l + 1);
+    if (!r) r = literal_ex(b, l + 1);
     p = r;
     r = r && expr_0(b, l + 1, g);
     exit_section_(b, l, m, null, r, p, null);
@@ -2798,41 +2798,22 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // TRUE | FALSE | STRING_NAME | NODE_PATH_LIT | STRING | NUMBER | NULL | NAN | INF | refId_nm
-  public static boolean literal_ex(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "literal_ex")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, LITERAL_EX, "<literal ex>");
-    r = consumeTokenSmart(b, TRUE);
-    if (!r) r = consumeTokenSmart(b, FALSE);
-    if (!r) r = consumeTokenSmart(b, STRING_NAME);
-    if (!r) r = consumeTokenSmart(b, NODE_PATH_LIT);
-    if (!r) r = consumeTokenSmart(b, STRING);
-    if (!r) r = consumeTokenSmart(b, NUMBER);
-    if (!r) r = consumeTokenSmart(b, NULL);
-    if (!r) r = consumeTokenSmart(b, NAN);
-    if (!r) r = consumeTokenSmart(b, INF);
-    if (!r) r = refId_nm(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
   // FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite
   public static boolean funcDecl_ex(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "funcDecl_ex")) return false;
-    if (!nextTokenIsSmart(b, FUNC)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, FUNC_DECL_EX, "<func decl ex>");
     r = consumeTokenSmart(b, FUNC);
-    r = r && funcDecl_ex_1(b, l + 1);
-    r = r && consumeToken(b, LRBR);
-    r = r && funcDecl_ex_3(b, l + 1);
-    r = r && consumeToken(b, RRBR);
-    r = r && funcDecl_ex_5(b, l + 1);
-    r = r && consumeToken(b, COLON);
-    r = r && stmtOrSuite(b, l + 1);
-    exit_section_(b, m, FUNC_DECL_EX, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, funcDecl_ex_1(b, l + 1));
+    r = p && report_error_(b, consumeToken(b, LRBR)) && r;
+    r = p && report_error_(b, funcDecl_ex_3(b, l + 1)) && r;
+    r = p && report_error_(b, consumeToken(b, RRBR)) && r;
+    r = p && report_error_(b, funcDecl_ex_5(b, l + 1)) && r;
+    r = p && report_error_(b, consumeToken(b, COLON)) && r;
+    r = p && stmtOrSuite(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, GdParser::stmt_r);
+    return r || p;
   }
 
   // funcDeclId_nmi?
@@ -2854,6 +2835,25 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "funcDecl_ex_5")) return false;
     returnHint(b, l + 1);
     return true;
+  }
+
+  // TRUE | FALSE | STRING_NAME | NODE_PATH_LIT | STRING | NUMBER | NULL | NAN | INF | refId_nm
+  public static boolean literal_ex(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "literal_ex")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, LITERAL_EX, "<literal ex>");
+    r = consumeTokenSmart(b, TRUE);
+    if (!r) r = consumeTokenSmart(b, FALSE);
+    if (!r) r = consumeTokenSmart(b, STRING_NAME);
+    if (!r) r = consumeTokenSmart(b, NODE_PATH_LIT);
+    if (!r) r = consumeTokenSmart(b, STRING);
+    if (!r) r = consumeTokenSmart(b, NUMBER);
+    if (!r) r = consumeTokenSmart(b, NULL);
+    if (!r) r = consumeTokenSmart(b, NAN);
+    if (!r) r = consumeTokenSmart(b, INF);
+    if (!r) r = refId_nm(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
 }

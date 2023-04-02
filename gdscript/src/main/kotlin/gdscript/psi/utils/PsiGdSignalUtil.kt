@@ -8,15 +8,13 @@ import gdscript.psi.GdSignalDeclTl
 
 object PsiGdSignalUtil {
 
-    fun getParameters(element: GdSignalDeclTl): Array<String> {
+    fun getParameters(element: GdSignalDeclTl): LinkedHashMap<String, String?> {
         val stub = element.stub;
         if (stub !== null) {
             return stub.parameters();
         }
 
-        return element.paramList?.paramList?.map {
-            it.varNmi.name
-        }?.toTypedArray() ?: emptyArray();
+        return PsiGdParameterUtil.toHashMap(element.paramList)
     }
 
     fun getDeclaration(element: GdCallEx): GdSignalDeclTl? {

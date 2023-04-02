@@ -139,7 +139,7 @@ param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
 returnHint ::= RET returnHintVal
 returnHintVal ::= typedVal | VOID // typeHint_nm | VOID
 argList ::= argExpr (COMMA argExpr)* COMMA? { pin=1 recoverWhile=argList_r }
-argExpr ::= expr
+argExpr ::= expr { methods=[getReturnType] }
 var_nmi ::= identifierEx
 private argList_r ::= !(RRBR | endStmt)
 
@@ -227,8 +227,8 @@ expr ::=
     | call_ex
     | arr_ex
     | primary_ex
-    | literal_ex
     | funcDecl_ex
+    | literal_ex
     {methods=[getReturnType]}
 
 cast_ex ::= expr AS typedVal
@@ -258,7 +258,7 @@ refId_nm ::= identifierEx | SELF | SUPER // TODO super
 
 funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[getReturnType getReturnExpr getParameters /*getPresentation*/]
-    /*pin=1 recoverWhile=stmt_r*/ //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"
+    pin=1 recoverWhile=stmt_r //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"
     //elementTypeFactory="gdscript.psi.impl.GdLocalFuncDeclElementType.getInstance"
 }
 funcDeclId_nmi ::= IDENTIFIER

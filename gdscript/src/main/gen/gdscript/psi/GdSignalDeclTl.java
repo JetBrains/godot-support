@@ -6,6 +6,7 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdSignalDeclStub;
+import java.util.LinkedHashMap;
 
 public interface GdSignalDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdSignalDeclStub> {
 
@@ -22,6 +23,6 @@ public interface GdSignalDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdSi
   String getName();
 
   @NotNull
-  String[] getParameters();
+  LinkedHashMap<String, String> getParameters();
 
 }

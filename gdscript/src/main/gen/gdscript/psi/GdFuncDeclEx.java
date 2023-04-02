@@ -4,7 +4,7 @@ package gdscript.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public interface GdFuncDeclEx extends GdExpr {
 
@@ -17,7 +17,7 @@ public interface GdFuncDeclEx extends GdExpr {
   @Nullable
   GdReturnHint getReturnHint();
 
-  @NotNull
+  @Nullable
   GdStmtOrSuite getStmtOrSuite();
 
   @NotNull
@@ -27,6 +27,6 @@ public interface GdFuncDeclEx extends GdExpr {
   PsiElement getReturnExpr();
 
   @NotNull
-  HashMap<String, String> getParameters();
+  LinkedHashMap<String, String> getParameters();
 
 }

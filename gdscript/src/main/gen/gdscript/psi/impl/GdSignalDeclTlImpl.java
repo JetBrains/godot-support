@@ -9,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
+import java.util.LinkedHashMap;
 import gdscript.index.stub.GdSignalDeclStub;
 import com.intellij.psi.stubs.IStubElementType;
 
@@ -58,7 +59,7 @@ public class GdSignalDeclTlImpl extends GdSignalDeclElementImpl implements GdSig
 
   @Override
   @NotNull
-  public String[] getParameters() {
+  public LinkedHashMap<String, String> getParameters() {
     return GdPsiUtils.getParameters(this);
   }
 

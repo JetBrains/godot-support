@@ -14,8 +14,10 @@ import gdscript.psi.GdCallEx
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdRefIdNm
-import gdscript.psi.GdSignalDeclTl
 import gdscript.psi.GdTypes
+import gdscript.psi.GdVarDeclSt
+import gdscript.psi.utils.GdExprUtil
+import gdscript.psi.utils.PsiGdSignalUtil
 import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiElementUtil.prevNonWhiteCommentToken
 
@@ -38,20 +40,22 @@ class GdParamAnnotator : Annotator {
         var description = ""
         val params = when (declaration) {
             is GdMethodDeclTl -> {
-                description = declaration.methodHeader()
-                declaration.paramList
+                if (declaration.isVariadic) return
+                if (declaration.name == "emit") {
+                    val signal = PsiGdSignalUtil.getDeclaration(call) ?: return
+                    description = signal.text
+                    signal.parameters
+                } else {
+                    description = declaration.methodHeader()
+                    declaration.parameters
+                }
             }
-            is GdSignalDeclTl -> {
-                description = ""
-                declaration.paramList
-            }
-            is GdFuncDeclEx -> {
-
-                description = ""
-                declaration.paramList
+            is GdVarDeclSt ->{
+                val lambda = if (declaration.expr is GdFuncDeclEx) declaration.expr as GdFuncDeclEx else null ?: return
+                lambda.parameters
             }
             else -> null
-        }?.paramList ?: return
+        } ?: return
 
         // Check number of arguments
         if (params.size <= index) {
@@ -66,7 +70,18 @@ class GdParamAnnotator : Annotator {
         }
 
         // Check argument's type
-        
+        val paramType = params.values.toTypedArray()[index]!!
+        val currentType = element.returnType
+        if (!GdExprUtil.typeAccepts(currentType, paramType, element.project)) {
+            holder
+                // TODO format
+                .newAnnotation(HighlightSeverity.ERROR, """
+                    Type mismatch.
+                     Required: $paramType
+                     Found:   $currentType""")
+                .range(element.textRange)
+                .create()
+        }
     }
 
 }

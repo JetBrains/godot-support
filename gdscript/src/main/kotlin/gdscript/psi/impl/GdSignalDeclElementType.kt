@@ -1,12 +1,12 @@
 package gdscript.psi.impl
 
 import com.intellij.psi.stubs.*
-import com.intellij.util.containers.toArray
 import gdscript.GdLanguage
 import gdscript.index.Indices
 import gdscript.index.stub.GdSignalDeclStub
 import gdscript.index.stub.GdSignalDeclStubImpl
 import gdscript.psi.GdSignalDeclTl
+import gdscript.psi.utils.PsiGdParameterUtil
 
 object GdSignalDeclElementType : IStubElementType<GdSignalDeclStub, GdSignalDeclTl>("signalDecl", GdLanguage) {
 
@@ -19,14 +19,14 @@ object GdSignalDeclElementType : IStubElementType<GdSignalDeclStub, GdSignalDecl
 
     override fun serialize(stub: GdSignalDeclStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name());
-        dataStream.writeName(stub.parameters().joinToString(","));
+        dataStream.writeName(stub.parameters().toString());
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): GdSignalDeclStub {
         return GdSignalDeclStubImpl(
             parentStub,
             dataStream.readNameString(),
-            dataStream.readNameString()?.split(",")?.toArray(emptyArray()) ?: emptyArray(),
+            PsiGdParameterUtil.fromString(dataStream.readNameString()),
         );
     }
 

@@ -14,7 +14,7 @@ object PsiGdLocalFuncUtil {
         return GdClassUtil.getClassIdElement(GdKeywords.CALLABLE, element)
     }
 
-    fun getParameters(element: GdFuncDeclEx): HashMap<String, String?> {
+    fun getParameters(element: GdFuncDeclEx): LinkedHashMap<String, String?> {
         return PsiGdParameterUtil.toHashMap(element.paramList);
     }
 

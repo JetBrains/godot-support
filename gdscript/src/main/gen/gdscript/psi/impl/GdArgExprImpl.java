@@ -33,4 +33,10 @@ public class GdArgExprImpl extends ASTWrapperPsiElement implements GdArgExpr {
     return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
   }
 
+  @Override
+  @NotNull
+  public String getReturnType() {
+    return GdPsiUtils.getReturnType(this);
+  }
+
 }

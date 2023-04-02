@@ -9,7 +9,7 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 public class GdFuncDeclExImpl extends GdExprImpl implements GdFuncDeclEx {
 
@@ -47,9 +47,9 @@ public class GdFuncDeclExImpl extends GdExprImpl implements GdFuncDeclEx {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdStmtOrSuite getStmtOrSuite() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class));
+    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
   }
 
   @Override
@@ -66,7 +66,7 @@ public class GdFuncDeclExImpl extends GdExprImpl implements GdFuncDeclEx {
 
   @Override
   @NotNull
-  public HashMap<String, String> getParameters() {
+  public LinkedHashMap<String, String> getParameters() {
     return GdPsiUtils.getParameters(this);
   }
 

@@ -33,7 +33,7 @@ object StringUtil {
         val start = this.indexOf('[');
         val end = this.indexOf(']', start);
 
-        if (start < 0 || end < 1) return this;
+        if (start < 0 || end < 1) return "";
         return this.substring(start + 1, end);
     }
 

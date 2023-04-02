@@ -2,7 +2,6 @@ package gdscript.completion.utils
 
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdClassCompletionUtil.lookup

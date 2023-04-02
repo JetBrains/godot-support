@@ -1,10 +1,13 @@
 package gdscript.psi.utils
 
-import com.intellij.openapi.project.DumbService
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.elementType
+import com.jetbrains.rd.util.first
+import com.jetbrains.rd.util.firstOrNull
 import gdscript.GdKeywords
 import gdscript.psi.*
+import gdscript.psi.utils.GdClassMemberUtil.constructors
+import gdscript.utils.StringUtil.parseFromSquare
 
 object GdExprUtil {
 
@@ -142,6 +145,7 @@ object GdExprUtil {
         }
     }
 
+    @Deprecated("přesun na typeAccepts")
     fun typesMatch(a: String, b: String): Boolean {
         if (a == b) return true;
         // Array checks
@@ -150,6 +154,43 @@ object GdExprUtil {
         }
 
         return false;
+    }
+
+    fun typeAccepts(from: String, into: String, project: Project): Boolean {
+        if (from == into) return true
+        if (from.isBlank() || into.isBlank()
+            || from == GdKeywords.VARIANT || into == GdKeywords.VARIANT
+        ) return true
+
+        // left = right
+        var left = into
+        var right = from
+
+        var arrays = 0
+        if (from.startsWith("Array")) arrays++
+        if (into.startsWith("Array")) arrays++
+
+        // Only 1 is an array
+        if (arrays == 1) {
+            return false
+        } else if (arrays > 1) {
+            left = left.parseFromSquare()
+            right = right.parseFromSquare()
+        }
+
+        val classId = GdClassUtil.getClassIdElement(left, project) ?: return true
+        val classElement = GdClassUtil.getOwningClassElement(classId)
+        // Constructor
+        GdClassMemberUtil
+            .listClassMemberDeclarations(classElement, constructors = true)
+            .constructors()
+            .forEach {
+                if (it.parameters.firstOrNull()?.value == right) return true
+            }
+
+        // Inheritance
+
+        return false
     }
 
 }

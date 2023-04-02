@@ -11,6 +11,7 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdClassVarDeclIndex
 import gdscript.model.BoolVal
 import gdscript.psi.*
+import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.settings.GdSettingsState
 
 object GdClassMemberUtil {
@@ -293,6 +294,13 @@ object GdClassMemberUtil {
      */
     fun List<PsiElement>.methods(): Array<GdMethodDeclTl> {
         return this.filterIsInstance<GdMethodDeclTl>().toTypedArray();
+    }
+
+    /**
+     * Filters out GdMethodsDeclTl of constructors
+     */
+    fun List<PsiElement>.constructors(): Array<GdMethodDeclTl> {
+        return this.filterIsInstance<GdMethodDeclTl>().filter { it.isConstructor }.toTypedArray();
     }
 
     /**

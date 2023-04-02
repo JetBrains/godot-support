@@ -5,7 +5,7 @@ import gdscript.psi.GdSignalDeclTl
 
 interface GdSignalDeclStub : StubElement<GdSignalDeclTl> {
 
-    fun name(): String;
-    fun parameters(): Array<String>;
+    fun name(): String
+    fun parameters(): LinkedHashMap<String, String?>
 
 }
