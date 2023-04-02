@@ -25,12 +25,14 @@ public interface GdTypes {
   IElementType ARRAY_DECL = new GdElementType("ARRAY_DECL");
   IElementType ARRAY_PATTERN = new GdElementType("ARRAY_PATTERN");
   IElementType ARR_EX = new GdElementType("ARR_EX");
+  IElementType ASSIGN_SIGN = new GdElementType("ASSIGN_SIGN");
   IElementType ASSIGN_ST = new GdElementType("ASSIGN_ST");
   IElementType ASSIGN_TYPED = new GdElementType("ASSIGN_TYPED");
   IElementType ATTRIBUTE_EX = new GdElementType("ATTRIBUTE_EX");
   IElementType AWAIT_ST = new GdElementType("AWAIT_ST");
   IElementType BINDING_PATTERN = new GdElementType("BINDING_PATTERN");
   IElementType BIT_AND_EX = new GdElementType("BIT_AND_EX");
+  IElementType BIT_AND_SIGN = new GdElementType("BIT_AND_SIGN");
   IElementType BIT_NOT_EX = new GdElementType("BIT_NOT_EX");
   IElementType CALL_EX = new GdElementType("CALL_EX");
   IElementType CAST_EX = new GdElementType("CAST_EX");
@@ -230,6 +232,9 @@ public interface GdTypes {
       else if (type == ARR_EX) {
         return new GdArrExImpl(node);
       }
+      else if (type == ASSIGN_SIGN) {
+        return new GdAssignSignImpl(node);
+      }
       else if (type == ASSIGN_ST) {
         return new GdAssignStImpl(node);
       }
@@ -247,6 +252,9 @@ public interface GdTypes {
       }
       else if (type == BIT_AND_EX) {
         return new GdBitAndExImpl(node);
+      }
+      else if (type == BIT_AND_SIGN) {
+        return new GdBitAndSignImpl(node);
       }
       else if (type == BIT_NOT_EX) {
         return new GdBitNotExImpl(node);

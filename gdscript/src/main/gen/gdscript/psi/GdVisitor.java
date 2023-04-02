@@ -39,6 +39,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitAssignSign(@NotNull GdAssignSign o) {
+    visitPsiElement(o);
+  }
+
   public void visitAssignTyped(@NotNull GdAssignTyped o) {
     visitPsiElement(o);
   }
@@ -56,6 +60,10 @@ public class GdVisitor extends PsiElementVisitor {
   }
 
   public void visitBindingPattern(@NotNull GdBindingPattern o) {
+    visitPsiElement(o);
+  }
+
+  public void visitBitAndSign(@NotNull GdBitAndSign o) {
     visitPsiElement(o);
   }
 

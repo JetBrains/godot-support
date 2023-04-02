@@ -75,6 +75,7 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdRefIdAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdMatchStmtAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdParamAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdExprTypeAnnotator" />
 
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />

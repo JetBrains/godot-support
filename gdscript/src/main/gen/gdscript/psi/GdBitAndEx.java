@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GdBitAndEx extends GdExpr {
 
   @NotNull
+  GdBitAndSign getBitAndSign();
+
+  @NotNull
   List<GdExpr> getExprList();
 
 }

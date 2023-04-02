@@ -15,6 +15,10 @@ object GdOperand {
         return OPERANDS.get(left)?.get(operator)?.get(right) ?: \"\"
     }
 
+    fun isAllowed(left: String, right: String, operator: String): Boolean {
+        return OPERANDS[left]?.get(operator)?.containsKey(right) ?: return false
+    }
+
     // Left -> Operand -> Right -> Result
     val OPERANDS = mapOf(
 %s

@@ -1,5 +1,6 @@
 package gdscript.utils
 
+import gdscript.GdKeywords
 import java.util.*
 
 object StringUtil {
@@ -35,6 +36,10 @@ object StringUtil {
 
         if (start < 0 || end < 1) return "";
         return this.substring(start + 1, end);
+    }
+
+    fun String.isDynamicType(): Boolean {
+        return this.isBlank() || this == GdKeywords.VARIANT
     }
 
 }

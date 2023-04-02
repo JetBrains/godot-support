@@ -7,7 +7,11 @@ package gdscript
 object GdOperand {
 
     fun getReturnType(left: String, right: String, operator: String): String {
-        return OPERANDS.get(left)?.get(operator)?.get(right) ?: ""
+        return OPERANDS[left]?.get(operator)?.get(right) ?: GdKeywords.VARIANT
+    }
+
+    fun isAllowed(left: String, right: String, operator: String): Boolean {
+        return OPERANDS[left]?.get(operator)?.containsKey(right) ?: return false
     }
 
     // Left -> Operand -> Right -> Result

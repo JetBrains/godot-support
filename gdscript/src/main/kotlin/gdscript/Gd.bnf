@@ -195,7 +195,8 @@ keyValuePattern ::= STRING [ COLON pattern ]
 
 await_st ::= AWAIT expr_st //{pin=1 recoverWhile=stmt_r}
 
-assign_st ::= expr (EQ | ASSIGN) expr endStmt //{ pin=2 }
+assign_st ::= expr assignSign expr endStmt //{ pin=2 }
+assignSign ::= EQ | ASSIGN
 expr_st ::= expr endStmt?
 
 flow_st ::=
@@ -238,7 +239,8 @@ negate_ex ::= NEGATE expr
 in_ex ::= expr IN expr
 comparison_ex ::= expr operator expr
 operator ::= TEST_OPERATOR
-bitAnd_ex ::= expr (AND | XOR | OR) expr
+bitAnd_ex ::= expr bitAndSign expr
+bitAndSign ::= AND | XOR | OR
 shift_ex ::= expr (LBSHIFT | RBSHIFT) expr
 plus_ex ::= expr sign expr
 sign ::= (PLUS | MINUS)
