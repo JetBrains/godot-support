@@ -43,7 +43,7 @@ class GdExprTypeAnnotator : Annotator {
     private fun assignExpr(element: GdAssignSt, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
-        val operator = element.assignSign.text
+        val operator = element.assignSign.text.trimEnd('=')
         validate(left, right, operator, "Cannot assign", element, holder)
     }
 
@@ -71,7 +71,7 @@ class GdExprTypeAnnotator : Annotator {
     ) {
         if (left == right) return
         if (left.isDynamicType() || right.isDynamicType()) return
-        if (GdOperand.isAllowed(left, operator, right)) return
+        if (GdOperand.isAllowed(left, right, operator)) return
 
         holder
             .newAnnotation(HighlightSeverity.ERROR, "$message $left $operator $right")

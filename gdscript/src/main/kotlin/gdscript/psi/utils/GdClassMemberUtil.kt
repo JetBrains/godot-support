@@ -124,7 +124,7 @@ object GdClassMemberUtil {
                 )
                 // Try autoload classes
                 if (parent == null) {
-                    parent = ProjectAutoloadUtil.findFromResource(classId, element)
+                    parent = ProjectAutoloadUtil.findFromAlias(calledOn, element)
                     if (parent != null) static = false
                 }
             }

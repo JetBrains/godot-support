@@ -95,7 +95,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
 
         val args = element.argList?.argExprList
         return params.mapIndexedNotNull { i, it ->
-            val param = args?.get(i) ?: return@mapIndexedNotNull null
+            val param = args?.getOrNull(i) ?: return@mapIndexedNotNull null
             InlayInfo(
                 it,
                 param.startOffset,

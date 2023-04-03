@@ -35,6 +35,14 @@ object ProjectAutoloadUtil {
         return GdFileResIndex.getFiles(path, project).firstOrNull()?.getPsiFile(project)
     }
 
+    fun findFromAlias(name: String, element: PsiElement): PsiFile? {
+        val project = element.project
+        var path = all(element).find { it.key == name }?.value ?: return null
+        path = path.substring(2, path.length - 1)
+
+        return GdFileResIndex.getFiles(path, project).firstOrNull()?.getPsiFile(project)
+    }
+
     private fun all(element: PsiElement): List<ProjectData> {
         val section = ProjectSectionIndex.getGlobally(ProjectSectionIndex.AUTOLOAD_SECTION, element)
             .firstOrNull() ?: return emptyList()
