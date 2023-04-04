@@ -8,6 +8,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.endOffset
+import gdscript.utils.EditorSettingsUtil.normalIndent
 
 class GdCreateMethodAction : BaseIntentionAction {
 
@@ -50,7 +51,8 @@ class GdCreateMethodAction : BaseIntentionAction {
             method.append(" -> $returnType")
         }
         method.appendLine(":")
-        val indent = "    "; // TODO read from settings; , nebo to umí nahradit formatter? Přidat formátování programově
+        val indent = editor.settings.normalIndent(project)
+
         bodyLines.forEach {
             method.append("$indent$it");
         }

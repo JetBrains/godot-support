@@ -13,6 +13,9 @@ In order to dedent on backspace instead of deletin a line, you can change editor
 Editor -> General -> Smart Keys -> Unindent on Backspace
 
 ## List of features
+
+Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
+
 - Auto-completion
   - Inheritance & ClassName
   - Annotations

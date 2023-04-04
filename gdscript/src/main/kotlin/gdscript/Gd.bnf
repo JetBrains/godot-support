@@ -105,7 +105,7 @@ setDecl ::= SET ((LRBR var_nmi typed? RRBR COLON stmtOrSuite) | (EQ setMethodId_
 }
 setMethodId_nm ::= IDENTIFIER
 getMethodId_nm ::= IDENTIFIER
-private setget_r ::= !(SET | GET) & topLevelDecl_r
+private setget_r ::= !(SET | GET | NEW_LINE) & topLevelDecl_r
 
 signalDecl_tl ::= SIGNAL signalId_nmi (LRBR paramList RRBR)? endStmt {
     methods=[getName getParameters]

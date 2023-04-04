@@ -10,8 +10,8 @@ import gdscript.completion.utils.*
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.psi.utils.*
+import gdscript.settings.GdSettingsState
 import gdscript.utils.PsiElementUtil.psi
-import project.psi.model.GdAutoload
 
 /**
  * RefId reference to ClassNames, Variables, Constants, etc...
@@ -61,22 +61,15 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
     override fun getVariants(): Array<LookupElement> {
         val members = GdClassMemberUtil.listDeclarations(element)
-        val results = ArrayList<LookupElement>()
+        val hidePrivate = GdSettingsState.getInstance().state.hidePrivate
+                && GdClassMemberUtil.calledUpon(element) != null
 
-        members.forEach {
-            when (it) {
-                is GdMethodDeclTl -> results.add(GdCompletionUtil.lookup(it))
-                is GdConstDeclTl -> results.add(GdCompletionUtil.lookup(it))
-                is GdVarDeclSt, is GdConstDeclSt, is GdClassVarDeclTl, is GdSignalDeclTl, is GdClassNaming,
-                is GdParam, is GdForSt, is GdEnumDeclTl, is GdSetDecl, is GdBindingPattern,
-                is GdEnumValue, is GdClassDeclTl, is GdVarNmi,
-                ->
-                    results.addAll(GdCompletionUtil.lookups(it))
-                is GdAutoload -> results.add(GdCompletionUtil.lookup(it))
+        return members.flatMap {
+            GdCompletionUtil.lookups(it).mapNotNull { lookup ->
+                if (!hidePrivate || !lookup.lookupString.startsWith("_")) lookup
+                else null
             }
-        }
-
-        return results.toTypedArray()
+        }.toTypedArray()
     }
 
 }

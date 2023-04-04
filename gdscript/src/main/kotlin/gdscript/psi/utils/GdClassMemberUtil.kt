@@ -429,6 +429,7 @@ object GdClassMemberUtil {
     /**
      * NamedClassMembers to Array
      */
+    @Deprecated("")
     fun HashMap<String, MutableList<PsiElement>>.array(): Array<PsiElement> {
         return this.entries.flatMap {
             if (!GdSettingsState.getInstance().state.hidePrivate || !it.key.startsWith("_")) {
@@ -436,7 +437,7 @@ object GdClassMemberUtil {
             } else {
                 emptyList()
             }
-        }.toTypedArray();
+        }.toTypedArray()
     }
 
     fun calledUpon(element: PsiElement): GdExpr? {

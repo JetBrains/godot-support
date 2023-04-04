@@ -2010,7 +2010,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(SET | GET) & topLevelDecl_r
+  // !(SET | GET | NEW_LINE) & topLevelDecl_r
   static boolean setget_r(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "setget_r")) return false;
     boolean r;
@@ -2021,7 +2021,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // !(SET | GET)
+  // !(SET | GET | NEW_LINE)
   private static boolean setget_r_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "setget_r_0")) return false;
     boolean r;
@@ -2031,12 +2031,13 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // SET | GET
+  // SET | GET | NEW_LINE
   private static boolean setget_r_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "setget_r_0_0")) return false;
     boolean r;
     r = consumeToken(b, SET);
     if (!r) r = consumeToken(b, GET);
+    if (!r) r = consumeToken(b, NEW_LINE);
     return r;
   }
 

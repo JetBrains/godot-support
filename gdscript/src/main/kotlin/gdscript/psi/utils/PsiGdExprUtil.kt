@@ -120,6 +120,8 @@ object PsiGdExprUtil {
                     }
 
                     return GdKeywords.INT;
+                } else if (elementType == GdTypes.STRING_VAL) {
+                    return GdKeywords.STR;
                 } else if (elementType == GdTypes.STRING) {
                     return GdKeywords.STR;
                 } else if (elementType == GdTypes.STRING_NAME) {
