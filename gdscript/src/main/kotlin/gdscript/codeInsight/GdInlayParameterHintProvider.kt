@@ -9,6 +9,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.containers.toArray
 import gdscript.psi.*
+import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdClassMemberUtil.constructors
+import gdscript.psi.utils.GdExprUtil
 import gdscript.psi.utils.PsiGdSignalUtil
 import gdscript.reference.GdClassMemberReference
 
@@ -31,8 +34,23 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
 
             return MethodInfo(name, declaration.parameters.keys.toList());
         } else if (declaration is GdVarDeclSt && declaration.expr is GdFuncDeclEx) {
+            // Lambdas
             val lambda = declaration.expr as GdFuncDeclEx;
             return MethodInfo(lambda.funcDeclIdNmi?.text.orEmpty(), lambda.parameters.keys.toList())
+        } else if (declaration is GdClassNaming) {
+            // Constructors
+            val currentParams = element.argList?.argExprList ?: return null
+            val constructors = GdClassMemberUtil.listClassMemberDeclarations(declaration, constructors = true).constructors()
+            val constructor = constructors.find {
+                if (it.parameters.size != currentParams.size) return@find false
+                val declParams = it.parameters.values.toTypedArray()
+                currentParams.forEachIndexed { i, param ->
+                    if (!GdExprUtil.typeAccepts(param.returnType, declParams[i], element.project)) return@find false
+                }
+                true
+            } ?: return null
+
+            return MethodInfo(declaration.classname, constructor.parameters.keys.toList())
         }
 
         return null
@@ -81,7 +99,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                     for (i in 0 until hints.size) {
                         val t1 = usedParams[i].expr.returnType
                         val t2 = hints[i].returnType
-                        ok = ok && (t1.isBlank() || t2.isBlank() || t1 == t2);
+                        ok = ok && GdExprUtil.typeAccepts(t1, t2, element.project)
                     }
 
                     if (ok) {
