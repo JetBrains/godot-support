@@ -50,10 +50,10 @@ object TscnNodeUtil {
         val stub = element.stub;
         if (stub != null) return stub.getScriptResource();
 
-        // ExtResource("2_s5kgd")
+        // ExtResource("2_s5kgd"), ExtResource( 1 )
         var id = TscnHeaderUtils.getDataValue(element.parent as TscnParagraph, TscnHeaderUtils.DL_SCRIPT);
         if (id.isBlank()) return "";
-        id = id.removePrefix("ExtResource(\"").removeSuffix("\")");
+        id = id.removePrefix("ExtResource(").removeSuffix(")").trim('"', ' ')
 
         val scripts = PsiTreeUtil.findChildrenOfType(element.containingFile, TscnResourceHeader::class.java);
 

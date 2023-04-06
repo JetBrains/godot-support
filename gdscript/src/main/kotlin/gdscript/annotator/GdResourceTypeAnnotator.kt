@@ -12,7 +12,7 @@ import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
 
 /**
- * Checks for existence of [res://] resource // TODO user:// ??
+ * Checks for existence of [res://] resource
  * Checks for existence of $NodePath, %Unique
  */
 class GdResourceTypeAnnotator : Annotator {
