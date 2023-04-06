@@ -22,8 +22,8 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, PsiElement>, DumbA
                 if (declaration.expr is GdFuncDeclEx) {
                     context.itemsToShow = arrayOf(declaration.expr as GdFuncDeclEx);
                 }
-            is GdFile -> {
-                val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(declaration, GdMethodDeclTl::class.java);
+            is GdClassNaming -> {
+                val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(declaration.containingFile, GdMethodDeclTl::class.java);
                 context.itemsToShow = methods.filter {
                     it.isConstructor
                 }.toTypedArray();
