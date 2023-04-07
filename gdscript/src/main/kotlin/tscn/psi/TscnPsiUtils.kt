@@ -15,6 +15,7 @@ object TscnPsiUtils {
     @JvmStatic fun getNodePath(element: TscnNodeHeader): String = TscnNodeUtil.getNodePath(element);
     @JvmStatic fun hasScript(element: TscnNodeHeader): Boolean = TscnNodeUtil.hasScript(element);
     @JvmStatic fun getDirectParentPath(element: TscnNodeHeader): String = TscnNodeUtil.getDirectParentPath(element);
+    @JvmStatic fun getGroups(element: TscnNodeHeader): Array<String> = TscnNodeUtil.getGroups(element);
 
     /** ext_resource */
     @JvmStatic fun getType(element: TscnResourceHeader): String = TscnResourceUtil.getType(element);

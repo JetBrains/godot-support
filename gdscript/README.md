@@ -22,7 +22,8 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
   - Inheritance & ClassName
   - Annotations
   - func overrides
-  - Resources (`$Path/Node` && `$"%Name"`) + inputs, user files
+  - Resources (`$Path/Node` && `$"%Name"`)
+  - Inputs, Groups, user resources
 - Refactoring
 - Go to declaration / usages
 - File templates taken from Godot's source

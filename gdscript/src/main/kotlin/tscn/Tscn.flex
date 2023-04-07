@@ -36,7 +36,7 @@ NEW_LINE = [\r\n]
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT}|\/)*
 
 //VALUE = [^\r\n\s\]]+
-VALUE = [^\r\n\]\s\(]+(\([^\r\n\]\(]+\))?
+VALUE = ( \[[^\r\n\]\(]+\] ) | ( [^\r\n\]\s\(]+(\([^\r\n\]\(]+\))? )
 DATA_LINE = [^\r\n]+
 
 WHITE_SPACE = [ \t]+

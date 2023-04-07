@@ -14,6 +14,7 @@ object TscnHeaderUtils {
     val HL_ID = "id";
     val HL_NAME = "name";
     val HL_TYPE = "type";
+    val HL_GROUPS = "groups";
     val HL_PATH = "path";
     val HL_PARENT = "parent";
     val HL_FROM = "from";

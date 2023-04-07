@@ -8,7 +8,7 @@ import tscn.psi.TscnParagraph
 
 object TscnIndices {
 
-    val VERSION = 3;
+    val VERSION = 4
 
     val PARAGRAPH_INDEX = StubIndexKey.createIndexKey<String, TscnParagraph>("tscn.nodeParagraph")
     val RESOURCE_INDEX = StubIndexKey.createIndexKey<String, TscnResourceHeader>("tscn.extResource")

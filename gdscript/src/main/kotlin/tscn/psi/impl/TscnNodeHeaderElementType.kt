@@ -17,12 +17,13 @@ object TscnNodeHeaderElementType :
     override fun getExternalId(): String = "tscn.nodeHeader"
 
     override fun serialize(stub: TscnNodeHeaderStub, dataStream: StubOutputStream) {
-        dataStream.writeName(stub.getName());
-        dataStream.writeName(stub.getType());
-        dataStream.writeName(stub.getParentPath());
-        dataStream.writeName(stub.getNodePath());
-        dataStream.writeBoolean(stub.isUniqueNameOwner());
-        dataStream.writeName(stub.getScriptResource());
+        dataStream.writeName(stub.getName())
+        dataStream.writeName(stub.getType())
+        dataStream.writeName(stub.getParentPath())
+        dataStream.writeName(stub.getNodePath())
+        dataStream.writeBoolean(stub.isUniqueNameOwner())
+        dataStream.writeName(stub.getScriptResource())
+        dataStream.writeName(stub.getGroups().joinToString(","))
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): TscnNodeHeaderStub =
@@ -34,6 +35,7 @@ object TscnNodeHeaderElementType :
             dataStream.readNameString() ?: "",
             dataStream.readBoolean(),
             dataStream.readNameString() ?: "",
+            (dataStream.readNameString() ?: "").split(",").toTypedArray(),
         )
 
     override fun indexStub(stub: TscnNodeHeaderStub, sink: IndexSink) {
@@ -51,7 +53,8 @@ object TscnNodeHeaderElementType :
             psi.parentPath,
             psi.nodePath,
             psi.isUniqueNameOwner,
-            psi.scriptResource
+            psi.scriptResource,
+            psi.groups,
         );
 
 }

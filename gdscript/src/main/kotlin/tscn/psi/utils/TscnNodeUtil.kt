@@ -1,9 +1,9 @@
 package tscn.psi.utils
 
+import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.parentOfType
-import com.intellij.psi.util.siblings
-import tscn.index.stub.TscnNodeHeaderStub
+import tscn.index.impl.TscnNodeIndex
 import tscn.psi.TscnNodeHeader
 import tscn.psi.TscnParagraph
 import tscn.psi.TscnResourceHeader
@@ -24,10 +24,10 @@ object TscnNodeUtil {
     }
 
     fun getType(element: TscnNodeHeader): String {
-        val stub = element.stub;
-        if (stub != null) return stub.getType();
+        val stub = element.stub
+        if (stub != null) return stub.getType()
 
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_TYPE);
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_TYPE)
     }
 
     fun getParentPath(element: TscnNodeHeader): String {
@@ -35,6 +35,17 @@ object TscnNodeUtil {
         if (stub != null) return stub.getParentPath();
 
         return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_PARENT);
+    }
+
+    fun getGroups(element: TscnNodeHeader): Array<String> {
+        val stub = element.stub
+        if (stub != null) return stub.getGroups()
+
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_GROUPS)
+            .trim('[', ']')
+            .split(",")
+            .map { it.trim(' ', '"') }
+            .toTypedArray()
     }
 
     /** Data lines */
@@ -88,6 +99,16 @@ object TscnNodeUtil {
         if (stub != null) return stub.hasScript();
 
         return getScriptResource(element).isNotBlank();
+    }
+
+    fun listAllGroups(element: PsiElement): Array<String> {
+        return listAllGroups(element.project)
+    }
+
+    fun listAllGroups(project: Project): Array<String> {
+        return TscnNodeIndex.getAllValues(project).flatMap {
+            it.groups.toList()
+        }.toTypedArray()
     }
 
 }

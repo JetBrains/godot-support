@@ -7,12 +7,13 @@ import tscn.psi.impl.TscnNodeHeaderElementType
 
 class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
 
-    private var name: String = "";
-    private var type: String = "";
-    private var parentPath: String = "";
-    private var nodePath: String = "";
-    private var scriptResource: String = "";
-    private var isUniqueNameOwner: Boolean = false;
+    private var name: String = ""
+    private var type: String = ""
+    private var parentPath: String = ""
+    private var nodePath: String = ""
+    private var scriptResource: String = ""
+    private var isUniqueNameOwner: Boolean = false
+    private var groups: Array<String> = emptyArray()
 
     constructor(
         parent: StubElement<*>?,
@@ -22,28 +23,31 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
         nodePath: String,
         isUniqueNameOwner: Boolean,
         scriptResource: String,
+        groups: Array<String>,
     ) : super(parent,
         TscnNodeHeaderElementType) {
-        this.name = name;
-        this.type = type;
-        this.parentPath = parentPath;
-        this.nodePath = nodePath;
-        this.isUniqueNameOwner = isUniqueNameOwner;
-        this.scriptResource = scriptResource;
+        this.name = name
+        this.type = type
+        this.parentPath = parentPath
+        this.nodePath = nodePath
+        this.isUniqueNameOwner = isUniqueNameOwner
+        this.scriptResource = scriptResource
     }
 
-    override fun getName(): String = name;
+    override fun getName(): String = name
 
-    override fun getType(): String = type;
+    override fun getType(): String = type
 
-    override fun getScriptResource(): String = scriptResource;
+    override fun getScriptResource(): String = scriptResource
 
-    override fun getNodePath(): String = nodePath;
+    override fun getNodePath(): String = nodePath
 
-    override fun isUniqueNameOwner(): Boolean = isUniqueNameOwner;
+    override fun isUniqueNameOwner(): Boolean = isUniqueNameOwner
 
-    override fun hasScript(): Boolean = scriptResource.isNotBlank();
+    override fun hasScript(): Boolean = scriptResource.isNotBlank()
 
-    override fun getParentPath(): String = parentPath;
+    override fun getParentPath(): String = parentPath
+
+    override fun getGroups(): Array<String> = groups
 
 }

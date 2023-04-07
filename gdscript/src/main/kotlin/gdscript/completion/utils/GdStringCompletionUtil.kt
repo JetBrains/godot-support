@@ -7,6 +7,7 @@ import gdscript.index.impl.GdUserFileIndex
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.utils.PsiElementUtil.getCallExprOfParam
 import project.psi.util.ProjectInputUtil
+import tscn.psi.utils.TscnNodeUtil
 
 object GdStringCompletionUtil {
 
@@ -40,7 +41,24 @@ object GdStringCompletionUtil {
                     it,
                     priority = priority,
                     tail = " (input)",
-                    color = if (priority > GdLookup.USER_DEFINED) GdLookup.COLOR_ANNOTATION else null,
+                    color = GdLookup.COLOR_ANNOTATION,
+                )
+            )
+        }
+    }
+
+    fun addGroups(element: PsiElement, result: CompletionResultSet) {
+        var priority = GdLookup.USER_DEFINED
+        val method = element.getCallExprOfParam()?.expr?.text
+        if (method != null && method.contains("group")) priority = GdLookup.TOP
+
+        TscnNodeUtil.listAllGroups(element).forEach {
+            result.addElement(
+                GdLookup.create(
+                    it,
+                    priority = priority,
+                    tail = " (group)",
+                    color = GdLookup.COLOR_GROUP,
                 )
             )
         }

@@ -5,12 +5,13 @@ import tscn.psi.TscnNodeHeader
 
 interface TscnNodeHeaderStub : StubElement<TscnNodeHeader> {
 
-    fun getName(): String;
-    fun getType(): String;
-    fun getScriptResource(): String;
-    fun getParentPath(): String;
-    fun getNodePath(): String;
-    fun isUniqueNameOwner(): Boolean;
-    fun hasScript(): Boolean;
+    fun getName(): String
+    fun getType(): String
+    fun getScriptResource(): String
+    fun getParentPath(): String
+    fun getNodePath(): String
+    fun isUniqueNameOwner(): Boolean
+    fun hasScript(): Boolean
+    fun getGroups(): Array<String>
 
 }

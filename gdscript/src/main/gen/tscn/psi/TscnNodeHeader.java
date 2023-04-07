@@ -34,4 +34,7 @@ public interface TscnNodeHeader extends TscnHeader, StubBasedPsiElement<TscnNode
   @NotNull
   String getDirectParentPath();
 
+  @NotNull
+  String[] getGroups();
+
 }
