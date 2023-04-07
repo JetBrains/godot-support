@@ -1,9 +1,9 @@
 <?php
 
 $files  = scandir("./classes");
-$target = "./src/main/kotlin/gdscript/GdOperand.kt";
+$target = "./src/main/kotlin/gdscript/utils/GdOperand.kt";
 
-$baseContent = "package gdscript
+$baseContent = "package gdscript.utils
 
 /**
  * Do not edit manually

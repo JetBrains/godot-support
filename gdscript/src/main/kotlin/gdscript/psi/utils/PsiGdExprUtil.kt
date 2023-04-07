@@ -6,7 +6,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
-import gdscript.GdOperand
+import gdscript.utils.GdOperand
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.utils.GdExprUtil.left
@@ -37,7 +37,7 @@ object PsiGdExprUtil {
             is GdPlusEx -> GdOperand.getReturnType(
                 expr.exprList.left(), expr.exprList.right(), expr.sign.text,
             )
-            is GdFactorEx ->GdOperand.getReturnType(
+            is GdFactorEx -> GdOperand.getReturnType(
                 expr.exprList.left(), expr.exprList.right(), expr.factorSign.text,
             )
             is GdSignEx -> expr.expr?.returnType ?: ""

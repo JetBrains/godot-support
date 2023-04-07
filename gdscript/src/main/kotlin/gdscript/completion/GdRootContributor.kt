@@ -42,7 +42,6 @@ class GdRootContributor : CompletionContributor() {
 
         if (previous === null || ROOT_POSITION.accepts(position)) {
             result.addElement(GdLookup.create(GdKeywords.EXTENDS));
-            result.addElement(GdLookup.create("@tool"));
             // Main class scope
             addClassName(parameters, result);
             addTopLvlDecl(parameters, result);

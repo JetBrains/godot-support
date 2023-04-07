@@ -4,7 +4,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
-import gdscript.GdOperand
+import gdscript.utils.GdOperand
 import gdscript.psi.GdAssignSt
 import gdscript.psi.GdBitAndEx
 import gdscript.psi.GdClassVarDeclTl

@@ -70,7 +70,7 @@ class GdParamAnnotator : Annotator {
             val toRemote = mutableListOf<PsiElement>(element)
             if (index > 0) toRemote.addIfNotNull(element.prevNonWhiteCommentToken())
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "Too many argument for $description")
+                .newAnnotation(HighlightSeverity.ERROR, "Too many arguments for $description")
                 .range(element.textRange)
                 .withFix(GdRemoveElementsAction(*toRemote.toTypedArray()))
                 .create()

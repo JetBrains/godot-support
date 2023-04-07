@@ -23,7 +23,7 @@ object GdLookup {
 
     // TODO from settings?
     val COLOR_ANNOTATION = Color(255, 179,115);
-    val COLOR_GROUP = Color(255, 150,150);
+    val COLOR_GROUP = Color(150, 200,255);
     val COLOR_RESOURCE = Color(99, 194,89);
 
     fun create(

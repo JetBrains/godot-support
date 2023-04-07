@@ -4,10 +4,10 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
-import gdscript.GdKeywords
 import gdscript.action.quickFix.GdRemoveAnnotationAction
 import gdscript.psi.GdAnnotationTl
-import gdscript.psi.GdFile
+import gdscript.psi.utils.GdExprUtil
+import gdscript.utils.GdAnnotationUtil
 
 /**
  * Check if annotation exists & tool is not within inner class
@@ -15,49 +15,46 @@ import gdscript.psi.GdFile
 class GdAnnotationAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element !is GdAnnotationTl) return;
+        if (element !is GdAnnotationTl) return
 
-        val annotation = element.firstChild?.text.orEmpty().trimStart('@');
-
-        exists(annotation, element, holder);
-        hasCorrectParameters(annotation, element, holder);
-        toolValidation(annotation, element, holder);
-    }
-
-    private fun exists(annotation: String, element: GdAnnotationTl, holder: AnnotationHolder) {
-        if (!GdKeywords.ANNOTATIONS_ALL.contains(annotation)) {
+        val definition = GdAnnotationUtil.get(element.annotationType.text.trimStart('@'))
+        if (definition == null) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Unknown annotation")
                 .range(element.textRange)
                 .withFix(GdRemoveAnnotationAction(element))
-                .create();
-        }
-    }
-
-    private fun hasCorrectParameters(annotation: String, element: GdAnnotationTl, holder: AnnotationHolder) {
-        return // TODO podle gdscript parser
-        if (GdKeywords.ANNOTATIONS_STAND_ALONE.containsKey(annotation) && element.firstChild.nextSibling != null) {
-            holder
-                .newAnnotation(
-                    HighlightSeverity.ERROR,
-                    "Standalone annotation [$annotation] cannot be parametrized",
-                )
-                .range(element.textRange)
-                .withFix(GdRemoveAnnotationAction(element))
-                .create();
-            return;
+                .create()
+            return
         }
 
-        // TODO annotation params - tohle je potřeba prozkoumat a sepsat (něco je navíc parametrized)
-    }
+        val definitionParams = definition.parameters
+        val usedParams = element.annotationParams?.literalExList ?: emptyList()
 
-    private fun toolValidation(annotation: String, element: GdAnnotationTl, holder: AnnotationHolder) {
-        if (GdKeywords.ANNOTATIONS_ROOT_ONLY.contains(annotation) && element.parent !is GdFile) {
-            holder
-                .newAnnotation(HighlightSeverity.ERROR, "[$annotation] is not supported in this scope")
-                .range(element.textRange)
-                .withFix(GdRemoveAnnotationAction(element))
-                .create();
+        // Check number of arguments
+        if (!definition.variadic) {
+            if (usedParams.size > definitionParams.size) {
+                holder
+                    .newAnnotation(HighlightSeverity.ERROR, "Too many arguments")
+                    .range(element.textRange)
+                    .create()
+                return
+            }
+        }
+
+        var index = 0
+        definitionParams.forEach {
+            val name = it.key
+            val expectedType = it.value
+            val actualType = usedParams[index++]
+
+            if (!GdExprUtil.typeAccepts(actualType.returnType, expectedType, element.project)) {
+                holder
+                    .newAnnotation(HighlightSeverity.ERROR, "")
+                    .tooltip("<html><body>Type mismatch for $name<table><tr><td>Required:</td><td>$expectedType</td></tr><tr><td>Found:</td><td>$actualType</td></tr></table></html></body>")
+                    .range(element.textRange)
+                    .create()
+                return
+            }
         }
     }
 

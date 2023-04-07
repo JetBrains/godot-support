@@ -1,4 +1,6 @@
-package gdscript
+package gdscript.utils
+
+import gdscript.GdKeywords
 
 /**
  * Do not edit manually
