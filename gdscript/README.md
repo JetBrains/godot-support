@@ -45,4 +45,4 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
 - remove annotation
 - change class_name to match filename
 - remove getter & setter
-- too many arguments
+- too many arguments / change function type

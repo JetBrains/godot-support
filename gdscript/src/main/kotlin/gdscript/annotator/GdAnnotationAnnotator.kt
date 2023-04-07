@@ -35,6 +35,7 @@ class GdAnnotationAnnotator : Annotator {
     }
 
     private fun hasCorrectParameters(annotation: String, element: GdAnnotationTl, holder: AnnotationHolder) {
+        return // TODO podle gdscript parser
         if (GdKeywords.ANNOTATIONS_STAND_ALONE.containsKey(annotation) && element.firstChild.nextSibling != null) {
             holder
                 .newAnnotation(
