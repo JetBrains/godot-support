@@ -7,12 +7,14 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.util.containers.addIfNotNull
+import gdscript.action.quickFix.GdChangeTypeFix
 import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.completion.utils.GdMethodCompletionUtil.methodHeader
 import gdscript.psi.GdArgExpr
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdParamList
 import gdscript.psi.GdRefIdNm
 import gdscript.psi.GdTypes
 import gdscript.psi.GdVarDeclSt
@@ -38,22 +40,28 @@ class GdParamAnnotator : Annotator {
         val declaration = GdClassMemberReference(refId).resolveDeclaration() ?: return
 
         var description = ""
+        var paramList: GdParamList? = null
         val params = when (declaration) {
             is GdMethodDeclTl -> {
                 if (declaration.isVariadic) return
                 if (declaration.name == "emit") {
                     val signal = PsiGdSignalUtil.getDeclaration(call) ?: return
+                    paramList = signal.paramList
                     description = signal.text
                     signal.parameters
                 } else {
                     description = declaration.methodHeader()
+                    paramList = declaration.paramList
                     declaration.parameters
                 }
             }
-            is GdVarDeclSt ->{
+
+            is GdVarDeclSt -> {
                 val lambda = if (declaration.expr is GdFuncDeclEx) declaration.expr as GdFuncDeclEx else null ?: return
+                paramList = lambda.paramList
                 lambda.parameters
             }
+
             else -> null
         } ?: return
 
@@ -72,14 +80,16 @@ class GdParamAnnotator : Annotator {
         // Check argument's type
         val paramType = params.values.toTypedArray()[index]!!
         val currentType = element.returnType
+
         if (!GdExprUtil.typeAccepts(currentType, paramType, element.project)) {
-            holder
-                // TODO format
-                .newAnnotation(HighlightSeverity.ERROR, """
-                    Type mismatch.
-                     Required: $paramType
-                     Found:   $currentType""")
-                .range(element.textRange)
+            val annotation = holder
+                .newAnnotation(HighlightSeverity.ERROR, "")
+                .tooltip("<html><body>Type mismatch<table><tr><td>Required:</td><td>$paramType</td></tr><tr><td>Found:</td><td>$currentType</td></tr></table></html></body>")
+
+            val typedVal = paramList?.paramList?.get(index)?.typed?.typedVal
+            if (typedVal != null) annotation.withFix(GdChangeTypeFix(typedVal, currentType))
+            
+            annotation.range(element.textRange)
                 .create()
         }
     }
