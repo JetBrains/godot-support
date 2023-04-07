@@ -34,7 +34,6 @@ class GdConstructorAnnotator : Annotator {
                 .range(element.methodIdNmi?.textRange ?: element.textRange)
                 .create();
         }
-        // TODO kontrola parametrů by měla být přes obecné GdCallExpr... takže se pak ujistit, že to šlape
     }
 
 }

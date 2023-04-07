@@ -203,7 +203,7 @@ flow_st ::=
     (CONTINUE
     | BREAK
     | PASS
-    | BREAKPOINT // TODO existuje ještě totok?
+    | BREAKPOINT
     | (RETURN expr?))
     endStmt
     {/*pin=1 recoverWhile=stmt_r*/ methods=[getType]}

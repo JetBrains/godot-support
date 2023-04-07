@@ -13,7 +13,7 @@ import gdscript.psi.utils.GdNodeUtil
 
 /**
  * $NodePath & %NodeName read from .tscn
- * Resource as string completion (currently it's not as reference, due to user:// but can be later added) TODO
+ * Resource as string completion (currently it's not as reference, due to user:// but can be later added)
  */
 class GdResourceCompletionContributor : CompletionContributor() {
 

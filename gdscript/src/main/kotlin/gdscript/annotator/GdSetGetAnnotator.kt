@@ -47,7 +47,6 @@ class GdSetGetAnnotator : Annotator {
             element.name,
             returnType = variableType(element),
             bodyLines = arrayOf("return ${variableName(element)}") // optional ;
-            // TODO bodyLines = arrayOf("return ${GdKeywords.SELF}.${variableName(element)}") // optional ;
         );
     }
 

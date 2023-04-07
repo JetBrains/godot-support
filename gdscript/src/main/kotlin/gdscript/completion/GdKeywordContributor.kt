@@ -8,7 +8,7 @@ import gdscript.GdKeywords
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdClassMemberUtil
 
-object GdKeywordContributor : CompletionContributor() {
+class GdKeywordContributor : CompletionContributor() {
 
     val TO_HINT_KEYWORDS = arrayOf(
         GdKeywords.FUNC,
