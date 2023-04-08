@@ -56,14 +56,14 @@ object PsiGdExprUtil {
                     val method = expr.expr.text
                     if (method == "get_node" || method == "get_node_or_null") {
                         //TODO zkusit vyparsovat Node z .tscn
-                        return GdKeywords.VARIANT
+                        return "Node"
                     } else if (method == "instantiate") {
                         return GdKeywords.VARIANT
                     } else if (method == "get_child") {
-                        return GdKeywords.VARIANT
+                        return "Node"
                     } else if (method == "get_parent") {
                         //TODO zkusit vyparsovat Node z .tscn
-                        return GdKeywords.VARIANT
+                        return "Node"
                     }
                     expr.expr.returnType
                 }
