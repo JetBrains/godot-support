@@ -12,12 +12,15 @@ import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.completion.utils.GdMethodCompletionUtil.methodHeader
 import gdscript.psi.GdArgExpr
 import gdscript.psi.GdCallEx
+import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdParamList
 import gdscript.psi.GdRefIdNm
 import gdscript.psi.GdTypes
 import gdscript.psi.GdVarDeclSt
+import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdClassMemberUtil.constructors
 import gdscript.psi.utils.GdExprUtil
 import gdscript.psi.utils.PsiGdSignalUtil
 import gdscript.reference.GdClassMemberReference
@@ -40,33 +43,52 @@ class GdParamAnnotator : Annotator {
         val declaration = GdClassMemberReference(refId).resolveDeclaration() ?: return
 
         var description = ""
-        var paramList: GdParamList? = null
-        val params = when (declaration) {
+        val paramLists = mutableListOf<GdParamList?>()
+        val paramDefinitions = when (declaration) {
             is GdMethodDeclTl -> {
                 if (declaration.isVariadic) return
                 if (declaration.name == "emit") {
                     val signal = PsiGdSignalUtil.getDeclaration(call) ?: return
-                    paramList = signal.paramList
+                    paramLists.add(signal.paramList)
                     description = signal.text
-                    signal.parameters
+                    arrayOf(signal.parameters)
                 } else {
                     description = declaration.methodHeader()
-                    paramList = declaration.paramList
-                    declaration.parameters
+                    paramLists.add(declaration.paramList)
+                    arrayOf(declaration.parameters)
                 }
             }
 
             is GdVarDeclSt -> {
                 val lambda = if (declaration.expr is GdFuncDeclEx) declaration.expr as GdFuncDeclEx else null ?: return
-                paramList = lambda.paramList
-                lambda.parameters
+                paramLists.add(lambda.paramList)
+                arrayOf(lambda.parameters)
+            }
+
+            is GdClassNaming -> {
+                description = declaration.classname
+                GdClassMemberUtil
+                    .listClassMemberDeclarations(declaration, constructors = true)
+                    .constructors()
+                    .map {
+                        paramLists.add(it.paramList)
+                        it.parameters
+                    }
+                    .toTypedArray()
             }
 
             else -> null
         } ?: return
 
+        var minSize = 99
+        var maxSize = 0
+        paramDefinitions.forEach { params ->
+            minSize = minOf(minSize, params.size)
+            maxSize = maxOf(maxSize, params.size)
+        }
+
         // Check number of arguments
-        if (params.size <= index) {
+        if (index >= maxSize) {
             val toRemote = mutableListOf<PsiElement>(element)
             if (index > 0) toRemote.addIfNotNull(element.prevNonWhiteCommentToken())
             holder
@@ -75,20 +97,42 @@ class GdParamAnnotator : Annotator {
                 .withFix(GdRemoveElementsAction(*toRemote.toTypedArray()))
                 .create()
             return
+        } else if (index < minSize) {
+            // TODO requires to exclude defaults
+//            holder
+//                .newAnnotation(HighlightSeverity.ERROR, "Not enough arguments for $description")
+//                .range(element.textRange)
+//                .create()
+//            return
         }
 
         // Check argument's type
-        val paramType = params.values.toTypedArray()[index]!!
-        val currentType = element.returnType
+        var paramType = ""
+        var paramName = ""
+        var currentType = ""
+        val matched = paramDefinitions.any { params ->
+            if (index >= params.size) return@any false
 
-        if (!GdExprUtil.typeAccepts(currentType, paramType, element.project)) {
+            paramType = params.values.toTypedArray()[index]
+            paramName = params.keys.toTypedArray()[index]
+            currentType = element.returnType
+
+            GdExprUtil.typeAccepts(currentType, paramType, element.project)
+        }
+
+        if (!matched) {
             val annotation = holder
                 .newAnnotation(HighlightSeverity.ERROR, "")
-                .tooltip("<html><body>Type mismatch<table><tr><td>Required:</td><td>$paramType</td></tr><tr><td>Found:</td><td>$currentType</td></tr></table></html></body>")
 
-            val typedVal = paramList?.paramList?.get(index)?.typed?.typedVal
-            if (typedVal != null) annotation.withFix(GdChangeTypeFix(typedVal, currentType))
-            
+            if (paramLists.size == 1) {
+                annotation
+                    .tooltip("<html><body>Type mismatch for $paramName<table><tr><td>Required:</td><td>$paramType</td></tr><tr><td>Found:</td><td>$currentType</td></tr></table></html></body>")
+                val typedVal = paramLists.first()!!.paramList[index]?.typed?.typedVal
+                if (typedVal != null) annotation.withFix(GdChangeTypeFix(typedVal, currentType))
+            } else {
+                annotation.tooltip("None of function overrides matches param of type $currentType")
+            }
+
             annotation.range(element.textRange)
                 .create()
         }

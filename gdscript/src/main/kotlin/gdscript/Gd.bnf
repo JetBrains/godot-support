@@ -86,7 +86,9 @@ constId_nmi ::= identifierEx
 
 annotation_tl ::= annotationType (LRBR annotationParams? RRBR)? endStmt? {pin=1 recoverWhile=topLevelDecl_r}
 annotationType ::= ANNOTATOR
-annotationParams ::= literal_ex (COMMA literal_ex)*
+annotationParams ::= literal_ex (COMMA literal_ex)* {
+    pin=1 recoverWhile=argList_r
+}
 classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
     methods=[getName getReturnType getPresentation isAnnotated]
     pin=1 recoverWhile=topLevelDecl_r

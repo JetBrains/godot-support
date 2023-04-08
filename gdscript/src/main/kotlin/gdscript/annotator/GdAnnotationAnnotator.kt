@@ -52,9 +52,8 @@ class GdAnnotationAnnotator : Annotator {
                 holder
                     .newAnnotation(HighlightSeverity.ERROR, "")
                     .tooltip("<html><body>Type mismatch for $name<table><tr><td>Required:</td><td>$expectedType</td></tr><tr><td>Found:</td><td>$actualType</td></tr></table></html></body>")
-                    .range(element.textRange)
+                    .range(actualType.textRange)
                     .create()
-                return
             }
         }
     }

@@ -54,12 +54,13 @@ public class GdParser implements PsiParser, LightPsiParser {
   // literal_ex (COMMA literal_ex)*
   public static boolean annotationParams(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "annotationParams")) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, ANNOTATION_PARAMS, "<annotation params>");
     r = literal_ex(b, l + 1);
+    p = r; // pin = 1
     r = r && annotationParams_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
+    exit_section_(b, l, m, r, p, GdParser::argList_r);
+    return r || p;
   }
 
   // (COMMA literal_ex)*
@@ -1101,7 +1102,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   // (CONTINUE
   //     | BREAK
   //     | PASS
-  //     | BREAKPOINT // TODO existuje ještě totok?
+  //     | BREAKPOINT
   //     | (RETURN expr?))
   //     endStmt
   public static boolean flow_st(PsiBuilder b, int l) {
@@ -1117,7 +1118,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   // CONTINUE
   //     | BREAK
   //     | PASS
-  //     | BREAKPOINT // TODO existuje ještě totok?
+  //     | BREAKPOINT
   //     | (RETURN expr?)
   private static boolean flow_st_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "flow_st_0")) return false;
