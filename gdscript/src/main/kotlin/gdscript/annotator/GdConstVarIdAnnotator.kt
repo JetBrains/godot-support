@@ -29,9 +29,10 @@ class GdConstVarIdAnnotator : Annotator {
     private fun isUnique(element: GdNamedIdElement, holder: AnnotationHolder) {
         val inMethod = PsiTreeUtil.findFirstParent(element) {
             it is GdClassDeclTl || it is GdMethodDeclTl || it is GdFile
-        } is GdMethodDeclTl;
+        } is GdMethodDeclTl
 
-        if (GdClassMemberUtil.findDeclaration(element, true, inMethod) != null) {
+        val declaration = GdClassMemberUtil.findDeclaration(element, true, inMethod)
+        if (declaration != null && declaration !is GdClassNaming) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR,
                     "[${element.name}] is already defined")
