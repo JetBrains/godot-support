@@ -55,14 +55,15 @@ object GdStringCompletionUtil {
         if (method != null && method.contains("group")) priority = GdLookup.TOP
 
         TscnNodeUtil.listAllGroups(element).forEach {
-            result.addElement(
-                GdLookup.create(
-                    it,
-                    priority = priority,
-                    tail = " (group)",
-                    color = GdLookup.COLOR_GROUP,
+            if (it.isNotBlank())
+                result.addElement(
+                    GdLookup.create(
+                        it,
+                        priority = priority,
+                        tail = " (group)",
+                        color = GdLookup.COLOR_GROUP,
+                    )
                 )
-            )
         }
     }
 

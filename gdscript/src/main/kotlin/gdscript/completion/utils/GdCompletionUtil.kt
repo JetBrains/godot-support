@@ -91,7 +91,7 @@ object GdCompletionUtil {
     fun lookup(method: GdMethodDeclTl): LookupElement {
         return GdLookup.create(
             method.name,
-            lookup = "()${if (method.paramList?.paramList?.isNotEmpty() == true) "_" else ""}",
+            lookup = "()${if (method.paramList?.paramList?.isNotEmpty() == true || method.isVariadic) "_" else ""}",
             presentable = method.name,
             typed = method.returnType,
             icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
