@@ -73,9 +73,10 @@ object PsiGdExprUtil {
             is GdPrimaryEx -> {
                 when (expr.firstChild) {
                     is GdNodePath -> {
-                        val node = GdNodeUtil.findNode(expr.firstChild as GdNodePath);
+                        if (expr.firstChild.text.contains(':')) return GdKeywords.VARIANT
+                        val node = GdNodeUtil.findNode(expr.firstChild as GdNodePath)
 
-                        return node?.element?.type ?: "";
+                        return node?.element?.type ?: ""
                     }
                     is GdDictDecl -> return "Dictionary";
                     is GdArrayDecl -> {
