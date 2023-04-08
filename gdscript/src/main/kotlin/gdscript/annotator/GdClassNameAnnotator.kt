@@ -6,7 +6,6 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import gdscript.action.quickFix.GdFileClassNameAction
 import gdscript.highlighter.GdHighlighterColors
-import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdClassDeclTl
@@ -17,6 +16,7 @@ import gdscript.psi.GdInheritanceIdNm
 import gdscript.psi.GdInheritanceSubIdNm
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.PsiGdFileUtil
+import gdscript.utils.StringUtil.snakeToPascalCase
 
 /**
  * Checks for uniqueness of classes & existing inheritance
@@ -44,32 +44,6 @@ class GdClassNameAnnotator : Annotator {
         ) {
             // Last case is extending InnerClass within same file which does not require FQN
             // and can directly use any at lower level
-            /* TODO ii
-            // Tohle je copy-paste i v TypeHint, tak vyřešit společně
-            class Const:
-	func _init(a: int) -> void:
-		pass
-
-	class Const1 extends Const11:
-		func _init() -> void:
-			super();
-
-			pass;
-
-		class Const21 extends Const:
-			func _init() -> void:
-				super(2);
-
-				pass;
-
-
-
-	class Const11 extends Const:
-		func _init() -> void:
-			super(1);
-
-			pass;
-             */
 
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Class not found")
@@ -125,13 +99,13 @@ class GdClassNameAnnotator : Annotator {
         if (element.parent !is GdClassNaming) return;
 
         val name = element.name;
-        val filename = PsiGdFileUtil.filename(element.containingFile);
-        if (filename.lowercase() != name.lowercase()) {
+        val filename = PsiGdFileUtil.filename(element.containingFile).snakeToPascalCase()
+        if (filename != name) {
             holder
                 .newAnnotation(HighlightSeverity.WEAK_WARNING, "Class name does not match filename")
                 .range(element.textRange)
                 .withFix(GdFileClassNameAction(filename, element))
-                .create();
+                .create()
         }
     }
 

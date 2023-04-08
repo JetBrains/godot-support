@@ -14,15 +14,15 @@ object StringUtil {
             }.lowercase(Locale.getDefault())
     }
 
-    fun String.snakeToLowerCamelCase(): String {
+    fun String.snakeToCamelCase(): String {
         return snakeRegex.replace(this) {
             it.value.replace("_","")
                 .uppercase(Locale.getDefault())
         }
     }
 
-    fun String.snakeToUpperCamelCase(): String {
-        return this.snakeToLowerCamelCase()
+    fun String.snakeToPascalCase(): String {
+        return this.snakeToCamelCase()
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     }
 
