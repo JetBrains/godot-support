@@ -1,14 +1,10 @@
 match template
 
-Video preview
 Resources
 NodePath
 Set/Get
 
 const func ... qualifiers ?? Je to i v xml
-
-TopLevel: innerClass
-syntax: @"Node/Label"
 
 getter/setter:
 GenerateGetterHandler - GenerateGetterSetterHandlerBase

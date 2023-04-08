@@ -32,6 +32,7 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
 - Line markers
   - Resource usages  
   - Signals  
+  - Super method
 - Inlay hints  
 - Param hints (Ctrl+P)  
 - Run configuration - start game from Editor
