@@ -6,6 +6,7 @@ import gdscript.model.GdNodeHolder
 import gdscript.psi.GdNodePath
 import tscn.index.impl.TscnResourceIndex
 import tscn.psi.TscnNodeHeader
+import tscn.psi.utils.TscnResourceUtil
 
 /**
  * Node utils for available nodes from given script
@@ -29,12 +30,11 @@ object GdNodeUtil {
      * List all available nodes for given file with parsed relative paths
      */
     fun listNodes(element: PsiElement): Array<GdNodeHolder> {
-        val resource = PsiGdResourceUtil.resourcePath(element.containingFile.originalFile.virtualFile);
+        val resource = PsiGdResourceUtil.resourcePath(element.containingFile.originalFile.virtualFile)
+        val script = TscnResourceUtil.findTscnByResource(element) ?: return emptyArray()
+        val nodes = PsiTreeUtil.findChildrenOfType(script.containingFile, TscnNodeHeader::class.java)
 
-        val script = TscnResourceIndex.getGlobally(resource, element).firstOrNull() ?: return emptyArray();
-        val nodes = PsiTreeUtil.findChildrenOfType(script.containingFile, TscnNodeHeader::class.java);
-
-        val scriptPath = nodes.find { it.scriptResource == resource }?.nodePath?.split("/") ?: return emptyArray();
+        val scriptPath = nodes.find { it.scriptResource == resource }?.nodePath?.split("/") ?: return emptyArray()
 
         return nodes.map {
             val nodePath = it.nodePath

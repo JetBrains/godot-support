@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import tscn.index.impl.TscnNodeIndex
+import tscn.psi.TscnDataLine
 import tscn.psi.TscnNodeHeader
 import tscn.psi.TscnParagraph
 import tscn.psi.TscnResourceHeader
@@ -13,6 +14,8 @@ import tscn.psi.TscnResourceHeader
  * [node name="Outer" type="Node3D" parent="."]
  */
 object TscnNodeUtil {
+
+    val META_PREFIX = "metadata/"
 
     /** Header lines */
 
@@ -108,6 +111,19 @@ object TscnNodeUtil {
     fun listAllGroups(project: Project): Array<String> {
         return TscnNodeIndex.getAllValues(project).flatMap {
             it.groups.toList()
+        }.toTypedArray()
+    }
+
+    fun listAllMetas(element: PsiElement): Array<String> {
+        val tscnFile = TscnResourceUtil.findTscnByResource(element) ?: return emptyArray()
+        val node = PsiTreeUtil.findChildOfType(tscnFile.containingFile, TscnNodeHeader::class.java)
+            ?: return emptyArray()
+        val datas = PsiTreeUtil.getChildrenOfTypeAsList(node.parent, TscnDataLine::class.java)
+
+        return datas.mapNotNull {
+            val name = it.dataLineNm.text
+            if (name.startsWith(META_PREFIX)) name.substring(META_PREFIX.length)
+            else null
         }.toTypedArray()
     }
 

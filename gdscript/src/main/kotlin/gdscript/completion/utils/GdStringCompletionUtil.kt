@@ -7,7 +7,9 @@ import gdscript.index.impl.GdUserFileIndex
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.utils.PsiElementUtil.getCallExprOfParam
 import project.psi.util.ProjectInputUtil
+import tscn.index.impl.TscnResourceIndex
 import tscn.psi.utils.TscnNodeUtil
+import tscn.psi.utils.TscnResourceUtil
 
 object GdStringCompletionUtil {
 
@@ -76,20 +78,17 @@ object GdStringCompletionUtil {
     }
 
     fun addMetas(element: PsiElement, result: CompletionResultSet) {
-        val method = element.getCallExprOfParam() ?: return
-        val methodName = method.expr.text
-        if (!META_METHODS.contains(methodName)) return
+        var priority = GdLookup.USER_DEFINED
+        val method = element.getCallExprOfParam()?.expr?.text
+        if (method != null && method.contains("meta")) priority = GdLookup.TOP
 
-        // TODO tohle nevím jak vyřešit zatím... nějak musím naprasovat na aktuální .tscn, což metody asi jsou v balíčku... ?
-        val calledUpon = GdClassMemberUtil.calledUpon(element)
-
-        ProjectInputUtil.listActions(element).forEach {
+        TscnNodeUtil.listAllMetas(element).forEach {
             result.addElement(
                 GdLookup.create(
                     it,
-                    priority = GdLookup.TOP,
+                    priority = priority,
                     tail = " (meta)",
-                    color = GdLookup.COLOR_ANNOTATION,
+                    color = GdLookup.COLOR_META,
                 )
             )
         }

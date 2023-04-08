@@ -44,6 +44,7 @@ class GdResourceCompletionContributor : CompletionContributor() {
             }
             GdStringCompletionUtil.addInputs(position, result)
             GdStringCompletionUtil.addGroups(position, result)
+            GdStringCompletionUtil.addMetas(position, result)
             GdStringCompletionUtil.addUserFiles(position, result)
         }
     }

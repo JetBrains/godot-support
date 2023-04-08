@@ -23,7 +23,7 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
   - Annotations
   - func overrides
   - Resources (`$Path/Node` && `$"%Name"`)
-  - Inputs, Groups, user resources
+  - Inputs, Groups, Meta fields, user resources
 - Refactoring
 - Go to declaration / usages
 - File templates taken from Godot's source

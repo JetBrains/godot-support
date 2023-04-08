@@ -19,14 +19,14 @@ class GdResourceTypeAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element is GdNodePath) {
-            resourceExists(element, holder);
+            resourceExists(element, holder)
         } else if (element.elementType == GdTypes.STRING) {
-            stringResourceExists(element, holder);
+            stringResourceExists(element, holder)
         }
     }
 
     private fun stringResourceExists(element: PsiElement, holder: AnnotationHolder) {
-        val text = element.text.trim('"');
+        val text = element.text.trim('"')
         if (text.startsWith("res://") && GdFileResIndex.getFiles(text, element.project).isEmpty()) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Resource not found")
@@ -36,8 +36,8 @@ class GdResourceTypeAnnotator : Annotator {
     }
 
     private fun resourceExists(element: GdNodePath, holder: AnnotationHolder) {
-        val node = GdNodeUtil.findNode(element);
-        if (node != null) return;
+        val node = GdNodeUtil.findNode(element)
+        if (node != null) return
 
         // TODO přepsat validaci - zakomponovat i attrs... "Child/Node:template:value"
 //        holder

@@ -22,9 +22,10 @@ object GdLookup {
     const val TOP = 500.0
 
     // TODO from settings?
-    val COLOR_ANNOTATION = Color(255, 179,115);
-    val COLOR_GROUP = Color(150, 200,255);
-    val COLOR_RESOURCE = Color(99, 194,89);
+    val COLOR_ANNOTATION = Color(255, 179,115)
+    val COLOR_GROUP = Color(230, 110,110)
+    val COLOR_META = Color(150, 200,255)
+    val COLOR_RESOURCE = Color(99, 194,89)
 
     fun create(
         text: String,
