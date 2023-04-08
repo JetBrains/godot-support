@@ -63,27 +63,27 @@ class GdClassNameAnnotator : Annotator {
             .newSilentAnnotation(HighlightSeverity.INFORMATION)
             .range(element.textRange)
             .textAttributes(GdHighlighterColors.CLASS_TYPE)
-            .create();
+            .create()
     }
 
     private fun alreadyExists(element: GdClassNameNmi, holder: AnnotationHolder) {
-        val name = element.name;
-        var message = "Class defined in global scope";
+        val name = element.name
+        var message = "Class defined in global scope"
 
-        var conflict = GdClassNamingIndex.getGloballyWithoutSelf(element).isNotEmpty();
+        var conflict = GdClassNamingIndex.getGloballyWithoutSelf(element).isNotEmpty()
 
         if (element.isInner) {
             // Inner class can conflict with local main class
-            conflict = conflict || GdClassNamingIndex.getInFile(element).isNotEmpty();
+            conflict = conflict || GdClassNamingIndex.getInFile(element).isNotEmpty()
 
             // Or with previously defined at the same level
-            var prev = element.parent.prevSibling;
+            var prev = element.parent.prevSibling
             while (prev != null && !conflict) {
                 if (prev is GdClassDeclTl && prev.classNameNmi?.name == name) {
-                    conflict = true;
-                    message = "Class already defined";
+                    conflict = true
+                    message = "Class already defined"
                 }
-                prev = prev.prevSibling;
+                prev = prev.prevSibling
             }
         }
 
@@ -91,7 +91,7 @@ class GdClassNameAnnotator : Annotator {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, message)
                 .range(element.textRange)
-                .create();
+                .create()
         }
     }
 

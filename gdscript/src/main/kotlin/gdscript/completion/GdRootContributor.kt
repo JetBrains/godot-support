@@ -14,6 +14,7 @@ import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdNodeUtil
 import gdscript.psi.utils.PsiGdFileUtil
+import gdscript.utils.StringUtil.snakeToPascalCase
 
 /**
  * Root & InnerClass root level completions
@@ -55,17 +56,17 @@ class GdRootContributor : CompletionContributor() {
     }
 
     private fun addClassName(parameters: CompletionParameters, result: CompletionResultSet) {
-        val className = PsiGdFileUtil.filename(parameters.position.containingFile);
-        result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " $className"));
+        val className = PsiGdFileUtil.filename(parameters.position.containingFile).snakeToPascalCase()
+        result.addElement(GdLookup.create(GdKeywords.CLASS_NAME, " $className"))
     }
 
     private fun addTopLvlDecl(parameters: CompletionParameters, result: CompletionResultSet) {
         GdNodeUtil.listNodes(parameters.position).forEach { result.addElement(it.variable_lookup()) }
-        GdClassVarCompletionUtil.annotations(result);
+        GdClassVarCompletionUtil.annotations(result)
 
-        val members = mutableListOf<Any>();
-        GdClassMemberUtil.collectFromParents(parameters.position, members, false);
-        result.addAllElements(members.methods().map { it.lookupDeclaration() });
+        val members = mutableListOf<Any>()
+        GdClassMemberUtil.collectFromParents(parameters.position, members, false)
+        result.addAllElements(members.methods().map { it.lookupDeclaration() })
     }
 
 }
