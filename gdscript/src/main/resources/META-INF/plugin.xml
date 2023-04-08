@@ -41,6 +41,7 @@
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdResourceLineMarkerContributor" />
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdSignalLineMarkerContributor" />
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdTraitLineMarkerContributor" />
+    <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdInheritanceLineMarkerContributor" />
 
     <!-- Tscn & Project -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>

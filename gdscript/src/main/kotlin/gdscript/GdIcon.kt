@@ -23,6 +23,7 @@ object GdIcon {
     const val ERROR = "StatusError"
     const val RESOURCE = "Mesh"
     const val STRING = "String"
+    const val OVERRIDE = "MethodOverride"
 
     var editorIcons = HashMap<String, Icon>()
 
