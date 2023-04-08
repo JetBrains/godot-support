@@ -17,13 +17,13 @@ object GdNodeUtil {
      * Returns corresponding node for given NodePath element
      */
     fun findNode(element: GdNodePath): GdNodeHolder? {
-        val nodes = listNodes(element);
-        var path = element.text;
-        if (path.startsWith("$\"%")) {
-            path = path.removePrefix("$\"").removeSuffix("\"");
-        }
+        val nodes = listNodes(element)
+        val path = element.text
+            .trim('$', '%', '"', '^')
+            .split(":")
+            .first()
 
-        return nodes.find { it.relativePath == path || it.uniqueId == path };
+        return nodes.find { it.relativePath.trim('$') == path || it.uniqueId == path };
     }
 
     /**

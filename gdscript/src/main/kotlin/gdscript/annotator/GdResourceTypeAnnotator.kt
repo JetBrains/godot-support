@@ -36,14 +36,14 @@ class GdResourceTypeAnnotator : Annotator {
     }
 
     private fun resourceExists(element: GdNodePath, holder: AnnotationHolder) {
+        if (element.text == "$\".\"") return
         val node = GdNodeUtil.findNode(element)
         if (node != null) return
 
-        // TODO přepsat validaci - zakomponovat i attrs... "Child/Node:template:value"
-//        holder
-//            .newAnnotation(HighlightSeverity.ERROR, "Node not found")
-//            .range(element.textRange)
-//            .create();
+        holder
+            .newAnnotation(HighlightSeverity.ERROR, "Node not found")
+            .range(element.textRange)
+            .create()
     }
 
 }
