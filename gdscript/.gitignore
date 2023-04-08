@@ -1,9 +1,8 @@
 .idea/
 .gradle/
 build/
-classes/
-classesGd/
-godotSource/
-godot-master/
-
-src/main/resources/_classes_test
+/classes/
+/classesGd/
+/godotSource/
+/godot-master/
+/icons/

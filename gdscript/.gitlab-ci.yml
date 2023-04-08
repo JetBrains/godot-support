@@ -10,7 +10,7 @@ refresh-sdk:
     - git config --global user.email "ci@runner.git"
     - git config --global user.name "CI runner"
   script:
-    - make generate
-    - git add GD_SDK.7z
+    - make update
+    - git add .
     - git commit -m "refresh SDK"
     - git push https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git HEAD:master

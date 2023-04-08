@@ -8,7 +8,7 @@ import os
 from io import StringIO
 from platform_methods import subprocess_main
 
-
+# See also `scene/resources/default_theme/default_theme_icons_builders.py`.
 def make_editor_icons_action(target, source, env):
 
     dst = target[0]
@@ -57,6 +57,8 @@ def make_editor_icons_action(target, source, env):
         if icon_name.endswith("MediumThumb"):  # don't know a better way to handle this
             thumb_medium_indices.append(str(index))
         if icon_name.endswith("BigThumb"):  # don't know a better way to handle this
+            thumb_big_indices.append(str(index))
+        if icon_name.endswith("GodotFile"):  # don't know a better way to handle this
             thumb_big_indices.append(str(index))
 
         s.write('\t"{0}"'.format(icon_name))
