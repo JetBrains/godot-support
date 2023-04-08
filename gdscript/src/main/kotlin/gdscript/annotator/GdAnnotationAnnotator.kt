@@ -17,7 +17,7 @@ class GdAnnotationAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is GdAnnotationTl) return
 
-        val definition = GdAnnotationUtil.get(element.annotationType.text.trimStart('@'))
+        val definition = GdAnnotationUtil.get(element)
         if (definition == null) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Unknown annotation")
@@ -45,6 +45,7 @@ class GdAnnotationAnnotator : Annotator {
         definitionParams.forEach {
             val name = it.key
             val expectedType = it.value
+            if (usedParams.size <= index) return@forEach
             val actualType = usedParams[index++]
 
             if (!GdExprUtil.typeAccepts(actualType.returnType, expectedType, element.project)) {

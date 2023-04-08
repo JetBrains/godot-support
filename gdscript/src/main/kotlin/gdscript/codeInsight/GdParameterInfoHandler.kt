@@ -7,86 +7,105 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.utils.GdAnnotationUtil
 
-class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, PsiElement>, DumbAware {
+class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElement>, DumbAware {
 
-    override fun findElementForParameterInfo(context: CreateParameterInfoContext): GdCallEx? {
-        val element = getFunctionCall(context) ?: return null;
-
-        val refId = element.firstChild?.firstChild ?: return null;
-        when (val declaration = GdClassMemberUtil.findDeclaration(refId as GdNamedElement)) {
-            is GdMethodDeclTl -> {
-                context.itemsToShow = arrayOf(declaration);
-            }
-            is GdVarDeclSt ->
-                if (declaration.expr is GdFuncDeclEx) {
-                    context.itemsToShow = arrayOf(declaration.expr as GdFuncDeclEx);
+    override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
+        val element = getFunctionCall(context)
+        if (element != null) {
+            val refId = element.firstChild?.firstChild ?: return null
+            when (val declaration = GdClassMemberUtil.findDeclaration(refId as GdNamedElement)) {
+                is GdMethodDeclTl -> {
+                    context.itemsToShow = arrayOf(declaration)
                 }
-            is GdClassNaming -> {
-                val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(declaration.containingFile, GdMethodDeclTl::class.java);
-                context.itemsToShow = methods.filter {
-                    it.isConstructor
-                }.toTypedArray();
+
+                is GdVarDeclSt ->
+                    if (declaration.expr is GdFuncDeclEx) {
+                        context.itemsToShow = arrayOf(declaration.expr as GdFuncDeclEx)
+                    }
+
+                is GdClassNaming -> {
+                    val methods =
+                        PsiTreeUtil.getStubChildrenOfTypeAsList(declaration.containingFile, GdMethodDeclTl::class.java)
+                    context.itemsToShow = methods.filter {
+                        it.isConstructor
+                    }.toTypedArray()
+                }
             }
+
+            return element
         }
 
-        return element;
+        val annotation = getAnnotation(context) ?: return null
+        context.itemsToShow = arrayOf(annotation)
+
+        return annotation
     }
 
-    override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): GdCallEx? {
-        val element = getFunctionCall(context) ?: return null;
-
-        val offset = context.offset;
-        val elRange: TextRange = element.textRange;
+    override fun findElementForUpdatingParameterInfo(context: UpdateParameterInfoContext): PsiElement? {
+        val element: PsiElement = getFunctionCall(context) ?: getAnnotation(context) ?: return null
+        val offset = context.offset
+        val elRange: TextRange = element.textRange
         val index =
             if (offset <= elRange.startOffset || offset >= elRange.endOffset) -1
-            else ParameterInfoUtils.getCurrentParameterIndex(
-                element.argList?.node ?: return element,
-                offset,
-                GdTypes.COMMA)
-        context.setCurrentParameter(index);
+            else {
+                val argumentNode = when (element) {
+                    is GdCallEx -> element.argList?.node ?: element.node
+                    is GdAnnotationTl -> element.annotationParams?.node ?: element.node
+                    else -> null
+                } ?: return null
 
-        return element;
+                ParameterInfoUtils.getCurrentParameterIndex(argumentNode, offset, GdTypes.COMMA)
+            }
+        context.setCurrentParameter(index)
+
+        return element
     }
 
     override fun updateUI(declaration: PsiElement?, context: ParameterInfoUIContext) {
-        val currentParam = context.currentParameterIndex;
-        var startOffset = -1;
-        var endOffset = -1;
+        val currentParam = context.currentParameterIndex
+        var startOffset = -1
+        var endOffset = -1
 
-        var isVariadic = false;
-        val builder = StringBuilder();
+        var isVariadic = false
+        val builder = StringBuilder()
         val parameters = when(declaration) {
             is GdMethodDeclTl -> {
-                isVariadic = declaration.isVariadic;
-                declaration.parameters;
-            };
-            is GdFuncDeclEx -> declaration.parameters;
-            else -> emptyMap<String, String>();
+                isVariadic = declaration.isVariadic
+                declaration.parameters
+            }
+            is GdFuncDeclEx -> declaration.parameters
+            is GdAnnotationTl -> {
+                val specification = GdAnnotationUtil.get(declaration)
+                isVariadic = specification?.variadic ?: false
+                specification?.parameters ?: emptyMap<String, String>()
+            }
+            else -> emptyMap<String, String>()
         }
 
-        var i = 0;
-        parameters.forEach { it ->
+        var i = 0
+        parameters.forEach {
             if (i > 0) {
-                builder.append(", ");
+                builder.append(", ")
             }
             val start = builder.length;
-            builder.append("${it.key}: ${it.value}");
+            builder.append("${it.key}: ${it.value}")
             if (currentParam == i) {
-                startOffset = start;
-                endOffset = builder.length;
+                startOffset = start
+                endOffset = builder.length
             }
-            i += 1;
+            i += 1
         }
 
         if (i <= 0) {
             if (isVariadic) {
                 repeat(currentParam) {
-                    builder.append("$it, ");
-                };
-                builder.append("vararg");
+                    builder.append("$it, ")
+                }
+                builder.append("vararg")
             } else {
-                builder.append("no parameters");
+                builder.append("no parameters")
             }
         }
 
@@ -98,19 +117,25 @@ class GdParameterInfoHandler : ParameterInfoHandler<GdCallEx, PsiElement>, DumbA
             false,
             false,
             context.defaultParameterColor,
-        );
+        )
     }
 
-    override fun updateParameterInfo(parameterOwner: GdCallEx, context: UpdateParameterInfoContext) {
-        context.parameterOwner = parameterOwner;
+    override fun updateParameterInfo(parameterOwner: PsiElement, context: UpdateParameterInfoContext) {
+        context.parameterOwner = parameterOwner
     }
 
-    override fun showParameterInfo(element: GdCallEx, context: CreateParameterInfoContext) {
-        context.showHint(element, element.textRange.startOffset + 1, this);
+    override fun showParameterInfo(element: PsiElement, context: CreateParameterInfoContext) {
+        context.showHint(element, element.textRange.startOffset + 1, this)
     }
 
     private fun getFunctionCall(context: ParameterInfoContext): GdCallEx? {
-        val element = context.file.findElementAt(context.offset) ?: return null;
-        return PsiTreeUtil.getParentOfType(element, GdCallEx::class.java);
+        val element = context.file.findElementAt(context.offset) ?: return null
+        return PsiTreeUtil.getParentOfType(element, GdCallEx::class.java)
     }
+
+    private fun getAnnotation(context: ParameterInfoContext): GdAnnotationTl? {
+        val element = context.file.findElementAt(context.offset) ?: return null
+        return PsiTreeUtil.getParentOfType(element, GdAnnotationTl::class.java)
+    }
+
 }

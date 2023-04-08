@@ -1,6 +1,7 @@
 package gdscript.utils
 
 import gdscript.model.GdAnnotation
+import gdscript.psi.GdAnnotationTl
 
 /**
  * Do not edit manually
@@ -8,8 +9,12 @@ import gdscript.model.GdAnnotation
  */
 object GdAnnotationUtil {
 
+    fun get(annotation: GdAnnotationTl): GdAnnotation? {
+        return get(annotation.annotationType.text)
+    }
+
     fun get(name: String): GdAnnotation? {
-        return ANNOTATIONS[name]
+        return ANNOTATIONS[name.trimStart('@')]
     }
 
     // Name -> GdAnnotation
