@@ -4,6 +4,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
+import gdscript.GdKeywords
 import gdscript.utils.GdOperand
 import gdscript.psi.GdAssignSt
 import gdscript.psi.GdBitAndEx
@@ -69,7 +70,7 @@ class GdExprTypeAnnotator : Annotator {
         element: PsiElement,
         holder: AnnotationHolder,
     ) {
-        if (left == right) return
+        if (left == right || right == GdKeywords.NULL) return
         if (left.isDynamicType() || right.isDynamicType()) return
         if (GdOperand.isAllowed(left, right, operator)) return
 

@@ -16,7 +16,8 @@ object GdOperand {
     }
 
     fun isAllowed(left: String, right: String, operator: String): Boolean {
-        return OPERANDS[left]?.get(operator)?.containsKey(right) ?: return false
+        val operated = OPERANDS[left]?.get(operator) ?: return false
+        return operated.containsKey(right) || operated.containsKey(GdKeywords.VARIANT)
     }
 
     // Left -> Operand -> Right -> Result
