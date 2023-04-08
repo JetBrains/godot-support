@@ -16,7 +16,7 @@ plugins {
 }
 
 group 'ice.explosive'
-version '0.8.0'
+version '1.0.0'
 
 sourceSets {
     main {
@@ -52,7 +52,6 @@ intellij {
 
 patchPluginXml {
     changeNotes = """
-      0.4+ - beta release<br>
       """
     sinceBuild = '223'
     untilBuild = ''
