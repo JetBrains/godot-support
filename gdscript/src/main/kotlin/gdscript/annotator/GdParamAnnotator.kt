@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.action.quickFix.GdChangeTypeFix
 import gdscript.action.quickFix.GdRemoveElementsAction
+import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFuncDeclEx
@@ -32,14 +33,17 @@ class GdParamAnnotator : Annotator {
 
         val refId = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return
         val declaration = GdClassMemberReference(refId).resolveDeclaration() ?: return
+        val descriptions = mutableListOf<String>()
 
         val paramLists = when (declaration) {
             is GdMethodDeclTl -> {
                 if (declaration.isVariadic) return
                 if (declaration.name == "emit") {
                     val signal = PsiGdSignalUtil.getDeclaration(element) ?: return
+                    descriptions.add(declaration.shortMethodHeader())
                     arrayOf(signal.paramList?.paramList)
                 } else {
+                    descriptions.add(declaration.shortMethodHeader())
                     arrayOf(declaration.paramList?.paramList)
                 }
             }
@@ -47,6 +51,7 @@ class GdParamAnnotator : Annotator {
             is GdVarDeclSt -> {
                 val lambda =
                     if (declaration.expr is GdFuncDeclEx) declaration.expr as GdFuncDeclEx else null ?: return
+                descriptions.add(lambda.shortMethodHeader())
                 arrayOf(lambda.paramList?.paramList)
             }
 
@@ -54,7 +59,10 @@ class GdParamAnnotator : Annotator {
                 GdClassMemberUtil
                     .listClassMemberDeclarations(declaration, constructors = true)
                     .constructors()
-                    .map { it.paramList?.paramList }
+                    .map {
+                        descriptions.add(it.shortMethodHeader())
+                        it.paramList?.paramList
+                    }
                     .toTypedArray()
             }
 
@@ -125,14 +133,13 @@ class GdParamAnnotator : Annotator {
 
         if (paramLists.size > 1) {
             val name = element.expr.text
-            val available = paramTypes.map { "$name(${it.value.joinToString(", ")})" }
 
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "")
                 .tooltip("""<html><body>
                     None of method definitions can be called with supplied arguments
                     <ul>
-                        ${available.joinToString("") { "<li><strong>$it</strong></li>" }}
+                        ${descriptions.joinToString("") { "<li><strong>$it</strong></li>" }}
                     </ul>
                     </body></html>""".trimIndent())
                 .range(element.textRange)

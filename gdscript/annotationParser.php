@@ -1,11 +1,12 @@
 <?php
 
-$filename  = "@GdScript.xml";
-$target = "./src/main/kotlin/gdscript/utils/GdAnnotationUtil.kt";
+$filename = "@GdScript.xml";
+$target   = "./src/main/kotlin/gdscript/utils/GdAnnotationUtil.kt";
 
 $baseContent = "package gdscript.utils
 
 import gdscript.model.GdAnnotation
+import gdscript.psi.GdAnnotationTl
 
 /**
  * Do not edit manually
@@ -34,25 +35,33 @@ $content = file_get_contents(sprintf("./classes/%s", $filename));
 $xml     = (array)simplexml_load_string($content);
 
 foreach ($xml['annotations'] ?? [] as $value) {
-    $value = (array)$value;
-    $att   = (array)$value['@attributes'];
+    $required = 0;
+    $value    = (array)$value;
+    $att      = (array)$value['@attributes'];
 
-    $name = substr($att['name'], 1);
+    $name       = substr($att['name'], 1);
     $qualifiers = $att['qualifiers'] ?? '' === 'vararg';
-    $vararg = $qualifiers ? 'true' : 'false';
-    $data .= "        \"$name\" to GdAnnotation($vararg, linkedMapOf(";
+    $vararg     = $qualifiers ? 'true' : 'false';
+    $line       = "";
 
     $any = false;
     foreach ($value['param'] ?? [] as $index => $param) {
         $any = true;
-        if ($index === 0) $data .= "\n";
+        if ($index === 0) $line .= "\n";
 
-        $param = (array) $param;
-        $p_att = $param['@attributes'];
-        $name = $p_att['name'];
-        $type = $p_att['type'] ?? 'Variant';
-        $data .= "            \"$name\" to \"$type\",\n";
+        $param = (array)$param;
+        $p_att = $param['@attributes'] ?? [];
+        $pName = $p_att['name'] ?? '';
+        $type  = $p_att['type'] ?? 'Variant';
+        $line  .= "            \"$pName\" to \"$type\",\n";
+
+        if (!array_key_exists('default', $p_att)) {
+            $required++;
+        }
     }
+
+    $data .= "        \"$name\" to GdAnnotation($vararg, $required, linkedMapOf(";
+    $data .= $line;
     if ($any) {
         $data .= "        ";
     }

@@ -31,14 +31,19 @@ class GdAnnotationAnnotator : Annotator {
         val usedParams = element.annotationParams?.literalExList ?: emptyList()
 
         // Check number of arguments
-        if (!definition.variadic) {
-            if (usedParams.size > definitionParams.size) {
-                holder
-                    .newAnnotation(HighlightSeverity.ERROR, "Too many arguments")
-                    .range(element.textRange)
-                    .create()
-                return
-            }
+        if (!definition.variadic && usedParams.size > definitionParams.size) {
+            holder
+                .newAnnotation(HighlightSeverity.ERROR, "Too many arguments")
+                .range(element.textRange)
+                .create()
+            return
+        }
+        if (definition.required > 0 && usedParams.size < definition.required) {
+            holder
+                .newAnnotation(HighlightSeverity.ERROR, "Not enough arguments")
+                .range(element.textRange)
+                .create()
+            return
         }
 
         var index = 0
