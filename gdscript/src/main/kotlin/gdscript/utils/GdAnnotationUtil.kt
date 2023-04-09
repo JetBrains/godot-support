@@ -1,7 +1,6 @@
 package gdscript.utils
 
 import gdscript.model.GdAnnotation
-import gdscript.psi.GdAnnotationTl
 
 /**
  * Do not edit manually
