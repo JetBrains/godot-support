@@ -22,7 +22,7 @@ class ProjectParserDefinition : ParserDefinition {
     companion object {
         val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
         val COMMENTS = TokenSet.create(ProjectTypes.COMMENT);
-        val FILE = IStubFileElementType<PsiFileStub<ProjectFile>>(ProjectLanguage);
+        val FILE = IStubFileElementType<PsiFileStub<ProjectFile>>("GdScriptProjectFile", ProjectLanguage);
     }
 
     override fun getWhitespaceTokens(): TokenSet = WHITE_SPACES;
