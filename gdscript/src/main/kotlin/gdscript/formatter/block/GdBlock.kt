@@ -12,6 +12,7 @@ import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdTypes
+import gdscript.psi.utils.PsiGdClassVarUtil
 import gdscript.utils.GdSettingsUtil.calculateSpaceIndents
 import gdscript.utils.PsiElementUtil.getCaretOffsetIfSingle
 import gdscript.utils.PsiElementUtil.nextNonWhiteCommentToken
@@ -154,8 +155,29 @@ class GdBlock : AbstractBlock {
         if (block2 == null) return null
 
         // Separation of @onready & @export variables
-        if (child1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block2.node.elementType == GdTypes.ANNOTATION_TL) {
-            val node1 = child1.node.psi as GdClassVarDeclTl
+        val split = splitByAnnotation(child1, block2)
+        if (split != null) return split
+
+        if (child1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block2.node.elementType == GdTypes.CLASS_VAR_DECL_TL && PsiGdClassVarUtil.isAnnotated(child1.node.psi as GdClassVarDeclTl)) {
+            val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java)
+            return Spacing.createSpacing(0, 0, customSettings.LINES_BETWEEN_EXPORT_GROUPS + 1, false, 0)
+        }
+
+        return this.spacing.getSpacing(this, child1, block2);
+    }
+
+    override fun getIndent(): Indent {
+        return myIndent;
+    }
+
+    override fun isLeaf(): Boolean {
+        return myNode.firstChildNode == null;
+    }
+
+    private fun splitByAnnotation(block1: GdBlock?, block2: GdBlock?): Spacing? {
+        if (block1 == null || block2 == null) return null
+        if (block1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block2.node.elementType == GdTypes.ANNOTATION_TL) {
+            val node1 = block1.node.psi as GdClassVarDeclTl
             var node2 = block2.node.psi
             val annotations = mutableListOf<String>()
             while (node2 is GdAnnotationTl) {
@@ -164,22 +186,14 @@ class GdBlock : AbstractBlock {
             }
 
             for (annotator in GdBlocks.SEPARATE_ANNOTATOR_GROUPS) {
-                if (node1.isAnnotated(annotator).xor(annotations.contains(annotator))) {
-                    val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java);
+                if (PsiGdClassVarUtil.isAnnotatedContains(node1, annotator).xor(annotations.contains(annotator))) {
+                    val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java)
                     return Spacing.createSpacing(0, 0, customSettings.LINES_BETWEEN_EXPORT_GROUPS + 1, false, 0)
                 }
             }
         }
 
-        return this.spacing.getSpacing(this, child1, block2);
-    }
-
-    override fun getIndent(): Indent {
-        return myIndent;
-    };
-
-    override fun isLeaf(): Boolean {
-        return myNode.firstChildNode == null;
+        return null
     }
 
 }

@@ -1,6 +1,5 @@
 package gdscript.formatter.block
 
-import com.intellij.formatting.Indent
 import com.intellij.psi.TokenType
 import gdscript.GdKeywords
 import gdscript.psi.GdTypes
@@ -64,8 +63,8 @@ object GdBlocks {
     )
 
     val SEPARATE_ANNOTATOR_GROUPS = arrayOf(
-        "@${GdKeywords.ANNOTATION_EXPORT}",
-        "@${GdKeywords.ANNOTATION_ONREADY}",
+        "export",
+        "onready",
     )
 
 }
