@@ -28,26 +28,30 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
 
         return component?.hidePrivate != settings.hidePrivate
                 || component?.sdkPath != settings.sdkPath
+                || component?.colorFormat != settings.colorFormat
     }
 
     override fun apply() {
-        val settings = GdSettingsState.getInstance().state;
-        settings.hidePrivate = component?.hidePrivate ?: false;
-        val oldSdk = settings.sdkPath;
-        settings.sdkPath = component?.sdkPath;
+        val settings = GdSettingsState.getInstance().state
+        settings.hidePrivate = component?.hidePrivate ?: false
+        settings.colorFormat = component?.colorFormat ?: GdSettings.COLOR_FORMAT_DEFAULT
 
-        if (oldSdk == settings.sdkPath) return;
-        GdLibraryManager.setUpLibrary(project, settings.sdkPath);
+        val oldSdk = settings.sdkPath
+        settings.sdkPath = component?.sdkPath
+
+        if (oldSdk == settings.sdkPath) return
+        GdLibraryManager.setUpLibrary(project, settings.sdkPath)
     }
 
     override fun reset() {
-        val settings = GdSettingsState.getInstance().state;
-        component?.hidePrivate = settings.hidePrivate;
-        component?.sdkPath = settings.sdkPath;
+        val settings = GdSettingsState.getInstance().state
+        component?.hidePrivate = settings.hidePrivate
+        component?.sdkPath = settings.sdkPath
+        component?.colorFormat = settings.colorFormat
     }
 
     override fun disposeUIResources() {
-        component = null;
+        component = null
     }
 
 }

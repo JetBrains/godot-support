@@ -69,6 +69,8 @@ class GdParamAnnotator : Annotator {
             else -> null
         }?.mapNotNull { it } ?: return
 
+        if (descriptions.size > paramLists.size) minSize = 0 // filtered by mapNotNull of empty constructor
+
         val paramTypes: HashMap<Int, MutableList<String>> = hashMapOf()
         paramLists.forEachIndexed { index, params ->
             minSize = minOf(minSize, params.size)
@@ -105,7 +107,7 @@ class GdParamAnnotator : Annotator {
                 .withFix(GdRemoveElementsAction(*toRemoveList.toTypedArray()))
                 .create()
             return
-        } else if (minSize < 99 && usedParamSize < minSize) {
+        } else if (minSize in 1..98 && usedParamSize < minSize) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Not enough arguments")
                 .range(element.textRange)
