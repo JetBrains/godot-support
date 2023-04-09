@@ -114,8 +114,8 @@ class GdBlock : AbstractBlock {
             }
         }
 
+        val caretOffset = node.psi.getCaretOffsetIfSingle()
         if (previousBlock is GdBlock && preceding != null && previousBlock.node.lastChildNode?.elementType == GdTypes.STMT_OR_SUITE) {
-            val caretOffset = preceding.getCaretOffsetIfSingle()
             if (caretOffset != null) {
                 val emptyLines = PsiTreeUtil.getDeepestLast(preceding).precedingNewLines(caretOffset)
                 if (emptyLines > 2) {
@@ -132,6 +132,13 @@ class GdBlock : AbstractBlock {
 
         // Inside indented blocks directly
         if (GdBlocks.INDENT_CHILDREN_ATTRIBUTE.contains(node.elementType)) {
+            if (caretOffset != null) {
+                val emptyLines = PsiTreeUtil.getDeepestLast(node.psi).precedingNewLines(caretOffset)
+                if (emptyLines > 2) {
+                    return ChildAttributes(settings.calculateSpaceIndents(node.psi, 2 - emptyLines), null)
+                }
+            }
+
             return ChildAttributes(Indent.getNormalIndent(), null)
         }
 
