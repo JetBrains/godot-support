@@ -2,10 +2,6 @@
 
 Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of GdScript2
 
-!!! IMPORTANT !!!  
-This plugin is still under development and serious bugs are bubbling up. I very much appreciate all tests and do please report any bugs you find, but keep in mind it's not production ready yet.  
-!!! IMPORTANT !!!  
-
 # Installation
 
 ![](./video/installation.mp4)
@@ -50,3 +46,7 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
 - Change class_name to match filename
 - Remove getter & setter
 - Too many arguments / change function type
+
+## Trait like system
+Via alt+insert sync trait code snippets
+TODO create preview and explanation
