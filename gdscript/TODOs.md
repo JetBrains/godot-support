@@ -1,7 +1,6 @@
 match template
 
-Resources
-NodePath
+
 Set/Get
 
 const func ... qualifiers ?? Je to i v xml
