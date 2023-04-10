@@ -2,6 +2,7 @@ package gdscript.formatter.block
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.impl.source.tree.FileElement
@@ -48,11 +49,13 @@ class GdBlock : AbstractBlock {
         var suited = false
         var indented = false
         var lastBlock: GdBlock? = null
+        val rootPosition = this.node is FileElement
+
         while (!children.isEmpty()) {
             val child = children.removeFirstOrNull()!!
             val type = child.elementType
-            if (suited) {
-                alignments.reset(type)
+            if (suited || rootPosition) { // Roots consume new_line instead of passing it as white_space
+                alignments.reset(type, if (rootPosition) 1 else 2)
             }
 
             // Due to elif & else being siblings and not children

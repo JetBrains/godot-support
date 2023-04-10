@@ -32,15 +32,15 @@ class Alignments {
     /**
      * Check whether to reset alignments (required at least two white_spaces or any non-aligned element)
      */
-    fun reset(type: IElementType) {
+    fun reset(type: IElementType, limit: Int = 2) {
         if (type == TokenType.WHITE_SPACE) {
-            if (++spaces >= 2) {
-                initialize();
+            if (++spaces >= limit) {
+                initialize()
             }
         } else if (!GdAlignments.ALIGN_SCOPE.contains(type)) {
-            initialize();
+            initialize()
         } else {
-            spaces = 0;
+            spaces = 0
         }
     }
 
@@ -53,23 +53,23 @@ class Alignments {
     }
 
     fun getAlignment(type: IElementType): Alignment? {
-        var returnAlign: Alignment? = null;
+        var returnAlign: Alignment? = null
         if (standard != null) {
             if (ASSIGN.contains(type)) {
                 if (settings.ALIGN_ASSIGNMENTS) {
-                    returnAlign = standard;
+                    returnAlign = standard
                 }
-                standard = null;
+                standard = null
             }
 
         } else {
             if (settings.ALIGN_AFTER_ASSIGNMENTS) {
-                returnAlign = after;
+                returnAlign = after
             }
-            after = null;
+            after = null
         }
 
-        return returnAlign;
+        return returnAlign
     }
 
 }

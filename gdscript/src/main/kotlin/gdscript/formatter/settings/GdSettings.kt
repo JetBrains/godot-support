@@ -24,6 +24,7 @@ object GdSettings {
                 Pair("LINES_AFTER_VARIABLE_GROUP", "Below variables, constants, etc."),
                 Pair("LINES_BEFORE_FUNC", "Before func declaration"),
                 Pair("LINES_BETWEEN_EXPORT_GROUPS", "Before @onready, @export"),
+                Pair("LINES_WITHIN_SUITE", "Empty lines within suite"),
             )
         ),
     );

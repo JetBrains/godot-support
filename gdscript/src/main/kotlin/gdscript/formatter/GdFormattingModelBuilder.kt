@@ -7,6 +7,7 @@ import gdscript.GdFileType
 import gdscript.GdLanguage
 import gdscript.formatter.block.Alignments
 import gdscript.formatter.block.GdBlock
+import gdscript.formatter.settings.GdSpacingUtil.emptyLines
 import gdscript.formatter.settings.GdSpacingUtil.forcedLines
 import gdscript.psi.GdTypes
 
@@ -15,6 +16,9 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
     override fun createModel(formattingContext: FormattingContext): FormattingModel {
         val settings = formattingContext.codeStyleSettings
         val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java)
+        val alignments = Alignments(customSettings)
+        alignments.initialize()
+
         val initialBlock = GdBlock(
             formattingContext.node,
             Wrap.createWrap(WrapType.NONE, false),
@@ -22,7 +26,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             settings,
             createSpaceBuilder(settings),
             Indent.getNoneIndent(),
-            Alignments(customSettings),
+            alignments,
         )
 
         return FormattingModelProvider
@@ -56,6 +60,8 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.ANNOTATION_TL)
             .forcedLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
 
+            /* Stmt */
+            .before(STATEMENTS).emptyLines(custom.LINES_WITHIN_SUITE)
             .before(ROOT_BLOCKS).forcedLines(custom.LINES_BEFORE_FUNC)
 
         // Separate groups
@@ -85,6 +91,20 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             GdTypes.SIGNAL_DECL_TL,
             GdTypes.ANNOTATION_TL,
             GdTypes.ENUM_DECL_TL,
+        )
+        val STATEMENTS = TokenSet.create(
+            GdTypes.ASSIGN_ST,
+            GdTypes.VAR_DECL_ST,
+            GdTypes.CONST_DECL_ST,
+            GdTypes.IF_ST,
+            GdTypes.ELIF_ST,
+            GdTypes.ELSE_ST,
+            GdTypes.WHILE_ST,
+            GdTypes.FOR_ST,
+            GdTypes.MATCH_ST,
+            GdTypes.FLOW_ST,
+            GdTypes.AWAIT_ST,
+            GdTypes.EXPR_ST,
         )
         val ROOT_BLOCKS = TokenSet.create(GdTypes.METHOD_DECL_TL, GdTypes.CLASS_DECL_TL)
         var INDENT_SIZE = 4;

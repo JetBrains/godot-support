@@ -40,7 +40,7 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
 - Param hints (Ctrl+P)  
 - Run configuration - start game from Editor
 - Formatter
-- IS conditioned type for validations (ignore checks following get_node)
+- is/has conditioned type for validations (ignore checks following get_node)
 
 ## Actions
 ### Quick fixes
