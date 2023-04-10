@@ -10,8 +10,8 @@
 ![](../screens/features/autocompletion_functions.png)
 ##### Resources (`$Path/Node` && `$"%Name"`)
 ![](../screens/features/autocompletion_resources.png)
-
-[//]: # (    - Inputs, Groups, Meta fields, user resources)
+##### Inputs, Groups, Meta fields, user resources
+![](../screens/features/string_completion.png)
 
 ### Refactoring
 ![](../screens/features/refactor.png)
