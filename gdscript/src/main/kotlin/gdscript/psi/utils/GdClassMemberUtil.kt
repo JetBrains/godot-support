@@ -23,8 +23,9 @@ object GdClassMemberUtil {
         element: GdNamedElement,
         onlyLocalScope: Boolean = false,
         ignoreParents: Boolean = false,
+        ignoreGlobalScope: Boolean = false,
     ): Any? {
-        return listDeclarations(element, element, onlyLocalScope, ignoreParents).firstOrNull();
+        return listDeclarations(element, element, onlyLocalScope, ignoreParents, ignoreGlobalScope).firstOrNull();
     }
 
     /**
@@ -36,8 +37,9 @@ object GdClassMemberUtil {
         searchFor: GdNamedElement,
         onlyLocalScope: Boolean = false,
         ignoreParents: Boolean = false,
+        ignoreGlobalScope: Boolean = false,
     ): Array<Any> {
-        return listDeclarations(element, searchFor.name, onlyLocalScope, ignoreParents);
+        return listDeclarations(element, searchFor.name, onlyLocalScope, ignoreParents, ignoreGlobalScope);
     }
 
     /**
@@ -49,6 +51,7 @@ object GdClassMemberUtil {
         searchFor: String? = null,
         onlyLocalScope: Boolean = false,
         ignoreParents: Boolean = false,
+        ignoreGlobalScope: Boolean = false,
     ): Array<Any> {
         var static = false
 
@@ -70,7 +73,7 @@ object GdClassMemberUtil {
         var parent: PsiElement?
 
         // If it's stand-alone ref_id, adds also _Global & ClassNames - Classes are added as last due to matching name of some GlobalVars with class_name
-        if (calledOn == null) {
+        if (calledOn == null && !ignoreGlobalScope) {
             arrayOf(GdKeywords.GLOBAL_SCOPE, GdKeywords.GLOBAL_GD_SCRIPT).forEach {
                 val globalParent = GdClassUtil.getClassIdElement(it, element)
                 if (globalParent != null) {

@@ -26,18 +26,18 @@ class GdReturnTypeAnnotator : Annotator {
     }
 
     private fun checkParentType(element: GdReturnHintVal, holder: AnnotationHolder) {
-        if (!isMethod(element)) return;
-        val returnType = element.text;
-        val declaration = PsiTreeUtil.getStubOrPsiParentOfType(element, GdMethodDeclTl::class.java) ?: return;
-        val id = declaration.methodIdNmi ?: return;
-        val parent = GdClassMemberUtil.findDeclaration(id) ?: return;
+        if (!isMethod(element)) return
+        val returnType = element.text
+        val declaration = PsiTreeUtil.getStubOrPsiParentOfType(element, GdMethodDeclTl::class.java) ?: return
+        val id = declaration.methodIdNmi ?: return
+        val parent = GdClassMemberUtil.findDeclaration(id) ?: return
 
         val parentReturnType = when (parent) {
-            is GdMethodDeclTl -> parent.returnType;
-            else -> return;
+            is GdMethodDeclTl -> parent.returnType
+            else -> return
         }
 
-        if (returnType == parentReturnType) return;
+        if (GdExprUtil.typeAccepts(returnType, parentReturnType, element)) return
         holder
             .newAnnotation(
                 HighlightSeverity.ERROR,

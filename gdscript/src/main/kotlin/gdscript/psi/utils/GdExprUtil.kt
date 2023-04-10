@@ -156,6 +156,10 @@ object GdExprUtil {
         return false;
     }
 
+    fun typeAccepts(from: String, into: String, element: PsiElement): Boolean {
+        return typeAccepts(from, into, element.project)
+    }
+
     fun typeAccepts(from: String, into: String, project: Project): Boolean {
         if (from == into) return true
         if (from.isBlank() || into.isBlank()

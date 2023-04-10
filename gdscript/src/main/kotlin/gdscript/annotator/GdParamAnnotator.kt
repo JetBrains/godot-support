@@ -124,7 +124,7 @@ class GdParamAnnotator : Annotator {
             .filter { it.size == usedParamSize }
             .map { definedParams ->
                 definedParams.mapIndexed { pIndex, definedParam ->
-                    GdExprUtil.typeAccepts(actualTypes[pIndex], definedParam, element.project)
+                    GdExprUtil.typeAccepts(actualTypes[pIndex], definedParam, element)
                 }
             }
 

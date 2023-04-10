@@ -45,7 +45,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                     if (it.parameters.size != currentParams.size) return@find false
                     val declParams = it.parameters.values.toTypedArray()
                     currentParams.forEachIndexed { i, param ->
-                        if (!GdExprUtil.typeAccepts(param.returnType, declParams[i], element.project)) return@find false
+                        if (!GdExprUtil.typeAccepts(param.returnType, declParams[i], element)) return@find false
                     }
                     true
                 } ?: return null
@@ -104,7 +104,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                         for (i in 0 until hints.size) {
                             val t1 = usedParams[i].expr.returnType
                             val t2 = hints[i].returnType
-                            ok = ok && GdExprUtil.typeAccepts(t1, t2, element.project)
+                            ok = ok && GdExprUtil.typeAccepts(t1, t2, element)
                         }
 
                         if (ok) {

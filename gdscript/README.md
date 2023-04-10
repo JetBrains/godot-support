@@ -33,6 +33,7 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
   - Resource usages  
   - Signals  
   - Super method
+  - Color picker
 - Inlay hints  
 - Param hints (Ctrl+P)  
 - Run configuration - start game from Editor

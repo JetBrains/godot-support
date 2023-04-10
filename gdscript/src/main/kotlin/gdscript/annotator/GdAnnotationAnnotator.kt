@@ -53,7 +53,7 @@ class GdAnnotationAnnotator : Annotator {
             if (usedParams.size <= index) return@forEach
             val actualType = usedParams[index++]
 
-            if (!GdExprUtil.typeAccepts(actualType.returnType, expectedType, element.project)) {
+            if (!GdExprUtil.typeAccepts(actualType.returnType, expectedType, element)) {
                 holder
                     .newAnnotation(HighlightSeverity.ERROR, "")
                     .tooltip("<html><body>Type mismatch for $name<table><tr><td>Required:</td><td>$expectedType</td></tr><tr><td>Found:</td><td>$actualType</td></tr></table></html></body>")

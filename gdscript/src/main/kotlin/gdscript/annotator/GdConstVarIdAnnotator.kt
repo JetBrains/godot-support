@@ -31,7 +31,7 @@ class GdConstVarIdAnnotator : Annotator {
             it is GdClassDeclTl || it is GdMethodDeclTl || it is GdFile
         } is GdMethodDeclTl
 
-        val declaration = GdClassMemberUtil.findDeclaration(element, true, inMethod)
+        val declaration = GdClassMemberUtil.findDeclaration(element, true, inMethod, true)
         if (declaration != null && declaration !is GdClassNaming) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR,
