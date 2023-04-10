@@ -16,7 +16,8 @@ Editor -> General -> Smart Keys -> Unindent on Backspace
 
 ## List of features
 
-Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
+Video preview (version 0.7): https://youtu.be/hjtzJW25GMI  
+[Screenshots](./documentation/features.md)  
 
 - Auto-completion
   - Inheritance & ClassName
@@ -34,6 +35,7 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
   - Signals  
   - Super method
   - Color picker
+  - Run current scene
 - Inlay hints  
 - Param hints (Ctrl+P)  
 - Run configuration - start game from Editor
