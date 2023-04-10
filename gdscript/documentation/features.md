@@ -12,11 +12,18 @@
 ![](../screens/features/autocompletion_resources.png)
 
 [//]: # (    - Inputs, Groups, Meta fields, user resources)
-[//]: # (- Refactoring)
-[//]: # (- Go to declaration / usages)
-[//]: # (- File templates taken from Godot's source)
-[//]: # (- Hides _prefix as private fields &#40;optional based on Language settings&#41;)
-[//]: # (- Built-in documentation &#40;Ctrl+Q&#41;)
+
+### Refactoring
+![](../screens/features/refactor.png)
+### Go to declaration / usages
+![](../screens/features/usages.png)
+### File templates taken from Godot's source
+![](../screens/features/file_template.png)
+### Hides _prefix as private fields (optional based on Language settings)
+![](../screens/features/_hide.png)
+### Built-in documentation (Ctrl+Q)
+![](../screens/features/documentation.png)
+
 ### Line markers
 [//]: # (    - Resource usages)
 [//]: # (    - Signals)
@@ -41,7 +48,6 @@
 
 # Actions
 ### Quick fixes
-
 ##### Add/change return Type
 ![](../screens/features/specify_variable.png)
 ##### Generate get_set methods
