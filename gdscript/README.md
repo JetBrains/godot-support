@@ -44,10 +44,9 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
 
 ## Actions
 ### Quick fixes
-#### Alt+Enter
-- add/change return Type
-- generate get_set methods
-- remove annotation
-- change class_name to match filename
-- remove getter & setter
-- too many arguments / change function type
+- Add/change return Type
+- Generate get_set methods
+- Remove annotation
+- Change class_name to match filename
+- Remove getter & setter
+- Too many arguments / change function type

@@ -39,20 +39,19 @@
 ### is/has conditioned type for validations (ignore checks following get_node)
 ![](../screens/features/is_has.png)
 
-[//]: # (## Actions)
+# Actions
+### Quick fixes
 
-[//]: # (### Quick fixes)
-
-[//]: # (#### Alt+Enter)
-
-[//]: # (- add/change return Type)
-
-[//]: # (- generate get_set methods)
-
-[//]: # (- remove annotation)
-
-[//]: # (- change class_name to match filename)
-
-[//]: # (- remove getter & setter)
-
-[//]: # (- too many arguments / change function type)
+##### Add/change return Type
+![](../screens/features/specify_variable.png)
+##### Generate get_set methods
+![](../screens/features/create_set_method.png)
+##### Remove annotation
+![](../screens/features/remove_annotation.png)
+##### Change class_name to match filename
+![](../screens/features/match_classname.png)
+##### Remove getter & setter
+![](../screens/features/remove_get_set.png)
+##### Too many arguments / change function type
+![](../screens/features/too_many_arguments.png)  
+![](../screens/features/change_param.png)
