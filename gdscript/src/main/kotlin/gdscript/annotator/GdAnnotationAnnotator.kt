@@ -4,7 +4,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
-import gdscript.action.quickFix.GdRemoveAnnotationAction
+import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.utils.GdExprUtil
 import gdscript.utils.GdAnnotationUtil
@@ -22,7 +22,6 @@ class GdAnnotationAnnotator : Annotator {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Unknown annotation")
                 .range(element.textRange)
-                .withFix(GdRemoveAnnotationAction(element))
                 .create()
             return
         }

@@ -111,6 +111,11 @@
       <bundleName>messages.gdscript</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>
+    <intentionAction>
+      <className>gdscript.action.GdRemoveElementAction</className>
+      <bundleName>messages.gdscript</bundleName>
+      <categoryKey>intention.category</categoryKey>
+    </intentionAction>
 
     <!-- Formatters -->
     <lang.braceMatcher language="GdScript" implementationClass="gdscript.formatter.GdBraceMatcher" />

@@ -1,5 +1,6 @@
 package gdscript.action.quickFix
 
+import com.intellij.codeInsight.actions.ReformatCodeProcessor
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -15,19 +16,20 @@ class GdRemoveElementsAction : BaseIntentionAction {
     }
 
     override fun getText(): String {
-        return "Remove";
+        return "Remove element"
     }
 
     override fun getFamilyName(): String {
-        return "Remove";
+        return "Remove element"
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        return true;
+        return true
     }
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         this.elements.forEach { it.delete() }
+        if (file != null) ReformatCodeProcessor(file, false).run()
     }
 
 }
