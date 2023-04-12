@@ -4,10 +4,17 @@ Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of G
 
 # Installation
 
-![](./video/installation.mp4)
+Please follow installation instructions or follow a [video](./documentation/installtion.md) as SDK is required for plugin to work.
+
+1. Download the plugin from Marketplace
+   - There are currently 2 plugins, use the one from "IceExplosive"
+2. Restart the IDE, due to unknown reasons, some parts like Highlighting is not working right after installation
+3. Download an SDK from this repository (GD_SDK.7z) and extract it anywhere in your computer
+4. Within Settings -> Languages & Frameworks -> GdScript add extracted folder into GdScript SDK field
+  - SDK is rebuild daily from current Godot master so after new GOdot release, download a new SDK as well
 
 ## Recommended settings:
-In order to dedent on backspace instead of deletin a line, you can change editor's settings under:  
+In order to dedent on backspace instead of deleting a line, you can change editor's settings under:  
 Editor -> General -> Smart Keys -> Unindent on Backspace
 
 ## List of features
