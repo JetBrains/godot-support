@@ -54,11 +54,15 @@ object PsiGdExprUtil {
                     }
                 } else {
                     val method = expr.expr.text
-                    if (method == "get_node" || method == "get_node_or_null") {
+                    if (method == "get_node" || method == "get_node_or_null" || method == "get_first_node_in_group") {
                         //TODO zkusit vyparsovat Node z .tscn
                         return "Node"
+                    } else if (method == "get_nodes_in_group") {
+                        return "Array[Variant]"
                     } else if (method == "instantiate") {
                         return GdKeywords.VARIANT
+                    } else if (method == "get_viewport") {
+                        return "SubViewport"
                     } else if (method == "get_child") {
                         return "Node"
                     } else if (method == "get_parent") {
@@ -69,7 +73,7 @@ object PsiGdExprUtil {
                 }
             }
             // TODO [] array accesor tu je také -> např. Basis je také přístupný -> potřeba překopat Array access
-            is GdArrEx -> fromTyped(expr.exprList.firstOrNull()?.returnType ?: "");
+            is GdArrEx -> fromTyped(expr.exprList.firstOrNull()?.returnType ?: "Variant")
             is GdPrimaryEx -> {
                 when (expr.firstChild) {
                     is GdNodePath -> {
@@ -80,22 +84,22 @@ object PsiGdExprUtil {
                     }
                     is GdDictDecl -> return "Dictionary";
                     is GdArrayDecl -> {
-                        var type = "";
-                        expr.arrayDecl?.exprList?.forEach {
-                            val itType = it.returnType;
-                            type = if (type == itType || type == "") {
-                                itType
-                            } else {
-                                "Array";
-                            }
-                        }
-                        type = if (type.isNotEmpty() && type != "Array") {
-                            "Array[$type]";
-                        } else {
-                            "Array";
-                        }
+//                        var type = ""
+//                        expr.arrayDecl?.exprList?.forEach {
+//                            val itType = it.returnType
+//                            type = if (type == itType || type == "") {
+//                                itType
+//                            } else {
+//                                "Array"
+//                            }
+//                        }
+//                        type = if (type.isNotEmpty() && type != "Array") {
+//                            "Array[$type]"
+//                        } else {
+//                            "Array[Variant]"
+//                        }
 
-                        return type;
+                        return "Array[Variant]"
                     }
                     else -> expr.expr?.returnType ?: "";
                 }
@@ -208,7 +212,7 @@ object PsiGdExprUtil {
             return typed.substring(5).trim('[', ']');
         }
 
-        return typed;
+        return typed
     }
 
     private fun fromTyped(typed: GdTypedVal?): String {

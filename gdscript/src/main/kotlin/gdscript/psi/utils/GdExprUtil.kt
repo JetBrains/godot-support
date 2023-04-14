@@ -162,9 +162,7 @@ object GdExprUtil {
 
     fun typeAccepts(from: String, into: String, project: Project): Boolean {
         if (from == into) return true
-        if (from.isBlank() || into.isBlank()
-            || from == GdKeywords.VARIANT || into == GdKeywords.VARIANT
-        ) return true
+        if (from.isBlank() || into.isBlank()) return true
 
         // left = right
         var left = into
@@ -181,6 +179,10 @@ object GdExprUtil {
             left = left.parseFromSquare()
             right = right.parseFromSquare()
         }
+
+        if (right == GdKeywords.VARIANT || left == GdKeywords.VARIANT
+            || right == "Node" || left == "RID"
+        ) return true
 
         val classId = GdClassUtil.getClassIdElement(left, project) ?: return true
         val classElement = GdClassUtil.getOwningClassElement(classId)

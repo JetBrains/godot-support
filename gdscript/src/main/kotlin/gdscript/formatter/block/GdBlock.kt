@@ -191,7 +191,7 @@ class GdBlock : AbstractBlock {
             var node2 = block2.node.psi
             val annotations = mutableListOf<String>()
             while (node2 is GdAnnotationTl) {
-                annotations.add(node2.annotationType.text)
+                annotations.add(node2.annotationType.text.trimStart('@'))
                 node2 = node2.nextNonWhiteCommentToken()
             }
 

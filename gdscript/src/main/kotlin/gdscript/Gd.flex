@@ -89,7 +89,7 @@ COMMENT = "#"[^\r\n]*
 INDENTED_COMMENT = {INDENT}"#"
 ANNOTATOR = "@"[a-zA-Z_]*
 NODE_PATH = "^"\"([^\\\"\r\n]|\\.)*\"
-NODE_PATH_LEX = ("$"|"%")[\"\%a-zA-Z0-9:_/\.]*
+NODE_PATH_LEX = ( ("$"|"%")[\%a-zA-Z0-9_/]* ) | ( ("$"|"%")\"[\%a-zA-Z0-9:_/\.]*\" )
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -207,9 +207,9 @@ ANY = .+
     {COMMENT}       {
           lineEnded = true;
           boolean alreadyDone = newLineProcessed;
-          IElementType ret = dedentRoot(GdTypes.COMMENT);
+          //IElementType ret = dedentRoot(GdTypes.COMMENT);
           newLineProcessed = alreadyDone || yycolumn == 0;
-          return ret;
+          return GdTypes.COMMENT;
       }
 
     {INDENTED_COMMENT} {
@@ -220,7 +220,7 @@ ANY = .+
 
         return TokenType.WHITE_SPACE;
     }
-    {EMPTY_INDENT} { return TokenType.WHITE_SPACE; }
+    {EMPTY_INDENT} { yypushback(1); return TokenType.WHITE_SPACE; }
     {NEW_LINE}     {
         if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;

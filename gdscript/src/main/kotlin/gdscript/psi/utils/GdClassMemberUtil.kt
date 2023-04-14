@@ -103,6 +103,8 @@ object GdClassMemberUtil {
             }
         } else {
             // For Enum add also all it's values
+            if (calledOn.startsWith("Array")) calledOn = "Array"
+
             // TODO je to ještě potřeba?
             if (calledOn.endsWith("Dictionary") && calledOnPsi != null /*&& calledOnPsi.firstChild is GdRefIdNm*/) {
                 val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdNm::class.java).lastOrNull();

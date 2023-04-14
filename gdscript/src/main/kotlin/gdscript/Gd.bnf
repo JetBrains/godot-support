@@ -227,8 +227,8 @@ expr ::=
     | bitNot_ex
     | is_ex
     | attribute_ex
-    | call_ex
     | arr_ex
+    | call_ex
     | primary_ex
     | funcDecl_ex
     | literal_ex

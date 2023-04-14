@@ -11,6 +11,7 @@ import gdscript.psi.GdBitAndEx
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdFactorEx
 import gdscript.psi.GdVarDeclSt
+import gdscript.psi.utils.GdExprUtil
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
 import gdscript.utils.StringUtil.isDynamicType
@@ -44,7 +45,7 @@ class GdExprTypeAnnotator : Annotator {
     private fun assignExpr(element: GdAssignSt, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
-        val operator = element.assignSign.text.trimEnd('=')
+        val operator = element.assignSign.text
         validate(left, right, operator, "Cannot assign", element, holder)
     }
 
@@ -73,6 +74,7 @@ class GdExprTypeAnnotator : Annotator {
         if (left == right || right == GdKeywords.NULL) return
         if (left.isDynamicType() || right.isDynamicType()) return
         if (GdOperand.isAllowed(left, right, operator)) return
+        if (operator == "=" && GdExprUtil.typeAccepts(right, left, element)) return
 
         holder
             .newAnnotation(HighlightSeverity.ERROR, "$message $left $operator $right")
