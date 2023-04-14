@@ -935,8 +935,41 @@ class GdLexer implements FlexLexer {
           case 12: 
             { lineEnded = true;
           boolean alreadyDone = newLineProcessed;
-          //IElementType ret = dedentRoot(GdTypes.COMMENT);
           newLineProcessed = alreadyDone || yycolumn == 0;
+
+          if (zzEndRead > zzStartRead) {
+            String following = zzBuffer.subSequence(zzStartRead, zzEndRead).toString();
+            int nextLineIndex = following.indexOf("\n");
+            int maxLen = following.length();
+            while (maxLen > nextLineIndex + 1 && following.charAt(nextLineIndex + 1) == '\n') {
+              nextLineIndex++;
+            }
+
+            if (nextLineIndex > 0) {
+              String nextLine = following.substring(nextLineIndex + 1);
+              if (!nextLine.isEmpty()) {
+                int indents = 0;
+                char indentChar = ' ';
+                if (nextLine.charAt(0) == '\t') {
+                  indentChar = '\t';
+                }
+                while (true) {
+                  if (nextLine.charAt(indents) == indentChar) {
+                    indents++;
+                  } else {
+                    break;
+                  }
+                }
+
+                if (indents < indent) {
+                  indent -= indentSizes.pop();
+                  yypushback(yylength());
+                  return GdTypes.DEDENT;
+                }
+              }
+            }
+          }
+
           return GdTypes.COMMENT;
             } 
             // fall through

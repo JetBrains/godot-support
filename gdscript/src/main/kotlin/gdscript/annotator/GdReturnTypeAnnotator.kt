@@ -64,7 +64,7 @@ class GdReturnTypeAnnotator : Annotator {
 
         val stmtType = element.expr?.returnType ?: GdKeywords.VOID;
         if (returnType.isNotEmpty()) {
-            if (GdExprUtil.typesMatch(stmtType, returnType)) return;
+            if (GdExprUtil.typeAccepts(stmtType, returnType, element)) return;
             holder
                 .newAnnotation(
                     HighlightSeverity.ERROR,
@@ -78,7 +78,7 @@ class GdReturnTypeAnnotator : Annotator {
             PsiTreeUtil.findChildrenOfType(method, GdFlowSt::class.java).forEach {
                 if (it.type == GdKeywords.FLOW_RETURN) {
                     val type = it.expr?.returnType ?: GdKeywords.VOID;
-                    matched = matched && GdExprUtil.typesMatch(type, stmtType);
+                    matched = matched && GdExprUtil.typeAccepts(type, stmtType, element);
                 }
             }
             if (matched) {

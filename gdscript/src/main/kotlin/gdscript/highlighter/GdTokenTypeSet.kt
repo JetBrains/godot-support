@@ -19,7 +19,6 @@ interface GdTokenTypeSet {
             GdTypes.TRUE,
             GdTypes.FALSE,
             GdTypes.VOID,
-            GdTypes.WHILE,
             GdTypes.BREAKPOINT,
             GdTypes.STATIC,
             GdTypes.VARARG,
@@ -53,6 +52,7 @@ interface GdTokenTypeSet {
             GdTypes.ELSE,
             GdTypes.ELIF,
             GdTypes.CONTINUE,
+            GdTypes.WHILE,
             GdTypes.BREAK,
             GdTypes.RETURN,
             GdTypes.PASS

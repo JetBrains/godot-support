@@ -145,17 +145,6 @@ object GdExprUtil {
         }
     }
 
-    @Deprecated("přesun na typeAccepts")
-    fun typesMatch(a: String, b: String): Boolean {
-        if (a == b) return true;
-        // Array checks
-        if (a.startsWith("Array") && b.startsWith("Array")) {
-            return a.length <= 5 || b.length <= 5;
-        }
-
-        return false;
-    }
-
     fun typeAccepts(from: String, into: String, element: PsiElement): Boolean {
         return typeAccepts(from, into, element.project)
     }
@@ -174,7 +163,8 @@ object GdExprUtil {
 
         // Only 1 is an array
         if (arrays == 1) {
-            return false
+            return right == GdKeywords.VARIANT || left == GdKeywords.VARIANT
+                || right == "Node" || left == "RID"
         } else if (arrays > 1) {
             left = left.parseFromSquare()
             right = right.parseFromSquare()
