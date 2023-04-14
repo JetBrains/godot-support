@@ -393,16 +393,24 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // AWAIT expr_st
+  // AWAIT expr endStmt?
   public static boolean await_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "await_st")) return false;
     if (!nextTokenIsFast(b, AWAIT)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenFast(b, AWAIT);
-    r = r && expr_st(b, l + 1);
+    r = r && expr(b, l + 1, -1);
+    r = r && await_st_2(b, l + 1);
     exit_section_(b, m, AWAIT_ST, r);
     return r;
+  }
+
+  // endStmt?
+  private static boolean await_st_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "await_st_2")) return false;
+    endStmt(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */

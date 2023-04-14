@@ -29,7 +29,7 @@ class GdBlock : AbstractBlock {
 
     constructor(
         node: ASTNode,
-        wrap: Wrap,
+        wrap: Wrap?,
         alignment: Alignment?,
         settings: CodeStyleSettings,
         spacing: SpacingBuilder,
@@ -81,7 +81,7 @@ class GdBlock : AbstractBlock {
 
                 val currentBlock = GdBlock(
                     child,
-                    Wrap.createWrap(WrapType.NONE, false),
+                    null, //Wrap.createWrap(WrapType.NONE, false),
                     alignments.getAlignment(type),
                     settings,
                     spacing,

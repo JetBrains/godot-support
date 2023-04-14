@@ -45,17 +45,20 @@ class GdAnnotationAnnotator : Annotator {
             return
         }
 
-        var index = 0
-        definitionParams.forEach {
-            val name = it.key
-            val expectedType = it.value
-            if (usedParams.size <= index) return@forEach
-            val actualType = usedParams[index++]
+        var expectedType = "Variant"
+        var name = ""
+        val definedKeys = definitionParams.keys.toTypedArray()
+        usedParams.forEachIndexed { index, actualType ->
+            if (index < definedKeys.size) {
+                expectedType = definitionParams[definedKeys[index]] ?: ""
+                name = definedKeys[index]
+            }
 
-            if (!GdExprUtil.typeAccepts(actualType.returnType, expectedType, element)) {
+            val actualReturnType = actualType.returnType
+            if (!GdExprUtil.typeAccepts(actualReturnType, expectedType, element)) {
                 holder
                     .newAnnotation(HighlightSeverity.ERROR, "")
-                    .tooltip("<html><body>Type mismatch for $name<table><tr><td>Required:</td><td>$expectedType</td></tr><tr><td>Found:</td><td>$actualType</td></tr></table></html></body>")
+                    .tooltip("<html><body>Type mismatch for $name<table><tr><td>Required:</td><td>$expectedType</td></tr><tr><td>Found:</td><td>$actualReturnType</td></tr></table></html></body>")
                     .range(actualType.textRange)
                     .create()
             }

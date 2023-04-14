@@ -130,7 +130,9 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
             val keys = definition.keys.toTypedArray()
 
             return element.annotationParams?.literalExList?.mapIndexedNotNull { index, it ->
-                InlayInfo(keys[index], it.startOffset, keys[index] == it.text)
+                if (index < keys.size) {
+                    InlayInfo(keys[index], it.startOffset, keys[index] == it.text)
+                } else null
             } ?: emptyList()
         }
 

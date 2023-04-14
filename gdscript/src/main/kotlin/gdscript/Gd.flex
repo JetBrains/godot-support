@@ -207,6 +207,7 @@ ANY = .+
     {COMMENT}       {
           lineEnded = true;
           boolean alreadyDone = newLineProcessed;
+          // TODO jak poznat, že chci dedent nebo ne?
           //IElementType ret = dedentRoot(GdTypes.COMMENT);
           newLineProcessed = alreadyDone || yycolumn == 0;
           return GdTypes.COMMENT;

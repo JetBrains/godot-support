@@ -195,7 +195,7 @@ arrayPattern ::= LSBR ( pattern (COMMA pattern)* (COMMA DOTDOT)? )? RSBR
 dictPattern ::= LCBR keyValuePattern? (COMMA keyValuePattern)* (COMMA DOTDOT)? RCBR
 keyValuePattern ::= STRING [ COLON pattern ]
 
-await_st ::= AWAIT expr_st //{pin=1 recoverWhile=stmt_r}
+await_st ::= AWAIT expr endStmt? //{pin=1 recoverWhile=stmt_r}
 
 assign_st ::= expr assignSign expr endStmt //{ pin=2 }
 assignSign ::= EQ | ASSIGN
