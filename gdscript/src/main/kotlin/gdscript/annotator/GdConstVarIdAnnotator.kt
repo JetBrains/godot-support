@@ -71,7 +71,7 @@ class GdConstVarIdAnnotator : Annotator {
 
         val realType = expr.returnType
         if (realType.isEmpty()) return
-        if (realType == GdKeywords.VARIANT) return
+        if (realType == GdKeywords.VARIANT || realType == GdKeywords.NULL) return
 
         holder
             .newAnnotation(HighlightSeverity.WEAK_WARNING, "Field's return type can be specified as [$realType]")

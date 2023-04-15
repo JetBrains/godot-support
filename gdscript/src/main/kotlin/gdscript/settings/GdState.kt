@@ -10,7 +10,7 @@ class GdState {
     @Tag("sdkPath")
     var sdkPath: String? = ""
 
-    @Tag("colorFormat")
-    var colorFormat: String = ""
+    @Tag("shortTyped")
+    var shortTyped = false
 
 }
