@@ -61,8 +61,8 @@ object PsiGdExprUtil {
                         return "Array[Variant]"
                     } else if (method == "instantiate") {
                         return GdKeywords.VARIANT
-                    } else if (method == "get_viewport") {
-                        return "SubViewport"
+//                    } else if (method == "get_viewport") {
+//                        return "SubViewport"
                     } else if (method == "get_child") {
                         return "Node"
                     } else if (method == "get_parent") {

@@ -23,7 +23,6 @@ import java.util.Stack;
     boolean dataJson = false;
     Character endingChar = '{';
     HashMap<Character, Character> endings = new HashMap<>();
-    StringBuilder dataJsonValue = new StringBuilder();
 
     private List<Character> valueEndingChars(char current) {
         switch (current) {
@@ -62,6 +61,7 @@ DIGIT = [0-9]
 
 NEW_LINE = [\r\n]
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT}|\/)*
+DATA_IDENTIFIER = [^=\s]+
 
 VALUE = [^\r\n]+ // ( \[[^\R]*?\] ) | ( \"[^\R]*?\" ) | ( {LETTER}*\([^\R\]]*?\) ) | ( {LETTER}+[^\(\R\]]+ )
 DATA_LINE = [^\r\n]+
@@ -128,7 +128,7 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 }
 
 <DATA_LINE> {
-    {IDENTIFIER}   { return TscnTypes.IDENTIFIER; }
+    {DATA_IDENTIFIER}   { return TscnTypes.IDENTIFIER; }
     {WHITE_SPACE}  { return TokenType.WHITE_SPACE; }
     "="            { yybegin(DATA_VALUE); return TscnTypes.EQ; }
 }
@@ -136,7 +136,7 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 <DATA_VALUE> {
     {WHITE_SPACE_ANY}  {
           if (dataJson) {
-              dataJsonValue.append(yytext());
+              continue;
           } else {
               return TokenType.WHITE_SPACE;
           }
@@ -146,8 +146,11 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
           char firstChar = text.charAt(0);
           char lastChar = text.charAt(text.length() - 1);
           if (dataJson) {
-              dataJsonValue.append(yytext());
               if (firstChar == endingChar || lastChar == endingChar) {
+                  if (endingChar == '}' && lastChar != '}') {
+                      continue; // TODO hack protože json může mít pole jsonů
+                  }
+
                   dataJson = false;
                   yybegin(YYINITIAL);
                   return TscnTypes.VALUE;
@@ -163,7 +166,6 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
                   }
 
                   dataJson = true;
-                  dataJsonValue = new StringBuilder(yytext());
                   continue;
               } else {
                   yybegin(YYINITIAL);
