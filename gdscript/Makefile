@@ -4,7 +4,7 @@ download-docs:
 refresh-classes:
 	rm -R classesGd || true
 	mkdir classesGd || true
-	mkdir classesGd/modules || true
+	#mkdir classesGd/modules || true
 	php classParser.php
 	#php templateParser.php
 

@@ -43,7 +43,7 @@ object GdKeywords {
     const val RESOURCE_PREFIX = "res://"
 
     const val GLOBAL_SCOPE = "_GlobalScope"
-    const val GLOBAL_GD_SCRIPT = "_GdScript"
+    const val GLOBAL_GD_SCRIPT = "_GDScript"
 
     const val INIT_METHOD = "_init";
 

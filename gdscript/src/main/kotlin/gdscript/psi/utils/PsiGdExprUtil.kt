@@ -72,8 +72,12 @@ object PsiGdExprUtil {
                     expr.expr.returnType
                 }
             }
-            // TODO [] array accesor tu je také -> např. Basis je také přístupný -> potřeba překopat Array access
-            is GdArrEx -> fromTyped(expr.exprList.firstOrNull()?.returnType ?: "Variant")
+            is GdArrEx -> {
+                val arrayType = expr.exprList.firstOrNull()?.returnType ?: return GdKeywords.VARIANT
+                if (arrayType.startsWith("Array[")) return fromTyped(arrayType)
+
+                return GdOperand.getReturnType(arrayType, GdKeywords.INT, "[]")
+            }
             is GdPrimaryEx -> {
                 when (expr.firstChild) {
                     is GdNodePath -> {

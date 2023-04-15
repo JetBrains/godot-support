@@ -55,7 +55,9 @@ $parseParams = function($value) {
     foreach ($list as $param) {
         $param = (array) $param;
         $p_att = $param['@attributes'];
-        $parsed[$p_att['index']] = [$p_att['name'], $p_att['type'], $p_att['default'] ?? null];
+        $p_name = $p_att['name'];
+        if ($p_name == "var") $p_name = "variable";
+        $parsed[$p_att['index']] = [$p_name, $p_att['type'], $p_att['default'] ?? null];
     }
     foreach ($parsed as $param) {
         $p = sprintf("%s: %s", $param[0], $param[1]);
@@ -240,11 +242,11 @@ foreach ($files as $filepath) {
     $data .= "\n";
     $data .= $getSetMethods;
 
-    if (strpos($filepath, "modules") > 0) {
-        file_put_contents(sprintf($moduleTarget, $class_name), $data);
-    } else {
+//    if (strpos($filepath, "modules") > 0) {
+//        file_put_contents(sprintf($moduleTarget, $class_name), $data);
+//    } else {
         file_put_contents(sprintf($target, $class_name), $data);
-    }
+//    }
 
 }
 

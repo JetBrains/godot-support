@@ -163,13 +163,13 @@ object GdExprUtil {
 
         // Only 1 is an array
         if (arrays == 1) {
-            return allowedExceptions(left, right)
+            return allowedExceptions(left, right, project)
         } else if (arrays > 1) {
             left = left.parseFromSquare()
             right = right.parseFromSquare()
         }
 
-        if (allowedExceptions(left, right)) return true
+        if (allowedExceptions(left, right, project)) return true
 
         val classId = GdClassUtil.getClassIdElement(left, project) ?: return true
         val classElement = GdClassUtil.getOwningClassElement(classId)
@@ -191,9 +191,19 @@ object GdExprUtil {
         return false
     }
 
-    private fun allowedExceptions(left: String, right: String): Boolean {
-        return arrayOf(GdKeywords.VARIANT, "RID").contains(left) ||
-                arrayOf(GdKeywords.VARIANT, "Node", "PackedScene").contains(right)
+    private fun allowedExceptions(left: String, right: String, project: Project): Boolean {
+        if (arrayOf(GdKeywords.VARIANT, "RID").contains(left) ||
+                arrayOf(GdKeywords.VARIANT).contains(right)) return true
+
+        if (arrayOf("Node", "Resource").contains(right)) {
+            val currentClassId = GdClassUtil.getClassIdElement(left, project)
+            if (currentClassId != null) {
+                val currentClassElement = GdClassUtil.getOwningClassElement(currentClassId)
+                return GdInheritanceUtil.isExtending(currentClassElement, right)
+            }
+        }
+
+        return false
     }
 
 }

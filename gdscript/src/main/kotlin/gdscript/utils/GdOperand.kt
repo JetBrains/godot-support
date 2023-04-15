@@ -1,5 +1,6 @@
 package gdscript.utils
 
+import com.jetbrains.rd.util.firstOrNull
 import gdscript.GdKeywords
 
 /**
@@ -9,7 +10,13 @@ import gdscript.GdKeywords
 object GdOperand {
     
     fun getReturnType(left: String, right: String, operator: String): String {
-        return OPERANDS.get(left)?.get(operator)?.get(right) ?: ""
+        val operated = OPERANDS.get(left)?.get(operator) ?: return ""
+        val typed = operated.get(right)
+        if (typed == null && operator == "[]") {
+            return operated.firstOrNull()?.value ?: ""
+        }
+
+        return ""
     }
 
     fun isAllowed(left: String, right: String, operator: String): Boolean {
