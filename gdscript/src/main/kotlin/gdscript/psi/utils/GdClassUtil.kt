@@ -49,7 +49,7 @@ object GdClassUtil {
                     named.classNameNmi?.classId ?: ""
                 } else {
                     val file = element.virtualFile ?: element.originalFile.virtualFile;
-                    "\"${PsiGdResourceUtil.resourcePath(file.localPath())}\""
+                    "\"${PsiGdResourceUtil.resourcePath(file)}\""
                 }
             }
             else -> getFullClassId(getOwningClassElement(element))

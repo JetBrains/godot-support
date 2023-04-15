@@ -19,8 +19,8 @@ abstract class ScalarIndexExtensionExt<K : Any> : ScalarIndexExtension<K>() {
     }
 
     fun getNonEmptyKeys(project: Project): List<K> {
-        val inst = FileBasedIndex.getInstance();
-        val scope = GlobalSearchScope.allScope(project);
+        val inst = FileBasedIndex.getInstance()
+        val scope = GlobalSearchScope.allScope(project)
 
         return inst.getAllKeys(id, project).mapNotNull {
             if (inst.getContainingFiles(id, it, scope).isNotEmpty()) {
@@ -28,11 +28,24 @@ abstract class ScalarIndexExtensionExt<K : Any> : ScalarIndexExtension<K>() {
             } else {
                 null
             }
-        };
+        }
     }
 
     override fun getName(): ID<K, Void> {
-        return id;
+        return id
+    }
+
+    companion object {
+        fun <K : Any> getNonEmptyKeys(id: ID<K, Void>, project: Project): List<K> {
+            val instance = FileBasedIndex.getInstance()
+            val scope = GlobalSearchScope.allScope(project)
+
+            return instance.getAllKeys(id, project).mapNotNull {
+                if (instance.getContainingFiles(id, it, scope).isNotEmpty())
+                    it
+                else null
+            }
+        }
     }
 
 }

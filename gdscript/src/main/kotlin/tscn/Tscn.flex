@@ -5,7 +5,9 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import tscn.psi.TscnTokenType;
 import tscn.psi.TscnTypes;
-import java.util.HashMap;import java.util.Stack;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Stack;
 
 %%
 
@@ -22,6 +24,32 @@ import java.util.HashMap;import java.util.Stack;
     Character endingChar = '{';
     HashMap<Character, Character> endings = new HashMap<>();
     StringBuilder dataJsonValue = new StringBuilder();
+
+    private List<Character> valueEndingChars(char current) {
+        switch (current) {
+            case '"':
+                return List.of('"');
+            case '(':
+                return List.of(')');
+            case '[':
+                return List.of(']');
+            default:
+                return List.of(' ', ']');
+        }
+    }
+
+    private boolean valueEndingIncluded(char current) {
+        switch (current) {
+            case '"':
+                return true;
+            case '(':
+                return true;
+            case '[':
+                return true;
+            default:
+                return false;
+        }
+    }
 %}
 
 %init{
@@ -35,8 +63,7 @@ DIGIT = [0-9]
 NEW_LINE = [\r\n]
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT}|\/)*
 
-//VALUE = [^\r\n\s\]]+
-VALUE = ( \[[^\r\n\]\(]+\] ) | ( [^\r\n\]\s\(]+(\([^\r\n\]\(]+\))? )
+VALUE = [^\r\n]+ // ( \[[^\R]*?\] ) | ( \"[^\R]*?\" ) | ( {LETTER}*\([^\R\]]*?\) ) | ( {LETTER}+[^\(\R\]]+ )
 DATA_LINE = [^\r\n]+
 
 WHITE_SPACE = [ \t]+
@@ -63,7 +90,41 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 }
 
 <VALUE> {
-    {VALUE}        { yybegin(HEADER); return TscnTypes.VALUE; }
+    {VALUE}        {
+        CharSequence line = yytext();
+        Stack<Character> openings = new Stack<>();
+        char currentOpening = line.charAt(0);
+        List<Character> searchFor = valueEndingChars(currentOpening);
+        List<Character> allowedOpening = List.of('"', '(', '[');
+        boolean includeEnding = valueEndingIncluded(currentOpening);
+
+        int i = 1;
+        for (; i < line.length(); i++) {
+            char current = line.charAt(i);
+            if (searchFor.contains(current)) {
+                if (openings.empty()) {
+                    if (includeEnding) {
+                       i++;
+                    }
+                    break;
+                } else {
+                    currentOpening = openings.pop();
+                    includeEnding = valueEndingIncluded(currentOpening);
+                    searchFor = valueEndingChars(currentOpening);
+                }
+            } else if (allowedOpening.contains(current)) {
+                openings.push(currentOpening);
+                currentOpening = current;
+                includeEnding = valueEndingIncluded(currentOpening);
+                searchFor = valueEndingChars(currentOpening);
+            }
+        }
+
+        yypushback(line.length() - i);
+        yybegin(HEADER);
+
+        return TscnTypes.VALUE;
+    }
 }
 
 <DATA_LINE> {

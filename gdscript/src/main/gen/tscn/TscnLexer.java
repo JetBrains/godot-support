@@ -7,7 +7,9 @@ import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import tscn.psi.TscnTokenType;
 import tscn.psi.TscnTypes;
-import java.util.HashMap;import java.util.Stack;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Stack;
 
 
 /**
@@ -42,27 +44,26 @@ class TscnLexer implements FlexLexer {
 
   /** 
    * Translates characters to character classes
-   * Chosen bits are [7, 7, 7]
-   * Total runtime size is 1928 bytes
+   * Chosen bits are [8, 6, 7]
+   * Total runtime size is 1040 bytes
    */
   public static int ZZ_CMAP(int ch) {
-    return ZZ_CMAP_A[(ZZ_CMAP_Y[ZZ_CMAP_Z[ch>>14]|((ch>>7)&0x7f)]<<7)|(ch&0x7f)];
+    return ZZ_CMAP_A[ZZ_CMAP_Y[ZZ_CMAP_Z[ch>>13]|((ch>>7)&0x3f)]|(ch&0x7f)];
   }
 
-  /* The ZZ_CMAP_Z table has 68 entries */
+  /* The ZZ_CMAP_Z table has 136 entries */
   static final char ZZ_CMAP_Z[] = zzUnpackCMap(
-    "\1\0\103\200");
+    "\1\0\207\100");
 
-  /* The ZZ_CMAP_Y table has 256 entries */
+  /* The ZZ_CMAP_Y table has 128 entries */
   static final char ZZ_CMAP_Y[] = zzUnpackCMap(
-    "\1\0\1\1\53\2\1\3\22\2\1\4\37\2\1\3\237\2");
+    "\1\0\177\200");
 
-  /* The ZZ_CMAP_A table has 640 entries */
+  /* The ZZ_CMAP_A table has 256 entries */
   static final char ZZ_CMAP_A[] = zzUnpackCMap(
-    "\11\0\1\11\1\13\2\7\1\2\22\0\1\11\7\0\1\5\1\10\3\0\1\1\1\0\1\3\12\1\1\0\1"+
-    "\12\1\0\1\31\3\0\32\1\1\4\1\0\1\6\1\0\1\16\1\0\2\1\1\20\1\15\1\21\1\1\1\14"+
-    "\1\1\1\30\4\1\1\22\1\26\2\1\1\25\1\17\1\24\1\27\2\1\1\23\2\1\1\0\1\1\10\0"+
-    "\1\7\32\0\1\7\337\0\1\7\177\0\13\7\35\0\2\7\5\0\1\7\57\0\1\7\40\0");
+    "\11\0\1\4\1\6\2\0\1\2\22\0\1\4\14\0\1\1\1\0\1\3\12\1\1\0\1\5\1\0\1\25\3\0"+
+    "\32\1\1\26\1\0\1\24\1\0\1\11\1\0\2\1\1\13\1\10\1\14\1\1\1\7\1\1\1\23\4\1\1"+
+    "\15\1\21\2\1\1\20\1\12\1\17\1\22\2\1\1\16\2\1\1\0\1\1\203\0");
 
   /** 
    * Translates DFA states to action switch labels.
@@ -70,13 +71,12 @@ class TscnLexer implements FlexLexer {
   private static final int [] ZZ_ACTION = zzUnpackAction();
 
   private static final String ZZ_ACTION_PACKED_0 =
-    "\5\0\1\1\1\2\1\3\1\1\1\4\1\5\1\2"+
-    "\4\4\1\6\2\7\1\10\1\11\2\12\2\13\4\4"+
-    "\1\0\1\7\1\0\4\4\1\0\1\7\3\4\1\14"+
-    "\1\7\11\4\1\15\4\4\1\16\2\4\1\17";
+    "\5\0\1\1\1\2\1\1\1\3\1\4\1\2\4\4"+
+    "\1\5\1\6\1\7\1\10\1\11\2\12\2\13\13\4"+
+    "\1\14\11\4\1\15\4\4\1\16\2\4\1\17";
 
   private static int [] zzUnpackAction() {
-    int [] result = new int[61];
+    int [] result = new int[54];
     int offset = 0;
     offset = zzUnpackAction(ZZ_ACTION_PACKED_0, offset, result);
     return result;
@@ -101,17 +101,16 @@ class TscnLexer implements FlexLexer {
   private static final int [] ZZ_ROWMAP = zzUnpackRowMap();
 
   private static final String ZZ_ROWMAP_PACKED_0 =
-    "\0\0\0\32\0\64\0\116\0\150\0\202\0\234\0\202"+
-    "\0\266\0\320\0\234\0\352\0\u0104\0\u011e\0\u0138\0\u0152"+
-    "\0\234\0\u016c\0\u0186\0\234\0\u01a0\0\234\0\u01ba\0\u01d4"+
-    "\0\234\0\u01ee\0\u0208\0\u0222\0\u023c\0\u0256\0\u0270\0\u028a"+
-    "\0\u02a4\0\u02be\0\u02d8\0\u02f2\0\u030c\0\234\0\u0326\0\u0340"+
-    "\0\u035a\0\320\0\u030c\0\u0374\0\u038e\0\u03a8\0\u03c2\0\u03dc"+
-    "\0\u03f6\0\u0410\0\u042a\0\u0444\0\320\0\u045e\0\u0478\0\u0492"+
-    "\0\u04ac\0\320\0\u04c6\0\u04e0\0\320";
+    "\0\0\0\27\0\56\0\105\0\134\0\163\0\212\0\241"+
+    "\0\163\0\270\0\317\0\346\0\375\0\u0114\0\u012b\0\212"+
+    "\0\212\0\56\0\212\0\u0142\0\212\0\u0159\0\u0170\0\212"+
+    "\0\u0187\0\u019e\0\u01b5\0\u01cc\0\u01e3\0\u01fa\0\u0211\0\u0228"+
+    "\0\u023f\0\u0256\0\u026d\0\270\0\u0284\0\u029b\0\u02b2\0\u02c9"+
+    "\0\u02e0\0\u02f7\0\u030e\0\u0325\0\u033c\0\270\0\u0353\0\u036a"+
+    "\0\u0381\0\u0398\0\270\0\u03af\0\u03c6\0\270";
 
   private static int [] zzUnpackRowMap() {
-    int [] result = new int[61];
+    int [] result = new int[54];
     int offset = 0;
     offset = zzUnpackRowMap(ZZ_ROWMAP_PACKED_0, offset, result);
     return result;
@@ -134,57 +133,49 @@ class TscnLexer implements FlexLexer {
   private static final int [] ZZ_TRANS = zzUnpackTrans();
 
   private static final String ZZ_TRANS_PACKED_0 =
-    "\2\6\1\7\1\6\1\10\5\6\1\11\1\7\16\6"+
-    "\1\0\1\12\4\0\1\13\2\0\1\14\2\0\1\15"+
-    "\3\12\1\16\1\17\1\20\6\12\1\21\2\22\1\0"+
-    "\1\22\1\23\3\0\1\22\1\0\1\22\1\0\16\22"+
-    "\1\0\1\12\7\0\1\14\2\0\15\12\1\24\2\25"+
-    "\1\26\6\25\1\27\1\25\1\26\16\25\2\6\1\0"+
-    "\10\6\1\0\16\6\32\0\2\11\1\30\10\11\1\31"+
-    "\16\11\1\0\1\12\1\0\1\12\10\0\15\12\12\0"+
-    "\1\14\21\0\1\12\1\0\1\12\10\0\1\12\1\32"+
-    "\13\12\2\0\1\12\1\0\1\12\10\0\12\12\1\33"+
-    "\2\12\2\0\1\12\1\0\1\12\10\0\7\12\1\34"+
-    "\5\12\2\0\1\12\1\0\1\12\10\0\12\12\1\35"+
-    "\2\12\1\0\2\22\1\0\2\22\1\36\2\0\1\22"+
-    "\1\0\1\22\1\0\16\22\2\37\1\0\2\37\1\36"+
-    "\1\0\1\40\1\37\1\40\1\37\1\0\16\37\2\25"+
-    "\1\0\10\25\1\0\20\25\1\0\6\25\1\27\1\25"+
-    "\1\0\16\25\13\0\1\31\17\0\1\12\1\0\1\12"+
-    "\10\0\2\12\1\41\12\12\2\0\1\12\1\0\1\12"+
-    "\10\0\6\12\1\42\6\12\2\0\1\12\1\0\1\12"+
-    "\10\0\10\12\1\43\4\12\2\0\1\12\1\0\1\12"+
-    "\10\0\1\12\1\44\13\12\1\0\2\45\1\0\2\45"+
-    "\2\0\4\45\1\0\16\45\2\37\1\0\2\37\1\36"+
-    "\1\46\1\40\1\37\1\40\1\37\1\0\16\37\2\40"+
-    "\1\0\2\40\1\0\1\46\4\40\1\0\16\40\1\0"+
-    "\1\12\1\0\1\12\10\0\3\12\1\47\11\12\2\0"+
-    "\1\12\1\0\1\12\10\0\6\12\1\50\6\12\2\0"+
-    "\1\12\1\0\1\12\10\0\2\12\1\51\12\12\2\0"+
-    "\1\12\1\0\1\12\10\0\5\12\1\52\7\12\1\0"+
-    "\2\45\1\0\2\45\2\0\1\45\1\53\2\45\1\0"+
-    "\16\45\1\0\1\12\1\0\1\12\10\0\4\12\1\54"+
-    "\10\12\2\0\1\12\1\0\1\12\10\0\5\12\1\55"+
-    "\7\12\2\0\1\12\1\0\1\12\10\0\11\12\1\56"+
-    "\3\12\2\0\1\12\1\0\1\12\10\0\5\12\1\57"+
-    "\7\12\2\0\1\12\1\0\1\12\10\0\4\12\1\60"+
-    "\10\12\2\0\1\12\1\0\1\12\10\0\5\12\1\61"+
-    "\7\12\2\0\1\12\1\0\1\12\10\0\6\12\1\62"+
-    "\6\12\2\0\1\12\1\0\1\12\10\0\10\12\1\63"+
-    "\4\12\2\0\1\12\1\0\1\12\10\0\3\12\1\64"+
-    "\11\12\2\0\1\12\1\0\1\12\10\0\5\12\1\65"+
-    "\7\12\2\0\1\12\1\0\1\12\10\0\14\12\1\66"+
-    "\2\0\1\12\1\0\1\12\10\0\12\12\1\67\2\12"+
-    "\2\0\1\12\1\0\1\12\10\0\12\12\1\70\2\12"+
-    "\2\0\1\12\1\0\1\12\10\0\13\12\1\71\1\12"+
-    "\2\0\1\12\1\0\1\12\10\0\6\12\1\72\6\12"+
-    "\2\0\1\12\1\0\1\12\10\0\11\12\1\73\3\12"+
-    "\2\0\1\12\1\0\1\12\10\0\4\12\1\74\10\12"+
-    "\2\0\1\12\1\0\1\12\10\0\5\12\1\75\7\12"+
-    "\1\0";
+    "\2\6\1\7\2\6\1\10\1\7\17\6\1\11\1\0"+
+    "\1\12\2\0\1\13\2\0\1\14\3\12\1\15\1\16"+
+    "\1\17\6\12\1\20\1\21\1\0\2\22\1\0\3\22"+
+    "\1\0\20\22\1\0\1\12\2\0\1\13\2\0\15\12"+
+    "\1\0\1\23\1\0\2\24\1\25\1\24\1\26\1\24"+
+    "\1\25\20\24\2\6\1\0\3\6\1\0\20\6\27\0"+
+    "\2\10\1\27\3\10\1\30\20\10\1\0\1\12\1\0"+
+    "\1\12\3\0\15\12\7\0\1\13\23\0\1\12\1\0"+
+    "\1\12\3\0\1\12\1\31\13\12\4\0\1\12\1\0"+
+    "\1\12\3\0\12\12\1\32\2\12\4\0\1\12\1\0"+
+    "\1\12\3\0\7\12\1\33\5\12\4\0\1\12\1\0"+
+    "\1\12\3\0\12\12\1\34\2\12\3\0\2\24\1\0"+
+    "\3\24\1\0\22\24\1\0\1\24\1\26\1\24\1\0"+
+    "\20\24\6\0\1\30\21\0\1\12\1\0\1\12\3\0"+
+    "\2\12\1\35\12\12\4\0\1\12\1\0\1\12\3\0"+
+    "\6\12\1\36\6\12\4\0\1\12\1\0\1\12\3\0"+
+    "\10\12\1\37\4\12\4\0\1\12\1\0\1\12\3\0"+
+    "\1\12\1\40\13\12\4\0\1\12\1\0\1\12\3\0"+
+    "\3\12\1\41\11\12\4\0\1\12\1\0\1\12\3\0"+
+    "\6\12\1\42\6\12\4\0\1\12\1\0\1\12\3\0"+
+    "\2\12\1\43\12\12\4\0\1\12\1\0\1\12\3\0"+
+    "\5\12\1\44\7\12\4\0\1\12\1\0\1\12\3\0"+
+    "\4\12\1\45\10\12\4\0\1\12\1\0\1\12\3\0"+
+    "\5\12\1\46\7\12\4\0\1\12\1\0\1\12\3\0"+
+    "\11\12\1\47\3\12\4\0\1\12\1\0\1\12\3\0"+
+    "\5\12\1\50\7\12\4\0\1\12\1\0\1\12\3\0"+
+    "\4\12\1\51\10\12\4\0\1\12\1\0\1\12\3\0"+
+    "\5\12\1\52\7\12\4\0\1\12\1\0\1\12\3\0"+
+    "\6\12\1\53\6\12\4\0\1\12\1\0\1\12\3\0"+
+    "\10\12\1\54\4\12\4\0\1\12\1\0\1\12\3\0"+
+    "\3\12\1\55\11\12\4\0\1\12\1\0\1\12\3\0"+
+    "\5\12\1\56\7\12\4\0\1\12\1\0\1\12\3\0"+
+    "\14\12\1\57\4\0\1\12\1\0\1\12\3\0\12\12"+
+    "\1\60\2\12\4\0\1\12\1\0\1\12\3\0\12\12"+
+    "\1\61\2\12\4\0\1\12\1\0\1\12\3\0\13\12"+
+    "\1\62\1\12\4\0\1\12\1\0\1\12\3\0\6\12"+
+    "\1\63\6\12\4\0\1\12\1\0\1\12\3\0\11\12"+
+    "\1\64\3\12\4\0\1\12\1\0\1\12\3\0\4\12"+
+    "\1\65\10\12\4\0\1\12\1\0\1\12\3\0\5\12"+
+    "\1\66\7\12\3\0";
 
   private static int [] zzUnpackTrans() {
-    int [] result = new int[1274];
+    int [] result = new int[989];
     int offset = 0;
     offset = zzUnpackTrans(ZZ_TRANS_PACKED_0, offset, result);
     return result;
@@ -222,12 +213,11 @@ class TscnLexer implements FlexLexer {
   private static final int [] ZZ_ATTRIBUTE = zzUnpackAttribute();
 
   private static final String ZZ_ATTRIBUTE_PACKED_0 =
-    "\5\0\1\1\1\11\3\1\1\11\5\1\1\11\2\1"+
-    "\1\11\1\1\1\11\2\1\1\11\4\1\1\0\1\1"+
-    "\1\0\4\1\1\0\1\11\27\1";
+    "\5\0\1\1\1\11\10\1\2\11\1\1\1\11\1\1"+
+    "\1\11\2\1\1\11\36\1";
 
   private static int [] zzUnpackAttribute() {
-    int [] result = new int[61];
+    int [] result = new int[54];
     int offset = 0;
     offset = zzUnpackAttribute(ZZ_ATTRIBUTE_PACKED_0, offset, result);
     return result;
@@ -287,6 +277,32 @@ class TscnLexer implements FlexLexer {
     Character endingChar = '{';
     HashMap<Character, Character> endings = new HashMap<>();
     StringBuilder dataJsonValue = new StringBuilder();
+
+    private List<Character> valueEndingChars(char current) {
+        switch (current) {
+            case '"':
+                return List.of('"');
+            case '(':
+                return List.of(')');
+            case '[':
+                return List.of(']');
+            default:
+                return List.of(' ', ']');
+        }
+    }
+
+    private boolean valueEndingIncluded(char current) {
+        switch (current) {
+            case '"':
+                return true;
+            case '(':
+                return true;
+            case '[':
+                return true;
+            default:
+                return false;
+        }
+    }
 
 
   /**
@@ -591,7 +607,39 @@ class TscnLexer implements FlexLexer {
             // fall through
           case 21: break;
           case 7: 
-            { yybegin(HEADER); return TscnTypes.VALUE;
+            { CharSequence line = yytext();
+        Stack<Character> openings = new Stack<>();
+        char currentOpening = line.charAt(0);
+        List<Character> searchFor = valueEndingChars(currentOpening);
+        List<Character> allowedOpening = List.of('"', '(', '[');
+        boolean includeEnding = valueEndingIncluded(currentOpening);
+
+        int i = 1;
+        for (; i < line.length(); i++) {
+            char current = line.charAt(i);
+            if (searchFor.contains(current)) {
+                if (openings.empty()) {
+                    if (includeEnding) {
+                       i++;
+                    }
+                    break;
+                } else {
+                    currentOpening = openings.pop();
+                    includeEnding = valueEndingIncluded(currentOpening);
+                    searchFor = valueEndingChars(currentOpening);
+                }
+            } else if (allowedOpening.contains(current)) {
+                openings.push(currentOpening);
+                currentOpening = current;
+                includeEnding = valueEndingIncluded(currentOpening);
+                searchFor = valueEndingChars(currentOpening);
+            }
+        }
+
+        yypushback(line.length() - i);
+        yybegin(HEADER);
+
+        return TscnTypes.VALUE;
             } 
             // fall through
           case 22: break;

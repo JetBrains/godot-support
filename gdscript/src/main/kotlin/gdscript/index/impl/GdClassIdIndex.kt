@@ -42,7 +42,7 @@ object GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
             val rootClass = classes.firstOrNull() ?: return emptyList();
             val cln = GdClassNamingIndex.getGlobally(rootClass, project).firstOrNull() ?: return emptyList();
 
-            val resource = PsiGdResourceUtil.resourcePath(cln.containingFile.virtualFile.localPath());
+            val resource = PsiGdResourceUtil.resourcePath(cln.containingFile.virtualFile);
             classes[0] = "\"$resource\"";
 
             modified = classes.joinToString(".");

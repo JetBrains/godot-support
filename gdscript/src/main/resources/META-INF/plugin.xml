@@ -107,6 +107,7 @@
     <stubIndex implementation="tscn.index.impl.TscnConnectionIndex" />
     <stubIndex implementation="project.index.impl.ProjectSectionIndex" />
     <stubIndex implementation="project.index.impl.ProjectDataIndex" />
+    <fileBasedIndex implementation="project.index.impl.ProjectRootFileIndex" />
 
     <!-- Actions -->
     <intentionAction>
