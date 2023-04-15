@@ -81,6 +81,12 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdParamAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdExprTypeAnnotator" />
 
+    <!-- Inspectors -->
+    <localInspection language="GdScript" shortName="CheckVarType" enabledByDefault="true" level="WARNING"
+                     bundle="messages.gdscript" key="inspections.check.return.type"
+                     groupBundle="messages.gdscript" groupKey="inspections.group.name"
+                     implementationClass="gdscript.inspection.GdTypeHintInspection"/>
+
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" />
     <stubIndex implementation="gdscript.index.impl.GdClassIdIndex" />

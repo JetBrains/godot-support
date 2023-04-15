@@ -1,0 +1,23 @@
+<html>
+<body>
+Reports variables that don't have specified type
+<p>When code cannot parse what type is variable holding, it must be specified manualy</p>
+<p>Example:</p>
+<pre><code>
+  var int_val = 1
+  val string_val = ""
+</code></pre>
+<p>After the quick-fix is applied:</p>
+<pre><code>
+  var int_val: int = 1
+  val string_val: String = ""
+</code></pre>
+<p>Or when short option is used:</p>
+<pre><code>
+  var int_val := 1
+  val string_val := ""
+</code></pre>
+<!-- tooltip end -->
+<p><small>Since 1.1.0</small></p>
+</body>
+</html>

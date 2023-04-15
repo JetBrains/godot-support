@@ -92,10 +92,17 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdSignalIdNmi::class.java)!!.firstChild
     }
 
+    @Deprecated("")
     fun typeHintNm(project: Project, name: String): PsiElement {
         val file = createFile(project, "extends Node\nvar variable: $name\n")
 
         return PsiTreeUtil.findChildOfType(file, GdTypeHintNm::class.java)!!.firstChild
+    }
+
+    fun typed(project: Project, type: String): PsiElement {
+        val file = createFile(project, "extends Node\nvar variable: $type\n")
+
+        return PsiTreeUtil.findChildOfType(file, GdTyped::class.java)!!
     }
 
     fun returnHintVal(project: Project, type: String): PsiElement {
@@ -114,6 +121,12 @@ object GdElementFactory {
         val file = createFile(project, "extends Node\nfunc fu():\n\t$expr");
 
         return PsiTreeUtil.findChildOfType(file, GdExpr::class.java)!!
+    }
+
+    fun shortAssignTyped(project: Project): PsiElement {
+        val file = createFile(project, "extends Node\nvar a := 1\n")
+
+        return PsiTreeUtil.findChildOfType(file, GdAssignTyped::class.java)!!
     }
 
     private fun createFile(project: Project, text: String) =

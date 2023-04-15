@@ -202,10 +202,9 @@ ANY = .+
     {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {COMMENT}       {
           lineEnded = true;
-          boolean alreadyDone = newLineProcessed;
-          newLineProcessed = alreadyDone || yycolumn == 0;
+          newLineProcessed = newLineProcessed || yycolumn == 0;
 
-          if (zzEndRead > zzStartRead) {
+          if (newLineProcessed && zzEndRead > zzStartRead) {
             String following = zzBuffer.subSequence(zzStartRead, zzEndRead).toString();
             int nextLineIndex = following.indexOf("\n");
             int maxLen = following.length();

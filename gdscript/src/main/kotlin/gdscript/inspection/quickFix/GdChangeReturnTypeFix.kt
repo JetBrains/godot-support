@@ -1,4 +1,4 @@
-package gdscript.action.quickFix
+package gdscript.inspection.quickFix
 
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.project.Project
@@ -10,7 +10,7 @@ import gdscript.psi.GdReturnHintVal
 /**
  * Updates return type of function "func asd() -> CHANGE_TYPE:"
  */
-class _GdChangeReturnTypeFix : LocalQuickFixOnPsiElement {
+class GdChangeReturnTypeFix : LocalQuickFixOnPsiElement {
 
     private val element: GdReturnHintVal
     private val desired: String
