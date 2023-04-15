@@ -35,11 +35,7 @@ REAL_NUMBER = {NUMBER}e-[0-9]+
 
 STRING = "&"?\"([^\\\"\r\n]|\\.)*\"
 STRING_CHAR = \'([^\\\'\r\n]|\\.)*\'
-STRING_MULTILINE = \"\"\"([^\\\"]|\\.)*\"\"\"
-
-// TODO remove z obojích flexů
-STRING_MARKER = \"\"\"|\"|\'
-STRING_MARKER_REV = [^\"\'\n\r]*
+STRING_MULTILINE = \"\"\"(\R|.)*\"\"\"
 
 COMMENT = "#"[^\r\n]*
 ANNOTATOR = "@"[a-zA-Z_]*

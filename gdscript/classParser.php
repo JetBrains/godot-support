@@ -1,7 +1,32 @@
 <?php
 
-$files = scandir("./classes");
+$files = [];
+$classes = scandir("./godot-master/doc/classes");
+foreach ($classes as $filename) {
+    $files[] = sprintf("./godot-master/doc/classes/%s", $filename);
+}
+
+// Search modules
+$modules = scandir("./godot-master/modules");
+
+foreach ($modules as $module) {
+    //$files[] = sprintf("./classes/%s", $filename);
+    $modulePath = sprintf("./godot-master/modules/%s", $module);
+    if (substr($module, 0, 1) == ".") continue;
+
+    if (is_dir($modulePath)) {
+        $modulePath = sprintf("%s/doc_classes", $modulePath);
+        if (is_dir($modulePath)) {
+            $classes = scandir($modulePath);
+            foreach ($classes as $filename) {
+                $files[] = sprintf("%s/%s", $modulePath, $filename);
+            }
+        }
+    }
+}
+
 $target = "./classesGd/%s.gd";
+$moduleTarget = "./classesGd/modules/%s.gd";
 
 $formatDesc = function($desc, $key) {
     $desc = trim($desc);
@@ -43,15 +68,20 @@ $parseParams = function($value) {
     return $params;
 };
 
-foreach ($files as $filename) {
+foreach ($files as $filepath) {
+    $paths = explode("/", $filepath);
+    $filename = $paths[count($paths) - 1];
+
 //     if ($filename != "CanvasItem.xml") { continue; }
 
     if ($filename == "." || $filename == "..") continue;
+    if (substr($filename, strlen($filename) - 4) != ".xml") continue;
+
     $data = "";
     $class_name = substr($filename, 0, strlen($filename) - 4);
     $class_name = str_replace("@", "_", $class_name);
 
-    $content = file_get_contents(sprintf("./classes/%s", $filename));
+    $content = file_get_contents($filepath);
 
     $xml = (array) simplexml_load_string($content);
 
@@ -210,6 +240,11 @@ foreach ($files as $filename) {
     $data .= "\n";
     $data .= $getSetMethods;
 
-    file_put_contents(sprintf($target, $class_name), $data);
+    if (strpos($filepath, "modules") > 0) {
+        file_put_contents(sprintf($moduleTarget, $class_name), $data);
+    } else {
+        file_put_contents(sprintf($target, $class_name), $data);
+    }
+
 }
 

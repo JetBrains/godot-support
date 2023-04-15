@@ -212,6 +212,7 @@ flow_st ::=
 
 expr ::=
     plusMinus_ex
+    | arr_ex
     | cast_ex
     | ternary_ex
     | logic_ex
@@ -227,7 +228,6 @@ expr ::=
     | bitNot_ex
     | is_ex
     | attribute_ex
-    | arr_ex
     | call_ex
     | primary_ex
     | funcDecl_ex
@@ -248,7 +248,7 @@ plus_ex ::= expr sign expr
 sign ::= (PLUS | MINUS)
 factor_ex ::= expr factorSign expr
 factorSign ::= (MUL | DIV | MOD | POWER)
-sign_ex ::= (MINUS | PLUS ) expr
+sign_ex ::= (MINUS | PLUS) expr
 bitNot_ex ::= NOT expr
 is_ex ::= expr IS typedVal
 call_ex ::= expr LRBR argList? RRBR

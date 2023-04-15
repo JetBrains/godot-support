@@ -79,11 +79,7 @@ REAL_NUMBER = {NUMBER}e-[0-9]+
 
 STRING = "&"?\"([^\\\"\r\n]|\\.)*\"
 STRING_CHAR = \'([^\\\'\r\n]|\\.)*\'
-STRING_MULTILINE = \"\"\"([^\\\"]|\\.)*\"\"\"
-
-// TODO remove z obojích flexů
-STRING_MARKER = \"\"\"|\"|\'
-STRING_MARKER_REV = [^\"\'\n\r]*
+STRING_MULTILINE = \"\"\"(\R|.)*\"\"\"
 
 COMMENT = "#"[^\r\n]*
 INDENTED_COMMENT = {INDENT}"#"
@@ -195,7 +191,7 @@ ANY = .+
     {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
     {STRING}        { if (yytext().charAt(0) == '&') { return dedentRoot(GdTypes.STRING_NAME); } return dedentRoot(GdTypes.STRING); }
     {STRING_CHAR}   { return dedentRoot(GdTypes.STRING); }
-    {STRING_MULTILINE} { return GdTypes.STRING; }
+    {STRING_MULTILINE} { int a = 1; return GdTypes.STRING; }
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
     {ANNOTATOR}     { return dedentRoot(GdTypes.ANNOTATOR); }

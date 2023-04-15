@@ -134,8 +134,6 @@ class GdParamAnnotator : Annotator {
         if (matched.any { it.all { p -> p } }) return
 
         if (paramLists.size > 1) {
-            val name = element.expr.text
-
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "")
                 .tooltip("""<html><body>

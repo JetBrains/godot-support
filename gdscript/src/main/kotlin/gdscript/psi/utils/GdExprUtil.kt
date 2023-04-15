@@ -163,16 +163,13 @@ object GdExprUtil {
 
         // Only 1 is an array
         if (arrays == 1) {
-            return right == GdKeywords.VARIANT || left == GdKeywords.VARIANT
-                || right == "Node" || left == "RID"
+            return allowedExceptions(left, right)
         } else if (arrays > 1) {
             left = left.parseFromSquare()
             right = right.parseFromSquare()
         }
 
-        if (right == GdKeywords.VARIANT || left == GdKeywords.VARIANT
-            || right == "Node" || left == "RID"
-        ) return true
+        if (allowedExceptions(left, right)) return true
 
         val classId = GdClassUtil.getClassIdElement(left, project) ?: return true
         val classElement = GdClassUtil.getOwningClassElement(classId)
@@ -192,6 +189,11 @@ object GdExprUtil {
         if (GdInheritanceUtil.isExtending(currentClassElement, left)) return true
 
         return false
+    }
+
+    private fun allowedExceptions(left: String, right: String): Boolean {
+        return arrayOf(GdKeywords.VARIANT, "RID").contains(left) ||
+                arrayOf(GdKeywords.VARIANT, "Node", "PackedScene").contains(right)
     }
 
 }
