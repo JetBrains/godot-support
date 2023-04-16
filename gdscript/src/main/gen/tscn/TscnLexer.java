@@ -562,7 +562,11 @@ class TscnLexer implements FlexLexer {
         zzAtEOF = true;
         zzDoEOF();
               {
-                return null;
+                if (yystate() == DATA_VALUE) {
+        yybegin(YYINITIAL);
+        return TscnTypes.VALUE;
+    }
+    return null;
               }
       }
       else {
@@ -650,45 +654,54 @@ class TscnLexer implements FlexLexer {
             // fall through
           case 23: break;
           case 9: 
-            { String text = yytext().toString().trim();
-          char firstChar = text.charAt(0);
-          char lastChar = text.charAt(text.length() - 1);
-          if (dataJson) {
-              if (firstChar == endingChar || lastChar == endingChar) {
-                  if (endingChar == '}' && lastChar != '}') {
-                      continue; // TODO hack protože json může mít pole jsonů
-                  }
+            { String line = yytext().toString();
+            if (line.startsWith("[") || line.contains(" = ")) {
+                yypushback(yylength());
+                yybegin(YYINITIAL);
+                return TscnTypes.VALUE;
+            } else {
+                continue;
+            }
 
-                  dataJson = false;
-                  yybegin(YYINITIAL);
-                  return TscnTypes.VALUE;
-              }
-              continue;
-          } else {
-              if (firstChar == '{' || firstChar == '"') {
-                  endingChar = endings.get(firstChar);
-                  // Check oneliners
-                  if (lastChar == endingChar) {
-                      yybegin(YYINITIAL);
-                      return TscnTypes.VALUE;
-                  }
-
-                  dataJson = true;
-                  continue;
-              } else {
-                  yybegin(YYINITIAL);
-                  return TscnTypes.VALUE;
-              }
-          }
+//          String text = yytext().toString().trim();
+//          char firstChar = text.charAt(0);
+//          char lastChar = text.charAt(text.length() - 1);
+//          if (dataJson) {
+//              if (firstChar == endingChar || lastChar == endingChar) {
+//                  if (endingChar == '}' && lastChar != '}') {
+//                      continue; // TODO hack protože json může mít pole jsonů
+//                  }
+//
+//                  dataJson = false;
+//                  yybegin(YYINITIAL);
+//                  return TscnTypes.VALUE;
+//              }
+//              continue;
+//          } else {
+//              if (firstChar == '{' || firstChar == '"') {
+//                  endingChar = endings.get(firstChar);
+//                  // Check oneliners
+//                  if (lastChar == endingChar) {
+//                      yybegin(YYINITIAL);
+//                      return TscnTypes.VALUE;
+//                  }
+//
+//                  dataJson = true;
+//                  continue;
+//              } else {
+//                  yybegin(YYINITIAL);
+//                  return TscnTypes.VALUE;
+//              }
+//          }
             } 
             // fall through
           case 24: break;
           case 10: 
-            { if (dataJson) {
+            { //          if (dataJson) {
               continue;
-          } else {
-              return TokenType.WHITE_SPACE;
-          }
+//          } else {
+//              return TokenType.WHITE_SPACE;
+//          }
             } 
             // fall through
           case 25: break;

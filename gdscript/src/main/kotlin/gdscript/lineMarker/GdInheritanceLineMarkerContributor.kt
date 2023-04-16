@@ -6,7 +6,7 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.ide.util.PsiElementListCellRenderer
 import com.intellij.psi.PsiElement
 import gdscript.GdIcon
-import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdMethodIdNmi
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdInheritanceUtil
 import gdscript.utils.VirtualFileUtil.localPath
@@ -25,7 +25,7 @@ class GdInheritanceLineMarkerContributor : RelatedItemLineMarkerProvider() {
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>,
     ) {
-        if (element !is GdMethodDeclTl) return
+        if (element !is GdMethodIdNmi) return
 
         val parent = GdInheritanceUtil.getExtendedElement(element)
         val results = mutableListOf<Any>()
@@ -57,7 +57,7 @@ class GdInheritanceLineMarkerContributor : RelatedItemLineMarkerProvider() {
                 }
             }
 
-        result.add(builder.createLineMarkerInfo(element))
+        result.add(builder.createLineMarkerInfo(element.firstChild))
     }
 
 }

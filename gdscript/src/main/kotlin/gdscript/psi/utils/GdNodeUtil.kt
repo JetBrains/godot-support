@@ -34,6 +34,8 @@ object GdNodeUtil {
         val script = TscnResourceUtil.findTscnByResource(element) ?: return emptyArray()
         val nodes = PsiTreeUtil.findChildrenOfType(script.containingFile, TscnNodeHeader::class.java)
 
+        // TODO přepsat a hlavně zindexovat a začlenit instanceOf
+//        val scriptPath = resource.split("/")
         val scriptPath = nodes.find { it.scriptResource == resource }?.nodePath?.split("/") ?: return emptyArray()
 
         return nodes.map {

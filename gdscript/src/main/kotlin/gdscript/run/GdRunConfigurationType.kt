@@ -5,19 +5,22 @@ import com.intellij.execution.configurations.ConfigurationType
 import gdscript.GdIcon
 import javax.swing.Icon
 
-object GdRunConfigurationType : ConfigurationType {
+class GdRunConfigurationType : ConfigurationType {
 
-    val ID = "GodotRunConfiguration";
+    companion object {
+        val ID = "GodotRunConfiguration"
+        val INSTANCE: GdRunConfigurationType = GdRunConfigurationType()
+    }
 
-    override fun getDisplayName(): String = "Godot";
+    override fun getDisplayName(): String = "Godot"
 
-    override fun getConfigurationTypeDescription(): String = "Godot run configuration type";
+    override fun getConfigurationTypeDescription(): String = "Godot run configuration type"
 
-    override fun getIcon(): Icon = GdIcon.FILE;
+    override fun getIcon(): Icon = GdIcon.FILE
 
-    override fun getId(): String = ID;
+    override fun getId(): String = ID
 
     override fun getConfigurationFactories(): Array<ConfigurationFactory> =
-        arrayOf(GdConfigurationFactory);
+        arrayOf(GdConfigurationFactory)
 
 }

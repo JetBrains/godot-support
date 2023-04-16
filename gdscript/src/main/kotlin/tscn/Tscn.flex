@@ -135,43 +135,52 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 
 <DATA_VALUE> {
     {WHITE_SPACE_ANY}  {
-          if (dataJson) {
+//          if (dataJson) {
               continue;
-          } else {
-              return TokenType.WHITE_SPACE;
-          }
+//          } else {
+//              return TokenType.WHITE_SPACE;
+//          }
     }
     {DATA_LINE}    {
-          String text = yytext().toString().trim();
-          char firstChar = text.charAt(0);
-          char lastChar = text.charAt(text.length() - 1);
-          if (dataJson) {
-              if (firstChar == endingChar || lastChar == endingChar) {
-                  if (endingChar == '}' && lastChar != '}') {
-                      continue; // TODO hack protože json může mít pole jsonů
-                  }
+            String line = yytext().toString();
+            if (line.startsWith("[") || line.contains(" = ")) {
+                yypushback(yylength());
+                yybegin(YYINITIAL);
+                return TscnTypes.VALUE;
+            } else {
+                continue;
+            }
 
-                  dataJson = false;
-                  yybegin(YYINITIAL);
-                  return TscnTypes.VALUE;
-              }
-              continue;
-          } else {
-              if (firstChar == '{' || firstChar == '"') {
-                  endingChar = endings.get(firstChar);
-                  // Check oneliners
-                  if (lastChar == endingChar) {
-                      yybegin(YYINITIAL);
-                      return TscnTypes.VALUE;
-                  }
-
-                  dataJson = true;
-                  continue;
-              } else {
-                  yybegin(YYINITIAL);
-                  return TscnTypes.VALUE;
-              }
-          }
+//          String text = yytext().toString().trim();
+//          char firstChar = text.charAt(0);
+//          char lastChar = text.charAt(text.length() - 1);
+//          if (dataJson) {
+//              if (firstChar == endingChar || lastChar == endingChar) {
+//                  if (endingChar == '}' && lastChar != '}') {
+//                      continue; // TODO hack protože json může mít pole jsonů
+//                  }
+//
+//                  dataJson = false;
+//                  yybegin(YYINITIAL);
+//                  return TscnTypes.VALUE;
+//              }
+//              continue;
+//          } else {
+//              if (firstChar == '{' || firstChar == '"') {
+//                  endingChar = endings.get(firstChar);
+//                  // Check oneliners
+//                  if (lastChar == endingChar) {
+//                      yybegin(YYINITIAL);
+//                      return TscnTypes.VALUE;
+//                  }
+//
+//                  dataJson = true;
+//                  continue;
+//              } else {
+//                  yybegin(YYINITIAL);
+//                  return TscnTypes.VALUE;
+//              }
+//          }
     }
 }
 
@@ -193,6 +202,10 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 {NEW_LINE}         { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
+    if (yystate() == DATA_VALUE) {
+        yybegin(YYINITIAL);
+        return TscnTypes.VALUE;
+    }
     return null;
 }
 

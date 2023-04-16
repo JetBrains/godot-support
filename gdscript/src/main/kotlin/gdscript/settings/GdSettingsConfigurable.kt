@@ -10,17 +10,17 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
     private var component: GdSettingsComponent? = null
 
     override fun getDisplayName(): String {
-        return "GdScript Settings";
+        return "GdScript Settings"
     }
 
     override fun getPreferredFocusedComponent(): JComponent? {
-        return component?.preferredFocusedComponent();
+        return component?.preferredFocusedComponent()
     }
 
     override fun createComponent(): JComponent? {
-        component = GdSettingsComponent();
+        component = GdSettingsComponent()
 
-        return component?.panel;
+        return component?.panel
     }
 
     override fun isModified(): Boolean {
