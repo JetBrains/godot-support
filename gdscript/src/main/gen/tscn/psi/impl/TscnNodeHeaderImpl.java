@@ -90,4 +90,10 @@ public class TscnNodeHeaderImpl extends TscnNodeHeaderElementImpl implements Tsc
     return TscnPsiUtils.getGroups(this);
   }
 
+  @Override
+  @NotNull
+  public String getInstanceResource() {
+    return TscnPsiUtils.getInstanceResource(this);
+  }
+
 }

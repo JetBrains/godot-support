@@ -15,6 +15,8 @@ import tscn.psi.TscnResourceHeader
  */
 object TscnResourceHeaderElementType : IStubElementType<TscnResourceHeaderStub, TscnResourceHeader>("extResource", TscnLanguage) {
 
+    val TO_INDEX = arrayOf("Script", "PackedScene")
+
     @JvmStatic
     fun getInstance(debugName: String): TscnResourceHeaderElementType = TscnResourceHeaderElementType
 
@@ -45,7 +47,7 @@ object TscnResourceHeaderElementType : IStubElementType<TscnResourceHeaderStub, 
     override fun shouldCreateStub(node: ASTNode): Boolean {
         val element = node.psi as TscnResourceHeader;
 
-        return element.type == "Script";
+        return TO_INDEX.contains(element.type)
     }
 
 }

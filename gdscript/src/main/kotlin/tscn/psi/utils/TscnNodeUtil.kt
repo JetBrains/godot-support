@@ -51,6 +51,20 @@ object TscnNodeUtil {
             .toTypedArray()
     }
 
+    fun getInstanceResource(element: TscnNodeHeader): String {
+        val stub = element.stub;
+        if (stub != null) return stub.getScriptResource()
+
+        // ExtResource("1"), ExtResource( 1 )
+        var id = TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_INSTANCE)
+        if (id.isBlank()) return ""
+        id = parseResourceId(id)
+
+        val resources = PsiTreeUtil.findChildrenOfType(element.containingFile, TscnResourceHeader::class.java)
+
+        return resources.find { it.id == id }?.path ?: ""
+    }
+
     /** Data lines */
 
     fun isUniqueNameOwner(element: TscnNodeHeader): Boolean {
@@ -62,16 +76,16 @@ object TscnNodeUtil {
 
     fun getScriptResource(element: TscnNodeHeader): String {
         val stub = element.stub;
-        if (stub != null) return stub.getScriptResource();
+        if (stub != null) return stub.getScriptResource()
 
         // ExtResource("2_s5kgd"), ExtResource( 1 )
-        var id = TscnHeaderUtils.getDataValue(element.parent as TscnParagraph, TscnHeaderUtils.DL_SCRIPT);
-        if (id.isBlank()) return "";
-        id = id.removePrefix("ExtResource(").removeSuffix(")").trim('"', ' ')
+        var id = TscnHeaderUtils.getDataValue(element.parent as TscnParagraph, TscnHeaderUtils.DL_SCRIPT)
+        if (id.isBlank()) return ""
+        id = parseResourceId(id)
 
-        val scripts = PsiTreeUtil.findChildrenOfType(element.containingFile, TscnResourceHeader::class.java);
+        val scripts = PsiTreeUtil.findChildrenOfType(element.containingFile, TscnResourceHeader::class.java)
 
-        return scripts.find { it.id == id }?.path ?: "";
+        return scripts.find { it.id == id }?.path ?: ""
     }
 
     /** Other */
@@ -125,6 +139,10 @@ object TscnNodeUtil {
             if (name.startsWith(META_PREFIX)) name.substring(META_PREFIX.length)
             else null
         }.toTypedArray()
+    }
+
+    private fun parseResourceId(resource: String): String {
+        return resource.removePrefix("ExtResource(").trim().removeSuffix(")").trim('"')
     }
 
 }

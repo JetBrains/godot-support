@@ -12,6 +12,7 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
     private var parentPath: String = ""
     private var nodePath: String = ""
     private var scriptResource: String = ""
+    private var instnaceResource: String = ""
     private var isUniqueNameOwner: Boolean = false
     private var groups: Array<String> = emptyArray()
 
@@ -23,6 +24,7 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
         nodePath: String,
         isUniqueNameOwner: Boolean,
         scriptResource: String,
+        instanceResource: String,
         groups: Array<String>,
     ) : super(parent,
         TscnNodeHeaderElementType) {
@@ -32,6 +34,8 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
         this.nodePath = nodePath
         this.isUniqueNameOwner = isUniqueNameOwner
         this.scriptResource = scriptResource
+        this.instnaceResource = instanceResource
+        this.groups = groups
     }
 
     override fun getName(): String = name
@@ -39,6 +43,8 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
     override fun getType(): String = type
 
     override fun getScriptResource(): String = scriptResource
+
+    override fun getInstanceResource(): String = instnaceResource
 
     override fun getNodePath(): String = nodePath
 

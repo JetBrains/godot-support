@@ -4,8 +4,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.model.GdNodeHolder
 import gdscript.psi.GdNodePath
+import gdscript.utils.VirtualFileUtil.resourcePath
+import tscn.index.impl.TscnNodeIndex
 import tscn.index.impl.TscnResourceIndex
 import tscn.psi.TscnNodeHeader
+import tscn.psi.TscnParagraph
+import tscn.psi.TscnResourceHeader
 import tscn.psi.utils.TscnResourceUtil
 
 /**
@@ -30,15 +34,29 @@ object GdNodeUtil {
      * List all available nodes for given file with parsed relative paths
      */
     fun listNodes(element: PsiElement): Array<GdNodeHolder> {
-        val resource = PsiGdResourceUtil.resourcePath(element.containingFile.originalFile.virtualFile)
-        val script = TscnResourceUtil.findTscnByResource(element) ?: return emptyArray()
-        val nodes = PsiTreeUtil.findChildrenOfType(script.containingFile, TscnNodeHeader::class.java)
+        val scripts = TscnResourceUtil.findTscnByResources(element)
+        if (scripts.isEmpty()) return emptyArray()
 
-        // TODO přepsat a hlavně zindexovat a začlenit instanceOf
-//        val scriptPath = resource.split("/")
-        val scriptPath = nodes.find { it.scriptResource == resource }?.nodePath?.split("/") ?: return emptyArray()
+        val connectedNodes = scripts.flatMap { listConnectedNodesForResource(it) }
+
+        return connectedNodes.flatMap { listAvailableNodeForNode(it) }
+            .toTypedArray()
+    }
+
+    private fun listConnectedNodesForResource(resource: TscnResourceHeader): Iterable<TscnNodeHeader> {
+        val path = resource.path
+
+        return PsiTreeUtil.findChildrenOfType(resource.containingFile, TscnNodeHeader::class.java)
+            .filter { it.scriptResource == path }
+    }
+
+    private fun listAvailableNodeForNode(resourceNode: TscnNodeHeader): Iterable<GdNodeHolder> {
+        val scriptPath = resourceNode.scriptResource.split("/")
+        val nodes = PsiTreeUtil.findChildrenOfType(resourceNode.containingFile, TscnNodeHeader::class.java)
 
         return nodes.map {
+            // TODO upravit relativní cesty, + rekurze na Instance
+
             val nodePath = it.nodePath
             val path = nodePath.split("/")
 
@@ -70,7 +88,11 @@ object GdNodeUtil {
             }
 
             GdNodeHolder(it, relativePath, uniqueId, tail, "$$hint")
-        }.toTypedArray();
+        }
+    }
+
+    private fun appendAvailableNodes() {
+
     }
 
 }

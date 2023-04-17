@@ -8,6 +8,7 @@ interface TscnNodeHeaderStub : StubElement<TscnNodeHeader> {
     fun getName(): String
     fun getType(): String
     fun getScriptResource(): String
+    fun getInstanceResource(): String
     fun getParentPath(): String
     fun getNodePath(): String
     fun isUniqueNameOwner(): Boolean
