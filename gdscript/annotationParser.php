@@ -1,6 +1,6 @@
 <?php
 
-$filename = "@GdScript.xml";
+$filename = "@GDScript.xml";
 $target   = "./src/main/kotlin/gdscript/utils/GdAnnotationUtil.kt";
 
 $baseContent = "package gdscript.utils
@@ -31,7 +31,7 @@ object GdAnnotationUtil {
 ";
 
 $data    = "";
-$content = file_get_contents(sprintf("./classes/%s", $filename));
+$content = file_get_contents(sprintf("./godot-master/modules/gdscript/doc_classes/%s", $filename));
 $xml     = (array)simplexml_load_string($content);
 
 foreach ($xml['annotations'] ?? [] as $value) {

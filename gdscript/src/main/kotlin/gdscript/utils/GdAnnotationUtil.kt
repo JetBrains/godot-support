@@ -19,6 +19,49 @@ object GdAnnotationUtil {
 
     // Name -> GdAnnotation
     val ANNOTATIONS = mapOf(
+        "export" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_category" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_color_no_alpha" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_dir" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_enum" to GdAnnotation(true, 0, linkedMapOf()),
+        "export_exp_easing" to GdAnnotation(true, 0, linkedMapOf()),
+        "export_file" to GdAnnotation(true, 0, linkedMapOf()),
+        "export_flags" to GdAnnotation(true, 0, linkedMapOf()),
+        "export_flags_2d_navigation" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_flags_2d_physics" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_flags_2d_render" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_flags_3d_navigation" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_flags_3d_physics" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_flags_3d_render" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_global_dir" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_global_file" to GdAnnotation(true, 0, linkedMapOf()),
+        "export_group" to GdAnnotation(false, 1, linkedMapOf(
+            "name" to "String",
+            "prefix" to "String",
+        )),
+        "export_multiline" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_node_path" to GdAnnotation(true, 0, linkedMapOf()),
+        "export_placeholder" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_range" to GdAnnotation(true, 2, linkedMapOf(
+            "min" to "float",
+            "max" to "float",
+            "step" to "float",
+            "extra_hints" to "String",
+        )),
+        "export_subgroup" to GdAnnotation(false, 1, linkedMapOf(
+            "name" to "String",
+            "prefix" to "String",
+        )),
+        "icon" to GdAnnotation(false, 0, linkedMapOf()),
+        "onready" to GdAnnotation(false, 0, linkedMapOf()),
+        "rpc" to GdAnnotation(true, 0, linkedMapOf(
+            "mode" to "String",
+            "sync" to "String",
+            "transfer_mode" to "String",
+            "transfer_channel" to "int",
+        )),
+        "tool" to GdAnnotation(false, 0, linkedMapOf()),
+        "warning_ignore" to GdAnnotation(true, 0, linkedMapOf()),
 
     )
 

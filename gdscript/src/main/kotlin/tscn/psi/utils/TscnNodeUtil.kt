@@ -2,6 +2,7 @@ package tscn.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import tscn.index.impl.TscnNodeIndex
 import tscn.psi.TscnDataLine
@@ -91,23 +92,31 @@ object TscnNodeUtil {
     /** Other */
 
     fun getNodePath(element: TscnNodeHeader): String {
-        val stub = element.stub;
-        if (stub != null) return stub.getNodePath();
+        val stub = element.stub
+        if (stub != null) return stub.getNodePath()
 
-        val parentPath = element.parentPath;
+        val parentPath = element.parentPath
+
+//        val rootName = PsiTreeUtil
+//            .findChildrenOfType(element.containingFile, TscnNodeHeader::class.java)
+//            .find { it.parentPath == "" }?.name ?: ""
 
         return when(parentPath) {
-            "" -> "..";
-            "." -> "../${element.name}";
-            else -> "../$parentPath/${element.name}";
+            "" -> ".."
+            "." -> "../${element.name}"
+            else -> "../$parentPath/${element.name}"
+//            "" -> rootName
+//            "." -> "$rootName/${element.name}"
+//            else -> "$rootName/$parentPath/${element.name}"
         }
     }
 
+    @Deprecated("is it needed after Node rework?")
     fun getDirectParentPath(element: TscnNodeHeader): String {
         return when(val parentPath = element.parentPath) {
-            "" -> ".";
-            "." -> element.name;
-            else -> "$parentPath/${element.name}";
+            "" -> "."
+            "." -> element.name
+            else -> "$parentPath/${element.name}"
         }
     }
 
