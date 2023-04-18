@@ -6,15 +6,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdFileResIndex
 import gdscript.model.GdNodeHolder
 import gdscript.psi.GdNodePath
-import gdscript.utils.PsiElementUtil.psi
 import gdscript.utils.VirtualFileUtil.getPsiFile
-import gdscript.utils.VirtualFileUtil.resourcePath
-import tscn.index.impl.TscnNodeIndex
-import tscn.index.impl.TscnResourceIndex
 import tscn.psi.TscnNodeHeader
-import tscn.psi.TscnParagraph
 import tscn.psi.TscnResourceHeader
-import tscn.psi.utils.TscnNodeUtil
 import tscn.psi.utils.TscnResourceUtil
 import kotlin.io.path.Path
 import kotlin.io.path.relativeTo
