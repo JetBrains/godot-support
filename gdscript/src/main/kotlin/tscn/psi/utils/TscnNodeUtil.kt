@@ -2,7 +2,6 @@ package tscn.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import tscn.index.impl.TscnNodeIndex
 import tscn.psi.TscnDataLine
@@ -95,19 +94,10 @@ object TscnNodeUtil {
         val stub = element.stub
         if (stub != null) return stub.getNodePath()
 
-        val parentPath = element.parentPath
-
-//        val rootName = PsiTreeUtil
-//            .findChildrenOfType(element.containingFile, TscnNodeHeader::class.java)
-//            .find { it.parentPath == "" }?.name ?: ""
-
-        return when(parentPath) {
+        return when(val parentPath = element.parentPath) {
             "" -> ".."
             "." -> "../${element.name}"
             else -> "../$parentPath/${element.name}"
-//            "" -> rootName
-//            "." -> "$rootName/${element.name}"
-//            else -> "$rootName/$parentPath/${element.name}"
         }
     }
 
@@ -151,7 +141,7 @@ object TscnNodeUtil {
     }
 
     private fun parseResourceId(resource: String): String {
-        return resource.removePrefix("ExtResource(").trim().removeSuffix(")").trim('"')
+        return resource.removePrefix("ExtResource(").trim().removeSuffix(")").trim('"', ' ')
     }
 
 }

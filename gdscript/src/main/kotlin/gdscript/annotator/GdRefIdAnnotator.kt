@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.*
@@ -45,9 +46,15 @@ class GdRefIdAnnotator : Annotator {
 
                 val calledUponType = GdClassMemberUtil.calledUpon(element)
                 // For undefined types do not mark it as error
-                if (calledUponType != null &&
-                    (calledUponType.returnType == "" || calledUponType.returnType == GdKeywords.VARIANT)
-                ) return@run GdHighlighterColors.MEMBER
+                if (calledUponType != null) {
+                    // TODO vázáno na git issue, že připojený script přidává extra metody...
+                    if (PsiTreeUtil.findChildOfType(calledUponType, GdNodePath::class.java) != null)
+                        return@run GdHighlighterColors.MEMBER
+
+                    val callType = calledUponType.returnType
+                    if (arrayOf(GdKeywords.VARIANT, "", "Node", "Resource", "null").contains(callType))
+                        return@run GdHighlighterColors.MEMBER
+                }
 
                 if (element.getCallExpr() != null && GdClassMemberUtil.hasMethodCheck(element))
                     return@run GdHighlighterColors.METHOD_CALL

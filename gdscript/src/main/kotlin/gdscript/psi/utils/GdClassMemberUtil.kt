@@ -62,6 +62,7 @@ object GdClassMemberUtil {
         if (calledOnPsi != null && calledOnPsi.text != GdKeywords.SELF) {
             // Check if there is an assertion check 'if (node is Node3D):'
             calledOn = findIsTypeCheck(calledOnPsi) ?: calledOnPsi.returnType
+            if (calledOn.startsWith("Array[")) calledOn = "Array"
             static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn);
         }
 
