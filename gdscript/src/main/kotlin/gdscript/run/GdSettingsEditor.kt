@@ -9,24 +9,24 @@ import javax.swing.*
 
 class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
 
-    lateinit var myPanel: JPanel;
-    lateinit var godotExe: LabeledComponent<TextFieldWithBrowseButton>;
-    lateinit var tscn: LabeledComponent<TextFieldWithBrowseButton>;
+    lateinit var myPanel: JPanel
+    lateinit var godotExe: LabeledComponent<TextFieldWithBrowseButton>
+    lateinit var tscn: LabeledComponent<TextFieldWithBrowseButton>
 
     override fun resetEditorFrom(gdRunConfiguration: GdRunConfiguration) {
-        godotExe.getComponent().setText(gdRunConfiguration.getGodotExe());
-        tscn.getComponent().setText(gdRunConfiguration.getTscn());
+        godotExe.getComponent().setText(gdRunConfiguration.getGodotExe())
+        tscn.getComponent().setText(gdRunConfiguration.getTscn())
     }
 
     override fun applyEditorTo(gdRunConfiguration: GdRunConfiguration) {
-        gdRunConfiguration.setGodotExe(godotExe.getComponent().getText());
-        gdRunConfiguration.setTscn(tscn.getComponent().getText());
+        gdRunConfiguration.setGodotExe(godotExe.getComponent().getText())
+        gdRunConfiguration.setTscn(tscn.getComponent().getText())
     }
 
-    override fun createEditor(): JComponent = myPanel;
+    override fun createEditor(): JComponent = myPanel
 
     private fun createUIComponents() {
-        godotExe = LabeledComponent();
+        godotExe = LabeledComponent()
         val godotField = TextFieldWithBrowseButton()
         godotField.text = "Godot.exe"
         godotField.toolTipText = "Godot.exe"
@@ -36,9 +36,9 @@ class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
             false,
             false,
             false)));
-        godotExe.setComponent(godotField);
+        godotExe.setComponent(godotField)
 
-        tscn = LabeledComponent();
+        tscn = LabeledComponent()
         val tscnField = TextFieldWithBrowseButton()
         tscnField.text = "Node.tscn"
         tscnField.toolTipText = "Node.tscn"
@@ -48,7 +48,7 @@ class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
             false,
             false,
             false)));
-        tscn.setComponent(tscnField);
+        tscn.setComponent(tscnField)
     }
 
 }
