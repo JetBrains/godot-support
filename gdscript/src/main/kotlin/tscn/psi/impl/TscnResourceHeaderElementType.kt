@@ -18,7 +18,7 @@ object TscnResourceHeaderElementType : IStubElementType<TscnResourceHeaderStub, 
     val TO_INDEX = arrayOf("Script", "PackedScene")
 
     @JvmStatic
-    fun getInstance(debugName: String): TscnResourceHeaderElementType = TscnResourceHeaderElementType
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): TscnResourceHeaderElementType = TscnResourceHeaderElementType
 
     override fun getExternalId(): String = "tscn.extResource"
 

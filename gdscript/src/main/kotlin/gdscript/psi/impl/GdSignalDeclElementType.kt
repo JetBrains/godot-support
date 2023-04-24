@@ -11,7 +11,7 @@ import gdscript.psi.utils.PsiGdParameterUtil
 object GdSignalDeclElementType : IStubElementType<GdSignalDeclStub, GdSignalDeclTl>("signalDecl", GdLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): GdSignalDeclElementType {
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdSignalDeclElementType {
         return GdSignalDeclElementType;
     }
 

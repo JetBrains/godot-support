@@ -12,7 +12,7 @@ object TscnNodeHeaderElementType :
     IStubElementType<TscnNodeHeaderStub, TscnNodeHeader>("nodeHeader", TscnLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): TscnNodeHeaderElementType = TscnNodeHeaderElementType
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): TscnNodeHeaderElementType = TscnNodeHeaderElementType
 
     override fun getExternalId(): String = "tscn.nodeHeader"
 

@@ -14,7 +14,7 @@ import gdscript.psi.utils.PsiGdParameterUtil
 object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDeclTl>("methodDecl", GdLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): GdMethodDeclElementType {
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdMethodDeclElementType {
         return GdMethodDeclElementType;
     }
 

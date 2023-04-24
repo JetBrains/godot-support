@@ -11,7 +11,7 @@ import project.psi.ProjectData
 object ProjectDataElementType : IStubElementType<ProjectDataStub, ProjectData>("data", ProjectLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): ProjectDataElementType = ProjectDataElementType
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): ProjectDataElementType = ProjectDataElementType
 
     override fun getExternalId(): String = "project.data"
 

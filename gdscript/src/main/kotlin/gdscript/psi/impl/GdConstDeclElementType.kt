@@ -10,7 +10,7 @@ import gdscript.psi.GdConstDeclTl
 object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>("constDecl", GdLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): GdConstDeclElementType {
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdConstDeclElementType {
         return GdConstDeclElementType;
     }
 

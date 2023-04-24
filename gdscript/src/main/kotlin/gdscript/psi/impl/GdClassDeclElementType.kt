@@ -24,7 +24,7 @@ object GdClassDeclElementType : IStubElementType<GdClassDeclStub, GdClassDeclTl>
     }
 
     @JvmStatic
-    fun getInstance(debugName: String): GdClassDeclElementType {
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdClassDeclElementType {
         return GdClassDeclElementType
     }
 

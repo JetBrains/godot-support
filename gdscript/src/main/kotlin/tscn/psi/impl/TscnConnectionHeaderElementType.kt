@@ -15,7 +15,7 @@ import tscn.psi.TscnConnectionHeader
 object TscnConnectionHeaderElementType : IStubElementType<TscnConnectionHeaderStub, TscnConnectionHeader>("connection", TscnLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): TscnConnectionHeaderElementType = TscnConnectionHeaderElementType
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): TscnConnectionHeaderElementType = TscnConnectionHeaderElementType
 
     override fun getExternalId(): String = "tscn.connection"
 

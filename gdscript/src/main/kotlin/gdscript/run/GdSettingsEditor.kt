@@ -26,6 +26,7 @@ class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
     override fun createEditor(): JComponent = myPanel
 
     private fun createUIComponents() {
+        myPanel = JPanel()
         godotExe = LabeledComponent()
         val godotField = TextFieldWithBrowseButton()
         godotField.text = "Godot.exe"
@@ -35,7 +36,7 @@ class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
             false,
             false,
             false,
-            false)));
+            false)))
         godotExe.setComponent(godotField)
 
         tscn = LabeledComponent()
@@ -47,7 +48,7 @@ class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
             false,
             false,
             false,
-            false)));
+            false)))
         tscn.setComponent(tscnField)
     }
 

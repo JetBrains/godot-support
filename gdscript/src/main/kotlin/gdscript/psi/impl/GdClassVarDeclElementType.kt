@@ -10,7 +10,7 @@ import gdscript.psi.GdClassVarDeclTl
 object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassVarDeclTl>("classVarDecl", GdLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): GdClassVarDeclElementType {
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdClassVarDeclElementType {
         return GdClassVarDeclElementType;
     }
 

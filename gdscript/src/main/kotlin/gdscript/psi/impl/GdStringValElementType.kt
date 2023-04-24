@@ -11,7 +11,7 @@ import gdscript.psi.GdStringVal
 object GdStringValElementType : IStubElementType<GdStringValStub, GdStringVal>("stringVal", GdLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): GdStringValElementType {
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdStringValElementType {
         return GdStringValElementType;
     }
 

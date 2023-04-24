@@ -11,7 +11,7 @@ import project.psi.ProjectSection
 object ProjectSectionElementType : IStubElementType<ProjectSectionStub, ProjectSection>("section", ProjectLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): ProjectSectionElementType = ProjectSectionElementType
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): ProjectSectionElementType = ProjectSectionElementType
 
     override fun getExternalId(): String = "project.section"
 

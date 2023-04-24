@@ -12,7 +12,7 @@ object TscnParagraphElementType :
     IStubElementType<TscnParagraphStub, TscnParagraph>("paragraph", TscnLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): TscnParagraphElementType = TscnParagraphElementType
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): TscnParagraphElementType = TscnParagraphElementType
 
     override fun getExternalId(): String = "tscn.paragraph"
 

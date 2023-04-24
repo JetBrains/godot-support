@@ -14,7 +14,7 @@ import gdscript.psi.utils.PsiGdEnumUtil
 object GdEnumDeclElementType : IStubElementType<GdEnumDeclStub, GdEnumDeclTl>("enumDecl", GdLanguage) {
 
     @JvmStatic
-    fun getInstance(debugName: String): GdEnumDeclElementType {
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdEnumDeclElementType {
         return GdEnumDeclElementType;
     }
 

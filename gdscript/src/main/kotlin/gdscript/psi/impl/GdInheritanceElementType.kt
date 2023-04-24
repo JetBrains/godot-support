@@ -14,7 +14,7 @@ object GdInheritanceElementType : IStubElementType<GdInheritanceStub, GdInherita
     }
 
     @JvmStatic
-    fun getInstance(debugName: String): GdInheritanceElementType {
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdInheritanceElementType {
         return GdInheritanceElementType
     }
 

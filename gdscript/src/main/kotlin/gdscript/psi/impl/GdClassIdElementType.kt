@@ -48,7 +48,7 @@ object GdClassIdElementType : IStubElementType<GdClassIdStub, GdClassNameNmi>("g
     }
 
     @JvmStatic
-    fun getInstance(debugName: String): GdClassIdElementType {
+    fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdClassIdElementType {
         return GdClassIdElementType
     }
 
