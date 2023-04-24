@@ -17,6 +17,10 @@ Please follow installation instructions or a [video](./documentation/installatio
 In order to dedent on backspace instead of deleting a line, you can change editor's settings under:  
 Editor -> General -> Smart Keys -> Unindent on Backspace
 
+## Known issues
+
+IDE must be opened from Godot's root folder, otherwise resource paths are incorrect [#issue](https://gitlab.com/IceExplosive/gdscript/-/issues/97)
+
 ## List of features
 
 Video preview (version 0.7): https://youtu.be/hjtzJW25GMI  
