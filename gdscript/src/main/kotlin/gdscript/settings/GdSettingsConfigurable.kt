@@ -29,12 +29,14 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
         return component?.hidePrivate != settings.hidePrivate
                 || component?.sdkPath != settings.sdkPath
                 || component?.shortTyped != settings.shortTyped
+                || component?.annotators != settings.annotators
     }
 
     override fun apply() {
         val settings = GdSettingsState.getInstance().state
         settings.hidePrivate = component?.hidePrivate ?: true
         settings.shortTyped = component?.shortTyped ?: false
+        settings.annotators = component?.annotators ?: GdState.OFF
 
         val oldSdk = settings.sdkPath
         settings.sdkPath = component?.sdkPath
@@ -48,6 +50,7 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
         component?.hidePrivate = settings.hidePrivate
         component?.sdkPath = settings.sdkPath
         component?.shortTyped = settings.shortTyped
+        component?.annotators = settings.annotators
     }
 
     override fun disposeUIResources() {
