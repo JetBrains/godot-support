@@ -32,7 +32,7 @@ class GdResourceTypeAnnotator : Annotator {
         val text = element.text.trim('"')
         if (text.startsWith("res://") && GdFileResIndex.getFiles(text, element.project).isEmpty()) {
             holder
-                .newAnnotation(GdState.getLevel(state), "Resource not found")
+                .newAnnotation(GdState.selectedLevel(state), "Resource not found")
                 .range(TextRange.create(element.textRange.startOffset + 1, element.textRange.endOffset - 1))
                 .create();
         }
@@ -44,7 +44,7 @@ class GdResourceTypeAnnotator : Annotator {
         if (node != null) return
 
         holder
-            .newAnnotation(GdState.getLevel(state), "Node not found")
+            .newAnnotation(GdState.selectedLevel(state), "Node not found")
             .range(element.textRange)
             .create()
     }

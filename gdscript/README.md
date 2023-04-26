@@ -13,15 +13,21 @@ Please follow installation instructions or a [video](./documentation/installatio
 4. Within Settings -> Languages & Frameworks -> GdScript add extracted folder into GdScript SDK field
    - SDK is rebuilt daily from current Godot master so after new Godot release, download new SDK as well
 
-## Recommended settings:
-In order to dedent on backspace instead of deleting a line, you can change editor's settings under:  
-Editor -> General -> Smart Keys -> Unindent on Backspace
+## Plugin settings:
+- In order to dedent on backspace instead of deleting a line, you can change editor's settings under:  
+Editor -> General -> Smart Keys -> UnIndent on Backspace
+- By default, few of annotators are off due dynamics of Godot and GdScript, you can change it in settings, but then
+it's required to be thorough when specifying types
+- Warning that variable is not typed is disabled by default, but I recommend to opt-in (types can be added via alt+enter)  
 
 ## Known limitations
 
 - IDE must be opened from Godot's root folder, otherwise resource paths are incorrect [#issue](https://gitlab.com/IceExplosive/gdscript/-/issues/97)
 - Attached scripts are not parsed -> if you create a method and attach it to Node3D f.e. autocompletion won't find it
 unless you add class_name and specify that given object is that class (will be supported later on, but can't promise when)
+- get_node(), get_parent() and so on atm do not parse actual Node, but only as a generic Node type (will be supported later on)
+- get_window() (and maybe few other methods) return different class based on context (SubViewport, Window, ...),
+plugin specify it as base Viewport class, so to get completion/check for inherited ones available you have to manually specify the type
 - Dynamic nodes and such added at runtime cannot be predicted and thus no autocompletion
 
 ## List of features

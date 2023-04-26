@@ -19,6 +19,7 @@ class GdSettingsComponent {
 
     private val hidePrivateCheck = JBCheckBox("Hide _private members from completion")
     private val shortTypedCheck = JBCheckBox("Use short typing 'var a := 1' instead of 'var a: int = 1'")
+    private val shouldTypeCheck = JBCheckBox("Enable variable not typed warning")
     private val descriptor: FileChooserDescriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
     private val sdkField = JTextField("GdScript SDK")
     private val annotatorsCb = ComboBox<String>()
@@ -40,6 +41,7 @@ class GdSettingsComponent {
         panel = FormBuilder.createFormBuilder()
             .addLabeledComponent("GdScript SDK", sdk, 1)
             .addComponent(hidePrivateCheck, 1)
+            .addComponent(shouldTypeCheck, 1)
             .addComponent(shortTypedCheck, 1)
             .addLabeledComponent("Reference, Node, Resource checks", annotatorsCb, 1)
             .addComponentFillVertically(JPanel(), 0)
@@ -64,6 +66,12 @@ class GdSettingsComponent {
         get() = shortTypedCheck.isSelected
         set(newStatus) {
             shortTypedCheck.isSelected = newStatus
+        }
+
+    var shouldType: Boolean
+        get() = shouldTypeCheck.isSelected
+        set(newStatus) {
+            shouldTypeCheck.isSelected = newStatus
         }
 
     var annotators: String

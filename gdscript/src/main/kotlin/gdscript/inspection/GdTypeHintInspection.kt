@@ -9,6 +9,7 @@ import gdscript.GdKeywords
 import gdscript.inspection.quickFix.GdAddVariableTypeHintFix
 import gdscript.psi.*
 import gdscript.settings.GdSettingsState
+import gdscript.settings.GdState
 
 class GdTypeHintInspection : LocalInspectionTool() {
 
@@ -67,10 +68,11 @@ class GdTypeHintInspection : LocalInspectionTool() {
         if (realType.isEmpty()) return
         if (realType == GdKeywords.VARIANT || realType == GdKeywords.NULL) return
 
+        val warn = GdSettingsState.getInstance().state.shouldType
         holder.registerProblem(
             element,
             "Field's return type can be specified as $realType",
-            ProblemHighlightType.WEAK_WARNING,
+            GdState.shouldWarnInspection(warn),
             GdAddVariableTypeHintFix(element, realType, fullType)
         )
     }

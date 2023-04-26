@@ -64,7 +64,7 @@ class GdRefIdAnnotator : Annotator {
 
                 if (state != GdState.OFF) {
                     holder
-                        .newAnnotation(GdState.getLevel(state), "Reference [${element.text}] not found")
+                        .newAnnotation(GdState.selectedLevel(state), "Reference [${element.text}] not found")
                         .range(element.textRange)
                         .create()
                     return
