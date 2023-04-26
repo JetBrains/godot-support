@@ -43,7 +43,7 @@ class GdAddTraitAction : SimpleCodeInsightAction() {
         }
 
         JBPopupFactory.getInstance()
-            .createPopupChooserBuilder(ContainerUtil.newArrayList(
+            .createPopupChooserBuilder(ArrayList(
                 GdFileUtil.listTraits(project).map {
                     GdTraitClass(it.nameWithoutExtension, it.resourcePath())
                 }
