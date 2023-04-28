@@ -60,6 +60,7 @@ object GdAnnotationUtil {
             "transfer_mode" to "String",
             "transfer_channel" to "int",
         )),
+        "static_unload" to GdAnnotation(false, 0, linkedMapOf()),
         "tool" to GdAnnotation(false, 0, linkedMapOf()),
         "warning_ignore" to GdAnnotation(true, 0, linkedMapOf()),
 
