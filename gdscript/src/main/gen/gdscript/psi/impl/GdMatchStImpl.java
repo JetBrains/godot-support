@@ -28,15 +28,15 @@ public class GdMatchStImpl extends GdStmtImpl implements GdMatchSt {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdExpr getExpr() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
+    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
   }
 
   @Override
   @NotNull
-  public GdMatchBlock getMatchBlock() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdMatchBlock.class));
+  public List<GdMatchBlock> getMatchBlockList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdMatchBlock.class);
   }
 
 }

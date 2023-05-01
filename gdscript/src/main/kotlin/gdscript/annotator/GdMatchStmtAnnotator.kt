@@ -18,9 +18,11 @@ import gdscript.reference.GdTypeHintNmReference
 class GdMatchStmtAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element !is GdExpr || element.parent !is GdMatchSt) return;
+        if (element !is GdExpr || element.parent !is GdMatchSt) return
 
-        val id = PsiTreeUtil.getDeepestLast(element).parent;
+        val id = PsiTreeUtil.getDeepestLast(element).parent
+        if (id !is GdNamedElement) return
+
         val rootDecl = GdClassMemberReference(id).resolveDeclaration() ?: return;
         val typeHint = PsiTreeUtil.findChildrenOfType(rootDecl, GdTypeHintNm::class.java).lastOrNull() ?: return;
         val enumNmi = GdTypeHintNmReference(typeHint).resolve() ?: return;

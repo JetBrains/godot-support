@@ -29,14 +29,14 @@ public class GdMatchBlockImpl extends ASTWrapperPsiElement implements GdMatchBlo
 
   @Override
   @NotNull
-  public List<GdPatternList> getPatternListList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdPatternList.class);
+  public GdPatternList getPatternList() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdPatternList.class));
   }
 
   @Override
-  @NotNull
-  public List<GdStmtOrSuite> getStmtOrSuiteList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdStmtOrSuite.class);
+  @Nullable
+  public GdStmtOrSuite getStmtOrSuite() {
+    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
   }
 
 }

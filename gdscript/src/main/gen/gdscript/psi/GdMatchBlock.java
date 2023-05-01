@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GdMatchBlock extends PsiElement {
 
   @NotNull
-  List<GdPatternList> getPatternListList();
+  GdPatternList getPatternList();
 
-  @NotNull
-  List<GdStmtOrSuite> getStmtOrSuiteList();
+  @Nullable
+  GdStmtOrSuite getStmtOrSuite();
 
 }

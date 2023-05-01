@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface GdMatchSt extends GdStmt {
 
-  @NotNull
+  @Nullable
   GdExpr getExpr();
 
   @NotNull
-  GdMatchBlock getMatchBlock();
+  List<GdMatchBlock> getMatchBlockList();
 
 }

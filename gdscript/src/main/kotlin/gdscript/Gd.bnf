@@ -167,11 +167,12 @@ stmt ::=
     | await_st
     | expr_st
     | BAD_CHARACTER // tohle je hack aby GdStmtImpl nebyl abstract class při token např. Ł to jinak nevyparsuje
-private stmt_r ::= !(SET | GET | IF | PASS
+private stmtNoLine_r ::= !(SET | GET | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
     | RETURN | AWAIT | ASSET | INDENT | DEDENT
-    | NEGATE | ELIF | ELSE | NEW_LINE
+    | NEGATE | ELIF | ELSE | UNDER
     | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
+private stmt_r ::= !(NEW_LINE) & stmtNoLine_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
 varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
@@ -184,8 +185,9 @@ else_st ::= ELSE COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
 while_st ::= WHILE expr COLON stmtOrSuite {pin=1 /*recoverWhile=stmt_r*/}
 for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=1 /*recoverWhile=stmt_r*/}
 
-match_st ::= MATCH expr COLON NEW_LINE INDENT matchBlock DEDENT //{pin=1 recoverWhile=stmt_r}
-matchBlock ::= (patternList COLON stmtOrSuite)+
+match_st ::= MATCH expr COLON NEW_LINE INDENT matchBlock+ DEDENT {pin=1 recoverWhile=stmt_r}
+matchBlock ::= patternList COLON stmtOrSuite {pin=2 recoverWhile=stmtNoLine_r}
+
 patternList ::= pattern (COMMA pattern)*
 //TODO (* Note: you can't have a binding in a pattern list, but to not complicate the grammar more it won't be restricted syntactically *)
 // Asi annotátor
