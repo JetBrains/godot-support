@@ -9,7 +9,7 @@ import com.intellij.openapi.util.io.FileUtilRt
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.util.ui.FormBuilder
-import javax.swing.JComboBox
+import gdscript.settings.component.GdSettingsComponents
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTextField
@@ -30,6 +30,7 @@ class GdSettingsComponent {
             sdkField.text = FileUtilRt.toSystemDependentName(f.path)
         }
     }
+    private val addSdk = GdSettingsComponents.addSdk()
 
     init {
         sdk.toolTipText
@@ -39,7 +40,8 @@ class GdSettingsComponent {
         annotatorsCb.selectedItem= GdState.OFF
 
         panel = FormBuilder.createFormBuilder()
-            .addLabeledComponent("GdScript SDK", sdk, 1)
+            .addComponent(addSdk)
+            .addLabeledComponent("GdScript SDK", sdk, 1, true)
             .addComponent(hidePrivateCheck, 1)
             .addComponent(shouldTypeCheck, 1)
             .addComponent(shortTypedCheck, 1)

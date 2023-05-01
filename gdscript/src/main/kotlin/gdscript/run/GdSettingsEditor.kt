@@ -37,7 +37,7 @@ class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
             false,
             false,
             false)))
-        godotExe.setComponent(godotField)
+        godotExe.component = godotField
 
         tscn = LabeledComponent()
         val tscnField = TextFieldWithBrowseButton()
@@ -49,7 +49,7 @@ class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
             false,
             false,
             false)))
-        tscn.setComponent(tscnField)
+        tscn.component = tscnField
     }
 
 }
