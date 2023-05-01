@@ -2,7 +2,7 @@
 .gradle/
 build/
 /classes/
-/classesGd/
+classesGd/
 /godotSource/
-/godot-master/
+godot-master/
 /icons/
