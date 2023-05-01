@@ -19,6 +19,13 @@ object VirtualFileUtil {
         return Paths.relativeIfUnder(path, project.basePath) ?: ""
     }
 
+    fun VirtualFile.localParentPath(): String {
+        val project = ProjectLocator.getInstance().guessProjectForFile(this) ?: return ""
+        val path = "${project.name}/${localPath()}"
+
+        return path.substringBeforeLast('/')
+    }
+
     fun VirtualFile.resourcePath(): String {
         return PsiGdResourceUtil.resourcePath(this)
     }

@@ -5,6 +5,7 @@ import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiNamedElement
+import gdscript.codeInsight.documentation.GdDocFragment
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdMethodDeclTl
@@ -18,6 +19,7 @@ import gdscript.psi.utils.GdClassMemberUtil.variables
 import gdscript.psi.utils.PsiGdCommentUtils
 import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiElementUtil.psi
+import gdscript.utils.VirtualFileUtil.localParentPath
 
 class GdDocumentationProvider : AbstractDocumentationProvider() {
 
@@ -25,12 +27,27 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
     private val links = "\\[link (.+?)](.+?)\\[/link]".toRegex()
     private val freeReference = "\\[([A-Z].+?)]".toRegex()
 
+    fun test(element: PsiElement): String {
+        val sb = StringBuilder()
+        sb.append(DocumentationMarkup.CONTENT_START)
+
+        sb.append(DocumentationMarkup.EXTERNAL_LINK_ICON)
+        sb.append("Losos")
+
+        sb.append(DocumentationMarkup.INFORMATION_ICON)
+        GdDocFragment.packagePath(sb, element.containingFile.virtualFile.localParentPath())
+
+        sb.append(DocumentationMarkup.CONTENT_END)
+        return sb.toString()
+    }
+
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
+        return test(element)
         if (originalElement != null && originalElement.parent is GdNamedElement) {
-            return findDocumentationComment(originalElement.parent as GdNamedElement, PsiGdCommentUtils.DESCRIPTION);
+            return findDocumentationComment(originalElement.parent as GdNamedElement, PsiGdCommentUtils.DESCRIPTION)
         }
 
-        return renderDocumentationForDeclaration(element, PsiGdCommentUtils.DESCRIPTION);
+        return renderDocumentationForDeclaration(element, PsiGdCommentUtils.DESCRIPTION)
     }
 
     override fun generateHoverDoc(element: PsiElement, originalElement: PsiElement?): String? {
@@ -40,20 +57,20 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
                 PsiGdCommentUtils.BRIEF_DESCRIPTION
             );
             if (doc != null && doc.isNotEmpty()) {
-                return doc;
+                return doc
             }
 
-            return findDocumentationComment(originalElement.parent as PsiNamedElement, PsiGdCommentUtils.DESCRIPTION);
+            return findDocumentationComment(originalElement.parent as PsiNamedElement, PsiGdCommentUtils.DESCRIPTION)
         }
 
-        return null;
+        return null
     }
 
     private fun findDocumentationComment(property: PsiNamedElement, key: String): String? {
-        var declaration = GdClassMemberReference(property).resolveDeclaration();
+        var declaration = GdClassMemberReference(property).resolveDeclaration()
         if (declaration == null) {
             declaration = GdClassNamingIndex.getGlobally(property)
-                .firstOrNull() ?: return null;
+                .firstOrNull() ?: return null
         }
 
         return renderDocumentationForDeclaration(declaration, key)
