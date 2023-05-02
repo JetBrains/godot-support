@@ -1,6 +1,6 @@
 package gdscript.run
 
-import com.intellij.openapi.fileChooser.FileChooserDescriptor
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.ui.LabeledComponent
 import com.intellij.openapi.ui.TextBrowseFolderListener
@@ -31,24 +31,18 @@ class GdSettingsEditor : SettingsEditor<GdRunConfiguration>() {
         val godotField = TextFieldWithBrowseButton()
         godotField.text = "Godot.exe"
         godotField.toolTipText = "Godot.exe"
-        godotField.addBrowseFolderListener(TextBrowseFolderListener(FileChooserDescriptor(true,
-            false,
-            false,
-            false,
-            false,
-            false)))
+        godotField.addBrowseFolderListener(TextBrowseFolderListener(
+            FileChooserDescriptorFactory.createSingleFileDescriptor("exe")
+        ))
         godotExe.component = godotField
 
         tscn = LabeledComponent()
         val tscnField = TextFieldWithBrowseButton()
         tscnField.text = "Node.tscn"
         tscnField.toolTipText = "Node.tscn"
-        tscnField.addBrowseFolderListener(TextBrowseFolderListener(FileChooserDescriptor(true,
-            false,
-            false,
-            false,
-            false,
-            false)))
+        tscnField.addBrowseFolderListener(TextBrowseFolderListener(
+            FileChooserDescriptorFactory.createSingleFileDescriptor("tscn")
+        ))
         tscn.component = tscnField
     }
 

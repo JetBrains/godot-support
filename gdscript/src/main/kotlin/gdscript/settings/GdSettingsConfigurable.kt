@@ -5,9 +5,19 @@ import com.intellij.openapi.project.Project
 import gdscript.library.GdLibraryManager
 import javax.swing.JComponent
 
-class GdSettingsConfigurable(val project: Project) : Configurable {
+class GdSettingsConfigurable : Configurable {
+
+    companion object {
+        lateinit var PROJECT: Project
+    }
 
     private var component: GdSettingsComponent? = null
+    private val project: Project
+
+    constructor(project: Project) {
+        this.project = project
+        PROJECT = project
+    }
 
     override fun getDisplayName(): String {
         return "GdScript Settings"

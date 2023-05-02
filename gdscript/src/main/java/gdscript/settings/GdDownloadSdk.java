@@ -1,11 +1,10 @@
 package gdscript.settings;
 
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import gdscript.library.GdLibraryManager;
-
 import javax.swing.*;
 import java.awt.event.*;
 
@@ -15,9 +14,11 @@ public class GdDownloadSdk extends JDialog {
     private JButton buttonCancel;
     private JComboBox<String> versionCb;
     private TextFieldWithBrowseButton locationFc;
-    private JTextField locationFcInner;
     private JLabel VersionLb;
     private JLabel LocationLb;
+
+    public String path = "";
+    public String version = "";
 
     public GdDownloadSdk() {
         setContentPane(contentPane);
@@ -53,7 +54,8 @@ public class GdDownloadSdk extends JDialog {
     }
 
     private void onOK() {
-        // TODO add your code here
+        path = locationFc.getText();
+        version = (String) versionCb.getSelectedItem();
         dispose();
     }
 
@@ -62,16 +64,11 @@ public class GdDownloadSdk extends JDialog {
     }
 
     private void createUIComponents() {
-        locationFcInner = new JTextField();
         versionCb = new ComboBox<>();
         locationFc = new TextFieldWithBrowseButton();
-        locationFc.addBrowseFolderListener(new TextBrowseFolderListener(new FileChooserDescriptor(
-                false,
-                true,
-                false,
-                false,
-                false,
-                false)));
+        locationFc.addBrowseFolderListener(new TextBrowseFolderListener(
+                FileChooserDescriptorFactory.createSingleFolderDescriptor()
+        ));
 
         GdLibraryManager.INSTANCE.listRemoteSdks(versionCb);
     }

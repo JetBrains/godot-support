@@ -1,7 +1,11 @@
 package gdscript.settings.component
 
 import com.intellij.icons.AllIcons.General
+import com.intellij.openapi.fileChooser.FileChooser
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
+import gdscript.library.GdLibraryManager
 import gdscript.settings.GdDownloadSdk
+import gdscript.settings.GdSettingsConfigurable
 import java.awt.Dimension
 import java.awt.Point
 import java.awt.Toolkit
@@ -13,8 +17,15 @@ object GdSettingsComponents {
 
     fun addSdk(): JButton {
         val menu = JPopupMenu()
-        menu.add("Local...")
+        val localBtn = JMenuItem("Local...")
+        localBtn.addActionListener {
+            val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
+            descriptor.title = "Select GdScript SDK folder"
+            val file = FileChooser.chooseFile(descriptor, null, null)
+            val path = file?.path ?: return@addActionListener
 
+            GdLibraryManager.setUpLibrary(GdSettingsConfigurable.PROJECT, path)
+        }
 
         val downloadBtn = JMenuItem("Download...")
         downloadBtn.addActionListener {
@@ -27,9 +38,15 @@ object GdSettingsComponents {
             )
             downloadModal.title = "Download GdScript SDK"
             downloadModal.isVisible = true
+
+            val path = downloadModal.path
+            if (path.isNotBlank()) {
+                val version = downloadModal.version
+                GdLibraryManager.download(version, path)
+            }
         }
 
-//        menu.add("Download...")
+        menu.add(localBtn)
         menu.add(downloadBtn)
 
         val button = JButton()

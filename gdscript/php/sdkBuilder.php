@@ -41,7 +41,7 @@ foreach ($toFetch as $tag) {
     exec("rm -R classesGd || true");
     exec("mkdir classesGd || true");
     exec("php classParser.php");
-    exec("zip -r '$sdkFile' classesGd");
+    exec("zip -r -j '$sdkFile' classesGd/*");
     exec("mv '$sdkFile' '../sdk/$sdkFile'");
 }
 
