@@ -8,13 +8,13 @@ import com.intellij.psi.PsiElementVisitor
 import gdscript.GdKeywords
 import gdscript.inspection.quickFix.GdAddVariableTypeHintFix
 import gdscript.psi.*
-import gdscript.settings.GdSettingsState
-import gdscript.settings.GdState
+import gdscript.settings.GdProjectSettingsState
+import gdscript.settings.GdProjectState
 
 class GdTypeHintInspection : LocalInspectionTool() {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
-        val fullType = !GdSettingsState.getInstance().state.shortTyped
+        val fullType = !GdProjectSettingsState.getInstance(holder.project).state.shortTyped
 
         return object : GdVisitor() {
             override fun visitClassVarDeclTl(o: GdClassVarDeclTl) {
@@ -68,11 +68,11 @@ class GdTypeHintInspection : LocalInspectionTool() {
         if (realType.isEmpty()) return
         if (realType == GdKeywords.VARIANT || realType == GdKeywords.NULL) return
 
-        val warn = GdSettingsState.getInstance().state.shouldType
+        val warn = GdProjectSettingsState.getInstance(element).state.shouldType
         holder.registerProblem(
             element,
             "Field's return type can be specified as $realType",
-            GdState.shouldWarnInspection(warn),
+            GdProjectState.shouldWarnInspection(warn),
             GdAddVariableTypeHintFix(element, realType, fullType)
         )
     }

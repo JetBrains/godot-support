@@ -10,8 +10,8 @@ import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassMemberUtil
-import gdscript.settings.GdSettingsState
-import gdscript.settings.GdState
+import gdscript.settings.GdProjectSettingsState
+import gdscript.settings.GdProjectState
 import gdscript.utils.PsiElementUtil.getCallExpr
 
 /**
@@ -21,7 +21,7 @@ import gdscript.utils.PsiElementUtil.getCallExpr
 class GdRefIdAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        val state = GdSettingsState.getInstance().state.annotators
+        val state = GdProjectSettingsState.getInstance(element).state.annotators
         if (element !is GdRefIdNm) return
         val txt = element.text
 
@@ -62,9 +62,9 @@ class GdRefIdAnnotator : Annotator {
                 if (element.getCallExpr() != null && GdClassMemberUtil.hasMethodCheck(element))
                     return@run GdHighlighterColors.METHOD_CALL
 
-                if (state != GdState.OFF) {
+                if (state != GdProjectState.OFF) {
                     holder
-                        .newAnnotation(GdState.selectedLevel(state), "Reference [${element.text}] not found")
+                        .newAnnotation(GdProjectState.selectedLevel(state), "Reference [${element.text}] not found")
                         .range(element.textRange)
                         .create()
                     return

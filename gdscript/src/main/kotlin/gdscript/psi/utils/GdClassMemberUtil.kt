@@ -11,7 +11,7 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdClassVarDeclIndex
 import gdscript.model.BoolVal
 import gdscript.psi.*
-import gdscript.settings.GdSettingsState
+import gdscript.settings.GdProjectSettingsState
 import project.psi.util.ProjectAutoloadUtil
 
 object GdClassMemberUtil {
@@ -430,20 +430,6 @@ object GdClassMemberUtil {
         result.addAll(list);
 
         return null;
-    }
-
-    /**
-     * NamedClassMembers to Array
-     */
-    @Deprecated("")
-    fun HashMap<String, MutableList<PsiElement>>.array(): Array<PsiElement> {
-        return this.entries.flatMap {
-            if (!GdSettingsState.getInstance().state.hidePrivate || !it.key.startsWith("_")) {
-                it.value
-            } else {
-                emptyList()
-            }
-        }.toTypedArray()
     }
 
     fun calledUpon(element: PsiElement): GdExpr? {

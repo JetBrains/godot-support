@@ -10,7 +10,7 @@ import gdscript.completion.utils.*
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.psi.utils.*
-import gdscript.settings.GdSettingsState
+import gdscript.settings.GdProjectSettingsState
 import gdscript.utils.PsiElementUtil.psi
 
 /**
@@ -61,7 +61,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
     override fun getVariants(): Array<LookupElement> {
         val members = GdClassMemberUtil.listDeclarations(element)
-        val hidePrivate = GdSettingsState.getInstance().state.hidePrivate
+        val hidePrivate = GdProjectSettingsState.getInstance(element).state.hidePrivate
                 && GdClassMemberUtil.calledUpon(element) != null
 
         return members.flatMap {

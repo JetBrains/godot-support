@@ -31,7 +31,8 @@
     <colorProvider implementation="gdscript.lineMarker.GdColorProvider" />
 
     <!-- settings -->
-    <applicationService serviceImplementation="gdscript.settings.GdSettingsState" />
+<!--    <applicationService serviceImplementation="gdscript.settings.GdApplicationSettingsState" />-->
+    <projectService serviceImplementation="gdscript.settings.GdProjectSettingsState" />
     <projectConfigurable
         parentId="language"
         instance="gdscript.settings.GdSettingsConfigurable"

@@ -20,7 +20,7 @@ object GdSdkUtil {
         return "$BASE_URL/files/sdk%2F${PREFIX.replace(" ", "%20")}$this$ZIP/raw"
     }
 
-    fun String.sdkZipToVersion(): String {
+    fun String.sdkToVersion(): String {
         return this.removePrefix(PREFIX).removeSuffix(ZIP)
     }
 

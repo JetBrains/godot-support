@@ -2,11 +2,18 @@ package gdscript.library
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runWriteAction
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ModifiableModelsProvider
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.roots.OrderRootType
+import com.intellij.openapi.roots.impl.libraries.LibraryEx
+import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.vfs.VfsUtil
+import gdscript.settings.GdApplicationSettingsState
 import gdscript.utils.GdSdkUtil.SDKs_URL
-import gdscript.utils.GdSdkUtil.sdkZipToVersion
+import gdscript.utils.GdSdkUtil.sdkToVersion
 import gdscript.utils.GdSdkUtil.versionToSdkName
 import gdscript.utils.GdSdkUtil.versionToSdkUrl
 import gdscript.utils.GdSdkUtil.versionToSdkZip
@@ -25,7 +32,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.zip.ZipFile
 import javax.swing.JComboBox
-
 
 object GdLibraryManager {
 
@@ -47,34 +53,73 @@ object GdLibraryManager {
             data class GdSdk(val id: String, val name: String, val type: String, val path: String, val mode: String)
 
             Json.decodeFromString<Array<GdSdk>>(response.body())
-                .map { it.name.sdkZipToVersion() }
+                .map { it.name.sdkToVersion() }
                 .sortedDescending()
                 .forEach { cb.addItem(it) }
         }
     }
 
-    fun setUpLibrary(project: Project, path: String?) {
-        val table = LibraryTablesRegistrar.getInstance().getLibraryTable(project);
-        val virtualFile = VfsUtil.findFileByIoFile(File(path!!), true);
+    fun listRegisteredSdks(): Iterable<Library> {
+        val asd = ApplicationManager
+            .getApplication()
+            .getService(ModifiableModelsProvider::class.java)
+            .libraryTableModifiableModel.libraries
+        val qwe = LibraryTablesRegistrar.getInstance().libraryTable.modifiableModel.libraries
+        val asda = LibraryTablesRegistrar.getInstance().libraryTable.libraries
+        return ApplicationManager
+            .getApplication()
+            .getService(ModifiableModelsProvider::class.java)
+            .libraryTableModifiableModel.libraries.filter {
+                (it as LibraryEx).kind is GdLibraryKind
+        }
+    }
+
+    fun registerSdk(path: String) {
+        val name = path.replace('\\', '/').substringAfterLast("/")
+        val type = OrderRootType.SOURCES
+        val app = ApplicationManager.getApplication()
+//        val modifier = app.getService(ModifiableModelsProvider::class.java)
+        val modifier = LibraryTablesRegistrar.getInstance().libraryTable.modifiableModel
+//        val modifier = LibraryTablesRegistrar.getInstance().libraryTable
+
+        app.invokeAndWait {
+            runWriteAction {
+//                val library = modifier.libraryTableModifiableModel.createLibrary(name, GdLibraryKind.getOrCreate())
+val library = modifier.createLibrary(name, GdLibraryKind.getOrCreate())
+//val library = modifier.createLibrary(name)
+val libModel = library.modifiableModel
+libModel.addRoot(path, type)
+libModel.commit()
+            }
+        }
+    }
+
+    fun setUpLibrary(project: Project, path: String) {
+        val table = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
+        val virtualFile = VfsUtil.findFileByIoFile(File(path), true)
+        val name = path.substringAfterLast("/")
+        val type = OrderRootType.SOURCES
 
         ApplicationManager.getApplication().invokeAndWait {
             runWriteAction {
-                val version = path.substringAfterLast("/")
-                val name = "$LIBRARY_PREFIX$version"
+                val state = GdApplicationSettingsState.getInstance().state
                 val lib = table.getLibraryByName(name)
                 if (lib != null) {
                     table.removeLibrary(lib)
+                    lib.rootProvider.getUrls(type).forEach {
+                        state.sdkPaths.remove(it)
+                    }
                 }
+                    val newLib = table.createLibrary(name)
+                    val libModel = newLib.modifiableModel
+                    libModel.addRoot(virtualFile!!.url, type)
+                    libModel.commit()
+                    state.sdkPaths.add(path)
 
-//                val newLib = table.createLibrary(LIBRARY_NAME);
-//                val libModel = newLib.modifiableModel;
-//                libModel.addRoot(virtualFile!!.url, OrderRootType.SOURCES);
-//                libModel.commit();
-//
-//                val module = ModuleManager.getInstance(project).modules.first()
-//                val rootModel = ModuleRootManager.getInstance(module).modifiableModel
-//                rootModel.addLibraryEntry(newLib)
-//                rootModel.commit()
+                    val module = ModuleManager.getInstance(project).modules.first()
+                    val rootModel = ModuleRootManager.getInstance(module).modifiableModel
+                    rootModel.addLibraryEntry(newLib)
+                    rootModel.commit()
             }
         }
     }
@@ -94,7 +139,7 @@ object GdLibraryManager {
         ZipFile(zipName).use { zip ->
             zip.entries().asSequence().forEach { entry ->
                 zip.getInputStream(entry).use { input ->
-                    File(dir, entry.name.substringAfter("/")).outputStream().use { output ->
+                    File(dir, entry.name).outputStream().use { output ->
                         input.copyTo(output)
                     }
                 }

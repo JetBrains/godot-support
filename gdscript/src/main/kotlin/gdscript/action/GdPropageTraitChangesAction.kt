@@ -72,7 +72,7 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
             }
         }
 
-        ApplicationManager.getApplication().runWriteAction(runner);
+        ApplicationManager.getApplication().runWriteAction(runner)
     }
 
     private fun isTraitFile(file: PsiFile): Boolean {

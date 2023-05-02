@@ -4,7 +4,7 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.util.xmlb.annotations.Tag
 
-class GdState {
+class GdProjectState {
 
     companion object {
         val OFF = "off"

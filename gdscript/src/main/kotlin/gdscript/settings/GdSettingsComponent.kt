@@ -10,6 +10,8 @@ import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.util.ui.FormBuilder
 import gdscript.settings.component.GdSettingsComponents
+import java.awt.FlowLayout
+import javax.swing.BoxLayout
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTextField
@@ -31,16 +33,21 @@ class GdSettingsComponent {
         }
     }
     private val addSdk = GdSettingsComponents.addSdk()
+    private val selectSdk = GdSettingsComponents.selectSdk()
 
     init {
         sdk.toolTipText
-        annotatorsCb.addItem(GdState.OFF)
-        annotatorsCb.addItem(GdState.WARN)
-        annotatorsCb.addItem(GdState.ERR)
-        annotatorsCb.selectedItem= GdState.OFF
+        annotatorsCb.addItem(GdProjectState.OFF)
+        annotatorsCb.addItem(GdProjectState.WARN)
+        annotatorsCb.addItem(GdProjectState.ERR)
+        annotatorsCb.selectedItem= GdProjectState.OFF
+
+        val sdkPanel = JPanel()
+        sdkPanel.add(selectSdk)
+        sdkPanel.add(addSdk)
 
         panel = FormBuilder.createFormBuilder()
-            .addComponent(addSdk)
+            .addComponent(sdkPanel)
             .addLabeledComponent("GdScript SDK", sdk, 1, true)
             .addComponent(hidePrivateCheck, 1)
             .addComponent(shouldTypeCheck, 1)
