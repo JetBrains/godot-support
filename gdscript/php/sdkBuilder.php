@@ -45,4 +45,4 @@ foreach ($toFetch as $tag) {
     exec("mv '$sdkFile' '../sdk/$sdkFile'");
 }
 
-exit count($toFetch) > 0 ? 0 : 1;
+exit(count($toFetch) > 0 ? 0 : 1);
