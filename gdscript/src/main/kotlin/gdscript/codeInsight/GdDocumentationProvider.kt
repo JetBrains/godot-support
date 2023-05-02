@@ -5,7 +5,7 @@ import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiNamedElement
-import gdscript.codeInsight.documentation.GdDocFragment
+import gdscript.codeInsight.documentation.GdDocBuilder
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdMethodDeclTl
@@ -16,6 +16,7 @@ import gdscript.psi.utils.GdClassMemberUtil.enums
 import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdClassMemberUtil.signals
 import gdscript.psi.utils.GdClassMemberUtil.variables
+import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.PsiGdCommentUtils
 import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiElementUtil.psi
@@ -28,17 +29,11 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
     private val freeReference = "\\[([A-Z].+?)]".toRegex()
 
     fun test(element: PsiElement): String {
-        val sb = StringBuilder()
-        sb.append(DocumentationMarkup.CONTENT_START)
-
-        sb.append(DocumentationMarkup.EXTERNAL_LINK_ICON)
-        sb.append("Losos")
-
-        sb.append(DocumentationMarkup.INFORMATION_ICON)
-        GdDocFragment.packagePath(sb, element.containingFile.virtualFile.localParentPath())
-
-        sb.append(DocumentationMarkup.CONTENT_END)
-        return sb.toString()
+        return GdDocBuilder()
+            .withPackage(element.containingFile.virtualFile.localParentPath())
+            .withOwner(GdClassUtil.getOwningClassElement(element))
+            .withPreview(element)
+            .toString()
     }
 
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
