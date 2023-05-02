@@ -6,6 +6,7 @@ using System.Reflection;
 using JetBrains.Annotations;
 using JetBrains.Collections.Viewable;
 using JetBrains.RdBackend.Common.Features;
+using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.UnitTestFramework.Execution.TestRunner;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.Util;

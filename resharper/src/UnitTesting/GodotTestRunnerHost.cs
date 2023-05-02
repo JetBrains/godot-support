@@ -11,7 +11,7 @@ using JetBrains.Collections.Viewable;
 using JetBrains.Core;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.RdBackend.Common.Features;
+using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.UnitTestFramework.Common.Extensions;
 using JetBrains.ReSharper.UnitTestFramework.Common.Processes;
 using JetBrains.ReSharper.UnitTestFramework.Execution.Hosting;

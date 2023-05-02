@@ -5,8 +5,8 @@ import com.intellij.testFramework.TestModeFlags
 import com.jetbrains.rider.completion.RiderCodeCompletionExtraSettings
 import com.jetbrains.rider.test.annotations.TestEnvironment
 import com.jetbrains.rider.test.base.BaseTestWithSolution
-import com.jetbrains.rider.test.enums.CoreVersion
-import com.jetbrains.rider.test.enums.ToolsetVersion
+import com.jetbrains.rider.test.env.enums.BuildTool
+import com.jetbrains.rider.test.env.enums.SdkVersion
 import com.jetbrains.rider.test.framework.persistAllFilesOnDisk
 import com.jetbrains.rider.test.scriptingApi.assertLookupContains
 import com.jetbrains.rider.test.scriptingApi.callBasicCompletion
@@ -17,7 +17,7 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.io.File
 
-@TestEnvironment(toolset = ToolsetVersion.TOOLSET_17_CORE, coreVersion = CoreVersion.DOT_NET_6)
+@TestEnvironment(sdkVersion = SdkVersion.DOT_NET_6, buildTool = BuildTool.SDK)
 class ResCompletionTest : BaseTestWithSolution() {
     override fun getSolutionDirectoryName(): String = "ResCompletionTest"
 

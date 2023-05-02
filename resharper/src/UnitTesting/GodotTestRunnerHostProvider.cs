@@ -1,6 +1,6 @@
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Impl;
-using JetBrains.RdBackend.Common.Features;
+using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.ReSharper.UnitTestFramework.Execution.TestRunner;
 using JetBrains.Rider.Model.Godot.FrontendBackend;

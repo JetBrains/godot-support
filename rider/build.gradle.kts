@@ -1,5 +1,5 @@
 import com.jetbrains.rd.generator.gradle.RdGenExtension
-import org.jetbrains.intellij.tasks.IntelliJInstrumentCodeTask
+import org.jetbrains.intellij.tasks.InstrumentCodeTask
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
@@ -11,18 +11,18 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.intellij") version "1.12.0" // https://github.com/JetBrains/gradle-intellij-plugin/releases
-    id("org.jetbrains.grammarkit") version "2021.2.2"
-    id("me.filippov.gradle.jvm.wrapper") version "0.11.0"
-    id("com.jetbrains.rdgen") version "2022.3.2"
-    kotlin("jvm") version "1.7.0"
+    id("org.jetbrains.intellij") version "1.13.3" // https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id("org.jetbrains.grammarkit") version "2022.3"
+    id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
+    id("com.jetbrains.rdgen") version "2023.2.1"
+    kotlin("jvm") version "1.8.0"
 }
 
 apply {
     plugin("kotlin")
 }
 
-val baseVersion = "2023.1"
+val baseVersion = "2023.2"
 val buildCounter = ext.properties["build.number"] ?: "9999"
 version = "$baseVersion.$buildCounter"
 
@@ -156,7 +156,7 @@ tasks {
         return@lazy sdkPath
     }
 
-    withType<IntelliJInstrumentCodeTask> {
+    withType<InstrumentCodeTask> {
         val bundledMavenArtifacts = file("build/maven-artifacts")
         if (bundledMavenArtifacts.exists()) {
             logger.lifecycle("Use ant compiler artifacts from local folder: $bundledMavenArtifacts")

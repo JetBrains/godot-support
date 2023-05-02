@@ -4,6 +4,7 @@ using JetBrains.Application.Threading;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features;
+using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Protocol
