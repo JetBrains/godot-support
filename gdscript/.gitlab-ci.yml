@@ -10,10 +10,12 @@ refresh-sdk:
     - git config --global user.email "ci@runner.git"
     - git config --global user.name "CI runner"
   script:
-#    - make update
     - cd php
-    - php sdkBuilder.php
+    - UPDATED=$(php sdkBuilder.php)
     - cd ..
-    - git add .
-    - git commit -m "refresh SDK"
-    - git push https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git HEAD:master
+    - |
+      if [[ $UPDATED == 0 ]]; then
+        git add .
+        git commit -m "refresh SDK"
+        git push https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git HEAD:master
+      fi

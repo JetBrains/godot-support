@@ -44,3 +44,5 @@ foreach ($toFetch as $tag) {
     exec("zip -r '$sdkFile' classesGd");
     exec("mv '$sdkFile' '../sdk/$sdkFile'");
 }
+
+exit count($toFetch) > 0 ? 0 : 1;
