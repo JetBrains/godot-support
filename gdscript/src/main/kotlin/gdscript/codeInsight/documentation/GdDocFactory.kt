@@ -5,14 +5,16 @@ import gdscript.completion.utils.GdMethodCompletionUtil.methodHeader
 import gdscript.psi.*
 import gdscript.psi.utils.GdAnnotationUtil
 import gdscript.psi.utils.GdCommonUtil
+import gdscript.psi.utils.GdInheritanceUtil
 
 object GdDocFactory {
 
-    fun create(element: PsiElement): String? {
+    fun create(element: PsiElement, brief: Boolean = false): String? {
         return when (element) {
             is GdVarNmi -> variable(element)
             is GdMethodIdNmi,
             is GdFuncDeclIdNmi -> method(element)
+            is GdClassNameNmi -> classId(element, brief)
 
             else -> null
         }
@@ -58,9 +60,25 @@ object GdDocFactory {
             is GdConstDeclSt -> builder.withPreview("const ${element.name}${withType(owner)}")
             is GdSetDecl,
             is GdParam -> builder.withPreview("var ${element.name}${withType(owner)}")
+
             is GdForSt -> builder.withPreview("var ${element.name}${withType(owner)}")
             is GdBindingPattern -> builder.withPreview("var ${element.name}")
             else -> return null
+        }
+
+        return builder.toString()
+    }
+
+    private fun classId(element: GdClassNameNmi, brief: Boolean): String {
+        val builder = GdDocBuilder()
+                .withPackage(element)
+
+        val parent = GdInheritanceUtil.getExtendedClassId(element)
+        val extendInfo = if (parent.isNotBlank()) " extends $parent" else ""
+        builder.withPreview("class ${element.classId}${extendInfo}")
+
+        if (!brief) {
+            // TODO props
         }
 
         return builder.toString()

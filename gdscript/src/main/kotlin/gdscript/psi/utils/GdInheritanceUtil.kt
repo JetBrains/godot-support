@@ -20,10 +20,10 @@ object GdInheritanceUtil {
      */
     fun getExtendedClassId(element: PsiElement): String {
         return when (element) {
-            is GdClassNaming -> element.parentName;
-            is GdClassDeclTl -> element.parentName;
-            is GdFile -> PsiTreeUtil.getStubChildOfType(element, GdInheritance::class.java)?.inheritancePath.orEmpty();
-            else -> getExtendedClassId(PsiGdClassUtil.getParentClassElement(element));
+            is GdClassNaming -> element.parentName
+            is GdClassDeclTl -> element.parentName
+            is GdFile -> PsiTreeUtil.getStubChildOfType(element, GdInheritance::class.java)?.inheritancePath.orEmpty()
+            else -> getExtendedClassId(PsiGdClassUtil.getParentClassElement(element))
         }
     }
 

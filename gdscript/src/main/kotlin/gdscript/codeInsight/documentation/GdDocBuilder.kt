@@ -22,7 +22,8 @@ class GdDocBuilder {
     /**
      * @param element GdClassDecl|GdFile from getOwningClassElement
      */
-    fun withOwner(element: PsiElement): GdDocBuilder {
+    fun withOwner(element: PsiElement?): GdDocBuilder {
+        if (element == null) return this
         val body = GdDocUtil.iconed("AllIcons.Nodes.Class")
         val link = GdClassUtil.getFullClassId(element)
         body.add(GdDocUtil.elementLink(link))
@@ -55,24 +56,7 @@ class GdDocBuilder {
 
     fun withPreview(code: String?): GdDocBuilder {
         if (code == null) return this
-        // TODO syntax highlight
-        // https://github.com/JetBrains/intellij-community/blob/idea/231.8109.175/platform/lang-impl/src/com/intellij/openapi/editor/richcopy/HtmlSyntaxInfoUtil.java
-//        val code = when (element) {
-//            is GdMethodIdNmi -> {
-//                val declaration =
-//                    PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java, GdFuncDeclEx::class.java)
-//                        ?: return this
-//
-//                when (declaration) {
-//                    is GdMethodDeclTl -> declaration.methodHeader(true)
-//                    is GdFuncDeclEx -> declaration.methodHeader(true)
-//                    else -> return this
-//                }
-//            }
-//
-//            else -> return this
-//        }
-        preview = HtmlChunk.text(code)
+        preview = HtmlChunk.raw(code)
         return this
     }
 
