@@ -2,7 +2,9 @@ package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
+import gdscript.GdKeywords
 import gdscript.psi.*
+import gdscript.utils.GdOperand
 
 /**
  * Shared utils among Named and other elements
@@ -53,6 +55,7 @@ object GdCommonUtil {
             is GdConstDeclSt -> element.returnType
             is GdExpr -> element.returnType
             is GdTypedVal -> element.returnType
+            is GdForSt -> GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]")
             else -> ""
         }
     }

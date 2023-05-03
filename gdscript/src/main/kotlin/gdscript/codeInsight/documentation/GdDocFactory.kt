@@ -35,29 +35,33 @@ object GdDocFactory {
         return builder.toString()
     }
 
-    private fun variable(element: PsiElement): String? {
+    private fun variable(element: GdVarNmi): String? {
         val builder = GdDocBuilder()
-                .withOwner(element)
-                .withPackage(element)
+        val withType = { el: PsiElement ->
+            val returnType = GdCommonUtil.returnType(el)
+            if (returnType.isBlank()) ""
+            else ": $returnType"
+        }
 
-        val owner = element.parent
-        val code: String? = when (owner) {
-            is GdConstDeclTl,
-            is GdClassVarDeclTl,
-            is GdVarDeclSt,
-            is GdConstDeclSt -> {
-                var code = annotationPreview(owner) + owner.text.trim()
-                if (GdCommonUtil.typed(element) == null) GdCommonUtil.returnType(owner).let { if (it.isNotBlank()) code += ": $it" }
-                code
+        when (val owner = element.parent) {
+            is GdConstDeclTl -> {
+                builder.withOwner(element)
+                builder.withPreview("const ${element.name}${withType(owner)}")
             }
 
-            is GdSetDecl -> null
-            is GdParam -> null
-            is GdForSt -> null
-            is GdBindingPattern -> null
+            is GdClassVarDeclTl -> {
+                builder.withOwner(element)
+                builder.withPreview(annotationPreview(owner) + "var ${element.name}${withType(owner)}")
+            }
+
+            is GdVarDeclSt -> builder.withPreview("var ${element.name}${withType(owner)}")
+            is GdConstDeclSt -> builder.withPreview("const ${element.name}${withType(owner)}")
+            is GdSetDecl,
+            is GdParam -> builder.withPreview("var ${element.name}${withType(owner)}")
+            is GdForSt -> builder.withPreview("var ${element.name}${withType(owner)}")
+            is GdBindingPattern -> builder.withPreview("var ${element.name}")
             else -> return null
         }
-        builder.withPreview(code)
 
         return builder.toString()
     }
