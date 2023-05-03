@@ -20,18 +20,6 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdClassNameNmi::class.java)!!.firstChild
     }
 
-    fun classVarIdNmi(project: Project, name: String): PsiElement {
-        val file = createFile(project, "extends Node\nvar $name\n")
-
-        return PsiTreeUtil.findChildOfType(file, GdClassVarIdNmi::class.java)!!.firstChild
-    }
-
-    fun constIdNmi(project: Project, name: String): PsiElement {
-        val file = createFile(project, "extends Node\nconst $name\n")
-
-        return PsiTreeUtil.findChildOfType(file, GdConstIdNmi::class.java)!!.firstChild
-    }
-
     fun enumDeclNmi(project: Project, name: String): PsiElement {
         val file = createFile(project, "extends Node\nenum $name {VALUE = 1}\n")
 

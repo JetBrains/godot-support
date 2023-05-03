@@ -9,6 +9,7 @@ import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdMethodIdNmi
 import gdscript.psi.utils.GdClassUtil
+import gdscript.utils.VirtualFileUtil.localParentPath
 
 class GdDocBuilder {
 
@@ -30,6 +31,10 @@ class GdDocBuilder {
         return this
     }
 
+    fun withPackage(element: PsiElement): GdDocBuilder {
+        return withPackage(element.containingFile.virtualFile.localParentPath())
+    }
+
     fun withPackage(path: String): GdDocBuilder {
         val body = GdDocUtil.iconed("AllIcons.Nodes.Package")
 
@@ -48,24 +53,25 @@ class GdDocBuilder {
         return this
     }
 
-    fun withPreview(element: PsiElement): GdDocBuilder {
+    fun withPreview(code: String?): GdDocBuilder {
+        if (code == null) return this
         // TODO syntax highlight
         // https://github.com/JetBrains/intellij-community/blob/idea/231.8109.175/platform/lang-impl/src/com/intellij/openapi/editor/richcopy/HtmlSyntaxInfoUtil.java
-        val code = when (element) {
-            is GdMethodIdNmi -> {
-                val declaration =
-                    PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java, GdFuncDeclEx::class.java)
-                        ?: return this
-
-                when (declaration) {
-                    is GdMethodDeclTl -> declaration.methodHeader(true)
-                    is GdFuncDeclEx -> declaration.methodHeader(true)
-                    else -> return this
-                }
-            }
-
-            else -> return this
-        }
+//        val code = when (element) {
+//            is GdMethodIdNmi -> {
+//                val declaration =
+//                    PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java, GdFuncDeclEx::class.java)
+//                        ?: return this
+//
+//                when (declaration) {
+//                    is GdMethodDeclTl -> declaration.methodHeader(true)
+//                    is GdFuncDeclEx -> declaration.methodHeader(true)
+//                    else -> return this
+//                }
+//            }
+//
+//            else -> return this
+//        }
         preview = HtmlChunk.text(code)
         return this
     }

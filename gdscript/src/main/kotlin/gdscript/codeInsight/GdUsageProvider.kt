@@ -23,8 +23,6 @@ class GdUsageProvider : FindUsagesProvider {
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
         return psiElement is GdClassNameNmi
                 || psiElement is GdMethodIdNmi
-                || psiElement is GdClassVarIdNmi
-                || psiElement is GdConstIdNmi
                 || psiElement is GdEnumDeclNmi
                 || psiElement is GdEnumValueNmi
                 || psiElement is GdSignalIdNmi
@@ -40,8 +38,6 @@ class GdUsageProvider : FindUsagesProvider {
         return when(element) {
             is GdClassNameNmi -> "classes"
             is GdMethodIdNmi -> "methods"
-            is GdClassVarIdNmi -> "variables"
-            is GdConstIdNmi -> "constants"
             is GdEnumDeclNmi -> "enums"
             is GdEnumValueNmi -> "enum consts"
             is GdSignalIdNmi -> "signals"

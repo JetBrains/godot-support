@@ -99,10 +99,6 @@ public class GdVisitor extends PsiElementVisitor {
     visitTopLevelDecl(o);
   }
 
-  public void visitClassVarIdNmi(@NotNull GdClassVarIdNmi o) {
-    visitNamedIdElement(o);
-  }
-
   public void visitComparisonEx(@NotNull GdComparisonEx o) {
     visitExpr(o);
   }
@@ -113,10 +109,6 @@ public class GdVisitor extends PsiElementVisitor {
 
   public void visitConstDeclTl(@NotNull GdConstDeclTl o) {
     visitTopLevelDecl(o);
-  }
-
-  public void visitConstIdNmi(@NotNull GdConstIdNmi o) {
-    visitNamedIdElement(o);
   }
 
   public void visitDictDecl(@NotNull GdDictDecl o) {

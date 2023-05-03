@@ -45,8 +45,8 @@ class GdAddVariableTypeHintFix : LocalQuickFixOnPsiElement {
 
     private fun typedPosition(element: PsiElement): PsiElement? {
         return when (element) {
-            is GdClassVarDeclTl -> element.classVarIdNmi
-            is GdConstDeclTl -> element.constIdNmi
+            is GdClassVarDeclTl -> element.varNmi
+            is GdConstDeclTl -> element.varNmi
             is GdVarDeclSt -> element.varNmi
             is GdConstDeclSt -> element.varNmi
             else -> null

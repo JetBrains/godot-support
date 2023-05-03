@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiNamedElement
 import gdscript.codeInsight.documentation.GdDocBuilder
+import gdscript.codeInsight.documentation.GdDocFactory
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdMethodDeclTl
@@ -29,11 +30,13 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
     private val freeReference = "\\[([A-Z].+?)]".toRegex()
 
     fun test(element: PsiElement): String {
-        return GdDocBuilder()
-            .withPackage(element.containingFile.virtualFile.localParentPath())
-            .withOwner(GdClassUtil.getOwningClassElement(element))
-            .withPreview(element)
-            .toString()
+        return GdDocFactory.create(element) ?: ""
+
+//        return GdDocBuilder()
+//            .withPackage(element.containingFile.virtualFile.localParentPath())
+//            .withOwner(GdClassUtil.getOwningClassElement(element))
+//            .withPreview(element)
+//            .toString()
     }
 
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {

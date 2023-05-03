@@ -37,11 +37,10 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     override fun resolve(): PsiElement? {
         val direct =
             when (val element = resolveDeclaration()) {
-                is GdClassVarDeclTl -> element.classVarIdNmi
+                is GdClassVarDeclTl -> element.varNmi
                 is GdClassDeclTl -> element.classNameNmi
                 is GdVarDeclSt -> element.varNmi
                 is GdConstDeclSt -> element.varNmi
-                is GdConstDeclTl -> element.constIdNmi
                 is GdEnumDeclTl -> element.enumDeclNmi
                 is GdEnumValue -> element.enumValueNmi
                 is GdMethodDeclTl -> element.methodIdNmi

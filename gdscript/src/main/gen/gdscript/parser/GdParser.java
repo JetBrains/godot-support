@@ -544,14 +544,14 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt)
+  // VAR var_nmi typed? (assignTyped expr)? (setgetDecl | endStmt)
   public static boolean classVarDecl_tl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classVarDecl_tl")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, CLASS_VAR_DECL_TL, "<class var decl tl>");
     r = consumeTokenFast(b, VAR);
     p = r; // pin = 1
-    r = r && report_error_(b, classVarId_nmi(b, l + 1));
+    r = r && report_error_(b, var_nmi(b, l + 1));
     r = p && report_error_(b, classVarDecl_tl_2(b, l + 1)) && r;
     r = p && report_error_(b, classVarDecl_tl_3(b, l + 1)) && r;
     r = p && classVarDecl_tl_4(b, l + 1) && r;
@@ -590,18 +590,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     boolean r;
     r = setgetDecl(b, l + 1);
     if (!r) r = endStmt(b, l + 1);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // IDENTIFIER
-  public static boolean classVarId_nmi(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classVarId_nmi")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, IDENTIFIER);
-    exit_section_(b, m, CLASS_VAR_ID_NMI, r);
     return r;
   }
 
@@ -647,14 +635,14 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // CONST constId_nmi typed? assignTyped expr endStmt
+  // CONST var_nmi typed? assignTyped expr endStmt
   public static boolean constDecl_tl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constDecl_tl")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, CONST_DECL_TL, "<const decl tl>");
     r = consumeTokenFast(b, CONST);
     p = r; // pin = 1
-    r = r && report_error_(b, constId_nmi(b, l + 1));
+    r = r && report_error_(b, var_nmi(b, l + 1));
     r = p && report_error_(b, constDecl_tl_2(b, l + 1)) && r;
     r = p && report_error_(b, assignTyped(b, l + 1)) && r;
     r = p && report_error_(b, expr(b, l + 1, -1)) && r;
@@ -668,17 +656,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "constDecl_tl_2")) return false;
     typed(b, l + 1);
     return true;
-  }
-
-  /* ********************************************************** */
-  // identifierEx
-  public static boolean constId_nmi(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "constId_nmi")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, CONST_ID_NMI, "<const id nmi>");
-    r = identifierEx(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
   }
 
   /* ********************************************************** */

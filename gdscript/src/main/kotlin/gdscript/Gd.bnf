@@ -75,28 +75,26 @@ private topLevelDecl_r ::= !(
     | REMOET | REMOTESYNC | MASTER | PUPPET | STATIC | VARARG
     | CLASS_NAME | RRBR | RCBR | RSBR | EXTENDS | CLASS )
 
-constDecl_tl ::= CONST constId_nmi typed? assignTyped expr endStmt {
+constDecl_tl ::= CONST var_nmi typed? assignTyped expr endStmt {
     methods=[getName getReturnType getPresentation]
     pin=1 recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdConstDeclElementImpl"
     stubClass="gdscript.index.stub.GdConstDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"
 }
-constId_nmi ::= identifierEx
 
 annotation_tl ::= annotationType (LRBR annotationParams? RRBR)? endStmt? {pin=1 recoverWhile=topLevelDecl_r}
 annotationType ::= ANNOTATOR
 annotationParams ::= literal_ex (COMMA literal_ex)* {
     pin=1 recoverWhile=argList_r
 }
-classVarDecl_tl ::= VAR classVarId_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
+classVarDecl_tl ::= VAR var_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
     methods=[getName getReturnType getPresentation isAnnotated]
     pin=1 recoverWhile=topLevelDecl_r
     mixin="gdscript.psi.impl.GdClassVarDeclElementImpl"
     stubClass="gdscript.index.stub.GdClassVarDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdClassVarDeclElementType.getInstance"
 }
-classVarId_nmi ::= IDENTIFIER
 
 setgetDecl ::= COLON (NEW_LINE INDENT)? (INDENT? (getDecl | setDecl | NEW_LINE) DEDENT?)+ DEDENT?
 getDecl ::= GET ((COLON stmtOrSuite) | (EQ getMethodId_nm COMMA?)) {

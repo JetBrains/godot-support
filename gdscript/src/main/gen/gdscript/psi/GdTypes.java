@@ -41,11 +41,9 @@ public interface GdTypes {
   IElementType CLASS_NAME_NMI = GdClassIdElementType.getInstance("CLASS_NAME_NMI");
   IElementType CLASS_NAMING = GdClassNamingElementType.getInstance("CLASS_NAMING");
   IElementType CLASS_VAR_DECL_TL = GdClassVarDeclElementType.getInstance("CLASS_VAR_DECL_TL");
-  IElementType CLASS_VAR_ID_NMI = new GdElementType("CLASS_VAR_ID_NMI");
   IElementType COMPARISON_EX = new GdElementType("COMPARISON_EX");
   IElementType CONST_DECL_ST = new GdElementType("CONST_DECL_ST");
   IElementType CONST_DECL_TL = GdConstDeclElementType.getInstance("CONST_DECL_TL");
-  IElementType CONST_ID_NMI = new GdElementType("CONST_ID_NMI");
   IElementType DICT_DECL = new GdElementType("DICT_DECL");
   IElementType DICT_PATTERN = new GdElementType("DICT_PATTERN");
   IElementType ELIF_ST = new GdElementType("ELIF_ST");
@@ -279,9 +277,6 @@ public interface GdTypes {
       else if (type == CLASS_VAR_DECL_TL) {
         return new GdClassVarDeclTlImpl(node);
       }
-      else if (type == CLASS_VAR_ID_NMI) {
-        return new GdClassVarIdNmiImpl(node);
-      }
       else if (type == COMPARISON_EX) {
         return new GdComparisonExImpl(node);
       }
@@ -290,9 +285,6 @@ public interface GdTypes {
       }
       else if (type == CONST_DECL_TL) {
         return new GdConstDeclTlImpl(node);
-      }
-      else if (type == CONST_ID_NMI) {
-        return new GdConstIdNmiImpl(node);
       }
       else if (type == DICT_DECL) {
         return new GdDictDeclImpl(node);

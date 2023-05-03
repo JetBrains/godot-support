@@ -41,12 +41,6 @@ public class GdClassVarDeclTlImpl extends GdClassVarDeclElementImpl implements G
 
   @Override
   @Nullable
-  public GdClassVarIdNmi getClassVarIdNmi() {
-    return PsiTreeUtil.getChildOfType(this, GdClassVarIdNmi.class);
-  }
-
-  @Override
-  @Nullable
   public GdEndStmt getEndStmt() {
     return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
   }
@@ -67,6 +61,12 @@ public class GdClassVarDeclTlImpl extends GdClassVarDeclElementImpl implements G
   @Nullable
   public GdTyped getTyped() {
     return PsiTreeUtil.getChildOfType(this, GdTyped.class);
+  }
+
+  @Override
+  @Nullable
+  public GdVarNmi getVarNmi() {
+    return PsiTreeUtil.getChildOfType(this, GdVarNmi.class);
   }
 
   @Override

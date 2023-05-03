@@ -14,9 +14,6 @@ public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<Gd
   GdAssignTyped getAssignTyped();
 
   @Nullable
-  GdClassVarIdNmi getClassVarIdNmi();
-
-  @Nullable
   GdEndStmt getEndStmt();
 
   @Nullable
@@ -27,6 +24,9 @@ public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<Gd
 
   @Nullable
   GdTyped getTyped();
+
+  @Nullable
+  GdVarNmi getVarNmi();
 
   @NotNull
   String getName();

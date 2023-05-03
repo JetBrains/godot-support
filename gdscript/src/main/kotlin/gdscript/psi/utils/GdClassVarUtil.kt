@@ -11,7 +11,7 @@ object GdClassVarUtil {
         val stub = element.stub;
         if (stub !== null) return stub.name();
 
-        return element.classVarIdNmi?.name.orEmpty();
+        return element.varNmi?.name.orEmpty();
     }
 
 }

@@ -66,13 +66,13 @@ class GdAddReturnType : BaseIntentionAction {
     }
 
     private fun classVarDecl(element: GdClassVarDeclTl): Pair<Int, String>? {
-        val offset = element.classVarIdNmi?.endOffset ?: return null;
+        val offset = element.varNmi?.endOffset ?: return null;
 
         return Pair(offset, ": $desired");
     }
 
     private fun constDecl(element: GdConstDeclTl): Pair<Int, String>? {
-        val offset = element.constIdNmi?.endOffset ?: return null;
+        val offset = element.varNmi?.endOffset ?: return null;
 
         return Pair(offset, ": $desired");
     }

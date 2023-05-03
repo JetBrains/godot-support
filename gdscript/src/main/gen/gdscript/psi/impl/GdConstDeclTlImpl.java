@@ -41,12 +41,6 @@ public class GdConstDeclTlImpl extends GdConstDeclElementImpl implements GdConst
 
   @Override
   @Nullable
-  public GdConstIdNmi getConstIdNmi() {
-    return PsiTreeUtil.getChildOfType(this, GdConstIdNmi.class);
-  }
-
-  @Override
-  @Nullable
   public GdEndStmt getEndStmt() {
     return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
   }
@@ -61,6 +55,12 @@ public class GdConstDeclTlImpl extends GdConstDeclElementImpl implements GdConst
   @Nullable
   public GdTyped getTyped() {
     return PsiTreeUtil.getChildOfType(this, GdTyped.class);
+  }
+
+  @Override
+  @Nullable
+  public GdVarNmi getVarNmi() {
+    return PsiTreeUtil.getChildOfType(this, GdVarNmi.class);
   }
 
   @Override

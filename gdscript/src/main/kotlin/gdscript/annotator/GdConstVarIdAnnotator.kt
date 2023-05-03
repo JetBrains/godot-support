@@ -14,7 +14,7 @@ import gdscript.psi.utils.GdClassMemberUtil
 class GdConstVarIdAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        if (element is GdConstIdNmi || element is GdClassVarIdNmi || element is GdVarNmi) {
+        if (element is GdVarNmi) {
             isUnique(element as GdNamedIdElement, holder);
         }
     }

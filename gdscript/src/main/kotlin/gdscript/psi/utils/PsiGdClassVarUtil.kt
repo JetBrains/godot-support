@@ -1,9 +1,6 @@
 package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
-import com.intellij.psi.TokenType
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.elementType
 import gdscript.psi.*
 import gdscript.utils.PsiElementUtil.prevNonWhiteCommentToken
 
