@@ -1,35 +1,108 @@
 <Project>
-  <Import Project="$(MSBuildThisFileDirectory)\build\DotNetSdkPath.generated.props"
-          Condition="Exists('$(MSBuildThisFileDirectory)\build\DotNetSdkPath.generated.props')" />
-  <!-- TODO: Test what happens without the condition if props are not generated yet -->
-  
-    <!-- We have multiple projects in the same folder, so need to rename the bin and obj
-       folders so that they are unique and we don't overwrite anything. We can do this
-       in the project files for the bin folders, but not for the obj folders, because
-       the Sdk attribute indirectly imports Microsoft.Common.props before we have a
-       chance to set any properties. Microsoft.Common.props defines the BaseIntermediateOutputPath
-       value, and then immediately uses it to include props files from the obj folder,
-       before we've had a chance to override it. Fortunately, this Directory.Build.props
-       file gets automatically imported first, so we can override it here.
-       We also have to set it to something outside of the source tree, or the default
-       wildcard includes only exclude bin and obj for the current project, and we'd
-       pick up extra files.
-       See:
-       * https://github.com/Microsoft/msbuild/issues/1603
-       * https://github.com/dotnet/sdk/issues/803
-       * https://github.com/dotnet/sdk/issues/802 -->
+
   <PropertyGroup>
-    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+      <ImportGuard-DirectoryBuildProps>True</ImportGuard-DirectoryBuildProps>
   </PropertyGroup>
 
   <PropertyGroup>
-    <!-- Build tests and production to a common bin folder to reduce unnecessary duplication and copies. By default,
-         production would skip copying @(JetContent) and should skip @(JetReference) but because we're not using the
-         standard SDK entry point, which would set JetReferencesPrivate=False, production gets all @(JetReference)
-         assemblies. It also gets all nuget assemblies. Combining test and production means we only get a single copy
-         of @(JetReference), nuget assemblies and @(JetContent) for each build - rider and resharper.
-         Note that obj folders are kept separate because per-project files are saved there, e.g. nuget restore details
-         and generated source files. -->
-    <OutputPath>$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName.Replace("tests.", ""))\bin\$(Configuration)</OutputPath>
+    <!-- Use a per project obj folder in a common build folder. Each project needs its own obj folder, as this contains
+         e.g. nuget import files and generated files, and can't be shared across all projects.
+         Note that we must set it in Directory.Build.Props as Microsoft.Common.props (included by Microsoft.Net.Sdk)
+         will set the property and immediately use it. Fortunately, it includes Directory.build.props first.
+         Also make sure that obj folder is outside of the project folder, or the default wildcards will include it in
+         the project
+         See:
+         * https://github.com/Microsoft/msbuild/issues/1603
+         * https://github.com/dotnet/sdk/issues/803
+         * https://github.com/dotnet/sdk/issues/802 -->
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+
+    <!-- Use a per-project bin folder, again outside of the project folder to avoid wildcard inclusion. We'll use this
+         for all non-plugin projects, and also the tests, which need to be in their own separate folders so they can be
+         run in parallel without stepping on each other's toes -->
+    <OutputPath>$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName)\bin\$(Configuration)</OutputPath>
+
+    <!-- The main plugin projects (Unity, Unity.Rider, Unity.VisualStudio, Unity.Shaders, Yaml, Json, etc.) are all
+         built into a single bin folder, to reduce copies of the SDK. Technically, we can run tests from this folder
+         without problems, because the test environment is created from assemblies referenced by the test assembly, and
+         we handle zoning correctly. However, TC wants to run the tests in parallel, so let's build tests to separate
+         folders.
+         Non-plugin projects will get the default $(OutputPath) set above, as will test projects. Plugins will use the
+         output path below and build to a central location.
+         For reference, the standard SDK package entry points would mean that production code would skip copying
+         @(JetContent) such as external annotations or schemas, would also skip copying all product assemblies defined
+         in @(JetReference) and would set JetReferencesPrivate=False to avoid creating a private copy of reference
+         assemblies in the bin dir. For test projects, JetTestProject=True, and @(JetContent) and @(JetReference) are
+         always copied. -->
+    <ReSharperUnityCommonOutputPath>$(MSBuildThisFileDirectory)\build\Unity\bin\$(Configuration)</ReSharperUnityCommonOutputPath>
   </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Treat *.Tests.csproj as a R# SDK test project, and also define JetReferencesPrivate. If set to False, it
+         prevents copying JetBrains references to the output folder. Ideally, this means we only get our production
+         assemblies copied to the common plugin output folder. But it doesn't stop copying nuget transitive, so
+         we've still got a fair amount of rubbish in the bin folder. We also copy everything to each of the test
+         folders, which is more data -->
+    <JetTestProject Condition="'$(JetTestProject)' == '' AND $(MSBuildProjectName.EndsWith('Tests'))">True</JetTestProject>
+    <JetReferencesPrivate Condition="'$(JetReferencesPrivate)' == '' AND '$(JetTestProject)' == 'True'">True</JetReferencesPrivate>
+    <JetReferencesPrivate Condition="'$(JetReferencesPrivate)' == ''">False</JetReferencesPrivate>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Company>JetBrains</Company>
+  </PropertyGroup>
+
+<!--  <PropertyGroup>-->
+<!--    <SignAssembly>true</SignAssembly>-->
+<!--    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)..\sign.snk</AssemblyOriginatorKeyFile>-->
+<!--  </PropertyGroup>-->
+
+  <!-- Set default constants to enable asserts and exceptions in debug mode. The internal build will set this via
+       JetSdkProjectParameterFilePath when building with the internal SDK. We're not currently using the internal SDK,
+       so make sure to allow this property for internal builds too -->
+  <PropertyGroup Condition="'$(Configuration)' != 'Release' and '$(JetSdkProjectParameterFilePath)' == ''">
+    <DefineConstants>$(DefineConstants);JET_MODE_ASSERT;JET_MODE_REPORT_EXCEPTIONS</DefineConstants>
+  </PropertyGroup>
+
+  <!-- Do not try to auto-unify referenced assembly versions. The SDK has a couple of clashes that are not easily
+       solved. E.g. the SDK has an exact reference on System.Runtime.CompilerServices.Unsafe.nupkg 4.5.3, which brings
+       in System.Runtime.CompilerServices.dll 4.0.4.1. The Microsoft.CodeAnalysis.dll references 5.0.0, which can't be
+       resolved as we're stuck on the 4.5.3 package.
+       This will normally give a warning about an unresolved version conflict, as msbuild will try to generate binding
+       redirects, but it doesn't appear to do anything else - the binding redirects might be calculated, but they're not
+       output for a class library unless we set GenerateBindingRedirectsOutputType to true. In which case, we get a
+       .dll.config file that contains the references that were auto-unified. If the reference has a conflict, it's not
+       resolved, so doesn't get output.
+       We don't actually care because we have no requirements for a specific version of a reference, and especially not
+       for a reference that could introduce a conflict. We're just a plugin and want to compile against and load the
+       versions of the assemblies used by the product. So we disable calculating binding redirects, and as a side
+       effect, remove the big warnings. -->
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+
+<!--  <Import Project="..\Packaging.props" />-->
+  <Import Project="$(MSBuildThisFileDirectory)build\DotNetSdkPath.generated.props"/>
+
+  <!-- Running tests on a Mac requires PresentationCore/PresentationFramework, which isn't part of the standard Mono/netcore
+       distro. We need to copy them from the SDK. Note that the IsOsPlatform function requires msbuild 15.3+
+       Note that this works, even though JetTestProject is defined AFTER this file is imported, because properties and
+       imports are evaluated before ItemGroups -->
+  <ItemGroup Condition=" '$(JetTestProject)' == 'True' AND '$([MSBuild]::IsOsPlatform(OSX))' == 'True' ">
+    <JetContent Include="$(DotNetSdkPath)\..\ReSharperHost\NetCore\runtimes\unix\lib\netcoreapp3.0\PresentationFramework.dll">
+      <TargetPath>PresentationFramework.dll</TargetPath>
+    </JetContent>
+    <JetContent Include="$(DotNetSdkPath)\..\ReSharperHost\NetCore\runtimes\unix\lib\netcoreapp3.0\PresentationCore.dll">
+      <TargetPath>PresentationCore.dll</TargetPath>
+    </JetContent>
+  </ItemGroup>
+  <!-- This is untested -->
+  <ItemGroup Condition=" '$(JetTestProject)' == 'True' AND '$([MSBuild]::IsOsPlatform(Linux))' == 'True' ">
+    <JetContent Include="$(DotNetSdkPath)/../ReSharperHost/NetCore/runtimes/unix/lib/netcoreapp3.0/PresentationFramework.dll">
+      <TargetPath>PresentationFramework.dll</TargetPath>
+    </JetContent>
+    <JetContent Include="$(DotNetSdkPath)/../ReSharperHost/NetCore/runtimes/unix/lib/netcoreapp3.0/PresentationCore.dll">
+      <TargetPath>PresentationCore.dll</TargetPath>
+    </JetContent>
+  </ItemGroup>
 </Project>

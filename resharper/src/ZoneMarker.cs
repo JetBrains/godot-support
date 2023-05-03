@@ -8,7 +8,7 @@ using JetBrains.Rider.Model;
 namespace JetBrains.ReSharper.Plugins.Godot
 {
     [ZoneMarker]
-    public class ZoneMarker : IRequire<IRiderProductEnvironmentZone>, IRequire<IProjectModelZone>, IRequire<IRiderModelZone>, IRequire<IDocumentModelZone>, IRequire<PsiFeaturesImplZone>
+    public class ZoneMarker : IRequire<IGodotZone>, IRequire<IRiderProductEnvironmentZone>, IRequire<IProjectModelZone>, IRequire<IRiderModelZone>, IRequire<IDocumentModelZone>, IRequire<PsiFeaturesImplZone>
     {
     }
 }

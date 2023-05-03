@@ -1,0 +1,122 @@
+using System;
+using JetBrains.ReSharper.Psi.Parsing;
+using JetBrains.Text;
+using JetBrains.Util;
+using JetBrains.ReSharper.Plugins.Godot.ProjectGodot.Psi.Parsing.TokenNodeTypes;
+
+%%
+%{
+TokenNodeType currentTokenType;
+%}
+
+%unicode
+
+%init{
+currentTokenType = null;
+%init}
+
+%namespace JetBrains.ReSharper.Plugins.Godot.ProjectGodot.Psi.Parsing
+%class ProjectGodotLexer
+%implements IIncrementalLexer
+
+%function _locateToken
+%public
+%type TokenNodeType
+%ignorecase
+
+%eofval{
+currentTokenType = null; return currentTokenType;
+%eofval}
+
+ALPHA=[A-Za-z]
+DIGIT=[0-9]
+
+WHITESPACE_CHARS=\u0020\u0009\u000B\u000C
+WHITESPACE=\u0020|\u0009|\u000B|\u000C
+
+L_SBRACKET=\u005B
+R_SBRACKET=\u005D
+SBRACKETS=({L_SBRACKET}|{R_SBRACKET})
+SBRACKETS_CHARS={L_SBRACKET}{R_SBRACKET}
+
+L_BRACKET=\u0028
+R_BRACKET=\u0029
+BRACKETS=({L_BRACKET}|{R_BRACKET})
+BRACKETS_CHARS={L_BRACKET}{R_BRACKET}
+
+EQ=\u003D
+
+PLUS=\u002B
+DOT=\u002E
+EXCL_MK=\u0021
+MINUS=\u002D
+STAR=\u002A
+
+OPERATORS={PLUS}{DOT}{EXCL_MK}{MINUS}{STAR}
+
+COMMA=\u002C
+COLON=\u003A
+SEMICOLON=\u003B
+
+QUOTE_MK=\u0022
+
+BACKSLASH=\u005C
+
+CARRIAGE_RETURN_CHAR=\u000D
+LINE_FEED_CHAR=\u000A
+NEW_LINE_PAIR={CARRIAGE_RETURN_CHAR}{LINE_FEED_CHAR}
+NEW_LINE_CHAR=({CARRIAGE_RETURN_CHAR}|{LINE_FEED_CHAR}|\u0085|\u2028|\u2029)
+NEW_LINE_CHAR_RAW={CARRIAGE_RETURN_CHAR}{LINE_FEED_CHAR}\u0085\u2028\u2029
+NEW_LINE = ({NEW_LINE_CHAR}|{NEW_LINE_PAIR})
+
+LINE_CONTINUATOR=(\\([\ \t]*)({NEW_LINE_PAIR}|{NEW_LINE_CHAR}))
+COMMENT=({SEMICOLON}([^{NEW_LINE_CHAR_RAW}]|{LINE_CONTINUATOR})*)
+
+SINGLE_REGULAR_STRING_LITERAL_CHARACTER=[^\"\\\u0085\u2028\u2029\u000D\u000A]
+SIMPLE_ESCAPE_SEQUENCE=(\\[\'\"\\abfnrtv])
+DECIMAL_DIGIT=[0-9]
+OCTAL_DIGIT=[0-7]
+HEX_DIGIT=({DECIMAL_DIGIT}|[A-Fa-f])
+OCTAL_ESCAPE_SEQUENCE=(\\{OCTAL_DIGIT}({OCTAL_DIGIT}|{OCTAL_DIGIT}{OCTAL_DIGIT})?)
+HEXADECIMAL_ESCAPE_SEQUENCE=(\\x{HEX_DIGIT}({HEX_DIGIT}|{HEX_DIGIT}{HEX_DIGIT}|{HEX_DIGIT}{HEX_DIGIT}{HEX_DIGIT})?)
+UNICODE_ESCAPE_SEQUENCE=((\\u{HEX_DIGIT}{HEX_DIGIT}{HEX_DIGIT}{HEX_DIGIT})|(\\U{HEX_DIGIT}{HEX_DIGIT}{HEX_DIGIT}{HEX_DIGIT}{HEX_DIGIT}{HEX_DIGIT}{HEX_DIGIT}{HEX_DIGIT}))
+
+REGULAR_STRING_LITERAL_CHARACTER=({SINGLE_REGULAR_STRING_LITERAL_CHARACTER}|{SIMPLE_ESCAPE_SEQUENCE}|{OCTAL_ESCAPE_SEQUENCE}|{HEXADECIMAL_ESCAPE_SEQUENCE}|{UNICODE_ESCAPE_SEQUENCE})
+STRING_LITERAL=(\"{REGULAR_STRING_LITERAL_CHARACTER}*\")
+
+LITERAL=[^{OPERATORS}{COMMA}{COLON}{SEMICOLON}{WHITESPACE_CHARS}{NEW_LINE_CHAR_RAW}{EQ}{BRACKETS_CHARS}{SBRACKETS_CHARS}{QUOTE_MK}{BACKSLASH}]+
+
+%state YY_IN_LINE
+
+%%
+<YYINITIAL, YY_IN_LINE> {SEMICOLON} { return GetToken(GodotInitTokenNodeTypes.SEMICOLON); }
+
+<YYINITIAL, YY_IN_LINE> {L_SBRACKET} { return GetToken(GodotInitTokenNodeTypes.L_SBRACKET); }
+<YYINITIAL, YY_IN_LINE> {R_SBRACKET} { return GetToken(GodotInitTokenNodeTypes.R_SBRACKET); }
+<YYINITIAL, YY_IN_LINE> {L_BRACKET} { return GetToken(GodotInitTokenNodeTypes.L_BRACKET); }
+<YYINITIAL, YY_IN_LINE> {R_BRACKET} { return GetToken(GodotInitTokenNodeTypes.R_BRACKET); }
+
+<YYINITIAL, YY_IN_LINE> {PLUS} { return GetToken(GodotInitTokenNodeTypes.ADD_WITH_CHECK); }
+<YYINITIAL, YY_IN_LINE> {DOT} { return GetToken(GodotInitTokenNodeTypes.ADD); }
+<YYINITIAL, YY_IN_LINE> {EXCL_MK} { return GetToken(GodotInitTokenNodeTypes.RM_PROP); }
+<YYINITIAL, YY_IN_LINE> {MINUS} { return GetToken(GodotInitTokenNodeTypes.RM_LN); }
+<YYINITIAL, YY_IN_LINE> {STAR} { return GetToken(GodotInitTokenNodeTypes.STAR); }
+
+<YYINITIAL, YY_IN_LINE> {EQ} { return GetToken(GodotInitTokenNodeTypes.EQ); }
+
+<YYINITIAL, YY_IN_LINE> {COMMA} { return GetToken(GodotInitTokenNodeTypes.COMMA); }
+<YYINITIAL, YY_IN_LINE> {COLON} { return GetToken(GodotInitTokenNodeTypes.COLON); }
+<YYINITIAL, YY_IN_LINE> {QUOTE_MK} { return GetToken(GodotInitTokenNodeTypes.QUOTE_MK); }
+
+<YYINITIAL, YY_IN_LINE> {LINE_CONTINUATOR} { return GetToken(GodotInitTokenNodeTypes.LINE_CONTINUATOR); }
+<YYINITIAL, YY_IN_LINE> {BACKSLASH} { return GetToken(GodotInitTokenNodeTypes.BACKSLASH); }
+
+<YYINITIAL, YY_IN_LINE> {WHITESPACE} { return currentTokenType = GodotInitTokenNodeTypes.WHITESPACE; }
+<YYINITIAL, YY_IN_LINE> {NEW_LINE} { return GetToken(GodotInitTokenNodeTypes.NEWLINE); }
+
+<YYINITIAL, YY_IN_LINE> {LITERAL} { return GetToken(GodotInitTokenNodeTypes.LITERAL); }
+<YYINITIAL, YY_IN_LINE> {STRING_LITERAL} { return GetToken(GodotInitTokenNodeTypes.STRING_LITERAL); }
+
+<YYINITIAL> {COMMENT} { return GetToken(GodotInitTokenNodeTypes.COMMENT); }
+
+<YYINITIAL, YY_IN_LINE> . { return GetToken(GodotInitTokenNodeTypes.BAD_CHAR); }

@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "debugger", "debugger", "{C2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "debugger", "debugger\debugger\debugger.csproj", "{0D331B4B-9B49-41A6-8322-0CFE82FA238E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "rider-godot.Tests", "test\Godot.Tests\rider-godot.Tests.csproj", "{53BB64DD-EE7F-4253-8E6C-F14B234AF066}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,9 +35,14 @@ Global
 		{0D331B4B-9B49-41A6-8322-0CFE82FA238E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D331B4B-9B49-41A6-8322-0CFE82FA238E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D331B4B-9B49-41A6-8322-0CFE82FA238E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53BB64DD-EE7F-4253-8E6C-F14B234AF066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53BB64DD-EE7F-4253-8E6C-F14B234AF066}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53BB64DD-EE7F-4253-8E6C-F14B234AF066}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53BB64DD-EE7F-4253-8E6C-F14B234AF066}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{E5F98D56-13E6-41B1-A70A-E1E1F81866C8} = {609BB37F-C547-4463-805E-329CB4AE7168}
 		{0D331B4B-9B49-41A6-8322-0CFE82FA238E} = {C27CD440-D760-4346-B528-531010AE3597}
+		{53BB64DD-EE7F-4253-8E6C-F14B234AF066} = {609BB37F-C547-4463-805E-329CB4AE7168}
 	EndGlobalSection
 EndGlobal

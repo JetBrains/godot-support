@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <AssemblyName>JetBrains.ReSharper.Plugins.Godot.Tests</AssemblyName>
+    <RootNamespace>JetBrains.ReSharper.Plugins.Godot.Tests</RootNamespace>
+    <LangVersion>10</LangVersion>
+    <!-- Force 64 bit for non-Windows, specifically Mac. The Rider SDK includes the ClrStack package that references
+     both ClrStack.exe and ClrStack32.exe, and the 32 bit version convinces the unit testing framework that we
+     should be a 32 bit assembly. Unfortunately, 32 bit processes aren't supported on Mac, and the tests fail.
+     Any test project that uses the Rider SDK will require this -->
+    <PlatformTarget Condition="'$([MSBuild]::IsOsPlatform(Windows))' != 'True'">x64</PlatformTarget>
+    <JetTestProject>True</JetTestProject>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;JET_MODE_ASSERT;JET_MODE_REPORT_EXCEPTIONS;RIDER;$(CommandLineConstants)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;RIDER;$(CommandLineConstants)</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <ProjectReference Include="..\..\src\rider-godot.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NUnit.Console" />
+  </ItemGroup>
+  
+  <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Psi.Features_src.Props"/>
+  <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Rider_Rider.Backend.Props"/>
+  <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Psi.Features_test_Framework.Props" />
+</Project>
