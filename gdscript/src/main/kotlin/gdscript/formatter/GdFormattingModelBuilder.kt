@@ -21,7 +21,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
         val initialBlock = GdBlock(
             formattingContext.node,
-            Wrap.createWrap(WrapType.NONE, false),
+            null, // Wrap.createWrap(WrapType.NONE, false),
             Alignment.createAlignment(),
             settings,
             createSpaceBuilder(settings),
@@ -52,6 +52,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .after(GdTypes.ANNOTATION_TL).spaces(1)
 
             /* Extends & ClassName */
+            .between(GdTypes.CLASS_NAME_NMI, GdTypes.INHERITANCE).spacing(1, -1, 0, true, custom.LINES_AFTER_HEADER)
             .before(NAMINGS).forcedLines(0)
             .after(NAMINGS).forcedLines(custom.LINES_AFTER_HEADER)
 
