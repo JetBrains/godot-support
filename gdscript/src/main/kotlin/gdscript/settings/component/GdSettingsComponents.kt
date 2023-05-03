@@ -38,7 +38,7 @@ object GdSettingsComponents {
                 var myValue = value
                 if (value is LibraryEx && value.kind is GdLibraryKind) {
 //                    val state = (value.properties as GdLibraryProperties).state
-                    val state = value.modifiableModel.properties.state as GdLibrary
+                    val state = value.modifiableModel.properties as GdLibraryProperties
                     // TODO gray
                     myValue = "${state.version} - ${state.path}"
                 }

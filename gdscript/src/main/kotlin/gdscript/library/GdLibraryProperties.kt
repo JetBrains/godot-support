@@ -6,30 +6,32 @@ import com.intellij.openapi.components.Storage
 import com.intellij.util.xmlb.annotations.Tag
 
 @State(name = "GdLibraryProperties", storages = [Storage("GdLibraryProperties.xml")])
-class GdLibraryProperties : LibraryProperties<GdLibrary>() {
+class GdLibraryProperties : LibraryProperties<GdLibraryProperties>() {
 
-    @Tag("config")
-    var config: GdLibrary = GdLibrary()
+    @Tag("path")
+    var path: String = ""
+
+    @Tag("version")
+    var version: String = ""
 
     override fun equals(other: Any?): Boolean {
         if (other !is GdLibraryProperties) return false
-        val otherConfig = other.config
-        val myConfig = config
 
-        return myConfig.path == otherConfig.path
-                && myConfig.version == otherConfig.version
+        return path == other.path
+                && version == other.version
     }
 
     override fun hashCode(): Int {
-        return config.hashCode()
+        return this.hashCode()
     }
 
-    override fun getState(): GdLibrary {
-        return config
+    override fun getState(): GdLibraryProperties {
+        return this
     }
 
-    override fun loadState(state: GdLibrary) {
-        config = state
+    override fun loadState(state: GdLibraryProperties) {
+        path = state.path
+        version = state.version
     }
 
 }

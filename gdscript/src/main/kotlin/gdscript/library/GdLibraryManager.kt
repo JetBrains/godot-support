@@ -81,9 +81,9 @@ object GdLibraryManager {
             runWriteAction {
                 val library = modifier.createLibrary(name, GdLibraryKind)
                 val libModifier = library.modifiableModel as ModifiableModelEx
-                val state = libModifier.properties.state as GdLibrary
-                state.path = path
-                state.version = name.sdkToVersion()
+                val props = libModifier.properties as GdLibraryProperties
+                props.path = path
+                props.version = name.sdkToVersion()
 
                 libModifier.addRoot(path, type)
                 libModifier.commit()
