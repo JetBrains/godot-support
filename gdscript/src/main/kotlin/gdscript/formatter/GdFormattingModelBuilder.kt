@@ -38,7 +38,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
     }
 
     private fun createSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
-        val custom = settings.getCustomSettings(GdCodeStyleSettings::class.java);
+        val custom = settings.getCustomSettings(GdCodeStyleSettings::class.java)
         INDENT_SIZE =
             settings.getIndentSize(GdFileType); // TODO u tabů se to posere, když je za stmt volné odsazení tak se převede na mezery a konec
 
@@ -81,7 +81,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
         builder.around(TokenSet.create(GdTypes.TEST_OPERATOR, GdTypes.ASSIGN, GdTypes.EQ, GdTypes.ASSIGN_TYPED))
             .spaces(1)
 
-        return builder;
+        return builder
     }
 
     companion object {
@@ -108,7 +108,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             GdTypes.EXPR_ST,
         )
         val ROOT_BLOCKS = TokenSet.create(GdTypes.METHOD_DECL_TL, GdTypes.CLASS_DECL_TL)
-        var INDENT_SIZE = 4;
+        var INDENT_SIZE = 4
     }
 
 }
