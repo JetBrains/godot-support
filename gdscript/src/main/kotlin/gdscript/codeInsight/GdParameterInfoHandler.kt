@@ -1,5 +1,6 @@
 package gdscript.codeInsight
 
+import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.lang.parameterInfo.*
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
@@ -67,17 +68,36 @@ class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElement>, Dum
         val currentParam = context.currentParameterIndex
         var startOffset = -1
         var endOffset = -1
+        val fullSignature = CodeInsightSettings.getInstance().SHOW_FULL_SIGNATURES_IN_PARAMETER_INFO
 
         var isVariadic = false
         val builder = StringBuilder()
+        var ending = ""
+
         val parameters = when(declaration) {
             is GdMethodDeclTl -> {
+                if (fullSignature) {
+                    builder.append("func ${declaration.name}(")
+                    ending = ")"
+                    if (declaration.returnType.isNotBlank()) ending += " -> ${declaration.returnType}"
+                }
                 isVariadic = declaration.isVariadic
                 declaration.parameters
             }
-            is GdFuncDeclEx -> declaration.parameters
+            is GdFuncDeclEx -> {
+                if (fullSignature) {
+                    builder.append("func ${declaration.funcDeclIdNmi?.text ?: ""}(")
+                    ending = ")"
+                    if (declaration.returnType.isNotBlank()) ending += " -> ${declaration.returnType}"
+                }
+                declaration.parameters
+            }
             is GdAnnotationTl -> {
                 val specification = GdAnnotationUtil.get(declaration)
+                if (fullSignature) {
+                    builder.append("${declaration.annotationType.text}(")
+                    ending = ")"
+                }
                 isVariadic = specification?.variadic ?: false
                 specification?.parameters ?: emptyMap<String, String>()
             }
@@ -108,6 +128,7 @@ class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElement>, Dum
                 builder.append("no parameters")
             }
         }
+        builder.append(ending)
 
         context.setupUIComponentPresentation(
             builder.toString(),
