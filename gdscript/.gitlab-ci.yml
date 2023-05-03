@@ -1,9 +1,9 @@
 refresh-sdk:
   stage: build
   image: php
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
-      when: always
+#  rules:
+#    - if: $CI_PIPELINE_SOURCE == "schedule"
+#      when: always
   before_script:
     - apt-get update
     - apt-get install -y wget make zip git
@@ -11,6 +11,7 @@ refresh-sdk:
     - git config --global user.name "CI runner"
   script:
     - cd php
+    - UPDATED=$(php test.php)
     - UPDATED=$(php sdkBuilder.php)
     - cd ..
     - |
