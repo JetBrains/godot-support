@@ -58,32 +58,23 @@ class GdDocBuilder {
                         ?: return this
 
                 when (declaration) {
-                    is GdMethodDeclTl -> declaration.methodHeader()
-                    is GdFuncDeclEx -> declaration.methodHeader()
+                    is GdMethodDeclTl -> declaration.methodHeader(true)
+                    is GdFuncDeclEx -> declaration.methodHeader(true)
                     else -> return this
                 }
             }
 
             else -> return this
         }
-        preview = HtmlChunk.tag("code").child(HtmlChunk.text(code))
+        preview = HtmlChunk.text(code)
         return this
     }
 
     override fun toString(): String {
         val sb = StringBuilder()
         line(sb, owner)
-//        sb.append(DocumentationMarkup.SECTIONS_START)
-        line(sb, preview)
-        sb.append(HtmlChunk.div().style("""
-          display: block;
-          height: 1px;
-          border: 0;
-          border-top: 1px solid #666;
-          margin: 10px 0;
-        """.trimMargin()))
+        code(sb, preview)
         line(sb, body)
-//        sb.append(DocumentationMarkup.SECTIONS_END)
         line(sb, packaged)
 
         return sb.toString()
@@ -94,6 +85,13 @@ class GdDocBuilder {
         sb.append(DocumentationMarkup.CONTENT_START)
         sb.append(element)
         sb.append(DocumentationMarkup.CONTENT_END)
+    }
+
+    private fun code(sb: StringBuilder, element: Any?) {
+        if (element == null) return
+        sb.append(DocumentationMarkup.DEFINITION_START)
+        sb.append(element)
+        sb.append(DocumentationMarkup.DEFINITION_END)
     }
 
     private fun section(sb: StringBuilder, element: Any?) {

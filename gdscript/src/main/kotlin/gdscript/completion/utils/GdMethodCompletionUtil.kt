@@ -6,11 +6,12 @@ import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdParamList
 
 object GdMethodCompletionUtil {
 
-    fun GdMethodDeclTl.methodHeader(): String {
-        val params = buildParamHint(this)
+    fun GdMethodDeclTl.methodHeader(wrapParams: Boolean = false): String {
+        val params = buildParamHint(this, wrapParams)
         return "func ${this.name}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}"
     }
 
@@ -18,8 +19,8 @@ object GdMethodCompletionUtil {
         return "${this.name}${buildParamHint(this)}"
     }
 
-    fun GdFuncDeclEx.methodHeader(): String {
-        val params = buildParamHint(this)
+    fun GdFuncDeclEx.methodHeader(wrapParams: Boolean = false): String {
+        val params = buildParamHint(this, wrapParams)
         return "func ${this.funcDeclIdNmi?.text ?: ""}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}"
     }
 
@@ -65,13 +66,27 @@ object GdMethodCompletionUtil {
         )
     }
 
-    fun buildParamHint(method: GdMethodDeclTl): String {
-        if (method.isVariadic) return "(vararg)";
-        return "(${method.paramList?.text ?: ""})";
+    fun buildParamHint(method: GdMethodDeclTl, wrap: Boolean = false): String {
+        if (method.isVariadic) return "(vararg)"
+        return buildParamHint(method.paramList, wrap)
     }
 
-    fun buildParamHint(method: GdFuncDeclEx): String {
-        return "(${method.paramList?.text ?: ""})";
+    fun buildParamHint(method: GdFuncDeclEx, wrap: Boolean = false): String {
+        return buildParamHint(method.paramList, wrap)
+    }
+
+    private fun buildParamHint(paramList: GdParamList?, wrap: Boolean = false): String {
+        if (paramList?.paramList?.isEmpty() ?: true) return "()"
+        val wrapper = if (wrap) "\n" else ""
+        val spacer = if (wrap) "  " else ""
+
+        val sb = StringBuilder("($wrapper")
+        paramList!!.paramList.forEach {
+            sb.append("$spacer${it.text},$wrapper")
+        }
+
+        sb.append(")")
+        return sb.toString()
     }
 
 }
