@@ -6,6 +6,7 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.roots.impl.libraries.LibraryEx
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.ui.ComboBox
+import gdscript.library.GdLibrary
 import gdscript.library.GdLibraryKind
 import gdscript.library.GdLibraryManager
 import gdscript.library.GdLibraryProperties
@@ -36,7 +37,10 @@ object GdSettingsComponents {
             ): Component {
                 var myValue = value
                 if (value is LibraryEx && value.kind is GdLibraryKind) {
-                    myValue = (value.properties as GdLibraryProperties).config?.version ?: value
+//                    val state = (value.properties as GdLibraryProperties).state
+                    val state = value.modifiableModel.properties.state as GdLibrary
+                    // TODO gray
+                    myValue = "${state.version} - ${state.path}"
                 }
 
                 return super.getListCellRendererComponent(list, myValue, index, isSelected, cellHasFocus)

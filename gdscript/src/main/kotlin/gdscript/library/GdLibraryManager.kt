@@ -8,9 +8,12 @@ import com.intellij.openapi.roots.ModifiableModelsProvider
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.impl.libraries.LibraryEx
+import com.intellij.openapi.roots.impl.libraries.LibraryEx.ModifiableModelEx
+import com.intellij.openapi.roots.impl.libraries.LibraryImpl
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.workspaceModel.ide.impl.legacyBridge.library.LibraryBridgeImpl
 import gdscript.settings.GdApplicationSettingsState
 import gdscript.utils.GdSdkUtil.SDKs_URL
 import gdscript.utils.GdSdkUtil.sdkToVersion
@@ -60,12 +63,6 @@ object GdLibraryManager {
     }
 
     fun listRegisteredSdks(): Iterable<Library> {
-        val asd = ApplicationManager
-            .getApplication()
-            .getService(ModifiableModelsProvider::class.java)
-            .libraryTableModifiableModel.libraries
-        val qwe = LibraryTablesRegistrar.getInstance().libraryTable.modifiableModel.libraries
-        val asda = LibraryTablesRegistrar.getInstance().libraryTable.libraries
         return ApplicationManager
             .getApplication()
             .getService(ModifiableModelsProvider::class.java)
@@ -78,18 +75,19 @@ object GdLibraryManager {
         val name = path.replace('\\', '/').substringAfterLast("/")
         val type = OrderRootType.SOURCES
         val app = ApplicationManager.getApplication()
-//        val modifier = app.getService(ModifiableModelsProvider::class.java)
         val modifier = LibraryTablesRegistrar.getInstance().libraryTable.modifiableModel
-//        val modifier = LibraryTablesRegistrar.getInstance().libraryTable
 
         app.invokeAndWait {
             runWriteAction {
-//                val library = modifier.libraryTableModifiableModel.createLibrary(name, GdLibraryKind.getOrCreate())
-val library = modifier.createLibrary(name, GdLibraryKind.getOrCreate())
-//val library = modifier.createLibrary(name)
-val libModel = library.modifiableModel
-libModel.addRoot(path, type)
-libModel.commit()
+                val library = modifier.createLibrary(name, GdLibraryKind)
+                val libModifier = library.modifiableModel as ModifiableModelEx
+                val state = libModifier.properties.state as GdLibrary
+                state.path = path
+                state.version = name.sdkToVersion()
+
+                libModifier.addRoot(path, type)
+                libModifier.commit()
+                modifier.commit()
             }
         }
     }

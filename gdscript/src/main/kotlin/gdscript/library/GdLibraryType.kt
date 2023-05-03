@@ -6,12 +6,11 @@ import com.intellij.openapi.roots.libraries.NewLibraryConfiguration
 import com.intellij.openapi.roots.libraries.ui.LibraryEditorComponent
 import com.intellij.openapi.roots.libraries.ui.LibraryPropertiesEditor
 import com.intellij.openapi.vfs.VirtualFile
+import gdscript.GdIcon
+import javax.swing.Icon
 import javax.swing.JComponent
 
-// TODO bude to potřeba?
-class GdLibraryType : LibraryType<GdLibraryProperties> {
-
-    constructor(kind: GdLibraryKind): super(kind)
+class GdLibraryType : LibraryType<GdLibraryProperties>(GdLibraryKind) {
 
     override fun getCreateActionName(): String? {
         return null
@@ -27,6 +26,10 @@ class GdLibraryType : LibraryType<GdLibraryProperties> {
 
     override fun createPropertiesEditor(editorComponent: LibraryEditorComponent<GdLibraryProperties>): LibraryPropertiesEditor? {
         return null
+    }
+
+    override fun getIcon(properties: GdLibraryProperties?): Icon? {
+        return GdIcon.FILE
     }
 
 }

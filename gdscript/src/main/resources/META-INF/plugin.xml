@@ -29,6 +29,7 @@
     <codeInsight.parameterNameHints language="GdScript" implementationClass="gdscript.codeInsight.GdInlayParameterHintProvider" />
     <lang.refactoringSupport language="GdScript" implementationClass="gdscript.psi.GdRefactoringSupportProvider" />
     <colorProvider implementation="gdscript.lineMarker.GdColorProvider" />
+    <library.type implementation="gdscript.library.GdLibraryType" />
 
     <!-- settings -->
 <!--    <applicationService serviceImplementation="gdscript.settings.GdApplicationSettingsState" />-->

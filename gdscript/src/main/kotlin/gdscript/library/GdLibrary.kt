@@ -1,3 +1,11 @@
 package gdscript.library
 
-data class GdLibrary(var path: String, var version: String)
+import com.intellij.util.xmlb.annotations.Tag
+
+class GdLibrary {
+    @Tag("path")
+    var path: String = ""
+
+    @Tag("version")
+    var version: String = ""
+}

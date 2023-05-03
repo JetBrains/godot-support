@@ -1,17 +1,20 @@
 package gdscript.library
 
 import com.intellij.openapi.roots.libraries.LibraryProperties
+import com.intellij.openapi.components.State
+import com.intellij.openapi.components.Storage
+import com.intellij.util.xmlb.annotations.Tag
 
+@State(name = "GdLibraryProperties", storages = [Storage("GdLibraryProperties.xml")])
 class GdLibraryProperties : LibraryProperties<GdLibrary>() {
-    var config: GdLibrary? = null
+
+    @Tag("config")
+    var config: GdLibrary = GdLibrary()
 
     override fun equals(other: Any?): Boolean {
         if (other !is GdLibraryProperties) return false
         val otherConfig = other.config
         val myConfig = config
-
-        if (myConfig == null && otherConfig == null) return true
-        if (myConfig == null || otherConfig == null) return false
 
         return myConfig.path == otherConfig.path
                 && myConfig.version == otherConfig.version
@@ -21,7 +24,7 @@ class GdLibraryProperties : LibraryProperties<GdLibrary>() {
         return config.hashCode()
     }
 
-    override fun getState(): GdLibrary? {
+    override fun getState(): GdLibrary {
         return config
     }
 
