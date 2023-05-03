@@ -1,4 +1,3 @@
-//import base.integrationTests.prepareAssemblies
 import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.editorActions.CompletionAutoPopupHandler
 import com.intellij.testFramework.TestModeFlags
@@ -17,7 +16,7 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.io.File
 
-@TestEnvironment(sdkVersion = SdkVersion.DOT_NET_6, buildTool = BuildTool.SDK)
+@TestEnvironment(sdkVersion = SdkVersion.AUTODETECT, buildTool = BuildTool.AUTODETECT)
 class ResCompletionTest : BaseTestWithSolution() {
     override fun getSolutionDirectoryName(): String = "ResCompletionTest"
 
