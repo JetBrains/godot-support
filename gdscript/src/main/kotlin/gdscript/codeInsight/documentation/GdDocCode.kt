@@ -12,17 +12,15 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.ui.ColorUtil
 import gdscript.GdLanguage
 import gdscript.psi.GdTypes
-import java.lang.annotation.ElementType
 
 object GdDocCode {
 
     fun createHighlightedSnippet(code: String, project: Project): List<HtmlChunk> {
         val scheme = EditorColorsManager.getInstance().globalScheme
-        val parsedCode = code//.replace("\t", "  ")
-        val psi = PsiFileFactory.getInstance(project).createFileFromText(GdLanguage, parsedCode)
+        val psi = PsiFileFactory.getInstance(project).createFileFromText(GdLanguage, code)
         val highlighter = HighlighterFactory.createHighlighter(psi.virtualFile, scheme, project)
 
-        return iterate(parsedCode, highlighter)
+        return iterate(code, highlighter)
     }
 
     private fun iterate(code: String, highlighter: EditorHighlighter): List<HtmlChunk> {

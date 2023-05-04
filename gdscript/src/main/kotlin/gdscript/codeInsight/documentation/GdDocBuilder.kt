@@ -13,7 +13,6 @@ class GdDocBuilder(val project: Project) {
     private var packaged: HtmlChunk? = null
     private var preview: HtmlChunk? = null
     private var bodyBlocks: MutableList<HtmlChunk> = mutableListOf()
-    private var separate = false
 
     /**
      * @param element GdClassDecl|GdFile from getOwningClassElement
@@ -82,25 +81,6 @@ class GdDocBuilder(val project: Project) {
         sb.append(HtmlChunk.tag("pre").children(
                 GdDocCode.createHighlightedSnippet(element.toString(), project),
         ).wrapWith(DocumentationMarkup.DEFINITION_ELEMENT))
-    }
-
-    private fun section(sb: StringBuilder, element: Any?) {
-        sb.append(element)
-//        if (element == null) return
-//        if (element is List<*> && element.isEmpty()) return
-//        if (separate) {
-//            sb.append(DocumentationMarkup.SECTION_SEPARATOR)
-//            separate = false
-//        }
-
-//        sb.append(DocumentationMarkup.SECTION_START)
-//        if (element is List<*>) {
-//            element.forEach { sb.append(it) }
-//        } else {
-//            sb.append(element)
-//        }
-//        sb.append(DocumentationMarkup.SECTION_END)
-//        separate = true
     }
 
 }

@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import gdscript.codeInsight.documentation.GdDocUtil
+import gdscript.codeInsight.documentation.GdGodotDocUtil
 import gdscript.psi.GdTypes
 
 object GdCommentUtil {
@@ -14,6 +15,7 @@ object GdCommentUtil {
     val BRIEF_DESCRIPTION = "brief"
     val ENUM = "enum"
     val RETURN = "return"
+    val TUTORIAL = "tutorial"
 
     fun collectAllDescriptions(element: PsiElement?): Map<String, List<String>> {
         val descriptions = mutableMapOf<String, MutableList<String>>()
@@ -22,6 +24,7 @@ object GdCommentUtil {
         descriptions[PARAMETER] = mutableListOf()
         descriptions[ENUM] = mutableListOf()
         descriptions[RETURN] = mutableListOf()
+        descriptions[TUTORIAL] = mutableListOf()
 
         var el = element?.prevSibling
         while (el != null) {
@@ -32,6 +35,9 @@ object GdCommentUtil {
 
                     if (!descriptions.containsKey(prefix)) prefix = DESCRIPTION
                     else text = text.substringAfter(" ")
+                    if (prefix != TUTORIAL) {
+                        text = GdGodotDocUtil.parserDescription(text)
+                    }
 
                     (descriptions[prefix]!!).add(0, text)
                 }
@@ -48,11 +54,21 @@ object GdCommentUtil {
 
     fun Map<String, List<String>>.briefDescriptionBlock(): HtmlChunk {
         val comments = if (this[BRIEF_DESCRIPTION]!!.isNotEmpty()) this[BRIEF_DESCRIPTION] else this[DESCRIPTION]
-        return GdDocUtil.paragraph(comments!!)
+        return GdDocUtil.paragraphs(comments!!)
     }
 
     fun Map<String, List<String>>.descriptionBlock(): HtmlChunk {
-        return GdDocUtil.paragraph(this[DESCRIPTION]!!)
+        return GdDocUtil.paragraphs(this[DESCRIPTION]!!)
+    }
+
+    fun Map<String, List<String>>.tutorialBlock(): HtmlChunk {
+        return GdDocUtil.listTable("tutorials", this[TUTORIAL]!!.map {
+            HtmlChunk.link(it.substringAfter("]").trim(), it.substringBefore("]").removePrefix("[").trim()).toString()
+        })
+    }
+
+    fun Map<String, List<String>>.descriptionText(): String {
+        return this[DESCRIPTION]!!.joinToString("<br/>")
     }
 
     fun Map<String, List<String>>.parameterBlock(): HtmlChunk {

@@ -64,6 +64,7 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
         return null
     }
 
+    @Deprecated("remove")
     private fun findDocumentationComment(property: PsiNamedElement, key: String): String? {
         var declaration = GdClassMemberReference(property).resolveDeclaration()
         if (declaration == null) {
@@ -74,6 +75,7 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
         return renderDocumentationForDeclaration(declaration, key)
     }
 
+    @Deprecated("remove")
     private fun renderDocumentationForDeclaration(element: PsiElement, key: String): String {
         val sb = StringBuilder()
         sb.append(DocumentationMarkup.CONTENT_START)
@@ -90,6 +92,7 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
         return doc.toString();
     }
 
+    @Deprecated("remove")
     private fun renderFullDoc(sb: StringBuilder, docLines: Array<String>): StringBuilder {
         var tutorials = false
 
@@ -185,6 +188,7 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
 //        return super.getQuickNavigateInfo(element, originalElement)
 //    }
 
+    @Deprecated("remove")
     private fun appendProperties(sb: StringBuilder, classElement: GdClassNaming) {
         val declarations = GdClassMemberUtil.listClassMemberDeclarations(classElement, null, constructors = true)
         val variables = declarations.variables()

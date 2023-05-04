@@ -1,8 +1,14 @@
 package gdscript.codeInsight
 
 import com.intellij.codeInsight.documentation.DocumentationManagerProtocol
+import com.intellij.lang.documentation.DocumentationMarkup
 
+@Deprecated("remove")
 object GdDocumentationUtil {
+
+    private val dynamicReference = "\\[(member|constant|method|enum) (.+?)]".toRegex()
+    private val links = "\\[link (.+?)](.+?)\\[/link]".toRegex()
+    private val freeReference = "\\[([A-Z].+?)]".toRegex()
 
     fun createLink(reference: String, label: String): StringBuilder {
         val sb = StringBuilder()
@@ -82,6 +88,88 @@ object GdDocumentationUtil {
 
     fun grayText(text: String): String {
         return "<a style=\"color: gray;\">$text</a>"
+    }
+
+    @Deprecated("temporary public call")
+    fun renderGodotDoc(lines: List<String>): String {
+        return renderFullDoc(StringBuilder(), lines.toTypedArray()).toString()
+    }
+
+    private fun renderFullDoc(sb: StringBuilder, docLines: Array<String>): StringBuilder {
+        var tutorials = false
+
+        /*
+        [member position]
+        [method _local]
+        [method Input.method]
+        [enum Input.method]
+        [constant NOTIFICATION_READY]
+        [Object]
+
+        [b]  styling
+        [code]
+        [i]
+
+        [gdscript]  examples
+        [csharp]
+         */
+
+        docLines.forEach {
+            var line = it
+                .replace("[b]", "<strong>")
+                .replace("[/b]", "</strong>")
+                .replace("[code]", "<i>")
+                .replace("[/code]", "</i>")
+                .replace("[codeblocks]", "")
+                .replace("[/codeblocks]", "")
+
+                .replace("[gdscript]", "${DocumentationMarkup.DEFINITION_START}<strong>GdScript</strong>")
+                .replace("[csharp]", "${DocumentationMarkup.DEFINITION_START}<strong>C#</strong>")
+                .replace("[/gdscript]", DocumentationMarkup.DEFINITION_END)
+                .replace("[/csharp]", DocumentationMarkup.DEFINITION_END)
+
+            // Links & tutorials
+            val match = links.find(line)
+            if (match != null) {
+                if (!tutorials) {
+                    tutorials = true
+                    GdDocumentationUtil.paragraphHeader(sb, "Tutorials")
+                }
+                val link = GdDocumentationUtil.createLink(
+                    match.groups[2]?.value ?: "",
+                    match.groups[1]?.value ?: "",
+                )
+                sb.append(link)
+                sb.append("<br />")
+                return@forEach
+            }
+
+            // Replace specific references [member|constant|method _name]
+            dynamicReference.findAll(line).forEach matched@{ match ->
+                val value = match.groups[2]?.value ?: return@matched
+                val link = GdDocumentationUtil.createElementLink(
+                    value.split(".").last(),
+                    value.replace("@", "_"),
+                )
+                line = line.replace(match.groups[0]?.value!!, link.toString())
+            }
+
+            // Try to replace unspecified references like [Object] or [Node]
+            freeReference.findAll(line).forEach matched@{ match ->
+                val value = match.groups[1]?.value?.replace("@", "_") ?: return@matched
+                val link = GdDocumentationUtil.createElementLink(
+                    value,
+                    value,
+                )
+                line = line.replace(match.groups[0]?.value!!, link.toString())
+            }
+
+            sb.append(line)
+            sb.append("<br />")
+            sb.append("<br />")
+        }
+
+        return sb
     }
 
 }

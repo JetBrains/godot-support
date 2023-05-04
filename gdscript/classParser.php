@@ -111,7 +111,7 @@ foreach ($files as $filepath) {
         $link = (array) $link;
         $p_att = $link['@attributes'];
         $value = str_replace('$DOCS_URL', $baseUrl, $link[0]);
-        $data .= $formatDesc(sprintf("[link %s]%s[/link]", $p_att['title'], $value), "desc");
+        $data .= $formatDesc(sprintf("[%s] %s", $p_att['title'], $value), "tutorial");
     }
 
     $data .= sprintf("class_name %s\n\n", $class_name);

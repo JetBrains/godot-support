@@ -78,7 +78,7 @@ object GdMethodCompletionUtil {
     private fun buildParamHint(paramList: GdParamList?, wrap: Boolean = false): String {
         if (paramList?.paramList?.isEmpty() ?: true) return "()"
         val wrapper = if (wrap) "\n" else ""
-        val spacer = if (wrap) "  " else ""
+        val spacer = if (wrap) "    " else ""
 
         val sb = StringBuilder("($wrapper")
         paramList!!.paramList.forEach {
@@ -86,7 +86,7 @@ object GdMethodCompletionUtil {
         }
 
         sb.append(")")
-        return sb.toString()
+        return sb.toString().replace(",)", ")")
     }
 
 }

@@ -12,6 +12,7 @@ object PsiGdCommentUtils {
     val BRIEF_DESCRIPTION = "brief"
     val ENUM = "enum"
 
+    @Deprecated("move to GdCommentUtil")
     fun collectDescriptions(element: PsiElement?, key: String = DESCRIPTION): Array<String> {
         val descs = mutableListOf<String>();
 

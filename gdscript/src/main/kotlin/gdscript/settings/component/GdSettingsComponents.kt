@@ -6,7 +6,6 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.roots.impl.libraries.LibraryEx
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.ui.ComboBox
-import gdscript.library.GdLibrary
 import gdscript.library.GdLibraryKind
 import gdscript.library.GdLibraryManager
 import gdscript.library.GdLibraryProperties
