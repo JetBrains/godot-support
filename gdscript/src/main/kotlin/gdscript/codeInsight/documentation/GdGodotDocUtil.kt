@@ -6,6 +6,8 @@ object GdGodotDocUtil {
 
     private val dynamicReference = "\\[(member|constant|method|enum) (.+?)]".toRegex()
     private val freeReference = "\\[(.+?)]".toRegex()
+    private val DEFINITION_START = "</p>${DocumentationMarkup.DEFINITION_START}"
+    private val DEFINITION_END = "${DocumentationMarkup.DEFINITION_END}<p style=\"padding: 5px 10px 0 10px;\">"
 
     fun parserDescription(text: String): String {
         var parsed = text.replace("[b]", "<strong>")
@@ -14,13 +16,15 @@ object GdGodotDocUtil {
             .replace("[/i]", "</a>")
             .replace("[code]", "<i>")
             .replace("[/code]", "</i>")
-            .replace("[codeblocks]", "<code>")
-            .replace("[/codeblocks]", "</code>")
+            .replace("[codeblock]", DEFINITION_START)
+            .replace("[/codeblock]", DEFINITION_END)
+            .replace("[codeblocks]", DEFINITION_START)
+            .replace("[/codeblocks]", DEFINITION_END)
 
-            .replace("[gdscript]", "${DocumentationMarkup.DEFINITION_START}<strong>GdScript</strong>")
-            .replace("[csharp]", "${DocumentationMarkup.DEFINITION_START}<strong>C#</strong>")
-            .replace("[/gdscript]", DocumentationMarkup.DEFINITION_END)
-            .replace("[/csharp]", DocumentationMarkup.DEFINITION_END)
+            .replace("[gdscript]", "${DEFINITION_START}<strong>GdScript</strong>")
+            .replace("[csharp]", "${DEFINITION_START}<strong>C#</strong>")
+            .replace("[/gdscript]", DEFINITION_END)
+            .replace("[/csharp]", DEFINITION_END)
 
         // Replace specific references [member|constant|method _name]
         dynamicReference.findAll(parsed).forEach matched@{ match ->

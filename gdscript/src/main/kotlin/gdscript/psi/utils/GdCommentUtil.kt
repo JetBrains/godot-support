@@ -54,11 +54,11 @@ object GdCommentUtil {
 
     fun Map<String, List<String>>.briefDescriptionBlock(): HtmlChunk {
         val comments = if (this[BRIEF_DESCRIPTION]!!.isNotEmpty()) this[BRIEF_DESCRIPTION] else this[DESCRIPTION]
-        return GdDocUtil.paragraphs(comments!!)
+        return GdDocUtil.paragraph(comments!!)
     }
 
     fun Map<String, List<String>>.descriptionBlock(): HtmlChunk {
-        return GdDocUtil.paragraphs(this[DESCRIPTION]!!)
+        return GdDocUtil.paragraph(this[DESCRIPTION]!!)
     }
 
     fun Map<String, List<String>>.tutorialBlock(): HtmlChunk {

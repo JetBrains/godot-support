@@ -66,11 +66,14 @@ object GdDocUtil {
         )
     }
 
-    fun paragraphs(lines: List<String>): HtmlChunk {
+    fun paragraph(lines: List<String>): HtmlChunk {
         if (lines.isEmpty()) return HtmlChunk.empty()
-        return HtmlChunk.fragment(
+        return HtmlChunk.p().style("padding: 5px 10px 0 10px;").children(
             *lines.map {
-                HtmlChunk.p().style("padding: 5px 10px 0 10px;").child(HtmlChunk.raw(it))
+                HtmlChunk.fragment(
+                    HtmlChunk.raw(it),
+                    if (!it.endsWith("<pre>") && !it.startsWith("</pre>")) HtmlChunk.br() else HtmlChunk.empty(),
+                )
             }.toTypedArray()
         )
     }

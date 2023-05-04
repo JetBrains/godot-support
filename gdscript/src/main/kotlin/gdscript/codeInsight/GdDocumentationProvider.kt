@@ -177,10 +177,8 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
     ): PsiElement? {
         if (link.isNullOrBlank() || context == null) return null
 
-        return GdClassMemberUtil.listDeclarations(
-            context,
-            link,
-        ).firstOrNull()?.psi()
+        val declaration = GdClassMemberUtil.listDeclarations(context, link).firstOrNull()?.psi() ?: return null
+        return GdClassMemberReference.resolveId(declaration)
     }
 
     // TODO ctrl hover nad referencí

@@ -18,6 +18,27 @@ import gdscript.utils.PsiElementUtil.psi
  */
 class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
 
+    companion object {
+        fun resolveId(element: PsiElement?): PsiElement? {
+            return when (element) {
+                is GdClassVarDeclTl -> element.varNmi
+                is GdClassDeclTl -> element.classNameNmi
+                is GdVarDeclSt -> element.varNmi
+                is GdConstDeclSt -> element.varNmi
+                is GdEnumDeclTl -> element.enumDeclNmi
+                is GdEnumValue -> element.enumValueNmi
+                is GdMethodDeclTl -> element.methodIdNmi
+                is GdSignalDeclTl -> element.signalIdNmi
+                is GdForSt -> element.varNmi
+                is GdParam -> element.varNmi
+                is GdVarNmi -> element
+                is PsiFile -> element
+                is GdClassNaming -> element.classNameNmi
+                else -> null
+            }
+        }
+    }
+
     private var key: String = ""
 
     constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
@@ -35,22 +56,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        val direct =
-            when (val element = resolveDeclaration()) {
-                is GdClassVarDeclTl -> element.varNmi
-                is GdClassDeclTl -> element.classNameNmi
-                is GdVarDeclSt -> element.varNmi
-                is GdConstDeclSt -> element.varNmi
-                is GdEnumDeclTl -> element.enumDeclNmi
-                is GdEnumValue -> element.enumValueNmi
-                is GdMethodDeclTl -> element.methodIdNmi
-                is GdSignalDeclTl -> element.signalIdNmi
-                is GdForSt -> element.varNmi
-                is GdParam -> element.varNmi
-                is GdVarNmi -> element
-                is PsiFile -> element
-                else -> null
-            }
+        val direct = resolveId(resolveDeclaration())
         if (direct != null) return direct
 
         return GdClassNamingIndex
