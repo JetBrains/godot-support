@@ -1,7 +1,6 @@
 name: CI
 
 on:
-    push:
     pull_request:
     schedule:
         - cron: '0 0 * * *'  # every day at midnight
@@ -28,11 +27,11 @@ jobs:
             - name: Build
               shell: bash
               working-directory: rider
-              run: ./gradlew buildPlugin
+              run: ./gradlew -PbuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
             - name: Tests
               shell: bash
               working-directory: rider
-              run: ./gradlew test
+              run: ./gradlew -PbuildConfiguration=Release -PbuildNumber=${{ github.run_number }} test
             - name: Upload Test Results
               uses: actions/upload-artifact@v2
               with:
