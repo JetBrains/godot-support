@@ -5,9 +5,10 @@ import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiNamedElement
-import gdscript.codeInsight.documentation.GdDocBuilder
 import gdscript.codeInsight.documentation.GdDocFactory
+import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdClassNamingIndex
+import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdNamedElement
@@ -17,11 +18,10 @@ import gdscript.psi.utils.GdClassMemberUtil.enums
 import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdClassMemberUtil.signals
 import gdscript.psi.utils.GdClassMemberUtil.variables
-import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.PsiGdCommentUtils
 import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiElementUtil.psi
-import gdscript.utils.VirtualFileUtil.localParentPath
+import gdscript.utils.VirtualFileUtil.getPsiFile
 
 class GdDocumentationProvider : AbstractDocumentationProvider() {
 
@@ -176,9 +176,14 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
         context: PsiElement?,
     ): PsiElement? {
         if (link.isNullOrBlank() || context == null) return null
+        val project = context.project
+        GdClassMemberUtil.listDeclarations(context, link).firstOrNull()?.psi()?.let {
+            return GdClassMemberReference.resolveId(it)
+        }
+        GdClassIdIndex.getGloballyResolved(link, project).firstOrNull()?.let { return it }
+        GdFileResIndex.getFiles(link.trim('"'), project).firstOrNull()?.let { return it.getPsiFile(project) }
 
-        val declaration = GdClassMemberUtil.listDeclarations(context, link).firstOrNull()?.psi() ?: return null
-        return GdClassMemberReference.resolveId(declaration)
+        return null
     }
 
     // TODO ctrl hover nad referencí

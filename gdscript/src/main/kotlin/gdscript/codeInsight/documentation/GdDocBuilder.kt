@@ -4,6 +4,7 @@ import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.VirtualFileUtil.localParentPath
 
@@ -21,7 +22,7 @@ class GdDocBuilder(val project: Project) {
         if (element == null) return this
         val body = GdDocUtil.iconed("AllIcons.Nodes.Class")
         val link = GdClassUtil.getFullClassId(element)
-        body.add(GdDocUtil.elementLink(link))
+        body.add(GdDocUtil.elementLink(link, GdClassUtil.getOwningClassName(element)))
         owner = HtmlChunk.div().children(body)
         return this
     }
@@ -32,6 +33,7 @@ class GdDocBuilder(val project: Project) {
     }
 
     fun withPackage(element: PsiElement): GdDocBuilder {
+        if (element is PsiFile) return withPackage(element.virtualFile.localParentPath())
         return withPackage(element.containingFile.virtualFile.localParentPath())
     }
 

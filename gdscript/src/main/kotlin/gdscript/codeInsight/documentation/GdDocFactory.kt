@@ -3,6 +3,7 @@ package gdscript.codeInsight.documentation
 import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import gdscript.completion.utils.GdMethodCompletionUtil.methodHeader
 import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
 import gdscript.psi.*
@@ -27,7 +28,8 @@ object GdDocFactory {
             is GdFuncDeclIdNmi,
             -> method(element, fullDoc)
 
-            is GdClassNameNmi -> classId(element, fullDoc)
+            is GdClassNameNmi -> classOrFile(element, fullDoc)
+            is PsiFile -> classOrFile(element, fullDoc)
 
             else -> null
         }
@@ -106,13 +108,15 @@ object GdDocFactory {
         return builder.toString()
     }
 
-    private fun classId(element: GdClassNameNmi, fullDoc: Boolean): String {
+    private fun classOrFile(element: PsiElement, fullDoc: Boolean): String {
         val builder = GdDocBuilder(element.project)
             .withPackage(element)
 
         val parent = GdInheritanceUtil.getExtendedClassId(element)
         val extendInfo = if (parent.isNotBlank()) " extends $parent" else ""
-        builder.withPreview("class ${element.classId}${extendInfo}")
+        if (element is GdClassNameNmi) {
+            builder.withPreview("class ${element.classId}${extendInfo}")
+        }
 
         val descriptions = GdCommentUtil.collectAllDescriptions(element.parent)
         if (fullDoc) {

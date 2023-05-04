@@ -20,35 +20,35 @@ object GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
     override fun getVersion(): Int = Indices.VERSION;
 
     fun getGloballyResolved(name: String, project: Project): Collection<GdClassNameNmi> {
-        if (DumbService.isDumb(project)) return emptyList();
-        val fqn = get(name, project, GlobalSearchScope.allScope(project));
-        if (fqn.isNotEmpty()) return fqn;
+        if (DumbService.isDumb(project)) return emptyList()
+        val fqn = get(name, project, GlobalSearchScope.allScope(project))
+        if (fqn.isNotEmpty()) return fqn
 
-        var modified: String;
+        var modified: String
         if (name.startsWith('"')) {
             // Try resource to class_name
-            val endIndex = name.indexOf('"', 1);
-            val resource = name.substring(1, endIndex);
-            val resourceFile = GdFileResIndex.getFiles(resource, project).firstOrNull() ?: return emptyList();
-            val psiFile = resourceFile.getPsiFile(project);
+            val endIndex = name.indexOf('"', 1)
+            val resource = name.substring(1, endIndex)
+            val resourceFile = GdFileResIndex.getFiles(resource, project).firstOrNull() ?: return emptyList()
+            val psiFile = resourceFile.getPsiFile(project)
             modified = PsiTreeUtil.getStubChildOfType(psiFile, GdClassNaming::class.java)?.classname.orEmpty()
 
             if (name.length > endIndex + 1) {
-                modified = "$modified${name.substring(endIndex + 1)}";
+                modified = "$modified${name.substring(endIndex + 1)}"
             }
         } else {
             // Try class_name to resource
-            val classes = name.split('.').toMutableList();
-            val rootClass = classes.firstOrNull() ?: return emptyList();
-            val cln = GdClassNamingIndex.getGlobally(rootClass, project).firstOrNull() ?: return emptyList();
+            val classes = name.split('.').toMutableList()
+            val rootClass = classes.firstOrNull() ?: return emptyList()
+            val cln = GdClassNamingIndex.getGlobally(rootClass, project).firstOrNull() ?: return emptyList()
 
-            val resource = PsiGdResourceUtil.resourcePath(cln.containingFile.virtualFile);
-            classes[0] = "\"$resource\"";
+            val resource = PsiGdResourceUtil.resourcePath(cln.containingFile.virtualFile)
+            classes[0] = "\"$resource\""
 
-            modified = classes.joinToString(".");
+            modified = classes.joinToString(".")
         }
 
-        return get(modified, project, GlobalSearchScope.allScope(project));
+        return get(modified, project, GlobalSearchScope.allScope(project))
     }
 
 }
