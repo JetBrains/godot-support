@@ -42,7 +42,7 @@ object GdDocUtil {
     fun paragraph(lines: List<String>): HtmlChunk {
         if (lines.isEmpty()) return HtmlChunk.empty()
         return HtmlChunk.p().style("padding: 5px 10px 0 10px;").children(
-                *lines.map { HtmlChunk.text(it) }.toTypedArray()
+                *lines.map { HtmlChunk.text(" $it") }.toTypedArray()
         )
     }
 

@@ -27,8 +27,8 @@ class GdDocBuilder(val project: Project) {
         return this
     }
 
-    fun addBodyBlock(chunk: HtmlChunk): GdDocBuilder {
-        this.bodyBlocks.add(chunk)
+    fun addBodyBlock(vararg chunks: HtmlChunk): GdDocBuilder {
+        this.bodyBlocks.addAll(chunks)
         return this
     }
 

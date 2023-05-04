@@ -12,12 +12,16 @@ import gdscript.psi.utils.GdClassMemberUtil.enums
 import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdClassMemberUtil.signals
 import gdscript.psi.utils.GdClassMemberUtil.variables
+import gdscript.psi.utils.GdCommentUtil.briefDescriptionBlock
+import gdscript.psi.utils.GdCommentUtil.descriptionBlock
+import gdscript.psi.utils.GdCommentUtil.parameterBlock
+import gdscript.psi.utils.GdCommentUtil.returnBlock
 
 object GdDocFactory {
 
     fun create(element: PsiElement, fullDoc: Boolean = false): String? {
         return when (element) {
-            is GdVarNmi -> variable(element)
+            is GdVarNmi -> variable(element, fullDoc)
             is GdMethodIdNmi,
             is GdFuncDeclIdNmi -> method(element, fullDoc)
 
@@ -44,19 +48,19 @@ object GdDocFactory {
 
         val descriptions = GdCommentUtil.collectAllDescriptions(declaration)
         if (fullDoc) {
-            builder.addBodyBlock(GdDocUtil.paragraph(descriptions[GdCommentUtil.DESCRIPTION]!!))
-            builder.addBodyBlock(GdDocUtil.listTable("params", descriptions[GdCommentUtil.PARAMETER]!!.map {
-                it.replaceFirst(" ", " - ")
-            }))
-            builder.addBodyBlock(GdDocUtil.listTable("return", descriptions[GdCommentUtil.RETURN]!!))
+            builder.addBodyBlock(
+                    descriptions.descriptionBlock(),
+                    descriptions.parameterBlock(),
+                    descriptions.returnBlock(),
+            )
         } else {
-            builder.addBodyBlock(GdDocUtil.paragraph(descriptions[GdCommentUtil.BRIEF_DESCRIPTION]!!))
+            builder.addBodyBlock(descriptions.briefDescriptionBlock())
         }
 
         return builder.toString()
     }
 
-    private fun variable(element: GdVarNmi): String? {
+    private fun variable(element: GdVarNmi, fullDoc: Boolean): String? {
         val builder = GdDocBuilder(element.project)
         val withType = { el: PsiElement ->
             val returnType = GdCommonUtil.returnType(el)
@@ -64,25 +68,36 @@ object GdDocFactory {
             else ": $returnType"
         }
 
+        val annotations = annotationPreview(element.parent)
         when (val owner = element.parent) {
             is GdConstDeclTl -> {
                 builder.withOwner(element)
-                builder.withPreview("const ${element.name}${withType(owner)}")
+                builder.withPreview("${annotations}const ${element.name}${withType(owner)}")
             }
 
             is GdClassVarDeclTl -> {
                 builder.withOwner(element)
-                builder.withPreview(annotationPreview(owner) + "var ${element.name}${withType(owner)}")
+                builder.withPreview("${annotations}var ${element.name}${withType(owner)}")
             }
 
-            is GdVarDeclSt -> builder.withPreview("var ${element.name}${withType(owner)}")
-            is GdConstDeclSt -> builder.withPreview("const ${element.name}${withType(owner)}")
+            is GdVarDeclSt -> builder.withPreview("${annotations}var ${element.name}${withType(owner)}")
+            is GdConstDeclSt -> builder.withPreview("${annotations}const ${element.name}${withType(owner)}")
             is GdSetDecl,
-            is GdParam -> builder.withPreview("var ${element.name}${withType(owner)}")
+            is GdParam -> builder.withPreview("${annotations}var ${element.name}${withType(owner)}")
 
-            is GdForSt -> builder.withPreview("var ${element.name}${withType(owner)}")
-            is GdBindingPattern -> builder.withPreview("var ${element.name}")
+            is GdForSt -> builder.withPreview("${annotations}var ${element.name}${withType(owner)}")
+            is GdBindingPattern -> builder.withPreview("${annotations}var ${element.name}")
             else -> return null
+        }
+
+        val descriptions = GdCommentUtil.collectAllDescriptions(element.parent)
+        if (fullDoc) {
+            builder.addBodyBlock(
+                    descriptions.descriptionBlock(),
+                    descriptions.returnBlock(),
+            )
+        } else {
+            builder.addBodyBlock(descriptions.briefDescriptionBlock())
         }
 
         return builder.toString()

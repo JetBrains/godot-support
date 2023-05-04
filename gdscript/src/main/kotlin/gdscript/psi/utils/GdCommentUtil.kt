@@ -1,8 +1,10 @@
 package gdscript.psi.utils
 
+import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
+import gdscript.codeInsight.documentation.GdDocUtil
 import gdscript.psi.GdTypes
 
 object GdCommentUtil {
@@ -25,9 +27,13 @@ object GdCommentUtil {
         while (el != null) {
             when (el.elementType) {
                 GdTypes.COMMENT -> {
-                    val text = el.text.removePrefix("#").trimStart()
-                    val prefix = text.substringBefore(" ")
-                    (descriptions[prefix.trim()] ?: descriptions[DESCRIPTION]!!).add(0, text.substringAfter(" "))
+                    var text = el.text.removePrefix("#").trimStart()
+                    var prefix = text.substringBefore(" ")
+
+                    if (!descriptions.containsKey(prefix)) prefix = DESCRIPTION
+                    else text = text.substringAfter(" ")
+
+                    (descriptions[prefix]!!).add(0, text)
                 }
 
                 TokenType.WHITE_SPACE -> {}
@@ -38,6 +44,24 @@ object GdCommentUtil {
         }
 
         return descriptions
+    }
+
+    fun Map<String, List<String>>.briefDescriptionBlock(): HtmlChunk {
+        return GdDocUtil.paragraph(this[BRIEF_DESCRIPTION]!!)
+    }
+
+    fun Map<String, List<String>>.descriptionBlock(): HtmlChunk {
+        return GdDocUtil.paragraph(this[DESCRIPTION]!!)
+    }
+
+    fun Map<String, List<String>>.parameterBlock(): HtmlChunk {
+        return GdDocUtil.listTable("params", this[PARAMETER]!!.map {
+            it.replaceFirst(" ", " - ")
+        })
+    }
+
+    fun Map<String, List<String>>.returnBlock(): HtmlChunk {
+        return GdDocUtil.listTable("return", this[RETURN]!!)
     }
 
 }
