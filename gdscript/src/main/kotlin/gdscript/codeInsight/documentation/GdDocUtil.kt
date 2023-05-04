@@ -33,26 +33,23 @@ object GdDocUtil {
         )
     }
 
-    fun descriptionListTable(key: String, items: List<Pair<String, String>>): HtmlChunk {
+    fun descriptionListTable(key: String, items: List<Pair<HtmlChunk, HtmlChunk>>): HtmlChunk {
         if (items.isEmpty()) return HtmlChunk.empty()
         return DocumentationMarkup.SECTIONS_TABLE.children(
             tableTitle(key).wrapWith("tr"),
+            HtmlChunk.raw("<tr><td><ul style=\"margin-top: 0;\">"),
             *items.map {
-                HtmlChunk.fragment(
-                    HtmlChunk.tag("tr").children(
-                        DocumentationMarkup.SECTION_CONTENT_CELL,
-                        DocumentationMarkup.SECTION_CONTENT_CELL.addRaw(it.first),
-                    ),
-                    HtmlChunk.tag("tr").children(
-                        DocumentationMarkup.SECTION_CONTENT_CELL,
-                        DocumentationMarkup.SECTION_CONTENT_CELL.addRaw(it.second),
-                    ),
+                HtmlChunk.li().style("margin-bottom: 10px;").children(
+                    it.first,
+                    HtmlChunk.br(),
+                    it.second,
                 )
-            }.toTypedArray()
+            }.toTypedArray(),
+            HtmlChunk.raw("</ul></td></tr>")
         )
     }
 
-    fun propertyTable(key: String, lines: List<Pair<String, String>>): HtmlChunk {
+    fun propertyTable(key: String, lines: List<Pair<HtmlChunk, HtmlChunk>>): HtmlChunk {
         if (lines.isEmpty()) return HtmlChunk.empty()
 
         return DocumentationMarkup.SECTIONS_TABLE.children(
@@ -108,12 +105,12 @@ object GdDocUtil {
         return DocumentationMarkup.SECTION_HEADER_CELL.addText("${title.capitalize()}:")
     }
 
-    private fun propertyTableLine(value: Pair<String, String>, withEmptyCell: Boolean = false): HtmlChunk {
+    private fun propertyTableLine(value: Pair<HtmlChunk, HtmlChunk>, withEmptyCell: Boolean = false): HtmlChunk {
         return HtmlChunk.fragment(
             if (withEmptyCell) HtmlChunk.tag("td") else HtmlChunk.empty(),
             DocumentationMarkup.SECTION_CONTENT_CELL.attr("align", "right").style("padding-right: 10px;")
-                .child(elementLink(value.first)),
-            DocumentationMarkup.SECTION_CONTENT_CELL.child(elementLink(value.second)),
+                .child(value.first),
+            DocumentationMarkup.SECTION_CONTENT_CELL.child(value.second),
         )
     }
 

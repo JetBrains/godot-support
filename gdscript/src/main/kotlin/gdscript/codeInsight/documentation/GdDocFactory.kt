@@ -8,6 +8,7 @@ import gdscript.completion.utils.GdMethodCompletionUtil.methodHeader
 import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
 import gdscript.psi.*
 import gdscript.psi.utils.*
+import gdscript.psi.utils.GdClassMemberUtil.constants
 import gdscript.psi.utils.GdClassMemberUtil.enums
 import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdClassMemberUtil.signals
@@ -116,6 +117,8 @@ object GdDocFactory {
         val extendInfo = if (parent.isNotBlank()) " extends $parent" else ""
         if (element is GdClassNameNmi) {
             builder.withPreview("class ${element.classId}${extendInfo}")
+        } else if (extendInfo.isNotBlank()) {
+            builder.withPreview(extendInfo)
         }
 
         val descriptions = GdCommentUtil.collectAllDescriptions(element.parent)
@@ -141,7 +144,7 @@ object GdDocFactory {
 
         val variables = declarations.variables()
         builder.addBodyBlock(GdDocUtil.propertyTable("variables", variables.map {
-            Pair(it.returnType, it.name)
+            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.name))
         }))
 
         val methods = mutableListOf<GdMethodDeclTl>()
@@ -152,10 +155,10 @@ object GdDocFactory {
         }
 
         builder.addBodyBlock(GdDocUtil.propertyTable("constructors", constructors.map {
-            Pair(it.returnType, it.shortMethodHeader())
+            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.name, it.shortMethodHeader()))
         }))
         builder.addBodyBlock(GdDocUtil.propertyTable("methods", methods.map {
-            Pair(it.returnType, it.shortMethodHeader())
+            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.name, it.shortMethodHeader()))
         }))
 
         // TODO operators
@@ -165,25 +168,26 @@ object GdDocFactory {
             var name = it.name
             if (!name.endsWith(")")) name += "()"
             Pair(
-                GdDocUtil.elementLink(name.substringBefore("("), name).toString(),
-                GdCommentUtil.collectAllDescriptions(it).descriptionText(),
+                GdDocUtil.elementLink(name.substringBefore("("), name),
+                HtmlChunk.raw(GdCommentUtil.collectAllDescriptions(it).descriptionText()),
             )
         }))
 
         // TODO enum case description
-        val enums = declarations.enums()
-        builder.addBodyBlock(GdDocUtil.descriptionListTable("enums", enums.map { enum ->
-            var name = enum.name
-            if (name.isBlank()) name =
-                GdCommentUtil.collectAllDescriptions(enum)[GdCommentUtil.ENUM]?.firstOrNull() ?: "_"
-            val values = enum.values.map {
-                HtmlChunk.li().children(
-                    GdDocUtil.elementLink(it.key),
-                    DocumentationMarkup.GRAYED_ELEMENT.addText(" = ${it.value}")
-                )
-            }.toTypedArray()
-            Pair("enum ${GdDocUtil.elementLink(name)}:", HtmlChunk.ul().children(*values).toString())
-        }))
+        // TODO nepojmenovaný enum se vrací po kusech
+//        val enums = declarations.enums()
+//        builder.addBodyBlock(GdDocUtil.descriptionListTable("enums", enums.map { enum ->
+//            var name = enum.name
+//            if (name.isBlank()) name =
+//                GdCommentUtil.collectAllDescriptions(enum)[GdCommentUtil.ENUM]?.firstOrNull() ?: "_"
+//            val values = enum.values.map {
+//                HtmlChunk.li().children(
+//                    GdDocUtil.elementLink(it.key),
+//                    DocumentationMarkup.GRAYED_ELEMENT.addText(" = ${it.value}")
+//                )
+//            }.toTypedArray()
+//            Pair("enum ${GdDocUtil.elementLink(name)}:", HtmlChunk.ul().children(*values).toString())
+//        }))
 //        GdDocumentationUtil.paragraphHeader(sb, "Enums")
 //        GdDocumentationUtil.enumTable(sb, enums.map {
 //            val name = PsiGdCommentUtils.collectDescriptions(it, PsiGdCommentUtils.ENUM).firstOrNull() ?: "enum"
@@ -195,26 +199,13 @@ object GdDocFactory {
 //            )
 //        })
 
-//        val consts = declarations.constants()
-//        if (consts.isNotEmpty()) {
-//            sb.append("<br />")
-//            GdDocumentationUtil.paragraphHeader(sb, "Constants")
-//            sb.append("<ul>")
-//            consts.forEach {
-//                sb.append("<li>")
-//                sb.append(it.name)
-//                sb.append(GdDocumentationUtil.grayText(" = ${it.expr?.text}"))
-//
-//                val descriptions = PsiGdCommentUtils.collectDescriptions(it)
-//                if (descriptions.isNotEmpty()) {
-//                    sb.append("<br /><a style=\"color: gray;\">")
-//                    renderFullDoc(sb, descriptions)
-//                    sb.append("</a>")
-//                }
-//                sb.append("</li>")
-//            }
-//            sb.append("</ul>")
-//        }
+        val consts = declarations.constants()
+        builder.addBodyBlock(GdDocUtil.descriptionListTable("constants", consts.map {
+            Pair(
+                GdDocUtil.elementLink(it.name, it.text.trim()),
+                HtmlChunk.raw(GdCommentUtil.collectAllDescriptions(it).descriptionText()),
+            )
+        }))
     }
 
 }
