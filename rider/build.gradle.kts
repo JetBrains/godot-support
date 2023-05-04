@@ -212,7 +212,6 @@ tasks {
 
     withType<Test> {
         useTestNG()
-        environment["LOCAL_ENV_RUN"] = "true"
 
         // Should be the same as community/plugins/devkit/devkit-core/src/run/OpenedPackages.txt
         jvmArgs("--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",

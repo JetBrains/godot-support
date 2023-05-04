@@ -29,7 +29,15 @@ jobs:
               shell: bash
               working-directory: rider
               run: ./gradlew test
-            - name: Upload artifact
+            - name: Upload Test Results
               uses: actions/upload-artifact@v2
               with:
-                path: rider/build/distributions/*.zip
+                  name: ${{ runner.os }}.test-results
+                  path: build/reports/tests
+              if: ${{ always() }}
+            - name: Upload Test Logs
+              uses: actions/upload-artifact@v2.2.4
+              with:
+                  name: ${{ runner.os }}.test-logs
+                  path: build/idea-sandbox/system-test/log
+              if: ${{ always() }}
