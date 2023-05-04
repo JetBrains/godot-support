@@ -16,7 +16,7 @@ class GdSyntaxHighlighter : SyntaxHighlighterBase() {
     }
 
     companion object {
-        private val ATTRIBUTES: Map<IElementType, TextAttributesKey> = HashMap()
+        val ATTRIBUTES: Map<IElementType, TextAttributesKey> = HashMap()
 
         init {
             fillMap(ATTRIBUTES, GdTokenTypeSet.KEYWORDS, GdHighlighterColors.KEYWORD)

@@ -15,19 +15,20 @@ import gdscript.psi.utils.GdClassMemberUtil.variables
 
 object GdDocFactory {
 
-    fun create(element: PsiElement, brief: Boolean = false): String? {
+    fun create(element: PsiElement, fullDoc: Boolean = false): String? {
         return when (element) {
             is GdVarNmi -> variable(element)
             is GdMethodIdNmi,
-            is GdFuncDeclIdNmi -> method(element)
-            is GdClassNameNmi -> classId(element, brief)
+            is GdFuncDeclIdNmi -> method(element, fullDoc)
+
+            is GdClassNameNmi -> classId(element, fullDoc)
 
             else -> null
         }
     }
 
-    private fun method(element: PsiElement): String {
-        val builder = GdDocBuilder()
+    private fun method(element: PsiElement, fullDoc: Boolean): String {
+        val builder = GdDocBuilder(element.project)
                 .withOwner(element)
                 .withPackage(element)
 
@@ -38,13 +39,25 @@ object GdDocFactory {
             is GdFuncDeclEx -> declaration.methodHeader(true)
             else -> return ""
         }
+
         builder.withPreview(code)
+
+        val descriptions = GdCommentUtil.collectAllDescriptions(declaration)
+        if (fullDoc) {
+            builder.addBodyBlock(GdDocUtil.paragraph(descriptions[GdCommentUtil.DESCRIPTION]!!))
+            builder.addBodyBlock(GdDocUtil.listTable("params", descriptions[GdCommentUtil.PARAMETER]!!.map {
+                it.replaceFirst(" ", " - ")
+            }))
+            builder.addBodyBlock(GdDocUtil.listTable("return", descriptions[GdCommentUtil.RETURN]!!))
+        } else {
+            builder.addBodyBlock(GdDocUtil.paragraph(descriptions[GdCommentUtil.BRIEF_DESCRIPTION]!!))
+        }
 
         return builder.toString()
     }
 
     private fun variable(element: GdVarNmi): String? {
-        val builder = GdDocBuilder()
+        val builder = GdDocBuilder(element.project)
         val withType = { el: PsiElement ->
             val returnType = GdCommonUtil.returnType(el)
             if (returnType.isBlank()) ""
@@ -75,15 +88,15 @@ object GdDocFactory {
         return builder.toString()
     }
 
-    private fun classId(element: GdClassNameNmi, brief: Boolean): String {
-        val builder = GdDocBuilder()
+    private fun classId(element: GdClassNameNmi, fullDoc: Boolean): String {
+        val builder = GdDocBuilder(element.project)
                 .withPackage(element)
 
         val parent = GdInheritanceUtil.getExtendedClassId(element)
         val extendInfo = if (parent.isNotBlank()) " extends $parent" else ""
         builder.withPreview("class ${element.classId}${extendInfo}")
 
-        if (!brief) {
+        if (fullDoc) {
             val classElement = GdClassUtil.getOwningClassElement(element)
             appendProperties(builder, classElement)
         }
@@ -101,22 +114,18 @@ object GdDocFactory {
         val declarations = GdClassMemberUtil.listClassMemberDeclarations(ownerElement, null, constructors = true)
 
         builder.addBodyBlock(
-            HtmlChunk.div().children(
-                DocumentationMarkup.SECTION_HEADER_CELL.addText("Params:"),
-                HtmlChunk.br(),
-                DocumentationMarkup.SECTION_CONTENT_CELL.addText("asd"),
-                HtmlChunk.br(),
-                DocumentationMarkup.SECTION_CONTENT_CELL.addText("qwe"),
-            )
+                HtmlChunk.div().children(
+                        DocumentationMarkup.SECTION_HEADER_CELL.addText("Params:").wrapWith("tr"),
+                        DocumentationMarkup.SECTION_CONTENT_CELL.addText("asd").wrapWith("tr"),
+                        DocumentationMarkup.SECTION_CONTENT_CELL.addText("qwe").wrapWith("tr"),
+                )
         )
         builder.addBodyBlock(
-            HtmlChunk.div().children(
-                DocumentationMarkup.SECTION_HEADER_CELL.addText("Methods:"),
-                HtmlChunk.br(),
-                DocumentationMarkup.SECTION_CONTENT_CELL.addText("asd"),
-                HtmlChunk.br(),
-                DocumentationMarkup.SECTION_CONTENT_CELL.addText("qwe"),
-            )
+                HtmlChunk.div().children(
+                        DocumentationMarkup.SECTION_HEADER_CELL.addText("Methods:"),
+                        DocumentationMarkup.SECTION_CONTENT_CELL.addText("asd"),
+                        DocumentationMarkup.SECTION_CONTENT_CELL.addText("qwe"),
+                )
         )
 
 //        val variables = declarations.variables()

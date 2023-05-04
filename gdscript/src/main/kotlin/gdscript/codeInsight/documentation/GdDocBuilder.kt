@@ -1,12 +1,13 @@
 package gdscript.codeInsight.documentation
 
 import com.intellij.lang.documentation.DocumentationMarkup
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.VirtualFileUtil.localParentPath
 
-class GdDocBuilder {
+class GdDocBuilder(val project: Project) {
 
     private var owner: HtmlChunk? = null
     private var packaged: HtmlChunk? = null
@@ -63,11 +64,7 @@ class GdDocBuilder {
         val sb = StringBuilder()
         line(sb, owner)
         code(sb, preview)
-        if (bodyBlocks.isNotEmpty()) {
-            sb.append(DocumentationMarkup.SECTIONS_START)
-            bodyBlocks.forEach { section(sb, it) }
-            sb.append(DocumentationMarkup.SECTIONS_END)
-        }
+        bodyBlocks.forEach { sb.append(it) }
         line(sb, packaged)
 
         return sb.toString()
@@ -82,9 +79,9 @@ class GdDocBuilder {
 
     private fun code(sb: StringBuilder, element: Any?) {
         if (element == null) return
-        sb.append(DocumentationMarkup.DEFINITION_START)
-        sb.append(element)
-        sb.append(DocumentationMarkup.DEFINITION_END)
+        sb.append(HtmlChunk.tag("pre").children(
+                GdDocCode.createHighlightedSnippet(element.toString(), project),
+        ).wrapWith(DocumentationMarkup.DEFINITION_ELEMENT))
     }
 
     private fun section(sb: StringBuilder, element: Any?) {

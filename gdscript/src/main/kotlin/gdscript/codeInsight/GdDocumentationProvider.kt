@@ -30,7 +30,7 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
     private val freeReference = "\\[([A-Z].+?)]".toRegex()
 
     fun test(element: PsiElement): String {
-        return GdDocFactory.create(element) ?: ""
+        return GdDocFactory.create(element, true) ?: ""
 
 //        return GdDocBuilder()
 //            .withPackage(element.containingFile.virtualFile.localParentPath())
