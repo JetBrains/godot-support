@@ -1,17 +1,21 @@
 package gdscript.settings
 
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.impl.libraries.LibraryEx
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.uiDesigner.core.GridConstraints
 import com.intellij.uiDesigner.core.GridLayoutManager
 import com.intellij.util.ui.FormBuilder
+import gdscript.library.GdLibraryManager
+import gdscript.library.GdLibraryProperties
 import gdscript.settings.component.GdSettingsComponents
 import java.awt.*
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
 
-class GdSettingsComponent {
+class GdSettingsComponent(val project: Project) {
     val panel: JPanel
 
     private val hidePrivateCheck = JBCheckBox("Hide _private members from completion")
@@ -19,7 +23,7 @@ class GdSettingsComponent {
     private val shouldTypeCheck = JBCheckBox("Enable variable not typed warning")
     private val annotatorsCb = ComboBox<String>()
     private val selectSdk = GdSettingsComponents.selectSdk()
-    private val addSdk: JButton = GdSettingsComponents.addSdk(selectSdk)
+    private val addSdk: JButton = GdSettingsComponents.addSdk(selectSdk, this)
 
     init {
         annotatorsCb.addItem(GdProjectState.OFF)
@@ -52,9 +56,15 @@ class GdSettingsComponent {
         }
 
     var sdkPath: String?
-        get() = "selectSdk.selectedItem"
+        get() = ((selectSdk.selectedItem as LibraryEx?)?.properties?.state as GdLibraryProperties?)?.path
         set(path) {
-            // TODO sdkField.text = path.orEmpty()
+            for (i in 0 until selectSdk.itemCount) {
+                if (((selectSdk.getItemAt(i) as LibraryEx).properties.state as GdLibraryProperties).path == path) {
+                    selectSdk.selectedIndex = i
+                    GdLibraryManager.setUpLibrary(project, path)
+                    break
+                }
+            }
         }
 
     var shortTyped: Boolean

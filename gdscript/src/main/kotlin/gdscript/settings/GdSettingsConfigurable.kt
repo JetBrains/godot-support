@@ -2,6 +2,7 @@ package gdscript.settings
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
+import gdscript.library.GdLibraryManager
 import javax.swing.JComponent
 
 class GdSettingsConfigurable(val project: Project) : Configurable {
@@ -18,13 +19,13 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
     }
 
     override fun createComponent(): JComponent? {
-        component = GdSettingsComponent()
+        component = GdSettingsComponent(project)
 
         return component?.panel
     }
 
     override fun isModified(): Boolean {
-        val settings = GdProjectSettingsState.getInstance(project).state;
+        val settings = GdProjectSettingsState.getInstance(project).state
 
         return component?.hidePrivate != settings.hidePrivate
                 || component?.sdkPath != settings.sdkPath
@@ -44,7 +45,7 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
         settings.sdkPath = component?.sdkPath
 
         if (oldSdk == settings.sdkPath) return
-        // TODO REMOVE GdLibraryManager.setUpLibrary(project, settings.sdkPath)
+        GdLibraryManager.setUpLibrary(project, settings.sdkPath ?: "")
     }
 
     override fun reset() {

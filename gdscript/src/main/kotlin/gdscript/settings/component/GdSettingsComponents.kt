@@ -10,6 +10,7 @@ import gdscript.library.GdLibraryKind
 import gdscript.library.GdLibraryManager
 import gdscript.library.GdLibraryProperties
 import gdscript.settings.GdDownloadSdk
+import gdscript.settings.GdSettingsComponent
 import gdscript.utils.GdSdkUtil.versionToSdkName
 import java.awt.*
 import java.nio.file.Paths
@@ -39,16 +40,12 @@ object GdSettingsComponents {
 
                 return super.getListCellRendererComponent(list, myValue, index, isSelected, cellHasFocus)
             }
-
-            override fun paint(g: Graphics?) {
-                super.paint(g)
-            }
         }
 
         return comboBox
     }
 
-    fun addSdk(selectSdk: ComboBox<Library>): JButton {
+    fun addSdk(selectSdk: ComboBox<Library>, settings: GdSettingsComponent): JButton {
         val menu = JPopupMenu()
 
         val localBtn = JMenuItem("Local...")
@@ -60,7 +57,7 @@ object GdSettingsComponents {
 
             val library = GdLibraryManager.registerSdk(path)
             selectSdk.addItem(library)
-            selectSdk.selectedItem = library
+            settings.sdkPath = path
         }
 
         val downloadBtn = JMenuItem("Download...")
