@@ -5,16 +5,19 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.VirtualFileUtil.localParentPath
 
 class GdDocBuilder {
 
-    private val project: Project;
+    private var project: Project? = null
     private var owner: HtmlChunk? = null
     private var packaged: HtmlChunk? = null
     private var preview: String? = null
     private var bodyBlocks: MutableList<HtmlChunk> = mutableListOf()
+
+    constructor()
 
     constructor(project: Project) {
         this.project = project
@@ -57,8 +60,7 @@ class GdDocBuilder {
             } else {
                 body.add(HtmlChunk.text("/"))
             }
-
-            body.add(GdDocUtil.packageLink(currentPath.trimStart('/'), s))
+            body.add(GdDocUtil.packageLink(currentPath, s))
         }
         packaged = HtmlChunk.div().children(body)
         return this
@@ -88,9 +90,9 @@ class GdDocBuilder {
     }
 
     private fun code(sb: StringBuilder, element: Any?) {
-        if (element == null) return
+        if (element == null || project == null) return
         sb.append(HtmlChunk.tag("pre").children(
-                GdDocCode.createHighlightedSnippet(element.toString(), project),
+                GdDocCode.createHighlightedSnippet(element.toString(), project!!),
         ).wrapWith(DocumentationMarkup.DEFINITION_ELEMENT))
     }
 

@@ -63,7 +63,7 @@ object GdCommentUtil {
 
     fun Map<String, List<String>>.tutorialBlock(): HtmlChunk {
         return GdDocUtil.listTable("tutorials", this[TUTORIAL]!!.map {
-            HtmlChunk.link(it.substringAfter("]").trim(), it.substringBefore("]").removePrefix("[").trim()).toString()
+            HtmlChunk.link(it.substringAfter("]").trim(), it.substringBefore("]").removePrefix("[").trim())
         })
     }
 
@@ -73,12 +73,14 @@ object GdCommentUtil {
 
     fun Map<String, List<String>>.parameterBlock(): HtmlChunk {
         return GdDocUtil.listTable("params", this[PARAMETER]!!.map {
-            it.replaceFirst(" ", " - ")
+            HtmlChunk.raw(it.replaceFirst(" ", " - "))
         })
     }
 
     fun Map<String, List<String>>.returnBlock(): HtmlChunk {
-        return GdDocUtil.listTable("return", this[RETURN]!!)
+        return GdDocUtil.listTable("return", this[RETURN]!!.map {
+            HtmlChunk.raw(it)
+        })
     }
 
 }

@@ -2,13 +2,17 @@ package gdscript.codeInsight.documentation
 
 import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.util.text.HtmlChunk
+import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import com.jetbrains.rd.util.reflection.usingTrueFlag
+import gdscript.GdFileType
 import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.completion.utils.GdEnumCompletionUtil.preview
 import gdscript.completion.utils.GdMethodCompletionUtil.methodHeader
 import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
+import gdscript.index.impl.utils.GdFileResInputFilter
 import gdscript.psi.*
 import gdscript.psi.utils.*
 import gdscript.psi.utils.GdClassMemberUtil.constants
@@ -22,24 +26,31 @@ import gdscript.psi.utils.GdCommentUtil.descriptionText
 import gdscript.psi.utils.GdCommentUtil.parameterBlock
 import gdscript.psi.utils.GdCommentUtil.returnBlock
 import gdscript.psi.utils.GdCommentUtil.tutorialBlock
+import gdscript.utils.VirtualFileUtil.localParentPath
+import gdscript.utils.VirtualFileUtil.resourcePath
+import project.ProjectFileType
+import tscn.TscnFileType
 
 object GdDocFactory {
 
-    fun create(element: PsiElement, fullDoc: Boolean = false): String? {
+    fun create(element: Any?, fullDoc: Boolean = false): String? {
         return when (element) {
             is GdVarNmi -> variable(element, fullDoc)
 
             is GdMethodIdNmi,
             is GdFuncDeclIdNmi,
-            -> method(element, fullDoc)
+            -> method(element as PsiElement, fullDoc)
 
             is GdEnumDeclNmi,
             is GdEnumValueNmi,
-            -> enum(element, fullDoc)
+            -> enum(element as PsiElement, fullDoc)
 
             is GdClassNameNmi,
             is PsiFile,
-            -> classOrFile(element, fullDoc)
+            -> classOrFile(element as PsiElement, fullDoc)
+
+            is PsiDirectory
+            -> directory(element, fullDoc)
 
             else -> null
         }
@@ -138,6 +149,45 @@ object GdDocFactory {
         } else {
             builder.addBodyBlock(descriptions.briefDescriptionBlock())
         }
+
+        return builder.toString()
+    }
+
+    private fun directory(element: PsiDirectory, fillDoc: Boolean): String {
+        val builder = GdDocBuilder()
+        val currentPath = element.virtualFile.localParentPath()
+
+        val scripts = mutableListOf<HtmlChunk>()
+        val scenes = mutableListOf<HtmlChunk>()
+        val others = mutableListOf<HtmlChunk>()
+
+        element.files.forEach {
+            val name = it.name
+            when (it.fileType) {
+                is GdFileType -> scripts.add(GdDocUtil.elementLink(it.virtualFile.resourcePath(), name))
+                is TscnFileType -> scenes.add(HtmlChunk.text(name))
+                is ProjectFileType -> {}
+                else -> {
+                    if (GdFileResInputFilter.validResource(name)) {
+                        others.add(HtmlChunk.text(name))
+                    }
+                }
+            }
+        }
+
+        val directories = element.subdirectories.mapNotNull {
+            val name = it.name
+            if (!name.startsWith("."))
+                GdDocUtil.packageLink("$currentPath/$name", name)
+            else null
+        }
+
+        builder.addBodyBlock(
+                GdDocUtil.listTable("scripts", scripts),
+                GdDocUtil.listTable("scenes", scenes),
+                GdDocUtil.listTable("packages", directories),
+                GdDocUtil.listTable("other", others),
+        )
 
         return builder.toString()
     }

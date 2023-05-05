@@ -5,20 +5,21 @@ import com.intellij.codeInsight.documentation.DocumentationManagerProtocol
 import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
+import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.psi.utils.GdCommentUtil
 import gdscript.psi.utils.GdCommentUtil.descriptionText
 
 object GdDocUtil {
+
+    fun packageLink(reference: String, label: String? = null): HtmlChunk {
+        return elementLink("${GdDocumentationProvider.LINK_PACKAGE}:${reference.trimStart('/')}", label)
+    }
 
     fun elementLink(reference: String, label: String? = null): HtmlChunk {
         var parsedReference = reference
         if (reference.startsWith("Array[")) parsedReference = reference.substring(6, reference.length - 1)
 
         return HtmlChunk.link(DocumentationManagerProtocol.PSI_ELEMENT_PROTOCOL + parsedReference, label ?: reference)
-    }
-
-    fun packageLink(packageName: String, label: String): HtmlChunk {
-        return elementLink("package:$packageName", label)
     }
 
     fun iconed(icon: String): MutableList<HtmlChunk> {
@@ -28,7 +29,7 @@ object GdDocUtil {
         )
     }
 
-    fun listTable(key: String, lines: List<String>): HtmlChunk {
+    fun listTable(key: String, lines: List<HtmlChunk>): HtmlChunk {
         if (lines.isEmpty()) return HtmlChunk.empty()
         return DocumentationMarkup.SECTIONS_TABLE.children(
                 tableHeader(key, lines.first()),
@@ -111,25 +112,25 @@ object GdDocUtil {
      * ------------------------------- HELPERS -------------------------------
      */
 
-    private fun tableHeader(header: String, item: String): HtmlChunk {
+    private fun tableHeader(header: String, item: HtmlChunk): HtmlChunk {
         return tableHeader(header, listOf(item))
     }
 
-    private fun tableHeader(header: String, items: List<String>): HtmlChunk {
+    private fun tableHeader(header: String, items: List<HtmlChunk>): HtmlChunk {
         return HtmlChunk.tag("tr").children(
                 tableTitle(header),
-                *items.map { DocumentationMarkup.SECTION_CONTENT_CELL.addRaw(it) }.toTypedArray(),
+                *items.map { DocumentationMarkup.SECTION_CONTENT_CELL.child(it) }.toTypedArray(),
         )
     }
 
-    private fun tableLine(item: String): HtmlChunk {
+    private fun tableLine(item: HtmlChunk): HtmlChunk {
         return tableLine(listOf(item))
     }
 
-    private fun tableLine(items: List<String>): HtmlChunk {
+    private fun tableLine(items: List<HtmlChunk>): HtmlChunk {
         return HtmlChunk.tag("tr").children(
                 DocumentationMarkup.SECTION_CONTENT_CELL,
-                *items.map { DocumentationMarkup.SECTION_CONTENT_CELL.addRaw(it) }.toTypedArray(),
+                *items.map { DocumentationMarkup.SECTION_CONTENT_CELL.child(it) }.toTypedArray(),
         )
     }
 
