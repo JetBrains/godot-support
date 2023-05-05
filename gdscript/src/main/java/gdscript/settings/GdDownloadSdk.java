@@ -13,7 +13,7 @@ public class GdDownloadSdk extends JDialog {
     private JButton buttonOK;
     private JButton buttonCancel;
     private JComboBox<String> versionCb;
-    private TextFieldWithBrowseButton locationFc;
+    public TextFieldWithBrowseButton locationFc;
     private JLabel VersionLb;
     private JLabel LocationLb;
 

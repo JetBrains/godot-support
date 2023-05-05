@@ -11,7 +11,6 @@ import gdscript.library.GdLibraryManager
 import gdscript.library.GdLibraryProperties
 import gdscript.settings.GdDownloadSdk
 import gdscript.utils.GdSdkUtil.versionToSdkName
-import org.jdesktop.swingx.painter.AbstractLayoutPainter.HorizontalAlignment
 import java.awt.*
 import java.nio.file.Paths
 import javax.swing.*
@@ -34,21 +33,24 @@ object GdSettingsComponents {
             ): Component {
                 var myValue = value
                 if (value is LibraryEx && value.kind is GdLibraryKind) {
-//                    val state = (value.properties as GdLibraryProperties).state
                     val state = value.modifiableModel.properties as GdLibraryProperties
-                    // TODO gray
-                    myValue = "${state.version} - ${state.path}"
+                    myValue = state.version
                 }
 
                 return super.getListCellRendererComponent(list, myValue, index, isSelected, cellHasFocus)
+            }
+
+            override fun paint(g: Graphics?) {
+                super.paint(g)
             }
         }
 
         return comboBox
     }
 
-    fun addSdk(): JButton {
+    fun addSdk(selectSdk: ComboBox<Library>): JButton {
         val menu = JPopupMenu()
+
         val localBtn = JMenuItem("Local...")
         localBtn.addActionListener {
             val descriptor = FileChooserDescriptorFactory.createSingleFolderDescriptor()
@@ -56,18 +58,26 @@ object GdSettingsComponents {
             val file = FileChooser.chooseFile(descriptor, null, null)
             val path = file?.path ?: return@addActionListener
 
-            GdLibraryManager.registerSdk(path)
+            val library = GdLibraryManager.registerSdk(path)
+            selectSdk.addItem(library)
+            selectSdk.selectedItem = library
         }
 
         val downloadBtn = JMenuItem("Download...")
         downloadBtn.addActionListener {
             val downloadModal = GdDownloadSdk()
+            val hintPath = GdLibraryManager.listRegisteredSdks().firstOrNull()?.let { lib ->
+                if (lib is LibraryEx && lib.kind is GdLibraryKind)
+                    (lib.modifiableModel.properties as GdLibraryProperties).path
+                else null
+            } ?: ""
 
             val screenSize = Toolkit.getDefaultToolkit().screenSize
             downloadModal.pack()
             downloadModal.location = Point(
                 screenSize.width / 2 - downloadModal.width / 2, screenSize.height / 2 - downloadModal.height / 2
             )
+            downloadModal.locationFc.text = hintPath.substringBeforeLast("\\", hintPath.substringBeforeLast("/"))
             downloadModal.title = "Download GdScript SDK"
             downloadModal.isVisible = true
 
@@ -75,7 +85,9 @@ object GdSettingsComponents {
             if (path.isNotBlank()) {
                 val version = downloadModal.version
                 GdLibraryManager.download(version, path)
-                GdLibraryManager.registerSdk(Paths.get(path, version.versionToSdkName()).toString())
+                val library = GdLibraryManager.registerSdk(Paths.get(path, version.versionToSdkName()).toString())
+                selectSdk.addItem(library)
+                selectSdk.selectedItem = library
             }
         }
 

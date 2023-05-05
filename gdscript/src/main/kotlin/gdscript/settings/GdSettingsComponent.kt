@@ -7,9 +7,9 @@ import com.intellij.uiDesigner.core.GridLayoutManager
 import com.intellij.util.ui.FormBuilder
 import gdscript.settings.component.GdSettingsComponents
 import java.awt.*
+import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
-import javax.swing.JTextField
 
 class GdSettingsComponent {
     val panel: JPanel
@@ -18,8 +18,8 @@ class GdSettingsComponent {
     private val shortTypedCheck = JBCheckBox("Use short typing 'var a := 1' instead of 'var a: int = 1'")
     private val shouldTypeCheck = JBCheckBox("Enable variable not typed warning")
     private val annotatorsCb = ComboBox<String>()
-    private val addSdk = GdSettingsComponents.addSdk()
     private val selectSdk = GdSettingsComponents.selectSdk()
+    private val addSdk: JButton = GdSettingsComponents.addSdk(selectSdk)
 
     init {
         annotatorsCb.addItem(GdProjectState.OFF)

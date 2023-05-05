@@ -32,7 +32,6 @@
     <library.type implementation="gdscript.library.GdLibraryType" />
 
     <!-- settings -->
-<!--    <applicationService serviceImplementation="gdscript.settings.GdApplicationSettingsState" />-->
     <projectService serviceImplementation="gdscript.settings.GdProjectSettingsState" />
     <projectConfigurable
         parentId="language"

@@ -14,7 +14,6 @@ import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.workspaceModel.ide.impl.legacyBridge.library.LibraryBridgeImpl
-import gdscript.settings.GdApplicationSettingsState
 import gdscript.utils.GdSdkUtil.SDKs_URL
 import gdscript.utils.GdSdkUtil.sdkToVersion
 import gdscript.utils.GdSdkUtil.versionToSdkName
@@ -37,8 +36,6 @@ import java.util.zip.ZipFile
 import javax.swing.JComboBox
 
 object GdLibraryManager {
-
-    val LIBRARY_PREFIX = "GdScript_"
 
     @OptIn(DelicateCoroutinesApi::class)
     fun listRemoteSdks(cb: JComboBox<String>) {
@@ -68,58 +65,60 @@ object GdLibraryManager {
             .getService(ModifiableModelsProvider::class.java)
             .libraryTableModifiableModel.libraries.filter {
                 (it as LibraryEx).kind is GdLibraryKind
-        }
+            }
     }
 
-    fun registerSdk(path: String) {
+    fun registerSdk(path: String): Library {
         val name = path.replace('\\', '/').substringAfterLast("/")
         val type = OrderRootType.SOURCES
         val app = ApplicationManager.getApplication()
         val modifier = LibraryTablesRegistrar.getInstance().libraryTable.modifiableModel
+        val library = modifier.createLibrary(name, GdLibraryKind)
+        val libModifier = library.modifiableModel as ModifiableModelEx
+        val props = libModifier.properties as GdLibraryProperties
+        props.path = path
+        props.version = name.sdkToVersion()
+        libModifier.properties = props
+        libModifier.addRoot(path, type)
 
         app.invokeAndWait {
             runWriteAction {
-                val library = modifier.createLibrary(name, GdLibraryKind)
-                val libModifier = library.modifiableModel as ModifiableModelEx
-                val props = libModifier.properties as GdLibraryProperties
-                props.path = path
-                props.version = name.sdkToVersion()
-
-                libModifier.addRoot(path, type)
                 libModifier.commit()
                 modifier.commit()
             }
         }
+
+        return library
     }
 
     fun setUpLibrary(project: Project, path: String) {
-        val table = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
-        val virtualFile = VfsUtil.findFileByIoFile(File(path), true)
-        val name = path.substringAfterLast("/")
-        val type = OrderRootType.SOURCES
-
-        ApplicationManager.getApplication().invokeAndWait {
-            runWriteAction {
-                val state = GdApplicationSettingsState.getInstance().state
-                val lib = table.getLibraryByName(name)
-                if (lib != null) {
-                    table.removeLibrary(lib)
-                    lib.rootProvider.getUrls(type).forEach {
-                        state.sdkPaths.remove(it)
-                    }
-                }
-                    val newLib = table.createLibrary(name)
-                    val libModel = newLib.modifiableModel
-                    libModel.addRoot(virtualFile!!.url, type)
-                    libModel.commit()
-                    state.sdkPaths.add(path)
-
-                    val module = ModuleManager.getInstance(project).modules.first()
-                    val rootModel = ModuleRootManager.getInstance(module).modifiableModel
-                    rootModel.addLibraryEntry(newLib)
-                    rootModel.commit()
-            }
-        }
+//        val table = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
+//        val virtualFile = VfsUtil.findFileByIoFile(File(path), true)
+//        val name = path.substringAfterLast("/")
+//        val type = OrderRootType.SOURCES
+//
+//        ApplicationManager.getApplication().invokeAndWait {
+//            runWriteAction {
+//                val state = GdApplicationSettingsState.getInstance().state
+//                val lib = table.getLibraryByName(name)
+//                if (lib != null) {
+//                    table.removeLibrary(lib)
+//                    lib.rootProvider.getUrls(type).forEach {
+//                        state.sdkPaths.remove(it)
+//                    }
+//                }
+//                    val newLib = table.createLibrary(name)
+//                    val libModel = newLib.modifiableModel
+//                    libModel.addRoot(virtualFile!!.url, type)
+//                    libModel.commit()
+//                    state.sdkPaths.add(path)
+//
+//                    val module = ModuleManager.getInstance(project).modules.first()
+//                    val rootModel = ModuleRootManager.getInstance(module).modifiableModel
+//                    rootModel.addLibraryEntry(newLib)
+//                    rootModel.commit()
+//            }
+//        }
     }
 
     fun download(version: String, directory: String) {

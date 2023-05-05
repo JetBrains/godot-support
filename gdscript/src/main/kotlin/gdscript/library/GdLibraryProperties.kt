@@ -3,15 +3,15 @@ package gdscript.library
 import com.intellij.openapi.roots.libraries.LibraryProperties
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
-import com.intellij.util.xmlb.annotations.Tag
+import com.intellij.util.xmlb.annotations.Attribute
 
 @State(name = "GdLibraryProperties", storages = [Storage("GdLibraryProperties.xml")])
 class GdLibraryProperties : LibraryProperties<GdLibraryProperties>() {
 
-    @Tag("path")
+    @Attribute
     var path: String = ""
 
-    @Tag("version")
+    @Attribute
     var version: String = ""
 
     override fun equals(other: Any?): Boolean {
