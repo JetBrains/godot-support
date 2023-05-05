@@ -4,6 +4,7 @@ import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.completion.utils.GdMethodCompletionUtil.methodHeader
 import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
 import gdscript.psi.*
@@ -38,8 +39,8 @@ object GdDocFactory {
 
     private fun method(element: PsiElement, fullDoc: Boolean): String {
         val builder = GdDocBuilder(element.project)
-            .withOwner(element)
-            .withPackage(element)
+                .withOwner(element)
+                .withPackage(element)
 
         val declaration = element.parent
         var code = annotationPreview(declaration)
@@ -54,9 +55,9 @@ object GdDocFactory {
         val descriptions = GdCommentUtil.collectAllDescriptions(declaration)
         if (fullDoc) {
             builder.addBodyBlock(
-                descriptions.descriptionBlock(),
-                descriptions.parameterBlock(),
-                descriptions.returnBlock(),
+                    descriptions.descriptionBlock(),
+                    descriptions.parameterBlock(),
+                    descriptions.returnBlock(),
             )
         } else {
             builder.addBodyBlock(descriptions.briefDescriptionBlock())
@@ -99,8 +100,8 @@ object GdDocFactory {
         val descriptions = GdCommentUtil.collectAllDescriptions(element.parent)
         if (fullDoc) {
             builder.addBodyBlock(
-                descriptions.descriptionBlock(),
-                descriptions.returnBlock(),
+                    descriptions.descriptionBlock(),
+                    descriptions.returnBlock(),
             )
         } else {
             builder.addBodyBlock(descriptions.briefDescriptionBlock())
@@ -111,7 +112,7 @@ object GdDocFactory {
 
     private fun classOrFile(element: PsiElement, fullDoc: Boolean): String {
         val builder = GdDocBuilder(element.project)
-            .withPackage(element)
+                .withPackage(element)
 
         val parent = GdInheritanceUtil.getExtendedClassId(element)
         val extendInfo = if (parent.isNotBlank()) " extends $parent" else ""
@@ -168,14 +169,40 @@ object GdDocFactory {
             var name = it.name
             if (!name.endsWith(")")) name += "()"
             Pair(
-                GdDocUtil.elementLink(name.substringBefore("("), name),
-                HtmlChunk.raw(GdCommentUtil.collectAllDescriptions(it).descriptionText()),
+                    GdDocUtil.elementLink(name.substringBefore("("), name),
+                    HtmlChunk.raw(GdCommentUtil.collectAllDescriptions(it).descriptionText()),
             )
         }))
 
-        // TODO enum case description
-        // TODO nepojmenovaný enum se vrací po kusech
-//        val enums = declarations.enums()
+        val enums = declarations.enums()
+        builder.addBodyBlock(GdDocUtil.descriptionListsTable("enums", enums.map {
+            var name = it.name
+            var isNamed = true
+            if (name.isBlank()) {
+                isNamed = false
+                name = GdCommentUtil.collectAllDescriptions(it)[GdCommentUtil.ENUM]?.firstOrNull() ?: "_"
+            }
+
+            Pair(
+                    HtmlChunk.fragment(
+                            HtmlChunk.text("enum "),
+                            if (isNamed) GdDocUtil.elementLink(it.name) else HtmlChunk.text(name),
+                    ),
+                    it.enumValueList.map { value ->
+                        val description = GdCommentUtil.collectAllDescriptions(value).descriptionText()
+                        val enumValueName = value.enumValueNmi.name
+                        val enumValue = it.values[enumValueName]
+                        HtmlChunk.fragment(
+                                GdDocUtil.elementLink("${GdDocumentationProvider.LINK_ENUM_VALUE}:$name.$enumValueName", enumValueName),
+                                DocumentationMarkup.GRAYED_ELEMENT.addText(" = $enumValue"),
+                                if (description.isNotBlank()) HtmlChunk.fragment(
+                                        HtmlChunk.br(),
+                                        DocumentationMarkup.GRAYED_ELEMENT.addRaw(description),
+                                ) else HtmlChunk.empty(),
+                        )
+                    }
+            )
+        }))
 //        builder.addBodyBlock(GdDocUtil.descriptionListTable("enums", enums.map { enum ->
 //            var name = enum.name
 //            if (name.isBlank()) name =
@@ -202,10 +229,12 @@ object GdDocFactory {
         val consts = declarations.constants()
         builder.addBodyBlock(GdDocUtil.descriptionListTable("constants", consts.map {
             Pair(
-                GdDocUtil.elementLink(it.name, it.text.trim()),
-                HtmlChunk.raw(GdCommentUtil.collectAllDescriptions(it).descriptionText()),
+                    GdDocUtil.elementLink(it.name, it.text.trim()),
+                    HtmlChunk.raw(GdCommentUtil.collectAllDescriptions(it).descriptionText()),
             )
         }))
+
+        // TODO variables & methods with descriptions
     }
 
 }

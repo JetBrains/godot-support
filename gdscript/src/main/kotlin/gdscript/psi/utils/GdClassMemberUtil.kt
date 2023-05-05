@@ -58,7 +58,7 @@ object GdClassMemberUtil {
         val result = mutableListOf<Any>()
         var calledOn: String? = GdKeywords.SELF
 
-        val calledOnPsi: GdExpr? = calledUpon(element);
+        val calledOnPsi: GdExpr? = calledUpon(element)
         if (calledOnPsi != null && calledOnPsi.text != GdKeywords.SELF) {
             // Check if there is an assertion check 'if (node is Node3D):'
             calledOn = findIsTypeCheck(calledOnPsi) ?: calledOnPsi.returnType

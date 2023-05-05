@@ -3,6 +3,10 @@
 $sdkFolder = "../sdk";
 $sdkPrefix = "GdSdk ";
 
+if (!file_exists($sdkFolder)) {
+    mkdir($sdkFolder, 0777, true);
+}
+
 // Fetch all existing tags
 exec("git ls-remote --tags https://github.com/godotengine/godot 2>&1", $tags);
 $existingTags = [];
