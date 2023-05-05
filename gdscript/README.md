@@ -47,7 +47,7 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
 - Go to declaration / usages
 - File templates taken from Godot's source
 - Hides _prefix as private fields (optional based on Language settings)
-- Built-in documentation (Ctrl+Q)
+- Built-in [documentation](./documentation/auto-documentation.md) (Ctrl+Q)
 - Line markers
   - Resource usages  
   - Signals  
