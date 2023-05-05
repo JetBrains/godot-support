@@ -85,7 +85,7 @@ class GdBlock : AbstractBlock {
                     alignments.getAlignment(type),
                     settings,
                     spacing,
-                    if (toIndent) Indent.getNormalIndent(true) else Indent.getNoneIndent(),
+                    if (toIndent) Indent.getNormalIndent() else Indent.getNoneIndent(),
                     alignments.clone(type),
                 )
                 if (lastBlock != null) {
@@ -118,7 +118,7 @@ class GdBlock : AbstractBlock {
                 if (atEndOfStmt && preceding != null) {
                     return ChildAttributes(settings.calculateSpaceIndents(preceding, 1 - precedingOffset), null)
                 }
-                return ChildAttributes(Indent.getNormalIndent(true), null)
+                return ChildAttributes(Indent.getNormalIndent(), null)
             }
         }
 
@@ -147,7 +147,7 @@ class GdBlock : AbstractBlock {
                 }
             }
 
-            return ChildAttributes(Indent.getNormalIndent(true), null)
+            return ChildAttributes(Indent.getNormalIndent(), null)
         }
 
 
