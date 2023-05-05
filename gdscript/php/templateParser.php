@@ -24,7 +24,7 @@ foreach ($dirs as $dir) {
         $content      = file_get_contents($filePath);
         $content      = str_replace('_BASE_', '${NAME}', $content);
 
-        file_put_contents("./src/main/resources/fileTemplates/$templateName.ft", $content);
+        file_put_contents("../src/main/resources/fileTemplates/$templateName.ft", $content);
     }
 
 }

@@ -1,7 +1,7 @@
 <?php
 
 $filename = "@GDScript.xml";
-$target   = "./src/main/kotlin/gdscript/utils/GdAnnotationUtil.kt";
+$target   = "../src/main/kotlin/gdscript/utils/GdAnnotationUtil.kt";
 
 $baseContent = "package gdscript.utils
 

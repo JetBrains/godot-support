@@ -25,7 +25,7 @@ foreach ($modules as $module) {
     }
 }
 
-$target = "./src/main/kotlin/gdscript/utils/GdOperand.kt";
+$target = "../src/main/kotlin/gdscript/utils/GdOperand.kt";
 
 $baseContent = "package gdscript.utils
 
