@@ -49,6 +49,11 @@ class GdSettingsComponent(val project: Project) {
 
     fun preferredFocusedComponent(): JComponent = hidePrivateCheck
 
+    @Deprecated("smazat")
+    fun setupLibrary() {
+        GdLibraryManager.setUpLibrary(project, sdkPath ?: "")
+    }
+
     var hidePrivate: Boolean
         get() = hidePrivateCheck.isSelected
         set(newStatus) {
@@ -61,7 +66,6 @@ class GdSettingsComponent(val project: Project) {
             for (i in 0 until selectSdk.itemCount) {
                 if (((selectSdk.getItemAt(i) as LibraryEx).properties.state as GdLibraryProperties).path == path) {
                     selectSdk.selectedIndex = i
-                    GdLibraryManager.setUpLibrary(project, path)
                     break
                 }
             }

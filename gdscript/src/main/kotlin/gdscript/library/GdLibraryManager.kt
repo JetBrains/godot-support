@@ -99,16 +99,15 @@ object GdLibraryManager {
     fun setUpLibrary(project: Project, path: String) {
         if (path.isBlank()) return
 
-        val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
-        modifier.libraries.forEach {
-            if ((it as LibraryEx).kind is GdLibraryKind) modifier.removeLibrary(it)
-        }
-
         getLibrary(path) ?: return
 
         ApplicationManager.getApplication().invokeAndWait {
             runWriteAction {
+                var modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
                 modifier.getLibraryByName(LIBRARY_NAME)?.let { modifier.removeLibrary(it) }
+                modifier.commit()
+
+                modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
                 val library = modifier.createLibrary(LIBRARY_NAME)
                 val libraryModifier = library.modifiableModel
                 libraryModifier.addRoot("file://$path", OrderRootType.SOURCES)
