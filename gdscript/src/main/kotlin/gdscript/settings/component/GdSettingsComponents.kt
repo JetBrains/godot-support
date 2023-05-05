@@ -11,10 +11,8 @@ import gdscript.library.GdLibraryManager
 import gdscript.library.GdLibraryProperties
 import gdscript.settings.GdDownloadSdk
 import gdscript.utils.GdSdkUtil.versionToSdkName
-import java.awt.Component
-import java.awt.Dimension
-import java.awt.Point
-import java.awt.Toolkit
+import org.jdesktop.swingx.painter.AbstractLayoutPainter.HorizontalAlignment
+import java.awt.*
 import java.nio.file.Paths
 import javax.swing.*
 
