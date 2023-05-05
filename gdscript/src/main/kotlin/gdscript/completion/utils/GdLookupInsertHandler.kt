@@ -1,12 +1,15 @@
 package gdscript.competion.utils
 
+import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.completion.InsertHandler
 import com.intellij.codeInsight.completion.InsertionContext
+import com.intellij.codeInsight.hint.ShowParameterInfoHandler
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
+import gdscript.utils.VirtualFileUtil.getPsiFile
 
 class GdLookupInsertHandler : InsertHandler<LookupElement> {
 
@@ -29,6 +32,15 @@ class GdLookupInsertHandler : InsertHandler<LookupElement> {
                 PsiDocumentManager.getInstance(project).commitDocument(editor.document)
                 if (valueToInsert == "()" && move) {
                     model.moveToOffset(model.offset - 1)
+                    if (CodeInsightSettings.getInstance().SHOW_PARAMETER_NAME_HINTS_ON_COMPLETION)
+                        ShowParameterInfoHandler.invoke(
+                                project,
+                                editor,
+                                editor.virtualFile.getPsiFile(project),
+                                model.offset - 2,
+                                null,
+                                false,
+                        )
                 }
             }
         }

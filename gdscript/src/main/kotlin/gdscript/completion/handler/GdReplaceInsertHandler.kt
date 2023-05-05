@@ -11,14 +11,14 @@ import com.intellij.psi.PsiDocumentManager
 class GdReplaceInsertHandler(private val input: String) : InsertHandler<LookupElement> {
 
     override fun handleInsert(context: InsertionContext, item: LookupElement) {
-        val editor = context.editor;
-        val project = context.project;
+        val editor = context.editor
+        val project = context.project
 
-        val document = editor.document;
-        document.replaceString(context.startOffset, context.selectionEndOffset, input);
+        val document = editor.document
+        document.replaceString(context.startOffset, context.selectionEndOffset, input)
 
-        PsiDocumentManager.getInstance(project).commitDocument(document);
-        editor.caretModel.moveToOffset(context.startOffset + input.length);
+        PsiDocumentManager.getInstance(project).commitDocument(document)
+        editor.caretModel.moveToOffset(context.startOffset + input.length)
     }
 
 }

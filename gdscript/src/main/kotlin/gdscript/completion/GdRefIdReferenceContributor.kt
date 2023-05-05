@@ -19,7 +19,7 @@ class GdRefIdReferenceContributor : PsiReferenceContributor() {
                     element: PsiElement,
                     context: ProcessingContext,
                 ): Array<PsiReference> {
-                    return arrayOf(GdClassMemberReference(element));
+                    return arrayOf(GdClassMemberReference(element))
                 }
             }
         );
