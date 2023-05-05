@@ -19,7 +19,8 @@ Editor -> General -> Smart Keys -> UnIndent on Backspace
 - By default, few of annotators are off due dynamics of Godot and GdScript, you can change it in settings, but then
 it's required to be thorough when specifying types
 - Warning that variable is not typed is disabled by default, but I recommend to opt-in (types can be added via alt+enter)  
-- TODO completion settings
+- Completion settings: Editor -> General -> Code Completion -> Parameter Info
+  - Try turning on: `Show parameter name hints on completion` which invokes hints after auto-completion
 
 ## Known limitations
 
