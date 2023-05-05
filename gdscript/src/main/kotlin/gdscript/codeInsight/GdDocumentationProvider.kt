@@ -18,40 +18,12 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
         val LINK_ENUM_VALUE = "enumValue"
     }
 
-    fun test(element: PsiElement): String {
-        return GdDocFactory.create(element, true) ?: ""
-
-//        return GdDocBuilder()
-//            .withPackage(element.containingFile.virtualFile.localParentPath())
-//            .withOwner(GdClassUtil.getOwningClassElement(element))
-//            .withPreview(element)
-//            .toString()
-    }
-
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
-        return test(element)
-//        if (originalElement != null && originalElement.parent is GdNamedElement) {
-//            return findDocumentationComment(originalElement.parent as GdNamedElement, PsiGdCommentUtils.DESCRIPTION)
-//        }
-//
-//        return renderDocumentationForDeclaration(element, PsiGdCommentUtils.DESCRIPTION)
+        return GdDocFactory.create(element, true)
     }
 
     override fun generateHoverDoc(element: PsiElement, originalElement: PsiElement?): String? {
-        return test(element)
-//        if (originalElement != null && originalElement.parent is PsiNamedElement) {
-//            val doc = findDocumentationComment(
-//                originalElement.parent as PsiNamedElement,
-//                PsiGdCommentUtils.BRIEF_DESCRIPTION
-//            );
-//            if (doc != null && doc.isNotEmpty()) {
-//                return doc
-//            }
-//
-//            return findDocumentationComment(originalElement.parent as PsiNamedElement, PsiGdCommentUtils.DESCRIPTION)
-//        }
-
-        return null
+        return GdDocFactory.create(element, false)
     }
 
     override fun getDocumentationElementForLink(

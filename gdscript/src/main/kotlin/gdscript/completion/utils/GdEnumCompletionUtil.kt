@@ -49,4 +49,16 @@ object GdEnumCompletionUtil {
         )
     }
 
+    fun GdEnumDeclTl.preview(): String {
+        var name = this.name
+        if (name.isNotBlank()) name = "$name "
+        val sb = StringBuilder("enum $name{\n")
+        this.values.forEach {
+            sb.appendLine("    ${it.key} = ${it.value},")
+        }
+        sb.append("}")
+
+        return sb.toString()
+    }
+
 }

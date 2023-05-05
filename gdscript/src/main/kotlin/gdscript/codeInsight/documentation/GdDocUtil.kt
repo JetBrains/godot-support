@@ -4,6 +4,9 @@ import ai.grazie.utils.capitalize
 import com.intellij.codeInsight.documentation.DocumentationManagerProtocol
 import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.util.text.HtmlChunk
+import com.intellij.psi.PsiElement
+import gdscript.psi.utils.GdCommentUtil
+import gdscript.psi.utils.GdCommentUtil.descriptionText
 
 object GdDocUtil {
 
@@ -89,6 +92,18 @@ object GdDocUtil {
                             if (!it.endsWith("<pre>") && !it.startsWith("</pre>")) HtmlChunk.br() else HtmlChunk.empty(),
                     )
                 }.toTypedArray()
+        )
+    }
+
+    fun appendDescription(element: PsiElement): HtmlChunk {
+        return appendDescription(GdCommentUtil.collectAllDescriptions(element).descriptionText())
+    }
+
+    fun appendDescription(description: String?): HtmlChunk {
+        if (description.isNullOrBlank()) return HtmlChunk.empty()
+        return HtmlChunk.fragment(
+                HtmlChunk.br(),
+                DocumentationMarkup.GRAYED_ELEMENT.addRaw(description),
         )
     }
 

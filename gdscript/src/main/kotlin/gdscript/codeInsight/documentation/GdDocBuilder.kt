@@ -8,12 +8,21 @@ import com.intellij.psi.PsiFile
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.VirtualFileUtil.localParentPath
 
-class GdDocBuilder(val project: Project) {
+class GdDocBuilder {
 
+    private val project: Project;
     private var owner: HtmlChunk? = null
     private var packaged: HtmlChunk? = null
-    private var preview: HtmlChunk? = null
+    private var preview: String? = null
     private var bodyBlocks: MutableList<HtmlChunk> = mutableListOf()
+
+    constructor(project: Project) {
+        this.project = project
+    }
+
+    constructor(element: PsiElement) {
+        this.project = element.project
+    }
 
     /**
      * @param element GdClassDecl|GdFile from getOwningClassElement
@@ -57,7 +66,7 @@ class GdDocBuilder(val project: Project) {
 
     fun withPreview(code: String?): GdDocBuilder {
         if (code == null) return this
-        preview = HtmlChunk.raw(code)
+        preview = code
         return this
     }
 
