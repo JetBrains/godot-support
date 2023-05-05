@@ -1,17 +1,46 @@
 name: CI
 
-on: [pull_request]
+on:
+    pull_request:
+    schedule:
+        - cron: '0 0 * * *'  # every day at midnight
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build Plugin
-        shell: bash
-        working-directory: rider
-        run: ./gradlew buildPlugin
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          path: rider/build/distributions/*.zip
+    # Make sure we only invoke known gradle-wrapper.jar files
+    gradleValidation:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Fetch Sources
+              uses: actions/checkout@v2
+            - name: Gradle Wrapper Validation
+              uses: gradle/wrapper-validation-action@v1
+    linux:
+        needs: gradleValidation
+        runs-on: ubuntu-latest
+        steps:
+            - name: Fetch Sources
+              uses: actions/checkout@v2
+            - name: Setup .NET CLI
+              uses: actions/setup-dotnet@v1
+              with:
+                  dotnet-version: '7.0.x'
+            - name: Build
+              shell: bash
+              working-directory: rider
+              run: ./gradlew -PbuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
+            - name: Tests
+              shell: bash
+              working-directory: rider
+              run: ./gradlew -PbuildConfiguration=Release -PbuildNumber=${{ github.run_number }} test
+            - name: Upload Test Results
+              uses: actions/upload-artifact@v2
+              with:
+                  name: ${{ runner.os }}.test-results
+                  path: build/reports/tests
+              if: ${{ always() }}
+            - name: Upload Test Logs
+              uses: actions/upload-artifact@v2.2.4
+              with:
+                  name: ${{ runner.os }}.test-logs
+                  path: build/idea-sandbox/system-test/log
+              if: ${{ always() }}
