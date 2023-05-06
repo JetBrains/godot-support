@@ -4,12 +4,12 @@ Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of G
 
 # Installation
 
-Please follow installation instructions or a [video](./documentation/installation.md) as SDK is required for plugin to work.
+Please follow installation instructions
 
 1. Download the plugin from Marketplace
    - There are currently 2 plugins, use the one from "IceExplosive"
 2. Restart the IDE, due to unknown reasons, some parts like Highlighting is not working right after installation
-3. Download an SDK from this repository (GD_SDK.7z) and extract it anywhere in your computer
+3. Download an SDK from Language settings
 4. Within Settings -> Languages & Frameworks -> GdScript add extracted folder into GdScript SDK field
    - SDK is rebuilt daily from current Godot master so after new Godot release, download new SDK as well
 
