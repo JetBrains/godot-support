@@ -68,7 +68,7 @@ object GdStringCompletionUtil {
     }
 
     fun addUserFiles(element: PsiElement, result: CompletionResultSet) {
-        GdUserFileIndex.getAllValues(element.project).forEach {
+        GdUserFileIndex.INSTANCE.getAllValues(element.project).forEach {
             result.addElement(
                 GdLookup.create(
                     it.text.trim('"'),

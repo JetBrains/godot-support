@@ -202,7 +202,7 @@ object PsiGdExprUtil {
             className = "Array";
         }
 
-        return GdClassNamingIndex.get(className, element.project, GlobalSearchScope.allScope(element.project))
+        return GdClassNamingIndex.INSTANCE.get(className, element.project, GlobalSearchScope.allScope(element.project))
             .firstOrNull()?.containingFile;
     }
 

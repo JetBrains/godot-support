@@ -5,7 +5,11 @@ import common.index.StringStubIndexExtensionExt
 import tscn.index.TscnIndices
 import tscn.psi.TscnConnectionHeader
 
-object TscnConnectionIndex : StringStubIndexExtensionExt<TscnConnectionHeader>() {
+class TscnConnectionIndex : StringStubIndexExtensionExt<TscnConnectionHeader>() {
+
+    companion object {
+        val INSTANCE = TscnConnectionIndex()
+    }
 
     override fun getKey(): StubIndexKey<String, TscnConnectionHeader> = TscnIndices.CONNECTION_INDEX;
 

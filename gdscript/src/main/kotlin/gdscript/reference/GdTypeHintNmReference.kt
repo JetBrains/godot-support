@@ -8,7 +8,6 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.completion.utils.GdClassCompletionUtil
 import gdscript.completion.utils.GdClassCompletionUtil.lookup
 import gdscript.completion.utils.GdEnumCompletionUtil.lookup
-import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdEnumDeclTl
@@ -32,7 +31,7 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        val classId = GdClassNamingIndex.getGlobally(key, element).firstOrNull()?.classNameNmi;
+        val classId = GdClassNamingIndex.INSTANCE.getGlobally(key, element).firstOrNull()?.classNameNmi;
         if (classId != null) return classId;
 
         val container = if (key.contains(".")) {

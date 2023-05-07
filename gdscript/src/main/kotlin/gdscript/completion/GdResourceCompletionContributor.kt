@@ -34,7 +34,7 @@ class GdResourceCompletionContributor : CompletionContributor() {
                 GdNodeUtil.listNodes(position).forEach { result.addElement(it.lookup()) }
             }
         } else if (STRING.accepts(position)) {
-            GdFileResIndex.getNonEmptyKeys(position.project).forEach {
+            GdFileResIndex.INSTANCE.getNonEmptyKeys(position.project).forEach {
                 result.addElement(
                     GdLookup.create(
                         it,

@@ -122,7 +122,7 @@ object TscnNodeUtil {
     }
 
     fun listAllGroups(project: Project): Array<String> {
-        return TscnNodeIndex.getAllValues(project).flatMap {
+        return TscnNodeIndex.INSTANCE.getAllValues(project).flatMap {
             it.groups.toList()
         }.toTypedArray()
     }

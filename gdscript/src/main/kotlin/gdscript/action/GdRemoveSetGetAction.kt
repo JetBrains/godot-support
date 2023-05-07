@@ -35,7 +35,7 @@ class GdRemoveSetGetAction : BaseIntentionAction() {
 
         arrayOf(GdSetMethodIdNm::class.java, GdGetMethodIdNm::class.java).forEach {
             val name = PsiTreeUtil.findChildOfType(element, it);
-            if (name != null) GdMethodDeclIndex.getInFile(name).firstOrNull()?.delete();
+            if (name != null) GdMethodDeclIndex.INSTANCE.getInFile(name).firstOrNull()?.delete();
         }
 
         element.delete();

@@ -5,10 +5,14 @@ import common.index.StringStubIndexExtensionExt
 import gdscript.index.Indices
 import gdscript.psi.GdClassDeclTl
 
-object GdClassDeclIndex : StringStubIndexExtensionExt<GdClassDeclTl>() {
+class GdClassDeclIndex : StringStubIndexExtensionExt<GdClassDeclTl>() {
 
-    override fun getKey(): StubIndexKey<String, GdClassDeclTl> = Indices.CLASS_DECL;
+    companion object {
+        val INSTANCE = GdClassDeclIndex()
+    }
 
-    override fun getVersion(): Int = Indices.VERSION;
+    override fun getKey(): StubIndexKey<String, GdClassDeclTl> = Indices.CLASS_DECL
+
+    override fun getVersion(): Int = Indices.VERSION
 
 }

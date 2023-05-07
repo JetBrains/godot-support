@@ -34,7 +34,7 @@ class GdTraitLineMarkerContributor : RelatedItemLineMarkerProvider() {
         val file = text.substring(PREFIX.length).trim();
         val project = element.project;
 
-        val definitons = GdFileResIndex.getFiles("res://$file", project)
+        val definitons = GdFileResIndex.INSTANCE.getFiles("res://$file", project)
             .mapNotNull { it.getPsiFile(project)?.firstChild };
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(

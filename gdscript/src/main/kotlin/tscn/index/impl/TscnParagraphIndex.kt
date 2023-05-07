@@ -5,7 +5,11 @@ import common.index.StringStubIndexExtensionExt
 import tscn.index.TscnIndices
 import tscn.psi.TscnParagraph
 
-object TscnParagraphIndex : StringStubIndexExtensionExt<TscnParagraph>() {
+class TscnParagraphIndex : StringStubIndexExtensionExt<TscnParagraph>() {
+
+    companion object {
+        val INSTANCE = TscnParagraphIndex()
+    }
 
     override fun getKey(): StubIndexKey<String, TscnParagraph> = TscnIndices.PARAGRAPH_INDEX;
 

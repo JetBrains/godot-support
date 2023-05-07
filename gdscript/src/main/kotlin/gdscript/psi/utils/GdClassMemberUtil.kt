@@ -149,12 +149,12 @@ object GdClassMemberUtil {
         if (calledOn == null) {
             val autoloads = ProjectAutoloadUtil.listGlobals(element)
             if (searchFor != null) {
-                val localClass = GdClassNamingIndex.getGlobally(searchFor, element).firstOrNull()
+                val localClass = GdClassNamingIndex.INSTANCE.getGlobally(searchFor, element).firstOrNull()
                 if (localClass != null) return arrayOf(localClass)
                 val autoloaded = autoloads.find { it.key == searchFor }
                 if (autoloaded != null) return arrayOf(autoloaded)
             }
-            result.addAll(GdClassNamingIndex.getAllValues(element.project))
+            result.addAll(GdClassNamingIndex.INSTANCE.getAllValues(element.project))
             result.addAll(autoloads)
         }
 
@@ -463,7 +463,7 @@ object GdClassMemberUtil {
         ).firstOrNull() ?: return true;
         val psiFile = PsiManager.getInstance(element.project).findFile(virtualFile) ?: return true;
 
-        return GdClassVarDeclIndex.get(
+        return GdClassVarDeclIndex.INSTANCE.get(
             name,
             element.project,
             GlobalSearchScope.fileScope(psiFile),

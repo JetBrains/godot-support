@@ -5,10 +5,14 @@ import common.index.StringStubIndexExtensionExt
 import gdscript.index.Indices
 import gdscript.psi.GdStringVal
 
-object GdUserFileIndex : StringStubIndexExtensionExt<GdStringVal>() {
+class GdUserFileIndex : StringStubIndexExtensionExt<GdStringVal>() {
 
-    override fun getKey(): StubIndexKey<String, GdStringVal> = Indices.USER_FILES;
+    companion object {
+        val INSTANCE = GdUserFileIndex()
+    }
 
-    override fun getVersion(): Int = Indices.VERSION;
+    override fun getKey(): StubIndexKey<String, GdStringVal> = Indices.USER_FILES
+
+    override fun getVersion(): Int = Indices.VERSION
 
 }

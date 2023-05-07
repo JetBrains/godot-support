@@ -34,7 +34,7 @@ object TscnResourceUtil {
     fun findTscnByResource(element: PsiElement): TscnResourceHeader? {
         val resource = PsiGdResourceUtil.resourcePath(element.containingFile.originalFile.virtualFile)
 
-        return TscnResourceIndex.getGlobally(resource, element).firstOrNull()
+        return TscnResourceIndex.INSTANCE.getGlobally(resource, element).firstOrNull()
     }
 
     fun findTscnByResources(element: PsiElement): Collection<TscnResourceHeader> {
@@ -44,7 +44,7 @@ object TscnResourceUtil {
     }
 
     fun findTscnByResources(resourcePath: String, project: Project): Collection<TscnResourceHeader> {
-        return TscnResourceIndex.getGlobally(resourcePath, project)
+        return TscnResourceIndex.INSTANCE.getGlobally(resourcePath, project)
     }
 
 }

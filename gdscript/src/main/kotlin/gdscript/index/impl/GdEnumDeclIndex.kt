@@ -5,10 +5,14 @@ import common.index.StringStubIndexExtensionExt
 import gdscript.index.Indices
 import gdscript.psi.GdEnumDeclTl
 
-object GdEnumDeclIndex : StringStubIndexExtensionExt<GdEnumDeclTl>() {
+class GdEnumDeclIndex : StringStubIndexExtensionExt<GdEnumDeclTl>() {
 
-    override fun getKey(): StubIndexKey<String, GdEnumDeclTl> = Indices.ENUM;
+    companion object {
+        val INSTANCE = GdEnumDeclIndex()
+    }
 
-    override fun getVersion(): Int = Indices.VERSION;
+    override fun getKey(): StubIndexKey<String, GdEnumDeclTl> = Indices.ENUM
+
+    override fun getVersion(): Int = Indices.VERSION
 
 }

@@ -86,7 +86,7 @@ object GdNodeUtil {
 
             val instancePath = it.instanceResource
             if (instancePath.isNotBlank()) {
-                val instance = GdFileResIndex.getFiles(instancePath, tscnFile.project).firstOrNull()
+                val instance = GdFileResIndex.INSTANCE.getFiles(instancePath, tscnFile.project).firstOrNull()
                 if (instance != null) {
                     availableNodes(
                         instance.getPsiFile(tscnFile.project)!!,

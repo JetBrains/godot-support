@@ -6,8 +6,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StringStubIndexExtension
-import tscn.index.impl.TscnResourceIndex
-import tscn.psi.TscnResourceHeader
 
 abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexExtension<Psi>() {
 
@@ -22,8 +20,6 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
         return DumbService.getInstance(element.project).runReadActionInSmartMode<Collection<Psi>> {
             get(name, element.project, GlobalSearchScope.allScope(element.project))
         } ?: return emptyList();
-
-        //return get(name, element.project, GlobalSearchScope.allScope(element.project));
     }
 
     fun getGlobally(name: String, project: Project): Collection<Psi> {

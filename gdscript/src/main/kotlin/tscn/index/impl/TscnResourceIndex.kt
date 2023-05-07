@@ -5,7 +5,11 @@ import common.index.StringStubIndexExtensionExt
 import tscn.index.TscnIndices
 import tscn.psi.TscnResourceHeader
 
-object TscnResourceIndex : StringStubIndexExtensionExt<TscnResourceHeader>() {
+class TscnResourceIndex : StringStubIndexExtensionExt<TscnResourceHeader>() {
+
+    companion object {
+        val INSTANCE = TscnResourceIndex()
+    }
 
     override fun getKey(): StubIndexKey<String, TscnResourceHeader> = TscnIndices.RESOURCE_INDEX;
 

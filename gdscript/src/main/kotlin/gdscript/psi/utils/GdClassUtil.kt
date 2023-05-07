@@ -11,7 +11,7 @@ import gdscript.utils.VirtualFileUtil.resourcePath
 object GdClassUtil {
 
     fun getClassIdElement(name: String, project: Project): PsiElement? {
-        return GdClassIdIndex.getGloballyResolved(name, project).firstOrNull();
+        return GdClassIdIndex.INSTANCE.getGloballyResolved(name, project).firstOrNull();
     }
 
     fun getClassIdElement(name: String, element: PsiElement): PsiElement? {

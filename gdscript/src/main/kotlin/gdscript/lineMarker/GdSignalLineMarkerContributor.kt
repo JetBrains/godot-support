@@ -36,9 +36,9 @@ class GdSignalLineMarkerContributor : RelatedItemLineMarkerProvider() {
         if (element.parent !is GdMethodIdNmi) return;
 
         val resource = element.containingFile.virtualFile.resourcePath();
-        val sceneFile = TscnResourceIndex.getGlobally(resource, element).firstOrNull() ?: return;
+        val sceneFile = TscnResourceIndex.INSTANCE.getGlobally(resource, element).firstOrNull() ?: return;
 
-        val connections = TscnConnectionIndex.getInFile(element.text, sceneFile);
+        val connections = TscnConnectionIndex.INSTANCE.getInFile(element.text, sceneFile);
         if (connections.isEmpty()) return;
 
         val nodeMap = hashMapOf<String, TscnNodeHeader>()
@@ -49,9 +49,9 @@ class GdSignalLineMarkerContributor : RelatedItemLineMarkerProvider() {
         val targets = connections.map {
             val node = nodeMap[it.from];
             val resourcePath = node?.scriptResource ?: return@map it;
-            val file = GdFileResIndex.getFiles(resourcePath, element.project).firstOrNull() ?: return@map it;
+            val file = GdFileResIndex.INSTANCE.getFiles(resourcePath, element.project).firstOrNull() ?: return@map it;
             val psiFile = file.getPsiFile(element.project) ?: return@map it;
-            GdSignalDeclIndex.getInFile(it.signal, psiFile).firstOrNull() ?: it
+            GdSignalDeclIndex.INSTANCE.getInFile(it.signal, psiFile).firstOrNull() ?: it
         }
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(

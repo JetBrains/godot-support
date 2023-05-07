@@ -29,7 +29,7 @@ class GdAddTraitAction : SimpleCodeInsightAction() {
 
         val consumer = Consumer { it: GdTraitClass ->
             WriteCommandAction.writeCommandAction(project, file).run<Exception> {
-                val traitFile = GdFileResIndex.getFiles(it.resource, project).firstOrNull() ?: return@run;
+                val traitFile = GdFileResIndex.INSTANCE.getFiles(it.resource, project).firstOrNull() ?: return@run;
 
                 val builder = StringBuilder();
                 builder.appendLine("# Trait ${it.resource.substring("res://".length)}");

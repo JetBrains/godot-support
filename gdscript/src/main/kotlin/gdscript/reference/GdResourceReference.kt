@@ -29,13 +29,13 @@ class GdResourceReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        return GdFileResIndex.getFiles(key.trim('"'), element.project)
+        return GdFileResIndex.INSTANCE.getFiles(key.trim('"'), element.project)
             .firstOrNull()
             ?.getPsiFile(element.project);
     }
 
     override fun getVariants(): Array<LookupElement> {
-        return GdFileResIndex.getNonEmptyKeys(element.project)
+        return GdFileResIndex.INSTANCE.getNonEmptyKeys(element.project)
             .filterGdScripts().map {
                 GdLookup.create(
                     it,

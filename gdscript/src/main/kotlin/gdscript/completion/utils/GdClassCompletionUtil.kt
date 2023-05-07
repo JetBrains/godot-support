@@ -13,7 +13,7 @@ import gdscript.psi.GdClassDeclTl
 object GdClassCompletionUtil {
 
     fun allRootClasses(project: Project): Array<LookupElement> {
-        return GdClassNamingIndex.getNonEmptyKeys(project).map {
+        return GdClassNamingIndex.INSTANCE.getNonEmptyKeys(project).map {
             GdLookup.create(it, priority = GdLookup.USER_DEFINED, icon = GdIcon.getEditorIcon(it))
         }.toTypedArray();
     }

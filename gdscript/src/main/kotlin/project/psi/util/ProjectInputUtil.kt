@@ -8,7 +8,7 @@ import project.psi.ProjectData
 object ProjectInputUtil {
 
     fun listActions(element: PsiElement): Iterable<String> {
-        val section = ProjectSectionIndex.getGlobally(ProjectSectionIndex.INPUT_SECTION, element)
+        val section = ProjectSectionIndex.INSTANCE.getGlobally(ProjectSectionIndex.INPUT_SECTION, element)
             .firstOrNull() ?: return arrayListOf()
         val inputs = PsiTreeUtil.getStubChildrenOfTypeAsList(section, ProjectData::class.java)
 

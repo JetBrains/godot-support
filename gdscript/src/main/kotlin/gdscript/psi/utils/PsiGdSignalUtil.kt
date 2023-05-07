@@ -24,7 +24,7 @@ object PsiGdSignalUtil {
         val signalName = root.text;
         val file = PsiGdExprUtil.getAttrOrCallParentFile(root) ?: element.containingFile;
 
-        return GdSignalDeclIndex
+        return GdSignalDeclIndex.INSTANCE
             .get(signalName, element.project, GlobalSearchScope.fileScope(file))
             .firstOrNull();
     }

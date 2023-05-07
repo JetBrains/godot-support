@@ -45,7 +45,7 @@ object GdInheritanceUtil {
         var parentId = getExtendedClassId(element);
         while (parentId.isNotBlank()) {
             if (parentId == className) return true;
-            val parent = GdClassIdIndex.getGlobally(parentId, element).firstOrNull() ?: return false;
+            val parent = GdClassIdIndex.INSTANCE.getGlobally(parentId, element).firstOrNull() ?: return false;
             parentId = getExtendedClassId(parent);
         }
 
@@ -69,7 +69,7 @@ object GdInheritanceUtil {
         }
 
         // In case of unnamed "res://Item.gd" check for the resource itself
-        val file = GdFileResIndex.getFiles(classId.trim('"'), project).firstOrNull() ?: return null;
+        val file = GdFileResIndex.INSTANCE.getFiles(classId.trim('"'), project).firstOrNull() ?: return null;
 
         return file.getPsiFile(project);
     }

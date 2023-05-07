@@ -8,28 +8,32 @@ import gdscript.index.Indices
 import gdscript.index.impl.utils.GdFileResIndexer
 import gdscript.index.impl.utils.GdFileResInputFilter
 
-object GdFileResIndex : ScalarIndexExtensionExt<String>() {
+class GdFileResIndex : ScalarIndexExtensionExt<String>() {
 
-    override val id: ID<String, Void> = Indices.FILE_RES;
+    companion object {
+        val INSTANCE = GdFileResIndex()
+    }
+
+    override val id: ID<String, Void> = Indices.FILE_RES
 
     override fun getIndexer(): DataIndexer<String, Void, FileContent> {
-        return GdFileResIndexer;
+        return GdFileResIndexer
     }
 
     override fun getKeyDescriptor(): KeyDescriptor<String> {
-        return EnumeratorStringDescriptor.INSTANCE;
+        return EnumeratorStringDescriptor.INSTANCE
     }
 
     override fun getVersion(): Int {
-        return Indices.VERSION;
+        return Indices.VERSION
     }
 
     override fun getInputFilter(): FileBasedIndex.InputFilter {
-        return GdFileResInputFilter;
+        return GdFileResInputFilter
     }
 
     override fun dependsOnFileContent(): Boolean {
-        return false;
+        return false
     }
 
 }

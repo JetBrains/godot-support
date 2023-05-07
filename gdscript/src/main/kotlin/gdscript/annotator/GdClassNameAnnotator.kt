@@ -40,7 +40,7 @@ class GdClassNameAnnotator : Annotator {
     private fun existingInheritance(element: GdInheritanceId, holder: AnnotationHolder) {
         if (GdClassUtil.getClassIdElement(element.text, element) == null
             // File index when you are extending script without class_name
-            && GdFileResIndex.getFiles(element.text.trim('"'), element.project).isEmpty()
+            && GdFileResIndex.INSTANCE.getFiles(element.text.trim('"'), element.project).isEmpty()
         ) {
             // Last case is extending InnerClass within same file which does not require FQN
             // and can directly use any at lower level
@@ -70,11 +70,11 @@ class GdClassNameAnnotator : Annotator {
         val name = element.name
         var message = "Class defined in global scope"
 
-        var conflict = GdClassNamingIndex.getGloballyWithoutSelf(element).isNotEmpty()
+        var conflict = GdClassNamingIndex.INSTANCE.getGloballyWithoutSelf(element).isNotEmpty()
 
         if (element.isInner) {
             // Inner class can conflict with local main class
-            conflict = conflict || GdClassNamingIndex.getInFile(element).isNotEmpty()
+            conflict = conflict || GdClassNamingIndex.INSTANCE.getInFile(element).isNotEmpty()
 
             // Or with previously defined at the same level
             var prev = element.parent.prevSibling

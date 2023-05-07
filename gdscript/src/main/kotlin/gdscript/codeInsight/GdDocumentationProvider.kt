@@ -62,8 +62,8 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
                 return GdClassMemberReference.resolveId(it)
             }
         }
-        GdClassIdIndex.getGloballyResolved(link, project).firstOrNull()?.let { return it }
-        GdFileResIndex.getFiles(link.trim('"'), project).firstOrNull()?.let { return it.getPsiFile(project) }
+        GdClassIdIndex.INSTANCE.getGloballyResolved(link, project).firstOrNull()?.let { return it }
+        GdFileResIndex.INSTANCE.getFiles(link.trim('"'), project).firstOrNull()?.let { return it.getPsiFile(project) }
 
         return null
     }

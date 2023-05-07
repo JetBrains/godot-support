@@ -53,7 +53,7 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
             source = editor.document.getText(TextRange.create(header.endOffset, footer.startOffset-1));
 
             val traitFile = header.text.substring(GdTraitLineMarkerContributor.PREFIX.length).trim();
-            sourceFile = GdFileResIndex.getFiles("res://$traitFile", project)
+            sourceFile = GdFileResIndex.INSTANCE.getFiles("res://$traitFile", project)
                 .firstOrNull() ?: return;
         }
 

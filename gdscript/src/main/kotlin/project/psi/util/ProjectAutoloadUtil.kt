@@ -16,7 +16,7 @@ object ProjectAutoloadUtil {
             var path = it.value
             if (path.startsWith("\"*")) {
                 path = path.substring(2, path.length - 1)
-                val resource = GdFileResIndex.getFiles(path, element.project).firstOrNull()
+                val resource = GdFileResIndex.INSTANCE.getFiles(path, element.project).firstOrNull()
                 val file = resource?.getPsiFile(element.project)
                 if (file != null) GdAutoload(it.key, file)
                 else null
@@ -32,7 +32,7 @@ object ProjectAutoloadUtil {
         var path = all(element).find { it.value == globalName }?.value ?: return null
         path = path.substring(2, path.length - 1)
 
-        return GdFileResIndex.getFiles(path, project).firstOrNull()?.getPsiFile(project)
+        return GdFileResIndex.INSTANCE.getFiles(path, project).firstOrNull()?.getPsiFile(project)
     }
 
     fun findFromAlias(name: String, element: PsiElement): PsiFile? {
@@ -40,11 +40,11 @@ object ProjectAutoloadUtil {
         var path = all(element).find { it.key == name }?.value ?: return null
         path = path.substring(2, path.length - 1)
 
-        return GdFileResIndex.getFiles(path, project).firstOrNull()?.getPsiFile(project)
+        return GdFileResIndex.INSTANCE.getFiles(path, project).firstOrNull()?.getPsiFile(project)
     }
 
     private fun all(element: PsiElement): List<ProjectData> {
-        val section = ProjectSectionIndex.getGlobally(ProjectSectionIndex.AUTOLOAD_SECTION, element)
+        val section = ProjectSectionIndex.INSTANCE.getGlobally(ProjectSectionIndex.AUTOLOAD_SECTION, element)
             .firstOrNull() ?: return emptyList()
         return PsiTreeUtil.getStubChildrenOfTypeAsList(section, ProjectData::class.java)
     }

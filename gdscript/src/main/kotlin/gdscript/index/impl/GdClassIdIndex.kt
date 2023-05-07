@@ -11,13 +11,16 @@ import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdClassNaming
 import gdscript.psi.utils.PsiGdResourceUtil
 import gdscript.utils.VirtualFileUtil.getPsiFile
-import gdscript.utils.VirtualFileUtil.localPath
 
-object GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
+class GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
 
-    override fun getKey(): StubIndexKey<String, GdClassNameNmi> = Indices.CLASS_NAME_ID;
+    companion object {
+        val INSTANCE = GdClassIdIndex()
+    }
 
-    override fun getVersion(): Int = Indices.VERSION;
+    override fun getKey(): StubIndexKey<String, GdClassNameNmi> = Indices.CLASS_NAME_ID
+
+    override fun getVersion(): Int = Indices.VERSION
 
     fun getGloballyResolved(name: String, project: Project): Collection<GdClassNameNmi> {
         if (DumbService.isDumb(project)) return emptyList()
@@ -29,7 +32,7 @@ object GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
             // Try resource to class_name
             val endIndex = name.indexOf('"', 1)
             val resource = name.substring(1, endIndex)
-            val resourceFile = GdFileResIndex.getFiles(resource, project).firstOrNull() ?: return emptyList()
+            val resourceFile = GdFileResIndex.INSTANCE.getFiles(resource, project).firstOrNull() ?: return emptyList()
             val psiFile = resourceFile.getPsiFile(project)
             modified = PsiTreeUtil.getStubChildOfType(psiFile, GdClassNaming::class.java)?.classname.orEmpty()
 
@@ -40,7 +43,7 @@ object GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
             // Try class_name to resource
             val classes = name.split('.').toMutableList()
             val rootClass = classes.firstOrNull() ?: return emptyList()
-            val cln = GdClassNamingIndex.getGlobally(rootClass, project).firstOrNull() ?: return emptyList()
+            val cln = GdClassNamingIndex.INSTANCE.getGlobally(rootClass, project).firstOrNull() ?: return emptyList()
 
             val resource = PsiGdResourceUtil.resourcePath(cln.containingFile.virtualFile)
             classes[0] = "\"$resource\""

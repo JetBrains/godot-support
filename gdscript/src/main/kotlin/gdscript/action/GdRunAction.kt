@@ -38,7 +38,7 @@ class GdRunAction : RunAnythingAction {
     }
 
     private fun getName(): String {
-        val className = GdClassNamingIndex.getInFile(element).firstOrNull();
+        val className = GdClassNamingIndex.INSTANCE.getInFile(element).firstOrNull();
         if (className != null) {
             return className.classname;
         }
@@ -61,7 +61,7 @@ class GdRunAction : RunAnythingAction {
         val current = GdRunConfiguration(element.project, GdConfigurationFactory, name);
 
         val filename = PsiGdFileUtil.filepath(element);
-        val script = TscnResourceIndex.get("${GdKeywords.RESOURCE_PREFIX}$filename", element.project, GlobalSearchScope.allScope(element.project))
+        val script = TscnResourceIndex.INSTANCE.get("${GdKeywords.RESOURCE_PREFIX}$filename", element.project, GlobalSearchScope.allScope(element.project))
             .firstOrNull() ?: return null;
 
         current.setTscn(PsiGdFileUtil.filepath(script.containingFile));
