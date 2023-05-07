@@ -80,6 +80,12 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdSignalIdNmi::class.java)!!.firstChild
     }
 
+    fun typeHintNm(project: Project, name: String): PsiElement {
+        val file = createFile(project, "extends Node\nvar variable: $name\n")
+
+        return PsiTreeUtil.findChildOfType(file, GdTypeHintNm::class.java)!!
+    }
+
     fun typed(project: Project, type: String): PsiElement {
         val file = createFile(project, "extends Node\nvar variable: $type\n")
 

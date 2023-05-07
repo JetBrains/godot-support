@@ -30,6 +30,7 @@
     <lang.refactoringSupport language="GdScript" implementationClass="gdscript.psi.GdRefactoringSupportProvider" />
     <colorProvider implementation="gdscript.lineMarker.GdColorProvider" />
     <library.type implementation="gdscript.library.GdLibraryType" />
+    <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor" />
 
     <!-- settings -->
     <projectService serviceImplementation="gdscript.settings.GdProjectSettingsState" />
@@ -89,7 +90,7 @@
                      implementationClass="gdscript.inspection.GdTypeHintInspection"/>
 
     <!-- Indices -->
-    <stubElementTypeHolder class="gdscript.psi.GdTypes" />
+    <stubElementTypeHolder class="gdscript.psi.GdTypes" externalIdPrefix="gd."/>
     <stubIndex implementation="gdscript.index.impl.GdClassIdIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassDeclIndex" />
@@ -111,16 +112,19 @@
 
     <!-- Actions -->
     <intentionAction>
+      <language>GdScript</language>
       <className>gdscript.action.GdRemoveSetGetAction</className>
       <bundleName>messages.gdscript</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
+      <language>GdScript</language>
       <className>gdscript.action.GdPropageTraitChangesAction</className>
       <bundleName>messages.gdscript</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
+      <language>GdScript</language>
       <className>gdscript.action.GdRemoveElementAction</className>
       <bundleName>messages.gdscript</bundleName>
       <categoryKey>intention.category</categoryKey>
