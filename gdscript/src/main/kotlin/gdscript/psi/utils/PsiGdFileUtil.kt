@@ -7,24 +7,24 @@ import java.io.File
 object PsiGdFileUtil {
 
     fun filename(file: PsiFile): String {
-        val name = file.name;
+        val name = file.name
 
-        return name.substring(0, name.length - 3);
+        return name.substring(0, name.length - 3)
     }
 
     @Deprecated("resource util?")
     fun filepath(element: PsiElement): String {
-        val basePath = element.project.basePath ?: return "";
-        val file = element.containingFile.originalFile;
-        val directory = file.containingDirectory?.toString()?.removePrefix("PsiDirectory:") ?: return "";
+        val basePath = element.project.basePath ?: return ""
+        val file = element.containingFile.originalFile
+        val directory = file.containingDirectory?.toString()?.removePrefix("PsiDirectory:") ?: return ""
 
-        var d = "";
+        var d = ""
         if (directory.length > basePath.length) {
-            d = directory.substring(basePath.length + 1) + File.separator;
+            d = directory.substring(basePath.length + 1) + File.separator
         }
-        val path = "$d${file.name}";
+        val path = "$d${file.name}"
 
-        return path.replace(File.separator, "/");
+        return path.replace(File.separator, "/")
     }
 
 }

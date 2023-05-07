@@ -10,7 +10,7 @@ import gdscript.utils.VirtualFileUtil.getPsiFile
 object PsiGdInheritanceUtil {
 
     fun isClassName(inheritance: GdInheritanceIdNm): Boolean {
-        return inheritance.firstChild.elementType == GdTypes.IDENTIFIER;
+        return inheritance.firstChild.elementType == GdTypes.IDENTIFIER
     }
 
     fun getPsiFile(inheritance: GdInheritanceIdNm): PsiFile? {

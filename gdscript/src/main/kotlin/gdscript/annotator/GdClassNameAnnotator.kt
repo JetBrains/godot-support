@@ -26,13 +26,13 @@ class GdClassNameAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
-            is GdInheritanceId -> existingInheritance(element, holder);
-            is GdInheritanceIdNm -> colorInheritance(element, holder);
-            is GdInheritanceSubIdNm -> colorClass(element, holder);
+            is GdInheritanceId -> existingInheritance(element, holder)
+            is GdInheritanceIdNm -> colorInheritance(element, holder)
+            is GdInheritanceSubIdNm -> colorClass(element, holder)
             is GdClassNameNmi -> {
-                alreadyExists(element, holder);
-                classNameToFilename(element, holder);
-                resourceHasNoInnerClass(element, holder);
+                alreadyExists(element, holder)
+                classNameToFilename(element, holder)
+                resourceHasNoInnerClass(element, holder)
             }
         }
     }
@@ -48,13 +48,13 @@ class GdClassNameAnnotator : Annotator {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Class not found")
                 .range(element.textRange)
-                .create();
+                .create()
         }
     }
 
     private fun colorInheritance(element: GdInheritanceIdNm, holder: AnnotationHolder) {
         if (element.isClassName) {
-            colorClass(element, holder);
+            colorClass(element, holder)
         }
     }
 

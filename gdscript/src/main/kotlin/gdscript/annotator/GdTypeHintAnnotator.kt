@@ -17,8 +17,8 @@ class GdTypeHintAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
-            is GdTypeHint -> existingType(element, holder);
-            is GdTypeHintNm -> colorType(element, holder);
+            is GdTypeHint -> existingType(element, holder)
+            is GdTypeHintNm -> colorType(element, holder)
         }
     }
 
@@ -32,18 +32,18 @@ class GdTypeHintAnnotator : Annotator {
     }
 
     private fun colorType(element: GdTypeHintNm, holder: AnnotationHolder) {
-        val name = element.text;
+        val name = element.text
 
-        var color = GdHighlighterColors.CLASS_TYPE;
+        var color = GdHighlighterColors.CLASS_TYPE
         if (GdKeywords.BUILT_TYPES.contains(name) || name == GdKeywords.VOID) {
-            color = GdHighlighterColors.KEYWORD;
+            color = GdHighlighterColors.KEYWORD
         }
 
         holder
             .newSilentAnnotation(HighlightSeverity.INFORMATION)
             .range(element.textRange)
             .textAttributes(color)
-            .create();
+            .create()
     }
 
 }

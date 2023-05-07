@@ -17,15 +17,6 @@ object PsiGdClassUtil {
         return element.parent is GdClassDeclTl;
     }
 
-    @Deprecated("getParentClassElement")
-    fun getParentContainer(element: PsiElement): PsiElement {
-        if (element is GdClassDeclTl) {
-            return element;
-        }
-
-        return PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassDeclTl::class.java) ?: element.containingFile;
-    }
-
     /**
      * Returns one of: GdClassDecl, GdClassNaming, GdFile
      */
@@ -35,15 +26,6 @@ object PsiGdClassUtil {
 
         return PsiTreeUtil.getStubChildOfType(element.containingFile, GdClassNaming::class.java)
             ?: element.containingFile;
-    }
-
-    fun getClass(element: PsiElement): String? {
-        val container = getParentContainer(element);
-        if (container is GdClassDeclTl) {
-            return container.classNameNmi?.name;
-        }
-
-        return PsiTreeUtil.getStubChildOfType(element, GdClassNaming::class.java)?.classname;
     }
 
 }

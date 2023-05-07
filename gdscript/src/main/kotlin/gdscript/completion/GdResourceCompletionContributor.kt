@@ -22,7 +22,7 @@ class GdResourceCompletionContributor : CompletionContributor() {
     val STRING = psiElement(GdTypes.STRING);
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
-        val position = parameters.position;
+        val position = parameters.position
         if (GdRefIdCompletionUtil.DIRECT_REF.accepts(position)) {
             GdNodeUtil.listNodes(position).forEach { result.addElement(it.lookup()) }
         } else if (NODE_PATH_ROOT.accepts(position)) {
@@ -34,7 +34,7 @@ class GdResourceCompletionContributor : CompletionContributor() {
                 GdNodeUtil.listNodes(position).forEach { result.addElement(it.lookup()) }
             }
         } else if (STRING.accepts(position)) {
-            GdFileResIndex.INSTANCE.getNonEmptyKeys(position.project).forEach {
+            GdFileResIndex.INSTANCE.getNonEmptyKeys(position).forEach {
                 result.addElement(
                     GdLookup.create(
                         it,

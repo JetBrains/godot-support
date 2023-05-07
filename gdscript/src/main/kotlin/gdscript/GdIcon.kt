@@ -8,15 +8,13 @@ object GdIcon {
     val FILE = IconLoader.getIcon("icons/file.png", GdIcon::class.java)
 
     // Godot editor icons
-    @Deprecated("")
-    val OBJECT = IconLoader.getIcon("icons/godot_editor/Object.svg", GdIcon::class.java)
-
     const val METHOD_MARKER = "MemberMethod"
     const val VAR_MARKER = "MemberProperty"
     const val CONST_MARKER = "MemberConstant"
     const val ENUM_MARKER = "Enum"
     const val SIGNAL_MARKER = "MemberSignal"
 
+    const val OBJECT = "Object"
     const val SIGNAL = "Signal"
     const val SLOT = "Slot"
     const val LINK = "LinkButton"
@@ -25,9 +23,9 @@ object GdIcon {
     const val STRING = "String"
     const val OVERRIDE = "MethodOverride"
 
-    var editorIcons = HashMap<String, Icon>()
+    private var editorIcons = HashMap<String, Icon>()
 
-    fun getEditorIcon(className: String): Icon? {
+    fun getEditorIcon(className: String): Icon {
         val icon = editorIcons[className]
         if (icon == null) {
             try {
@@ -39,12 +37,21 @@ object GdIcon {
                     loaded = IconUtil.toSize(loaded, 16, 16)
                     editorIcons[className] = loaded
                 } else {
-                    editorIcons[className] = OBJECT
+                    editorIcons[className] = backupIcon()
                 }
             } catch (e: Exception) {
-                editorIcons[className] = OBJECT
+                editorIcons[className] = backupIcon()
             }
         }
-        return editorIcons[className]
+
+        return editorIcons[className]!!
+    }
+
+    private fun backupIcon(): Icon {
+        return try {
+            IconLoader.getIcon("icons/godot_editor/Object.svg", GdIcon::class.java)
+        } catch (e: Exception) {
+            FILE
+        }
     }
 }

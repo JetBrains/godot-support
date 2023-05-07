@@ -34,7 +34,7 @@ object GdCommonUtil {
                 is GdRefIdNm -> GdElementFactory.refIdNm(element.project, newName)
                 is GdSetMethodIdNm -> GdElementFactory.setMethodIdNm(element.project, newName)
                 is GdSignalIdNmi -> GdElementFactory.signalIdNmi(element.project, newName)
-                is GdTypeHintNm -> GdElementFactory.typeHintNm(element.project, newName)
+                is GdTypeHintNm -> GdElementFactory.typed(element.project, newName)
                 is GdVarNmi -> GdElementFactory.varNmi(element.project, newName)
                 else -> return element
             }

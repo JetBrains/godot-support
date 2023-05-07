@@ -3,6 +3,7 @@ package common.index
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.util.indexing.FileBasedIndex
 import com.intellij.util.indexing.ID
@@ -18,34 +19,22 @@ abstract class ScalarIndexExtensionExt<K : Any> : ScalarIndexExtension<K>() {
         return FileBasedIndex.getInstance().getContainingFiles(id, key, GlobalSearchScope.allScope(project));
     }
 
+    fun getNonEmptyKeys(element: PsiElement): List<K> {
+        return getNonEmptyKeys(element.project)
+    }
+
     fun getNonEmptyKeys(project: Project): List<K> {
         val inst = FileBasedIndex.getInstance()
         val scope = GlobalSearchScope.allScope(project)
 
         return inst.getAllKeys(id, project).mapNotNull {
-            if (inst.getContainingFiles(id, it, scope).isNotEmpty()) {
-                it
-            } else {
-                null
-            }
+            if (inst.getContainingFiles(id, it, scope).isNotEmpty()) it
+            else null
         }
     }
 
     override fun getName(): ID<K, Void> {
         return id
-    }
-
-    companion object {
-        fun <K : Any> getNonEmptyKeys(id: ID<K, Void>, project: Project): List<K> {
-            val instance = FileBasedIndex.getInstance()
-            val scope = GlobalSearchScope.allScope(project)
-
-            return instance.getAllKeys(id, project).mapNotNull {
-                if (instance.getContainingFiles(id, it, scope).isNotEmpty())
-                    it
-                else null
-            }
-        }
     }
 
 }

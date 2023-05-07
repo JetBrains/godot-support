@@ -6,13 +6,11 @@ import com.intellij.openapi.vfs.findDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import gdscript.codeInsight.documentation.GdDocFactory
-import gdscript.index.impl.GdClassIdIndex
-import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdClassUtil
 import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiElementUtil.psi
-import gdscript.utils.VirtualFileUtil.getPsiFile
 
 class GdDocumentationProvider : AbstractDocumentationProvider() {
 
@@ -62,15 +60,9 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
                 return GdClassMemberReference.resolveId(it)
             }
         }
-        GdClassIdIndex.INSTANCE.getGloballyResolved(link, project).firstOrNull()?.let { return it }
-        GdFileResIndex.INSTANCE.getFiles(link.trim('"'), project).firstOrNull()?.let { return it.getPsiFile(project) }
+        GdClassUtil.getClassIdElement(link, project)?.let { return it }
 
         return null
     }
-
-    // TODO ctrl hover nad referencí
-//    override fun getQuickNavigateInfo(element: PsiElement?, originalElement: PsiElement?): String? {
-//        return super.getQuickNavigateInfo(element, originalElement)
-//    }
 
 }

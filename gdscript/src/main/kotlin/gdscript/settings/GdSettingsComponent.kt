@@ -49,11 +49,6 @@ class GdSettingsComponent(val project: Project) {
 
     fun preferredFocusedComponent(): JComponent = hidePrivateCheck
 
-    @Deprecated("smazat")
-    fun setupLibrary() {
-        GdLibraryManager.setUpLibrary(project, sdkPath ?: "")
-    }
-
     var hidePrivate: Boolean
         get() = hidePrivateCheck.isSelected
         set(newStatus) {

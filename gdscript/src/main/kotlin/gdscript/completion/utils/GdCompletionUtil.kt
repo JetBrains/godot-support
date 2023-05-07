@@ -15,23 +15,23 @@ object GdCompletionUtil {
 
     fun lookups(element: Any): Array<LookupElement> {
         return when (element) {
-            is GdClassDeclTl -> arrayOf(element.lookup());
-            is GdClassNaming -> arrayOf(lookup(element));
-            is GdClassVarDeclTl -> arrayOf(lookup(element));
-            is GdVarDeclSt -> arrayOf(lookup(element));
-            is GdConstDeclTl -> arrayOf(lookup(element));
-            is GdConstDeclSt -> arrayOf(lookup(element));
-            is GdEnumDeclTl -> lookup(element);
-            is GdEnumValue -> arrayOf(GdEnumCompletionUtil.lookup(element));
-            is GdMethodDeclTl -> arrayOf(lookup(element));
-            is GdForSt -> arrayOf(lookup(element));
-            is GdParam -> arrayOf(lookup(element));
-            is GdSetDecl -> arrayOf(lookup(element));
-            is GdBindingPattern -> arrayOf(lookup(element));
-            is GdSignalDeclTl -> arrayOf(lookup(element));
-            is GdVarNmi -> arrayOf(lookup(element));
-            is GdAutoload -> arrayOf(lookup(element));
-            else -> emptyArray();
+            is GdClassDeclTl -> arrayOf(element.lookup())
+            is GdClassNaming -> arrayOf(lookup(element))
+            is GdClassVarDeclTl -> arrayOf(lookup(element))
+            is GdVarDeclSt -> arrayOf(lookup(element))
+            is GdConstDeclTl -> arrayOf(lookup(element))
+            is GdConstDeclSt -> arrayOf(lookup(element))
+            is GdEnumDeclTl -> lookup(element)
+            is GdEnumValue -> arrayOf(GdEnumCompletionUtil.lookup(element))
+            is GdMethodDeclTl -> arrayOf(lookup(element))
+            is GdForSt -> arrayOf(lookup(element))
+            is GdParam -> arrayOf(lookup(element))
+            is GdSetDecl -> arrayOf(lookup(element))
+            is GdBindingPattern -> arrayOf(lookup(element))
+            is GdSignalDeclTl -> arrayOf(lookup(element))
+            is GdVarNmi -> arrayOf(lookup(element))
+            is GdAutoload -> arrayOf(lookup(element))
+            else -> emptyArray()
         }
     }
 
@@ -161,7 +161,7 @@ object GdCompletionUtil {
         GdLookup.create(
             file.key,
             priority = GdLookup.REMOTE_DEFINED,
-            icon = GdIcon.OBJECT,
+            icon = GdIcon.getEditorIcon(GdIcon.OBJECT),
         )
 
 }

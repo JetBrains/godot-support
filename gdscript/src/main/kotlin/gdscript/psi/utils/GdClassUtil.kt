@@ -4,18 +4,21 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdClassIdIndex
+import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.*
-import gdscript.utils.VirtualFileUtil.localPath
+import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
 
 object GdClassUtil {
 
     fun getClassIdElement(name: String, project: Project): PsiElement? {
-        return GdClassIdIndex.INSTANCE.getGloballyResolved(name, project).firstOrNull();
+        return GdClassIdIndex.INSTANCE.getGloballyResolved(name, project).firstOrNull()
+            ?: GdFileResIndex.INSTANCE.getFiles(name.trim('"'), project).firstOrNull()
+                ?.let { return it.getPsiFile(project) }
     }
 
     fun getClassIdElement(name: String, element: PsiElement): PsiElement? {
-        return getClassIdElement(name, element.project);
+        return getClassIdElement(name, element.project)
     }
 
     /**
@@ -24,7 +27,7 @@ object GdClassUtil {
      * @return String owning className (resource if not named)
      */
     fun getOwningClassName(element: PsiElement): String {
-        return when(val it = getOwningClassElement(element)) {
+        return when (val it = getOwningClassElement(element)) {
             is GdClassDeclTl -> it.name;
             else -> {
                 val cln = PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java);
@@ -52,6 +55,7 @@ object GdClassUtil {
                     "\"${PsiGdResourceUtil.resourcePath(file)}\""
                 }
             }
+
             else -> getFullClassId(getOwningClassElement(element))
         }
     }
