@@ -26,7 +26,6 @@ class GdFileAutomaticRenamerFactory : AutomaticRenamerFactory {
     }
 
     override fun setEnabled(enabled: Boolean) {
-        // TODO
     }
 
     override fun createRenamer(
