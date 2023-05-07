@@ -11,8 +11,6 @@ Please follow installation instructions
 2. Restart the IDE, due to unknown reasons, some parts like Highlighting is not working right after installation
 3. Download an SDK from Language settings (since v1.1.0)
    ![](./screens/download_sdk.png)
-4. Within Settings -> Languages & Frameworks -> GdScript add extracted folder into GdScript SDK field
-   - SDK is rebuilt daily from current Godot master so after new Godot release, download new SDK as well
 
 ## Plugin settings:
 - In order to dedent on backspace instead of deleting a line, you can change editor's settings under:  
