@@ -9,21 +9,6 @@ import gdscript.structureView.GdPresentationUtil
 
 object GdPsiUtils {
 
-    @Deprecated("TODO move to common")
-    fun returnType(element: PsiElement?): String {
-        return when(element) {
-            is GdConstDeclTl -> element.returnType
-            is GdClassVarDeclTl -> element.returnType
-            is GdVarDeclSt -> element.returnType
-            is GdConstDeclSt -> element.returnType
-            is GdMethodDeclTl -> element.returnType
-            is GdExpr -> element.returnType
-            else -> ""
-        }
-    }
-
-    // TODO projít vše, co není z elementType? a překopat
-
     /** ClassName  */
     @JvmStatic fun getClassname(element: GdClassNaming): String = GdClassNamingElementType.getClassname(element)
     @JvmStatic fun getParentName(element: GdClassNaming): String = GdClassNamingElementType.getParentName(element)
@@ -98,7 +83,6 @@ object GdPsiUtils {
     /** Expressions */
     @JvmStatic fun getReturnType(element: GdExpr): String = PsiGdExprUtil.getReturnType(element)
     @JvmStatic fun getReturnType(element: GdArgExpr): String = PsiGdExprUtil.getReturnType(element.expr)
-    @JvmStatic fun getReturnExpr(element: GdExpr): PsiElement? = GdExprUtil.getReturnType(element)
 
     /** Lambdas */
     @JvmStatic fun getReturnType(element: GdFuncDeclEx): String = PsiGdLocalFuncUtil.getReturnType(element)

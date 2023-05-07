@@ -17,20 +17,20 @@ object PsiGdExprUtil {
 
     fun getReturnType(expr: GdExpr): String {
         return when (expr) {
-            is GdFuncDeclEx -> GdKeywords.CALLABLE;
-            is GdPlusMinusEx -> expr.expr.returnType;
-            is GdCastEx -> fromTyped(expr.typedVal);
+            is GdFuncDeclEx -> GdKeywords.CALLABLE
+            is GdPlusMinusEx -> expr.expr.returnType
+            is GdCastEx -> fromTyped(expr.typedVal)
             is GdTernaryEx -> {
-                val a = expr.exprList.getOrNull(0)?.returnType ?: "";
-                val b = expr.exprList.getOrNull(2)?.returnType ?: "";
+                val a = expr.exprList.getOrNull(0)?.returnType ?: ""
+                val b = expr.exprList.getOrNull(2)?.returnType ?: ""
 
-                return if (a == b) a else "";
-            };
-            is GdLogicEx -> GdKeywords.BOOL;
-            is GdNegateEx -> GdKeywords.BOOL;
-            is GdInEx -> GdKeywords.BOOL;
-            is GdShiftEx -> GdKeywords.INT;
-            is GdBitAndEx -> GdKeywords.INT;
+                return if (a == b) a else ""
+            }
+            is GdLogicEx -> GdKeywords.BOOL
+            is GdNegateEx -> GdKeywords.BOOL
+            is GdInEx -> GdKeywords.BOOL
+            is GdShiftEx -> GdKeywords.INT
+            is GdBitAndEx -> GdKeywords.INT
             is GdComparisonEx -> GdOperand.getReturnType(
                 expr.exprList.left(), expr.exprList.right(), expr.operator.text,
             )
@@ -41,14 +41,14 @@ object PsiGdExprUtil {
                 expr.exprList.left(), expr.exprList.right(), expr.factorSign.text,
             )
             is GdSignEx -> expr.expr?.returnType ?: ""
-            is GdBitNotEx -> GdKeywords.INT;
-            is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT;
-            is GdAttributeEx -> expr.exprList.lastOrNull()?.returnType ?: "";
+            is GdBitNotEx -> GdKeywords.INT
+            is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT
+            is GdAttributeEx -> expr.exprList.lastOrNull()?.returnType ?: ""
             is GdIsEx -> fromTyped(expr.typedVal)
             is GdCallEx -> {
                 if (expr.text == "new()") { // TODO může to mít params?
                     if (expr.parent is GdAttributeEx) {
-                        GdPsiUtils.returnType(expr.parent.firstChild);
+                        GdCommonUtil.returnType(expr.parent.firstChild)
                     } else {
                         ""
                     }
@@ -61,8 +61,6 @@ object PsiGdExprUtil {
                         return "Array[Variant]"
                     } else if (method == "instantiate") {
                         return GdKeywords.VARIANT
-//                    } else if (method == "get_viewport") {
-//                        return "SubViewport"
                     } else if (method == "get_child") {
                         return "Node"
                     } else if (method == "get_parent") {
@@ -86,7 +84,7 @@ object PsiGdExprUtil {
 
                         return node?.element?.type ?: ""
                     }
-                    is GdDictDecl -> return "Dictionary";
+                    is GdDictDecl -> return "Dictionary"
                     is GdArrayDecl -> {
 //                        var type = ""
 //                        expr.arrayDecl?.exprList?.forEach {
@@ -105,53 +103,53 @@ object PsiGdExprUtil {
 
                         return "Array[Variant]"
                     }
-                    else -> expr.expr?.returnType ?: "";
+                    else -> expr.expr?.returnType ?: ""
                 }
-            };
+            }
             is GdLiteralEx -> {
-                val text = expr.text;
+                val text = expr.text
                 when (text) {
-                    GdKeywords.TRUE -> return GdKeywords.BOOL;
-                    GdKeywords.FALSE -> return GdKeywords.BOOL;
-                    GdKeywords.NULL -> return GdKeywords.NULL;
-                    GdKeywords.NAN -> return "inf";
-                    GdKeywords.INF -> return "nan";
+                    GdKeywords.TRUE -> return GdKeywords.BOOL
+                    GdKeywords.FALSE -> return GdKeywords.BOOL
+                    GdKeywords.NULL -> return GdKeywords.NULL
+                    GdKeywords.NAN -> return "inf"
+                    GdKeywords.INF -> return "nan"
                 }
 
-                val elementType = expr.firstChild?.elementType;
+                val elementType = expr.firstChild?.elementType
                 if (elementType == GdTypes.NUMBER) {
                     if (text.startsWith("0b")) {
-                        return GdKeywords.INT;
+                        return GdKeywords.INT
                     } else if (text.startsWith("0x")) {
-                        return GdKeywords.INT;
+                        return GdKeywords.INT
                     } else if (text.contains('e') || text.contains('.')) {
-                        return GdKeywords.FLOAT;
+                        return GdKeywords.FLOAT
                     }
 
-                    return GdKeywords.INT;
+                    return GdKeywords.INT
                 } else if (elementType == GdTypes.STRING_VAL) {
-                    return GdKeywords.STR;
+                    return GdKeywords.STR
                 } else if (elementType == GdTypes.STRING) {
-                    return GdKeywords.STR;
+                    return GdKeywords.STR
                 } else if (elementType == GdTypes.STRING_NAME) {
-                    return GdKeywords.STR_NAME;
+                    return GdKeywords.STR_NAME
                 } else if (elementType == GdTypes.NODE_PATH) {
-                    return GdKeywords.STR;
+                    return GdKeywords.STR
                 } else if (elementType == GdTypes.NODE_PATH_LIT) {
-                    return GdKeywords.NODE_PATH;
+                    return GdKeywords.NODE_PATH
                 } else if (elementType == GdTypes.REF_ID_NM) {
                     if (text == GdKeywords.SELF) {
                         return GdClassUtil.getOwningClassName(expr)
                     } else if (text == GdKeywords.SUPER) {
                         // TODO tohle může vrátit zanoření... :/ Losos.InnerClass -> nějak se to musí vyparsovat
-                        return GdInheritanceUtil.getExtendedClassId(expr);
+                        return GdInheritanceUtil.getExtendedClassId(expr)
                     }
 
                     if (DumbService.isDumb(expr.project)) {
-                        return "";
+                        return ""
                     }
 
-                    val named: GdNamedElement = expr.refIdNm ?: return "";
+                    val named: GdNamedElement = expr.refIdNm ?: return ""
                     return when (val element =
                         GdClassMemberUtil.findDeclaration(named)) {
                         is GdClassVarDeclTl -> element.returnType
@@ -176,7 +174,7 @@ object PsiGdExprUtil {
     }
 
     fun fromTyped(typed: GdTyped?): String {
-        return typed?.text?.trim(':', ' ') ?: "";
+        return typed?.text?.trim(':', ' ') ?: ""
     }
 
     fun getAttrOrCallParentClass(element: PsiElement): String? {
@@ -184,45 +182,45 @@ object PsiGdExprUtil {
             && element.parent != null
             && element.parent is GdLiteralEx
         ) {
-            val root = element.parent.parent ?: return null;
+            val root = element.parent.parent ?: return null
             if (root is GdAttributeEx && element.parent.prevSibling != null) {
-                return GdPsiUtils.returnType(root.firstChild);
+                return GdCommonUtil.returnType(root.firstChild)
             }
             if (root is GdCallEx && root.prevSibling != null && root.parent is GdAttributeEx) {
-                return GdPsiUtils.returnType(root.parent.firstChild);
+                return GdCommonUtil.returnType(root.parent.firstChild)
             }
         }
 
-        return null;
+        return null
     }
 
     fun getAttrOrCallParentFile(element: PsiElement): PsiFile? {
-        var className = getAttrOrCallParentClass(element) ?: return null;
+        var className = getAttrOrCallParentClass(element) ?: return null
         if (className.startsWith("Array")) {
-            className = "Array";
+            className = "Array"
         }
 
         return GdClassNamingIndex.INSTANCE.get(className, element.project, GlobalSearchScope.allScope(element.project))
-            .firstOrNull()?.containingFile;
+            .firstOrNull()?.containingFile
     }
 
     private fun fromTyped(typed: String): String {
         if (typed.startsWith("Array")) {
-            return typed.substring(5).trim('[', ']');
+            return typed.substring(5).trim('[', ']')
         }
 
         return typed
     }
 
     private fun fromTyped(typed: GdTypedVal?): String {
-        if (typed == null) return "";
+        if (typed == null) return ""
 
-        val main = typed.typeHintList.first().text;
+        val main = typed.typeHintList.first().text
         if (main != "Array") {
-            return main;
+            return main
         }
 
-        return typed.typeHintList.last().text;
+        return typed.typeHintList.last().text
     }
 
 }

@@ -11,7 +11,6 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdClassVarDeclIndex
 import gdscript.model.BoolVal
 import gdscript.psi.*
-import gdscript.settings.GdProjectSettingsState
 import project.psi.util.ProjectAutoloadUtil
 
 object GdClassMemberUtil {
@@ -25,13 +24,14 @@ object GdClassMemberUtil {
         ignoreParents: Boolean = false,
         ignoreGlobalScope: Boolean = false,
     ): Any? {
-        return listDeclarations(element, element, onlyLocalScope, ignoreParents, ignoreGlobalScope).firstOrNull();
+        return listDeclarations(element, element, onlyLocalScope, ignoreParents, ignoreGlobalScope).firstOrNull()
     }
 
     /**
      * List available declarations (const, var, enum, signal, method, ...) from given PsiElement skipping itself
      * @param searchFor stops and returns matching element
      */
+    @SuppressWarnings()
     fun listDeclarations(
         element: PsiElement,
         searchFor: GdNamedElement,
@@ -39,7 +39,7 @@ object GdClassMemberUtil {
         ignoreParents: Boolean = false,
         ignoreGlobalScope: Boolean = false,
     ): Array<Any> {
-        return listDeclarations(element, searchFor.name, onlyLocalScope, ignoreParents, ignoreGlobalScope);
+        return listDeclarations(element, searchFor.name, onlyLocalScope, ignoreParents, ignoreGlobalScope)
     }
 
     /**
@@ -63,12 +63,12 @@ object GdClassMemberUtil {
             // Check if there is an assertion check 'if (node is Node3D):'
             calledOn = findIsTypeCheck(calledOnPsi) ?: calledOnPsi.returnType
             if (calledOn.startsWith("Array[")) calledOn = "Array"
-            static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn);
+            static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn)
         }
 
         when (calledOn) {
-            GdKeywords.SELF -> calledOn = null;
-            GdKeywords.SUPER -> calledOn = GdInheritanceUtil.getExtendedClassId(element);
+            GdKeywords.SELF -> calledOn = null
+            GdKeywords.SUPER -> calledOn = GdInheritanceUtil.getExtendedClassId(element)
         }
 
         var parent: PsiElement?
@@ -89,34 +89,34 @@ object GdClassMemberUtil {
             }
         }
 
-        val hitLocal = BoolVal.new();
+        val hitLocal = BoolVal.new()
         // Checks locals only when it's not attribute/call expression moving declaration possibly outside
         if (calledOn == null) {
-            val locals = listLocalDeclarationsUpward(element, onlyLocalScope, hitLocal);
-            if (searchFor != null && locals.containsKey(searchFor)) return arrayOf(locals[searchFor]!!);
-            result.addAll(locals.values);
+            val locals = listLocalDeclarationsUpward(element, onlyLocalScope, hitLocal)
+            if (searchFor != null && locals.containsKey(searchFor)) return arrayOf(locals[searchFor]!!)
+            result.addAll(locals.values)
 
             // This class is already scanned via localDecl - so move to extended one
             parent = if (onlyLocalScope) {
-                GdInheritanceUtil.getExtendedElement(element);
+                GdInheritanceUtil.getExtendedElement(element)
             } else {
-                GdClassUtil.getOwningClassElement(element);
+                GdClassUtil.getOwningClassElement(element)
             }
         } else {
             // For Enum add also all it's values
             if (calledOn.startsWith("Array[")) calledOn = "Array"
 
             // TODO je to ještě potřeba?
-            if (calledOn.endsWith("Dictionary") && calledOnPsi != null /*&& calledOnPsi.firstChild is GdRefIdNm*/) {
-                val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdNm::class.java).lastOrNull();
+            if (calledOn.endsWith("Dictionary")) {
+                val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdNm::class.java).lastOrNull()
                 if (firstChild != null) {
-                    val dictDecl = findDeclaration(firstChild);
+                    val dictDecl = findDeclaration(firstChild)
                     if (dictDecl is GdEnumDeclTl) {
                         if (searchFor != null) {
-                            val localVal = dictDecl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor };
-                            if (localVal != null) return arrayOf(localVal);
+                            val localVal = dictDecl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor }
+                            if (localVal != null) return arrayOf(localVal)
                         }
-                        result.addAll(dictDecl.enumValueList);
+                        result.addAll(dictDecl.enumValueList)
                     }
                 }
             }
@@ -147,15 +147,15 @@ object GdClassMemberUtil {
         }
 
         if (calledOn == null) {
-            val autoloads = ProjectAutoloadUtil.listGlobals(element)
+            val autoLoads = ProjectAutoloadUtil.listGlobals(element)
             if (searchFor != null) {
                 val localClass = GdClassNamingIndex.INSTANCE.getGlobally(searchFor, element).firstOrNull()
                 if (localClass != null) return arrayOf(localClass)
-                val autoloaded = autoloads.find { it.key == searchFor }
-                if (autoloaded != null) return arrayOf(autoloaded)
+                val autoLoaded = autoLoads.find { it.key == searchFor }
+                if (autoLoaded != null) return arrayOf(autoLoaded)
             }
             result.addAll(GdClassNamingIndex.INSTANCE.getAllValues(element.project))
-            result.addAll(autoloads)
+            result.addAll(autoLoads)
         }
 
         if (searchFor != null) return emptyArray()
@@ -172,14 +172,14 @@ object GdClassMemberUtil {
         static: Boolean? = null,
         search: String? = null,
     ): PsiElement? {
-        var par = parent;
+        var par = parent
         while (par != null) {
-            val local = addsParentDeclarations(par, result, static, search);
-            if (search != null && local != null) return local;
-            par = GdInheritanceUtil.getExtendedElement(par);
+            val local = addsParentDeclarations(par, result, static, search)
+            if (search != null && local != null) return local
+            par = GdInheritanceUtil.getExtendedElement(par)
         }
 
-        return null;
+        return null
     }
 
     /**
@@ -192,8 +192,8 @@ object GdClassMemberUtil {
         onlyLocalScope: Boolean = false,
         hitLocal: BoolVal? = null,
     ): HashMap<String, PsiElement> {
-        val locals: HashMap<String, PsiElement> = hashMapOf();
-        var it: PsiElement = element;
+        val locals: HashMap<String, PsiElement> = hashMapOf()
+        var it: PsiElement = element
 
         // To avoid matching self
         when (it.parent) {
@@ -209,32 +209,32 @@ object GdClassMemberUtil {
             is GdForSt,
             is GdBindingPattern,
             -> {
-                it = it.parent;
+                it = it.parent
             }
         }
-        var isParam = false;
+        var isParam = false
         when (it) {
             is GdParam,
             -> {
-                isParam = true;
+                isParam = true
                 it = it.prevSibling ?: it.parent
             }
         }
 
         while (true) {
-            val movedToParent = it?.prevSibling == null;
-            it = it.prevSibling ?: it.parent ?: break;
+            val movedToParent = it.prevSibling == null
+            it = it.prevSibling ?: it.parent ?: break
             when (it) {
-                is GdClassVarDeclTl -> locals[it.name] = it;
-                is GdVarDeclSt -> locals[it.name] = it;
-                is GdConstDeclTl -> locals[it.name] = it;
-                is GdConstDeclSt -> locals[it.name] = it;
-                is GdEnumDeclTl -> locals[it.name] = it;
-                is GdSignalDeclTl -> locals[it.name] = it;
+                is GdClassVarDeclTl -> locals[it.name] = it
+                is GdVarDeclSt -> locals[it.name] = it
+                is GdConstDeclTl -> locals[it.name] = it
+                is GdConstDeclSt -> locals[it.name] = it
+                is GdEnumDeclTl -> locals[it.name] = it
+                is GdSignalDeclTl -> locals[it.name] = it
                 is GdParam -> {
-                    locals[it.varNmi.name] = it;
-                };
-                is GdForSt -> if (movedToParent) locals[it.varNmi?.name ?: ""] = it;
+                    locals[it.varNmi.name] = it
+                }
+                is GdForSt -> if (movedToParent) locals[it.varNmi?.name ?: ""] = it
                 is GdPatternList -> {
                     if (movedToParent) {
                         PsiTreeUtil.getChildrenOfType(it, GdBindingPattern::class.java)
@@ -245,34 +245,35 @@ object GdClassMemberUtil {
                     if (movedToParent) {
                         locals[it.varNmi?.name.orEmpty()] = it.varNmi!!
                     }
-                };
+                }
                 is GdMethodDeclTl -> {
                     if (onlyLocalScope) {
                         if (!isParam) {
                             it.paramList?.paramList?.forEach { p ->
-                                locals[p.varNmi.name] = p;
+                                locals[p.varNmi.name] = p
                             }
                         }
-                        if (hitLocal != null) hitLocal.value = true;
-                        break;
+                        if (hitLocal != null) hitLocal.value = true
+                        break
                     }
                     if (movedToParent) {
                         it.paramList?.paramList?.forEach { p ->
-                            locals[p.varNmi.name] = p;
+                            locals[p.varNmi.name] = p
                         }
                     } else {
-                        locals[it.name] = it;
+                        locals[it.name] = it
                     }
                 }
 
                 // End of scope
-                is GdClassDeclTl -> break;
+                is GdClassDeclTl -> break
             }
         }
 
-        return locals;
+        return locals
     }
 
+    @SuppressWarnings()
     fun firstNamedDeclaration(element: PsiElement): PsiElement? {
         return PsiTreeUtil.findFirstParent(element) {
             it is GdClassVarDeclTl
@@ -303,49 +304,49 @@ object GdClassMemberUtil {
      * Filters out GdMethodsDeclTl
      */
     fun Array<Any>.methods(): Array<GdMethodDeclTl> {
-        return this.filterIsInstance<GdMethodDeclTl>().toTypedArray();
+        return this.filterIsInstance<GdMethodDeclTl>().toTypedArray()
     }
 
     /**
      * Filters out GdMethodsDeclTl
      */
     fun List<Any>.methods(): Array<GdMethodDeclTl> {
-        return this.filterIsInstance<GdMethodDeclTl>().toTypedArray();
+        return this.filterIsInstance<GdMethodDeclTl>().toTypedArray()
     }
 
     /**
      * Filters out GdMethodsDeclTl of constructors
      */
     fun List<PsiElement>.constructors(): Array<GdMethodDeclTl> {
-        return this.filterIsInstance<GdMethodDeclTl>().filter { it.isConstructor }.toTypedArray();
+        return this.filterIsInstance<GdMethodDeclTl>().filter { it.isConstructor }.toTypedArray()
     }
 
     /**
      * Filters out GdClassVarDeclTl
      */
     fun List<PsiElement>.variables(): Array<GdClassVarDeclTl> {
-        return this.filterIsInstance<GdClassVarDeclTl>().toTypedArray();
+        return this.filterIsInstance<GdClassVarDeclTl>().toTypedArray()
     }
 
     /**
      * Filters out GdEnumDeclTl
      */
     fun List<PsiElement>.enums(): Array<GdEnumDeclTl> {
-        return this.filterIsInstance<GdEnumDeclTl>().toTypedArray();
+        return this.filterIsInstance<GdEnumDeclTl>().toTypedArray()
     }
 
     /**
      * Filters out GdConstDeclTl
      */
     fun List<PsiElement>.constants(): Array<GdConstDeclTl> {
-        return this.filterIsInstance<GdConstDeclTl>().toTypedArray();
+        return this.filterIsInstance<GdConstDeclTl>().toTypedArray()
     }
 
     /**
      * Filters out GdSignalDeclTl
      */
     fun List<PsiElement>.signals(): Array<GdSignalDeclTl> {
-        return this.filterIsInstance<GdSignalDeclTl>().toTypedArray();
+        return this.filterIsInstance<GdSignalDeclTl>().toTypedArray()
     }
 
     /**
@@ -362,14 +363,14 @@ object GdClassMemberUtil {
         constructors: Boolean = false,
     ): MutableList<PsiElement> {
         val classElement = when (element) {
-            is GdFile, is GdClassDeclTl -> element;
-            else -> GdClassUtil.getOwningClassElement(element);
+            is GdFile, is GdClassDeclTl -> element
+            else -> GdClassUtil.getOwningClassElement(element)
         }
 
-        val members = mutableListOf<PsiElement>();
+        val members = mutableListOf<PsiElement>()
 
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdConstDeclTl::class.java).forEach {
-            if (search != null && it.name == search) return mutableListOf(it);
+            if (search != null && it.name == search) return mutableListOf(it)
             members.add(it)
         }
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
@@ -384,18 +385,18 @@ object GdClassMemberUtil {
             }
         }
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdSignalDeclTl::class.java).forEach {
-            if (search != null && it.name == search) return mutableListOf(it);
+            if (search != null && it.name == search) return mutableListOf(it)
             members.add(it)
         }
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
-            if (search != null && it.name == search) return mutableListOf(it);
+            if (search != null && it.name == search) return mutableListOf(it)
             members.add(it)
             members.addAll(listClassMemberDeclarations(it, static, search))
         }
 
         if (static != true) {
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassVarDeclTl::class.java).forEach {
-                if (search != null && it.name == search) return mutableListOf(it);
+                if (search != null && it.name == search) return mutableListOf(it)
                 members.add(it)
             }
         }
@@ -403,14 +404,14 @@ object GdClassMemberUtil {
         PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdMethodDeclTl::class.java).forEach {
             if ((static == null || it.isStatic == static)) {
                 if (constructors || !it.isConstructor) {
-                    if (search != null && it.name == search) return mutableListOf(it);
+                    if (search != null && it.name == search) return mutableListOf(it)
                     members.add(it)
                 }
             }
         }
-        if (search != null) return mutableListOf();
+        if (search != null) return mutableListOf()
 
-        return members;
+        return members
     }
 
     /**
@@ -425,16 +426,16 @@ object GdClassMemberUtil {
         static: Boolean? = false,
         search: String? = null,
     ): PsiElement? {
-        val list = listClassMemberDeclarations(classElement, static, search);
-        if (search != null) return list.firstOrNull();
-        result.addAll(list);
+        val list = listClassMemberDeclarations(classElement, static, search)
+        if (search != null) return list.firstOrNull()
+        result.addAll(list)
 
-        return null;
+        return null
     }
 
     fun calledUpon(element: PsiElement): GdExpr? {
         val getAttrIfAny = fun (el: PsiElement): GdExpr? {
-            val previous = PsiTreeUtil.prevVisibleLeaf(element) ?: return null
+            val previous = PsiTreeUtil.prevVisibleLeaf(el) ?: return null
             val parent = previous.parent ?: return null
             if (previous.elementType == GdTypes.DOT && parent is GdAttributeEx) {
                 return parent.exprList.first()
@@ -460,14 +461,14 @@ object GdClassMemberUtil {
         val virtualFile = FilenameIndex.getVirtualFilesByName(
             "${GdKeywords.GLOBAL_SCOPE}.gd",
             GlobalSearchScope.allScope(element.project)
-        ).firstOrNull() ?: return true;
-        val psiFile = PsiManager.getInstance(element.project).findFile(virtualFile) ?: return true;
+        ).firstOrNull() ?: return true
+        val psiFile = PsiManager.getInstance(element.project).findFile(virtualFile) ?: return true
 
         return GdClassVarDeclIndex.INSTANCE.get(
             name,
             element.project,
             GlobalSearchScope.fileScope(psiFile),
-        ).isEmpty();
+        ).isEmpty()
     }
 
     /**
