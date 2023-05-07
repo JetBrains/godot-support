@@ -31,6 +31,7 @@
     <colorProvider implementation="gdscript.lineMarker.GdColorProvider" />
     <library.type implementation="gdscript.library.GdLibraryType" />
     <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor" />
+    <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
 
     <!-- settings -->
     <projectService serviceImplementation="gdscript.settings.GdProjectSettingsState" />

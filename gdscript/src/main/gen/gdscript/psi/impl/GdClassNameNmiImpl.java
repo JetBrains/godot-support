@@ -51,14 +51,14 @@ public class GdClassNameNmiImpl extends GdClassIdElementImpl implements GdClassN
 
   @Override
   @NotNull
-  public String getName() {
-    return GdPsiUtils.getName(this);
+  public PsiElement setName(@NotNull String newName) {
+    return GdPsiUtils.setName(this, newName);
   }
 
   @Override
   @NotNull
-  public PsiElement setName(@NotNull String newName) {
-    return GdPsiUtils.setName(this, newName);
+  public String getName() {
+    return GdPsiUtils.getName(this);
   }
 
   @Override

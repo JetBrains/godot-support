@@ -42,6 +42,7 @@ object GdPsiUtils {
     @JvmStatic fun getName(element: GdNamedElement): String = GdCommonUtil.getName(element)
     @JvmStatic fun setName(element: GdNamedElement, newName: String): PsiElement = GdCommonUtil.setName(element, newName)
     @JvmStatic fun getNameIdentifier(element: GdNamedIdElement): PsiElement = GdCommonUtil.getNameIdentifier(element)
+    @JvmStatic fun setName(element: GdFile, newName: String): PsiElement = GdCommonUtil.setName(element, newName)
 
     /** Type hint */
     @JvmStatic fun getReturnType(element: GdTypedVal): String = GdTypedUtil.getReturnType(element)

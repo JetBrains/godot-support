@@ -56,7 +56,7 @@ classNaming ::= CLASS_NAME className_nmi endStmt? {
     elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"
 }
 className_nmi ::= IDENTIFIER {
-    methods=[getClassId getParentName isInner] // TODO parentname ?!
+    methods=[getClassId getParentName isInner setName getName getNameIdentifier] // TODO parentname ?!
     mixin="gdscript.psi.impl.GdClassIdElementImpl" stubClass="gdscript.index.stub.GdClassIdStub"
     elementTypeFactory="gdscript.psi.impl.GdClassIdElementType.getInstance"
 }

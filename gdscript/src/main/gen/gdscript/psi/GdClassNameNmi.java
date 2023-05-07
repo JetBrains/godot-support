@@ -18,10 +18,10 @@ public interface GdClassNameNmi extends GdNamedIdElement, StubBasedPsiElement<Gd
   boolean isInner();
 
   @NotNull
-  String getName();
+  PsiElement setName(@NotNull String newName);
 
   @NotNull
-  PsiElement setName(@NotNull String newName);
+  String getName();
 
   @NotNull
   PsiElement getNameIdentifier();

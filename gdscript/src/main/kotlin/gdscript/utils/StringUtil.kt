@@ -6,7 +6,7 @@ import java.util.*
 object StringUtil {
 
     private val camelRegex = "(?<=[a-zA-Z])[A-Z]".toRegex()
-    private val snakeRegex = "_[a-zA-Z]".toRegex()
+    private val snakeRegex = "([_ ])[a-zA-Z]".toRegex()
 
     fun String.camelToSnakeCase(): String {
         return camelRegex.replace(this) {
@@ -18,7 +18,7 @@ object StringUtil {
         return snakeRegex.replace(this) {
             it.value.replace("_","")
                 .uppercase(Locale.getDefault())
-        }
+        }.replace(" ", "")
     }
 
     fun String.snakeToPascalCase(): String {
