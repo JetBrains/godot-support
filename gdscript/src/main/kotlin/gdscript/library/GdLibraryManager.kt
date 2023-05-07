@@ -50,7 +50,7 @@ object GdLibraryManager {
             // https://github.com/Kotlin/kotlinx.serialization/issues/993
             @Suppress("PROVIDED_RUNTIME_TOO_LOW")
             @Serializable
-            data class GdSdk(val id: String, val name: String, val type: String, val path: String, val mode: String)
+            class GdSdk(val id: String, val name: String, val type: String, val path: String, val mode: String)
 
             Json.decodeFromString<Array<GdSdk>>(response.body())
                 .map { it.name.sdkToVersion() }
