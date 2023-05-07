@@ -32,7 +32,7 @@ class GdResourceLineMarkerContributor : RelatedItemLineMarkerProvider() {
         if (usages.isEmpty()) return;
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(
-            GdIcon.getEditorIcon(GdIcon.RESOURCE)!!
+            GdIcon.getEditorIcon(GdIcon.RESOURCE)
         )
             .setTargets(*usages)
             .setPopupTitle("Resource Usage")
@@ -40,7 +40,7 @@ class GdResourceLineMarkerContributor : RelatedItemLineMarkerProvider() {
             .setCellRenderer {
                 object : PsiElementListCellRenderer<PsiElement>() {
                     override fun getIcon(element: PsiElement?): Icon {
-                        return GdIcon.getEditorIcon(GdIcon.SLOT)!!;
+                        return GdIcon.getEditorIcon(GdIcon.SLOT)
                     }
 
                     override fun getToolTipText(): String? {

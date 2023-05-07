@@ -38,7 +38,7 @@ class GdTraitLineMarkerContributor : RelatedItemLineMarkerProvider() {
             .mapNotNull { it.getPsiFile(project)?.firstChild };
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(
-            GdIcon.getEditorIcon(if (definitons.isEmpty()) GdIcon.ERROR else GdIcon.LINK)!!
+            GdIcon.getEditorIcon(if (definitons.isEmpty()) GdIcon.ERROR else GdIcon.LINK)
         )
             .setTargets(definitons)
             .setPopupTitle("Trait")
@@ -46,7 +46,7 @@ class GdTraitLineMarkerContributor : RelatedItemLineMarkerProvider() {
             .setCellRenderer {
                 object : PsiElementListCellRenderer<PsiElement>() {
                     override fun getIcon(element: PsiElement?): Icon {
-                        return GdIcon.getEditorIcon(GdIcon.LINK)!!;
+                        return GdIcon.getEditorIcon(GdIcon.LINK)
                     }
 
                     override fun getToolTipText(): String? {
@@ -54,17 +54,17 @@ class GdTraitLineMarkerContributor : RelatedItemLineMarkerProvider() {
                     }
 
                     override fun getElementText(element: PsiElement?): String {
-                        if (element == null) return "";
-                        return GdClassMemberUtil.firstNamedDeclarationName(element) ?: element.text;
+                        if (element == null) return ""
+                        return GdClassMemberUtil.firstNamedDeclarationName(element) ?: element.text
                     }
 
                     override fun getContainerText(element: PsiElement?, name: String?): String {
-                        return element?.containingFile?.virtualFile?.localPath() ?: "";
+                        return element?.containingFile?.virtualFile?.localPath() ?: ""
                     }
                 }
             }
 
-        result.add(builder.createLineMarkerInfo(element));
+        result.add(builder.createLineMarkerInfo(element))
     }
 
 }

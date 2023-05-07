@@ -55,7 +55,7 @@ class GdSignalLineMarkerContributor : RelatedItemLineMarkerProvider() {
         }
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(
-            GdIcon.getEditorIcon(GdIcon.SLOT)!!
+            GdIcon.getEditorIcon(GdIcon.SLOT)
         )
             .setTargets(targets)
             .setPopupTitle("Signal Connections")
@@ -64,9 +64,9 @@ class GdSignalLineMarkerContributor : RelatedItemLineMarkerProvider() {
                 object : PsiElementListCellRenderer<PsiElement>() {
                     override fun getIcon(element: PsiElement?): Icon {
                         if (element is GdSignalDeclTl)
-                            return GdIcon.getEditorIcon(GdIcon.SLOT)!!;
+                            return GdIcon.getEditorIcon(GdIcon.SLOT)
 
-                        return GdIcon.getEditorIcon(GdIcon.SIGNAL)!!;
+                        return GdIcon.getEditorIcon(GdIcon.SIGNAL)
                     }
 
                     override fun getToolTipText(): String? {
@@ -74,24 +74,24 @@ class GdSignalLineMarkerContributor : RelatedItemLineMarkerProvider() {
                     }
 
                     override fun getElementText(element: PsiElement?): String {
-                        if (element is GdSignalDeclTl) return element.name;
-                        if (element is TscnConnectionHeader) return element.signal;
+                        if (element is GdSignalDeclTl) return element.name
+                        if (element is TscnConnectionHeader) return element.signal
 
-                        return element?.text ?: "";
+                        return element?.text ?: ""
                     }
 
                     override fun getContainerText(element: PsiElement?, name: String?): String {
                         if (element is TscnConnectionHeader) {
-                            val node = nodeMap[element.from];
-                            return node?.name ?: element.text;
+                            val node = nodeMap[element.from]
+                            return node?.name ?: element.text
                         };
 
-                        return element?.containingFile?.virtualFile?.localPath() ?: "";
+                        return element?.containingFile?.virtualFile?.localPath() ?: ""
                     }
                 }
             }
 
-        result.add(builder.createLineMarkerInfo(element));
+        result.add(builder.createLineMarkerInfo(element))
     }
 
 }
