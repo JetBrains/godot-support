@@ -10,7 +10,7 @@ object GdSpacingUtil {
     }
 
     fun RuleBuilder.emptyLines(count: Int): SpacingBuilder {
-        return this.spacing(0, 0, 1, false, count)
+        return this.spacing(1, 0, 0, true, count)
     }
 
 }

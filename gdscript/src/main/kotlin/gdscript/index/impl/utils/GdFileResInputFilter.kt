@@ -16,11 +16,8 @@ object GdFileResInputFilter : FileBasedIndex.InputFilter {
     )
 
     fun validResource(filename: String): Boolean {
-        return IGNORE_SUFFIX.find {
-            filename.endsWith(it)
-        } == null && IGNORE_PREFFIX.find {
-            filename.startsWith(it)
-        } == null
+        return IGNORE_SUFFIX.none { filename.endsWith(it) }
+                && IGNORE_PREFFIX.none { filename.startsWith(it) }
     }
 
     override fun acceptInput(file: VirtualFile): Boolean {
