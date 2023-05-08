@@ -77,10 +77,6 @@ HEX_NUMBER = 0x[0-9_a-fA-F]+
 BIN_NUMBER = 0b[01_]+
 REAL_NUMBER = {NUMBER}e-[0-9]+
 
-STRING = "&"?\"([^\\\"\r\n]|\\.)*\"
-STRING_CHAR = \'([^\\\'\r\n]|\\.)*\'
-STRING_MULTILINE = \"\"\"(\R|.)*\"\"\"
-
 COMMENT = "#"[^\r\n]*
 INDENTED_COMMENT = {INDENT}"#"
 ANNOTATOR = "@"[a-zA-Z_]*
@@ -92,6 +88,21 @@ TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
 //OPERATOR = "+" | "-" | "*" | "/" | "%" | "^" | "&" | "|"
 //    | "<<" | ">>" | "!" | "&&" | "||"
 ANY = .+
+
+ONE_NL = \R
+WHITE_SPACE = " " | \t | \f | \\ {ONE_NL}
+
+STRING_NL = {ONE_NL}
+STRING_ESC = \\ [^] | \\ ({WHITE_SPACE})+ (\n|\r)
+
+SINGLE_QUOTED_CONTENT = {STRING_ESC} | [^'\\\r\n]
+SINGLE_QUOTED_LITERAL = \' {SINGLE_QUOTED_CONTENT}* \'?
+
+DOUBLE_QUOTED_CONTENT = {STRING_ESC} | [^\"\\$\n\r]
+DOUBLE_QUOTED_LITERAL = [\$\^]?\" {DOUBLE_QUOTED_CONTENT}* \"
+
+TRIPLE_DOUBLE_QUOTED_CONTENT = {DOUBLE_QUOTED_CONTENT} | {STRING_NL} | \"(\")?[^\"\\$]
+TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
 
 %state CREATE_INDENT
 
@@ -189,9 +200,11 @@ ANY = .+
 
     {NODE_PATH}     { return dedentRoot(GdTypes.NODE_PATH_LIT); }
     {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
-    {STRING}        { if (yytext().charAt(0) == '&') { return dedentRoot(GdTypes.STRING_NAME); } return dedentRoot(GdTypes.STRING); }
-    {STRING_CHAR}   { return dedentRoot(GdTypes.STRING); }
-    {STRING_MULTILINE} { int a = 1; return GdTypes.STRING; }
+
+    {SINGLE_QUOTED_LITERAL}        { return dedentRoot(GdTypes.STRING); }
+    {DOUBLE_QUOTED_LITERAL}        { return dedentRoot(GdTypes.STRING); }
+    {TRIPLE_DOUBLE_QUOTED_LITERAL} { return dedentRoot(GdTypes.STRING); }
+
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
     {ANNOTATOR}     { return dedentRoot(GdTypes.ANNOTATOR); }
