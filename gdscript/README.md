@@ -68,6 +68,5 @@ Video preview (version 0.7): https://youtu.be/hjtzJW25GMI
 - Remove getter & setter
 - Too many arguments / change function type
 
-## Trait like system
-Via alt+insert sync trait code snippets
-TODO create preview and explanation
+#### Trait like system
+Experimental hacky work-around to fill [Trait like feature](./documentation/trait.md) (since v1.1.1)

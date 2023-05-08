@@ -20,25 +20,25 @@ import gdscript.utils.GdTraitUtil
 class GdTraitFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val members = PsiTreeUtil.findChildrenOfType(root, PsiComment::class.java);
+        val members = PsiTreeUtil.findChildrenOfType(root, PsiComment::class.java)
 
         return members
             .filter { it.text.startsWith(GdTraitLineMarkerContributor.PREFIX) }
-            .mapNotNull { mapRegion(it) }.toTypedArray();
+            .mapNotNull { mapRegion(it) }.toTypedArray()
     }
 
     override fun getPlaceholderText(node: ASTNode): String {
-        return node.text;
+        return node.text
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return true;
+        return true
     }
 
     private fun mapRegion(element: PsiComment): FoldingDescriptor? {
-        val footer = GdTraitUtil.endComment(element) ?: return null;
+        val footer = GdTraitUtil.endComment(element) ?: return null
 
-        return FoldingDescriptor(element.node, TextRange(element.startOffset, footer.endOffset - 1));
+        return FoldingDescriptor(element.node, TextRange(element.startOffset, footer.endOffset))
     }
 
 }

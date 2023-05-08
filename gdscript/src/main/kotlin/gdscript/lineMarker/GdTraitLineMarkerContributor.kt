@@ -16,26 +16,26 @@ import javax.swing.Icon
 class GdTraitLineMarkerContributor : RelatedItemLineMarkerProvider() {
 
     companion object {
-        val PREFIX = "# Trait ";
-        val SUFFIX = "# EndTrait";
+        val PREFIX = "#trait "
+        val SUFFIX = "#endTrait"
     }
 
-    override fun getIcon(): Icon? {
-        return GdIcon.getEditorIcon(GdIcon.LINK);
+    override fun getIcon(): Icon {
+        return GdIcon.getEditorIcon(GdIcon.LINK)
     }
 
     override fun collectNavigationMarkers(
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>,
     ) {
-        if (element !is PsiComment) return;
-        val text = element.text;
-        if (!text.startsWith(PREFIX)) return;
-        val file = text.substring(PREFIX.length).trim();
-        val project = element.project;
+        if (element !is PsiComment) return
+        val text = element.text
+        if (!text.startsWith(PREFIX)) return
+        val file = text.substring(PREFIX.length).trim()
+        val project = element.project
 
         val definitons = GdFileResIndex.INSTANCE.getFiles("res://$file", project)
-            .mapNotNull { it.getPsiFile(project)?.firstChild };
+            .mapNotNull { it.getPsiFile(project)?.firstChild }
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(
             GdIcon.getEditorIcon(if (definitons.isEmpty()) GdIcon.ERROR else GdIcon.LINK)
@@ -50,7 +50,7 @@ class GdTraitLineMarkerContributor : RelatedItemLineMarkerProvider() {
                     }
 
                     override fun getToolTipText(): String? {
-                        return null;
+                        return null
                     }
 
                     override fun getElementText(element: PsiElement?): String {

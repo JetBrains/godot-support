@@ -19,7 +19,7 @@ import gdscript.utils.VirtualFileUtil.resourcePath
 class GdPropageTraitChangesAction : BaseIntentionAction() {
 
     override fun getText(): String {
-        return "Propage Trait code";
+        return "Propage Trait code"
     }
 
     override fun getFamilyName(): String {
@@ -27,47 +27,54 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
     }
 
     override fun startInWriteAction(): Boolean {
-        return false;
+        return false
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if (editor === null || file === null) return false;
+        if (editor === null || file === null) return false
 
-        if (isTraitFile(file)) return true;
-        if (traitRegionLabel(editor, file) != null) return true;
+        if (isTraitFile(file)) return true
+        if (traitRegionLabel(editor, file) != null) return true
 
-        return false;
+        return false
     }
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if (editor === null || file === null) return;
+        if (editor === null || file === null) return
+        val extendsRegex = "extends .+\n*".toRegex()
 
-        val source: String;
-        var sourceFile = file.originalFile.virtualFile;
+        var fromSource = true
+        val source: String
+        var sourceFile = file.originalFile.virtualFile
 
         if (isTraitFile(file)) {
-            source = file.containingFile.text;
+            source = file.containingFile.text.replace(extendsRegex, "")
         } else {
-            val header = traitRegionLabel(editor, file) ?: return;
-            val footer = GdTraitUtil.endComment(header) ?: return;
-            source = editor.document.getText(TextRange.create(header.endOffset, footer.startOffset-1));
+            val header = traitRegionLabel(editor, file) ?: return
+            val footer = GdTraitUtil.endComment(header) ?: return
+            source = editor.document.getText(TextRange.create(header.endOffset + 1, footer.startOffset - 1))
 
-            val traitFile = header.text.substring(GdTraitLineMarkerContributor.PREFIX.length).trim();
+            val traitFile = header.text.substring(GdTraitLineMarkerContributor.PREFIX.length).trim()
             sourceFile = GdFileResIndex.INSTANCE.getFiles("res://$traitFile", project)
-                .firstOrNull() ?: return;
+                .firstOrNull() ?: return
+            fromSource = false
         }
+        val usages = GdTraitUtil.listUsages(sourceFile.resourcePath().substring("res://".length), project)
 
-        val usages = GdTraitUtil.listUsages(sourceFile.resourcePath().substring("res://".length), project);
+        val dm = PsiDocumentManager.getInstance(project)
+        val runner = runner@{
+            if (!fromSource) {
+                val sourceDocument = FileDocumentManager.getInstance().getDocument(sourceFile) ?: return@runner
+                val prefix = extendsRegex.find(sourceDocument.text)?.value ?: ""
+                FileDocumentManager.getInstance().getDocument(sourceFile)?.setText(prefix + source)
+            }
 
-        val dm = PsiDocumentManager.getInstance(project);
-        val runner = {
-            FileDocumentManager.getInstance().getDocument(sourceFile)?.setText(source);
             usages.forEach { header ->
-                val f = header.containingFile;
-                val footer = GdTraitUtil.endComment(header);
+                val f = header.containingFile
+                val footer = GdTraitUtil.endComment(header)
                 val doc = dm.getDocument(f)
                 if (footer != null && doc != null) {
-                    doc.replaceString(header.endOffset, footer.startOffset, source + "\n");
+                    doc.replaceString(header.endOffset, footer.startOffset, "\n$source\n")
                 }
             }
         }
@@ -76,24 +83,24 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
     }
 
     private fun isTraitFile(file: PsiFile): Boolean {
-        return file.name.lowercase().endsWith("trait.gd");
+        return file.name.lowercase().endsWith("trait.gd")
     }
 
     private fun traitRegionLabel(editor: Editor, file: PsiFile): PsiComment? {
-        var current = file.findElementAt(editor.caretModel.offset);
+        var current = file.findElementAt(editor.caretModel.offset)
         while (current != null) {
             if (current is PsiComment) {
-                val text = current.text;
+                val text = current.text
                 if (text.startsWith(GdTraitLineMarkerContributor.PREFIX)) {
-                    return current;
+                    return current
                 } else if (text.startsWith(GdTraitLineMarkerContributor.SUFFIX)) {
-                    return null;
+                    return null
                 }
             }
-            current = current.prevSibling ?: current.parent;
+            current = current.prevSibling ?: current.parent
         }
 
-        return null;
+        return null
     }
 
 }

@@ -6,6 +6,7 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import gdscript.codeInsight.documentation.GdDocUtil
 import gdscript.codeInsight.documentation.GdGodotDocUtil
+import gdscript.lineMarker.GdTraitLineMarkerContributor
 import gdscript.psi.GdTypes
 
 object GdCommentUtil {
@@ -16,6 +17,11 @@ object GdCommentUtil {
     val ENUM = "enum"
     val RETURN = "return"
     val TUTORIAL = "tutorial"
+
+    val BREAKS_AT = arrayOf(
+        GdTraitLineMarkerContributor.PREFIX.trimStart('#'),
+        GdTraitLineMarkerContributor.SUFFIX.trimStart('#'),
+    )
 
     fun collectAllDescriptions(element: PsiElement?): Map<String, List<String>> {
         val descriptions = mutableMapOf<String, MutableList<String>>()
@@ -32,6 +38,8 @@ object GdCommentUtil {
                 GdTypes.COMMENT -> {
                     var text = el.text.removePrefix("#").trimStart()
                     var prefix = text.substringBefore(" ")
+
+                    if (BREAKS_AT.contains(prefix)) break
 
                     if (!descriptions.containsKey(prefix)) prefix = DESCRIPTION
                     else text = text.substringAfter(" ")
