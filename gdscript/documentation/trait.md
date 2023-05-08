@@ -12,7 +12,7 @@ As Godot does not offer any such feature there is a very hacky workaround built 
 
 ### Whole explanation:
 
-First you have to define Trait files - their names must end with "trait" work (case-insensitive)  
+First you have to define Trait files - their names must end with "trait" word (caseinsensitive)  
 ![](../screens/trait/file.png)
 
 Define what ever code you want inside. Then to apply it into any of your scripts, use Alt+Insert shortcut
