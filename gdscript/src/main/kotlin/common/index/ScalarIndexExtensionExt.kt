@@ -12,11 +12,15 @@ import com.intellij.util.indexing.ScalarIndexExtension
 abstract class ScalarIndexExtensionExt<K : Any> : ScalarIndexExtension<K>() {
 
     // Cannot use directly getName due to OverrideOnly annotation api violation
-    abstract val id: ID<K, Void>;
+    abstract val id: ID<K, Void>
 
     fun getFiles(key: K, project: Project): Collection<VirtualFile> {
-        if (DumbService.isDumb(project)) return emptyList();
-        return FileBasedIndex.getInstance().getContainingFiles(id, key, GlobalSearchScope.allScope(project));
+        if (DumbService.isDumb(project)) return emptyList()
+        return FileBasedIndex.getInstance().getContainingFiles(id, key, GlobalSearchScope.allScope(project))
+    }
+
+    fun getFiles(key: K, element: PsiElement): Collection<VirtualFile> {
+        return getFiles(key, element.project)
     }
 
     fun getNonEmptyKeys(element: PsiElement): List<K> {

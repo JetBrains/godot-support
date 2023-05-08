@@ -4,6 +4,7 @@ import com.intellij.history.core.Paths
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectLocator
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import gdscript.psi.utils.PsiGdResourceUtil
@@ -28,6 +29,10 @@ object VirtualFileUtil {
 
     fun VirtualFile.resourcePath(): String {
         return PsiGdResourceUtil.resourcePath(this)
+    }
+
+    fun VirtualFile.getPsiFile(element: PsiElement): PsiFile? {
+        return this.getPsiFile(element.project)
     }
 
     fun VirtualFile.getPsiFile(project: Project): PsiFile? {

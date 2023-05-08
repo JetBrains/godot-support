@@ -75,11 +75,10 @@ object GdNodeUtil {
 
         nodes.forEach {
             // In case of nested instance simply joining paths lead to "Parent/../Child"
-            // so skip pureParent which would be duplicated and remove prefix of it
+            // so skip ".." and remove prefix of it
             var currentNodePath = it.nodePath
             if (parentPath.isNotBlank()) {
                 currentNodePath = currentNodePath.removePrefix("..")
-                if (currentNodePath.isBlank()) return@forEach
             }
 
             val nodePath = "$parentPath$currentNodePath"
@@ -96,6 +95,7 @@ object GdNodeUtil {
                         nodePath,
                     )
                 }
+                return@forEach
             }
 
             var relativePath = Path(nodePath).relativeTo(Path(basePath)).toString().replace("\\", "/")
@@ -125,7 +125,16 @@ object GdNodeUtil {
                 relativePath = "$$relativePath"
             }
 
-            resultSet.add(GdNodeHolder(it, relativePath, uniqueId, tail, "$$hint"))
+            resultSet.add(
+                GdNodeHolder(
+                    it,
+                    relativePath,
+                    uniqueId,
+                    tail,
+                    "$$hint",
+                    it.scriptResource.ifEmpty { null }
+                )
+            )
         }
     }
 

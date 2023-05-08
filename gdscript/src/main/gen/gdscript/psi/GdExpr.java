@@ -10,4 +10,7 @@ public interface GdExpr extends PsiElement {
   @NotNull
   String getReturnType();
 
+  @NotNull
+  String getReturnTypeOrRes(boolean allowResource);
+
 }

@@ -49,6 +49,7 @@ object GdCommonUtil {
             is GdConstDeclTl -> element.returnType
             is GdClassVarDeclTl -> element.returnType
             is GdMethodDeclTl -> element.returnType
+            is GdFuncDeclEx -> element.returnType
             is GdParam -> element.returnType
             is GdArgExpr -> element.returnType
             is GdVarDeclSt -> element.returnType
@@ -56,7 +57,7 @@ object GdCommonUtil {
             is GdExpr -> element.returnType
             is GdTypedVal -> element.returnType
             is GdForSt -> GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]")
-            else -> ""
+            else -> throw NotImplementedError()
         }
     }
 

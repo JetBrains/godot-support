@@ -232,7 +232,7 @@ expr ::=
     | primary_ex
     | funcDecl_ex
     | literal_ex
-    {methods=[getReturnType]}
+    {methods=[getReturnType getReturnTypeOrRes]}
 
 cast_ex ::= expr AS typedVal
 ternary_ex ::= expr IF expr ELSE expr

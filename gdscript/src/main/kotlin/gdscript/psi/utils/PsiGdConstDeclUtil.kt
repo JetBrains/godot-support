@@ -13,8 +13,5 @@ object PsiGdConstDeclUtil {
         return element.expr?.returnType ?: "";
     }
 
-    fun getReturnExpr(element: GdConstDeclTl): PsiElement? {
-        return GdClassUtil.getClassIdElement(element.returnType, element)
-    }
 
 }

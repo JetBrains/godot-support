@@ -52,6 +52,7 @@ object GdClassMemberUtil {
         onlyLocalScope: Boolean = false,
         ignoreParents: Boolean = false,
         ignoreGlobalScope: Boolean = false,
+        allowResource: Boolean = false,
     ): Array<Any> {
         var static = false
 
@@ -61,7 +62,7 @@ object GdClassMemberUtil {
         val calledOnPsi: GdExpr? = calledUpon(element)
         if (calledOnPsi != null && calledOnPsi.text != GdKeywords.SELF) {
             // Check if there is an assertion check 'if (node is Node3D):'
-            calledOn = findIsTypeCheck(calledOnPsi) ?: calledOnPsi.returnType
+            calledOn = findIsTypeCheck(calledOnPsi) ?: calledOnPsi.getReturnTypeOrRes(allowResource)
             if (calledOn.startsWith("Array[")) calledOn = "Array"
             static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn)
         }

@@ -8,14 +8,16 @@ import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
 import gdscript.utils.GdOperand
 import gdscript.index.impl.GdClassNamingIndex
+import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.*
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
+import gdscript.utils.VirtualFileUtil.getPsiFile
 import project.psi.model.GdAutoload
 
 object PsiGdExprUtil {
 
-    fun getReturnType(expr: GdExpr): String {
+    fun getReturnType(expr: GdExpr, allowResource: Boolean = false): String {
         return when (expr) {
             is GdFuncDeclEx -> GdKeywords.CALLABLE
             is GdPlusMinusEx -> expr.expr.returnType
@@ -80,9 +82,18 @@ object PsiGdExprUtil {
                 when (expr.firstChild) {
                     is GdNodePath -> {
                         if (expr.firstChild.text.contains(':')) return GdKeywords.VARIANT
-                        val node = GdNodeUtil.findNode(expr.firstChild as GdNodePath)
+                        val node = GdNodeUtil.findNode(expr.firstChild as GdNodePath) ?: return GdKeywords.VARIANT
 
-                        return node?.element?.type ?: ""
+                        node.script?.let {
+                            GdFileResIndex.INSTANCE.getFiles(it, expr).firstOrNull()
+                                ?.getPsiFile(expr)
+                                ?.let { GdClassUtil.getFullClassId(it) }
+                                ?.let {
+                                    if (!it.startsWith("\"res://") || allowResource) return it
+                                }
+                        }
+
+                        return node.element.type
                     }
                     is GdDictDecl -> return "Dictionary"
                     is GdArrayDecl -> {

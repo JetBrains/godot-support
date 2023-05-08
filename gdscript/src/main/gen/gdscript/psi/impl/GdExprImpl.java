@@ -33,4 +33,10 @@ public abstract class GdExprImpl extends ASTWrapperPsiElement implements GdExpr 
     return GdPsiUtils.getReturnType(this);
   }
 
+  @Override
+  @NotNull
+  public String getReturnTypeOrRes(boolean allowResource) {
+    return GdPsiUtils.getReturnTypeOrRes(this, allowResource);
+  }
+
 }

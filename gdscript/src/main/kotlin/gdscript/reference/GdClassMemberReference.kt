@@ -65,7 +65,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun getVariants(): Array<LookupElement> {
-        val members = GdClassMemberUtil.listDeclarations(element)
+        val members = GdClassMemberUtil.listDeclarations(element, allowResource = true)
         val hidePrivate = GdProjectSettingsState.getInstance(element).state.hidePrivate
                 && GdClassMemberUtil.calledUpon(element) != null
 

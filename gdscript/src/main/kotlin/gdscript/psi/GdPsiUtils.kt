@@ -35,7 +35,6 @@ object GdPsiUtils {
     /** Const */
     @JvmStatic fun getPresentation(element: GdConstDeclTl): ItemPresentation = GdPresentationUtil.presentation(element)
     @JvmStatic fun getReturnType(element: GdConstDeclTl): String = PsiGdConstDeclUtil.getReturnType(element)
-    @JvmStatic fun getReturnExpr(element: GdConstDeclTl): PsiElement? = PsiGdConstDeclUtil.getReturnExpr(element)
     @JvmStatic fun getName(element: GdConstDeclTl): String = GdConstDeclUtil.getName(element)
 
     /** Named */
@@ -83,10 +82,12 @@ object GdPsiUtils {
 
     /** Expressions */
     @JvmStatic fun getReturnType(element: GdExpr): String = PsiGdExprUtil.getReturnType(element)
+    @JvmStatic fun getReturnTypeOrRes(element: GdExpr, allowResource: Boolean = false): String = PsiGdExprUtil.getReturnType(element, allowResource)
     @JvmStatic fun getReturnType(element: GdArgExpr): String = PsiGdExprUtil.getReturnType(element.expr)
 
     /** Lambdas */
     @JvmStatic fun getReturnType(element: GdFuncDeclEx): String = PsiGdLocalFuncUtil.getReturnType(element)
+    // TODO remove?
     @JvmStatic fun getReturnExpr(element: GdFuncDeclEx): PsiElement? = PsiGdLocalFuncUtil.getReturnExpr(element)
     @JvmStatic fun getParameters(element: GdFuncDeclEx): LinkedHashMap<String, String?> = PsiGdLocalFuncUtil.getParameters(element)
 

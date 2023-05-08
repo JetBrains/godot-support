@@ -15,6 +15,7 @@ data class GdNodeHolder(
     val uniqueId: String?,
     val extraInfo: String?,
     val readableNodePath: String,
+    val script: String? = null,
 ) {
 
     fun lookup(): LookupElement {
