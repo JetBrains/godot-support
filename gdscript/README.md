@@ -1,6 +1,7 @@
 # GdScript
 
-Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of GdScript2
+Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of GdScript2  
+https://plugins.jetbrains.com/plugin/20123-gdscript
 
 # Installation
 
