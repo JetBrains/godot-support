@@ -65,6 +65,10 @@ interface GdTokenTypeSet {
             GdTypes.STRING_NAME,
         )
 
+        val STRING_FORMAT = TokenSet.create(
+//            GdTypes.MOD,
+        )
+
         // Teal
         val CLASS_TYPE = TokenSet.create()
 

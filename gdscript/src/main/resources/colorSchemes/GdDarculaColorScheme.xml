@@ -50,6 +50,11 @@
             <option name="FOREGROUND" value="ffeca1" />
         </value>
     </option>
+    <option name="GD_STRING_FORMAT">
+        <value>
+            <option name="FOREGROUND" value="badeff" />
+        </value>
+    </option>
     <option name="GD_ANNOTATION">
         <value>
             <option name="FOREGROUND" value="ffb373" />

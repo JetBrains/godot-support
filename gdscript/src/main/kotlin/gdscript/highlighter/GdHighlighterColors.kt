@@ -56,6 +56,11 @@ interface GdHighlighterColors {
             "GD_STRING", DefaultLanguageHighlighterColors.STRING
         )
 
+        // Blue-ish
+        val STRING_FORMAT = TextAttributesKey.createTextAttributesKey(
+            "GD_STRING_FORMAT", DefaultLanguageHighlighterColors.STRING
+        )
+
         // Red
         val ANNOTATION = TextAttributesKey.createTextAttributesKey(
             "GD_ANNOTATION", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP

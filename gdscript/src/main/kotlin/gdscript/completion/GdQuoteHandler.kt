@@ -17,7 +17,7 @@ class GdQuoteHandler : SimpleTokenSetQuoteHandler, MultiCharQuoteHandler {
             val quote = document.getText(TextRange(offset - 3, offset))
             if ("\"\"\"" == quote) return quote
         }
-        if (offset >= 2) {
+        if (offset >= 1) {
             val quote = document.getText(TextRange(offset - 1, offset))
             if (quote == "\"" || quote == "'") return quote
         }
