@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface GdEndStmt extends PsiElement {
 
-  @NotNull
-  List<GdNewLineEnd> getNewLineEndList();
+  @Nullable
+  GdNewLineEnd getNewLineEnd();
 
 }

@@ -858,28 +858,15 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (SEMICON | newLineEnd)+
+  // SEMICON | newLineEnd
   public static boolean endStmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "endStmt")) return false;
     if (!nextTokenIs(b, "<end stmt>", NEW_LINE, SEMICON)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, END_STMT, "<end stmt>");
-    r = endStmt_0(b, l + 1);
-    while (r) {
-      int c = current_position_(b);
-      if (!endStmt_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "endStmt", c)) break;
-    }
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // SEMICON | newLineEnd
-  private static boolean endStmt_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "endStmt_0")) return false;
-    boolean r;
     r = consumeToken(b, SEMICON);
     if (!r) r = newLineEnd(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 

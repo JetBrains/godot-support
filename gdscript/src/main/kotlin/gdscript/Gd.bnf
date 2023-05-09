@@ -280,7 +280,7 @@ typed ::= COLON typedVal
 typedVal ::= typeHint (LSBR typeHint RSBR)? {methods=[getReturnType]}
 typeHint ::= typeHint_nm (DOT typeHint_nm)*
 typeHint_nm ::= IDENTIFIER
-endStmt ::= (SEMICON | newLineEnd)+
+endStmt ::= SEMICON | newLineEnd
 newLineEnd ::= NEW_LINE
 nodePath ::= NODE_PATH_LEX
 

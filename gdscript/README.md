@@ -22,10 +22,24 @@ it's required to be thorough when specifying types
 - Completion settings: Editor -> General -> Code Completion -> Parameter Info
   - Try turning on: `Show parameter name hints on completion` which invokes hints after auto-completion
 
+## Known large issues:
+- lambda following by in if statement breaks the parser [#issue](https://gitlab.com/IceExplosive/gdscript/-/issues/117)
+```
+var labmda = func(x): print(x)
+if true:
+  print(x)
+```
+breaks the code atm is it parses into Ternary expression... workaround is to put `pass` in between
+```
+var labmda = func(x): print(x)
+pass
+if true:
+  print(x)
+```
+- IDE must be opened from Godot's root folder, otherwise resource paths are incorrect [#issue](https://gitlab.com/IceExplosive/gdscript/-/issues/97)
+
 ## Known limitations
 
-- IDE must be opened from Godot's root folder, otherwise resource paths are incorrect [#issue](https://gitlab.com/IceExplosive/gdscript/-/issues/97)
-unless you add class_name and specify that given object is that class (will be supported later on, but can't promise when)
 - get_node(), get_parent() and so on atm do not parse actual Node, but only as a generic Node type (will be supported later on)
 - get_window() (and maybe few other methods) return different class based on context (SubViewport, Window, ...),
 plugin specify it as base Viewport class, so to get completion/check for inherited ones available you have to manually specify the type

@@ -28,9 +28,9 @@ public class GdEndStmtImpl extends ASTWrapperPsiElement implements GdEndStmt {
   }
 
   @Override
-  @NotNull
-  public List<GdNewLineEnd> getNewLineEndList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdNewLineEnd.class);
+  @Nullable
+  public GdNewLineEnd getNewLineEnd() {
+    return PsiTreeUtil.getChildOfType(this, GdNewLineEnd.class);
   }
 
 }
