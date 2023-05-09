@@ -174,9 +174,12 @@ private stmt_r ::= !(NEW_LINE) & stmtNoLine_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
 varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
-    /*pin=2 recoverWhile=stmt_r*/ methods=[getName getReturnType]
+    pin=2 recoverWhile=stmt_r methods=[getName getReturnType]
 }
-constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {/*pin=1 recoverWhile=stmt_r*/ methods=[getName getReturnType getReturnExpr]}
+// TODO tady je endStmt optional, protože to jinak sežere lambda
+constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt? {
+    pin=2 recoverWhile=stmt_r methods=[getName getReturnType getReturnExpr]
+}
 if_st ::= IF expr COLON stmtOrSuite elif_st* else_st? {pin=1 recoverWhile=stmt_r}
 elif_st ::= ELIF expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
 else_st ::= ELSE COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
@@ -267,7 +270,8 @@ stringVal ::= STRING {
 
 funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[getReturnType getReturnExpr getParameters /*getPresentation*/]
-    pin=1 recoverWhile=stmt_r //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"
+    pin=1 recoverWhile=stmt_r
+    //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"
     //elementTypeFactory="gdscript.psi.impl.GdLocalFuncDeclElementType.getInstance"
 }
 funcDeclId_nmi ::= IDENTIFIER
@@ -276,7 +280,7 @@ typed ::= COLON typedVal
 typedVal ::= typeHint (LSBR typeHint RSBR)? {methods=[getReturnType]}
 typeHint ::= typeHint_nm (DOT typeHint_nm)*
 typeHint_nm ::= IDENTIFIER
-endStmt ::= (SEMICON | newLineEnd)+ // TODO SEMICON? newLineEnd
+endStmt ::= (SEMICON | newLineEnd)+
 newLineEnd ::= NEW_LINE
 nodePath ::= NODE_PATH_LEX
 

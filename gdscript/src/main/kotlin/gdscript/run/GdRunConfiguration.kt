@@ -43,8 +43,7 @@ class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions>
         return getTscn().split("/").last().split(".")[0];
     }
 
-    override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> =
-        GdSettingsEditor();
+    override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = GdSettingsEditor()
 
     override fun checkConfiguration() {}
 

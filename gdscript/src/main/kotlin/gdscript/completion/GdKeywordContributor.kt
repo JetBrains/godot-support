@@ -3,10 +3,8 @@ package gdscript.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
-import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.GdKeywords
-import gdscript.psi.GdTypes
-import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.completion.utils.GdRefIdCompletionUtil.DIRECT_REF
 
 class GdKeywordContributor : CompletionContributor() {
 
@@ -27,9 +25,7 @@ class GdKeywordContributor : CompletionContributor() {
     )
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
-        if (psiElement(GdTypes.COMMENT).accepts(parameters.position)) return
-        if (GdClassMemberUtil.calledUpon(parameters.position) != null) return
-
+        if (!DIRECT_REF.accepts(parameters.position)) return
         result.addAllElements(TO_HINT_KEYWORDS.map { GdLookup.create(it, priority = 0.0) })
     }
 

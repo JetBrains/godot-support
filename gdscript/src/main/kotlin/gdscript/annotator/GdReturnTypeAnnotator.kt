@@ -81,7 +81,7 @@ class GdReturnTypeAnnotator : Annotator {
                     matched = matched && GdExprUtil.typeAccepts(type, stmtType, element);
                 }
             }
-            if (matched) {
+            if (matched && stmtType.isNotBlank()) {
                 holder
                     .newAnnotation(HighlightSeverity.WEAK_WARNING, "Function's return type can be specified as [$stmtType]")
                     .range(element.textRange)

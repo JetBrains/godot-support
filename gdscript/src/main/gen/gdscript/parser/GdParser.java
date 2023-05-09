@@ -594,19 +594,19 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // CONST var_nmi typed? (assignTyped expr)? endStmt
+  // CONST var_nmi typed? (assignTyped expr)? endStmt?
   public static boolean constDecl_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constDecl_st")) return false;
-    if (!nextTokenIsFast(b, CONST)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, CONST_DECL_ST, "<const decl st>");
     r = consumeTokenFast(b, CONST);
     r = r && var_nmi(b, l + 1);
-    r = r && constDecl_st_2(b, l + 1);
-    r = r && constDecl_st_3(b, l + 1);
-    r = r && endStmt(b, l + 1);
-    exit_section_(b, m, CONST_DECL_ST, r);
-    return r;
+    p = r; // pin = 2
+    r = r && report_error_(b, constDecl_st_2(b, l + 1));
+    r = p && report_error_(b, constDecl_st_3(b, l + 1)) && r;
+    r = p && constDecl_st_4(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, GdParser::stmt_r);
+    return r || p;
   }
 
   // typed?
@@ -632,6 +632,13 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && expr(b, l + 1, -1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // endStmt?
+  private static boolean constDecl_st_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "constDecl_st_4")) return false;
+    endStmt(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -2483,16 +2490,16 @@ public class GdParser implements PsiParser, LightPsiParser {
   // VAR var_nmi typed? (assignTyped expr)? endStmt?
   public static boolean varDecl_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "varDecl_st")) return false;
-    if (!nextTokenIsFast(b, VAR)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, VAR_DECL_ST, "<var decl st>");
     r = consumeTokenFast(b, VAR);
     r = r && var_nmi(b, l + 1);
-    r = r && varDecl_st_2(b, l + 1);
-    r = r && varDecl_st_3(b, l + 1);
-    r = r && varDecl_st_4(b, l + 1);
-    exit_section_(b, m, VAR_DECL_ST, r);
-    return r;
+    p = r; // pin = 2
+    r = r && report_error_(b, varDecl_st_2(b, l + 1));
+    r = p && report_error_(b, varDecl_st_3(b, l + 1)) && r;
+    r = p && varDecl_st_4(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, GdParser::stmt_r);
+    return r || p;
   }
 
   // typed?

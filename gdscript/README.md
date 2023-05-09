@@ -25,7 +25,6 @@ it's required to be thorough when specifying types
 ## Known limitations
 
 - IDE must be opened from Godot's root folder, otherwise resource paths are incorrect [#issue](https://gitlab.com/IceExplosive/gdscript/-/issues/97)
-- Attached scripts are not parsed -> if you create a method and attach it to Node3D f.e. autocompletion won't find it
 unless you add class_name and specify that given object is that class (will be supported later on, but can't promise when)
 - get_node(), get_parent() and so on atm do not parse actual Node, but only as a generic Node type (will be supported later on)
 - get_window() (and maybe few other methods) return different class based on context (SubViewport, Window, ...),

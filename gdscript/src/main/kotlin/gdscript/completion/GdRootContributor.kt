@@ -38,20 +38,20 @@ class GdRootContributor : CompletionContributor() {
     }
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
-        val position = parameters.position;
-        val previous = PsiTreeUtil.prevCodeLeaf(position.originalElement);
+        val position = parameters.position
+        val previous = PsiTreeUtil.prevCodeLeaf(position.originalElement)
 
         if (previous === null || ROOT_POSITION.accepts(position)) {
-            result.addElement(GdLookup.create(GdKeywords.EXTENDS));
+            result.addElement(GdLookup.create(GdKeywords.EXTENDS))
             // Main class scope
-            addClassName(parameters, result);
-            addTopLvlDecl(parameters, result);
+            addClassName(parameters, result)
+            addTopLvlDecl(parameters, result)
         } else if (INNER_CLASS_POSITION.accepts(position)) {
             // Inner class
-            addTopLvlDecl(parameters, result);
+//            addTopLvlDecl(parameters, result)
         } else if (ANNOTATOR_DECL.accepts(position)) {
             // After "@"
-            GdClassVarCompletionUtil.annotations(result, false);
+            GdClassVarCompletionUtil.annotations(result, false)
         }
     }
 

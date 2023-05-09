@@ -2,12 +2,14 @@ package gdscript.formatter.block
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.impl.source.tree.FileElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.nextLeaf
 import com.jetbrains.rd.util.forEachReversed
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdAnnotationTl
@@ -117,17 +119,26 @@ class GdBlock : AbstractBlock {
             if (lastNode?.elementType == GdTypes.COLON) {
                 if (atEndOfStmt && preceding != null) {
                     return ChildAttributes(settings.calculateSpaceIndents(preceding, 1 - precedingOffset), null)
+                } else if (preceding != null && lastNode?.nextLeaf(false) is PsiErrorElement) {
+                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 1, true), null)
                 }
-                return ChildAttributes(Indent.getNormalIndent(), null)
+                return ChildAttributes(Indent.getNormalIndent(true), null)
             }
         }
 
         val caretOffset = node.psi.getCaretOffsetIfSingle()
-        if (previousBlock is GdBlock && preceding != null && previousBlock.node.lastChildNode?.elementType == GdTypes.STMT_OR_SUITE) {
+        if (
+            previousBlock is GdBlock && preceding != null
+            && previousBlock.node.lastChildNode?.elementType == GdTypes.STMT_OR_SUITE
+            && previousBlock.node.lastChildNode?.firstChildNode?.elementType == GdTypes.SUITE
+        ) {
             if (caretOffset != null) {
                 val emptyLines = PsiTreeUtil.getDeepestLast(preceding).precedingNewLines(caretOffset)
                 if (emptyLines > 2) {
-                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 2 - emptyLines - precedingOffset), null)
+                    return ChildAttributes(
+                        settings.calculateSpaceIndents(preceding, 2 - emptyLines - precedingOffset),
+                        null
+                    )
                 }
             }
 
@@ -143,7 +154,10 @@ class GdBlock : AbstractBlock {
             if (caretOffset != null) {
                 val emptyLines = PsiTreeUtil.getDeepestLast(node.psi).precedingNewLines(caretOffset)
                 if (emptyLines > 2) {
-                    return ChildAttributes(settings.calculateSpaceIndents(node.psi, 2 - emptyLines - precedingOffset), null)
+                    return ChildAttributes(
+                        settings.calculateSpaceIndents(node.psi, 2 - emptyLines - precedingOffset),
+                        null
+                    )
                 }
             }
 
@@ -173,7 +187,10 @@ class GdBlock : AbstractBlock {
         val split = splitByAnnotation(child1, block2)
         if (split != null) return split
 
-        if (child1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block2.node.elementType == GdTypes.CLASS_VAR_DECL_TL && PsiGdClassVarUtil.isAnnotated(child1.node.psi as GdClassVarDeclTl)) {
+        if (child1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block2.node.elementType == GdTypes.CLASS_VAR_DECL_TL && PsiGdClassVarUtil.isAnnotated(
+                child1.node.psi as GdClassVarDeclTl
+            )
+        ) {
             val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java)
             return Spacing.createSpacing(0, 0, customSettings.LINES_BETWEEN_EXPORT_GROUPS + 1, false, 0)
         }

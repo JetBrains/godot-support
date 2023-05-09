@@ -25,17 +25,8 @@ public class GdDownloadSdk extends JDialog {
         setModal(true);
         getRootPane().setDefaultButton(buttonOK);
 
-        buttonOK.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onOK();
-            }
-        });
-
-        buttonCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                onCancel();
-            }
-        });
+        buttonOK.addActionListener(e -> onOK());
+        buttonCancel.addActionListener(e -> onCancel());
 
         // call onCancel() when cross is clicked
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -71,6 +62,13 @@ public class GdDownloadSdk extends JDialog {
         ));
 
         GdLibraryManager.INSTANCE.listRemoteSdks(versionCb);
+    }
+
+    public static void main(String[] args) {
+        GdDownloadSdk dialog = new GdDownloadSdk();
+        dialog.pack();
+        dialog.setVisible(true);
+        System.exit(0);
     }
 
 }

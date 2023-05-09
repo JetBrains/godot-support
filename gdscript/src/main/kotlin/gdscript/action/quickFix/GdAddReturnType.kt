@@ -13,33 +13,33 @@ import gdscript.psi.*
 
 class GdAddReturnType : BaseIntentionAction {
 
-    private val element: PsiElement;
-    private val desired: String;
+    private val element: PsiElement
+    private val desired: String
 
-    override fun getFamilyName(): String = "Add return type";
-    override fun getText(): String = "Specify return type [$desired]";
+    override fun getFamilyName(): String = "Add return type"
+    override fun getText(): String = "Specify return type [$desired]"
 
     constructor(element: PsiElement, desired: String) {
-        this.element = element;
-        this.desired = desired;
+        this.element = element
+        this.desired = desired
     }
 
-    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean = true;
+    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean = true
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         if (editor == null || file == null) {
-            return;
+            return
         }
-        val caret = editor.caretModel;
+        val caret = editor.caretModel
 
         val typed = when (element) {
-            is GdMethodDeclTl -> methodDecl(element);
-            is GdClassVarDeclTl -> classVarDecl(element);
-            is GdConstDeclTl -> constDecl(element);
-            is GdConstDeclSt -> constDeclSt(element);
-            is GdVarDeclSt -> varDeclSt(element);
-            else -> null;
-        } ?: return;
+            is GdMethodDeclTl -> methodDecl(element)
+            is GdClassVarDeclTl -> classVarDecl(element)
+            is GdConstDeclTl -> constDecl(element)
+            is GdConstDeclSt -> constDeclSt(element)
+            is GdVarDeclSt -> varDeclSt(element)
+            else -> null
+        } ?: return
 
         val baseOffset = caret.offset
         caret.moveToOffset(typed.first)
@@ -50,43 +50,43 @@ class GdAddReturnType : BaseIntentionAction {
 
     // TODO tohle zobecnit také pro lambdu
     private fun methodDecl(element: GdMethodDeclTl): Pair<Int, String>? {
-        var child = element.firstChild;
+        var child = element.firstChild
         while (child != null) {
             if (child.elementType == GdTypes.COLON) {
                 break
             }
-            child = child.nextSibling;
+            child = child.nextSibling
         }
 
         if (child == null) {
-            return null;
+            return null
         }
 
-        return Pair(child.textOffset, " -> $desired");
+        return Pair(child.textOffset, " -> $desired")
     }
 
     private fun classVarDecl(element: GdClassVarDeclTl): Pair<Int, String>? {
-        val offset = element.varNmi?.endOffset ?: return null;
+        val offset = element.varNmi?.endOffset ?: return null
 
-        return Pair(offset, ": $desired");
+        return Pair(offset, ": $desired")
     }
 
     private fun constDecl(element: GdConstDeclTl): Pair<Int, String>? {
-        val offset = element.varNmi?.endOffset ?: return null;
+        val offset = element.varNmi?.endOffset ?: return null
 
-        return Pair(offset, ": $desired");
+        return Pair(offset, ": $desired")
     }
 
     private fun varDeclSt(element: GdVarDeclSt): Pair<Int, String> {
-        val offset = element.varNmi.endOffset;
+        val offset = element.varNmi.endOffset
 
-        return Pair(offset, ": $desired");
+        return Pair(offset, ": $desired")
     }
 
     private fun constDeclSt(element: GdConstDeclSt): Pair<Int, String> {
-        val offset = element.varNmi?.endOffset ?: 0;
+        val offset = element.varNmi.endOffset
 
-        return Pair(offset, ": $desired");
+        return Pair(offset, ": $desired")
     }
 
 }
