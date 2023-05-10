@@ -35,12 +35,6 @@ public class GdConstDeclStImpl extends GdStmtImpl implements GdConstDeclSt {
 
   @Override
   @Nullable
-  public GdEndStmt getEndStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
-  }
-
-  @Override
-  @Nullable
   public GdExpr getExpr() {
     return PsiTreeUtil.getChildOfType(this, GdExpr.class);
   }

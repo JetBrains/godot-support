@@ -155,13 +155,13 @@ suite ::= NEW_LINE? INDENT (NEW_LINE | stmt)+ DEDENT { pin=2 recoverWhile=stmt_r
 
 stmt ::=
     assign_st
-    | varDecl_st
-    | constDecl_st
+    | varDecl_st endStmt
+    | constDecl_st endStmt
     | if_st
     | while_st
     | for_st
     | match_st
-    | flow_st
+    | flow_st endStmt
     | await_st
     | expr_st
     | BAD_CHARACTER // tohle je hack aby GdStmtImpl nebyl abstract class při token např. Ł to jinak nevyparsuje
@@ -170,21 +170,21 @@ private stmtNoLine_r ::= !(SET | GET | IF | PASS
     | RETURN | AWAIT | ASSET | INDENT | DEDENT
     | NEGATE | ELIF | ELSE | UNDER
     | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
-private stmt_r ::= !(NEW_LINE) & stmtNoLine_r
+private stmt_r ::= !(NEW_LINE | SEMICON) & stmtNoLine_r
 
 // TODO tady je endStmt optional, protože to jinak sežere lambda
-varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
+varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? {
     pin=2 recoverWhile=stmt_r methods=[getName getReturnType]
 }
 // TODO tady je endStmt optional, protože to jinak sežere lambda
-constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt? {
+constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? {
     pin=2 recoverWhile=stmt_r methods=[getName getReturnType getReturnExpr]
 }
 if_st ::= IF expr COLON stmtOrSuite elif_st* else_st? {pin=1 recoverWhile=stmt_r}
 elif_st ::= ELIF expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
 else_st ::= ELSE COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
-while_st ::= WHILE expr COLON stmtOrSuite {pin=1 /*recoverWhile=stmt_r*/}
-for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=1 /*recoverWhile=stmt_r*/}
+while_st ::= WHILE expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
+for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
 
 match_st ::= MATCH expr COLON NEW_LINE INDENT matchBlock+ DEDENT {pin=1 recoverWhile=stmt_r}
 matchBlock ::= patternList COLON stmtOrSuite {pin=2 recoverWhile=stmtNoLine_r}
@@ -202,19 +202,19 @@ await_st ::= AWAIT expr endStmt? //{pin=1 recoverWhile=stmt_r}
 
 assign_st ::= expr assignSign expr endStmt //{ pin=2 }
 assignSign ::= EQ | ASSIGN
-expr_st ::= expr endStmt?
+expr_st ::= expr endStmt
 
 flow_st ::=
-    (CONTINUE
+    CONTINUE
     | BREAK
     | PASS
     | BREAKPOINT
-    | (RETURN expr?))
-    endStmt
+    | RETURN expr?
     {/*pin=1 recoverWhile=stmt_r*/ methods=[getType]}
 
 expr ::=
-    plusMinus_ex
+    funcDecl_ex
+    | plusMinus_ex
     | arr_ex
     | cast_ex
     | ternary_ex
@@ -233,7 +233,6 @@ expr ::=
     | attribute_ex
     | call_ex
     | primary_ex
-    | funcDecl_ex
     | literal_ex
     {methods=[getReturnType getReturnTypeOrRes]}
 
@@ -270,7 +269,7 @@ stringVal ::= STRING {
 
 funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[getReturnType getReturnExpr getParameters /*getPresentation*/]
-    pin=1 recoverWhile=stmt_r
+//    pin=1 recoverWhile=stmtNoLine_r
     //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"
     //elementTypeFactory="gdscript.psi.impl.GdLocalFuncDeclElementType.getInstance"
 }

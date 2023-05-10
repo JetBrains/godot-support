@@ -543,7 +543,7 @@ class GdLexer implements FlexLexer {
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     int yycolumn;
-    boolean eofFinished = false; // TODO remove?
+    boolean eofFinished = false;
 
     boolean newLineProcessed = false;
     // For signals and such, where Indents/NewLines do not matter
@@ -570,10 +570,7 @@ class GdLexer implements FlexLexer {
         }
 
         dedent();
-
-//        if (indent > yylength()) {
-            yypushback(yylength());
-//        }
+        yypushback(yylength());
 
         return true;
     }
@@ -906,12 +903,7 @@ class GdLexer implements FlexLexer {
             { if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;
         } else if (ignored > 0) {
-//            if (ignored == 0) {
-//                ignoreIndent = false;
-//                return GdTypes.NEW_LINE;
-//            } else {
-                return TokenType.WHITE_SPACE;
-//            }
+            return TokenType.WHITE_SPACE;
         }
 
         if (newLineProcessed) {
@@ -1083,17 +1075,17 @@ class GdLexer implements FlexLexer {
             // fall through
           case 112: break;
           case 26: 
-            { lineEnded = true; return GdTypes.SEMICON;
+            { newLineProcessed = true; return GdTypes.SEMICON;
             } 
             // fall through
           case 113: break;
           case 27: 
-            { /*if (ignoreIndent) { ignored++; }*/ ignored++; return dedentRoot(GdTypes.LRBR);
+            { ignored++; return dedentRoot(GdTypes.LRBR);
             } 
             // fall through
           case 114: break;
           case 28: 
-            { /*if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } }*/ ignored--; return GdTypes.RRBR;
+            { ignored--; return dedentRoot(GdTypes.RRBR);
             } 
             // fall through
           case 115: break;
@@ -1103,17 +1095,17 @@ class GdLexer implements FlexLexer {
             // fall through
           case 116: break;
           case 30: 
-            { ignored--; return GdTypes.RSBR;
+            { ignored--; return dedentRoot(GdTypes.RSBR);
             } 
             // fall through
           case 117: break;
           case 31: 
-            { /*if (ignoreIndent) { ignored++; }*/ignored++; return dedentRoot(GdTypes.LCBR);
+            { ignored++; return dedentRoot(GdTypes.LCBR);
             } 
             // fall through
           case 118: break;
           case 32: 
-            { /*if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } } */ignored--; return GdTypes.RCBR;
+            { ignored--; return dedentRoot(GdTypes.RCBR);
             } 
             // fall through
           case 119: break;

@@ -27,4 +27,16 @@ public class GdStmtImpl extends ASTWrapperPsiElement implements GdStmt {
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public GdEndStmt getEndStmt() {
+    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
+  }
+
+  @Override
+  @Nullable
+  public GdStmt getStmt() {
+    return PsiTreeUtil.getChildOfType(this, GdStmt.class);
+  }
+
 }

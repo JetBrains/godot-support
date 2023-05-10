@@ -24,7 +24,7 @@ import java.util.Stack;
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     int yycolumn;
-    boolean eofFinished = false; // TODO remove?
+    boolean eofFinished = false;
 
     boolean newLineProcessed = false;
     // For signals and such, where Indents/NewLines do not matter
@@ -51,10 +51,7 @@ import java.util.Stack;
         }
 
         dedent();
-
-//        if (indent > yylength()) {
-            yypushback(yylength());
-//        }
+        yypushback(yylength());
 
         return true;
     }
@@ -171,7 +168,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     ","            { return dedentRoot(GdTypes.COMMA); }
     ":="           { return dedentRoot(GdTypes.CEQ); }
     ":"            { return dedentRoot(GdTypes.COLON); }
-    ";"            { lineEnded = true; return GdTypes.SEMICON; }
+    ";"            { newLineProcessed = true; return GdTypes.SEMICON; }
     "!"            { return dedentRoot(GdTypes.NEGATE); }
     "not"          { return dedentRoot(GdTypes.NEGATE); }
     "="            { return dedentRoot(GdTypes.EQ); }
@@ -179,13 +176,12 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     ">>"           { return dedentRoot(GdTypes.RBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
-    "("            { /*if (ignoreIndent) { ignored++; }*/ ignored++; return dedentRoot(GdTypes.LRBR); }
-    ")"            { /*if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } }*/ ignored--; return GdTypes.RRBR; }
+    "("            { ignored++; return dedentRoot(GdTypes.LRBR); }
+    ")"            { ignored--; return dedentRoot(GdTypes.RRBR); }
     "["            { ignored++; return dedentRoot(GdTypes.LSBR); }
-    "]"            { ignored--; return GdTypes.RSBR; }
-      // TODO resetovat ignored, když bude chybět uzavírací závorka? např. nedopsaný call fn
-    "{"            { /*if (ignoreIndent) { ignored++; }*/ignored++; return dedentRoot(GdTypes.LCBR); }
-    "}"            { /*if (ignoreIndent) { if (--ignored == 0) { ignoreIndent = false; } } */ignored--; return GdTypes.RCBR; }
+    "]"            { ignored--; return dedentRoot(GdTypes.RSBR); }
+    "{"            { ignored++; return dedentRoot(GdTypes.LCBR); }
+    "}"            { ignored--; return dedentRoot(GdTypes.RCBR); }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
@@ -266,12 +262,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
         if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;
         } else if (ignored > 0) {
-//            if (ignored == 0) {
-//                ignoreIndent = false;
-//                return GdTypes.NEW_LINE;
-//            } else {
-                return TokenType.WHITE_SPACE;
-//            }
+            return TokenType.WHITE_SPACE;
         }
 
         if (newLineProcessed) {
@@ -302,8 +293,6 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
 
         return TokenType.WHITE_SPACE;
     }
-
-//    {IGNORE_NEW_LINE} { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
     if (yycolumn > 0 && !eofFinished) {

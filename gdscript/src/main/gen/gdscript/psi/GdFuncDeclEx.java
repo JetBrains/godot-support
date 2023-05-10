@@ -17,7 +17,7 @@ public interface GdFuncDeclEx extends GdExpr {
   @Nullable
   GdReturnHint getReturnHint();
 
-  @Nullable
+  @NotNull
   GdStmtOrSuite getStmtOrSuite();
 
   @NotNull
