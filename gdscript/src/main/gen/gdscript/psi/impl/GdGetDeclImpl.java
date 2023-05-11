@@ -29,6 +29,12 @@ public class GdGetDeclImpl extends ASTWrapperPsiElement implements GdGetDecl {
 
   @Override
   @Nullable
+  public GdEndStmt getEndStmt() {
+    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
+  }
+
+  @Override
+  @Nullable
   public GdGetMethodIdNm getGetMethodIdNm() {
     return PsiTreeUtil.getChildOfType(this, GdGetMethodIdNm.class);
   }

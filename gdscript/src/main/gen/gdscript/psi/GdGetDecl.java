@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GdGetDecl extends PsiElement {
 
   @Nullable
+  GdEndStmt getEndStmt();
+
+  @Nullable
   GdGetMethodIdNm getGetMethodIdNm();
 
   @Nullable

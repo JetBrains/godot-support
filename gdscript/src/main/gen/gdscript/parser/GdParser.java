@@ -1222,7 +1222,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // GET ((COLON stmtOrSuite) | (EQ getMethodId_nm COMMA?))
+  // GET ((COLON stmtOrSuite) | (EQ getMethodId_nm (COMMA | endStmt)?))
   public static boolean getDecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "getDecl")) return false;
     boolean r, p;
@@ -1234,7 +1234,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // (COLON stmtOrSuite) | (EQ getMethodId_nm COMMA?)
+  // (COLON stmtOrSuite) | (EQ getMethodId_nm (COMMA | endStmt)?)
   private static boolean getDecl_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "getDecl_1")) return false;
     boolean r;
@@ -1256,7 +1256,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // EQ getMethodId_nm COMMA?
+  // EQ getMethodId_nm (COMMA | endStmt)?
   private static boolean getDecl_1_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "getDecl_1_1")) return false;
     boolean r;
@@ -1268,11 +1268,20 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // COMMA?
+  // (COMMA | endStmt)?
   private static boolean getDecl_1_1_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "getDecl_1_1_2")) return false;
-    consumeToken(b, COMMA);
+    getDecl_1_1_2_0(b, l + 1);
     return true;
+  }
+
+  // COMMA | endStmt
+  private static boolean getDecl_1_1_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "getDecl_1_1_2_0")) return false;
+    boolean r;
+    r = consumeToken(b, COMMA);
+    if (!r) r = endStmt(b, l + 1);
+    return r;
   }
 
   /* ********************************************************** */
@@ -1818,7 +1827,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // SET ((LRBR var_nmi typed? RRBR COLON stmtOrSuite) | (EQ setMethodId_nm COMMA?))
+  // SET ((LRBR var_nmi typed? RRBR COLON stmtOrSuite) | (EQ setMethodId_nm (COMMA | endStmt)?))
   public static boolean setDecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "setDecl")) return false;
     boolean r, p;
@@ -1830,7 +1839,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // (LRBR var_nmi typed? RRBR COLON stmtOrSuite) | (EQ setMethodId_nm COMMA?)
+  // (LRBR var_nmi typed? RRBR COLON stmtOrSuite) | (EQ setMethodId_nm (COMMA | endStmt)?)
   private static boolean setDecl_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "setDecl_1")) return false;
     boolean r;
@@ -1862,7 +1871,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // EQ setMethodId_nm COMMA?
+  // EQ setMethodId_nm (COMMA | endStmt)?
   private static boolean setDecl_1_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "setDecl_1_1")) return false;
     boolean r;
@@ -1874,11 +1883,20 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // COMMA?
+  // (COMMA | endStmt)?
   private static boolean setDecl_1_1_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "setDecl_1_1_2")) return false;
-    consumeToken(b, COMMA);
+    setDecl_1_1_2_0(b, l + 1);
     return true;
+  }
+
+  // COMMA | endStmt
+  private static boolean setDecl_1_1_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "setDecl_1_1_2_0")) return false;
+    boolean r;
+    r = consumeToken(b, COMMA);
+    if (!r) r = endStmt(b, l + 1);
+    return r;
   }
 
   /* ********************************************************** */

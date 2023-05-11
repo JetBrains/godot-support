@@ -29,6 +29,12 @@ public class GdSetDeclImpl extends ASTWrapperPsiElement implements GdSetDecl {
 
   @Override
   @Nullable
+  public GdEndStmt getEndStmt() {
+    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
+  }
+
+  @Override
+  @Nullable
   public GdSetMethodIdNm getSetMethodIdNm() {
     return PsiTreeUtil.getChildOfType(this, GdSetMethodIdNm.class);
   }
