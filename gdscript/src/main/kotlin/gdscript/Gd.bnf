@@ -151,6 +151,7 @@ classDecl_tl ::= CLASS className_nmi inheritance? COLON NEW_LINE (INDENT (inheri
 }
 
 stmtOrSuite ::= stmt | suite+
+exprOrSuite ::= expr | suite+
 suite ::= NEW_LINE? INDENT (NEW_LINE | stmt)+ DEDENT { pin=2 recoverWhile=stmt_r }
 
 stmt ::=
@@ -267,7 +268,7 @@ stringVal ::= STRING {
     elementTypeFactory="gdscript.psi.impl.GdStringValElementType.getInstance"
 }
 
-funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
+funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON exprOrSuite {
     methods=[getReturnType getReturnExpr getParameters /*getPresentation*/]
 //    pin=1 recoverWhile=stmtNoLine_r
     //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"

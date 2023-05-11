@@ -8,6 +8,9 @@ import java.util.LinkedHashMap;
 
 public interface GdFuncDeclEx extends GdExpr {
 
+  @NotNull
+  GdExprOrSuite getExprOrSuite();
+
   @Nullable
   GdFuncDeclIdNmi getFuncDeclIdNmi();
 
@@ -16,9 +19,6 @@ public interface GdFuncDeclEx extends GdExpr {
 
   @Nullable
   GdReturnHint getReturnHint();
-
-  @NotNull
-  GdStmtOrSuite getStmtOrSuite();
 
   @NotNull
   String getReturnType();

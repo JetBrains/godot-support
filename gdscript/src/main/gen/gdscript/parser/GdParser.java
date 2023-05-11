@@ -1037,6 +1037,33 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // expr | suite+
+  public static boolean exprOrSuite(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "exprOrSuite")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, EXPR_OR_SUITE, "<expr or suite>");
+    r = expr(b, l + 1, -1);
+    if (!r) r = exprOrSuite_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // suite+
+  private static boolean exprOrSuite_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "exprOrSuite_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = suite(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!suite(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "exprOrSuite_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // expr endStmt
   public static boolean expr_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr_st")) return false;
@@ -2662,7 +2689,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite
+  // FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON exprOrSuite
   public static boolean funcDecl_ex(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "funcDecl_ex")) return false;
     if (!nextTokenIsSmart(b, FUNC)) return false;
@@ -2675,9 +2702,8 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && consumeToken(b, RRBR);
     r = r && funcDecl_ex_5(b, l + 1);
     r = r && consumeToken(b, COLON);
-    r = r && stmtOrSuite(b, l + 1);
+    r = r && exprOrSuite(b, l + 1);
     exit_section_(b, m, FUNC_DECL_EX, r);
-
     return r;
   }
 
