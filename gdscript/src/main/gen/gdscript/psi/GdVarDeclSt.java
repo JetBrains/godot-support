@@ -11,6 +11,9 @@ public interface GdVarDeclSt extends GdStmt {
   GdAssignTyped getAssignTyped();
 
   @Nullable
+  GdEndStmt getEndStmt();
+
+  @Nullable
   GdExpr getExpr();
 
   @Nullable

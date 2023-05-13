@@ -7,10 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface GdStmt extends PsiElement {
 
-  @Nullable
-  GdEndStmt getEndStmt();
-
-  @Nullable
-  GdStmt getStmt();
-
 }

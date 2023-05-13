@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GdAwaitSt extends GdStmt {
 
   @NotNull
+  GdEndStmt getEndStmt();
+
+  @NotNull
   GdExpr getExpr();
 
 }

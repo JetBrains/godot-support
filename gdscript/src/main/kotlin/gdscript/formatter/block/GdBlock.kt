@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.impl.source.tree.FileElement
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeaf
@@ -182,10 +183,10 @@ class GdBlock : AbstractBlock {
             block2 = block2.nextBlock
         }
         if (block2 == null) return null
+        block2 = functionAnnotation(block2)
 
         // Separation of @onready & @export variables
-        val split = splitByAnnotation(child1, block2)
-        if (split != null) return split
+        splitByAnnotation(child1, block2)?.let{ return it }
 
         if (child1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block2.node.elementType == GdTypes.CLASS_VAR_DECL_TL && PsiGdClassVarUtil.isAnnotated(
                 child1.node.psi as GdClassVarDeclTl
@@ -226,6 +227,21 @@ class GdBlock : AbstractBlock {
         }
 
         return null
+    }
+
+    private fun functionAnnotation(block: GdBlock): GdBlock {
+        var current: GdBlock? = block
+        var type: IElementType? = block.node.elementType
+        var any = false
+
+        while (type == GdTypes.ANNOTATION_TL) {
+            any = true
+            current = block.nextBlock
+            type = current?.node?.elementType
+        }
+
+        if (any && type == GdTypes.METHOD_DECL_TL) return current!!
+        return block
     }
 
 }

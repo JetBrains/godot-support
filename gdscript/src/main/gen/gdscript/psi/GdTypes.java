@@ -461,9 +461,6 @@ public interface GdTypes {
       else if (type == SIGN_EX) {
         return new GdSignExImpl(node);
       }
-      else if (type == STMT) {
-        return new GdStmtImpl(node);
-      }
       else if (type == STMT_OR_SUITE) {
         return new GdStmtOrSuiteImpl(node);
       }
