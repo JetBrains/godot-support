@@ -379,7 +379,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // expr assignSign expr endStmt
+  // expr assignSign expr
   public static boolean assign_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "assign_st")) return false;
     boolean r;
@@ -387,13 +387,12 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = expr(b, l + 1, -1);
     r = r && assignSign(b, l + 1);
     r = r && expr(b, l + 1, -1);
-    r = r && endStmt(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // AWAIT expr endStmt
+  // AWAIT expr
   public static boolean await_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "await_st")) return false;
     if (!nextTokenIsFast(b, AWAIT)) return false;
@@ -401,7 +400,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeTokenFast(b, AWAIT);
     r = r && expr(b, l + 1, -1);
-    r = r && endStmt(b, l + 1);
     exit_section_(b, m, AWAIT_ST, r);
     return r;
   }
@@ -587,7 +585,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // CONST var_nmi typed? (assignTyped expr)? endStmt
+  // CONST var_nmi typed? (assignTyped expr)?
   public static boolean constDecl_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constDecl_st")) return false;
     boolean r, p;
@@ -596,8 +594,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && var_nmi(b, l + 1);
     p = r; // pin = 2
     r = r && report_error_(b, constDecl_st_2(b, l + 1));
-    r = p && report_error_(b, constDecl_st_3(b, l + 1)) && r;
-    r = p && endStmt(b, l + 1) && r;
+    r = p && constDecl_st_3(b, l + 1) && r;
     exit_section_(b, l, m, r, p, GdParser::stmt_r);
     return r || p;
   }
@@ -1031,40 +1028,12 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // expr | suite+
-  public static boolean exprOrSuite(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "exprOrSuite")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, EXPR_OR_SUITE, "<expr or suite>");
-    r = expr(b, l + 1, -1);
-    if (!r) r = exprOrSuite_1(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // suite+
-  private static boolean exprOrSuite_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "exprOrSuite_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = suite(b, l + 1);
-    while (r) {
-      int c = current_position_(b);
-      if (!suite(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "exprOrSuite_1", c)) break;
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // expr endStmt
+  // expr
   public static boolean expr_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "expr_st")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, EXPR_ST, "<expr st>");
     r = expr(b, l + 1, -1);
-    r = r && endStmt(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -1084,54 +1053,38 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (CONTINUE
-  //     | BREAK
-  //     | PASS
-  //     | BREAKPOINT
-  //     | RETURN expr?)
-  //     endStmt
-  public static boolean flow_st(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "flow_st")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, FLOW_ST, "<flow st>");
-    r = flow_st_0(b, l + 1);
-    r = r && endStmt(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
   // CONTINUE
   //     | BREAK
   //     | PASS
   //     | BREAKPOINT
   //     | RETURN expr?
-  private static boolean flow_st_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "flow_st_0")) return false;
+  public static boolean flow_st(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flow_st")) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, FLOW_ST, "<flow st>");
     r = consumeTokenFast(b, CONTINUE);
     if (!r) r = consumeTokenFast(b, BREAK);
     if (!r) r = consumeTokenFast(b, PASS);
     if (!r) r = consumeTokenFast(b, BREAKPOINT);
-    if (!r) r = flow_st_0_4(b, l + 1);
-    exit_section_(b, m, null, r);
+    if (!r) r = flow_st_4(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   // RETURN expr?
-  private static boolean flow_st_0_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "flow_st_0_4")) return false;
+  private static boolean flow_st_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flow_st_4")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenFast(b, RETURN);
-    r = r && flow_st_0_4_1(b, l + 1);
+    r = r && flow_st_4_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // expr?
-  private static boolean flow_st_0_4_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "flow_st_0_4_1")) return false;
+  private static boolean flow_st_4_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "flow_st_4_1")) return false;
     expr(b, l + 1, -1);
     return true;
   }
@@ -1660,7 +1613,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // VAR? var_nmi typed? (EQ expr)?
+  // VAR? var_nmi typed? (assignTyped expr)?
   public static boolean param(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "param")) return false;
     boolean r;
@@ -1687,19 +1640,19 @@ public class GdParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (EQ expr)?
+  // (assignTyped expr)?
   private static boolean param_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "param_3")) return false;
     param_3_0(b, l + 1);
     return true;
   }
 
-  // EQ expr
+  // assignTyped expr
   private static boolean param_3_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "param_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, EQ);
+    r = assignTyped(b, l + 1);
     r = r && expr(b, l + 1, -1);
     exit_section_(b, m, null, r);
     return r;
@@ -2115,31 +2068,112 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // assign_st
-  //     | varDecl_st
-  //     | constDecl_st
+  // (assign_st endStmt)
+  // // TODO tady je endStmt optional, protože to jinak sežere lambda
+  //     | (varDecl_st endStmt?)
+  //     | (constDecl_st endStmt?)
   //     | if_st
   //     | while_st
   //     | for_st
   //     | match_st
-  //     | flow_st
-  //     | await_st
-  //     | expr_st
+  //     | (flow_st endStmt)
+  //     | (await_st endStmt)
+  //     | (expr_st endStmt)
   public static boolean stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stmt")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, STMT, "<stmt>");
-    r = assign_st(b, l + 1);
-    if (!r) r = varDecl_st(b, l + 1);
-    if (!r) r = constDecl_st(b, l + 1);
+    r = stmt_0(b, l + 1);
+    if (!r) r = stmt_1(b, l + 1);
+    if (!r) r = stmt_2(b, l + 1);
     if (!r) r = if_st(b, l + 1);
     if (!r) r = while_st(b, l + 1);
     if (!r) r = for_st(b, l + 1);
     if (!r) r = match_st(b, l + 1);
-    if (!r) r = flow_st(b, l + 1);
-    if (!r) r = await_st(b, l + 1);
-    if (!r) r = expr_st(b, l + 1);
+    if (!r) r = stmt_7(b, l + 1);
+    if (!r) r = stmt_8(b, l + 1);
+    if (!r) r = stmt_9(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // assign_st endStmt
+  private static boolean stmt_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmt_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = assign_st(b, l + 1);
+    r = r && endStmt(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // varDecl_st endStmt?
+  private static boolean stmt_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmt_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = varDecl_st(b, l + 1);
+    r = r && stmt_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // endStmt?
+  private static boolean stmt_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmt_1_1")) return false;
+    endStmt(b, l + 1);
+    return true;
+  }
+
+  // constDecl_st endStmt?
+  private static boolean stmt_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmt_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = constDecl_st(b, l + 1);
+    r = r && stmt_2_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // endStmt?
+  private static boolean stmt_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmt_2_1")) return false;
+    endStmt(b, l + 1);
+    return true;
+  }
+
+  // flow_st endStmt
+  private static boolean stmt_7(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmt_7")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = flow_st(b, l + 1);
+    r = r && endStmt(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // await_st endStmt
+  private static boolean stmt_8(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmt_8")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = await_st(b, l + 1);
+    r = r && endStmt(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // expr_st endStmt
+  private static boolean stmt_9(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmt_9")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = expr_st(b, l + 1);
+    r = r && endStmt(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -2504,7 +2538,7 @@ public class GdParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // VAR var_nmi typed? (assignTyped expr)? endStmt?
+  // VAR var_nmi typed? (assignTyped expr)?
   public static boolean varDecl_st(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "varDecl_st")) return false;
     boolean r, p;
@@ -2513,8 +2547,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && var_nmi(b, l + 1);
     p = r; // pin = 2
     r = r && report_error_(b, varDecl_st_2(b, l + 1));
-    r = p && report_error_(b, varDecl_st_3(b, l + 1)) && r;
-    r = p && varDecl_st_4(b, l + 1) && r;
+    r = p && varDecl_st_3(b, l + 1) && r;
     exit_section_(b, l, m, r, p, GdParser::stmt_r);
     return r || p;
   }
@@ -2542,13 +2575,6 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && expr(b, l + 1, -1);
     exit_section_(b, m, null, r);
     return r;
-  }
-
-  // endStmt?
-  private static boolean varDecl_st_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "varDecl_st_4")) return false;
-    endStmt(b, l + 1);
-    return true;
   }
 
   /* ********************************************************** */
@@ -2690,7 +2716,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON exprOrSuite
+  // FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite
   public static boolean funcDecl_ex(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "funcDecl_ex")) return false;
     if (!nextTokenIsSmart(b, FUNC)) return false;
@@ -2703,7 +2729,7 @@ public class GdParser implements PsiParser, LightPsiParser {
     r = r && consumeToken(b, RRBR);
     r = r && funcDecl_ex_5(b, l + 1);
     r = r && consumeToken(b, COLON);
-    r = r && exprOrSuite(b, l + 1);
+    r = r && stmtOrSuite(b, l + 1);
     exit_section_(b, m, FUNC_DECL_EX, r);
     return r;
   }

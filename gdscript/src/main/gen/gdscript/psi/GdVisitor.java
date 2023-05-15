@@ -151,10 +151,6 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitExprOrSuite(@NotNull GdExprOrSuite o) {
-    visitPsiElement(o);
-  }
-
   public void visitExprSt(@NotNull GdExprSt o) {
     visitStmt(o);
   }

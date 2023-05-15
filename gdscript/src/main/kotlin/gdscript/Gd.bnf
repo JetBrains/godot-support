@@ -135,7 +135,7 @@ methodDecl_tl ::= methodSpecifier* FUNC methodId_nmi LRBR paramList? RRBR return
 methodSpecifier ::= STATIC | VARARG | MASTER | PUPPET | REMOTE | REMOTESYNC
 methodId_nmi ::= identifierEx
 paramList ::= param (COMMA param)* COMMA? { pin=1 recoverWhile=argList_r }
-param ::= VAR? var_nmi typed? (EQ expr)? {methods=[getReturnType]}
+param ::= VAR? var_nmi typed? (assignTyped expr)? {methods=[getReturnType]}
 returnHint ::= RET returnHintVal
 returnHintVal ::= typedVal | VOID // typeHint_nm | VOID
 argList ::= argExpr (COMMA argExpr)* COMMA? { pin=1 recoverWhile=argList_r }
@@ -151,20 +151,20 @@ classDecl_tl ::= CLASS className_nmi inheritance? COLON NEW_LINE (INDENT (inheri
 }
 
 stmtOrSuite ::= stmt | suite+
-exprOrSuite ::= expr | suite+
 suite ::= NEW_LINE? INDENT (NEW_LINE | stmt)+ DEDENT { pin=2 recoverWhile=stmt_r }
 
 stmt ::=
-    assign_st
-    | varDecl_st
-    | constDecl_st
+    (assign_st endStmt)
+// TODO tady je endStmt optional, protože to jinak sežere lambda
+    | (varDecl_st endStmt?)
+    | (constDecl_st endStmt?)
     | if_st
     | while_st
     | for_st
     | match_st
-    | flow_st
-    | await_st
-    | expr_st
+    | (flow_st endStmt)
+    | (await_st endStmt)
+    | (expr_st endStmt)
 //    | BAD_CHARACTER // tohle je hack aby GdStmtImpl nebyl abstract class při token např. Ł to jinak nevyparsuje
 private stmtNoLine_r ::= !(SET | GET | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
@@ -173,12 +173,10 @@ private stmtNoLine_r ::= !(SET | GET | IF | PASS
     | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
 private stmt_r ::= !(NEW_LINE | endStmt) & stmtNoLine_r
 
-// TODO tady je endStmt optional, protože to jinak sežere lambda
-varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt? {
+varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? {
     pin=2 recoverWhile=stmt_r methods=[getName getReturnType]
 }
-// TODO tady je endStmt optional, protože to jinak sežere lambda
-constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt? {
+constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? {
     pin=2 recoverWhile=stmt_r methods=[getName getReturnType getReturnExpr]
 }
 if_st ::= IF expr COLON stmtOrSuite elif_st* else_st? {pin=1 recoverWhile=stmt_r}
@@ -199,11 +197,11 @@ arrayPattern ::= LSBR ( pattern (COMMA pattern)* (COMMA DOTDOT)? )? RSBR
 dictPattern ::= LCBR keyValuePattern? (COMMA keyValuePattern)* (COMMA DOTDOT)? RCBR
 keyValuePattern ::= STRING [ COLON pattern ]
 
-await_st ::= AWAIT expr endStmt //{pin=1 recoverWhile=stmt_r}
+await_st ::= AWAIT expr //{pin=1 recoverWhile=stmt_r}
 
-assign_st ::= expr assignSign expr endStmt //{ pin=2 }
+assign_st ::= expr assignSign expr //{ pin=2 }
 assignSign ::= EQ | ASSIGN
-expr_st ::= expr endStmt
+expr_st ::= expr
 
 flow_st ::=
     (CONTINUE
@@ -211,7 +209,6 @@ flow_st ::=
     | PASS
     | BREAKPOINT
     | RETURN expr?)
-    endStmt
     {/*pin=1 recoverWhile=stmt_r*/ methods=[getType]}
 
 expr ::=
@@ -269,7 +266,7 @@ stringVal ::= STRING {
     elementTypeFactory="gdscript.psi.impl.GdStringValElementType.getInstance"
 }
 
-funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON exprOrSuite {
+funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
     methods=[getReturnType getReturnExpr getParameters /*getPresentation*/]
 //    pin=1 recoverWhile=stmtNoLine_r
     //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"

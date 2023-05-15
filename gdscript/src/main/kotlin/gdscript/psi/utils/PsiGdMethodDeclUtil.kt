@@ -6,49 +6,51 @@ import gdscript.psi.*
 object PsiGdMethodDeclUtil {
 
     fun isStatic(element: GdMethodDeclTl): Boolean {
-        val stub = element.stub;
-        if (stub !== null) return stub.isStatic();
+        val stub = element.stub
+        if (stub !== null) return stub.isStatic()
 
         return element.methodSpecifierList.any { it.text == GdKeywords.STATIC }
     }
 
     fun isVariadic(element: GdMethodDeclTl): Boolean {
-        val stub = element.stub;
+        val stub = element.stub
         if (stub !== null) {
-            return stub.isVariadic();
+            return stub.isVariadic()
         }
 
         return element.methodSpecifierList.any { it.text == GdKeywords.VARARG }
     }
 
     fun getReturnType(element: GdMethodDeclTl): String {
-        val stub = element.stub;
+        val stub = element.stub
         if (stub !== null) {
-            return stub.returnType();
+            return stub.returnType()
         }
 
-        return element.returnHint?.returnHintVal?.text ?: "";
+        return element.returnHint?.returnHintVal?.text ?: ""
     }
 
     fun getReturnType(element: GdParam): String {
-        return element.typed?.typedVal?.returnType ?: "";
+        element.typed?.let { return PsiGdExprUtil.fromTyped(it) }
+
+        return element.expr?.returnType ?: ""
     }
 
     fun getParameters(element: GdMethodDeclTl): LinkedHashMap<String, String?> {
-        val stub = element.stub;
+        val stub = element.stub
         if (stub !== null) {
-            return stub.parameters();
+            return stub.parameters()
         }
 
         return PsiGdParameterUtil.toHashMap(element.paramList)
     }
 
     fun isConstructor(element: GdMethodDeclTl): Boolean {
-        val stub = element.stub;
-        if (stub != null) return stub.isConstructor();
+        val stub = element.stub
+        if (stub != null) return stub.isConstructor()
 
         return element.name == "_init"
-                || GdClassUtil.getOwningClassName(element) == element.name;
+                || GdClassUtil.getOwningClassName(element) == element.name
     }
 
 }

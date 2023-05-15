@@ -5,7 +5,7 @@ import gdscript.psi.GdVarDeclSt
 object GdVarDeclStUtil {
 
     fun getName(element: GdVarDeclSt): String {
-        return element.varNmi.name;
+        return element.varNmi.name
     }
 
 }

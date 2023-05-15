@@ -11,9 +11,6 @@ public interface GdAssignSt extends GdStmt {
   GdAssignSign getAssignSign();
 
   @NotNull
-  GdEndStmt getEndStmt();
-
-  @NotNull
   List<GdExpr> getExprList();
 
 }

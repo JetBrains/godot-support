@@ -54,7 +54,6 @@ public interface GdTypes {
   IElementType ENUM_VALUE = new GdElementType("ENUM_VALUE");
   IElementType ENUM_VALUE_NMI = new GdElementType("ENUM_VALUE_NMI");
   IElementType EXPR = new GdElementType("EXPR");
-  IElementType EXPR_OR_SUITE = new GdElementType("EXPR_OR_SUITE");
   IElementType EXPR_ST = new GdElementType("EXPR_ST");
   IElementType FACTOR_EX = new GdElementType("FACTOR_EX");
   IElementType FACTOR_SIGN = new GdElementType("FACTOR_SIGN");
@@ -314,9 +313,6 @@ public interface GdTypes {
       else if (type == ENUM_VALUE_NMI) {
         return new GdEnumValueNmiImpl(node);
       }
-      else if (type == EXPR_OR_SUITE) {
-        return new GdExprOrSuiteImpl(node);
-      }
       else if (type == EXPR_ST) {
         return new GdExprStImpl(node);
       }
@@ -460,6 +456,9 @@ public interface GdTypes {
       }
       else if (type == SIGN_EX) {
         return new GdSignExImpl(node);
+      }
+      else if (type == STMT) {
+        return new GdStmtImpl(node);
       }
       else if (type == STMT_OR_SUITE) {
         return new GdStmtOrSuiteImpl(node);

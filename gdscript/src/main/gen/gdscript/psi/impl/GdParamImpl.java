@@ -29,6 +29,12 @@ public class GdParamImpl extends ASTWrapperPsiElement implements GdParam {
 
   @Override
   @Nullable
+  public GdAssignTyped getAssignTyped() {
+    return PsiTreeUtil.getChildOfType(this, GdAssignTyped.class);
+  }
+
+  @Override
+  @Nullable
   public GdExpr getExpr() {
     return PsiTreeUtil.getChildOfType(this, GdExpr.class);
   }

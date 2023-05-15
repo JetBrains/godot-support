@@ -29,12 +29,6 @@ public class GdFuncDeclExImpl extends GdExprImpl implements GdFuncDeclEx {
   }
 
   @Override
-  @NotNull
-  public GdExprOrSuite getExprOrSuite() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExprOrSuite.class));
-  }
-
-  @Override
   @Nullable
   public GdFuncDeclIdNmi getFuncDeclIdNmi() {
     return PsiTreeUtil.getChildOfType(this, GdFuncDeclIdNmi.class);
@@ -50,6 +44,12 @@ public class GdFuncDeclExImpl extends GdExprImpl implements GdFuncDeclEx {
   @Nullable
   public GdReturnHint getReturnHint() {
     return PsiTreeUtil.getChildOfType(this, GdReturnHint.class);
+  }
+
+  @Override
+  @NotNull
+  public GdStmtOrSuite getStmtOrSuite() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class));
   }
 
   @Override

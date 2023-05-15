@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GdParam extends PsiElement {
 
   @Nullable
+  GdAssignTyped getAssignTyped();
+
+  @Nullable
   GdExpr getExpr();
 
   @Nullable

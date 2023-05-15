@@ -8,10 +8,10 @@ import gdscript.psi.GdClassVarDeclTl
 object GdClassVarUtil {
 
     fun getName(element: GdClassVarDeclTl): String {
-        val stub = element.stub;
-        if (stub !== null) return stub.name();
+        val stub = element.stub
+        if (stub !== null) return stub.name()
 
-        return element.varNmi?.name.orEmpty();
+        return element.varNmi?.name.orEmpty()
     }
 
 }
