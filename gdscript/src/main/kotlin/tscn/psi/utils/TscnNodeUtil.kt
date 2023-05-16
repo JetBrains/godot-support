@@ -68,8 +68,8 @@ object TscnNodeUtil {
     /** Data lines */
 
     fun isUniqueNameOwner(element: TscnNodeHeader): Boolean {
-        val stub = element.stub;
-        if (stub != null) return stub.isUniqueNameOwner();
+        val stub = element.stub
+        if (stub != null) return stub.isUniqueNameOwner()
 
         return TscnHeaderUtils.getDataValue(element.parent as TscnParagraph, TscnHeaderUtils.DL_UNIQUE) == "true"
     }

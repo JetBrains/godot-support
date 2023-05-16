@@ -34,9 +34,9 @@ object TscnHeaderUtils {
     fun getValue(values: List<TscnHeaderValue>, key: String): String {
         val value = values.find {
             it.headerValueNm.text == key
-        }?.headerValueVal?.text ?: "";
+        }?.headerValueVal?.text ?: ""
 
-        return value.trim { it == '"' };
+        return value.trim { it == '"' }
     }
 
     /**
@@ -46,7 +46,7 @@ object TscnHeaderUtils {
     fun getDataValue(element: TscnParagraph, key: String): String {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(element, TscnDataLine::class.java).find {
             it.dataLineNm.text == key
-        }?.dataLineValue?.text?.trim(' ') ?: "";
+        }?.dataLineValue?.text?.trim(' ', '\n') ?: ""
     }
 
 }

@@ -28,7 +28,7 @@ object GdNodeUtil {
             .split(":")
             .first()
 
-        return nodes.find { it.relativePath.trim('$') == path || it.uniqueId == path };
+        return nodes.find { it.relativePath.trim('$') == path || it.uniqueId?.trim('%') == path };
     }
 
     /**
