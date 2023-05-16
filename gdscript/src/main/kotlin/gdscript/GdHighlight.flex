@@ -36,6 +36,7 @@ REAL_NUMBER = {NUMBER}e-[0-9]+
 COMMENT = "#"[^\r\n]*
 ANNOTATOR = "@"[a-zA-Z_]*
 NODE_PATH = "^"\"([^\\\"\r\n]|\\.)*\"
+STRING_NAME = "&"\"([^\\\"\r\n]|\\.)*\"
 NODE_PATH_LEX = ( ("$"|"%")[\%a-zA-Z0-9_/]* ) | ( ("$"|"%")\"[\%a-zA-Z0-9:_/\.]*\" )
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
@@ -140,6 +141,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "\\"           { return GdTypes.BACKSLASH; }
 
     {NODE_PATH}        { return GdTypes.NODE_PATH_LIT; }
+    {STRING_NAME}      { return GdTypes.STRING_NAME; }
     {NODE_PATH_LEX}    { return GdTypes.NODE_PATH_LEX; }
 
     {SINGLE_QUOTED_LITERAL}        { return GdTypes.STRING; }

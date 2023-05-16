@@ -62,7 +62,6 @@ interface GdTokenTypeSet {
         val STRINGS = TokenSet.create(
             GdTypes.STRING,
             GdTypes.NODE_PATH,
-            GdTypes.STRING_NAME,
         )
 
         val STRING_FORMAT = TokenSet.create()
@@ -75,11 +74,6 @@ interface GdTokenTypeSet {
             GdTypes.NUMBER
         )
 
-        // White
-        val IDENTIFIERS = TokenSet.create(
-            GdTypes.IDENTIFIER
-        )
-
         // Green
         val ANNOTATIONS = TokenSet.create(
             GdTypes.ANNOTATOR
@@ -90,9 +84,18 @@ interface GdTokenTypeSet {
             GdTypes.NODE_PATH_LEX
         )
 
+        val STRING_NAME = TokenSet.create(
+            GdTypes.STRING_NAME
+        )
+
         // Green
         val NODE_STRING_PATH = TokenSet.create(
             GdTypes.NODE_PATH_LIT,
+        )
+
+        // Blue
+        val MEMBER = TokenSet.create(
+            GdTypes.IDENTIFIER,
         )
 
         // Red

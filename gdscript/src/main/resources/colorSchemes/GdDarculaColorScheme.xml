@@ -60,23 +60,14 @@
             <option name="FOREGROUND" value="a3a3f5" />
         </value>
     </option>
-
-
-
-
-    <option name="GD_MEMBER">
+    <option name="GD_STRING_NAME">
         <value>
-            <option name="FOREGROUND" value="8fffdb" />
+            <option name="FOREGROUND" value="ffc2a6" />
         </value>
     </option>
     <option name="GD_NUMBER">
         <value>
             <option name="FOREGROUND" value="a1ffe0" />
-        </value>
-    </option>
-    <option name="GD_IDENTIFIER">
-        <value>
-            <option name="FOREGROUND" value="cdcfd2" />
         </value>
     </option>
     <option name="GD_COMMENT">
@@ -89,6 +80,15 @@
             <option name="FOREGROUND" value="badeff" />
         </value>
     </option>
+    <option name="GD_MEMBER">
+        <value>
+            <option name="FOREGROUND" value="bce0ff" />
+        </value>
+    </option>
+
+
+
+
     <option name="GD_BAD_CHARACTER">
         <value>
             <option name="FOREGROUND" value="ff786b" />

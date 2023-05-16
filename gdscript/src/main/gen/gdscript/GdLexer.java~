@@ -548,25 +548,17 @@ class GdLexer implements FlexLexer {
     boolean newLineProcessed = false;
     // For signals and such, where Indents/NewLines do not matter
     boolean ignoreIndent = false;
-    boolean dedentEnded = true;
     int ignored = 0;
 
     public IElementType dedentRoot(IElementType type) {
         newLineProcessed = false;
         lineEnded = false;
         if (ignored > 0 || yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
-            if (!dedentEnded) {
-                yypushback(yylength());
-                return GdTypes.END_STMT;
-            }
-
-            dedentEnded = true;
             return type;
         }
 
         dedent();
         yypushback(yylength());
-        dedentEnded = false;
 
         return GdTypes.DEDENT;
     }

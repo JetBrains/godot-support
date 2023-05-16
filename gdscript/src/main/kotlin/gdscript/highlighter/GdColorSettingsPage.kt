@@ -96,10 +96,11 @@ class Something:
             AttributesDescriptor("User type (class_name)", GdHighlighterColors.CLASS_TYPE),
             AttributesDescriptor("Numbers", GdHighlighterColors.NUMBER),
             AttributesDescriptor("Global function", GdHighlighterColors.GLOBAL_FUNCTION),
+            AttributesDescriptor("String names (&\"name\")", GdHighlighterColors.STRING_NAME),
+            AttributesDescriptor("String format marks (\"%s\")", GdHighlighterColors.STRING_FORMAT),
+            AttributesDescriptor("Variable reference", GdHighlighterColors.MEMBER),
 
 
-            AttributesDescriptor("Variables", GdHighlighterColors.IDENTIFIER),
-            AttributesDescriptor("Member reference", GdHighlighterColors.MEMBER),
             AttributesDescriptor("Errors", GdHighlighterColors.BAD_CHARACTER),
         )
     }

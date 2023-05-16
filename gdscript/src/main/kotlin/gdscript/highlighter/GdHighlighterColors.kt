@@ -51,11 +51,6 @@ interface GdHighlighterColors {
             "GD_NUMBER", DefaultLanguageHighlighterColors.NUMBER
         )
 
-        // White
-        val IDENTIFIER = TextAttributesKey.createTextAttributesKey(
-            "GD_IDENTIFIER", DefaultLanguageHighlighterColors.IDENTIFIER
-        )
-
         // Grey
         val COMMENT = TextAttributesKey.createTextAttributesKey(
             "GD_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT
@@ -84,6 +79,11 @@ interface GdHighlighterColors {
         // Green
         val NODE_STRING_PATH = TextAttributesKey.createTextAttributesKey(
             "GD_NODE_STRING_PATH", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG
+        )
+
+        // Yellow
+        val STRING_NAME = TextAttributesKey.createTextAttributesKey(
+            "GD_STRING_NAME", DefaultLanguageHighlighterColors.STRING
         )
 
         // Purple

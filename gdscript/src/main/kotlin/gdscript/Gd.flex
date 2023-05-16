@@ -78,6 +78,7 @@ COMMENT = "#"[^\r\n]*
 INDENTED_COMMENT = {INDENT}"#"
 ANNOTATOR = "@"[a-zA-Z_]*
 NODE_PATH = "^"\"([^\\\"\r\n]|\\.)*\"
+STRING_NAME = "&"\"([^\\\"\r\n]|\\.)*\"
 NODE_PATH_LEX = ( ("$"|"%")[\%a-zA-Z0-9_/]* ) | ( ("$"|"%")\"[\%a-zA-Z0-9:_/\.]*\" )
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "%=" | "&=" | "|="
@@ -195,6 +196,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "\\"           { newLineProcessed = true; ignoreIndent = true; return GdTypes.BACKSLASH; }
 
     {NODE_PATH}     { return dedentRoot(GdTypes.NODE_PATH_LIT); }
+    {STRING_NAME}   { return dedentRoot(GdTypes.STRING_NAME); }
     {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
 
     {SINGLE_QUOTED_LITERAL}        { return dedentRoot(GdTypes.STRING); }
