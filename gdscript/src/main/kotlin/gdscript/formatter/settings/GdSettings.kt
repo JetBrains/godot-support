@@ -20,11 +20,12 @@ object GdSettings {
         Pair(
             "Keep maximum blank lines", hashMapOf(
                 Pair("LINES_AFTER_HEADER", "After class_name/extends header"),
-                Pair("LINES_IN_BETWEEN_VARIABLE_GROUP", "Between variables, constants, etc."),
-                Pair("LINES_AFTER_VARIABLE_GROUP", "Below variables, constants, etc."),
+                Pair("LINES_AFTER_VARIABLE_GROUP", "Between variable groups (f.e. between const & var)"),
+                Pair("LINES_IN_BETWEEN_VARIABLE_GROUP", "Between variables (inside single group)"),
+                Pair("LINES_BETWEEN_EXPORT_GROUPS", "Before @onready, @export group (separation from other vars)"),
+                Pair("LINES_AROUND_MULTILINE_VAR", "Below multi-line variables (overrides above for given var)"),
                 Pair("LINES_BEFORE_FUNC", "Before func declaration"),
-                Pair("LINES_BETWEEN_EXPORT_GROUPS", "Before @onready, @export"),
-                Pair("LINES_WITHIN_SUITE", "Empty lines within suite"),
+                Pair("LINES_WITHIN_SUITE", "Max. empty lines in code"),
             )
         ),
     );

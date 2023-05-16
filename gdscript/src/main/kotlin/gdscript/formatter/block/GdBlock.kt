@@ -21,6 +21,7 @@ import gdscript.utils.GdSettingsUtil.calculateSpaceIndents
 import gdscript.utils.PsiElementUtil.getCaretOffsetIfSingle
 import gdscript.utils.PsiElementUtil.nextNonWhiteCommentToken
 import gdscript.utils.PsiElementUtil.precedingNewLines
+import gdscript.formatter.settings.GdSpacingUtil.forcedLines
 
 class GdBlock : AbstractBlock {
 
@@ -185,6 +186,7 @@ class GdBlock : AbstractBlock {
         if (block2 == null) return null
         block2 = functionAnnotation(block2)
 
+        separateMultilineVars(child1, block2)?.let { return it }
         // Separation of @onready & @export variables
         splitByAnnotation(child1, block2)?.let{ return it }
 
@@ -205,6 +207,27 @@ class GdBlock : AbstractBlock {
 
     override fun isLeaf(): Boolean {
         return myNode.firstChildNode == null;
+    }
+
+    private fun separateMultilineVars(block1: GdBlock, block2: GdBlock): Spacing? {
+        if (block1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block1.node.text.trim().contains('\n')) {
+            if (block2.node.elementType != GdTypes.METHOD_DECL_TL) {
+                val lines = this.settings.getCustomSettings(GdCodeStyleSettings::class.java).LINES_AROUND_MULTILINE_VAR
+                return Spacing.createSpacing(0, 0, lines+1, false, 0)
+            }
+        }
+
+        val block22 = varAnnotation(block2)
+        if (
+            block1.node.elementType != GdTypes.COMMENT
+            && block1.node.elementType != GdTypes.ANNOTATION_TL
+            && block22.node.elementType == GdTypes.CLASS_VAR_DECL_TL
+            && block22.node.text.trim().contains('\n')) {
+            val lines = this.settings.getCustomSettings(GdCodeStyleSettings::class.java).LINES_AROUND_MULTILINE_VAR
+            return Spacing.createSpacing(0, 0, lines+1, false, 0)
+        }
+
+        return null
     }
 
     private fun splitByAnnotation(block1: GdBlock?, block2: GdBlock?): Spacing? {
@@ -241,6 +264,22 @@ class GdBlock : AbstractBlock {
         }
 
         if (any && type == GdTypes.METHOD_DECL_TL) return current!!
+        return block
+    }
+
+    // TODO merge
+    private fun varAnnotation(block: GdBlock): GdBlock {
+        var current: GdBlock? = block
+        var type: IElementType? = block.node.elementType
+        var any = false
+
+        while (type == GdTypes.ANNOTATION_TL) {
+            any = true
+            current = block.nextBlock
+            type = current?.node?.elementType
+        }
+
+        if (any && type == GdTypes.CLASS_VAR_DECL_TL) return current!!
         return block
     }
 

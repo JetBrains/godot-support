@@ -13,6 +13,7 @@ public class GdCodeStyleSettings extends CustomCodeStyleSettings {
     public int LINES_AFTER_VARIABLE_GROUP = 0;
     public int LINES_BETWEEN_EXPORT_GROUPS = 1;
     public int LINES_WITHIN_SUITE = 1;
+    public int LINES_AROUND_MULTILINE_VAR = 1;
 
     /* Spacing */
     public boolean SPACE_BEFORE_COMMA = false;
