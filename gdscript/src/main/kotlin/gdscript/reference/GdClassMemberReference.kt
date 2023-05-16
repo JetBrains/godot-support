@@ -23,6 +23,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
             return when (element) {
                 is GdClassVarDeclTl -> element.varNmi
                 is GdClassDeclTl -> element.classNameNmi
+                is GdConstDeclTl -> element.varNmi
                 is GdVarDeclSt -> element.varNmi
                 is GdConstDeclSt -> element.varNmi
                 is GdEnumDeclTl -> element.enumDeclNmi

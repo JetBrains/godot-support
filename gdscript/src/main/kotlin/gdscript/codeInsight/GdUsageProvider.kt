@@ -31,7 +31,7 @@ class GdUsageProvider : FindUsagesProvider {
     }
 
     override fun getHelpId(psiElement: PsiElement): String? {
-        return null;
+        return null
     }
 
     override fun getType(element: PsiElement): String {
