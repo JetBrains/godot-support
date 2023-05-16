@@ -85,15 +85,20 @@ class Something:
             AttributesDescriptor("Keywords", GdHighlighterColors.KEYWORD),
             AttributesDescriptor("Method declaration", GdHighlighterColors.METHOD_DECLARATION),
             AttributesDescriptor("Method call", GdHighlighterColors.METHOD_CALL),
-            AttributesDescriptor("Class types", GdHighlighterColors.CLASS_TYPE),
             AttributesDescriptor("Flow control", GdHighlighterColors.FLOW_KEYWORDS),
-            AttributesDescriptor("Numbers", GdHighlighterColors.NUMBER),
-            AttributesDescriptor("Variables", GdHighlighterColors.IDENTIFIER),
             AttributesDescriptor("Comments", GdHighlighterColors.COMMENT),
-            AttributesDescriptor("Member reference", GdHighlighterColors.MEMBER),
             AttributesDescriptor("Strings", GdHighlighterColors.STRING),
             AttributesDescriptor("Annotations", GdHighlighterColors.ANNOTATION),
-            AttributesDescriptor("NodePath", GdHighlighterColors.NODE_PATH),
+            AttributesDescriptor("Node path", GdHighlighterColors.NODE_STRING_PATH),
+            AttributesDescriptor("Node reference", GdHighlighterColors.NODE_PATH),
+            AttributesDescriptor("BaseType (Vector3, Node3D)", GdHighlighterColors.BASE_TYPE),
+            AttributesDescriptor("EngineType (Vector3, Node3D)", GdHighlighterColors.ENGINE_TYPE),
+            AttributesDescriptor("User type (class_name)", GdHighlighterColors.CLASS_TYPE),
+            AttributesDescriptor("Numbers", GdHighlighterColors.NUMBER),
+
+
+            AttributesDescriptor("Variables", GdHighlighterColors.IDENTIFIER),
+            AttributesDescriptor("Member reference", GdHighlighterColors.MEMBER),
             AttributesDescriptor("Errors", GdHighlighterColors.BAD_CHARACTER),
         )
     }

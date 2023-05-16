@@ -3,6 +3,7 @@ package gdscript.annotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import gdscript.action.quickFix.GdFileClassNameAction
 import gdscript.highlighter.GdHighlighterColors
@@ -16,6 +17,7 @@ import gdscript.psi.GdInheritanceIdNm
 import gdscript.psi.GdInheritanceSubIdNm
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.PsiGdFileUtil
+import gdscript.utils.PsiFileUtil.isInSdk
 import gdscript.utils.StringUtil.snakeToPascalCase
 
 /**
@@ -28,7 +30,7 @@ class GdClassNameAnnotator : Annotator {
         when (element) {
             is GdInheritanceId -> existingInheritance(element, holder)
             is GdInheritanceIdNm -> colorInheritance(element, holder)
-            is GdInheritanceSubIdNm -> colorClass(element, holder)
+            is GdInheritanceSubIdNm -> colorClass(element, GdHighlighterColors.CLASS_TYPE, holder)
             is GdClassNameNmi -> {
                 alreadyExists(element, holder)
                 classNameToFilename(element, holder)
@@ -54,15 +56,17 @@ class GdClassNameAnnotator : Annotator {
 
     private fun colorInheritance(element: GdInheritanceIdNm, holder: AnnotationHolder) {
         if (element.isClassName) {
-            colorClass(element, holder)
+            if (GdClassUtil.getClassIdElement(element.text, element)?.containingFile?.isInSdk() == true)
+            colorClass(element, GdHighlighterColors.ENGINE_TYPE, holder)
+            else colorClass(element, GdHighlighterColors.CLASS_TYPE, holder)
         }
     }
 
-    private fun colorClass(element: PsiElement, holder: AnnotationHolder) {
+    private fun colorClass(element: PsiElement, color: TextAttributesKey, holder: AnnotationHolder) {
         holder
             .newSilentAnnotation(HighlightSeverity.INFORMATION)
             .range(element.textRange)
-            .textAttributes(GdHighlighterColors.CLASS_TYPE)
+            .textAttributes(color)
             .create()
     }
 
@@ -98,7 +102,7 @@ class GdClassNameAnnotator : Annotator {
     private fun classNameToFilename(element: GdClassNameNmi, holder: AnnotationHolder) {
         if (element.parent !is GdClassNaming) return;
 
-        val name = element.name;
+        val name = element.name
         val filename = PsiGdFileUtil.filename(element.containingFile).snakeToPascalCase()
         if (filename != name) {
             holder

@@ -23,7 +23,6 @@ interface GdTokenTypeSet {
             GdTypes.STATIC,
             GdTypes.VARARG,
             GdTypes.SIGNAL,
-            GdTypes.FOR,
             GdTypes.IN,
             GdTypes.MATCH,
             GdTypes.AWAIT,
@@ -48,6 +47,7 @@ interface GdTokenTypeSet {
 
         // Pink
         val FLOW_KEYWORDS = TokenSet.create(
+            GdTypes.FOR,
             GdTypes.IF,
             GdTypes.ELSE,
             GdTypes.ELIF,
@@ -65,9 +65,7 @@ interface GdTokenTypeSet {
             GdTypes.STRING_NAME,
         )
 
-        val STRING_FORMAT = TokenSet.create(
-//            GdTypes.MOD,
-        )
+        val STRING_FORMAT = TokenSet.create()
 
         // Teal
         val CLASS_TYPE = TokenSet.create()
@@ -90,6 +88,11 @@ interface GdTokenTypeSet {
         // Green
         val NODE_PATH = TokenSet.create(
             GdTypes.NODE_PATH_LEX
+        )
+
+        // Green
+        val NODE_STRING_PATH = TokenSet.create(
+            GdTypes.NODE_PATH_LIT,
         )
 
         // Red

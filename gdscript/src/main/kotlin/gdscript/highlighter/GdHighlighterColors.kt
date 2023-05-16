@@ -37,6 +37,16 @@ interface GdHighlighterColors {
         )
 
         // Teal
+        val ENGINE_TYPE = TextAttributesKey.createTextAttributesKey(
+            "GD_ENGINE_TYPE", DefaultLanguageHighlighterColors.CONSTANT
+        )
+
+        // Teal
+        val BASE_TYPE = TextAttributesKey.createTextAttributesKey(
+            "GD_BASE_TYPE", DefaultLanguageHighlighterColors.CONSTANT
+        )
+
+        // Teal
         val NUMBER = TextAttributesKey.createTextAttributesKey(
             "GD_NUMBER", DefaultLanguageHighlighterColors.NUMBER
         )
@@ -69,6 +79,11 @@ interface GdHighlighterColors {
         // Green
         val NODE_PATH = TextAttributesKey.createTextAttributesKey(
             "GD_NODE_PATH", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG
+        )
+
+        // Green
+        val NODE_STRING_PATH = TextAttributesKey.createTextAttributesKey(
+            "GD_NODE_STRING_PATH", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG
         )
 
         // Red

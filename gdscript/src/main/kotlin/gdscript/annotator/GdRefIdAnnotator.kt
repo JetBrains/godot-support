@@ -13,6 +13,8 @@ import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdProjectState
 import gdscript.utils.PsiElementUtil.getCallExpr
+import gdscript.utils.PsiElementUtil.psi
+import gdscript.utils.PsiFileUtil.isInSdk
 
 /**
  * Colors references
@@ -37,9 +39,12 @@ class GdRefIdAnnotator : Annotator {
             return
         }
 
-        var attribute = when (GdClassMemberUtil.findDeclaration(element)) {
+        var attribute = when (val resolved = GdClassMemberUtil.findDeclaration(element)) {
             is GdMethodDeclTl -> GdHighlighterColors.METHOD_CALL
-            is PsiFile, is GdClassDeclTl -> GdHighlighterColors.CLASS_TYPE
+            is PsiFile, is GdClassDeclTl -> {
+                if (resolved.psi().containingFile.isInSdk()) GdHighlighterColors.ENGINE_TYPE
+                else GdHighlighterColors.CLASS_TYPE
+            }
             null -> run {
                 if (element.text == "new"
                     || GdClassMemberUtil.calledUpon(element)?.returnType == "Dictionary"
@@ -50,7 +55,6 @@ class GdRefIdAnnotator : Annotator {
                 val calledUponType = GdClassMemberUtil.calledUpon(element)
                 // For undefined types do not mark it as error
                 if (calledUponType != null) {
-                    // TODO vázáno na git issue, že připojený script přidává extra metody...
                     if (PsiTreeUtil.findChildOfType(calledUponType, GdNodePath::class.java) != null)
                         return@run GdHighlighterColors.MEMBER
 

@@ -1,6 +1,8 @@
 package gdscript.utils
 
+import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.psi.util.PsiTreeUtil
@@ -9,6 +11,7 @@ import gdscript.psi.GdArgList
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdTypes
 import gdscript.utils.ElementTypeUtil.isSkipable
+import gdscript.utils.PsiFileUtil.isInSdk
 import project.psi.model.GdAutoload
 
 object PsiElementUtil {
