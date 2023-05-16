@@ -55,6 +55,11 @@
             <option name="FOREGROUND" value="42ffc2" />
         </value>
     </option>
+    <option name="GD_GLOBAL_FUNCTION">
+        <value>
+            <option name="FOREGROUND" value="a3a3f5" />
+        </value>
+    </option>
 
 
 

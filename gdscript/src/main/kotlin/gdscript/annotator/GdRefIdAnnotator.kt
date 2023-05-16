@@ -40,7 +40,10 @@ class GdRefIdAnnotator : Annotator {
         }
 
         var attribute = when (val resolved = GdClassMemberUtil.findDeclaration(element)) {
-            is GdMethodDeclTl -> GdHighlighterColors.METHOD_CALL
+            is GdMethodDeclTl -> {
+                if (resolved.containingFile.name.endsWith("GlobalScope.gd")) GdHighlighterColors.GLOBAL_FUNCTION
+                else GdHighlighterColors.METHOD_CALL
+            }
             is PsiFile, is GdClassDeclTl -> {
                 if (resolved.psi().containingFile.isInSdk()) GdHighlighterColors.ENGINE_TYPE
                 else GdHighlighterColors.CLASS_TYPE

@@ -95,6 +95,7 @@ class Something:
             AttributesDescriptor("EngineType (Vector3, Node3D)", GdHighlighterColors.ENGINE_TYPE),
             AttributesDescriptor("User type (class_name)", GdHighlighterColors.CLASS_TYPE),
             AttributesDescriptor("Numbers", GdHighlighterColors.NUMBER),
+            AttributesDescriptor("Global function", GdHighlighterColors.GLOBAL_FUNCTION),
 
 
             AttributesDescriptor("Variables", GdHighlighterColors.IDENTIFIER),

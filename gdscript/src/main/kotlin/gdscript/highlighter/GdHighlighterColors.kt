@@ -86,6 +86,11 @@ interface GdHighlighterColors {
             "GD_NODE_STRING_PATH", DefaultLanguageHighlighterColors.DOC_COMMENT_TAG
         )
 
+        // Purple
+        val GLOBAL_FUNCTION = TextAttributesKey.createTextAttributesKey(
+            "GD_GLOBAL_FUNCTION", DefaultLanguageHighlighterColors.CONSTANT
+        )
+
         // Red
         val BAD_CHARACTER = TextAttributesKey.createTextAttributesKey(
             "GD_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER
