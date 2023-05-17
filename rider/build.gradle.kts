@@ -313,7 +313,7 @@ tasks {
         doLast {
             exec {
                 executable = "dotnet"
-                args = listOf("build", "$resharperPluginPath/godot-support.sln")
+                args("build", "$resharperPluginPath/godot-support.sln", "-c", buildConfiguration)
             }
         }
     }

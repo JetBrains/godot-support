@@ -27,11 +27,11 @@ jobs:
             - name: Build
               shell: bash
               working-directory: rider
-              run: ./gradlew -PbuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
+              run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
             - name: Tests
               shell: bash
               working-directory: rider
-              run: ./gradlew -PbuildConfiguration=Release -PbuildNumber=${{ github.run_number }} test
+              run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} test
             - name: Upload Test Results
               uses: actions/upload-artifact@v2
               with:
