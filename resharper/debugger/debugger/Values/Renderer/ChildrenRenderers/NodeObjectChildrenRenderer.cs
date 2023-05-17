@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.ValueReferences;
 using JetBrains.Util;
@@ -84,7 +85,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.Renderer.Child
             if (method.Parameters.Any())
             {
                 var frame = role.ValueReference.OriginatingFrame;
-                var param = ValueServices.ValueFactory.CreatePrimitive(frame, options, false); // todo: RIDER-90793
+                var param = ValueServices.ValueFactory.CreatePrimitive(frame, options, method.Parameters.First().DefaultValue);
                 returnedPropertyRole = new SimpleValueReference<TValue>(
                         role.CallInstanceMethod(method, param),
                         role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)

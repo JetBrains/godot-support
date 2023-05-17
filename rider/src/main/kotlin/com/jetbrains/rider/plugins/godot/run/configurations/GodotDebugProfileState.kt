@@ -35,7 +35,7 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
 
     override suspend fun createDebuggerWorker(
         workerCmd: GeneralCommandLine,
-        debuggerWorkerModel: DebuggerWorkerModel,
+        protocolModel: DebuggerWorkerModel,
         protocolServerPort: Int,
         projectLifetime: Lifetime
     ): DebuggerWorkerProcessHandler {
@@ -44,9 +44,9 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
 
         val frontendBackendModel = executionEnvironment.project.solution.godotFrontendBackendModel
         frontendBackendModel.backendSettings.enableDebuggerExtensions.flowInto(debuggerWorkerLifetime,
-            debuggerWorkerModel.godotDebuggerWorkerModel.showCustomRenderers)
+            protocolModel.godotDebuggerWorkerModel.showCustomRenderers)
 
-        return super.createDebuggerWorker(workerCmd, debuggerWorkerModel, protocolServerPort, projectLifetime).apply {
+        return super.createDebuggerWorker(workerCmd, protocolModel, protocolServerPort, projectLifetime).apply {
             addProcessListener(object : ProcessAdapter() {
                 override fun processTerminated(event: ProcessEvent) { debuggerWorkerLifetime.terminate() }
             })
