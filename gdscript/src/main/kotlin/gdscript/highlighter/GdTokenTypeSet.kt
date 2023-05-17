@@ -74,6 +74,11 @@ interface GdTokenTypeSet {
             GdTypes.NUMBER
         )
 
+        // White
+        val IDENTIFIERS = TokenSet.create(
+            GdTypes.IDENTIFIER
+        )
+
         // Green
         val ANNOTATIONS = TokenSet.create(
             GdTypes.ANNOTATOR
@@ -94,9 +99,7 @@ interface GdTokenTypeSet {
         )
 
         // Blue
-        val MEMBER = TokenSet.create(
-            GdTypes.IDENTIFIER,
-        )
+        val MEMBER = TokenSet.create()
 
         // Red
         val BAD_CHARACTERS = TokenSet.create(GdTypes.BAD_CHARACTER)

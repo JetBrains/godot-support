@@ -26,6 +26,11 @@ interface GdHighlighterColors {
             "GD_METHOD_CALL", DefaultLanguageHighlighterColors.INSTANCE_METHOD
         )
 
+        // Blue
+        val STATIC_METHOD_CALL = TextAttributesKey.createTextAttributesKey(
+            "GD_STATIC_METHOD_CALL", DefaultLanguageHighlighterColors.INSTANCE_METHOD
+        )
+
         // Teal
         val CLASS_TYPE = TextAttributesKey.createTextAttributesKey(
             "GD_CLASS_TYPE", DefaultLanguageHighlighterColors.KEYWORD

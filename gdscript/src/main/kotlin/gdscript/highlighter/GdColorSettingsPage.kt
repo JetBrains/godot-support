@@ -85,6 +85,7 @@ class Something:
             AttributesDescriptor("Keywords", GdHighlighterColors.KEYWORD),
             AttributesDescriptor("Method declaration", GdHighlighterColors.METHOD_DECLARATION),
             AttributesDescriptor("Method call", GdHighlighterColors.METHOD_CALL),
+            AttributesDescriptor("Static method call", GdHighlighterColors.STATIC_METHOD_CALL),
             AttributesDescriptor("Flow control", GdHighlighterColors.FLOW_KEYWORDS),
             AttributesDescriptor("Comments", GdHighlighterColors.COMMENT),
             AttributesDescriptor("Strings", GdHighlighterColors.STRING),
@@ -99,8 +100,7 @@ class Something:
             AttributesDescriptor("String names (&\"name\")", GdHighlighterColors.STRING_NAME),
             AttributesDescriptor("String format marks (\"%s\")", GdHighlighterColors.STRING_FORMAT),
             AttributesDescriptor("Variable reference", GdHighlighterColors.MEMBER),
-
-
+            AttributesDescriptor("Variable reference", GdHighlighterColors.MEMBER),
             AttributesDescriptor("Errors", GdHighlighterColors.BAD_CHARACTER),
         )
     }
