@@ -4,7 +4,9 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.nextLeaf
 import gdscript.GdKeywords
 import gdscript.utils.GdOperand
 import gdscript.index.impl.GdClassNamingIndex
@@ -167,7 +169,10 @@ object PsiGdExprUtil {
                         is GdVarDeclSt -> element.returnType
                         is GdConstDeclTl -> element.returnType
                         is GdConstDeclSt -> element.returnType
-                        is GdMethodDeclTl -> element.returnType
+                        is GdMethodDeclTl -> {
+                            if (PsiTreeUtil.nextVisibleLeaf(expr)?.elementType == GdTypes.LRBR) element.returnType
+                            else "Callable"
+                        }
                         is GdSignalDeclTl -> "Signal"
                         is GdEnumDeclTl -> "EnumDictionary"
                         is GdEnumValue -> GdKeywords.INT
