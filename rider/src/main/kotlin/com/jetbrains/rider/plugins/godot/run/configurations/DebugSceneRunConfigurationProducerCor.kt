@@ -14,16 +14,16 @@ class DebugSceneRunConfigurationProducerCor : LazyRunConfigurationProducer<DotNe
     override fun getConfigurationFactory() = runConfigurationType<DotNetExeConfigurationType>().factory
 
     override fun isConfigurationFromContext(configuration: DotNetExeConfiguration, context: ConfigurationContext): Boolean {
-        if (!GodotProjectDiscoverer.getInstance(context.project).isGodotProject.value) return false
+        if (GodotProjectDiscoverer.getInstance(context.project).mainProjectBasePath.value == null) return false
         if (GodotProjectDiscoverer.getInstance(context.project).godotCorePath.value == null) return false
 
-        val resPath = DebugSceneRunConfigurationProducer.extractResPath(context) ?: return false
+        val resPath = DebugSceneRunConfigurationProducer.extractResPath(GodotProjectDiscoverer.getInstance(context.project).mainProjectBasePath.value!!, context) ?: return false
         return configuration.parameters.programParameters.contains(resPath)
     }
 
     override fun setupConfigurationFromContext(configuration: DotNetExeConfiguration, context: ConfigurationContext, sourceElement: Ref<PsiElement>): Boolean {
         val file = DebugSceneRunConfigurationProducer.getContainingFile(context) ?: return false
-        val resPath = DebugSceneRunConfigurationProducer.extractResPath(context) ?: return false
+        val resPath = DebugSceneRunConfigurationProducer.extractResPath(GodotProjectDiscoverer.getInstance(context.project).mainProjectBasePath.value!!, context) ?: return false
 
         val path = GodotProjectDiscoverer.getInstance(context.project).godotCorePath.value
 
@@ -31,7 +31,7 @@ class DebugSceneRunConfigurationProducerCor : LazyRunConfigurationProducer<DotNe
             return false
         }
         configuration.parameters.exePath = path
-        configuration.parameters.programParameters = "--path \"${context.project.basePath}\" \"$resPath\""
+        configuration.parameters.programParameters = "--path \"${GodotProjectDiscoverer.getInstance(context.project).mainProjectBasePath.value}\" \"$resPath\""
 
         configuration.parameters.workingDirectory = "${context.project.basePath}"
         configuration.name = file.name

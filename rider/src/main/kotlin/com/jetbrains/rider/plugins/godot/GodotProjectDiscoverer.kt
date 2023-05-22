@@ -1,39 +1,37 @@
 package com.jetbrains.rider.plugins.godot
 
 import com.intellij.execution.RunManager
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.ide.model.RdExistingSolution
+import com.jetbrains.rd.platform.client.ProtocolProjectSession
 import com.jetbrains.rd.platform.util.idea.LifetimedService
+import com.jetbrains.rd.platform.util.lifetime
+import com.jetbrains.rd.protocol.SolutionExtListener
+import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IProperty
 import com.jetbrains.rd.util.reactive.Property
+import com.jetbrains.rd.util.reactive.adviseNotNull
+import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
-import com.jetbrains.rider.projectView.solutionDescription
-import com.jetbrains.rider.projectView.solutionDirectory
-import com.jetbrains.rider.projectView.solutionFile
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.util.idea.getService
 import java.io.File
 
 class GodotProjectDiscoverer(project: Project) : LifetimedService() {
-    private val projectGodotPath = project.solutionDirectory.resolve("project.godot")
-    val isGodotProject: IProperty<Boolean> = Property(false)
-    val hasWATAddon: IProperty<Boolean> = Property(false)
+
+    val mainProjectBasePath : IProperty<String?> = Property(null)
+    private val logger = Logger.getInstance(GodotProjectDiscoverer::class.java)
     val godotMonoPath : IProperty<String?> = Property(null)
     val godotCorePath : IProperty<String?> = Property(null)
 
     init {
-        val isGodot = getIsGodotProject(project)
-        if (isGodot) {
-            if (projectGodotPath.readLines()
-                    .any { it.startsWith("enabled=PoolStringArray") && it.contains("WAT") }) // todo: in Godot 4 it is PackedStringArray
-                        hasWATAddon.set(project.solutionDirectory.resolve("addons/WAT/gui.tscn").exists())
-
-            isGodotProject.set(isGodot)
-            godotMonoPath.set(MetadataMonoFileWatcher.getFromMonoMetadataPath(project) ?: MetadataMonoFileWatcher.getGodotPath(project) ?: getGodotPathFromPlayerRunConfiguration(project))
-            godotCorePath.set(MetadataCoreFileWatcher.getGodotPath(project) ?: getGodotPathFromCorePlayerRunConfiguration(project))
+        mainProjectBasePath.adviseNotNull(project.lifetime){
+            logger.info("Godot mainProjectBasePath: $it")
+            godotMonoPath.set(MetadataMonoFileWatcher.getFromMonoMetadataPath(it) ?: MetadataMonoFileWatcher.getGodotPath(it) ?: getGodotPathFromPlayerRunConfiguration(project))
+            godotCorePath.set(MetadataCoreFileWatcher.getGodotPath(it) ?: getGodotPathFromCorePlayerRunConfiguration(project))
         }
     }
 
@@ -63,21 +61,18 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
         return null
     }
 
-    // It's a Godot project, but not necessarily loaded correctly (e.g. it might be opened as folder)
-    private fun getIsGodotProject(project:Project) : Boolean
-    {
-        return projectGodotPath.exists() && isCorrectlyLoadedSolution(project)
-    }
-
     val port: Int = 23685 // default value, //todo: read custom value from project.godot file
-
-    // Returns false when opening a project as a plain folder
-    private fun isCorrectlyLoadedSolution(project: Project): Boolean {
-        val solutionFile = project.solutionFile
-        return project.solutionDescription is RdExistingSolution && solutionFile.isFile && solutionFile.extension.equals("sln", true)
-    }
 
     companion object {
         fun getInstance(project: Project) = project.getService<GodotProjectDiscoverer>()
+    }
+
+
+    class ProtocolListener : SolutionExtListener<GodotFrontendBackendModel> {
+        override fun extensionCreated(lifetime: Lifetime, session: ProtocolProjectSession, model: GodotFrontendBackendModel) {
+            model.mainProjectBasePath.adviseNotNull(lifetime) {
+                getInstance(session.project).mainProjectBasePath.set(it)
+            }
+        }
     }
 }

@@ -5,6 +5,7 @@ import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.util.reactive.adviseNotNull
+import com.jetbrains.rd.util.reactive.viewNotNull
 import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
@@ -16,6 +17,7 @@ import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationTy
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntimeType
+import java.nio.file.Paths
 
 class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectComponent(project) {
 
@@ -24,7 +26,6 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
 
         const val PLAYER_CONFIGURATION_NAME = "Player"
         const val EDITOR_CONFIGURATION_NAME = "Editor"
-        const val WAT_UNIT_TESTING = "WATSharpGui"
 
         private val logger = Logger.getInstance(GodotRunConfigurationGenerator::class.java)
     }
@@ -32,7 +33,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
     init {
         project.solution.isLoaded.whenTrue(componentLifetime){
             val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-            godotDiscoverer.isGodotProject.whenTrue(componentLifetime) { lt->
+            godotDiscoverer.mainProjectBasePath.viewNotNull(componentLifetime) { lt, mainProjectBasePath ->
                 logger.info("isGodotProject = true")
                 val runManager = RunManager.getInstance(project)
 
@@ -58,17 +59,13 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
                 }
 
                 GodotProjectDiscoverer.getInstance(project).godotMonoPath.adviseNotNull(lt){ path ->
-                    createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${project.basePath}\"", runManager, path, project)
-                    createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${project.basePath}\" --editor", runManager, path, project)
-                    if (godotDiscoverer.hasWATAddon.value)
-                        createOrUpdateRunConfiguration(WAT_UNIT_TESTING, "--path \"${project.basePath}\" \"res://addons/WAT/gui.tscn\"", runManager, path, project)
+                    createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${mainProjectBasePath}\"", runManager, path, project)
+                    createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${mainProjectBasePath}\" --editor", runManager, path, project)
                 }
 
                 GodotProjectDiscoverer.getInstance(project).godotCorePath.adviseNotNull(lt){ path ->
-                    createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${project.basePath}\"", runManager, path, project)
-                    createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${project.basePath}\" --editor", runManager, path, project)
-                    if (godotDiscoverer.hasWATAddon.value)
-                        createOrUpdateCoreRunConfiguration(WAT_UNIT_TESTING, "--path \"${project.basePath}\" \"res://addons/WAT/gui.tscn\"", runManager, path, project)
+                    createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${mainProjectBasePath}\"", runManager, path, project)
+                    createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${mainProjectBasePath}\" --editor", runManager, path, project)
                 }
 
                 // make configuration selected if nothing is selected

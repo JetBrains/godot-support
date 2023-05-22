@@ -6,12 +6,14 @@ import com.intellij.openapi.rd.util.launchBackground
 import com.intellij.util.application
 import com.intellij.util.io.isDirectory
 import com.jetbrains.rd.util.lifetime.isAlive
+import com.jetbrains.rd.util.reactive.viewNotNull
 import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.time.withTimeout
+import java.io.File
 import java.nio.file.*
 import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
 import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
@@ -25,8 +27,8 @@ class MetadataCoreFileWatcher(project: Project) : LifetimedProjectComponent(proj
         const val cfgFileName = "project_metadata.cfg"
         private val logger = Logger.getInstance(MetadataCoreFileWatcher::class.java)
 
-        fun getGodotPath(project: Project): String? {
-            val projectPath = project.solutionDirectory
+        fun getGodotPath(mainProjectBasePath: String): String? {
+            val projectPath = File(mainProjectBasePath)
             val projectMetadataCfg = projectPath.resolve(cfgDir).resolve(cfgFileName)
 
             if (projectMetadataCfg.exists()) {
@@ -44,10 +46,10 @@ class MetadataCoreFileWatcher(project: Project) : LifetimedProjectComponent(proj
     init {
         project.solution.isLoaded.whenTrue(componentLifetime) { l ->
             val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-            godotDiscoverer.isGodotProject.whenTrue(l) { lt ->
+            godotDiscoverer.mainProjectBasePath.viewNotNull(l) { lt, mainProjectBasePath ->
                 lt.launchBackground {
                     val watchService: WatchService = FileSystems.getDefault().newWatchService()
-                    val metaFileDir = project.solutionDirectory.resolve(cfgDir).toPath()
+                    val metaFileDir = File(mainProjectBasePath).resolve(cfgDir).toPath()
 
                     withTimeout(Duration.ofMinutes(5)) {
                         while (!(metaFileDir.isDirectory())) {
@@ -72,7 +74,7 @@ class MetadataCoreFileWatcher(project: Project) : LifetimedProjectComponent(proj
                                 val context = event.context() ?: continue
                                 if (context.toString() == cfgFileName) {
                                     logger.info("GodotCoreProjectDiscoverer.getInstance(project).godotPath.set()")
-                                    val newPath = getGodotPath(project) ?: continue
+                                    val newPath = getGodotPath(mainProjectBasePath) ?: continue
                                     logger.info("GodotCoreProjectDiscoverer.getInstance(project).godotPath.set($newPath)")
                                     application.invokeLater {
                                         logger.info("application.invokeLater GodotProjectDiscoverer.getInstance(project).godotPath.set($newPath)")

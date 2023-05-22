@@ -6,10 +6,11 @@ import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.application
 import com.intellij.util.io.isDirectory
 import com.jetbrains.rd.util.lifetime.isAlive
+import com.jetbrains.rd.util.reactive.viewNotNull
 import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.projectView.solution
-import com.jetbrains.rider.projectView.solutionDirectory
+import java.io.File
 import java.math.BigInteger
 import java.nio.file.*
 import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
@@ -30,7 +31,7 @@ class MetadataMonoFileWatcher(project: Project) : LifetimedProjectComponent(proj
         //Windows: %APPDATA%\Godot\projects\{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}\
         //macOS: $XDG_DATA_HOME/Godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/ or $HOME/Library/Application Support/Godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/
         //Linux: $XDG_DATA_HOME/godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/ or $HOME/.local/share/godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/
-        fun getGodotPath(project:Project):String? {
+        fun getGodotPath(projectPath:String):String? {
             val projectsSettingsPath = if (SystemInfo.isMac)
             {
                 val home = Paths.get(System.getenv("HOME"))
@@ -47,7 +48,6 @@ class MetadataMonoFileWatcher(project: Project) : LifetimedProjectComponent(proj
             else
                 throw Exception("Unexpected OS.")
 
-            val projectPath = project.basePath!!
             val md5 = projectPath.md5()
             val projectSettingsPath = projectsSettingsPath.resolve("${Paths.get(projectPath).fileName}-$md5")
             val projectMetadataCfg = projectSettingsPath.resolve("project_metadata.cfg").toFile()
@@ -69,8 +69,8 @@ class MetadataMonoFileWatcher(project: Project) : LifetimedProjectComponent(proj
             return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
         }
 
-        fun getFromMonoMetadataPath(project: Project): String? {
-            val basePath = project.solutionDirectory
+        fun getFromMonoMetadataPath(mainProjectBasePath: String): String? {
+            val basePath = File(mainProjectBasePath)
             var metaFile = basePath.resolve(metaFileDir).resolve(metaFileName)
             if (!metaFile.exists())
                 metaFile = basePath.resolve(metaFileDir).resolve(oldMetaFileName)
@@ -89,10 +89,10 @@ class MetadataMonoFileWatcher(project: Project) : LifetimedProjectComponent(proj
     init {
         project.solution.isLoaded.whenTrue(componentLifetime) {l->
             val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-            godotDiscoverer.isGodotProject.whenTrue(l) { lt ->
+            godotDiscoverer.mainProjectBasePath.viewNotNull(l) { lt, mainProjectBasePath ->
                 thread(name = "MetadataFileWatcher") {
                     val watchService: WatchService = FileSystems.getDefault().newWatchService()
-                    val metaFileDir = project.solutionDirectory.resolve(metaFileDir).toPath()
+                    val metaFileDir = File(mainProjectBasePath).resolve(metaFileDir).toPath()
 
                     if (!(metaFileDir.isDirectory()))
                         return@thread
@@ -110,7 +110,7 @@ class MetadataMonoFileWatcher(project: Project) : LifetimedProjectComponent(proj
                                 val context = event.context() ?: continue
                                 if (context.toString() == metaFileName || context.toString() == oldMetaFileName) {
                                     logger.info("GodotProjectDiscoverer.getInstance(project).godotPath.set()")
-                                    val newPath = getFromMonoMetadataPath(project) ?: continue
+                                    val newPath = getFromMonoMetadataPath(mainProjectBasePath) ?: continue
                                     logger.info("GodotProjectDiscoverer.getInstance(project).godotPath.set($newPath)")
                                     application.invokeLater {
                                         logger.info("application.invokeLater GodotProjectDiscoverer.getInstance(project).godotPath.set($newPath)")

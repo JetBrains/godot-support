@@ -5,8 +5,10 @@ using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
 using JetBrains.Collections.Viewable;
+using JetBrains.ProjectModel;
 using JetBrains.RdBackend.Common.Features;
 using JetBrains.ReSharper.Feature.Services.Protocol;
+using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.ReSharper.UnitTestFramework.Execution.TestRunner;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.Util;
@@ -22,8 +24,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, ITestRunnerContext context)
         {
             var solution = context.RuntimeEnvironment.Project.GetSolution();
-            var solutionDirectory = solution.SolutionDirectory;
-            var scenePaths = solutionDirectory.GetChildDirectories(pluginDirectory,
+            var baseDirectory = solution.GetComponent<GodotTracker>().MainProjectBasePath;
+            var scenePaths = baseDirectory.GetChildDirectories(pluginDirectory,
                 PathSearchFlags.ExcludeFiles | PathSearchFlags.RecurseIntoSubdirectories).Select(a=>a.Combine(runnerScene)).Where(a => a.ExistsFile).ToArray();
             if (!scenePaths.Any())
                 throw new Exception("Please manually put folder with files from https://github.com/van800/godot-demo-projects/tree/net6/mono/dodge_the_creeps/RiderTestRunner to your project.");
@@ -54,10 +56,10 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
                 throw new InvalidOperationException("GodotPath is unknown.");
             var godotPath = model.GodotPath.Value;
 
-            var sceneRelPath = scenePaths.Single().MakeRelativeTo(solutionDirectory);
+            var sceneRelPath = scenePaths.Single().MakeRelativeTo(baseDirectory);
             startInfo.FileName = godotPath;
             startInfo.Arguments =
-                $"--path \"{solutionDir}\" \"res://{sceneRelPath}\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{usefulArgs}\"";
+                $"--path \"{solution.GetComponent<GodotTracker>().MainProjectBasePath}\" \"res://{sceneRelPath}\" --unit_test_assembly \"{fileName}\" --unit_test_args \"{usefulArgs}\"";
 
 
             if (context is ITestRunnerExecutionContext executionContext)

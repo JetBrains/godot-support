@@ -6,7 +6,7 @@ using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 namespace JetBrains.ReSharper.Plugins.Godot.UsageStatistics
 {
     [SolutionComponent]
-    public class UnityProjectTechnologyProvider : IProjectTechnologyProvider
+    public class GodotProjectTechnologyProvider : IProjectTechnologyProvider
     {
         public IEnumerable<string> GetProjectTechnology(IProject project)
         {

@@ -25,6 +25,8 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <projectService serviceImplementation="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer"/>
+    <rd.solutionExtListener endpoint="IDE Frontend"
+                            listener="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer$ProtocolListener"/>
   </extensions>
 
 
