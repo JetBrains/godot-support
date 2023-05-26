@@ -1,9 +1,9 @@
 # GdScript
 
 
-!!!!!!!!!!!!!
-IMPORTANT
-!!!!!!!!!!!!!
+!!!!!!!!!!!!!  
+IMPORTANT  
+!!!!!!!!!!!!!  
 Currently  his plugin is broken and not working properly... please wait for release of 1.1.0 version where most of it should be fixed.
 To get notification you can subscribe/comment to receive updates when this [blocker](https://gitlab.com/IceExplosive/gdscript/-/issues/117) is closed.
 
