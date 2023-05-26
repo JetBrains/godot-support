@@ -1,5 +1,12 @@
 # GdScript
 
+
+!!!!!!!!!!!!!
+IMPORTANT
+!!!!!!!!!!!!!
+Currently  his plugin is broken and not working properly... please wait for release of 1.1.0 version where most of it should be fixed.
+To get notification you can subscribe/comment to receive updates when this [blocker]//gitlab.com/IceExplosive/gdscript/-/issues/117) is closed.
+
 Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of GdScript2  
 https://plugins.jetbrains.com/plugin/20123-gdscript
 
