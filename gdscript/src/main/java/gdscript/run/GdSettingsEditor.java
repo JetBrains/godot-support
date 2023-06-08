@@ -28,6 +28,8 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
     }
 
     private void createUIComponents() {
+        godotExe = new LabeledComponent<>();
+        tscn = new LabeledComponent<>();
         TextFieldWithBrowseButton godotField = new TextFieldWithBrowseButton();
         godotField.setText("Godot.exe");
         godotField.setToolTipText("Godot.exe");
