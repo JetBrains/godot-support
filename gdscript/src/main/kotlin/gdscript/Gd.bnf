@@ -85,7 +85,7 @@ constDecl_tl ::= CONST var_nmi typed? assignTyped expr endStmt {
 
 annotation_tl ::= annotationType (LRBR annotationParams? RRBR)? endStmt? {pin=1 recoverWhile=topLevelDecl_r}
 annotationType ::= ANNOTATOR
-annotationParams ::= literal_ex (COMMA literal_ex)* {
+annotationParams ::= expr (COMMA expr)* {
     pin=1 recoverWhile=argList_r
 }
 classVarDecl_tl ::= VAR var_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
@@ -163,7 +163,6 @@ stmt ::=
     | for_st
     | match_st
     | (flow_st endStmt)
-    | (await_st endStmt)
     | (expr_st endStmt)
 //    | BAD_CHARACTER // tohle je hack aby GdStmtImpl nebyl abstract class při token např. Ł to jinak nevyparsuje
 private stmtNoLine_r ::= !(SET | GET | IF | PASS
@@ -197,8 +196,6 @@ arrayPattern ::= LSBR ( pattern (COMMA pattern)* (COMMA DOTDOT)? )? RSBR
 dictPattern ::= LCBR keyValuePattern? (COMMA keyValuePattern)* (COMMA DOTDOT)? RCBR
 keyValuePattern ::= STRING [ COLON pattern ]
 
-await_st ::= AWAIT expr //{pin=1 recoverWhile=stmt_r}
-
 assign_st ::= expr assignSign expr //{ pin=2 }
 assignSign ::= EQ | ASSIGN
 expr_st ::= expr
@@ -229,6 +226,7 @@ expr ::=
     | sign_ex
     | bitNot_ex
     | is_ex
+    | await_ex
     | attribute_ex
     | call_ex
     | primary_ex
@@ -252,6 +250,7 @@ factorSign ::= (MUL | DIV | MOD | POWER)
 sign_ex ::= (MINUS | PLUS) expr
 bitNot_ex ::= NOT expr
 is_ex ::= expr IS typedVal
+await_ex ::= AWAIT expr
 call_ex ::= expr LRBR argList? RRBR
 arr_ex ::= expr LSBR expr RSBR
 primary_ex ::= nodePath | arrayDecl | dictDecl | (LRBR expr RRBR)

@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface GdAnnotationParams extends PsiElement {
 
   @NotNull
-  List<GdLiteralEx> getLiteralExList();
+  List<GdExpr> getExprList();
 
 }

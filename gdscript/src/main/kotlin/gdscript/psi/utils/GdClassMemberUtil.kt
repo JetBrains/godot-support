@@ -247,6 +247,13 @@ object GdClassMemberUtil {
                         locals[it.varNmi?.name.orEmpty()] = it.varNmi!!
                     }
                 }
+                is GdFuncDeclEx -> {
+                    if (movedToParent && !isParam) {
+                        it.paramList?.paramList?.forEach { p ->
+                            locals[p.varNmi.name] = p
+                        }
+                    }
+                }
                 is GdMethodDeclTl -> {
                     if (onlyLocalScope) {
                         if (!isParam) {

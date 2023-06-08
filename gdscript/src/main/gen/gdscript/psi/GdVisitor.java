@@ -55,8 +55,8 @@ public class GdVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
-  public void visitAwaitSt(@NotNull GdAwaitSt o) {
-    visitStmt(o);
+  public void visitAwaitEx(@NotNull GdAwaitEx o) {
+    visitExpr(o);
   }
 
   public void visitBindingPattern(@NotNull GdBindingPattern o) {

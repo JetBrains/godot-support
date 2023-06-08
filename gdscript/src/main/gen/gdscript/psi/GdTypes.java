@@ -30,7 +30,7 @@ public interface GdTypes {
   IElementType ASSIGN_ST = new GdElementType("ASSIGN_ST");
   IElementType ASSIGN_TYPED = new GdElementType("ASSIGN_TYPED");
   IElementType ATTRIBUTE_EX = new GdElementType("ATTRIBUTE_EX");
-  IElementType AWAIT_ST = new GdElementType("AWAIT_ST");
+  IElementType AWAIT_EX = new GdElementType("AWAIT_EX");
   IElementType BINDING_PATTERN = new GdElementType("BINDING_PATTERN");
   IElementType BIT_AND_EX = new GdElementType("BIT_AND_EX");
   IElementType BIT_AND_SIGN = new GdElementType("BIT_AND_SIGN");
@@ -244,8 +244,8 @@ public interface GdTypes {
       else if (type == ATTRIBUTE_EX) {
         return new GdAttributeExImpl(node);
       }
-      else if (type == AWAIT_ST) {
-        return new GdAwaitStImpl(node);
+      else if (type == AWAIT_EX) {
+        return new GdAwaitExImpl(node);
       }
       else if (type == BINDING_PATTERN) {
         return new GdBindingPatternImpl(node);

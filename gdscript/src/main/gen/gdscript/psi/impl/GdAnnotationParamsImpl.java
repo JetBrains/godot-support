@@ -29,8 +29,8 @@ public class GdAnnotationParamsImpl extends ASTWrapperPsiElement implements GdAn
 
   @Override
   @NotNull
-  public List<GdLiteralEx> getLiteralExList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdLiteralEx.class);
+  public List<GdExpr> getExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdExpr.class);
   }
 
 }

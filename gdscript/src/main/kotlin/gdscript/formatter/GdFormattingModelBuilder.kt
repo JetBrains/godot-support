@@ -104,7 +104,6 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             GdTypes.FOR_ST,
             GdTypes.MATCH_ST,
             GdTypes.FLOW_ST,
-            GdTypes.AWAIT_ST,
             GdTypes.EXPR_ST,
         )
         val ROOT_BLOCKS = TokenSet.create(GdTypes.METHOD_DECL_TL, GdTypes.CLASS_DECL_TL)

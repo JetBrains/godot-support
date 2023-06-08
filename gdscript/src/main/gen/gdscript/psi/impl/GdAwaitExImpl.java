@@ -10,15 +10,15 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
 
-public class GdAwaitStImpl extends GdStmtImpl implements GdAwaitSt {
+public class GdAwaitExImpl extends GdExprImpl implements GdAwaitEx {
 
-  public GdAwaitStImpl(@NotNull ASTNode node) {
+  public GdAwaitExImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   @Override
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitAwaitSt(this);
+    visitor.visitAwaitEx(this);
   }
 
   @Override
@@ -28,9 +28,9 @@ public class GdAwaitStImpl extends GdStmtImpl implements GdAwaitSt {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdExpr getExpr() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
+    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
   }
 
 }

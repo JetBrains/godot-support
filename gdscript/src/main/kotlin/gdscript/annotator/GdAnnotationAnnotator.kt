@@ -27,7 +27,7 @@ class GdAnnotationAnnotator : Annotator {
         }
 
         val definitionParams = definition.parameters
-        val usedParams = element.annotationParams?.literalExList ?: emptyList()
+        val usedParams = element.annotationParams?.exprList ?: emptyList()
 
         // Check number of arguments
         if (!definition.variadic && usedParams.size > definitionParams.size) {
