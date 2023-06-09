@@ -2,15 +2,12 @@ package gdscript.formatter.block
 
 import com.intellij.formatting.*
 import com.intellij.lang.ASTNode
-import com.intellij.psi.PsiErrorElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
 import com.intellij.psi.impl.source.tree.FileElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.nextLeaf
 import com.jetbrains.rd.util.forEachReversed
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdAnnotationTl
@@ -21,7 +18,6 @@ import gdscript.utils.GdSettingsUtil.calculateSpaceIndents
 import gdscript.utils.PsiElementUtil.getCaretOffsetIfSingle
 import gdscript.utils.PsiElementUtil.nextNonWhiteCommentToken
 import gdscript.utils.PsiElementUtil.precedingNewLines
-import gdscript.formatter.settings.GdSpacingUtil.forcedLines
 
 class GdBlock : AbstractBlock {
 
@@ -119,11 +115,11 @@ class GdBlock : AbstractBlock {
         if (previousBlock is GdBlock) {
             val lastNode = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)
             if (lastNode?.elementType == GdTypes.COLON) {
-                if (atEndOfStmt && preceding != null) {
-                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 1 - precedingOffset), null)
-                } else if (preceding != null && lastNode?.nextLeaf(false) is PsiErrorElement) {
-                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 1, true), null)
-                }
+//                if (atEndOfStmt && preceding != null) {
+//                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 1 - precedingOffset), null)
+//                } else if (preceding != null && lastNode?.nextLeaf(false) is PsiErrorElement) {
+//                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 1, true), null)
+//                }
                 return ChildAttributes(Indent.getNormalIndent(true), null)
             }
         }

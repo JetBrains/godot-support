@@ -28,7 +28,7 @@ object GdSettingsUtil {
         }
 
         if (absolute) {
-            return IndentImpl(Indent.Type.SPACES, true, size + baseSize, true, false)
+            return IndentImpl(Indent.Type.SPACES, true, size + baseSize, false, false)
         }
 
         return Indent.getSpaceIndent(max(size + baseSize, 0))

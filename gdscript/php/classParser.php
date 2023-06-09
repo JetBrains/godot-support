@@ -219,12 +219,11 @@ foreach ($files as $filepath) {
         $att = (array) $value['@attributes'];
         $ret = (array) ($value['return'] ?? ['@attributes' => [ 'type' => 'void' ]]);
 
-        $quali = $att['qualifiers'] ?? ""; // TODO multiple?
+        $quali = explode(' ', $att['qualifiers'] ?? '');
         // TODO Tohle pak smazat, až bude const func implementována .. piozor existuje ještě "virtual" .. např _init
         $allowed = ["static", "vararg"];
-        if (!in_array($quali, $allowed)) {
-            $quali = "";
-        }
+        $quali = array_filter($quali, fn($qualiItem) => in_array($qualiItem, $allowed));
+        $quali = implode(' ', $quali);
 
         if ($quali) {
             $quali .= " ";

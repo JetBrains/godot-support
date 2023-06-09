@@ -35,6 +35,12 @@ public class GdAssignStImpl extends GdStmtImpl implements GdAssignSt {
 
   @Override
   @NotNull
+  public GdEndStmt getEndStmt() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdEndStmt.class));
+  }
+
+  @Override
+  @NotNull
   public List<GdExpr> getExprList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, GdExpr.class);
   }
