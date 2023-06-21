@@ -27,5 +27,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
         public static readonly IClrTypeName Script                = GodotTypeName("Script");
         public static readonly IClrTypeName GDScript              = GodotTypeName("GDScript");
         public static readonly IClrTypeName CSharpScript          = GodotTypeName("CSharpScript");
+
+        public static readonly IClrTypeName Input                 = GodotTypeName("Input");
     }
 }

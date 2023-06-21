@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application.UI.Icons.Shell;
+using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
@@ -33,6 +34,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
     public class GodotResourcePathCodeCompletion : CSharpItemsProviderBase<CSharpCodeCompletionContext>
     {
         private const string Prefix = "res://";
+
 
         protected override bool IsAvailable(CSharpCodeCompletionContext context)
         {

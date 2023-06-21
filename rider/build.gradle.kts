@@ -78,7 +78,8 @@ val resharperPluginPath = File(repoRoot, "resharper")
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
 val pluginFiles = listOf(
-    "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot")
+    "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot",
+    "bin/$buildConfiguration/net472/GodotTools.IdeMessaging")
 
 val debuggerPluginFiles = listOf(
     "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.Rider.Debugger")
