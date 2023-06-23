@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.Application.UI.Icons.Shell;
+using JetBrains.Diagnostics;
 using JetBrains.DocumentModel;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ProjectModel;
@@ -34,6 +35,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
     {
         private const string Prefix = "res://";
 
+
         protected override bool IsAvailable(CSharpCodeCompletionContext context)
         {
             return context.BasicContext.CodeCompletionType == CodeCompletionType.BasicCompletion;
@@ -41,6 +43,10 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
         protected override bool AddLookupItems(CSharpCodeCompletionContext context, IItemsCollector collector)
         {
+            var logger = Logger.GetLogger<GodotResourcePathCodeCompletion>();
+            logger.Log(LoggingLevel.WARN, "Godot This is just a test.");
+            var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
+            
             if (!IsAvailable(context))
                 return false;
 
