@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using GodotTools.IdeMessaging;
+using GodotTools.IdeMessaging.Requests;
 using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
+using JetBrains.Rd.Impl;
+using JetBrains.ReSharper.Plugins.Godot.CSharp.Completions;
 using JetBrains.Util;
 using JetBrains.Util.Logging;
 using ILogger = JetBrains.Util.ILogger;
@@ -20,20 +23,38 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 
         public GodotMessagingClient(ISolution solution, ILogger logger)
         {
-            var testLogger = Logger.GetLogger<GodotMessagingClient>();
-            testLogger.Log(LoggingLevel.INFO, "GODOT Omg WTF!");
             myLogger = logger;
-            myClient = new Client(Identity, solution.SolutionDirectory.Name, this, this);
-            myClient.Connected += () => logger.Info("CONNECTETDSGDSDKOFGJKLSDF YES!");
-            logger.Info("Started GodotMessagingClient");
-            logger.Warn("avocado");
-            Console.WriteLine("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% AVOCADO %%%%%%%%%%%%%%%%%%%%%%%%%");
+            myClient = new Client(Identity, solution.SolutionDirectory.FullPath, this, this);
+            myClient.Connected += () => logger.Info("Godot Editor connected...");
+            myClient.Connected += () => logger.Info("Godot Editor disconnected...");
+            myClient.Start();
         }
 
         public Task<MessageContent> HandleRequest(Peer peer, string id, MessageContent content,
             GodotTools.IdeMessaging.ILogger logger)
         {
-            throw new NotImplementedException("does not work yet!");
+            throw new NotImplementedException("oh no");
+        }
+
+        public async void SendNodePathRequest()
+        {
+            var response = await myClient.SendRequest<CodeCompletionResponse>(new CodeCompletionRequest()
+            {
+                Kind = CodeCompletionRequest.CompletionKind.NodePaths,
+                ScriptFile = "Main.cs"
+            });
+            myLogger.Info(response.Suggestions.Join(", "));
+        }
+        
+        public async Task<CodeCompletionResponse> SendInputActionsRequest()
+        {
+            var response = await myClient.SendRequest<CodeCompletionResponse>(new CodeCompletionRequest()
+            {
+                Kind = CodeCompletionRequest.CompletionKind.InputActions,
+            });
+            myLogger.Info(response.Suggestions.Join(", "));
+            
+            return response;
         }
 
         public void LogDebug(string message)

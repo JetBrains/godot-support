@@ -43,8 +43,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
         protected override bool AddLookupItems(CSharpCodeCompletionContext context, IItemsCollector collector)
         {
-            var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
-            
             if (!IsAvailable(context))
                 return false;
 
