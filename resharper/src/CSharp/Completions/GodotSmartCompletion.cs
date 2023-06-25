@@ -40,14 +40,22 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             if (!project.IsGodotProject())
                 return false;
 
-            if (context.NodeInFile.Parent is not IInvocationExpression parent)
+            var stringLiteral = context.StringLiteral();
+            if (stringLiteral is null)
                 return false;
 
-            var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
+            var invocationExpression = InvocationExpressionNavigator.GetByArgument(
+                CSharpArgumentNavigator.GetByValue(context.NodeInFile.Parent as ICSharpLiteralExpression)) as IInvocationExpression;
 
-            var invokedMethodName = parent.InvokedMethodName();
-            if (invokedMethodName.Equals("IsActionPressed"))
+            if (!GodotTypes.Input.Equals(invocationExpression.InvokedMethodContainingType()))
+                return false;
+            
+            var invokedMethodName = invocationExpression.InvokedMethodName();
+
+            if (InputActionMethods.Methods.Contains(invokedMethodName))
             {
+                var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
+
                 var response = client.SendInputActionsRequest().Result;
                 foreach (var suggestion in response.Suggestions)
                 {
@@ -61,7 +69,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
             return false;
         }
-        
+
         private sealed class StringLiteralItem : TextLookupItemBase, IMLSortingAwareItem
         {
             public StringLiteralItem([NotNull] string text)
@@ -76,14 +84,16 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 var matchingResult = prefixMatcher.Match(Text);
                 if (matchingResult == null)
                     return null;
-                return new MatchingResult(matchingResult.MatchedIndices, matchingResult.AdjustedScore - 1000, matchingResult.OriginalScore);
+                return new MatchingResult(matchingResult.MatchedIndices, matchingResult.AdjustedScore - 1000,
+                    matchingResult.OriginalScore);
             }
 
             public override void Accept(
                 ITextControl textControl, DocumentRange nameRange, LookupItemInsertType insertType,
                 Suffix suffix, ISolution solution, bool keepCaretStill)
             {
-                base.Accept(textControl, nameRange, LookupItemInsertType.Replace, suffix, solution, keepCaretStill);
+                base.Accept(textControl, nameRange, LookupItemInsertType.Replace, suffix, solution,
+                    keepCaretStill);
             }
 
             public bool UseMLSort() => false;
