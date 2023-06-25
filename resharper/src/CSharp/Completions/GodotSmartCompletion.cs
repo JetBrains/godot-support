@@ -45,14 +45,42 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 return false;
 
             var invocationExpression = InvocationExpressionNavigator.GetByArgument(
-                CSharpArgumentNavigator.GetByValue(context.NodeInFile.Parent as ICSharpLiteralExpression)) as IInvocationExpression;
+                CSharpArgumentNavigator.GetByValue(context.NodeInFile.Parent as ICSharpLiteralExpression));
 
-            if (!GodotTypes.Input.Equals(invocationExpression.InvokedMethodContainingType()))
-                return false;
-            
-            var invokedMethodName = invocationExpression.InvokedMethodName();
 
-            if (InputActionMethods.Methods.Contains(invokedMethodName))
+            var itemsCollected = false;
+            itemsCollected |= LookupInputActions(invocationExpression, context, collector);
+            itemsCollected |= LookupNodePaths(invocationExpression, context, collector);
+
+            return itemsCollected;
+        }
+
+        private static bool LookupNodePaths(IInvocationExpression invocationExpression, CSharpCodeCompletionContext context,
+            IItemsCollector collector)
+        {
+            if (NodePathMethods.Methods.Contains(invocationExpression.InvokedMethodName()))
+            {
+                var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
+
+                var response = client.SendNodePathRequest().Result;
+                foreach (var suggestion in response.Suggestions)
+                {
+                    var item = new StringLiteralItem(suggestion);
+                    item.InitializeRanges(context.CompletionRanges, context.BasicContext);
+                    collector.Add(item);
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool LookupInputActions(IInvocationExpression invocationExpression,
+            CSharpCodeCompletionContext context, IItemsCollector collector)
+        {
+            if (GodotTypes.Input.Equals(invocationExpression.InvokedMethodContainingType()) &&
+                InputActionMethods.Methods.Contains(invocationExpression.InvokedMethodName()))
             {
                 var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
 

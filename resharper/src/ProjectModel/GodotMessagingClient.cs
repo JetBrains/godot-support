@@ -4,10 +4,7 @@ using GodotTools.IdeMessaging;
 using GodotTools.IdeMessaging.Requests;
 using JetBrains.Diagnostics;
 using JetBrains.ProjectModel;
-using JetBrains.Rd.Impl;
-using JetBrains.ReSharper.Plugins.Godot.CSharp.Completions;
 using JetBrains.Util;
-using JetBrains.Util.Logging;
 using ILogger = JetBrains.Util.ILogger;
 
 namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
@@ -19,7 +16,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 
         private readonly ILogger myLogger;
 
-        private Client myClient;
+        private readonly Client myClient;
 
         public GodotMessagingClient(ISolution solution, ILogger logger)
         {
@@ -36,14 +33,14 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             throw new NotImplementedException("oh no");
         }
 
-        public async void SendNodePathRequest()
+        public async Task<CodeCompletionResponse> SendNodePathRequest()
         {
             var response = await myClient.SendRequest<CodeCompletionResponse>(new CodeCompletionRequest()
             {
                 Kind = CodeCompletionRequest.CompletionKind.NodePaths,
-                ScriptFile = "Main.cs"
             });
-            myLogger.Info(response.Suggestions.Join(", "));
+
+            return response;
         }
         
         public async Task<CodeCompletionResponse> SendInputActionsRequest()
@@ -52,7 +49,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             {
                 Kind = CodeCompletionRequest.CompletionKind.InputActions,
             });
-            myLogger.Info(response.Suggestions.Join(", "));
             
             return response;
         }
