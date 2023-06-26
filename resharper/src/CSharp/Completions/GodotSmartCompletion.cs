@@ -54,10 +54,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             return itemsCollected;
         }
 
-        private static bool LookupNodePaths(IInvocationExpression invocationExpression, CSharpCodeCompletionContext context,
+        private static bool LookupNodePaths(IInvocationExpression invocationExpression,
+            CSharpCodeCompletionContext context,
             IItemsCollector collector)
         {
-            if (NodePathMethods.Methods.Contains(invocationExpression.InvokedMethodName()))
+            if (GodotTypes.Node.Equals(invocationExpression.InvokedMethodContainingType()) &&
+                NodePathMethods.Methods.Contains(invocationExpression.InvokedMethodName()))
             {
                 var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
                 var fullPath = context.BasicContext.SourceFile.GetLocation().FullPath;
