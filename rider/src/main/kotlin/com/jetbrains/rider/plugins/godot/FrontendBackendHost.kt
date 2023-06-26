@@ -30,7 +30,7 @@ import com.jetbrains.rider.util.NetUtils
 import java.awt.Frame
 
 class FrontendBackendHost(project: Project) : ProtocolSubscribedProjectComponent(project) {
-    private val model = project.solution.godotFrontendBackendModel
+    val model = project.solution.godotFrontendBackendModel
     private val debugProcesses = mutableMapOf<Int, DotNetDebugProcess>()
 
     init {

@@ -2,8 +2,15 @@
 using System.Threading.Tasks;
 using GodotTools.IdeMessaging;
 using GodotTools.IdeMessaging.Requests;
-using JetBrains.Diagnostics;
+using JetBrains.Application.Threading;
+using JetBrains.Application.Threading.Tasks;
+using JetBrains.Collections.Viewable;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
+using JetBrains.Rd.Base;
+using JetBrains.ReSharper.Feature.Services.Protocol;
+using JetBrains.Rider.Model.Godot.FrontendBackend;
+using JetBrains.Threading;
 using JetBrains.Util;
 using ILogger = JetBrains.Util.ILogger;
 
@@ -16,15 +23,41 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 
         private readonly ILogger myLogger;
 
-        private readonly Client myClient;
+        private Client myClient;
 
-        public GodotMessagingClient(ISolution solution, ILogger logger)
+        public GodotMessagingClient(ISolution solution, ILogger logger, Lifetime lifetime, IThreading threading)
         {
-            myLogger = logger;
-            myClient = new Client(Identity, solution.SolutionDirectory.FullPath, this, this);
-            myClient.Connected += () => logger.Info("Godot Editor connected...");
-            myClient.Connected += () => logger.Info("Godot Editor disconnected...");
-            myClient.Start();
+            myLogger = logger; 
+            var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
+            
+            model.MainProjectBasePath.AdviseOnce(lifetime, baseDir =>
+            {
+                myClient = new Client(Identity, baseDir, this, this);
+                SubscribeConnected(logger, threading, model);
+                SubscribeDisconnected(logger, threading, model); 
+                myClient.Start();
+            });
+        }
+
+        private void SubscribeDisconnected(ILogger logger, IThreading threading, GodotFrontendBackendModel model)
+        {
+            // it looks like it subscribes to be called just once
+            myClient.AwaitDisconnected().ContinueWith(task =>
+            {
+                logger.Info("Godot Editor disconnected...");
+                model.EditorState.SetValue(GodotEditorState.Disconnected);
+                SubscribeDisconnected(logger, threading, model);
+            }, threading.Tasks.GuardedMainThreadScheduler);
+        }
+
+        private void SubscribeConnected(ILogger logger, IThreading threading, GodotFrontendBackendModel model)
+        {
+            myClient.AwaitConnected().ContinueWith(task =>
+            {
+                logger.Info("Godot Editor connected...");
+                model.EditorState.SetValue(GodotEditorState.Connected);
+                SubscribeConnected(logger, threading, model);
+            }, threading.Tasks.GuardedMainThreadScheduler);
         }
 
         public Task<MessageContent> HandleRequest(Peer peer, string id, MessageContent content,
