@@ -2,8 +2,11 @@
 using System.Threading.Tasks;
 using GodotTools.IdeMessaging;
 using GodotTools.IdeMessaging.Requests;
-using JetBrains.Diagnostics;
+using JetBrains.Collections.Viewable;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Feature.Services.Protocol;
+using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.Util;
 using ILogger = JetBrains.Util.ILogger;
 
@@ -16,15 +19,19 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 
         private readonly ILogger myLogger;
 
-        private readonly Client myClient;
+        private Client myClient;
 
-        public GodotMessagingClient(ISolution solution, ILogger logger)
+        public GodotMessagingClient(ISolution solution, ILogger logger, Lifetime lifetime)
         {
             myLogger = logger;
-            myClient = new Client(Identity, solution.SolutionDirectory.FullPath, this, this);
-            myClient.Connected += () => logger.Info("Godot Editor connected...");
-            myClient.Disconnected += () => logger.Info("Godot Editor disconnected...");
-            myClient.Start();
+            
+            solution.GetProtocolSolution().GetGodotFrontendBackendModel().MainProjectBasePath.AdviseOnce(lifetime, baseDir =>
+            {
+                myClient = new Client(Identity, baseDir, this, this);
+                myClient.Connected += () => logger.Info("Godot Editor connected...");
+                myClient.Disconnected += () => logger.Info("Godot Editor disconnected...");
+                myClient.Start();
+            });
         }
 
         public Task<MessageContent> HandleRequest(Peer peer, string id, MessageContent content,
