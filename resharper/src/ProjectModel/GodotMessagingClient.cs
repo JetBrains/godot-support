@@ -57,27 +57,27 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 
         public void LogDebug(string message)
         {
-            myLogger.Log(LoggingLevel.VERBOSE, message);
+            myLogger.Verbose(message);
         }
 
         public void LogInfo(string message)
         {
-            myLogger.Log(LoggingLevel.INFO, message);
+            myLogger.Info(message);
         }
 
         public void LogWarning(string message)
         {
-            myLogger.Log(LoggingLevel.WARN, message);
+            myLogger.Warn(message);
         }
 
         public void LogError(string message)
         {
-            myLogger.Log(LoggingLevel.ERROR, message);
+            myLogger.Error(message);
         }
 
         public void LogError(string message, Exception e)
         {
-            myLogger.Log(LoggingLevel.ERROR, message, e);
+            myLogger.Error(message, e);
         }
     }
 }
