@@ -23,7 +23,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             myLogger = logger;
             myClient = new Client(Identity, solution.SolutionDirectory.FullPath, this, this);
             myClient.Connected += () => logger.Info("Godot Editor connected...");
-            myClient.Connected += () => logger.Info("Godot Editor disconnected...");
+            myClient.Disconnected += () => logger.Info("Godot Editor disconnected...");
             myClient.Start();
         }
 
