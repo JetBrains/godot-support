@@ -29,7 +29,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
         protected override bool AddLookupItems(CSharpCodeCompletionContext context, IItemsCollector collector)
         {
-            // TODO: refactor with GodotResourcePathCodeCompletion
             if (!IsAvailable(context))
                 return false;
 
@@ -61,8 +60,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             if (NodePathMethods.Methods.Contains(invocationExpression.InvokedMethodName()))
             {
                 var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
+                var fullPath = context.BasicContext.SourceFile.GetLocation().FullPath;
 
-                var response = client.SendNodePathRequest().Result;
+                var response = client.SendNodePathRequest(fullPath).Result;
                 foreach (var suggestion in response.Suggestions)
                 {
                     var item = new StringLiteralItem(suggestion);

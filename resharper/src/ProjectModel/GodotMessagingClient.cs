@@ -30,14 +30,16 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
         public Task<MessageContent> HandleRequest(Peer peer, string id, MessageContent content,
             GodotTools.IdeMessaging.ILogger logger)
         {
-            throw new NotImplementedException("oh no");
+            // TODO: unsure what this is for. Maybe PlayRequests?
+            throw new NotImplementedException("Not implemented yet!");
         }
 
-        public async Task<CodeCompletionResponse> SendNodePathRequest()
+        public async Task<CodeCompletionResponse> SendNodePathRequest(string fullPath)
         {
             var response = await myClient.SendRequest<CodeCompletionResponse>(new CodeCompletionRequest()
             {
                 Kind = CodeCompletionRequest.CompletionKind.NodePaths,
+                ScriptFile = fullPath
             });
 
             return response;
