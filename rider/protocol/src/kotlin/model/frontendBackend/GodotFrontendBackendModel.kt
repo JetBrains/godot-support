@@ -18,6 +18,11 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
         field("message", string)
     }
 
+    val GodotEditorState = enum {
+        +"Disconnected"
+        +"Connected"
+    }
+
     init {
         setting(Kotlin11Generator.Namespace, "com.jetbrains.rider.model.godot.frontendBackend")
         setting(CSharp50Generator.Namespace, "JetBrains.Rider.Model.Godot.FrontendBackend")
@@ -35,5 +40,7 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
         field("backendSettings", aggregatedef("GodotBackendSettings") {
             property("enableDebuggerExtensions", bool)
         })
+
+        property("editorState", GodotEditorState)
     }
 }

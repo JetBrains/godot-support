@@ -30,6 +30,18 @@
   </extensions>
 
 
+
+  <actions>
+    <group id="GodotToolbarActions" class = "com.jetbrains.rider.plugins.godot.ui.ToolbarActionsGroup">
+      <add-to-group group-id="ActiveRuntimeGroup" relative-to-action="BuildSolutionAction" anchor="before" />
+      <add-to-group group-id="RightToolbarSideGroup" relative-to-action="BuildSolutionAction" anchor="before" />
+      <add-to-group group-id="MainToolbarRight" anchor="first"/>
+
+      <action id="GodotConnectionAction" class="com.jetbrains.rider.plugins.godot.ui.GodotConnectionAction" />
+    </group>
+  </actions>
+
+
   <description><![CDATA[
 <strong>Adds support for the Godot engine (C#).</strong>
 <p>Further information on <a href="https://github.com/JetBrains/godot-support">github</a></p>
