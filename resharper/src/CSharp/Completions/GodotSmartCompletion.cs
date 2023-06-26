@@ -46,7 +46,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             var invocationExpression = InvocationExpressionNavigator.GetByArgument(
                 CSharpArgumentNavigator.GetByValue(context.NodeInFile.Parent as ICSharpLiteralExpression));
 
-
             var itemsCollected = false;
             itemsCollected |= LookupInputActions(invocationExpression, context, collector);
             itemsCollected |= LookupNodePaths(invocationExpression, context, collector);
@@ -65,6 +64,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 var fullPath = context.BasicContext.SourceFile.GetLocation().FullPath;
 
                 var response = client.SendNodePathRequest(fullPath).Result;
+                if (response == null)
+                    return false;
+
                 foreach (var suggestion in response.Suggestions)
                 {
                     var item = new StringLiteralItem(suggestion);
