@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using JetBrains.DocumentModel;
 using JetBrains.ProjectModel;
@@ -16,12 +17,20 @@ using JetBrains.ReSharper.Psi.Resources;
 using JetBrains.ReSharper.Psi.Tree;
 using JetBrains.TextControl;
 using JetBrains.UI.Icons;
+using JetBrains.Util;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 {
     [Language(typeof(CSharpLanguage))]
     public class GodotSmartCompletion : CSharpItemsProviderBase<CSharpCodeCompletionContext>
     {
+        private readonly ILogger myLogger;
+
+        public GodotSmartCompletion(ILogger logger)
+        {
+            myLogger = logger;
+        }
+        
         protected override bool IsAvailable(CSharpCodeCompletionContext context)
         {
             return context.BasicContext.CodeCompletionType == CodeCompletionType.BasicCompletion;
@@ -53,7 +62,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             return itemsCollected;
         }
 
-        private static bool LookupNodePaths(IInvocationExpression invocationExpression,
+        private bool LookupNodePaths(IInvocationExpression invocationExpression,
             CSharpCodeCompletionContext context,
             IItemsCollector collector)
         {
@@ -63,7 +72,13 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
                 var fullPath = context.BasicContext.SourceFile.GetLocation().FullPath;
 
-                var response = client.SendNodePathRequest(fullPath).Result;
+                var task = client.SendNodePathRequest(fullPath);
+                if (!task.Wait(TimeSpan.FromSeconds(.5)))
+                {
+                    myLogger.Error("Call to the GodotEditor SendInputActionsRequest wasn't finished in 0.5 seconds.");
+                    return false;
+                }
+                var response = task.Result;
                 if (response == null)
                     return false;
 
@@ -80,15 +95,25 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             return false;
         }
 
-        private static bool LookupInputActions(IInvocationExpression invocationExpression,
+        private bool LookupInputActions(IInvocationExpression invocationExpression,
             CSharpCodeCompletionContext context, IItemsCollector collector)
         {
             if (GodotTypes.Input.Equals(invocationExpression.InvokedMethodContainingType()) &&
                 InputActionMethods.Methods.Contains(invocationExpression.InvokedMethodName()))
             {
+                //var typeArgs = invocationExpression.Reference.Invocation.TypeArguments;
                 var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
-
-                var response = client.SendInputActionsRequest().Result;
+                var fullPath = context.BasicContext.SourceFile.GetLocation().FullPath;
+                var task = client.SendInputActionsRequest(fullPath);
+                if (!task.Wait(TimeSpan.FromSeconds(.5)))
+                {
+                    myLogger.Error("Call to the GodotEditor SendInputActionsRequest wasn't finished in 0.5 seconds.");
+                    return false;
+                }
+                var response = task.Result;
+                if (response == null)
+                    return false;
+                
                 foreach (var suggestion in response.Suggestions)
                 {
                     var item = new StringLiteralItem(suggestion);
