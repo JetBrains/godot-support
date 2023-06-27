@@ -69,33 +69,37 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             CSharpCodeCompletionContext context,
             IItemsCollector collector)
         {
-            if (GodotTypes.Node.Equals(invocationExpression.InvokedMethodContainingType()) &&
-                NodePathMethods.Methods.Contains(invocationExpression.InvokedMethodName()))
+            if (!GodotTypes.Node.Equals(invocationExpression.InvokedMethodContainingType()))
+                return false;
+            if (context.NodeInFile.Parent is not { Parent: ICSharpArgument argument })
+                return false;
+            if (argument.MatchingParameter == null || argument.MatchingParameter.Type is not IDeclaredType declaredType)
+                return false;
+            if (!Equals(declaredType.GetClrName().GetPersistent(), GodotTypes.NodePath))
+                return false;
+
+            var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
+            var fullPath = context.BasicContext.SourceFile.GetLocation().FullPath;
+
+            var task = client.SendNodePathRequest(fullPath);
+            if (!task.Wait(TimeSpan.FromSeconds(.5)))
             {
-                var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
-                var fullPath = context.BasicContext.SourceFile.GetLocation().FullPath;
-
-                var task = client.SendNodePathRequest(fullPath);
-                if (!task.Wait(TimeSpan.FromSeconds(.5)))
-                {
-                    myLogger.Error("Call to the GodotEditor SendInputActionsRequest wasn't finished in 0.5 seconds.");
-                    return false;
-                }
-                var response = task.Result;
-                if (response == null)
-                    return false;
-
-                foreach (var suggestion in response.Suggestions)
-                {
-                    var item = new StringLiteralItem(suggestion);
-                    item.InitializeRanges(context.CompletionRanges, context.BasicContext);
-                    collector.Add(item);
-                }
-
-                return true;
+                myLogger.Error("Call to the GodotEditor SendInputActionsRequest wasn't finished in 0.5 seconds.");
+                return false;
             }
 
-            return false;
+            var response = task.Result;
+            if (response == null)
+                return false;
+
+            foreach (var suggestion in response.Suggestions)
+            {
+                var item = new StringLiteralItem(suggestion);
+                item.InitializeRanges(context.CompletionRanges, context.BasicContext);
+                collector.Add(item);
+            }
+
+            return true;
         }
 
         private bool LookupInputActions(IInvocationExpression invocationExpression,
