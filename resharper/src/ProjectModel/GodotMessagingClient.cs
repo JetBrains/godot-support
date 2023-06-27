@@ -78,11 +78,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             return response;
         }
         
-        public async Task<CodeCompletionResponse> SendInputActionsRequest()
+        public async Task<CodeCompletionResponse> SendInputActionsRequest(string fullPath)
         {
             var response = await myClient.SendRequest<CodeCompletionResponse>(new CodeCompletionRequest()
             {
                 Kind = CodeCompletionRequest.CompletionKind.InputActions,
+                ScriptFile = fullPath
             });
             
             return response;
@@ -105,7 +106,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 
         public void LogError(string message)
         {
-            myLogger.Error(message);
+            // GodotTools.IdeMessaging.Client logs errors, which are not always errors like in `ConnectToServer`
+            myLogger.Warn(message);
         }
 
         public void LogError(string message, Exception e)
