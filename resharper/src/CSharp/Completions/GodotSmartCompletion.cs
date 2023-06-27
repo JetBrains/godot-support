@@ -52,6 +52,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             if (stringLiteral is null)
                 return false;
 
+            if (context.NodeInFile.Parent is not { Parent: ICSharpArgument })
+                return false;
+            
             var invocationExpression = InvocationExpressionNavigator.GetByArgument(
                 CSharpArgumentNavigator.GetByValue(context.NodeInFile.Parent as ICSharpLiteralExpression));
 
