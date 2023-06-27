@@ -52,20 +52,41 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             if (stringLiteral is null)
                 return false;
 
-            if (context.NodeInFile.Parent is not { Parent: ICSharpArgument })
-                return false;
-            
+            if (context.NodeInFile.Parent is { Parent: ICSharpArgument })
+                return LookupItemsForArgument(context, collector);
+
+            if (context.NodeInFile.Parent?.Parent is { Parent: ILocalVariableDeclaration localVariableDeclaration })
+                return LookupNodePathsForVariableDeclaration(localVariableDeclaration, context, collector);
+
+            return false;
+        }
+
+        private bool LookupItemsForArgument(CSharpCodeCompletionContext context, IItemsCollector collector)
+        {
             var invocationExpression = InvocationExpressionNavigator.GetByArgument(
                 CSharpArgumentNavigator.GetByValue(context.NodeInFile.Parent as ICSharpLiteralExpression));
 
             var itemsCollected = false;
             itemsCollected |= LookupInputActions(invocationExpression, context, collector);
-            itemsCollected |= LookupNodePaths(invocationExpression, context, collector);
+            itemsCollected |= LookupNodePathsForInvocation(invocationExpression, context, collector);
 
             return itemsCollected;
         }
 
-        private bool LookupNodePaths(IInvocationExpression invocationExpression,
+        private bool LookupNodePathsForVariableDeclaration(ILocalVariableDeclaration localVariableDeclaration,
+            CSharpCodeCompletionContext context,
+            IItemsCollector collector)
+        {
+            if (localVariableDeclaration.Type is not IDeclaredType declaredType)
+                return false;
+
+            if (!Equals(declaredType.GetClrName().GetPersistent(), GodotTypes.NodePath))
+                return false;
+
+            return RequestNodePathCompletion(context, collector);
+        }
+
+        private bool LookupNodePathsForInvocation(IInvocationExpression invocationExpression,
             CSharpCodeCompletionContext context,
             IItemsCollector collector)
         {
@@ -78,6 +99,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             if (!Equals(declaredType.GetClrName().GetPersistent(), GodotTypes.NodePath))
                 return false;
 
+            return RequestNodePathCompletion(context, collector);
+        }
+
+        private bool RequestNodePathCompletion(CSharpCodeCompletionContext context, IItemsCollector collector)
+        {
             var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
             var fullPath = context.BasicContext.SourceFile.GetLocation().FullPath;
 
@@ -117,6 +143,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
             var client = context.BasicContext.Solution.GetComponent<GodotMessagingClient>();
             var fullPath = context.BasicContext.SourceFile.GetLocation().FullPath;
+            
             var task = client.SendInputActionsRequest(fullPath);
             if (!task.Wait(TimeSpan.FromSeconds(.5)))
             {
