@@ -11,6 +11,10 @@ So I'm sorry that it takes so long and still is not finished but to be on safer 
 
 Have patience with me and hopefully this will go smoother than I'm imagining. (but seriously... I won't bet on that)
 
+Update 9.7.2023
+
+... shit, I've forgotten that bnf hadles generation of all PsiTypes so I'm incresing minimum time to 2 months. -_-
+
 # Installation
 
 Please follow installation instructions
