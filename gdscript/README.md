@@ -6,14 +6,11 @@ Update 8.7.2023
 IMPORTANT  
 !!!!!!!!!!!!!  
 Sorry for long wait I've taken some time off (a month cca?) and now I'm getting back to this development.
-As there is still major Lambda Issue which I'm unable to properly solve in current state & even though Intellij is getting LSP support it's features are limited I've decided to rewrite AST Parser from scratch without help of BNF - which in short means A LOT of work.
-So I'm sorry that it takes so long and still is not finished but to be on safer side I'll say that this might take me a month of work - after which a new round of testing and bug fixing will come... but since it'll be mostly only on weekends and I know that father wants to help with home renovation... ye I'd love to have it 1 month. :/
+As there is still major Lambda Issue which I'm unable to properly solve in current state & even though Intellij is getting LSP support it's features are limited... so I have to decide if rewrite AST Parser from scratch without help of BNF - which in short means A LOT of work or how to fix it... :/
+So I'm sorry that it takes so long and still is not finished but to be on safer side I'll say that this will take me at least a month of work - after which a new round of testing and bug fixing will come... but since it'll be mostly only on weekends and I know that father wants to help with home renovation... ye I'd love to have it 1 month. :/
 
 Have patience with me and hopefully this will go smoother than I'm imagining. (but seriously... I won't bet on that)
 
-Update 9.7.2023
-
-... shit, I've forgotten that bnf hadles generation of all PsiTypes so I'm incresing minimum time to 2 months. -_-
 
 # Installation
 
