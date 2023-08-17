@@ -38,8 +38,12 @@ repositories {
 dependencies {
 //    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 //    compile "org.jetbrains.kotlin:kotlin-stdlib:1.6.21"
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+//    testImplementation 'org.testng:testng:7.7.0'
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
@@ -47,9 +51,6 @@ intellij {
     version = '2023.1'
 //    type = "RD"
 }
-//rider {
-//    version = '2022.3'
-//}
 
 patchPluginXml {
     changeNotes = """
@@ -58,9 +59,9 @@ patchPluginXml {
     untilBuild = ''
 }
 
-//test {
-//    useJUnitPlatform()
-//}
+test {
+    useJUnitPlatform()
+}
 
 tasks {
     buildSearchableOptions {
