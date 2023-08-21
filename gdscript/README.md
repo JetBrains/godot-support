@@ -11,6 +11,10 @@ So I'm sorry that it takes so long and still is not finished but to be on safer 
 
 Have patience with me and hopefully this will go smoother than I'm imagining. (but seriously... I won't bet on that)
 
+Update 21.8.2023
+So.. I've started with rewriting PsiParser -> this is a lot of work and a chance to fix some known bugs, but it'll take months I'm afraid to finish - so in the neear future there won't be any more updates.
+Work is in branch `parser` should anyone be interested to check it... you'll also see if there's any activity. :-D 
+
 
 # Installation
 
