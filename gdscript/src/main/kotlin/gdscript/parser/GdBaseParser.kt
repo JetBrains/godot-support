@@ -17,33 +17,61 @@ abstract class GdBaseParser {
 
     fun consumeToken(elementType: IElementType): Boolean {
         if (builder.tokenType == elementType) {
-            builder.advanceLexer()
+            advance()
             return true
         }
 
         return false
     }
 
-    fun nextTokenIs(vararg elementTypes: IElementType): Boolean {
-        val searchFor = builder.tokenType
-        return elementTypes.any { it == searchFor }
+    fun mcToken(markToken: IElementType, vararg elementTypes: IElementType): Boolean {
+        if (nextTokenIs(*elementTypes)) {
+            return markToken(markToken)
+        } else {
+            val m = mark()
+            advance()
+            m.error("expected [$elementTypes]")
+        }
+
+        return false
     }
 
     fun mark(): Marker {
         return builder.mark()
     }
 
-    fun mcIdentifier(markerType: IElementType): Boolean {
-        if (!nextTokenIs(IDENTIFIER)) return false
+    fun mcAnyOf(markElement: IElementType, vararg elementTypes: IElementType): Boolean {
+        if (nextTokenIs(*elementTypes)) {
+            val m = mark()
+            advance()
+            m.done(markElement)
+            return true
+        }
+
+        return false
+    }
+
+    fun markToken(markType: IElementType, steps: Int = 1): Boolean {
         val m = mark()
-        builder.advanceLexer()
-        m.done(markerType)
+        repeat(steps) { advance() }
+        m.done(markType)
 
         return true
     }
 
-    fun endSection(m: Marker, elementType: IElementType) {
+    fun markError(error: String) {
+        val m = mark()
+        advance()
+        m.error(error)
+    }
 
+    fun mcIdentifier(markerType: IElementType): Boolean {
+        if (!nextTokenIs(IDENTIFIER)) return false
+        val m = mark()
+        advance()
+        m.done(markerType)
+
+        return true
     }
 
     fun mcEndStmt(): Boolean {
@@ -53,6 +81,40 @@ abstract class GdBaseParser {
         m.done(END_STMT)
 
         return true
+    }
+
+    /** CHECKERS **/
+
+    fun nextTokenIs(vararg elementTypes: IElementType): Boolean {
+        val searchFor = builder.tokenType
+        return elementTypes.any { it == searchFor }
+    }
+
+    fun ensureNextTokenIs(vararg elementTypes: IElementType): Boolean {
+        val searchFor = builder.tokenType
+        if (elementTypes.none { it == searchFor }) {
+            val m = mark()
+            advance()
+            m.error("${elementTypes.first()} expected, got ${builder.tokenText}")
+
+            return false
+        }
+
+        return true
+    }
+
+    fun followingTokensAre(vararg elementTypes: IElementType): Boolean {
+        var step = 0
+
+        return elementTypes.all {
+            it == builder.lookAhead(step++)
+        }
+    }
+
+    /** HELPERS **/
+
+    fun advance() {
+        return builder.advanceLexer()
     }
 
 }

@@ -5,8 +5,12 @@ import com.intellij.lang.LightPsiParser
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.PsiParser
 import com.intellij.psi.tree.IElementType
+import gdscript.parser.expr.GdLiteralExParser
+import gdscript.parser.recovery.GdRecovery
+import gdscript.parser.roots.GdAnnotationParser
 import gdscript.parser.roots.GdClassNameParser
 import gdscript.parser.roots.GdEmptyLineParser
+import gdscript.parser.roots.GdInheritanceParser
 import gdscript.psi.GdTypes.*
 
 class GdRootParser : PsiParser, LightPsiParser {
@@ -35,10 +39,19 @@ class GdRootParser : PsiParser, LightPsiParser {
     }
 
     private fun prepareParsers(builder: PsiBuilder) {
+        // Roots
         topLevelParsers.add(GdClassNameParser(builder))
+        topLevelParsers.add(GdInheritanceParser(builder))
+        topLevelParsers.add(GdAnnotationParser(builder))
 
         // Keep as last
         topLevelParsers.add(GdEmptyLineParser(builder))
+
+        // Expressions
+        GdLiteralExParser(builder)
+
+        // Helpers
+        GdRecovery(builder)
     }
 
 }

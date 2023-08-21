@@ -1,0 +1,11 @@
+GdScript File(0,30)
+  GdInheritance(0,30)
+    PsiElement(GdTokenType.EXTENDS)('extends')(0,7)
+    PsiWhiteSpace(' ')(7,8)
+    GdInheritanceIdNmImpl(INHERITANCE_ID_NM)(8,24)
+      PsiElement(GdTokenType.STRING)('"res://losos.gd"')(8,24)
+    PsiElement(GdTokenType.DOT)('.')(24,25)
+    GdInheritanceSubIdNmImpl(INHERITANCE_SUB_ID_NM)(25,30)
+      PsiElement(GdTokenType.IDENTIFIER)('Losos')(25,30)
+    GdEndStmtImpl(END_STMT)(30,30)
+      <empty list>
