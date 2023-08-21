@@ -1,5 +1,11 @@
 # GdScript
 
+Update 21.8.2023.  
+So.. I've started with rewriting PsiParser -> this is a lot of work and a chance to fix some known bugs, but it'll take months I'm afraid to finish - so in the neear future there won't be any more updates.
+Work is in branch `parser` should anyone be interested to check it... you'll also see if there's any activity. :-D 
+
+
+
 Update 8.7.2023
 
 !!!!!!!!!!!!!  
@@ -10,10 +16,6 @@ As there is still major Lambda Issue which I'm unable to properly solve in curre
 So I'm sorry that it takes so long and still is not finished but to be on safer side I'll say that this will take me at least a month of work - after which a new round of testing and bug fixing will come... but since it'll be mostly only on weekends and I know that father wants to help with home renovation... ye I'd love to have it 1 month. :/
 
 Have patience with me and hopefully this will go smoother than I'm imagining. (but seriously... I won't bet on that)
-
-Update 21.8.2023
-So.. I've started with rewriting PsiParser -> this is a lot of work and a chance to fix some known bugs, but it'll take months I'm afraid to finish - so in the neear future there won't be any more updates.
-Work is in branch `parser` should anyone be interested to check it... you'll also see if there's any activity. :-D 
 
 
 # Installation
