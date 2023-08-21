@@ -18,6 +18,7 @@ import gdscript.psi.impl.*;
 
 public interface GdTypes {
 
+  IElementType FILE = new GdElementType("FILE");
   IElementType ANNOTATION_PARAMS = new GdElementType("ANNOTATION_PARAMS");
   IElementType ANNOTATION_TL = new GdElementType("ANNOTATION_TL");
   IElementType ANNOTATION_TYPE = new GdElementType("ANNOTATION_TYPE");

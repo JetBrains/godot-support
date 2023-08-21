@@ -5,5 +5,4 @@ GdScript File(0,20)
     GdClassId(11,20)
       PsiElement(GdTokenType.IDENTIFIER)('ClassName')(11,20)
     GdEndStmtImpl(END_STMT)(20,20)
-      GdNewLineEndImpl(NEW_LINE_END)(20,20)
-        <empty list>
+      <empty list>

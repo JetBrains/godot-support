@@ -13,6 +13,8 @@ abstract class GdBaseParser {
         this.builder = builder
     }
 
+    abstract fun parse(): Boolean
+
     fun consumeToken(elementType: IElementType): Boolean {
         if (builder.tokenType == elementType) {
             builder.advanceLexer()
@@ -22,15 +24,16 @@ abstract class GdBaseParser {
         return false
     }
 
-    fun nextTokenIs(elementType: IElementType): Boolean {
-        return builder.tokenType == elementType
+    fun nextTokenIs(vararg elementTypes: IElementType): Boolean {
+        val searchFor = builder.tokenType
+        return elementTypes.any { it == searchFor }
     }
 
     fun mark(): Marker {
         return builder.mark()
     }
 
-    fun markAndConsumeIdentifier(markerType: IElementType): Boolean {
+    fun mcIdentifier(markerType: IElementType): Boolean {
         if (!nextTokenIs(IDENTIFIER)) return false
         val m = mark()
         builder.advanceLexer()
@@ -41,6 +44,15 @@ abstract class GdBaseParser {
 
     fun endSection(m: Marker, elementType: IElementType) {
 
+    }
+
+    fun mcEndStmt(): Boolean {
+        if (!nextTokenIs(SEMICON, NEW_LINE)) return false
+        val m = mark()
+        consumeToken(SEMICON)
+        m.done(END_STMT)
+
+        return true
     }
 
 }
