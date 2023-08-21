@@ -72,7 +72,7 @@ topLevelDecl ::=
     | BAD_CHARACTER
 private topLevelDecl_r ::= !(
     FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT
-    | REMOET | REMOTESYNC | MASTER | PUPPET | STATIC | VARARG
+    | REMOTE | REMOTESYNC | MASTER | PUPPET | STATIC | VARARG
     | CLASS_NAME | RRBR | RCBR | RSBR | EXTENDS | CLASS )
 
 constDecl_tl ::= CONST var_nmi typed? assignTyped expr endStmt {

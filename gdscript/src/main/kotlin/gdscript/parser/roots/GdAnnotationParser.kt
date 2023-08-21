@@ -10,8 +10,8 @@ class GdAnnotationParser : GdBaseParser {
 
     constructor(builder: PsiBuilder): super(builder)
 
-    override fun parse(): Boolean {
-        if (!nextTokenIs(ANNOTATOR)) return false
+    override fun parse(optional: Boolean): Boolean {
+        if (!nextTokenIs(ANNOTATOR)) return optional
 
         val m = mark()
         var ok = markToken(ANNOTATION_TYPE)
@@ -20,9 +20,7 @@ class GdAnnotationParser : GdBaseParser {
             ok = ok && parseParams()
             ok = ok && consumeToken(RRBR)
         }
-        if (!ok) {
-            // TODO
-        }
+        GdRecovery.topLevel()
 
         m.done(ANNOTATION_TL)
         return true

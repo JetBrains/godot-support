@@ -14,8 +14,25 @@ class GdLiteralExParser : GdBaseParser {
         INSTANCE = this
     }
 
-    override fun parse(): Boolean {
-        if (mcAnyOf(LITERAL_EX)) return true
+    override fun parse(optional: Boolean): Boolean {
+        if (mcAnyOf(LITERAL_EX, TRUE, FALSE, STRING_NAME, NODE_PATH_LIT, NUMBER, NULL, NAN, INF)) return true
+
+        if (nextTokenIs(SELF, SUPER)) {
+            val m = mark()
+            markToken(REF_ID_NM)
+            m.done(LITERAL_EX)
+            return true
+        }
+
+        // func - Array.gd, signal: Vector2.gd, class_name - Array.gd, FileAccess - pass
+        // tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě, stejně jako metody
+        if (nextTokenIs(IDENTIFIER, GET, SET, MATCH, SIGNAL, FUNC, CLASS_NAME, PASS, CLASS)) {
+            val m = mark()
+            markToken(REF_ID_NM)
+            m.done(LITERAL_EX)
+            return true
+        }
+
         if (nextTokenIs(STRING)) {
             val m = mark()
             markToken(STRING_VAL)

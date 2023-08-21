@@ -16,9 +16,11 @@ class GdParserTest : ParsingTestCase {
     @Test fun testAnnotation() = doTest(true)
     @Test fun testAnnotationParam() = doTest(true)
     @Test fun testAnnotationError() = doTest(true)
-
     @Test fun testClassConst() = doTest(true)
     @Test fun testClassVar() = doTest(true)
+
+    @Test fun testClassVarSetGet() = doTest(true)
+
     @Test fun testFunction() = doTest(true)
 
     override fun getTestDataPath(): String {

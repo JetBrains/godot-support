@@ -8,12 +8,12 @@ class GdClassNameParser : GdBaseParser {
 
     constructor(builder: PsiBuilder): super(builder)
 
-    override fun parse(): Boolean {
-        if (!nextTokenIs(CLASS_NAME)) return false
+    override fun parse(optional: Boolean): Boolean {
+        if (!nextTokenIs(CLASS_NAME)) return optional
 
         val m = mark()
         var ok = consumeToken(CLASS_NAME)
-        ok = ok && mcIdentifier(CLASS_NAME_NMI)
+        ok = ok && mceIdentifier(CLASS_NAME_NMI)
         ok = ok && mcEndStmt()
         if (!ok) {
             // TODO error

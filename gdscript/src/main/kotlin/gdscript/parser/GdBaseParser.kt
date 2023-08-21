@@ -13,7 +13,7 @@ abstract class GdBaseParser {
         this.builder = builder
     }
 
-    abstract fun parse(): Boolean
+    abstract fun parse(optional: Boolean = false): Boolean
 
     fun consumeToken(elementType: IElementType): Boolean {
         if (builder.tokenType == elementType) {
@@ -65,9 +65,17 @@ abstract class GdBaseParser {
         m.error(error)
     }
 
-    fun mcIdentifier(markerType: IElementType): Boolean {
-        if (!nextTokenIs(IDENTIFIER)) return false
+    fun mceIdentifier(markerType: IElementType): Boolean {
         val m = mark()
+
+        if (!nextTokenIs(IDENTIFIER)) {
+            val err = "expected IDENTIFIER, got ${builder.tokenText}"
+            advance()
+            m.error(err)
+
+            return false
+        }
+
         advance()
         m.done(markerType)
 
@@ -115,6 +123,12 @@ abstract class GdBaseParser {
 
     fun advance() {
         return builder.advanceLexer()
+    }
+
+    /** SHARED PARSERS **/
+
+    fun mcTyped() {
+
     }
 
 }

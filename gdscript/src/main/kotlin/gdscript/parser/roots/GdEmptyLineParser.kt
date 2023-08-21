@@ -9,7 +9,7 @@ class GdEmptyLineParser : GdBaseParser {
 
     constructor(builder: PsiBuilder): super(builder)
 
-    override fun parse(): Boolean {
+    override fun parse(optional: Boolean): Boolean {
         if (nextTokenIs(NEW_LINE)) {
             builder.remapCurrentToken(TokenType.WHITE_SPACE)
             builder.advanceLexer()

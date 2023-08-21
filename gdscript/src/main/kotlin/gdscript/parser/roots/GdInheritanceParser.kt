@@ -8,8 +8,8 @@ class GdInheritanceParser : GdBaseParser {
 
     constructor(builder: PsiBuilder): super(builder)
 
-    override fun parse(): Boolean {
-        if (!nextTokenIs(EXTENDS)) return false
+    override fun parse(optional: Boolean): Boolean {
+        if (!nextTokenIs(EXTENDS)) return optional
 
         val m = mark()
         var ok = consumeToken(EXTENDS)

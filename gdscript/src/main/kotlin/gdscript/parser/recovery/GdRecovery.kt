@@ -10,13 +10,14 @@ class GdRecovery : GdBaseParser {
         lateinit var recovery: GdRecovery
 
         fun argumentList() = recovery.recoverUntil(*ARG_END)
+        fun topLevel() = recovery.recoverUntil(*TOP_LEVEL)
     }
 
     constructor(builder: PsiBuilder): super(builder) {
         recovery = this
     }
 
-    override fun parse(): Boolean {
+    override fun parse(optional: Boolean): Boolean {
         TODO("Not yet implemented")
     }
 
@@ -24,7 +25,7 @@ class GdRecovery : GdBaseParser {
         var any: String? = null
         val m = mark()
 
-        while (!nextTokenIs(*elementTypes)) {
+        while (!builder.eof() && !nextTokenIs(*elementTypes)) {
             any = builder.tokenText
             advance()
         }

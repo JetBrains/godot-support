@@ -18,5 +18,4 @@ GdScript File(0,18)
     GdLiteralExImpl(LITERAL_EX)(17,18)
       PsiElement(GdTokenType.NUMBER)('1')(17,18)
     GdEndStmtImpl(END_STMT)(18,18)
-      GdNewLineEndImpl(NEW_LINE_END)(18,18)
-        <empty list>
+      <empty list>
