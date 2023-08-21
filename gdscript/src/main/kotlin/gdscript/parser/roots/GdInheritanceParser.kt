@@ -17,7 +17,7 @@ class GdInheritanceParser : GdBaseParser {
         while (ok && consumeToken(DOT)) {
             ok = mcToken(INHERITANCE_SUB_ID_NM, IDENTIFIER)
         }
-        ok = ok && mcEndStmt()
+        ok = ok && mceEndStmt()
         if (!ok) {
             // TODO
         }

@@ -2,6 +2,7 @@ package gdscript.parser
 
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.PsiBuilder.Marker
+import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import gdscript.psi.GdTypes.*
 
@@ -15,10 +16,16 @@ abstract class GdBaseParser {
 
     abstract fun parse(optional: Boolean = false): Boolean
 
-    fun consumeToken(elementType: IElementType): Boolean {
+    fun consumeToken(elementType: IElementType, force: Boolean = false): Boolean {
         if (builder.tokenType == elementType) {
             advance()
             return true
+        } else if (force) {
+            val m = mark()
+            val err = "expected $elementType, got ${builder.tokenText}"
+            advance()
+            m.error(err)
+            return false
         }
 
         return false
@@ -82,13 +89,25 @@ abstract class GdBaseParser {
         return true
     }
 
-    fun mcEndStmt(): Boolean {
-        if (!nextTokenIs(SEMICON, NEW_LINE)) return false
+    fun mceEndStmt(): Boolean {
         val m = mark()
+        if (!nextTokenIs(SEMICON, NEW_LINE)) {
+            consumeToken(SEMICON)
+            m.error("expected endStmt")
+            return false
+        }
+
         consumeToken(SEMICON)
         m.done(END_STMT)
 
         return true
+    }
+
+    fun consumeNewLine() {
+        if (nextTokenIs(NEW_LINE)) {
+            builder.remapCurrentToken(TokenType.WHITE_SPACE)
+            advance()
+        }
     }
 
     /** CHECKERS **/

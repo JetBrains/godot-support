@@ -11,6 +11,7 @@ class GdRecovery : GdBaseParser {
 
         fun argumentList() = recovery.recoverUntil(*ARG_END)
         fun topLevel() = recovery.recoverUntil(*TOP_LEVEL)
+        fun setGet() = recovery.recoverUntil(*SET_GET)
     }
 
     constructor(builder: PsiBuilder): super(builder) {
@@ -31,7 +32,7 @@ class GdRecovery : GdBaseParser {
         }
 
         if (any != null) {
-            m.error("expected COMMA, got '$any'")
+            m.error("unexpected '$any'")
         } else {
             m.drop()
         }

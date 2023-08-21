@@ -14,7 +14,7 @@ class GdClassNameParser : GdBaseParser {
         val m = mark()
         var ok = consumeToken(CLASS_NAME)
         ok = ok && mceIdentifier(CLASS_NAME_NMI)
-        ok = ok && mcEndStmt()
+        ok = ok && mceEndStmt()
         if (!ok) {
             // TODO error
         }

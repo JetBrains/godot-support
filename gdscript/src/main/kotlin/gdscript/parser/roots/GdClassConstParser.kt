@@ -20,7 +20,7 @@ class GdClassConstParser : GdBaseParser {
         ok = ok && GdTypedParser.INSTANCE.parse(true)
         ok = ok && mcAnyOf(ASSIGN_TYPED, EQ, CEQ)
         ok = ok && GdExprParser.INSTANCE.parse()
-        ok && mcEndStmt()
+        ok && mceEndStmt()
 
         GdRecovery.topLevel()
         m.done(CONST_DECL_TL)
