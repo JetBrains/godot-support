@@ -1,10 +1,10 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot</id>
   <name>Godot Support</name>
-  <version>2023.2.0.9999</version>
+  <version>2023.3.0.9999</version>
   <vendor url="https://www.jetbrains.com">JetBrains</vendor>
 
-  <idea-version since-build="232.0.0" until-build="233.0.0" />
+  <idea-version since-build="233.0.0" until-build="234.0.0" />
 
   <depends>com.intellij.modules.rider</depends>
 
