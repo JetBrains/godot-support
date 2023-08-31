@@ -9,10 +9,6 @@ import org.jetbrains.annotations.NotNull
 open class GodotDebugRunFactory(type: ConfigurationType) : ConfigurationFactory(type) {
     override fun getId() = "Start and Debug"
 
-    override fun isConfigurationSingletonByDefault(): Boolean {
-        return true
-    }
-
     override fun createTemplateConfiguration(@NotNull project: Project): RunConfiguration =
             GodotDebugRunConfiguration(this.name, project, this, ExeConfigurationParameters(
                 exePath = "",
