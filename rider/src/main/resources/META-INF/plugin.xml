@@ -4,7 +4,7 @@
   <version>2023.3.0.9999</version>
   <vendor url="https://www.jetbrains.com">JetBrains</vendor>
 
-  <idea-version since-build="233.0.0" until-build="234.0.0" />
+  <idea-version since-build="233" until-build="234.*" />
 
   <depends>com.intellij.modules.rider</depends>
 
@@ -24,7 +24,6 @@
   </project-components>
 
   <extensions defaultExtensionNs="com.intellij">
-    <projectService serviceImplementation="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer"/>
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer$ProtocolListener"/>
   </extensions>

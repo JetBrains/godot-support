@@ -312,8 +312,9 @@ tasks {
         group = riderGodotTargetsGroup
         dependsOn("prepare")
         doLast {
+            val dotNetCliPath = projectDir.parentFile.resolve("dotnet-sdk.cmd")
             exec {
-                executable = "dotnet"
+                executable = dotNetCliPath.canonicalPath
                 args("build", "$resharperPluginPath/godot-support.sln", "-c", buildConfiguration)
             }
         }
