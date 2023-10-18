@@ -1,11 +1,12 @@
 package com.jetbrains.rider.plugins.godot
 
 import com.intellij.execution.RunManager
+import com.intellij.openapi.client.ClientProjectSession
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.platform.client.ProtocolProjectSession
 import com.jetbrains.rd.platform.util.idea.LifetimedService
-import com.jetbrains.rd.platform.util.lifetime
+import com.intellij.openapi.rd.util.lifetime
 import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IProperty
@@ -20,6 +21,7 @@ import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationTy
 import com.jetbrains.rider.util.idea.getService
 import java.io.File
 
+@Service(Service.Level.PROJECT)
 class GodotProjectDiscoverer(project: Project) : LifetimedService() {
 
     val mainProjectBasePath : IProperty<String?> = Property(null)
@@ -69,7 +71,11 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
 
 
     class ProtocolListener : SolutionExtListener<GodotFrontendBackendModel> {
-        override fun extensionCreated(lifetime: Lifetime, session: ProtocolProjectSession, model: GodotFrontendBackendModel) {
+        override fun extensionCreated(
+            lifetime: Lifetime,
+            session: ClientProjectSession,
+            model: GodotFrontendBackendModel
+        ) {
             model.mainProjectBasePath.adviseNotNull(lifetime) {
                 getInstance(session.project).mainProjectBasePath.set(it)
             }

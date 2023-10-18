@@ -4,13 +4,11 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.launchBackground
 import com.intellij.util.application
-import com.intellij.util.io.isDirectory
 import com.jetbrains.rd.util.lifetime.isAlive
 import com.jetbrains.rd.util.reactive.viewNotNull
 import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rdclient.util.idea.LifetimedProjectComponent
 import com.jetbrains.rider.projectView.solution
-import com.jetbrains.rider.projectView.solutionDirectory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.time.withTimeout
 import java.io.File
@@ -18,6 +16,7 @@ import java.nio.file.*
 import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
 import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
 import java.time.Duration
+import kotlin.io.path.isDirectory
 
 
 class MetadataCoreFileWatcher(project: Project) : LifetimedProjectComponent(project) {

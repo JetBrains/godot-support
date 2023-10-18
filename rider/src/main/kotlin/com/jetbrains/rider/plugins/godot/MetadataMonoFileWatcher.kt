@@ -4,7 +4,6 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.util.application
-import com.intellij.util.io.isDirectory
 import com.jetbrains.rd.util.lifetime.isAlive
 import com.jetbrains.rd.util.reactive.viewNotNull
 import com.jetbrains.rd.util.reactive.whenTrue
@@ -17,6 +16,7 @@ import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
 import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
 import java.security.MessageDigest
 import kotlin.concurrent.thread
+import kotlin.io.path.isDirectory
 
 
 class MetadataMonoFileWatcher(project: Project) : LifetimedProjectComponent(project) {
