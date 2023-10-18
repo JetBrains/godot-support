@@ -19,7 +19,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 SolutionLoadTaskKinds.Done,
                 () =>
                 {
-                    foreach (var project in solution.GetTopLevelProjects().Where(project => project.IsGodotProject()))
+                    foreach (var project in solution.GetAllProjects().Where(project => project.IsGodotProject()))
                     {
                         var file = project.Location.Combine("project.godot");
                         if (!file.ExistsFile) continue;
