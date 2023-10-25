@@ -38,7 +38,7 @@ class GdParserDefinition : ParserDefinition {
     }
 
     override fun createParser(project: Project): PsiParser {
-        return  ()
+        return GdParser()
     }
 
     override fun getFileNodeType(): IFileElementType {
