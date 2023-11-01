@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Test
 
 class GdParserTest : ParsingTestCase {
 
+    // https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html
+
     constructor(): super("", "gd", GdNewParserDefinition())
 //    constructor(): super("", "gd", GdParserDefinition())
 
@@ -22,6 +24,8 @@ class GdParserTest : ParsingTestCase {
     @Test fun testClassVarSetGetMethod() = doTest(true)
 
     @Test fun testSignal() = doTest(true)
+    @Test fun testEnumAnonymous() = doTest(true)
+    @Test fun testEnumNamed() = doTest(true)
 
 //    @Test fun testFunction() = doTest(true)
 //    @Test fun testClassVarSetGet() = doTest(true)

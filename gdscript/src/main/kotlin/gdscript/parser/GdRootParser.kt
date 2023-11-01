@@ -8,10 +8,9 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.common.GdParamListParser
 import gdscript.parser.common.GdTypedParser
 import gdscript.parser.expr.GdExprParser
-import gdscript.parser.expr.GdLiteralExParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.roots.*
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.FILE
 
 class GdRootParser : PsiParser, LightPsiParser {
 
@@ -46,6 +45,7 @@ class GdRootParser : PsiParser, LightPsiParser {
         topLevelParsers.add(GdClassConstParser(builder))
         topLevelParsers.add(GdClassVarParser(builder))
         topLevelParsers.add(GdSignalParser(builder))
+        topLevelParsers.add(GdEnumParser(builder))
         // Keep as last
         topLevelParsers.add(GdEmptyLineParser(builder))
 
