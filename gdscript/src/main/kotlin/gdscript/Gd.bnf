@@ -72,7 +72,7 @@ topLevelDecl ::=
     | BAD_CHARACTER
 private topLevelDecl_r ::= !(
     FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT
-    | REMOTE | REMOTESYNC | MASTER | PUPPET | STATIC | VARARG
+    | REMOTE | REMOTESYNC | MASTERSYNC | PUPPETSYNC | MASTER | PUPPET | STATIC | VARARG
     | CLASS_NAME | RRBR | RCBR | RSBR | EXTENDS | CLASS )
 
 constDecl_tl ::= CONST var_nmi typed? assignTyped expr endStmt {
@@ -132,7 +132,7 @@ methodDecl_tl ::= methodSpecifier* FUNC methodId_nmi LRBR paramList? RRBR return
     stubClass="gdscript.index.stub.GdMethodDeclStub"
     elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"
 }
-methodSpecifier ::= STATIC | VARARG | MASTER | PUPPET | REMOTE | REMOTESYNC
+methodSpecifier ::= STATIC | VARARG | MASTER | PUPPET | REMOTE | REMOTESYNC | MASTERSYNC | PUPPETSYNC
 methodId_nmi ::= identifierEx
 paramList ::= param (COMMA param)* COMMA? { pin=1 recoverWhile=argList_r }
 param ::= VAR? var_nmi typed? (assignTyped expr)? {methods=[getReturnType]}

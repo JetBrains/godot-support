@@ -30,6 +30,8 @@ interface GdTokenTypeSet {
             GdTypes.MASTER,
             GdTypes.REMOTE,
             GdTypes.REMOTESYNC,
+            GdTypes.MASTERSYNC,
+            GdTypes.PUPPETSYNC,
             GdTypes.AS,
             GdTypes.IS,
             GdTypes.AND,

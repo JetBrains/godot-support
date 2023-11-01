@@ -102,6 +102,8 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "pupper"       { return GdTypes.PUPPET; }
     "remote"       { return GdTypes.REMOTE; }
     "remotesync"   { return GdTypes.REMOTESYNC; }
+    "mastersync"   { return GdTypes.MASTERSYNC; }
+    "puppetsync"   { return GdTypes.PUPPETSYNC; }
 
     "*"            { return GdTypes.MUL; }
     "**"           { return GdTypes.POWER; }

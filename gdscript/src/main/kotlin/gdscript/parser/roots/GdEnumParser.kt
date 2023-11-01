@@ -27,8 +27,8 @@ class GdEnumParser : GdBaseParser {
             if (!consumeToken(COMMA)) break
         }
 
-        ok && consumeToken(RCBR, true)
-        ok && mceEndStmt()
+        ok = ok && consumeToken(RCBR, true)
+        ok = ok && mceEndStmt()
         GdRecovery.topLevel()
 
         enumDecl.done(ENUM_DECL_TL)

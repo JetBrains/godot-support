@@ -13,6 +13,8 @@ object GdKeywords {
     const val PUPPET = "puppet"
     const val REMOTE = "remote"
     const val REMOTE_SYNC = "remotesync"
+    const val MASTER_SYNC = "mastersync"
+    const val PUPPET_SYNC = "puppetsync"
     const val CONST = "const"
     const val VAR = "var"
     const val SELF = "self"

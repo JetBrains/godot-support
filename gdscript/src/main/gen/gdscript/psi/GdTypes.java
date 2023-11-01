@@ -185,6 +185,8 @@ public interface GdTypes {
   IElementType REMOET = new GdTokenType("REMOET");
   IElementType REMOTE = new GdTokenType("REMOTE");
   IElementType REMOTESYNC = new GdTokenType("REMOTESYNC");
+  IElementType MASTERSYNC = new GdTokenType("MASTERSYNC");
+  IElementType PUPPETSYNC = new GdTokenType("PUPPETSYNC");
   IElementType RET = new GdTokenType("RET");
   IElementType RETURN = new GdTokenType("RETURN");
   IElementType RRBR = new GdTokenType("RRBR");

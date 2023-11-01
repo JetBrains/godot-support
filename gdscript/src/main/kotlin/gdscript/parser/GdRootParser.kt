@@ -46,6 +46,9 @@ class GdRootParser : PsiParser, LightPsiParser {
         topLevelParsers.add(GdClassVarParser(builder))
         topLevelParsers.add(GdSignalParser(builder))
         topLevelParsers.add(GdEnumParser(builder))
+        topLevelParsers.add(GdMethodParser(builder))
+        // method
+        // sub-class
         // Keep as last
         topLevelParsers.add(GdEmptyLineParser(builder))
 
