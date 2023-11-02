@@ -29,8 +29,8 @@ class GdEnumParser : GdBaseParser {
 
         ok = ok && consumeToken(RCBR, true)
         ok = ok && mceEndStmt()
-        GdRecovery.topLevel()
 
+        GdRecovery.topLevel()
         enumDecl.done(ENUM_DECL_TL)
 
         return true

@@ -2,6 +2,7 @@ package gdscript.parser.common
 
 import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
+import gdscript.parser.expr.GdExprParser
 import gdscript.psi.GdTypes.*
 
 class GdTypedParser : GdBaseParser {
@@ -17,8 +18,40 @@ class GdTypedParser : GdBaseParser {
     override fun parse(optional: Boolean): Boolean {
         if (!nextTokenIs(COLON)) return optional
 
+        var ok = true
         val typed = mark()
         advance() // Colon
+
+        ok = ok && typedVal(false)
+
+        if (ok) {
+            typed.done(TYPED)
+        } else {
+            typed.rollbackTo()
+        }
+
+        return true
+    }
+
+    fun parseWithAssignTyped(optional: Boolean): Boolean {
+        var ok = true
+        if (nextTokenIs(CEQ)) {
+            ok = ok && mcAnyOf(ASSIGN_TYPED, CEQ)
+            ok = ok && GdExprParser.INSTANCE.parse()
+        } else if (nextTokenIs(COLON)) {
+            ok = ok && parse(optional)
+            if (nextTokenIs(EQ)) {
+                ok = ok && mcAnyOf(ASSIGN_TYPED, EQ)
+                ok = ok && GdExprParser.INSTANCE.parse()
+            }
+        } else if (!optional) {
+            return false
+        }
+
+        return true
+    }
+
+    fun typedVal(optional: Boolean): Boolean {
         val typedVal = mark()
 
         var ok = parseTypeHint()
@@ -28,18 +61,16 @@ class GdTypedParser : GdBaseParser {
             ensureNextTokenIs(RSBR)
         }
 
-        if (ok) {
-            typedVal.done(TYPED_VAL)
-            typed.done(TYPED)
-        } else {
-            typed.rollbackTo()
-        }
+        typedVal.done(TYPED_VAL)
 
         return true
     }
 
     private fun parseTypeHint(): Boolean {
+        if (!nextTokenIs(IDENTIFIER)) return false
+
         val hint = mark()
+
         var ok = mceIdentifier(TYPE_HINT_NM)
         while (ok && nextTokenIs(DOT)) {
             advance()
@@ -47,7 +78,8 @@ class GdTypedParser : GdBaseParser {
         }
 
         hint.done(TYPE_HINT)
-        return ok
+
+        return true
     }
 
 }

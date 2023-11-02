@@ -4,7 +4,6 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
 import gdscript.parser.common.GdTypedParser
-import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
 
@@ -18,14 +17,9 @@ class GdClassVarParser : GdBaseParser {
         val m = mark()
         advance() // const
         var ok = mceIdentifier(VAR_NMI)
-        ok = ok && GdTypedParser.INSTANCE.parse(true)
 
-        if (ok && nextTokenIs(EQ, CEQ)) {
-            ok = ok && mcAnyOf(ASSIGN_TYPED, EQ, CEQ)
-            ok = ok && GdExprParser.INSTANCE.parse()
-        }
-
-        ok && (parseGetSet() || mceEndStmt())
+        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTyped(true)
+        ok = ok && (parseGetSet() || mceEndStmt())
 
         GdRecovery.topLevel()
         m.done(CLASS_VAR_DECL_TL)

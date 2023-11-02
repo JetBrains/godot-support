@@ -22,8 +22,8 @@ class GdSignalParser : GdBaseParser {
         }
 
         ok && mceEndStmt()
-        GdRecovery.topLevel()
 
+        GdRecovery.topLevel()
         signalDecl.done(SIGNAL_DECL_TL)
 
         return true

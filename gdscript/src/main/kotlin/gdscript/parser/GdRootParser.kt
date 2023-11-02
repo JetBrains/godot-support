@@ -10,6 +10,7 @@ import gdscript.parser.common.GdTypedParser
 import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.roots.*
+import gdscript.parser.stmt.GdStmtParser
 import gdscript.psi.GdTypes.FILE
 
 class GdRootParser : PsiParser, LightPsiParser {
@@ -53,6 +54,7 @@ class GdRootParser : PsiParser, LightPsiParser {
         topLevelParsers.add(GdEmptyLineParser(builder))
 
         GdExprParser(builder)
+        GdStmtParser(builder)
 
         // Helpers
         GdRecovery(builder)

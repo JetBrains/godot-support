@@ -12,6 +12,7 @@ class GdRecovery : GdBaseParser {
         fun argumentList() = recovery.recoverUntil(*ARG_END)
         fun topLevel() = recovery.recoverUntil(*TOP_LEVEL)
         fun setGet() = recovery.recoverUntil(*SET_GET)
+        fun stmt() = recovery.recoverUntil(*STMT)
     }
 
     constructor(builder: PsiBuilder): super(builder) {
