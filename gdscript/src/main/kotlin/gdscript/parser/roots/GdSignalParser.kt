@@ -2,6 +2,7 @@ package gdscript.parser.roots
 
 import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
+import gdscript.parser.common.GdParamListParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
 
@@ -16,9 +17,9 @@ class GdSignalParser : GdBaseParser {
         advance() // signal
         var ok = mceIdentifier(SIGNAL_ID_NMI)
 
-        if (ok && nextTokenIs(LRBR)) {
-            advance()
-
+        if (ok && consumeToken(LRBR)) {
+            ok = ok && GdParamListParser.INSTANCE.parse(false)
+            ok = ok && consumeToken(RRBR, true)
         }
 
         ok && mceEndStmt()

@@ -2,7 +2,6 @@ package gdscript.parser
 
 import com.intellij.testFramework.ParsingTestCase
 import gdscript.GdNewParserDefinition
-import gdscript.GdParserDefinition
 import org.junit.jupiter.api.Test
 
 class GdParserTest : ParsingTestCase {

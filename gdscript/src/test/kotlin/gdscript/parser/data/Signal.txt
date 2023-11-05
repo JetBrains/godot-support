@@ -36,5 +36,4 @@ GdScript File(0,39)
             PsiElement(GdTokenType.STRING)('"asd"')(33,38)
     PsiElement(GdTokenType.RRBR)(')')(38,39)
     GdEndStmtImpl(END_STMT)(39,39)
-      GdNewLineEndImpl(NEW_LINE_END)(39,39)
-        <empty list>
+      <empty list>

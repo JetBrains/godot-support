@@ -42,6 +42,5 @@ GdScript File(0,42)
         GdStmtImpl(STMT)(38,42)
           GdFlowStImpl(FLOW_ST)(38,42)
             PsiElement(GdTokenType.PASS)('pass')(38,42)
-          GdEndStmtImpl(END_STMT)(42,42)
-            GdNewLineEndImpl(NEW_LINE_END)(42,42)
+            GdEndStmtImpl(END_STMT)(42,42)
               <empty list>

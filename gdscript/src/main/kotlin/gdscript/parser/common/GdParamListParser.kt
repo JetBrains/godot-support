@@ -2,6 +2,7 @@ package gdscript.parser.common
 
 import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
+import gdscript.parser.expr.GdExprParser
 import gdscript.psi.GdTypes.*
 
 class GdParamListParser : GdBaseParser {
@@ -36,6 +37,9 @@ class GdParamListParser : GdBaseParser {
         consumeToken(VAR)
         ok = ok && mceIdentifier(VAR_NMI)
         ok = ok && GdTypedParser.INSTANCE.parseWithAssignTyped(true)
+        if (ok && mcAnyOf(ASSIGN_TYPED, EQ)) {
+            ok = ok && GdExprParser.INSTANCE.parse()
+        }
 
         param.done(PARAM)
 

@@ -58,6 +58,15 @@ abstract class GdBaseParser {
         return false
     }
 
+    fun mcAnyOfForce(markElement: IElementType, vararg elementTypes: IElementType): Boolean {
+        if (!mcAnyOf(markElement, *elementTypes)) {
+            markError("expected [$elementTypes]")
+            return false
+        }
+
+        return true
+    }
+
     fun markToken(markType: IElementType, steps: Int = 1): Boolean {
         val m = mark()
         repeat(steps) { advance() }
@@ -90,15 +99,10 @@ abstract class GdBaseParser {
     }
 
     fun mceEndStmt(): Boolean {
-        val m = mark()
-        if (!nextTokenIs(SEMICON, NEW_LINE)) {
-            consumeToken(SEMICON)
-            m.error("expected endStmt")
+        if (!mcAnyOf(END_STMT, SEMICON, NEW_LINE)) {
+            markError("expected endStmt")
             return false
         }
-
-        consumeToken(SEMICON)
-        m.done(END_STMT)
 
         return true
     }

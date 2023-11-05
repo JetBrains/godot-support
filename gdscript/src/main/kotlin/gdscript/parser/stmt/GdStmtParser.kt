@@ -14,7 +14,9 @@ class GdStmtParser : GdBaseParser {
     val parsers = mutableListOf<GdBaseParser>()
 
     constructor(builder: PsiBuilder): super(builder) {
-//        parsers.add(GdLiteralExParser(builder))
+        parsers.add(GdAssignStmtParser(builder))
+
+        parsers.add(GdFlowStmtParser(builder))
         INSTANCE = this
     }
 
@@ -45,8 +47,17 @@ class GdStmtParser : GdBaseParser {
     }
 
     private fun stmt(optional: Boolean): Boolean {
-        return false
-        // return parsers.any { it.parse() }
+        val stmt = mark()
+        if (parsers.any { it.parse() }) {
+            stmt.done(STMT)
+            return true
+        }
+
+        if (!optional) {
+            stmt.error("Statement expected")
+        }
+
+        return optional
     }
 
 }

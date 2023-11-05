@@ -40,10 +40,6 @@ class GdTypedParser : GdBaseParser {
             ok = ok && GdExprParser.INSTANCE.parse()
         } else if (nextTokenIs(COLON)) {
             ok = ok && parse(optional)
-            if (nextTokenIs(EQ)) {
-                ok = ok && mcAnyOf(ASSIGN_TYPED, EQ)
-                ok = ok && GdExprParser.INSTANCE.parse()
-            }
         } else if (!optional) {
             return false
         }
