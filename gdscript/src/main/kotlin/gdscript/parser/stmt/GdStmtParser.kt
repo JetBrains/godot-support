@@ -12,11 +12,14 @@ class GdStmtParser : GdBaseParser {
     }
 
     val parsers = mutableListOf<GdBaseParser>()
+    var moved = false
 
     constructor(builder: PsiBuilder): super(builder) {
         parsers.add(GdAssignStmtParser(builder))
 
         parsers.add(GdFlowStmtParser(builder))
+        parsers.add(GdVarStmtParser(builder))
+        parsers.add(GdConstStmtParser(builder))
         INSTANCE = this
     }
 
@@ -36,8 +39,11 @@ class GdStmtParser : GdBaseParser {
         advance() // NEW_LINE
         ok = ok && consumeToken(INDENT)
 
-        // TODO new_line?
         ok = ok && stmt(false)
+        moved = true
+        while (ok && moved) {
+            ok = ok && stmt(true)
+        }
         ok = ok && consumeToken(DEDENT, true)
 
         GdRecovery.stmt()
@@ -48,14 +54,19 @@ class GdStmtParser : GdBaseParser {
 
     private fun stmt(optional: Boolean): Boolean {
         val stmt = mark()
+        moved = false
+
         if (parsers.any { it.parse() }) {
             stmt.done(STMT)
+            moved = true
             return true
         }
 
         if (!optional) {
             stmt.error("Statement expected")
         }
+
+        stmt.drop()
 
         return optional
     }

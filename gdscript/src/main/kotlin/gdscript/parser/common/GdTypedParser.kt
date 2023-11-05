@@ -33,13 +33,18 @@ class GdTypedParser : GdBaseParser {
         return true
     }
 
-    fun parseWithAssignTyped(optional: Boolean): Boolean {
+    fun parseWithAssignTypedAndExpr(optional: Boolean): Boolean {
         var ok = true
         if (nextTokenIs(CEQ)) {
             ok = ok && mcAnyOf(ASSIGN_TYPED, CEQ)
             ok = ok && GdExprParser.INSTANCE.parse()
         } else if (nextTokenIs(COLON)) {
             ok = ok && parse(optional)
+            if (ok && mcAnyOf(ASSIGN_TYPED, EQ)) {
+                ok = ok && GdExprParser.INSTANCE.parse()
+            }
+        } else if (mcAnyOf(ASSIGN_TYPED, EQ)) {
+            ok = ok && GdExprParser.INSTANCE.parse()
         } else if (!optional) {
             return false
         }

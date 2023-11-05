@@ -16,7 +16,7 @@ class GdClassConstParser : GdBaseParser {
         val m = mark()
         advance() // const
         var ok = mceIdentifier(VAR_NMI)
-        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTyped(true)
+        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(true)
 
         ok && mceEndStmt()
 

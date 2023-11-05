@@ -18,7 +18,7 @@ class GdClassVarParser : GdBaseParser {
         advance() // const
         var ok = mceIdentifier(VAR_NMI)
 
-        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTyped(true)
+        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(true)
         ok = ok && (parseGetSet() || mceEndStmt())
 
         GdRecovery.topLevel()

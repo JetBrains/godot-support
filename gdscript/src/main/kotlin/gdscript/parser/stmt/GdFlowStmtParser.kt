@@ -3,6 +3,7 @@ package gdscript.parser.stmt
 import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
 import gdscript.parser.expr.GdExprParser
+import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
 
 class GdFlowStmtParser : GdBaseParser {
@@ -24,6 +25,7 @@ class GdFlowStmtParser : GdBaseParser {
         }
 
         mceEndStmt()
+        GdRecovery.stmt()
         stmt.done(FLOW_ST)
 
         return true
