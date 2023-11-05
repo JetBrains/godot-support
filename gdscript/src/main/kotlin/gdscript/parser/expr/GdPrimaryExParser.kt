@@ -1,13 +1,15 @@
 package gdscript.parser.expr
 
 import com.intellij.lang.PsiBuilder
-import gdscript.parser.GdBaseParser
+import com.intellij.psi.tree.IElementType
 import gdscript.psi.GdTypes.*
 
-class GdPrimaryExParser : GdBaseParser {
+class GdPrimaryExParser : GdExprBaseParser {
+
+    override val EXPR_TYPE: IElementType = PRIMARY_EX
 
     companion object {
-        lateinit var INSTANCE: GdPrimaryExParser
+        lateinit var INSTANCE: GdExprBaseParser
     }
 
     constructor(builder: PsiBuilder): super(builder) {
@@ -15,16 +17,10 @@ class GdPrimaryExParser : GdBaseParser {
     }
 
     override fun parse(optional: Boolean): Boolean {
-        val primary = mark()
-        val ok = mcAnyOf(NODE_PATH, NODE_PATH_LEX)
+        return nextTokenIs(NODE_PATH, NODE_PATH_LEX)
                 || arrayDecl()
         // TODO dictDecl
         // TODO (LRBR expr RRBR)
-
-        if (ok) primary.done(PRIMARY_EX)
-        else primary.rollbackTo()
-
-        return ok
     }
 
     private fun arrayDecl(): Boolean {

@@ -18,6 +18,7 @@ class GdParserTest : ParsingTestCase {
     @Test fun testAnnotationError() = doTest(true)
     @Test fun testClassConst() = doTest(true)
     @Test fun testClassVar() = doTest(true)
+    // @Test fun testClassVarSetGet() = doTest(true)
     // TODO více řádkové
     @Test fun testClassVarSetGetMethod() = doTest(true)
 
@@ -32,9 +33,10 @@ class GdParserTest : ParsingTestCase {
     @Test fun testIfStmt() = doTest(true)
     @Test fun testWhileStmt() = doTest(true)
     @Test fun testForStmt() = doTest(true)
+    @Test fun testMatchStmt() = doTest(true)
+    @Test fun testAwaitStmt() = doTest(true)
+    @Test fun testAssignStmt() = doTest(true)
 
-//    @Test fun testFunction() = doTest(true)
-//    @Test fun testClassVarSetGet() = doTest(true)
 
     override fun getTestDataPath(): String {
         return "src/test/kotlin/gdscript/parser/data"

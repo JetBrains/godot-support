@@ -5,6 +5,7 @@ import com.intellij.lang.LightPsiParser
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.PsiParser
 import com.intellij.psi.tree.IElementType
+import gdscript.parser.common.GdArgListParser
 import gdscript.parser.common.GdParamListParser
 import gdscript.parser.common.GdTypedParser
 import gdscript.parser.expr.GdExprParser
@@ -60,6 +61,7 @@ class GdRootParser : PsiParser, LightPsiParser {
         GdRecovery(builder)
         GdTypedParser(builder)
         GdParamListParser(builder)
+        GdArgListParser(builder)
     }
 
 }
