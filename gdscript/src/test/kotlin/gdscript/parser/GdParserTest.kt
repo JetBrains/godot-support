@@ -37,6 +37,8 @@ class GdParserTest : ParsingTestCase {
     @Test fun testAwaitStmt() = doTest(true)
     @Test fun testAssignStmt() = doTest(true)
 
+    // Exprs
+    @Test fun testNestedCallExpr() = doTest(true)
 
     override fun getTestDataPath(): String {
         return "src/test/kotlin/gdscript/parser/data"

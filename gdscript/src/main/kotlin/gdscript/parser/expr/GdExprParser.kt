@@ -23,7 +23,7 @@ class GdExprParser : GdBaseParser {
     }
 
     override fun parse(optional: Boolean): Boolean {
-        val left = mark()
+        var left = mark()
         var leftType: IElementType = EXPR
 
         if (
@@ -36,8 +36,8 @@ class GdExprParser : GdBaseParser {
             return optional
         }
 
-        var right = left.precede()
         left.done(leftType)
+        left = left.precede()
         var rightType: IElementType = EXPR
         while (
             leftLeadParsers.any {
@@ -45,11 +45,11 @@ class GdExprParser : GdBaseParser {
                 it.parse()
             }
         ) {
-            right.done(rightType)
-            right = mark()
+            left.done(rightType)
+            left = left.precede()
         }
 
-        right.drop()
+        left.drop()
 
         return true
     }
