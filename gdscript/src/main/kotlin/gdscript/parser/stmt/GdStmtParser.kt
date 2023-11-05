@@ -20,6 +20,9 @@ class GdStmtParser : GdBaseParser {
         parsers.add(GdFlowStmtParser(builder))
         parsers.add(GdVarStmtParser(builder))
         parsers.add(GdConstStmtParser(builder))
+        parsers.add(GdIfStmtParser(builder))
+        parsers.add(GdWhileStmtParser(builder))
+        parsers.add(GdForStmtParser(builder))
         INSTANCE = this
     }
 
@@ -53,20 +56,21 @@ class GdStmtParser : GdBaseParser {
     }
 
     private fun stmt(optional: Boolean): Boolean {
-        val stmt = mark()
+//        val stmt = mark()
         moved = false
 
         if (parsers.any { it.parse() }) {
-            stmt.done(STMT)
+//            stmt.done(STMT)
             moved = true
             return true
         }
 
         if (!optional) {
-            stmt.error("Statement expected")
+            markError("Statement expected")
+//            stmt.error("Statement expected")
         }
 
-        stmt.drop()
+//        stmt.drop()
 
         return optional
     }

@@ -39,8 +39,7 @@ GdScript File(0,42)
       GdSuiteImpl(SUITE)(33,42)
         PsiElement(GdTokenType.NEW_LINE)('\n')(33,34)
         PsiElement(GdTokenType.INDENT)('    ')(34,38)
-        GdStmtImpl(STMT)(38,42)
-          GdFlowStImpl(FLOW_ST)(38,42)
-            PsiElement(GdTokenType.PASS)('pass')(38,42)
-            GdEndStmtImpl(END_STMT)(42,42)
-              <empty list>
+        GdFlowStImpl(FLOW_ST)(38,42)
+          PsiElement(GdTokenType.PASS)('pass')(38,42)
+          GdEndStmtImpl(END_STMT)(42,42)
+            <empty list>

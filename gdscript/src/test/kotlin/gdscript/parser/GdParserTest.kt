@@ -1,15 +1,14 @@
 package gdscript.parser
 
 import com.intellij.testFramework.ParsingTestCase
-import gdscript.GdNewParserDefinition
 import org.junit.jupiter.api.Test
 
 class GdParserTest : ParsingTestCase {
 
     // https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html
 
-    constructor(): super("", "gd", GdNewParserDefinition())
-//    constructor(): super("", "gd", GdParserDefinition())
+    constructor(): super("", "gd", gdscript.GdNewParserDefinition())
+//    constructor(): super("", "gd", gdscript.GdParserDefinition())
 
     @Test fun testClassName() = doTest(true)
     @Test fun testExtension() = doTest(true)
@@ -30,6 +29,9 @@ class GdParserTest : ParsingTestCase {
     @Test fun testFunctionSimple() = doTest(true)
     @Test fun testVarConstStmt() = doTest(true)
     @Test fun testVarConstWithEmptyStmt() = doTest(true)
+    @Test fun testIfStmt() = doTest(true)
+    @Test fun testWhileStmt() = doTest(true)
+    @Test fun testForStmt() = doTest(true)
 
 //    @Test fun testFunction() = doTest(true)
 //    @Test fun testClassVarSetGet() = doTest(true)

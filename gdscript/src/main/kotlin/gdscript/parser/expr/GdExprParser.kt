@@ -12,8 +12,9 @@ class GdExprParser : GdBaseParser {
     val parsers = mutableListOf<GdBaseParser>()
 
     constructor(builder: PsiBuilder): super(builder) {
-        parsers.add(GdLiteralExParser(builder))
         INSTANCE = this
+        parsers.add(GdLiteralExParser(builder))
+        parsers.add(GdPrimaryExParser(builder))
     }
 
     override fun parse(optional: Boolean): Boolean {
