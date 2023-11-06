@@ -8,7 +8,9 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.execution.ui.ConsoleViewContentType
+import com.intellij.openapi.rd.createNestedDisposable
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.SystemInfo
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.flowInto
@@ -26,6 +28,7 @@ import com.jetbrains.rider.run.ExternalConsoleMediator
 import com.jetbrains.rider.run.WorkerRunInfo
 import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
 import com.jetbrains.rider.run.createEmptyConsoleCommandLine
+import com.jetbrains.rider.run.environment.ExecutableType
 import com.jetbrains.rider.run.withRawParameters
 import com.jetbrains.rider.util.NetUtils
 
@@ -64,7 +67,7 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
     override fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler, lifetime: Lifetime): ExecutionResult {
         val envs = exeConfiguration.parameters.envs.toMutableMap()
         envs.addUnique(lifetime, "GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:${remoteConfiguration.port},server=n,suspend=y")
-        val runCommandLine = createEmptyConsoleCommandLine(exeConfiguration.parameters.useExternalConsole)
+        val runCommandLine = createEmptyConsoleCommandLine(exeConfiguration.parameters.useExternalConsole, if (SystemInfo.isWindows) ExecutableType.Windows else ExecutableType.Console)
                 .withEnvironment(envs)
                 .withParentEnvironmentType(if (exeConfiguration.parameters.isPassParentEnvs) {
                     GeneralCommandLine.ParentEnvironmentType.CONSOLE
@@ -101,16 +104,12 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
                     override fun processTerminated(processEvent: ProcessEvent) {
                         monoConnectResult.executionConsole.tryWriteMessageToConsoleView(OutputMessageWithSubject(output = "Process \"$commandLineString\" terminated with exit code ${processEvent.exitCode}.\r\n", type = OutputType.Warning, subject = OutputSubject.Default))
                     }
-
-                    override fun startNotified(processEvent: ProcessEvent) {
-                        monoConnectResult.executionConsole.tryWriteMessageToConsoleView(OutputMessageWithSubject("Process \"$commandLineString\" started.\r\n", OutputType.Info, OutputSubject.Default))
-                    }
                 })
 
                 targetProcessHandler.startNotify()
                 super.startNotified(event)
             }
-        })
+        }, lifetime.createNestedDisposable())
 
         return monoConnectResult
     }
