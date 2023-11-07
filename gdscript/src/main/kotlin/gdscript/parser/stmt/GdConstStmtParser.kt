@@ -11,7 +11,7 @@ class GdConstStmtParser : GdBaseParser {
     constructor(builder: PsiBuilder) : super(builder)
 
     override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(CONST)) return false
+        if (!nextTokenIs(CONST)) return optional
 
         val stmt = mark()
         advance() // var

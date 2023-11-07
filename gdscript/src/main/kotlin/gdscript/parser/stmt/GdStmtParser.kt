@@ -17,12 +17,13 @@ class GdStmtParser : GdBaseParser {
     constructor(builder: PsiBuilder): super(builder) {
         parsers.add(GdAssignStmtParser(builder))
 
-        parsers.add(GdFlowStmtParser(builder))
         parsers.add(GdVarStmtParser(builder))
         parsers.add(GdConstStmtParser(builder))
         parsers.add(GdIfStmtParser(builder))
         parsers.add(GdWhileStmtParser(builder))
         parsers.add(GdForStmtParser(builder))
+        parsers.add(GdMatchStmtParser(builder))
+        parsers.add(GdFlowStmtParser(builder))
         parsers.add(GdAwaitStmtParser(builder))
         parsers.add(GdExStmtParser(builder))
         INSTANCE = this

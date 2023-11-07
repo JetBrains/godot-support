@@ -13,6 +13,7 @@ class GdRecovery : GdBaseParser {
         fun topLevel() = recovery.recoverUntil(*TOP_LEVEL)
         fun setGet() = recovery.recoverUntil(*SET_GET)
         fun stmt() = recovery.recoverUntil(*STMT)
+        fun stmtNoLine() = recovery.recoverUntil(*STMT_NO_LINE)
     }
 
     constructor(builder: PsiBuilder): super(builder) {
