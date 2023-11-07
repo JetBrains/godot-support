@@ -41,6 +41,10 @@ class GdParserTest : ParsingTestCase {
     @Test fun testNestedCallExpr() = doTest(true)
     @Test fun testArrayExpr() = doTest(true)
     @Test fun testCastExpr() = doTest(true)
+    // TODO ternary
+    @Test fun testLogicExpr() = doTest(true)
+    @Test fun testNegateExpr() = doTest(true)
+    @Test fun testInExpr() = doTest(true)
 
     override fun getTestDataPath(): String {
         return "src/test/kotlin/gdscript/parser/data"

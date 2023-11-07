@@ -18,12 +18,13 @@ class GdExprParser : GdBaseParser {
         INSTANCE = this
         parsers.add(GdLiteralExParser(builder))
         parsers.add(GdPrimaryExParser(builder))
+        parsers.add(GdNegateExParser(builder))
 
         leftLeadParsers.add(GdArrayExParser(builder))
         leftLeadParsers.add(GdCastExParser(builder))
         // ternary
-        // logic
-        // in
+        leftLeadParsers.add(GdLogicExParser(builder))
+        leftLeadParsers.add(GdInExParser(builder))
         // compari
         // bit_and
         // shift

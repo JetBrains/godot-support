@@ -31,6 +31,21 @@ abstract class GdBaseParser {
         return false
     }
 
+    fun consumeAnyOfToken(force: Boolean, vararg elementTypes: IElementType): Boolean {
+        if (nextTokenIs(*elementTypes)) {
+            advance()
+            return true
+        } else if (force) {
+            val m = mark()
+            val err = "expected ${elementTypes[0]}, got ${builder.tokenText}"
+            advance()
+            m.error(err)
+            return false
+        }
+
+        return false
+    }
+
     fun mcToken(markToken: IElementType, vararg elementTypes: IElementType): Boolean {
         if (nextTokenIs(*elementTypes)) {
             return markToken(markToken)
