@@ -29,9 +29,9 @@ class GdAnnotationParser : GdBaseParser {
     private fun parseParams(): Boolean {
         val params = mark()
 
-        var ok = GdLiteralExParser.INSTANCE.parse()
+        var ok = GdLiteralExParser.INSTANCE.parseAndMark()
         while (ok && nextTokenIs(COMMA)) {
-            ok = GdLiteralExParser.INSTANCE.parse()
+            ok = GdLiteralExParser.INSTANCE.parseAndMark()
         }
         GdRecovery.argumentList()
         params.done(ANNOTATION_PARAMS)

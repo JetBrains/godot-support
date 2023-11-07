@@ -19,6 +19,18 @@ class GdExprParser : GdBaseParser {
         parsers.add(GdLiteralExParser(builder))
         parsers.add(GdPrimaryExParser(builder))
 
+        leftLeadParsers.add(GdArrayExParser(builder))
+        leftLeadParsers.add(GdCastExParser(builder))
+        // ternary
+        // logic
+        // in
+        // compari
+        // bit_and
+        // shift
+        // plus
+        // factor
+        // is
+        // attribute
         leftLeadParsers.add(GdCallExParser(builder))
     }
 

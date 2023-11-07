@@ -9,7 +9,7 @@ class GdLiteralExParser : GdExprBaseParser {
     override val EXPR_TYPE: IElementType = LITERAL_EX
 
     companion object {
-        lateinit var INSTANCE: GdExprBaseParser
+        lateinit var INSTANCE: GdLiteralExParser
     }
 
     constructor(builder: PsiBuilder): super(builder) {
@@ -17,7 +17,10 @@ class GdLiteralExParser : GdExprBaseParser {
     }
 
     override fun parse(optional: Boolean): Boolean {
-        if (nextTokenIs(LITERAL_EX, TRUE, FALSE, STRING_NAME, NODE_PATH_LIT, NUMBER, NULL, NAN, INF)) return true
+        if (nextTokenIs(LITERAL_EX, TRUE, FALSE, STRING_NAME, NODE_PATH_LIT, NUMBER, NULL, NAN, INF)) {
+            advance()
+            return true
+        }
 
         if (nextTokenIs(SELF, SUPER)) {
             markToken(REF_ID_NM)
@@ -37,6 +40,15 @@ class GdLiteralExParser : GdExprBaseParser {
         }
 
         return false
+    }
+
+    fun parseAndMark(): Boolean {
+        val expr = mark()
+        val ok = parse()
+        if (ok) expr.done(LITERAL_EX)
+        else expr.rollbackTo()
+
+        return ok
     }
 
 }
