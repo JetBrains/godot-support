@@ -16,9 +16,11 @@ class GdExprParser : GdBaseParser {
 
     constructor(builder: PsiBuilder) : super(builder) {
         INSTANCE = this
-        parsers.add(GdLiteralExParser(builder))
-        parsers.add(GdPrimaryExParser(builder))
         parsers.add(GdNegateExParser(builder))
+        parsers.add(GdPlusExParser(builder))
+        parsers.add(GdBitNotExParser(builder))
+        parsers.add(GdPrimaryExParser(builder))
+        parsers.add(GdLiteralExParser(builder))
 
         leftLeadParsers.add(GdArrayExParser(builder))
         leftLeadParsers.add(GdCastExParser(builder))
@@ -26,12 +28,12 @@ class GdExprParser : GdBaseParser {
         leftLeadParsers.add(GdLogicExParser(builder))
         leftLeadParsers.add(GdInExParser(builder))
         leftLeadParsers.add(GdComparisonExParser(builder))
-        // bit_and
-        // shift
-        // plus
-        // factor
-        // is
-        // attribute
+        leftLeadParsers.add(GdBitExParser(builder))
+        leftLeadParsers.add(GdShiftExParser(builder))
+        leftLeadParsers.add(GdPlusExParser(builder))
+        leftLeadParsers.add(GdFactorExParser(builder))
+        leftLeadParsers.add(GdIsExParser(builder))
+        leftLeadParsers.add(GdAttributeExParser(builder))
         leftLeadParsers.add(GdCallExParser(builder))
     }
 
