@@ -24,7 +24,7 @@ class GdExprParser : GdBaseParser {
 
         leftLeadParsers.add(GdArrayExParser(builder))
         leftLeadParsers.add(GdCastExParser(builder))
-        // ternary
+        leftLeadParsers.add(GdTernaryExParser(builder))
         leftLeadParsers.add(GdLogicExParser(builder))
         leftLeadParsers.add(GdInExParser(builder))
         leftLeadParsers.add(GdComparisonExParser(builder))
