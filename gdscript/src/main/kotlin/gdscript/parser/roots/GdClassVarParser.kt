@@ -5,6 +5,7 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
 import gdscript.parser.common.GdTypedParser
 import gdscript.parser.recovery.GdRecovery
+import gdscript.parser.stmt.GdStmtParser
 import gdscript.psi.GdTypes.*
 
 class GdClassVarParser : GdBaseParser {
@@ -36,17 +37,16 @@ class GdClassVarParser : GdBaseParser {
 
         if (ok && nextTokenIs(NEW_LINE)) {
             advance()
-            consumeToken(INDENT)
+            ok = ok && consumeToken(INDENT)
             indented = true
         }
 
         while (ok) {
             ok = parseGet() || parseSet()
-            ok = ok && consumeToken(COMMA)
+            consumeToken(COMMA) && mcAnyOf(END_STMT, SEMICON, NEW_LINE)
         }
 
-        mceEndStmt()
-        consumeNewLine()
+        mcAnyOf(END_STMT, SEMICON, NEW_LINE)
         if (indented) {
             consumeToken(DEDENT, true)
         }
@@ -60,7 +60,7 @@ class GdClassVarParser : GdBaseParser {
 
         val getDecl = mark()
         var ok = consumeToken(GET)
-        ok = ok && (parseMethodVersion(GET_METHOD_ID_NM))
+        ok = ok && (parseMethodVersion(GET_METHOD_ID_NM) || parseStmtVersion(GET))
         GdRecovery.setGet()
         getDecl.done(GET_DECL)
 
@@ -72,7 +72,7 @@ class GdClassVarParser : GdBaseParser {
 
         val setDecl = mark()
         var ok = consumeToken(SET)
-        ok = ok && (parseMethodVersion(SET_METHOD_ID_NM))
+        ok = ok && (parseMethodVersion(SET_METHOD_ID_NM) || parseStmtVersion(SET))
         GdRecovery.setGet()
         setDecl.done(SET_DECL)
 
@@ -82,6 +82,21 @@ class GdClassVarParser : GdBaseParser {
     private fun parseMethodVersion(markerType: IElementType): Boolean {
         var ok = consumeToken(EQ)
         ok = ok && mceIdentifier(markerType)
+
+        return ok
+    }
+
+    private fun parseStmtVersion(markerType: IElementType): Boolean {
+        var ok = true
+        if (markerType == SET) {
+            ok = ok && consumeToken(LRBR)
+            ok = ok && mceIdentifier(VAR_NMI)
+            ok = ok && GdTypedParser.INSTANCE.parse(true)
+            ok = ok && consumeToken(RRBR)
+        }
+
+        ok = ok && consumeToken(COLON)
+        ok = ok && GdStmtParser.INSTANCE.parse(false)
 
         return ok
     }

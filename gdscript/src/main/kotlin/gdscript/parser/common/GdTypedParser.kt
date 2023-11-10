@@ -62,9 +62,10 @@ class GdTypedParser : GdBaseParser {
             ensureNextTokenIs(RSBR)
         }
 
-        typedVal.done(TYPED_VAL)
+        if (ok) typedVal.done(TYPED_VAL)
+        else typedVal.rollbackTo()
 
-        return true
+        return ok || optional
     }
 
     private fun parseTypeHint(): Boolean {

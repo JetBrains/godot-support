@@ -18,9 +18,9 @@ class GdParserTest : ParsingTestCase {
     @Test fun testAnnotationError() = doTest(true)
     @Test fun testClassConst() = doTest(true)
     @Test fun testClassVar() = doTest(true)
-    // @Test fun testClassVarSetGet() = doTest(true)
-    // TODO více řádkové
+    @Test fun testClassVarSetGet() = doTest(true)
     @Test fun testClassVarSetGetMethod() = doTest(true)
+    @Test fun testClassVarSetGetMethodMultiline() = doTest(true)
 
     @Test fun testSignal() = doTest(true)
     @Test fun testEnumAnonymous() = doTest(true)
@@ -38,6 +38,7 @@ class GdParserTest : ParsingTestCase {
     @Test fun testAssignStmt() = doTest(true)
 
     // Exprs
+    // TODO func decl
     @Test fun testNestedCallExpr() = doTest(true)
     @Test fun testArrayExpr() = doTest(true)
     @Test fun testCastExpr() = doTest(true)
