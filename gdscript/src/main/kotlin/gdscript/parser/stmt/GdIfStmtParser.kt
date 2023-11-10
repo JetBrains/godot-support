@@ -1,19 +1,20 @@
 package gdscript.parser.stmt
 
 import com.intellij.lang.PsiBuilder
-import gdscript.parser.GdBaseParser
+import com.intellij.psi.tree.IElementType
 import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
 
-class GdIfStmtParser : GdBaseParser {
+class GdIfStmtParser : GdStmtBaseParser {
+
+    override val STMT_TYPE: IElementType = IF_ST
 
     constructor(builder: PsiBuilder) : super(builder)
 
     override fun parse(optional: Boolean): Boolean {
         if (!nextTokenIs(IF)) return optional
 
-        val stmt = mark()
         advance() // if
         var ok = true
         ok = ok && GdExprParser.INSTANCE.parse()
@@ -22,9 +23,6 @@ class GdIfStmtParser : GdBaseParser {
 
         while (ok && elifSt()) {}
         ok && elseSt()
-
-        GdRecovery.stmt()
-        stmt.done(IF_ST)
 
         return ok
     }

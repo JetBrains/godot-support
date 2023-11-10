@@ -89,13 +89,13 @@ class GdClassVarParser : GdBaseParser {
     private fun parseStmtVersion(markerType: IElementType): Boolean {
         var ok = true
         if (markerType == SET) {
-            ok = ok && consumeToken(LRBR)
+            ok = ok && consumeToken(LRBR, true)
             ok = ok && mceIdentifier(VAR_NMI)
             ok = ok && GdTypedParser.INSTANCE.parse(true)
-            ok = ok && consumeToken(RRBR)
+            ok = ok && consumeToken(RRBR, true)
         }
 
-        ok = ok && consumeToken(COLON)
+        ok = ok && consumeToken(COLON, true)
         ok = ok && GdStmtParser.INSTANCE.parse(false)
 
         return ok

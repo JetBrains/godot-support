@@ -1,28 +1,25 @@
 package gdscript.parser.stmt
 
 import com.intellij.lang.PsiBuilder
-import gdscript.parser.GdBaseParser
+import com.intellij.psi.tree.IElementType
 import gdscript.parser.common.GdTypedParser
-import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
 
-class GdConstStmtParser : GdBaseParser {
+class GdConstStmtParser : GdStmtBaseParser {
+
+    override val STMT_TYPE: IElementType = CONST_DECL_ST
+    override val endWithEndStmt: Boolean = true
 
     constructor(builder: PsiBuilder) : super(builder)
 
     override fun parse(optional: Boolean): Boolean {
         if (!nextTokenIs(CONST)) return optional
 
-        val stmt = mark()
-        advance() // var
+        advance() // const
         var ok = true
         ok = ok && mceIdentifier(VAR_NMI)
 
         ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(true)
-        ok = ok && mceEndStmt()
-
-        GdRecovery.stmt()
-        stmt.done(CONST_DECL_ST)
 
         return ok
     }

@@ -16,6 +16,7 @@ class GdExprParser : GdBaseParser {
 
     constructor(builder: PsiBuilder) : super(builder) {
         INSTANCE = this
+        parsers.add(GdFuncDeclExParser(builder))
         parsers.add(GdNegateExParser(builder))
         parsers.add(GdPlusExParser(builder))
         parsers.add(GdBitNotExParser(builder))

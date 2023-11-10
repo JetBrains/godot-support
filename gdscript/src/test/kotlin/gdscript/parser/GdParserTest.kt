@@ -28,6 +28,7 @@ class GdParserTest : ParsingTestCase {
 
     // Stmts
     @Test fun testFunctionSimple() = doTest(true)
+    @Test fun testAssignStmt() = doTest(true)
     @Test fun testVarConstStmt() = doTest(true)
     @Test fun testVarConstWithEmptyStmt() = doTest(true)
     @Test fun testIfStmt() = doTest(true)
@@ -35,10 +36,11 @@ class GdParserTest : ParsingTestCase {
     @Test fun testForStmt() = doTest(true)
     @Test fun testMatchStmt() = doTest(true)
     @Test fun testAwaitStmt() = doTest(true)
-    @Test fun testAssignStmt() = doTest(true)
 
     // Exprs
-    // TODO func decl
+    @Test fun testFuncDeclExpr() = doTest(true)
+    @Test fun testFuncDeclExprExt() = doTest(true)
+    @Test fun testFuncDeclExprParam() = doTest(true)
     @Test fun testNestedCallExpr() = doTest(true)
     @Test fun testArrayExpr() = doTest(true)
     @Test fun testCastExpr() = doTest(true)

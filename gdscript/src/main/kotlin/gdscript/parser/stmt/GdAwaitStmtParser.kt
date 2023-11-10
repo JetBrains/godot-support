@@ -1,27 +1,24 @@
 package gdscript.parser.stmt
 
 import com.intellij.lang.PsiBuilder
-import gdscript.parser.GdBaseParser
+import com.intellij.psi.tree.IElementType
 import gdscript.parser.expr.GdExprParser
-import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.AWAIT
 import gdscript.psi.GdTypes.AWAIT_ST
 
-class GdAwaitStmtParser : GdBaseParser {
+class GdAwaitStmtParser : GdStmtBaseParser {
+
+    override val STMT_TYPE: IElementType = AWAIT_ST
+    override val endWithEndStmt: Boolean = true
 
     constructor(builder: PsiBuilder) : super(builder)
 
     override fun parse(optional: Boolean): Boolean {
         if (!nextTokenIs(AWAIT)) return false
 
-        val stmt = mark()
         advance() // await
         var ok = true
         ok = ok && GdExprParser.INSTANCE.parse()
-        ok = ok && mceEndStmt()
-
-        GdRecovery.stmt()
-        stmt.done(AWAIT_ST)
 
         return ok
     }

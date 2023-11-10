@@ -1,17 +1,18 @@
 package gdscript.parser.stmt
 
 import com.intellij.lang.PsiBuilder
-import gdscript.parser.GdBaseParser
+import com.intellij.psi.tree.IElementType
 import gdscript.parser.expr.GdExprParser
-import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
 
-class GdFlowStmtParser : GdBaseParser {
+class GdFlowStmtParser : GdStmtBaseParser {
+
+    override val STMT_TYPE: IElementType = FLOW_ST
+    override val endWithEndStmt: Boolean = true
 
     constructor(builder: PsiBuilder) : super(builder)
 
     override fun parse(optional: Boolean): Boolean {
-        val stmt = mark()
         val flows = arrayOf(CONTINUE, BREAK, PASS, BREAKPOINT)
 
         if (nextTokenIs(*flows)) {
@@ -20,13 +21,8 @@ class GdFlowStmtParser : GdBaseParser {
             advance() // RETURN
             GdExprParser.INSTANCE.parse(true)
         } else {
-            stmt.rollbackTo()
             return false
         }
-
-        mceEndStmt()
-        GdRecovery.stmt()
-        stmt.done(FLOW_ST)
 
         return true
     }
