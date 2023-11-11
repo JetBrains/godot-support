@@ -15,13 +15,11 @@ class GdClassNameParser : GdBaseParser {
         var ok = consumeToken(CLASS_NAME)
         ok = ok && mceIdentifier(CLASS_NAME_NMI)
         ok = ok && mceEndStmt()
-        if (!ok) {
-            // TODO error
-        }
 
-        m.done(CLASS_NAMING)
+        if (ok) m.done(CLASS_NAMING)
+        else m.error("expected class_name")
 
-        return true
+        return ok || optional
     }
 
 }

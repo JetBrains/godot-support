@@ -16,7 +16,7 @@ class GdMethodParser : GdBaseParser {
         val methodDecl = mark()
         var ok = markers()
         if (!ok && !nextTokenIs(FUNC)) {
-            methodDecl.drop()
+            methodDecl.rollbackTo()
             return optional
         }
         ok = consumeToken(FUNC, true)

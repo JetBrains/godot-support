@@ -15,7 +15,8 @@ class GdSignalParser : GdBaseParser {
 
         val signalDecl = mark()
         advance() // signal
-        var ok = mceIdentifier(SIGNAL_ID_NMI)
+        var ok = true
+        if (nextTokenIs(IDENTIFIER)) mceIdentifier(SIGNAL_ID_NMI)
 
         if (ok && consumeToken(LRBR)) {
             ok = ok && GdParamListParser.INSTANCE.parse(false)

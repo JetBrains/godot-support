@@ -20,6 +20,7 @@ class GdRootParser : PsiParser, LightPsiParser {
 
     override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
         parseLight(root, builder)
+        // builder.setDebugMode(true)
         return builder.treeBuilt
     }
 
