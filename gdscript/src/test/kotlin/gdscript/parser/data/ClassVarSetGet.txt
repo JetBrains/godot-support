@@ -67,3 +67,5 @@ GdScript File(0,83)
                     PsiElement(GdTokenType.IDENTIFIER)('value')(78,83)
               GdEndStmtImpl(END_STMT)(83,83)
                 <empty list>
+      GdEndStmtImpl(END_STMT)(83,83)
+        <empty list>

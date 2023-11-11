@@ -17,6 +17,8 @@ GdScript File(0,53)
           PsiElement(GdTokenType.IDENTIFIER)('get_my_prop')(23,34)
       PsiElement(GdTokenType.COMMA)(',')(34,35)
       PsiWhiteSpace(' ')(35,36)
+      GdEndStmtImpl(END_STMT)(36,36)
+        <empty list>
       GdSetDeclImpl(SET_DECL)(36,53)
         PsiElement(GdTokenType.SET)('set')(36,39)
         PsiWhiteSpace(' ')(39,40)
