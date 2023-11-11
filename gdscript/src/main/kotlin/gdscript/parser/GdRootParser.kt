@@ -18,22 +18,22 @@ class GdRootParser : PsiParser, LightPsiParser {
 
     private val topLevelParsers = mutableListOf<GdBaseParser>()
 
-    override fun parse(root: IElementType, builder: PsiBuilder): ASTNode {
-        parseLight(root, builder)
-        // builder.setDebugMode(true)
-        return builder.treeBuilt
+    override fun parse(root: IElementType, b: PsiBuilder): ASTNode {
+        parseLight(root, b)
+        // b.setDebugMode(true)
+        return b.treeBuilt
     }
 
-    override fun parseLight(root: IElementType, builder: PsiBuilder) {
-        prepareParsers(builder)
+    override fun parseLight(root: IElementType, b: PsiBuilder) {
+        prepareParsers(b)
 
-        val document = builder.mark()
-        while (!builder.eof()) {
-            val any = topLevelParsers.any { it.parse() }
+        val document = b.mark()
+        while (!b.eof()) {
+            val any = topLevelParsers.any { it.parse(b) }
             if (!any) {
-                val m = builder.mark()
-                val text = builder.tokenText
-                while (!builder.eof()) builder.advanceLexer()
+                val m = b.mark()
+                val text = b.tokenText
+                while (!b.eof()) b.advanceLexer()
                 m.error("Unexpected tokens, $text")
             }
         }
@@ -42,28 +42,27 @@ class GdRootParser : PsiParser, LightPsiParser {
 
     private fun prepareParsers(builder: PsiBuilder) {
         // Roots
-        topLevelParsers.add(GdClassNameParser(builder))
-        topLevelParsers.add(GdInheritanceParser(builder))
-        topLevelParsers.add(GdAnnotationParser(builder))
-        topLevelParsers.add(GdClassConstParser(builder))
-        topLevelParsers.add(GdClassVarParser(builder))
-        topLevelParsers.add(GdSignalParser(builder))
-        topLevelParsers.add(GdEnumParser(builder))
-        topLevelParsers.add(GdMethodParser(builder))
-        // method
+        topLevelParsers.add(GdClassNameParser())
+        topLevelParsers.add(GdInheritanceParser())
+        topLevelParsers.add(GdAnnotationParser())
+        topLevelParsers.add(GdClassConstParser())
+        topLevelParsers.add(GdClassVarParser())
+        topLevelParsers.add(GdSignalParser())
+        topLevelParsers.add(GdEnumParser())
+        topLevelParsers.add(GdMethodParser())
         // sub-class
         // Keep as last
-        topLevelParsers.add(GdEmptyLineParser(builder))
+        topLevelParsers.add(GdEmptyLineParser())
 
-        GdExprParser(builder)
-        GdStmtParser(builder)
+        GdExprParser()
+        GdStmtParser()
 
         // Helpers
-        GdRecovery(builder)
-        GdTypedParser(builder)
-        GdParamListParser(builder)
-        GdArgListParser(builder)
-        GdReturnHintParser(builder)
+        GdRecovery()
+        GdTypedParser()
+        GdParamListParser()
+        GdArgListParser()
+        GdReturnHintParser()
     }
 
 }

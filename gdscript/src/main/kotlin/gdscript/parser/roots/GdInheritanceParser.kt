@@ -3,27 +3,29 @@ package gdscript.parser.roots
 import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.mcAnyOf
+import gdscript.utils.PsiBuilderUtil.mcToken
+import gdscript.utils.PsiBuilderUtil.mceEndStmt
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdInheritanceParser : GdBaseParser {
+class GdInheritanceParser : GdBaseParser() {
 
-    constructor(builder: PsiBuilder): super(builder)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(EXTENDS)) return optional
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(EXTENDS)) return optional
-
-        val m = mark()
-        var ok = consumeToken(EXTENDS)
-        ok = ok && mcAnyOf(INHERITANCE_ID_NM, STRING, IDENTIFIER)
-        while (ok && consumeToken(DOT)) {
-            ok = mcToken(INHERITANCE_SUB_ID_NM, IDENTIFIER)
+        val m = b.mark()
+        var ok = b.consumeToken(EXTENDS)
+        ok = ok && b.mcAnyOf(INHERITANCE_ID_NM, STRING, IDENTIFIER)
+        while (ok && b.consumeToken(DOT)) {
+            ok = b.mcToken(INHERITANCE_SUB_ID_NM, IDENTIFIER)
         }
-        ok = ok && mceEndStmt()
-        if (!ok) {
-            // TODO
-        }
-        m.done(INHERITANCE)
+        ok = ok && b.mceEndStmt()
 
-        return true
+        if (ok) m.done(INHERITANCE)
+        else m.error("Expected INHERITANCE")
+
+        return ok || optional
     }
 
 }

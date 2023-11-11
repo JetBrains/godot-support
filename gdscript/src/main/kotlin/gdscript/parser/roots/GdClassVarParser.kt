@@ -7,96 +7,98 @@ import gdscript.parser.common.GdTypedParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.stmt.GdStmtParser
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.mceEndStmt
+import gdscript.utils.PsiBuilderUtil.mceIdentifier
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdClassVarParser : GdBaseParser {
+class GdClassVarParser : GdBaseParser() {
 
-    constructor(builder: PsiBuilder): super(builder)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(VAR)) return optional
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(VAR)) return optional
+        val m = b.mark()
+        b.advanceLexer() // const
+        var ok = b.mceIdentifier(VAR_NMI)
 
-        val m = mark()
-        advance() // const
-        var ok = mceIdentifier(VAR_NMI)
+        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(b, true)
+        ok = ok && (parseGetSet(b) || b.mceEndStmt())
 
-        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(true)
-        ok = ok && (parseGetSet() || mceEndStmt())
-
-        GdRecovery.topLevel()
+        GdRecovery.topLevel(b)
         m.done(CLASS_VAR_DECL_TL)
 
         return true
     }
 
-    private fun parseGetSet(): Boolean {
-        if (!nextTokenIs(COLON)) return false
+    private fun parseGetSet(b: PsiBuilder): Boolean {
+        if (!b.nextTokenIs(COLON)) return false
 
-        val setGet = mark()
-        var ok = consumeToken(COLON)
+        val setGet = b.mark()
+        var ok = b.consumeToken(COLON)
         var indented = false
 
-        if (ok && nextTokenIs(NEW_LINE)) {
-            advance()
-            ok = ok && consumeToken(INDENT)
+        if (ok && b.nextTokenIs(NEW_LINE)) {
+            b.advanceLexer()
+            ok = ok && b.consumeToken(INDENT)
             indented = true
         }
 
         while (ok) {
-            ok = parseGet() || parseSet()
-            consumeToken(COMMA) && mceEndStmt(false)
+            ok = parseGet(b) || parseSet(b)
+            b.consumeToken(COMMA) && b.mceEndStmt(false)
         }
 
-        mceEndStmt(false)
+        b.mceEndStmt(false)
         if (indented) {
-            consumeToken(DEDENT, true)
+            b.consumeToken(DEDENT, true)
         }
         setGet.done(SETGET_DECL)
 
         return true
     }
 
-    private fun parseGet(): Boolean {
-        if (!nextTokenIs(GET)) return false
+    private fun parseGet(b: PsiBuilder): Boolean {
+        if (!b.nextTokenIs(GET)) return false
 
-        val getDecl = mark()
-        var ok = consumeToken(GET)
-        ok = ok && (parseMethodVersion(GET_METHOD_ID_NM) || parseStmtVersion(GET))
-        GdRecovery.setGet()
+        val getDecl = b.mark()
+        var ok = b.consumeToken(GET)
+        ok = ok && (parseMethodVersion(b, GET_METHOD_ID_NM) || parseStmtVersion(b, GET))
+        GdRecovery.setGet(b)
         getDecl.done(GET_DECL)
 
         return ok
     }
 
-    private fun parseSet(): Boolean {
-        if (!nextTokenIs(SET)) return false
+    private fun parseSet(b: PsiBuilder): Boolean {
+        if (!b.nextTokenIs(SET)) return false
 
-        val setDecl = mark()
-        var ok = consumeToken(SET)
-        ok = ok && (parseMethodVersion(SET_METHOD_ID_NM) || parseStmtVersion(SET))
-        GdRecovery.setGet()
+        val setDecl = b.mark()
+        var ok = b.consumeToken(SET)
+        ok = ok && (parseMethodVersion(b, SET_METHOD_ID_NM) || parseStmtVersion(b, SET))
+        GdRecovery.setGet(b)
         setDecl.done(SET_DECL)
 
         return ok
     }
 
-    private fun parseMethodVersion(markerType: IElementType): Boolean {
-        var ok = consumeToken(EQ)
-        ok = ok && mceIdentifier(markerType)
+    private fun parseMethodVersion(b: PsiBuilder, markerType: IElementType): Boolean {
+        var ok = b.consumeToken(EQ)
+        ok = ok && b.mceIdentifier(markerType)
 
         return ok
     }
 
-    private fun parseStmtVersion(markerType: IElementType): Boolean {
+    private fun parseStmtVersion(b: PsiBuilder, markerType: IElementType): Boolean {
         var ok = true
         if (markerType == SET) {
-            ok = ok && consumeToken(LRBR, true)
-            ok = ok && mceIdentifier(VAR_NMI)
-            ok = ok && GdTypedParser.INSTANCE.parse(true)
-            ok = ok && consumeToken(RRBR, true)
+            ok = ok && b.consumeToken(LRBR, true)
+            ok = ok && b.mceIdentifier(VAR_NMI)
+            ok = ok && GdTypedParser.INSTANCE.parse(b, true)
+            ok = ok && b.consumeToken(RRBR, true)
         }
 
-        ok = ok && consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse(false)
+        ok = ok && b.consumeToken(COLON, true)
+        ok = ok && GdStmtParser.INSTANCE.parse(b, false)
 
         return ok
     }

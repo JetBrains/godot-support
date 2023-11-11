@@ -4,21 +4,21 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.common.GdTypedParser
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.mceIdentifier
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdVarStmtParser : GdStmtBaseParser {
+class GdVarStmtParser : GdStmtBaseParser() {
 
     override val STMT_TYPE: IElementType = VAR_DECL_ST
     override val endWithEndStmt: Boolean = true
 
-    constructor(builder: PsiBuilder) : super(builder)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(VAR)) return false
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(VAR)) return false
-
-        advance() // var
+        b.advanceLexer() // var
         var ok = true
-        ok = ok && mceIdentifier(VAR_NMI)
-        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(true)
+        ok = ok && b.mceIdentifier(VAR_NMI)
+        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(b, true)
 
         return ok
     }

@@ -3,6 +3,8 @@ package gdscript.parser.expr
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 class GdPrimaryExParser : GdExprBaseParser {
 
@@ -12,26 +14,26 @@ class GdPrimaryExParser : GdExprBaseParser {
         lateinit var INSTANCE: GdExprBaseParser
     }
 
-    constructor(builder: PsiBuilder): super(builder) {
+    constructor() {
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        return nextTokenIs(NODE_PATH, NODE_PATH_LEX)
-                || arrayDecl()
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        return b.nextTokenIs(NODE_PATH, NODE_PATH_LEX)
+                || arrayDecl(b)
         // TODO dictDecl
         // TODO (LRBR expr RRBR)
     }
 
-    private fun arrayDecl(): Boolean {
-        val array = mark()
+    private fun arrayDecl(b: PsiBuilder): Boolean {
+        val array = b.mark()
         var ok = true
 
-        ok = ok && consumeToken(LSBR)
-        while (ok && GdExprParser.INSTANCE.parse(true)) {
-            if (!nextTokenIs(COMMA)) break
+        ok = ok && b.consumeToken(LSBR)
+        while (ok && GdExprParser.INSTANCE.parse(b, true)) {
+            if (!b.nextTokenIs(COMMA)) break
         }
-        ok = ok && consumeToken(RSBR)
+        ok = ok && b.consumeToken(RSBR)
 
         if (ok) array.done(ARRAY_DECL)
         else array.rollbackTo()

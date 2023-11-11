@@ -3,6 +3,8 @@ package gdscript.parser.expr
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.markToken
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 class GdLiteralExParser : GdExprBaseParser {
 
@@ -12,39 +14,39 @@ class GdLiteralExParser : GdExprBaseParser {
         lateinit var INSTANCE: GdLiteralExParser
     }
 
-    constructor(builder: PsiBuilder): super(builder) {
+    constructor() {
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        if (nextTokenIs(LITERAL_EX, TRUE, FALSE, STRING_NAME, NODE_PATH_LIT, NUMBER, NULL, NAN, INF)) {
-            advance()
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (b.nextTokenIs(LITERAL_EX, TRUE, FALSE, STRING_NAME, NODE_PATH_LIT, NUMBER, NULL, NAN, INF)) {
+            b.advanceLexer()
             return true
         }
 
-        if (nextTokenIs(SELF, SUPER)) {
-            markToken(REF_ID_NM)
+        if (b.nextTokenIs(SELF, SUPER)) {
+            b.markToken(REF_ID_NM)
             return true
         }
 
         // func - Array.gd, signal: Vector2.gd, class_name - Array.gd, FileAccess - pass
         // tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě, stejně jako metody
-        if (nextTokenIs(IDENTIFIER, GET, SET, MATCH, SIGNAL, FUNC, CLASS_NAME, PASS, CLASS)) {
-            markToken(REF_ID_NM)
+        if (b.nextTokenIs(IDENTIFIER, GET, SET, MATCH, SIGNAL, FUNC, CLASS_NAME, PASS, CLASS)) {
+            b.markToken(REF_ID_NM)
             return true
         }
 
-        if (nextTokenIs(STRING)) {
-            markToken(STRING_VAL)
+        if (b.nextTokenIs(STRING)) {
+            b.markToken(STRING_VAL)
             return true
         }
 
         return false
     }
 
-    fun parseAndMark(): Boolean {
-        val expr = mark()
-        val ok = parse()
+    fun parseAndMark(b: PsiBuilder): Boolean {
+        val expr = b.mark()
+        val ok = parse(b)
         if (ok) expr.done(LITERAL_EX)
         else expr.rollbackTo()
 

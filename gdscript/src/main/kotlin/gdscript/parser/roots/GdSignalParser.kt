@@ -5,27 +5,29 @@ import gdscript.parser.GdBaseParser
 import gdscript.parser.common.GdParamListParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.mceEndStmt
+import gdscript.utils.PsiBuilderUtil.mceIdentifier
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdSignalParser : GdBaseParser {
+class GdSignalParser : GdBaseParser() {
 
-    constructor(builder: PsiBuilder): super(builder)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(SIGNAL)) return optional
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(SIGNAL)) return optional
-
-        val signalDecl = mark()
-        advance() // signal
+        val signalDecl = b.mark()
+        b.advanceLexer() // signal
         var ok = true
-        if (nextTokenIs(IDENTIFIER)) mceIdentifier(SIGNAL_ID_NMI)
+        if (b.nextTokenIs(IDENTIFIER)) b.mceIdentifier(SIGNAL_ID_NMI)
 
-        if (ok && consumeToken(LRBR)) {
-            ok = ok && GdParamListParser.INSTANCE.parse(false)
-            ok = ok && consumeToken(RRBR, true)
+        if (ok && b.consumeToken(LRBR)) {
+            ok = ok && GdParamListParser.INSTANCE.parse(b, false)
+            ok = ok && b.consumeToken(RRBR, true)
         }
 
-        ok && mceEndStmt()
+        ok && b.mceEndStmt()
 
-        GdRecovery.topLevel()
+        GdRecovery.topLevel(b)
         signalDecl.done(SIGNAL_DECL_TL)
 
         return true

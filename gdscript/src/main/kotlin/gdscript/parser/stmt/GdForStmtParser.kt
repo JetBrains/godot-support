@@ -4,23 +4,24 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.expr.GdExprParser
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.mceIdentifier
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdForStmtParser : GdStmtBaseParser {
+class GdForStmtParser : GdStmtBaseParser() {
 
     override val STMT_TYPE: IElementType = FOR_ST
 
-    constructor(builder: PsiBuilder) : super(builder)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(FOR)) return false
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(FOR)) return false
-
-        advance() // for
+        b.advanceLexer() // for
         var ok = true
-        ok = ok && mceIdentifier(VAR_NMI)
-        ok = ok && consumeToken(IN, true)
-        ok = ok && GdExprParser.INSTANCE.parse()
-        ok = ok && consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse()
+        ok = ok && b.mceIdentifier(VAR_NMI)
+        ok = ok && b.consumeToken(IN, true)
+        ok = ok && GdExprParser.INSTANCE.parse(b)
+        ok = ok && b.consumeToken(COLON, true)
+        ok = ok && GdStmtParser.INSTANCE.parse(b)
 
         return ok
     }

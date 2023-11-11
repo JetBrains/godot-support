@@ -7,44 +7,45 @@ import gdscript.parser.common.GdReturnHintParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.stmt.GdStmtParser
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.mceIdentifier
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdMethodParser : GdBaseParser {
+class GdMethodParser : GdBaseParser() {
 
-    constructor(builder: PsiBuilder) : super(builder)
-
-    override fun parse(optional: Boolean): Boolean {
-        val methodDecl = mark()
-        var ok = markers()
-        if (!ok && !nextTokenIs(FUNC)) {
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        val methodDecl = b.mark()
+        var ok = markers(b)
+        if (!ok && !b.nextTokenIs(FUNC)) {
             methodDecl.rollbackTo()
             return optional
         }
-        ok = consumeToken(FUNC, true)
-        ok = ok && mceIdentifier(METHOD_ID_NMI)
-        ok = ok && consumeToken(LRBR)
+        ok = b.consumeToken(FUNC, true)
+        ok = ok && b.mceIdentifier(METHOD_ID_NMI)
+        ok = ok && b.consumeToken(LRBR)
 
-        ok = ok && GdParamListParser.INSTANCE.parse(true)
+        ok = ok && GdParamListParser.INSTANCE.parse(b, true)
 
-        ok = ok && consumeToken(RRBR, true)
-        ok = ok && GdReturnHintParser.INSTANCE.parse(true)
-        ok = ok && consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse()
+        ok = ok && b.consumeToken(RRBR, true)
+        ok = ok && GdReturnHintParser.INSTANCE.parse(b, true)
+        ok = ok && b.consumeToken(COLON, true)
+        ok = ok && GdStmtParser.INSTANCE.parse(b)
 
-        GdRecovery.topLevel()
+        GdRecovery.topLevel(b)
         methodDecl.done(METHOD_DECL_TL)
 
         return true
     }
 
-    private fun markers(): Boolean {
+    private fun markers(b: PsiBuilder): Boolean {
         var marked = false
-        marked = marked || consumeToken(REMOTE)
-        marked = marked || consumeToken(MASTER)
-        marked = marked || consumeToken(PUPPET)
-        marked = marked || consumeToken(REMOTESYNC)
-        marked = marked || consumeToken(MASTERSYNC)
-        marked = marked || consumeToken(PUPPETSYNC)
-        marked = consumeToken(STATIC) || marked
+        marked = marked || b.consumeToken(REMOTE)
+        marked = marked || b.consumeToken(MASTER)
+        marked = marked || b.consumeToken(PUPPET)
+        marked = marked || b.consumeToken(REMOTESYNC)
+        marked = marked || b.consumeToken(MASTERSYNC)
+        marked = marked || b.consumeToken(PUPPETSYNC)
+        marked = b.consumeToken(STATIC) || marked
 
         return marked
     }

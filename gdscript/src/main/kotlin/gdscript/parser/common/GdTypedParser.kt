@@ -4,6 +4,10 @@ import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
 import gdscript.parser.expr.GdExprParser
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.ensureNextTokenIs
+import gdscript.utils.PsiBuilderUtil.mcAnyOf
+import gdscript.utils.PsiBuilderUtil.mceIdentifier
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 class GdTypedParser : GdBaseParser {
 
@@ -11,18 +15,18 @@ class GdTypedParser : GdBaseParser {
         lateinit var INSTANCE: GdTypedParser
     }
 
-    constructor(builder: PsiBuilder): super(builder) {
+    constructor() {
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(COLON)) return optional
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(COLON)) return optional
 
         var ok = true
-        val typed = mark()
-        advance() // Colon
+        val typed = b.mark()
+        b.advanceLexer() // Colon
 
-        ok = ok && typedVal(false)
+        ok = ok && typedVal(b, false)
 
         if (ok) {
             typed.done(TYPED)
@@ -33,18 +37,18 @@ class GdTypedParser : GdBaseParser {
         return true
     }
 
-    fun parseWithAssignTypedAndExpr(optional: Boolean): Boolean {
+    fun parseWithAssignTypedAndExpr(b: PsiBuilder, optional: Boolean): Boolean {
         var ok = true
-        if (nextTokenIs(CEQ)) {
-            ok = ok && mcAnyOf(ASSIGN_TYPED, CEQ)
-            ok = ok && GdExprParser.INSTANCE.parse()
-        } else if (nextTokenIs(COLON)) {
-            ok = ok && parse(optional)
-            if (ok && mcAnyOf(ASSIGN_TYPED, EQ)) {
-                ok = ok && GdExprParser.INSTANCE.parse()
+        if (b.nextTokenIs(CEQ)) {
+            ok = ok && b.mcAnyOf(ASSIGN_TYPED, CEQ)
+            ok = ok && GdExprParser.INSTANCE.parse(b)
+        } else if (b.nextTokenIs(COLON)) {
+            ok = ok && parse(b, optional)
+            if (ok && b.mcAnyOf(ASSIGN_TYPED, EQ)) {
+                ok = ok && GdExprParser.INSTANCE.parse(b)
             }
-        } else if (mcAnyOf(ASSIGN_TYPED, EQ)) {
-            ok = ok && GdExprParser.INSTANCE.parse()
+        } else if (b.mcAnyOf(ASSIGN_TYPED, EQ)) {
+            ok = ok && GdExprParser.INSTANCE.parse(b)
         } else if (!optional) {
             return false
         }
@@ -52,14 +56,14 @@ class GdTypedParser : GdBaseParser {
         return true
     }
 
-    fun typedVal(optional: Boolean): Boolean {
-        val typedVal = mark()
+    fun typedVal(b: PsiBuilder, optional: Boolean): Boolean {
+        val typedVal = b.mark()
 
-        var ok = parseTypeHint()
-        if (ok && nextTokenIs(LSBR)) {
-            advance()
-            ok = parseTypeHint()
-            ensureNextTokenIs(RSBR)
+        var ok = parseTypeHint(b)
+        if (ok && b.nextTokenIs(LSBR)) {
+            b.advanceLexer()
+            ok = parseTypeHint(b)
+            b.ensureNextTokenIs(RSBR)
         }
 
         if (ok) typedVal.done(TYPED_VAL)
@@ -68,15 +72,15 @@ class GdTypedParser : GdBaseParser {
         return ok || optional
     }
 
-    private fun parseTypeHint(): Boolean {
-        if (!nextTokenIs(IDENTIFIER)) return false
+    private fun parseTypeHint(b: PsiBuilder): Boolean {
+        if (!b.nextTokenIs(IDENTIFIER)) return false
 
-        val hint = mark()
+        val hint = b.mark()
 
-        var ok = mceIdentifier(TYPE_HINT_NM)
-        while (ok && nextTokenIs(DOT)) {
-            advance()
-            ok = mceIdentifier(TYPE_HINT_NM)
+        var ok = b.mceIdentifier(TYPE_HINT_NM)
+        while (ok && b.nextTokenIs(DOT)) {
+            b.advanceLexer()
+            ok = b.mceIdentifier(TYPE_HINT_NM)
         }
 
         hint.done(TYPE_HINT)

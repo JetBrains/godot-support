@@ -4,6 +4,8 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.psi.GdTypes.AWAIT
 import gdscript.psi.GdTypes.AWAIT_EX
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 class GdAwaitExParser : GdExprBaseParser {
 
@@ -13,17 +15,17 @@ class GdAwaitExParser : GdExprBaseParser {
         lateinit var INSTANCE: GdAwaitExParser
     }
 
-    constructor(builder: PsiBuilder): super(builder) {
+    constructor() {
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(AWAIT)) return optional
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(AWAIT)) return optional
 
-        val m = mark()
+        val m = b.mark()
         var ok = true
-        ok = ok && consumeToken(AWAIT, true)
-        ok = ok && GdExprParser.INSTANCE.parse()
+        ok = ok && b.consumeToken(AWAIT, true)
+        ok = ok && GdExprParser.INSTANCE.parse(b)
 
         if (ok) m.drop()
         else m.rollbackTo()

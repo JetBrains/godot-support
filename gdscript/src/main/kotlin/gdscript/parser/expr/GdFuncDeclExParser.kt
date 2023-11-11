@@ -6,6 +6,9 @@ import gdscript.parser.common.GdParamListParser
 import gdscript.parser.common.GdReturnHintParser
 import gdscript.parser.stmt.GdStmtParser
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.mceIdentifier
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 class GdFuncDeclExParser : GdExprBaseParser {
 
@@ -15,23 +18,23 @@ class GdFuncDeclExParser : GdExprBaseParser {
         lateinit var INSTANCE: GdFuncDeclExParser
     }
 
-    constructor(builder: PsiBuilder): super(builder) {
+    constructor() {
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(FUNC)) return false
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(FUNC)) return false
 
-        advance() // func
-        val m = mark()
+        b.advanceLexer() // func
+        val m = b.mark()
         var ok = true
-        if (nextTokenIs(IDENTIFIER)) mceIdentifier(FUNC_DECL_ID_NMI)
-        ok = ok && consumeToken(LRBR, true)
-        ok = ok && GdParamListParser.INSTANCE.parse(true)
-        ok = ok && consumeToken(RRBR, true)
-        ok = ok && GdReturnHintParser.INSTANCE.parse(true)
-        ok = ok && consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parseLambda(false, true)
+        if (b.nextTokenIs(IDENTIFIER)) b.mceIdentifier(FUNC_DECL_ID_NMI)
+        ok = ok && b.consumeToken(LRBR, true)
+        ok = ok && GdParamListParser.INSTANCE.parse(b, true)
+        ok = ok && b.consumeToken(RRBR, true)
+        ok = ok && GdReturnHintParser.INSTANCE.parse(b, true)
+        ok = ok && b.consumeToken(COLON, true)
+        ok = ok && GdStmtParser.INSTANCE.parseLambda(b, false, true)
 
         m.drop()
 

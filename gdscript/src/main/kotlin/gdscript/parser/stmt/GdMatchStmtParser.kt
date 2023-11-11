@@ -5,41 +5,43 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.followingTokensAre
+import gdscript.utils.PsiBuilderUtil.mceIdentifier
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdMatchStmtParser : GdStmtBaseParser {
+class GdMatchStmtParser : GdStmtBaseParser() {
 
     override val STMT_TYPE: IElementType = MATCH_ST
 
-    constructor(builder: PsiBuilder) : super(builder)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(MATCH)) return optional
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(MATCH)) return optional
-
-        advance() // match
+        b.advanceLexer() // match
         var ok = true
-        ok = ok && GdExprParser.INSTANCE.parse(false)
-        ok = ok && consumeToken(COLON, true)
-        ok = ok && consumeToken(NEW_LINE, true)
-        ok = ok && consumeToken(INDENT, true)
-        ok = ok && matchBlock()
-        while (matchBlock()) {
+        ok = ok && GdExprParser.INSTANCE.parse(b, false)
+        ok = ok && b.consumeToken(COLON, true)
+        ok = ok && b.consumeToken(NEW_LINE, true)
+        ok = ok && b.consumeToken(INDENT, true)
+        ok = ok && matchBlock(b)
+        while (matchBlock(b)) {
         }
-        ok = ok && consumeToken(DEDENT, true)
+        ok = ok && b.consumeToken(DEDENT, true)
 
         return ok
     }
 
-    private fun matchBlock(): Boolean {
-        val block = mark()
+    private fun matchBlock(b: PsiBuilder): Boolean {
+        val block = b.mark()
         var ok = true
         var pin = false
 
-        ok = ok && patternList()
-        ok = ok && consumeToken(COLON)
+        ok = ok && patternList(b)
+        ok = ok && b.consumeToken(COLON)
         pin = ok
-        ok = ok && GdStmtParser.INSTANCE.parse()
+        ok = ok && GdStmtParser.INSTANCE.parse(b)
         if (pin) {
-            GdRecovery.stmtNoLine()
+            GdRecovery.stmtNoLine(b)
             block.done(MATCH_BLOCK)
         } else {
             block.rollbackTo()
@@ -48,26 +50,26 @@ class GdMatchStmtParser : GdStmtBaseParser {
         return pin
     }
 
-    private fun patternList(): Boolean {
-        val list = mark()
-        val ok = pattern(false)
-        while (ok && nextTokenIs(COMMA))
-            pattern(false)
+    private fun patternList(b: PsiBuilder): Boolean {
+        val list = b.mark()
+        val ok = pattern(b, false)
+        while (ok && b.nextTokenIs(COMMA))
+            pattern(b, false)
         if (ok) list.done(PATTERN_LIST)
         else list.drop()
 
         return ok
     }
 
-    private fun pattern(optional: Boolean): Boolean {
-        val pattern = mark()
+    private fun pattern(b: PsiBuilder, optional: Boolean): Boolean {
+        val pattern = b.mark()
 
-        val ok = consumeToken(UNDER)
+        val ok = b.consumeToken(UNDER)
             // binding pattern
-            || (followingTokensAre(VAR, IDENTIFIER) && consumeToken(VAR) && mceIdentifier(VAR_NMI))
-            || arrayPattern()
-            || dictPattern()
-            || GdExprParser.INSTANCE.parse()
+            || (b.followingTokensAre(VAR, IDENTIFIER) && b.consumeToken(VAR) && b.mceIdentifier(VAR_NMI))
+            || arrayPattern(b)
+            || dictPattern(b)
+            || GdExprParser.INSTANCE.parse(b)
             || optional
 
         if (ok) pattern.done(PATTERN)
@@ -76,32 +78,32 @@ class GdMatchStmtParser : GdStmtBaseParser {
         return ok
     }
 
-    private fun arrayPattern(): Boolean {
+    private fun arrayPattern(b: PsiBuilder): Boolean {
         var ok = true
-        ok = ok && consumeToken(LSBR)
-        ok = ok && pattern(true)
-        while (ok && nextTokenIs(COMMA)) {
-            advance() // comma
-            if (consumeToken(DOTDOT)) break
-            ok = ok && pattern(false)
+        ok = ok && b.consumeToken(LSBR)
+        ok = ok && pattern(b, true)
+        while (ok && b.nextTokenIs(COMMA)) {
+            b.advanceLexer() // comma
+            if (b.consumeToken(DOTDOT)) break
+            ok = ok && pattern(b, false)
         }
-        ok = ok && consumeToken(RSBR)
+        ok = ok && b.consumeToken(RSBR)
 
         return ok
     }
 
-    private fun dictPattern(): Boolean {
-        val dict = mark()
+    private fun dictPattern(b: PsiBuilder): Boolean {
+        val dict = b.mark()
         var ok = true
-        ok = ok && consumeToken(LCBR)
-        ok = ok && keyValuePattern()
-        while (ok && nextTokenIs(COMMA)) {
-            advance()
-            if (consumeToken(DOTDOT)) break
-            ok = ok && keyValuePattern()
+        ok = ok && b.consumeToken(LCBR)
+        ok = ok && keyValuePattern(b)
+        while (ok && b.nextTokenIs(COMMA)) {
+            b.advanceLexer()
+            if (b.consumeToken(DOTDOT)) break
+            ok = ok && keyValuePattern(b)
         }
 
-        ok = ok && consumeToken(RCBR)
+        ok = ok && b.consumeToken(RCBR)
 
         if (ok) dict.done(DICT_PATTERN)
         else dict.rollbackTo()
@@ -109,12 +111,12 @@ class GdMatchStmtParser : GdStmtBaseParser {
         return ok
     }
 
-    private fun keyValuePattern(): Boolean {
-        val pattern = mark()
+    private fun keyValuePattern(b: PsiBuilder): Boolean {
+        val pattern = b.mark()
         var ok = true
-        ok = ok && consumeToken(STRING)
-        ok = ok && consumeToken(COLON)
-        ok = ok && pattern(false)
+        ok = ok && b.consumeToken(STRING)
+        ok = ok && b.consumeToken(COLON)
+        ok = ok && pattern(b, false)
 
         if (ok) pattern.done(KEY_VALUE_PATTERN)
         else pattern.rollbackTo()

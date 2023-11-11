@@ -5,54 +5,54 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdIfStmtParser : GdStmtBaseParser {
+class GdIfStmtParser : GdStmtBaseParser() {
 
     override val STMT_TYPE: IElementType = IF_ST
 
-    constructor(builder: PsiBuilder) : super(builder)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(IF)) return optional
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(IF)) return optional
-
-        advance() // if
+        b.advanceLexer() // if
         var ok = true
-        ok = ok && GdExprParser.INSTANCE.parse()
-        ok = ok && consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse()
+        ok = ok && GdExprParser.INSTANCE.parse(b)
+        ok = ok && b.consumeToken(COLON, true)
+        ok = ok && GdStmtParser.INSTANCE.parse(b)
 
-        while (ok && elifSt()) {}
-        ok && elseSt()
+        while (ok && elifSt(b)) {}
+        ok && elseSt(b)
 
         return ok
     }
 
-    private fun elifSt(): Boolean {
-        if (!nextTokenIs(ELIF)) return false
+    private fun elifSt(b: PsiBuilder): Boolean {
+        if (!b.nextTokenIs(ELIF)) return false
 
-        val elif = mark()
+        val elif = b.mark()
         var ok = true
-        advance() // elif
-        ok = ok && GdExprParser.INSTANCE.parse()
-        ok = ok && consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse()
+        b.advanceLexer() // elif
+        ok = ok && GdExprParser.INSTANCE.parse(b)
+        ok = ok && b.consumeToken(COLON, true)
+        ok = ok && GdStmtParser.INSTANCE.parse(b)
 
-        GdRecovery.stmt()
+        GdRecovery.stmt(b)
         elif.done(ELIF_ST)
 
         return true
     }
 
-    private fun elseSt(): Boolean {
-        if (!nextTokenIs(ELSE)) return false
+    private fun elseSt(b: PsiBuilder): Boolean {
+        if (!b.nextTokenIs(ELSE)) return false
 
-        val elseSt = mark()
+        val elseSt = b.mark()
         var ok = true
-        advance() // else
-        ok = ok && consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse()
+        b.advanceLexer() // else
+        ok = ok && b.consumeToken(COLON, true)
+        ok = ok && GdStmtParser.INSTANCE.parse(b)
 
-        GdRecovery.stmt()
+        GdRecovery.stmt(b)
         elseSt.done(ELSE_ST)
 
         return true

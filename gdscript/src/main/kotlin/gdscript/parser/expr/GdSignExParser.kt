@@ -3,6 +3,7 @@ package gdscript.parser.expr
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeAnyOfToken
 
 class GdSignExParser : GdExprBaseParser {
 
@@ -12,15 +13,15 @@ class GdSignExParser : GdExprBaseParser {
         lateinit var INSTANCE: GdSignExParser
     }
 
-    constructor(builder: PsiBuilder): super(builder) {
+    constructor(): super() {
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        val m = mark()
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        val m = b.mark()
         var ok = true
-        ok = ok && consumeAnyOfToken(true, PLUS, MINUS)
-        ok = ok && GdExprParser.INSTANCE.parse()
+        ok = ok && b.consumeAnyOfToken(true, PLUS, MINUS)
+        ok = ok && GdExprParser.INSTANCE.parse(b)
 
         if (ok) m.drop()
         else m.rollbackTo()

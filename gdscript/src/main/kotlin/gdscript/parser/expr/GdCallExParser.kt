@@ -4,6 +4,7 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.common.GdArgListParser
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
 
 class GdCallExParser : GdExprBaseParser {
 
@@ -13,16 +14,16 @@ class GdCallExParser : GdExprBaseParser {
         lateinit var INSTANCE: GdCallExParser
     }
 
-    constructor(builder: PsiBuilder): super(builder) {
+    constructor() {
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        val m = mark()
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        val m = b.mark()
         var ok = true
-        ok = ok && consumeToken(LRBR, true)
-        ok = ok && GdArgListParser.INSTANCE.parse(true)
-        ok = ok && consumeToken(RRBR, true)
+        ok = ok && b.consumeToken(LRBR, true)
+        ok = ok && GdArgListParser.INSTANCE.parse(b, true)
+        ok = ok && b.consumeToken(RRBR, true)
 
         if (ok) m.drop()
         else m.rollbackTo()

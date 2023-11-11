@@ -5,6 +5,7 @@ import gdscript.parser.GdBaseParser
 import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 class GdArgListParser : GdBaseParser {
 
@@ -12,35 +13,35 @@ class GdArgListParser : GdBaseParser {
         lateinit var INSTANCE: GdArgListParser
     }
 
-    constructor(builder: PsiBuilder) : super(builder) {
+    constructor() {
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        val argList = mark()
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        val argList = b.mark()
         var ok = true
 
-        ok = ok && argExpr()
+        ok = ok && argExpr(b)
         if (!ok) {
             argList.rollbackTo()
             return optional
         }
 
-        while (nextTokenIs(COMMA)) {
-            argExpr()
+        while (b.nextTokenIs(COMMA)) {
+            argExpr(b)
         }
 
-        GdRecovery.argumentList()
+        GdRecovery.argumentList(b)
         argList.done(ARG_LIST)
 
         return true
     }
 
-    private fun argExpr(): Boolean {
-        val expr = mark()
+    private fun argExpr(b: PsiBuilder): Boolean {
+        val expr = b.mark()
         var ok = true
 
-        ok = ok && GdExprParser.INSTANCE.parse()
+        ok = ok && GdExprParser.INSTANCE.parse(b)
 
         if (ok) expr.done(ARG_EXPR)
         else expr.rollbackTo()

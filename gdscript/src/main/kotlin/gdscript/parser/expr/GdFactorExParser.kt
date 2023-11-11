@@ -3,6 +3,7 @@ package gdscript.parser.expr
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.mcAnyOfForce
 
 class GdFactorExParser : GdExprBaseParser {
 
@@ -12,15 +13,15 @@ class GdFactorExParser : GdExprBaseParser {
         lateinit var INSTANCE: GdFactorExParser
     }
 
-    constructor(builder: PsiBuilder): super(builder) {
+    constructor() {
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        val m = mark()
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        val m = b.mark()
         var ok = true
-        ok = ok && mcAnyOfForce(FACTOR_SIGN, MUL, DIV, MOD, POWER)
-        ok = ok && GdExprParser.INSTANCE.parse(false)
+        ok = ok && b.mcAnyOfForce(FACTOR_SIGN, MUL, DIV, MOD, POWER)
+        ok = ok && GdExprParser.INSTANCE.parse(b, false)
 
         if (ok) m.drop()
         else m.rollbackTo()

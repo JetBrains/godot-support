@@ -5,35 +5,36 @@ import gdscript.parser.GdBaseParser
 import gdscript.parser.expr.GdLiteralExParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.markToken
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdAnnotationParser : GdBaseParser {
+class GdAnnotationParser : GdBaseParser() {
 
-    constructor(builder: PsiBuilder): super(builder)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(ANNOTATOR)) return optional
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(ANNOTATOR)) return optional
-
-        val m = mark()
-        var ok = markToken(ANNOTATION_TYPE)
-        if (ok && nextTokenIs(LRBR)) {
-            advance()
-            ok = ok && parseParams()
-            ok = ok && consumeToken(RRBR)
+        val m = b.mark()
+        var ok = b.markToken(ANNOTATION_TYPE)
+        if (ok && b.nextTokenIs(LRBR)) {
+            b.advanceLexer()
+            ok = ok && parseParams(b)
+            ok = ok && b.consumeToken(RRBR)
         }
-        GdRecovery.topLevel()
+        GdRecovery.topLevel(b)
 
         m.done(ANNOTATION_TL)
         return true
     }
 
-    private fun parseParams(): Boolean {
-        val params = mark()
+    private fun parseParams(b: PsiBuilder): Boolean {
+        val params = b.mark()
 
-        var ok = GdLiteralExParser.INSTANCE.parseAndMark()
-        while (ok && nextTokenIs(COMMA)) {
-            ok = GdLiteralExParser.INSTANCE.parseAndMark()
+        var ok = GdLiteralExParser.INSTANCE.parseAndMark(b)
+        while (ok && b.nextTokenIs(COMMA)) {
+            ok = GdLiteralExParser.INSTANCE.parseAndMark(b)
         }
-        GdRecovery.argumentList()
+        GdRecovery.argumentList(b)
         params.done(ANNOTATION_PARAMS)
 
         return ok

@@ -5,22 +5,23 @@ import gdscript.parser.GdBaseParser
 import gdscript.parser.common.GdTypedParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.mceEndStmt
+import gdscript.utils.PsiBuilderUtil.mceIdentifier
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdClassConstParser : GdBaseParser {
+class GdClassConstParser : GdBaseParser() {
 
-    constructor(builder: PsiBuilder): super(builder)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(CONST)) return optional
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(CONST)) return optional
+        val m = b.mark()
+        b.advanceLexer() // const
+        var ok = b.mceIdentifier(VAR_NMI)
+        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(b, true)
 
-        val m = mark()
-        advance() // const
-        var ok = mceIdentifier(VAR_NMI)
-        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(true)
+        ok && b.mceEndStmt()
 
-        ok && mceEndStmt()
-
-        GdRecovery.topLevel()
+        GdRecovery.topLevel(b)
         m.done(CONST_DECL_TL)
 
         return true

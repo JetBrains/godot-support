@@ -3,34 +3,35 @@ package gdscript.parser.recovery
 import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 class GdRecovery : GdBaseParser {
 
     companion object {
         lateinit var recovery: GdRecovery
 
-        fun argumentList() = recovery.recoverUntil(*ARG_END)
-        fun topLevel() = recovery.recoverUntil(*TOP_LEVEL)
-        fun setGet() = recovery.recoverUntil(*SET_GET)
-        fun stmt() = recovery.recoverUntil(*STMT)
-        fun stmtNoLine() = recovery.recoverUntil(*STMT_NO_LINE)
+        fun argumentList(b: PsiBuilder) = recovery.recoverUntil(b, *ARG_END)
+        fun topLevel(b: PsiBuilder) = recovery.recoverUntil(b, *TOP_LEVEL)
+        fun setGet(b: PsiBuilder) = recovery.recoverUntil(b, *SET_GET)
+        fun stmt(b: PsiBuilder) = recovery.recoverUntil(b, *STMT)
+        fun stmtNoLine(b: PsiBuilder) = recovery.recoverUntil(b, *STMT_NO_LINE)
     }
 
-    constructor(builder: PsiBuilder): super(builder) {
+    constructor() {
         recovery = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         TODO("Not yet implemented")
     }
 
-    fun recoverUntil(vararg elementTypes: IElementType) {
+    fun recoverUntil(b: PsiBuilder, vararg elementTypes: IElementType) {
         var any: String? = null
-        val m = mark()
+        val m = b.mark()
 
-        while (!builder.eof() && !nextTokenIs(*elementTypes)) {
-            any = builder.tokenText
-            advance()
+        while (!b.eof() && !b.nextTokenIs(*elementTypes)) {
+            any = b.tokenText
+            b.advanceLexer()
         }
 
         if (any != null) {

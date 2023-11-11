@@ -4,6 +4,9 @@ import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.markError
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 class GdStmtParser : GdBaseParser {
 
@@ -13,56 +16,55 @@ class GdStmtParser : GdBaseParser {
 
     val parsers = mutableListOf<GdStmtBaseParser>()
     var moved = false
-    var lambda = false
 
-    constructor(builder: PsiBuilder) : super(builder) {
-        parsers.add(GdAssignStmtParser(builder))
-        parsers.add(GdVarStmtParser(builder))
-        parsers.add(GdConstStmtParser(builder))
-        parsers.add(GdIfStmtParser(builder))
-        parsers.add(GdWhileStmtParser(builder))
-        parsers.add(GdForStmtParser(builder))
-        parsers.add(GdMatchStmtParser(builder))
-        parsers.add(GdFlowStmtParser(builder))
-        parsers.add(GdExStmtParser(builder))
+    constructor() {
+        parsers.add(GdAssignStmtParser())
+        parsers.add(GdVarStmtParser())
+        parsers.add(GdConstStmtParser())
+        parsers.add(GdIfStmtParser())
+        parsers.add(GdWhileStmtParser())
+        parsers.add(GdForStmtParser())
+        parsers.add(GdMatchStmtParser())
+        parsers.add(GdFlowStmtParser())
+        parsers.add(GdExStmtParser())
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        return parseLambda(optional, false)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        return parseLambda(b, optional, false)
     }
 
-    fun parseLambda(optional: Boolean, asLambda: Boolean): Boolean {
-        val stmtOrSuite = mark()
-        var ok = suite(false, asLambda) || stmt(optional, asLambda)
+    fun parseLambda(b: PsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
+        val stmtOrSuite = b.mark()
+        var ok = suite(b, false, asLambda) || stmt(b, optional, asLambda)
 
         stmtOrSuite.done(STMT_OR_SUITE)
 
         return true
     }
 
-    private fun suite(optional: Boolean, asLambda: Boolean): Boolean {
-        if (!nextTokenIs(NEW_LINE)) return optional
+    private fun suite(b: PsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
+        if (!b.nextTokenIs(NEW_LINE)) return optional
         var ok = true
-        val suite = mark()
-        advance() // NEW_LINE
-        ok = ok && consumeToken(INDENT)
+        val suite = b.mark()
+        b.advanceLexer() // NEW_LINE
+        ok = ok && b.consumeToken(INDENT)
 
-        ok = ok && stmt(false, asLambda)
+        ok = ok && stmt(b, false, asLambda)
         moved = true
         while (ok && moved) {
-            ok = ok && stmt(true, asLambda)
+            ok = ok && stmt(b, true, asLambda)
         }
         if (asLambda) {
-            builder.remapCurrentToken(DEDENT)
+            b.remapCurrentToken(DEDENT)
         }
-        ok = ok && consumeToken(DEDENT, true)
+        ok = ok && b.consumeToken(DEDENT, true)
         if (asLambda) {
-            builder.remapCurrentToken(NEW_LINE)
+            b.remapCurrentToken(NEW_LINE)
         }
 
         if (ok) {
-            GdRecovery.stmt()
+            GdRecovery.stmt(b)
             suite.done(SUITE)
         } else {
             suite.rollbackTo()
@@ -71,22 +73,22 @@ class GdStmtParser : GdBaseParser {
         return ok || optional
     }
 
-    private fun stmt(optional: Boolean, asLambda: Boolean): Boolean {
+    private fun stmt(b: PsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
         moved = false
 
         if (
             parsers.any {
-                val stmt = mark()
-                var ok = it.parse()
+                val stmt = b.mark()
+                var ok = it.parse(b)
                 ok = ok &&
                     if (asLambda) {
-                        nextTokenIs(SEMICON, NEW_LINE, RRBR)
+                        b.nextTokenIs(SEMICON, NEW_LINE, RRBR)
                     } else {
-                        it.parseEndStmt()
+                        it.parseEndStmt(b)
                     }
 
                 if (ok) {
-                    GdRecovery.stmt()
+                    GdRecovery.stmt(b)
                     stmt.done(it.STMT_TYPE)
                 } else {
                     stmt.rollbackTo()
@@ -101,7 +103,7 @@ class GdStmtParser : GdBaseParser {
         }
 
         if (!optional) {
-            markError("Statement expected")
+            b.markError("Statement expected")
         }
 
         return optional

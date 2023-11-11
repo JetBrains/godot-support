@@ -3,6 +3,7 @@ package gdscript.parser.common
 import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
 import gdscript.psi.GdTypes
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 class GdReturnHintParser : GdBaseParser {
 
@@ -10,21 +11,21 @@ class GdReturnHintParser : GdBaseParser {
         lateinit var INSTANCE: GdReturnHintParser
     }
 
-    constructor(builder: PsiBuilder) : super(builder) {
+    constructor() {
         INSTANCE = this
     }
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(GdTypes.RET)) return optional
-        val hint = mark()
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(GdTypes.RET)) return optional
+        val hint = b.mark()
         var ok = true
-        advance() // RET
+        b.advanceLexer() // RET
 
-        val hintVal = mark()
-        if (nextTokenIs(GdTypes.VOID)) {
-            advance() // VOID
+        val hintVal = b.mark()
+        if (b.nextTokenIs(GdTypes.VOID)) {
+            b.advanceLexer() // VOID
         } else {
-            ok = ok && GdTypedParser.INSTANCE.typedVal(false)
+            ok = ok && GdTypedParser.INSTANCE.typedVal(b, false)
         }
 
         hintVal.done(GdTypes.RETURN_HINT_VAL)

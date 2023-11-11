@@ -4,47 +4,49 @@ import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
+import gdscript.utils.PsiBuilderUtil.consumeToken
+import gdscript.utils.PsiBuilderUtil.mceEndStmt
+import gdscript.utils.PsiBuilderUtil.mceIdentifier
+import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdEnumParser : GdBaseParser {
+class GdEnumParser : GdBaseParser() {
 
-    constructor(builder: PsiBuilder) : super(builder)
+    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(ENUM)) return optional
 
-    override fun parse(optional: Boolean): Boolean {
-        if (!nextTokenIs(ENUM)) return optional
-
-        val enumDecl = mark()
-        advance() // enum
+        val enumDecl = b.mark()
+        b.advanceLexer() // enum
 
         var ok = true
-        if (nextTokenIs(IDENTIFIER)) {
-            ok = ok && mceIdentifier(ENUM_DECL_NMI)
+        if (b.nextTokenIs(IDENTIFIER)) {
+            ok = ok && b.mceIdentifier(ENUM_DECL_NMI)
         }
 
-        if (ok && nextTokenIs(LCBR)) advance()
+        if (ok && b.nextTokenIs(LCBR)) b.advanceLexer()
 
-        while (ok && nextTokenIs(IDENTIFIER)) {
-            ok = enumValue()
-            if (!consumeToken(COMMA)) break
+        while (ok && b.nextTokenIs(IDENTIFIER)) {
+            ok = enumValue(b)
+            if (!b.consumeToken(COMMA)) break
         }
 
-        ok = ok && consumeToken(RCBR, true)
-        ok = ok && mceEndStmt()
+        ok = ok && b.consumeToken(RCBR, true)
+        ok = ok && b.mceEndStmt()
 
-        GdRecovery.topLevel()
+        GdRecovery.topLevel(b)
         enumDecl.done(ENUM_DECL_TL)
 
         return true
     }
 
-    private fun enumValue(): Boolean {
-        val enumValue = mark()
-        mceIdentifier(ENUM_VALUE_NMI)
+    private fun enumValue(b: PsiBuilder): Boolean {
+        val enumValue = b.mark()
+        b.mceIdentifier(ENUM_VALUE_NMI)
 
         var ok = true
-        if (consumeToken(EQ)) {
-            consumeToken(PLUS)
-            consumeToken(MINUS)
-            ok = consumeToken(NUMBER, true)
+        if (b.consumeToken(EQ)) {
+            b.consumeToken(PLUS)
+            b.consumeToken(MINUS)
+            ok = b.consumeToken(NUMBER, true)
         }
         enumValue.done(ENUM_VALUE)
 
