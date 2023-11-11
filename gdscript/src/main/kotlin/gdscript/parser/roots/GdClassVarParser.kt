@@ -43,10 +43,10 @@ class GdClassVarParser : GdBaseParser {
 
         while (ok) {
             ok = parseGet() || parseSet()
-            consumeToken(COMMA) && mcAnyOf(END_STMT, SEMICON, NEW_LINE)
+            consumeToken(COMMA) && mceEndStmt(false)
         }
 
-        mcAnyOf(END_STMT, SEMICON, NEW_LINE)
+        mceEndStmt(false)
         if (indented) {
             consumeToken(DEDENT, true)
         }

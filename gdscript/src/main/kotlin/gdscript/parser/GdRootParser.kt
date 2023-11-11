@@ -13,7 +13,6 @@ import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.roots.*
 import gdscript.parser.stmt.GdStmtParser
-import gdscript.psi.GdTypes.FILE
 
 class GdRootParser : PsiParser, LightPsiParser {
 
@@ -37,7 +36,7 @@ class GdRootParser : PsiParser, LightPsiParser {
                 m.error("Unexpected tokens, $text")
             }
         }
-        document.done(FILE)
+        document.done(root)
     }
 
     private fun prepareParsers(builder: PsiBuilder) {

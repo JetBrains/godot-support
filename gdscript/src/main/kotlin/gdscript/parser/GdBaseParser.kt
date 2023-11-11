@@ -113,11 +113,18 @@ abstract class GdBaseParser {
         return true
     }
 
-    fun mceEndStmt(): Boolean {
-        if (!mcAnyOf(END_STMT, SEMICON, NEW_LINE)) {
-            markError("expected endStmt")
-            return false
+    fun mceEndStmt(force: Boolean = true): Boolean {
+        if (!nextTokenIs(SEMICON, NEW_LINE)) {
+            if (force) {
+                markError("expected endStmt")
+                return false
+            }
         }
+
+        val m = mark()
+        consumeToken(SEMICON)
+        consumeToken(NEW_LINE)
+        m.done(END_STMT)
 
         return true
     }
