@@ -18,6 +18,7 @@ class GdExprParser : GdBaseParser {
         INSTANCE = this
         parsers.add(GdFuncDeclExParser(builder))
         parsers.add(GdNegateExParser(builder))
+        parsers.add(GdAwaitExParser(builder))
         parsers.add(GdPlusExParser(builder))
         parsers.add(GdBitNotExParser(builder))
         parsers.add(GdPrimaryExParser(builder))

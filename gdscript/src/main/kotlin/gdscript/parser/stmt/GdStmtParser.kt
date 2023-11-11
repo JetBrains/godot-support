@@ -24,7 +24,6 @@ class GdStmtParser : GdBaseParser {
         parsers.add(GdForStmtParser(builder))
         parsers.add(GdMatchStmtParser(builder))
         parsers.add(GdFlowStmtParser(builder))
-        parsers.add(GdAwaitStmtParser(builder))
         parsers.add(GdExStmtParser(builder))
         INSTANCE = this
     }

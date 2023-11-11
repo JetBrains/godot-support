@@ -35,7 +35,6 @@ class GdParserTest : ParsingTestCase {
     @Test fun testWhileStmt() = doTest(true)
     @Test fun testForStmt() = doTest(true)
     @Test fun testMatchStmt() = doTest(true)
-    @Test fun testAwaitStmt() = doTest(true)
 
     // Exprs
     @Test fun testFuncDeclExpr() = doTest(true)
@@ -43,6 +42,7 @@ class GdParserTest : ParsingTestCase {
     @Test fun testFuncDeclExprParam() = doTest(true)
     @Test fun testNestedCallExpr() = doTest(true)
     @Test fun testArrayExpr() = doTest(true)
+    @Test fun testAwaitExpr() = doTest(true)
     @Test fun testCastExpr() = doTest(true)
     @Test fun testTernaryExpr() = doTest(true)
     @Test fun testLogicExpr() = doTest(true)
