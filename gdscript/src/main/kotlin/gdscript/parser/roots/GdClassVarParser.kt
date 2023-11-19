@@ -15,10 +15,11 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 object GdClassVarParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
-        if (!b.nextTokenIs(VAR)) return optional
+        if (!b.nextTokenIs(VAR, STATIC)) return optional
 
         val m = b.mark()
-        b.advanceLexer() // const
+        b.consumeToken(STATIC)
+        b.advanceLexer() // var
         var ok = b.mceIdentifier(VAR_NMI)
 
         ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, true)
