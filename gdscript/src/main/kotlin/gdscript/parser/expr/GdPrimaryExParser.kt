@@ -11,10 +11,15 @@ object GdPrimaryExParser : GdExprBaseParser {
     override val EXPR_TYPE: IElementType = PRIMARY_EX
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
-        return b.nextTokenIs(NODE_PATH, NODE_PATH_LEX)
-                || arrayDecl(b)
-        // TODO dictDecl
-        // TODO (LRBR expr RRBR)
+        if (b.nextTokenIs(NODE_PATH, NODE_PATH_LEX)) {
+            b.advanceLexer()
+            return true
+        }
+
+        return arrayDecl(b)
+            || bracketExpr(b)
+            || dictDecl(b)
+            || optional
     }
 
     private fun arrayDecl(b: PsiBuilder): Boolean {
@@ -22,13 +27,64 @@ object GdPrimaryExParser : GdExprBaseParser {
         var ok = true
 
         ok = ok && b.consumeToken(LSBR)
-        while (ok && GdExprParser.parse(b, true)) {
-            if (!b.nextTokenIs(COMMA)) break
+        while (ok && GdExprParser.parse(b)) {
+            if (!b.consumeToken(COMMA)) break
         }
         ok = ok && b.consumeToken(RSBR)
 
         if (ok) array.done(ARRAY_DECL)
         else array.rollbackTo()
+
+        return ok
+    }
+
+    private fun dictDecl(b: PsiBuilder): Boolean {
+        val m = b.mark()
+        var ok = true
+
+        ok = ok && b.consumeToken(LCBR, true)
+        while (ok && keyValuePair(b)) {
+            if (!b.consumeToken(COMMA)) break
+        }
+
+        ok = ok && b.consumeToken(RCBR, true)
+
+        if (ok) m.done(DICT_DECL)
+        else m.rollbackTo()
+
+        return ok
+    }
+
+    private fun keyValuePair(b: PsiBuilder): Boolean {
+        val m = b.mark()
+        var ok = true
+
+        if (b.nextTokenIs(IDENTIFIER)) {
+            ok = ok && b.consumeToken(IDENTIFIER, true)
+            ok = ok && b.consumeToken(EQ, true)
+            ok = ok && GdExprParser.parse(b)
+        } else {
+            ok = ok && GdExprParser.parse(b)
+            ok = ok && b.consumeToken(COLON, true)
+            ok = ok && GdExprParser.parse(b)
+        }
+
+        if (ok) m.done(KEY_VALUE)
+        else m.rollbackTo()
+
+        return ok
+    }
+
+    private fun bracketExpr(b: PsiBuilder): Boolean {
+        val m = b.mark()
+        var ok = true
+
+        ok = ok && b.consumeToken(LRBR, true)
+        ok = ok && GdExprParser.parse(b, true)
+        ok = ok && b.consumeToken(RRBR, true)
+
+        if (ok) m.drop()
+        else m.rollbackTo()
 
         return ok
     }

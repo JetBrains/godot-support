@@ -19,7 +19,7 @@ object GdAnnotationParser : GdBaseParser {
         if (ok && b.nextTokenIs(LRBR)) {
             b.advanceLexer()
             ok = ok && parseParams(b)
-            ok = ok && b.consumeToken(RRBR)
+            ok = ok && b.consumeToken(RRBR, true)
         }
         GdRecovery.topLevel(b)
 
@@ -32,6 +32,7 @@ object GdAnnotationParser : GdBaseParser {
 
         var ok = GdLiteralExParser.parseAndMark(b)
         while (ok && b.nextTokenIs(COMMA)) {
+            b.advanceLexer() // comma
             ok = GdLiteralExParser.parseAndMark(b)
         }
         GdRecovery.argumentList(b)

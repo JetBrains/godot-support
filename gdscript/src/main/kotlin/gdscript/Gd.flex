@@ -214,41 +214,41 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     {HEX_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {COMMENT}       {
-          lineEnded = true;
-          newLineProcessed = newLineProcessed || yycolumn == 0;
-
-          if (newLineProcessed && zzEndRead > zzStartRead) {
-            String following = zzBuffer.subSequence(zzStartRead, zzEndRead).toString();
-            int nextLineIndex = following.indexOf("\n");
-            int maxLen = following.length();
-            while (maxLen > nextLineIndex + 1 && following.charAt(nextLineIndex + 1) == '\n') {
-              nextLineIndex++;
-            }
-
-            if (nextLineIndex > 0) {
-              String nextLine = following.substring(nextLineIndex + 1);
-              if (!nextLine.isEmpty()) {
-                  int indents = 0;
-                  char indentChar = ' ';
-                  if (nextLine.charAt(0) == '\t') {
-                    indentChar = '\t';
-                  }
-                  while (true) {
-                    if (nextLine.charAt(indents) == indentChar) {
-                      indents++;
-                    } else {
-                      break;
-                    }
-                  }
-
-                  if (indents < indent) {
-                    indent -= indentSizes.pop();
-                    yypushback(yylength());
-                    return GdTypes.DEDENT;
-                  }
-                }
-            }
-          }
+//          lineEnded = true;
+//          newLineProcessed = newLineProcessed || yycolumn == 0;
+//
+//          if (newLineProcessed && zzEndRead > zzStartRead) {
+//            String following = zzBuffer.subSequence(zzStartRead, zzEndRead).toString();
+//            int nextLineIndex = following.indexOf("\n");
+//            int maxLen = following.length();
+//            while (maxLen > nextLineIndex + 1 && following.charAt(nextLineIndex + 1) == '\n') {
+//              nextLineIndex++;
+//            }
+//
+//            if (nextLineIndex > 0) {
+//              String nextLine = following.substring(nextLineIndex + 1);
+//              if (!nextLine.isEmpty()) {
+//                  int indents = 0;
+//                  char indentChar = ' ';
+//                  if (nextLine.charAt(0) == '\t') {
+//                    indentChar = '\t';
+//                  }
+//                  while (true) {
+//                    if (nextLine.charAt(indents) == indentChar) {
+//                      indents++;
+//                    } else {
+//                      break;
+//                    }
+//                  }
+//
+//                  if (indents < indent) {
+//                    indent -= indentSizes.pop();
+//                    yypushback(yylength());
+//                    return GdTypes.DEDENT;
+//                  }
+//                }
+//            }
+//          }
 
           return GdTypes.COMMENT;
       }
