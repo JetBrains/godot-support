@@ -38,7 +38,7 @@ class GdSetGetAnnotator : Annotator {
         return GdCreateMethodAction(
             element.name,
             parameters = arrayOf(param),
-            bodyLines = arrayOf("${GdKeywords.SELF}.${variableName(element)} = value") // optional ;
+            bodyLines = arrayOf("${variableName(element)} = value") // optional ;
         );
     }
 
