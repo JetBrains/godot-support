@@ -60,7 +60,13 @@ $parseParams = function($value) {
         $parsed[$p_att['index']] = [$p_name, $p_att['type'], $p_att['default'] ?? null];
     }
     foreach ($parsed as $param) {
-        $p = sprintf("%s: %s", $param[0], $param[1]);
+        $paramType = $param[1];
+        if (str_ends_with($paramType, '[]')) {
+            $paramType = substr($paramType, 0, strlen($paramType) - 2);
+            $paramType = "Array[$paramType]";
+        }
+
+        $p = sprintf("%s: %s", $param[0], $paramType);
         if (($param[2] ?? null) !== null) {
             $p = sprintf("%s = %s", $p, $param[2]);
         }
