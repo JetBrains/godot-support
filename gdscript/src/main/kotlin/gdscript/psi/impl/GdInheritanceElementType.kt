@@ -10,7 +10,7 @@ import gdscript.psi.GdInheritance
 object GdInheritanceElementType : IStubElementType<GdInheritanceStub, GdInheritance>("inheritance", GdLanguage) {
 
     fun inheritancePath(element: GdInheritance): String {
-        return element.inheritanceId?.text.orEmpty();
+        return element.inheritanceId?.text.orEmpty()
     }
 
     @JvmStatic

@@ -4,7 +4,7 @@ import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
 import gdscript.parser.expr.GdExprParser
 import gdscript.psi.GdTypes.*
-import gdscript.utils.PsiBuilderUtil.ensureNextTokenIs
+import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.mcAnyOf
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
@@ -55,7 +55,7 @@ object GdTypedParser : GdBaseParser {
         if (ok && b.nextTokenIs(LSBR)) {
             b.advanceLexer()
             ok = parseTypeHint(b)
-            b.ensureNextTokenIs(RSBR)
+            ok = ok && b.consumeToken(RSBR, true)
         }
 
         if (ok) typedVal.done(TYPED_VAL)

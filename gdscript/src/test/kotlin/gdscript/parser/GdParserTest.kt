@@ -21,6 +21,7 @@ class GdParserTest : ParsingTestCase {
     @Test fun testClassVarSetGet() = doTest(true)
     @Test fun testClassVarSetGetMethod() = doTest(true)
     @Test fun testClassVarSetGetMethodMultiline() = doTest(true)
+    @Test fun testMethodArrayReturnType() = doTest(true)
 
     @Test fun testSignal() = doTest(true)
     @Test fun testEnumAnonymous() = doTest(true)

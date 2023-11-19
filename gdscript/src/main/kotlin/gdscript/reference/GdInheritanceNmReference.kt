@@ -22,7 +22,7 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
     private var key: String = "";
 
     constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
-        key = element.parent.text.substring(0, element.textRangeInParent.endOffset)
+        key = element.text
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {

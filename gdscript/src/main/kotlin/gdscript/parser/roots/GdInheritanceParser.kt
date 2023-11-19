@@ -14,16 +14,23 @@ object GdInheritanceParser : GdBaseParser {
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(EXTENDS)) return optional
 
-        val m = b.mark()
+        val inheritance = b.mark()
         var ok = b.consumeToken(EXTENDS)
+        val inheritanceId = b.mark()
+
         ok = ok && b.mcAnyOf(INHERITANCE_ID_NM, STRING, IDENTIFIER)
         while (ok && b.consumeToken(DOT)) {
             ok = b.mcToken(INHERITANCE_SUB_ID_NM, IDENTIFIER)
         }
+        if (ok) inheritanceId.done(INHERITANCE_ID)
         ok = ok && b.mceEndStmt()
 
-        if (ok) m.done(INHERITANCE)
-        else m.error("Expected INHERITANCE")
+        if (ok) {
+            inheritance.done(INHERITANCE)
+        }
+        else {
+            inheritance.error("Expected INHERITANCE")
+        }
 
         return ok || optional
     }
