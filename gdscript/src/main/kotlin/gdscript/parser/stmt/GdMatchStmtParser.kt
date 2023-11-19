@@ -10,16 +10,17 @@ import gdscript.utils.PsiBuilderUtil.followingTokensAre
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdMatchStmtParser : GdStmtBaseParser() {
+object GdMatchStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = MATCH_ST
+    override val endWithEndStmt: Boolean = false
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(MATCH)) return optional
 
         b.advanceLexer() // match
         var ok = true
-        ok = ok && GdExprParser.INSTANCE.parse(b, false)
+        ok = ok && GdExprParser.parse(b, false)
         ok = ok && b.consumeToken(COLON, true)
         ok = ok && b.consumeToken(NEW_LINE, true)
         ok = ok && b.consumeToken(INDENT, true)
@@ -39,7 +40,7 @@ class GdMatchStmtParser : GdStmtBaseParser() {
         ok = ok && patternList(b)
         ok = ok && b.consumeToken(COLON)
         pin = ok
-        ok = ok && GdStmtParser.INSTANCE.parse(b)
+        ok = ok && GdStmtParser.parse(b)
         if (pin) {
             GdRecovery.stmtNoLine(b)
             block.done(MATCH_BLOCK)
@@ -69,7 +70,7 @@ class GdMatchStmtParser : GdStmtBaseParser() {
             || (b.followingTokensAre(VAR, IDENTIFIER) && b.consumeToken(VAR) && b.mceIdentifier(VAR_NMI))
             || arrayPattern(b)
             || dictPattern(b)
-            || GdExprParser.INSTANCE.parse(b)
+            || GdExprParser.parse(b)
             || optional
 
         if (ok) pattern.done(PATTERN)

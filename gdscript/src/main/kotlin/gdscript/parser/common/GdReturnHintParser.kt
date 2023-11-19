@@ -5,15 +5,7 @@ import gdscript.parser.GdBaseParser
 import gdscript.psi.GdTypes
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdReturnHintParser : GdBaseParser {
-
-    companion object {
-        lateinit var INSTANCE: GdReturnHintParser
-    }
-
-    constructor() {
-        INSTANCE = this
-    }
+object GdReturnHintParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(GdTypes.RET)) return optional
@@ -25,7 +17,7 @@ class GdReturnHintParser : GdBaseParser {
         if (b.nextTokenIs(GdTypes.VOID)) {
             b.advanceLexer() // VOID
         } else {
-            ok = ok && GdTypedParser.INSTANCE.typedVal(b, false)
+            ok = ok && GdTypedParser.typedVal(b, false)
         }
 
         hintVal.done(GdTypes.RETURN_HINT_VAL)

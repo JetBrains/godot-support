@@ -9,15 +9,7 @@ import gdscript.utils.PsiBuilderUtil.mcAnyOf
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdTypedParser : GdBaseParser {
-
-    companion object {
-        lateinit var INSTANCE: GdTypedParser
-    }
-
-    constructor() {
-        INSTANCE = this
-    }
+object GdTypedParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(COLON)) return optional
@@ -41,14 +33,14 @@ class GdTypedParser : GdBaseParser {
         var ok = true
         if (b.nextTokenIs(CEQ)) {
             ok = ok && b.mcAnyOf(ASSIGN_TYPED, CEQ)
-            ok = ok && GdExprParser.INSTANCE.parse(b)
+            ok = ok && GdExprParser.parse(b)
         } else if (b.nextTokenIs(COLON)) {
             ok = ok && parse(b, optional)
             if (ok && b.mcAnyOf(ASSIGN_TYPED, EQ)) {
-                ok = ok && GdExprParser.INSTANCE.parse(b)
+                ok = ok && GdExprParser.parse(b)
             }
         } else if (b.mcAnyOf(ASSIGN_TYPED, EQ)) {
-            ok = ok && GdExprParser.INSTANCE.parse(b)
+            ok = ok && GdExprParser.parse(b)
         } else if (!optional) {
             return false
         }

@@ -7,23 +7,15 @@ import gdscript.psi.GdTypes.AS
 import gdscript.psi.GdTypes.CAST_EX
 import gdscript.utils.PsiBuilderUtil.consumeToken
 
-class GdCastExParser : GdExprBaseParser {
+object GdCastExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = CAST_EX
-
-    companion object {
-        lateinit var INSTANCE: GdCastExParser
-    }
-
-    constructor() {
-        INSTANCE = this
-    }
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         val m = b.mark()
         var ok = true
         ok = ok && b.consumeToken(AS, true)
-        ok = ok && GdTypedParser.INSTANCE.typedVal(b, false)
+        ok = ok && GdTypedParser.typedVal(b, false)
 
         if (ok) m.drop()
         else m.rollbackTo()

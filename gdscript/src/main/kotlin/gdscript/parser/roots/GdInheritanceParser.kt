@@ -9,7 +9,7 @@ import gdscript.utils.PsiBuilderUtil.mcToken
 import gdscript.utils.PsiBuilderUtil.mceEndStmt
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdInheritanceParser : GdBaseParser() {
+object GdInheritanceParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(EXTENDS)) return optional

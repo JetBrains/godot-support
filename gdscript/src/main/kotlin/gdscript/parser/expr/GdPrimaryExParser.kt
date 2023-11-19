@@ -6,17 +6,9 @@ import gdscript.psi.GdTypes.*
 import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdPrimaryExParser : GdExprBaseParser {
+object GdPrimaryExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = PRIMARY_EX
-
-    companion object {
-        lateinit var INSTANCE: GdExprBaseParser
-    }
-
-    constructor() {
-        INSTANCE = this
-    }
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         return b.nextTokenIs(NODE_PATH, NODE_PATH_LEX)
@@ -30,7 +22,7 @@ class GdPrimaryExParser : GdExprBaseParser {
         var ok = true
 
         ok = ok && b.consumeToken(LSBR)
-        while (ok && GdExprParser.INSTANCE.parse(b, true)) {
+        while (ok && GdExprParser.parse(b, true)) {
             if (!b.nextTokenIs(COMMA)) break
         }
         ok = ok && b.consumeToken(RSBR)

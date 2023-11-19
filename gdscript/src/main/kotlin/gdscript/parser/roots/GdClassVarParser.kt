@@ -12,7 +12,7 @@ import gdscript.utils.PsiBuilderUtil.mceEndStmt
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdClassVarParser : GdBaseParser() {
+object GdClassVarParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(VAR)) return optional
@@ -21,7 +21,7 @@ class GdClassVarParser : GdBaseParser() {
         b.advanceLexer() // const
         var ok = b.mceIdentifier(VAR_NMI)
 
-        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(b, true)
+        ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, true)
         ok = ok && (parseGetSet(b) || b.mceEndStmt())
 
         GdRecovery.topLevel(b)
@@ -93,12 +93,12 @@ class GdClassVarParser : GdBaseParser() {
         if (markerType == SET) {
             ok = ok && b.consumeToken(LRBR, true)
             ok = ok && b.mceIdentifier(VAR_NMI)
-            ok = ok && GdTypedParser.INSTANCE.parse(b, true)
+            ok = ok && GdTypedParser.parse(b, true)
             ok = ok && b.consumeToken(RRBR, true)
         }
 
         ok = ok && b.consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse(b, false)
+        ok = ok && GdStmtParser.parse(b, false)
 
         return ok
     }

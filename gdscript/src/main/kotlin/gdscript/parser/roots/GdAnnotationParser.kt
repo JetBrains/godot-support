@@ -9,7 +9,7 @@ import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.markToken
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdAnnotationParser : GdBaseParser() {
+object GdAnnotationParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(ANNOTATOR)) return optional
@@ -30,9 +30,9 @@ class GdAnnotationParser : GdBaseParser() {
     private fun parseParams(b: PsiBuilder): Boolean {
         val params = b.mark()
 
-        var ok = GdLiteralExParser.INSTANCE.parseAndMark(b)
+        var ok = GdLiteralExParser.parseAndMark(b)
         while (ok && b.nextTokenIs(COMMA)) {
-            ok = GdLiteralExParser.INSTANCE.parseAndMark(b)
+            ok = GdLiteralExParser.parseAndMark(b)
         }
         GdRecovery.argumentList(b)
         params.done(ANNOTATION_PARAMS)

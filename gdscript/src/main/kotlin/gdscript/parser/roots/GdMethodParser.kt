@@ -11,7 +11,7 @@ import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdMethodParser : GdBaseParser() {
+object GdMethodParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         val methodDecl = b.mark()
@@ -24,12 +24,12 @@ class GdMethodParser : GdBaseParser() {
         ok = ok && b.mceIdentifier(METHOD_ID_NMI)
         ok = ok && b.consumeToken(LRBR)
 
-        ok = ok && GdParamListParser.INSTANCE.parse(b, true)
+        ok = ok && GdParamListParser.parse(b, true)
 
         ok = ok && b.consumeToken(RRBR, true)
-        ok = ok && GdReturnHintParser.INSTANCE.parse(b, true)
+        ok = ok && GdReturnHintParser.parse(b, true)
         ok = ok && b.consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse(b)
+        ok = ok && GdStmtParser.parse(b)
 
         GdRecovery.topLevel(b)
         methodDecl.done(METHOD_DECL_TL)

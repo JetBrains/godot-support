@@ -9,7 +9,7 @@ import gdscript.utils.PsiBuilderUtil.mceEndStmt
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdClassConstParser : GdBaseParser() {
+object GdClassConstParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(CONST)) return optional
@@ -17,7 +17,7 @@ class GdClassConstParser : GdBaseParser() {
         val m = b.mark()
         b.advanceLexer() // const
         var ok = b.mceIdentifier(VAR_NMI)
-        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(b, true)
+        ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, true)
 
         ok && b.mceEndStmt()
 

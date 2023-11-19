@@ -5,18 +5,15 @@ import com.intellij.lang.LightPsiParser
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.PsiParser
 import com.intellij.psi.tree.IElementType
-import gdscript.parser.common.GdArgListParser
-import gdscript.parser.common.GdParamListParser
-import gdscript.parser.common.GdReturnHintParser
-import gdscript.parser.common.GdTypedParser
-import gdscript.parser.expr.GdExprParser
-import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.roots.*
-import gdscript.parser.stmt.GdStmtParser
 
 class GdRootParser : PsiParser, LightPsiParser {
 
     private val topLevelParsers = mutableListOf<GdBaseParser>()
+
+    constructor() {
+        prepareParsers()
+    }
 
     override fun parse(root: IElementType, b: PsiBuilder): ASTNode {
         parseLight(root, b)
@@ -25,8 +22,6 @@ class GdRootParser : PsiParser, LightPsiParser {
     }
 
     override fun parseLight(root: IElementType, b: PsiBuilder) {
-        prepareParsers(b)
-
         val document = b.mark()
         while (!b.eof()) {
             val any = topLevelParsers.any { it.parse(b) }
@@ -40,29 +35,19 @@ class GdRootParser : PsiParser, LightPsiParser {
         document.done(root)
     }
 
-    private fun prepareParsers(builder: PsiBuilder) {
+    private fun prepareParsers() {
         // Roots
-        topLevelParsers.add(GdClassNameParser())
-        topLevelParsers.add(GdInheritanceParser())
-        topLevelParsers.add(GdAnnotationParser())
-        topLevelParsers.add(GdClassConstParser())
-        topLevelParsers.add(GdClassVarParser())
-        topLevelParsers.add(GdSignalParser())
-        topLevelParsers.add(GdEnumParser())
-        topLevelParsers.add(GdMethodParser())
+        topLevelParsers.add(GdClassNameParser)
+        topLevelParsers.add(GdInheritanceParser)
+        topLevelParsers.add(GdAnnotationParser)
+        topLevelParsers.add(GdClassConstParser)
+        topLevelParsers.add(GdClassVarParser)
+        topLevelParsers.add(GdSignalParser)
+        topLevelParsers.add(GdEnumParser)
+        topLevelParsers.add(GdMethodParser)
         // sub-class
         // Keep as last
-        topLevelParsers.add(GdEmptyLineParser())
-
-        GdExprParser()
-        GdStmtParser()
-
-        // Helpers
-        GdRecovery()
-        GdTypedParser()
-        GdParamListParser()
-        GdArgListParser()
-        GdReturnHintParser()
+        topLevelParsers.add(GdEmptyLineParser)
     }
 
 }

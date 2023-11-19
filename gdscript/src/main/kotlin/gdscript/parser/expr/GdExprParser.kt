@@ -5,38 +5,33 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
 import gdscript.psi.GdTypes.EXPR
 
-class GdExprParser : GdBaseParser {
-
-    companion object {
-        lateinit var INSTANCE: GdExprParser
-    }
+object GdExprParser : GdBaseParser {
 
     val parsers = mutableListOf<GdExprBaseParser>()
     val leftLeadParsers = mutableListOf<GdExprBaseParser>()
 
-    constructor() {
-        INSTANCE = this
-        parsers.add(GdFuncDeclExParser())
-        parsers.add(GdNegateExParser())
-        parsers.add(GdAwaitExParser())
-        parsers.add(GdPlusExParser())
-        parsers.add(GdBitNotExParser())
-        parsers.add(GdPrimaryExParser())
-        parsers.add(GdLiteralExParser())
+    init {
+        parsers.add(GdFuncDeclExParser)
+        parsers.add(GdNegateExParser)
+        parsers.add(GdAwaitExParser)
+        parsers.add(GdPlusExParser)
+        parsers.add(GdBitNotExParser)
+        parsers.add(GdPrimaryExParser)
+        parsers.add(GdLiteralExParser)
 
-        leftLeadParsers.add(GdArrayExParser())
-        leftLeadParsers.add(GdCastExParser())
-        leftLeadParsers.add(GdTernaryExParser())
-        leftLeadParsers.add(GdLogicExParser())
-        leftLeadParsers.add(GdInExParser())
-        leftLeadParsers.add(GdComparisonExParser())
-        leftLeadParsers.add(GdBitExParser())
-        leftLeadParsers.add(GdShiftExParser())
-        leftLeadParsers.add(GdPlusExParser())
-        leftLeadParsers.add(GdFactorExParser())
-        leftLeadParsers.add(GdIsExParser())
-        leftLeadParsers.add(GdAttributeExParser())
-        leftLeadParsers.add(GdCallExParser())
+        leftLeadParsers.add(GdArrayExParser)
+        leftLeadParsers.add(GdCastExParser)
+        leftLeadParsers.add(GdTernaryExParser)
+        leftLeadParsers.add(GdLogicExParser)
+        leftLeadParsers.add(GdInExParser)
+        leftLeadParsers.add(GdComparisonExParser)
+        leftLeadParsers.add(GdBitExParser)
+        leftLeadParsers.add(GdShiftExParser)
+        leftLeadParsers.add(GdPlusExParser)
+        leftLeadParsers.add(GdFactorExParser)
+        leftLeadParsers.add(GdIsExParser)
+        leftLeadParsers.add(GdAttributeExParser)
+        leftLeadParsers.add(GdCallExParser)
     }
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {

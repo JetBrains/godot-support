@@ -7,7 +7,7 @@ import gdscript.psi.GdTypes.*
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdConstStmtParser : GdStmtBaseParser() {
+object GdConstStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = CONST_DECL_ST
     override val endWithEndStmt: Boolean = true
@@ -19,7 +19,7 @@ class GdConstStmtParser : GdStmtBaseParser() {
         var ok = true
         ok = ok && b.mceIdentifier(VAR_NMI)
 
-        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(b, true)
+        ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, true)
 
         return ok
     }

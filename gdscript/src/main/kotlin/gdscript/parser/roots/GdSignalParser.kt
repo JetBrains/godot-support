@@ -10,7 +10,7 @@ import gdscript.utils.PsiBuilderUtil.mceEndStmt
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdSignalParser : GdBaseParser() {
+object GdSignalParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(SIGNAL)) return optional
@@ -21,7 +21,7 @@ class GdSignalParser : GdBaseParser() {
         if (b.nextTokenIs(IDENTIFIER)) b.mceIdentifier(SIGNAL_ID_NMI)
 
         if (ok && b.consumeToken(LRBR)) {
-            ok = ok && GdParamListParser.INSTANCE.parse(b, false)
+            ok = ok && GdParamListParser.parse(b, false)
             ok = ok && b.consumeToken(RRBR, true)
         }
 

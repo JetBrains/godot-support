@@ -9,7 +9,7 @@ import gdscript.utils.PsiBuilderUtil.mceEndStmt
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdEnumParser : GdBaseParser() {
+object GdEnumParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(ENUM)) return optional

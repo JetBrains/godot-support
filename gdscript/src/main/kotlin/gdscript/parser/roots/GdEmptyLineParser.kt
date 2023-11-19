@@ -6,7 +6,7 @@ import gdscript.parser.GdBaseParser
 import gdscript.psi.GdTypes.NEW_LINE
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdEmptyLineParser : GdBaseParser() {
+object GdEmptyLineParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (b.nextTokenIs(NEW_LINE)) {

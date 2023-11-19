@@ -7,19 +7,20 @@ import gdscript.psi.GdTypes.*
 import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdWhileStmtParser : GdStmtBaseParser() {
+object GdWhileStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = WHILE_ST
+    override val endWithEndStmt: Boolean = false
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(WHILE)) return false
 
         b.advanceLexer() // while
         var ok = true
-        ok = ok && GdExprParser.INSTANCE.parse(b)
+        ok = ok && GdExprParser.parse(b)
         ok = ok && b.consumeToken(COLON)
 
-        ok = ok && GdStmtParser.INSTANCE.parse(b)
+        ok = ok && GdStmtParser.parse(b)
 
         return ok
     }

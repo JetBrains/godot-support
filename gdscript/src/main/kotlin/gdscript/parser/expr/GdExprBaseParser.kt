@@ -3,8 +3,8 @@ package gdscript.parser.expr
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
 
-abstract class GdExprBaseParser : GdBaseParser() {
+interface GdExprBaseParser : GdBaseParser {
 
-    abstract val EXPR_TYPE: IElementType
+    val EXPR_TYPE: IElementType
 
 }

@@ -7,17 +7,9 @@ import gdscript.psi.GdTypes.AWAIT_EX
 import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdAwaitExParser : GdExprBaseParser {
+object GdAwaitExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = AWAIT_EX
-
-    companion object {
-        lateinit var INSTANCE: GdAwaitExParser
-    }
-
-    constructor() {
-        INSTANCE = this
-    }
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(AWAIT)) return optional
@@ -25,7 +17,7 @@ class GdAwaitExParser : GdExprBaseParser {
         val m = b.mark()
         var ok = true
         ok = ok && b.consumeToken(AWAIT, true)
-        ok = ok && GdExprParser.INSTANCE.parse(b)
+        ok = ok && GdExprParser.parse(b)
 
         if (ok) m.drop()
         else m.rollbackTo()

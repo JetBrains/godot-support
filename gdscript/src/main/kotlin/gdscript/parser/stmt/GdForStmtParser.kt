@@ -8,9 +8,10 @@ import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdForStmtParser : GdStmtBaseParser() {
+object GdForStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = FOR_ST
+    override val endWithEndStmt: Boolean = false
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(FOR)) return false
@@ -19,9 +20,9 @@ class GdForStmtParser : GdStmtBaseParser() {
         var ok = true
         ok = ok && b.mceIdentifier(VAR_NMI)
         ok = ok && b.consumeToken(IN, true)
-        ok = ok && GdExprParser.INSTANCE.parse(b)
+        ok = ok && GdExprParser.parse(b)
         ok = ok && b.consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse(b)
+        ok = ok && GdStmtParser.parse(b)
 
         return ok
     }

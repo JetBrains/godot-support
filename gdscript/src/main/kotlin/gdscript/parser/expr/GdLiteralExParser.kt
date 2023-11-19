@@ -6,17 +6,9 @@ import gdscript.psi.GdTypes.*
 import gdscript.utils.PsiBuilderUtil.markToken
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdLiteralExParser : GdExprBaseParser {
+object GdLiteralExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = LITERAL_EX
-
-    companion object {
-        lateinit var INSTANCE: GdLiteralExParser
-    }
-
-    constructor() {
-        INSTANCE = this
-    }
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (b.nextTokenIs(LITERAL_EX, TRUE, FALSE, STRING_NAME, NODE_PATH_LIT, NUMBER, NULL, NAN, INF)) {

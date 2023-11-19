@@ -8,26 +8,21 @@ import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.markError
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdStmtParser : GdBaseParser {
-
-    companion object {
-        lateinit var INSTANCE: GdStmtParser
-    }
+object GdStmtParser : GdBaseParser {
 
     val parsers = mutableListOf<GdStmtBaseParser>()
     var moved = false
 
-    constructor() {
-        parsers.add(GdAssignStmtParser())
-        parsers.add(GdVarStmtParser())
-        parsers.add(GdConstStmtParser())
-        parsers.add(GdIfStmtParser())
-        parsers.add(GdWhileStmtParser())
-        parsers.add(GdForStmtParser())
-        parsers.add(GdMatchStmtParser())
-        parsers.add(GdFlowStmtParser())
-        parsers.add(GdExStmtParser())
-        INSTANCE = this
+    init {
+        parsers.add(GdAssignStmtParser)
+        parsers.add(GdVarStmtParser)
+        parsers.add(GdConstStmtParser)
+        parsers.add(GdIfStmtParser)
+        parsers.add(GdWhileStmtParser)
+        parsers.add(GdForStmtParser)
+        parsers.add(GdMatchStmtParser)
+        parsers.add(GdFlowStmtParser)
+        parsers.add(GdExStmtParser)
     }
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {

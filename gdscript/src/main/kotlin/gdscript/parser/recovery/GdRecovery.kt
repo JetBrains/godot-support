@@ -5,21 +5,13 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdRecovery : GdBaseParser {
+object GdRecovery : GdBaseParser {
 
-    companion object {
-        lateinit var recovery: GdRecovery
-
-        fun argumentList(b: PsiBuilder) = recovery.recoverUntil(b, *ARG_END)
-        fun topLevel(b: PsiBuilder) = recovery.recoverUntil(b, *TOP_LEVEL)
-        fun setGet(b: PsiBuilder) = recovery.recoverUntil(b, *SET_GET)
-        fun stmt(b: PsiBuilder) = recovery.recoverUntil(b, *STMT)
-        fun stmtNoLine(b: PsiBuilder) = recovery.recoverUntil(b, *STMT_NO_LINE)
-    }
-
-    constructor() {
-        recovery = this
-    }
+    fun argumentList(b: PsiBuilder) = recoverUntil(b, *ARG_END)
+    fun topLevel(b: PsiBuilder) = recoverUntil(b, *TOP_LEVEL)
+    fun setGet(b: PsiBuilder) = recoverUntil(b, *SET_GET)
+    fun stmt(b: PsiBuilder) = recoverUntil(b, *STMT)
+    fun stmtNoLine(b: PsiBuilder) = recoverUntil(b, *STMT_NO_LINE)
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         TODO("Not yet implemented")

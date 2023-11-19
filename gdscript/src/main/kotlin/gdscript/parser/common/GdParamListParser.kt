@@ -7,15 +7,7 @@ import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.mceIdentifier
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdParamListParser : GdBaseParser {
-
-    companion object {
-        lateinit var INSTANCE: GdParamListParser
-    }
-
-    constructor() {
-        INSTANCE = this
-    }
+object GdParamListParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(VAR, IDENTIFIER)) return optional
@@ -38,7 +30,7 @@ class GdParamListParser : GdBaseParser {
 
         b.consumeToken(VAR)
         ok = ok && b.mceIdentifier(VAR_NMI)
-        ok = ok && GdTypedParser.INSTANCE.parseWithAssignTypedAndExpr(b, true)
+        ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, true)
 
         param.done(PARAM)
 

@@ -5,10 +5,10 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
 import gdscript.utils.PsiBuilderUtil.mceEndStmt
 
-abstract class GdStmtBaseParser : GdBaseParser() {
+interface GdStmtBaseParser : GdBaseParser {
 
-    abstract val STMT_TYPE: IElementType
-    open val endWithEndStmt: Boolean = false
+    val STMT_TYPE: IElementType
+    val endWithEndStmt: Boolean
 
     fun parseEndStmt(b: PsiBuilder): Boolean {
         return if (endWithEndStmt) b.mceEndStmt()

@@ -8,18 +8,19 @@ import gdscript.psi.GdTypes.*
 import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-class GdIfStmtParser : GdStmtBaseParser() {
+object GdIfStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = IF_ST
+    override val endWithEndStmt: Boolean = false
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(IF)) return optional
 
         b.advanceLexer() // if
         var ok = true
-        ok = ok && GdExprParser.INSTANCE.parse(b)
+        ok = ok && GdExprParser.parse(b)
         ok = ok && b.consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse(b)
+        ok = ok && GdStmtParser.parse(b)
 
         while (ok && elifSt(b)) {}
         ok && elseSt(b)
@@ -33,9 +34,9 @@ class GdIfStmtParser : GdStmtBaseParser() {
         val elif = b.mark()
         var ok = true
         b.advanceLexer() // elif
-        ok = ok && GdExprParser.INSTANCE.parse(b)
+        ok = ok && GdExprParser.parse(b)
         ok = ok && b.consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse(b)
+        ok = ok && GdStmtParser.parse(b)
 
         GdRecovery.stmt(b)
         elif.done(ELIF_ST)
@@ -50,7 +51,7 @@ class GdIfStmtParser : GdStmtBaseParser() {
         var ok = true
         b.advanceLexer() // else
         ok = ok && b.consumeToken(COLON, true)
-        ok = ok && GdStmtParser.INSTANCE.parse(b)
+        ok = ok && GdStmtParser.parse(b)
 
         GdRecovery.stmt(b)
         elseSt.done(ELSE_ST)
