@@ -20,6 +20,7 @@ object GdArgListParser : GdBaseParser {
         }
 
         while (b.nextTokenIs(COMMA)) {
+            b.advanceLexer() // comma
             argExpr(b)
         }
 
