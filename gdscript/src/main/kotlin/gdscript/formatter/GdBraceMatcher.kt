@@ -15,11 +15,11 @@ class GdBraceMatcher : PairedBraceMatcher {
     );
 
     override fun isPairedBracesAllowedBeforeType(lbraceType: IElementType, contextType: IElementType?): Boolean {
-        return true;
+        return true
     }
 
     override fun getCodeConstructStart(file: PsiFile?, openingBraceOffset: Int): Int {
-        return openingBraceOffset;
+        return openingBraceOffset
     }
 
 }

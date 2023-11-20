@@ -36,10 +36,10 @@ class GdBlock : AbstractBlock {
         indent: Indent,
         alignments: Alignments,
     ) : super(node, wrap, alignment) {
-        this.settings = settings;
-        this.spacing = spacing;
-        this.myIndent = indent;
-        this.alignments = alignments;
+        this.settings = settings
+        this.spacing = spacing
+        this.myIndent = indent
+        this.alignments = alignments
     }
 
     override fun buildChildren(): MutableList<Block> {
@@ -168,11 +168,11 @@ class GdBlock : AbstractBlock {
 
     override fun getSpacing(child1: Block?, child2: Block): Spacing? {
         if (child1 == null || child1 !is GdBlock || child2 !is GdBlock) {
-            return this.spacing.getSpacing(this, child1, child2);
+            return this.spacing.getSpacing(this, child1, child2)
         }
 
         if (child1.node.elementType == GdTypes.COMMENT) {
-            return null;
+            return null
         }
 
         var block2: GdBlock? = child2
@@ -194,15 +194,15 @@ class GdBlock : AbstractBlock {
             return Spacing.createSpacing(0, 0, customSettings.LINES_BETWEEN_EXPORT_GROUPS + 1, false, 0)
         }
 
-        return this.spacing.getSpacing(this, child1, block2);
+        return this.spacing.getSpacing(this, child1, block2)
     }
 
     override fun getIndent(): Indent {
-        return myIndent;
+        return myIndent
     }
 
     override fun isLeaf(): Boolean {
-        return myNode.firstChildNode == null;
+        return myNode.firstChildNode == null
     }
 
     private fun separateMultilineVars(block1: GdBlock, block2: GdBlock): Spacing? {
@@ -255,7 +255,7 @@ class GdBlock : AbstractBlock {
 
         while (type == GdTypes.ANNOTATION_TL) {
             any = true
-            current = block.nextBlock
+            current = current?.nextBlock
             type = current?.node?.elementType
         }
 
@@ -271,7 +271,7 @@ class GdBlock : AbstractBlock {
 
         while (type == GdTypes.ANNOTATION_TL) {
             any = true
-            current = block.nextBlock
+            current = current?.nextBlock
             type = current?.node?.elementType
         }
 
