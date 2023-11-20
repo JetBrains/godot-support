@@ -21,6 +21,7 @@ public interface GdTypes {
   IElementType FILE = new GdElementType("FILE");
   IElementType ANNOTATION_PARAMS = new GdElementType("ANNOTATION_PARAMS");
   IElementType ANNOTATION_TL = new GdElementType("ANNOTATION_TL");
+  IElementType ANNOTATION_STMT = new GdElementType("ANNOTATION_STMT");
   IElementType ANNOTATION_TYPE = new GdElementType("ANNOTATION_TYPE");
   IElementType ARG_EXPR = new GdElementType("ARG_EXPR");
   IElementType ARG_LIST = new GdElementType("ARG_LIST");
@@ -216,6 +217,9 @@ public interface GdTypes {
       }
       else if (type == ANNOTATION_TL) {
         return new GdAnnotationTlImpl(node);
+      }
+      else if (type == ANNOTATION_STMT) {
+        return new GdAnnotationStmtImpl(node);
       }
       else if (type == ANNOTATION_TYPE) {
         return new GdAnnotationTypeImpl(node);

@@ -14,7 +14,7 @@ class GdRootParser : PsiParser, LightPsiParser {
         val topLevelParsers = mutableListOf(
             GdClassNameParser,
             GdInheritanceParser,
-            GdAnnotationParser,
+            GdAnnotationTlParser,
             GdClassConstParser,
             GdClassVarParser,
             GdSignalParser,

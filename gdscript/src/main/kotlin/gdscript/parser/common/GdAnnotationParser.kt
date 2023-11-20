@@ -1,4 +1,4 @@
-package gdscript.parser.roots
+package gdscript.parser.common
 
 import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
@@ -9,21 +9,18 @@ import gdscript.utils.PsiBuilderUtil.consumeToken
 import gdscript.utils.PsiBuilderUtil.markToken
 import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
-object GdAnnotationParser : GdBaseParser {
+interface GdAnnotationParser : GdBaseParser {
 
     override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(ANNOTATOR)) return optional
 
-        val m = b.mark()
         var ok = b.markToken(ANNOTATION_TYPE)
         if (ok && b.nextTokenIs(LRBR)) {
             b.advanceLexer()
             ok = ok && parseParams(b)
             ok = ok && b.consumeToken(RRBR, true)
         }
-        GdRecovery.topLevel(b)
 
-        m.done(ANNOTATION_TL)
         return true
     }
 

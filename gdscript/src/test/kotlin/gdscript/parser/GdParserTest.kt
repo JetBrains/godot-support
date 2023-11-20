@@ -16,6 +16,7 @@ class GdParserTest : ParsingTestCase {
     @Test fun testAnnotation() = doTest(true)
     @Test fun testAnnotationParam() = doTest(true)
     @Test fun testAnnotationError() = doTest(true)
+    @Test fun testAnnotationInner() = doTest(true)
     @Test fun testClassConst() = doTest(true)
     @Test fun testClassVar() = doTest(true)
     @Test fun testClassVarAs() = doTest(true)

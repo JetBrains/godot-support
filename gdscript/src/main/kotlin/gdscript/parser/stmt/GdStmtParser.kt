@@ -22,6 +22,7 @@ object GdStmtParser : GdBaseParser {
         parsers.add(GdForStmtParser)
         parsers.add(GdMatchStmtParser)
         parsers.add(GdFlowStmtParser)
+        parsers.add(GdAnnotationStmtParser)
         parsers.add(GdExStmtParser)
     }
 
