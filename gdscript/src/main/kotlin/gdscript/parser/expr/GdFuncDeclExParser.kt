@@ -28,9 +28,10 @@ object GdFuncDeclExParser : GdExprBaseParser {
         ok = ok && b.consumeToken(COLON, true)
         ok = ok && GdStmtParser.parseLambda(b, false, true)
 
-        m.drop()
+        if (ok) m.drop()
+        else m.rollbackTo()
 
-        return true
+        return ok
     }
 
 }

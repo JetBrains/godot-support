@@ -3,7 +3,8 @@ package gdscript;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import gdscript.psi.GdTokenType;import gdscript.psi.GdTypes;
+import gdscript.psi.GdTokenType;
+import gdscript.psi.GdTypes;
 import java.util.Stack;
 
 %%
@@ -23,18 +24,18 @@ import java.util.Stack;
     boolean lineEnded = false;
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
-    int yycolumn;
     boolean eofFinished = false;
 
     boolean newLineProcessed = false;
     // For signals and such, where Indents/NewLines do not matter
     boolean ignoreIndent = false;
     int ignored = 0;
+    Stack<Integer> ignoreLambda = new Stack<>();
 
     public IElementType dedentRoot(IElementType type) {
         newLineProcessed = false;
         lineEnded = false;
-        if (ignored > 0 || yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
+        if (isIgnored() || yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
             return type;
         }
 
@@ -46,7 +47,7 @@ import java.util.Stack;
 
     public boolean dedentSpaces() {
         newLineProcessed = false;
-        if (ignored > 0 || indent <= 0 || indentSizes.empty()) { // For EOF rule
+        if (isIgnored() || indent <= 0 || indentSizes.empty()) { // For EOF rule
             return false;
         }
 
@@ -58,6 +59,27 @@ import java.util.Stack;
 
     private void dedent() {
         indent = Math.max(0, indent - indentSizes.pop());
+    }
+
+    private boolean isIgnored() {
+        if (ignored <= 0) return false;
+
+        if (ignoreLambda.isEmpty()) return true;
+
+        return ignoreLambda.peek() != ignored;
+    }
+
+    private void ignoredMinus() {
+        if (!ignoreLambda.isEmpty() && ignoreLambda.peek() == ignored) {
+            ignoreLambda.pop();
+        }
+        ignored--;
+    }
+
+    private void markLambda() {
+        if (ignored > 0) {
+            ignoreLambda.push(ignored);
+        }
     }
 %}
 
@@ -123,7 +145,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "set"          { return dedentRoot(GdTypes.SET); }
 
     "enum"         { return dedentRoot(GdTypes.ENUM); }
-    "func"         { return dedentRoot(GdTypes.FUNC); }
+    "func"         { markLambda(); return dedentRoot(GdTypes.FUNC); }
     "pass"         { return dedentRoot(GdTypes.PASS); }
     "true"         { return dedentRoot(GdTypes.TRUE); }
     "false"        { return dedentRoot(GdTypes.FALSE); }
@@ -180,11 +202,11 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "("            { ignored++; return dedentRoot(GdTypes.LRBR); }
-    ")"            { ignored--; return dedentRoot(GdTypes.RRBR); }
+    ")"            { ignoredMinus(); return dedentRoot(GdTypes.RRBR); }
     "["            { ignored++; return dedentRoot(GdTypes.LSBR); }
-    "]"            { ignored--; return dedentRoot(GdTypes.RSBR); }
+    "]"            { ignoredMinus(); return dedentRoot(GdTypes.RSBR); }
     "{"            { ignored++; return dedentRoot(GdTypes.LCBR); }
-    "}"            { ignored--; return dedentRoot(GdTypes.RCBR); }
+    "}"            { ignoredMinus(); return dedentRoot(GdTypes.RCBR); }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
@@ -265,7 +287,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     {NEW_LINE}     {
         if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;
-        } else if (ignored > 0) {
+        } else if (isIgnored()) {
             return TokenType.WHITE_SPACE;
         }
 
@@ -280,7 +302,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
         if (yycolumn == 0 && !ignoreIndent) {
             int spaces = yytext().length();
             if (spaces > indent) {
-                if (ignored > 0) {
+                if (isIgnored()) {
                     return TokenType.WHITE_SPACE;
                 }
 

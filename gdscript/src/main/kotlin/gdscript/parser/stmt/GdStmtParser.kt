@@ -50,11 +50,11 @@ object GdStmtParser : GdBaseParser {
         while (ok && moved) {
             ok = ok && stmt(b, true, asLambda)
         }
-        if (asLambda) {
+        if (asLambda && b.nextTokenIs(NEW_LINE)) {
             b.remapCurrentToken(DEDENT)
         }
         ok = ok && b.consumeToken(DEDENT, true)
-        if (asLambda) {
+        if (asLambda && b.nextTokenIs(DEDENT)) {
             b.remapCurrentToken(NEW_LINE)
         }
 
@@ -75,12 +75,11 @@ object GdStmtParser : GdBaseParser {
             parsers.any {
                 val stmt = b.mark()
                 var ok = it.parse(b)
-                ok = ok &&
-                    if (asLambda) {
-                        b.nextTokenIs(SEMICON, NEW_LINE, RRBR)
-                    } else {
-                        it.parseEndStmt(b)
-                    }
+                if (asLambda) {
+                    ok = ok && b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT)
+                } else {
+                    ok = ok && it.parseEndStmt(b)
+                }
 
                 if (ok) {
                     GdRecovery.stmt(b)
