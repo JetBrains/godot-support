@@ -25,12 +25,8 @@ object GdInheritanceParser : GdBaseParser {
         if (ok) inheritanceId.done(INHERITANCE_ID)
         ok = ok && b.mceEndStmt()
 
-        if (ok) {
-            inheritance.done(INHERITANCE)
-        }
-        else {
-            inheritance.error("Expected INHERITANCE")
-        }
+        if (ok) inheritance.done(INHERITANCE)
+        else inheritance.error("Expected INHERITANCE")
 
         return ok || optional
     }

@@ -9,10 +9,20 @@ import gdscript.parser.roots.*
 
 class GdRootParser : PsiParser, LightPsiParser {
 
-    private val topLevelParsers = mutableListOf<GdBaseParser>()
 
-    constructor() {
-        prepareParsers()
+    companion object {
+        val topLevelParsers = mutableListOf(
+            GdClassNameParser,
+            GdInheritanceParser,
+            GdAnnotationParser,
+            GdClassConstParser,
+            GdClassVarParser,
+            GdSignalParser,
+            GdEnumParser,
+            GdMethodParser,
+            GdClassParser,
+            GdEmptyLineParser,
+        )
     }
 
     override fun parse(root: IElementType, b: PsiBuilder): ASTNode {
@@ -33,21 +43,6 @@ class GdRootParser : PsiParser, LightPsiParser {
             }
         }
         document.done(root)
-    }
-
-    private fun prepareParsers() {
-        // Roots
-        topLevelParsers.add(GdClassNameParser)
-        topLevelParsers.add(GdInheritanceParser)
-        topLevelParsers.add(GdAnnotationParser)
-        topLevelParsers.add(GdClassConstParser)
-        topLevelParsers.add(GdClassVarParser)
-        topLevelParsers.add(GdSignalParser)
-        topLevelParsers.add(GdEnumParser)
-        topLevelParsers.add(GdMethodParser)
-        // sub-class
-        // Keep as last
-        topLevelParsers.add(GdEmptyLineParser)
     }
 
 }
