@@ -7,8 +7,11 @@
   <idea-version since-build="233.10527" until-build="234.*" />
 
   <depends>com.intellij.modules.rider</depends>
+  <depends>org.jetbrains.plugins.textmate</depends>
 
   <extensions defaultExtensionNs="com.intellij">
+    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.textMate.TextmateActivator"/>
+
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducerCor" />
