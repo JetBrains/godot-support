@@ -10,7 +10,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.UsageStatistics
     {
         public IEnumerable<string> GetProjectTechnology(IProject project)
         {
-            if (project.IsGodotProject()) yield return "Godot";
+            if (project.IsGodotProject())
+            {
+                yield return "Godot";
+                yield return "GameDev";
+            }
         }
     }
 }

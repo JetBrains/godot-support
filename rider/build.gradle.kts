@@ -1,10 +1,17 @@
+
 import com.jetbrains.rd.generator.gradle.RdGenExtension
+import org.gradle.kotlin.dsl.support.unzipTo
 import org.jetbrains.intellij.tasks.InstrumentCodeTask
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.tasks.RunIdeTask
+import org.jetbrains.kotlin.com.intellij.openapi.util.io.FileUtil
 import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 import java.net.URI
+import java.net.URL
 
 repositories {
     maven { setUrl("https://cache-redirector.jetbrains.com/maven-central") }
@@ -23,6 +30,7 @@ apply {
 }
 
 val baseVersion = "2023.3"
+var godotVscodePluginVersion = "1.3.1" // https://github.com/godotengine/godot-vscode-plugin/releases
 val buildCounter = ext.properties["build.number"] ?: "9999"
 version = "$baseVersion.$buildCounter"
 
@@ -52,7 +60,7 @@ intellij {
     updateSinceUntilBuild.set(false)
 
     // Workaround for https://youtrack.jetbrains.com/issue/IDEA-179607
-    plugins.set(listOf("rider-plugins-appender"))
+    plugins.set(listOf("rider-plugins-appender", "org.jetbrains.plugins.textmate"))
 }
 
 repositories.forEach {
@@ -96,6 +104,31 @@ fun File.writeTextIfChanged(content: String) {
         println("Writing $path")
         writeBytes(bytes)
     }
+}
+
+fun download(temp:File){
+    // alternative val url = URL("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/geequlim/vsextensions/godot-tools/$godotVscodePluginVersion/vspackage")
+
+    // https://github.com/godotengine/godot-vscode-plugin/releases/download
+    val cachedLink = "https://cache-redirector.jetbrains.com/github.com/godotengine/godot-vscode-plugin/releases/download"
+    val url = URL("$cachedLink/$godotVscodePluginVersion/godot-tools-$godotVscodePluginVersion.vsix")
+
+    val connection = url.openConnection()
+    connection.setRequestProperty(
+        "User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"
+    )
+
+    val inputStream: InputStream = connection.getInputStream()
+    val outputStream: OutputStream = FileOutputStream(temp)
+
+    outputStream.use { output ->
+        inputStream.use { input ->
+            input.copyTo(output)
+        }
+    }
+
+    logger.lifecycle("Downloaded $url to ${temp.path}")
 }
 
 
@@ -190,12 +223,22 @@ tasks {
             from("../resharper/src/annotations")
         }
 
+        val configDir = destinationDir.resolve(File("${intellij.pluginName.get()}/godot-tools"))
+
         doLast {
             files.forEach {
                 val file = file(it)
                 if (!file.exists()) throw RuntimeException("File $file does not exist")
                 logger.warn("$name: ${file.name} -> $destinationDir/${intellij.pluginName.get()}/dotnet")
             }
+
+            logger.lifecycle("downloading godot-tools TextMate bundle")
+            val temp = FileUtil.createTempFile("godot-tools", ".tmp")
+            download(temp)
+
+            FileUtil.createDirectory(configDir)
+            logger.lifecycle("Unzipping ${temp.path} to $configDir")
+            unzipTo(configDir, temp)
         }
     }
 
