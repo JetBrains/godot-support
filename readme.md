@@ -9,6 +9,8 @@ Rider is JetBrains' cross platform .NET IDE, based on ReSharper and the IntelliJ
 
 # Features
 
+Bundles syntax highlighting for Godot file types, including GDScript, scenes and resources.
+
 Autogenerates multiple run configurations:
  - `Player` to Run/Debug or Profile game in one click. [Demo](https://youtu.be/FmaYKONV5NY?t=78)
  - `Editor` to Run/Debug or Profile Godot Editor in one click
@@ -27,7 +29,7 @@ Supports Input Action and NodePath completion in string literals [More](https://
 # Recomendations
 
 Add `.idea` to [.gitignore](https://github.com/van800/godot-demo-projects/pull/2/files#diff-a084b794bc0759e7a6b77810e01874f2R22) 
-Including `tscn` in your project as demonstrated [here](https://github.com/van800/godot-demo-projects/pull/2/files#diff-d6ab4c56e3f79be158a2dbd5b9ae8eb8R7)
+Include `tscn` in your project as demonstrated [here](https://github.com/van800/godot-demo-projects/pull/2/files#diff-d6ab4c56e3f79be158a2dbd5b9ae8eb8R7)
 
 # Contributing
 
