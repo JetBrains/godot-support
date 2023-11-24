@@ -19,14 +19,19 @@
     <dependencySupport kind="dotnet" coordinate="GodotSharp" displayName="Godot"/>
   </extensions>
 
-  <project-components>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator</implementation-class></component>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.FrontendBackendHost</implementation-class></component>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher</implementation-class></component>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher</implementation-class></component>
-  </project-components>
-
   <extensions defaultExtensionNs="com.intellij">
+
+    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher"/>
+    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher"/>
+
+    <projectService serviceImplementation="com.jetbrains.rider.plugins.godot.FrontendBackendHost"/>
+    <rd.solutionExtListener endpoint="IDE Frontend"
+                            listener="com.jetbrains.rider.plugins.godot.FrontendBackendHost$ProtocolListener"/>
+
+    <projectService serviceImplementation="com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator"/>
+    <rd.solutionExtListener endpoint="IDE Frontend"
+                            listener="com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator$ProtocolListener"/>
+
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer$ProtocolListener"/>
   </extensions>

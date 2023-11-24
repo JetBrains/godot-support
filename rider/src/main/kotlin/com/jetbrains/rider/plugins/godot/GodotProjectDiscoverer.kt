@@ -5,8 +5,8 @@ import com.intellij.openapi.client.ClientProjectSession
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.intellij.openapi.rd.util.lifetime
+import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IProperty
@@ -32,8 +32,10 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
     init {
         mainProjectBasePath.adviseNotNull(project.lifetime){
             logger.info("Godot mainProjectBasePath: $it")
-            godotMonoPath.set(MetadataMonoFileWatcher.getFromMonoMetadataPath(it) ?: MetadataMonoFileWatcher.getGodotPath(it) ?: getGodotPathFromPlayerRunConfiguration(project))
-            godotCorePath.set(MetadataCoreFileWatcher.getGodotPath(it) ?: getGodotPathFromCorePlayerRunConfiguration(project))
+            godotMonoPath.set(
+                MetadataMonoFileWatcher.Util.getFromMonoMetadataPath(it)
+                    ?: MetadataMonoFileWatcher.Util.getGodotPath(it) ?: getGodotPathFromPlayerRunConfiguration(project))
+            godotCorePath.set(MetadataCoreFileWatcher.Util.getGodotPath(it) ?: getGodotPathFromCorePlayerRunConfiguration(project))
         }
     }
 
