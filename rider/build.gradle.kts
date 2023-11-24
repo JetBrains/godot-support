@@ -29,7 +29,7 @@ apply {
     plugin("kotlin")
 }
 
-val baseVersion = "2023.3"
+val baseVersion = "2024.1"
 var godotVscodePluginVersion = "1.3.1" // https://github.com/godotengine/godot-vscode-plugin/releases
 val buildCounter = ext.properties["build.number"] ?: "9999"
 version = "$baseVersion.$buildCounter"
