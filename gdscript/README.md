@@ -1,6 +1,6 @@
 # GdScript
 
-Update 25.11.2023  
+# Update 25.11.2023 #  
 Released version 2.0.0 in an early access (`EAP` channel), still unfinished but for the most part, parsers are rewritten.  
 
 All those Issues labeled as "To be released" are included and currently I'm working on better error recovery as with the new Parser a simple error usually results in an error to the end of file.
