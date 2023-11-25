@@ -11,7 +11,7 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdTypedParser : GdBaseParser {
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(COLON)) return optional
 
         var ok = true
@@ -29,7 +29,7 @@ object GdTypedParser : GdBaseParser {
         return true
     }
 
-    fun parseWithAssignTypedAndExpr(b: PsiBuilder, optional: Boolean): Boolean {
+    fun parseWithAssignTypedAndExpr(b: GdPsiBuilder, optional: Boolean): Boolean {
         var ok = true
         if (b.nextTokenIs(CEQ)) {
             ok = ok && b.mcAnyOf(ASSIGN_TYPED, CEQ)
@@ -48,7 +48,7 @@ object GdTypedParser : GdBaseParser {
         return true
     }
 
-    fun typedVal(b: PsiBuilder, optional: Boolean): Boolean {
+    fun typedVal(b: GdPsiBuilder, optional: Boolean): Boolean {
         val typedVal = b.mark()
 
         var ok = parseTypeHint(b)
@@ -64,7 +64,7 @@ object GdTypedParser : GdBaseParser {
         return ok || optional
     }
 
-    private fun parseTypeHint(b: PsiBuilder): Boolean {
+    private fun parseTypeHint(b: GdPsiBuilder): Boolean {
         if (!b.nextTokenIs(IDENTIFIER)) return false
 
         val hint = b.mark()

@@ -9,7 +9,7 @@ object GdComparisonExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = COMPARISON_EX
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         val m = b.mark()
         var ok = true
         ok = ok && b.mcAnyOfForce(OPERATOR, TEST_OPERATOR)

@@ -10,7 +10,7 @@ object GdLiteralExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = LITERAL_EX
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (b.nextTokenIs(LITERAL_EX, TRUE, FALSE, STRING_NAME, NODE_PATH_LIT, NUMBER, NULL, NAN, INF)) {
             b.advanceLexer()
             return true
@@ -36,7 +36,7 @@ object GdLiteralExParser : GdExprBaseParser {
         return false
     }
 
-    fun parseAndMark(b: PsiBuilder): Boolean {
+    fun parseAndMark(b: GdPsiBuilder): Boolean {
         val expr = b.mark()
         val ok = parse(b)
         if (ok) expr.done(LITERAL_EX)

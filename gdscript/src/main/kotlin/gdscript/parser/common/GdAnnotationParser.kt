@@ -11,7 +11,7 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 interface GdAnnotationParser : GdBaseParser {
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(ANNOTATOR)) return optional
 
         var ok = b.markToken(ANNOTATION_TYPE)
@@ -24,7 +24,7 @@ interface GdAnnotationParser : GdBaseParser {
         return true
     }
 
-    private fun parseParams(b: PsiBuilder): Boolean {
+    private fun parseParams(b: GdPsiBuilder): Boolean {
         val params = b.mark()
 
         var ok = GdLiteralExParser.parseAndMark(b)

@@ -1,0 +1,2 @@
+extends
+class_name Inheritance

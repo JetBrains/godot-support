@@ -9,7 +9,7 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdArgListParser : GdBaseParser {
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         val argList = b.mark()
         var ok = true
 
@@ -30,7 +30,7 @@ object GdArgListParser : GdBaseParser {
         return true
     }
 
-    private fun argExpr(b: PsiBuilder): Boolean {
+    private fun argExpr(b: GdPsiBuilder): Boolean {
         val expr = b.mark()
         var ok = true
 

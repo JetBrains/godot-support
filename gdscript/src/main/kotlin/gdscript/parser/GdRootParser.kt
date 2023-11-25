@@ -25,13 +25,13 @@ class GdRootParser : PsiParser, LightPsiParser {
         )
     }
 
-    override fun parse(root: IElementType, b: PsiBuilder): ASTNode {
+    override fun parse(root: IElementType, b: GdPsiBuilder): ASTNode {
         parseLight(root, b)
-        // b.setDebugMode(true)
+        b.setDebugMode(true)
         return b.treeBuilt
     }
 
-    override fun parseLight(root: IElementType, b: PsiBuilder) {
+    override fun parseLight(root: IElementType, b: GdPsiBuilder) {
         val document = b.mark()
         while (!b.eof()) {
             val any = topLevelParsers.any { it.parse(b) }

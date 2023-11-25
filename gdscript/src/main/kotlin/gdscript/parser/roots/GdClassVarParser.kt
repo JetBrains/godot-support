@@ -1,8 +1,8 @@
 package gdscript.parser.roots
 
-import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
+import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdTypedParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.stmt.GdStmtParser
@@ -14,7 +14,7 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdClassVarParser : GdBaseParser {
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(VAR, STATIC)) return optional
 
         val m = b.mark()
@@ -31,7 +31,7 @@ object GdClassVarParser : GdBaseParser {
         return true
     }
 
-    private fun parseGetSet(b: PsiBuilder): Boolean {
+    private fun parseGetSet(b: GdPsiBuilder): Boolean {
         if (!b.nextTokenIs(COLON)) return false
 
         val setGet = b.mark()
@@ -58,7 +58,7 @@ object GdClassVarParser : GdBaseParser {
         return true
     }
 
-    private fun parseGet(b: PsiBuilder): Boolean {
+    private fun parseGet(b: GdPsiBuilder): Boolean {
         if (!b.nextTokenIs(GET)) return false
 
         val getDecl = b.mark()
@@ -70,7 +70,7 @@ object GdClassVarParser : GdBaseParser {
         return ok
     }
 
-    private fun parseSet(b: PsiBuilder): Boolean {
+    private fun parseSet(b: GdPsiBuilder): Boolean {
         if (!b.nextTokenIs(SET)) return false
 
         val setDecl = b.mark()
@@ -82,14 +82,14 @@ object GdClassVarParser : GdBaseParser {
         return ok
     }
 
-    private fun parseMethodVersion(b: PsiBuilder, markerType: IElementType): Boolean {
+    private fun parseMethodVersion(b: GdPsiBuilder, markerType: IElementType): Boolean {
         var ok = b.consumeToken(EQ)
         ok = ok && b.mceIdentifier(markerType)
 
         return ok
     }
 
-    private fun parseStmtVersion(b: PsiBuilder, markerType: IElementType): Boolean {
+    private fun parseStmtVersion(b: GdPsiBuilder, markerType: IElementType): Boolean {
         var ok = true
         if (markerType == SET) {
             ok = ok && b.consumeToken(LRBR, true)

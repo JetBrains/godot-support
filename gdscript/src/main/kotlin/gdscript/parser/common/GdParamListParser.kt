@@ -9,7 +9,7 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdParamListParser : GdBaseParser {
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(VAR, IDENTIFIER)) return optional
         var ok = true
         val paramList = b.mark()
@@ -24,7 +24,7 @@ object GdParamListParser : GdBaseParser {
         return true
     }
 
-    private fun param(b: PsiBuilder): Boolean {
+    private fun param(b: GdPsiBuilder): Boolean {
         val param = b.mark()
         var ok = true
 

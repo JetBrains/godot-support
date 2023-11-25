@@ -7,17 +7,17 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdRecovery : GdBaseParser {
 
-    fun argumentList(b: PsiBuilder) = recoverUntil(b, *ARG_END)
-    fun topLevel(b: PsiBuilder) = recoverUntil(b, *TOP_LEVEL)
-    fun setGet(b: PsiBuilder) = recoverUntil(b, *SET_GET)
-    fun stmt(b: PsiBuilder) = recoverUntil(b, *STMT)
-    fun stmtNoLine(b: PsiBuilder) = recoverUntil(b, *STMT_NO_LINE)
+    fun argumentList(b: GdPsiBuilder) = recoverUntil(b, *ARG_END)
+    fun topLevel(b: GdPsiBuilder) = recoverUntil(b, *TOP_LEVEL)
+    fun setGet(b: GdPsiBuilder) = recoverUntil(b, *SET_GET)
+    fun stmt(b: GdPsiBuilder) = recoverUntil(b, *STMT)
+    fun stmtNoLine(b: GdPsiBuilder) = recoverUntil(b, *STMT_NO_LINE)
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         TODO("Not yet implemented")
     }
 
-    fun recoverUntil(b: PsiBuilder, vararg elementTypes: IElementType) {
+    fun recoverUntil(b: GdPsiBuilder, vararg elementTypes: IElementType) {
         var any: String? = null
         val m = b.mark()
 

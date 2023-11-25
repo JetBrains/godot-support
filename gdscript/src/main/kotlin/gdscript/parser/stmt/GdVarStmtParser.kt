@@ -11,8 +11,9 @@ object GdVarStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = VAR_DECL_ST
     override val endWithEndStmt: Boolean = true
+    override val pinnable: Boolean = true
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(VAR)) return false
 
         b.advanceLexer() // var
@@ -20,7 +21,7 @@ object GdVarStmtParser : GdStmtBaseParser {
         ok = ok && b.mceIdentifier(VAR_NMI)
         ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, true)
 
-        return ok
+        return true
     }
 
 }

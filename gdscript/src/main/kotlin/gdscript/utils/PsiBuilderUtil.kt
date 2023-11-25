@@ -1,6 +1,7 @@
 package gdscript.utils
 
 import com.intellij.lang.PsiBuilder
+import com.intellij.lang.parser.GeneratedParserUtilBase.ErrorState
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import gdscript.psi.GdTypes
@@ -136,11 +137,6 @@ object PsiBuilderUtil {
         return true
     }
 
-    fun PsiBuilder.nextTokenIs(vararg elementTypes: IElementType): Boolean {
-        val searchFor = tokenType
-        return elementTypes.any { it == searchFor }
-    }
-
     /** CHECKERS **/
 
     fun PsiBuilder.followingTokensAre(vararg elementTypes: IElementType): Boolean {
@@ -149,6 +145,23 @@ object PsiBuilderUtil {
         return elementTypes.all {
             it == lookAhead(step++)
         }
+    }
+
+    /** Errors **/
+
+    fun PsiBuilder.error(result: Boolean): Boolean {
+        val state = ErrorState.get(this)
+        val frame = state.currentFrame
+        val position = this.rawTokenIndex()
+
+        if (frame.errorReportedAt < position && frame.lastVariantAt > -1 && frame.lastVariantAt <= position) {
+//            state.getExpected()
+//            this.error(message)
+
+            return false
+        }
+
+        return true
     }
 
 }

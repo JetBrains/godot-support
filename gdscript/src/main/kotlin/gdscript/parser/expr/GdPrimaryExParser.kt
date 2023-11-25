@@ -10,7 +10,7 @@ object GdPrimaryExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = PRIMARY_EX
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (b.nextTokenIs(NODE_PATH, NODE_PATH_LEX)) {
             b.advanceLexer()
             return true
@@ -22,7 +22,7 @@ object GdPrimaryExParser : GdExprBaseParser {
             || optional
     }
 
-    private fun arrayDecl(b: PsiBuilder): Boolean {
+    private fun arrayDecl(b: GdPsiBuilder): Boolean {
         val array = b.mark()
         var ok = true
 
@@ -38,7 +38,7 @@ object GdPrimaryExParser : GdExprBaseParser {
         return ok
     }
 
-    private fun dictDecl(b: PsiBuilder): Boolean {
+    private fun dictDecl(b: GdPsiBuilder): Boolean {
         val m = b.mark()
         var ok = true
 
@@ -55,7 +55,7 @@ object GdPrimaryExParser : GdExprBaseParser {
         return ok
     }
 
-    private fun keyValuePair(b: PsiBuilder): Boolean {
+    private fun keyValuePair(b: GdPsiBuilder): Boolean {
         val m = b.mark()
         var ok = true
 
@@ -75,7 +75,7 @@ object GdPrimaryExParser : GdExprBaseParser {
         return ok
     }
 
-    private fun bracketExpr(b: PsiBuilder): Boolean {
+    private fun bracketExpr(b: GdPsiBuilder): Boolean {
         val m = b.mark()
         var ok = true
 

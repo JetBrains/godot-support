@@ -26,11 +26,11 @@ object GdStmtParser : GdBaseParser {
         parsers.add(GdExStmtParser)
     }
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         return parseLambda(b, optional, false)
     }
 
-    fun parseLambda(b: PsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
+    fun parseLambda(b: GdPsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
         val stmtOrSuite = b.mark()
         var ok = suite(b, false, asLambda) || stmt(b, optional, asLambda)
 
@@ -39,12 +39,14 @@ object GdStmtParser : GdBaseParser {
         return true
     }
 
-    private fun suite(b: PsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
+    private fun suite(b: GdPsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
         if (!b.nextTokenIs(NEW_LINE)) return optional
         var ok = true
+        var pin = false
         val suite = b.mark()
         b.advanceLexer() // NEW_LINE
         ok = ok && b.consumeToken(INDENT)
+        pin = ok
 
         ok = ok && stmt(b, false, asLambda)
         moved = true
@@ -59,17 +61,17 @@ object GdStmtParser : GdBaseParser {
             b.remapCurrentToken(NEW_LINE)
         }
 
-        if (ok) {
+        if (pin) {
             GdRecovery.stmt(b)
             suite.done(SUITE)
         } else {
             suite.rollbackTo()
         }
 
-        return ok || optional
+        return pin || optional
     }
 
-    private fun stmt(b: PsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
+    private fun stmt(b: GdPsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
         moved = false
 
         if (
@@ -77,9 +79,9 @@ object GdStmtParser : GdBaseParser {
                 val stmt = b.mark()
                 var ok = it.parse(b)
                 if (asLambda) {
-                    ok = ok && b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT)
+                    ok = ok && (b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT) || it.pinnable)
                 } else {
-                    ok = ok && it.parseEndStmt(b)
+                    ok = ok && (it.parseEndStmt(b) || it.pinnable)
                 }
 
                 if (ok) {

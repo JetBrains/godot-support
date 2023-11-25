@@ -9,7 +9,7 @@ object GdFactorExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = FACTOR_EX
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         val m = b.mark()
         var ok = true
         ok = ok && b.mcAnyOfForce(FACTOR_SIGN, MUL, DIV, MOD, POWER)

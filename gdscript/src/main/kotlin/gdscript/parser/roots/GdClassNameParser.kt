@@ -10,7 +10,7 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdClassNameParser : GdBaseParser {
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(CLASS_NAME)) return optional
 
         val m = b.mark()

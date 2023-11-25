@@ -14,8 +14,9 @@ object GdMatchStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = MATCH_ST
     override val endWithEndStmt: Boolean = false
+    override val pinnable: Boolean = false
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(MATCH)) return optional
 
         b.advanceLexer() // match
@@ -29,10 +30,10 @@ object GdMatchStmtParser : GdStmtBaseParser {
         }
         ok = ok && b.consumeToken(DEDENT, true)
 
-        return ok
+        return true
     }
 
-    private fun matchBlock(b: PsiBuilder): Boolean {
+    private fun matchBlock(b: GdPsiBuilder): Boolean {
         val block = b.mark()
         var ok = true
         var pin = false
@@ -51,7 +52,7 @@ object GdMatchStmtParser : GdStmtBaseParser {
         return pin
     }
 
-    private fun patternList(b: PsiBuilder): Boolean {
+    private fun patternList(b: GdPsiBuilder): Boolean {
         val list = b.mark()
         val ok = pattern(b, false)
         while (ok && b.nextTokenIs(COMMA))
@@ -62,7 +63,7 @@ object GdMatchStmtParser : GdStmtBaseParser {
         return ok
     }
 
-    private fun pattern(b: PsiBuilder, optional: Boolean): Boolean {
+    private fun pattern(b: GdPsiBuilder, optional: Boolean): Boolean {
         val pattern = b.mark()
 
         val ok = b.consumeToken(UNDER)
@@ -79,7 +80,7 @@ object GdMatchStmtParser : GdStmtBaseParser {
         return ok
     }
 
-    private fun arrayPattern(b: PsiBuilder): Boolean {
+    private fun arrayPattern(b: GdPsiBuilder): Boolean {
         var ok = true
         ok = ok && b.consumeToken(LSBR)
         ok = ok && pattern(b, true)
@@ -93,7 +94,7 @@ object GdMatchStmtParser : GdStmtBaseParser {
         return ok
     }
 
-    private fun dictPattern(b: PsiBuilder): Boolean {
+    private fun dictPattern(b: GdPsiBuilder): Boolean {
         val dict = b.mark()
         var ok = true
         ok = ok && b.consumeToken(LCBR)
@@ -112,7 +113,7 @@ object GdMatchStmtParser : GdStmtBaseParser {
         return ok
     }
 
-    private fun keyValuePattern(b: PsiBuilder): Boolean {
+    private fun keyValuePattern(b: GdPsiBuilder): Boolean {
         val pattern = b.mark()
         var ok = true
         ok = ok && b.consumeToken(STRING)

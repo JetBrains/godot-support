@@ -8,7 +8,7 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdEmptyLineParser : GdBaseParser {
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (b.nextTokenIs(NEW_LINE)) {
             b.remapCurrentToken(TokenType.WHITE_SPACE)
             b.advanceLexer()

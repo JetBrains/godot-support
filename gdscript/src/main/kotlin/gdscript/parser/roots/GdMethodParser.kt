@@ -13,7 +13,7 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdMethodParser : GdBaseParser {
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         val methodDecl = b.mark()
         var ok = markers(b)
         if (!ok && !b.nextTokenIs(FUNC)) {
@@ -37,7 +37,7 @@ object GdMethodParser : GdBaseParser {
         return true
     }
 
-    private fun markers(b: PsiBuilder): Boolean {
+    private fun markers(b: GdPsiBuilder): Boolean {
         var marked = false
         marked = marked || b.consumeToken(REMOTE)
         marked = marked || b.consumeToken(MASTER)

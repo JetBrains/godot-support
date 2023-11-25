@@ -34,7 +34,7 @@ object GdExprParser : GdBaseParser {
         leftLeadParsers.add(GdCallExParser)
     }
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         var left = b.mark()
         var leftType: IElementType = EXPR
 

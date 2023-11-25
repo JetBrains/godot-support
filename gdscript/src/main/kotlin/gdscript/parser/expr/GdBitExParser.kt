@@ -9,7 +9,7 @@ object GdBitExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = BIT_AND_EX
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         val m = b.mark()
         var ok = true
         ok = ok && b.mcAnyOfForce(BIT_AND_SIGN, AND, XOR, OR)

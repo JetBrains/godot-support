@@ -12,8 +12,9 @@ object GdIfStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = IF_ST
     override val endWithEndStmt: Boolean = false
+    override val pinnable: Boolean = false
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(IF)) return optional
 
         b.advanceLexer() // if
@@ -25,10 +26,10 @@ object GdIfStmtParser : GdStmtBaseParser {
         while (ok && elifSt(b)) {}
         ok && elseSt(b)
 
-        return ok
+        return true
     }
 
-    private fun elifSt(b: PsiBuilder): Boolean {
+    private fun elifSt(b: GdPsiBuilder): Boolean {
         if (!b.nextTokenIs(ELIF)) return false
 
         val elif = b.mark()
@@ -44,7 +45,7 @@ object GdIfStmtParser : GdStmtBaseParser {
         return true
     }
 
-    private fun elseSt(b: PsiBuilder): Boolean {
+    private fun elseSt(b: GdPsiBuilder): Boolean {
         if (!b.nextTokenIs(ELSE)) return false
 
         val elseSt = b.mark()

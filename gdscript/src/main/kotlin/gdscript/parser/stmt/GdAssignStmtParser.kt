@@ -10,8 +10,9 @@ object GdAssignStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = ASSIGN_ST
     override val endWithEndStmt: Boolean = true
+    override val pinnable: Boolean = false
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         var ok = GdExprParser.parse(b)
         ok = ok && b.mcAnyOf(ASSIGN_SIGN, EQ, ASSIGN)
         ok = ok && GdExprParser.parse(b)

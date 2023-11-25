@@ -7,7 +7,7 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdReturnHintParser : GdBaseParser {
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(GdTypes.RET)) return optional
         val hint = b.mark()
         var ok = true

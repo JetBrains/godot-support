@@ -11,7 +11,7 @@ import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdEnumParser : GdBaseParser {
 
-    override fun parse(b: PsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(ENUM)) return optional
 
         val enumDecl = b.mark()
@@ -38,7 +38,7 @@ object GdEnumParser : GdBaseParser {
         return true
     }
 
-    private fun enumValue(b: PsiBuilder): Boolean {
+    private fun enumValue(b: GdPsiBuilder): Boolean {
         val enumValue = b.mark()
         b.mceIdentifier(ENUM_VALUE_NMI)
 
