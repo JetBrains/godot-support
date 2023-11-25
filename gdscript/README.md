@@ -1,5 +1,12 @@
 # GdScript
 
+Update 25.11.2023  
+Released version 2.0.0 in an early access (`EAP` channel), still unfinished but for the most part, parsers are rewritten.  
+
+All those Issues labeled as "To be released" are included and currently I'm working on better error recovery as with the new Parser a simple error usually results in an error to the end of file.
+
+And some of you reported few new issues, so I'll test them against new parser as well - so my estimate is about a 2-3 weeks to new EAP release.
+
 Update 21.8.2023.  
 So.. I've started with rewriting PsiParser -> this is a lot of work and a chance to fix some known bugs, but it'll take months I'm afraid to finish (especially should I find time one evening weekly) - so in the neear future there won't be any more updates.
 Work is in branch `parser` should anyone be interested to check it... you'll also see if there's any activity. :-D 
