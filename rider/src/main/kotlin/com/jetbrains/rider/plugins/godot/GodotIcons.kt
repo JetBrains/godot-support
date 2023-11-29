@@ -10,6 +10,12 @@ class GodotIcons {
         }
     }
 
+    class Actions {
+        companion object {
+            @JvmField val StartGodotEditorActionIcon = Icons.GodotLogo
+        }
+    }
+
     class RunConfigurations {
         companion object {
             val StartAndDebug = Icons.GodotLogo
