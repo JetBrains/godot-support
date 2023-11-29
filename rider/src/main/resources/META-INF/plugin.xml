@@ -39,12 +39,15 @@
 
 
   <actions>
-    <group id="GodotToolbarActions" class = "com.jetbrains.rider.plugins.godot.ui.ToolbarActionsGroup">
+    <group id="GodotToolbarActions" popup="true" class = "com.jetbrains.rider.plugins.godot.ui.ToolbarActionsGroup">
       <add-to-group group-id="ActiveRuntimeGroup" relative-to-action="BuildSolutionAction" anchor="before" />
       <add-to-group group-id="RightToolbarSideGroup" relative-to-action="BuildSolutionAction" anchor="before" />
       <add-to-group group-id="MainToolbarRight" anchor="first"/>
 
-      <action id="GodotConnectionAction" class="com.jetbrains.rider.plugins.godot.ui.GodotConnectionAction" />
+      <action id="StartEditorAction"
+              class="com.jetbrains.rider.plugins.godot.ui.StartGodotEditorAction"
+              icon="com.jetbrains.rider.plugins.godot.GodotIcons.Actions.StartGodotEditorActionIcon"
+              text="Start Godot Editor"/>
     </group>
   </actions>
 
