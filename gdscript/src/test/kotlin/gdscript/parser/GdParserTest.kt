@@ -10,9 +10,11 @@ class GdParserTest : ParsingTestCase {
     constructor(): super("", "gd", gdscript.GdNewParserDefinition())
     //    constructor(): super("", "gd", gdscript.GdParserDefinition())
 
-    @Test fun testClassName() = doTest(true)
     @Test fun testExtension() = doTest(true)
     @Test fun testExtensionExt() = doTest(true)
+    @Test fun testClassName() = doTest(true)
+
+
     @Test fun testAnnotation() = doTest(true)
     @Test fun testAnnotationParam() = doTest(true)
     @Test fun testAnnotationError() = doTest(true)

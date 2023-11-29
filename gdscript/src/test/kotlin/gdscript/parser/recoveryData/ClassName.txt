@@ -1,0 +1,12 @@
+GdScript File(0,31)
+  GdClassNaming(0,11)
+    PsiElement(GdTokenType.CLASS_NAME)('class_name')(0,10)
+    PsiErrorElement:IDENTIFIER expected(10,11)
+      PsiElement(GdTokenType.NEW_LINE)('\n')(10,11)
+  GdClassNaming(11,31)
+    PsiElement(GdTokenType.CLASS_NAME)('class_name')(11,21)
+    PsiWhiteSpace(' ')(21,22)
+    GdClassId(22,31)
+      PsiElement(GdTokenType.IDENTIFIER)('ClassName')(22,31)
+    GdEndStmtImpl(END_STMT)(31,31)
+      <empty list>

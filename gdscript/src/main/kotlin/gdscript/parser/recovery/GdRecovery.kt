@@ -1,32 +1,32 @@
 package gdscript.parser.recovery
 
-import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
-import gdscript.utils.PsiBuilderUtil.nextTokenIs
+import gdscript.parser.GdPsiBuilder
 
 object GdRecovery : GdBaseParser {
 
-    fun argumentList(b: GdPsiBuilder) = recoverUntil(b, *ARG_END)
-    fun topLevel(b: GdPsiBuilder) = recoverUntil(b, *TOP_LEVEL)
-    fun setGet(b: GdPsiBuilder) = recoverUntil(b, *SET_GET)
-    fun stmt(b: GdPsiBuilder) = recoverUntil(b, *STMT)
-    fun stmtNoLine(b: GdPsiBuilder) = recoverUntil(b, *STMT_NO_LINE)
+    fun argumentList(b: GdPsiBuilder, result: Boolean = true) = recoverUntil(b, result, *ARG_END)
+    fun topLevel(b: GdPsiBuilder, result: Boolean = true) = recoverUntil(b, result, *TOP_LEVEL)
+    fun setGet(b: GdPsiBuilder, result: Boolean = true) = recoverUntil(b, result, *SET_GET)
+    fun stmt(b: GdPsiBuilder, result: Boolean = true) = recoverUntil(b, result, *STMT)
+    fun stmtNoLine(b: GdPsiBuilder, result: Boolean = true) = recoverUntil(b, result, *STMT_NO_LINE)
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         TODO("Not yet implemented")
     }
 
-    fun recoverUntil(b: GdPsiBuilder, vararg elementTypes: IElementType) {
+    fun recoverUntil(b: GdPsiBuilder, result: Boolean, vararg elementTypes: IElementType) {
+        if (!result && !b.pinned()) return
         var any: String? = null
         val m = b.mark()
 
-        while (!b.eof() && !b.nextTokenIs(*elementTypes)) {
+        while (!b.eof && !b.nextTokenIs(*elementTypes)) {
             any = b.tokenText
-            b.advanceLexer()
+            b.advance()
         }
 
-        if (any != null) {
+        if (any != null && !b.isError) {
             m.error("unexpected '$any'")
         } else {
             m.drop()

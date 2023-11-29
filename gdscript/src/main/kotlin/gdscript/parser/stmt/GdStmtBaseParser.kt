@@ -4,7 +4,6 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
-import gdscript.utils.PsiBuilderUtil.mceEndStmt
 
 interface GdStmtBaseParser : GdBaseParser {
 

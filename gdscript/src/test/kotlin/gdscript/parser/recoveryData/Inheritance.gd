@@ -1,2 +1,2 @@
 extends
-class_name Inheritance
+extends Node

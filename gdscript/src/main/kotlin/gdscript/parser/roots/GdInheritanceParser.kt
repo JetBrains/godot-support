@@ -1,37 +1,32 @@
 package gdscript.parser.roots
 
-import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
+import gdscript.parser.GdPsiBuilder
+import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
-import gdscript.utils.PsiBuilderUtil.consumeToken
-import gdscript.utils.PsiBuilderUtil.error
-import gdscript.utils.PsiBuilderUtil.mcAnyOf
-import gdscript.utils.PsiBuilderUtil.mcToken
-import gdscript.utils.PsiBuilderUtil.mceEndStmt
-import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdInheritanceParser : GdBaseParser {
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(EXTENDS)) return optional
 
-        // pin
-        val inheritance = b.mark()
-        var ok = b.consumeToken(EXTENDS)
+        b.enterSection(INHERITANCE)
+        var ok = b.consumeToken(EXTENDS, pin = true)
 
-        val inheritanceId = b.mark()
+        b.enterSection(INHERITANCE_ID)
 
-        ok && b.error(b.mcAnyOf(INHERITANCE_ID_NM, STRING, IDENTIFIER))
-
+        ok = ok && b.mceAnyOf(INHERITANCE_ID_NM, false, IDENTIFIER, STRING)
         while (ok && b.consumeToken(DOT)) {
-            ok = b.mcToken(INHERITANCE_SUB_ID_NM, IDENTIFIER)
+            ok = b.mceAnyOf(INHERITANCE_SUB_ID_NM, false, IDENTIFIER)
         }
-        if (ok) inheritanceId.done(INHERITANCE_ID)
+
+        ok = b.exitSection(ok) // INHERITANCE_ID
         ok = ok && b.mceEndStmt()
 
-        inheritance.done(INHERITANCE)
+        GdRecovery.topLevel(b, ok)
+        ok = b.exitSection(ok) // INHERITANCE
 
-        return true
+        return ok
     }
 
 }

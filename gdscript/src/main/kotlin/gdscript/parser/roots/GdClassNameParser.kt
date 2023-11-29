@@ -1,27 +1,23 @@
 package gdscript.parser.roots
 
-import com.intellij.lang.PsiBuilder
 import gdscript.parser.GdBaseParser
+import gdscript.parser.GdPsiBuilder
 import gdscript.psi.GdTypes.*
-import gdscript.utils.PsiBuilderUtil.consumeToken
-import gdscript.utils.PsiBuilderUtil.mceEndStmt
-import gdscript.utils.PsiBuilderUtil.mceIdentifier
-import gdscript.utils.PsiBuilderUtil.nextTokenIs
 
 object GdClassNameParser : GdBaseParser {
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(CLASS_NAME)) return optional
 
-        val m = b.mark()
-        var ok = b.consumeToken(CLASS_NAME)
+        b.enterSection(CLASS_NAMING)
+        var ok = b.consumeToken(CLASS_NAME, pin = true)
+
         ok = ok && b.mceIdentifier(CLASS_NAME_NMI)
         ok = ok && b.mceEndStmt()
 
-        if (ok) m.done(CLASS_NAMING)
-        else m.error("Expected class_name")
+        ok = b.exitSection(ok)
 
-        return ok || optional
+        return ok
     }
 
 }
