@@ -1,13 +1,9 @@
 //package gdscript.parser.roots
 //
-//import com.intellij.lang.PsiBuilder
 //import gdscript.parser.GdBaseParser
-//import gdscript.parser.common.GdTypedParser
+//import gdscript.parser.GdPsiBuilder
 //import gdscript.parser.recovery.GdRecovery
 //import gdscript.psi.GdTypes.*
-//import gdscript.utils.PsiBuilderUtil.mceEndStmt
-//import gdscript.utils.PsiBuilderUtil.mceIdentifier
-//import gdscript.utils.PsiBuilderUtil.nextTokenIs
 //
 //object GdClassConstParser : GdBaseParser {
 //

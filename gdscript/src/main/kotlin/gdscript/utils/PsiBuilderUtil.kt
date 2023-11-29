@@ -17,18 +17,6 @@ object PsiBuilderUtil {
 //        return false
 //    }
 //
-//    fun PsiBuilder.mcToken(markToken: IElementType, vararg elementTypes: IElementType): Boolean {
-//        if (nextTokenIs(*elementTypes)) {
-//            return markToken(markToken)
-//        } else {
-//            val m = mark()
-//            advanceLexer()
-//            m.error("expected [$elementTypes]")
-//        }
-//
-//        return false
-//    }
-//
 //    fun PsiBuilder.mcAnyOfForce(markElement: IElementType, vararg elementTypes: IElementType): Boolean {
 //        if (!mcAnyOf(markElement, *elementTypes)) {
 //            markError("expected [$elementTypes]")

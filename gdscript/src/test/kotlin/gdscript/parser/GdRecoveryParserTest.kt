@@ -9,6 +9,7 @@ class GdRecoveryParserTest : ParsingTestCase {
 
     @Test fun testInheritance() = doTest(true)
     @Test fun testClassName() = doTest(true)
+    @Test fun testAnnotation() = doTest(true)
 
     override fun getTestDataPath(): String {
         return "src/test/kotlin/gdscript/parser/recoveryData"

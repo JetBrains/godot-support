@@ -2,6 +2,7 @@ package gdscript.parser.roots
 
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
+import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
 
 object GdClassNameParser : GdBaseParser {
@@ -15,6 +16,7 @@ object GdClassNameParser : GdBaseParser {
         ok = ok && b.mceIdentifier(CLASS_NAME_NMI)
         ok = ok && b.mceEndStmt()
 
+        ok && GdRecovery.topLevel(b)
         ok = b.exitSection(ok)
 
         return ok

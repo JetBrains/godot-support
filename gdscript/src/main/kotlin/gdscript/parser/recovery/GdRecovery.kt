@@ -16,8 +16,8 @@ object GdRecovery : GdBaseParser {
         TODO("Not yet implemented")
     }
 
-    fun recoverUntil(b: GdPsiBuilder, result: Boolean, vararg elementTypes: IElementType) {
-        if (!result && !b.pinned()) return
+    fun recoverUntil(b: GdPsiBuilder, result: Boolean, vararg elementTypes: IElementType): Boolean {
+        if (!result && !b.pinned()) return true
         var any: String? = null
         val m = b.mark()
 
@@ -31,6 +31,8 @@ object GdRecovery : GdBaseParser {
         } else {
             m.drop()
         }
+
+        return true
     }
 
 }

@@ -23,7 +23,7 @@ object GdInheritanceParser : GdBaseParser {
         ok = b.exitSection(ok) // INHERITANCE_ID
         ok = ok && b.mceEndStmt()
 
-        GdRecovery.topLevel(b, ok)
+        ok && GdRecovery.topLevel(b)
         ok = b.exitSection(ok) // INHERITANCE
 
         return ok

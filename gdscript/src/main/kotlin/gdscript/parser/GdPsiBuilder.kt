@@ -107,6 +107,17 @@ class GdPsiBuilder {
         return true
     }
 
+    fun mcToken(markToken: IElementType, vararg elementTypes: IElementType): Boolean {
+        if (nextTokenIs(*elementTypes)) {
+            val m = mark()
+            advance()
+            m.done(markToken)
+            return true
+        }
+
+        return false
+    }
+
     /** Sections **/
 
     fun enterSection(elementType: IElementType) {

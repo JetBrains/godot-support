@@ -13,13 +13,11 @@ class GdParserTest : ParsingTestCase {
     @Test fun testExtension() = doTest(true)
     @Test fun testExtensionExt() = doTest(true)
     @Test fun testClassName() = doTest(true)
-
-
     @Test fun testAnnotation() = doTest(true)
     @Test fun testAnnotationParam() = doTest(true)
-    @Test fun testAnnotationError() = doTest(true)
-    @Test fun testAnnotationInner() = doTest(true)
+
     @Test fun testClassConst() = doTest(true)
+
     @Test fun testClassVar() = doTest(true)
     @Test fun testClassVarAs() = doTest(true)
     @Test fun testClassVarSetGet() = doTest(true)
@@ -33,6 +31,7 @@ class GdParserTest : ParsingTestCase {
     @Test fun testEnumNamed() = doTest(true)
 
     // Stmts
+    @Test fun testAnnotationInner() = doTest(true)
     @Test fun testFunctionSimple() = doTest(true)
     @Test fun testAssignStmt() = doTest(true)
     @Test fun testVarConstStmt() = doTest(true)

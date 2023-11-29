@@ -1,23 +1,27 @@
-//package gdscript.parser.roots
-//
-//import com.intellij.lang.PsiBuilder
-//import gdscript.parser.common.GdAnnotationParser
-//import gdscript.parser.recovery.GdRecovery
-//import gdscript.psi.GdTypes.ANNOTATION_TL
-//import gdscript.psi.GdTypes.ANNOTATOR
-//import gdscript.utils.PsiBuilderUtil.nextTokenIs
-//
-//object GdAnnotationTlParser : GdAnnotationParser {
-//
-//    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
-//        if (!b.nextTokenIs(ANNOTATOR)) return optional
-//
-//        val m = b.mark()
-//        val ok = super.parse(b, optional)
-//        if (ok) GdRecovery.stmt(b)
-//        m.done(ANNOTATION_TL)
-//
-//        return true
-//    }
-//
-//}
+package gdscript.parser.roots
+
+import com.intellij.psi.TokenType
+import gdscript.parser.GdPsiBuilder
+import gdscript.parser.common.GdAnnotationParser
+import gdscript.parser.recovery.GdRecovery
+import gdscript.psi.GdTypes.*
+
+object GdAnnotationTlParser : GdAnnotationParser {
+
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(ANNOTATOR)) return optional
+        b.enterSection(ANNOTATION_TL)
+
+        var ok = super.parse(b, optional)
+
+        while (b.nextTokenIs(NEW_LINE)) {
+            b.remapCurrentToken(TokenType.WHITE_SPACE)
+            b.advance()
+        }
+        ok = ok && GdRecovery.topLevel(b)
+        ok = ok && b.exitSection(ok)
+
+        return ok
+    }
+
+}
