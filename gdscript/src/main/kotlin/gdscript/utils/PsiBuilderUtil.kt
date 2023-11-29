@@ -17,15 +17,6 @@ object PsiBuilderUtil {
 //        return false
 //    }
 //
-//    fun PsiBuilder.mcAnyOfForce(markElement: IElementType, vararg elementTypes: IElementType): Boolean {
-//        if (!mcAnyOf(markElement, *elementTypes)) {
-//            markError("expected [$elementTypes]")
-//            return false
-//        }
-//
-//        return true
-//    }
-//
 //    fun PsiBuilder.markToken(markType: IElementType, steps: Int = 1): Boolean {
 //        val m = mark()
 //        repeat(steps) { advanceLexer() }

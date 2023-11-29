@@ -43,8 +43,8 @@ class GdPsiBuilder {
         b.setDebugMode(boolean)
     }
 
-    fun pin() {
-        state.pin()
+    fun pin(result: Boolean = true): Boolean {
+        return state.pin(result)
     }
 
     /** Checks **/
@@ -59,10 +59,10 @@ class GdPsiBuilder {
     fun consumeToken(elementType: IElementType, optional: Boolean = false, pin: Boolean = false): Boolean {
         if (tokenType == elementType) {
             advance()
-            if (pin) pin()
+            pin(pin)
             return true
         } else if (!optional) {
-            if (pin) pin()
+            pin(pin)
             consumeUnexpected(elementType)
             return false
         }
@@ -108,10 +108,21 @@ class GdPsiBuilder {
     }
 
     fun mcToken(markToken: IElementType, vararg elementTypes: IElementType): Boolean {
-        if (nextTokenIs(*elementTypes)) {
+        val lookFor = if (elementTypes.isEmpty()) arrayOf(markToken) else elementTypes
+        if (nextTokenIs(*lookFor)) {
             val m = mark()
             advance()
             m.done(markToken)
+            return true
+        }
+
+        return false
+    }
+
+    fun passToken(markToken: IElementType, vararg elementTypes: IElementType): Boolean {
+        val lookFor = if (elementTypes.isEmpty()) arrayOf(markToken) else elementTypes
+        if (nextTokenIs(*lookFor)) {
+            advance()
             return true
         }
 

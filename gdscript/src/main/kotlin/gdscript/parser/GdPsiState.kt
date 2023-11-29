@@ -44,8 +44,9 @@ class GdPsiState {
         return res
     }
 
-    fun pin() {
-        currentFrame?.pinned = true
+    fun pin(result: Boolean = true): Boolean {
+        currentFrame?.pinned = result || currentFrame?.pinned ?: false
+        return currentFrame?.pinned ?: false
     }
 
     fun pinned(): Boolean {
