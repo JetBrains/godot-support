@@ -10,7 +10,7 @@ using JetBrains.ReSharper.Plugins.Godot.Protocol;
 using JetBrains.ReSharper.Psi.Util;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 
-namespace JetBrains.ReSharper.Plugins.Godot.Settings
+namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
 {
     [SolutionComponent]
     public class SettingsSynchronizer

@@ -36,6 +36,11 @@
                             listener="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer$ProtocolListener"/>
 
     <rider.runtime.dotNetRuntimeAutodetect implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetRuntimeAutodetect"/>
+
+    <!-- Options pages -->
+    <applicationConfigurable groupId="language"
+                             id="preferences.build.godotPlugin"
+                             instance="com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage"/>
   </extensions>
 
 
