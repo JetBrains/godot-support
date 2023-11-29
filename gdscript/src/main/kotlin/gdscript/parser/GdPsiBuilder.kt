@@ -119,9 +119,8 @@ class GdPsiBuilder {
         return false
     }
 
-    fun passToken(markToken: IElementType, vararg elementTypes: IElementType): Boolean {
-        val lookFor = if (elementTypes.isEmpty()) arrayOf(markToken) else elementTypes
-        if (nextTokenIs(*lookFor)) {
+    fun passToken(vararg elementTypes: IElementType): Boolean {
+        if (nextTokenIs(*elementTypes)) {
             advance()
             return true
         }

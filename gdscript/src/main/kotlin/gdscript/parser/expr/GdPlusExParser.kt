@@ -1,24 +1,19 @@
-//package gdscript.parser.expr
-//
-//import com.intellij.lang.PsiBuilder
-//import com.intellij.psi.tree.IElementType
-//import gdscript.psi.GdTypes.*
-//import gdscript.utils.PsiBuilderUtil.mcAnyOfForce
-//
-//object GdPlusExParser : GdExprBaseParser {
-//
-//    override val EXPR_TYPE: IElementType = PLUS_EX
-//
-//    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
-//        val m = b.mark()
-//        var ok = true
-//        ok = ok && b.mcAnyOfForce(SIGN, PLUS, MINUS)
-//        ok = ok && GdExprParser.parse(b, false)
-//
-//        if (ok) m.drop()
-//        else m.rollbackTo()
-//
-//        return ok
-//    }
-//
-//}
+package gdscript.parser.expr
+
+import com.intellij.psi.tree.IElementType
+import gdscript.parser.GdPsiBuilder
+import gdscript.psi.GdTypes.*
+
+object GdPlusExParser : GdExprBaseParser {
+
+    override val EXPR_TYPE: IElementType = PLUS_EX
+
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+        var ok = true
+        ok = ok && b.mceAnyOf(SIGN, false, PLUS, MINUS)
+        ok = ok && GdExprParser.parse(b, false)
+
+        return ok
+    }
+
+}

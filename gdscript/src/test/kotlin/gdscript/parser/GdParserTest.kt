@@ -17,12 +17,12 @@ class GdParserTest : ParsingTestCase {
     @Test fun testAnnotationParam() = doTest(true)
     @Test fun testClassConst() = doTest(true)
     @Test fun testClassVar() = doTest(true)
-
     @Test fun testClassVarAs() = doTest(true)
-
     @Test fun testClassVarSetGet() = doTest(true)
+
     @Test fun testClassVarSetGetMethod() = doTest(true)
     @Test fun testClassVarSetGetMethodMultiline() = doTest(true)
+
     @Test fun testMethodArrayReturnType() = doTest(true)
     @Test fun testCommentWithinCode() = doTest(true)
     @Test fun testClass() = doTest(true)

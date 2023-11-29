@@ -11,14 +11,14 @@ object GdStmtParser : GdBaseParser {
     var moved = false
 
     init {
-//        parsers.add(GdAssignStmtParser)
+        parsers.add(GdAssignStmtParser)
 //        parsers.add(GdVarStmtParser)
 //        parsers.add(GdConstStmtParser)
 //        parsers.add(GdIfStmtParser)
 //        parsers.add(GdWhileStmtParser)
 //        parsers.add(GdForStmtParser)
 //        parsers.add(GdMatchStmtParser)
-//        parsers.add(GdFlowStmtParser)
+        parsers.add(GdFlowStmtParser)
 //        parsers.add(GdAnnotationStmtParser)
 //        parsers.add(GdExStmtParser)
     }

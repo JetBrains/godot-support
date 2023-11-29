@@ -4,6 +4,7 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.psi.GdTypes.EXPR
+import gdscript.utils.PsiBuilderUtil.rollOrDrop
 
 object GdExprParser : GdBaseParser {
 
@@ -14,13 +15,13 @@ object GdExprParser : GdBaseParser {
 //        parsers.add(GdFuncDeclExParser)
 //        parsers.add(GdNegateExParser)
 //        parsers.add(GdAwaitExParser)
-//        parsers.add(GdPlusExParser)
+        parsers.add(GdPlusExParser)
 //        parsers.add(GdBitNotExParser)
-//        parsers.add(GdPrimaryExParser)
+        parsers.add(GdPrimaryExParser)
         parsers.add(GdLiteralExParser)
 
 //        leftLeadParsers.add(GdArrayExParser)
-//        leftLeadParsers.add(GdCastExParser)
+        leftLeadParsers.add(GdCastExParser)
 //        leftLeadParsers.add(GdTernaryExParser)
 //        leftLeadParsers.add(GdLogicExParser)
 //        leftLeadParsers.add(GdInExParser)
@@ -44,9 +45,7 @@ object GdExprParser : GdBaseParser {
                 val m = b.mark()
                 val ok = it.parse(b)
 
-                if (ok) m.drop()
-                else m.rollbackTo()
-                ok
+                m.rollOrDrop(ok)
             }
         ) {
             left.drop()
@@ -62,9 +61,7 @@ object GdExprParser : GdBaseParser {
                 val m = b.mark()
                 val ok = it.parse(b)
 
-                if (ok) m.drop()
-                else m.rollbackTo()
-                ok
+                m.rollOrDrop(ok)
             }
         ) {
             left.done(rightType)

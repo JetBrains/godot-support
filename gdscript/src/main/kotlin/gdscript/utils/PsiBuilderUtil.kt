@@ -1,6 +1,15 @@
 package gdscript.utils
 
+import com.intellij.lang.PsiBuilder.Marker
+
 object PsiBuilderUtil {
+
+    fun Marker.rollOrDrop(result: Boolean): Boolean {
+        if (result) this.drop()
+        else this.rollbackTo()
+
+        return result
+    }
 
 //    fun PsiBuilder.consumeAnyOfToken(force: Boolean, vararg elementTypes: IElementType): Boolean {
 //        if (nextTokenIs(*elementTypes)) {

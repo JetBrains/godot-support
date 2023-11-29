@@ -42,10 +42,10 @@ object GdClassVarParser : GdBaseParser {
 
         while (ok) {
             ok = parseGet(b) || parseSet(b)
-            b.mcToken(COMMA) && b.mceEndStmt(false)
+            b.passToken(COMMA) && b.mceEndStmt(false)
         }
 
-        b.mceEndStmt(false)
+        b.mceEndStmt(true)
         indented && b.consumeToken(DEDENT)
 
         ok = b.exitSection(true)
@@ -88,7 +88,7 @@ object GdClassVarParser : GdBaseParser {
         if (markerType == SET) {
             ok = ok && b.consumeToken(LRBR)
             ok = ok && b.mceIdentifier(VAR_NMI)
-            ok = ok && GdTypedParser.parse(b)
+            ok = ok && GdTypedParser.parse(b, true)
             ok = ok && b.consumeToken(RRBR)
         }
 
