@@ -63,7 +63,7 @@ class GdPsiBuilder {
             return true
         } else if (!optional) {
             pin(pin)
-            consumeUnexpected(elementType)
+            error(elementType.debugName, false)
             return false
         }
 

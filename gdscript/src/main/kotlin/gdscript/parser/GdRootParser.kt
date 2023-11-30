@@ -17,7 +17,7 @@ class GdRootParser : PsiParser, LightPsiParser {
             GdClassConstParser,
             GdClassVarParser,
             GdSignalParser,
-//            GdEnumParser,
+            GdEnumParser,
 //            GdMethodParser,
 //            GdClassParser,
             GdEmptyLineParser,

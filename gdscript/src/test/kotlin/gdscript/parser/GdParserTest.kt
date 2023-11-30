@@ -22,11 +22,11 @@ class GdParserTest : ParsingTestCase {
     @Test fun testClassVarSetGetMethod() = doTest(true)
     @Test fun testClassVarSetGetMethodMultiline() = doTest(true)
     @Test fun testSignal() = doTest(true)
-
     @Test fun testEnumAnonymous() = doTest(true)
     @Test fun testEnumNamed() = doTest(true)
 
     @Test fun testMethodArrayReturnType() = doTest(true)
+
     @Test fun testCommentWithinCode() = doTest(true)
     @Test fun testClass() = doTest(true)
 

@@ -16,7 +16,7 @@ object GdInheritanceParser : GdBaseParser {
         b.enterSection(INHERITANCE_ID)
 
         ok = ok && b.mceAnyOf(INHERITANCE_ID_NM, false, IDENTIFIER, STRING)
-        while (ok && b.consumeToken(DOT)) {
+        while (ok && b.passToken(DOT)) {
             ok = b.mceAnyOf(INHERITANCE_SUB_ID_NM, false, IDENTIFIER)
         }
 

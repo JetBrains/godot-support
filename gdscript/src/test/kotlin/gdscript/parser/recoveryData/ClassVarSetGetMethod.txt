@@ -19,12 +19,12 @@ GdScript File(0,51)
       PsiWhiteSpace(' ')(35,36)
       GdEndStmtImpl(END_STMT)(36,36)
         <empty list>
-      GdSetDeclImpl(SET_DECL)(36,40)
+      GdSetDeclImpl(SET_DECL)(36,39)
         PsiElement(GdTokenType.SET)('set')(36,39)
-        PsiErrorElement:LRBR expected(39,40)
-          PsiElement(GdTokenType.NEW_LINE)('\n')(39,40)
-      GdEndStmtImpl(END_STMT)(40,40)
-        <empty list>
+        PsiErrorElement:LRBR expected(39,39)
+          <empty list>
+      GdEndStmtImpl(END_STMT)(39,40)
+        PsiElement(GdTokenType.NEW_LINE)('\n')(39,40)
   GdClassVarDecl(40,51)
     PsiElement(GdTokenType.VAR)('var')(40,43)
     PsiWhiteSpace(' ')(43,44)
