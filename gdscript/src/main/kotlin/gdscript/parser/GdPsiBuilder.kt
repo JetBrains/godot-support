@@ -140,6 +140,25 @@ class GdPsiBuilder {
 
     /** Errors **/
 
+    fun error(expected: String, consume: Boolean = true) {
+        if (errorAt == 0) {
+            val m = b.mark()
+            if (consume) {
+                advance()
+            }
+            errorAt = positionAt
+            m.error("$expected expected")
+        }
+    }
+
+    fun errorPin(result: Boolean, expected: String): Boolean {
+        if (!result && pinned()) {
+            error(expected, false)
+        }
+
+        return pinned()
+    }
+
     private fun consumeUnexpected(vararg elementTypes: IElementType) {
         error(elementTypes.getOrNull(0)?.debugName ?: "{}")
     }
@@ -150,17 +169,6 @@ class GdPsiBuilder {
 
     private fun consumeUnexpected(expected: String) {
         error(expected)
-    }
-
-    fun error(expected: String, consume: Boolean = true) {
-        if (errorAt == 0) {
-            val m = b.mark()
-            if (consume) {
-                advance()
-            }
-            errorAt = positionAt
-            m.error("$expected expected")
-        }
     }
 
 }

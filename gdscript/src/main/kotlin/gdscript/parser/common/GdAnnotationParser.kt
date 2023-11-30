@@ -13,25 +13,24 @@ interface GdAnnotationParser : GdBaseParser {
 
         var ok = b.mceAnyOf(ANNOTATION_TYPE, false, ANNOTATOR)
         b.pin()
-        if (ok && b.consumeToken(LRBR, true)) {
+        if (ok && b.passToken(LRBR)) {
             ok = ok && parseParams(b)
-            ok = ok && b.consumeToken(RRBR, true)
+            ok = ok && b.consumeToken(RRBR)
         }
 
-        return ok
+        return true
     }
 
     private fun parseParams(b: GdPsiBuilder): Boolean {
         b.enterSection(ANNOTATION_PARAMS)
 
         var ok = GdLiteralExParser.parseAndMark(b)
-        while (ok && b.consumeToken(COMMA, true)) {
+        while (ok && b.passToken(COMMA)) {
             ok = GdLiteralExParser.parseAndMark(b)
         }
-        ok && GdRecovery.argumentList(b)
-        b.exitSection(ok)
+        GdRecovery.argumentList(b, ok)
 
-        return ok
+        return b.exitSection(ok)
     }
 
 }

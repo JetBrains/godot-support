@@ -19,8 +19,8 @@ object GdStmtParser : GdBaseParser {
 //        parsers.add(GdForStmtParser)
 //        parsers.add(GdMatchStmtParser)
         parsers.add(GdFlowStmtParser)
-//        parsers.add(GdAnnotationStmtParser)
-//        parsers.add(GdExStmtParser)
+        parsers.add(GdAnnotationStmtParser)
+        parsers.add(GdExStmtParser)
     }
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {

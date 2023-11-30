@@ -24,16 +24,18 @@ class GdParserTest : ParsingTestCase {
     @Test fun testSignal() = doTest(true)
     @Test fun testEnumAnonymous() = doTest(true)
     @Test fun testEnumNamed() = doTest(true)
-
+    @Test fun testFunctionSimple() = doTest(true)
     @Test fun testMethodArrayReturnType() = doTest(true)
+    @Test fun testClass() = doTest(true)
+
 
     @Test fun testCommentWithinCode() = doTest(true)
-    @Test fun testClass() = doTest(true)
 
     // Stmts
     @Test fun testAnnotationInner() = doTest(true)
-    @Test fun testFunctionSimple() = doTest(true)
     @Test fun testAssignStmt() = doTest(true)
+
+
     @Test fun testVarConstStmt() = doTest(true)
     @Test fun testVarConstWithEmptyStmt() = doTest(true)
     @Test fun testIfStmt() = doTest(true)

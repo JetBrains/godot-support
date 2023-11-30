@@ -1,31 +1,25 @@
-//package gdscript.parser.common
-//
-//import com.intellij.lang.PsiBuilder
-//import gdscript.parser.GdBaseParser
-//import gdscript.psi.GdTypes
-//import gdscript.utils.PsiBuilderUtil.nextTokenIs
-//
-//object GdReturnHintParser : GdBaseParser {
-//
-//    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
-//        if (!b.nextTokenIs(GdTypes.RET)) return optional
-//        val hint = b.mark()
-//        var ok = true
-//        b.advance() // RET
-//
-//        val hintVal = b.mark()
-//        if (b.nextTokenIs(GdTypes.VOID)) {
-//            b.advance() // VOID
-//        } else {
-//            ok = ok && GdTypedParser.typedVal(b, false)
-//        }
-//
-//        hintVal.done(GdTypes.RETURN_HINT_VAL)
-//
-//        if (ok) hint.done(GdTypes.RETURN_HINT)
-//        else hint.rollbackTo()
-//
-//        return ok || optional
-//    }
-//
-//}
+package gdscript.parser.common
+
+import gdscript.parser.GdBaseParser
+import gdscript.parser.GdPsiBuilder
+import gdscript.psi.GdTypes.*
+
+object GdReturnHintParser : GdBaseParser {
+
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+        if (!b.nextTokenIs(RET)) return optional
+
+        b.enterSection(RETURN_HINT)
+        var ok = b.consumeToken(RET)
+
+        b.enterSection(RETURN_HINT_VAL)
+        if (!b.passToken(VOID)) {
+            ok = ok && GdTypedParser.typedVal(b, false)
+        }
+
+        b.exitSection(ok)
+
+        return b.exitSection(ok) || optional
+    }
+
+}
