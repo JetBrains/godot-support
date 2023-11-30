@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
+import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntimeType
 import java.io.File
 
 class DebugSceneRunConfigurationProducerCor : LazyRunConfigurationProducer<DotNetExeConfiguration>() {
@@ -34,6 +35,7 @@ class DebugSceneRunConfigurationProducerCor : LazyRunConfigurationProducer<DotNe
         configuration.parameters.programParameters = "--path \"${GodotProjectDiscoverer.getInstance(context.project).mainProjectBasePath.value}\" \"$resPath\""
 
         configuration.parameters.workingDirectory = "${context.project.basePath}"
+        configuration.parameters.runtimeType = DotNetCoreRuntimeType
         configuration.name = file.name
         return true
     }
