@@ -1,0 +1,12 @@
+GdScript File(0,12)
+  GdSignalDecl(0,7)
+    PsiElement(GdTokenType.SIGNAL)('signal')(0,6)
+    PsiErrorElement:IDENTIFIER expected(6,7)
+      PsiElement(GdTokenType.NEW_LINE)('\n')(6,7)
+  GdClassVarDecl(7,12)
+    PsiElement(GdTokenType.VAR)('var')(7,10)
+    PsiWhiteSpace(' ')(10,11)
+    GdVarNmiImpl(VAR_NMI)(11,12)
+      PsiElement(GdTokenType.IDENTIFIER)('a')(11,12)
+    GdEndStmtImpl(END_STMT)(12,12)
+      <empty list>

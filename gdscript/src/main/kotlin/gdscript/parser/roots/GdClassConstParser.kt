@@ -19,7 +19,7 @@ object GdClassConstParser : GdBaseParser {
 
         ok && b.mceEndStmt()
 
-        ok && GdRecovery.topLevel(b)
+        GdRecovery.topLevel(b)
         b.exitSection(ok)
 
         return true

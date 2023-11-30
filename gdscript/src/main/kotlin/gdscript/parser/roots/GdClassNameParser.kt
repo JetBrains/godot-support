@@ -16,7 +16,7 @@ object GdClassNameParser : GdBaseParser {
         ok = ok && b.mceIdentifier(CLASS_NAME_NMI)
         ok = ok && b.mceEndStmt()
 
-        ok && GdRecovery.topLevel(b)
+        GdRecovery.topLevel(b)
         ok = b.exitSection(ok)
 
         return ok

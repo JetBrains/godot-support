@@ -21,7 +21,7 @@ object GdClassVarParser : GdBaseParser {
         ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, true)
         ok = ok && (parseGetSet(b) || b.mceEndStmt())
 
-        ok && GdRecovery.topLevel(b)
+        GdRecovery.topLevel(b)
         ok = b.exitSection(ok)
 
         return ok
@@ -42,7 +42,7 @@ object GdClassVarParser : GdBaseParser {
 
         while (ok) {
             ok = parseGet(b) || parseSet(b)
-            b.passToken(COMMA) && b.mceEndStmt(false)
+            b.passToken(COMMA) && b.mceEndStmt(true)
         }
 
         b.mceEndStmt(true)
@@ -60,7 +60,7 @@ object GdClassVarParser : GdBaseParser {
         var ok = b.consumeToken(GET, pin = true)
 
         ok = ok && (parseMethodVersion(b, GET_METHOD_ID_NM) || parseStmtVersion(b, GET))
-        ok && GdRecovery.setGet(b)
+        GdRecovery.setGet(b)
 
         return b.exitSection(ok)
     }
@@ -71,13 +71,13 @@ object GdClassVarParser : GdBaseParser {
         b.enterSection(SET_DECL)
         var ok = b.consumeToken(SET, pin = true)
         ok = ok && (parseMethodVersion(b, SET_METHOD_ID_NM) || parseStmtVersion(b, SET))
-        ok && GdRecovery.setGet(b)
+        GdRecovery.setGet(b)
 
         return b.exitSection(ok)
     }
 
     private fun parseMethodVersion(b: GdPsiBuilder, markerType: IElementType): Boolean {
-        var ok = b.mcToken(EQ)
+        var ok = b.passToken(EQ)
         ok = ok && b.mceIdentifier(markerType)
 
         return ok
