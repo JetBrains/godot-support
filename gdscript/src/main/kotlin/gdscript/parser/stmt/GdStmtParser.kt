@@ -14,7 +14,7 @@ object GdStmtParser : GdBaseParser {
         parsers.add(GdAssignStmtParser)
         parsers.add(GdVarStmtParser)
         parsers.add(GdConstStmtParser)
-//        parsers.add(GdIfStmtParser)
+        parsers.add(GdIfStmtParser)
 //        parsers.add(GdWhileStmtParser)
 //        parsers.add(GdForStmtParser)
 //        parsers.add(GdMatchStmtParser)

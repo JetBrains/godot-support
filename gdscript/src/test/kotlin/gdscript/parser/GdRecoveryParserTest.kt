@@ -25,6 +25,9 @@ class GdRecoveryParserTest : ParsingTestCase {
 //    @Test fun testAnnotationInner() = doTest(true)
     @Test fun testAssignStmt() = doTest(true)
     @Test fun testVarConstStmt() = doTest(true)
+    @Test fun testIfStmt() = doTest(true)
+    @Test fun testIfElifStmt() = doTest(true)
+    @Test fun testIfElseStmt() = doTest(true)
 
     override fun getTestDataPath(): String {
         return "src/test/kotlin/gdscript/parser/recoveryData"
