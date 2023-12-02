@@ -27,8 +27,6 @@ class GdParserTest : ParsingTestCase {
     @Test fun testFunctionSimple() = doTest(true)
     @Test fun testMethodArrayReturnType() = doTest(true)
     @Test fun testClass() = doTest(true)
-
-
     @Test fun testCommentWithinCode() = doTest(true)
 
     // Stmts
@@ -38,8 +36,6 @@ class GdParserTest : ParsingTestCase {
     @Test fun testVarConstWithEmptyStmt() = doTest(true)
     @Test fun testIfStmt() = doTest(true)
     @Test fun testWhileStmt() = doTest(true)
-
-
     @Test fun testForStmt() = doTest(true)
     @Test fun testMatchStmt() = doTest(true)
 

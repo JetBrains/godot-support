@@ -59,6 +59,14 @@ class GdPsiBuilder {
         return elementTypes.any { it == searchFor }
     }
 
+    fun followingTokensAre(vararg elementTypes: IElementType): Boolean {
+        var step = 0
+
+        return elementTypes.all {
+            it == b.lookAhead(step++)
+        }
+    }
+
     /** Tokens **/
 
     fun consumeToken(elementType: IElementType, optional: Boolean = false, pin: Boolean = false): Boolean {

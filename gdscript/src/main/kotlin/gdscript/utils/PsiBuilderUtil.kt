@@ -53,15 +53,5 @@ object PsiBuilderUtil {
 //
 //        return true
 //    }
-//
-//    /** CHECKERS **/
-//
-//    fun PsiBuilder.followingTokensAre(vararg elementTypes: IElementType): Boolean {
-//        var step = 0
-//
-//        return elementTypes.all {
-//            it == lookAhead(step++)
-//        }
-//    }
 
 }
