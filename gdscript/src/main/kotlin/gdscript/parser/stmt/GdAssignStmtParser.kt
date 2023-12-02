@@ -14,7 +14,9 @@ object GdAssignStmtParser : GdStmtBaseParser {
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         var ok = GdExprParser.parse(b)
         ok = ok && b.mcToken(ASSIGN_SIGN, EQ, ASSIGN)
+        b.pin(ok)
         ok = ok && GdExprParser.parse(b)
+        b.errorPin(ok, "Expression")
 
         return ok
     }

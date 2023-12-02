@@ -1,3 +1,3 @@
 func a():
     local =
-    var a
+    a = 1

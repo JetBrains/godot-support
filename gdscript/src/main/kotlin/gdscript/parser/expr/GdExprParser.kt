@@ -49,6 +49,7 @@ object GdExprParser : GdBaseParser {
             }
         ) {
             left.drop()
+            b.clearErrors()
             return optional
         }
 
@@ -69,6 +70,7 @@ object GdExprParser : GdBaseParser {
         }
 
         left.drop()
+        b.clearErrors()
 
         return true
     }

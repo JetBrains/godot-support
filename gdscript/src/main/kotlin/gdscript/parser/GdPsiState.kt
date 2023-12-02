@@ -29,10 +29,11 @@ class GdPsiState {
         currentFrame = newFrame
     }
 
-    fun exitSection(result: Boolean): Boolean {
+    fun exitSection(result: Boolean, drop: Boolean = false): Boolean {
         val res = currentFrame?.exit(result) ?: false
+
         var errorType: IElementType? = null
-        if (!res && currentFrame?.errorAt != null) {
+        if (!res && currentFrame?.errorAt != null && !drop) {
             errorType = currentFrame!!.elementType
         }
 
@@ -44,6 +45,10 @@ class GdPsiState {
         return res
     }
 
+    fun remapElement(elementType: IElementType) {
+        currentFrame?.elementType = elementType
+    }
+
     fun pin(result: Boolean = true): Boolean {
         currentFrame?.pinned = result || currentFrame?.pinned ?: false
         return currentFrame?.pinned ?: false
@@ -51,6 +56,10 @@ class GdPsiState {
 
     fun pinned(): Boolean {
         return currentFrame?.pinned ?: false
+    }
+
+    fun unpin() {
+        currentFrame?.pinned = false
     }
 
 }

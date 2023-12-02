@@ -12,8 +12,8 @@ object GdStmtParser : GdBaseParser {
 
     init {
         parsers.add(GdAssignStmtParser)
-//        parsers.add(GdVarStmtParser)
-//        parsers.add(GdConstStmtParser)
+        parsers.add(GdVarStmtParser)
+        parsers.add(GdConstStmtParser)
 //        parsers.add(GdIfStmtParser)
 //        parsers.add(GdWhileStmtParser)
 //        parsers.add(GdForStmtParser)
@@ -72,7 +72,7 @@ object GdStmtParser : GdBaseParser {
 
         if (
             parsers.any {
-                val stmt = b.mark()
+                b.enterSection(it.STMT_TYPE)
                 var ok = it.parse(b)
                 if (asLambda) {
                     ok = ok && (b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT) || it.pinnable)
@@ -80,12 +80,11 @@ object GdStmtParser : GdBaseParser {
                     ok = ok && (it.parseEndStmt(b) || it.pinnable)
                 }
 
+                ok = ok || b.pinned()
                 if (ok) {
-                    GdRecovery.stmt(b)
-                    stmt.done(it.STMT_TYPE)
-                } else {
-                    stmt.rollbackTo()
+                    GdRecovery.stmtNoLine(b)
                 }
+                b.exitSection(ok, true)
 
                 ok
             }

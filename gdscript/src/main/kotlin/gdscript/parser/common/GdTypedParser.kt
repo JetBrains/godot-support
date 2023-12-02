@@ -21,6 +21,7 @@ object GdTypedParser : GdBaseParser {
     }
 
     fun parseWithAssignTypedAndExpr(b: GdPsiBuilder, optional: Boolean): Boolean {
+        val m = b.mark()
         var ok = true
         if (b.nextTokenIs(CEQ)) {
             ok = ok && b.mcToken(ASSIGN_TYPED, CEQ)
@@ -33,10 +34,14 @@ object GdTypedParser : GdBaseParser {
         } else if (b.mcToken(ASSIGN_TYPED, EQ)) {
             ok = ok && GdExprParser.parse(b)
         } else if (!optional) {
+            m.drop()
             return false
         }
 
-        return true
+        if (ok || !optional) m.drop()
+        else m.rollbackTo()
+
+        return ok || optional
     }
 
     fun typedVal(b: GdPsiBuilder, optional: Boolean): Boolean {

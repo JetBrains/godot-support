@@ -4,6 +4,7 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.lang.PsiBuilder.Marker
 import com.intellij.psi.tree.IElementType
 import gdscript.psi.GdTypes
+import io.ktor.util.*
 
 class GdPsiBuilder {
 
@@ -26,7 +27,7 @@ class GdPsiBuilder {
     /** GdPsiState **/
 
     val isError get() = state.isError
-    var errorAt get() = state.errorAt ?: 0
+    var errorAt: Int? get() = state.errorAt ?: 0
         set(value) { state.errorAt = value }
 
     /** Lexer **/
@@ -45,6 +46,10 @@ class GdPsiBuilder {
 
     fun pin(result: Boolean = true): Boolean {
         return state.pin(result)
+    }
+
+    fun unpin() {
+        state.unpin()
     }
 
     /** Checks **/
@@ -134,14 +139,19 @@ class GdPsiBuilder {
         state.enterSection(elementType, b.mark())
     }
 
-    fun exitSection(result: Boolean): Boolean {
+    fun exitSection(result: Boolean, drop: Boolean = false): Boolean {
+        return state.exitSection(result, drop)
+    }
+
+    fun exitSection(result: Boolean, elementType: IElementType): Boolean {
+        state.remapElement(elementType)
         return state.exitSection(result)
     }
 
     /** Errors **/
 
     fun error(expected: String, consume: Boolean = true) {
-        if (errorAt == 0) {
+        if (!isError) {
             val m = b.mark()
             if (consume) {
                 advance()
@@ -153,10 +163,14 @@ class GdPsiBuilder {
 
     fun errorPin(result: Boolean, expected: String): Boolean {
         if (!result && pinned()) {
-            error(expected, false)
+            error(expected.toUpperCasePreservingASCIIRules(), false)
         }
 
         return pinned()
+    }
+
+    fun clearErrors() {
+        errorAt = null
     }
 
     private fun consumeUnexpected(vararg elementTypes: IElementType) {
