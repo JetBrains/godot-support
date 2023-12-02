@@ -37,9 +37,9 @@ class GdParserTest : ParsingTestCase {
     @Test fun testVarConstStmt() = doTest(true)
     @Test fun testVarConstWithEmptyStmt() = doTest(true)
     @Test fun testIfStmt() = doTest(true)
-
-
     @Test fun testWhileStmt() = doTest(true)
+
+
     @Test fun testForStmt() = doTest(true)
     @Test fun testMatchStmt() = doTest(true)
 

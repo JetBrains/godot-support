@@ -15,7 +15,7 @@ object GdStmtParser : GdBaseParser {
         parsers.add(GdVarStmtParser)
         parsers.add(GdConstStmtParser)
         parsers.add(GdIfStmtParser)
-//        parsers.add(GdWhileStmtParser)
+        parsers.add(GdWhileStmtParser)
 //        parsers.add(GdForStmtParser)
 //        parsers.add(GdMatchStmtParser)
         parsers.add(GdFlowStmtParser)
@@ -29,7 +29,6 @@ object GdStmtParser : GdBaseParser {
 
     fun parseLambda(b: GdPsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
         b.enterSection(STMT_OR_SUITE)
-        b.pin()
         var ok = suite(b, false, asLambda) || stmt(b, optional, asLambda)
 
         return b.exitSection(ok)
@@ -38,11 +37,10 @@ object GdStmtParser : GdBaseParser {
     private fun suite(b: GdPsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
         if (!b.nextTokenIs(NEW_LINE)) return optional
         var ok = true
-        var pin = false
         val suite = b.mark()
         b.advance() // NEW_LINE
         ok = ok && b.consumeToken(INDENT)
-        pin = ok
+        b.pin(ok)
 
         ok = ok && stmt(b, false, asLambda)
         moved = true
@@ -57,14 +55,14 @@ object GdStmtParser : GdBaseParser {
             b.remapCurrentToken(NEW_LINE)
         }
 
-        if (pin) {
+        if (ok || b.pinned()) {
             GdRecovery.stmt(b)
             suite.done(SUITE)
         } else {
             suite.rollbackTo()
         }
 
-        return pin || optional
+        return ok || b.pinned() || optional
     }
 
     private fun stmt(b: GdPsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {

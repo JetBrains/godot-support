@@ -17,12 +17,13 @@ object GdIfStmtParser : GdStmtBaseParser {
 
         var ok = b.consumeToken(IF, pin = true)
         ok = ok && GdExprParser.parse(b)
+        b.errorPin(ok, "expression")
         ok = ok && b.consumeToken(COLON, true)
         ok = ok && GdStmtParser.parse(b)
+        b.errorPin(ok, "statement")
 
         while (ok && elifSt(b)) {}
         ok && elseSt(b)
-        b.errorPin(ok, "Expression")
 
         return ok
     }
