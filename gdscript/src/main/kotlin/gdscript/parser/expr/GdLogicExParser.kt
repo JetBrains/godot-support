@@ -9,7 +9,7 @@ object GdLogicExParser : GdExprBaseParser {
     override val EXPR_TYPE: IElementType = LOGIC_EX
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
-        var ok = b.passToken(ANDAND) || b.passToken(OROR)
+        var ok = b.passToken(ANDAND, OROR)
         b.pin(ok)
         ok = ok && GdExprParser.parse(b)
         b.errorPin(ok, "expression")

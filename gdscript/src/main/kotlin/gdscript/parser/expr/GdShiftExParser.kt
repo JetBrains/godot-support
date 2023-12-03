@@ -1,24 +1,22 @@
-//package gdscript.parser.expr
-//
-//import com.intellij.lang.PsiBuilder
-//import com.intellij.psi.tree.IElementType
-//import gdscript.psi.GdTypes.*
-//import gdscript.utils.PsiBuilderUtil.consumeAnyOfToken
-//
-//object GdShiftExParser : GdExprBaseParser {
-//
-//    override val EXPR_TYPE: IElementType = SHIFT_EX
-//
-//    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
-//        val m = b.mark()
-//        var ok = true
-//        ok = ok && b.consumeAnyOfToken(true, LBSHIFT, RBSHIFT)
-//        ok = ok && GdExprParser.parse(b, false)
-//
-//        if (ok) m.drop()
-//        else m.rollbackTo()
-//
-//        return ok
-//    }
-//
-//}
+package gdscript.parser.expr
+
+import com.intellij.psi.tree.IElementType
+import gdscript.parser.GdPsiBuilder
+import gdscript.psi.GdTypes
+import gdscript.psi.GdTypes.LBSHIFT
+import gdscript.psi.GdTypes.SHIFT_EX
+
+object GdShiftExParser : GdExprBaseParser {
+
+    override val EXPR_TYPE: IElementType = SHIFT_EX
+
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+        var ok = b.passToken(LBSHIFT, GdTypes.RBSHIFT)
+        b.pin(ok)
+        ok = ok && GdExprParser.parse(b)
+        b.errorPin(ok, "expression")
+
+        return ok || b.pinned()
+    }
+
+}

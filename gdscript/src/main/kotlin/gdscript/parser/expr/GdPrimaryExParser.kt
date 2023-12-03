@@ -22,29 +22,26 @@ object GdPrimaryExParser : GdExprBaseParser {
 
     private fun arrayDecl(b: GdPsiBuilder): Boolean {
         b.enterSection(ARRAY_DECL)
-        var ok = true
-
-        ok = ok && b.consumeToken(LSBR)
+        var ok = b.consumeToken(LSBR, pin = true)
         while (ok && GdExprParser.parse(b)) {
             if (!b.passToken(COMMA)) break
         }
         ok = ok && b.consumeToken(RSBR)
 
-        return b.exitSection(ok)
+        return b.exitSection(ok, true)
     }
 
     private fun dictDecl(b: GdPsiBuilder): Boolean {
         b.enterSection(DICT_DECL)
-        var ok = true
 
-        ok = ok && b.consumeToken(LCBR)
+        var ok = b.consumeToken(LCBR, pin = true)
         while (ok && keyValuePair(b)) {
             if (!b.passToken(COMMA)) break
         }
 
         ok = ok && b.consumeToken(RCBR)
 
-        return b.exitSection(ok)
+        return b.exitSection(ok, true)
     }
 
     private fun keyValuePair(b: GdPsiBuilder): Boolean {
