@@ -72,6 +72,8 @@ object GdStmtParser : GdBaseParser {
             parsers.any {
                 b.enterSection(it.STMT_TYPE)
                 var ok = it.parse(b)
+                ok = ok || b.pinned()
+
                 if (asLambda) {
                     ok = ok && b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT)
                 } else {

@@ -13,7 +13,7 @@ object GdArrayExParser : GdExprBaseParser {
         ok = ok && GdExprParser.parse(b, true)
         ok = ok && b.consumeToken(RSBR)
 
-        return ok
+        return ok || b.pinned()
     }
 
 }
