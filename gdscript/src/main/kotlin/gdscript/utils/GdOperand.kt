@@ -11,7 +11,7 @@ object GdOperand {
 
     fun getReturnType(left: String, right: String, operator: String): String {
         if (operator == "[]" && left.startsWith("Array[")) return left.removePrefix("Array[").removeSuffix("]")
-        val operated = OPERANDS.get(left)?.get(operator) ?: return ""
+        val operated = OPERANDS.get(left)?.get(parseOperator(operator)) ?: return ""
         val typed = operated.get(right)
         if (typed == null && operator == "[]") {
             return operated.firstOrNull()?.value ?: ""
@@ -21,9 +21,21 @@ object GdOperand {
     }
 
     fun isAllowed(left: String, right: String, operator: String): Boolean {
-        val operated = OPERANDS[left]?.get(operator) ?: return false
+        val operated = OPERANDS[left]?.get(parseOperator(operator)) ?: return false
         return operated.containsKey(right) || operated.containsKey(GdKeywords.VARIANT)
     }
+
+    private fun parseOperator(operator: String): String {
+        for (prefix in TO_TRIM) {
+            if (operator == "$prefix=") {
+                return prefix
+            }
+        }
+
+        return operator
+    }
+
+    val TO_TRIM = arrayOf("+", "-", "*", "/", "**", "%", "&", "|", "^", "<<", ">>")
 
     // Left -> Operand -> Right -> Result
     val OPERANDS = mapOf(
