@@ -15,8 +15,7 @@ object GdVarStmtParser : GdStmtBaseParser {
 
         var ok = b.consumeToken(VAR, pin = true)
         ok = ok && b.mceIdentifier(VAR_NMI)
-        ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, false)
-        b.errorPin(ok, "Expression")
+        ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, true)
 
         return ok || b.pinned()
     }
