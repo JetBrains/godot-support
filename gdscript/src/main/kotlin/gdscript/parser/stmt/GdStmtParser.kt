@@ -73,14 +73,15 @@ object GdStmtParser : GdBaseParser {
                 b.enterSection(it.STMT_TYPE)
                 var ok = it.parse(b)
                 if (asLambda) {
-                    ok = ok && (b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT) || it.pinnable)
+                    ok = ok && b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT)
                 } else {
-                    ok = ok && (it.parseEndStmt(b) || it.pinnable)
+                    ok = ok && it.parseEndStmt(b)
                 }
 
                 ok = ok || b.pinned()
-                if (ok) {
-                    GdRecovery.stmtNoLine(b)
+                if (ok && !asLambda) {
+                    if (it.endWithEndStmt) GdRecovery.stmt(b)
+                    else GdRecovery.stmtNoLine(b)
                 }
                 b.exitSection(ok, true)
 

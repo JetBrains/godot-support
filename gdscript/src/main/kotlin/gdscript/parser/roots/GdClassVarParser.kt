@@ -14,17 +14,16 @@ object GdClassVarParser : GdBaseParser {
         if (!b.nextTokenIs(VAR, STATIC)) return optional
 
         b.enterSection(CLASS_VAR_DECL_TL)
-        b.passToken(STATIC)
+        if (b.passToken(STATIC)) b.pin(true)
         var ok = b.consumeToken(VAR, pin = true)
         ok = ok && b.mceIdentifier(VAR_NMI)
 
         ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, true)
         ok = ok && (parseGetSet(b) || b.mceEndStmt())
 
-        GdRecovery.topLevel(b)
-        ok = b.exitSection(ok)
+        GdRecovery.topLevel(b, ok)
 
-        return ok
+        return b.exitSection(ok)
     }
 
     private fun parseGetSet(b: GdPsiBuilder): Boolean {

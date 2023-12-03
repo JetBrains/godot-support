@@ -45,6 +45,22 @@ class GdPsiState {
         return res
     }
 
+    fun dropSection(result: Boolean): Boolean {
+        currentFrame?.drop(result)
+
+        var errorAt: Int? = null
+        if (result && isError) {
+            errorAt = currentFrame!!.errorAt
+        }
+
+        currentFrame = currentFrame?.parent
+        if (errorAt != null && !isError) {
+            b.errorAt = errorAt
+        }
+
+        return result
+    }
+
     fun remapElement(elementType: IElementType) {
         currentFrame?.elementType = elementType
     }
@@ -88,6 +104,14 @@ class GdPsiFrame {
     fun exit(result: Boolean): Boolean {
         if (mark == null || elementType == null) return true
         if (result || pinned) mark!!.done(elementType!!)
+        else mark!!.rollbackTo()
+
+        return result || pinned
+    }
+
+    fun drop(result: Boolean): Boolean {
+        if (mark == null) return true
+        if (result || pinned) mark!!.drop()
         else mark!!.rollbackTo()
 
         return result || pinned

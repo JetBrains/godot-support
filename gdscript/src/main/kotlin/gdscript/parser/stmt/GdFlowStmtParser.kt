@@ -9,7 +9,6 @@ object GdFlowStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = FLOW_ST
     override val endWithEndStmt: Boolean = true
-    override val pinnable: Boolean = false
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         val flows = arrayOf(CONTINUE, BREAK, PASS, BREAKPOINT)

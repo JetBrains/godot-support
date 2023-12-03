@@ -9,7 +9,6 @@ object GdVarStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = VAR_DECL_ST
     override val endWithEndStmt: Boolean = true
-    override val pinnable: Boolean = true
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(VAR)) return false

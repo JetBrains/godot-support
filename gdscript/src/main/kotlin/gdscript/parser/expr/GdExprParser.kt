@@ -1,10 +1,9 @@
 package gdscript.parser.expr
 
+import com.intellij.lang.PsiBuilder.Marker
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.EXPR
-import gdscript.utils.PsiBuilderUtil.rollOrDrop
 
 object GdExprParser : GdBaseParser {
 
@@ -12,65 +11,56 @@ object GdExprParser : GdBaseParser {
     val leftLeadParsers = mutableListOf<GdExprBaseParser>()
 
     init {
-//        parsers.add(GdFuncDeclExParser)
+        parsers.add(GdFuncDeclExParser)
 //        parsers.add(GdNegateExParser)
-//        parsers.add(GdAwaitExParser)
+        parsers.add(GdAwaitExParser)
         parsers.add(GdPlusExParser)
-//        parsers.add(GdBitNotExParser)
+        parsers.add(GdBitNotExParser)
         parsers.add(GdPrimaryExParser)
         parsers.add(GdLiteralExParser)
 
-//        leftLeadParsers.add(GdArrayExParser)
+        leftLeadParsers.add(GdArrayExParser)
         leftLeadParsers.add(GdCastExParser)
 //        leftLeadParsers.add(GdTernaryExParser)
 //        leftLeadParsers.add(GdLogicExParser)
 //        leftLeadParsers.add(GdInExParser)
-//        leftLeadParsers.add(GdComparisonExParser)
-//        leftLeadParsers.add(GdBitExParser)
+        leftLeadParsers.add(GdComparisonExParser)
+        leftLeadParsers.add(GdBitExParser)
 //        leftLeadParsers.add(GdShiftExParser)
 //        leftLeadParsers.add(GdPlusExParser)
-//        leftLeadParsers.add(GdFactorExParser)
+        leftLeadParsers.add(GdFactorExParser)
 //        leftLeadParsers.add(GdIsExParser)
-//        leftLeadParsers.add(GdAttributeExParser)
+        leftLeadParsers.add(GdAttributeExParser)
         leftLeadParsers.add(GdCallExParser)
     }
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
-        var left = b.mark()
-        var leftType: IElementType = EXPR
-
+        var latestMark: Marker? = null
         if (
             !parsers.any {
-                leftType = it.EXPR_TYPE
-                val m = b.mark()
+                latestMark = b.enterSection(it.EXPR_TYPE)
                 val ok = it.parse(b)
-
-                m.rollOrDrop(ok)
+                b.exitSection(ok, true)
+                ok
             }
         ) {
-            left.drop()
-            b.clearErrors()
             return optional
         }
 
-        left.done(leftType)
-        left = left.precede()
-        var rightType: IElementType = EXPR
+        var type: IElementType? = null
         while (
             leftLeadParsers.any {
-                rightType = it.EXPR_TYPE
-                val m = b.mark()
-                val ok = it.parse(b)
+                type = it.EXPR_TYPE
+                b.enterSection(it.EXPR_TYPE)
+                val ok = it.parse(b) || b.pinned()
 
-                m.rollOrDrop(ok)
+                b.dropSection(ok)
             }
         ) {
-            left.done(rightType)
-            left = left.precede()
+            val m = latestMark!!.precede()
+            m.done(type!!)
+            latestMark = m
         }
-
-        left.drop()
-        b.clearErrors()
 
         return true
     }

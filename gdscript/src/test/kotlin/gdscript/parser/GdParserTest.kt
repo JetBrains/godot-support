@@ -40,29 +40,30 @@ class GdParserTest : ParsingTestCase {
     @Test fun testMatchStmt() = doTest(true)
 
     // Exprs
+    @Test fun testArrayExpr() = doTest(true)
+    @Test fun testAttributeExpr() = doTest(true)
+    @Test fun testAwaitExpr() = doTest(true)
+    @Test fun testBitExpr() = doTest(true)
+    @Test fun testBitNotExpr() = doTest(true)
+    @Test fun testCastExpr() = doTest(true)
+    @Test fun testComparisonExpr() = doTest(true)
+    @Test fun testFactorExpr() = doTest(true)
     @Test fun testFuncDeclExpr() = doTest(true)
     @Test fun testFuncDeclExprExt() = doTest(true)
     @Test fun testFuncDeclExprParam() = doTest(true)
     @Test fun testLambdaCallExpr() = doTest(true)
+
     @Test fun testNestedCallExpr() = doTest(true)
-    @Test fun testArrayExpr() = doTest(true)
     @Test fun testPrimaryBracketExpr() = doTest(true)
     @Test fun testDictDeclExpr() = doTest(true)
-    @Test fun testAwaitExpr() = doTest(true)
-    @Test fun testCastExpr() = doTest(true)
     @Test fun testTernaryExpr() = doTest(true)
     @Test fun testLogicExpr() = doTest(true)
     @Test fun testNegateExpr() = doTest(true)
     @Test fun testInExpr() = doTest(true)
-    @Test fun testComparisonExpr() = doTest(true)
-    @Test fun testBitExpr() = doTest(true)
     @Test fun testShiftExpr() = doTest(true)
     @Test fun testPlusExpr() = doTest(true)
-    @Test fun testFactorExpr() = doTest(true)
     @Test fun testSignExpr() = doTest(true)
-    @Test fun testBitNotExpr() = doTest(true)
     @Test fun testIsExpr() = doTest(true)
-    @Test fun testAttributeExpr() = doTest(true)
 
     override fun getTestDataPath(): String {
         return "src/test/kotlin/gdscript/parser/data"

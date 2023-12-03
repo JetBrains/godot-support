@@ -8,6 +8,5 @@ object GdAnnotationStmtParser : GdAnnotationParser, GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = ANNOTATION_STMT
     override val endWithEndStmt: Boolean = true
-    override val pinnable: Boolean = false
 
 }

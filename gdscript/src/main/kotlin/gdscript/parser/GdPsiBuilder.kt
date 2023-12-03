@@ -75,7 +75,6 @@ class GdPsiBuilder {
             pin(pin)
             return true
         } else if (!optional) {
-            pin(pin)
             error(elementType.debugName, false)
             return false
         }
@@ -86,7 +85,7 @@ class GdPsiBuilder {
     fun mceEndStmt(optional: Boolean = false): Boolean {
         if (!nextTokenIs(GdTypes.SEMICON, GdTypes.NEW_LINE)) {
             if (!optional) {
-                consumeUnexpected("END_STMT")
+                error("END_STMT", false)
                 return false
             }
         }
@@ -143,8 +142,10 @@ class GdPsiBuilder {
 
     /** Sections **/
 
-    fun enterSection(elementType: IElementType) {
-        state.enterSection(elementType, b.mark())
+    fun enterSection(elementType: IElementType): Marker {
+        val m = b.mark()
+        state.enterSection(elementType, m)
+        return m
     }
 
     fun exitSection(result: Boolean, drop: Boolean = false): Boolean {
@@ -154,6 +155,10 @@ class GdPsiBuilder {
     fun exitSection(result: Boolean, elementType: IElementType): Boolean {
         state.remapElement(elementType)
         return state.exitSection(result)
+    }
+
+    fun dropSection(result: Boolean): Boolean {
+        return state.dropSection(result)
     }
 
     /** Errors **/
@@ -177,8 +182,9 @@ class GdPsiBuilder {
         return pinned()
     }
 
-    fun clearErrors() {
+    fun clearState() {
         errorAt = null
+        unpin()
     }
 
     private fun consumeUnexpected(vararg elementTypes: IElementType) {

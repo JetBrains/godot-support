@@ -10,7 +10,6 @@ object GdMatchStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = MATCH_ST
     override val endWithEndStmt: Boolean = false
-    override val pinnable: Boolean = false
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(MATCH)) return optional
@@ -38,7 +37,7 @@ object GdMatchStmtParser : GdStmtBaseParser {
         ok = ok && GdStmtParser.parse(b)
         GdRecovery.stmtNoLine(b, ok)
 
-        return b.exitSection(ok)
+        return b.exitSection(ok, true)
     }
 
     private fun patternList(b: GdPsiBuilder): Boolean {

@@ -9,11 +9,11 @@ object GdExStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = EXPR_ST
     override val endWithEndStmt: Boolean = true
-    override val pinnable: Boolean = false
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         var ok = true
         ok = ok && GdExprParser.parse(b)
+        b.pin(ok)
 
         return ok
     }

@@ -9,7 +9,6 @@ object GdConstStmtParser : GdStmtBaseParser {
 
     override val STMT_TYPE: IElementType = CONST_DECL_ST
     override val endWithEndStmt: Boolean = true
-    override val pinnable: Boolean = false
 
     override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
         if (!b.nextTokenIs(CONST)) return optional

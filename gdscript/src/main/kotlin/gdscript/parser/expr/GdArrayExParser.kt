@@ -1,25 +1,19 @@
-//package gdscript.parser.expr
-//
-//import com.intellij.lang.PsiBuilder
-//import com.intellij.psi.tree.IElementType
-//import gdscript.psi.GdTypes.*
-//import gdscript.utils.PsiBuilderUtil.consumeToken
-//
-//object GdArrayExParser : GdExprBaseParser {
-//
-//    override val EXPR_TYPE: IElementType = ARR_EX
-//
-//    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
-//        val m = b.mark()
-//        var ok = true
-//        ok = ok && b.consumeToken(LSBR, true)
-//        ok = ok && GdExprParser.parse(b, false)
-//        ok = ok && b.consumeToken(RSBR, true)
-//
-//        if (ok) m.drop()
-//        else m.rollbackTo()
-//
-//        return ok
-//    }
-//
-//}
+package gdscript.parser.expr
+
+import com.intellij.psi.tree.IElementType
+import gdscript.parser.GdPsiBuilder
+import gdscript.psi.GdTypes.*
+
+object GdArrayExParser : GdExprBaseParser {
+
+    override val EXPR_TYPE: IElementType = ARR_EX
+
+    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+        var ok = b.consumeToken(LSBR, pin = true)
+        ok = ok && GdExprParser.parse(b, true)
+        ok = ok && b.consumeToken(RSBR)
+
+        return ok
+    }
+
+}
