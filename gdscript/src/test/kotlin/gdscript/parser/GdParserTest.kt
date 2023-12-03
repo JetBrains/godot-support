@@ -52,18 +52,18 @@ class GdParserTest : ParsingTestCase {
     @Test fun testFuncDeclExprExt() = doTest(true)
     @Test fun testFuncDeclExprParam() = doTest(true)
     @Test fun testLambdaCallExpr() = doTest(true)
+    @Test fun testInExpr() = doTest(true)
+    @Test fun testIsExpr() = doTest(true)
+    @Test fun testLogicExpr() = doTest(true)
+    @Test fun testNegateExpr() = doTest(true)
 
     @Test fun testNestedCallExpr() = doTest(true)
     @Test fun testPrimaryBracketExpr() = doTest(true)
     @Test fun testDictDeclExpr() = doTest(true)
     @Test fun testTernaryExpr() = doTest(true)
-    @Test fun testLogicExpr() = doTest(true)
-    @Test fun testNegateExpr() = doTest(true)
-    @Test fun testInExpr() = doTest(true)
     @Test fun testShiftExpr() = doTest(true)
     @Test fun testPlusExpr() = doTest(true)
     @Test fun testSignExpr() = doTest(true)
-    @Test fun testIsExpr() = doTest(true)
 
     override fun getTestDataPath(): String {
         return "src/test/kotlin/gdscript/parser/data"

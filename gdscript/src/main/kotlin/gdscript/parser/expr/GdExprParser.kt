@@ -12,7 +12,7 @@ object GdExprParser : GdBaseParser {
 
     init {
         parsers.add(GdFuncDeclExParser)
-//        parsers.add(GdNegateExParser)
+        parsers.add(GdNegateExParser)
         parsers.add(GdAwaitExParser)
         parsers.add(GdPlusExParser)
         parsers.add(GdBitNotExParser)
@@ -22,14 +22,14 @@ object GdExprParser : GdBaseParser {
         leftLeadParsers.add(GdArrayExParser)
         leftLeadParsers.add(GdCastExParser)
 //        leftLeadParsers.add(GdTernaryExParser)
-//        leftLeadParsers.add(GdLogicExParser)
-//        leftLeadParsers.add(GdInExParser)
+        leftLeadParsers.add(GdLogicExParser)
+        leftLeadParsers.add(GdInExParser)
         leftLeadParsers.add(GdComparisonExParser)
         leftLeadParsers.add(GdBitExParser)
 //        leftLeadParsers.add(GdShiftExParser)
 //        leftLeadParsers.add(GdPlusExParser)
         leftLeadParsers.add(GdFactorExParser)
-//        leftLeadParsers.add(GdIsExParser)
+        leftLeadParsers.add(GdIsExParser)
         leftLeadParsers.add(GdAttributeExParser)
         leftLeadParsers.add(GdCallExParser)
     }

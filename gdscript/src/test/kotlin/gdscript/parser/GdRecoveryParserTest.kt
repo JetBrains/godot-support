@@ -39,6 +39,11 @@ class GdRecoveryParserTest : ParsingTestCase {
     @Test fun testAwaitExpr() = doTest(true)
     @Test fun testBitExpr() = doTest(true)
 
+    @Test fun testInExpr() = doTest(true)
+    @Test fun testIsExpr() = doTest(true)
+    @Test fun testLogicExpr() = doTest(true)
+    @Test fun testNegateExpr() = doTest(true)
+
     override fun getTestDataPath(): String {
         return "src/test/kotlin/gdscript/parser/recoveryData"
     }
