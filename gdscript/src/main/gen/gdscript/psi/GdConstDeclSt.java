@@ -19,7 +19,7 @@ public interface GdConstDeclSt extends GdStmt {
   @Nullable
   GdTyped getTyped();
 
-  @NotNull
+  @Nullable
   GdVarNmi getVarNmi();
 
   @NotNull

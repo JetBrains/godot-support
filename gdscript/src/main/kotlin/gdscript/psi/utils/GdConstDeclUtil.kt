@@ -17,7 +17,7 @@ object GdConstDeclUtil {
     /** Local */
 
     fun getName(element: GdConstDeclSt): String {
-        return element.varNmi.name ?: "";
+        return element.varNmi?.name ?: "";
     }
 
 }

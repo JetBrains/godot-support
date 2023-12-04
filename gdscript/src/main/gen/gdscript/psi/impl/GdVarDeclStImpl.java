@@ -52,9 +52,9 @@ public class GdVarDeclStImpl extends GdStmtImpl implements GdVarDeclSt {
   }
 
   @Override
-  @NotNull
+  @Nullable
   public GdVarNmi getVarNmi() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi.class));
+    return PsiTreeUtil.getChildOfType(this, GdVarNmi.class);
   }
 
   @Override

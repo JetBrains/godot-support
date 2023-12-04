@@ -77,14 +77,14 @@ class GdAddReturnType : BaseIntentionAction {
         return Pair(offset, ": $desired")
     }
 
-    private fun varDeclSt(element: GdVarDeclSt): Pair<Int, String> {
-        val offset = element.varNmi.endOffset
+    private fun varDeclSt(element: GdVarDeclSt): Pair<Int, String>? {
+        val offset = element.varNmi?.endOffset ?: return null
 
         return Pair(offset, ": $desired")
     }
 
-    private fun constDeclSt(element: GdConstDeclSt): Pair<Int, String> {
-        val offset = element.varNmi.endOffset
+    private fun constDeclSt(element: GdConstDeclSt): Pair<Int, String>? {
+        val offset = element.varNmi?.endOffset ?: return null
 
         return Pair(offset, ": $desired")
     }
