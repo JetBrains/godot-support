@@ -22,6 +22,7 @@ class GdRecoveryParserTest : ParsingTestCase {
     @Test fun testClass() = doTest(true)
 
     // Stmts
+//    @Test fun testAnnotationInner() = doTest(true)
     @Test fun testAssignStmt() = doTest(true)
     @Test fun testVarConstStmt() = doTest(true)
     @Test fun testIfStmt() = doTest(true)

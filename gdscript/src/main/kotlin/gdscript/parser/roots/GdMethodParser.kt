@@ -46,6 +46,7 @@ object GdMethodParser : GdBaseParser {
                 MASTERSYNC,
                 PUPPETSYNC,
                 STATIC,
+                VARARG,
             )
         ) {
             marked = true

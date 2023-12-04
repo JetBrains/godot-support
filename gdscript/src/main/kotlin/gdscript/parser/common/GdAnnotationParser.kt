@@ -14,7 +14,7 @@ interface GdAnnotationParser : GdBaseParser {
         var ok = b.mceAnyOf(ANNOTATION_TYPE, false, ANNOTATOR)
         b.pin()
         if (ok && b.passToken(LRBR)) {
-            ok = ok && parseParams(b)
+            ok && parseParams(b)
             ok = ok && b.consumeToken(RRBR)
         }
 

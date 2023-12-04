@@ -1,3 +1,3 @@
 func a():
-    @warning_ignore("unrea"
+    @warning_ignore()
     a = 1
