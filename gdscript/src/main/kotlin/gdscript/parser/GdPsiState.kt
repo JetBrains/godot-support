@@ -39,7 +39,7 @@ class GdPsiState {
 
         currentFrame = currentFrame?.parent
         if (errorType != null && !isError) {
-            b.error(errorType.debugName, false)
+            b.error(errorType.toString(), false)
         }
 
         return res

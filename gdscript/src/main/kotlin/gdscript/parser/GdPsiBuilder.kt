@@ -75,7 +75,7 @@ class GdPsiBuilder {
             pin(pin)
             return true
         } else if (!optional) {
-            error(elementType.debugName, false)
+            error(elementType.toString(), false)
             return false
         }
 
@@ -188,11 +188,11 @@ class GdPsiBuilder {
     }
 
     private fun consumeUnexpected(vararg elementTypes: IElementType) {
-        error(elementTypes.getOrNull(0)?.debugName ?: "{}")
+        error(elementTypes.getOrNull(0)?.toString() ?: "{}")
     }
 
     private fun consumeUnexpected(elementType: IElementType) {
-        error(elementType.debugName)
+        error(elementType.toString())
     }
 
     private fun consumeUnexpected(expected: String) {
