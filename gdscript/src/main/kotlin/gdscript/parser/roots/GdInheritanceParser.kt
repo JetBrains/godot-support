@@ -7,7 +7,8 @@ import gdscript.psi.GdTypes.*
 
 object GdInheritanceParser : GdBaseParser {
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "Inheritance")) return false
         if (!b.nextTokenIs(EXTENDS)) return optional
 
         b.enterSection(INHERITANCE)

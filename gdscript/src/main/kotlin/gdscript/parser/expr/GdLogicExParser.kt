@@ -8,10 +8,11 @@ object GdLogicExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = LOGIC_EX
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "LogicExpr")) return false
         var ok = b.passToken(ANDAND, OROR)
         b.pin(ok)
-        ok = ok && GdExprParser.parse(b)
+        ok = ok && GdExprParser.parse(b, l + 1)
         b.errorPin(ok, "expression")
 
         return ok || b.pinned()

@@ -12,7 +12,7 @@ object GdRecovery : GdBaseParser {
     fun stmt(b: GdPsiBuilder, result: Boolean = true) = recoverUntil(b, result, *STMT)
     fun stmtNoLine(b: GdPsiBuilder, result: Boolean = true) = recoverUntil(b, result, *STMT_NO_LINE)
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         TODO("Not yet implemented")
     }
 

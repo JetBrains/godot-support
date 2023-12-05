@@ -9,9 +9,10 @@ object GdNegateExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = NEGATE_EX
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "NegateExpr")) return false
         var ok = b.consumeToken(NEGATE, pin = true)
-        ok = ok && GdExprParser.parse(b)
+        ok = ok && GdExprParser.parse(b, l + 1)
         b.errorPin(ok, "expression")
 
         return ok || b.pinned()

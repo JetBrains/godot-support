@@ -7,7 +7,8 @@ import gdscript.psi.GdTypes.*
 
 object GdClassNameParser : GdBaseParser {
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "ClassName")) return false
         if (!b.nextTokenIs(CLASS_NAME)) return optional
 
         b.enterSection(CLASS_NAMING)

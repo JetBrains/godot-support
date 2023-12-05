@@ -11,17 +11,18 @@ object GdFuncDeclExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = FUNC_DECL_EX
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "FuncDeclExpr")) return false
         if (!b.nextTokenIs(FUNC)) return false
 
         var ok = b.consumeToken(FUNC, pin = true)
         if (b.nextTokenIs(IDENTIFIER)) b.mceIdentifier(FUNC_DECL_ID_NMI)
         ok = ok && b.consumeToken(LRBR)
-        ok = ok && GdParamListParser.parse(b, true)
+        ok = ok && GdParamListParser.parse(b, l + 1, true)
         ok = ok && b.consumeToken(RRBR)
-        ok = ok && GdReturnHintParser.parse(b, true)
+        ok = ok && GdReturnHintParser.parse(b, l + 1, true)
         ok = ok && b.consumeToken(COLON)
-        ok = ok && GdStmtParser.parseLambda(b, false, true)
+        ok = ok && GdStmtParser.parseLambda(b, l + 1, false, true)
 
         return ok || b.pinned()
     }

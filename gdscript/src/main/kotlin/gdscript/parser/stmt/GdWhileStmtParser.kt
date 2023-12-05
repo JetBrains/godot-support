@@ -10,15 +10,15 @@ object GdWhileStmtParser : GdStmtBaseParser {
     override val STMT_TYPE: IElementType = WHILE_ST
     override val endWithEndStmt: Boolean = false
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.nextTokenIs(WHILE)) return false
 
         var ok = b.consumeToken(WHILE, pin = true)
-        ok = ok && GdExprParser.parse(b)
+        ok = ok && GdExprParser.parse(b, l + 1)
         b.errorPin(ok, "expression")
         ok = ok && b.consumeToken(COLON)
 
-        ok = ok && GdStmtParser.parse(b)
+        ok = ok && GdStmtParser.parse(b, l + 1)
         b.errorPin(ok, "statement")
 
         return ok

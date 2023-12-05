@@ -10,11 +10,12 @@ object GdCastExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = CAST_EX
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "CastExpr")) return false
         var ok = true
 
         ok = ok && b.consumeToken(AS)
-        ok = ok && GdTypedParser.typedVal(b, false)
+        ok = ok && GdTypedParser.typedVal(b, l + 1, false)
 
         return ok
     }

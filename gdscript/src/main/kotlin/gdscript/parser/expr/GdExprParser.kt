@@ -34,12 +34,12 @@ object GdExprParser : GdBaseParser {
         leftLeadParsers.add(GdCallExParser)
     }
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         var latestMark: Marker? = null
         if (
             !parsers.any {
                 latestMark = b.enterSection(it.EXPR_TYPE)
-                val ok = it.parse(b)
+                val ok = it.parse(b, l + 1)
                 b.exitSection(ok, true)
                 ok
             }
@@ -52,7 +52,7 @@ object GdExprParser : GdBaseParser {
             leftLeadParsers.any {
                 type = it.EXPR_TYPE
                 b.enterSection(it.EXPR_TYPE)
-                val ok = it.parse(b) || b.pinned()
+                val ok = it.parse(b, l + 1) || b.pinned()
 
                 b.dropSection(ok)
             }

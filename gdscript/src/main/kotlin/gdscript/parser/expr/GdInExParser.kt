@@ -9,9 +9,10 @@ object GdInExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = IN_EX
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "InExpr")) return false
         var ok = b.consumeToken(IN, pin = true)
-        ok = ok && GdExprParser.parse(b)
+        ok = ok && GdExprParser.parse(b, l + 1)
         b.errorPin(ok, "expression")
 
         return ok || b.pinned()

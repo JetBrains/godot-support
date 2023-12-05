@@ -8,7 +8,8 @@ object GdLiteralExParser : GdExprBaseParser {
 
     override val EXPR_TYPE: IElementType = LITERAL_EX
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "LiteralExpr")) return false
         if (b.nextTokenIs(LITERAL_EX, TRUE, FALSE, STRING_NAME, NODE_PATH_LIT, NUMBER, NULL, NAN, INF)) {
             b.advance()
             return true
@@ -31,9 +32,10 @@ object GdLiteralExParser : GdExprBaseParser {
         return false
     }
 
-    fun parseAndMark(b: GdPsiBuilder): Boolean {
+    fun parseAndMark(b: GdPsiBuilder, l: Int): Boolean {
+        if (!b.recursionGuard(l, "LiteralExprMark")) return false
         b.enterSection(LITERAL_EX)
-        val ok = parse(b)
+        val ok = parse(b, l + 1)
         b.exitSection(ok)
 
         return ok

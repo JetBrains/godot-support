@@ -6,7 +6,8 @@ import gdscript.psi.GdTypes.*
 
 object GdReturnHintParser : GdBaseParser {
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "ReturnHint")) return false
         if (!b.nextTokenIs(RET)) return optional
 
         b.enterSection(RETURN_HINT)
@@ -14,7 +15,7 @@ object GdReturnHintParser : GdBaseParser {
 
         b.enterSection(RETURN_HINT_VAL)
         if (!b.passToken(VOID)) {
-            ok = ok && GdTypedParser.typedVal(b, false)
+            ok = ok && GdTypedParser.typedVal(b, l + 1, false)
         }
 
         b.exitSection(ok)

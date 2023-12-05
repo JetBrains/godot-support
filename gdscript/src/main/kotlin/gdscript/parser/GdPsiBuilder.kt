@@ -2,11 +2,14 @@ package gdscript.parser
 
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.PsiBuilder.Marker
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import gdscript.psi.GdTypes
 import io.ktor.util.*
 
 class GdPsiBuilder {
+
+    val MAX_RECURSION_LEVEL = StringUtil.parseInt(System.getProperty("grammar.kit.gpub.max.level"), 1000)
 
     val b: PsiBuilder
     val state: GdPsiState
@@ -197,6 +200,16 @@ class GdPsiBuilder {
 
     private fun consumeUnexpected(expected: String) {
         error(expected)
+    }
+
+
+    fun recursionGuard(level: Int, funcName: String?): Boolean {
+        if (level > MAX_RECURSION_LEVEL) {
+            b.mark().error("Maximum recursion level ($MAX_RECURSION_LEVEL) reached $funcName")
+            return false
+        }
+
+        return true
     }
 
 }

@@ -7,7 +7,8 @@ import gdscript.psi.GdTypes.*
 
 object GdEnumParser : GdBaseParser {
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "Enum")) return false
         if (!b.nextTokenIs(ENUM)) return optional
 
         b.enterSection(ENUM_DECL_TL)
@@ -19,7 +20,7 @@ object GdEnumParser : GdBaseParser {
 
         val lcbr = ok && b.passToken(LCBR)
         while (ok && b.nextTokenIs(IDENTIFIER)) {
-            ok = enumValue(b)
+            ok = enumValue(b, l + 1)
             if (!b.passToken(COMMA)) break
         }
 
@@ -31,7 +32,8 @@ object GdEnumParser : GdBaseParser {
         return b.exitSection(ok)
     }
 
-    private fun enumValue(b: GdPsiBuilder): Boolean {
+    private fun enumValue(b: GdPsiBuilder, l: Int): Boolean {
+        if (!b.recursionGuard(l, "EnumValue")) return false
         b.enterSection(ENUM_VALUE)
         b.mceIdentifier(ENUM_VALUE_NMI)
 

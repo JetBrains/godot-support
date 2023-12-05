@@ -8,12 +8,13 @@ import gdscript.psi.GdTypes.*
 
 object GdArgListParser : GdBaseParser {
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "ArgList")) return false
         b.enterSection(ARG_LIST)
 
-        var ok = b.pin(argExpr(b))
+        var ok = b.pin(argExpr(b, l + 1))
         while (b.consumeToken(COMMA, true)) {
-            argExpr(b)
+            argExpr(b, l + 1)
         }
 
         ok && GdRecovery.argumentList(b)
@@ -22,10 +23,11 @@ object GdArgListParser : GdBaseParser {
         return ok || optional
     }
 
-    private fun argExpr(b: GdPsiBuilder): Boolean {
+    private fun argExpr(b: GdPsiBuilder, l: Int): Boolean {
+        b.recursionGuard(l + 1, "ArgExpr")
         b.enterSection(ARG_EXPR)
 
-        var ok = GdExprParser.parse(b)
+        var ok = GdExprParser.parse(b, l + 1)
         b.exitSection(ok)
 
         return ok

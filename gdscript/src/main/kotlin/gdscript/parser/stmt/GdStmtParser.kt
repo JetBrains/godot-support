@@ -23,18 +23,21 @@ object GdStmtParser : GdBaseParser {
         parsers.add(GdExStmtParser)
     }
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
-        return parseLambda(b, optional, false)
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "Stmt")) return false
+        return parseLambda(b, l + 1, optional, false)
     }
 
-    fun parseLambda(b: GdPsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
+    fun parseLambda(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
+        if (!b.recursionGuard(l, "Lambda")) return false
         b.enterSection(STMT_OR_SUITE)
-        var ok = suite(b, false, asLambda) || stmt(b, optional, asLambda)
+        var ok = suite(b, l + 1, false, asLambda) || stmt(b, l + 1, optional, asLambda)
 
         return b.exitSection(ok)
     }
 
-    private fun suite(b: GdPsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
+    private fun suite(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
+        if (!b.recursionGuard(l, "Suite")) return false
         if (!b.nextTokenIs(NEW_LINE)) return optional
         var ok = true
         val suite = b.mark()
@@ -42,10 +45,10 @@ object GdStmtParser : GdBaseParser {
         ok = ok && b.consumeToken(INDENT)
         b.pin(ok)
 
-        ok = ok && stmt(b, false, asLambda)
+        ok = ok && stmt(b, l + 1, false, asLambda)
         moved = true
         while (ok && moved) {
-            ok = ok && stmt(b, true, asLambda)
+            ok = ok && stmt(b, l + 1, true, asLambda)
         }
         if (asLambda && b.nextTokenIs(NEW_LINE)) {
             b.remapCurrentToken(DEDENT)
@@ -65,13 +68,14 @@ object GdStmtParser : GdBaseParser {
         return ok || b.pinned() || optional
     }
 
-    private fun stmt(b: GdPsiBuilder, optional: Boolean, asLambda: Boolean): Boolean {
+    private fun stmt(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
+        if (!b.recursionGuard(l, "InnerStmt")) return false
         moved = false
 
         if (
             parsers.any {
                 b.enterSection(it.STMT_TYPE)
-                var ok = it.parse(b)
+                var ok = it.parse(b, l + 1)
                 ok = ok || b.pinned()
 
                 if (asLambda) {

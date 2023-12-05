@@ -41,7 +41,7 @@ class GdRootParser : PsiParser, LightPsiParser {
     fun parseLightGd(root: IElementType, b: GdPsiBuilder) {
         val document = b.mark()
         while (!b.eof) {
-            val any = topLevelParsers.any { it.parse(b) }
+            val any = topLevelParsers.any { it.parse(b, 0) }
             if (!any) {
                 val m = b.mark()
                 val text = b.tokenText

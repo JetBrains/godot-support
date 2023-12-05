@@ -8,11 +8,12 @@ import gdscript.psi.GdTypes.*
 
 object GdAnnotationTlParser : GdAnnotationParser {
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "AnnotationTl")) return false
         if (!b.nextTokenIs(ANNOTATOR)) return optional
         b.enterSection(ANNOTATION_TL)
 
-        var ok = super.parse(b, optional)
+        var ok = super.parse(b, l + 1, optional)
 
         while (b.nextTokenIs(NEW_LINE)) {
             b.remapCurrentToken(TokenType.WHITE_SPACE)

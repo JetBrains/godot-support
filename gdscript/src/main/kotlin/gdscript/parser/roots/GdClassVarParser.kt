@@ -10,7 +10,8 @@ import gdscript.psi.GdTypes.*
 
 object GdClassVarParser : GdBaseParser {
 
-    override fun parse(b: GdPsiBuilder, optional: Boolean): Boolean {
+    override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        if (!b.recursionGuard(l, "ClassVar")) return false
         if (!b.nextTokenIs(VAR, STATIC)) return optional
 
         b.enterSection(CLASS_VAR_DECL_TL)
@@ -18,15 +19,16 @@ object GdClassVarParser : GdBaseParser {
         var ok = b.consumeToken(VAR, pin = true)
         ok = ok && b.mceIdentifier(VAR_NMI)
 
-        ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, true)
-        ok = ok && (parseGetSet(b) || b.mceEndStmt())
+        ok = ok && GdTypedParser.parseWithAssignTypedAndExpr(b, l + 1, true)
+        ok = ok && (parseGetSet(b, l + 1) || b.mceEndStmt())
 
         GdRecovery.topLevel(b, ok)
 
         return b.exitSection(ok)
     }
 
-    private fun parseGetSet(b: GdPsiBuilder): Boolean {
+    private fun parseGetSet(b: GdPsiBuilder, l: Int): Boolean {
+        if (!b.recursionGuard(l, "GetSet")) return false
         if (!b.nextTokenIs(COLON)) return false
 
         b.enterSection(SETGET_DECL)
@@ -40,7 +42,7 @@ object GdClassVarParser : GdBaseParser {
         }
 
         while (ok) {
-            ok = parseGet(b) || parseSet(b)
+            ok = parseGet(b, l + 1) || parseSet(b, l + 1)
             b.passToken(COMMA) && b.mceEndStmt(true)
         }
 
@@ -52,47 +54,51 @@ object GdClassVarParser : GdBaseParser {
         return ok
     }
 
-    private fun parseGet(b: GdPsiBuilder): Boolean {
+    private fun parseGet(b: GdPsiBuilder, l: Int): Boolean {
+        if (!b.recursionGuard(l, "Get")) return false
         if (!b.nextTokenIs(GET)) return false
 
         b.enterSection(GET_DECL)
         var ok = b.consumeToken(GET, pin = true)
 
-        ok = ok && (parseMethodVersion(b, GET_METHOD_ID_NM) || parseStmtVersion(b, GET))
+        ok = ok && (parseMethodVersion(b, l + 1, GET_METHOD_ID_NM) || parseStmtVersion(b, l + 1, GET))
         GdRecovery.setGet(b)
 
         return b.exitSection(ok)
     }
 
-    private fun parseSet(b: GdPsiBuilder): Boolean {
+    private fun parseSet(b: GdPsiBuilder, l: Int): Boolean {
+        if (!b.recursionGuard(l, "Set")) return false
         if (!b.nextTokenIs(SET)) return false
 
         b.enterSection(SET_DECL)
         var ok = b.consumeToken(SET, pin = true)
-        ok = ok && (parseMethodVersion(b, SET_METHOD_ID_NM) || parseStmtVersion(b, SET))
+        ok = ok && (parseMethodVersion(b, l + 1, SET_METHOD_ID_NM) || parseStmtVersion(b, l + 1, SET))
         GdRecovery.setGet(b)
 
         return b.exitSection(ok)
     }
 
-    private fun parseMethodVersion(b: GdPsiBuilder, markerType: IElementType): Boolean {
+    private fun parseMethodVersion(b: GdPsiBuilder, l: Int, markerType: IElementType): Boolean {
+        if (!b.recursionGuard(l, "MethodGetSet")) return false
         var ok = b.passToken(EQ)
         ok = ok && b.mceIdentifier(markerType)
 
         return ok
     }
 
-    private fun parseStmtVersion(b: GdPsiBuilder, markerType: IElementType): Boolean {
+    private fun parseStmtVersion(b: GdPsiBuilder, l: Int, markerType: IElementType): Boolean {
+        if (!b.recursionGuard(l, "StmtGetSet")) return false
         var ok = true
         if (markerType == SET) {
             ok = ok && b.consumeToken(LRBR)
             ok = ok && b.mceIdentifier(VAR_NMI)
-            ok = ok && GdTypedParser.parse(b, true)
+            ok = ok && GdTypedParser.parse(b, l + 1, true)
             ok = ok && b.consumeToken(RRBR)
         }
 
         ok = ok && b.consumeToken(COLON)
-        ok = ok && GdStmtParser.parse(b, false)
+        ok = ok && GdStmtParser.parse(b, l + 1, false)
 
         return ok
     }
