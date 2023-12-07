@@ -6,14 +6,13 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.nextLeaf
 import gdscript.GdKeywords
-import gdscript.utils.GdOperand
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.*
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
+import gdscript.utils.GdOperand
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import project.psi.model.GdAutoload
 
@@ -173,6 +172,7 @@ object PsiGdExprUtil {
                             if (PsiTreeUtil.nextVisibleLeaf(expr)?.elementType == GdTypes.LRBR) element.returnType
                             else "Callable"
                         }
+                        is GdParam -> element.returnType
                         is GdSignalDeclTl -> "Signal"
                         is GdEnumDeclTl -> "EnumDictionary"
                         is GdEnumValue -> GdKeywords.INT
