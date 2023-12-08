@@ -3,7 +3,10 @@ package gdscript.psi
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import gdscript.psi.impl.*
+import gdscript.psi.impl.GdClassDeclElementType
+import gdscript.psi.impl.GdClassIdElementType
+import gdscript.psi.impl.GdClassNamingElementType
+import gdscript.psi.impl.GdInheritanceElementType
 import gdscript.psi.utils.*
 import gdscript.structureView.GdPresentationUtil
 
@@ -29,7 +32,7 @@ object GdPsiUtils {
 
     /** Enum  */
     @JvmStatic fun getName(element: GdEnumDeclTl): String = GdEnumUtil.getName(element)
-    @JvmStatic fun getValues(element: GdEnumDeclTl): HashMap<String, Int> = PsiGdEnumUtil.values(element)
+    @JvmStatic fun getValues(element: GdEnumDeclTl): HashMap<String, Long> = PsiGdEnumUtil.values(element)
     @JvmStatic fun getPresentation(element: GdEnumDeclTl): ItemPresentation = GdPresentationUtil.presentation(element)
 
     /** Const */

@@ -60,7 +60,7 @@ public class GdEnumDeclTlImpl extends GdEnumDeclElementImpl implements GdEnumDec
 
   @Override
   @NotNull
-  public HashMap<String, Integer> getValues() {
+  public HashMap<String, Long> getValues() {
     return GdPsiUtils.getValues(this);
   }
 

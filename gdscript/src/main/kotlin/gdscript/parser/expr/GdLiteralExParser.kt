@@ -21,7 +21,7 @@ object GdLiteralExParser : GdExprBaseParser {
 
         // func - Array.gd, signal: Vector2.gd, class_name - Array.gd, FileAccess - pass
         // tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě, stejně jako metody
-        if (b.mcToken(REF_ID_NM, IDENTIFIER, GET, SET, MATCH, SIGNAL, FUNC, CLASS_NAME, PASS, CLASS)) {
+        if (parseExtendedRefId(b)) {
             return true
         }
 
@@ -39,6 +39,22 @@ object GdLiteralExParser : GdExprBaseParser {
         b.exitSection(ok)
 
         return ok
+    }
+
+    fun checkExtendedRefId(b: GdPsiBuilder): Boolean {
+        return b.nextTokenIs(IDENTIFIER, GET, SET, MATCH, SIGNAL, FUNC, CLASS_NAME, PASS, CLASS)
+    }
+
+    fun parseExtendedRefId(b: GdPsiBuilder, type: IElementType? = null): Boolean {
+        if (checkExtendedRefId(b)) {
+            val m = b.mark()
+            b.advance()
+            if (type != null) m.done(type)
+            else m.done(REF_ID_NM)
+            return true
+        }
+
+        return false
     }
 
 }

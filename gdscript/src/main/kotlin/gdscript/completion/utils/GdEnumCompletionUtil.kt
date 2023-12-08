@@ -10,7 +10,7 @@ import gdscript.psi.GdEnumValue
 
 object GdEnumCompletionUtil {
 
-    fun lookup(name: String, value: Int? = null): LookupElement {
+    fun lookup(name: String, value: Long? = null): LookupElement {
         return GdLookup.create(
             name,
             icon = GdIcon.getEditorIcon(GdIcon.ENUM_MARKER),

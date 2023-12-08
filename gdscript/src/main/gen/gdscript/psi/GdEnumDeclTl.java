@@ -24,7 +24,7 @@ public interface GdEnumDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdEnum
   String getName();
 
   @NotNull
-  HashMap<String, Integer> getValues();
+  HashMap<String, Long> getValues();
 
   @NotNull
   ItemPresentation getPresentation();

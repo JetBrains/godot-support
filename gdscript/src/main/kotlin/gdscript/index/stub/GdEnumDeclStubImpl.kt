@@ -7,20 +7,20 @@ import gdscript.psi.impl.GdEnumDeclElementType
 
 class GdEnumDeclStubImpl : StubBase<GdEnumDeclTl>, GdEnumDeclStub {
 
-    private var name: String = "";
-    private var values: HashMap<String, Int> = HashMap();
+    private var name: String = ""
+    private var values: HashMap<String, Long> = HashMap()
 
-    constructor(parent: StubElement<*>?, name: String?, values: HashMap<String, Int>): super(parent, GdEnumDeclElementType) {
+    constructor(parent: StubElement<*>?, name: String?, values: HashMap<String, Long>): super(parent, GdEnumDeclElementType) {
         this.name = name.orEmpty();
-        this.values = values;
+        this.values = values
     }
 
     override fun name(): String {
-        return name;
+        return name
     }
 
-    override fun values(): HashMap<String, Int> {
-        return values;
+    override fun values(): HashMap<String, Long> {
+        return values
     }
 
 }
