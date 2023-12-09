@@ -20,8 +20,10 @@ import gdscript.utils.GdSdkUtil.versionToSdkZip
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.serialization.*
-import kotlinx.serialization.json.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import org.apache.commons.io.FileUtils
 import java.io.File
 import java.net.URI
 import java.net.URL
@@ -34,6 +36,8 @@ import java.util.zip.ZipFile
 import javax.swing.JComboBox
 
 object GdLibraryManager {
+
+    var project: Project? = null
 
     val LIBRARY_NAME = "GdSdk"
 
@@ -121,6 +125,45 @@ object GdLibraryManager {
                         rootModel.removeOrderEntry(it)
                 }
                 rootModel.addLibraryEntry(library)
+                rootModel.commit()
+            }
+        }
+    }
+
+    fun clearSdks() {
+        if (project == null) return
+        ApplicationManager.getApplication().invokeAndWait {
+            runWriteAction {
+                val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project!!).modifiableModel
+                val tableModel = ApplicationManager
+                    .getApplication()
+                    .getService(ModifiableModelsProvider::class.java)
+                    .libraryTableModifiableModel
+
+                modifier.getLibraryByName(LIBRARY_NAME)?.let { modifier.removeLibrary(it) }
+                listRegisteredSdks().forEach {
+                    it.rootProvider.getFiles(OrderRootType.SOURCES).forEach { dir ->
+                        try {
+                            FileUtils.deleteDirectory(File(dir.path))
+                        } catch (e: Error) {
+                        }
+                    }
+                    modifier.removeLibrary(it)
+                    tableModel.removeLibrary(it)
+                }
+                try {
+                    modifier.commit()
+                } catch (e: Error) {}
+                try {
+                    tableModel.commit()
+                } catch (e: Error) {}
+
+                val module = ModuleManager.getInstance(project!!).modules.first()
+                val rootModel = ModuleRootManager.getInstance(module).modifiableModel
+                rootModel.orderEntries.forEach {
+                    if (it is LibraryOrderEntry && it.libraryName == LIBRARY_NAME){}
+                        rootModel.removeOrderEntry(it)
+                }
                 rootModel.commit()
             }
         }

@@ -10,7 +10,7 @@ import com.intellij.util.ui.FormBuilder
 import gdscript.library.GdLibraryManager
 import gdscript.library.GdLibraryProperties
 import gdscript.settings.component.GdSettingsComponents
-import java.awt.*
+import java.awt.Dimension
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
@@ -24,6 +24,7 @@ class GdSettingsComponent(val project: Project) {
     private val annotatorsCb = ComboBox<String>()
     private val selectSdk = GdSettingsComponents.selectSdk()
     private val addSdk: JButton = GdSettingsComponents.addSdk(selectSdk, this)
+    private val removeAllSdks: JButton = JButton("Remove all SDKs")
 
     init {
         annotatorsCb.addItem(GdProjectState.OFF)
@@ -37,8 +38,15 @@ class GdSettingsComponent(val project: Project) {
         sdkPanel.add(selectSdk, GridConstraints(0, 0, 1, 1, 8, 1, 2, 0, dimension, dimension, dimension, 0, false))
         sdkPanel.add(addSdk, GridConstraints(0, 1, 1, 1, 8, 0, 0, 0, dimension, dimension, Dimension(30, 30), 0, false))
 
+        removeAllSdks.addActionListener {
+            sdkPath = null
+            selectSdk.removeAllItems()
+            GdLibraryManager.clearSdks()
+        }
+
         panel = FormBuilder.createFormBuilder()
                 .addLabeledComponent("GdScript SDK", sdkPanel, 1, true)
+                .addComponent(removeAllSdks, 1)
                 .addComponent(hidePrivateCheck, 1)
                 .addComponent(shouldTypeCheck, 1)
                 .addComponent(shortTypedCheck, 1)
@@ -56,7 +64,13 @@ class GdSettingsComponent(val project: Project) {
         }
 
     var sdkPath: String?
-        get() = ((selectSdk.selectedItem as LibraryEx?)?.properties?.state as GdLibraryProperties?)?.path
+        get() {
+            try {
+                return ((selectSdk.selectedItem as LibraryEx?)?.properties?.state as GdLibraryProperties?)?.path
+            } catch (e: Exception) {
+                return null
+            }
+        }
         set(path) {
             for (i in 0 until selectSdk.itemCount) {
                 if (((selectSdk.getItemAt(i) as LibraryEx).properties.state as GdLibraryProperties).path == path) {

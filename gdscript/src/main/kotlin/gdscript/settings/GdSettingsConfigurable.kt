@@ -20,6 +20,7 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
 
     override fun createComponent(): JComponent? {
         component = GdSettingsComponent(project)
+        GdLibraryManager.project = project
 
         return component?.panel
     }
@@ -28,10 +29,10 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
         val settings = GdProjectSettingsState.getInstance(project).state
 
         return component?.hidePrivate != settings.hidePrivate
-                || component?.sdkPath != settings.sdkPath
-                || component?.shortTyped != settings.shortTyped
-                || component?.shouldType != settings.shouldType
-                || component?.annotators != settings.annotators
+            || component?.sdkPath != settings.sdkPath
+            || component?.shortTyped != settings.shortTyped
+            || component?.shouldType != settings.shouldType
+            || component?.annotators != settings.annotators
     }
 
     override fun apply() {

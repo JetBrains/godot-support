@@ -12,7 +12,10 @@ import gdscript.library.GdLibraryProperties
 import gdscript.settings.GdDownloadSdk
 import gdscript.settings.GdSettingsComponent
 import gdscript.utils.GdSdkUtil.versionToSdkName
-import java.awt.*
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.Point
+import java.awt.Toolkit
 import java.nio.file.Paths
 import javax.swing.*
 
@@ -30,7 +33,7 @@ object GdSettingsComponents {
                 value: Any?,
                 index: Int,
                 isSelected: Boolean,
-                cellHasFocus: Boolean
+                cellHasFocus: Boolean,
             ): Component {
                 var myValue = value
                 if (value is LibraryEx && value.kind is GdLibraryKind) {
