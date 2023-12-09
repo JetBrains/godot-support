@@ -15,7 +15,7 @@ object GdClassNameParser : GdBaseParser {
         var ok = b.consumeToken(CLASS_NAME, pin = true)
 
         ok = ok && b.mceIdentifier(CLASS_NAME_NMI)
-        ok = ok && b.mceEndStmt()
+        ok = ok && b.mceEndStmt(true)
 
         GdRecovery.topLevel(b)
         ok = b.exitSection(ok)
