@@ -54,7 +54,7 @@ This is outdated and no longer in use - the same goes for GdParser.java within `
 
 Whole Parser is rewritten into pure .kt files under `src/gdscript/parser/` the reason is that Godot is ContextAware language which bnf does not support.  
 
-On the same note classes inside `src/gen/gdscript/psi/` are obsolete - they are still used as they have been generated from .bnf (it'd too much work to move and update them), but should there be any change to Psi, .bnf generators cannot be used anymore, thus it's important to edit those files - preferably to also move them inside `src/kotlin/gdscript/psi/` when editing them.
+On the same note, classes inside `src/gen/gdscript/psi/` are obsolete - they are still used as they have been generated from .bnf (it'd be too much work to move and update them), but should there be any change to Psi, .bnf generators cannot be used anymore, thus it's important to edit those files - preferably to also move them inside `src/kotlin/gdscript/psi/` when editing them.
 
 .tscn and .project parsers are still using their .bnf grammars
 
