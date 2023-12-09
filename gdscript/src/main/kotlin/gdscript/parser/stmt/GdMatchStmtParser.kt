@@ -45,9 +45,10 @@ object GdMatchStmtParser : GdStmtBaseParser {
     private fun patternList(b: GdPsiBuilder, l: Int): Boolean {
         if (!b.recursionGuard(l, "PatternList")) return false
         val list = b.mark()
-        val ok = pattern(b, l + 1, false)
-        while (ok && b.nextTokenIs(COMMA))
-            pattern(b, l + 1, false)
+        var ok = pattern(b, l + 1, false)
+        while (ok && b.passToken(COMMA)) {
+            ok = ok && pattern(b, l + 1, false)
+        }
 
         if (ok) list.done(PATTERN_LIST)
         else list.drop()

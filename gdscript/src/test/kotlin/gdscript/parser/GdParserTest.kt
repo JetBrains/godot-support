@@ -39,6 +39,7 @@ class GdParserTest : ParsingTestCase {
     @Test fun testWhileStmt() = doTest(true)
     @Test fun testForStmt() = doTest(true)
     @Test fun testMatchStmt() = doTest(true)
+    @Test fun testMatchStmt2() = doTest(true)
 
     // Exprs
     @Test fun testArrayExpr() = doTest(true)
