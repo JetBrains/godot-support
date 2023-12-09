@@ -60,7 +60,7 @@ On the same note, classes inside `src/gen/gdscript/psi/` are obsolete - they are
 
 ## Development
 
-...I don't know what to write there... if you'd jump into development I'd say just get in touch with me and I can help you out... and fill in this part.
+...I don't know what to write there... if you'd jump into development I'd say just get in touch with me and I can help you out... and fill in this part. You can open Gitlab issue for any question you have.
 
 Maybe write there how to approach different features? But I'd start with tutorials mentioned above.
 
