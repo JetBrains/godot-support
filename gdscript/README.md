@@ -13,6 +13,7 @@ Work is in branch `parser` should anyone be interested to check it... you'll als
 
 [BuyMeACooffee](https://www.buymeacoffee.com/iceexplosive) 
 
+[CONTRIBUTE.md](CONTRIBUTE.md)
 
 # Installation
 
