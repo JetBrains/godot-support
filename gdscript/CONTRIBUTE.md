@@ -13,6 +13,7 @@ You don't have to read it all, but at least check if there's a chapter for a fea
 
 ## Development
 
+[Souce code](documentation%2Fcontribution%2Fsouce_code.md)  
 [Code flow overview](documentation%2Fcontribution%2Fcode_flow.md)
 
 #### Features

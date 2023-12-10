@@ -10,6 +10,9 @@ Walks file from begging to end matching it to many different regular expressions
 Each token than represents part of the code like keywords (func, for, var, class, class_name, ...), brackets, white space, signs (+, -, *, =, <, ...) and so on.  
 Lexer doesn't care for grammar and is generated from `.flex` files resulting in simple array of tokens passed to Parser.
 
+For GdScript there are 2 lexers, one for grammar parser and other for code highlight.  
+Reason is that GdScript script is Indent based which creates empty tokens that are unsupported in highlighter so any change that is not strictly regarding indentation must be reflected in both files.
+
 ## Parser
 Takes token array and parser it into PsiElement and PsiTree based on language grammar.  
 GdScript uses pure .kt parsers, while Scene and Project are using .bnf grammar as they are context free grammar unlike GdScript.
