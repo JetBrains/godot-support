@@ -19,4 +19,4 @@ Parser matches incoming tokens against rules f.e.: tokens CLASS_NAME IDENTIFIER 
 Resulting PsiTree, and it's PsiElements are used for pretty much everything else - Indexes for quick search, completion hints, LineMarkers, formatters, references, in-editor documentation, ...  
 All of which are invoked by editor itself when required.
 
-For more in-depth explanations please read check official [tutorial](https://plugins.jetbrains.com/docs/intellij/custom-language-support.html)  
+For more in-depth explanations please check official [tutorial](https://plugins.jetbrains.com/docs/intellij/custom-language-support.html)  
