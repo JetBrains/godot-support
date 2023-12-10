@@ -77,6 +77,9 @@ All of which are invoked by editor itself when required.
 
 For more in-depth explanations please read check official [tutorial](https://plugins.jetbrains.com/docs/intellij/custom-language-support.html)  
 
+#### Testing
+- [Parser test](documentation%2Fcontribution%2Fparser_tests.md)
+
 ## Important notes
 
 ### Debugging
