@@ -220,8 +220,8 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     {NODE_PATH}     { return dedentRoot(GdTypes.NODE_PATH_LIT); }
     {STRING_NAME}   { return dedentRoot(GdTypes.STRING_NAME); }
     {NODE_PATH_LEX} {
-          if (yytext().charAt(0) == '%') {
-              String preceeding = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 10), zzCurrentPos).trim();
+          if (yytext().toString().startsWith("%\"")) {
+              String preceeding = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 100), zzCurrentPos).trim();
               if (preceeding.length() > 1 && preceeding.charAt(preceeding.length() - 1) == '"') {
                   yypushback(yylength() - 1);
                   return dedentRoot(GdTypes.MOD);

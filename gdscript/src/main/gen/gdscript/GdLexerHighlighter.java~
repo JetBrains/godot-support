@@ -813,10 +813,9 @@ class GdLexerHighlighter implements FlexLexer {
           // fall through
           case 90: break;
           case 5:
-            { if (yytext().charAt(0) == '%') {
+            { if (yytext().toString().startsWith("%\"")) {
               String preceeding = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 10), zzCurrentPos).trim();
-              String lastChar = preceeding.substring(Math.max(0, preceeding.length() - 1));
-              if (lastChar == "\"") {
+              if (preceeding.length() > 1 && preceeding.charAt(preceeding.length() - 1) == '"') {
                   yypushback(yylength() - 1);
                   return GdTypes.MOD;
               }
