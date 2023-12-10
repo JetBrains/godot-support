@@ -1026,7 +1026,15 @@ class GdLexer implements FlexLexer {
           // fall through
           case 95: break;
           case 6:
-            { return dedentRoot(GdTypes.NODE_PATH_LEX);
+            { if (yytext().charAt(0) == '%') {
+              String preceeding = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 10), zzCurrentPos).trim();
+              if (preceeding.length() > 1 && preceeding.charAt(preceeding.length() - 1) == '"') {
+                  yypushback(yylength() - 1);
+                  return dedentRoot(GdTypes.MOD);
+              }
+          }
+
+          return dedentRoot(GdTypes.NODE_PATH_LEX);
             }
           // fall through
           case 96: break;

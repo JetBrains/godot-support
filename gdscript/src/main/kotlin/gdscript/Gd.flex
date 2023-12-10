@@ -219,7 +219,17 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
 
     {NODE_PATH}     { return dedentRoot(GdTypes.NODE_PATH_LIT); }
     {STRING_NAME}   { return dedentRoot(GdTypes.STRING_NAME); }
-    {NODE_PATH_LEX} { return dedentRoot(GdTypes.NODE_PATH_LEX); }
+    {NODE_PATH_LEX} {
+          if (yytext().charAt(0) == '%') {
+              String preceeding = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 10), zzCurrentPos).trim();
+              if (preceeding.length() > 1 && preceeding.charAt(preceeding.length() - 1) == '"') {
+                  yypushback(yylength() - 1);
+                  return dedentRoot(GdTypes.MOD);
+              }
+          }
+
+          return dedentRoot(GdTypes.NODE_PATH_LEX);
+    }
 
     {SINGLE_QUOTED_LITERAL}        { return dedentRoot(GdTypes.STRING); }
     {DOUBLE_QUOTED_LITERAL}        { return dedentRoot(GdTypes.STRING); }
