@@ -31,11 +31,11 @@ class GdFoldingBuilder : FoldingBuilderEx(), DumbAware {
                 is GdClassDeclTl -> mapClassDecl(it)
                 else -> null
             }
-        }.toTypedArray();
+        }.toTypedArray()
     }
 
     override fun getPlaceholderText(node: ASTNode): String {
-        return "{ ... }";
+        return "{ ... }"
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {

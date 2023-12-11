@@ -13,7 +13,7 @@ import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import gdscript.index.impl.GdFileResIndex
 import gdscript.lineMarker.GdTraitLineMarkerContributor
-import gdscript.utils.GdTraitUtil
+import gdscript.utils.GdCommentUtil
 import gdscript.utils.VirtualFileUtil.resourcePath
 
 class GdPropageTraitChangesAction : BaseIntentionAction() {
@@ -51,7 +51,7 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
             source = file.containingFile.text.replace(extendsRegex, "")
         } else {
             val header = traitRegionLabel(editor, file) ?: return
-            val footer = GdTraitUtil.endComment(header) ?: return
+            val footer = GdCommentUtil.endTraitComment(header) ?: return
             source = editor.document.getText(TextRange.create(header.endOffset + 1, footer.startOffset - 1))
 
             val traitFile = header.text.substring(GdTraitLineMarkerContributor.PREFIX.length).trim()
@@ -59,7 +59,7 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
                 .firstOrNull() ?: return
             fromSource = false
         }
-        val usages = GdTraitUtil.listUsages(sourceFile.resourcePath().substring("res://".length), project)
+        val usages = GdCommentUtil.listUsages(sourceFile.resourcePath().substring("res://".length), project)
 
         val dm = PsiDocumentManager.getInstance(project)
         val runner = runner@{
@@ -71,7 +71,7 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
 
             usages.forEach { header ->
                 val f = header.containingFile
-                val footer = GdTraitUtil.endComment(header)
+                val footer = GdCommentUtil.endTraitComment(header)
                 val doc = dm.getDocument(f)
                 if (footer != null && doc != null) {
                     doc.replaceString(header.endOffset, footer.startOffset, "\n$source\n")

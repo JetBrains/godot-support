@@ -9,26 +9,36 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdFileType
 import gdscript.lineMarker.GdTraitLineMarkerContributor
-import gdscript.utils.VirtualFileUtil.resourcePath
 
-object GdTraitUtil {
+object GdCommentUtil {
 
-    fun endComment(header: PsiComment): PsiComment? {
-        var footer = header.nextSibling;
+    fun endComment(header: PsiComment, prefix: String, suffix: String): PsiComment? {
+        var footer = header.nextSibling
         while (footer != null) {
             if (footer is PsiComment) {
-                if (footer.text.startsWith(GdTraitLineMarkerContributor.SUFFIX)) {
-                    return footer;
-                } else if (footer.text.startsWith(GdTraitLineMarkerContributor.PREFIX)) {
-                    return null;
+                if (footer.text.startsWith(suffix)) {
+                    return footer
+                } else if (footer.text.startsWith(prefix)) {
+                    return null
                 }
-            };
-            footer = footer.nextSibling;
+            }
+            footer = footer.nextSibling
         }
 
-        return null;
+        return null
     }
 
+    fun endTraitComment(header: PsiComment): PsiComment? {
+        return endComment(header, GdTraitLineMarkerContributor.PREFIX, GdTraitLineMarkerContributor.SUFFIX)
+    }
+
+    fun endRegionComment(header: PsiComment): PsiComment? {
+        return endComment(header, "#region", "#endregion")
+    }
+
+    /**
+     * Usages of Trait
+     */
     fun listUsages(resource: String, project: Project): Array<PsiComment> {
         val manager = PsiManager.getInstance(project);
 
