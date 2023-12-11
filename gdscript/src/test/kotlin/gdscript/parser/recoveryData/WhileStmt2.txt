@@ -17,7 +17,7 @@ GdScript File(0,35)
           GdLiteralExImpl(LITERAL_EX)(20,24)
             PsiElement(GdTokenType.TRUE)('true')(20,24)
           PsiElement(GdTokenType.COLON)(':')(24,25)
-          PsiErrorElement:STMT_OR_SUITE expected(25,25)
+          PsiErrorElement:STATEMENT expected(25,25)
             <empty list>
           PsiElement(GdTokenType.NEW_LINE)('\n')(25,26)
         PsiWhiteSpace('    ')(26,30)

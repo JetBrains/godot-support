@@ -177,7 +177,13 @@ object PsiGdExprUtil {
                         is GdEnumDeclTl -> "EnumDictionary"
                         is GdEnumValue -> GdKeywords.INT
                         is GdClassNaming -> text
-                        is GdForSt -> GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]")
+                        is GdForSt -> {
+                            if (element.typed != null) {
+                                return fromTyped(element.typed)
+                            }
+
+                            return GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]")
+                        }
                         is GdAutoload -> element.key
                         else -> ""
                     }
@@ -189,6 +195,7 @@ object PsiGdExprUtil {
         }
     }
 
+    // TODO unify with doc builder
     fun fromTyped(typed: GdTyped?): String {
         return typed?.text?.trim(':', ' ') ?: ""
     }

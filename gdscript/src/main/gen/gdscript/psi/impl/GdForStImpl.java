@@ -45,4 +45,10 @@ public class GdForStImpl extends GdStmtImpl implements GdForSt {
     return PsiTreeUtil.getChildOfType(this, GdVarNmi.class);
   }
 
+  @Override
+  @Nullable
+  public GdTyped getTyped() {
+    return PsiTreeUtil.getChildOfType(this, GdTyped.class);
+  }
+
 }

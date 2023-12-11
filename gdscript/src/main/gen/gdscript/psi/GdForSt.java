@@ -16,4 +16,7 @@ public interface GdForSt extends GdStmt {
   @Nullable
   GdVarNmi getVarNmi();
 
+  @Nullable
+  GdTyped getTyped();
+
 }

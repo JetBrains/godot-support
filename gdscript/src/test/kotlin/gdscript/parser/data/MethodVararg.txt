@@ -1,6 +1,7 @@
 GdScript File(0,34)
   GdMethodDecl(0,34)
-    PsiElement(GdTokenType.VARARG)('vararg')(0,6)
+    GdMethodSpecifierImpl(METHOD_SPECIFIER)(0,6)
+      PsiElement(GdTokenType.VARARG)('vararg')(0,6)
     PsiWhiteSpace(' ')(6,7)
     PsiElement(GdTokenType.FUNC)('func')(7,11)
     PsiWhiteSpace(' ')(11,12)

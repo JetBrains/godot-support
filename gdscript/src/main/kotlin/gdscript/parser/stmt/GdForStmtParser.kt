@@ -2,6 +2,7 @@ package gdscript.parser.stmt
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
+import gdscript.parser.common.GdTypedParser
 import gdscript.parser.expr.GdExprParser
 import gdscript.psi.GdTypes.*
 
@@ -16,6 +17,7 @@ object GdForStmtParser : GdStmtBaseParser {
 
         var ok = b.consumeToken(FOR, pin = true)
         ok = ok && b.mceIdentifier(VAR_NMI)
+        ok = ok && GdTypedParser.parse(b, l + 1, true)
         ok = ok && b.consumeToken(IN, true)
         ok = ok && GdExprParser.parse(b, l + 1)
         b.errorPin(ok, "expression")

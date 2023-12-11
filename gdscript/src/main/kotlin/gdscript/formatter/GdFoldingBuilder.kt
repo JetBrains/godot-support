@@ -23,7 +23,7 @@ import gdscript.psi.GdTypes
 class GdFoldingBuilder : FoldingBuilderEx(), DumbAware {
 
     override fun buildFoldRegions(root: PsiElement, document: Document, quick: Boolean): Array<FoldingDescriptor> {
-        val members = PsiTreeUtil.findChildrenOfAnyType(root, GdSuite::class.java, GdClassDeclTl::class.java);
+        val members = PsiTreeUtil.findChildrenOfAnyType(root, GdSuite::class.java, GdClassDeclTl::class.java)
 
         return members.mapNotNull {
             when (it) {

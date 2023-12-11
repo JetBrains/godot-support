@@ -33,7 +33,7 @@ class GdPsiState {
         val res = currentFrame?.exit(result) ?: false
 
         var errorType: IElementType? = null
-        if (!res && currentFrame?.errorAt != null && !drop) {
+        if (!res && currentFrame?.errorAt != null && !drop && pinned()) {
             errorType = currentFrame!!.elementType
         }
 

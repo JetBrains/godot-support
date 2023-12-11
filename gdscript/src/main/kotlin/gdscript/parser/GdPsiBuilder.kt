@@ -173,7 +173,7 @@ class GdPsiBuilder {
                 advance()
             }
             errorAt = positionAt
-            m.error("$expected expected")
+            m.error("${expected.removePrefix("GdTokenType.")} expected")
         }
     }
 

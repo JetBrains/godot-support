@@ -56,7 +56,13 @@ object GdCommonUtil {
             is GdConstDeclSt -> element.returnType
             is GdExpr -> element.returnType
             is GdTypedVal -> element.returnType
-            is GdForSt -> GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]")
+            is GdForSt -> {
+                if (element.typed != null) {
+                    return element.typed?.text?.trim(':', ' ') ?: ""
+                }
+
+                return GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]")
+            }
             else -> throw NotImplementedError()
         }
     }
