@@ -4,6 +4,7 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.lang.PsiBuilder.Marker
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
+import gdscript.parser.expr.GdLiteralExParser
 import gdscript.psi.GdTypes
 import io.ktor.util.*
 
@@ -102,7 +103,8 @@ class GdPsiBuilder {
     }
 
     fun mceIdentifier(markerType: IElementType): Boolean {
-        return mceAnyOf(markerType, false, GdTypes.IDENTIFIER)
+        return GdLiteralExParser.parseExtendedRefId(this, markerType)
+        //return mceAnyOf(markerType, false, GdTypes.IDENTIFIER)
     }
 
     fun mceAnyOf(markElement: IElementType, optional: Boolean, vararg elementTypes: IElementType): Boolean {
