@@ -226,31 +226,31 @@ object GdClassMemberUtil {
             val movedToParent = it.prevSibling == null
             it = it.prevSibling ?: it.parent ?: break
             when (it) {
-                is GdClassVarDeclTl -> locals[it.name] = it
-                is GdVarDeclSt -> locals[it.name] = it
-                is GdConstDeclTl -> locals[it.name] = it
-                is GdConstDeclSt -> locals[it.name] = it
-                is GdEnumDeclTl -> locals[it.name] = it
-                is GdSignalDeclTl -> locals[it.name] = it
+                is GdClassVarDeclTl -> if (!locals.contains(it.name)) locals[it.name] = it
+                is GdVarDeclSt -> if (!locals.contains(it.name)) locals[it.name] = it
+                is GdConstDeclTl -> if (!locals.contains(it.name)) locals[it.name] = it
+                is GdConstDeclSt -> if (!locals.contains(it.name)) locals[it.name] = it
+                is GdEnumDeclTl -> if (!locals.contains(it.name)) locals[it.name] = it
+                is GdSignalDeclTl -> if (!locals.contains(it.name)) locals[it.name] = it
                 is GdParam -> {
-                    locals[it.varNmi.name] = it
+                    if (!locals.contains(it.varNmi.name)) locals[it.varNmi.name] = it
                 }
-                is GdForSt -> if (movedToParent) locals[it.varNmi?.name ?: ""] = it
+                is GdForSt -> if (movedToParent && !locals.contains(it.varNmi?.name ?: "")) locals[it.varNmi?.name ?: ""] = it
                 is GdPatternList -> {
                     if (movedToParent) {
                         PsiTreeUtil.getChildrenOfType(it, GdBindingPattern::class.java)
-                            ?.map { b -> locals[b.varNmi.name] = b }
+                            ?.map { b -> if (!locals.contains(b.varNmi.name)) locals[b.varNmi.name] = b }
                     }
                 }
                 is GdSetDecl -> {
                     if (movedToParent) {
-                        locals[it.varNmi?.name.orEmpty()] = it.varNmi!!
+                        if (!locals.contains(it.varNmi?.name.orEmpty())) locals[it.varNmi?.name.orEmpty()] = it.varNmi!!
                     }
                 }
                 is GdFuncDeclEx -> {
                     if (movedToParent && !isParam) {
                         it.paramList?.paramList?.forEach { p ->
-                            locals[p.varNmi.name] = p
+                            if (!locals.contains(p.varNmi.name)) locals[p.varNmi.name] = p
                         }
                     }
                 }
@@ -258,7 +258,7 @@ object GdClassMemberUtil {
                     if (onlyLocalScope) {
                         if (!isParam) {
                             it.paramList?.paramList?.forEach { p ->
-                                locals[p.varNmi.name] = p
+                                if (!locals.contains(p.varNmi.name)) locals[p.varNmi.name] = p
                             }
                         }
                         if (hitLocal != null) hitLocal.value = true
@@ -266,10 +266,10 @@ object GdClassMemberUtil {
                     }
                     if (movedToParent) {
                         it.paramList?.paramList?.forEach { p ->
-                            locals[p.varNmi.name] = p
+                            if (!locals.contains(p.varNmi.name)) locals[p.varNmi.name] = p
                         }
                     } else {
-                        locals[it.name] = it
+                        if (!locals.contains(it.name)) locals[it.name] = it
                     }
                 }
 
