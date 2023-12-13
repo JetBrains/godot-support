@@ -90,6 +90,21 @@
             <option name="FOREGROUND" value="bce0ff" />
         </value>
     </option>
+    <option name="GD_NOTE">
+        <value>
+            <option name="FOREGROUND" value="8fab82" />
+        </value>
+    </option>
+    <option name="GD_WARNING">
+        <value>
+            <option name="FOREGROUND" value="b89c7a" />
+        </value>
+    </option>
+    <option name="GD_DANGER">
+        <value>
+            <option name="FOREGROUND" value="c45959" />
+        </value>
+    </option>
     <option name="GD_BAD_CHARACTER">
         <value>
             <option name="FOREGROUND" value="ff786b" />

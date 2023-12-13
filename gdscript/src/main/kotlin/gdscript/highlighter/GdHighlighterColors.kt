@@ -96,6 +96,18 @@ interface GdHighlighterColors {
             "GD_GLOBAL_FUNCTION", DefaultLanguageHighlighterColors.CONSTANT
         )
 
+        val NOTE = TextAttributesKey.createTextAttributesKey(
+            "GD_NOTE", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP
+        )
+
+        val DANGER = TextAttributesKey.createTextAttributesKey(
+            "GD_DANGER", HighlighterColors.BAD_CHARACTER
+        )
+
+        val WARNING = TextAttributesKey.createTextAttributesKey(
+            "GD_WARNING", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP
+        )
+
         // Red
         val BAD_CHARACTER = TextAttributesKey.createTextAttributesKey(
             "GD_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER

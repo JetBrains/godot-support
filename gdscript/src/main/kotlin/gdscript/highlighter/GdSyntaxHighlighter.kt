@@ -4,6 +4,7 @@ import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
 import gdscript.GdLexerHighlighterAdapter
 
 class GdSyntaxHighlighter : SyntaxHighlighterBase() {
@@ -32,6 +33,9 @@ class GdSyntaxHighlighter : SyntaxHighlighterBase() {
             fillMap(ATTRIBUTES, GdTokenTypeSet.NODE_PATH, GdHighlighterColors.NODE_PATH)
             fillMap(ATTRIBUTES, GdTokenTypeSet.NODE_STRING_PATH, GdHighlighterColors.NODE_STRING_PATH)
             fillMap(ATTRIBUTES, GdTokenTypeSet.COMMENT, GdHighlighterColors.COMMENT)
+            fillMap(ATTRIBUTES, TokenSet.EMPTY, GdHighlighterColors.DANGER)
+            fillMap(ATTRIBUTES, TokenSet.EMPTY, GdHighlighterColors.WARNING)
+            fillMap(ATTRIBUTES, TokenSet.EMPTY, GdHighlighterColors.NOTE)
         }
     }
 }

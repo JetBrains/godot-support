@@ -38,4 +38,13 @@ class GdProjectState {
     @Tag("annotators")
     var annotators: String = OFF
 
+    @Tag("criticals")
+    var criticals: String = "ALERT,ATTENTION,CAUTION,CRITICAL,DANGER,SECURITY"
+
+    @Tag("warnings")
+    var warnings: String = "BUG,DEPRECATED,FIXME,HACK,TASK,TBD,TODO,WARNING"
+
+    @Tag("notes")
+    var notes: String = "INFO,NOTE,NOTICE,TEST,TESTING"
+
 }

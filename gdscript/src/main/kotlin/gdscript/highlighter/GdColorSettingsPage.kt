@@ -36,7 +36,9 @@ enum Named {THING_1, THING_2, ANOTHER_THING = -1}
 
 var v2 = Vector2(1, 2)
 
-
+# DANGER: danger comment
+# WARN: warning comment
+# NOTE: note comment
 func _init():
     print("Constructed!")
     var local_var = 5
@@ -88,6 +90,9 @@ class Something:
             AttributesDescriptor("Static method call", GdHighlighterColors.STATIC_METHOD_CALL),
             AttributesDescriptor("Flow control", GdHighlighterColors.FLOW_KEYWORDS),
             AttributesDescriptor("Comments", GdHighlighterColors.COMMENT),
+            AttributesDescriptor("Critical comments", GdHighlighterColors.DANGER),
+            AttributesDescriptor("Warning comments", GdHighlighterColors.WARNING),
+            AttributesDescriptor("Note comments", GdHighlighterColors.NOTE),
             AttributesDescriptor("Strings", GdHighlighterColors.STRING),
             AttributesDescriptor("Annotations", GdHighlighterColors.ANNOTATION),
             AttributesDescriptor("Node path", GdHighlighterColors.NODE_STRING_PATH),

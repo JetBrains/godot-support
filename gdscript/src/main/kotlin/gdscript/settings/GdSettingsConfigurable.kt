@@ -33,6 +33,9 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
             || component?.shortTyped != settings.shortTyped
             || component?.shouldType != settings.shouldType
             || component?.annotators != settings.annotators
+            || component?.criticals != settings.criticals
+            || component?.warnings != settings.warnings
+            || component?.notes != settings.notes
     }
 
     override fun apply() {
@@ -41,6 +44,9 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
         settings.shortTyped = component?.shortTyped ?: false
         settings.shouldType = component?.shouldType ?: false
         settings.annotators = component?.annotators ?: GdProjectState.OFF
+        settings.criticals = component?.criticals ?: "ALERT,ATTENTION,CAUTION,CRITICAL,DANGER,SECURITY"
+        settings.warnings = component?.warnings ?: "BUG,DEPRECATED,FIXME,HACK,TASK,TBD,TODO,WARNING"
+        settings.notes = component?.notes ?: "INFO,NOTE,NOTICE,TEST,TESTING"
 
         val oldSdk = settings.sdkPath
         settings.sdkPath = component?.sdkPath
@@ -56,6 +62,9 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
         component?.shortTyped = settings.shortTyped
         component?.shouldType = settings.shouldType
         component?.annotators = settings.annotators
+        component?.criticals = settings.criticals
+        component?.warnings = settings.warnings
+        component?.notes = settings.notes
     }
 
     override fun disposeUIResources() {

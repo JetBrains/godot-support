@@ -14,6 +14,7 @@ import java.awt.Dimension
 import javax.swing.JButton
 import javax.swing.JComponent
 import javax.swing.JPanel
+import javax.swing.JTextField
 
 class GdSettingsComponent(val project: Project) {
     val panel: JPanel
@@ -25,6 +26,9 @@ class GdSettingsComponent(val project: Project) {
     private val selectSdk = GdSettingsComponents.selectSdk()
     private val addSdk: JButton = GdSettingsComponents.addSdk(selectSdk, this)
     private val removeAllSdks: JButton = JButton("Remove all SDKs")
+    private val criticalsTf: JTextField = JTextField()
+    private val warningsTf: JTextField = JTextField()
+    private val notesTf: JTextField = JTextField()
 
     init {
         annotatorsCb.addItem(GdProjectState.OFF)
@@ -51,6 +55,9 @@ class GdSettingsComponent(val project: Project) {
                 .addComponent(shouldTypeCheck, 1)
                 .addComponent(shortTypedCheck, 1)
                 .addLabeledComponent("Reference, Node, Resource checks", annotatorsCb, 1)
+                .addLabeledComponent("Critical comments", criticalsTf, 1)
+                .addLabeledComponent("Warning comments", warningsTf, 1)
+                .addLabeledComponent("Note comments", notesTf, 1)
                 .addComponentFillVertically(JPanel(), 0)
                 .panel
     }
@@ -96,6 +103,24 @@ class GdSettingsComponent(val project: Project) {
         get() = annotatorsCb.selectedItem as String
         set(newStatus) {
             annotatorsCb.selectedItem = newStatus
+        }
+
+    var criticals: String
+        get() = criticalsTf.text
+        set(newStatus) {
+            criticalsTf.text = newStatus
+        }
+
+    var warnings: String
+        get() = warningsTf.text
+        set(newStatus) {
+            warningsTf.text = newStatus
+        }
+
+    var notes: String
+        get() = notesTf.text
+        set(newStatus) {
+            notesTf.text = newStatus
         }
 
 }

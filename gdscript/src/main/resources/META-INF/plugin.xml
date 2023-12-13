@@ -83,6 +83,7 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdMatchStmtAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdParamAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdExprTypeAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdCommentAnnotator" />
 
     <!-- Inspectors -->
     <localInspection language="GdScript" shortName="CheckVarType" enabledByDefault="true" level="WARNING"
