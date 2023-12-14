@@ -21,7 +21,6 @@ class GdSettingsComponent(val project: Project) {
 
     private val hidePrivateCheck = JBCheckBox("Hide _private members from completion")
     private val shortTypedCheck = JBCheckBox("Use short typing 'var a := 1' instead of 'var a: int = 1'")
-    private val shouldTypeCheck = JBCheckBox("Enable variable not typed warning")
     private val annotatorsCb = ComboBox<String>()
     private val selectSdk = GdSettingsComponents.selectSdk()
     private val addSdk: JButton = GdSettingsComponents.addSdk(selectSdk, this)
@@ -52,7 +51,6 @@ class GdSettingsComponent(val project: Project) {
                 .addLabeledComponent("GdScript SDK", sdkPanel, 1, true)
                 .addComponent(removeAllSdks, 1)
                 .addComponent(hidePrivateCheck, 1)
-                .addComponent(shouldTypeCheck, 1)
                 .addComponent(shortTypedCheck, 1)
                 .addLabeledComponent("Reference, Node, Resource checks", annotatorsCb, 1)
                 .addLabeledComponent("Critical comments", criticalsTf, 1)
@@ -91,12 +89,6 @@ class GdSettingsComponent(val project: Project) {
         get() = shortTypedCheck.isSelected
         set(newStatus) {
             shortTypedCheck.isSelected = newStatus
-        }
-
-    var shouldType: Boolean
-        get() = shouldTypeCheck.isSelected
-        set(newStatus) {
-            shouldTypeCheck.isSelected = newStatus
         }
 
     var annotators: String

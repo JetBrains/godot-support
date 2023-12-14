@@ -90,6 +90,18 @@
                      bundle="messages.gdscript" key="inspections.check.return.type"
                      groupBundle="messages.gdscript" groupKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdTypeHintInspection"/>
+    <localInspection language="GdScript" shortName="UnusedMethod" enabledByDefault="true" level="WARNING"
+                     bundle="messages.gdscript" key="inspections.check.unused.method"
+                     groupBundle="messages.gdscript" groupKey="inspections.group.unused.name"
+                     implementationClass="gdscript.inspection.GdUnusedMethodInspection"/>
+    <localInspection language="GdScript" shortName="UnusedParameter" enabledByDefault="true" level="WARNING"
+                     bundle="messages.gdscript" key="inspections.check.unused.parameter"
+                     groupBundle="messages.gdscript" groupKey="inspections.group.unused.name"
+                     implementationClass="gdscript.inspection.GdUnusedParameterInspection"/>
+    <localInspection language="GdScript" shortName="UnusedVariable" enabledByDefault="true" level="WARNING"
+                     bundle="messages.gdscript" key="inspections.check.unused.variable"
+                     groupBundle="messages.gdscript" groupKey="inspections.group.unused.name"
+                     implementationClass="gdscript.inspection.GdUnusedVariableInspection"/>
 
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" externalIdPrefix="gd."/>

@@ -1,6 +1,5 @@
 package gdscript.settings
 
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.util.xmlb.annotations.Tag
 
@@ -17,10 +16,6 @@ class GdProjectState {
                 else -> HighlightSeverity.ERROR
             }
         }
-
-        fun shouldWarnInspection(warn: Boolean): ProblemHighlightType {
-            return if (warn) ProblemHighlightType.WEAK_WARNING else ProblemHighlightType.INFORMATION
-        }
     }
 
     @Tag("hidePrivate")
@@ -28,9 +23,6 @@ class GdProjectState {
 
     @Tag("sdkPath")
     var sdkPath: String? = ""
-
-    @Tag("shouldType")
-    var shouldType = false
 
     @Tag("shortTyped")
     var shortTyped = false
