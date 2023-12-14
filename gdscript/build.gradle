@@ -17,7 +17,7 @@ plugins {
 }
 
 group 'ice.explosive'
-version '2.0.6'
+version '2.0.7'
 
 sourceSets {
     main {
