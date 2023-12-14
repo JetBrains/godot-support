@@ -11,7 +11,7 @@ object GdPrimaryExParser : GdExprBaseParser {
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "PrimaryExpr")) return false
-        if (b.passToken(NODE_PATH, NODE_PATH_LEX)) {
+        if (b.mcToken(NODE_PATH, NODE_PATH_LEX)) {
             return true
         }
 
