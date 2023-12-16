@@ -34,13 +34,12 @@ and ending with #endTrait comment
 
 ![](../../screens/trait/added.png)
 
-### Do not edit those comments
-{: .gitlab-orange}
+**Do not edit these comments**
 
-Rhey mark trait usages for following feature.
+They mark trait usages for following feature.
 
 To cheat around "single spot of definition" plugin offers "Propagate" action which copy-paste the code again into all
-spots where the Trait is used and it's definition.
+spots where the Trait is used, and it's definition.
 
 ![](../../screens/trait/propagate.png)
 
