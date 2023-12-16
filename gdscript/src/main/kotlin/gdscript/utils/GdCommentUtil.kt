@@ -7,6 +7,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.nextLeaf
 import gdscript.GdFileType
 import gdscript.lineMarker.GdTraitLineMarkerContributor
 
@@ -14,15 +15,17 @@ object GdCommentUtil {
 
     fun endComment(header: PsiComment, prefix: String, suffix: String): PsiComment? {
         var footer = header.nextSibling
+        var nested = 1
+
         while (footer != null) {
             if (footer is PsiComment) {
                 if (footer.text.startsWith(suffix)) {
-                    return footer
+                    if (--nested == 0) return footer
                 } else if (footer.text.startsWith(prefix)) {
-                    return null
+                    nested++
                 }
             }
-            footer = footer.nextSibling
+            footer = footer.nextLeaf(true)
         }
 
         return null

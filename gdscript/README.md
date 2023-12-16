@@ -1,4 +1,4 @@
-# GdScript
+## GdScript
 
 Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of GdScript2 of Godot's GameEngine
 
@@ -7,26 +7,6 @@ Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of G
 Currently testy only on Win10 - alter on I'll test it on iOS
 
 [List of features](documentation%2Ffeatures%2Ffeatures.md)
-
-## List of features
-
-  - Resource usages  marker
-- Inlay hints  
-- Param hints (Ctrl+P)  
-- Run configuration - start game from Editor
-- Formatter
-- user files
-- is/has conditioned type for validations (ignore checks following get_node)
-- ... and many more I don't even remember
-
-## Actions
-### Quick fixes
-- Add/change return Type
-- Generate get_set methods
-- Remove annotation
-- Change class_name to match filename
-- Remove getter & setter
-- Too many arguments / change function type
 
 ### Known limitations
 

@@ -1,6 +1,7 @@
 ## Features
 
-List of implemented Intelli sense features
+List of implemented features  
+Please report any issues you encounter - this is still yet to be battle tested
 
 ### Auto-completion
 
@@ -31,14 +32,18 @@ List of implemented Intelli sense features
 
 <details>
     <summary>Go to declaration / usages</summary>
-    <img src="../../screens/features/usages.png" />
+    <img src="../../screens/features/usages/usages.png" />
 </details>
 
 <details>
     <summary>Refactoring</summary>
-    <img src="../../screens/features/refactor.png" />
+    <img src="../../screens/features/usages/refactor.png" />
 </details>
 
+<details>
+    <summary>Go to file resource (Ctrl+Click)</summary>
+    <img src="../../screens/features/usages/goto_resource.png" />
+</details>
 
 ### File templates
 
@@ -60,6 +65,11 @@ List of implemented Intelli sense features
     <div>&nbsp;</div>
     <strong>While showing them within the class itself</strong>
     <img src="../../screens/features/private_fields/show_in_self.png" />
+</details>
+
+<details>
+    <summary>Setting for turning it it off</summary>
+    <img src="../../screens/features/setting/private_setting.png" />
 </details>
 
 ### Built-in documentation (Ctrl+Q)
@@ -97,51 +107,80 @@ List of implemented Intelli sense features
     <img src="../../screens/features/line_marker/color_picker.png" />
 </details>
 
-### Inlay hints
+### Parameter hints
 
-![](../../screens/features/inlay.png)
+<details>
+    <summary>Param hints (Ctrl+P)</summary>
+    <img src="../../screens/features/hint/param_hint.png" />
+</details>
 
-### Param hints (Ctrl+P)
-
-![](../../screens/features/param_hint.png)
+<details>
+    <summary>Inlay hints</summary>
+    <img src="../../screens/features/hint/inlay.png" />
+</details>
 
 ### Run configuration - start game from Editor
 
-![](../../screens/features/run_configuration.png)
+<details>
+    <summary>Add Godot's path</summary>
+    <img src="../../screens/features/run_configuration.png" />
+</details>
 
 ### Formatter
 
-![](../../screens/features/formatter.png)
+<details>
+    <summary>Code formatter</summary>
+    <img src="../../screens/features/formatter.png" />
+</details>
 
-### is/has conditioned type for validations (ignore checks following get_node)
+<details>
+    <summary>Code style settings</summary>
+    <img src="../../screens/features/setting/code_style.png" />
+</details>
 
-![](../../screens/features/is_has.png)
+### Type checks
 
-# Actions
+<details>
+    <summary>is/has conditioned type</summary>
+    <img src="../../screens/features/is_has.png" />
+</details>
 
-### Quick fixes
+### Actions
 
-##### Add/change return Type
+<details>
+    <summary>Add/change return Type</summary>
+    <img src="../../screens/features/action/specify_variable.png" />
+</details>
 
-![](../../screens/features/specify_variable.png)
+<details>
+    <summary>Generate get_set methods</summary>
+    <img src="../../screens/features/action/create_set_method.png" />
+</details>
 
-##### Generate get_set methods
+<details>
+    <summary>Remove annotation</summary>
+    <img src="../../screens/features/action/remove_annotation.png" />
+</details>
 
-![](../../screens/features/create_set_method.png)
+<details>
+    <summary>Change class_name to match filename</summary>
+    <img src="../../screens/features/action/match_classname.png" />
+</details>
 
-##### Remove annotation
+<details>
+    <summary>Remove getter & setter</summary>
+    <img src="../../screens/features/action/remove_get_set.png" />
+</details>
 
-![](../../screens/features/remove_annotation.png)
+<details>
+    <summary>Too many arguments</summary>
+    <img src="../../screens/features/action/too_many_arguments.png" />
+</details>
 
-##### Change class_name to match filename
+<details>
+    <summary>Change function type</summary>
+    <img src="../../screens/features/action/change_param.png" />
+</details>
 
-![](../../screens/features/match_classname.png)
 
-##### Remove getter & setter
-
-![](../../screens/features/remove_get_set.png)
-
-##### Too many arguments / change function type
-
-![](../../screens/features/too_many_arguments.png)  
-![](../../screens/features/change_param.png)
+### ["Trait" like feature](trait.md)
