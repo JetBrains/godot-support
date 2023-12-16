@@ -63,7 +63,7 @@ Please report any issues you encounter - this is still yet to be battle tested
     <summary>Hides _underscore prefixed variables and methods from completions</summary>
     <img src="../../screens/features/private_fields/hide.png" />
     <div>&nbsp;</div>
-    <strong>While showing them within the class itself</strong>
+    <strong>While showing them within the class itself</strong><br />
     <img src="../../screens/features/private_fields/show_in_self.png" />
 </details>
 
