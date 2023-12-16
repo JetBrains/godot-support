@@ -3,7 +3,7 @@
   <name>GdScript</name>
   <vendor email="h.raven@centrum.cz" url="https://gitlab.com/IceExplosive/gdscript">IceExplosive</vendor>
 
-  <description>GdScript2 language plugin for GodotEngine 4.0+
+  <description>GdScript2 language plugin for Godot 4.0+
     !!IMPORTANT!! An SDK is required for this plugin to work, please follow instructions at https://gitlab.com/IceExplosive/gdscript
   </description>
   <change-notes>
