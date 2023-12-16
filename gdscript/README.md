@@ -13,7 +13,7 @@ Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of G
 
 [Installation instructions](documentation%2Finstallation.md)
 
-Currently testy only on Win10 - alter on I'll test it on iOS
+Currently tested only on Win10 - once it's good enough on it, I'll test it on macOS
 
 [List of features](documentation%2Ffeatures%2Ffeatures.md)
 
