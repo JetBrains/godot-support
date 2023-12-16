@@ -14,9 +14,13 @@ Currently tested only on Win10 - once it's good enough on it, I'll test it on ma
 ## IntelliGodot
 
 <div style="display: flex; align-items: center;">
-    <img src="screens/jb_beam.png" alt="JetBrains">
+    <a href="https://godotengine.org">
+        <img src="screens/jb_beam.svg" alt="JetBrains" width="64">
+    </a>
     <img src="screens/plus.png">
-    <img src="screens/godot.png">
+    <a href="https://www.jetbrains.com" data-ui-trademark="Copyright © 2000-2023 JetBrains s.r.o. JetBrains and the JetBrains logo are registered trademarks of JetBrains s.r.o.">
+        <img src="screens/godot.svg" alt="Godot" width="64">
+    </a>
 </div>
 
 GdScript2 language plugin for JetBrains IDEs (Intellij, Rider and all the other ones)  
