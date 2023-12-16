@@ -184,3 +184,29 @@ Please report any issues you encounter - this is still yet to be battle tested
 
 
 ### ["Trait" like feature](trait.md)
+
+### Known limitations
+
+<details>
+    <summary>get_node, get_parent</summary>
+    <div>
+        <strong>get_node</strong>, <strong>get_parent</strong> and so on atm do not parse actual Node, but only as a generic Node type (will be supported later on)
+    </div>
+</details>
+
+<details>
+    <summary>get_window method</summary>
+    <div>
+        <strong>get_window</strong> (and maybe few other methods) return different class based on context (SubViewport, Window, ...)
+        <br />
+        Plugin specify it as base Viewport class, so to get completion/check for inherited ones available you have to manually specify the type
+    </div>
+</details>
+
+<details>
+    <summary>Dynamic nodes</summary>
+    <div>
+        Dynamic nodes and such added at runtime cannot be predicted and thus no autocompletion is available
+    </div>
+</details>
+
