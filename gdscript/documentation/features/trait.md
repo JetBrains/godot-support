@@ -34,7 +34,7 @@ and ending with #endTrait comment
 
 ![](../../screens/trait/added.png)
 
-DO NOT EDIT THOSE COMMENTS
+### Do not edit those comments
 {: .gitlab-orange}
 
 Rhey mark trait usages for following feature.
