@@ -1,3 +1,12 @@
+## Update 16.12.2023
+Currently, awaiting 2.0.8 release where all feature should be ready for testing,  
+and for now I'll refrain from writing any new features focusing only on bugs that pops-up.
+
+Feel free to report any you find and ofc even new ideas, so they are written down for later.
+I thank you for all your support up to now - hopefully instead of just reporting issues we'll move to actually using this plugin as intended.
+
+So current focus: I'd say get this stable enough that it gets noticed by Gamefromscratch. :D
+
 ## GdScript
 
 Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of GdScript2 of Godot's GameEngine
@@ -20,6 +29,6 @@ Experimental hacky work-around to fill [Trait like feature](./documentation/trai
 
 ## Support me
 
-[BuyMeACooffee](https://www.buymeacoffee.com/iceexplosive)
+[BuyMeACoffee](https://www.buymeacoffee.com/iceexplosive)
 
 [CONTRIBUTE](CONTRIBUTE.md)
