@@ -15,11 +15,11 @@ Currently tested only on Win10 - once it's good enough on it, I'll test it on ma
 
 <div style="display: flex; align-items: center;">
     <a href="https://godotengine.org">
-        <img src="screens/godot.svg" alt="JetBrains" width="128">
+        <img src="screens/godot.svg" alt="JetBrains" width="96">
     </a>
     <img src="screens/plus.png">
     <a href="https://www.jetbrains.com" data-ui-trademark="Copyright © 2000-2023 JetBrains s.r.o. JetBrains and the JetBrains logo are registered trademarks of JetBrains s.r.o.">
-        <img src="screens/jb_beam.svg" alt="Godot" width="128">
+        <img src="screens/jb_beam.svg" alt="Godot" width="96">
     </a>
 </div>
 
