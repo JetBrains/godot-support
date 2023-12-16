@@ -7,13 +7,13 @@ I thank you for all your support up to now - hopefully instead of just reporting
 
 So current focus: I'd say get this stable enough that it gets noticed by Gamefromscratch. :D
 
+Currently tested only on Win10 - once it's good enough on it, I'll test it on macOS
+
 ## GdScript
 
 Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of GdScript2 of Godot's GameEngine
 
 [Installation instructions](documentation%2Finstallation.md)
-
-Currently tested only on Win10 - once it's good enough on it, I'll test it on macOS
 
 [List of features](documentation%2Ffeatures%2Ffeatures.md)
 
