@@ -4,32 +4,18 @@ Language plugin for JetBrains IDEs (Intellij, Rider and all the other ones) of G
 
 [Installation instructions](documentation%2Finstallation.md)
 
+Currently testy only on Win10 - alter on I'll test it on iOS
+
+[List of features](documentation%2Ffeatures%2Ffeatures.md)
+
 ## List of features
 
-Video preview (version 0.7): https://youtu.be/hjtzJW25GMI  
-[Screenshots](./documentation/features.md)  
-
-- Auto-completion
-  - Inheritance & ClassName
-  - Annotations
-  - func overrides
-  - Resources (`$Path/Node` && `$"%Name"`)
-  - Inputs, Groups, Meta fields, user resources
-- Refactoring
-- Go to declaration / usages
-- File templates taken from Godot's source
-- Hides _prefix as private fields (optional based on Language settings)
-- Built-in [documentation](./documentation/auto-documentation.md) (Ctrl+Q)
-- Line markers
-  - Resource usages  
-  - Signals  
-  - Super method
-  - Color picker
-  - Run current scene
+  - Resource usages  marker
 - Inlay hints  
 - Param hints (Ctrl+P)  
 - Run configuration - start game from Editor
 - Formatter
+- user files
 - is/has conditioned type for validations (ignore checks following get_node)
 - ... and many more I don't even remember
 

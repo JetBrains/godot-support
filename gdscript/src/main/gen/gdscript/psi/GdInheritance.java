@@ -2,12 +2,14 @@
 package gdscript.psi;
 
 import java.util.List;
+
+import com.intellij.model.psi.PsiSymbolDeclaration;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdInheritanceStub;
 
-public interface GdInheritance extends PsiElement, StubBasedPsiElement<GdInheritanceStub> {
+public interface GdInheritance extends PsiElement, StubBasedPsiElement<GdInheritanceStub>, PsiSymbolDeclaration {
 
   @Nullable
   GdEndStmt getEndStmt();

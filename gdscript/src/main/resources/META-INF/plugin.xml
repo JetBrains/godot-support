@@ -33,6 +33,10 @@
     <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor" />
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
 
+    <!-- References -->
+    <!-- Implicit -->
+    <psi.implicitReferenceProvider implementation="gdscript.reference.implicit.GdResourceImplicitReference" />
+
     <!-- settings -->
     <projectService serviceImplementation="gdscript.settings.GdProjectSettingsState" />
     <projectConfigurable

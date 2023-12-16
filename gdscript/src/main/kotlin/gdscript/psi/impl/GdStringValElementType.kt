@@ -40,7 +40,8 @@ object GdStringValElementType : IStubElementType<GdStringValStub, GdStringVal>("
     }
 
     override fun shouldCreateStub(node: ASTNode?): Boolean {
-        return node?.psi?.text?.trim('"')?.startsWith("user://") ?: false
+        val name = node?.psi?.text?.trim('"') ?: return false
+        return name.startsWith("user://") || name.startsWith("res://")
     }
 
 }

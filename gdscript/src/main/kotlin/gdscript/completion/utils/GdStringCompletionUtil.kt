@@ -4,12 +4,9 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
 import gdscript.completion.GdLookup
 import gdscript.index.impl.GdUserFileIndex
-import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.utils.PsiElementUtil.getCallExprOfParam
 import project.psi.util.ProjectInputUtil
-import tscn.index.impl.TscnResourceIndex
 import tscn.psi.utils.TscnNodeUtil
-import tscn.psi.utils.TscnResourceUtil
 
 object GdStringCompletionUtil {
 
@@ -68,7 +65,7 @@ object GdStringCompletionUtil {
     }
 
     fun addUserFiles(element: PsiElement, result: CompletionResultSet) {
-        GdUserFileIndex.INSTANCE.getAllValues(element.project).forEach {
+        GdUserFileIndex.INSTANCE.userFiles(element.project).forEach {
             result.addElement(
                 GdLookup.create(
                     it.text.trim('"'),
