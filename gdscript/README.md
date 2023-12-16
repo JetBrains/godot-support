@@ -30,7 +30,7 @@ Supports only Godot 4.0 and higher
 
 [List of features](documentation%2Ffeatures%2Ffeatures.md)
 
-## Support me
+## Support
 
 [BuyMeACoffee](https://www.buymeacoffee.com/iceexplosive)
 
