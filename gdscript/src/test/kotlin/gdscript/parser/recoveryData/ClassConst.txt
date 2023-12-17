@@ -1,8 +1,9 @@
 GdScript File(0,24)
   GdConstDecl(0,6)
     PsiElement(GdTokenType.CONST)('const')(0,5)
-    PsiErrorElement:IDENTIFIER expected(5,6)
-      PsiElement(GdTokenType.NEW_LINE)('\n')(5,6)
+    PsiErrorElement:IDENTIFIER expected(5,5)
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')(5,6)
   GdConstDecl(6,24)
     PsiElement(GdTokenType.CONST)('const')(6,11)
     PsiWhiteSpace(' ')(11,12)

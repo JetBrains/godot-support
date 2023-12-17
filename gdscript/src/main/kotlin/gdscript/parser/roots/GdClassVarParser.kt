@@ -15,7 +15,15 @@ object GdClassVarParser : GdBaseParser {
         if (!b.nextTokenIs(VAR, STATIC)) return optional
 
         b.enterSection(CLASS_VAR_DECL_TL)
-        b.passToken(STATIC)
+        if (b.passToken(STATIC)) {
+            // Separate check due to static being optional before FUNC as well
+            if (b.nextTokenIs(NEW_LINE)) {
+                b.pin(true)
+                b.error(VAR.toString(), false)
+                GdRecovery.topLevel(b, false)
+                return b.exitSection(false)
+            }
+        }
         var ok = b.consumeToken(VAR, pin = true)
         ok = ok && b.mceIdentifier(VAR_NMI)
 

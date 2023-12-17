@@ -1,8 +1,9 @@
 GdScript File(0,31)
   GdClassNaming(0,11)
     PsiElement(GdTokenType.CLASS_NAME)('class_name')(0,10)
-    PsiErrorElement:IDENTIFIER expected(10,11)
-      PsiElement(GdTokenType.NEW_LINE)('\n')(10,11)
+    PsiErrorElement:IDENTIFIER expected(10,10)
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')(10,11)
   GdClassNaming(11,31)
     PsiElement(GdTokenType.CLASS_NAME)('class_name')(11,21)
     PsiWhiteSpace(' ')(21,22)

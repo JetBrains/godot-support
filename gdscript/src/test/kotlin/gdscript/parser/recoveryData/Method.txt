@@ -1,8 +1,9 @@
 GdScript File(0,10)
   GdMethodDecl(0,5)
     PsiElement(GdTokenType.FUNC)('func')(0,4)
-    PsiErrorElement:IDENTIFIER expected(4,5)
-      PsiElement(GdTokenType.NEW_LINE)('\n')(4,5)
+    PsiErrorElement:IDENTIFIER expected(4,4)
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')(4,5)
   GdClassVarDecl(5,10)
     PsiElement(GdTokenType.VAR)('var')(5,8)
     PsiWhiteSpace(' ')(8,9)

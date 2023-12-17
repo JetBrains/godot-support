@@ -103,8 +103,10 @@ class GdPsiBuilder {
     }
 
     fun mceIdentifier(markerType: IElementType): Boolean {
-        return GdLiteralExParser.parseExtendedRefId(this, markerType)
-        //return mceAnyOf(markerType, false, GdTypes.IDENTIFIER)
+        val ok = GdLiteralExParser.parseExtendedRefId(this, markerType)
+        if (!ok) error("IDENTIFIER", false)
+
+        return ok
     }
 
     fun mceAnyOf(markElement: IElementType, optional: Boolean, vararg elementTypes: IElementType): Boolean {

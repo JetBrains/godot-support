@@ -29,20 +29,20 @@ object GdTypedParser : GdBaseParser {
             ok = ok && b.mcToken(ASSIGN_TYPED, CEQ)
             if (ok) {
                 ok = ok && GdExprParser.parse(b, l + 1)
-                if (!ok) b.error("expression")
+                if (!ok) b.error("EXPRESSION")
             }
         } else if (b.nextTokenIs(COLON)) {
             ok = ok && parse(b, l + 1, optional)
             if (ok && b.mcToken(ASSIGN_TYPED, EQ)) {
                 if (ok) {
                     ok = ok && GdExprParser.parse(b, l + 1)
-                    if (!ok) b.error("expression")
+                    if (!ok) b.error("EXPRESSION")
                 }
             }
         } else if (b.mcToken(ASSIGN_TYPED, EQ)) {
             if (ok) {
                 ok = ok && GdExprParser.parse(b, l + 1)
-                if (!ok) b.error("expression")
+                if (!ok) b.error("EXPRESSION")
             }
         } else if (!optional) {
             m.drop()
