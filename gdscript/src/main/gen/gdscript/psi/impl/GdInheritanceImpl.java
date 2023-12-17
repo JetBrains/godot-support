@@ -1,17 +1,16 @@
 // This is a generated file. Not intended for manual editing.
 package gdscript.psi.impl;
 
-import java.util.List;
-
 import com.intellij.model.Symbol;
-import com.intellij.model.psi.PsiSymbolService;
+import com.intellij.model.psi.impl.PsiSymbolServiceImpl;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.util.TextRange;
+import gdscript.symbol.GdPsiSymbol;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
 import gdscript.index.stub.GdInheritanceStub;
 import com.intellij.psi.stubs.IStubElementType;
@@ -66,6 +65,6 @@ public class GdInheritanceImpl extends GdInheritanceElementImpl implements GdInh
 
   @Override
   public @NotNull Symbol getSymbol() {
-    return PsiSymbolService.getInstance().asSymbol(this);
+    return new GdPsiSymbol(this);
   }
 }
