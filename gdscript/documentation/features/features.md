@@ -42,8 +42,7 @@ Please report any issues you encounter - this is still yet to be battle tested
 
 <details>
     <summary>Go to file resource (Ctrl+Click)</summary>
-    <br />
-    <div>TODO currently not working as requierd API is not allowed publicly yet</div>
+    <strong>Currently not working as requierd API is not allowed publicly yet</strong>
     <img src="../../screens/features/usages/goto_resource.png" />
 </details>
 
