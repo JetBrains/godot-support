@@ -34,4 +34,4 @@ Supports only Godot 4.0 and higher
 
 [BuyMeACoffee](https://www.buymeacoffee.com/iceexplosive)
 
-[CONTRIBUTE](CONTRIBUTE.md)
+[CONTRIBUTE](CONTRIBUTING.md)
