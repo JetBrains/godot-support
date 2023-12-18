@@ -22,11 +22,10 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
         public const string PID = "GodotPluginSettings";
         public const string Name = "Godot Engine";
 
-        // private static readonly Expression<Func<GodotSettings, bool>> ourEnabledProperty =
-        //     s => s.LanguageServerConnectionModeEntry != LanguageServerConnectionMode.Never;
+        private static readonly Expression<Func<GodotSettings, LanguageServerConnectionMode>> ourLanguageServerConnectionMode =
+            s => s.LanguageServerConnectionMode;
         
-        private static readonly Expression<Func<GodotSettings, string>> ourHostNameAccessor =
-            s => s.RemoteHost;
+        private static readonly Expression<Func<GodotSettings, bool>> ourUseDynamicPort = s => s.UseDynamicPort;
         
         private static readonly Expression<Func<GodotSettings, int>> ourHostPortAccessor =
             s => s.RemoteHostPort;
@@ -44,25 +43,25 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
             AddHeader("Network");
             using (Indent())
             {
-                AddComboOption((GodotSettings s) => s.LanguageServerConnectionModeEntry,
-                    "Utilizing LSP server:", string.Empty, string.Empty,
+                AddComboOption((GodotSettings s) => s.LanguageServerConnectionMode,
+                    "Connecting LSP server:", string.Empty, string.Empty,
                     new RadioOptionPoint(LanguageServerConnectionMode.StartEditorHeadless, "Automatically start headless LSP server"),
-                    new RadioOptionPoint(LanguageServerConnectionMode.StartEditor, "Automatically start Godot Editor, if it is not running"), 
-                    new RadioOptionPoint(LanguageServerConnectionMode.ConnectRunningEditor, "Wait for the Godot Editor"),
+                    new RadioOptionPoint(LanguageServerConnectionMode.ConnectRunningEditor, "Attempt to connect the running Godot Editor"),
                     new RadioOptionPoint(LanguageServerConnectionMode.Never, "Never use LSP")
                 );
                 AddKeyword("Language server");
                 
-                AddTextBox(ourHostNameAccessor, "Host");
-                AddIntOption(ourHostPortAccessor, "Port");
-                // BindToEnabledProperty(AddTextBox(ourHostNameAccessor, "Host"), ourEnabledProperty);
-                // BindToEnabledProperty(AddIntOption(ourHostPortAccessor, "Port"), ourEnabledProperty);
+                // AddTextBox(ourHostNameAccessor, "Host"); // host is always localhot, lets not allow changing it.
+                var useDynamic = AddBoolOption(ourUseDynamicPort, "Use a random free port",
+                    toolTipText: "Only supported by the future Godot builds");
+
+                var portOption = AddIntOption(ourHostPortAccessor, "Port");
+                AddBinding(portOption, BindingStyle.IsVisibleProperty, ourUseDynamicPort, enable => !enable);
+                AddBinding(portOption, BindingStyle.IsVisibleProperty, ourLanguageServerConnectionMode,
+                    mode => mode is not LanguageServerConnectionMode.Never);
+                AddBinding(useDynamic, BindingStyle.IsVisibleProperty, ourLanguageServerConnectionMode,
+                    mode => mode is LanguageServerConnectionMode.StartEditorHeadless);
             }
-        }
-        
-        private void BindToEnabledProperty(BeControl option, Expression<Func<GodotSettings, bool>> setting)
-        {
-            AddBinding(option, BindingStyle.IsEnabledProperty, setting, enable => enable);
         }
     }
 }

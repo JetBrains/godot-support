@@ -4,7 +4,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
     {
         Never,
         ConnectRunningEditor,
-        StartEditor,
         StartEditorHeadless
     }
 }
