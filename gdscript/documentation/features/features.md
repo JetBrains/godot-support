@@ -42,7 +42,8 @@ Please report any issues you encounter - this is still yet to be battle tested
 
 <details>
     <summary>Go to file resource (Ctrl+Click)</summary>
-    <strong>Currently not working as requierd API is not allowed publicly yet</strong>
+    <strong>Currently not working as required API is not allowed publicly yet</strong>
+    <div><a href="https://intellij-support.jetbrains.com/hc/en-us/community/posts/15824595985042-How-create-Symbol-for-Psi">Issue</a></div>
     <img src="../../screens/features/usages/goto_resource.png" />
 </details>
 
