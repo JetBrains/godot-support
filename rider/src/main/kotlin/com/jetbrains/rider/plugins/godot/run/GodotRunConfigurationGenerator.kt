@@ -91,7 +91,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             godotPath: String,
             project: Project
         ) {
-            val configs = runManager.allSettings.filter { it.type is DotNetExeConfiguration && it.name == configurationName }
+            val configs = runManager.allSettings.filter { it.type is DotNetExeConfigurationType && it.name == configurationName }
             if (configs.any()) {
                 configs.forEach{
                     (it.configuration as DotNetExeConfiguration).parameters.exePath = godotPath
