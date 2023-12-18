@@ -28,7 +28,6 @@
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.FrontendBackendHost$ProtocolListener"/>
 
-    <projectService serviceImplementation="com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator"/>
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator$ProtocolListener"/>
 

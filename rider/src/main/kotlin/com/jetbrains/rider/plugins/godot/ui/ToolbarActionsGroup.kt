@@ -18,7 +18,8 @@ class ToolbarActionsGroup : DefaultActionGroup(), DumbAware, TooltipDescriptionP
             return
         }
 
-        e.presentation.isVisible = GodotProjectDiscoverer.getInstance(project).mainProjectBasePath.value != null
+        val descriptor = GodotProjectDiscoverer.getInstance(project).godotDescriptor.value
+        e.presentation.isVisible = descriptor != null && !descriptor.isPureGdScriptProject
 
         if (e.presentation.isVisible) {
             e.presentation.isEnabled = true

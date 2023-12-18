@@ -3,6 +3,7 @@ package com.jetbrains.rider.plugins.godot.run
 import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.client.ClientProjectSession
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.platform.util.idea.LifetimedService
@@ -18,10 +19,13 @@ import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigu
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
+import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
+import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntimeType
 
+@Service
 class GodotRunConfigurationGenerator : LifetimedService() {
 
     companion object {
@@ -38,11 +42,12 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             val project = session.project
             project.solution.isLoaded.whenTrue(lifetime){
                 val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-                godotDiscoverer.mainProjectBasePath.viewNotNull(lifetime) { lt, mainProjectBasePath ->
-                    logger.info("isGodotProject = true")
+                godotDiscoverer.godotDescriptor.viewNotNull(lifetime) { lt, descriptor ->
+                    logger.info("descriptor = $descriptor")
+                    val basePath = descriptor.mainProjectBasePath
                     val runManager = RunManager.getInstance(project)
 
-                    GodotProjectDiscoverer.getInstance(project).godotCorePath.advise(lt) { corePath->
+                    GodotProjectDiscoverer.getInstance(project).godot4Path.advise(lt) { corePath->
                         if (corePath != null) {
                             val toRemove = runManager.allSettings.filter {
                                 it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME
@@ -63,14 +68,23 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                         }
                     }
 
-                    GodotProjectDiscoverer.getInstance(project).godotMonoPath.adviseNotNull(lt){ path ->
-                        createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${mainProjectBasePath}\"", runManager, path, project)
-                        createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${mainProjectBasePath}\" --editor", runManager, path, project)
+                    GodotProjectDiscoverer.getInstance(project).godot3Path.adviseNotNull(lt) { path ->
+                        if (descriptor.isPureGdScriptProject){
+                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${basePath}\"", runManager, path, project)
+                            createOrUpdateGdScriptRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${basePath}\" --editor", runManager, path, project)
+                            return@adviseNotNull
+                        }
+                        createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${basePath}\"", runManager, path, project)
+                        createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${basePath}\" --editor", runManager, path, project)
                     }
-
-                    GodotProjectDiscoverer.getInstance(project).godotCorePath.adviseNotNull(lt){ path ->
-                        createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${mainProjectBasePath}\"", runManager, path, project)
-                        createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${mainProjectBasePath}\" --editor", runManager, path, project)
+                    GodotProjectDiscoverer.getInstance(project).godot4Path.adviseNotNull(lt) { path ->
+                        if (descriptor.isPureGdScriptProject){
+                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${basePath}\"", runManager, path, project)
+                            createOrUpdateGdScriptRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${basePath}\" --editor", runManager, path, project)
+                            return@adviseNotNull
+                        }
+                        createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${basePath}\"", runManager, path, project)
+                        createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${basePath}\" --editor", runManager, path, project)
                     }
 
                     // make configuration selected if nothing is selected
@@ -128,6 +142,31 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 config.parameters.exePath = godotPath
                 config.parameters.programParameters = programParameters
                 config.parameters.workingDirectory = "${project.basePath}"
+                runConfiguration.storeInLocalWorkspace()
+                runManager.addConfiguration(runConfiguration)
+            }
+        }
+
+        private fun createOrUpdateGdScriptRunConfiguration(
+            configurationName: String,
+            programParameters:String,
+            runManager: RunManager,
+            godotPath: String,
+            project: Project
+        ) {
+            val configs = runManager.allSettings.filter { it.type is ExeConfigurationType && it.name == configurationName }
+            if (configs.any()) {
+                configs.forEach{
+                    (it.configuration as ExeConfiguration).parameters.exePath = godotPath
+                }
+            } else {
+                val configurationType = ConfigurationTypeUtil.findConfigurationType(ExeConfigurationType::class.java)
+                val runConfiguration = runManager.createConfiguration(configurationName, configurationType.factory)
+                val config = runConfiguration.configuration as ExeConfiguration
+                config.parameters.exePath = godotPath
+                config.parameters.programParameters = programParameters
+                config.parameters.workingDirectory = "${project.basePath}"
+                config.beforeRunTasks.removeIf { true }
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }

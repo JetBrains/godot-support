@@ -12,9 +12,9 @@ import java.io.File
 
 class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDebugRunConfiguration>() {
     companion object{
-        internal fun extractResPath(basePath:String, context: ConfigurationContext): String? {
+        internal fun extractResPath(basePath:File, context: ConfigurationContext): String? {
             val file = getContainingFile(context) ?: return null
-            val relPath = file.virtualFile.toIOFile().relativeTo(File(basePath))
+            val relPath = file.virtualFile.toIOFile().relativeTo(basePath)
             return "res://$relPath"
         }
 
@@ -28,10 +28,10 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
     override fun getConfigurationFactory() = runConfigurationType<GodotDebugRunConfigurationType>().factory
 
     override fun isConfigurationFromContext(configuration: GodotDebugRunConfiguration, context: ConfigurationContext): Boolean {
-        if (GodotProjectDiscoverer.getInstance(context.project).mainProjectBasePath.value == null) return false
-        if (GodotProjectDiscoverer.getInstance(context.project).godotMonoPath.value == null) return false
+        val basePath = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.value?.mainProjectBasePath ?: return false
+        if (GodotProjectDiscoverer.getInstance(context.project).godot3Path.value == null) return false
 
-        val resPath = extractResPath(GodotProjectDiscoverer.getInstance(context.project).mainProjectBasePath.value!!, context) ?: return false
+        val resPath = extractResPath(File(basePath), context) ?: return false
         return configuration.parameters.programParameters.contains(resPath)
     }
 
@@ -39,15 +39,16 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
                                                context: ConfigurationContext,
                                                sourceElement: Ref<PsiElement>): Boolean {
         val file = getContainingFile(context) ?: return false
-        val resPath = extractResPath(GodotProjectDiscoverer.getInstance(context.project).mainProjectBasePath.value!!, context) ?: return false
+        val basePath = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.value?.mainProjectBasePath ?: return false
+        val resPath = extractResPath(File(basePath), context) ?: return false
 
-        val path = GodotProjectDiscoverer.getInstance(context.project).godotMonoPath.value
+        val path = GodotProjectDiscoverer.getInstance(context.project).godot3Path.value
 
         if (path == null || !File(path).exists()) {
             return false
         }
         configuration.parameters.exePath = path
-        configuration.parameters.programParameters = "--path \"${GodotProjectDiscoverer.getInstance(context.project).mainProjectBasePath.value}\" \"$resPath\""
+        configuration.parameters.programParameters = "--path \"${basePath}\" \"$resPath\""
 
         configuration.parameters.workingDirectory = "${context.project.basePath}"
         configuration.name = file.name

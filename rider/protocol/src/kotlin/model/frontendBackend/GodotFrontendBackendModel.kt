@@ -23,6 +23,11 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
         +"Connected"
     }
 
+    val GodotDescriptor = structdef("GodotDescriptor"){
+        field("isPureGdScriptProject", bool).documentation = "True for pure GdScript project"
+        field("mainProjectBasePath", string).documentation = "Path to the folder with the project.godot"
+    }
+
     init {
         setting(Kotlin11Generator.Namespace, "com.jetbrains.rider.model.godot.frontendBackend")
         setting(CSharp50Generator.Namespace, "JetBrains.Rider.Model.Godot.FrontendBackend")
@@ -34,12 +39,13 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
 
         // Misc backend/fronted context
         property("godotPath", string).documentation = "Path to GodotEditor"
-        property("mainProjectBasePath", string).documentation = "Path to the folder with the project.godot"
 
         // Settings stored in the backend
         field("backendSettings", aggregatedef("GodotBackendSettings") {
             property("enableDebuggerExtensions", bool)
         })
+
+        property("godotDescriptor", GodotDescriptor)
 
         property("editorState", GodotEditorState)
     }
