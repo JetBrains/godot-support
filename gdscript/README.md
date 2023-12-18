@@ -26,7 +26,7 @@ Feel free to report any you find and ofc even new ideas, so they are written dow
 I thank you for all your support up to now - hopefully instead of just reporting issues we'll move to actually using
 this plugin as intended.
 
-So current focus: I'd say get this stable enough that it gets noticed by Gamefromscratch. :D
+So current focus: I'd say get this stable enough that it'll be worthy of Gamefromscratch. :D
 
 Currently tested only on Win10 - once it's good enough on it, I'll test it on macOS
 
