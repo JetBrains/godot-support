@@ -17,7 +17,6 @@ import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationTy
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntimeType
-import java.nio.file.Paths
 
 class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectComponent(project) {
 
@@ -86,7 +85,7 @@ class GodotRunConfigurationGenerator(project: Project) : LifetimedProjectCompone
         godotPath: String,
         project: Project
     ) {
-        val configs = runManager.allSettings.filter { it.type is DotNetExeConfiguration && it.name == configurationName }
+        val configs = runManager.allSettings.filter { it.type is DotNetExeConfigurationType && it.name == configurationName }
         if (configs.any()) {
             configs.forEach{
                 (it.configuration as DotNetExeConfiguration).parameters.exePath = godotPath
