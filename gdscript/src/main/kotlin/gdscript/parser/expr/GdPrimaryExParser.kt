@@ -52,7 +52,7 @@ object GdPrimaryExParser : GdExprBaseParser {
         b.enterSection(KEY_VALUE)
         var ok = true
 
-        if (b.nextTokenIs(IDENTIFIER)) {
+        if (b.followingTokensAre(IDENTIFIER, EQ)) {
             ok = ok && b.consumeToken(IDENTIFIER)
             ok = ok && b.consumeToken(EQ)
             ok = ok && GdExprParser.parse(b, l + 1)

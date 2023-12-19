@@ -1,0 +1,3 @@
+const SOME_DICTIONARY: Dictionary = {
+    NAME_OF_MY_ENUM.FOO: 0, NAME_OF_MY_ENUM.BAR: -2
+}
