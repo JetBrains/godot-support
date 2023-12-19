@@ -56,10 +56,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
                     toolTipText: "Only supported by the future Godot builds");
 
                 var portOption = AddIntOption(ourHostPortAccessor, "Port");
+                
                 AddBinding(portOption, BindingStyle.IsVisibleProperty, ourUseDynamicPort, enable => !enable);
-                AddBinding(portOption, BindingStyle.IsVisibleProperty, ourLanguageServerConnectionMode,
+                AddBinding(portOption, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
                     mode => mode is not LanguageServerConnectionMode.Never);
-                AddBinding(useDynamic, BindingStyle.IsVisibleProperty, ourLanguageServerConnectionMode,
+                AddBinding(useDynamic, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
                     mode => mode is LanguageServerConnectionMode.StartEditorHeadless);
             }
         }
