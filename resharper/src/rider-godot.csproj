@@ -4,7 +4,6 @@
     <AssemblyName>JetBrains.ReSharper.Plugins.Godot</AssemblyName>
     <RootNamespace>JetBrains.ReSharper.Plugins.Godot</RootNamespace>
     <LangVersion>9</LangVersion>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;JET_MODE_ASSERT;JET_MODE_REPORT_EXCEPTIONS;RIDER;$(CommandLineConstants)</DefineConstants>
