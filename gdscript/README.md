@@ -17,6 +17,8 @@ Supports only Godot 4.0 and higher
 
 [List of features](documentation%2Ffeatures%2Ffeatures.md)
 
+[Changelog](CHANGELOG.md)
+
 ## Update 16.12.2023
 
 Currently, awaiting 2.0.8 release where all feature should be ready for testing,  

@@ -1,9 +1,9 @@
-## 2
-
-### 2.1.0 (in progress)
+## In progress
 
 + new documentation rendered based on Godot's 4.2 update
 
-### 2.0.9 (awaiting approval)
+## Released
+
+### 2.0.9
 
 - fix dictionary definition
