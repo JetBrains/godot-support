@@ -1,9 +1,3 @@
-<style>
-    .alert-danger {
-        color: rgb(169,68,66) !important;
-    }
-</style>
-
 ## Trait/Mixin like helper
 
 Traits or Mixins are pieces of code that you can attach to any other code and have both
