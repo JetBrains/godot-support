@@ -16,4 +16,13 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 configuration.DefineConstants.Contains("GODOT;"));
         }
     }
+
+    public static class SolutionExtensions
+    {
+        public static bool IsGdScriptSolution([CanBeNull] this ISolution solution)
+        {
+            if (solution == null || !solution.IsValid()) return false;
+            return solution.SolutionFile == null && solution.SolutionDirectory.Combine("project.godot").ExistsFile;
+        }
+    }
 }
