@@ -15,7 +15,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
         [SettingsEntry(6005, "Remote host port")]
         public int RemoteHostPort;
 
-        [SettingsEntry(true, "Use a random free port, supported only with future Godot builds")]
+        [SettingsEntry(false, "Use a random free port, supported only with future Godot builds")]
         public bool UseDynamicPort;
         
         // Debugging
