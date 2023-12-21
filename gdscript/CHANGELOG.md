@@ -4,7 +4,9 @@
 
 ## Released
 
-### 2.0.10
+Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
+
+### 2.0.10 (21.12.2023)
 
 - Lambda issue [#162](https://gitlab.com/IceExplosive/gdscript/-/issues/162)
 
