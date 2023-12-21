@@ -1,6 +1,6 @@
 ## In progress
 
-+ new documentation rendered based on Godot's 4.2 update
++ new documentation rendered based on Godot's 4.2 update [#158](https://gitlab.com/IceExplosive/gdscript/-/issues/158)
 
 ## Released
 
