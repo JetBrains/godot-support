@@ -111,12 +111,15 @@ class GdBlock : AbstractBlock {
             else -> 0
         }
 
-        // Check is it is right after COLON/LRBR
+        // Check is it is right after COLON
         if (previousBlock is GdBlock) {
             val lastNode = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)
-            if (arrayOf(COLON, LRBR).contains(lastNode?.elementType)) {
+            if (arrayOf(COLON).contains(lastNode?.elementType)) {
                 if (precedingOffset > 0) {
-                    return ChildAttributes(Indent.getContinuationIndent(true), null)
+                    if (preceding != null) {
+                        return ChildAttributes(settings.calculateSpaceIndents(preceding), null)
+                    }
+                    return ChildAttributes(Indent.getContinuationIndent(false), null)
                 }
 
 //                if (atEndOfStmt && preceding != null) {
@@ -124,7 +127,7 @@ class GdBlock : AbstractBlock {
 //                } else if (preceding != null && lastNode?.nextLeaf(false) is PsiErrorElement) {
 //                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 1, true), null)
 //                }
-                return ChildAttributes(Indent.getNormalIndent(true), null)
+                return ChildAttributes(Indent.getNormalIndent(false), null)
             }
         }
 
@@ -148,7 +151,7 @@ class GdBlock : AbstractBlock {
                 return ChildAttributes(settings.calculateSpaceIndents(preceding), null)
             }
 
-            return ChildAttributes(Indent.getContinuationIndent(true), null)
+            return ChildAttributes(Indent.getContinuationIndent(false), null)
         }
 
         if (node.elementType == CALL_EX) {
