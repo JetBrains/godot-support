@@ -12,7 +12,7 @@ import com.jetbrains.rd.util.forEachReversed
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.GdClassVarDeclTl
-import gdscript.psi.GdTypes
+import gdscript.psi.GdTypes.*
 import gdscript.psi.utils.PsiGdClassVarUtil
 import gdscript.utils.GdSettingsUtil.calculateSpaceIndents
 import gdscript.utils.PsiElementUtil.getCaretOffsetIfSingle
@@ -62,11 +62,11 @@ class GdBlock : AbstractBlock {
             if (GdBlocks.DEDENT_TOKENS.contains(type)) indented = false
 
             if (GdBlocks.EMPTY_TOKENS.contains(type)) {
-                if (type == GdTypes.INDENT) {
+                if (type == INDENT) {
                     indented = true
                 }
             } else if (GdBlocks.SKIP_TOKENS.contains(type)) {
-                if (type == GdTypes.SUITE) {
+                if (type == SUITE) {
                     suited = true
                     alignments.initialize()
                 }
@@ -75,7 +75,7 @@ class GdBlock : AbstractBlock {
             } else {
                 var toIndent = indented || GdBlocks.ALWAYS_INDENTED_TOKENS.contains(type)
                 // Unique case of comment before Indentation
-                if (!toIndent && type == GdTypes.COMMENT && child.psi.nextNonWhiteCommentToken().elementType == GdTypes.INDENT) {
+                if (!toIndent && type == COMMENT && child.psi.nextNonWhiteCommentToken().elementType == INDENT) {
                     toIndent = true
                 }
 
@@ -111,10 +111,14 @@ class GdBlock : AbstractBlock {
             else -> 0
         }
 
-        // Check is it is right after COLON
+        // Check is it is right after COLON/LRBR
         if (previousBlock is GdBlock) {
             val lastNode = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)
-            if (lastNode?.elementType == GdTypes.COLON) {
+            if (arrayOf(COLON, LRBR).contains(lastNode?.elementType)) {
+                if (precedingOffset > 0) {
+                    return ChildAttributes(Indent.getContinuationIndent(true), null)
+                }
+
 //                if (atEndOfStmt && preceding != null) {
 //                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 1 - precedingOffset), null)
 //                } else if (preceding != null && lastNode?.nextLeaf(false) is PsiErrorElement) {
@@ -127,8 +131,8 @@ class GdBlock : AbstractBlock {
         val caretOffset = node.psi.getCaretOffsetIfSingle()
         if (
             previousBlock is GdBlock && preceding != null
-            && previousBlock.node.lastChildNode?.elementType == GdTypes.STMT_OR_SUITE
-            && previousBlock.node.lastChildNode?.firstChildNode?.elementType == GdTypes.SUITE
+            && previousBlock.node.lastChildNode?.elementType == STMT_OR_SUITE
+            && previousBlock.node.lastChildNode?.firstChildNode?.elementType == SUITE
         ) {
             if (caretOffset != null) {
                 val emptyLines = PsiTreeUtil.getDeepestLast(preceding).precedingNewLines(caretOffset)
@@ -147,6 +151,10 @@ class GdBlock : AbstractBlock {
             return ChildAttributes(Indent.getContinuationIndent(true), null)
         }
 
+        if (node.elementType == CALL_EX) {
+            return ChildAttributes(Indent.getNormalIndent(), null)
+        }
+
         // Inside indented blocks directly
         if (GdBlocks.INDENT_CHILDREN_ATTRIBUTE.contains(node.elementType)) {
             if (caretOffset != null) {
@@ -156,6 +164,8 @@ class GdBlock : AbstractBlock {
                         settings.calculateSpaceIndents(node.psi, 2 - emptyLines - precedingOffset),
                         null
                     )
+                } else {
+                    return ChildAttributes(Indent.getNormalIndent(), null)
                 }
             }
 
@@ -171,12 +181,12 @@ class GdBlock : AbstractBlock {
             return this.spacing.getSpacing(this, child1, child2)
         }
 
-        if (child1.node.elementType == GdTypes.COMMENT) {
+        if (child1.node.elementType == COMMENT) {
             return null
         }
 
         var block2: GdBlock? = child2
-        while (block2 != null && block2.node.elementType == GdTypes.COMMENT) {
+        while (block2 != null && block2.node.elementType == COMMENT) {
             block2 = block2.nextBlock
         }
         if (block2 == null) return null
@@ -186,7 +196,7 @@ class GdBlock : AbstractBlock {
         // Separation of @onready & @export variables
         splitByAnnotation(child1, block2)?.let{ return it }
 
-        if (child1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block2.node.elementType == GdTypes.CLASS_VAR_DECL_TL && PsiGdClassVarUtil.isAnnotated(
+        if (child1.node.elementType == CLASS_VAR_DECL_TL && block2.node.elementType == CLASS_VAR_DECL_TL && PsiGdClassVarUtil.isAnnotated(
                 child1.node.psi as GdClassVarDeclTl
             )
         ) {
@@ -206,8 +216,8 @@ class GdBlock : AbstractBlock {
     }
 
     private fun separateMultilineVars(block1: GdBlock, block2: GdBlock): Spacing? {
-        if (block1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block1.node.text.trim().contains('\n')) {
-            if (block2.node.elementType != GdTypes.METHOD_DECL_TL) {
+        if (block1.node.elementType == CLASS_VAR_DECL_TL && block1.node.text.trim().contains('\n')) {
+            if (block2.node.elementType != METHOD_DECL_TL) {
                 val lines = this.settings.getCustomSettings(GdCodeStyleSettings::class.java).LINES_AROUND_MULTILINE_VAR
                 return Spacing.createSpacing(0, 0, lines+1, false, 0)
             }
@@ -215,9 +225,9 @@ class GdBlock : AbstractBlock {
 
         val block22 = varAnnotation(block2)
         if (
-            block1.node.elementType != GdTypes.COMMENT
-            && block1.node.elementType != GdTypes.ANNOTATION_TL
-            && block22.node.elementType == GdTypes.CLASS_VAR_DECL_TL
+            block1.node.elementType != COMMENT
+            && block1.node.elementType != ANNOTATION_TL
+            && block22.node.elementType == CLASS_VAR_DECL_TL
             && block22.node.text.trim().contains('\n')) {
             val lines = this.settings.getCustomSettings(GdCodeStyleSettings::class.java).LINES_AROUND_MULTILINE_VAR
             return Spacing.createSpacing(0, 0, lines+1, false, 0)
@@ -228,7 +238,7 @@ class GdBlock : AbstractBlock {
 
     private fun splitByAnnotation(block1: GdBlock?, block2: GdBlock?): Spacing? {
         if (block1 == null || block2 == null) return null
-        if (block1.node.elementType == GdTypes.CLASS_VAR_DECL_TL && block2.node.elementType == GdTypes.ANNOTATION_TL) {
+        if (block1.node.elementType == CLASS_VAR_DECL_TL && block2.node.elementType == ANNOTATION_TL) {
             val node1 = block1.node.psi as GdClassVarDeclTl
             var node2 = block2.node.psi
             val annotations = mutableListOf<String>()
@@ -253,13 +263,13 @@ class GdBlock : AbstractBlock {
         var type: IElementType? = block.node.elementType
         var any = false
 
-        while (type == GdTypes.ANNOTATION_TL) {
+        while (type == ANNOTATION_TL) {
             any = true
             current = current?.nextBlock
             type = current?.node?.elementType
         }
 
-        if (any && type == GdTypes.METHOD_DECL_TL) return current!!
+        if (any && type == METHOD_DECL_TL) return current!!
         return block
     }
 
@@ -269,13 +279,13 @@ class GdBlock : AbstractBlock {
         var type: IElementType? = block.node.elementType
         var any = false
 
-        while (type == GdTypes.ANNOTATION_TL) {
+        while (type == ANNOTATION_TL) {
             any = true
             current = current?.nextBlock
             type = current?.node?.elementType
         }
 
-        if (any && type == GdTypes.CLASS_VAR_DECL_TL) return current!!
+        if (any && type == CLASS_VAR_DECL_TL) return current!!
         return block
     }
 

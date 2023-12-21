@@ -30,6 +30,7 @@ class GdPsiBuilder {
 
     /** GdPsiState **/
 
+    val isArgs get() = state.isArgs
     val isError get() = state.isError
     var errorAt: Int? get() = state.errorAt ?: 0
         set(value) { state.errorAt = value }
@@ -39,6 +40,10 @@ class GdPsiBuilder {
     fun advance() = b.advanceLexer()
     fun mark(): Marker = b.mark()
     fun pinned(): Boolean = state.pinned()
+
+    fun rawLookup(steps: Int = 1): IElementType? {
+        return b.rawLookup(steps)
+    }
 
     fun remapCurrentToken(type: IElementType) {
         b.remapCurrentToken(type)

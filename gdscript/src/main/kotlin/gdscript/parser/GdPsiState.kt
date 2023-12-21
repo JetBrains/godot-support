@@ -3,6 +3,7 @@ package gdscript.parser
 import com.intellij.lang.PsiBuilder.Marker
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.containers.LimitedPool
+import gdscript.psi.GdTypes.ARG_LIST
 
 class GdPsiState {
 
@@ -19,6 +20,7 @@ class GdPsiState {
         this.b = b
     }
 
+    val isArgs get() = currentFrame?.withinArg ?: false
     val isError get() = currentFrame?.errorAt != null
     var errorAt get() = currentFrame?.errorAt
         set(value) { currentFrame?.errorAt = value }
@@ -26,6 +28,7 @@ class GdPsiState {
     fun enterSection(elementType: IElementType, mark: Marker) {
         val newFrame = FRAMES.alloc().init(elementType, mark)
         newFrame.parent = currentFrame
+        newFrame.withinArg = currentFrame?.withinArg ?: false || elementType == ARG_LIST
         currentFrame = newFrame
     }
 
@@ -94,6 +97,7 @@ class GdPsiFrame {
     var errorAt: Int? = null
     var pinned: Boolean = false
     var required: Boolean = true
+    var withinArg: Boolean = false
 
     fun init(elementType: IElementType, mark: Marker): GdPsiFrame {
         this.elementType = elementType
@@ -102,6 +106,7 @@ class GdPsiFrame {
     }
 
     fun exit(result: Boolean): Boolean {
+        if (elementType == ARG_LIST) withinArg = false
         if (mark == null || elementType == null) return true
         if (result || pinned) mark!!.done(elementType!!)
         else mark!!.rollbackTo()
@@ -110,6 +115,7 @@ class GdPsiFrame {
     }
 
     fun drop(result: Boolean): Boolean {
+        if (elementType == ARG_LIST) withinArg = false
         if (mark == null) return true
         if (result || pinned) mark!!.drop()
         else mark!!.rollbackTo()

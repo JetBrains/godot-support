@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hints.HintInfo
 import com.intellij.codeInsight.hints.HintInfo.MethodInfo
 import com.intellij.codeInsight.hints.InlayInfo
 import com.intellij.codeInsight.hints.InlayParameterHintsProvider
-import com.intellij.psi.*
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.containers.toArray
@@ -35,7 +35,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                 return MethodInfo(name, declaration.parameters.keys.toList());
             } else if (declaration is GdVarDeclSt && declaration.expr is GdFuncDeclEx) {
                 // Lambdas
-                val lambda = declaration.expr as GdFuncDeclEx;
+                val lambda = declaration.expr as GdFuncDeclEx
                 return MethodInfo(lambda.funcDeclIdNmi?.text.orEmpty(), lambda.parameters.keys.toList())
             } else if (declaration is GdClassNaming) {
                 // Constructors
@@ -83,7 +83,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                         val lambda = method.expr as GdFuncDeclEx;
                         params = lambda.parameters.keys.toArray(emptyArray())
                     } else {
-                        return emptyList();
+                        return emptyList()
                     }
                 }
 
@@ -108,7 +108,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                         }
 
                         if (ok) {
-                            params = hints.map { it.varNmi.name }.toTypedArray();
+                            params = hints.map { it.varNmi.name }.toTypedArray()
                             break
                         }
                     }

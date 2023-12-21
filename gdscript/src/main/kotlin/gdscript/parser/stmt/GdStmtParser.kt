@@ -80,6 +80,7 @@ object GdStmtParser : GdBaseParser {
 
                 if (asLambda) {
                     ok = ok && b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT)
+                    if (b.isArgs) b.passToken(NEW_LINE) || b.passToken(SEMICON)
                 } else {
                     ok = ok && it.parseEndStmt(b)
                 }

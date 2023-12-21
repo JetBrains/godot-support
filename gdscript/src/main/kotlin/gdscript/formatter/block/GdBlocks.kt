@@ -1,7 +1,6 @@
 package gdscript.formatter.block
 
 import com.intellij.psi.TokenType
-import gdscript.GdKeywords
 import gdscript.psi.GdTypes
 
 object GdBlocks {
