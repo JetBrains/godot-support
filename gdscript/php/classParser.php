@@ -28,11 +28,55 @@ foreach ($modules as $module) {
 $target = "./classesGd/%s.gd";
 $moduleTarget = "./classesGd/modules/%s.gd";
 
-$formatDesc = function($desc, $key) {
-    $desc = trim($desc);
-    $desc = explode("\n", $desc);
-    $desc = array_map(function ($it) { return trim($it); }, $desc);
-    return sprintf("#%s %s\n", $key, implode(sprintf("\n#%s ", $key), $desc));
+$addDocumentation = function($data, $desc, $brief = null, $tutorials = null, $deprecated = false, $experimental = false) {
+    if (!$brief && !$desc && !$tutorials && !$deprecated && !$experimental) {
+        return $data;
+    }
+
+    $addSpace = false;
+    if ($brief) {
+        $addSpace = true;
+        $lines = explode("\n", $brief);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line) {
+                $data .= "## $line\n";
+            }
+        }
+    }
+    if ($desc) {
+        if ($addSpace) {
+            $data .= "##\n";
+        }
+        $addSpace = true;
+        $lines = explode("\n", $desc);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line) {
+                $data .= "## $line\n";
+            }
+        }
+    }
+    if ($tutorials) {
+        if ($addSpace) {
+            $data .= "##\n";
+        }
+        foreach ($tutorials as $tutorial) {
+            $name = $tutorial[0];
+            if ($name) {
+                $name = "($name)";
+            }
+            $data .= sprintf("## @tutorial%s: %s\n", $name, $tutorial[1]);
+        }
+    }
+    if ($deprecated == "true") {
+        $data .= "## @deprecated\n";
+    }
+    if ($experimental == "true") {
+        $data .= "## @experimental\n";
+    }
+
+    return $data;
 };
 
 $formatType = function($type) {
@@ -80,8 +124,6 @@ foreach ($files as $filepath) {
     $paths = explode("/", $filepath);
     $filename = $paths[count($paths) - 1];
 
-//     if ($filename != "CanvasItem.xml") { continue; }
-
     if ($filename == "." || $filename == "..") continue;
     if (substr($filename, strlen($filename) - 4) != ".xml") continue;
 
@@ -98,30 +140,28 @@ foreach ($files as $filepath) {
         $data .= sprintf("extends %s\n", $att['inherits']);
     }
 
+    $data .= sprintf("class_name %s\n\n", $att['name'] ?? $class_name);
+
     /** Description */
+    $baseTutorialUrl = 'https://docs.godotengine.org/en/stable';
     $desc = (array) ($xml['brief_description'] ?? []);
-    if ($desc) {
-        $data .= $formatDesc($desc['0'], "brief");
-    }
+    $brief = $desc['0'] ?? "";
 
-    //if (substr($class_name, 0, 1) != '@') {
-        $desc = (array) ($xml['description'] ?? []);
-        if ($desc) {
-            $data .= $formatDesc($desc['0'], "desc");
-        }
+    $desc = (array) ($xml['description'] ?? []);
+    $description = $desc['0'] ?? "";
 
-    // Tutorial links
-    $baseUrl = 'https://docs.godotengine.org/en/stable';
     $links = (array) ($xml['tutorials'] ?? []);
+    $tutorials = [];
     foreach ($xml['tutorials'] as $link) {
         $link = (array) $link;
         $p_att = $link['@attributes'];
-        $value = str_replace('$DOCS_URL', $baseUrl, $link[0]);
-        $data .= $formatDesc(sprintf("[%s] %s", $p_att['title'], $value), "tutorial");
+        $value = str_replace('$DOCS_URL', $baseTutorialUrl, $link[0]);
+
+        $tutorials[] = [$p_att['title'] ?? null, $value];
     }
 
-    $data .= sprintf("class_name %s\n\n", $class_name);
-    //}
+    $data = $addDocumentation($data, $description, $brief, $tutorials, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
+    $data .= "\n\n";
 
     /** Signals */
     foreach ($xml['signals'] ?? [] as $value) {
@@ -130,9 +170,7 @@ foreach ($files as $filepath) {
 
         $params = $parseParams($value);
         $desc = (array) ($value['description'] ?? []);
-        if ($desc) {
-            $data .= $formatDesc($desc['0'], "desc");
-        }
+        $data = $addDocumentation($data, $desc['0'], null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
 
         $paramsStr = implode(', ', $params);
         if ($paramsStr) {
@@ -148,9 +186,7 @@ foreach ($files as $filepath) {
     foreach ($xml['constants'] ?? [] as $value) {
         $value = (array) $value;
         $att = (array) $value['@attributes'];
-        if ($value['0'] ?? null) {
-            $data .= $formatDesc($value['0'], "desc");
-        }
+        $data = $addDocumentation($data, $value['0'] ?? null, null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
         $enum = $att['enum'] ?? null;
         if ($enum) {
             $enums[$enum][] = sprintf("%s = %s,\n", $att['name'], $att['value']);
@@ -176,9 +212,7 @@ foreach ($files as $filepath) {
         foreach ($xml['members'] ?? [] as $value) {
             $value = (array) $value;
             $att = (array) $value['@attributes'];
-            if ($value['0'] ?? null) {
-                $data .= $formatDesc($value['0'], "desc");
-            }
+            $data = $addDocumentation($data, $value['0'] ?? null, null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
             $data .= sprintf("var %s: %s", $att['name'], $formatType($att['type']));
 
             $getter = $att['getter'] ?? null ? sprintf("get = %s", $att['getter']) : null;
@@ -210,9 +244,7 @@ foreach ($files as $filepath) {
 
         $params = $parseParams($value);
         $desc = (array) ($value['description'] ?? []);
-        if ($desc) {
-            $data .= $formatDesc($desc['0'], "desc");
-        }
+        $data = $addDocumentation($data, $desc['0'], null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
 
         $data .= sprintf("func %s(%s) -> %s:\n", $att['name'], implode(', ', $params), $formatType($ret['@attributes']['type']));
         $data .= sprintf("\tpass;\n\n");
@@ -237,9 +269,7 @@ foreach ($files as $filepath) {
 
         $params = $parseParams($value);
         $desc = (array) ($value['description'] ?? []);
-        if ($desc) {
-            $data .= $formatDesc($desc['0'], "desc");
-        }
+        $data = $addDocumentation($data, $desc['0'], null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
 
         $data .= sprintf("%sfunc %s(%s) -> %s:\n", $quali, $att['name'], implode(', ', $params), $formatType($ret['@attributes']['type']));
         $data .= sprintf("\tpass;\n\n");
@@ -247,11 +277,7 @@ foreach ($files as $filepath) {
     $data .= "\n";
     $data .= $getSetMethods;
 
-//    if (strpos($filepath, "modules") > 0) {
-//        file_put_contents(sprintf($moduleTarget, $class_name), $data);
-//    } else {
-        file_put_contents(sprintf($target, $class_name), $data);
-//    }
+    file_put_contents(sprintf($target, $class_name), $data);
 
 }
 

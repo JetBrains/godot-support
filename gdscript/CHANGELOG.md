@@ -1,6 +1,6 @@
 ## In progress
 
-+ new documentation rendered based on Godot's 4.2 update [#158](https://gitlab.com/IceExplosive/gdscript/-/issues/158)
++ New documentation rendered based on Godot's 4.2 update [#158](https://gitlab.com/IceExplosive/gdscript/-/issues/158)
 
 ## Released
 
@@ -16,4 +16,4 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 
 ### 2.0.9
 
-- fix dictionary definition
+- Fix dictionary definition

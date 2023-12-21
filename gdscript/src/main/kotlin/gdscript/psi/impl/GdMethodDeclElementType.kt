@@ -1,14 +1,12 @@
 package gdscript.psi.impl
 
 import com.intellij.psi.stubs.*
-import com.intellij.psi.util.elementType
 import gdscript.GdLanguage
 import gdscript.index.Indices
 import gdscript.index.stub.GdMethodDeclStub
 import gdscript.index.stub.GdMethodDeclStubImpl
 import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdTypes
-import gdscript.psi.utils.PsiGdClassUtil
+import gdscript.psi.utils.GdCommentUtil
 import gdscript.psi.utils.PsiGdParameterUtil
 
 object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDeclTl>("methodDecl", GdLanguage) {
@@ -48,6 +46,7 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
         GdMethodDeclTlImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdMethodDeclTl, parentStub: StubElement<*>?): GdMethodDeclStub {
+        GdCommentUtil.collectComments(psi)
         return GdMethodDeclStubImpl(parentStub,
             psi.isStatic,
             psi.isVariadic,

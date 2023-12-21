@@ -4,7 +4,6 @@ import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdParamListParser
 import gdscript.parser.common.GdReturnHintParser
-import gdscript.parser.expr.GdLiteralExParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.stmt.GdStmtParser
 import gdscript.psi.GdTypes.*

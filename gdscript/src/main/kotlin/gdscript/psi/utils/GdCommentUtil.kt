@@ -4,12 +4,17 @@ import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.prevLeaf
 import gdscript.codeInsight.documentation.GdDocUtil
 import gdscript.codeInsight.documentation.GdGodotDocUtil
 import gdscript.lineMarker.GdTraitLineMarkerContributor
+import gdscript.model.GdCommentModel
+import gdscript.model.GdTutorial
 import gdscript.psi.GdTypes
 
 object GdCommentUtil {
+
+    val TUTORIAL_REGEX = "@tutorial(\\(.+\\))?: (.+)".toRegex()
 
     val DESCRIPTION = "desc"
     val PARAMETER = "param"
@@ -22,6 +27,47 @@ object GdCommentUtil {
         GdTraitLineMarkerContributor.PREFIX.trimStart('#'),
         GdTraitLineMarkerContributor.SUFFIX.trimStart('#'),
     )
+
+    fun collectComments(element: PsiElement?): GdCommentModel {
+        val comments = mutableListOf<String>()
+        val model = GdCommentModel()
+
+        var previous: PsiElement? = element?.prevLeaf(false) ?: return model
+        while (previous.elementType == TokenType.WHITE_SPACE) {
+            previous = previous?.prevLeaf(false)
+            if (previous?.elementType == GdTypes.COMMENT) {
+                val txt = previous!!.text
+                if (!txt.startsWith("##")) break
+                comments.add(0, txt.removePrefix("##").trim())
+            } else break
+            previous = previous.prevLeaf(false)
+        }
+
+        var brief = false
+        comments.forEach {
+            if (it.startsWith("@description")) {
+                model.isDeprecated = true
+            } else if (it.startsWith("@tutorial")) {
+                val groups = TUTORIAL_REGEX.find(it)?.groups
+                val tutorial = GdTutorial()
+                if (groups?.get(2) != null) {
+                    tutorial.url = groups[2]!!.value
+                    tutorial.name = groups[1]?.value ?: groups[2]!!.value
+                    model.tutorials.add(0, tutorial)
+                }
+            } else if (it.trim() == "") {
+                brief = true
+            } else {
+                if (brief) {
+                    model.brief = "${it}\n${model.brief}".trim('\n')
+                } else {
+                    model.description = "${it}\n${model.description}".trim('\n')
+                }
+            }
+        }
+
+        return model
+    }
 
     fun collectAllDescriptions(element: PsiElement?): Map<String, List<String>> {
         val descriptions = mutableMapOf<String, MutableList<String>>()
