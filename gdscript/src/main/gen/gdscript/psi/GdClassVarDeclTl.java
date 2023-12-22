@@ -2,13 +2,15 @@
 package gdscript.psi;
 
 import java.util.List;
+
+import gdscript.psi.types.GdDocumented;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdClassVarDeclStub;
 import com.intellij.navigation.ItemPresentation;
 
-public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdClassVarDeclStub> {
+public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdClassVarDeclStub>, GdDocumented {
 
   @Nullable
   GdAssignTyped getAssignTyped();

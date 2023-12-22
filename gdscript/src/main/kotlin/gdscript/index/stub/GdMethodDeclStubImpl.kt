@@ -2,6 +2,8 @@ package gdscript.index.stub
 
 import com.intellij.psi.stubs.StubBase
 import com.intellij.psi.stubs.StubElement
+import gdscript.model.GdCommentModel
+import gdscript.model.GdTutorial
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.impl.GdMethodDeclElementType
 
@@ -13,6 +15,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
     private var returnType: String = "";
     private var isConstructor: Boolean = false;
     private var parameters: LinkedHashMap<String, String?> = LinkedHashMap();
+    private var doc: GdCommentModel
 
     constructor(
         parent: StubElement<*>?,
@@ -22,6 +25,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
         name: String?,
         returnType: String,
         parameters: LinkedHashMap<String, String?>,
+        doc: GdCommentModel,
     ) : super(parent, GdMethodDeclElementType) {
         if (name != null) {
             this.name = name
@@ -31,6 +35,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
         this.isConstructor = isConstructor;
         this.returnType = returnType;
         this.parameters = parameters;
+        this.doc = doc
     }
 
     override fun isStatic(): Boolean = isStatic;
@@ -44,5 +49,11 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
     override fun parameters(): LinkedHashMap<String, String?> = parameters;
 
     override fun isConstructor(): Boolean = isConstructor;
+
+    override fun description(): String = this.doc.description
+    override fun brief(): String = this.doc.brief
+    override fun tutorials(): List<GdTutorial> = this.doc.tutorials
+    override fun isDeprecated(): Boolean = this.doc.isDeprecated
+    override fun isExperimental(): Boolean = this.doc.isExperimental
 
 }

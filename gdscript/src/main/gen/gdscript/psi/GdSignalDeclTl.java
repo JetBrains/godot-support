@@ -2,13 +2,15 @@
 package gdscript.psi;
 
 import java.util.List;
+
+import gdscript.psi.types.GdDocumented;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdSignalDeclStub;
 import java.util.LinkedHashMap;
 
-public interface GdSignalDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdSignalDeclStub> {
+public interface GdSignalDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdSignalDeclStub>, GdDocumented {
 
   @Nullable
   GdEndStmt getEndStmt();

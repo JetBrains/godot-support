@@ -2,6 +2,9 @@
 package gdscript.psi.impl;
 
 import java.util.List;
+
+import gdscript.model.GdTutorial;
+import gdscript.psi.utils.GdCommentUtil;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -68,6 +71,34 @@ public class GdFuncDeclExImpl extends GdExprImpl implements GdFuncDeclEx {
   @NotNull
   public LinkedHashMap<String, String> getParameters() {
     return GdPsiUtils.getParameters(this);
+  }
+
+  @NotNull
+  @Override
+  public String description() {
+    return GdCommentUtil.INSTANCE.description(this);
+  }
+
+  @NotNull
+  @Override
+  public String brief() {
+    return GdCommentUtil.INSTANCE.brief(this);
+  }
+
+  @NotNull
+  @Override
+  public List<GdTutorial> tutorials() {
+    return GdCommentUtil.INSTANCE.tutorials(this);
+  }
+
+  @Override
+  public boolean isDeprecated() {
+    return GdCommentUtil.INSTANCE.isDeprecated(this);
+  }
+
+  @Override
+  public boolean isExperimental() {
+    return GdCommentUtil.INSTANCE.isExperimental(this);
   }
 
 }

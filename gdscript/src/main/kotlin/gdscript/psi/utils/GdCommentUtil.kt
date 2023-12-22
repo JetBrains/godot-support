@@ -2,6 +2,7 @@ package gdscript.psi.utils
 
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
+import com.intellij.psi.StubBasedPsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.prevLeaf
@@ -11,10 +12,11 @@ import gdscript.lineMarker.GdTraitLineMarkerContributor
 import gdscript.model.GdCommentModel
 import gdscript.model.GdTutorial
 import gdscript.psi.GdTypes
+import gdscript.psi.types.GdDocumented
 
 object GdCommentUtil {
 
-    val TUTORIAL_REGEX = "@tutorial(\\(.+\\))?: (.+)".toRegex()
+    val TUTORIAL_REGEX = "@tutorial(\\(.+\\))?:\\s+(.+)".toRegex()
 
     val DESCRIPTION = "desc"
     val PARAMETER = "param"
@@ -27,6 +29,61 @@ object GdCommentUtil {
         GdTraitLineMarkerContributor.PREFIX.trimStart('#'),
         GdTraitLineMarkerContributor.SUFFIX.trimStart('#'),
     )
+
+    fun brief(element: PsiElement): String {
+        if (element !is GdDocumented) return ""
+        if (element is StubBasedPsiElement<*>) {
+            val stub = element.stub
+            if (stub != null && stub is GdDocumented) return stub.brief()
+        }
+
+        val model = collectComments(element)
+        return model.brief.ifEmpty { model.description }
+    }
+
+    fun description(element: PsiElement): String {
+        if (element !is GdDocumented) return ""
+        if (element is StubBasedPsiElement<*>) {
+            val stub = element.stub
+            if (stub != null && stub is GdDocumented) return stub.description()
+        }
+
+        val model = collectComments(element)
+        return model.description
+    }
+
+    fun tutorials(element: PsiElement): List<GdTutorial> {
+        if (element !is GdDocumented) return listOf()
+        if (element is StubBasedPsiElement<*>) {
+            val stub = element.stub
+            if (stub != null && stub is GdDocumented) return stub.tutorials()
+        }
+
+        val model = collectComments(element)
+        return model.tutorials
+    }
+
+    fun isDeprecated(element: PsiElement): Boolean {
+        if (element !is GdDocumented) return false
+        if (element is StubBasedPsiElement<*>) {
+            val stub = element.stub
+            if (stub != null && stub is GdDocumented) return stub.isDeprecated()
+        }
+
+        val model = collectComments(element)
+        return model.isDeprecated
+    }
+
+    fun isExperimental(element: PsiElement): Boolean {
+        if (element !is GdDocumented) return false
+        if (element is StubBasedPsiElement<*>) {
+            val stub = element.stub
+            if (stub != null && stub is GdDocumented) return stub.isExperimental()
+        }
+
+        val model = collectComments(element)
+        return model.isExperimental
+    }
 
     fun collectComments(element: PsiElement?): GdCommentModel {
         val comments = mutableListOf<String>()

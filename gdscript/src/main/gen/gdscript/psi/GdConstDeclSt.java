@@ -2,10 +2,12 @@
 package gdscript.psi;
 
 import java.util.List;
+
+import gdscript.psi.types.GdDocumented;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface GdConstDeclSt extends GdStmt {
+public interface GdConstDeclSt extends GdStmt, GdDocumented {
 
   @Nullable
   GdAssignTyped getAssignTyped();

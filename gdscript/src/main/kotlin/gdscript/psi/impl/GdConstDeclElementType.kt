@@ -5,7 +5,9 @@ import gdscript.GdLanguage
 import gdscript.index.Indices
 import gdscript.index.stub.GdConstDeclStub
 import gdscript.index.stub.GdConstDeclStubImpl
+import gdscript.model.GdCommentModel
 import gdscript.psi.GdConstDeclTl
+import gdscript.psi.utils.GdCommentUtil
 
 object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>("constDecl", GdLanguage) {
 
@@ -17,11 +19,15 @@ object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>
     override fun getExternalId(): String = "GdScript.constDecl";
 
     override fun serialize(stub: GdConstDeclStub, dataStream: StubOutputStream) {
-        dataStream.writeName(stub.name());
+        dataStream.writeName(stub.name())
+        GdCommentModel.serializeDocumentation(stub, dataStream)
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): GdConstDeclStub =
-        GdConstDeclStubImpl(parentStub, dataStream.readNameString());
+        GdConstDeclStubImpl(
+            parentStub, dataStream.readNameString(),
+            GdCommentModel(dataStream),
+        )
 
     override fun indexStub(stub: GdConstDeclStub, sink: IndexSink) {
         sink.occurrence(Indices.CONST_DECL, stub.name());
@@ -31,7 +37,10 @@ object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>
         GdConstDeclTlImpl(stub, stub.stubType);
 
     override fun createStub(psi: GdConstDeclTl, parentStub: StubElement<*>?): GdConstDeclStub {
-        return GdConstDeclStubImpl(parentStub, psi.name);
+        return GdConstDeclStubImpl(
+            parentStub, psi.name,
+            GdCommentUtil.collectComments(psi),
+        )
     }
 
 }

@@ -2,6 +2,8 @@
 package gdscript.psi;
 
 import java.util.List;
+
+import gdscript.psi.types.GdDocumented;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
@@ -9,7 +11,7 @@ import gdscript.index.stub.GdMethodDeclStub;
 import com.intellij.navigation.ItemPresentation;
 import java.util.LinkedHashMap;
 
-public interface GdMethodDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdMethodDeclStub> {
+public interface GdMethodDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdMethodDeclStub>, GdDocumented {
 
   @Nullable
   GdMethodIdNmi getMethodIdNmi();
