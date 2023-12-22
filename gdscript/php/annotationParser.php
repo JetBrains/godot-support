@@ -45,7 +45,12 @@ foreach ($xml['annotations'] ?? [] as $value) {
     $line       = "";
 
     $any = false;
-    foreach ($value['param'] ?? [] as $index => $param) {
+    $params = $value['param'] ?? [];
+    if (!is_array($params)) {
+        $params = [(array)$params];
+    }
+
+    foreach ($params as $index => $param) {
         $any = true;
         if ($index === 0) $line .= "\n";
 

@@ -20,28 +20,45 @@ object GdAnnotationUtil {
     // Name -> GdAnnotation
     val ANNOTATIONS = mapOf(
         "export" to GdAnnotation(false, 0, linkedMapOf()),
-        "export_category" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_category" to GdAnnotation(false, 1, linkedMapOf(
+            "name" to "String",
+        )),
         "export_color_no_alpha" to GdAnnotation(false, 0, linkedMapOf()),
         "export_dir" to GdAnnotation(false, 0, linkedMapOf()),
-        "export_enum" to GdAnnotation(true, 0, linkedMapOf()),
-        "export_exp_easing" to GdAnnotation(true, 0, linkedMapOf()),
-        "export_file" to GdAnnotation(true, 0, linkedMapOf()),
-        "export_flags" to GdAnnotation(true, 0, linkedMapOf()),
+        "export_enum" to GdAnnotation(true, 1, linkedMapOf(
+            "names" to "String",
+        )),
+        "export_exp_easing" to GdAnnotation(true, 0, linkedMapOf(
+            "hints" to "String",
+        )),
+        "export_file" to GdAnnotation(true, 0, linkedMapOf(
+            "filter" to "String",
+        )),
+        "export_flags" to GdAnnotation(true, 1, linkedMapOf(
+            "names" to "String",
+        )),
         "export_flags_2d_navigation" to GdAnnotation(false, 0, linkedMapOf()),
         "export_flags_2d_physics" to GdAnnotation(false, 0, linkedMapOf()),
         "export_flags_2d_render" to GdAnnotation(false, 0, linkedMapOf()),
         "export_flags_3d_navigation" to GdAnnotation(false, 0, linkedMapOf()),
         "export_flags_3d_physics" to GdAnnotation(false, 0, linkedMapOf()),
         "export_flags_3d_render" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_flags_avoidance" to GdAnnotation(false, 0, linkedMapOf()),
         "export_global_dir" to GdAnnotation(false, 0, linkedMapOf()),
-        "export_global_file" to GdAnnotation(true, 0, linkedMapOf()),
+        "export_global_file" to GdAnnotation(true, 0, linkedMapOf(
+            "filter" to "String",
+        )),
         "export_group" to GdAnnotation(false, 1, linkedMapOf(
             "name" to "String",
             "prefix" to "String",
         )),
         "export_multiline" to GdAnnotation(false, 0, linkedMapOf()),
-        "export_node_path" to GdAnnotation(true, 0, linkedMapOf()),
-        "export_placeholder" to GdAnnotation(false, 0, linkedMapOf()),
+        "export_node_path" to GdAnnotation(true, 0, linkedMapOf(
+            "type" to "String",
+        )),
+        "export_placeholder" to GdAnnotation(false, 1, linkedMapOf(
+            "placeholder" to "String",
+        )),
         "export_range" to GdAnnotation(true, 2, linkedMapOf(
             "min" to "float",
             "max" to "float",
@@ -52,9 +69,11 @@ object GdAnnotationUtil {
             "name" to "String",
             "prefix" to "String",
         )),
-        "icon" to GdAnnotation(false, 0, linkedMapOf()),
+        "icon" to GdAnnotation(false, 1, linkedMapOf(
+            "icon_path" to "String",
+        )),
         "onready" to GdAnnotation(false, 0, linkedMapOf()),
-        "rpc" to GdAnnotation(true, 0, linkedMapOf(
+        "rpc" to GdAnnotation(false, 0, linkedMapOf(
             "mode" to "String",
             "sync" to "String",
             "transfer_mode" to "String",
@@ -62,7 +81,9 @@ object GdAnnotationUtil {
         )),
         "static_unload" to GdAnnotation(false, 0, linkedMapOf()),
         "tool" to GdAnnotation(false, 0, linkedMapOf()),
-        "warning_ignore" to GdAnnotation(true, 0, linkedMapOf()),
+        "warning_ignore" to GdAnnotation(true, 1, linkedMapOf(
+            "warning" to "String",
+        )),
 
     )
 
