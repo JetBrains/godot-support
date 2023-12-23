@@ -19,6 +19,8 @@ Supports only Godot 4.0 and higher
 
 [Changelog](CHANGELOG.md)
 
+[Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
+
 ## Update 16.12.2023
 
 Currently, awaiting 2.0.8 release where all feature should be ready for testing,  
