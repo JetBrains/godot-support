@@ -1,20 +1,21 @@
 package gdscript.utils
 
-import com.intellij.openapi.roots.ProjectFileIndex
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
+import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.prevLeaf
 import gdscript.psi.GdArgList
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdTypes
 import gdscript.utils.ElementTypeUtil.isSkipable
-import gdscript.utils.PsiFileUtil.isInSdk
 import project.psi.model.GdAutoload
 
 object PsiElementUtil {
+
+    private val SKIPS_TO_COMMENT = listOf(TokenType.WHITE_SPACE, GdTypes.INDENT, GdTypes.DEDENT);
 
     fun PsiElement.precedingNewLines(position: Int): Int {
         val parent = this.parent ?: return 0
@@ -75,6 +76,20 @@ object PsiElementUtil {
         }
 
         return prev
+    }
+
+    fun PsiElement.prevCommentBlock(): PsiElement? {
+        var prev = this.prevLeaf()
+        while (SKIPS_TO_COMMENT.contains(prev?.elementType)) {
+            if (prev!!.text == "\n") {
+                prev = prev.prevLeaf()
+                break
+            }
+            prev = prev.prevLeaf()
+        }
+
+        if (prev?.elementType == GdTypes.COMMENT) return prev
+        return null
     }
 
     fun Any.psi(): PsiElement {

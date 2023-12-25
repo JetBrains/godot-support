@@ -4,10 +4,8 @@ import ai.grazie.utils.capitalize
 import com.intellij.codeInsight.documentation.DocumentationManagerProtocol
 import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.util.text.HtmlChunk
-import com.intellij.psi.PsiElement
 import gdscript.codeInsight.GdDocumentationProvider
-import gdscript.psi.utils.GdCommentUtil
-import gdscript.psi.utils.GdCommentUtil.descriptionText
+import gdscript.psi.types.GdDocumented
 
 object GdDocUtil {
 
@@ -84,7 +82,8 @@ object GdDocUtil {
         )
     }
 
-    fun paragraph(lines: List<String>): HtmlChunk {
+    fun paragraph(description: String): HtmlChunk {
+        val lines = description.split("\n")
         if (lines.isEmpty()) return HtmlChunk.empty()
         return HtmlChunk.p().style("padding: 5px 10px 0 10px;").children(
                 *lines.map {
@@ -96,8 +95,8 @@ object GdDocUtil {
         )
     }
 
-    fun appendDescription(element: PsiElement): HtmlChunk {
-        return appendDescription(GdCommentUtil.collectAllDescriptions(element).descriptionText())
+    fun appendDescription(element: GdDocumented): HtmlChunk {
+        return appendDescription(element.description())
     }
 
     fun appendDescription(description: String?): HtmlChunk {

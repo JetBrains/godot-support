@@ -5,7 +5,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.StubBasedPsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
-import com.intellij.psi.util.prevLeaf
 import gdscript.codeInsight.documentation.GdDocUtil
 import gdscript.codeInsight.documentation.GdGodotDocUtil
 import gdscript.lineMarker.GdTraitLineMarkerContributor
@@ -13,6 +12,7 @@ import gdscript.model.GdCommentModel
 import gdscript.model.GdTutorial
 import gdscript.psi.GdTypes
 import gdscript.psi.types.GdDocumented
+import gdscript.utils.PsiElementUtil.prevCommentBlock
 
 object GdCommentUtil {
 
@@ -31,8 +31,7 @@ object GdCommentUtil {
     )
 
     fun brief(element: PsiElement): String {
-        if (element !is GdDocumented) return ""
-        if (element is StubBasedPsiElement<*>) {
+        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
             val stub = element.stub
             if (stub != null && stub is GdDocumented) return stub.brief()
         }
@@ -42,8 +41,7 @@ object GdCommentUtil {
     }
 
     fun description(element: PsiElement): String {
-        if (element !is GdDocumented) return ""
-        if (element is StubBasedPsiElement<*>) {
+        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
             val stub = element.stub
             if (stub != null && stub is GdDocumented) return stub.description()
         }
@@ -53,8 +51,7 @@ object GdCommentUtil {
     }
 
     fun tutorials(element: PsiElement): List<GdTutorial> {
-        if (element !is GdDocumented) return listOf()
-        if (element is StubBasedPsiElement<*>) {
+        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
             val stub = element.stub
             if (stub != null && stub is GdDocumented) return stub.tutorials()
         }
@@ -64,8 +61,7 @@ object GdCommentUtil {
     }
 
     fun isDeprecated(element: PsiElement): Boolean {
-        if (element !is GdDocumented) return false
-        if (element is StubBasedPsiElement<*>) {
+        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
             val stub = element.stub
             if (stub != null && stub is GdDocumented) return stub.isDeprecated()
         }
@@ -75,8 +71,7 @@ object GdCommentUtil {
     }
 
     fun isExperimental(element: PsiElement): Boolean {
-        if (element !is GdDocumented) return false
-        if (element is StubBasedPsiElement<*>) {
+        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
             val stub = element.stub
             if (stub != null && stub is GdDocumented) return stub.isExperimental()
         }
@@ -89,15 +84,14 @@ object GdCommentUtil {
         val comments = mutableListOf<String>()
         val model = GdCommentModel()
 
-        var previous: PsiElement? = element?.prevLeaf(false) ?: return model
-        while (previous.elementType == TokenType.WHITE_SPACE) {
-            previous = previous?.prevLeaf(false)
-            if (previous?.elementType == GdTypes.COMMENT) {
-                val txt = previous!!.text
+        var previous: PsiElement? = element
+        while (true) {
+            previous = previous?.prevCommentBlock()
+            if (previous != null) {
+                val txt = previous.text
                 if (!txt.startsWith("##")) break
-                comments.add(0, txt.removePrefix("##").trim())
+                comments.add(txt.removePrefix("##").trim())
             } else break
-            previous = previous.prevLeaf(false)
         }
 
         var brief = false
@@ -112,7 +106,7 @@ object GdCommentUtil {
                     tutorial.name = groups[1]?.value ?: groups[2]!!.value
                     model.tutorials.add(0, tutorial)
                 }
-            } else if (it.trim() == "") {
+            } else if (it.trim() == "" && model.description != "") {
                 brief = true
             } else {
                 if (brief) {
@@ -165,11 +159,11 @@ object GdCommentUtil {
 
     fun Map<String, List<String>>.briefDescriptionBlock(): HtmlChunk {
         val comments = if (this[BRIEF_DESCRIPTION]!!.isNotEmpty()) this[BRIEF_DESCRIPTION] else this[DESCRIPTION]
-        return GdDocUtil.paragraph(comments!!)
+        return GdDocUtil.paragraph("")
     }
 
     fun Map<String, List<String>>.descriptionBlock(): HtmlChunk {
-        return GdDocUtil.paragraph(this[DESCRIPTION]!!)
+        return GdDocUtil.paragraph("")
     }
 
     fun Map<String, List<String>>.tutorialBlock(): HtmlChunk {
