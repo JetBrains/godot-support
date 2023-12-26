@@ -32,6 +32,7 @@
     <library.type implementation="gdscript.library.GdLibraryType" />
     <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor" />
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
+    <postStartupActivity implementation="gdscript.listener.SdkStartupListener"/>
 
     <!-- References -->
     <!-- Implicit -->
@@ -56,7 +57,7 @@
     <!-- Tscn, Project, Config -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
     <fileType name="GodotProject file" implementationClass="project.ProjectFileType" fieldName="INSTANCE" language="GodotProject" extensions="godot"/>
-    <fileType name="Godot's config" implementationClass="config.GdConfigFileType" fieldName="INSTANCE" language="GodotConfig" extensions="gdconf"/>
+    <fileType name="GodotConfig file" implementationClass="config.GdConfigFileType" fieldName="INSTANCE" language="GodotConfig" extensions="gdconf"/>
     <lang.parserDefinition language="Tscn" implementationClass="tscn.TscnParserDefinition"/>
     <lang.parserDefinition language="GodotProject" implementationClass="project.ProjectParserDefinition"/>
 

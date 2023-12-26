@@ -5,6 +5,7 @@
 ## To Be Released
 
 + New documentation rendered based on Godot's 4.2 update [#158](https://gitlab.com/IceExplosive/gdscript/-/issues/158)
++ SDK auto-download - no more getting into settings to download/map SDK, now it's handled and downloaded based on project's Godot version
 
 ## Released
 

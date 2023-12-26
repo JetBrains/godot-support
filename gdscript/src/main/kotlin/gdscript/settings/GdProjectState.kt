@@ -21,9 +21,6 @@ class GdProjectState {
     @Tag("hidePrivate")
     var hidePrivate = true
 
-    @Tag("sdkPath")
-    var sdkPath: String? = ""
-
     @Tag("shortTyped")
     var shortTyped = false
 

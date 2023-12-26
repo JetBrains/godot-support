@@ -10,7 +10,7 @@ if (!file_exists($sdkFolder)) {
 // Fetch all existing tags
 exec("git ls-remote --tags https://github.com/godotengine/godot 2>&1", $tags);
 $existingTags = [];
-$tagRegex = "/^.+?refs\/tags\/(.+?)-stable$/";
+$tagRegex = "/^.*?refs\/tags\/(.+?)-stable$/";
 foreach ($tags as $tag) {
     preg_match($tagRegex, $tag, $matched);
     $tag = $matched[1] ?? '';
