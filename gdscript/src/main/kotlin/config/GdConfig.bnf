@@ -1,0 +1,28 @@
+{
+  parserClass="config.parser.ConfigParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Config"
+  psiImplClassSuffix="Impl"
+  psiPackage="config.psi"
+  psiImplPackage="config.psi.impl"
+
+  elementTypeHolderClass="config.psi.GdConfigTypes"
+  elementTypeClass="config.psi.GdConfigElementType"
+  tokenTypeClass="config.psi.GdConfigTokenType"
+
+//  psiImplUtilClass="config.psi.ProjectPsiUtils"
+}
+
+file ::= annotation* operator*
+
+annotation ::= AN an_prefix* annotation_nm param*
+annotation_nm ::= IDENTIFIER
+param ::= IDENTIFIER COLON TYPE
+
+an_prefix ::= VARIADIC | REQUIRED
+
+operator ::= OP operator_nm operation*
+operator_nm ::= IDENTIFIER
+operation ::= OPERAND TYPE COLON TYPE

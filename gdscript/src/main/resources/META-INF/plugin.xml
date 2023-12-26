@@ -53,9 +53,10 @@
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdTraitLineMarkerContributor" />
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdInheritanceLineMarkerContributor" />
 
-    <!-- Tscn & Project -->
+    <!-- Tscn, Project, Config -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
     <fileType name="GodotProject file" implementationClass="project.ProjectFileType" fieldName="INSTANCE" language="GodotProject" extensions="godot"/>
+    <fileType name="Godot's config" implementationClass="config.GdConfigFileType" fieldName="INSTANCE" language="GodotConfig" extensions="gdconf"/>
     <lang.parserDefinition language="Tscn" implementationClass="tscn.TscnParserDefinition"/>
     <lang.parserDefinition language="GodotProject" implementationClass="project.ProjectParserDefinition"/>
 

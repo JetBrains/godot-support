@@ -1,5 +1,9 @@
 ## In progress
 
++ SDK update to contain Annotations
+
+## To Be Released
+
 + New documentation rendered based on Godot's 4.2 update [#158](https://gitlab.com/IceExplosive/gdscript/-/issues/158)
 
 ## Released
