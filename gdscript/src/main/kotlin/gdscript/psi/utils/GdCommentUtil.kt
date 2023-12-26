@@ -2,6 +2,7 @@ package gdscript.psi.utils
 
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.StubBasedPsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
@@ -10,6 +11,7 @@ import gdscript.codeInsight.documentation.GdGodotDocUtil
 import gdscript.lineMarker.GdTraitLineMarkerContributor
 import gdscript.model.GdCommentModel
 import gdscript.model.GdTutorial
+import gdscript.psi.GdClassNaming
 import gdscript.psi.GdTypes
 import gdscript.psi.types.GdDocumented
 import gdscript.utils.PsiElementUtil.prevCommentBlock
@@ -84,14 +86,41 @@ object GdCommentUtil {
         val comments = mutableListOf<String>()
         val model = GdCommentModel()
 
-        var previous: PsiElement? = element
-        while (true) {
-            previous = previous?.prevCommentBlock()
-            if (previous != null) {
-                val txt = previous.text
-                if (!txt.startsWith("##")) break
-                comments.add(txt.removePrefix("##").trim())
-            } else break
+        if (element is GdClassNaming || element is PsiFile) {
+            var file = element
+            if (element is GdClassNaming) file = element.parent
+
+            var child = file?.firstChild
+            var isComment = false
+            var newLined = false
+            while (child != null) {
+                if (child.elementType == GdTypes.COMMENT) {
+                    if (child.text.startsWith("##")) {
+                        isComment = true
+                        comments.add(child.text.removePrefix("##").trim())
+                        newLined = false
+                    }
+                } else if (child.elementType == TokenType.WHITE_SPACE) {
+                    if (child.text == "\n") {
+                        if (newLined) break
+                        newLined = true
+                    }
+                } else if (isComment) {
+                    break
+                }
+                child = child.nextSibling
+            }
+            comments.reverse()
+        } else {
+            var previous: PsiElement? = element
+            while (true) {
+                previous = previous?.prevCommentBlock()
+                if (previous != null) {
+                    val txt = previous.text
+                    if (!txt.startsWith("##")) break
+                    comments.add(txt.removePrefix("##").trim())
+                } else break
+            }
         }
 
         var brief = false
