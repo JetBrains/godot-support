@@ -3,8 +3,7 @@
 1. Download the plugin from Marketplace
     - There are currently 2 plugins, use the one from "IceExplosive"
 2. Restart the IDE, due to unknown reasons, some parts like Highlighting is not working right after installation
-3. Download an SDK from Language settings (since v1.1.0)  
-![download_sdk.png](..%2Fscreens%2Fdownload_sdk.png)
+   - TODO: Is it still an issue?
 
 ## Plugin settings:
 - In order to dedent on backspace instead of deleting a line, you can change editor's settings under:
