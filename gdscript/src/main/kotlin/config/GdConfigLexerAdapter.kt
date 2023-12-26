@@ -1,4 +1,9 @@
 package config
 
-class GdConfigLexerAdapter {
+import com.intellij.lexer.FlexAdapter
+
+class GdConfigLexerAdapter : FlexAdapter {
+
+    constructor() : super(GdConfigLexer(null))
+
 }

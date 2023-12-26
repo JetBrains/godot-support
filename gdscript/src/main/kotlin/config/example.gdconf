@@ -1,4 +1,4 @@
-AN _variadic _required export_group name:String prefix:String
+AN _variadic 3 export_group name:String prefix:String
 
 
 OP AABB

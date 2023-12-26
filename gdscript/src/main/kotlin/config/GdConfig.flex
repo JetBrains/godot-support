@@ -19,38 +19,34 @@ import java.util.Stack;
 %{
 %}
 
-KEY_CHAR = [^=\r\n]
+LETTER = [a-z|A-Z|_]
+DIGIT = [0-9]
+NUMBER = [0-9]+
+ONE_NL = \R
+WHITE_SPACE = " " | \t | \f | \R
 
-COMMENT = ";"[^\r\n]*
-SECTION_KEY = "["{KEY_CHAR}+"]"
+VARIADIC = "_variadic"
 
-NEW_LINE = [\r\n]
+OPERAND = "+" | "-" | "*" | "/" | "<" | ">" | "!=" | "==" | "^"
+  | "<=" | ">=" | "[]" | "%" | "<<" | ">>" | "**" | "&"  | "|"
 
-KEY = {KEY_CHAR}+
-KEYED = {KEY}"="
-
-//VALUE = (.*(\?:\n(?!.+\=).*)*)
-VALUE = [^\r\n=]*
-VALUE_LINE = !(!{VALUE}|{SECTION_KEY})
-EQ = "="
-
-%xstate KEYED_STATE
-%xstate VALUED_STATE
+IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 
 %%
-    "AN" { return GdConfigTypes.AN; }
+"AN"          { return GdConfigTypes.AN; }
+"OP"          { return GdConfigTypes.OP; }
+":"           { return GdConfigTypes.COLON; }
 
+{VARIADIC}    { return GdConfigTypes.VARIADIC; }
+{NUMBER}      { return GdConfigTypes.NUMBER; }
 
-    "OP" { return GdConfigTypes.AN; }
+{OPERAND}     { return GdConfigTypes.OPERAND; }
+{IDENTIFIER}  { return GdConfigTypes.IDENTIFIER; }
 
-{SECTION_KEY}      { return ProjectTypes.SECTION_KEY; }
-{KEYED}            { yybegin(KEYED_STATE); yypushback(yylength()); continue; }
-
-{COMMENT}          { return ProjectTypes.COMMENT; }
-{NEW_LINE}         { return TokenType.WHITE_SPACE; }
+{WHITE_SPACE} { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
     return null;
 }
 
-[^] { return ProjectTypes.BAD_CHARACTER; }
+[^] { return TokenType.BAD_CHARACTER; }

@@ -60,6 +60,7 @@
     <fileType name="GodotConfig file" implementationClass="config.GdConfigFileType" fieldName="INSTANCE" language="GodotConfig" extensions="gdconf"/>
     <lang.parserDefinition language="Tscn" implementationClass="tscn.TscnParserDefinition"/>
     <lang.parserDefinition language="GodotProject" implementationClass="project.ProjectParserDefinition"/>
+    <lang.parserDefinition language="GodotConfig" implementationClass="config.GdConfigParserDefinition"/>
 
     <!-- Completions -->
     <completion.contributor   language="GdScript" order="last" implementationClass="gdscript.completion.GdKeywordContributor"/>
@@ -122,13 +123,16 @@
     <stubIndex implementation="gdscript.index.impl.GdEnumDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdUserFileIndex" />
     <fileBasedIndex implementation="gdscript.index.impl.GdFileResIndex" />
-    <!-- Tscn & Project -->
+    <!-- Tscn, Project, Config -->
     <stubIndex implementation="tscn.index.impl.TscnResourceIndex" />
     <stubIndex implementation="tscn.index.impl.TscnNodeIndex" />
     <stubIndex implementation="tscn.index.impl.TscnParagraphIndex" />
     <stubIndex implementation="tscn.index.impl.TscnConnectionIndex" />
     <stubIndex implementation="project.index.impl.ProjectSectionIndex" />
     <stubIndex implementation="project.index.impl.ProjectDataIndex" />
+    <stubIndex implementation="config.index.impl.GdConfigOperatorDataIndex" />
+    <stubIndex implementation="config.index.impl.GdConfigOperationDataIndex" />
+    <stubIndex implementation="config.index.impl.GdConfigAnnotationDataIndex" />
 
     <!-- Actions -->
     <intentionAction>

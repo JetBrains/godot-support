@@ -12,17 +12,38 @@
   elementTypeClass="config.psi.GdConfigElementType"
   tokenTypeClass="config.psi.GdConfigTokenType"
 
-//  psiImplUtilClass="config.psi.ProjectPsiUtils"
+  psiImplUtilClass="config.psi.GdConfigPsiUtils"
 }
 
 file ::= annotation* operator*
 
-annotation ::= AN an_prefix* annotation_nm param*
+annotation ::= AN variadicMark? required annotation_nm param* {
+    methods=[isVariadic requiredCount getName getParams]
+    mixin="config.psi.impl.GdConfigAnnotationElementImpl"
+    stubClass="config.index.stub.ConfigAnnotationStub"
+    elementTypeFactory="config.psi.impl.GdConfigAnnotationElementType.getInstance"
+}
 annotation_nm ::= IDENTIFIER
-param ::= IDENTIFIER COLON TYPE
+param ::= paramName COLON type
+paramName ::= IDENTIFIER
+type ::= IDENTIFIER
 
-an_prefix ::= VARIADIC | REQUIRED
+variadicMark ::= VARIADIC
+required ::= NUMBER
 
-operator ::= OP operator_nm operation*
+operator ::= OP operator_nm operation* {
+    methods=[getName]
+    mixin="config.psi.impl.GdConfigOperatorElementImpl"
+    stubClass="config.index.stub.ConfigOperatorStub"
+    elementTypeFactory="config.psi.impl.GdConfigOperatorElementType.getInstance"
+}
 operator_nm ::= IDENTIFIER
-operation ::= OPERAND TYPE COLON TYPE
+operation ::= opType leftType COLON rightType {
+    methods=[getOperand getLeftTyped getRightTyped]
+    mixin="config.psi.impl.GdConfigOperationElementImpl"
+    stubClass="config.index.stub.ConfigOperationStub"
+    elementTypeFactory="config.psi.impl.GdConfigOperationElementType.getInstance"
+}
+opType ::= OPERAND
+leftType ::= IDENTIFIER
+rightType ::= IDENTIFIER
