@@ -124,12 +124,15 @@
     <stubIndex implementation="gdscript.index.impl.GdUserFileIndex" />
     <fileBasedIndex implementation="gdscript.index.impl.GdFileResIndex" />
     <!-- Tscn, Project, Config -->
+    <stubElementTypeHolder class="tscn.psi.TscnTypes" externalIdPrefix="tscn."/>
     <stubIndex implementation="tscn.index.impl.TscnResourceIndex" />
     <stubIndex implementation="tscn.index.impl.TscnNodeIndex" />
     <stubIndex implementation="tscn.index.impl.TscnParagraphIndex" />
     <stubIndex implementation="tscn.index.impl.TscnConnectionIndex" />
+    <stubElementTypeHolder class="project.psi.ProjectTypes" externalIdPrefix="gdproject."/>
     <stubIndex implementation="project.index.impl.ProjectSectionIndex" />
     <stubIndex implementation="project.index.impl.ProjectDataIndex" />
+    <stubElementTypeHolder class="config.psi.GdConfigTypes" externalIdPrefix="gdconf."/>
     <stubIndex implementation="config.index.impl.GdConfigOperatorDataIndex" />
     <stubIndex implementation="config.index.impl.GdConfigOperationDataIndex" />
     <stubIndex implementation="config.index.impl.GdConfigAnnotationDataIndex" />

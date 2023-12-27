@@ -8,13 +8,13 @@ import config.index.stub.ConfigOperatorStub
 import config.index.stub.ConfigOperatorStubImpl
 import config.psi.ConfigOperator
 
-object GdConfigOperatorElementType : IStubElementType<ConfigOperatorStub, ConfigOperator>("operator", GdConfigLanguage) {
+object GdConfigOperatorElementType : IStubElementType<ConfigOperatorStub, ConfigOperator>("OPERATOR", GdConfigLanguage) {
 
     @JvmStatic
     fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdConfigOperatorElementType = GdConfigOperatorElementType
 
     override fun getExternalId(): String {
-        return "gdconf.operator"
+        return "gdconf.OPERATOR"
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ConfigOperatorStub {

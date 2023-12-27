@@ -15,7 +15,7 @@
   psiImplUtilClass="config.psi.GdConfigPsiUtils"
 }
 
-file ::= annotation* operator*
+file ::= (annotation | operator)*
 
 annotation ::= AN variadicMark? required annotation_nm param* {
     methods=[isVariadic requiredCount getName getParams]

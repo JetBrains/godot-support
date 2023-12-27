@@ -16,14 +16,13 @@ import com.intellij.psi.tree.TokenSet
 import config.parser.ConfigParser
 import config.psi.GdConfigFile
 import config.psi.GdConfigTypes
-import project.psi.ProjectFile
 
 class GdConfigParserDefinition : ParserDefinition {
 
     companion object {
         val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
         val COMMENTS = TokenSet.create()
-        val FILE = IStubFileElementType<PsiFileStub<ProjectFile>>("GdConfigFile", GdConfigLanguage)
+        val FILE = IStubFileElementType<PsiFileStub<GdConfigFile>>("GdConfigFile", GdConfigLanguage)
     }
 
     override fun getWhitespaceTokens(): TokenSet = WHITE_SPACES

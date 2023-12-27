@@ -35,13 +35,13 @@ object PsiGdExprUtil {
             is GdShiftEx -> GdKeywords.INT
             is GdBitAndEx -> GdKeywords.INT
             is GdComparisonEx -> GdOperand.getReturnType(
-                expr.exprList.left(), expr.exprList.right(), expr.operator.text,
+                expr.exprList.left(), expr.exprList.right(), expr.operator.text, expr.project,
             )
             is GdPlusEx -> GdOperand.getReturnType(
-                expr.exprList.left(), expr.exprList.right(), expr.sign.text,
+                expr.exprList.left(), expr.exprList.right(), expr.sign.text, expr.project,
             )
             is GdFactorEx -> GdOperand.getReturnType(
-                expr.exprList.left(), expr.exprList.right(), expr.factorSign.text,
+                expr.exprList.left(), expr.exprList.right(), expr.factorSign.text, expr.project,
             )
             is GdSignEx -> expr.expr?.returnType ?: ""
             is GdBitNotEx -> GdKeywords.INT
@@ -77,7 +77,7 @@ object PsiGdExprUtil {
                 val arrayType = expr.exprList.firstOrNull()?.returnType ?: return GdKeywords.VARIANT
                 if (arrayType.startsWith("Array[")) return fromTyped(arrayType)
 
-                return GdOperand.getReturnType(arrayType, GdKeywords.INT, "[]")
+                return GdOperand.getReturnType(arrayType, GdKeywords.INT, "[]", expr.project)
             }
             is GdPrimaryEx -> {
                 when (expr.firstChild) {
@@ -182,7 +182,7 @@ object PsiGdExprUtil {
                                 return fromTyped(element.typed)
                             }
 
-                            return GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]")
+                            return GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]", expr.project)
                         }
                         is GdAutoload -> element.key
                         else -> ""

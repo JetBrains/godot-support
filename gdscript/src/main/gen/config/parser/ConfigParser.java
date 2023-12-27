@@ -82,37 +82,24 @@ public class ConfigParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // annotation* operator*
+  // (annotation | operator)*
   static boolean file(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "file")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = file_0(b, l + 1);
-    r = r && file_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+    while (true) {
+      int c = current_position_(b);
+      if (!file_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "file", c)) break;
+    }
+    return true;
   }
 
-  // annotation*
+  // annotation | operator
   private static boolean file_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "file_0")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!annotation(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "file_0", c)) break;
-    }
-    return true;
-  }
-
-  // operator*
-  private static boolean file_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "file_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!operator(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "file_1", c)) break;
-    }
-    return true;
+    boolean r;
+    r = annotation(b, l + 1);
+    if (!r) r = operator(b, l + 1);
+    return r;
   }
 
   /* ********************************************************** */

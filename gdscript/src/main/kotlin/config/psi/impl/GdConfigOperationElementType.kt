@@ -8,13 +8,13 @@ import config.index.stub.ConfigOperationStub
 import config.index.stub.ConfigOperationStubImpl
 import config.psi.ConfigOperation
 
-object GdConfigOperationElementType : IStubElementType<ConfigOperationStub, ConfigOperation>("operation", GdConfigLanguage) {
+object GdConfigOperationElementType : IStubElementType<ConfigOperationStub, ConfigOperation>("OPERATION", GdConfigLanguage) {
 
     @JvmStatic
     fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdConfigOperationElementType = GdConfigOperationElementType
 
     override fun getExternalId(): String {
-        return "gdconf.operation"
+        return "gdconf.OPERATION"
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ConfigOperationStub {
@@ -40,7 +40,7 @@ object GdConfigOperationElementType : IStubElementType<ConfigOperationStub, Conf
     }
 
     override fun indexStub(stub: ConfigOperationStub, sink: IndexSink) {
-        sink.occurrence(GdConfigIndices.OPERATION_INDEX, stub.operand())
+        sink.occurrence(GdConfigIndices.OPERATION_INDEX, stub.leftTyped())
     }
 
     override fun serialize(stub: ConfigOperationStub, dataStream: StubOutputStream) {

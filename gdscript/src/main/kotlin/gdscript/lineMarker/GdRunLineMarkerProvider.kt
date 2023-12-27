@@ -14,7 +14,7 @@ class GdRunLineMarkerProvider : RunLineMarkerContributor() {
 
     override fun getInfo(element: PsiElement): Info? {
         if (element.parent !is GdInheritanceIdNm || GdInheritanceUtil.isExtending(element, "Resource"))
-            return null;
+            return null
         if (GdInheritanceUtil.getExtendedElement(element) !is PsiFile) return null;
 
         return Info(GdRunAction(element.parent as GdInheritanceIdNm));

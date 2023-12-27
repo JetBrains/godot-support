@@ -61,7 +61,7 @@ object GdCommonUtil {
                     return element.typed?.text?.trim(':', ' ') ?: ""
                 }
 
-                return GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]")
+                return GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]", element.project)
             }
             else -> throw NotImplementedError()
         }

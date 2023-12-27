@@ -10,13 +10,13 @@ import config.index.stub.ConfigAnnotationStub
 import config.index.stub.ConfigAnnotationStubImpl
 import config.psi.ConfigAnnotation
 
-object GdConfigAnnotationElementType : IStubElementType<ConfigAnnotationStub, ConfigAnnotation>("annotation", GdConfigLanguage) {
+object GdConfigAnnotationElementType : IStubElementType<ConfigAnnotationStub, ConfigAnnotation>("ANNOTATION", GdConfigLanguage) {
 
     @JvmStatic
     fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdConfigAnnotationElementType = GdConfigAnnotationElementType
 
     override fun getExternalId(): String {
-        return "gdconf.annotation"
+        return "gdconf.ANNOTATION"
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ConfigAnnotationStub {
