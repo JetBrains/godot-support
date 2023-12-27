@@ -10,9 +10,9 @@ class ConfigAnnotationStubImpl : StubBase<ConfigAnnotation>, ConfigAnnotationStu
     private val isVariadic: Boolean
     private val requiredCount: Int
     private val name: String
-    private val params: HashMap<String, String>
+    private val params: LinkedHashMap<String, String>
 
-    constructor(parent: StubElement<*>?, isVariadic: Boolean, requiredCount: Int, name: String, params: HashMap<String, String>) : super(parent, GdConfigAnnotationElementType) {
+    constructor(parent: StubElement<*>?, isVariadic: Boolean, requiredCount: Int, name: String, params: LinkedHashMap<String, String>) : super(parent, GdConfigAnnotationElementType) {
         this.isVariadic = isVariadic
         this.requiredCount = requiredCount
         this.name = name
@@ -22,6 +22,6 @@ class ConfigAnnotationStubImpl : StubBase<ConfigAnnotation>, ConfigAnnotationStu
     override fun isVariadic(): Boolean = isVariadic
     override fun requiredCount(): Int = requiredCount
     override fun name(): String = name
-    override fun params(): HashMap<String, String> = params
+    override fun params(): LinkedHashMap<String, String> = params
 
 }

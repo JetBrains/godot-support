@@ -18,6 +18,6 @@ object GdConfigPsiUtils {
     @JvmStatic fun isVariadic(element: ConfigAnnotation): Boolean = GdConfigAnnotationUtil.isVariadic(element)
     @JvmStatic fun requiredCount(element: ConfigAnnotation): Int = GdConfigAnnotationUtil.requiredCount(element)
     @JvmStatic fun getName(element: ConfigAnnotation): String = GdConfigAnnotationUtil.getName(element)
-    @JvmStatic fun getParams(element: ConfigAnnotation): HashMap<String, String> = GdConfigAnnotationUtil.getParams(element)
+    @JvmStatic fun getParams(element: ConfigAnnotation): LinkedHashMap<String, String> = GdConfigAnnotationUtil.getParams(element)
 
 }

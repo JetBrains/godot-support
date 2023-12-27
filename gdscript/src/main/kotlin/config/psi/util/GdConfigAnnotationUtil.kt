@@ -25,11 +25,11 @@ object GdConfigAnnotationUtil {
         return element.annotationNm.text
     }
 
-    fun getParams(element: ConfigAnnotation): HashMap<String, String> {
+    fun getParams(element: ConfigAnnotation): LinkedHashMap<String, String> {
         val stub = element.stub
         if (stub != null) return stub.params()
 
-        val params = hashMapOf<String, String>()
+        val params = linkedMapOf<String, String>()
         element.paramList.forEach {
             params[it.paramName.text] = it.type.text
         }

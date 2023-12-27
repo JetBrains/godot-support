@@ -53,9 +53,9 @@ Most of the code is already rewritten in Kotlin, but there are still few Java fi
 
 - Php code  
 under `php` folder are few Php files - those are generators used for SDK generation (parsing Godot's source .xml into plugin's .gd)
-and few (2 I think) .kt files used for checking Annotations and Operations (like if you can sum String with Int)
+and 2 .gdconf files used for checking Annotations and Operations (like if you can sum String with Int and what resulting type would be)
 
 
 - Makefile  
-This is used for generating mentioned .kt files for Annotations and Operations & copying Godot's icons to have same visuals for completion of Classes, line markers and so on.  
+This is used for copying Godot's icons to have same visuals for completion of Classes, line markers and so on.  
 Later should be added into .gitlab-ci to update it with each new Godot's release

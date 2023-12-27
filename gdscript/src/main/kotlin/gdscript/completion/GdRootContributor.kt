@@ -7,9 +7,10 @@ import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
-import gdscript.completion.utils.*
+import gdscript.completion.utils.GdClassVarCompletionUtil
 import gdscript.completion.utils.GdMethodCompletionUtil.lookupDeclaration
-import gdscript.psi.*
+import gdscript.psi.GdFile
+import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdNodeUtil
@@ -51,7 +52,7 @@ class GdRootContributor : CompletionContributor() {
 //            addTopLvlDecl(parameters, result)
         } else if (ANNOTATOR_DECL.accepts(position)) {
             // After "@"
-            GdClassVarCompletionUtil.annotations(result, false)
+            GdClassVarCompletionUtil.annotations(result, position.project, false)
         }
     }
 
@@ -62,7 +63,7 @@ class GdRootContributor : CompletionContributor() {
 
     private fun addTopLvlDecl(parameters: CompletionParameters, result: CompletionResultSet) {
         GdNodeUtil.listNodes(parameters.position).forEach { result.addElement(it.variable_lookup()) }
-        GdClassVarCompletionUtil.annotations(result)
+        GdClassVarCompletionUtil.annotations(result, parameters.position.project)
 
         val members = mutableListOf<Any>()
         GdClassMemberUtil.collectFromParents(parameters.position, members, false)

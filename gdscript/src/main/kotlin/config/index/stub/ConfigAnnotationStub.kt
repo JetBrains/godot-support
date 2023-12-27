@@ -8,6 +8,6 @@ interface ConfigAnnotationStub : StubElement<ConfigAnnotation> {
     fun isVariadic(): Boolean
     fun requiredCount(): Int
     fun name(): String
-    fun params(): HashMap<String, String>
+    fun params(): LinkedHashMap<String, String>
 
 }

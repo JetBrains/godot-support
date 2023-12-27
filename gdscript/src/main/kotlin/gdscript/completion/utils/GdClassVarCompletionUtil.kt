@@ -1,15 +1,16 @@
 package gdscript.completion.utils
 
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.openapi.project.Project
+import config.index.impl.GdConfigAnnotationDataIndex
 import gdscript.completion.GdLookup
-import gdscript.utils.GdAnnotationUtil
 
 object GdClassVarCompletionUtil {
 
-    fun annotations(result: CompletionResultSet, withPrefix: Boolean = true) {
-        GdAnnotationUtil.ANNOTATIONS.forEach {
-            val key = it.key
-            val params = it.value.variadic || it.value.parameters.isNotEmpty()
+    fun annotations(result: CompletionResultSet, project: Project, withPrefix: Boolean = true) {
+        GdConfigAnnotationDataIndex.INSTANCE.getAllValues(project).forEach {
+            val key = it.name
+            val params = it.isVariadic || it.params.isNotEmpty()
 
             result
                 .addElement(

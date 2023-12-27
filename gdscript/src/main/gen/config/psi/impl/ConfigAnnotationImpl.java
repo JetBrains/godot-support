@@ -1,6 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package config.psi.impl;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
@@ -75,7 +76,7 @@ public class ConfigAnnotationImpl extends GdConfigAnnotationElementImpl implemen
 
   @Override
   @NotNull
-  public HashMap<String, String> getParams() {
+  public LinkedHashMap<String, String> getParams() {
     return GdConfigPsiUtils.getParams(this);
   }
 
