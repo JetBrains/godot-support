@@ -4,10 +4,10 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 
 ### 2.1.0 (27.12.2023)
 
-+ SDK update to contain Annotations
++ SDK update to contain Annotations [#105](https://gitlab.com/IceExplosive/gdscript/-/issues/105)
 + New documentation rendered based on Godot's 4.2 update [#158](https://gitlab.com/IceExplosive/gdscript/-/issues/158)
-+ SDK auto-download - no more getting into settings to download/map SDK, now it's handled and downloaded based on project's Godot version
-+ Run configuration forcing .exe only on Windows
++ SDK auto-download - no more getting into settings to download/map SDK, now it's handled and downloaded based on project's Godot version [#161](https://gitlab.com/IceExplosive/gdscript/-/issues/161)
++ Run configuration forcing .exe only on Windows [#167](https://gitlab.com/IceExplosive/gdscript/-/issues/167)
 
 ### 2.0.11 (22.12.2023)
 
