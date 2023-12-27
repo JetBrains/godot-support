@@ -5,6 +5,8 @@ import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.util.SystemInfo;
+
 import javax.swing.*;
 
 public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
@@ -31,10 +33,12 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
         godotExe = new LabeledComponent<>();
         tscn = new LabeledComponent<>();
         TextFieldWithBrowseButton godotField = new TextFieldWithBrowseButton();
-        godotField.setText("Godot.exe");
-        godotField.setToolTipText("Godot.exe");
+        godotField.setText("");
+        godotField.setToolTipText("Path to the Godot Executable");
         godotField.addBrowseFolderListener(new TextBrowseFolderListener(
-                FileChooserDescriptorFactory.createSingleFileDescriptor("exe")
+                SystemInfo.isWindows ?
+                        FileChooserDescriptorFactory.createSingleFileDescriptor("exe") :
+                        FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor()
         ));
         godotExe.setComponent(godotField);
 
