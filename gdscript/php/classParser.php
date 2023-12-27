@@ -170,7 +170,7 @@ foreach ($files as $filepath) {
 
         $params = $parseParams($value);
         $desc = (array) ($value['description'] ?? []);
-        $data = $addDocumentation($data, $desc['0'], null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
+        $data = $addDocumentation($data, $desc['0'] ?? '', null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
 
         $paramsStr = implode(', ', $params);
         if ($paramsStr) {
@@ -269,7 +269,7 @@ foreach ($files as $filepath) {
 
         $params = $parseParams($value);
         $desc = (array) ($value['description'] ?? []);
-        $data = $addDocumentation($data, $desc['0'], null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
+        $data = $addDocumentation($data, $desc['0'] ?? '', null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
 
         $data .= sprintf("%sfunc %s(%s) -> %s:\n", $quali, $att['name'], implode(', ', $params), $formatType($ret['@attributes']['type']));
         $data .= sprintf("\tpass;\n\n");
