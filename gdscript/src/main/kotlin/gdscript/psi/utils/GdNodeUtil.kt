@@ -120,7 +120,7 @@ object GdNodeUtil {
             }
 
             var uniqueId: String? = null
-            if (isUnique || it.isUniqueNameOwner) {
+            if ((isUnique && parentPath == nodePath) || it.isUniqueNameOwner) {
                 uniqueId = "%${it.name}"
                 tail = " ${it.name}"
             } else {
