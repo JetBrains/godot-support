@@ -70,6 +70,7 @@
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GetterSetterNameCompletion"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdMethodDeclCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdResourceCompletionContributor"/>
+    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdMethodParamCompletion"/>
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdInheritanceReferenceContributor" />
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdTypeHintReferenceContributor" />
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdSetGetMethodIdReferenceContributor" />

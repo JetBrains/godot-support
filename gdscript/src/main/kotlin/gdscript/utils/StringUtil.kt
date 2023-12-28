@@ -9,7 +9,17 @@ object StringUtil {
     private val snakeRegex = "([_ ])[a-zA-Z]".toRegex()
 
     fun String.camelToSnakeCase(): String {
-        return camelRegex.replace(this) {
+        var toLower = true
+        val parsed = this.map {
+            if (toLower) {
+                toLower = it == it.uppercaseChar()
+                it.lowercase()
+            } else {
+                it.toString()
+            }
+        }.joinToString("")
+
+        return camelRegex.replace(parsed) {
                 "_${it.value}"
             }.lowercase(Locale.getDefault())
     }
