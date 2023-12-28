@@ -21,6 +21,11 @@ Supports only Godot 4.0 and higher
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
+## Update 28.12.2023
+
+Newly released version of 2.1.0 has auto-download SDK feature, but I've noticed that it is sometimes little buggy.  
+Please first uninstall plugin restart IDE and then install it again - should the error persist even after this, let me know.
+
 ## Update 16.12.2023
 
 Currently, awaiting 2.0.8 release where all feature should be ready for testing,  

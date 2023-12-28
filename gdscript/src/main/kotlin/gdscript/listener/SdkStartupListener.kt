@@ -25,7 +25,6 @@ class SdkStartupListener : ProjectActivity {
             return
         }
 
-//        val dirPath = "${project.basePath}${File.separator}.idea${File.separator}sdk${File.separator}"
         val dirPath = project.getProjectDataPath("sdk").toString()
         val dir = File(dirPath)
         if (!dir.exists()) dir.mkdirs()
