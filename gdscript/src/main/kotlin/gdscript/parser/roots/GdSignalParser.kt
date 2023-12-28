@@ -17,7 +17,7 @@ object GdSignalParser : GdBaseParser {
         ok = ok && b.mceIdentifier(SIGNAL_ID_NMI)
 
         if (ok && b.passToken(LRBR)) {
-            ok = ok && GdParamListParser.parse(b, l + 1, false)
+            ok = ok && GdParamListParser.parse(b, l + 1, true)
             ok = ok && b.consumeToken(RRBR)
         }
 
