@@ -69,6 +69,7 @@ object GdNodeUtil {
         resultSet: MutableList<GdNodeHolder>,
         isSingleNode: Boolean,
         parentPath: String = "",
+        isUnique: Boolean = false,
     ) {
         val nodes = PsiTreeUtil.findChildrenOfType(tscnFile, TscnNodeHeader::class.java)
         val baseName = if (isSingleNode) "" else basePath.split("/").last()
@@ -93,6 +94,7 @@ object GdNodeUtil {
                         resultSet,
                         isSingleNode,
                         nodePath,
+                        it.isUniqueNameOwner,
                     )
                 }
                 return@forEach
@@ -118,7 +120,7 @@ object GdNodeUtil {
             }
 
             var uniqueId: String? = null
-            if (it.isUniqueNameOwner) {
+            if (isUnique || it.isUniqueNameOwner) {
                 uniqueId = "%${it.name}"
                 tail = " ${it.name}"
             } else {
