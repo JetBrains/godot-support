@@ -2,6 +2,10 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.1.1 (28.12.2023)
+
++ Resolve Unique names of nested nodes [#169](https://gitlab.com/IceExplosive/gdscript/-/issues/169)
+
 ### 2.1.0 (27.12.2023)
 
 + SDK update to contain Annotations [#105](https://gitlab.com/IceExplosive/gdscript/-/issues/105)
