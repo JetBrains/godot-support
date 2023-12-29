@@ -3,6 +3,7 @@ package gdscript.psi.utils
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
@@ -14,7 +15,9 @@ import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
 import gdscript.utils.GdOperand
 import gdscript.utils.VirtualFileUtil.getPsiFile
+import gdscript.utils.VirtualFileUtil.resourcePath
 import project.psi.model.GdAutoload
+import java.nio.file.Paths
 
 object PsiGdExprUtil {
 
@@ -72,7 +75,22 @@ object PsiGdExprUtil {
                     } else if (method == "load" || method == "preload") {
                         val res = expr.argList?.argExprList?.firstOrNull()
                         if (res != null) {
-                            GdFileResIndex.INSTANCE.getFiles(res.text.trim('"'), expr)
+                            var resource = res.text.trim('"')
+                            if (!resource.startsWith("res://") && expr.containingFile.originalFile.virtualFile?.parent != null) {
+                                val myPath = Paths.get(expr.containingFile.originalFile.virtualFile.parent.path)
+                                FilenameIndex.getVirtualFilesByName(com.intellij.history.core.Paths.getNameOf(resource), GlobalSearchScope.allScope(expr.project)).find {
+                                    val itPath = Paths.get(it.path)
+                                    try {
+                                        val relative = myPath.relativize(itPath)
+                                        return@find relative.toString().replace('\\', '/') == resource
+                                    } catch (e: Exception) {}
+                                    false
+                                }?.let {
+                                    resource = it.resourcePath()
+                                }
+                            }
+
+                            GdFileResIndex.INSTANCE.getFiles(resource, expr)
                                 .firstOrNull()
                                 ?.getPsiFile(expr)
                                 ?.let { GdClassUtil.getOwningClassName(it) }
