@@ -9,9 +9,7 @@ import gdscript.completion.utils.GdClassCompletionUtil
 import gdscript.completion.utils.GdClassCompletionUtil.lookup
 import gdscript.completion.utils.GdEnumCompletionUtil.lookup
 import gdscript.index.impl.GdClassNamingIndex
-import gdscript.psi.GdClassDeclTl
-import gdscript.psi.GdEnumDeclTl
-import gdscript.psi.GdNamedElement
+import gdscript.psi.*
 import gdscript.psi.utils.GdClassUtil
 
 /**
@@ -64,9 +62,11 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         } else {
             container = GdClassUtil.getOwningClassElement(element)
             variants.addAll(GdClassCompletionUtil.allRootClasses(element.project))
+            variants.addAll(innerClasses(GdClassUtil.getOwningClassElement(element)).map { it.lookup() })
         }
 
         variants.addAll(enums(container).mapNotNull { it.lookup() })
+        variants.addAll(loadedClasses(container).mapNotNull { it.lookup() })
 
         return variants.toTypedArray()
     }
@@ -86,6 +86,13 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
 
     private fun innerClasses(ownerClass: PsiElement): List<GdClassDeclTl> {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(ownerClass, GdClassDeclTl::class.java)
+    }
+
+    private fun loadedClasses(ownerClass: PsiElement): List<GdClassDeclTl> {
+        val vars = PsiTreeUtil.getChildrenOfAnyType(ownerClass, GdClassVarDeclTl::class.java, GdConstDeclTl::class.java)
+
+
+        return listOf()
     }
 
 }

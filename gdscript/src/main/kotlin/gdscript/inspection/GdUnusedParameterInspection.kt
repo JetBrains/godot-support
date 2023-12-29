@@ -2,8 +2,8 @@ package gdscript.inspection
 
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import gdscript.psi.GdParam
-import gdscript.psi.GdVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.*
 
 class GdUnusedParameterInspection : GdUnusedInspection() {
 
@@ -13,6 +13,14 @@ class GdUnusedParameterInspection : GdUnusedInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : GdVisitor() {
             override fun visitParam(o: GdParam) {
+                val owner = PsiTreeUtil.getParentOfType(
+                    o,
+                    GdMethodDeclTl::class.java,
+                    GdFuncDeclEx::class.java,
+                    GdSignalDeclTl::class.java,
+                )
+
+                if (owner is GdSignalDeclTl) return
                 process(o, o.varNmi, holder)
             }
         }

@@ -16,9 +16,7 @@ object GdTypedParser : GdBaseParser {
         var ok = b.consumeToken(COLON)
         ok = ok && typedVal(b, l + 1, false)
 
-        b.exitSection(ok)
-
-        return ok
+        return b.exitSection(ok)
     }
 
     fun parseWithAssignTypedAndExpr(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
@@ -78,13 +76,12 @@ object GdTypedParser : GdBaseParser {
         b.enterSection(TYPE_HINT)
 
         var ok = b.mceIdentifier(TYPE_HINT_NM)
-        while (ok && b.consumeToken(DOT, true)) {
+        b.pin(ok)
+        while (ok && b.passToken(DOT)) {
             ok = ok && b.mceIdentifier(TYPE_HINT_NM)
         }
 
-        b.exitSection(ok)
-
-        return ok
+        return b.exitSection(ok)
     }
 
 }
