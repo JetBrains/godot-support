@@ -70,7 +70,16 @@ object PsiGdExprUtil {
                         //TODO zkusit vyparsovat Node z .tscn
                         return "Node"
                     } else if (method == "load" || method == "preload") {
-                        return "Variant"
+                        val res = expr.argList?.argExprList?.firstOrNull()
+                        if (res != null) {
+                            GdFileResIndex.INSTANCE.getFiles(res.text.trim('"'), expr)
+                                .firstOrNull()
+                                ?.getPsiFile(expr)
+                                ?.let { GdClassUtil.getOwningClassName(it) }
+                                ?.let { return it }
+                        }
+
+                        return ""
                     }
                     expr.expr.returnType
                 }
@@ -166,15 +175,16 @@ object PsiGdExprUtil {
                     val named: GdNamedElement = expr.refIdNm ?: return ""
                     return when (val element =
                         GdClassMemberUtil.findDeclaration(named)) {
-                        is GdClassVarDeclTl -> element.returnType
-                        is GdVarDeclSt -> element.returnType
-                        is GdConstDeclTl -> element.returnType
-                        is GdConstDeclSt -> element.returnType
+                        is GdClassVarDeclTl -> parseLoadedType(expr, element.returnType)
+                        is GdVarDeclSt -> parseLoadedType(expr, element.returnType)
+                        is GdConstDeclTl -> parseLoadedType(expr, element.returnType)
+                        is GdConstDeclSt -> parseLoadedType(expr, element.returnType)
                         is GdMethodDeclTl -> {
-                            if (PsiTreeUtil.nextVisibleLeaf(expr)?.elementType == GdTypes.LRBR) element.returnType
+                            if (PsiTreeUtil.nextVisibleLeaf(expr)?.elementType == GdTypes.LRBR)
+                                parseLoadedType(expr, element.returnType)
                             else "Callable"
                         }
-                        is GdParam -> element.returnType
+                        is GdParam -> parseLoadedType(expr, element.returnType)
                         is GdSignalDeclTl -> "Signal"
                         is GdEnumDeclTl -> "EnumDictionary"
                         is GdEnumValue -> GdKeywords.INT
@@ -246,6 +256,13 @@ object PsiGdExprUtil {
         }
 
         return typed.typeHintList.last().text
+    }
+
+    private fun parseLoadedType(element: PsiElement, type: String): String {
+        GdClassMemberUtil.listDeclarations(element, type, false, true, true, true)
+            .firstOrNull()
+            ?.let { if (it is PsiElement) return GdCommonUtil.returnType(it) }
+        return type
     }
 
 }

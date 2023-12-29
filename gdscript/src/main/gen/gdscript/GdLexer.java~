@@ -919,7 +919,7 @@ class GdLexer implements FlexLexer {
         zzAtEOF = true;
             zzDoEOF();
               {
-                if (yycolumn > 0 && !eofFinished) {
+                if (yycolumn > 0 && !eofFinished && !lineEnded) {
         eofFinished = true;
         return GdTypes.NEW_LINE;
     }
@@ -1146,7 +1146,7 @@ class GdLexer implements FlexLexer {
           // fall through
           case 124: break;
           case 35:
-            { yypushback(1); return TokenType.WHITE_SPACE;
+            { if (yycolumn > 0) { yypushback(1); } return TokenType.WHITE_SPACE;
             }
           // fall through
           case 125: break;

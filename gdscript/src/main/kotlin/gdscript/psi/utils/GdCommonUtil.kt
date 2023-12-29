@@ -12,7 +12,18 @@ import gdscript.utils.GdOperand
 object GdCommonUtil {
 
     fun getName(element: GdNamedElement): String {
-        return element.text;
+        return element.text
+    }
+
+    fun getName(element: PsiElement): String {
+        return when (element) {
+            is GdNamedElement -> element.text
+            is GdConstDeclTl -> element.name
+            is GdClassVarDeclTl -> element.name
+            is GdConstDeclSt -> element.name
+            is GdVarDeclSt -> element.name
+            else -> ""
+        }
     }
 
     fun getNameIdentifier(element: GdNamedIdElement): PsiElement {
@@ -56,6 +67,7 @@ object GdCommonUtil {
             is GdConstDeclSt -> element.returnType
             is GdExpr -> element.returnType
             is GdTypedVal -> element.returnType
+            is GdClassNaming -> element.classname
             is GdForSt -> {
                 if (element.typed != null) {
                     return element.typed?.text?.trim(':', ' ') ?: ""

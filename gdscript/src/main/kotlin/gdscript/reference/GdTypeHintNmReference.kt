@@ -5,12 +5,15 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdIcon
+import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdClassCompletionUtil
 import gdscript.completion.utils.GdClassCompletionUtil.lookup
 import gdscript.completion.utils.GdEnumCompletionUtil.lookup
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassUtil
+import gdscript.psi.utils.GdCommonUtil
 
 /**
  * ReturnType reference to ClassId & EnumDecl
@@ -46,6 +49,16 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         innerClasses(container).forEach {
             if (it.name == myName) return it.classNameNmi
         }
+        loadedClasses(container).forEach {
+            if (GdCommonUtil.getName(it) == myName) return GdClassMemberReference.resolveId(it)
+        }
+        PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java,)?.let { methodDecl ->
+            PsiTreeUtil.findChildOfType(methodDecl, GdSuite::class.java)?.let { suite ->
+                loadedClasses(suite).forEach {
+                    if (GdCommonUtil.getName(it) == myName) return GdClassMemberReference.resolveId(it)
+                }
+            }
+        }
 
         return null
     }
@@ -60,11 +73,28 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         } else {
             container = GdClassUtil.getOwningClassElement(element)
             variants.addAll(GdClassCompletionUtil.allRootClasses(element.project))
+            PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java,)?.let { methodDecl ->
+                PsiTreeUtil.findChildOfType(methodDecl, GdSuite::class.java)?.let { suite ->
+                    variants.addAll(loadedClasses(suite).map {
+                        GdLookup.create(
+                            GdCommonUtil.getName(it),
+                            priority = GdLookup.LOCAL_USER_DEFINED,
+                            icon = GdIcon.getEditorIcon(GdIcon.OBJECT),
+                        )
+                    })
+                }
+            }
         }
 
         variants.addAll(innerClasses(container).map { it.lookup() })
         variants.addAll(enums(container).mapNotNull { it.lookup() })
-        variants.addAll(loadedClasses(container).filterNotNull())
+        variants.addAll(loadedClasses(container).map {
+            GdLookup.create(
+                GdCommonUtil.getName(it),
+                priority = GdLookup.USER_DEFINED,
+                icon = GdIcon.getEditorIcon(GdIcon.OBJECT),
+            )
+        })
 
         return variants.toTypedArray()
     }
@@ -86,15 +116,29 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(ownerClass, GdClassDeclTl::class.java)
     }
 
-    private fun loadedClasses(ownerClass: PsiElement): List<LookupElement?> {
-        return PsiTreeUtil.getChildrenOfAnyType(ownerClass, GdClassVarDeclTl::class.java).map {
-            val expr = it.expr
-            if (expr is GdCallEx && arrayOf("preload", "load").contains(expr.expr.text)) {
-                val dfg = expr.returnType
-                val sdfg = 1
+    private fun loadedClasses(ownerElement: PsiElement): List<PsiElement> {
+        val list = mutableListOf<PsiElement>()
+
+        PsiTreeUtil.getChildrenOfAnyType(
+            ownerElement,
+            GdClassVarDeclTl::class.java,
+            GdConstDeclTl::class.java,
+            GdVarDeclSt::class.java,
+            GdConstDeclSt::class.java,
+        ).forEach {
+            val expr = when (it) {
+                is GdClassVarDeclTl -> it.expr
+                is GdConstDeclTl -> it.expr
+                is GdVarDeclSt -> it.expr
+                is GdConstDeclSt -> it.expr
+                else -> return list
             }
-            null
+            if (expr is GdCallEx && arrayOf("preload", "load").contains(expr.expr.text)) {
+                list.add(it)
+            }
         }
+
+        return list
     }
 
 }

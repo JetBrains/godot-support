@@ -66,6 +66,7 @@ class GdTypeHintInspection : LocalInspectionTool() {
         val realType = expr.returnType
         if (realType.isEmpty()) return
         if (realType == GdKeywords.VARIANT || realType == GdKeywords.NULL) return
+        if (realType.startsWith("res")) return
 
         holder.registerProblem(
             element,

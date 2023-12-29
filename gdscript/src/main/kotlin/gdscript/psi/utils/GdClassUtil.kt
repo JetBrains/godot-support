@@ -5,7 +5,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdFileResIndex
-import gdscript.psi.*
+import gdscript.psi.GdClassDeclTl
+import gdscript.psi.GdClassNaming
+import gdscript.psi.GdFile
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
 
@@ -65,9 +67,9 @@ object GdClassUtil {
      */
     fun getOwningClassElement(element: PsiElement): PsiElement {
         val inner = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassDeclTl::class.java);
-        if (inner != null) return inner;
+        if (inner != null) return inner
 
-        return element.containingFile;
+        return element.containingFile
     }
 
     fun getName(element: GdClassDeclTl): String {

@@ -253,7 +253,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
 
         return TokenType.WHITE_SPACE;
     }
-    {EMPTY_INDENT} { yypushback(1); return TokenType.WHITE_SPACE; }
+    {EMPTY_INDENT} { if (yycolumn > 0) { yypushback(1); } return TokenType.WHITE_SPACE; }
     {NEW_LINE}     {
         if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;
@@ -291,7 +291,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     }
 
 <<EOF>> {
-    if (yycolumn > 0 && !eofFinished) {
+    if (yycolumn > 1 && !eofFinished && !lineEnded) {
         eofFinished = true;
         return GdTypes.NEW_LINE;
     }
