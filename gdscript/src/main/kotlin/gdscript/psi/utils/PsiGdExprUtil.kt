@@ -69,6 +69,8 @@ object PsiGdExprUtil {
                     } else if (method == "get_parent") {
                         //TODO zkusit vyparsovat Node z .tscn
                         return "Node"
+                    } else if (method == "load" || method == "preload") {
+                        return "Variant"
                     }
                     expr.expr.returnType
                 }

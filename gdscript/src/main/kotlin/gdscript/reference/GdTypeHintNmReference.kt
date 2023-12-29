@@ -57,16 +57,14 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         if (key.contains(".")) {
             val classId = getOwnerClass() ?: return emptyArray()
             container = GdClassUtil.getOwningClassElement(classId)
-
-            variants.addAll(innerClasses(container).map { it.lookup() })
         } else {
             container = GdClassUtil.getOwningClassElement(element)
             variants.addAll(GdClassCompletionUtil.allRootClasses(element.project))
-            variants.addAll(innerClasses(GdClassUtil.getOwningClassElement(element)).map { it.lookup() })
         }
 
+        variants.addAll(innerClasses(container).map { it.lookup() })
         variants.addAll(enums(container).mapNotNull { it.lookup() })
-        variants.addAll(loadedClasses(container).mapNotNull { it.lookup() })
+        variants.addAll(loadedClasses(container).filterNotNull())
 
         return variants.toTypedArray()
     }
@@ -88,11 +86,15 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(ownerClass, GdClassDeclTl::class.java)
     }
 
-    private fun loadedClasses(ownerClass: PsiElement): List<GdClassDeclTl> {
-        val vars = PsiTreeUtil.getChildrenOfAnyType(ownerClass, GdClassVarDeclTl::class.java, GdConstDeclTl::class.java)
-
-
-        return listOf()
+    private fun loadedClasses(ownerClass: PsiElement): List<LookupElement?> {
+        return PsiTreeUtil.getChildrenOfAnyType(ownerClass, GdClassVarDeclTl::class.java).map {
+            val expr = it.expr
+            if (expr is GdCallEx && arrayOf("preload", "load").contains(expr.expr.text)) {
+                val dfg = expr.returnType
+                val sdfg = 1
+            }
+            null
+        }
     }
 
 }

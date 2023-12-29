@@ -12,12 +12,12 @@ import com.intellij.openapi.roots.impl.libraries.LibraryEx
 import com.intellij.openapi.roots.impl.libraries.LibraryEx.ModifiableModelEx
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
+import gdscript.model.GdSdk
 import gdscript.utils.GdSdkUtil.SDKs_URL
 import gdscript.utils.GdSdkUtil.sdkToVersion
 import gdscript.utils.GdSdkUtil.versionToSdkName
 import gdscript.utils.GdSdkUtil.versionToSdkUrl
 import gdscript.utils.GdSdkUtil.versionToSdkZip
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.apache.commons.io.FileUtils
@@ -31,7 +31,6 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.zip.ZipFile
 
-
 object GdLibraryManager {
 
     val LIBRARY_NAME = "GdSdk"
@@ -43,11 +42,6 @@ object GdLibraryManager {
             .build()
 
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-
-        // https://github.com/Kotlin/kotlinx.serialization/issues/993
-        @Suppress("PROVIDED_RUNTIME_TOO_LOW")
-        @Serializable
-        class GdSdk(val id: String, val name: String, val type: String, val path: String, val mode: String)
 
         return Json.decodeFromString<Array<GdSdk>>(response.body())
             .map { it.name.sdkToVersion() }
