@@ -33,6 +33,7 @@
     <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor" />
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
     <postStartupActivity implementation="gdscript.listener.SdkStartupListener"/>
+    <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
 
     <!-- References -->
     <!-- Implicit -->
