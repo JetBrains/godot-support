@@ -7,6 +7,7 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import gdscript.psi.GdFile
 import gdscript.psi.utils.PsiGdFileUtil
+import tscn.psi.TscnFile
 
 class GdRunConfigurationProducer : LazyRunConfigurationProducer<GdRunConfiguration>() {
 
@@ -15,19 +16,19 @@ class GdRunConfigurationProducer : LazyRunConfigurationProducer<GdRunConfigurati
         context: ConfigurationContext,
         sourceElement: Ref<PsiElement>,
     ): Boolean {
-        val psi = context.psiLocation ?: return false;
-        if (psi.containingFile !is GdFile) {
-            return false;
+        val psi = context.psiLocation ?: return false
+        if (psi.containingFile is GdFile || psi.containingFile is TscnFile) {
+            configuration.setTscn(PsiGdFileUtil.filepath(psi))
+            configuration.name = configuration.actionName
+        } else {
+            return false
         }
 
-        configuration.setTscn(PsiGdFileUtil.filepath(psi));
-        configuration.name = configuration.actionName;
-
-        return true;
+        return true
     }
 
     override fun isConfigurationFromContext(configuration: GdRunConfiguration, context: ConfigurationContext): Boolean {
-        return true;
+        return true
     }
 
     override fun getConfigurationFactory(): ConfigurationFactory = GdConfigurationFactory
