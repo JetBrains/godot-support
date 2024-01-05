@@ -41,6 +41,12 @@
                              id="preferences.build.godotPlugin"
                              instance="com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage"
                              displayName="Godot Engine"/>
+
+    <platform.lsp.serverSupportProvider
+      implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspServerSupportProvider"/>
+    <fileIndentOptionsProvider
+      implementation="com.jetbrains.rider.plugins.godot.textMate.GdScriptFileIndentOptionsProvider"
+      id="GdScriptFileIndentOptionsProvider"/>
   </extensions>
 
 
