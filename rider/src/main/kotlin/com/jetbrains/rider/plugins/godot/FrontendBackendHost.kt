@@ -100,11 +100,10 @@ class FrontendBackendHost(project: Project) : LifetimedService() {
             }
 
             GodotProjectDiscoverer.getInstance(project).godot4Path.adviseNotNull(lifetime){ s ->
-
+                // for Godot3 this is done in a separate place
                 RiderDebuggerWorkerModelManager.getModels().adviseNotNull(lifetime){
                     model.backendSettings.enableDebuggerExtensions.flowInto(lifetime,
                         it.value.godotDebuggerWorkerModel.showCustomRenderers)
-
                 }
 
                 model.godotPath.set(s)

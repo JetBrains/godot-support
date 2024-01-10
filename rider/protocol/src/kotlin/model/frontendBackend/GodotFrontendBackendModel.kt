@@ -28,6 +28,12 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
         field("mainProjectBasePath", string).documentation = "Path to the folder with the project.godot"
     }
 
+    private val LanguageServerConnectionMode = enum {
+        +"Never"
+        +"ConnectRunningEditor"
+        +"StartEditorHeadless"
+    }
+
     init {
         setting(Kotlin11Generator.Namespace, "com.jetbrains.rider.model.godot.frontendBackend")
         setting(CSharp50Generator.Namespace, "JetBrains.Rider.Model.Godot.FrontendBackend")
@@ -43,6 +49,10 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
         // Settings stored in the backend
         field("backendSettings", aggregatedef("GodotBackendSettings") {
             property("enableDebuggerExtensions", bool)
+
+            property("lspConnectionMode", LanguageServerConnectionMode)
+            property("remoteHostPort", int)
+            property("useDynamicPort", bool)
         })
 
         property("godotDescriptor", GodotDescriptor)

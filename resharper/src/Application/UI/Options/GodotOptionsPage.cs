@@ -10,6 +10,7 @@ using JetBrains.IDE.UI.Options;
 using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Feature.Services.OptionPages.CodeEditing;
 using JetBrains.ReSharper.Plugins.Godot.Application.Settings;
+using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.UI.ThemedIcons;
 using JetBrains.Rider.Model.UIAutomation;
 
@@ -46,22 +47,24 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
                 AddComboOption((GodotSettings s) => s.LanguageServerConnectionMode,
                     "Connecting LSP server:", string.Empty, string.Empty,
                     new RadioOptionPoint(LanguageServerConnectionMode.StartEditorHeadless, "Automatically start headless LSP server"),
-                    new RadioOptionPoint(LanguageServerConnectionMode.ConnectRunningEditor, "Attempt to connect the running Godot Editor"),
+                    // new RadioOptionPoint(LanguageServerConnectionMode.ConnectRunningEditor, "Attempt to connect the running Godot Editor"), // todo: commented because need some tricky waiting and probing the port
                     new RadioOptionPoint(LanguageServerConnectionMode.Never, "Never use LSP")
                 );
                 AddKeyword("Language server");
                 
                 // AddTextBox(ourHostNameAccessor, "Host"); // host is always localhot, lets not allow changing it.
-                var useDynamic = AddBoolOption(ourUseDynamicPort, "Use a random free port",
-                    toolTipText: "Only supported by the future Godot builds");
+                
+                // todo: implement later 
+                // var useDynamic = AddBoolOption(ourUseDynamicPort, "Use a random free port",
+                //     toolTipText: "Only supported by the future Godot builds");
 
                 var portOption = AddIntOption(ourHostPortAccessor, "Port");
                 
                 AddBinding(portOption, BindingStyle.IsVisibleProperty, ourUseDynamicPort, enable => !enable);
                 AddBinding(portOption, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
                     mode => mode is not LanguageServerConnectionMode.Never);
-                AddBinding(useDynamic, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
-                    mode => mode is LanguageServerConnectionMode.StartEditorHeadless);
+                // AddBinding(useDynamic, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
+                //     mode => mode is LanguageServerConnectionMode.StartEditorHeadless);
             }
         }
     }

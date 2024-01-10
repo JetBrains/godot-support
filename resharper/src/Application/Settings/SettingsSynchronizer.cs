@@ -23,6 +23,16 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
             BindSettingToProperty(lifetime, solution, host, boundStore,
                 (GodotSettings s) => s.EnableDebuggerExtensions,
                 (model, args) => model.BackendSettings.EnableDebuggerExtensions.Value = args.New);
+            
+            BindSettingToProperty(lifetime, solution, host, boundStore,
+                (GodotSettings s) => s.LanguageServerConnectionMode,
+                (model, args) => model.BackendSettings.LspConnectionMode.Value = args.New);
+            BindSettingToProperty(lifetime, solution, host, boundStore,
+                (GodotSettings s) => s.RemoteHostPort,
+                (model, args) => model.BackendSettings.RemoteHostPort.Value = args.New);
+            BindSettingToProperty(lifetime, solution, host, boundStore,
+                (GodotSettings s) => s.UseDynamicPort,
+                (model, args) => model.BackendSettings.UseDynamicPort.Value = args.New);
         }
 
         private static void BindSettingToProperty<TKeyClass, TEntryMemberType>(

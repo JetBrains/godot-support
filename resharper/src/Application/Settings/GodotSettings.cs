@@ -1,11 +1,13 @@
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Resources.Settings;
+using JetBrains.Rider.Model.Godot.FrontendBackend;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
 {
     [SettingsKey(typeof(CodeEditingSettings), "Godot plugin settings")]
     public class GodotSettings
     {
+        // LSP 
         [SettingsEntry(LanguageServerConnectionMode.StartEditorHeadless, "Different ways to connect LSP")]
         public LanguageServerConnectionMode LanguageServerConnectionMode;
 
