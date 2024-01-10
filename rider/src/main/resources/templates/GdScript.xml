@@ -1,0 +1,74 @@
+<templateSet group="GDScript">
+
+  <template name="for" value="for $VAR$ in $ITERABLE$:&#10;&#9;$END$" description="for loop" toReformat="false">
+    <variable name="ITERABLE" expression="" alwaysStopAt="true" />
+    <variable name="VAR" expression="" alwaysStopAt="true" />
+    <context>
+      <option name="GDSCRIPT" value="true" />
+    </context>
+  </template>
+  <template name="forrange" value="for $VAR$ in range($RANGE_START$, $RANGE_END$):&#10;&#9;$END$"
+            description="for range loop" toReformat="false">
+    <variable name="RANGE_START" alwaysStopAt="true" />
+    <variable name="RANGE_END" alwaysStopAt="true" />
+    <variable name="VAR" alwaysStopAt="true" />
+    <context>
+      <option name="GDSCRIPT" value="true" />
+    </context>
+  </template>
+  <template name="while" value="while $CONDITION$:&#10;&#9;$END$" description="while">
+    <variable name="CONDITION" expression="condition()" defaultValue="expr" alwaysStopAt="true" />
+    <context>
+      <option name="GDSCRIPT" value="true" />
+    </context>
+  </template>
+  <template name="if" value="if $CONDITION$:&#10;&#9;$END$" description="if" toReformat="false">
+    <variable name="CONDITION" expression="" defaultValue="expr" alwaysStopAt="true" />
+    <context>
+      <option name="GDSCRIPT" value="true"/>
+    </context>
+  </template>
+  <template name="print" value="print($END$)" description="Print messages to console" toReformat="false">
+    <context>
+      <option name="GDSCRIPT" value="true"/>
+    </context>
+  </template>
+  <template name="func" value="func $NAME$($ARGS$):&#10;&#9;$END$" description="define function" toReformat="false">
+    <variable name="NAME" defaultValue="name" alwaysStopAt="true" />
+    <variable name="ARGS" defaultValue="args" alwaysStopAt="true" />
+    <context>
+      <option name="GDSCRIPT" value="true"/>
+    </context>
+  </template>
+  <template name="signal" value="signal $NAME$($ARGS$)" description="signal declaration">
+    <variable name="NAME" expression="" alwaysStopAt="true" />
+    <variable name="ARGS" expression="" alwaysStopAt="true" />
+    <context>
+      <option name="GDSCRIPT" value="true"/>
+    </context>
+  </template>
+
+
+<!--  <template name="Inner class" value="class $1 extends ${2:Reference}&#10;&#9;$3" description="Inner class"/>-->
+<!--  <template name="if elif else"-->
+<!--            value="if ${1:condition}:&#10;&#9;${3:pass}&#10;elif ${2:condition}:&#10;&#9;${4:pass}&#10;else:&#10;&#9;${5:pass}"-->
+<!--            description="if elif else"/>-->
+<!--  <template name="if else" value="if ${1:condition}:&#10;&#9;${2:pass}&#10;else:&#10;&#9;${3:pass}"-->
+<!--            description="if else"/>-->
+<!--  <template name="match"-->
+<!--            value="match ${1:expression}:&#10;&#9;${2:pattern}:&#10;&#9;&#9;${3}&#10;\t_:\n\t\t${0:default}"-->
+<!--            description="match"/>-->
+<!--  <template name="var" value="var ${1:name}${2: = default}${3: setget }" description="define variables"/>-->
+<!--  <template name="export"-->
+<!--            value="export(${1:type}${2:,other_configs}) var ${3:name}${4: = default}${5: setget }"-->
+<!--            description="export variables"/>-->
+<!--  <template name="var" value="var ${1:name}${2: = default}${3: setget }" description="define variables"/>-->
+<!--  <template name="onready" value="onready var ${1:name} = get_node($2)"-->
+<!--            description="define onready variables"/>-->
+<!--  <template name="Is instance of a class or script" value="${1:instance} is ${2:class}"-->
+<!--            description="Is instance of a class or script"/>-->
+<!--  <template name="element in array" value="${1:element} in ${$2:array}" description="element in array"/>-->
+<!--  <template name="GDScript template"-->
+<!--            value="extends ${1:BaseClass}&#10;&#10;# class member variables go here, for example:&#10;# var a = 2&#10;# var b = &quot;textvar&quot;&#10;&#10;func _ready():&#10;&#9;# Called every time the node is added to the scene.&#10;&#9;# Initialization here&#10;&#9;pass&#10;"-->
+<!--            description="GDScript template"/>-->
+</templateSet>

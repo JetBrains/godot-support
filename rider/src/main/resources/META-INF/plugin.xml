@@ -20,6 +20,8 @@
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
+    <liveTemplateContext contextId="GDSCRIPT" implementation="com.jetbrains.rider.plugins.godot.textMate.GdScriptTemplateContextType" order="first" />
+    <defaultLiveTemplates file="templates/GdScript.xml" />
 
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher"/>
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher"/>
