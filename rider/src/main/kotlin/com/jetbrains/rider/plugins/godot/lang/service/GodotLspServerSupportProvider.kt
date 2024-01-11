@@ -59,7 +59,7 @@ class GodotLspServerSupportProvider: LspServerSupportProvider {
             thisLogger().info("pingSocket1")
             Socket().use { socket ->
                 thisLogger().info("pingSocket2")
-                socket.connect(InetSocketAddress("127.0.0.1", port)) // set connection timeout to 1000ms
+                socket.connect(InetSocketAddress("127.0.0.1", port))
                 true
             }
         } catch (e: IOException) {
@@ -78,7 +78,7 @@ class GodotLspServerSupportProvider: LspServerSupportProvider {
             val basePath = discoverer.godotDescriptor.value?.mainProjectBasePath
             val godotPath = discoverer.godotPath.value
             val headlessArg = if (discoverer.godot4Path.value != null) "--headless" else "--no-window"
-            val commandLine = GeneralCommandLine(godotPath, "--path", basePath, "--editor", headlessArg, "--lsp-port=$remoteHostPort")
+            val commandLine = GeneralCommandLine(godotPath, "--path", "$basePath", "--editor", headlessArg, "--lsp-port", remoteHostPort.toString())
             thisLogger().info("createCommandLine commandLine=$commandLine")
             return commandLine
             // https://github.com/godotengine/godot-proposals/issues/7558#issuecomment-1693765359
