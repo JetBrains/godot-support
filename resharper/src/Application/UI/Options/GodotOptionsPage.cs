@@ -12,7 +12,6 @@ using JetBrains.ReSharper.Feature.Services.OptionPages.CodeEditing;
 using JetBrains.ReSharper.Plugins.Godot.Application.Settings;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.UI.ThemedIcons;
-using JetBrains.Rider.Model.UIAutomation;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
 {
