@@ -30,7 +30,20 @@ apply {
 }
 
 val baseVersion = "2024.1"
-var godotVscodePluginVersion = "1.3.1" // https://github.com/godotengine/godot-vscode-plugin/releases
+
+// alternative val url = URL("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/geequlim/vsextensions/godot-tools/$godotVscodePluginVersion/vspackage")
+// https://github.com/godotengine/godot-vscode-plugin/releases/download
+val cachedLink = "https://cache-redirector.jetbrains.com/github.com/godotengine/godot-vscode-plugin/releases/download"
+data class PluginDescription(val name: String, val url: String)
+
+val godotVscodePluginVersion = "1.3.1" // https://github.com/godotengine/godot-vscode-plugin/releases
+val alfishPluginVerion = "0.0.7" // https://github.com/AlfishSoftware/godot-files-vscode/releases/download/v0.0.7/alfish.godot-files-0.0.7.vsix
+
+val plugins = listOf(
+    PluginDescription("godot-tools", "https://cache-redirector.jetbrains.com/github.com/godotengine/godot-vscode-plugin/releases/download/$godotVscodePluginVersion/godot-tools-$godotVscodePluginVersion.vsix"),
+    PluginDescription("godot-files", "https://github.com/AlfishSoftware/godot-files-vscode/releases/download/v$alfishPluginVerion/alfish.godot-files-$alfishPluginVerion.vsix")
+)
+
 val buildCounter = ext.properties["build.number"] ?: "9999"
 version = "$baseVersion.$buildCounter"
 
@@ -106,13 +119,8 @@ fun File.writeTextIfChanged(content: String) {
     }
 }
 
-fun download(temp:File){
-    // alternative val url = URL("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/geequlim/vsextensions/godot-tools/$godotVscodePluginVersion/vspackage")
-
-    // https://github.com/godotengine/godot-vscode-plugin/releases/download
-    val cachedLink = "https://cache-redirector.jetbrains.com/github.com/godotengine/godot-vscode-plugin/releases/download"
-    val url = URL("$cachedLink/$godotVscodePluginVersion/godot-tools-$godotVscodePluginVersion.vsix")
-
+fun download(temp:File, spec:String){
+    val url = URL(spec)
     val connection = url.openConnection()
     connection.setRequestProperty(
         "User-Agent",
@@ -223,8 +231,6 @@ tasks {
             from("../resharper/src/annotations")
         }
 
-        val configDir = destinationDir.resolve(File("${intellij.pluginName.get()}/godot-tools"))
-
         doLast {
             files.forEach {
                 val file = file(it)
@@ -232,13 +238,15 @@ tasks {
                 logger.warn("$name: ${file.name} -> $destinationDir/${intellij.pluginName.get()}/dotnet")
             }
 
-            logger.lifecycle("downloading godot-tools TextMate bundle")
-            val temp = FileUtil.createTempFile("godot-tools", ".tmp")
-            download(temp)
-
-            FileUtil.createDirectory(configDir)
-            logger.lifecycle("Unzipping ${temp.path} to $configDir")
-            unzipTo(configDir, temp)
+            logger.lifecycle("downloading TextMate bundles")
+            plugins.forEach {
+                val configDir = destinationDir.resolve(intellij.pluginName.get()).resolve("bundles").resolve(it.name)
+                val temp = FileUtil.createTempFile("download", ".tmp")
+                download(temp, it.url)
+                FileUtil.createDirectory(configDir)
+                logger.lifecycle("Unzipping ${temp.path} to $configDir")
+                unzipTo(configDir, temp)
+            }
         }
     }
 
