@@ -1,34 +1,51 @@
 package com.jetbrains.rider.plugins.godot.lang.service
 
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.lifetime
-import com.intellij.openapi.rd.util.startNonUrgentBackgroundAsync
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.LspCommunicationChannel
 import com.intellij.platform.lsp.api.LspServerManager
 import com.intellij.platform.lsp.api.LspServerSupportProvider
 import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
+import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.reactive.adviseNotNull
-import com.jetbrains.rd.util.threading.coroutines.noAwait
 import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
-import kotlinx.coroutines.delay
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
+import java.util.concurrent.atomic.AtomicBoolean
 
-class GodotLspServerSupportProvider: LspServerSupportProvider {
+@Service(Service.Level.PROJECT)
+class LspPreparationService(val project: Project): LifetimedService() {
+    var isScheduled: AtomicBoolean = AtomicBoolean(false)
 
+    companion object {
+        fun getInstance(project: Project) = project.service<LspPreparationService>()
+    }
+}
+class GodotLspServerSupportProvider : LspServerSupportProvider {
     override fun fileOpened(project: Project, file: VirtualFile, serverStarter: LspServerSupportProvider.LspServerStarter) {
-        val discoverer = GodotProjectDiscoverer.getInstance(project)
-        discoverer.lspConnectionMode.adviseNotNull(project.lifetime) { lspConnectionMode ->
-            if (lspConnectionMode == LanguageServerConnectionMode.Never) return@adviseNotNull
-            discoverer.remoteHostPort.adviseNotNull(project.lifetime) { remoteHostPort ->
-                discoverer.godotDescriptor.adviseNotNull(project.lifetime) {
-                    if (Util.isSupportedFile(file)) {
-                        discoverer.godotPath.adviseNotNull(project.lifetime) {
+        if (Util.isSupportedFile(file)) {
+            val discoverer = GodotProjectDiscoverer.getInstance(project)
+            if (discoverer.lspConnectionMode.value != LanguageServerConnectionMode.Never
+                && discoverer.godotPath.value != null && discoverer.remoteHostPort.value != null
+                && discoverer.godotDescriptor.value != null)
+            {
+                thisLogger().info("ensureServerStarted")
+                serverStarter.ensureServerStarted(GodotLspServerDescriptor(project)) // this does not start the server, if fileOpened already ended
+            }
+            else if (LspPreparationService.getInstance(project).isScheduled.compareAndSet(false, true)){
+                val nested = project.lifetime.createNested()
+                discoverer.lspConnectionMode.adviseNotNull(nested) { lspConnectionMode ->
+                    if (lspConnectionMode == LanguageServerConnectionMode.Never) return@adviseNotNull
+                    discoverer.remoteHostPort.adviseNotNull(nested) { remoteHostPort ->
+                        discoverer.godotDescriptor.adviseNotNull(nested) {
+                            discoverer.godotPath.adviseNotNull(nested) {
 // todo: restore
 //                            if (lspConnectionMode == LanguageServerConnectionMode.ConnectRunningEditor) {
 //                                thisLogger().info("fileOpened6 ${remoteHostPort}")
@@ -43,10 +60,12 @@ class GodotLspServerSupportProvider: LspServerSupportProvider {
 //                                    serverStarter.ensureServerStarted(GodotLspServerDescriptor(project))
 //                                }.noAwait()
 //                            } else {
-                                thisLogger().info("ensureServerStarted")
-                                serverStarter.ensureServerStarted(GodotLspServerDescriptor(project)) // this does not start the server, if executed after fileOpened already ended
+
+                                thisLogger().info("startServersIfNeeded")
                                 LspServerManager.getInstance(project).startServersIfNeeded(this.javaClass)
+                                nested.terminate()
 //                            }
+                            }
                         }
                     }
                 }
@@ -93,6 +112,6 @@ class GodotLspServerSupportProvider: LspServerSupportProvider {
     }
 
     object Util {
-        fun isSupportedFile(file: VirtualFile) = file.extension?.equals("gd", true)?:false
+        fun isSupportedFile(file: VirtualFile) = file.extension?.equals("gd", true) ?: false
     }
 }
