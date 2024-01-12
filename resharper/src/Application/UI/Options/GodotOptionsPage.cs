@@ -53,17 +53,17 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
                 
                 // AddTextBox(ourHostNameAccessor, "Host"); // host is always localhot, lets not allow changing it.
                 
-                // todo: implement later 
-                // var useDynamic = AddBoolOption(ourUseDynamicPort, "Use a random free port",
-                //     toolTipText: "Only supported by the future Godot builds");
+                // Godot 4.3 and later
+                var useDynamic = AddBoolOption(ourUseDynamicPort, "Use a random free port (supported in Godot 4.3+)",
+                    toolTipText: "Only supported by the Godot 4.3+");
 
                 var portOption = AddIntOption(ourHostPortAccessor, "Port");
                 
                 AddBinding(portOption, BindingStyle.IsVisibleProperty, ourUseDynamicPort, enable => !enable);
                 AddBinding(portOption, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
                     mode => mode is not LanguageServerConnectionMode.Never);
-                // AddBinding(useDynamic, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
-                //     mode => mode is LanguageServerConnectionMode.StartEditorHeadless);
+                AddBinding(useDynamic, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
+                    mode => mode is LanguageServerConnectionMode.StartEditorHeadless);
             }
         }
     }

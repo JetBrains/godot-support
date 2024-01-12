@@ -15,6 +15,7 @@ import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
+import com.jetbrains.rider.util.NetUtils
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -43,7 +44,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 val nested = project.lifetime.createNested()
                 discoverer.lspConnectionMode.adviseNotNull(nested) { lspConnectionMode ->
                     if (lspConnectionMode == LanguageServerConnectionMode.Never) return@adviseNotNull
-                    discoverer.remoteHostPort.adviseNotNull(nested) { remoteHostPort ->
+                    discoverer.useDynamicPort.adviseNotNull(nested) { useDynamicPort ->
                         discoverer.godotDescriptor.adviseNotNull(nested) {
                             discoverer.godotPath.adviseNotNull(nested) {
 // todo: restore
@@ -90,7 +91,8 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
 
         val discoverer = GodotProjectDiscoverer.getInstance(project)
         val lspConnectionMode by lazy { discoverer.lspConnectionMode.value }
-        val remoteHostPort by lazy { discoverer.remoteHostPort.value }
+        val remoteHostPort by lazy { if (useDynamicPort!!) NetUtils.findFreePort(500050, setOf()) else discoverer.remoteHostPort.value }
+        val useDynamicPort by lazy { discoverer.useDynamicPort.value }
 
         override fun isSupportedFile(file: VirtualFile) = Util.isSupportedFile(file)
         override fun createCommandLine(): GeneralCommandLine {
