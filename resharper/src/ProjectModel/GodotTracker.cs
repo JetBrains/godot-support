@@ -15,7 +15,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
         public GodotTracker(ISolution solution, ILogger logger, ISolutionLoadTasksScheduler tasksScheduler)
         {
             var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
-            tasksScheduler.EnqueueTask(new SolutionLoadTask("UnityTechnologyDescriptionCollector",
+            tasksScheduler.EnqueueTask(new SolutionLoadTask(GetType(),
                 SolutionLoadTaskKinds.Done,
                 () =>
                 {
