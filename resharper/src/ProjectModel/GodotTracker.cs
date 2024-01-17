@@ -30,7 +30,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                         if (!file.ExistsFile) continue;
                         MainProjectBasePath = file.Directory;
                         logger.Verbose($"Godot MainProjectBasePath: {file.Directory}");
-                        model.GodotDescriptor.SetValue(new GodotDescriptor(false, file.Directory.FullPath));
+                        model.MainProjectBasePath.SetValue(file.Directory.FullPath);
                         break;
                     }
                 }));
