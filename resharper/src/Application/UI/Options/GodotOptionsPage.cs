@@ -68,6 +68,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
                 sourceProperty
                     .Change.Advise(Lifetime, () =>
                     {
+                        // RIDER-104651 Visibility of a BeControl based on other settings works inconsistently
                         portOption.Enabled.Value = !sourceProperty.Value; // this always works
                         portOption.Visible.Value = sourceProperty.Value ? ControlVisibility.Collapsed: ControlVisibility.Visible; // this doesn't work initially, but starts working when you change sourceProperty back and forth
                     });
