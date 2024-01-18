@@ -2,15 +2,18 @@
 
 using System;
 using System.Linq.Expressions;
+using JetBrains.Application.Settings;
 using JetBrains.Application.UI.Options;
 using JetBrains.Application.UI.Options.OptionsDialog;
 using JetBrains.Application.UI.Options.OptionsDialog.SimpleOptions;
 using JetBrains.Application.UI.Options.OptionsDialog.SimpleOptions.ViewModel;
+using JetBrains.DataFlow;
 using JetBrains.IDE.UI.Options;
 using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Feature.Services.OptionPages.CodeEditing;
 using JetBrains.ReSharper.Plugins.Godot.Application.Settings;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
+using JetBrains.Rider.Model.UIAutomation;
 using JetBrains.UI.ThemedIcons;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
@@ -59,9 +62,18 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
 
                 var portOption = AddIntOption(ourHostPortAccessor, "Port");
                 
-                AddBinding(portOption, BindingStyle.IsVisibleProperty, ourUseDynamicPort, enable => !enable);
-                AddBinding(portOption, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
-                    mode => mode is not LanguageServerConnectionMode.Never);
+                // AddBinding(portOption, BindingStyle.IsEnabledProperty, ourUseDynamicPort, enable => !enable);
+                
+                var sourceProperty = OptionsSettingsSmartContext.GetValueProperty(Lifetime, ourUseDynamicPort);
+                sourceProperty
+                    .Change.Advise(Lifetime, () =>
+                    {
+                        portOption.Enabled.Value = !sourceProperty.Value; // this always works
+                        portOption.Visible.Value = sourceProperty.Value ? ControlVisibility.Collapsed: ControlVisibility.Visible; // this doesn't work initially, but starts working when you change sourceProperty back and forth
+                    });
+                
+                // AddBinding(portOption, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
+                //     mode => mode is not LanguageServerConnectionMode.Never);
                 AddBinding(useDynamic, BindingStyle.IsEnabledProperty, ourLanguageServerConnectionMode,
                     mode => mode is LanguageServerConnectionMode.StartEditorHeadless);
             }
