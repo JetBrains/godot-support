@@ -12,6 +12,9 @@ import com.intellij.platform.lsp.api.LspServerManager
 import com.intellij.platform.lsp.api.LspServerSupportProvider
 import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
 import com.jetbrains.rd.platform.util.idea.LifetimedService
+import com.jetbrains.rd.util.lifetime.Lifetime
+import com.jetbrains.rd.util.lifetime.SequentialLifetimes
+import com.jetbrains.rd.util.lifetime.isAlive
 import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
@@ -30,6 +33,9 @@ class LspPreparationService(val project: Project): LifetimedService() {
     }
 }
 class GodotLspServerSupportProvider : LspServerSupportProvider {
+
+    private val sequentialLifetimes = SequentialLifetimes(Lifetime.Eternal)
+
     override fun fileOpened(project: Project, file: VirtualFile, serverStarter: LspServerSupportProvider.LspServerStarter) {
         if (Util.isSupportedFile(file)) {
             val discoverer = GodotProjectDiscoverer.getInstance(project)
@@ -41,12 +47,16 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 serverStarter.ensureServerStarted(GodotLspServerDescriptor(project)) // this does not start the server, if fileOpened already ended
             }
             else if (LspPreparationService.getInstance(project).isScheduled.compareAndSet(false, true)){
-                val nested = project.lifetime.createNested()
-                discoverer.lspConnectionMode.adviseNotNull(nested) { lspConnectionMode ->
-                    if (lspConnectionMode == LanguageServerConnectionMode.Never) return@adviseNotNull
-                    discoverer.useDynamicPort.adviseNotNull(nested) { useDynamicPort ->
-                        discoverer.godotDescriptor.adviseNotNull(nested) {
-                            discoverer.godotPath.adviseNotNull(nested) {
+                val lifetime = sequentialLifetimes.next()
+                project.lifetime.onTerminationIfAlive { if (lifetime.isAlive) lifetime.terminate() }
+                discoverer.lspConnectionMode.adviseNotNull(lifetime) { lspConnectionMode ->
+                    if (lspConnectionMode == LanguageServerConnectionMode.Never) {
+                        LspServerManager.getInstance(project).stopServers(this.javaClass)
+                        return@adviseNotNull
+                    }
+                    discoverer.useDynamicPort.adviseNotNull(lifetime) { useDynamicPort ->
+                        discoverer.godotDescriptor.adviseNotNull(lifetime) {
+                            discoverer.godotPath.adviseNotNull(lifetime) {
 // todo: restore
 //                            if (lspConnectionMode == LanguageServerConnectionMode.ConnectRunningEditor) {
 //                                thisLogger().info("fileOpened6 ${remoteHostPort}")
@@ -64,7 +74,6 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
 
                                 thisLogger().info("startServersIfNeeded")
                                 LspServerManager.getInstance(project).startServersIfNeeded(this.javaClass)
-                                nested.terminate()
 //                            }
                             }
                         }
