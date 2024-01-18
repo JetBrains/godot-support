@@ -34,6 +34,8 @@
 
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer$ProtocolListener"/>
+
+    <rider.runtime.dotNetRuntimeAutodetect implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetRuntimeAutodetect"/>
   </extensions>
 
 
