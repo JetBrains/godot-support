@@ -3,14 +3,12 @@ using System.Threading.Tasks;
 using GodotTools.IdeMessaging;
 using GodotTools.IdeMessaging.Requests;
 using JetBrains.Application.Threading;
-using JetBrains.Application.Threading.Tasks;
 using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.Rd.Base;
 using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
-using JetBrains.Threading;
 using JetBrains.Util;
 using ILogger = JetBrains.Util.ILogger;
 
@@ -30,9 +28,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             myLogger = logger; 
             var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
             
-            model.MainProjectBasePath.AdviseOnce(lifetime, baseDir =>
+            model.GodotDescriptor.AdviseOnce(lifetime, descriptor =>
             {
-                myClient = new Client(Identity, baseDir, this, this);
+                if (descriptor.IsPureGdScriptProject) return;
+                
+                myClient = new Client(Identity, descriptor.MainProjectBasePath, this, this);
                 SubscribeConnected(logger, threading, model);
                 SubscribeDisconnected(logger, threading, model); 
                 myClient.Start();
@@ -42,7 +42,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
         private void SubscribeDisconnected(ILogger logger, IThreading threading, GodotFrontendBackendModel model)
         {
             // it looks like it subscribes to be called just once
-            myClient.AwaitDisconnected().ContinueWith(task =>
+            myClient.AwaitDisconnected().ContinueWith(_ =>
             {
                 logger.Info("Godot Editor disconnected...");
                 model.EditorState.SetValue(GodotEditorState.Disconnected);
@@ -52,7 +52,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 
         private void SubscribeConnected(ILogger logger, IThreading threading, GodotFrontendBackendModel model)
         {
-            myClient.AwaitConnected().ContinueWith(task =>
+            myClient.AwaitConnected().ContinueWith(_ =>
             {
                 logger.Info("Godot Editor connected...");
                 model.EditorState.SetValue(GodotEditorState.Connected);

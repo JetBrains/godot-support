@@ -17,4 +17,27 @@ namespace JetBrains.ReSharper.Plugins.Godot.UsageStatistics
             }
         }
     }
+    
+    [SolutionComponent]
+    public class GodotSolutionTechnologyProvider : ISolutionTechnologyProvider
+    {
+        public IEnumerable<string> GetProjectTechnology(IProject project)
+        {
+            if (project.IsGodotProject())
+            {
+                yield return "Godot";
+                yield return "GameDev";
+            }
+        }
+
+        public IEnumerable<string> GetSolutionTechnology(ISolution solution)
+        {
+            if (solution.IsGdScriptSolution())
+            {
+                yield return "Godot";
+                yield return "GameDev";
+                yield return "GDScript";
+            }
+        }
+    }
 }

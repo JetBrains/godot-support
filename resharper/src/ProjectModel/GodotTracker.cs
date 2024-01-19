@@ -15,6 +15,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
         public GodotTracker(ISolution solution, ILogger logger, ISolutionLoadTasksScheduler tasksScheduler)
         {
             var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
+            if (solution.SolutionFile == null && solution.SolutionDirectory.Combine("project.godot").ExistsFile)
+            {
+                model.GodotDescriptor.SetValue(new GodotDescriptor(true, solution.SolutionDirectory.FullPath));
+            }
+            
             tasksScheduler.EnqueueTask(new SolutionLoadTask(GetType(),
                 SolutionLoadTaskKinds.Done,
                 () =>
@@ -25,7 +30,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                         if (!file.ExistsFile) continue;
                         MainProjectBasePath = file.Directory;
                         logger.Verbose($"Godot MainProjectBasePath: {file.Directory}");
-                        model.MainProjectBasePath.SetValue(file.Directory.FullPath);
+                        model.GodotDescriptor.SetValue(new GodotDescriptor(false, file.Directory.FullPath));
                         break;
                     }
                 }));
