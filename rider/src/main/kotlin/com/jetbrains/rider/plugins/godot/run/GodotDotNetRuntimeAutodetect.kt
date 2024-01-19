@@ -14,7 +14,7 @@ class GodotDotNetRuntimeAutodetect(private val project: Project): DotNetRuntimeA
         if (dotNetCoreRuntime == null)
             return null
 
-        if (GodotProjectDiscoverer.getInstance(project).godotCorePath.value != null)
+        if (GodotProjectDiscoverer.getInstance(project).godot4Path.value != null)
             return RuntimeDetectionResult.create(dotNetCoreRuntime)
 
         return null
