@@ -17,6 +17,7 @@ import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rd.util.lifetime.isAlive
 import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
+import com.jetbrains.rider.plugins.godot.Util
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.util.NetUtils
 import java.io.IOException
@@ -37,7 +38,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
     private val sequentialLifetimes = SequentialLifetimes(Lifetime.Eternal)
 
     override fun fileOpened(project: Project, file: VirtualFile, serverStarter: LspServerSupportProvider.LspServerStarter) {
-        if (Util.isSupportedFile(file)) {
+        if (Util.isGdFile(file)) {
             val discoverer = GodotProjectDiscoverer.getInstance(project)
             if (discoverer.lspConnectionMode.value != LanguageServerConnectionMode.Never
                 && discoverer.godotPath.value != null && discoverer.remoteHostPort.value != null
@@ -103,7 +104,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
         val remoteHostPort by lazy { if (useDynamicPort!!) NetUtils.findFreePort(500050, setOf()) else discoverer.remoteHostPort.value }
         val useDynamicPort by lazy { discoverer.useDynamicPort.value }
 
-        override fun isSupportedFile(file: VirtualFile) = Util.isSupportedFile(file)
+        override fun isSupportedFile(file: VirtualFile) = Util.isGdFile(file)
         override fun createCommandLine(): GeneralCommandLine {
             val basePath = discoverer.godotDescriptor.value?.mainProjectBasePath
             val godotPath = discoverer.godotPath.value
@@ -120,9 +121,5 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 return LspCommunicationChannel.Socket(remoteHostPort!!,
                     lspConnectionMode == LanguageServerConnectionMode.StartEditorHeadless)
             }
-    }
-
-    object Util {
-        fun isSupportedFile(file: VirtualFile) = file.extension?.equals("gd", true) ?: false
     }
 }

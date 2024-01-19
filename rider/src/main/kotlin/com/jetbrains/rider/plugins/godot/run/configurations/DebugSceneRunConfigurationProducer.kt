@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.jetbrains.rdclient.util.idea.toIOFile
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
+import com.jetbrains.rider.plugins.godot.Util
 import java.io.File
 
 class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDebugRunConfiguration>() {
@@ -21,7 +22,7 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
         internal fun getContainingFile(context: ConfigurationContext): PsiFile? {
             val location = context.psiLocation ?: return null
             val file = location.containingFile ?: return null
-            if (file.virtualFile.extension != "tscn") return null
+            if (!Util.isTscnFile(file.virtualFile)) return null
             return file
         }
     }

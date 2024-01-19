@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.FileIndentOptionsProvider
+import com.jetbrains.rider.plugins.godot.Util
 
 class GdScriptFileIndentOptionsProvider : FileIndentOptionsProvider() {
     override fun getIndentOptions(
@@ -12,7 +13,7 @@ class GdScriptFileIndentOptionsProvider : FileIndentOptionsProvider() {
         settings: CodeStyleSettings,
         file: VirtualFile
     ): CommonCodeStyleSettings.IndentOptions? {
-        if (file.extension == "gd") {
+        if (Util.isGdFile(file)) {
             val indentOptions = settings.indentOptions
             indentOptions.USE_TAB_CHARACTER = true
             return indentOptions
