@@ -12,7 +12,8 @@ import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IProperty
 import com.jetbrains.rd.util.reactive.Property
 import com.jetbrains.rd.util.reactive.adviseNotNull
-import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
+import com.jetbrains.rd.util.reactive.flowInto
+import com.jetbrains.rider.model.godot.frontendBackend.*
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
@@ -24,18 +25,30 @@ import java.io.File
 @Service(Service.Level.PROJECT)
 class GodotProjectDiscoverer(project: Project) : LifetimedService() {
 
-    val mainProjectBasePath : IProperty<String?> = Property(null)
+    val godotDescriptor : IProperty<GodotDescriptor?> = Property(null)
+    val lspConnectionMode: IProperty<LanguageServerConnectionMode?> = Property(null)
+    val remoteHostPort: IProperty<Int?> = Property(null)
+    val useDynamicPort: IProperty<Boolean?> = Property(null)
     private val logger = Logger.getInstance(GodotProjectDiscoverer::class.java)
-    val godotMonoPath : IProperty<String?> = Property(null)
-    val godotCorePath : IProperty<String?> = Property(null)
+    val godot3Path : IProperty<String?> = Property(null)
+    val godot4Path : IProperty<String?> = Property(null)
+    val godotPath : IProperty<String?> = Property(null)
 
     init {
-        mainProjectBasePath.adviseNotNull(project.lifetime){
-            logger.info("Godot mainProjectBasePath: $it")
-            godotMonoPath.set(
-                MetadataMonoFileWatcher.Util.getFromMonoMetadataPath(it)
-                    ?: MetadataMonoFileWatcher.Util.getGodotPath(it) ?: getGodotPathFromPlayerRunConfiguration(project))
-            godotCorePath.set(MetadataCoreFileWatcher.Util.getGodotPath(it) ?: getGodotPathFromCorePlayerRunConfiguration(project))
+        godot3Path.adviseNotNull(project.lifetime){
+            godotPath.set(it)
+        }
+        godot4Path.adviseNotNull(project.lifetime){
+            godotPath.set(it)
+        }
+
+        godotDescriptor.adviseNotNull(project.lifetime){
+            logger.info("Godot godotDescriptor: $it")
+            val basePath = File(it.mainProjectBasePath)
+            godot3Path.set(
+                MetadataMonoFileWatcher.Util.getFromMonoMetadataPath(basePath)
+                    ?: MetadataMonoFileWatcher.Util.getGodotPath(basePath) ?: getGodotPathFromPlayerRunConfiguration(project))
+            godot4Path.set(MetadataCoreFileWatcher.Util.getGodotPath(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project))
         }
     }
 
@@ -78,9 +91,10 @@ class GodotProjectDiscoverer(project: Project) : LifetimedService() {
             session: ClientProjectSession,
             model: GodotFrontendBackendModel
         ) {
-            model.mainProjectBasePath.adviseNotNull(lifetime) {
-                getInstance(session.project).mainProjectBasePath.set(it)
-            }
+            model.godotDescriptor.adviseNotNull(lifetime){ getInstance(session.project).godotDescriptor.set(it) }
+            model.backendSettings.lspConnectionMode.adviseNotNull(lifetime){ getInstance(session.project).lspConnectionMode.set(it) }
+            model.backendSettings.remoteHostPort.adviseNotNull(lifetime) { getInstance(session.project).remoteHostPort.set(it) }
+            model.backendSettings.useDynamicPort.adviseNotNull(lifetime) { getInstance(session.project).useDynamicPort.set(it) }
         }
     }
 }

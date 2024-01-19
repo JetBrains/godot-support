@@ -20,6 +20,8 @@
   </extensions>
 
   <extensions defaultExtensionNs="com.intellij">
+    <liveTemplateContext contextId="GDSCRIPT" implementation="com.jetbrains.rider.plugins.godot.textMate.GdScriptTemplateContextType" order="first" />
+    <defaultLiveTemplates file="templates/GdScript.xml" />
 
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher"/>
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher"/>
@@ -28,7 +30,6 @@
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.FrontendBackendHost$ProtocolListener"/>
 
-    <projectService serviceImplementation="com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator"/>
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator$ProtocolListener"/>
 
@@ -36,6 +37,18 @@
                             listener="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer$ProtocolListener"/>
 
     <rider.runtime.dotNetRuntimeAutodetect implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetRuntimeAutodetect"/>
+
+    <!-- Options pages -->
+    <applicationConfigurable groupId="language"
+                             id="preferences.build.godotPlugin"
+                             instance="com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage"
+                             displayName="Godot Engine"/>
+
+    <platform.lsp.serverSupportProvider
+      implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspServerSupportProvider"/>
+    <fileIndentOptionsProvider
+      implementation="com.jetbrains.rider.plugins.godot.textMate.GdScriptFileIndentOptionsProvider"
+      id="GdScriptFileIndentOptionsProvider"/>
   </extensions>
 
 
