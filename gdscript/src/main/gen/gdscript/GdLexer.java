@@ -791,7 +791,7 @@ class GdLexer implements FlexLexer {
   private void zzDoEOF() {
     if (!zzEOFDone) {
       zzEOFDone = true;
-    
+
     }
   }
 
@@ -919,7 +919,7 @@ class GdLexer implements FlexLexer {
         zzAtEOF = true;
             zzDoEOF();
               {
-                if (yycolumn > 1 && !eofFinished && !lineEnded) {
+                if (yycolumn > 0 && !eofFinished && !lineEnded) {
         eofFinished = true;
         return GdTypes.NEW_LINE;
     }

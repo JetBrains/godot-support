@@ -291,7 +291,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     }
 
 <<EOF>> {
-    if (yycolumn > 1 && !eofFinished && !lineEnded) {
+    if (yycolumn > 0 && !eofFinished && !lineEnded) {
         eofFinished = true;
         return GdTypes.NEW_LINE;
     }
