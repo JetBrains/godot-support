@@ -32,7 +32,7 @@ object GdClassVarParser : GdBaseParser {
 
         GdRecovery.topLevel(b, ok)
 
-        return b.exitSection(ok)
+        return b.exitSection(ok, !ok && !b.pinned())
     }
 
     private fun parseGetSet(b: GdPsiBuilder, l: Int): Boolean {
