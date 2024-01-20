@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ButtonGroup" inherits="Resource" version="4.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		Group of Buttons.
+	</brief_description>
+	<description>
+		Group of [BaseButton]. The members of this group are treated like radio buttons in the sense that only one button can be pressed at the same time.
+		Every member of the ButtonGroup should have [member BaseButton.toggle_mode] set to [code]true[/code].
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="get_buttons">
+			<return type="BaseButton[]" />
+			<description>
+				Returns an [Array] of [Button]s who have this as their [ButtonGroup] (see [member BaseButton.button_group]).
+			</description>
+		</method>
+		<method name="get_pressed_button">
+			<return type="BaseButton" />
+			<description>
+				Returns the current pressed button.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="resource_local_to_scene" type="bool" setter="set_local_to_scene" getter="is_local_to_scene" overrides="Resource" default="true" />
+	</members>
+	<signals>
+		<signal name="pressed">
+			<param index="0" name="button" type="BaseButton" />
+			<description>
+				Emitted when one of the buttons of the group is pressed.
+			</description>
+		</signal>
+	</signals>
+</class>

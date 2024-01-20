@@ -12,7 +12,10 @@ import com.intellij.openapi.roots.impl.libraries.LibraryEx
 import com.intellij.openapi.roots.impl.libraries.LibraryEx.ModifiableModelEx
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
+import gdscript.model.GdHistory
 import gdscript.model.GdSdk
+import gdscript.utils.GdSdkUtil.COMMIT_HISTORY_PLACEHOLDER
+import gdscript.utils.GdSdkUtil.COMMIT_HISTORY_URL
 import gdscript.utils.GdSdkUtil.SDKs_URL
 import gdscript.utils.GdSdkUtil.sdkToVersion
 import gdscript.utils.GdSdkUtil.versionToSdkName
@@ -34,6 +37,7 @@ import java.util.zip.ZipFile
 object GdLibraryManager {
 
     val LIBRARY_NAME = "GdSdk"
+    val jsonParser = Json { ignoreUnknownKeys = true }
 
     fun listAvailableSdks(): List<String> {
         val client = HttpClient.newBuilder().build()
@@ -43,7 +47,7 @@ object GdLibraryManager {
 
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
-        return Json.decodeFromString<Array<GdSdk>>(response.body())
+        return jsonParser.decodeFromString<Array<GdSdk>>(response.body())
             .map { it.name.sdkToVersion() }
             .sortedDescending()
     }
@@ -57,6 +61,19 @@ object GdLibraryManager {
             .filter {
                 (it as LibraryEx).kind is GdLibraryKind
             }
+    }
+
+    fun libDate(version: String): String {
+        val client = HttpClient.newBuilder().build()
+        val request = HttpRequest.newBuilder()
+            .uri(URI.create(COMMIT_HISTORY_URL.replace(COMMIT_HISTORY_PLACEHOLDER, version)))
+            .build()
+
+        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+
+        return jsonParser.decodeFromString<Array<GdHistory>>(response.body())
+                .firstOrNull()?.commit?.committed_date
+            ?: ""
     }
 
     fun registerSdk(path: String, project: Project) {

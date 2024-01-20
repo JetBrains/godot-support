@@ -2,8 +2,10 @@ package gdscript.listener
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.getProjectDataPath
+import com.intellij.openapi.roots.impl.libraries.LibraryEx.ModifiableModelEx
 import com.intellij.openapi.startup.ProjectActivity
 import gdscript.library.GdLibraryManager
+import gdscript.library.GdLibraryProperties
 import gdscript.utils.GdSdkUtil.versionToSdkName
 import org.apache.commons.io.FileUtils
 import java.io.File
@@ -33,15 +35,21 @@ class SdkStartupListener : ProjectActivity {
         val latest = GdLibraryManager.listAvailableSdks().find { it.startsWith(version) } ?: return
         val sdkPath = Paths.get(dirPath, latest.versionToSdkName()).toString()
 
-        if (registered != null && !registered.name!!.endsWith(latest)) {
-            GdLibraryManager.clearSdks(project)
-            registered = null
+        if (registered != null) {
+            val props = (registered.modifiableModel as ModifiableModelEx).properties as GdLibraryProperties
+            val updated = GdLibraryManager.libDate(props.version)
+
+            if (!registered.name!!.endsWith(latest) || updated != props.version) {
+                GdLibraryManager.clearSdks(project)
+                registered = null
+            }
         }
 
         if (registered == null) {
             try {
                 GdLibraryManager.download(latest, dirPath)
-            } catch (e: Exception) {}
+            } catch (e: Exception) {
+            }
             GdLibraryManager.registerSdk(sdkPath, project)
         }
     }

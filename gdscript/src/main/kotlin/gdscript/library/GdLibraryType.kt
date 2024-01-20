@@ -28,7 +28,7 @@ class GdLibraryType : LibraryType<GdLibraryProperties>(GdLibraryKind) {
         return null
     }
 
-    override fun getIcon(properties: GdLibraryProperties?): Icon? {
+    override fun getIcon(properties: GdLibraryProperties?): Icon {
         return GdIcon.FILE
     }
 

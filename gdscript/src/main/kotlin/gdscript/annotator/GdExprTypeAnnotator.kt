@@ -5,15 +5,11 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import gdscript.GdKeywords
-import gdscript.utils.GdOperand
-import gdscript.psi.GdAssignSt
-import gdscript.psi.GdBitAndEx
-import gdscript.psi.GdClassVarDeclTl
-import gdscript.psi.GdFactorEx
-import gdscript.psi.GdVarDeclSt
+import gdscript.psi.*
 import gdscript.psi.utils.GdExprUtil
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
+import gdscript.utils.GdOperand
 import gdscript.utils.StringUtil.isDynamicType
 
 class GdExprTypeAnnotator : Annotator {

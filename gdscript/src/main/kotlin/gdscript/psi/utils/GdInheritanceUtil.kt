@@ -2,6 +2,7 @@ package gdscript.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdFileResIndex
@@ -23,6 +24,7 @@ object GdInheritanceUtil {
             is GdClassNaming -> element.parentName
             is GdClassDeclTl -> element.parentName
             is GdFile -> PsiTreeUtil.getStubChildOfType(element, GdInheritance::class.java)?.inheritancePath.orEmpty()
+            is PsiFile -> ""
             else -> getExtendedClassId(PsiGdClassUtil.getParentClassElement(element))
         }
     }
