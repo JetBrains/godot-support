@@ -9,9 +9,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons
     public class NoCtorWarn : IHighlighting
     {
         private readonly DocumentRange _documentRange;
-        public readonly ITreeNode ClassDeclaration;
+        public readonly IClassDeclaration ClassDeclaration;
 
-        public NoCtorWarn(ITreeNode classDeclaration, DocumentRange documentRange)
+        public NoCtorWarn(IClassDeclaration classDeclaration, DocumentRange documentRange)
         {
             _documentRange = documentRange;
             ClassDeclaration = classDeclaration;

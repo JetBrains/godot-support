@@ -20,8 +20,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons
                 if (bodyChild.DeclaredElement.Parameters.ToArray().Length == 0)
                     return;
             }
-            
-            consumer.AddHighlighting(new NoCtorWarn((ITreeNode) element.NameIdentifier, element.NameIdentifier.GetDocumentRange()));
+            consumer.AddHighlighting(new NoCtorWarn(element, element.NameIdentifier.GetDocumentRange()));
         }
     }
 }
