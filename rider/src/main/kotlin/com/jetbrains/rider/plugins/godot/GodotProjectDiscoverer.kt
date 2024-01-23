@@ -23,7 +23,7 @@ import com.jetbrains.rider.util.idea.getService
 import java.io.File
 
 @Service(Service.Level.PROJECT)
-class GodotProjectDiscoverer(project: Project) : LifetimedService() {
+class GodotProjectDiscoverer(project: Project) {
 
     val godotDescriptor : IProperty<GodotDescriptor?> = Property(null)
     val lspConnectionMode: IProperty<LanguageServerConnectionMode?> = Property(null)
