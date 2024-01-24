@@ -13,21 +13,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp
         {
             if (candidate == null)
                 return false;
-
-            var solution = candidate.GetSolution();
-            var knownTypesCache = solution.GetComponent<KnownTypesCache>();
-            var baseType = GetTypeElement(baseTypeName, knownTypesCache, candidate.Module);
-            return candidate.IsDescendantOf(baseType);
-        }
-
-        private static ITypeElement GetTypeElement(IClrTypeName typeName, KnownTypesCache knownTypesCache,
-            IPsiModule module)
-        {
-            using (CompilationContextCookie.GetExplicitUniversalContextIfNotSet())
-            {
-                var type = knownTypesCache.GetByClrTypeName(typeName, module);
-                return type.GetTypeElement();
-            }
+            
+            var baseTypeElement = TypeFactory.CreateTypeByCLRName(baseTypeName, candidate.Module).GetTypeElement();
+            return candidate.IsDescendantOf(baseTypeElement);
         }
 
         public static bool DerivesFromGodotObject([CanBeNull] this ITypeElement candidate)
