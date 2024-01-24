@@ -7,11 +7,21 @@ using IClassDeclaration = JetBrains.ReSharper.Psi.CSharp.Tree.IClassDeclaration;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons
 {
+    /// <summary>
+    /// Analyzes classes that derives from Godot.GodotObject
+    /// </summary>
     [ElementProblemAnalyzer(typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(NoCtorWarn)})]
     public class GodotElementProblemAnalyzerBase : ElementProblemAnalyzer<IClassDeclaration>
     {
         protected override void Run(IClassDeclaration element, ElementProblemAnalyzerData data, IHighlightingConsumer consumer)
         {
+            var typeElement = element.DeclaredElement;
+            if (typeElement == null) 
+                return;
+            
+            if (!typeElement.DerivesFromGodotObject()) // could you please check if it only makes sense for the Node or all GodotObjects?
+                return;
+            
             var ctors = element.ConstructorDeclarationsEnumerable;
             if (!ctors.Any())
                 return;

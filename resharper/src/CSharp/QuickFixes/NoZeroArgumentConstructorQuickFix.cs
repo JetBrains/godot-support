@@ -22,11 +22,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.QuickFixes
         {
             var psiModule = error.ClassDeclaration.GetPsiModule();
             var factory = CSharpElementFactory.GetInstance(error.ClassDeclaration);
-            ICSharpStatement statement = factory.CreateStatement($"public {error.ClassDeclaration.NameIdentifier}()\n{{\n}}", EmptyArray<object>.Instance);
-            return 
+            IConstructorDeclaration statement = factory.CreateConstructorDeclaration();
+            error.ClassDeclaration.AddClassMemberDeclaration(statement);
+            return null;
         }
 
-        public override string Text { get; } = "Add empty constructor with 0 arguments";
+        public override string Text { get; } = "Add empty constructor with no parameters";
         public override bool IsAvailable(IUserDataHolder cache) => error.IsValid();
     }
 }
