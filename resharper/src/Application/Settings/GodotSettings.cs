@@ -1,3 +1,5 @@
+using System;
+using System.Linq.Expressions;
 using JetBrains.Application.Settings;
 using JetBrains.ReSharper.Resources.Settings;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
@@ -23,5 +25,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
         // Debugging
         [SettingsEntry(true, "Enable debugger extensions")]
         public bool EnableDebuggerExtensions;
+
+        [SettingsEntry(true, "Hide generated sources from navigation")]
+        public bool HideGeneratedCodeFromNavigation;
+        
+        public static readonly Expression<Func<GodotSettings, bool>> HideGeneratedCodeFromNavigationAccessor =
+            s => s.HideGeneratedCodeFromNavigation;
+
     }
 }
