@@ -10,8 +10,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons
     /// <summary>
     /// Analyzes classes that derives from Godot.GodotObject
     /// </summary>
-    [ElementProblemAnalyzer(typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(NoCtorWarn)})]
-    public class GodotElementProblemAnalyzerBase : ElementProblemAnalyzer<IClassDeclaration>
+    [ElementProblemAnalyzer(typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(NoParameterlessConstructorError)})]
+    public class ConstructorElementProblemAnalyzer : ElementProblemAnalyzer<IClassDeclaration>
     {
         protected override void Run(IClassDeclaration element, ElementProblemAnalyzerData data, IHighlightingConsumer consumer)
         {
@@ -30,7 +30,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons
                 if (bodyChild.DeclaredElement.Parameters.ToArray().Length == 0)
                     return;
             }
-            consumer.AddHighlighting(new NoCtorWarn(element, element.NameIdentifier.GetDocumentRange()));
+            consumer.AddHighlighting(new NoParameterlessConstructorError(element, element.NameIdentifier.GetDocumentRange()));
         }
     }
 }

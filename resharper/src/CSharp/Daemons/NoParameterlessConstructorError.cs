@@ -6,12 +6,12 @@ using JetBrains.ReSharper.Psi.Tree;
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons
 {
     [StaticSeverityHighlighting(Severity.ERROR, typeof(HighlightingGroupIds.GutterMarks))]
-    public class NoCtorWarn : IHighlighting
+    public class NoParameterlessConstructorError : IHighlighting
     {
         private readonly DocumentRange _documentRange;
         public readonly IClassDeclaration ClassDeclaration;
 
-        public NoCtorWarn(IClassDeclaration classDeclaration, DocumentRange documentRange)
+        public NoParameterlessConstructorError(IClassDeclaration classDeclaration, DocumentRange documentRange)
         {
             _documentRange = documentRange;
             ClassDeclaration = classDeclaration;
@@ -26,7 +26,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons
             return _documentRange;
         }
 
-        public string ToolTip => "Constructor with no parameters is required to initialize a script/game object";
+        public string ToolTip => "Parameterless constructor is required to initialize a script/game object";
         public string ErrorStripeToolTip { get; }
     }
 }

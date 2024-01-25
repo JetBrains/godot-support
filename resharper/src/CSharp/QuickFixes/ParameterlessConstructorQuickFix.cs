@@ -12,11 +12,11 @@ using JetBrains.Util;
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.QuickFixes
 {
     [QuickFix]
-    public class NoZeroArgumentConstructorQuickFix : QuickFixBase
+    public class ParameterlessConstructorQuickFix : QuickFixBase
     {
-        private readonly NoCtorWarn error;
+        private readonly NoParameterlessConstructorError error;
 
-        public NoZeroArgumentConstructorQuickFix([NotNull] NoCtorWarn warning) => error = warning;
+        public ParameterlessConstructorQuickFix([NotNull] NoParameterlessConstructorError warning) => error = warning;
         
         protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
         {
@@ -27,7 +27,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.QuickFixes
             return null;
         }
 
-        public override string Text { get; } = "Add empty constructor with no parameters";
+        public override string Text { get; } = "Add parameterless constructor";
         public override bool IsAvailable(IUserDataHolder cache) => error.IsValid();
     }
 }
