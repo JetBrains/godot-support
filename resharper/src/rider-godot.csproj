@@ -47,10 +47,6 @@
     <ProjectReference Include="..\GodotTools.IdeMessaging\GodotTools.IdeMessaging.csproj" />
   </ItemGroup>
   
-  <ItemGroup>
-    <Folder Include="CSharp\Psi\" />
-  </ItemGroup>
-  
   <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Psi.Features_src.Props" />
   <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Psi.Features_UnitTesting.Props" />
   <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Rider_Rider.Backend.Props" />
