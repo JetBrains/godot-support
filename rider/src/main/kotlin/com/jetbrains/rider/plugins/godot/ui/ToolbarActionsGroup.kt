@@ -1,5 +1,6 @@
 package com.jetbrains.rider.plugins.godot.ui
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
@@ -11,6 +12,7 @@ import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 
 class ToolbarActionsGroup : DefaultActionGroup(), DumbAware, TooltipDescriptionProvider {
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
     override fun update(e: AnActionEvent) {
         val project = e.project
         if (project == null) {
