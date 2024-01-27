@@ -40,18 +40,17 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
             : base(lifetime, pageContext, settingsStore)
         {
             AddNetworkSection();
+            
+            AddHeader("Debugger");
+            using (Indent())
+            {
+                AddBoolOption((GodotSettings s) => s.EnableDebuggerExtensions,
+                    "Enable debugger extensions");
+            }
         }
 
         private void AddNetworkSection()
         {
-            AddHeader("Navigation");
-            using (Indent())
-            {
-                // https://github.com/JetBrains/godot-support/issues/92
-                AddBoolOption(GodotSettings.HideGeneratedCodeFromNavigationAccessor,
-                    "Exclude generated declarations from navigation");
-            }
-
             AddHeader("Network");
             using (Indent())
             {
