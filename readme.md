@@ -26,6 +26,10 @@ Support running XUnit/NUnit tests inside the game process. [More](https://github
 
 Supports Input Action and NodePath completion in string literals [More](https://github.com/JetBrains/godot-support/pull/102)
 
+Debugger extension. Adds “Current Scene” item to the Variables and Watches tab. Adds Children node to every Godot.Node item in the Variables and Watches tab
+
+Godot specific warnings and quick fixes. A warning and a quick-fix for a missing parameterless ctor. [Pull request](https://github.com/JetBrains/godot-support/pull/127)
+
 # Recomendations
 
 Add `.idea` to [.gitignore](https://github.com/van800/godot-demo-projects/pull/2/files#diff-a084b794bc0759e7a6b77810e01874f2R22) 
