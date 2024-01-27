@@ -27,7 +27,7 @@ import java.net.Socket
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Service(Service.Level.PROJECT)
-class LspProjectService(val project: Project) : LifetimedService() {
+class LspProjectService(val project: Project) {
     var isScheduled: AtomicBoolean = AtomicBoolean(false)
 
     companion object {
