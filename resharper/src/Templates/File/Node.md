@@ -17,6 +17,6 @@ NAMESPACE-expression: fileDefaultNamespace()
 
 ```
 $HEADER$namespace $NAMESPACE$ {
-  public class $CLASS$ : Godot.Node {$END$}
+  public partial class $CLASS$ : Godot.Node {$END$}
 }
 ```
