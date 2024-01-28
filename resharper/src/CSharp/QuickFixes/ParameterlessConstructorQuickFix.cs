@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 using JetBrains.Application.Progress;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.QuickFixes;
-using JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons;
+using JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon;
 using JetBrains.ReSharper.Psi.CSharp;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 using JetBrains.TextControl;
@@ -14,9 +14,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.QuickFixes
     [QuickFix]
     public class ParameterlessConstructorQuickFix : QuickFixBase
     {
-        private readonly NoParameterlessConstructorError error;
+        private readonly MissingParameterlessConstructorError error;
 
-        public ParameterlessConstructorQuickFix([NotNull] NoParameterlessConstructorError warning) => error = warning;
+        public ParameterlessConstructorQuickFix([NotNull] MissingParameterlessConstructorError warning) => error = warning;
         
         protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
         {

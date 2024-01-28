@@ -1,17 +1,16 @@
 ﻿using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
-using JetBrains.ReSharper.Psi.Tree;
 
-namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons
+namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
 {
     [StaticSeverityHighlighting(Severity.ERROR, typeof(HighlightingGroupIds.GutterMarks))]
-    public class NoParameterlessConstructorError : IHighlighting
+    public class MissingParameterlessConstructorError : IHighlighting
     {
         private readonly DocumentRange _documentRange;
         public readonly IClassDeclaration ClassDeclaration;
 
-        public NoParameterlessConstructorError(IClassDeclaration classDeclaration, DocumentRange documentRange)
+        public MissingParameterlessConstructorError(IClassDeclaration classDeclaration, DocumentRange documentRange)
         {
             _documentRange = documentRange;
             ClassDeclaration = classDeclaration;

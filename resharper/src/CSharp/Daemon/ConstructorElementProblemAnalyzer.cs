@@ -1,16 +1,16 @@
-﻿using JetBrains.ReSharper.Feature.Services.Daemon;
+﻿using System.Linq;
+using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Psi.Tree;
-using System.Linq;
 using IClassDeclaration = JetBrains.ReSharper.Psi.CSharp.Tree.IClassDeclaration;
 
 #nullable enable
 
-namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons
+namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
 {
     /// <summary>
     /// Analyzes classes that derives from Godot.GodotObject
     /// </summary>
-    [ElementProblemAnalyzer(typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(NoParameterlessConstructorError)})]
+    [ElementProblemAnalyzer(typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(MissingParameterlessConstructorError)})]
     public class ConstructorElementProblemAnalyzer : ElementProblemAnalyzer<IClassDeclaration>
     {
         protected override void Run(IClassDeclaration element, ElementProblemAnalyzerData data, IHighlightingConsumer consumer)
@@ -30,7 +30,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemons
                 if (bodyChild.DeclaredElement.Parameters.ToArray().Length == 0)
                     return;
             }
-            consumer.AddHighlighting(new NoParameterlessConstructorError(element, element.NameIdentifier.GetDocumentRange()));
+            consumer.AddHighlighting(new MissingParameterlessConstructorError(element, element.NameIdentifier.GetDocumentRange()));
         }
     }
 }
