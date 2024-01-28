@@ -2,7 +2,7 @@
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Scope;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Templates;
 using JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates.Scope;
-using JetBrains.ReSharper.Psi.CSharp.Resources;
+using JetBrains.UI.ThemedIcons;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
 {
@@ -13,7 +13,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
         static GodotProjectScopeCategoryUIProvider()
         {
             // These get added to a static dictionary, so they can be referenced by name from templates
-            TemplateImage.Register("GodotCSharp", PsiCSharpThemedIcons.Csharp.Id);
+            TemplateImage.Register("GodotCSharp", GodotLogoIconsThemedIcons.Godot.Id);
         }
 
         // Needs to be less than other priorities in R#'s built in ScopeCategoryUIProvider
@@ -21,7 +21,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
         private const int Priority = -200;
 
         public GodotProjectScopeCategoryUIProvider()
-            : base(null)
+            : base(GodotLogoIconsThemedIcons.Godot.Id)
         {
             // The main scope point is used to the UID of the QuickList for this category.
             // It does nothing unless there is also a QuickList stored in settings.

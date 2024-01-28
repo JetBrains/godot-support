@@ -18,7 +18,7 @@ using JetBrains.UI.ThemedIcons;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
 {
-    [OptionsPage(PID, Name, typeof(QydowydThemedIconsThemedIcons.Godot), ParentId = CodeEditingPage.PID,
+    [OptionsPage(PID, Name, typeof(GodotLogoIconsThemedIcons.Godot), ParentId = CodeEditingPage.PID,
         HelpKeyword = "Settings_Godot_Engine")]
     public class GodotOptionsPage : BeSimpleOptionsPage
     {

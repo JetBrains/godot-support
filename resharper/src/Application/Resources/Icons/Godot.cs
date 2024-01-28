@@ -26,31 +26,31 @@ namespace JetBrains.UI.ThemedIcons
 	///	<para>It has two primary goals: load the icons of this assembly to be registered with <see cref="JetBrains.Application.Icons.IThemedIconManager"></see> so that they were WPF-accessible and theme-sensitive; and emit early-bound accessors for referencing icons in codebehind in a compile-time-validated manner.</para>
 	///	<h1>XAML</h1>
 	///	<para>For performance reasons, the icons are not individually exposed with application resources. There is a custom markup extension to bind an image source in markup.</para>
-	///	<para>To use an icon from XAML, set an <see cref="System.Windows.Media.ImageSource"></see> property to the <see cref="System.CodeDom.CodeTypeReference"></see> markup extension, which takes an icon identifier class (nested in <see cref="JetBrains.UI.ThemedIcons.QydowydThemedIconsThemedIcons"></see> class) as a parameter.</para>
+	///	<para>To use an icon from XAML, set an <see cref="System.Windows.Media.ImageSource"></see> property to the <see cref="System.CodeDom.CodeTypeReference"></see> markup extension, which takes an icon identifier class (nested in <see cref="GodotLogoIconsThemedIcons"></see> class) as a parameter.</para>
 	///	<para>Example:</para>
-	///	<code>&lt;Image Source="{icons:ThemedIcon myres:QydowydThemedIconsThemedIcons+Trinity}" /&gt;</code>
+	///	<code>&lt;Image Source="{icons:ThemedIcon myres:GodotLogoIconsThemedIcons+Trinity}" /&gt;</code>
 	///	<h1>Attributes</h1>
 	///	<para>Sometimes you have to reference an icon from a type attriute when you're defining objects in code. Typical examples are Options pages and Tool Windows.</para>
-	///	<para>To avoid the use of string IDs which are not validated very well, we've emitted identifier classes to be used with <c>typeof()</c> expression, one per each icon. Use the attribute overload which takes a <see cref="System.Type"></see> for an image, and choose your icon class from nested classes in the <see cref="JetBrains.UI.ThemedIcons.QydowydThemedIconsThemedIcons"></see> class.</para>
+	///	<para>To avoid the use of string IDs which are not validated very well, we've emitted identifier classes to be used with <c>typeof()</c> expression, one per each icon. Use the attribute overload which takes a <see cref="System.Type"></see> for an image, and choose your icon class from nested classes in the <see cref="GodotLogoIconsThemedIcons"></see> class.</para>
 	///	<para>Example:</para>
-	///	<code>[Item(Name="Sample", Icon=typeof(QydowydThemedIconsThemedIcons.Trinity))]</code>
+	///	<code>[Item(Name="Sample", Icon=typeof(GodotLogoIconsThemedIcons.Trinity))]</code>
 	///	<h1>CodeBehind</h1>
 	///	<para>In codebehind, we have two distinct tasks: (a) specify some icon in the APIs and (b) render icon images onscreen.</para>
-	///	<para>On the APIs stage you should only manipulate icon identifier objects (of type <see cref="JetBrains.UI.Icons.IconId"></see>, statically defined in <see cref="JetBrains.UI.ThemedIcons.QydowydThemedIconsThemedIcons"></see> in <c>Id</c> fields). Icon identifier classes (nested in <see cref="JetBrains.UI.ThemedIcons.QydowydThemedIconsThemedIcons"></see>) should be turned into icon identifier objects as early as possible. Rendering is about getting an <see cref="System.Windows.Media.ImageSource"></see> to assign to WPF, or <see cref="System.Drawing.Bitmap"></see> to use with GDI+ / Windows Forms.</para>
+	///	<para>On the APIs stage you should only manipulate icon identifier objects (of type <see cref="JetBrains.UI.Icons.IconId"></see>, statically defined in <see cref="GodotLogoIconsThemedIcons"></see> in <c>Id</c> fields). Icon identifier classes (nested in <see cref="GodotLogoIconsThemedIcons"></see>) should be turned into icon identifier objects as early as possible. Rendering is about getting an <see cref="System.Windows.Media.ImageSource"></see> to assign to WPF, or <see cref="System.Drawing.Bitmap"></see> to use with GDI+ / Windows Forms.</para>
 	///	<para>You should turn an identifier object into a rendered image as late as possible. The identifier is static and lightweight and does not depend on the current theme, while the image is themed and has to be loaded or generated/rasterized. You need an <see cref="JetBrains.Application.Icons.IThemedIconManager"></see> instance to get the image out of an icon identifier object. Once you got the image, you should take care to change it with theme changes — either by using a live image property, or by listening to the theme change event. See <see cref="JetBrains.Application.Icons.IThemedIconManager"></see> and its extensions for the related facilities.</para>
 	///	<para>Example:</para>
 	///	<code>// Getting IconId identifier object to use with APIs
-	///IconId iconid = QydowydThemedIconsThemedIcons.Trinity.Id;</code>
+	///IconId iconid = GodotLogoIconsThemedIcons.Trinity.Id;</code>
 	///	<code>// Getting IconId out of an Icon Identifier Class type
-	///IconId iconid = new JetBrains.Application.Icons.CompiledIconsCs.CompiledIconCsId(typeof(QydowydThemedIconsThemedIcons.Trinity));</code>
+	///IconId iconid = new JetBrains.Application.Icons.CompiledIconsCs.CompiledIconCsId(typeof(GodotLogoIconsThemedIcons.Trinity));</code>
 	///	<code>// Getting image for screen rendering by IconId
 	///themediconmanager.Icons[icnoid]</code>
 	///	<code>// Getting image for screen rendering by Icon Identifier Class
-	///themediconmanager.GetIcon&lt;QydowydThemedIconsThemedIcons.Trinity&gt;()</code>
+	///themediconmanager.GetIcon&lt;GodotLogoIconsThemedIcons.Trinity&gt;()</code>
 	///	<h1>Icons Origin</h1>
 	///	<para>This code was generated by a pre-compile build task from a set of input files which are XAML files adhering to a certain convention, as convenient for exporting them from the Illustrator workspace, plus separate PNG files with raster icons. In the projects, these files are designated with <c>ThemedIconsXamlV3</c> and <c>ThemedIconPng</c> build actions and do not themselves get into the output assembly. All of such files are processed, vector images for different themes of the same icon are split and combined into the single list of icons in this assembly. This list is then written into the genearted XAML file (compiled into BAML within assembly), and serves as the source for this generated code.</para>
 	///</remarks>
-	public sealed class QydowydThemedIconsThemedIcons
+	public sealed class GodotLogoIconsThemedIcons
 	{
 		
 		#region Godot
@@ -85,16 +85,16 @@ namespace JetBrains.UI.ThemedIcons
 		///	<para>For details on Themed Icons and their use, see Remarks on the outer class.</para>
 		///</remarks>
 		///<example>
-		///	<code>&lt;Image Source="{icons:ThemedIcon myres:QydowydThemedIconsThemedIcons+Godot}" /&gt;        &lt;!-- XAML --&gt;</code>
+		///	<code>&lt;Image Source="{icons:ThemedIcon myres:GodotLogoIconsThemedIcons+Godot}" /&gt;        &lt;!-- XAML --&gt;</code>
 		///</example>
 		///<example>
-		///	<code>[Item(Name="Sample", Icon=typeof(QydowydThemedIconsThemedIcons.Godot))]        // C# Type attribute</code>
+		///	<code>[Item(Name="Sample", Icon=typeof(GodotLogoIconsThemedIcons.Godot))]        // C# Type attribute</code>
 		///</example>
 		///<example>
-		///	<code>IconId iconid = QydowydThemedIconsThemedIcons.Godot.Id;        // IconId identifier object</code>
+		///	<code>IconId iconid = GodotLogoIconsThemedIcons.Godot.Id;        // IconId identifier object</code>
 		///</example>
 		///<example>
-		///	<code>themediconmanager.GetIcon&lt;QydowydThemedIconsThemedIcons.Godot&gt;()        // Icon image for rendering</code>
+		///	<code>themediconmanager.GetIcon&lt;GodotLogoIconsThemedIcons.Godot&gt;()        // Icon image for rendering</code>
 		///</example>
 		[global::JetBrains.Application.Icons.CompiledIconsCs.CompiledIconCsAttribute()]
 		public sealed class Godot : global::JetBrains.Application.Icons.CompiledIconsCs.CompiledIconCsClass
