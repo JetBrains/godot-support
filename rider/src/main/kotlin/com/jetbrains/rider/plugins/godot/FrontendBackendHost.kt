@@ -23,19 +23,15 @@ import com.jetbrains.rider.model.debuggerWorker.OutputSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputType
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
 import com.jetbrains.rider.model.godot.frontendBackend.TestRunnerOutputEventType
-import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.model.debuggerWorker.godotDebuggerWorkerModel
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfigurationFactory
-import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.util.NetUtils
 import java.awt.Frame
 
-class FrontendBackendHost(project: Project) : LifetimedService() {
-    val model = project.solution.godotFrontendBackendModel
-
+class FrontendBackendHost : LifetimedService() {
     class ProtocolListener : SolutionExtListener<GodotFrontendBackendModel> {
         private val debugProcesses = mutableMapOf<Int, DotNetDebugProcess>()
         override fun extensionCreated(lifetime: Lifetime, session: ClientProjectSession, model: GodotFrontendBackendModel) {

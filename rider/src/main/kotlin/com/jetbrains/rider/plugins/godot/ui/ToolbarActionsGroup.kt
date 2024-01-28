@@ -7,9 +7,10 @@ import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.project.DumbAware
 import com.jetbrains.rd.util.reactive.valueOrDefault
 import com.jetbrains.rider.model.godot.frontendBackend.GodotEditorState
-import com.jetbrains.rider.plugins.godot.FrontendBackendHost
+import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
+import com.jetbrains.rider.projectView.solution
 
 class ToolbarActionsGroup : DefaultActionGroup(), DumbAware, TooltipDescriptionProvider {
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -25,11 +26,10 @@ class ToolbarActionsGroup : DefaultActionGroup(), DumbAware, TooltipDescriptionP
 
         if (e.presentation.isVisible) {
             e.presentation.isEnabled = true
-            val host = FrontendBackendHost.getInstance(project)
             e.presentation.icon = GodotIcons.Icons.GodotLogoDisconnected
             e.presentation.text = "Not Connected to Godot Editor"
 
-            if (host.model.editorState.valueOrDefault(GodotEditorState.Disconnected) == GodotEditorState.Connected) {
+            if (project.solution.godotFrontendBackendModel.editorState.valueOrDefault(GodotEditorState.Disconnected) == GodotEditorState.Connected) {
                 e.presentation.icon = GodotIcons.Icons.GodotLogo
                 e.presentation.text = "Connected to Godot Editor"
             }
