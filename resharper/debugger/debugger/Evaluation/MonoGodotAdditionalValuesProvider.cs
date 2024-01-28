@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
 using JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values;
@@ -65,6 +67,17 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
             // TODO: Make lazy
             if (!myOptions.ExtensionsEnabled || !mySession.EvaluationOptions.AllowTargetInvoke)
                 yield break;
+            
+            if (this is CorGodotAdditionalValuesProvider)
+            {
+                var processId = frame.DebuggerSession.GetProcessInfo().Id;
+                if (processId == null) yield break;
+                int pid = Convert.ToInt32(processId);
+                var mainModule = Process.GetProcessById(pid).MainModule;
+                if (mainModule == null) yield break;
+                if (!mainModule.ModuleName.StartsWith("Godot")) 
+                    yield break;
+            }
 
             // Add "Current Scene" as a top level item to mimic the Hierarchy window in Godot
             var activeScene = GetCurrentScene(frame);
