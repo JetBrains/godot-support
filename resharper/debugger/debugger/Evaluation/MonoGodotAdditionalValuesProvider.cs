@@ -47,6 +47,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
         private readonly IValueServicesFacade<TValue> myValueServices;
         private readonly IOptions myOptions;
         private readonly ILogger myLogger;
+        private bool? myIsGodotModule;
 
         protected GodotAdditionalValuesProvider(IDebuggerSession session, IValueServicesFacade<TValue> valueServices,
             IOptions options, ILogger logger)
@@ -68,14 +69,14 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
             if (!myOptions.ExtensionsEnabled || !mySession.EvaluationOptions.AllowTargetInvoke)
                 yield break;
             
+            // Only needed for the Cor
+            // Avoid evaluating Scene when running not in the Game, for example in the unit-tests
             if (this is CorGodotAdditionalValuesProvider)
             {
-                var processId = frame.DebuggerSession.GetProcessInfo().Id;
-                if (processId == null) yield break;
-                int pid = Convert.ToInt32(processId);
-                var mainModule = Process.GetProcessById(pid).MainModule;
-                if (mainModule == null) yield break;
-                if (!mainModule.ModuleName.StartsWith("Godot")) 
+                if (!myIsGodotModule.HasValue) 
+                    myIsGodotModule = IsGodotProcess(frame.DebuggerSession);
+                
+                if (!myIsGodotModule.Value) 
                     yield break;
             }
 
@@ -83,6 +84,15 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
             var activeScene = GetCurrentScene(frame);
             if (activeScene != null)
                 yield return activeScene.ToValue(myValueServices);
+        }
+
+        private static bool IsGodotProcess(IDebuggerSession session)
+        {
+            var processId = session.GetProcessInfo().Id;
+            if (processId == null) return false;
+            int pid = Convert.ToInt32(processId);
+            var mainModule = Process.GetProcessById(pid).MainModule;
+            return mainModule != null && mainModule.ModuleName.StartsWith("Godot");
         }
 
         [CanBeNull]
