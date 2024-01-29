@@ -17,23 +17,21 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
         private readonly ILogger myLogger;
         private readonly ISettingsSchema mySettingsSchema;
         private readonly IMainScopePoint myProjectMainPoint;
-        private readonly IMainScopePoint myFilesMainPoint;
+        // private readonly IMainScopePoint myFilesMainPoint;
 
         public GodotQuickListDefaultSettings(ILogger logger, ISettingsSchema settingsSchema,
-            GodotProjectScopeCategoryUIProvider projectScopeProvider,
-            GodotScopeCategoryUiProvider filesScopeProvider)
+            GodotProjectScopeCategoryUIProvider projectScopeProvider
+            )
             : base(settingsSchema, logger)
         {
             myLogger = logger;
             mySettingsSchema = settingsSchema;
             myProjectMainPoint = projectScopeProvider.MainPoint;
-            myFilesMainPoint = filesScopeProvider.MainPoint;
         }
 
         public override void InitDefaultSettings(ISettingsStorageMountPoint mountPoint)
         {
             InitialiseQuickList(mountPoint, myProjectMainPoint);
-            InitialiseQuickList(mountPoint, myFilesMainPoint);
 
             // TODO: Not sure if this would be better handled in a .dotSettings file
             var pos = 0;

@@ -8,6 +8,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
 {
     // Defines a category for the UI, and the scope points that it includes
     [ScopeCategoryUIProvider(Priority = Priority, ScopeFilter = ScopeFilter.Project)]
+    // ReSharper disable once InconsistentNaming
     public class GodotProjectScopeCategoryUIProvider : ScopeCategoryUIProvider
     {
         static GodotProjectScopeCategoryUIProvider()
