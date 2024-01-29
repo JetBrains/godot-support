@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Scope;
 using JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates.Scope;
+using JetBrains.UI.ThemedIcons;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
 {
@@ -11,7 +12,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
         // to push it to the end of the list
         private const int Priority = -200;
 
-        public GodotScopeCategoryUiProvider() : base()
+        public GodotScopeCategoryUiProvider() : base(GodotLogoIconsThemedIcons.Godot.Id)
         {
             MainPoint = new InGodotCSharpProject();
         }
