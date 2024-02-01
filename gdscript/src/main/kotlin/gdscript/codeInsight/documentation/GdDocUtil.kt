@@ -88,7 +88,7 @@ object GdDocUtil {
         return HtmlChunk.p().style("padding: 5px 10px 0 10px;").children(
                 *lines.map {
                     HtmlChunk.fragment(
-                            HtmlChunk.raw(it),
+                            HtmlChunk.raw(GdGodotDocUtil.parseStyles(it)),
                             if (!it.endsWith("<pre>") && !it.startsWith("</pre>")) HtmlChunk.br() else HtmlChunk.empty(),
                     )
                 }.toTypedArray()
@@ -103,7 +103,7 @@ object GdDocUtil {
         if (description.isNullOrBlank()) return HtmlChunk.empty()
         return HtmlChunk.fragment(
                 HtmlChunk.br(),
-                DocumentationMarkup.GRAYED_ELEMENT.addRaw(description),
+                DocumentationMarkup.GRAYED_ELEMENT.addRaw(GdGodotDocUtil.parseStyles(description)),
         )
     }
 

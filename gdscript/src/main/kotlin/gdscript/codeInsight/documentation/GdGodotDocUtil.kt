@@ -9,7 +9,7 @@ object GdGodotDocUtil {
     private val DEFINITION_START = "</p>${DocumentationMarkup.DEFINITION_START}"
     private val DEFINITION_END = "${DocumentationMarkup.DEFINITION_END}<p style=\"padding: 5px 10px 0 10px;\">"
 
-    fun parserDescription(text: String): String {
+    fun parseStyles(text: String): String {
         var parsed = text.replace("[b]", "<strong>")
             .replace("[/b]", "</strong>")
             .replace("[i]", "<a style=\"font-style: italic;\">")

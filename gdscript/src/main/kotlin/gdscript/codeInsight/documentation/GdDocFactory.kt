@@ -43,6 +43,9 @@ object GdDocFactory {
             is PsiFile,
             -> classOrFile(element as PsiElement, fullDoc)
 
+            is GdSignalIdNmi,
+            -> signal(element, fullDoc)
+
             is PsiDirectory,
             -> directory(element, fullDoc)
 
@@ -134,7 +137,7 @@ object GdDocFactory {
                 builder.addBodyBlock(GdDocUtil.listTable(
                     "tutorials",
                     declaration.tutorials().map {
-                      HtmlChunk.link(it.url, it.name)
+                      HtmlChunk.link(it.url, it.name.removeSurrounding("(", ")"))
                     },
                 ))
                 appendProperties(builder, GdClassUtil.getOwningClassElement(element))
@@ -204,6 +207,25 @@ object GdDocFactory {
         return builder.toString()
     }
 
+    /**
+     * @param element GdSignalNmi
+     */
+    private fun signal(element: PsiElement, fullDoc: Boolean): String {
+        val declaration = PsiTreeUtil.getParentOfType(element, GdSignalDeclTl::class.java) ?: return ""
+        val builder = GdDocBuilder(element)
+            .withPackage(element)
+            .withOwner(element)
+            .withPreview(declaration.text)
+
+        if (fullDoc) {
+            builder.addBodyBlock(GdDocUtil.paragraph(declaration.description()))
+        } else {
+            builder.addBodyBlock(GdDocUtil.paragraph(declaration.brief()))
+        }
+
+        return builder.toString()
+    }
+
     private fun annotationPreview(element: PsiElement): String {
         val list = GdAnnotationUtil.collectPreceding(element)
         if (list.isEmpty()) return ""
@@ -240,7 +262,7 @@ object GdDocFactory {
             if (!name.endsWith(")")) name += "()"
             Pair(
                 GdDocUtil.elementLink(name.substringBefore("("), name),
-                HtmlChunk.raw(it.description()),
+                HtmlChunk.raw(GdGodotDocUtil.parseStyles(it.description())),
             )
         }))
 
@@ -283,7 +305,7 @@ object GdDocFactory {
         builder.addBodyBlock(GdDocUtil.descriptionListTable("constants", consts.map {
             Pair(
                 GdDocUtil.elementLink(it.name, it.text.trim()),
-                HtmlChunk.raw(it.description()),
+                HtmlChunk.raw(GdGodotDocUtil.parseStyles(it.description())),
             )
         }))
 

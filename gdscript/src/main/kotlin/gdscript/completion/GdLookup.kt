@@ -13,11 +13,11 @@ import javax.swing.Icon
  */
 object GdLookup {
 
-    const val KEYWORDS = 90.0;
-    const val PRIORITY_KEYWORDS = 95.0;
-    const val BUILT_IN = 100.0;
-    const val USER_DEFINED = 200.0;
-    const val REMOTE_DEFINED = 220.0; // resources
+    const val KEYWORDS = 90.0
+    const val PRIORITY_KEYWORDS = 95.0
+    const val BUILT_IN = 100.0
+    const val USER_DEFINED = 200.0
+    const val REMOTE_DEFINED = 220.0 // resources
     const val LOCAL_USER_DEFINED = 250.0
     const val TOP = 500.0
 

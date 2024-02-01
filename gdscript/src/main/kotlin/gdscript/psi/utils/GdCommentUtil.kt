@@ -170,7 +170,7 @@ object GdCommentUtil {
                     if (!descriptions.containsKey(prefix)) prefix = DESCRIPTION
                     else text = text.substringAfter(" ")
                     if (prefix != TUTORIAL) {
-                        text = GdGodotDocUtil.parserDescription(text)
+                        text = GdGodotDocUtil.parseStyles(text)
                     }
 
                     (descriptions[prefix]!!).add(0, text)
