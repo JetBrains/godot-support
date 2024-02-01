@@ -21,6 +21,7 @@ object GdStmtParser : GdBaseParser {
         parsers.add(GdFlowStmtParser)
         parsers.add(GdAnnotationStmtParser)
         parsers.add(GdExStmtParser)
+        parsers.add(GdEmptyStmtParser)
     }
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
