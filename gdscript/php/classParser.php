@@ -128,19 +128,19 @@ foreach ($files as $filepath) {
     if (substr($filename, strlen($filename) - 4) != ".xml") continue;
 
     $data = "";
-    $class_name = substr($filename, 0, strlen($filename) - 4);
-    $class_name = str_replace("@", "_", $class_name);
 
     $content = file_get_contents($filepath);
 
     $xml = (array) simplexml_load_string($content);
 
     $att = (array) $xml['@attributes'];
+    $class_name = str_replace("@", "_", $att['name'] ?? substr($filename, 0, strlen($filename) - 4));
+
     if ($att['inherits'] ?? null) {
         $data .= sprintf("extends %s\n", $att['inherits']);
     }
 
-    $data .= sprintf("class_name %s\n\n", $att['name'] ?? $class_name);
+    $data .= sprintf("class_name %s\n\n", $class_name);
 
     /** Description */
     $baseTutorialUrl = 'https://docs.godotengine.org/en/stable';
