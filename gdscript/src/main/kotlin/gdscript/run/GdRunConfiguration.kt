@@ -14,10 +14,10 @@ class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions>
 
 
     constructor(project: Project, factory: ConfigurationFactory, name: String) :
-        super(project, factory, name);
+        super(project, factory, name)
 
     override fun getActionName(): String {
-        return getTscn().split("/").last().split(".")[0];
+        return getTscn().split("/").last().split(".")[0]
     }
 
     override fun getOptions(): GdRunConfigurationOptions =
@@ -40,7 +40,7 @@ class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions>
     }
 
     override fun suggestedName(): String {
-        return getTscn().split("/").last().split(".")[0];
+        return getTscn().split("/").last().split(".")[0]
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = GdSettingsEditor()
@@ -51,10 +51,10 @@ class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions>
         return object : CommandLineState(executionEnvironment) {
             @Throws(ExecutionException::class)
             override fun startProcess(): ProcessHandler {
-                val processHandler = ProcessHandlerFactory.getInstance().createColoredProcessHandler(command());
-                ProcessTerminatedListener.attach(processHandler);
+                val processHandler = ProcessHandlerFactory.getInstance().createColoredProcessHandler(command())
+                ProcessTerminatedListener.attach(processHandler)
 
-                return processHandler;
+                return processHandler
             }
         }
     }
@@ -62,14 +62,14 @@ class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions>
     private fun command(): GeneralCommandLine {
         var command = GeneralCommandLine()
             .withExePath(getGodotExe())
-            .withWorkDirectory(project.basePath);
+            .withWorkDirectory(project.basePath)
 
-        val scene = getTscn();
+        val scene = getTscn()
         if (scene.isNotEmpty()) {
-            command = command.withParameters(scene);
+            command = command.withParameters(scene)
         }
 
-        return command;
+        return command
     }
 
 }

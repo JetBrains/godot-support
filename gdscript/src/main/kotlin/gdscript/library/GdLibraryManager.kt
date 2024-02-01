@@ -4,10 +4,7 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.LibraryOrderEntry
-import com.intellij.openapi.roots.ModifiableModelsProvider
-import com.intellij.openapi.roots.ModuleRootManager
-import com.intellij.openapi.roots.OrderRootType
+import com.intellij.openapi.roots.*
 import com.intellij.openapi.roots.impl.libraries.LibraryEx
 import com.intellij.openapi.roots.impl.libraries.LibraryEx.ModifiableModelEx
 import com.intellij.openapi.roots.libraries.Library
@@ -72,32 +69,26 @@ object GdLibraryManager {
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
         return jsonParser.decodeFromString<Array<GdHistory>>(response.body())
-                .firstOrNull()?.commit?.committed_date
+            .firstOrNull()?.commit?.committed_date
             ?: ""
     }
 
     fun registerSdk(path: String, project: Project) {
+        val name = path.replace('\\', '/').substringAfterLast("/")
+        val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
+
+        val library = modifier.createLibrary(name, GdLibraryKind)
+        val libModifier = library.modifiableModel as ModifiableModelEx
+
+        libModifier.addRoot("file://$path", OrderRootType.SOURCES)
+
         ApplicationManager.getApplication().invokeAndWait {
             runWriteAction {
-                val name = path.replace('\\', '/').substringAfterLast("/")
-                val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
-                val library = modifier.createLibrary(name, GdLibraryKind)
-
-                val libModifier = library.modifiableModel as ModifiableModelEx
-                val props = libModifier.properties as GdLibraryProperties
-                props.path = path
-                props.version = name.sdkToVersion()
-
-                libModifier.properties = props
-                libModifier.addRoot("file://$path", OrderRootType.SOURCES)
-
                 libModifier.commit()
                 modifier.commit()
 
                 val module = ModuleManager.getInstance(project).modules.first()
-                val rootModel = ModuleRootManager.getInstance(module).modifiableModel
-                rootModel.addLibraryEntry(library)
-                rootModel.commit()
+                ModuleRootModificationUtil.addDependency(module, library)
             }
         }
     }
@@ -124,16 +115,19 @@ object GdLibraryManager {
                 }
                 try {
                     modifier.commit()
-                } catch (e: Error) {}
+                } catch (e: Error) {
+                }
                 try {
                     tableModel.commit()
-                } catch (e: Error) {}
+                } catch (e: Error) {
+                }
 
                 val module = ModuleManager.getInstance(project!!).modules.first()
                 val rootModel = ModuleRootManager.getInstance(module).modifiableModel
                 rootModel.orderEntries.forEach {
-                    if (it is LibraryOrderEntry && it.libraryName == LIBRARY_NAME){}
-                        rootModel.removeOrderEntry(it)
+                    if (it is LibraryOrderEntry && it.libraryName == LIBRARY_NAME) {
+                    }
+                    rootModel.removeOrderEntry(it)
                 }
                 rootModel.commit()
             }
@@ -147,7 +141,8 @@ object GdLibraryManager {
 
         try {
             Files.createDirectory(Paths.get(directory, sdkName))
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
         val dir = Paths.get(directory, sdkName).toFile()
 
         URL(version.versionToSdkUrl())

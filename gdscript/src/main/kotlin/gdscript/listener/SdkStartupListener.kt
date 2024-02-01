@@ -28,6 +28,7 @@ class SdkStartupListener : ProjectActivity {
         }
 
         val dirPath = project.getProjectDataPath("sdk").toString()
+
         val dir = File(dirPath)
         if (!dir.exists()) dir.mkdirs()
 
@@ -37,7 +38,13 @@ class SdkStartupListener : ProjectActivity {
 
         if (registered != null) {
             val props = (registered.modifiableModel as ModifiableModelEx).properties as GdLibraryProperties
-            val updated = GdLibraryManager.libDate(props.version)
+
+            val updated: String
+            if (props.version.isNotBlank()) {
+                updated = GdLibraryManager.libDate(props.version)
+            } else {
+                updated = "_"
+            }
 
             if (!registered.name!!.endsWith(latest) || updated != props.version) {
                 GdLibraryManager.clearSdks(project)
