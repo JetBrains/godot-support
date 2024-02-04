@@ -13,6 +13,8 @@ class GdUnusedParameterInspection : GdUnusedInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : GdVisitor() {
             override fun visitParam(o: GdParam) {
+                if (o.varNmi.name.startsWith("_")) return
+
                 val owner = PsiTreeUtil.getParentOfType(
                     o,
                     GdMethodDeclTl::class.java,

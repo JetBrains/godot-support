@@ -16,7 +16,6 @@ abstract class GdUnusedInspection : LocalInspectionTool() {
 
     fun process(element: PsiElement?, nmi: PsiNameIdentifierOwner?, holder: ProblemsHolder) {
         if (element == null || nmi == null) return
-        if (nmi.name?.startsWith("_") == true) return
 
         if (!ReferencesSearch.search(nmi, element.project.globalSearchScope()).any()) {
             holder.registerProblem(
