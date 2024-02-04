@@ -14,6 +14,8 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.GdCommonUtil
+import gdscript.psi.utils.GdInheritanceUtil
+import kotlin.reflect.KClass
 
 /**
  * ReturnType reference to ClassId & EnumDecl
@@ -109,11 +111,11 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
     }
 
     private fun enums(ownerClass: PsiElement): List<GdEnumDeclTl> {
-        return PsiTreeUtil.getStubChildrenOfTypeAsList(ownerClass, GdEnumDeclTl::class.java)
+        return findRecursiveOfType(ownerClass, GdEnumDeclTl::class)
     }
 
     private fun innerClasses(ownerClass: PsiElement): List<GdClassDeclTl> {
-        return PsiTreeUtil.getStubChildrenOfTypeAsList(ownerClass, GdClassDeclTl::class.java)
+        return findRecursiveOfType(ownerClass, GdClassDeclTl::class)
     }
 
     private fun loadedClasses(ownerElement: PsiElement): List<PsiElement> {
@@ -141,4 +143,13 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         return list
     }
 
+    private fun <T:PsiElement> findRecursiveOfType(ownerClass: PsiElement, kClass: KClass<T>): List<T> {
+        val results = mutableListOf<T>()
+        var par: PsiElement? = ownerClass
+        while (par != null) {
+            results.addAll(PsiTreeUtil.getStubChildrenOfTypeAsList(par, kClass.java))
+            par = GdInheritanceUtil.getExtendedElement(par)
+        }
+        return results
+    }
 }
