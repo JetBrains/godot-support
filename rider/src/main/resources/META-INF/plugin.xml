@@ -10,16 +10,11 @@
   <depends>org.jetbrains.plugins.textmate</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.textMate.TextmateActivator"/>
-
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducerCor" />
 
     <dependencySupport kind="dotnet" coordinate="GodotSharp" displayName="Godot"/>
-  </extensions>
-
-  <extensions defaultExtensionNs="com.intellij">
     <liveTemplateContext contextId="GDSCRIPT" implementation="com.jetbrains.rider.plugins.godot.textMate.GdScriptTemplateContextType" order="first" />
     <defaultLiveTemplates file="templates/GdScript.xml" />
 
@@ -50,6 +45,8 @@
     <fileIndentOptionsProvider
       implementation="com.jetbrains.rider.plugins.godot.textMate.GdScriptFileIndentOptionsProvider"
       id="GdScriptFileIndentOptionsProvider"/>
+
+    <textmate.bundleProvider implementation="com.jetbrains.rider.plugins.godot.textMate.GodotTextMateBundleProvider"/>
   </extensions>
 
 
