@@ -241,11 +241,27 @@ tasks {
             logger.lifecycle("downloading TextMate bundles")
             plugins.forEach {
                 val configDir = destinationDir.resolve(intellij.pluginName.get()).resolve("bundles").resolve(it.name)
-                val temp = FileUtil.createTempFile("download", ".tmp")
+                val temp = FileUtil.createTempFile("download", ".tmp", true)
                 download(temp, it.url)
                 FileUtil.createDirectory(configDir)
                 logger.lifecycle("Unzipping ${temp.path} to $configDir")
                 unzipTo(configDir, temp)
+
+                // workaround for IDEA-342823 Apply 2 textmate bundles
+                // ".gdshader", ".gdshaderinc", "*.gdshader", "*.gdshaderinc"
+                if (it.name == "godot-tools") {
+                    val extensionDir = configDir.resolve("extension")
+                    val packageJson = extensionDir.resolve("package.json")
+                    if (packageJson.exists()) {
+                        val text = packageJson.readText()
+                            .replace("\".gdshader\"", "\".gdshader2\"")
+                            .replace("\".gdshaderinc\"", "\".gdshaderinc2\"")
+                            .replace("\"*.gdshader\"", "\"*.gdshader2\"")
+                            .replace("\"*.gdshader\"", "\"*.gdshader2\"")
+
+                        packageJson.writeText(text)
+                    }
+                }
             }
         }
     }

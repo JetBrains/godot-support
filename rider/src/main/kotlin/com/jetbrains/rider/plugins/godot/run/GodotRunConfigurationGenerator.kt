@@ -56,7 +56,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                                 runManager.removeConfiguration(value)
                             }
                         }
-                        else{
+                        else if (!descriptor.isPureGdScriptProject){
                             if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }) {
                                 val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
                                 val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
