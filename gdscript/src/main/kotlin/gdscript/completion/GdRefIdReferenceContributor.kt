@@ -22,7 +22,7 @@ class GdRefIdReferenceContributor : PsiReferenceContributor() {
                     return arrayOf(GdClassMemberReference(element))
                 }
             }
-        );
+        )
     }
 
 }

@@ -66,6 +66,7 @@
     <lang.parserDefinition language="GodotConfig" implementationClass="config.GdConfigParserDefinition"/>
 
     <!-- Completions -->
+    <completion.contributor language="GdScript" order="first" implementationClass="gdscript.completion.GdNumberPositionCompletionContributor" />
     <completion.contributor   language="GdScript" order="last" implementationClass="gdscript.completion.GdKeywordContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
