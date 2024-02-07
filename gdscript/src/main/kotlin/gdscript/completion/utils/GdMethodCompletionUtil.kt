@@ -54,10 +54,10 @@ object GdMethodCompletionUtil {
         )
     }
 
-    fun GdMethodDeclTl.lookupDeclaration(omitFuncKeyword: Boolean = false): LookupElement {
+    fun GdMethodDeclTl.lookupDeclaration(omitFuncKeyword: Boolean = false, indent: String? = null): LookupElement {
         val params = buildParamHint(this);
         return GdLookup.create(
-            "${if (omitFuncKeyword) "" else "func "}${this.name}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}:",
+            "${if (omitFuncKeyword) "" else "func "}${this.name}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}:${if (indent !== null) "\n$indent" else ""}",
             tail = params,
             presentable = this.name,
             typed = this.returnType,

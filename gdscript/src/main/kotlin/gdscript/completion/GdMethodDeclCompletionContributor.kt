@@ -9,6 +9,7 @@ import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdInheritanceUtil
+import gdscript.utils.CompletionParametersUtil.indent
 
 /**
  * Override parent methods (after 'func' keyword)
@@ -25,7 +26,7 @@ class GdMethodDeclCompletionContributor : CompletionContributor() {
             GdClassMemberUtil.collectFromParents(parent, list);
             list
                 .methods()
-                .forEach { result.addElement(it.lookupDeclaration(true)) };
+                .forEach { result.addElement(it.lookupDeclaration(true, parameters.indent())) }
         }
     }
 

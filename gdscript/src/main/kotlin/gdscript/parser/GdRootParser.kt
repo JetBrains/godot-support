@@ -45,7 +45,7 @@ class GdRootParser : PsiParser, LightPsiParser {
             if (!any) {
                 val m = b.mark()
                 val text = b.tokenText
-                while (!b.eof) b.advance()
+                if (!b.eof) b.advance()
                 m.error("Unexpected tokens, $text")
             }
         }

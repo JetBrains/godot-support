@@ -15,6 +15,7 @@ import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdNodeUtil
 import gdscript.psi.utils.PsiGdFileUtil
+import gdscript.utils.CompletionParametersUtil.indent
 import gdscript.utils.StringUtil.snakeToPascalCase
 
 /**
@@ -67,7 +68,7 @@ class GdRootContributor : CompletionContributor() {
 
         val members = mutableListOf<Any>()
         GdClassMemberUtil.collectFromParents(parameters.position, members, false)
-        result.addAllElements(members.methods().map { it.lookupDeclaration() })
+        result.addAllElements(members.methods().map { it.lookupDeclaration(false, parameters.indent()) })
     }
 
 }
