@@ -19,7 +19,7 @@ object GdSettingsUtil {
         var size = 0
         if (!whiteSpace.isWhitespace()) return Indent.getSpaceIndent(baseSize)
 
-        while (indent[size] == whiteSpace) {
+        while (indent.getOrNull(size) == whiteSpace) {
             size++
         }
 

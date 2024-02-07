@@ -197,7 +197,7 @@ class GdBlock : AbstractBlock {
 
         separateMultilineVars(child1, block2)?.let { return it }
         // Separation of @onready & @export variables
-        splitByAnnotation(child1, block2)?.let{ return it }
+        splitByAnnotation(child1, block2)?.let { return it }
 
         if (child1.node.elementType == CLASS_VAR_DECL_TL && block2.node.elementType == CLASS_VAR_DECL_TL && PsiGdClassVarUtil.isAnnotated(
                 child1.node.psi as GdClassVarDeclTl
@@ -222,7 +222,7 @@ class GdBlock : AbstractBlock {
         if (block1.node.elementType == CLASS_VAR_DECL_TL && block1.node.text.trim().contains('\n')) {
             if (block2.node.elementType != METHOD_DECL_TL) {
                 val lines = this.settings.getCustomSettings(GdCodeStyleSettings::class.java).LINES_AROUND_MULTILINE_VAR
-                return Spacing.createSpacing(0, 0, lines+1, false, 0)
+                return Spacing.createSpacing(0, 0, lines + 1, false, 0)
             }
         }
 
@@ -231,9 +231,10 @@ class GdBlock : AbstractBlock {
             block1.node.elementType != COMMENT
             && block1.node.elementType != ANNOTATION_TL
             && block22.node.elementType == CLASS_VAR_DECL_TL
-            && block22.node.text.trim().contains('\n')) {
+            && block22.node.text.trim().contains('\n')
+        ) {
             val lines = this.settings.getCustomSettings(GdCodeStyleSettings::class.java).LINES_AROUND_MULTILINE_VAR
-            return Spacing.createSpacing(0, 0, lines+1, false, 0)
+            return Spacing.createSpacing(0, 0, lines + 1, false, 0)
         }
 
         return null

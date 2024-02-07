@@ -68,6 +68,7 @@ object GdCommonUtil {
             is GdExpr -> element.returnType
             is GdTypedVal -> element.returnType
             is GdClassNaming -> element.classname
+            is GdEnumDeclTl -> element.name
             is GdForSt -> {
                 if (element.typed != null) {
                     return element.typed?.text?.trim(':', ' ') ?: ""
@@ -75,7 +76,7 @@ object GdCommonUtil {
 
                 return GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]", element.project)
             }
-            else -> throw NotImplementedError()
+            else -> throw NotImplementedError(element.toString())
         }
     }
 
