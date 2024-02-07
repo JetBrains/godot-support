@@ -2,7 +2,13 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
-### 2.1.3 ()
+### 2.1.8
+
++ Enum type hint [#196](https://gitlab.com/IceExplosive/gdscript/-/issues/196)
++ Add new line after method completion [#194](https://gitlab.com/IceExplosive/gdscript/-/issues/194)
++ Remove invalid completions for numbers [#195](https://gitlab.com/IceExplosive/gdscript/-/issues/195)
+
+### 2.1.3 - 2.1.7 (??) - forgot 
 
 + Extract GdSdk class from local scope [#175](https://gitlab.com/IceExplosive/gdscript/-/issues/175)
 + Signal declaration with empty brackets [#171](https://gitlab.com/IceExplosive/gdscript/-/issues/171)
