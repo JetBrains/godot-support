@@ -2,7 +2,7 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
-### 2.1.8
+### 2.1.8 (8.2.2024)
 
 + Enum type hint [#196](https://gitlab.com/IceExplosive/gdscript/-/issues/196)
 + Add new line after method completion [#194](https://gitlab.com/IceExplosive/gdscript/-/issues/194)
