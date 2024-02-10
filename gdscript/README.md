@@ -21,6 +21,24 @@ Supports only Godot 4.0 and higher
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
+## GdScript toolkit (not related to this project)
+
+An independent set of tools for GdScript (Formatter, Linter, and more) that can work together with this plugin.  
+For example instead of plugin's built-in formatter, you can use theirs 
+<details>
+    <summary>gdformat</summary>
+
+- Install by their own tutorial
+- Add File Watcher `Settings -> Tools -> File Watchers`
+- File type: `GdScript language file`
+- Scope: `Project files`
+- Program: `/home/{username}/.local/bin/gdformat`
+- Arguments: `-l 160 $FilePath$`
+- Output paths to refresh: `$FilePath$`
+- Enable Auto-save edited files to trigger the watcher
+- Thanks to @e.sirkova for mentioning it.
+</details>
+
 ## Update 28.12.2023
 
 Newly released version of 2.1.0 has auto-download SDK feature, but I've noticed that it is sometimes little buggy.  
