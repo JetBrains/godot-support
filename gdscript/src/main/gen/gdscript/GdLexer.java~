@@ -622,10 +622,11 @@ class GdLexer implements FlexLexer {
 
     private IElementType dedentComment(IElementType type) {
         int nextIndent = nextNonCommentIndent();
-        if (nextIndent < 0 || isIgnored() || indent <= 0 || indentSizes.empty() || indent <= nextIndent) {
+        if (nextIndent < 0 || isIgnored() || indent <= 0 || indentSizes.empty()) {
             return type;
         }
 
+        if (indent <= nextIndent) return type;
         dedent();
         yypushback(yylength());
 
@@ -815,7 +816,7 @@ class GdLexer implements FlexLexer {
   private void zzDoEOF() {
     if (!zzEOFDone) {
       zzEOFDone = true;
-    
+
     }
   }
 

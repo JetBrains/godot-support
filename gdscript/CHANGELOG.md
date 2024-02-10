@@ -2,6 +2,10 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.1.9 (WIP)
+
++ Comment indentation [#198](https://gitlab.com/IceExplosive/gdscript/-/issues/198)
+
 ### 2.1.8 (8.2.2024)
 
 + Enum type hint [#196](https://gitlab.com/IceExplosive/gdscript/-/issues/196)

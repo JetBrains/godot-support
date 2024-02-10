@@ -6,6 +6,8 @@ import com.intellij.psi.tree.IElementType;
 import gdscript.psi.GdTokenType;
 import gdscript.psi.GdTypes;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 %%
 
@@ -31,6 +33,7 @@ import java.util.Stack;
     boolean ignoreIndent = false;
     int ignored = 0;
     Stack<Integer> ignoreLambda = new Stack<>();
+    Pattern nextNonCommentIndentPattern = Pattern.compile("\\n([ |\\t]*)[^#\\s]");
 
     public IElementType dedentRoot(IElementType type) {
         newLineProcessed = false;
@@ -55,6 +58,27 @@ import java.util.Stack;
         yypushback(yylength());
 
         return true;
+    }
+
+    private int nextNonCommentIndent() {
+        Matcher matcher = nextNonCommentIndentPattern.matcher(zzBuffer.subSequence(zzCurrentPos+yylength(), zzBuffer.length()));
+        if (matcher.find()) {
+            return matcher.group(1).length();
+        }
+
+        return -1;
+    }
+
+    private IElementType dedentComment(IElementType type) {
+        int nextIndent = nextNonCommentIndent();
+        if (nextIndent < 0 || isIgnored() || indent <= 0 || indentSizes.empty() || indent <= nextIndent) {
+            return type;
+        }
+
+        dedent();
+        yypushback(yylength());
+
+        return GdTypes.DEDENT;
     }
 
     private void dedent() {
@@ -243,7 +267,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     {NUMBER}        { return dedentRoot(GdTypes.NUMBER); }
     {HEX_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
     {BIN_NUMBER}    { return dedentRoot(GdTypes.NUMBER); }
-    {COMMENT}       { return GdTypes.COMMENT; }
+    {COMMENT}       { return dedentComment(GdTypes.COMMENT); }
 
     {INDENTED_COMMENT} {
         yypushback(1);
