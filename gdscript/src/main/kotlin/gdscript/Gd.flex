@@ -123,9 +123,9 @@ REAL_NUMBER = {NUMBER}e-[0-9]+
 COMMENT = "#"[^\r\n]*
 INDENTED_COMMENT = {INDENT}"#"
 ANNOTATOR = "@"[a-zA-Z_]*
-NODE_PATH = "^"\"([^\\\"\r\n]|\\.)*\"
+NODE_PATH = "^"\"([^\\\"\r\n ]|\\.)*\"
 STRING_NAME = "&"\"([^\\\"\r\n]|\\.)*\"
-NODE_PATH_LEX = ( ("$"|"%")[\%a-zA-Z0-9_/]* ) | ( ("$"|"%")\"[\%a-zA-Z0-9:_/\.]*\" )
+NODE_PATH_LEX = ( ("$"|"%")[\%a-zA-Z0-9_/]* ) | ( ("$"|"%")\"[\%a-zA-Z0-9:_/\. ]*\" )
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "**=" | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
