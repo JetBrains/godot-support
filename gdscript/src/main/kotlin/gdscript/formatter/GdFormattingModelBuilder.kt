@@ -54,28 +54,28 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             /* Extends & ClassName */
             .between(GdTypes.CLASS_NAME_NMI, GdTypes.INHERITANCE).spacing(1, -1, 0, true, custom.LINES_AFTER_HEADER)
             .before(NAMINGS).forcedLines(0)
-            .after(NAMINGS).forcedLines(custom.LINES_AFTER_HEADER)
+            .after(NAMINGS).emptyLines(custom.LINES_AFTER_HEADER)
 
             /* Method & Classes */
             .between(GdTypes.ANNOTATION_TL, GdTypes.CLASS_VAR_DECL_TL).forcedLines(0, 1)
             .between(GdTypes.CLASS_VAR_DECL_TL, GdTypes.ANNOTATION_TL)
-            .forcedLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
+            .emptyLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
 
             /* Stmt */
             .before(STATEMENTS).emptyLines(custom.LINES_WITHIN_SUITE)
-            .before(ROOT_BLOCKS).forcedLines(custom.LINES_BEFORE_FUNC)
+            .before(ROOT_BLOCKS).emptyLines(custom.LINES_BEFORE_FUNC)
 
         // Separate groups
         ROOT_VARIABLES.types.forEachIndexed { iLeft, left ->
             ROOT_VARIABLES.types.forEachIndexed { iRight, right ->
                 if (iLeft != iRight) {
-                    builder.between(left, right).forcedLines(custom.LINES_AFTER_VARIABLE_GROUP)
+                    builder.between(left, right).emptyLines(custom.LINES_AFTER_VARIABLE_GROUP)
                 }
             }
         }
 
         // Then within group
-        builder.between(ROOT_VARIABLES, ROOT_VARIABLES).forcedLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
+        builder.between(ROOT_VARIABLES, ROOT_VARIABLES).emptyLines(custom.LINES_IN_BETWEEN_VARIABLE_GROUP)
 
         // operators
         builder.around(TokenSet.create(GdTypes.TEST_OPERATOR, GdTypes.ASSIGN, GdTypes.EQ, GdTypes.ASSIGN_TYPED))
