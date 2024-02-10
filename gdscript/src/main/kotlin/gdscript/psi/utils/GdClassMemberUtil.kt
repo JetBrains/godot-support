@@ -67,6 +67,20 @@ object GdClassMemberUtil {
             static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn)
         }
 
+        if (!static) {
+            when (val ownerMethod = PsiTreeUtil.getParentOfType(
+                calledOnPsi ?: element,
+                GdMethodDeclTl::class.java,
+                GdFuncDeclEx::class.java,
+            )) {
+                is GdMethodDeclTl -> {
+                    static = ownerMethod.isStatic
+                }
+
+                is GdFuncDeclEx -> {}
+            }
+        }
+
         when (calledOn) {
             GdKeywords.SELF -> calledOn = null
             GdKeywords.SUPER -> calledOn = GdInheritanceUtil.getExtendedClassId(element)
@@ -235,18 +249,23 @@ object GdClassMemberUtil {
                 is GdParam -> {
                     if (!locals.contains(it.varNmi.name)) locals[it.varNmi.name] = it
                 }
-                is GdForSt -> if (movedToParent && !locals.contains(it.varNmi?.name ?: "")) locals[it.varNmi?.name ?: ""] = it
+
+                is GdForSt -> if (movedToParent && !locals.contains(it.varNmi?.name ?: "")) locals[it.varNmi?.name
+                    ?: ""] = it
+
                 is GdPatternList -> {
                     if (movedToParent) {
                         PsiTreeUtil.getChildrenOfType(it, GdBindingPattern::class.java)
                             ?.map { b -> if (!locals.contains(b.varNmi.name)) locals[b.varNmi.name] = b }
                     }
                 }
+
                 is GdSetDecl -> {
                     if (movedToParent) {
                         if (!locals.contains(it.varNmi?.name.orEmpty())) locals[it.varNmi?.name.orEmpty()] = it.varNmi!!
                     }
                 }
+
                 is GdFuncDeclEx -> {
                     if (movedToParent && !isParam) {
                         it.paramList?.paramList?.forEach { p ->
@@ -254,6 +273,7 @@ object GdClassMemberUtil {
                         }
                     }
                 }
+
                 is GdMethodDeclTl -> {
                     if (onlyLocalScope) {
                         if (!isParam) {
@@ -285,12 +305,12 @@ object GdClassMemberUtil {
     fun firstNamedDeclaration(element: PsiElement): PsiElement? {
         return PsiTreeUtil.findFirstParent(element) {
             it is GdClassVarDeclTl
-                    || it is GdVarDeclSt
-                    || it is GdConstDeclTl
-                    || it is GdConstDeclSt
-                    || it is GdMethodDeclTl
-                    || it is GdClassDeclTl
-                    || it is GdParam
+                || it is GdVarDeclSt
+                || it is GdConstDeclTl
+                || it is GdConstDeclSt
+                || it is GdMethodDeclTl
+                || it is GdClassDeclTl
+                || it is GdParam
         }
     }
 
@@ -442,7 +462,7 @@ object GdClassMemberUtil {
     }
 
     fun calledUpon(element: PsiElement): GdExpr? {
-        val getAttrIfAny = fun (el: PsiElement): GdExpr? {
+        val getAttrIfAny = fun(el: PsiElement): GdExpr? {
             val previous = PsiTreeUtil.prevVisibleLeaf(el) ?: return null
             val parent = previous.parent ?: return null
             if (previous.elementType == GdTypes.DOT && parent is GdAttributeEx) {
@@ -511,8 +531,8 @@ object GdClassMemberUtil {
         } ?: false
     }
 
-    private fun<T> getConditioned(element: PsiElement, action: (element: PsiElement, stmt: PsiElement?) -> T?): T? {
-        val getParent = fun (stmt: PsiElement?): PsiElement? {
+    private fun <T> getConditioned(element: PsiElement, action: (element: PsiElement, stmt: PsiElement?) -> T?): T? {
+        val getParent = fun(stmt: PsiElement?): PsiElement? {
             return PsiTreeUtil.getParentOfType(stmt, GdIfSt::class.java, GdWhileSt::class.java, GdElifSt::class.java)
         }
 
@@ -523,12 +543,14 @@ object GdClassMemberUtil {
                     val typed = action(element, parent.expr)
                     if (typed != null) return typed
                 }
+
                 is GdElifSt -> {
                     val typed = action(element, parent.expr)
                     if (typed != null) return typed
                     // To avoid matching from base condition that is not part of this suite
                     parent = PsiTreeUtil.getParentOfType(parent, GdIfSt::class.java)
                 }
+
                 is GdWhileSt -> {
                     val typed = action(element, parent.expr)
                     if (typed != null) return typed

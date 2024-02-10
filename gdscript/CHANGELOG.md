@@ -5,6 +5,7 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 ### 2.1.9 (WIP)
 
 + Comment indentation [#198](https://gitlab.com/IceExplosive/gdscript/-/issues/198)
++ Static method reference [#183](https://gitlab.com/IceExplosive/gdscript/-/issues/183)
 
 ### 2.1.8 (8.2.2024)
 

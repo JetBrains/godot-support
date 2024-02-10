@@ -70,15 +70,15 @@ class GdRefIdAnnotator : Annotator {
                 if (element.getCallExpr() != null && GdClassMemberUtil.hasMethodCheck(element))
                     return@run GdHighlighterColors.METHOD_CALL
 
-                if (state != GdProjectState.OFF) {
+//                if (state != GdProjectState.OFF) {
                     holder
                         .newAnnotation(GdProjectState.selectedLevel(state), "Reference [${element.text}] not found")
                         .range(element.textRange)
                         .create()
                     return
-                }
+//                }
 
-                return@run GdHighlighterColors.MEMBER
+//                return@run GdHighlighterColors.MEMBER
             }
 
             else -> GdHighlighterColors.MEMBER
