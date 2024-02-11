@@ -1,9 +1,10 @@
 package tscn
 
 import com.intellij.openapi.fileTypes.LanguageFileType
+import org.jetbrains.plugins.textmate.TextMateBackedFileType
 import javax.swing.Icon
 
-object TscnFileType : LanguageFileType(TscnLanguage) {
+object TscnFileType : LanguageFileType(TscnLanguage), TextMateBackedFileType {
 
     override fun getName(): String = "Tscn file"
 
@@ -12,5 +13,4 @@ object TscnFileType : LanguageFileType(TscnLanguage) {
     override fun getDefaultExtension(): String = "tscn"
 
     override fun getIcon(): Icon = TscnIcon.FILE
-
 }

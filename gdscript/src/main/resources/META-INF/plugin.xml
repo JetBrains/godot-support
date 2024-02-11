@@ -11,6 +11,7 @@
   <incompatible-with>gdscript</incompatible-with>
 
   <depends>com.intellij.modules.lang</depends>
+  <depends>org.jetbrains.plugins.textmate</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <fileType name="GdScript File" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd"/>
