@@ -9,6 +9,7 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 + Formatter - apply only "maximum lines" as described [#181](https://gitlab.com/IceExplosive/gdscript/-/issues/181)
 + Node path with space [#191](https://gitlab.com/IceExplosive/gdscript/-/issues/191)
 + Support for CLI parameters in Run Configuration [#193](https://gitlab.com/IceExplosive/gdscript/-/issues/193)
++ Extended Unused checks [#200](https://gitlab.com/IceExplosive/gdscript/-/issues/200)
 
 ### 2.1.8 (8.2.2024)
 
