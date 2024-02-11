@@ -3,6 +3,7 @@
   <name>Godot Support</name>
   <version>2024.1.0.9999</version>
   <vendor url="https://www.jetbrains.com">JetBrains</vendor>
+  <incompatible-with>gdscript</incompatible-with> <!-- Obsolete https://github.com/exigow/intellij-gdscript.git -->
 
   <idea-version since-build="241.11761" until-build="242.*" />
 
