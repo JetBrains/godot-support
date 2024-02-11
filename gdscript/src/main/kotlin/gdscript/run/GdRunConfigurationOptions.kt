@@ -15,6 +15,9 @@ class GdRunConfigurationOptions : LocatableRunConfigurationOptions {
     private val tscn: StoredProperty<String?> =
         string("").provideDelegate(this, "godot.tscn")
 
+    private val debugShapes: StoredProperty<Boolean> =
+        property(false).provideDelegate(this, "debugShapes")
+
     fun getGodotExe(): String = godotExe.getValue(this) ?: "";
 
     fun setGodotExe(godotExe: String) {
@@ -26,5 +29,11 @@ class GdRunConfigurationOptions : LocatableRunConfigurationOptions {
     fun setTscn(tscn: String) {
         this.tscn.setValue(this, tscn);
     };
+
+    fun getDebugShapes(): Boolean = debugShapes.getValue(this);
+
+    fun setDebugShapes(debugShapes: Boolean) {
+        this.debugShapes.setValue(this, debugShapes);
+    }
 
 }

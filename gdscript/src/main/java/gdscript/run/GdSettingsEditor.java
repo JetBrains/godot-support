@@ -14,15 +14,18 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
     private JPanel myPanel;
     private LabeledComponent<TextFieldWithBrowseButton> godotExe;
     private LabeledComponent<TextFieldWithBrowseButton> tscn;
+    private JCheckBox debugShapes;
 
     public void resetEditorFrom(GdRunConfiguration gdRunConfiguration) {
         godotExe.getComponent().setText(gdRunConfiguration.getGodotExe());
         tscn.getComponent().setText(gdRunConfiguration.getTscn());
+        debugShapes.setSelected(gdRunConfiguration.isDebugShapes());
     }
 
     public void applyEditorTo(GdRunConfiguration gdRunConfiguration) {
         gdRunConfiguration.setGodotExe(godotExe.getComponent().getText());
         gdRunConfiguration.setTscn(tscn.getComponent().getText());
+        gdRunConfiguration.setDebugShapes(debugShapes.isSelected());
     }
 
     public JComponent createEditor() {

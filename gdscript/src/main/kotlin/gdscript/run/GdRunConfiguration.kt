@@ -39,6 +39,14 @@ class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions>
         options.setTscn(file)
     }
 
+    fun isDebugShapes(): Boolean {
+        return options.getDebugShapes()
+    }
+
+    fun setDebugShapes(debugShapes: Boolean) {
+        options.setDebugShapes(debugShapes)
+    }
+
     override fun suggestedName(): String {
         return getTscn().split("/").last().split(".")[0]
     }
@@ -67,6 +75,10 @@ class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions>
         val scene = getTscn()
         if (scene.isNotEmpty()) {
             command = command.withParameters(scene)
+        }
+
+        if (isDebugShapes()) {
+            command = command.withParameters("--debug-collisions")
         }
 
         return command
