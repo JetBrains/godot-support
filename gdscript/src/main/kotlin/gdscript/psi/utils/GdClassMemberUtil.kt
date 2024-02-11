@@ -162,7 +162,7 @@ object GdClassMemberUtil {
         }
 
         if (calledOn == null) {
-            val autoLoads = ProjectAutoloadUtil.listGlobals(element)
+            val autoLoads = ProjectAutoloadUtil.listGlobals(element.project)
             if (searchFor != null) {
                 val localClass = GdClassNamingIndex.INSTANCE.getGlobally(searchFor, element).firstOrNull()
                 if (localClass != null) return arrayOf(localClass)
