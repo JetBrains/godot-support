@@ -1,39 +1,27 @@
 package gdscript.run
 
 import com.intellij.execution.configurations.LocatableRunConfigurationOptions
-import com.intellij.openapi.components.StoredProperty
+import com.intellij.util.xmlb.annotations.Property
 
 class GdRunConfigurationOptions : LocatableRunConfigurationOptions {
 
     constructor() : super() {
-        isNameGenerated = true;
+        isNameGenerated = true
     }
 
-    private val godotExe: StoredProperty<String?> =
-        string("").provideDelegate(this, "godotExe")
+    @get:Property
+    var godotExe by string()
 
-    private val tscn: StoredProperty<String?> =
-        string("").provideDelegate(this, "godot.tscn")
+    @get:Property
+    var tscn by string()
 
-    private val debugShapes: StoredProperty<Boolean> =
-        property(false).provideDelegate(this, "debugShapes")
+    @get:Property
+    var debugShapes by property(false)
 
-    fun getGodotExe(): String = godotExe.getValue(this) ?: "";
+    @get:Property
+    var debugPaths by property(false)
 
-    fun setGodotExe(godotExe: String) {
-        this.godotExe.setValue(this, godotExe);
-    };
-
-    fun getTscn(): String = tscn.getValue(this) ?: "";
-
-    fun setTscn(tscn: String) {
-        this.tscn.setValue(this, tscn);
-    };
-
-    fun getDebugShapes(): Boolean = debugShapes.getValue(this);
-
-    fun setDebugShapes(debugShapes: Boolean) {
-        this.debugShapes.setValue(this, debugShapes);
-    }
+    @get:Property
+    var arguments by string()
 
 }

@@ -14,18 +14,24 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
     private JPanel myPanel;
     private LabeledComponent<TextFieldWithBrowseButton> godotExe;
     private LabeledComponent<TextFieldWithBrowseButton> tscn;
+    private LabeledComponent<JTextField> arguments;
     private JCheckBox debugShapes;
+    private JCheckBox debugPaths;
 
     public void resetEditorFrom(GdRunConfiguration gdRunConfiguration) {
         godotExe.getComponent().setText(gdRunConfiguration.getGodotExe());
         tscn.getComponent().setText(gdRunConfiguration.getTscn());
-        debugShapes.setSelected(gdRunConfiguration.isDebugShapes());
+        arguments.getComponent().setText(gdRunConfiguration.getArguments());
+        debugShapes.setSelected(gdRunConfiguration.getDebugShapes());
+        debugPaths.setSelected(gdRunConfiguration.getDebugPaths());
     }
 
     public void applyEditorTo(GdRunConfiguration gdRunConfiguration) {
         gdRunConfiguration.setGodotExe(godotExe.getComponent().getText());
         gdRunConfiguration.setTscn(tscn.getComponent().getText());
+        gdRunConfiguration.setArguments(arguments.getComponent().getText());
         gdRunConfiguration.setDebugShapes(debugShapes.isSelected());
+        gdRunConfiguration.setDebugPaths(debugPaths.isSelected());
     }
 
     public JComponent createEditor() {
@@ -35,6 +41,7 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
     private void createUIComponents() {
         godotExe = new LabeledComponent<>();
         tscn = new LabeledComponent<>();
+        arguments = new LabeledComponent<>();
         TextFieldWithBrowseButton godotField = new TextFieldWithBrowseButton();
         godotField.setText("");
         godotField.setToolTipText("Path to the Godot Executable");
@@ -52,6 +59,11 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
                 FileChooserDescriptorFactory.createSingleFileDescriptor("tscn")
         ));
         tscn.setComponent(tscnField);
+
+        JTextField argumentsField = new JTextField();
+        argumentsField.setText("options");
+        argumentsField.setToolTipText("options");
+        arguments.setComponent(argumentsField);
     }
 
 }

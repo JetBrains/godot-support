@@ -12,43 +12,47 @@ import com.intellij.openapi.project.Project
 
 class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions> {
 
-
     constructor(project: Project, factory: ConfigurationFactory, name: String) :
         super(project, factory, name)
 
     override fun getActionName(): String {
-        return getTscn().split("/").last().split(".")[0]
+        return (options.tscn ?: "").split("/").last().split(".")[0]
     }
 
-    override fun getOptions(): GdRunConfigurationOptions =
-         super.getOptions() as GdRunConfigurationOptions
+    override fun getOptions(): GdRunConfigurationOptions = super.getOptions() as GdRunConfigurationOptions
 
-    fun getGodotExe(): String {
-        return options.getGodotExe()
-    }
+    var godotExe
+        get() = options.godotExe
+        set(value) {
+            options.godotExe = value
+        }
 
-    fun setGodotExe(exe: String) {
-        options.setGodotExe(exe)
-    }
+    var tscn
+        get() = options.tscn
+        set(value) {
+            options.tscn = value
+        }
 
-    fun getTscn(): String {
-        return options.getTscn()
-    }
+    var debugShapes
+        get() = options.debugShapes
+        set(value) {
+            options.debugShapes = value
+        }
 
-    fun setTscn(file: String) {
-        options.setTscn(file)
-    }
+    var debugPaths
+        get() = options.debugPaths
+        set(value) {
+            options.debugPaths = value
+        }
 
-    fun isDebugShapes(): Boolean {
-        return options.getDebugShapes()
-    }
-
-    fun setDebugShapes(debugShapes: Boolean) {
-        options.setDebugShapes(debugShapes)
-    }
+    var arguments
+        get() = options.arguments ?: ""
+        set(value) {
+            options.arguments = value
+        }
 
     override fun suggestedName(): String {
-        return getTscn().split("/").last().split(".")[0]
+        return options.tscn ?: "".split("/").last().split(".")[0]
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = GdSettingsEditor()
@@ -69,17 +73,21 @@ class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions>
 
     private fun command(): GeneralCommandLine {
         var command = GeneralCommandLine()
-            .withExePath(getGodotExe())
+            .withExePath(options.godotExe ?: "")
             .withWorkDirectory(project.basePath)
 
-        val scene = getTscn()
-        if (scene.isNotEmpty()) {
+        val scene = options.tscn
+        if (scene?.isNotEmpty() == true) {
             command = command.withParameters(scene)
         }
 
-        if (isDebugShapes()) {
-            command = command.withParameters("--debug-collisions")
-        }
+        val opts = mutableSetOf<String>()
+        opts.addAll(arguments?.split(" ") ?: emptyList())
+
+        if (debugShapes) opts.add(GdCliArguments.DEBUG_SHAPES)
+        if (debugPaths) opts.add(GdCliArguments.DEBUG_PATHS)
+
+        command = command.withParameters(opts.toList())
 
         return command
     }

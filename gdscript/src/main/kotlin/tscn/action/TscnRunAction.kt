@@ -52,8 +52,8 @@ class TscnRunAction : RunAnythingAction {
         val template = manager.getConfigurationTemplate(GdConfigurationFactory).configuration as GdRunConfiguration
         val current = GdRunConfiguration(file.project, GdConfigurationFactory, name)
 
-        current.setTscn(PsiGdFileUtil.filepath(file))
-        current.setGodotExe(template.getGodotExe())
+        current.tscn = PsiGdFileUtil.filepath(file)
+        current.godotExe = template.godotExe
         val action: RunnerAndConfigurationSettings = manager.createConfiguration(current, GdConfigurationFactory)
         action.isTemporary = true
         manager.addConfiguration(action)

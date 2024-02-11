@@ -64,8 +64,8 @@ class GdRunAction : RunAnythingAction {
         val script = TscnResourceIndex.INSTANCE.get("${GdKeywords.RESOURCE_PREFIX}$filename", element.project, GlobalSearchScope.allScope(element.project))
             .firstOrNull() ?: return null
 
-        current.setTscn(PsiGdFileUtil.filepath(script.containingFile))
-        current.setGodotExe(template.getGodotExe())
+        current.tscn = PsiGdFileUtil.filepath(script.containingFile)
+        current.godotExe = template.godotExe
         val action: RunnerAndConfigurationSettings = manager.createConfiguration(current, GdConfigurationFactory)
         action.isTemporary = true
         manager.addConfiguration(action)

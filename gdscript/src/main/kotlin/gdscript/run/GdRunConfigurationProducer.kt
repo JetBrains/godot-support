@@ -18,7 +18,7 @@ class GdRunConfigurationProducer : LazyRunConfigurationProducer<GdRunConfigurati
     ): Boolean {
         val psi = context.psiLocation ?: return false
         if (psi.containingFile is GdFile || psi.containingFile is TscnFile) {
-            configuration.setTscn(PsiGdFileUtil.filepath(psi))
+            configuration.tscn = PsiGdFileUtil.filepath(psi)
             configuration.name = configuration.actionName
         } else {
             return false
