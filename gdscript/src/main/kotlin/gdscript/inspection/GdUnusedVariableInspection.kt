@@ -5,6 +5,7 @@ import com.intellij.psi.PsiElementVisitor
 import gdscript.psi.GdConstDeclSt
 import gdscript.psi.GdVarDeclSt
 import gdscript.psi.GdVisitor
+import gdscript.utils.ProjectUtil.globalSearchScope
 
 class GdUnusedVariableInspection : GdUnusedInspection() {
 
@@ -14,11 +15,15 @@ class GdUnusedVariableInspection : GdUnusedInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : GdVisitor() {
             override fun visitVarDeclSt(o: GdVarDeclSt) {
-                process(o, o.varNmi, holder)
+                if (o.varNmi == null || anyReference(o.varNmi!!, o.project.globalSearchScope())) return
+
+                registerUnused(o, o.varNmi!!, holder);
             }
 
             override fun visitConstDeclSt(o: GdConstDeclSt) {
-                process(o, o.varNmi, holder)
+                if (o.varNmi == null || anyReference(o.varNmi!!, o.project.globalSearchScope())) return
+
+                registerUnused(o, o.varNmi!!, holder);
             }
         }
     }

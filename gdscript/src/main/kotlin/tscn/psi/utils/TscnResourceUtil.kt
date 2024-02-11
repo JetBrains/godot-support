@@ -2,8 +2,10 @@ package tscn.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.descendantsOfType
 import gdscript.psi.utils.PsiGdResourceUtil
 import tscn.index.impl.TscnResourceIndex
+import tscn.psi.TscnConnectionHeader
 import tscn.psi.TscnResourceHeader
 
 /**
@@ -47,4 +49,7 @@ object TscnResourceUtil {
         return TscnResourceIndex.INSTANCE.getGlobally(resourcePath, project)
     }
 
+    fun findConnectionsForResource(resource: TscnResourceHeader): Sequence<TscnConnectionHeader> {
+        return resource.containingFile.descendantsOfType<TscnConnectionHeader>()
+    }
 }

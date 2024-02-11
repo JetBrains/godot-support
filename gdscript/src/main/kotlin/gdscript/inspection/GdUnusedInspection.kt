@@ -1,30 +1,28 @@
 package gdscript.inspection
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
+import com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBOL
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
+import com.intellij.psi.search.SearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import gdscript.inspection.quickFix.GdRemoveElementFix
-import gdscript.utils.ProjectUtil.globalSearchScope
 
 abstract class GdUnusedInspection : LocalInspectionTool() {
 
     protected abstract val description: String
     protected abstract val text: String
 
-    fun process(element: PsiElement?, nmi: PsiNameIdentifierOwner?, holder: ProblemsHolder) {
-        if (element == null || nmi == null) return
-
-        if (!ReferencesSearch.search(nmi, element.project.globalSearchScope()).any()) {
-            holder.registerProblem(
+    fun registerUnused(element: PsiElement, nmi: PsiNameIdentifierOwner, holder: ProblemsHolder) {
+        holder.registerProblem(
                 nmi,
                 description,
-                ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                GdRemoveElementFix(element, text.replace("{NAME}", nmi.name ?: "")),
-            )
-        }
+                LIKE_UNUSED_SYMBOL,
+                GdRemoveElementFix(element, text.replace("{NAME}", nmi.name ?: "")))
     }
 
+    fun anyReference(nmi: PsiNameIdentifierOwner, searchScope: SearchScope): Boolean {
+        return ReferencesSearch.search(nmi, searchScope).any();
+    }
 }

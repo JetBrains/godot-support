@@ -13,6 +13,7 @@ class GdUnusedParameterInspection : GdUnusedInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : GdVisitor() {
             override fun visitParam(o: GdParam) {
+                // ignore unused parameters
                 if (o.varNmi.name.startsWith("_")) return
 
                 val owner = PsiTreeUtil.getParentOfType(
@@ -23,7 +24,10 @@ class GdUnusedParameterInspection : GdUnusedInspection() {
                 )
 
                 if (owner is GdSignalDeclTl) return
-                process(o, o.varNmi, holder)
+                // only check for references in the owning element
+                if (owner == null || anyReference(o.varNmi, owner.useScope)) return
+
+                registerUnused(o, o.varNmi, holder)
             }
         }
     }
