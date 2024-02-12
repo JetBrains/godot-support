@@ -12,11 +12,13 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
     public class GodotTracker
     {
         public VirtualFileSystemPath MainProjectBasePath { get; private set; }
+        public bool IsGodot { get; private set; }
         public GodotTracker(ISolution solution, ILogger logger, ISolutionLoadTasksScheduler tasksScheduler)
         {
             var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
             if (solution.SolutionFile == null && solution.SolutionDirectory.Combine("project.godot").ExistsFile)
             {
+                IsGodot = true;
                 model.GodotDescriptor.SetValue(new GodotDescriptor(true, solution.SolutionDirectory.FullPath));
             }
             
@@ -28,6 +30,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                     {
                         var file = project.Location.Combine("project.godot");
                         if (!file.ExistsFile) continue;
+                        IsGodot = true;
                         MainProjectBasePath = file.Directory;
                         logger.Verbose($"Godot MainProjectBasePath: {file.Directory}");
                         model.GodotDescriptor.SetValue(new GodotDescriptor(false, file.Directory.FullPath));
