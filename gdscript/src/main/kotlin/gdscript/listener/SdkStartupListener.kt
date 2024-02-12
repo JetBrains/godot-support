@@ -47,8 +47,6 @@ class SdkStartupListener : ProjectActivity {
             }
 
             if (!registered.name!!.endsWith(latest) || updated != props.version) {
-                throw Exception("Removing Name: ${registered.name}... updated: ${updated}, props: ${props.version}")
-
                 GdLibraryManager.clearSdks(project)
                 registered = null
             }

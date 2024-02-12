@@ -9,6 +9,7 @@ import gdscript.formatter.block.Alignments
 import gdscript.formatter.block.GdBlock
 import gdscript.formatter.settings.GdSpacingUtil.emptyLines
 import gdscript.formatter.settings.GdSpacingUtil.forcedLines
+import gdscript.formatter.settings.GdSpacingUtil.minMaxLines
 import gdscript.psi.GdTypes
 
 class GdFormattingModelBuilder : FormattingModelBuilder {
@@ -63,7 +64,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
             /* Stmt */
             .before(STATEMENTS).emptyLines(custom.LINES_WITHIN_SUITE)
-            .before(ROOT_BLOCKS).emptyLines(custom.LINES_BEFORE_FUNC)
+            .before(ROOT_BLOCKS).minMaxLines(custom.LINES_BEFORE_FUNC_MIN, custom.LINES_BEFORE_FUNC_MAX)
 
         // Separate groups
         ROOT_VARIABLES.types.forEachIndexed { iLeft, left ->

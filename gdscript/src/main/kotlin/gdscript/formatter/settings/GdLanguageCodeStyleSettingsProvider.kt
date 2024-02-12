@@ -14,15 +14,15 @@ import gdscript.formatter.settings.GdSettings.consume
 class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() {
 
     override fun getLanguage(): Language {
-        return GdLanguage;
+        return GdLanguage
     }
 
     override fun getIndentOptionsEditor(): IndentOptionsEditor {
-        return SmartIndentOptionsEditor();
+        return SmartIndentOptionsEditor()
     }
 
     override fun createCustomSettings(settings: CodeStyleSettings): CustomCodeStyleSettings =
-        GdCodeStyleSettings(settings);
+        GdCodeStyleSettings(settings)
 
     override fun customizeSettings(
         consumer: CodeStyleSettingsCustomizable,
@@ -30,7 +30,7 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
     ) {
         when (settingsType) {
             SettingsType.SPACING_SETTINGS -> {
-                GdSettings.SPACING.consume(consumer);
+                GdSettings.SPACING.consume(consumer)
             }
 
             SettingsType.INDENT_SETTINGS -> {
@@ -38,11 +38,11 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
             }
 
             SettingsType.BLANK_LINES_SETTINGS -> {
-                GdSettings.BLANK_LINES.consume(consumer);
+                GdSettings.BLANK_LINES.consume(consumer)
             }
 
             SettingsType.WRAPPING_AND_BRACES_SETTINGS -> {
-                GdSettings.WRAPPING_AND_BRACES.consume(consumer);
+                GdSettings.WRAPPING_AND_BRACES.consume(consumer)
             }
 
             SettingsType.COMMENTER_SETTINGS -> {
@@ -70,11 +70,11 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
             |const cc = "cc"
             |
             |func fn1():
-            |   pass;
+            |   pass
             |
             |
             |func fn2():
-            |   pass;
+            |   pass
         """.trimMargin()
     }
 

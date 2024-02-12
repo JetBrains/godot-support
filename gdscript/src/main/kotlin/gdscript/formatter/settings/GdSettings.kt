@@ -24,8 +24,13 @@ object GdSettings {
                 Pair("LINES_IN_BETWEEN_VARIABLE_GROUP", "Between variables (inside single group)"),
                 Pair("LINES_BETWEEN_EXPORT_GROUPS", "Before @onready, @export group (separation from other vars)"),
                 Pair("LINES_AROUND_MULTILINE_VAR", "Below multi-line variables (overrides above for given var)"),
-                Pair("LINES_BEFORE_FUNC", "Before func declaration"),
                 Pair("LINES_WITHIN_SUITE", "Max. empty lines in code"),
+                Pair("LINES_BEFORE_FUNC_MAX", "Before func declaration"),
+            )
+        ),
+        Pair(
+            "Minimum blank lines", hashMapOf(
+                Pair("LINES_BEFORE_FUNC_MIN", "Before func declaration"),
             )
         ),
     );

@@ -7,7 +7,8 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings;
 public class GdCodeStyleSettings extends CustomCodeStyleSettings {
 
     /* Black lines */
-    public int LINES_BEFORE_FUNC = 2;
+    public int LINES_BEFORE_FUNC_MIN = 2;
+    public int LINES_BEFORE_FUNC_MAX = 2;
     public int LINES_AFTER_HEADER = 1;
     public int LINES_IN_BETWEEN_VARIABLE_GROUP = 0;
     public int LINES_AFTER_VARIABLE_GROUP = 0;
