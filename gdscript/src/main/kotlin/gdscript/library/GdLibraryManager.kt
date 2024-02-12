@@ -77,6 +77,7 @@ object GdLibraryManager {
         val name = path.replace('\\', '/').substringAfterLast("/")
         val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
 
+        if (modifier.getLibraryByName(name) != null) return
         val library = modifier.createLibrary(name, GdLibraryKind)
         val libModifier = library.modifiableModel as ModifiableModelEx
 
