@@ -2,13 +2,13 @@ package tscn.index
 
 import com.intellij.psi.stubs.StubIndexKey
 import tscn.psi.TscnConnectionHeader
-import tscn.psi.TscnResourceHeader
 import tscn.psi.TscnNodeHeader
 import tscn.psi.TscnParagraph
+import tscn.psi.TscnResourceHeader
 
 object TscnIndices {
 
-    val VERSION = 5
+    val VERSION = 6
 
     val PARAGRAPH_INDEX = StubIndexKey.createIndexKey<String, TscnParagraph>("tscn.nodeParagraph")
     val RESOURCE_INDEX = StubIndexKey.createIndexKey<String, TscnResourceHeader>("tscn.extResource")
