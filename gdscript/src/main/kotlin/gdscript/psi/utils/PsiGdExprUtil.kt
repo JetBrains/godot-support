@@ -76,7 +76,12 @@ object PsiGdExprUtil {
                         val res = expr.argList?.argExprList?.firstOrNull()
                         if (res != null) {
                             var resource = res.text.trim('"')
+                            if (resource.endsWith(".tscn")) {
+                                return "PackedScene"
+                            }
+
                             if (!resource.startsWith("res://") && expr.containingFile.originalFile.virtualFile?.parent != null) {
+
                                 val myPath = Paths.get(expr.containingFile.originalFile.virtualFile.parent.path)
                                 FilenameIndex.getVirtualFilesByName(com.intellij.history.core.Paths.getNameOf(resource), GlobalSearchScope.allScope(expr.project)).find {
                                     val itPath = Paths.get(it.path)

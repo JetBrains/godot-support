@@ -2,11 +2,8 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
-### 2.1.10 (WIP)
 
-+ Autoloaded scripts from Scenes [#201](https://gitlab.com/IceExplosive/gdscript/-/issues/201)
-
-### 2.1.9 (12.2.2024)
+### 2.1.9 (WIP)
 
 + Comment indentation [#198](https://gitlab.com/IceExplosive/gdscript/-/issues/198)
 + Static method reference [#183](https://gitlab.com/IceExplosive/gdscript/-/issues/183)
@@ -14,6 +11,8 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 + Node path with space [#191](https://gitlab.com/IceExplosive/gdscript/-/issues/191)
 + Support for CLI parameters in Run Configuration [#193](https://gitlab.com/IceExplosive/gdscript/-/issues/193)
 + Extended Unused checks [#200](https://gitlab.com/IceExplosive/gdscript/-/issues/200)
++ Autoloaded scripts from Scenes [#201](https://gitlab.com/IceExplosive/gdscript/-/issues/201)
++ PackedScene type [#204](https://gitlab.com/IceExplosive/gdscript/-/issues/204)
 
 ### 2.1.8 (8.2.2024)
 
