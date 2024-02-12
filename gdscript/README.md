@@ -23,7 +23,6 @@ Supports only Godot 4.0 and higher
 
 ## Update 12.2.2024
 
-!! READ ME !!
 With latest version 2.2.0 there's an update for TscnFiles -> highlighting possible via TextMate plugin,
 check out [description](https://gitlab.com/IceExplosive/gdscript/-/merge_requests/6) and updated tscn file icon
 -> this caused me an error with each opened .tscn file due to cache issue that could not resolve itself and I had to 
