@@ -121,7 +121,6 @@ object GdClassMemberUtil {
             // For Enum add also all it's values
             if (calledOn.startsWith("Array[")) calledOn = "Array"
 
-            // TODO je to ještě potřeba?
             if (calledOn.endsWith("Dictionary")) {
                 val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdNm::class.java).lastOrNull()
                 if (firstChild != null) {
@@ -134,6 +133,7 @@ object GdClassMemberUtil {
                         result.addAll(dictDecl.enumValueList)
                     }
                 }
+                calledOn = "Dictionary"
             }
 
             parent = GdClassUtil.getClassIdElement(calledOn, element)
