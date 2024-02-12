@@ -2,6 +2,9 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.2.0 (12.2.2024)
+
++ TextMate for .tscn files highlight
 
 ### 2.1.9 (12.2.2024)
 

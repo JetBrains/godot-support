@@ -21,6 +21,16 @@ Supports only Godot 4.0 and higher
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
+## Update 12.2.2024
+
+!! READ ME !!
+With latest version 2.2.0 there's an update for TscnFiles -> highlighting possible via TextMate plugin,
+check out [description](https://gitlab.com/IceExplosive/gdscript/-/merge_requests/6) and updated tscn file icon
+-> this caused me an error with each opened .tscn file due to cache issue that could not resolve itself and I had to 
+clear caches manually (File -> Invalidate Caches... -> Clear file system cache)
+
+Current focus remains bug fixing until it'll be worthy of Gamefromscratch. :)
+
 ## GdScript toolkit (not related to this project)
 
 An independent set of tools for GdScript (Formatter, Linter, and more) that can work together with this plugin.  
@@ -38,24 +48,6 @@ For example instead of plugin's built-in formatter, you can use theirs
 - Enable Auto-save edited files to trigger the watcher
 - Thanks to @e.sirkova for mentioning it.
 </details>
-
-## Update 28.12.2023
-
-Newly released version of 2.1.0 has auto-download SDK feature, but I've noticed that it is sometimes little buggy.  
-Please first uninstall plugin restart IDE and then install it again - should the error persist even after this, let me know.
-
-## Update 16.12.2023
-
-Currently, awaiting 2.0.8 release where all feature should be ready for testing,  
-and for now I'll refrain from writing any new features focusing only on bugs that pops-up.
-
-Feel free to report any you find and ofc even new ideas, so they are written down for later.
-I thank you for all your support up to now - hopefully instead of just reporting issues we'll move to actually using
-this plugin as intended.
-
-So current focus: I'd say get this stable enough that it'll be worthy of Gamefromscratch. :D
-
-Currently tested only on Win10 - once it's good enough on it, I'll test it on macOS
 
 ## Support
 
