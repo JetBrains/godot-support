@@ -28,7 +28,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             var scenePaths = baseDirectory.GetChildDirectories(pluginDirectory,
                 PathSearchFlags.ExcludeFiles | PathSearchFlags.RecurseIntoSubdirectories).Select(a=>a.Combine(runnerScene)).Where(a => a.ExistsFile).ToArray();
             if (!scenePaths.Any())
-                throw new Exception("Please manually put folder with files from https://github.com/van800/godot-demo-projects/tree/net6/mono/dodge_the_creeps/RiderTestRunner to your project.");
+                throw new Exception("Please manually put folder with files from https://github.com/van800/godot-demo-projects/tree/net6/mono/dodge_the_creeps/projects/MainProject/RiderTestRunner to your project.");
             if (scenePaths.Length > 1)
                 throw new Exception($"Make sure you have only 1 {pluginDirectory}/{runnerScene} in your project.");
             
