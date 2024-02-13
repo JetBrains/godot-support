@@ -28,6 +28,8 @@ check out [description](https://gitlab.com/IceExplosive/gdscript/-/merge_request
 -> this caused me an error with each opened .tscn file due to cache issue that could not resolve itself and I had to 
 clear caches manually (File -> Invalidate Caches... -> Clear file system cache)
 
+It also requires 2023.3 editor version
+
 Current focus remains bug fixing until it'll be worthy of Gamefromscratch. :)
 
 ## GdScript toolkit (not related to this project)
