@@ -54,7 +54,7 @@ intellij {
 patchPluginXml {
     changeNotes = """
       """
-    sinceBuild = '231'
+    sinceBuild = '233'
     untilBuild = ''
 }
 
