@@ -63,7 +63,8 @@ class GdRootContributor : CompletionContributor() {
     }
 
     private fun addTopLvlDecl(parameters: CompletionParameters, result: CompletionResultSet) {
-        GdNodeUtil.listNodes(parameters.position).forEach { result.addElement(it.variable_lookup()) }
+        result.withPrefixMatcher("")
+        GdNodeUtil.listNodes(parameters.position).forEach { result.addAllElements(it.variable_lookups()) }
         GdClassVarCompletionUtil.annotations(result, parameters.position.project)
 
         val members = mutableListOf<Any>()

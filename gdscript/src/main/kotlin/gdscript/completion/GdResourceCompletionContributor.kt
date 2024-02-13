@@ -22,16 +22,17 @@ class GdResourceCompletionContributor : CompletionContributor() {
     val STRING = psiElement(GdTypes.STRING);
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
+        result.withPrefixMatcher("")
         val position = parameters.position
         if (GdRefIdCompletionUtil.DIRECT_REF.accepts(position)) {
-            GdNodeUtil.listNodes(position).forEach { result.addElement(it.lookup()) }
+            GdNodeUtil.listNodes(position).forEach { result.addAllElements(it.lookups()) }
         } else if (NODE_PATH_ROOT.accepts(position)) {
-            GdNodeUtil.listNodes(position).forEach { result.addElement(it.variable_lookup()) }
+            GdNodeUtil.listNodes(position).forEach { result.addAllElements(it.variable_lookups()) }
         } else if (NODE_PATH.accepts(position)) {
             if (GdRefIdCompletionUtil.CLASS_ROOT.accepts(position)) {
-                GdNodeUtil.listNodes(position).forEach { result.addElement(it.variable_lookup()) }
+                GdNodeUtil.listNodes(position).forEach { result.addAllElements(it.variable_lookups()) }
             } else {
-                GdNodeUtil.listNodes(position).forEach { result.addElement(it.lookup()) }
+                GdNodeUtil.listNodes(position).forEach { result.addAllElements(it.lookups()) }
             }
         } else if (STRING.accepts(position)) {
             GdFileResIndex.INSTANCE.getNonEmptyKeys(position).forEach {
