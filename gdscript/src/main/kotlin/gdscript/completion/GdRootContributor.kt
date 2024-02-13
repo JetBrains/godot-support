@@ -63,7 +63,6 @@ class GdRootContributor : CompletionContributor() {
     }
 
     private fun addTopLvlDecl(parameters: CompletionParameters, result: CompletionResultSet) {
-        result.withPrefixMatcher("")
         GdNodeUtil.listNodes(parameters.position).forEach { result.addAllElements(it.variable_lookups()) }
         GdClassVarCompletionUtil.annotations(result, parameters.position.project)
 

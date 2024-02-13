@@ -3,6 +3,7 @@ package gdscript.completion
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.impl.CamelHumpMatcher
 import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.completion.utils.GdRefIdCompletionUtil
 import gdscript.completion.utils.GdStringCompletionUtil
@@ -22,17 +23,21 @@ class GdResourceCompletionContributor : CompletionContributor() {
     val STRING = psiElement(GdTypes.STRING);
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
-        result.withPrefixMatcher("")
+        val r = result.withPrefixMatcher(CamelHumpMatcher(
+            parameters.position.text.substring(0, parameters.offset - parameters.position.textRange.startOffset),
+            true,
+        ))
+
         val position = parameters.position
         if (GdRefIdCompletionUtil.DIRECT_REF.accepts(position)) {
-            GdNodeUtil.listNodes(position).forEach { result.addAllElements(it.lookups()) }
+            GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.lookups()) }
         } else if (NODE_PATH_ROOT.accepts(position)) {
-            GdNodeUtil.listNodes(position).forEach { result.addAllElements(it.variable_lookups()) }
+            GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.variable_lookups()) }
         } else if (NODE_PATH.accepts(position)) {
             if (GdRefIdCompletionUtil.CLASS_ROOT.accepts(position)) {
-                GdNodeUtil.listNodes(position).forEach { result.addAllElements(it.variable_lookups()) }
+                GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.variable_lookups()) }
             } else {
-                GdNodeUtil.listNodes(position).forEach { result.addAllElements(it.lookups()) }
+                GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.lookups()) }
             }
         } else if (STRING.accepts(position)) {
             GdFileResIndex.INSTANCE.getNonEmptyKeys(position).forEach {

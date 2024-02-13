@@ -34,7 +34,6 @@ data class GdNodeHolder(
                             color = GdLookup.COLOR_RESOURCE,
                             priority = GdLookup.REMOTE_DEFINED,
                             typed = element.type,
-                            tail = extraInfo,
                             handler = GdReplaceInsertHandler(uniqueId),
                     ) else null
         )
@@ -61,7 +60,6 @@ data class GdNodeHolder(
                             color = GdLookup.COLOR_RESOURCE,
                             priority = GdLookup.REMOTE_DEFINED,
                             typed = element.type,
-                            tail = extraInfo,
                             handler = GdReplaceInsertHandler("@onready var ${element.name.camelToSnakeCase()}$type = $uniqueId"),
                     ) else null
         )
