@@ -1,9 +1,9 @@
 package tscn.psi.search
 
 import com.intellij.usageView.UsageInfo
-import gdscript.psi.GdSignalDeclTl
+import gdscript.psi.GdSignalIdNmi
 
-class TscnSignalSearcher(val signal: GdSignalDeclTl) : AbstractTscnSearcher(signal.project, signal.containingFile) {
+class TscnSignalSearcher(val signal: GdSignalIdNmi) : AbstractTscnSearcher(signal.project, signal.containingFile) {
 
     fun anySignalReference() : Boolean {
         // match signals on the "from" field

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.usageView.UsageInfo
 import com.intellij.util.Processor
 import gdscript.psi.GdMethodIdNmi
-import gdscript.psi.GdSignalDeclTl
+import gdscript.psi.GdSignalIdNmi
 import tscn.psi.search.TscnMethodSearcher
 import tscn.psi.search.TscnSignalSearcher
 
@@ -21,7 +21,7 @@ class GdFindUsageHandler(element: PsiElement) : FindUsagesHandler(element) {
             val tscnMethodRefs = TscnMethodSearcher(element).listMethodReferences()
             tscnMethodRefs.forEach { usage -> processor.process(usage) }
             return result && tscnMethodRefs.any()
-        } else if (options.isUsages && element is GdSignalDeclTl) {
+        } else if (options.isUsages && element is GdSignalIdNmi) {
             val tscnSignalRefs = TscnSignalSearcher(element).listSignalReferences()
             tscnSignalRefs.forEach { usage -> processor.process(usage) }
             return result && tscnSignalRefs.any()

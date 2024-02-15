@@ -18,7 +18,7 @@ class GdUnusedSignalDetection : GdUnusedInspection() {
                 // check for content scope
                 if (o.signalIdNmi == null || anyReference(o.signalIdNmi!!, o.project.contentScope())) return
                 // check for tscn references
-                if (TscnSignalSearcher(o).anySignalReference()) return
+                if (TscnSignalSearcher(o.signalIdNmi!!).anySignalReference()) return
 
                 registerUnused(o, o.signalIdNmi!!, holder);
             }
