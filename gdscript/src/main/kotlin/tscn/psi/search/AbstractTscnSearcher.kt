@@ -64,7 +64,7 @@ abstract class AbstractTscnSearcher(val project: Project, scriptFile: PsiFile) {
             if (nodePaths.isEmpty()) continue
             // check if the paragraph is a match
             if (matchInParagraph(par, searchTerm, typeSuffix, nodePaths)) {
-                result.add(UsageInfo(par))
+                result.add(PsiElementUsageInfo(par))
                 // check for early stop
                 if (earlyStop) return result
             }
