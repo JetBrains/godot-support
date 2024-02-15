@@ -4,10 +4,8 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import gdscript.psi.GdSignalDeclTl
 import gdscript.psi.GdVisitor
-import gdscript.utils.ProjectUtil.globalSearchScope
-import tscn.psi.utils.TscnConnectionUtil.getSignal
-import tscn.psi.utils.TscnResourceUtil.findConnectionsForResource
-import tscn.psi.utils.TscnResourceUtil.findTscnByResources
+import gdscript.utils.ProjectUtil.contentScope
+import tscn.psi.search.TscnSignalSearcher
 
 class GdUnusedSignalDetection : GdUnusedInspection() {
 
@@ -17,23 +15,12 @@ class GdUnusedSignalDetection : GdUnusedInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : GdVisitor() {
             override fun visitSignalDeclTl(o: GdSignalDeclTl) {
-                // check for global scope
-                if (o.signalIdNmi == null || anyReference(o.signalIdNmi!!, o.project.globalSearchScope())) return
-                // check for tscn files
-                if (signalConnectedInTscnResource(o)) return
+                // check for content scope
+                if (o.signalIdNmi == null || anyReference(o.signalIdNmi!!, o.project.contentScope())) return
+                // check for tscn references
+                if (TscnSignalSearcher(o).anySignalReference()) return
 
                 registerUnused(o, o.signalIdNmi!!, holder);
-            }
-
-            private fun signalConnectedInTscnResource(element: GdSignalDeclTl) : Boolean {
-                val tscnResources = findTscnByResources(element)
-                tscnResources.forEach{ resource ->
-                    var connections = findConnectionsForResource(resource)
-                    if (connections.filter { con -> getSignal(con) == element.name }.any()) {
-                        return true
-                    }
-                }
-                return false
             }
         }
     }

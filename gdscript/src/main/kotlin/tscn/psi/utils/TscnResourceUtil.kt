@@ -48,8 +48,4 @@ object TscnResourceUtil {
     fun findTscnByResources(resourcePath: String, project: Project): Collection<TscnResourceHeader> {
         return TscnResourceIndex.INSTANCE.getGlobally(resourcePath, project)
     }
-
-    fun findConnectionsForResource(resource: TscnResourceHeader): Sequence<TscnConnectionHeader> {
-        return resource.containingFile.descendantsOfType<TscnConnectionHeader>()
-    }
 }

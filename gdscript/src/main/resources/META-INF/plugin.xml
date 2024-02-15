@@ -21,6 +21,7 @@
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider" />
+    <findUsagesHandlerFactory implementation="gdscript.codeInsight.GdFindUsageHandlerFactory" />
     <configurationType implementation="gdscript.run.GdRunConfigurationType" />
     <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer" />
     <defaultLiveTemplates file="/templates/GdScript.xml" />

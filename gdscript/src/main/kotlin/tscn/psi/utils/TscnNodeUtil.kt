@@ -19,6 +19,22 @@ object TscnNodeUtil {
 
     /** Header lines */
 
+    fun findNode(nodeHeaders: Sequence<TscnNodeHeader>, nodeName: String): TscnNodeHeader? {
+        for (nodeHeader in nodeHeaders) {
+            // if we look for the root node
+            if (nodeHeader.parentPath.isEmpty() && nodeName == ".") {
+                return nodeHeader
+                // if we look for first child
+            } else if (nodeHeader.parentPath == "." && nodeHeader.name == nodeName) {
+                return nodeHeader
+                // if we look for nested child
+            } else if ("${nodeHeader.parentPath}/${nodeHeader.name}" == nodeName) {
+                return nodeHeader
+            }
+        }
+        return null
+    }
+
     fun getName(element: TscnNodeHeader): String {
         val stub = element.stub;
         if (stub != null) return stub.getName();
