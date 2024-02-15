@@ -1,5 +1,6 @@
 package tscn.psi.search
 
+import com.intellij.model.PsiElementUsageInfo
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.PsiSearchHelper
@@ -42,7 +43,7 @@ abstract class AbstractTscnSearcher(val project: Project, scriptFile: PsiFile) {
 
             // check if node resource is one of the ones we are looking for
             if (sceneResources.contains(node.instanceResource) || scriptResource == node.scriptResource) {
-                result.add(UsageInfo(con))
+                result.add(PsiElementUsageInfo(con))
                 // check for early stop
                 if (earlyStop) return result
             }
