@@ -20,11 +20,11 @@ class GdFindUsageHandler(element: PsiElement) : FindUsagesHandler(element) {
         if (options.isUsages && element is GdMethodIdNmi) {
             val tscnMethodRefs = ReadAction.compute<List<UsageInfo>, Throwable> { TscnMethodSearcher(element).listMethodReferences() }
             tscnMethodRefs.forEach { usage -> processor.process(usage) }
-            return result && tscnMethodRefs.any()
+            return result || tscnMethodRefs.any()
         } else if (options.isUsages && element is GdSignalIdNmi) {
             val tscnSignalRefs = ReadAction.compute<List<UsageInfo>, Throwable> { TscnSignalSearcher(element).listSignalReferences() }
             tscnSignalRefs.forEach { usage -> processor.process(usage) }
-            return result && tscnSignalRefs.any()
+            return result || tscnSignalRefs.any()
         }
 
         return result
