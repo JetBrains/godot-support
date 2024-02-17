@@ -7,7 +7,7 @@ import gdscript.psi.GdVisitor
 import gdscript.utils.ProjectUtil.contentScope
 import tscn.psi.search.TscnSignalSearcher
 
-class GdUnusedSignalDetection : GdUnusedInspection() {
+class GdUnusedSignalInspection : GdUnusedInspection() {
 
     override val description: String = "Unused signal"
     override val text: String = "Remove [{NAME}] signal"

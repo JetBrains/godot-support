@@ -119,7 +119,11 @@
     <localInspection language="GdScript" shortName="UnusedSignal" enabledByDefault="true" level="WARNING"
                      bundle="messages.gdscript" key="inspections.check.unused.signal"
                      groupBundle="messages.gdscript" groupKey="inspections.group.unused.name"
-                     implementationClass="gdscript.inspection.GdUnusedSignalDetection"/>
+                     implementationClass="gdscript.inspection.GdUnusedSignalInspection"/>
+    <localInspection language="GdScript" shortName="UnusedClass" enabledByDefault="true" level="WARNING"
+                     bundle="messages.gdscript" key="inspections.check.unused.class"
+                     groupBundle="messages.gdscript" groupKey="inspections.group.unused.name"
+                     implementationClass="gdscript.inspection.GdUnusedClassInspection"/>
 
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" externalIdPrefix="gd."/>
