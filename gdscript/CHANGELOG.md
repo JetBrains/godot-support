@@ -8,6 +8,8 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 + Unused class check [#205](https://gitlab.com/IceExplosive/gdscript/-/issues/205)
 + Method auto-completion correction [#213](https://gitlab.com/IceExplosive/gdscript/-/issues/213)
 + Unused signal check [#210](https://gitlab.com/IceExplosive/gdscript/-/issues/210)
++ Unused signal check [#210](https://gitlab.com/IceExplosive/gdscript/-/issues/210)
++ Inner class parser bugfix [#212](https://gitlab.com/IceExplosive/gdscript/-/issues/212)
 
 ### 2.2.0 (13.2.2024)
 
