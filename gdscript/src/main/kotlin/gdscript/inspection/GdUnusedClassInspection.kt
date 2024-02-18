@@ -38,12 +38,11 @@ class GdUnusedClassInspection : GdUnusedInspection() {
                 registerUnused(o.containingFile, o.classNameNmi!!, holder);
             }
 
-            // support root without explicit class_name
+            // Support root without explicit class_name
             override fun visitInheritance(o: GdInheritance) {
-                super.visitInheritance(o)
-                // don't do a double check if there is an explicit class_name use that
-                if (o.parent.childrenOfType<GdClassNaming>().any()) return
-                //  check if file is linked to any scene
+                // Don't do a double check if there is an explicit class_name use that
+                if (o.parent.childrenOfType<GdClassNaming>().any() || o.parent is GdClassDeclTl) return
+                //  Check if file is linked to any scene
                 if (TscnResourceUtil.findTscnByResources(o.containingFile).any()) return
 
                 holder.registerProblem(
