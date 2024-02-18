@@ -2,6 +2,10 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.2.3 (19.2.2024)
+
++ Autoloaded inner types [#209](https://gitlab.com/IceExplosive/gdscript/-/issues/209)
+
 ### 2.2.2 (19.2.2024)
 
 + Completion for unique node names starting with % [#206](https://gitlab.com/IceExplosive/gdscript/-/issues/206)

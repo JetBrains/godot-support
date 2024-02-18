@@ -9,7 +9,6 @@ import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.GdTypeHint
 import gdscript.psi.GdTypeHintNm
 import gdscript.psi.utils.GdClassMemberUtil
-import gdscript.reference.GdClassMemberReference
 import gdscript.reference.GdTypeHintNmReference
 import gdscript.utils.PsiElementUtil.psi
 import gdscript.utils.PsiFileUtil.isInSdk

@@ -15,6 +15,7 @@ import gdscript.psi.*
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.GdCommonUtil
 import gdscript.psi.utils.GdInheritanceUtil
+import project.psi.util.ProjectAutoloadUtil
 import kotlin.reflect.KClass
 
 /**
@@ -54,7 +55,7 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         loadedClasses(container).forEach {
             if (GdCommonUtil.getName(it) == myName) return GdClassMemberReference.resolveId(it)
         }
-        PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java,)?.let { methodDecl ->
+        PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java)?.let { methodDecl ->
             PsiTreeUtil.findChildOfType(methodDecl, GdSuite::class.java)?.let { suite ->
                 loadedClasses(suite).forEach {
                     if (GdCommonUtil.getName(it) == myName) return GdClassMemberReference.resolveId(it)
@@ -75,7 +76,7 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         } else {
             container = GdClassUtil.getOwningClassElement(element)
             variants.addAll(GdClassCompletionUtil.allRootClasses(element.project))
-            PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java,)?.let { methodDecl ->
+            PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java)?.let { methodDecl ->
                 PsiTreeUtil.findChildOfType(methodDecl, GdSuite::class.java)?.let { suite ->
                     variants.addAll(loadedClasses(suite).map {
                         GdLookup.create(
@@ -85,6 +86,13 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
                         )
                     })
                 }
+            }
+            ProjectAutoloadUtil.listGlobals(element.project).forEach {
+                variants.add(GdLookup.create(
+                    it.key,
+                    priority = GdLookup.USER_DEFINED,
+                    icon = GdIcon.getEditorIcon(GdIcon.OBJECT),
+                ))
             }
         }
 
@@ -107,7 +115,11 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         if (global != null) return global
 
         val myId = GdClassUtil.getFullClassId(element)
-        return GdClassUtil.getClassIdElement("${myId}.${withoutLast}", element)
+        GdClassUtil.getClassIdElement("${myId}.${withoutLast}", element)?.let { return it }
+
+        ProjectAutoloadUtil.findFromAlias(withoutLast, element)?.let { return it }
+
+        return null
     }
 
     private fun enums(ownerClass: PsiElement): List<GdEnumDeclTl> {
@@ -143,7 +155,7 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         return list
     }
 
-    private fun <T:PsiElement> findRecursiveOfType(ownerClass: PsiElement, kClass: KClass<T>): List<T> {
+    private fun <T : PsiElement> findRecursiveOfType(ownerClass: PsiElement, kClass: KClass<T>): List<T> {
         val results = mutableListOf<T>()
         var par: PsiElement? = ownerClass
         while (par != null) {
