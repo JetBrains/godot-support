@@ -2,9 +2,12 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
-### 2.2.1 (WIP)
+### 2.2.1 (19.2.2024)
 
-+ Completion for unique node names starting with % [#206](https://gitlab.com/IceExplosive/gdscript/-/issues/206) 
++ Completion for unique node names starting with % [#206](https://gitlab.com/IceExplosive/gdscript/-/issues/206)
++ Unused class check [#205](https://gitlab.com/IceExplosive/gdscript/-/issues/205)
++ Method auto-completion correction [#213](https://gitlab.com/IceExplosive/gdscript/-/issues/213)
++ Unused signal check [#210](https://gitlab.com/IceExplosive/gdscript/-/issues/210)
 
 ### 2.2.0 (13.2.2024)
 
