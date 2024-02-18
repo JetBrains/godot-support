@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 
 class GdComplexRecoveryData : ParsingTestCase {
 
-    constructor(): super("", "gd", gdscript.GdNewParserDefinition())
+    constructor(): super("", "gd", gdscript.GdParserDefinition())
 
     @Test fun testLambda() = doTest(true)
     @Test fun testLambda2() = doTest(true)

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test
 
 class GdRecoveryParserTest : ParsingTestCase {
 
-    constructor(): super("", "gd", gdscript.GdNewParserDefinition())
+    constructor(): super("", "gd", gdscript.GdParserDefinition())
 
     @Test fun testInheritance() = doTest(true)
     @Test fun testClassName() = doTest(true)

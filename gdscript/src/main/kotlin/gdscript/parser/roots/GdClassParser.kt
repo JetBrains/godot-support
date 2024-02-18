@@ -16,7 +16,7 @@ object GdClassParser : GdBaseParser {
         var ok = b.consumeToken(CLASS, pin = true)
 
         ok = ok && b.mceIdentifier(CLASS_NAME_NMI)
-        ok = ok && GdInheritanceParser.parse(b, l + 1, true)
+        ok = ok && GdInheritanceParser.parseFromClass(b, l + 1, true, true)
         ok = ok && b.consumeToken(COLON)
         ok = ok && b.consumeToken(NEW_LINE)
         ok = ok && b.consumeToken(INDENT)

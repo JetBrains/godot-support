@@ -8,6 +8,10 @@ import gdscript.psi.GdTypes.*
 object GdInheritanceParser : GdBaseParser {
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
+        return this.parseFromClass(b, l, optional)
+    }
+
+    fun parseFromClass(b: GdPsiBuilder, l: Int, optional: Boolean, fromClass: Boolean = false): Boolean {
         if (!b.recursionGuard(l, "Inheritance")) return false
         if (!b.nextTokenIs(EXTENDS)) return optional
 
@@ -22,9 +26,11 @@ object GdInheritanceParser : GdBaseParser {
         }
 
         ok = b.exitSection(ok) // INHERITANCE_ID
-        ok = ok && b.mceEndStmt()
+        if (!fromClass) {
+            ok = ok && b.mceEndStmt()
+            GdRecovery.topLevel(b)
+        }
 
-        GdRecovery.topLevel(b)
         ok = b.exitSection(ok) // INHERITANCE
 
         return ok

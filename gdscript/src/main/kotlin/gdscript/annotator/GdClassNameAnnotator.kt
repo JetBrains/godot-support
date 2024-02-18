@@ -5,16 +5,13 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiTreeUtil
 import gdscript.action.quickFix.GdFileClassNameAction
+import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
-import gdscript.psi.GdClassDeclTl
-import gdscript.psi.GdClassNameNmi
-import gdscript.psi.GdClassNaming
-import gdscript.psi.GdInheritanceId
-import gdscript.psi.GdInheritanceIdNm
-import gdscript.psi.GdInheritanceSubIdNm
+import gdscript.psi.*
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.utils.PsiFileUtil.isInSdk
@@ -36,6 +33,8 @@ class GdClassNameAnnotator : Annotator {
                 classNameToFilename(element, holder)
                 resourceHasNoInnerClass(element, holder)
             }
+            is GdClassNaming -> isDuplicated(element, holder, "class_name")
+            is GdInheritance -> isDuplicated(element, holder, "Inheritance")
         }
     }
 
@@ -109,6 +108,16 @@ class GdClassNameAnnotator : Annotator {
                 .newAnnotation(HighlightSeverity.WEAK_WARNING, "Class name does not match filename")
                 .range(element.textRange)
                 .withFix(GdFileClassNameAction(filename, element))
+                .create()
+        }
+    }
+
+    private fun isDuplicated(element: PsiElement, holder: AnnotationHolder, type: String) {
+        if (PsiTreeUtil.getPrevSiblingOfType(element, element::class.java) !== null) {
+            holder
+                .newAnnotation(HighlightSeverity.ERROR, "$type already defined")
+                .range(element.textRange)
+                .withFix(GdRemoveElementsAction(element))
                 .create()
         }
     }

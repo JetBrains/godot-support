@@ -7,7 +7,7 @@ class GdParserTest : ParsingTestCase {
 
     // https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html
 
-    constructor(): super("", "gd", gdscript.GdNewParserDefinition())
+    constructor(): super("", "gd", gdscript.GdParserDefinition())
     //    constructor(): super("", "gd", gdscript.GdParserDefinition())
 
     @Test fun testExtension() = doTest(true)

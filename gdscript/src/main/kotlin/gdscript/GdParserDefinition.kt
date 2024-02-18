@@ -13,7 +13,7 @@ import com.intellij.psi.stubs.PsiFileStub
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.IStubFileElementType
 import com.intellij.psi.tree.TokenSet
-import gdscript.parser.GdParser
+import gdscript.parser.GdRootParser
 import gdscript.psi.GdFile
 import gdscript.psi.GdTypes
 
@@ -38,7 +38,7 @@ class GdParserDefinition : ParserDefinition {
     }
 
     override fun createParser(project: Project): PsiParser {
-        return GdParser()
+        return GdRootParser()
     }
 
     override fun getFileNodeType(): IFileElementType {
