@@ -6,7 +6,7 @@ import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdParamList
+import gdscript.psi.GdParam
 
 object GdMethodCompletionUtil {
 
@@ -68,25 +68,30 @@ object GdMethodCompletionUtil {
 
     fun buildParamHint(method: GdMethodDeclTl, wrap: Boolean = false): String {
         if (method.isVariadic) return "(vararg)"
-        return buildParamHint(method.paramList, wrap)
+        return buildParamHint(method.paramList?.paramList ?: emptyList(), wrap)
     }
 
     fun buildParamHint(method: GdFuncDeclEx, wrap: Boolean = false): String {
-        return buildParamHint(method.paramList, wrap)
+        return buildParamHint(method.paramList?.paramList ?: emptyList(), wrap)
     }
 
-    private fun buildParamHint(paramList: GdParamList?, wrap: Boolean = false): String {
-        if (paramList?.paramList?.isEmpty() ?: true) return "()"
+    private fun buildParamHint(paramList: List<GdParam>, wrap: Boolean = false): String {
+        if (paramList.isEmpty()) return "()"
         val wrapper = if (wrap) "\n" else " "
         val spacer = if (wrap) "    " else ""
 
-        val sb = StringBuilder("($wrapper")
-        paramList!!.paramList.forEach {
-            sb.append("$spacer${it.text},$wrapper")
+        val sb = StringBuilder("(")
+        if (wrap) sb.append("\n")
+        paramList.forEachIndexed { idx, param ->
+            sb.append("$spacer${param.text}")
+            // not the last param
+            if (idx < paramList.size - 1) {
+                sb.append(",$wrapper")
+            }
         }
+        if (wrap) sb.append("\n")
 
-        sb.append(")")
-        return sb.toString().replace(",)", ")")
+        return sb.append(")").toString();
     }
 
 }
