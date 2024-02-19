@@ -2,6 +2,10 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.2.4 (WIP)
+
++ Group unused inspections [#217](https://gitlab.com/IceExplosive/gdscript/-/issues/217)
+
 ### 2.2.3 (19.2.2024)
 
 + Autoloaded inner types [#209](https://gitlab.com/IceExplosive/gdscript/-/issues/209)
