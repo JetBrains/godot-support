@@ -3,12 +3,20 @@ package gdscript.library
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.runWriteAction
 import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.*
+import com.intellij.openapi.roots.ModifiableModelsProvider
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.roots.ModuleRootModificationUtil
+import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.impl.libraries.LibraryEx
 import com.intellij.openapi.roots.impl.libraries.LibraryEx.ModifiableModelEx
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
+import com.intellij.platform.templates.github.DownloadUtil
+import com.intellij.util.io.ZipUtil
+import com.intellij.util.io.createDirectories
+import com.intellij.util.io.delete
 import gdscript.model.GdHistory
 import gdscript.model.GdSdk
 import gdscript.utils.GdSdkUtil.COMMIT_HISTORY_PLACEHOLDER
@@ -18,18 +26,17 @@ import gdscript.utils.GdSdkUtil.sdkToVersion
 import gdscript.utils.GdSdkUtil.versionToSdkName
 import gdscript.utils.GdSdkUtil.versionToSdkUrl
 import gdscript.utils.GdSdkUtil.versionToSdkZip
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import org.apache.commons.io.FileUtils
-import java.io.File
+import org.apache.commons.io.filefilter.TrueFileFilter
 import java.net.URI
-import java.net.URL
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
 import java.nio.file.Files
-import java.nio.file.Paths
-import java.util.zip.ZipFile
+import java.nio.file.LinkOption
+import java.nio.file.Path
+import kotlin.io.path.Path
+import kotlin.io.path.exists
 
 object GdLibraryManager {
 
@@ -105,62 +112,40 @@ object GdLibraryManager {
 
                 modifier.getLibraryByName(LIBRARY_NAME)?.let { modifier.removeLibrary(it) }
                 listRegisteredSdks(project).forEach {
-                    it.rootProvider.getFiles(OrderRootType.SOURCES).forEach { dir ->
-                        try {
-                            FileUtils.deleteDirectory(File(dir.path))
-                        } catch (e: Error) {
-                        }
+                    it.rootProvider.getFiles(OrderRootType.SOURCES).forEach {
+                        dir -> Path(dir.path).delete(true)
                     }
                     modifier.removeLibrary(it)
                     tableModel.removeLibrary(it)
                 }
-                try {
-                    modifier.commit()
-                } catch (e: Error) {
-                }
-                try {
-                    tableModel.commit()
-                } catch (e: Error) {
-                }
 
-                val module = ModuleManager.getInstance(project!!).modules.first()
+                modifier.commit()
+                tableModel.commit()
+
+                val module = ModuleManager.getInstance(project).modules.first()
                 val rootModel = ModuleRootManager.getInstance(module).modifiableModel
-                rootModel.orderEntries.forEach {
-                    if (it is LibraryOrderEntry && it.libraryName == LIBRARY_NAME) {
-                    }
-                    rootModel.removeOrderEntry(it)
-                }
+                rootModel.orderEntries.forEach { rootModel.removeOrderEntry(it) }
                 rootModel.commit()
             }
         }
     }
 
-    fun download(version: String, directory: String) {
-        val zipName = "$directory/${version.versionToSdkZip()}"
-        val zipPath = Paths.get(zipName)
-        val sdkName = version.versionToSdkName()
+    fun download(progressIndicator: ProgressIndicator, version: String, directory: Path) : Path {
+        val zipPath = Path(directory.toString(), version.versionToSdkZip())
+        val sdkPath = Path(directory.toString(), version.versionToSdkName())
 
-        try {
-            Files.createDirectory(Paths.get(directory, sdkName))
-        } catch (e: Exception) {
+        // create sdk directory (delete old if necessary)
+        if (sdkPath.exists(LinkOption.NOFOLLOW_LINKS)) {
+            sdkPath.delete(true)
         }
-        val dir = Paths.get(directory, sdkName).toFile()
+        sdkPath.createDirectories()
 
-        URL(version.versionToSdkUrl())
-            .openStream()
-            .use { Files.copy(it, zipPath) }
-
-        ZipFile(zipName).use { zip ->
-            zip.entries().asSequence().forEach { entry ->
-                zip.getInputStream(entry).use { input ->
-                    File(dir, entry.name).outputStream().use { output ->
-                        input.copyTo(output)
-                    }
-                }
-            }
-        }
-
+        // download zip and extract
+        DownloadUtil.downloadAtomically(progressIndicator, version.versionToSdkUrl(), zipPath.toFile())
+        ZipUtil.extract(zipPath, sdkPath, TrueFileFilter.INSTANCE)
         Files.delete(zipPath)
+
+        return sdkPath
     }
 
 }

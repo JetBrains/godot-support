@@ -194,6 +194,8 @@
     <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdTraitFoldingBuilder" />
     <lang.psiStructureViewFactory language="GdScript" implementationClass="gdscript.structureView.GdStructureViewFactory" />
     <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler" />
+
+    <notificationGroup id="GdSdkNotifications" displayType="BALLOON" bundle="messages.gdscript" key="notification.group.sdk.name" />
   </extensions>
 
   <actions>
