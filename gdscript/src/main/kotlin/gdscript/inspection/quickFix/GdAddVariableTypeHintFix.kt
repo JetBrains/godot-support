@@ -5,40 +5,26 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.psi.GdAssignTyped
-import gdscript.psi.GdClassVarDeclTl
-import gdscript.psi.GdConstDeclSt
-import gdscript.psi.GdConstDeclTl
-import gdscript.psi.GdElementFactory
-import gdscript.psi.GdVarDeclSt
+import gdscript.psi.*
 
-class GdAddVariableTypeHintFix : LocalQuickFixOnPsiElement {
+class GdAddVariableTypeHintFix(element: PsiElement, private val desired: String, private val fullType: Boolean) : LocalQuickFixOnPsiElement(element) {
 
-    private val desired: String
-    private val fullType: Boolean
-
-    constructor(element: PsiElement, desired: String, fullType: Boolean) : super(element) {
-        this.desired = desired
-        this.fullType = fullType
-    }
-
-    override fun getFamilyName(): String = "Add return type"
-
-    override fun getText(): String = "Specify return type [$desired]"
+    override fun getFamilyName(): String = "Add variable type"
+    override fun getText(): String = "Specify variable type [$desired]"
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        if (fullType) fullType(project, file, startElement, endElement)
-        else shortType(project, file, startElement, endElement)
+        if (fullType) fullType(project)
+        else shortType(project)
     }
 
-    private fun fullType(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
+    private fun fullType(project: Project) {
         val typeHint = GdElementFactory.typed(project, desired)
 
         endElement.addAfter(typeHint, typedPosition(startElement))
     }
 
-    private fun shortType(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        val assigment = PsiTreeUtil.getChildOfType(endElement, GdAssignTyped::class.java) ?: return
+    private fun shortType(project: Project) {
+        val assigment = PsiTreeUtil.getChildOfType(startElement, GdAssignTyped::class.java) ?: return
 
         assigment.replace(GdElementFactory.shortAssignTyped(project))
     }

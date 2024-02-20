@@ -88,8 +88,6 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstVarIdAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdSetGetAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstructorAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdReturnTypeAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdMethodNameAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdLambdaAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdResourceTypeAnnotator" />
@@ -102,8 +100,12 @@
     <!-- Inspectors -->
     <localInspection language="GdScript" shortName="CheckVarType" enabledByDefault="true" level="WARNING"
                      bundle="messages.gdscript" key="inspections.check.return.type"
-                     groupBundle="messages.gdscript" groupKey="inspections.group.name"
+                     groupBundle="messages.gdscript" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdTypeHintInspection"/>
+    <localInspection language="GdScript" shortName="MethodValidation" enabledByDefault="true" level="WARNING"
+                     bundle="messages.gdscript" key="inspections.check.methods"
+                     groupBundle="messages.gdscript" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
+                     implementationClass="gdscript.inspection.GdInvalidMethodInspection"/>
     <localInspection language="GdScript" shortName="UnusedMethod" enabledByDefault="true" level="WARNING"
                      bundle="messages.gdscript" key="inspections.check.unused.method"
                      groupBundle="messages.gdscript" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"

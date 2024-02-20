@@ -16,6 +16,7 @@ object GdExprUtil {
     fun typeAccepts(from: String, into: String, project: Project): Boolean {
         if (from == into) return true
         if (from.isBlank() || into.isBlank()) return true
+        if (into == "void") return false
 
         // left = right
         var left = into

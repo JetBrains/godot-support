@@ -3,8 +3,21 @@ package gdscript.psi.utils
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdMethodIdNmi
 
 object GdMethodUtil {
+
+    /**
+     * Finds method in given owner by name for the parent structure
+     */
+    fun findParentMethodRecursive(element: GdMethodIdNmi) : GdMethodDeclTl? {
+        var par = GdInheritanceUtil.getExtendedElement(element.parent)
+        while (par != null) {
+            findMethod(par, element.name)?.let { return it }
+            par = GdInheritanceUtil.getExtendedElement(par)
+        }
+        return null
+    }
 
     /**
      * Finds method in given owner by name

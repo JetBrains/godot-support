@@ -80,19 +80,24 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdSignalIdNmi::class.java)!!.firstChild
     }
 
-    fun typeHintNm(project: Project, name: String): PsiElement {
+    fun typeHintNm(project: Project, name: String): GdTypeHintNm {
         val file = createFile(project, "extends Node\nvar variable: $name\n")
 
         return PsiTreeUtil.findChildOfType(file, GdTypeHintNm::class.java)!!
     }
 
-    fun typed(project: Project, type: String): PsiElement {
+    fun typed(project: Project, type: String): GdTyped {
         val file = createFile(project, "extends Node\nvar variable: $type\n")
 
         return PsiTreeUtil.findChildOfType(file, GdTyped::class.java)!!
     }
 
-    fun returnHintVal(project: Project, type: String): PsiElement {
+    fun returnHint(project: Project, type: String): GdReturnHint {
+        val file = createFile(project, "extends Node\nfunc fn() -> $type:\n\tpass")
+        return PsiTreeUtil.findChildOfType(file, GdReturnHint::class.java)!!
+    }
+
+    fun returnHintVal(project: Project, type: String): GdReturnHintVal {
         val file = createFile(project, "extends Node\nfunc fn() -> $type:\n\tpass")
 
         return PsiTreeUtil.findChildOfType(file, GdReturnHintVal::class.java)!!
@@ -104,13 +109,13 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdVarNmi::class.java)!!.firstChild
     }
 
-    fun callExpr(project: Project, expr: String): PsiElement {
+    fun callExpr(project: Project, expr: String): GdExpr {
         val file = createFile(project, "extends Node\nfunc fu():\n\t$expr");
 
         return PsiTreeUtil.findChildOfType(file, GdExpr::class.java)!!
     }
 
-    fun shortAssignTyped(project: Project): PsiElement {
+    fun shortAssignTyped(project: Project): GdAssignTyped {
         val file = createFile(project, "extends Node\nvar a := 1\n")
 
         return PsiTreeUtil.findChildOfType(file, GdAssignTyped::class.java)!!

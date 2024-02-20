@@ -2,10 +2,9 @@ package gdscript.inspection
 
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdMethodIdNmi
 import gdscript.psi.GdVisitor
-import gdscript.psi.utils.GdInheritanceUtil
+import gdscript.psi.utils.GdMethodUtil
 import gdscript.psi.utils.PsiGdMethodIdUtil
 import gdscript.utils.ProjectUtil.contentScope
 import tscn.psi.search.TscnMethodSearcher
@@ -21,7 +20,7 @@ class GdUnusedMethodInspection : GdUnusedInspection() {
                 // ignore constructor
                 if (PsiGdMethodIdUtil.isConstructor(o)) return
                 // ignore warnings for inherited methods
-                if (methodExistsInParentStructure(o)) return
+                if (GdMethodUtil.findParentMethodRecursive(o) != null) return
                 // check for content scope
                 if (anyReference(o, o.project.contentScope())) return
                 // check for tscn references
@@ -32,17 +31,4 @@ class GdUnusedMethodInspection : GdUnusedInspection() {
         }
     }
 
-    private fun methodExistsInParentStructure(element: GdMethodIdNmi) : Boolean {
-
-        var par = element.parent
-        while (par != null) {
-            if (par.children
-                    .filterIsInstance<GdMethodDeclTl>()
-                    .any { method -> method.name == element.name }) return true
-
-            par = GdInheritanceUtil.getExtendedElement(par)
-        }
-
-        return false
-    }
 }

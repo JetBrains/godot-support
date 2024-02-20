@@ -10,26 +10,13 @@ import gdscript.psi.GdReturnHintVal
 /**
  * Updates return type of function "func asd() -> CHANGE_TYPE:"
  */
-class GdChangeReturnTypeFix : LocalQuickFixOnPsiElement {
+class GdChangeReturnTypeFix(element: GdReturnHintVal, private val desired: String): LocalQuickFixOnPsiElement(element) {
 
-    private val element: GdReturnHintVal
-    private val desired: String
-
-    constructor(element: GdReturnHintVal, desired: String): super(element) {
-        this.element = element
-        this.desired = desired
-    }
-
-    override fun getFamilyName(): String {
-        return "Change return type to $desired"
-    }
-
-    override fun getText(): String {
-        return "Change return type to $desired"
-    }
+    override fun getFamilyName(): String = "Change return type"
+    override fun getText(): String = "Change return type to $desired"
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        element.replace(GdElementFactory.returnHintVal(project, desired))
+        startElement.replace(GdElementFactory.returnHintVal(project, desired))
     }
 
 }
