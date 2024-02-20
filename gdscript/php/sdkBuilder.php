@@ -35,13 +35,18 @@ foreach ($existingTags as $tag) {
     }
 }
 
-// Download and build sdks for newly released tags
-foreach ($toFetch as $tag) {
+$processSdk = function($tag) {
+    $sdkPrefix = "GdSdk ";
     $sdkFile = "$sdkPrefix$tag.7z";
+    $downloadTag = strtolower($tag);
+    if ($downloadTag != "master") {
+        $downloadTag = "$downloadTag-stable";
+    }
+
     exec("rm -R godot-master || true");
     exec("rm -R classesGd || true");
-    exec("wget -O - https://github.com/godotengine/godot/archive/$tag-stable.tar.gz | tar -xz");
-    exec("mv godot-$tag-stable godot-master");
+    exec("wget -O - https://github.com/godotengine/godot/archive/$downloadTag.tar.gz | tar -xz");
+    exec("mv godot-$downloadTag godot-master");
     exec("rm -R classesGd || true");
     exec("mkdir classesGd || true");
     exec("php classParser.php");
@@ -49,6 +54,13 @@ foreach ($toFetch as $tag) {
     exec("php annotationParser.php");
     exec("zip -r -j '$sdkFile' classesGd/*");
     exec("mv '$sdkFile' '../sdk/$sdkFile'");
-}
+};
 
-echo count($toFetch) > 0 ? 0 : 1;
+// Download and build sdks for newly released tags
+foreach ($toFetch as $tag) {
+    $processSdk($tag);
+}
+$processSdk("Master");
+
+echo 1; // With master there's always an update
+// echo count($toFetch) > 0 ? 0 : 1;

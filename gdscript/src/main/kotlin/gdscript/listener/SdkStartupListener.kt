@@ -33,7 +33,7 @@ class SdkStartupListener : ProjectActivity {
         if (!dir.exists()) dir.mkdirs()
 
         var registered = GdLibraryManager.listRegisteredSdks(project).firstOrNull()
-        val latest = GdLibraryManager.listAvailableSdks().find { it.startsWith(version) } ?: return
+        val latest = GdLibraryManager.listAvailableSdks().find { it.startsWith(version) } ?: "Master"
         val sdkPath = Paths.get(dirPath, latest.versionToSdkName()).toString()
 
         if (registered != null) {
@@ -46,7 +46,7 @@ class SdkStartupListener : ProjectActivity {
                 updated = "_"
             }
 
-            if (!registered.name!!.endsWith(latest) || updated != props.version) {
+            if (!registered.name!!.endsWith(latest) || updated != props.version || registered.name!!.endsWith("Master")) {
                 GdLibraryManager.clearSdks(project)
                 registered = null
             }
