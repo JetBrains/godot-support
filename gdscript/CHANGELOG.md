@@ -7,6 +7,7 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 + Group unused inspections [#217](https://gitlab.com/IceExplosive/gdscript/-/issues/217)
 + Master SDK version for dev builds of Godot [#208](https://gitlab.com/IceExplosive/gdscript/-/issues/208)
 + New SDK downloader - background tasks with notification of errors [#219](https://gitlab.com/IceExplosive/gdscript/-/issues/219)
++ Updated method checks + unreachable code inspection [#220](https://gitlab.com/IceExplosive/gdscript/-/issues/220)
 
 ### 2.2.3 (19.2.2024)
 
