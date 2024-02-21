@@ -33,9 +33,10 @@ class GdUnusedClassInspection : GdUnusedInspection() {
                 // check if there are class references
                 if (o.classNameNmi == null || anyReference(o.classNameNmi!!, holder.project.contentScope())) return
                 //  check if file is linked to any scene
-                if (TscnResourceUtil.findTscnByResources(o.containingFile).any()) return
+                val containingFile = o.containingFile
+                if (TscnResourceUtil.findTscnByResources(containingFile).any()) return
 
-                registerUnused(o.containingFile, o.classNameNmi!!, holder);
+                registerUnused(containingFile, o.classNameNmi!!, holder);
             }
 
             // Support root without explicit class_name
@@ -43,13 +44,14 @@ class GdUnusedClassInspection : GdUnusedInspection() {
                 // Don't do a double check if there is an explicit class_name use that
                 if (o.parent.childrenOfType<GdClassNaming>().any() || o.parent is GdClassDeclTl) return
                 //  Check if file is linked to any scene
-                if (TscnResourceUtil.findTscnByResources(o.containingFile).any()) return
+                val containingFile = o.containingFile
+                if (TscnResourceUtil.findTscnByResources(containingFile).any()) return
 
                 holder.registerProblem(
                         o,
                         description,
                         ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                        GdRemoveElementFix(o.containingFile, text.replace("{NAME}", o.containingFile.name)))
+                        GdRemoveElementFix(containingFile, text.replace("{NAME}", containingFile.name)))
             }
         }
     }

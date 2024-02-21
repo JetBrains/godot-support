@@ -20,7 +20,7 @@ class GdUnusedMethodInspection : GdUnusedInspection() {
                 // ignore constructor
                 if (PsiGdMethodIdUtil.isConstructor(o)) return
                 // ignore warnings for inherited methods
-                if (GdMethodUtil.findParentMethodRecursive(o) != null) return
+                if (GdMethodUtil.findParentMethodRecursive(o, holder.project) != null) return
                 // check for content scope
                 if (anyReference(o, holder.project.contentScope())) return
                 // check for tscn references

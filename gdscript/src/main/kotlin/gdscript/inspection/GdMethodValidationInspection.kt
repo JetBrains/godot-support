@@ -63,7 +63,7 @@ class GdInvalidMethodInspection : LocalInspectionTool() {
 
             private fun validateConstructor(methodId: GdMethodIdNmi, method: GdMethodDeclTl) {
                 // If parent has parameters - child must call super(args)
-                val parent = GdInheritanceUtil.getExtendedElement(method) ?: return;
+                val parent = GdInheritanceUtil.getExtendedElement(method, holder.project) ?: return;
                 val parentConstructor = GdMethodUtil.findMethod(parent, GdKeywords.INIT_METHOD) ?: return;
                 if (parentConstructor.parameters.isEmpty()) return;
 
@@ -140,7 +140,7 @@ class GdInvalidMethodInspection : LocalInspectionTool() {
             }
 
             private fun validateParentType(methodId: GdMethodIdNmi, hint : GdReturnHintVal?, returnType: String) {
-                val parent = GdMethodUtil.findParentMethodRecursive(methodId) ?: return
+                val parent = GdMethodUtil.findParentMethodRecursive(methodId, holder.project) ?: return
 
                 if (!GdExprUtil.typeAccepts(returnType, parent.returnType, holder.project)) {
                     holder.registerProblem(

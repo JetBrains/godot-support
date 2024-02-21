@@ -34,11 +34,23 @@ object GdInheritanceUtil {
      *
      * @return GdClassDeclTL|GdFile
      */
+    @Deprecated("Switch to getExtendedElement(element, project) to promote efficient project reference usage",
+            ReplaceWith("getExtendedElement(element, project)", "gdscript.psi.utils.GdInheritanceUtil.getExtendedElement", ))
     fun getExtendedElement(element: PsiElement): PsiElement? {
         return getExtendedElement(
             getExtendedClassId(element),
             element.project,
         );
+    }
+
+    /**
+     * @param element GdClassDeclTL|GdClassNaming|GdFile
+     * @param project
+     *
+     * @return GdClassDeclTL|GdFile
+     */
+    fun getExtendedElement(element: PsiElement, project: Project): PsiElement? {
+        return getExtendedElement(getExtendedClassId(element), project);
     }
 
     fun isExtending(element: PsiElement, className: String): Boolean {
