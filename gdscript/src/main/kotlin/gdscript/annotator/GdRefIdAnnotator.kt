@@ -10,6 +10,7 @@ import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.reference.GdClassMemberReference
 import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdProjectState
 import gdscript.utils.PsiElementUtil.getCallExpr
@@ -39,45 +40,49 @@ class GdRefIdAnnotator : Annotator {
             return
         }
 
-        var attribute = when (val resolved = GdClassMemberUtil.findDeclaration(element)) {
-            is GdMethodDeclTl -> {
-                if (resolved.containingFile.name.endsWith("GlobalScope.gd")) GdHighlighterColors.GLOBAL_FUNCTION
-                else if (resolved.isStatic) GdHighlighterColors.STATIC_METHOD_CALL
-                else GdHighlighterColors.METHOD_CALL
-            }
-            is PsiFile, is GdClassDeclTl, is GdClassNaming -> {
-                if (resolved.psi().containingFile.isInSdk()) GdHighlighterColors.ENGINE_TYPE
-                else GdHighlighterColors.CLASS_TYPE
-            }
-            null -> run {
-                if (element.text == "new"
-                    || GdClassMemberUtil.calledUpon(element)?.returnType == "Dictionary"
-                ) {
-                    return@run GdHighlighterColors.MEMBER
+        var attribute = GdHighlighterColors.METHOD_CALL
+        val reference = element.references.getOrNull(0)
+        if (reference is GdClassMemberReference) {
+            attribute = when (val resolved = reference.resolveDeclaration()) {
+                is GdMethodDeclTl -> {
+                    if (resolved.containingFile.name.endsWith("GlobalScope.gd")) GdHighlighterColors.GLOBAL_FUNCTION
+                    else if (resolved.isStatic) GdHighlighterColors.STATIC_METHOD_CALL
+                    else GdHighlighterColors.METHOD_CALL
+                }
+                is PsiFile, is GdClassDeclTl, is GdClassNaming -> {
+                    if (resolved.psi().containingFile.isInSdk()) GdHighlighterColors.ENGINE_TYPE
+                    else GdHighlighterColors.CLASS_TYPE
+                }
+                null -> run {
+                    if (element.text == "new"
+                        || GdClassMemberUtil.calledUpon(element)?.returnType == "Dictionary"
+                    ) {
+                        return@run GdHighlighterColors.MEMBER
+                    }
+
+                    val calledUponType = GdClassMemberUtil.calledUpon(element)
+                    // For undefined types do not mark it as error
+                    if (calledUponType != null) {
+                        if (PsiTreeUtil.findChildOfType(calledUponType, GdNodePath::class.java) != null)
+                            return@run GdHighlighterColors.MEMBER
+
+                        val callType = calledUponType.returnType
+                        if (arrayOf(GdKeywords.VARIANT, "", "Node", "Resource", "null").contains(callType))
+                            return@run GdHighlighterColors.MEMBER
+                    }
+
+                    if (element.getCallExpr() != null && GdClassMemberUtil.hasMethodCheck(element))
+                        return@run GdHighlighterColors.METHOD_CALL
+
+                        holder
+                            .newAnnotation(GdProjectState.selectedLevel(state), "Reference [${element.text}] not found")
+                            .range(element.textRange)
+                            .create()
+                        return
                 }
 
-                val calledUponType = GdClassMemberUtil.calledUpon(element)
-                // For undefined types do not mark it as error
-                if (calledUponType != null) {
-                    if (PsiTreeUtil.findChildOfType(calledUponType, GdNodePath::class.java) != null)
-                        return@run GdHighlighterColors.MEMBER
-
-                    val callType = calledUponType.returnType
-                    if (arrayOf(GdKeywords.VARIANT, "", "Node", "Resource", "null").contains(callType))
-                        return@run GdHighlighterColors.MEMBER
-                }
-
-                if (element.getCallExpr() != null && GdClassMemberUtil.hasMethodCheck(element))
-                    return@run GdHighlighterColors.METHOD_CALL
-
-                    holder
-                        .newAnnotation(GdProjectState.selectedLevel(state), "Reference [${element.text}] not found")
-                        .range(element.textRange)
-                        .create()
-                    return
+                else -> GdHighlighterColors.MEMBER
             }
-
-            else -> GdHighlighterColors.MEMBER
         }
 
         if (attribute == GdHighlighterColors.MEMBER && element.getCallExpr() != null) {

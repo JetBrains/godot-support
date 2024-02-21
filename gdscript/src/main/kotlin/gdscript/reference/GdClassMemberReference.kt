@@ -1,22 +1,24 @@
 package gdscript.reference
 
+import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.search.GlobalSearchScope
-import gdscript.completion.utils.*
+import gdscript.completion.utils.GdCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
-import gdscript.psi.utils.*
+import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.settings.GdProjectSettingsState
 import gdscript.utils.PsiElementUtil.psi
 
 /**
  * RefId reference to ClassNames, Variables, Constants, etc...
  */
-class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
+class GdClassMemberReference : PsiReferenceBase<GdNamedElement>, HighlightedReference {
 
     companion object {
         fun resolveId(element: PsiElement?): PsiElement? {
@@ -49,11 +51,17 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement> {
     override fun handleElementRename(newElementName: String): PsiElement {
         myElement.setName(newElementName)
 
-        return myElement;
+        return myElement
     }
 
     fun resolveDeclaration(): PsiElement? {
-        return GdClassMemberUtil.findDeclaration(element)?.psi()
+        val cache = ResolveCache.getInstance(element.project)
+        return cache.resolveWithCaching(
+            this,
+            ResolveCache.Resolver { _, _ -> GdClassMemberUtil.findDeclaration(element)?.psi() },
+            false,
+            false,
+        )
     }
 
     override fun resolve(): PsiElement? {
