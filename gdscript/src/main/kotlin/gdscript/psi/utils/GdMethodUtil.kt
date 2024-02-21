@@ -12,7 +12,7 @@ object GdMethodUtil {
      * Finds method in given owner by name for the parent structure
      */
     fun findParentMethodRecursive(element: GdMethodIdNmi, project: Project) : GdMethodDeclTl? {
-        var par = GdInheritanceUtil.getExtendedElement(element.parent)
+        var par = GdInheritanceUtil.getExtendedElement(element.parent, project)
         while (par != null) {
             findMethod(par, element.name)?.let { return it }
             par = GdInheritanceUtil.getExtendedElement(par, project)
