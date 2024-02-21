@@ -23,7 +23,7 @@ class GdUnusedClassInspection : GdUnusedInspection() {
             // support inner classes
             override fun visitClassDeclTl(o: GdClassDeclTl) {
                 // check if there are class references
-                if (o.classNameNmi == null || anyReference(o.classNameNmi!!, o.project.contentScope())) return
+                if (o.classNameNmi == null || anyReference(o.classNameNmi!!, holder.project.contentScope())) return
 
                 registerUnused(o, o.classNameNmi!!, holder);
             }
@@ -31,7 +31,7 @@ class GdUnusedClassInspection : GdUnusedInspection() {
             // support root class
             override fun visitClassNaming(o: GdClassNaming) {
                 // check if there are class references
-                if (o.classNameNmi == null || anyReference(o.classNameNmi!!, o.project.contentScope())) return
+                if (o.classNameNmi == null || anyReference(o.classNameNmi!!, holder.project.contentScope())) return
                 //  check if file is linked to any scene
                 if (TscnResourceUtil.findTscnByResources(o.containingFile).any()) return
 

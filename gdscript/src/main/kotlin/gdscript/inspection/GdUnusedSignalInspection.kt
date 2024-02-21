@@ -16,9 +16,9 @@ class GdUnusedSignalInspection : GdUnusedInspection() {
         return object : GdVisitor() {
             override fun visitSignalDeclTl(o: GdSignalDeclTl) {
                 // check for content scope
-                if (o.signalIdNmi == null || anyReference(o.signalIdNmi!!, o.project.contentScope())) return
+                if (o.signalIdNmi == null || anyReference(o.signalIdNmi!!, holder.project.contentScope())) return
                 // check for tscn references
-                if (TscnSignalSearcher(o.signalIdNmi!!).anySignalReference()) return
+                if (TscnSignalSearcher(o.signalIdNmi!!, holder.project).anySignalReference()) return
 
                 registerUnused(o, o.signalIdNmi!!, holder);
             }

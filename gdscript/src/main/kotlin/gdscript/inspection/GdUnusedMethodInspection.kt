@@ -22,9 +22,9 @@ class GdUnusedMethodInspection : GdUnusedInspection() {
                 // ignore warnings for inherited methods
                 if (GdMethodUtil.findParentMethodRecursive(o) != null) return
                 // check for content scope
-                if (anyReference(o, o.project.contentScope())) return
+                if (anyReference(o, holder.project.contentScope())) return
                 // check for tscn references
-                if (TscnMethodSearcher(o).anyMethodReference()) return
+                if (TscnMethodSearcher(o, holder.project).anyMethodReference()) return
 
                 registerUnused(o.parent, o, holder)
             }

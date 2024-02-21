@@ -1,9 +1,10 @@
 package tscn.psi.search
 
+import com.intellij.openapi.project.Project
 import com.intellij.usageView.UsageInfo
 import gdscript.psi.GdMethodIdNmi
 
-class TscnMethodSearcher(val method: GdMethodIdNmi) : AbstractTscnSearcher(method.project, method.containingFile) {
+class TscnMethodSearcher(val method: GdMethodIdNmi, project: Project) : AbstractTscnSearcher(project, method.containingFile) {
 
     fun anyMethodReference() : Boolean {
         // match methods on the "to" field

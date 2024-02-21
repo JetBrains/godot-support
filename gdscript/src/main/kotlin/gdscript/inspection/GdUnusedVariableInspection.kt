@@ -15,13 +15,13 @@ class GdUnusedVariableInspection : GdUnusedInspection() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : GdVisitor() {
             override fun visitVarDeclSt(o: GdVarDeclSt) {
-                if (o.varNmi == null || anyReference(o.varNmi!!, o.project.contentScope())) return
+                if (o.varNmi == null || anyReference(o.varNmi!!, holder.project.contentScope())) return
 
                 registerUnused(o, o.varNmi!!, holder);
             }
 
             override fun visitConstDeclSt(o: GdConstDeclSt) {
-                if (o.varNmi == null || anyReference(o.varNmi!!, o.project.contentScope())) return
+                if (o.varNmi == null || anyReference(o.varNmi!!, holder.project.contentScope())) return
 
                 registerUnused(o, o.varNmi!!, holder);
             }

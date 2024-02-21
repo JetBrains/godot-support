@@ -18,11 +18,11 @@ class GdFindUsageHandler(element: PsiElement) : FindUsagesHandler(element) {
 
         // in case of isUsage search for method/signal also search the scenes files
         if (options.isUsages && element is GdMethodIdNmi) {
-            val tscnMethodRefs = ReadAction.compute<List<UsageInfo>, Throwable> { TscnMethodSearcher(element).listMethodReferences() }
+            val tscnMethodRefs = ReadAction.compute<List<UsageInfo>, Throwable> { TscnMethodSearcher(element, project).listMethodReferences() }
             tscnMethodRefs.forEach { usage -> processor.process(usage) }
             return result || tscnMethodRefs.any()
         } else if (options.isUsages && element is GdSignalIdNmi) {
-            val tscnSignalRefs = ReadAction.compute<List<UsageInfo>, Throwable> { TscnSignalSearcher(element).listSignalReferences() }
+            val tscnSignalRefs = ReadAction.compute<List<UsageInfo>, Throwable> { TscnSignalSearcher(element, project).listSignalReferences() }
             tscnSignalRefs.forEach { usage -> processor.process(usage) }
             return result || tscnSignalRefs.any()
         }
