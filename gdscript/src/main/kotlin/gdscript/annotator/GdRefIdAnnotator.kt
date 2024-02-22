@@ -42,7 +42,7 @@ class GdRefIdAnnotator : Annotator {
 
         var attribute = GdHighlighterColors.METHOD_CALL
         val reference = element.references.getOrNull(0)
-        if (reference is GdClassMemberReference) {
+        if (reference?.isSoft == false && reference is GdClassMemberReference) {
             attribute = when (val resolved = reference.resolveDeclaration()) {
                 is GdMethodDeclTl -> {
                     if (resolved.containingFile.name.endsWith("GlobalScope.gd")) GdHighlighterColors.GLOBAL_FUNCTION
