@@ -412,7 +412,12 @@ object GdClassMemberUtil {
             GdSignalDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             GdClassDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             GdClassVarDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
-            // TODO Create stub for unnamed
+            // TODO Losos
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
+                members.addAll(listClassMemberDeclarations(it, static, search))
+                if (members.size > 0) return members
+            }
+            // TODO Losos Create stub for unnamed
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
                 if (it.name.isBlank()) {
                     it.enumValueList.forEach { value ->
