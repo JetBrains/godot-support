@@ -36,6 +36,7 @@ object GdEnumDeclElementType : IStubElementType<GdEnumDeclStub, GdEnumDeclTl>("e
 
     override fun indexStub(stub: GdEnumDeclStub, sink: IndexSink) {
         var name: String? = stub.name();
+        // TODO losos
         if (name == null || name.isEmpty()) {
             name = stub.values().keys.firstOrNull();
         }

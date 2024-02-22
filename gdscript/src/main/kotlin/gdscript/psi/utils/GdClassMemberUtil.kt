@@ -413,9 +413,11 @@ object GdClassMemberUtil {
             GdClassDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             GdClassVarDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             // TODO Create stub for unnamed
-            GdEnumDeclIndex.INSTANCE.getScoped("", project, scope).forEach {
-                it.enumValueList.forEach { value ->
-                    if (value.enumValueNmi.name == search) return mutableListOf(value)
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
+                if (it.name.isBlank()) {
+                    it.enumValueList.forEach { value ->
+                        if (value.enumValueNmi.name == search) return mutableListOf(value)
+                    }
                 }
             }
         } else {
