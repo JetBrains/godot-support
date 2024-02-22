@@ -21,6 +21,7 @@ class GdSyntaxHighlighter : SyntaxHighlighterBase() {
 
         init {
             fillMap(ATTRIBUTES, GdTokenTypeSet.KEYWORDS, GdHighlighterColors.KEYWORD)
+            fillMap(ATTRIBUTES, GdTokenTypeSet.VOID, GdHighlighterColors.BASE_TYPE)
             fillMap(ATTRIBUTES, GdTokenTypeSet.FLOW_KEYWORDS, GdHighlighterColors.FLOW_KEYWORDS)
             fillMap(ATTRIBUTES, GdTokenTypeSet.CLASS_TYPE, GdHighlighterColors.CLASS_TYPE)
             fillMap(ATTRIBUTES, GdTokenTypeSet.MEMBER, GdHighlighterColors.MEMBER)

@@ -35,17 +35,13 @@ class GdTypeHintAnnotator : Annotator {
     }
 
     private fun colorType(element: GdTypeHintNm, holder: AnnotationHolder) {
-        val name = element.text
-
         var color = GdHighlighterColors.CLASS_TYPE
-        if (GdKeywords.BUILT_TYPES.contains(name) || name == GdKeywords.VOID) {
-            color = GdHighlighterColors.KEYWORD
-        }
-
-        if (GdClassMemberUtil.listDeclarations(element, element.text).firstOrNull()
-                ?.psi()?.containingFile?.isInSdk() == true
-        )
+        if (GdKeywords.BUILT_TYPES.contains(element.name)) {
             color = GdHighlighterColors.BASE_TYPE
+        } else if (GdClassMemberUtil.listDeclarations(element, element.text).firstOrNull()
+                ?.psi()?.containingFile?.isInSdk() == true) {
+            color = GdHighlighterColors.ENGINE_TYPE
+        }
 
         holder
             .newSilentAnnotation(HighlightSeverity.INFORMATION)

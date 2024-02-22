@@ -18,7 +18,6 @@ interface GdTokenTypeSet {
             GdTypes.VAR,
             GdTypes.TRUE,
             GdTypes.FALSE,
-            GdTypes.VOID,
             GdTypes.BREAKPOINT,
             GdTypes.STATIC,
             GdTypes.VARARG,
@@ -46,6 +45,8 @@ interface GdTokenTypeSet {
             GdTypes.ANDAND,
             GdTypes.OROR,
         )
+
+        val VOID = TokenSet.create(GdTypes.VOID)
 
         // Pink
         val FLOW_KEYWORDS = TokenSet.create(
