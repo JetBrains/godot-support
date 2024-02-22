@@ -52,6 +52,11 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
         return StubIndex.getElements(key, name, element.project, GlobalSearchScope.fileScope(element.containingFile), PsiElement::class.java as Class<Psi>)
     }
 
+    fun getScoped(name: String, project: Project, scope: GlobalSearchScope): Collection<Psi> {
+        if (DumbService.isDumb(project)) return emptyList()
+        return StubIndex.getElements(key, name, project, scope, PsiElement::class.java as Class<Psi>)
+    }
+
     fun getNonEmptyKeys(project: Project): Collection<String> {
         if (DumbService.isDumb(project)) return emptyList();
         return getAllKeys(project).mapNotNull {

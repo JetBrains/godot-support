@@ -7,8 +7,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import gdscript.GdKeywords
-import gdscript.index.impl.GdClassNamingIndex
-import gdscript.index.impl.GdClassVarDeclIndex
+import gdscript.index.impl.*
 import gdscript.model.BoolVal
 import gdscript.psi.*
 import project.psi.util.ProjectAutoloadUtil
@@ -397,43 +396,68 @@ object GdClassMemberUtil {
 
         val members = mutableListOf<PsiElement>()
 
-        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdConstDeclTl::class.java).forEach {
-            if (search != null && it.name == search) return mutableListOf(it)
-            members.add(it)
-        }
-        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
-            if (it.enumDeclNmi != null) {
-                if (search != null && it.name == search) return mutableListOf(it)
-                members.add(it)
-            } else {
-                it.enumValueList.forEach { value ->
-                    if (search != null && value.enumValueNmi.name == search) return mutableListOf(value)
-                    members.add(value)
+        if (search != null) {
+            val project = element.project
+            val scope = GlobalSearchScope.fileScope(element.containingFile)
+
+            GdMethodDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let {
+                if ((static == null || it.isStatic == static)) {
+                    if (constructors || !it.isConstructor) {
+                        return mutableListOf(it)
+                    }
                 }
             }
-        }
-        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdSignalDeclTl::class.java).forEach {
-            if (search != null && it.name == search) return mutableListOf(it)
-            members.add(it)
-        }
-        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
-            if (search != null && it.name == search) return mutableListOf(it)
-            members.add(it)
-            members.addAll(listClassMemberDeclarations(it, static, search))
-        }
-
-        if (static != true) {
-            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassVarDeclTl::class.java).forEach {
+            GdConstDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
+            GdEnumDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
+            GdSignalDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
+            GdClassDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
+            GdClassVarDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
+            // TODO Create stub for unnamed
+            GdEnumDeclIndex.INSTANCE.getScoped("", project, scope).forEach {
+                it.enumValueList.forEach { value ->
+                    if (value.enumValueNmi.name == search) return mutableListOf(value)
+                }
+            }
+        } else {
+            // TODO losos
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdConstDeclTl::class.java).forEach {
                 if (search != null && it.name == search) return mutableListOf(it)
                 members.add(it)
             }
-        }
-
-        PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdMethodDeclTl::class.java).forEach {
-            if ((static == null || it.isStatic == static)) {
-                if (constructors || !it.isConstructor) {
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
+                if (it.name.isNotBlank()) {
                     if (search != null && it.name == search) return mutableListOf(it)
                     members.add(it)
+                } else {
+                    it.enumValueList.forEach { value ->
+                        if (search != null && value.enumValueNmi.name == search) return mutableListOf(value)
+                        members.add(value)
+                    }
+                }
+            }
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdSignalDeclTl::class.java).forEach {
+                if (search != null && it.name == search) return mutableListOf(it)
+                members.add(it)
+            }
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
+                if (search != null && it.name == search) return mutableListOf(it)
+                members.add(it)
+                members.addAll(listClassMemberDeclarations(it, static, search))
+            }
+
+            if (static != true) {
+                PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassVarDeclTl::class.java).forEach {
+                    if (search != null && it.name == search) return mutableListOf(it)
+                    members.add(it)
+                }
+            }
+
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdMethodDeclTl::class.java).forEach {
+                if ((static == null || it.isStatic == static)) {
+                    if (constructors || !it.isConstructor) {
+                        if (search != null && it.name == search) return mutableListOf(it)
+                        members.add(it)
+                    }
                 }
             }
         }
