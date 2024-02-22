@@ -17,7 +17,9 @@
     <fileType name="GdScript File" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd"/>
     <lang.parserDefinition language="GdScript" implementationClass="gdscript.GdParserDefinition"/>
     <lang.syntaxHighlighterFactory language="GdScript" implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
+    <lang.syntaxHighlighterFactory language="Tscn" implementationClass="tscn.highlighter.TscnSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
+    <colorSettingsPage implementation="tscn.highlighter.TscnColorSettingsPage"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider" />
@@ -96,6 +98,8 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdParamAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdExprTypeAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdCommentAnnotator" />
+
+    <annotator language="Tscn" implementationClass="tscn.annotator.TscnAnnotator" />
 
     <!-- Inspectors -->
     <localInspection language="GdScript" shortName="CheckVarType" enabledByDefault="true" level="WARNING"
