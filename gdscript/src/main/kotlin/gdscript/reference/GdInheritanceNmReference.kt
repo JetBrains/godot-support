@@ -48,8 +48,11 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
                 ?: return emptyArray()
             val container = GdClassUtil.getOwningClassElement(classId)
             val inners = PsiTreeUtil.getStubChildrenOfTypeAsList(container, GdClassDeclTl::class.java)
+            if (container is GdClassDeclTl) {
+                PsiTreeUtil.getStubChildrenOfTypeAsList(container.parent, GdClassDeclTl::class.java)
+            }
 
-            return inners.map { it.lookup() }.toTypedArray();
+            return inners.map { it.lookup() }.toTypedArray()
         }
 
         return GdClassCompletionUtil.allRootClasses(element.project)

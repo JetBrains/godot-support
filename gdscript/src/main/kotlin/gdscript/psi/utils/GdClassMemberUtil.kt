@@ -388,6 +388,7 @@ object GdClassMemberUtil {
         static: Boolean? = false,
         search: String? = null,
         constructors: Boolean = false,
+        isRecursive: Boolean = false,
     ): MutableList<PsiElement> {
         val classElement = when (element) {
             is GdFile, is GdClassDeclTl -> element
@@ -410,13 +411,21 @@ object GdClassMemberUtil {
             GdConstDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             GdEnumDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             GdSignalDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
-            GdClassDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             GdClassVarDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
-            // TODO Losos
+
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
+                if (it.name == search) return mutableListOf(it)
                 members.addAll(listClassMemberDeclarations(it, static, search))
                 if (members.size > 0) return members
             }
+            if (classElement is GdClassDeclTl && !isRecursive) {
+                PsiTreeUtil.getStubChildrenOfTypeAsList(classElement.parent, GdClassDeclTl::class.java).forEach {
+                    if (it.name == search) return mutableListOf(it)
+                    members.addAll(listClassMemberDeclarations(it, static, search, false, true))
+                    if (members.size > 0) return members
+                }
+            }
+
             // TODO Losos Create stub for unnamed
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
                 if (it.name.isBlank()) {
@@ -426,35 +435,33 @@ object GdClassMemberUtil {
                 }
             }
         } else {
-            // TODO losos
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdConstDeclTl::class.java).forEach {
-                if (search != null && it.name == search) return mutableListOf(it)
                 members.add(it)
             }
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
                 if (it.name.isNotBlank()) {
-                    if (search != null && it.name == search) return mutableListOf(it)
                     members.add(it)
                 } else {
                     it.enumValueList.forEach { value ->
-                        if (search != null && value.enumValueNmi.name == search) return mutableListOf(value)
                         members.add(value)
                     }
                 }
             }
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdSignalDeclTl::class.java).forEach {
-                if (search != null && it.name == search) return mutableListOf(it)
                 members.add(it)
             }
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
-                if (search != null && it.name == search) return mutableListOf(it)
                 members.add(it)
-                members.addAll(listClassMemberDeclarations(it, static, search))
+                members.addAll(listClassMemberDeclarations(it, static))
+            }
+            if (classElement is GdClassDeclTl && !isRecursive) {
+                PsiTreeUtil.getStubChildrenOfTypeAsList(classElement.parent, GdClassDeclTl::class.java).forEach {
+                    members.addAll(listClassMemberDeclarations(it, static, null, false, true))
+                }
             }
 
             if (static != true) {
                 PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassVarDeclTl::class.java).forEach {
-                    if (search != null && it.name == search) return mutableListOf(it)
                     members.add(it)
                 }
             }
@@ -462,7 +469,6 @@ object GdClassMemberUtil {
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdMethodDeclTl::class.java).forEach {
                 if ((static == null || it.isStatic == static)) {
                     if (constructors || !it.isConstructor) {
-                        if (search != null && it.name == search) return mutableListOf(it)
                         members.add(it)
                     }
                 }
