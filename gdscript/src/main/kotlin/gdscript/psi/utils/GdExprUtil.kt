@@ -26,10 +26,7 @@ object GdExprUtil {
         if (from.startsWith("Array")) arrays++
         if (into.startsWith("Array")) arrays++
 
-        // Only 1 is an array
-        if (arrays == 1) {
-            return allowedExceptions(left, right, project)
-        } else if (arrays > 1) {
+        if (arrays > 1) {
             left = left.parseFromSquare()
             right = right.parseFromSquare()
         }
