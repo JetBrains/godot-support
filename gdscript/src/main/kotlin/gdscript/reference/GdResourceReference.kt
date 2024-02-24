@@ -8,6 +8,7 @@ import com.intellij.psi.PsiReferenceBase
 import gdscript.completion.GdLookup
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdNamedElement
+import gdscript.psi.utils.GdCfgUtil
 import gdscript.utils.StringUtil.filterGdScripts
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
@@ -27,6 +28,7 @@ class GdResourceReference : PsiReferenceBase<GdNamedElement> {
 
     override fun handleElementRename(newElementName: String): PsiElement {
         element.setName(newElementName)
+        GdCfgUtil.renameValue(project, key.trim('"'), "res://$newElementName")
 
         return element
     }

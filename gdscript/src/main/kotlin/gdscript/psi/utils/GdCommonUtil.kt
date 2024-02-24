@@ -31,23 +31,27 @@ object GdCommonUtil {
     }
 
     fun setName(element: PsiNamedElement, newName: String): PsiElement {
+        val project = element.project
         val keyNode = element.node.firstChildNode
         if (keyNode != null) {
             val id = when(element) {
-                is GdClassNameNmi -> GdElementFactory.classNameNmi(element.project, newName)
-                is GdEnumDeclNmi -> GdElementFactory.enumDeclNmi(element.project, newName)
-                is GdEnumValueNmi -> GdElementFactory.enumValueNmi(element.project, newName)
-                is GdFuncDeclIdNmi -> GdElementFactory.funcDeclIdNmi(element.project, newName)
-                is GdGetMethodIdNm -> GdElementFactory.getMethodIdNm(element.project, newName)
-                is GdInheritanceIdNm -> GdElementFactory.inheritanceIdNm(element.project, newName)
-                is GdInheritanceSubIdNm -> GdElementFactory.inheritanceSubIdNm(element.project, newName)
-                is GdMethodIdNmi -> GdElementFactory.methodIdNmi(element.project, newName)
-                is GdRefIdNm -> GdElementFactory.refIdNm(element.project, newName)
-                is GdSetMethodIdNm -> GdElementFactory.setMethodIdNm(element.project, newName)
-                is GdSignalIdNmi -> GdElementFactory.signalIdNmi(element.project, newName)
-                is GdTypeHintNm -> GdElementFactory.typeHintNm(element.project, newName).firstChild
-                is GdStringValNm -> GdElementFactory.typeStringVal(element.project, newName)
-                is GdVarNmi -> GdElementFactory.varNmi(element.project, newName)
+                is GdClassNameNmi -> {
+                    GdCfgUtil.renameValue(project, element.name, newName)
+                    GdElementFactory.classNameNmi(project, newName)
+                }
+                is GdEnumDeclNmi -> GdElementFactory.enumDeclNmi(project, newName)
+                is GdEnumValueNmi -> GdElementFactory.enumValueNmi(project, newName)
+                is GdFuncDeclIdNmi -> GdElementFactory.funcDeclIdNmi(project, newName)
+                is GdGetMethodIdNm -> GdElementFactory.getMethodIdNm(project, newName)
+                is GdInheritanceIdNm -> GdElementFactory.inheritanceIdNm(project, newName)
+                is GdInheritanceSubIdNm -> GdElementFactory.inheritanceSubIdNm(project, newName)
+                is GdMethodIdNmi -> GdElementFactory.methodIdNmi(project, newName)
+                is GdRefIdNm -> GdElementFactory.refIdNm(project, newName)
+                is GdSetMethodIdNm -> GdElementFactory.setMethodIdNm(project, newName)
+                is GdSignalIdNmi -> GdElementFactory.signalIdNmi(project, newName)
+                is GdTypeHintNm -> GdElementFactory.typeHintNm(project, newName).firstChild
+                is GdStringValNm -> GdElementFactory.typeStringVal(project, newName)
+                is GdVarNmi -> GdElementFactory.varNmi(project, newName)
                 else -> return element
             }
             element.node.replaceChild(keyNode, id.node)
