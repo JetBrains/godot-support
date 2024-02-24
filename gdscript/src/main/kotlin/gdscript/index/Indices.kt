@@ -6,7 +6,7 @@ import gdscript.psi.*
 
 object Indices {
 
-    val VERSION = 14
+    val VERSION = 15
 
     val CLASS_NAMING = StubIndexKey.createIndexKey<String, GdClassNaming>("gdscript.classNaming")
     val CLASS_DECL = StubIndexKey.createIndexKey<String, GdClassDeclTl>("gdscript.classDecl")
@@ -17,7 +17,6 @@ object Indices {
     val METHOD_DECL = StubIndexKey.createIndexKey<String, GdMethodDeclTl>("gdscript.methodDecl")
     val SIGNAL_DECL = StubIndexKey.createIndexKey<String, GdSignalDeclTl>("gdscript.signal")
     val ENUM = StubIndexKey.createIndexKey<String, GdEnumDeclTl>("gdscript.enum")
-    val USER_FILES = StubIndexKey.createIndexKey<String, GdStringVal>("gdscript.userResource")
 
     val FILE_RES = ID.create<String, Void>("gdscript.fileResource")
 

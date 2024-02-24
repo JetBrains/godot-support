@@ -173,7 +173,7 @@ object PsiGdExprUtil {
                     }
 
                     return GdKeywords.INT
-                } else if (elementType == GdTypes.STRING_VAL) {
+                } else if (elementType == GdTypes.STRING_VAL_NM) {
                     return GdKeywords.STR
                 } else if (elementType == GdTypes.STRING) {
                     return GdKeywords.STR

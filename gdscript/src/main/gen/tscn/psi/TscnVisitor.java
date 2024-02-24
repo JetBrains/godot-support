@@ -36,7 +36,7 @@ public class TscnVisitor extends PsiElementVisitor {
   }
 
   public void visitHeaderValueVal(@NotNull TscnHeaderValueVal o) {
-    visitPsiElement(o);
+    visitNamedElement(o);
   }
 
   public void visitNodeHeader(@NotNull TscnNodeHeader o) {
@@ -57,6 +57,10 @@ public class TscnVisitor extends PsiElementVisitor {
 
   public void visitUnknownHeader(@NotNull TscnUnknownHeader o) {
     visitHeader(o);
+  }
+
+  public void visitNamedElement(@NotNull TscnNamedElement o) {
+    visitPsiElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {

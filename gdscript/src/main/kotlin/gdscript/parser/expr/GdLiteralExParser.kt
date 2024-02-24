@@ -25,7 +25,7 @@ object GdLiteralExParser : GdExprBaseParser {
             return true
         }
 
-        if (b.mcToken(STRING_VAL, STRING)) {
+        if (b.mcToken(STRING_VAL_NM, STRING)) {
             return true
         }
 

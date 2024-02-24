@@ -8,12 +8,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static tscn.psi.TscnTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tscn.psi.*;
 
-public class TscnHeaderValueValImpl extends ASTWrapperPsiElement implements TscnHeaderValueVal {
+public class TscnHeaderValueValImpl extends TscnNamedElementImpl implements TscnHeaderValueVal {
 
-  public TscnHeaderValueValImpl(@NotNull ASTNode node) {
+  public TscnHeaderValueValImpl(ASTNode node) {
     super(node);
   }
 
@@ -25,6 +24,18 @@ public class TscnHeaderValueValImpl extends ASTWrapperPsiElement implements Tscn
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof TscnVisitor) accept((TscnVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public String getName() {
+    return TscnPsiUtils.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement setName(@NotNull String newName) {
+    return TscnPsiUtils.setName(this, newName);
   }
 
 }

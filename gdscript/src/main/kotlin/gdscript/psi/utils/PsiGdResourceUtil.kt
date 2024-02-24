@@ -9,8 +9,8 @@ object PsiGdResourceUtil {
     val SEPARATOR = "/";
 
     @Deprecated("VirtualFileUtil")
-    fun resourcePath(file: VirtualFile): String {
-        return "res://${file.localPath().trimStart(File.separatorChar).split(File.separatorChar).joinToString(SEPARATOR)}"
+    fun resourcePath(file: VirtualFile, withPrefix: Boolean = true): String {
+        return "${if (withPrefix) "res://" else ""}${file.localPath().trimStart(File.separatorChar).split(File.separatorChar).joinToString(SEPARATOR)}"
     }
 
 }

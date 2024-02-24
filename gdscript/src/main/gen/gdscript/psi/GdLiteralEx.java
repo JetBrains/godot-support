@@ -1,9 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package gdscript.psi;
 
-import java.util.List;
 import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElement;
 
 public interface GdLiteralEx extends GdExpr {
 
@@ -11,6 +9,6 @@ public interface GdLiteralEx extends GdExpr {
   GdRefIdNm getRefIdNm();
 
   @Nullable
-  GdStringVal getStringVal();
+  GdStringValNm getStringVal();
 
 }

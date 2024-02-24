@@ -3,7 +3,6 @@ package gdscript.completion.utils
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.psi.PsiElement
 import gdscript.completion.GdLookup
-import gdscript.index.impl.GdUserFileIndex
 import gdscript.utils.PsiElementUtil.getCallExprOfParam
 import project.psi.util.ProjectInputUtil
 import tscn.psi.utils.TscnNodeUtil
@@ -61,17 +60,6 @@ object GdStringCompletionUtil {
                         color = GdLookup.COLOR_GROUP,
                     )
                 )
-        }
-    }
-
-    fun addUserFiles(element: PsiElement, result: CompletionResultSet) {
-        GdUserFileIndex.INSTANCE.userFiles(element.project).forEach {
-            result.addElement(
-                GdLookup.create(
-                    it.text.trim('"'),
-                    priority = GdLookup.USER_DEFINED,
-                )
-            )
         }
     }
 

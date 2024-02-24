@@ -1,13 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package gdscript.psi.impl;
 
-import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
 
 public class GdLiteralExImpl extends GdExprImpl implements GdLiteralEx {
@@ -35,8 +32,8 @@ public class GdLiteralExImpl extends GdExprImpl implements GdLiteralEx {
 
   @Override
   @Nullable
-  public GdStringVal getStringVal() {
-    return PsiTreeUtil.getChildOfType(this, GdStringVal.class);
+  public GdStringValNm getStringVal() {
+    return PsiTreeUtil.getChildOfType(this, GdStringValNm.class);
   }
 
 }

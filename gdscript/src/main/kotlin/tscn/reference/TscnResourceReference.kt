@@ -1,13 +1,13 @@
-package gdscript.reference
+package tscn.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import gdscript.completion.GdLookup
 import gdscript.index.impl.GdFileResIndex
-import gdscript.psi.GdNamedElement
 import gdscript.utils.StringUtil.filterGdScripts
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
@@ -15,12 +15,12 @@ import gdscript.utils.VirtualFileUtil.resourcePath
 /**
  * Resource "res://" reference to file
  */
-class GdResourceReference : PsiReferenceBase<GdNamedElement> {
+class TscnResourceReference : PsiReferenceBase<PsiNamedElement> {
 
     private var key: String = ""
     private var project: Project
 
-    constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
+    constructor(element: PsiElement) : super(element as PsiNamedElement, TextRange(0, element.textLength)) {
         key = element.text
         this.project = element.project
     }

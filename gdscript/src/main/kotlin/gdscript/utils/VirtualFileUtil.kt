@@ -27,8 +27,8 @@ object VirtualFileUtil {
         return path.substringBeforeLast('/')
     }
 
-    fun VirtualFile.resourcePath(): String {
-        return PsiGdResourceUtil.resourcePath(this)
+    fun VirtualFile.resourcePath(withPrefix: Boolean = true): String {
+        return PsiGdResourceUtil.resourcePath(this, withPrefix)
     }
 
     fun VirtualFile.getPsiFile(element: PsiElement): PsiFile? {

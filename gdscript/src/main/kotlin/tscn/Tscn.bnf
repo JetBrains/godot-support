@@ -59,7 +59,11 @@ connection_header ::= LSBR CONNECTION headerValue* RSBR {
 unknown_header ::= LSBR IDENTIFIER headerValue* RSBR
 headerValue ::= headerValue_nm EQ headerValue_val
 headerValue_nm ::= IDENTIFIER // TODO _nm extend
-headerValue_val ::= VALUE
+headerValue_val ::= VALUE {
+    mixin="TscnNamedElementImpl"
+    implements="TscnNamedElement"
+    methods=[getName setName]
+}
 
 dataLine ::= dataLine_nm EQ dataLine_value
 dataLine_nm ::= IDENTIFIER // TODO _nm extend

@@ -29,7 +29,7 @@ class GdTscnLineMarkerContributor : RelatedItemLineMarkerProvider() {
         if (element !is GdMethodIdNmi) return;
 
         val connections = TscnMethodSearcher(element, element.project).listMethodReferences()
-        if (connections.isEmpty()) return;
+        if (connections.isEmpty()) return
 
         val nodes = connections.mapNotNull { it.element }
 
@@ -62,7 +62,7 @@ class GdTscnLineMarkerContributor : RelatedItemLineMarkerProvider() {
                 }
             }
 
-        result.add(builder.createLineMarkerInfo(element))
+        result.add(builder.createLineMarkerInfo(element.firstChild))
     }
 
 }

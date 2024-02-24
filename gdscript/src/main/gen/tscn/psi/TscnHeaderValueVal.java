@@ -5,6 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TscnHeaderValueVal extends PsiElement {
+public interface TscnHeaderValueVal extends TscnNamedElement {
+
+  @NotNull
+  String getName();
+
+  @NotNull
+  PsiElement setName(@NotNull String newName);
 
 }

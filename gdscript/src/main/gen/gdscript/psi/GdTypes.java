@@ -13,7 +13,6 @@ import gdscript.psi.impl.GdEnumDeclElementType;
 import gdscript.psi.impl.GdInheritanceElementType;
 import gdscript.psi.impl.GdMethodDeclElementType;
 import gdscript.psi.impl.GdSignalDeclElementType;
-import gdscript.psi.impl.GdStringValElementType;
 import gdscript.psi.impl.*;
 
 public interface GdTypes {
@@ -106,7 +105,7 @@ public interface GdTypes {
   IElementType SIGN_EX = new GdElementType("SIGN_EX");
   IElementType STMT = new GdElementType("STMT");
   IElementType STMT_OR_SUITE = new GdElementType("STMT_OR_SUITE");
-  IElementType STRING_VAL = GdStringValElementType.getInstance("STRING_VAL");
+  IElementType STRING_VAL_NM = new GdElementType("STRING_VAL_NM");
   IElementType SUITE = new GdElementType("SUITE");
   IElementType TERNARY_EX = new GdElementType("TERNARY_EX");
   IElementType TOP_LEVEL_DECL = new GdElementType("TOP_LEVEL_DECL");
@@ -467,8 +466,8 @@ public interface GdTypes {
       else if (type == STMT_OR_SUITE) {
         return new GdStmtOrSuiteImpl(node);
       }
-      else if (type == STRING_VAL) {
-        return new GdStringValImpl(node);
+      else if (type == STRING_VAL_NM) {
+        return new GdStringValNmImpl(node);
       }
       else if (type == SUITE) {
         return new GdSuiteImpl(node);

@@ -46,6 +46,7 @@ object GdCommonUtil {
                 is GdSetMethodIdNm -> GdElementFactory.setMethodIdNm(element.project, newName)
                 is GdSignalIdNmi -> GdElementFactory.signalIdNmi(element.project, newName)
                 is GdTypeHintNm -> GdElementFactory.typeHintNm(element.project, newName).firstChild
+                is GdStringValNm -> GdElementFactory.typeStringVal(element.project, newName)
                 is GdVarNmi -> GdElementFactory.varNmi(element.project, newName)
                 else -> return element
             }

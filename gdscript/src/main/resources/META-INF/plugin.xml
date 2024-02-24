@@ -39,10 +39,6 @@
     <backgroundPostStartupActivity implementation="gdscript.listener.SdkStartupListener"/>
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
 
-    <!-- References -->
-    <!-- Implicit -->
-    <psi.implicitReferenceProvider implementation="gdscript.reference.implicit.GdResourceImplicitReference" />
-
     <!-- settings -->
     <projectService serviceImplementation="gdscript.settings.GdProjectSettingsState" />
     <projectConfigurable
@@ -84,6 +80,9 @@
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdTypeHintReferenceContributor" />
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdSetGetMethodIdReferenceContributor" />
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdRefIdReferenceContributor" />
+    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdResourceReferenceContributor" />
+    <!-- Tscn, Project, Config -->
+    <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceReferenceContributor" />
 
     <!-- Annotators -->
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />
@@ -143,7 +142,6 @@
     <stubIndex implementation="gdscript.index.impl.GdMethodDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdSignalDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdEnumDeclIndex" />
-    <stubIndex implementation="gdscript.index.impl.GdUserFileIndex" />
     <fileBasedIndex implementation="gdscript.index.impl.GdFileResIndex" />
     <!-- Tscn, Project, Config -->
     <stubElementTypeHolder class="tscn.psi.TscnTypes" externalIdPrefix="tscn."/>

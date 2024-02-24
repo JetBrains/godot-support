@@ -1,10 +1,16 @@
 package tscn.psi
 
+import com.intellij.psi.PsiElement
+import tscn.psi.utils.TscnCommonUtil
 import tscn.psi.utils.TscnConnectionUtil
 import tscn.psi.utils.TscnNodeUtil
 import tscn.psi.utils.TscnResourceUtil
 
 object TscnPsiUtils {
+
+    /** Named */
+    @JvmStatic fun getName(element: TscnNamedElement): String = TscnCommonUtil.getName(element)
+    @JvmStatic fun setName(element: TscnNamedElement, newName: String): PsiElement = TscnCommonUtil.setName(element, newName)
 
     /** Node */
     @JvmStatic fun getName(element: TscnNodeHeader): String = TscnNodeUtil.getName(element)
