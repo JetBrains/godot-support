@@ -6,6 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeaf
 import gdscript.GdKeywords
@@ -16,7 +17,6 @@ import gdscript.reference.GdClassMemberReference
 import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdProjectState
 import gdscript.utils.PsiElementUtil.getCallExpr
-import gdscript.utils.PsiElementUtil.psi
 import gdscript.utils.PsiFileUtil.isInSdk
 
 /**
@@ -59,7 +59,21 @@ class GdRefIdAnnotator : Annotator {
                 }
 
                 is PsiFile, is GdClassDeclTl, is GdClassNaming -> {
-                    if (resolved.psi().containingFile.isInSdk()) GdHighlighterColors.ENGINE_TYPE
+                    var psi = resolved
+                    if (resolved is GdClassNaming) {
+                        psi = psi.parent!!
+                    }
+
+                    if (psi.containingFile.isInSdk()) {
+                        if (psi.childrenOfType<GdMethodDeclTl>().any { it.isConstructor }) {
+                            holder
+                                .newAnnotation(HighlightSeverity.ERROR, "Builtin type $txt cannot be assigned to a variable")
+                                .range(element.textRange)
+                                .create()
+                            return
+                        }
+                        GdHighlighterColors.ENGINE_TYPE
+                    }
                     else GdHighlighterColors.CLASS_TYPE
                 }
 
