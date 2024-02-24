@@ -28,9 +28,9 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
     private var key: String = ""
     private var project: Project
 
-    constructor(element: GdNamedElement, project: Project) : super(element, TextRange(0, element.textLength)) {
+    constructor(element: GdNamedElement) : super(element, TextRange(0, element.textLength)) {
         key = element.parent.text.substring(0, element.textRangeInParent.endOffset)
-        this.project = project
+        this.project = element.project
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {

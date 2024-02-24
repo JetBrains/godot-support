@@ -1,9 +1,11 @@
 package gdscript.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdClassCompletionUtil
@@ -20,9 +22,11 @@ import gdscript.psi.utils.GdClassUtil
 class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
 
     private var key: String = ""
+    private var project: Project
 
     constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
         key = element.parent.text.substring(0, element.textRangeInParent.endOffset)
+        this.project = element.project
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
@@ -34,7 +38,13 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        return GdClassUtil.getClassIdElement(key, element)
+        val cache = ResolveCache.getInstance(project)
+        return cache.resolveWithCaching(
+            this,
+            ResolveCache.Resolver { _, _ -> GdClassUtil.getClassIdElement(key, project) },
+            false,
+            false,
+        )
     }
 
     override fun getVariants(): Array<LookupElement> {

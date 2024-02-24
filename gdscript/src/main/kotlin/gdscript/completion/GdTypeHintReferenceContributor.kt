@@ -20,7 +20,7 @@ class GdTypeHintReferenceContributor : PsiReferenceContributor() {
                     element: PsiElement,
                     context: ProcessingContext,
                 ): Array<PsiReference> {
-                    return arrayOf(GdTypeHintNmReference(element as GdNamedElement, element.project))
+                    return arrayOf(GdTypeHintNmReference(element as GdNamedElement))
                 }
             }
         );

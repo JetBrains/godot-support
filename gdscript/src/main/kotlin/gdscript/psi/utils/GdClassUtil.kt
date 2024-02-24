@@ -19,6 +19,12 @@ object GdClassUtil {
                 ?.let { return it.getPsiFile(project) }
     }
 
+    @Deprecated(
+        "Use above with supplied project", ReplaceWith(
+            "getClassIdElement(name, project)",
+            "gdscript.psi.utils.GdClassUtil.getClassIdElement"
+        )
+    )
     fun getClassIdElement(name: String, element: PsiElement): PsiElement? {
         return getClassIdElement(name, element.project)
     }

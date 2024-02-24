@@ -10,7 +10,7 @@ import gdscript.psi.*
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.GdInheritanceUtil
 import gdscript.reference.GdClassMemberReference
-import gdscript.reference.GdTypeHintNmReference
+import gdscript.utils.PsiReferenceUtil.resolveRef
 
 /**
  * Offers to fill missing branches into Enum match statement
@@ -25,7 +25,8 @@ class GdMatchStmtAnnotator : Annotator {
 
         val rootDecl = GdClassMemberReference(id).resolveDeclaration() ?: return;
         val typeHint = PsiTreeUtil.findChildrenOfType(rootDecl, GdTypeHintNm::class.java).lastOrNull() ?: return;
-        val enumNmi = GdTypeHintNmReference(typeHint, element.project).resolve() ?: return;
+        val enumNmi = typeHint.resolveRef() ?: return
+        // val enumNmi = GdTypeHintNmReference(typeHint).resolve() ?: return
         if (enumNmi !is GdEnumDeclNmi) return;
 
         val match: GdMatchSt = element.parent as GdMatchSt;
