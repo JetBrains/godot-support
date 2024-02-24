@@ -41,7 +41,7 @@ class GdRefIdAnnotator : Annotator {
         }
 
         var attribute = GdHighlighterColors.METHOD_CALL
-        val reference = element.references.getOrNull(0)
+        val reference = element.references.firstOrNull()
         if (reference?.isSoft == false && reference is GdClassMemberReference) {
             attribute = when (val resolved = reference.resolveDeclaration()) {
                 is GdMethodDeclTl -> {
@@ -49,10 +49,12 @@ class GdRefIdAnnotator : Annotator {
                     else if (resolved.isStatic) GdHighlighterColors.STATIC_METHOD_CALL
                     else GdHighlighterColors.METHOD_CALL
                 }
+
                 is PsiFile, is GdClassDeclTl, is GdClassNaming -> {
                     if (resolved.psi().containingFile.isInSdk()) GdHighlighterColors.ENGINE_TYPE
                     else GdHighlighterColors.CLASS_TYPE
                 }
+
                 null -> run {
                     if (element.text == "new"
                         || GdClassMemberUtil.calledUpon(element)?.returnType == "Dictionary"
@@ -74,11 +76,11 @@ class GdRefIdAnnotator : Annotator {
                     if (element.getCallExpr() != null && GdClassMemberUtil.hasMethodCheck(element))
                         return@run GdHighlighterColors.METHOD_CALL
 
-                        holder
-                            .newAnnotation(GdProjectState.selectedLevel(state), "Reference [${element.text}] not found")
-                            .range(element.textRange)
-                            .create()
-                        return
+                    holder
+                        .newAnnotation(GdProjectState.selectedLevel(state), "Reference [${element.text}] not found")
+                        .range(element.textRange)
+                        .create()
+                    return
                 }
 
                 else -> GdHighlighterColors.MEMBER

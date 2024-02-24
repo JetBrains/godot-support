@@ -5,6 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
@@ -22,9 +23,15 @@ import kotlin.reflect.KClass
 /**
  * ReturnType reference to ClassId & EnumDecl
  */
-class GdTypeHintNmReference(element: GdNamedElement, val project: Project) : PsiReferenceBase<GdNamedElement>(element, TextRange(0, element.textLength)) {
+class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
 
-    private var key = element.parent.text.substring(0, element.textRangeInParent.endOffset)
+    private var key: String = ""
+    private var project: Project
+
+    constructor(element: GdNamedElement, project: Project) : super(element, TextRange(0, element.textLength)) {
+        key = element.parent.text.substring(0, element.textRangeInParent.endOffset)
+        this.project = project
+    }
 
     override fun handleElementRename(newElementName: String): PsiElement {
         element.setName(newElementName)
@@ -32,35 +39,43 @@ class GdTypeHintNmReference(element: GdNamedElement, val project: Project) : Psi
     }
 
     override fun resolve(): PsiElement? {
-        val classId = GdClassNamingIndex.INSTANCE.getGlobally(key, project).firstOrNull()?.classNameNmi
-        if (classId != null) return classId
+        val cache = ResolveCache.getInstance(project)
+        return cache.resolveWithCaching(
+            this,
+            ResolveCache.Resolver { _, _ ->
+                val classId = GdClassNamingIndex.INSTANCE.getGlobally(key, project).firstOrNull()?.classNameNmi
+                if (classId != null) return@Resolver classId
 
-        val container = if (key.contains(".")) {
-            val ownerClassId = getOwnerClass() ?: return null
-            GdClassUtil.getOwningClassElement(ownerClassId)
-        } else {
-            GdClassUtil.getOwningClassElement(element)
-        }
-
-        val myName = element.name
-        enums(container).forEach {
-            if (it.name == myName) return it.enumDeclNmi
-        }
-        innerClasses(container).forEach {
-            if (it.name == myName) return it.classNameNmi
-        }
-        loadedClasses(container).forEach {
-            if (GdCommonUtil.getName(it) == myName) return GdClassMemberReference.resolveId(it)
-        }
-        PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java)?.let { methodDecl ->
-            PsiTreeUtil.findChildOfType(methodDecl, GdSuite::class.java)?.let { suite ->
-                loadedClasses(suite).forEach {
-                    if (GdCommonUtil.getName(it) == myName) return GdClassMemberReference.resolveId(it)
+                val container = if (key.contains(".")) {
+                    val ownerClassId = getOwnerClass() ?: return@Resolver null
+                    GdClassUtil.getOwningClassElement(ownerClassId)
+                } else {
+                    GdClassUtil.getOwningClassElement(element)
                 }
-            }
-        }
 
-        return null
+                val myName = element.name
+                enums(container).forEach {
+                    if (it.name == myName) return@Resolver it.enumDeclNmi
+                }
+                innerClasses(container).forEach {
+                    if (it.name == myName) return@Resolver it.classNameNmi
+                }
+                loadedClasses(container).forEach {
+                    if (GdCommonUtil.getName(it) == myName) return@Resolver GdClassMemberReference.resolveId(it)
+                }
+                PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java)?.let { methodDecl ->
+                    PsiTreeUtil.findChildOfType(methodDecl, GdSuite::class.java)?.let { suite ->
+                        loadedClasses(suite).forEach {
+                            if (GdCommonUtil.getName(it) == myName) return@Resolver GdClassMemberReference.resolveId(it)
+                        }
+                    }
+                }
+
+                return@Resolver null
+            },
+            false,
+            false,
+        )
     }
 
     override fun getVariants(): Array<LookupElement> {

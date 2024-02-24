@@ -3,7 +3,7 @@ package gdscript.completion
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
-import gdscript.psi.GdTypeHintNm
+import gdscript.psi.GdNamedElement
 import gdscript.psi.GdTypes
 import gdscript.reference.GdTypeHintNmReference
 
@@ -20,8 +20,7 @@ class GdTypeHintReferenceContributor : PsiReferenceContributor() {
                     element: PsiElement,
                     context: ProcessingContext,
                 ): Array<PsiReference> {
-                    if (element !is GdTypeHintNm) return emptyArray()
-                    return arrayOf(GdTypeHintNmReference(element, element.project));
+                    return arrayOf(GdTypeHintNmReference(element as GdNamedElement, element.project))
                 }
             }
         );

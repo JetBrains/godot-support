@@ -19,10 +19,10 @@ import gdscript.psi.utils.GdClassUtil
  */
 class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
 
-    private var key: String = "";
+    private var key: String = ""
 
     constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
-        key = element.text
+        key = element.parent.text.substring(0, element.textRangeInParent.endOffset)
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
@@ -30,7 +30,7 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
         if (isResource()) return element
 
         element.setName(newElementName)
-        return element;
+        return element
     }
 
     override fun resolve(): PsiElement? {

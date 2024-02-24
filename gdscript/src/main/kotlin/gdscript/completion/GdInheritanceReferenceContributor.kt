@@ -20,7 +20,7 @@ class GdInheritanceReferenceContributor : PsiReferenceContributor() {
             ),
             object : PsiReferenceProvider() {
                 override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-                    return arrayOf(GdInheritanceNmReference(element));
+                    return arrayOf(GdInheritanceNmReference(element))
                 }
             }
         );
