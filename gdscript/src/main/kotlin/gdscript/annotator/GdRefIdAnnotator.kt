@@ -25,20 +25,14 @@ import gdscript.utils.PsiFileUtil.isInSdk
  */
 class GdRefIdAnnotator : Annotator {
 
+    private val objectContinuation = setOf(GdTypes.LRBR, GdTypes.LSBR, GdTypes.DOT)
+
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val state = GdProjectSettingsState.getInstance(element).state.annotators
         if (element !is GdRefIdNm) return
         val txt = element.text
 
         if (txt == GdKeywords.SELF || txt == GdKeywords.SUPER) return;
-        // only check for standalone references (ex String.chr(1) is allowed)
-        if (GdKeywords.BUILT_TYPES.contains(txt) && element.nextLeaf(true)?.elementType != GdTypes.DOT) {
-            holder
-                .newAnnotation(HighlightSeverity.ERROR, "Builtin type $txt cannot be assigned to a variable")
-                .range(element.textRange)
-                .create()
-            return
-        }
         if (GdKeywords.MATH_CONSTANTS.contains(txt)) {
             holder
                 .newSilentAnnotation(HighlightSeverity.INFORMATION)
@@ -65,7 +59,8 @@ class GdRefIdAnnotator : Annotator {
                     }
 
                     if (psi.containingFile.isInSdk()) {
-                        if (psi.childrenOfType<GdMethodDeclTl>().any { it.isConstructor }) {
+                        var nextLeaf = element.nextLeaf(true)
+                        if (!objectContinuation.contains(nextLeaf.elementType) && psi.childrenOfType<GdMethodDeclTl>().any { it.isConstructor }) {
                             holder
                                 .newAnnotation(HighlightSeverity.ERROR, "Builtin type $txt cannot be assigned to a variable")
                                 .range(element.textRange)
