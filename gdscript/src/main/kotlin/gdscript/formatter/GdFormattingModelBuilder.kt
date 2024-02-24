@@ -51,6 +51,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             .before(GdTypes.TYPED).spaceIf(custom.SPACE_BEFORE_COLON)
             .after(GdTypes.COLON).spaceIf(custom.SPACE_AFTER_COLON)
             .after(GdTypes.ANNOTATION_TL).spaces(1)
+            .before(GdTypes.AS).spaces(1)
 
             /* Extends & ClassName */
             .between(GdTypes.CLASS_NAME_NMI, GdTypes.INHERITANCE).spacing(1, -1, 0, true, custom.LINES_AFTER_HEADER)
