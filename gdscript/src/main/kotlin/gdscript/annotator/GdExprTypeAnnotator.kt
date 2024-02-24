@@ -70,6 +70,7 @@ class GdExprTypeAnnotator : Annotator {
         if (left == right || right == GdKeywords.NULL) return
         if (left.isDynamicType() || right.isDynamicType()) return
         if (left == "PackedScene") return
+        if (left.endsWith("Array") && right.startsWith("Array")) return
         if (GdOperand.isAllowed(left, right, operator, element.project)) return
         if (operator == "=" && GdExprUtil.typeAccepts(right, left, element)) return
 

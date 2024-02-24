@@ -44,7 +44,7 @@ class GdRootContributor : CompletionContributor() {
         val previous = PsiTreeUtil.prevCodeLeaf(position.originalElement)
 
         if (previous === null || ROOT_POSITION.accepts(position)) {
-            result.addElement(GdLookup.create(GdKeywords.EXTENDS))
+            result.addElement(GdLookup.create("${GdKeywords.EXTENDS} ", presentable = GdKeywords.EXTENDS))
             // Main class scope
             addClassName(parameters, result)
             addTopLvlDecl(parameters, result)
