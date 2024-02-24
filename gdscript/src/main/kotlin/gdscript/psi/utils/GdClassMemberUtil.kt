@@ -553,14 +553,15 @@ object GdClassMemberUtil {
 
     /**
      * Looks for statements of has_method
-     *  if node.has_method("asd"):
+     *  if node[.subnodes].has_method("asd"):
      */
     fun hasMethodCheck(element: PsiElement): Boolean {
         // TODO je to dost na hrubo a nekontroluje to negace a pod
         return getConditioned(element) { el, stmt ->
-            val expr = PsiTreeUtil.findChildOfType(stmt, GdCallEx::class.java)
-            if (expr != null && expr.expr.text == "has_method") {
-                if (expr.argList?.argExprList?.firstOrNull()?.text == "\"${el.text}\"") {
+            val expressions = PsiTreeUtil.findChildrenOfType(stmt, GdCallEx::class.java)
+            val hasMethodExpr = expressions.filter { it.expr.textMatches("has_method") }.firstOrNull()
+            if (hasMethodExpr != null) {
+                if (hasMethodExpr.argList?.argExprList?.firstOrNull()?.textMatches("\"${el.text}\"") == true) {
                     return@getConditioned true
                 }
             }
