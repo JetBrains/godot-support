@@ -29,6 +29,7 @@ object GdKeywords {
     const val INF = "INF"
     const val TAU = "TAU"
     const val PI = "PI"
+    val MATH_CONSTANTS = setOf(PI, TAU, INF, NAN);
 
     /** Return types */
     const val INT = "int"

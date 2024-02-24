@@ -6,6 +6,8 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.nextLeaf
 import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.*
@@ -29,9 +31,15 @@ class GdRefIdAnnotator : Annotator {
         val txt = element.text
 
         if (txt == GdKeywords.SELF || txt == GdKeywords.SUPER) return;
-        if (GdKeywords.BUILT_TYPES.contains(txt)
-            || arrayOf(GdKeywords.PI, GdKeywords.TAU, GdKeywords.INF, GdKeywords.NAN).contains(txt)
-        ) {
+        // only check for standalone references (ex String.chr(1) is allowed)
+        if (GdKeywords.BUILT_TYPES.contains(txt) && element.nextLeaf(true)?.elementType != GdTypes.DOT) {
+            holder
+                .newAnnotation(HighlightSeverity.ERROR, "Builtin type $txt cannot be assigned to a variable")
+                .range(element.textRange)
+                .create()
+            return
+        }
+        if (GdKeywords.MATH_CONSTANTS.contains(txt)) {
             holder
                 .newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .range(element.textRange)
