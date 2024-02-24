@@ -22,6 +22,8 @@ object GdIcon {
     const val RESOURCE = "Mesh"
     const val STRING = "String"
     const val OVERRIDE = "MethodOverride"
+    const val ANIMATION = "Animation"
+    const val NODE = "Node"
 
     private var editorIcons = HashMap<String, Icon>()
 

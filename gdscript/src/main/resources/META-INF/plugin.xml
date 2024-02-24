@@ -55,7 +55,7 @@
     <!-- Line markers -->
     <runLineMarkerContributor language="GdScript" implementationClass="gdscript.lineMarker.GdRunLineMarkerProvider" />
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdResourceLineMarkerContributor" />
-    <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdSignalLineMarkerContributor" />
+    <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdTscnLineMarkerContributor" />
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdTraitLineMarkerContributor" />
     <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdInheritanceLineMarkerContributor" />
     <!-- Tscn, Project, Config -->
