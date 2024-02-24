@@ -1,6 +1,7 @@
 package gdscript.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
@@ -21,13 +22,9 @@ import kotlin.reflect.KClass
 /**
  * ReturnType reference to ClassId & EnumDecl
  */
-class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
+class GdTypeHintNmReference(element: GdNamedElement, val project: Project) : PsiReferenceBase<GdNamedElement>(element, TextRange(0, element.textLength)) {
 
-    private var key: String = ""
-
-    constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
-        key = element.parent.text.substring(0, element.textRangeInParent.endOffset)
-    }
+    private var key = element.parent.text.substring(0, element.textRangeInParent.endOffset)
 
     override fun handleElementRename(newElementName: String): PsiElement {
         element.setName(newElementName)
@@ -35,7 +32,7 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        val classId = GdClassNamingIndex.INSTANCE.getGlobally(key, element).firstOrNull()?.classNameNmi
+        val classId = GdClassNamingIndex.INSTANCE.getGlobally(key, project).firstOrNull()?.classNameNmi
         if (classId != null) return classId
 
         val container = if (key.contains(".")) {
@@ -75,7 +72,7 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
             container = GdClassUtil.getOwningClassElement(classId)
         } else {
             container = GdClassUtil.getOwningClassElement(element)
-            variants.addAll(GdClassCompletionUtil.allRootClasses(element.project))
+            variants.addAll(GdClassCompletionUtil.allRootClasses(project))
             PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java)?.let { methodDecl ->
                 PsiTreeUtil.findChildOfType(methodDecl, GdSuite::class.java)?.let { suite ->
                     variants.addAll(loadedClasses(suite).map {
@@ -87,7 +84,7 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
                     })
                 }
             }
-            ProjectAutoloadUtil.listGlobals(element.project).forEach {
+            ProjectAutoloadUtil.listGlobals(project).forEach {
                 variants.add(GdLookup.create(
                     it.key,
                     priority = GdLookup.USER_DEFINED,

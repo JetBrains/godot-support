@@ -3,14 +3,14 @@ package gdscript.annotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
+import gdscript.index.impl.GdClassIdIndex
 import gdscript.psi.GdTypeHint
 import gdscript.psi.GdTypeHintNm
-import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.reference.GdTypeHintNmReference
-import gdscript.utils.PsiElementUtil.psi
 import gdscript.utils.PsiFileUtil.isInSdk
 
 /**
@@ -19,27 +19,33 @@ import gdscript.utils.PsiFileUtil.isInSdk
 class GdTypeHintAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        when (element) {
-            is GdTypeHint -> existingType(element, holder)
-            is GdTypeHintNm -> colorType(element, holder)
-        }
-    }
+        if (element !is GdTypeHint) return
 
-    private fun existingType(element: GdTypeHint, holder: AnnotationHolder) {
-        if (GdTypeHintNmReference(element.typeHintNmList.last()).resolve() == null) {
+        val project = element.project
+        val typeHints = element.typeHintNmList
+
+        if (invalidType(typeHints.last(), project)) {
             holder
                 .newAnnotation(HighlightSeverity.ERROR, "Invalid type")
                 .range(element.textRange)
                 .create()
         }
+
+        // color all type hints
+        typeHints.forEach{ colorTypeHints(it, project, holder)}
     }
 
-    private fun colorType(element: GdTypeHintNm, holder: AnnotationHolder) {
+    private fun invalidType(element: GdTypeHintNm, project: Project) : Boolean {
+        // don't spend time on resolving builtin types
+        if (GdKeywords.BUILT_TYPES.contains(element.name)) return false
+        return GdTypeHintNmReference(element, project).resolve() == null
+    }
+
+    private fun colorTypeHints(element: GdTypeHintNm, project: Project, holder: AnnotationHolder) {
         var color = GdHighlighterColors.CLASS_TYPE
         if (GdKeywords.BUILT_TYPES.contains(element.name)) {
             color = GdHighlighterColors.BASE_TYPE
-        } else if (GdClassMemberUtil.listDeclarations(element, element.text).firstOrNull()
-                ?.psi()?.containingFile?.isInSdk() == true) {
+        } else if (GdClassIdIndex.INSTANCE.getGloballyResolved(element.name, project).firstOrNull()?.containingFile?.isInSdk() == true) {
             color = GdHighlighterColors.ENGINE_TYPE
         }
 

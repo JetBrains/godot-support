@@ -25,7 +25,7 @@ class GdMatchStmtAnnotator : Annotator {
 
         val rootDecl = GdClassMemberReference(id).resolveDeclaration() ?: return;
         val typeHint = PsiTreeUtil.findChildrenOfType(rootDecl, GdTypeHintNm::class.java).lastOrNull() ?: return;
-        val enumNmi = GdTypeHintNmReference(typeHint).resolve() ?: return;
+        val enumNmi = GdTypeHintNmReference(typeHint, element.project).resolve() ?: return;
         if (enumNmi !is GdEnumDeclNmi) return;
 
         val match: GdMatchSt = element.parent as GdMatchSt;
