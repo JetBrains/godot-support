@@ -2,6 +2,10 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.3.0 (WIP)
+
++ File rename with references [#218](https://gitlab.com/IceExplosive/gdscript/-/issues/218)
+
 ### 2.2.6 (26.2.2024)
 
 + Extending sibling class [#227](https://gitlab.com/IceExplosive/gdscript/-/issues/227)
