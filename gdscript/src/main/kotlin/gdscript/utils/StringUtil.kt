@@ -36,8 +36,8 @@ object StringUtil {
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     }
 
-    fun List<String>.filterGdScripts(): Array<String> {
-        return this.filter { it.endsWith(".gd") }.toTypedArray();
+    fun List<String>.filterGdTscn(): Array<String> {
+        return this.filter { it.endsWith(".gd") || it.endsWith(".tscn") }.toTypedArray()
     }
 
     fun String.parseFromSquare(): String {

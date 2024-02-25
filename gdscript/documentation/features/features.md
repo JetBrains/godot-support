@@ -105,6 +105,11 @@ Please report any issues you encounter - this is still yet to be battle tested
 </details>
 
 <details>
+    <summary>Inherited scene</summary>
+    <img src="../../screens/features/line_marker/inherited_scene.png" />
+</details>
+
+<details>
     <summary>Color picker</summary>
     <img src="../../screens/features/line_marker/color_picker.png" />
 </details>

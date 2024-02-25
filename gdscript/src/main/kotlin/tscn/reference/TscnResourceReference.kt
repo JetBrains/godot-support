@@ -8,7 +8,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import gdscript.completion.GdLookup
 import gdscript.index.impl.GdFileResIndex
-import gdscript.utils.StringUtil.filterGdScripts
+import gdscript.utils.StringUtil.filterGdTscn
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
 
@@ -44,7 +44,7 @@ class TscnResourceReference : PsiReferenceBase<PsiNamedElement> {
 
     override fun getVariants(): Array<LookupElement> {
         return GdFileResIndex.INSTANCE.getNonEmptyKeys(project)
-            .filterGdScripts().map {
+            .filterGdTscn().map {
                 GdLookup.create(
                     "\"$it\"",
                     priority = GdLookup.REMOTE_DEFINED,

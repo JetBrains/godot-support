@@ -9,7 +9,7 @@ import gdscript.completion.GdLookup
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdNamedElement
 import gdscript.psi.utils.GdCfgUtil
-import gdscript.utils.StringUtil.filterGdScripts
+import gdscript.utils.StringUtil.filterGdTscn
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
 
@@ -46,7 +46,7 @@ class GdResourceReference : PsiReferenceBase<GdNamedElement> {
 
     override fun getVariants(): Array<LookupElement> {
         return GdFileResIndex.INSTANCE.getNonEmptyKeys(project)
-            .filterGdScripts().map {
+            .filterGdTscn().map {
                 GdLookup.create(
                     "\"$it\"",
                     priority = GdLookup.REMOTE_DEFINED,
