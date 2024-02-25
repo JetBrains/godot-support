@@ -21,12 +21,6 @@ Supports only Godot 4.0 and higher
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
-## Help wanted with
-
-- Debugger - if there is any miracle worker, I'd love to get some help with implementing debugger within this plugin.  
-JetBrains still lacks any documentation (for many years it still "Available soon") but I haven't found out any
-for GodotEngine as well apart from adding --remote-debug with port. Is there any API overview of what GodotEngine sends/expects?
-
 ## Update 12.2.2024
 
 With latest version 2.2.0 there's an update for TscnFiles -> highlighting possible via TextMate plugin,
