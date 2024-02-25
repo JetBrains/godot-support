@@ -205,6 +205,18 @@ foreach ($files as $filepath) {
         $data .= "}\n";
     }
 
+    // GlobalScope enums can be accesses both ways as named & unnamed
+    if ($class_name == "_GlobalScope") {
+        foreach ($enums as $key => $values) {
+            $data .= "#enum $key\n";
+            $data .= "enum $key {\n";
+            foreach ($values as $value) {
+                $data .= "    $value";
+            }
+            $data .= "}\n";
+        }
+    }
+
     /** Variables */
     $getSetMethods = "";
     // TODO tohle by se mělo začlenit do hintů?
