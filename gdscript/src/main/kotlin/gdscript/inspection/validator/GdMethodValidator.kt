@@ -46,7 +46,7 @@ class GdMethodValidator(val project : Project, val returnType: String) {
             // if it always returns, this code is unreachable
             if (alwaysReturn) {
                 unreachableStatements.add(statement)
-                return alwaysReturns
+                return true
             } else if (statement is GdFlowSt && statement.type == GdKeywords.FLOW_RETURN) {
                 checkReturnStatement(statement)
                 alwaysReturn = true
