@@ -145,12 +145,31 @@ Please report any issues you encounter - this is still yet to be battle tested
     <img src="../../screens/features/setting/code_style.png" />
 </details>
 
-### Type checks
+### Validations
+
+#### Type checks
 
 <details>
     <summary>is/has conditioned type</summary>
-    <img src="../../screens/features/is_has.png" />
+    <img src="../../screens/features/validations/is_has.png" />
 </details>
+<details>
+    <summary>is/has correct return</summary>
+    <img src="../../screens/features/validations/correct_return.png" />
+</details>
+
+#### Method correctness
+
+<details>
+    <summary>unreachable code</summary>
+    <img src="../../screens/features/validations/unreachable_code.png" />
+</details>
+
+<details>
+    <summary>all paths return</summary>
+    <img src="../../screens/features/validations/all_paths_return.png" />
+</details>
+
 
 ### Actions
 
