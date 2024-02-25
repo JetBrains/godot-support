@@ -1,21 +1,23 @@
 package gdscript.action
 
+import PluginConstants
 import com.intellij.execution.ProgramRunnerUtil
 import com.intellij.execution.RunManager
 import com.intellij.execution.RunnerAndConfigurationSettings
 import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.icons.AllIcons
 import com.intellij.ide.actions.runAnything.RunAnythingAction
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiNamedElement
-import com.intellij.psi.search.GlobalSearchScope
-import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.run.GdConfigurationFactory
 import gdscript.run.GdRunConfiguration
 import gdscript.run.GdRunConfigurationType
-import tscn.index.impl.TscnResourceIndex
+import tscn.psi.utils.TscnResourceUtil
 
 class GdRunAction : RunAnythingAction {
     val element: PsiNamedElement
@@ -48,7 +50,8 @@ class GdRunAction : RunAnythingAction {
 
     private fun prepareAction(): RunnerAndConfigurationSettings? {
         val name = getName()
-        val configuration = RunManager.getInstance(element.project)
+        val project = element.project
+        val configuration = RunManager.getInstance(project)
             .getConfigurationSettingsList(GdRunConfigurationType::class.java)
             .find { it.configuration is GdRunConfiguration && it.name == name }
 
@@ -56,15 +59,22 @@ class GdRunAction : RunAnythingAction {
             return configuration
         }
 
-        val manager: RunManager = RunManager.getInstance(element.project)
+        val manager: RunManager = RunManager.getInstance(project)
         val template = manager.getConfigurationTemplate(GdConfigurationFactory).configuration as GdRunConfiguration
-        val current = GdRunConfiguration(element.project, GdConfigurationFactory, name)
+        val current = GdRunConfiguration(project, GdConfigurationFactory, name)
 
-        val filename = PsiGdFileUtil.filepath(element)
-        val script = TscnResourceIndex.INSTANCE.get("${GdKeywords.RESOURCE_PREFIX}$filename", element.project, GlobalSearchScope.allScope(element.project))
-            .firstOrNull() ?: return null
+        if (template.godotExe == null) {
+            createWarning(project, "Godot executable not set in template, please look at installation instructions")
+            return null
+        }
 
-        current.tscn = PsiGdFileUtil.filepath(script.containingFile)
+        val scenes = TscnResourceUtil.findTscnByResources(element)
+        if (scenes.isEmpty()) {
+            createWarning(project, "No scene file found")
+            return null
+        }
+
+        current.tscn = scenes.first().containingFile.virtualFile.path
         current.godotExe = template.godotExe
         val action: RunnerAndConfigurationSettings = manager.createConfiguration(current, GdConfigurationFactory)
         action.isTemporary = true
@@ -72,6 +82,13 @@ class GdRunAction : RunAnythingAction {
         manager.selectedConfiguration = action
 
         return action
+    }
+
+    private fun createWarning(project: Project, message: String) {
+        NotificationGroupManager.getInstance()
+                .getNotificationGroup(PluginConstants.RUN_NOTIFICATION_GROUP_ID)
+                .createNotification("Failed to run due to '$message' ", NotificationType.WARNING)
+                .notify(project);
     }
 
 }

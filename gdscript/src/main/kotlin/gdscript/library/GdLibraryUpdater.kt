@@ -36,7 +36,7 @@ class GdLibraryUpdater {
                 checkSdk(progressIndicator)
             } catch (exception: Exception) {
                 NotificationGroupManager.getInstance()
-                        .getNotificationGroup(PluginConstants.sdkNotificationGroupId)
+                        .getNotificationGroup(PluginConstants.SDK_NOTIFICATION_GROUP_ID)
                         .createNotification("Failed to verify project SDK with error '${exception.message}'", NotificationType.ERROR)
                         .notify(project);
             }
@@ -91,7 +91,7 @@ class GdLibraryUpdater {
                 GdLibraryManager.registerSdk(sdkPath.toString(), project)
             } catch (exception: Exception) {
                 NotificationGroupManager.getInstance()
-                        .getNotificationGroup(PluginConstants.sdkNotificationGroupId)
+                        .getNotificationGroup(PluginConstants.SDK_NOTIFICATION_GROUP_ID)
                         .createNotification("Failed to download project SDK with error '${exception.message}'", NotificationType.ERROR)
                         .notify(project);
             }

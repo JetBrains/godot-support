@@ -202,6 +202,7 @@
     <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler" />
 
     <notificationGroup id="GdSdkNotifications" displayType="BALLOON" bundle="messages.gdscript" key="notification.group.sdk.name" />
+    <notificationGroup id="GdRunNotifications" displayType="BALLOON" bundle="messages.gdscript" key="notification.group.run.name" />
   </extensions>
 
   <actions>
