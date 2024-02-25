@@ -1,7 +1,7 @@
 package gdscript.library
 
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.runWriteAction
+import com.intellij.openapi.application.runWriteActionAndWait
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
@@ -9,7 +9,6 @@ import com.intellij.openapi.roots.ModifiableModelsProvider
 import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ModuleRootModificationUtil
 import com.intellij.openapi.roots.OrderRootType
-import com.intellij.openapi.roots.impl.libraries.LibraryEx
 import com.intellij.openapi.roots.impl.libraries.LibraryEx.ModifiableModelEx
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
@@ -56,15 +55,13 @@ object GdLibraryManager {
             .sortedDescending()
     }
 
-    fun listRegisteredSdks(project: Project): Iterable<Library> {
+    fun getRegisteredSdk(project: Project): Library? {
         return LibraryTablesRegistrar
             .getInstance()
             .getLibraryTable(project)
             .modifiableModel
             .libraries
-            .filter {
-                (it as LibraryEx).kind is GdLibraryKind
-            }
+            .firstOrNull()
     }
 
     fun libDate(version: String): String {
@@ -84,14 +81,23 @@ object GdLibraryManager {
         val name = path.replace('\\', '/').substringAfterLast("/")
         val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
 
-        if (modifier.getLibraryByName(name) != null) return
+        if (modifier.getLibraryByName(name) != null) {
+            return
+
+        }
         val library = modifier.createLibrary(name, GdLibraryKind)
         val libModifier = library.modifiableModel as ModifiableModelEx
+
+        val props = libModifier.properties as GdLibraryProperties
+        props.path = path
+        props.version = name.sdkToVersion()
+        props.date = libDate(props.version)
+        libModifier.properties = props
 
         libModifier.addRoot("file://$path", OrderRootType.SOURCES)
 
         ApplicationManager.getApplication().invokeAndWait {
-            runWriteAction {
+            runWriteActionAndWait {
                 libModifier.commit()
                 modifier.commit()
 
@@ -103,7 +109,7 @@ object GdLibraryManager {
 
     fun clearSdks(project: Project) {
         ApplicationManager.getApplication().invokeAndWait {
-            runWriteAction {
+            runWriteActionAndWait {
                 val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
                 val tableModel = ApplicationManager
                     .getApplication()
@@ -111,7 +117,7 @@ object GdLibraryManager {
                     .getLibraryTableModifiableModel(project)
 
                 modifier.getLibraryByName(LIBRARY_NAME)?.let { modifier.removeLibrary(it) }
-                listRegisteredSdks(project).forEach {
+                getRegisteredSdk(project)?.let {
                     it.rootProvider.getFiles(OrderRootType.SOURCES).forEach {
                         dir -> Path(dir.path).delete(true)
                     }

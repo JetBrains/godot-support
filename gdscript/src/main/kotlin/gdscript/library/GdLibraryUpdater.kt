@@ -38,19 +38,20 @@ class GdLibraryUpdater {
                 NotificationGroupManager.getInstance()
                         .getNotificationGroup(PluginConstants.SDK_NOTIFICATION_GROUP_ID)
                         .createNotification("Failed to verify project SDK with error '${exception.message}'", NotificationType.ERROR)
-                        .notify(project);
+                        .notify(project)
             }
         }
 
         fun checkSdk(progressIndicator: ProgressIndicator) {
             val projectFile = "${project.basePath}${File.separator}project.godot"
             val content = FileUtils.readFileToString(File(projectFile), Charset.defaultCharset())
+
             val version = VERSION_REGEX.find(content)?.groups?.get(1)?.value
                     ?: throw IllegalStateException("GdSdk version cannot be parsed from project.godot")
             if (version.startsWith("3.")) throw IllegalStateException("Godot 3.x is not supported by the plugin")
             progressIndicator.fraction = 0.33
 
-            val registered = GdLibraryManager.listRegisteredSdks(project).firstOrNull()
+            val registered = GdLibraryManager.getRegisteredSdk(project)
             progressIndicator.fraction = 0.66
 
             val latest = GdLibraryManager.listAvailableSdks().find { it.startsWith(version) } ?: "Master"
@@ -71,7 +72,12 @@ class GdLibraryUpdater {
             if (library.rootProvider.getFiles(OrderRootType.SOURCES).isEmpty()) return true
             // no version or outdated version
             val props = (library.modifiableModel as LibraryEx.ModifiableModelEx).properties as GdLibraryProperties
-            if (props.version.isBlank() || GdLibraryManager.libDate(props.version) != props.version) return true
+
+            if (props.version.isBlank()) {
+                return true
+            }
+
+            if (props.version.isBlank() || GdLibraryManager.libDate(props.version) != props.date) return true
             // is it correct version?
             return !library.name!!.endsWith(latestVersion) || library.name!!.endsWith("Master")
         }
@@ -93,7 +99,7 @@ class GdLibraryUpdater {
                 NotificationGroupManager.getInstance()
                         .getNotificationGroup(PluginConstants.SDK_NOTIFICATION_GROUP_ID)
                         .createNotification("Failed to download project SDK with error '${exception.message}'", NotificationType.ERROR)
-                        .notify(project);
+                        .notify(project)
             }
         }
     }

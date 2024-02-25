@@ -66,7 +66,7 @@ object GdClassMemberUtil {
             static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn)
         }
 
-        if (!static) {
+        if (!static && calledOn == null) {
             when (val ownerMethod = PsiTreeUtil.getParentOfType(
                 calledOnPsi ?: element,
                 GdMethodDeclTl::class.java,
@@ -75,7 +75,6 @@ object GdClassMemberUtil {
                 is GdMethodDeclTl -> {
                     static = ownerMethod.isStatic
                 }
-
                 is GdFuncDeclEx -> {}
             }
         }
