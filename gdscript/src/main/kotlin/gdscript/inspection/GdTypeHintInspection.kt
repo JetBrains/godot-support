@@ -1,12 +1,13 @@
 package gdscript.inspection
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import gdscript.GdKeywords
 import gdscript.inspection.quickFix.GdAddVariableTypeHintFix
+import gdscript.inspection.util.ProblemsHolderExtension.registerError
+import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
 import gdscript.psi.*
 import gdscript.settings.GdProjectSettingsState
 
@@ -50,10 +51,7 @@ class GdTypeHintInspection : LocalInspectionTool() {
                 return
             }
 
-            holder.registerProblem(
-                element,
-                ":= assigment cannot be typed",
-                ProblemHighlightType.ERROR,
+            holder.registerError(element,  ":= assigment cannot be typed",
                 // TODO GdAddVariableTypeHintFix(element, realType, fullType)
             )
             return
@@ -68,10 +66,7 @@ class GdTypeHintInspection : LocalInspectionTool() {
         if (realType == GdKeywords.VARIANT || realType == GdKeywords.NULL) return
         if (realType.startsWith("res")) return
 
-        holder.registerProblem(
-            element,
-            "Field's return type can be specified as $realType",
-            ProblemHighlightType.WEAK_WARNING,
+        holder.registerWeakWarning(element, "Field's return type can be specified as $realType",
             GdAddVariableTypeHintFix(element, realType, fullType)
         )
     }

@@ -1,26 +1,21 @@
 package gdscript.inspection
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.LocalQuickFix
-import com.intellij.codeInspection.ProblemHighlightType
-import com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR
-import com.intellij.codeInspection.ProblemHighlightType.WEAK_WARNING
 import com.intellij.codeInspection.ProblemsHolder
-import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.childrenOfType
 import gdscript.GdKeywords
 import gdscript.inspection.quickFix.GdAddReturnTypeHintFix
 import gdscript.inspection.quickFix.GdChangeReturnTypeFix
+import gdscript.inspection.util.ProblemsHolderExtension.registerGenericError
+import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
+import gdscript.inspection.validator.GdMethodValidator
 import gdscript.psi.*
-import gdscript.psi.impl.GdMatchBlockImpl
 import gdscript.psi.utils.GdExprUtil
 import gdscript.psi.utils.GdInheritanceUtil
 import gdscript.psi.utils.GdMethodUtil
-import gdscript.psi.utils.GdStmtUtil
 
-class GdInvalidMethodInspection : LocalInspectionTool() {
+class GdMethodValidationInspection : LocalInspectionTool() {
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : GdVisitor() {
@@ -37,22 +32,36 @@ class GdInvalidMethodInspection : LocalInspectionTool() {
             }
 
             private fun validateMethod(methodId: GdNamedIdElement, hint : GdReturnHintVal?, returnType: String, stmtOrSuite: GdStmtOrSuite?) {
-                val returnTypeResult = ReturnTypesResult()
-                stmtOrSuite?.let { traverseSuite(returnTypeResult, stmtOrSuite, hint, returnType) }
+                val validationResult = GdMethodValidator(holder.project, returnType).validate(stmtOrSuite)
+
+                validationResult.unreachableStatements.forEach{
+                    holder.registerGenericError(it, "Code is unreachable")
+                }
+
+                validationResult.invalidReturns.forEach{
+                    val stmtType = it.second
+                    holder.registerGenericError(
+                            it.first,
+                            "Returns a type [$stmtType] which do not match function's [$returnType]",
+                            hint?.let { GdChangeReturnTypeFix(hint, stmtType) }
+                    )
+                }
 
                 // no return statement when required
-                if (returnType.isNotEmpty() && returnType != "void" && returnTypeResult.returnTypes.isEmpty()) {
-                    holder.registerProblem(methodId, "Function's require a return value", GENERIC_ERROR)
+                if (returnType.isNotEmpty() && validationResult.noReturn() && returnType != "void") {
+                    holder.registerGenericError(methodId, "Function's require a return value")
+                } else if (validationResult.hasReturn() && !validationResult.alwaysReturns && returnType != "void") {
+                    holder.registerGenericError(methodId, "Not all code paths return a value")
+                }
                 // no return type specified
-                } else if(returnType.isEmpty() && returnTypeResult.returnTypes.isNotEmpty())  {
-                    val commonType = determineCommonType(returnTypeResult.returnTypes)
+                if(returnType.isEmpty() && validationResult.hasReturn())  {
+                    val commonType = determineCommonType(validationResult.returnTypes)
                     if (commonType == null) {
-                        holder.registerProblem(methodId, "Function's return type is not specified", WEAK_WARNING)
+                        holder.registerWeakWarning(methodId, "Function's return type is not specified")
                     } else {
-                        holder.registerProblem(
+                        holder.registerWeakWarning(
                                 methodId,
                                 "Function's return type can be specified as $commonType",
-                                WEAK_WARNING,
                                 GdAddReturnTypeHintFix(methodId, commonType)
                         )
                     }
@@ -70,63 +79,8 @@ class GdInvalidMethodInspection : LocalInspectionTool() {
                 val stmts = PsiTreeUtil.findChildrenOfType(method, GdCallEx::class.java)
                         .filter{ it.expr.text == GdKeywords.SUPER };
                 if (stmts.isEmpty()) {
-                    holder.registerProblem(methodId, "Initializing super() constructor is required", GENERIC_ERROR)
+                    holder.registerGenericError(methodId, "Initializing super() constructor is required")
                 }
-            }
-
-            private fun traverseSuite(result: ReturnTypesResult, stmtOrSuite: GdStmtOrSuite, hint : GdReturnHintVal?, returnType: String) {
-                // single statement
-                if (stmtOrSuite.stmt != null) {
-                    return traverseStatement(result, listOf(stmtOrSuite.stmt!!), hint, returnType)
-                }
-
-                // traverse suites
-                for (suite in stmtOrSuite.suiteList) {
-                    traverseStatement(result, suite.childrenOfType<GdStmt>(), hint, returnType)
-                }
-            }
-
-            private fun traverseStatement(result: ReturnTypesResult, statements: List<GdStmt>, hint : GdReturnHintVal?, returnType: String) {
-                var seenReturn = false
-
-                for (statement in statements) {
-                    // if it always returns, this code is unreachable
-                    if (seenReturn) {
-                        holder.registerProblem(statement, "Code is unreachable", GENERIC_ERROR)
-                    } else if (statement is GdFlowSt && statement.type == GdKeywords.FLOW_RETURN) {
-                        result.addReturnType(validateReturnStatement(statement, hint, returnType))
-                        seenReturn = true
-                    } else if (GdStmtUtil.isNestedStatement(statement)) {
-                        traverseNestedStatement(result, statement, hint, returnType)
-                    }
-                }
-            }
-
-            private fun traverseNestedStatement(result: ReturnTypesResult, statement: GdStmt, hint : GdReturnHintVal?, returnType: String) {
-                if (statement is GdMatchSt) {
-                    for (matchBlock in statement.childrenOfType<GdMatchBlockImpl>()) {
-                        for (nestedElems in matchBlock.childrenOfType<GdStmtOrSuite>()) {
-                            traverseSuite(result, nestedElems, hint, returnType)
-                        }
-                    }
-                } else {
-                    for (nestedElems in statement.childrenOfType<GdStmtOrSuite>()) {
-                        traverseSuite(result, nestedElems, hint, returnType)
-                    }
-                }
-            }
-
-            private fun validateReturnStatement(statement: GdFlowSt, hint : GdReturnHintVal?, returnType: String) : String {
-                val stmtType = statement.expr?.returnType ?: GdKeywords.VOID;
-                if (!GdExprUtil.typeAccepts(stmtType, returnType, holder.project)) {
-                    holder.registerProblem(
-                            statement,
-                            "Returns a type [$stmtType] which do not match function's [$returnType]",
-                            GENERIC_ERROR,
-                            hint?.let { GdChangeReturnTypeFix(hint, stmtType) }
-                    )
-                }
-                return stmtType
             }
 
             private fun determineCommonType(types: Set<String>) : String? {
@@ -143,33 +97,14 @@ class GdInvalidMethodInspection : LocalInspectionTool() {
                 val parent = GdMethodUtil.findParentMethodRecursive(methodId, holder.project) ?: return
 
                 if (!GdExprUtil.typeAccepts(returnType, parent.returnType, holder.project)) {
-                    holder.registerProblem(
+                    holder.registerWeakWarning(
                             methodId,
                             "Return type [$returnType] does not match parent's [${parent.returnType}]",
-                            WEAK_WARNING,
                             hint?.let { GdChangeReturnTypeFix(hint, parent.returnType) }
                     )
                 }
             }
         }
-    }
-
-}
-
-private fun ProblemsHolder.registerProblem(element: PsiElement, description: String, highlightType: ProblemHighlightType, quickFix: LocalQuickFix?) {
-    if (quickFix == null) {
-        this.registerProblem(element, description, highlightType)
-    } else {
-        this.registerProblem(element, description, highlightType, quickFix)
-    }
-}
-
-class ReturnTypesResult() {
-
-    val returnTypes = mutableSetOf<String>()
-
-    fun addReturnType(type: String) {
-        returnTypes.add(type)
     }
 
 }

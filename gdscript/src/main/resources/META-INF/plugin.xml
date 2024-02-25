@@ -110,7 +110,7 @@
     <localInspection language="GdScript" shortName="MethodValidation" enabledByDefault="true" level="WARNING"
                      bundle="messages.gdscript" key="inspections.check.methods"
                      groupBundle="messages.gdscript" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
-                     implementationClass="gdscript.inspection.GdInvalidMethodInspection"/>
+                     implementationClass="gdscript.inspection.GdMethodValidationInspection"/>
     <localInspection language="GdScript" shortName="UnusedMethod" enabledByDefault="true" level="WARNING"
                      bundle="messages.gdscript" key="inspections.check.unused.method"
                      groupBundle="messages.gdscript" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"

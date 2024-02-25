@@ -1,6 +1,9 @@
 package gdscript.psi.utils
 
-import gdscript.psi.*
+import gdscript.psi.GdFlowSt
+import gdscript.psi.GdForSt
+import gdscript.psi.GdStmt
+import gdscript.psi.GdWhileSt
 
 object GdStmtUtil {
 
@@ -8,7 +11,7 @@ object GdStmtUtil {
         return element.firstChild.text;
     }
 
-    fun isNestedStatement(stmt: GdStmt): Boolean {
-        return stmt is GdIfSt || stmt is GdElifSt || stmt is GdElseSt || stmt is GdWhileSt || stmt is GdForSt || stmt is GdMatchSt
+    fun isLoopStatement(stmt: GdStmt): Boolean {
+        return stmt is GdWhileSt || stmt is GdForSt
     }
 }

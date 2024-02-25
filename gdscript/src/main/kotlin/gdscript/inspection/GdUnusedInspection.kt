@@ -1,13 +1,13 @@
 package gdscript.inspection
 
 import com.intellij.codeInspection.LocalInspectionTool
-import com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBOL
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import gdscript.inspection.quickFix.GdRemoveElementFix
+import gdscript.inspection.util.ProblemsHolderExtension.registerUnused
 
 abstract class GdUnusedInspection : LocalInspectionTool() {
 
@@ -15,10 +15,7 @@ abstract class GdUnusedInspection : LocalInspectionTool() {
     protected abstract val text: String
 
     fun registerUnused(element: PsiElement, nmi: PsiNameIdentifierOwner, holder: ProblemsHolder) {
-        holder.registerProblem(
-                nmi,
-                description,
-                LIKE_UNUSED_SYMBOL,
+        holder.registerUnused(nmi, description,
                 GdRemoveElementFix(element, text.replace("{NAME}", nmi.name ?: "")))
     }
 

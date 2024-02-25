@@ -1,10 +1,10 @@
 package gdscript.inspection
 
-import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.childrenOfType
 import gdscript.inspection.quickFix.GdRemoveElementFix
+import gdscript.inspection.util.ProblemsHolderExtension.registerUnused
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdInheritance
@@ -47,10 +47,7 @@ class GdUnusedClassInspection : GdUnusedInspection() {
                 val containingFile = o.containingFile
                 if (TscnResourceUtil.findTscnByResources(containingFile).any()) return
 
-                holder.registerProblem(
-                        o,
-                        description,
-                        ProblemHighlightType.LIKE_UNUSED_SYMBOL,
+                holder.registerUnused(o, description,
                         GdRemoveElementFix(containingFile, text.replace("{NAME}", containingFile.name)))
             }
         }
