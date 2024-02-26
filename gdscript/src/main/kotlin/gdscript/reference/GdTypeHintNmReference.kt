@@ -8,6 +8,7 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdIcon
+import gdscript.GdKeywords
 import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdClassCompletionUtil
 import gdscript.completion.utils.GdClassCompletionUtil.lookup
@@ -53,25 +54,10 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
                     GdClassUtil.getOwningClassElement(element)
                 }
 
-                val myName = element.name
-                enums(container).forEach {
-                    if (it.name == myName) return@Resolver it.enumDeclNmi
+                resolveInner(container)?.let { return@Resolver it }
+                GdClassUtil.getClassIdElement(GdKeywords.GLOBAL_SCOPE, project)?.let {
+                    return@Resolver resolveInner(GdClassUtil.getOwningClassElement(it))
                 }
-                innerClasses(container).forEach {
-                    if (it.name == myName) return@Resolver it.classNameNmi
-                }
-                loadedClasses(container).forEach {
-                    if (GdCommonUtil.getName(it) == myName) return@Resolver GdClassMemberReference.resolveId(it)
-                }
-                PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java)?.let { methodDecl ->
-                    PsiTreeUtil.findChildOfType(methodDecl, GdSuite::class.java)?.let { suite ->
-                        loadedClasses(suite).forEach {
-                            if (GdCommonUtil.getName(it) == myName) return@Resolver GdClassMemberReference.resolveId(it)
-                        }
-                    }
-                }
-
-                return@Resolver null
             },
             false,
             false,
@@ -119,6 +105,28 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         })
 
         return variants.toTypedArray()
+    }
+
+    private fun resolveInner(container: PsiElement): PsiElement? {
+        val myName = element.name
+        enums(container).forEach {
+            if (it.name == myName) return it.enumDeclNmi
+        }
+        innerClasses(container).forEach {
+            if (it.name == myName) return it.classNameNmi
+        }
+        loadedClasses(container).forEach {
+            if (GdCommonUtil.getName(it) == myName) return GdClassMemberReference.resolveId(it)
+        }
+        PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java)?.let { methodDecl ->
+            PsiTreeUtil.findChildOfType(methodDecl, GdSuite::class.java)?.let { suite ->
+                loadedClasses(suite).forEach {
+                    if (GdCommonUtil.getName(it) == myName) return GdClassMemberReference.resolveId(it)
+                }
+            }
+        }
+
+        return null
     }
 
     private fun getOwnerClass(): PsiElement? {

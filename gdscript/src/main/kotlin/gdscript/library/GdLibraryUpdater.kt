@@ -14,6 +14,7 @@ import com.intellij.openapi.roots.libraries.Library
 import com.intellij.util.io.createDirectories
 import org.apache.commons.io.FileUtils
 import java.io.File
+import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.file.LinkOption
 import kotlin.io.path.exists
@@ -34,6 +35,9 @@ class GdLibraryUpdater {
         override fun run(progressIndicator: ProgressIndicator) {
             try {
                 checkSdk(progressIndicator)
+            } catch (exception: IOException) {
+                // ignore non-projects
+                val ass = 44
             } catch (exception: Exception) {
                 NotificationGroupManager.getInstance()
                         .getNotificationGroup(PluginConstants.SDK_NOTIFICATION_GROUP_ID)
