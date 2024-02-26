@@ -208,6 +208,9 @@ foreach ($files as $filepath) {
     // GlobalScope enums can be accesses both ways as named & unnamed
     if ($class_name == "_GlobalScope") {
         foreach ($enums as $key => $values) {
+            if (str_contains($key, '.')) {
+                continue;
+            }
             $data .= "#enum $key\n";
             $data .= "enum $key {\n";
             foreach ($values as $value) {
@@ -256,7 +259,7 @@ foreach ($files as $filepath) {
 
         $params = $parseParams($value);
         $desc = (array) ($value['description'] ?? []);
-        $data = $addDocumentation($data, $desc['0'], null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
+        $data = $addDocumentation($data, $desc['0'] ?? '', null, null, $att['is_deprecated'] ?? false, $att['is_experimental'] ?? false);
 
         $data .= sprintf("func %s(%s) -> %s:\n", $att['name'], implode(', ', $params), $formatType($ret['@attributes']['type']));
         $data .= sprintf("\tpass;\n\n");
