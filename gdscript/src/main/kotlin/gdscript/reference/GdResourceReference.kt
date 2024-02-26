@@ -19,14 +19,24 @@ import gdscript.utils.VirtualFileUtil.resourcePath
 class GdResourceReference : PsiReferenceBase<GdNamedElement> {
 
     private var key: String = ""
+    private var resKey: String = ""
     private var project: Project
 
     constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
-        key = element.text
         this.project = element.project
+        key = element.text
+        resKey = key.trim('"')
+
+        if (!resKey.startsWith("res://")) {
+            var self = element.containingFile.virtualFile.resourcePath()
+            self = self.substring(0, self.lastIndexOf('/'))
+            resKey = "$self/${key.trim('"')}"
+        }
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
+        // TODO ignored relative paths
+        if (!key.startsWith("\"res://")) return element
         element.setName(newElementName)
         GdCfgUtil.renameValue(project, key.trim('"'), "res://$newElementName")
 
@@ -39,7 +49,7 @@ class GdResourceReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        return GdFileResIndex.INSTANCE.getFiles(key.trim('"'), project)
+        return GdFileResIndex.INSTANCE.getFiles(resKey, project)
             .firstOrNull()
             ?.getPsiFile(project)
     }
