@@ -37,7 +37,6 @@ class GdLibraryUpdater {
                 checkSdk(progressIndicator)
             } catch (exception: IOException) {
                 // ignore non-projects
-                val ass = 44
             } catch (exception: Exception) {
                 NotificationGroupManager.getInstance()
                         .getNotificationGroup(PluginConstants.SDK_NOTIFICATION_GROUP_ID)
