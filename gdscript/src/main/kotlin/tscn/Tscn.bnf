@@ -38,7 +38,7 @@ header ::=
 
 scene_header ::= LSBR GD_SCENE headerValue* RSBR
 node_header ::= LSBR NODE headerValue* RSBR {
-    methods=[getName getType getParentPath getNodePath isUniqueNameOwner getScriptResource hasScript getDirectParentPath getGroups getInstanceResource]
+    methods=[getName getType getParentPath getNodePath isUniqueNameOwner getScriptResource hasScript getDirectParentPath getGroups getInstanceResource getIndex]
     mixin="tscn.psi.impl.TscnNodeHeaderElementImpl"
     stubClass="tscn.index.stub.TscnNodeHeaderStub"
     elementTypeFactory="tscn.psi.impl.TscnNodeHeaderElementType.getInstance"

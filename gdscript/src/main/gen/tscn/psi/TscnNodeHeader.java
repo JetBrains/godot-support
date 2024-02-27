@@ -40,4 +40,6 @@ public interface TscnNodeHeader extends TscnHeader, StubBasedPsiElement<TscnNode
   @NotNull
   String getInstanceResource();
 
+  int getIndex();
+
 }

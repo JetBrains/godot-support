@@ -81,6 +81,17 @@ object TscnNodeUtil {
         return resources.find { it.id == id }?.path ?: ""
     }
 
+    fun getIndex(element: TscnNodeHeader): Int {
+        val stub = element.stub
+        if (stub != null) return stub.getIndex()
+
+        // ExtResource("1"), ExtResource( 1 )
+        val index = TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_INDEX)
+        if (index.isBlank()) return -1
+
+        return index.toIntOrNull() ?: -1
+    }
+
     /** Data lines */
 
     fun isUniqueNameOwner(element: TscnNodeHeader): Boolean {

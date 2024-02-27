@@ -14,5 +14,6 @@ interface TscnNodeHeaderStub : StubElement<TscnNodeHeader> {
     fun isUniqueNameOwner(): Boolean
     fun hasScript(): Boolean
     fun getGroups(): Array<String>
+    fun getIndex(): Int
 
 }

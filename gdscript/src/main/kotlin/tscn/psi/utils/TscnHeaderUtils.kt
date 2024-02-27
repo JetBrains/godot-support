@@ -22,6 +22,7 @@ object TscnHeaderUtils {
     val HL_TO = "to"
     val HL_SIGNAL = "signal"
     val HL_METHOD = "method"
+    val HL_INDEX = "index"
 
     /** Data line keys */
     val DL_UNIQUE = "unique_name_in_owner"

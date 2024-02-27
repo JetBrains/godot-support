@@ -25,6 +25,7 @@ object TscnNodeHeaderElementType :
         dataStream.writeName(stub.getScriptResource())
         dataStream.writeName(stub.getInstanceResource())
         dataStream.writeName(stub.getGroups().joinToString(","))
+        dataStream.writeInt(stub.getIndex())
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): TscnNodeHeaderStub =
@@ -38,6 +39,7 @@ object TscnNodeHeaderElementType :
             dataStream.readNameString() ?: "",
             dataStream.readNameString() ?: "",
             (dataStream.readNameString() ?: "").split(",").toTypedArray(),
+            dataStream.readInt(),
         )
 
     override fun indexStub(stub: TscnNodeHeaderStub, sink: IndexSink) {
@@ -58,6 +60,7 @@ object TscnNodeHeaderElementType :
             psi.scriptResource,
             psi.instanceResource,
             psi.groups,
+            psi.index,
         );
 
 }

@@ -23,6 +23,7 @@ object TscnPsiUtils {
     @JvmStatic fun getDirectParentPath(element: TscnNodeHeader): String = TscnNodeUtil.getDirectParentPath(element)
     @JvmStatic fun getGroups(element: TscnNodeHeader): Array<String> = TscnNodeUtil.getGroups(element)
     @JvmStatic fun getInstanceResource(element: TscnNodeHeader): String = TscnNodeUtil.getInstanceResource(element)
+    @JvmStatic fun getIndex(element: TscnNodeHeader): Int = TscnNodeUtil.getIndex(element)
 
     /** ext_resource */
     @JvmStatic fun getType(element: TscnResourceHeader): String = TscnResourceUtil.getType(element)
