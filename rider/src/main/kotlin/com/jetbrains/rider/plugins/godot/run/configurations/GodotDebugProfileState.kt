@@ -60,23 +60,23 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
         throw UnsupportedOperationException("Should use overload with session")
     }
 
-    override fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler): ExecutionResult {
+    override suspend fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler): ExecutionResult {
         throw UnsupportedOperationException("Should use overload with session")
     }
 
-    override fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler, lifetime: Lifetime): ExecutionResult {
+    override suspend fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler, lifetime: Lifetime): ExecutionResult {
         val envs = exeConfiguration.parameters.envs.toMutableMap()
         envs.addUnique(lifetime, "GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:${remoteConfiguration.port},server=n,suspend=y")
         val runCommandLine = createEmptyConsoleCommandLine(exeConfiguration.parameters.useExternalConsole, if (SystemInfo.isWindows) ExecutableType.Windows else ExecutableType.Console)
-                .withEnvironment(envs)
-                .withParentEnvironmentType(if (exeConfiguration.parameters.isPassParentEnvs) {
-                    GeneralCommandLine.ParentEnvironmentType.CONSOLE
-                } else {
-                    GeneralCommandLine.ParentEnvironmentType.NONE
-                })
-                .withExePath(exeConfiguration.parameters.exePath)
-                .withWorkDirectory(exeConfiguration.parameters.workingDirectory)
-                .withRawParameters(exeConfiguration.parameters.programParameters)
+            .withEnvironment(envs)
+            .withParentEnvironmentType(if (exeConfiguration.parameters.isPassParentEnvs) {
+                GeneralCommandLine.ParentEnvironmentType.CONSOLE
+            } else {
+                GeneralCommandLine.ParentEnvironmentType.NONE
+            })
+            .withExePath(exeConfiguration.parameters.exePath)
+            .withWorkDirectory(exeConfiguration.parameters.workingDirectory)
+            .withRawParameters(exeConfiguration.parameters.programParameters)
 
         val commandLineString = runCommandLine.commandLineString
         val monoConnectResult = super.execute(executor, runner, workerProcessHandler)
