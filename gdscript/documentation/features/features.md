@@ -81,6 +81,14 @@ Please report any issues you encounter - this is still yet to be battle tested
     <img src="../../screens/features/documentation.png" />
 </details>
 
+### Scene preview
+
+<details>
+    <summary>Scene tree view</summary>
+    <img src="../../screens/features/tool_window/scene_preview.png" />
+</details>
+
+
 ### Line markers
 
 <details>

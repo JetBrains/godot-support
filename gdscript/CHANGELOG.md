@@ -2,7 +2,12 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.4.0 (28.2.2024)
+
++ Basic scene preview [#235](https://gitlab.com/IceExplosive/gdscript/-/issues/235)
+
 ### 2.3.1 (27.2.2024)
+
 + All code path return detection [#231](https://gitlab.com/IceExplosive/gdscript/-/issues/231)
 
 ### 2.3.0 (26.2.2024)
