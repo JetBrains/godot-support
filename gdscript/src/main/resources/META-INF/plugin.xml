@@ -100,6 +100,7 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdParamAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdExprTypeAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdCommentAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdFlowStmtAnnotator" />
 
     <annotator language="Tscn" implementationClass="tscn.annotator.TscnAnnotator" />
 
