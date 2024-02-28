@@ -2,6 +2,9 @@ package tscn.toolWindow
 
 import com.intellij.ide.ActivityTracker
 import com.intellij.ide.DataManager
+import com.intellij.ide.dnd.DnDActionInfo
+import com.intellij.ide.dnd.DnDDragStartBean
+import com.intellij.ide.dnd.DnDSupport
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
@@ -13,11 +16,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.Disposer
-import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
+import com.intellij.platform.ide.progress.ModalTaskOwner.component
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.ScrollPaneFactory
@@ -45,9 +48,11 @@ import tscn.psi.utils.TscnResourceUtil
 import tscn.toolWindow.model.TscnSceneTreeNode
 import java.awt.Container
 import java.awt.KeyboardFocusManager
+import java.awt.datatransfer.StringSelection
 import java.awt.event.HierarchyEvent
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.*
+
 
 private enum class RebuildDelay {
     QUEUE,
@@ -66,7 +71,7 @@ class TscnScenePreviewWindow : Disposable {
     private var firstRun = true
     private val pendingRebuild = AtomicBoolean(false)
     private val rebuildRequests =
-        MutableSharedFlow<RebuildDelay>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+            MutableSharedFlow<RebuildDelay>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     private val isStructureViewShowing: Boolean
         get() {
@@ -125,9 +130,9 @@ class TscnScenePreviewWindow : Disposable {
                     RebuildDelay.QUEUE -> 100
                 }
             }
-                .collectLatest {
-                    rebuildImpl()
-                }
+                    .collectLatest {
+                        rebuildImpl()
+                    }
         }
     }
 
@@ -280,14 +285,14 @@ class TscnScenePreviewWindow : Disposable {
             }
             newPanel
         }
-            .coalesceBy(this)
-            .finishOnUiThread(ModalityState.defaultModalityState()) {
-                val content = ContentFactory.getInstance()
-                    .createContent(it ?: createContentPanel(JLabel("No scene")), null, false)
-                contentManager.addContent(content)
-                pendingRebuild.set(false)
-            }
-            .submit(AppExecutorUtil.getAppExecutorService())
+                .coalesceBy(this)
+                .finishOnUiThread(ModalityState.defaultModalityState()) {
+                    val content = ContentFactory.getInstance()
+                            .createContent(it ?: createContentPanel(JLabel("No scene")), null, false)
+                    contentManager.addContent(content)
+                    pendingRebuild.set(false)
+                }
+                .submit(AppExecutorUtil.getAppExecutorService())
 
 
         if (wasFocused) {
@@ -302,7 +307,7 @@ class TscnScenePreviewWindow : Disposable {
         val treeModel = TscnSceneTreeNode()
 
         val tree = Tree(treeModel)
-        tree.dragEnabled = false // TODO
+        tree.dragEnabled = true
         tree.dropMode
         tree.cellRenderer = TscnSceneCellRenderer()
 

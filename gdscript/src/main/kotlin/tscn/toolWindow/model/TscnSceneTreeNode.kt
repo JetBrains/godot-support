@@ -8,41 +8,43 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
     var myName = ""
     var myType = ""
     var inherited = false
+    var basePath = false
 
     constructor()
-    constructor(name: String, type: String) {
+    constructor(name: String, type: String, nodePath: String) {
         myName = name
         myType = type
+        userObject = nodePath
     }
 
     fun addNodeChild(node: TscnNodeHeader, externalType: String? = null) {
         val name = node.name
         val type = externalType ?: node.type
+        val nodePath = node.nodePath
         if (name.isBlank()) return
 
         when (node.parentPath) {
             "" -> {
-                userObject = node
                 myName = name
                 myType = type
             }
             "." -> {
-                insertInner(TscnSceneTreeNode(name, type), 0.coerceAtLeast(node.index))
+                insertInner(TscnSceneTreeNode(name, type, nodePath), 0.coerceAtLeast(node.index))
             }
             else -> {
-                addNodeChild(name, type, 0.coerceAtLeast(node.index), node.parentPath.split('/'))
+                addNodeChild(name, type, nodePath, 0.coerceAtLeast(node.index), node.parentPath.split('/'))
             }
         }
     }
 
-    fun addNodeChild(type: String, name: String, index: Int, paths: List<String>) {
+    fun addNodeChild(type: String, name: String, nodePath: String, index: Int, paths: List<String>) {
         if (paths.isEmpty()) {
-            insertInner(TscnSceneTreeNode(name, type), index)
+            insertInner(TscnSceneTreeNode(name, type, nodePath), index)
         } else {
             val lookFor = paths.first()
             (children)
                 .find { it is TscnSceneTreeNode && it.myName == lookFor }
-                ?.let { (it as TscnSceneTreeNode).addNodeChild(type, name, index, paths.subList(1, paths.size)) }
+                ?.let { (it as TscnSceneTreeNode).addNodeChild(type, name, nodePath, index, paths.subList(1, paths.size)) }
         }
     }
 

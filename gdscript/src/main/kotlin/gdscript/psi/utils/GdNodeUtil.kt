@@ -44,6 +44,26 @@ object GdNodeUtil {
             .toTypedArray()
     }
 
+    fun TscnNodeHeader.relativeOrUniquePath(): String {
+        if (this.isUniqueNameOwner) {
+            return "%${this.name}"
+        }
+
+        // TODO
+        var relativePath = ""
+
+//        var relativePath = Path(nodePath).relativeTo(Path(basePath)).toString().replace("\\", "/")
+//        if (relativePath.isBlank()) {
+//            relativePath = "."
+//        }
+//
+//        if (relativePath.contains(".")) {
+//            relativePath = "\"$relativePath\""
+//        }
+
+        return "$$relativePath"
+    }
+
     private fun listConnectedNodesForResource(resource: TscnResourceHeader): Iterable<TscnNodeHeader> {
         val path = resource.path
 
