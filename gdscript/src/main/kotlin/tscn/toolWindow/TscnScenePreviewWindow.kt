@@ -31,6 +31,7 @@ import com.intellij.util.ui.TimerUtil
 import com.intellij.util.ui.UIUtil
 import gdscript.GdFileType
 import gdscript.psi.utils.GdClassUtil
+import gdscript.psi.utils.GdNodeUtil
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +44,6 @@ import kotlinx.coroutines.withContext
 import tscn.TscnFileType
 import tscn.psi.TscnFile
 import tscn.psi.TscnNodeHeader
-import tscn.psi.utils.TscnResourceUtil
 import tscn.toolWindow.model.TscnSceneTreeNode
 import java.awt.Container
 import java.awt.KeyboardFocusManager
@@ -261,13 +261,24 @@ class TscnScenePreviewWindow : Disposable {
             when (myFile?.fileType) {
                 is GdFileType -> {
                     myFile?.getPsiFile(project)?.let {
-                        val files = TscnResourceUtil.findTscnFilesByResources(it)
-                        newPanel = when (files.size) {
+                        val nodes = GdNodeUtil.listNodes(it)
+                        newPanel = when (nodes.size) {
                             0 -> createContentPanel(JLabel("No scene"))
-                            1 -> buildTreeStructure(files.first())
+                            1 -> {
+                                val tscn = nodes.first()
+                                buildTreeStructure(tscn.element.containingFile, tscn.nodePath ?: "")
+                            }
                             else -> {
+                                val processed = mutableSetOf<String>()
                                 val tabs = JTabbedPane()
-                                files.forEach { tabs.addTab(it.name, buildTreeStructure(it)) }
+                                nodes.forEach {
+                                    val nodeFile = it.element.containingFile
+                                    val name = nodeFile.name
+                                    if (processed.contains(name)) return@forEach
+                                    processed.add(name)
+
+                                    tabs.addTab(name, buildTreeStructure(nodeFile, it.nodePath ?: ""))
+                                }
                                 tabs
                             }
                         }
@@ -276,7 +287,7 @@ class TscnScenePreviewWindow : Disposable {
 
                 is TscnFileType -> {
                     myFile?.getPsiFile(project)?.let {
-                        newPanel = buildTreeStructure(it)
+                        newPanel = buildTreeStructure(it, "")
                     }
                 }
             }
@@ -299,9 +310,9 @@ class TscnScenePreviewWindow : Disposable {
         }
     }
 
-    private fun buildTreeStructure(file: PsiFile): JComponent {
+    private fun buildTreeStructure(file: PsiFile, basePath: String): JComponent {
         val nodes = PsiTreeUtil.collectElementsOfType(file, TscnNodeHeader::class.java)
-        val treeModel = TscnSceneTreeNode()
+        val treeModel = TscnSceneTreeNode(basePath)
 
         val tree = Tree(treeModel)
         tree.dragEnabled = true

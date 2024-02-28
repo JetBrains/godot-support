@@ -44,22 +44,19 @@ object GdNodeUtil {
             .toTypedArray()
     }
 
-    fun TscnNodeHeader.relativeOrUniquePath(): String {
+    fun TscnNodeHeader.relativeOrUniquePath(basePath: String): String {
         if (this.isUniqueNameOwner) {
             return "%${this.name}"
         }
 
-        // TODO
-        var relativePath = ""
+        var relativePath = Path(this.nodePath).relativeTo(Path(basePath)).toString().replace("\\", "/")
+        if (relativePath.isBlank()) {
+            relativePath = "."
+        }
 
-//        var relativePath = Path(nodePath).relativeTo(Path(basePath)).toString().replace("\\", "/")
-//        if (relativePath.isBlank()) {
-//            relativePath = "."
-//        }
-//
-//        if (relativePath.contains(".")) {
-//            relativePath = "\"$relativePath\""
-//        }
+        if (relativePath.contains(".")) {
+            relativePath = "\"$relativePath\""
+        }
 
         return "$$relativePath"
     }
@@ -154,7 +151,8 @@ object GdNodeUtil {
                     uniqueId,
                     tail,
                     "$$hint",
-                    it.scriptResource.ifEmpty { null }
+                    it.scriptResource.ifEmpty { null },
+                    it.nodePath,
                 )
             )
         }

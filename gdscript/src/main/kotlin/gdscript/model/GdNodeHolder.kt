@@ -16,6 +16,7 @@ data class GdNodeHolder(
         val extraInfo: String?,
         val readableNodePath: String,
         val script: String? = null,
+        val nodePath: String? = null,
 ) {
 
     fun lookups(): List<LookupElement> {

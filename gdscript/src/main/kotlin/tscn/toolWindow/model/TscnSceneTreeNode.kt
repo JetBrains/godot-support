@@ -1,5 +1,6 @@
 package tscn.toolWindow.model
 
+import gdscript.psi.utils.GdNodeUtil.relativeOrUniquePath
 import tscn.psi.TscnNodeHeader
 import javax.swing.tree.DefaultMutableTreeNode
 
@@ -8,20 +9,18 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
     var myName = ""
     var myType = ""
     var inherited = false
-    var basePath = false
+    var basePath = ""
     var hasScript = false
     var hasUniqueName = false
 
-    constructor()
-    constructor(name: String, type: String, nodePath: String) {
-        myName = name
-        myType = type
-        userObject = nodePath
+    constructor(basePath: String) {
+        this.basePath = basePath
     }
-    constructor(node: TscnNodeHeader, externalType: String? = null) {
+
+    constructor(node: TscnNodeHeader, basePath: String, externalType: String? = null) {
         myName = node.name
         myType = externalType ?: node.type
-        userObject = node.nodePath
+        userObject = node.relativeOrUniquePath(basePath)
         hasScript = node.hasScript()
         hasUniqueName = node.isUniqueNameOwner
     }
@@ -29,6 +28,7 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
     fun addNodeChild(node: TscnNodeHeader, externalType: String? = null) {
         val name = node.name
         if (name.isBlank()) return
+        val basePath = (root as TscnSceneTreeNode).basePath
 
         when (node.parentPath) {
             "" -> {
@@ -38,22 +38,22 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
                 hasUniqueName = node.isUniqueNameOwner
             }
             "." -> {
-                insertInner(TscnSceneTreeNode(node, externalType), 0.coerceAtLeast(node.index))
+                insertInner(TscnSceneTreeNode(node, basePath, externalType), 0.coerceAtLeast(node.index))
             }
             else -> {
-                addNodeChild(node, externalType, 0.coerceAtLeast(node.index), node.parentPath.split('/'))
+                addNodeChild(node, basePath, externalType, 0.coerceAtLeast(node.index), node.parentPath.split('/'))
             }
         }
     }
 
-    fun addNodeChild(node: TscnNodeHeader, externalType: String?, index: Int, paths: List<String>) {
+    fun addNodeChild(node: TscnNodeHeader, basePath: String, externalType: String?, index: Int, paths: List<String>) {
         if (paths.isEmpty()) {
-            insertInner(TscnSceneTreeNode(node, externalType), index)
+            insertInner(TscnSceneTreeNode(node, basePath, externalType), index)
         } else {
             val lookFor = paths.first()
             (children)
                 .find { it is TscnSceneTreeNode && it.myName == lookFor }
-                ?.let { (it as TscnSceneTreeNode).addNodeChild(node, externalType, index, paths.subList(1, paths.size)) }
+                ?.let { (it as TscnSceneTreeNode).addNodeChild(node, basePath, externalType, index, paths.subList(1, paths.size)) }
         }
     }
 

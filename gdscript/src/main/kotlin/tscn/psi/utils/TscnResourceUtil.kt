@@ -2,9 +2,7 @@ package tscn.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import gdscript.psi.utils.PsiGdResourceUtil
-import gdscript.utils.VirtualFileUtil.resourcePath
 import tscn.index.impl.TscnResourceIndex
 import tscn.psi.TscnResourceHeader
 
@@ -43,18 +41,6 @@ object TscnResourceUtil {
         val resource = PsiGdResourceUtil.resourcePath(element.containingFile.originalFile.virtualFile)
 
         return findTscnByResources(resource, element.project)
-    }
-
-    fun findTscnFilesByResources(element: PsiElement): Collection<PsiFile> {
-        val resource = PsiGdResourceUtil.resourcePath(element.containingFile.originalFile.virtualFile)
-        val files = mutableMapOf<String, PsiFile>()
-
-        findTscnByResources(resource, element.project).forEach {
-            val f = it.containingFile
-            files[f.virtualFile.resourcePath()] = f
-        }
-
-        return files.values
     }
 
     fun findTscnByResources(resourcePath: String, project: Project): Collection<TscnResourceHeader> {
