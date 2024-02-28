@@ -9,7 +9,7 @@ import tscn.TscnIcon
 class TscnScenePreviewWindowFactory(private val coroutineScope: CoroutineScope) : ToolWindowFactory {
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        toolWindow.setIcon(TscnIcon.FILE)
+        toolWindow.setIcon(TscnIcon.TOOL_WINDOW_ICON)
         TscnScenePreviewWindow(project, toolWindow, coroutineScope)
     }
 

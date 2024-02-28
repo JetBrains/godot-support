@@ -5,9 +5,7 @@ import com.intellij.ide.DataManager
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.EDT
-import com.intellij.openapi.application.ModalityState
+import com.intellij.openapi.application.*
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.impl.FileEditorManagerImpl
@@ -15,6 +13,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.util.registry.Registry
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.IdeFocusManager
 import com.intellij.openapi.wm.ToolWindow
@@ -25,9 +24,11 @@ import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.content.ContentFactory
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.BitUtil
+import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.ui.TimerUtil
 import com.intellij.util.ui.UIUtil
 import gdscript.GdFileType
+import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -38,6 +39,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import tscn.TscnFileType
+import tscn.psi.TscnFile
 import tscn.psi.TscnNodeHeader
 import tscn.psi.utils.TscnResourceUtil
 import tscn.toolWindow.model.TscnSceneTreeNode
@@ -54,7 +56,6 @@ private enum class RebuildDelay {
 
 class TscnScenePreviewWindow : Disposable {
 
-    var myPanel: JComponent? = null
     private val project: Project
     private val toolWindow: ToolWindow
     private var activityCount = 0
@@ -253,34 +254,41 @@ class TscnScenePreviewWindow : Disposable {
             myFile = file
         }
 
-        myPanel = null
-        when (myFile?.fileType) {
-            is GdFileType -> {
-                myFile?.getPsiFile(project)?.let {
-                    val files = TscnResourceUtil.findTscnFilesByResources(it)
-                    when (files.size) {
-                        0 -> myPanel = createContentPanel(JLabel("No scene"))
-                        1 -> myPanel = buildTreeStructure(files.first())
-                        else -> {
-                            val tabs = JTabbedPane()
-                            files.forEach { tabs.addTab(it.name, buildTreeStructure(it)) }
-                            myPanel = tabs
+        ReadAction.nonBlocking<JComponent> {
+            var newPanel: JComponent? = null
+            when (myFile?.fileType) {
+                is GdFileType -> {
+                    myFile?.getPsiFile(project)?.let {
+                        val files = TscnResourceUtil.findTscnFilesByResources(it)
+                        newPanel = when (files.size) {
+                            0 -> createContentPanel(JLabel("No scene"))
+                            1 -> buildTreeStructure(files.first())
+                            else -> {
+                                val tabs = JTabbedPane()
+                                files.forEach { tabs.addTab(it.name, buildTreeStructure(it)) }
+                                tabs
+                            }
                         }
                     }
                 }
-            }
-            is TscnFileType -> {
-                myFile?.getPsiFile(project)?.let {
-                    myPanel = buildTreeStructure(it)
+
+                is TscnFileType -> {
+                    myFile?.getPsiFile(project)?.let {
+                        newPanel = buildTreeStructure(it)
+                    }
                 }
             }
+            newPanel
         }
-        if (myPanel == null) myPanel = createContentPanel(JLabel("No scene"))
+            .coalesceBy(this)
+            .finishOnUiThread(ModalityState.defaultModalityState()) {
+                val content = ContentFactory.getInstance()
+                    .createContent(it ?: createContentPanel(JLabel("No scene")), null, false)
+                contentManager.addContent(content)
+                pendingRebuild.set(false)
+            }
+            .submit(AppExecutorUtil.getAppExecutorService())
 
-        val content = ContentFactory.getInstance().createContent(myPanel, null, false)
-
-        contentManager.addContent(content)
-        pendingRebuild.set(false)
 
         if (wasFocused) {
             val policy = container.focusTraversalPolicy
@@ -293,9 +301,17 @@ class TscnScenePreviewWindow : Disposable {
         val nodes = PsiTreeUtil.collectElementsOfType(file, TscnNodeHeader::class.java)
         val treeModel = TscnSceneTreeNode()
 
-        nodes.forEach { treeModel.addNodeChild(it) }
         val tree = Tree(treeModel)
+        tree.dragEnabled = true
         tree.cellRenderer = TscnSceneCellRenderer()
+
+        var parent: String? = null
+        nodes.forEachIndexed { i, it ->
+            if (i == 0 && it.instanceResource.isNotBlank()) parent = it.instanceResource
+            treeModel.addNodeChild(it)
+        }
+        addParentScene(treeModel, tree, parent)
+
         var j = tree.getRowCount()
         var i = 0
         while (i < j) {
@@ -306,6 +322,21 @@ class TscnScenePreviewWindow : Disposable {
         tree.emptyText.text = "No nodes"
 
         return ScrollPaneFactory.createScrollPane(tree, true)
+    }
+
+    private fun addParentScene(treeModel: TscnSceneTreeNode, tree: Tree, resource: String?) {
+        if (resource == null) return
+        GdClassUtil.getClassIdElement(resource, project)?.let { file ->
+            if (file !is TscnFile) return@let
+
+            val nodes = PsiTreeUtil.collectElementsOfType(file, TscnNodeHeader::class.java)
+            var parent: String? = null
+            nodes.forEachIndexed { i, it ->
+                if (i == 0 && it.instanceResource.isNotBlank()) parent = it.instanceResource
+                treeModel.addNodeChild(it)
+            }
+            coroutineScope.launch { addParentScene(treeModel, tree, parent) }
+        }
     }
 
     private fun createContentPanel(component: JComponent): JPanel {

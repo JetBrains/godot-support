@@ -1,13 +1,13 @@
 package tscn.toolWindow.model
 
 import tscn.psi.TscnNodeHeader
-import java.util.*
 import javax.swing.tree.DefaultMutableTreeNode
 
 class TscnSceneTreeNode : DefaultMutableTreeNode {
 
     var myName = ""
     var myType = ""
+    var inherited = false
 
     constructor()
     constructor(name: String, type: String) {
@@ -18,7 +18,7 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
     fun addNodeChild(node: TscnNodeHeader) {
         val name = node.name
         val type = node.type
-        if (name.isBlank() || type.isBlank()) return
+        if (name.isBlank()) return
 
         when (node.parentPath) {
             "" -> {
@@ -27,25 +27,39 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
                 myType = type
             }
             "." -> {
-                // TODO
-                // root.children[node.index] = TscnSceneTreeElement(node.type, node.name)
-                add(TscnSceneTreeNode(name, type))
+                insertInner(TscnSceneTreeNode(name, type), 0.coerceAtLeast(node.index))
             }
             else -> {
-                addNodeChild(name, type, node.index, node.parentPath.split('/'))
+                addNodeChild(name, type, 0.coerceAtLeast(node.index), node.parentPath.split('/'))
             }
         }
     }
 
     fun addNodeChild(type: String, name: String, index: Int, paths: List<String>) {
         if (paths.isEmpty()) {
-            add(TscnSceneTreeNode(name, type))
+            insertInner(TscnSceneTreeNode(name, type), index)
         } else {
             val lookFor = paths.first()
-            (children as Vector<TscnSceneTreeNode>)
-                .find { it.myName == lookFor }
-                ?.addNodeChild(type, name, index, paths.subList(1, paths.size))
+            (children)
+                .find { it is TscnSceneTreeNode && it.myName == lookFor }
+                ?.let { (it as TscnSceneTreeNode).addNodeChild(type, name, index, paths.subList(1, paths.size)) }
         }
+    }
+
+    private fun insertInner(node: TscnSceneTreeNode, index: Int) {
+        if (childCount > index) {
+            val i = children.indexOfFirst { it is TscnSceneTreeNodePlaceholder }
+            if (i >= 0) {
+                node.inherited = true
+                children[i] = node
+            }
+            return
+        }
+
+        if (childCount < index) {
+            add(TscnSceneTreeNodePlaceholder())
+        }
+        insert(node, index)
     }
 
 }

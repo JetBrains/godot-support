@@ -1,5 +1,6 @@
 package tscn.toolWindow
 
+import com.intellij.ui.JBColor
 import gdscript.GdIcon
 import tscn.toolWindow.model.TscnSceneTreeNode
 import java.awt.Component
@@ -21,6 +22,7 @@ class TscnSceneCellRenderer : DefaultTreeCellRenderer() {
         if (value is TscnSceneTreeNode) {
             text = value.myName
             icon = GdIcon.getEditorIcon(value.myType)
+            if (value.inherited) foreground = JBColor.YELLOW
         }
 
         return this
