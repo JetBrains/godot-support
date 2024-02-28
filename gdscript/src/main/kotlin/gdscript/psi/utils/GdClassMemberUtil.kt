@@ -67,7 +67,7 @@ object GdClassMemberUtil {
             static = static || calledOn.endsWith(".gd")
         }
 
-        if (!static && calledOn == null) {
+        if (!static) {
             when (val ownerMethod = PsiTreeUtil.getParentOfType(
                 calledOnPsi ?: element,
                 GdMethodDeclTl::class.java,
@@ -95,7 +95,7 @@ object GdClassMemberUtil {
                     val local = addsParentDeclarations(
                         GdClassUtil.getOwningClassElement(globalParent),
                         result,
-                        static,
+                        null,
                         searchFor
                     )
                     if (searchFor != null && local != null) return arrayOf(local)

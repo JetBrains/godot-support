@@ -51,7 +51,6 @@ import java.awt.event.HierarchyEvent
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.*
 
-
 private enum class RebuildDelay {
     QUEUE,
     NOW,

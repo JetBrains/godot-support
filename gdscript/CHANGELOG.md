@@ -4,6 +4,7 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 
 ### 2.4.0 (28.2.2024)
 
++ Static method resolve [#241](https://gitlab.com/IceExplosive/gdscript/-/issues/241)
 + Basic scene preview [#235](https://gitlab.com/IceExplosive/gdscript/-/issues/235)
 
 ### 2.3.1 (27.2.2024)
