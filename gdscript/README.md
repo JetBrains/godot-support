@@ -21,6 +21,19 @@ Supports only Godot 4.0 and higher
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
+# NEW UPDATE 28.2.2024
+
+Thank you for help and support - extra thanks to @BokoEnos for a lot of contributions.
+
+This plugin is gaining quite an attention and latest 2.4.0 release (should be public tomorrow) is coming up with a 
+[Scene preview](documentation%2Ffeatures%2Fscene_preview.md) - for now it's usage
+is VERY limited, but it shows Node's tree structure and allows for Drag&Drop into scripts.
+
+There are some feature requests in Issue list - I don't have time to implement them all within next weeks (maybe months), 
+but don't hesitate to propose new ones or vote (just give "thumbs up" on issue) for the one you desire the most.
+
+And ofc please report all issues you find.
+
 ## Update 12.2.2024
 
 With latest version 2.2.0 there's an update for TscnFiles -> highlighting possible via TextMate plugin,
