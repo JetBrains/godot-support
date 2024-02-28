@@ -1,23 +1,24 @@
 // This is a generated file. Not intended for manual editing.
 package tscn.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
-import tscn.psi.TscnJsonObjectElem;
-import tscn.psi.TscnJsonValue;
-import tscn.psi.TscnVisitor;
+import static tscn.psi.TscnTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import tscn.psi.*;
 
-public class TscnJsonObjectElemImpl extends ASTWrapperPsiElement implements TscnJsonObjectElem {
+public class TscnJsonPairImpl extends ASTWrapperPsiElement implements TscnJsonPair {
 
-  public TscnJsonObjectElemImpl(@NotNull ASTNode node) {
+  public TscnJsonPairImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull TscnVisitor visitor) {
-    visitor.visitJsonObjectElem(this);
+    visitor.visitJsonPair(this);
   }
 
   @Override

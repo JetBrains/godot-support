@@ -46,7 +46,7 @@ object TscnHeaderUtils {
      */
     fun getDataValue(element: TscnParagraph, key: String): String {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(element, TscnDataLine::class.java).find {
-            it.dataLineNm.text == key
+            it.dataLineHeader.text == key
         }?.dataLineValue?.text?.trim(' ', '\n') ?: ""
     }
 

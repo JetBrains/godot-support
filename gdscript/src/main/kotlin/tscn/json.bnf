@@ -1,0 +1,30 @@
+// Terminals
+terminal COMMA, COLON, LSQBRACKET, RSQBRACKET, LCBRACKET, RCBRACKET, NULL;
+terminal Double NUMBER;
+terminal String STRING;
+terminal Boolean BOOLEAN;
+
+// Non terminals
+non terminal object, pair_list, pair, value, array, value_list, file_start;
+
+// json files start with either of these
+file_start::= object {: System.out.println("Parse successful."); :}
+            | array {: System.out.println("Parse successful."); :};
+
+// Object: {} or { pair list }
+object::= LCBRACKET RCBRACKET | LCBRACKET pair_list RCBRACKET;
+
+// Pair list: one pair (key:value) or a list of comma separated pairs
+pair_list::= pair_list COMMA pair | pair;
+
+// Key-value format: STRING:value
+pair::= STRING COLON value;
+
+// Array: value list between sq brackets
+array ::= LSQBRACKET RSQBRACKET | LSQBRACKET value_list RSQBRACKET;
+
+// Value list: one value or multiple separated by commas
+value_list ::= value_list COMMA value | value;
+
+// Value: anything
+value::=STRING | NUMBER | BOOLEAN | NULL | array | object;

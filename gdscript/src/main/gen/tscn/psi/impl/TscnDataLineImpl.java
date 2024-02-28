@@ -29,8 +29,8 @@ public class TscnDataLineImpl extends ASTWrapperPsiElement implements TscnDataLi
 
   @Override
   @NotNull
-  public TscnDataLineNm getDataLineNm() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnDataLineNm.class));
+  public TscnDataLineHeader getDataLineHeader() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnDataLineHeader.class));
   }
 
   @Override

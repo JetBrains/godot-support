@@ -1,14 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package tscn.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
-import tscn.psi.TscnDataLineValue;
-import tscn.psi.TscnJsonValue;
-import tscn.psi.TscnVisitor;
+import static tscn.psi.TscnTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import tscn.psi.*;
 
 public class TscnDataLineValueImpl extends ASTWrapperPsiElement implements TscnDataLineValue {
 
@@ -28,8 +29,8 @@ public class TscnDataLineValueImpl extends ASTWrapperPsiElement implements TscnD
 
   @Override
   @NotNull
-  public TscnJsonValue getJsonValue() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnJsonValue.class));
+  public TscnValue getValue() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnValue.class));
   }
 
 }

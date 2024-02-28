@@ -1,17 +1,15 @@
 // This is a generated file. Not intended for manual editing.
 package tscn.psi.impl;
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import java.util.List;
+import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import tscn.psi.TscnGodotObject;
-import tscn.psi.TscnJsonArray;
-import tscn.psi.TscnJsonObject;
-import tscn.psi.TscnJsonValue;
-import tscn.psi.TscnVisitor;
+import static tscn.psi.TscnTypes.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import tscn.psi.*;
 
 public class TscnJsonValueImpl extends ASTWrapperPsiElement implements TscnJsonValue {
 
@@ -31,20 +29,26 @@ public class TscnJsonValueImpl extends ASTWrapperPsiElement implements TscnJsonV
 
   @Override
   @Nullable
-  public TscnGodotObject getGodotObject() {
-    return PsiTreeUtil.getChildOfType(this, TscnGodotObject.class);
+  public TscnArray getArray() {
+    return PsiTreeUtil.getChildOfType(this, TscnArray.class);
   }
 
   @Override
   @Nullable
-  public TscnJsonArray getJsonArray() {
-    return PsiTreeUtil.getChildOfType(this, TscnJsonArray.class);
+  public TscnExprValue getExprValue() {
+    return PsiTreeUtil.getChildOfType(this, TscnExprValue.class);
   }
 
   @Override
   @Nullable
-  public TscnJsonObject getJsonObject() {
-    return PsiTreeUtil.getChildOfType(this, TscnJsonObject.class);
+  public TscnNumberValue getNumberValue() {
+    return PsiTreeUtil.getChildOfType(this, TscnNumberValue.class);
+  }
+
+  @Override
+  @Nullable
+  public TscnObject getObject() {
+    return PsiTreeUtil.getChildOfType(this, TscnObject.class);
   }
 
 }

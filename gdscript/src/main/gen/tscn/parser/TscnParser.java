@@ -41,6 +41,68 @@ public class TscnParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
+  // value? (COMMA value)*
+  public static boolean argList(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argList")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, ARG_LIST, "<arg list>");
+    r = argList_0(b, l + 1);
+    r = r && argList_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // value?
+  private static boolean argList_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argList_0")) return false;
+    value(b, l + 1);
+    return true;
+  }
+
+  // (COMMA value)*
+  private static boolean argList_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argList_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!argList_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "argList_1", c)) break;
+    }
+    return true;
+  }
+
+  // COMMA value
+  private static boolean argList_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argList_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && value(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // LSBR valueList? RSBR
+  public static boolean array(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "array")) return false;
+    if (!nextTokenIs(b, LSBR)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LSBR);
+    r = r && array_1(b, l + 1);
+    r = r && consumeToken(b, RSBR);
+    exit_section_(b, m, ARRAY, r);
+    return r;
+  }
+
+  // valueList?
+  private static boolean array_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "array_1")) return false;
+    valueList(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
   // LSBR CONNECTION headerValue* RSBR
   public static boolean connection_header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "connection_header")) return false;
@@ -66,41 +128,123 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // dataLine_nm EQ dataLine_value
+  // dataLineHeader EQ dataLine_value
   public static boolean dataLine(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLine")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    if (!nextTokenIs(b, "<data line>", IDENTIFIER, NUMBER)) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = dataLine_nm(b, l + 1);
+    Marker m = enter_section_(b, l, _NONE_, DATA_LINE, "<data line>");
+    r = dataLineHeader(b, l + 1);
     r = r && consumeToken(b, EQ);
     r = r && dataLine_value(b, l + 1);
-    exit_section_(b, m, DATA_LINE, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // IDENTIFIER
+  // dataLine_nm ((COLON | SLASH) dataLine_nm)*
+  public static boolean dataLineHeader(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLineHeader")) return false;
+    if (!nextTokenIs(b, "<data line header>", IDENTIFIER, NUMBER)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, DATA_LINE_HEADER, "<data line header>");
+    r = dataLine_nm(b, l + 1);
+    r = r && dataLineHeader_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // ((COLON | SLASH) dataLine_nm)*
+  private static boolean dataLineHeader_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLineHeader_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!dataLineHeader_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "dataLineHeader_1", c)) break;
+    }
+    return true;
+  }
+
+  // (COLON | SLASH) dataLine_nm
+  private static boolean dataLineHeader_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLineHeader_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = dataLineHeader_1_0_0(b, l + 1);
+    r = r && dataLine_nm(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // COLON | SLASH
+  private static boolean dataLineHeader_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLineHeader_1_0_0")) return false;
+    boolean r;
+    r = consumeToken(b, COLON);
+    if (!r) r = consumeToken(b, SLASH);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // IDENTIFIER | NUMBER
   public static boolean dataLine_nm(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLine_nm")) return false;
-    if (!nextTokenIs(b, IDENTIFIER)) return false;
+    if (!nextTokenIs(b, "<data line nm>", IDENTIFIER, NUMBER)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, DATA_LINE_NM, "<data line nm>");
     r = consumeToken(b, IDENTIFIER);
-    exit_section_(b, m, DATA_LINE_NM, r);
+    if (!r) r = consumeToken(b, NUMBER);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   /* ********************************************************** */
-  // VALUE
+  // value
   public static boolean dataLine_value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLine_value")) return false;
-    if (!nextTokenIs(b, VALUE)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, DATA_LINE_VALUE, "<data line value>");
+    r = value(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // identifierEx (LRBR argList? RRBR)?
+  public static boolean exprValue(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "exprValue")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, EXPR_VALUE, "<expr value>");
+    r = identifierEx(b, l + 1);
+    r = r && exprValue_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (LRBR argList? RRBR)?
+  private static boolean exprValue_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "exprValue_1")) return false;
+    exprValue_1_0(b, l + 1);
+    return true;
+  }
+
+  // LRBR argList? RRBR
+  private static boolean exprValue_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "exprValue_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, VALUE);
-    exit_section_(b, m, DATA_LINE_VALUE, r);
+    r = consumeToken(b, LRBR);
+    r = r && exprValue_1_0_1(b, l + 1);
+    r = r && consumeToken(b, RRBR);
+    exit_section_(b, m, null, r);
     return r;
+  }
+
+  // argList?
+  private static boolean exprValue_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "exprValue_1_0_1")) return false;
+    argList(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -150,14 +294,129 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // VALUE
+  // value
   public static boolean headerValue_val(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "headerValue_val")) return false;
-    if (!nextTokenIs(b, VALUE)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, HEADER_VALUE_VAL, "<header value val>");
+    r = value(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(LSBR | IDENTIFIER)
+  static boolean header_r(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "header_r")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !header_r_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // LSBR | IDENTIFIER
+  private static boolean header_r_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "header_r_0")) return false;
+    boolean r;
+    r = consumeToken(b, LSBR);
+    if (!r) r = consumeToken(b, IDENTIFIER);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // OBJECT_REF | IDENTIFIER | IDENTIFIER_REF | GD_SCENE | EXT_RESOURCE | NODE
+  public static boolean identifierEx(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "identifierEx")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, IDENTIFIER_EX, "<identifier ex>");
+    r = consumeToken(b, OBJECT_REF);
+    if (!r) r = consumeToken(b, IDENTIFIER);
+    if (!r) r = consumeToken(b, IDENTIFIER_REF);
+    if (!r) r = consumeToken(b, GD_SCENE);
+    if (!r) r = consumeToken(b, EXT_RESOURCE);
+    if (!r) r = consumeToken(b, NODE);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // object | array
+  public static boolean json(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "json")) return false;
+    if (!nextTokenIs(b, "<json>", LCBR, LSBR)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, JSON, "<json>");
+    r = object(b, l + 1);
+    if (!r) r = array(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // STRING COLON jsonValue
+  public static boolean jsonPair(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "jsonPair")) return false;
+    if (!nextTokenIs(b, STRING)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, VALUE);
-    exit_section_(b, m, HEADER_VALUE_VAL, r);
+    r = consumeTokens(b, 0, STRING, COLON);
+    r = r && jsonValue(b, l + 1);
+    exit_section_(b, m, JSON_PAIR, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // jsonPair (COMMA jsonPair)*
+  public static boolean jsonPairList(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "jsonPairList")) return false;
+    if (!nextTokenIs(b, STRING)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = jsonPair(b, l + 1);
+    r = r && jsonPairList_1(b, l + 1);
+    exit_section_(b, m, JSON_PAIR_LIST, r);
+    return r;
+  }
+
+  // (COMMA jsonPair)*
+  private static boolean jsonPairList_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "jsonPairList_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!jsonPairList_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "jsonPairList_1", c)) break;
+    }
+    return true;
+  }
+
+  // COMMA jsonPair
+  private static boolean jsonPairList_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "jsonPairList_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && jsonPair(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | array | object
+  public static boolean jsonValue(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "jsonValue")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, JSON_VALUE, "<json value>");
+    r = numberValue(b, l + 1);
+    if (!r) r = consumeToken(b, TRUE);
+    if (!r) r = consumeToken(b, FALSE);
+    if (!r) r = consumeToken(b, NULL);
+    if (!r) r = consumeToken(b, STRING);
+    if (!r) r = consumeToken(b, STRING_REF);
+    if (!r) r = exprValue(b, l + 1);
+    if (!r) r = array(b, l + 1);
+    if (!r) r = object(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -183,6 +442,55 @@ public class TscnParser implements PsiParser, LightPsiParser {
       if (!headerValue(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "node_header_2", c)) break;
     }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // (PLUS | MINUS)? NUMBER
+  public static boolean numberValue(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "numberValue")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, NUMBER_VALUE, "<number value>");
+    r = numberValue_0(b, l + 1);
+    r = r && consumeToken(b, NUMBER);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (PLUS | MINUS)?
+  private static boolean numberValue_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "numberValue_0")) return false;
+    numberValue_0_0(b, l + 1);
+    return true;
+  }
+
+  // PLUS | MINUS
+  private static boolean numberValue_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "numberValue_0_0")) return false;
+    boolean r;
+    r = consumeToken(b, PLUS);
+    if (!r) r = consumeToken(b, MINUS);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // LCBR jsonPairList? RCBR
+  public static boolean object(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "object")) return false;
+    if (!nextTokenIs(b, LCBR)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LCBR);
+    r = r && object_1(b, l + 1);
+    r = r && consumeToken(b, RCBR);
+    exit_section_(b, m, OBJECT, r);
+    return r;
+  }
+
+  // jsonPairList?
+  private static boolean object_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "object_1")) return false;
+    jsonPairList(b, l + 1);
     return true;
   }
 
@@ -236,7 +544,10 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LSBR GD_SCENE headerValue* RSBR
+  // LSBR GD_SCENE headerValue* RSBR {
+  // //    pin=2
+  // //    recoverWhile=header_r
+  // }
   public static boolean scene_header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scene_header")) return false;
     if (!nextTokenIs(b, LSBR)) return false;
@@ -245,6 +556,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
     r = consumeTokens(b, 0, LSBR, GD_SCENE);
     r = r && scene_header_2(b, l + 1);
     r = r && consumeToken(b, RSBR);
+    r = r && scene_header_4(b, l + 1);
     exit_section_(b, m, SCENE_HEADER, r);
     return r;
   }
@@ -257,6 +569,14 @@ public class TscnParser implements PsiParser, LightPsiParser {
       if (!headerValue(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "scene_header_2", c)) break;
     }
+    return true;
+  }
+
+  // {
+  // //    pin=2
+  // //    recoverWhile=header_r
+  // }
+  private static boolean scene_header_4(PsiBuilder b, int l) {
     return true;
   }
 
@@ -278,7 +598,10 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LSBR IDENTIFIER headerValue* RSBR
+  // LSBR IDENTIFIER headerValue* RSBR {
+  // //    pin=1
+  // //    recoverWhile=header_r
+  // }
   public static boolean unknown_header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "unknown_header")) return false;
     if (!nextTokenIs(b, LSBR)) return false;
@@ -287,6 +610,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
     r = consumeTokens(b, 0, LSBR, IDENTIFIER);
     r = r && unknown_header_2(b, l + 1);
     r = r && consumeToken(b, RSBR);
+    r = r && unknown_header_4(b, l + 1);
     exit_section_(b, m, UNKNOWN_HEADER, r);
     return r;
   }
@@ -300,6 +624,66 @@ public class TscnParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "unknown_header_2", c)) break;
     }
     return true;
+  }
+
+  // {
+  // //    pin=1
+  // //    recoverWhile=header_r
+  // }
+  private static boolean unknown_header_4(PsiBuilder b, int l) {
+    return true;
+  }
+
+  /* ********************************************************** */
+  // numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | json
+  public static boolean value(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "value")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, VALUE, "<value>");
+    r = numberValue(b, l + 1);
+    if (!r) r = consumeToken(b, TRUE);
+    if (!r) r = consumeToken(b, FALSE);
+    if (!r) r = consumeToken(b, NULL);
+    if (!r) r = consumeToken(b, STRING);
+    if (!r) r = consumeToken(b, STRING_REF);
+    if (!r) r = exprValue(b, l + 1);
+    if (!r) r = json(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // jsonValue (COMMA jsonValue)*
+  public static boolean valueList(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "valueList")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, VALUE_LIST, "<value list>");
+    r = jsonValue(b, l + 1);
+    r = r && valueList_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // (COMMA jsonValue)*
+  private static boolean valueList_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "valueList_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!valueList_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "valueList_1", c)) break;
+    }
+    return true;
+  }
+
+  // COMMA jsonValue
+  private static boolean valueList_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "valueList_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, COMMA);
+    r = r && jsonValue(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
 }

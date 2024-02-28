@@ -13,7 +13,7 @@ import com.intellij.psi.stubs.PsiFileStub
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.IStubFileElementType
 import com.intellij.psi.tree.TokenSet
-import tscn.parser.TscnParserV2
+import tscn.parser.TscnParser
 import tscn.psi.TscnFile
 import tscn.psi.TscnTypes
 
@@ -29,7 +29,7 @@ class TscnParserDefinition : ParserDefinition {
 
     override fun createLexer(project: Project?): Lexer = TscnLexerAdapter();
 
-    override fun createParser(project: Project?): PsiParser = TscnParserV2();
+    override fun createParser(project: Project?): PsiParser = TscnParser();
 
     override fun getFileNodeType(): IFileElementType = FILE;
 

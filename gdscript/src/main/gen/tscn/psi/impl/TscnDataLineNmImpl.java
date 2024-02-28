@@ -8,12 +8,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static tscn.psi.TscnTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tscn.psi.*;
 
-public class TscnDataLineNmImpl extends ASTWrapperPsiElement implements TscnDataLineNm {
+public class TscnDataLineNmImpl extends TscnNamedElementImpl implements TscnDataLineNm {
 
-  public TscnDataLineNmImpl(@NotNull ASTNode node) {
+  public TscnDataLineNmImpl(ASTNode node) {
     super(node);
   }
 
@@ -25,6 +24,18 @@ public class TscnDataLineNmImpl extends ASTWrapperPsiElement implements TscnData
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof TscnVisitor) accept((TscnVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public String getName() {
+    return TscnPsiUtils.getName(this);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement setName(@NotNull String newName) {
+    return TscnPsiUtils.setName(this, newName);
   }
 
 }

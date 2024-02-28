@@ -1,0 +1,7 @@
+[sub_resource type="SpriteFrames" id="7"]
+animations = [{
+"frames": [SubResource("2"), SubResource("3"), SubResource("4"), SubResource("5"), SubResource("6")],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]

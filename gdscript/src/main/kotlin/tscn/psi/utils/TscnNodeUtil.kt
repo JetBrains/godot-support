@@ -161,7 +161,7 @@ object TscnNodeUtil {
         val datas = PsiTreeUtil.getChildrenOfTypeAsList(node.parent, TscnDataLine::class.java)
 
         return datas.mapNotNull {
-            val name = it.dataLineNm.text
+            val name = it.dataLineHeader.text
             if (name.startsWith(META_PREFIX)) name.substring(META_PREFIX.length)
             else null
         }.toTypedArray()

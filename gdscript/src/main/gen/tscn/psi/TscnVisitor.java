@@ -1,11 +1,19 @@
 // This is a generated file. Not intended for manual editing.
 package tscn.psi;
 
-import com.intellij.psi.PsiElement;
+import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.PsiElement;
 
 public class TscnVisitor extends PsiElementVisitor {
+
+  public void visitArgList(@NotNull TscnArgList o) {
+    visitPsiElement(o);
+  }
+
+  public void visitArray(@NotNull TscnArray o) {
+    visitPsiElement(o);
+  }
 
   public void visitConnectionHeader(@NotNull TscnConnectionHeader o) {
     visitHeader(o);
@@ -15,15 +23,19 @@ public class TscnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitDataLineNm(@NotNull TscnDataLineNm o) {
+  public void visitDataLineHeader(@NotNull TscnDataLineHeader o) {
     visitPsiElement(o);
+  }
+
+  public void visitDataLineNm(@NotNull TscnDataLineNm o) {
+    visitNamedElement(o);
   }
 
   public void visitDataLineValue(@NotNull TscnDataLineValue o) {
     visitPsiElement(o);
   }
 
-  public void visitGodotObject(@NotNull TscnGodotObject o) {
+  public void visitExprValue(@NotNull TscnExprValue o) {
     visitPsiElement(o);
   }
 
@@ -36,22 +48,26 @@ public class TscnVisitor extends PsiElementVisitor {
   }
 
   public void visitHeaderValueNm(@NotNull TscnHeaderValueNm o) {
-    visitPsiElement(o);
+    visitNamedElement(o);
   }
 
   public void visitHeaderValueVal(@NotNull TscnHeaderValueVal o) {
     visitNamedElement(o);
   }
 
-  public void visitJsonArray(@NotNull TscnJsonArray o) {
+  public void visitIdentifierEx(@NotNull TscnIdentifierEx o) {
     visitPsiElement(o);
   }
 
-  public void visitJsonObject(@NotNull TscnJsonObject o) {
+  public void visitJson(@NotNull TscnJson o) {
     visitPsiElement(o);
   }
 
-  public void visitJsonObjectElem(@NotNull TscnJsonObjectElem o) {
+  public void visitJsonPair(@NotNull TscnJsonPair o) {
+    visitPsiElement(o);
+  }
+
+  public void visitJsonPairList(@NotNull TscnJsonPairList o) {
     visitPsiElement(o);
   }
 
@@ -61,6 +77,14 @@ public class TscnVisitor extends PsiElementVisitor {
 
   public void visitNodeHeader(@NotNull TscnNodeHeader o) {
     visitHeader(o);
+  }
+
+  public void visitNumberValue(@NotNull TscnNumberValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitObject(@NotNull TscnObject o) {
+    visitPsiElement(o);
   }
 
   public void visitParagraph(@NotNull TscnParagraph o) {
@@ -77,6 +101,14 @@ public class TscnVisitor extends PsiElementVisitor {
 
   public void visitUnknownHeader(@NotNull TscnUnknownHeader o) {
     visitHeader(o);
+  }
+
+  public void visitValue(@NotNull TscnValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitValueList(@NotNull TscnValueList o) {
+    visitPsiElement(o);
   }
 
   public void visitNamedElement(@NotNull TscnNamedElement o) {

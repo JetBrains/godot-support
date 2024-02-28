@@ -1,0 +1,52 @@
+[gd_scene load_steps=5 format=3 uid="uid://bw0wy7yp6jniw"]
+
+[ext_resource type="PackedScene" uid="uid://cpa3ioxd6crke" path="res://examples/light.tscn" id="2_jap8n"]
+[ext_resource type="Script" path="res://examples/mouse_light.gd" id="2_px2gi"]
+[ext_resource type="PackedScene" uid="uid://xxx8r8vuswa" path="res://examples/gridvania/example_gridvania.ldtk" id="3_0pwam"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_2ueii"]
+
+[node name="MapViewer" type="Node2D"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 0
+follow_viewport_enabled = true
+
+[node name="example_gridvania" parent="CanvasLayer" instance=ExtResource("3_0pwam")]
+
+[node name="CanvasModulate" type="CanvasModulate" parent="CanvasLayer"]
+color = Color(0.372549, 0.423529, 0.533333, 1)
+
+[node name="MouseLight" parent="CanvasLayer" instance=ExtResource("2_jap8n")]
+position = Vector2(314, 72)
+scale = Vector2(2, 2)
+height = 2.0
+script = ExtResource("2_px2gi")
+
+[node name="Camera2D" type="Camera2D" parent="CanvasLayer"]
+anchor_mode = 0
+
+[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer2"]
+top_level = true
+custom_minimum_size = Vector2(960, 540)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="CanvasLayer2/Control"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -26.0
+offset_right = 226.0
+grow_vertical = 0
+text = "[RMB] + Drag : Move Camera"
+label_settings = SubResource("LabelSettings_2ueii")
+horizontal_alignment = 1
+vertical_alignment = 1

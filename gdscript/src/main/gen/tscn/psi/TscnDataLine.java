@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface TscnDataLine extends PsiElement {
 
   @NotNull
-  TscnDataLineNm getDataLineNm();
+  TscnDataLineHeader getDataLineHeader();
 
   @NotNull
   TscnDataLineValue getDataLineValue();

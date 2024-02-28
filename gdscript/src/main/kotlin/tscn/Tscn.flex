@@ -16,196 +16,71 @@ import java.util.Stack;
 %unicode
 %function advance
 %type IElementType
-%eof{  return;
+%eof{ return;
 %eof}
 
 %{
-    boolean dataJson = false;
-    Character endingChar = '{';
-    HashMap<Character, Character> endings = new HashMap<>();
-
-    private List<Character> valueEndingChars(char current) {
-        switch (current) {
-            case '"':
-                return List.of('"');
-            case '(':
-                return List.of(')');
-            case '[':
-                return List.of(']');
-            default:
-                return List.of(' ', ']');
-        }
-    }
-
-    private boolean valueEndingIncluded(char current) {
-        switch (current) {
-            case '"':
-                return true;
-            case '(':
-                return true;
-            case '[':
-                return true;
-            default:
-                return false;
-        }
-    }
 %}
 
 %init{
-    endings.put('{', '}');
-    endings.put('"', '"');
 %init}
 
-LETTER = [a-z|A-Z_\-0-9]
+LETTER = [a-z|A-Z|_]
 DIGIT = [0-9]
 
-NEW_LINE = [\r\n]
-IDENTIFIER = {LETTER}({LETTER}|{DIGIT}|\/)*
-DATA_IDENTIFIER = [^=\s]+
+NUMBER = ( [0-9][0-9_]*(\.[0-9_]+)? ) | ( \.[0-9][0-9_]* ) | ( [0-9][0-9_]*\. )
+REAL_NUMBER = {NUMBER}e-[0-9]+
 
-VALUE = [^\r\n]+ // ( \[[^\R]*?\] ) | ( \"[^\R]*?\" ) | ( {LETTER}*\([^\R\]]*?\) ) | ( {LETTER}+[^\(\R\]]+ )
-DATA_LINE = [^\r\n]+
+IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
+IDENTIFIER_REF = {LETTER}({LETTER}|{DIGIT})*"("
 
-WHITE_SPACE = [ \t]+
-WHITE_SPACE_ANY = {WHITE_SPACE}|{NEW_LINE}
+ONE_NL = \R
+WHITE_SPACE = " " | \t | \f | \\ {ONE_NL}
 COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 
-%xstate HEADER
-%xstate VALUE
-%xstate DATA_LINE
-%xstate DATA_VALUE
+STRING_ESC = \\ [^] | \\ ({WHITE_SPACE})+ (\n|\r)
+DOUBLE_QUOTED_CONTENT = {STRING_ESC} | [^\"]
+DOUBLE_QUOTED_LITERAL = [\$\^]?\" {DOUBLE_QUOTED_CONTENT}* \"
+STRING_REFERENCE = "&"{DOUBLE_QUOTED_LITERAL}
 
 %%
 
-<HEADER> {
-    "gd_scene"     { return TscnTypes.GD_SCENE; }
-    "ext_resource" { return TscnTypes.EXT_RESOURCE; }
-//    "sub_resource" { return TscnTypes.SUB_RESOURCE; }
-    "node"         { return TscnTypes.NODE; }
-    "connection"   { return TscnTypes.CONNECTION; }
-    {IDENTIFIER}   { return TscnTypes.IDENTIFIER; }
-    {WHITE_SPACE}  { return TokenType.WHITE_SPACE; }
-    "]"            { yybegin(YYINITIAL); return TscnTypes.RSBR; }
-    "="            { yybegin(VALUE); return TscnTypes.EQ; }
-}
+// Node names
+"gd_scene"        { return TscnTypes.GD_SCENE; }
+"ext_resource"    { return TscnTypes.EXT_RESOURCE; }
+"node"            { return TscnTypes.NODE; }
+"connection"      { return TscnTypes.CONNECTION; }
 
-<VALUE> {
-    {VALUE}        {
-        CharSequence line = yytext();
-        Stack<Character> openings = new Stack<>();
-        char currentOpening = line.charAt(0);
-        List<Character> searchFor = valueEndingChars(currentOpening);
-        List<Character> allowedOpening = List.of('"', '(', '[');
-        boolean includeEnding = valueEndingIncluded(currentOpening);
+"/"               { return TscnTypes.SLASH; }
+"="               { return TscnTypes.EQ; }
+":"               { return TscnTypes.COLON; }
+","               { return TscnTypes.COMMA; }
 
-        int i = 1;
-        for (; i < line.length(); i++) {
-            char current = line.charAt(i);
-            if (searchFor.contains(current)) {
-                if (openings.empty()) {
-                    if (includeEnding) {
-                       i++;
-                    }
-                    break;
-                } else {
-                    currentOpening = openings.pop();
-                    includeEnding = valueEndingIncluded(currentOpening);
-                    searchFor = valueEndingChars(currentOpening);
-                }
-            } else if (allowedOpening.contains(current)) {
-                openings.push(currentOpening);
-                currentOpening = current;
-                includeEnding = valueEndingIncluded(currentOpening);
-                searchFor = valueEndingChars(currentOpening);
-            }
-        }
+"("               { return TscnTypes.LRBR; }
+"["               { return TscnTypes.LSBR; }
+"{"               { return TscnTypes.LCBR; }
+")"               { return TscnTypes.RRBR; }
+"]"               { return TscnTypes.RSBR; }
+"}"               { return TscnTypes.RCBR; }
 
-        yypushback(line.length() - i);
-        yybegin(HEADER);
+"true"            { return TscnTypes.TRUE; }
+"false"           { return TscnTypes.FALSE; }
+"null"            { return TscnTypes.NULL; }
+{NUMBER}          { return TscnTypes.NUMBER; }
+{REAL_NUMBER}     { return TscnTypes.NUMBER; }
+"+"               { return TscnTypes.PLUS; }
+"-"               { return TscnTypes.MINUS; }
 
-        return TscnTypes.VALUE;
-    }
-}
+{DOUBLE_QUOTED_LITERAL} { return TscnTypes.STRING; }
+{STRING_REFERENCE}      { return TscnTypes.STRING_REF; }
 
-<DATA_LINE> {
-    {DATA_IDENTIFIER}   { return TscnTypes.IDENTIFIER; }
-    {WHITE_SPACE}  { return TokenType.WHITE_SPACE; }
-    "="            { yybegin(DATA_VALUE); return TscnTypes.EQ; }
-}
-
-<DATA_VALUE> {
-    {WHITE_SPACE_ANY}  {
-//          if (dataJson) {
-              continue;
-//          } else {
-//              return TokenType.WHITE_SPACE;
-//          }
-    }
-    {DATA_LINE}    {
-            String line = yytext().toString();
-            if (line.startsWith("[") || line.contains(" = ")) {
-                yypushback(yylength());
-                yybegin(YYINITIAL);
-                return TscnTypes.VALUE;
-            } else {
-                continue;
-            }
-
-//          String text = yytext().toString().trim();
-//          char firstChar = text.charAt(0);
-//          char lastChar = text.charAt(text.length() - 1);
-//          if (dataJson) {
-//              if (firstChar == endingChar || lastChar == endingChar) {
-//                  if (endingChar == '}' && lastChar != '}') {
-//                      continue; // TODO hack protože json může mít pole jsonů
-//                  }
-//
-//                  dataJson = false;
-//                  yybegin(YYINITIAL);
-//                  return TscnTypes.VALUE;
-//              }
-//              continue;
-//          } else {
-//              if (firstChar == '{' || firstChar == '"') {
-//                  endingChar = endings.get(firstChar);
-//                  // Check oneliners
-//                  if (lastChar == endingChar) {
-//                      yybegin(YYINITIAL);
-//                      return TscnTypes.VALUE;
-//                  }
-//
-//                  dataJson = true;
-//                  continue;
-//              } else {
-//                  yybegin(YYINITIAL);
-//                  return TscnTypes.VALUE;
-//              }
-//          }
-    }
-}
-
-"["                { yybegin(HEADER); return TscnTypes.LSBR; }
-{DATA_LINE}        {
-                      if (yytext().charAt(0) == '[') {
-                          yypushback(yylength() - 1);
-                          yybegin(HEADER);
-
-                          return TscnTypes.LSBR;
-                      } else {
-                          yypushback(yylength() - 1);
-                          yybegin(DATA_LINE);
-
-                          continue;
-                      }
-                   }
-{COMMENT}          { return TscnTypes.COMMENT; }
-{NEW_LINE}         { return TokenType.WHITE_SPACE; }
+{IDENTIFIER}      { return TscnTypes.IDENTIFIER; }
+{IDENTIFIER_REF}  { yypushback(1); return TscnTypes.IDENTIFIER_REF; }
+{COMMENT}         { return TscnTypes.COMMENT; }
+{WHITE_SPACE}     { return TokenType.WHITE_SPACE; }
+{ONE_NL}          { return TokenType.WHITE_SPACE; }
 
 <<EOF>> {
-    if (yystate() == DATA_VALUE) {
-        yybegin(YYINITIAL);
-        return TscnTypes.VALUE;
-    }
     return null;
 }
 
