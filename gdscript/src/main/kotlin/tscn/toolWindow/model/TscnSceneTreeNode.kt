@@ -9,6 +9,8 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
     var myType = ""
     var inherited = false
     var basePath = false
+    var hasScript = false
+    var hasUniqueName = false
 
     constructor()
     constructor(name: String, type: String, nodePath: String) {
@@ -16,35 +18,42 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
         myType = type
         userObject = nodePath
     }
+    constructor(node: TscnNodeHeader, externalType: String? = null) {
+        myName = node.name
+        myType = externalType ?: node.type
+        userObject = node.nodePath
+        hasScript = node.hasScript()
+        hasUniqueName = node.isUniqueNameOwner
+    }
 
     fun addNodeChild(node: TscnNodeHeader, externalType: String? = null) {
         val name = node.name
-        val type = externalType ?: node.type
-        val nodePath = node.nodePath
         if (name.isBlank()) return
 
         when (node.parentPath) {
             "" -> {
                 myName = name
-                myType = type
+                myType = externalType ?: node.type
+                hasScript = node.hasScript()
+                hasUniqueName = node.isUniqueNameOwner
             }
             "." -> {
-                insertInner(TscnSceneTreeNode(name, type, nodePath), 0.coerceAtLeast(node.index))
+                insertInner(TscnSceneTreeNode(node, externalType), 0.coerceAtLeast(node.index))
             }
             else -> {
-                addNodeChild(name, type, nodePath, 0.coerceAtLeast(node.index), node.parentPath.split('/'))
+                addNodeChild(node, externalType, 0.coerceAtLeast(node.index), node.parentPath.split('/'))
             }
         }
     }
 
-    fun addNodeChild(type: String, name: String, nodePath: String, index: Int, paths: List<String>) {
+    fun addNodeChild(node: TscnNodeHeader, externalType: String?, index: Int, paths: List<String>) {
         if (paths.isEmpty()) {
-            insertInner(TscnSceneTreeNode(name, type, nodePath), index)
+            insertInner(TscnSceneTreeNode(node, externalType), index)
         } else {
             val lookFor = paths.first()
             (children)
                 .find { it is TscnSceneTreeNode && it.myName == lookFor }
-                ?.let { (it as TscnSceneTreeNode).addNodeChild(type, name, nodePath, index, paths.subList(1, paths.size)) }
+                ?.let { (it as TscnSceneTreeNode).addNodeChild(node, externalType, index, paths.subList(1, paths.size)) }
         }
     }
 
