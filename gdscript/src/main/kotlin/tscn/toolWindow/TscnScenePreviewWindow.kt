@@ -302,7 +302,8 @@ class TscnScenePreviewWindow : Disposable {
         val treeModel = TscnSceneTreeNode()
 
         val tree = Tree(treeModel)
-        tree.dragEnabled = true
+        tree.dragEnabled = false // TODO
+        tree.dropMode
         tree.cellRenderer = TscnSceneCellRenderer()
 
         var parent: String? = null
