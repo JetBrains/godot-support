@@ -15,9 +15,9 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
         myType = type
     }
 
-    fun addNodeChild(node: TscnNodeHeader) {
+    fun addNodeChild(node: TscnNodeHeader, externalType: String? = null) {
         val name = node.name
-        val type = node.type
+        val type = externalType ?: node.type
         if (name.isBlank()) return
 
         when (node.parentPath) {

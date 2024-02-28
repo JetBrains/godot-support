@@ -308,7 +308,7 @@ class TscnScenePreviewWindow : Disposable {
         var parent: String? = null
         nodes.forEachIndexed { i, it ->
             if (i == 0 && it.instanceResource.isNotBlank()) parent = it.instanceResource
-            treeModel.addNodeChild(it)
+            treeModel.addNodeChild(it, resolveType(it))
         }
         addParentScene(treeModel, tree, parent)
 
@@ -332,11 +332,23 @@ class TscnScenePreviewWindow : Disposable {
             val nodes = PsiTreeUtil.collectElementsOfType(file, TscnNodeHeader::class.java)
             var parent: String? = null
             nodes.forEachIndexed { i, it ->
-                if (i == 0 && it.instanceResource.isNotBlank()) parent = it.instanceResource
-                treeModel.addNodeChild(it)
+                if (i == 0) parent = it.instanceResource
+                treeModel.addNodeChild(it, resolveType(it))
             }
             coroutineScope.launch { addParentScene(treeModel, tree, parent) }
         }
+    }
+
+    private fun resolveType(node: TscnNodeHeader): String? {
+        val instance = node.instanceResource
+        if (instance.isBlank()) return null
+
+        GdClassUtil.getClassIdElement(instance, project)?.let {
+            if (it is TscnFile) PsiTreeUtil.findChildOfType(it, TscnNodeHeader::class.java)?.let { return it.type }
+            // TODO can there be .gd file?
+        }
+
+        return null
     }
 
     private fun createContentPanel(component: JComponent): JPanel {
