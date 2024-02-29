@@ -67,7 +67,7 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
             return
         }
 
-        if (childCount < index) {
+        while (childCount < index) {
             add(TscnSceneTreeNodePlaceholder())
         }
         insert(node, index)
