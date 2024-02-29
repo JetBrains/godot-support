@@ -2,6 +2,11 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.4.1 (30.2.2024)
+
++ LineMarker exception [#245](https://gitlab.com/IceExplosive/gdscript/-/issues/245)
++ Scene preview exception [#246](https://gitlab.com/IceExplosive/gdscript/-/issues/246)
+
 ### 2.4.0 (28.2.2024)
 
 + Static method resolve [#241](https://gitlab.com/IceExplosive/gdscript/-/issues/241)
