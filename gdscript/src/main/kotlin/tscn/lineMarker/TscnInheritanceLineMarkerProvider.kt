@@ -3,6 +3,7 @@ package tscn.lineMarker
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
+import com.intellij.ide.util.PsiElementListCellRenderer
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.descendantsOfType
 import com.intellij.psi.util.firstLeaf
@@ -10,6 +11,7 @@ import com.intellij.psi.util.parentOfType
 import gdscript.GdIcon
 import gdscript.index.impl.GdFileResIndex
 import gdscript.utils.VirtualFileUtil.getPsiFile
+import gdscript.utils.VirtualFileUtil.localPath
 import tscn.psi.TscnFile
 import tscn.psi.TscnNodeHeader
 import tscn.psi.TscnResourceHeader
@@ -36,6 +38,18 @@ class TscnInheritanceLineMarkerProvider : RelatedItemLineMarkerProvider() {
             .setTargets(target.getPsiFile(project))
             .setPopupTitle("Inherited Scene")
             .setTooltipText("Navigate to inherited scene")
+            .setCellRenderer {
+                object : PsiElementListCellRenderer<PsiElement>() {
+
+                    override fun getElementText(element: PsiElement?): String {
+                        return "Inherited scene"
+                    }
+
+                    override fun getContainerText(element: PsiElement?, name: String?): String {
+                        return target.localPath() ?: ""
+                    }
+                }
+            }
 
         result.add(builder.createLineMarkerInfo(element.firstLeaf))
     }
