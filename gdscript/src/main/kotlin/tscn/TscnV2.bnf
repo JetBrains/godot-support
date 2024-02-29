@@ -1,0 +1,77 @@
+{
+  parserClass="tscn.parser.TscnParserV2"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Tscn"
+  psiImplClassSuffix="Impl"
+  psiPackage="tscn.psi"
+  psiImplPackage="tscn.psi.impl"
+
+  elementTypeHolderClass="tscn.psi.TscnTypes"
+  elementTypeClass="tscn.psi.TscnElementType"
+  tokenTypeClass="tscn.psi.TscnTokenType"
+
+  psiImplUtilClass="tscn.psi.TscnPsiUtils"
+
+  extends(".*_header")=header
+
+  tokens = [
+    comment='regexp:;.*'
+    bad_character='regexp:[\^]'
+  ]
+}
+
+tscnfile ::= paragraph+
+paragraph ::= header dataLine* {
+    mixin="tscn.psi.impl.TscnParagraphElementImpl"
+    stubClass="tscn.index.stub.TscnParagraphStub"
+    elementTypeFactory="tscn.psi.impl.TscnParagraphElementType.getInstance"
+}
+
+header ::=
+    scene_header
+    | node_header
+    | resource_header
+    | connection_header
+    | unknown_header
+
+scene_header ::= LSBR GD_SCENE headerValue* RSBR
+node_header ::= LSBR NODE headerValue* RSBR {
+    methods=[getName getType getParentPath getNodePath isUniqueNameOwner getScriptResource hasScript getDirectParentPath getGroups getInstanceResource]
+    mixin="tscn.psi.impl.TscnNodeHeaderElementImpl"
+    stubClass="tscn.index.stub.TscnNodeHeaderStub"
+    elementTypeFactory="tscn.psi.impl.TscnNodeHeaderElementType.getInstance"
+}
+resource_header ::= LSBR EXT_RESOURCE headerValue* RSBR {
+    methods=[getPath getType getId]
+    mixin="tscn.psi.impl.TscnResourceHeaderElementImpl"
+    stubClass="tscn.index.stub.TscnResourceHeaderStub"
+    elementTypeFactory="tscn.psi.impl.TscnResourceHeaderElementType.getInstance"
+}
+connection_header ::= LSBR CONNECTION headerValue* RSBR {
+    methods=[getFrom getTo getSignal getMethod]
+    mixin="tscn.psi.impl.TscnConnectionHeaderElementImpl"
+    stubClass="tscn.index.stub.TscnConnectionHeaderStub"
+    elementTypeFactory="tscn.psi.impl.TscnConnectionHeaderElementType.getInstance"
+}
+
+unknown_header ::= LSBR UNKNOWN headerValue* RSBR
+
+headerValue ::= headerValue_nm EQ headerValue_val
+headerValue_nm ::= HEADER_VALUE_NM
+headerValue_val ::= RES_STRING_VALUE | STRING_VALUE | VALUE | godotObject {
+    mixin="TscnNamedElementImpl"
+    implements="TscnNamedElement"
+    methods=[getName setName]
+}
+
+dataLine ::= dataLine_nm EQ dataLine_value
+dataLine_nm ::= DATA_LINE_NM
+dataLine_value ::= jsonValue
+
+jsonValue ::= RES_STRING_VALUE | STRING_VALUE | VALUE | (AMPERSAND GODOT_MEMBER_REF) | godotObject | jsonObject | jsonArray
+godotObject ::= GODOT_CLASS_REF LP ((STRING_VALUE | VALUE) (COMMA (STRING_VALUE | VALUE))*)? RP
+jsonObject ::= LCBR (jsonObjectElem (COMMA jsonObjectElem)*)? RCBR
+jsonObjectElem ::= STRING_VALUE COLON jsonValue
+jsonArray ::= LSBR (jsonValue (COMMA jsonValue)*)? RSBR

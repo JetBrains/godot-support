@@ -17,9 +17,7 @@
     <fileType name="GdScript File" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd"/>
     <lang.parserDefinition language="GdScript" implementationClass="gdscript.GdParserDefinition"/>
     <lang.syntaxHighlighterFactory language="GdScript" implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
-    <lang.syntaxHighlighterFactory language="Tscn" implementationClass="tscn.highlighter.TscnSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
-    <colorSettingsPage implementation="tscn.highlighter.TscnColorSettingsPage"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider" />
@@ -62,11 +60,14 @@
     <!-- Tscn, Project, Config -->
     <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
     <fileType name="Tres file" implementationClass="tscn.TresFileType" fieldName="INSTANCE" language="Tscn" extensions="tres"/>
+    <fileType name="Import file" implementationClass="tscn.ImportFileType" fieldName="INSTANCE" language="Tscn" extensions="import"/>
     <fileType name="GodotProject file" implementationClass="project.ProjectFileType" fieldName="INSTANCE" language="GodotProject" extensions="godot"/>
     <fileType name="GodotConfig file" implementationClass="config.GdConfigFileType" fieldName="INSTANCE" language="GodotConfig" extensions="gdconf"/>
     <lang.parserDefinition language="Tscn" implementationClass="tscn.TscnParserDefinition"/>
     <lang.parserDefinition language="GodotProject" implementationClass="project.ProjectParserDefinition"/>
     <lang.parserDefinition language="GodotConfig" implementationClass="config.GdConfigParserDefinition"/>
+    <lang.syntaxHighlighterFactory language="Tscn" implementationClass="tscn.highlighter.TscnSyntaxHighlighterFactory"/>
+    <colorSettingsPage implementation="tscn.highlighter.TscnColorSettingsPage"/>
 
     <!-- Completions -->
     <completion.contributor language="GdScript" order="first" implementationClass="gdscript.completion.GdNumberPositionCompletionContributor" />
@@ -102,7 +103,7 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdCommentAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdFlowStmtAnnotator" />
 
-    <annotator language="Tscn" implementationClass="tscn.annotator.TscnAnnotator" />
+    <annotator language="Tscn" implementationClass="tscn.annotator.TscnHeaderValueAnnotator" />
 
     <!-- Inspectors -->
     <localInspection language="GdScript" shortName="CheckVarType" enabledByDefault="true" level="WARNING"

@@ -122,6 +122,11 @@
             <option name="FOREGROUND" value="8fffdb" />
         </value>
     </option>
+    <option name="TSCN_MEMBER_REF">
+        <value>
+            <option name="FOREGROUND" value="57b3ff" />
+        </value>
+    </option>
     <option name="TSCN_ATTRIBUTES">
         <value>
             <option name="FOREGROUND" value="bce0ff" />

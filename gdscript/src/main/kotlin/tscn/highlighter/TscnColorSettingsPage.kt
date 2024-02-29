@@ -85,7 +85,8 @@ shape = SubResource("CircleShape2D_xthut")
         private val DESCRIPTORS = arrayOf(
                 AttributesDescriptor("Syntax tokens", TscnHighlighterColors.SYNTAX_TOKENS),
                 AttributesDescriptor("Node resource", TscnHighlighterColors.NODE_RESOURCE),
-                AttributesDescriptor("Node type", TscnHighlighterColors.NODE_TYPE),
+                AttributesDescriptor("Godot class reference", TscnHighlighterColors.NODE_TYPE),
+                AttributesDescriptor("Godot member reference", TscnHighlighterColors.MEMBER_REF),
                 AttributesDescriptor("Attributes", TscnHighlighterColors.ATTRIBUTES),
                 AttributesDescriptor("String", TscnHighlighterColors.STRING),
                 AttributesDescriptor("Resource string", TscnHighlighterColors.RES_STRING),

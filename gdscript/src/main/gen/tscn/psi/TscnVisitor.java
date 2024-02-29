@@ -1,9 +1,9 @@
 // This is a generated file. Not intended for manual editing.
 package tscn.psi;
 
-import org.jetbrains.annotations.*;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import org.jetbrains.annotations.NotNull;
 
 public class TscnVisitor extends PsiElementVisitor {
 
@@ -23,6 +23,10 @@ public class TscnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitGodotObject(@NotNull TscnGodotObject o) {
+    visitPsiElement(o);
+  }
+
   public void visitHeader(@NotNull TscnHeader o) {
     visitPsiElement(o);
   }
@@ -37,6 +41,22 @@ public class TscnVisitor extends PsiElementVisitor {
 
   public void visitHeaderValueVal(@NotNull TscnHeaderValueVal o) {
     visitNamedElement(o);
+  }
+
+  public void visitJsonArray(@NotNull TscnJsonArray o) {
+    visitPsiElement(o);
+  }
+
+  public void visitJsonObject(@NotNull TscnJsonObject o) {
+    visitPsiElement(o);
+  }
+
+  public void visitJsonObjectElem(@NotNull TscnJsonObjectElem o) {
+    visitPsiElement(o);
+  }
+
+  public void visitJsonValue(@NotNull TscnJsonValue o) {
+    visitPsiElement(o);
   }
 
   public void visitNodeHeader(@NotNull TscnNodeHeader o) {

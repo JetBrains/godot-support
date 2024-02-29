@@ -21,6 +21,13 @@ class TscnSyntaxHighlighter : SyntaxHighlighterBase() {
 
         init {
             fillMap(ATTRIBUTES, TscnTokenTypeSet.SYNTAX_TOKENS, TscnHighlighterColors.SYNTAX_TOKENS)
+            fillMap(ATTRIBUTES, TscnTokenTypeSet.STRING_TOKENS, TscnHighlighterColors.STRING)
+            fillMap(ATTRIBUTES, TscnTokenTypeSet.RES_STRING_TOKENS, TscnHighlighterColors.RES_STRING)
+            fillMap(ATTRIBUTES, TscnTokenTypeSet.GODOT_MEMBER_REF_TOKENS, TscnHighlighterColors.MEMBER_REF)
+            fillMap(ATTRIBUTES, TscnTokenTypeSet.VALUE_TOKENS, TscnHighlighterColors.ATTRIBUTE_VALUES)
+            fillMap(ATTRIBUTES, TscnTokenTypeSet.ATTRIBUTE_TOKENS, TscnHighlighterColors.ATTRIBUTES)
+            fillMap(ATTRIBUTES, TscnTokenTypeSet.RESOURCE_TOKENS, TscnHighlighterColors.NODE_RESOURCE)
+            fillMap(ATTRIBUTES, TscnTokenTypeSet.GODOT_CLASS_REF_TOKENS, TscnHighlighterColors.NODE_TYPE)
         }
     }
 }

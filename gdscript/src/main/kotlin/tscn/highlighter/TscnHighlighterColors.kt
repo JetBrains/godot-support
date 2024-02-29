@@ -18,6 +18,10 @@ object TscnHighlighterColors {
             "TSCN_NODE_TYPE", DefaultLanguageHighlighterColors.STRING
     )
 
+    val MEMBER_REF = TextAttributesKey.createTextAttributesKey(
+            "TSCN_MEMBER_REF", DefaultLanguageHighlighterColors.FUNCTION_CALL
+    )
+
     val ATTRIBUTES = TextAttributesKey.createTextAttributesKey(
             "TSCN_ATTRIBUTES", DefaultLanguageHighlighterColors.IDENTIFIER
     )

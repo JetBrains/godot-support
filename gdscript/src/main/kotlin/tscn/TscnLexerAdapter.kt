@@ -4,6 +4,6 @@ import com.intellij.lexer.FlexAdapter
 
 class TscnLexerAdapter : FlexAdapter {
 
-    constructor() : super(TscnLexer(null));
+    constructor() : super(TscnLexerV2(null));
 
 }
