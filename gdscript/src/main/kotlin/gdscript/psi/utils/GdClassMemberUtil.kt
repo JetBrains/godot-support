@@ -67,7 +67,7 @@ object GdClassMemberUtil {
             static = static || calledOn.endsWith(".gd")
         }
 
-        if (!static) {
+        if (!static && (calledOn == null || calledOn == GdKeywords.SELF)) {
             when (val ownerMethod = PsiTreeUtil.getParentOfType(
                 calledOnPsi ?: element,
                 GdMethodDeclTl::class.java,
