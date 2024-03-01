@@ -30,8 +30,8 @@ class GdClassNameAnnotator : Annotator {
             is GdInheritanceSubIdNm -> colorClass(element, GdHighlighterColors.CLASS_TYPE, holder)
             is GdClassNameNmi -> {
                 alreadyExists(element, holder)
-                classNameToFilename(element, holder)
-                resourceHasNoInnerClass(element, holder)
+                    || classNameToFilename(element, holder)
+                    || colorClass(element, GdHighlighterColors.CLASS_TYPE, holder)
             }
             is GdClassNaming -> isDuplicated(element, holder, "class_name")
             is GdInheritance -> isDuplicated(element, holder, "Inheritance")
@@ -74,15 +74,16 @@ class GdClassNameAnnotator : Annotator {
         }
     }
 
-    private fun colorClass(element: PsiElement, color: TextAttributesKey, holder: AnnotationHolder) {
+    private fun colorClass(element: PsiElement, color: TextAttributesKey, holder: AnnotationHolder): Boolean {
         holder
             .newSilentAnnotation(HighlightSeverity.INFORMATION)
             .range(element.textRange)
             .textAttributes(color)
             .create()
+        return true
     }
 
-    private fun alreadyExists(element: GdClassNameNmi, holder: AnnotationHolder) {
+    private fun alreadyExists(element: GdClassNameNmi, holder: AnnotationHolder): Boolean {
         val name = element.name
         var message = "Class defined in global scope"
 
@@ -108,11 +109,14 @@ class GdClassNameAnnotator : Annotator {
                 .newAnnotation(HighlightSeverity.ERROR, message)
                 .range(element.textRange)
                 .create()
+            return true
         }
+
+        return false
     }
 
-    private fun classNameToFilename(element: GdClassNameNmi, holder: AnnotationHolder) {
-        if (element.parent !is GdClassNaming) return;
+    private fun classNameToFilename(element: GdClassNameNmi, holder: AnnotationHolder): Boolean {
+        if (element.parent !is GdClassNaming) return false
 
         val name = element.name
         val filename = PsiGdFileUtil.filename(element.containingFile).snakeToPascalCase()
@@ -122,7 +126,9 @@ class GdClassNameAnnotator : Annotator {
                 .range(element.textRange)
                 .withFix(GdFileClassNameAction(filename, element))
                 .create()
+            return true
         }
+        return false
     }
 
     private fun isDuplicated(element: PsiElement, holder: AnnotationHolder, type: String) {
@@ -133,20 +139,6 @@ class GdClassNameAnnotator : Annotator {
                 .withFix(GdRemoveElementsAction(element))
                 .create()
         }
-    }
-
-    private fun resourceHasNoInnerClass(element: GdClassNameNmi, holder: AnnotationHolder) {
-        if (element.parent !is GdClassDeclTl) return;
-// TODO ii
-//        val name = element.name;
-//        val filename = PsiGdFileUtil.filename(element.containingFile);
-//        if (filename.lowercase() != name.lowercase()) {
-//            holder
-//                .newAnnotation(HighlightSeverity.WEAK_WARNING, "Resource cannot have InnerClass")
-//                .range(element.textRange)
-//                .withFix(GdFileClassNameAction(filename, element))
-//                .create();
-//        }
     }
 
 }
