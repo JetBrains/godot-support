@@ -41,6 +41,7 @@ header ::=
     | unknown_header
 
 scene_header ::= LSBR GD_SCENE headerValue* RSBR {
+// TODO would be required to recoverWhile only when pinned
 //    pin=2
 //    recoverWhile=header_r
 }

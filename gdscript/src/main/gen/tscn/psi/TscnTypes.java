@@ -94,6 +94,9 @@ public interface TscnTypes {
       else if (type == EXPR_VALUE) {
         return new TscnExprValueImpl(node);
       }
+      else if (type == HEADER) {
+        return new TscnHeaderImpl(node);
+      }
       else if (type == HEADER_VALUE) {
         return new TscnHeaderValueImpl(node);
       }

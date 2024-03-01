@@ -255,15 +255,14 @@ public class TscnParser implements PsiParser, LightPsiParser {
   //     | unknown_header
   public static boolean header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header")) return false;
-    if (!nextTokenIs(b, LSBR)) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _COLLAPSE_, HEADER, null);
+    Marker m = enter_section_(b, l, _COLLAPSE_, HEADER, "<header>");
     r = scene_header(b, l + 1);
     if (!r) r = node_header(b, l + 1);
     if (!r) r = resource_header(b, l + 1);
     if (!r) r = connection_header(b, l + 1);
     if (!r) r = unknown_header(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
+    exit_section_(b, l, m, r, false, TscnParser::header_r);
     return r;
   }
 
@@ -305,7 +304,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(LSBR | IDENTIFIER)
+  // !(LSBR | identifierEx)
   static boolean header_r(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_r")) return false;
     boolean r;
@@ -315,12 +314,12 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // LSBR | IDENTIFIER
+  // LSBR | identifierEx
   private static boolean header_r_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "header_r_0")) return false;
     boolean r;
     r = consumeToken(b, LSBR);
-    if (!r) r = consumeToken(b, IDENTIFIER);
+    if (!r) r = identifierEx(b, l + 1);
     return r;
   }
 
@@ -544,10 +543,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LSBR GD_SCENE headerValue* RSBR {
-  // //    pin=2
-  // //    recoverWhile=header_r
-  // }
+  // LSBR GD_SCENE headerValue* RSBR
   public static boolean scene_header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scene_header")) return false;
     if (!nextTokenIs(b, LSBR)) return false;
@@ -556,7 +552,6 @@ public class TscnParser implements PsiParser, LightPsiParser {
     r = consumeTokens(b, 0, LSBR, GD_SCENE);
     r = r && scene_header_2(b, l + 1);
     r = r && consumeToken(b, RSBR);
-    r = r && scene_header_4(b, l + 1);
     exit_section_(b, m, SCENE_HEADER, r);
     return r;
   }
@@ -569,14 +564,6 @@ public class TscnParser implements PsiParser, LightPsiParser {
       if (!headerValue(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "scene_header_2", c)) break;
     }
-    return true;
-  }
-
-  // {
-  // //    pin=2
-  // //    recoverWhile=header_r
-  // }
-  private static boolean scene_header_4(PsiBuilder b, int l) {
     return true;
   }
 
@@ -598,10 +585,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LSBR IDENTIFIER headerValue* RSBR {
-  // //    pin=1
-  // //    recoverWhile=header_r
-  // }
+  // LSBR IDENTIFIER headerValue* RSBR
   public static boolean unknown_header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "unknown_header")) return false;
     if (!nextTokenIs(b, LSBR)) return false;
@@ -610,7 +594,6 @@ public class TscnParser implements PsiParser, LightPsiParser {
     r = consumeTokens(b, 0, LSBR, IDENTIFIER);
     r = r && unknown_header_2(b, l + 1);
     r = r && consumeToken(b, RSBR);
-    r = r && unknown_header_4(b, l + 1);
     exit_section_(b, m, UNKNOWN_HEADER, r);
     return r;
   }
@@ -623,14 +606,6 @@ public class TscnParser implements PsiParser, LightPsiParser {
       if (!headerValue(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "unknown_header_2", c)) break;
     }
-    return true;
-  }
-
-  // {
-  // //    pin=1
-  // //    recoverWhile=header_r
-  // }
-  private static boolean unknown_header_4(PsiBuilder b, int l) {
     return true;
   }
 
