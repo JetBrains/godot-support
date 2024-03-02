@@ -64,7 +64,7 @@ object GdClassMemberUtil {
             calledOn = findIsTypeCheck(calledOnPsi) ?: calledOnPsi.getReturnTypeOrRes(allowResource)
             if (calledOn.startsWith("Array[")) calledOn = "Array"
             static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn)
-            static = static || calledOn.endsWith(".gd")
+//            static = static || calledOn.endsWith(".gd")
         }
 
         if (!static && (calledOn == null || calledOn == GdKeywords.SELF)) {
