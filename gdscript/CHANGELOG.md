@@ -2,9 +2,13 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
-### 2.4.2 (3.2.2024)
+### 2.4.3 (3.2.2024)
 
 + Unused class - count also file references [#248](https://gitlab.com/IceExplosive/gdscript/-/issues/248)
+
+### 2.4.2 (1.3.2024)
+
++ Tscn lexer & Parser rework + .import support [#239](https://gitlab.com/IceExplosive/gdscript/-/issues/239)
 
 ### 2.4.1 (30.2.2024)
 
