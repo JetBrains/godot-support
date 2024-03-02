@@ -50,7 +50,7 @@ object PsiGdExprUtil {
             is GdBitNotEx -> GdKeywords.INT
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT
             is GdAttributeEx -> expr.exprList.lastOrNull()?.returnType ?: ""
-            is GdIsEx -> fromTyped(expr.typedVal)
+            is GdIsEx -> GdKeywords.BOOL
             is GdCallEx -> {
                 if (expr.text == "new()") { // TODO může to mít params?
                     if (expr.parent is GdAttributeEx) {
@@ -270,7 +270,7 @@ object PsiGdExprUtil {
         return typed
     }
 
-    private fun fromTyped(typed: GdTypedVal?): String {
+    fun fromTyped(typed: GdTypedVal?): String {
         if (typed == null) return ""
 
         val main = typed.typeHintList.first().text

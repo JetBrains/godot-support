@@ -61,7 +61,7 @@ object GdClassMemberUtil {
         val calledOnPsi: GdExpr? = calledUpon(element)
         if (calledOnPsi != null && calledOnPsi.text != GdKeywords.SELF) {
             // Check if there is an assertion check 'if (node is Node3D):'
-            calledOn = findIsTypeCheck(calledOnPsi) ?: calledOnPsi.getReturnTypeOrRes(allowResource)
+            calledOn = findIsTypeCheck(element) ?: calledOnPsi.getReturnTypeOrRes(allowResource)
             if (calledOn.startsWith("Array[")) calledOn = "Array"
             static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn)
 //            static = static || calledOn.endsWith(".gd")
@@ -76,6 +76,7 @@ object GdClassMemberUtil {
                 is GdMethodDeclTl -> {
                     static = ownerMethod.isStatic
                 }
+
                 is GdFuncDeclEx -> {}
             }
         }
@@ -411,7 +412,8 @@ object GdClassMemberUtil {
             GdConstDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             GdEnumDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             GdSignalDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
-            GdClassVarDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
+            GdClassVarDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()
+                ?.let { return mutableListOf(it) }
 
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
                 if (it.name == search) return mutableListOf(it)
@@ -545,8 +547,9 @@ object GdClassMemberUtil {
     private fun findIsTypeCheck(element: PsiElement): String? {
         // TODO je to dost na hrubo a nekontroluje to negace a pod
         return getConditioned(element) { el, stmt ->
-            val expr = PsiTreeUtil.findChildOfType(stmt, GdIsEx::class.java)
-            if (expr != null && el.text == expr.expr.text) return@getConditioned expr.returnType
+            val expr = if (stmt is GdIsEx) stmt
+            else PsiTreeUtil.findChildOfType(stmt, GdIsEx::class.java)
+            if (expr != null) return@getConditioned PsiGdExprUtil.fromTyped(expr.typedVal)
             null
         }
     }
@@ -558,7 +561,8 @@ object GdClassMemberUtil {
     fun hasMethodCheck(element: PsiElement): Boolean {
         // TODO je to dost na hrubo a nekontroluje to negace a pod
         return getConditioned(element) { el, stmt ->
-            val expressions = PsiTreeUtil.findChildrenOfType(stmt, GdCallEx::class.java)
+            val expressions = if (stmt is GdCallEx) listOf(stmt)
+            else PsiTreeUtil.findChildrenOfType(stmt, GdCallEx::class.java)
             val hasMethodExpr = expressions.filter { it.expr.textMatches("has_method") }.firstOrNull()
             if (hasMethodExpr != null) {
                 if (hasMethodExpr.argList?.argExprList?.firstOrNull()?.textMatches("\"${el.text}\"") == true) {

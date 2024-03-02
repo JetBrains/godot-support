@@ -5,6 +5,7 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 ### 2.4.3 (3.2.2024)
 
 + Unused class - count also file references [#248](https://gitlab.com/IceExplosive/gdscript/-/issues/248)
++ IS comparison didn't evaluate as bool [#249](https://gitlab.com/IceExplosive/gdscript/-/issues/249)
 
 ### 2.4.2 (1.3.2024)
 
