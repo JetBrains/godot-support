@@ -2,6 +2,7 @@ package gdscript.inspection
 
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.childrenOfType
 import gdscript.inspection.quickFix.GdRemoveElementFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerUnused
@@ -46,6 +47,7 @@ class GdUnusedClassInspection : GdUnusedInspection() {
                 //  Check if file is linked to any scene
                 val containingFile = o.containingFile
                 if (TscnResourceUtil.findTscnByResources(containingFile).any()) return
+                if (anyReference(containingFile, holder.project.contentScope())) return
 
                 holder.registerUnused(o, description,
                         GdRemoveElementFix(containingFile, text.replace("{NAME}", containingFile.name)))

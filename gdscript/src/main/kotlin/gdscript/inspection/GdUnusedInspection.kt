@@ -19,7 +19,7 @@ abstract class GdUnusedInspection : LocalInspectionTool() {
                 GdRemoveElementFix(element, text.replace("{NAME}", nmi.name ?: "")))
     }
 
-    fun anyReference(nmi: PsiNameIdentifierOwner, searchScope: SearchScope): Boolean {
-        return ReferencesSearch.search(nmi, searchScope).any();
+    fun anyReference(nmi: PsiElement, searchScope: SearchScope): Boolean {
+        return ReferencesSearch.search(nmi, searchScope).any()
     }
 }

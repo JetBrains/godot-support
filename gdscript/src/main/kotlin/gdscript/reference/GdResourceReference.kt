@@ -27,10 +27,12 @@ class GdResourceReference : PsiReferenceBase<GdNamedElement> {
         key = element.text
         resKey = key.trim('"')
 
-        if (!resKey.startsWith("res://")) {
-            var self = element.containingFile.virtualFile.resourcePath()
-            self = self.substring(0, self.lastIndexOf('/'))
-            resKey = "$self/${key.trim('"')}"
+        if (!resKey.startsWith("res://")){
+            element.containingFile?.virtualFile?.resourcePath()?.let {
+                var self = it
+                self = self.substring(0, self.lastIndexOf('/'))
+                resKey = "$self/${key.trim('"')}"
+            }
         }
     }
 
