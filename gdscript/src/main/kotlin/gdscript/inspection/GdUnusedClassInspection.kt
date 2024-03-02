@@ -2,7 +2,6 @@ package gdscript.inspection
 
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.childrenOfType
 import gdscript.inspection.quickFix.GdRemoveElementFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerUnused
@@ -25,8 +24,9 @@ class GdUnusedClassInspection : GdUnusedInspection() {
             override fun visitClassDeclTl(o: GdClassDeclTl) {
                 // check if there are class references
                 if (o.classNameNmi == null || anyReference(o.classNameNmi!!, holder.project.contentScope())) return
+                if (anyReference(o.containingFile, holder.project.contentScope())) return
 
-                registerUnused(o, o.classNameNmi!!, holder);
+                registerUnused(o, o.classNameNmi!!, holder)
             }
 
             // support root class
@@ -36,8 +36,9 @@ class GdUnusedClassInspection : GdUnusedInspection() {
                 //  check if file is linked to any scene
                 val containingFile = o.containingFile
                 if (TscnResourceUtil.findTscnByResources(containingFile).any()) return
+                if (anyReference(containingFile, holder.project.contentScope())) return
 
-                registerUnused(containingFile, o.classNameNmi!!, holder);
+                registerUnused(containingFile, o.classNameNmi!!, holder)
             }
 
             // Support root without explicit class_name

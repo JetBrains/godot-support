@@ -2,6 +2,10 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.4.2 (3.2.2024)
+
++ Unused class - count also file references [#248](https://gitlab.com/IceExplosive/gdscript/-/issues/248)
+
 ### 2.4.1 (30.2.2024)
 
 + LineMarker exception [#245](https://gitlab.com/IceExplosive/gdscript/-/issues/245)
