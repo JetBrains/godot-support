@@ -36,7 +36,7 @@ class GdResourceTypeAnnotator : Annotator {
     }
 
     private fun stringResourceExists(element: PsiElement, holder: AnnotationHolder, state: String): Boolean {
-        val text = element.text.trim('"')
+        val text = element.text.trim('"', '\'')
         if (text.startsWith("res://") && GdFileResIndex.INSTANCE.getFiles(text, element.project).isEmpty()) {
             holder
                 .newAnnotation(GdProjectState.selectedLevel(state), "Resource not found")

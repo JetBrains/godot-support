@@ -14,7 +14,7 @@ object PsiGdInheritanceUtil {
     }
 
     fun getPsiFile(inheritance: GdInheritanceIdNm): PsiFile? {
-        val key = inheritance.text.trim('"');
+        val key = inheritance.text.trim('"', '\'')
         if (key.startsWith("res://")) {
             val virtual = GdFileResIndex.INSTANCE.getFiles(key, inheritance.project).first();
 

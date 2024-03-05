@@ -37,7 +37,7 @@ class TscnResourceReference : PsiReferenceBase<PsiNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        return GdFileResIndex.INSTANCE.getFiles(key.trim('"'), project)
+        return GdFileResIndex.INSTANCE.getFiles(key.trim('"', '\''), project)
             .firstOrNull()
             ?.getPsiFile(project)
     }

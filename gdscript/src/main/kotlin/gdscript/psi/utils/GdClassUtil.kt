@@ -15,7 +15,7 @@ object GdClassUtil {
 
     fun getClassIdElement(name: String, project: Project): PsiElement? {
         return GdClassIdIndex.INSTANCE.getGloballyResolved(name, project).firstOrNull()
-            ?: GdFileResIndex.INSTANCE.getFiles(name.trim('"'), project).firstOrNull()
+            ?: GdFileResIndex.INSTANCE.getFiles(name.trim('"', '\''), project).firstOrNull()
                 ?.let { return it.getPsiFile(project) }
     }
 

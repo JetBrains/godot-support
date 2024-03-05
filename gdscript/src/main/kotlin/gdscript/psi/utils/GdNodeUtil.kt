@@ -24,7 +24,7 @@ object GdNodeUtil {
     fun findNode(element: GdNodePath): GdNodeHolder? {
         val nodes = listNodes(element)
         val path = element.text
-            .trim('$', '%', '"', '^')
+            .trim('$', '%', '"', '^', '\'')
             .split(":")
             .first()
 

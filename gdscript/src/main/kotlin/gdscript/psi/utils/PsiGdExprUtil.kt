@@ -75,7 +75,7 @@ object PsiGdExprUtil {
                     } else if (method == "load" || method == "preload") {
                         val res = expr.argList?.argExprList?.firstOrNull()
                         if (res != null) {
-                            var resource = res.text.trim('"')
+                            var resource = res.text.trim('"', '\'')
                             if (resource.endsWith(".tscn")) {
                                 return "PackedScene"
                             }

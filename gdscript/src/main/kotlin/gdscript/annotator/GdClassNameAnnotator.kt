@@ -42,7 +42,7 @@ class GdClassNameAnnotator : Annotator {
         val name = element.text
         if (GdClassUtil.getClassIdElement(name, element) == null
             // File index when you are extending script without class_name
-            && GdFileResIndex.INSTANCE.getFiles(name.trim('"'), element.project).isEmpty()
+            && GdFileResIndex.INSTANCE.getFiles(name.trim('"', '\''), element.project).isEmpty()
         ) {
             // Last case is extending InnerClass within same file which does not require FQN
             // and can directly use any at lower level

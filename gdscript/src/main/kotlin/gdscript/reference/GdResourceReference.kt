@@ -25,13 +25,13 @@ class GdResourceReference : PsiReferenceBase<GdNamedElement> {
     constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
         this.project = element.project
         key = element.text
-        resKey = key.trim('"')
+        resKey = key.trim('"', '\'')
 
         if (!resKey.startsWith("res://")){
             element.containingFile?.virtualFile?.resourcePath()?.let {
                 var self = it
                 self = self.substring(0, self.lastIndexOf('/'))
-                resKey = "$self/${key.trim('"')}"
+                resKey = "$self/${key.trim('"', '\'')}"
             }
         }
     }
@@ -40,7 +40,7 @@ class GdResourceReference : PsiReferenceBase<GdNamedElement> {
         // TODO ignored relative paths
         if (!key.startsWith("\"res://")) return element
         element.setName(newElementName)
-        GdCfgUtil.renameValue(project, key.trim('"'), "res://$newElementName")
+        GdCfgUtil.renameValue(project, key.trim('"', '\''), "res://$newElementName")
 
         return element
     }
