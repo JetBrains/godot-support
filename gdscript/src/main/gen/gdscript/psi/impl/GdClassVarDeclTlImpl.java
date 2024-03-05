@@ -80,6 +80,12 @@ public class GdClassVarDeclTlImpl extends GdClassVarDeclElementImpl implements G
 
   @Override
   @NotNull
+  public Boolean isStatic() {
+    return GdPsiUtils.isStatic(this);
+  }
+
+  @Override
+  @NotNull
   public String getReturnType() {
     return GdPsiUtils.getReturnType(this);
   }

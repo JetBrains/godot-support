@@ -5,6 +5,7 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 ### 2.4.4 (6.2.2024)
 
 + Res:// parsing with both " and ' quotes [#251](https://gitlab.com/IceExplosive/gdscript/-/issues/251)
++ Class static var accessible globally [#252](https://gitlab.com/IceExplosive/gdscript/-/issues/252)
 
 ### 2.4.3 (3.2.2024)
 

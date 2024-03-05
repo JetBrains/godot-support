@@ -6,7 +6,7 @@ import gdscript.psi.*
 
 object Indices {
 
-    val VERSION = 15
+    val VERSION = 16
 
     val CLASS_NAMING = StubIndexKey.createIndexKey<String, GdClassNaming>("gdscript.classNaming")
     val CLASS_DECL = StubIndexKey.createIndexKey<String, GdClassDeclTl>("gdscript.classDecl")

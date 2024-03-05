@@ -10,17 +10,23 @@ import gdscript.psi.impl.GdClassVarDeclElementType
 class GdClassVarDeclStubImpl : StubBase<GdClassVarDeclTl>, GdClassVarDeclStub {
 
     private var name: String = "";
+    private var static: Boolean = false;
     private var doc: GdCommentModel
 
-    constructor(parent: StubElement<*>?, name: String?, doc: GdCommentModel): super(parent, GdClassVarDeclElementType) {
+    constructor(parent: StubElement<*>?, name: String?, static: Boolean, doc: GdCommentModel): super(parent, GdClassVarDeclElementType) {
         if (name != null) {
             this.name = name
-        };
+        }
+        this.static = static
         this.doc = doc
     }
 
     override fun name(): String {
-        return name;
+        return name
+    }
+
+    override fun isStatic(): Boolean {
+        return static
     }
 
     override fun description(): String = this.doc.description

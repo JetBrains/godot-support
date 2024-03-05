@@ -34,6 +34,9 @@ public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<Gd
   String getName();
 
   @NotNull
+  Boolean isStatic();
+
+  @NotNull
   String getReturnType();
 
   @NotNull

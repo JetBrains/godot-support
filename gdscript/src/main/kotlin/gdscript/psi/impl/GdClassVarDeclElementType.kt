@@ -20,6 +20,7 @@ object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassV
 
     override fun serialize(stub: GdClassVarDeclStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name())
+        dataStream.writeBoolean(stub.isStatic())
         GdCommentModel.serializeDocumentation(stub, dataStream)
     }
 
@@ -27,6 +28,7 @@ object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassV
         GdClassVarDeclStubImpl(
             parentStub,
             dataStream.readNameString(),
+            dataStream.readBoolean(),
             GdCommentModel(dataStream),
         )
 
@@ -39,7 +41,9 @@ object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassV
 
     override fun createStub(psi: GdClassVarDeclTl, parentStub: StubElement<*>?): GdClassVarDeclStub {
         return GdClassVarDeclStubImpl(
-            parentStub, psi.name,
+            parentStub,
+            psi.name,
+            psi.isStatic,
             GdCommentUtil.collectComments(psi),
         )
     }

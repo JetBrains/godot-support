@@ -1,7 +1,10 @@
 package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
-import gdscript.psi.*
+import com.intellij.psi.util.elementType
+import gdscript.psi.GdAnnotationTl
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdTypes
 import gdscript.utils.PsiElementUtil.prevNonWhiteCommentToken
 
 object PsiGdClassVarUtil {
@@ -26,6 +29,13 @@ object PsiGdClassVarUtil {
         }
 
         return false
+    }
+
+    fun isStatic(element: GdClassVarDeclTl): Boolean {
+        val stub = element.stub
+        if (stub != null) return stub.isStatic()
+
+        return element.firstChild.elementType == GdTypes.STATIC
     }
 
     fun isAnnotated(element: GdClassVarDeclTl): Boolean {

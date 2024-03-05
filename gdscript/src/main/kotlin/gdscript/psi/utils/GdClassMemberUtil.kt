@@ -413,7 +413,7 @@ object GdClassMemberUtil {
             GdEnumDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             GdSignalDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
             GdClassVarDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()
-                ?.let { return mutableListOf(it) }
+                ?.let { if (static != null || it.isStatic) return mutableListOf(it) }
 
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
                 if (it.name == search) return mutableListOf(it)
@@ -462,8 +462,8 @@ object GdClassMemberUtil {
                 }
             }
 
-            if (static != true) {
-                PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassVarDeclTl::class.java).forEach {
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassVarDeclTl::class.java).forEach {
+                if (static != true || it.isStatic) {
                     members.add(it)
                 }
             }
