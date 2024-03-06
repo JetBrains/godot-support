@@ -17,13 +17,13 @@ class GdUnusedVariableInspection : GdUnusedInspection() {
             override fun visitVarDeclSt(o: GdVarDeclSt) {
                 if (o.varNmi == null || anyReference(o.varNmi!!, holder.project.contentScope())) return
 
-                registerUnused(o, o.varNmi!!, holder);
+                registerUnused(o, o.varNmi!!, holder)
             }
 
             override fun visitConstDeclSt(o: GdConstDeclSt) {
                 if (o.varNmi == null || anyReference(o.varNmi!!, holder.project.contentScope())) return
 
-                registerUnused(o, o.varNmi!!, holder);
+                registerUnused(o, o.varNmi!!, holder)
             }
         }
     }

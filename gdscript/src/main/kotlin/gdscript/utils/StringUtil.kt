@@ -32,7 +32,9 @@ object StringUtil {
     }
 
     fun String.snakeToPascalCase(): String {
-        return this.snakeToCamelCase()
+        return this
+            .replace("-", "_")
+            .snakeToCamelCase()
             .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     }
 

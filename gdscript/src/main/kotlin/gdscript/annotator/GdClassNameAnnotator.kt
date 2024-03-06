@@ -120,7 +120,7 @@ class GdClassNameAnnotator : Annotator {
 
         val name = element.name
         val filename = PsiGdFileUtil.filename(element.containingFile).snakeToPascalCase()
-        if (filename != name) {
+        if (filename.lowercase() != name.lowercase()) {
             holder
                 .newAnnotation(HighlightSeverity.WEAK_WARNING, "Class name does not match filename")
                 .range(element.textRange)

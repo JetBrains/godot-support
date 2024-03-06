@@ -53,31 +53,46 @@ object GdClassMemberUtil {
         ignoreGlobalScope: Boolean = false,
         allowResource: Boolean = false,
     ): Array<Any> {
-        var static = false
+        var static: Boolean? = false
 
         val result = mutableListOf<Any>()
         var calledOn: String? = GdKeywords.SELF
 
         val calledOnPsi: GdExpr? = calledUpon(element)
-        if (calledOnPsi != null && calledOnPsi.text != GdKeywords.SELF) {
+        val calledOnPsiName = calledOnPsi?.text ?: ""
+        if (calledOnPsi != null && calledOnPsiName != GdKeywords.SELF) {
             // Check if there is an assertion check 'if (node is Node3D):'
-            calledOn = findIsTypeCheck(element) ?: calledOnPsi.getReturnTypeOrRes(allowResource)
-            if (calledOn.startsWith("Array[")) calledOn = "Array"
-            static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn)
-//            static = static || calledOn.endsWith(".gd")
+            var isCheckedSuccess = false
+            val isChecked = findIsTypeCheck(element)
+            if (isChecked != null) {
+                val isExpr = isChecked.expr.firstChild
+                if (isExpr is GdNamedElement && isExpr.name == calledOnPsiName) {
+                    calledOn = PsiGdExprUtil.fromTyped(isChecked.typedVal)
+                    isCheckedSuccess = true
+                }
+            }
+
+            if (!isCheckedSuccess) {
+                calledOn = calledOnPsi.getReturnTypeOrRes(allowResource)
+            }
+
+            if (calledOn != null) {
+                if (calledOn.startsWith("Array[")) calledOn = "Array"
+                static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn)
+                if (calledOn.endsWith(".gd")) {
+                    static = null
+                }
+            }
         }
 
-        if (!static && (calledOn == null || calledOn == GdKeywords.SELF)) {
+        if (static == false && (calledOn == null || calledOn == GdKeywords.SELF)) {
             when (val ownerMethod = PsiTreeUtil.getParentOfType(
                 calledOnPsi ?: element,
                 GdMethodDeclTl::class.java,
-                GdFuncDeclEx::class.java,
             )) {
                 is GdMethodDeclTl -> {
                     static = ownerMethod.isStatic
                 }
-
-                is GdFuncDeclEx -> {}
             }
         }
 
@@ -544,12 +559,12 @@ object GdClassMemberUtil {
      *  while next is Node3D:
      * and returns correct type for hint & validation
      */
-    private fun findIsTypeCheck(element: PsiElement): String? {
+    private fun findIsTypeCheck(element: PsiElement): GdIsEx? {
         // TODO je to dost na hrubo a nekontroluje to negace a pod
         return getConditioned(element) { el, stmt ->
             val expr = if (stmt is GdIsEx) stmt
             else PsiTreeUtil.findChildOfType(stmt, GdIsEx::class.java)
-            if (expr != null) return@getConditioned PsiGdExprUtil.fromTyped(expr.typedVal)
+            if (expr != null) return@getConditioned expr
             null
         }
     }

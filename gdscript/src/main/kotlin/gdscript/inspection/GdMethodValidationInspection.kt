@@ -35,7 +35,7 @@ class GdMethodValidationInspection : LocalInspectionTool() {
                 val validationResult = GdMethodValidator(holder.project, returnType).validate(stmtOrSuite)
 
                 validationResult.unreachableStatements.forEach{
-                    holder.registerGenericError(it, "Code is unreachable")
+                    holder.registerWeakWarning(it, "Code is unreachable")
                 }
 
                 validationResult.invalidReturns.forEach{

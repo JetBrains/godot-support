@@ -27,7 +27,7 @@ class GdUnusedParameterInspection : GdUnusedInspection() {
                 // only check for references in the owning element
                 if (owner == null || anyReference(o.varNmi, owner.useScope)) return
 
-                registerUnused(o, o.varNmi, holder)
+                registerUnusedWithUnderscoreFix(o, o.varNmi, holder)
             }
         }
     }

@@ -36,7 +36,7 @@ object GdStringCompletionUtil {
         ProjectInputUtil.listActions(element).forEach {
             result.addElement(
                 GdLookup.create(
-                    it,
+                    "\"$it\"",
                     priority = priority,
                     tail = " (input)",
                     color = GdLookup.COLOR_ANNOTATION,
@@ -54,7 +54,7 @@ object GdStringCompletionUtil {
             if (it.isNotBlank())
                 result.addElement(
                     GdLookup.create(
-                        it,
+                        "\"$it\"",
                         priority = priority,
                         tail = " (group)",
                         color = GdLookup.COLOR_GROUP,
@@ -71,7 +71,7 @@ object GdStringCompletionUtil {
         TscnNodeUtil.listAllMetas(element).forEach {
             result.addElement(
                 GdLookup.create(
-                    it,
+                    "\"$it\"",
                     priority = priority,
                     tail = " (meta)",
                     color = GdLookup.COLOR_META,
