@@ -29,7 +29,7 @@ apply {
     plugin("kotlin")
 }
 
-val baseVersion = "2024.1"
+val baseVersion = "2024.2"
 
 // alternative val url = URL("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/geequlim/vsextensions/godot-tools/$godotVscodePluginVersion/vspackage")
 // https://github.com/godotengine/godot-vscode-plugin/releases/download
