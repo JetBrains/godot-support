@@ -1,5 +1,8 @@
 package com.jetbrains.rider.plugins.godot.lang.service
 
+import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.completion.PrioritizedLookupElement
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -7,20 +10,21 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.lifetime
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.platform.lsp.api.LspCommunicationChannel
-import com.intellij.platform.lsp.api.LspServerManager
-import com.intellij.platform.lsp.api.LspServerSupportProvider
-import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
+import com.intellij.platform.lsp.api.*
+import com.intellij.platform.lsp.api.customization.LspCompletionSupport
+import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
-import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rd.util.lifetime.isAlive
 import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
-import com.jetbrains.rider.plugins.godot.Util
+import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
+import com.jetbrains.rider.plugins.godot.Util
+import com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage
 import com.jetbrains.rider.util.NetUtils
+import org.eclipse.lsp4j.CompletionItem
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
@@ -63,6 +67,7 @@ class LspProjectService(val project: Project) {
 }
 
 class GodotLspServerSupportProvider : LspServerSupportProvider {
+    override fun createLspServerWidgetItem(lspServer: LspServer, currentFile: VirtualFile?): LspServerWidgetItem = LspServerWidgetItem(lspServer, currentFile, GodotIcons.Icons.GodotLogo, settingsPageClass = GodotPluginOptionsPage::class.java)
 
     override fun fileOpened(project: Project, file: VirtualFile, serverStarter: LspServerSupportProvider.LspServerStarter) {
         if (Util.isGdFile(file)) {
@@ -144,6 +149,16 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             get() {
                 thisLogger().info("lspCommunicationChannel port=$remoteHostPort, mode=$lspConnectionMode")
                 return LspCommunicationChannel.Socket(remoteHostPort!!, lspConnectionMode == LanguageServerConnectionMode.StartEditorHeadless)
+            }
+
+        override val lspCompletionSupport: LspCompletionSupport
+            get() = object : LspCompletionSupport() {
+                override fun createLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
+                    val item = super.createLookupElement(parameters, item) ?: return null
+                    // we want to be more preferable than TextMate
+                    return PrioritizedLookupElement.withPriority(item, 1.0)
+                }
+
             }
     }
 }
