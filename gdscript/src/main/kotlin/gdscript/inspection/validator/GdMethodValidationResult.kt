@@ -1,5 +1,6 @@
 package gdscript.inspection.validator
 
+import gdscript.GdKeywords
 import gdscript.psi.GdStmt
 
 data class GdMethodValidationResult(
@@ -17,4 +18,7 @@ data class GdMethodValidationResult(
         return returnTypes.isNotEmpty()
     }
 
+    fun voidOnlyReturn() : Boolean {
+        return returnTypes.isEmpty() || (returnTypes.size == 1 && returnTypes.contains(GdKeywords.VOID));
+    }
 }

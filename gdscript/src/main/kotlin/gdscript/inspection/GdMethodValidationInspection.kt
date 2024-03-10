@@ -50,7 +50,7 @@ class GdMethodValidationInspection : LocalInspectionTool() {
                 // no return statement when required
                 if (returnType.isNotEmpty() && validationResult.noReturn() && returnType != "void") {
                     holder.registerGenericError(methodId, "Function's require a return value")
-                } else if (validationResult.hasReturn() && !validationResult.alwaysReturns && returnType != "void") {
+                } else if (!validationResult.voidOnlyReturn() && !validationResult.alwaysReturns) {
                     holder.registerGenericError(methodId, "Not all code paths return a value")
                 }
                 // no return type specified
