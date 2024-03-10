@@ -8,6 +8,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.PsiTreeUtil
 import gdscript.completion.utils.GdCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
@@ -74,16 +75,30 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement>, HighlightedRefe
     }
 
     override fun getVariants(): Array<LookupElement> {
+        val isCallable = this.completionIntoCallableParam()
         val members = GdClassMemberUtil.listDeclarations(element, allowResource = true)
         val hidePrivate = GdProjectSettingsState.getInstance(element).state.hidePrivate
-                && GdClassMemberUtil.calledUpon(element) != null
+            && GdClassMemberUtil.calledUpon(element) != null
 
         return members.flatMap {
-            GdCompletionUtil.lookups(it).mapNotNull { lookup ->
+            GdCompletionUtil.lookups(it, isCallable).mapNotNull { lookup ->
                 if (!hidePrivate || !lookup.lookupString.startsWith("_")) lookup
                 else null
             }
         }.toTypedArray()
+    }
+
+    private fun completionIntoCallableParam(): Boolean {
+        return PsiTreeUtil.getParentOfType(element, GdArgExpr::class.java)?.let { arg ->
+            PsiTreeUtil.getParentOfType(arg, GdCallEx::class.java)?.let {
+                val index = arg.parent.children.indexOf(arg)
+                val decl = GdClassMemberReference(it.expr.firstChild).resolveDeclaration()
+                if (decl is GdMethodDeclTl) {
+                    return decl.parameters.values.toTypedArray()[index] == "Callable"
+                }
+                return false
+            }
+        } ?: false
     }
 
 }

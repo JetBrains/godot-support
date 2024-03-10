@@ -1,7 +1,6 @@
 package gdscript.completion.utils
 
 import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.psi.PsiElement
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdClassCompletionUtil.lookup
@@ -13,7 +12,7 @@ import project.psi.model.GdAutoload
 @Deprecated("move into assigned methods")
 object GdCompletionUtil {
 
-    fun lookups(element: Any): Array<LookupElement> {
+    fun lookups(element: Any, isCallable: Boolean = false): Array<LookupElement> {
         return when (element) {
             is GdClassDeclTl -> arrayOf(element.lookup())
             is GdClassNaming -> arrayOf(lookup(element))
@@ -23,7 +22,7 @@ object GdCompletionUtil {
             is GdConstDeclSt -> arrayOf(lookup(element))
             is GdEnumDeclTl -> lookup(element)
             is GdEnumValue -> arrayOf(GdEnumCompletionUtil.lookup(element))
-            is GdMethodDeclTl -> arrayOf(lookup(element))
+            is GdMethodDeclTl -> arrayOf(lookup(element, isCallable))
             is GdForSt -> arrayOf(lookup(element))
             is GdParam -> arrayOf(lookup(element))
             is GdSetDecl -> arrayOf(lookup(element))
@@ -88,10 +87,10 @@ object GdCompletionUtil {
         }
     }
 
-    fun lookup(method: GdMethodDeclTl): LookupElement {
+    fun lookup(method: GdMethodDeclTl, isCallable: Boolean = false): LookupElement {
         return GdLookup.create(
             method.name,
-            lookup = "()${if (method.paramList?.paramList?.isNotEmpty() == true || method.isVariadic) "_" else ""}",
+            lookup = "${if (isCallable) "" else "()"}${if (method.paramList?.paramList?.isNotEmpty() == true || method.isVariadic) "_" else ""}",
             presentable = method.name,
             typed = method.returnType,
             icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
