@@ -56,6 +56,10 @@ object GdPrimaryExParser : GdExprBaseParser {
             ok = ok && b.consumeToken(IDENTIFIER)
             ok = ok && b.consumeToken(EQ)
             ok = ok && GdExprParser.parse(b, l + 1)
+        } else if (b.followingTokensAre(STRING, EQ)) {
+            ok = ok && b.consumeToken(STRING)
+            ok = ok && b.consumeToken(EQ)
+            ok = ok && GdExprParser.parse(b, l + 1)
         } else {
             ok = ok && GdExprParser.parse(b, l + 1)
             ok = ok && b.consumeToken(COLON)
