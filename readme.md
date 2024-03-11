@@ -24,7 +24,7 @@ Delegates marked with [Signal] attribute would not be marked as unused.
 
 Support test framework:
 
- - [gdUnit4Mono](https://github.com/MikeSchulze/gdUnit4Mono)
+ - [gdUnit4Mono](https://github.com/MikeSchulze/gdUnit4Mono), [Example project](https://github.com/van800/Godot421GdUnitExample)
  - old approach: support running XUnit/NUnit tests inside the game process. [More](https://github.com/JetBrains/godot-support/pull/58)
 
 Supports Input Action and NodePath completion in string literals [More](https://github.com/JetBrains/godot-support/pull/102)
