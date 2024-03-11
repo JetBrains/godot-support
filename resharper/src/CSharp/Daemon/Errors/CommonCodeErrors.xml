@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Errors language="C#" configurableSeverityImplementationLanguage="CSHARP">
+  <Usings>
+    JetBrains.ReSharper.Psi.CSharp;
+    JetBrains.ReSharper.Psi.CSharp.Tree;
+  </Usings>
+
+  <SeverityConfiguration>
+    <Group name="GodotConfigurableHighlightingsGroupIds.Godot">
+      <Tag externalName="MissingParameterlessConstructor.HIGHLIGHTING_ID" default="WARNING">
+        <Title>Parameterless constructor required</Title>
+        <Description>Consider adding a parameterless constructor for the GodotEngine to initialize a script/game object</Description>
+      </Tag>
+    </Group>
+  </SeverityConfiguration>
+  
+  <Warning name="MissingParameterlessConstructor" configurableSeverity="Godot.MissingParameterlessConstructor">
+    <Parameter type="ITreeNode" name="node" />
+    <Parameter type="string" name="name" isValid="skip" />
+    <Message value="Consider adding a parameterless constructor for the GodotEngine to initialize a script/game object">
+    </Message>
+    <Range>Node.GetDocumentRange()</Range>
+    <Behavour overlapResolvePolicy="NONE" />
+  </Warning>
+</Errors>
