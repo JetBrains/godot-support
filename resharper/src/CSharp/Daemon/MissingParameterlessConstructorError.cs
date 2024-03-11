@@ -1,12 +1,14 @@
 ﻿using JetBrains.DocumentModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
+using JetBrains.ReSharper.Feature.Services.Daemon.Attributes;
 using JetBrains.ReSharper.Psi.CSharp.Tree;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
 {
-    [StaticSeverityHighlighting(Severity.ERROR, typeof(HighlightingGroupIds.GutterMarks))]
+    [StaticSeverityHighlighting(Severity.WARNING, typeof(GodotHighlightingsGroup), Languages = "CSHARP", AttributeId = AnalysisHighlightingAttributeIds.WARNING, OverlapResolve = OverlapResolveKind.WARNING, ToolTipFormatString = Tooltip)]
     public class MissingParameterlessConstructorError : IHighlighting
     {
+        private const string Tooltip = "Parameterless constructor is required for the GodotEngine to initialize a script/game object";
         private readonly DocumentRange _documentRange;
         public readonly IClassDeclaration ClassDeclaration;
 
@@ -25,7 +27,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
             return _documentRange;
         }
 
-        public string ToolTip => "Parameterless constructor is required to initialize a script/game object";
-        public string ErrorStripeToolTip { get; }
+        public string ToolTip => Tooltip;
+        public string ErrorStripeToolTip => ToolTip;
     }
 }
