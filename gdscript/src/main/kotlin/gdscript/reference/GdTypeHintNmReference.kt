@@ -55,6 +55,8 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
                 }
 
                 resolveInner(container)?.let { return@Resolver it }
+                if (container is GdClassDeclTl) resolveInner(container.parent)?.let { return@Resolver it }
+
                 GdClassUtil.getClassIdElement(GdKeywords.GLOBAL_SCOPE, project)?.let {
                     return@Resolver resolveInner(GdClassUtil.getOwningClassElement(it))
                 }
@@ -94,15 +96,8 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
             }
         }
 
-        variants.addAll(innerClasses(container).map { it.lookup() })
-        variants.addAll(enums(container).mapNotNull { it.lookup() })
-        variants.addAll(loadedClasses(container).map {
-            GdLookup.create(
-                GdCommonUtil.getName(it),
-                priority = GdLookup.USER_DEFINED,
-                icon = GdIcon.getEditorIcon(GdIcon.OBJECT),
-            )
-        })
+        variantsInner(container, variants)
+        if (container is GdClassDeclTl) variantsInner(container.parent, variants)
 
         return variants.toTypedArray()
     }
@@ -127,6 +122,18 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
         }
 
         return null
+    }
+
+    private fun variantsInner(container: PsiElement, variants: MutableList<LookupElement>) {
+        variants.addAll(innerClasses(container).map { it.lookup() })
+        variants.addAll(enums(container).mapNotNull { it.lookup() })
+        variants.addAll(loadedClasses(container).map {
+            GdLookup.create(
+                GdCommonUtil.getName(it),
+                priority = GdLookup.USER_DEFINED,
+                icon = GdIcon.getEditorIcon(GdIcon.OBJECT),
+            )
+        })
     }
 
     private fun getOwnerClass(): PsiElement? {
