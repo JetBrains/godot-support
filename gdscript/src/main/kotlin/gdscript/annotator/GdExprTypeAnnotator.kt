@@ -17,9 +17,12 @@ class GdExprTypeAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is GdFactorEx -> factorExpr(element, holder)
+            is GdPlusEx -> plusExpr(element, holder)
             is GdBitAndEx -> bitAndExpr(element, holder)
             is GdVarDeclSt -> varDeclExpr(element, holder)
             is GdAssignSt -> assignExpr(element, holder)
+            is GdShiftEx -> shiftExpr(element, holder)
+            is GdComparisonEx -> comparisonExpr(element, holder)
             is GdClassVarDeclTl -> classVarDecl(element, holder)
         }
     }
@@ -50,6 +53,25 @@ class GdExprTypeAnnotator : Annotator {
         val right = element.exprList.right()
         val operator = element.factorSign.text
         validate(left, right, operator, "Cannot factor", element, holder)
+    }
+
+    private fun plusExpr(element: GdPlusEx, holder: AnnotationHolder) {
+        val left = element.exprList.left()
+        val right = element.exprList.right()
+        val operator = element.sign.text
+        validate(left, right, operator, "Cannot factor", element, holder)
+    }
+
+    private fun shiftExpr(element: GdShiftEx, holder: AnnotationHolder) {
+        val left = element.exprList.left()
+        val right = element.exprList.right()
+        validate(left, right, "<<", "Cannot factor", element, holder)
+    }
+
+    private fun comparisonExpr(element: GdComparisonEx, holder: AnnotationHolder) {
+        val left = element.exprList.left()
+        val right = element.exprList.right()
+        validate(left, right, element.operator.text, "Cannot factor", element, holder)
     }
 
     private fun bitAndExpr(element: GdBitAndEx, holder: AnnotationHolder) {
