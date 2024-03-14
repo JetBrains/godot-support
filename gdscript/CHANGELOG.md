@@ -2,6 +2,10 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.4.7
+
++ Expression validations [#259](https://gitlab.com/IceExplosive/gdscript/-/issues/259)
+
 ### 2.4.6
 
 + Stop adding "()" when completing Callable param [#256](https://gitlab.com/IceExplosive/gdscript/-/issues/256)
