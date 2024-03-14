@@ -1,5 +1,7 @@
 ﻿using System.Linq;
 using JetBrains.ReSharper.Feature.Services.Daemon;
+using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
+using JetBrains.ReSharper.Psi.Modules;
 using JetBrains.ReSharper.Psi.Tree;
 using IClassDeclaration = JetBrains.ReSharper.Psi.CSharp.Tree.IClassDeclaration;
 
@@ -18,6 +20,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
             var typeElement = element.DeclaredElement;
             if (typeElement == null) 
                 return;
+
+            if (typeElement.Module is ProjectPsiModuleBase projectPsiModuleBase)
+                if (!projectPsiModuleBase.Project.IsGodotProject2()) return;
             
             if (!typeElement.DerivesFromGodotObject()) // could you please check if it only makes sense for the Node or all GodotObjects?
                 return;
