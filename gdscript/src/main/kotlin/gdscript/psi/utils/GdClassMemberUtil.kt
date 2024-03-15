@@ -443,7 +443,7 @@ object GdClassMemberUtil {
                 }
             }
 
-            // TODO Losos Create stub for unnamed
+            // TODO Create stub for unnamed enums
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
                 if (it.name.isBlank()) {
                     it.enumValueList.forEach { value ->
