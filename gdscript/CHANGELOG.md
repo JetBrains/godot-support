@@ -2,7 +2,11 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
-### 2.4.7
+### 2.4.8 (15.3.2024)
+
++ GdFacade - extension registration
+
+### 2.4.7 (14.3.2024)
 
 + Expression validations [#259](https://gitlab.com/IceExplosive/gdscript/-/issues/259)
 

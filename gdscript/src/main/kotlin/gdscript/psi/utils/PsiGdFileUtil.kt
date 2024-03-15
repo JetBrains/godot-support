@@ -9,7 +9,7 @@ object PsiGdFileUtil {
     fun filename(file: PsiFile): String {
         val name = file.name
 
-        return name.substring(0, name.length - 3)
+        return name.substring(0, name.lastIndexOf("."))
     }
 
     @Deprecated("resource util?")

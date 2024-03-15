@@ -21,7 +21,7 @@ class GdClassNameCompletionContributor : CompletionContributor() {
         if (CLASS_NAME_NM.accepts(parameters.position)) {
             val filename = parameters.originalFile.name
             result.addElement(
-                GdLookup.create(filename.substring(0, filename.length - 3).snakeToPascalCase()),
+                GdLookup.create(filename.substring(0, filename.lastIndexOf(".")).snakeToPascalCase()),
             )
             result.stopHere()
         }
