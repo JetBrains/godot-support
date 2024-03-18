@@ -6,7 +6,7 @@ group = "ice.explosive"
 version = "2.4.9"
 
 plugins {
-    id("org.jetbrains.intellij") version "1.13.3"
+    id("org.jetbrains.intellij") version "1.17.3" // https://github.com/JetBrains/gradle-intellij-plugin/releases
     kotlin("jvm") version "1.9.0"
     kotlin("plugin.serialization") version "1.9.0"
 }
@@ -29,8 +29,9 @@ sourceSets {
 
 intellij {
     version.set("2023.3")
-    //type.set("RD")
-    plugins.set(listOf("org.jetbrains.plugins.textmate"))
+    // version.set("2024.2-SNAPSHOT") // for Rider
+    // type.set("RD") // for Rider
+    plugins.set(listOf("org.jetbrains.plugins.textmate", "com.intellij.rider.godot.community:1.0.0"))
     updateSinceUntilBuild.set(true)
 }
 
@@ -59,7 +60,7 @@ tasks {
         dependsOn(patchPluginXml)
     }
 
-    val patchPluginXml by named<PatchPluginXmlTask>("patchPluginXml") {
+    withType<PatchPluginXmlTask> {
         sinceBuild.set("233")
         untilBuild.set("")
 

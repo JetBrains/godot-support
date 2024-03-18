@@ -19,7 +19,7 @@ class GdFlowStmtAnnotator : Annotator {
         }?.let {
             if (it is GdMethodDeclTl || it is GdFuncDeclEx) {
                 holder
-                    .newAnnotation(HighlightSeverity.ERROR, "Cannot use '$txt' outside of a loop")
+                    .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Cannot use '$txt' outside of a loop")
                     .range(element.textRange)
                     .create()
             }

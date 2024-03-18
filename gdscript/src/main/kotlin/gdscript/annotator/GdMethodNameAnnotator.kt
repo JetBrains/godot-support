@@ -47,9 +47,10 @@ class GdMethodNameAnnotator : Annotator {
             }
 
             holder
-                .newAnnotation(
-                    HighlightSeverity.ERROR,
-                    "Name [${element.name}] already defined as $type"
+                .newAnnotationGd(
+                        element.project,
+                        HighlightSeverity.ERROR,
+                        "Name [${element.name}] already defined as $type"
                 )
                 .range(element.textRange)
                 .create();

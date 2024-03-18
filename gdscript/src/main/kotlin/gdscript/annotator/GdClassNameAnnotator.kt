@@ -60,7 +60,7 @@ class GdClassNameAnnotator : Annotator {
             }
 
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "Class not found")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Class not found")
                 .range(element.textRange)
                 .create()
         }
@@ -106,7 +106,7 @@ class GdClassNameAnnotator : Annotator {
 
         if (conflict) {
             holder
-                .newAnnotation(HighlightSeverity.ERROR, message)
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, message)
                 .range(element.textRange)
                 .create()
             return true
@@ -122,7 +122,7 @@ class GdClassNameAnnotator : Annotator {
         val filename = PsiGdFileUtil.filename(element.containingFile).snakeToPascalCase()
         if (filename.lowercase() != name.lowercase()) {
             holder
-                .newAnnotation(HighlightSeverity.WEAK_WARNING, "Class name does not match filename")
+                .newAnnotationGd(element.project, HighlightSeverity.WEAK_WARNING, "Class name does not match filename")
                 .range(element.textRange)
                 .withFix(GdFileClassNameAction(filename, element))
                 .create()
@@ -134,7 +134,7 @@ class GdClassNameAnnotator : Annotator {
     private fun isDuplicated(element: PsiElement, holder: AnnotationHolder, type: String) {
         if (PsiTreeUtil.getPrevSiblingOfType(element, element::class.java) !== null) {
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "$type already defined")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "$type already defined")
                 .range(element.textRange)
                 .withFix(GdRemoveElementsAction(element))
                 .create()

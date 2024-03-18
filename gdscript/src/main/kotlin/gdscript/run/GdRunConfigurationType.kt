@@ -22,5 +22,4 @@ class GdRunConfigurationType : ConfigurationType {
 
     override fun getConfigurationFactories(): Array<ConfigurationFactory> =
         arrayOf(GdConfigurationFactory)
-
 }

@@ -96,7 +96,7 @@ class GdExprTypeAnnotator : Annotator {
         if (operator == "=" && GdExprUtil.typeAccepts(right, left, element)) return
 
         holder
-            .newAnnotation(HighlightSeverity.ERROR, "$message $left $operator $right")
+            .newAnnotationGd(element.project, HighlightSeverity.ERROR, "$message $left $operator $right")
             .range(element.textRange)
             .create()
     }

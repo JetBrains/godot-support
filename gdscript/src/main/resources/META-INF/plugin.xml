@@ -12,6 +12,7 @@
 
   <depends>com.intellij.modules.lang</depends>
   <depends>org.jetbrains.plugins.textmate</depends>
+  <depends optional="true" config-file="optionalPlugin.xml">com.intellij.rider.godot.community</depends>
 
   <extensions defaultExtensionNs="com.intellij">
     <fileType name="GdScript File" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd;gdf"/>

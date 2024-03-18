@@ -62,7 +62,7 @@ class GdRefIdAnnotator : Annotator {
                         var nextLeaf = element.nextLeaf(true)
                         if (!objectContinuation.contains(nextLeaf.elementType) && psi.childrenOfType<GdMethodDeclTl>().any { it.isConstructor }) {
                             holder
-                                .newAnnotation(HighlightSeverity.ERROR, "Builtin type $txt cannot be assigned to a variable")
+                                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Builtin type $txt cannot be assigned to a variable")
                                 .range(element.textRange)
                                 .create()
                             return
@@ -94,7 +94,7 @@ class GdRefIdAnnotator : Annotator {
                         return@run GdHighlighterColors.METHOD_CALL
 
                     holder
-                        .newAnnotation(GdProjectState.selectedLevel(state), "Reference [${element.text}] not found")
+                        .newAnnotationGd(element.project, GdProjectState.selectedLevel(state), "Reference [${element.text}] not found")
                         .range(element.textRange)
                         .create()
                     return

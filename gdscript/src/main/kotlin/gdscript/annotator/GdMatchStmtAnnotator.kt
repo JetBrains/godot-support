@@ -64,7 +64,7 @@ class GdMatchStmtAnnotator : Annotator {
 
         if (allKeys.isEmpty()) return;
         holder
-            .newAnnotation(HighlightSeverity.WEAK_WARNING, "Missing enum options")
+            .newAnnotationGd(element.project, HighlightSeverity.WEAK_WARNING, "Missing enum options")
             .range(element.textRange)
             .withFix(GdAddMatchBranchesFix(match, allKeys.keys.map { "$prefix$it" }.toTypedArray()))
             .create();

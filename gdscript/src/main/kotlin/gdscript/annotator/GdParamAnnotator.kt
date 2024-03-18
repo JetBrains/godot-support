@@ -102,14 +102,14 @@ class GdParamAnnotator : Annotator {
             }
 
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "Too many arguments")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Too many arguments")
                 .range(element.textRange)
                 .withFix(GdRemoveElementsAction(*toRemoveList.toTypedArray()))
                 .create()
             return
         } else if (minSize in 1..98 && usedParamSize < minSize) {
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "Not enough arguments")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Not enough arguments")
                 .range(element.textRange)
                 .create()
             return
@@ -135,7 +135,7 @@ class GdParamAnnotator : Annotator {
 
         if (paramLists.size > 1) {
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "")
                 .tooltip("""<html><body>
                     None of method definitions can be called with supplied arguments
                     <ul>
@@ -154,7 +154,7 @@ class GdParamAnnotator : Annotator {
                     val actualType = actualTypes[pIndex]
 
                     val annotator = holder
-                        .newAnnotation(HighlightSeverity.ERROR, "")
+                        .newAnnotationGd(element.project, HighlightSeverity.ERROR, "")
                         .tooltip("""
                             <html><body>
                                 Type mismatch for ${param.varNmi.name}

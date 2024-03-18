@@ -4,7 +4,6 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
-import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.utils.GdExprUtil
 import gdscript.utils.GdAnnotationUtil
@@ -20,7 +19,7 @@ class GdAnnotationAnnotator : Annotator {
         val definition = GdAnnotationUtil.get(element)
         if (definition == null) {
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "Unknown annotation")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Unknown annotation")
                 .range(element.textRange)
                 .create()
             return
@@ -32,14 +31,14 @@ class GdAnnotationAnnotator : Annotator {
         // Check number of arguments
         if (!definition.variadic && usedParams.size > definitionParams.size) {
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "Too many arguments")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Too many arguments")
                 .range(element.textRange)
                 .create()
             return
         }
         if (definition.required > 0 && usedParams.size < definition.required) {
             holder
-                .newAnnotation(HighlightSeverity.ERROR, "Not enough arguments")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Not enough arguments")
                 .range(element.textRange)
                 .create()
             return
@@ -57,7 +56,7 @@ class GdAnnotationAnnotator : Annotator {
             val actualReturnType = actualType.returnType
             if (!GdExprUtil.typeAccepts(actualReturnType, expectedType, element)) {
                 holder
-                    .newAnnotation(HighlightSeverity.ERROR, "")
+                    .newAnnotationGd(element.project, HighlightSeverity.ERROR, "")
                     .tooltip("<html><body>Type mismatch for $name<table><tr><td>Required:</td><td>$expectedType</td></tr><tr><td>Found:</td><td>$actualReturnType</td></tr></table></html></body>")
                     .range(actualType.textRange)
                     .create()
