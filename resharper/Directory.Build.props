@@ -1,6 +1,12 @@
 <Project>
+  <Sdk Name="JetBrains.Build.VersionLockFileTargets" Version="0.0.4" />
+  <PropertyGroup>
+    <IsIndependentBuild Condition="Exists('$(MSBuildThisFileDirectory)\build\DotNetSdkPath.generated.props')">True</IsIndependentBuild>
+    <IsIndependentBuild Condition="$(IsIndependentBuild) == ''">False</IsIndependentBuild>
+    <PackageLockFilePath>$(MSBuildThisFileDirectory)PackagesLock.targets</PackageLockFilePath>
+  </PropertyGroup>
   <Import Project="$(MSBuildThisFileDirectory)\build\DotNetSdkPath.generated.props"
-          Condition="Exists('$(MSBuildThisFileDirectory)\build\DotNetSdkPath.generated.props')" />
+          Condition="$(IsIndependentBuild)" />
   <!-- TODO: Test what happens without the condition if props are not generated yet -->
   
     <!-- We have multiple projects in the same folder, so need to rename the bin and obj
@@ -19,7 +25,7 @@
        * https://github.com/dotnet/sdk/issues/803
        * https://github.com/dotnet/sdk/issues/802 -->
   <PropertyGroup>
-    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
+    <BaseIntermediateOutputPath Condition="$(IsIndependentBuild)">$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName)\obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -30,6 +36,6 @@
          of @(JetReference), nuget assemblies and @(JetContent) for each build - rider and resharper.
          Note that obj folders are kept separate because per-project files are saved there, e.g. nuget restore details
          and generated source files. -->
-    <OutputPath>$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName.Replace("tests.", ""))\bin\$(Configuration)</OutputPath>
+    <OutputPath Condition="$(IsIndependentBuild)">$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName.Replace("tests.", ""))\bin\$(Configuration)</OutputPath>
   </PropertyGroup>
 </Project>
