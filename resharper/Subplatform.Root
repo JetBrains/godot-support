@@ -4,5 +4,6 @@
         <SubplatformReference Name="Psi.Features\UnitTesting" />
         <SubplatformReference Name="Psi.Features\src" />
         <SubplatformReference Name="Rider\Rider.Backend" />
+        <SubplatformReference Name="Plugins\_GodotSupport.Pregenerated\BackendModel" />
     </SubplatformInfo.SubplatformReferences>
 </SubplatformInfo>
