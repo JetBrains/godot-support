@@ -21,7 +21,7 @@ plugins {
     id("org.jetbrains.intellij") version "1.13.3" // https://github.com/JetBrains/gradle-intellij-plugin/releases
     id("org.jetbrains.grammarkit") version "2022.3"
     id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
-    id("com.jetbrains.rdgen") version "2023.2.1"
+    id("com.jetbrains.rdgen") version "2024.1.0"
     kotlin("jvm") version "1.9.0"
 }
 
@@ -98,6 +98,11 @@ val repoRoot = projectDir.parentFile!!
 val resharperPluginPath = File(repoRoot, "resharper")
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
+val productMonorepoDir = getProductMonorepoRoot()
+val monorepoPreGeneratedRootDir by lazy { productMonorepoDir?.resolve("dotnet/Plugins/_GodotSupport.Pregenerated") ?: error("Building not in monorepo") }
+val monorepoPreGeneratedFrontendDir by lazy {  monorepoPreGeneratedRootDir.resolve("FrontendModel") }
+val monorepoPreGeneratedBackendDir by lazy {  monorepoPreGeneratedRootDir.resolve("BackendModel") }
+
 val pluginFiles = listOf(
     "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot",
     "bin/$buildConfiguration/net472/GodotTools.IdeMessaging")
@@ -142,22 +147,41 @@ fun download(temp:File, spec:String){
 
 tasks {
     configure<RdGenExtension> {
-        val backendCsOutDir = File(repoRoot, "resharper/build/generated/Model/FrontendBackend")
-        val frontendKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
+        val inMonorepo = productMonorepoDir != null
+        logger.info("Configuring rdgen with inMonorepo=$inMonorepo")
 
-        val debuggerCsOutDir = File(repoRoot, "resharper/build/generated/Model/DebuggerWorker")
-        val debuggerKtOutDir = File(repoRoot, "rider/src/main/kotlin/com/jetbrains/rider/plugins/godot/model")
+        val ktOutputRelativePath = "src/main/kotlin/com/jetbrains/rider/plugins/godot/model"
+        val backendCsOutDir =
+            if (inMonorepo) File(monorepoPreGeneratedBackendDir, "FrontendBackend")
+            else File(repoRoot, "resharper/build/generated/Model/FrontendBackend")
+        val frontendKtOutDir =
+            if (inMonorepo) File(monorepoPreGeneratedFrontendDir, ktOutputRelativePath)
+            else File(repoRoot, "rider/$ktOutputRelativePath")
+
+        val debuggerCsOutDir =
+            if (inMonorepo) File(monorepoPreGeneratedBackendDir, "DebuggerWorker")
+            else File(repoRoot, "resharper/build/generated/Model/DebuggerWorker")
+        val debuggerKtOutDir =
+            if (inMonorepo) File(monorepoPreGeneratedFrontendDir, ktOutputRelativePath)
+            else File(repoRoot, "rider/$ktOutputRelativePath")
 
         verbose = true
         hashFolder = File(repoRoot, "rider/build/rdgen").path
         logger.info("Configuring rdgen params")
-        classpath({
-            logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${setupDependencies.get().idea.get()}")
-            val sdkPath = setupDependencies.get().idea.get().classes
-            val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
+        if (inMonorepo) {
+            classpath({
+                val riderModelClassPathFile: String by project
+                File(riderModelClassPathFile).readLines()
+            })
+        } else {
+            classpath({
+                logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${setupDependencies.get().idea.get()}")
+                val sdkPath = setupDependencies.get().idea.get().classes
+                val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
 
-            "$rdLibDirectory/rider-model.jar"
-        })
+                "$rdLibDirectory/rider-model.jar"
+            })
+        }
         sources(File(repoRoot, "rider/protocol/src/kotlin/model"))
         packages = "model"
 
@@ -166,6 +190,7 @@ tasks {
             transform = "reversed"
             root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
             directory = "$backendCsOutDir"
+            if (inMonorepo) generatedFileSuffix = ".Pregenerated"
         }
 
         generator {
@@ -173,6 +198,7 @@ tasks {
             transform = "asis"
             root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
             directory = "$frontendKtOutDir"
+            if (inMonorepo) generatedFileSuffix = ".Pregenerated"
         }
 
         generator {
@@ -180,6 +206,7 @@ tasks {
             transform = "reversed"
             root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
             directory = "$debuggerCsOutDir"
+            if (inMonorepo) generatedFileSuffix = ".Pregenerated"
         }
 
         generator {
@@ -187,6 +214,7 @@ tasks {
             transform = "asis"
             root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
             directory = "$debuggerKtOutDir"
+            if (inMonorepo) generatedFileSuffix = ".Pregenerated"
         }
     }
 
@@ -400,6 +428,19 @@ tasks {
             }
         }
     }
+}
+
+fun getProductMonorepoRoot(): File? {
+    var currentDir = repoRoot
+
+    while (currentDir.parent != null) {
+        if (currentDir.resolve(".ultimate.root.marker").exists()) {
+            return currentDir
+        }
+        currentDir = currentDir.parentFile
+    }
+
+    return null
 }
 
 defaultTasks("prepare")
