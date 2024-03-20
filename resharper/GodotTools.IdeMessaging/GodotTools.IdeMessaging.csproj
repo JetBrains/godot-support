@@ -15,7 +15,6 @@
     <AssemblyVersion>$(Version)</AssemblyVersion>
     <AssemblyName>JetBrains.ReSharper.Plugins.Godot.GodotTools.IdeMessaging</AssemblyName>
     <Authors>Godot Engine contributors</Authors>
-    <Company />
     <PackageTags>godot</PackageTags>
     <RepositoryUrl>https://github.com/godotengine/godot/tree/master/modules/mono/editor/GodotTools/GodotTools.IdeMessaging</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
