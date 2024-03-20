@@ -12,12 +12,8 @@
     <RootNamespace>JetBrains.ReSharper.Plugins.Godot</RootNamespace>
     <LangVersion>9</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>JET_MODE_ASSERT;JET_MODE_REPORT_EXCEPTIONS;RIDER;$(CommandLineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>RIDER;$(CommandLineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">JET_MODE_ASSERT;JET_MODE_REPORT_EXCEPTIONS;RIDER;$(CommandLineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">RIDER;$(CommandLineConstants)</DefineConstants>
   </PropertyGroup>
   <!-- ********** -->
   <ItemGroup Label="Live templates">
