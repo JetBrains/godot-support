@@ -12,7 +12,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
     /// <summary>
     /// Analyzes classes that derives from Godot.GodotObject
     /// </summary>
-    [ElementProblemAnalyzer(typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(MissingParameterlessConstructorError)})]
+    [ElementProblemAnalyzer(typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(MissingParameterlessConstructor)})]
     public class ConstructorElementProblemAnalyzer : ElementProblemAnalyzer<IClassDeclaration>
     {
         protected override void Run(IClassDeclaration element, ElementProblemAnalyzerData data, IHighlightingConsumer consumer)
@@ -35,7 +35,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
                 if (bodyChild.DeclaredElement.Parameters.ToArray().Length == 0)
                     return;
             }
-            consumer.AddHighlighting(new MissingParameterlessConstructorError(element, element.NameIdentifier.GetDocumentRange()));
+            consumer.AddHighlighting(new MissingParameterlessConstructor(element, element.NameIdentifier.GetDocumentRange()));
         }
     }
 }

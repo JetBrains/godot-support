@@ -14,9 +14,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.QuickFixes
     [QuickFix]
     public class ParameterlessConstructorQuickFix : QuickFixBase
     {
-        private readonly MissingParameterlessConstructorError error;
+        private readonly MissingParameterlessConstructor error;
 
-        public ParameterlessConstructorQuickFix([NotNull] MissingParameterlessConstructorError warning) => error = warning;
+        public ParameterlessConstructorQuickFix([NotNull] MissingParameterlessConstructor warning) => error = warning;
         
         protected override Action<ITextControl> ExecutePsiTransaction(ISolution solution, IProgressIndicator progress)
         {
