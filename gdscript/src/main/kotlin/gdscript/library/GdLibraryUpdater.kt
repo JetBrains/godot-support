@@ -3,6 +3,7 @@ package gdscript.library
 import PluginConstants
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task.Backgroundable
@@ -68,6 +69,9 @@ class GdLibraryUpdater {
             } else if (refreshNeeded(registered, latest)) {
                 ProgressManager.getInstance().run(GdUpdateSdkTask(project, latest, true))
             }
+            else{
+                thisLogger().info("Continue using $registered gdscript sdk.")
+            }
         }
 
         private fun refreshNeeded(library: Library, latestVersion: String) : Boolean {
@@ -89,9 +93,9 @@ class GdLibraryUpdater {
     private class GdUpdateSdkTask(project: Project, val version: String, val requiresReset: Boolean) : Backgroundable(project, "Update GdSdk for project") {
 
         override fun run(progressIndicator: ProgressIndicator) {
-
             try {
                 val dirPath = project.getProjectDataPath("sdk")
+                thisLogger().info("update gdscript sdk $dirPath")
                 if (!dirPath.exists(LinkOption.NOFOLLOW_LINKS)) dirPath.createDirectories()
 
                 if (requiresReset) GdLibraryManager.clearSdks(project)
