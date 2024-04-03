@@ -151,6 +151,8 @@ object GdLibraryManager {
         ZipUtil.extract(zipPath, sdkPath, TrueFileFilter.INSTANCE)
         Files.delete(zipPath)
 
+        SdkIntegrityValidator().writeStamp(sdkPath.toFile())
+
         return sdkPath
     }
 

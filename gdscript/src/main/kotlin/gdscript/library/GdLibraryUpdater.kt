@@ -47,6 +47,7 @@ class GdLibraryUpdater {
         }
 
         fun checkSdk(progressIndicator: ProgressIndicator) {
+            progressIndicator.isIndeterminate = false
             val projectFile = "${project.basePath}${File.separator}project.godot"
             val content = FileUtils.readFileToString(File(projectFile), Charset.defaultCharset())
 
@@ -68,25 +69,26 @@ class GdLibraryUpdater {
                 ProgressManager.getInstance().run(GdUpdateSdkTask(project, latest, false))
             } else if (refreshNeeded(registered, latest)) {
                 ProgressManager.getInstance().run(GdUpdateSdkTask(project, latest, true))
-            }
-            else{
+            } else {
                 thisLogger().info("Continue using $registered gdscript sdk.")
             }
         }
 
-        private fun refreshNeeded(library: Library, latestVersion: String) : Boolean {
+        private fun refreshNeeded(library: Library, latestVersion: String): Boolean {
             // no sources found
             if (library.rootProvider.getFiles(OrderRootType.SOURCES).isEmpty()) return true
             // no version or outdated version
             val props = (library.modifiableModel as LibraryEx.ModifiableModelEx).properties as GdLibraryProperties
 
-            if (props.version.isBlank()) {
-                return true
-            }
+            if (props.version.isBlank()) return true
 
             if (props.version.isBlank() || GdLibraryManager.libDate(props.version) != props.date) return true
             // is it correct version?
-            return !library.name!!.endsWith(latestVersion) || library.name!!.endsWith("Master")
+            if (!library.name!!.endsWith(latestVersion) || library.name!!.endsWith("Master"))
+                return true
+
+            // the sdk folder may not be present on the disk
+            return library.rootProvider.getFiles(OrderRootType.SOURCES).any { !SdkIntegrityValidator().hasValidStamp(it) }
         }
     }
 
@@ -110,6 +112,4 @@ class GdLibraryUpdater {
             }
         }
     }
-
-
 }
