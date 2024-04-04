@@ -1,6 +1,7 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot.community</id>
   <name>Technical For Godot Support</name>
+  <version>1.0.0</version>
   <vendor url="https://www.jetbrains.com">JetBrains</vendor>
 
   <description><![CDATA[
@@ -16,4 +17,9 @@
   <extensions defaultExtensionNs="com.intellij">
 
   </extensions>
+
+  <extensionPoints>
+    <extensionPoint name="lspStatusProvider" interface="com.jetbrains.rider.godot.community.LspRunningStatusProvider" />
+  </extensionPoints>
+
 </idea-plugin>

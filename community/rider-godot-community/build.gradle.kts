@@ -6,7 +6,7 @@ repositories {
 }
 
 plugins {
-    id("org.jetbrains.intellij") version "1.16.1" // https://github.com/JetBrains/gradle-intellij-plugin/releases
+    id("org.jetbrains.intellij") version "1.17.3" // https://github.com/JetBrains/gradle-intellij-plugin/releases
     kotlin("jvm") version "1.9.21"
 }
 
