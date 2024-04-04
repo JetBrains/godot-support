@@ -22,7 +22,7 @@ plugins {
     id("org.jetbrains.grammarkit") version "2022.3"
     id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
     id("com.jetbrains.rdgen") version "2023.2.1"
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm") version "1.9.21"
 }
 
 apply {
