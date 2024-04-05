@@ -38,11 +38,9 @@ val cachedLink = "https://cache-redirector.jetbrains.com/github.com/godotengine/
 data class PluginDescription(val name: String, val url: String)
 
 val godotVscodePluginVersion = "1.3.1" // https://github.com/godotengine/godot-vscode-plugin/releases
-val alfishPluginVerion = "0.0.7" // https://github.com/AlfishSoftware/godot-files-vscode/releases/download/v0.0.7/alfish.godot-files-0.0.7.vsix
 
 val plugins = listOf(
     PluginDescription("godot-tools", "https://cache-redirector.jetbrains.com/github.com/godotengine/godot-vscode-plugin/releases/download/$godotVscodePluginVersion/godot-tools-$godotVscodePluginVersion.vsix"),
-    PluginDescription("godot-files", "https://github.com/AlfishSoftware/godot-files-vscode/releases/download/v$alfishPluginVerion/alfish.godot-files-$alfishPluginVerion.vsix")
 )
 
 val buildCounter = ext.properties["build.number"] ?: "9999"
