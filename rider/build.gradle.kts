@@ -21,7 +21,8 @@ plugins {
     id("org.jetbrains.intellij") version "1.13.3" // https://github.com/JetBrains/gradle-intellij-plugin/releases
     id("org.jetbrains.grammarkit") version "2022.3"
     id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
-    id("com.jetbrains.rdgen") version "2024.1.0"
+    // Version is configured in gradle.properties
+    id("com.jetbrains.rdgen")
     kotlin("jvm") version "1.9.0"
 }
 
