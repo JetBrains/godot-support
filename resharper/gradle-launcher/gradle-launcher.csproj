@@ -9,6 +9,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <SdkTargetFrameworkOverride>.NETCoreApp,Version=v6.0</SdkTargetFrameworkOverride>
+    <JetNonProductAssembly>true</JetNonProductAssembly>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <AssemblyName>JetBrains.ReSharper.Plugins.Godot.Gradle.Launcher</AssemblyName>
   </PropertyGroup>
