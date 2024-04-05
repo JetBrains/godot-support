@@ -50,6 +50,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Condition="$(InternalBuild)" Include="JetBrains.Godot.Tools" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GodotTools.IdeMessaging\GodotTools.IdeMessaging.csproj" />
