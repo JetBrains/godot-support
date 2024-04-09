@@ -26,7 +26,9 @@ Supports only Godot 4.0 and higher
 Hello,
 I'm sorry for late responses and lack of activity, I'm currently running between 3 projects in daily job and have not much time and much less will to work on this plugin.
 
-So give me a month or two, and hopefully I'll get back on track with it and start solving issues - thanks for all reports.
+So give me a month or two, and hopefully I'll get back on track with it and start solving issues.
+
+Have patience with me, thanks.
 
 ## Update 28.2.2024
 
