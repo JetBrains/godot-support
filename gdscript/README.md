@@ -21,6 +21,13 @@ Supports only Godot 4.0 and higher
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
+# Update 9.4.2024
+
+Hello,
+I'm sorry for late responses and lack of activity, I'm currently running between 3 projects in daily job and have not much time and much less will to work on this plugin.
+
+So give me a month or two, and hopefully I'll get back on track with it and start solving issues - thanks for all reports.
+
 ## Update 28.2.2024
 
 Thank you for help and support - extra thanks to @BokoEnos for a lot of contributions.
@@ -33,17 +40,6 @@ There are some feature requests in Issue list - I don't have time to implement t
 but don't hesitate to propose new ones or vote (just give "thumbs up" on issue) for the one you desire the most.
 
 And ofc please report all issues you find.
-
-## Update 12.2.2024
-
-With latest version 2.2.0 there's an update for TscnFiles -> highlighting possible via TextMate plugin,
-check out [description](https://gitlab.com/IceExplosive/gdscript/-/merge_requests/6) and updated tscn file icon
--> this caused me an error with each opened .tscn file due to cache issue that could not resolve itself and I had to 
-clear caches manually (File -> Invalidate Caches... -> Clear file system cache)
-
-It also requires 2023.3 editor version
-
-Current focus remains bug fixing until it'll be worthy of Gamefromscratch. :)
 
 ## GdScript toolkit (not related to this project)
 
