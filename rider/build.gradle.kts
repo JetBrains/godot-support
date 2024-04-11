@@ -103,8 +103,8 @@ val monorepoPreGeneratedFrontendDir by lazy {  monorepoPreGeneratedRootDir.resol
 val monorepoPreGeneratedBackendDir by lazy {  monorepoPreGeneratedRootDir.resolve("BackendModel") }
 
 val pluginFiles = listOf(
-    "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot",
-    "bin/$buildConfiguration/net472/GodotTools.IdeMessaging")
+    "rider-godot/bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot",
+    "GodotTools.IdeMessaging/bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.GodotTools.IdeMessaging")
 
 val debuggerPluginFiles = listOf(
     "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.Rider.Debugger")
@@ -242,7 +242,7 @@ tasks {
     withType<PrepareSandboxTask> {
         dependsOn("buildReSharperPlugin")
         var files = pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
-        files = files.map { "$resharperPluginPath/build/rider-godot/$it" }
+        files = files.map { "$resharperPluginPath/build/$it" }
         files.forEach {
             from(it) { into("${intellij.pluginName.get()}/dotnet") }
         }
