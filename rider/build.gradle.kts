@@ -72,7 +72,8 @@ intellij {
     updateSinceUntilBuild.set(false)
 
     // Workaround for https://youtrack.jetbrains.com/issue/IDEA-179607
-    plugins.set(listOf("rider-plugins-appender", "org.jetbrains.plugins.textmate"))
+    plugins.set(listOf("rider-plugins-appender", "org.jetbrains.plugins.textmate",
+        "com.intellij.ml.llm"))
 }
 
 repositories.forEach {
