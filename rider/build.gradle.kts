@@ -1,25 +1,16 @@
-
+import com.jetbrains.plugin.structure.base.utils.isDirectory
 import com.jetbrains.rd.generator.gradle.RdGenExtension
 import org.gradle.kotlin.dsl.support.unzipTo
-import org.jetbrains.intellij.tasks.InstrumentCodeTask
-import org.jetbrains.intellij.tasks.PrepareSandboxTask
-import org.jetbrains.intellij.tasks.RunIdeTask
-import org.jetbrains.kotlin.com.intellij.openapi.util.io.FileUtil
+import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
+import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
-import java.net.URI
 import java.net.URL
-
-repositories {
-    maven { setUrl("https://cache-redirector.jetbrains.com/maven-central") }
-}
+import kotlin.io.path.*
 
 plugins {
-    id("org.jetbrains.intellij") version "1.13.3" // https://github.com/JetBrains/gradle-intellij-plugin/releases
-    id("org.jetbrains.grammarkit") version "2022.3"
+    id("org.jetbrains.intellij.platform") version "2.0.0-beta1" // https://github.com/jetbrains/intellij-platform-gradle-plugin/releases
+    id("org.jetbrains.grammarkit") version "2022.3.2.2"
     id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
     // Version is configured in gradle.properties
     id("com.jetbrains.rdgen")
@@ -35,82 +26,103 @@ val baseVersion = "2024.2"
 // alternative val url = URL("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/geequlim/vsextensions/godot-tools/$godotVscodePluginVersion/vspackage")
 // https://github.com/godotengine/godot-vscode-plugin/releases/download
 val cachedLink = "https://cache-redirector.jetbrains.com/github.com/godotengine/godot-vscode-plugin/releases/download"
+
 data class PluginDescription(val name: String, val url: String)
 
 val godotVscodePluginVersion = "1.3.1" // https://github.com/godotengine/godot-vscode-plugin/releases
 
 val plugins = listOf(
-    PluginDescription("godot-tools", "https://cache-redirector.jetbrains.com/github.com/godotengine/godot-vscode-plugin/releases/download/$godotVscodePluginVersion/godot-tools-$godotVscodePluginVersion.vsix"),
+    PluginDescription(
+        "godot-tools",
+        "https://cache-redirector.jetbrains.com/github.com/godotengine/godot-vscode-plugin/releases/download/$godotVscodePluginVersion/godot-tools-$godotVscodePluginVersion.vsix"
+    ),
 )
 
 val buildCounter = ext.properties["build.number"] ?: "9999"
 version = "$baseVersion.$buildCounter"
 
-intellij {
-    type.set("RD")
-
-    // Download a version of Rider to compile and run with. Either set `version` to
-    // 'LATEST-TRUNK-SNAPSHOT' or 'LATEST-EAP-SNAPSHOT' or a known version.
-    // This will download from www.jetbrains.com/intellij-repository/snapshots or
-    // www.jetbrains.com/intellij-repository/releases, respectively.
-    // Note that there's no guarantee that these are kept up to date
-    // version = 'LATEST-TRUNK-SNAPSHOT'
-    // If the build isn't available in intellij-repository, use an installed version via `localPath`
-    // localPath 'build/riderRD-173-SNAPSHOT'
-
-    val dir = file("build/rider")
-    if (dir.exists()) {
-        logger.lifecycle("*** Using Rider SDK from local path " + dir.absolutePath)
-        localPath.set(dir.absolutePath)
-    } else {
-        logger.lifecycle("*** Using Rider SDK from intellij-snapshots repository")
-        version.set("$baseVersion-SNAPSHOT")
-    }
-
-    instrumentCode.set(false)
-    downloadSources.set(false)
-    updateSinceUntilBuild.set(false)
-
-    // Workaround for https://youtrack.jetbrains.com/issue/IDEA-179607
-    plugins.set(listOf("rider-plugins-appender", "org.jetbrains.plugins.textmate"))
-}
-
-repositories.forEach {
-    fun replaceWithCacheRedirector(u: URI): URI {
-        val cacheHost = "cache-redirector.jetbrains.com"
-        return if (u.scheme.startsWith("http") && u.host != cacheHost)
-            URI("https", cacheHost, "/${u.host}/${u.path}", u.query, u.fragment)
-        else u
-    }
-
-    when (it) {
-        is MavenArtifactRepository -> {
-            it.url = replaceWithCacheRedirector(it.url)
-        }
-        is IvyArtifactRepository -> {
-            it.url = replaceWithCacheRedirector(it.url)
-        }
-    }
-}
-
 val repoRoot = projectDir.parentFile!!
-val resharperPluginPath = File(repoRoot, "resharper")
+val resharperPluginPath = repoRoot.resolve("resharper")
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
+
+repositories {
+    maven { setUrl("https://cache-redirector.jetbrains.com/maven-central") }
+
+    intellijPlatform {
+        defaultRepositories()
+    }
+}
+
+val foo = provider {
+
+    intellijPlatform.productInfo
+
+    listOf(
+        "lib/modules/intellij.platform.settings.local.jar",
+        "lib/modules/intellij.profiler.common.jar",
+        "lib/modules/intellij.platform.navbar.compatibility.jar",
+        "lib/modules/intellij.platform.navbar.compatibility.backend.jar",
+        "lib/modules/intellij.platform.navbar.compatibility.ide.jar",
+        "intellij.platform.navbar.backend.split",
+    )
+        .map { intellijPlatform.platformPath.resolve(it).toFile() }
+        .let { files(it) }
+}
+
+dependencies {
+    intellijPlatform {
+        // Download a version of Rider to compile and run with.
+        // Either set `rider(version)` where `version` can be: "LATEST-TRUNK-SNAPSHOT" or "LATEST-EAP-SNAPSHOT" or a known version.
+        // This will download from www.jetbrains.com/intellij-repository/snapshots or www.jetbrains.com/intellij-repository/releases, respectively.
+        // Note that there's no guarantee that `LATEST-TRUNK-SNAPSHOT` is kept up to date.
+        // If the build isn't available in intellij-repository, use an installed version via `local(path)`, like: local("build/riderRD-173-SNAPSHOT")
+        with(file("build/rider")) {
+            when {
+                exists() -> {
+                    logger.lifecycle("*** Using Rider SDK from local path $this")
+                    local(this)
+                }
+
+                else -> {
+                    logger.lifecycle("*** Using Rider SDK from intellij-snapshots repository")
+                    rider("$baseVersion-SNAPSHOT")
+                }
+            }
+        }
+
+        // Workaround for https://youtrack.jetbrains.com/issue/IDEA-179607
+        bundledPlugin("rider.intellij.plugin.appender")
+        bundledPlugin("org.jetbrains.plugins.textmate")
+        instrumentationTools()
+//        testFramework(TestFrameworkType.Platform.Bundled)
+
+        bundledLibrary("lib/testFramework.jar")
+    }
+
+//    compileOnly(foo)
+//    testCompileOnly(foo)
+}
+
+intellijPlatform {
+    buildSearchableOptions = buildConfiguration == "Release"
+}
 
 val productMonorepoDir = getProductMonorepoRoot()
 val monorepoPreGeneratedRootDir by lazy { productMonorepoDir?.resolve("dotnet/Plugins/_GodotSupport.Pregenerated") ?: error("Building not in monorepo") }
-val monorepoPreGeneratedFrontendDir by lazy {  monorepoPreGeneratedRootDir.resolve("FrontendModel") }
-val monorepoPreGeneratedBackendDir by lazy {  monorepoPreGeneratedRootDir.resolve("BackendModel") }
+val monorepoPreGeneratedFrontendDir by lazy { monorepoPreGeneratedRootDir.resolve("FrontendModel") }
+val monorepoPreGeneratedBackendDir by lazy { monorepoPreGeneratedRootDir.resolve("BackendModel") }
 
 val pluginFiles = listOf(
     "rider-godot/bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot",
-    "GodotTools.IdeMessaging/bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.GodotTools.IdeMessaging")
+    "GodotTools.IdeMessaging/bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.GodotTools.IdeMessaging"
+)
 
 val debuggerPluginFiles = listOf(
-    "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.Rider.Debugger")
+    "bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.Rider.Debugger"
+)
 
-val nugetConfigPath = File(repoRoot, "NuGet.Config")
-val dotNetSdkPathPropsPath = File(project.projectDir, "../resharper/build/DotNetSdkPath.generated.props")
+val nugetConfigPath = repoRoot.resolve("NuGet.Config")
+val dotNetSdkPathPropsPath = project.projectDir.resolve("../resharper/build/DotNetSdkPath.generated.props")
 
 val riderGodotTargetsGroup = "rider-godot"
 
@@ -123,7 +135,7 @@ fun File.writeTextIfChanged(content: String) {
     }
 }
 
-fun download(temp:File, spec:String){
+fun download(temp: File, spec: String) {
     val url = URL(spec)
     val connection = url.openConnection()
     connection.setRequestProperty(
@@ -131,8 +143,8 @@ fun download(temp:File, spec:String){
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"
     )
 
-    val inputStream: InputStream = connection.getInputStream()
-    val outputStream: OutputStream = FileOutputStream(temp)
+    val inputStream = connection.getInputStream()
+    val outputStream = temp.outputStream()
 
     outputStream.use { output ->
         inputStream.use { input ->
@@ -151,21 +163,21 @@ tasks {
 
         val ktOutputRelativePath = "src/main/kotlin/com/jetbrains/rider/plugins/godot/model"
         val backendCsOutDir =
-            if (inMonorepo) File(monorepoPreGeneratedBackendDir, "FrontendBackend")
-            else File(repoRoot, "resharper/build/generated/Model/FrontendBackend")
+            if (inMonorepo) monorepoPreGeneratedBackendDir.resolve("FrontendBackend")
+            else repoRoot.resolve("resharper/build/generated/Model/FrontendBackend")
         val frontendKtOutDir =
-            if (inMonorepo) File(monorepoPreGeneratedFrontendDir, ktOutputRelativePath)
-            else File(repoRoot, "rider/$ktOutputRelativePath")
+            if (inMonorepo) monorepoPreGeneratedFrontendDir.resolve(ktOutputRelativePath)
+            else repoRoot.resolve("rider/$ktOutputRelativePath")
 
         val debuggerCsOutDir =
-            if (inMonorepo) File(monorepoPreGeneratedBackendDir, "DebuggerWorker")
-            else File(repoRoot, "resharper/build/generated/Model/DebuggerWorker")
+            if (inMonorepo) monorepoPreGeneratedBackendDir.resolve("DebuggerWorker")
+            else repoRoot.resolve("resharper/build/generated/Model/DebuggerWorker")
         val debuggerKtOutDir =
-            if (inMonorepo) File(monorepoPreGeneratedFrontendDir, ktOutputRelativePath)
-            else File(repoRoot, "rider/$ktOutputRelativePath")
+            if (inMonorepo) monorepoPreGeneratedFrontendDir.resolve(ktOutputRelativePath)
+            else repoRoot.resolve("rider/$ktOutputRelativePath")
 
         verbose = true
-        hashFolder = File(repoRoot, "rider/build/rdgen").path
+        hashFolder = repoRoot.resolve("rider/build/rdgen").path
         logger.info("Configuring rdgen params")
         if (inMonorepo) {
             classpath({
@@ -174,14 +186,11 @@ tasks {
             })
         } else {
             classpath({
-                logger.info("Calculating classpath for rdgen, intellij.ideaDependency is ${setupDependencies.get().idea.get()}")
-                val sdkPath = setupDependencies.get().idea.get().classes
-                val rdLibDirectory = File(sdkPath, "lib/rd").canonicalFile
-
-                "$rdLibDirectory/rider-model.jar"
+                logger.info("Calculating classpath for rdgen, IntelliJ Platform path is ${intellijPlatform.platformPath}")
+                intellijPlatform.platformPath.resolve("lib/rd/rider-model.jar")
             })
         }
-        sources(File(repoRoot, "rider/protocol/src/kotlin/model"))
+        sources(repoRoot.resolve("rider/protocol/src/kotlin/model"))
         packages = "model"
 
         generator {
@@ -217,66 +226,62 @@ tasks {
         }
     }
 
-    val dotNetSdkPath by lazy {
-        val sdkPath = setupDependencies.get().idea.get().classes.resolve("lib").resolve("DotNetSdkForRdPlugins")
-        if (sdkPath.isDirectory.not()) error("$sdkPath does not exist or not a directory")
+    val dotNetSdkPath = provider {
+        val sdkPath = intellijPlatform.platformPath.resolve("lib/DotNetSdkForRdPlugins").absolute()
+        check(sdkPath.isDirectory) { "$sdkPath does not exist or not a directory" }
 
         println("SDK path: $sdkPath")
-        return@lazy sdkPath
-    }
-
-    withType<InstrumentCodeTask> {
-        val bundledMavenArtifacts = file("build/maven-artifacts")
-        if (bundledMavenArtifacts.exists()) {
-            logger.lifecycle("Use ant compiler artifacts from local folder: $bundledMavenArtifacts")
-            compilerClassPathFromMaven.set(
-                bundledMavenArtifacts.walkTopDown()
-                    .filter { it.extension == "jar" && !it.name.endsWith("-sources.jar") }
-                    .toList() + File("${ideaDependency.get().classes}/lib/util.jar")
-            )
-        } else {
-            logger.lifecycle("Use ant compiler artifacts from maven")
-        }
+        sdkPath
     }
 
     withType<PrepareSandboxTask> {
         dependsOn("buildReSharperPlugin")
-        var files = pluginFiles.map { "$it.dll" } + pluginFiles.map { "$it.pdb" }
-        files = files.map { "$resharperPluginPath/build/$it" }
-        files.forEach {
-            from(it) { into("${intellij.pluginName.get()}/dotnet") }
+        val projectName = intellijPlatform.projectName
+
+        val files = pluginFiles
+            .flatMap { listOf("$it.dll", "$it.pdb") }
+            .map { "$resharperPluginPath/build/$it" }
+
+        files.forEach { file ->
+            from(file) { into(projectName.map { "$it/dotnet" }) }
         }
 
-        var debuggerFiles = debuggerPluginFiles.map { "$it.dll" } + debuggerPluginFiles.map{ "$it.pdb"}
-        debuggerFiles = debuggerFiles.map { "$resharperPluginPath/build/debugger/$it" }
+        debuggerPluginFiles
+            .flatMap { listOf("$it.dll", "$it.pdb") }
+            .map { "$resharperPluginPath/build/debugger/$it" }
+            .forEach { file ->
+                from(file) { into(projectName.map { "$it/dotnetDebuggerWorker" }) }
+            }
 
-        debuggerFiles.forEach {
-            from(it) { into("${intellij.pluginName.get()}/dotnetDebuggerWorker") }
-        }
-
-        into("${intellij.pluginName.get()}/dotnet/Extensions/com.intellij.rider.godot/annotations") {
+        into(projectName.map { "$it/dotnet/Extensions/com.intellij.rider.godot/annotations" }) {
             from("../resharper/src/annotations")
         }
 
         doLast {
-            files.forEach {
-                val file = file(it)
-                if (!file.exists()) throw RuntimeException("File $file does not exist")
-                logger.warn("$name: ${file.name} -> $destinationDir/${intellij.pluginName.get()}/dotnet")
-            }
+            files
+                .map { file(it) }
+                .forEach { file ->
+                    if (!file.exists()) throw RuntimeException("File $file does not exist")
+                    logger.warn(projectName.map { "$name: ${file.name} -> $destinationDir/$it/dotnet" }.get())
+                }
 
             logger.lifecycle("downloading TextMate bundles")
-            plugins.forEach {
-                val configDir = destinationDir.resolve(intellij.pluginName.get()).resolve("bundles").resolve(it.name)
-                val temp = FileUtil.createTempFile("download", ".tmp", true)
-                download(temp, it.url)
-                FileUtil.createDirectory(configDir)
-                logger.lifecycle("Unzipping ${temp.path} to $configDir")
-                unzipTo(configDir, temp)
+            plugins.forEach { plugin ->
+                val configDir = destinationDir
+                    .resolve(projectName.get())
+                    .resolve("bundles")
+                    .resolve(plugin.name)
+                    .toPath()
+                    .createDirectories()
+
+                val temporaryFile = temporaryDir.resolve(plugin.name)
+                download(temporaryFile, plugin.url)
+                logger.lifecycle("Unzipping ${temporaryFile.path} to $configDir")
+                unzipTo(configDir.toFile(), temporaryFile)
 
                 // workaround for IDEA-342823 Apply 2 textmate bundles
                 // ".gdshader", ".gdshaderinc", "*.gdshader", "*.gdshaderinc"
-                if (it.name == "godot-tools") {
+                if (plugin.name == "godot-tools") {
                     val extensionDir = configDir.resolve("extension")
                     val packageJson = extensionDir.resolve("package.json")
                     if (packageJson.exists()) {
@@ -309,48 +314,6 @@ tasks {
     withType<Test> {
         useTestNG()
 
-        // Should be the same as community/plugins/devkit/devkit-core/src/run/OpenedPackages.txt
-        jvmArgs("--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
-            "--add-opens=java.base/java.net=ALL-UNNAMED",
-            "--add-opens=java.base/java.nio=ALL-UNNAMED",
-            "--add-opens=java.base/java.nio.charset=ALL-UNNAMED",
-            "--add-opens=java.base/java.text=ALL-UNNAMED",
-            "--add-opens=java.base/java.time=ALL-UNNAMED",
-            "--add-opens=java.base/java.util=ALL-UNNAMED",
-            "--add-opens=java.base/java.util.concurrent=ALL-UNNAMED",
-            "--add-opens=java.base/java.util.concurrent.atomic=ALL-UNNAMED",
-            "--add-opens=java.base/jdk.internal.vm=ALL-UNNAMED",
-            "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
-            "--add-opens=java.base/sun.security.ssl=ALL-UNNAMED",
-            "--add-opens=java.base/sun.security.util=ALL-UNNAMED",
-            "--add-opens=java.desktop/com.apple.eawt=ALL-UNNAMED",
-            "--add-opens=java.desktop/com.apple.eawt.event=ALL-UNNAMED",
-            "--add-opens=java.desktop/com.apple.laf=ALL-UNNAMED",
-            "--add-opens=java.desktop/com.sun.java.swing.plaf.gtk=ALL-UNNAMED",
-            "--add-opens=java.desktop/java.awt=ALL-UNNAMED",
-            "--add-opens=java.desktop/java.awt.dnd.peer=ALL-UNNAMED",
-            "--add-opens=java.desktop/java.awt.event=ALL-UNNAMED",
-            "--add-opens=java.desktop/java.awt.image=ALL-UNNAMED",
-            "--add-opens=java.desktop/java.awt.peer=ALL-UNNAMED",
-            "--add-opens=java.desktop/java.awt.font=ALL-UNNAMED",
-            "--add-opens=java.desktop/javax.swing=ALL-UNNAMED",
-            "--add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED",
-            "--add-opens=java.desktop/javax.swing.text.html=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.awt.datatransfer=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.awt.image=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.awt.windows=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.awt=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.font=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.java2d=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.lwawt=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.lwawt.macosx=ALL-UNNAMED",
-            "--add-opens=java.desktop/sun.swing=ALL-UNNAMED",
-            "--add-opens=jdk.attach/sun.tools.attach=ALL-UNNAMED",
-            "--add-opens=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
-            "--add-opens=jdk.internal.jvmstat/sun.jvmstat.monitor=ALL-UNNAMED",
-            "--add-opens=jdk.jdi/com.sun.tools.jdi=ALL-UNNAMED")
-
         testLogging {
             showStandardStreams = true
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
@@ -361,12 +324,15 @@ tasks {
         group = riderGodotTargetsGroup
         doLast {
             dotNetSdkPathPropsPath.parentFile?.mkdir()
-            dotNetSdkPathPropsPath.writeTextIfChanged("""<Project>
-  <PropertyGroup>
-    <DotNetSdkPath>$dotNetSdkPath</DotNetSdkPath>
-  </PropertyGroup>
-</Project>
-""")
+            dotNetSdkPathPropsPath.writeTextIfChanged(
+                """
+                <Project>
+                  <PropertyGroup>
+                    <DotNetSdkPath>${dotNetSdkPath.get()}</DotNetSdkPath>
+                  </PropertyGroup>
+                </Project>
+                """.trimIndent()
+            )
         }
 
         getByName("buildSearchableOptions") {
@@ -377,13 +343,16 @@ tasks {
     create("writeNuGetConfig") {
         group = riderGodotTargetsGroup
         doLast {
-            nugetConfigPath.writeTextIfChanged("""<?xml version="1.0" encoding="utf-8"?>
-<configuration>
-  <packageSources>
-    <add key="resharper-sdk" value="$dotNetSdkPath" />
-  </packageSources>
-</configuration>
-""")
+            nugetConfigPath.writeTextIfChanged(
+                """
+                <?xml version="1.0" encoding="utf-8"?>
+                <configuration>
+                  <packageSources>
+                    <add key="resharper-sdk" value="${dotNetSdkPath.get()}" />
+                  </packageSources>
+                </configuration>
+                """.trimIndent()
+            )
         }
     }
 
@@ -399,10 +368,6 @@ tasks {
         dependsOn("rdgen", "writeNuGetConfig", "writeDotNetSdkPathProps")
     }
 
-    "buildSearchableOptions" {
-        enabled = buildConfiguration == "Release"
-    }
-
     create("buildReSharperPlugin") {
         group = riderGodotTargetsGroup
         dependsOn("prepare")
@@ -415,7 +380,7 @@ tasks {
         }
     }
 
-    task("listrepos"){
+    task("listrepos") {
         doLast {
             logger.lifecycle("Repositories:")
             project.repositories.forEach {
