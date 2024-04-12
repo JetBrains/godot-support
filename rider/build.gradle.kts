@@ -53,22 +53,6 @@ repositories {
     }
 }
 
-val foo = provider {
-
-    intellijPlatform.productInfo
-
-    listOf(
-        "lib/modules/intellij.platform.settings.local.jar",
-        "lib/modules/intellij.profiler.common.jar",
-        "lib/modules/intellij.platform.navbar.compatibility.jar",
-        "lib/modules/intellij.platform.navbar.compatibility.backend.jar",
-        "lib/modules/intellij.platform.navbar.compatibility.ide.jar",
-        "intellij.platform.navbar.backend.split",
-    )
-        .map { intellijPlatform.platformPath.resolve(it).toFile() }
-        .let { files(it) }
-}
-
 dependencies {
     intellijPlatform {
         // Download a version of Rider to compile and run with.
@@ -98,9 +82,6 @@ dependencies {
 
         bundledLibrary("lib/testFramework.jar")
     }
-
-//    compileOnly(foo)
-//    testCompileOnly(foo)
 }
 
 intellijPlatform {
