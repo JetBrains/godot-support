@@ -3,7 +3,7 @@ rootProject.name = "rider-godot"
 pluginManagement {
     repositories {
         maven { setUrl("https://cache-redirector.jetbrains.com/plugins.gradle.org") }
-        // This is for snapshot version of 'org.jetbrains.intellij' plugin
+        // This is for snapshot version of 'org.jetbrains.intellij.platform' plugin
         maven { setUrl("https://oss.sonatype.org/content/repositories/snapshots/") }
     }
     resolutionStrategy {
@@ -19,4 +19,3 @@ pluginManagement {
 }
 
 include(":protocol")
-
