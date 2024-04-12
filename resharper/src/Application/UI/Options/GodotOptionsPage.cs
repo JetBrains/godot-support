@@ -39,7 +39,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
             OptionsSettingsSmartContext settingsStore)
             : base(lifetime, pageContext, settingsStore)
         {
-            AddNetworkSection();
+            AddGdScriptSection();
             
             AddHeader("Debugger");
             using (Indent())
@@ -49,9 +49,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
             }
         }
 
-        private void AddNetworkSection()
+        private void AddGdScriptSection()
         {
-            AddHeader("Network");
+            AddHeader("GDScript Support");
             using (Indent())
             {
                 AddComboOption((GodotSettings s) => s.LanguageServerConnectionMode,
