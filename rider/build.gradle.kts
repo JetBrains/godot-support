@@ -5,6 +5,7 @@ import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.incremental.createDirectory
 import java.net.URL
 import kotlin.io.path.*
 
@@ -23,18 +24,15 @@ apply {
 
 val baseVersion = "2024.2"
 
-// alternative val url = URL("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/geequlim/vsextensions/godot-tools/$godotVscodePluginVersion/vspackage")
-// https://github.com/godotengine/godot-vscode-plugin/releases/download
-val cachedLink = "https://cache-redirector.jetbrains.com/github.com/godotengine/godot-vscode-plugin/releases/download"
-
 data class PluginDescription(val name: String, val url: String)
 
-val godotVscodePluginVersion = "1.3.1" // https://github.com/godotengine/godot-vscode-plugin/releases
+val godotVscodePluginVersion = "2.0.0" // https://github.com/godotengine/godot-vscode-plugin/releases
+// alternative val url = URL("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/geequlim/vsextensions/godot-tools/$godotVscodePluginVersion/vspackage")
 
 val plugins = listOf(
     PluginDescription(
         "godot-tools",
-        "https://cache-redirector.jetbrains.com/github.com/godotengine/godot-vscode-plugin/releases/download/$godotVscodePluginVersion/godot-tools-$godotVscodePluginVersion.vsix"
+        "https://github.com/godotengine/godot-vscode-plugin/releases/download/$godotVscodePluginVersion/godot-tools-$godotVscodePluginVersion.vsix"
     ),
 )
 
@@ -245,37 +243,6 @@ tasks {
                     if (!file.exists()) throw RuntimeException("File $file does not exist")
                     logger.warn(projectName.map { "$name: ${file.name} -> $destinationDir/$it/dotnet" }.get())
                 }
-
-            logger.lifecycle("downloading TextMate bundles")
-            plugins.forEach { plugin ->
-                val configDir = destinationDir
-                    .resolve(projectName.get())
-                    .resolve("bundles")
-                    .resolve(plugin.name)
-                    .toPath()
-                    .createDirectories()
-
-                val temporaryFile = temporaryDir.resolve(plugin.name)
-                download(temporaryFile, plugin.url)
-                logger.lifecycle("Unzipping ${temporaryFile.path} to $configDir")
-                unzipTo(configDir.toFile(), temporaryFile)
-
-                // workaround for IDEA-342823 Apply 2 textmate bundles
-                // ".gdshader", ".gdshaderinc", "*.gdshader", "*.gdshaderinc"
-                if (plugin.name == "godot-tools") {
-                    val extensionDir = configDir.resolve("extension")
-                    val packageJson = extensionDir.resolve("package.json")
-                    if (packageJson.exists()) {
-                        val text = packageJson.readText()
-                            .replace("\".gdshader\"", "\".gdshader2\"")
-                            .replace("\".gdshaderinc\"", "\".gdshaderinc2\"")
-                            .replace("\"*.gdshader\"", "\"*.gdshader2\"")
-                            .replace("\"*.gdshader\"", "\"*.gdshader2\"")
-
-                        packageJson.writeText(text)
-                    }
-                }
-            }
         }
     }
 
@@ -298,6 +265,50 @@ tasks {
         testLogging {
             showStandardStreams = true
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+        }
+    }
+
+    create("prepareTextMateBundleNuget") {
+        // pack nuget manually with the following command
+        // nuget pack JetBrains.Godot.Tools.nuspec
+        // nuget may be installed with `brew install nuget`
+        group = riderGodotTargetsGroup
+        doLast {
+            logger.lifecycle("downloading TextMate bundles")
+            plugins.forEach { plugin ->
+                val nugetDir = projectDir.resolve("nuget")
+                nugetDir.createDirectory()
+                val nuspecFile = nugetDir.resolve("JetBrains.Godot.Tools.nuspec")
+                nuspecFile.writeTextIfChanged(
+                    """<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>JetBrains.Godot.Tools</id>
+    <version>${godotVscodePluginVersion}.1</version>
+    <title>Godot Tools</title>
+    <authors>godotengine</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/godotengine/godot-vscode-plugin</projectUrl>
+    <description>Godot tools to redestribute with the godot plugin</description>
+  </metadata>
+  <files>
+    <file src=".\**\*.*" target="" />
+  </files>
+</package>""".trimIndent()
+                )
+                val configDir = nugetDir
+                    .resolve("DotFiles")
+                    .resolve("bundles")
+                    .resolve(plugin.name)
+                    .toPath()
+                    .createDirectories()
+
+                val temporaryFile = temporaryDir.resolve(plugin.name)
+                download(temporaryFile, plugin.url)
+                logger.lifecycle("Unzipping ${temporaryFile.path} to $configDir")
+                unzipTo(configDir.toFile(), temporaryFile)
+            }
         }
     }
 
