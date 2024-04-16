@@ -4,6 +4,7 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
@@ -159,6 +160,12 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                     return PrioritizedLookupElement.withPriority(item, 1.0)
                 }
 
+             }
+
+        override val lspGoToDefinitionSupport: Boolean
+            get() {
+                // todo: remove, when https://gitlab.com/IceExplosive/gdscript/-/issues/263 is fixed.
+                return !PluginManagerCore.plugins.any { it.pluginId.idString == "ice.explosive.gdscript" && it.isEnabled }
             }
     }
 }
