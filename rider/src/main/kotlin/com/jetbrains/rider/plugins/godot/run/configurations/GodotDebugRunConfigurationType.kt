@@ -5,7 +5,7 @@ import com.intellij.execution.configurations.ConfigurationTypeBase
 import com.jetbrains.rider.plugins.godot.GodotIcons
 
 class GodotDebugRunConfigurationType : ConfigurationTypeBase(id,
-        "Start and Debug", "Start Godot and Attach debugger",
+        "Godot 3 Start and Debug", "Start Godot and Attach debugger",
         GodotIcons.RunConfigurations.StartAndDebug) {
 
     val factory = GodotDebugRunFactory(this)
