@@ -19,9 +19,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
         {
             var solution = context.RuntimeEnvironment.Project.GetSolution();
             var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
-            if (model.GodotPath.HasValue()) 
+            if (model.GodotPath.HasValue())
+            {
+                startInfo.EnvironmentVariables.Remove(godotPathEnvVarName);
                 startInfo.EnvironmentVariables.Add(godotPathEnvVarName, model.GodotPath.Value);
-
+            }
             return base.StartProcess(startInfo, context);
         }
     }
