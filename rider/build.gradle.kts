@@ -1,5 +1,4 @@
 import com.jetbrains.plugin.structure.base.utils.isDirectory
-import com.jetbrains.rd.generator.gradle.RdGenExtension
 import org.gradle.kotlin.dsl.support.unzipTo
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
@@ -14,8 +13,7 @@ plugins {
     id("org.jetbrains.grammarkit") version "2022.3.2.2"
     id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
     // Version is configured in gradle.properties
-    id("com.jetbrains.rdgen")
-    kotlin("jvm") version "1.9.0"
+    kotlin("jvm")
 }
 
 apply {
@@ -44,8 +42,8 @@ val resharperPluginPath = repoRoot.resolve("resharper")
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
 repositories {
-    maven { setUrl("https://cache-redirector.jetbrains.com/maven-central") }
-
+    maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
+    maven("https://cache-redirector.jetbrains.com/maven-central")
     intellijPlatform {
         defaultRepositories()
     }
@@ -85,11 +83,6 @@ dependencies {
 intellijPlatform {
     buildSearchableOptions = buildConfiguration == "Release"
 }
-
-val productMonorepoDir = getProductMonorepoRoot()
-val monorepoPreGeneratedRootDir by lazy { productMonorepoDir?.resolve("dotnet/Plugins/_GodotSupport.Pregenerated") ?: error("Building not in monorepo") }
-val monorepoPreGeneratedFrontendDir by lazy { monorepoPreGeneratedRootDir.resolve("FrontendModel") }
-val monorepoPreGeneratedBackendDir by lazy { monorepoPreGeneratedRootDir.resolve("BackendModel") }
 
 val pluginFiles = listOf(
     "rider-godot/bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot",
@@ -134,77 +127,23 @@ fun download(temp: File, spec: String) {
     logger.lifecycle("Downloaded $url to ${temp.path}")
 }
 
+val riderModel: Configuration by configurations.creating {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+}
+
+artifacts {
+    add(riderModel.name, provider {
+        val sdkRoot = intellijPlatform.platformPath.toFile()
+        sdkRoot.resolve("lib/rd/rider-model.jar").also {
+            check(it.isFile) {
+                "rider-model.jar is not found at $riderModel"
+            }
+        }
+    })
+}
 
 tasks {
-    configure<RdGenExtension> {
-        val inMonorepo = productMonorepoDir != null
-        logger.info("Configuring rdgen with inMonorepo=$inMonorepo")
-
-        val ktOutputRelativePath = "src/main/kotlin/com/jetbrains/rider/plugins/godot/model"
-        val backendCsOutDir =
-            if (inMonorepo) monorepoPreGeneratedBackendDir.resolve("FrontendBackend")
-            else repoRoot.resolve("resharper/build/generated/Model/FrontendBackend")
-        val frontendKtOutDir =
-            if (inMonorepo) monorepoPreGeneratedFrontendDir.resolve(ktOutputRelativePath)
-            else repoRoot.resolve("rider/$ktOutputRelativePath")
-
-        val debuggerCsOutDir =
-            if (inMonorepo) monorepoPreGeneratedBackendDir.resolve("DebuggerWorker")
-            else repoRoot.resolve("resharper/build/generated/Model/DebuggerWorker")
-        val debuggerKtOutDir =
-            if (inMonorepo) monorepoPreGeneratedFrontendDir.resolve(ktOutputRelativePath)
-            else repoRoot.resolve("rider/$ktOutputRelativePath")
-
-        verbose = true
-        hashFolder = repoRoot.resolve("rider/build/rdgen").path
-        logger.info("Configuring rdgen params")
-        if (inMonorepo) {
-            classpath({
-                val riderModelClassPathFile: String by project
-                File(riderModelClassPathFile).readLines()
-            })
-        } else {
-            classpath({
-                logger.info("Calculating classpath for rdgen, IntelliJ Platform path is ${intellijPlatform.platformPath}")
-                intellijPlatform.platformPath.resolve("lib/rd/rider-model.jar")
-            })
-        }
-        sources(repoRoot.resolve("rider/protocol/src/kotlin/model"))
-        packages = "model"
-
-        generator {
-            language = "csharp"
-            transform = "reversed"
-            root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-            directory = "$backendCsOutDir"
-            if (inMonorepo) generatedFileSuffix = ".Pregenerated"
-        }
-
-        generator {
-            language = "kotlin"
-            transform = "asis"
-            root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-            directory = "$frontendKtOutDir"
-            if (inMonorepo) generatedFileSuffix = ".Pregenerated"
-        }
-
-        generator {
-            language = "csharp"
-            transform = "reversed"
-            root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
-            directory = "$debuggerCsOutDir"
-            if (inMonorepo) generatedFileSuffix = ".Pregenerated"
-        }
-
-        generator {
-            language = "kotlin"
-            transform = "asis"
-            root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
-            directory = "$debuggerKtOutDir"
-            if (inMonorepo) generatedFileSuffix = ".Pregenerated"
-        }
-    }
-
     val dotNetSdkPath = provider {
         val sdkPath = intellijPlatform.platformPath.resolve("lib/DotNetSdkForRdPlugins").absolute()
         check(sdkPath.isDirectory) { "$sdkPath does not exist or not a directory" }
@@ -357,7 +296,7 @@ tasks {
 
     create("prepare") {
         group = riderGodotTargetsGroup
-        dependsOn("rdgen", "writeNuGetConfig", "writeDotNetSdkPathProps")
+        dependsOn(":protocol:rdgen", "writeNuGetConfig", "writeDotNetSdkPathProps")
     }
 
     create("buildReSharperPlugin") {
@@ -384,19 +323,6 @@ tasks {
             }
         }
     }
-}
-
-fun getProductMonorepoRoot(): File? {
-    var currentDir = repoRoot
-
-    while (currentDir.parent != null) {
-        if (currentDir.resolve(".ultimate.root.marker").exists()) {
-            return currentDir
-        }
-        currentDir = currentDir.parentFile
-    }
-
-    return null
 }
 
 defaultTasks("prepare")
