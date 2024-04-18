@@ -9,10 +9,9 @@ import java.net.URL
 import kotlin.io.path.*
 
 plugins {
-    id("org.jetbrains.intellij.platform") version "2.0.0-beta1" // https://github.com/jetbrains/intellij-platform-gradle-plugin/releases
-    id("org.jetbrains.grammarkit") version "2022.3.2.2"
-    id("me.filippov.gradle.jvm.wrapper") version "0.14.0"
     // Version is configured in gradle.properties
+    id("me.filippov.gradle.jvm.wrapper")
+    id("org.jetbrains.intellij.platform")
     kotlin("jvm")
 }
 
@@ -322,6 +321,11 @@ tasks {
                 }
             }
         }
+    }
+
+    wrapper {
+        gradleVersion = "8.7"
+        distributionUrl = "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"
     }
 }
 
