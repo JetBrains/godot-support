@@ -17,7 +17,7 @@ val godotRepoRoot: File = projectDir.parentFile.parentFile
 sourceSets {
     main {
         kotlin {
-            srcDir(godotRepoRoot.resolve("rider/protocol/src/main/kotlin/model"))
+            srcDir(godotRepoRoot.resolve("rider/protocol/src/kotlin"))
         }
     }
 }
@@ -99,9 +99,6 @@ rdgen {
 tasks.withType<RdGenTask> {
     dependsOn(sourceSets["main"].runtimeClasspath)
     classpath(sourceSets["main"].runtimeClasspath)
-    doFirst {
-        logger.warn(sourceSets["main"].runtimeClasspath.files.joinToString("\n"))
-    }
 }
 
 dependencies {
