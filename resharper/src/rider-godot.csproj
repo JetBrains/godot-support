@@ -51,9 +51,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Condition="$(InternalBuild)" Include="JetBrains.Godot.Tools" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GodotTools.IdeMessaging\GodotTools.IdeMessaging.csproj" />
+    <PackageReference Include="GodotTools.IdeMessaging" />
   </ItemGroup>
   <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Psi.Features_src.Props" Condition="!$(InternalBuild)" />
   <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Psi.Features_UnitTesting.Props" Condition="!$(InternalBuild)" />

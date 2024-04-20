@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <PackageLock Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" IsDevelopmentDependency="True" />
-    <PackageLock Include="GodotTools.IdeMessaging" Version="1.1.1" />
+    <PackageLock Include="GodotTools.IdeMessaging" Version="1.1.2" />
     <PackageLock Include="CitizenMatt.ReSharper.LiveTemplateCompiler" Version="3.5.0" IsDevelopmentDependency="True" />
     <PackageLock Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageLock Include="JetBrains.Godot.Tools" Version="2.0.0.1" />
