@@ -33,6 +33,8 @@ Debugger extension. Adds “Current Scene” item to the Variables and Watches t
 
 Godot specific warnings and quick fixes. A warning and a quick-fix for a missing parameterless ctor. [Pull request](https://github.com/JetBrains/godot-support/pull/127)
 
+Works with Godot version 3.x and 4.x.
+
 # Recomendations
 
 Add `.idea` to [.gitignore](https://github.com/van800/godot-demo-projects/pull/2/files#diff-a084b794bc0759e7a6b77810e01874f2R22) 
