@@ -46,7 +46,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             {
                 logger.Info("Godot Editor disconnected...");
                 model.EditorState.SetValue(GodotEditorState.Disconnected);
-                SubscribeDisconnected(logger, threading, model, myClient);
+                SubscribeDisconnected(logger, threading, model, client);
             }, threading.Tasks.GuardedMainThreadScheduler);
         }
 
