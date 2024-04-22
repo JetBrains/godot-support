@@ -64,10 +64,37 @@
     </group>
   </actions>
 
-
-  <description><![CDATA[
-<strong>Adds support for the Godot engine (C#).</strong>
-<p>Further information on <a href="https://github.com/JetBrains/godot-support">github</a></p>
+  <description>
+    <![CDATA[
+<p>Adds support for the Godot engine.</p>
+<p>
+<strong>Features</strong>
+<ul>
+  <li>Supports Godot versions 3.x and 4.x with a design ready for future updates.</li>
+  <li>Bundles syntax highlighting for Godot file types, including GDScript, scenes, resources and shaders.</li>
+  <li>Integration with Language server protocol, which is provided by Godot.</li>
+  <li>Autogenerates multiple run configurations:
+  <ul>
+    <li>Player to Run/Debug or Profile game in one click.</li>
+    <li>Editor to Run/Debug or Profile Godot Editor in one click.</li>
+    <li>[Godot3] Attach to debug already started player.</li>
+    <li>Context menu on a scene file allows running game directly to that scene.</li>
+  </ul></li>
+  <li>Supports testing framework like gdUnit4Mono and running XUnit/NUnit tests inside the game process.</li>
+  <li>Supports Input Action and NodePath completion in string literals.</li>
+  <li>Debugger extension that adds a “Current Scene” item to the Variables and Watches tab and a Children node to every Godot.Node item in the Variables and Watches tab.</li>
+  <li>Godot specific warnings and quick fixes, integrated with Roslyn provided ones.</li>
+  <li>External annotations for Godot specific attributes.</li>
+  <li>And more!</li>
+</ul>
+</p>
+<p>
+<strong>Links</strong>
+<ul>
+  <li><a href="https://github.com/JetBrains/godot-support">GitHub</a></li>
+  <li><a href="https://github.com/JetBrains/godot-support/issues">Issues</a></li>
+</ul>
+</p>
 ]]>
   </description>
 </idea-plugin>
