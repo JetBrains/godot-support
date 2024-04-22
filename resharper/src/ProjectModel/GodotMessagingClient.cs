@@ -36,6 +36,10 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 SubscribeConnected(logger, threading, model, myClient);
                 SubscribeDisconnected(logger, threading, model, myClient); 
                 myClient.Start();
+                lifetime.OnTermination(() =>
+                {
+                    myClient.Dispose();
+                });
             });
         }
 
