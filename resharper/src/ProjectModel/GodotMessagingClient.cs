@@ -33,30 +33,31 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 if (descriptor.IsPureGdScriptProject) return;
                 
                 myClient = new Client(Identity, descriptor.MainProjectBasePath, this, this);
-                SubscribeConnected(logger, threading, model);
-                SubscribeDisconnected(logger, threading, model); 
+                SubscribeConnected(logger, threading, model, myClient);
+                SubscribeDisconnected(logger, threading, model, myClient); 
                 myClient.Start();
             });
         }
 
-        private void SubscribeDisconnected(ILogger logger, IThreading threading, GodotFrontendBackendModel model)
+        private void SubscribeDisconnected(ILogger logger, IThreading threading, GodotFrontendBackendModel model,
+            Client client)
         {
-            // it looks like it subscribes to be called just once
-            myClient.AwaitDisconnected().ContinueWith(_ =>
+            client.AwaitDisconnected().ContinueWith(_ =>
             {
                 logger.Info("Godot Editor disconnected...");
                 model.EditorState.SetValue(GodotEditorState.Disconnected);
-                SubscribeDisconnected(logger, threading, model);
+                SubscribeDisconnected(logger, threading, model, myClient);
             }, threading.Tasks.GuardedMainThreadScheduler);
         }
 
-        private void SubscribeConnected(ILogger logger, IThreading threading, GodotFrontendBackendModel model)
+        private void SubscribeConnected(ILogger logger, IThreading threading, GodotFrontendBackendModel model,
+            Client client)
         {
-            myClient.AwaitConnected().ContinueWith(_ =>
+            client.AwaitConnected().ContinueWith(_ =>
             {
                 logger.Info("Godot Editor connected...");
                 model.EditorState.SetValue(GodotEditorState.Connected);
-                SubscribeConnected(logger, threading, model);
+                SubscribeConnected(logger, threading, model, client);
             }, threading.Tasks.GuardedMainThreadScheduler);
         }
 
@@ -69,7 +70,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 
         public async Task<CodeCompletionResponse> SendNodePathRequest(string fullPath)
         {
-            var response = await myClient.SendRequest<CodeCompletionResponse>(new CodeCompletionRequest()
+            var response = await myClient.SendRequest<CodeCompletionResponse>(new CodeCompletionRequest
             {
                 Kind = CodeCompletionRequest.CompletionKind.NodePaths,
                 ScriptFile = fullPath
@@ -113,6 +114,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
         public void LogError(string message, Exception e)
         {
             myLogger.Error(message, e);
+        }
+
+        public bool IsReady()
+        {
+            return myClient != null;
         }
     }
 }
