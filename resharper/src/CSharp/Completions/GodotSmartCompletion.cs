@@ -48,6 +48,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             if (!project.IsGodotProject())
                 return false;
 
+            if (!project.GetComponent<GodotMessagingClient>().IsReady())
+                return false;
+
             var stringLiteral = context.StringLiteral();
             if (stringLiteral is null)
                 return false;
