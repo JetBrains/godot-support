@@ -36,9 +36,18 @@ val plugins = listOf(
 val buildCounter = ext.properties["build.number"] ?: "9999"
 version = "$baseVersion.$buildCounter"
 
+val isMonorepo = rootProject.projectDir != projectDir
 val repoRoot = projectDir.parentFile!!
 val resharperPluginPath = repoRoot.resolve("resharper")
 val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
+
+if (!isMonorepo) {
+    sourceSets.getByName("main") {
+        kotlin {
+            srcDir(repoRoot.resolve("rider/src/generated/kotlin"))
+        }
+    }
+}
 
 repositories {
     maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
