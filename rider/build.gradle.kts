@@ -81,6 +81,7 @@ dependencies {
         // Workaround for https://youtrack.jetbrains.com/issue/IDEA-179607
         bundledPlugin("rider.intellij.plugin.appender")
         bundledPlugin("org.jetbrains.plugins.textmate")
+        bundledPlugin("com.intellij.rider.godot.community")
         instrumentationTools()
 //        testFramework(TestFrameworkType.Platform.Bundled)
 
