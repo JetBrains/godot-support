@@ -1,0 +1,25 @@
+<idea-plugin url="https://github.com/JetBrains/godot-support">
+  <id>com.intellij.rider.godot.community</id>
+  <name>Technical For Godot Support</name>
+  <version>1.0.0</version>
+  <vendor url="https://www.jetbrains.com">JetBrains</vendor>
+
+  <description><![CDATA[
+<strong>This plugin is a mediator between Rider Godot support plugin and GdScript IntelliJ plugin.</strong>
+<p>Referenced from the Godot support plugin</p>
+<p>Optionally referenced from the GdScript plugin</p>
+<p>Provides a set of extension points between those plugins.</p>
+]]>
+  </description>
+
+  <depends>com.intellij.modules.platform</depends>
+
+  <extensions defaultExtensionNs="com.intellij">
+
+  </extensions>
+
+  <extensionPoints>
+    <extensionPoint name="lspStatusProvider" interface="com.jetbrains.rider.godot.community.LspRunningStatusProvider" />
+  </extensionPoints>
+
+</idea-plugin>
