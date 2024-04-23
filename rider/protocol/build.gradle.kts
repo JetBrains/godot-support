@@ -30,7 +30,7 @@ data class GodotGeneratorSettings(
     val suffix: String
 )
 
-val ktOutputRelativePath = "com/jetbrains/rider/plugins/godot/model"
+val ktOutputRelativePath = "src/generated/kotlin/com/jetbrains/rider/plugins/godot/model"
 
 val generatorOutputSettings = if (isMonorepo) {
     val monorepoRoot = buildscript.sourceFile?.parentFile?.parentFile?.parentFile?.parentFile?.parentFile?.parentFile
@@ -44,17 +44,17 @@ val generatorOutputSettings = if (isMonorepo) {
 
     GodotGeneratorSettings(
         monorepoPreGeneratedBackendDir.resolve("FrontendBackend"),
-        monorepoPreGeneratedFrontendDir.resolve("src/main/kotlin/$ktOutputRelativePath"),
+        monorepoPreGeneratedFrontendDir.resolve(ktOutputRelativePath),
         monorepoPreGeneratedBackendDir.resolve("DebuggerWorker"),
-        monorepoPreGeneratedFrontendDir.resolve("src/main/kotlin/$ktOutputRelativePath"),
+        monorepoPreGeneratedFrontendDir.resolve(ktOutputRelativePath),
         ".Pregenerated"
     )
 } else {
     GodotGeneratorSettings(
         godotRepoRoot.resolve("resharper/build/generated/Model/FrontendBackend"),
-        godotRepoRoot.resolve("rider/src/generated/kotlin/$ktOutputRelativePath"),
+        godotRepoRoot.resolve("rider/$ktOutputRelativePath"),
         godotRepoRoot.resolve("resharper/build/generated/Model/DebuggerWorker"),
-        godotRepoRoot.resolve("rider/src/generated/kotlin/$ktOutputRelativePath"),
+        godotRepoRoot.resolve("rider/$ktOutputRelativePath"),
         ""
     )
 }
