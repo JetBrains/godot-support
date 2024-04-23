@@ -37,14 +37,14 @@ public class GodotChatContextPartProvider : IChatContextPartProvider
     var text = new StringBuilder();
     text.Append("You are working with Godot project.\n");
     if (tracker.GodotDescriptor.IsPureGdScriptProject)
-        text.Append("You are mostly using GDScript language.\n");
+        text.Append("Default language in the project is GDScript.\n");
     else
     {
         var sdk = tracker.MainProject.ProjectProperties.DotNetCorePlatform?.Sdk;
         if (sdk != null)
         {
-            text.Append($"You are using Project Sdk: \"{sdk}\".\n");
-            text.Append($"You are mostly using C# language.\n");
+            text.Append($"Default language in the project is C#.\n");
+            text.Append($"Project SDK is \"{sdk}\".\n");
         }
     }
     
