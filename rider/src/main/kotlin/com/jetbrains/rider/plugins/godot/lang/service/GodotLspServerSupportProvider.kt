@@ -155,9 +155,9 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
         override val lspCompletionSupport: LspCompletionSupport
             get() = object : LspCompletionSupport() {
                 override fun createLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
-                    val item = super.createLookupElement(parameters, item) ?: return null
+                    val item1 = super.createLookupElement(parameters, item) ?: return null
                     // we want to be more preferable than TextMate
-                    return PrioritizedLookupElement.withPriority(item, 1.0)
+                    return PrioritizedLookupElement.withPriority(item1, 1.0)
                 }
 
              }
