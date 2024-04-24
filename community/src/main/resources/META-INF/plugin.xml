@@ -1,6 +1,6 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot.community</id>
-  <name>Technical For Godot Support</name>
+  <name>Godot Support (Technical)</name>
   <version>1.0.0</version>
   <vendor url="https://www.jetbrains.com">JetBrains</vendor>
 
