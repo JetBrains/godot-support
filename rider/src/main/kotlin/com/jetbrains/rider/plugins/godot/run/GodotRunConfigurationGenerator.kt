@@ -26,7 +26,8 @@ import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntimeType
 import java.nio.file.Paths
-import kotlin.io.path.relativeTo
+import kotlin.io.path.pathString
+import kotlin.io.path.relativeToOrSelf
 
 @Service
 class GodotRunConfigurationGenerator : LifetimedService() {
@@ -47,7 +48,8 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
                 godotDiscoverer.godotDescriptor.viewNotNull(lifetime) { lt, descriptor ->
                     logger.info("descriptor = $descriptor")
-                    val relPath = Paths.get(descriptor.mainProjectBasePath).relativeTo(project.solutionDirectory.toPath())
+                    val tempRelPath = Paths.get(descriptor.mainProjectBasePath).relativeToOrSelf(project.solutionDirectory.toPath())
+                    val relPath = if (tempRelPath.pathString.isEmpty()) "./" else tempRelPath
                     val runManager = RunManager.getInstance(project)
 
                     GodotProjectDiscoverer.getInstance(project).godot4Path.advise(lt) { corePath->
