@@ -17,6 +17,7 @@ import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.projectView.solution
+import com.jetbrains.rider.projectView.solutionDirectory
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
@@ -24,6 +25,9 @@ import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntimeType
+import java.nio.file.Paths
+import kotlin.io.path.pathString
+import kotlin.io.path.relativeToOrSelf
 
 @Service
 class GodotRunConfigurationGenerator : LifetimedService() {
@@ -44,7 +48,8 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
                 godotDiscoverer.godotDescriptor.viewNotNull(lifetime) { lt, descriptor ->
                     logger.info("descriptor = $descriptor")
-                    val basePath = descriptor.mainProjectBasePath
+                    val tempRelPath = Paths.get(descriptor.mainProjectBasePath).relativeToOrSelf(project.solutionDirectory.toPath())
+                    val relPath = if (tempRelPath.pathString.isEmpty()) "./" else tempRelPath
                     val runManager = RunManager.getInstance(project)
 
                     GodotProjectDiscoverer.getInstance(project).godot4Path.advise(lt) { corePath->
@@ -70,21 +75,21 @@ class GodotRunConfigurationGenerator : LifetimedService() {
 
                     GodotProjectDiscoverer.getInstance(project).godot3Path.adviseNotNull(lt) { path ->
                         if (descriptor.isPureGdScriptProject){
-                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${basePath}\"", runManager, path, project)
-                            createOrUpdateGdScriptRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${basePath}\" --editor", runManager, path, project)
+                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
+                            createOrUpdateGdScriptRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                             return@adviseNotNull
                         }
-                        createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${basePath}\"", runManager, path, project)
-                        createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${basePath}\" --editor", runManager, path, project)
+                        createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
+                        createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                     }
                     GodotProjectDiscoverer.getInstance(project).godot4Path.adviseNotNull(lt) { path ->
                         if (descriptor.isPureGdScriptProject){
-                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${basePath}\"", runManager, path, project)
-                            createOrUpdateGdScriptRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${basePath}\" --editor", runManager, path, project)
+                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
+                            createOrUpdateGdScriptRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                             return@adviseNotNull
                         }
-                        createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${basePath}\"", runManager, path, project)
-                        createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${basePath}\" --editor", runManager, path, project)
+                        createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
+                        createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                     }
 
                     // make configuration selected if nothing is selected
@@ -109,6 +114,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             if (configs.any()) {
                 configs.forEach{
                     (it.configuration as DotNetExeConfiguration).parameters.exePath = godotPath
+                    (it.configuration as DotNetExeConfiguration).parameters.workingDirectory = project.solutionDirectory.absolutePath
                 }
             } else {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(DotNetExeConfigurationType::class.java)
@@ -116,7 +122,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 val config = runConfiguration.configuration as DotNetExeConfiguration
                 config.parameters.exePath = godotPath
                 config.parameters.programParameters = programParameters
-                config.parameters.workingDirectory = "${project.basePath}"
+                config.parameters.workingDirectory = project.solutionDirectory.absolutePath
                 config.parameters.runtimeType = DotNetCoreRuntimeType
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
@@ -134,6 +140,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             if (configs.any()) {
                 configs.forEach{
                     (it.configuration as GodotDebugRunConfiguration).parameters.exePath = godotPath
+                    (it.configuration as GodotDebugRunConfiguration).parameters.workingDirectory = project.solutionDirectory.absolutePath
                 }
             } else {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java)
@@ -141,7 +148,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 val config = runConfiguration.configuration as GodotDebugRunConfiguration
                 config.parameters.exePath = godotPath
                 config.parameters.programParameters = programParameters
-                config.parameters.workingDirectory = "${project.basePath}"
+                config.parameters.workingDirectory = project.solutionDirectory.absolutePath
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }
@@ -158,6 +165,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             if (configs.any()) {
                 configs.forEach{
                     (it.configuration as ExeConfiguration).parameters.exePath = godotPath
+                    (it.configuration as ExeConfiguration).parameters.workingDirectory = project.solutionDirectory.absolutePath
                 }
             } else {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(ExeConfigurationType::class.java)
@@ -165,7 +173,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 val config = runConfiguration.configuration as ExeConfiguration
                 config.parameters.exePath = godotPath
                 config.parameters.programParameters = programParameters
-                config.parameters.workingDirectory = "${project.basePath}"
+                config.parameters.workingDirectory = project.solutionDirectory.absolutePath
                 config.beforeRunTasks.removeIf { true }
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
