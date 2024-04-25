@@ -236,6 +236,7 @@ tasks {
     <authors>godotengine</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
+    <copyright>Copyright (c) 2016-2022 The Godot Engine community</copyright>
     <projectUrl>https://github.com/godotengine/godot-vscode-plugin</projectUrl>
     <description>Godot tools to redestribute with the godot plugin</description>
   </metadata>
