@@ -10,8 +10,7 @@ using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 
 namespace JetBrains.ReSharper.Plugins.Godot.AI;
 
-[ShellComponent(Instantiation.DemandAnyThread)]
-public class GodotPreferableLanguageChatContextPartProvider : IChatContextPartProvider
+public abstract class GodotChatContextPartProviderBase : IChatContextPartProvider
 {
     public int Priority => ChatContextPartPriorities.SOLUTION + 1;
 
@@ -23,14 +22,20 @@ public class GodotPreferableLanguageChatContextPartProvider : IChatContextPartPr
     public void ContributeTo(IDataContext dataContext, ChatContextPartSet parts)
     {
         var solution = dataContext.GetData(ProjectModelDataConstants.SOLUTION);
-        if (solution == null)
-            return;
+        var tracker = solution?.TryGetComponent<GodotTracker>();
+        if (tracker?.GodotDescriptor == null) return;
 
-        var tracker = solution.TryGetComponent<GodotTracker>();
-        if (tracker == null) return;
+        ContributeTo(tracker, parts);
+    }
 
-        if (tracker.GodotDescriptor == null) return;
+    protected abstract void ContributeTo(GodotTracker tracker, ChatContextPartSet parts);
+}
 
+[ShellComponent(Instantiation.DemandAnyThread)]
+public class GodotPreferableLanguageChatContextPartProvider : GodotChatContextPartProviderBase
+{
+    protected override void ContributeTo(GodotTracker tracker, ChatContextPartSet parts)
+    {
         var text = new StringBuilder();
         if (tracker.GodotDescriptor.IsPureGdScriptProject)
             text.Append("Default language in the current project is GDScript.\n");
@@ -43,10 +48,10 @@ public class GodotPreferableLanguageChatContextPartProvider : IChatContextPartPr
                 text.Append($"Project SDK is \"{sdk}\".\n");
             }
         }
-    
+
         parts.Add(new Part(text.ToString()));
     }
-  
+
     public sealed class Part : SimpleChatContextPart<Part>, ILanguageDefinitionContextPart
     {
         public override int Priority => ChatContextPartPriorities.SOLUTION + 1;
@@ -58,39 +63,23 @@ public class GodotPreferableLanguageChatContextPartProvider : IChatContextPartPr
 }
 
 [ShellComponent(Instantiation.DemandAnyThread)]
-public class GodotChatContextPartProvider : IChatContextPartProvider
+public class GodotTechnologyChatContextPartProvider : GodotChatContextPartProviderBase
 {
-  public int Priority => ChatContextPartPriorities.SOLUTION + 1;
-
-  public bool IsApplicable(IDataContext dataContext)
-  {
-    return true;
-  }
-
-  public void ContributeTo(IDataContext dataContext, ChatContextPartSet parts)
-  {
-    var solution = dataContext.GetData(ProjectModelDataConstants.SOLUTION);
-    if (solution == null)
-      return;
-
-    var tracker = solution.TryGetComponent<GodotTracker>();
-    if (tracker == null) return;
-
-    if (tracker.GodotDescriptor == null) return;
-
-    if (parts.Contains<TechnologyChatContextPartProvider.Part>())
-      parts.Remove<TechnologyChatContextPartProvider.Part>();
-
-    var text = "Current project is using following technology: Godot.";
-    parts.Add(new Part(text));
-  }
-  
-  public sealed class Part : SimpleChatContextPart<Part>
-  {
-    public override int Priority => ChatContextPartPriorities.SOLUTION + 1;
-
-    public Part(string text) : base(text)
+    protected override void ContributeTo(GodotTracker tracker, ChatContextPartSet parts)
     {
+        if (parts.Contains<TechnologyChatContextPartProvider.Part>())
+            parts.Remove<TechnologyChatContextPartProvider.Part>();
+
+        const string text = "Current project is using the following technology: Godot.";
+        parts.Add(new Part(text));
     }
-  }
+
+    public sealed class Part : SimpleChatContextPart<Part>
+    {
+        public override int Priority => ChatContextPartPriorities.SOLUTION + 1;
+
+        public Part(string text) : base(text)
+        {
+        }
+    }
 }
