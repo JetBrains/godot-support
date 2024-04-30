@@ -17,7 +17,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, ITestRunnerContext context)
         {
-            var solution = context.RuntimeEnvironment.Project.GetSolution();
+            var solution = context.RuntimeDescriptor.Project.GetSolution();
             var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
             if (model.GodotPath.HasValue())
             {
