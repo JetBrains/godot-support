@@ -22,7 +22,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, ITestRunnerContext context)
         {
-            var solution = context.RuntimeEnvironment.Project.GetSolution();
+            var solution = context.RuntimeDescriptor.Project.GetSolution();
             var baseDirectory = solution.GetComponent<GodotTracker>().MainProjectBasePath;
             var scenePaths = baseDirectory.GetChildDirectories(pluginDirectory,
                 PathSearchFlags.ExcludeFiles | PathSearchFlags.RecurseIntoSubdirectories).Select(a=>a.Combine(runnerScene)).Where(a => a.ExistsFile).ToArray();
@@ -63,7 +63,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
             if (context is ITestRunnerExecutionContext executionContext)
             {
-                return executionContext.Run.HostController.StartProcess(startInfo, executionContext.Run, context.Logger);
+                return executionContext.Run.HostController.StartProcess(startInfo, executionContext.Run, context.Logger).Result;
             }
 
             return base.StartProcess(startInfo, context);
