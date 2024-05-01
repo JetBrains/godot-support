@@ -2,6 +2,7 @@
 
 using System;
 using System.Linq.Expressions;
+using JetBrains.Application.Help;
 using JetBrains.Application.Settings;
 using JetBrains.Application.UI.Options;
 using JetBrains.Application.UI.Options.OptionsDialog;
@@ -19,7 +20,7 @@ using JetBrains.UI.ThemedIcons;
 namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
 {
     [OptionsPage(PID, Name, typeof(GodotLogoIconsThemedIcons.Godot), ParentId = CodeEditingPage.PID,
-        HelpKeyword = "Settings_Godot_Engine")]
+        HelpKeyword = HelpId.Settings_Godot_Engine)]
     public class GodotOptionsPage : BeSimpleOptionsPage
     {
         public const string PID = "GodotPluginSettings";
