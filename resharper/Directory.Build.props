@@ -38,4 +38,10 @@
          and generated source files. -->
     <OutputPath Condition="$(IsIndependentBuild)">$(MSBuildThisFileDirectory)\build\$(MSBuildProjectName.Replace("tests.", ""))\bin\$(Configuration)</OutputPath>
   </PropertyGroup>
+  
+  <PropertyGroup Condition="$(IsIndependentBuild)">
+    <GenerateTargetFrameworkAttribute>false</GenerateTargetFrameworkAttribute>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>12</LangVersion>
+  </PropertyGroup>
 </Project>

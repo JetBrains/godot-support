@@ -10,7 +10,6 @@
     <TargetFramework>net472</TargetFramework>
     <AssemblyName>JetBrains.ReSharper.Plugins.Godot</AssemblyName>
     <RootNamespace>JetBrains.ReSharper.Plugins.Godot</RootNamespace>
-    <LangVersion>9</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <DefineConstants Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">JET_MODE_ASSERT;JET_MODE_REPORT_EXCEPTIONS;RIDER;$(CommandLineConstants)</DefineConstants>
     <DefineConstants Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">RIDER;$(CommandLineConstants)</DefineConstants>
