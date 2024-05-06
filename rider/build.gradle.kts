@@ -94,8 +94,9 @@ intellijPlatform {
 }
 
 val pluginFiles = listOf(
-    "rider-godot/bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot",
-    "GodotTools.IdeMessaging/bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.GodotTools.IdeMessaging"
+    "rider-godot/bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.dll",
+    "rider-godot/bin/$buildConfiguration/net472/JetBrains.ReSharper.Plugins.Godot.pdb",
+    "rider-godot/bin/$buildConfiguration/net472/GodotTools.IdeMessaging.dll"
 )
 
 val debuggerPluginFiles = listOf(
@@ -166,7 +167,7 @@ tasks {
         val projectName = intellijPlatform.projectName
 
         val files = pluginFiles
-            .flatMap { listOf("$it.dll", "$it.pdb") }
+            .flatMap { listOf(it) }
             .map { "$resharperPluginPath/build/$it" }
 
         files.forEach { file ->
