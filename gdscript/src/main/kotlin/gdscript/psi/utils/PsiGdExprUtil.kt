@@ -18,6 +18,7 @@ import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
 import project.psi.model.GdAutoload
 import java.nio.file.Paths
+import kotlin.io.path.name
 
 object PsiGdExprUtil {
 
@@ -83,7 +84,8 @@ object PsiGdExprUtil {
                             if (!resource.startsWith("res://") && expr.containingFile.originalFile.virtualFile?.parent != null) {
 
                                 val myPath = Paths.get(expr.containingFile.originalFile.virtualFile.parent.path)
-                                FilenameIndex.getVirtualFilesByName(com.intellij.history.core.Paths.getNameOf(resource), GlobalSearchScope.allScope(expr.project)).find {
+                                // I have fixed the compilation here, but I don't understand the supported case
+                                FilenameIndex.getVirtualFilesByName(Paths.get(resource).name, GlobalSearchScope.allScope(expr.project)).find {
                                     val itPath = Paths.get(it.path)
                                     try {
                                         val relative = myPath.relativize(itPath)

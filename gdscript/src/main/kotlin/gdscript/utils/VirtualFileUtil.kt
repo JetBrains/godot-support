@@ -1,6 +1,5 @@
 package gdscript.utils
 
-import com.intellij.history.core.Paths
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ProjectLocator
 import com.intellij.openapi.vfs.VirtualFile
@@ -8,16 +7,18 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import gdscript.psi.utils.PsiGdResourceUtil
+import java.nio.file.Path
+import kotlin.io.path.pathString
+import kotlin.io.path.relativeToOrNull
 
 object VirtualFileUtil {
 
     fun VirtualFile.localPath(): String {
         val project = ProjectLocator.getInstance().guessProjectForFile(this) ?: return ""
-        val path = this.path.removePrefix("file://") // TODO vyhazuje se to někde?
-
+        val basePath = project.basePath ?: return ""
+        return toNioPath().relativeToOrNull(Path.of(basePath))?.pathString ?: return ""
         // TODO tohle vyvolá greeze - nemohu se ptát na Fileindex, když indexuji... jak ale mít více projektů?
-        //val projectRoot = ProjectRootFileIndex.getProjectRoot(path, project)
-        return Paths.relativeIfUnder(path, project.basePath) ?: ""
+        // val projectRoot = ProjectRootFileIndex.getProjectRoot(path, project)
     }
 
     fun VirtualFile.localParentPath(): String {

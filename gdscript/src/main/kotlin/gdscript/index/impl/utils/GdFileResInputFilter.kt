@@ -21,6 +21,7 @@ object GdFileResInputFilter : FileBasedIndex.InputFilter {
     }
 
     override fun acceptInput(file: VirtualFile): Boolean {
+        // todo: doesn't look right, this is the only usage of localPath(), where we don't have a `project`
         val filename = file.localPath()
         if (filename.isBlank()) {
             return false
