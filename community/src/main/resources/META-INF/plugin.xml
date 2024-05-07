@@ -4,6 +4,8 @@
   <version>1.0.0</version>
   <vendor url="https://www.jetbrains.com">JetBrains</vendor>
 
+  <incompatible-with>gdscript</incompatible-with>
+
   <description><![CDATA[
 <strong>This plugin is a mediator between Rider Godot support plugin and GdScript IntelliJ plugin.</strong>
 <p>Referenced from the Godot support plugin</p>
