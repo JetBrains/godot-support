@@ -31,7 +31,7 @@ public abstract class GodotChatContextPartProviderBase : IChatContextPartProvide
     protected abstract void ContributeTo(GodotTracker tracker, ChatContextPartSet parts);
 }
 
-[ShellComponent(Instantiation.DemandAnyThread)]
+[ShellComponent(Instantiation.DemandAnyThreadSafe)]
 public class GodotPreferableLanguageChatContextPartProvider : GodotChatContextPartProviderBase
 {
     protected override void ContributeTo(GodotTracker tracker, ChatContextPartSet parts)
@@ -62,7 +62,7 @@ public class GodotPreferableLanguageChatContextPartProvider : GodotChatContextPa
     }
 }
 
-[ShellComponent(Instantiation.DemandAnyThread)]
+[ShellComponent(Instantiation.DemandAnyThreadSafe)]
 public class GodotTechnologyChatContextPartProvider : GodotChatContextPartProviderBase
 {
     protected override void ContributeTo(GodotTracker tracker, ChatContextPartSet parts)
