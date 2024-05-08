@@ -22,6 +22,7 @@ import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
 import com.jetbrains.rider.plugins.godot.Util
+import com.jetbrains.rider.plugins.godot.gdscript.PluginInterop
 import com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage
 import com.jetbrains.rider.util.NetUtils
 import org.eclipse.lsp4j.CompletionItem
@@ -142,7 +143,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
 
         override val lspFindReferencesSupport: LspFindReferencesSupport?
             get() {
-                if (PluginManagerCore.plugins.any { it.pluginId.idString == "ice.explosive.gdscript" && it.isEnabled })
+                if (!PluginInterop.isGdScriptPluginEnabled())
                     return null
                 return super.lspFindReferencesSupport
             }
