@@ -1,10 +1,9 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot</id>
   <name>Godot Support</name>
-  <version>2024.2.0.9999</version>
-  <vendor url="https://www.jetbrains.com">JetBrains</vendor>
+  <vendor>JetBrains</vendor>
 
-  <idea-version since-build="242.0" until-build="242.*" />
+  <incompatible-with>gdscript</incompatible-with>
 
   <depends>com.intellij.modules.rider</depends>
   <depends>org.jetbrains.plugins.textmate</depends>
