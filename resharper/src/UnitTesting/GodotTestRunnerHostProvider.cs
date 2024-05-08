@@ -1,4 +1,5 @@
 using System;
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Impl;
 using JetBrains.ReSharper.Feature.Services.Protocol;
@@ -9,7 +10,7 @@ using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
 namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 {
-    [SolutionComponent]
+    [SolutionComponent(Instantiation.ContainerAsyncAnyThreadSafe)] // TODO do we really need this at ContainerAsync stage? can it be on-demand?
     public class GodotTestRunnerHostProvider : ITestRunnerHostProvider
     {
         public GodotTestRunnerHostProvider(ISolution solution)
