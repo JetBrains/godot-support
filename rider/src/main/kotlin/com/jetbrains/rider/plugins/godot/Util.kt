@@ -4,7 +4,7 @@ import com.intellij.openapi.vfs.VirtualFile
 
 class Util {
     companion object {
-        private const val GD = "gd"
+        const val GD = "gd"
         private const val TSCN = "tscn"
         const val GDSCRIPT = "GDScript"
 
