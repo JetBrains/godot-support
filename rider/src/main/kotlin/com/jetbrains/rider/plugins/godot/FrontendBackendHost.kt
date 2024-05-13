@@ -6,6 +6,7 @@ import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.ide.impl.ProjectUtil
 import com.intellij.openapi.client.ClientProjectSession
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.WindowManager
 import com.intellij.util.BitUtil
@@ -31,6 +32,7 @@ import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.util.NetUtils
 import java.awt.Frame
 
+@Service(Service.Level.PROJECT)
 class FrontendBackendHost : LifetimedService() {
     class ProtocolListener : SolutionExtListener<GodotFrontendBackendModel> {
         private val debugProcesses = mutableMapOf<Int, DotNetDebugProcess>()
