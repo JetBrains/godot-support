@@ -76,7 +76,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             val lspService = LspProjectService.getInstance(project)
             if (allReady(discoverer)) {
                 thisLogger().info("ensureServerStarted")
-                serverStarter.ensureServerStarted(GodotLspServerDescriptor(project)) // this does not start the server, if fileOpened already ended
+                serverStarter.ensureServerStarted(GodotLspServerDescriptor(project)) // this does not start a server if the `fileOpened` has already ended
             } else if (lspService.isScheduled.compareAndSet(false, true)) {
                 val lifetime = lspService.sequentialLifetimes.next()
                 project.lifetime.onTerminationIfAlive { if (lifetime.isAlive) lifetime.terminate() }

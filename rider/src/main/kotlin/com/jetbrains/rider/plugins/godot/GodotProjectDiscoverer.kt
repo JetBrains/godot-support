@@ -6,14 +6,14 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.lifetime
-import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IProperty
 import com.jetbrains.rd.util.reactive.Property
 import com.jetbrains.rd.util.reactive.adviseNotNull
-import com.jetbrains.rd.util.reactive.flowInto
-import com.jetbrains.rider.model.godot.frontendBackend.*
+import com.jetbrains.rider.model.godot.frontendBackend.GodotDescriptor
+import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
+import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType

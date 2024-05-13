@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.godot.ui
+package com.jetbrains.rider.plugins.godot.actions
 
 import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.ConfigurationTypeUtil
@@ -16,7 +16,7 @@ import com.jetbrains.rider.run.createEmptyConsoleCommandLine
 import com.jetbrains.rider.run.withRawParameters
 
 
-open class  StartGodotEditorAction : DumbAwareAction() {
+class  StartGodotEditorAction : DumbAwareAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
 

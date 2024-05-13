@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.godot.ui
+package com.jetbrains.rider.plugins.godot.actions
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -9,6 +9,7 @@ import com.jetbrains.rd.util.reactive.valueOrDefault
 import com.jetbrains.rider.model.godot.frontendBackend.GodotEditorState
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.GodotIcons
+import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.projectView.solution
 
@@ -27,11 +28,11 @@ class ToolbarActionsGroup : DefaultActionGroup(), DumbAware, TooltipDescriptionP
         if (e.presentation.isVisible) {
             e.presentation.isEnabled = true
             e.presentation.icon = GodotIcons.Icons.GodotLogoDisconnected
-            e.presentation.text = "Not Connected to Godot Editor"
+            e.presentation.text = GodotPluginBundle.message("not.connected.to.godot.editor.text")
 
             if (project.solution.godotFrontendBackendModel.editorState.valueOrDefault(GodotEditorState.Disconnected) == GodotEditorState.Connected) {
                 e.presentation.icon = GodotIcons.Icons.GodotLogo
-                e.presentation.text = "Connected to Godot Editor"
+                e.presentation.text = GodotPluginBundle.message("connected.to.godot.editor.text")
             }
         }
     }

@@ -21,7 +21,6 @@
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher"/>
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher"/>
 
-    <projectService serviceImplementation="com.jetbrains.rider.plugins.godot.FrontendBackendHost"/>
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.FrontendBackendHost$ProtocolListener"/>
 
@@ -54,13 +53,13 @@
 
 
   <actions>
-    <group id="GodotToolbarActions" popup="true" class = "com.jetbrains.rider.plugins.godot.ui.ToolbarActionsGroup">
+    <group id="GodotToolbarActions" popup="true" class = "com.jetbrains.rider.plugins.godot.actions.ToolbarActionsGroup">
       <add-to-group group-id="ActiveRuntimeGroup" relative-to-action="BuildSolutionAction" anchor="before" />
       <add-to-group group-id="RightToolbarSideGroup" relative-to-action="BuildSolutionAction" anchor="before" />
       <add-to-group group-id="MainToolbarRight" anchor="first"/>
 
       <action id="StartEditorAction"
-              class="com.jetbrains.rider.plugins.godot.ui.StartGodotEditorAction"
+              class="com.jetbrains.rider.plugins.godot.actions.StartGodotEditorAction"
               icon="com.jetbrains.rider.plugins.godot.GodotIcons.Actions.StartGodotEditorActionIcon"/>
 
       <action id="ShowGodotSettingsInRider"
@@ -103,5 +102,5 @@
 ]]>
   </description>
 
-  <resource-bundle>messages.GodotPluginActionsBundle</resource-bundle>
+  <resource-bundle>messages.GodotPluginBundle</resource-bundle>
 </idea-plugin>
