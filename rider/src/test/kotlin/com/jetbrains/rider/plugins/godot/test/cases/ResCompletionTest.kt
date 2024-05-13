@@ -18,7 +18,7 @@ import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.io.File
 
-@TestEnvironment(sdkVersion = SdkVersion.AUTODETECT, buildTool = BuildTool.AUTODETECT)
+@TestEnvironment(sdkVersion = SdkVersion.DOT_NET_6, buildTool = BuildTool.SDK)
 class ResCompletionTest : BaseTestWithSolution() {
     override fun getSolutionDirectoryName(): String = "ResCompletionTest"
 
