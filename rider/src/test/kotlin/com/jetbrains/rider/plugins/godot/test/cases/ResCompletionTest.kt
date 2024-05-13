@@ -1,3 +1,5 @@
+package com.jetbrains.rider.plugins.godot.test.cases
+
 import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.editorActions.CompletionAutoPopupHandler
 import com.intellij.testFramework.TestModeFlags
