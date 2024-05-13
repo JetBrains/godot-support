@@ -61,8 +61,11 @@
 
       <action id="StartEditorAction"
               class="com.jetbrains.rider.plugins.godot.ui.StartGodotEditorAction"
-              icon="com.jetbrains.rider.plugins.godot.GodotIcons.Actions.StartGodotEditorActionIcon"
-              text="Start Godot Editor"/>
+              icon="com.jetbrains.rider.plugins.godot.GodotIcons.Actions.StartGodotEditorActionIcon"/>
+
+      <action id="ShowGodotSettingsInRider"
+              class="com.jetbrains.rider.plugins.godot.actions.GodotPluginShowSettingsAction"
+              icon="AllIcons.General.Settings" />
     </group>
   </actions>
 
@@ -99,4 +102,6 @@
 </p>
 ]]>
   </description>
+
+  <resource-bundle>messages.GodotPluginActionsBundle</resource-bundle>
 </idea-plugin>
