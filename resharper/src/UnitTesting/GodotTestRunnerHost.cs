@@ -52,7 +52,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
             var rawStartInfo = new JetProcessStartInfo(startInfo);
             var patcher = new GodotPatcher(solution, scenePaths.Single().MakeRelativeTo(solutionDirectory));
-            var request = context.RuntimeDescriptor.ToJetProcessRuntimeRequest();
+            var request = context.RuntimeDescriptor.ToJetProcessRuntimeRequest(null);
             var patch = new JetProcessStartInfoPatch(patcher, request);
             var preparedProcess = new PreparedProcess(rawStartInfo, patch);
             CaptureOutputIfRequired(preparedProcess, context);
