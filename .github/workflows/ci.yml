@@ -17,6 +17,8 @@ jobs:
     linux:
         needs: gradleValidation
         runs-on: ubuntu-latest
+        env:
+            LOCAL_ENV_RUN: true
         steps:
             - name: Fetch Sources
               uses: actions/checkout@v2
