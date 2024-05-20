@@ -54,6 +54,7 @@ repositories {
     maven("https://cache-redirector.jetbrains.com/maven-central")
     intellijPlatform {
         defaultRepositories()
+        jetbrainsRuntime()
     }
 }
 
@@ -77,6 +78,8 @@ dependencies {
                 }
             }
         }
+
+        jetbrainsRuntime()
 
         // Workaround for https://youtrack.jetbrains.com/issue/IDEA-179607
         bundledPlugin("rider.intellij.plugin.appender")
