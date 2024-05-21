@@ -5,9 +5,13 @@
 
   <incompatible-with>gdscript</incompatible-with>
 
-  <depends>com.intellij.modules.rider</depends>
-  <depends>org.jetbrains.plugins.textmate</depends>
-  <depends>com.intellij.rider.godot.community</depends>
+  <dependencies>
+    <plugin id="com.intellij.modules.rider"/>
+    <plugin id="org.jetbrains.plugins.textmate"/>
+    <plugin id="com.intellij.rider.godot.community"/>
+    <module name="intellij.platform.dap"/>
+    <module name="intellij.platform.dap.impl"/>
+  </dependencies>
 
   <extensions defaultExtensionNs="com.intellij">
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
@@ -49,6 +53,11 @@
     <textmate.bundleProvider implementation="com.jetbrains.rider.plugins.godot.textMate.GodotTextMateBundleProvider"/>
 
     <rider.godot.community.lspStatusProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspRunningStatusProvider" />
+
+    <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptConfigurationType"/>
+    <platform.dap.debugAdapterSupportProvider implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptDebugAdapterSupportProvider"/>
+    <xdebugger.breakpointType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.brakepoints.GdScriptLineBreakpointType"/>
+    <xdebugger.breakpointType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.brakepoints.GdScriptExceptionBreakpointType"/>
   </extensions>
 
 

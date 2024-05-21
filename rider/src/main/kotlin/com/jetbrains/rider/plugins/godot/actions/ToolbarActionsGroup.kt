@@ -23,16 +23,20 @@ class ToolbarActionsGroup : DefaultActionGroup(), DumbAware, TooltipDescriptionP
         }
 
         val descriptor = GodotProjectDiscoverer.getInstance(project).godotDescriptor.value
-        e.presentation.isVisible = descriptor != null && !descriptor.isPureGdScriptProject
+        e.presentation.isVisible = descriptor != null
 
-        if (e.presentation.isVisible) {
+        if (descriptor != null) {
             e.presentation.isEnabled = true
-            e.presentation.icon = GodotIcons.Icons.GodotLogoDisconnected
-            e.presentation.text = GodotPluginBundle.message("not.connected.to.godot.editor.text")
-
-            if (project.solution.godotFrontendBackendModel.editorState.valueOrDefault(GodotEditorState.Disconnected) == GodotEditorState.Connected) {
+            if (!descriptor.isPureGdScriptProject){
+                e.presentation.icon = GodotIcons.Icons.GodotLogoDisconnected
+                e.presentation.text = GodotPluginBundle.message("not.connected.to.godot.editor.text")
+                if (project.solution.godotFrontendBackendModel.editorState.valueOrDefault(GodotEditorState.Disconnected) == GodotEditorState.Connected) {
+                    e.presentation.icon = GodotIcons.Icons.GodotLogo
+                    e.presentation.text = GodotPluginBundle.message("connected.to.godot.editor.text")
+                }
+            }
+            else {
                 e.presentation.icon = GodotIcons.Icons.GodotLogo
-                e.presentation.text = GodotPluginBundle.message("connected.to.godot.editor.text")
             }
         }
     }

@@ -16,6 +16,8 @@ import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
+import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptConfigurationType
+import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptRunConfiguration
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectory
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
@@ -75,8 +77,8 @@ class GodotRunConfigurationGenerator : LifetimedService() {
 
                     GodotProjectDiscoverer.getInstance(project).godot3Path.adviseNotNull(lt) { path ->
                         if (descriptor.isPureGdScriptProject){
-                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
-                            createOrUpdateGdScriptRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
+                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, runManager)
+                            createOrUpdateNativeExecutableRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                             return@adviseNotNull
                         }
                         createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
@@ -84,8 +86,8 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                     }
                     GodotProjectDiscoverer.getInstance(project).godot4Path.adviseNotNull(lt) { path ->
                         if (descriptor.isPureGdScriptProject){
-                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
-                            createOrUpdateGdScriptRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
+                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, runManager)
+                            createOrUpdateNativeExecutableRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                             return@adviseNotNull
                         }
                         createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
@@ -156,6 +158,32 @@ class GodotRunConfigurationGenerator : LifetimedService() {
 
         private fun createOrUpdateGdScriptRunConfiguration(
             configurationName: String,
+            runManager: RunManager
+        ) {
+            // todo: maybe after some time, we can remove this code, it is only useful to remove previously generated configs
+            val toRemove = runManager.allSettings.filter {
+                it.type is ExeConfigurationType && (it.name == configurationName)
+            }
+            for (value in toRemove) {
+                runManager.removeConfiguration(value)
+            }
+
+            val configs = runManager.allSettings.filter { it.type is GdScriptConfigurationType && it.name == configurationName }
+            if (configs.any()) {
+                configs.forEach{
+                    // todo: update DAP port, if I find a way to read it from project settings
+                }
+            } else {
+                val configurationType = ConfigurationTypeUtil.findConfigurationType(GdScriptConfigurationType::class.java)
+                val runConfiguration = runManager.createConfiguration(configurationName, configurationType.factory)
+                (runConfiguration.configuration as GdScriptRunConfiguration).port = 6006
+                runConfiguration.storeInLocalWorkspace()
+                runManager.addConfiguration(runConfiguration)
+            }
+        }
+
+        private fun createOrUpdateNativeExecutableRunConfiguration(
+            configurationName: String,
             programParameters:String,
             runManager: RunManager,
             godotPath: String,
@@ -174,7 +202,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 config.parameters.exePath = godotPath
                 config.parameters.programParameters = programParameters
                 config.parameters.workingDirectory = project.solutionDirectory.absolutePath
-                config.beforeRunTasks.removeIf { true }
+                config.beforeRunTasks = emptyList()
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }

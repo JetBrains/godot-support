@@ -52,7 +52,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
 
         private void AddGdScriptSection()
         {
-            AddHeader("GDScript Support");
+            AddHeaderWithoutCapitalization("GDScript support");
             using (Indent())
             {
                 AddComboOption((GodotSettings s) => s.LanguageServerConnectionMode,
