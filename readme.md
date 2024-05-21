@@ -17,8 +17,8 @@ Rider is JetBrains' cross platform .NET IDE, based on ReSharper and the IntelliJ
     - Editor to Run/Debug or Profile Godot Editor in one click.
     - [Godot3] Attach to debug already started player.
     - Context menu on a scene file allows running game directly to that scene.
-- Supports testing framework like gdUnit4Mono and running XUnit/NUnit tests inside the game process.
-- Supports Input Action and NodePath completion in string literals.
+- Supports [gdUnit4Net](https://github.com/MikeSchulze/gdUnit4Net) test framework.
+- Supports Input Action and NodePath completion in string literals [More](https://github.com/JetBrains/godot-support/pull/102).
 - Debugger extension that adds a “Current Scene” item to the Variables and Watches tab and a Children node to every Godot.Node item in the Variables and Watches tab.
 - Godot specific warnings and quick fixes, integrated with Roslyn provided ones.
 - External annotations for Godot specific attributes:
