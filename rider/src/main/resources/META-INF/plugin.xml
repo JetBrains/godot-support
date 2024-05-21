@@ -84,8 +84,8 @@
     <li>[Godot3] Attach to debug already started player.</li>
     <li>Context menu on a scene file allows running game directly to that scene.</li>
   </ul></li>
-  <li>Supports testing framework like gdUnit4Mono and running XUnit/NUnit tests inside the game process.</li>
-  <li>Supports Input Action and NodePath completion in string literals.</li>
+  <li>Supports <a href="https://github.com/MikeSchulze/gdUnit4Net">gdUnit4Net</a> test framework</li>
+  <li>Supports Input Action and NodePath completion in string literals <a href="https://github.com/JetBrains/godot-support/pull/102">More</a>.</li>
   <li>Debugger extension that adds a “Current Scene” item to the Variables and Watches tab and a Children node to every Godot.Node item in the Variables and Watches tab.</li>
   <li>Godot specific warnings and quick fixes, integrated with Roslyn provided ones.</li>
   <li>External annotations for Godot specific attributes.</li>
