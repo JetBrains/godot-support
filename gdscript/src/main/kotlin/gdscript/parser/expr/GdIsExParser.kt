@@ -6,7 +6,8 @@ import gdscript.parser.common.GdTypedParser
 import gdscript.psi.GdTypes.IS
 import gdscript.psi.GdTypes.IS_EX
 
-object GdIsExParser : GdExprBaseParser {
+// is = call [ "is" ( IDENTIFIER | BUILTINTYPE ) ] ;
+object GdIsExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = IS_EX
 

@@ -4,7 +4,7 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.psi.GdTypes.*
 
-object GdLiteralExParser : GdExprBaseParser {
+object GdLiteralExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = LITERAL_EX
 

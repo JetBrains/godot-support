@@ -2,9 +2,11 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
+import gdscript.parser.GdPsiBuilder
 
-interface GdExprBaseParser : GdBaseParser {
+abstract class GdExprBaseParser : GdBaseParser {
 
-    val EXPR_TYPE: IElementType
+    abstract val EXPR_TYPE: IElementType
+    var POSITION: Int = 999
 
 }

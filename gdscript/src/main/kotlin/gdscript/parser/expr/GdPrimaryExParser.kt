@@ -5,7 +5,7 @@ import gdscript.parser.GdPsiBuilder
 import gdscript.psi.GdTypes.*
 import gdscript.utils.PsiBuilderUtil.rollOrDrop
 
-object GdPrimaryExParser : GdExprBaseParser {
+object GdPrimaryExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = PRIMARY_EX
 
@@ -22,7 +22,7 @@ object GdPrimaryExParser : GdExprBaseParser {
     }
 
     private fun arrayDecl(b: GdPsiBuilder, l: Int): Boolean {
-        if (!b.recursionGuard(l, "ArrayExpr")) return false
+        if (!b.recursionGuard(l, "ArrayDeclExpr")) return false
         b.enterSection(ARRAY_DECL)
         var ok = b.consumeToken(LSBR, pin = true)
         while (ok && GdExprParser.parse(b, l + 1)) {

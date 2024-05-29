@@ -27,7 +27,7 @@ object GdArgListParser : GdBaseParser {
         b.recursionGuard(l + 1, "ArgExpr")
         b.enterSection(ARG_EXPR)
 
-        var ok = GdExprParser.parse(b, l + 1)
+        var ok = GdExprParser.parse(b, l + 1, false)
         b.exitSection(ok)
 
         return ok

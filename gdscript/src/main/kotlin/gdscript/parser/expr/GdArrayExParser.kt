@@ -4,7 +4,8 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.psi.GdTypes.*
 
-object GdArrayExParser : GdExprBaseParser {
+// cast [ "[" expression "]" ] ;
+object GdArrayExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = ARR_EX
 

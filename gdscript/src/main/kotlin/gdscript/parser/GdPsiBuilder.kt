@@ -40,6 +40,7 @@ class GdPsiBuilder {
     fun advance() = b.advanceLexer()
     fun mark(): Marker = b.mark()
     fun pinned(): Boolean = state.pinned()
+    val latestDoneMarker get() = b.latestDoneMarker as Marker
 
     fun rawLookup(steps: Int = 1): IElementType? {
         return b.rawLookup(steps)
@@ -156,6 +157,12 @@ class GdPsiBuilder {
 
     fun enterSection(elementType: IElementType): Marker {
         val m = b.mark()
+        state.enterSection(elementType, m)
+        return m
+    }
+
+    fun precedeEnterSection(elementType: IElementType): Marker {
+        val m = (b.latestDoneMarker as Marker).precede()
         state.enterSection(elementType, m)
         return m
     }

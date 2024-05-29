@@ -8,7 +8,7 @@ import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.stmt.GdStmtParser
 import gdscript.psi.GdTypes.*
 
-object GdFuncDeclExParser : GdExprBaseParser {
+object GdFuncDeclExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = FUNC_DECL_EX
 
