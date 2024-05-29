@@ -79,7 +79,12 @@ object GdCommonUtil {
                     return element.typed?.text?.trim(':', ' ') ?: ""
                 }
 
-                return GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]", element.project)
+                val forExpr = element.expr?.returnType ?: ""
+                if (forExpr.startsWith("Array")) {
+                    return GdOperand.getReturnType(forExpr, GdKeywords.INT, "[]", element.project)
+                } else {
+                    return forExpr
+                }
             }
             else -> throw NotImplementedError(element.toString())
         }

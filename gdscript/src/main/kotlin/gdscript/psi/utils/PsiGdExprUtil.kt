@@ -218,8 +218,12 @@ object PsiGdExprUtil {
                             if (element.typed != null) {
                                 return fromTyped(element.typed)
                             }
-
-                            return GdOperand.getReturnType(element.expr?.returnType ?: "", GdKeywords.INT, "[]", expr.project)
+                            val forExpr = element.expr?.returnType ?: ""
+                            if (forExpr.startsWith("Array")) {
+                                return GdOperand.getReturnType(forExpr, GdKeywords.INT, "[]", expr.project)
+                            } else {
+                                return forExpr
+                            }
                         }
                         is GdAutoload -> element.key
                         else -> ""
