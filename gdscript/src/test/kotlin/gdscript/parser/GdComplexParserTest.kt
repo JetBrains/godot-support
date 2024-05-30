@@ -10,6 +10,7 @@ class GdComplexParserTest : ParsingTestCase {
     @Test fun testSingleLineEnum() = doTest(true)
     @Test fun testBoolWithComparison() = doTest(true)
     @Test fun testNestedLoops() = doTest(true)
+    @Test fun testNestedLambda() = doTest(true)
 
     override fun getTestDataPath(): String {
         return "src/test/kotlin/gdscript/parser/complexData"

@@ -51,12 +51,18 @@ object GdStmtParser : GdBaseParser {
         while (ok && moved) {
             ok = ok && stmt(b, l + 1, true, asLambda)
         }
-        if (asLambda && b.nextTokenIs(NEW_LINE)) {
-            b.remapCurrentToken(DEDENT)
-        }
-        ok = ok && b.consumeToken(DEDENT, true)
-        if (asLambda && b.nextTokenIs(DEDENT)) {
-            b.remapCurrentToken(NEW_LINE)
+
+        ok && asLambda && b.passToken(NEW_LINE)
+        if (asLambda) {
+            if (b.nextTokenIs(DEDENT)) {
+                if (!b.followingTokensAre(DEDENT, NEW_LINE) && !b.followingTokensAre(DEDENT, END_STMT)) {
+                    b.remapCurrentToken(NEW_LINE)
+                } else {
+                    b.consumeToken(DEDENT)
+                }
+            }
+        } else {
+            ok = ok && b.consumeToken(DEDENT)
         }
 
         if (ok || b.pinned()) {
