@@ -617,7 +617,7 @@ class GdLexer implements FlexLexer {
     }
 
     private int nextNonCommentIndent() {
-        Matcher matcher = nextNonCommentIndentPattern.matcher(zzBuffer.subSequence(zzCurrentPos+yylength(), zzBuffer.length()));
+        Matcher matcher = nextNonCommentIndentPattern.matcher(zzBuffer.subSequence(Math.min(zzBuffer.length(), zzCurrentPos+yylength()), zzBuffer.length()));
         if (matcher.find()) {
             return matcher.group(1).length();
         }
