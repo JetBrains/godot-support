@@ -63,14 +63,17 @@ class GdMethodValidator(val project : Project, val returnType: String) {
     }
 
     private fun traverseMatchStatement(statement: GdMatchSt) : Boolean {
+        var withDefault = false
         var alwaysReturn = true
         for (matchBlock in statement.childrenOfType<GdMatchBlockImpl>()) {
+            // TODO when match is over enum, there could be a check that all cases are met
+            withDefault = withDefault || matchBlock.patternList.patternList.first().text == "_"
             for (nestedElems in matchBlock.childrenOfType<GdStmtOrSuite>()) {
                 val suiteReturn = traverseSuite(nestedElems)
                 alwaysReturn = alwaysReturn && suiteReturn
             }
         }
-        return alwaysReturn
+        return alwaysReturn && withDefault
     }
 
     private fun traverseIfStatement(statement: GdIfSt) : Boolean {
