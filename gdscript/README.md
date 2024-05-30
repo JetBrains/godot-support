@@ -21,7 +21,7 @@ Supports only Godot 4.0 and higher
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
-# Update 9.4.2024
+## Update 9.4.2024
 
 Hello,
 I'm sorry for late responses and lack of activity, I'm currently running between 3 projects in daily job and have not much time and much less will to work on this plugin.
