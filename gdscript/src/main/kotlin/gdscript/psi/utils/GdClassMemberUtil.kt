@@ -420,20 +420,28 @@ object GdClassMemberUtil {
             GdMethodDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let {
                 if ((static == null || it.isStatic == static)) {
                     if (constructors || !it.isConstructor) {
-                        return mutableListOf(it)
+                        if (GdClassUtil.getOwningClassElement(it) == classElement) {
+                            return mutableListOf(it)
+                        }
                     }
                 }
             }
-            GdConstDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
-            GdEnumDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
-            GdSignalDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let { return mutableListOf(it) }
+            GdConstDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()
+                ?.let { if (GdClassUtil.getOwningClassElement(it) == classElement) it else null }?.let { return mutableListOf(it) }
+            GdEnumDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()
+                ?.let { if (GdClassUtil.getOwningClassElement(it) == classElement) it else null }?.let { return mutableListOf(it) }
+            GdSignalDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()
+                ?.let { if (GdClassUtil.getOwningClassElement(it) == classElement) it else null }?.let { return mutableListOf(it) }
             GdClassVarDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()
+                ?.let { if (GdClassUtil.getOwningClassElement(it) == classElement) it else null }
                 ?.let { if (static != true || it.isStatic) return mutableListOf(it) }
 
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
                 if (it.name == search) return mutableListOf(it)
-                members.addAll(listClassMemberDeclarations(it, static, search))
-                if (members.size > 0) return members
+                if (isRecursive) {
+                    members.addAll(listClassMemberDeclarations(it, static, search))
+                    if (members.size > 0) return members
+                }
             }
             if (classElement is GdClassDeclTl && !isRecursive) {
                 PsiTreeUtil.getStubChildrenOfTypeAsList(classElement.parent, GdClassDeclTl::class.java).forEach {
