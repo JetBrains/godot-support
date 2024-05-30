@@ -78,7 +78,8 @@ object GdClassMemberUtil {
 
             if (calledOn != null) {
                 if (calledOn.startsWith("Array[")) calledOn = "Array"
-                static = (calledOn == calledOnPsi.text) && checkGlobalStaticMatch(element, calledOn)
+                // solution to check if statically called on current inner class - would be nice to come up with clean solution
+                static = (calledOn == calledOnPsi.text || calledOn == "${GdClassUtil.getFullClassId(calledOnPsi)}.${calledOnPsi.text}") && checkGlobalStaticMatch(element, calledOn)
                 if (calledOn.endsWith(".gd")) {
                     static = null
                 }

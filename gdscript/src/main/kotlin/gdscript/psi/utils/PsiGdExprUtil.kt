@@ -226,6 +226,7 @@ object PsiGdExprUtil {
                             }
                         }
                         is GdAutoload -> element.key
+                        is GdClassDeclTl -> GdClassUtil.getFullClassId(element)
                         else -> ""
                     }
                 }
