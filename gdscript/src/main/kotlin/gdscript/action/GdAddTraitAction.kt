@@ -32,7 +32,7 @@ class GdAddTraitAction : SimpleCodeInsightAction() {
 
         val consumer = Consumer { it: GdTraitClass ->
             WriteCommandAction.writeCommandAction(project, file).run<Exception> {
-                val traitFile = GdFileResIndex.INSTANCE.getFiles(it.resource, project).firstOrNull() ?: return@run
+                val traitFile = GdFileResIndex.getFiles(it.resource, project).firstOrNull() ?: return@run
 
                 val titleLine = "${GdTraitLineMarkerContributor.PREFIX}${it.resource.substring("res://".length)}"
                 val builder = StringBuilder()

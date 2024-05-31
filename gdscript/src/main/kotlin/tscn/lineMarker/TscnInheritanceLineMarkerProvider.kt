@@ -32,7 +32,7 @@ class TscnInheritanceLineMarkerProvider : RelatedItemLineMarkerProvider() {
         if (!isInheritedScene(element)) return
 
         val project = element.project
-        val target = GdFileResIndex.INSTANCE.getFiles(element.path, project).firstOrNull() ?: return
+        val target = GdFileResIndex.getFiles(element.path, project).firstOrNull() ?: return
 
         val builder = NavigationGutterIconBuilder.create(GdIcon.getEditorIcon(GdIcon.OVERRIDE))
             .setTargets(target.getPsiFile(project))

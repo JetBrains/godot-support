@@ -12,6 +12,7 @@ interface TscnNodeHeaderStub : StubElement<TscnNodeHeader> {
     fun getParentPath(): String
     fun getNodePath(): String
     fun isUniqueNameOwner(): Boolean
+    fun isVisible(): Boolean
     fun hasScript(): Boolean
     fun getGroups(): Array<String>
     fun getIndex(): Int

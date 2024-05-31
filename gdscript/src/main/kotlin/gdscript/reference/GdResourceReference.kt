@@ -51,13 +51,13 @@ class GdResourceReference : PsiReferenceBase<GdNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        return GdFileResIndex.INSTANCE.getFiles(resKey, project)
+        return GdFileResIndex.getFiles(resKey, project)
             .firstOrNull()
             ?.getPsiFile(project)
     }
 
     override fun getVariants(): Array<LookupElement> {
-        return GdFileResIndex.INSTANCE.getNonEmptyKeys(project)
+        return GdFileResIndex.getNonEmptyKeys(project)
             .filterGdTscn().map {
                 GdLookup.create(
                     "\"$it\"",

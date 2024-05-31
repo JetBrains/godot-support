@@ -68,6 +68,11 @@ public class TscnNodeHeaderImpl extends TscnNodeHeaderElementImpl implements Tsc
   }
 
   @Override
+  public boolean isVisible() {
+    return TscnPsiUtils.isVisible(this);
+  }
+
+  @Override
   @NotNull
   public String getScriptResource() {
     return TscnPsiUtils.getScriptResource(this);

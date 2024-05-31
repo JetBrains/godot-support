@@ -5,51 +5,37 @@ import com.intellij.ide.DataManager
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.actionSystem.DataContext
-import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.ReadAction
-import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.impl.FileEditorManagerImpl
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.ui.popup.JBPopupFactory
-import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.wm.IdeFocusManager
+import com.intellij.openapi.vfs.VirtualFileManager
+import com.intellij.openapi.vfs.newvfs.BulkFileListener
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowManager
-import com.intellij.psi.PsiFile
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.content.ContentFactory
-import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.BitUtil
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.ui.TimerUtil
 import com.intellij.util.ui.UIUtil
-import gdscript.GdFileType
-import gdscript.psi.utils.GdClassUtil
-import gdscript.psi.utils.GdNodeUtil
-import gdscript.utils.VirtualFileUtil.getPsiFile
+import com.jetbrains.rd.util.Callable
+import common.util.PluginScopeService
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import tscn.TscnFileType
-import tscn.psi.TscnFile
-import tscn.psi.TscnNodeHeader
-import tscn.toolWindow.model.TscnSceneTreeNode
-import java.awt.Container
+import tscn.toolWindow.model.TscnSceneTreeBuilder
 import java.awt.KeyboardFocusManager
 import java.awt.event.HierarchyEvent
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.*
+
 
 private enum class RebuildDelay {
     QUEUE,
@@ -60,15 +46,14 @@ class TscnScenePreviewWindow : Disposable {
 
     private val project: Project
     private val toolWindow: ToolWindow
+
     private var activityCount = 0
     private var myFile: VirtualFile? = null
     private val coroutineScope: CoroutineScope
-    private val myFileEditor: FileEditor? = null
 
-    private var firstRun = true
     private val pendingRebuild = AtomicBoolean(false)
     private val rebuildRequests =
-            MutableSharedFlow<RebuildDelay>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
+        MutableSharedFlow<RebuildDelay>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
     private val isStructureViewShowing: Boolean
         get() {
@@ -77,10 +62,13 @@ class TscnScenePreviewWindow : Disposable {
             return toolWindow != null && toolWindow.isVisible
         }
 
-    constructor(project: Project, toolWindow: ToolWindow, coroutineScope: CoroutineScope) {
+    constructor(project: Project, toolWindow: ToolWindow) {
         this.project = project
         this.toolWindow = toolWindow
-        this.coroutineScope = coroutineScope
+        this.coroutineScope = PluginScopeService.getScope(project)
+    }
+
+    fun runScheduler() {
         val component = toolWindow.component
 
         val timer = TimerUtil.createNamedTimer("SceneView", 100) { _ ->
@@ -109,7 +97,7 @@ class TscnScenePreviewWindow : Disposable {
                     scheduleRebuild()
                 } else if (!project.isDisposed) {
                     myFile = null
-                    rebuildNow("clear a structure on hide")
+                    rebuildNow()
                 }
             }
         }
@@ -127,10 +115,18 @@ class TscnScenePreviewWindow : Disposable {
                     RebuildDelay.QUEUE -> 100
                 }
             }
-                    .collectLatest {
-                        rebuildImpl()
-                    }
+                .collectLatest {
+                    rebuildImpl()
+                }
         }
+
+        project.messageBus.connect().subscribe<BulkFileListener>(
+            VirtualFileManager.VFS_CHANGES,
+            object : BulkFileListener {
+                override fun after(events: MutableList<out VFileEvent>) {
+                    events.find { it.file == myFile }?.let { scheduleRebuild() }
+                }
+            })
     }
 
     override fun dispose() {
@@ -148,38 +144,20 @@ class TscnScenePreviewWindow : Disposable {
     private fun checkUpdate() {
         if (project.isDisposed) return
         val owner = KeyboardFocusManager.getCurrentKeyboardFocusManager().focusOwner
-        val insideToolwindow = SwingUtilities.isDescendingFrom(toolWindow.component, owner)
-        if (!firstRun && (insideToolwindow || JBPopupFactory.getInstance().isPopupActive)) {
-            return
-        }
         val dataContext = DataManager.getInstance().getDataContext(owner)
-        if (CommonDataKeys.PROJECT.getData(dataContext) !== project) return
-        if (insideToolwindow) {
-            if (firstRun) {
-                setFileFromSelectionHistory()
-                firstRun = false
-            }
-        } else {
-            ApplicationManager.getApplication().invokeLater {
-                val file = getVirtualFile(dataContext)
-                val firstRun = firstRun
-                this.firstRun = false
+        ToolWindowManager.getInstance(project).invokeLater {
+            val file = getVirtualFile(dataContext)
 
-                coroutineScope.launch {
-                    if (file != null) {
-                        setFile(file)
-                    } else if (firstRun) {
-                        setFileFromSelectionHistory()
-                    } else {
-                        // setFile(null)
-                    }
+            coroutineScope.launch {
+                if (file != null) {
+                    setFileFromSelectionHistory()
                 }
             }
         }
     }
 
-    fun rebuildNow(why: String) {
-        scheduleRebuild(RebuildDelay.NOW, why)
+    fun rebuildNow() {
+        scheduleRebuild(RebuildDelay.NOW)
     }
 
     private fun getVirtualFile(dataContext: DataContext): VirtualFile? {
@@ -189,16 +167,12 @@ class TscnScenePreviewWindow : Disposable {
 
     private fun scheduleRebuild() {
         if (!toolWindow.isVisible) return
-        scheduleRebuild(RebuildDelay.QUEUE, "delayed rebuild")
+        scheduleRebuild(RebuildDelay.QUEUE)
     }
 
-    private fun scheduleRebuild(delay: RebuildDelay, why: String) {
+    private fun scheduleRebuild(delay: RebuildDelay) {
         pendingRebuild.set(true)
         check(rebuildRequests.tryEmit(delay))
-    }
-
-    private fun clearCaches() {
-        rebuildNow("clear caches")
     }
 
     private fun setFileFromSelectionHistory() {
@@ -211,88 +185,30 @@ class TscnScenePreviewWindow : Disposable {
         }
     }
 
-    private suspend fun setFile(file: VirtualFile?) {
+    private fun setFile(file: VirtualFile?) {
         if (file == myFile) return
-        suspend fun setFileAndRebuild() = withContext(Dispatchers.EDT) {
-            // myFile access on EDT
-            myFile = file
-            scheduleRebuild()
-        }
-
-        // File is different
-        val differentFiles = withContext(Dispatchers.EDT) { !Comparing.equal(file, myFile) }
-        if (differentFiles) {
-            setFileAndRebuild()
-            return
-        }
-
-        // editor is different
-        if (file != null) {
-            val editorIsDifferent = withContext(Dispatchers.EDT) {
-                FileEditorManager.getInstance(project).getSelectedEditor(file) !== myFileEditor
-            }
-            if (editorIsDifferent) {
-                setFileAndRebuild()
-                return
-            }
-        }
+        myFile = file
+        scheduleRebuild()
     }
 
-    private suspend fun rebuildImpl() = withContext(Dispatchers.EDT) {
-        val container: Container = toolWindow.component
-        val wasFocused = UIUtil.isFocusAncestor(container)
-        val contentManager = toolWindow.contentManager
-        contentManager.removeAllContents(true)
-        if (!isStructureViewShowing) {
-            return@withContext
-        }
-
-        val file = myFile ?: run {
-            val selectedFiles = FileEditorManager.getInstance(project).selectedFiles
-            if (selectedFiles.isNotEmpty()) selectedFiles[0] else null
-        }
-
-        if (file != null && file.isValid) {
-            myFile = file
-        }
-
-        ReadAction.nonBlocking<JComponent> {
-            var newPanel: JComponent? = null
-            when (myFile?.fileType) {
-                is GdFileType -> {
-                    myFile?.getPsiFile(project)?.let {
-                        val nodes = GdNodeUtil.listNodes(it)
-                        newPanel = when (nodes.size) {
-                            0 -> createContentPanel(JLabel("No scene"))
-                            1 -> {
-                                val tscn = nodes.first()
-                                buildTreeStructure(tscn.element.containingFile, tscn.nodePath ?: "")
-                            }
-                            else -> {
-                                val processed = mutableSetOf<String>()
-                                val tabs = JTabbedPane()
-                                nodes.forEach {
-                                    val nodeFile = it.element.containingFile
-                                    val name = nodeFile.name
-                                    if (processed.contains(name)) return@forEach
-                                    processed.add(name)
-
-                                    tabs.addTab(name, buildTreeStructure(nodeFile, it.nodePath ?: ""))
-                                }
-                                tabs
-                            }
-                        }
-                    }
-                }
-
-                is TscnFileType -> {
-                    myFile?.getPsiFile(project)?.let {
-                        newPanel = buildTreeStructure(it, "")
-                    }
-                }
+    private fun rebuildImpl() {
+        ToolWindowManager.getInstance(project).invokeLater {
+            val contentManager = toolWindow.contentManager
+            contentManager.removeAllContents(true)
+            if (!isStructureViewShowing) {
+                return@invokeLater
             }
-            newPanel
-        }
+
+            val file = myFile ?: run {
+                val selectedFiles = FileEditorManager.getInstance(project).selectedFiles
+                if (selectedFiles.isNotEmpty()) selectedFiles[0] else null
+            }
+
+            if (file != null && file.isValid) {
+                myFile = file
+            }
+
+            ReadAction.nonBlocking(Callable { TscnSceneTreeBuilder(project).build(file) })
                 .coalesceBy(this)
                 .finishOnUiThread(ModalityState.defaultModalityState()) {
                     val content = ContentFactory.getInstance()
@@ -301,68 +217,7 @@ class TscnScenePreviewWindow : Disposable {
                     pendingRebuild.set(false)
                 }
                 .submit(AppExecutorUtil.getAppExecutorService())
-
-
-        if (wasFocused) {
-            val policy = container.focusTraversalPolicy
-            val component = policy?.getDefaultComponent(container)
-            if (component != null) IdeFocusManager.getInstance(project).requestFocusInProject(component, project)
         }
-    }
-
-    private fun buildTreeStructure(file: PsiFile, basePath: String): JComponent {
-        val nodes = PsiTreeUtil.collectElementsOfType(file, TscnNodeHeader::class.java)
-        val treeModel = TscnSceneTreeNode(basePath)
-
-        val tree = Tree(treeModel)
-        tree.dragEnabled = true
-        tree.dropMode
-        tree.cellRenderer = TscnSceneCellRenderer()
-
-        var parent: String? = null
-        nodes.forEachIndexed { i, it ->
-            if (i == 0 && it.instanceResource.isNotBlank()) parent = it.instanceResource
-            treeModel.addNodeChild(it, resolveType(it))
-        }
-        addParentScene(treeModel, tree, parent)
-
-        var j = tree.getRowCount()
-        var i = 0
-        while (i < j) {
-            tree.expandRow(i)
-            i++
-            j = tree.getRowCount()
-        }
-        tree.emptyText.text = "No nodes"
-
-        return ScrollPaneFactory.createScrollPane(tree, true)
-    }
-
-    private fun addParentScene(treeModel: TscnSceneTreeNode, tree: Tree, resource: String?) {
-        if (resource == null) return
-        GdClassUtil.getClassIdElement(resource, project)?.let { file ->
-            if (file !is TscnFile) return@let
-
-            val nodes = PsiTreeUtil.collectElementsOfType(file, TscnNodeHeader::class.java)
-            var parent: String? = null
-            nodes.forEachIndexed { i, it ->
-                if (i == 0) parent = it.instanceResource
-                treeModel.addNodeChild(it, resolveType(it))
-            }
-            addParentScene(treeModel, tree, parent)
-        }
-    }
-
-    private fun resolveType(node: TscnNodeHeader): String? {
-        val instance = node.instanceResource
-        if (instance.isBlank()) return null
-
-        GdClassUtil.getClassIdElement(instance, project)?.let {
-            if (it is TscnFile) PsiTreeUtil.findChildOfType(it, TscnNodeHeader::class.java)?.let { return it.type }
-            // TODO can there be .gd file?
-        }
-
-        return null
     }
 
     private fun createContentPanel(component: JComponent): JPanel {

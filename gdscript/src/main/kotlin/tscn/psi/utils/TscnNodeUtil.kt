@@ -101,6 +101,13 @@ object TscnNodeUtil {
         return TscnHeaderUtils.getDataValue(element.parent as TscnParagraph, TscnHeaderUtils.DL_UNIQUE) == "true"
     }
 
+    fun isVisible(element: TscnNodeHeader): Boolean {
+        val stub = element.stub
+        if (stub != null) return stub.isVisible()
+
+        return TscnHeaderUtils.getDataValue(element.parent as TscnParagraph, TscnHeaderUtils.DL_VISIBLE) != "false"
+    }
+
     fun getScriptResource(element: TscnNodeHeader): String {
         val stub = element.stub;
         if (stub != null) return stub.getScriptResource()

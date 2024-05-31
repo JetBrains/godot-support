@@ -49,7 +49,7 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
 
     override fun getVariants(): Array<LookupElement> {
         if (isResource()) { // At Top level "res://Asd.gd" can be used
-            return GdFileResIndex.INSTANCE.getNonEmptyKeys(element).mapNotNull {
+            return GdFileResIndex.getNonEmptyKeys(element).mapNotNull {
                 if (it.endsWith(".gd")) GdLookup.create("\"$it", lookup = "\"")
                 else null
             }.toTypedArray()

@@ -40,7 +40,7 @@ class GdResourceCompletionContributor : CompletionContributor() {
                 GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.lookups()) }
             }
         } else if (STRING.accepts(position)) {
-            GdFileResIndex.INSTANCE.getNonEmptyKeys(position).forEach {
+            GdFileResIndex.getNonEmptyKeys(position).forEach {
                 result.addElement(
                     GdLookup.create(
                         it,

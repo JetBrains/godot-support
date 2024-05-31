@@ -14,29 +14,6 @@ abstract class ScalarIndexExtensionExt<K : Any> : ScalarIndexExtension<K>() {
     // Cannot use directly getName due to OverrideOnly annotation api violation
     abstract val id: ID<K, Void>
 
-    fun getFiles(key: K, project: Project): Collection<VirtualFile> {
-        if (DumbService.isDumb(project)) return emptyList()
-        return FileBasedIndex.getInstance().getContainingFiles(id, key, GlobalSearchScope.allScope(project))
-    }
-
-    fun getFiles(key: K, element: PsiElement): Collection<VirtualFile> {
-        return getFiles(key, element.project)
-    }
-
-    fun getNonEmptyKeys(element: PsiElement): List<K> {
-        return getNonEmptyKeys(element.project)
-    }
-
-    fun getNonEmptyKeys(project: Project): List<K> {
-        val inst = FileBasedIndex.getInstance()
-        val scope = GlobalSearchScope.allScope(project)
-
-        return inst.getAllKeys(id, project).mapNotNull {
-            if (inst.getContainingFiles(id, it, scope).isNotEmpty()) it
-            else null
-        }
-    }
-
     override fun getName(): ID<K, Void> {
         return id
     }

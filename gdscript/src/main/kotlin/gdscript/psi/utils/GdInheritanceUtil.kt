@@ -83,7 +83,7 @@ object GdInheritanceUtil {
         }
 
         // In case of unnamed "res://Item.gd" check for the resource itself
-        val file = GdFileResIndex.INSTANCE.getFiles(classId.trim('"', '\''), project).firstOrNull() ?: return null;
+        val file = GdFileResIndex.getFiles(classId.trim('"', '\''), project).firstOrNull() ?: return null;
 
         return file.getPsiFile(project);
     }

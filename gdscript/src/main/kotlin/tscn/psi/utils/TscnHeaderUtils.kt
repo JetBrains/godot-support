@@ -27,6 +27,7 @@ object TscnHeaderUtils {
     /** Data line keys */
     val DL_UNIQUE = "unique_name_in_owner"
     val DL_SCRIPT = "script"
+    val DL_VISIBLE = "visible"
 
     /**
      * Gets a value from header line parameter [node name="Outer"] without quotes

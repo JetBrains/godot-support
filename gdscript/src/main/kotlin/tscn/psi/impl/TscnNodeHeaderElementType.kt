@@ -22,6 +22,7 @@ object TscnNodeHeaderElementType :
         dataStream.writeName(stub.getParentPath())
         dataStream.writeName(stub.getNodePath())
         dataStream.writeBoolean(stub.isUniqueNameOwner())
+        dataStream.writeBoolean(stub.isVisible())
         dataStream.writeName(stub.getScriptResource())
         dataStream.writeName(stub.getInstanceResource())
         dataStream.writeName(stub.getGroups().joinToString(","))
@@ -35,6 +36,7 @@ object TscnNodeHeaderElementType :
             dataStream.readNameString() ?: "",
             dataStream.readNameString() ?: "",
             dataStream.readNameString() ?: "",
+            dataStream.readBoolean(),
             dataStream.readBoolean(),
             dataStream.readNameString() ?: "",
             dataStream.readNameString() ?: "",
@@ -57,6 +59,7 @@ object TscnNodeHeaderElementType :
             psi.parentPath,
             psi.nodePath,
             psi.isUniqueNameOwner,
+            psi.isVisible,
             psi.scriptResource,
             psi.instanceResource,
             psi.groups,

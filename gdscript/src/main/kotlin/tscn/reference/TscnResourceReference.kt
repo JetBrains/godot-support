@@ -37,13 +37,13 @@ class TscnResourceReference : PsiReferenceBase<PsiNamedElement> {
     }
 
     override fun resolve(): PsiElement? {
-        return GdFileResIndex.INSTANCE.getFiles(key.trim('"', '\''), project)
+        return GdFileResIndex.getFiles(key.trim('"', '\''), project)
             .firstOrNull()
             ?.getPsiFile(project)
     }
 
     override fun getVariants(): Array<LookupElement> {
-        return GdFileResIndex.INSTANCE.getNonEmptyKeys(project)
+        return GdFileResIndex.getNonEmptyKeys(project)
             .filterGdTscn().map {
                 GdLookup.create(
                     "\"$it\"",

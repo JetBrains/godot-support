@@ -23,7 +23,7 @@ object ProjectAutoloadUtil {
             var path = it.value
             if (path.startsWith("\"*")) {
                 path = path.substring(2, path.length - 1)
-                val resource = GdFileResIndex.INSTANCE.getFiles(path, project).firstOrNull()
+                val resource = GdFileResIndex.getFiles(path, project).firstOrNull()
                 val file = resource?.getPsiFile(project)
                 if (file == null) null
                 else if (file.fileType == GdFileType) GdAutoload(it.key, file)
@@ -49,7 +49,7 @@ object ProjectAutoloadUtil {
     private fun findGdFileForTscnFile(project: Project, key: String, tscnFile: PsiFile): GdAutoload? {
         tscnFile.descendantsOfType<TscnNodeHeader>().forEach { header ->
             if (TscnNodeUtil.hasScript(header)) {
-                val resource = GdFileResIndex.INSTANCE.getFiles(getScriptResource(header), project).firstOrNull()
+                val resource = GdFileResIndex.getFiles(getScriptResource(header), project).firstOrNull()
                 val gdFile = resource?.getPsiFile(project)
                 if (gdFile != null && gdFile.fileType == GdFileType) return GdAutoload(key, gdFile)
             }

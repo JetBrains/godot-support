@@ -37,7 +37,7 @@
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
     <backgroundPostStartupActivity implementation="gdscript.listener.SdkStartupListener"/>
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
-    <toolWindow id="Scene preview" anchor="right" factoryClass="tscn.toolWindow.TscnScenePreviewWindowFactory"/>
+    <toolWindow id="Scene preview" anchor="right" factoryClass="tscn.toolWindow.TscnScenePreviewWindowFactory" />
 
     <!-- settings -->
     <projectService serviceImplementation="gdscript.settings.GdProjectSettingsState" />

@@ -14,6 +14,7 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
     private var scriptResource: String = ""
     private var instnaceResource: String = ""
     private var isUniqueNameOwner: Boolean = false
+    private var visible: Boolean = true
     private var groups: Array<String> = emptyArray()
     private var index: Int = -1
 
@@ -24,6 +25,7 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
         parentPath: String,
         nodePath: String,
         isUniqueNameOwner: Boolean,
+        visible: Boolean,
         scriptResource: String,
         instanceResource: String,
         groups: Array<String>,
@@ -35,6 +37,7 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
         this.parentPath = parentPath
         this.nodePath = nodePath
         this.isUniqueNameOwner = isUniqueNameOwner
+        this.visible = visible
         this.scriptResource = scriptResource
         this.instnaceResource = instanceResource
         this.groups = groups
@@ -52,6 +55,8 @@ class TscnNodeHeaderStubImpl : StubBase<TscnNodeHeader>, TscnNodeHeaderStub {
     override fun getNodePath(): String = nodePath
 
     override fun isUniqueNameOwner(): Boolean = isUniqueNameOwner
+
+    override fun isVisible(): Boolean = visible
 
     override fun hasScript(): Boolean = scriptResource.isNotBlank()
 

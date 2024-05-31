@@ -32,7 +32,7 @@ class GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
             // Try resource to class_name
             val endIndex = name.indexOf('"', 1)
             val resource = name.substring(1, endIndex)
-            val resourceFile = GdFileResIndex.INSTANCE.getFiles(resource, project).firstOrNull() ?: return emptyList()
+            val resourceFile = GdFileResIndex.getFiles(resource, project).firstOrNull() ?: return emptyList()
             val psiFile = resourceFile.getPsiFile(project)
             modified = PsiTreeUtil.getStubChildOfType(psiFile, GdClassNaming::class.java)?.classname.orEmpty()
 

@@ -97,7 +97,7 @@ object PsiGdExprUtil {
                                 }
                             }
 
-                            GdFileResIndex.INSTANCE.getFiles(resource, expr)
+                            GdFileResIndex.getFiles(resource, expr)
                                 .firstOrNull()
                                 ?.getPsiFile(expr)
                                 ?.let { GdClassUtil.getOwningClassName(it) }
@@ -122,7 +122,7 @@ object PsiGdExprUtil {
                         val node = GdNodeUtil.findNode(expr.firstChild as GdNodePath) ?: return GdKeywords.VARIANT
 
                         node.script?.let {
-                            GdFileResIndex.INSTANCE.getFiles(it, expr).firstOrNull()
+                            GdFileResIndex.getFiles(it, expr).firstOrNull()
                                 ?.getPsiFile(expr)
                                 ?.let { GdClassUtil.getFullClassId(it) }
                                 ?.let {

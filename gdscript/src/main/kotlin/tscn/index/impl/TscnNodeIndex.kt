@@ -14,7 +14,7 @@ class TscnNodeIndex : StringStubIndexExtensionExt<TscnNodeHeader>() {
     override fun getKey(): StubIndexKey<String, TscnNodeHeader> = TscnIndices.NODE_INDEX;
 
     override fun getVersion(): Int {
-        return TscnIndices.VERSION;
+        return TscnIndices.VERSION
     }
 
 }

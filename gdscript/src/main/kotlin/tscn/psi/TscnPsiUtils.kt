@@ -17,6 +17,7 @@ object TscnPsiUtils {
     @JvmStatic fun getType(element: TscnNodeHeader): String = TscnNodeUtil.getType(element)
     @JvmStatic fun getParentPath(element: TscnNodeHeader): String = TscnNodeUtil.getParentPath(element)
     @JvmStatic fun isUniqueNameOwner(element: TscnNodeHeader): Boolean = TscnNodeUtil.isUniqueNameOwner(element)
+    @JvmStatic fun isVisible(element: TscnNodeHeader): Boolean = TscnNodeUtil.isVisible(element)
     @JvmStatic fun getScriptResource(element: TscnNodeHeader): String = TscnNodeUtil.getScriptResource(element)
     @JvmStatic fun getNodePath(element: TscnNodeHeader): String = TscnNodeUtil.getNodePath(element)
     @JvmStatic fun hasScript(element: TscnNodeHeader): Boolean = TscnNodeUtil.hasScript(element)
