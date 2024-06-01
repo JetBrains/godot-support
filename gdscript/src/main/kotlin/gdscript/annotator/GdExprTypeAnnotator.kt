@@ -89,14 +89,18 @@ class GdExprTypeAnnotator : Annotator {
         element: PsiElement,
         holder: AnnotationHolder,
     ) {
-        if (left == right || right == GdKeywords.NULL) return
-        if (left.isDynamicType() || right.isDynamicType()) return
-        if (left == "PackedScene") return
-        if (GdOperand.isAllowed(left, right, operator, element.project)) return
-        if (operator == "=" && GdExprUtil.typeAccepts(right, left, element)) return
+        var l = left
+        var r = right
+        if (l == r || r == GdKeywords.NULL) return
+        if (l.isDynamicType() || r.isDynamicType()) return
+        if (l == "PackedScene") return
+        if (l == "EnumDictionary") l = "int"
+        if (r == "EnumDictionary") r = "int"
+        if (GdOperand.isAllowed(l, r, operator, element.project)) return
+        if (operator == "=" && GdExprUtil.typeAccepts(r, l, element)) return
 
         holder
-            .newAnnotationGd(element.project, HighlightSeverity.ERROR, "$message $left $operator $right")
+            .newAnnotationGd(element.project, HighlightSeverity.ERROR, "$message $l $operator $r")
             .range(element.textRange)
             .create()
     }
