@@ -46,7 +46,7 @@ $processSdk = function($tag) {
     exec("rm -R godot-master || true");
     exec("rm -R classesGd || true");
     exec("wget -O - https://github.com/godotengine/godot/archive/$downloadTag.tar.gz | tar -xz");
-    exec("mv godot-$downloadTag godot-master");
+    exec("mv godot-$downloadTag godot-master || true");
     exec("rm -R classesGd || true");
     exec("mkdir classesGd || true");
     exec("php classParser.php");
