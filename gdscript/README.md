@@ -24,7 +24,7 @@ Supports only Godot 4.0 and higher
 # Update 1.6.2024
 
 Sorry, version 2.5.0 broke quite a lot of things, I'm taking it down for now and going to fix those issues...
-seems that while Parser is more or less fixed, a lot of Annotators broke. -_- 
+seems that while Parser is more or less fixed, a lot of Annotators broke. -_- Gonna have to start writing tests for those as well I guess.
 
 ## Update 9.4.2024
 
