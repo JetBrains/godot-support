@@ -89,20 +89,20 @@
     <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceReferenceContributor" />
 
     <!-- Annotators -->
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdTypeHintAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstVarIdAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdSetGetAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdMethodNameAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdLambdaAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdResourceTypeAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdRefIdAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdMatchStmtAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdParamAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdExprTypeAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdCommentAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdFlowStmtAnnotator" />
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdTypeHintAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstVarIdAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdSetGetAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdMethodNameAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdLambdaAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdResourceTypeAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdRefIdAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdMatchStmtAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdParamAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdExprTypeAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdCommentAnnotator" />-->
+<!--    <annotator language="GdScript" implementationClass="gdscript.annotator.GdFlowStmtAnnotator" />-->
 
     <annotator language="Tscn" implementationClass="tscn.annotator.TscnHeaderValueAnnotator" />
 
