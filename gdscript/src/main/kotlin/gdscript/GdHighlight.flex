@@ -34,7 +34,7 @@ BIN_NUMBER = 0b[01_]+
 REAL_NUMBER = {NUMBER}e-[0-9]+
 
 COMMENT = "#"[^\r\n]*
-ANNOTATOR = "@"[a-zA-Z_]*
+ANNOTATOR = "@"[a-zA-Z_0-9]*
 NODE_PATH = "^"\"([^\\\"\r\n ]|\\.)*\"
 STRING_NAME = "&"\"([^\\\"\r\n]|\\.)*\"
 NODE_PATH_LEX = ( ("$"|"%")[\%a-zA-Z0-9_/]* ) | ( ("$"|"%")\"[\%a-zA-Z0-9:_/\. ]*\" )
