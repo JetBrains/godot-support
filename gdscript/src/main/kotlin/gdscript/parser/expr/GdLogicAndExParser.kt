@@ -8,6 +8,7 @@ import gdscript.psi.GdTypes.*
 object GdLogicAndExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = LOGIC_EX
+    override val isNested = true
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "LogicAndExpr")) return false

@@ -9,6 +9,7 @@ import gdscript.psi.GdTypes.IN_EX
 object GdInExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = IN_EX
+    override val isNested = true
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "InExpr")) return false

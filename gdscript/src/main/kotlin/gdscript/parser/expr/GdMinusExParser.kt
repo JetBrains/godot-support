@@ -8,6 +8,7 @@ import gdscript.psi.GdTypes.*
 object GdMinusExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = PLUS_EX
+    override val isNested = true
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "MinusExpr")) return false

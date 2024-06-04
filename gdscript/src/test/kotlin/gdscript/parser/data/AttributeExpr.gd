@@ -1,2 +1,3 @@
 func a():
-    Node.position
+    if not a.b:
+        return

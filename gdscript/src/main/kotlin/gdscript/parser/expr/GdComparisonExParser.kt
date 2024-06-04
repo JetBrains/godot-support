@@ -9,6 +9,7 @@ import gdscript.psi.GdTypes.*
 object GdComparisonExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = COMPARISON_EX
+    override val isNested = true
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "ComparisonExpr")) return false

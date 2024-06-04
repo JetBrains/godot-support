@@ -9,6 +9,7 @@ import gdscript.psi.GdTypes.*
 object GdTernaryExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = TERNARY_EX
+    override val isNested = true
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "TernaryExpr")) return false

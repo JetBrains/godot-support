@@ -8,6 +8,7 @@ import gdscript.psi.GdTypes.*
 object GdBitXorExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = BIT_AND_EX
+    override val isNested = true
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "BitXorExpr")) return false

@@ -10,6 +10,7 @@ import gdscript.psi.GdTypes.SHIFT_EX
 object GdShiftExParser : GdExprBaseParser() {
 
     override val EXPR_TYPE: IElementType = SHIFT_EX
+    override val isNested = true
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "ShiftExpr")) return false
