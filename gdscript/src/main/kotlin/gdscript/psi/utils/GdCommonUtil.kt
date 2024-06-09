@@ -75,6 +75,7 @@ object GdCommonUtil {
             is GdClassNaming -> element.classname
             is GdEnumDeclTl -> element.name
             is GdEnumValue -> GdKeywords.INT
+            is GdSignalDeclTl -> GdKeywords.SIGNAL
             is GdForSt -> {
                 if (element.typed != null) {
                     return element.typed?.text?.trim(':', ' ') ?: ""

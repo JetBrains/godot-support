@@ -15,6 +15,11 @@ class GdConstVarIdAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element is GdVarNmi) {
+            when (element.parent) {
+                is GdParam -> return
+                is GdSetDecl -> return
+            }
+
             isUnique(element as GdNamedIdElement, holder);
         }
     }
