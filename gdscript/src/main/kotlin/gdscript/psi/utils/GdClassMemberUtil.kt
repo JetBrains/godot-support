@@ -529,7 +529,7 @@ object GdClassMemberUtil {
             val previous = PsiTreeUtil.prevVisibleLeaf(el) ?: return null
             val parent = previous.parent ?: return null
             if (previous.elementType == GdTypes.DOT && parent is GdAttributeEx) {
-                return parent.exprList.first()
+                return parent.expr
             }
             return null
         }

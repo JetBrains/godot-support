@@ -86,6 +86,7 @@ object GdCommonUtil {
                     return forExpr
                 }
             }
+            null -> return ""
             else -> throw NotImplementedError(element.toString())
         }
     }

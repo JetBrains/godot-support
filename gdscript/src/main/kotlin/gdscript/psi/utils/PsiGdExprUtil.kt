@@ -11,9 +11,11 @@ import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.*
+import gdscript.reference.GdClassMemberReference
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
 import gdscript.utils.GdOperand
+import gdscript.utils.PsiReferenceUtil.resolveRef
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
 import project.psi.model.GdAutoload
@@ -50,7 +52,14 @@ object PsiGdExprUtil {
             is GdSignEx -> expr.expr?.returnType ?: ""
             is GdBitNotEx -> GdKeywords.INT
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT
-            is GdAttributeEx -> expr.exprList.lastOrNull()?.returnType ?: ""
+            is GdAttributeEx -> {
+                val ref = expr.refId.references.firstOrNull() ?: return ""
+                if (ref is GdClassMemberReference) {
+                    return GdCommonUtil.returnType(ref.resolveDeclaration())
+                }
+
+                return ""
+            }
             is GdIsEx -> GdKeywords.BOOL
             is GdCallEx -> {
                 if (expr.text == "new()") { // TODO může to mít params?

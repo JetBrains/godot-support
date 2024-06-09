@@ -8,6 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface GdAttributeEx extends GdExpr {
 
   @NotNull
-  List<GdExpr> getExprList();
+  GdExpr getExpr();
+  GdRefIdNm getRefId();
 
 }

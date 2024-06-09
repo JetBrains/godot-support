@@ -7,6 +7,7 @@ class GdComplexParserTest : ParsingTestCase {
 
     constructor(): super("", "gd", gdscript.GdParserDefinition())
 
+    @Test fun testAttributes() = doTest(true)
     @Test fun testSingleLineEnum() = doTest(true)
     @Test fun testBoolWithComparison() = doTest(true)
     @Test fun testNestedLoops() = doTest(true)

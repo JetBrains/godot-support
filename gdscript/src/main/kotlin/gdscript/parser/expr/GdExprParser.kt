@@ -10,7 +10,6 @@ object GdExprParser : GdBaseParser {
     init {
         parsers.add(GdFuncDeclExParser) // simple
         parsers.add(GdAwaitExParser) // simple
-        parsers.add(GdArrayExParser)
         parsers.add(GdCastExParser)
         parsers.add(GdTernaryExParser)
         parsers.add(GdLogicOrExParser)
@@ -30,6 +29,7 @@ object GdExprParser : GdBaseParser {
         parsers.add(GdIsExParser)
         parsers.add(GdCallExParser)
         parsers.add(GdAttributeExParser)
+        parsers.add(GdArrayExParser)
         parsers.add(GdPrimaryExParser) // simple
         parsers.add(GdLiteralExParser) // simple
 
