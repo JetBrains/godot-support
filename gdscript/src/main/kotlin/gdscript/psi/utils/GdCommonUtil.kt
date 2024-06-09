@@ -74,6 +74,7 @@ object GdCommonUtil {
             is GdTypedVal -> element.returnType
             is GdClassNaming -> element.classname
             is GdEnumDeclTl -> element.name
+            is GdEnumValue -> GdKeywords.INT
             is GdForSt -> {
                 if (element.typed != null) {
                     return element.typed?.text?.trim(':', ' ') ?: ""
