@@ -14,12 +14,6 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <AssemblyName>JetBrains.ReSharper.Plugins.Godot.Gradle.Launcher</AssemblyName>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
   <ItemGroup Label="ProjectReference">
     <ProjectReference Include="..\debugger\debugger.csproj" />
     <ProjectReference Include="..\src\rider-godot.csproj" />
