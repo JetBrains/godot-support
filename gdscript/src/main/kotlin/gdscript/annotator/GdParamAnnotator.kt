@@ -31,8 +31,10 @@ class GdParamAnnotator : Annotator {
         var minSize = 99
         var maxSize = 0
 
-        val refId = PsiTreeUtil.findChildOfType(element, GdRefIdNm::class.java) ?: return
-        val declaration = GdClassMemberReference(refId).resolveDeclaration() ?: return
+        val refId = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdNm::class.java).lastOrNull() ?: return
+        val ref = refId.references.firstOrNull() ?: return
+        if (ref !is GdClassMemberReference) return
+        val declaration = ref.resolveDeclaration() ?: return
         val descriptions = mutableListOf<String>()
 
         val paramLists = when (declaration) {

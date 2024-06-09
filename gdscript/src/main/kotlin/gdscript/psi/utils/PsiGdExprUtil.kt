@@ -91,10 +91,11 @@ object PsiGdExprUtil {
                             }
 
                             if (!resource.startsWith("res://") && expr.containingFile.originalFile.virtualFile?.parent != null) {
-
+                                // In case of relative paths (debug/frames.gd) resource is not recognized -> thus convert relative path to absolute
+                                val fileName = resource.substringAfterLast("/")
                                 val myPath = Paths.get(expr.containingFile.originalFile.virtualFile.parent.path)
-                                // I have fixed the compilation here, but I don't understand the supported case
-                                FilenameIndex.getVirtualFilesByName(Paths.get(resource).name, GlobalSearchScope.allScope(expr.project)).find {
+
+                                FilenameIndex.getVirtualFilesByName(Paths.get(fileName).name, GlobalSearchScope.allScope(expr.project)).find {
                                     val itPath = Paths.get(it.path)
                                     try {
                                         val relative = myPath.relativize(itPath)

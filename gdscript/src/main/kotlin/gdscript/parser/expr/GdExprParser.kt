@@ -27,8 +27,8 @@ object GdExprParser : GdBaseParser {
         parsers.add(GdSignExParser) // simple
         parsers.add(GdBitNotExParser) // simple
         parsers.add(GdIsExParser)
-        parsers.add(GdCallExParser)
         parsers.add(GdAttributeExParser)
+        parsers.add(GdCallExParser)
         parsers.add(GdArrayExParser)
         parsers.add(GdPrimaryExParser) // simple
         parsers.add(GdLiteralExParser) // simple
