@@ -45,12 +45,8 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Condition="!$(InternalBuild)">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Condition="$(InternalBuild)" Include="JetBrains.Godot.Tools" />
     <PackageReference Include="GodotTools.IdeMessaging" />
+    <PackageReference Condition="$(InternalBuild)" Include="JetBrains.Godot.Tools" />
   </ItemGroup>
   <Target Name="DropObjFromIndependentBuild" Condition="$(InternalBuild)" BeforeTargets="Build">
     <RemoveDir Directories="obj" />
