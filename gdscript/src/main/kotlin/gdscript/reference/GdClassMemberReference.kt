@@ -9,6 +9,8 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdIcon
+import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
@@ -85,7 +87,10 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement>, HighlightedRefe
                 if (!hidePrivate || !lookup.lookupString.startsWith("_")) lookup
                 else null
             }
-        }.toTypedArray()
+        }.toTypedArray() + arrayOf(
+            addMethod("new"),
+            addMethod("instance"),
+        )
     }
 
     private fun completionIntoCallableParam(): Boolean {
@@ -99,6 +104,16 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement>, HighlightedRefe
                 return false
             }
         } ?: false
+    }
+
+    private fun addMethod(name: String): LookupElement {
+        return GdLookup.create(
+            name,
+            lookup = "()",
+            presentable = name,
+            priority = GdLookup.BUILT_IN,
+            icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
+        )
     }
 
 }
