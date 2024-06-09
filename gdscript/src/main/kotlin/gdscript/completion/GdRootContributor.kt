@@ -67,7 +67,7 @@ class GdRootContributor : CompletionContributor() {
         GdClassVarCompletionUtil.annotations(result, parameters.position.project)
 
         val members = mutableListOf<Any>()
-        GdClassMemberUtil.collectFromParents(parameters.position, members, false)
+        GdClassMemberUtil.collectFromParents(parameters.position, members, parameters.position.project, false)
         result.addAllElements(members.methods().map { it.lookupDeclaration(false, parameters.indent()) })
     }
 

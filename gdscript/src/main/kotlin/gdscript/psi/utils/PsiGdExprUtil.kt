@@ -3,7 +3,6 @@ package gdscript.psi.utils
 import com.intellij.openapi.project.DumbService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
@@ -15,12 +14,9 @@ import gdscript.reference.GdClassMemberReference
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
 import gdscript.utils.GdOperand
-import gdscript.utils.PsiReferenceUtil.resolveRef
+import gdscript.utils.PsiFileUtil.toAbsoluteResource
 import gdscript.utils.VirtualFileUtil.getPsiFile
-import gdscript.utils.VirtualFileUtil.resourcePath
 import project.psi.model.GdAutoload
-import java.nio.file.Paths
-import kotlin.io.path.name
 
 object PsiGdExprUtil {
 
@@ -35,6 +31,7 @@ object PsiGdExprUtil {
 
                 return if (a == b) a else ""
             }
+
             is GdLogicEx -> GdKeywords.BOOL
             is GdNegateEx -> GdKeywords.BOOL
             is GdInEx -> GdKeywords.BOOL
@@ -43,12 +40,15 @@ object PsiGdExprUtil {
             is GdComparisonEx -> GdOperand.getReturnType(
                 expr.exprList.left(), expr.exprList.right(), expr.operator.text, expr.project,
             )
+
             is GdPlusEx -> GdOperand.getReturnType(
                 expr.exprList.left(), expr.exprList.right(), expr.sign.text, expr.project,
             )
+
             is GdFactorEx -> GdOperand.getReturnType(
                 expr.exprList.left(), expr.exprList.right(), expr.factorSign.text, expr.project,
             )
+
             is GdSignEx -> expr.expr?.returnType ?: ""
             is GdBitNotEx -> GdKeywords.INT
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT
@@ -60,6 +60,7 @@ object PsiGdExprUtil {
 
                 return ""
             }
+
             is GdIsEx -> GdKeywords.BOOL
             is GdCallEx -> {
                 if (expr.text == "new()") { // TODO může to mít params?
@@ -91,20 +92,7 @@ object PsiGdExprUtil {
                             }
 
                             if (!resource.startsWith("res://") && expr.containingFile.originalFile.virtualFile?.parent != null) {
-                                // In case of relative paths (debug/frames.gd) resource is not recognized -> thus convert relative path to absolute
-                                val fileName = resource.substringAfterLast("/")
-                                val myPath = Paths.get(expr.containingFile.originalFile.virtualFile.parent.path)
-
-                                FilenameIndex.getVirtualFilesByName(Paths.get(fileName).name, GlobalSearchScope.allScope(expr.project)).find {
-                                    val itPath = Paths.get(it.path)
-                                    try {
-                                        val relative = myPath.relativize(itPath)
-                                        return@find relative.toString().replace('\\', '/') == resource
-                                    } catch (e: Exception) {}
-                                    false
-                                }?.let {
-                                    resource = it.resourcePath()
-                                }
+                                resource = resource.toAbsoluteResource(expr, expr.project)
                             }
 
                             GdFileResIndex.getFiles(resource, expr)
@@ -119,12 +107,14 @@ object PsiGdExprUtil {
                     expr.expr.returnType
                 }
             }
+
             is GdArrEx -> {
                 val arrayType = expr.exprList.firstOrNull()?.returnType ?: return GdKeywords.VARIANT
                 if (arrayType.startsWith("Array[")) return fromTyped(arrayType)
 
                 return GdOperand.getReturnType(arrayType, GdKeywords.INT, "[]", expr.project)
             }
+
             is GdPrimaryEx -> {
                 when (expr.firstChild) {
                     is GdNodePath -> {
@@ -142,6 +132,7 @@ object PsiGdExprUtil {
 
                         return node.element.type
                     }
+
                     is GdDictDecl -> return "Dictionary"
                     is GdArrayDecl -> {
 //                        var type = ""
@@ -161,9 +152,11 @@ object PsiGdExprUtil {
 
                         return "Array[Variant]"
                     }
+
                     else -> expr.expr?.returnType ?: ""
                 }
             }
+
             is GdLiteralEx -> {
                 val text = expr.text
                 when (text) {
@@ -219,6 +212,7 @@ object PsiGdExprUtil {
                                 parseLoadedType(expr, element.returnType)
                             else "Callable"
                         }
+
                         is GdParam -> parseLoadedType(expr, element.returnType)
                         is GdSignalDeclTl -> "Signal"
                         is GdEnumDeclTl -> "EnumDictionary"
@@ -235,6 +229,7 @@ object PsiGdExprUtil {
                                 return forExpr
                             }
                         }
+
                         is GdAutoload -> element.key
                         is GdClassDeclTl -> GdClassUtil.getFullClassId(element)
                         else -> ""
@@ -243,6 +238,7 @@ object PsiGdExprUtil {
 
                 return ""
             }
+
             else -> ""
         }
     }

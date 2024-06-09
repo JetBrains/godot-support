@@ -39,6 +39,7 @@ object GdInheritanceUtil {
     fun getExtendedElement(element: PsiElement): PsiElement? {
         return getExtendedElement(
             getExtendedClassId(element),
+            element,
             element.project,
         );
     }
@@ -50,7 +51,7 @@ object GdInheritanceUtil {
      * @return GdClassDeclTL|GdFile
      */
     fun getExtendedElement(element: PsiElement, project: Project): PsiElement? {
-        return getExtendedElement(getExtendedClassId(element), project);
+        return getExtendedElement(getExtendedClassId(element), element, project)
     }
 
     fun isExtending(element: PsiElement, className: String): Boolean {
@@ -71,8 +72,8 @@ object GdInheritanceUtil {
      *
      * @return GdClassDeclTL|GdFile
      */
-    fun getExtendedElement(classId: String, project: Project): PsiElement? {
-        val classEl = GdClassUtil.getClassIdElement(classId, project);
+    fun getExtendedElement(classId: String, element: PsiElement, project: Project): PsiElement? {
+        val classEl = GdClassUtil.getClassIdElement(classId, element, project);
         // Extending directly named class (includes "res://Item.gd".InnerClass)
         if (classEl != null) {
             return if (classEl.parent is GdClassDeclTl) {

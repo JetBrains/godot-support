@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FilenameIndex
@@ -54,6 +55,7 @@ object GdClassMemberUtil {
         allowResource: Boolean = false,
     ): Array<Any> {
         var static: Boolean? = false
+        val project = element.project
 
         val result = mutableListOf<Any>()
         var calledOn: String? = GdKeywords.SELF
@@ -173,19 +175,19 @@ object GdClassMemberUtil {
 
         // Recursively iterate over all extended classes
         if (!ignoreParents && !hitLocal.value) {
-            val local = collectFromParents(parent, result, static, searchFor)
+            val local = collectFromParents(parent, result, project, static, searchFor)
             if (local != null) return arrayOf(local)
         }
 
         if (calledOn == null) {
-            val autoLoads = ProjectAutoloadUtil.listGlobals(element.project)
+            val autoLoads = ProjectAutoloadUtil.listGlobals(project)
             if (searchFor != null) {
                 val localClass = GdClassNamingIndex.INSTANCE.getGlobally(searchFor, element).firstOrNull()
                 if (localClass != null) return arrayOf(localClass)
                 val autoLoaded = autoLoads.find { it.key == searchFor }
                 if (autoLoaded != null) return arrayOf(autoLoaded)
             }
-            result.addAll(GdClassNamingIndex.INSTANCE.getAllValues(element.project))
+            result.addAll(GdClassNamingIndex.INSTANCE.getAllValues(project))
             result.addAll(autoLoads)
         }
 
@@ -200,6 +202,7 @@ object GdClassMemberUtil {
     fun collectFromParents(
         parent: PsiElement?,
         result: MutableList<Any>,
+        project: Project,
         static: Boolean? = null,
         search: String? = null,
     ): PsiElement? {
@@ -207,7 +210,7 @@ object GdClassMemberUtil {
         while (par != null) {
             val local = addsParentDeclarations(par, result, static, search)
             if (search != null && local != null) return local
-            par = GdInheritanceUtil.getExtendedElement(par)
+            par = GdInheritanceUtil.getExtendedElement(par, project)
         }
 
         return null

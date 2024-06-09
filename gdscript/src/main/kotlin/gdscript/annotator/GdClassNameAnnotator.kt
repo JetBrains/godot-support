@@ -39,31 +39,34 @@ class GdClassNameAnnotator : Annotator {
     }
 
     private fun existingInheritance(element: GdInheritanceId, holder: AnnotationHolder) {
-        val name = element.text
-        if (GdClassUtil.getClassIdElement(name, element) == null
-            // File index when you are extending script without class_name
-            && GdFileResIndex.getFiles(name.trim('"', '\''), element.project).isEmpty()
-        ) {
-            // Last case is extending InnerClass within same file which does not require FQN
-            // and can directly use any at lower level
-            val classElement = when (element) {
-                is GdFile, is GdClassDeclTl -> element
-                else -> GdClassUtil.getOwningClassElement(element)
-            }
-            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
-                if (it.name == name) return
-            }
-            if (classElement is GdClassDeclTl) {
-                PsiTreeUtil.getStubChildrenOfTypeAsList(classElement.parent, GdClassDeclTl::class.java).forEach {
-                    if (it.name == name) return
-                }
-            }
+        val ref = element.lastChild.references.firstOrNull()
+        if (ref?.resolve() != null) return
+
+//        val name = element.text
+//        if (GdClassUtil.getClassIdElement(name, element) == null
+//            // File index when you are extending script without class_name
+//            && GdFileResIndex.getFiles(name.trim('"', '\''), element.project).isEmpty()
+//        ) {
+//            // Last case is extending InnerClass within same file which does not require FQN
+//            // and can directly use any at lower level
+//            val classElement = when (element) {
+//                is GdFile, is GdClassDeclTl -> element
+//                else -> GdClassUtil.getOwningClassElement(element)
+//            }
+//            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
+//                if (it.name == name) return
+//            }
+//            if (classElement is GdClassDeclTl) {
+//                PsiTreeUtil.getStubChildrenOfTypeAsList(classElement.parent, GdClassDeclTl::class.java).forEach {
+//                    if (it.name == name) return
+//                }
+//            }
 
             holder
                 .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Class not found")
                 .range(element.textRange)
                 .create()
-        }
+//        }
     }
 
     private fun colorInheritance(element: GdInheritanceIdNm, holder: AnnotationHolder) {

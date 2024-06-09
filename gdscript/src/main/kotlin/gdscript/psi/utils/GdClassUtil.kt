@@ -8,11 +8,21 @@ import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
+import gdscript.utils.PsiFileUtil.toAbsoluteResource
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
 
 object GdClassUtil {
 
+    fun getClassIdElement(name: String, element: PsiElement, project: Project): PsiElement? {
+        val path = name.toAbsoluteResource(element, project)
+
+        return GdClassIdIndex.INSTANCE.getGloballyResolved(path, project).firstOrNull()
+            ?: GdFileResIndex.getFiles(path.trim('"', '\''), project).firstOrNull()
+                ?.let { return it.getPsiFile(project) }
+    }
+
+    @Deprecated("For internal usage only called after resolving relative paths")
     fun getClassIdElement(name: String, project: Project): PsiElement? {
         return GdClassIdIndex.INSTANCE.getGloballyResolved(name, project).firstOrNull()
             ?: GdFileResIndex.getFiles(name.trim('"', '\''), project).firstOrNull()

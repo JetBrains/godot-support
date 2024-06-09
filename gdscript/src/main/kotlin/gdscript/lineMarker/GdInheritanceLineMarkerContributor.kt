@@ -29,7 +29,7 @@ class GdInheritanceLineMarkerContributor : RelatedItemLineMarkerProvider() {
 
         val parent = GdInheritanceUtil.getExtendedElement(element)
         val results = mutableListOf<Any>()
-        val superMethod = GdClassMemberUtil.collectFromParents(parent, results, null, element.name) ?: return
+        val superMethod = GdClassMemberUtil.collectFromParents(parent, results, element.project, null, element.name) ?: return
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(
             GdIcon.getEditorIcon(GdIcon.OVERRIDE)

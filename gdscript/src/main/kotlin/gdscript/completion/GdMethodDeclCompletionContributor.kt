@@ -23,7 +23,7 @@ class GdMethodDeclCompletionContributor : CompletionContributor() {
         if (METHOD_ID.accepts(parameters.position)) {
             val parent = GdInheritanceUtil.getExtendedElement(element) ?: return;
             val list = mutableListOf<Any>()
-            GdClassMemberUtil.collectFromParents(parent, list);
+            GdClassMemberUtil.collectFromParents(parent, list, element.project)
             list
                 .methods()
                 .forEach { result.addElement(it.lookupDeclaration(true, parameters.indent())) }
