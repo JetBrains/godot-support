@@ -5,9 +5,10 @@ using JetBrains.Application.Settings;
 using JetBrains.Application.Settings.Implementation;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Scope;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Settings;
+using JetBrains.ReSharper.Plugins.Godot.CSharp.FileTemplates.Scope;
 using JetBrains.Util;
 
-namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
+namespace JetBrains.ReSharper.Plugins.Godot.CSharp.FileTemplates
 {
     // Defines settings for the QuickList, or we don't get a QuickList at all
     // Note that the QuickList can be empty, but it's still required

@@ -2,10 +2,9 @@
 using JetBrains.Application;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Context;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Scope;
-using JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates.Scope;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 
-namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
+namespace JetBrains.ReSharper.Plugins.Godot.CSharp.FileTemplates.Scope
 {
     // Provides the scope points that are valid for the given context
     [ShellComponent]
