@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Scope;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Templates;
-using JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates.Scope;
 using JetBrains.UI.ThemedIcons;
 
-namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
+namespace JetBrains.ReSharper.Plugins.Godot.CSharp.FileTemplates.Scope
 {
     // Defines a category for the UI, and the scope points that it includes
     [ScopeCategoryUIProvider(Priority = Priority, ScopeFilter = ScopeFilter.Project)]
@@ -34,6 +33,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
             yield return new InGodotCSharpProject();
         }
 
-        public override string CategoryCaption => "Godot";
+        public override string CategoryCaption => "Godot C#";
     }
 }

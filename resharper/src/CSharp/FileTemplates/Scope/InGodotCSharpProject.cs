@@ -4,7 +4,7 @@ using JetBrains.ReSharper.Feature.Services.LiveTemplates.Scope;
 using JetBrains.ReSharper.Psi;
 using JetBrains.ReSharper.Psi.CSharp;
 
-namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates.Scope
+namespace JetBrains.ReSharper.Plugins.Godot.CSharp.FileTemplates.Scope
 {
     // Defines a scope point, but has no inherent behaviour, other than to compare against
     // other scope points. A template can declare that it requires this scope point, and
