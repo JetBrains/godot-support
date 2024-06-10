@@ -606,7 +606,7 @@ class GdLexer implements FlexLexer {
 
     public boolean dedentSpaces() {
         newLineProcessed = false;
-        if (isIgnored() || indent <= 0 || indentSizes.empty()) { // For EOF rule
+        if (indent <= 0 || indentSizes.empty()) { // For EOF rule
             return false;
         }
 
@@ -643,14 +643,20 @@ class GdLexer implements FlexLexer {
 
     private boolean isIgnored() {
         if (ignored <= 0) return false;
+        if (!ignoreLambda.isEmpty()) {
+            int diff = yycolumn;
+            if (diff == 0) {
+                diff = yylength();
+            }
 
-        if (ignoreLambda.isEmpty()) return true;
+            return ignoreLambda.peek() > diff;
+        }
 
-        return ignoreLambda.peek() != ignored;
+        return true;
     }
 
     private void ignoredMinus() {
-        if (!ignoreLambda.isEmpty() && ignoreLambda.peek() == ignored) {
+        if (!ignoreLambda.isEmpty() && ignoreLambda.peek() >= yycolumn) {
             ignoreLambda.pop();
         }
         ignored--;
@@ -658,7 +664,13 @@ class GdLexer implements FlexLexer {
 
     private void markLambda() {
         if (ignored > 0) {
-            ignoreLambda.push(ignored);
+            int atIndent = 999;
+            CharSequence spaces = zzBuffer.subSequence(zzCurrentPos - yycolumn, zzCurrentPos);
+            if (spaces.toString().trim().isEmpty()) {
+                atIndent = spaces.length();
+            }
+
+            ignoreLambda.push(atIndent);
         }
     }
 

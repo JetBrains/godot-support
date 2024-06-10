@@ -1,5 +1,6 @@
 package gdscript.parser.expr
 
+import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdArgListParser

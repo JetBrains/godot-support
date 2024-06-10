@@ -1,5 +1,6 @@
 package gdscript.parser.common
 
+import com.intellij.psi.TokenType
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
@@ -15,6 +16,9 @@ object GdArgListParser : GdBaseParser {
         var ok = b.pin(argExpr(b, l + 1))
         while (b.consumeToken(COMMA, true)) {
             argExpr(b, l + 1)
+        }
+        while (ok && b.nextTokenIs(INDENT)) {
+            b.remapCurrentToken(TokenType.WHITE_SPACE)
         }
 
         ok && GdRecovery.argumentList(b)

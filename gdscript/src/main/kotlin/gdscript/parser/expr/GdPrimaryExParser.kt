@@ -1,5 +1,6 @@
 package gdscript.parser.expr
 
+import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.psi.GdTypes.*
@@ -75,7 +76,15 @@ object GdPrimaryExParser : GdExprBaseParser() {
         var ok = true
 
         ok = ok && b.consumeToken(LRBR)
+//        while (ok && b.nextTokenIs(INDENT)) {
+//            b.remapCurrentToken(TokenType.WHITE_SPACE)
+//            b.advance()
+//        }
         ok = ok && GdExprParser.parse(b, l + 1)
+//        while (ok && b.nextTokenIs(DEDENT)) {
+//            b.remapCurrentToken(TokenType.WHITE_SPACE)
+//            b.advance()
+//        }
         ok = ok && b.consumeToken(RRBR)
 
         return m.rollOrDrop(ok)
