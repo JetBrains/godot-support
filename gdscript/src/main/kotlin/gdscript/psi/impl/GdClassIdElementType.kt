@@ -23,10 +23,10 @@ object GdClassIdElementType : IStubElementType<GdClassIdStub, GdClassNameNmi>("g
                 parents.add(parent.classNameNmi?.name.orEmpty());
                 break;
             } else if (parent is GdFile) {
-                parents.add("\"${PsiGdResourceUtil.resourcePath(parent.virtualFile)}\"");
-                break;
+                parents.add("\"${PsiGdResourceUtil.resourcePath(parent.virtualFile ?: parent.originalFile.virtualFile)}\"");
+                break
             } else {
-                break;
+                break
             }
 
             parent = PsiGdClassUtil.getParentClassElement(parent);

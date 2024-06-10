@@ -3,6 +3,7 @@ package gdscript.psi.utils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.index.impl.GdClassDeclIndex
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdClassDeclTl
@@ -17,9 +18,11 @@ object GdClassUtil {
     fun getClassIdElement(name: String, element: PsiElement, project: Project): PsiElement? {
         val path = name.toAbsoluteResource(element, project)
 
-        return GdClassIdIndex.INSTANCE.getGloballyResolved(path, project).firstOrNull()
-            ?: GdFileResIndex.getFiles(path.trim('"', '\''), project).firstOrNull()
-                ?.let { return it.getPsiFile(project) }
+        GdClassIdIndex.INSTANCE.getGloballyResolved(path, project).firstOrNull()?.let { return it }
+        GdFileResIndex.getFiles(path.trim('"', '\''), project).firstOrNull()?.let { return it.getPsiFile(project) }
+        GdClassDeclIndex.INSTANCE.getInFile(name, element, project).firstOrNull()?.let { return it }
+
+        return null
     }
 
     @Deprecated("For internal usage only called after resolving relative paths")
@@ -69,7 +72,7 @@ object GdClassUtil {
                 if (named != null) {
                     named.classNameNmi?.classId ?: ""
                 } else {
-                    val file = element.virtualFile ?: element.originalFile.virtualFile;
+                    val file = element.virtualFile ?: element.originalFile.virtualFile
                     "\"${PsiGdResourceUtil.resourcePath(file)}\""
                 }
             }
@@ -82,7 +85,12 @@ object GdClassUtil {
      * @return GdClassDecl|GdFile containing element
      */
     fun getOwningClassElement(element: PsiElement): PsiElement {
-        val inner = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassDeclTl::class.java);
+        when (element) {
+            is GdFile -> return element
+            is GdClassDeclTl -> return element
+        }
+
+        val inner = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassDeclTl::class.java)
         if (inner != null) return inner
 
         return element.containingFile
@@ -90,9 +98,9 @@ object GdClassUtil {
 
     fun getName(element: GdClassDeclTl): String {
         val stub = element.stub;
-        if (stub != null) return stub.name();
+        if (stub != null) return stub.name()
 
-        return element.classNameNmi?.name.orEmpty();
+        return element.classNameNmi?.name.orEmpty()
     }
 
 }

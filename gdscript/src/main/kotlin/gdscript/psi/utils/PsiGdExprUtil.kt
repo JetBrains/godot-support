@@ -298,6 +298,7 @@ object PsiGdExprUtil {
         GdClassMemberUtil.listDeclarations(element, type, false, true, true, true)
             .firstOrNull()
             ?.let { if (it is PsiElement) return GdCommonUtil.returnType(it) }
+
         return type
     }
 

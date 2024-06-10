@@ -97,7 +97,8 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement>, HighlightedRefe
         return PsiTreeUtil.getParentOfType(element, GdArgExpr::class.java)?.let { arg ->
             PsiTreeUtil.getParentOfType(arg, GdCallEx::class.java)?.let {
                 val index = arg.parent.children.indexOf(arg)
-                val decl = GdClassMemberReference(it.expr.firstChild).resolveDeclaration()
+                val refId = PsiTreeUtil.getChildrenOfType(it.expr, GdNamedElement::class.java)?.lastOrNull() ?: return false
+                val decl = GdClassMemberReference(refId).resolveDeclaration()
                 if (decl is GdMethodDeclTl) {
                     return decl.parameters.values.toTypedArray()[index] == "Callable"
                 }

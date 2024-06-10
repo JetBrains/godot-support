@@ -64,7 +64,7 @@ object GdInheritanceUtil {
             parentId = getExtendedClassId(parent);
         }
 
-        return false;
+        return false
     }
 
     /**

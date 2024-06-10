@@ -154,7 +154,7 @@ object GdClassMemberUtil {
                 calledOn = "Dictionary"
             }
 
-            parent = GdClassUtil.getClassIdElement(calledOn, element)
+            parent = GdClassUtil.getClassIdElement(calledOn, element, project)
             if (parent == null) {
                 val classId = GdClassUtil.getFullClassId(element)
                 parent = GdClassUtil.getClassIdElement(
@@ -210,6 +210,12 @@ object GdClassMemberUtil {
         while (par != null) {
             val local = addsParentDeclarations(par, result, static, search)
             if (search != null && local != null) return local
+            if (par is GdClassDeclTl) {
+                // When within classDecl, check also root of current file, not only what the class is extending
+                val local = addsParentDeclarations(par.containingFile, result, static, search)
+                if (search != null && local != null) return local
+            }
+
             par = GdInheritanceUtil.getExtendedElement(par, project)
         }
 

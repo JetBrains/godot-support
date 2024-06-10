@@ -7,6 +7,7 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndex
+import com.intellij.psi.util.PsiTreeUtil
 
 @Suppress("UNCHECKED_CAST")
 abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexExtension<Psi>() {
@@ -44,12 +45,19 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
 
     fun getInFile(element: PsiNamedElement): Collection<Psi> {
         if (DumbService.isDumb(element.project)) return emptyList()
-        return StubIndex.getElements(key, element.name.orEmpty(), element.project, GlobalSearchScope.fileScope(element.containingFile), PsiElement::class.java as Class<Psi>)
+        return StubIndex.getElements(key, element.name.orEmpty(), element.project, GlobalSearchScope.fileScope(element.containingFile.originalFile), PsiElement::class.java as Class<Psi>)
     }
 
+    @Deprecated("Use with project")
     fun getInFile(name: String, element: PsiElement): Collection<Psi> {
         if (DumbService.isDumb(element.project)) return emptyList()
-        return StubIndex.getElements(key, name, element.project, GlobalSearchScope.fileScope(element.containingFile), PsiElement::class.java as Class<Psi>)
+        return StubIndex.getElements(key, name, element.project, GlobalSearchScope.fileScope(element.containingFile.originalFile), PsiElement::class.java as Class<Psi>)
+    }
+
+    fun getInFile(name: String, element: PsiElement, project: Project): Collection<Psi> {
+        if (DumbService.isDumb(project)) return emptyList()
+        // Just containingFile did not return results
+        return StubIndex.getElements(key, name, project, GlobalSearchScope.fileScope(element.containingFile.originalFile), PsiElement::class.java as Class<Psi>)
     }
 
     fun getScoped(name: String, project: Project, scope: GlobalSearchScope): Collection<Psi> {
