@@ -17,6 +17,7 @@
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducerCor" />
 
+    <rider.godotDetector implementation="com.jetbrains.rider.plugins.godot.GodotDetectorImpl" />
     <dependencySupport kind="dotnet" coordinate="GodotSharp" displayName="Godot"/>
     <liveTemplateContext contextId="GDSCRIPT" implementation="com.jetbrains.rider.plugins.godot.textMate.GdScriptTemplateContextType" order="first" />
     <defaultLiveTemplates file="templates/GdScript.xml" />
