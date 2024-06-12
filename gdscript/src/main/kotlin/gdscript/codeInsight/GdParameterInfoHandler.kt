@@ -15,7 +15,7 @@ class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElement>, Dum
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
         val element = getFunctionCall(context)
         if (element != null) {
-            val refId = element.firstChild?.firstChild ?: return null
+            val refId = PsiTreeUtil.findChildrenOfType(element.expr, GdNamedElement::class.java).lastOrNull() ?: return null
             when (val declaration = GdClassMemberUtil.findDeclaration(refId as GdNamedElement)) {
                 is GdMethodDeclTl -> {
                     context.itemsToShow = arrayOf(declaration)
