@@ -97,7 +97,7 @@ class GdExprTypeAnnotator : Annotator {
         if (l == "EnumDictionary") l = "int"
         if (r == "EnumDictionary") r = "int"
         if (GdOperand.isAllowed(l, r, operator, element.project)) return
-        if (operator == "=" && GdExprUtil.typeAccepts(r, l, element)) return
+        if (operator.contains("=") && GdExprUtil.typeAccepts(r, l, element)) return
 
         holder
             .newAnnotationGd(element.project, HighlightSeverity.ERROR, "$message $l $operator $r")
