@@ -34,6 +34,7 @@ class GdRecoveryParserTest : ParsingTestCase {
     @Test fun testForStmt() = doTest(true)
     @Test fun testMatchStmt() = doTest(true)
     @Test fun testMatchStmt2() = doTest(true)
+    @Test fun testReturnStmt() = doTest(true)
 
     // Exprs
     @Test fun testArrayExpr() = doTest(true)

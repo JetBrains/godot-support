@@ -17,7 +17,7 @@ GdScript File(0,29)
               GdRefIdNmImpl(REF_ID_NM)(14,18)
                 PsiElement(GdTokenType.IDENTIFIER)('Node')(14,18)
             PsiElement(GdTokenType.DOT)('.')(18,19)
-            PsiErrorElement:EXPRESSION expected(19,19)
+            PsiErrorElement:IDENTIFIER expected(19,19)
               <empty list>
           GdEndStmtImpl(END_STMT)(19,20)
             PsiElement(GdTokenType.NEW_LINE)('\n')(19,20)

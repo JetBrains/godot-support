@@ -100,7 +100,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement>, HighlightedRefe
                 val refId = PsiTreeUtil.getChildrenOfType(it.expr, GdNamedElement::class.java)?.lastOrNull() ?: return false
                 val decl = GdClassMemberReference(refId).resolveDeclaration()
                 if (decl is GdMethodDeclTl) {
-                    return decl.parameters.values.toTypedArray()[index] == "Callable"
+                    return decl.parameters.values.toTypedArray().getOrNull(index).orEmpty() == "Callable"
                 }
                 return false
             }

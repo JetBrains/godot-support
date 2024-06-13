@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.GdKeywords
+import gdscript.completion.GdCommonContribution.COMMENT_POS
 import gdscript.psi.GdTypes
 
 class GdKeywordContributor : CompletionContributor() {
@@ -37,6 +38,7 @@ class GdKeywordContributor : CompletionContributor() {
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         if (SKIP_KEYWORDS_FOR.accepts(parameters.position)) return
+        if (COMMENT_POS.accepts(parameters.position)) return
 
         result.addAllElements(TO_HINT_KEYWORDS.map { GdLookup.create(it, priority = -100.0) })
         result.addAllElements(TO_HINT_KEYWORDS_WITH_SPACE.map { GdLookup.create("$it ", priority = -100.0, presentable = it) })

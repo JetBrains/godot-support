@@ -53,7 +53,7 @@ object PsiGdExprUtil {
             is GdBitNotEx -> GdKeywords.INT
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT
             is GdAttributeEx -> {
-                val ref = expr.refId.references.firstOrNull() ?: return ""
+                val ref = expr.refId?.references?.firstOrNull() ?: return ""
                 if (ref is GdClassMemberReference) {
                     return GdCommonUtil.returnType(ref.resolveDeclaration())
                 }

@@ -319,7 +319,7 @@ object GdClassMemberUtil {
                 }
 
                 // End of scope
-                is GdClassDeclTl -> break
+                is GdClassDeclTl -> { if (movedToParent) { break } }
             }
         }
 
