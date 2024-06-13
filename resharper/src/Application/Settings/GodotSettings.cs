@@ -10,7 +10,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
     public class GodotSettings
     {
         // LSP 
-        [SettingsEntry(LanguageServerConnectionMode.Never, "Different ways to connect LSP")]
+        [SettingsEntry(LanguageServerConnectionMode.ConnectRunningEditor, "Different ways to connect LSP")]
         public LanguageServerConnectionMode LanguageServerConnectionMode;
 
         [SettingsEntry("127.0.0.1", "RemoteHost")]
