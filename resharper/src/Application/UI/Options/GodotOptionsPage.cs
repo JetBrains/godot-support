@@ -59,7 +59,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
                     "Connecting LSP server:", string.Empty, string.Empty,
                     new RadioOptionPoint(LanguageServerConnectionMode.StartEditorHeadless,
                         "Automatically start headless LSP server"),
-                    // new RadioOptionPoint(LanguageServerConnectionMode.ConnectRunningEditor, "Attempt to connect the running Godot Editor"), // todo: commented because need some tricky waiting and probing the port
+                    new RadioOptionPoint(LanguageServerConnectionMode.ConnectRunningEditor, 
+                        "Attempt to connect the running Godot Editor"),
                     new RadioOptionPoint(LanguageServerConnectionMode.Never, "Never use LSP")
                 );
                 AddKeyword("Language server");
