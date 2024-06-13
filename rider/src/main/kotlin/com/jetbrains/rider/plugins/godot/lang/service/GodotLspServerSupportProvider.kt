@@ -9,19 +9,17 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.rd.util.lifetime
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.*
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
-import com.jetbrains.rd.util.lifetime.SequentialLifetimes
-import com.jetbrains.rd.util.lifetime.isAlive
 import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
 import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
+import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
 import com.jetbrains.rider.plugins.godot.Util
 import com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage
 import com.jetbrains.rider.util.NetUtils
@@ -39,7 +37,6 @@ class LspProjectService(val project: Project) {
         fun getInstance(project: Project) = project.service<LspProjectService>()
     }
 
-    val sequentialLifetimes = SequentialLifetimes(project.lifetime)
     val mergingUpdateQueue: MergingUpdateQueue = MergingUpdateQueue("GodotLspServerSupportProviderMergingUpdateQueue", 1000, true, null).setRestartTimerOnAdd(true)
     val mergingUpdateQueueAction: Update = object : Update("restartServerIfNeeded") {
         override fun run() {
@@ -52,19 +49,6 @@ class LspProjectService(val project: Project) {
         thisLogger().info("startServersIfNeeded")
         LspServerManager.getInstance(project).startServersIfNeeded(GodotLspServerSupportProvider::class.java)
     }
-
-    private fun pingSocket(port: Int): Boolean {
-        return try {
-            thisLogger().info("pingSocket1")
-            Socket().use { socket ->
-                thisLogger().info("pingSocket2")
-                socket.connect(InetSocketAddress("127.0.0.1", port))
-                true
-            }
-        } catch (e: IOException) {
-            false
-        }
-    }
 }
 
 class GodotLspServerSupportProvider : LspServerSupportProvider {
@@ -74,20 +58,18 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
         if (Util.isGdFile(file)) {
             val discoverer = GodotProjectDiscoverer.getInstance(project)
             val lspService = LspProjectService.getInstance(project)
-            if (allReady(discoverer)) {
-                thisLogger().info("ensureServerStarted")
-                serverStarter.ensureServerStarted(GodotLspServerDescriptor(project)) // this does not start a server if the `fileOpened` has already ended
-            } else if (lspService.isScheduled.compareAndSet(false, true)) {
-                val lifetime = lspService.sequentialLifetimes.next()
-                project.lifetime.onTerminationIfAlive { if (lifetime.isAlive) lifetime.terminate() }
+
+            // subscribe one time to everything
+            if (lspService.isScheduled.compareAndSet(false, true)){
+                val lifetime = GodotProjectLifetimeService.getLifetime(project)
                 discoverer.lspConnectionMode.adviseNotNull(lifetime) { lspConnectionMode ->
                     if (lspConnectionMode == LanguageServerConnectionMode.Never) {
                         LspServerManager.getInstance(project).stopServers(this.javaClass)
-                        return@adviseNotNull
                     }
-
-                    scheduleStartIfNeeded(project)
+                    else
+                        scheduleStartIfNeeded(project)
                 }
+
                 discoverer.useDynamicPort.adviseNotNull(lifetime) {
                     scheduleStartIfNeeded(project)
                 }
@@ -97,21 +79,13 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 discoverer.godotPath.adviseNotNull(lifetime) {
                     scheduleStartIfNeeded(project)
                 }
+            }
 
-// todo: restore
-//                            if (lspConnectionMode == LanguageServerConnectionMode.ConnectRunningEditor) {
-//                                thisLogger().info("fileOpened6 ${remoteHostPort}")
-//                                project.lifetime.startNonUrgentBackgroundAsync {
-//                                    thisLogger().info("fileOpened7 ${remoteHostPort}")
-//                                    while (!pingSocket(remoteHostPort)) {
-//                                        delay(1000)
-//                                        thisLogger().info("fileOpened - delay")
-//                                    }
-//                                    thisLogger().info("ensureServerStarted1")
-//                                    delay(500)
-//                                    serverStarter.ensureServerStarted(GodotLspServerDescriptor(project))
-//                                }.noAwait()
-//                            }
+            // start, it is ok to call multiple times, but not too often
+            if (allReady(discoverer)) {
+                thisLogger().info("ensureServerStarted")
+                // this does not start a server if the `fileOpened` has already ended
+                serverStarter.ensureServerStarted(GodotLspServerDescriptor(project))
             }
         }
     }
@@ -133,6 +107,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
         val discoverer = GodotProjectDiscoverer.getInstance(project)
         val lspConnectionMode by lazy { discoverer.lspConnectionMode.value }
         val remoteHostPort by lazy { if (useDynamicPort!!) NetUtils.findFreePort(500050, setOf()) else discoverer.remoteHostPort.value }
+        //val dapPort by lazy { NetUtils.findFreePort(500060, setOf()) }
         val useDynamicPort by lazy { discoverer.useDynamicPort.value }
 
         override fun isSupportedFile(file: VirtualFile) = Util.isGdFile(file)
@@ -140,7 +115,10 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             val basePath = discoverer.godotDescriptor.value?.mainProjectBasePath
             val godotPath = discoverer.godotPath.value
             val headlessArg = if (discoverer.godot4Path.value != null) "--headless" else "--no-window"
+            // todo: dap port in the headless Godot may conflict with dap port of the main Godot editor
             val commandLine = GeneralCommandLine(godotPath, "--path", "$basePath", "--editor", headlessArg, "--lsp-port", remoteHostPort.toString())
+            // can be solved with https://github.com/godotengine/godot/pull/92336, when it is released
+            // val commandLine = GeneralCommandLine(godotPath, "--path", "$basePath", "--editor", headlessArg, "--lsp-port", remoteHostPort.toString(), "--dap-port", dapPort.toString())
             thisLogger().info("createCommandLine commandLine=$commandLine")
             return commandLine
             // https://github.com/godotengine/godot-proposals/issues/7558#issuecomment-1693765359
