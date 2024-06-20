@@ -10,7 +10,6 @@
     <plugin id="org.jetbrains.plugins.textmate"/>
     <plugin id="com.intellij.rider.godot.community"/>
     <module name="intellij.platform.dap"/>
-    <module name="intellij.platform.dap.impl"/>
   </dependencies>
 
   <extensions defaultExtensionNs="com.intellij">
