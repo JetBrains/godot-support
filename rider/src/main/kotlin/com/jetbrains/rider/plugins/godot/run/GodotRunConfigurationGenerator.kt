@@ -185,7 +185,6 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             } else {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(GdScriptConfigurationType::class.java)
                 val runConfiguration = runManager.createConfiguration(configurationName, configurationType.factory)
-                (runConfiguration.configuration as GdScriptRunConfiguration).port = 6006
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }
