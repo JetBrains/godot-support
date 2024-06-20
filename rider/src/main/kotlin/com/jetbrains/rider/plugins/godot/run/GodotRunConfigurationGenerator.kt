@@ -38,6 +38,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
         const val ATTACH_CONFIGURATION_NAME = "Attach to Player"
 
         const val PLAYER_CONFIGURATION_NAME = "Player"
+        const val PLAYER_GDSCRIPT_CONFIGURATION_NAME = "Player GDScript"
         const val EDITOR_CONFIGURATION_NAME = "Editor"
     }
 
@@ -77,19 +78,21 @@ class GodotRunConfigurationGenerator : LifetimedService() {
 
                     GodotProjectDiscoverer.getInstance(project).godot3Path.adviseNotNull(lt) { path ->
                         if (descriptor.isPureGdScriptProject){
-                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, runManager)
+                            createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
                             createOrUpdateNativeExecutableRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                             return@adviseNotNull
                         }
+                        createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
                         createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
                         createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                     }
                     GodotProjectDiscoverer.getInstance(project).godot4Path.adviseNotNull(lt) { path ->
                         if (descriptor.isPureGdScriptProject){
-                            createOrUpdateGdScriptRunConfiguration(PLAYER_CONFIGURATION_NAME, runManager)
+                            createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
                             createOrUpdateNativeExecutableRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                             return@adviseNotNull
                         }
+                        createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
                         createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
                         createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                     }
@@ -99,6 +102,12 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                         val runConfiguration = runManager.findConfigurationByName(PLAYER_CONFIGURATION_NAME)
                         if (runConfiguration != null) {
                             runManager.selectedConfiguration = runConfiguration
+                        }
+                        else{
+                            val runConfiguration2 = runManager.findConfigurationByName(PLAYER_GDSCRIPT_CONFIGURATION_NAME)
+                            if (runConfiguration2 != null) {
+                                runManager.selectedConfiguration = runConfiguration2
+                            }
                         }
                     }
                 }
