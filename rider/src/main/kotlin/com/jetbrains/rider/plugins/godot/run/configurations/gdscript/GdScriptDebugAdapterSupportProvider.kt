@@ -27,6 +27,7 @@ private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<
     override suspend fun launchDebugAdapter(environment: ExecutionEnvironment, executionResult: ExecutionResult?, sessionId: String): DebugAdapterHandle {
         try {
             return DebugAdapterSocketConnection(
+                host = (environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration).address,
                 port = (environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration).port, connectionAttempts = 1)
         }
         catch (e: Exception) {
@@ -37,6 +38,7 @@ private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<
             }
 
             return DebugAdapterSocketConnection(
+                host = (environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration).address,
                 port = (environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration).port,
                 connectionAttempts = 2)
         }
