@@ -9,17 +9,29 @@ import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.platform.dap.api.DapLaunchArgumentsProvider
 import com.intellij.platform.dap.api.DapStartRequest
+import com.intellij.util.xmlb.XmlSerializer
+import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Transient
-import org.w3c.dom.Element
+import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
+import org.jdom.Element
 
 class GdScriptRunConfiguration(name:String, project: Project, factory: ConfigurationFactory)
-    : LocatableConfigurationBase<Element>(project, factory, name),
+    : RunConfigurationBase<Element>(project, factory, name),
+      RemoteConfiguration,
       WithoutOwnBeforeRunSteps, DapLaunchArgumentsProvider {
 
     override val adapterId = GdScriptDebugAdapter
     override val request: DapStartRequest = DapStartRequest.Launch
+
+    @Attribute
+    override var port: Int = 6006
+
     @Transient
-    var port: Int = 6006
+    override var address: String = "127.0.0.1"
+
+    @Transient
+    override var listenPortForConnections: Boolean = false
+
     override fun arguments(): Map<String, Any?> = mapOf(
         // all those do not affect anything
     )
@@ -39,5 +51,16 @@ class GdScriptRunConfiguration(name:String, project: Project, factory: Configura
         return configuration
     }
 
+    override fun readExternal(element: Element) {
+        super.readExternal(element)
+        XmlSerializer.deserializeInto(this, element)
+    }
+
+    override fun writeExternal(element: Element) {
+        super.writeExternal(element)
+        XmlSerializer.serializeInto(this, element)
+    }
+
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = GdScriptRunConfigurationSettingsEditor(project)
+
 }
