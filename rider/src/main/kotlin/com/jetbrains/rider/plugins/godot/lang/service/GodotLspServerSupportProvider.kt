@@ -24,40 +24,40 @@ import com.jetbrains.rider.plugins.godot.Util
 import com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage
 import com.jetbrains.rider.util.NetUtils
 import org.eclipse.lsp4j.CompletionItem
-import java.io.IOException
-import java.net.InetSocketAddress
-import java.net.Socket
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Service(Service.Level.PROJECT)
-class LspProjectService(val project: Project) {
+class GodotLspProjectService(val project: Project) {
     var isScheduled: AtomicBoolean = AtomicBoolean(false)
 
     companion object {
-        fun getInstance(project: Project) = project.service<LspProjectService>()
+        fun getInstance(project: Project) = project.service<GodotLspProjectService>()
     }
 
-    val mergingUpdateQueue: MergingUpdateQueue = MergingUpdateQueue("GodotLspServerSupportProviderMergingUpdateQueue", 1000, true, null).setRestartTimerOnAdd(true)
-    val mergingUpdateQueueAction: Update = object : Update("restartServerIfNeeded") {
+    fun queueRestart(){
+        mergingUpdateQueue.queue(mergingUpdateQueueAction)
+    }
+
+    private val mergingUpdateQueue: MergingUpdateQueue = MergingUpdateQueue("GodotLspServerSupportProviderMergingUpdateQueue", 1000, true, null).setRestartTimerOnAdd(true)
+    private val mergingUpdateQueueAction: Update = object : Update("restartServerIfNeeded") {
         override fun run() {
-            restartServer(project)
+            restartServer()
         }
     }
 
-    private fun restartServer(project: Project) {
-        LspServerManager.getInstance(project).stopServers(GodotLspServerSupportProvider::class.java)
-        thisLogger().info("startServersIfNeeded")
-        LspServerManager.getInstance(project).startServersIfNeeded(GodotLspServerSupportProvider::class.java)
+    fun restartServer() {
+        thisLogger().info("stopAndRestartIfNeeded")
+        LspServerManager.getInstance(project).stopAndRestartIfNeeded(GodotLspServerSupportProvider::class.java)
     }
 }
 
 class GodotLspServerSupportProvider : LspServerSupportProvider {
-    override fun createLspServerWidgetItem(lspServer: LspServer, currentFile: VirtualFile?): LspServerWidgetItem = LspServerWidgetItem(lspServer, currentFile, GodotIcons.Icons.GodotLogo, settingsPageClass = GodotPluginOptionsPage::class.java)
+    override fun createLspServerWidgetItem(lspServer: LspServer, currentFile: VirtualFile?): LspServerWidgetItem = GodotLspServerWidgetItem(lspServer, currentFile, GodotIcons.Icons.GodotLogo, settingsPageClass = GodotPluginOptionsPage::class.java)
 
     override fun fileOpened(project: Project, file: VirtualFile, serverStarter: LspServerSupportProvider.LspServerStarter) {
         if (Util.isGdFile(file)) {
             val discoverer = GodotProjectDiscoverer.getInstance(project)
-            val lspService = LspProjectService.getInstance(project)
+            val lspService = GodotLspProjectService.getInstance(project)
 
             // subscribe one time to everything
             if (lspService.isScheduled.compareAndSet(false, true)){
@@ -97,10 +97,10 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             && discoverer.godotDescriptor.value != null)
 
     private fun scheduleStartIfNeeded(project: Project) {
-        val lspProjectService = LspProjectService.getInstance(project)
+        val godotLspProjectService = GodotLspProjectService.getInstance(project)
         val discoverer = GodotProjectDiscoverer.getInstance(project)
         if (!allReady(discoverer)) return
-        lspProjectService.mergingUpdateQueue.queue(lspProjectService.mergingUpdateQueueAction)
+        godotLspProjectService.queueRestart()
     }
 
     private class GodotLspServerDescriptor(project: Project) : ProjectWideLspServerDescriptor(project, "Godot") {
