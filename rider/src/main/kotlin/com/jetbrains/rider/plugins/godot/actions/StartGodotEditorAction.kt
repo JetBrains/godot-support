@@ -3,14 +3,17 @@ package com.jetbrains.rider.plugins.godot.actions
 import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.SystemInfo
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
+import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
@@ -21,10 +24,42 @@ import com.jetbrains.rider.run.withRawParameters
 
 
 class  StartGodotEditorAction : DumbAwareAction() {
+    override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
+
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-
         startEditor(project)
+    }
+
+    override fun update(e: AnActionEvent) {
+        val project = e.project
+        if (project == null){
+            e.presentation.isEnabled = false
+            return
+        }
+
+        val runManager = RunManager.getInstance(project)
+        val configurationType = ConfigurationTypeUtil.findConfigurationType(DotNetExeConfigurationType::class.java)
+        var runConfiguration = runManager.findConfigurationByTypeAndName(
+            configurationType.id, GodotRunConfigurationGenerator.EDITOR_CONFIGURATION_NAME)
+
+        if (runConfiguration == null){
+            runConfiguration = runManager.findConfigurationByTypeAndName(
+                ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java).id,
+                GodotRunConfigurationGenerator.EDITOR_CONFIGURATION_NAME)
+            if (runConfiguration == null){
+                runConfiguration = runManager.findConfigurationByTypeAndName(
+                    ConfigurationTypeUtil.findConfigurationType(ExeConfigurationType::class.java).id,
+                    GodotRunConfigurationGenerator.EDITOR_CONFIGURATION_NAME)
+                if (runConfiguration == null){
+                    e.presentation.isEnabled = false
+                    return
+                }
+            }
+        }
+
+        e.presentation.isEnabled = true
+        super.update(e)
     }
 
     companion object {
