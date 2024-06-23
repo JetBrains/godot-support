@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.nextLeaf
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
@@ -55,7 +56,13 @@ object PsiGdExprUtil {
             is GdAttributeEx -> {
                 val ref = expr.refId?.references?.firstOrNull() ?: return ""
                 if (ref is GdClassMemberReference) {
-                    return GdCommonUtil.returnType(ref.resolveDeclaration())
+                    val declaration = ref.resolveDeclaration()
+                    // In case method is not resolved returnType is method itself
+                    if (declaration is GdMethodDeclTl && expr.refId?.nextLeaf()?.elementType == GdTypes.DOT) {
+                        return "Callable"
+                    }
+
+                    return GdCommonUtil.returnType(declaration)
                 }
 
                 return ""
