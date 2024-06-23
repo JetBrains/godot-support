@@ -7,8 +7,8 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.ui.FragmentedSettings
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
-import com.intellij.platform.dap.api.DapLaunchArgumentsProvider
-import com.intellij.platform.dap.api.DapStartRequest
+import com.intellij.platform.dap.DapLaunchArgumentsProvider
+import com.intellij.platform.dap.DapStartRequest
 import com.intellij.util.xmlb.XmlSerializer
 import com.intellij.util.xmlb.annotations.Attribute
 import com.intellij.util.xmlb.annotations.Transient
@@ -42,7 +42,7 @@ class GdScriptRunConfiguration(name:String, project: Project, factory: Configura
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState {
         // todo: We can start the Godot Editor here
-        return EmptyRunProfileState.INSTANCE;
+        return EmptyRunProfileState.INSTANCE
     }
 
     override fun clone(): RunConfiguration {
