@@ -32,17 +32,15 @@ class GodotLspServerWidgetItem(lspServer: LspServer,
             LspServerState.ShutdownUnexpectedly -> GodotPluginBundle.message("language.services.widget.item.shutdown.unexpectedly", serverLabel)
         }
 
-    override fun createWidgetInlineActions(): List<AnAction> {
-        val actions = super.createWidgetInlineActions().toMutableList()
-
-        if (widgetActionLocation == LanguageServicePopupSection.ForCurrentFile
-            && lspServer.state in arrayOf(LspServerState.ShutdownNormally, LspServerState.ShutdownUnexpectedly)) {
+    override fun createAdditionalInlineActions(): List<AnAction> {
+        if (widgetActionLocation == LanguageServicePopupSection.ForCurrentFile &&
+            lspServer.state in arrayOf(LspServerState.ShutdownNormally, LspServerState.ShutdownUnexpectedly)
+        ) {
             val discoverer = GodotProjectDiscoverer.getInstance(lspServer.project)
             if (discoverer.lspConnectionMode.value == LanguageServerConnectionMode.ConnectRunningEditor)
-                actions.add(0, StartGodotEditorActionInWidget(lspServer))
+                return listOf(StartGodotEditorActionInWidget(lspServer))
         }
-
-        return actions
+        return super.createAdditionalInlineActions()
     }
 
     private class StartGodotEditorActionInWidget(
