@@ -56,6 +56,7 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
         })
 
         property("godotDescriptor", GodotDescriptor)
+        property("godotInitialized", bool.nullable)
 
         property("editorState", GodotEditorState)
     }
