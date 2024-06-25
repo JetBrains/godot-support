@@ -35,6 +35,7 @@
                             listener="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer$ProtocolListener"/>
 
     <rider.runtime.dotNetRuntimeAutodetect implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetRuntimeAutodetect"/>
+    <rider.filesIndexingRuleProvider implementation="com.jetbrains.rider.plugins.godot.GodotFilesIndexingRuleProvider"/>
 
     <!-- Options pages -->
     <applicationConfigurable groupId="language"

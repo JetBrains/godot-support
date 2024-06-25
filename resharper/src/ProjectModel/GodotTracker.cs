@@ -25,11 +25,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
         {
             myLogger = logger;
             var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
-            tasksScheduler.EnqueueTask(new SolutionLoadTask(GetType(),
-                SolutionLoadTaskKinds.Done,
-                () =>
+            tasksScheduler.EnqueueTask(new SolutionLoadTask(GetType(), SolutionLoadTaskKinds.Done, () =>
+            {
+                try
                 {
-                    if (solution.SolutionFilePath.IsEmpty && solution.SolutionDirectory.Combine("project.godot").ExistsFile)
+                    if (solution.SolutionFilePath.IsEmpty &&
+                        solution.SolutionDirectory.Combine("project.godot").ExistsFile)
                     {
                         GodotDescriptor = new GodotDescriptor(true, solution.SolutionDirectory.FullPath);
                         model.GodotDescriptor.SetValue(GodotDescriptor);
@@ -37,7 +38,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                         // logger.Verbose($"Godot project features: {string.Join(",", Features)}");
                         return;
                     }
-                    
+
                     foreach (var project in solution.GetAllProjects().Where(project => project.IsGodotProject()))
                     {
                         var file = project.Location.Combine("project.godot");
@@ -51,7 +52,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                         // logger.Verbose($"Godot project features: {string.Join(",", Features)}");
                         break;
                     }
-                }));
+                }
+                finally
+                {
+                    model.GodotInitialized.SetValue(true);
+                }
+            }));
         }
         
         // RIDER-111425 Design a cache for "project.godot" data
