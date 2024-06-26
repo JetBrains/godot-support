@@ -38,7 +38,6 @@ class GdKeywordContributor : CompletionContributor() {
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         if (SKIP_KEYWORDS_FOR.accepts(parameters.position)) return
-        if (COMMENT_POS.accepts(parameters.position)) return
 
         result.addAllElements(TO_HINT_KEYWORDS.map { GdLookup.create(it, priority = -100.0) })
         result.addAllElements(TO_HINT_KEYWORDS_WITH_SPACE.map { GdLookup.create("$it ", priority = -100.0, presentable = it) })
