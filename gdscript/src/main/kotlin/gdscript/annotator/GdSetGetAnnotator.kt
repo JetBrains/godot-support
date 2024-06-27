@@ -17,44 +17,44 @@ class GdSetGetAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
-            is GdSetMethodIdNm, is GdGetMethodIdNm -> methodExists(element as GdNamedElement, holder)
+            is GdSetMethodIdRef, is GdGetMethodIdRef -> methodExists(element, holder)
         }
     }
 
-    private fun methodExists(element: GdNamedElement, holder: AnnotationHolder) {
-        if (GdMethodDeclIndex.INSTANCE.getInFile(element).isNotEmpty()) return;
+    private fun methodExists(element: PsiElement, holder: AnnotationHolder) {
+        if (GdMethodDeclIndex.INSTANCE.getInFile(element).isNotEmpty()) return
         holder
             .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Method [${element.text}] does not exist")
             .range(element.textRange)
-            .withFix(if (element is GdSetMethodIdNm) setMethod(element) else getMethod(element as GdGetMethodIdNm))
+            .withFix(if (element is GdSetMethodIdRef) setMethod(element) else getMethod(element as GdGetMethodIdRef))
             .create()
     }
 
-    private fun setMethod(element: GdSetMethodIdNm): GdCreateMethodAction {
-        val paramType = variableType(element);
-        val param = "value${if (paramType.isNotBlank()) ": $paramType" else ""}";
+    private fun setMethod(element: GdSetMethodIdRef): GdCreateMethodAction {
+        val paramType = variableType(element)
+        val param = "value${if (paramType.isNotBlank()) ": $paramType" else ""}"
 
         return GdCreateMethodAction(
-            element.name,
+            element.text,
             parameters = arrayOf(param),
-            bodyLines = arrayOf("${variableName(element)} = value") // optional ;
-        );
+            bodyLines = arrayOf("${variableName(element)} = value") // optional
+        )
     }
 
-    private fun getMethod(element: GdGetMethodIdNm): GdCreateMethodAction {
+    private fun getMethod(element: GdGetMethodIdRef): GdCreateMethodAction {
         return GdCreateMethodAction(
-            element.name,
+            element.text,
             returnType = variableType(element),
-            bodyLines = arrayOf("return ${variableName(element)}") // optional ;
-        );
+            bodyLines = arrayOf("return ${variableName(element)}") // optional
+        )
     }
 
     private fun variableName(element: PsiElement): String? {
-        return PsiTreeUtil.getParentOfType(element, GdClassVarDeclTl::class.java)?.name;
+        return PsiTreeUtil.getParentOfType(element, GdClassVarDeclTl::class.java)?.name
     }
 
     private fun variableType(element: PsiElement): String {
-        return PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassVarDeclTl::class.java)?.returnType ?: "";
+        return PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassVarDeclTl::class.java)?.returnType ?: ""
     }
 
 }

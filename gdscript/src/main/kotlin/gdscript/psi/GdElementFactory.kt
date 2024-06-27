@@ -38,10 +38,10 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdFuncDeclIdNmi::class.java)!!.firstChild
     }
 
-    fun getMethodIdNm(project: Project, name: String): PsiElement {
+    fun getMethodIdRef(project: Project, name: String): PsiElement {
         val file = createFile(project, "extends Node\nvar variable:\n\tget = $name\n");
 
-        return PsiTreeUtil.findChildOfType(file, GdGetMethodIdNm::class.java)!!.firstChild
+        return PsiTreeUtil.findChildOfType(file, GdGetMethodIdRef::class.java)!!.firstChild
     }
 
     fun inheritanceIdNm(project: Project, name: String): PsiElement {
@@ -68,10 +68,10 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdRefIdNm::class.java)!!.firstChild
     }
 
-    fun setMethodIdNm(project: Project, name: String): PsiElement {
+    fun setMethodIdRef(project: Project, name: String): PsiElement {
         val file = createFile(project, "extends Node\nvar variable:\n\tset = $name\n")
 
-        return PsiTreeUtil.findChildOfType(file, GdSetMethodIdNm::class.java)!!.firstChild
+        return PsiTreeUtil.findChildOfType(file, GdSetMethodIdRef::class.java)!!.firstChild
     }
 
     fun signalIdNmi(project: Project, name: String): PsiElement {

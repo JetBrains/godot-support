@@ -6,8 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdMethodDeclIndex
-import gdscript.psi.GdGetMethodIdNm
-import gdscript.psi.GdSetMethodIdNm
+import gdscript.psi.GdGetMethodIdRef
+import gdscript.psi.GdSetMethodIdRef
 import gdscript.psi.GdSetgetDecl
 
 /**
@@ -33,8 +33,8 @@ class GdRemoveSetGetAction : BaseIntentionAction() {
         if (editor === null || file === null) return;
         val element = getDeclaration(editor, file) ?: return;
 
-        arrayOf(GdSetMethodIdNm::class.java, GdGetMethodIdNm::class.java).forEach {
-            val name = PsiTreeUtil.findChildOfType(element, it);
+        arrayOf(GdSetMethodIdRef::class.java, GdGetMethodIdRef::class.java).forEach {
+            val name = PsiTreeUtil.findChildOfType(element, it)
             if (name != null) GdMethodDeclIndex.INSTANCE.getInFile(name).firstOrNull()?.delete();
         }
 

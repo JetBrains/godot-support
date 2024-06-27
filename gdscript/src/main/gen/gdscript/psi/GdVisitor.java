@@ -184,8 +184,8 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitGetMethodIdNm(@NotNull GdGetMethodIdNm o) {
-    visitNamedElement(o);
+  public void visitGetMethodIdRef(@NotNull GdGetMethodIdRef o) {
+    visitPsiElement(o);
   }
 
   public void visitIfSt(@NotNull GdIfSt o) {
@@ -316,8 +316,8 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitSetMethodIdNm(@NotNull GdSetMethodIdNm o) {
-    visitNamedElement(o);
+  public void visitSetMethodIdRef(@NotNull GdSetMethodIdRef o) {
+    visitPsiElement(o);
   }
 
   public void visitSetgetDecl(@NotNull GdSetgetDecl o) {
@@ -372,7 +372,7 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitTypeHintNm(@NotNull GdTypeHintRef o) {
+  public void visitTypeHintRef(@NotNull GdTypeHintRef o) {
     visitPsiElement(o);
   }
 

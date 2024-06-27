@@ -5,7 +5,7 @@ import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import gdscript.psi.GdTypes
-import gdscript.reference.GdSetGetMethodIdNmReference
+import gdscript.reference.GdSetGetMethodIdReference
 
 /**
  * Getter & Setter reference to method
@@ -20,7 +20,7 @@ class GdSetGetMethodIdReferenceContributor : PsiReferenceContributor() {
             ),
             object : PsiReferenceProvider() {
                 override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-                    return arrayOf(GdSetGetMethodIdNmReference(element));
+                    return arrayOf(GdSetGetMethodIdReference(element));
                 }
             }
         );

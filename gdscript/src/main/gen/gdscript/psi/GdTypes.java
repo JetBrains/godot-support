@@ -344,7 +344,7 @@ public interface GdTypes {
         return new GdGetDeclImpl(node);
       }
       else if (type == GET_METHOD_ID_NM) {
-        return new GdGetMethodIdNmImpl(node);
+        return new GdGetMethodIdRefImpl(node);
       }
       else if (type == IF_ST) {
         return new GdIfStImpl(node);
@@ -446,7 +446,7 @@ public interface GdTypes {
         return new GdSetDeclImpl(node);
       }
       else if (type == SET_METHOD_ID_NM) {
-        return new GdSetMethodIdNmImpl(node);
+        return new GdSetMethodIdRefImpl(node);
       }
       else if (type == SHIFT_EX) {
         return new GdShiftExImpl(node);

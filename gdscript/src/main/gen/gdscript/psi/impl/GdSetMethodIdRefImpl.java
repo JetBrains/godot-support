@@ -6,14 +6,14 @@ import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import gdscript.psi.*;
 
-public class GdTypeHintRefImpl extends GdRefElementImpl implements GdTypeHintRef {
+public class GdSetMethodIdRefImpl extends GdRefElementImpl implements GdSetMethodIdRef {
 
-  public GdTypeHintRefImpl(ASTNode node) {
+  public GdSetMethodIdRefImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitTypeHintRef(this);
+    visitor.visitSetMethodIdRef(this);
   }
 
   @Override
