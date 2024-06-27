@@ -25,10 +25,11 @@ private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<
     override val id = GdScriptDebugAdapter
 
     override suspend fun launchDebugAdapter(environment: ExecutionEnvironment, executionResult: ExecutionResult?, sessionId: String): DebugAdapterHandle {
+        val config = environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration
         try {
             return DebugAdapterSocketConnection(
-                host = (environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration).address,
-                port = (environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration).port, connectionAttempts = 1)
+                host = config.address,
+                port = config.port, connectionAttempts = 1)
         }
         catch (e: Exception) {
             // handling of cases, if Editor is not running or the port is not matching
@@ -38,8 +39,8 @@ private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<
             }
 
             return DebugAdapterSocketConnection(
-                host = (environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration).address,
-                port = (environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration).port,
+                host = config.address,
+                port = config.port,
                 connectionAttempts = 2)
         }
     }
