@@ -4,10 +4,8 @@ package gdscript.psi.impl;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
@@ -29,8 +27,8 @@ public class GdTypeHintImpl extends ASTWrapperPsiElement implements GdTypeHint {
 
   @Override
   @NotNull
-  public List<GdTypeHintNm> getTypeHintNmList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdTypeHintNm.class);
+  public List<GdTypeHintRef> getTypeHintNmList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdTypeHintRef.class);
   }
 
 }

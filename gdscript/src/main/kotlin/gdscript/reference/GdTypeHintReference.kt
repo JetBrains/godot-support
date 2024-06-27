@@ -24,19 +24,18 @@ import kotlin.reflect.KClass
 /**
  * ReturnType reference to ClassId & EnumDecl
  */
-class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
+class GdTypeHintReference : PsiReferenceBase<GdTypeHintRef> {
 
     private var key: String = ""
     private var project: Project
 
-    constructor(element: GdNamedElement) : super(element, TextRange(0, element.textLength)) {
+    constructor(element: GdTypeHintRef) : super(element, TextRange(0, element.textLength)) {
         key = element.parent.text.substring(0, element.textRangeInParent.endOffset)
         this.project = element.project
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        element.setName(newElementName)
-        return element
+        return element.replace(GdElementFactory.typeHintRef(element.project, newElementName))
     }
 
     override fun resolve(): PsiElement? {
@@ -103,7 +102,7 @@ class GdTypeHintNmReference : PsiReferenceBase<GdNamedElement> {
     }
 
     private fun resolveInner(container: PsiElement): PsiElement? {
-        val myName = element.name
+        val myName = element.text
         enums(container).forEach {
             if (it.name == myName) return it.enumDeclNmi
         }

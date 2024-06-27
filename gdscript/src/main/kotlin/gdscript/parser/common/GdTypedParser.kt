@@ -75,10 +75,10 @@ object GdTypedParser : GdBaseParser {
 
         b.enterSection(TYPE_HINT)
 
-        var ok = b.mceIdentifier(TYPE_HINT_NM)
+        var ok = b.mceIdentifier(TYPE_HINT_REF)
         b.pin(ok)
         while (ok && b.passToken(DOT)) {
-            ok = ok && b.mceIdentifier(TYPE_HINT_NM)
+            ok = ok && b.mceIdentifier(TYPE_HINT_REF)
         }
 
         return b.exitSection(ok)

@@ -49,7 +49,7 @@ object GdCommonUtil {
                 is GdRefIdNm -> GdElementFactory.refIdNm(project, newName)
                 is GdSetMethodIdNm -> GdElementFactory.setMethodIdNm(project, newName)
                 is GdSignalIdNmi -> GdElementFactory.signalIdNmi(project, newName)
-                is GdTypeHintNm -> GdElementFactory.typeHintNm(project, newName).firstChild
+                is GdTypeHintRef -> GdElementFactory.typeHintRef(project, newName).firstChild
                 is GdStringValNm -> GdElementFactory.typeStringVal(project, newName)
                 is GdVarNmi -> GdElementFactory.varNmi(project, newName)
                 else -> return element

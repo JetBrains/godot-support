@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface GdTypeHint extends PsiElement {
 
   @NotNull
-  List<GdTypeHintNm> getTypeHintNmList();
+  List<GdTypeHintRef> getTypeHintNmList();
 
 }

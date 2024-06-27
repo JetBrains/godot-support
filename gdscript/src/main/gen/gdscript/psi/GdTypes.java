@@ -112,7 +112,7 @@ public interface GdTypes {
   IElementType TYPED = new GdElementType("TYPED");
   IElementType TYPED_VAL = new GdElementType("TYPED_VAL");
   IElementType TYPE_HINT = new GdElementType("TYPE_HINT");
-  IElementType TYPE_HINT_NM = new GdElementType("TYPE_HINT_NM");
+  IElementType TYPE_HINT_REF = new GdElementType("TYPE_HINT_NM");
   IElementType VAR_DECL_ST = new GdElementType("VAR_DECL_ST");
   IElementType VAR_NMI = new GdElementType("VAR_NMI");
   IElementType WHILE_ST = new GdElementType("WHILE_ST");
@@ -487,8 +487,8 @@ public interface GdTypes {
       else if (type == TYPE_HINT) {
         return new GdTypeHintImpl(node);
       }
-      else if (type == TYPE_HINT_NM) {
-        return new GdTypeHintNmImpl(node);
+      else if (type == TYPE_HINT_REF) {
+        return new GdTypeHintRefImpl(node);
       }
       else if (type == VAR_DECL_ST) {
         return new GdVarDeclStImpl(node);
