@@ -4,6 +4,7 @@ import com.intellij.execution.Executor
 import com.intellij.execution.configuration.EmptyRunProfileState
 import com.intellij.execution.configurations.*
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.execution.runners.RunConfigurationWithSuppressedDefaultRunAction
 import com.intellij.execution.ui.FragmentedSettings
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
@@ -17,6 +18,7 @@ import org.jdom.Element
 
 class GdScriptRunConfiguration(name:String, project: Project, factory: ConfigurationFactory)
     : RunConfigurationBase<Element>(project, factory, name),
+      RunConfigurationWithSuppressedDefaultRunAction,
       RemoteConfiguration,
       WithoutOwnBeforeRunSteps, DapLaunchArgumentsProvider {
 
