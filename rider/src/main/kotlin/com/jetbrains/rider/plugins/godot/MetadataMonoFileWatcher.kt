@@ -6,10 +6,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.lifetime
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.SystemInfo
-import com.intellij.util.application
 import com.jetbrains.rd.util.lifetime.isAlive
 import com.jetbrains.rd.util.reactive.viewNotNull
 import com.jetbrains.rd.util.reactive.whenTrue
+import com.jetbrains.rd.util.threading.coroutines.launch
 import com.jetbrains.rider.projectView.solution
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -19,7 +19,6 @@ import java.nio.file.*
 import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
 import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
 import java.security.MessageDigest
-import kotlin.concurrent.thread
 import kotlin.io.path.isDirectory
 
 
@@ -94,12 +93,12 @@ class MetadataMonoFileWatcher : ProjectActivity {
                 godotDiscoverer.godotDescriptor.viewNotNull(l) { lt, descriptor ->
                     if (descriptor.isPureGdScriptProject) return@viewNotNull
                     val mainProjectBasePath = File(descriptor.mainProjectBasePath)
-                    thread(name = "MetadataFileWatcher") {
+                    lt.launch(Dispatchers.IO) {
                         val watchService: WatchService = FileSystems.getDefault().newWatchService()
                         val metaFileDir = mainProjectBasePath.resolve(metaFileDir).toPath()
 
                         if (!(metaFileDir.isDirectory()))
-                            return@thread
+                            return@launch
 
                         metaFileDir.register(watchService, ENTRY_CREATE, ENTRY_MODIFY)
 
@@ -116,7 +115,7 @@ class MetadataMonoFileWatcher : ProjectActivity {
                                         logger.info("GodotProjectDiscoverer.getInstance(project).godotPath.set()")
                                         val newPath = Util.getFromMonoMetadataPath(mainProjectBasePath) ?: continue
                                         logger.info("GodotProjectDiscoverer.getInstance(project).godotPath.set($newPath)")
-                                        application.invokeLater {
+                                        withContext(Dispatchers.EDT) {
                                             logger.info("application.invokeLater GodotProjectDiscoverer.getInstance(project).godotPath.set($newPath)")
                                             GodotProjectDiscoverer.getInstance(project).godot3Path.set(newPath)
                                         }
