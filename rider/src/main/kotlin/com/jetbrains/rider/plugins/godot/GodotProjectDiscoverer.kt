@@ -1,6 +1,7 @@
 package com.jetbrains.rider.plugins.godot
 
 import com.intellij.execution.RunManager
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.client.ClientProjectSession
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.Logger
@@ -11,6 +12,7 @@ import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IProperty
 import com.jetbrains.rd.util.reactive.Property
 import com.jetbrains.rd.util.reactive.adviseNotNull
+import com.jetbrains.rd.util.threading.coroutines.launch
 import com.jetbrains.rider.model.godot.frontendBackend.GodotDescriptor
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
 import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
@@ -20,6 +22,8 @@ import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigu
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.util.idea.getService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
 @Service(Service.Level.PROJECT)
@@ -35,20 +39,26 @@ class GodotProjectDiscoverer(project: Project) {
     val godotPath : IProperty<String?> = Property(null)
 
     init {
-        godot3Path.adviseNotNull(project.lifetime){
+        val lifetime = GodotProjectLifetimeService.getLifetime(project)
+        godot3Path.adviseNotNull(lifetime){
             godotPath.set(it)
         }
-        godot4Path.adviseNotNull(project.lifetime){
+        godot4Path.adviseNotNull(lifetime){
             godotPath.set(it)
         }
 
-        godotDescriptor.adviseNotNull(project.lifetime){
+        godotDescriptor.adviseNotNull(lifetime){
             logger.info("Godot godotDescriptor: $it")
             val basePath = File(it.mainProjectBasePath)
-            godot3Path.set(
-                MetadataMonoFileWatcher.Util.getFromMonoMetadataPath(basePath)
-                    ?: MetadataMonoFileWatcher.Util.getGodotPath(basePath) ?: getGodotPathFromPlayerRunConfiguration(project))
-            godot4Path.set(MetadataCoreFileWatcher.Util.getGodotPath(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project))
+            lifetime.launch(Dispatchers.IO) {
+                val g3path = MetadataMonoFileWatcher.Util.getFromMonoMetadataPath(basePath)
+                             ?: MetadataMonoFileWatcher.Util.getGodotPath(basePath) ?: getGodotPathFromPlayerRunConfiguration(project)
+                val g4path = MetadataCoreFileWatcher.Util.getGodotPath(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project)
+                withContext(Dispatchers.EDT) {
+                    godot3Path.set(g3path)
+                    godot4Path.set(g4path)
+                }
+            }
         }
     }
 
