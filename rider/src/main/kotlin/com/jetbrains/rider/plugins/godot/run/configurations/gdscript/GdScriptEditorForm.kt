@@ -10,14 +10,12 @@ import javax.swing.JPanel
 import javax.swing.event.HyperlinkEvent
 
 class GdScriptEditorForm(viewModel: GdScriptViewModel) {
-    private var rootPanel: JPanel? = null
-    val panel: JPanel
-        get() = rootPanel!!
+    var panel: JPanel
 
     private var portField: PortField = PortField(viewModel.port.value)
 
     init {
-        rootPanel = panel {
+        panel = panel {
             indent {
                 row{
                     text(GodotPluginBundle.message("editor.should.be.running")){
