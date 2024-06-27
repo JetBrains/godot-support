@@ -27,8 +27,8 @@ object GdPsiUtils {
 
     /** Inheritance */
     @JvmStatic fun getInheritancePath(element: GdInheritance): String = GdInheritanceElementType.inheritancePath(element)
-    @JvmStatic fun getPsiFile(element: GdInheritanceIdNm): PsiFile? = PsiGdInheritanceUtil.getPsiFile(element)
-    @JvmStatic fun isClassName(element: GdInheritanceIdNm): Boolean = PsiGdInheritanceUtil.isClassName(element)
+    @JvmStatic fun getPsiFile(element: GdInheritanceIdRef): PsiFile? = PsiGdInheritanceUtil.getPsiFile(element)
+    @JvmStatic fun isClassName(element: GdInheritanceIdRef): Boolean = PsiGdInheritanceUtil.isClassName(element)
 
     /** Enum  */
     @JvmStatic fun getName(element: GdEnumDeclTl): String = GdEnumUtil.getName(element)

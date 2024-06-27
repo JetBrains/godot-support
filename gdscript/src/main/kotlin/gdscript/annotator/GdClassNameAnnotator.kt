@@ -10,7 +10,6 @@ import gdscript.action.quickFix.GdFileClassNameAction
 import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdClassNamingIndex
-import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.PsiGdFileUtil
@@ -26,8 +25,8 @@ class GdClassNameAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         when (element) {
             is GdInheritanceId -> existingInheritance(element, holder)
-            is GdInheritanceIdNm -> colorInheritance(element, holder)
-            is GdInheritanceSubIdNm -> colorClass(element, GdHighlighterColors.CLASS_TYPE, holder)
+            is GdInheritanceIdRef -> colorInheritance(element, holder)
+            is GdInheritanceSubIdRef -> colorClass(element, GdHighlighterColors.CLASS_TYPE, holder)
             is GdClassNameNmi -> {
                 alreadyExists(element, holder)
                     || classNameToFilename(element, holder)
@@ -69,7 +68,7 @@ class GdClassNameAnnotator : Annotator {
 //        }
     }
 
-    private fun colorInheritance(element: GdInheritanceIdNm, holder: AnnotationHolder) {
+    private fun colorInheritance(element: GdInheritanceIdRef, holder: AnnotationHolder) {
         if (element.isClassName) {
             if (GdClassUtil.getClassIdElement(element.text, element)?.containingFile?.isInSdk() == true)
             colorClass(element, GdHighlighterColors.ENGINE_TYPE, holder)

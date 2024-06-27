@@ -5,7 +5,7 @@ import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
 import gdscript.psi.GdTypes
-import gdscript.reference.GdInheritanceNmReference
+import gdscript.reference.GdInheritanceReference
 
 /**
  * ReturnType reference to classId
@@ -20,7 +20,7 @@ class GdInheritanceReferenceContributor : PsiReferenceContributor() {
             ),
             object : PsiReferenceProvider() {
                 override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-                    return arrayOf(GdInheritanceNmReference(element))
+                    return arrayOf(GdInheritanceReference(element))
                 }
             }
         );

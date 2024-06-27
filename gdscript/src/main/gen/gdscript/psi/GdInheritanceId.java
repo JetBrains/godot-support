@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface GdInheritanceId extends PsiElement {
 
   @NotNull
-  GdInheritanceIdNm getInheritanceIdNm();
+  GdInheritanceIdRef getInheritanceIdNm();
 
   @NotNull
-  List<GdInheritanceSubIdNm> getInheritanceSubIdNmList();
+  List<GdInheritanceSubIdRef> getInheritanceSubIdNmList();
 
 }

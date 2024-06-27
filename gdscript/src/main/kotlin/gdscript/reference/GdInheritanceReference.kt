@@ -11,9 +11,7 @@ import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdClassCompletionUtil
 import gdscript.completion.utils.GdClassCompletionUtil.lookup
 import gdscript.index.impl.GdFileResIndex
-import gdscript.psi.GdClassDeclTl
-import gdscript.psi.GdInheritanceSubIdNm
-import gdscript.psi.GdNamedElement
+import gdscript.psi.*
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.PsiFileUtil.toAbsoluteResource
 import gdscript.utils.VirtualFileUtil.resourcePath
@@ -22,12 +20,12 @@ import java.nio.file.Paths
 /**
  * Inheritance reference to classId
  */
-class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
+class GdInheritanceReference : PsiReferenceBase<PsiElement> {
 
     private var key: String = ""
     private var project: Project
 
-    constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
+    constructor(element: PsiElement) : super(element, TextRange(0, element.textLength)) {
         key = element.parent.text.substring(0, element.textRangeInParent.endOffset)
         this.project = element.project
 
@@ -40,7 +38,11 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
         // TODO rename resource -> rename file
         if (isResource()) return element
 
-        element.setName(newElementName)
+        when (element) {
+            is GdInheritanceIdRef -> element.replace(GdElementFactory.inheritanceIdNm(element.project, newElementName))
+            is GdInheritanceSubIdRef -> element.replace(GdElementFactory.inheritanceSubIdNm(element.project, newElementName))
+        }
+
         return element
     }
 
@@ -72,7 +74,7 @@ class GdInheritanceNmReference : PsiReferenceBase<GdNamedElement> {
                 }
                 lookUps
             }.toTypedArray()
-        } else if (element is GdInheritanceSubIdNm) { // While at nested position, only InnerClasses
+        } else if (element is GdInheritanceSubIdRef) { // While at nested position, only InnerClasses
             val classId = GdClassUtil.getClassIdElement(key.substring(0, key.lastIndexOf(".")), element)
                 ?: return emptyArray()
             val container = GdClassUtil.getOwningClassElement(classId)

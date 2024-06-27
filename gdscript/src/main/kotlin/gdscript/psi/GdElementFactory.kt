@@ -47,13 +47,13 @@ object GdElementFactory {
     fun inheritanceIdNm(project: Project, name: String): PsiElement {
         val file = createFile(project, "extends $name\n")
 
-        return PsiTreeUtil.findChildOfType(file, GdInheritanceIdNm::class.java)!!.firstChild
+        return PsiTreeUtil.findChildOfType(file, GdInheritanceIdRef::class.java)!!.firstChild
     }
 
     fun inheritanceSubIdNm(project: Project, name: String): PsiElement {
         val file = createFile(project, "extends Node.$name\n")
 
-        return PsiTreeUtil.findChildOfType(file, GdInheritanceSubIdNm::class.java)!!.firstChild
+        return PsiTreeUtil.findChildOfType(file, GdInheritanceSubIdRef::class.java)!!.firstChild
     }
 
     fun methodIdNmi(project: Project, name: String): PsiElement {

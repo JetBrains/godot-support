@@ -204,12 +204,12 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitInheritanceIdNm(@NotNull GdInheritanceIdNm o) {
-    visitNamedElement(o);
+  public void visitInheritanceIdRef(@NotNull GdInheritanceIdRef o) {
+    visitPsiElement(o);
   }
 
-  public void visitInheritanceSubIdNm(@NotNull GdInheritanceSubIdNm o) {
-    visitNamedElement(o);
+  public void visitInheritanceSubIdRef(@NotNull GdInheritanceSubIdRef o) {
+    visitPsiElement(o);
   }
 
   public void visitIsEx(@NotNull GdIsEx o) {

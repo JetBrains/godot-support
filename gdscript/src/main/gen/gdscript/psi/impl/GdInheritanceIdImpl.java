@@ -4,10 +4,8 @@ package gdscript.psi.impl;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static gdscript.psi.GdTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import gdscript.psi.*;
 
@@ -29,14 +27,14 @@ public class GdInheritanceIdImpl extends ASTWrapperPsiElement implements GdInher
 
   @Override
   @NotNull
-  public GdInheritanceIdNm getInheritanceIdNm() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdInheritanceIdNm.class));
+  public GdInheritanceIdRef getInheritanceIdNm() {
+    return notNullChild(PsiTreeUtil.getChildOfType(this, GdInheritanceIdRef.class));
   }
 
   @Override
   @NotNull
-  public List<GdInheritanceSubIdNm> getInheritanceSubIdNmList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdInheritanceSubIdNm.class);
+  public List<GdInheritanceSubIdRef> getInheritanceSubIdNmList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdInheritanceSubIdRef.class);
   }
 
 }

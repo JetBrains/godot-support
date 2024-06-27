@@ -9,11 +9,11 @@ import gdscript.utils.VirtualFileUtil.getPsiFile
 
 object PsiGdInheritanceUtil {
 
-    fun isClassName(inheritance: GdInheritanceIdNm): Boolean {
+    fun isClassName(inheritance: GdInheritanceIdRef): Boolean {
         return inheritance.firstChild.elementType == GdTypes.IDENTIFIER
     }
 
-    fun getPsiFile(inheritance: GdInheritanceIdNm): PsiFile? {
+    fun getPsiFile(inheritance: GdInheritanceIdRef): PsiFile? {
         val key = inheritance.text.trim('"', '\'')
         if (key.startsWith("res://")) {
             val virtual = GdFileResIndex.getFiles(key, inheritance.project).first();

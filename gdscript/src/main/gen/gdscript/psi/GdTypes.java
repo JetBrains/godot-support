@@ -356,10 +356,10 @@ public interface GdTypes {
         return new GdInheritanceIdImpl(node);
       }
       else if (type == INHERITANCE_ID_NM) {
-        return new GdInheritanceIdNmImpl(node);
+        return new GdInheritanceIdRefImpl(node);
       }
       else if (type == INHERITANCE_SUB_ID_NM) {
-        return new GdInheritanceSubIdNmImpl(node);
+        return new GdInheritanceSubIdRefImpl(node);
       }
       else if (type == IN_EX) {
         return new GdInExImpl(node);

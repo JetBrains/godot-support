@@ -4,7 +4,7 @@ import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.psi.PsiElement
 import gdscript.GdIcon
-import gdscript.psi.GdInheritanceIdNm
+import gdscript.psi.GdInheritanceIdRef
 import gdscript.psi.utils.GdInheritanceUtil
 import javax.swing.Icon
 
@@ -21,7 +21,7 @@ class GdResourceLineMarkerContributor : RelatedItemLineMarkerProvider() {
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>,
     ) {
-        if (element.parent !is GdInheritanceIdNm || !GdInheritanceUtil.isExtending(element, "Resource")) return;
+        if (element.parent !is GdInheritanceIdRef || !GdInheritanceUtil.isExtending(element, "Resource")) return;
 
         // TODO
 //        val usages = GdUserFileIndex.INSTANCE.resourceFiles(

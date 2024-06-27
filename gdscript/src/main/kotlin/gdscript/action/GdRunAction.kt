@@ -11,7 +11,7 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiNamedElement
+import com.intellij.psi.PsiElement
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.run.GdConfigurationFactory
@@ -20,9 +20,9 @@ import gdscript.run.GdRunConfigurationType
 import tscn.psi.utils.TscnResourceUtil
 
 class GdRunAction : RunAnythingAction {
-    val element: PsiNamedElement
+    val element: PsiElement
 
-    constructor(element: PsiNamedElement) {
+    constructor(element: PsiElement) {
         this.element = element
         templatePresentation.icon = AllIcons.RunConfigurations.TestState.Run
         templatePresentation.text = "Run"
