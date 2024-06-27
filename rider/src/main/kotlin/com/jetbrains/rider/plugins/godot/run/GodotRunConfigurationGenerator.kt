@@ -80,35 +80,41 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                         if (descriptor.isPureGdScriptProject){
                             createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
                             createOrUpdateNativeExecutableRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
+                            selectConfigurationIfNeeded(runManager)
                             return@adviseNotNull
                         }
                         createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
                         createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
                         createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
+                        selectConfigurationIfNeeded(runManager)
                     }
                     GodotProjectDiscoverer.getInstance(project).godot4Path.adviseNotNull(lt) { path ->
                         if (descriptor.isPureGdScriptProject){
                             createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
                             createOrUpdateNativeExecutableRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
+                            selectConfigurationIfNeeded(runManager)
                             return@adviseNotNull
                         }
                         createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
                         createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
                         createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
+                        selectConfigurationIfNeeded(runManager)
                     }
+                }
+            }
+        }
 
-                    // make configuration selected if nothing is selected
-                    if (runManager.selectedConfiguration == null) {
-                        val runConfiguration = runManager.findConfigurationByName(PLAYER_CONFIGURATION_NAME)
-                        if (runConfiguration != null) {
-                            runManager.selectedConfiguration = runConfiguration
-                        }
-                        else{
-                            val runConfiguration2 = runManager.findConfigurationByName(PLAYER_GDSCRIPT_CONFIGURATION_NAME)
-                            if (runConfiguration2 != null) {
-                                runManager.selectedConfiguration = runConfiguration2
-                            }
-                        }
+        // make configuration selected if nothing is selected
+        private fun selectConfigurationIfNeeded(runManager: RunManager) {
+            if (runManager.selectedConfiguration == null) {
+                val runConfiguration = runManager.findConfigurationByName(PLAYER_CONFIGURATION_NAME)
+                if (runConfiguration != null) {
+                    runManager.selectedConfiguration = runConfiguration
+                }
+                else {
+                    val runConfiguration2 = runManager.findConfigurationByName(PLAYER_GDSCRIPT_CONFIGURATION_NAME)
+                    if (runConfiguration2 != null) {
+                        runManager.selectedConfiguration = runConfiguration2
                     }
                 }
             }
