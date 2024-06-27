@@ -1,1 +1,2 @@
-*.java -gitlab-generated
+src/main/gen/psi/** -gitlab-generated
+src/main/gen/psi/impl/** -gitlab-generated
