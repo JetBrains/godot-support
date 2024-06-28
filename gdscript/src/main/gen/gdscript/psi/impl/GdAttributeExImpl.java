@@ -1,13 +1,10 @@
 // This is a generated file. Not intended for manual editing.
 package gdscript.psi.impl;
 
-import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import static gdscript.psi.GdTypes.*;
 import gdscript.psi.*;
 
 public class GdAttributeExImpl extends GdExprImpl implements GdAttributeEx {
@@ -34,8 +31,8 @@ public class GdAttributeExImpl extends GdExprImpl implements GdAttributeEx {
   }
 
   @Override
-  public GdRefIdNm getRefId() {
-    return PsiTreeUtil.getChildOfType(this, GdRefIdNm.class);
+  public GdRefIdRef getRefId() {
+    return PsiTreeUtil.getChildOfType(this, GdRefIdRef.class);
   }
 
 }

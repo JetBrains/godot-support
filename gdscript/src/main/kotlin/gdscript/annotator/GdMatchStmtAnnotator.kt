@@ -21,7 +21,7 @@ class GdMatchStmtAnnotator : Annotator {
         if (element !is GdExpr || element.parent !is GdMatchSt) return
 
         val id = PsiTreeUtil.getDeepestLast(element).parent
-        if (id !is GdNamedElement) return
+        if (id !is GdRefIdRef) return
 
         val rootDecl = GdClassMemberReference(id).resolveDeclaration() ?: return;
         val typeHint = PsiTreeUtil.findChildrenOfType(rootDecl, GdTypeHintRef::class.java).lastOrNull() ?: return;

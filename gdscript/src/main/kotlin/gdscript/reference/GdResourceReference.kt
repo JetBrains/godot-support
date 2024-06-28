@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import gdscript.completion.GdLookup
 import gdscript.index.impl.GdFileResIndex
-import gdscript.psi.GdNamedElement
+import gdscript.psi.GdElementFactory
 import gdscript.psi.utils.GdCfgUtil
 import gdscript.utils.StringUtil.filterGdTscn
 import gdscript.utils.VirtualFileUtil.getPsiFile
@@ -16,13 +16,13 @@ import gdscript.utils.VirtualFileUtil.resourcePath
 /**
  * Resource "res://" reference to file
  */
-class GdResourceReference : PsiReferenceBase<GdNamedElement> {
+class GdResourceReference : PsiReferenceBase<PsiElement> {
 
     private var key: String = ""
     private var resKey: String = ""
     private var project: Project
 
-    constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
+    constructor(element: PsiElement) : super(element, TextRange(0, element.textLength)) {
         this.project = element.project
         key = element.text
         resKey = key.trim('"', '\'')
@@ -39,10 +39,9 @@ class GdResourceReference : PsiReferenceBase<GdNamedElement> {
     override fun handleElementRename(newElementName: String): PsiElement {
         // TODO ignored relative paths
         if (!key.startsWith("\"res://")) return element
-        element.setName(newElementName)
         GdCfgUtil.renameValue(project, key.trim('"', '\''), "res://$newElementName")
 
-        return element
+        return element.replace(GdElementFactory.typeStringVal(project, newElementName))
     }
 
     override fun bindToElement(element: PsiElement): PsiElement {

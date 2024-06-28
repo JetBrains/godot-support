@@ -6,9 +6,9 @@ import org.jetbrains.annotations.*;
 public interface GdLiteralEx extends GdExpr {
 
   @Nullable
-  GdRefIdNm getRefIdNm();
+  GdRefIdRef getRefIdNm();
 
   @Nullable
-  GdStringValNm getStringVal();
+  GdStringValRef getStringVal();
 
 }

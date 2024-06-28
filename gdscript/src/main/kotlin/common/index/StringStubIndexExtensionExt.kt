@@ -3,7 +3,6 @@ package common.index
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StringStubIndexExtension
 import com.intellij.psi.stubs.StubIndex
@@ -15,7 +14,7 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
         if (DumbService.isDumb(element.project)) return emptyList()
         return StubIndex.getElements(
             key,
-            getName(element),
+            element.text,
             element.project,
             GlobalSearchScope.allScope(element.project),
             PsiElement::class.java as Class<Psi>
@@ -43,7 +42,7 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
     fun getGloballyWithoutSelf(element: PsiElement): Collection<Psi> {
         if (DumbService.isDumb(element.project)) return emptyList()
         return StubIndex.getElements(
-            key, getName(element), element.project, GlobalSearchScope.notScope(
+            key, element.text, element.project, GlobalSearchScope.notScope(
                 GlobalSearchScope.fileScope(element.containingFile)
             ), PsiElement::class.java as Class<Psi>
         )
@@ -62,7 +61,7 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
         if (DumbService.isDumb(element.project)) return emptyList()
         return StubIndex.getElements(
             key,
-            getName(element),
+            element.text,
             element.project,
             GlobalSearchScope.fileScope(element.containingFile.originalFile),
             PsiElement::class.java as Class<Psi>
@@ -108,10 +107,6 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
     fun getAllValues(project: Project): Collection<Psi> {
         if (DumbService.isDumb(project)) return emptyList();
         return getAllKeys(project).flatMap { getGlobally(it, project) };
-    }
-
-    protected fun getName(element: PsiElement): String {
-        return if (element is PsiNamedElement) element.name.orEmpty() else element.text
     }
 
 }

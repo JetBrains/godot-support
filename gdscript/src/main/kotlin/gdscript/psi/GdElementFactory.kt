@@ -65,7 +65,7 @@ object GdElementFactory {
     fun refIdNm(project: Project, name: String): PsiElement {
         val file = createFile(project, "extends Node\nfunc fu():\n\t$name\n")
 
-        return PsiTreeUtil.findChildOfType(file, GdRefIdNm::class.java)!!.firstChild
+        return PsiTreeUtil.findChildOfType(file, GdRefIdRef::class.java)!!.firstChild
     }
 
     fun setMethodIdRef(project: Project, name: String): PsiElement {
@@ -89,7 +89,7 @@ object GdElementFactory {
     fun typeStringVal(project: Project, name: String): PsiElement {
         val file = createFile(project, "var variable = \"res://$name\"\n")
 
-        return PsiTreeUtil.findChildOfType(file, GdStringValNm::class.java)!!.firstChild
+        return PsiTreeUtil.findChildOfType(file, GdStringValRef::class.java)!!.firstChild
     }
 
     fun typed(project: Project, type: String): GdTyped {

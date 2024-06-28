@@ -19,7 +19,7 @@ object GdClassMemberUtil {
      * Finds declaration (const, var, enum, signal, method, ...) of given NamedElement skipping itself
      */
     fun findDeclaration(
-        element: GdNamedElement,
+        element: PsiElement,
         onlyLocalScope: Boolean = false,
         ignoreParents: Boolean = false,
         ignoreGlobalScope: Boolean = false,
@@ -34,12 +34,12 @@ object GdClassMemberUtil {
     @SuppressWarnings()
     fun listDeclarations(
         element: PsiElement,
-        searchFor: GdNamedElement,
+        searchFor: PsiElement,
         onlyLocalScope: Boolean = false,
         ignoreParents: Boolean = false,
         ignoreGlobalScope: Boolean = false,
     ): Array<Any> {
-        return listDeclarations(element, searchFor.name, onlyLocalScope, ignoreParents, ignoreGlobalScope)
+        return listDeclarations(element, searchFor.text, onlyLocalScope, ignoreParents, ignoreGlobalScope)
     }
 
     /**
@@ -68,7 +68,7 @@ object GdClassMemberUtil {
             val isChecked = findIsTypeCheck(element)
             if (isChecked != null) {
                 val isExpr = isChecked.expr.firstChild
-                if (isExpr is GdNamedElement && isExpr.name == calledOnPsiName) {
+                if (isExpr is GdRefIdRef && isExpr.text == calledOnPsiName) {
                     calledOn = PsiGdExprUtil.fromTyped(isChecked.typedVal)
                     isCheckedSuccess = true
                 }
@@ -140,7 +140,7 @@ object GdClassMemberUtil {
             if (calledOn.startsWith("Array[")) calledOn = "Array"
 
             if (calledOn.endsWith("Dictionary")) {
-                val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdNm::class.java).lastOrNull()
+                val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdRef::class.java).lastOrNull()
                 if (firstChild != null) {
                     val dictDecl = findDeclaration(firstChild)
                     if (dictDecl is GdEnumDeclTl) {

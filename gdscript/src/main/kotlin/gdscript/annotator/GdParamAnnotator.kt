@@ -12,7 +12,7 @@ import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdRefIdNm
+import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdVarDeclSt
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.constructors
@@ -31,7 +31,7 @@ class GdParamAnnotator : Annotator {
         var minSize = 99
         var maxSize = 0
 
-        val refId = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdNm::class.java).lastOrNull() ?: return
+        val refId = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return
         val ref = refId.references.firstOrNull() ?: return
         if (ref !is GdClassMemberReference) return
         val declaration = ref.resolveDeclaration() ?: return

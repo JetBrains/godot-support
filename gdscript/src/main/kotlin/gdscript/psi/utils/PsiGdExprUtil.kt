@@ -207,7 +207,7 @@ object PsiGdExprUtil {
                         return ""
                     }
 
-                    val named: GdNamedElement = expr.refIdNm ?: return ""
+                    val named: GdRefIdRef = expr.refIdNm ?: return ""
                     return when (val element =
                         GdClassMemberUtil.findDeclaration(named)) {
                         is GdClassVarDeclTl -> parseLoadedType(expr, element.returnType)
@@ -256,7 +256,7 @@ object PsiGdExprUtil {
     }
 
     fun getAttrOrCallParentClass(element: PsiElement): String? {
-        if (element is GdRefIdNm
+        if (element is GdRefIdRef
             && element.parent != null
             && element.parent is GdLiteralEx
         ) {

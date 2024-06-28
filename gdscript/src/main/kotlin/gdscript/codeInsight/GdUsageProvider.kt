@@ -28,7 +28,7 @@ class GdUsageProvider : FindUsagesProvider {
                 || psiElement is GdSignalIdNmi
                 || psiElement is GdVarNmi
                 || psiElement is GdForSt
-                || psiElement is GdStringValNm
+                || psiElement is GdStringValRef
     }
 
     override fun getHelpId(psiElement: PsiElement): String? {
@@ -43,7 +43,7 @@ class GdUsageProvider : FindUsagesProvider {
             is GdEnumValueNmi -> "enum consts"
             is GdSignalIdNmi -> "signals"
             is GdVarNmi -> "variables"
-            is GdStringValNm -> "resources"
+            is GdStringValRef -> "resources"
             else -> ""
         }
     }
@@ -51,14 +51,14 @@ class GdUsageProvider : FindUsagesProvider {
     override fun getDescriptiveName(element: PsiElement): String {
         return when(element) {
             is GdNamedElement -> element.name.orEmpty()
-            else -> ""
+            else -> element.text
         }
     }
 
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
         return when(element) {
             is GdNamedElement -> element.name.orEmpty()
-            else -> ""
+            else -> element.text
         }
     }
 

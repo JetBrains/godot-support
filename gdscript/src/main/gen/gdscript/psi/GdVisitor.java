@@ -300,8 +300,8 @@ public class GdVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
-  public void visitRefIdNm(@NotNull GdRefIdNm o) {
-    visitNamedElement(o);
+  public void visitRefIdNm(@NotNull GdRefIdRef o) {
+    visitPsiElement(o);
   }
 
   public void visitReturnHint(@NotNull GdReturnHint o) {
@@ -352,7 +352,7 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitStringVal(@NotNull GdStringValNm o) {
+  public void visitStringVal(@NotNull GdStringValRef o) {
     visitPsiElement(o);
   }
 

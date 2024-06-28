@@ -48,12 +48,12 @@ class GdMethodParamCompletion : CompletionContributor() {
 
             // Local undeclared variables
             val method = PsiTreeUtil.getParentOfType(parameters.position, GdMethodDeclTl::class.java, GdFuncDeclEx::class.java)
-            val vars = PsiTreeUtil.collectElementsOfType(method, GdRefIdNm::class.java)
+            val vars = PsiTreeUtil.collectElementsOfType(method, GdRefIdRef::class.java)
             vars.forEach {
                 if (GdClassMemberReference(it).resolveDeclaration() == null) {
                     result.addElement(
                         GdLookup.create(
-                            it.name,
+                            it.text,
                             priority = GdLookup.LOCAL_USER_DEFINED,
                         )
                     )

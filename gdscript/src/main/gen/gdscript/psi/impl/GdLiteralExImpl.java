@@ -26,14 +26,14 @@ public class GdLiteralExImpl extends GdExprImpl implements GdLiteralEx {
 
   @Override
   @Nullable
-  public GdRefIdNm getRefIdNm() {
-    return PsiTreeUtil.getChildOfType(this, GdRefIdNm.class);
+  public GdRefIdRef getRefIdNm() {
+    return PsiTreeUtil.getChildOfType(this, GdRefIdRef.class);
   }
 
   @Override
   @Nullable
-  public GdStringValNm getStringVal() {
-    return PsiTreeUtil.getChildOfType(this, GdStringValNm.class);
+  public GdStringValRef getStringVal() {
+    return PsiTreeUtil.getChildOfType(this, GdStringValRef.class);
   }
 
 }

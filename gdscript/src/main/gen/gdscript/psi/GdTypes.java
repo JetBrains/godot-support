@@ -431,7 +431,7 @@ public interface GdTypes {
         return new GdPrimaryExImpl(node);
       }
       else if (type == REF_ID_NM) {
-        return new GdRefIdNmImpl(node);
+        return new GdRefIdRefImpl(node);
       }
       else if (type == RETURN_HINT) {
         return new GdReturnHintImpl(node);
@@ -467,7 +467,7 @@ public interface GdTypes {
         return new GdStmtOrSuiteImpl(node);
       }
       else if (type == STRING_VAL_NM) {
-        return new GdStringValNmImpl(node);
+        return new GdStringValRefImpl(node);
       }
       else if (type == SUITE) {
         return new GdSuiteImpl(node);

@@ -21,7 +21,7 @@ import gdscript.utils.PsiElementUtil.psi
 /**
  * RefId reference to ClassNames, Variables, Constants, etc...
  */
-class GdClassMemberReference : PsiReferenceBase<GdNamedElement>, HighlightedReference {
+class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReference {
 
     companion object {
         fun resolveId(element: PsiElement?): PsiElement? {
@@ -47,14 +47,12 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement>, HighlightedRefe
 
     private var key: String = ""
 
-    constructor(element: PsiElement) : super(element as GdNamedElement, TextRange(0, element.textLength)) {
+    constructor(element: GdRefIdRef) : super(element, TextRange(0, element.textLength)) {
         key = element.text
     }
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        myElement.setName(newElementName)
-
-        return myElement
+        return myElement.replace(GdElementFactory.refIdNm(myElement.project, newElementName))
     }
 
     fun resolveDeclaration(): PsiElement? {
@@ -97,7 +95,7 @@ class GdClassMemberReference : PsiReferenceBase<GdNamedElement>, HighlightedRefe
         return PsiTreeUtil.getParentOfType(element, GdArgExpr::class.java)?.let { arg ->
             PsiTreeUtil.getParentOfType(arg, GdCallEx::class.java)?.let {
                 val index = arg.parent.children.indexOf(arg)
-                val refId = PsiTreeUtil.getChildrenOfType(it.expr, GdNamedElement::class.java)?.lastOrNull() ?: return false
+                val refId = PsiTreeUtil.getChildrenOfType(it.expr, GdRefIdRef::class.java)?.lastOrNull() ?: return false
                 val decl = GdClassMemberReference(refId).resolveDeclaration()
                 if (decl is GdMethodDeclTl) {
                     return decl.parameters.values.toTypedArray().getOrNull(index).orEmpty() == "Callable"

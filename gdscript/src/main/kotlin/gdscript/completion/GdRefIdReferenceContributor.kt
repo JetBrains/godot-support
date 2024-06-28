@@ -3,6 +3,7 @@ package gdscript.completion
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.*
 import com.intellij.util.ProcessingContext
+import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdTypes
 import gdscript.reference.GdClassMemberReference
 
@@ -19,7 +20,7 @@ class GdRefIdReferenceContributor : PsiReferenceContributor() {
                     element: PsiElement,
                     context: ProcessingContext,
                 ): Array<PsiReference> {
-                    return arrayOf(GdClassMemberReference(element))
+                    return arrayOf(GdClassMemberReference(element as GdRefIdRef))
                 }
             }
         )

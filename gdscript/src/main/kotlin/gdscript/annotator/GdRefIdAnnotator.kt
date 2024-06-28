@@ -29,7 +29,7 @@ class GdRefIdAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val state = GdProjectSettingsState.getInstance(element).state.annotators
-        if (element !is GdRefIdNm) return
+        if (element !is GdRefIdRef) return
         val txt = element.text
 
         if (txt == GdKeywords.SELF || txt == GdKeywords.SUPER) return;

@@ -45,9 +45,9 @@ object GdCommonUtil {
                 is GdInheritanceIdRef -> GdElementFactory.inheritanceIdNm(project, newName)
                 is GdInheritanceSubIdRef -> GdElementFactory.inheritanceSubIdNm(project, newName)
                 is GdMethodIdNmi -> GdElementFactory.methodIdNmi(project, newName)
-                is GdRefIdNm -> GdElementFactory.refIdNm(project, newName)
+                is GdRefIdRef -> GdElementFactory.refIdNm(project, newName)
                 is GdSignalIdNmi -> GdElementFactory.signalIdNmi(project, newName)
-                is GdStringValNm -> GdElementFactory.typeStringVal(project, newName)
+                is GdStringValRef -> GdElementFactory.typeStringVal(project, newName)
                 is GdVarNmi -> GdElementFactory.varNmi(project, newName)
                 else -> return element
             }
