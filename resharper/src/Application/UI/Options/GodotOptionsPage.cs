@@ -9,10 +9,12 @@ using JetBrains.Application.UI.Options.OptionsDialog;
 using JetBrains.Application.UI.Options.OptionsDialog.SimpleOptions;
 using JetBrains.Application.UI.Options.OptionsDialog.SimpleOptions.ViewModel;
 using JetBrains.DataFlow;
+using JetBrains.IDE.UI.Extensions;
 using JetBrains.IDE.UI.Options;
 using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Feature.Services.OptionPages.CodeEditing;
 using JetBrains.ReSharper.Plugins.Godot.Application.Settings;
+using JetBrains.ReSharper.Plugins.Godot.Resources;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.Rider.Model.UIAutomation;
 using JetBrains.UI.ThemedIcons;
@@ -42,36 +44,51 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
         {
             AddGdScriptSection();
             
-            AddHeader("Debugger");
+            AddHeader(Strings.CSharp_Text);
             using (Indent())
             {
                 AddBoolOption((GodotSettings s) => s.EnableDebuggerExtensions,
-                    "Enable debugger extensions");
+                    Strings.ExtendValueRendering_Text);
+                AddBetterCommentText(Strings.GodotOptionsPage_AddDebuggingSection_Extend_value_rendering_Comment);
             }
+        }
+        
+        private void AddBetterCommentText(string text)
+        {
+            // AddCommentText doesn't match the UI guidelines for inline help. It doesn't indent, uses the wrong theme
+            // colour, should wrap at about 70 characters and have a slightly smaller font size.
+            // https://youtrack.jetbrains.com/issue/RIDER-47090
+            using (Indent())
+            {
+                var comment = CreateCommentText(text).WithCustomTextSize(BeFontSize.SMALLER);
+                AddControl(comment);
+            }
+
+            AddKeyword(text);
         }
 
         private void AddGdScriptSection()
         {
-            AddHeaderWithoutCapitalization("GDScript support");
+            AddHeaderWithoutCapitalization(Strings.GDScriptSupport_Text);
             using (Indent())
             {
                 AddComboOption((GodotSettings s) => s.LanguageServerConnectionMode,
-                    "Connecting LSP server:", string.Empty, string.Empty,
+                    Strings.GDScript_ConnectingLSPServer_Text, string.Empty, string.Empty,
                     new RadioOptionPoint(LanguageServerConnectionMode.StartEditorHeadless,
-                        "Automatically start headless LSP server"),
+                        Strings.GDScript_AutomaticallyStartHeadlessLSPServer_Text),
                     new RadioOptionPoint(LanguageServerConnectionMode.ConnectRunningEditor, 
-                        "Attempt to connect the running Godot Editor"),
-                    new RadioOptionPoint(LanguageServerConnectionMode.Never, "Never use LSP")
+                        Strings.GDScript_AttemptToConnectTheRunningGodotEditor_Text),
+                    new RadioOptionPoint(LanguageServerConnectionMode.Never, Strings.GDScript_NeverUseLSP_Text)
                 );
-                AddKeyword("Language server");
+                AddKeyword(Strings.GDScript_LanguageServer_Text);
 
                 // AddTextBox(ourHostNameAccessor, "Host"); // host is always localhot, lets not allow changing it.
 
                 // Godot 4.3 and later
-                var useDynamic = AddBoolOption(ourUseDynamicPort, "Use a random free port (supported in Godot 4.3+)",
-                    toolTipText: "Only supported by the Godot 4.3+");
+                var useDynamic = AddBoolOption(ourUseDynamicPort, Strings.GDScript_UseARandomFreePortSupportedInGodot4_Text,
+                    toolTipText: Strings.GDScript_OnlySupportedByTheGodot43_Text);
 
-                var portOption = AddIntOption(ourHostPortAccessor, "Port");
+                var portOption = AddIntOption(ourHostPortAccessor, Strings.GDScript_LSP_Port_Text);
 
                 // AddBinding(portOption, BindingStyle.IsEnabledProperty, ourUseDynamicPort, enable => !enable);
 
