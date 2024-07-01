@@ -9,20 +9,25 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
     public class GodotSettings
     {
         // LSP 
-        [SettingsEntry(LanguageServerConnectionMode.ConnectRunningEditor,  nameof(Strings.LanguageServerConnectionMode_Description))]
+        [SettingsEntry(LanguageServerConnectionMode.ConnectRunningEditor, DescriptionResourceType: typeof(Strings),
+            DescriptionResourceName: nameof(Strings.LanguageServerConnectionMode_Description))]
         public LanguageServerConnectionMode LanguageServerConnectionMode;
 
-        [SettingsEntry("127.0.0.1", nameof(Strings.GDScript_LSP_Remote_Host_Text))]
+        [SettingsEntry("127.0.0.1", DescriptionResourceType: typeof(Strings),
+            DescriptionResourceName: nameof(Strings.GDScript_LSP_Remote_Host_Text))]
         public string RemoteHost;
-        
-        [SettingsEntry(6005, nameof(Strings.GDScript_LSP_Port_Text))]
+
+        [SettingsEntry(6005, DescriptionResourceType: typeof(Strings),
+            DescriptionResourceName: nameof(Strings.GDScript_LSP_Port_Text))]
         public int RemoteHostPort;
 
-        [SettingsEntry(false, nameof(Strings.GDScript_UseARandomFreePortSupportedInGodot4_Text))]
+        [SettingsEntry(false, DescriptionResourceType: typeof(Strings),
+            DescriptionResourceName: nameof(Strings.GDScript_UseARandomFreePortSupportedInGodot4_Text))]
         public bool UseDynamicPort;
-        
+
         // Debugging
-        [SettingsEntry(true, DescriptionResourceType: typeof(Strings), DescriptionResourceName: nameof(Strings.GodotSettings_t_Enable_debugger_extensions))]
+        [SettingsEntry(true, DescriptionResourceType: typeof(Strings),
+            DescriptionResourceName: nameof(Strings.GodotSettings_t_Enable_debugger_extensions))]
         public bool EnableDebuggerExtensions;
     }
 }
