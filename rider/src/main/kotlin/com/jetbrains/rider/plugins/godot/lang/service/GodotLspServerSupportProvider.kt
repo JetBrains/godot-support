@@ -11,6 +11,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.*
+import com.intellij.platform.lsp.api.customization.FindReferencesSupport
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
@@ -137,13 +138,13 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                     // we want to be more preferable than TextMate
                     return PrioritizedLookupElement.withPriority(item1, 1.0)
                 }
-
              }
 
-        override val lspGoToDefinitionSupport: Boolean
+        override val lspFindReferencesSupport: FindReferencesSupport?
             get() {
-                // todo: remove, when https://gitlab.com/IceExplosive/gdscript/-/issues/263 is fixed.
-                return !PluginManagerCore.plugins.any { it.pluginId.idString == "ice.explosive.gdscript" && it.isEnabled }
+                if (PluginManagerCore.plugins.any { it.pluginId.idString == "ice.explosive.gdscript" && it.isEnabled })
+                    return null
+                return super.lspFindReferencesSupport
             }
     }
 }
