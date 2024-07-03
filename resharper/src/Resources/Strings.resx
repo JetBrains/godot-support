@@ -50,13 +50,8 @@ such as active scene and Node children.</value>
     <data name="GDScript_NeverUseLSP_Text" xml:space="preserve">
         <value>Never use LSP</value>
     </data>
-    <data name="GDScript_UseARandomFreePortSupportedInGodot4_Text" xml:space="preserve">
-        <value>Use a random free port (supported in Godot 4.3+)</value>
-    </data>
-    <data name="GDScript_OnlySupportedByTheGodot43_Text" xml:space="preserve">
-        <value>Only supported by the Godot 4.3+</value>
-        <comment>Option Page: Name
-        </comment>
+    <data name="GDScript_UseARandomFreePortSupportedInGodot_Text" xml:space="preserve">
+        <value>Use a random free port (supported in Godot 4.2.1+)</value>
     </data>
     <data name="GDScript_LSP_Port_Text" xml:space="preserve">
         <value>Port</value>

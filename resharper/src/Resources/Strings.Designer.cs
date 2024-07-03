@@ -71,8 +71,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Resources
     public static string GodotOptionsPage_AddDebuggingSection_Extend_value_rendering_Comment => ResourceManager.GetString("GodotOptionsPage_AddDebuggingSection_Extend_value_rendering_Comment");
     public static string GDScript_LanguageServer_Text => ResourceManager.GetString("GDScript_LanguageServer_Text");
     public static string GDScript_NeverUseLSP_Text => ResourceManager.GetString("GDScript_NeverUseLSP_Text");
-    public static string GDScript_UseARandomFreePortSupportedInGodot4_Text => ResourceManager.GetString("GDScript_UseARandomFreePortSupportedInGodot4_Text");
-    public static string GDScript_OnlySupportedByTheGodot43_Text => ResourceManager.GetString("GDScript_OnlySupportedByTheGodot43_Text");
+    public static string GDScript_UseARandomFreePortSupportedInGodot_Text => ResourceManager.GetString("GDScript_UseARandomFreePortSupportedInGodot_Text");
     public static string GDScript_LSP_Port_Text => ResourceManager.GetString("GDScript_LSP_Port_Text");
     public static string GDScript_LSP_Remote_Host_Text => ResourceManager.GetString("GDScript_LSP_Remote_Host_Text");
     public static string LanguageServerConnectionMode_Description => ResourceManager.GetString("LanguageServerConnectionMode_Description");
