@@ -84,9 +84,10 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
 
                 // AddTextBox(ourHostNameAccessor, "Host"); // host is always localhot, lets not allow changing it.
 
-                // Godot 4.3 and later
-                var useDynamic = AddBoolOption(ourUseDynamicPort, Strings.GDScript_UseARandomFreePortSupportedInGodot4_Text,
-                    toolTipText: Strings.GDScript_OnlySupportedByTheGodot43_Text);
+                // Godot 4.2.1 and later
+                // https://github.com/godotengine/godot/pull/81844/commits/a5b7c4c415ff9bf7e368371ddb88601bcb9e1232
+                // and Godot 3.6 https://github.com/godotengine/godot/pull/82025
+                var useDynamic = AddBoolOption(ourUseDynamicPort, Strings.GDScript_UseARandomFreePortSupportedInGodot_Text);
 
                 var portOption = AddIntOption(ourHostPortAccessor, Strings.GDScript_LSP_Port_Text);
 

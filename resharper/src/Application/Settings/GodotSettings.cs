@@ -22,7 +22,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
         public int RemoteHostPort;
 
         [SettingsEntry(false, DescriptionResourceType: typeof(Strings),
-            DescriptionResourceName: nameof(Strings.GDScript_UseARandomFreePortSupportedInGodot4_Text))]
+            DescriptionResourceName: nameof(Strings.GDScript_UseARandomFreePortSupportedInGodot_Text))]
         public bool UseDynamicPort;
 
         // Debugging
