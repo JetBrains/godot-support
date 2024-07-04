@@ -1,5 +1,6 @@
 package com.jetbrains.rider.plugins.godot
 
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.util.IconLoader
 
 class GodotIcons {
@@ -12,7 +13,7 @@ class GodotIcons {
 
     class Actions {
         companion object {
-            @JvmField val StartGodotEditorActionIcon = Icons.GodotLogo
+            @JvmField val StartGodotEditorActionIcon = AllIcons.Actions.Execute
         }
     }
 
