@@ -32,16 +32,19 @@ class GodotLspServerWidgetItem(lspServer: LspServer,
             LspServerState.ShutdownUnexpectedly -> GodotPluginBundle.message("language.services.widget.item.shutdown.unexpectedly", serverLabel)
         }
 
-    override fun createAdditionalInlineActions(): List<AnAction> {
-        if (widgetActionLocation == LanguageServicePopupSection.ForCurrentFile &&
-            lspServer.state in arrayOf(LspServerState.ShutdownNormally, LspServerState.ShutdownUnexpectedly)
-        ) {
-            val discoverer = GodotProjectDiscoverer.getInstance(lspServer.project)
-            if (discoverer.lspConnectionMode.value == LanguageServerConnectionMode.ConnectRunningEditor)
-                return listOf(StartGodotEditorActionInWidget(lspServer))
-        }
-        return super.createAdditionalInlineActions()
-    }
+    //override fun createAdditionalInlineActions(): List<AnAction> {
+    //    // todo: we need a better solution then just displaying a start Godot action, which would not even try to connect after
+    //    // lets return to this after RIDER-114163 and found races would be resolved.
+    //
+    //    if (widgetActionLocation == LanguageServicePopupSection.ForCurrentFile &&
+    //        lspServer.state in arrayOf(LspServerState.ShutdownNormally, LspServerState.ShutdownUnexpectedly)
+    //    ) {
+    //        val discoverer = GodotProjectDiscoverer.getInstance(lspServer.project)
+    //        if (discoverer.lspConnectionMode.value == LanguageServerConnectionMode.ConnectRunningEditor)
+    //            return listOf(StartGodotEditorActionInWidget(lspServer))
+    //    }
+    //    return super.createAdditionalInlineActions()
+    //}
 
     private class StartGodotEditorActionInWidget(
         private val lspServer: LspServer,
