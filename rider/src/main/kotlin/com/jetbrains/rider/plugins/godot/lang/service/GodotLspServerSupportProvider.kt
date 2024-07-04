@@ -107,9 +107,9 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
     private class GodotLspServerDescriptor(project: Project) : ProjectWideLspServerDescriptor(project, "Godot") {
         val discoverer = GodotProjectDiscoverer.getInstance(project)
         val lspConnectionMode by lazy { discoverer.lspConnectionMode.value }
-        val remoteHostPort by lazy { if (useDynamicPort!!) NetUtils.findFreePort(500050, setOf()) else discoverer.remoteHostPort.value }
+        val remoteHostPort by lazy { if (useDynamicPort) NetUtils.findFreePort(500050, setOf()) else discoverer.remoteHostPort.value }
         //val dapPort by lazy { NetUtils.findFreePort(500060, setOf()) }
-        val useDynamicPort by lazy { discoverer.useDynamicPort.value }
+        val useDynamicPort by lazy { discoverer.useDynamicPort.value!! && (discoverer.lspConnectionMode.value == LanguageServerConnectionMode.StartEditorHeadless) }
 
         override fun isSupportedFile(file: VirtualFile) = Util.isGdFile(file)
         override fun createCommandLine(): GeneralCommandLine {
