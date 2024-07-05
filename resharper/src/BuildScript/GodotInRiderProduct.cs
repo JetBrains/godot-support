@@ -41,4 +41,36 @@ namespace JetBrains.ReSharper.Plugins.Godot.BuildScript
       };
     }
   }
+  
+  public class GodotDebuggerProduct
+  {
+      public static readonly SubplatformName SubplatformName = new((RelativePath)"Plugins" / "godot-support" / "debugger" / "debugger-worker");
+
+      public static readonly RelativePath PluginFolder = @"plugins\rider-godot\dotnetDebuggerWorker";
+
+      public const string ProductTechnicalName = "Godot.Debugger";
+
+      [BuildStep]
+      public static SubplatformComponentForPackagingFast[] ProductMetaDependency(AllAssembliesOnSources allassSrc)
+      {
+          if (!allassSrc.Has(SubplatformName))
+              return Array.Empty<SubplatformComponentForPackagingFast>();
+
+          return new[]
+          {
+              new SubplatformComponentForPackagingFast
+              (
+                  SubplatformName,
+                  new JetPackageMetadata
+                  {
+                      Spec = new JetSubplatformSpec
+                      {
+                          ComplementedProductName = RiderConstants.ProductTechnicalName
+                      }
+                  }
+              )
+          };
+      }
+  }
+
 }

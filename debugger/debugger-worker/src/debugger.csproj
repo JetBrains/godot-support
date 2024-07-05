@@ -15,7 +15,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\resharper\build\generated\Model\DebuggerWorker\**\*" LinkBase="Model" />
+    <Compile Include="..\..\..\resharper\build\generated\Model\DebuggerWorker\**\*" LinkBase="Model" />
   </ItemGroup>
   <Target Name="DropObjFromIndependentBuild" Condition="$(InternalBuild)" BeforeTargets="Build">
     <RemoveDir Directories="obj" />

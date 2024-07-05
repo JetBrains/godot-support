@@ -16,6 +16,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.Install
             GodotInRiderProduct.ThisSubplatformName,
             GodotInRiderProduct.DotFilesFolder,
           allowCommonPluginFiles: false),
+        new RiderBundledProductArtifact(
+            GodotDebuggerProduct.ProductTechnicalName,
+            GodotDebuggerProduct.SubplatformName,
+            GodotDebuggerProduct.PluginFolder,
+            allowCommonPluginFiles: false),
       };
     }
   }
