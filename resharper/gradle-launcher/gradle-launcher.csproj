@@ -15,7 +15,6 @@
     <AssemblyName>JetBrains.ReSharper.Plugins.Godot.Gradle.Launcher</AssemblyName>
   </PropertyGroup>
   <ItemGroup Label="ProjectReference">
-    <ProjectReference Include="..\..\debugger\debugger-worker\src\debugger.csproj" />
     <ProjectReference Include="..\src\rider-godot.csproj" />
   </ItemGroup>
   <Target Name="DropObjFromIndependentBuild" Condition="$(InternalBuild)" BeforeTargets="Build">
