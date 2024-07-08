@@ -5,6 +5,5 @@
         <SubplatformReference Name="Psi.Features\src" />
         <SubplatformReference Name="Rider\Rider.Backend" />
         <SubplatformReference Name="Plugins\_GodotSupport.Pregenerated\BackendModel" />
-        <SubplatformReference Name="Plugins\godot-support\debugger\debugger-worker" />
     </SubplatformInfo.SubplatformReferences>
 </SubplatformInfo>
