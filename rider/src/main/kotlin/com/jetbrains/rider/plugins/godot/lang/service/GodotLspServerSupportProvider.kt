@@ -11,7 +11,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.*
-import com.intellij.platform.lsp.api.customization.FindReferencesSupport
+import com.intellij.platform.lsp.api.customization.LspFindReferencesSupport
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
@@ -140,7 +140,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 }
              }
 
-        override val lspFindReferencesSupport: FindReferencesSupport?
+        override val lspFindReferencesSupport: LspFindReferencesSupport?
             get() {
                 if (PluginManagerCore.plugins.any { it.pluginId.idString == "ice.explosive.gdscript" && it.isEnabled })
                     return null
