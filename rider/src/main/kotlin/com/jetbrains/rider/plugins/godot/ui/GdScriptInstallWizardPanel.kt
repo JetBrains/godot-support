@@ -26,7 +26,7 @@ import com.intellij.ui.dsl.gridLayout.UnscaledGapsY
 import com.intellij.ui.layout.predicate
 import com.intellij.util.concurrency.ThreadingAssertions
 import com.intellij.util.concurrency.annotations.RequiresEdt
-import com.intellij.util.ui.RestartDialogImpl
+import com.intellij.util.ui.RestartDialog
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.gdscript.GDSCRIPT_PLUGIN_ID
 import com.jetbrains.rider.plugins.godot.gdscript.GDSCRIPT_PLUGIN_NAME
@@ -86,7 +86,7 @@ open class GdScriptInstallWizardPanel(val project:Project): JPanel(BorderLayout(
 
         row {
             button(GodotPluginBundle.message("promo.panel.wizard.restart.ide")) {
-                RestartDialogImpl.restartWithConfirmation()
+                RestartDialog.restartWithConfirmation()
             }.defaultStyle()
                 .gap(RightGap.SMALL)
             label(GodotPluginBundle.message("promo.panel.wizard.installed")).applyToComponent {
