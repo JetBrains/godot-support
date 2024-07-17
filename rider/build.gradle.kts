@@ -90,6 +90,8 @@ dependencies {
 
         bundledLibrary("lib/testFramework.jar")
     }
+
+    testImplementation("org.opentest4j:opentest4j:1.3.0")
 }
 
 intellijPlatform {
