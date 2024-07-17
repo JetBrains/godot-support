@@ -1,14 +1,13 @@
 import com.jetbrains.plugin.structure.base.utils.isDirectory
 import org.gradle.kotlin.dsl.support.unzipTo
-import org.jetbrains.intellij.platform.gradle.Constants
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.incremental.createDirectory
-import java.net.URL
-import kotlin.io.path.*
+import kotlin.io.path.absolute
+import kotlin.io.path.createDirectories
 
 plugins {
     // Version is configured in gradle.properties
@@ -123,7 +122,7 @@ fun File.writeTextIfChanged(content: String) {
 }
 
 fun download(temp: File, spec: String) {
-    val url = URL(spec)
+    val url = uri(spec).toURL()
     val connection = url.openConnection()
     connection.setRequestProperty(
         "User-Agent",
