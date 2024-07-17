@@ -13,6 +13,8 @@
 GdScript2 language plugin for JetBrains IDEs (Intellij, Rider and all the other ones)  
 Supports only Godot 4.0 and higher
 
+Note that there are also major issues running both this and JuetBrain's Godot plugin together as they are conflicting. If you are using Rider you have to uninstall JetBrains plugin in order to get this working properly.
+
 [Installation instructions](documentation%2Finstallation.md)
 
 [List of features](documentation%2Ffeatures%2Ffeatures.md)
@@ -20,8 +22,6 @@ Supports only Godot 4.0 and higher
 [Changelog](CHANGELOG.md)
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
-
-Note that there are also major issues running both this and JuetBrain's Godot plugin together as they are conflicting. If you are using Rider you have to uninstall JetBrains plugin in order to get this working properly.
 
 ## Update 1.6.2024
 
