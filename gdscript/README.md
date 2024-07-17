@@ -21,7 +21,9 @@ Supports only Godot 4.0 and higher
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
-# Update 1.6.2024
+Note that there are also major issues running both this and JuetBrain's Godot plugin together as they are conflicting. If you are using Rider you have to uninstall JetBrains plugin in order to get this working properly.
+
+## Update 1.6.2024
 
 Sorry, version 2.5.0 broke quite a lot of things, I'm taking it down for now and going to fix those issues...
 seems that while Parser is more or less fixed, a lot of Annotators broke. -_- Gonna have to start writing tests for those as well I guess.
