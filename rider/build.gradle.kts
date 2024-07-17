@@ -1,5 +1,7 @@
 import com.jetbrains.plugin.structure.base.utils.isDirectory
 import org.gradle.kotlin.dsl.support.unzipTo
+import org.jetbrains.intellij.platform.gradle.Constants
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
@@ -86,9 +88,7 @@ dependencies {
         bundledPlugin("org.jetbrains.plugins.textmate")
         bundledPlugin("com.intellij.rider.godot.community")
         instrumentationTools()
-//        testFramework(TestFrameworkType.Platform.Bundled)
-
-        bundledLibrary("lib/testFramework.jar")
+        testFramework(TestFrameworkType.Bundled)
     }
 
     testImplementation("org.opentest4j:opentest4j:1.3.0")
@@ -165,6 +165,25 @@ tasks {
 
         println("SDK path: $sdkPath")
         sdkPath
+    }
+
+    val generateDisabledPluginsTxt by registering {
+        val out = layout.buildDirectory.file("disabled_plugins.txt")
+        outputs.file(out)
+        doLast {
+            file(out).writeText(
+                """
+                  com.intellij.ml.llm
+                """.trimIndent()
+            )
+        }
+    }
+
+    prepareTestSandbox {
+        dependsOn(generateDisabledPluginsTxt)
+        from(generateDisabledPluginsTxt.get().outputs.files.singleFile) {
+            into("../config-test")
+        }
     }
 
     withType<PrepareSandboxTask> {
