@@ -20,7 +20,7 @@ import java.io.File
 
 @TestEnvironment(sdkVersion = SdkVersion.DOT_NET_6, buildTool = BuildTool.SDK)
 class ResCompletionTest : BaseTestWithSolution() {
-    override fun getSolutionDirectoryName(): String = "ResCompletionTest"
+    override val testSolution: String = "ResCompletionTest"
 
     override val traceCategories: List<String>
         get() = listOf(
