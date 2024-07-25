@@ -1,0 +1,3 @@
+- name: lib/rider-plugins-godot-community.jar
+  modules:
+  - name: intellij.rider.plugins.godot.community
