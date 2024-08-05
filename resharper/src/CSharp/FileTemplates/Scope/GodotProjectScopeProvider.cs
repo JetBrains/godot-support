@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Application;
+using JetBrains.Application.Parts;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Context;
 using JetBrains.ReSharper.Feature.Services.LiveTemplates.Scope;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
@@ -7,7 +8,7 @@ using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.FileTemplates.Scope
 {
     // Provides the scope points that are valid for the given context
-    [ShellComponent]
+    [ShellComponent(InstantiationEx.LegacyDefault)]
     public class GodotProjectScopeProvider : ScopeProvider
     {
         public GodotProjectScopeProvider()
