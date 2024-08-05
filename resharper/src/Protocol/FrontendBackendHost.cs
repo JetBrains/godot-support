@@ -1,5 +1,6 @@
 ﻿using System;
 using JetBrains.Annotations;
+using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
@@ -9,7 +10,7 @@ using JetBrains.Rider.Model.Godot.FrontendBackend;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Protocol
 {
-    [SolutionComponent]
+    [SolutionComponent(InstantiationEx.LegacyDefault)]
     public class FrontendBackendHost
     {
         private readonly bool myIsInTests;

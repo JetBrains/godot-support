@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using JetBrains.Application.Parts;
 using JetBrains.Application.Settings;
 using JetBrains.Application.Threading;
 using JetBrains.DataFlow;
@@ -12,7 +13,7 @@ using JetBrains.Rider.Model.Godot.FrontendBackend;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
 {
-    [SolutionComponent]
+    [SolutionComponent(InstantiationEx.LegacyDefault)]
     public class SettingsSynchronizer
     {
         public SettingsSynchronizer(Lifetime lifetime, ISolution solution, FrontendBackendHost host,
