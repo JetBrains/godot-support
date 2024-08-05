@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using GodotTools.IdeMessaging;
 using GodotTools.IdeMessaging.Requests;
+using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
 using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
@@ -14,7 +15,7 @@ using ILogger = JetBrains.Util.ILogger;
 
 namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 {
-    [SolutionComponent]
+    [SolutionComponent(InstantiationEx.LegacyDefault)]
     public class GodotMessagingClient : IMessageHandler, GodotTools.IdeMessaging.ILogger
     {
         private const string Identity = "Rider";

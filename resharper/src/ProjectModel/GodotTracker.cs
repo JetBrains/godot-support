@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Tasks;
 using JetBrains.Rd.Base;
@@ -8,7 +9,7 @@ using JetBrains.Util;
 
 namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 {
-    [SolutionComponent]
+    [SolutionComponent(InstantiationEx.LegacyDefault)]
     public class GodotTracker
     {
         private readonly ILogger myLogger;
