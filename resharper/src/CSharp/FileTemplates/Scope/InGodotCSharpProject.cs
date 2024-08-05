@@ -10,7 +10,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.FileTemplates.Scope
     // other scope points. A template can declare that it requires this scope point, and
     // the template will only be made available if a ScopeProvider "publishes" this scope
     // point based on the current context
-    public class InGodotCSharpProject : InLanguageSpecificProject
+    public class InGodotCSharpProject : InLanguageSpecificProject, IMandatoryScopePoint
     {
         private static readonly Guid DefaultUID = new Guid("6B18575A-F13A-4950-98F8-99931D95EBA1");
         private static readonly Guid QuickUID = new Guid("FB6511D0-C4F8-40A3-B8E0-9776C6452AA5");
