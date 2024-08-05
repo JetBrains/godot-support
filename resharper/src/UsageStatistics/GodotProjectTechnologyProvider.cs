@@ -1,11 +1,12 @@
 using System.Collections.Generic;
+using JetBrains.Application.Parts;
 using JetBrains.IDE.UsageStatistics;
 using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 
 namespace JetBrains.ReSharper.Plugins.Godot.UsageStatistics
 {
-    [SolutionComponent]
+    [SolutionComponent(InstantiationEx.LegacyDefault)]
     public class GodotProjectTechnologyProvider : IProjectTechnologyProvider
     {
         public IEnumerable<string> GetProjectTechnology(IProject project)
@@ -18,7 +19,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UsageStatistics
         }
     }
     
-    [SolutionComponent]
+    [SolutionComponent(InstantiationEx.LegacyDefault)]
     public class GodotSolutionTechnologyProvider : ISolutionTechnologyProvider
     {
         public IEnumerable<string> GetSolutionTechnology(ISolution solution)

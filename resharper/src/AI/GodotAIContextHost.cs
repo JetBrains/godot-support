@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using JetBrains.Application.Parts;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.DataContext;
 using JetBrains.Rd.Tasks;
@@ -10,7 +11,7 @@ using JetBrains.Rider.Model;
 
 namespace JetBrains.ReSharper.Plugins.Godot.AI;
 
-[SolutionComponent]
+[SolutionComponent(InstantiationEx.LegacyDefault)]
 public class GodotAIContextHost
 {
     public GodotAIContextHost(SolutionModel solutionModel,
