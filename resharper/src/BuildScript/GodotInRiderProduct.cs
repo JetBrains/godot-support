@@ -15,7 +15,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.BuildScript
   {
     public static readonly SubplatformName ThisSubplatformName = new((RelativePath)"Plugins" / "godot-support" / "resharper");
 
-    public static readonly RelativePath DotFilesFolder = @"plugins\rider-plugins-godot\dotnet";
+    public static readonly RelativePath DotFilesFolder = @"plugins\rider-godot\dotnet";
 
     public const string ProductTechnicalName = "Godot";
 
