@@ -1,0 +1,21 @@
+<assembly name="Chickensoft.GoDotTest">
+  <!-- N:Chickensoft -->
+  <member name="T:Chickensoft.GoDotTest.SetupAllAttribute">
+    <attribute ctor="M:JetBrains.Annotations.MeansImplicitUseAttribute.#ctor"/>
+  </member>
+  <member name="T:Chickensoft.GoDotTest.SetupAttribute">
+    <attribute ctor="M:JetBrains.Annotations.MeansImplicitUseAttribute.#ctor"/>
+  </member>
+  <member name="T:Chickensoft.GoDotTest.TestAttribute">
+    <attribute ctor="M:JetBrains.Annotations.MeansImplicitUseAttribute.#ctor"/>
+  </member>
+  <member name="T:Chickensoft.GoDotTest.CleanupAttribute">
+    <attribute ctor="M:JetBrains.Annotations.MeansImplicitUseAttribute.#ctor"/>
+  </member>
+  <member name="T:Chickensoft.GoDotTest.CleanupAllAttribute">
+    <attribute ctor="M:JetBrains.Annotations.MeansImplicitUseAttribute.#ctor"/>
+  </member>
+  <member name="T:Chickensoft.GoDotTest.FailureAttribute">
+    <attribute ctor="M:JetBrains.Annotations.MeansImplicitUseAttribute.#ctor"/>
+  </member>
+</assembly>
