@@ -1,3 +1,30 @@
+# Official Gradle Docker Images: https://hub.docker.com/_/gradle?tab=tags&page=1&ordering=last_updated
+image: gradle:8.10.0-jdk17
+
+before_script:
+  - GRADLE_USER_HOME="$(pwd)/.gradle"
+  - export GRADLE_USER_HOME
+
+build:
+  stage: build
+  script: gradle --build-cache assemble
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
+
+test:
+  stage: test
+  script: gradle check
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: pull
+    paths:
+      - build
+      - .gradle
+
 refresh-sdk:
   stage: build
   image: php
