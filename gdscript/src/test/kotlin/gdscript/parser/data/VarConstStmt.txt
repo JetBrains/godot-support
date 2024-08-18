@@ -35,7 +35,7 @@ GdScript File(0,58)
             PsiElement(GdTokenType.EQ)('=')(49,50)
           PsiWhiteSpace(' ')(50,51)
           GdLiteralExImpl(LITERAL_EX)(51,58)
-            GdStringValNmImpl(STRING_VAL_NM)(51,58)
+            GdStringValRefImpl(STRING_VAL_NM)(51,58)
               PsiElement(GdTokenType.STRING)('"Losos"')(51,58)
           GdEndStmtImpl(END_STMT)(58,58)
             <empty list>

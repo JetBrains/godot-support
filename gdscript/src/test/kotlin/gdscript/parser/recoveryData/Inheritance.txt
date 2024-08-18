@@ -8,7 +8,7 @@ GdScript File(0,20)
     PsiElement(GdTokenType.EXTENDS)('extends')(8,15)
     PsiWhiteSpace(' ')(15,16)
     GdInheritanceIdImpl(INHERITANCE_ID)(16,20)
-      GdInheritanceIdNmImpl(INHERITANCE_ID_NM)(16,20)
+      GdInheritanceIdRefImpl(INHERITANCE_ID_NM)(16,20)
         PsiElement(GdTokenType.IDENTIFIER)('Node')(16,20)
     GdEndStmtImpl(END_STMT)(20,20)
       <empty list>

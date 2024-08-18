@@ -21,7 +21,7 @@ GdScript File(0,60)
       PsiWhiteSpace(' ')(43,44)
       GdTypedValImpl(TYPED_VAL)(44,60)
         GdTypeHintImpl(TYPE_HINT)(44,60)
-          GdTypeHintNmImpl(TYPE_HINT_NM)(44,60)
+          GdTypeHintRefImpl(TYPE_HINT_NM)(44,60)
             PsiElement(GdTokenType.IDENTIFIER)('AnimatedSprite2D')(44,60)
     GdEndStmtImpl(END_STMT)(60,60)
       <empty list>

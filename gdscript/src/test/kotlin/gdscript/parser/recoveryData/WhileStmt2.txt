@@ -24,7 +24,7 @@ GdScript File(0,35)
               <empty list>
         GdAssignStImpl(ASSIGN_ST)(30,35)
           GdLiteralExImpl(LITERAL_EX)(30,31)
-            GdRefIdNmImpl(REF_ID_NM)(30,31)
+            GdRefIdRefImpl(REF_ID_NM)(30,31)
               PsiElement(GdTokenType.IDENTIFIER)('a')(30,31)
           PsiWhiteSpace(' ')(31,32)
           GdAssignSignImpl(ASSIGN_SIGN)(32,33)
