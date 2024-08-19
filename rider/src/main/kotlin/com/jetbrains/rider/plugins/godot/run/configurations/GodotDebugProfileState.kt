@@ -81,7 +81,7 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
 
         val commandLineString = runCommandLine.commandLineString
         val monoConnectResult = super.execute(executor, runner, workerProcessHandler)
-        workerProcessHandler.debuggerWorkerRealHandler.addProcessListener(object : ProcessAdapter() {
+        workerProcessHandler.addProcessListener(object : ProcessAdapter() {
             override fun startNotified(event: ProcessEvent) {
                 val targetProcessHandler = if (exeConfiguration.parameters.useExternalConsole)
                     ExternalConsoleMediator.createProcessHandler(runCommandLine)
