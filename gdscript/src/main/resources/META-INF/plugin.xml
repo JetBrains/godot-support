@@ -17,6 +17,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <fileType name="GdScript File" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd;gdf"/>
     <lang.parserDefinition language="GdScript" implementationClass="gdscript.GdParserDefinition"/>
+    <highlightErrorFilter implementation="gdscript.codeInsight.highlighting.GdErrorFilter"/>
     <lang.syntaxHighlighterFactory language="GdScript" implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>

@@ -9,7 +9,7 @@ import gdscript.utils.RiderGodotSupportPluginUtil
 import gdscript.utils.isRiderGodotSupportPluginInstalled
 import org.jetbrains.annotations.NotNull
 
-private val isGodotSupportInstalled = PluginManagerCore.isRiderGodotSupportPluginInstalled()
+val isGodotSupportInstalled = PluginManagerCore.isRiderGodotSupportPluginInstalled()
 fun AnnotationHolder.newAnnotationGd(
         project: Project,
         @NotNull severity: HighlightSeverity,
