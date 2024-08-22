@@ -73,7 +73,7 @@ unknown_header ::= LSBR IDENTIFIER headerValue* RSBR {
 //    pin=1
 //    recoverWhile=header_r
 }
-private header_r ::= !(LSBR | IDENTIFIER)
+private header_r ::= !(LSBR | IDENTIFIER | NUMBER)
 
 headerValue ::= headerValue_nm EQ headerValue_val
 headerValue_nm ::= IDENTIFIER

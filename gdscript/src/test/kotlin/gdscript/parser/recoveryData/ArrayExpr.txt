@@ -21,6 +21,8 @@ GdScript File(0,27)
               PsiElement(GdTokenType.NUMBER)('1')(16,17)
             PsiErrorElement:RSBR expected(17,17)
               <empty list>
+          PsiErrorElement:END_STMT expected(17,17)
+            <empty list>
         PsiWhiteSpace('\n')(17,18)
         PsiWhiteSpace('    ')(18,22)
         GdAssignStImpl(ASSIGN_ST)(22,27)
