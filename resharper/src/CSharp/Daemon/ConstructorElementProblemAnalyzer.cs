@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using JetBrains.Application.Parts;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.ReSharper.Psi.Modules;
@@ -12,7 +13,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
     /// <summary>
     /// Analyzes classes that derives from Godot.GodotObject
     /// </summary>
-    [ElementProblemAnalyzer(typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(MissingParameterlessConstructor)})]
+    [ElementProblemAnalyzer(Instantiation.DemandAnyThreadUnsafe, typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(MissingParameterlessConstructor)})]
     public class ConstructorElementProblemAnalyzer : ElementProblemAnalyzer<IClassDeclaration>
     {
         protected override void Run(IClassDeclaration element, ElementProblemAnalyzerData data, IHighlightingConsumer consumer)
