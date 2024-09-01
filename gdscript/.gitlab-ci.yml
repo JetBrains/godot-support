@@ -2,28 +2,22 @@
 image: gradle:8.10.0-jdk17
 
 before_script:
-  - GRADLE_USER_HOME="$(pwd)/.gradle"
-  - export GRADLE_USER_HOME
+  - export GRADLE_USER_HOME="$(pwd)/.gradle"
 
-build:
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+
+package:
   stage: build
-  script: gradle --build-cache assemble
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: push
-    paths:
-      - build
-      - .gradle
+  script:
+    - ./gradlew assemble
 
 test:
   stage: test
-  script: gradle check
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: pull
-    paths:
-      - build
-      - .gradle
+  script:
+    - ./gradlew check
 
 refresh-sdk:
   stage: build
