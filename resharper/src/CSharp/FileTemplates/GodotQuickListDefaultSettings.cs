@@ -14,7 +14,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.FileTemplates
     // Defines settings for the QuickList, or we don't get a QuickList at all
     // Note that the QuickList can be empty, but it's still required
     [ShellComponent(Instantiation.DemandAnyThreadSafe)]
-    public class GodotQuickListDefaultSettings : HaveDefaultSettings
+    public class GodotQuickListDefaultSettings : HaveDefaultSettings<QuickListSettings>
     {
         private readonly ILogger myLogger;
         private readonly ISettingsSchema mySettingsSchema;

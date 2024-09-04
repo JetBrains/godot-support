@@ -5,11 +5,12 @@ using JetBrains.Application.Parts;
 using JetBrains.Application.Settings;
 using JetBrains.Diagnostics;
 using JetBrains.Lifetimes;
+using JetBrains.ReSharper.Feature.Services.LiveTemplates.Settings;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.LiveTemplates
 {
     [ShellComponent(Instantiation.DemandAnyThreadSafe)]
-    public class GodotTemplatesDefaultSettings : IHaveDefaultSettingsStream
+    public class GodotTemplatesDefaultSettings : IHaveDefaultSettingsStream, IDefaultSettingsRootKey<LiveTemplatesSettings>
     {
         public Stream GetDefaultSettingsStream(Lifetime lifetime)
         {
