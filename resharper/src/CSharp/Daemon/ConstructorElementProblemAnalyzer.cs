@@ -13,7 +13,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
     /// <summary>
     /// Analyzes classes that derives from Godot.GodotObject
     /// </summary>
-    [ElementProblemAnalyzer(Instantiation.DemandAnyThreadUnsafe, typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(MissingParameterlessConstructor)})]
+    [ElementProblemAnalyzer(Instantiation.DemandAnyThreadSafe, typeof(IClassDeclaration), HighlightingTypes = new[] {typeof(MissingParameterlessConstructor)})]
     public class ConstructorElementProblemAnalyzer : ElementProblemAnalyzer<IClassDeclaration>
     {
         protected override void Run(IClassDeclaration element, ElementProblemAnalyzerData data, IHighlightingConsumer consumer)
