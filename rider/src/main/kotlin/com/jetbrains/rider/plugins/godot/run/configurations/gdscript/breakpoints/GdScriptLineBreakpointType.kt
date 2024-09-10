@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.godot.run.configurations.gdscript.brakepoints
+package com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
