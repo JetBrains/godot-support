@@ -12,8 +12,8 @@ import com.intellij.platform.dap.DebugAdapterSupportProvider
 import com.intellij.platform.dap.connection.DebugAdapterHandle
 import com.intellij.platform.dap.connection.DebugAdapterSocketConnection
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
-import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.brakepoints.GdScriptExceptionBreakpointType
-import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.brakepoints.GdScriptLineBreakpointType
+import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptExceptionBreakpointType
+import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptLineBreakpointType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
