@@ -143,7 +143,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
 
         override val lspFindReferencesSupport: LspFindReferencesSupport?
             get() {
-                if (!PluginInterop.isGdScriptPluginEnabled())
+                if (PluginInterop.isGdScriptPluginEnabled())
                     return null
                 return super.lspFindReferencesSupport
             }
