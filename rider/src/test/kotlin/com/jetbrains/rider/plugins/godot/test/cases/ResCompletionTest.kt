@@ -53,7 +53,7 @@ class ResCompletionTest : BaseTestWithSolution(), TestApiScopes.Editor {
 
     // https://github.com/JetBrains/godot-support/pull/77 // todo: add more cases
 
-    @Test
+    @Test(timeOut = 240000) // 4 min for setUpTestCaseSolution
     fun test_PrimitiveCompletion() {
         withOpenedEditor(File("scripts").resolve("NewScript.cs").path, "ResCompletionTest1.cs") {
             typeWithLatency("/")
