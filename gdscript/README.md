@@ -33,33 +33,6 @@ But due to Godot's total failure regarding their banning spree and hatred toward
 
 Ok, new DEA version 2024.2 is out and unfortunately this plugin is not supported -> JetBrains once again decided to hide parts of their API, forbidding plugins to use it so I'll have to find some probably complicated workarounds again... -_-
 
-## Update 1.6.2024
-
-Sorry, version 2.5.0 broke quite a lot of things, I'm taking it down for now and going to fix those issues...
-seems that while Parser is more or less fixed, a lot of Annotators broke. -_- Gonna have to start writing tests for those as well I guess.
-
-## Update 9.4.2024
-
-Hello,
-I'm sorry for late responses and lack of activity, I'm currently running between 3 projects in daily job and have not much time and much less will to work on this plugin.
-
-So give me a month or two, and hopefully I'll get back on track with it and start solving issues.
-
-Have patience with me, thanks.
-
-## Update 28.2.2024
-
-Thank you for help and support - extra thanks to @BokoEnos for a lot of contributions.
-
-This plugin is gaining quite an attention and latest 2.4.0 release (should be public tomorrow) is coming up with a 
-[Scene preview](documentation%2Ffeatures%2Fscene_preview.md) - for now it's usage
-is VERY limited, but it shows Node's tree structure and allows for Drag&Drop into scripts.
-
-There are some feature requests in Issue list - I don't have time to implement them all within next weeks (maybe months), 
-but don't hesitate to propose new ones or vote (just give "thumbs up" on issue) for the one you desire the most.
-
-And ofc please report all issues you find.
-
 ## GdScript toolkit (not related to this project)
 
 An independent set of tools for GdScript (Formatter, Linter, and more) that can work together with this plugin.  
