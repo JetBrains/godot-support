@@ -23,7 +23,13 @@ Note that there are also major issues running both this and JuetBrain's Godot pl
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
-# Update 15.8.2024
+# Update 1.10.2024
+
+Well I havent done anything usefull in past few months sorry for that... I have work deadlines comming in couple of weeks, so I'm focusing on that.
+
+But due to Godot's total failure regarding their banning spree and hatred towards their own community (us) I'm stopping support of Godot for the forseeable future - no donations, no plugin updates, nothing. Maybe I'll try different engine, who knows.
+
+## Update 15.8.2024
 
 Ok, new DEA version 2024.2 is out and unfortunately this plugin is not supported -> JetBrains once again decided to hide parts of their API, forbidding plugins to use it so I'll have to find some probably complicated workarounds again... -_-
 
