@@ -28,6 +28,7 @@ Note that there are also major issues running both this and JuetBrain's Godot pl
 Well I havent done anything usefull in past few months sorry for that... I have work deadlines comming in couple of weeks, so I'm focusing on that.
 
 But due to Godot's total failure regarding their banning spree and hatred towards their own community (us) I'm stopping support of Godot for the forseeable future - no donations, no plugin updates, nothing. Maybe I'll try different engine, who knows.
+EDIT: Just to clarify I know we should keep politics out of SW and I would love to, but SWs companies got a lot of bullshit because we always were silent... and since that nonesense of forcing to rename 'master' branch to 'main' and discriminatory hiring practices I'm just tired of those lunatics and refuse to just silently accept everything.
 
 ## Update 15.8.2024
 
