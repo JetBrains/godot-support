@@ -5,6 +5,7 @@ import com.jetbrains.rider.RiderEnvironment
 import org.jetbrains.plugins.textmate.api.TextMateBundleProvider
 import java.io.File
 import java.io.FileFilter
+import kotlin.io.path.name
 
 class GodotTextMateBundleProvider : TextMateBundleProvider {
     override fun getBundles(): List<TextMateBundleProvider.PluginBundle> {
@@ -23,7 +24,9 @@ class GodotTextMateBundleProvider : TextMateBundleProvider {
                 .orEmpty().toList()}
 
         val bundles = directories.map{it.resolve("extension")}.filter { it.isDirectory }
-            .map { TextMateBundleProvider.PluginBundle(it.name, it.toPath()) }
+            .map { dir ->
+                val dirPath = dir.toPath()
+                TextMateBundleProvider.PluginBundle(dirPath.parent.name, dirPath) }
 
         return bundles
     }
