@@ -5,6 +5,10 @@ import org.jetbrains.plugins.textmate.TextMateBackedFileType
 import javax.swing.Icon
 
 internal class GdScriptFileType private constructor() : FileType, TextMateBackedFileType {
+  companion object{
+    val INSTANCE = GdScriptFileType()
+  }
+
   override fun getName(): String {
     return "GDScript"
   }

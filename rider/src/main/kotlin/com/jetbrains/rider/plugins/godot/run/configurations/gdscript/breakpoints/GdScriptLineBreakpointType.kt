@@ -10,7 +10,7 @@ internal class GdScriptLineBreakpointType :
   XLineBreakpointTypeBase(
       "GdScriptLineBreakpointTypeId",
       GodotPluginBundle.message("gdscript.debug.line.breakpoint.title"),
-      null // Create and provide an instance of XBreakpointProperties if needed
+      GdScriptDebuggerEditorsProvider()
   ) {
     override fun canPutAt(file: VirtualFile, line: Int, project: Project): Boolean {
         if (Util.isGdFile(file))
