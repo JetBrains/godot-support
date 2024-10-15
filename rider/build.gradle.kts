@@ -20,7 +20,7 @@ apply {
     plugin("kotlin")
 }
 
-val baseVersion = "2024.3"
+val baseVersion = "2025.1"
 
 data class PluginDescription(val name: String, val url: String)
 
