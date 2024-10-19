@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.godot.run.configurations.gdscript.brakepoints
+package com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints
 
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.fileTypes.PlainTextLanguage
