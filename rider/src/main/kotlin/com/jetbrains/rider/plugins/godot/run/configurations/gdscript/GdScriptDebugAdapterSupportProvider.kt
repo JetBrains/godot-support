@@ -8,12 +8,9 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.dap.*
 import com.intellij.platform.dap.connection.DebugAdapterHandle
 import com.intellij.platform.dap.connection.DebugAdapterSocketConnection
-import com.intellij.platform.dap.xdebugger.DapXDebugProcess
-import com.intellij.xdebugger.XDebugSession
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptExceptionBreakpointType
 import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptLineBreakpointType
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
