@@ -25,7 +25,7 @@ Note that there are also major issues running both this and JuetBrain's Godot pl
 
 # Update 27.10.2024
 
-As Redot seems to be really going at it, I'm just gonna let you know, that plugin will be redirected from Godot and Redot and continue to live.
+As Redot seems to be really going at it, I'm just gonna let you know, that plugin will be redirected from Godot to Redot and continue to live.
 See https://gitlab.com/IceExplosive/gdscript/-/issues/296
 
 ## Update 1.10.2024
