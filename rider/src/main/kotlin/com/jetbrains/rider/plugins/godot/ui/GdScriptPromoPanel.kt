@@ -81,7 +81,7 @@ class GdScriptPromoPanel(project: Project) : GdScriptInstallWizardPanel(project)
                         icon(suggestion.icon)
                             .gap(RightGap.SMALL)
                             .applyToComponent {
-                                putClientProperty(DslComponentProperty.VERTICAL_COMPONENT_GAP, VerticalComponentGap(false, false))
+                                putClientProperty(DslComponentProperty.VERTICAL_COMPONENT_GAP, VerticalComponentGap.NONE)
                             }
                         text(suggestion.text, maxLineLength = MAX_LINE_LENGTH_NO_WRAP)
                     }
