@@ -5,6 +5,8 @@ import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.codeInspection.ProblemHighlightType.*
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
+import gdscript.annotator.isGodotSupportInstalled
+import gdscript.utils.RiderGodotSupportPluginUtil
 
 object ProblemsHolderExtension {
 
@@ -25,10 +27,14 @@ object ProblemsHolderExtension {
     }
 
     private fun ProblemsHolder.registerProblem(element: PsiElement, description: String, highlightType: ProblemHighlightType, quickFix: LocalQuickFix?) {
+        var type = highlightType
+        if ((highlightType == GENERIC_ERROR || highlightType == ERROR) && isGodotSupportInstalled && RiderGodotSupportPluginUtil.isGodotSupportLSPRunning(project))
+            type = POSSIBLE_PROBLEM
+
         if (quickFix == null) {
-            this.registerProblem(element, description, highlightType)
+            this.registerProblem(element, description, type)
         } else {
-            this.registerProblem(element, description, highlightType, quickFix)
+            this.registerProblem(element, description, type, quickFix)
         }
     }
 }
