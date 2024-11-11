@@ -4,15 +4,15 @@ import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.PrioritizedLookupElement
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.*
-import com.intellij.platform.lsp.api.customization.LspFindReferencesSupport
+import com.intellij.platform.lsp.api.customization.LspCodeActionsSupport
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
+import com.intellij.platform.lsp.api.customization.LspFindReferencesSupport
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
@@ -147,5 +147,16 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                     return null
                 return super.lspFindReferencesSupport
             }
+
+        // todo: https://youtrack.jetbrains.com/issue/IJPL-171159/codeActionProviderfalse-should-disable-the-codeAction-attempts
+        // causes https://youtrack.jetbrains.com/issue/RIDER-114380/Godot-HotReload-GDScript
+        override val lspCodeActionsSupport: LspCodeActionsSupport
+            get() = godotLspCodeActionSupport
     }
+
+}
+
+val godotLspCodeActionSupport: LspCodeActionsSupport = object : LspCodeActionsSupport() {
+    override val intentionActionsSupport: Boolean
+        get() = false
 }
