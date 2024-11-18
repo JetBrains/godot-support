@@ -147,11 +147,6 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                     return null
                 return super.lspFindReferencesSupport
             }
-
-        // todo: https://youtrack.jetbrains.com/issue/IJPL-171159/codeActionProviderfalse-should-disable-the-codeAction-attempts
-        // causes https://youtrack.jetbrains.com/issue/RIDER-114380/Godot-HotReload-GDScript
-        override val lspCodeActionsSupport: LspCodeActionsSupport
-            get() = godotLspCodeActionSupport
     }
 
 }
