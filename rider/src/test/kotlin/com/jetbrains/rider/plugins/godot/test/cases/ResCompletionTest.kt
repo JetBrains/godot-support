@@ -8,6 +8,9 @@ import com.jetbrains.rider.test.annotations.TestEnvironment
 import com.jetbrains.rider.test.base.BaseTestWithSolution
 import com.jetbrains.rider.test.env.enums.BuildTool
 import com.jetbrains.rider.test.env.enums.SdkVersion
+import com.jetbrains.rider.test.facades.TestApiScopes
+import com.jetbrains.rider.test.facades.editor.EditorApiFacade
+import com.jetbrains.rider.test.facades.editor.RiderEditorApiFacade
 import com.jetbrains.rider.test.framework.persistAllFilesOnDisk
 import com.jetbrains.rider.test.scriptingApi.assertLookupContains
 import com.jetbrains.rider.test.scriptingApi.callBasicCompletion
@@ -19,7 +22,9 @@ import org.testng.annotations.Test
 import java.io.File
 
 @TestEnvironment(sdkVersion = SdkVersion.DOT_NET_6, buildTool = BuildTool.SDK)
-class ResCompletionTest : BaseTestWithSolution() {
+class ResCompletionTest : BaseTestWithSolution(), TestApiScopes.Editor {
+    override val editorApiFacade: EditorApiFacade by lazy { RiderEditorApiFacade(solutionApiFacade, testDataStorage) }
+
     override val testSolution: String = "ResCompletionTest"
 
     override val traceCategories: List<String>
