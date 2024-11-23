@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.RangeMarker
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsContexts
+import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.PsiTreeUtil
@@ -54,26 +55,36 @@ class GdInplaceIntroducer(
         // create write action otherwise the concurrency model will complain
         val gdVar = WriteAction.computeAndWait<GdVarNmi, Exception> {
             val varDeclSt = createLocalVarDeclSt(names[0])
-            val gdVar = PsiTreeUtil.findChildOfType(varDeclSt, GdVarNmi::class.java)
             val exprContainingSuite = PsiTreeUtil.getParentOfType(expr, GdSuite::class.java)
             if (varDeclSt != null && exprContainingSuite != null) {
-                // TODO we need to add a newline after the variable declaration - is there an easy way?
-                exprContainingSuite.addBefore(varDeclSt, expr)
+                val insertionPoint = findInsertionPoint(expr)
+                val added = exprContainingSuite.addBefore(varDeclSt, insertionPoint)
+                PsiTreeUtil.findChildOfType(added, GdVarNmi::class.java)
+            } else {
+                null
             }
-            gdVar
         }
-        localVariable = gdVar
+        myLocalVariable = gdVar // update the local variable for the superclass
         return gdVar
     }
 
     // see https://plugins.jetbrains.com/docs/intellij/modifying-psi.html
     private fun createLocalVarDeclSt(varname: String): GdVarDeclSt? {
+        // this declaration needs a newline afte the assignment, thus the dummy statement
         val simpleDecl = """
                 func a():
                     var $varname = ${expr.text}
+                    var b = 1
             """.trimIndent()
         val dummyFile = PsiFileFactory.getInstance(project).createFileFromText("dummy.gd", GdLanguage, simpleDecl)
         return PsiTreeUtil.findChildOfType(dummyFile.firstChild, GdVarDeclSt::class.java)
+    }
+
+    private fun findInsertionPoint(el: PsiElement): PsiElement {
+        if (el.parent is GdSuite) {
+            return el
+        }
+        return findInsertionPoint(el.parent)
     }
 
     override fun getComponent(): JComponent? {
