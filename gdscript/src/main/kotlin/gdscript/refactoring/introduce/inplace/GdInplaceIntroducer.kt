@@ -7,22 +7,18 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsContexts
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.introduce.inplace.AbstractInplaceIntroducer
-import gdscript.GdLanguage
-import gdscript.psi.GdExpr
-import gdscript.psi.GdSuite
-import gdscript.psi.GdVarDeclSt
-import gdscript.psi.GdVarNmi
+import gdscript.psi.*
 import javax.swing.JComponent
 
 class GdInplaceIntroducer(
     val project: Project?,
     val editor: Editor?,
     val expr: GdExpr,
-    var localVariable: GdVarNmi?,
-    occurrences: Array<out GdExpr>?, title: @NlsContexts.Command String?,
+    localVariable: GdVarNmi?,
+    occurrences: Array<out GdExpr>?,
+    title: @NlsContexts.Command String?,
     val file: PsiFile
 ) : AbstractInplaceIntroducer<GdVarNmi, GdExpr>(
     project,
@@ -48,43 +44,34 @@ class GdInplaceIntroducer(
     }
 
     override fun getVariable(): GdVarNmi? {
-        return localVariable
+        return myLocalVariable
     }
 
     override fun createFieldToStartTemplateOn(replaceAll: Boolean, names: Array<out String>): GdVarNmi? {
         // create write action otherwise the concurrency model will complain
-        val gdVar = WriteAction.computeAndWait<GdVarNmi, Exception> {
+        myLocalVariable = WriteAction.computeAndWait<GdVarNmi, Exception> {
             val varDeclSt = createLocalVarDeclSt(names[0])
+
             val exprContainingSuite = PsiTreeUtil.getParentOfType(expr, GdSuite::class.java)
-            if (varDeclSt != null && exprContainingSuite != null) {
+            if (exprContainingSuite != null) {
                 val insertionPoint = findInsertionPoint(expr)
-                val added = exprContainingSuite.addBefore(varDeclSt, insertionPoint)
-                PsiTreeUtil.findChildOfType(added, GdVarNmi::class.java)
+                exprContainingSuite.addBefore(varDeclSt, insertionPoint)
+
+                varDeclSt.varNmi
             } else {
                 null
             }
         }
-        myLocalVariable = gdVar // update the local variable for the superclass
-        return gdVar
+
+        return myLocalVariable
     }
 
-    // see https://plugins.jetbrains.com/docs/intellij/modifying-psi.html
-    private fun createLocalVarDeclSt(varname: String): GdVarDeclSt? {
-        // this declaration needs a newline afte the assignment, thus the dummy statement
-        val simpleDecl = """
-                func a():
-                    var $varname = ${expr.text}
-                    var b = 1
-            """.trimIndent()
-        val dummyFile = PsiFileFactory.getInstance(project).createFileFromText("dummy.gd", GdLanguage, simpleDecl)
-        return PsiTreeUtil.findChildOfType(dummyFile.firstChild, GdVarDeclSt::class.java)
+    private fun createLocalVarDeclSt(varname: String): GdVarDeclSt {
+        return GdElementFactory.varDecl(project!!, varname, expr.text)
     }
 
     private fun findInsertionPoint(el: PsiElement): PsiElement {
-        if (el.parent is GdSuite) {
-            return el
-        }
-        return findInsertionPoint(el.parent)
+        return PsiTreeUtil.getParentOfType(el, GdStmt::class.java) ?: el
     }
 
     override fun getComponent(): JComponent? {

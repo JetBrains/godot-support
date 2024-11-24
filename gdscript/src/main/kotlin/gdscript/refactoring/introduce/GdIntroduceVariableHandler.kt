@@ -6,13 +6,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Pair
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.elementType
 import com.intellij.refactoring.introduce.IntroduceHandler
 import com.intellij.refactoring.introduce.PsiIntroduceTarget
 import com.intellij.refactoring.introduce.inplace.AbstractInplaceIntroducer
 import com.intellij.refactoring.introduce.inplace.OccurrencesChooser
 import com.intellij.usageView.UsageInfo
-import gdscript.psi.GdExpr
-import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.*
 import gdscript.refactoring.introduce.inplace.GdInplaceIntroducer
 
 /**
@@ -21,6 +21,14 @@ import gdscript.refactoring.introduce.inplace.GdInplaceIntroducer
  * Supports only the current method as scope and a selection target
  */
 class GdIntroduceVariableHandler : IntroduceHandler<PsiIntroduceTarget<GdExpr>, GdMethodDeclTl>() {
+
+    companion object {
+        val SKIP_TO_PARENT = arrayOf(
+            GdTypes.ARR_EX,
+            GdTypes.CALL_EX,
+            GdTypes.ATTRIBUTE_EX,
+        )
+    }
 
     override fun getRefactoringName(): String {
         return "Introduce Variable"
@@ -49,7 +57,26 @@ class GdIntroduceVariableHandler : IntroduceHandler<PsiIntroduceTarget<GdExpr>, 
         editor: Editor,
         project: Project
     ): Pair<MutableList<PsiIntroduceTarget<GdExpr>>, Int> {
-        return Pair(mutableListOf(), 0) // not really implement. only for selections
+        val exprs = mutableListOf<PsiIntroduceTarget<GdExpr>>()
+        var element = file.findElementAt(editor.caretModel.offset)
+        while (element != null) {
+            if (element is GdStmt) break
+            if (element !is GdExpr) {
+                element = element.parent
+                continue
+            }
+
+            // call() -> ignores "call" and jumps to whole "call()" expr
+            if (SKIP_TO_PARENT.contains(element.parent.elementType)) {
+                element = element.parent
+                continue
+            }
+
+            exprs.add(PsiIntroduceTarget(element))
+            element = element.parent
+        }
+
+        return Pair(exprs, 0) // is number for ordering of different handlers?
     }
 
     override fun checkSelectedTarget(

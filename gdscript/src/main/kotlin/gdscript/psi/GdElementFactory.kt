@@ -115,6 +115,12 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdVarNmi::class.java)!!.firstChild
     }
 
+    fun varDecl(project: Project, name: String, expr: String = ""): GdVarDeclSt {
+        val file = createFile(project, "extends Node\nfunc a():\n\tvar $name = $expr\n")
+
+        return PsiTreeUtil.findChildOfType(file, GdVarDeclSt::class.java)!!
+    }
+
     fun callExpr(project: Project, expr: String): GdExpr {
         val file = createFile(project, "extends Node\nfunc fu():\n\t$expr");
 
