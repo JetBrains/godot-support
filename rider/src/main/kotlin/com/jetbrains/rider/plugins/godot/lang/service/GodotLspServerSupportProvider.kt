@@ -17,6 +17,7 @@ import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
 import com.jetbrains.rd.util.reactive.adviseNotNull
+import com.jetbrains.rd.util.threading.coroutines.async
 import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
 import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
@@ -25,6 +26,7 @@ import com.jetbrains.rider.plugins.godot.Util
 import com.jetbrains.rider.plugins.godot.gdscript.PluginInterop
 import com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage
 import com.jetbrains.rider.util.NetUtils
+import kotlinx.coroutines.Dispatchers
 import org.eclipse.lsp4j.CompletionItem
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -63,23 +65,25 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
 
             // subscribe one time to everything
             if (lspService.isScheduled.compareAndSet(false, true)){
-                val lifetime = GodotProjectLifetimeService.getLifetime(project)
-                discoverer.lspConnectionMode.adviseNotNull(lifetime) { lspConnectionMode ->
-                    if (lspConnectionMode == LanguageServerConnectionMode.Never) {
-                        LspServerManager.getInstance(project).stopServers(this.javaClass)
+                val pluginLifetime = GodotProjectLifetimeService.getLifetime(project)
+                pluginLifetime.async(Dispatchers.IO) {
+                    discoverer.lspConnectionMode.adviseNotNull(pluginLifetime) { lspConnectionMode ->
+                        if (lspConnectionMode == LanguageServerConnectionMode.Never) {
+                            LspServerManager.getInstance(project).stopServers(GodotLspServerSupportProvider::class.java)
+                        }
+                        else
+                            scheduleStartIfNeeded(project)
                     }
-                    else
-                        scheduleStartIfNeeded(project)
-                }
 
-                discoverer.useDynamicPort.adviseNotNull(lifetime) {
-                    scheduleStartIfNeeded(project)
-                }
-                discoverer.godotDescriptor.adviseNotNull(lifetime) {
-                    scheduleStartIfNeeded(project)
-                }
-                discoverer.godotPath.adviseNotNull(lifetime) {
-                    scheduleStartIfNeeded(project)
+                    discoverer.useDynamicPort.adviseNotNull(pluginLifetime) {
+                        scheduleStartIfNeeded(project)
+                    }
+                    discoverer.godotDescriptor.adviseNotNull(pluginLifetime) {
+                        scheduleStartIfNeeded(project)
+                    }
+                    discoverer.godotPath.adviseNotNull(pluginLifetime) {
+                        scheduleStartIfNeeded(project)
+                    }
                 }
             }
 
