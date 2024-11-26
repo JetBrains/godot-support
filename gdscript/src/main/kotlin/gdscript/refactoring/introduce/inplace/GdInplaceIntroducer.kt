@@ -55,9 +55,9 @@ class GdInplaceIntroducer(
             val exprContainingSuite = PsiTreeUtil.getParentOfType(expr, GdSuite::class.java)
             if (exprContainingSuite != null) {
                 val insertionPoint = findInsertionPoint(expr)
-                exprContainingSuite.addBefore(varDeclSt, insertionPoint)
-
-                varDeclSt.varNmi
+                // use the added element to get the varNmi otherwise the cursor to rename will be at a random position
+                val added = exprContainingSuite.addBefore(varDeclSt, insertionPoint) as GdVarDeclSt
+                added.varNmi
             } else {
                 null
             }
