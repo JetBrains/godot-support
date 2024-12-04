@@ -24,7 +24,7 @@ val baseVersion = "2025.1"
 
 data class PluginDescription(val name: String, val url: String)
 
-val godotVscodePluginVersion = "2.0.0" // https://github.com/godotengine/godot-vscode-plugin/releases
+val godotVscodePluginVersion = "2.3.0" // https://github.com/godotengine/godot-vscode-plugin/releases
 // alternative val url = URL("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/geequlim/vsextensions/godot-tools/$godotVscodePluginVersion/vspackage")
 
 val plugins = listOf(
@@ -244,6 +244,7 @@ tasks {
         // pack nuget manually with the following command
         // nuget pack JetBrains.Godot.Tools.nuspec
         // nuget may be installed with `brew install nuget`
+        // upload to https://jetbrains.team/p/net/packages/nuget/build/JetBrains.Godot.Tools
         group = riderGodotTargetsGroup
         doLast {
             logger.lifecycle("downloading TextMate bundles")
