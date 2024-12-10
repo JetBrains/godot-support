@@ -20,7 +20,7 @@ import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
 import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.createEmptyConsoleCommandLine
 import com.jetbrains.rider.run.environment.ExecutableType
-import com.jetbrains.rider.run.withRawParameters
+import com.jetbrains.rider.shared.run.withRawParameters
 
 
 class  StartGodotEditorAction : DumbAwareAction() {
