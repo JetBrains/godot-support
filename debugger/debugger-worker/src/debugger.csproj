@@ -8,7 +8,7 @@
   <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" Condition="!$(InternalBuild)" />
   <PropertyGroup>
     <AssemblyName>JetBrains.ReSharper.Plugins.Godot.Rider.Debugger</AssemblyName>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>latest</LangVersion>
     <RootNamespace>JetBrains.ReSharper.Plugins.Godot.Rider.Debugger</RootNamespace>
     <SignAssembly>true</SignAssembly>
     <TargetFramework>net472</TargetFramework>
