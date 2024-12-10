@@ -30,7 +30,7 @@ import com.jetbrains.rider.run.WorkerRunInfo
 import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
 import com.jetbrains.rider.run.createEmptyConsoleCommandLine
 import com.jetbrains.rider.run.environment.ExecutableType
-import com.jetbrains.rider.run.withRawParameters
+import com.jetbrains.rider.shared.run.withRawParameters
 import com.jetbrains.rider.util.NetUtils
 
 class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfiguration, private val remoteConfiguration: RemoteConfiguration, executionEnvironment: ExecutionEnvironment)
