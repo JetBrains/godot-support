@@ -4,6 +4,7 @@ import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.editorActions.CompletionAutoPopupHandler
 import com.intellij.testFramework.TestModeFlags
 import com.jetbrains.rider.completion.RiderCodeCompletionExtraSettings
+import com.jetbrains.rider.test.annotations.RiderTestTimeout
 import com.jetbrains.rider.test.annotations.TestEnvironment
 import com.jetbrains.rider.test.base.BaseTestWithSolution
 import com.jetbrains.rider.test.env.enums.BuildTool
@@ -20,6 +21,7 @@ import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 @TestEnvironment(sdkVersion = SdkVersion.DOT_NET_6, buildTool = BuildTool.SDK)
 class ResCompletionTest : BaseTestWithSolution(), TestApiScopes.Editor {
@@ -53,7 +55,8 @@ class ResCompletionTest : BaseTestWithSolution(), TestApiScopes.Editor {
 
     // https://github.com/JetBrains/godot-support/pull/77 // todo: add more cases
 
-    @Test(timeOut = 240000) // 4 min for setUpTestCaseSolution
+    @RiderTestTimeout(5, TimeUnit.MINUTES)
+    @Test
     fun test_PrimitiveCompletion() {
         withOpenedEditor(File("scripts").resolve("NewScript.cs").path, "ResCompletionTest1.cs") {
             typeWithLatency("/")
