@@ -31,6 +31,12 @@ class GdInplaceIntroducer(
 ) {
     private var replaceAllOccurrences: Boolean = false
 
+    /**
+     * NOTE: This is a hack to prevent the superclass from calling `restoreExpression` and `saveSettings` which cause exceptions for no apparant reason.
+     * @see AbstractInplaceIntroducer.finish
+     */
+    private var isFinished: Boolean = false
+
     override fun getActionName(): String {
         return "Introduce Variable"
     }
@@ -44,7 +50,7 @@ class GdInplaceIntroducer(
     }
 
     override fun getVariable(): GdVarNmi? {
-        return myLocalVariable
+        return if (isFinished) null else myLocalVariable
     }
 
     override fun createFieldToStartTemplateOn(replaceAll: Boolean, names: Array<out String>): GdVarNmi? {
@@ -75,11 +81,16 @@ class GdInplaceIntroducer(
     }
 
     override fun getComponent(): JComponent? {
-        return null
+        return null // unused - probably only if there are some options to set
     }
 
     override fun performIntroduce() {
-        TODO("Not yet implemented")
+        // unused
+    }
+
+    override fun finish(success: Boolean) {
+        isFinished = true
+        super.finish(success)
     }
 
     override fun restoreExpression(
@@ -92,10 +103,10 @@ class GdInplaceIntroducer(
     }
 
     override fun saveSettings(variable: GdVarNmi) {
-        TODO("Not yet implemented")
+        // unused - probably only if there are some options to set
     }
 
     override fun suggestNames(replaceAll: Boolean, variable: GdVarNmi?): Array<String> {
-        return arrayOf("foo") // TODO
+        return arrayOf("foo") // TODO these are ignored in our implementation currently by the system. It has to do with the template of myLocalVariable
     }
 }
