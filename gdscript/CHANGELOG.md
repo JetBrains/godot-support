@@ -97,6 +97,9 @@ Each release is delayed usually for 2 working days as it awaits JetBrain's appro
 + PackedScene type [#204](https://gitlab.com/IceExplosive/gdscript/-/issues/204)
 + Reenable SDK throws an error [#202](https://gitlab.com/IceExplosive/gdscript/-/issues/202)
 
+## 2.6.0
++ Introduce new Variable
+
 ### 2.1.8 (8.2.2024)
 
 + Enum type hint [#196](https://gitlab.com/IceExplosive/gdscript/-/issues/196)

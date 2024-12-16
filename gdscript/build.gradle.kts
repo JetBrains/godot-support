@@ -3,7 +3,7 @@ import org.jetbrains.intellij.tasks.RunIdeTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 group = "ice.explosive"
-version = "2.5.7"
+version = "2.6.0"
 
 plugins {
     id("org.jetbrains.intellij") version "1.17.3" // https://github.com/JetBrains/gradle-intellij-plugin/releases
