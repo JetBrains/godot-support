@@ -5,8 +5,9 @@ import com.intellij.codeInsight.editorActions.CompletionAutoPopupHandler
 import com.intellij.testFramework.TestModeFlags
 import com.jetbrains.rider.completion.RiderCodeCompletionExtraSettings
 import com.jetbrains.rider.test.annotations.RiderTestTimeout
+import com.jetbrains.rider.test.annotations.Solution
 import com.jetbrains.rider.test.annotations.TestEnvironment
-import com.jetbrains.rider.test.base.BaseTestWithSolution
+import com.jetbrains.rider.test.base.PerClassSolutionTestBase
 import com.jetbrains.rider.test.env.enums.BuildTool
 import com.jetbrains.rider.test.env.enums.SdkVersion
 import com.jetbrains.rider.test.facades.TestApiScopes
@@ -23,11 +24,10 @@ import org.testng.annotations.Test
 import java.io.File
 import java.util.concurrent.TimeUnit
 
-@TestEnvironment(sdkVersion = SdkVersion.DOT_NET_6, buildTool = BuildTool.SDK)
-class ResCompletionTest : BaseTestWithSolution(), TestApiScopes.Editor {
+@Solution("ResCompletionTest")
+@TestEnvironment(sdkVersion = SdkVersion.LATEST_STABLE, buildTool = BuildTool.SDK)
+class ResCompletionTest : PerClassSolutionTestBase(), TestApiScopes.Editor {
     override val editorApiFacade: EditorApiFacade by lazy { RiderEditorApiFacade(solutionApiFacade, testDataStorage) }
-
-    override val testSolution: String = "ResCompletionTest"
 
     override val traceCategories: List<String>
         get() = listOf(
@@ -76,7 +76,7 @@ class ResCompletionTest : BaseTestWithSolution(), TestApiScopes.Editor {
     fun initializeEnvironment() {
         TestModeFlags.set(CompletionAutoPopupHandler.ourTestingAutopopup, true)
 
-        CodeInsightSettings.getInstance().COMPLETION_CASE_SENSITIVE = CodeInsightSettings.NONE
+        CodeInsightSettings.getInstance().completionCaseSensitive = CodeInsightSettings.NONE
         CodeInsightSettings.getInstance().isSelectAutopopupSuggestionsByChars = true
         CodeInsightSettings.getInstance().AUTO_POPUP_JAVADOC_INFO = false
 
