@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.xdebugger.evaluation.XDebuggerEditorsProviderBase
 import com.jetbrains.rider.plugins.godot.GdScriptFileType
 
-class GdScriptDebuggerEditorsProvider: XDebuggerEditorsProviderBase() {
+internal class GdScriptDebuggerEditorsProvider: XDebuggerEditorsProviderBase() {
     override fun getFileType(): FileType {
         return GdScriptFileType.INSTANCE
     }
