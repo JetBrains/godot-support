@@ -39,7 +39,7 @@
     <backgroundPostStartupActivity implementation="gdscript.listener.SdkStartupListener"/>
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
     <toolWindow id="Scene preview" anchor="right" factoryClass="tscn.toolWindow.TscnScenePreviewWindowFactory" />
-    <inlineActionHandler language="GdScript" implementation="gdscript.psi.GdInlineVariableActionHandler" />
+    <inlineActionHandler language="GdScript" implementation="gdscript.refactoring.inline.GdInlineVariableActionHandler" />
 
     <!-- settings -->
     <projectService serviceImplementation="gdscript.settings.GdProjectSettingsState" />
