@@ -16,6 +16,7 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.childLeafs
 import com.intellij.psi.util.elementType
+import com.intellij.refactoring.util.CommonRefactoringUtil
 import gdscript.GdLanguage
 import gdscript.utils.PsiReferenceUtil
 
@@ -31,15 +32,23 @@ class GdInlineVariableActionHandler : InlineActionHandler() {
     override fun inlineElement(project: Project?, editor: Editor?, element: PsiElement?) {
         if (editor == null || project == null || element !is GdVarNmi) return
 
-        val replacementExpr: GdExpr = when (val parent = element.parent) {
+        val replacementExpr: GdExpr? = when (val parent = element.parent) {
             is GdVarDeclSt -> parent.expr
             is GdClassVarDeclTl -> parent.expr
             is GdConstDeclSt -> parent.expr
             is GdConstDeclTl -> parent.expr
             else -> null
-        } ?: return
+        }
+        if (replacementExpr == null) {
+            CommonRefactoringUtil.showErrorHint(project, editor, "Declaration lacks an expression", "Inline Variable", null)
+            return
+        }
 
         val usages = ReferencesSearch.search(element).findAll()
+        if (usages.isEmpty()) {
+            CommonRefactoringUtil.showErrorHint(project, editor, "No usages", "Inline Variable", null)
+            return
+        }
 
 //        val containingMethod = PsiTreeUtil.getParentOfType(expr, GdMethodDeclTl::class.java) ?: return
 //        val callExpressions = PsiTreeUtil.findChildrenOfType(containingMethod, GdCallEx::class.java) ?: return
