@@ -40,11 +40,11 @@ class GdInlineVariableDialog : InlineOptionsDialog {
     }
 
     override fun getInlineAllText(): String {
-        return "Inline all references and remove field"
+        return "Inline all references and remove the variable"
     }
 
     override fun getInlineThisText(): String {
-        return "Inline this reference and keep field"
+        return "Inline this reference and keep the variable"
     }
 
     override fun allowInlineAll(): Boolean {
