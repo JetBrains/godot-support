@@ -2,6 +2,10 @@
 
 Each release is delayed usually for 2 working days as it awaits JetBrain's approval.
 
+### 2.7.0 (1.1.2025)
+
++ Inline Variable
+
 ### 2.4.8 (15.3.2024)
 
 + GdFacade - extension registration
