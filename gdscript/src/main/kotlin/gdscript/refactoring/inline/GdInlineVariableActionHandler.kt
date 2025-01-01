@@ -42,7 +42,8 @@ class GdInlineVariableActionHandler : InlineActionHandler() {
             return
         }
 
-        if (!ReferencesSearch.search(element).any()) {
+        val occurrences = ReferencesSearch.search(element).count()
+        if (occurrences <= 0) {
             CommonRefactoringUtil.showErrorHint(project, editor, "No usages", "Inline Variable", null)
             return
         }
@@ -50,7 +51,11 @@ class GdInlineVariableActionHandler : InlineActionHandler() {
         val reference = TargetElementUtil.findReference(editor, editor.caretModel.offset)
         val dialog = GdInlineVariableDialog(project, element, reference?.element)
 
-        dialog.show()
+        if (occurrences > 1) {
+            dialog.show()
+        } else {
+            dialog.inlineAndRemove()
+        }
     }
 
 }

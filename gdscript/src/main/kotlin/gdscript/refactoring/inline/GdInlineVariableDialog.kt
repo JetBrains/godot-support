@@ -61,8 +61,14 @@ class GdInlineVariableDialog : InlineOptionsDialog {
 
     override fun doAction() {
         invokeRefactoring(
-            GdInlineVariableProcessor(project, myElement, myRef, isInlineThisOnly(), !isKeepTheDeclaration())
+            GdInlineVariableProcessor(project, myElement, myRef, isInlineThisOnly, !isKeepTheDeclaration())
         )
+    }
+
+    // Could not figure out how to handle it the proper way, so for single usage I overcome it by this
+    fun inlineAndRemove() {
+        myRbInlineAll.isSelected = true
+        doAction()
     }
 
 }
