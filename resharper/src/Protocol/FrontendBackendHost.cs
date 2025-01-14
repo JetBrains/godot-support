@@ -1,16 +1,13 @@
 ﻿using System;
 using JetBrains.Annotations;
 using JetBrains.Application.Parts;
-using JetBrains.Application.Threading;
-using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.RdBackend.Common.Features;
 using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Protocol
 {
-    [SolutionComponent(InstantiationEx.LegacyDefault)]
+    [SolutionComponent(Instantiation.DemandAnyThreadSafe)]
     public class FrontendBackendHost
     {
         private readonly bool myIsInTests;
@@ -19,8 +16,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Protocol
         // Prefer using this field over calling GetFrontendBackendModel(), as that method will throw in tests
         [CanBeNull] public readonly GodotFrontendBackendModel Model;
 
-        public FrontendBackendHost(Lifetime lifetime, ISolution solution, IShellLocks shellLocks,
-            bool isInTests = false)
+        public FrontendBackendHost(ISolution solution, bool isInTests = false)
         {
             myIsInTests = isInTests;
             if (myIsInTests)
