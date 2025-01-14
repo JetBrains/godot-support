@@ -13,7 +13,7 @@ using JetBrains.Rider.Model.Godot.FrontendBackend;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
 {
-    [SolutionComponent(InstantiationEx.LegacyDefault)]
+    [SolutionComponent(Instantiation.LaterAsyncAnyThreadSafe)]
     public class SettingsSynchronizer
     {
         public SettingsSynchronizer(Lifetime lifetime, ISolution solution, FrontendBackendHost host,
@@ -44,7 +44,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
         {
             var name = entry.GetInstanceMemberName();
             var setting = boundStore.Schema.GetScalarEntry(entry);
-            boundStore.GetValueProperty<TEntryMemberType>(lifetime, setting, null).Change.Advise_HasNew(lifetime,
+            var apartmentForNotifications = ApartmentForNotifications.Primary(solution.Locks);
+            boundStore.GetValueProperty2<TEntryMemberType>(lifetime, setting, null, apartmentForNotifications).Change.Advise_HasNew(lifetime,
                 args =>
                 {
                     solution.Locks.ExecuteOrQueueEx(lifetime, name, () =>
