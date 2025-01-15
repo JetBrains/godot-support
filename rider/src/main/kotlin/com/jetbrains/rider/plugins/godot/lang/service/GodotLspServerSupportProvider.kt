@@ -152,10 +152,4 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 return super.lspFindReferencesSupport
             }
     }
-
-}
-
-val godotLspCodeActionSupport: LspCodeActionsSupport = object : LspCodeActionsSupport() {
-    override val intentionActionsSupport: Boolean
-        get() = false
 }
