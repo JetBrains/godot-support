@@ -3,6 +3,7 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
+ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import kotlin.io.path.*
 
@@ -223,8 +224,12 @@ tasks {
         // jvmArgs("-Didea.l10n=true")
     }
 
+    withType<JavaCompile> {
+        options.release.set(21)
+    }
+
     withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_21)
         dependsOn("prepare")
     }
 
@@ -237,7 +242,7 @@ tasks {
         }
     }
 
-    create("prepareTextMateBundleNuget") {
+    register("prepareTextMateBundleNuget", fun Task.() {
         // pack nuget manually with the following command
         // nuget pack JetBrains.Godot.Tools.nuspec
         // nuget may be installed with `brew install nuget`
@@ -251,22 +256,22 @@ tasks {
                 val nuspecFile = nugetDir.resolve("JetBrains.Godot.Tools.nuspec").toFile()
                 nuspecFile.writeTextIfChanged(
                     """<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
-  <metadata>
-    <id>JetBrains.Godot.Tools</id>
-    <version>${godotVscodePluginVersion}.1</version>
-    <title>Godot Tools</title>
-    <authors>godotengine</authors>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <license type="expression">MIT</license>
-    <copyright>Copyright (c) 2016-2022 The Godot Engine community</copyright>
-    <projectUrl>https://github.com/godotengine/godot-vscode-plugin</projectUrl>
-    <description>Godot tools to redestribute with the godot plugin</description>
-  </metadata>
-  <files>
-    <file src=".\**\*.*" target="" />
-  </files>
-</package>""".trimIndent()
+    <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+      <metadata>
+        <id>JetBrains.Godot.Tools</id>
+        <version>${godotVscodePluginVersion}.1</version>
+        <title>Godot Tools</title>
+        <authors>godotengine</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <license type="expression">MIT</license>
+        <copyright>Copyright (c) 2016-2022 The Godot Engine community</copyright>
+        <projectUrl>https://github.com/godotengine/godot-vscode-plugin</projectUrl>
+        <description>Godot tools to redestribute with the godot plugin</description>
+      </metadata>
+      <files>
+        <file src=".\**\*.*" target="" />
+      </files>
+    </package>""".trimIndent()
                 )
                 val configDir = nugetDir
                     .resolve("DotFiles")
@@ -280,43 +285,39 @@ tasks {
                 unzipTo(configDir.toFile(), temporaryFile)
             }
         }
-    }
+    })
 
-    create("writeDotNetSdkPathProps") {
+    register("writeDotNetSdkPathProps", fun Task.() {
         group = riderGodotTargetsGroup
         doLast {
             dotNetSdkPathPropsPath.parentFile?.mkdir()
             dotNetSdkPathPropsPath.writeTextIfChanged(
                 """
-                <Project>
-                  <PropertyGroup>
-                    <DotNetSdkPath>${dotNetSdkPath.get()}</DotNetSdkPath>
-                  </PropertyGroup>
-                </Project>
-                """.trimIndent()
+                    <Project>
+                      <PropertyGroup>
+                        <DotNetSdkPath>${dotNetSdkPath.get()}</DotNetSdkPath>
+                      </PropertyGroup>
+                    </Project>
+                    """.trimIndent()
             )
         }
+    })
 
-        getByName("buildSearchableOptions") {
-            enabled = buildConfiguration == "Release"
-        }
-    }
-
-    create("writeNuGetConfig") {
+    register("writeNuGetConfig", fun Task.() {
         group = riderGodotTargetsGroup
         doLast {
             nugetConfigPath.writeTextIfChanged(
                 """
-                <?xml version="1.0" encoding="utf-8"?>
-                <configuration>
-                  <packageSources>
-                    <add key="resharper-sdk" value="${dotNetSdkPath.get()}" />
-                  </packageSources>
-                </configuration>
-                """.trimIndent()
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <configuration>
+                      <packageSources>
+                        <add key="resharper-sdk" value="${dotNetSdkPath.get()}" />
+                      </packageSources>
+                    </configuration>
+                    """.trimIndent()
             )
         }
-    }
+    })
 
     getByName("assemble") {
         doLast {
@@ -325,12 +326,12 @@ tasks {
         }
     }
 
-    create("prepare") {
+    register("prepare", fun Task.() {
         group = riderGodotTargetsGroup
         dependsOn(":protocol:rdgen", "writeNuGetConfig", "writeDotNetSdkPathProps")
-    }
+    })
 
-    create("buildReSharperPlugin") {
+    register("buildReSharperPlugin", fun Task.() {
         group = riderGodotTargetsGroup
         dependsOn("prepare")
         doLast {
@@ -340,6 +341,10 @@ tasks {
                 args("build", "$resharperPluginPath/godot-support.sln", "-c", buildConfiguration)
             }
         }
+    })
+
+    getByName("buildSearchableOptions") {
+        enabled = false // until intellijPlatformPluginVersion 2.2.2 is used
     }
 
     task("listrepos") {
@@ -353,11 +358,6 @@ tasks {
                 }
             }
         }
-    }
-
-    wrapper {
-        gradleVersion = "8.7"
-        distributionUrl = "https://cache-redirector.jetbrains.com/services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"
     }
 }
 
