@@ -1,7 +1,7 @@
 <Project>
   <Sdk Name="JetBrains.Build.VersionLockFileTargets" Version="0.0.4" />
   <PropertyGroup>
-    <IsIndependentBuild Condition="Exists('$(MSBuildThisFileDirectory)\build\DotNetSdkPath.generated.props')">True</IsIndependentBuild>
+    <IsIndependentBuild Condition="'$(SolutionFileName)' == 'godot-support.sln'">True</IsIndependentBuild>
     <IsIndependentBuild Condition="$(IsIndependentBuild) == ''">False</IsIndependentBuild>
     <PackageLockFilePath>$(MSBuildThisFileDirectory)PackagesLock.targets</PackageLockFilePath>
   </PropertyGroup>
