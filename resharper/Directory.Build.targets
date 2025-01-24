@@ -1,7 +1,5 @@
 <Project>
-    <Sdk Name="JetBrains.Build.VersionLockFileTargets" Version="0.0.4" />
     <PropertyGroup>
-        <ImportGuard-DeirectoryBuildTargets>True</ImportGuard-DeirectoryBuildTargets>
         <IsIndependentBuild Condition="'$(SolutionFileName)' == 'godot-support.sln'">True</IsIndependentBuild>
         <IsIndependentBuild Condition="$(IsIndependentBuild) == ''">False</IsIndependentBuild>
     </PropertyGroup>
