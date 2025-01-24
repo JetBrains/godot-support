@@ -1,13 +1,10 @@
-import com.jetbrains.plugin.structure.base.utils.isDirectory
 import org.gradle.kotlin.dsl.support.unzipTo
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.intellij.platform.gradle.tasks.RunIdeTask
 import org.jetbrains.kotlin.daemon.common.toHexString
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.incremental.createDirectory
-import kotlin.io.path.absolute
-import kotlin.io.path.createDirectories
+import kotlin.io.path.*
 
 plugins {
     // Version is configured in gradle.properties
@@ -27,7 +24,7 @@ data class PluginDescription(val name: String, val url: String)
 val godotVscodePluginVersion = "2.3.0" // https://github.com/godotengine/godot-vscode-plugin/releases
 // alternative val url = URL("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/geequlim/vsextensions/godot-tools/$godotVscodePluginVersion/vspackage")
 
-val plugins = listOf(
+val myPlugins = listOf(
     PluginDescription(
         "godot-tools",
         "https://github.com/godotengine/godot-vscode-plugin/releases/download/$godotVscodePluginVersion/godot-tools-$godotVscodePluginVersion.vsix"
@@ -159,8 +156,8 @@ artifacts {
 
 tasks {
     val dotNetSdkPath = provider {
-        val sdkPath = intellijPlatform.platformPath.resolve("lib/DotNetSdkForRdPlugins").absolute()
-        check(sdkPath.isDirectory) { "$sdkPath does not exist or not a directory" }
+        val sdkPath = intellijPlatform.platformPath.resolve("lib/DotNetSdkForRdPlugins")
+        check(sdkPath.isDirectory()) { "$sdkPath does not exist or not a directory" }
 
         println("SDK path: $sdkPath")
         sdkPath
@@ -248,10 +245,10 @@ tasks {
         group = riderGodotTargetsGroup
         doLast {
             logger.lifecycle("downloading TextMate bundles")
-            plugins.forEach { plugin ->
-                val nugetDir = projectDir.resolve("nuget")
+            myPlugins.forEach { plugin ->
+                val nugetDir = projectDir.resolve("nuget").toPath()
                 nugetDir.createDirectory()
-                val nuspecFile = nugetDir.resolve("JetBrains.Godot.Tools.nuspec")
+                val nuspecFile = nugetDir.resolve("JetBrains.Godot.Tools.nuspec").toFile()
                 nuspecFile.writeTextIfChanged(
                     """<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
@@ -275,7 +272,6 @@ tasks {
                     .resolve("DotFiles")
                     .resolve("bundles")
                     .resolve(plugin.name)
-                    .toPath()
                     .createDirectories()
 
                 val temporaryFile = temporaryDir.resolve(plugin.name)
