@@ -1,6 +1,5 @@
 package com.jetbrains.rider.plugins.godot
 
-import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.util.lifetime
 import com.jetbrains.rd.util.threading.coroutines.asCoroutineDispatcher
@@ -9,7 +8,6 @@ import com.jetbrains.rider.godot.GodotProjectInfo
 import com.jetbrains.rider.model.aIChatModel
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.protocol.protocol
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class GodotDetectorImpl: GodotDetector {

@@ -17,7 +17,6 @@ import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptConfigurationType
-import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptRunConfiguration
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectory
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
