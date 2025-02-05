@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq.Expressions;
+using JetBrains.Application.Components;
 using JetBrains.Application.Parts;
 using JetBrains.Application.Settings;
 using JetBrains.Application.Threading;
@@ -13,8 +14,8 @@ using JetBrains.Rider.Model.Godot.FrontendBackend;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
 {
-    [SolutionComponent(Instantiation.LaterAsyncAnyThreadSafe)]
-    public class SettingsSynchronizer
+    [SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+    public class SettingsSynchronizer : IStartupActivity
     {
         public SettingsSynchronizer(Lifetime lifetime, ISolution solution, FrontendBackendHost host,
                                          IApplicationWideContextBoundSettingStore settingsStore)
