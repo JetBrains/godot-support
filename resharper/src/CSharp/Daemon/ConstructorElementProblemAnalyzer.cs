@@ -21,6 +21,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
             var typeElement = element.DeclaredElement;
             if (typeElement == null) 
                 return;
+            
+            if (typeElement.IsAbstract)
+                return;
 
             if (typeElement.Module is ProjectPsiModuleBase projectPsiModuleBase)
                 if (!projectPsiModuleBase.Project.IsGodotProject2()) return;
@@ -33,8 +36,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon
                 return;
             foreach (var bodyChild in ctors)
             {
-                if (bodyChild.DeclaredElement.Parameters.ToArray().Length == 0)
-                    return;
+                if (bodyChild.DeclaredElement == null) return;
+                if (bodyChild.DeclaredElement.Parameters.ToArray().Length == 0) return;
             }
             consumer.AddHighlighting(new MissingParameterlessConstructor(element, element.NameIdentifier.GetDocumentRange()));
         }
