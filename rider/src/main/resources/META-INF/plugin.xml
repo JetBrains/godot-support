@@ -24,6 +24,8 @@
 
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher"/>
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher"/>
+    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.projectView.GodotUidTrackerInitializer"/>
+    <projectViewNestingRulesProvider implementation="com.jetbrains.rider.plugins.godot.projectView.GodotNestingRulesProvider" />
 
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.FrontendBackendHost$ProtocolListener"/>
@@ -66,7 +68,9 @@
               extensions="gd"/>
   </extensions>
 
-
+  <applicationListeners>
+    <listener class="com.jetbrains.rider.plugins.godot.projectView.UidTrackerListener" topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+  </applicationListeners>
 
   <actions>
     <group id="GodotToolbarActions" popup="true" class = "com.jetbrains.rider.plugins.godot.actions.ToolbarActionsGroup">
