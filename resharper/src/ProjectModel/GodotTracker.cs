@@ -4,6 +4,8 @@ using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Tasks;
 using JetBrains.Rd.Base;
 using JetBrains.ReSharper.Feature.Services.Protocol;
+using JetBrains.ReSharper.Features.Running;
+using JetBrains.Rider.Model;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
 using JetBrains.Util;
 
@@ -33,7 +35,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                     if (solution.SolutionFilePath.IsEmpty &&
                         solution.SolutionDirectory.Combine("project.godot").ExistsFile)
                     {
-                        GodotDescriptor = new GodotDescriptor(true, solution.SolutionDirectory.FullPath);
+                        GodotDescriptor = new GodotDescriptor(true, solution.SolutionDirectory.FullPath, null);
                         model.GodotDescriptor.SetValue(GodotDescriptor);
                         // Features = ReadFeatures(solution.SolutionDirectory.Combine("project.godot"));
                         // logger.Verbose($"Godot project features: {string.Join(",", Features)}");
@@ -47,7 +49,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                         MainProjectBasePath = file.Directory;
                         MainProject = project;
                         logger.Verbose($"Godot MainProjectBasePath: {file.Directory}");
-                        GodotDescriptor = new GodotDescriptor(false, file.Directory.FullPath);
+                        GodotDescriptor = new GodotDescriptor(false, file.Directory.FullPath, MainProject.TargetFrameworkIds.SingleItem().ToRdTargetFrameworkInfo());
                         model.GodotDescriptor.SetValue(GodotDescriptor);
                         // Features = ReadFeatures(file);
                         // logger.Verbose($"Godot project features: {string.Join(",", Features)}");
