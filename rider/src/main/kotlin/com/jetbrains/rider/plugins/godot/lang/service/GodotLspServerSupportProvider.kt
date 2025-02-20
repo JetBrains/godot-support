@@ -143,12 +143,5 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                     return PrioritizedLookupElement.withPriority(item1, 1.0)
                 }
              }
-
-        override val lspFindReferencesSupport: LspFindReferencesSupport?
-            get() {
-                if (PluginInterop.isGdScriptPluginEnabled())
-                    return null
-                return super.lspFindReferencesSupport
-            }
     }
 }
