@@ -14,7 +14,7 @@ apply {
     plugin("kotlin")
 }
 
-val baseVersion = "2025.1"
+val baseVersion = "2025.2"
 
 intellij {
     version.set(baseVersion)
@@ -35,7 +35,7 @@ tasks {
         untilBuild.set("")
 
         changeNotes.set(
-            """    
+            """
                 """.trimIndent()
         )
     }
