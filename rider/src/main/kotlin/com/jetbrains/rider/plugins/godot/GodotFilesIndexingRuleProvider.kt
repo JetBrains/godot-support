@@ -2,6 +2,7 @@ package com.jetbrains.rider.plugins.godot
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.vfs.isFile
 import com.jetbrains.rd.util.threading.coroutines.nextNotNullValue
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.projectView.indexing.files.RiderFilesIndexingRule
@@ -24,9 +25,13 @@ class GodotFilesIndexingRuleProvider : RiderFilesIndexingRuleProvider {
             VfsUtil.findFileByIoFile(File(descriptor.mainProjectBasePath), true)
         } ?: return emptyList()
 
-        val rule = RiderFilesIndexingRule {
-            it.name.endsWith(".gd", true) && VfsUtil.isAncestor(projectBaseFile, it, true)
-        }
+        val rule = RiderFilesIndexingRule({
+            if (!it.isFile) return@RiderFilesIndexingRule null
+            if (it.name.endsWith(".gd", true) && VfsUtil.isAncestor(projectBaseFile, it, true))
+                it
+            else
+                null
+        })
         return listOf(rule)
     }
 }
