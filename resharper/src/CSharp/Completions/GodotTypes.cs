@@ -30,6 +30,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
         public static readonly IClrTypeName Node                  = GodotTypeName("Node");
         public static readonly IClrTypeName Input                 = GodotTypeName("Input");
+        public static readonly IClrTypeName InputEvent            = GodotTypeName("InputEvent");
 
         public static readonly IClrTypeName NodePath              = GodotTypeName("NodePath");
         public static readonly IClrTypeName StringName            = GodotTypeName("StringName");
