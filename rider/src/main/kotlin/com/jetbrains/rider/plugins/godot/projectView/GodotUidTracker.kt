@@ -14,10 +14,7 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
-import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
-import com.intellij.openapi.vfs.newvfs.events.VFileEvent
-import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
-import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
+import com.intellij.openapi.vfs.newvfs.events.*
 import com.intellij.openapi.vfs.readBytes
 import com.intellij.util.PathUtil
 import com.intellij.util.application
@@ -34,16 +31,21 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.name
 
-// for file outside csproj, just nesting rules are enough
-// but users may decide to include some files in the csproj
-// when files are in the project model and their uid is not, we need to take the same approach as Unity plugin
+/* the platform behavior is a bit unexpected
+ - for move, rename file outside csproj just nesting is enough
+ - but deleting file would not cause uid deletion
+
+  when files are in the project model and their uid is not, we need to take the same approach as Unity plugin
+
+  todo: when coping a file we need to either avoid coping UID file or substitute guid inside a copy
+*/
 
 class GodotUidTrackerInitializer : ProjectActivity {
     override suspend fun execute(project: Project) {
         val lifetime = GodotProjectLifetimeService.getLifetime(project)
         val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
         godotDiscoverer.godotDescriptor.adviseUntil(lifetime) {
-            if (it != null && !it.isPureGdScriptProject) {
+            if (it != null) {
                 GodotUidTracker.getInstance().register(project)
                 return@adviseUntil true
             }
