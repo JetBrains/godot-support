@@ -87,14 +87,14 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values.Renderer.Child
                 var frame = role.ValueReference.OriginatingFrame;
                 var param = ValueServices.ValueFactory.CreatePrimitive(frame, options, method.Parameters.First().DefaultValue);
                 returnedPropertyRole = new SimpleValueReference<TValue>(
-                        role.CallInstanceMethod(method, param),
+                        role.CallInstanceMethod(options, method, param),
                         role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)
                     .AsObjectSafe(options);
             }
             else
             {
                 returnedPropertyRole = new SimpleValueReference<TValue>(
-                        role.CallInstanceMethod(method),
+                        role.CallInstanceMethod(options, method),
                         role.ValueReference.OriginatingFrame, ValueServices.RoleFactory)
                     .AsObjectSafe(options);    
             }
