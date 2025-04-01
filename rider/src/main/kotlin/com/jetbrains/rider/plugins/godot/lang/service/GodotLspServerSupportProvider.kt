@@ -8,10 +8,10 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.*
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
-import com.intellij.platform.lsp.api.customization.LspFindReferencesSupport
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
@@ -22,12 +22,15 @@ import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
 import com.jetbrains.rider.plugins.godot.Util
-import com.jetbrains.rider.plugins.godot.gdscript.PluginInterop
 import com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage
 import com.jetbrains.rider.util.NetUtils
 import kotlinx.coroutines.Dispatchers
 import org.eclipse.lsp4j.CompletionItem
+import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.io.path.exists
+import kotlin.io.path.nameWithoutExtension
+import kotlin.io.path.pathString
 
 @Service(Service.Level.PROJECT)
 class GodotLspProjectService(val project: Project) {
@@ -118,15 +121,24 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
         override fun isSupportedFile(file: VirtualFile) = Util.isGdFile(file)
         override fun createCommandLine(): GeneralCommandLine {
             val basePath = discoverer.godotDescriptor.value?.mainProjectBasePath
-            val godotPath = discoverer.godotPath.value
+            var godotPath = discoverer.godotPath.value
+            if (godotPath == null) throw Exception("godotPath is null")
+            // https://github.com/godotengine/godot-proposals/issues/7558#issuecomment-1693765359
             val headlessArg = if (discoverer.godot4Path.value != null) "--headless" else "--no-window"
             // todo: dap port in the headless Godot may conflict with dap port of the main Godot editor
+            if (SystemInfo.isWindows){
+                // need to ensure that we start _console.exe, if it exists, otherwise LSP may not connect
+                // "Godot_v4.4-stable_mono_win64_console.exe"
+                val path = Path.of(godotPath)
+                val possiblePath = path.parent.resolve("${path.nameWithoutExtension}_console.exe")
+                if (possiblePath.exists())
+                    godotPath = possiblePath.pathString
+            }
             val commandLine = GeneralCommandLine(godotPath, "--path", "$basePath", "--editor", headlessArg, "--lsp-port", remoteHostPort.toString())
-            // can be solved with https://github.com/godotengine/godot/pull/92336, when it is released
+            // todo: use dynamic DAP port, which exists since Godot 4.3 https://github.com/godotengine/godot/pull/92336
             // val commandLine = GeneralCommandLine(godotPath, "--path", "$basePath", "--editor", headlessArg, "--lsp-port", remoteHostPort.toString(), "--dap-port", dapPort.toString())
             thisLogger().info("createCommandLine commandLine=$commandLine")
             return commandLine
-            // https://github.com/godotengine/godot-proposals/issues/7558#issuecomment-1693765359
         }
 
         override val lspCommunicationChannel: LspCommunicationChannel
