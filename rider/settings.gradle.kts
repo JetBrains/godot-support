@@ -1,39 +1,16 @@
 rootProject.name = "rider-godot"
+include(":protocol")
 
 pluginManagement {
-    val rdVersion: String by settings
-    val rdKotlinVersion: String by settings
-    val intellijPlatformPluginVersion: String by settings
-    val gradleJvmWrapperVersion: String by settings
-
     repositories {
-        maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
-        maven("https://cache-redirector.jetbrains.com/plugins.gradle.org")
-        maven("https://cache-redirector.jetbrains.com/maven-central")
-
-        if (rdVersion == "SNAPSHOT") {
-            mavenLocal()
-        }
+        gradlePluginPortal()
+        mavenCentral()
     }
-
-    plugins {
-        id("com.jetbrains.rdgen") version rdVersion
-        id("org.jetbrains.kotlin.jvm") version rdKotlinVersion
-        id("org.jetbrains.intellij.platform") version intellijPlatformPluginVersion
-        id("me.filippov.gradle.jvm.wrapper") version gradleJvmWrapperVersion
-    }
-
     resolutionStrategy {
         eachPlugin {
-            when (requested.id.name) {
-                // This required to correctly rd-gen plugin resolution.
-                // Maybe we should switch our naming to match Gradle plugin naming convention.
-                "rdgen" -> {
-                    useModule("com.jetbrains.rd:rd-gen:${rdVersion}")
-                }
+            if (requested.id.id == "com.jetbrains.rdgen") {
+                useModule("com.jetbrains.rd:rd-gen:${requested.version}")
             }
         }
     }
 }
-
-include(":protocol")
