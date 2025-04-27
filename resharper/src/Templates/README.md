@@ -8,9 +8,11 @@ Categorised:
 
 ### File Templates
 
-| Description          |
-|----------------------|
-| [Node](File/Node.md) |
+| Description                                     |
+|-------------------------------------------------|
+| [Godot exported properties](Live/ExportProp.md) |
+| [Godot log objects/message](Live/GDPrint.md)    |
+| [Node](File/Node.md)                            |
 
 
 ### Live Templates
@@ -25,9 +27,11 @@ Categorised:
 
 ### File Templates
 
-| Description          |
-|----------------------|
-| [Node](File/Node.md) |
+| Description                                     |
+|-------------------------------------------------|
+| [Godot exported properties](Live/ExportProp.md) |
+| [Godot log objects/message](Live/GDPrint.md)    |
+| [Node](File/Node.md)                            |
 
 
 ### Live Templates
