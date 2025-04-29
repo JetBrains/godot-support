@@ -139,22 +139,6 @@ tasks {
         dependsOn(compileDotNet)
     }
 
-    patchPluginXml {
-        val latestChangelog = try {
-            changelog.getUnreleased()
-        } catch (_: MissingVersionException) {
-            changelog.getLatest()
-        }
-        changeNotes.set(provider {
-            changelog.renderItem(
-                latestChangelog
-                    .withHeader(false)
-                    .withEmptySections(false),
-                org.jetbrains.changelog.Changelog.OutputType.HTML
-            )
-        })
-    }
-
     withType<PrepareSandboxTask> {
         dependsOn(compileDotNet)
 
