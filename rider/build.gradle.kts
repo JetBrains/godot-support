@@ -1,6 +1,5 @@
 import com.jetbrains.plugin.structure.base.utils.isFile
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.jetbrains.changelog.exceptions.MissingVersionException
 import org.jetbrains.intellij.platform.gradle.Constants
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
@@ -41,11 +40,8 @@ repositories {
     }
 }
 
-val pluginVersion: String by project
 val buildConfiguration: String by project
 val dotNetPluginId: String by project
-
-version = pluginVersion
 
 val riderSdkPath by lazy {
     val path = intellijPlatform.platformPath.resolve("lib/DotNetSdkForRdPlugins").absolute()
