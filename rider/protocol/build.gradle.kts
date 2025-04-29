@@ -1,14 +1,8 @@
 import com.jetbrains.rd.generator.gradle.RdGenTask
 
 plugins {
-    // Version is configured in gradle.properties
-    id("com.jetbrains.rdgen")
-    id("org.jetbrains.kotlin.jvm")
-}
-
-repositories {
-    maven("https://cache-redirector.jetbrains.com/intellij-dependencies")
-    maven("https://cache-redirector.jetbrains.com/maven-central")
+    alias(libs.plugins.kotlinJvm)
+    id("com.jetbrains.rdgen") version libs.versions.rdGen
 }
 
 val isMonorepo = rootProject.projectDir != projectDir.parentFile
@@ -96,27 +90,25 @@ rdgen {
     }
 }
 
-tasks.withType<RdGenTask> {
-    dependsOn(sourceSets["main"].runtimeClasspath)
-    classpath(sourceSets["main"].runtimeClasspath)
-}
-
-dependencies {
-    if (isMonorepo) {
-        implementation(project(":rider-model"))
-    } else {
-        val rdVersion: String by project
-        val rdKotlinVersion: String by project
-
-        implementation("com.jetbrains.rd:rd-gen:$rdVersion")
-        implementation("org.jetbrains.kotlin:kotlin-stdlib:$rdKotlinVersion")
-        implementation(
-            project(
-                mapOf(
-                    "path" to ":",
-                    "configuration" to "riderModel"
+    dependencies {
+        if (isMonorepo) {
+            implementation(project(":rider-model"))
+        } else {
+            implementation(libs.rdGen)
+            implementation(libs.kotlinStdLib)
+            implementation(
+                project(
+                    mapOf(
+                        "path" to ":",
+                        "configuration" to "riderModel"
+                    )
                 )
             )
-        )
+        }
     }
+
+tasks.withType<RdGenTask> {
+    val classPath = sourceSets["main"].runtimeClasspath
+    dependsOn(classPath)
+    classpath(classPath)
 }
