@@ -57,7 +57,7 @@ class TscnSceneCellRenderer : DefaultTreeCellRenderer {
     }
 
     private fun listIcons(node: TscnSceneTreeNode): List<Component> {
-        return node.listActions().map {
+        return node.listActions().mapNotNull {
             when (it) {
                 "instance" -> getIcon("InstanceOptions")
                 "script" -> getIcon("Script")
@@ -68,7 +68,7 @@ class TscnSceneCellRenderer : DefaultTreeCellRenderer {
                 }
                 else -> null
             }
-        }.filterNotNull()
+        }
     }
 
     private fun getIcon(icon: String): Component {

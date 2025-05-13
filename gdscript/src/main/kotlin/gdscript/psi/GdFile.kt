@@ -8,7 +8,7 @@ import gdscript.GdLanguage
 
 open class GdFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, GdLanguage) {
     override fun getFileType(): FileType {
-        return GdFileType
+        return GdFileType.INSTANCE
     }
 
     override fun toString(): String {

@@ -19,7 +19,7 @@ class GdCreateFileAction : CreateFileFromTemplateAction, DumbAware {
         FileTemplateManager.getInstance(project)
             .allTemplates
             .forEach {
-                if (it.extension == GdFileType.defaultExtension) {
+                if (it.extension == GdFileType.INSTANCE.defaultExtension) {
                     builder.addKind(it.name, GdIcon.FILE, it.name)
                 }
             }

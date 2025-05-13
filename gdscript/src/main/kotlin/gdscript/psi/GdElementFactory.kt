@@ -134,5 +134,5 @@ object GdElementFactory {
     }
 
     private fun createFile(project: Project, text: String) =
-            PsiFileFactory.getInstance(project).createFileFromText("dum.gd", GdFileType, text) as GdFile
+            PsiFileFactory.getInstance(project).createFileFromText("dum.gd", GdFileType.INSTANCE, text) as GdFile
 }

@@ -1,42 +1,42 @@
-# Official Gradle Docker Images: https://hub.docker.com/_/gradle?tab=tags&page=1&ordering=last_updated
-image: gradle:8.10.0-jdk17
-
-before_script:
-  - export GRADLE_USER_HOME="$(pwd)/.gradle"
-
-cache:
-  paths:
-    - .gradle/wrapper
-    - .gradle/caches
-
-package:
-  stage: build
-  script:
-    - ./gradlew assemble
-
-test:
-  stage: test
-  script:
-    - ./gradlew check
-
-refresh-sdk:
-  stage: build
-  image: php
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "schedule"
-      when: always
-  before_script:
-    - apt-get update
-    - apt-get install -y wget make zip git
-    - git config --global user.email "ci@runner.git"
-    - git config --global user.name "CI runner"
-  script:
-    - cd php
-    - UPDATED=$(php sdkBuilder.php)
-    - cd ..
-    - |
-      if [[ $UPDATED == 0 ]]; then
-        git add .
-        git commit -m "refresh SDK"
-        git push https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git HEAD:master
-      fi
+## Official Gradle Docker Images: https://hub.docker.com/_/gradle?tab=tags&page=1&ordering=last_updated
+#image: gradle:8.10.0-jdk17
+#
+#before_script:
+#  - export GRADLE_USER_HOME="$(pwd)/.gradle"
+#
+#cache:
+#  paths:
+#    - .gradle/wrapper
+#    - .gradle/caches
+#
+#package:
+#  stage: build
+#  script:
+#    - ./gradlew assemble
+#
+#test:
+#  stage: test
+#  script:
+#    - ./gradlew check
+#
+#refresh-sdk:
+#  stage: build
+#  image: php
+#  rules:
+#    - if: $CI_PIPELINE_SOURCE == "schedule"
+#      when: always
+#  before_script:
+#    - apt-get update
+#    - apt-get install -y wget make zip git
+#    - git config --global user.email "ci@runner.git"
+#    - git config --global user.name "CI runner"
+#  script:
+#    - cd php
+#    - UPDATED=$(php sdkBuilder.php)
+#    - cd ..
+#    - |
+#      if [[ $UPDATED == 0 ]]; then
+#        git add .
+#        git commit -m "refresh SDK"
+#        git push https://${USERNAME}:${PASSWORD}@gitlab.com/IceExplosive/gdscript.git HEAD:master
+#      fi

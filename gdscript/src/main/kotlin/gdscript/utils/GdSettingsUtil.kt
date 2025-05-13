@@ -14,7 +14,7 @@ object GdSettingsUtil {
 
     fun CodeStyleSettings.indentToSpaces(indent: String, offset: Int = 0, absolute: Boolean = false): Indent {
         val whiteSpace = indent.first()
-        val tabSize = this.getTabSize(GdFileType)
+        val tabSize = this.getTabSize(GdFileType.INSTANCE)
         val baseSize = offset * tabSize
         var size = 0
         if (!whiteSpace.isWhitespace()) return Indent.getSpaceIndent(baseSize)

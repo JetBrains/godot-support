@@ -13,12 +13,13 @@ import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.impl.libraries.LibraryEx
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.util.io.createDirectories
-import org.apache.commons.io.FileUtils
-import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
 import java.nio.file.LinkOption
+import java.nio.file.Paths
+import java.nio.file.Path
 import kotlin.io.path.exists
+import kotlin.io.path.readText
 
 
 class GdLibraryUpdater {
@@ -48,8 +49,8 @@ class GdLibraryUpdater {
 
         fun checkSdk(progressIndicator: ProgressIndicator) {
             progressIndicator.isIndeterminate = false
-            val projectFile = "${project.basePath}${File.separator}project.godot"
-            val content = FileUtils.readFileToString(File(projectFile), Charset.defaultCharset())
+            val projectFile = Path.of(project.basePath!!, "project.godot")
+            val content = projectFile.readText(Charset.defaultCharset())
 
             val version = VERSION_REGEX.find(content)?.groups?.get(1)?.value
                     ?: throw IllegalStateException("GdSdk version cannot be parsed from project.godot")

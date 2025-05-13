@@ -6,7 +6,7 @@ import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.expr.GdLiteralExParser
 import gdscript.psi.GdTypes
-import io.ktor.util.*
+import java.util.Locale
 
 class GdPsiBuilder {
 
@@ -195,7 +195,7 @@ class GdPsiBuilder {
 
     fun errorPin(result: Boolean, expected: String): Boolean {
         if (!result && pinned()) {
-            error(expected.toUpperCasePreservingASCIIRules(), false)
+            error(expected.uppercase(Locale.ROOT), false)
         }
 
         return pinned()

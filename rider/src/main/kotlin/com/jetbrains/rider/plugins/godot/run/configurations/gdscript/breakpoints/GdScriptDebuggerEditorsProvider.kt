@@ -7,11 +7,11 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
 import com.intellij.xdebugger.evaluation.XDebuggerEditorsProviderBase
-import com.jetbrains.rider.plugins.godot.GdScriptFileType
+import gdscript.GdFileType
 
 internal class GdScriptDebuggerEditorsProvider: XDebuggerEditorsProviderBase() {
     override fun getFileType(): FileType {
-        return GdScriptFileType.INSTANCE
+        return GdFileType.INSTANCE
     }
 
     override fun createExpressionCodeFragment(project: Project, text: String, context: PsiElement?, isPhysical: Boolean): PsiFile {

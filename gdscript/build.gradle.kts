@@ -31,7 +31,7 @@ intellij {
     version.set("2023.3")
     // version.set("2024.2-SNAPSHOT") // for Rider
     // type.set("RD") // for Rider
-    plugins.set(listOf("org.jetbrains.plugins.textmate", "com.intellij.rider.godot.community:1.0.0"))
+    plugins.set(listOf("com.intellij.rider.godot.community:1.0.0"))
     updateSinceUntilBuild.set(true)
 }
 

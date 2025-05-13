@@ -4,7 +4,10 @@ import com.intellij.openapi.fileTypes.LanguageFileType
 import gdscript.GdIcon.FILE
 import javax.swing.Icon
 
-object GdFileType : LanguageFileType(GdLanguage) {
+class GdFileType private constructor() :  LanguageFileType(GdLanguage) {
+    companion object{
+        val INSTANCE: GdFileType = GdFileType()
+    }
 
     override fun getName(): String {
         return "GdScript File"

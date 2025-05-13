@@ -1,7 +1,7 @@
-<idea-plugin>
-  <id>ice.explosive.gdscript</id>
+<idea-plugin url="https://github.com/JetBrains/godot-support">
+  <id>com.intellij.godot.gdscript</id>
   <name>GdScript</name>
-  <vendor email="h.raven@centrum.cz" url="https://gitlab.com/IceExplosive/gdscript">IceExplosive</vendor>
+  <vendor>JetBrains</vendor>
 
   <description>
     GdScript2 language plugin for Godot 4.0+.
@@ -9,9 +9,9 @@
   <change-notes>
   </change-notes>
   <incompatible-with>gdscript</incompatible-with>
+  <incompatible-with>ice.explosive.gdscript</incompatible-with>
 
   <depends>com.intellij.modules.lang</depends>
-  <depends>org.jetbrains.plugins.textmate</depends>
   <depends optional="true" config-file="optionalPlugin.xml">com.intellij.rider.godot.community</depends>
 
   <extensions defaultExtensionNs="com.intellij">
@@ -39,10 +39,9 @@
     <backgroundPostStartupActivity implementation="gdscript.listener.SdkStartupListener"/>
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
     <toolWindow id="Scene preview" anchor="right" factoryClass="tscn.toolWindow.TscnScenePreviewWindowFactory" />
-    <inlineActionHandler language="GdScript" implementation="gdscript.refactoring.inline.GdInlineVariableActionHandler" />
+    <inlineActionHandler implementation="gdscript.refactoring.inline.GdInlineVariableActionHandler" />
 
     <!-- settings -->
-    <projectService serviceImplementation="gdscript.settings.GdProjectSettingsState" />
     <projectConfigurable
         parentId="language"
         instance="gdscript.settings.GdSettingsConfigurable"

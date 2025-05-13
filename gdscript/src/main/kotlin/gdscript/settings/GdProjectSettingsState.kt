@@ -1,12 +1,14 @@
 package gdscript.settings
 
 import com.intellij.openapi.components.PersistentStateComponent
+import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.State
 import com.intellij.openapi.components.Storage
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 
 @State(name = "GdProjectSettingsState", storages = [Storage("gdProjectSettings.xml")])
+@Service(Service.Level.PROJECT)
 class GdProjectSettingsState : PersistentStateComponent<GdProjectState> {
 
     var gdProjectState = GdProjectState()

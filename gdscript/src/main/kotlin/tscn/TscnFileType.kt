@@ -1,11 +1,9 @@
 package tscn
 
 import com.intellij.openapi.fileTypes.LanguageFileType
-import org.jetbrains.plugins.textmate.TextMateBackedFileType
 import javax.swing.Icon
 
-object TscnFileType : LanguageFileType(TscnLanguage), TextMateBackedFileType {
-
+object TscnFileType : LanguageFileType(TscnLanguage) {
     override fun getName(): String = "Tscn file"
 
     override fun getDescription(): String = "Godot's scene file"

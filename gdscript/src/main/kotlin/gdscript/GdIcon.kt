@@ -1,7 +1,7 @@
 package gdscript
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.IconLoader
-import com.intellij.util.IconUtil
 import javax.swing.Icon
 
 object GdIcon {
@@ -36,12 +36,16 @@ object GdIcon {
                     GdIcon::class.java
                 )
                 if (loaded.iconHeight > 1) {
-                    loaded = IconUtil.toSize(loaded, 16, 16)
+                    //loaded = IconUtil.toSize(loaded, 16, 16)
+                    // todo: determine not needed icons and remove them
+                    // rework icons to be required size without scaling
+                    thisLogger().info("Icon $className requested.")
                     editorIcons[className] = loaded
                 } else {
                     editorIcons[className] = backupIcon()
                 }
             } catch (e: Exception) {
+                thisLogger().error("Unable to load editor icon for $className. Using default one.", e)
                 editorIcons[className] = backupIcon()
             }
         }

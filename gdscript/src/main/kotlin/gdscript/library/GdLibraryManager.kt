@@ -1,7 +1,7 @@
 package gdscript.library
 
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.runWriteActionAndWait
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
@@ -12,6 +12,7 @@ import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.impl.libraries.LibraryEx.ModifiableModelEx
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
+import com.intellij.openapi.util.ThrowableComputable
 import com.intellij.platform.templates.github.DownloadUtil
 import com.intellij.util.io.ZipUtil
 import com.intellij.util.io.createDirectories
@@ -26,7 +27,6 @@ import gdscript.utils.GdSdkUtil.versionToSdkName
 import gdscript.utils.GdSdkUtil.versionToSdkUrl
 import gdscript.utils.GdSdkUtil.versionToSdkZip
 import kotlinx.serialization.json.Json
-import org.apache.commons.io.filefilter.TrueFileFilter
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -97,19 +97,19 @@ object GdLibraryManager {
         libModifier.addRoot("file://$path", OrderRootType.SOURCES)
 
         ApplicationManager.getApplication().invokeAndWait {
-            runWriteActionAndWait {
+            WriteAction.computeAndWait(ThrowableComputable {
                 libModifier.commit()
                 modifier.commit()
 
                 val module = ModuleManager.getInstance(project).modules.first()
                 ModuleRootModificationUtil.addDependency(module, library)
-            }
+            })
         }
     }
 
     fun clearSdks(project: Project) {
         ApplicationManager.getApplication().invokeAndWait {
-            runWriteActionAndWait {
+            WriteAction.computeAndWait(ThrowableComputable {
                 val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
                 val tableModel = ApplicationManager
                     .getApplication()
@@ -132,7 +132,7 @@ object GdLibraryManager {
                 val rootModel = ModuleRootManager.getInstance(module).modifiableModel
                 rootModel.orderEntries.forEach { rootModel.removeOrderEntry(it) }
                 rootModel.commit()
-            }
+            })
         }
     }
 
@@ -148,7 +148,7 @@ object GdLibraryManager {
 
         // download zip and extract
         DownloadUtil.downloadAtomically(progressIndicator, version.versionToSdkUrl(), zipPath.toFile())
-        ZipUtil.extract(zipPath, sdkPath, TrueFileFilter.INSTANCE)
+        ZipUtil.extract(zipPath, sdkPath, null)
         Files.delete(zipPath)
 
         SdkIntegrityValidator().writeStamp(sdkPath.toFile())

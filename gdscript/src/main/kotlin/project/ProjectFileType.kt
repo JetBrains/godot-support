@@ -1,10 +1,9 @@
 package project
 
 import com.intellij.openapi.fileTypes.LanguageFileType
-import org.jetbrains.plugins.textmate.TextMateBackedFileType
 import javax.swing.Icon
 
-object ProjectFileType : LanguageFileType(ProjectLanguage), TextMateBackedFileType {
+object ProjectFileType : LanguageFileType(ProjectLanguage) {
 
     override fun getName(): String = "GodotProject file"
 

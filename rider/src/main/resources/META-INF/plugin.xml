@@ -4,10 +4,10 @@
   <vendor>JetBrains</vendor>
 
   <incompatible-with>gdscript</incompatible-with>
+  <incompatible-with>ice.explosive.gdscript</incompatible-with>
 
   <dependencies>
     <plugin id="com.intellij.modules.rider"/>
-    <plugin id="org.jetbrains.plugins.textmate"/>
     <plugin id="com.intellij.rider.godot.community"/>
     <module name="intellij.platform.dap"/>
   </dependencies>
@@ -19,7 +19,6 @@
 
     <rider.godotDetector implementation="com.jetbrains.rider.plugins.godot.GodotDetectorImpl" />
     <dependencySupport kind="dotnet" coordinate="GodotSharp" displayName="Godot"/>
-    <liveTemplateContext contextId="GDSCRIPT" implementation="com.jetbrains.rider.plugins.godot.textMate.GdScriptTemplateContextType" order="first" />
     <defaultLiveTemplates file="templates/GdScript.xml" />
 
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher"/>
@@ -48,13 +47,7 @@
     <projectConfigurable parentId="FileTemplatesSettingsId" instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotFileTemplatesOptionPage" groupWeight="-120" />
     <projectConfigurable parentId="LiveTemplatesSettingsId" instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotLiveTemplatesOptionPage" groupWeight="-120" />
 
-    <platform.lsp.serverSupportProvider
-      implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspServerSupportProvider"/>
-    <fileIndentOptionsProvider
-      implementation="com.jetbrains.rider.plugins.godot.textMate.GdScriptFileIndentOptionsProvider"
-      id="GdScriptFileIndentOptionsProvider"/>
-
-    <textmate.bundleProvider implementation="com.jetbrains.rider.plugins.godot.textMate.GodotTextMateBundleProvider"/>
+    <platform.lsp.serverSupportProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspServerSupportProvider"/>
 
     <rider.godot.community.lspStatusProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspRunningStatusProvider" />
     <fileEditorProvider implementation="com.jetbrains.rider.plugins.godot.ui.GdScriptEditorWithPromotion" id="GDSCRIPT_WITH_PROMO_EDITOR_TYPE_ID" />
@@ -63,10 +56,6 @@
     <platform.dap.debugAdapterSupportProvider implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptDebugAdapterSupportProvider"/>
     <xdebugger.breakpointType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptLineBreakpointType"/>
     <xdebugger.breakpointType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptExceptionBreakpointType"/>
-
-    <fileType name="GDScript"
-              implementationClass="com.jetbrains.rider.plugins.godot.GdScriptFileType"
-              extensions="gd"/>
   </extensions>
 
   <applicationListeners>

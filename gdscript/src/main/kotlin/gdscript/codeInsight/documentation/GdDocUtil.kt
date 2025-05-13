@@ -1,6 +1,5 @@
 package gdscript.codeInsight.documentation
 
-import ai.grazie.utils.capitalize
 import com.intellij.codeInsight.documentation.DocumentationManagerProtocol
 import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.util.text.HtmlChunk
