@@ -26,8 +26,8 @@ object ProjectAutoloadUtil {
                 val resource = GdFileResIndex.getFiles(path, project).firstOrNull()
                 val file = resource?.getPsiFile(project)
                 if (file == null) null
-                else if (file.fileType == GdFileType) GdAutoload(it.key, file)
-                else if (file.fileType == TscnFileType) findGdFileForTscnFile(project, it.key, file)
+                else if (file.fileType is GdFileType) GdAutoload(it.key, file)
+                else if (file.fileType is TscnFileType) findGdFileForTscnFile(project, it.key, file)
                 else null
             } else {
                 null
@@ -51,7 +51,7 @@ object ProjectAutoloadUtil {
             if (TscnNodeUtil.hasScript(header)) {
                 val resource = GdFileResIndex.getFiles(getScriptResource(header), project).firstOrNull()
                 val gdFile = resource?.getPsiFile(project)
-                if (gdFile != null && gdFile.fileType == GdFileType) return GdAutoload(key, gdFile)
+                if (gdFile != null && gdFile.fileType is GdFileType) return GdAutoload(key, gdFile)
             }
         }
         return null
