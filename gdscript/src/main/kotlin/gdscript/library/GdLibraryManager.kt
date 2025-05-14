@@ -43,6 +43,8 @@ object GdLibraryManager {
     val jsonParser = Json { ignoreUnknownKeys = true }
 
     fun listAvailableSdks(): List<String> {
+        return listOf() // todo: currently fails with Serializer for class 'GdSdk' is not found.
+
         val client = HttpClient.newBuilder().build()
         val request = HttpRequest.newBuilder()
             .uri(URI.create(SDKs_URL))
@@ -72,6 +74,7 @@ object GdLibraryManager {
 
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
 
+        return "" // todo: fix kotlinx-serialization
         return jsonParser.decodeFromString<Array<GdHistory>>(response.body())
             .firstOrNull()?.commit?.committed_date
             ?: ""
