@@ -13,7 +13,7 @@ object GdPresentationUtil {
         return object : ItemPresentation {
             override fun getPresentableText(): String = classVar.name;
             override fun getLocationString(): String = classVar.returnType;
-            override fun getIcon(unused: Boolean): Icon? = GdIcon.getEditorIcon(GdIcon.VAR_MARKER);
+            override fun getIcon(unused: Boolean): Icon? = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER;
         }
     }
 
@@ -21,7 +21,7 @@ object GdPresentationUtil {
         return object : ItemPresentation {
             override fun getPresentableText(): String = constVar.name;
             override fun getLocationString(): String = constVar.returnType;
-            override fun getIcon(unused: Boolean): Icon? = GdIcon.getEditorIcon(GdIcon.CONST_MARKER);
+            override fun getIcon(unused: Boolean): Icon? = GdScriptPluginIcons.GDScriptIcons.CONST_MARKER;
         }
     }
 
@@ -29,7 +29,7 @@ object GdPresentationUtil {
         return object : ItemPresentation {
             override fun getPresentableText(): String? = method.name;
             override fun getLocationString(): String = method.returnType;
-            override fun getIcon(unused: Boolean): Icon? = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER);
+            override fun getIcon(unused: Boolean): Icon? = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER;
         }
     }
 
@@ -37,7 +37,7 @@ object GdPresentationUtil {
         return object : ItemPresentation {
             override fun getPresentableText(): String = enum.enumDeclNmi?.name ?: "(${enum.values.firstOrNull()?.key}, ...)";
             override fun getLocationString(): String = GdKeywords.INT;
-            override fun getIcon(unused: Boolean): Icon? = GdIcon.getEditorIcon(GdIcon.ENUM_MARKER);
+            override fun getIcon(unused: Boolean): Icon? = GdScriptPluginIcons.GDScriptIcons.ENUM_MARKER;
         }
     }
 

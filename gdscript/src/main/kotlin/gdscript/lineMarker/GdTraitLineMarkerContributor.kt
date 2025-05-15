@@ -21,7 +21,7 @@ class GdTraitLineMarkerContributor : RelatedItemLineMarkerProvider() {
     }
 
     override fun getIcon(): Icon {
-        return GdIcon.getEditorIcon(GdIcon.LINK)
+        return GdScriptPluginIcons.GDScriptIcons.LINK
     }
 
     override fun collectNavigationMarkers(
@@ -38,7 +38,7 @@ class GdTraitLineMarkerContributor : RelatedItemLineMarkerProvider() {
             .mapNotNull { it.getPsiFile(project)?.firstChild }
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(
-            GdIcon.getEditorIcon(if (definitons.isEmpty()) GdIcon.ERROR else GdIcon.LINK)
+            if (definitons.isEmpty()) GdScriptPluginIcons.GDScriptIcons.ERROR else GdScriptPluginIcons.GDScriptIcons.LINK
         )
             .setTargets(definitons)
             .setPopupTitle("Trait")
@@ -46,7 +46,7 @@ class GdTraitLineMarkerContributor : RelatedItemLineMarkerProvider() {
             .setCellRenderer {
                 object : PsiElementListCellRenderer<PsiElement>() {
                     override fun getIcon(element: PsiElement?): Icon {
-                        return GdIcon.getEditorIcon(GdIcon.LINK)
+                        return GdScriptPluginIcons.GDScriptIcons.LINK
                     }
 
                     override fun getToolTipText(): String? {

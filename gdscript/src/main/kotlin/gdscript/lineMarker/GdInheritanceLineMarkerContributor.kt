@@ -18,7 +18,7 @@ import javax.swing.Icon
 class GdInheritanceLineMarkerContributor : RelatedItemLineMarkerProvider() {
 
     override fun getIcon(): Icon? {
-        return GdIcon.getEditorIcon(GdIcon.OVERRIDE);
+        return GdScriptPluginIcons.GDScriptIcons.OVERRIDE;
     }
 
     override fun collectNavigationMarkers(
@@ -32,7 +32,7 @@ class GdInheritanceLineMarkerContributor : RelatedItemLineMarkerProvider() {
         val superMethod = GdClassMemberUtil.collectFromParents(parent, results, element.project, null, element.name) ?: return
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(
-            GdIcon.getEditorIcon(GdIcon.OVERRIDE)
+            GdScriptPluginIcons.GDScriptIcons.OVERRIDE
         )
             .setTargets(superMethod)
             .setPopupTitle("Parent Method")
@@ -40,7 +40,7 @@ class GdInheritanceLineMarkerContributor : RelatedItemLineMarkerProvider() {
             .setCellRenderer {
                 object : PsiElementListCellRenderer<PsiElement>() {
                     override fun getIcon(element: PsiElement?): Icon {
-                        return GdIcon.getEditorIcon(GdIcon.OVERRIDE)
+                        return GdScriptPluginIcons.GDScriptIcons.OVERRIDE
                     }
 
                     override fun getToolTipText(): String? {

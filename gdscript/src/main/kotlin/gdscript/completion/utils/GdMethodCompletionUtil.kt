@@ -37,7 +37,7 @@ object GdMethodCompletionUtil {
                 tail = params,
                 presentable = item.name,
                 typed = item.returnType,
-                icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
+                icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
                 priority = GdLookup.USER_DEFINED,
             ))
         }
@@ -49,7 +49,7 @@ object GdMethodCompletionUtil {
             this.name,
             tail = params,
             typed = this.returnType,
-            icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
             priority = GdLookup.USER_DEFINED,
         )
     }
@@ -61,7 +61,7 @@ object GdMethodCompletionUtil {
             tail = params,
             presentable = this.name,
             typed = this.returnType,
-            icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
             priority = GdLookup.USER_DEFINED,
         )
     }

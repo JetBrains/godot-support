@@ -1,5 +1,6 @@
 package gdscript.reference
 
+import GdScriptPluginIcons
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
@@ -9,7 +10,6 @@ import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
@@ -111,7 +111,7 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
             lookup = "()",
             presentable = name,
             priority = GdLookup.BUILT_IN,
-            icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
         )
     }
 

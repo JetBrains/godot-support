@@ -44,7 +44,7 @@ object GdCompletionUtil {
     fun lookup(variable: GdClassVarDeclTl): LookupElement =
         GdLookup.create(
             variable.name,
-            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER,
             typed = variable.returnType,
             priority = GdLookup.USER_DEFINED,
         )
@@ -52,7 +52,7 @@ object GdCompletionUtil {
     fun lookup(variable: GdVarDeclSt): LookupElement =
         GdLookup.create(
             variable.name,
-            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER,
             typed = variable.returnType,
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
@@ -60,7 +60,7 @@ object GdCompletionUtil {
     fun lookup(constant: GdConstDeclTl): LookupElement =
         GdLookup.create(
             constant.name,
-            icon = GdIcon.getEditorIcon(GdIcon.CONST_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.CONST_MARKER,
             typed = constant.returnType,
             priority = GdLookup.USER_DEFINED,
         )
@@ -68,7 +68,7 @@ object GdCompletionUtil {
     fun lookup(constant: GdConstDeclSt): LookupElement =
         GdLookup.create(
             constant.name,
-            icon = GdIcon.getEditorIcon(GdIcon.CONST_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.CONST_MARKER,
             typed = constant.returnType,
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
@@ -93,7 +93,7 @@ object GdCompletionUtil {
             lookup = "${if (isCallable) "" else "()"}${if (method.paramList?.paramList?.isNotEmpty() == true || method.isVariadic) "_" else ""}",
             presentable = method.name,
             typed = method.returnType,
-            icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
             priority = GdLookup.USER_DEFINED,
             tail = GdMethodCompletionUtil.buildParamHint(method),
         );
@@ -102,7 +102,7 @@ object GdCompletionUtil {
     fun lookup(loop: GdForSt): LookupElement =
         GdLookup.create(
             loop.varNmi?.name ?: "",
-            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER,
             typed = loop.expr?.returnType?.parseFromSquare() ?: "",
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
@@ -111,7 +111,7 @@ object GdCompletionUtil {
         GdLookup.create(
             param.varNmi.name,
             typed = param.returnType,
-            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER,
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
 
@@ -125,7 +125,7 @@ object GdCompletionUtil {
         return GdLookup.create(
             variable.name,
             typed = PsiGdExprUtil.fromTyped(typed),
-            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER,
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
     }
@@ -134,7 +134,7 @@ object GdCompletionUtil {
         GdLookup.create(
             decl.varNmi?.name ?: "",
             typed = decl.typed?.text ?: "",
-            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER,
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
 
@@ -142,7 +142,7 @@ object GdCompletionUtil {
         return GdLookup.create(
             binding.varNmi.name,
 //            typed = binding.typed?.text ?: "", TODO dá se v match zjistit typ?
-            icon = GdIcon.getEditorIcon(GdIcon.VAR_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER,
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
     }
@@ -151,7 +151,7 @@ object GdCompletionUtil {
         return GdLookup.create(
             signal.signalIdNmi?.name ?: "",
             typed = "signal",
-            icon = GdIcon.getEditorIcon(GdIcon.SIGNAL_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.SIGNAL_MARKER,
             priority = GdLookup.LOCAL_USER_DEFINED,
         )
     }
@@ -160,7 +160,7 @@ object GdCompletionUtil {
         GdLookup.create(
             file.key,
             priority = GdLookup.REMOTE_DEFINED,
-            icon = GdIcon.getEditorIcon(GdIcon.OBJECT),
+            icon = GdScriptPluginIcons.GDScriptIcons.OBJECT,
         )
 
 }

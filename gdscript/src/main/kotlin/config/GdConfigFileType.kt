@@ -11,6 +11,6 @@ object GdConfigFileType : LanguageFileType(GdConfigLanguage) {
 
     override fun getDefaultExtension(): String = "gdconf"
 
-    override fun getIcon(): Icon = GdConfigIcon.FILE
+    override fun getIcon(): Icon = GdScriptPluginIcons.Icons.GodotConfigFile
 
 }

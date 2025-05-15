@@ -5,13 +5,12 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
-import tscn.TscnIcon
 import javax.swing.Icon
 
 class TscnColorSettingsPage : ColorSettingsPage {
 
     override fun getIcon(): Icon {
-        return TscnIcon.FILE
+        return GdScriptPluginIcons.TscnIcons.FILE
     }
 
     override fun getHighlighter(): SyntaxHighlighter {

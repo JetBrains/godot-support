@@ -19,7 +19,7 @@ import javax.swing.Icon
 class GdTscnLineMarkerContributor : RelatedItemLineMarkerProvider() {
 
     override fun getIcon(): Icon? {
-        return GdIcon.getEditorIcon(GdIcon.SLOT);
+        return GdScriptPluginIcons.GDScriptIcons.SLOT;
     }
 
     override fun collectNavigationMarkers(
@@ -34,7 +34,7 @@ class GdTscnLineMarkerContributor : RelatedItemLineMarkerProvider() {
         val nodes = connections.mapNotNull { it.element }
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(
-            GdIcon.getEditorIcon(GdIcon.SLOT)
+            GdScriptPluginIcons.GDScriptIcons.SLOT
         )
             .setTargets(nodes)
             .setPopupTitle("Tscn Connections")
@@ -43,10 +43,10 @@ class GdTscnLineMarkerContributor : RelatedItemLineMarkerProvider() {
                 object : PsiElementListCellRenderer<PsiElement>() {
                     override fun getIcon(element: PsiElement?): Icon {
                         if (element is TscnConnectionHeader)
-                            return GdIcon.getEditorIcon(GdIcon.SIGNAL)
+                            return GdScriptPluginIcons.GDScriptIcons.SIGNAL
                         else if (element is TscnParagraph)
-                            return GdIcon.getEditorIcon(GdIcon.ANIMATION)
-                        return GdIcon.getEditorIcon(GdIcon.NODE)
+                            return GdScriptPluginIcons.GDScriptIcons.ANIMATION
+                        return GdScriptPluginIcons.GDScriptIcons.NODE
                     }
 
                     override fun getElementText(element: PsiElement?): String {

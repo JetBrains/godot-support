@@ -13,7 +13,7 @@ object GdEnumCompletionUtil {
     fun lookup(name: String, value: Long? = null): LookupElement {
         return GdLookup.create(
             name,
-            icon = GdIcon.getEditorIcon(GdIcon.ENUM_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.ENUM_MARKER,
             typed = GdKeywords.INT,
             tail = if (value != null) "($value)" else {
                 ""
@@ -29,7 +29,7 @@ object GdEnumCompletionUtil {
 
         return GdLookup.create(
             name,
-            icon = GdIcon.getEditorIcon(GdIcon.ENUM_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.ENUM_MARKER,
             typed = GdKeywords.INT,
             tail = if (values != null) "(${values[name] ?: ""})" else {
                 ""
@@ -43,7 +43,7 @@ object GdEnumCompletionUtil {
 
         return GdLookup.create(
             name,
-            icon = GdIcon.getEditorIcon(GdIcon.ENUM_MARKER),
+            icon = GdScriptPluginIcons.GDScriptIcons.ENUM_MARKER,
             typed = GdKeywords.INT,
             priority = GdLookup.LOCAL_USER_DEFINED,
         )

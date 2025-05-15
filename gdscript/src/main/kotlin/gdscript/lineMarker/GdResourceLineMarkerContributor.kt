@@ -14,7 +14,7 @@ import javax.swing.Icon
 class GdResourceLineMarkerContributor : RelatedItemLineMarkerProvider() {
 
     override fun getIcon(): Icon? {
-        return GdIcon.getEditorIcon(GdIcon.RESOURCE);
+        return GdScriptPluginIcons.GDScriptIcons.RESOURCE
     }
 
     override fun collectNavigationMarkers(

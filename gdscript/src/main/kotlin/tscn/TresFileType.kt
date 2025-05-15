@@ -11,7 +11,7 @@ object TresFileType : LanguageFileType(TscnLanguage) {
 
     override fun getDefaultExtension(): String = "tres"
 
-    override fun getIcon(): Icon = GodotFileIcon.FILE
+    override fun getIcon(): Icon = GdScriptPluginIcons.Icons.GodotFile
 
     override fun getDisplayName(): String = "tres"
 }

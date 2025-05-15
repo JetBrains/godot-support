@@ -11,7 +11,7 @@ object ImportFileType : LanguageFileType(TscnLanguage) {
 
     override fun getDefaultExtension(): String = "import"
 
-    override fun getIcon(): Icon = GodotFileIcon.FILE
+    override fun getIcon(): Icon = GdScriptPluginIcons.Icons.GodotFile
 
     override fun getDisplayName(): String = "Godot import file"
 }

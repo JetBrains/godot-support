@@ -81,7 +81,7 @@ class GdTypeHintReference : PsiReferenceBase<GdTypeHintRef> {
                         GdLookup.create(
                             GdCommonUtil.getName(it),
                             priority = GdLookup.LOCAL_USER_DEFINED,
-                            icon = GdIcon.getEditorIcon(GdIcon.OBJECT),
+                            icon = GdScriptPluginIcons.GDScriptIcons.OBJECT,
                         )
                     })
                 }
@@ -90,7 +90,7 @@ class GdTypeHintReference : PsiReferenceBase<GdTypeHintRef> {
                 variants.add(GdLookup.create(
                     it.key,
                     priority = GdLookup.USER_DEFINED,
-                    icon = GdIcon.getEditorIcon(GdIcon.OBJECT),
+                    icon = GdScriptPluginIcons.GDScriptIcons.OBJECT,
                 ))
             }
         }
@@ -130,7 +130,7 @@ class GdTypeHintReference : PsiReferenceBase<GdTypeHintRef> {
             GdLookup.create(
                 GdCommonUtil.getName(it),
                 priority = GdLookup.USER_DEFINED,
-                icon = GdIcon.getEditorIcon(GdIcon.OBJECT),
+                icon = GdScriptPluginIcons.GDScriptIcons.OBJECT,
             )
         })
     }

@@ -29,7 +29,7 @@ class GdLibraryType : LibraryType<GdLibraryProperties>(GdLibraryKind) {
     }
 
     override fun getIcon(properties: GdLibraryProperties?): Icon {
-        return GdIcon.FILE
+        return GdScriptPluginIcons.Icons.GDScript
     }
 
 }

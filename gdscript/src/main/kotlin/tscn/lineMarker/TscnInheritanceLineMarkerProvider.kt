@@ -20,7 +20,7 @@ import javax.swing.Icon
 class TscnInheritanceLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
     override fun getIcon(): Icon {
-        return GdIcon.getEditorIcon(GdIcon.OVERRIDE)
+        return GdScriptPluginIcons.GDScriptIcons.OVERRIDE
     }
 
     override fun collectNavigationMarkers(
@@ -34,7 +34,7 @@ class TscnInheritanceLineMarkerProvider : RelatedItemLineMarkerProvider() {
         val project = element.project
         val target = GdFileResIndex.getFiles(element.path, project).firstOrNull() ?: return
 
-        val builder = NavigationGutterIconBuilder.create(GdIcon.getEditorIcon(GdIcon.OVERRIDE))
+        val builder = NavigationGutterIconBuilder.create(GdScriptPluginIcons.GDScriptIcons.OVERRIDE)
             .setTargets(target.getPsiFile(project))
             .setPopupTitle("Inherited Scene")
             .setTooltipText("Navigate to inherited scene")

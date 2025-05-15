@@ -1,5 +1,6 @@
 package gdscript.completion
 
+import GdScriptPluginIcons
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
@@ -32,7 +33,7 @@ class GetterSetterNameCompletion : CompletionContributor() {
             GdLookup.create(
                 "_${prefix}_${name.trimStart('_')}",
                 priority = GdLookup.TOP,
-                icon = GdIcon.getEditorIcon(GdIcon.METHOD_MARKER),
+                icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
             )
         );
     }

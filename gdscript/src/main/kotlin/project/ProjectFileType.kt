@@ -11,6 +11,6 @@ object ProjectFileType : LanguageFileType(ProjectLanguage) {
 
     override fun getDefaultExtension(): String = "godot"
 
-    override fun getIcon(): Icon = ProjectIcon.FILE
+    override fun getIcon(): Icon = GdScriptPluginIcons.Icons.GodotProjectFile
 
 }

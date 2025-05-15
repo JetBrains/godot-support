@@ -1,5 +1,0 @@
-<!-- Copyright © 2000–2024 JetBrains s.r.o. -->
-<svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-  <path fill="#afb1b3" d="M2 2v12h12V2zm10.5 1.5v6.78C9.15 9.47 8.49 7.9 6.87 7.61c-1.03-.19-2.16.15-3.37 1V3.5zm-9 9V9.86c1.2-1 2.28-1.44 3.19-1.27 1.21.22 2.25 1.93 5.81 2.72v1.19z"/>
-  <circle cx="10" cy="6" r="1.25" fill="#afb1b3"/>
-</svg>

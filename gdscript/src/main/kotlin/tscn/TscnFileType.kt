@@ -10,5 +10,5 @@ object TscnFileType : LanguageFileType(TscnLanguage) {
 
     override fun getDefaultExtension(): String = "tscn"
 
-    override fun getIcon(): Icon = TscnIcon.FILE
+    override fun getIcon(): Icon = GdScriptPluginIcons.TscnIcons.FILE
 }
