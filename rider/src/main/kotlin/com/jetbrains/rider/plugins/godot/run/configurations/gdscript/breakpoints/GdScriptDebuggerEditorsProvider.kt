@@ -10,9 +10,7 @@ import com.intellij.xdebugger.evaluation.XDebuggerEditorsProviderBase
 import gdscript.GdFileType
 
 internal class GdScriptDebuggerEditorsProvider: XDebuggerEditorsProviderBase() {
-    override fun getFileType(): FileType {
-        return GdFileType.INSTANCE
-    }
+    override fun getFileType(): FileType = GdFileType
 
     override fun createExpressionCodeFragment(project: Project, text: String, context: PsiElement?, isPhysical: Boolean): PsiFile {
         return PsiFileFactory.getInstance(project).createFileFromText("expression.gdscript", PlainTextLanguage.INSTANCE, text)

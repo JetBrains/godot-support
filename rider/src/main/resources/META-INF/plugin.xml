@@ -4,7 +4,6 @@
   <vendor>JetBrains</vendor>
 
   <incompatible-with>gdscript</incompatible-with>
-  <incompatible-with>ice.explosive.gdscript</incompatible-with>
 
   <dependencies>
     <plugin id="com.intellij.modules.rider"/>
@@ -50,6 +49,7 @@
     <platform.lsp.serverSupportProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspServerSupportProvider"/>
 
     <rider.godot.community.lspStatusProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspRunningStatusProvider" />
+    <rider.godot.community.projectInfoProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotProjectInfoProvider" />
 
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptConfigurationType"/>
     <platform.dap.debugAdapterSupportProvider implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptDebugAdapterSupportProvider"/>

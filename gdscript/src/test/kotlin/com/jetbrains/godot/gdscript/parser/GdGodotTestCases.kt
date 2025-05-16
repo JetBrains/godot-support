@@ -1,0 +1,105 @@
+package com.jetbrains.godot.parser
+
+import com.intellij.testFramework.ParsingTestCase
+import gdscript.GdParserDefinition
+
+class GdGodotTestCases : ParsingTestCase("", "gd", GdParserDefinition()) {
+    
+    fun testadvanced_expression_matching() = doTest(true, true)
+    fun testallowed_keywords_as_identifiers() = doTest(true, true)
+    fun testallow_id_similar_to_keyword_in_ascii() = doTest(true, true)
+    fun testallow_strings_as_comments() = doTest(true, true)
+    fun testannotations() = doTest(true, true)
+    fun testarray() = doTest(true, true)
+    fun testarrays_dictionaries_nested_const() = doTest(true, true)
+    fun testbasic_expression_matching() = doTest(true, true)
+    fun testbitwise_operators() = doTest(true, true)
+    fun testclass() = doTest(true, true)
+    fun testclass_inheritance() = doTest(true, true)
+    fun testclass_inheritance_access() = doTest(true, true)
+    fun testclass_name() = doTest(true, true)
+    fun testconcatenation() = doTest(true, true)
+    fun testconstants() = doTest(true, true)
+    fun testcontinuation_lines_comments() = doTest(true, true)
+    fun testdictionary() = doTest(true, true)
+    fun testdictionary_lua_style() = doTest(true, true)
+    fun testdictionary_mixed_syntax() = doTest(true, true)
+    fun testdollar_and_percent_get_node() = doTest(true, true)
+    fun testdollar_node_paths() = doTest(true, true)
+    fun testenum() = doTest(true, true)
+    fun testexport_arrays() = doTest(true, true)
+    fun testexport_enum() = doTest(true, true)
+    fun testexport_variable() = doTest(true, true)
+    fun testexport_variable_global() = doTest(true, true)
+    fun testexport_variable_unnamed() = doTest(true, true)
+    fun testfloat_notation() = doTest(true, true)
+    fun testfor_range() = doTest(true, true)
+    fun testfunction_default_parameter_type_inference() = doTest(true, true)
+    fun testfunction_many_parameters() = doTest(true, true)
+    fun testgood_continue_in_lambda() = doTest(true, true)
+    fun testif_after_lambda() = doTest(true, true)
+    fun testin() = doTest(true, true)
+    fun testis_not_operator() = doTest(true, true)
+    fun testlambda_callable() = doTest(true, true)
+    fun testlambda_capture_callable() = doTest(true, true)
+    fun testlambda_default_parameter_capture() = doTest(true, true)
+    fun testlambda_ends_with_new_line() = doTest(true, true)
+    fun testlambda_named_callable() = doTest(true, true)
+    fun testmatch() = doTest(true, true)
+    fun testmatch_array() = doTest(true, true)
+    fun testmatch_bind_unused() = doTest(true, true)
+    fun testmatch_dictionary() = doTest(true, true)
+    fun testmatch_multiple_patterns_with_array() = doTest(true, true)
+    fun testmatch_multiple_variable_binds_in_pattern() = doTest(true, true)
+    fun testmatch_with_variables() = doTest(true, true)
+    fun testmixed_indentation_on_blank_lines() = doTest(true, true)
+    fun testmultiline_arrays() = doTest(true, true)
+    fun testmultiline_assert() = doTest(true, true)
+    fun testmultiline_dictionaries() = doTest(true, true)
+    fun testmultiline_if() = doTest(true, true)
+    fun testmultiline_strings() = doTest(true, true)
+    fun testmultiline_vector() = doTest(true, true)
+    fun testnested_arithmetic() = doTest(true, true)
+    fun testnested_array() = doTest(true, true)
+    fun testnested_dictionary() = doTest(true, true)
+    fun testnested_function_calls() = doTest(true, true)
+    fun testnested_if() = doTest(true, true)
+    fun testnested_match() = doTest(true, true)
+    fun testnested_parentheses() = doTest(true, true)
+    fun testnumber_literals_with_sign() = doTest(true, true)
+    fun testnumber_separators() = doTest(true, true)
+    fun testoperator_assign() = doTest(true, true)
+    fun testproperty_setter_getter() = doTest(true, true)
+    fun testreserved_keywords_as_attribute() = doTest(true, true)
+    fun testr_strings() = doTest(true, true)
+    fun testsemicolon_as_end_statement() = doTest(true, true)
+    fun testsemicolon_as_terminator() = doTest(true, true)
+    fun testsignal_declaration() = doTest(true, true)
+    fun testsingle_line_declaration() = doTest(true, true)
+    fun testspace_indentation() = doTest(true, true)
+    fun teststatic_typing() = doTest(true, true)
+    fun teststring_formatting() = doTest(true, true)
+    fun teststr_preserves_case() = doTest(true, true)
+    fun testsuper() = doTest(true, true)
+    fun testtrailing_comma_in_function_args() = doTest(true, true)
+    fun testtruthiness() = doTest(true, true)
+    fun testtyped_arrays() = doTest(true, true)
+    fun testunicode_identifiers() = doTest(true, true)
+    fun testunnamed_enums_outer_conflicts() = doTest(true, true)
+    fun testvariable_declaration() = doTest(true, true)
+    fun testvector_inf() = doTest(true, true)
+    fun testwhile() = doTest(true, true)
+
+    override fun getTestDataPath(): String {
+        return "testData/gdscript/parser/godotTestCases"
+    }
+
+    override fun skipSpaces(): Boolean {
+        return false
+    }
+
+    override fun includeRanges(): Boolean {
+        return true
+    }
+
+}

@@ -114,9 +114,7 @@ object GdLibraryManager {
         ApplicationManager.getApplication().invokeAndWait {
             WriteAction.computeAndWait(ThrowableComputable {
                 val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
-                val tableModel = ApplicationManager
-                    .getApplication()
-                    .getService(ModifiableModelsProvider::class.java)
+                val tableModel = ModifiableModelsProvider.getInstance()
                     .getLibraryTableModifiableModel(project)
 
                 modifier.getLibraryByName(LIBRARY_NAME)?.let { modifier.removeLibrary(it) }

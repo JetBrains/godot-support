@@ -1,5 +1,5 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
-  <id>com.intellij.godot.gdscript</id>
+  <id>com.intellij.rider.godot.gdscript</id>
   <name>GdScript</name>
   <vendor>JetBrains</vendor>
 
@@ -9,13 +9,12 @@
   <change-notes>
   </change-notes>
   <incompatible-with>gdscript</incompatible-with>
-  <incompatible-with>ice.explosive.gdscript</incompatible-with>
 
   <depends>com.intellij.modules.lang</depends>
   <depends optional="true" config-file="optionalPlugin.xml">com.intellij.rider.godot.community</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileType name="GdScript File" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd;gdf"/>
+    <fileType name="GdScript" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd;gdf"/>
     <lang.parserDefinition language="GdScript" implementationClass="gdscript.GdParserDefinition"/>
     <highlightErrorFilter implementation="gdscript.codeInsight.highlighting.GdErrorFilter"/>
     <lang.syntaxHighlighterFactory language="GdScript" implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
@@ -211,12 +210,14 @@
   </extensions>
 
   <actions>
-    <action id="gdscript.action.GdCreateFileAction" class="gdscript.action.GdCreateFileAction" >
+    <action id="GdCreateFileAction" class="gdscript.action.GdCreateFileAction" icon="com.intellij.rider.plugins.godot.gdscript.icons.RiderPluginsGodotGdscriptIcons.GodotEditor.GDScript" >
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile" />
     </action>
-    <action id="gdscript.action.GdAddTraitAction" class="gdscript.action.GdAddTraitAction" text="Add GdScript Trait">
+    <action id="GdAddTraitAction" class="gdscript.action.GdAddTraitAction" text="Add GdScript Trait">
       <add-to-group group-id="GenerateGroup" anchor="first" />
     </action>
   </actions>
+
+  <resource-bundle>messages.gdscript</resource-bundle>
 
 </idea-plugin>

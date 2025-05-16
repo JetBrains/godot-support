@@ -4,7 +4,7 @@ import com.intellij.execution.RunManager
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.client.ClientProjectSession
 import com.intellij.openapi.components.Service
-import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -23,7 +23,8 @@ import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationTy
 import com.jetbrains.rider.util.idea.getService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
+import kotlin.io.path.Path
+import kotlin.io.path.exists
 
 @Service(Service.Level.PROJECT)
 class GodotProjectDiscoverer(project: Project) {
@@ -32,7 +33,6 @@ class GodotProjectDiscoverer(project: Project) {
     val lspConnectionMode: IProperty<LanguageServerConnectionMode?> = Property(null)
     val remoteHostPort: IProperty<Int?> = Property(null)
     val useDynamicPort: IProperty<Boolean?> = Property(null)
-    private val logger = Logger.getInstance(GodotProjectDiscoverer::class.java)
     val godot3Path : IProperty<String?> = Property(null)
     val godot4Path : IProperty<String?> = Property(null)
     val godotPath : IProperty<String?> = Property(null)
@@ -47,8 +47,8 @@ class GodotProjectDiscoverer(project: Project) {
         }
 
         godotDescriptor.adviseNotNull(lifetime){
-            logger.info("Godot godotDescriptor: $it")
-            val basePath = File(it.mainProjectBasePath)
+            thisLogger().info("Godot godotDescriptor: $it")
+            val basePath = Path(it.mainProjectBasePath)
             lifetime.launch(Dispatchers.IO) {
                 val g3path = MetadataMonoFileWatcher.Util.getFromMonoMetadataPath(basePath)
                              ?: MetadataMonoFileWatcher.Util.getGodotPath(basePath) ?: getGodotPathFromPlayerRunConfiguration(project)
@@ -67,7 +67,7 @@ class GodotProjectDiscoverer(project: Project) {
         if (playerSettings != null) {
             val config = playerSettings.configuration as DotNetExeConfiguration
             val path = config.parameters.exePath
-            if (path.isNotEmpty() && File(path).exists()) {
+            if (path.isNotEmpty() && Path(path).exists()) {
                 return path
             }
         }
@@ -80,7 +80,7 @@ class GodotProjectDiscoverer(project: Project) {
         if (playerSettings != null) {
             val config = playerSettings.configuration as GodotDebugRunConfiguration
             val path = config.parameters.exePath
-            if (path.isNotEmpty() && File(path).exists()) {
+            if (path.isNotEmpty() && Path(path).exists()) {
                 return path
             }
         }

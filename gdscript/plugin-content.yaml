@@ -1,0 +1,3 @@
+- name: lib/rider-plugins-godot-gdscript.jar
+  modules:
+      - name: intellij.rider.plugins.godot.gdscript

@@ -2,7 +2,6 @@ package gdscript.formatter
 
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
-import org.jdom.Element
 
 class GdCodeStyleSettings(settings: CodeStyleSettings) : CustomCodeStyleSettings("GdCodeStyleSettings", settings) {
 

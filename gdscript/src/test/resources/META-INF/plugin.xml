@@ -1,0 +1,12 @@
+<idea-plugin>
+  <id>intellij.rider.godot.test.cases.gdscript.plugin</id>
+  <name>Rider Tests Plugin for intellij.rider.test.cases.gdscript module</name>
+  <vendor>JetBrains</vendor>
+
+  <content>
+    <!-- Put required modules, use intellij.rider.test.cases.plugin plugin.xml as a reference -->
+    <module name="intellij.libraries.junit5"/>
+    <module name="intellij.libraries.junit5.launcher"/>
+    <module name="intellij.platform.testFramework"/>
+  </content>
+</idea-plugin>

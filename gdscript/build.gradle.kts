@@ -1,72 +1,96 @@
-import org.jetbrains.intellij.tasks.PatchPluginXmlTask
-import org.jetbrains.intellij.tasks.RunIdeTask
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
-group = "ice.explosive"
-version = "2.7.0"
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
-    id("org.jetbrains.intellij") version "1.17.3" // https://github.com/JetBrains/gradle-intellij-plugin/releases
-    kotlin("jvm") version "1.9.0"
-    kotlin("plugin.serialization") version "1.9.0"
+    alias(libs.plugins.changelog)
+    alias(libs.plugins.gradleIntelliJPlatform)
+    alias(libs.plugins.gradleJvmWrapper)
+    alias(libs.plugins.kotlinJvm)
+    id("java")
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+val isMonorepo = rootProject.projectDir != projectDir
+val repoRoot = projectDir.parentFile!!
+
+if (!isMonorepo) {
+    sourceSets.getByName("main") {
+        java {
+            srcDir(repoRoot.resolve("gdscript/src/main/gen"))
+        }
+    }
 }
 
 repositories {
-    mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+        jetbrainsRuntime()
+    }
 }
 
+val buildConfiguration: String by project
+
 dependencies {
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.0")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
+    intellijPlatform {
+        rider(libs.versions.riderSdk, useInstaller = false)
+        jetbrainsRuntime()
+        bundledPlugin("com.intellij.rider.godot.community")
+        testFramework(TestFrameworkType.Bundled)
+    }
+    testImplementation(libs.openTest4J)
+}
+
+intellijPlatform{
+    instrumentCode = false
+    buildSearchableOptions = buildConfiguration != "Debug"
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 sourceSets {
-    named("main") {
-        java.srcDirs("src/main/gen")
+    main {
+        kotlin.srcDir("src/rider/generated/kotlin")
+        kotlin.srcDir("src/rider/main/kotlin")
+        resources.srcDir("src/rider/main/resources")
     }
 }
-
-intellij {
-    version.set("2023.3")
-    // version.set("2024.2-SNAPSHOT") // for Rider
-    // type.set("RD") // for Rider
-    plugins.set(listOf("com.intellij.rider.godot.community:1.0.0"))
-    updateSinceUntilBuild.set(true)
-}
-
-val buildConfiguration = ext.properties["BuildConfiguration"] ?: "Debug"
 
 tasks {
+    register("prepare") {
 
-    withType<RunIdeTask> {
-        jvmArgs("-Xmx1500m", "-Didea.is.internal=true")
-        maxHeapSize = "1500m"
     }
 
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+    runIde {
+        jvmArgs("-Xmx1500m")
     }
 
-    getByName("buildSearchableOptions") {
-        enabled = buildConfiguration == "Release"
-    }
-
-    withType<Test> {
+    test {
         useJUnitPlatform()
+        testLogging {
+            showStandardStreams = true
+            exceptionFormat = TestExceptionFormat.FULL
+        }
+        environment["LOCAL_ENV_RUN"] = "true"
     }
 
-    processResources {
-        dependsOn(patchPluginXml)
+    val testRiderPreview by intellijPlatformTesting.testIde.registering {
+        version = libs.versions.riderSdkPreview
+        useInstaller = false
+        task {
+            enabled = libs.versions.riderSdk.get() != libs.versions.riderSdkPreview.get()
+        }
     }
 
-    withType<PatchPluginXmlTask> {
-        sinceBuild.set("233")
-        untilBuild.set("")
-
-        changeNotes.set(
-                """    
-                """.trimIndent()
-        )
+    check {
+        dependsOn(testRiderPreview)
     }
 }

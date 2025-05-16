@@ -11,7 +11,7 @@ import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.components.JBTabbedPane
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.concurrency.AppExecutorUtil
-import com.jetbrains.rd.util.Callable
+import java.util.concurrent.Callable
 import gdscript.GdFileType
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.utils.GdClassUtil

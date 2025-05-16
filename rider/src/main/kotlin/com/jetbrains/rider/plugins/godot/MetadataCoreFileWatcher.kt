@@ -14,18 +14,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.time.withTimeout
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.nio.file.*
 import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
 import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
 import java.time.Duration
+import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
+import kotlin.io.path.readLines
 
 
 class MetadataCoreFileWatcher : ProjectActivity {
 
     object Util {
-        fun getGodotPath(projectPath: File): String? {
+        fun getGodotPath(projectPath: Path): String? {
             val projectMetadataCfg = projectPath.resolve(cfgDir).resolve(cfgFileName)
 
             if (projectMetadataCfg.exists()) {
@@ -52,10 +53,10 @@ class MetadataCoreFileWatcher : ProjectActivity {
             project.solution.isLoaded.whenTrue(project.lifetime) {l->
                 val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
                 godotDiscoverer.godotDescriptor.viewNotNull(l) { lt, descriptor ->
-                    val mainProjectBaseFile = File(descriptor.mainProjectBasePath)
+                    val mainProjectBaseFile = Paths.get(descriptor.mainProjectBasePath)
                     lt.launch(Dispatchers.IO) {
                         val watchService: WatchService = FileSystems.getDefault().newWatchService()
-                        val metaFileDir = mainProjectBaseFile.resolve(cfgDir).toPath()
+                        val metaFileDir = mainProjectBaseFile.resolve(cfgDir)
 
                         withTimeout(Duration.ofMinutes(5)) {
                             while (!(metaFileDir.isDirectory())) {

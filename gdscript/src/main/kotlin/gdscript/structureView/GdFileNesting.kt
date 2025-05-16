@@ -13,7 +13,6 @@ class GdFileNesting : ProjectViewNestingRulesProvider {
     )
 
     override fun addFileNestingRules(consumer: ProjectViewNestingRulesProvider.Consumer) {
-        consumer.addNestingRule(".gd", ".tscn")
         exts.forEach { consumer.addNestingRule(".$it", ".$it.import") }
     }
 

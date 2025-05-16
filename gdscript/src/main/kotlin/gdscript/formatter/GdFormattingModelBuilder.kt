@@ -41,7 +41,7 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
     private fun createSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
         val custom = settings.getCustomSettings(GdCodeStyleSettings::class.java)
         INDENT_SIZE =
-            settings.getIndentSize(GdFileType.INSTANCE); // TODO u tabů se to posere, když je za stmt volné odsazení tak se převede na mezery a konec
+            settings.getIndentSize(GdFileType); // TODO u tabů se to posere, když je za stmt volné odsazení tak se převede na mezery a konec
 
         val builder = SpacingBuilder(settings, GdLanguage)
             /* Spacings */

@@ -45,7 +45,7 @@ object GdCommentUtil {
     fun listUsages(resource: String, project: Project): Array<PsiComment> {
         val manager = PsiManager.getInstance(project);
 
-        return FileTypeIndex.getFiles(GdFileType.INSTANCE, GlobalSearchScope.allScope(project))
+        return FileTypeIndex.getFiles(GdFileType, GlobalSearchScope.allScope(project))
             .flatMap<VirtualFile, PsiComment> { file ->
                 PsiTreeUtil.findChildrenOfType(
                     manager.findFile(file),

@@ -3,24 +3,12 @@ package gdscript
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
-class GdFileType private constructor() : LanguageFileType(GdLanguage) {
-    companion object{
-        val INSTANCE: GdFileType = GdFileType()
-    }
+object GdFileType : LanguageFileType(GdLanguage) {
+    override fun getName(): String = GdLanguage.id
 
-    override fun getName(): String {
-        return "GdScript File"
-    }
+    override fun getDescription(): String = GdScriptBundle.message("language.file_name")
 
-    override fun getDescription(): String {
-        return "GdScript language file"
-    }
+    override fun getDefaultExtension(): String = "gd"
 
-    override fun getDefaultExtension(): String {
-        return "gd"
-    }
-
-    override fun getIcon(): Icon {
-        return GdScriptPluginIcons.Icons.GDScript
-    }
+    override fun getIcon(): Icon = GdScriptPluginIcons.Icons.GDScript
 }

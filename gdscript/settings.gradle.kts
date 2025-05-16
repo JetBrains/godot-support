@@ -1,2 +1,2 @@
-rootProject.name = "GdScript"
+rootProject.name = "rider-gdscript"
 

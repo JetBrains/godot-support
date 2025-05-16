@@ -11,7 +11,7 @@
 //    // 2 possible solutions:
 //    //  a) custom Parser - preferred
 //    //  b) rewrite bnf to single header rule
-//    // @Test fun testHeader() = doTest(true)
+//    // fun testHeader() = doTest(true)
 //
 //    override fun getTestDataPath(): String {
 //        return "src/test/kotlin/tscn/parser/recoveryData"

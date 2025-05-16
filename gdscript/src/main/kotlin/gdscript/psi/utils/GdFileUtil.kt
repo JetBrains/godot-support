@@ -9,7 +9,7 @@ import gdscript.GdFileType
 object GdFileUtil {
 
     fun listTraits(project: Project): List<VirtualFile> {
-        return FileTypeIndex.getFiles(GdFileType.INSTANCE, GlobalSearchScope.allScope(project))
+        return FileTypeIndex.getFiles(GdFileType, GlobalSearchScope.allScope(project))
             .filter { it.nameWithoutExtension.lowercase().endsWith("trait") };
     }
 

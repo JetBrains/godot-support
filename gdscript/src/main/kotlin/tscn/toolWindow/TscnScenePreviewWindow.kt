@@ -22,7 +22,7 @@ import com.intellij.util.BitUtil
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.ui.TimerUtil
 import com.intellij.util.ui.UIUtil
-import com.jetbrains.rd.util.Callable
+import java.util.concurrent.Callable
 import common.util.PluginScopeService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow

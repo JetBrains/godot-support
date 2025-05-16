@@ -3,6 +3,7 @@ package gdscript.formatter
 import com.intellij.application.options.CodeStyleAbstractConfigurable
 import com.intellij.application.options.CodeStyleAbstractPanel
 import com.intellij.application.options.TabbedLanguageCodeStylePanel
+import com.intellij.lang.Language
 import com.intellij.psi.codeStyle.CodeStyleConfigurable
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
@@ -10,13 +11,15 @@ import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 import gdscript.GdLanguage
 
 // TODO je tohle potřeba?
-class GdCodeStyleSettingsProvider : CodeStyleSettingsProvider() {
+class GdCodeStyleSettingsProvider(private val language: Language = GdLanguage) : CodeStyleSettingsProvider() {
 
     override fun createCustomSettings(settings: CodeStyleSettings): CustomCodeStyleSettings {
         return GdCodeStyleSettings(settings)
     }
 
-    override fun getConfigurableDisplayName(): String = "GdScript";
+    override fun getLanguage(): Language? {
+        return language
+    }
 
     override fun createConfigurable(
         settings: CodeStyleSettings,

@@ -21,5 +21,8 @@
   <extensionPoints>
     <extensionPoint name="lspStatusProvider" interface="com.jetbrains.rider.godot.community.LspRunningStatusProvider" />
   </extensionPoints>
+  <extensionPoints>
+    <extensionPoint name="projectInfoProvider" interface="com.jetbrains.rider.godot.community.ProjectInfoProvider" />
+  </extensionPoints>
 
 </idea-plugin>

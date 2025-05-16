@@ -13,13 +13,15 @@ import com.jetbrains.rd.util.threading.coroutines.launch
 import com.jetbrains.rider.projectView.solution
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
 import java.math.BigInteger
 import java.nio.file.*
 import java.nio.file.StandardWatchEventKinds.ENTRY_CREATE
 import java.nio.file.StandardWatchEventKinds.ENTRY_MODIFY
 import java.security.MessageDigest
+import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
+import kotlin.io.path.pathString
+import kotlin.io.path.readLines
 
 
 class MetadataMonoFileWatcher : ProjectActivity {
@@ -29,7 +31,7 @@ class MetadataMonoFileWatcher : ProjectActivity {
         //Windows: %APPDATA%\Godot\projects\{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}\
         //macOS: $XDG_DATA_HOME/Godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/ or $HOME/Library/Application Support/Godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/
         //Linux: $XDG_DATA_HOME/godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/ or $HOME/.local/share/godot/projects/{PROJECT_NAME}_{MD5_OF_PROJECT_PATH}/
-        fun getGodotPath(projectPath: File): String? {
+        fun getGodotPath(projectPath: Path): String? {
             val projectsSettingsPath = if (SystemInfo.isMac) {
                 val home = Paths.get(System.getenv("HOME"))
                 home.resolve("Library/Application Support/Godot/projects")
@@ -42,8 +44,8 @@ class MetadataMonoFileWatcher : ProjectActivity {
             } else
                 throw Exception("Unexpected OS.")
 
-            val md5 = projectPath.path.md5()
-            val projectSettingsPath = projectsSettingsPath.resolve("${projectPath.toPath().fileName}-$md5")
+            val md5 = projectPath.pathString.md5()
+            val projectSettingsPath = projectsSettingsPath.resolve("${projectPath.fileName}-$md5")
             val projectMetadataCfg = projectSettingsPath.resolve("project_metadata.cfg").toFile()
 
             if (projectMetadataCfg.exists()) {
@@ -62,7 +64,7 @@ class MetadataMonoFileWatcher : ProjectActivity {
             return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
         }
 
-        fun getFromMonoMetadataPath(basePath: File): String? {
+        fun getFromMonoMetadataPath(basePath: Path): String? {
             var metaFile = basePath.resolve(metaFileDir).resolve(metaFileName)
             if (!metaFile.exists())
                 metaFile = basePath.resolve(metaFileDir).resolve(oldMetaFileName)
@@ -92,10 +94,10 @@ class MetadataMonoFileWatcher : ProjectActivity {
                 val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
                 godotDiscoverer.godotDescriptor.viewNotNull(l) { lt, descriptor ->
                     if (descriptor.isPureGdScriptProject) return@viewNotNull
-                    val mainProjectBasePath = File(descriptor.mainProjectBasePath)
+                    val mainProjectBasePath = Paths.get(descriptor.mainProjectBasePath)
                     lt.launch(Dispatchers.IO) {
                         val watchService: WatchService = FileSystems.getDefault().newWatchService()
-                        val metaFileDir = mainProjectBasePath.resolve(metaFileDir).toPath()
+                        val metaFileDir = mainProjectBasePath.resolve(metaFileDir)
 
                         if (!(metaFileDir.isDirectory()))
                             return@launch

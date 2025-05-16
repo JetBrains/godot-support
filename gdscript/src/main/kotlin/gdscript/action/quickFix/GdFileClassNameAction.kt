@@ -14,7 +14,7 @@ class GdFileClassNameAction : BaseIntentionAction {
 
     constructor(
         filename: String,
-        element: GdClassNameNmi
+        element: GdClassNameNmi,
     ) {
         this.filename = filename
         this.element = element
@@ -35,5 +35,4 @@ class GdFileClassNameAction : BaseIntentionAction {
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         RenameProcessor( project, element, filename, false, false).run()
     }
-
 }
