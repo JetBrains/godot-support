@@ -64,7 +64,7 @@ object GdKeywords {
     val ANNOTATION_ONREADY = "onready";
     val ANNOTATION_ICON = "icon";
 
-    // TODO promazat - použít?
+    // TODO delete - use?
     val ANNOTATIONS_ROOT_ONLY = arrayOf(
         ANNOTATION_TOOL,
         ANNOTATION_ICON,

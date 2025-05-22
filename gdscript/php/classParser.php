@@ -222,7 +222,7 @@ foreach ($files as $filepath) {
 
     /** Variables */
     $getSetMethods = "";
-    // TODO tohle by se mělo začlenit do hintů?
+    // TODO should this be incorporated into hints?
     if ($filename != 'ProjectSettings.xml') {
         foreach ($xml['members'] ?? [] as $value) {
             $value = (array) $value;
@@ -273,7 +273,7 @@ foreach ($files as $filepath) {
         $ret = (array) ($value['return'] ?? ['@attributes' => [ 'type' => 'void' ]]);
 
         $quali = explode(' ', $att['qualifiers'] ?? '');
-        // TODO Tohle pak smazat, až bude const func implementována .. piozor existuje ještě "virtual" .. např _init
+        // TODO Delete this when const func is implemented .. attention there is also "virtual" .. e.g. _init
         $allowed = ["static", "vararg"];
         $quali = array_filter($quali, fn($qualiItem) => in_array($qualiItem, $allowed));
         $quali = implode(' ', $quali);
@@ -295,4 +295,3 @@ foreach ($files as $filepath) {
     file_put_contents(sprintf($target, $class_name), $data);
 
 }
-
