@@ -11,7 +11,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.*
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
-import com.intellij.platform.lsp.api.customization.LspFindReferencesSupport
+import com.intellij.platform.lsp.api.customization.LspCustomization
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
@@ -135,13 +135,15 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 return LspCommunicationChannel.Socket(remoteHostPort!!, lspConnectionMode == LanguageServerConnectionMode.StartEditorHeadless)
             }
 
-        override val lspCompletionSupport: LspCompletionSupport
-            get() = object : LspCompletionSupport() {
-                override fun createLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
-                    val item1 = super.createLookupElement(parameters, item) ?: return null
-                    // we want to be more preferable than TextMate
-                    return PrioritizedLookupElement.withPriority(item1, 1.0)
+        override val lspCustomization: LspCustomization = object : LspCustomization() {
+            override val lspCompletionSupport: LspCompletionSupport
+                get() = object : LspCompletionSupport() {
+                    override fun createLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
+                        val item1 = super.createLookupElement(parameters, item) ?: return null
+                        // we want to be more preferable than TextMate
+                        return PrioritizedLookupElement.withPriority(item1, 1.0)
+                    }
                 }
-             }
+        }
     }
 }
