@@ -136,7 +136,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             }
 
         override val lspCustomization: LspCustomization = object : LspCustomization() {
-            override val lspCompletionSupport: LspCompletionSupport
+            override val completionCustomizer: LspCompletionSupport
                 get() = object : LspCompletionSupport() {
                     override fun createLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
                         val item1 = super.createLookupElement(parameters, item) ?: return null
