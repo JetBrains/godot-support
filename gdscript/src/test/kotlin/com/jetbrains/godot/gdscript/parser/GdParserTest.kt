@@ -1,13 +1,14 @@
 package com.jetbrains.godot.parser
 
 import com.intellij.testFramework.ParsingTestCase
+import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.GdParserDefinition
+import kotlin.io.path.pathString
 
 
 class GdParserTest : ParsingTestCase("", "gd", GdParserDefinition()) {
 
     // https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html
-    //    constructor(): super("", "gd", gdscript.GdParserDefinition())
 
     fun testExtension() = doTest(true)
     fun testExtensionExt() = doTest(true)
@@ -68,7 +69,7 @@ class GdParserTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     fun testDictDeclExpr() = doTest(true)
 
     override fun getTestDataPath(): String {
-        return "testData/gdscript/parser/data"
+        return getBaseTestDataPath().resolve("testData/gdscript/parser/data").pathString
     }
 
     override fun skipSpaces(): Boolean {

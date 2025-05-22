@@ -1,7 +1,9 @@
 package com.jetbrains.godot.parser
 
 import com.intellij.testFramework.ParsingTestCase
+import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.GdParserDefinition
+import kotlin.io.path.pathString
 
 class GdComplexRecoveryData : ParsingTestCase("", "gd", GdParserDefinition()) {
 
@@ -9,7 +11,7 @@ class GdComplexRecoveryData : ParsingTestCase("", "gd", GdParserDefinition()) {
     fun testLambda2() = doTest(true)
 
     override fun getTestDataPath(): String {
-        return "testData/gdscript/parser/complexRecoveryData"
+        return getBaseTestDataPath().resolve( "testData/gdscript/parser/complexRecoveryData").pathString
     }
 
     override fun skipSpaces(): Boolean {

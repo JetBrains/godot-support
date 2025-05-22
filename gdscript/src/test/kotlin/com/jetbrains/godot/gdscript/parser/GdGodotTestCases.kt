@@ -1,7 +1,9 @@
 package com.jetbrains.godot.parser
 
 import com.intellij.testFramework.ParsingTestCase
+import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.GdParserDefinition
+import kotlin.io.path.pathString
 
 class GdGodotTestCases : ParsingTestCase("", "gd", GdParserDefinition()) {
     
@@ -91,15 +93,11 @@ class GdGodotTestCases : ParsingTestCase("", "gd", GdParserDefinition()) {
     fun testwhile() = doTest(true, true)
 
     override fun getTestDataPath(): String {
-        return "testData/gdscript/parser/godotTestCases"
+        return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString
     }
 
-    override fun skipSpaces(): Boolean {
-        return false
-    }
+    override fun skipSpaces(): Boolean = false
 
-    override fun includeRanges(): Boolean {
-        return true
-    }
+    override fun includeRanges(): Boolean = true
 
 }
