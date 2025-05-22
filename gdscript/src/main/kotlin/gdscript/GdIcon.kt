@@ -2,11 +2,13 @@ package gdscript
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.IconLoader
+import org.jetbrains.annotations.ApiStatus
 import javax.swing.Icon
 
 object GdIcon {
     private var editorIcons = HashMap<String, Icon>()
 
+    @ApiStatus.Obsolete // todo: find a way to get rid of this completely and also all unused Godot editor icons
     fun getEditorIcon(className: String): Icon {
         val icon = editorIcons[className]
         if (icon == null) {
@@ -19,7 +21,6 @@ object GdIcon {
                     //loaded = IconUtil.toSize(loaded, 16, 16)
                     // todo: determine not needed icons and remove them
                     // rework icons to be required size without scaling
-                    thisLogger().info("Icon $className requested.")
                     editorIcons[className] = loaded
                 } else {
                     editorIcons[className] = GdScriptPluginIcons.Icons.BackupIcon
