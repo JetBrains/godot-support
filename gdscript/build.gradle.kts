@@ -17,6 +17,7 @@ allprojects {
 
 val isMonorepo = rootProject.projectDir != projectDir
 val repoRoot = projectDir.parentFile!!
+val dotNetSrcDir = repoRoot.resolve("gdscript/dotnet")
 
 if (!isMonorepo) {
     sourceSets.getByName("main") {
@@ -65,8 +66,38 @@ sourceSets {
 }
 
 tasks {
-    register("prepare") {
+    val generateNuGetConfig by registering {
+        val nuGetConfigFile = dotNetSrcDir.resolve("Nuget.Config")
+        doLast {
+            nuGetConfigFile.writeTextIfChanged("""
+            <?xml version="1.0" encoding="utf-8"?>
+            <!-- Auto-generated from 'generateNuGetConfig' task of old.build_gradle.kts -->
+            <!-- Run `gradlew :prepare` to regenerate -->
+            <configuration>
+                <packageSources>
+                    <add key="local-gdscript-sdk" value="${repoRoot.resolve("gdscript/php")}" />
+                    <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+                </packageSources>
+            </configuration>
+            """.trimIndent())
+        }
+    }
 
+    register("prepare") {
+        dependsOn(generateNuGetConfig)
+    }
+
+    val compileDotNet by registering(Exec::class) {
+        dependsOn(generateNuGetConfig)
+        inputs.property("buildConfiguration", buildConfiguration)
+
+        executable(dotNetSrcDir.resolve("dotnet-sdk.cmd"))
+        args("build", "-consoleLoggerParameters:ErrorsOnly", "--configuration", buildConfiguration, "--configfile", "Nuget.Config")
+        workingDir = dotNetSrcDir
+    }
+
+    buildPlugin {
+        dependsOn(compileDotNet)
     }
 
     runIde {
@@ -92,5 +123,15 @@ tasks {
 
     check {
         dependsOn(testRiderPreview)
+    }
+}
+
+fun File.writeTextIfChanged(content: String) {
+    val bytes = content.toByteArray()
+
+    if (!exists() || !readBytes().contentEquals(bytes)) {
+        println("Writing $path with:\n$content")
+        parentFile.mkdirs()
+        writeBytes(bytes)
     }
 }

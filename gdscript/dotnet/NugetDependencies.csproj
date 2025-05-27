@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JetBrains.GDScript.SDK" Version="[2025.0.0,)" GeneratePathProperty="true">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <Target Name="ExtractSDK" AfterTargets="Build">
+    <Message Text="Extract gdscript sdk from '$(PkgJetBrains_GDScript_SDK)' to '$(ProjectDir)'" Importance="high"/>
+<!--    <Exec Command="tar -xf $(PkgJetBrains_GDScript_SDK)/sdk/sdk.tar.xz -C $(ProjectDir)/../src/main/resources"/>-->
+    <Copy SourceFiles="$(PkgJetBrains_GDScript_SDK)/sdk/sdk.tar.xz" DestinationFiles="$(ProjectDir)/sdk.tar.xz"/>
+  </Target>
+</Project>

@@ -46,7 +46,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="GodotTools.IdeMessaging" />
-    <PackageReference Condition="$(InternalBuild)" Include="JetBrains.Godot.Tools" />
   </ItemGroup>
   <ItemGroup Label="EmbeddedResource">
     <EmbeddedResource Include="Resources\Strings.resx" Condition="$(InternalBuild)">

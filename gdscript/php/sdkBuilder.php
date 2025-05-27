@@ -1,6 +1,6 @@
 <?php
 
-$sdkFolder = "../sdk";
+$sdkFolder = "sdk";
 $sdkPrefix = "GdSdk ";
 
 if (!file_exists($sdkFolder)) {
@@ -44,17 +44,22 @@ $processSdk = function($tag) {
     }
 
     exec("rm -R godot-master || true");
-    exec("rm -R classesGd || true");
-    exec("wget -O - https://github.com/godotengine/godot/archive/$downloadTag.tar.gz | tar -xz");
-    exec("mv godot-$downloadTag godot-master || true");
+    exec("wget https://github.com/godotengine/godot/archive/$downloadTag.tar.gz");
+    #exec("wget https://github.com/godotengine/godot/archive/refs/tags/$downloadTag.tar.gz"); # is it similar to the previous line?
+    exec("tar -xf $downloadTag.tar.gz");
+    if ($downloadTag != "master") {
+        exec("mv godot-$downloadTag godot-master || true");
+    }
     exec("rm -R classesGd || true");
     exec("mkdir classesGd || true");
     exec("php classParser.php");
     exec("php operandParser.php");
     exec("php annotationParser.php");
-    exec("zip -r -j '$sdkFile' classesGd/*");
-    exec("mv '$sdkFile' '../sdk/$sdkFile'");
+    exec("mv 'classesGd' 'sdk/$tag'");
 };
+
+exec("rm -R $sdkFolder || true");
+exec("mkdir $sdkFolder || true");
 
 // Download and build sdks for newly released tags
 foreach ($toFetch as $tag) {
@@ -62,5 +67,5 @@ foreach ($toFetch as $tag) {
 }
 $processSdk("Master");
 
-echo 1; // With master there's always an update
-// echo count($toFetch) > 0 ? 0 : 1;
+exec("tar -caf sdk.tar.xz -C $sdkFolder ."); # good compression
+exec("nuget pack sdk.nuspec");

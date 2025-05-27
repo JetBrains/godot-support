@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>JetBrains.GDScript.SDK</id>
+    <version>2025.05.27</version>
+    <authors>JetBrains s.r.o.</authors>
+    <owners>JetBrains s.r.o.</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <developmentDependency>true</developmentDependency>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/JetBrains/godot-support</projectUrl>
+    <description>JetBrains SDK for GDScript</description>
+    <copyright>© 2025 JetBrains s.r.o.. All rights reserved.</copyright>
+  </metadata>
+  <files>
+    <file src="sdk.tar.xz" target="sdk" />
+  </files>
+</package>
