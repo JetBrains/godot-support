@@ -10,6 +10,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.*
+import com.intellij.platform.lsp.api.customization.DefaultLspCustomization
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
 import com.intellij.platform.lsp.api.customization.LspCustomization
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
@@ -135,7 +136,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 return LspCommunicationChannel.Socket(remoteHostPort!!, lspConnectionMode == LanguageServerConnectionMode.StartEditorHeadless)
             }
 
-        override val lspCustomization: LspCustomization = object : LspCustomization() {
+        override val lspCustomization: LspCustomization = object : DefaultLspCustomization() {
             override val completionCustomizer: LspCompletionSupport
                 get() = object : LspCompletionSupport() {
                     override fun createLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
