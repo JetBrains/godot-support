@@ -1,160 +1,196 @@
 package gdscript.library
 
+import com.intellij.ide.plugins.getPluginDistDirByClass
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.WriteAction
+import com.intellij.openapi.application.PathManager
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleManager
-import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModifiableModelsProvider
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ModuleRootModificationUtil
 import com.intellij.openapi.roots.OrderRootType
-import com.intellij.openapi.roots.impl.libraries.LibraryEx.ModifiableModelEx
-import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
-import com.intellij.openapi.util.ThrowableComputable
-import com.intellij.platform.templates.github.DownloadUtil
-import com.intellij.util.io.ZipUtil
-import com.intellij.util.io.createDirectories
-import com.intellij.util.io.delete
-import gdscript.model.GdHistory
-import gdscript.model.GdSdk
-import gdscript.utils.GdSdkUtil.COMMIT_HISTORY_PLACEHOLDER
-import gdscript.utils.GdSdkUtil.COMMIT_HISTORY_URL
-import gdscript.utils.GdSdkUtil.SDKs_URL
-import gdscript.utils.GdSdkUtil.sdkToVersion
+import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.util.io.Decompressor
 import gdscript.utils.GdSdkUtil.versionToSdkName
-import gdscript.utils.GdSdkUtil.versionToSdkUrl
-import gdscript.utils.GdSdkUtil.versionToSdkZip
-import kotlinx.serialization.json.Json
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 import java.nio.file.Files
-import java.nio.file.LinkOption
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
+import kotlin.io.path.pathString
 
 object GdLibraryManager {
 
     val LIBRARY_NAME = "GdSdk"
-    val jsonParser = Json { ignoreUnknownKeys = true }
 
-    fun listAvailableSdks(): List<String> {
-        return listOf() // todo: currently fails with Serializer for class 'GdSdk' is not found.
+    // alternative to registerSdk
+    //fun addBCLApiSources(path: Path, project: Project) {
+    //    val sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(path.pathString)
+    //
+    //    ApplicationManager.getApplication().invokeLater {
+    //        ApplicationManager.getApplication().runWriteAction(Runnable {
+    //            val module = ModuleManager.getInstance(project).modules.first()
+    //            val rootManager = ModuleRootManager.getInstance(module)
+    //            val model = rootManager.getModifiableModel()
+    //            try {
+    //                if (!model.contentRoots.any { it == sourceRoot }) {
+    //                    if (sourceRoot != null) {
+    //                        model.addContentEntry(sourceRoot, object : ProjectModelExternalSource {
+    //                            override fun getDisplayName(): String =
+    //                                "gdscript bcl"
+    //
+    //                            override fun getId(): String =
+    //                                "gdscriptBcl"
+    //                        })
+    //                    }
+    //                    model.commit()
+    //                }
+    //                else {
+    //                    model.dispose()
+    //                }
+    //            }
+    //            catch (e: IOException) {
+    //                e.printStackTrace()
+    //            }
+    //            finally {
+    //                if (model.isWritable()) {
+    //                    model.dispose()
+    //                }
+    //            }
+    //        })
+    //    }
+    //}
 
-        val client = HttpClient.newBuilder().build()
-        val request = HttpRequest.newBuilder()
-            .uri(URI.create(SDKs_URL))
-            .build()
+    fun registerSdkIfNeeded(path: Path, project: Project) {
+        val sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(path.pathString)
 
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-
-        return jsonParser.decodeFromString<Array<GdSdk>>(response.body())
-            .map { it.name.sdkToVersion() }
-            .sortedDescending()
-    }
-
-    fun getRegisteredSdk(project: Project): Library? {
-        return LibraryTablesRegistrar
-            .getInstance()
-            .getLibraryTable(project)
-            .modifiableModel
-            .libraries
-            .firstOrNull()
-    }
-
-    fun libDate(version: String): String {
-        val client = HttpClient.newBuilder().build()
-        val request = HttpRequest.newBuilder()
-            .uri(URI.create(COMMIT_HISTORY_URL.replace(COMMIT_HISTORY_PLACEHOLDER, version)))
-            .build()
-
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-
-        return "" // todo: fix kotlinx-serialization
-        return jsonParser.decodeFromString<Array<GdHistory>>(response.body())
-            .firstOrNull()?.commit?.committed_date
-            ?: ""
-    }
-
-    fun registerSdk(path: String, project: Project) {
-        val name = path.replace('\\', '/').substringAfterLast("/")
-        val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
-
-        if (modifier.getLibraryByName(name) != null) {
-            return
-
+        if (sourceRoot == null) {
+            throw Exception("Cannot find SDK at $path")
         }
-        val library = modifier.createLibrary(name, GdLibraryKind)
-        val libModifier = library.modifiableModel as ModifiableModelEx
 
-        val props = libModifier.properties as GdLibraryProperties
-        props.path = path
-        props.version = name.sdkToVersion()
-        props.date = libDate(props.version)
-        libModifier.properties = props
+        val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
+        val tableModel = libraryTable.modifiableModel
 
-        libModifier.addRoot("file://$path", OrderRootType.SOURCES)
+        //ApplicationManager.getApplication().invokeAndWait {
+        //    ApplicationManager.getApplication().runWriteAction(Runnable {
+        //        libraryTable.libraries.forEach { libraryTable.removeLibrary(it) }
+        //    })
+        //}
 
-        ApplicationManager.getApplication().invokeAndWait {
-            WriteAction.computeAndWait(ThrowableComputable {
-                libModifier.commit()
-                modifier.commit()
-
-                val module = ModuleManager.getInstance(project).modules.first()
-                ModuleRootModificationUtil.addDependency(module, library)
-            })
+        var library = tableModel.getLibraryByName(LIBRARY_NAME)
+        if (library == null) {
+            library = tableModel.createLibrary(LIBRARY_NAME, GdLibraryKind)
+            val module = ModuleManager.getInstance(project).modules.first()
+            ApplicationManager.getApplication().invokeAndWait {
+                ApplicationManager.getApplication().runWriteAction(Runnable {
+                    tableModel.commit()
+                    ModuleRootModificationUtil.addDependency(module, library)
+                })
+            }
+            val libraryModel = library.modifiableModel
+            libraryModel.addRoot(sourceRoot, OrderRootType.SOURCES)
+            ApplicationManager.getApplication().invokeAndWait {
+                ApplicationManager.getApplication().runWriteAction(Runnable {
+                    libraryModel.commit()
+                    ModuleRootModificationUtil.addDependency(module, library)
+                })
+            }
         }
-    }
+        else {
+            val libraryModel = library.modifiableModel
 
-    fun clearSdks(project: Project) {
-        ApplicationManager.getApplication().invokeAndWait {
-            WriteAction.computeAndWait(ThrowableComputable {
-                val modifier = LibraryTablesRegistrar.getInstance().getLibraryTable(project).modifiableModel
-                val tableModel = ModifiableModelsProvider.getInstance()
-                    .getLibraryTableModifiableModel(project)
-
-                modifier.getLibraryByName(LIBRARY_NAME)?.let { modifier.removeLibrary(it) }
-                getRegisteredSdk(project)?.let {
-                    it.rootProvider.getFiles(OrderRootType.SOURCES).forEach {
-                        dir -> Path(dir.path).delete(true)
-                    }
-                    modifier.removeLibrary(it)
-                    tableModel.removeLibrary(it)
-                }
-
-                modifier.commit()
-                tableModel.commit()
-
-                val module = ModuleManager.getInstance(project).modules.first()
-                val rootModel = ModuleRootManager.getInstance(module).modifiableModel
-                rootModel.orderEntries.forEach { rootModel.removeOrderEntry(it) }
-                rootModel.commit()
-            })
+            library.rootProvider.getUrls(OrderRootType.SOURCES)
+                .forEach { libraryModel.removeRoot(it, OrderRootType.SOURCES) }
+            libraryModel.addRoot(sourceRoot, OrderRootType.SOURCES)
+            ApplicationManager.getApplication().invokeAndWait {
+                ApplicationManager.getApplication().runWriteAction(Runnable {
+                    libraryModel.commit()
+                    tableModel.commit()
+                })
+            }
         }
     }
 
-    fun download(progressIndicator: ProgressIndicator, version: String, directory: Path) : Path {
-        val zipPath = Path(directory.toString(), version.versionToSdkZip())
-        val sdkPath = Path(directory.toString(), version.versionToSdkName())
+    private fun extractSdkIfNeededInternal(version: String, bundledSdkPath: Path): Path {
+        val extractionDir = bundledSdkPath.parent.resolve("extracted")
 
-        // create sdk directory (delete old if necessary)
-        if (sdkPath.exists(LinkOption.NOFOLLOW_LINKS)) {
-            sdkPath.delete(true)
+        // Check if SDK is already extracted and has a valid stamp
+        val validator = SdkIntegrityValidator()
+        val extractionStampFile = extractionDir.resolve(SdkIntegrityValidator.STAMP_FILE_NAME).toFile()
+        val needsExtraction = !extractionDir.toFile().exists() ||
+                              !extractionStampFile.exists() ||
+                              extractionStampFile.readText().trim() != validator.getFilesFromFs(extractionDir).count().toString()
+
+        // Extract SDK if needed
+        if (needsExtraction) {
+            if (extractionDir.toFile().exists()) {
+                extractionDir.toFile().deleteRecursively()
+            }
+            Files.createDirectories(extractionDir)
+
+            // Extract the SDK
+            Decompressor.Tar(bundledSdkPath).extract(extractionDir)
+            validator.writeStamp(extractionDir.toFile())
         }
-        sdkPath.createDirectories()
 
-        // download zip and extract
-        DownloadUtil.downloadAtomically(progressIndicator, version.versionToSdkUrl(), zipPath.toFile())
-        ZipUtil.extract(zipPath, sdkPath, null)
-        Files.delete(zipPath)
+        // Find the requested SDK version in the extracted directory
+        val requestedSdkDir = findSdkVersion(extractionDir, version)
+        if (requestedSdkDir == null) {
+            throw Exception("Requested SDK version $version not found in $extractionDir")
+        }
 
-        SdkIntegrityValidator().writeStamp(sdkPath.toFile())
-
-        return sdkPath
+        return requestedSdkDir
     }
 
+    // todo: check with OSS build
+    fun extractSdkIfNeeded(version: String): Path {
+        val bundledSdkPath = getPluginDistDirByClass(this::class.java)?.resolve("sdk/sdk.tar.xz").takeIf { it?.exists() == true } ?: error("Bundled SDK not found")
+        return extractSdkIfNeededInternal(version, bundledSdkPath)
+    }
+
+    // old approach
+    fun extractSdkIfNeeded2(version: String): Path {
+        val pluginDirs = arrayListOf(
+            Path(PathManager.getPluginsPath()),
+            Path(PathManager.getPreInstalledPluginsPath()))
+
+        val potentialSdkPaths = pluginDirs.map { dir ->
+            dir.resolve("rider-gdscript/sdk/sdk.tar.xz") }
+        val bundledSdkPath = potentialSdkPaths.singleOrNull { it.exists() }
+
+        if (bundledSdkPath == null) {
+            throw Exception("Bundled SDK not found at $potentialSdkPaths")
+        }
+        return extractSdkIfNeededInternal(version, bundledSdkPath)
+    }
+
+    private fun findSdkVersion(extractionDir: Path, version: String): Path? {
+        // Look for a directory that matches the requested version
+        val versionDirs = Files.list(extractionDir)
+            .filter { Files.isDirectory(it) }
+            .filter { it.fileName.toString().contains(version) }
+            .toList()
+
+        // If we found an exact match, use it
+        val exactMatch = versionDirs.find { it.fileName.toString() == version.versionToSdkName() }
+        if (exactMatch != null) {
+            thisLogger().info("Use $exactMatch for $version.")
+            return exactMatch
+        }
+
+        // If we found a partial match (e.g. "4.0" matches "4.0.1"), use the first one
+        if (versionDirs.isNotEmpty()) {
+            val dir = versionDirs[0]
+            thisLogger().info("Use $dir for $version.")
+            return dir
+        }
+
+        // If we didn't find any match, look for a "master" version
+        val masterDir = Files.list(extractionDir)
+            .filter { Files.isDirectory(it) }
+            .filter { it.fileName.toString().equals("master", ignoreCase = true) }
+            .findFirst()
+
+        thisLogger().info("Use $masterDir for $version.")
+        return masterDir.orElse(null)
+    }
 }

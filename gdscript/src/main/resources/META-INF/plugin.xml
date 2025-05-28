@@ -35,7 +35,7 @@
     <library.type implementation="gdscript.library.GdLibraryType" />
     <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor" />
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
-    <backgroundPostStartupActivity implementation="gdscript.listener.SdkStartupListener"/>
+    <backgroundPostStartupActivity implementation="gdscript.listener.ReferenceSdkProjectActivity"/>
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
     <toolWindow id="Scene preview" anchor="right" factoryClass="tscn.toolWindow.TscnScenePreviewWindowFactory" />
     <inlineActionHandler implementation="gdscript.refactoring.inline.GdInlineVariableActionHandler" />

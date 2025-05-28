@@ -87,7 +87,7 @@ tasks {
         dependsOn(generateNuGetConfig)
     }
 
-    val compileDotNet by registering(Exec::class) {
+    val getSDK by registering(Exec::class) {
         dependsOn(generateNuGetConfig)
         inputs.property("buildConfiguration", buildConfiguration)
 
@@ -97,7 +97,7 @@ tasks {
     }
 
     buildPlugin {
-        dependsOn(compileDotNet)
+        dependsOn(getSDK)
     }
 
     runIde {
