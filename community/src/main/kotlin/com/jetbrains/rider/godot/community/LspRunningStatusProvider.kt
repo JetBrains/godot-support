@@ -5,4 +5,3 @@ import com.intellij.openapi.project.Project
 interface LspRunningStatusProvider {
     fun isLspRunning(project: Project): Boolean
 }
-
