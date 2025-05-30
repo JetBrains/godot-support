@@ -67,5 +67,5 @@ foreach ($toFetch as $tag) {
 }
 $processSdk("Master");
 
-exec("tar -caf sdk.tar.xz -C $sdkFolder ."); # good compression
-exec("nuget pack sdk.nuspec");
+exec("tar -caf gdscriptsdk-1.0.0-SNAPSHOT.tar.xz -C $sdkFolder ."); # good compression
+# upload to https://jetbrains.team/p/net/packages/files/gdscriptsdk
