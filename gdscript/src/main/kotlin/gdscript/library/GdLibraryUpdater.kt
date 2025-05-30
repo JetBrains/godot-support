@@ -11,6 +11,7 @@ import com.intellij.platform.ide.progress.withBackgroundProgress
 import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 import java.nio.file.Path
+import kotlin.io.path.exists
 import kotlin.io.path.readText
 
 @Service( Service.Level.PROJECT)
@@ -31,7 +32,9 @@ class GdLibraryUpdater(private val project: Project) {
     }
 
     private fun checkSdk() {
+        // todo: it can be more complicated, see mainProjectBasePath in the godot-support
         val projectFile = Path.of(project.basePath!!, "project.godot")
+        if (!projectFile.exists()) return
         val content = projectFile.readText(Charset.defaultCharset())
 
         val version = VERSION_REGEX.find(content)?.groups?.get(1)?.value
