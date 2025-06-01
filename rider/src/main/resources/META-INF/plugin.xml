@@ -8,6 +8,7 @@
   <dependencies>
     <plugin id="com.intellij.modules.rider"/>
     <plugin id="com.intellij.rider.godot.community"/>
+    <plugin id="com.intellij.rider.godot.gdscript"/>
     <module name="intellij.platform.dap"/>
   </dependencies>
 
