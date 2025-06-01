@@ -70,43 +70,24 @@ object GdLibraryManager {
         val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
         val tableModel = libraryTable.modifiableModel
 
-        //ApplicationManager.getApplication().invokeAndWait {
-        //    ApplicationManager.getApplication().runWriteAction(Runnable {
-        //        libraryTable.libraries.forEach { libraryTable.removeLibrary(it) }
-        //    })
-        //}
+        // not sure, at times during development, I had to remove occasional libs
+        // libraryTable.libraries.forEach { libraryTable.removeLibrary(it) }
 
         var library = tableModel.getLibraryByName(LIBRARY_NAME)
+        val module = ModuleManager.getInstance(project).modules.first()
         if (library == null) {
             library = tableModel.createLibrary(LIBRARY_NAME, GdLibraryKind)
-            val module = ModuleManager.getInstance(project).modules.first()
-            ApplicationManager.getApplication().invokeAndWait {
-                ApplicationManager.getApplication().runWriteAction(Runnable {
-                    tableModel.commit()
-                    ModuleRootModificationUtil.addDependency(module, library)
-                })
-            }
-            val libraryModel = library.modifiableModel
-            libraryModel.addRoot(sourceRoot, OrderRootType.SOURCES)
-            ApplicationManager.getApplication().invokeAndWait {
-                ApplicationManager.getApplication().runWriteAction(Runnable {
-                    libraryModel.commit()
-                    ModuleRootModificationUtil.addDependency(module, library)
-                })
-            }
         }
-        else {
-            val libraryModel = library.modifiableModel
-
-            library.rootProvider.getUrls(OrderRootType.SOURCES)
-                .forEach { libraryModel.removeRoot(it, OrderRootType.SOURCES) }
-            libraryModel.addRoot(sourceRoot, OrderRootType.SOURCES)
-            ApplicationManager.getApplication().invokeAndWait {
-                ApplicationManager.getApplication().runWriteAction(Runnable {
-                    libraryModel.commit()
-                    tableModel.commit()
-                })
-            }
+        val libraryModel = library.modifiableModel
+        library.rootProvider.getUrls(OrderRootType.SOURCES)
+            .forEach { libraryModel.removeRoot(it, OrderRootType.SOURCES) }
+        libraryModel.addRoot(sourceRoot, OrderRootType.SOURCES)
+        ApplicationManager.getApplication().invokeAndWait {
+            ApplicationManager.getApplication().runWriteAction(Runnable {
+                tableModel.commit()
+                libraryModel.commit()
+                ModuleRootModificationUtil.addDependency(module, library)
+            })
         }
     }
 
