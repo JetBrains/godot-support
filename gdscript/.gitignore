@@ -9,3 +9,7 @@ godot-master/
 /php/icons/
 /out/
 /src/main/gen/gdscript/parser/GdParser.java
+/php/*.tar.gz
+/php/*.tar.xz
+/php/godot-master
+/php/sdk
