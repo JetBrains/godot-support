@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdComplexRecoveryData : ParsingTestCase("", "gd", GdParserDefinition()) {
+class GdComplexRecoveryDataTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     @Rule @JvmField val testProcessorRule: TestProcessorRule = TestProcessorRule()
 
     @Test fun testLambda() = doTest(true)

@@ -11,7 +11,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdGodotTestCases : ParsingTestCase("", "gd", GdParserDefinition()) {
+class GdGodotTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     @Rule @JvmField val testProcessorRule: TestProcessorRule = TestProcessorRule()
     
     @Test fun testadvanced_expression_matching() = doTest(true, true)
