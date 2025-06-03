@@ -3,12 +3,26 @@
 $sdkFolder = "sdk";
 $sdkPrefix = "GdSdk ";
 
+// Function to execute command and check for errors
+$execAndCheck = function($cmd) {
+    $output = [];
+    $returnVar = 0;
+    exec($cmd, $output, $returnVar);
+    if ($returnVar !== 0) {
+        echo "Error executing command: $cmd\n";
+        echo "Return code: $returnVar\n";
+        echo "Output: " . implode("\n", $output) . "\n";
+        exit(1); // Exit with error code
+    }
+    return $output;
+};
+
 if (!file_exists($sdkFolder)) {
     mkdir($sdkFolder, 0777, true);
 }
 
 // Fetch all existing tags
-exec("git ls-remote --tags https://github.com/godotengine/godot 2>&1", $tags);
+$tags = $execAndCheck("git ls-remote --tags https://github.com/godotengine/godot 2>&1");
 $existingTags = [];
 $tagRegex = "/^.*?refs\/tags\/(.+?)-stable$/";
 foreach ($tags as $tag) {
@@ -35,29 +49,29 @@ foreach ($existingTags as $tag) {
     }
 }
 
-$processSdk = function($tag) {
+$processSdk = function($tag) use ($execAndCheck) {
     $downloadTag = strtolower($tag);
     if ($downloadTag != "master") {
         $downloadTag = "$downloadTag-stable";
     }
 
-    exec("rm -R godot-master || true");
-    exec("wget https://github.com/godotengine/godot/archive/$downloadTag.tar.gz");
+    $execAndCheck("rm -R godot-master || true");
+    $execAndCheck("wget https://github.com/godotengine/godot/archive/$downloadTag.tar.gz");
     #exec("wget https://github.com/godotengine/godot/archive/refs/tags/$downloadTag.tar.gz"); # is it similar to the previous line?
-    exec("tar -xf $downloadTag.tar.gz");
+    $execAndCheck("tar -xf $downloadTag.tar.gz");
     if ($downloadTag != "master") {
-        exec("mv godot-$downloadTag godot-master || true");
+        $execAndCheck("mv godot-$downloadTag godot-master || true");
     }
-    exec("rm -R classesGd || true");
-    exec("mkdir classesGd || true");
-    exec("php classParser.php");
-    exec("php operandParser.php");
-    exec("php annotationParser.php");
-    exec("mv 'classesGd' 'sdk/$tag'");
+    $execAndCheck("rm -R classesGd || true");
+    $execAndCheck("mkdir classesGd || true");
+    $execAndCheck("php classParser.php");
+    $execAndCheck("php operandParser.php");
+    $execAndCheck("php annotationParser.php");
+    $execAndCheck("mv 'classesGd' 'sdk/$tag'");
 };
 
-exec("rm -R $sdkFolder || true");
-exec("mkdir $sdkFolder || true");
+$execAndCheck("rm -R $sdkFolder || true");
+$execAndCheck("mkdir $sdkFolder || true");
 
 // Download and build sdks for newly released tags
 foreach ($toFetch as $tag) {
@@ -65,5 +79,5 @@ foreach ($toFetch as $tag) {
 }
 $processSdk("Master");
 
-exec("tar -caf gdscriptsdk-1.0.0-SNAPSHOT.tar.xz -C $sdkFolder ."); # good compression
+$execAndCheck("tar -caf gdscriptsdk.tar.xz -C $sdkFolder ."); # good compression
 # upload to https://jetbrains.team/p/net/packages/files/gdscriptsdk
