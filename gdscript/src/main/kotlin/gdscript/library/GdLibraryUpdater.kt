@@ -1,13 +1,13 @@
 package gdscript.library
 
 import GdScriptBundle
-import GdscriptProjectService
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.impl.libraries.LibraryEx
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.platform.ide.progress.withBackgroundProgress
+import common.util.GdScriptProjectLifetimeService
 import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 import java.nio.file.Path
@@ -23,17 +23,16 @@ class GdLibraryUpdater(private val project: Project) {
 
     private val VERSION_REGEX = "config/features=PackedStringArray\\(.*\"(\\d\\.\\d)\".*\\)".toRegex()
 
-    fun scheduleSkdCheck() {
-        GdscriptProjectService.getInstance(project).scope.launch {
+    fun scheduleSkdCheck(projectBasePath: Path) {
+        GdScriptProjectLifetimeService.getInstance(project).scope.launch {
             withBackgroundProgress(project, GdScriptBundle.message("progress.title.check.gdsdk.for.project")) {
-                checkSdk()
+                checkSdk(projectBasePath)
             }
         }
     }
 
-    private fun checkSdk() {
-        // todo: it can be more complicated, see mainProjectBasePath in the godot-support
-        val projectFile = Path.of(project.basePath!!, "project.godot")
+    private fun checkSdk(projectBasePath: Path) {
+        val projectFile = projectBasePath.resolve("project.godot")
         if (!projectFile.exists()) return
         val content = projectFile.readText(Charset.defaultCharset())
 

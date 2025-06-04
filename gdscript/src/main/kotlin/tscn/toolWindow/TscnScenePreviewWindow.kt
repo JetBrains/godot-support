@@ -22,8 +22,8 @@ import com.intellij.util.BitUtil
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.ui.TimerUtil
 import com.intellij.util.ui.UIUtil
+import common.util.GdScriptProjectLifetimeService
 import java.util.concurrent.Callable
-import common.util.PluginScopeService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -65,7 +65,7 @@ class TscnScenePreviewWindow : Disposable {
     constructor(project: Project, toolWindow: ToolWindow) {
         this.project = project
         this.toolWindow = toolWindow
-        this.coroutineScope = PluginScopeService.getScope(project)
+        this.coroutineScope = GdScriptProjectLifetimeService.getScope(project)
     }
 
     fun runScheduler() {

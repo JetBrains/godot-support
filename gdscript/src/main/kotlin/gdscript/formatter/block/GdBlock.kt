@@ -8,6 +8,7 @@ import com.intellij.psi.impl.source.tree.FileElement
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
+import com.jetbrains.rd.util.forEachReversed
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.GdClassVarDeclTl
@@ -17,7 +18,6 @@ import gdscript.utils.GdSettingsUtil.calculateSpaceIndents
 import gdscript.utils.PsiElementUtil.getCaretOffsetIfSingle
 import gdscript.utils.PsiElementUtil.nextNonWhiteCommentToken
 import gdscript.utils.PsiElementUtil.precedingNewLines
-import gdscript.utils.forEachReversed
 
 class GdBlock : AbstractBlock {
 

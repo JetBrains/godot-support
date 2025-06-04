@@ -2,10 +2,10 @@ package gdscript.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.jetbrains.rd.util.firstOrNull
 import gdscript.GdKeywords
 import gdscript.psi.utils.GdClassMemberUtil.constructors
 import gdscript.utils.StringUtil.parseFromSquare
-import gdscript.utils.firstOrNull
 
 object GdExprUtil {
 

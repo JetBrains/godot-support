@@ -3,6 +3,7 @@ package gdscript.utils
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
+import com.jetbrains.rd.util.reactive.IProperty
 import com.jetbrains.rider.godot.community.LspRunningStatusProvider
 import com.jetbrains.rider.godot.community.ProjectInfoProvider
 
@@ -18,6 +19,9 @@ class RiderGodotSupportPluginUtil {
         fun isGodotProject(project: Project): Boolean {
             return EP_NAME2.extensionList.any { it.isGodotProject(project) }
         }
+
+        fun getMainProjectBasePathProperty(project: Project): IProperty<String?>? =
+            EP_NAME2.extensionList.firstOrNull { it.getMainProjectBasePathProperty(project) != null }?.getMainProjectBasePathProperty(project)
     }
 }
 

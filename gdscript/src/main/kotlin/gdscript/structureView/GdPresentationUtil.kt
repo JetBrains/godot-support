@@ -1,10 +1,9 @@
 package gdscript.structureView
 
 import com.intellij.navigation.ItemPresentation
-import gdscript.GdIcon
 import gdscript.GdKeywords
 import gdscript.psi.*
-import gdscript.utils.firstOrNull
+import com.jetbrains.rd.util.firstOrNull
 import javax.swing.Icon
 
 object GdPresentationUtil {
