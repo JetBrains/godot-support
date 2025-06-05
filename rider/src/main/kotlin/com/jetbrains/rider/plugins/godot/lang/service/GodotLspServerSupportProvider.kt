@@ -1,8 +1,5 @@
 package com.jetbrains.rider.plugins.godot.lang.service
 
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.completion.PrioritizedLookupElement
-import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -10,9 +7,6 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.*
-import com.intellij.platform.lsp.api.customization.DefaultLspCustomization
-import com.intellij.platform.lsp.api.customization.LspCompletionSupport
-import com.intellij.platform.lsp.api.customization.LspCustomization
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
@@ -23,11 +17,9 @@ import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
 import com.jetbrains.rider.plugins.godot.Util
-import com.jetbrains.rider.plugins.godot.gdscript.PluginInterop
 import com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage
 import com.jetbrains.rider.util.NetUtils
 import kotlinx.coroutines.Dispatchers
-import org.eclipse.lsp4j.CompletionItem
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Service(Service.Level.PROJECT)
@@ -135,16 +127,5 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 thisLogger().info("lspCommunicationChannel port=$remoteHostPort, mode=$lspConnectionMode")
                 return LspCommunicationChannel.Socket(remoteHostPort!!, lspConnectionMode == LanguageServerConnectionMode.StartEditorHeadless)
             }
-
-        override val lspCustomization: LspCustomization = object : DefaultLspCustomization() {
-            override val completionCustomizer: LspCompletionSupport
-                get() = object : LspCompletionSupport() {
-                    override fun createLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
-                        val item1 = super.createLookupElement(parameters, item) ?: return null
-                        // todo: compare with GdScript plugin - check, which one is more priorable
-                        return PrioritizedLookupElement.withPriority(item1, 1.0)
-                    }
-                }
-        }
     }
 }
