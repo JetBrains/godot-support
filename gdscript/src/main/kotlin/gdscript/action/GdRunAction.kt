@@ -7,6 +7,7 @@ import com.intellij.execution.RunnerAndConfigurationSettings
 import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.icons.AllIcons
 import com.intellij.ide.actions.runAnything.RunAnythingAction
+import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -17,6 +18,7 @@ import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.run.GdConfigurationFactory
 import gdscript.run.GdRunConfiguration
 import gdscript.run.GdRunConfigurationType
+import gdscript.utils.isRiderGodotSupportPluginInstalled
 import tscn.psi.utils.TscnResourceUtil
 
 class GdRunAction : RunAnythingAction {
@@ -25,7 +27,7 @@ class GdRunAction : RunAnythingAction {
     constructor(element: PsiElement) {
         this.element = element
         templatePresentation.icon = AllIcons.RunConfigurations.TestState.Run
-        templatePresentation.text = "Run"
+        templatePresentation.text = GdScriptBundle.message("action.run.text")
     }
 
     fun runAction() {
@@ -37,6 +39,13 @@ class GdRunAction : RunAnythingAction {
 
     override fun actionPerformed(e: AnActionEvent) {
         runAction()
+    }
+
+    override fun update(e: AnActionEvent) {
+        //RIDER-126489 Run configuration in the GdScript plugin
+        if (PluginManagerCore.isRiderGodotSupportPluginInstalled())
+            e.presentation.isEnabledAndVisible = false
+        super.update(e)
     }
 
     private fun getName(): String {
@@ -64,13 +73,13 @@ class GdRunAction : RunAnythingAction {
         val current = GdRunConfiguration(project, GdConfigurationFactory, name)
 
         if (template.godotExe == null) {
-            createWarning(project, "Godot executable not set in template, please look at installation instructions")
+            createWarning(project, GdScriptBundle.message("godot.executable.not.set"))
             return null
         }
 
         val scenes = TscnResourceUtil.findTscnByResources(element)
         if (scenes.isEmpty()) {
-            createWarning(project, "No scene file found")
+            createWarning(project, GdScriptBundle.message("no.scene.found"))
             return null
         }
 
@@ -87,7 +96,7 @@ class GdRunAction : RunAnythingAction {
     private fun createWarning(project: Project, message: String) {
         NotificationGroupManager.getInstance()
                 .getNotificationGroup(PluginConstants.RUN_NOTIFICATION_GROUP_ID)
-                .createNotification("Failed to run due to '$message' ", NotificationType.WARNING)
+                .createNotification(GdScriptBundle.message("notification.content.failed.to.run.due.to", message), NotificationType.WARNING)
                 .notify(project);
     }
 
