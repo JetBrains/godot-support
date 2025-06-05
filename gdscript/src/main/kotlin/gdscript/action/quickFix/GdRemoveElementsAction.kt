@@ -16,11 +16,11 @@ class GdRemoveElementsAction : BaseIntentionAction {
     }
 
     override fun getText(): String {
-        return "Remove element"
+        return GdScriptBundle.message("intention.name.remove.element")
     }
 
     override fun getFamilyName(): String {
-        return "Remove element"
+        return GdScriptBundle.message("intention.family.name.remove.element")
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
@@ -31,5 +31,4 @@ class GdRemoveElementsAction : BaseIntentionAction {
         this.elements.forEach { it.delete() }
         if (file != null) ReformatCodeProcessor(file, false).run()
     }
-
 }

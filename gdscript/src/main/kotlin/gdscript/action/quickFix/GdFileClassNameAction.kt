@@ -20,7 +20,7 @@ class GdFileClassNameAction : BaseIntentionAction {
         this.element = element
     }
 
-    override fun getText(): String = "Rename class to match filename"
+    override fun getText(): String = GdScriptBundle.message("intention.name.rename.class.to.match.filename")
 
     override fun getFamilyName(): String = "Rename class"
 

@@ -46,7 +46,8 @@
         parentId="language"
         instance="gdscript.settings.GdSettingsConfigurable"
         id="gdscript.settings.GdSettingsConfigurable"
-        displayName="GdScript"
+        bundle="messages.GdScriptBundle"
+        key="language.name"
     />
 
     <!-- Line markers -->
@@ -109,32 +110,32 @@
 
     <!-- Inspectors -->
     <localInspection language="GdScript" shortName="CheckVarType" enabledByDefault="true" level="WARNING"
-                     bundle="messages.gdscript" key="inspections.check.return.type"
-                     groupBundle="messages.gdscript" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
+                     bundle="messages.GdScriptBundle" key="inspections.check.return.type"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdTypeHintInspection"/>
     <localInspection language="GdScript" shortName="MethodValidation" enabledByDefault="true" level="WARNING"
-                     bundle="messages.gdscript" key="inspections.check.methods"
-                     groupBundle="messages.gdscript" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
+                     bundle="messages.GdScriptBundle" key="inspections.check.methods"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdMethodValidationInspection"/>
     <localInspection language="GdScript" shortName="UnusedMethod" enabledByDefault="true" level="WARNING"
-                     bundle="messages.gdscript" key="inspections.check.unused.method"
-                     groupBundle="messages.gdscript" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
+                     bundle="messages.GdScriptBundle" key="inspections.check.unused.method"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedMethodInspection"/>
     <localInspection language="GdScript" shortName="UnusedParameter" enabledByDefault="true" level="WARNING"
-                     bundle="messages.gdscript" key="inspections.check.unused.parameter"
-                     groupBundle="messages.gdscript" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
+                     bundle="messages.GdScriptBundle" key="inspections.check.unused.parameter"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedParameterInspection"/>
     <localInspection language="GdScript" shortName="UnusedVariable" enabledByDefault="true" level="WARNING"
-                     bundle="messages.gdscript" key="inspections.check.unused.variable"
-                     groupBundle="messages.gdscript" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
+                     bundle="messages.GdScriptBundle" key="inspections.check.unused.variable"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedVariableInspection"/>
     <localInspection language="GdScript" shortName="UnusedSignal" enabledByDefault="true" level="WARNING"
-                     bundle="messages.gdscript" key="inspections.check.unused.signal"
-                     groupBundle="messages.gdscript" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
+                     bundle="messages.GdScriptBundle" key="inspections.check.unused.signal"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedSignalInspection"/>
     <localInspection language="GdScript" shortName="UnusedClass" enabledByDefault="true" level="WARNING"
-                     bundle="messages.gdscript" key="inspections.check.unused.class"
-                     groupBundle="messages.gdscript" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
+                     bundle="messages.GdScriptBundle" key="inspections.check.unused.class"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedClassInspection"/>
 
     <!-- Indices -->
@@ -167,19 +168,19 @@
     <intentionAction>
       <language>GdScript</language>
       <className>gdscript.action.GdRemoveSetGetAction</className>
-      <bundleName>messages.gdscript</bundleName>
+      <bundleName>messages.GdScriptBundle</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
       <language>GdScript</language>
       <className>gdscript.action.GdPropageTraitChangesAction</className>
-      <bundleName>messages.gdscript</bundleName>
+      <bundleName>messages.GdScriptBundle</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>
     <intentionAction>
       <language>GdScript</language>
       <className>gdscript.action.GdRemoveElementAction</className>
-      <bundleName>messages.gdscript</bundleName>
+      <bundleName>messages.GdScriptBundle</bundleName>
       <categoryKey>intention.category</categoryKey>
     </intentionAction>
 
@@ -206,19 +207,19 @@
     <lang.psiStructureViewFactory language="GdScript" implementationClass="gdscript.structureView.GdStructureViewFactory" />
     <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler" />
 
-    <notificationGroup id="GdSdkNotifications" displayType="BALLOON" bundle="messages.gdscript" key="notification.group.sdk.name" />
-    <notificationGroup id="GdRunNotifications" displayType="BALLOON" bundle="messages.gdscript" key="notification.group.run.name" />
+    <notificationGroup id="GdSdkNotifications" displayType="BALLOON" bundle="messages.GdScriptBundle" key="notification.group.sdk.name" />
+    <notificationGroup id="GdRunNotifications" displayType="BALLOON" bundle="messages.GdScriptBundle" key="notification.group.run.name" />
   </extensions>
 
   <actions>
     <action id="GdCreateFileAction" class="gdscript.action.GdCreateFileAction" icon="com.intellij.rider.plugins.godot.gdscript.icons.RiderPluginsGodotGdscriptIcons.GodotEditor.GDScript" >
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile" />
     </action>
-    <action id="GdAddTraitAction" class="gdscript.action.GdAddTraitAction" text="Add GdScript Trait">
+    <action id="GdAddTraitAction" class="gdscript.action.GdAddTraitAction">
       <add-to-group group-id="GenerateGroup" anchor="first" />
     </action>
   </actions>
 
-  <resource-bundle>messages.gdscript</resource-bundle>
+  <resource-bundle>messages.GdScriptBundle</resource-bundle>
 
 </idea-plugin>

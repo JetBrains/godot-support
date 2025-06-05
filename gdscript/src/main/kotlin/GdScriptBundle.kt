@@ -3,7 +3,7 @@ import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.PropertyKey
 
 object GdScriptBundle {
-    private const val BUNDLE = "messages.gdscript"
+    private const val BUNDLE = "messages.GdScriptBundle"
 
     private val INSTANCE: DynamicBundle = DynamicBundle(GdScriptBundle::class.java, BUNDLE)
 
