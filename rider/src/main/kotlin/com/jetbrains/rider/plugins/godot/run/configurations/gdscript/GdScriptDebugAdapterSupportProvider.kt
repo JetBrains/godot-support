@@ -9,6 +9,8 @@ import com.intellij.platform.dap.*
 import com.intellij.platform.dap.connection.DebugAdapterHandle
 import com.intellij.platform.dap.connection.DebugAdapterSocketConnection
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
+import com.jetbrains.rider.plugins.godot.lang.service.GodotLspProjectService
+import com.jetbrains.rider.plugins.godot.lang.service.isGodotLspRunning
 import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptExceptionBreakpointType
 import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptLineBreakpointType
 import kotlinx.coroutines.Dispatchers
@@ -44,6 +46,12 @@ private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<
                         host = config.address,
                         port = config.port,
                         connectionAttempts = 2)
+                }
+                finally {
+                    // LSP is required for the hotreload, so we better additionally check that it is running
+                    if (!isGodotLspRunning(project)) {
+                        GodotLspProjectService.getInstance(project).restartServer()
+                    }
                 }
             }
 
