@@ -11,7 +11,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Fetch Sources
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
             - name: Gradle Wrapper Validation
               uses: gradle/wrapper-validation-action@v3
     linux:
@@ -21,7 +21,7 @@ jobs:
             LOCAL_ENV_RUN: true
         steps:
             - name: Fetch Sources
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
             - name: Setup .NET CLI
               uses: actions/setup-dotnet@v4
               with:
