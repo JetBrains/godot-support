@@ -13,7 +13,7 @@ jobs:
             - name: Fetch Sources
               uses: actions/checkout@v2
             - name: Gradle Wrapper Validation
-              uses: gradle/wrapper-validation-action@v3
+              uses: gradle/wrapper-validation-action@v1
     linux:
         needs: gradleValidation
         runs-on: ubuntu-latest
@@ -23,7 +23,7 @@ jobs:
             - name: Fetch Sources
               uses: actions/checkout@v2
             - name: Setup .NET CLI
-              uses: actions/setup-dotnet@v4
+              uses: actions/setup-dotnet@v1
               with:
                   dotnet-version: '8.0.x'
             - name: Build
