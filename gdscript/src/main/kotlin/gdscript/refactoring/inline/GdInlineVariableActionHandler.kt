@@ -8,7 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.refactoring.util.CommonRefactoringUtil
-import gdscript.GdLanguage
+import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.psi.*
 
 

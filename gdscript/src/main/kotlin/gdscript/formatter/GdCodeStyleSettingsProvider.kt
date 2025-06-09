@@ -8,7 +8,7 @@ import com.intellij.psi.codeStyle.CodeStyleConfigurable
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
-import gdscript.GdLanguage
+import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 
 // TODO je tohle potřeba?
 class GdCodeStyleSettingsProvider(private val language: Language = GdLanguage) : CodeStyleSettingsProvider() {

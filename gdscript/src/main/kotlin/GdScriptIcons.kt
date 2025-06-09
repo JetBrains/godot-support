@@ -10,7 +10,6 @@ class GdScriptPluginIcons {
             val GodotFile = RiderPluginsGodotGdscriptIcons.GodotEditor.GodotFile
             val GodotConfigFile = RiderPluginsGodotGdscriptIcons.GodotEditor.FileDialog
             val GodotProjectFile = RiderPluginsGodotGdscriptIcons.GodotEditor.FileDialog
-            @JvmField val GDScript = RiderPluginsGodotGdscriptIcons.GodotEditor.GDScript
         }
     }
 

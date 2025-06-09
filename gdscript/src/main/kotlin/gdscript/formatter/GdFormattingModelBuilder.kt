@@ -3,8 +3,8 @@ package gdscript.formatter
 import com.intellij.formatting.*
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
-import gdscript.GdFileType
-import gdscript.GdLanguage
+import com.jetbrains.rider.godot.community.gdscript.GdFileType
+import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.formatter.block.Alignments
 import gdscript.formatter.block.GdBlock
 import gdscript.formatter.settings.GdSpacingUtil.emptyLines

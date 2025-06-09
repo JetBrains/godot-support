@@ -301,7 +301,6 @@ public final class RiderPluginsGodotGdscriptIcons {
     /** 16x16 */ public static final @NotNull Icon FontVariation = load("icons/godot_editor/FontVariation.svg", -1258307825, 0);
     /** 8x8 */ public static final @NotNull Icon ForwardSq = load("icons/godot_editor/Forward-sq.svg", 853513006, 0);
     /** 8x16 */ public static final @NotNull Icon Forward = load("icons/godot_editor/Forward.svg", -1408956023, 0);
-    /** 16x16 */ public static final @NotNull Icon GDScript = load("icons/godot_editor/GDScript.svg", -279704108, 0);
     /** 16x16 */ public static final @NotNull Icon Generic6DOFJoint3D = load("icons/godot_editor/Generic6DOFJoint3D.svg", 2111305289, 0);
     /** 16x16 */ public static final @NotNull Icon GeometryInstance3D = load("icons/godot_editor/GeometryInstance3D.svg", 1982447740, 0);
     /** 128x128 */ public static final @NotNull Icon Gizmo3DSamplePlayer = load("icons/godot_editor/Gizmo3DSamplePlayer.svg", -1811821730, 0);

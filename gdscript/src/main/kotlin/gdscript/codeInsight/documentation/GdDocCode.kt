@@ -10,7 +10,7 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import com.intellij.ui.ColorUtil
-import gdscript.GdLanguage
+import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.psi.GdTypes
 
 object GdDocCode {

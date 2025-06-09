@@ -8,7 +8,7 @@ import com.intellij.psi.search.FileTypeIndex
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.nextLeaf
-import gdscript.GdFileType
+import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.lineMarker.GdTraitLineMarkerContributor
 
 object GdCommentUtil {

@@ -7,7 +7,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.util.PsiEditorUtil
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.endOffset
-import gdscript.GdFileType
+import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import kotlin.math.max
 
 object GdSettingsUtil {
