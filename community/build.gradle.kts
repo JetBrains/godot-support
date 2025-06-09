@@ -31,7 +31,7 @@ tasks {
     }
 
     val patchPluginXml by named<PatchPluginXmlTask>("patchPluginXml") {
-        sinceBuild.set("233")
+        sinceBuild.set("252")
         untilBuild.set("")
 
         changeNotes.set(

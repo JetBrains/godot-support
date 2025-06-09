@@ -10,9 +10,11 @@
   </change-notes>
   <incompatible-with>gdscript</incompatible-with>
   <incompatible-with>ice.explosive.gdscript</incompatible-with>
-
-  <depends>com.intellij.modules.lang</depends>
-  <depends optional="true" config-file="optionalPlugin.xml">com.intellij.rider.godot.community</depends>
+  
+  <dependencies>
+    <plugin id="com.intellij.modules.lang"/>
+    <plugin id="com.intellij.rider.godot.community"/>
+  </dependencies>
 
   <extensions defaultExtensionNs="com.intellij">
     <lang.parserDefinition language="GdScript" implementationClass="gdscript.GdParserDefinition"/>
