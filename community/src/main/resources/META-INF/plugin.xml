@@ -13,9 +13,7 @@
   </description>
 
   <depends>com.intellij.modules.platform</depends>
-
   <extensions defaultExtensionNs="com.intellij">
-
   </extensions>
 
   <extensionPoints>
@@ -24,5 +22,11 @@
   <extensionPoints>
     <extensionPoint name="projectInfoProvider" interface="com.jetbrains.rider.godot.community.ProjectInfoProvider" />
   </extensionPoints>
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileType name="GdScript" implementationClass="com.jetbrains.rider.godot.community.gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd;gdf"/>
+  </extensions>
+
+  <resource-bundle>messages.GodotCommunityBundle</resource-bundle>
 
 </idea-plugin>

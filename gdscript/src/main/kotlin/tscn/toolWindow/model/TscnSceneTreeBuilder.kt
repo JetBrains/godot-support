@@ -12,7 +12,7 @@ import com.intellij.ui.components.JBTabbedPane
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.concurrency.AppExecutorUtil
 import java.util.concurrent.Callable
-import gdscript.GdFileType
+import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.VirtualFileUtil.getPsiFile

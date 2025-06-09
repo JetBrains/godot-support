@@ -6,7 +6,7 @@ import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.GdFileType
+import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.completion.utils.GdEnumCompletionUtil.preview
 import gdscript.completion.utils.GdMethodCompletionUtil.methodHeader

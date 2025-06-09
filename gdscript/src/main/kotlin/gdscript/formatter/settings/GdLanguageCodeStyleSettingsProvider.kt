@@ -7,7 +7,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
-import gdscript.GdLanguage
+import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.formatter.settings.GdSettings.consume
 

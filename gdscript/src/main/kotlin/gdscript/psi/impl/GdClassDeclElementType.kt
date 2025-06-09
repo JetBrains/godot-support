@@ -2,7 +2,7 @@ package gdscript.psi.impl
 
 import com.intellij.psi.stubs.*
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.GdLanguage
+import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.index.Indices
 import gdscript.index.stub.GdClassDeclStub
 import gdscript.index.stub.GdClassDeclStubImpl

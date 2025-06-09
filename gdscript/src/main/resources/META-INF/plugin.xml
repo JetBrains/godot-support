@@ -15,7 +15,6 @@
   <depends optional="true" config-file="optionalPlugin.xml">com.intellij.rider.godot.community</depends>
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileType name="GdScript" implementationClass="gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd;gdf"/>
     <lang.parserDefinition language="GdScript" implementationClass="gdscript.GdParserDefinition"/>
     <highlightErrorFilter implementation="gdscript.codeInsight.highlighting.GdErrorFilter"/>
     <lang.syntaxHighlighterFactory language="GdScript" implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
@@ -212,7 +211,7 @@
   </extensions>
 
   <actions>
-    <action id="GdCreateFileAction" class="gdscript.action.GdCreateFileAction" icon="com.intellij.rider.plugins.godot.gdscript.icons.RiderPluginsGodotGdscriptIcons.GodotEditor.GDScript" >
+    <action id="GdCreateFileAction" class="gdscript.action.GdCreateFileAction" icon="com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons.GDScript" >
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile" />
     </action>
     <action id="GdAddTraitAction" class="gdscript.action.GdAddTraitAction">

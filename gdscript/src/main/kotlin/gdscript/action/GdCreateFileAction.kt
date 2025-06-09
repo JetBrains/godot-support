@@ -7,7 +7,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
-import gdscript.GdFileType
+import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.annotator.isGodotSupportInstalled
 import gdscript.utils.RiderGodotSupportPluginUtil
 

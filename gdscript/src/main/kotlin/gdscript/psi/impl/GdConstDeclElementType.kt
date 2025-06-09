@@ -1,7 +1,7 @@
 package gdscript.psi.impl
 
 import com.intellij.psi.stubs.*
-import gdscript.GdLanguage
+import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.index.Indices
 import gdscript.index.stub.GdConstDeclStub
 import gdscript.index.stub.GdConstDeclStubImpl
