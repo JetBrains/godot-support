@@ -13,7 +13,7 @@ jobs:
             - name: Fetch Sources
               uses: actions/checkout@v2
             - name: Gradle Wrapper Validation
-              uses: gradle/wrapper-validation-action@v1
+              uses: gradle/actions/wrapper-validation@v4
     linux:
         needs: gradleValidation
         runs-on: ubuntu-latest
