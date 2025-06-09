@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.gradleIntelliJPlatform)
     alias(libs.plugins.gradleJvmWrapper)
     alias(libs.plugins.kotlinJvm)
+//    plugins.set(listOf("com.intellij.rider.godot.community:2.0.0")) // todo: setup this for build with IC
     id("java")
 }
 
