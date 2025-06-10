@@ -36,7 +36,7 @@ class GdLookupInsertHandler : InsertHandler<LookupElement> {
                         ShowParameterInfoHandler.invoke(
                                 project,
                                 editor,
-                                editor.virtualFile.getPsiFile(project),
+                                editor.virtualFile?.getPsiFile(project),
                                 model.offset - 2,
                                 null,
                                 false,
