@@ -29,7 +29,7 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
     override fun getConfigurationFactory() = runConfigurationType<GodotDebugRunConfigurationType>().factory
 
     override fun isConfigurationFromContext(configuration: GodotDebugRunConfiguration, context: ConfigurationContext): Boolean {
-        val basePath = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.value?.mainProjectBasePath ?: return false
+        val basePath = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.valueOrNull?.mainProjectBasePath ?: return false
         if (GodotProjectDiscoverer.getInstance(context.project).godot3Path.value == null) return false
 
         val resPath = extractResPath(File(basePath), context) ?: return false
@@ -40,7 +40,7 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
                                                context: ConfigurationContext,
                                                sourceElement: Ref<PsiElement>): Boolean {
         val file = getContainingFile(context) ?: return false
-        val basePath = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.value?.mainProjectBasePath ?: return false
+        val basePath = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.valueOrNull?.mainProjectBasePath ?: return false
         val resPath = extractResPath(File(basePath), context) ?: return false
 
         val path = GodotProjectDiscoverer.getInstance(context.project).godot3Path.value

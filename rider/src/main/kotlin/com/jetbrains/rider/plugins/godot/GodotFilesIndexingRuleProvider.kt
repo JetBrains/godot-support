@@ -17,7 +17,7 @@ class GodotFilesIndexingRuleProvider : RiderFilesIndexingRuleProvider {
         val model = project.solution.godotFrontendBackendModel
 
         // Wait for godot model initialized on backend
-        model.godotInitialized.nextNotNullValue()
+        if (!model.isGodotProject.nextNotNullValue()) return emptyList()
 
         // Calculate rules if any
         val descriptor = model.godotDescriptor.valueOrNull ?: return emptyList()

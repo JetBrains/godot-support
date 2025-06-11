@@ -58,7 +58,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 }
                 finally
                 {
-                    model.GodotInitialized.SetValue(true);
+                    model.IsGodotProject.SetValue(GodotDescriptor != null);
                 }
             }));
         }

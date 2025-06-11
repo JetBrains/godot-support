@@ -14,7 +14,7 @@ class GodotDotNetEncInfoAutodetect(private val project: Project): DotNetEncInfoA
 
         if (GodotProjectDiscoverer.Companion.getInstance(project).godot4Path.value != null && riderDotNetActiveRuntimeHost.activeDotNetSdkVersion != null){
             val discoverer = GodotProjectDiscoverer.getInstance(project)
-            val tfm = discoverer.godotDescriptor.value?.tfm ?: return null
+            val tfm = discoverer.godotDescriptor.valueOrNull?.tfm ?: return null
             return EncInfo(tfm)
         }
         return null

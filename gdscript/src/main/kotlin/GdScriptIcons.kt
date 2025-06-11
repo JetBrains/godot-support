@@ -44,7 +44,6 @@ class GdScriptPluginIcons {
             val GuiVisibilityVisibleDark = RiderPluginsGodotGdscriptIcons.GodotEditor.GuiVisibilityVisibleDark
             val GuiVisibilityHidden = RiderPluginsGodotGdscriptIcons.GodotEditor.GuiVisibilityHidden
             val GuiVisibilityHiddenDark = RiderPluginsGodotGdscriptIcons.GodotEditor.GuiVisibilityHiddenDark
-            val TOOL_WINDOW_ICON = RiderPluginsGodotGdscriptIcons.TscnFile
         }
     }
 }

@@ -58,7 +58,7 @@ class TscnScenePreviewWindow : Disposable {
     private val isStructureViewShowing: Boolean
         get() {
             val windowManager = ToolWindowManager.getInstance(project)
-            val toolWindow = windowManager.getToolWindow("Scene preview")
+            val toolWindow = windowManager.getToolWindow(TscnScenePreviewWindowFactory.TOOLWINDOW_ID)
             return toolWindow != null && toolWindow.isVisible
         }
 
@@ -212,7 +212,7 @@ class TscnScenePreviewWindow : Disposable {
                 .coalesceBy(this)
                 .finishOnUiThread(ModalityState.defaultModalityState()) {
                     val content = ContentFactory.getInstance()
-                            .createContent(it ?: createContentPanel(JLabel("No scene")), null, false)
+                            .createContent(it ?: createContentPanel(JLabel(GdScriptBundle.message("no.scene"))), null, false)
                     contentManager.addContent(content)
                     pendingRebuild.set(false)
                 }
