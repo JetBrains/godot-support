@@ -87,18 +87,6 @@ tasks {
         }
         environment["LOCAL_ENV_RUN"] = "true"
     }
-
-    val testRiderPreview by intellijPlatformTesting.testIde.registering {
-        version = libs.versions.riderSdkPreview
-        useInstaller = false
-        task {
-            enabled = libs.versions.riderSdk.get() != libs.versions.riderSdkPreview.get()
-        }
-    }
-
-    check {
-        dependsOn(testRiderPreview)
-    }
 }
 
 fun File.writeTextIfChanged(content: String) {
