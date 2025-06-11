@@ -7,6 +7,10 @@ The "Godot Support" plugin adds specific functionality for the [Godot game engin
 
 Rider is JetBrains' cross platform .NET IDE, based on ReSharper and the IntelliJ Platform. It can be used on Windows, Mac and Linux providing rich code navigation, inspections and refactorings.
 
+# GdScript plugin for all JetBrains IDEs
+
+Todo: Add information here
+
 # Features
 
 | Feature                                                                | GDScript | C#  | Details                                                                                                                                                                                                                  |
