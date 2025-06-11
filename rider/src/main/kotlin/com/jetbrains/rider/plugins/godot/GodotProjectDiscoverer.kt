@@ -8,7 +8,9 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
+import com.jetbrains.rd.util.reactive.IOptProperty
 import com.jetbrains.rd.util.reactive.IProperty
+import com.jetbrains.rd.util.reactive.OptProperty
 import com.jetbrains.rd.util.reactive.Property
 import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rd.util.threading.coroutines.launch
@@ -29,13 +31,14 @@ import kotlin.io.path.exists
 @Service(Service.Level.PROJECT)
 class GodotProjectDiscoverer(project: Project) {
 
-    val godotDescriptor : IProperty<GodotDescriptor?> = Property(null)
+    val godotDescriptor : IOptProperty<GodotDescriptor> = OptProperty()
     val lspConnectionMode: IProperty<LanguageServerConnectionMode?> = Property(null)
     val remoteHostPort: IProperty<Int?> = Property(null)
     val useDynamicPort: IProperty<Boolean?> = Property(null)
     val godot3Path : IProperty<String?> = Property(null)
     val godot4Path : IProperty<String?> = Property(null)
-    val godotPath : IProperty<String?> = Property(null)
+    val godotPath : IOptProperty<String> = OptProperty()
+    val isGodotProject : IOptProperty<Boolean> = OptProperty()
 
     init {
         val lifetime = GodotProjectLifetimeService.getLifetime(project)
@@ -100,7 +103,8 @@ class GodotProjectDiscoverer(project: Project) {
             session: ClientProjectSession,
             model: GodotFrontendBackendModel
         ) {
-            model.godotDescriptor.adviseNotNull(lifetime){ getInstance(session.project).godotDescriptor.set(it) }
+            model.isGodotProject.advise(lifetime) {getInstance(session.project).isGodotProject.set(it) }
+            model.godotDescriptor.advise(lifetime){ getInstance(session.project).godotDescriptor.set(it) }
             model.backendSettings.lspConnectionMode.adviseNotNull(lifetime){ getInstance(session.project).lspConnectionMode.set(it) }
             model.backendSettings.remoteHostPort.adviseNotNull(lifetime) { getInstance(session.project).remoteHostPort.set(it) }
             model.backendSettings.useDynamicPort.adviseNotNull(lifetime) { getInstance(session.project).useDynamicPort.set(it) }

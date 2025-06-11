@@ -22,7 +22,7 @@ class ToolbarActionsGroup : DefaultActionGroup(), DumbAware, TooltipDescriptionP
             return
         }
 
-        val descriptor = GodotProjectDiscoverer.getInstance(project).godotDescriptor.value
+        val descriptor = GodotProjectDiscoverer.getInstance(project).godotDescriptor.valueOrNull
         e.presentation.isVisible = descriptor != null
 
         if (descriptor != null) {

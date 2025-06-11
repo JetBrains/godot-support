@@ -10,6 +10,7 @@ import com.intellij.psi.PsiDirectory
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.annotator.isGodotSupportInstalled
 import gdscript.utils.RiderGodotSupportPluginUtil
+import gdscript.utils.hasCompletedTrue
 
 
 class GdCreateFileAction : CreateFileFromTemplateAction(), DumbAware {
@@ -46,6 +47,6 @@ class GdCreateFileAction : CreateFileFromTemplateAction(), DumbAware {
             return
         }
 
-        e.presentation.setEnabledAndVisible(isGodotSupportInstalled && RiderGodotSupportPluginUtil.isGodotProject(project))
+        e.presentation.setEnabledAndVisible(isGodotSupportInstalled && RiderGodotSupportPluginUtil.isGodotProject(project).hasCompletedTrue())
     }
 }

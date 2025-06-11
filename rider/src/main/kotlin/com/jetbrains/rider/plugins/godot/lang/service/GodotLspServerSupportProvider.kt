@@ -11,6 +11,7 @@ import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
 import com.jetbrains.rd.util.reactive.adviseNotNull
+import com.jetbrains.rd.util.reactive.hasValue
 import com.jetbrains.rd.util.threading.coroutines.async
 import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
 import com.jetbrains.rider.plugins.godot.GodotIcons
@@ -90,9 +91,9 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
 
     private fun allReady(discoverer: GodotProjectDiscoverer) = (
         discoverer.lspConnectionMode.value != LanguageServerConnectionMode.Never
-            && discoverer.godotPath.value != null
+            && discoverer.godotPath.hasValue
             && discoverer.remoteHostPort.value != null
-            && discoverer.godotDescriptor.value != null)
+            && discoverer.godotDescriptor.valueOrNull != null)
 
     private fun scheduleStartIfNeeded(project: Project) {
         val godotLspProjectService = GodotLspProjectService.getInstance(project)
@@ -110,8 +111,8 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
 
         override fun isSupportedFile(file: VirtualFile) = Util.isGdFile(file)
         override fun createCommandLine(): GeneralCommandLine {
-            val basePath = discoverer.godotDescriptor.value?.mainProjectBasePath
-            val godotPath = discoverer.godotPath.value
+            val basePath = discoverer.godotDescriptor.valueOrNull?.mainProjectBasePath
+            val godotPath = discoverer.godotPath.valueOrNull
             val headlessArg = if (discoverer.godot4Path.value != null) "--headless" else "--no-window"
             // todo: dap port in the headless Godot may conflict with dap port of the main Godot editor
             val commandLine = GeneralCommandLine(godotPath, "--path", "$basePath", "--editor", headlessArg, "--lsp-port", remoteHostPort.toString())

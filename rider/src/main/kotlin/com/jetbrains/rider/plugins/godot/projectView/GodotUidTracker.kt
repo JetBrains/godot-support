@@ -14,14 +14,17 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
-import com.intellij.openapi.vfs.newvfs.events.*
+import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.intellij.openapi.vfs.newvfs.events.VFileMoveEvent
+import com.intellij.openapi.vfs.newvfs.events.VFilePropertyChangeEvent
 import com.intellij.openapi.vfs.readBytes
 import com.intellij.util.PathUtil
 import com.intellij.util.application
 import com.intellij.util.concurrency.annotations.RequiresEdt
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.addUnique
-import com.jetbrains.rd.util.reactive.adviseUntil
+import com.jetbrains.rd.util.reactive.adviseNotNullOnce
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
@@ -44,12 +47,8 @@ class GodotUidTrackerInitializer : ProjectActivity {
     override suspend fun execute(project: Project) {
         val lifetime = GodotProjectLifetimeService.getLifetime(project)
         val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-        godotDiscoverer.godotDescriptor.adviseUntil(lifetime) {
-            if (it != null) {
-                GodotUidTracker.getInstance().register(project)
-                return@adviseUntil true
-            }
-            false
+        godotDiscoverer.godotDescriptor.adviseNotNullOnce(lifetime) {
+            GodotUidTracker.getInstance().register(project)
         }
     }
 }

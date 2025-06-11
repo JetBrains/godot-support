@@ -49,7 +49,7 @@
     <platform.lsp.serverSupportProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspServerSupportProvider"/>
 
     <rider.godot.community.lspStatusProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspRunningStatusProvider" />
-    <rider.godot.community.projectInfoProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotProjectInfoProvider" />
+    <rider.godot.community.projectInfoProvider implementation="com.jetbrains.rider.plugins.godot.project.GodotProjectInfoProvider" />
 
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptConfigurationType"/>
     <platform.dap.debugAdapterSupportProvider implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptDebugAdapterSupportProvider"/>

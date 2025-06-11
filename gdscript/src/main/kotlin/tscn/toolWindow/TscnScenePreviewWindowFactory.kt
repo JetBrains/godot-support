@@ -1,33 +1,39 @@
 package tscn.toolWindow
 
-import GdScriptPluginIcons
+import GdScriptBundle
+import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
+import com.intellij.openapi.wm.ToolWindowManager
 import common.util.GdScriptProjectLifetimeService
-import gdscript.utils.RiderGodotSupportPluginUtil
-import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class TscnScenePreviewWindowFactory() : ToolWindowFactory {
+    companion object {
+        const val TOOLWINDOW_ID = "TscnScenePreviewWindowId"
 
-    override fun init(toolWindow: ToolWindow) {
-        super.init(toolWindow)
-        toolWindow.setIcon(GdScriptPluginIcons.TscnIcons.TOOL_WINDOW_ICON)
+        fun makeAvailable(project: Project) {
+            GdScriptProjectLifetimeService.getScope(project).launch(Dispatchers.EDT) {
+                val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(TOOLWINDOW_ID) ?: return@launch
+                toolWindow.isAvailable = true
+            }
+        }
     }
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
+        toolWindow.stripeTitle = GdScriptBundle.message("tab.title.scene.preview")
         val window = TscnScenePreviewWindow(project, toolWindow)
         window.runScheduler()
     }
 
-    override suspend fun isApplicableAsync(project: Project): Boolean {
-        val property = RiderGodotSupportPluginUtil.getMainProjectBasePathProperty(project) ?: return true // no Godot plugin
+    override fun shouldBeAvailable(project: Project): Boolean {
+        return false
+    }
 
-        val deferred = CompletableDeferred<Unit>()
-        property.advise(GdScriptProjectLifetimeService.getLifetime(project)) { value ->
-            deferred.complete(Unit)
-        }
-        deferred.await()
-        return property.value != null
+    override suspend fun isApplicableAsync(project: Project): Boolean {
+        // I have tried to await() IsGodotProject here, but it causes all toolwindows to wait, so can't use it
+        return super.isApplicableAsync(project)
     }
 }
