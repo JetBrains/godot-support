@@ -6,6 +6,7 @@ import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.SystemInfo;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
@@ -18,6 +19,7 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
     private JCheckBox debugShapes;
     private JCheckBox debugPaths;
 
+    @Override
     public void resetEditorFrom(GdRunConfiguration gdRunConfiguration) {
         godotExe.getComponent().setText(gdRunConfiguration.getGodotExe());
         tscn.getComponent().setText(gdRunConfiguration.getTscn());
@@ -26,6 +28,7 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
         debugPaths.setSelected(gdRunConfiguration.getDebugPaths());
     }
 
+    @Override
     public void applyEditorTo(GdRunConfiguration gdRunConfiguration) {
         gdRunConfiguration.setGodotExe(godotExe.getComponent().getText());
         gdRunConfiguration.setTscn(tscn.getComponent().getText());
@@ -34,7 +37,8 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
         gdRunConfiguration.setDebugPaths(debugPaths.isSelected());
     }
 
-    public JComponent createEditor() {
+    @Override
+    public @NotNull JComponent createEditor() {
         return myPanel;
     }
 
