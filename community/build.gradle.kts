@@ -14,7 +14,7 @@ apply {
     plugin("kotlin")
 }
 
-val baseVersion = "2025.2"
+val baseVersion = "2025.3"
 
 intellij {
     version.set(baseVersion)
