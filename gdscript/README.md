@@ -10,8 +10,8 @@
     </a>
 </div>
 
-GdScript2 language plugin for JetBrains IDEs (Intellij, Rider, and all the other ones)  
-Supports only Godot 4.0 and higher
+GdScript2 language plugin for JetBrains IDEs (IntelliJ IDEA, Rider, and all the others)  
+Supports Godot 4.0 and higher
 
 ## History
 
