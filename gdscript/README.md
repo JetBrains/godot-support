@@ -1,4 +1,4 @@
-## IntelliGodot
+[![official JetBrains project](https://jb.gg/badges/official-flat-square.svg)](https://github.com/JetBrains#jetbrains-on-github)
 
 <div style="display: flex; align-items: center;">
     <a href="https://godotengine.org">
@@ -10,35 +10,23 @@
     </a>
 </div>
 
-GdScript2 language plugin for JetBrains IDEs (Intellij, Rider and all the other ones)  
+GdScript2 language plugin for JetBrains IDEs (Intellij, Rider, and all the other ones)  
 Supports only Godot 4.0 and higher
 
-Note that there are also major issues running both this and JuetBrain's Godot plugin together as they are conflicting. If you are using Rider you have to uninstall JetBrains plugin in order to get this working properly.
+## History
 
-[Installation instructions](documentation%2Finstallation.md)
+This plugin was originally developed by David ([@IceExplosive](https://gitlab.com/IceExplosive)) and was available on
+GitLab and the JetBrains Marketplace. When the original author could no longer maintain the project, JetBrains took over
+its development to ensure continued support for the Godot community. We're grateful for David's work that laid
+the foundation for this plugin.
+
+[Settings](documentation%2Fsettings.md)
 
 [List of features](documentation%2Ffeatures%2Ffeatures.md)
 
 [Changelog](CHANGELOG.md)
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
-
-# Update 27.10.2024
-
-As Redot seems to be really going at it, I'm just gonna let you know, that plugin will be redirected from Godot to Redot and continue to live.
-See https://gitlab.com/IceExplosive/gdscript/-/issues/296
-
-## Update 1.10.2024
-
-Well I havent done anything usefull in past few months sorry for that... I have work deadlines comming in couple of weeks, so I'm focusing on that.
-
-But due to Godot's total failure regarding their banning spree and hatred towards their own community (us) I'm stopping support of Godot for the forseeable future - no donations, no plugin updates, nothing. Maybe I'll try different engine, who knows.
-  
-EDIT: Just to clarify I know we should keep politics out of SW and I would love to, but SWs companies got a lot of bullshit because we always were silent... and since that nonesense of forcing to rename 'master' branch to 'main' and discriminatory hiring practices I'm just tired of those lunatics and refuse to just silently accept everything.
-
-## Update 15.8.2024
-
-Ok, new DEA version 2024.2 is out and unfortunately this plugin is not supported -> JetBrains once again decided to hide parts of their API, forbidding plugins to use it so I'll have to find some probably complicated workarounds again... -_-
 
 ## GdScript toolkit (not related to this project)
 
@@ -57,9 +45,3 @@ For example instead of plugin's built-in formatter, you can use theirs
 - Enable Auto-save edited files to trigger the watcher
 - Thanks to @e.sirkova for mentioning it.
 </details>
-
-## Support
-
-[BuyMeACoffee](https://www.buymeacoffee.com/iceexplosive)
-
-[Contribute](CONTRIBUTING.md)
