@@ -20,11 +20,11 @@ namespace JetBrains.ReSharper.Plugins.Godot.UsageStatistics
     }
     
     [SolutionComponent(Instantiation.DemandAnyThreadSafe)]
-    public class GodotSolutionTechnologyProvider : ISolutionTechnologyProvider
+    public class GodotSolutionTechnologyProvider(GodotTracker godotTracker) : ISolutionTechnologyProvider
     {
         public IEnumerable<string> GetSolutionTechnology(ISolution solution)
         {
-            if (solution.IsGdScriptSolution())
+            if (godotTracker.GodotDescriptor is { IsPureGdScriptProject: true })
             {
                 yield return "Godot";
                 yield return "GameDev";

@@ -1,68 +1,109 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
 using JetBrains.Application.Parts;
+using JetBrains.Application.Threading;
+using JetBrains.Application.Threading.Tasks;
+using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Tasks;
 using JetBrains.Rd.Base;
 using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Features.Running;
-using JetBrains.Rider.Model;
+using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Rider.Model.Godot.FrontendBackend;
+using JetBrains.Threading;
 using JetBrains.Util;
+using JetBrains.Util.Threading.Tasks;
 
 namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 {
-    [SolutionComponent(InstantiationEx.LegacyDefault)]
-    public class GodotTracker
+    [SolutionComponent(Instantiation.DemandAnyThreadSafe)]
+    public class GodotTracker : ISolutionLoadTasksInitialSynchronizeSolutionListener
     {
+        private readonly ISolution mySolution;
         private readonly ILogger myLogger;
+        private readonly ISolutionLoadTasksScheduler myLoadTasksScheduler;
+        private readonly IShellLocks myLocks;
+        private readonly Lifetime myLifetime;
         public VirtualFileSystemPath MainProjectBasePath { get; private set; }
         
         public IProject MainProject { get; private set; }
         public GodotDescriptor GodotDescriptor { get; private set; }
-        
+
         /// <summary>
         /// List of config/feature from the project.godot
         /// </summary>
         // public string[] Features { get; private set; }
-        public GodotTracker(ISolution solution, ILogger logger, ISolutionLoadTasksScheduler tasksScheduler)
+        public GodotTracker(ISolution solution, ILogger logger, ISolutionLoadTasksScheduler loadTasksScheduler,
+            IShellLocks locks, Lifetime lifetime)
         {
+            mySolution = solution;
             myLogger = logger;
-            var model = solution.GetProtocolSolution().GetGodotFrontendBackendModel();
-            tasksScheduler.EnqueueTask(new SolutionLoadTask(GetType(), SolutionLoadTaskKinds.Done, () =>
+            myLoadTasksScheduler = loadTasksScheduler;
+            myLocks = locks;
+            myLifetime = lifetime;
+        }
+        
+        public Task OnSolutionLoadInitialSynchronizeSolutionAsync(OuterLifetime loadLifetime,
+            ISolutionLoadTasksSchedulerThreading _)
+        {
+            var barrierCookie = myLoadTasksScheduler.SetTasksBarrier(GetType(), SolutionLoadTaskKinds.Done,
+                "Waiting for Godot solution load tasks");
+            myLocks.Tasks.StartNew(myLifetime, Scheduling.FreeThreaded, TaskPriority.AboveNormal,  () =>
             {
+                var model = mySolution.GetProtocolSolution().GetGodotFrontendBackendModel();
                 try
                 {
-                    if (solution.SolutionFilePath.IsEmpty &&
-                        solution.SolutionDirectory.Combine("project.godot").ExistsFile)
+                    if (!mySolution.SolutionFilePath.IsEmpty)
                     {
-                        GodotDescriptor = new GodotDescriptor(true, solution.SolutionDirectory.FullPath, null);
-                        model.GodotDescriptor.SetValue(GodotDescriptor);
-                        // Features = ReadFeatures(solution.SolutionDirectory.Combine("project.godot"));
-                        // logger.Verbose($"Godot project features: {string.Join(",", Features)}");
-                        return;
-                    }
-
-                    foreach (var project in solution.GetAllProjects().Where(project => project.IsGodotProject()))
-                    {
-                        var file = project.Location.Combine("project.godot");
-                        if (!file.ExistsFile) continue;
-                        MainProjectBasePath = file.Directory;
+                        var project = GetMainGodotProject();
+                        if (project == null) return;
+                        MainProjectBasePath = project.Location;
                         MainProject = project;
-                        logger.Verbose($"Godot MainProjectBasePath: {file.Directory}");
-                        GodotDescriptor = new GodotDescriptor(false, file.Directory.FullPath, MainProject.TargetFrameworkIds.SingleItem().ToRdTargetFrameworkInfo());
-                        model.GodotDescriptor.SetValue(GodotDescriptor);
-                        // Features = ReadFeatures(file);
-                        // logger.Verbose($"Godot project features: {string.Join(",", Features)}");
-                        break;
+                        myLogger.Verbose($"Godot MainProjectBasePath: {MainProjectBasePath}");
+                        GodotDescriptor = new GodotDescriptor(false, MainProjectBasePath.FullPath,
+                            MainProject.TargetFrameworkIds.SingleItem().ToRdTargetFrameworkInfo());
+
                     }
+                    else
+                    {
+                        var files = mySolution.SolutionDirectory.GetChildFiles(3, "project.godot",
+                            PathSearchFlags.RecurseIntoSubdirectories);
+                        var bestMatch = files.OrderBy(it => it.Components.Count()).FirstOrDefault();
+                        if (bestMatch == null) return;
+                        GodotDescriptor = new GodotDescriptor(true, bestMatch.Directory.FullPath, null);
+                    }
+                    // todo: Features = ReadFeatures(solution.SolutionDirectory.Combine("project.godot")); 
                 }
                 finally
                 {
-                    model.IsGodotProject.SetValue(GodotDescriptor != null);
+                    barrierCookie.Dispose();
+                    myLocks.ExecuteOrQueue("Sync Godot model", () =>
+                    {
+                        if (GodotDescriptor != null) 
+                            model.GodotDescriptor.SetValue(GodotDescriptor);
+                        model.IsGodotProject.SetValue(GodotDescriptor != null);
+                    });
                 }
-            }));
+            }).NoAwait();
+            return Task.CompletedTask;
         }
-        
+
+        [CanBeNull]
+        private IProject GetMainGodotProject()
+        {
+            using (ReadLockCookie.Create())
+            {
+                foreach (var project in mySolution.GetAllProjects().Where(project => project.IsGodotProject()))
+                {
+                    var file = project.Location.Combine("project.godot");
+                    if (file.ExistsFile) return project;
+                }
+            }
+            return null;
+        }
+
         // RIDER-111425 Design a cache for "project.godot" data
         // maybe we need an external files module on backend, or track it on the frontend
         
