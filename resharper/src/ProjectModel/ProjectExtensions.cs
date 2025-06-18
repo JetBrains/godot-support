@@ -22,13 +22,4 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             return project.ProjectProperties.DotNetCorePlatform?.Sdk != null && project.ProjectProperties.DotNetCorePlatform.Sdk.StartsWith("Godot.NET.SDK", StringComparison.OrdinalIgnoreCase);
         }
     }
-
-    public static class SolutionExtensions
-    {
-        public static bool IsGdScriptSolution([CanBeNull] this ISolution solution)
-        {
-            if (solution == null || !solution.IsValid()) return false;
-            return solution.SolutionFile == null && solution.SolutionDirectory.Combine("project.godot").ExistsFile;
-        }
-    }
 }
