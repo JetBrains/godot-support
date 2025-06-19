@@ -8,5 +8,4 @@ object GdLibraryKind : PersistentLibraryKind<GdLibraryProperties>(ID) {
     override fun createDefaultProperties(): GdLibraryProperties {
         return GdLibraryProperties()
     }
-
 }
