@@ -32,5 +32,4 @@ class GdLibraryType : LibraryType<GdLibraryProperties>(GdLibraryKind) {
     override fun getIcon(properties: GdLibraryProperties?): Icon {
         return RiderPluginsGodotCommunityIcons.GDScript
     }
-
 }

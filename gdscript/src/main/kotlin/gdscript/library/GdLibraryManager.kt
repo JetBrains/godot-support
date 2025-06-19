@@ -68,26 +68,41 @@ object GdLibraryManager {
         }
 
         val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
-        val tableModel = libraryTable.modifiableModel
-
-        // not sure, at times during development, I had to remove occasional libs
-        // libraryTable.libraries.forEach { libraryTable.removeLibrary(it) }
-
-        var library = tableModel.getLibraryByName(LIBRARY_NAME)
-        val module = ModuleManager.getInstance(project).modules.first()
-        if (library == null) {
-            library = tableModel.createLibrary(LIBRARY_NAME, GdLibraryKind)
+        libraryTable.getLibraryByName(LIBRARY_NAME)?.let {
+            // I see this doesn't work on the dev build
+            // different casing of letters
+            // /Users/ivan.shakhov/Work/ultimate/out/dev-run/Rider
+            // vs
+            // /Users/ivan.shakhov/Work/ultimate/out/dev-run/rider
+            if (it.isValid(sourceRoot.url, OrderRootType.SOURCES))
+            return@registerSdkIfNeeded
         }
+
+        var tableModel = libraryTable.modifiableModel
+        var library = tableModel.getLibraryByName(LIBRARY_NAME)
+
+        val module = ModuleManager.getInstance(project).modules.first()
+        if (library != null) {
+            tableModel.removeLibrary(library)
+
+            ApplicationManager.getApplication().invokeAndWait {
+                ApplicationManager.getApplication().runWriteAction(Runnable {
+                    tableModel.commit()
+                })
+            }
+        }
+
+        tableModel = libraryTable.modifiableModel
+        library = tableModel.createLibrary(LIBRARY_NAME, GdLibraryKind)
         val libraryModel = library.modifiableModel
-        library.rootProvider.getUrls(OrderRootType.SOURCES)
-            .forEach { libraryModel.removeRoot(it, OrderRootType.SOURCES) }
         libraryModel.addRoot(sourceRoot, OrderRootType.SOURCES)
+
         ApplicationManager.getApplication().invokeAndWait {
             ApplicationManager.getApplication().runWriteAction(Runnable {
-                tableModel.commit()
                 libraryModel.commit()
-                ModuleRootModificationUtil.addDependency(module, library)
+                tableModel.commit()
             })
+            ModuleRootModificationUtil.addDependency(module, library)
         }
     }
 
