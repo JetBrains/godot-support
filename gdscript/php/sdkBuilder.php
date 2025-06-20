@@ -36,8 +36,6 @@ foreach ($existingTags as $tag) {
 }
 
 $processSdk = function($tag) {
-    $sdkPrefix = "GdSdk ";
-    $sdkFile = "$sdkPrefix$tag.7z";
     $downloadTag = strtolower($tag);
     if ($downloadTag != "master") {
         $downloadTag = "$downloadTag-stable";
