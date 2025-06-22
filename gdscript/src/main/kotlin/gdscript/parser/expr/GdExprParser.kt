@@ -41,7 +41,7 @@ object GdExprParser : GdBaseParser {
         return this.parseFrom(b, l, optional)
     }
 
-    public fun parseFrom(b: GdPsiBuilder, l: Int, optional: Boolean, from: Int = 0): Boolean {
+    fun parseFrom(b: GdPsiBuilder, l: Int, optional: Boolean, from: Int = 0): Boolean {
         var ok = parsers.any {
             if (it.isNested) return@any false
 
