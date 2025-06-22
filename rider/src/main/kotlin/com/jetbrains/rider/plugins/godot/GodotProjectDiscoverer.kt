@@ -10,8 +10,10 @@ import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IOptProperty
 import com.jetbrains.rd.util.reactive.IProperty
+import com.jetbrains.rd.util.reactive.ISignal
 import com.jetbrains.rd.util.reactive.OptProperty
 import com.jetbrains.rd.util.reactive.Property
+import com.jetbrains.rd.util.reactive.Signal
 import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rd.util.threading.coroutines.launch
 import com.jetbrains.rider.model.godot.frontendBackend.GodotDescriptor
@@ -39,6 +41,7 @@ class GodotProjectDiscoverer(project: Project) {
     val godot4Path : IProperty<String?> = Property(null)
     val godotPath : IOptProperty<String> = OptProperty()
     val isGodotProject : IOptProperty<Boolean> = OptProperty()
+    val projectMetadataModificationSignal: ISignal<Unit> = Signal()
 
     init {
         val lifetime = GodotProjectLifetimeService.getLifetime(project)

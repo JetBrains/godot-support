@@ -86,6 +86,7 @@ class MetadataCoreFileWatcher : ProjectActivity {
                                         withContext(Dispatchers.EDT) {
                                             logger.info("application.invokeLater GodotProjectDiscoverer.getInstance(project).godotPath.set($newPath)")
                                             GodotProjectDiscoverer.getInstance(project).godot4Path.set(newPath)
+                                            GodotProjectDiscoverer.getInstance(project).projectMetadataModificationSignal.fire(Unit)
                                         }
                                     }
                                 }
