@@ -82,6 +82,13 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                     discoverer.godotPath.adviseNotNull(pluginLifetime) {
                         scheduleStartIfNeeded(project)
                     }
+
+                    // RIDER-127016 Trigger Godot LSP reconnect with Editor start
+                    discoverer.projectMetadataModificationSignal.adviseNotNull(pluginLifetime) {
+                        if (discoverer.lspConnectionMode.value == LanguageServerConnectionMode.ConnectRunningEditor) {
+                            scheduleStartIfNeeded(project)
+                        }
+                    }
                 }
             }
 
