@@ -20,7 +20,7 @@ object GdLiteralExParser : GdExprBaseParser() {
         }
 
         // func - Array.gd, signal: Vector2.gd, class_name - Array.gd, FileAccess - pass
-        // tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě, stejně jako metody
+        // these exceptions are due to the SDK parser -> some parameters match by name, just like methods
         if (parseExtendedRefId(b)) {
             return true
         }
