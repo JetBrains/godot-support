@@ -40,6 +40,8 @@ class GdGodotTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     @Test fun testexport_arrays() = doTest(true, true)
     @Test fun testexport_enum() = doTest(true, true)
     @Test fun testexport_variable() = doTest(true, true)
+    // RIDER-127009
+    @Test fun testexport_variable_negative() = doTest(true, true)
     @Test fun testexport_variable_global() = doTest(true, true)
     @Test fun testexport_variable_unnamed() = doTest(true, true)
     @Mute("RIDER-126458") @Test fun testfloat_notation() = doTest(true, true)
