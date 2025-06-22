@@ -2,6 +2,7 @@ package gdscript.parser.common
 
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
+import gdscript.parser.expr.GdExprParser
 import gdscript.parser.expr.GdLiteralExParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.*
@@ -26,9 +27,9 @@ interface GdAnnotationParser : GdBaseParser {
         if (!b.recursionGuard(l, "AnnotationParams")) return false
         b.enterSection(ANNOTATION_PARAMS)
 
-        var ok = GdLiteralExParser.parseAndMark(b, l + 1)
+        var ok = GdExprParser.parse(b, l + 1, false)
         while (ok && b.passToken(COMMA)) {
-            ok = GdLiteralExParser.parseAndMark(b, l + 1)
+            ok = GdExprParser.parse(b, l + 1, false)
         }
         GdRecovery.argumentList(b, ok)
 
