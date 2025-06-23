@@ -22,8 +22,12 @@ class TscnScenePreviewWindowFactory() : ToolWindowFactory {
         }
     }
 
-    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
+    override fun init(toolWindow: ToolWindow) {
         toolWindow.stripeTitle = GdScriptBundle.message("tab.title.scene.preview")
+        super.init(toolWindow)
+    }
+
+    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val window = TscnScenePreviewWindow(project, toolWindow)
         window.runScheduler()
     }
