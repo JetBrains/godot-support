@@ -20,8 +20,7 @@
     <dependencySupport kind="dotnet" coordinate="GodotSharp" displayName="Godot"/>
     <defaultLiveTemplates file="templates/GdScript.xml" />
 
-    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher"/>
-    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher"/>
+    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.GodotMetadataFileWatcherManager"/>
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.projectView.GodotUidTrackerInitializer"/>
     <projectViewNestingRulesProvider implementation="com.jetbrains.rider.plugins.godot.projectView.GodotNestingRulesProvider" />
 
