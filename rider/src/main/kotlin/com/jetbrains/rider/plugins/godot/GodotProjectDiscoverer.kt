@@ -56,9 +56,9 @@ class GodotProjectDiscoverer(project: Project) {
             thisLogger().info("Godot godotDescriptor: $it")
             val basePath = Path(it.mainProjectBasePath)
             lifetime.launch(Dispatchers.IO) {
-                val g3path = MetadataMonoFileWatcher.Util.getFromMonoMetadataPath(basePath)
-                             ?: MetadataMonoFileWatcher.Util.getGodotPath(basePath) ?: getGodotPathFromPlayerRunConfiguration(project)
-                val g4path = MetadataCoreFileWatcher.Util.getGodotPath(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project)
+                val g3path = GodotMetadataFileWatcherUtil.getFromMonoMetadataPath(basePath)
+                             ?: GodotMetadataFileWatcherUtil.getGodot3Path(basePath) ?: getGodotPathFromPlayerRunConfiguration(project)
+                val g4path = GodotMetadataFileWatcherUtil.getGodot4Path(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project)
                 withContext(Dispatchers.EDT) {
                     godot3Path.set(g3path)
                     godot4Path.set(g4path)
@@ -96,7 +96,7 @@ class GodotProjectDiscoverer(project: Project) {
     val port: Int = 23685 // default value, //todo: read custom value from project.godot file
 
     companion object {
-        fun getInstance(project: Project) = project.getService<GodotProjectDiscoverer>()
+        fun getInstance(project: Project): GodotProjectDiscoverer = project.getService<GodotProjectDiscoverer>()
     }
 
 
