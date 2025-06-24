@@ -3,7 +3,6 @@ package gdscript.formatter
 import com.intellij.formatting.*
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.tree.TokenSet
-import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.formatter.block.Alignments
 import gdscript.formatter.block.GdBlock
@@ -40,9 +39,6 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
     private fun createSpaceBuilder(settings: CodeStyleSettings): SpacingBuilder {
         val custom = settings.getCustomSettings(GdCodeStyleSettings::class.java)
-        INDENT_SIZE =
-            settings.getIndentSize(GdFileType); // TODO with tabs it gets messed up, when there's free indentation after something it gets converted to spaces and ends
-
         val builder = SpacingBuilder(settings, GdLanguage)
             /* Spacings */
             .before(GdTypes.COMMA).spaceIf(custom.SPACE_BEFORE_COMMA)
@@ -109,7 +105,5 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
             GdTypes.EXPR_ST,
         )
         val ROOT_BLOCKS = TokenSet.create(GdTypes.METHOD_DECL_TL, GdTypes.CLASS_DECL_TL)
-        var INDENT_SIZE = 4
     }
-
 }

@@ -3,7 +3,8 @@ package gdscript.formatter
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 
-class GdCodeStyleSettings(settings: CodeStyleSettings) : CustomCodeStyleSettings("GdCodeStyleSettings", settings) {
+class GdCodeStyleSettings(container: CodeStyleSettings) :
+    CustomCodeStyleSettings(GdCodeStyleSettings::class.java.getSimpleName(), container) {
 
     /* Black lines */
     @JvmField var LINES_BEFORE_FUNC_MIN: Int = 2
