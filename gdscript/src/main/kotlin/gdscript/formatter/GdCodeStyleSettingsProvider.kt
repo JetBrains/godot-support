@@ -10,7 +10,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsProvider
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 
-// TODO je tohle potřeba?
+// TODO is this needed?
 class GdCodeStyleSettingsProvider(private val language: Language = GdLanguage) : CodeStyleSettingsProvider() {
 
     override fun createCustomSettings(settings: CodeStyleSettings): CustomCodeStyleSettings {
@@ -50,5 +50,4 @@ class GdCodeStyleSettingsProvider(private val language: Language = GdLanguage) :
 
     private class GdCodeStyleMainPanel(currentSettings: CodeStyleSettings, settings: CodeStyleSettings) :
         TabbedLanguageCodeStylePanel(GdLanguage, currentSettings, settings)
-
 }

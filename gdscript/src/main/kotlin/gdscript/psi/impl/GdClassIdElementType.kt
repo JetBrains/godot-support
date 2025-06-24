@@ -35,7 +35,7 @@ object GdClassIdElementType : IStubElementType<GdClassIdStub, GdClassNameNmi>("g
         return parents.reversed().joinToString(".");
     }
 
-    @Deprecated("tohle má být u decl, ne tady.. ?")
+    @Deprecated("this should be at declaration, not here.. ?")
     fun getParentName(element: GdClassNameNmi): String? {
         val declaration = PsiGdTreeUtil.findFirstPrecedingElement(element) {
             it is GdClassDeclTl || it is GdClassNaming
