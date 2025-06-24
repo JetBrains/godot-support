@@ -38,7 +38,7 @@
 }
 
  // TODO limit to once
- // TODO indent dedent je když např hned pod extends je indent -> emptyIndent není match, protože je eof místo /r
+ // TODO indent dedent is when e.g. right under extends there's an indent -> emptyIndent isn't a match, because it's eof instead of /r
 gdfile ::= (topLevelDecl | inheritance | classNaming)* (INDENT NEW_LINE? DEDENT?)?
 inheritance ::= EXTENDS inheritanceId endStmt? {
     methods=[getInheritancePath] pin=1
@@ -155,7 +155,7 @@ suite ::= NEW_LINE? INDENT (NEW_LINE | stmt)+ DEDENT { pin=2 recoverWhile=stmt_r
 
 stmt ::=
     assign_st
-// TODO tady je endStmt optional, protože to jinak sežere lambda
+// TODO here endStmt is optional, because otherwise it would consume the lambda
     | varDecl_st
     | constDecl_st
     | if_st
@@ -164,7 +164,7 @@ stmt ::=
     | match_st
     | flow_st
     | expr_st
-//    | BAD_CHARACTER // tohle je hack aby GdStmtImpl nebyl abstract class při token např. Ł to jinak nevyparsuje
+//    | BAD_CHARACTER // this is a hack so that GdStmtImpl isn't an abstract class for tokens like Ł otherwise it wouldn't parse
 private stmtNoLine_r ::= !(SET | GET | IF | PASS
     | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
     | RETURN | AWAIT | ASSET | INDENT | DEDENT
@@ -289,5 +289,5 @@ keyValue ::= (expr COLON expr) | (IDENTIFIER EQ expr)
 assignTyped ::= EQ | CEQ
 
 // func - Array.gd, signal: Vector2.gd, class_name - Array.gd, FileAccess - pass
-// tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě, stejně jako metody
+// these exceptions are because of the sdk parser -> some params match by name, just like methods
 private identifierEx ::= IDENTIFIER | GET | SET | MATCH | SIGNAL | FUNC | CLASS_NAME | PASS | CLASS

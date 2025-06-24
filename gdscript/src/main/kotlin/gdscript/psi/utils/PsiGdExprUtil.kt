@@ -70,7 +70,7 @@ object PsiGdExprUtil {
 
             is GdIsEx -> GdKeywords.BOOL
             is GdCallEx -> {
-                if (expr.text == "new()") { // TODO může to mít params?
+                if (expr.text == "new()") { // TODO can it have params?
                     if (expr.parent is GdAttributeEx) {
                         GdCommonUtil.returnType(expr.parent.firstChild)
                     } else {
@@ -79,7 +79,7 @@ object PsiGdExprUtil {
                 } else {
                     val method = expr.expr.text
                     if (method == "get_node" || method == "get_node_or_null" || method == "get_first_node_in_group") {
-                        //TODO zkusit vyparsovat Node z .tscn
+                        //TODO try to parse Node from .tscn
                         return "Node"
                     } else if (method == "get_nodes_in_group") {
                         return "Array[Variant]"
@@ -88,7 +88,7 @@ object PsiGdExprUtil {
                     } else if (method == "get_child") {
                         return "Node"
                     } else if (method == "get_parent") {
-                        //TODO zkusit vyparsovat Node z .tscn
+                        //TODO try to parse Node from .tscn
                         return "Node"
                     } else if (method == "load" || method == "preload") {
                         val res = expr.argList?.argExprList?.firstOrNull()
@@ -199,7 +199,7 @@ object PsiGdExprUtil {
                     if (text == GdKeywords.SELF) {
                         return GdClassUtil.getOwningClassName(expr)
                     } else if (text == GdKeywords.SUPER) {
-                        // TODO tohle může vrátit zanoření... :/ Losos.InnerClass -> nějak se to musí vyparsovat
+                        // TODO this can return nesting... :/ Losos.InnerClass -> somehow it must be parsed
                         return GdInheritanceUtil.getExtendedClassId(expr)
                     }
 

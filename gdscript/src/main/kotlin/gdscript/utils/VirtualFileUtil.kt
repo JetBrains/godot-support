@@ -17,7 +17,7 @@ object VirtualFileUtil {
         val project = ProjectLocator.getInstance().guessProjectForFile(this) ?: return ""
         val basePath = project.basePath ?: return ""
         return fileSystem.getNioPath(this)?.relativeToOrNull(Path.of(basePath))?.pathString ?: return ""
-        // TODO tohle vyvolá greeze - nemohu se ptát na Fileindex, když indexuji... jak ale mít více projektů?
+        // TODO this causes issues - I can't query the Fileindex when indexing... but how to have multiple projects?
         // val projectRoot = ProjectRootFileIndex.getProjectRoot(path, project)
     }
 
