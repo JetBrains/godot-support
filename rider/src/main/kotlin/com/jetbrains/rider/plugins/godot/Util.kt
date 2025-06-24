@@ -6,7 +6,6 @@ class Util {
     companion object {
         const val GD = "gd"
         private const val TSCN = "tscn"
-        const val GDSCRIPT = "GDScript"
 
         fun isGdFile(file: VirtualFile?) = isMatchingFile(file, GD)
         fun isTscnFile(file: VirtualFile?) = isMatchingFile(file, TSCN)
