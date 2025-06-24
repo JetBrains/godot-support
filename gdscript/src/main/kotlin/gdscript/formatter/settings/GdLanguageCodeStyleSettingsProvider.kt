@@ -5,6 +5,7 @@ import com.intellij.application.options.SmartIndentOptionsEditor
 import com.intellij.lang.Language
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CodeStyleSettingsCustomizable
+import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.codeStyle.CustomCodeStyleSettings
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
@@ -19,6 +20,11 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
 
     override fun getIndentOptionsEditor(): IndentOptionsEditor {
         return SmartIndentOptionsEditor()
+    }
+
+    override fun customizeDefaults(commonSettings: CommonCodeStyleSettings, indentOptions: CommonCodeStyleSettings.IndentOptions) {
+        indentOptions.USE_TAB_CHARACTER = true
+        super.customizeDefaults(commonSettings, indentOptions)
     }
 
     override fun createCustomSettings(settings: CodeStyleSettings): CustomCodeStyleSettings =
