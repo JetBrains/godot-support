@@ -9,6 +9,7 @@ import com.intellij.execution.process.ProcessTerminatedListener
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
+import gdscript.utils.getMainProjectBasePath
 
 class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions> {
 
@@ -74,7 +75,7 @@ class GdRunConfiguration : LocatableConfigurationBase<GdRunConfigurationOptions>
     private fun command(): GeneralCommandLine {
         var command = GeneralCommandLine()
             .withExePath(options.godotExe ?: "")
-            .withWorkDirectory(project.basePath)
+            .withWorkingDirectory(project.getMainProjectBasePath())
 
         val scene = options.tscn
         if (scene?.isNotEmpty() == true) {

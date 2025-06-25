@@ -7,6 +7,8 @@ import com.jetbrains.rd.util.reactive.IOptProperty
 import com.jetbrains.rider.godot.community.LspRunningStatusProvider
 import com.jetbrains.rider.godot.community.ProjectInfoProvider
 import kotlinx.coroutines.Deferred
+import java.nio.file.Path
+import java.nio.file.Paths
 
 class RiderGodotSupportPluginUtil {
     companion object {
@@ -39,4 +41,10 @@ fun Deferred<Boolean>?.hasCompletedTrue(): Boolean {
     } else {
         false
     }
+}
+
+fun Project.getMainProjectBasePath() : Path? {
+    return Paths.get (RiderGodotSupportPluginUtil.getMainProjectBasePathProperty(this)?.let {
+        it.valueOrNull ?: this.basePath
+    } ?: this.basePath ?: return null)
 }
