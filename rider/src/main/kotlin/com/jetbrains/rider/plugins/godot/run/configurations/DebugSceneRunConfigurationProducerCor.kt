@@ -35,7 +35,7 @@ class DebugSceneRunConfigurationProducerCor : LazyRunConfigurationProducer<DotNe
         configuration.parameters.exePath = path
         configuration.parameters.programParameters = "--path \"${File(basePath)}\" \"$resPath\""
 
-        configuration.parameters.workingDirectory = "${context.project.basePath}"
+        configuration.parameters.workingDirectory = basePath
         configuration.parameters.runtimeType = DotNetCoreRuntimeType
         configuration.name = file.name
         return true

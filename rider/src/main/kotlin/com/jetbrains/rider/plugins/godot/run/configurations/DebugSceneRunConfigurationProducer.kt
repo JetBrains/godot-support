@@ -51,7 +51,7 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
         configuration.parameters.exePath = path
         configuration.parameters.programParameters = "--path \"${basePath}\" \"$resPath\""
 
-        configuration.parameters.workingDirectory = "${context.project.basePath}"
+        configuration.parameters.workingDirectory = basePath
         configuration.name = file.name
         return true
     }
