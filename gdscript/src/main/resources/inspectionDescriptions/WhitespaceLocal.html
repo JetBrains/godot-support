@@ -1,0 +1,28 @@
+<html>
+<body>
+<p>Detects inconsistent indentation character usage in leading whitespace, specifically flagging tabs where spaces are configured, and spaces where tabs are configured.</p>
+<p>Godot doesn't allow mixing tabs and spaces in the indents.</p>
+<p>
+    For example, if your code style is configured to use spaces for indentation:
+</p>
+<pre><code>
+func _init():
+  var x = 1
+\tvar y = 2 # Highlighted: Tab found where spaces are preferred
+</code></pre>
+<p>
+    Or, if your code style is configured to use tabs for indentation:
+</p>
+<pre><code>
+func _init():
+\tvar x = 1
+    var y = 2 # Highlighted: Space found where tabs are preferred
+</code></pre>
+<!-- tooltip end -->
+<!--<p>Text after this comment will only be shown in the settings of the inspection.</p>-->
+
+<!--<p>To open related settings directly from the description, add a link with `settings://$` optionally followed by `?$` to pre-select a UI-->
+<!--    element.</p>-->
+</body>
+</html>
+
