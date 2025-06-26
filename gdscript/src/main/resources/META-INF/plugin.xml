@@ -144,6 +144,10 @@
                      bundle="messages.GdScriptBundle" key="inspections.check.unused.class"
                      groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedClassInspection"/>
+    <localInspection language="GdScript" shortName="WhitespaceLocal" enabledByDefault="true" level="WARNING"
+                     bundle="messages.GdScriptBundle" key="inspections.check.whitespace"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
+                     implementationClass="gdscript.inspection.GdWhitespaceLocalInspectionTool"/>
 
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" externalIdPrefix="gd."/>
