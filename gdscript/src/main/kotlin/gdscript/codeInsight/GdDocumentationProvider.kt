@@ -12,6 +12,7 @@ import gdscript.psi.utils.GdClassUtil
 import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiElementUtil.psi
 
+// todo: delay creating GdDocFactory after isGodotProject is evaluated
 class GdDocumentationProvider : AbstractDocumentationProvider() {
 
     companion object {
