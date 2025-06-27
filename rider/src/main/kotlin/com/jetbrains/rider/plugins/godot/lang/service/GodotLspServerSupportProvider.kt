@@ -25,6 +25,7 @@ import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
 import com.jetbrains.rider.plugins.godot.Util
+import com.jetbrains.rider.plugins.godot.gdscript.PluginInterop
 import com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage
 import com.jetbrains.rider.util.NetUtils
 import kotlinx.coroutines.Dispatchers
@@ -143,6 +144,10 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 return LspCommunicationChannel.Socket(remoteHostPort!!, lspConnectionMode == LanguageServerConnectionMode.StartEditorHeadless)
             }
 
+        override fun createLsp4jClient(handler: LspServerNotificationsHandler): Lsp4jClient {
+            return GodotLsp4jClient(handler, project)
+        }
+
         override val lspCustomization: LspCustomization = object : DefaultLspCustomization() {
             override val completionCustomizer: LspCompletionCustomizer = object : LspCompletionSupport() {
                 override fun getCompletionPrefix(parameters: CompletionParameters, defaultPrefix: String): String =
@@ -152,7 +157,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             }
             override val hoverCustomizer: LspHoverCustomizer
                 get() {
-                    if (com.jetbrains.rider.plugins.godot.gdscript.PluginInterop.Companion.isGdScriptPluginEnabled())
+                    if (PluginInterop.isGdScriptPluginEnabled())
                         return LspHoverDisabled
                     return super.hoverCustomizer
                 }
