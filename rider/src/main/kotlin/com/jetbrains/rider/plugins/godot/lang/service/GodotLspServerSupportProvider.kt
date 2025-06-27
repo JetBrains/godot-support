@@ -12,6 +12,8 @@ import com.intellij.platform.lsp.api.customization.DefaultLspCustomization
 import com.intellij.platform.lsp.api.customization.LspCompletionCustomizer
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
 import com.intellij.platform.lsp.api.customization.LspCustomization
+import com.intellij.platform.lsp.api.customization.LspHoverCustomizer
+import com.intellij.platform.lsp.api.customization.LspHoverDisabled
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
@@ -148,6 +150,12 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                     if (defaultPrefix.startsWith("$")) defaultPrefix.substringAfter("$")
                     else defaultPrefix
             }
+            override val hoverCustomizer: LspHoverCustomizer
+                get() {
+                    if (com.jetbrains.rider.plugins.godot.gdscript.PluginInterop.Companion.isGdScriptPluginEnabled())
+                        return LspHoverDisabled
+                    return super.hoverCustomizer
+                }
         }
     }
 }

@@ -4,11 +4,9 @@ import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.openapi.extensions.PluginId
 import org.jetbrains.annotations.ApiStatus
 
-
-internal const val GDSCRIPT_PLUGIN_NAME = "GdScript"
 val GDSCRIPT_PLUGIN_ID: PluginId
     @ApiStatus.Internal
-    get() = PluginId.getId("ice.explosive.gdscript")
+    get() = PluginId.getId("com.intellij.rider.godot.gdscript")
 
 class PluginInterop {
     companion object{
