@@ -9,8 +9,14 @@ import com.jetbrains.rider.godot.community.ProjectInfoProvider
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
 import kotlinx.coroutines.Deferred
+import java.util.concurrent.ConcurrentHashMap
 
 class GodotProjectInfoProvider : ProjectInfoProvider {
+    companion object {
+        // Cache to store one property per project to avoid creating multiple subscriptions
+        private val projectBasePathPropertyCache = ConcurrentHashMap<Project, IOptProperty<String>>()
+    }
+    
     override fun isGodotProject(project: Project): Deferred<Boolean> {
         return GodotProjectDiscoverer.Companion.getInstance(project).isGodotProject.nextNotNullValueAsync(
           GodotProjectLifetimeService.Companion.getLifetime(project))
@@ -21,11 +27,11 @@ class GodotProjectInfoProvider : ProjectInfoProvider {
     }
 
     override fun getMainProjectBasePathProperty(project: Project): IOptProperty<String> {
-        val mainProjectPathProperty = OptProperty<String>().also { prop ->
-            val lifetime = GodotProjectLifetimeService.Companion.getLifetime(project)
-            GodotProjectDiscoverer.Companion.getInstance(project).godotDescriptor.adviseNotNull(lifetime){ prop.set(it.mainProjectBasePath) }
+        return projectBasePathPropertyCache.computeIfAbsent(project) {
+            OptProperty<String>().also { prop ->
+                val lifetime = GodotProjectLifetimeService.Companion.getLifetime(project)
+                GodotProjectDiscoverer.Companion.getInstance(project).godotDescriptor.adviseNotNull(lifetime){ prop.set(it.mainProjectBasePath) }
+            }
         }
-
-        return mainProjectPathProperty
     }
 }
