@@ -3,6 +3,7 @@ package gdscript.reference
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.openapi.vfs.findFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import gdscript.completion.GdLookup
@@ -15,6 +16,7 @@ import gdscript.utils.VirtualFileUtil.resourcePath
 
 /**
  * Resource "res://" reference to file
+ * GodotEditor also supports relative to current script notation, but it is not recommended
  */
 class GdResourceReference : PsiReferenceBase<PsiElement> {
 
@@ -28,10 +30,11 @@ class GdResourceReference : PsiReferenceBase<PsiElement> {
         resKey = key.trim('"', '\'')
 
         if (!resKey.startsWith("res://")){
-            element.containingFile?.virtualFile?.resourcePath()?.let {
-                var self = it
-                self = self.substring(0, self.lastIndexOf('/'))
-                resKey = "$self/${key.trim('"', '\'')}"
+            element.containingFile?.virtualFile?.parent?.let {
+                var file = it.findFile(resKey)
+                if (file != null){
+                    resKey = file.resourcePath(true)
+                }
             }
         }
     }
