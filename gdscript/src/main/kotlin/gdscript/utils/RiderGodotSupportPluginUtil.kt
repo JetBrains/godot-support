@@ -23,7 +23,7 @@ class RiderGodotSupportPluginUtil {
             return EP_NAME2.extensionList.firstOrNull()?.isGodotProject(project)
         }
 
-        fun getMainProjectBasePathProperty(project: Project): IOptProperty<String>? =
+        fun getMainProjectBasePathProperty(project: Project): Deferred<Path>? =
             EP_NAME2.extensionList.firstOrNull()?.getMainProjectBasePathProperty(project)
     }
 }
@@ -43,8 +43,10 @@ fun Deferred<Boolean>?.hasCompletedTrue(): Boolean {
     }
 }
 
+// todo: prop init may be delayed, we may need to somehow postpone index building
 fun Project.getMainProjectBasePath() : Path? {
-    return Paths.get (RiderGodotSupportPluginUtil.getMainProjectBasePathProperty(this)?.let {
-        it.valueOrNull ?: this.basePath
-    } ?: this.basePath ?: return null)
+    val prop = RiderGodotSupportPluginUtil.getMainProjectBasePathProperty(this)
+    if (prop != null && prop.isCompleted)
+        return prop.getCompleted()
+    return this.basePath?.let { Paths.get(it) }
 }
