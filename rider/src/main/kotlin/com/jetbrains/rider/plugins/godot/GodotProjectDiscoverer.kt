@@ -8,13 +8,7 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rd.util.reactive.IOptProperty
-import com.jetbrains.rd.util.reactive.IProperty
-import com.jetbrains.rd.util.reactive.ISignal
-import com.jetbrains.rd.util.reactive.OptProperty
-import com.jetbrains.rd.util.reactive.Property
-import com.jetbrains.rd.util.reactive.Signal
-import com.jetbrains.rd.util.reactive.adviseNotNull
+import com.jetbrains.rd.util.reactive.*
 import com.jetbrains.rd.util.threading.coroutines.launch
 import com.jetbrains.rider.model.godot.frontendBackend.GodotDescriptor
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
@@ -25,8 +19,10 @@ import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigu
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.util.idea.getService
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
 
@@ -40,7 +36,10 @@ class GodotProjectDiscoverer(project: Project) {
     val godot3Path : IProperty<String?> = Property(null)
     val godot4Path : IProperty<String?> = Property(null)
     val godotPath : IOptProperty<String> = OptProperty()
-    val isGodotProject : IOptProperty<Boolean> = OptProperty()
+
+    val mainProjectBasePath: CompletableDeferred<Path> = CompletableDeferred()
+    val isGodotProject : CompletableDeferred<Boolean> = CompletableDeferred()
+
     val projectMetadataModificationSignal: ISignal<Unit> = Signal()
 
     init {
@@ -106,8 +105,11 @@ class GodotProjectDiscoverer(project: Project) {
             session: ClientProjectSession,
             model: GodotFrontendBackendModel
         ) {
-            model.isGodotProject.advise(lifetime) {getInstance(session.project).isGodotProject.set(it) }
-            model.godotDescriptor.advise(lifetime){ getInstance(session.project).godotDescriptor.set(it) }
+            model.isGodotProject.advise(lifetime) {getInstance(session.project).isGodotProject.complete(it) }
+            model.godotDescriptor.advise(lifetime){
+                getInstance(session.project).godotDescriptor.set(it)
+                getInstance(session.project).mainProjectBasePath.complete(Path(it.mainProjectBasePath))
+            }
             model.backendSettings.lspConnectionMode.adviseNotNull(lifetime){ getInstance(session.project).lspConnectionMode.set(it) }
             model.backendSettings.remoteHostPort.adviseNotNull(lifetime) { getInstance(session.project).remoteHostPort.set(it) }
             model.backendSettings.useDynamicPort.adviseNotNull(lifetime) { getInstance(session.project).useDynamicPort.set(it) }
