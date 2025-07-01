@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.gradleIntelliJPlatform)
     alias(libs.plugins.gradleJvmWrapper)
     alias(libs.plugins.kotlinJvm)
-//    plugins.set(listOf("com.intellij.rider.godot.community:2.0.0")) // todo: setup this for build with IC
     id("java")
 }
 
@@ -38,10 +37,12 @@ val buildConfiguration: String by project
 
 dependencies {
     intellijPlatform {
-        rider(libs.versions.riderSdk, useInstaller = false)
+        intellijIdeaCommunity(libs.versions.ideaSdk, useInstaller = false)
+        // rider(libs.versions.riderSdk, useInstaller = false)
         jetbrainsRuntime()
-        bundledPlugin("com.intellij.rider.godot.community")
-        testFramework(TestFrameworkType.Bundled)
+        localPlugin(repoRoot.resolve("community/build/libs/rider-godot-community.jar"))
+        testFramework(TestFrameworkType.JUnit5)
+        // testFramework(TestFrameworkType.Bundled)
     }
     testImplementation(libs.openTest4J)
 }
@@ -51,17 +52,11 @@ intellijPlatform{
     buildSearchableOptions = buildConfiguration != "Debug"
 }
 
-kotlin {
-    jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 sourceSets {
     main {
-        kotlin.srcDir("src/rider/generated/kotlin")
-        kotlin.srcDir("src/rider/main/kotlin")
-        resources.srcDir("src/rider/main/resources")
+        // When building with IDEA IC SDK, we should use the main source directories
+        kotlin.srcDir("src/main/kotlin")
+        resources.srcDir("src/main/resources")
     }
 }
 
@@ -69,13 +64,15 @@ tasks {
 
     register("prepare") {
         // todo: get sdk from  https://packages.jetbrains.team/files/p/net/gdscriptsdk/
+        // https://youtrack.jetbrains.com/issue/RIDER-127007/Different-approach-to-GD-sdk
     }
 
-    buildPlugin {
-
+    processResources {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
 
     runIde {
+        dependsOn(gradle.includedBuild("community").task(":buildPlugin"))
         jvmArgs("-Xmx1500m")
     }
 
@@ -86,15 +83,5 @@ tasks {
             exceptionFormat = TestExceptionFormat.FULL
         }
         environment["LOCAL_ENV_RUN"] = "true"
-    }
-}
-
-fun File.writeTextIfChanged(content: String) {
-    val bytes = content.toByteArray()
-
-    if (!exists() || !readBytes().contentEquals(bytes)) {
-        println("Writing $path with:\n$content")
-        parentFile.mkdirs()
-        writeBytes(bytes)
     }
 }

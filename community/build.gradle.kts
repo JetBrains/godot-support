@@ -1,42 +1,37 @@
-import org.jetbrains.intellij.tasks.PatchPluginXmlTask
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+plugins {
+    alias(libs.plugins.gradleIntelliJPlatform)
+    alias(libs.plugins.gradleJvmWrapper)
+    alias(libs.plugins.kotlinJvm)
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
 
 repositories {
-    maven { setUrl("https://cache-redirector.jetbrains.com/maven-central") }
-}
-
-plugins {
-    id("org.jetbrains.intellij") version "1.17.3" // https://github.com/JetBrains/gradle-intellij-plugin/releases
-    kotlin("jvm") version "1.9.21"
-}
-
-apply {
-    plugin("kotlin")
-}
-
-val baseVersion = "2025.3"
-
-intellij {
-    version.set(baseVersion)
-    type.set("IC") // Target IDE Platform
-}
-
-tasks {
-    withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+    intellijPlatform {
+        defaultRepositories()
+        jetbrainsRuntime()
     }
+}
 
-    processResources {
-        dependsOn(patchPluginXml)
+dependencies {
+    intellijPlatform {
+        intellijIdeaCommunity(libs.versions.ideaSdk, useInstaller = false)
+        // rider(libs.versions.riderSdk, useInstaller = false)
+        jetbrainsRuntime()
     }
+}
 
-    val patchPluginXml by named<PatchPluginXmlTask>("patchPluginXml") {
-        sinceBuild.set("252")
-        untilBuild.set("")
+intellijPlatform{
+    instrumentCode = false
+    buildSearchableOptions = false
 
-        changeNotes.set(
-            """
-                """.trimIndent()
-        )
+    pluginConfiguration{
+        ideaVersion {
+            sinceBuild = "252"
+        }
     }
 }

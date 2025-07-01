@@ -8,10 +8,8 @@ riderSdk = "2025.2-SNAPSHOT"
 
 [libraries]
 kotlinStdLib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
-openTest4J = "org.opentest4j:opentest4j:1.3.0"
 
 [plugins]
-changelog = "org.jetbrains.changelog:2.2.1"
 gradleIntelliJPlatform = "org.jetbrains.intellij.platform:2.6.0"
 gradleJvmWrapper = "me.filippov.gradle.jvm.wrapper:0.14.0"
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
