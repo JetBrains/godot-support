@@ -1,5 +1,6 @@
 rootProject.name = "rider-godot"
 include(":protocol")
+includeBuild("../community")
 
 pluginManagement {
     repositories {

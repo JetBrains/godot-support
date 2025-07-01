@@ -1,8 +1,8 @@
 [versions]
 # https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#kotlin-standard-library
-kotlin = "2.1.10"
+kotlin = "2.1.20"
 # https://search.maven.org/artifact/com.jetbrains.rd/rd-gen
-rdGen = "2025.1.1"
+rdGen = "2025.2.2"
 # https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
 # https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
 riderSdk = "2025.3-SNAPSHOT"
@@ -14,6 +14,6 @@ rdGen = { group = "com.jetbrains.rd", name = "rd-gen", version.ref = "rdGen" }
 
 [plugins]
 changelog = "org.jetbrains.changelog:2.2.1"
-gradleIntelliJPlatform = "org.jetbrains.intellij.platform:2.5.0"
+gradleIntelliJPlatform = "org.jetbrains.intellij.platform:2.6.0"
 gradleJvmWrapper = "me.filippov.gradle.jvm.wrapper:0.14.0"
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
