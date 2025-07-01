@@ -18,7 +18,7 @@ import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
 import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.createEmptyConsoleCommandLine
 import com.jetbrains.rider.run.environment.ExecutableType
-import com.jetbrains.rider.shared.run.withRawParameters
+import com.jetbrains.rider.shared.run.withFormatPreservingParameters
 
 
 class  StartGodotEditorAction : DumbAwareAction() {
@@ -123,7 +123,7 @@ class  StartGodotEditorAction : DumbAwareAction() {
                 })
                 .withExePath(parameters.exePath)
                 .withWorkDirectory(parameters.workingDirectory)
-                .withRawParameters(parameters.programParameters)
+                .withFormatPreservingParameters(parameters.programParameters)
 
             logger.info("Starting $runCommandLine")
 
