@@ -12,7 +12,6 @@ plugins {
     alias(libs.plugins.gradleIntelliJPlatform)
     alias(libs.plugins.gradleJvmWrapper)
     alias(libs.plugins.kotlinJvm)
-    id("java")
 }
 
 allprojects {
@@ -21,15 +20,12 @@ allprojects {
     }
 }
 
-val isMonorepo = rootProject.projectDir != projectDir
 val repoRoot = projectDir.parentFile!!
 val dotNetSrcDir = repoRoot.resolve("resharper")
 
-if (!isMonorepo) {
-    sourceSets.getByName("main") {
-        kotlin {
-            srcDir(repoRoot.resolve("rider/src/generated/kotlin"))
-        }
+sourceSets.getByName("main") {
+    kotlin {
+        srcDir(repoRoot.resolve("rider/src/generated/kotlin"))
     }
 }
 
@@ -56,6 +52,7 @@ dependencies {
         rider(libs.versions.riderSdk, useInstaller = false)
         jetbrainsRuntime()
         bundledPlugin("org.jetbrains.plugins.textmate")
+        //localPlugin(repoRoot.resolve("community/build/libs/rider-godot-community.jar"))
         bundledPlugin("com.intellij.rider.godot.community")
         bundledModule("intellij.platform.dap")
         testFramework(TestFrameworkType.Bundled)
@@ -63,7 +60,7 @@ dependencies {
     testImplementation(libs.openTest4J)
 }
 
-intellijPlatform{
+intellijPlatform {
     instrumentCode = false
     buildSearchableOptions = buildConfiguration != "Debug"
 }
