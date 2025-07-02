@@ -15,14 +15,10 @@ allprojects {
     }
 }
 
-val isMonorepo = rootProject.projectDir != projectDir
 val repoRoot = projectDir.parentFile!!
-
-if (!isMonorepo) {
-    sourceSets.getByName("main") {
-        java {
-            srcDir(repoRoot.resolve("gdscript/src/main/gen"))
-        }
+sourceSets.getByName("main") {
+    java {
+        srcDir(repoRoot.resolve("gdscript/src/main/gen"))
     }
 }
 
@@ -36,10 +32,13 @@ repositories {
 val buildConfiguration: String by project
 
 dependencies {
+    compileOnly(":rider-godot-community")
+
     intellijPlatform {
         intellijIdeaCommunity(libs.versions.ideaSdk, useInstaller = false)
         // rider(libs.versions.riderSdk, useInstaller = false)
         jetbrainsRuntime()
+        // this fails, compile the community plugin in advance, I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/libs/rider-godot-community.jar"))
         testFramework(TestFrameworkType.JUnit5)
         // testFramework(TestFrameworkType.Bundled)
@@ -60,14 +59,13 @@ intellijPlatform{
 
 sourceSets {
     main {
-        // When building with IDEA IC SDK, we should use the main source directories
+        // When building with IDEA IC SDK, we should use the main source directories?
         kotlin.srcDir("src/main/kotlin")
         resources.srcDir("src/main/resources")
     }
 }
 
 tasks {
-
     register("prepare") {
         // todo: get sdk from  https://packages.jetbrains.team/files/p/net/gdscriptsdk/
         // https://youtrack.jetbrains.com/issue/RIDER-127007/Different-approach-to-GD-sdk
@@ -78,7 +76,6 @@ tasks {
     }
 
     runIde {
-        dependsOn(gradle.includedBuild("community").task(":buildPlugin"))
         jvmArgs("-Xmx1500m")
     }
 
