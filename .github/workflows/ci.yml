@@ -26,7 +26,15 @@ jobs:
               uses: actions/setup-dotnet@v1
               with:
                   dotnet-version: '8.0.x'
-            - name: Build
+            - name: Build godot-support
               shell: bash
               working-directory: rider
+              run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
+            - name: Build community
+              shell: bash
+              working-directory: community
+              run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
+            - name: Build gdscript
+              shell: bash
+              working-directory: gdscript
               run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
