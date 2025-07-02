@@ -47,6 +47,12 @@ dependencies {
     testImplementation(libs.openTest4J)
 }
 
+kotlin {
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
 intellijPlatform{
     instrumentCode = false
     buildSearchableOptions = buildConfiguration != "Debug"
