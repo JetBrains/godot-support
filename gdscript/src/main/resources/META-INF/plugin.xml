@@ -116,35 +116,35 @@
     <annotator language="Tscn" implementationClass="tscn.annotator.TscnHeaderValueAnnotator" />
 
     <!-- Inspectors -->
-    <localInspection language="GdScript" shortName="CheckVarType" enabledByDefault="true" level="WARNING"
+    <localInspection language="GdScript" shortName="GdCheckVarType" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspections.check.return.type"
                      groupBundle="messages.GdScriptBundle" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdTypeHintInspection"/>
-    <localInspection language="GdScript" shortName="MethodValidation" enabledByDefault="true" level="WARNING"
+    <localInspection language="GdScript" shortName="GdMethodValidation" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspections.check.methods"
                      groupBundle="messages.GdScriptBundle" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdMethodValidationInspection"/>
-    <localInspection language="GdScript" shortName="UnusedMethod" enabledByDefault="true" level="WARNING"
+    <localInspection language="GdScript" shortName="GdUnusedMethod" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspections.check.unused.method"
                      groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedMethodInspection"/>
-    <localInspection language="GdScript" shortName="UnusedParameter" enabledByDefault="true" level="WARNING"
+    <localInspection language="GdScript" shortName="GdUnusedParameter" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspections.check.unused.parameter"
                      groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedParameterInspection"/>
-    <localInspection language="GdScript" shortName="UnusedVariable" enabledByDefault="true" level="WARNING"
+    <localInspection language="GdScript" shortName="GdUnusedVariable" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspections.check.unused.variable"
                      groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedVariableInspection"/>
-    <localInspection language="GdScript" shortName="UnusedSignal" enabledByDefault="true" level="WARNING"
+    <localInspection language="GdScript" shortName="GdUnusedSignal" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspections.check.unused.signal"
                      groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedSignalInspection"/>
-    <localInspection language="GdScript" shortName="UnusedClass" enabledByDefault="true" level="WARNING"
+    <localInspection language="GdScript" shortName="GdUnusedClass" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspections.check.unused.class"
                      groupBundle="messages.GdScriptBundle" groupKey="inspections.group.unused.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdUnusedClassInspection"/>
-    <localInspection language="GdScript" shortName="WhitespaceLocal" enabledByDefault="true" level="WARNING"
+    <localInspection language="GdScript" shortName="GdWhitespaceLocal" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspections.check.whitespace"
                      groupBundle="messages.GdScriptBundle" groupKey="inspections.group.check.name" groupPathKey="inspections.group.name"
                      implementationClass="gdscript.inspection.GdWhitespaceLocalInspectionTool"/>
