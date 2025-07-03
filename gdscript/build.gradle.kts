@@ -59,7 +59,6 @@ intellijPlatform{
 
 sourceSets {
     main {
-        // When building with IDEA IC SDK, we should use the main source directories?
         kotlin.srcDir("src/main/kotlin")
         resources.srcDir("src/main/resources")
     }

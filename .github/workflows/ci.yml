@@ -11,25 +11,33 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Fetch Sources
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
             - name: Gradle Wrapper Validation
               uses: gradle/actions/wrapper-validation@v4
-    linux:
+    rider:
         needs: gradleValidation
         runs-on: ubuntu-latest
         env:
             LOCAL_ENV_RUN: true
         steps:
             - name: Fetch Sources
-              uses: actions/checkout@v2
+              uses: actions/checkout@v4
             - name: Setup .NET CLI
               uses: actions/setup-dotnet@v1
               with:
                   dotnet-version: '8.0.x'
-            - name: Build godot-support
+            - name: Build rider
               shell: bash
               working-directory: rider
               run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
+    idea:
+        needs: gradleValidation
+        runs-on: ubuntu-latest
+        env:
+            LOCAL_ENV_RUN: true
+        steps:
+            - name: Fetch Sources
+              uses: actions/checkout@v4
             - name: Build community
               shell: bash
               working-directory: community
