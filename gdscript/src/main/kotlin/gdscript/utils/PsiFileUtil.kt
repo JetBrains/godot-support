@@ -1,13 +1,14 @@
 package gdscript.utils
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
+import com.intellij.openapi.util.io.toNioPathOrNull
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
 import gdscript.utils.VirtualFileUtil.resourcePath
-import java.nio.file.Paths
 import kotlin.io.path.name
 
 object PsiFileUtil {
@@ -22,16 +23,17 @@ object PsiFileUtil {
     fun String.toAbsoluteResource(element: PsiElement, project: Project): String {
         if (this.startsWith("res://") || this.startsWith("\"res://")) return this
 
-        val trimmed = this.trim('"')
-        val fileName = trimmed.substringAfterLast("/")
-        val myPath = Paths.get(element.containingFile.originalFile.virtualFile.parent.path)
+        val thisPath = this.trim('"').toNioPathOrNull()?.normalize() ?: return this
+        val dirPath = element.containingFile.originalFile.virtualFile.parent.toNioPath()
 
-        FilenameIndex.getVirtualFilesByName(Paths.get(fileName).name, GlobalSearchScope.allScope(project)).find {
-            val itPath = Paths.get(it.path)
+        FilenameIndex.getVirtualFilesByName(thisPath.name, GlobalSearchScope.allScope(project)).find {
+            val itPath = it.toNioPath()
             try {
-                val relative = myPath.relativize(itPath)
-                return@find relative.toString().replace('\\', '/') == trimmed
-            } catch (e: Exception) {
+                val relative = dirPath.relativize(itPath)
+                return@find relative == thisPath
+            }
+            catch (e: Exception) {
+                thisLogger().trace(e)
             }
             false
         }?.let {
