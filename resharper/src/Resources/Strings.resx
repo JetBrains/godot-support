@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+    </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="GDScript_AttemptToConnectTheRunningGodotEditor_Text" xml:space="preserve">
+        <value>Attempt to connect to the running Godot Editor</value>
+    </data>
+    <data name="GDScript_AutomaticallyStartHeadlessLSPServer_Text" xml:space="preserve">
+        <value>Automatically start headless LSP server</value>
+    </data>
+    <data name="GDScript_ConnectingLSPServer_Text" xml:space="preserve">
+        <value>LSP server connection:</value>
+    </data>
+    <data name="CSharp_Text" xml:space="preserve">
+        <value>C#</value>
+    </data>
+    <data name="GDScriptSupport_Text" xml:space="preserve">
+        <value>GDScript</value>
+    </data>
+    <data name="GodotPluginSettings_Text" xml:space="preserve">
+        <value>Godot plugin settings</value>
+    </data>
+    <data name="GodotSettings_t_Enable_debugger_extensions" xml:space="preserve">
+        <value>Enable debugger extensions</value>
+    </data>
+    <data name="ExtendValueRendering_Text" xml:space="preserve">
+        <value>Extend value rendering</value>
+    </data>
+    <data name="GodotOptionsPage_AddDebuggingSection_Extend_value_rendering_Comment" xml:space="preserve">
+        <value>When enabled, Rider will show extra values in debugger object views,
+such as active scene and Node children.</value>
+    </data>
+    <data name="GDScript_LanguageServer_Text" xml:space="preserve">
+        <value>Language server</value>
+    </data>
+    <data name="GDScript_NeverUseLSP_Text" xml:space="preserve">
+        <value>Never use LSP</value>
+    </data>
+    <data name="GDScript_UseARandomFreePortSupportedInGodot_Text" xml:space="preserve">
+        <value>Use a random free port (supported in Godot 4.2.1+)</value>
+    </data>
+    <data name="GDScript_LSP_Port_Text" xml:space="preserve">
+        <value>Port</value>
+        <comment>Option Page: Name
+        </comment>
+    </data>
+    <data name="GDScript_LSP_Remote_Host_Text" xml:space="preserve">
+        <value>Remote host</value>
+    </data>
+    <data name="LanguageServerConnectionMode_Description" xml:space="preserve">
+        <value>Different ways to connect LSP</value>
+    </data>
+</root>

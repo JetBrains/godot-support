@@ -1,50 +1,116 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot</id>
   <name>Godot Support</name>
-  <version>2023.3.0.9999</version>
-  <vendor url="https://www.jetbrains.com">JetBrains</vendor>
+  <vendor>JetBrains</vendor>
 
-  <idea-version since-build="233.0.0" until-build="234.0.0" />
+  <incompatible-with>gdscript</incompatible-with>
 
-  <depends>com.intellij.modules.rider</depends>
+  <dependencies>
+    <plugin id="com.intellij.modules.rider"/>
+    <plugin id="com.intellij.rider.godot.community"/>
+    <plugin id="com.intellij.rider.godot.gdscript"/>
+    <module name="intellij.platform.dap"/>
+  </dependencies>
 
   <extensions defaultExtensionNs="com.intellij">
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducerCor" />
 
+    <rider.godotDetector implementation="com.jetbrains.rider.plugins.godot.GodotDetectorImpl" />
     <dependencySupport kind="dotnet" coordinate="GodotSharp" displayName="Godot"/>
-  </extensions>
+    <defaultLiveTemplates file="templates/GdScript.xml" />
 
-  <project-components>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator</implementation-class></component>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.FrontendBackendHost</implementation-class></component>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher</implementation-class></component>
-    <component><implementation-class>com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher</implementation-class></component>
-  </project-components>
+    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataMonoFileWatcher"/>
+    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.MetadataCoreFileWatcher"/>
+    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.projectView.GodotUidTrackerInitializer"/>
+    <projectViewNestingRulesProvider implementation="com.jetbrains.rider.plugins.godot.projectView.GodotNestingRulesProvider" />
 
-  <extensions defaultExtensionNs="com.intellij">
-    <projectService serviceImplementation="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer"/>
+    <rd.solutionExtListener endpoint="IDE Frontend"
+                            listener="com.jetbrains.rider.plugins.godot.FrontendBackendHost$ProtocolListener"/>
+
+    <rd.solutionExtListener endpoint="IDE Frontend"
+                            listener="com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator$ProtocolListener"/>
+
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer$ProtocolListener"/>
+
+    <rider.runtime.dotNetRuntimeAutodetect implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetRuntimeAutodetect"/>
+    <rider.debugger.editAndContinue.dotNetEncInfoAutodetect implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetEncInfoAutodetect"/>
+    <rider.filesIndexingRuleProvider implementation="com.jetbrains.rider.plugins.godot.GodotFilesIndexingRuleProvider"/>
+
+    <!-- Options pages -->
+    <applicationConfigurable groupId="language"
+                             id="preferences.build.godotPlugin"
+                             instance="com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage"
+                             displayName="Godot Engine"/>
+    <projectConfigurable parentId="FileTemplatesSettingsId" instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotFileTemplatesOptionPage" groupWeight="-120" />
+    <projectConfigurable parentId="LiveTemplatesSettingsId" instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotLiveTemplatesOptionPage" groupWeight="-120" />
+
+    <platform.lsp.serverSupportProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspServerSupportProvider"/>
+
+    <rider.godot.community.lspStatusProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspRunningStatusProvider" />
+    <rider.godot.community.projectInfoProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotProjectInfoProvider" />
+
+    <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptConfigurationType"/>
+    <platform.dap.debugAdapterSupportProvider implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptDebugAdapterSupportProvider"/>
+    <xdebugger.breakpointType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptLineBreakpointType"/>
+    <xdebugger.breakpointType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptExceptionBreakpointType"/>
   </extensions>
 
-
+  <applicationListeners>
+    <listener class="com.jetbrains.rider.plugins.godot.projectView.UidTrackerListener" topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+  </applicationListeners>
 
   <actions>
-    <group id="GodotToolbarActions" class = "com.jetbrains.rider.plugins.godot.ui.ToolbarActionsGroup">
+    <group id="GodotToolbarActions" popup="true" class = "com.jetbrains.rider.plugins.godot.actions.ToolbarActionsGroup">
       <add-to-group group-id="ActiveRuntimeGroup" relative-to-action="BuildSolutionAction" anchor="before" />
       <add-to-group group-id="RightToolbarSideGroup" relative-to-action="BuildSolutionAction" anchor="before" />
       <add-to-group group-id="MainToolbarRight" anchor="first"/>
 
-      <action id="GodotConnectionAction" class="com.jetbrains.rider.plugins.godot.ui.GodotConnectionAction" />
+      <action id="StartEditorAction"
+              class="com.jetbrains.rider.plugins.godot.actions.StartGodotEditorAction"
+              icon="com.jetbrains.rider.plugins.godot.GodotIcons.Actions.StartGodotEditorActionIcon"/>
+
+      <action id="ShowGodotSettingsInRider"
+              class="com.jetbrains.rider.plugins.godot.actions.GodotPluginShowSettingsAction"
+              icon="AllIcons.General.Settings" />
     </group>
   </actions>
 
-
-  <description><![CDATA[
-<strong>Adds support for the Godot engine (C#).</strong>
-<p>Further information on <a href="https://github.com/JetBrains/godot-support">github</a></p>
+  <description>
+    <![CDATA[
+<p>Adds support for the Godot engine.</p>
+<p>
+<strong>Features</strong>
+<ul>
+  <li>Supports Godot versions 3.x and 4.x with a design ready for future updates.</li>
+  <li>Bundles syntax highlighting for Godot file types, including GDScript, scenes, resources and shaders.</li>
+  <li>Integration with Language server protocol, which is provided by Godot.</li>
+  <li>Autogenerates multiple run configurations:
+  <ul>
+    <li>Player to Run/Debug or Profile game in one click.</li>
+    <li>Editor to Run/Debug or Profile Godot Editor in one click.</li>
+    <li>[Godot3] Attach to debug already started player.</li>
+    <li>Context menu on a scene file allows running game directly to that scene.</li>
+  </ul></li>
+  <li>Supports <a href="https://github.com/MikeSchulze/gdUnit4Net">gdUnit4Net</a> test framework</li>
+  <li>Supports Input Action and NodePath completion in string literals <a href="https://github.com/JetBrains/godot-support/pull/102">More</a>.</li>
+  <li>Debugger extension that adds a “Current Scene” item to the Variables and Watches tab and a Children node to every Godot.Node item in the Variables and Watches tab.</li>
+  <li>Godot specific warnings and quick fixes, integrated with Roslyn provided ones.</li>
+  <li>External annotations for Godot specific attributes.</li>
+  <li>And more!</li>
+</ul>
+</p>
+<p>
+<strong>Links</strong>
+<ul>
+  <li><a href="https://github.com/JetBrains/godot-support">GitHub</a></li>
+  <li><a href="https://github.com/JetBrains/godot-support/issues">Issues</a></li>
+</ul>
+</p>
 ]]>
   </description>
+
+  <resource-bundle>messages.GodotPluginBundle</resource-bundle>
 </idea-plugin>

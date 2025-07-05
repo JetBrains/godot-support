@@ -1,0 +1,9 @@
+[node name="Camera2D" type="Camera2D" parent="CanvasLayer"]
+anchor_mode = 0
+
+[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+
+[node name="Control" type="Control" parent="CanvasLayer2"]
+top_level = true
+custom_minimum_size = Vector2(960, 540)
+layout_mode = 3

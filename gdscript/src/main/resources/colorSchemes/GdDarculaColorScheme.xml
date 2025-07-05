@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<list>
+    <option name="GD_KEYWORD">
+        <value>
+            <option name="FOREGROUND" value="ff7085" />
+        </value>
+    </option>
+    <option name="GD_FLOW_KEYWORDS">
+        <value>
+            <option name="FOREGROUND" value="ff8ccc" />
+        </value>
+    </option>
+    <option name="GD_STRING">
+        <value>
+            <option name="FOREGROUND" value="ffeda1" />
+        </value>
+    </option>
+    <option name="GD_NODE_PATH">
+        <value>
+            <option name="FOREGROUND" value="63c259" />
+        </value>
+    </option>
+    <option name="GD_ANNOTATION">
+        <value>
+            <option name="FOREGROUND" value="ffb373" />
+        </value>
+    </option>
+    <option name="GD_METHOD_DECLARATION">
+        <value>
+            <option name="FOREGROUND" value="66e6ff" />
+        </value>
+    </option>
+    <option name="GD_NODE_STRING_PATH">
+        <value>
+            <option name="FOREGROUND" value="b8c47d" />
+        </value>
+    </option>
+    <option name="GD_METHOD_CALL">
+        <value>
+            <option name="FOREGROUND" value="57b3ff" />
+        </value>
+    </option>
+    <option name="GD_STATIC_METHOD_CALL">
+        <value>
+            <option name="FOREGROUND" value="57b3ff" />
+        </value>
+    </option>
+    <option name="GD_ENGINE_TYPE">
+        <value>
+            <option name="FOREGROUND" value="8fffdb" />
+        </value>
+    </option>
+    <option name="GD_CLASS_TYPE">
+        <value>
+            <option name="FOREGROUND" value="c7ffed" />
+        </value>
+    </option>
+    <option name="GD_BASE_TYPE">
+        <value>
+            <option name="FOREGROUND" value="42ffc2" />
+        </value>
+    </option>
+    <option name="GD_GLOBAL_FUNCTION">
+        <value>
+            <option name="FOREGROUND" value="a3a3f5" />
+        </value>
+    </option>
+    <option name="GD_STRING_NAME">
+        <value>
+            <option name="FOREGROUND" value="ffc2a6" />
+        </value>
+    </option>
+    <option name="GD_NUMBER">
+        <value>
+            <option name="FOREGROUND" value="a1ffe0" />
+        </value>
+    </option>
+    <option name="GD_COMMENT">
+        <value>
+            <option name="FOREGROUND" value="cdcfd280" />
+        </value>
+    </option>
+    <option name="GD_STRING_FORMAT">
+        <value>
+            <option name="FOREGROUND" value="badeff" />
+        </value>
+    </option>
+    <option name="GD_MEMBER">
+        <value>
+            <option name="FOREGROUND" value="bce0ff" />
+        </value>
+    </option>
+    <option name="GD_NOTE">
+        <value>
+            <option name="FOREGROUND" value="8fab82" />
+        </value>
+    </option>
+    <option name="GD_WARNING">
+        <value>
+            <option name="FOREGROUND" value="b89c7a" />
+        </value>
+    </option>
+    <option name="GD_DANGER">
+        <value>
+            <option name="FOREGROUND" value="c45959" />
+        </value>
+    </option>
+    <option name="GD_BAD_CHARACTER">
+        <value>
+            <option name="FOREGROUND" value="ff786b" />
+        </value>
+    </option>
+
+    <!-- Tscn Options -->
+    <option name="TSCN_NODE_RESOURCE">
+        <value>
+            <option name="FOREGROUND" value="a3a3f5" />
+        </value>
+    </option>
+    <option name="TSCN_NODE_TYPE">
+        <value>
+            <option name="FOREGROUND" value="8fffdb" />
+        </value>
+    </option>
+    <option name="TSCN_MEMBER_REF">
+        <value>
+            <option name="FOREGROUND" value="57b3ff" />
+        </value>
+    </option>
+    <option name="TSCN_ATTRIBUTES">
+        <value>
+            <option name="FOREGROUND" value="bce0ff" />
+        </value>
+    </option>
+    <option name="TSCN_RES_STRING">
+        <value>
+            <option name="FOREGROUND" value="ffb373" />
+        </value>
+    </option>
+    <option name="TSCN_STRING">
+        <value>
+            <option name="FOREGROUND" value="ffeda1" />
+        </value>
+    </option>
+</list>

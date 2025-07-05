@@ -3,32 +3,34 @@
  
 # Godot Support for Rider
 
-The "Godot Support" plugin adds specific functionality for the [Godot game engine](https://godotengine.org/) .NET version (C# support) to [Rider](https://www.jetbrains.com/rider/).
+The "Godot Support" plugin adds specific functionality for the [Godot game engine](https://godotengine.org/) to [Rider](https://www.jetbrains.com/rider/).
 
 Rider is JetBrains' cross platform .NET IDE, based on ReSharper and the IntelliJ Platform. It can be used on Windows, Mac and Linux providing rich code navigation, inspections and refactorings.
 
 # Features
 
-Autogenerates multiple run configurations:
- - `Player` to Run/Debug or Profile game in one click. [Demo](https://youtu.be/FmaYKONV5NY?t=78)
- - `Editor` to Run/Debug or Profile Godot Editor in one click
- - `Attach` to debug already started player
- - `WATSharp` to start the test-runner. [More](https://www.reddit.com/r/godot/comments/jl547k/official_jetbrains_godot_support_plugin_for_rider/)
- 
-Context menu on a scene file allows running game directly to that scene.
+| Feature                                                                | GDScript | C#  | Details                                                                                                                                                                                                                  |
+|------------------------------------------------------------------------|----------|-----|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Godot 3.x                                                              | ✔        | ✔   |                                                                                                                                                                                                                          |
+| Godot 4.x                                                              | ✔        | ✔   | design ready for future updates                                                                                                                                                                                          |
+| Syntax Highlighting                                                    | ✔        | *   | GDScript, scenes, shaders, & resources.                                                                                                                                                                                  |
+| Godot GDScript LSP                                                     | ✔        | n/a | LSP from current editor or from headless editor                                                                                                                                                                          |
+| Run Configurations                                                     | ✔        | ✔   | Run/Debug, launch editor, and context menu on a scene file allows running game directly to that scene                                                                                                                    |
+| [gdUnit4Net](https://github.com/MikeSchulze/gdUnit4Net) test framework | n/a      | ✔   | Write and run unit tests in C#                                                                                                                                                                                           |
+| Input Action and NodePath completions                                  | ✔        | ✔   | completion in string literals and [more](https://github.com/JetBrains/godot-support/pull/102)                                                                                                                            |
+| Debugger                                                               | ✔        | ✔   | for C# adds a “Current Scene” item to the Variables and Watches tab and a Children node to every Godot.Node item in the Variables and Watches tab. .NET debugging occurs in .NET runtime with access to scene variables. |
+| Godot warnings and quick fixes                                         | ✔        | ✔   | Godot specific warnings and quick fixes, integrated with Roslyn provided ones.                                                                                                                                           |
+| External Annotations for Godot Attributes                              | n/a      | ✔   | C# Warning suppression for known Godot idioms                                                                                                                                                                            |
+| and More...                                                            |          |     |                                                                                                                                                                                                                          | 
 
-Fields marked with [Export] attribute would not be marked as not-initialized.
-Classes marked with [Tool] attribute would not be marked as unused.
-Delegates marked with [Signal] attribute would not be marked as unused.
+\* C# features provided by [JetBrains Rider](https://jetbrains.com/rider)
 
-Support running XUnit/NUnit tests inside the game process. [More](https://github.com/JetBrains/godot-support/pull/58)
-
-# Recomendations
+# Recommendations
 
 Add `.idea` to [.gitignore](https://github.com/van800/godot-demo-projects/pull/2/files#diff-a084b794bc0759e7a6b77810e01874f2R22) 
-Including `tscn` in your project as demonstrated [here](https://github.com/van800/godot-demo-projects/pull/2/files#diff-d6ab4c56e3f79be158a2dbd5b9ae8eb8R7)
+Include `tscn` in your project as demonstrated [here](https://github.com/van800/godot-demo-projects/pull/2/files#diff-d6ab4c56e3f79be158a2dbd5b9ae8eb8R7)
 
 # Contributing
 
 This project welcomes contributions and suggestions.
-Please have a look at our [Guidelines](CONTRIBUTING.md) for contributing.
+Please refer to our [Guidelines](CONTRIBUTING.md) for contributing.

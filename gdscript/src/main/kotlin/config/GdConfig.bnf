@@ -1,0 +1,49 @@
+{
+  parserClass="config.parser.ConfigParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Config"
+  psiImplClassSuffix="Impl"
+  psiPackage="config.psi"
+  psiImplPackage="config.psi.impl"
+
+  elementTypeHolderClass="config.psi.GdConfigTypes"
+  elementTypeClass="config.psi.GdConfigElementType"
+  tokenTypeClass="config.psi.GdConfigTokenType"
+
+  psiImplUtilClass="config.psi.GdConfigPsiUtils"
+}
+
+file ::= (annotation | operator)*
+
+annotation ::= AN variadicMark? required annotation_nm param* {
+    methods=[isVariadic requiredCount getName getParams]
+    mixin="config.psi.impl.GdConfigAnnotationElementImpl"
+    stubClass="config.index.stub.ConfigAnnotationStub"
+    elementTypeFactory="config.psi.impl.GdConfigAnnotationElementType.getInstance"
+}
+annotation_nm ::= IDENTIFIER
+param ::= paramName COLON type
+paramName ::= IDENTIFIER
+type ::= IDENTIFIER
+
+variadicMark ::= VARIADIC
+required ::= NUMBER
+
+operator ::= OP operator_nm operation* {
+    methods=[getName]
+    mixin="config.psi.impl.GdConfigOperatorElementImpl"
+    stubClass="config.index.stub.ConfigOperatorStub"
+    elementTypeFactory="config.psi.impl.GdConfigOperatorElementType.getInstance"
+}
+operator_nm ::= IDENTIFIER
+operation ::= opType leftType COLON rightType {
+    methods=[getOperand getLeftTyped getRightTyped]
+    mixin="config.psi.impl.GdConfigOperationElementImpl"
+    stubClass="config.index.stub.ConfigOperationStub"
+    elementTypeFactory="config.psi.impl.GdConfigOperationElementType.getInstance"
+}
+opType ::= OPERAND
+leftType ::= IDENTIFIER
+rightType ::= IDENTIFIER

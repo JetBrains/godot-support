@@ -1,0 +1,11 @@
+.idea/
+.gradle/
+build/
+/classes/
+classesGd/
+/godotSource/
+godot-master/
+/icons/
+/php/icons/
+/out/
+/src/main/gen/gdscript/parser/GdParser.java

@@ -1,18 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <InternalBuild Condition="'$(SolutionFileName)' != 'godot-support.sln'">True</InternalBuild>
+    <InternalBuild Condition="$(InternalBuild) == ''">False</InternalBuild>
+  </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="JetBrains.Toolset.MainSolution.Sdk" Version="20200625.1.1.2" Condition="$(InternalBuild)" />
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" Condition="!$(InternalBuild)" />
+  <PropertyGroup>
     <AssemblyName>JetBrains.ReSharper.Plugins.Godot</AssemblyName>
+    <DefineConstants Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">JET_MODE_ASSERT;JET_MODE_REPORT_EXCEPTIONS;RIDER;$(CommandLineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">RIDER;$(CommandLineConstants)</DefineConstants>
     <RootNamespace>JetBrains.ReSharper.Plugins.Godot</RootNamespace>
-    <LangVersion>9</LangVersion>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <TargetFramework>net472</TargetFramework>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;JET_MODE_ASSERT;JET_MODE_REPORT_EXCEPTIONS;RIDER;$(CommandLineConstants)</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;RIDER;$(CommandLineConstants)</DefineConstants>
-  </PropertyGroup>
-
   <!-- ********** -->
   <ItemGroup Label="Live templates">
     <LiveTemplate Include="Templates\**\*.md">
@@ -24,30 +25,45 @@
     </EmbeddedResource>
   </ItemGroup>
   <!-- ********** -->
-
   <ItemGroup Label="Model">
-    <Compile Include="../../resharper/build/generated/Model/**/*" LinkBase="Model">
+    <Compile Include="..\..\resharper\build\generated\Model\**\*" LinkBase="Model">
       <Visible>True</Visible>
     </Compile>
   </ItemGroup>
-  
+  <ItemGroup Label="C#">
+    <ErrorsGen Include="CSharp\Daemon\Errors\CommonCodeErrors.xml">
+      <Namespace>JetBrains.ReSharper.Plugins.Godot.CSharp.Daemon.Errors</Namespace>
+      <OutputFile>CSharp\Daemon\Errors\CommonCodeErrors.generated.cs</OutputFile>
+      <Mode>ERRORS</Mode>
+    </ErrorsGen>
+    <Compile Update="CSharp\Daemon\Errors\CommonCodeErrors.generated.cs">
+      <DependentUpon>CommonCodeErrors.xml</DependentUpon>
+    </Compile>
+  </ItemGroup>
   <ItemGroup Label="References">
-    <PackageReference Include="CitizenMatt.ReSharper.LiveTemplateCompiler" Version="3.2.0">
+    <PackageReference Include="CitizenMatt.ReSharper.LiveTemplateCompiler">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="GodotTools.IdeMessaging" Version="1.1.1" />
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="GodotTools.IdeMessaging" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\GodotTools.IdeMessaging\GodotTools.IdeMessaging.csproj" />
+  <ItemGroup Label="EmbeddedResource">
+    <EmbeddedResource Include="Resources\Strings.resx" Condition="$(InternalBuild)">
+      <Generator>JetResourceGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Strings.resx" Condition="!$(InternalBuild)">
+      <Generator>JetResourceGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
-  
-  <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Psi.Features_src.Props" />
-  <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Psi.Features_UnitTesting.Props" />
-  <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Rider_Rider.Backend.Props" />
+  <Target Name="DropObjFromIndependentBuild" Condition="$(InternalBuild)" BeforeTargets="Build">
+    <RemoveDir Directories="obj" />
+  </Target>
+  <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Psi.Features_src.Props" Condition="!$(InternalBuild)" />
+  <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Psi.Features_UnitTesting.Props" Condition="!$(InternalBuild)" />
+  <Import Project="$(DotNetSdkPath)\Build\SubplatformReference.Rider_Rider.Backend.Props" Condition="!$(InternalBuild)" />
+  <Import Project="ManagedProject.Generated.Targets" Condition="$(InternalBuild)" />
+  <Import Project="Sdk.targets" Sdk="JetBrains.Toolset.MainSolution.Sdk" Version="20200625.1.1.2" Condition="$(InternalBuild)" />
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" Condition="!$(InternalBuild)" />
 </Project>

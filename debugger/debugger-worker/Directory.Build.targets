@@ -1,0 +1,13 @@
+<Project>
+    <Sdk Name="JetBrains.Build.VersionLockFileTargets" Version="0.0.4" />
+    <PropertyGroup>
+        <ImportGuard-DeirectoryBuildTargets>True</ImportGuard-DeirectoryBuildTargets>
+        <IsIndependentBuild Condition="'$(SolutionFileName)' == 'godot-support.sln'">True</IsIndependentBuild>
+        <IsIndependentBuild Condition="$(IsIndependentBuild) == ''">False</IsIndependentBuild>
+    </PropertyGroup>
+    <ItemGroup Condition="$(IsIndependentBuild)">
+        <!-- Implicitly installed package Microsoft.Identity.Client.NativeInterop contains targets
+            that include this embedded file and lead to a compilation error (see RIDER-122287) -->
+        <EmbeddedFiles Remove="$(GeneratedAssemblyInfoFile)" />
+    </ItemGroup>
+</Project>

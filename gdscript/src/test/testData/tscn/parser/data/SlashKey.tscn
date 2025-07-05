@@ -1,0 +1,2 @@
+[node name="Help" type="Label" parent="."]
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)

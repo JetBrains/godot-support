@@ -48,6 +48,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             if (!project.IsGodotProject())
                 return false;
 
+            if (!project.GetComponent<GodotMessagingClient>().IsReady())
+                return false;
+
             var stringLiteral = context.StringLiteral();
             if (stringLiteral is null)
                 return false;
@@ -131,7 +134,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
         private bool LookupInputActions(IInvocationExpression invocationExpression,
             CSharpCodeCompletionContext context, IItemsCollector collector)
         {
-            if (!GodotTypes.Input.Equals(invocationExpression.InvokedMethodContainingType()))
+            var containingType = invocationExpression.InvokedMethodContainingType();
+            if (!GodotTypes.Input.Equals(containingType) && !GodotTypes.InputEvent.Equals(containingType))
                 return false;
             if (context.NodeInFile.Parent is not { Parent: ICSharpArgument argument })
                 return false;

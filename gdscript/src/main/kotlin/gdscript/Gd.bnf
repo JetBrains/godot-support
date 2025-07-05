@@ -1,0 +1,293 @@
+{
+  parserClass="gdscript.parser.GdParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Gd"
+  psiImplClassSuffix="Impl"
+  psiPackage="gdscript.psi"
+  psiImplPackage="gdscript.psi.impl"
+
+  elementTypeHolderClass="gdscript.psi.GdTypes"
+  elementTypeClass="gdscript.psi.GdElementType"
+  tokenTypeClass="gdscript.psi.GdTokenType"
+
+  psiImplUtilClass="gdscript.psi.GdPsiUtils"
+
+  mixin(".*_nm")="GdNamedElementImpl"
+  implements(".*_nm")="GdNamedElement"
+  methods(".*_nm")=[getName setName]
+
+  mixin(".*_nmi")="GdNamedIdElementImpl"
+  implements(".*_nmi")="GdNamedIdElement"
+  methods(".*_nmi")=[getName setName getNameIdentifier]
+
+  extends(".*_tl")=topLevelDecl
+  extends(".*_ex")=expr
+  extends(".*_st")=stmt
+
+  consumeTokenMethod(".*_ex|expr|stmt|.*_st|topLevelDecl|.*_tl")="consumeTokenFast"
+
+  tokens = [
+    string='regexp:"[^"]*?"'
+    number='regexp:[0-9]+(\.)?[0-9]*'
+    comment='regexp:#.*'
+    backslash='\'
+    bad_character='regexp:[\^]'
+  ]
+}
+
+ // TODO limit to once
+ // TODO indent dedent je když např hned pod extends je indent -> emptyIndent není match, protože je eof místo /r
+gdfile ::= (topLevelDecl | inheritance | classNaming)* (INDENT NEW_LINE? DEDENT?)?
+inheritance ::= EXTENDS inheritanceId endStmt? {
+    methods=[getInheritancePath] pin=1
+    mixin="gdscript.psi.impl.GdInheritanceElementImpl"
+    stubClass="gdscript.index.stub.GdInheritanceStub"
+    elementTypeFactory="gdscript.psi.impl.GdInheritanceElementType.getInstance"
+}
+inheritanceId ::= inheritanceId_nm (DOT inheritanceSubId_nm)*
+inheritanceId_nm ::= STRING | IDENTIFIER {methods=[getPsiFile isClassName]}
+inheritanceSubId_nm ::= IDENTIFIER
+
+classNaming ::= CLASS_NAME className_nmi endStmt? {
+    methods=[getClassname getParentName] pin=1
+    mixin="gdscript.psi.impl.GdClassNamingElementImpl" stubClass="gdscript.index.stub.GdClassNamingStub"
+    elementTypeFactory="gdscript.psi.impl.GdClassNamingElementType.getInstance"
+}
+className_nmi ::= IDENTIFIER {
+    methods=[getClassId getParentName isInner setName getName getNameIdentifier] // TODO parentname ?!
+    mixin="gdscript.psi.impl.GdClassIdElementImpl" stubClass="gdscript.index.stub.GdClassIdStub"
+    elementTypeFactory="gdscript.psi.impl.GdClassIdElementType.getInstance"
+}
+
+topLevelDecl ::=
+    constDecl_tl
+    | enumDecl_tl
+    | signalDecl_tl
+    | classVarDecl_tl
+    | annotation_tl
+    | methodDecl_tl
+    | classDecl_tl
+    | BAD_CHARACTER
+private topLevelDecl_r ::= !(
+    FUNC | CONST | SIGNAL | VAR | ENUM | ANNOTATOR | IDENTIFIER | DEDENT | INDENT
+    | REMOTE | REMOTESYNC | MASTERSYNC | PUPPETSYNC | MASTER | PUPPET | STATIC | VARARG
+    | CLASS_NAME | RRBR | RCBR | RSBR | EXTENDS | CLASS )
+
+constDecl_tl ::= CONST var_nmi typed? assignTyped expr endStmt {
+    methods=[getName getReturnType getPresentation]
+    pin=1 recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdConstDeclElementImpl"
+    stubClass="gdscript.index.stub.GdConstDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdConstDeclElementType.getInstance"
+}
+
+annotation_tl ::= annotationType (LRBR annotationParams? RRBR)? endStmt? {pin=1 recoverWhile=topLevelDecl_r}
+annotationType ::= ANNOTATOR
+annotationParams ::= expr (COMMA expr)* {
+    pin=1 recoverWhile=argList_r
+}
+classVarDecl_tl ::= VAR var_nmi typed? (assignTyped expr)? (setgetDecl | endStmt) {
+    methods=[getName getReturnType getPresentation isAnnotated]
+    pin=1 recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdClassVarDeclElementImpl"
+    stubClass="gdscript.index.stub.GdClassVarDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdClassVarDeclElementType.getInstance"
+}
+
+setgetDecl ::= COLON (NEW_LINE INDENT)? (INDENT? (getDecl | setDecl | NEW_LINE) DEDENT?)+ DEDENT?
+getDecl ::= GET ((COLON stmtOrSuite) | (EQ getMethodId_nm (COMMA | endStmt)?)) {
+    pin=1 recoverWhile=setget_r
+}
+setDecl ::= SET ((LRBR var_nmi typed? RRBR COLON stmtOrSuite) | (EQ setMethodId_nm (COMMA | endStmt)?)) {
+    pin=1 recoverWhile=setget_r
+}
+setMethodId_nm ::= IDENTIFIER
+getMethodId_nm ::= IDENTIFIER
+private setget_r ::= !(SET | GET | NEW_LINE) & topLevelDecl_r
+
+signalDecl_tl ::= SIGNAL signalId_nmi (LRBR paramList RRBR)? endStmt {
+    methods=[getName getParameters]
+    pin=1 recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdSignalDeclElementImpl"
+    stubClass="gdscript.index.stub.GdSignalDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdSignalDeclElementType.getInstance"
+}
+signalId_nmi ::= IDENTIFIER
+
+enumDecl_tl ::= ENUM enumDecl_nmi? LCBR INDENT? enumValue ((COMMA | NEW_LINE) enumValue)* (COMMA | NEW_LINE)? RCBR (endStmt | (NEW_LINE DEDENT)) {
+    pin=1 methods=[getName getValues getPresentation] recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdEnumDeclElementImpl" stubClass="gdscript.index.stub.GdEnumDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdEnumDeclElementType.getInstance"
+}
+enumDecl_nmi ::= IDENTIFIER
+enumValue ::= enumValue_nmi (EQ (PLUS | MINUS)? NUMBER)?
+enumValue_nmi ::= IDENTIFIER
+
+methodDecl_tl ::= methodSpecifier* FUNC methodId_nmi LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
+    methods=[isStatic isVariadic getName getReturnType getParameters getPresentation isConstructor]
+    pin=2 recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdMethodDeclElementImpl"
+    stubClass="gdscript.index.stub.GdMethodDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdMethodDeclElementType.getInstance"
+}
+methodSpecifier ::= STATIC | VARARG | MASTER | PUPPET | REMOTE | REMOTESYNC | MASTERSYNC | PUPPETSYNC
+methodId_nmi ::= identifierEx
+paramList ::= param (COMMA param)* COMMA? { pin=1 recoverWhile=argList_r }
+param ::= VAR? var_nmi typed? (assignTyped expr)? {methods=[getReturnType]}
+returnHint ::= RET returnHintVal
+returnHintVal ::= typedVal | VOID // typeHint_nm | VOID
+argList ::= argExpr (COMMA argExpr)* COMMA? { pin=1 recoverWhile=argList_r }
+argExpr ::= expr { methods=[getReturnType] }
+var_nmi ::= identifierEx
+private argList_r ::= !(RRBR | endStmt)
+
+// TODO annotace - single inheritance - jak root tak inner, single class_name
+classDecl_tl ::= CLASS className_nmi inheritance? COLON NEW_LINE (INDENT (inheritance | topLevelDecl)* DEDENT)+ {
+    methods=[getName getParentName] pin=1 recoverWhile=topLevelDecl_r
+    mixin="gdscript.psi.impl.GdClassDeclElementImpl" stubClass="gdscript.index.stub.GdClassDeclStub"
+    elementTypeFactory="gdscript.psi.impl.GdClassDeclElementType.getInstance"
+}
+
+stmtOrSuite ::= stmt | suite+
+suite ::= NEW_LINE? INDENT (NEW_LINE | stmt)+ DEDENT { pin=2 recoverWhile=stmt_r }
+
+stmt ::=
+    assign_st
+// TODO tady je endStmt optional, protože to jinak sežere lambda
+    | varDecl_st
+    | constDecl_st
+    | if_st
+    | while_st
+    | for_st
+    | match_st
+    | flow_st
+    | expr_st
+//    | BAD_CHARACTER // tohle je hack aby GdStmtImpl nebyl abstract class při token např. Ł to jinak nevyparsuje
+private stmtNoLine_r ::= !(SET | GET | IF | PASS
+    | CONTINUE | BREAK | BREAKPOINT | WHILE | FOR | MATCH
+    | RETURN | AWAIT | ASSET | INDENT | DEDENT
+    | NEGATE | ELIF | ELSE | UNDER
+    | IDENTIFIER | literal_ex | primary_ex) & topLevelDecl_r
+private stmt_r ::= !(NEW_LINE | endStmt) & stmtNoLine_r
+
+varDecl_st ::= VAR var_nmi typed? (assignTyped expr)? endStmt {
+    pin=2 recoverWhile=stmt_r methods=[getName getReturnType]
+}
+constDecl_st ::= CONST var_nmi typed? (assignTyped expr)? endStmt {
+    pin=2 recoverWhile=stmt_r methods=[getName getReturnType getReturnExpr]
+}
+if_st ::= IF expr COLON stmtOrSuite elif_st* else_st? {pin=1 recoverWhile=stmt_r}
+elif_st ::= ELIF expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
+else_st ::= ELSE COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
+while_st ::= WHILE expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
+for_st ::= FOR var_nmi IN expr COLON stmtOrSuite {pin=1 recoverWhile=stmt_r}
+
+match_st ::= MATCH expr COLON NEW_LINE INDENT matchBlock+ DEDENT {pin=1 recoverWhile=stmt_r}
+matchBlock ::= patternList COLON stmtOrSuite {pin=2 recoverWhile=stmtNoLine_r}
+
+patternList ::= pattern (COMMA pattern)*
+//TODO (* Note: you can't have a binding in a pattern list, but to not complicate the grammar more it won't be restricted syntactically *)
+// Asi annotátor
+pattern ::= UNDER | bindingPattern | arrayPattern | dictPattern | expr
+bindingPattern ::= VAR var_nmi
+arrayPattern ::= LSBR ( pattern (COMMA pattern)* (COMMA DOTDOT)? )? RSBR
+dictPattern ::= LCBR keyValuePattern? (COMMA keyValuePattern)* (COMMA DOTDOT)? RCBR
+keyValuePattern ::= STRING [ COLON pattern ]
+
+assign_st ::= expr assignSign expr endStmt //{ pin=2 }
+assignSign ::= EQ | ASSIGN
+expr_st ::= expr endStmt
+
+flow_st ::=
+    (CONTINUE
+    | BREAK
+    | PASS
+    | BREAKPOINT
+    | RETURN expr?)
+    endStmt
+    {/*pin=1 recoverWhile=stmt_r*/ methods=[getType]}
+
+expr ::=
+    funcDecl_ex
+    | plusMinus_ex
+    | arr_ex
+    | cast_ex
+    | ternary_ex
+    | logic_ex
+    | negate_ex
+    | in_ex
+    | comparison_ex
+    | bitAnd_ex
+    | shift_ex
+    | plus_ex
+    | plusMinusPre_ex
+    | factor_ex
+    | sign_ex
+    | bitNot_ex
+    | is_ex
+    | await_ex
+    | attribute_ex
+    | call_ex
+    | primary_ex
+    | literal_ex
+    {methods=[getReturnType getReturnTypeOrRes]}
+
+cast_ex ::= expr AS typedVal
+ternary_ex ::= expr IF expr ELSE expr
+logic_ex ::= expr (ANDAND | OROR) expr
+negate_ex ::= NEGATE expr
+in_ex ::= expr IN expr
+comparison_ex ::= expr operator expr
+operator ::= TEST_OPERATOR
+bitAnd_ex ::= expr bitAndSign expr
+bitAndSign ::= AND | XOR | OR
+shift_ex ::= expr (LBSHIFT | RBSHIFT) expr
+plus_ex ::= expr sign expr
+sign ::= (PLUS | MINUS)
+factor_ex ::= expr factorSign expr
+factorSign ::= (MUL | DIV | MOD | POWER)
+sign_ex ::= (MINUS | PLUS) expr
+bitNot_ex ::= NOT expr
+is_ex ::= expr IS typedVal
+await_ex ::= AWAIT expr
+call_ex ::= expr LRBR argList? RRBR
+arr_ex ::= expr LSBR expr RSBR
+primary_ex ::= nodePath | arrayDecl | dictDecl | (LRBR expr RRBR)
+plusMinus_ex ::= expr (PPLUS | MMINUS)
+plusMinusPre_ex ::= (PPLUS | MMINUS) expr
+attribute_ex ::= expr DOT expr
+refId_nm ::= identifierEx | SELF | SUPER
+literal_ex ::= TRUE | FALSE | STRING_NAME | NODE_PATH_LIT | stringVal | NUMBER | NULL | NAN | INF | refId_nm
+stringVal ::= STRING {
+    mixin="gdscript.psi.impl.GdStringValElementImpl"
+    stubClass="gdscript.index.stub.GdStringValStub"
+    elementTypeFactory="gdscript.psi.impl.GdStringValElementType.getInstance"
+}
+
+funcDecl_ex ::= FUNC funcDeclId_nmi? LRBR paramList? RRBR returnHint? COLON stmtOrSuite {
+    methods=[getReturnType getReturnExpr getParameters /*getPresentation*/]
+//    pin=1 recoverWhile=stmtNoLine_r
+    //mixin="gdscript.psi.impl.GdLocalFuncDeclElementImpl" stubClass="gdscript.index.stub.GdLocalFuncDeclStub"
+    //elementTypeFactory="gdscript.psi.impl.GdLocalFuncDeclElementType.getInstance"
+}
+funcDeclId_nmi ::= IDENTIFIER
+
+typed ::= COLON typedVal
+typedVal ::= typeHint (LSBR typeHint RSBR)? {methods=[getReturnType]}
+typeHint ::= typeHint_nm (DOT typeHint_nm)*
+typeHint_nm ::= IDENTIFIER
+endStmt ::= SEMICON | newLineEnd
+newLineEnd ::= NEW_LINE
+nodePath ::= NODE_PATH_LEX
+
+arrayDecl ::= LSBR (expr (COMMA expr)* COMMA?)? RSBR
+dictDecl ::= LCBR newLineEnd? INDENT? (keyValue (COMMA newLineEnd? keyValue)* COMMA? newLineEnd?)? DEDENT? RCBR
+keyValue ::= (expr COLON expr) | (IDENTIFIER EQ expr)
+
+assignTyped ::= EQ | CEQ
+
+// func - Array.gd, signal: Vector2.gd, class_name - Array.gd, FileAccess - pass
+// tyhle vyjímky jsou kvůli parseru sdk -> nějaké params se shodují jmenovitě, stejně jako metody
+private identifierEx ::= IDENTIFIER | GET | SET | MATCH | SIGNAL | FUNC | CLASS_NAME | PASS | CLASS

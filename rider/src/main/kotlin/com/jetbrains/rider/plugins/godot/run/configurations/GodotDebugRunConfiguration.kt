@@ -12,8 +12,6 @@ import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
 import com.jetbrains.rider.run.configurations.exe.ExeConfigurationParameters
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
-import org.jetbrains.concurrency.Promise
-import org.jetbrains.concurrency.resolvedPromise
 
 class GodotDebugRunConfiguration(name:String, project: Project, factory: ConfigurationFactory, params: ExeConfigurationParameters)
     : ExeConfiguration(name, project, factory, params) {
@@ -29,12 +27,12 @@ class GodotDebugRunConfiguration(name:String, project: Project, factory: Configu
         return newConfiguration
     }
 
-    override fun getStateAsync(executor: Executor, environment: ExecutionEnvironment): Promise<RunProfileState> {
+    override suspend fun getRunProfileStateAsync(executor: Executor, environment: ExecutionEnvironment): RunProfileState {
         val executorId = executor.id
 
         if (executorId == DefaultDebugExecutor.EXECUTOR_ID)
-            return resolvedPromise(GodotDebugProfileState(this, DotNetRemoteConfiguration(project, ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java).factory, name), environment))
+            return GodotDebugProfileState(this, DotNetRemoteConfiguration(project, ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java).factory, name), environment)
 
-        return super.getStateAsync(executor, environment)
+        return super.getRunProfileStateAsync(executor, environment)
     }
 }

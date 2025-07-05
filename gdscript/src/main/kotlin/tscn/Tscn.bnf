@@ -1,0 +1,108 @@
+{
+  parserClass="tscn.parser.TscnParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Tscn"
+  psiImplClassSuffix="Impl"
+  psiPackage="tscn.psi"
+  psiImplPackage="tscn.psi.impl"
+
+  elementTypeHolderClass="tscn.psi.TscnTypes"
+  elementTypeClass="tscn.psi.TscnElementType"
+  tokenTypeClass="tscn.psi.TscnTokenType"
+
+  psiImplUtilClass="tscn.psi.TscnPsiUtils"
+
+  mixin(".*_nm")="TscnNamedElementImpl"
+  implements(".*_nm")="TscnNamedElement"
+  methods(".*_nm")=[getName setName]
+
+  extends(".*_header")=header
+
+  tokens = [
+    comment='regexp:;.*'
+    bad_character='regexp:[\^]'
+  ]
+}
+
+tscnfile ::= paragraph+
+paragraph ::= header dataLine* {
+    mixin="tscn.psi.impl.TscnParagraphElementImpl"
+    stubClass="tscn.index.stub.TscnParagraphStub"
+    elementTypeFactory="tscn.psi.impl.TscnParagraphElementType.getInstance"
+}
+
+header ::=
+    scene_header
+    | node_header
+    | resource_header
+    | connection_header
+    | unknown_header
+
+scene_header ::= LSBR GD_SCENE headerValue* RSBR {
+// TODO would be required to recoverWhile only when pinned
+//    pin=2
+//    recoverWhile=header_r
+}
+node_header ::= LSBR NODE headerValue* RSBR {
+//    pin=2
+//    recoverWhile=header_r
+    methods=[getName getType getParentPath getNodePath isUniqueNameOwner getScriptResource hasScript getDirectParentPath getGroups getInstanceResource getIndex]
+    mixin="tscn.psi.impl.TscnNodeHeaderElementImpl"
+    stubClass="tscn.index.stub.TscnNodeHeaderStub"
+    elementTypeFactory="tscn.psi.impl.TscnNodeHeaderElementType.getInstance"
+}
+resource_header ::= LSBR EXT_RESOURCE headerValue* RSBR {
+//    pin=2
+//    recoverWhile=header_r
+    methods=[getPath getType getId]
+    mixin="tscn.psi.impl.TscnResourceHeaderElementImpl"
+    stubClass="tscn.index.stub.TscnResourceHeaderStub"
+    elementTypeFactory="tscn.psi.impl.TscnResourceHeaderElementType.getInstance"
+}
+connection_header ::= LSBR CONNECTION headerValue* RSBR {
+//    pin=2
+//    recoverWhile=header_r
+    methods=[getFrom getTo getSignal getMethod]
+    mixin="tscn.psi.impl.TscnConnectionHeaderElementImpl"
+    stubClass="tscn.index.stub.TscnConnectionHeaderStub"
+    elementTypeFactory="tscn.psi.impl.TscnConnectionHeaderElementType.getInstance"
+}
+unknown_header ::= LSBR IDENTIFIER headerValue* RSBR {
+//    pin=1
+//    recoverWhile=header_r
+}
+private header_r ::= !(LSBR | IDENTIFIER | NUMBER)
+
+headerValue ::= headerValue_nm EQ headerValue_val
+headerValue_nm ::= IDENTIFIER
+headerValue_val ::= value {
+    mixin="TscnNamedElementImpl"
+    implements="TscnNamedElement"
+    methods=[getName setName]
+}
+
+dataLine ::= dataLineHeader EQ dataLine_value
+dataLineHeader ::= dataLine_nm ((COLON | SLASH) dataLine_nm)*
+dataLine_nm ::= IDENTIFIER | NUMBER
+dataLine_value ::= value
+
+value ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | json
+numberValue ::= (PLUS | MINUS)? NUMBER
+exprValue ::= identifierEx (LRBR argList? RRBR)?
+argList ::= value? (COMMA value)*
+
+identifierEx ::=  OBJECT_REF | IDENTIFIER | IDENTIFIER_REF | GD_SCENE | EXT_RESOURCE | NODE
+
+json ::= object | array
+
+jsonPair ::= STRING COLON jsonValue
+jsonPairList ::= jsonPair (COMMA jsonPair)*
+jsonValue ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | array | object
+
+object ::= LCBR jsonPairList? RCBR
+
+array ::= LSBR valueList? RSBR
+valueList ::= jsonValue (COMMA jsonValue)*
+

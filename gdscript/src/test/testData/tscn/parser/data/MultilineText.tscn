@@ -1,0 +1,4 @@
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+text = "This text will always render at the native resolution.
+Press Space to adjust the 3D viewport's resolution scaling.
+Press Enter to cycle filtering modes."

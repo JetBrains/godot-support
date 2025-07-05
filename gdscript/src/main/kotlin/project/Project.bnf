@@ -1,0 +1,40 @@
+{
+  parserClass="project.parser.ProjectParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Project"
+  psiImplClassSuffix="Impl"
+  psiPackage="project.psi"
+  psiImplPackage="project.psi.impl"
+
+  elementTypeHolderClass="project.psi.ProjectTypes"
+  elementTypeClass="project.psi.ProjectElementType"
+  tokenTypeClass="project.psi.ProjectTokenType"
+
+  psiImplUtilClass="project.psi.ProjectPsiUtils"
+
+  tokens = [
+    comment='regexp:;[^\r\n]*'
+    bad_character='regexp:[\^]'
+  ]
+}
+
+file ::= section+
+section ::= section_nm? data+ {
+    methods=[getName]
+    mixin="project.psi.impl.ProjectSectionElementImpl"
+    stubClass="project.index.stub.ProjectSectionStub"
+    elementTypeFactory="project.psi.impl.ProjectSectionElementType.getInstance"
+}
+
+section_nm ::= SECTION_KEY
+data ::= dataKey EQ dataValue {
+    methods=[getKey getValue]
+    mixin="project.psi.impl.ProjectDataElementImpl"
+    stubClass="project.index.stub.ProjectDataStub"
+    elementTypeFactory="project.psi.impl.ProjectDataElementType.getInstance"
+}
+
+dataKey ::= KEY
+dataValue ::= VALUE+

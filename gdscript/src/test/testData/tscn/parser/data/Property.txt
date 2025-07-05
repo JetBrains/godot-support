@@ -1,0 +1,3 @@
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ikl4w"]
+0:0/0 = 0
+0:0/0/physics_layer_0/linear_velocity = Vector2(0, 0)

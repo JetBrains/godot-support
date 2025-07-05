@@ -6,7 +6,6 @@ using System.Reflection;
 using JetBrains.Annotations;
 using JetBrains.Collections.Viewable;
 using JetBrains.ProjectModel;
-using JetBrains.RdBackend.Common.Features;
 using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.ReSharper.UnitTestFramework.Execution.TestRunner;
@@ -23,12 +22,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, ITestRunnerContext context)
         {
-            var solution = context.RuntimeEnvironment.Project.GetSolution();
+            var solution = context.RuntimeDescriptor.Project.GetSolution();
             var baseDirectory = solution.GetComponent<GodotTracker>().MainProjectBasePath;
             var scenePaths = baseDirectory.GetChildDirectories(pluginDirectory,
                 PathSearchFlags.ExcludeFiles | PathSearchFlags.RecurseIntoSubdirectories).Select(a=>a.Combine(runnerScene)).Where(a => a.ExistsFile).ToArray();
             if (!scenePaths.Any())
-                throw new Exception("Please manually put folder with files from https://github.com/van800/godot-demo-projects/tree/net6/mono/dodge_the_creeps/RiderTestRunner to your project.");
+                throw new Exception("Please manually put folder with files from https://github.com/van800/godot-demo-projects/tree/net6/mono/dodge_the_creeps/projects/MainProject/RiderTestRunner to your project.");
             if (scenePaths.Length > 1)
                 throw new Exception($"Make sure you have only 1 {pluginDirectory}/{runnerScene} in your project.");
             
@@ -64,7 +63,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
             if (context is ITestRunnerExecutionContext executionContext)
             {
-                return executionContext.Run.HostController.StartProcess(startInfo, executionContext.Run, context.Logger);
+                return executionContext.Run.HostController.StartProcess(startInfo, executionContext.Run, context.Logger).Result;
             }
 
             return base.StartProcess(startInfo, context);

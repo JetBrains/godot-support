@@ -31,7 +31,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
         public override IPreparedProcess StartProcess(ProcessStartInfo startInfo, ITestRunnerContext context)
         {
-            var solution = context.RuntimeEnvironment.Project.GetSolution();
+            var solution = context.RuntimeDescriptor.Project.GetSolution();
             var solutionDirectory = solution.SolutionDirectory;
             var scenePaths = solutionDirectory.GetChildDirectories(pluginDirectory,
                 PathSearchFlags.ExcludeFiles | PathSearchFlags.RecurseIntoSubdirectories).Select(a=>a.Combine(runnerScene)).Where(a => a.ExistsFile).ToArray();
@@ -52,7 +52,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
 
             var rawStartInfo = new JetProcessStartInfo(startInfo);
             var patcher = new GodotPatcher(solution, scenePaths.Single().MakeRelativeTo(solutionDirectory));
-            var request = context.RuntimeEnvironment.ToJetProcessRuntimeRequest();
+            var request = context.RuntimeDescriptor.ToJetProcessRuntimeRequest(null);
             var patch = new JetProcessStartInfoPatch(patcher, request);
             var preparedProcess = new PreparedProcess(rawStartInfo, patch);
             CaptureOutputIfRequired(preparedProcess, context);
@@ -102,7 +102,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.UnitTesting
             if (context is ITestRunnerExecutionContext executionContext &&
                 executionContext.Run.HostController.HostId == WellKnownHostProvidersIds.DebugProviderId)
             {
-                var solution = context.RuntimeEnvironment.Project.GetSolution();
+                var solution = context.RuntimeDescriptor.Project.GetSolution();
                 process.ErrorLineRead += line => { Send(solution, context.Lifetime, myDebugPort, line, TestRunnerOutputEventType.Error); };
                 process.OutputLineRead += line => { Send(solution, context.Lifetime, myDebugPort, line, TestRunnerOutputEventType.Message); };
             }

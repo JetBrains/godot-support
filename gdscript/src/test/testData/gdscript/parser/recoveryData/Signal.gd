@@ -1,0 +1,2 @@
+signal
+var a
