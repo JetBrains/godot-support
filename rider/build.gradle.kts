@@ -1,3 +1,4 @@
+import com.jetbrains.plugin.structure.base.utils.forceRemoveDirectory
 import com.jetbrains.plugin.structure.base.utils.isFile
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.intellij.platform.gradle.Constants
@@ -6,6 +7,8 @@ import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import kotlin.io.path.absolute
 import kotlin.io.path.isDirectory
+import org.gradle.kotlin.dsl.support.unzipTo
+import kotlin.io.path.*
 
 plugins {
     alias(libs.plugins.changelog)
@@ -185,6 +188,104 @@ tasks {
             exceptionFormat = TestExceptionFormat.FULL
         }
         environment["LOCAL_ENV_RUN"] = "true"
+    }
+
+    register("prepareTextMateBundleNuget", fun Task.() {
+        // pack nuget manually with the following command
+        // nuget pack JetBrains.Godot.Tools.nuspec
+        // nuget may be installed with `brew install nuget`
+        // upload to https://jetbrains.team/p/net/packages/nuget/build/JetBrains.Godot.Tools
+        group = "rider-godot"
+        doLast {
+
+            data class PluginDescription(val name: String, val url: String)
+
+            val godotVscodePluginVersion = "2.3.0" // https://github.com/godotengine/godot-vscode-plugin/releases
+            // alternative val url = URL("https://marketplace.visualstudio.com/_apis/public/gallery/publishers/geequlim/vsextensions/godot-tools/$godotVscodePluginVersion/vspackage")
+
+            val myPlugins = listOf(
+                PluginDescription(
+                    "godot-tools",
+                    "https://github.com/godotengine/godot-vscode-plugin/releases/download/$godotVscodePluginVersion/godot-tools-$godotVscodePluginVersion.vsix"
+                ),
+            )
+
+            logger.lifecycle("downloading TextMate bundles")
+            myPlugins.forEach { plugin ->
+                val nugetDir = projectDir.resolve("nuget").toPath()
+                if (nugetDir.exists()) {
+                    nugetDir.forceRemoveDirectory()
+                }
+                nugetDir.createDirectory()
+                val nuspecFile = nugetDir.resolve("JetBrains.Godot.Tools.nuspec").toFile()
+                nuspecFile.writeTextIfChanged(
+                    """<?xml version="1.0" encoding="utf-8"?>
+    <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+      <metadata>
+        <id>JetBrains.Godot.Tools</id>
+        <version>${godotVscodePluginVersion}.5</version>
+        <title>Godot Tools</title>
+        <authors>godotengine</authors>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <license type="expression">MIT</license>
+        <copyright>Copyright (c) 2016-2022 The Godot Engine community</copyright>
+        <projectUrl>https://github.com/godotengine/godot-vscode-plugin</projectUrl>
+        <description>Godot tools to redestribute with the godot plugin</description>
+      </metadata>
+      <files>
+        <file src=".\**\*.*" target="" />
+      </files>
+    </package>""".trimIndent()
+                )
+
+                val configDir = nugetDir
+                    .resolve("DotFiles")
+                    .resolve("bundles")
+                    .resolve(plugin.name)
+                if (!configDir.exists()) {
+                    configDir.createDirectories()
+                }
+
+                val temporaryFile = temporaryDir.resolve(plugin.name)
+                download(temporaryFile, plugin.url)
+                logger.lifecycle("Unzipping ${temporaryFile.path} to $configDir")
+                unzipTo(configDir.toFile(), temporaryFile)
+                postprocess(configDir.resolve("extension/package.json"))
+            }
+        }
+    })
+}
+
+fun postprocess(packageJson: java.nio.file.Path) {
+    val packageJsonText = packageJson.readText()
+    // we don't want textmate for .gd and .tscn
+    val newPackageJsonText = packageJsonText.replace("\".gd\"", "\".gd_disabled\"")
+        .replace("\".tscn\"", "\".tscn_disabled\"")
+        .replace("\".godot\"", "\".godot_disabled\"")
+        .replace("\".tres\"", "\".tres_disabled\"")
+        .replace("\".import\"", "\".import_disabled\"")
+        .replace("\".gdns\"", "\".gdns_disabled\"")
+        .replace("\".gdnlib\"", "\".gdnlib_disabled\"")
+    packageJson.writeText(newPackageJsonText)
+}
+
+fun download(temp: File, spec: String) {
+    val url = uri(spec).toURL()
+    val connection = url.openConnection()
+    connection.setRequestProperty(
+        "User-Agent",
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"
+    )
+
+    val inputStream = connection.getInputStream()
+    val outputStream = temp.outputStream()
+
+    outputStream.use { output ->
+        inputStream.use { input ->
+            input.copyTo(output)
+        }
+
+        logger.lifecycle("Downloaded $url to ${temp.path}")
     }
 }
 
