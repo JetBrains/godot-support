@@ -1,9 +1,9 @@
 package gdscript.utils
 
 import com.intellij.ide.plugins.PluginManagerCore
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
-import com.jetbrains.rd.util.reactive.IOptProperty
 import com.jetbrains.rider.godot.community.LspRunningStatusProvider
 import com.jetbrains.rider.godot.community.ProjectInfoProvider
 import kotlinx.coroutines.Deferred
@@ -16,15 +16,28 @@ class RiderGodotSupportPluginUtil {
         private val EP_NAME2: ExtensionPointName<ProjectInfoProvider> = ExtensionPointName.create("com.intellij.rider.godot.community.projectInfoProvider")
 
         fun isGodotSupportLSPRunning(project: Project): Boolean {
-            return EP_NAME.extensionList.any { it.isLspRunning(project) } // list of booleans
+            val extList = EP_NAME.extensionList
+            if (extList.size > 1) {
+                thisLogger().error("Only one implementation of ${EP_NAME.name} is allowed.")
+            }
+            return extList.any { it.isLspRunning(project) } // list of booleans
         }
 
         fun isGodotProject(project: Project): Deferred<Boolean>? {
-            return EP_NAME2.extensionList.firstOrNull()?.isGodotProject(project)
+            val extList = EP_NAME2.extensionList
+            if (extList.size > 1) {
+                thisLogger().error("Only one implementation of ${EP_NAME2.name} is allowed.")
+            }
+            return extList.firstOrNull()?.isGodotProject(project)
         }
 
-        fun getMainProjectBasePathProperty(project: Project): Deferred<Path>? =
-            EP_NAME2.extensionList.firstOrNull()?.getMainProjectBasePathProperty(project)
+        fun getMainProjectBasePathProperty(project: Project): Deferred<Path>? {
+            val extList = EP_NAME2.extensionList
+            if (extList.size > 1) {
+                thisLogger().error("Only one implementation of ${EP_NAME2.name} is allowed.")
+            }
+            return extList.firstOrNull()?.getMainProjectBasePathProperty(project)
+        }
     }
 }
 

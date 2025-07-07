@@ -42,6 +42,7 @@ dependencies {
 
     intellijPlatform {
         intellijIdeaCommunity(libs.versions.ideaSdk, useInstaller = false)
+        // todo: leave runIde to run IDEA and create a custom testing task runRider to run Rider.
         // rider(libs.versions.riderSdk, useInstaller = false)
         jetbrainsRuntime()
         // this fails, compile the community plugin in advance, I haven't found a workaround
@@ -64,6 +65,7 @@ intellijPlatform{
 }
 
 tasks {
+    // todo: tobe removed with RIDER-127007 Different approach to GD sdk
     register("prepare") {
         doLast {
             val url = "https://packages.jetbrains.team/files/p/net/gdscriptsdk/gdscriptsdk-1.0.0-SNAPSHOT.tar.xz"
