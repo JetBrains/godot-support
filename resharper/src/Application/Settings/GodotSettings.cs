@@ -29,5 +29,10 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
         [SettingsEntry(true, DescriptionResourceType: typeof(Strings),
             DescriptionResourceName: nameof(Strings.GodotSettings_t_Enable_debugger_extensions))]
         public bool EnableDebuggerExtensions;
+
+        // Build
+        [SettingsEntry(true, DescriptionResourceType: typeof(Strings),
+            DescriptionResourceName: nameof(Strings.GodotSettings_BuildAutomatically_Description))]
+        public bool BuildAutomatically;
     }
 }

@@ -50,6 +50,10 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
                 AddBoolOption((GodotSettings s) => s.EnableDebuggerExtensions,
                     Strings.ExtendValueRendering_Text);
                 AddBetterCommentText(Strings.GodotOptionsPage_AddDebuggingSection_Extend_value_rendering_Comment);
+                
+                AddBoolOption((GodotSettings s) => s.BuildAutomatically,
+                    Strings.BuildAutomatically_Text);
+                AddBetterCommentText(Strings.GodotSettings_BuildAutomatically_Description);
             }
         }
         
