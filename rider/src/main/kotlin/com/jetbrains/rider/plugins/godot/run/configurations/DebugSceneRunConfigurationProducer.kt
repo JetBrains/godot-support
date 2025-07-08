@@ -29,7 +29,9 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
     override fun getConfigurationFactory() = runConfigurationType<GodotDebugRunConfigurationType>().factory
 
     override fun isConfigurationFromContext(configuration: GodotDebugRunConfiguration, context: ConfigurationContext): Boolean {
-        val basePath = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.valueOrNull?.mainProjectBasePath ?: return false
+        val descriptor = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.valueOrNull ?: return false
+        if (descriptor.isPureGdScriptProject) return false
+        val basePath = descriptor.mainProjectBasePath
         if (GodotProjectDiscoverer.getInstance(context.project).godot3Path.value == null) return false
 
         val resPath = extractResPath(File(basePath), context) ?: return false
