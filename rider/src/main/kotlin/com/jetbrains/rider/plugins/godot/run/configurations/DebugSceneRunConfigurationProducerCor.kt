@@ -24,7 +24,9 @@ class DebugSceneRunConfigurationProducerCor : LazyRunConfigurationProducer<DotNe
 
     override fun setupConfigurationFromContext(configuration: DotNetExeConfiguration, context: ConfigurationContext, sourceElement: Ref<PsiElement>): Boolean {
         val file = DebugSceneRunConfigurationProducer.getContainingFile(context) ?: return false
-        val basePath = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.valueOrNull?.mainProjectBasePath ?: return false
+        val descriptor = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.valueOrNull ?: return false
+        if (descriptor.isPureGdScriptProject) return false
+        val basePath = descriptor.mainProjectBasePath
         val resPath = DebugSceneRunConfigurationProducer.extractResPath(File(basePath), context) ?: return false
 
         val path = GodotProjectDiscoverer.getInstance(context.project).godot4Path.value
