@@ -37,6 +37,7 @@
     <rider.runtime.dotNetRuntimeAutodetect implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetRuntimeAutodetect"/>
     <rider.debugger.editAndContinue.dotNetEncInfoAutodetect implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetEncInfoAutodetect"/>
     <rider.filesIndexingRuleProvider implementation="com.jetbrains.rider.plugins.godot.GodotFilesIndexingRuleProvider"/>
+    <fileDocumentManagerListener implementation="com.jetbrains.rider.plugins.godot.GodotFileDocumentManagerListener"/>
 
     <!-- Options pages -->
     <applicationConfigurable groupId="language"

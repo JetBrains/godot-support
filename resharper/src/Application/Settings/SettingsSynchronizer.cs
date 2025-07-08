@@ -35,6 +35,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.Settings
             BindSettingToProperty(lifetime, solution, host, boundStore,
                 (GodotSettings s) => s.UseDynamicPort,
                 (model, args) => model.BackendSettings.UseDynamicPort.Value = args.New);
+            BindSettingToProperty(lifetime, solution, host, boundStore,
+                (GodotSettings s) => s.BuildAutomatically,
+                (model, args) => model.BackendSettings.BuildAutomatically.Value = args.New);
         }
 
         private static void BindSettingToProperty<TKeyClass, TEntryMemberType>(

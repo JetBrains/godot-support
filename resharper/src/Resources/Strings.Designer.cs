@@ -60,6 +60,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Resources
         return string.Format(formatter, format, args);
     }
 
+    public static string BuildAutomatically_Text => ResourceManager.GetString("BuildAutomatically_Text");
     public static string GDScript_AttemptToConnectTheRunningGodotEditor_Text => ResourceManager.GetString("GDScript_AttemptToConnectTheRunningGodotEditor_Text");
     public static string GDScript_AutomaticallyStartHeadlessLSPServer_Text => ResourceManager.GetString("GDScript_AutomaticallyStartHeadlessLSPServer_Text");
     public static string GDScript_ConnectingLSPServer_Text => ResourceManager.GetString("GDScript_ConnectingLSPServer_Text");
@@ -75,5 +76,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.Resources
     public static string GDScript_LSP_Port_Text => ResourceManager.GetString("GDScript_LSP_Port_Text");
     public static string GDScript_LSP_Remote_Host_Text => ResourceManager.GetString("GDScript_LSP_Remote_Host_Text");
     public static string LanguageServerConnectionMode_Description => ResourceManager.GetString("LanguageServerConnectionMode_Description");
+    public static string GodotSettings_BuildAutomatically_Description => ResourceManager.GetString("GodotSettings_BuildAutomatically_Description");
   }
 }

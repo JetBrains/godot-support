@@ -55,6 +55,7 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
             property("lspConnectionMode", LanguageServerConnectionMode)
             property("remoteHostPort", int)
             property("useDynamicPort", bool)
+            property("buildAutomatically", bool)
         })
 
         property("godotDescriptor", GodotDescriptor)

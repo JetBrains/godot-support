@@ -20,7 +20,9 @@ import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.util.idea.getService
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -114,5 +116,20 @@ class GodotProjectDiscoverer(project: Project) {
             model.backendSettings.remoteHostPort.adviseNotNull(lifetime) { getInstance(session.project).remoteHostPort.set(it) }
             model.backendSettings.useDynamicPort.adviseNotNull(lifetime) { getInstance(session.project).useDynamicPort.set(it) }
         }
+    }
+}
+
+@OptIn(ExperimentalCoroutinesApi::class)
+fun <T> Deferred<T>?.valueOrDefault(defaultValue: T): T {
+    if (this == null) return defaultValue
+
+    return if (this.isCompleted) {
+        try {
+            this.getCompleted()
+        } catch (_: Exception) {
+            defaultValue
+        }
+    } else {
+        defaultValue
     }
 }
