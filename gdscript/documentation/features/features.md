@@ -86,7 +86,7 @@ Please report any issues you encounter - this is still yet to be battle tested
     <img src="../../screens/features/tool_window/scene_preview.png" />
 </details>
 
-### Line markers
+### Gutter markers
 
 <details>
     <summary>Parent(super) methods</summary>
@@ -95,7 +95,7 @@ Please report any issues you encounter - this is still yet to be battle tested
 </details>
 
 <details>
-    <summary>Run current scene</summary>
+    <summary>Run current scene (disabled in Rider)</summary>
     <img src="../../screens/features/line_marker/run_marker.png" />
 </details>
 
@@ -131,7 +131,7 @@ Please report any issues you encounter - this is still yet to be battle tested
     <img src="../../screens/features/hint/inlay.png" />
 </details>
 
-### Run configuration - start game from Editor
+### Run configuration - start game from Editor  (disabled in Rider)
 
 <details>
     <summary>Add Godot's path</summary>
