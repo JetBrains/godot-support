@@ -46,24 +46,4 @@ class GdLibraryUpdater(private val project: Project) {
         val sdkPath = GdLibraryManager.extractSdkIfNeeded(version)
         GdLibraryManager.registerSdkIfNeeded(sdkPath, project)
     }
-
-    // todo: can be removed
-    private fun refreshNeeded(library: Library, latestVersion: String): Boolean {
-        // no sources found
-        if (library.rootProvider.getFiles(OrderRootType.SOURCES).isEmpty()) return true
-        // no version or outdated version
-        val props = (library.modifiableModel as LibraryEx.ModifiableModelEx).properties as GdLibraryProperties
-
-        if (props.version.isBlank()) return true
-
-        // Skip version date check since we're using bundled SDK
-        // if (props.version.isBlank() || GdLibraryManager.libDate(props.version) != props.date) return true
-
-        // is it correct version?
-        if (!library.name!!.endsWith(latestVersion) || library.name!!.endsWith("Master"))
-            return true
-
-        // the sdk folder may not be present on the disk or stamp is invalid
-        return library.rootProvider.getFiles(OrderRootType.SOURCES).any { !SdkIntegrityValidator().hasValidStamp(it) }
-    }
 }
