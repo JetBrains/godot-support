@@ -2,7 +2,6 @@ package gdscript.library
 
 import com.intellij.ide.plugins.getPluginDistDirByClass
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
@@ -11,54 +10,15 @@ import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.util.io.Decompressor
-import gdscript.utils.GdSdkUtil.versionToSdkName
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.Path
 import kotlin.io.path.exists
 import kotlin.io.path.pathString
 
 object GdLibraryManager {
 
-    val LIBRARY_NAME = "GdSdk"
-
-    // alternative to registerSdk
-    //fun addBCLApiSources(path: Path, project: Project) {
-    //    val sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(path.pathString)
-    //
-    //    ApplicationManager.getApplication().invokeLater {
-    //        ApplicationManager.getApplication().runWriteAction(Runnable {
-    //            val module = ModuleManager.getInstance(project).modules.first()
-    //            val rootManager = ModuleRootManager.getInstance(module)
-    //            val model = rootManager.getModifiableModel()
-    //            try {
-    //                if (!model.contentRoots.any { it == sourceRoot }) {
-    //                    if (sourceRoot != null) {
-    //                        model.addContentEntry(sourceRoot, object : ProjectModelExternalSource {
-    //                            override fun getDisplayName(): String =
-    //                                "gdscript bcl"
-    //
-    //                            override fun getId(): String =
-    //                                "gdscriptBcl"
-    //                        })
-    //                    }
-    //                    model.commit()
-    //                }
-    //                else {
-    //                    model.dispose()
-    //                }
-    //            }
-    //            catch (e: IOException) {
-    //                e.printStackTrace()
-    //            }
-    //            finally {
-    //                if (model.isWritable()) {
-    //                    model.dispose()
-    //                }
-    //            }
-    //        })
-    //    }
-    //}
+    // before 252, library name used to be "GdSdk $version"
+    private const val LIBRARY_NAME = "GdSdk"
 
     fun registerSdkIfNeeded(path: Path, project: Project) {
         val sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(path.pathString)
@@ -74,16 +34,20 @@ object GdLibraryManager {
             // /Users/ivan.shakhov/Work/ultimate/out/dev-run/Rider
             // vs
             // /Users/ivan.shakhov/Work/ultimate/out/dev-run/rider
-            if (it.isValid(sourceRoot.url, OrderRootType.SOURCES))
-            return@registerSdkIfNeeded
+            if (it.isValid(sourceRoot.url, OrderRootType.SOURCES)
+                && libraryTable.libraries.count { library -> library.name?.startsWith(LIBRARY_NAME) == true } == 1) {
+                return@registerSdkIfNeeded
+            }
         }
 
         var tableModel = libraryTable.modifiableModel
-        var library = tableModel.getLibraryByName(LIBRARY_NAME)
+        val libraries = tableModel.libraries.filter { library -> library.name?.startsWith(LIBRARY_NAME) == true }
 
         val module = ModuleManager.getInstance(project).modules.first()
-        if (library != null) {
-            tableModel.removeLibrary(library)
+        if (libraries.any()) {
+            for (library in libraries) {
+                tableModel.removeLibrary(library)
+            }
 
             ApplicationManager.getApplication().invokeAndWait {
                 ApplicationManager.getApplication().runWriteAction(Runnable {
@@ -93,7 +57,7 @@ object GdLibraryManager {
         }
 
         tableModel = libraryTable.modifiableModel
-        library = tableModel.createLibrary(LIBRARY_NAME, GdLibraryKind)
+        val library = tableModel.createLibrary(LIBRARY_NAME, GdLibraryKind)
         val libraryModel = library.modifiableModel
         libraryModel.addRoot(sourceRoot, OrderRootType.SOURCES)
 
@@ -143,22 +107,6 @@ object GdLibraryManager {
         return extractSdkIfNeededInternal(version, bundledSdkPath)
     }
 
-    // old approach
-    fun extractSdkIfNeeded2(version: String): Path {
-        val pluginDirs = arrayListOf(
-            Path(PathManager.getPluginsPath()),
-            Path(PathManager.getPreInstalledPluginsPath()))
-
-        val potentialSdkPaths = pluginDirs.map { dir ->
-            dir.resolve("rider-gdscript/sdk/sdk.tar.xz") }
-        val bundledSdkPath = potentialSdkPaths.singleOrNull { it.exists() }
-
-        if (bundledSdkPath == null) {
-            throw Exception("Bundled SDK not found at $potentialSdkPaths")
-        }
-        return extractSdkIfNeededInternal(version, bundledSdkPath)
-    }
-
     private fun findSdkVersion(extractionDir: Path, version: String): Path? {
         // Look for a directory that matches the requested version
         val versionDirs = Files.list(extractionDir)
@@ -167,7 +115,7 @@ object GdLibraryManager {
             .toList()
 
         // If we found an exact match, use it
-        val exactMatch = versionDirs.find { it.fileName.toString() == version.versionToSdkName() }
+        val exactMatch = versionDirs.find { it.fileName.toString() == "$LIBRARY_NAME $version" }
         if (exactMatch != null) {
             thisLogger().info("Use $exactMatch for $version.")
             return exactMatch
