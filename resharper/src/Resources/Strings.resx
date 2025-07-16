@@ -68,6 +68,6 @@ such as active scene and Node children.</value>
         <value>Different ways to connect LSP</value>
     </data>
     <data name="GodotSettings_BuildAutomatically_Description">
-        <value>Automatically build the solution when focus moves away from Rider, allowing GodotEditor to reload exports in the inspector.</value>
+        <value>Automatically build the solution when focus shifts away from Rider, enabling Godot Editor to reload exports in the Inspector</value>
     </data>
 </root>
