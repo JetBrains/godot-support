@@ -36,6 +36,7 @@ repositories {
     intellijPlatform {
         defaultRepositories()
         jetbrainsRuntime()
+        nightly()
     }
 }
 
@@ -53,6 +54,7 @@ val riderSdkPath by lazy {
 dependencies {
     intellijPlatform {
         rider(libs.versions.riderSdk, useInstaller = false)
+        javaCompiler(libs.versions.javaCompiler)
         jetbrainsRuntime()
         bundledPlugin("org.jetbrains.plugins.textmate")
         //localPlugin(repoRoot.resolve("community/build/libs/rider-godot-community.jar"))
