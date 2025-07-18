@@ -8,7 +8,6 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.*
-import com.intellij.platform.lsp.api.customization.DefaultLspCustomization
 import com.intellij.platform.lsp.api.customization.LspCompletionCustomizer
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
 import com.intellij.platform.lsp.api.customization.LspCustomization
@@ -148,7 +147,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             return GodotLsp4jClient(handler, project)
         }
 
-        override val lspCustomization: LspCustomization = object : DefaultLspCustomization() {
+        override val lspCustomization: LspCustomization = object : LspCustomization() {
             override val completionCustomizer: LspCompletionCustomizer = object : LspCompletionSupport() {
                 override fun getCompletionPrefix(parameters: CompletionParameters, defaultPrefix: String): String =
                     // RIDER-119006 LSP Completion for GDScript doesn't work after "$"
