@@ -6,7 +6,6 @@ import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons
-import gdscript.GdIcon
 import javax.swing.Icon
 
 class GdColorSettingsPage : ColorSettingsPage {
@@ -40,6 +39,7 @@ var v2 = Vector2(1, 2)
 # DANGER: danger comment
 # WARN: warning comment
 # NOTE: note comment
+## Documentation comment
 func _init():
     print("Constructed!")
     var local_var = 5
@@ -91,6 +91,7 @@ class Something:
             AttributesDescriptor("Static method call", GdHighlighterColors.STATIC_METHOD_CALL),
             AttributesDescriptor("Flow control", GdHighlighterColors.FLOW_KEYWORDS),
             AttributesDescriptor("Comments", GdHighlighterColors.COMMENT),
+            AttributesDescriptor("Doc comments", GdHighlighterColors.DOC_COMMENT),
             AttributesDescriptor("Critical comments", GdHighlighterColors.DANGER),
             AttributesDescriptor("Warning comments", GdHighlighterColors.WARNING),
             AttributesDescriptor("Note comments", GdHighlighterColors.NOTE),
