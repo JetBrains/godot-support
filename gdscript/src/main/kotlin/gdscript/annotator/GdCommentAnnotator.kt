@@ -15,6 +15,12 @@ class GdCommentAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is PsiComment) return
 
+        if (element.text.startsWith("##")) {
+            holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                .textAttributes(GdHighlighterColors.DOC_COMMENT)
+                .create()
+        }
+
         val state = GdProjectSettingsState.getInstance(element).state
         val criticals = state.criticals.split(",")
         val warnings = state.warnings.split(",")
@@ -35,5 +41,4 @@ class GdCommentAnnotator : Annotator {
             }
         }
     }
-
 }

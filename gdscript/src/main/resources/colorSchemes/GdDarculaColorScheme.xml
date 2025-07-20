@@ -80,6 +80,11 @@
             <option name="FOREGROUND" value="cdcfd280" />
         </value>
     </option>
+    <option name="GD_DOC_COMMENT">
+        <value>
+            <option name="FOREGROUND" value="99b3cccc" />
+        </value>
+    </option>
     <option name="GD_STRING_FORMAT">
         <value>
             <option name="FOREGROUND" value="badeff" />

@@ -61,6 +61,11 @@ interface GdHighlighterColors {
             "GD_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT
         )
 
+        // Soft translucent blue
+        val DOC_COMMENT = TextAttributesKey.createTextAttributesKey(
+            "GD_DOC_COMMENT", DefaultLanguageHighlighterColors.DOC_COMMENT
+        )
+
         // Yellow
         val STRING = TextAttributesKey.createTextAttributesKey(
             "GD_STRING", DefaultLanguageHighlighterColors.STRING
