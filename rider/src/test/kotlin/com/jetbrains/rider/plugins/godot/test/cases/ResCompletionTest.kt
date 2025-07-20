@@ -8,8 +8,8 @@ import com.jetbrains.rider.test.annotations.RiderTestTimeout
 import com.jetbrains.rider.test.annotations.Solution
 import com.jetbrains.rider.test.annotations.TestEnvironment
 import com.jetbrains.rider.test.base.PerClassSolutionTestBase
-import com.jetbrains.rider.test.env.enums.BuildTool
-import com.jetbrains.rider.test.env.enums.SdkVersion
+import com.jetbrains.rider.test.enums.BuildTool
+import com.jetbrains.rider.test.enums.sdk.SdkVersion
 import com.jetbrains.rider.test.facades.TestApiScopes
 import com.jetbrains.rider.test.facades.editor.EditorApiFacade
 import com.jetbrains.rider.test.facades.editor.RiderEditorApiFacade
