@@ -10,11 +10,9 @@ import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
-import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
-import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
+import com.jetbrains.rider.run.configurations.RiderConfigurationParametersAware
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
-import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
 import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.createEmptyConsoleCommandLine
 import com.jetbrains.rider.run.environment.ExecutableType
@@ -63,8 +61,6 @@ class  StartGodotEditorAction : DumbAwareAction() {
     companion object {
         private val logger = Logger.getInstance(StartGodotEditorAction::class.java)
 
-        data class Parameters(val useExternalConsole:Boolean, val envs: Map<String, String>, val isPassParentEnvs:Boolean, val exePath: String,
-                              val workingDirectory:String, val programParameters:String)
         fun startEditor(project: Project) {
             val runManager = RunManager.getInstance(project)
             val configurationType = ConfigurationTypeUtil.findConfigurationType(DotNetExeConfigurationType::class.java)
@@ -86,35 +82,9 @@ class  StartGodotEditorAction : DumbAwareAction() {
             if (runConfiguration == null)
                 throw Exception("Godot ${GodotRunConfigurationGenerator.EDITOR_CONFIGURATION_NAME} run configuration was not present.")
 
-            val parameters = when (val exeConfiguration = runConfiguration.configuration) {
-                is DotNetExeConfiguration -> Parameters(
-                    exeConfiguration.parameters.useExternalConsole,
-                    exeConfiguration.parameters.envs,
-                    exeConfiguration.parameters.isPassParentEnvs,
-                    exeConfiguration.parameters.exePath,
-                    exeConfiguration.parameters.workingDirectory,
-                    exeConfiguration.parameters.programParameters
-                )
-                is GodotDebugRunConfiguration -> Parameters(
-                    exeConfiguration.parameters.useExternalConsole,
-                    exeConfiguration.parameters.envs,
-                    exeConfiguration.parameters.isPassParentEnvs,
-                    exeConfiguration.parameters.exePath,
-                    exeConfiguration.parameters.workingDirectory,
-                    exeConfiguration.parameters.programParameters
-                )
-                is ExeConfiguration -> Parameters(
-                    exeConfiguration.parameters.useExternalConsole,
-                    exeConfiguration.parameters.envs,
-                    exeConfiguration.parameters.isPassParentEnvs,
-                    exeConfiguration.parameters.exePath,
-                    exeConfiguration.parameters.workingDirectory,
-                    exeConfiguration.parameters.programParameters
-                )
-                else -> throw Exception("Unexpected run configuration type")
-            }
+            val parameters = (runConfiguration as? RiderConfigurationParametersAware<*>)?.parameters ?: throw Exception("Unexpected run configuration type")
 
-            val runCommandLine = createEmptyConsoleCommandLine(parameters.useExternalConsole, if (SystemInfo.isWindows) ExecutableType.Windows else ExecutableType.Console)
+            val runCommandLine = createEmptyConsoleCommandLine(parameters.terminalMode, if (SystemInfo.isWindows) ExecutableType.Windows else ExecutableType.Console)
                 .withEnvironment(parameters.envs)
                 .withParentEnvironmentType(if (parameters.isPassParentEnvs) {
                     GeneralCommandLine.ParentEnvironmentType.CONSOLE

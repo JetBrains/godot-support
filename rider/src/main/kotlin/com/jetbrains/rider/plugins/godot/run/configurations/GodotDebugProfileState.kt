@@ -27,6 +27,7 @@ import com.jetbrains.rider.plugins.godot.model.debuggerWorker.godotDebuggerWorke
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.run.ExternalConsoleMediator
 import com.jetbrains.rider.run.WorkerRunInfo
+import com.jetbrains.rider.run.configurations.TerminalMode
 import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
 import com.jetbrains.rider.run.createEmptyConsoleCommandLine
 import com.jetbrains.rider.run.environment.ExecutableType
@@ -68,7 +69,7 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
     override suspend fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler, lifetime: Lifetime): ExecutionResult {
         val envs = exeConfiguration.parameters.envs.toMutableMap()
         envs.addUnique(lifetime, "GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:${remoteConfiguration.port},server=n,suspend=y")
-        val runCommandLine = createEmptyConsoleCommandLine(exeConfiguration.parameters.useExternalConsole, if (SystemInfo.isWindows) ExecutableType.Windows else ExecutableType.Console)
+        val runCommandLine = createEmptyConsoleCommandLine(exeConfiguration.parameters.terminalMode, if (SystemInfo.isWindows) ExecutableType.Windows else ExecutableType.Console)
             .withEnvironment(envs)
             .withParentEnvironmentType(if (exeConfiguration.parameters.isPassParentEnvs) {
                 GeneralCommandLine.ParentEnvironmentType.CONSOLE
@@ -83,7 +84,7 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
         val monoConnectResult = super.execute(executor, runner, workerProcessHandler)
         workerProcessHandler.addProcessListener(object : ProcessAdapter() {
             override fun startNotified(event: ProcessEvent) {
-                val targetProcessHandler = if (exeConfiguration.parameters.useExternalConsole)
+                val targetProcessHandler = if (exeConfiguration.parameters.terminalMode == TerminalMode.ExternalConsole)
                     ExternalConsoleMediator.createProcessHandler(runCommandLine)
                 else
                     KillableProcessHandler(runCommandLine)

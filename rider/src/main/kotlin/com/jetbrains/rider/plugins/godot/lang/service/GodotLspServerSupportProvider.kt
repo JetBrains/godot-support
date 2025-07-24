@@ -8,12 +8,13 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.*
-import com.intellij.platform.lsp.api.customization.DefaultLspCustomization
 import com.intellij.platform.lsp.api.customization.LspCompletionCustomizer
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
 import com.intellij.platform.lsp.api.customization.LspCustomization
 import com.intellij.platform.lsp.api.customization.LspHoverCustomizer
 import com.intellij.platform.lsp.api.customization.LspHoverDisabled
+import com.intellij.platform.lsp.api.customization.LspInlayHintCustomizer
+import com.intellij.platform.lsp.api.customization.LspInlayHintDisabled
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
@@ -148,7 +149,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             return GodotLsp4jClient(handler, project)
         }
 
-        override val lspCustomization: LspCustomization = object : DefaultLspCustomization() {
+        override val lspCustomization: LspCustomization = object : LspCustomization() {
             override val completionCustomizer: LspCompletionCustomizer = object : LspCompletionSupport() {
                 override fun getCompletionPrefix(parameters: CompletionParameters, defaultPrefix: String): String =
                     // RIDER-119006 LSP Completion for GDScript doesn't work after "$"
@@ -161,6 +162,8 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                         return LspHoverDisabled
                     return super.hoverCustomizer
                 }
+
+            override val inlayHintCustomizer: LspInlayHintCustomizer = LspInlayHintDisabled
         }
     }
 }

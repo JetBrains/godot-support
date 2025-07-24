@@ -16,6 +16,5 @@ open class GodotDebugRunFactory(type: ConfigurationType) : ConfigurationFactory(
                 workingDirectory = "",
                 envs = hashMapOf(),
                 isPassParentEnvs = true,
-                useExternalConsole = false
             ))
 }
