@@ -25,7 +25,7 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity(libs.versions.ideaSdk, useInstaller = false)
+        intellijIdeaCommunity(libs.versions.ideaSdk) { useInstaller = false }
         // rider(libs.versions.riderSdk, useInstaller = false)
         jetbrainsRuntime()
     }

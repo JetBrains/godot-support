@@ -1,13 +1,11 @@
 import com.jetbrains.plugin.structure.base.utils.forceRemoveDirectory
 import com.jetbrains.plugin.structure.base.utils.isFile
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.kotlin.dsl.support.unzipTo
 import org.jetbrains.intellij.platform.gradle.Constants
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import kotlin.io.path.absolute
-import kotlin.io.path.isDirectory
-import org.gradle.kotlin.dsl.support.unzipTo
 import kotlin.io.path.*
 
 plugins {
@@ -52,7 +50,7 @@ val riderSdkPath by lazy {
 
 dependencies {
     intellijPlatform {
-        rider(libs.versions.riderSdk, useInstaller = false)
+        rider(libs.versions.riderSdk) { useInstaller = false }
         jetbrainsRuntime()
         bundledPlugin("org.jetbrains.plugins.textmate")
         //localPlugin(repoRoot.resolve("community/build/libs/rider-godot-community.jar"))
