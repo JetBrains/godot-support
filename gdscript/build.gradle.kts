@@ -41,12 +41,12 @@ dependencies {
     compileOnly(":rider-godot-community")
 
     intellijPlatform {
-        intellijIdeaCommunity(libs.versions.ideaSdk, useInstaller = false)
+        intellijIdeaCommunity(libs.versions.ideaSdk) { useInstaller = false }
         // todo: leave runIde to run IDEA and create a custom testing task runRider to run Rider.
         // rider(libs.versions.riderSdk, useInstaller = false)
         jetbrainsRuntime()
-        // this fails, compile the community plugin in advance, I haven't found a workaround
-        localPlugin(repoRoot.resolve("community/build/libs/rider-godot-community.jar"))
+        // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
+        localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
         testFramework(TestFrameworkType.JUnit5)
         // testFramework(TestFrameworkType.Bundled)
     }
