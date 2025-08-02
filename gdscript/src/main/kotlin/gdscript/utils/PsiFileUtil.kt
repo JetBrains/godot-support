@@ -24,7 +24,7 @@ object PsiFileUtil {
         if (this.startsWith("res://") || this.startsWith("\"res://")) return this
 
         val thisPath = this.trim('"').toNioPathOrNull()?.normalize() ?: return this
-        val dirPath = element.containingFile.originalFile.virtualFile.parent.toNioPath()
+        val dirPath = element.containingFile.originalFile.virtualFile.parent?.toNioPath() ?: return this
 
         FilenameIndex.getVirtualFilesByName(thisPath.name, GlobalSearchScope.allScope(project)).find {
             val itPath = it.toNioPath()
