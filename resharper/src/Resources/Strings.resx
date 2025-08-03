@@ -70,4 +70,10 @@ such as active scene and Node children.</value>
     <data name="GodotSettings_BuildAutomatically_Description">
         <value>Automatically build the solution when focus shifts away from Rider, enabling Godot Editor to reload exports in the Inspector</value>
     </data>
+    
+    <data name="Debug_Chickensoft_Test" xml:space="preserve">
+        <value>Debug '{0}'</value>
+        <comment>{0} &lt;- 'Name'; 
+        </comment>
+    </data>
 </root>

@@ -26,6 +26,7 @@ import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
 import com.jetbrains.rider.model.godot.frontendBackend.TestRunnerOutputEventType
 import com.jetbrains.rider.plugins.godot.model.debuggerWorker.godotDebuggerWorkerModel
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
+import com.jetbrains.rider.plugins.godot.run.RunChickenTestsUtil
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfigurationFactory
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
@@ -91,6 +92,10 @@ class FrontendBackendHost : LifetimedService() {
                 ProgramRunnerUtil.executeConfiguration(runConfiguration, DefaultDebugExecutor.getDebugExecutorInstance())
 
                 task
+            }
+
+            model.runChickensoftTest.adviseNotNull(lifetime) {
+                RunChickenTestsUtil.execute(it, project)
             }
 
             GodotProjectDiscoverer.getInstance(project).godot3Path.adviseNotNull(lifetime){

@@ -77,5 +77,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.Resources
     public static string GDScript_LSP_Remote_Host_Text => ResourceManager.GetString("GDScript_LSP_Remote_Host_Text");
     public static string LanguageServerConnectionMode_Description => ResourceManager.GetString("LanguageServerConnectionMode_Description");
     public static string GodotSettings_BuildAutomatically_Description => ResourceManager.GetString("GodotSettings_BuildAutomatically_Description");
+    public static string Debug_Chickensoft_Test => ResourceManager.GetString("Debug_Chickensoft_Test");
   }
 }
