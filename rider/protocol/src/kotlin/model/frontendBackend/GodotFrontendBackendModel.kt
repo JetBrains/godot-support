@@ -62,5 +62,7 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
         property("isGodotProject", bool)
 
         property("editorState", GodotEditorState)
+
+        sink("runChickensoftTest", string).async.documentation = "Passes test identifier to frontend"
     }
 }

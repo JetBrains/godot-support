@@ -1,6 +1,7 @@
 package com.jetbrains.rider.plugins.godot.run
 
 import com.intellij.execution.RunManager
+import com.intellij.execution.RunnerAndConfigurationSettings
 import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.client.ClientProjectSession
 import com.intellij.openapi.components.Service
@@ -39,6 +40,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
         const val PLAYER_CONFIGURATION_NAME = "Player"
         const val PLAYER_GDSCRIPT_CONFIGURATION_NAME = "Player GDScript"
         const val EDITOR_CONFIGURATION_NAME = "Editor"
+        const val CHICKENSOFT_TEST_CONFIGURATION_NAME = "Debug test"
     }
 
     class ProtocolListener : SolutionExtListener<GodotFrontendBackendModel> {
@@ -119,32 +121,36 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             }
         }
 
-        private fun createOrUpdateCoreRunConfiguration(
-            configurationName: String,
-            programParameters:String,
-            runManager: RunManager,
-            godotPath: String,
-            project: Project
-        ) {
-            val configs = runManager.allSettings.filter { it.type is DotNetExeConfigurationType && it.name == configurationName }
-            if (configs.any()) {
-                configs.forEach{
-                    (it.configuration as DotNetExeConfiguration).parameters.exePath = godotPath
-                    (it.configuration as DotNetExeConfiguration).parameters.workingDirectory = project.solutionDirectory.absolutePath
+        companion object {
+            fun createOrUpdateCoreRunConfiguration(
+                configurationName: String,
+                programParameters: String,
+                runManager: RunManager,
+                godotPath: String,
+                project: Project
+            ): RunnerAndConfigurationSettings {
+                val configs = runManager.allSettings.filter { it.type is DotNetExeConfigurationType && it.name == configurationName }
+                if (configs.any()) {
+                    configs.forEach {
+                        (it.configuration as DotNetExeConfiguration).parameters.exePath = godotPath
+                        (it.configuration as DotNetExeConfiguration).parameters.workingDirectory = project.solutionDirectory.absolutePath
+                    }
+                    return configs.last()
                 }
-            } else {
-                val configurationType = ConfigurationTypeUtil.findConfigurationType(DotNetExeConfigurationType::class.java)
-                val runConfiguration = runManager.createConfiguration(configurationName, configurationType.factory)
-                val config = runConfiguration.configuration as DotNetExeConfiguration
-                config.parameters.exePath = godotPath
-                config.parameters.programParameters = programParameters
-                config.parameters.workingDirectory = project.solutionDirectory.absolutePath
-                config.parameters.runtimeType = DotNetCoreRuntimeType
-                runConfiguration.storeInLocalWorkspace()
-                runManager.addConfiguration(runConfiguration)
+                else {
+                    val configurationType = ConfigurationTypeUtil.findConfigurationType(DotNetExeConfigurationType::class.java)
+                    val runConfiguration = runManager.createConfiguration(configurationName, configurationType.factory)
+                    val config = runConfiguration.configuration as DotNetExeConfiguration
+                    config.parameters.exePath = godotPath
+                    config.parameters.programParameters = programParameters
+                    config.parameters.workingDirectory = project.solutionDirectory.absolutePath
+                    config.parameters.runtimeType = DotNetCoreRuntimeType
+                    runConfiguration.storeInLocalWorkspace()
+                    runManager.addConfiguration(runConfiguration)
+                    return runConfiguration
+                }
             }
         }
-
         private fun createOrUpdateRunConfiguration(
             configurationName: String,
             programParameters:String,

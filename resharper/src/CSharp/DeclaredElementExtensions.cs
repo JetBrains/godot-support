@@ -22,5 +22,10 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp
         {
             return candidate.DerivesFrom(KnownTypes.GodotObject);
         }
+
+        public static bool DerivesFromChickenTest([CanBeNull] this ITypeElement candidate)
+        {
+            return candidate.DerivesFrom(KnownTypes.ChickensoftTest);
+        }
     }
 }
