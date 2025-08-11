@@ -7,7 +7,7 @@
 
   <dependencies>
     <plugin id="com.intellij.modules.rider"/>
-    <plugin id="org.jetbrains.plugins.textmate"/>
+    <module name="intellij.textmate"/>
     <plugin id="com.intellij.rider.godot.community"/>
     <module name="intellij.platform.dap"/>
   </dependencies>
