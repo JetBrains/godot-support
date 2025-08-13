@@ -108,7 +108,32 @@ class GdExprTypeAnnotator : Annotator {
     }
 
     private fun arrIndexExpr(element: GdArrEx, holder: AnnotationHolder) {
+        val exprs = element.exprList
+        val baseType = exprs.getOrNull(0)?.returnType ?: return
+        val indexType = exprs.getOrNull(1)?.returnType ?: return
 
+        // Skip if dynamic/unresolved
+        if (baseType.isDynamicType() || indexType.isDynamicType()) return
+
+        var expectedKey: String? = null
+        if (baseType.startsWith("Array[")) {
+            expectedKey = GdKeywords.INT
+        } else if (baseType == "Array") {
+            expectedKey = GdKeywords.INT
+        } else if (baseType.startsWith("Dictionary[")) {
+            val inside = baseType.substringAfter("[").substringBeforeLast("]")
+            val parts = inside.split(",").map { it.trim() }
+            if (parts.isNotEmpty()) expectedKey = parts[0]
+        }
+
+        val exp = expectedKey ?: return // if null (untyped dict) do not enforce
+        // If the expected key type accepts the provided index type, it's fine
+        if (GdExprUtil.typeAccepts(exp, indexType, element)) return
+
+        holder
+            .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Invalid index type $indexType, expected $exp")
+            .range(exprs.getOrNull(1)?.textRange ?: element.textRange)
+            .create()
     }
 }
 
