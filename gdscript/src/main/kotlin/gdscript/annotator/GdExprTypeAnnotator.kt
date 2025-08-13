@@ -24,6 +24,7 @@ class GdExprTypeAnnotator : Annotator {
             is GdShiftEx -> shiftExpr(element, holder)
             is GdComparisonEx -> comparisonExpr(element, holder)
             is GdClassVarDeclTl -> classVarDecl(element, holder)
+            is GdArrEx -> arrIndexExpr(element, holder)
         }
     }
 
@@ -106,6 +107,8 @@ class GdExprTypeAnnotator : Annotator {
             .create()
     }
 
+    private fun arrIndexExpr(element: GdArrEx, holder: AnnotationHolder) {
 
+    }
 }
 
