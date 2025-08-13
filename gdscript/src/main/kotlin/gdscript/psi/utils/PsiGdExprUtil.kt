@@ -116,10 +116,10 @@ object PsiGdExprUtil {
             }
 
             is GdArrEx -> {
-                val arrayType = expr.exprList.firstOrNull()?.returnType ?: return GdKeywords.VARIANT
-                if (arrayType.startsWith("Array[")) return fromTyped(arrayType)
-
-                return GdOperand.getReturnType(arrayType, GdKeywords.INT, "[]", expr.project)
+                val exprType = expr.exprList.firstOrNull()?.returnType ?: return GdKeywords.VARIANT
+                if (exprType.startsWith("Array[") || exprType.startsWith("Dictionary["))
+                    return fromTyped(exprType)
+                return GdOperand.getReturnType(exprType, GdKeywords.INT, "[]", expr.project)
             }
 
             is GdPrimaryEx -> {
@@ -140,7 +140,7 @@ object PsiGdExprUtil {
                         return node.element.type
                     }
 
-                    is GdDictDecl -> return "Dictionary"
+                    is GdDictDecl -> return "Dictionary[Variant, Variant]"
                     is GdArrayDecl -> {
 //                        var type = ""
 //                        expr.arrayDecl?.exprList?.forEach {
@@ -276,6 +276,8 @@ object PsiGdExprUtil {
         var className = getAttrOrCallParentClass(element) ?: return null
         if (className.startsWith("Array")) {
             className = "Array"
+        } else if (className.startsWith("Dictionary")) {
+            className = "Dictionary"
         }
 
         return GdClassNamingIndex.INSTANCE.get(className, element.project, GlobalSearchScope.allScope(element.project))
@@ -287,7 +289,12 @@ object PsiGdExprUtil {
             return typed.substring(5).trim('[', ']')
         }
 
-        return typed
+        if (typed.startsWith("Dictionary")) {
+            val inside = typed.substring(10).trim('[', ']')
+            return inside.split(",").map { it.trim() }.last()
+        }
+
+        return GdKeywords.VARIANT
     }
 
     fun fromTyped(typed: GdTypedVal?): String {
