@@ -11,6 +11,12 @@ rider/.intellijPlatform
 rider/build
 rider/protocol/build
 rider/classes
+rider/nuget
+
+gdscript/.intellijPlatform
+gdscript/build
+gdscript/protocol/build
+gdscript/classes
 
 *generated*
 *Generated*
