@@ -165,6 +165,23 @@ Please report any issues you encounter - this is still yet to be battle tested
     <img src="../../screens/features/validations/correct_return.png" />
 </details>
 
+<details>
+    <summary>Typed Array/Dictionary indexing checks</summary>
+    <div>
+        Array[T] requires an <strong>int</strong> index. Dictionary[K, V] requires a key of type <strong>K</strong>.<br/>
+        Untyped Dictionary accepts any key type.<br/>
+        On type mismatch, only the index expression is highlighted.
+    </div>
+</details>
+
+<details>
+    <summary>Element type inference for indexing</summary>
+    <div>
+        <code>arr[index]</code> returns <strong>T</strong> for <code>Array[T]</code>.<br/>
+        <code>dict[key]</code> returns <strong>V</strong> for <code>Dictionary[K, V]</code>.
+    </div>
+</details>
+
 #### Method correctness
 
 <details>
