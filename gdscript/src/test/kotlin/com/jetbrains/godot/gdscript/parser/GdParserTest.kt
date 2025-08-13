@@ -2,9 +2,7 @@ package com.jetbrains.godot.gdscript.parser
 
 import com.intellij.testFramework.ParsingTestCase
 import com.jetbrains.godot.getBaseTestDataPath
-import com.jetbrains.rider.test.framework.TestProcessorRule
 import gdscript.GdParserDefinition
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -12,8 +10,6 @@ import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
 class GdParserTest : ParsingTestCase("", "gd", GdParserDefinition()) {
-    @Rule @JvmField val testProcessorRule: TestProcessorRule = TestProcessorRule()
-
     // https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html
 
     @Test fun testExtension() = doTest(true)
