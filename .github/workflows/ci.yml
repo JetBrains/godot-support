@@ -46,3 +46,7 @@ jobs:
               shell: bash
               working-directory: gdscript
               run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
+            - name: Test gdscript
+              shell: bash
+              working-directory: gdscript
+              run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} test
