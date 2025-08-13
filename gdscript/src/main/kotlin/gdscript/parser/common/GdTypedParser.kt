@@ -1,5 +1,7 @@
 package gdscript.parser.common
 
+import gdscript.GdKeywords.ARRAY
+import gdscript.GdKeywords.DICTIONARY
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
@@ -57,10 +59,39 @@ object GdTypedParser : GdBaseParser {
         if (!b.recursionGuard(l, "TypedVal")) return false
         val typedVal = b.mark()
 
+        // Capture base type name (first IDENTIFIER token text) before consuming it via parseTypeHint
+        val baseTypeName = if (b.nextTokenIs(IDENTIFIER)) b.tokenText else null
+
         var ok = parseTypeHint(b, l + 1)
         if (ok && b.consumeToken(LSBR, true)) {
+            var paramCount = 0
+            // Support either single param (Array[T]) or exactly two params (Dictionary[K, V])
             ok = ok && parseTypeHint(b, l + 1)
+            if (ok) paramCount++
+            if (ok && b.passToken(COMMA)) {
+                ok = ok && parseTypeHint(b, l + 1)
+                if (ok) paramCount++
+                // Disallow more than two parameters
+                if (ok && b.nextTokenIs(COMMA)) {
+                    ok = false
+                    b.error("Only two type parameters are supported")
+                }
+            }
             ok = ok && b.consumeToken(RSBR, true)
+
+            // Enforce parameter counts for known generic containers
+            if (ok && baseTypeName != null) {
+                when (baseTypeName) {
+                    ARRAY -> if (paramCount != 1) {
+                        ok = false
+                        b.error("Array expects exactly one type parameter")
+                    }
+                    DICTIONARY -> if (paramCount != 2) {
+                        ok = false
+                        b.error("Dictionary expects exactly two type parameters")
+                    }
+                }
+            }
         }
 
         if (ok) typedVal.done(TYPED_VAL)
