@@ -28,8 +28,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
         private readonly Lifetime myLifetime;
         public VirtualFileSystemPath MainProjectBasePath { get; private set; }
         
-        public IProject MainProject { get; private set; }
-        public GodotDescriptor GodotDescriptor { get; private set; }
+        public IProject? MainProject { get; private set; }
+        public GodotDescriptor? GodotDescriptor { get; private set; }
 
         /// <summary>
         /// List of config/feature from the project.godot
@@ -90,8 +90,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             return Task.CompletedTask;
         }
 
-        [CanBeNull]
-        private IProject GetMainGodotProject()
+        private IProject? GetMainGodotProject()
         {
             using (ReadLockCookie.Create())
             {
