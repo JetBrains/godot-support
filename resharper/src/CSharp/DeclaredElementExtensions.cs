@@ -9,7 +9,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp
 {
     public static class DeclaredElementExtensions
     {
-        private static bool DerivesFrom([CanBeNull] this ITypeElement candidate, IClrTypeName baseTypeName)
+        private static bool DerivesFrom(this ITypeElement? candidate, IClrTypeName baseTypeName)
         {
             if (candidate == null)
                 return false;
@@ -18,7 +18,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp
             return candidate.IsDescendantOf(baseTypeElement);
         }
 
-        public static bool DerivesFromGodotObject([CanBeNull] this ITypeElement candidate)
+        public static bool DerivesFromGodotObject(this ITypeElement? candidate)
         {
             return candidate.DerivesFrom(KnownTypes.GodotObject);
         }
