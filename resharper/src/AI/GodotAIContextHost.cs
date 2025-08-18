@@ -29,6 +29,9 @@ public class GodotAIContextHost
                     return Task.FromResult(new GodotContextResult(false, false, null));
 
                 var isPureGdScriptProject = tracker.GodotDescriptor.IsPureGdScriptProject;
+                if (tracker.MainProject == null)
+                    return Task.FromResult(new GodotContextResult(true, isPureGdScriptProject, null));
+                
                 var sdk = tracker.MainProject.ProjectProperties.DotNetCorePlatform?.Sdk;
                 return Task.FromResult(new GodotContextResult(true, isPureGdScriptProject, sdk));
             }
