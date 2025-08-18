@@ -82,7 +82,7 @@ class  StartGodotEditorAction : DumbAwareAction() {
             if (runConfiguration == null)
                 throw Exception("Godot ${GodotRunConfigurationGenerator.EDITOR_CONFIGURATION_NAME} run configuration was not present.")
 
-            val parameters = (runConfiguration as? RiderConfigurationParametersAware<*>)?.parameters ?: throw Exception("Unexpected run configuration type")
+            val parameters = (runConfiguration.configuration as? RiderConfigurationParametersAware<*>)?.parameters ?: throw Exception("Unexpected run configuration type")
 
             val runCommandLine = createEmptyConsoleCommandLine(parameters.terminalMode, if (SystemInfo.isWindows) ExecutableType.Windows else ExecutableType.Console)
                 .withEnvironment(parameters.envs)
