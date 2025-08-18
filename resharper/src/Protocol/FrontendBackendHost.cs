@@ -12,7 +12,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Protocol
     {
         // This will only ever be null when running tests. The value does not change for the lifetime of the solution.
         // Prefer using this field over calling GetFrontendBackendModel(), as that method will throw in tests
-        [CanBeNull] public readonly GodotFrontendBackendModel Model;
+        public readonly GodotFrontendBackendModel? Model;
 
         public FrontendBackendHost(ISolution solution)
         {

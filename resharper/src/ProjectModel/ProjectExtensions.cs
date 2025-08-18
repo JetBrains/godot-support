@@ -8,7 +8,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 {
     public static class ProjectExtensions
     {
-        public static bool IsGodotProject([CanBeNull] this IProject project)
+        public static bool IsGodotProject(this IProject? project)
         {
             if (project == null || !project.IsValid())
                 return false;
