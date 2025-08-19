@@ -3,7 +3,8 @@ package gdscript.reference
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.vfs.findFile
+import com.intellij.openapi.vfs.findFileOrDirectory
+import com.intellij.openapi.vfs.isFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import gdscript.completion.GdLookup
@@ -31,8 +32,8 @@ class GdResourceReference : PsiReferenceBase<PsiElement> {
 
         if (!resKey.startsWith("res://")){
             element.containingFile?.virtualFile?.parent?.let {
-                var file = it.findFile(resKey)
-                if (file != null){
+                var file = it.findFileOrDirectory(resKey)
+                if (file != null && file.isFile){
                     resKey = file.resourcePath(true)
                 }
             }
