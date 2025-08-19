@@ -8,12 +8,12 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootModificationUtil
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
+import com.intellij.openapi.util.Version
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.util.io.Decompressor
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.exists
-import kotlin.io.path.pathString
+import kotlin.io.path.*
 
 object GdLibraryManager {
 
@@ -94,10 +94,6 @@ object GdLibraryManager {
 
         // Find the requested SDK version in the extracted directory
         val requestedSdkDir = findSdkVersion(extractionDir, version)
-        if (requestedSdkDir == null) {
-            throw Exception("Requested SDK version $version not found in $extractionDir")
-        }
-
         return requestedSdkDir
     }
 
@@ -107,34 +103,35 @@ object GdLibraryManager {
         return extractSdkIfNeededInternal(version, bundledSdkPath)
     }
 
-    private fun findSdkVersion(extractionDir: Path, version: String): Path? {
-        // Look for a directory that matches the requested version
-        val versionDirs = Files.list(extractionDir)
-            .filter { Files.isDirectory(it) }
-            .filter { it.fileName.toString().contains(version) }
-            .toList()
+    private fun findSdkVersion(extractionDir: Path, version: String): Path {
+        // version from the project.godot is always "major.minor", lets always use the highest patch version available
+        val prefix = Version.parseVersion(version)
 
-        // If we found an exact match, use it
-        val exactMatch = versionDirs.find { it.fileName.toString() == "$LIBRARY_NAME $version" }
-        if (exactMatch != null) {
-            thisLogger().info("Use $exactMatch for $version.")
-            return exactMatch
+        if (prefix != null) {
+            val bestMatch = extractionDir.listDirectoryEntries()
+                .asSequence()
+                .filter { Files.isDirectory(it) }
+                .mapNotNull { dir ->
+                    val parsed = Version.parseVersion(dir.name)
+                    if (parsed != null) parsed to dir else null
+                }
+                .filter { (ver, _) -> ver.major == prefix.major && ver.minor == prefix.minor }
+                .sortedByDescending { (semVer, _) -> semVer }
+                .firstOrNull()?.second
+
+            if (bestMatch != null) {
+                thisLogger().info($$"Use $$bestMatch (version ${bestVer.parsedVersion}) for $$version.")
+                return bestMatch
+            }
         }
 
-        // If we found a partial match (e.g. "4.0" matches "4.0.1"), use the first one
-        if (versionDirs.isNotEmpty()) {
-            val dir = versionDirs[0]
-            thisLogger().info("Use $dir for $version.")
-            return dir
+        // If we didn't find any match, look for a "Master" version
+        val masterDir = extractionDir.resolve("Master")
+        if (masterDir.isDirectory()) {
+            thisLogger().info("Use $masterDir for $version.")
+            return masterDir
         }
 
-        // If we didn't find any match, look for a "master" version
-        val masterDir = Files.list(extractionDir)
-            .filter { Files.isDirectory(it) }
-            .filter { it.fileName.toString().equals("master", ignoreCase = true) }
-            .findFirst()
-
-        thisLogger().info("Use $masterDir for $version.")
-        return masterDir.orElse(null)
+        throw Exception("Requested SDK version $version not found in $extractionDir")
     }
 }
