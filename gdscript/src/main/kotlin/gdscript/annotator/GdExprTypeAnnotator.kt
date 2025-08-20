@@ -109,6 +109,21 @@ class GdExprTypeAnnotator : Annotator {
 
     private fun arrIndexExpr(element: GdArrEx, holder: AnnotationHolder) {
         val exprs = element.exprList
+        if (exprs.getOrNull(1) == null) {
+            // Highlight both brackets and everything between them
+            val lBracket = element.node.findChildByType(GdTypes.LSBR)?.psi
+            val rBracket = element.node.findChildByType(GdTypes.RSBR)?.psi
+            val range = when {
+                lBracket != null && rBracket != null -> lBracket.textRange.union(rBracket.textRange)
+                else -> element.textRange
+            }
+            holder
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Indexer has 1 parameter but is invoked with 0 argument")
+                .range(range)
+                .create()
+            return
+        }
+
         val baseType = exprs.getOrNull(0)?.returnType ?: return
         val indexType = exprs.getOrNull(1)?.returnType ?: return
 
