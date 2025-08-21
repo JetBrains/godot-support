@@ -1,0 +1,32 @@
+<html>
+<body>
+<p>Reports GDScript function/method parameters that are declared but never used in their owning function body.</p>
+
+<p>
+This inspection helps you spot dead or redundant parameters. It checks only within the enclosing function or method and ignores signal declarations. Parameters whose names start with an underscore are treated as intentionally unused and are not reported. If a type hint is present but refers to an unresolved non‑builtin type, the parameter is ignored to prevent false positives.
+</p>
+
+<p>Examples:</p>
+<pre><code>
+func damage(target, amount):
+    print("Damaged!")
+    # 'target' and 'amount' are never used → reported
+
+func _process(_delta):
+    # Leading underscore marks intentionally unused parameter → not reported
+    pass
+
+func spawn(enemy: UnknownType):
+    # Ignored if UnknownType cannot be resolved
+    pass
+</code></pre>
+
+<p>Quick fix actions:</p>
+<ul>
+  <li>Prefix the parameter with an underscore to mark it as intentionally unused.</li>
+</ul>
+
+<!-- tooltip end -->
+<p>The inspection does not report parameters that are referenced anywhere in their function/method body. It also skips signal parameters and parameters with unresolved type to avoid false alarms.</p>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<html>
+<body>
+<p>Reports GDScript variables and constants that are declared but never used.</p>
+
+<p>
+This inspection helps keep your scripts clean by detecting local variables and const declarations that have no usages in the project scope. If a type hint is present but refers to an unresolved type, the declaration is ignored to prevent false positives.
+</p>
+
+<p>Examples:</p>
+<pre><code>
+var tmp = 42 # unused, will be reported
+const PI2 = PI * 2 # unused, will be reported
+
+var enemy: UnknownType # ignored if UnknownType cannot be resolved
+</code></pre>
+
+<p>Quick fix actions:</p>
+<ul>
+  <li>Remove the unused variable/constant.</li>
+</ul>
+
+<!-- tooltip end -->
+<p>The inspection does not report declarations that are referenced anywhere in the project. It also skips declarations with unresolved type to avoid false alarms.</p>
+</body>
+</html>
