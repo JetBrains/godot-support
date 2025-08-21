@@ -3,7 +3,9 @@ package gdscript.inspection
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdKeywords
 import gdscript.psi.*
+import gdscript.utils.PsiReferenceUtil.resolveRef
 
 class GdUnusedParameterInspection : GdUnusedInspection() {
 
@@ -27,9 +29,11 @@ class GdUnusedParameterInspection : GdUnusedInspection() {
                 // only check for references in the owning element
                 if (owner == null || anyReference(o.varNmi, owner.useScope)) return
 
+                // Avoid unused highlighting - type is unresolved
+                if (o.typed == null) return
+
                 registerUnusedWithUnderscoreFix(o, o.varNmi, holder)
             }
         }
     }
-
 }
