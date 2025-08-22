@@ -17,7 +17,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application;
 public class GodotVersion : IGodotVersion
 {
     private readonly IFileSystemTracker myFileSystemTracker;
-    private Version? myVersionFromProjectVersionTxt;
+    private Version? myVersion;
     private readonly VirtualFileSystemPath? mySolutionDirectory;
     private static readonly ILogger ourLogger = Logger.GetLogger<GodotVersion>();
     public ViewableProperty<Version> ActualVersionForSolution { get; } = new(new Version(0, 0));
@@ -40,7 +40,7 @@ public class GodotVersion : IGodotVersion
     }
     private Version? TryGetVersionFromProjectVersion(VirtualFileSystemPath solutionDirectory)
     {
-        var version = GetProjectSettingsUnityVersion(solutionDirectory);
+        var version = GetProjectSettingVersion(solutionDirectory);
         if (version == null)
             return null;
             
@@ -54,7 +54,7 @@ public class GodotVersion : IGodotVersion
         return Version.TryParse(input, out var version) ? version : null;
     }
 
-    private static string? GetProjectSettingsUnityVersion(VirtualFileSystemPath solutionDirectory)
+    private static string? GetProjectSettingVersion(VirtualFileSystemPath solutionDirectory)
     {
         var projectVersionTxtPath = GetProjectFilePath(solutionDirectory);
         if (!projectVersionTxtPath.ExistsFile)
@@ -76,8 +76,8 @@ public class GodotVersion : IGodotVersion
     }
     private Version GetActualVersionForSolution()
     {
-        if (myVersionFromProjectVersionTxt != null)
-            return myVersionFromProjectVersionTxt;
+        if (myVersion != null)
+            return myVersion;
 
         return new Version(0, 0);
     }
@@ -92,10 +92,10 @@ public class GodotVersion : IGodotVersion
             projectVersionTxtPath,
             _ =>
             {
-                myVersionFromProjectVersionTxt = TryGetVersionFromProjectVersion(mySolutionDirectory);
+                myVersion = TryGetVersionFromProjectVersion(mySolutionDirectory);
                 UpdateActualVersionForSolution();
             });
-        myVersionFromProjectVersionTxt = TryGetVersionFromProjectVersion(mySolutionDirectory);
+        myVersion = TryGetVersionFromProjectVersion(mySolutionDirectory);
 
         UpdateActualVersionForSolution();
     }
