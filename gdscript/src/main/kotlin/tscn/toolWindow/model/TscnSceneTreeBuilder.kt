@@ -23,7 +23,9 @@ import tscn.psi.search.TscnResourceSearcher
 import tscn.toolWindow.TscnSceneCellRenderer
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
+import java.awt.datatransfer.StringSelection
 import javax.swing.JComponent
+import javax.swing.TransferHandler
 
 class TscnSceneTreeBuilder {
 
@@ -69,8 +71,16 @@ class TscnSceneTreeBuilder {
         val treeModel = TscnSceneTreeNode(basePath)
 
         val tree = Tree(treeModel)
-        tree.dragEnabled = false
-        tree.dropMode
+        tree.dragEnabled = true
+        tree.transferHandler = object : TransferHandler() {
+            override fun getSourceActions(c: JComponent): Int = COPY
+            override fun createTransferable(c: JComponent): java.awt.datatransfer.Transferable? {
+                val selectedPath = (c as? Tree)?.selectionPath ?: return null
+                val node = selectedPath.lastPathComponent as? TscnSceneTreeNode ?: return null
+                val text = node.userObject?.toString() ?: node.myName
+                return StringSelection(text)
+            }
+        }
         tree.cellRenderer = TscnSceneCellRenderer(project)
         tree.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
