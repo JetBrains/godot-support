@@ -120,7 +120,7 @@ object GdLibraryManager {
                 .firstOrNull()?.second
 
             if (bestMatch != null) {
-                thisLogger().info($$"Use $$bestMatch (version ${bestVer.parsedVersion}) for $$version.")
+                thisLogger().info("Use $bestMatch version for $version.")
                 return bestMatch
             }
         }
