@@ -1,6 +1,7 @@
 package gdscript.reference
 
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.findFileOrDirectory
@@ -32,7 +33,13 @@ class GdResourceReference : PsiReferenceBase<PsiElement> {
 
         if (!resKey.startsWith("res://")){
             element.containingFile?.virtualFile?.parent?.let {
-                var file = it.findFileOrDirectory(resKey)
+                var file = try {
+                    it.findFileOrDirectory(resKey)
+                }
+                catch (e: Exception) {
+                    thisLogger().warn("Failed to resolve relative resource path '$resKey' from parent '${it.path}': Exception", e)
+                    null
+                }
                 if (file != null && file.isFile){
                     resKey = file.resourcePath(true)
                 }
