@@ -180,6 +180,11 @@ Please report any issues you encounter - this is still yet to be battle tested
     </div>
 </details>
 
+#### Typed collections: Array[T], Dictionary[K, V]
+
+- The plugin understands Godot 4 typed collections and performs:
+  - Index type checks (T for Array[T], K for Dictionary[K, V]).
+
 #### Method correctness
 
 <details>
