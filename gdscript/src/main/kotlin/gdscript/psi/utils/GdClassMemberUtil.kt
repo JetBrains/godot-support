@@ -136,10 +136,11 @@ object GdClassMemberUtil {
                 GdClassUtil.getOwningClassElement(element)
             }
         } else {
-            // For Enum add also all it's values
+            // Normalize typed Array[K] to base Array
             if (calledOn.startsWith("Array[")) calledOn = "Array"
 
-            if (calledOn.endsWith("Dictionary")) {
+            // Normalize typed Dictionary[K, V] to base Dictionary
+            if (calledOn.startsWith("Dictionary[")) {
                 val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdRef::class.java).lastOrNull()
                 if (firstChild != null) {
                     val dictDecl = findDeclaration(firstChild)
