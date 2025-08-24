@@ -15,7 +15,7 @@ Running the plugin in IDE (Gradle runIde):
 - First time
   - `./gradlew buildPlugin` from the Terminal in community folder.
   - `./gradlew buildPlugin` from the Terminal in gdscript folder.
-- Later you may call it from the Gradle tool window and run configuration would automatically be created.
+- Later you may call `runIde` task from the Gradle tool window and run configuration would automatically be created.
 
 Then run the configuration. It will download the target IDE into the Gradle cache on first run (this may take time) and launch a sandbox IDE with the plugin.
 
