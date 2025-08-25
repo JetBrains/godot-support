@@ -54,11 +54,13 @@ class TscnSceneTreeBuilder {
     private fun collectSceneFiles(file: VirtualFile, project: Project): List<PsiFile> {
         return when (file.fileType) {
             is TscnFileType -> arrayOf(file.getPsiFile(project)).filterNotNull()
-            is GdFileType -> TscnResourceSearcher(project).listReference(file).mapNotNull {
-                it.file
+            is GdFileType -> TscnResourceSearcher(project).listReference(file).mapNotNull { it.file }
+            else -> {
+                // can't reference CSharpFileType here
+                if (file.extension.equals("cs", ignoreCase = true)) {
+                    TscnResourceSearcher(project).listReference(file).mapNotNull { it.file }
+                } else emptyList()
             }
-
-            else -> emptyList()
         }
     }
 
@@ -93,7 +95,7 @@ class TscnSceneTreeBuilder {
         })
 
         var parent: String? = null
-        nodes.first()?.let {
+        nodes.firstOrNull()?.let {
             if (it.instanceResource.isNotBlank()) parent = it.instanceResource
         }
         addParentScene(treeModel, tree, parent)
