@@ -1,12 +1,12 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
+﻿using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Application.Parts;
 using JetBrains.Application.Threading;
 using JetBrains.Application.Threading.Tasks;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Tasks;
+using JetBrains.ProjectModel.Tasks.Listeners;
 using JetBrains.Rd.Base;
 using JetBrains.ReSharper.Feature.Services.Protocol;
 using JetBrains.ReSharper.Features.Running;
@@ -19,7 +19,7 @@ using JetBrains.Util.Threading.Tasks;
 namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
 {
     [SolutionComponent(Instantiation.DemandAnyThreadSafe)]
-    public class GodotTracker : ISolutionLoadTasksInitialSynchronizeSolutionListener
+    public class GodotTracker : ISolutionLoadTasksInitialSynchronizeSolutionListener2
     {
         private readonly ISolution mySolution;
         private readonly ILogger myLogger;
@@ -44,9 +44,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             myLocks = locks;
             myLifetime = lifetime;
         }
-        
-        public Task OnSolutionLoadInitialSynchronizeSolutionAsync(OuterLifetime loadLifetime,
-            ISolutionLoadTasksSchedulerThreading _)
+
+        IEnumerable<SolutionLoadTasksListenerExecutionStep> ISolutionLoadTasksInitialSynchronizeSolutionListener2.OnSolutionLoadInitialSynchronizeSolution()
         {
             var barrierCookie = myLoadTasksScheduler.SetTasksBarrier(GetType(), SolutionLoadTaskKinds.Done,
                 "Waiting for Godot solution load tasks");
@@ -87,7 +86,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                     });
                 }
             }).NoAwait();
-            return Task.CompletedTask;
+            return EmptyList<SolutionLoadTasksListenerExecutionStep>.Enumerable;
         }
 
         private IProject? GetMainGodotProject()
