@@ -7,13 +7,18 @@ import com.jetbrains.rd.util.threading.coroutines.nextNotNullValue
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.projectView.indexing.files.RiderFilesIndexingRule
 import com.jetbrains.rider.projectView.indexing.files.RiderFilesIndexingRuleProvider
+import com.jetbrains.rider.projectView.isDirectorySolution
 import com.jetbrains.rider.projectView.solution
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.io.File
+import kotlin.io.path.Path
 
 class GodotFilesIndexingRuleProvider : RiderFilesIndexingRuleProvider {
     override suspend fun collectRules(project: Project): List<RiderFilesIndexingRule> {
+        // for some obscure reason, adding indexing rules to a virtual solution would exclude them from Solution scope of the GotoFile.
+        if (project.isDirectorySolution)
+            return emptyList()
+
         val model = project.solution.godotFrontendBackendModel
 
         // Wait for godot model initialized on backend
@@ -22,7 +27,7 @@ class GodotFilesIndexingRuleProvider : RiderFilesIndexingRuleProvider {
         // Calculate rules if any
         val descriptor = model.godotDescriptor.valueOrNull ?: return emptyList()
         val projectBaseFile = withContext(Dispatchers.IO) {
-            VfsUtil.findFileByIoFile(File(descriptor.mainProjectBasePath), true)
+            VfsUtil.findFile(Path( descriptor.mainProjectBasePath), true)
         } ?: return emptyList()
 
         val rule = RiderFilesIndexingRule({
