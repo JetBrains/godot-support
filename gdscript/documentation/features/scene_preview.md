@@ -1,6 +1,6 @@
 ## Scene preview details
 
-Scene preview shows Node tree of selected .tscn of or all .tscn files connected with given .gd file  
+Scene preview shows Node tree of selected .tscn of or all .tscn files connected with given .gd or .cs file  
 
 ![scene_preview.png](..%2F..%2Fscreens%2Ffeatures%2Ftool_window%2Fscene_preview.png)
 
