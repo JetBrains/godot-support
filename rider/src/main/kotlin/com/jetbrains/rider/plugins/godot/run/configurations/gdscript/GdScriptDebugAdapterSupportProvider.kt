@@ -32,8 +32,8 @@ private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<
                 val config = environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration
                 try {
                     return DebugAdapterSocketConnection(
-                        host = config.address,
-                        port = config.port, connectionAttempts = 1)
+                        host = GdScriptRunFactory.DEFAULT_ADDRESS,
+                        port = config.structured.debugServerPort, connectionAttempts = 1)
                 }
                 catch (e: Exception) {
                     // handling of cases, if Editor is not running or the port is not matching
@@ -43,8 +43,8 @@ private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<
                     }
 
                     return DebugAdapterSocketConnection(
-                        host = config.address,
-                        port = config.port,
+                        host = GdScriptRunFactory.DEFAULT_ADDRESS,
+                        port = config.structured.debugServerPort,
                         connectionAttempts = 2)
                 }
                 finally {
