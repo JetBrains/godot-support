@@ -10,12 +10,14 @@
     <module name="intellij.textmate"/>
     <plugin id="com.intellij.rider.godot.community"/>
     <module name="intellij.platform.dap"/>
+    <plugin id="com.intellij.modules.json"/>
   </dependencies>
 
   <extensions defaultExtensionNs="com.intellij">
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducerCor" />
+    <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptSceneRunConfigurationProducer" />
 
     <rider.godotDetector implementation="com.jetbrains.rider.plugins.godot.GodotDetectorImpl" />
     <dependencySupport kind="dotnet" coordinate="GodotSharp" displayName="Godot"/>

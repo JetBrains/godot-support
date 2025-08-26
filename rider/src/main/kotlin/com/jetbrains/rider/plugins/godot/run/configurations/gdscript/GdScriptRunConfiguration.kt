@@ -5,62 +5,64 @@ import com.intellij.execution.configuration.EmptyRunProfileState
 import com.intellij.execution.configurations.*
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.RunConfigurationWithSuppressedDefaultRunAction
-import com.intellij.execution.ui.FragmentedSettings
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.platform.dap.DapLaunchArgumentsProvider
 import com.intellij.platform.dap.DapStartRequest
-import com.intellij.util.xmlb.XmlSerializer
-import com.intellij.util.xmlb.annotations.Attribute
-import com.intellij.util.xmlb.annotations.Transient
-import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
 import org.jdom.Element
 
+data class GdScriptStructuredArguments(
+    var request: DapStartRequest,
+    var debugServerPort: Int,
+    var remainingArguments: String,
+    var scene: String,
+)
+
 class GdScriptRunConfiguration(name:String, project: Project, factory: ConfigurationFactory)
-    : RunConfigurationBase<Element>(project, factory, name),
+    : RunConfigurationBase<GdScriptRunFactory.GdScriptDebugConfigurationOptions>(project, factory, name),
       RunConfigurationWithSuppressedDefaultRunAction,
-      RemoteConfiguration,
       WithoutOwnBeforeRunSteps, DapLaunchArgumentsProvider {
 
-    override val adapterId = GdScriptDebugAdapter
-    override val request: DapStartRequest = DapStartRequest.Launch
+    override val adapterId: GdScriptDebugAdapter = GdScriptDebugAdapter
 
-    @Attribute
-    override var port: Int = 6006
+    var structured: GdScriptStructuredArguments =
+        GdScriptStructuredArguments(
+            GdScriptRunFactory.DEFAULT_REQUEST,
+            GdScriptRunFactory.DEFAULT_PORT,
+            GdScriptRunFactory.DEFAULT_EMPTY_JSON,
+            GdScriptRunFactory.DEFAULT_SCENE
+        )
 
-    @Transient
-    override var address: String = "127.0.0.1"
+    override val request: DapStartRequest
+        get() = structured.request
 
-    @Transient
-    override var listenPortForConnections: Boolean = false
-
-    override fun arguments(): Map<String, Any?> = mapOf(
-        // all those do not affect anything
-    )
-
-    override var selectedOptions: MutableList<FragmentedSettings.Option>
-        get() = super.selectedOptions
-        set(value) {}
+    override fun arguments(): Map<String, Any?> {
+        val map = mutableMapOf<String, Any?>(
+            "request" to structured.request,
+            "debugServer" to structured.debugServerPort,
+            "scene" to structured.scene
+        )
+        val rest = GdScriptRunConfigurationHelper.parseArgumentsToMap(structured.remainingArguments)
+        rest.forEach { (k, v) -> if (k !in map.keys) map[k] = v }
+        return map
+    }
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState {
-        // todo: We can start the Godot Editor here
         return EmptyRunProfileState.INSTANCE
     }
 
-    override fun clone(): RunConfiguration {
-        val configuration = super.clone() as GdScriptRunConfiguration
-        configuration.port = port
-        return configuration
+    override fun getOptions(): GdScriptRunFactory.GdScriptDebugConfigurationOptions {
+        return super.getOptions() as GdScriptRunFactory.GdScriptDebugConfigurationOptions
+    }
+
+    override fun writeExternal(element: Element) {
+        options.structuredJson = GdScriptRunConfigurationHelper.serialize(structured)
+        super.writeExternal(element)
     }
 
     override fun readExternal(element: Element) {
         super.readExternal(element)
-        XmlSerializer.deserializeInto(this, element)
-    }
-
-    override fun writeExternal(element: Element) {
-        super.writeExternal(element)
-        XmlSerializer.serializeInto(this, element)
+        structured = GdScriptRunConfigurationHelper.parse(options.structuredJson!!)
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = GdScriptRunConfigurationSettingsEditor(project)
