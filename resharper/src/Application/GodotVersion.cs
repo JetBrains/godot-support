@@ -1,46 +1,37 @@
-#nullable enable
 using System;
 using System.Text.RegularExpressions;
 using JetBrains.Application.FileSystemTracker;
 using JetBrains.Application.Parts;
-using JetBrains.Collections.Viewable;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
-using JetBrains.Rd.Base;
 using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 using JetBrains.Util;
-using JetBrains.Util.Logging;
 
 namespace JetBrains.ReSharper.Plugins.Godot.Application;
 
 [SolutionComponent(Instantiation.DemandAnyThreadSafe)]
 public class GodotVersion : IGodotVersion
 {
+    private readonly ILogger myLogger;
     private readonly IFileSystemTracker myFileSystemTracker;
-    private Version? myVersion;
-    private readonly VirtualFileSystemPath? mySolutionDirectory;
-    private static readonly ILogger ourLogger = Logger.GetLogger<GodotVersion>();
-    public ViewableProperty<Version> ActualVersionForSolution { get; } = new(new Version(0, 0));
+    private readonly GodotTracker myGodotTracker;
+    public Version? ActualVersionForSolution { get; set; }
 
-    public GodotVersion(ISolution solution, IFileSystemTracker fileSystemTracker, GodotTracker? godotTracker, Lifetime lifetime)
+    public GodotVersion(ILogger logger, IFileSystemTracker fileSystemTracker, GodotTracker godotTracker, Lifetime lifetime)
     {
+        myLogger = logger;
         myFileSystemTracker = fileSystemTracker;
-        mySolutionDirectory = solution.SolutionDirectory;
-        if (mySolutionDirectory is { IsAbsolute: false })
-            mySolutionDirectory = solution.SolutionDirectory.ToAbsolutePath( FileSystemUtil.GetCurrentDirectory().ToVirtualFileSystemPath());
-
-        if (godotTracker != null)
-            SetActualVersionForSolution(lifetime); 
+        myGodotTracker = godotTracker;
+        
+        if (godotTracker.ProjectGodotPath == null)
+            return;
+        
+        SetActualVersionForSolution(lifetime); 
     }
-
-    private static VirtualFileSystemPath GetProjectFilePath(VirtualFileSystemPath solutionDirectory)
+    
+    private Version? TryGetVersionFromProjectGodot(VirtualFileSystemPath projectGodotPath)
     {
-        var projectVersionTxtPath = solutionDirectory.Combine("project.godot");
-        return projectVersionTxtPath;
-    }
-    private Version? TryGetVersionFromProjectVersion(VirtualFileSystemPath solutionDirectory)
-    {
-        var version = GetProjectSettingVersion(solutionDirectory);
+        var version = GetVersionFromProjectGodot(projectGodotPath);
         if (version == null)
             return null;
             
@@ -54,13 +45,15 @@ public class GodotVersion : IGodotVersion
         return Version.TryParse(input, out var version) ? version : null;
     }
 
-    private static string? GetProjectSettingVersion(VirtualFileSystemPath solutionDirectory)
+    private string? GetVersionFromProjectGodot(VirtualFileSystemPath projectGodotPath)
     {
-        var projectVersionTxtPath = GetProjectFilePath(solutionDirectory);
-        if (!projectVersionTxtPath.ExistsFile)
+        if (!projectGodotPath.ExistsFile)
+        {
+            myLogger.Error($"{projectGodotPath} does not exist.");
             return null;
+        }
             
-        var text = projectVersionTxtPath.ReadAllText2().Text;
+        var text = projectGodotPath.ReadAllText2().Text;
         var match = Regex.Match(text, @"^config/features=PackedStringArray\(""(?<version>[^""]+)""\)", RegexOptions.Multiline);
         var groups = match.Groups;
         if (match.Success)
@@ -68,35 +61,16 @@ public class GodotVersion : IGodotVersion
 
         return null;
     }
-    private void UpdateActualVersionForSolution()
-    {
-        var version = GetActualVersionForSolution();
-        ourLogger.Verbose($"UpdateActualVersionForSolution to {version}");
-        ActualVersionForSolution.SetValue(version);
-    }
-    private Version GetActualVersionForSolution()
-    {
-        if (myVersion != null)
-            return myVersion;
-
-        return new Version(0, 0);
-    }
 
     private void SetActualVersionForSolution(Lifetime lt)
     {
-        if (mySolutionDirectory == null)
-            return;
-        
-        var projectVersionTxtPath = GetProjectFilePath(mySolutionDirectory);
+        var projectGodotPath = myGodotTracker.ProjectGodotPath;
         myFileSystemTracker.AdviseFileChanges(lt,
-            projectVersionTxtPath,
+            projectGodotPath,
             _ =>
             {
-                myVersion = TryGetVersionFromProjectVersion(mySolutionDirectory);
-                UpdateActualVersionForSolution();
+                ActualVersionForSolution = TryGetVersionFromProjectGodot(projectGodotPath);
             });
-        myVersion = TryGetVersionFromProjectVersion(mySolutionDirectory);
-
-        UpdateActualVersionForSolution();
+        ActualVersionForSolution = TryGetVersionFromProjectGodot(projectGodotPath);
     }
 }
