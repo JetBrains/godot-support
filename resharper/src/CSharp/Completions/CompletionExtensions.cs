@@ -11,7 +11,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 {
     static class CompletionExtensions
     {
-        public static ICSharpLiteralExpression StringLiteral(this CSharpCodeCompletionContext context)
+        public static ICSharpLiteralExpression? StringLiteral(this CSharpCodeCompletionContext context)
             => context.NodeInFile is ITokenNode nodeInFile
                && nodeInFile.Parent is ICSharpLiteralExpression literalExpression
                && literalExpression.Literal.IsAnyStringLiteral()
@@ -32,12 +32,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 ? type.GetClrName()
                 : null;
 
-        public static string InvokedMethodName(this IInvocationExpression invocation)
+        public static string? InvokedMethodName(this IInvocationExpression invocation)
             => invocation.Reference.Resolve().DeclaredElement is IMethod method
                 ? method.ShortName
                 : null;
 
-        public static IClrTypeName InvokedMethodFirstTypeArgument(this IInvocationExpression invocation)
+        public static IClrTypeName? InvokedMethodFirstTypeArgument(this IInvocationExpression invocation)
         {
             var typeArgs = invocation.Reference.Invocation.TypeArguments;
             return typeArgs.Count == 1
@@ -52,7 +52,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                 ? lhsType.GetClrName()
                 : null;
 
-        public static IClrTypeName IfGodotLoadGetResourceType(this CSharpCodeCompletionContext context)
+        public static IClrTypeName? IfGodotLoadGetResourceType(this CSharpCodeCompletionContext context)
         {
             if (!(
                     InvocationExpressionNavigator.GetByArgument(

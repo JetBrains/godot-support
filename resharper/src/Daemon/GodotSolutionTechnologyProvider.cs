@@ -11,13 +11,20 @@ namespace JetBrains.ReSharper.Plugins.Godot.Daemon;
 public class GodotSolutionTechnologyProvider(GodotTracker godotTracker, IGodotVersion godotVersion)
     : GodotSolutionTechnologyProviderBase(godotTracker), ISolutionTechnologyProvider
 {
-    private readonly GodotTracker myGodotTracker = godotTracker;
-
     public IEnumerable<string> GetSolutionTechnology(ISolution solution)
     {
         foreach (var s in GetSolutionTechnologyInternal()) yield return s;
 
-        if (myGodotTracker.GodotDescriptor is { IsPureGdScriptProject: true } && godotVersion.ActualVersionForSolution.Maybe.HasValue)
-            yield return $"Godot version: {godotVersion.ActualVersionForSolution.Maybe.ValueOrDefault}";
+        if (godotVersion.ActualVersionForSolution != null)
+            yield return $"Godot version: {godotVersion.ActualVersionForSolution}";
+        
+        // todo: implement after RIDER-127238 [AIA] Refactor chat context preparation logic
+//         yield return @"## Key Files for Project Analysis:
+// - `project.godot` - Check `[editor_plugins]` section for available tools (e.g., testing frameworks)
+// - `.godot/editor/project_metadata.cfg` - Contains `executable_path` to Godot executable
+//
+// ## Usage:
+// Use the Godot executable path to check files for errors and run tests.";
+        
     }
 }
