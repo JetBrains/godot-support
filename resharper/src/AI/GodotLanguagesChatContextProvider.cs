@@ -11,7 +11,7 @@ using JetBrains.ReSharper.Psi.CSharp;
 namespace JetBrains.ReSharper.Plugins.Godot.AI;
 
 [ShellComponent(Instantiation.DemandAnyThreadSafe)]
-public class GodotPreferableLanguagesChatContextProvider : ILanguagesChatContextDataProvider
+public class GodotPreferableLanguagesChatContextProvider : ISolutionLanguagesChatContextDataProvider
 {
     public bool IsApplicable(IDataContext dataContext) => true;
 
