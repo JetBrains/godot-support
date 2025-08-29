@@ -45,7 +45,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             myLifetime = lifetime;
         }
 
-        IEnumerable<SolutionLoadTasksListenerExecutionStep> ISolutionLoadTasksInitialSynchronizeSolutionListener2.OnSolutionLoadInitialSynchronizeSolution()
+        IEnumerable<SolutionLoadTasksListenerExecutionStep> ISolutionLoadTasksInitialSynchronizeSolutionListener2.OnSolutionLoadInitialSynchronizeSolution(OuterLifetime loadLifetime)
         {
             var barrierCookie = myLoadTasksScheduler.SetTasksBarrier(GetType(), SolutionLoadTaskKinds.Done,
                 "Waiting for Godot solution load tasks");
