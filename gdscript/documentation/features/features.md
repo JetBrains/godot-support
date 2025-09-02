@@ -142,6 +142,9 @@ Please report any issues you encounter - this is still yet to be battle tested
 
 ### Formatter
 
+The full formatter is disabled to avoid structural changes until related issues are resolved.
+In the meantime, please use the "Convert Indents" action.
+
 <details>
     <summary>Code formatter</summary>
     <img src="../../screens/features/formatter.png" />
