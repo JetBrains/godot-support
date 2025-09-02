@@ -62,26 +62,32 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
     }
 
     override fun getCodeSample(settingsType: SettingsType): String {
-        return """extends Node2D
-            |class_name MyClass
-            |
-            |@export
-            |var vari: int = 1 # Comment
-            |var var2: String = "" # Comment
-            |var arrayVar := [
-            |    {
-            |        "vb": "asd",
-            |    },
-            |]
-            |const cc = "cc"
-            |
-            |func fn1():
-            |   pass
-            |
-            |
-            |func fn2():
-            |   pass
+        // Note to inform about the current formatter status.
+        return """# NOTE: GDScript reformat currently converts only indentation (tabs/spaces) according to Code Style.
+            |# It does not change other spacing, alignment, or blank lines.
+            |# Consider enabling "Main menu | View | Active Editor | Show Whitespaces"
         """.trimMargin()
+        //
+        //return """extends Node2D
+        //    |class_name MyClass
+        //    |
+        //    |@export
+        //    |var vari: int = 1 # Comment
+        //    |var var2: String = "" # Comment
+        //    |var arrayVar := [
+        //    |    {
+        //    |        "vb": "asd",
+        //    |    },
+        //    |]
+        //    |const cc = "cc"
+        //    |
+        //    |func fn1():
+        //    |   pass
+        //    |
+        //    |
+        //    |func fn2():
+        //    |   pass
+        //""".trimMargin()
     }
 
 }
