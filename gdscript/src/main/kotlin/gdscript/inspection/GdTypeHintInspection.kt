@@ -5,7 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import gdscript.GdKeywords
-import gdscript.inspection.quickFix.GdAddVariableTypeHintFix
+import gdscript.inspection.fixes.GdAddVariableTypeHintFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerError
 import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
 import gdscript.psi.*

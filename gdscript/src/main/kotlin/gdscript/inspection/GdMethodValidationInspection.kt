@@ -5,8 +5,8 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
-import gdscript.inspection.quickFix.GdAddReturnTypeHintFix
-import gdscript.inspection.quickFix.GdChangeReturnTypeFix
+import gdscript.inspection.fixes.GdAddReturnTypeHintFix
+import gdscript.inspection.fixes.GdChangeReturnTypeFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerGenericError
 import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
 import gdscript.inspection.validator.GdMethodValidator
@@ -72,12 +72,12 @@ class GdMethodValidationInspection : LocalInspectionTool() {
 
             private fun validateConstructor(methodId: GdMethodIdNmi, method: GdMethodDeclTl) {
                 // If parent has parameters - child must call super(args)
-                val parent = GdInheritanceUtil.getExtendedElement(method, holder.project) ?: return;
-                val parentConstructor = GdMethodUtil.findMethod(parent, GdKeywords.INIT_METHOD) ?: return;
-                if (parentConstructor.parameters.isEmpty()) return;
+                val parent = GdInheritanceUtil.getExtendedElement(method, holder.project) ?: return
+                val parentConstructor = GdMethodUtil.findMethod(parent, GdKeywords.INIT_METHOD) ?: return
+                if (parentConstructor.parameters.isEmpty()) return
 
                 val stmts = PsiTreeUtil.findChildrenOfType(method, GdCallEx::class.java)
-                        .filter{ it.expr.text == GdKeywords.SUPER };
+                        .filter{ it.expr.text == GdKeywords.SUPER }
                 if (stmts.isEmpty()) {
                     holder.registerGenericError(methodId, "Initializing super() constructor is required")
                 }

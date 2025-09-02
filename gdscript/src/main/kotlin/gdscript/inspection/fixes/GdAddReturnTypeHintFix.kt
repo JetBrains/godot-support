@@ -1,4 +1,4 @@
-package gdscript.inspection.quickFix
+package gdscript.inspection.fixes
 
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.project.Project
