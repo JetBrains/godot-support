@@ -6,8 +6,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNameIdentifierOwner
 import com.intellij.psi.search.SearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
-import gdscript.inspection.quickFix.GdAddUnderscoreFix
-import gdscript.inspection.quickFix.GdRemoveElementFix
+import gdscript.inspection.fixes.GdAddUnderscoreFix
+import gdscript.inspection.fixes.GdRemoveElementFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerUnused
 
 abstract class GdUnusedInspection : LocalInspectionTool() {

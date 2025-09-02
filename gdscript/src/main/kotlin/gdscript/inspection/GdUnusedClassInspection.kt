@@ -3,7 +3,7 @@ package gdscript.inspection
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.childrenOfType
-import gdscript.inspection.quickFix.GdRemoveElementFix
+import gdscript.inspection.fixes.GdRemoveElementFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerUnused
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassNaming

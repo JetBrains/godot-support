@@ -8,7 +8,9 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
+import com.intellij.util.DocumentUtil
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
+import gdscript.inspection.fixes.GdFixIndentsQuickFix
 
 /**
  * Inspection that checks for leading whitespaces that differ from expected ones in GdScript files.
@@ -19,7 +21,7 @@ class GdWhitespaceLocalInspectionTool : LocalInspectionTool() {
         return WhitespaceVisitor(holder)
     }
 
-    private inner class WhitespaceVisitor(
+    private class WhitespaceVisitor(
         private val myHolder: ProblemsHolder
     ) : PsiElementVisitor() {
 
@@ -36,55 +38,31 @@ class GdWhitespaceLocalInspectionTool : LocalInspectionTool() {
             val useTabs = indentOptions.USE_TAB_CHARACTER
 
             val lineCount = document.lineCount
-            for (i in 0 until lineCount) {
-                val startOffset = document.getLineStartOffset(i)
-                val endOffset = document.getLineEndOffset(i)
-                val line = document.getText(TextRange(startOffset, endOffset))
+            for (lineIndex in 0 until lineCount) {
+                val startOffset = document.getLineStartOffset(lineIndex)
+                val indent: CharSequence = DocumentUtil.getIndent(document, startOffset)
+                val indentRange = TextRange(startOffset, startOffset + indent.length)
 
-                // Iterate only through the leading whitespace characters of the line
-                for (j in 0 until line.length) {
-                    val c = line[j]
-
-                    // If we encounter a non-whitespace character, the leading whitespace sequence has ended
-                    if (c != ' ' && c != '\t') {
-                        break
-                    }
-
-                    if (useTabs) {
-                        // If tabs are preferred, but we find a space in the leading whitespace
-                        if (c == ' ') {
-                            registerError(file, startOffset + j, true) // 'true' for space problem
-                        }
-                    } else {
-                        // If spaces are preferred, but we find a tab in the leading whitespace
-                        if (c == '\t') {
-                            registerError(file, startOffset + j, false) // 'false' for tab problem
-                        }
-                    }
-                }
+                if (indent.contains('\t') && !useTabs)
+                    registerError(file, indentRange, true)
+                if (indent.contains(' ') && useTabs)
+                    registerError(file, indentRange, false)
             }
         }
 
-        private fun registerError(file: PsiFile, offset: Int, tab: Boolean) {
-            val element = file.findElementAt(offset)
-            if (element != null && isSuppressedFor(element)) {
-                return
-            }
-
+        private fun registerError(file: PsiFile, range: TextRange, tab: Boolean) {
             val description = if (tab)
                 message("inspections.whitespace.spaces.problem")
             else
                 message("inspections.whitespace.tabs.problem")
 
-            val range = TextRange(offset, offset + 1)
-
-                myHolder.registerProblem(
-                    file,
-                    description,
-                    ProblemHighlightType.GENERIC_ERROR,
-                    range,
-                    // ReformatQuickFix, I don't like how it looks. there is "apply for all similar errors in File", it doesn't make sense.
-                )
+            myHolder.registerProblem(
+                file,
+                description,
+                ProblemHighlightType.GENERIC_ERROR,
+                range,
+                GdFixIndentsQuickFix()
+            )
         }
     }
 }
