@@ -197,8 +197,8 @@
 
     <!-- Formatters -->
     <lang.braceMatcher language="GdScript" implementationClass="gdscript.formatter.GdBraceMatcher" />
-    <!-- RIDER-129204 Format code would change indents in gdscript -->
-<!--    <lang.formatter language="GdScript" implementationClass="gdscript.formatter.GdFormattingModelBuilder" />-->
+    <!-- Keep the full formatter disabled to avoid structural changes until related bugs are resolved. -->
+    <!-- <lang.formatter language="GdScript" implementationClass="gdscript.formatter.GdFormattingModelBuilder" />-->
     <codeStyleSettingsProvider implementation="gdscript.formatter.GdCodeStyleSettingsProvider" />
     <langCodeStyleSettingsProvider implementation="gdscript.formatter.settings.GdLanguageCodeStyleSettingsProvider" />
 
