@@ -1,0 +1,5 @@
+--> PlayerLogger.cs:14(411,458) // GD.Print($"Binary notation: {binaryNotation}");
+PlayerLogger._Ready() in 
+    +this = {PlayerLogger} <Node2D#29242688834>
+    binaryNotation = {int} 2000000
+
