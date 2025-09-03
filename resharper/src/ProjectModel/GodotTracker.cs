@@ -46,7 +46,6 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                     {
                         var project = GetMainGodotProject();
                         if (project == null) return;
-                        MainProjectBasePath = project.Location;
                         MainProject = project;
                         logger.Verbose($"Godot MainProjectBasePath: {MainProjectBasePath}");
                         GodotDescriptor = new GodotDescriptor(false, MainProjectBasePath.FullPath,
@@ -83,14 +82,26 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             {
                 foreach (var project in solution.GetAllProjects())
                 {
+                    // not a regular generated project, however can happen with gdextensions template
+                    var subItem = project.GetSubItems("project.godot").FirstOrDefault();
+                    if (subItem != null)
+                    {
+                        ProjectGodotPath = subItem.Location;
+                        MainProjectBasePath = ProjectGodotPath.Parent;
+                        return project;
+                    }
+
+                    // regular case
                     var file = project.Location.Combine("project.godot");
                     if (file.ExistsFile)
                     {
                         ProjectGodotPath = file;
+                        MainProjectBasePath = project.Location;
                         return project;
                     }
                 }
             }
+
             return null;
         }
     }
