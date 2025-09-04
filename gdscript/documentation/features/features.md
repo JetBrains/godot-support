@@ -201,6 +201,16 @@ In the meantime, please use the "Convert Indents" action.
 </details>
 
 
+### Inspections
+
+<details>
+    <summary>Whitespace style (tabs vs spaces)</summary>
+    <img src="../../screens/features/inspection/whitespace.png" />
+    <div>
+        Detects and highlights leading indentation that doesn't match your code style settings (tabs vs spaces) in GDScript files. Offers a quick fix to convert indentation.
+    </div>
+</details>
+
 ### Actions
 
 <details>
