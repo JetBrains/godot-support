@@ -10,12 +10,6 @@ allprojects {
     }
 }
 
-kotlin {
-    jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 repositories {
     intellijPlatform {
         defaultRepositories()

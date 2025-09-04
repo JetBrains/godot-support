@@ -58,12 +58,6 @@ dependencies {
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.0")
 }
 
-kotlin {
-    jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 intellijPlatform{
     instrumentCode = false
     buildSearchableOptions = buildConfiguration != "Debug"
