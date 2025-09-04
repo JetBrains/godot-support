@@ -35,11 +35,13 @@ fun downloadAndExtractGodot(version: String): File {
 
     val godotExecutable = extractedDir.resolve(when {
                                                    SystemInfo.isWindows -> "Godot_v${version}-stable_mono_win64.exe"
-                                                   SystemInfo.isLinux -> "Godot_v${version}-stable_mono_linux.x86_64"
+                                                   SystemInfo.isLinux -> "Godot_v${version}-stable_mono_linux_x86_64"
                                                    SystemInfo.isMac -> "Godot_mono.app/Contents/MacOS/Godot"
                                                    else -> error("Unsupported OS for Godot Mono")
                                                }).apply { setExecutable(true) }
-
+    if (SystemInfo.isLinux) {
+        Runtime.getRuntime().exec(arrayOf("chmod", "+x", godotExecutable.absolutePath)).waitFor()
+    }
     if (!godotExecutable.exists()) {
         error("Godot Mono executable not found at ${godotExecutable.absolutePath}")
     }
@@ -63,16 +65,22 @@ fun putGodotProjectToTempTestDir(
 // endregion
 
 // region Godot Execution
-fun startGodot(godotExecutable: File, projectPath: String): Process {
+fun startGodot(godotExecutable: File, projectPath: String, logPath: File): Process {
+    val logFile = File(logPath.toString(), "Godot_${System.currentTimeMillis()}.log")
+
     val command = mutableListOf(
         godotExecutable.absolutePath,
+        "--verbose",
         "--headless",
+        "--editor",
         "--path", projectPath, // Starts the editor, waits for any resources to be imported, and then quits.
-        "--import"
     )
     val process = ProcessBuilder(command)
         .directory(File(projectPath))
+        .redirectErrorStream(true)
+        .redirectOutput(logFile)
         .start()
+
     frameworkLogger.info("Godot process started (pid=${process.pid()})")
     return process
 }
@@ -82,11 +90,38 @@ fun startGodotWithProject(
     projectName: String,
     testWorkDirectory: File,
     solutionSourceRootDirectory: File,
+    logPath: File
 ): Process {
     val godotExecutable = downloadAndExtractGodot(godotVersion)
     val projectDir = putGodotProjectToTempTestDir(projectName, testWorkDirectory, solutionSourceRootDirectory)
-    val process = startGodot(godotExecutable, projectDir.absolutePath)
+    val process = startGodot(godotExecutable, projectDir.absolutePath, logPath)
+    waitForGodotFolderWithFiles(projectDir)
     return process
+}
+
+fun waitForGodotFolderWithFiles(
+    projectDir: File,
+    folderName: String = ".godot",
+    minFileCount: Int = 3
+) {
+    val targetFolder = File(projectDir, folderName)
+    while (!targetFolder.exists() || (targetFolder.listFiles()?.size ?: 0) < minFileCount) {
+        frameworkLogger.info("Waiting files in .godot folder")
+        Thread.sleep(500)
+    }
+}
+
+fun stopGodotProcess(process: Process?) {
+    if (process!!.isAlive) {
+        try {
+            process.destroy()
+            if (!process.waitFor(10, java.util.concurrent.TimeUnit.SECONDS)) {
+                process.destroyForcibly()
+            }
+        } catch (e: Exception) {
+            if (process.isAlive) process.destroyForcibly()
+        }
+    }
 }
 
 fun waitForGodotRunConfigurations(project: Project) {
