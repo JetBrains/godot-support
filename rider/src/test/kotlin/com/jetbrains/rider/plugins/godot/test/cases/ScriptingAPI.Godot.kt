@@ -65,23 +65,27 @@ fun putGodotProjectToTempTestDir(
 // endregion
 
 // region Godot Execution
-fun startGodot(godotExecutable: File, projectPath: String, logPath: File): Process {
+fun startGodot(godotExecutable: File, projectPath: String, logPath: File, dotnetSdk: String): Process {
     val logFile = File(logPath.toString(), "Godot_${System.currentTimeMillis()}.log")
 
     val command = mutableListOf(
         godotExecutable.absolutePath,
         "--verbose",
         "--headless",
-        "--editor",
-        "--path", projectPath, // Starts the editor, waits for any resources to be imported, and then quits.
+        "--import", // Starts the editor, waits for any resources to be imported, and then quits.
+        "--path", projectPath,
     )
-    val process = ProcessBuilder(command)
+
+    val processBuilder = ProcessBuilder(command)
         .directory(File(projectPath))
         .redirectErrorStream(true)
         .redirectOutput(logFile)
-        .start()
-
+    processBuilder.environment()["DOTNET_ROOT"] = dotnetSdk
+    val process = processBuilder.start()
     frameworkLogger.info("Godot process started (pid=${process.pid()})")
+
+    val exitCode = process.waitFor()
+    frameworkLogger.info("Godot process finished, exit code = $exitCode")
     return process
 }
 
@@ -90,38 +94,13 @@ fun startGodotWithProject(
     projectName: String,
     testWorkDirectory: File,
     solutionSourceRootDirectory: File,
-    logPath: File
+    logPath: File,
+    dotnetSdk: String,
 ): Process {
     val godotExecutable = downloadAndExtractGodot(godotVersion)
     val projectDir = putGodotProjectToTempTestDir(projectName, testWorkDirectory, solutionSourceRootDirectory)
-    val process = startGodot(godotExecutable, projectDir.absolutePath, logPath)
-    waitForGodotFolderWithFiles(projectDir)
+    val process = startGodot(godotExecutable, projectDir.absolutePath, logPath, dotnetSdk)
     return process
-}
-
-fun waitForGodotFolderWithFiles(
-    projectDir: File,
-    folderName: String = ".godot",
-    minFileCount: Int = 3
-) {
-    val targetFolder = File(projectDir, folderName)
-    while (!targetFolder.exists() || (targetFolder.listFiles()?.size ?: 0) < minFileCount) {
-        frameworkLogger.info("Waiting files in .godot folder")
-        Thread.sleep(500)
-    }
-}
-
-fun stopGodotProcess(process: Process?) {
-    if (process!!.isAlive) {
-        try {
-            process.destroy()
-            if (!process.waitFor(10, java.util.concurrent.TimeUnit.SECONDS)) {
-                process.destroyForcibly()
-            }
-        } catch (e: Exception) {
-            if (process.isAlive) process.destroyForcibly()
-        }
-    }
 }
 
 fun waitForGodotRunConfigurations(project: Project) {
