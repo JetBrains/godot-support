@@ -1,6 +1,5 @@
 package com.jetbrains.rider.plugins.godot.run.configurations.gdscript
 
-import com.intellij.icons.AllIcons
 import com.intellij.json.JsonLanguage
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.createNestedDisposable
@@ -29,19 +28,18 @@ class GdScriptEditorForm(lifetime: Lifetime, project: Project) {
     private lateinit var remainingArgumentsField: LanguageTextField
     private lateinit var sceneField: JBTextField
     private enum class EditMode { Structured, Raw }
-    private var editMode: EditMode = EditMode.Structured
+    private var editMode: EditMode = EditMode.Raw
 
     // Row references for visibility toggling
     private var rawArgsRowRef: Row? = null
     private var structuredRowRef: Row? = null
 
     fun setVisibility(structured: Boolean) {
-        rawArgsRowRef?.visible(!structured)
-        structuredRowRef?.visible(structured)
+        rawArgsRowRef!!.visible(!structured)
+        structuredRowRef!!.visible(structured)
     }
 
     fun setMode(structured: Boolean) {
-        // sync between structured and raw views
         if (structured){
             val structuredVal = GdScriptRunConfigurationHelper.parse(fullArgumentsField.text)
             portField.value = structuredVal.debugServerPort
@@ -71,19 +69,14 @@ class GdScriptEditorForm(lifetime: Lifetime, project: Project) {
 
             group("", indent = false) {
                 row {
-                    val items = listOf(EditMode.Structured, EditMode.Raw)
-                    val segmented = segmentedButton(items) { mode ->
-                        text = when (mode) {
-                            EditMode.Structured -> GodotPluginBundle.message("gdscript.editor.form.mode.structured")
-                            EditMode.Raw -> GodotPluginBundle.message("gdscript.editor.form.mode.raw")
+                    val segmented = segmentedButton(listOf(EditMode.Raw, EditMode.Structured)) { mode ->
+                        if (mode == EditMode.Raw){
+                            text = GodotPluginBundle.message("gdscript.editor.form.mode.raw")
+                            toolTipText = GodotPluginBundle.message("gdscript.editor.form.mode.raw.tooltip")
                         }
-                        toolTipText = when (mode) {
-                            EditMode.Structured -> GodotPluginBundle.message("gdscript.editor.form.mode.structured.tooltip")
-                            EditMode.Raw -> GodotPluginBundle.message("gdscript.editor.form.mode.raw.tooltip")
-                        }
-                        icon = when (mode) {
-                            EditMode.Structured -> AllIcons.Actions.Edit
-                            EditMode.Raw -> AllIcons.Json.Object
+                        else {
+                            text = GodotPluginBundle.message("gdscript.editor.form.mode.structured")
+                            toolTipText = GodotPluginBundle.message("gdscript.editor.form.mode.structured.tooltip")
                         }
                     }
                     segmented.whenItemSelectedFromUi(lifetime.createNestedDisposable()) { selected ->
@@ -91,13 +84,13 @@ class GdScriptEditorForm(lifetime: Lifetime, project: Project) {
                         setVisibility(selected == EditMode.Structured)
                         setMode(selected == EditMode.Structured)
                     }
-                    segmented.selectedItem = editMode
+                    segmented.selectedItem = EditMode.Raw
                 }
 
                 rawArgsRowRef = row {
                     fullArgumentsField = LanguageTextField(JsonLanguage.INSTANCE, project, "", false)
                     cell(fullArgumentsField).resizableColumn().align(AlignX.FILL)
-                        .comment(GodotPluginBundle.message("gdscript.editor.form.arguments.tooltip"))
+                        .comment(GodotPluginBundle.message("gdscript.editor.form.arguments.comment"))
                 }
 
                 structuredRowRef = row {
@@ -121,9 +114,8 @@ class GdScriptEditorForm(lifetime: Lifetime, project: Project) {
 
                         row(GodotPluginBundle.message("gdscript.editor.form.arguments")) {
                             remainingArgumentsField = LanguageTextField(JsonLanguage.INSTANCE, project, "", false)
-                            remainingArgumentsField.toolTipText = GodotPluginBundle.message("gdscript.editor.form.arguments.tooltip")
+                            remainingArgumentsField.toolTipText = GodotPluginBundle.message("gdscript.editor.form.arguments.comment")
                             cell(remainingArgumentsField).resizableColumn().align(AlignX.FILL)
-                                .comment(GodotPluginBundle.message("gdscript.editor.form.arguments.tooltip"))
                         }
                     }
                 }
@@ -137,15 +129,16 @@ class GdScriptEditorForm(lifetime: Lifetime, project: Project) {
         panel.name = "GdScriptEditorForm"
         // Wire up request change to enable/disable other controls in structured mode
         requestCombo.addActionListener { updateStructuredControlsEnabled() }
-        // Default to Structured (controls) view
-        setVisibility(true)
+        setVisibility(false)
     }
 
     fun setData(structured: GdScriptStructuredArguments) {
-        requestCombo.selectedItem = structured.request
-        portField.value = structured.debugServerPort
-        remainingArgumentsField.text = structured.remainingArguments
-        sceneField.text = structured.scene
+        // those are invisible at the beginning
+        //requestCombo.selectedItem = structured.request
+        //portField.value = structured.debugServerPort
+        //remainingArgumentsField.text = structured.remainingArguments
+        //sceneField.text = structured.scene
+        fullArgumentsField.text = GdScriptRunConfigurationHelper.serialize(structured)
         updateStructuredControlsEnabled()
     }
 

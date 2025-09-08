@@ -56,13 +56,13 @@ class GdScriptRunConfiguration(name:String, project: Project, factory: Configura
     }
 
     override fun writeExternal(element: Element) {
-        options.structuredJson = GdScriptRunConfigurationHelper.serialize(structured)
+        options.json = GdScriptRunConfigurationHelper.serialize(structured)
         super.writeExternal(element)
     }
 
     override fun readExternal(element: Element) {
         super.readExternal(element)
-        structured = GdScriptRunConfigurationHelper.parse(options.structuredJson!!)
+        structured = GdScriptRunConfigurationHelper.parse(options.json!!)
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = GdScriptRunConfigurationSettingsEditor(project)
