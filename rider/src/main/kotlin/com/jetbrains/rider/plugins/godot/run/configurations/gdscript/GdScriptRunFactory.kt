@@ -47,6 +47,6 @@ open class GdScriptRunFactory(type: ConfigurationType) : ConfigurationFactory(ty
 
     class GdScriptDebugConfigurationOptions : RunConfigurationOptions() {
         @get:Property
-        var structuredJson: String? by string("")
+        var json: String? by string("")
     }
 }
