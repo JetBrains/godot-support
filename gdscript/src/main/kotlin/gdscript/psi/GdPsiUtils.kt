@@ -32,7 +32,7 @@ object GdPsiUtils {
 
     /** Enum  */
     @JvmStatic fun getName(element: GdEnumDeclTl): String = GdEnumUtil.getName(element)
-    @JvmStatic fun getValues(element: GdEnumDeclTl): HashMap<String, Long> = PsiGdEnumUtil.values(element)
+    @JvmStatic fun getValues(element: GdEnumDeclTl): LinkedHashMap<String, Long> = PsiGdEnumUtil.values(element)
     @JvmStatic fun getPresentation(element: GdEnumDeclTl): ItemPresentation = GdPresentationUtil.presentation(element)
 
     /** Const */

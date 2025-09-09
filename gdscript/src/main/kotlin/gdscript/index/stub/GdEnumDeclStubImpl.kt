@@ -10,11 +10,11 @@ import gdscript.psi.impl.GdEnumDeclElementType
 class GdEnumDeclStubImpl : StubBase<GdEnumDeclTl>, GdEnumDeclStub {
 
     private var name: String = ""
-    private var values: HashMap<String, Long> = HashMap()
+    private var values: LinkedHashMap<String, Long> = LinkedHashMap()
     private var doc: GdCommentModel
 
-    constructor(parent: StubElement<*>?, name: String?, values: HashMap<String, Long>, doc: GdCommentModel): super(parent, GdEnumDeclElementType) {
-        this.name = name.orEmpty();
+    constructor(parent: StubElement<*>?, name: String?, values: LinkedHashMap<String, Long>, doc: GdCommentModel): super(parent, GdEnumDeclElementType) {
+        this.name = name.orEmpty()
         this.values = values
         this.doc = doc
     }
@@ -23,7 +23,7 @@ class GdEnumDeclStubImpl : StubBase<GdEnumDeclTl>, GdEnumDeclStub {
         return name
     }
 
-    override fun values(): HashMap<String, Long> {
+    override fun values(): LinkedHashMap<String, Long> {
         return values
     }
 

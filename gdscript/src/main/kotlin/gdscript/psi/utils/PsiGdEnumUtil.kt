@@ -6,9 +6,9 @@ import gdscript.psi.GdTypes
 
 object PsiGdEnumUtil {
 
-    fun fromString(data: String?): HashMap<String, Long> {
-        val params = HashMap<String, Long>()
-        if (data == null) {
+    fun fromString(data: String?): LinkedHashMap<String, Long> {
+        val params: LinkedHashMap<String, Long> = java.util.LinkedHashMap()
+        if (data.isNullOrBlank()) {
             return params
         }
 
@@ -22,25 +22,25 @@ object PsiGdEnumUtil {
         return params
     }
 
-    fun values(enum: GdEnumDeclTl): HashMap<String, Long> {
+    fun values(enum: GdEnumDeclTl): LinkedHashMap<String, Long> {
         val stub = enum.stub
         if (stub != null) return stub.values()
 
-        val values = HashMap<String, Long>()
+        val values: LinkedHashMap<String, Long> = LinkedHashMap()
         var currentVal: Long = 0
 
         enum.enumValueList.forEach {
-            currentVal += 1
             var child = it.lastChild
             while (child != null) {
                 if (child.elementType == GdTypes.NUMBER) {
                     currentVal = child.text.toLong()
                     break
                 }
-                child = child.prevSibling;
+                child = child.prevSibling
             }
 
             values[it.enumValueNmi.name] = currentVal
+            currentVal += 1
         }
 
         return values

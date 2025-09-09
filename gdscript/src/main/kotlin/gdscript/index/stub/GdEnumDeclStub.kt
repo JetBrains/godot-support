@@ -7,6 +7,6 @@ import gdscript.psi.types.GdDocumented
 interface GdEnumDeclStub : StubElement<GdEnumDeclTl>, GdDocumented {
 
     fun name(): String
-    fun values(): HashMap<String, Long>
+    fun values(): LinkedHashMap<String, Long>
 
 }
