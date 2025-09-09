@@ -15,6 +15,8 @@ import com.intellij.platform.lsp.api.customization.LspHoverCustomizer
 import com.intellij.platform.lsp.api.customization.LspHoverDisabled
 import com.intellij.platform.lsp.api.customization.LspInlayHintCustomizer
 import com.intellij.platform.lsp.api.customization.LspInlayHintDisabled
+import com.intellij.platform.lsp.api.customization.LspDiagnosticsCustomizer
+import com.intellij.platform.lsp.api.customization.LspDiagnosticsSupport
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
@@ -164,6 +166,14 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 }
 
             override val inlayHintCustomizer: LspInlayHintCustomizer = LspInlayHintDisabled
+
+            override val diagnosticsCustomizer: LspDiagnosticsCustomizer = object : LspDiagnosticsSupport() {
+                override fun getHighlightSeverity(diagnostic: org.eclipse.lsp4j.Diagnostic): com.intellij.lang.annotation.HighlightSeverity? {
+                    // RIDER-117554
+                    if (diagnostic.message.startsWith("(UNUSED_PARAMETER)")) return null
+                    return super.getHighlightSeverity(diagnostic)
+                }
+            }
         }
     }
 }
