@@ -37,15 +37,12 @@ fun downloadAndExtractGodot(version: String): File {
                                                    SystemInfo.isWindows -> "Godot_v${version}-stable_mono_win64.exe"
                                                    SystemInfo.isLinux -> "Godot_v${version}-stable_mono_linux_x86_64"
                                                    SystemInfo.isMac -> "Godot_mono.app/Contents/MacOS/Godot"
-                                                   else -> error("Unsupported OS for Godot Mono")
-                                               }).apply { setExecutable(true) }
-    if (SystemInfo.isLinux) {
-        Runtime.getRuntime().exec(arrayOf("chmod", "+x", godotExecutable.absolutePath)).waitFor()
-    }
+                                                   else -> error("Unsupported OS for Godot")
+                                               }).apply { setExecutable(true,false) }
     if (!godotExecutable.exists()) {
-        error("Godot Mono executable not found at ${godotExecutable.absolutePath}")
+        error("Godot executable not found at ${godotExecutable.absolutePath}")
     }
-    frameworkLogger.info("Godot Mono downloaded and extracted: ${godotExecutable.absolutePath}")
+    frameworkLogger.info("Godot downloaded and extracted: ${godotExecutable.absolutePath}")
     return godotExecutable
 }
 // endregion
