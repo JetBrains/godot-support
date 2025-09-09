@@ -1,8 +1,10 @@
 --> Node2D.cs:115(3882,3883) // {
 Node2D.get_GlobalPosition() in Godot, GodotSharp.dll
-    +this = {PlayerLogger} <Node2D#29242688834>
+    +CurrentScene = {Node2D} <Node2D#29209134400>
+    +this = {PlayerLogger} <Node2D#29225911617>
 
 --> Node2D.cs:116(3896,3923) // return GetGlobalPosition();
 Node2D.get_GlobalPosition() in Godot, GodotSharp.dll
-    +this = {PlayerLogger} <Node2D#29242688834>
+    +CurrentScene = {Node2D} <Node2D#29209134400>
+    +this = {PlayerLogger} <Node2D#29225911617>
 
