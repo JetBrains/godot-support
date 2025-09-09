@@ -1,6 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package gdscript.psi;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import gdscript.psi.types.GdDocumented;
@@ -26,7 +27,7 @@ public interface GdEnumDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdEnum
   String getName();
 
   @NotNull
-  HashMap<String, Long> getValues();
+  LinkedHashMap<String, Long> getValues();
 
   @NotNull
   ItemPresentation getPresentation();

@@ -1,6 +1,7 @@
 // This is a generated file. Not intended for manual editing.
 package gdscript.psi.impl;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import gdscript.model.GdTutorial;
@@ -63,7 +64,7 @@ public class GdEnumDeclTlImpl extends GdEnumDeclElementImpl implements GdEnumDec
 
   @Override
   @NotNull
-  public HashMap<String, Long> getValues() {
+  public LinkedHashMap<String, Long> getValues() {
     return GdPsiUtils.getValues(this);
   }
 
