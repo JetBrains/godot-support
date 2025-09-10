@@ -5,6 +5,7 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.configurations.RunConfigurationOptions
+import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.platform.dap.DapStartRequest
@@ -13,8 +14,10 @@ import com.jetbrains.rider.build.tasks.BuildSolutionBeforeRunTask
 import com.jetbrains.rider.build.tasks.BuildSolutionBeforeRunTaskProvider
 import org.jetbrains.annotations.NotNull
 
-open class GdScriptRunFactory(type: ConfigurationType) : ConfigurationFactory(type) {
+open class GdScriptRunFactory(type: ConfigurationType) : ConfigurationFactory(type), DumbAware {
     override fun getId(): String = "GdScriptRunFactory"
+
+    override fun isEditableInDumbMode(): Boolean = true
 
     override fun getOptionsClass(): Class<GdScriptDebugConfigurationOptions> = GdScriptDebugConfigurationOptions::class.java
 

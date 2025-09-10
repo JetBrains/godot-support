@@ -1,14 +1,14 @@
 package com.jetbrains.rider.plugins.godot.run.configurations.gdscript
 
 import com.intellij.execution.configurations.ConfigurationTypeBase
-import com.intellij.openapi.project.PossiblyDumbAware
+import com.intellij.openapi.project.DumbAware
 import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 
 class GdScriptConfigurationType : ConfigurationTypeBase(id,
                                                         GodotPluginBundle.message("gdscript.start.and.debug"),
                                                         GodotPluginBundle.message("start.godot.and.attach.debugger"),
-                                                        GodotIcons.RunConfigurations.StartAndDebug), PossiblyDumbAware {
+                                                        GodotIcons.RunConfigurations.StartAndDebug), DumbAware {
 
     val factory: GdScriptRunFactory = GdScriptRunFactory(this)
 
