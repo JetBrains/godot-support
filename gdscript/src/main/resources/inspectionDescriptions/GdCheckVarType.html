@@ -1,0 +1,18 @@
+<html>
+<body>
+<p>Reports GDScript variable and constant declarations that miss an explicit type hint when it can be inferred, and flags typed use of the <code>:=</code> assignment.</p>
+<!-- tooltip end -->
+<p>Notes:</p>
+<ul>
+  <li>Suggests adding a type when the initializer expression has a concrete, non-<code>Variant</code>/<code>null</code> type.</li>
+  <li>Ignores resource-like types that cannot be resolved precisely.</li>
+  <li>The <code>:=</code> assignment cannot be used together with an explicit type hint. Use <code>=</code> when a type is specified.</li>
+</ul>
+<p>Example:</p>
+<pre><code>
+var hp = 100          # suggests: var hp: int = 100
+var hp: int := 100    # error: ":=" assignment cannot be typed
+var hp: int = 100     # OK
+</code></pre>
+</body>
+</html>
