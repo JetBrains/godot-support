@@ -89,6 +89,7 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
     private fun traitRegionLabel(editor: Editor, file: PsiFile): PsiComment? {
         var current = file.findElementAt(editor.caretModel.offset)
         while (current != null) {
+            if (current is PsiFile) break // avoid directory traversal
             if (current is PsiComment) {
                 val text = current.text
                 if (text.startsWith(GdTraitLineMarkerContributor.PREFIX)) {
