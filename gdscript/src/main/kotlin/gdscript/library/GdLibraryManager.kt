@@ -1,7 +1,9 @@
 package gdscript.library
 
+import com.intellij.ide.plugins.PluginManager.getPluginByClass
 import com.intellij.ide.plugins.getPluginDistDirByClass
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
@@ -71,7 +73,12 @@ object GdLibraryManager {
     }
 
     private fun extractSdkIfNeededInternal(version: String, bundledSdkPath: Path): Path {
-        val extractionDir = bundledSdkPath.parent.resolve("extracted")
+        var name = getPluginByClass(GdLibraryManager::class.java)?.name
+        if (name == null) {
+            thisLogger().error("Cannot find Godot plugin ID")
+            name = "GdScript"
+        }
+        val extractionDir = PathManager.getPluginsDir().resolve(name).resolve("extracted")
 
         // Check if SDK is already extracted and has a valid stamp
         val validator = SdkIntegrityValidator()
