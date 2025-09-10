@@ -2,6 +2,7 @@ package gdscript.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
@@ -265,6 +266,7 @@ object GdClassMemberUtil {
         while (true) {
             val movedToParent = it.prevSibling == null
             it = it.prevSibling ?: it.parent ?: break
+            if (it is PsiFile) break // avoid directory traversal
             when (it) {
                 is GdClassVarDeclTl -> if (!locals.contains(it.name)) locals[it.name] = it
                 is GdVarDeclSt -> if (!locals.contains(it.name)) locals[it.name] = it

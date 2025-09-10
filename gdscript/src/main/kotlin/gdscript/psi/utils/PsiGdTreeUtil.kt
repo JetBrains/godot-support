@@ -2,23 +2,26 @@ package gdscript.psi.utils
 
 import com.intellij.openapi.util.Condition
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiFile
 
 object PsiGdTreeUtil {
 
     fun findFirstPrecedingElement(element: PsiElement, withSelf: Boolean = true, condition: Condition<in PsiElement?>): PsiElement? {
-        var el: PsiElement? = element;
+        var el: PsiElement? = element
         if (!withSelf) {
             el = el?.prevSibling ?: el?.parent;
         }
 
         while (el != null) {
+            if (el is PsiFile) break // avoid directory traversal
             if (condition.value(el)) {
-                return el;
+                return el
             }
-            el = el.prevSibling ?: el.parent;
+
+            el = el.prevSibling ?: el.parent
         }
 
-        return null;
+        return null
     }
 
 }
