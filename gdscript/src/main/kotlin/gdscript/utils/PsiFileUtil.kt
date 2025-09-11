@@ -24,12 +24,12 @@ object PsiFileUtil {
         if (this.startsWith("res://") || this.startsWith("\"res://")) return this
 
         val thisPath = this.trim('"').toNioPathOrNull()?.normalize() ?: return this
-        val dirPath = element.containingFile.originalFile.virtualFile.parent?.toNioPath() ?: return this
+        val dirPath = element.containingFile.originalFile.virtualFile.parent ?: return this
 
         FilenameIndex.getVirtualFilesByName(thisPath.name, GlobalSearchScope.allScope(project)).find {
-            val itPath = it.toNioPath()
             try {
-                val relative = dirPath.relativize(itPath)
+                // todo: use VfsUtilCore#getRelativePath
+                val relative = dirPath.toNioPath().relativize(it.toNioPath())
                 return@find relative == thisPath
             }
             catch (e: Exception) {

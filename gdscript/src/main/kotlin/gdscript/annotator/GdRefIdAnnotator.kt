@@ -79,13 +79,25 @@ class GdRefIdAnnotator : Annotator {
                         return@run GdHighlighterColors.MEMBER
                     }
 
-                    val calledUponType = GdClassMemberUtil.calledUpon(element)
+                    val calledUponExpr = GdClassMemberUtil.calledUpon(element)
                     // For undefined types do not mark it as error
-                    if (calledUponType != null) {
-                        if (PsiTreeUtil.findChildOfType(calledUponType, GdNodePath::class.java) != null)
+                    if (calledUponExpr != null) {
+                        // If qualifier is a node path, skip error
+                        if (PsiTreeUtil.findChildOfType(calledUponExpr, GdNodePath::class.java) != null)
                             return@run GdHighlighterColors.MEMBER
 
-                        val callType = calledUponType.returnType
+                        // If qualifier resolves to a named enum, allow enum member access only for existing enum values
+                        run {
+                            val decl = GdClassMemberUtil.findDeclaration(calledUponExpr)
+                            if (decl is GdEnumDeclTl) {
+                                val name = element.text
+                                val isMember = decl.enumValueList.any { it.enumValueNmi.name == name }
+                                if (isMember) return@run GdHighlighterColors.MEMBER
+                                // otherwise, fall through to unresolved reference error
+                            }
+                        }
+
+                        val callType = calledUponExpr.returnType
                         if (arrayOf(GdKeywords.VARIANT, "", "Node", "Resource", "null").contains(callType))
                             return@run GdHighlighterColors.MEMBER
                     }
