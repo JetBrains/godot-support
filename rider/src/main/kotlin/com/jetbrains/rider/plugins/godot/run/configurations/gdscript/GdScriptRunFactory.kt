@@ -31,6 +31,23 @@ open class GdScriptRunFactory(type: ConfigurationType) : ConfigurationFactory(ty
             
             }
         """.trimIndent()
+
+        val DEFAULT_FULL_JSON: String = """
+            {
+              // Launch: "Launch a new instance of the game",
+              // Attach: "Attach to an already running game, which was started from the Godot Editor"
+              "request" : "Launch",
+              "debugServer" : 6006, // port should match the Debug Adapter port in the Godot Editor project settings.
+              "scene" : "main", // main, current, res://path/to/file.tscn
+              
+              // "playArgs" : [ "--editor" ], // debugging a tool script
+              // "playArgs": ["--debug-collisions","--debug-navigation"], // different options
+              
+              // one click deploy and debug via Godot Editor:
+              // "platform": "Android", // including Android, iOS, Web and W4 consoles
+              // "device": "0", // index of the device of a "platform" type
+            }
+        """.trimIndent()
     }
 
     override fun configureBeforeRunTaskDefaults(providerID: Key<out BeforeRunTask<BeforeRunTask<*>>>?,

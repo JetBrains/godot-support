@@ -1,12 +1,15 @@
 package com.jetbrains.rider.plugins.godot.run.configurations.gdscript
 
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.intellij.json.JsonLanguage
+import com.intellij.openapi.editor.event.DocumentEvent
+import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.createNestedDisposable
-import com.intellij.platform.dap.DapStartRequest
+import com.intellij.openapi.ui.ValidationInfo
+import com.intellij.openapi.ui.ex.MultiLineLabel
 import com.intellij.ui.LanguageTextField
-import com.intellij.ui.PortField
-import com.intellij.ui.components.JBTextField
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.panel
@@ -15,50 +18,19 @@ import com.jetbrains.rd.util.threading.coroutines.async
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.actions.StartGodotEditorAction
 import kotlinx.coroutines.Dispatchers
-import javax.swing.DefaultComboBoxModel
-import javax.swing.JComboBox
 import javax.swing.JPanel
 import javax.swing.event.HyperlinkEvent
 
 class GdScriptEditorForm(lifetime: Lifetime, project: Project) {
 
-    private lateinit var portField: PortField
-    private lateinit var requestCombo: JComboBox<DapStartRequest>
     private lateinit var fullArgumentsField: LanguageTextField
-    private lateinit var remainingArgumentsField: LanguageTextField
-    private lateinit var sceneField: JBTextField
-    private enum class EditMode { Structured, Raw }
-    private var editMode: EditMode = EditMode.Raw
-
-    // Row references for visibility toggling
-    private var rawArgsRowRef: Row? = null
-    private var structuredRowRef: Row? = null
-
-    fun setVisibility(structured: Boolean) {
-        rawArgsRowRef!!.visible(!structured)
-        structuredRowRef!!.visible(structured)
-    }
-
-    fun setMode(structured: Boolean) {
-        if (structured){
-            val structuredVal = GdScriptRunConfigurationHelper.parse(fullArgumentsField.text)
-            portField.value = structuredVal.debugServerPort
-            requestCombo.selectedItem = structuredVal.request
-            sceneField.text = structuredVal.scene
-            remainingArgumentsField.text = structuredVal.remainingArguments
-            // ensure enabled state reflects current request
-            updateStructuredControlsEnabled()
-        }
-        else{
-            val structuredVal = GdScriptStructuredArguments(requestCombo.selectedItem as DapStartRequest, portField.value as Int, remainingArgumentsField.text, sceneField.text )
-            fullArgumentsField.text = GdScriptRunConfigurationHelper.serialize(structuredVal)
-        }
-    }
+    private lateinit var errorLabel: MultiLineLabel
+    private lateinit var errorRow: Row
 
     val panel: JPanel = panel {
         indent {
-            row{
-                text(GodotPluginBundle.message("editor.should.be.running")){
+            row {
+                text(GodotPluginBundle.message("editor.should.be.running"), ) {
                     if (it.eventType == HyperlinkEvent.EventType.ACTIVATED) {
                         lifetime.async(Dispatchers.Default) {
                             StartGodotEditorAction.startEditor(project)
@@ -67,92 +39,91 @@ class GdScriptEditorForm(lifetime: Lifetime, project: Project) {
                 }
             }
 
-            group("", indent = false) {
-                row {
-                    val segmented = segmentedButton(listOf(EditMode.Raw, EditMode.Structured)) { mode ->
-                        if (mode == EditMode.Raw){
-                            text = GodotPluginBundle.message("gdscript.editor.form.mode.raw")
-                            toolTipText = GodotPluginBundle.message("gdscript.editor.form.mode.raw.tooltip")
+            row {
+                fullArgumentsField = LanguageTextField(JsonLanguage.INSTANCE, project, "", false)
+                cell(fullArgumentsField)
+                    .align(AlignX.FILL)
+                    .resizableColumn()
+                    .comment(GodotPluginBundle.message("gdscript.editor.form.arguments.comment"))
+
+                // custom validation, since I wasn't able to setup the Platform one with LanguageTextField
+                fullArgumentsField.document.addDocumentListener(object : DocumentListener {
+                    override fun documentChanged(event: DocumentEvent) {
+                        super.documentChanged(event)
+                        val res = validateJson(event.document.text)
+                        if (res != null) {
+                            errorLabel.text = res.message
+                            errorRow.visible(true)
                         }
                         else {
-                            text = GodotPluginBundle.message("gdscript.editor.form.mode.structured")
-                            toolTipText = GodotPluginBundle.message("gdscript.editor.form.mode.structured.tooltip")
+                            errorLabel.text = ""
+                            errorRow.visible(false)
                         }
                     }
-                    segmented.whenItemSelectedFromUi(lifetime.createNestedDisposable()) { selected ->
-                        editMode = selected
-                        setVisibility(selected == EditMode.Structured)
-                        setMode(selected == EditMode.Structured)
-                    }
-                    segmented.selectedItem = EditMode.Raw
-                }
+                }, lifetime.createNestedDisposable())
+            }
+            errorRow = row {
+                errorLabel = MultiLineLabel("")
+                cell(errorLabel)
+                    .resizableColumn()
+            }
+            errorRow.visible(false)
+        }
+    }.apply {name = "GdScriptEditorForm"}
 
-                rawArgsRowRef = row {
-                    fullArgumentsField = LanguageTextField(JsonLanguage.INSTANCE, project, "", false)
-                    cell(fullArgumentsField).resizableColumn().align(AlignX.FILL)
-                        .comment(GodotPluginBundle.message("gdscript.editor.form.arguments.comment"))
-                }
-
-                structuredRowRef = row {
-                    panel{
-                        // Structured mode: port + request + remaining arguments
-                        row(GodotPluginBundle.message("gdscript.editor.form.port")) {
-                            portField = PortField()
-                            cell(portField)
-                        }
-
-                        row(GodotPluginBundle.message("gdscript.editor.form.request")) {
-                            requestCombo = JComboBox(DefaultComboBoxModel(DapStartRequest.entries.toTypedArray()))
-                            cell(requestCombo)
-                        }
-
-                        row(GodotPluginBundle.message("gdscript.editor.form.scene")) {
-                            sceneField = JBTextField()
-
-                            cell(sceneField).resizableColumn().align(AlignX.FILL).comment(GodotPluginBundle.message("label.note.scene.debugging.requires.godot.see.pr"))
-                        }
-
-                        row(GodotPluginBundle.message("gdscript.editor.form.arguments")) {
-                            remainingArgumentsField = LanguageTextField(JsonLanguage.INSTANCE, project, "", false)
-                            remainingArgumentsField.toolTipText = GodotPluginBundle.message("gdscript.editor.form.arguments.comment")
-                            cell(remainingArgumentsField).resizableColumn().align(AlignX.FILL)
-                        }
-                    }
-                }
+    private fun validateJson(text: String): ValidationInfo? {
+        if (text.isBlank()) return null // allow empty, will use defaults
+        val mapper = jacksonObjectMapper().apply {
+            configure(JsonParser.Feature.ALLOW_TRAILING_COMMA, true)
+            configure(JsonParser.Feature.ALLOW_COMMENTS, true)
+        }
+        val node = try {
+            mapper.readTree(text)
+        } catch (e: Exception) {
+            return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.invalid.json"), fullArgumentsField)
+        }
+        if (!node.isObject) {
+            return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.root.object"), fullArgumentsField)
+        }
+        // request
+        val requestNode = node.get("request")
+        if (requestNode != null && requestNode.isTextual) {
+            val value = requestNode.asText()
+            val valid = try {
+                kotlin.runCatching { com.intellij.platform.dap.DapStartRequest.valueOf(value) }.isSuccess
+            } catch (_: Exception) { false }
+            if (!valid) {
+                return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.request"), fullArgumentsField)
+            }
+        } else if (requestNode != null && !requestNode.isTextual) {
+            return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.request"), fullArgumentsField)
+        }
+        // debugServer can be integer or string that parses to int
+        val portNode = node.get("debugServer")
+        if (portNode != null) {
+            val ok = when {
+                portNode.isInt -> true
+                portNode.isIntegralNumber -> true
+                portNode.isTextual -> portNode.asText().toIntOrNull() != null
+                else -> false
+            }
+            if (!ok) {
+                return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.debugServer"), fullArgumentsField)
             }
         }
+        // scene must be string if present
+        val sceneNode = node.get("scene")
+        if (sceneNode != null && !sceneNode.isTextual) {
+            return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.scene"), fullArgumentsField)
+        }
+        return null
     }
 
-
-    init {
-        // Ensure this panel is identifiable in UI Inspector
-        panel.name = "GdScriptEditorForm"
-        // Wire up request change to enable/disable other controls in structured mode
-        requestCombo.addActionListener { updateStructuredControlsEnabled() }
-        setVisibility(false)
+    fun setData(json: String) {
+        fullArgumentsField.text = json
     }
 
-    fun setData(structured: GdScriptStructuredArguments) {
-        // those are invisible at the beginning
-        //requestCombo.selectedItem = structured.request
-        //portField.value = structured.debugServerPort
-        //remainingArgumentsField.text = structured.remainingArguments
-        //sceneField.text = structured.scene
-        fullArgumentsField.text = GdScriptRunConfigurationHelper.serialize(structured)
-        updateStructuredControlsEnabled()
-    }
-
-    private fun updateStructuredControlsEnabled() {
-        val isAttach = (requestCombo.selectedItem as? DapStartRequest) == DapStartRequest.Attach
-        val enabled = !isAttach
-        sceneField.isEnabled = enabled
-        remainingArgumentsField.isEnabled = enabled
-    }
-
-    fun update(viewModel: GdScriptRunConfiguration) {
-        viewModel.structured.scene = sceneField.text
-        viewModel.structured.request = requestCombo.selectedItem as DapStartRequest
-        viewModel.structured.debugServerPort = portField.value as Int
-        viewModel.structured.remainingArguments = remainingArgumentsField.text
+    fun getData(viewModel: GdScriptRunConfiguration) {
+        viewModel.json = fullArgumentsField.text
     }
 }

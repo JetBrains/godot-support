@@ -12,6 +12,7 @@ object GdScriptRunConfigurationHelper {
         return try {
             val mapper = jacksonObjectMapper()
             mapper.configure(JsonParser.Feature.ALLOW_TRAILING_COMMA, true)
+            mapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true)
             @Suppress("UNCHECKED_CAST")
             val map: Map<String, Any?> = mapper.readValue(json, mutableMapOf<String, Any?>().javaClass)
             map
