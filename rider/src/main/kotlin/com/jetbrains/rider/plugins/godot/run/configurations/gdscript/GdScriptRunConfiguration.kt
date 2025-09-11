@@ -51,7 +51,7 @@ class GdScriptRunConfiguration(name:String, project: Project, factory: Configura
 
     override fun readExternal(element: Element) {
         super.readExternal(element)
-        json = options.json!!
+        json = options.json ?: GdScriptRunFactory.DEFAULT_FULL_JSON
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = GdScriptRunConfigurationSettingsEditor(project)
