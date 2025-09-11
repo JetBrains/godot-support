@@ -70,6 +70,7 @@ object GdCommonUtil {
             is GdExpr -> element.returnType
             is GdTypedVal -> element.returnType
             is GdClassNaming -> element.classname
+            is GdClassDeclTl -> element.classNameNmi?.classId.orEmpty()
             is GdEnumDeclTl -> "EnumDictionary"
             is GdEnumValue -> GdKeywords.INT
             is GdSignalDeclTl -> "Signal"
