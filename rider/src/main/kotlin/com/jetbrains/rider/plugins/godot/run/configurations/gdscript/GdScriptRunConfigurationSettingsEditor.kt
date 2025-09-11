@@ -14,11 +14,11 @@ class GdScriptRunConfigurationSettingsEditor(project: Project) : SettingsEditor<
     private val form: GdScriptEditorForm = GdScriptEditorForm(lifetimeDefinition, project)
 
     override fun checkEditorData(configuration: GdScriptRunConfiguration) {
-        form.update(configuration)
+        form.getData(configuration)
     }
 
     override fun resetEditorFrom(configuration: GdScriptRunConfiguration) {
-        form.setData(configuration.structured)
+        form.setData(configuration.json)
     }
 
     override fun applyEditorTo(configuration: GdScriptRunConfiguration) {

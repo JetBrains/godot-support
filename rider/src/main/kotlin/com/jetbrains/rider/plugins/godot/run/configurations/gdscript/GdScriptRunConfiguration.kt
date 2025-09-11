@@ -25,26 +25,15 @@ class GdScriptRunConfiguration(name:String, project: Project, factory: Configura
 
     override val adapterId: GdScriptDebugAdapter = GdScriptDebugAdapter
 
-    var structured: GdScriptStructuredArguments =
-        GdScriptStructuredArguments(
-            GdScriptRunFactory.DEFAULT_REQUEST,
-            GdScriptRunFactory.DEFAULT_PORT,
-            GdScriptRunFactory.DEFAULT_EMPTY_JSON,
-            GdScriptRunFactory.DEFAULT_SCENE
-        )
+    var json: String = GdScriptRunFactory.DEFAULT_FULL_JSON
+    val structured: GdScriptStructuredArguments
+        get() = GdScriptRunConfigurationHelper.parse(json)
 
     override val request: DapStartRequest
         get() = structured.request
 
     override fun arguments(): Map<String, Any?> {
-        val map = mutableMapOf<String, Any?>(
-            "request" to structured.request,
-            "debugServer" to structured.debugServerPort,
-            "scene" to structured.scene
-        )
-        val rest = GdScriptRunConfigurationHelper.parseArgumentsToMap(structured.remainingArguments)
-        rest.forEach { (k, v) -> if (k !in map.keys) map[k] = v }
-        return map
+        return GdScriptRunConfigurationHelper.parseArgumentsToMap(json)
     }
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState {
@@ -56,13 +45,13 @@ class GdScriptRunConfiguration(name:String, project: Project, factory: Configura
     }
 
     override fun writeExternal(element: Element) {
-        options.json = GdScriptRunConfigurationHelper.serialize(structured)
+        options.json = json
         super.writeExternal(element)
     }
 
     override fun readExternal(element: Element) {
         super.readExternal(element)
-        structured = GdScriptRunConfigurationHelper.parse(options.json!!)
+        json = options.json!!
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = GdScriptRunConfigurationSettingsEditor(project)
