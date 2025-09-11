@@ -30,8 +30,8 @@ class GdLambdaIndentationErrorTest : BasePlatformTestCase() {
         val errors = psiFile.children.flatMap { collectErrors(it) }
         assertTrue("Expected at least one PsiErrorElement", errors.isNotEmpty())
 
-        // We expect an error at the beginning of the line with 'set_process(false)'
-        val targetStart = lineStartOffsetOf(code, "set_process(false)")
+        // We expect an error at the beginning of the line with 'pass'
+        val targetStart = lineStartOffsetOf(code, "pass")
         assertTrue("Couldn't locate target line start in the test source", targetStart >= 0)
 
         // Check error appears on the same line as 'set_process(false)'

@@ -156,6 +156,18 @@ object GdClassMemberUtil {
                 calledOn = "Dictionary"
             }
 
+            // If qualifier resolves to a named enum, expose its values for member lookup (e.g., _Anim.FLOOR)
+            findDeclaration(calledOnPsi!!)?.let { decl ->
+                if (decl is GdEnumDeclTl) {
+                    if (searchFor != null) {
+                        val localVal = decl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor }
+                        if (localVal != null) return arrayOf(localVal)
+                    }
+                    result.addAll(decl.enumValueList)
+                    if (searchFor == null) return result.toTypedArray()
+                }
+            }
+
             parent = GdClassUtil.getClassIdElement(calledOn, element, project)
             if (parent == null) {
                 val classId = GdClassUtil.getFullClassId(element)
