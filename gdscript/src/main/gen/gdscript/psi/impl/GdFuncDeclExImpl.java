@@ -3,6 +3,7 @@ package gdscript.psi.impl;
 
 import java.util.List;
 
+import gdscript.GdKeywords;
 import gdscript.model.GdTutorial;
 import gdscript.psi.utils.GdCommentUtil;
 import org.jetbrains.annotations.*;
@@ -58,7 +59,13 @@ public class GdFuncDeclExImpl extends GdExprImpl implements GdFuncDeclEx {
   @Override
   @NotNull
   public String getReturnType() {
-    return GdPsiUtils.getReturnType(this);
+    return GdKeywords.CALLABLE;
+  }
+
+  @Override
+  @NotNull
+  public String getInvokedReturnType() {
+    return GdPsiUtils.getInvokedReturnType(this);
   }
 
   @Override
