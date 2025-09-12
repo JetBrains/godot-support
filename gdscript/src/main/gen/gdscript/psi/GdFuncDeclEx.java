@@ -23,7 +23,7 @@ public interface GdFuncDeclEx extends GdExpr, GdDocumented {
   GdStmtOrSuite getStmtOrSuite();
 
   @NotNull
-  String getReturnType();
+  String getInvokedReturnType();
 
   @Nullable
   PsiElement getReturnExpr();

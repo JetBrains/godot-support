@@ -90,7 +90,7 @@ object GdPsiUtils {
     @JvmStatic fun getReturnType(element: GdArgExpr): String = PsiGdExprUtil.getReturnType(element.expr)
 
     /** Lambdas */
-    @JvmStatic fun getReturnType(element: GdFuncDeclEx): String = PsiGdLocalFuncUtil.getReturnType(element)
+    @JvmStatic fun getInvokedReturnType(element: GdFuncDeclEx): String = PsiGdLocalFuncUtil.getReturnType(element)
     // TODO remove?
     @JvmStatic fun getReturnExpr(element: GdFuncDeclEx): PsiElement? = PsiGdLocalFuncUtil.getReturnExpr(element)
     @JvmStatic fun getParameters(element: GdFuncDeclEx): LinkedHashMap<String, String?> = PsiGdLocalFuncUtil.getParameters(element)
