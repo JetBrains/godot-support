@@ -15,6 +15,7 @@ import gdscript.completion.utils.GdCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdClassUtil
 import gdscript.settings.GdProjectSettingsState
 import gdscript.utils.PsiElementUtil.psi
 
@@ -55,11 +56,50 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
         return myElement.replace(GdElementFactory.refIdNm(myElement.project, newElementName))
     }
 
+    /**
+     * Resolves the declaration associated with the given element in the context of the project.
+     * Utilizes caching through the ResolveCache mechanism to enhance performance.
+     * The resolution process includes determining the relevant class, analyzing the owning class
+     * of the target, and validating access permissions for class members.
+     *
+     * @return a PsiElement representing the resolved declaration if found, or null otherwise
+     */
     fun resolveDeclaration(): PsiElement? {
         val cache = ResolveCache.getInstance(element.project)
         return cache.resolveWithCaching(
             this,
-            ResolveCache.Resolver { _, _ -> GdClassMemberUtil.findDeclaration(element)?.psi() },
+            ResolveCache.Resolver { _, _ ->
+                val qualifierExpr = GdClassMemberUtil.calledUpon(element)
+                val targetClassDecl = qualifierExpr?.let {
+                    val type = it.getReturnType()
+                    if (type.isNotEmpty()) {
+                        val target = GdClassUtil.getClassIdElement(type, element, element.project)
+                        if (target != null) GdClassUtil.getOwningClassElement(target) as? GdClassDeclTl else null
+                    } else null
+                }
+
+                val resolved = GdClassMemberUtil.findDeclaration(element)?.psi()
+
+                if (targetClassDecl != null && resolved is PsiElement) {
+                    val owner = GdClassUtil.getOwningClassElement(resolved)
+                    // Allow accessing inner classes via their parent class (e.g., A1.B1)
+                    if (resolved is GdClassDeclTl) {
+                        val enclosing = PsiTreeUtil.getStubOrPsiParentOfType(resolved, GdClassDeclTl::class.java)
+                        if (enclosing != null && enclosing == targetClassDecl) {
+                            // OK: accessing inner class on its parent
+                        } else if (owner is GdClassDeclTl && owner != targetClassDecl) {
+                            return@Resolver null
+                        }
+                    } else {
+                        // For non-class members, require exact owning class match
+                        if (owner is GdClassDeclTl && owner != targetClassDecl) {
+                            return@Resolver null
+                        }
+                    }
+                }
+
+                resolved
+            },
             false,
             false,
         )
@@ -76,16 +116,34 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
 
     override fun getVariants(): Array<LookupElement> {
         val isCallable = this.completionIntoCallableParam()
-        val members = GdClassMemberUtil.listDeclarations(element, allowResource = true)
-        val hidePrivate = GdProjectSettingsState.getInstance(element).state.hidePrivate
-            && GdClassMemberUtil.calledUpon(element) != null
 
-        return members.flatMap {
+        // If there's a qualifier, compute the target class and collect only its direct members.
+        val qualifierExpr = GdClassMemberUtil.calledUpon(element)
+        val targetClassDecl: PsiElement? = qualifierExpr?.let {
+            val type = it.getReturnType()
+            if (type.isNotEmpty()) {
+                val target = GdClassUtil.getClassIdElement(type, element, element.project)
+                if (target != null) GdClassUtil.getOwningClassElement(target) else null
+            } else null
+        }
+
+        val members = if (targetClassDecl != null) {
+            GdClassMemberUtil.listClassMemberDeclarations(targetClassDecl)
+        } else {
+            GdClassMemberUtil.listClassMemberDeclarations(element)
+        }
+
+        val hidePrivate = GdProjectSettingsState.getInstance(element).state.hidePrivate
+            && qualifierExpr != null
+
+        val baseLookups = members.flatMap {
             GdCompletionUtil.lookups(it, isCallable).mapNotNull { lookup ->
                 if (!hidePrivate || !lookup.lookupString.startsWith("_")) lookup
                 else null
             }
-        }.toTypedArray() + arrayOf(
+        }
+
+        return baseLookups.toTypedArray() + arrayOf(
             addMethod("new"),
             addMethod("instance"),
         )
