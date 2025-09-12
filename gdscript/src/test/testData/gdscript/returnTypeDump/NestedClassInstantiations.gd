@@ -1,0 +1,23 @@
+class_name OuterClass
+
+var var1 := A1.new()
+var var2 := A1.B1.new()
+var var3 := A1.B1.C1.new()
+var var4 := A1.B1.C1.D1.new()
+
+func in_the_outer_wrong():
+	print(in_the_outer_correct())
+	A1.new().pp()
+	A1.D1.new().pp() # here should be error and also completion is suggesting D1 after A1, it should only B1 after A1
+
+func in_the_outer_correct() -> String:
+	A1.B1.C1.D1.new().pp()
+	return ""
+
+
+class A1:
+	class B1:
+		class C1:
+			class D1:
+				func pp():
+					pass

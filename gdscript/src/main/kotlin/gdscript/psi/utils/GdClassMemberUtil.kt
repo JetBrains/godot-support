@@ -418,11 +418,16 @@ object GdClassMemberUtil {
     }
 
     /**
-     * Finds local declarations from current position upwards
+     * Retrieves the declarations of class members such as methods, variables, signals, enums, constants,
+     * or inner classes from a specified class element.
      *
-     * @param element GdClassDecl|GdFile class containing element
-     *
-     * @return HashMap<name, MutableList<PsiElement>>
+     * @param element The PsiElement representing the class or file whose members are to be listed.
+     * @param static Optional parameter that filters the results to include only static members
+     * if true, only non-static members if false, or all members if null.
+     * @param search Optional filter parameter to search for a specific member by name. If null, all members will be returned.
+     * @param constructors If true, includes constructor members in the result; otherwise, filters them out.
+     * @param isRecursive If true, includes members from nested classes by traversing recursively.
+     * @return A mutable list of PsiElement representing the class member declarations matching the provided criteria.
      */
     fun listClassMemberDeclarations(
         element: PsiElement,
@@ -501,8 +506,9 @@ object GdClassMemberUtil {
                 members.add(it)
             }
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
+                // For completion and general member listing, include only direct inner classes,
+                // not members of their inner trees. Deeper members are reachable after further qualification.
                 members.add(it)
-                members.addAll(listClassMemberDeclarations(it, static))
             }
             if (classElement is GdClassDeclTl && !isRecursive) {
                 PsiTreeUtil.getStubChildrenOfTypeAsList(classElement.parent, GdClassDeclTl::class.java).forEach {
@@ -562,8 +568,8 @@ object GdClassMemberUtil {
         if (attr != null) return attr
 
         val next = PsiTreeUtil.nextVisibleLeaf(element)
-        if (next?.elementType == GdTypes.LRBR && next?.parent?.elementType == GdTypes.CALL_EX) {
-            return getAttrIfAny(next!!.parent)
+        if (next?.elementType == GdTypes.LRBR && next.parent?.elementType == GdTypes.CALL_EX) {
+            return getAttrIfAny(next.parent)
         }
 
         return null
@@ -595,8 +601,7 @@ object GdClassMemberUtil {
     private fun findIsTypeCheck(element: PsiElement): GdIsEx? {
         // TODO je to dost na hrubo a nekontroluje to negace a pod
         return getConditioned(element) { el, stmt ->
-            val expr = if (stmt is GdIsEx) stmt
-            else PsiTreeUtil.findChildOfType(stmt, GdIsEx::class.java)
+            val expr = stmt as? GdIsEx ?: PsiTreeUtil.findChildOfType(stmt, GdIsEx::class.java)
             if (expr != null) return@getConditioned expr
             null
         }
