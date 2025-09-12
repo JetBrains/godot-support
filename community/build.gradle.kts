@@ -16,6 +16,12 @@ kotlin {
     }
 }
 
+kotlin {
+    jvmToolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 repositories {
     intellijPlatform {
         defaultRepositories()
