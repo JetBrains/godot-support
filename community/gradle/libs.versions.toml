@@ -10,6 +10,6 @@ riderSdk = "2025.3-SNAPSHOT"
 kotlinStdLib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 
 [plugins]
-gradleIntelliJPlatform = "org.jetbrains.intellij.platform:2.7.2"
+gradleIntelliJPlatform = "org.jetbrains.intellij.platform:2.9.0"
 gradleJvmWrapper = "me.filippov.gradle.jvm.wrapper:0.14.0"
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
