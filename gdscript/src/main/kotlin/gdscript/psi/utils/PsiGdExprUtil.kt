@@ -63,6 +63,12 @@ object PsiGdExprUtil {
                     }
 
                     return GdCommonUtil.returnType(declaration)
+                } else {
+                    // If attribute resolves to a class name or class decl, return its full class id
+                    when (val resolved = ref.resolve()) {
+                        is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
+                        is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
+                    }
                 }
 
                 return ""
@@ -70,13 +76,29 @@ object PsiGdExprUtil {
 
             is GdIsEx -> GdKeywords.BOOL
             is GdCallEx -> {
-                if (expr.text == "new()") { // TODO can it have params?
-                    if (expr.parent is GdAttributeEx) {
-                        GdCommonUtil.returnType(expr.parent.firstChild)
-                    } else {
-                        ""
+                // Detect constructor calls like A.B.new() or simply new() by inspecting the callee name
+                run {
+                    val callee = expr.expr
+                    val lastId = PsiTreeUtil.getChildrenOfType(callee, GdRefIdRef::class.java)?.lastOrNull()?.text
+                    if (lastId == "new") {
+                        // Qualified constructor call: the class is the qualifier of the attribute
+                        if (callee is GdAttributeEx) {
+                            // Try to resolve the attribute's reference to a class and return its full class id
+                            when (val resolved = callee.refId?.references?.firstOrNull()?.resolve()) {
+                                is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
+                                is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
+                            }
+                            return GdCommonUtil.returnType(callee.firstChild)
+                        }
+                        // Unqualified new(): take the attribute parent if any
+                        val parentAttr = PsiTreeUtil.getParentOfType(expr, GdAttributeEx::class.java)
+                        if (parentAttr != null) {
+                            return GdCommonUtil.returnType(parentAttr.firstChild)
+                        }
+                        return ""
                     }
-                } else {
+                }
+                run {
                     val method = expr.expr.text
                     if (method == "get_node" || method == "get_node_or_null" || method == "get_first_node_in_group") {
                         //TODO try to parse Node from .tscn
