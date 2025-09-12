@@ -26,13 +26,14 @@ import gdscript.utils.PsiFileUtil.isInSdk
 class GdRefIdAnnotator : Annotator {
 
     private val objectContinuation = setOf(GdTypes.LRBR, GdTypes.LSBR, GdTypes.DOT)
+    private val unresolvedTolerantTypes = setOf(GdKeywords.VARIANT, "Node", "Resource", "null")
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         val state = GdProjectSettingsState.getInstance(element).state.annotators
         if (element !is GdRefIdRef) return
         val txt = element.text
 
-        if (txt == GdKeywords.SELF || txt == GdKeywords.SUPER) return;
+        if (txt == GdKeywords.SELF || txt == GdKeywords.SUPER) return
         if (GdKeywords.MATH_CONSTANTS.contains(txt)) {
             holder
                 .newSilentAnnotation(HighlightSeverity.INFORMATION)
@@ -59,7 +60,7 @@ class GdRefIdAnnotator : Annotator {
                     }
 
                     if (psi.containingFile.isInSdk()) {
-                        var nextLeaf = element.nextLeaf(true)
+                        val nextLeaf = element.nextLeaf(true)
                         if (!objectContinuation.contains(nextLeaf.elementType) && psi.childrenOfType<GdMethodDeclTl>().any { it.isConstructor }) {
                             holder
                                 .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Builtin type $txt cannot be assigned to a variable")
@@ -98,7 +99,7 @@ class GdRefIdAnnotator : Annotator {
                         }
 
                         val callType = calledUponExpr.returnType
-                        if (arrayOf(GdKeywords.VARIANT, "", "Node", "Resource", "null").contains(callType))
+                        if (callType in unresolvedTolerantTypes)
                             return@run GdHighlighterColors.MEMBER
                     }
 

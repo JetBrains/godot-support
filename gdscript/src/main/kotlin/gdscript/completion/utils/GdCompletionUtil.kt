@@ -9,7 +9,23 @@ import gdscript.psi.utils.PsiGdExprUtil
 import gdscript.utils.StringUtil.parseFromSquare
 import project.psi.model.GdAutoload
 
-@Deprecated("move into assigned methods")
+/**
+ * Deprecated aggregator for building completion lookup elements.
+ *
+ * Use dedicated utils instead, depending on the element type:
+ * - Classes: GdClassCompletionUtil.lookup(GdClassDeclTl) or GdClassCompletionUtil.allRootClasses(Project)
+ * - Methods: GdMethodCompletionUtil.buildParamHint(...) with GdLookup.create(...)
+ * - Enums/Enum values: GdEnumCompletionUtil.lookup(...)
+ * - Class variables: GdClassVarCompletionUtil or build via GdLookup.create(...)
+ * - Parameters/locals/signals: build via specific utils or GdLookup.create(...)
+ *
+ * If you previously used lookups(any), replace the call site with a
+ * when(element) { ... } that dispatches to the specific util above.
+ */
+@Deprecated(
+    message = "Use dedicated utils (GdClassCompletionUtil/GdMethodCompletionUtil/GdEnumCompletionUtil/...) instead of this aggregator.",
+    replaceWith = ReplaceWith("when(element){ is GdClassDeclTl -> element.lookup() else -> GdLookup.create(\"\") }")
+)
 object GdCompletionUtil {
 
     fun lookups(element: Any, isCallable: Boolean = false): Array<LookupElement> {
@@ -74,16 +90,16 @@ object GdCompletionUtil {
         )
 
     fun lookup(enum: GdEnumDeclTl): Array<LookupElement> {
-        val name = enum.enumDeclNmi;
+        val name = enum.enumDeclNmi
 
         return if (name != null) {
             arrayOf(GdEnumCompletionUtil.lookup(
                 name.name,
-            ));
+            ))
         } else {
             enum.values.map {
                 GdEnumCompletionUtil.lookup(it.key, it.value)
-            }.toTypedArray();
+            }.toTypedArray()
         }
     }
 
@@ -96,7 +112,7 @@ object GdCompletionUtil {
             icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
             priority = GdLookup.USER_DEFINED,
             tail = GdMethodCompletionUtil.buildParamHint(method),
-        );
+        )
     }
 
     fun lookup(loop: GdForSt): LookupElement =
@@ -116,10 +132,10 @@ object GdCompletionUtil {
         )
 
     fun lookup(variable: GdVarNmi): LookupElement {
-        var typed: GdTyped? = null;
+        var typed: GdTyped? = null
         val next = variable.nextSibling
         if (next is GdTyped) {
-            typed = next;
+            typed = next
         }
 
         return GdLookup.create(
