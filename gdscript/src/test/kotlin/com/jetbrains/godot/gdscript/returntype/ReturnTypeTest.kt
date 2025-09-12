@@ -7,7 +7,6 @@ import kotlin.io.path.pathString
 
 class ReturnTypeTest : BasePlatformTestCase() {
 
-
     fun testReturnTypesOfNestedClassInstantiations() {
         val file = myFixture.configureByFile(getTestName(false) + ".gd")
         val varDeclarations = file.children.filterIsInstance<GdClassVarDeclTl>()
