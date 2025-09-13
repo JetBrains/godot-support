@@ -1,0 +1,12 @@
+== A.gd ==
+class_name AClass
+
+func m():
+	pass
+
+
+== B.gd ==
+var x := AClass[9r].new[16u]()
+
+func t():
+	x[34r].m[36r]()
