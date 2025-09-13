@@ -1,0 +1,28 @@
+== Outer.gd ==
+class_name Outer
+
+static var STATIC_VAL := 1
+var instance_val := 2
+var names: Array[78u][String[84u]] = []
+
+static func s() -> void:
+	pass
+
+func i() -> void:
+	pass
+
+class Sub:
+    static func s_Sub(): pass
+    var inst_Sub := 42
+
+== Regular.gd ==
+func _ready():
+	Outer[16r].s[22r]()                  # static OK
+	Outer[56r].STATIC_VAL[62r]           # static OK
+	Outer[96r].i[102u]()                  # non-static should be filtered out by static context
+	Outer[178r].instance_val[184u]         # non-static should be filtered out
+
+	# Qualifier is `Outer` (for `Sub`) or `Outer.Sub` (for members)
+	# When completing after `Outer.`, selecting `Sub` and then `Sub.` will set a class context.
+	Outer[401r].Sub[407r].s_Sub[411r]()          # static OK
+	Outer[441r].Sub[447r].inst_Sub[451u]         # non-static should be filtered out in static context
