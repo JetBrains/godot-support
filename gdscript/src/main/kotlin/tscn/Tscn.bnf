@@ -90,14 +90,15 @@ dataLine_value ::= value
 
 value ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | json
 numberValue ::= (PLUS | MINUS)? NUMBER
-exprValue ::= identifierEx (LRBR argList? RRBR)?
+exprValue ::= identifierEx (LSBR typeList? RSBR)? (LRBR argList? RRBR)?
 argList ::= value? (COMMA value)*
+typeList ::= identifierEx? (COMMA identifierEx)*
 
 identifierEx ::=  OBJECT_REF | IDENTIFIER | IDENTIFIER_REF | GD_SCENE | EXT_RESOURCE | NODE
 
 json ::= object | array
 
-jsonPair ::= STRING COLON jsonValue
+jsonPair ::= jsonValue COLON jsonValue
 jsonPairList ::= jsonPair (COMMA jsonPair)*
 jsonValue ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | array | object
 

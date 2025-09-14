@@ -11,7 +11,7 @@ import static tscn.psi.TscnTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tscn.psi.*;
 
-public class TscnHeaderImpl extends ASTWrapperPsiElement implements TscnHeader {
+public abstract class TscnHeaderImpl extends ASTWrapperPsiElement implements TscnHeader {
 
   public TscnHeaderImpl(@NotNull ASTNode node) {
     super(node);

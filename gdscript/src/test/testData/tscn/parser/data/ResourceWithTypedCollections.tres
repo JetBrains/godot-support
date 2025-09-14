@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ResourceWithTypedCollections" load_steps=2 format=3 uid="uid://p50ya54c84fr"]
+
+[ext_resource type="Script" uid="uid://v7bfy5v8rx84" path="res://resource_with_typed_collections.gd" id="1_w8hdg"]
+
+[resource]
+script = ExtResource("1_w8hdg")
+typed_array = Array[String](["foo", "bar"])
+typed_dictionary = Dictionary[String, int]({
+"bar": 1,
+"foo": 0
+})
+untyped_array = [1.0, Color(1, 0, 0, 1)]
+untyped_dictionary = {
+7: "8",
+Vector2(1, 2): Rect2(3, 4, 5, 6)
+}
+metadata/_custom_type_script = "uid://v7bfy5v8rx84"

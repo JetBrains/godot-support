@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TscnJsonPair extends PsiElement {
+public interface TscnTypeList extends PsiElement {
 
   @NotNull
-  List<TscnJsonValue> getJsonValueList();
+  List<TscnIdentifierEx> getIdentifierExList();
 
 }

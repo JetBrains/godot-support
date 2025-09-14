@@ -11,14 +11,14 @@ import static tscn.psi.TscnTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tscn.psi.*;
 
-public class TscnExprValueImpl extends ASTWrapperPsiElement implements TscnExprValue {
+public class TscnTypeListImpl extends ASTWrapperPsiElement implements TscnTypeList {
 
-  public TscnExprValueImpl(@NotNull ASTNode node) {
+  public TscnTypeListImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull TscnVisitor visitor) {
-    visitor.visitExprValue(this);
+    visitor.visitTypeList(this);
   }
 
   @Override
@@ -28,21 +28,9 @@ public class TscnExprValueImpl extends ASTWrapperPsiElement implements TscnExprV
   }
 
   @Override
-  @Nullable
-  public TscnArgList getArgList() {
-    return PsiTreeUtil.getChildOfType(this, TscnArgList.class);
-  }
-
-  @Override
   @NotNull
-  public TscnIdentifierEx getIdentifierEx() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnIdentifierEx.class));
-  }
-
-  @Override
-  @Nullable
-  public TscnTypeList getTypeList() {
-    return PsiTreeUtil.getChildOfType(this, TscnTypeList.class);
+  public List<TscnIdentifierEx> getIdentifierExList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TscnIdentifierEx.class);
   }
 
 }

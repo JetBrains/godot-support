@@ -13,4 +13,7 @@ public interface TscnExprValue extends PsiElement {
   @NotNull
   TscnIdentifierEx getIdentifierEx();
 
+  @Nullable
+  TscnTypeList getTypeList();
+
 }

@@ -35,6 +35,7 @@ public interface TscnTypes {
   IElementType PARAGRAPH = TscnParagraphElementType.getInstance("PARAGRAPH");
   IElementType RESOURCE_HEADER = TscnResourceHeaderElementType.getInstance("RESOURCE_HEADER");
   IElementType SCENE_HEADER = new TscnElementType("SCENE_HEADER");
+  IElementType TYPE_LIST = new TscnElementType("TYPE_LIST");
   IElementType UNKNOWN_HEADER = new TscnElementType("UNKNOWN_HEADER");
   IElementType VALUE = new TscnElementType("VALUE");
   IElementType VALUE_LIST = new TscnElementType("VALUE_LIST");
@@ -94,9 +95,6 @@ public interface TscnTypes {
       else if (type == EXPR_VALUE) {
         return new TscnExprValueImpl(node);
       }
-      else if (type == HEADER) {
-        return new TscnHeaderImpl(node);
-      }
       else if (type == HEADER_VALUE) {
         return new TscnHeaderValueImpl(node);
       }
@@ -138,6 +136,9 @@ public interface TscnTypes {
       }
       else if (type == SCENE_HEADER) {
         return new TscnSceneHeaderImpl(node);
+      }
+      else if (type == TYPE_LIST) {
+        return new TscnTypeListImpl(node);
       }
       else if (type == UNKNOWN_HEADER) {
         return new TscnUnknownHeaderImpl(node);
