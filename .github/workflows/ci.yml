@@ -30,7 +30,7 @@ jobs:
               shell: bash
               working-directory: rider
               run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
-    idea:
+    gdscript:
         needs: gradleValidation
         runs-on: ubuntu-latest
         env:
