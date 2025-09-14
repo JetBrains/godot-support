@@ -1,8 +1,7 @@
 package com.jetbrains.godot.gdscript.redCode
 
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.gdscript.testUtil.collectErrors
 import org.junit.Ignore
 
 class GdLambdaIndentationErrorTest : BasePlatformTestCase() {
@@ -43,12 +42,5 @@ class GdLambdaIndentationErrorTest : BasePlatformTestCase() {
                     errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange },
             onSameLine
         )
-    }
-
-    private fun collectErrors(element: PsiElement): List<PsiErrorElement> {
-        val list = mutableListOf<PsiErrorElement>()
-        if (element is PsiErrorElement) list.add(element)
-        element.children.forEach { list.addAll(collectErrors(it)) }
-        return list
     }
 }
