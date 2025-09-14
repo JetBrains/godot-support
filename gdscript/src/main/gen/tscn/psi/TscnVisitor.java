@@ -99,6 +99,10 @@ public class TscnVisitor extends PsiElementVisitor {
     visitHeader(o);
   }
 
+  public void visitTypeList(@NotNull TscnTypeList o) {
+    visitPsiElement(o);
+  }
+
   public void visitUnknownHeader(@NotNull TscnUnknownHeader o) {
     visitHeader(o);
   }

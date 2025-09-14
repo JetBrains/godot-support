@@ -29,8 +29,8 @@ public class TscnJsonPairImpl extends ASTWrapperPsiElement implements TscnJsonPa
 
   @Override
   @NotNull
-  public TscnJsonValue getJsonValue() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnJsonValue.class));
+  public List<TscnJsonValue> getJsonValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TscnJsonValue.class);
   }
 
 }
