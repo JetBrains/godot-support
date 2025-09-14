@@ -80,9 +80,15 @@ object GdClassMemberUtil {
             }
 
             if (calledOn != null) {
-                if (calledOn.startsWith("Array[")) calledOn = "Array"
-                // solution to check if statically called on current inner class - would be nice to come up with clean solution
-                static = (calledOn == calledOnPsi.text || calledOn == "${GdClassUtil.getFullClassId(calledOnPsi)}.${calledOnPsi.text}") && checkGlobalStaticMatch(element, calledOn)
+                // Only apply this heuristic if we haven't already determined a static context.
+                // The idea: if the inferred type name of the qualifier matches the qualifier text itself
+                // (e.g., "Outer"), or a fully qualified form like "FileOrOuter.Outer", then we consider
+                // the access to be static on a class, unless _Global has a variable with the same name.
+                static = isStaticAccessByName(element, calledOnPsi, calledOn)
+                // If the qualifier resolves to a script resource path (e.g. "res://Something.gd"),
+                // do not assume either static or instance context. Resource-based references can represent
+                // unnamed scripts or external files where we cannot reliably infer static-ness from the type
+                // string alone. Setting `static = null` prevents premature filtering of members.
                 if (calledOn.endsWith(".gd")) {
                     static = null
                 }
@@ -578,6 +584,17 @@ object GdClassMemberUtil {
     /**
      * _GlobalScope has matching variables with classes
      */
+    private fun isStaticAccessByName(element: PsiElement, qualifier: GdExpr, typeName: String): Boolean {
+        // We consider it a static class access when:
+        // - The resolved type name equals the qualifier text (e.g., 'Outer'), OR
+        // - The resolved type name equals 'FullOwnerId.QualifierText' to handle nested or file-qualified contexts.
+        // And we additionally ensure there is no conflicting global variable with the same name in _Global.
+        val qualifierText = qualifier.text
+        val fullOwnerId = GdClassUtil.getFullClassId(qualifier)
+        val looksLikeClassName = (typeName == qualifierText) || (typeName == "$fullOwnerId.$qualifierText")
+        return looksLikeClassName && checkGlobalStaticMatch(element, typeName)
+    }
+    
     private fun checkGlobalStaticMatch(element: PsiElement, name: String): Boolean {
         val virtualFile = FilenameIndex.getVirtualFilesByName(
             "${GdKeywords.GLOBAL_SCOPE}.gd",
