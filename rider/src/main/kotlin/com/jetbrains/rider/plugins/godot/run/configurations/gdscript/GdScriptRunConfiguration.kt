@@ -7,7 +7,6 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.RunConfigurationWithSuppressedDefaultRunAction
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
-import com.intellij.platform.dap.DapLaunchArgumentsProvider
 import com.intellij.platform.dap.DapStartRequest
 import org.jdom.Element
 
@@ -21,20 +20,11 @@ data class GdScriptStructuredArguments(
 class GdScriptRunConfiguration(name:String, project: Project, factory: ConfigurationFactory)
     : RunConfigurationBase<GdScriptRunFactory.GdScriptDebugConfigurationOptions>(project, factory, name),
       RunConfigurationWithSuppressedDefaultRunAction,
-      WithoutOwnBeforeRunSteps, DapLaunchArgumentsProvider {
-
-    override val adapterId: GdScriptDebugAdapter = GdScriptDebugAdapter
+      WithoutOwnBeforeRunSteps {
 
     var json: String = GdScriptRunFactory.DEFAULT_FULL_JSON
     val structured: GdScriptStructuredArguments
         get() = GdScriptRunConfigurationHelper.parse(json)
-
-    override val request: DapStartRequest
-        get() = structured.request
-
-    override fun arguments(): Map<String, Any?> {
-        return GdScriptRunConfigurationHelper.parseArgumentsToMap(json)
-    }
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState {
         return EmptyRunProfileState.INSTANCE
