@@ -56,6 +56,8 @@
 
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptConfigurationType"/>
     <platform.dap.debugAdapterSupportProvider implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptDebugAdapterSupportProvider"/>
+    <platform.dap.launchArgumentsProvider
+      implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptDapLaunchArgumentsProvider"/>
     <xdebugger.breakpointType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptLineBreakpointType"/>
     <xdebugger.breakpointType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptExceptionBreakpointType"/>
     <textmate.bundleProvider implementation="com.jetbrains.rider.plugins.godot.textMate.GodotTextMateBundleProvider"/>
