@@ -24,8 +24,6 @@ the foundation for this plugin.
 
 [List of features](documentation%2Ffeatures%2Ffeatures.md)
 
-[Changelog](CHANGELOG.md)
-
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
 ## GdScript toolkit (not related to this project)

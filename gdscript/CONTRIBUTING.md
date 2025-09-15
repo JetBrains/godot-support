@@ -2,6 +2,8 @@
 
 Hello, thanks for taking time and helping out with the plugin!
 
+Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. Please sign the CLA before sending the PR: https://www.jetbrains.com/agreements/cla/.
+
 #### [Local setup](documentation%2Fcontribution%2Flocal_setup.md)
 
 ## Tutorials
@@ -18,12 +20,12 @@ You don't have to read it all, but at least check if there's a chapter for a fea
 
 #### Features
 
-...I don't know what to write there... if you'd jump into development I'd say just get in touch with me and I can help you out... and fill in this part. You can open Gitlab issue for any question you have.
+...I don't know what to write there... if you'd jump into development I'd say just get in touch with me and I can help you out... and fill in this part. If you have any questions, please open a GitHub issue in this repository: https://github.com/JetBrains/godot-support/issues
 
 Maybe write there how to approach different features? But I'd start with tutorials mentioned above.
 
 #### Testing
-- [Parser test](documentation%2Fcontribution%2Fparser_tests.md)
+- [tests.md](documentation/contribution/tests.md)
 
 ## Important notes
 
@@ -58,4 +60,16 @@ and 2 .gdconf files used for checking Annotations and Operations (like if you ca
 
 - Makefile  
 This is used for copying Godot's icons to have same visuals for completion of Classes, line markers and so on.  
-Later should be added into .gitlab-ci to update it with each new Godot's release
+Later may be added into CI to update it with each new Godot release
+
+
+## Pull Request Checklist
+
+When submitting a PR, please ensure the following:
+
+- The fix or feature implementation is included in the PR.
+- Tests are added or updated as described in - [tests.md](documentation/contribution/tests.md)
+- Optional: A YouTrack issue is linked (https://youtrack.jetbrains.com/issues) to keep QA and release notes in the loop.
+  - If the commit that contains the fix starts with "fix Rider-XXX", automation will mark it fixed and set the proper "fixed in build" when the change is synced to the main Rider repository.
+
+You can also follow the prompts in our GitHub pull request template located at .github/pull_request_template.md.
