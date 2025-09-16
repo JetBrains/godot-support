@@ -1,5 +1,3 @@
-Title: <short summary>
-
 Summary
 - What does this change do? Why?
 - Any user-facing behavior changes? Screenshots where helpful.
