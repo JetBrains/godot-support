@@ -97,11 +97,12 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
                     // workarounds RIDER-90857
                     var resItem = new StringLiteralItem(Prefix);
                     var ranges = context.CompletionRanges;
-                    var range = new TextLookupRanges(new DocumentRange(ranges.InsertRange.StartOffset + 1,
-                            ranges.InsertRange.EndOffset + 1),
-                        new DocumentRange(ranges.ReplaceRange.StartOffset + 1,
-                            ranges.ReplaceRange.EndOffset - 1)
-                    );
+                    var documentRange = new DocumentRange(ranges.InsertRange.StartOffset + 1,
+                        ranges.InsertRange.EndOffset + 1);
+                    var replaceRange = new DocumentRange(ranges.ReplaceRange.StartOffset + 1,
+                        ranges.ReplaceRange.EndOffset - 1);
+                    // ReSharper disable once RedundantArgumentDefaultValue
+                    var range = new TextLookupRanges(documentRange, replaceRange, true);
 
                     resItem.InitializeRanges(range, context.BasicContext);
                     collector.Add(resItem);
