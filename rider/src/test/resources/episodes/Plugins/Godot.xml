@@ -4,7 +4,9 @@
 <suite name="Rider Tests Godot">
   <test name="Main Tests Godot">
     <packages>
-      <package name="com.jetbrains.rider.plugins.godot.test.cases"/>
+      <package name="com.jetbrains.rider.plugins.godot.test.cases.*">
+        <exclude name="com.jetbrains.rider.plugins.godot.test.cases.integrationTests"/>
+      </package>
     </packages>
   </test>
 </suite>
