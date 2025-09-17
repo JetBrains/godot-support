@@ -34,7 +34,10 @@ fun downloadAndExtractGodot(version: String): File {
     val extractedDir = downloadAndExtractTestToolArchiveArtifactIntoPersistentCache("$TEST_DATA_DOWNLOAD_URL/$godotZipName").canonicalFile
 
     val godotExecutable = extractedDir.resolve(when {
-                                                   SystemInfo.isWindows -> "Godot_v${version}-stable_mono_win64.exe"
+                                                   SystemInfo.isWindows -> {
+                                                       val base = "Godot_v${version}-stable_mono_win64"
+                                                       "$base/$base.exe"
+                                                   }
                                                    SystemInfo.isLinux -> "Godot_v${version}-stable_mono_linux_x86_64"
                                                    SystemInfo.isMac -> "Godot_mono.app/Contents/MacOS/Godot"
                                                    else -> error("Unsupported OS for Godot")
