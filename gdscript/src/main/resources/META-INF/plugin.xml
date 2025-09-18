@@ -96,6 +96,7 @@
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdResourceReferenceContributor" />
     <!-- Tscn, Project, Config -->
     <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceReferenceContributor" />
+    <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnScriptClassReferenceContributor"/>
 
     <!-- Annotators -->
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />

@@ -12,7 +12,7 @@ import tscn.TscnFileType
 object TscnElementFactory {
 
     fun tscnNodeHeaderValueVal(project: Project, name: String): PsiElement {
-        val file = createFile(project, "[ext_resource path=\"res://$name\"]\n")
+        val file = createFile(project, "[ext_resource path=\"$name\"]\n")
 
         return PsiTreeUtil.findChildOfType(file, TscnHeaderValueVal::class.java)!!.firstChild
     }
