@@ -205,15 +205,7 @@
     <langCodeStyleSettingsProvider implementation="gdscript.formatter.settings.GdLanguageCodeStyleSettingsProvider" />
 
     <!-- File templates -->
-    <internalFileTemplate name="Node default" />
-    <internalFileTemplate name="Object empty" />
-    <internalFileTemplate name="CharacterBody2D basic_movement" />
-    <internalFileTemplate name="CharacterBody3D basic_movement" />
-    <internalFileTemplate name="EditorPlugin plugin" />
-    <internalFileTemplate name="EditorScenePostImport basic_import_script" />
-    <internalFileTemplate name="EditorScenePostImport no_comments" />
-    <internalFileTemplate name="EditorScript basic_editor_script" />
-    <internalFileTemplate name="VisualShaderNodeCustom basic" />
+    <fileTemplateGroup implementation="gdscript.templates.GdFileTemplateGroupFactory"/>
 
     <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdFoldingBuilder" />
     <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdRegionFoldingBuilder" />
