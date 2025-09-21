@@ -253,6 +253,28 @@ object GdClassMemberUtil {
         hitLocal: BoolVal? = null,
     ): HashMap<String, PsiElement> {
         val locals: HashMap<String, PsiElement> = hashMapOf()
+
+        // If inside a match branch GUARD (before ':'), bindings from the pattern list are visible
+        run {
+            var cur: PsiElement? = element
+            while (cur != null) {
+                val p = cur.parent
+                if (p is GdMatchBlock) {
+                    val suiteStart = p.stmtOrSuite?.textRange?.startOffset ?: Int.MAX_VALUE
+                    val refStart = element.textRange.startOffset
+                    if (refStart < suiteStart) {
+                        val vars = PsiTreeUtil.findChildrenOfType(p.patternList, GdVarNmi::class.java)
+                        vars.forEach { v ->
+                            val name = v.name
+                            if (!locals.containsKey(name)) locals[name] = v
+                        }
+                    }
+                    break
+                }
+                cur = p
+            }
+        }
+
         var it: PsiElement = element
 
         // To avoid matching self
@@ -300,10 +322,16 @@ object GdClassMemberUtil {
                     ?: ""] = it
 
                 is GdPatternList -> {
-                    if (movedToParent) {
-                        PsiTreeUtil.getChildrenOfType(it, GdBindingPattern::class.java)
-                            ?.map { b -> if (!locals.contains(b.varNmi.name)) locals[b.varNmi.name] = b }
-                    }
+                    // Pattern binding variables are visible both in the guard (when ...) and in the branch body.
+                    // Collect them whenever we encounter the pattern list while walking upwards.
+                    PsiTreeUtil.findChildrenOfType(it, GdVarNmi::class.java)
+                        .forEach { v -> if (!locals.contains(v.name)) locals[v.name] = v }
+                }
+
+                is GdMatchBlock -> {
+                    // Be robust: when reaching the match block, also collect bindings from its pattern list
+                    PsiTreeUtil.findChildrenOfType(it.patternList, GdVarNmi::class.java)
+                        .forEach { v -> if (!locals.contains(v.name)) locals[v.name] = v }
                 }
 
                 is GdSetDecl -> {

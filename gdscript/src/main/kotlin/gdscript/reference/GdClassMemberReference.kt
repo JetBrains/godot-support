@@ -39,6 +39,7 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
                 is GdForSt -> element.varNmi
                 is GdParam -> element.varNmi
                 is GdVarNmi -> element
+                is GdBindingPattern -> element.varNmi
                 is PsiFile -> element
                 is GdClassNaming -> element.classNameNmi
                 else -> null
