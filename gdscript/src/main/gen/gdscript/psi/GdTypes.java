@@ -205,6 +205,7 @@ public interface GdTypes {
   IElementType VAR = new GdTokenType("VAR");
   IElementType VARARG = new GdTokenType("VARARG");
   IElementType VOID = new GdTokenType("VOID");
+  IElementType WHEN = new GdTokenType("WHEN");
   IElementType WHILE = new GdTokenType("WHILE");
   IElementType XOR = new GdTokenType("XOR");
 

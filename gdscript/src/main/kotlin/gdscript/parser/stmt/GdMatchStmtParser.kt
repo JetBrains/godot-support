@@ -35,6 +35,12 @@ object GdMatchStmtParser : GdStmtBaseParser {
         var ok = true
 
         ok = ok && patternList(b, l + 1)
+        // Optional pattern guard: contextual 'when' keyword followed by an expression
+        if (ok && b.nextTokenIs(IDENTIFIER) && b.tokenText == "when") {
+            b.remapCurrentToken(WHEN)
+            ok = ok && b.consumeToken(WHEN)
+            ok = ok && GdExprParser.parse(b, l + 1, false)
+        }
         ok = ok && b.consumeToken(COLON, pin = true)
         ok = ok && GdStmtParser.parse(b, l + 1)
         GdRecovery.stmtNoLine(b, ok)
