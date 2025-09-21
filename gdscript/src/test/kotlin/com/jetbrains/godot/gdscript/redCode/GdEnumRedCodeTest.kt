@@ -5,13 +5,6 @@ import com.intellij.psi.PsiErrorElement
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 class GdEnumRedCodeTest : BasePlatformTestCase() {
-  private fun collectErrors(element: PsiElement): List<PsiErrorElement> {
-    val list = mutableListOf<PsiErrorElement>()
-    if (element is PsiErrorElement) list.add(element)
-    element.children.forEach { list.addAll(collectErrors(it)) }
-    return list
-  }
-
   // Red code should NOT appear for this valid enum and typed variable initialization
   fun testEnumHasNoRedCode() {
     val code = """

@@ -1,0 +1,5 @@
+func test(point):
+  match point[26r]:
+    [var x, var y] when y[57r] == x[62r]:
+      print[71u](x[77r])
+      print[86u](y[92r])

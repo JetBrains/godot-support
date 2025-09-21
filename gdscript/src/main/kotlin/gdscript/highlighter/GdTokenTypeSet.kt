@@ -24,6 +24,7 @@ interface GdTokenTypeSet {
             GdTypes.SIGNAL,
             GdTypes.IN,
             GdTypes.MATCH,
+            GdTypes.WHEN,
             GdTypes.AWAIT,
             GdTypes.PUPPET,
             GdTypes.MASTER,
