@@ -6,6 +6,7 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.*
+import gdscript.psi.GdPattern
 import gdscript.psi.utils.GdClassMemberUtil
 
 /**
@@ -18,6 +19,7 @@ class GdConstVarIdAnnotator : Annotator {
             when (element.parent) {
                 is GdParam -> return
                 is GdSetDecl -> return
+                is GdPattern -> return
             }
 
             isUnique(element as GdNamedIdElement, holder);
