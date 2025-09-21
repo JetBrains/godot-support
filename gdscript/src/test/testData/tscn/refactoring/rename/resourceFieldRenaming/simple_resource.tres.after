@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="SimpleResource" load_steps=2 format=3 uid="uid://cj83h232urbtm"]
+
+[ext_resource type="Script" uid="uid://cajacij1ntk65" path="res://simple_resource.gd" id="1_hn4mw"]
+
+[resource]
+script = ExtResource("1_hn4mw")
+valueRenamed = "foobar"
+metadata/_custom_type_script = "uid://cajacij1ntk65"

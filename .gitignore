@@ -18,7 +18,15 @@ gdscript/build
 gdscript/protocol/build
 gdscript/classes
 
+community/.intellijPlatform
+community/build
+community/protocol/build
+community/classes
+community/nuget
+
 *generated*
 *Generated*
 
 NuGet.Config
+
+*.hprof

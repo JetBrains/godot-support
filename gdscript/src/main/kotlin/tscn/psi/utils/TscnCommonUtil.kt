@@ -1,6 +1,7 @@
 package tscn.psi.utils
 
 import com.intellij.psi.PsiElement
+import tscn.psi.TscnDataLineNm
 import tscn.psi.TscnElementFactory
 import tscn.psi.TscnHeaderValueVal
 import tscn.psi.TscnNamedElement
@@ -19,6 +20,7 @@ object TscnCommonUtil {
         if (keyNode != null) {
             val id = when(element) {
                 is TscnHeaderValueVal -> TscnElementFactory.tscnNodeHeaderValueVal(element.project, newName)
+                is TscnDataLineNm -> TscnElementFactory.tscnDataLineNm(element.project, newName)
                 else -> return element
             }
             element.node.replaceChild(keyNode, id.node)
