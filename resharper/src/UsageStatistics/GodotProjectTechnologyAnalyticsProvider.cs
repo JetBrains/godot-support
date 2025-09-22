@@ -8,8 +8,8 @@ using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 namespace JetBrains.ReSharper.Plugins.Godot.UsageStatistics;
 
 [SolutionComponent(Instantiation.DemandAnyThreadSafe)]
-public class GodotProjectTechnologyProvider(IGodotVersion godotVersion, GodotTracker godotTracker)
-    : IProjectTechnologyProvider
+public class GodotProjectTechnologyAnalyticsProvider(IGodotVersion godotVersion, GodotTracker godotTracker)
+    : IProjectTechnologyAnalyticsProvider
 {
     public IEnumerable<string> GetProjectTechnology(IProject project)
     {
@@ -26,7 +26,7 @@ public class GodotProjectTechnologyProvider(IGodotVersion godotVersion, GodotTra
 }
     
 [SolutionComponent(Instantiation.DemandAnyThreadSafe)]
-public class GodotSolutionTechnologyProvider(GodotTracker godotTracker, IGodotVersion godotVersion) : ISolutionTechnologyProvider
+public class GodotSolutionTechnologyAnalyticsProvider(GodotTracker godotTracker, IGodotVersion godotVersion) : ISolutionTechnologyAnalyticsProvider
 {
     public IEnumerable<string> GetSolutionTechnology(ISolution solution)
     {
