@@ -7,14 +7,15 @@ using JetBrains.ReSharper.Plugins.Godot.ProjectModel;
 namespace JetBrains.ReSharper.Plugins.Godot.UsageStatistics;
 
 [SolutionComponent(Instantiation.DemandAnyThreadSafe)]
-public class GodotProjectTechnologyAnalyticsProvider : IProjectTechnologyAnalyticsProvider
+public class GodotSolutionTechnologyAnalyticsProvider(GodotTracker godotTracker) : ISolutionTechnologyAnalyticsProvider
 {
-    public IEnumerable<string> GetProjectTechnology(IProject project)
+    public IEnumerable<string> GetSolutionTechnology(ISolution solution)
     {
-        if (project.IsGodotProject())
+        if (godotTracker.GodotDescriptor is { IsPureGdScriptProject: true })
         {
             yield return "Godot";
             yield return "GameDev";
+            yield return "GDScript";
         }
     }
 }
