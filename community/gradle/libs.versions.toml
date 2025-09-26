@@ -3,7 +3,7 @@
 kotlin = "2.1.20"
 # https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
 # https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
-ideaSdk = "252-EAP-SNAPSHOT"
+ideaSdk = "253-EAP-SNAPSHOT"
 riderSdk = "2025.3-SNAPSHOT"
 
 [libraries]
