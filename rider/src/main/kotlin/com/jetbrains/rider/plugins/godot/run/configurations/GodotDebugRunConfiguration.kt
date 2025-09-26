@@ -8,13 +8,14 @@ import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.project.Project
+import com.jetbrains.rider.debugger.mixed.mode.isDotnetMixedModeDebugFeatureEnabled
 import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
 import com.jetbrains.rider.run.configurations.exe.ExeConfigurationParameters
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 
 class GodotDebugRunConfiguration(name:String, project: Project, factory: ConfigurationFactory, params: ExeConfigurationParameters)
-    : ExeConfiguration(name, project, factory, params) {
+    : ExeConfiguration(name, project, factory, params, isDotnetMixedModeDebugFeatureEnabled()) {
 
     override fun isNative(): Boolean {
         return false
