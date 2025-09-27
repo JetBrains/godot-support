@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import java.net.URI
 import java.net.http.HttpClient
@@ -47,9 +48,8 @@ dependencies {
     compileOnly(":rider-godot-community")
 
     intellijPlatform {
-        intellijIdeaCommunity(libs.versions.ideaSdk) { useInstaller = false }
-        // todo: leave runIde to run IDEA and create a custom testing task runRider to run Rider.
-        // rider(libs.versions.riderSdk, useInstaller = false)
+        intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
+        // rider(libs.versions.riderSdk, useInstaller = false) // instead of touching this, just use runRider gradle task
         jetbrainsRuntime()
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
@@ -107,7 +107,17 @@ tasks {
         val pluginName = intellijPlatform.projectName.get()
         val sdkDir = project.layout.buildDirectory.dir("sdk").get().asFile
         from(sdkDir) { into(Path(pluginName, "sdk").pathString)}
+    }
 
+    // run it to start Rider from SDK
+    val runRider by intellijPlatformTesting.runIde.registering {
+        type = IntelliJPlatformType.Rider
+        version = libs.versions.riderSdk
+        useInstaller = false
+        task {
+            enabled = true
+            dependsOn(prepareSandbox)
+        }
     }
 
     runIde {
