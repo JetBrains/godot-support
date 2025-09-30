@@ -9,6 +9,13 @@ class ScriptClassRenamingTest : BasePlatformTestCase() {
         return getBaseTestDataPath().resolve("testData/tscn/refactoring/rename/scriptClassRenaming").pathString
     }
 
+    override fun setUp() {
+        super.setUp()
+        // Allow reading expected .after files from the test data directory
+        val path = getTestDataPath()
+        com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess.allowRootAccess(testRootDisposable, path)
+    }
+
     fun testRename() {
         myFixture.configureByFiles("simple_resource.gd", "simple_resource.tres")
         myFixture.renameElementAtCaret("SimpleResourceRenamed")
