@@ -135,6 +135,7 @@ tasks {
     }
 
     runIde {
+        dependsOn(gradle.includedBuild("community").task(":buildPlugin"))
         jvmArgs("-Xmx1500m")
     }
 
