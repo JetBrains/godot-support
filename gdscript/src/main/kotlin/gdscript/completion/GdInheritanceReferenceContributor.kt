@@ -23,7 +23,7 @@ class GdInheritanceReferenceContributor : PsiReferenceContributor() {
                     return arrayOf(GdInheritanceReference(element))
                 }
             }
-        );
+        )
     }
 
 }

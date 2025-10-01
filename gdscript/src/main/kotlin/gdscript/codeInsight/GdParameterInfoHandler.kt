@@ -109,7 +109,7 @@ class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElement>, Dum
             if (i > 0) {
                 builder.append(", ")
             }
-            val start = builder.length;
+            val start = builder.length
             builder.append("${it.key}: ${it.value}")
             if (currentParam == i) {
                 startOffset = start

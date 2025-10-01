@@ -9,8 +9,8 @@ import gdscript.psi.impl.GdClassVarDeclElementType
 
 class GdClassVarDeclStubImpl : StubBase<GdClassVarDeclTl>, GdClassVarDeclStub {
 
-    private var name: String = "";
-    private var static: Boolean = false;
+    private var name: String = ""
+    private var static: Boolean = false
     private var doc: GdCommentModel
 
     constructor(parent: StubElement<*>?, name: String?, static: Boolean, doc: GdCommentModel): super(parent, GdClassVarDeclElementType) {

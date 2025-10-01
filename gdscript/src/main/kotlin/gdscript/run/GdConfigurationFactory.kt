@@ -13,6 +13,6 @@ object GdConfigurationFactory : ConfigurationFactory(GdRunConfigurationType.INST
         GdRunConfiguration(project, this, "GdScript")
 
     override fun getOptionsClass(): Class<out BaseState?> =
-        GdRunConfigurationOptions::class.java;
+        GdRunConfigurationOptions::class.java
 
 }

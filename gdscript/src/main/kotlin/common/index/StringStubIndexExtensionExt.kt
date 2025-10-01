@@ -98,15 +98,15 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
     }
 
     fun getNonEmptyKeys(project: Project): Collection<String> {
-        if (DumbService.isDumb(project)) return emptyList();
+        if (DumbService.isDumb(project)) return emptyList()
         return getAllKeys(project).mapNotNull {
             if (it.isNotBlank() && getGlobally(it, project).isNotEmpty()) it else null
         }
     }
 
     fun getAllValues(project: Project): Collection<Psi> {
-        if (DumbService.isDumb(project)) return emptyList();
-        return getAllKeys(project).flatMap { getGlobally(it, project) };
+        if (DumbService.isDumb(project)) return emptyList()
+        return getAllKeys(project).flatMap { getGlobally(it, project) }
     }
 
 }

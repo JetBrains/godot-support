@@ -23,9 +23,9 @@ object GdEnumCompletionUtil {
     }
 
     fun lookup(element: GdEnumValue): LookupElement {
-        val decl = PsiTreeUtil.getParentOfType(element, GdEnumDeclTl::class.java);
-        val values = decl?.values;
-        val name = element.enumValueNmi.name;
+        val decl = PsiTreeUtil.getParentOfType(element, GdEnumDeclTl::class.java)
+        val values = decl?.values
+        val name = element.enumValueNmi.name
 
         return GdLookup.create(
             name,
@@ -39,7 +39,7 @@ object GdEnumCompletionUtil {
     }
 
     fun GdEnumDeclTl.lookup(): LookupElement? {
-        if (name.isBlank()) return null;
+        if (name.isBlank()) return null
 
         return GdLookup.create(
             name,

@@ -22,20 +22,20 @@ class GdMethodNameAnnotator : Annotator {
             .newSilentAnnotation(HighlightSeverity.INFORMATION)
             .range(element.textRange)
             .textAttributes(GdHighlighterColors.METHOD_DECLARATION)
-            .create();
+            .create()
 
-        isUnique(element, holder);
+        isUnique(element, holder)
     }
 
     private fun isUnique(element: GdMethodIdNmi, holder: AnnotationHolder) {
-        val name = element.name;
+        val name = element.name
 
         // Constructors
         if (GdClassUtil.getOwningClassName(element) == name) {
-            return;
+            return
         }
 
-        val declaration = GdClassMemberUtil.listLocalDeclarationsUpward(element)[name];
+        val declaration = GdClassMemberUtil.listLocalDeclarationsUpward(element)[name]
         if (declaration != null) {
             val type = when (declaration) {
                 is GdMethodDeclTl -> "method"
@@ -53,7 +53,7 @@ class GdMethodNameAnnotator : Annotator {
                         "Name [${element.name}] already defined as $type"
                 )
                 .range(element.textRange)
-                .create();
+                .create()
         }
     }
 

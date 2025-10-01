@@ -5,7 +5,7 @@ import tscn.psi.TscnResourceHeader
 
 interface TscnResourceHeaderStub : StubElement<TscnResourceHeader> {
 
-    fun getId(): String;
-    fun getPath(): String;
+    fun getId(): String
+    fun getPath(): String
 
 }

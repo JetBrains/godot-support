@@ -30,8 +30,8 @@ object GdMethodCompletionUtil {
 
     fun addMethods(methods: Map<String, GdMethodDeclTl>, result: CompletionResultSet, withFunc: Boolean = false) {
         methods.forEach {
-            val item = it.value;
-            val params = buildParamHint(item);
+            val item = it.value
+            val params = buildParamHint(item)
             result.addElement(GdLookup.create(
                 "${if (withFunc) "func " else ""}${item.name}$params${if (item.returnType.isNotEmpty()) " -> ${item.returnType}" else ""}:",
                 tail = params,
@@ -44,7 +44,7 @@ object GdMethodCompletionUtil {
     }
 
     fun GdMethodDeclTl.lookup(): LookupElement {
-        val params = buildParamHint(this);
+        val params = buildParamHint(this)
         return GdLookup.create(
             this.name,
             tail = params,
@@ -55,7 +55,7 @@ object GdMethodCompletionUtil {
     }
 
     fun GdMethodDeclTl.lookupDeclaration(omitFuncKeyword: Boolean = false, indent: String? = null): LookupElement {
-        val params = buildParamHint(this);
+        val params = buildParamHint(this)
         return GdLookup.create(
             "${if (omitFuncKeyword) "" else "func "}${this.name}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}:${if (indent !== null) "\n$indent" else ""}",
             tail = params,
@@ -91,7 +91,7 @@ object GdMethodCompletionUtil {
         }
         if (wrap) sb.append("\n")
 
-        return sb.append(")").toString();
+        return sb.append(")").toString()
     }
 
 }

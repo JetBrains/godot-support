@@ -13,27 +13,27 @@ object IndentUtil {
      *  - count: true -> number of indents (spaces / tabSize)
      */
     fun Editor.indents(element: PsiElement, count: Boolean = false): Int {
-        val line = document.getLineNumber(element.startOffset);
-        val indentStart = document.getLineStartOffset(line);
-        val indentEnd = EditorActionUtil.findFirstNonSpaceOffsetOnTheLine(document, line);
+        val line = document.getLineNumber(element.startOffset)
+        val indentStart = document.getLineStartOffset(line)
+        val indentEnd = EditorActionUtil.findFirstNonSpaceOffsetOnTheLine(document, line)
 
-        val editorSettings = settings;
-        val indentSize = indentEnd - indentStart;
-        val tabSize = editorSettings.getTabSize(project);
+        val editorSettings = settings
+        val indentSize = indentEnd - indentStart
+        val tabSize = editorSettings.getTabSize(project)
 
         if (!count) {
             if (editorSettings.isUseTabCharacter(project)) {
-                return indentSize * tabSize;
+                return indentSize * tabSize
             }
 
-            return indentSize;
-        };
-
-        if (editorSettings.isUseTabCharacter(project)) {
-            return indentSize;
+            return indentSize
         }
 
-        return indentSize / tabSize;
+        if (editorSettings.isUseTabCharacter(project)) {
+            return indentSize
+        }
+
+        return indentSize / tabSize
     }
 
 }

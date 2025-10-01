@@ -5,7 +5,7 @@ import project.ProjectLanguage
 
 class ProjectTokenType : IElementType {
 
-    constructor(debugName: String) : super(debugName, ProjectLanguage);
+    constructor(debugName: String) : super(debugName, ProjectLanguage)
 
     override fun toString(): String = "ProjectTokenType.${super.toString()}"
 

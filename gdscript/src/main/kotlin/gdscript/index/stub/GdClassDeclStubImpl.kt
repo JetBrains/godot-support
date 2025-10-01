@@ -20,11 +20,11 @@ class GdClassDeclStubImpl : StubBase<GdClassDeclTl>, GdClassDeclStub {
     }
 
     override fun name(): String {
-        return myClassname;
+        return myClassname
     }
 
     override fun parent(): String {
-        return myParentName;
+        return myParentName
     }
 
     override fun description(): String = this.doc.description

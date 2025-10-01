@@ -15,11 +15,11 @@ class GdStructureViewModel : StructureViewModelBase, StructureViewModel.ElementI
     constructor(psiFile: PsiFile) : super(psiFile, GdStructureViewElement(psiFile))
 
     override fun getSorters(): Array<Sorter> {
-        return arrayOf(Sorter.ALPHA_SORTER);
+        return arrayOf(Sorter.ALPHA_SORTER)
     }
 
     override fun isAlwaysShowsPlus(element: StructureViewTreeElement?): Boolean {
-        return false;
+        return false
     }
 
     override fun isAlwaysLeaf(element: StructureViewTreeElement): Boolean {

@@ -7,7 +7,7 @@ import gdscript.psi.GdFuncDeclEx
 object PsiGdLocalFuncUtil {
 
     fun getReturnType(element: GdFuncDeclEx): String {
-        return element.returnHint?.returnHintVal?.text ?: "";
+        return element.returnHint?.returnHintVal?.text ?: ""
     }
 
     fun getReturnExpr(element: GdFuncDeclEx): PsiElement? {
@@ -15,7 +15,7 @@ object PsiGdLocalFuncUtil {
     }
 
     fun getParameters(element: GdFuncDeclEx): LinkedHashMap<String, String?> {
-        return PsiGdParameterUtil.toHashMap(element.paramList);
+        return PsiGdParameterUtil.toHashMap(element.paramList)
     }
 
 }

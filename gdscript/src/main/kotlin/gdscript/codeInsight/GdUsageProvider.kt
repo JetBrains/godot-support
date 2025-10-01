@@ -17,7 +17,7 @@ class GdUsageProvider : FindUsagesProvider {
             GdTokenTypeSet.IDENTIFIERS,
             GdTokenTypeSet.COMMENT,
             TokenSet.EMPTY,
-        );
+        )
     }
 
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {

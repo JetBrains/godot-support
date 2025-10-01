@@ -16,12 +16,12 @@ import gdscript.utils.CompletionParametersUtil.indent
  */
 class GdMethodDeclCompletionContributor : CompletionContributor() {
 
-    val METHOD_ID = psiElement().withParent(psiElement(GdTypes.METHOD_ID_NMI));
+    val METHOD_ID = psiElement().withParent(psiElement(GdTypes.METHOD_ID_NMI))
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
-        val element = parameters.originalPosition ?: return;
+        val element = parameters.originalPosition ?: return
         if (METHOD_ID.accepts(parameters.position)) {
-            val parent = GdInheritanceUtil.getExtendedElement(element) ?: return;
+            val parent = GdInheritanceUtil.getExtendedElement(element) ?: return
             val list = mutableListOf<Any>()
             GdClassMemberUtil.collectFromParents(parent, list, element.project)
             list

@@ -5,6 +5,6 @@ import project.psi.ProjectSection
 
 interface ProjectSectionStub : StubElement<ProjectSection> {
 
-    fun getName(): String;
+    fun getName(): String
 
 }

@@ -22,7 +22,7 @@ class GdConstVarIdAnnotator : Annotator {
                 is GdPattern -> return
             }
 
-            isUnique(element as GdNamedIdElement, holder);
+            isUnique(element as GdNamedIdElement, holder)
         }
     }
 
@@ -38,7 +38,7 @@ class GdConstVarIdAnnotator : Annotator {
                         HighlightSeverity.ERROR,
                         "[${element.name}] is already defined")
                 .range(element.textRange)
-                .create();
+                .create()
         }
     }
 

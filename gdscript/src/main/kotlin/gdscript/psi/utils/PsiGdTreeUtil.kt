@@ -9,7 +9,7 @@ object PsiGdTreeUtil {
     fun findFirstPrecedingElement(element: PsiElement, withSelf: Boolean = true, condition: Condition<in PsiElement?>): PsiElement? {
         var el: PsiElement? = element
         if (!withSelf) {
-            el = el?.prevSibling ?: el?.parent;
+            el = el?.prevSibling ?: el?.parent
         }
 
         while (el != null) {

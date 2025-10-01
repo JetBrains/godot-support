@@ -27,7 +27,7 @@ object GdElementFactory {
     }
 
     fun enumValueNmi(project: Project, name: String): PsiElement {
-        val file = createFile(project, "extends Node\nenum Enum {$name = 1}\n");
+        val file = createFile(project, "extends Node\nenum Enum {$name = 1}\n")
 
         return PsiTreeUtil.findChildOfType(file, GdEnumValueNmi::class.java)!!.firstChild
     }
@@ -39,7 +39,7 @@ object GdElementFactory {
     }
 
     fun getMethodIdRef(project: Project, name: String): PsiElement {
-        val file = createFile(project, "extends Node\nvar variable:\n\tget = $name\n");
+        val file = createFile(project, "extends Node\nvar variable:\n\tget = $name\n")
 
         return PsiTreeUtil.findChildOfType(file, GdGetMethodIdRef::class.java)!!.firstChild
     }
@@ -122,7 +122,7 @@ object GdElementFactory {
     }
 
     fun callExpr(project: Project, expr: String): GdExpr {
-        val file = createFile(project, "extends Node\nfunc fu():\n\t$expr");
+        val file = createFile(project, "extends Node\nfunc fu():\n\t$expr")
 
         return PsiTreeUtil.findChildOfType(file, GdExpr::class.java)!!
     }

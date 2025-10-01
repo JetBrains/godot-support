@@ -10,7 +10,7 @@ object GdFileUtil {
 
     fun listTraits(project: Project): List<VirtualFile> {
         return FileTypeIndex.getFiles(GdFileType, GlobalSearchScope.allScope(project))
-            .filter { it.nameWithoutExtension.lowercase().endsWith("trait") };
+            .filter { it.nameWithoutExtension.lowercase().endsWith("trait") }
     }
 
 }

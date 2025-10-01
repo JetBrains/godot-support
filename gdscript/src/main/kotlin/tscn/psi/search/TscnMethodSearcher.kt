@@ -15,7 +15,7 @@ class TscnMethodSearcher(val method: GdMethodIdNmi, project: Project) : Abstract
             return true
         }
         // or search for matches in an animation track
-        return listAnimationReference("\"method\": &\"${method.name}\"", true, "method").any();
+        return listAnimationReference("\"method\": &\"${method.name}\"", true, "method").any()
     }
 
     fun listMethodReferences() : List<UsageInfo> {

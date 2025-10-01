@@ -5,6 +5,6 @@ import project.psi.ProjectData
 
 interface ProjectDataStub : StubElement<ProjectData> {
 
-    fun getKey(): String;
+    fun getKey(): String
 
 }

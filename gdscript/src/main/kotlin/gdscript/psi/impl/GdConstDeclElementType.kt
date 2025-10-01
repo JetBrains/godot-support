@@ -13,10 +13,10 @@ object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>
 
     @JvmStatic
     fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdConstDeclElementType {
-        return GdConstDeclElementType;
+        return GdConstDeclElementType
     }
 
-    override fun getExternalId(): String = "GdScript.constDecl";
+    override fun getExternalId(): String = "GdScript.constDecl"
 
     override fun serialize(stub: GdConstDeclStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name())
@@ -30,11 +30,11 @@ object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>
         )
 
     override fun indexStub(stub: GdConstDeclStub, sink: IndexSink) {
-        sink.occurrence(Indices.CONST_DECL, stub.name());
+        sink.occurrence(Indices.CONST_DECL, stub.name())
     }
 
     override fun createPsi(stub: GdConstDeclStub): GdConstDeclTl =
-        GdConstDeclTlImpl(stub, stub.stubType);
+        GdConstDeclTlImpl(stub, stub.stubType)
 
     override fun createStub(psi: GdConstDeclTl, parentStub: StubElement<*>?): GdConstDeclStub {
         return GdConstDeclStubImpl(

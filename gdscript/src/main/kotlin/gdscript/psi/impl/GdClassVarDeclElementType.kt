@@ -16,7 +16,7 @@ object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassV
         return GdClassVarDeclElementType
     }
 
-    override fun getExternalId(): String = "GdScript.classVarDecl";
+    override fun getExternalId(): String = "GdScript.classVarDecl"
 
     override fun serialize(stub: GdClassVarDeclStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name())

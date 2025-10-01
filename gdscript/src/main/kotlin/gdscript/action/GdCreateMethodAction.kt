@@ -12,10 +12,10 @@ import gdscript.utils.EditorSettingsUtil.normalIndent
 
 class GdCreateMethodAction : BaseIntentionAction {
 
-    val name: String;
-    val returnType: String?;
-    val parameters: Array<String>;
-    val bodyLines: Array<String>;
+    val name: String
+    val returnType: String?
+    val parameters: Array<String>
+    val bodyLines: Array<String>
 
     constructor(
         name: String,
@@ -23,10 +23,10 @@ class GdCreateMethodAction : BaseIntentionAction {
         parameters: Array<String> = emptyArray(),
         bodyLines: Array<String> = arrayOf("pass"),
     ) {
-        this.name = name;
-        this.returnType = returnType;
-        this.parameters = parameters;
-        this.bodyLines = bodyLines;
+        this.name = name
+        this.returnType = returnType
+        this.parameters = parameters
+        this.bodyLines = bodyLines
     }
 
     override fun getText(): String = "Create method"
@@ -34,19 +34,19 @@ class GdCreateMethodAction : BaseIntentionAction {
     override fun getFamilyName(): String = "Create method"
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        return true;
+        return true
     }
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         if (file === null || editor === null) {
-            return;
+            return
         }
 
-        val after = PsiTreeUtil.getDeepestVisibleLast(file) ?: return;
-        editor.caretModel.moveToOffset(after.endOffset);
+        val after = PsiTreeUtil.getDeepestVisibleLast(file) ?: return
+        editor.caretModel.moveToOffset(after.endOffset)
 
-        val method = StringBuilder("\n\n\n");
-        method.append("func $name(${parameters.joinToString()})");
+        val method = StringBuilder("\n\n\n")
+        method.append("func $name(${parameters.joinToString()})")
         if (returnType != null && returnType.isNotBlank()) {
             method.append(" -> $returnType")
         }
@@ -54,11 +54,11 @@ class GdCreateMethodAction : BaseIntentionAction {
         val indent = editor.settings.normalIndent(project)
 
         bodyLines.forEach {
-            method.append("$indent$it");
+            method.append("$indent$it")
         }
 
-        EditorModificationUtil.insertStringAtCaret(editor, method.toString());
-        PsiDocumentManager.getInstance(project).commitDocument(editor.document);
+        EditorModificationUtil.insertStringAtCaret(editor, method.toString())
+        PsiDocumentManager.getInstance(project).commitDocument(editor.document)
     }
 
 }

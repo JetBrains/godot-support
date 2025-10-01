@@ -8,18 +8,18 @@ import gdscript.psi.GdConstDeclTl
 import gdscript.psi.impl.GdConstDeclElementType
 
 class GdConstDeclStubImpl : StubBase<GdConstDeclTl>, GdConstDeclStub {
-    private var name: String = "";
+    private var name: String = ""
     private var doc: GdCommentModel
 
     constructor(parent: StubElement<*>?, name: String?, doc: GdCommentModel): super(parent, GdConstDeclElementType) {
         if (name != null) {
             this.name = name
-        };
+        }
         this.doc = doc
     }
 
     override fun name(): String {
-        return name;
+        return name
     }
 
     override fun description(): String = this.doc.description

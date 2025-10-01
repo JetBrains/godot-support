@@ -21,21 +21,21 @@ class GetterSetterNameCompletion : CompletionContributor() {
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         if (SET_METHOD.accepts(parameters.position)) {
-            addMethodName("set", parameters.position, result);
+            addMethodName("set", parameters.position, result)
         } else if (GET_METHOD.accepts(parameters.position)) {
-            addMethodName("get", parameters.position, result);
+            addMethodName("get", parameters.position, result)
         }
     }
 
     private fun addMethodName(prefix: String, element: PsiElement, result: CompletionResultSet) {
-        val name = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassVarDeclTl::class.java)?.name ?: return;
+        val name = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassVarDeclTl::class.java)?.name ?: return
         result.addElement(
             GdLookup.create(
                 "_${prefix}_${name.trimStart('_')}",
                 priority = GdLookup.TOP,
                 icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
             )
-        );
+        )
     }
 
 }

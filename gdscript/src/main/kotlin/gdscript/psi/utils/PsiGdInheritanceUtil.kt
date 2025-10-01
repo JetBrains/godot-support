@@ -16,12 +16,12 @@ object PsiGdInheritanceUtil {
     fun getPsiFile(inheritance: GdInheritanceIdRef): PsiFile? {
         val key = inheritance.text.trim('"', '\'')
         if (key.startsWith("res://")) {
-            val virtual = GdFileResIndex.getFiles(key, inheritance.project).first();
+            val virtual = GdFileResIndex.getFiles(key, inheritance.project).first()
 
-            return virtual.getPsiFile(inheritance.project);
+            return virtual.getPsiFile(inheritance.project)
         }
 
-        return GdClassNamingIndex.INSTANCE.getGlobally(inheritance).firstOrNull()?.containingFile;
+        return GdClassNamingIndex.INSTANCE.getGlobally(inheritance).firstOrNull()?.containingFile
     }
 
 }

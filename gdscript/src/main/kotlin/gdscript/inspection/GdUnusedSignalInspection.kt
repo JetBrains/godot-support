@@ -20,7 +20,7 @@ class GdUnusedSignalInspection : GdUnusedInspection() {
                 // check for tscn references
                 if (TscnSignalSearcher(o.signalIdNmi!!, holder.project).anySignalReference()) return
 
-                registerUnused(o, o.signalIdNmi!!, holder);
+                registerUnused(o, o.signalIdNmi!!, holder)
             }
         }
     }

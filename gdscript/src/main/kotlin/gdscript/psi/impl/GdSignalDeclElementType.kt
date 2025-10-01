@@ -17,7 +17,7 @@ object GdSignalDeclElementType : IStubElementType<GdSignalDeclStub, GdSignalDecl
         return GdSignalDeclElementType
     }
 
-    override fun getExternalId(): String = "GdScript.signalDecl";
+    override fun getExternalId(): String = "GdScript.signalDecl"
 
     override fun serialize(stub: GdSignalDeclStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name())

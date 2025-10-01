@@ -13,21 +13,21 @@ import tscn.psi.TscnResourceHeader
 object TscnResourceUtil {
 
     fun getId(element: TscnResourceHeader): String {
-        val stub = element.stub;
-        if (stub != null) return stub.getId();
+        val stub = element.stub
+        if (stub != null) return stub.getId()
 
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_ID);
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_ID)
     }
 
     fun getPath(element: TscnResourceHeader): String {
-        val stub = element.stub;
-        if (stub != null) return stub.getPath();
+        val stub = element.stub
+        if (stub != null) return stub.getPath()
 
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_PATH);
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_PATH)
     }
 
     fun getType(element: TscnResourceHeader): String {
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_TYPE);
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_TYPE)
     }
 
     @Deprecated("list list below - script might be in multiple .tscn")

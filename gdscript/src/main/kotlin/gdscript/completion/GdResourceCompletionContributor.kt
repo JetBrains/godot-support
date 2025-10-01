@@ -18,9 +18,9 @@ import gdscript.psi.utils.GdNodeUtil
  */
 class GdResourceCompletionContributor : CompletionContributor() {
 
-    val NODE_PATH = psiElement(GdTypes.NODE_PATH_LEX);
-    val NODE_PATH_ROOT = NODE_PATH.withSuperParent(3, psiElement(GdFile::class.java));
-    val STRING = psiElement(GdTypes.STRING);
+    val NODE_PATH = psiElement(GdTypes.NODE_PATH_LEX)
+    val NODE_PATH_ROOT = NODE_PATH.withSuperParent(3, psiElement(GdFile::class.java))
+    val STRING = psiElement(GdTypes.STRING)
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         val r = result.withPrefixMatcher(CamelHumpMatcher(

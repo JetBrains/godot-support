@@ -15,10 +15,10 @@ object GdEnumDeclElementType : IStubElementType<GdEnumDeclStub, GdEnumDeclTl>("e
 
     @JvmStatic
     fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdEnumDeclElementType {
-        return GdEnumDeclElementType;
+        return GdEnumDeclElementType
     }
 
-    override fun getExternalId(): String = "GdScript.enumDecl";
+    override fun getExternalId(): String = "GdScript.enumDecl"
 
     override fun serialize(stub: GdEnumDeclStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name())
@@ -32,23 +32,23 @@ object GdEnumDeclElementType : IStubElementType<GdEnumDeclStub, GdEnumDeclTl>("e
             dataStream.readNameString(),
             PsiGdEnumUtil.fromString(dataStream.readNameString()),
             GdCommentModel(dataStream),
-        );
+        )
 
     override fun indexStub(stub: GdEnumDeclStub, sink: IndexSink) {
-        var name: String? = stub.name();
+        var name: String? = stub.name()
         // TODO losos
         if (name == null || name.isEmpty()) {
-            name = stub.values().keys.firstOrNull();
+            name = stub.values().keys.firstOrNull()
         }
         if (name == null || name.isEmpty()) {
-            name = createSecureRandom().toString();
+            name = createSecureRandom().toString()
         }
 
-        sink.occurrence(Indices.ENUM, name);
+        sink.occurrence(Indices.ENUM, name)
     }
 
     override fun createPsi(stub: GdEnumDeclStub): GdEnumDeclTl =
-        GdEnumDeclTlImpl(stub, stub.stubType);
+        GdEnumDeclTlImpl(stub, stub.stubType)
 
     override fun createStub(psi: GdEnumDeclTl, parentStub: StubElement<*>?): GdEnumDeclStub {
         return GdEnumDeclStubImpl(

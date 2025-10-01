@@ -19,14 +19,14 @@ import javax.swing.Icon
 class GdTscnLineMarkerContributor : RelatedItemLineMarkerProvider() {
 
     override fun getIcon(): Icon? {
-        return GdScriptPluginIcons.GDScriptIcons.SLOT;
+        return GdScriptPluginIcons.GDScriptIcons.SLOT
     }
 
     override fun collectNavigationMarkers(
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>,
     ) {
-        if (element !is GdMethodIdNmi) return;
+        if (element !is GdMethodIdNmi) return
 
         val connections = TscnMethodSearcher(element, element.project).listMethodReferences()
         if (connections.isEmpty()) return

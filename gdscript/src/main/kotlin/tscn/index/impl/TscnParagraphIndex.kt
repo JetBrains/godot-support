@@ -11,10 +11,10 @@ class TscnParagraphIndex : StringStubIndexExtensionExt<TscnParagraph>() {
         val INSTANCE = TscnParagraphIndex()
     }
 
-    override fun getKey(): StubIndexKey<String, TscnParagraph> = TscnIndices.PARAGRAPH_INDEX;
+    override fun getKey(): StubIndexKey<String, TscnParagraph> = TscnIndices.PARAGRAPH_INDEX
 
     override fun getVersion(): Int {
-        return TscnIndices.VERSION;
+        return TscnIndices.VERSION
     }
 
 }

@@ -43,11 +43,11 @@ object StringUtil {
     }
 
     fun String.parseFromSquare(): String {
-        val start = this.indexOf('[');
-        val end = this.indexOf(']', start);
+        val start = this.indexOf('[')
+        val end = this.indexOf(']', start)
 
-        if (start < 0 || end < 1) return "";
-        return this.substring(start + 1, end);
+        if (start < 0 || end < 1) return ""
+        return this.substring(start + 1, end)
     }
 
     fun String.isDynamicType(): Boolean {

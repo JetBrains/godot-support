@@ -21,7 +21,7 @@ class GdResourceLineMarkerContributor : RelatedItemLineMarkerProvider() {
         element: PsiElement,
         result: MutableCollection<in RelatedItemLineMarkerInfo<*>>,
     ) {
-        if (element.parent !is GdInheritanceIdRef || !GdInheritanceUtil.isExtending(element, "Resource")) return;
+        if (element.parent !is GdInheritanceIdRef || !GdInheritanceUtil.isExtending(element, "Resource")) return
 
         // TODO
 //        val usages = GdUserFileIndex.INSTANCE.resourceFiles(

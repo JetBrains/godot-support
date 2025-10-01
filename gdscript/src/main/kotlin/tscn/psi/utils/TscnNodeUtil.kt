@@ -36,10 +36,10 @@ object TscnNodeUtil {
     }
 
     fun getName(element: TscnNodeHeader): String {
-        val stub = element.stub;
-        if (stub != null) return stub.getName();
+        val stub = element.stub
+        if (stub != null) return stub.getName()
 
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_NAME);
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_NAME)
     }
 
     fun getType(element: TscnNodeHeader): String {
@@ -50,10 +50,10 @@ object TscnNodeUtil {
     }
 
     fun getParentPath(element: TscnNodeHeader): String {
-        val stub = element.stub;
-        if (stub != null) return stub.getParentPath();
+        val stub = element.stub
+        if (stub != null) return stub.getParentPath()
 
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_PARENT);
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_PARENT)
     }
 
     fun getGroups(element: TscnNodeHeader): Array<String> {
@@ -68,7 +68,7 @@ object TscnNodeUtil {
     }
 
     fun getInstanceResource(element: TscnNodeHeader): String {
-        val stub = element.stub;
+        val stub = element.stub
         if (stub != null) return stub.getScriptResource()
 
         // ExtResource("1"), ExtResource( 1 )
@@ -109,7 +109,7 @@ object TscnNodeUtil {
     }
 
     fun getScriptResource(element: TscnNodeHeader): String {
-        val stub = element.stub;
+        val stub = element.stub
         if (stub != null) return stub.getScriptResource()
 
         // ExtResource("2_s5kgd"), ExtResource( 1 )
@@ -145,10 +145,10 @@ object TscnNodeUtil {
     }
 
     fun hasScript(element: TscnNodeHeader): Boolean {
-        val stub = element.stub;
-        if (stub != null) return stub.hasScript();
+        val stub = element.stub
+        if (stub != null) return stub.hasScript()
 
-        return getScriptResource(element).isNotBlank();
+        return getScriptResource(element).isNotBlank()
     }
 
     fun listAllGroups(element: PsiElement): Array<String> {

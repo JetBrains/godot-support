@@ -19,7 +19,7 @@ class GdLambdaAnnotator : Annotator {
             .newSilentAnnotation(HighlightSeverity.INFORMATION)
             .range(element.textRange)
             .textAttributes(GdHighlighterColors.METHOD_DECLARATION)
-            .create();
+            .create()
     }
 
 }

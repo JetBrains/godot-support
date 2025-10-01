@@ -5,6 +5,6 @@ import tscn.TscnLanguage
 
 class TscnElementType : IElementType {
 
-    constructor(debugName: String) : super(debugName, TscnLanguage);
+    constructor(debugName: String) : super(debugName, TscnLanguage)
 
 }

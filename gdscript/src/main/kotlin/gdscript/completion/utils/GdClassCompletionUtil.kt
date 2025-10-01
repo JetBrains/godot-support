@@ -15,11 +15,11 @@ object GdClassCompletionUtil {
     fun allRootClasses(project: Project): Array<LookupElement> {
         return GdClassNamingIndex.INSTANCE.getNonEmptyKeys(project).map {
             GdLookup.create(it, priority = GdLookup.USER_DEFINED, icon = GdIcon.getEditorIcon(it))
-        }.toTypedArray();
+        }.toTypedArray()
     }
 
     fun GdClassDeclTl.lookup(): LookupElement {
-        val name = this.name;
+        val name = this.name
         return GdLookup.create(name, priority = GdLookup.USER_DEFINED, icon = GdIcon.getEditorIcon(name))
     }
 
