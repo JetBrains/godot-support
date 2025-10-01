@@ -6,7 +6,7 @@ import java.io.File
 
 object PsiGdResourceUtil {
 
-    val SEPARATOR = "/";
+    val SEPARATOR = "/"
 
     @Deprecated("VirtualFileUtil")
     fun resourcePath(file: VirtualFile, withPrefix: Boolean = true): String {

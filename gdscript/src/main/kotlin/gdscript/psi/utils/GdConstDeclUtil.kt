@@ -6,18 +6,18 @@ import gdscript.psi.GdConstDeclTl
 object GdConstDeclUtil {
 
     fun getName(element: GdConstDeclTl): String {
-        val stub = element.stub;
+        val stub = element.stub
         if (stub !== null) {
-            return stub.name();
+            return stub.name()
         }
 
-        return element.varNmi?.name.orEmpty();
+        return element.varNmi?.name.orEmpty()
     }
 
     /** Local */
 
     fun getName(element: GdConstDeclSt): String {
-        return element.varNmi?.name ?: "";
+        return element.varNmi?.name ?: ""
     }
 
 }

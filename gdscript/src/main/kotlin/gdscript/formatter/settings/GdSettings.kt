@@ -14,7 +14,7 @@ object GdSettings {
                 Pair("SPACE_BEFORE_COLON", "Before :"),
             )
         ),
-    );
+    )
 
     val BLANK_LINES: HashMap<String, HashMap<String, String>> = hashMapOf(
         Pair(
@@ -33,7 +33,7 @@ object GdSettings {
                 Pair("LINES_BEFORE_FUNC_MIN", "Before func declaration"),
             )
         ),
-    );
+    )
 
     val WRAPPING_AND_BRACES: HashMap<String, HashMap<String, String>> = hashMapOf(
         Pair(
@@ -47,7 +47,7 @@ object GdSettings {
                 Pair("ALIGN_COMMENTS", "Align"),
             ),
         ),
-    );
+    )
 
     fun HashMap<String, HashMap<String, String>>.consume(consumer: CodeStyleSettingsCustomizable) {
         this.forEach { (group, fields) ->

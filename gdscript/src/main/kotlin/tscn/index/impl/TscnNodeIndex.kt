@@ -11,7 +11,7 @@ class TscnNodeIndex : StringStubIndexExtensionExt<TscnNodeHeader>() {
         val INSTANCE = TscnNodeIndex()
     }
 
-    override fun getKey(): StubIndexKey<String, TscnNodeHeader> = TscnIndices.NODE_INDEX;
+    override fun getKey(): StubIndexKey<String, TscnNodeHeader> = TscnIndices.NODE_INDEX
 
     override fun getVersion(): Int {
         return TscnIndices.VERSION

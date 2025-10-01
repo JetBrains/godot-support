@@ -45,25 +45,25 @@ object GdLookup {
             .withIcon(icon)
 
         if (presentable !== null) {
-            builder = builder.withPresentableText(presentable);
+            builder = builder.withPresentableText(presentable)
         }
 
         if (handler !== null || lookup != null) {
-            builder = builder.withInsertHandler(handler ?: GdLookupInsertHandler.INSTANCE);
+            builder = builder.withInsertHandler(handler ?: GdLookupInsertHandler.INSTANCE)
         }
 
         if (color !== null) {
-            builder = builder.withItemTextForeground(color);
+            builder = builder.withItemTextForeground(color)
         }
 
         if (priority === null) {
-            return builder;
+            return builder
         }
 
         return PrioritizedLookupElement.withPriority(
             builder,
             priority,
-        );
+        )
     }
 
 }

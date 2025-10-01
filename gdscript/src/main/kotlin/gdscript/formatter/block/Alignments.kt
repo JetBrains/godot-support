@@ -12,10 +12,10 @@ class Alignments {
         val ASSIGN = arrayOf(GdTypes.EQ, GdTypes.ASSIGN, GdTypes.ASSIGN_TYPED)
     }
 
-    var standard: Alignment? = null;
-    var after: Alignment? = null;
-    var settings: GdCodeStyleSettings;
-    var spaces = 0;
+    var standard: Alignment? = null
+    var after: Alignment? = null
+    var settings: GdCodeStyleSettings
+    var spaces = 0
 
     constructor(settings: GdCodeStyleSettings, standard: Alignment? = null, after: Alignment? = null) {
         this.standard = standard
@@ -24,9 +24,9 @@ class Alignments {
     }
 
     fun initialize() {
-        standard = Alignment.createAlignment(true);
-        after = Alignment.createAlignment(true);
-        spaces = 0;
+        standard = Alignment.createAlignment(true)
+        after = Alignment.createAlignment(true)
+        spaces = 0
     }
 
     /**
@@ -49,7 +49,7 @@ class Alignments {
             return Alignments(settings, standard, after)
         }
 
-        return Alignments(settings);
+        return Alignments(settings)
     }
 
     fun getAlignment(type: IElementType): Alignment? {

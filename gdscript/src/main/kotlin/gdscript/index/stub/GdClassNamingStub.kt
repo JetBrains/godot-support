@@ -4,6 +4,6 @@ import com.intellij.psi.stubs.StubElement
 import gdscript.psi.GdClassNaming
 
 interface GdClassNamingStub : StubElement<GdClassNaming> {
-    fun name(): String;
-    fun parent(): String;
+    fun name(): String
+    fun parent(): String
 }

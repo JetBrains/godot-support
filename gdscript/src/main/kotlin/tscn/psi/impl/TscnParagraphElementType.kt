@@ -22,13 +22,13 @@ object TscnParagraphElementType :
         TscnParagraphStubImpl(parentStub)
 
     override fun indexStub(stub: TscnParagraphStub, sink: IndexSink) {
-        sink.occurrence(TscnIndices.PARAGRAPH_INDEX, "paragraph");
+        sink.occurrence(TscnIndices.PARAGRAPH_INDEX, "paragraph")
     }
 
     override fun createPsi(stub: TscnParagraphStub): TscnParagraph =
-        TscnParagraphImpl(stub, stub.stubType);
+        TscnParagraphImpl(stub, stub.stubType)
 
     override fun createStub(psi: TscnParagraph, parentStub: StubElement<out PsiElement>?): TscnParagraphStub =
-        TscnParagraphStubImpl(parentStub);
+        TscnParagraphStubImpl(parentStub)
 
 }

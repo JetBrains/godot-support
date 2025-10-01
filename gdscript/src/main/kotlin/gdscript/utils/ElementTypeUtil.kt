@@ -11,13 +11,13 @@ object ElementTypeUtil {
     val SKIP_TOKEN = arrayOf(GdTypes.COMMENT, TokenType.WHITE_SPACE)
 
     fun hasChildOfType(element: PsiElement, elementType: IElementType): Boolean {
-        var child = element.firstChild;
+        var child = element.firstChild
         while (child != null) {
-            if (child.elementType == elementType) return true;
-            child = child.nextSibling;
+            if (child.elementType == elementType) return true
+            child = child.nextSibling
         }
 
-        return false;
+        return false
     }
 
     fun IElementType?.isSkipable(): Boolean {

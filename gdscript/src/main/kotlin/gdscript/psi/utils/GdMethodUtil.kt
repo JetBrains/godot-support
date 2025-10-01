@@ -29,10 +29,10 @@ object GdMethodUtil {
     }
 
     fun getName(element: GdMethodDeclTl): String {
-        val stub = element.stub;
-        if (stub !== null) stub.name();
+        val stub = element.stub
+        if (stub !== null) stub.name()
 
-        return element.methodIdNmi?.name.orEmpty();
+        return element.methodIdNmi?.name.orEmpty()
     }
 
 }

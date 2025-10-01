@@ -7,14 +7,14 @@ import project.psi.impl.ProjectSectionElementType
 
 class ProjectSectionStubImpl : StubBase<ProjectSection>, ProjectSectionStub {
 
-    private var name: String = "";
+    private var name: String = ""
 
     constructor(parent: StubElement<*>?, name: String) : super(parent, ProjectSectionElementType) {
-        this.name = name;
+        this.name = name
     }
 
     override fun getName(): String {
-        return name;
+        return name
     }
 
 }

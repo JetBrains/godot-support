@@ -7,14 +7,14 @@ import project.psi.impl.ProjectDataElementType
 
 class ProjectDataStubImpl : StubBase<ProjectData>, ProjectDataStub {
 
-    private var key: String = "";
+    private var key: String = ""
 
     constructor(parent: StubElement<*>?, key: String) : super(parent, ProjectDataElementType) {
-        this.key = key;
+        this.key = key
     }
 
     override fun getKey(): String {
-        return key;
+        return key
     }
 
 }

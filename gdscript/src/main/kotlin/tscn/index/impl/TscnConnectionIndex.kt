@@ -11,10 +11,10 @@ class TscnConnectionIndex : StringStubIndexExtensionExt<TscnConnectionHeader>() 
         val INSTANCE = TscnConnectionIndex()
     }
 
-    override fun getKey(): StubIndexKey<String, TscnConnectionHeader> = TscnIndices.CONNECTION_INDEX;
+    override fun getKey(): StubIndexKey<String, TscnConnectionHeader> = TscnIndices.CONNECTION_INDEX
 
     override fun getVersion(): Int {
-        return TscnIndices.VERSION;
+        return TscnIndices.VERSION
     }
 
 }

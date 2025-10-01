@@ -13,7 +13,7 @@ class TscnConnectionHeaderCollectingProcessor : TextOccurenceProcessor {
             result.add(element)
         }
         // always continue
-        return true;
+        return true
     }
 
 }

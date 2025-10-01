@@ -19,6 +19,6 @@ data class GdMethodValidationResult(
     }
 
     fun voidOnlyReturn() : Boolean {
-        return returnTypes.isEmpty() || (returnTypes.size == 1 && returnTypes.contains(GdKeywords.VOID));
+        return returnTypes.isEmpty() || (returnTypes.size == 1 && returnTypes.contains(GdKeywords.VOID))
     }
 }

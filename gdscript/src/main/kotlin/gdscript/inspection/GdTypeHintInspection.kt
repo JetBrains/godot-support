@@ -44,7 +44,7 @@ class GdTypeHintInspection : LocalInspectionTool() {
             else -> return
         }
 
-        val assigment = returnTypes.first;
+        val assigment = returnTypes.first
         // := assigment cannot specify the type
         if (assigment !== null && assigment.text.equals(":=")) {
             if (returnTypes.second === null) {
@@ -57,8 +57,8 @@ class GdTypeHintInspection : LocalInspectionTool() {
             return
         }
 
-        val returnType = returnTypes.second?.typedVal?.returnType;
-        val expr = returnTypes.third;
+        val returnType = returnTypes.second?.typedVal?.returnType
+        val expr = returnTypes.third
         if (returnType != null || expr == null) return
 
         val realType = expr.returnType

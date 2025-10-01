@@ -20,10 +20,10 @@ object TscnConnectionHeaderElementType : IStubElementType<TscnConnectionHeaderSt
     override fun getExternalId(): String = "tscn.connection"
 
     override fun serialize(stub: TscnConnectionHeaderStub, dataStream: StubOutputStream) {
-        dataStream.writeName(stub.getFrom());
-        dataStream.writeName(stub.getTo());
-        dataStream.writeName(stub.getSignal());
-        dataStream.writeName(stub.getMethod());
+        dataStream.writeName(stub.getFrom())
+        dataStream.writeName(stub.getTo())
+        dataStream.writeName(stub.getSignal())
+        dataStream.writeName(stub.getMethod())
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): TscnConnectionHeaderStub =
@@ -36,13 +36,13 @@ object TscnConnectionHeaderElementType : IStubElementType<TscnConnectionHeaderSt
         )
 
     override fun indexStub(stub: TscnConnectionHeaderStub, sink: IndexSink) {
-        sink.occurrence(TscnIndices.CONNECTION_INDEX, stub.getMethod());
+        sink.occurrence(TscnIndices.CONNECTION_INDEX, stub.getMethod())
     }
 
     override fun createPsi(stub: TscnConnectionHeaderStub): TscnConnectionHeader =
-        TscnConnectionHeaderImpl(stub, stub.stubType);
+        TscnConnectionHeaderImpl(stub, stub.stubType)
 
     override fun createStub(psi: TscnConnectionHeader, parentStub: StubElement<out PsiElement>?): TscnConnectionHeaderStub =
-        TscnConnectionHeaderStubImpl(parentStub, psi.from, psi.to, psi.signal, psi.method);
+        TscnConnectionHeaderStubImpl(parentStub, psi.from, psi.to, psi.signal, psi.method)
 
 }

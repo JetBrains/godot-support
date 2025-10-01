@@ -15,7 +15,7 @@ import project.psi.model.GdAutoload
 
 object PsiElementUtil {
 
-    private val SKIPS_TO_COMMENT = listOf(TokenType.WHITE_SPACE, GdTypes.INDENT, GdTypes.DEDENT);
+    private val SKIPS_TO_COMMENT = listOf(TokenType.WHITE_SPACE, GdTypes.INDENT, GdTypes.DEDENT)
 
     fun PsiElement.precedingNewLines(position: Int): Int {
         val parent = this.parent ?: return 0

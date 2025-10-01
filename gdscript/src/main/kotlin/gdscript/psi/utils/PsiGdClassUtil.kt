@@ -10,14 +10,14 @@ import gdscript.psi.GdTypes
 object PsiGdClassUtil {
 
     fun getName(element: GdClassNameNmi?): String {
-        if (element == null) return "";
+        if (element == null) return ""
 
         val valueNode = element.node.findChildByType(GdTypes.IDENTIFIER)
         return valueNode?.text ?: ""
     }
 
     fun isInner(element: GdClassNameNmi): Boolean {
-        return element.parent is GdClassDeclTl;
+        return element.parent is GdClassDeclTl
     }
 
     /**

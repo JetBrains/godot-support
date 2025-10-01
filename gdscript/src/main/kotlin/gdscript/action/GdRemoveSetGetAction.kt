@@ -16,33 +16,33 @@ import gdscript.psi.GdSetgetDecl
 class GdRemoveSetGetAction : BaseIntentionAction() {
 
     override fun getText(): String {
-        return "Remove get & set";
+        return "Remove get & set"
     }
 
     override fun getFamilyName(): String {
-        return "Remove get & set";
+        return "Remove get & set"
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        if (editor === null || file === null) return false;
+        if (editor === null || file === null) return false
 
-        return getDeclaration(editor, file) != null;
+        return getDeclaration(editor, file) != null
     }
 
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if (editor === null || file === null) return;
-        val element = getDeclaration(editor, file) ?: return;
+        if (editor === null || file === null) return
+        val element = getDeclaration(editor, file) ?: return
 
         arrayOf(GdSetMethodIdRef::class.java, GdGetMethodIdRef::class.java).forEach {
             val name = PsiTreeUtil.findChildOfType(element, it)
-            if (name != null) GdMethodDeclIndex.INSTANCE.getInFile(name).firstOrNull()?.delete();
+            if (name != null) GdMethodDeclIndex.INSTANCE.getInFile(name).firstOrNull()?.delete()
         }
 
-        element.delete();
+        element.delete()
     }
 
     private fun getDeclaration(editor: Editor, file: PsiFile): GdSetgetDecl? {
-        return PsiTreeUtil.getParentOfType(file.findElementAt(editor.caretModel.offset), GdSetgetDecl::class.java);
+        return PsiTreeUtil.getParentOfType(file.findElementAt(editor.caretModel.offset), GdSetgetDecl::class.java)
     }
 
 }

@@ -16,7 +16,7 @@ object ProjectSectionElementType : IStubElementType<ProjectSectionStub, ProjectS
     override fun getExternalId(): String = "project.section"
 
     override fun serialize(stub: ProjectSectionStub, dataStream: StubOutputStream) {
-        dataStream.writeName(stub.getName());
+        dataStream.writeName(stub.getName())
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): ProjectSectionStub =
@@ -26,13 +26,13 @@ object ProjectSectionElementType : IStubElementType<ProjectSectionStub, ProjectS
         )
 
     override fun indexStub(stub: ProjectSectionStub, sink: IndexSink) {
-        sink.occurrence(ProjectIndices.SECTION_INDEX, stub.getName());
+        sink.occurrence(ProjectIndices.SECTION_INDEX, stub.getName())
     }
 
     override fun createPsi(stub: ProjectSectionStub): ProjectSection =
-        ProjectSectionImpl(stub, stub.stubType);
+        ProjectSectionImpl(stub, stub.stubType)
 
     override fun createStub(psi: ProjectSection, parentStub: StubElement<out PsiElement>?): ProjectSectionStub =
-        ProjectSectionStubImpl(parentStub, psi.name);
+        ProjectSectionStubImpl(parentStub, psi.name)
 
 }

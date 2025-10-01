@@ -41,7 +41,7 @@ object GdInheritanceUtil {
             getExtendedClassId(element),
             element,
             element.project,
-        );
+        )
     }
 
     /**
@@ -55,13 +55,13 @@ object GdInheritanceUtil {
     }
 
     fun isExtending(element: PsiElement, className: String): Boolean {
-        if (GdClassUtil.getOwningClassName(element) == className) return true;
+        if (GdClassUtil.getOwningClassName(element) == className) return true
 
-        var parentId = getExtendedClassId(element);
+        var parentId = getExtendedClassId(element)
         while (parentId.isNotBlank()) {
-            if (parentId == className) return true;
-            val parent = GdClassIdIndex.INSTANCE.getGlobally(parentId, element).firstOrNull() ?: return false;
-            parentId = getExtendedClassId(parent);
+            if (parentId == className) return true
+            val parent = GdClassIdIndex.INSTANCE.getGlobally(parentId, element).firstOrNull() ?: return false
+            parentId = getExtendedClassId(parent)
         }
 
         return false
@@ -73,20 +73,20 @@ object GdInheritanceUtil {
      * @return GdClassDeclTL|GdFile
      */
     fun getExtendedElement(classId: String, element: PsiElement, project: Project): PsiElement? {
-        val classEl = GdClassUtil.getClassIdElement(classId, element, project);
+        val classEl = GdClassUtil.getClassIdElement(classId, element, project)
         // Extending directly named class (includes "res://Item.gd".InnerClass)
         if (classEl != null) {
             return if (classEl.parent is GdClassDeclTl) {
-                classEl.parent;
+                classEl.parent
             } else {
-                classEl.containingFile;
+                classEl.containingFile
             }
         }
 
         // In case of unnamed "res://Item.gd" check for the resource itself
-        val file = GdFileResIndex.getFiles(classId.trim('"', '\''), project).firstOrNull() ?: return null;
+        val file = GdFileResIndex.getFiles(classId.trim('"', '\''), project).firstOrNull() ?: return null
 
-        return file.getPsiFile(project);
+        return file.getPsiFile(project)
     }
 
 }

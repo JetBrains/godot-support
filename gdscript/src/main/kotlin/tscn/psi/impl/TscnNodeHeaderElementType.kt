@@ -45,11 +45,11 @@ object TscnNodeHeaderElementType :
         )
 
     override fun indexStub(stub: TscnNodeHeaderStub, sink: IndexSink) {
-        sink.occurrence(TscnIndices.NODE_INDEX, stub.getNodePath());
+        sink.occurrence(TscnIndices.NODE_INDEX, stub.getNodePath())
     }
 
     override fun createPsi(stub: TscnNodeHeaderStub): TscnNodeHeader =
-        TscnNodeHeaderImpl(stub, stub.stubType);
+        TscnNodeHeaderImpl(stub, stub.stubType)
 
     override fun createStub(psi: TscnNodeHeader, parentStub: StubElement<out PsiElement>?): TscnNodeHeaderStub =
         TscnNodeHeaderStubImpl(
@@ -64,6 +64,6 @@ object TscnNodeHeaderElementType :
             psi.instanceResource,
             psi.groups,
             psi.index,
-        );
+        )
 
 }

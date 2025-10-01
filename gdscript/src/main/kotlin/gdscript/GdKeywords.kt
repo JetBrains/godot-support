@@ -29,7 +29,7 @@ object GdKeywords {
     const val INF = "INF"
     const val TAU = "TAU"
     const val PI = "PI"
-    val MATH_CONSTANTS = setOf(PI, TAU, INF, NAN);
+    val MATH_CONSTANTS = setOf(PI, TAU, INF, NAN)
 
     /** Return types */
     const val INT = "int"
@@ -40,7 +40,7 @@ object GdKeywords {
     const val DICTIONARY = "Dictionary"
     const val STR_NAME = "StringName"
     const val NODE_PATH = "NodePath"
-    val BUILT_TYPES = setOf(INT, STR, FLOAT, BOOL, ARRAY, DICTIONARY);
+    val BUILT_TYPES = setOf(INT, STR, FLOAT, BOOL, ARRAY, DICTIONARY)
     const val VOID = "void"
     const val CALLABLE = "Callable"
 
@@ -50,24 +50,24 @@ object GdKeywords {
     const val GLOBAL_SCOPE = "_GlobalScope"
     const val GLOBAL_GD_SCRIPT = "_GDScript"
 
-    const val INIT_METHOD = "_init";
+    const val INIT_METHOD = "_init"
 
     /** Flow Types */
-    const val FLOW_RETURN = "return";
+    const val FLOW_RETURN = "return"
 
-    val LITERALS = arrayOf(TRUE, FALSE, NULL);
-    val LITERAL_TYPES = arrayOf(BOOL, BOOL, NULL);
+    val LITERALS = arrayOf(TRUE, FALSE, NULL)
+    val LITERAL_TYPES = arrayOf(BOOL, BOOL, NULL)
 
     /** Annotations */
-    val ANNOTATION_TOOL = "tool";
-    val ANNOTATION_EXPORT = "export";
-    val ANNOTATION_ONREADY = "onready";
-    val ANNOTATION_ICON = "icon";
+    val ANNOTATION_TOOL = "tool"
+    val ANNOTATION_EXPORT = "export"
+    val ANNOTATION_ONREADY = "onready"
+    val ANNOTATION_ICON = "icon"
 
     // TODO delete - use?
     val ANNOTATIONS_ROOT_ONLY = arrayOf(
         ANNOTATION_TOOL,
         ANNOTATION_ICON,
-    );
+    )
 
 }

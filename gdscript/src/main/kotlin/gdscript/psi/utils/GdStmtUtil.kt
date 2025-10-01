@@ -8,7 +8,7 @@ import gdscript.psi.GdWhileSt
 object GdStmtUtil {
 
     fun getType(element: GdFlowSt): String {
-        return element.firstChild.text;
+        return element.firstChild.text
     }
 
     fun isLoopStatement(stmt: GdStmt): Boolean {

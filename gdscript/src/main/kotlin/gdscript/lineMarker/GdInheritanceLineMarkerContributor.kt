@@ -18,7 +18,7 @@ import javax.swing.Icon
 class GdInheritanceLineMarkerContributor : RelatedItemLineMarkerProvider() {
 
     override fun getIcon(): Icon? {
-        return GdScriptPluginIcons.GDScriptIcons.OVERRIDE;
+        return GdScriptPluginIcons.GDScriptIcons.OVERRIDE
     }
 
     override fun collectNavigationMarkers(

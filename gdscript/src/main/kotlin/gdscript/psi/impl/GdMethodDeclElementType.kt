@@ -14,10 +14,10 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
 
     @JvmStatic
     fun getInstance(@Suppress("UNUSED_PARAMETER") debugName: String): GdMethodDeclElementType {
-        return GdMethodDeclElementType;
+        return GdMethodDeclElementType
     }
 
-    override fun getExternalId(): String = "GdScript.methodDecl";
+    override fun getExternalId(): String = "GdScript.methodDecl"
 
     override fun serialize(stub: GdMethodDeclStub, dataStream: StubOutputStream) {
         dataStream.writeBoolean(stub.isStatic())
@@ -39,14 +39,14 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
             dataStream.readNameString() ?: "",
             PsiGdParameterUtil.fromString(dataStream.readNameString()),
             GdCommentModel(dataStream),
-        );
+        )
 
     override fun indexStub(stub: GdMethodDeclStub, sink: IndexSink) {
-        sink.occurrence(Indices.METHOD_DECL, stub.name());
+        sink.occurrence(Indices.METHOD_DECL, stub.name())
     }
 
     override fun createPsi(stub: GdMethodDeclStub): GdMethodDeclTl =
-        GdMethodDeclTlImpl(stub, stub.stubType);
+        GdMethodDeclTlImpl(stub, stub.stubType)
 
     override fun createStub(psi: GdMethodDeclTl, parentStub: StubElement<*>?): GdMethodDeclStub {
         GdCommentUtil.collectComments(psi)

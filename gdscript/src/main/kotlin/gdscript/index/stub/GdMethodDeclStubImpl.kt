@@ -9,12 +9,12 @@ import gdscript.psi.impl.GdMethodDeclElementType
 
 class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
 
-    private var isStatic: Boolean = false;
-    private var isVariadic: Boolean = false;
-    private var name: String = "";
-    private var returnType: String = "";
-    private var isConstructor: Boolean = false;
-    private var parameters: LinkedHashMap<String, String?> = LinkedHashMap();
+    private var isStatic: Boolean = false
+    private var isVariadic: Boolean = false
+    private var name: String = ""
+    private var returnType: String = ""
+    private var isConstructor: Boolean = false
+    private var parameters: LinkedHashMap<String, String?> = LinkedHashMap()
     private var doc: GdCommentModel
 
     constructor(
@@ -29,26 +29,26 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
     ) : super(parent, GdMethodDeclElementType) {
         if (name != null) {
             this.name = name
-        };
-        this.isStatic = isStatic;
-        this.isVariadic = isVariadic;
-        this.isConstructor = isConstructor;
-        this.returnType = returnType;
-        this.parameters = parameters;
+        }
+        this.isStatic = isStatic
+        this.isVariadic = isVariadic
+        this.isConstructor = isConstructor
+        this.returnType = returnType
+        this.parameters = parameters
         this.doc = doc
     }
 
-    override fun isStatic(): Boolean = isStatic;
+    override fun isStatic(): Boolean = isStatic
 
-    override fun isVariadic(): Boolean = isVariadic;
+    override fun isVariadic(): Boolean = isVariadic
 
-    override fun name(): String = name;
+    override fun name(): String = name
 
-    override fun returnType(): String = returnType;
+    override fun returnType(): String = returnType
 
-    override fun parameters(): LinkedHashMap<String, String?> = parameters;
+    override fun parameters(): LinkedHashMap<String, String?> = parameters
 
-    override fun isConstructor(): Boolean = isConstructor;
+    override fun isConstructor(): Boolean = isConstructor
 
     override fun description(): String = this.doc.description
     override fun brief(): String = this.doc.brief

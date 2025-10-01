@@ -12,7 +12,7 @@ class GdBraceMatcher : PairedBraceMatcher {
         BracePair(GdTypes.LRBR, GdTypes.RRBR, true),
         BracePair(GdTypes.LCBR, GdTypes.RCBR, true),
         BracePair(GdTypes.LSBR, GdTypes.RSBR, true),
-    );
+    )
 
     override fun isPairedBracesAllowedBeforeType(lbraceType: IElementType, contextType: IElementType?): Boolean {
         return true

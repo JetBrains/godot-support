@@ -22,7 +22,7 @@ object GdClassVarCompletionUtil {
                         color = GdLookup.COLOR_ANNOTATION,
                         priority = GdLookup.BUILT_IN,
                     )
-                );
+                )
         }
     }
 

@@ -20,7 +20,7 @@ class TscnParagraphCollectingProcessor(val type: String) : TextOccurenceProcesso
             }
         }
         // always continue
-        return true;
+        return true
     }
 
 }

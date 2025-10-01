@@ -20,12 +20,12 @@ object GdAlignments {
         // TODO match?
     )
 
-    var alignment: Alignment? = null;
-    var type: IElementType? = null;
+    var alignment: Alignment? = null
+    var type: IElementType? = null
 
     fun reset() {
-        alignment = null;
-        type = null;
+        alignment = null
+        type = null
     }
 
 }

@@ -7,11 +7,11 @@ import java.io.DataOutput
 object GdFileResDataExternalizer : DataExternalizer<String> {
 
     override fun save(out: DataOutput, value: String) {
-        out.writeBytes(value);
+        out.writeBytes(value)
     }
 
     override fun read(`in`: DataInput): String {
-        return `in`.readLine();
+        return `in`.readLine()
     }
 
 }

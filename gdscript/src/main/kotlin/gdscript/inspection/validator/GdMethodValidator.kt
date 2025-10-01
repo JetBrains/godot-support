@@ -116,7 +116,7 @@ class GdMethodValidator(val project : Project, val returnType: String) {
     }
 
     private fun checkReturnStatement(statement: GdFlowSt) {
-        val stmtType = statement.expr?.returnType ?: GdKeywords.VOID;
+        val stmtType = statement.expr?.returnType ?: GdKeywords.VOID
         if (!GdExprUtil.typeAccepts(stmtType, returnType, project)) {
             invalidReturns.add(Pair(statement, stmtType))
         }

@@ -9,31 +9,31 @@ import tscn.psi.TscnConnectionHeader
 object TscnConnectionUtil {
 
     fun getFrom(element: TscnConnectionHeader): String {
-        val stub = element.stub;
-        if (stub != null) return stub.getFrom();
+        val stub = element.stub
+        if (stub != null) return stub.getFrom()
 
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_FROM);
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_FROM)
     }
 
     fun getTo(element: TscnConnectionHeader): String {
-        val stub = element.stub;
-        if (stub != null) return stub.getTo();
+        val stub = element.stub
+        if (stub != null) return stub.getTo()
 
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_TO);
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_TO)
     }
 
     fun getSignal(element: TscnConnectionHeader): String {
-        val stub = element.stub;
-        if (stub != null) return stub.getSignal();
+        val stub = element.stub
+        if (stub != null) return stub.getSignal()
 
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_SIGNAL);
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_SIGNAL)
     }
 
     fun getMethod(element: TscnConnectionHeader): String {
-        val stub = element.stub;
-        if (stub != null) return stub.getMethod();
+        val stub = element.stub
+        if (stub != null) return stub.getMethod()
 
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_METHOD);
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_METHOD)
     }
 
 }

@@ -20,10 +20,10 @@ class GdSetGetMethodIdReferenceContributor : PsiReferenceContributor() {
             ),
             object : PsiReferenceProvider() {
                 override fun getReferencesByElement(element: PsiElement, context: ProcessingContext): Array<PsiReference> {
-                    return arrayOf(GdSetGetMethodIdReference(element));
+                    return arrayOf(GdSetGetMethodIdReference(element))
                 }
             }
-        );
+        )
     }
 
 }

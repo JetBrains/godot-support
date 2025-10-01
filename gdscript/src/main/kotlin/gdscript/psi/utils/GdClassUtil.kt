@@ -49,13 +49,13 @@ object GdClassUtil {
      */
     fun getOwningClassName(element: PsiElement): String {
         return when (val it = getOwningClassElement(element)) {
-            is GdClassDeclTl -> it.name;
+            is GdClassDeclTl -> it.name
             else -> {
-                val cln = PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java);
-                if (cln != null) return cln.classname;
+                val cln = PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java)
+                if (cln != null) return cln.classname
 
                 (element.containingFile.virtualFile ?: element.containingFile.originalFile.virtualFile)
-                    .resourcePath();
+                    .resourcePath()
             }
         }
     }
@@ -68,7 +68,7 @@ object GdClassUtil {
         return when (element) {
             is GdClassDeclTl -> element.classNameNmi?.classId ?: ""
             is GdFile -> {
-                val named = PsiTreeUtil.getStubChildOfType(element, GdClassNaming::class.java);
+                val named = PsiTreeUtil.getStubChildOfType(element, GdClassNaming::class.java)
                 if (named != null) {
                     named.classNameNmi?.classId ?: ""
                 } else {
@@ -97,7 +97,7 @@ object GdClassUtil {
     }
 
     fun getName(element: GdClassDeclTl): String {
-        val stub = element.stub;
+        val stub = element.stub
         if (stub != null) return stub.name()
 
         return element.classNameNmi?.name.orEmpty()

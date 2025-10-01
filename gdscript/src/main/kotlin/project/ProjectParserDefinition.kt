@@ -20,25 +20,25 @@ import project.psi.ProjectTypes
 class ProjectParserDefinition : ParserDefinition {
 
     companion object {
-        val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-        val COMMENTS = TokenSet.create(ProjectTypes.COMMENT);
-        val FILE = IStubFileElementType<PsiFileStub<ProjectFile>>("GdScriptProjectFile", ProjectLanguage);
+        val WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE)
+        val COMMENTS = TokenSet.create(ProjectTypes.COMMENT)
+        val FILE = IStubFileElementType<PsiFileStub<ProjectFile>>("GdScriptProjectFile", ProjectLanguage)
     }
 
-    override fun getWhitespaceTokens(): TokenSet = WHITE_SPACES;
+    override fun getWhitespaceTokens(): TokenSet = WHITE_SPACES
 
-    override fun createLexer(project: Project?): Lexer = ProjectLexerAdapter();
+    override fun createLexer(project: Project?): Lexer = ProjectLexerAdapter()
 
-    override fun createParser(project: Project?): PsiParser = ProjectParser();
+    override fun createParser(project: Project?): PsiParser = ProjectParser()
 
-    override fun getFileNodeType(): IFileElementType = FILE;
+    override fun getFileNodeType(): IFileElementType = FILE
 
-    override fun getCommentTokens(): TokenSet = COMMENTS;
+    override fun getCommentTokens(): TokenSet = COMMENTS
 
-    override fun getStringLiteralElements(): TokenSet = TokenSet.EMPTY;
+    override fun getStringLiteralElements(): TokenSet = TokenSet.EMPTY
 
-    override fun createElement(node: ASTNode?): PsiElement = ProjectTypes.Factory.createElement(node);
+    override fun createElement(node: ASTNode?): PsiElement = ProjectTypes.Factory.createElement(node)
 
-    override fun createFile(viewProvider: FileViewProvider): PsiFile = ProjectFile(viewProvider);
+    override fun createFile(viewProvider: FileViewProvider): PsiFile = ProjectFile(viewProvider)
 
 }

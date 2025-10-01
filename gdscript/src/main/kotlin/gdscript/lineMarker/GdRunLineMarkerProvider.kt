@@ -20,9 +20,9 @@ class GdRunLineMarkerProvider : RunLineMarkerContributor() {
             return null
         if (element.parent !is GdInheritanceIdRef || GdInheritanceUtil.isExtending(element, "Resource"))
             return null
-        if (GdInheritanceUtil.getExtendedElement(element) !is PsiFile) return null;
+        if (GdInheritanceUtil.getExtendedElement(element) !is PsiFile) return null
 
-        return Info(GdRunAction(element.parent as GdInheritanceIdRef));
+        return Info(GdRunAction(element.parent as GdInheritanceIdRef))
     }
 
 }

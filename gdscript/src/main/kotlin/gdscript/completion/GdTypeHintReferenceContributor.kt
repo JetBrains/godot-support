@@ -23,7 +23,7 @@ class GdTypeHintReferenceContributor : PsiReferenceContributor() {
                     return arrayOf(GdTypeHintReference(element as GdTypeHintRef))
                 }
             }
-        );
+        )
     }
 
 }

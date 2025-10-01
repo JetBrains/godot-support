@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull
 abstract class GdNamedIdElementImpl(node: @NotNull ASTNode) : ASTWrapperPsiElement(node), GdNamedIdElement {
 
     override fun getReferences(): Array<PsiReference> {
-        return ReferenceProvidersRegistryImpl.getReferencesFromProviders(this);
+        return ReferenceProvidersRegistryImpl.getReferencesFromProviders(this)
     }
 
 }

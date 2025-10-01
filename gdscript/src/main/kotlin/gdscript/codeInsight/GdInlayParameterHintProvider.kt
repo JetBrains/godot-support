@@ -32,7 +32,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                     }
                 }
 
-                return MethodInfo(name, declaration.parameters.keys.toList());
+                return MethodInfo(name, declaration.parameters.keys.toList())
             } else if (declaration is GdVarDeclSt && declaration.expr is GdFuncDeclEx) {
                 // Lambdas
                 val lambda = declaration.expr as GdFuncDeclEx
@@ -62,25 +62,25 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
 
     override fun getParameterHints(element: PsiElement): List<InlayInfo> {
         if (element is GdCallEx) {
-            val id = PsiTreeUtil.findChildOfType(element, GdRefIdRef::class.java) ?: return emptyList();
+            val id = PsiTreeUtil.findChildOfType(element, GdRefIdRef::class.java) ?: return emptyList()
             val method = GdClassMemberReference(id).resolveDeclaration()
 
-            var params: Array<String> = emptyArray();
+            var params: Array<String> = emptyArray()
             when (method) {
                 is GdMethodDeclTl -> {
-                    params = method.parameters.keys.toArray(emptyArray());
+                    params = method.parameters.keys.toArray(emptyArray())
 
                     if (method.name == "emit") {
-                        val signal = PsiGdSignalUtil.getDeclaration(element);
+                        val signal = PsiGdSignalUtil.getDeclaration(element)
                         if (signal != null) {
-                            params = signal.parameters.keys.toArray(emptyArray());
+                            params = signal.parameters.keys.toArray(emptyArray())
                         }
                     }
                 }
 
                 is GdVarDeclSt -> {
                     if (method.expr is GdFuncDeclEx) {
-                        val lambda = method.expr as GdFuncDeclEx;
+                        val lambda = method.expr as GdFuncDeclEx
                         params = lambda.parameters.keys.toArray(emptyArray())
                     } else {
                         return emptyList()
@@ -100,7 +100,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                         if (!hint.isConstructor) continue
                         val hints = hint.paramList?.paramList
                         if (hints == null || usedParams == null || hints.size != usedParams.size) continue
-                        var ok = true;
+                        var ok = true
                         for (i in 0 until hints.size) {
                             val t1 = usedParams[i].expr.returnType
                             val t2 = hints[i].returnType

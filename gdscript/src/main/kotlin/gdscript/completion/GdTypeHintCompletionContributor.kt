@@ -16,7 +16,7 @@ class GdTypeHintCompletionContributor : CompletionContributor() {
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         if (GdRefIdCompletionUtil.DIRECT_REF.accepts(parameters.position)) {
             // RefId position offers built-ins like PI or INF
-            GdLiteralCompletionUtil.builtIns(result);
+            GdLiteralCompletionUtil.builtIns(result)
         }
     }
 

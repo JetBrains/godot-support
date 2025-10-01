@@ -11,10 +11,10 @@ class TscnResourceIndex : StringStubIndexExtensionExt<TscnResourceHeader>() {
         val INSTANCE = TscnResourceIndex()
     }
 
-    override fun getKey(): StubIndexKey<String, TscnResourceHeader> = TscnIndices.RESOURCE_INDEX;
+    override fun getKey(): StubIndexKey<String, TscnResourceHeader> = TscnIndices.RESOURCE_INDEX
 
     override fun getVersion(): Int {
-        return TscnIndices.VERSION;
+        return TscnIndices.VERSION
     }
 
 }

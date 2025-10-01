@@ -17,7 +17,7 @@ object GdClassDeclElementType : IStubElementType<GdClassDeclStub, GdClassDeclTl>
      * @return name of extended class
      */
     fun getParentName(element: GdClassDeclTl): String {
-        val stub = element.stub;
+        val stub = element.stub
         if (stub !== null) {
             return stub.parent()
         }
@@ -55,7 +55,7 @@ object GdClassDeclElementType : IStubElementType<GdClassDeclStub, GdClassDeclTl>
         GdClassDeclTlImpl(stub, stub.stubType)
 
     override fun createStub(psi: GdClassDeclTl, parentStub: StubElement<*>?): GdClassDeclStub {
-        val inheritance = PsiTreeUtil.getStubChildOfType(psi, GdInheritance::class.java);
+        val inheritance = PsiTreeUtil.getStubChildOfType(psi, GdInheritance::class.java)
 
         return GdClassDeclStubImpl(
             parentStub,

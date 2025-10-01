@@ -97,7 +97,7 @@ class GdRunAction : RunAnythingAction {
         NotificationGroupManager.getInstance()
                 .getNotificationGroup(PluginConstants.RUN_NOTIFICATION_GROUP_ID)
                 .createNotification(GdScriptBundle.message("notification.content.failed.to.run.due.to", message), NotificationType.WARNING)
-                .notify(project);
+                .notify(project)
     }
 
 }

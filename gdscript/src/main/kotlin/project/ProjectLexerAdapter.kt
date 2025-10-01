@@ -4,6 +4,6 @@ import com.intellij.lexer.FlexAdapter
 
 class ProjectLexerAdapter : FlexAdapter {
 
-    constructor() : super(ProjectLexer(null));
+    constructor() : super(ProjectLexer(null))
 
 }

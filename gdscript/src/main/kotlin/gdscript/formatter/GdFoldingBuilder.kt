@@ -39,22 +39,22 @@ class GdFoldingBuilder : FoldingBuilderEx(), DumbAware {
     }
 
     override fun isCollapsedByDefault(node: ASTNode): Boolean {
-        return false;
+        return false
     }
 
     private fun mapSuite(element: GdSuite): FoldingDescriptor? {
-        val ending = PsiTreeUtil.getDeepestVisibleLast(element) ?: return null;
-        if (ending.endOffset <= element.startOffset) return null;
+        val ending = PsiTreeUtil.getDeepestVisibleLast(element) ?: return null
+        if (ending.endOffset <= element.startOffset) return null
 
-        return FoldingDescriptor(element.node, TextRange(element.startOffset, ending.endOffset));
+        return FoldingDescriptor(element.node, TextRange(element.startOffset, ending.endOffset))
     }
 
     private fun mapClassDecl(element: GdClassDeclTl): FoldingDescriptor? {
-        val start = element.classNameNmi?.nextLeaf { it.elementType == GdTypes.COLON } ?: return null;
-        val ending = PsiTreeUtil.getDeepestVisibleLast(element) ?: return null;
-        if (ending.endOffset <= start.startOffset + 1) return null;
+        val start = element.classNameNmi?.nextLeaf { it.elementType == GdTypes.COLON } ?: return null
+        val ending = PsiTreeUtil.getDeepestVisibleLast(element) ?: return null
+        if (ending.endOffset <= start.startOffset + 1) return null
 
-        return FoldingDescriptor(element.node, TextRange(start.startOffset + 1, ending.endOffset));
+        return FoldingDescriptor(element.node, TextRange(start.startOffset + 1, ending.endOffset))
     }
 
 }

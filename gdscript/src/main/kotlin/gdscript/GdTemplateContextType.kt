@@ -6,6 +6,6 @@ import com.intellij.codeInsight.template.TemplateContextType
 class GdTemplateContextType : TemplateContextType("GdScript") {
 
     override fun isInContext(templateActionContext: TemplateActionContext): Boolean =
-        templateActionContext.file.name.endsWith(".gd");
+        templateActionContext.file.name.endsWith(".gd")
 
 }

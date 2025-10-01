@@ -10,7 +10,7 @@ class ProjectFile : PsiFileBase {
 
     constructor(viewProvider: FileViewProvider) : super(viewProvider, ProjectLanguage)
 
-    override fun getFileType(): FileType = ProjectFileType;
+    override fun getFileType(): FileType = ProjectFileType
 
     override fun toString(): String = "Godot's project file"
 

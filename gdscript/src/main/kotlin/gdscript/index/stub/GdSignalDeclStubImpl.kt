@@ -15,13 +15,13 @@ class GdSignalDeclStubImpl : StubBase<GdSignalDeclTl>, GdSignalDeclStub {
     constructor(parent: StubElement<*>?, name: String?, parameters: LinkedHashMap<String, String?>, doc: GdCommentModel): super(parent, GdSignalDeclElementType) {
         if (name != null) {
             this.name = name
-        };
+        }
         this.parameters = parameters
         this.doc = doc
     }
 
     override fun name(): String {
-        return name;
+        return name
     }
 
     override fun parameters(): LinkedHashMap<String, String?> {

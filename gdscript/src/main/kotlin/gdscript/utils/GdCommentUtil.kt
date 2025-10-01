@@ -43,7 +43,7 @@ object GdCommentUtil {
      * Usages of Trait
      */
     fun listUsages(resource: String, project: Project): Array<PsiComment> {
-        val manager = PsiManager.getInstance(project);
+        val manager = PsiManager.getInstance(project)
 
         return FileTypeIndex.getFiles(GdFileType, GlobalSearchScope.allScope(project))
             .flatMap<VirtualFile, PsiComment> { file ->
@@ -54,7 +54,7 @@ object GdCommentUtil {
                     it.text.trim() == "${GdTraitLineMarkerContributor.PREFIX}$resource"
                 }
             }
-            .toTypedArray();
+            .toTypedArray()
     }
 
 }
