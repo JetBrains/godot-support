@@ -1,0 +1,18 @@
+== global.gd ==
+func m():
+    pass
+
+
+== project.godot ==
+[application]
+config/name="Autoload (Singletons)"
+config/features=PackedStringArray("4.5")
+
+[autoload]
+
+global="*res://global.gd"
+
+
+== use.gd ==
+func t():
+    global[14r].m[21r]()

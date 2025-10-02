@@ -17,7 +17,7 @@ class GdFileResIndex : ScalarIndexExtensionExt<String>() {
 
     companion object {
         fun getFiles(key: String, project: Project): Collection<VirtualFile> {
-            if (DumbService.isDumb(project)) return emptyList()
+            if (DumbService.isDumb(project)) return emptyList() // looks like inconsistent DumbAware check, why getNonEmptyKeys is not checking it?
             return FileBasedIndex.getInstance()
                 .getContainingFiles(Indices.FILE_RES, key, GlobalSearchScope.allScope(project))
         }
@@ -62,5 +62,4 @@ class GdFileResIndex : ScalarIndexExtensionExt<String>() {
     override fun dependsOnFileContent(): Boolean {
         return false
     }
-
 }

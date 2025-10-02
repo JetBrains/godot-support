@@ -1,0 +1,7 @@
+[application]
+config/name="Autoload (Singletons)"
+config/features=PackedStringArray("4.5")
+
+[autoload]
+
+global="*res://global.gd"

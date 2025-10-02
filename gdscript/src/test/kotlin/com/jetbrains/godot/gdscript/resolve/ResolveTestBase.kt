@@ -29,7 +29,7 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
      * are loaded (sorted by filename) and returned. Otherwise, falls back to a single file testName.gd.
      */
     protected fun loadFilesByTestName(): Array<PsiFile> {
-        val basePath = myFixture.getTestDataPath()
+        val basePath = myFixture.testDataPath
         val testName = getTestName(false)
         val dir = File(basePath, testName)
         if (dir.isDirectory) {
@@ -150,5 +150,11 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
             sb.append(dumpResolvesWithInlineMarkers(file))
         }
         return sb.toString()
+    }
+
+    protected fun loadFilesFromSubdirAsProjectRoot(): Array<PsiFile> {
+        val testName = getTestName(false)
+        val dir = myFixture.copyDirectoryToProject(testName, "")
+        return myFixture.configureByFiles(*dir.children.map { it.name }.toTypedArray())
     }
 }
