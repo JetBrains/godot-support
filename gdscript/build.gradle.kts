@@ -106,21 +106,7 @@ tasks {
         dependsOn("prepare")
         val pluginName = intellijPlatform.projectName.get()
         val sdkDir = project.layout.buildDirectory.dir("sdk").get().asFile
-
-        val target = sandboxPluginsDirectory.get().asFile.resolve(pluginName).resolve("sdk")
-        logger.lifecycle("Copying SDK from $sdkDir to $target")
-        project.copy {
-            from(sdkDir)
-            into(target)
-        }
-
-        // sandboxPluginsDirectory is not adequate when calling runRider
-        val target2 = Path(sandboxDirectory.get().asFile.absolutePath, "plugins_runRider", pluginName, "sdk")
-        logger.lifecycle("Copying SDK from $sdkDir to $target2")
-        project.copy {
-            from(sdkDir)
-            into(target2)
-        }
+        from(sdkDir) { into(Path(pluginName, "sdk").pathString)}
     }
 
     // run it to start Rider from SDK
@@ -131,6 +117,17 @@ tasks {
         task {
             enabled = true
             dependsOn(prepareSandbox)
+
+            val pluginName = intellijPlatform.projectName.get()
+            val sdkDir = project.layout.buildDirectory.dir("sdk").get().asFile
+
+            // sandboxPluginsDirectory is not adequate when calling runRider
+            val target2 = Path(sandboxDirectory.get().asFile.absolutePath, "plugins_runRider", pluginName, "sdk")
+            logger.lifecycle("Copying SDK from $sdkDir to $target2")
+            project.copy {
+                from(sdkDir)
+                into(target2)
+            }
         }
     }
 
