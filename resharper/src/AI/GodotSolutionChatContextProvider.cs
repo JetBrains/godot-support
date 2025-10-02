@@ -20,7 +20,9 @@ public class GodotSolutionChatContextProvider(GodotTracker godotTracker, IGodotV
         var version = godotVersion.ActualVersionForSolution?.ToString();
         yield return new GameEngineDetails("Godot", version, false);
         
-        if (!descriptor.IsPureGdScriptProject)
+        if (descriptor.IsPureGdScriptProject)
+            yield return new LanguageDetails("GDScript");
+        else
         {
             var sdk = godotTracker.MainProject?.ProjectProperties.DotNetCorePlatform?.Sdk;
             if (sdk != null)
