@@ -6,7 +6,7 @@ using JetBrains.Rider.Backend.Product;
 namespace JetBrains.ReSharper.Plugins.Godot.AI
 {
     [ZoneMarker]
-    public class ZoneMarker : IRequire<IRiderProductEnvironmentZone>, IRequire<IRiderFeatureZone>, IRequire<IArtificialIntelligenceZone>
+    public class ZoneMarker : IRequire<IRiderProductFullEnvironmentZone>, IRequire<IRiderFullFeatureZone>, IRequire<IArtificialIntelligenceZone>
     {
     }
 }
