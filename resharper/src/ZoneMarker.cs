@@ -5,7 +5,7 @@ using JetBrains.Rider.Backend.Product;
 namespace JetBrains.ReSharper.Plugins.Godot
 {
     [ZoneMarker]
-    public class ZoneMarker : IRequire<IRiderProductEnvironmentZone>, IRequire<IRiderFeatureZone>
+    public class ZoneMarker : IRequire<IRiderProductFullEnvironmentZone>, IRequire<IRiderFullFeatureZone>
     {
     }
 }
