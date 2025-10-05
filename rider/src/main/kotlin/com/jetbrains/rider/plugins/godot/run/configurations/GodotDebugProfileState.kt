@@ -12,6 +12,7 @@ import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.openapi.rd.createNestedDisposable
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.SystemInfo
+import com.intellij.util.NetworkUtils
 import com.jetbrains.rd.util.addUnique
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.flowInto
@@ -32,7 +33,6 @@ import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
 import com.jetbrains.rider.run.createEmptyConsoleCommandLine
 import com.jetbrains.rider.run.environment.ExecutableType
 import com.jetbrains.rider.shared.run.withRawParameters
-import com.jetbrains.rider.util.NetUtils
 
 class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfiguration, private val remoteConfiguration: RemoteConfiguration, executionEnvironment: ExecutionEnvironment)
     : GodotMonoConnectRemoteProfileState(remoteConfiguration, executionEnvironment) {
@@ -120,7 +120,7 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
         val runCmd = super.createWorkerRunInfo(lifetime, helper, port)
 
         remoteConfiguration.listenPortForConnections = true
-        remoteConfiguration.port = NetUtils.findFreePort(500013, setOf(port))
+        remoteConfiguration.port = NetworkUtils.findFreePort(500013, setOf(port))
         remoteConfiguration.address = "127.0.0.1"
 
         return runCmd

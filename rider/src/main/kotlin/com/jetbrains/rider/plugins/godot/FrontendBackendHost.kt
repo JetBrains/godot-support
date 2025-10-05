@@ -10,6 +10,7 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.WindowManager
 import com.intellij.util.BitUtil
+import com.intellij.util.NetworkUtils
 import com.jetbrains.rd.framework.impl.RdTask
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.protocol.SolutionExtListener
@@ -30,7 +31,6 @@ import com.jetbrains.rider.plugins.godot.run.RunChickenTestsUtil
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfigurationFactory
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
-import com.jetbrains.rider.util.NetUtils
 import java.awt.Frame
 
 @Service(Service.Level.PROJECT)
@@ -71,7 +71,7 @@ class FrontendBackendHost : LifetimedService() {
                 )
                 val remoteConfiguration = runConfiguration.configuration as GodotDotNetRemoteConfiguration
                 remoteConfiguration.listenPortForConnections = true
-                remoteConfiguration.port = NetUtils.findFreePort(500013)
+                remoteConfiguration.port = NetworkUtils.findFreePort(500013)
                 remoteConfiguration.address = "127.0.0.1"
 
                 val processTracker: RiderDebugActiveDotNetSessionsTracker =
