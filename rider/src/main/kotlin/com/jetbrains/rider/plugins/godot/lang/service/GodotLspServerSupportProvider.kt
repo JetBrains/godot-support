@@ -18,6 +18,7 @@ import com.intellij.platform.lsp.api.customization.LspInlayHintDisabled
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsCustomizer
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsSupport
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
+import com.intellij.util.NetworkUtils
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
 import com.jetbrains.rd.util.reactive.adviseNotNull
@@ -30,7 +31,6 @@ import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
 import com.jetbrains.rider.plugins.godot.Util
 import com.jetbrains.rider.plugins.godot.gdscript.PluginInterop
 import com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage
-import com.jetbrains.rider.util.NetUtils
 import kotlinx.coroutines.Dispatchers
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -123,8 +123,8 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
     private class GodotLspServerDescriptor(project: Project) : ProjectWideLspServerDescriptor(project, "Godot") {
         val discoverer = GodotProjectDiscoverer.getInstance(project)
         val lspConnectionMode by lazy { discoverer.lspConnectionMode.value }
-        val remoteHostPort by lazy { if (useDynamicPort) NetUtils.findFreePort(500050, setOf()) else discoverer.remoteHostPort.value }
-        //val dapPort by lazy { NetUtils.findFreePort(500060, setOf()) }
+        val remoteHostPort by lazy { if (useDynamicPort) NetworkUtils.findFreePort(500050) else discoverer.remoteHostPort.value }
+        //val dapPort by lazy { NetworkUtils.findFreePort(500060, setOf()) }
         val useDynamicPort by lazy { discoverer.useDynamicPort.value!! && (discoverer.lspConnectionMode.value == LanguageServerConnectionMode.StartEditorHeadless) }
 
         override fun isSupportedFile(file: VirtualFile) = Util.isGdFile(file)
