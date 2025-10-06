@@ -1,10 +1,10 @@
 package com.jetbrains.godot.tscn.refactoring.rename
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.BasePlatformTestCaseWithTestDataVFSAccess
 import com.jetbrains.godot.getBaseTestDataPath
 import kotlin.io.path.pathString
 
-class ResourceFieldRenamingTest : BasePlatformTestCase() {
+class ResourceFieldRenamingTest : BasePlatformTestCaseWithTestDataVFSAccess() {
 
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/tscn/refactoring/rename/resourceFieldRenaming").pathString
