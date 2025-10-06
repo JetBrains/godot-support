@@ -1,14 +1,11 @@
 class A:
-	func a():
-		pass
+	pass
 
 class B:
-	func a():
-		pass
+	pass
 	
 class C:
-	func a():
-		pass
+	pass
 	
 func rpc_response(
 	_peer_to : A,

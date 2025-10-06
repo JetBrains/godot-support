@@ -31,7 +31,7 @@ class GdRedCodeTest : BasePlatformTestCase() {
         val code = """
             |class A:
             |	pass
-        """.trimIndent()
+        """.trimMargin()
         test(code)
     }
 

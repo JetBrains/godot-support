@@ -21,6 +21,7 @@ class GdRootParser : PsiParser, LightPsiParser {
             GdMethodParser,
             GdClassParser,
             GdEmptyLineParser,
+            GdPassParser
         )
     }
 
