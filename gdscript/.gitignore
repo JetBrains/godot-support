@@ -13,3 +13,6 @@ godot-master/
 /php/*.tar.xz
 /php/godot-master
 /php/sdk
+
+# ignore generated backup files
+*~
