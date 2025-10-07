@@ -143,4 +143,20 @@ tasks {
         }
         environment["LOCAL_ENV_RUN"] = "true"
     }
+    
+    register<DefaultTask>("convertToLF") {
+        description = "Converts CRLF to LF in generated files if runtime uses CRLF"
+        val generatedDir = file("src/main/gen")
+        doLast {
+            if (System.lineSeparator() != "\r\n") return@doLast
+            generatedDir.walkTopDown()
+                .filter { it.isFile && it.extension in setOf("java") }
+                .forEach { file ->
+                    val content = file.readText()
+                    if (content.contains("\r\n")) {
+                        file.writeText(content.replace("\r\n", "\n"), Charsets.UTF_8)
+                    }
+                }
+        }
+    }
 }
