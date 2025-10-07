@@ -49,6 +49,7 @@ dependencies {
     intellijPlatform {
         intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
         // rider(libs.versions.riderSdk, useInstaller = false) // instead of touching this, just use runRider gradle task
+//        local(providers.gradleProperty("localIdePath").orNull ?: error("Set localIdePath in gradle.properties"))
 
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
