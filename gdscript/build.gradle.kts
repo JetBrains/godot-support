@@ -72,10 +72,10 @@ intellijPlatform{
 tasks {
     // todo: tobe removed with RIDER-127007 Different approach to GD sdk
     register<DefaultTask>("prepare") {
+        val sdkDir = layout.buildDirectory.dir("sdk").get().asFile
         doLast {
             val url = "https://packages.jetbrains.team/files/p/net/gdscriptsdk/gdscriptsdk-1.0.0-SNAPSHOT.tar.xz"
-            val sdkDir = project.layout.buildDirectory.dir("sdk").get().asFile
-            
+
             // Create the SDK directory if it doesn't exist
             if (!sdkDir.exists()) {
                 sdkDir.mkdirs()
