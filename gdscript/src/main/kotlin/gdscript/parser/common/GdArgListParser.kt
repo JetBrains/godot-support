@@ -13,27 +13,45 @@ object GdArgListParser : GdBaseParser {
         if (!b.recursionGuard(l, "ArgList")) return false
         b.enterSection(ARG_LIST)
 
-        var ok = b.pin(argExpr(b, l + 1))
-        while (b.consumeToken(COMMA, true)) {
-            argExpr(b, l + 1)
-        }
-        while (ok && b.nextTokenIs(INDENT)) {
-            b.remapCurrentToken(TokenType.WHITE_SPACE)
+        // Allow leading whitespace-like layout tokens inside the parens
+        skipWsInArgs(b)
+
+        var ok = true
+        // Empty list: immediate closing parenthesis
+        if (!b.nextTokenIs(RRBR)) {
+            ok = b.pin(argExpr(b, l + 1))
+
+            // Parse ", expr" pairs. Newlines/indents after comma are ok.
+            while (b.consumeToken(COMMA, true)) {
+                skipWsInArgs(b)
+                // Trailing comma before ")" is allowed
+                if (b.nextTokenIs(RRBR)) break
+                argExpr(b, l + 1)
+            }
         }
 
-        ok && GdRecovery.argumentList(b)
+        // Trailing layout before ")" is ok
+        skipWsInArgs(b)
+
+        // Recovery hook (side-effects) and close the section
+        GdRecovery.argumentList(b)
         ok = b.exitSection(ok)
-
         return ok || optional
+    }
+
+    private fun skipWsInArgs(b: GdPsiBuilder) {
+        // Treat NEW_LINE/INDENT/DEDENT as ordinary whitespace while in args
+        while (b.nextTokenIs(NEW_LINE, INDENT, DEDENT)) {
+            b.remapCurrentToken(TokenType.WHITE_SPACE)
+            b.advance()
+        }
     }
 
     private fun argExpr(b: GdPsiBuilder, l: Int): Boolean {
         b.recursionGuard(l + 1, "ArgExpr")
         b.enterSection(ARG_EXPR)
-
-        var ok = GdExprParser.parse(b, l + 1, false)
+        val ok = GdExprParser.parse(b, l + 1, false)
         b.exitSection(ok)
-
         return ok
     }
 }
