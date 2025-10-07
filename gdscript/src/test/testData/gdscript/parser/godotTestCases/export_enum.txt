@@ -842,6 +842,8 @@ GdScript File(0,2053)
               GdRefIdRefImpl(REF_ID_NM)(1933,1950)
                 PsiElement(GdTokenType.IDENTIFIER)('get_property_list')(1933,1950)
             PsiElement(GdTokenType.LRBR)('(')(1950,1951)
+            GdArgListImpl(ARG_LIST)(1951,1951)
+              <empty list>
             PsiElement(GdTokenType.RRBR)(')')(1951,1952)
           PsiElement(GdTokenType.COLON)(':')(1952,1953)
           GdStmtOrSuiteImpl(STMT_OR_SUITE)(1953,2053)

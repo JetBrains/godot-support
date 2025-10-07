@@ -20,6 +20,8 @@ GdScript File(0,27)
                 GdRefIdRefImpl(REF_ID_NM)(20,25)
                   PsiElement(GdTokenType.IDENTIFIER)('async')(20,25)
               PsiElement(GdTokenType.LRBR)('(')(25,26)
+              GdArgListImpl(ARG_LIST)(26,26)
+                <empty list>
               PsiElement(GdTokenType.RRBR)(')')(26,27)
           GdEndStmtImpl(END_STMT)(27,27)
             <empty list>

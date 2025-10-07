@@ -66,6 +66,8 @@ GdScript File(0,91)
               GdRefIdRefImpl(REF_ID_NM)(70,74)
                 PsiElement(GdTokenType.IDENTIFIER)('call')(70,74)
             PsiElement(GdTokenType.LRBR)('(')(74,75)
+            GdArgListImpl(ARG_LIST)(75,75)
+              <empty list>
             PsiElement(GdTokenType.RRBR)(')')(75,76)
           PsiWhiteSpace(' ')(76,77)
           PsiComment(GdTokenType.comment)('# Prints "42".')(77,91)
