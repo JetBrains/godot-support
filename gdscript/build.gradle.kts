@@ -38,7 +38,6 @@ kotlin {
 repositories {
     intellijPlatform {
         defaultRepositories()
-        jetbrainsRuntime()
     }
 }
 
