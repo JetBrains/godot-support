@@ -27,6 +27,8 @@ GdScript File(0,98)
                     GdRefIdRefImpl(REF_ID_NM)(34,39)
                       PsiElement(GdTokenType.IDENTIFIER)('print')(34,39)
                   PsiElement(GdTokenType.LRBR)('(')(39,40)
+                  GdArgListImpl(ARG_LIST)(40,40)
+                    <empty list>
                   PsiElement(GdTokenType.RRBR)(')')(40,41)
                 GdEndStmtImpl(END_STMT)(41,42)
                   PsiElement(GdTokenType.NEW_LINE)('\n')(41,42)
