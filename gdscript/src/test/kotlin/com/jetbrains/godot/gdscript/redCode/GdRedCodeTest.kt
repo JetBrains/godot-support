@@ -27,6 +27,14 @@ class GdRedCodeTest : BasePlatformTestCase() {
         test(code)
     }
 
+    fun testPassForClass(){
+        val code = """
+            |class A:
+            |	pass
+        """.trimMargin()
+        test(code)
+    }
+
     private fun test(code: String) {
         val psiFile = myFixture.configureByText("a.gd", code)
 

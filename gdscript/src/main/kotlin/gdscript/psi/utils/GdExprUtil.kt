@@ -37,6 +37,7 @@ object GdExprUtil {
         val classElement = GdClassUtil.getOwningClassElement(classId)
 
         // Constructor
+        // todo: here it is too permissive, just checks that there is a ctor, which accepts "right" type as a first arg - doesn't make sense to me
         GdClassMemberUtil
             .listClassMemberDeclarations(classElement, constructors = true)
             .constructors()
