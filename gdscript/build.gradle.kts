@@ -39,9 +39,27 @@ repositories {
     intellijPlatform {
         defaultRepositories()
     }
+    // Ivy repository for direct file download and caching of the SDK
+    ivy {
+        url = uri("https://packages.jetbrains.team/files/p/net/gdscriptsdk/")
+        patternLayout {
+            artifact("gdscriptsdk-[revision].[ext]")
+            setM2compatible(true)
+        }
+        metadataSources {
+            artifact()
+        }
+    }
 }
 
 val buildConfiguration: String by project
+
+// Custom configuration for resolving the SDK
+val sdk: Configuration by configurations.creating {
+    description = "Configuration for resolving the GDScript SDK"
+    isCanBeResolved = true
+    isCanBeConsumed = false
+}
 
 dependencies {
     compileOnly(":rider-godot-community")
@@ -62,6 +80,9 @@ dependencies {
     testImplementation(libs.openTest4J)
     testImplementation("junit:junit:4.13.2")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.0")
+
+    // Declare SDK as an Ivy dependency for caching (organization, module, revision, extension)
+    sdk("net.gdscriptsdk:gdscriptsdk:1.0.0-SNAPSHOT@tar.xz")
 }
 
 intellijPlatform{
@@ -71,34 +92,31 @@ intellijPlatform{
 
 tasks {
     // todo: tobe removed with RIDER-127007 Different approach to GD sdk
-    register<DefaultTask>("prepare") {
+    register<Copy>("prepare") {
+        description = "Prepare the GDScript SDK by copying it to the build directory"
+        group = "build"
+
         val sdkDir = layout.buildDirectory.dir("sdk").get().asFile
-        doLast {
-            val url = "https://packages.jetbrains.team/files/p/net/gdscriptsdk/gdscriptsdk-1.0.0-SNAPSHOT.tar.xz"
+        val sdkFile = sdk.incoming.files.singleFile
+        val outputFile = sdkDir.resolve("sdk.tar.xz")
 
-            // Create the SDK directory if it doesn't exist
-            if (!sdkDir.exists()) {
-                sdkDir.mkdirs()
-            }
-            
-            // Download the SDK
-            val sdkFile = sdkDir.resolve("sdk.tar.xz")
-            if (sdkFile.exists()) {
-                return@doLast
-            }
-            val client = HttpClient.newBuilder()
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build()
-            val request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .build()
+        // Declare inputs and outputs
+        inputs.files(sdkFile)
+        outputs.file(outputFile)
 
-            client.send(
-                request,
-                HttpResponse.BodyHandlers.ofFile(sdkFile.toPath())
-            )
-            
-            logger.lifecycle("Downloaded SDK from $url to ${sdkFile.absolutePath}")
+        // Configure the copy operation
+        from(sdkFile)
+        into(sdkDir)
+        rename { "sdk.tar.xz" }
+
+        // Ensure the output directory exists
+        doFirst {
+            sdkDir.mkdirs()
+        }
+
+        // Skip if the output already exists
+        onlyIf {
+            !outputFile.exists()
         }
     }
 
