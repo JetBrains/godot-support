@@ -4,7 +4,7 @@ kotlin = "2.1.20"
 # https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
 # https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
 ideaSdk = "253-EAP-SNAPSHOT"
-riderSdk = "2025.3-SNAPSHOT"
+riderSdk = "2026.1-SNAPSHOT"
 
 [libraries]
 kotlinStdLib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }

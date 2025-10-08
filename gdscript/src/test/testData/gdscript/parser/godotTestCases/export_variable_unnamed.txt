@@ -1,9 +1,9 @@
-GdScript File(0,14)
-  GdInheritance(0,14)
-    PsiElement(GdTokenType.EXTENDS)('extends')(0,7)
-    PsiWhiteSpace(' ')(7,8)
-    GdInheritanceIdImpl(INHERITANCE_ID)(8,14)
-      GdInheritanceIdRefImpl(INHERITANCE_ID_NM)(8,14)
-        PsiElement(GdTokenType.IDENTIFIER)('Node2D')(8,14)
-    GdEndStmtImpl(END_STMT)(14,14)
+GdScript File
+  GdInheritance
+    PsiElement(GdTokenType.EXTENDS)('extends')
+    PsiWhiteSpace(' ')
+    GdInheritanceIdImpl(INHERITANCE_ID)
+      GdInheritanceIdRefImpl(INHERITANCE_ID_NM)
+        PsiElement(GdTokenType.IDENTIFIER)('Node2D')
+    GdEndStmtImpl(END_STMT)
       <empty list>

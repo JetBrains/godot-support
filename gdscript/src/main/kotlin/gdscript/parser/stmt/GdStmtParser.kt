@@ -26,13 +26,18 @@ object GdStmtParser : GdBaseParser {
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "Stmt")) return false
-        return parseLambda(b, l + 1, optional, false)
+        // When parsing inside an argument list (e.g., a lambda passed as an argument),
+        // continue treating nested statements as lambda-context to allow multiline suites.
+        return parseLambda(b, l + 1, optional, b.isArgs)
     }
 
     fun parseLambda(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
         if (!b.recursionGuard(l, "Lambda")) return false
         b.enterSection(STMT_OR_SUITE)
-        var ok = suite(b, l + 1, false, asLambda) || stmt(b, l + 1, optional, asLambda)
+        var ok = suite(b, l + 1, false, asLambda)
+
+        if (!ok)
+            ok = stmt(b, l + 1, optional, asLambda)
 
         return b.exitSection(ok)
     }
@@ -94,13 +99,10 @@ object GdStmtParser : GdBaseParser {
                 ok = ok || b.pinned()
 
                 if (asLambda) {
-                    ok = ok && b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT, COMMA)
+                    ok = ok && b.nextTokenIs(SEMICON, RRBR, COMMA)
                     if (ok && b.isArgs) {
-                        b.passToken(NEW_LINE) || b.passToken(SEMICON) || b.nextTokenIs(COMMA)
+                        b.passToken(SEMICON) || b.nextTokenIs(COMMA)
                     }
-//                    if (ok && !b.followingTokensAre(NEW_LINE, DEDENT)) {
-//                        b.passToken(NEW_LINE)
-//                    }
                 } else {
                     ok = ok && it.parseEndStmt(b)
                 }
