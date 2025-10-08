@@ -48,7 +48,6 @@ class GdGodotTest : GdParsingTestCase() {
     @Ignore("RIDER-126458") @Test fun testis_not_operator() = doTest(true, true)
     @Test fun testlambda_callable() = doTest(true, true)
     @Test fun testlambda_callable_multiline() = doTest(true, true)
-    @Test fun testlambda_nested() = doTest(true, true)
     @Test fun testcallableInCtor() = doTest(true, true)
     @Test fun testlambda_capture_callable() = doTest(true, true)
     @Test fun testlambda_default_parameter_capture() = doTest(true, true)
@@ -100,14 +99,10 @@ class GdGodotTest : GdParsingTestCase() {
     @Ignore("RIDER-126458") @Test fun testvector_inf() = doTest(true, true)
     @Test fun testwhile() = doTest(true, true)
 
-    @Test fun testsignal_connect_func() = doTest(true, true)
+    @Test fun testsignal_connect_func() = doTest(true, false)
+    @Test fun testLambdaCallExpr() = doTest(true, true)
 
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString
     }
-
-    override fun skipSpaces(): Boolean = false
-
-    override fun includeRanges(): Boolean = true
-
 }

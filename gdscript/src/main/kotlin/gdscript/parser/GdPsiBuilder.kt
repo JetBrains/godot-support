@@ -101,7 +101,9 @@ class GdPsiBuilder {
         }
 
         val m = mark()
+        // Always consume semicolon if present
         consumeToken(GdTypes.SEMICON, true)
+        // Always consume NEW_LINE if present; at EOF it's still a real token from the lexer
         consumeToken(GdTypes.NEW_LINE, true)
         m.done(GdTypes.END_STMT)
 

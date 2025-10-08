@@ -208,8 +208,12 @@ public interface GdTypes {
   IElementType WHEN = new GdTokenType("WHEN");
   IElementType WHILE = new GdTokenType("WHILE");
   IElementType XOR = new GdTokenType("XOR");
+    IElementType DOLLAR = new GdTokenType("DOLLAR");
+    IElementType QUESTION_MARK = new GdTokenType("QUESTION_MARK");
+    IElementType BACKTICK = new GdTokenType("BACKTICK");
+    IElementType DOTDOTDOT = new GdTokenType("DOTDOTDOT");
 
-  class Factory {
+    class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
       if (type == ANNOTATION_PARAMS) {

@@ -1,35 +1,38 @@
 package com.jetbrains.godot.gdscript.parser
 
+import com.intellij.platform.testFramework.core.FileComparisonFailedError
 import com.intellij.testFramework.ParsingTestCase
 import gdscript.GdParserDefinition
-import java.io.IOException
 
 abstract class GdParsingTestCase : ParsingTestCase("", "gd", GdParserDefinition()) {
 
-    // I want to check ensureNoErrorElements first
     protected override fun doTest(checkResult: Boolean, ensureNoErrorElements: Boolean) {
-        if (!ensureNoErrorElements) {
-            super.ensureNoErrorElements()
-        }
-
-        val name = this.testName
         try {
-            val text = this.loadFile(name + "." + this.myFileExt)
-            this.parseFile(name, text)
-            if (checkResult) {
-                try {
-                    this.checkResult(name, this.myFile)
+            super.doTest(checkResult, ensureNoErrorElements)
+        } catch (e: FileComparisonFailedError) {
+            val expectedText = e.getExpectedStringPresentation()
+            val actualText = e.getActualStringPresentation()
+            val expectedPath = e.getFilePath()
+            val actualPath = e.getActualFilePath()
+
+            val details = buildString {
+                append("\n")
+                if (e.isExpectedDefined && expectedPath != null) {
+                    append("expected file: ").append(expectedPath)
                 }
-                finally {
-                    if (ensureNoErrorElements) {
-                        this.ensureNoErrorElements()
-                    }
+                else{
+                    append("expected: \n").append(expectedText)
+                    append("\n---\n")
                 }
-            } else {
-                toParseTreeText(this.myFile, this.skipSpaces(), this.includeRanges())
+                if (e.isActualDefined && actualPath != null) {
+                    append("actual file: ").append(actualPath)
+                } else {
+                    append("actual: \n").append(actualText)
+                }
             }
-        } catch (e: IOException) {
-            throw RuntimeException(e)
+
+            val newMessage = (e.message ?: "") + details
+            throw FileComparisonFailedError(newMessage, expectedText, actualText, expectedPath, actualPath)
         }
     }
 }
