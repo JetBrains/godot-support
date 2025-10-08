@@ -91,6 +91,7 @@ class GdGodotTest : GdParsingTestCase() {
     @Test fun testsuper() = doTest(true, true)
     @Test fun testtrailing_comma_in_function_args() = doTest(true, true)
     @Test fun testtruthiness() = doTest(true, true)
+    @Test fun testnot_in_array() = doTest(true, true)
     @Test fun testtyped_arrays() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testunicode_identifiers() = doTest(true, true)
     @Test fun testunnamed_enums_outer_conflicts() = doTest(true, true)
