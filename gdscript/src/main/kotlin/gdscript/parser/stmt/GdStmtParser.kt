@@ -77,6 +77,13 @@ object GdStmtParser : GdBaseParser {
 
     private fun stmt(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
         if (!b.recursionGuard(l, "InnerStmt")) return false
+
+        // multiline lambda
+        if (optional && asLambda && b.nextTokenIs(NEW_LINE)){
+            b.passToken(NEW_LINE)
+            return true
+        }
+
         moved = false
 
         if (
@@ -119,5 +126,4 @@ object GdStmtParser : GdBaseParser {
 
         return optional
     }
-
 }
