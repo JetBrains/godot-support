@@ -26,6 +26,8 @@ GdScript File(0,47)
                   PsiElement(GdTokenType.LRBR)('(')(38,39)
                   PsiElement(GdTokenType.RRBR)(')')(39,40)
                   PsiElement(GdTokenType.COLON)(':')(40,41)
+                  PsiErrorElement:STMT_OR_SUITE expected(41,41)
+                    <empty list>
             PsiWhiteSpace('\n')(41,42)
             PsiWhiteSpace('    ')(42,46)
             PsiElement(GdTokenType.RRBR)(')')(46,47)
