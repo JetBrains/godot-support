@@ -68,7 +68,8 @@ class GdParserTest : ParsingTestCase("", "gd", GdParserDefinition()) {
 
     @Test fun testFuncDeclExprExt() = doTest(true)
     @Test fun testFuncDeclExprParam() = doTest(true)
-    @Test fun testLambdaCallExpr() = doTest(true)
+    @Test fun testLambdaCallExpr() = doTest(true, true)
+    @Test fun testlambda_nested() = doTest(true, true)
     @Test fun testNestedCallExpr() = doTest(true)
     @Test fun testPrimaryBracketExpr() = doTest(true)
     @Test fun testDictDeclExpr() = doTest(true)
