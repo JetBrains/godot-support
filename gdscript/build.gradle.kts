@@ -132,7 +132,9 @@ tasks {
     }
 
     runIde {
-        dependsOn(gradle.includedBuild("community").task(":buildPlugin"))
+        if (gradle.includedBuilds.any { it.name == "community" }) {
+            dependsOn(gradle.includedBuild("community").task(":buildPlugin"))
+        }
         jvmArgs("-Xmx1500m")
     }
 
