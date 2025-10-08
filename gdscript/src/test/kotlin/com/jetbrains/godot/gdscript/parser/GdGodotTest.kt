@@ -1,8 +1,6 @@
 package com.jetbrains.godot.gdscript.parser
 
-import com.intellij.testFramework.ParsingTestCase
 import com.jetbrains.godot.getBaseTestDataPath
-import gdscript.GdParserDefinition
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -10,7 +8,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdGodotTest : ParsingTestCase("", "gd", GdParserDefinition()) {
+class GdGodotTest : GdParsingTestCase() {
     @Ignore("RIDER-126458") @Test fun testadvanced_expression_matching() = doTest(true, true)
     @Test fun testallowed_keywords_as_identifiers() = doTest(true, true)
     @Test fun testallow_id_similar_to_keyword_in_ascii() = doTest(true, true)
@@ -49,6 +47,7 @@ class GdGodotTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     @Test fun testin() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testis_not_operator() = doTest(true, true)
     @Test fun testlambda_callable() = doTest(true, true)
+    @Test fun testlambda_callable_multiline() = doTest(true, true)
     @Test fun testcallableInCtor() = doTest(true, true)
     @Test fun testlambda_capture_callable() = doTest(true, true)
     @Test fun testlambda_default_parameter_capture() = doTest(true, true)
