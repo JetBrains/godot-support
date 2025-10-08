@@ -52,15 +52,11 @@ GdScript File(0,93)
                         GdRefIdRefImpl(REF_ID_NM)(76,84)
                           PsiElement(GdTokenType.IDENTIFIER)('get_tree')(76,84)
                       PsiElement(GdTokenType.LRBR)('(')(84,85)
-                      GdArgListImpl(ARG_LIST)(85,85)
-                        <empty list>
                       PsiElement(GdTokenType.RRBR)(')')(85,86)
                     PsiElement(GdTokenType.DOT)('.')(86,87)
                     GdRefIdRefImpl(REF_ID_NM)(87,91)
                       PsiElement(GdTokenType.IDENTIFIER)('quit')(87,91)
                   PsiElement(GdTokenType.LRBR)('(')(91,92)
-                  GdArgListImpl(ARG_LIST)(92,92)
-                    <empty list>
                   PsiElement(GdTokenType.RRBR)(')')(92,93)
                 GdEndStmtImpl(END_STMT)(93,93)
                   <empty list>

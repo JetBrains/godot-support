@@ -84,8 +84,6 @@ GdScript File(0,143)
               GdRefIdRefImpl(REF_ID_NM)(137,141)
                 PsiElement(GdTokenType.IDENTIFIER)('call')(137,141)
             PsiElement(GdTokenType.LRBR)('(')(141,142)
-            GdArgListImpl(ARG_LIST)(142,142)
-              <empty list>
             PsiElement(GdTokenType.RRBR)(')')(142,143)
           GdEndStmtImpl(END_STMT)(143,143)
             <empty list>

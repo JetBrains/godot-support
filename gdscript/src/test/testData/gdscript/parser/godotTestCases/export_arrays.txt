@@ -1711,8 +1711,6 @@ GdScript File(0,5464)
               GdRefIdRefImpl(REF_ID_NM)(5350,5367)
                 PsiElement(GdTokenType.IDENTIFIER)('get_property_list')(5350,5367)
             PsiElement(GdTokenType.LRBR)('(')(5367,5368)
-            GdArgListImpl(ARG_LIST)(5368,5368)
-              <empty list>
             PsiElement(GdTokenType.RRBR)(')')(5368,5369)
           PsiElement(GdTokenType.COLON)(':')(5369,5370)
           GdStmtOrSuiteImpl(STMT_OR_SUITE)(5370,5464)
