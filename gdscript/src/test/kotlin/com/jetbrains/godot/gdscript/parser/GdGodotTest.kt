@@ -48,6 +48,7 @@ class GdGodotTest : GdParsingTestCase() {
     @Ignore("RIDER-126458") @Test fun testis_not_operator() = doTest(true, true)
     @Test fun testlambda_callable() = doTest(true, true)
     @Test fun testlambda_callable_multiline() = doTest(true, true)
+    @Test fun testlambda_nested() = doTest(true, true)
     @Test fun testcallableInCtor() = doTest(true, true)
     @Test fun testlambda_capture_callable() = doTest(true, true)
     @Test fun testlambda_default_parameter_capture() = doTest(true, true)
