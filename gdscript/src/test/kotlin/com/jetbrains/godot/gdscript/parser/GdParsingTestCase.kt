@@ -9,7 +9,7 @@ abstract class GdParsingTestCase : ParsingTestCase("", "gd", GdParserDefinition(
     // I want to check ensureNoErrorElements first
     protected override fun doTest(checkResult: Boolean, ensureNoErrorElements: Boolean) {
         if (!ensureNoErrorElements) {
-            super.ensureNoErrorElements()
+            super.doTest(checkResult, ensureNoErrorElements)
         }
 
         val name = this.testName
