@@ -86,36 +86,18 @@ import java.util.regex.Pattern;
     }
 
     private boolean isIgnored() {
-        if (ignored <= 0) return false;
-        if (!ignoreLambda.isEmpty()) {
-            int diff = yycolumn;
-            if (diff == 0) {
-                diff = yylength();
-            }
-
-            return ignoreLambda.peek() > diff;
-        }
-
-        return true;
+        // Only ignore indentation when inside brackets (for regular multi-line expressions)
+        // Don't suppress indentation for lambda bodies
+        return ignored > 0;
     }
 
     private void ignoredMinus() {
-        if (!ignoreLambda.isEmpty() && ignoreLambda.peek() >= yycolumn) {
-            ignoreLambda.pop();
-        }
         ignored--;
     }
 
     private void markLambda() {
-        if (ignored > 0) {
-            int atIndent = 999;
-            CharSequence spaces = zzBuffer.subSequence(zzCurrentPos - yycolumn, zzCurrentPos);
-            if (spaces.toString().trim().isEmpty()) {
-                atIndent = spaces.length();
-            }
-
-            ignoreLambda.push(atIndent);
-        }
+        // No-op: Don't suppress indentation for lambda bodies
+        // Let the parser handle lambda indentation normally
     }
 %}
 
