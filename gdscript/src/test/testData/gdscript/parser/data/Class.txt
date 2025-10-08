@@ -40,8 +40,6 @@ GdScript File(0,63)
                 GdRefIdRefImpl(REF_ID_NM)(56,61)
                   PsiElement(GdTokenType.IDENTIFIER)('losos')(56,61)
               PsiElement(GdTokenType.LRBR)('(')(61,62)
-              GdArgListImpl(ARG_LIST)(62,62)
-                <empty list>
               PsiElement(GdTokenType.RRBR)(')')(62,63)
             GdEndStmtImpl(END_STMT)(63,63)
               <empty list>
