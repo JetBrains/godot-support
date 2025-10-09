@@ -17,9 +17,9 @@ object GdArgListParser : GdBaseParser {
         while (b.consumeToken(COMMA, true)) {
             argExpr(b, l + 1)
         }
-        while (ok && b.nextTokenIs(INDENT)) {
-            b.remapCurrentToken(TokenType.WHITE_SPACE)
-        }
+//        while (ok && b.nextTokenIs(INDENT)) {
+//            b.remapCurrentToken(TokenType.WHITE_SPACE)
+//        }
 
         ok && GdRecovery.argumentList(b)
         ok = b.exitSection(ok)

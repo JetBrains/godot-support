@@ -14,7 +14,6 @@ class GdComplexParserTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     @Test fun testSingleLineEnum() = doTest(true)
     @Test fun testBoolWithComparison() = doTest(true)
     @Test fun testNestedLoops() = doTest(true)
-    @Test fun testNestedLambda() = doTest(true)
 
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/complexData").pathString

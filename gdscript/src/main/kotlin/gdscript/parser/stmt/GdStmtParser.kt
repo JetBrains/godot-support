@@ -32,7 +32,10 @@ object GdStmtParser : GdBaseParser {
     fun parseLambda(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
         if (!b.recursionGuard(l, "Lambda")) return false
         b.enterSection(STMT_OR_SUITE)
-        var ok = suite(b, l + 1, false, asLambda) || stmt(b, l + 1, optional, asLambda)
+        var ok = suite(b, l + 1, false, asLambda)
+
+        if (!ok)
+            ok = stmt(b, l + 1, optional, asLambda)
 
         return b.exitSection(ok)
     }
@@ -77,6 +80,13 @@ object GdStmtParser : GdBaseParser {
 
     private fun stmt(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
         if (!b.recursionGuard(l, "InnerStmt")) return false
+
+        // multiline lambda
+        if (optional && asLambda && b.nextTokenIs(NEW_LINE)){
+            b.passToken(NEW_LINE)
+            return true
+        }
+
         moved = false
 
         if (
@@ -119,5 +129,4 @@ object GdStmtParser : GdBaseParser {
 
         return optional
     }
-
 }
