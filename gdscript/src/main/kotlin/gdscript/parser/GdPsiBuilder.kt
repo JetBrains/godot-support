@@ -93,6 +93,14 @@ class GdPsiBuilder {
     }
 
     fun mceEndStmt(optional: Boolean = false): Boolean {
+
+//        if (nextTokenIs(GdTypes.RRBR)) {
+//            // closing brace is from the GdArgList, need to figure out a better fix
+//            val m = mark()
+//            m.done(GdTypes.END_STMT)
+//            return true
+//        }
+
         if (!nextTokenIs(GdTypes.SEMICON, GdTypes.NEW_LINE)) {
             if (!optional) {
                 error("END_STMT", false)
