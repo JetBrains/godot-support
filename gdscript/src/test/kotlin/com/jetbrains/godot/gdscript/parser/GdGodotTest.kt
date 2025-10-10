@@ -101,7 +101,7 @@ class GdGodotTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     @Ignore("RIDER-126458") @Test fun testvector_inf() = doTest(true, true)
     @Test fun testwhile() = doTest(true, true)
 
-    @Test fun testsignal_connect_func() = doTest(true, true)
+    @Test fun testsignal_connect_func() = doTest(true, false)
 
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString

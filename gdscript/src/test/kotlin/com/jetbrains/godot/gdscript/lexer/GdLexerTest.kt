@@ -20,8 +20,29 @@ class GdLexerTest : LexerTestCase() {
     fun getText(): String = getBaseTestDataPath().resolve("testData/gdscript/parser/data").resolve("${getTestName(true)}.gd").readText()
 
     @Test
-//    @Ignore("how to point it on where to dump results?")
+    @Ignore("how to point it on where to dump results?")
     fun testlambda_nested() = doTest(getText())
+
+    @Test
+    @Ignore("how to point it on where to dump results?")
+    fun testlambda_nested2()=doTest("""
+        func _ready():
+	var projectile := Node.new()
+	var lifetime := Timer.new()
+
+	lifetime.timeout.connect(func():
+		if is_instance_valid(projectile):
+			projectile.queue_free()
+			var d = {22:"value",
+					"some_key": 2,
+					"other_key": [2, 3, 4],
+					"more_key": "Hello"
+			}
+			print("Projectile freed")
+		pass; pass
+
+	)
+    """.trimIndent())
 
 
     @Test
