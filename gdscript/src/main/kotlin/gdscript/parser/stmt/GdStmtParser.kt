@@ -26,7 +26,9 @@ object GdStmtParser : GdBaseParser {
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "Stmt")) return false
-        return parseLambda(b, l + 1, optional, false)
+        // When parsing inside an argument list (e.g., a lambda passed as an argument),
+        // continue treating nested statements as lambda-context to allow multiline suites.
+        return parseLambda(b, l + 1, optional, b.isArgs)
     }
 
     fun parseLambda(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {

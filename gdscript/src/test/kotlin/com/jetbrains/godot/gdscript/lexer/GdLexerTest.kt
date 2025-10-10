@@ -17,10 +17,10 @@ class GdLexerTest : LexerTestCase() {
         return ""
     }
 
-    fun getText(): String = getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").resolve("${getTestName(true)}.gd").readText()
+    fun getText(): String = getBaseTestDataPath().resolve("testData/gdscript/parser/data").resolve("${getTestName(true)}.gd").readText()
 
     @Test
-    @Ignore("how to point it on where to dump results?")
+//    @Ignore("how to point it on where to dump results?")
     fun testlambda_nested() = doTest(getText())
 
 
