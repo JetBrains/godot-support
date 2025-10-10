@@ -11,27 +11,42 @@ object GdArgListParser : GdBaseParser {
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "ArgList")) return false
+
+        // Leading whitespace should belong to CALL_EX, not ARG_LIST
+        skipArgWs(b)
         b.enterSection(ARG_LIST)
 
         var ok = b.pin(argExpr(b, l + 1))
         while (b.consumeToken(COMMA, true)) {
+            // Inter-argument whitespace stays inside ARG_LIST
+            skipArgWs(b)
             argExpr(b, l + 1)
+            skipArgWs(b)
         }
-//        while (ok && b.nextTokenIs(INDENT)) {
-//            b.remapCurrentToken(TokenType.WHITE_SPACE)
-//        }
 
         ok && GdRecovery.argumentList(b)
         ok = b.exitSection(ok)
 
+        // Trailing whitespace should also belong to CALL_EX, not ARG_LIST
+        skipArgWs(b)
+
         return ok || optional
+    }
+
+    private fun skipArgWs(b: GdPsiBuilder) {
+        // Remap and actively consume structural whitespace inside argument lists
+        // so expression parsing does not choke on a pending WHITE_SPACE token.
+        while (b.nextTokenIs(NEW_LINE, INDENT, DEDENT)) {
+            b.remapCurrentToken(TokenType.WHITE_SPACE)
+            b.advance()
+        }
     }
 
     private fun argExpr(b: GdPsiBuilder, l: Int): Boolean {
         b.recursionGuard(l + 1, "ArgExpr")
         b.enterSection(ARG_EXPR)
 
-        var ok = GdExprParser.parse(b, l + 1, false)
+        val ok = GdExprParser.parse(b, l + 1, false)
         b.exitSection(ok)
 
         return ok
