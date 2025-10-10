@@ -117,6 +117,18 @@ import java.util.regex.Pattern;
             ignoreLambda.push(atIndent);
         }
     }
+
+    private IElementType closeBracket(IElementType tokenType) {
+        boolean needDed = (!ignoreLambda.isEmpty() && ignoreLambda.peek() >= yycolumn && indent > 0 && !indentSizes.empty());
+        ignoredMinus();
+        if (needDed) {
+            newLineProcessed = false;
+            dedent();
+            yypushback(yylength());
+            return GdTypes.DEDENT;
+        }
+        return dedentRoot(tokenType);
+    }
 %}
 
 LETTER = [a-z|A-Z|_]
@@ -236,11 +248,11 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "("            { ignored++; return dedentRoot(GdTypes.LRBR); }
-    ")"            { ignoredMinus(); return dedentRoot(GdTypes.RRBR); }
+    ")"            { return closeBracket(GdTypes.RRBR); }
     "["            { ignored++; return dedentRoot(GdTypes.LSBR); }
-    "]"            { ignoredMinus(); return dedentRoot(GdTypes.RSBR); }
+    "]"            { return closeBracket(GdTypes.RSBR); }
     "{"            { ignored++; return dedentRoot(GdTypes.LCBR); }
-    "}"            { ignoredMinus(); return dedentRoot(GdTypes.RCBR); }
+    "}"            { return closeBracket(GdTypes.RCBR); }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
