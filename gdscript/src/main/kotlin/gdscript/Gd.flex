@@ -131,8 +131,9 @@ import java.util.regex.Pattern;
         if (!ignoreLambda.isEmpty()) {
             int i = ignoreLambda.size() - 1;
             if (ignoreLambdaLevel.get(i) == ignored && ignoreLambda.get(i) < 0) {
-                // Activate at the position immediately after ':' on the current line.
-                ignoreLambda.set(i, yycolumn + 1);
+                // Activate lambda indentation handling at this bracket depth regardless of column.
+                // Using 0 ensures isIgnored() stops suppressing INDENT/DEDENT for the lambda body lines.
+                ignoreLambda.set(i, 0);
             }
         }
     }
