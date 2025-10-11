@@ -56,13 +56,4 @@ class GdRecoveryParserTest : GdParsingTestCase() {
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/recoveryData").pathString
     }
-
-    override fun skipSpaces(): Boolean {
-        return false
-    }
-
-    override fun includeRanges(): Boolean {
-        return true
-    }
-
 }
