@@ -77,13 +77,4 @@ class GdParserTest : GdParsingTestCase() {
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/data").pathString
     }
-
-    override fun skipSpaces(): Boolean {
-        return false
-    }
-
-    override fun includeRanges(): Boolean {
-        return true
-    }
-
 }

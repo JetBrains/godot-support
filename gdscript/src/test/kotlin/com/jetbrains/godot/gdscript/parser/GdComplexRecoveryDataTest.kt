@@ -19,12 +19,4 @@ class GdComplexRecoveryDataTest : GdParsingTestCase() {
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve( "testData/gdscript/parser/complexRecoveryData").pathString
     }
-
-    override fun skipSpaces(): Boolean {
-        return false
-    }
-
-    override fun includeRanges(): Boolean {
-        return true
-    }
 }

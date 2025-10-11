@@ -1,13 +1,13 @@
-GdScript File(0,11)
-  GdClassDecl(0,6)
-    PsiElement(GdTokenType.CLASS)('class')(0,5)
-    PsiErrorElement:IDENTIFIER expected(5,5)
+GdScript File
+  GdClassDecl
+    PsiElement(GdTokenType.CLASS)('class')
+    PsiErrorElement:IDENTIFIER expected
       <empty list>
-    PsiElement(GdTokenType.NEW_LINE)('\n')(5,6)
-  GdClassVarDecl(6,11)
-    PsiElement(GdTokenType.VAR)('var')(6,9)
-    PsiWhiteSpace(' ')(9,10)
-    GdVarNmiImpl(VAR_NMI)(10,11)
-      PsiElement(GdTokenType.IDENTIFIER)('a')(10,11)
-    GdEndStmtImpl(END_STMT)(11,11)
+    PsiElement(GdTokenType.NEW_LINE)('\n')
+  GdClassVarDecl
+    PsiElement(GdTokenType.VAR)('var')
+    PsiWhiteSpace(' ')
+    GdVarNmiImpl(VAR_NMI)
+      PsiElement(GdTokenType.IDENTIFIER)('a')
+    GdEndStmtImpl(END_STMT)
       <empty list>

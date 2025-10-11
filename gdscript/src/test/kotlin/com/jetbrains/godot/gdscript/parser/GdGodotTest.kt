@@ -104,9 +104,4 @@ class GdGodotTest : GdParsingTestCase() {
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString
     }
-
-    override fun skipSpaces(): Boolean = false
-
-    override fun includeRanges(): Boolean = true
-
 }
