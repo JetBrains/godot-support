@@ -10,7 +10,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdComplexRecoveryDataTest : ParsingTestCase("", "gd", GdParserDefinition()) {
+class GdComplexRecoveryDataTest : GdParsingTestCase() {
     @Ignore("Hard to work with non completely valid test data")
     @Test fun testLambda() = doTest(true)
     @Ignore("Hard to work with non completely valid test data")

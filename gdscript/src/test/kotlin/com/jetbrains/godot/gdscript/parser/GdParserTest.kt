@@ -9,7 +9,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdParserTest : ParsingTestCase("", "gd", GdParserDefinition()) {
+class GdParserTest : GdParsingTestCase() {
     // https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html
 
     @Test fun testExtension() = doTest(true)
