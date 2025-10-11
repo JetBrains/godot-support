@@ -9,7 +9,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdRecoveryParserTest : ParsingTestCase("", "gd", GdParserDefinition()) {
+class GdRecoveryParserTest : GdParsingTestCase() {
     @Test fun testInheritance() = doTest(true)
     @Test fun testClassName() = doTest(true)
     @Test fun testAnnotation() = doTest(true)

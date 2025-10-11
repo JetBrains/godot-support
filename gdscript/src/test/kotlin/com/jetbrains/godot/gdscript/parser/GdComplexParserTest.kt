@@ -9,7 +9,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdComplexParserTest : ParsingTestCase("", "gd", GdParserDefinition()) {
+class GdComplexParserTest : GdParsingTestCase() {
     @Test fun testAttributes() = doTest(true)
     @Test fun testSingleLineEnum() = doTest(true)
     @Test fun testBoolWithComparison() = doTest(true)
