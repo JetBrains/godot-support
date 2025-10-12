@@ -202,36 +202,42 @@ import java.util.regex.Pattern;
         }
     }
 
+    private boolean colonStartsBlock() {
+        // Look ahead from current position to the end of line. If only spaces/tabs and optional comment
+        // remain before a newline or EOF, treat this ':' as starting a block suite.
+        int start = Math.min(zzBuffer.length(), zzCurrentPos + yylength());
+        for (int i = start; i < zzBuffer.length(); i++) {
+            char c = zzBuffer.charAt(i);
+            if (c == '\r' || c == '\n') return true; // newline reached with nothing significant after ':'
+            if (c == '#') {
+                // comment until EOL — still a block
+                // skip until newline/EOF
+                while (i < zzBuffer.length()) {
+                    char d = zzBuffer.charAt(i);
+                    if (d == '\r' || d == '\n') return true;
+                    i++;
+                }
+                return true;
+            }
+            if (c != ' ' && c != '\t') return false; // some token follows on same line → inline suite
+        }
+        // Reached EOF without newline and with only whitespace/comment → block
+        return true;
+    }
+
     private void activateLambdaAfterColon() {
-        if (!ignoreLambda.isEmpty()) {
+        if (!ignoreLambda.isEmpty() && colonStartsBlock()) {
             int i = ignoreLambda.size() - 1;
             if (ignoreLambdaLevel.get(i) == ignored && ignoreLambda.get(i) < 0) {
-                // Activate lambda indentation handling at this bracket depth regardless of column.
-                // Using 0 ensures isIgnored() stops suppressing INDENT/DEDENT for the lambda body lines.
+                // Activate lambda indentation handling at this bracket depth because ':' starts a block
                 ignoreLambda.set(i, 0);
             }
         }
     }
 
     private IElementType closeBracket(IElementType tokenType) {
-        boolean needDed = false;
-        if (!ignoreLambda.isEmpty()) {
-            int topLevel = ignoreLambdaLevel.peek();
-            int topIndent = ignoreLambda.peek();
-            // If we're closing the bracket that owns the lambda and we are at/before its activation indent,
-            // emit a DEDENT for the lambda block before producing the closing bracket token.
-            if (topLevel == ignored && topIndent >= 0 && topIndent >= yycolumn && indent > 0 && !indentSizes.empty()) {
-                needDed = true;
-            }
-        }
-        // Now close the bracket (decrement depth and clean any deeper lambda contexts).
+        // Per guidelines, never emit DEDENT on closing brackets. Only adjust paren depth.
         ignoredMinus();
-        if (needDed) {
-            newLineProcessed = false;
-            dedent();
-            yypushback(yylength());
-            return GdTypes.DEDENT;
-        }
         return dedentRoot(tokenType);
     }
 %}
@@ -317,15 +323,15 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
     "nan"          { return dedentRoot(GdTypes.NAN); }
     "signal"       { return dedentRoot(GdTypes.SIGNAL); }
     "in"           { return dedentRoot(GdTypes.IN); }
-    "if"           { return dedentRoot(GdTypes.IF); }
-    "else"         { return dedentRoot(GdTypes.ELSE); }
-    "elif"         { return dedentRoot(GdTypes.ELIF); }
+    "if"           { markLambda(); return dedentRoot(GdTypes.IF); }
+    "else"         { markLambda(); return dedentRoot(GdTypes.ELSE); }
+    "elif"         { markLambda(); return dedentRoot(GdTypes.ELIF); }
     "as"           { return dedentRoot(GdTypes.AS); }
     "is"           { return dedentRoot(GdTypes.IS); }
-    "while"        { return dedentRoot(GdTypes.WHILE); }
-    "for"          { return dedentRoot(GdTypes.FOR); }
+    "while"        { markLambda(); return dedentRoot(GdTypes.WHILE); }
+    "for"          { markLambda(); return dedentRoot(GdTypes.FOR); }
     "in"           { return dedentRoot(GdTypes.IN); }
-    "match"        { return dedentRoot(GdTypes.MATCH); }
+    "match"        { markLambda(); return dedentRoot(GdTypes.MATCH); }
     "await"        { return dedentRoot(GdTypes.AWAIT); }
     "static"       { return dedentRoot(GdTypes.STATIC); }
     "vararg"       { return dedentRoot(GdTypes.VARARG); }

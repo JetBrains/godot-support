@@ -3,8 +3,8 @@ package gdscript.parser.recovery
 import gdscript.psi.GdTypes.*
 
 val END_STMT_SET = arrayOf(SEMICON, NEW_LINE)
-val ARG_END = arrayOf(RRBR)
-//val ARG_END = arrayOf(RRBR, *END_STMT_SET)
+// Accept end-of-statement tokens inside argument lists (e.g., after block-form lambdas)
+val ARG_END = arrayOf(RRBR, *END_STMT_SET)
 
 val LITERAL = arrayOf(TRUE, FALSE, STRING_NAME, NODE_PATH_LIT, STRING, NUMBER, NULL, NAN, INF, SELF, SUPER,
     IDENTIFIER, GET, SET, MATCH, SIGNAL, FUNC, CLASS_NAME, PASS, CLASS)
