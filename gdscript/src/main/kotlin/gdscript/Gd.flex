@@ -1,3 +1,78 @@
+/*
+------------------------------------------------------------------------------
+  GDSCRIPT INDENTATION & NESTING RULES
+  ------------------------------------
+
+  This lexer must handle indentation-sensitive syntax with nested regions
+  where indentation is temporarily ignored or reactivated.
+
+  State variables:
+    int paren_depth;           // count of (, [, {
+    bool indent_active;        // whether indentation affects NEWLINE
+    stack<int> indent_stack;   // indentation levels
+    stack<bool> react_stack;   // previous indent_active states (for reactivation)
+
+------------------------------------------------------------------------------
+  NEWLINE HANDLING
+  ----------------
+  - On each NEWLINE:
+      if (indent_active && paren_depth == 0):
+          compare current indentation to top(indent_stack)
+          emit INDENT or one/more DEDENT tokens accordingly
+      else:
+          ignore indentation (leading spaces are insignificant)
+
+------------------------------------------------------------------------------
+  PARENTHESIS CONTROL
+  -------------------
+  - On '(', '[', '{'  → paren_depth++
+  - On ')', ']', '}'  → paren_depth--
+  - When paren_depth > 0 → indentation normally disabled
+  - When paren_depth == 0 → indentation enabled (unless overridden)
+
+------------------------------------------------------------------------------
+  COLON BEHAVIOR
+  --------------
+  After ':' :
+    - If next token is NEWLINE:
+        // block suite
+        enable indentation (indent_active = true)
+        on next line, emit INDENT if deeper
+    - Else:
+        // inline suite
+        no INDENT/DEDENT emitted
+
+------------------------------------------------------------------------------
+  INDENTATION REACTIVATION INSIDE PARENS
+  --------------------------------------
+  - If inside parentheses (paren_depth > 0)
+    and ':' followed by NEWLINE occurs after a block-forming keyword
+    (func, if, elif, else, for, while, match):
+        push current indent_active to react_stack
+        set indent_active = true
+  - When dedented back to outer level:
+        restore indent_active from react_stack (usually false)
+
+------------------------------------------------------------------------------
+  DEDENTS
+  -------
+  - Emit DEDENTs only when indentation decreases on a NEWLINE
+  - Do NOT emit synthetic DEDENTs on closing ')', ']', or '}'
+
+------------------------------------------------------------------------------
+  EXAMPLES
+  --------
+  func a():
+      print(
+          func(): pass)            // inline suite: no indent change
+
+      print(
+          func():
+              if x:
+                  pass)            // block suite: dedents before ')'
+------------------------------------------------------------------------------
+*/
+
 package gdscript;
 
 import com.intellij.lexer.FlexLexer;

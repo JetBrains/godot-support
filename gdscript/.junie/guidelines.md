@@ -2,16 +2,13 @@ Project-specific development guidelines for gdscript module (JetBrains GDScript 
 
 This document captures practical, project-specific knowledge to help advanced contributors build, test, and extend the GDScript plugin efficiently.
 
-1) Build and configuration
+1. Build and configuration
 
 Prerequisites
-- JDK: Java 21 (enforced via kotlin.jvmToolchain in build.gradle.kts)
 - Gradle: use the included Gradle wrapper (./gradlew)
-- OS packages: none required beyond standard JDK + network access (tests/downloads fetch artifacts)
 
 IntelliJ Platform and SDK preparation
 - build.gradle.kts uses the IntelliJ Platform Gradle plugin to resolve IDEA Community and JetBrains Runtime. No manual setup is required for those.
-- The custom prepare task downloads a temporary GDScript SDK archive used during sandbox preparation. It is wired automatically via prepareSandbox.dependsOn("prepare"). You typically don’t need to invoke it manually.
 
 Common tasks
 - Build (verifies sources compile and prepares the plugin):
@@ -24,9 +21,58 @@ Common tasks
 
 Notes about code generation and sources
 - Generated PSI/Parser sources are placed under src/main/gen and are registered as a source root (see sourceSets in build.gradle.kts).
-- Gd.bnf is outdated and no longer in use
 
-2) Testing: running, configuring, and adding tests
+2.1. Lexer and Parser
+
+Gd.flex is used to generate the GdLexer.java.
+
+### GDScript indentation rules (for Gd.flex)
+
+* Maintain:
+
+    * `paren_depth` counter for `()[]{}`
+    * `indent_stack` for indentation levels
+    * `indent_active` flag
+    * `reactivation_stack` for indentation reactivation inside parens
+
+#### Core
+
+* At `NEWLINE`:
+
+    * If `indent_active == true && paren_depth == 0`, compare indentation with top of `indent_stack`:
+
+        * emit `INDENT` or `DEDENT`s accordingly
+    * Otherwise, ignore indentation (treat leading whitespace as insignificant)
+
+#### Paren control
+
+* On `(`, `[`, `{` → `paren_depth++`
+* On `)`, `]`, `}` → `paren_depth--`
+* If `paren_depth > 0` → `indent_active = false` (unless reactivated)
+
+#### Colon behavior
+
+* After `:`:
+
+    * If next token is `NEWLINE` → start **block suite**
+
+        * push state (`indent_active = true`)
+        * on next line, emit `INDENT` if deeper
+    * Else → **inline suite** (no `INDENT`/`DEDENT`)
+
+#### Reactivation inside parens
+
+* If inside parens and encounter `:` followed by `NEWLINE` after block-forming keyword (`func`, `if`, `elif`, `else`, `for`, `while`, `match`):
+
+    * push `indent_active = true` (reactivate)
+    * emit dedents normally until returning to parent level, then restore previous `indent_active` (usually false)
+
+#### Dedents
+
+* Emit dedents only on indentation decrease at `NEWLINE`
+* Never emit dedents on `)` `]` `}` directly
+
+3. Testing: running, configuring, and adding tests
 
 Test frameworks and configuration
 - Tests are run on JUnit Platform with the Vintage engine (JUnit 4 code style is used in the project). Dependencies:
@@ -51,7 +97,7 @@ IDE test execution
 Adding new tests
 - Location: src/test/kotlin
 
-3) Additional development information
+4. Additional development information
 
 Contact points
 - Start from README.md for plugin overview and links to features, changelog, and marketplace. For Grammar-Kit or PSI concerns, consult IntelliJ Platform SDK docs.
