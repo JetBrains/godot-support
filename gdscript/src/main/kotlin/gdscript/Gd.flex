@@ -57,7 +57,9 @@
   DEDENTS
   -------
   - Emit DEDENTs only when indentation decreases on a NEWLINE
-  - Do NOT emit synthetic DEDENTs on closing ')', ']', or '}'
+  - When closing ')' ']' '}' that ends a lambda block (indentation reactivated inside parens),
+  - emit pending DEDENTs before returning the bracket token.
+  - Normal parentheses (without reactivated indentation) still do NOT emit dedents.
 
 ------------------------------------------------------------------------------
   EXAMPLES
@@ -165,23 +167,17 @@ import java.util.regex.Pattern;
     private boolean isIgnored() {
         if (ignored <= 0) return false;
         if (!ignoreLambda.isEmpty()) {
-            // Walk from the most recent lambda down to find one that applies at current depth.
+            // If there is an activated lambda at the current bracket depth, indentation is ACTIVE.
             for (int i = ignoreLambda.size() - 1; i >= 0; i--) {
                 int lvl = ignoreLambdaLevel.get(i);
-                if (lvl <= ignored) {
+                if (lvl == ignored) {
                     int at = ignoreLambda.get(i);
-                    // If lambda not yet activated (colon not seen), indentation is still ignored.
-                    if (at < 0) return true;
-                    int diff = yycolumn;
-                    if (diff == 0) {
-                        diff = yylength();
-                    }
-                    // Ignore indentation until we reach the lambda's activation indent.
-                    return at > diff;
+                    // at >= 0 means ':' started a block for this lambda → re-activate indentation
+                    return at < 0; // still ignored only until ':' activates the lambda
                 }
             }
         }
-        // No applicable lambda re-enables indentation: still ignored while inside brackets.
+        // No activated lambda for this depth → ignore indentation while inside brackets.
         return true;
     }
 
@@ -225,19 +221,64 @@ import java.util.regex.Pattern;
         return true;
     }
 
+    private int currentLineIndent() {
+        // Count spaces/tabs from the previous newline (or BOF) up to first non-space
+        int i = Math.min(zzBuffer.length(), zzCurrentPos);
+        // Move i to the start of current token
+        int start = i;
+        // Go back to previous newline
+        while (start > 0) {
+            char c = zzBuffer.charAt(start - 1);
+            if (c == '\n' || c == '\r') break;
+            start--;
+        }
+        int indentCount = 0;
+        while (start + indentCount < zzBuffer.length()) {
+            char c = zzBuffer.charAt(start + indentCount);
+            if (c == ' ' || c == '\t') {
+                indentCount++;
+            } else {
+                break;
+            }
+        }
+        return indentCount;
+    }
+
     private void activateLambdaAfterColon() {
         if (!ignoreLambda.isEmpty() && colonStartsBlock()) {
             int i = ignoreLambda.size() - 1;
             if (ignoreLambdaLevel.get(i) == ignored && ignoreLambda.get(i) < 0) {
                 // Activate lambda indentation handling at this bracket depth because ':' starts a block
-                ignoreLambda.set(i, 0);
+                // Use the actual visual indent of the current line (inside parens indentation is ignored by lexer state)
+                ignoreLambda.set(i, currentLineIndent());
             }
         }
     }
 
+    private boolean hasActiveLambdaAtCurrentDepth() {
+        if (ignoreLambda.isEmpty()) return false;
+        int i = ignoreLambda.size() - 1;
+        return ignoreLambdaLevel.get(i) == ignored && ignoreLambda.get(i) >= 0;
+    }
+
     private IElementType closeBracket(IElementType tokenType) {
-        // Per guidelines, never emit DEDENT on closing brackets. Only adjust paren depth.
-        ignoredMinus();
+        // Before decreasing ignored depth, check for active lambda block at this level
+        if (hasActiveLambdaAtCurrentDepth()) {
+            int i = ignoreLambda.size() - 1;
+            int lambdaDepth = ignoreLambdaLevel.get(i);
+            // For outermost call-arg lambdas (depth==1), defer dedent until after the bracket
+            if (lambdaDepth > 0) {
+                int targetIndent = Math.max(0, ignoreLambda.get(i)); // exact indentation recorded at ':'
+                // Emit one DEDENT per advance until we unwind back to targetIndent.
+                if (!indentSizes.empty() && indent > targetIndent) {
+                    dedent();
+                    yypushback(yylength());
+                    return GdTypes.DEDENT;
+                }
+            }
+        }
+
+        ignoredMinus(); // reduce paren depth, clear deeper lambdas
         return dedentRoot(tokenType);
     }
 %}
@@ -456,18 +497,19 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
     }
 
 <<EOF>> {
-    if (yycolumn > 0 && !eofFinished && !lineEnded) {
+    // Emit any pending DEDENTs before adding a synthetic NEW_LINE at EOF
+    if (!indentSizes.empty()) {
+        indentSizes.pop();
+        yypushback(yylength());
+        return GdTypes.DEDENT;
+    }
+
+    if (yycolumn > 0 && !eofFinished && !lineEnded && !isIgnored()) {
         eofFinished = true;
         return GdTypes.NEW_LINE;
     }
 
-    if (indentSizes.empty()) {
-        return null;
-    }
-
-    indentSizes.pop();
-    yypushback(yylength());
-    return GdTypes.DEDENT;
+    return null;
 }
 
 [^] { return TokenType.BAD_CHARACTER; }

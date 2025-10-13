@@ -53,15 +53,13 @@ GdScript File
                                 PsiElement(GdTokenType.LRBR)('(')
                                 PsiElement(GdTokenType.RRBR)(')')
                                 PsiElement(GdTokenType.COLON)(':')
-                                PsiErrorElement:STMT_OR_SUITE expected
-                                  <empty list>
-                            PsiErrorElement:unexpected 'pass'
-                              PsiElement(GdTokenType.NEW_LINE)('\n')
-                              PsiWhiteSpace('\t\t')
-                              PsiElement(GdTokenType.PASS)('pass')
+                                GdStmtOrSuiteImpl(STMT_OR_SUITE)
+                                  GdSuiteImpl(SUITE)
+                                    PsiElement(GdTokenType.NEW_LINE)('\n')
+                                    PsiElement(GdTokenType.INDENT)('\t\t\t')
+                                    GdFlowStImpl(FLOW_ST)
+                                      PsiElement(GdTokenType.PASS)('pass')
                           PsiElement(GdTokenType.RRBR)(')')
             PsiElement(GdTokenType.RRBR)(')')
           GdEndStmtImpl(END_STMT)
             <empty list>
-  PsiErrorElement:Unexpected tokens, 
-    <empty list>

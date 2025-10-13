@@ -24,7 +24,7 @@ Notes about code generation and sources
 
 2.1. Lexer and Parser
 
-Gd.flex is used to generate the GdLexer.java.
+Gd.flex is used to generate the GdLexer.java. There is an action "Run JFlex Generator" to re-generate the GdLexer.java.
 
 ### GDScript indentation rules (for Gd.flex)
 

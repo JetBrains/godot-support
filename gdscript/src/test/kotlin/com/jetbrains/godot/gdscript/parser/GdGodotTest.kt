@@ -49,6 +49,7 @@ class GdGodotTest : GdParsingTestCase() {
     @Test fun testlambda_callable() = doTest(true, true)
     @Test fun testlambda_callable_multiline() = doTest(true, true)
     @Test fun testcallableInCtor() = doTest(true, true)
+    @Test fun testLambdaCallExpr() = doTest(true, true)
     @Test fun testlambda_capture_callable() = doTest(true, true)
     @Test fun testlambda_default_parameter_capture() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testlambda_ends_with_new_line() = doTest(true, true)

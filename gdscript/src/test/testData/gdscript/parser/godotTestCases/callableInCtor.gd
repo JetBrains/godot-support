@@ -9,6 +9,8 @@ var h: callableInCtor = callableInCtor.new(
 )
 
 var h2: callableInCtor = callableInCtor.new(
-	func(): return,
+	func():
+		print("yesy")
+		return,
 	""
 )
