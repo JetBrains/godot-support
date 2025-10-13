@@ -27,12 +27,13 @@ abstract class GdParsingTestCase : ParsingTestCase("", "gd", GdParserDefinition(
                 if (e.isActualDefined && actualPath != null) {
                     append("actual file: ").append(actualPath)
                 } else {
-                    append("actual: \n").append(actualText)
+                    append("\n actual: \n").append(actualText)
                 }
             }
 
-            val newMessage = (e.message ?: "") + details
-            throw FileComparisonFailedError(newMessage, expectedText, actualText, expectedPath, actualPath)
+            print(details)
+
+            throw e
         }
     }
 }
