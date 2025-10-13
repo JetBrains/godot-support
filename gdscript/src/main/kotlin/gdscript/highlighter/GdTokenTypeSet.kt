@@ -59,7 +59,8 @@ interface GdTokenTypeSet {
             GdTypes.WHILE,
             GdTypes.BREAK,
             GdTypes.RETURN,
-            GdTypes.PASS
+            GdTypes.PASS,
+            GdTypes.WHEN
         )
 
         // Yellow
