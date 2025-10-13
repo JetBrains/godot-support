@@ -11,7 +11,7 @@ import com.jetbrains.rider.projectView.solution
 class GodotDetectorImpl : GodotDetector {
     override suspend fun godotProjectInfo(project: Project): GodotProjectInfo {
         // Wait for the model to be ready before proceeding
-        project.solution.aIChatModel.isReady.nextTrueValue()
+        project.solution.aIChatModel.isBackendReady.nextTrueValue()
 
         val result = project.solution.aIChatModel.godotContext.startSuspending(project.lifetime, Unit)
 
