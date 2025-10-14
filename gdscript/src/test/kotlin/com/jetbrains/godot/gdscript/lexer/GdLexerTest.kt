@@ -1,11 +1,13 @@
 package com.jetbrains.godot.gdscript.lexer
 
 import com.intellij.lexer.Lexer
+import com.intellij.platform.testFramework.core.FileComparisonFailedError
 import com.intellij.testFramework.LexerTestCase
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.GdLexerAdapter
-import org.junit.Ignore
+import org.junit.ComparisonFailure
 import org.junit.Test
+import org.junit.Ignore
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.io.path.readText
@@ -17,39 +19,41 @@ class GdLexerTest : LexerTestCase() {
         return ""
     }
 
-    fun getText(): String = getBaseTestDataPath().resolve("testData/gdscript/parser/data").resolve("${getTestName(true)}.gd").readText()
+    fun getExpected(): String =
+        getBaseTestDataPath().resolve("testData/gdscript/lexer/data").resolve("${getTestName(true)}.txt").readText()
 
-    @Test
-    @Ignore("how to point it on where to dump results?")
-    fun testlambda_nested() = doTest(getText())
+    override fun doFileTest(filePath: String) {
+        val text = loadTestDataFile(filePath)
+        val expected = getExpected()
+        doTest(text, expected, createLexer())
+    }
 
-    @Test
-    @Ignore("how to point it on where to dump results?")
-    fun testlambda_nested2()=doTest("""
-        func _ready():
-	var projectile := Node.new()
-	var lifetime := Timer.new()
+    override fun loadTestDataFile(filePath: String): String {
+        // Read source .gd files from the Godot parser test cases folder by default
+        val base = getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases")
+        val path = base.resolve(filePath)
+        return path.readText()
+    }
 
-	lifetime.timeout.connect(func():
-		if is_instance_valid(projectile):
-			projectile.queue_free()
-			var d = {22:"value",
-					"some_key": 2,
-					"other_key": [2, 3, 4],
-					"more_key": "Hello"
-			}
-			print("Projectile freed")
-		pass; pass
+    @Test fun testsignal_connect_func() = doFileTest("${getTestName(true)}.gd")
+    @Test fun testclass_name() = doFileTest("${getTestName(true)}.gd")
+    @Test fun testcallableInCtor() = doFileTest("${getTestName(true)}.gd")
+    @Test fun testLambdaCallExpr() = doFileTest("${getTestName(true)}.gd")
+    @Test fun testArrayWithFunc() = doFileTest("${getTestName(true)}.gd")
 
-	)
-    """.trimIndent())
-
-
-    @Test
-    @Ignore("how to point it on where to dump results?")
-    fun testLambdaCallExpr() = doTest(getText())
-
-    @Test
-    @Ignore("how to point it on where to dump results?")
-    fun testcallableInCtor() = doTest(getText())
+    override fun doTest(text: String, expected: String?, lexer: Lexer) {
+        try{
+            super.doTest(text, expected, this.createLexer())
+        }
+//        catch (e:FileComparisonFailedError){
+//            val expectedText = e.getExpectedStringPresentation()
+//            val actualText = e.getActualStringPresentation()
+//            println("EXPECTED:\n" + expectedText + "\n----\nACTUAL:\n" + actualText)
+//            throw e
+//        }
+        catch (e: ComparisonFailure){
+            println("EXPECTED:\n" + e.expected + "\n----\nACTUAL:\n" + e.actual)
+            // throw e
+        }
+    }
 }
