@@ -82,6 +82,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             {
                 foreach (var project in solution.GetAllProjects())
                 {
+                    if (project.ProjectFile == null) continue; // MiscProject and SolutionProject
                     // not a regular generated project, however can happen with gdextensions template
                     var subItem = project.GetSubItems("project.godot").FirstOrDefault();
                     if (subItem != null)
