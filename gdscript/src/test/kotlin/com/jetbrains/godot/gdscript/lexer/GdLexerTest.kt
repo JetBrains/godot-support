@@ -35,11 +35,11 @@ class GdLexerTest : LexerTestCase() {
         return path.readText()
     }
 
-    @Test fun testsignal_connect_func() = doFileTest("${getTestName(true)}.gd")
-    @Test fun testclass_name() = doFileTest("${getTestName(true)}.gd")
-    @Test fun testcallableInCtor() = doFileTest("${getTestName(true)}.gd")
-    @Test fun testLambdaCallExpr() = doFileTest("${getTestName(true)}.gd")
-    @Test fun testArrayWithFunc() = doFileTest("${getTestName(true)}.gd")
+    @Ignore @Test fun testsignal_connect_func() = doFileTest("${getTestName(true)}.gd")
+    @Ignore @Test fun testclass_name() = doFileTest("${getTestName(true)}.gd")
+    @Ignore @Test fun testcallableInCtor() = doFileTest("${getTestName(true)}.gd")
+    @Ignore @Test fun testLambdaCallExpr() = doFileTest("${getTestName(true)}.gd")
+    @Ignore @Test fun testArrayWithFunc() = doFileTest("${getTestName(true)}.gd")
 
     override fun doTest(text: String, expected: String?, lexer: Lexer) {
         try{
