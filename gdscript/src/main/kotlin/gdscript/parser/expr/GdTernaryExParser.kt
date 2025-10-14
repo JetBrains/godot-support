@@ -5,6 +5,21 @@ import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdTypedParser
 import gdscript.psi.GdTypes.*
 
+/**
+ * Parses GDScript's inline conditional (a.k.a. "ternary") expression and builds a PSI node of type [TERNARY_EX].
+ *
+ * Grammar (simplified):
+ *   logicOr [ "if" logicOr "else" logicOr ] ;
+ *
+ * Examples:
+ *   - val x = 1 if cond else 2
+ *   - print("ok") if a > 0 else print("bad")
+ *
+ * Notes:
+ *   - This is an expression form of if/else. It differs from the statement form because it returns a value and
+ *     can appear wherever an expression is allowed.
+ *   - The PSI element type used for this node is [TERNARY_EX], declared in generated GdTypes.
+ */
 // logicOr [ "if" logicOr "else" logicOr ] ;
 object GdTernaryExParser : GdExprBaseParser() {
 

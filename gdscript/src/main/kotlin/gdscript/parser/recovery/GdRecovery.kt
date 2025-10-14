@@ -26,9 +26,10 @@ object GdRecovery : GdBaseParser {
             b.advance()
         }
 
-        if (any != null && !b.isError) {
-            m.error("unexpected '$any'")
-        } else {
+        if (any != null && !b.isError && !any.isEmpty()) {
+            m.error("recovery unexpected '${any}'")
+        }
+        else {
             m.drop()
         }
 

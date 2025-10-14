@@ -329,8 +329,17 @@ RAW_DOUBLE_QUOTED_CONTENT = [^\"\r\n]
 RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
 
 %state CREATE_INDENT
+%state PENDING_DEDENT
 
 %%
+
+<PENDING_DEDENT> {
+    {ANY} {
+        yybegin(lastState);
+        yypushback(yylength());
+        return GdTypes.DEDENT;
+    }
+}
 
 <CREATE_INDENT> {
     {ANY} {
@@ -461,6 +470,8 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
     }
     {EMPTY_INDENT} { if (yycolumn > 0) { yypushback(1); } return TokenType.WHITE_SPACE; }
     {NEW_LINE}     {
+        int nextIndentNl = nextNonCommentIndent();
+        boolean willDedent = nextIndentNl >= 0 && !isIgnored() && !indentSizes.empty() && indent > nextIndentNl;
         if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;
         } else if (isIgnored()) {
@@ -472,6 +483,10 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
         }
 
         newLineProcessed = true;
+        if (willDedent) {
+            lastState = YYINITIAL;
+            yybegin(PENDING_DEDENT);
+        }
         return GdTypes.NEW_LINE;
     }
     {INDENT}  {

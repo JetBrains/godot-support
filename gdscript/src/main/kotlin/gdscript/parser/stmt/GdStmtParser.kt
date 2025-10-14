@@ -28,12 +28,17 @@ object GdStmtParser : GdBaseParser {
         if (!b.recursionGuard(l, "Stmt")) return false
         // When parsing inside an argument list (e.g., a lambda passed as an argument),
         // continue treating nested statements as lambda-context to allow multiline suites.
-        return parseLambda(b, l + 1, optional, b.isArgs)
+        // Also propagate lambda context started by a func-decl expression (not only arg lists).
+        return parseLambda(b, l + 1, optional, b.isArgs || b.isLambda)
     }
 
     fun parseLambda(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
         if (!b.recursionGuard(l, "Lambda")) return false
         b.enterSection(STMT_OR_SUITE)
+        if (asLambda) {
+            // Mark lambda context so nested statements keep lambda rules
+            b.markLambda()
+        }
         var ok = suite(b, l + 1, false, asLambda)
 
         if (!ok)
@@ -57,17 +62,30 @@ object GdStmtParser : GdBaseParser {
             ok = ok && stmt(b, l + 1, true, asLambda)
         }
 
-        ok && asLambda && b.passToken(NEW_LINE)
         if (asLambda) {
-            if (b.nextTokenIs(DEDENT)) {
-                if (!b.followingTokensAre(DEDENT, NEW_LINE) && !b.followingTokensAre(DEDENT, END_STMT)) {
-                    b.remapCurrentToken(NEW_LINE)
-                } else {
-                    b.consumeToken(DEDENT)
-                }
-            }
+            // In lambda context, allow an optional newline before closing the suite
+            b.passToken(NEW_LINE)
+        }
+        if (asLambda) {
+            // Do not consume DEDENT here. Leave it for the outer (non-lambda) context so that
+            // statement termination can be inferred by END_STMT when needed.
         } else {
-            ok = ok && b.consumeToken(DEDENT)
+            // Normally require a DEDENT to close the suite. However, Godot allows a dangling comma
+            // on a separately indented line that logically belongs to the enclosing list/dict/args.
+            // Example:
+            //   if cond:
+            //       pass
+            //           ,
+            // In such cases, INDENT is followed by a COMMA that closes the container element.
+            // Be tolerant and do not force DEDENT here; leave INDENT/COMMA to the outer parser.
+            if (b.nextTokenIs(DEDENT)) {
+                ok = ok && b.consumeToken(DEDENT)
+            } else if (b.followingTokensAre(INDENT, COMMA) || b.nextTokenIs(COMMA)) {
+                // accept suite without consuming DEDENT; outer context will handle comma and dedents
+                ok = ok && true
+            } else {
+                ok = ok && b.consumeToken(DEDENT)
+            }
         }
 
         if (ok || b.pinned()) {
@@ -101,7 +119,8 @@ object GdStmtParser : GdBaseParser {
                 if (asLambda) {
                     ok = ok && b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT, COMMA)
                     if (ok && b.isArgs) {
-                        b.passToken(NEW_LINE) || b.passToken(SEMICON) || b.nextTokenIs(COMMA)
+                        // Do not consume NEW_LINE here; leave it to the statement-specific parser to attach appropriately.
+                        b.passToken(SEMICON) || b.nextTokenIs(COMMA)
                     }
 //                    if (ok && !b.followingTokensAre(NEW_LINE, DEDENT)) {
 //                        b.passToken(NEW_LINE)

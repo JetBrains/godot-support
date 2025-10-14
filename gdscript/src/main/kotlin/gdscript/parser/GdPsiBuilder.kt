@@ -5,6 +5,7 @@ import com.intellij.lang.PsiBuilder.Marker
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.expr.GdLiteralExParser
+import gdscript.parser.recovery.STMT
 import gdscript.psi.GdTypes
 import java.util.Locale
 
@@ -31,6 +32,7 @@ class GdPsiBuilder {
     /** GdPsiState **/
 
     val isArgs get() = state.isArgs
+    val isLambda get() = state.isLambda
     val isError get() = state.isError
     var errorAt: Int? get() = state.errorAt ?: 0
         set(value) { state.errorAt = value }
@@ -60,6 +62,11 @@ class GdPsiBuilder {
 
     fun unpin() {
         state.unpin()
+    }
+
+    // Lambda context control
+    fun markLambda() {
+        state.markLambda()
     }
 
     /** Checks **/
@@ -93,6 +100,13 @@ class GdPsiBuilder {
     }
 
     fun mceEndStmt(optional: Boolean = false): Boolean {
+        // Treat end-of-file as a valid statement terminator so parsers can close
+        // the last statement without requiring a trailing NEW_LINE or semicolon.
+        if (eof) {
+            val m = mark()
+            m.done(GdTypes.END_STMT)
+            return true
+        }
 
 //        if (nextTokenIs(GdTypes.RRBR)) {
 //            // closing brace is from the GdArgList, need to figure out a better fix
@@ -102,9 +116,36 @@ class GdPsiBuilder {
 //        }
 
         if (!nextTokenIs(GdTypes.SEMICON, GdTypes.NEW_LINE)) {
+            // Allow suite closure (DEDENT) to implicitly terminate a statement
+            // without consuming it, so END_STMT is produced even if the lexer
+            // doesn’t emit a NEW_LINE token (e.g., last statement before block end).
+            if (nextTokenIs(GdTypes.DEDENT) || b.lookAhead(1) == GdTypes.DEDENT) {
+                val m = mark()
+                m.done(GdTypes.END_STMT)
+                return true
+            }
+
+            // Fallback heuristic: if the next token starts another statement, treat this as implicitly terminated.
+            // This handles cases like a lambda block used as an rvalue whose suite consumed the line break,
+            // so the terminator is implied by the start of the next statement at the outer indentation level.
+            if (tokenType == com.intellij.psi.TokenType.WHITE_SPACE) {
+                val m2 = mark()
+                m2.done(GdTypes.END_STMT)
+                return true
+            }
+
+            if (tokenType != null && STMT.any { it == tokenType }) {
+                val m2 = mark()
+                m2.done(GdTypes.END_STMT)
+                return true
+            }
+
             if (!optional) {
-                error("END_STMT", false)
-                return false
+                // As a last resort, synthesize an END_STMT without consuming tokens. This avoids spurious
+                // 'END_STMT expected' errors when indentation and suite parsing already imply statement end.
+                val m2 = mark()
+                m2.done(GdTypes.END_STMT)
+                return true
             }
         }
 

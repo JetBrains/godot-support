@@ -27,7 +27,9 @@ object GdPrimaryExParser : GdExprBaseParser() {
         b.enterSection(ARRAY_DECL)
         var ok = b.consumeToken(LSBR, pin = true)
         while (ok && GdExprParser.parse(b, l + 1)) {
+            skipListWs(b)
             if (!b.passToken(COMMA)) break
+            skipListWs(b)
         }
         ok = ok && b.consumeToken(RSBR)
 
@@ -40,12 +42,24 @@ object GdPrimaryExParser : GdExprBaseParser() {
 
         var ok = b.consumeToken(LCBR, pin = true)
         while (ok && keyValuePair(b, l + 1)) {
+            skipListWs(b)
             if (!b.passToken(COMMA)) break
+            skipListWs(b)
         }
 
         ok = ok && b.consumeToken(RCBR)
 
         return b.exitSection(ok, true)
+    }
+
+    private fun skipListWs(b: GdPsiBuilder) {
+        // Remap structural whitespace before/after commas inside list-like literals
+        // (arrays, dictionaries) so separators can appear on their own lines with
+        // indentation. This mirrors skipArgWs used for function argument lists.
+        while (b.nextTokenIs(NEW_LINE, INDENT, DEDENT)) {
+            b.remapCurrentToken(TokenType.WHITE_SPACE)
+            b.advance()
+        }
     }
 
     private fun keyValuePair(b: GdPsiBuilder, l: Int): Boolean {
