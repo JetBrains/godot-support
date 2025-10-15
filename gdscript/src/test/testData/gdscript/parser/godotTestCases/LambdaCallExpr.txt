@@ -50,11 +50,6 @@ GdScript File
                             GdFlowStImpl(FLOW_ST)
                               PsiElement(GdTokenType.PASS)('pass')
                               PsiElement(GdTokenType.NEW_LINE)('\n')
-            PsiWhiteSpace('\t')
             PsiElement(GdTokenType.RRBR)(')')
           GdEndStmtImpl(END_STMT)
             PsiElement(GdTokenType.NEW_LINE)('\n')
-  GdFlowStImpl(FLOW_ST)
-    PsiElement(GdTokenType.PASS)('pass')
-    GdEndStmtImpl(END_STMT)
-      <empty list>
