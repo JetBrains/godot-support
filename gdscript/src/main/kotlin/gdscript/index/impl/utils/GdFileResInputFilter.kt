@@ -1,30 +1,31 @@
 package gdscript.index.impl.utils
 
-import com.intellij.util.indexing.FileBasedIndex
-import com.intellij.util.indexing.IndexedFile
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.VirtualFileFilter
 
-object GdFileResInputFilter : FileBasedIndex.ProjectSpecificInputFilter {
+object GdFileResInputFilter : VirtualFileFilter {
 
-    val IGNORE_SUFFIX = arrayOf(
+    private val IGNORE_SUFFIX = arrayOf(
         ".import",
         ".godot",
     )
 
-    val IGNORE_PREFFIX = arrayOf(
+    private val IGNORE_PREFIX = arrayOf(
         ".",
     )
 
     fun validResource(filename: String): Boolean {
         return IGNORE_SUFFIX.none { filename.endsWith(it) }
-                && IGNORE_PREFFIX.none { filename.startsWith(it) }
+               && IGNORE_PREFIX.none { filename.startsWith(it) }
     }
 
-    fun validResource(file: IndexedFile): Boolean {
-        return IGNORE_SUFFIX.none { file.fileName.endsWith(it) }
-            && IGNORE_PREFFIX.none { file.fileName.startsWith(it) }
+    fun validResource(file: VirtualFile): Boolean {
+        return IGNORE_SUFFIX.none { file.name.endsWith(it) }
+               && IGNORE_PREFIX.none { file.name.startsWith(it) }
     }
 
-    override fun acceptInput(file: IndexedFile): Boolean {
+    override fun accept(file: VirtualFile): Boolean {
+        if (file.isDirectory) return false
         return validResource(file)
     }
 }
