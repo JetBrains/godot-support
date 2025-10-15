@@ -18,6 +18,9 @@ import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptConfigurationType
+import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptRunConfiguration
+import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptRunConfigurationHelper
+import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptRunFactory
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectory
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
@@ -39,6 +42,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
 
         const val PLAYER_CONFIGURATION_NAME = "Player"
         const val PLAYER_GDSCRIPT_CONFIGURATION_NAME = "Player GDScript"
+        const val PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME = "Player GDScript (Attach)"
         const val EDITOR_CONFIGURATION_NAME = "Editor"
         const val CHICKENSOFT_TEST_CONFIGURATION_NAME = "Debug test"
     }
@@ -78,27 +82,23 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                     }
 
                     GodotProjectDiscoverer.getInstance(project).godot3Path.adviseNotNull(lt) { path ->
-                        if (descriptor.isPureGdScriptProject){
-                            createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
-                            createOrUpdateNativeExecutableRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
-                            selectConfigurationIfNeeded(runManager)
-                            return@adviseNotNull
-                        }
-                        createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
                         createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
                         createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                         selectConfigurationIfNeeded(runManager)
                     }
                     GodotProjectDiscoverer.getInstance(project).godot4Path.adviseNotNull(lt) { path ->
-                        if (descriptor.isPureGdScriptProject){
-                            createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
-                            createOrUpdateNativeExecutableRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
-                            selectConfigurationIfNeeded(runManager)
-                            return@adviseNotNull
-                        }
-                        createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
                         createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
                         createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
+                        selectConfigurationIfNeeded(runManager)
+                    }
+
+                    GodotProjectDiscoverer.getInstance(project).godotPath.adviseNotNull(lt) { path ->
+                        createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
+                        createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME, runManager, true)
+                        if (descriptor.isPureGdScriptProject){
+                            createOrUpdateNativeExecutableRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
+                            selectConfigurationIfNeeded(runManager)
+                        }
                         selectConfigurationIfNeeded(runManager)
                     }
                 }
@@ -178,8 +178,8 @@ class GodotRunConfigurationGenerator : LifetimedService() {
 
         private fun createOrUpdateGdScriptRunConfiguration(
             configurationName: String,
-            runManager: RunManager
-        ) {
+            runManager: RunManager,
+            attach: Boolean = false        ) {
             // todo: maybe after some time, we can remove this code, it is only useful to remove previously generated configs
             val toRemove = runManager.allSettings.filter {
                 it.type is ExeConfigurationType && (it.name == configurationName)
@@ -196,6 +196,9 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             } else {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(GdScriptConfigurationType::class.java)
                 val runConfiguration = runManager.createConfiguration(configurationName, configurationType.factory)
+                if (attach) {
+                    (runConfiguration.configuration as GdScriptRunConfiguration).json = GdScriptRunFactory.DEFAULT_FULL_JSON.replace("\"request\" : \"Launch\"", "\"request\" : \"Attach\"")
+                }
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }
