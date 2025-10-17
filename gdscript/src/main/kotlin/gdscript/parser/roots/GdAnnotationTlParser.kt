@@ -15,10 +15,10 @@ object GdAnnotationTlParser : GdAnnotationParser {
 
         var ok = super.parse(b, l + 1, optional)
 
-        while (b.nextTokenIs(NEW_LINE)) {
-            b.remapCurrentToken(TokenType.WHITE_SPACE)
-            b.advance()
-        }
+//        while (b.nextTokenIs(NEW_LINE)) {
+//            //b.remapCurrentToken(TokenType.WHITE_SPACE)
+//            b.advance()
+//        }
         ok = ok && GdRecovery.topLevel(b)
         ok = ok && b.exitSection(ok)
 

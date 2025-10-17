@@ -1,3 +1,80 @@
+/*
+------------------------------------------------------------------------------
+  GDSCRIPT INDENTATION & NESTING RULES
+  ------------------------------------
+
+  This lexer must handle indentation-sensitive syntax with nested regions
+  where indentation is temporarily ignored or reactivated.
+
+  State variables:
+    int paren_depth;           // count of (, [, {
+    bool indent_active;        // whether indentation affects NEWLINE
+    stack<int> indent_stack;   // indentation levels
+    stack<bool> react_stack;   // previous indent_active states (for reactivation)
+
+------------------------------------------------------------------------------
+  NEWLINE HANDLING
+  ----------------
+  - On each NEWLINE:
+      if (indent_active && paren_depth == 0):
+          compare current indentation to top(indent_stack)
+          emit INDENT or one/more DEDENT tokens accordingly
+      else:
+          ignore indentation (leading spaces are insignificant)
+
+------------------------------------------------------------------------------
+  PARENTHESIS CONTROL
+  -------------------
+  - On '(', '[', '{'  → paren_depth++
+  - On ')', ']', '}'  → paren_depth--
+  - When paren_depth > 0 → indentation normally disabled
+  - When paren_depth == 0 → indentation enabled (unless overridden)
+
+------------------------------------------------------------------------------
+  COLON BEHAVIOR
+  --------------
+  After ':' :
+    - If next token is NEWLINE:
+        // block suite
+        enable indentation (indent_active = true)
+        on next line, emit INDENT if deeper
+    - Else:
+        // inline suite
+        no INDENT/DEDENT emitted
+
+------------------------------------------------------------------------------
+  INDENTATION REACTIVATION INSIDE PARENS
+  --------------------------------------
+  - If inside parentheses (paren_depth > 0)
+    and ':' followed by NEWLINE occurs after a block-forming keyword
+    (func, if, elif, else, for, while, match):
+        push current indent_active to react_stack
+        set indent_active = true
+  - When dedented back to outer level:
+        restore indent_active from react_stack (usually false)
+
+------------------------------------------------------------------------------
+  DEDENTS
+  -------
+  - Emit DEDENTs only when indentation decreases on a NEWLINE
+  - When closing ')' ']' '}' that ends a lambda block (indentation reactivated inside parens),
+  - emit pending DEDENTs before returning the bracket token.
+  - Normal parentheses (without reactivated indentation) still do NOT emit dedents.
+
+------------------------------------------------------------------------------
+  EXAMPLES
+  --------
+  func a():
+      print(
+          func(): pass)            // inline suite: no indent change
+
+      print(
+          func():
+              if x:
+                  pass)            // block suite: dedents before ')'
+------------------------------------------------------------------------------
+*/
+
 package gdscript;
 
 import com.intellij.lexer.FlexLexer;
@@ -33,6 +110,8 @@ import java.util.regex.Pattern;
     boolean ignoreIndent = false;
     int ignored = 0;
     Stack<Integer> ignoreLambda = new Stack<>();
+    // Tracks the bracket depth (value of `ignored`) when each lambda was encountered
+    Stack<Integer> ignoreLambdaLevel = new Stack<>();
     Pattern nextNonCommentIndentPattern = Pattern.compile("\\n([ |\\t]*)[^#\\s]");
 
     public IElementType dedentRoot(IElementType type) {
@@ -88,34 +167,119 @@ import java.util.regex.Pattern;
     private boolean isIgnored() {
         if (ignored <= 0) return false;
         if (!ignoreLambda.isEmpty()) {
-            int diff = yycolumn;
-            if (diff == 0) {
-                diff = yylength();
+            // If there is an activated lambda at the current bracket depth, indentation is ACTIVE.
+            for (int i = ignoreLambda.size() - 1; i >= 0; i--) {
+                int lvl = ignoreLambdaLevel.get(i);
+                if (lvl == ignored) {
+                    int at = ignoreLambda.get(i);
+                    // at >= 0 means ':' started a block for this lambda → re-activate indentation
+                    return at < 0; // still ignored only until ':' activates the lambda
+                }
             }
-
-            return ignoreLambda.peek() > diff;
         }
-
+        // No activated lambda for this depth → ignore indentation while inside brackets.
         return true;
     }
 
     private void ignoredMinus() {
-        if (!ignoreLambda.isEmpty() && ignoreLambda.peek() >= yycolumn) {
+        // Decrease bracket depth and remove any lambda contexts that belonged to deeper brackets.
+        ignored = Math.max(0, ignored - 1);
+        while (!ignoreLambdaLevel.isEmpty() && ignoreLambdaLevel.peek() > ignored) {
+            ignoreLambdaLevel.pop();
             ignoreLambda.pop();
         }
-        ignored--;
     }
 
     private void markLambda() {
         if (ignored > 0) {
-            int atIndent = 999;
-            CharSequence spaces = zzBuffer.subSequence(zzCurrentPos - yycolumn, zzCurrentPos);
-            if (spaces.toString().trim().isEmpty()) {
-                atIndent = spaces.length();
-            }
-
-            ignoreLambda.push(atIndent);
+            // Defer activation until ':' is seen on this lambda line; store bracket depth now.
+            ignoreLambda.push(-1); // -1 means not yet activated by ':'
+            ignoreLambdaLevel.push(ignored);
         }
+    }
+
+    private boolean colonStartsBlock() {
+        // Look ahead from current position to the end of line. If only spaces/tabs and optional comment
+        // remain before a newline or EOF, treat this ':' as starting a block suite.
+        int start = Math.min(zzBuffer.length(), zzCurrentPos + yylength());
+        for (int i = start; i < zzBuffer.length(); i++) {
+            char c = zzBuffer.charAt(i);
+            if (c == '\r' || c == '\n') return true; // newline reached with nothing significant after ':'
+            if (c == '#') {
+                // comment until EOL — still a block
+                // skip until newline/EOF
+                while (i < zzBuffer.length()) {
+                    char d = zzBuffer.charAt(i);
+                    if (d == '\r' || d == '\n') return true;
+                    i++;
+                }
+                return true;
+            }
+            if (c != ' ' && c != '\t') return false; // some token follows on same line → inline suite
+        }
+        // Reached EOF without newline and with only whitespace/comment → block
+        return true;
+    }
+
+    private int currentLineIndent() {
+        // Count spaces/tabs from the previous newline (or BOF) up to first non-space
+        int i = Math.min(zzBuffer.length(), zzCurrentPos);
+        // Move i to the start of current token
+        int start = i;
+        // Go back to previous newline
+        while (start > 0) {
+            char c = zzBuffer.charAt(start - 1);
+            if (c == '\n' || c == '\r') break;
+            start--;
+        }
+        int indentCount = 0;
+        while (start + indentCount < zzBuffer.length()) {
+            char c = zzBuffer.charAt(start + indentCount);
+            if (c == ' ' || c == '\t') {
+                indentCount++;
+            } else {
+                break;
+            }
+        }
+        return indentCount;
+    }
+
+    private void activateLambdaAfterColon() {
+        if (!ignoreLambda.isEmpty() && colonStartsBlock()) {
+            int i = ignoreLambda.size() - 1;
+            if (ignoreLambdaLevel.get(i) == ignored && ignoreLambda.get(i) < 0) {
+                // Activate lambda indentation handling at this bracket depth because ':' starts a block
+                // Use the actual visual indent of the current line (inside parens indentation is ignored by lexer state)
+                ignoreLambda.set(i, currentLineIndent());
+            }
+        }
+    }
+
+    private boolean hasActiveLambdaAtCurrentDepth() {
+        if (ignoreLambda.isEmpty()) return false;
+        int i = ignoreLambda.size() - 1;
+        return ignoreLambdaLevel.get(i) == ignored && ignoreLambda.get(i) >= 0;
+    }
+
+    private IElementType closeBracket(IElementType tokenType) {
+        // Before decreasing ignored depth, check for active lambda block at this level
+        if (hasActiveLambdaAtCurrentDepth()) {
+            int i = ignoreLambda.size() - 1;
+            int lambdaDepth = ignoreLambdaLevel.get(i);
+            // For outermost call-arg lambdas (depth==1), defer dedent until after the bracket
+            if (lambdaDepth > 0) {
+                int targetIndent = Math.max(0, ignoreLambda.get(i)); // exact indentation recorded at ':'
+                // Emit one DEDENT per advance until we unwind back to targetIndent.
+                if (!indentSizes.empty() && indent > targetIndent) {
+                    dedent();
+                    yypushback(yylength());
+                    return GdTypes.DEDENT;
+                }
+            }
+        }
+
+        ignoredMinus(); // reduce paren depth, clear deeper lambdas
+        return dedentRoot(tokenType);
     }
 %}
 
@@ -130,14 +294,14 @@ IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 NUMBER = ( [0-9][0-9_]*(\.[0-9_]+)? ) | ( \.[0-9][0-9_]* ) | ( [0-9][0-9_]*\. )
 HEX_NUMBER = 0x[0-9_a-fA-F]+
 BIN_NUMBER = 0b[01_]+
-REAL_NUMBER = {NUMBER}e-[0-9]+
+REAL_NUMBER = {NUMBER}[eE][+-]?[0-9][0-9_]*
 
 COMMENT = "#"[^\r\n]*
 INDENTED_COMMENT = {INDENT}"#"
 ANNOTATOR = "@"[a-zA-Z_0-9]*
 NODE_PATH = "^"\"([^\\\"\r\n ]|\\.)*\"
 STRING_NAME = "&"(\"([^\\\"\r\n]|\\.)*\"|'([^\\'\r\n]|\\.)*')
-NODE_PATH_LEX = ( ("$"|"%")[\%a-zA-Z0-9_/]* ) | ( ("$"|"%")\"[\%a-zA-Z0-9:_/\. ]*\" )
+NODE_PATH_LEX = ( ("$"|"%")[\%a-zA-Z0-9_/]+ ) | ( ("$"|"%")\"[\%a-zA-Z0-9:_/\. ]*\" )
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "**=" | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -158,9 +322,24 @@ DOUBLE_QUOTED_LITERAL = [\$\^]?\" {DOUBLE_QUOTED_CONTENT}* \"
 TRIPLE_DOUBLE_QUOTED_CONTENT = {DOUBLE_QUOTED_CONTENT} | {STRING_NL} | \"(\")?[^\"\\$]
 TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
 
+RAW_SINGLE_QUOTED_CONTENT = [^'\r\n]
+RAW_SINGLE_QUOTED_LITERAL = r \' {RAW_SINGLE_QUOTED_CONTENT}* \'?
+
+RAW_DOUBLE_QUOTED_CONTENT = [^\"\r\n]
+RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
+
 %state CREATE_INDENT
+%state PENDING_DEDENT
 
 %%
+
+<PENDING_DEDENT> {
+    {ANY} {
+        yybegin(lastState);
+        yypushback(yylength());
+        return GdTypes.DEDENT;
+    }
+}
 
 <CREATE_INDENT> {
     {ANY} {
@@ -194,26 +373,20 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "nan"          { return dedentRoot(GdTypes.NAN); }
     "signal"       { return dedentRoot(GdTypes.SIGNAL); }
     "in"           { return dedentRoot(GdTypes.IN); }
-    "if"           { return dedentRoot(GdTypes.IF); }
-    "else"         { return dedentRoot(GdTypes.ELSE); }
-    "elif"         { return dedentRoot(GdTypes.ELIF); }
+    "if"           { markLambda(); return dedentRoot(GdTypes.IF); }
+    "else"         { markLambda(); return dedentRoot(GdTypes.ELSE); }
+    "elif"         { markLambda(); return dedentRoot(GdTypes.ELIF); }
     "as"           { return dedentRoot(GdTypes.AS); }
     "is"           { return dedentRoot(GdTypes.IS); }
-    "while"        { return dedentRoot(GdTypes.WHILE); }
-    "for"          { return dedentRoot(GdTypes.FOR); }
+    "while"        { markLambda(); return dedentRoot(GdTypes.WHILE); }
+    "for"          { markLambda(); return dedentRoot(GdTypes.FOR); }
     "in"           { return dedentRoot(GdTypes.IN); }
-    "match"        { return dedentRoot(GdTypes.MATCH); }
+    "match"        { markLambda(); return dedentRoot(GdTypes.MATCH); }
     "await"        { return dedentRoot(GdTypes.AWAIT); }
     "static"       { return dedentRoot(GdTypes.STATIC); }
     "vararg"       { return dedentRoot(GdTypes.VARARG); }
     "class"        { return dedentRoot(GdTypes.CLASS); }
     "super"        { return dedentRoot(GdTypes.SUPER); }
-    "master"       { return dedentRoot(GdTypes.MASTER); }
-    "pupper"       { return dedentRoot(GdTypes.PUPPET); }
-    "remote"       { return dedentRoot(GdTypes.REMOTE); }
-    "remotesync"   { return dedentRoot(GdTypes.REMOTESYNC); }
-    "mastersync"   { return dedentRoot(GdTypes.MASTERSYNC); }
-    "puppetsync"   { return dedentRoot(GdTypes.PUPPETSYNC); }
 
     "*"            { return dedentRoot(GdTypes.MUL); }
     "**"           { return dedentRoot(GdTypes.POWER); }
@@ -223,11 +396,16 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "-"            { return dedentRoot(GdTypes.MINUS); }
     "++"           { return dedentRoot(GdTypes.PPLUS); }
     "--"           { return dedentRoot(GdTypes.MMINUS); }
+    "..."          { return dedentRoot(GdTypes.DOTDOTDOT); }
+    ".."           { return dedentRoot(GdTypes.DOTDOT); }
     "."            { return dedentRoot(GdTypes.DOT); }
     ","            { return dedentRoot(GdTypes.COMMA); }
     ":="           { return dedentRoot(GdTypes.CEQ); }
-    ":"            { return dedentRoot(GdTypes.COLON); }
+    ":"            { activateLambdaAfterColon(); return dedentRoot(GdTypes.COLON); }
     ";"            { newLineProcessed = true; return GdTypes.SEMICON; }
+    "?"            { return dedentRoot(GdTypes.QUESTION_MARK); }
+    "`"            { return dedentRoot(GdTypes.BACKTICK); }
+    "$"            { return dedentRoot(GdTypes.DOLLAR); }
     "!"            { return dedentRoot(GdTypes.NEGATE); }
     "not"          { return dedentRoot(GdTypes.NEGATE); }
     "="            { return dedentRoot(GdTypes.EQ); }
@@ -236,11 +414,11 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "("            { ignored++; return dedentRoot(GdTypes.LRBR); }
-    ")"            { ignoredMinus(); return dedentRoot(GdTypes.RRBR); }
+    ")"            { return closeBracket(GdTypes.RRBR); }
     "["            { ignored++; return dedentRoot(GdTypes.LSBR); }
-    "]"            { ignoredMinus(); return dedentRoot(GdTypes.RSBR); }
+    "]"            { return closeBracket(GdTypes.RSBR); }
     "{"            { ignored++; return dedentRoot(GdTypes.LCBR); }
-    "}"            { ignoredMinus(); return dedentRoot(GdTypes.RCBR); }
+    "}"            { return closeBracket(GdTypes.RCBR); }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
@@ -250,7 +428,6 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "^"            { return dedentRoot(GdTypes.XOR); }
     "~"            { return dedentRoot(GdTypes.NOT); }
     "_"            { return dedentRoot(GdTypes.UNDER); }
-    ".."           { return dedentRoot(GdTypes.DOTDOT); }
     "\\"           { newLineProcessed = true; ignoreIndent = true; return GdTypes.BACKSLASH; }
 
     {NODE_PATH}     { return dedentRoot(GdTypes.NODE_PATH_LIT); }
@@ -270,6 +447,8 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     {SINGLE_QUOTED_LITERAL}        { return dedentRoot(GdTypes.STRING); }
     {DOUBLE_QUOTED_LITERAL}        { return dedentRoot(GdTypes.STRING); }
     {TRIPLE_DOUBLE_QUOTED_LITERAL} { return dedentRoot(GdTypes.STRING); }
+    {RAW_SINGLE_QUOTED_LITERAL}    { return dedentRoot(GdTypes.STRING); }
+    {RAW_DOUBLE_QUOTED_LITERAL}    { return dedentRoot(GdTypes.STRING); }
 
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
@@ -291,6 +470,8 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     }
     {EMPTY_INDENT} { if (yycolumn > 0) { yypushback(1); } return TokenType.WHITE_SPACE; }
     {NEW_LINE}     {
+        int nextIndentNl = nextNonCommentIndent();
+        boolean willDedent = nextIndentNl >= 0 && !isIgnored() && !indentSizes.empty() && indent > nextIndentNl;
         if (yycolumn == 0) {
             return TokenType.WHITE_SPACE;
         } else if (isIgnored()) {
@@ -302,6 +483,10 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
         }
 
         newLineProcessed = true;
+        if (willDedent) {
+            lastState = YYINITIAL;
+            yybegin(PENDING_DEDENT);
+        }
         return GdTypes.NEW_LINE;
     }
     {INDENT}  {
@@ -327,18 +512,19 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     }
 
 <<EOF>> {
-    if (yycolumn > 0 && !eofFinished && !lineEnded) {
+    // Emit any pending DEDENTs before adding a synthetic NEW_LINE at EOF
+    if (!indentSizes.empty()) {
+        indentSizes.pop();
+        yypushback(yylength());
+        return GdTypes.DEDENT;
+    }
+
+    if (yycolumn > 0 && !eofFinished && !lineEnded && !isIgnored()) {
         eofFinished = true;
         return GdTypes.NEW_LINE;
     }
 
-    if (indentSizes.empty()) {
-        return null;
-    }
-
-    indentSizes.pop();
-    yypushback(yylength());
-    return GdTypes.DEDENT;
+    return null;
 }
 
 [^] { return TokenType.BAD_CHARACTER; }

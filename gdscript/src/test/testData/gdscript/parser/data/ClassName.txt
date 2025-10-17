@@ -1,8 +1,8 @@
-GdScript File(0,20)
-  GdClassNaming(0,20)
-    PsiElement(GdTokenType.CLASS_NAME)('class_name')(0,10)
-    PsiWhiteSpace(' ')(10,11)
-    GdClassId(11,20)
-      PsiElement(GdTokenType.IDENTIFIER)('ClassName')(11,20)
-    GdEndStmtImpl(END_STMT)(20,20)
+GdScript File
+  GdClassNaming
+    PsiElement(GdTokenType.CLASS_NAME)('class_name')
+    PsiWhiteSpace(' ')
+    GdClassId
+      PsiElement(GdTokenType.IDENTIFIER)('ClassName')
+    GdEndStmtImpl(END_STMT)
       <empty list>

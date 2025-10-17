@@ -1,13 +1,13 @@
-GdScript File(0,10)
-  GdEnumDecl(0,5)
-    PsiElement(GdTokenType.ENUM)('enum')(0,4)
+GdScript File
+  GdEnumDecl
+    PsiElement(GdTokenType.ENUM)('enum')
     PsiErrorElement:unexpected '
-'(4,5)
-      PsiElement(GdTokenType.NEW_LINE)('\n')(4,5)
-  GdClassVarDecl(5,10)
-    PsiElement(GdTokenType.VAR)('var')(5,8)
-    PsiWhiteSpace(' ')(8,9)
-    GdVarNmiImpl(VAR_NMI)(9,10)
-      PsiElement(GdTokenType.IDENTIFIER)('a')(9,10)
-    GdEndStmtImpl(END_STMT)(10,10)
+'
+      PsiElement(GdTokenType.NEW_LINE)('\n')
+  GdClassVarDecl
+    PsiElement(GdTokenType.VAR)('var')
+    PsiWhiteSpace(' ')
+    GdVarNmiImpl(VAR_NMI)
+      PsiElement(GdTokenType.IDENTIFIER)('a')
+    GdEndStmtImpl(END_STMT)
       <empty list>

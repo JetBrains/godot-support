@@ -21,6 +21,7 @@ class GdPsiState {
     }
 
     val isArgs get() = currentFrame?.withinArg ?: false
+    val isLambda get() = currentFrame?.withinLambda ?: false
     val isError get() = currentFrame?.errorAt != null
     var errorAt get() = currentFrame?.errorAt
         set(value) { currentFrame?.errorAt = value }
@@ -29,7 +30,12 @@ class GdPsiState {
         val newFrame = FRAMES.alloc().init(elementType, mark)
         newFrame.parent = currentFrame
         newFrame.withinArg = currentFrame?.withinArg ?: false || elementType == ARG_LIST
+        newFrame.withinLambda = currentFrame?.withinLambda ?: false
         currentFrame = newFrame
+    }
+
+    fun markLambda() {
+        currentFrame?.withinLambda = true
     }
 
     fun exitSection(result: Boolean, drop: Boolean = false): Boolean {
@@ -98,6 +104,7 @@ class GdPsiFrame {
     var pinned: Boolean = false
     var required: Boolean = true
     var withinArg: Boolean = false
+    var withinLambda: Boolean = false
 
     fun init(elementType: IElementType, mark: Marker): GdPsiFrame {
         this.elementType = elementType

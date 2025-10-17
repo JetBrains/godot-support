@@ -9,7 +9,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdRecoveryParserTest : ParsingTestCase("", "gd", GdParserDefinition()) {
+class GdRecoveryParserTest : GdParsingTestCase() {
     @Test fun testInheritance() = doTest(true)
     @Test fun testClassName() = doTest(true)
     @Test fun testAnnotation() = doTest(true)
@@ -56,13 +56,4 @@ class GdRecoveryParserTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/recoveryData").pathString
     }
-
-    override fun skipSpaces(): Boolean {
-        return false
-    }
-
-    override fun includeRanges(): Boolean {
-        return true
-    }
-
 }
