@@ -37,7 +37,7 @@ class GdLexerTest : LexerTestCase() {
 
     @Ignore @Test fun testsignal_connect_func() = doFileTest("${getTestName(true)}.gd")
     @Ignore @Test fun testclass_name() = doFileTest("${getTestName(true)}.gd")
-    @Ignore @Test fun testcallableInCtor() = doFileTest("${getTestName(true)}.gd")
+    @Test fun testcallableInCtor() = doFileTest("${getTestName(true)}.gd")
     @Ignore @Test fun testLambdaCallExpr() = doFileTest("${getTestName(true)}.gd")
     @Ignore @Test fun testArrayWithFunc() = doFileTest("${getTestName(true)}.gd")
 
@@ -53,7 +53,7 @@ class GdLexerTest : LexerTestCase() {
 //        }
         catch (e: ComparisonFailure){
             println("EXPECTED:\n" + e.expected + "\n----\nACTUAL:\n" + e.actual)
-            // throw e
+            throw e
         }
     }
 }

@@ -50,7 +50,7 @@
     (func, if, elif, else, for, while, match):
         push current indent_active to react_stack
         set indent_active = true
-  - When dedented back to outer level:
+  - On `return` keyword or dedented back to outer level:
         restore indent_active from react_stack (usually false)
 
 ------------------------------------------------------------------------------
@@ -107,9 +107,9 @@ import java.util.regex.Pattern;
     // For signals and such, where Indents/NewLines do not matter
     boolean ignoreIndent = false;
     int ignored = 0;
-    Stack<Integer> ignoreLambda = new Stack<>();
-    // Tracks the bracket depth (value of `ignored`) when each lambda was encountered
-    Stack<Integer> ignoreLambdaLevel = new Stack<>();
+    int lambdaReactivateDepth = -1;
+    // Tracks pending reactivation at the bracket depth where 'func' was seen
+    int lambdaPendingDepth = -1;
     Pattern nextNonCommentIndentPattern = Pattern.compile("\\n([ |\\t]*)[^#\\s]");
 
     public IElementType dedentRoot(IElementType type) {
@@ -164,76 +164,49 @@ import java.util.regex.Pattern;
 
     private boolean isIgnored() {
         if (ignored <= 0) return false;
-        if (!ignoreLambda.isEmpty()) {
-            // Walk from the most recent lambda down to find one that applies at current depth.
-            for (int i = ignoreLambda.size() - 1; i >= 0; i--) {
-                int lvl = ignoreLambdaLevel.get(i);
-                if (lvl <= ignored) {
-                    int at = ignoreLambda.get(i);
-                    // If lambda not yet activated (colon not seen), indentation is still ignored.
-                    if (at < 0) return true;
-                    int diff = yycolumn;
-                    if (diff == 0) {
-                        diff = yylength();
-                    }
-                    // Ignore indentation until we reach the lambda's activation indent.
-                    return at > diff;
-                }
-            }
-        }
-        // No applicable lambda re-enables indentation: still ignored while inside brackets.
-        return true;
+        // Inside parentheses, indentation is ignored unless reactivated at this depth
+        return !(lambdaReactivateDepth == ignored);
     }
 
     private void ignoredMinus() {
-        // Decrease bracket depth and remove any lambda contexts that belonged to deeper brackets.
         ignored = Math.max(0, ignored - 1);
-        while (!ignoreLambdaLevel.isEmpty() && ignoreLambdaLevel.peek() > ignored) {
-            ignoreLambdaLevel.pop();
-            ignoreLambda.pop();
-        }
+        if (lambdaPendingDepth > ignored) lambdaPendingDepth = -1;
+        if (lambdaReactivateDepth > ignored) lambdaReactivateDepth = -1;
     }
 
     private void markLambda() {
         if (ignored > 0) {
-            // Defer activation until ':' is seen on this lambda line; store bracket depth now.
-            ignoreLambda.push(-1); // -1 means not yet activated by ':'
-            ignoreLambdaLevel.push(ignored);
+            lambdaPendingDepth = ignored;
         }
+    }
+
+    private boolean nextCharIsNewline() {
+        int start = Math.min(zzBuffer.length(), zzCurrentPos + yylength());
+        if (start >= zzBuffer.length()) return false;
+        char c = zzBuffer.charAt(start);
+        if (c == '\r') return true; // handles \r and \r\n
+        return c == '\n';
     }
 
     private void activateLambdaAfterColon() {
-        if (!ignoreLambda.isEmpty()) {
-            int i = ignoreLambda.size() - 1;
-            if (ignoreLambdaLevel.get(i) == ignored && ignoreLambda.get(i) < 0) {
-                // Activate lambda indentation handling at this bracket depth regardless of column.
-                // Using 0 ensures isIgnored() stops suppressing INDENT/DEDENT for the lambda body lines.
-                ignoreLambda.set(i, 0);
-            }
+        // Reactivate indentation inside parentheses only for block suites,
+        // i.e., when ':' is immediately followed by a newline.
+        if (lambdaPendingDepth == ignored && nextCharIsNewline()) {
+            lambdaReactivateDepth = ignored;
         }
     }
 
-    private IElementType closeBracket(IElementType tokenType) {
-        boolean needDed = false;
-        if (!ignoreLambda.isEmpty()) {
-            int topLevel = ignoreLambdaLevel.peek();
-            int topIndent = ignoreLambda.peek();
-            // If we're closing the bracket that owns the lambda and we are at/before its activation indent,
-            // emit a DEDENT for the lambda block before producing the closing bracket token.
-            if (topLevel == ignored && topIndent >= 0 && topIndent >= yycolumn && indent > 0 && !indentSizes.empty()) {
-                needDed = true;
-            }
+    private void restoreLambdaOnReturn() {
+        // When returning from a lambda defined inside parens with reactivated indentation,
+        // stop treating NEW_LINE as significant at this bracket depth.
+        if (ignored > 0 && lambdaReactivateDepth == ignored) {
+            lambdaReactivateDepth = -1;
+            // clear pending marker as well, we won't reactivate again for this lambda
+            if (lambdaPendingDepth == ignored) lambdaPendingDepth = -1;
         }
-        // Now close the bracket (decrement depth and clean any deeper lambda contexts).
-        ignoredMinus();
-        if (needDed) {
-            newLineProcessed = false;
-            dedent();
-            yypushback(yylength());
-            return GdTypes.DEDENT;
-        }
-        return dedentRoot(tokenType);
     }
+
+
 %}
 
 LETTER = [a-z|A-Z|_]
@@ -311,7 +284,7 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
     "continue"     { return dedentRoot(GdTypes.CONTINUE); }
     "breakpoint"   { return dedentRoot(GdTypes.BREAKPOINT); }
     "break"        { return dedentRoot(GdTypes.BREAK); }
-    "return"       { return dedentRoot(GdTypes.RETURN); }
+    "return"       { restoreLambdaOnReturn(); return dedentRoot(GdTypes.RETURN); }
     "void"         { return dedentRoot(GdTypes.VOID); }
     "inf"          { return dedentRoot(GdTypes.INF); }
     "nan"          { return dedentRoot(GdTypes.NAN); }
@@ -358,11 +331,11 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "("            { ignored++; return dedentRoot(GdTypes.LRBR); }
-    ")"            { return closeBracket(GdTypes.RRBR); }
+    ")"            { ignoredMinus(); return dedentRoot(GdTypes.RRBR); }
     "["            { ignored++; return dedentRoot(GdTypes.LSBR); }
-    "]"            { return closeBracket(GdTypes.RSBR); }
+    "]"            { ignoredMinus(); return dedentRoot(GdTypes.RSBR); }
     "{"            { ignored++; return dedentRoot(GdTypes.LCBR); }
-    "}"            { return closeBracket(GdTypes.RCBR); }
+    "}"            { ignoredMinus(); return dedentRoot(GdTypes.RCBR); }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
