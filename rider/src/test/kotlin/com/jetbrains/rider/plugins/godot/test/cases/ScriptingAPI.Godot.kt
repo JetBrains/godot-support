@@ -9,6 +9,7 @@ import com.jetbrains.rdclient.util.idea.waitAndPump
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.test.asserts.shouldBeTrue
 import com.jetbrains.rider.test.asserts.shouldNotBeNull
+import com.jetbrains.rider.test.facades.environment.RiderTestEnvironment
 import com.jetbrains.rider.test.framework.*
 import com.jetbrains.rider.test.scriptingApi.DebugTestExecutionContext
 import com.jetbrains.rider.test.scriptingApi.debugProgram
@@ -31,7 +32,7 @@ fun downloadAndExtractGodot(version: String): File {
         else -> error("Unsupported OS for Godot Mono")
     }
 
-    val extractedDir = downloadAndExtractTestToolArchiveArtifactIntoPersistentCache("$TEST_DATA_DOWNLOAD_URL/$godotZipName").canonicalFile
+    val extractedDir = downloadAndExtractTestToolArchiveArtifactIntoPersistentCache(RiderTestEnvironment.fromCurrentMachine(),"$TEST_DATA_DOWNLOAD_URL/$godotZipName").canonicalFile
 
     val godotExecutable = extractedDir.resolve(when {
                                                    SystemInfo.isWindows -> {
