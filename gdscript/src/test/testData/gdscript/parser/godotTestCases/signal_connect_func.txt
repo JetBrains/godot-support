@@ -63,5 +63,3 @@ GdScript File
             PsiElement(GdTokenType.RRBR)(')')
           GdEndStmtImpl(END_STMT)
             <empty list>
-  PsiErrorElement:Unexpected tokens, 
-    <empty list>

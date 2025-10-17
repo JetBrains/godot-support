@@ -99,13 +99,10 @@ object GdStmtParser : GdBaseParser {
                 ok = ok || b.pinned()
 
                 if (asLambda) {
-                    ok = ok && b.nextTokenIs(SEMICON, NEW_LINE, RRBR, DEDENT, COMMA)
+                    ok = ok && b.nextTokenIs(SEMICON, RRBR, COMMA)
                     if (ok && b.isArgs) {
-                        b.passToken(NEW_LINE) || b.passToken(SEMICON) || b.nextTokenIs(COMMA)
+                        b.passToken(SEMICON) || b.nextTokenIs(COMMA)
                     }
-//                    if (ok && !b.followingTokensAre(NEW_LINE, DEDENT)) {
-//                        b.passToken(NEW_LINE)
-//                    }
                 } else {
                     ok = ok && it.parseEndStmt(b)
                 }

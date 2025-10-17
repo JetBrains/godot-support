@@ -52,5 +52,3 @@ GdScript File
                               PsiElement(GdTokenType.NEW_LINE)('\n')
               GdEndStmtImpl(END_STMT)
             PsiElement(GdTokenType.RRBR)(')')
-          GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
