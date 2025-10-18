@@ -56,8 +56,8 @@
 ------------------------------------------------------------------------------
   DEDENTS
   -------
-  - Emit DEDENTs only when indentation decreases on a NEWLINE
-  - Do NOT emit synthetic DEDENTs on closing ')', ']', or '}'
+Closing ), ], or } within parentheses implicitly triggers all pending DEDENTs of nested
+block suites inside that parenthesis, emitting a synthetic NEWLINE first if none was seen.
 
 ------------------------------------------------------------------------------
   EXAMPLES

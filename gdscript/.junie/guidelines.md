@@ -24,53 +24,9 @@ Notes about code generation and sources
 
 2.1. Lexer and Parser
 
-Gd.flex is used to generate the GdLexer.java.
-
 ### GDScript indentation rules (for Gd.flex)
 
-* Maintain:
-
-    * `paren_depth` counter for `()[]{}`
-    * `indent_stack` for indentation levels
-    * `indent_active` flag
-    * `reactivation_stack` for indentation reactivation inside parens
-
-#### Core
-
-* At `NEWLINE`:
-
-    * If `indent_active == true && paren_depth == 0`, compare indentation with top of `indent_stack`:
-
-        * emit `INDENT` or `DEDENT`s accordingly
-    * Otherwise, ignore indentation (treat leading whitespace as insignificant)
-
-#### Paren control
-
-* On `(`, `[`, `{` → `paren_depth++`
-* On `)`, `]`, `}` → `paren_depth--`
-* If `paren_depth > 0` → `indent_active = false` (unless reactivated)
-
-#### Colon behavior
-
-* After `:`:
-
-    * If next token is `NEWLINE` → start **block suite**
-
-        * push state (`indent_active = true`)
-        * on next line, emit `INDENT` if deeper
-    * Else → **inline suite** (no `INDENT`/`DEDENT`)
-
-#### Reactivation inside parens
-
-* If inside parens and encounter `:` followed by `NEWLINE` after block-forming keyword (`func`, `if`, `elif`, `else`, `for`, `while`, `match`):
-
-    * push `indent_active = true` (reactivate)
-    * emit dedents normally until returning to parent level, then restore previous `indent_active` (usually false)
-
-#### Dedents
-
-* Emit dedents only on indentation decrease at `NEWLINE`
-* Never emit dedents on `)` `]` `}` directly
+Instructions are in the Gd.flex file.
 
 3. Testing: running, configuring, and adding tests
 
