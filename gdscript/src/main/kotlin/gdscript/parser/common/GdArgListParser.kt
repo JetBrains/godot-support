@@ -11,14 +11,12 @@ object GdArgListParser : GdBaseParser {
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "ArgList")) return false
+
         b.enterSection(ARG_LIST)
 
         var ok = b.pin(argExpr(b, l + 1))
         while (b.consumeToken(COMMA, true)) {
             argExpr(b, l + 1)
-        }
-        while (ok && b.nextTokenIs(INDENT)) {
-            b.remapCurrentToken(TokenType.WHITE_SPACE)
         }
 
         ok && GdRecovery.argumentList(b)
@@ -31,7 +29,7 @@ object GdArgListParser : GdBaseParser {
         b.recursionGuard(l + 1, "ArgExpr")
         b.enterSection(ARG_EXPR)
 
-        var ok = GdExprParser.parse(b, l + 1, false)
+        val ok = GdExprParser.parse(b, l + 1, false)
         b.exitSection(ok)
 
         return ok

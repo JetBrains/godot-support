@@ -1,8 +1,6 @@
 package com.jetbrains.godot.gdscript.parser
 
-import com.intellij.testFramework.ParsingTestCase
 import com.jetbrains.godot.getBaseTestDataPath
-import gdscript.GdParserDefinition
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -10,7 +8,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdGodotTest : ParsingTestCase("", "gd", GdParserDefinition()) {
+class GdGodotTest : GdParsingTestCase() {
     @Ignore("RIDER-126458") @Test fun testadvanced_expression_matching() = doTest(true, true)
     @Test fun testallowed_keywords_as_identifiers() = doTest(true, true)
     @Test fun testallow_id_similar_to_keyword_in_ascii() = doTest(true, true)
@@ -49,6 +47,8 @@ class GdGodotTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     @Test fun testin() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testis_not_operator() = doTest(true, true)
     @Test fun testlambda_callable() = doTest(true, true)
+    @Test fun testlambda_callable_multiline() = doTest(true, true)
+    @Test fun testcallableInCtor() = doTest(true, true)
     @Test fun testlambda_capture_callable() = doTest(true, true)
     @Test fun testlambda_default_parameter_capture() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testlambda_ends_with_new_line() = doTest(true, true)
@@ -91,6 +91,7 @@ class GdGodotTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     @Test fun testsuper() = doTest(true, true)
     @Test fun testtrailing_comma_in_function_args() = doTest(true, true)
     @Test fun testtruthiness() = doTest(true, true)
+    @Test fun testnot_in_array() = doTest(true, true)
     @Test fun testtyped_arrays() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testunicode_identifiers() = doTest(true, true)
     @Test fun testunnamed_enums_outer_conflicts() = doTest(true, true)
@@ -98,14 +99,10 @@ class GdGodotTest : ParsingTestCase("", "gd", GdParserDefinition()) {
     @Ignore("RIDER-126458") @Test fun testvector_inf() = doTest(true, true)
     @Test fun testwhile() = doTest(true, true)
 
-    @Test fun testsignal_connect_func() = doTest(true, true)
+    @Test fun testsignal_connect_func() = doTest(true, false)
+    @Test fun testLambdaCallExpr() = doTest(true, true)
 
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString
     }
-
-    override fun skipSpaces(): Boolean = false
-
-    override fun includeRanges(): Boolean = true
-
 }

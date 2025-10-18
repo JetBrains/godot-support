@@ -7,6 +7,8 @@ import gdscript.psi.GdTypes.*
 
 object GdPassParser : GdBaseParser {
 
+    // there is also GdFlowStmtParser, which also handles pass statements
+
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.nextTokenIs(PASS)) return false
         b.enterSection(FLOW_ST)

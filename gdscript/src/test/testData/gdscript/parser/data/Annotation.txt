@@ -1,4 +1,4 @@
-GdScript File(0,5)
-  GdAnnotationTlImpl(ANNOTATION_TL)(0,5)
-    GdAnnotationTypeImpl(ANNOTATION_TYPE)(0,5)
-      PsiElement(GdTokenType.ANNOTATOR)('@tool')(0,5)
+GdScript File
+  GdAnnotationTlImpl(ANNOTATION_TL)
+    GdAnnotationTypeImpl(ANNOTATION_TYPE)
+      PsiElement(GdTokenType.ANNOTATOR)('@tool')

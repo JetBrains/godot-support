@@ -1,14 +1,14 @@
-GdScript File(0,20)
-  GdInheritance(0,8)
-    PsiElement(GdTokenType.EXTENDS)('extends')(0,7)
-    PsiErrorElement:INHERITANCE_ID expected(7,7)
+GdScript File
+  GdInheritance
+    PsiElement(GdTokenType.EXTENDS)('extends')
+    PsiErrorElement:INHERITANCE_ID expected
       <empty list>
-    PsiElement(GdTokenType.NEW_LINE)('\n')(7,8)
-  GdInheritance(8,20)
-    PsiElement(GdTokenType.EXTENDS)('extends')(8,15)
-    PsiWhiteSpace(' ')(15,16)
-    GdInheritanceIdImpl(INHERITANCE_ID)(16,20)
-      GdInheritanceIdRefImpl(INHERITANCE_ID_NM)(16,20)
-        PsiElement(GdTokenType.IDENTIFIER)('Node')(16,20)
-    GdEndStmtImpl(END_STMT)(20,20)
+    PsiElement(GdTokenType.NEW_LINE)('\n')
+  GdInheritance
+    PsiElement(GdTokenType.EXTENDS)('extends')
+    PsiWhiteSpace(' ')
+    GdInheritanceIdImpl(INHERITANCE_ID)
+      GdInheritanceIdRefImpl(INHERITANCE_ID_NM)
+        PsiElement(GdTokenType.IDENTIFIER)('Node')
+    GdEndStmtImpl(END_STMT)
       <empty list>

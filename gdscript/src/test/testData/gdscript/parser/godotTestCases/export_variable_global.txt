@@ -1,16 +1,16 @@
-GdScript File(0,55)
-  GdClassNaming(0,41)
-    PsiElement(GdTokenType.CLASS_NAME)('class_name')(0,10)
-    PsiWhiteSpace(' ')(10,11)
-    GdClassId(11,40)
-      PsiElement(GdTokenType.IDENTIFIER)('ExportVariableTestGlobalClass')(11,40)
-    GdEndStmtImpl(END_STMT)(40,41)
-      PsiElement(GdTokenType.NEW_LINE)('\n')(40,41)
-  GdInheritance(41,55)
-    PsiElement(GdTokenType.EXTENDS)('extends')(41,48)
-    PsiWhiteSpace(' ')(48,49)
-    GdInheritanceIdImpl(INHERITANCE_ID)(49,55)
-      GdInheritanceIdRefImpl(INHERITANCE_ID_NM)(49,55)
-        PsiElement(GdTokenType.IDENTIFIER)('Node2D')(49,55)
-    GdEndStmtImpl(END_STMT)(55,55)
+GdScript File
+  GdClassNaming
+    PsiElement(GdTokenType.CLASS_NAME)('class_name')
+    PsiWhiteSpace(' ')
+    GdClassId
+      PsiElement(GdTokenType.IDENTIFIER)('ExportVariableTestGlobalClass')
+    GdEndStmtImpl(END_STMT)
+      PsiElement(GdTokenType.NEW_LINE)('\n')
+  GdInheritance
+    PsiElement(GdTokenType.EXTENDS)('extends')
+    PsiWhiteSpace(' ')
+    GdInheritanceIdImpl(INHERITANCE_ID)
+      GdInheritanceIdRefImpl(INHERITANCE_ID_NM)
+        PsiElement(GdTokenType.IDENTIFIER)('Node2D')
+    GdEndStmtImpl(END_STMT)
       <empty list>
