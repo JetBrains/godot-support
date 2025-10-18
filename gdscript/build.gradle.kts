@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.gradleIntelliJPlatform)
     alias(libs.plugins.gradleJvmWrapper)
     alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.grammarkit)
     id("java")
 }
 
@@ -59,6 +60,7 @@ dependencies {
             project.intellijPlatform.platformPath.resolve("lib/testFramework.jar").pathString
         })
     }
+    implementation(libs.jflex)
     testImplementation(libs.openTest4J)
     testImplementation("junit:junit:4.13.2")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.0")
@@ -69,7 +71,21 @@ intellijPlatform{
     buildSearchableOptions = buildConfiguration != "Debug"
 }
 
+grammarKit {
+    // todo: figure out later
+}
+
 tasks {
+    generateLexer {
+        sourceFile = file("src/main/kotlin/gdscript/Gd.flex")
+        targetOutputDir = file("src/main/gen/gdscript")
+        purgeOldFiles.set(false)
+    }
+    
+    compileKotlin {
+        dependsOn( generateLexer)
+    }
+    
     // todo: tobe removed with RIDER-127007 Different approach to GD sdk
     register("prepare") {
         doLast {
