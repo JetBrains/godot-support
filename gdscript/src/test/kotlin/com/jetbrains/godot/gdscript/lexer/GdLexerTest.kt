@@ -3,13 +3,15 @@ package com.jetbrains.godot.gdscript.lexer
 import com.intellij.lexer.Lexer
 import com.intellij.platform.testFramework.core.FileComparisonFailedError
 import com.intellij.testFramework.LexerTestCase
+import com.intellij.testFramework.fixtures.IdeaTestExecutionPolicy
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.GdLexerAdapter
 import org.junit.ComparisonFailure
-import org.junit.Test
 import org.junit.Ignore
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import kotlin.io.path.pathString
 import kotlin.io.path.readText
 
 @RunWith(JUnit4::class)
@@ -19,38 +21,32 @@ class GdLexerTest : LexerTestCase() {
         return ""
     }
 
-    fun getExpected(): String =
-        getBaseTestDataPath().resolve("testData/gdscript/lexer/data").resolve("${getTestName(true)}.txt").readText()
-
-    override fun doFileTest(filePath: String) {
-        val text = loadTestDataFile(filePath)
-        val expected = getExpected()
-        doTest(text, expected, createLexer())
+    override fun getExpectedFileExtension(): String {
+        return ".lexer.txt"
     }
 
-    override fun loadTestDataFile(filePath: String): String {
-        // Read source .gd files from the Godot parser test cases folder by default
+    override fun getPathToTestDataFile(ext: String): String {
         val base = getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases")
-        val path = base.resolve(filePath)
-        return path.readText()
+        val path = base.resolve(getTestName(true) + ext)
+        return path.pathString
     }
 
-    @Test fun testsignal_connect_func() = doFileTest("${getTestName(true)}.gd")
-    @Ignore @Test fun testclass_name() = doFileTest("${getTestName(true)}.gd")
-    @Test fun testcallableInCtor() = doFileTest("${getTestName(true)}.gd")
-    @Test fun testLambdaCallExpr() = doFileTest("${getTestName(true)}.gd")
-    @Ignore @Test fun testArrayWithFunc() = doFileTest("${getTestName(true)}.gd")
+    @Test fun testsignal_connect_func() = doFileTest("gd")
+    @Ignore @Test fun testclass_name() = doFileTest("gd")
+    @Test fun testcallableInCtor() = doFileTest("gd")
+    @Test fun testLambdaCallExpr() = doFileTest("gd")
+    @Ignore @Test fun testArrayWithFunc() = doFileTest("gd")
 
     override fun doTest(text: String, expected: String?, lexer: Lexer) {
         try{
             super.doTest(text, expected, this.createLexer())
         }
-//        catch (e:FileComparisonFailedError){
-//            val expectedText = e.getExpectedStringPresentation()
-//            val actualText = e.getActualStringPresentation()
-//            println("EXPECTED:\n" + expectedText + "\n----\nACTUAL:\n" + actualText)
-//            throw e
-//        }
+        catch (e:FileComparisonFailedError){
+            val expectedText = e.getExpectedStringPresentation()
+            val actualText = e.getActualStringPresentation()
+            println("EXPECTED:\n" + expectedText + "\n----\nACTUAL:\n" + actualText)
+            throw e
+        }
         catch (e: ComparisonFailure){
             println("EXPECTED:\n" + e.expected + "\n----\nACTUAL:\n" + e.actual)
             throw e
