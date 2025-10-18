@@ -1,4 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.jetbrains.grammarkit.tasks.GenerateLexerTask
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import java.net.URI
@@ -13,6 +14,7 @@ plugins {
     alias(libs.plugins.gradleIntelliJPlatform)
     alias(libs.plugins.gradleJvmWrapper)
     alias(libs.plugins.kotlinJvm)
+    alias(libs.plugins.grammarkit)
     id("java")
 }
 
@@ -59,6 +61,7 @@ dependencies {
             project.intellijPlatform.platformPath.resolve("lib/testFramework.jar").pathString
         })
     }
+    implementation(libs.jflex)
     testImplementation(libs.openTest4J)
     testImplementation("junit:junit:4.13.2")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.0")
@@ -69,7 +72,31 @@ intellijPlatform{
     buildSearchableOptions = buildConfiguration != "Debug"
 }
 
+grammarKit {
+    // todo: figure out later
+}
+
+val lexers = listOf(
+    "config" to "src/main/kotlin/config/GdConfig.flex",
+    "gdscript" to "src/main/kotlin/gdscript/Gd.flex",
+    "gdscriptHighlighter" to "src/main/kotlin/gdscript/GdHighlight.flex",
+    "tscn" to "src/main/kotlin/tscn/Tscn.flex",
+    "project" to "src/main/kotlin/project/Project.flex",
+)
+
+lexers.forEach { (lexerName, lexerPath) ->
+    project.tasks.register<GenerateLexerTask>("${lexerName}Lexer") {
+        sourceFile = file(lexerPath)
+        targetOutputDir = file("src/main/gen/$lexerName")
+        purgeOldFiles.set(false)
+    }
+}
+
 tasks {
+    compileKotlin {
+        dependsOn( lexers.map { "${it.first}Lexer" })
+    }
+    
     // todo: tobe removed with RIDER-127007 Different approach to GD sdk
     register("prepare") {
         doLast {
