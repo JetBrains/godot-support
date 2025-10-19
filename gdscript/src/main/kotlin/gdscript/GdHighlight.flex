@@ -91,6 +91,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "for"          { return GdTypes.FOR; }
     "in"           { return GdTypes.IN; }
     "match"        { return GdTypes.MATCH; }
+    "when"         { return GdTypes.WHEN; }
     "await"        { return GdTypes.AWAIT; }
     "static"       { return GdTypes.STATIC; }
     "vararg"       { return GdTypes.VARARG; }
