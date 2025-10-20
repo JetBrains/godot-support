@@ -11,10 +11,10 @@ import com.intellij.platform.dap.DapStartRequest
 import org.jdom.Element
 
 data class GdScriptStructuredArguments(
-    var request: DapStartRequest,
-    var debugServerPort: Int,
-    var remainingArguments: String,
-    var scene: String,
+    val request: DapStartRequest,
+    val debugServerPort: Int,
+    val remainingArguments: String,
+    val scene: String,
 )
 
 class GdScriptRunConfiguration(name:String, project: Project, factory: ConfigurationFactory)
