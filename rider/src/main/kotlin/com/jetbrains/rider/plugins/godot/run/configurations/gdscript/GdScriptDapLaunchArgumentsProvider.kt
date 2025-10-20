@@ -6,7 +6,7 @@ import com.intellij.platform.dap.DapLaunchArgumentsProvider
 import com.intellij.platform.dap.LaunchRequestArguments
 
 class GdScriptDapLaunchArgumentsProvider : DapLaunchArgumentsProvider {
-    override fun isApplicable(profile: RunProfile): Boolean = profile is GdScriptRunConfiguration
+    override fun isApplicable(executorId: String, profile: RunProfile): Boolean = profile is GdScriptRunConfiguration
 
     override fun getLaunchArguments(project: Project, profile: RunProfile): LaunchRequestArguments {
         profile as GdScriptRunConfiguration
