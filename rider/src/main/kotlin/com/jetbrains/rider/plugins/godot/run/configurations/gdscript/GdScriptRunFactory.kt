@@ -59,10 +59,7 @@ open class GdScriptRunFactory(type: ConfigurationType) : ConfigurationFactory(ty
 
     override fun createTemplateConfiguration(@NotNull project: Project): RunConfiguration =
         GdScriptRunConfiguration(this.name, project, this).apply {
-            structured.debugServerPort = DEFAULT_PORT
-            structured.scene = DEFAULT_SCENE
-            structured.request = DEFAULT_REQUEST
-            if (structured.remainingArguments.isBlank()) structured.remainingArguments = DEFAULT_EMPTY_JSON
+            json = DEFAULT_FULL_JSON
         }
 
     class GdScriptDebugConfigurationOptions : RunConfigurationOptions() {

@@ -30,7 +30,13 @@ class GdScriptSceneRunConfigurationProducer : LazyRunConfigurationProducer<GdScr
         val basePath = descriptor.mainProjectBasePath
         val resPath = extractResPath(Path.of(basePath), context) ?: return false
 
-        configuration.structured.scene = resPath
+        val structured = GdScriptStructuredArguments(
+            configuration.structured.request,
+            configuration.structured.debugServerPort,
+            configuration.structured.remainingArguments,
+            resPath
+        )
+        configuration.json = GdScriptRunConfigurationHelper.serialize(structured)
         configuration.name = file.name
         return true
     }
