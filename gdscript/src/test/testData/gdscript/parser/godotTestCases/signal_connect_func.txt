@@ -60,6 +60,8 @@ GdScript File
                               PsiWhiteSpace('\t\t')
                               PsiElement(GdTokenType.PASS)('pass')
                           PsiElement(GdTokenType.RRBR)(')')
+                      PsiWhiteSpace('\n')
+            PsiWhiteSpace('\t')
             PsiElement(GdTokenType.RRBR)(')')
           GdEndStmtImpl(END_STMT)
             <empty list>
