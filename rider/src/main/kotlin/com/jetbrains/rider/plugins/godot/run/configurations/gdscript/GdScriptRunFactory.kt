@@ -36,9 +36,9 @@ open class GdScriptRunFactory(type: ConfigurationType) : ConfigurationFactory(ty
             {
               // Launch: "Launch a new instance of the game",
               // Attach: "Attach to an already running game, which was started from the Godot Editor"
-              "request" : "Launch",
-              "debugServer" : 6006, // port should match the Debug Adapter port in the Godot Editor project settings.
-              "scene" : "main", // main, current, res://path/to/file.tscn
+              "request" : "${DEFAULT_REQUEST.name}",
+              "debugServer" : $DEFAULT_PORT, // port should match the Debug Adapter port in the Godot Editor project settings.
+              "scene" : "$DEFAULT_SCENE", // main, current, res://path/to/file.tscn
               
               // "playArgs" : [ "--editor" ], // debugging a tool script
               // "playArgs": ["--debug-collisions","--debug-navigation"], // different options
