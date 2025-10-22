@@ -3,4 +3,4 @@ func asd():
 		func():
 			if 0 < 0:
 				pass
-        )
+	)
