@@ -52,31 +52,6 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
     }
 
     /**
-     * Walks the PSI tree of the given file, collects ALL PsiReference instances from every element,
-     * calls resolve() on each, and returns the list of pairs (reference, resolvedTargetOrNull).
-     * The references are ordered by their absolute start offset in the file for stability.
-     */
-    protected fun resolveAllReferences(file: PsiFile): List<Pair<PsiReference, PsiElement?>> {
-        val entries = mutableListOf<Triple<Int, PsiReference, PsiElement?>>()
-        file.accept(object : PsiRecursiveElementWalkingVisitor() {
-            override fun visitElement(element: PsiElement) {
-                // Collect references present on this element
-                val refs = element.references
-                if (refs.isNotEmpty()) {
-                    val baseOffset = element.textRange.startOffset
-                    for (ref in refs) {
-                        val refStart = baseOffset + ref.rangeInElement.startOffset
-                        val target = kotlin.runCatching { ref.resolve() }.getOrNull()
-                        entries += Triple(refStart, ref, target)
-                    }
-                }
-                super.visitElement(element)
-            }
-        })
-        return entries.sortedBy { it.first }.map { it.second to it.third }
-    }
-
-    /**
      * Produce the original file text annotated with inline numbered markers for every reference,
      * followed by a details section mapping each number to its resolve result.
      * Example output:
@@ -131,7 +106,7 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
             if (insertAt < last) return@forEach
             annotated.append(src, last, insertAt)
             val statusChar = if (it.target == null) 'u' else 'r'
-            annotated.append('[').append(it.start).append(statusChar).append(']')
+            annotated.append('[').append(statusChar).append(']')
             last = insertAt
         }
         annotated.append(src, last, src.length)
