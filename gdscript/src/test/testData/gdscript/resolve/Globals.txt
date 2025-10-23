@@ -15,4 +15,4 @@ global="*res://global.gd"
 
 == use.gd ==
 func t():
-    global[14r].m[21r]()
+    global[r].m[r]()

@@ -6,7 +6,7 @@ func m():
 
 
 == B.gd ==
-var x := AClass[9r].new[16u]()
+var x := AClass[r].new[u]()
 
 func t():
-	x[34r].m[36r]()
+	x[r].m[r]()
