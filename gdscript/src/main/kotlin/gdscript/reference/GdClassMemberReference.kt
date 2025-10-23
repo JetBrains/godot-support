@@ -47,14 +47,14 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
         }
     }
 
-    private var key: String = ""
-
-    constructor(element: GdRefIdRef) : super(element, TextRange(0, element.textLength)) {
-        key = element.text
-    }
+    constructor(element: GdRefIdRef) : super(element, TextRange(0, element.textLength))
 
     override fun handleElementRename(newElementName: String): PsiElement {
-        return myElement.replace(GdElementFactory.refIdNm(myElement.project, newElementName))
+        // replacing the whole element would brake references
+        // new approach is similar to what `GdCommonUtil.setName` does
+        val keyNode = element.node.firstChildNode
+        element.node.replaceChild(keyNode, GdElementFactory.refIdNm(myElement.project, newElementName).node)
+        return element
     }
 
     /**

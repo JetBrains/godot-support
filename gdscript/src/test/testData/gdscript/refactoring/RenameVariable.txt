@@ -1,0 +1,7 @@
+func in_the_outer_wrong():
+	var renamed_A1Instance := A1[r].new[u]()
+	renamed_A1Instance[r].ppa1[r]() # will be updated after rename
+
+class A1:
+	func ppa1():
+		pass
