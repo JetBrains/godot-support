@@ -89,6 +89,7 @@ import gdscript.psi.GdTypes;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import gdscript.lexer.ParenTracker;
 
 %%
 
@@ -102,17 +103,14 @@ import java.util.regex.Pattern;
 %eof}
 
 %{
-    String oppening = "";
-    int lastState = YYINITIAL;
-    boolean lineEnded = false;
+    ParenTracker parens = new ParenTracker();
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     boolean eofFinished = false;
 
     boolean newLineProcessed = false;
-    // For signals and such, where Indents/NewLines do not matter
-    boolean ignoreIndent = false;
-    int ignored = 0;
+    boolean gotBackslash = false;
+
     int lambdaReactivateDepth = -1;
     // Tracks pending reactivation at the bracket depth where 'func' was seen
     int lambdaPendingDepth = -1;
@@ -120,7 +118,6 @@ import java.util.regex.Pattern;
 
     public IElementType dedentRoot(IElementType type) {
         newLineProcessed = false;
-        lineEnded = false;
         if (isIgnored() || yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
             return type;
         }
@@ -169,20 +166,20 @@ import java.util.regex.Pattern;
     }
 
     private boolean isIgnored() {
-        if (ignored <= 0) return false;
+        if (parens.isTopLevel()) return false;
         // Inside parentheses, indentation is ignored unless reactivated at this depth
-        return !(lambdaReactivateDepth == ignored);
+        return !(lambdaReactivateDepth == parens.getDepth());
     }
 
-    private void ignoredMinus() {
-        ignored = Math.max(0, ignored - 1);
-        if (lambdaPendingDepth > ignored) lambdaPendingDepth = -1;
-        if (lambdaReactivateDepth > ignored) lambdaReactivateDepth = -1;
+    private void onCloseParen() {
+        parens.close();
+        if (lambdaPendingDepth > parens.getDepth()) lambdaPendingDepth = -1;
+        if (lambdaReactivateDepth > parens.getDepth()) lambdaReactivateDepth = -1;
     }
 
     private void markLambda() {
-        if (ignored > 0) {
-            lambdaPendingDepth = ignored;
+        if (parens.isNested()) {
+            lambdaPendingDepth = parens.getDepth();
         }
     }
 
@@ -197,18 +194,18 @@ import java.util.regex.Pattern;
     private void activateLambdaAfterColon() {
         // Reactivate indentation inside parentheses only for block suites,
         // i.e., when ':' is immediately followed by a newline.
-        if (lambdaPendingDepth == ignored && nextCharIsNewline()) {
-            lambdaReactivateDepth = ignored;
+        if (lambdaPendingDepth == parens.getDepth() && nextCharIsNewline()) {
+            lambdaReactivateDepth = parens.getDepth();
         }
     }
 
     private void restoreLambdaOnReturn() {
         // When returning from a lambda defined inside parens with reactivated indentation,
         // stop treating NEW_LINE as significant at this bracket depth.
-        if (ignored > 0 && lambdaReactivateDepth == ignored) {
+        if (parens.getDepth() > 0 && lambdaReactivateDepth == parens.getDepth()) {
             lambdaReactivateDepth = -1;
             // clear pending marker as well, we won't reactivate again for this lambda
-            if (lambdaPendingDepth == ignored) lambdaPendingDepth = -1;
+            if (lambdaPendingDepth == parens.getDepth()) lambdaPendingDepth = -1;
         }
     }
 
@@ -266,7 +263,7 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
 
 <CREATE_INDENT> {
     {ANY} {
-        yybegin(lastState);
+        yybegin(YYINITIAL);
         yypushback(yylength());
 
         return GdTypes.INDENT;
@@ -336,12 +333,12 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
     ">>"           { return dedentRoot(GdTypes.RBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
-    "("            { ignored++; return dedentRoot(GdTypes.LRBR); }
-    ")"            { ignoredMinus(); return dedentRoot(GdTypes.RRBR); }
-    "["            { ignored++; return dedentRoot(GdTypes.LSBR); }
-    "]"            { ignoredMinus(); return dedentRoot(GdTypes.RSBR); }
-    "{"            { ignored++; return dedentRoot(GdTypes.LCBR); }
-    "}"            { ignoredMinus(); return dedentRoot(GdTypes.RCBR); }
+    "("            { parens.open(); return dedentRoot(GdTypes.LRBR); }
+    ")"            { onCloseParen(); return dedentRoot(GdTypes.RRBR); }
+    "["            { parens.open(); return dedentRoot(GdTypes.LSBR); }
+    "]"            { onCloseParen(); return dedentRoot(GdTypes.RSBR); }
+    "{"            { parens.open(); return dedentRoot(GdTypes.LCBR); }
+    "}"            { onCloseParen(); return dedentRoot(GdTypes.RCBR); }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
@@ -351,7 +348,7 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
     "^"            { return dedentRoot(GdTypes.XOR); }
     "~"            { return dedentRoot(GdTypes.NOT); }
     "_"            { return dedentRoot(GdTypes.UNDER); }
-    "\\"           { newLineProcessed = true; ignoreIndent = true; return GdTypes.BACKSLASH; }
+    "\\"           { newLineProcessed = true; gotBackslash = true; return GdTypes.BACKSLASH; }
 
     {NODE_PATH}     { return dedentRoot(GdTypes.NODE_PATH_LIT); }
     {STRING_NAME}   { return dedentRoot(GdTypes.STRING_NAME); }
@@ -407,7 +404,7 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
         return GdTypes.NEW_LINE;
     }
     {INDENT}  {
-        if (yycolumn == 0 && !ignoreIndent) {
+        if (yycolumn == 0 && !gotBackslash) {
             int spaces = yytext().length();
             if (spaces > indent) {
                 if (isIgnored()) {
@@ -423,13 +420,13 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
                 return GdTypes.DEDENT;
             }
         }
-        ignoreIndent = false;
+        gotBackslash = false;
 
         return TokenType.WHITE_SPACE;
     }
 
 <<EOF>> {
-    if (yycolumn > 0 && !eofFinished && !lineEnded) {
+    if (yycolumn > 0 && !eofFinished) {
         eofFinished = true;
         return GdTypes.NEW_LINE;
     }

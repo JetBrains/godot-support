@@ -92,6 +92,7 @@ import gdscript.psi.GdTypes;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import gdscript.lexer.ParenTracker;
 
 
 class GdLexer implements FlexLexer {
@@ -666,17 +667,14 @@ class GdLexer implements FlexLexer {
   private boolean zzEOFDone;
 
   /* user code: */
-    String oppening = "";
-    int lastState = YYINITIAL;
-    boolean lineEnded = false;
+    ParenTracker parens = new ParenTracker();
     int indent = 0;
     Stack<Integer> indentSizes = new Stack<>();
     boolean eofFinished = false;
 
     boolean newLineProcessed = false;
-    // For signals and such, where Indents/NewLines do not matter
-    boolean ignoreIndent = false;
-    int ignored = 0;
+    boolean gotBackslash = false;
+
     int lambdaReactivateDepth = -1;
     // Tracks pending reactivation at the bracket depth where 'func' was seen
     int lambdaPendingDepth = -1;
@@ -684,7 +682,6 @@ class GdLexer implements FlexLexer {
 
     public IElementType dedentRoot(IElementType type) {
         newLineProcessed = false;
-        lineEnded = false;
         if (isIgnored() || yycolumn > 0 || indent <= 0 || indentSizes.empty()) {
             return type;
         }
@@ -733,20 +730,20 @@ class GdLexer implements FlexLexer {
     }
 
     private boolean isIgnored() {
-        if (ignored <= 0) return false;
+        if (parens.isTopLevel()) return false;
         // Inside parentheses, indentation is ignored unless reactivated at this depth
-        return !(lambdaReactivateDepth == ignored);
+        return !(lambdaReactivateDepth == parens.getDepth());
     }
 
-    private void ignoredMinus() {
-        ignored = Math.max(0, ignored - 1);
-        if (lambdaPendingDepth > ignored) lambdaPendingDepth = -1;
-        if (lambdaReactivateDepth > ignored) lambdaReactivateDepth = -1;
+    private void onCloseParen() {
+        parens.close();
+        if (lambdaPendingDepth > parens.getDepth()) lambdaPendingDepth = -1;
+        if (lambdaReactivateDepth > parens.getDepth()) lambdaReactivateDepth = -1;
     }
 
     private void markLambda() {
-        if (ignored > 0) {
-            lambdaPendingDepth = ignored;
+        if (parens.isNested()) {
+            lambdaPendingDepth = parens.getDepth();
         }
     }
 
@@ -761,18 +758,18 @@ class GdLexer implements FlexLexer {
     private void activateLambdaAfterColon() {
         // Reactivate indentation inside parentheses only for block suites,
         // i.e., when ':' is immediately followed by a newline.
-        if (lambdaPendingDepth == ignored && nextCharIsNewline()) {
-            lambdaReactivateDepth = ignored;
+        if (lambdaPendingDepth == parens.getDepth() && nextCharIsNewline()) {
+            lambdaReactivateDepth = parens.getDepth();
         }
     }
 
     private void restoreLambdaOnReturn() {
         // When returning from a lambda defined inside parens with reactivated indentation,
         // stop treating NEW_LINE as significant at this bracket depth.
-        if (ignored > 0 && lambdaReactivateDepth == ignored) {
+        if (parens.getDepth() > 0 && lambdaReactivateDepth == parens.getDepth()) {
             lambdaReactivateDepth = -1;
             // clear pending marker as well, we won't reactivate again for this lambda
-            if (lambdaPendingDepth == ignored) lambdaPendingDepth = -1;
+            if (lambdaPendingDepth == parens.getDepth()) lambdaPendingDepth = -1;
         }
     }
 
@@ -1064,7 +1061,7 @@ class GdLexer implements FlexLexer {
         zzAtEOF = true;
             zzDoEOF();
               {
-                if (yycolumn > 0 && !eofFinished && !lineEnded) {
+                if (yycolumn > 0 && !eofFinished) {
         eofFinished = true;
         return GdTypes.NEW_LINE;
     }
@@ -1086,7 +1083,7 @@ class GdLexer implements FlexLexer {
           // fall through
           case 89: break;
           case 2:
-            { if (yycolumn == 0 && !ignoreIndent) {
+            { if (yycolumn == 0 && !gotBackslash) {
             int spaces = yytext().length();
             if (spaces > indent) {
                 if (isIgnored()) {
@@ -1102,7 +1099,7 @@ class GdLexer implements FlexLexer {
                 return GdTypes.DEDENT;
             }
         }
-        ignoreIndent = false;
+        gotBackslash = false;
 
         return TokenType.WHITE_SPACE;
             }
@@ -1155,12 +1152,12 @@ class GdLexer implements FlexLexer {
           // fall through
           case 97: break;
           case 10:
-            { ignored++; return dedentRoot(GdTypes.LRBR);
+            { parens.open(); return dedentRoot(GdTypes.LRBR);
             }
           // fall through
           case 98: break;
           case 11:
-            { ignoredMinus(); return dedentRoot(GdTypes.RRBR);
+            { onCloseParen(); return dedentRoot(GdTypes.RRBR);
             }
           // fall through
           case 99: break;
@@ -1235,17 +1232,17 @@ class GdLexer implements FlexLexer {
           // fall through
           case 113: break;
           case 26:
-            { ignored++; return dedentRoot(GdTypes.LSBR);
+            { parens.open(); return dedentRoot(GdTypes.LSBR);
             }
           // fall through
           case 114: break;
           case 27:
-            { newLineProcessed = true; ignoreIndent = true; return GdTypes.BACKSLASH;
+            { newLineProcessed = true; gotBackslash = true; return GdTypes.BACKSLASH;
             }
           // fall through
           case 115: break;
           case 28:
-            { ignoredMinus(); return dedentRoot(GdTypes.RSBR);
+            { onCloseParen(); return dedentRoot(GdTypes.RSBR);
             }
           // fall through
           case 116: break;
@@ -1265,7 +1262,7 @@ class GdLexer implements FlexLexer {
           // fall through
           case 119: break;
           case 32:
-            { ignored++; return dedentRoot(GdTypes.LCBR);
+            { parens.open(); return dedentRoot(GdTypes.LCBR);
             }
           // fall through
           case 120: break;
@@ -1275,7 +1272,7 @@ class GdLexer implements FlexLexer {
           // fall through
           case 121: break;
           case 34:
-            { ignoredMinus(); return dedentRoot(GdTypes.RCBR);
+            { onCloseParen(); return dedentRoot(GdTypes.RCBR);
             }
           // fall through
           case 122: break;
@@ -1285,7 +1282,7 @@ class GdLexer implements FlexLexer {
           // fall through
           case 123: break;
           case 36:
-            { yybegin(lastState);
+            { yybegin(YYINITIAL);
         yypushback(yylength());
 
         return GdTypes.INDENT;
