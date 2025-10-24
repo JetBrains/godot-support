@@ -25,4 +25,11 @@ class ResolveMultiFileTest : ResolveTestBase() {
         val annotated = dumpResolvesForFiles(files)
         assertGold(annotated)
     }
+
+    @Test
+    fun testEnums() {
+        val files = loadFilesFromSubdirAsProjectRoot()
+        val annotated = dumpResolvesForFiles(files)
+        assertGold(annotated)
+    }
 }

@@ -1,0 +1,11 @@
+== Marker.gd ==
+class_name Marker
+
+enum MarkerType {
+    FOOD,
+    NEST
+}
+
+== ant.gd ==
+func test():
+    return Marker[r].MarkerType[r].FOOD[r]

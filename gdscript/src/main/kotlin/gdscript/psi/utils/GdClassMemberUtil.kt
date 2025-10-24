@@ -162,14 +162,27 @@ object GdClassMemberUtil {
                 calledOn = "Dictionary"
             }
 
-            // If qualifier resolves to a named enum, expose its values for member lookup (e.g., _Anim.FLOOR)
-            findDeclaration(calledOnPsi!!)?.let { decl ->
-                if (decl is GdEnumDeclTl) {
+            // If qualifier resolves to a named enum, expose its values for member lookup (e.g., Class.Enum.VALUE)
+            run {
+                // First, try resolving the entire qualifier expression directly
+                val direct = findDeclaration(calledOnPsi!!)
+                val enumDecl = when (direct) {
+                    is GdEnumDeclTl -> direct
+                    else -> {
+                        // If that failed, try resolving the right-most identifier within the qualifier
+                        val refs = PsiTreeUtil.findChildrenOfType(calledOnPsi, GdRefIdRef::class.java)
+                            .sortedBy { it.textRange.startOffset }
+                        val lastRef = refs.lastOrNull()
+                        val lastDecl = lastRef?.let { findDeclaration(it) }
+                        lastDecl as? GdEnumDeclTl
+                    }
+                }
+                if (enumDecl != null) {
                     if (searchFor != null) {
-                        val localVal = decl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor }
+                        val localVal = enumDecl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor }
                         if (localVal != null) return arrayOf(localVal)
                     }
-                    result.addAll(decl.enumValueList)
+                    result.addAll(enumDecl.enumValueList)
                     if (searchFor == null) return result.toTypedArray()
                 }
             }
