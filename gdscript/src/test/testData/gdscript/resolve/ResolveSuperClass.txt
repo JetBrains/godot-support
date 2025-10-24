@@ -1,0 +1,12 @@
+class_name ResolveSuperClass
+
+class DirectoryCtrl:
+    extends ResolveSuperClass[r]
+    func _init():
+        pass
+
+class FileCtrl:
+    extends DirectoryCtrl[r]
+
+    func _init():
+        super[r]._init[r]()
