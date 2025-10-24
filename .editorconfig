@@ -16,3 +16,6 @@ indent_size = 2
 
 [*.xaml]
 indent_size = 2
+
+[*.gd]
+indent_style = tab

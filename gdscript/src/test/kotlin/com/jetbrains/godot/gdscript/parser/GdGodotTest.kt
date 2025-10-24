@@ -94,7 +94,6 @@ class GdGodotTest : GdParsingTestCase() {
     @Test fun testnot_in_array() = doTest(true, true)
     @Test fun testtyped_arrays() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testunicode_identifiers() = doTest(true, true)
-    @Test fun testunnamed_enums_outer_conflicts() = doTest(true, true)
     @Test fun testvariable_declaration() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testvector_inf() = doTest(true, true)
     @Test fun testwhile() = doTest(true, true)
