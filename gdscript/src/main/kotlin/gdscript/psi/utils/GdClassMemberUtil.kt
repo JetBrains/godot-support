@@ -267,6 +267,22 @@ object GdClassMemberUtil {
     ): HashMap<String, PsiElement> {
         val locals: HashMap<String, PsiElement> = hashMapOf()
 
+        // Special handling: inside an enum value initializer, only previously declared enum values are visible
+        run {
+            val enumValue = PsiTreeUtil.getParentOfType(element, GdEnumValue::class.java)
+            if (enumValue != null) {
+                val enumDecl = PsiTreeUtil.getParentOfType(enumValue, GdEnumDeclTl::class.java)
+                if (enumDecl != null) {
+                    for (v in enumDecl.enumValueList) {
+                        if (v == enumValue) break
+                        val nmi = v.enumValueNmi
+                        val name = nmi.name
+                        if (!locals.containsKey(name)) locals[name] = v
+                    }
+                }
+            }
+        }
+
         // If inside a match branch GUARD (before ':'), bindings from the pattern list are visible
         run {
             var cur: PsiElement? = element

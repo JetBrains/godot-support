@@ -1,0 +1,6 @@
+enum Constant {
+    PASS1 = 0,
+    PASSED = PASS1[r]+1, # enum element can reference other enum element
+    CANNOT = OK[u], # can not reference before it was declared
+    OK = 0,
+}

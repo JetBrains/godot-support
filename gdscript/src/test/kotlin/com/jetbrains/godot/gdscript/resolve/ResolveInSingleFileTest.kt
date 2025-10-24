@@ -29,4 +29,19 @@ class ResolveInSingleFileTest : ResolveTestBase() {
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
     }
+
+    @Test
+    fun testEnum1(){
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
+
+    @Test
+    @Ignore
+    fun testUnnamedEnumsOuterConflicts() {
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
 }

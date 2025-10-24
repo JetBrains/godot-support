@@ -39,8 +39,8 @@ object GdEnumParser : GdBaseParser {
 
         var ok = true
         if (b.passToken(EQ)) {
-            b.passToken(PLUS, MINUS)
-            ok = ok && b.consumeToken(NUMBER)
+            // Accept a full expression to support references to previously declared enum values
+            ok = gdscript.parser.expr.GdExprParser.parse(b, l + 1, true)
         }
 
         return b.exitSection(ok)
