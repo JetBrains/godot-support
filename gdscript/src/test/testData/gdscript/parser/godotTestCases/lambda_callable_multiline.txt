@@ -1,12 +1,4 @@
 GdScript File
-  GdClassNaming
-    PsiElement(GdTokenType.CLASS_NAME)('class_name')
-    PsiWhiteSpace(' ')
-    GdClassId
-      PsiElement(GdTokenType.IDENTIFIER)('Asdf')
-    GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
-  PsiWhiteSpace('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')

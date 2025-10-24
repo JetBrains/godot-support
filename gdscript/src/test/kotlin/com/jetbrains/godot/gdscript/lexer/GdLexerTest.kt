@@ -36,6 +36,7 @@ class GdLexerTest : LexerTestCase() {
     @Test fun testcallableInCtor() = doFileTest("gd")
     @Test fun testLambdaCallExpr() = doFileTest("gd")
     @Ignore @Test fun testArrayWithFunc() = doFileTest("gd")
+    @Test fun testlambda_callable_multiline() = doFileTest("gd")
 
     override fun doTest(text: String, expected: String?, lexer: Lexer) {
         try{

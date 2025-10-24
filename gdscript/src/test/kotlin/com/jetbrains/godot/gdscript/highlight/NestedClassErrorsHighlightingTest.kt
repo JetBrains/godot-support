@@ -16,6 +16,11 @@ class NestedClassErrorsHighlightingTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testLambdaCallableMultiline() {
+        myFixture.testHighlighting("${getTestName(false)}.gd");
+    }
+
+    @Test
     @Ignore("Bug in GdExprUtil.typeAccepts")
     fun testInvalidReturns() {
         myFixture.testHighlighting("${getTestName(false)}.gd")
