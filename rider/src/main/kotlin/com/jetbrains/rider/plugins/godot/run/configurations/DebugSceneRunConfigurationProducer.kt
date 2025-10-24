@@ -11,6 +11,7 @@ import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.Util
 import java.nio.file.Path
 import kotlin.io.path.exists
+import kotlin.io.path.invariantSeparatorsPathString
 import kotlin.io.path.relativeTo
 
 class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDebugRunConfiguration>() {
@@ -49,7 +50,7 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
 
 internal fun extractResPath(basePath: Path, context: ConfigurationContext): String? {
     val file = getContainingFile(context) ?: return null
-    val relPath = file.virtualFile.toNioPath().relativeTo(basePath)
+    val relPath = file.virtualFile.toNioPath().relativeTo(basePath).invariantSeparatorsPathString
     return "res://$relPath"
 }
 
