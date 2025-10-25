@@ -3,7 +3,6 @@ package com.jetbrains.godot.gdscript.lexer
 import com.intellij.lexer.Lexer
 import com.intellij.platform.testFramework.core.FileComparisonFailedError
 import com.intellij.testFramework.LexerTestCase
-import com.intellij.testFramework.fixtures.IdeaTestExecutionPolicy
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.GdLexerAdapter
 import org.junit.ComparisonFailure
@@ -12,7 +11,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
-import kotlin.io.path.readText
 
 @RunWith(JUnit4::class)
 class GdLexerTest : LexerTestCase() {
