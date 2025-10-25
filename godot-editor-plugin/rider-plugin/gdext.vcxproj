@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<PropertyGroup>
+		<RepoRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)'))</RepoRoot>
+	</PropertyGroup>
+
+	<PropertyGroup Label="Globals">
+		<ProjectGuid>{9A2FB295-38D9-4994-9497-26FF91C85465}</ProjectGuid>
+		<RootNamespace>godot</RootNamespace>
+		<Keyword>MakeFileProj</Keyword>
+		<VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<GodotTemplate>template_debug</GodotTemplate>
+		<BuildType>dev_build=yes</BuildType>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Release'">
+		<GodotTemplate>template_release</GodotTemplate>
+	</PropertyGroup>
+
+	<!-- Windows -->
+	<PropertyGroup Condition="'$(Platform)'=='windows-x86_32'">
+		<GodotPlatform>windows</GodotPlatform>
+		<Arch>x86_32</Arch>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Platform)'=='windows-x86_64'">
+		<GodotPlatform>windows</GodotPlatform>
+		<Arch>x86_64</Arch>
+	</PropertyGroup>
+
+	<!-- Linux -->
+	<PropertyGroup Condition="'$(Platform)'=='linux-x86_64'">
+		<GodotPlatform>linux</GodotPlatform>
+		<Arch>x86_64</Arch>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Platform)'=='linux-arm64'">
+		<GodotPlatform>linux</GodotPlatform>
+		<Arch>arm64</Arch>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Platform)'=='linux-rv64'">
+		<GodotPlatform>linux</GodotPlatform>
+		<Arch>rv64</Arch>
+	</PropertyGroup>
+
+	<!-- macOS (no arch in config) -->
+	<PropertyGroup Condition="'$(Platform)'=='macos'">
+		<GodotPlatform>macos</GodotPlatform>
+		<Arch></Arch> <!-- no arch in example.gdextension -->
+	</PropertyGroup>
+
+	<!-- iOS -->
+	<PropertyGroup Condition="'$(Platform)'=='ios-arm64'">
+		<GodotPlatform>ios</GodotPlatform>
+		<Arch>arm64</Arch>
+	</PropertyGroup>
+
+	<!-- Android -->
+	<PropertyGroup Condition="'$(Platform)'=='android-x86_64'">
+		<GodotPlatform>android</GodotPlatform>
+		<Arch>x86_64</Arch>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Platform)'=='android-arm64'">
+		<GodotPlatform>android</GodotPlatform>
+		<Arch>arm64</Arch>
+	</PropertyGroup>
+
+	<!-- Web (wasm32) -->
+	<PropertyGroup Condition="'$(Platform)'=='web-wasm32'">
+		<GodotPlatform>web</GodotPlatform>
+		<Arch>wasm32</Arch>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<IsWindows>$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))</IsWindows>
+		<IsMac>$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))</IsMac>
+		<IsLinux>$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))</IsLinux>
+	</PropertyGroup>
+	<Import Project="$(VCTargetsPath)/Microsoft.Cpp.Default.props" Condition="$(IsWindows)"/>
+	<Import Project="$(MSBuildProjectDirectory)/rider-cpp-msbuild/targets/JetBrains.Rider.Cpp.targets" Condition="$(IsMac) OR $(IsLinux)"/>
+
+	<PropertyGroup Label="UserMacros">
+		<!-- can be overridden in godot.user.props -->
+		<Precision Condition="'$(Precision)' == ''">single</Precision> <!--single or double-->
+		<Threads Condition="'$(Threads)' == ''">threads</Threads>
+	</PropertyGroup>
+	<Import Project="$(MSBuildProjectDirectory)/rider-cpp-msbuild/targets/godot.user.props" Condition="Exists('$(MSBuildProjectDirectory)/rider-cpp-msbuild/targets/godot.user.props')"/>
+
+	<PropertyGroup Label="Configuration">
+		<ConfigurationType>Makefile</ConfigurationType>
+		<UseOfMfc>false</UseOfMfc>
+		<!-- Possible values: V143, Clang_Mac, Clang_Linux, llvm, Clang, ClangCL, MSFS, Unknown-->
+		<!-- Select toolset based on target GodotPlatform. Switches Cpp dialect a bit -->
+		<PlatformToolset Condition="'$(GodotPlatform)'=='windows'">v143</PlatformToolset>
+		<PlatformToolset Condition="'$(GodotPlatform)'=='macos' or '$(GodotPlatform)'=='ios'">Clang_Mac</PlatformToolset>
+		<PlatformToolset Condition="'$(GodotPlatform)'=='linux'">Clang_Linux</PlatformToolset>
+		<PlatformToolset Condition="'$(GodotPlatform)'=='android'">Clang_Linux</PlatformToolset>
+		<PlatformToolset Condition="'$(GodotPlatform)'=='web'">Clang_Linux</PlatformToolset>
+		<!-- Fallback when platform is not matched -->
+		<PlatformToolset Condition="'$(PlatformToolset)'==''">Unknown</PlatformToolset>
+
+		<NMakeWorkingDirectory>$(RepoRoot)</NMakeWorkingDirectory>
+		<NMakeOutput Condition="'$(NMakeOutput)' == ''">dylib</NMakeOutput> <!--any non empty value required for automatic run configuration generation in Rider -->
+		<LocalDebuggerWorkingDirectory Condition="'$(LocalDebuggerWorkingDirectory)' == ''">$(NMakeWorkingDirectory)/demo</LocalDebuggerWorkingDirectory>
+		<LocalDebuggerCommandArguments>--editor</LocalDebuggerCommandArguments>
+		<NMakeIncludeSearchPath>$(RepoRoot)/godot-cpp/gen/include;$(RepoRoot)/godot-cpp/include;$(RepoRoot)/godot-cpp/gdextension;$(NMakeIncludeSearchPath);</NMakeIncludeSearchPath>
+		<!-- Commands executed by Build/Rebuild/Clean in the IDE (Rider, VS) -->
+		<NMakeBuildCommandLine>scons platform=$(GodotPlatform) arch=$(Arch) target=$(GodotTemplate) $(BuildType)</NMakeBuildCommandLine>
+		<NMakeReBuildCommandLine>scons --clean platform=$(GodotPlatform) arch=$(Arch) target=$(GodotTemplate) &amp;&amp; scons platform=$(GodotPlatform) arch=$(Arch) target=$(GodotTemplate)</NMakeReBuildCommandLine>
+		<NMakeCleanCommandLine>scons --clean platform=$(GodotPlatform) arch=$(Arch) target=$(GodotTemplate)</NMakeCleanCommandLine>
+	</PropertyGroup>
+	<Import Project="$(VCTargetsPath)/Microsoft.Cpp.props" Condition="$(IsWindows)"/>
+	<ImportGroup Label="ExtensionSettings">
+	</ImportGroup>
+	<ItemGroup>
+		<None Include="src/**/*.h"/>
+		<None Include="src/**/*.cpp"/>
+	</ItemGroup>
+
+	<!-- Build/Rebuild/Clean targets for NMake are defined in MSVC, so we need to provide them, when using MSBuild without MSVC targets -->
+	<Import Project="$(MSBuildProjectDirectory)/rider-cpp-msbuild/targets/nmake.substitution.props" Condition="!Exists('$(VCTargetsPath)/Microsoft.Cpp.targets')" />
+	<Import Project="$(VCTargetsPath)/Microsoft.Cpp.targets" Condition="$(IsWindows)"/>
+</Project>

@@ -1,0 +1,8 @@
+[submodule "godot-editor-plugin/rider-plugin/godot-cpp"]
+	path = godot-editor-plugin/rider-plugin/godot-cpp
+	url = https://github.com/godotengine/godot-cpp.git
+	branch = 4.3
+[submodule "godot-editor-plugin/rider-plugin/rider-cpp-msbuild"]
+	path = godot-editor-plugin/rider-plugin/rider-cpp-msbuild
+	url = https://github.com/JetBrains/rider-cpp-msbuild.git
+	branch = main
