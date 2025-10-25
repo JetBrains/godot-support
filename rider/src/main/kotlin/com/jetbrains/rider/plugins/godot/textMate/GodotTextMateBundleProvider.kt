@@ -1,7 +1,7 @@
 package com.jetbrains.rider.plugins.godot.textMate
 
 import com.intellij.openapi.application.PathManager
-import com.jetbrains.rider.RiderEnvironment
+import com.jetbrains.rider.environment.local.RiderLocalEnvironment
 import org.jetbrains.plugins.textmate.api.TextMateBundleProvider
 import java.io.File
 import java.io.FileFilter
@@ -20,7 +20,7 @@ class GodotTextMateBundleProvider : TextMateBundleProvider {
 
         // fallback for run in the ultimate mono-repo
         if (!directories.any()) {
-            directories = RiderEnvironment.getBundledBinDir().resolve("bundles").listFiles(FileFilter { it.isDirectory })
+            directories = RiderLocalEnvironment.getBundledBinDir().resolve("bundles").listFiles(FileFilter { it.isDirectory })
                 .orEmpty().toList()}
 
         val bundles = directories.map{it.resolve("extension")}.filter { it.isDirectory }
