@@ -6,3 +6,7 @@
 	path = godot-editor-plugin/rider-plugin/rider-cpp-msbuild
 	url = https://github.com/JetBrains/rider-cpp-msbuild.git
 	branch = main
+[submodule "godot-editor-plugin/rider-plugin/godot-editor-plugin/rider-plugin/RiderSourceCodeAccess"]
+	path = godot-editor-plugin/rider-plugin/godot-editor-plugin/rider-plugin/RiderSourceCodeAccess
+	url = https://github.com/JetBrains/RiderSourceCodeAccess.git
+	branch = main
