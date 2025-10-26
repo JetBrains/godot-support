@@ -5,22 +5,20 @@
 #include <godot_cpp/core/defs.hpp>
 #include <godot_cpp/godot.hpp>
 
-#include "example_class.h"
+#include "external_editor_toggle_plugin.h"
 
 using namespace godot;
 
 void initialize_gdextension_types(ModuleInitializationLevel p_level)
 {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
-		return;
+	if (p_level == MODULE_INITIALIZATION_LEVEL_EDITOR) {
+		GDREGISTER_CLASS(RiderEditorPlugin);
+		EditorPlugins::add_by_type<RiderEditorPlugin>();
 	}
-	GDREGISTER_CLASS(ExampleClass);
 }
 
 void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {
-	if (p_level != MODULE_INITIALIZATION_LEVEL_SCENE) {
-		return;
-	}
+	// Nothing to do for now.
 }
 
 extern "C"
@@ -31,7 +29,8 @@ extern "C"
 		GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
 		init_obj.register_initializer(initialize_gdextension_types);
 		init_obj.register_terminator(uninitialize_gdextension_types);
-		init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
+		// We need editor-level initialization for EditorPlugin classes.
+		init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_EDITOR);
 
 		return init_obj.init();
 	}
