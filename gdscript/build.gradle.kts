@@ -77,17 +77,17 @@ grammarKit {
 }
 
 val lexers = listOf(
-    "config" to "src/main/kotlin/config/GdConfig.flex",
-    "gdscript" to "src/main/kotlin/gdscript/Gd.flex",
-    "gdscriptHighlighter" to "src/main/kotlin/gdscript/GdHighlight.flex",
-    "tscn" to "src/main/kotlin/tscn/Tscn.flex",
-    "project" to "src/main/kotlin/project/Project.flex",
+    Triple("config", "config", "src/main/kotlin/config/GdConfig.flex"),
+    Triple("gdscript", "gdscript", "src/main/kotlin/gdscript/Gd.flex"),
+    Triple("gdscriptHighlighter", "gdscript", "src/main/kotlin/gdscript/GdHighlight.flex"),
+    Triple("tscn", "tscn", "src/main/kotlin/tscn/Tscn.flex"),
+    Triple("project", "project", "src/main/kotlin/project/Project.flex"),
 )
 
-lexers.forEach { (lexerName, lexerPath) ->
+lexers.forEach { (lexerName, folder, lexerPath) ->
     project.tasks.register<GenerateLexerTask>("${lexerName}Lexer") {
         sourceFile = file(lexerPath)
-        targetOutputDir = file("src/main/gen/$lexerName")
+        targetOutputDir = file("src/main/gen/$folder")
         purgeOldFiles.set(false)
     }
 }
