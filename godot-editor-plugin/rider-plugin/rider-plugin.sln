@@ -33,14 +33,14 @@ Global
 		Release|web-wasm32 = Release|web-wasm32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9A2FB295-38D9-4994-9497-26FF91C85465}.Debug|windows-x86_32.ActiveCfg = Debug|windows-x86_32
-		{9A2FB295-38D9-4994-9497-26FF91C85465}.Debug|windows-x86_32.Build.0 = Debug|windows-x86_32
-		{9A2FB295-38D9-4994-9497-26FF91C85465}.Release|windows-x86_32.ActiveCfg = Release|windows-x86_32
-		{9A2FB295-38D9-4994-9497-26FF91C85465}.Release|windows-x86_32.Build.0 = Release|windows-x86_32
-		{9A2FB295-38D9-4994-9497-26FF91C85465}.Debug|windows-x86_64.ActiveCfg = Debug|windows-x86_64
-		{9A2FB295-38D9-4994-9497-26FF91C85465}.Debug|windows-x86_64.Build.0 = Debug|windows-x86_64
-		{9A2FB295-38D9-4994-9497-26FF91C85465}.Release|windows-x86_64.ActiveCfg = Release|windows-x86_64
-		{9A2FB295-38D9-4994-9497-26FF91C85465}.Release|windows-x86_64.Build.0 = Release|windows-x86_64
+		{9A2FB295-38D9-4994-9497-26FF91C85465}.Debug|windows-x86_32.ActiveCfg = Debug|Win32
+		{9A2FB295-38D9-4994-9497-26FF91C85465}.Debug|windows-x86_32.Build.0 = Debug|Win32
+		{9A2FB295-38D9-4994-9497-26FF91C85465}.Release|windows-x86_32.ActiveCfg = Release|Win32
+		{9A2FB295-38D9-4994-9497-26FF91C85465}.Release|windows-x86_32.Build.0 = Release|Win32
+		{9A2FB295-38D9-4994-9497-26FF91C85465}.Debug|windows-x86_64.ActiveCfg = Debug|x64
+		{9A2FB295-38D9-4994-9497-26FF91C85465}.Debug|windows-x86_64.Build.0 = Debug|x64
+		{9A2FB295-38D9-4994-9497-26FF91C85465}.Release|windows-x86_64.ActiveCfg = Release|x64
+		{9A2FB295-38D9-4994-9497-26FF91C85465}.Release|windows-x86_64.Build.0 = Release|x64
 		{9A2FB295-38D9-4994-9497-26FF91C85465}.Debug|linux-x86_64.ActiveCfg = Debug|linux-x86_64
 		{9A2FB295-38D9-4994-9497-26FF91C85465}.Debug|linux-x86_64.Build.0 = Debug|linux-x86_64
 		{9A2FB295-38D9-4994-9497-26FF91C85465}.Release|linux-x86_64.ActiveCfg = Release|linux-x86_64
