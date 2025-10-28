@@ -3,7 +3,8 @@ name: CI
 on:
     pull_request:
     schedule:
-        - cron: '0 0 * * *'  # every day at midnight
+      - cron: '0 0 * * 0'   # every Sunday at midnight
+    workflow_dispatch:      # manual trigger
 
 jobs:
     # Make sure we only invoke known gradle-wrapper.jar files

@@ -1,0 +1,65 @@
+# For syntax, see https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+# This workflow is automatically triggered for every push and pull request, to verify that everything still builds.
+
+name: Editor Plugin CI
+on:
+  workflow_call:
+  push:
+  pull_request:
+  merge_group:
+
+defaults:
+  run:
+    working-directory: godot-editor-plugin/addons/rider-plugin/cpp
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        # Test a few selected combinations of parameters ("test case matrix").
+        include:
+          - target: { platform: linux, arch: x86_64, os: ubuntu-22.04 }
+            target-type: editor
+            float-precision: single
+          - target: { platform: windows, arch: x86_64, os: windows-latest }
+            target-type: editor
+            float-precision: single
+          - target: { platform: macos, arch: universal, os: macos-latest }
+            target-type: editor
+            float-precision: single
+
+    runs-on: ${{ matrix.target.os }}
+    steps:
+      # Clone this repository
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      # Setup dependencies
+      - name: Setup godot-cpp
+        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/setup-godot-cpp
+        with:
+          platform: ${{ matrix.target.platform }}
+          em-version: 3.1.62
+
+      # Build GDExtension (with caches)
+      - name: Restore .scons_cache
+        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/godot-cache-restore
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+
+      - name: Build GDExtension Debug Build
+        shell: sh
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
+        run: |
+          scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }} precision=${{ matrix.float-precision }}
+
+      - name: Save .scons_cache
+        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/godot-cache-save
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}

@@ -1,0 +1,3 @@
+**/*.os
+src/gen/**
+.sconsign.dblite

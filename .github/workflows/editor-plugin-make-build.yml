@@ -1,0 +1,171 @@
+# For syntax, see https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+# This workflow is triggered manually on the "Actions" tab on GitHub, and can be used to create releases.
+
+name: Editor Plugin Build
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag to create for the GitHub Release (e.g., v1.2.3). Leave empty to auto-generate.'
+        required: false
+        type: string
+      release_name:
+        description: 'Release title. Defaults to tag name or an auto-generated name.'
+        required: false
+        type: string
+      draft:
+        description: 'Create as a draft release'
+        required: false
+        type: boolean
+        default: true
+      prerelease:
+        description: 'Mark release as prerelease'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  build:
+    defaults:
+      run:
+        working-directory: godot-editor-plugin/addons/rider-plugin/cpp
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          [
+            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
+            { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
+            { platform: windows, arch: x86_64, os: windows-latest },
+            { platform: windows, arch: arm64, os: windows-latest },
+            { platform: macos, arch: universal, os: macos-latest },
+          ]
+        target-type: [editor]
+        float-precision: [single, double]
+
+    runs-on: ${{ matrix.target.os }}
+    steps:
+      # Clone this repository
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      # Setup dependencies
+      - name: Setup godot-cpp
+        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/setup-godot-cpp
+        with:
+          platform: ${{ matrix.target.platform }}
+          em-version: 3.1.62
+
+      # Build GDExtension (with caches)
+      - name: Restore .scons_cache
+        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/godot-cache-restore
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+
+      - name: Build GDExtension
+        shell: sh
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
+        run: |
+          scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }} precision=${{ matrix.float-precision }}
+
+      - name: Save .scons_cache
+        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/godot-cache-save
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+
+      # Clean up compilation files
+      - name: Windows - Delete compilation files
+        if: ${{ matrix.target.platform == 'windows' }}
+        shell: pwsh
+        run: |
+          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
+
+      # Upload the build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rider-plugin-addons-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
+          path: |
+            godot-editor-plugin
+            !godot-editor-plugin/main.tscn
+            !godot-editor-plugin/project.godot
+            !godot-editor-plugin/addons/rider-plugin/cpp/**
+            !**/.git/**
+            !**/.idea/**
+            !**/.godot/**
+            !**/.import/**
+            !**/.scons*/**
+            !**/*.exp
+            !**/*.lib
+            !**/*.pdb
+            !**/.gitignore
+
+  # Merges all the build artifacts together into a single artifact
+  merge:
+    runs-on: ubuntu-22.04
+    needs: build
+    defaults:
+      run:
+        working-directory: .
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: rider-plugin-addons
+          pattern: rider-plugin-addons-*
+          delete-merged: true
+
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-22.04
+    needs: merge
+    permissions:
+      contents: write
+    steps:
+      - name: Download merged artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: rider-plugin-addons
+          path: rider-plugin-addons
+
+      - name: Prepare archive
+        run: |
+          cd rider-plugin-addons
+          zip -r ../rider-plugin-addons.zip .
+          cd ..
+
+      - name: Compute release params
+        id: rel
+        shell: bash
+        run: |
+          TAG_INPUT="${{ github.event.inputs.tag_name }}"
+          NAME_INPUT="${{ github.event.inputs.release_name }}"
+          if [ -z "$TAG_INPUT" ]; then
+            TAG="manual-${GITHUB_RUN_NUMBER}"
+          else
+            TAG="$TAG_INPUT"
+          fi
+          if [ -z "$NAME_INPUT" ]; then
+            NAME="$TAG"
+          else
+            NAME="$NAME_INPUT"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Create GitHub Release and upload asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.rel.outputs.tag }}
+          name: ${{ steps.rel.outputs.name }}
+          files: rider-plugin-addons.zip
+          draft: ${{ github.event.inputs.draft }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
