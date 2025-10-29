@@ -1,7 +1,7 @@
 @tool
 extends EditorPlugin
 
-const JsonUtil = preload("json_utils.gd")
+const JsonUtil = preload("scripts/json_utils.gd")
 
 # Toggle in the toolbar switches active="on|off" and applies settings specified in presets.json
 # todo: integrate code to find installed Rider, provide UI to choose which one to use 
