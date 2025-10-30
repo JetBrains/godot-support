@@ -3,7 +3,7 @@
   <name>Rider Tests Plugin for intellij.rider.test.cases.gdscript module</name>
   <vendor>JetBrains</vendor>
 
-  <content>
+  <content namespace="jetbrains">
     <!-- Put required modules, use intellij.rider.test.cases.plugin plugin.xml as a reference -->
     <module name="intellij.libraries.junit5"/>
     <module name="intellij.libraries.junit5.launcher"/>
