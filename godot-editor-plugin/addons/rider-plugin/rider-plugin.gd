@@ -1,8 +1,6 @@
 @tool
 extends EditorPlugin
 
-const JsonUtil = preload("scripts/json_utils.gd")
-
 # Toggle in the toolbar switches active="on|off" and applies settings specified in presets.json
 # todo: integrate code to find installed Rider, provide UI to choose which one to use 
 #    "text_editor/external/exec_path": "",
@@ -54,7 +52,7 @@ func _on_checkbutton_pressed() -> void:
 	_apply_preset(new_active)
 
 func _apply_preset(active: String) -> void:
-	var data: Dictionary = JsonUtil.load_dict_from_file(_presets_json_path)
+	var data: Dictionary = JsonUtils.load_dict_from_file(_presets_json_path)
 	if data.is_empty():
 		push_warning("Failed to load presets: %s" % _presets_json_path)
 		return
