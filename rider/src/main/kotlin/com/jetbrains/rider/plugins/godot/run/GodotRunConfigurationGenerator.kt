@@ -42,7 +42,8 @@ class GodotRunConfigurationGenerator : LifetimedService() {
 
         const val PLAYER_CONFIGURATION_NAME = "Player"
         const val PLAYER_GDSCRIPT_CONFIGURATION_NAME = "Player GDScript"
-        const val PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME = "Player GDScript (Attach)"
+        const val PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME_OLD = "Player GDScript (Attach)"
+        const val PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME = "Debug GDScript (Running session)"
         const val EDITOR_CONFIGURATION_NAME = "Editor"
         const val CHICKENSOFT_TEST_CONFIGURATION_NAME = "Debug test"
     }
@@ -59,6 +60,16 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                     val tempRelPath = Paths.get(descriptor.mainProjectBasePath).relativeToOrSelf(project.solutionDirectory.toPath())
                     val relPath = if (tempRelPath.pathString.isEmpty()) "./" else tempRelPath
                     val runManager = RunManager.getInstance(project)
+
+                    // todo: remove in 261
+                    run {
+                        val toRemove = runManager.allSettings.filter {
+                            it.type is GdScriptConfigurationType && it.name == PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME_OLD
+                        }
+                        for (value in toRemove) {
+                            runManager.removeConfiguration(value)
+                        }
+                    }
 
                     GodotProjectDiscoverer.getInstance(project).godot4Path.advise(lt) { corePath->
                         if (corePath != null) {
