@@ -8,7 +8,7 @@ import gdscript.psi.GdTypes.*
 object GdStmtParser : GdBaseParser {
 
     val parsers = mutableListOf<GdStmtBaseParser>()
-    var moved = false
+    data class StmtParsingResult(val ok: Boolean, val moved: Boolean)
 
     init {
         parsers.add(GdAssignStmtParser)
@@ -37,7 +37,7 @@ object GdStmtParser : GdBaseParser {
         var ok = suite(b, l + 1, false, asLambda)
 
         if (!ok)
-            ok = stmt(b, l + 1, optional, asLambda)
+            ok = stmt(b, l + 1, optional, asLambda).ok
 
         return b.exitSection(ok)
     }
@@ -51,13 +51,14 @@ object GdStmtParser : GdBaseParser {
         ok = ok && b.consumeToken(INDENT)
         b.pin(ok)
 
-        ok = ok && stmt(b, l + 1, false, asLambda)
-        moved = true
+        ok = ok && stmt(b, l + 1, false, asLambda).ok
+        var moved = true
         while (ok && moved) {
-            ok = ok && stmt(b, l + 1, true, asLambda)
+            val res = stmt(b, l + 1, true, asLambda)
+            ok = res.ok
+            moved = res.moved
         }
 
-        ok && asLambda && b.passToken(NEW_LINE)
         if (asLambda) {
             if (b.nextTokenIs(DEDENT)) {
                 if (!b.followingTokensAre(DEDENT, NEW_LINE) && !b.followingTokensAre(DEDENT, END_STMT)) {
@@ -80,18 +81,19 @@ object GdStmtParser : GdBaseParser {
         return ok || b.pinned() || optional
     }
 
-    private fun stmt(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
-        if (!b.recursionGuard(l, "InnerStmt")) return false
+    private fun stmt(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): StmtParsingResult {
+        if (!b.recursionGuard(l, "InnerStmt")) return StmtParsingResult(false, false)
 
         // multiline lambda
         if (optional && asLambda && b.nextTokenIs(NEW_LINE)){
             b.passToken(NEW_LINE)
-            return true
+            return StmtParsingResult(true, true)
         }
 
-        moved = false
+        // Track builder position before attempting to parse the statement
+        val startPos = b.positionAt
 
-        if (
+        val parsed =
             parsers.any {
                 if (asLambda && it is GdEmptyStmtParser) return@any false
                 b.enterSection(it.STMT_TYPE)
@@ -116,16 +118,13 @@ object GdStmtParser : GdBaseParser {
 
                 ok
             }
-        ) {
-            moved = true
 
-            return true
-        }
+        if (parsed && b.positionAt > startPos) return StmtParsingResult(true, true)
 
         if (!optional) {
             b.error("Statement expected")
         }
 
-        return optional
+        return StmtParsingResult(optional, b.positionAt > startPos)
     }
 }
