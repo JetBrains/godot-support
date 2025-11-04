@@ -41,7 +41,41 @@ class GdScriptRunConfiguration(name:String, project: Project, factory: Configura
 
     override fun readExternal(element: Element) {
         super.readExternal(element)
-        json = options.json ?: GdScriptRunFactory.DEFAULT_FULL_JSON
+        val optionsJson = options.json
+        json = if (optionsJson.isNullOrBlank() || !hasMeaningfulContent(optionsJson)) {
+            GdScriptRunFactory.DEFAULT_FULL_JSON
+        } else {
+            optionsJson
+        }
+    }
+
+    private fun hasMeaningfulContent(jsonString: String): Boolean {
+        return try {
+            val mapper = GdScriptRunConfigJacksonObjectMapper.getService(project).mapper
+            val node = mapper.readTree(jsonString)
+            // If it's null or not an object/array
+            if (node == null || node.isNull()) {
+                return false
+            }
+
+
+            // If it's an empty object {}
+            if (node.isObject() && node.size() == 0) {
+                return false
+            }
+
+
+            // If it's an empty array []
+            if (node.isArray() && node.size() == 0) {
+                return false
+            }
+
+
+            // Otherwise, has something
+            return true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun getConfigurationEditor(): SettingsEditor<out RunConfiguration> = GdScriptRunConfigurationSettingsEditor(project)

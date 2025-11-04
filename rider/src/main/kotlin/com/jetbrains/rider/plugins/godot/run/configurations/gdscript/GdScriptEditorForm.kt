@@ -21,7 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import javax.swing.JPanel
 import javax.swing.event.HyperlinkEvent
 
-class GdScriptEditorForm(lifetime: Lifetime, project: Project) {
+class GdScriptEditorForm(lifetime: Lifetime, val project: Project) {
 
     private lateinit var fullArgumentsField: LanguageTextField
     private lateinit var errorLabel: MultiLineLabel
@@ -73,10 +73,7 @@ class GdScriptEditorForm(lifetime: Lifetime, project: Project) {
 
     private fun validateJson(text: String): ValidationInfo? {
         if (text.isBlank()) return null // allow empty, will use defaults
-        val mapper = jacksonObjectMapper().apply {
-            configure(JsonParser.Feature.ALLOW_TRAILING_COMMA, true)
-            configure(JsonParser.Feature.ALLOW_COMMENTS, true)
-        }
+        val mapper = GdScriptRunConfigJacksonObjectMapper.getService(project).mapper
         val node = try {
             mapper.readTree(text)
         } catch (e: Exception) {
