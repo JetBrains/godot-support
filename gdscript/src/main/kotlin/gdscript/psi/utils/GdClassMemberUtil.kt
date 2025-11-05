@@ -239,8 +239,14 @@ object GdClassMemberUtil {
         static: Boolean? = null,
         search: String? = null,
     ): PsiElement? {
+        val visited = mutableSetOf<PsiElement>()
         var par = parent
         while (par != null) {
+            // Cycle detection: prevent infinite loops in case of circular inheritance
+            if (!visited.add(par)) {
+                break
+            }
+
             val local = addsParentDeclarations(par, result, static, search)
             if (search != null && local != null) return local
             if (par is GdClassDeclTl) {
