@@ -50,7 +50,9 @@ class GdInheritanceReference : PsiReferenceBase<PsiElement> {
         val cache = ResolveCache.getInstance(project)
         return cache.resolveWithCaching(
             this,
-            ResolveCache.Resolver { _, _ -> GdClassUtil.getClassIdElement(key, project) },
+            ResolveCache.Resolver { _, _ ->
+                GdClassUtil.getClassIdElement(key, element, project)
+            },
             false,
             false,
         )

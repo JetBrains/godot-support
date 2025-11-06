@@ -1,0 +1,10 @@
+class T1:
+	func x():
+		Child[r].new[u]().s[r]()
+
+class Child extends Parent2[r]:
+	pass
+
+class Parent2:
+	func s():
+		pass

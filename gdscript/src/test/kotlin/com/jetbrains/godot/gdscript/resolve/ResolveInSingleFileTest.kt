@@ -44,4 +44,11 @@ class ResolveInSingleFileTest : ResolveTestBase() {
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
     }
+
+    @Test
+    fun testExtendsClass(){
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
 }
