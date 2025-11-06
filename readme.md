@@ -17,7 +17,7 @@ Rider is JetBrains' cross platform IDE, based on ReSharper and the IntelliJ Plat
 **Key components:**
 - Located in the `rider`, `resharper`, and `debugger` folders
 - Focused on C# development for Godot
-- Provides GDScript debugging
+- However provides LSP and debugging for GDScript
 
 [Dedicated readme](godot-support/features.md)
 
