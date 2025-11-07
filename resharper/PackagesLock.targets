@@ -4,7 +4,7 @@
     <PackageLock Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" IsDevelopmentDependency="True" />
     <PackageLock Include="GodotTools.IdeMessaging" Version="1.1.2" />
     <PackageLock Include="CitizenMatt.ReSharper.LiveTemplateCompiler" Version="3.7.0" IsDevelopmentDependency="True" />
-    <PackageLock Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageLock Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageLock Include="JetBrains.Godot.Tools" Version="2.3.0.5" />
   </ItemGroup>
 </Project>
