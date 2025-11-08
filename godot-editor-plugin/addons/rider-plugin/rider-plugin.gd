@@ -1,13 +1,12 @@
 @tool
 extends EditorPlugin
 
-# Toggle in the toolbar switches active="on|off" and applies settings specified in presets.json
-# todo: integrate code to find installed Rider, provide UI to choose which one to use 
-#    "text_editor/external/exec_path": "",
-#    "text_editor/external/exec_flags": "{project} --line {line} {file}"
-
 var editor_settings: EditorSettings
 var checkbutton: CheckButton
+var rider_button: Button
+var _preset_applier: PresetApplier
+var _settings_service: EditorSettingsService
+var _locator_service: RiderLocatorService
 var _plugin_cfg_path: String
 var _presets_json_path: String
 
@@ -33,6 +32,14 @@ func _enter_tree() -> void:
 	checkbutton.pressed.connect(_on_checkbutton_pressed)
 	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, checkbutton)
 
+	# Initialize services and panel
+	_settings_service = EditorSettingsService.new()
+	_locator_service = RiderLocatorService.new()
+	_preset_applier = PresetApplier.new(_presets_json_path)
+
+	for rider in _locator_service.get_installations():
+		print(rider)
+
 	# Ensure settings reflect current state on startup
 	_apply_preset(active)
 
@@ -52,18 +59,10 @@ func _on_checkbutton_pressed() -> void:
 	_apply_preset(new_active)
 
 func _apply_preset(active: String) -> void:
-	var data: Dictionary = JsonUtils.load_dict_from_file(_presets_json_path)
-	if data.is_empty():
-		push_warning("Failed to load presets: %s" % _presets_json_path)
-		return
-	if not data.has(active):
-		push_warning("Preset '%s' not found in presets.json" % active)
-		return
-	var preset := data[active] as Dictionary
-	for key in preset:
-		editor_settings.set_setting(str(key), preset[key])
-	# EditorSettings are typically auto-saved by the editor; no explicit save() call here.
+	_preset_applier.apply_preset(editor_settings, active)
 
 func _exit_tree() -> void:
 	remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, checkbutton)
+	remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, rider_button)
 	checkbutton.free()
+	rider_button.free()

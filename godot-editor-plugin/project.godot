@@ -21,6 +21,10 @@ project/assembly_name="godot-engine.rider-plugin"
 
 enabled=PackedStringArray("res://addons/rider-plugin/plugin.cfg")
 
+[gd_extension]
+
+paths=PackedStringArray("res://addons/rider-plugin/cpp/rider-plugin.gdextension")
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"

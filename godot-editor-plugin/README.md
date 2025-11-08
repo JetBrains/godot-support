@@ -1,6 +1,6 @@
 # JetBrains Rider External Editor – Godot Plugin
 
-A tiny Godot Editor plugin that adds a "Use Rider" toggle to the Godot toolbar and, when enabled, applies a set of editor settings recommended for working with JetBrains Rider as your external script editor.
+A Godot Editor plugin that adds a "Use Rider" toggle to the Godot toolbar and, when enabled, applies a set of editor settings recommended for working with JetBrains Rider as your external script editor.
 
 The goal is to make it trivial to switch between Rider‑optimized settings and stock Godot settings with a single click.
 
@@ -34,7 +34,7 @@ When OFF:
 Note: The plugin does not currently auto‑set Rider’s executable path or flags. See Plans below.
 
 ## Plans
-- Detect installed Rider and provide UI to choose among detected Rider installations:
+- Integrate the gdextension part of the plugin to help choose installed Rider as external editor:
   - set `text_editor/external/exec_path`
 
 ## License
