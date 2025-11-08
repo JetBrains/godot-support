@@ -46,6 +46,7 @@ class ResolveInSingleFileTest : ResolveTestBase() {
     }
 
     @Test
+    @Ignore("RIDER-132087")
     fun testExtendsClass(){
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
