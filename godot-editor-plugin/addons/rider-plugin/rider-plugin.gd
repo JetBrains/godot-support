@@ -37,13 +37,8 @@ func _enter_tree() -> void:
 	_locator_service = RiderLocatorService.new()
 	_preset_applier = PresetApplier.new(_presets_json_path)
 
-	# we are just getting first one
-	# todo: make it friendly configurable, there might be more then one Rider version around
-	# Godot C# has a separate setting for external editor, maybe need an option to sync with it too
-	if not _settings_service.has_valid_external_editor_path(editor_settings):
-		for riderPath in _locator_service.get_installations():
-			_settings_service.set_external_editor_path(editor_settings, riderPath.get("path", ""))
-			break
+	if not _locator_service.fix_external_editor_if_supplied_in_commandline(_settings_service, editor_settings):
+		_locator_service.fix_external_editor_if_needed(_settings_service, editor_settings)
 
 	# Ensure settings reflect current state on startup
 	_apply_preset(active)
