@@ -11,7 +11,8 @@ config_version=5
 [application]
 
 config/name="godot-engine.rider-plugin"
-config/features=PackedStringArray("4.3", "GL Compatibility")
+run/main_scene="uid://d1hr3m3q0ljcn"
+config/features=PackedStringArray("4.6", "GL Compatibility")
 
 [dotnet]
 

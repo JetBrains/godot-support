@@ -5,17 +5,19 @@ func get_installations() -> Array:
 	var result: Array = RiderLocator.new().get_installations() # from the gdextension
 	return result
 
-	# we are just getting first one
+	# we are just getting last one
 	# todo: make it friendly configurable, there might be more then one Rider version around
 	# Godot C# has a separate setting for external editor, maybe need an option to sync with it too
 func fix_external_editor_if_needed(_settings_service: EditorSettingsService, editor_settings: EditorSettings):
 	if not _settings_service.has_valid_external_editor_path(editor_settings):
-		for riderPath in get_installations():
+		var array: Array = get_installations()
+		var index: int = array.size() - 1
+		if index >= 0:
+			var riderPath = array[index]
 			var new_path : String = riderPath.get("path", "")
 			if not new_path.is_empty():
 				_settings_service.set_external_editor_path(editor_settings, new_path)
 				print("set exec_path: ", new_path)
-				break
 
 func fix_external_editor_if_supplied_in_commandline(_settings_service: EditorSettingsService, editor_settings: EditorSettings) -> bool:
 	# When Godot is started from Rider (or vice versa), we may receive the Rider path
