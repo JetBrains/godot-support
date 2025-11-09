@@ -6,6 +6,7 @@ from methods import print_error
 
 
 libname = "rider-plugin"
+projectdir = "../lib"
 
 localEnv = Environment(tools=["default"], PLATFORM="")
 
@@ -57,5 +58,7 @@ library = env.SharedLibrary(
     source=sources,
 )
 
-default_args = [library]
+copy = env.Install("{}/bin/{}/".format(projectdir, env["platform"]), library)
+
+default_args = [library, copy]
 Default(*default_args)
