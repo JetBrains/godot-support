@@ -57,6 +57,7 @@ dependencies {
         bundledPlugin("com.intellij.rider.godot.community")
         bundledPlugin("com.intellij.modules.json")
         bundledModule("intellij.platform.dap")
+        bundledPlugin("org.jetbrains.plugins.terminal")
         testFramework(TestFrameworkType.Bundled)
     }
     testImplementation(libs.openTest4J)
