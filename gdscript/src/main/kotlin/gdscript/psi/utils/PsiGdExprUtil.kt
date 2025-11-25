@@ -230,8 +230,7 @@ object PsiGdExprUtil {
                     }
 
                     val named: GdRefIdRef = expr.refIdNm ?: return ""
-                    return when (val element =
-                        GdClassMemberUtil.findDeclaration(named)) {
+                    return when (val element = GdClassMemberUtil.findDeclaration(named)) {
                         is GdClassVarDeclTl -> parseLoadedType(expr, element.returnType)
                         is GdVarDeclSt -> parseLoadedType(expr, element.returnType)
                         is GdConstDeclTl -> parseLoadedType(expr, element.returnType)
@@ -302,8 +301,7 @@ object PsiGdExprUtil {
             className = "Dictionary"
         }
 
-        return GdClassNamingIndex.INSTANCE.get(className, element.project, GlobalSearchScope.allScope(element.project))
-            .firstOrNull()?.containingFile
+        return GdClassNamingIndex.INSTANCE.getGlobally(className, element.project).firstOrNull()?.containingFile
     }
 
     private fun fromTyped(typed: String): String {

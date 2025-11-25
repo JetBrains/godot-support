@@ -12,6 +12,7 @@ import gdscript.GdKeywords
 import gdscript.index.impl.*
 import gdscript.model.BoolVal
 import gdscript.psi.*
+import gdscript.psi.utils.GdClassUtil.getClassIdElement
 import project.psi.util.ProjectAutoloadUtil
 
 object GdClassMemberUtil {
@@ -32,8 +33,7 @@ object GdClassMemberUtil {
      * List available declarations (const, var, enum, signal, method, ...) from given PsiElement skipping itself
      * @param searchFor stops and returns matching element
      */
-    @SuppressWarnings()
-    fun listDeclarations(
+    private fun listDeclarations(
         element: PsiElement,
         searchFor: PsiElement,
         onlyLocalScope: Boolean = false,
@@ -187,13 +187,10 @@ object GdClassMemberUtil {
                 }
             }
 
-            parent = GdClassUtil.getClassIdElement(calledOn, element, project)
+            parent = getClassIdElement(calledOn, element, project)
             if (parent == null) {
                 val classId = GdClassUtil.getFullClassId(element)
-                parent = GdClassUtil.getClassIdElement(
-                    "$classId.${calledOn}",
-                    element,
-                )
+                parent = getClassIdElement("$classId.${calledOn}", element, project)
                 // Try autoload classes
                 if (parent == null) {
                     parent = ProjectAutoloadUtil.findFromAlias(calledOn, element)
@@ -225,7 +222,7 @@ object GdClassMemberUtil {
             result.addAll(autoLoads)
         }
 
-        if (searchFor != null) return emptyArray()
+        if (searchFor != null) return emptyArray() // this one seems weird, but removing it brakes tests
         return result.toTypedArray()
     }
 
