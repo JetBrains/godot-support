@@ -21,11 +21,12 @@ abstract class StringStubIndexExtensionExt<Psi : PsiElement?> : StringStubIndexE
         )
     }
 
+    @Deprecated("Consider other overloads, this one uses deprecated methods")
     fun getGlobally(name: String, element: PsiElement): Collection<Psi> {
         if (DumbService.isDumb(element.project)) return emptyList()
         return DumbService.getInstance(element.project).runReadActionInSmartMode<Collection<Psi>> {
             get(name, element.project, GlobalSearchScope.allScope(element.project))
-        } ?: return emptyList()
+        }
     }
 
     fun getGlobally(name: String, project: Project): Collection<Psi> {

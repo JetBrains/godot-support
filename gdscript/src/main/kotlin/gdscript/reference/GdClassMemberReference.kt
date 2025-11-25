@@ -198,9 +198,7 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
         val direct = resolveId(resolveDeclaration())
         if (direct != null) return direct
 
-        return GdClassNamingIndex.INSTANCE
-            .get(element.text, element.project, GlobalSearchScope.allScope(element.project))
-            .firstOrNull()?.containingFile
+        return GdClassNamingIndex.INSTANCE.getGlobally(element.text, element.project).firstOrNull()?.containingFile
     }
 
     override fun getVariants(): Array<LookupElement> {
