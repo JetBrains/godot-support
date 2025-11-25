@@ -220,7 +220,8 @@ object GdClassMemberUtil {
                 val autoLoaded = autoLoads.find { it.key == searchFor }
                 if (autoLoaded != null) return arrayOf(autoLoaded)
             }
-            result.addAll(GdClassNamingIndex.INSTANCE.getAllValues(project))
+            // todo: this call is time-consuming and it is useful for completion of base types, which we have from LSP anyway
+            // result.addAll(GdClassNamingIndex.INSTANCE.getAllValues(project))
             result.addAll(autoLoads)
         }
 
