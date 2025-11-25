@@ -304,7 +304,7 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
     "match"        { return dedentRoot(GdTypes.MATCH); }
     "await"        { return dedentRoot(GdTypes.AWAIT); }
     "static"       { return dedentRoot(GdTypes.STATIC); }
-    "vararg"       { return dedentRoot(GdTypes.VARARG); }
+    "vararg"       { return dedentRoot(GdTypes.VARARG); } // this is only for the gd sdk style
     "class"        { return dedentRoot(GdTypes.CLASS); }
     "super"        { return dedentRoot(GdTypes.SUPER); }
 

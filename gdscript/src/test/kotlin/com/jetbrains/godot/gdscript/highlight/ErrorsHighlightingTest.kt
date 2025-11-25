@@ -9,7 +9,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class NestedClassErrorsHighlightingTest : BasePlatformTestCase() {
+class ErrorsHighlightingTest : BasePlatformTestCase() {
     @Test
     fun testNestedClassErrors() {
         myFixture.testHighlighting("${getTestName(false)}.gd")
@@ -23,6 +23,11 @@ class NestedClassErrorsHighlightingTest : BasePlatformTestCase() {
     @Test
     @Ignore("Bug in GdExprUtil.typeAccepts")
     fun testInvalidReturns() {
+        myFixture.testHighlighting("${getTestName(false)}.gd")
+    }
+
+    @Test
+    fun testVariadicFunctions(){
         myFixture.testHighlighting("${getTestName(false)}.gd")
     }
 
