@@ -67,7 +67,7 @@ object GdMethodCompletionUtil {
     }
 
     fun buildParamHint(method: GdMethodDeclTl, wrap: Boolean = false): String {
-        if (method.isVariadic) return "(vararg)"
+        if (method.isVariadic) return "(...)"
         return buildParamHint(method.paramList?.paramList ?: emptyList(), wrap)
     }
 

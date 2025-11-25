@@ -112,6 +112,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     "-"            { return GdTypes.MINUS; }
     "++"           { return GdTypes.PPLUS; }
     "--"           { return GdTypes.MMINUS; }
+    "..."          { return GdTypes.DOTDOTDOT; }
     "."            { return GdTypes.DOT; }
     ","            { return GdTypes.COMMA; }
     ":="           { return GdTypes.CEQ; }
