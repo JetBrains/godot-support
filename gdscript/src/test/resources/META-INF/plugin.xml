@@ -9,6 +9,7 @@
     <module name="intellij.libraries.junit5.launcher"/>
     <module name="intellij.libraries.junit5.vintage"/>
     <module name="intellij.platform.testFramework"/>
+    <module name="intellij.rider.test.build.shared"/>
     <module name="intellij.rider.test.framework.junit"/>
     <module name="intellij.rider.test.framework.core"/>
   </content>
