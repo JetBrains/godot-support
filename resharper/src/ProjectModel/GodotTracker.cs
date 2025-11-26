@@ -48,7 +48,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                         if (project == null) return;
                         MainProject = project;
                         logger.Verbose($"Godot MainProjectBasePath: {MainProjectBasePath}");
-                        GodotDescriptor = new GodotDescriptor(false, MainProjectBasePath.FullPath,
+                        GodotDescriptor = new GodotDescriptor(false, MainProjectBasePath!.FullPath, MainProject.ProjectFile?.Location?.FullPath,
                             MainProject.TargetFrameworkIds.SingleItem().ToRdTargetFrameworkInfo());
 
                     }
@@ -58,7 +58,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                             PathSearchFlags.RecurseIntoSubdirectories);
                         var bestMatch = files.OrderBy(it => it.Components.Count()).FirstOrDefault();
                         if (bestMatch == null) return;
-                        GodotDescriptor = new GodotDescriptor(true, bestMatch.Directory.FullPath, null);
+                        GodotDescriptor = new GodotDescriptor(true, bestMatch.Directory.FullPath, null, null);
                         ProjectGodotPath = bestMatch;
                     }
                 }

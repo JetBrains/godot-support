@@ -27,6 +27,7 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
     val GodotDescriptor = structdef("GodotDescriptor"){
         field("isPureGdScriptProject", bool).documentation = "True for pure GdScript project"
         field("mainProjectBasePath", string).documentation = "Path to the folder with the project.godot"
+        field("mainProjectPath", string.nullable).documentation = "Path to the main csproj"
         field("tfm", RunnableProjectsModel.rdTargetFrameworkId.nullable)
     }
 
