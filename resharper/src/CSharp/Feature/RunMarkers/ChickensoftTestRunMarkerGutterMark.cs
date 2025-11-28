@@ -14,28 +14,10 @@ using JetBrains.UI.ThemedIcons;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Feature.RunMarkers
 {
-    public class ChickensoftTestRunMarkerGutterMark() : RunMarkerGutterMark(RunMarkersThemedIcons.DebugThis.Id)
+    public class ChickensoftTestRunMarkerGutterMark() : RunMarkerGutterMark<ChickensoftTestRunMarkerHighlighting>(RunMarkersThemedIcons.DebugThis.Id)
     {
-        public override IEnumerable<BulbMenuItem> GetBulbMenuItems(IHighlighter highlighter)
-        {
-            if (highlighter.GetHighlighting() is not ChickensoftTestRunMarkerHighlighting runMarker) yield break;
-
-            var solution = Shell.Instance.GetComponent<SolutionsManager>().Solution;
-            if (solution == null) yield break;
-
-            switch (runMarker.AttributeId)
-            {
-                case ChickensoftTestRunMarkerAttributeIds.RUN_MARKER_ID:
-                    foreach (var item in GetRunItems(solution, runMarker)) yield return item;
-                    yield break;
-
-                default:
-                    yield break;
-            }
-        }
-
-        private static IEnumerable<BulbMenuItem> GetRunItems(ISolution solution,
-            ChickensoftTestRunMarkerHighlighting runMarker)
+        protected override IEnumerable<BulbMenuItem> GetBulbMenuItems(ISolution solution, ChickensoftTestRunMarkerHighlighting runMarker,
+            IHighlighter highlighter)
         {
             var host = solution.GetComponent<FrontendBackendHost>();
             var testScriptIdentifier = runMarker.TestIdentifier;
