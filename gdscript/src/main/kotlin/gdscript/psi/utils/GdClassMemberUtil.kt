@@ -92,6 +92,19 @@ object GdClassMemberUtil {
                 if (calledOn.endsWith(".gd")) {
                     static = null
                 }
+                // Hybrid handling for _GlobalScope singletons shadowing class names (e.g., `Input`).
+                // If the qualifier text looks like a class name (matches the inferred type name) AND
+                // there exists a variable with the same name in _GlobalScope, expose both static and
+                // instance members by switching to tri-state `static = null`.
+                run {
+                    val qualifierText = calledOnPsi.text
+                    val fullOwnerId = GdClassUtil.getFullClassId(calledOnPsi)
+                    val looksLikeClassName = (calledOn == qualifierText) || (calledOn == "$fullOwnerId.$qualifierText")
+                    val globalHasVarWithSameName = !checkGlobalStaticMatch(element, qualifierText)
+                    if (looksLikeClassName && globalHasVarWithSameName) {
+                        static = null
+                    }
+                }
             }
         }
 
@@ -116,7 +129,7 @@ object GdClassMemberUtil {
         // If it's stand-alone ref_id, adds also _Global & ClassNames - Classes are added as last due to matching name of some GlobalVars with class_name
         if (calledOn == null && !ignoreGlobalScope) {
             arrayOf(GdKeywords.GLOBAL_SCOPE, GdKeywords.GLOBAL_GD_SCRIPT).forEach {
-                val globalParent = GdClassUtil.getClassIdElement(it, element)
+                val globalParent = getClassIdElement(it, element, project)
                 if (globalParent != null) {
                     val local = addsParentDeclarations(
                         GdClassUtil.getOwningClassElement(globalParent),
@@ -205,7 +218,13 @@ object GdClassMemberUtil {
 
         // Recursively iterate over all extended classes
         if (!ignoreParents && !hitLocal.value) {
-            val local = collectFromParents(parent, result, project, static, searchFor)
+            // Important nuance: for unqualified completion (calledOn == null), do not suppress
+            // file-level declarations by passing a concrete static flag; keep it nullable so that
+            // listClassMemberDeclarations won't early-return for PsiFile owners. This preserves
+            // SDK/_Global and file-root members in plain completion, while still restricting them
+            // for qualified completion (calledOn != null).
+            val staticForParents = if (calledOn == null && parent is PsiFile) null else static
+            val local = collectFromParents(parent, result, project, staticForParents, searchFor)
             if (local != null) return arrayOf(local)
         }
 
@@ -557,6 +576,11 @@ object GdClassMemberUtil {
                 }
             }
         } else {
+            // When completing with a qualifier (static or instance), avoid mixing in file-level declarations,
+            // which would otherwise expose unrelated top-level classes like the qualifier's ancestors.
+            if (classElement is PsiFile && static != null) {
+                return mutableListOf()
+            }
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdConstDeclTl::class.java).forEach {
                 members.add(it)
             }

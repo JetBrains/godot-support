@@ -203,53 +203,16 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
 
     override fun getVariants(): Array<LookupElement> {
         val isCallable = this.completionIntoCallableParam()
-
-        // If there's a qualifier, compute the target class and collect only its direct members.
-        val qualifierExpr = GdClassMemberUtil.calledUpon(element)
-        var targetClassDecl: PsiElement? = qualifierExpr?.let {
-            val type = it.getReturnType()
-            if (type.isNotEmpty()) {
-                val target = GdClassUtil.getClassIdElement(type, element, element.project)
-                if (target != null) GdClassUtil.getOwningClassElement(target) else null
-            } else null
-        }
-        // Fallback: if qualifier is a class chain like A1.B1, try to interpret it as a class id
-        if (targetClassDecl == null && qualifierExpr != null) {
-            val chain = qualifierExpr.text
-            val t = GdClassUtil.getClassIdElement(chain, element, element.project)
-            if (t != null) targetClassDecl = GdClassUtil.getOwningClassElement(t)
-        }
-        // Determine static vs instance access for completion context
-        var isStaticAccess: Boolean? = null
-        if (qualifierExpr is GdCallEx) {
-            isStaticAccess = false
-        } else if (qualifierExpr != null) {
-            val leftRef = PsiTreeUtil.getChildrenOfType(qualifierExpr, GdRefIdRef::class.java)?.firstOrNull()
-            val decl = leftRef?.let { GdClassMemberUtil.findDeclaration(it)?.psi() }
-            isStaticAccess = inferStaticAccessFromDecl(decl)
-            if (isStaticAccess == null && (targetClassDecl != null || qualifierQualifiesAsClass(qualifierExpr))) {
-                // If we could resolve a class from the qualifier chain, assume static access
-                isStaticAccess = true
-            }
-        }
-
-        val members = if (targetClassDecl != null) {
-            GdClassMemberUtil.listClassMemberDeclarations(targetClassDecl, isStaticAccess)
-        } else {
-            GdClassMemberUtil.listClassMemberDeclarations(element)
-        }
-
+        val members = GdClassMemberUtil.listDeclarations(element, allowResource = true)
         val hidePrivate = GdProjectSettingsState.getInstance(element).state.hidePrivate
-            && qualifierExpr != null
+                          && GdClassMemberUtil.calledUpon(element) != null
 
-        val baseLookups = members.flatMap {
+        return members.flatMap {
             GdCompletionUtil.lookups(it, isCallable).mapNotNull { lookup ->
                 if (!hidePrivate || !lookup.lookupString.startsWith("_")) lookup
                 else null
             }
-        }
-
-        return baseLookups.toTypedArray() + arrayOf(
+        }.toTypedArray() + arrayOf(
             addMethod("new"),
             addMethod("instance"),
         )
