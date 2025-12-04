@@ -1,0 +1,55 @@
+#!/usr/bin/env python
+import os
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from _scons_stubs.SCons.Stubs import *  # noqa: F401,F403 — used only for IDE/type checking
+
+# Capture rich runtime info so we can generate stubs for both functions and variables
+snapshot = {}
+for k, v in list(globals().items()):
+    try:
+        module_name = getattr(v, "__module__", str(type(v)))
+    except Exception:
+        module_name = str(type(v))
+    try:
+        is_callable = callable(v)
+    except Exception:
+        is_callable = False
+    try:
+        is_class = isinstance(v, type)
+    except Exception:
+        is_class = False
+    snapshot[k] = {
+        "module": module_name,
+        "callable": bool(is_callable),
+        "is_class": bool(is_class),
+        "type_name": type(v).__name__,
+    }
+
+stub_path = "_scons_stubs/SCons/Stubs.pyi"
+os.makedirs(os.path.dirname(stub_path), exist_ok=True)
+
+with open(stub_path, "w") as f:
+    f.write("# Auto-generated SCons stubs\n")
+    f.write("# Simplified for IDE code completion\n")
+    f.write("from typing import Any\n\n")
+    for name, meta in sorted(snapshot.items()):
+        # Skip private names
+        if name.startswith("_"):
+            continue
+        module = meta.get("module", "") if isinstance(meta, dict) else str(meta)
+        is_callable = bool(meta.get("callable", False)) if isinstance(meta, dict) else False
+        is_class = bool(meta.get("is_class", False)) if isinstance(meta, dict) else False
+
+        f.write(f"# {module}\n")
+        if is_callable and not is_class:
+            # Functions and callables
+            f.write(f"def {name}(*args, **kwargs): ...\n\n")
+        else:
+            # Variables/constants (e.g., ARGUMENTS) and classes we don't model explicitly
+            f.write(f"{name}: Any = ...\n\n")
+
+
+default_args = []
+Default(*default_args)
