@@ -35,6 +35,25 @@ class CompletionTest : BasePlatformTestCase() {
         return sdkFiles
     }
 
+    /**
+     * Some IntelliJ test fixture APIs (configureByFiles) cannot infer a target path
+     * when given absolute file paths and will throw
+     * "Cannot guess target path ... please specify explicitly".
+     *
+     * To avoid that, copy SDK files into the in-memory project with explicit
+     * target paths that mirror the sdk directory structure.
+     */
+    private fun setupSdkFiles() {
+        val sdkRoot = getSdkPath()
+        Files.walk(sdkRoot)
+            .filter { it.isRegularFile() && it.fileName.toString().endsWith(".gd") }
+            .forEach { file ->
+                val rel = sdkRoot.relativize(file).toString()
+                // Place files under sdk/ to keep a stable layout in the temp project
+                myFixture.copyFileToProject(file.pathString, "sdk/$rel")
+            }
+    }
+
     // todo: for some reason those tests don't work with SDK
     //@Test
     //fun testWithSdk01() {
@@ -62,7 +81,7 @@ class CompletionTest : BasePlatformTestCase() {
             |	var previous_mode := Input.<caret> #anonymous enum in the static class context
         """.trimMargin()
 
-        myFixture.configureByFiles(*getSdkFiles())
+        setupSdkFiles()
         myFixture.configureByText("MyInputTest.gd", code)
         val lookups = myFixture.completeBasic()?.map { it.lookupString }?.toSet().orEmpty()
         assertTrue("Expected MOUSE_MODE_VISIBLE in completion", lookups.contains("MOUSE_MODE_VISIBLE"))
@@ -75,7 +94,7 @@ class CompletionTest : BasePlatformTestCase() {
             |	var previous_mode := Input.<caret> # Completion from the Input instance in the _GlobalScope, like action_press
         """.trimMargin()
 
-        myFixture.configureByFiles(*getSdkFiles())
+        setupSdkFiles()
         myFixture.configureByText("MyInputTest.gd", code)
 
         val lookups = myFixture.completeBasic()?.map { it.lookupString }?.toSet().orEmpty()
