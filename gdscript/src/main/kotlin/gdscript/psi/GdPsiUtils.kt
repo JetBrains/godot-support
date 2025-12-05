@@ -10,7 +10,7 @@ import gdscript.psi.impl.GdInheritanceElementType
 import gdscript.psi.utils.*
 import gdscript.structureView.GdPresentationUtil
 
-object GdPsiUtils {
+internal object GdPsiUtils {
 
     /** ClassName  */
     @JvmStatic fun getClassname(element: GdClassNaming): String = GdClassNamingElementType.getClassname(element)

@@ -1,12 +1,16 @@
 package gdscript.structureView
 
+import GdScriptPluginIcons
 import com.intellij.navigation.ItemPresentation
-import gdscript.GdKeywords
-import gdscript.psi.*
 import com.jetbrains.rd.util.firstOrNull
+import gdscript.GdKeywords
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdEnumDeclTl
+import gdscript.psi.GdMethodDeclTl
 import javax.swing.Icon
 
-object GdPresentationUtil {
+internal object GdPresentationUtil {
 
     fun presentation(classVar: GdClassVarDeclTl): ItemPresentation {
         return object : ItemPresentation {
