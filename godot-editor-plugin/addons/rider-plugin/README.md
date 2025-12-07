@@ -7,7 +7,7 @@ The goal is to make it trivial to switch between Rider‑optimized settings and 
 ## Quick start
 
 Requirements:
-- Godot 4.x
+- Godot 4.2.2
 
 Install:
 1. Copy the `addons/rider-plugin` folder into your project (keep the path as is).
@@ -19,11 +19,11 @@ Use:
 - A toolbar toggle named "Use Rider" will appear. Click it to turn the preset On/Off.
 
 Screenshot:
-![Toolbar toggle](addons/rider-plugin/screenshots/Toolbar.png)
+![Toolbar toggle](screenshots/Toolbar.png)
 
 ## What the toggle changes
 
-The preset values live in `addons/rider-plugin/presets.json`.
+The preset values live in `presets.json`.
 
 When ON:
 - Write the values from the "on" preset into the Editor Settings.
@@ -33,9 +33,15 @@ When OFF:
 
 Note: The plugin does not currently auto‑set Rider’s executable path or flags. See Plans below.
 
-## Plans
-- Integrate the gdextension part of the plugin to help choose installed Rider as external editor:
-  - set `text_editor/external/exec_path`
+## Setting Rider to be the external editor
+
+The plugin automatically detects installed Rider versions on your system and provides a convenient dropdown menu to
+select which installation to use as your external editor.
+
+- The plugin scans common installation locations for Rider on Windows, macOS, and Linux.
+- Detected installations appear in the "Select Rider" dropdown in the toolbar.
+- When you select a Rider installation, the plugin automatically updates the `dotnet/editor/external_editor_path` editor
+  setting.
 
 ## License
 See `addons/rider-plugin/LICENCE`.

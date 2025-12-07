@@ -4,6 +4,25 @@
 name: Editor Plugin Build
 on:
   workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag to create for the GitHub Release (e.g., v1.2.3). Leave empty to auto-generate.'
+        required: false
+        type: string
+      release_name:
+        description: 'Release title. Defaults to tag name or an auto-generated name.'
+        required: false
+        type: string
+      draft:
+        description: 'Create as a draft release'
+        required: false
+        type: boolean
+        default: true
+      prerelease:
+        description: 'Mark release as prerelease'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -72,7 +91,10 @@ jobs:
         with:
           name: rider-plugin-addons-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
           path: |
-            godot-editor-plugin/addons/rider-plugin/
+            godot-editor-plugin
+            !godot-editor-plugin/main.tscn
+            !godot-editor-plugin/project.godot
+            !godot-editor-plugin/addons/rider-plugin/cpp/**
             !**/.git/**
             !**/.idea/**
             !**/.godot/**
@@ -81,8 +103,9 @@ jobs:
             !**/*.exp
             !**/*.lib
             !**/*.pdb
+            !**/.gitignore
 
-  # Merges all the build artifacts together into a single artifact and publishes a zip
+  # Merges all the build artifacts together into a single artifact
   merge:
     runs-on: ubuntu-22.04
     needs: build
@@ -97,39 +120,52 @@ jobs:
           pattern: rider-plugin-addons-*
           delete-merged: true
 
-  # Packages the merged addon into a single zip suitable for the Godot Asset Library
-  package:
-    runs-on: ubuntu-latest
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-22.04
     needs: merge
-    defaults:
-      run:
-        working-directory: .
+    permissions:
+      contents: write
     steps:
-      - name: Download merged addon
+      - name: Download merged artifact
         uses: actions/download-artifact@v4
         with:
           name: rider-plugin-addons
-          path: merged
+          path: rider-plugin-addons
 
-      - name: Prepare zip folder with addons at repository root
+      - name: Prepare archive
+        run: |
+          cd rider-plugin-addons
+          zip -r ../rider-plugin-addons.zip .
+          cd ..
+
+      - name: Compute release params
+        id: rel
         shell: bash
         run: |
-          set -euo pipefail
-          mkdir -p dist
-          # Copy the addons directory so that the zip root contains `addons/` as required by the Asset Library
-          if [ -d "merged/godot-editor-plugin/addons" ]; then
-            cp -a merged/godot-editor-plugin/addons dist/
+          TAG_INPUT="${{ github.event.inputs.tag_name }}"
+          NAME_INPUT="${{ github.event.inputs.release_name }}"
+          if [ -z "$TAG_INPUT" ]; then
+            TAG="manual-${GITHUB_RUN_NUMBER}"
           else
-            echo "Expected path merged/godot-editor-plugin/addons not found" >&2
-            ls -la merged || true
-            exit 1
+            TAG="$TAG_INPUT"
           fi
-          # Prune build sources from the asset; keep only the built binaries under addons/rider-plugin/lib/**
-          rm -rf dist/addons/rider-plugin/cpp || true
-          (cd dist && zip -r rider-plugin-addons.zip addons)
+          if [ -z "$NAME_INPUT" ]; then
+            NAME="$TAG"
+          else
+            NAME="$NAME_INPUT"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
 
-      - name: Upload Asset Library package
-        uses: actions/upload-artifact@v4
+      - name: Create GitHub Release and upload asset
+        uses: softprops/action-gh-release@v2
         with:
-          name: asset-library-package
-          path: dist/rider-plugin-addons.zip
+          tag_name: ${{ steps.rel.outputs.tag }}
+          name: ${{ steps.rel.outputs.name }}
+          files: rider-plugin-addons.zip
+          draft: ${{ github.event.inputs.draft }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
