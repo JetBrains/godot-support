@@ -1,0 +1,130 @@
+# For syntax, see https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+# This workflow is triggered manually on the "Actions" tab on GitHub, and can be used to create releases.
+
+name: Editor Plugin Build
+on:
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: godot-editor-plugin/addons/rider-plugin/cpp
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          [
+            { platform: linux, arch: x86_64, os: ubuntu-22.04 },
+            { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
+            { platform: windows, arch: x86_64, os: windows-latest },
+            { platform: windows, arch: arm64, os: windows-latest },
+            { platform: macos, arch: universal, os: macos-latest },
+          ]
+        target-type: [template_debug, template_release]
+        float-precision: [single]
+
+    runs-on: ${{ matrix.target.os }}
+    steps:
+      # Clone this repository
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      # Setup dependencies
+      - name: Setup godot-cpp
+        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/setup-godot-cpp
+        with:
+          platform: ${{ matrix.target.platform }}
+          em-version: 3.1.62
+
+      # Build GDExtension (with caches)
+      - name: Restore .scons_cache
+        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/godot-cache-restore
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+
+      - name: Build GDExtension
+        shell: sh
+        env:
+          SCONS_CACHE: ${{ github.workspace }}/.scons-cache/
+        run: |
+          scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }} precision=${{ matrix.float-precision }}
+
+      - name: Save .scons_cache
+        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/godot-cache-save
+        with:
+          scons-cache: ${{ github.workspace }}/.scons-cache/
+          cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+
+      # Clean up compilation files
+      - name: Windows - Delete compilation files
+        if: ${{ matrix.target.platform == 'windows' }}
+        shell: pwsh
+        run: |
+          Remove-Item bin/* -Include *.exp,*.lib,*.pdb -Force
+
+      # Upload the build
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rider-plugin-addons-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
+          path: |
+            godot-editor-plugin/addons/rider-plugin/**
+            !**/.git/**
+            !**/.idea/**
+            !**/.godot/**
+            !**/.import/**
+            !**/.scons*/**
+            !**/*.exp
+            !**/*.lib
+            !**/*.pdb
+
+  # Merges all the build artifacts together into a single artifact and publishes a zip
+  merge:
+    runs-on: ubuntu-22.04
+    needs: build
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: rider-plugin-addons
+          pattern: rider-plugin-addons-*
+          delete-merged: true
+
+  # Packages the merged addon into a single zip suitable for the Godot Asset Library
+  package:
+    runs-on: ubuntu-latest
+    needs: merge
+    steps:
+      - name: Download merged addon
+        uses: actions/download-artifact@v4
+        with:
+          name: rider-plugin-addons
+          path: merged
+
+      - name: Prepare zip folder with addons at repository root
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          # Copy the addons directory so that the zip root contains `addons/` as required by the Asset Library
+          if [ -d "merged/godot-editor-plugin/addons" ]; then
+            cp -a merged/godot-editor-plugin/addons dist/
+          else
+            echo "Expected path merged/godot-editor-plugin/addons not found" >&2
+            ls -la merged || true
+            exit 1
+          fi
+          # Prune build sources from the asset; keep only the built binaries under addons/rider-plugin/lib/**
+          rm -rf dist/addons/rider-plugin/cpp || true
+          (cd dist && zip -r rider-plugin-addons.zip addons)
+
+      - name: Upload Asset Library package
+        uses: actions/upload-artifact@v4
+        with:
+          name: asset-library-package
+          path: dist/rider-plugin-addons.zip
