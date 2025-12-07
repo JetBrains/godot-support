@@ -5,12 +5,11 @@ name: Editor Plugin Build
 on:
   workflow_dispatch:
 
-defaults:
-  run:
-    working-directory: godot-editor-plugin/addons/rider-plugin/cpp
-
 jobs:
   build:
+    defaults:
+      run:
+        working-directory: godot-editor-plugin/addons/rider-plugin/cpp
     strategy:
       fail-fast: false
       matrix:
@@ -87,6 +86,9 @@ jobs:
   merge:
     runs-on: ubuntu-22.04
     needs: build
+    defaults:
+      run:
+        working-directory: .
     steps:
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
@@ -99,6 +101,9 @@ jobs:
   package:
     runs-on: ubuntu-latest
     needs: merge
+    defaults:
+      run:
+        working-directory: .
     steps:
       - name: Download merged addon
         uses: actions/download-artifact@v4
