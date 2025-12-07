@@ -20,13 +20,13 @@ jobs:
         # Test a few selected combinations of parameters ("test case matrix").
         include:
           - target: { platform: linux, arch: x86_64, os: ubuntu-22.04 }
-            target-type: template_debug
-            float-precision: double
+            target-type: editor
+            float-precision: single
           - target: { platform: windows, arch: x86_64, os: windows-latest }
-            target-type: template_release
+            target-type: editor
             float-precision: single
           - target: { platform: macos, arch: universal, os: macos-latest }
-            target-type: template_debug
+            target-type: editor
             float-precision: single
 
     runs-on: ${{ matrix.target.os }}
