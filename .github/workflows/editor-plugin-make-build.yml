@@ -22,7 +22,7 @@ jobs:
             { platform: macos, arch: universal, os: macos-latest },
           ]
         target-type: [editor]
-        float-precision: [single]
+        float-precision: [single, double]
 
     runs-on: ${{ matrix.target.os }}
     steps:
