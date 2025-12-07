@@ -21,7 +21,7 @@ jobs:
             { platform: windows, arch: arm64, os: windows-latest },
             { platform: macos, arch: universal, os: macos-latest },
           ]
-        target-type: [template_debug, template_release]
+        target-type: [editor]
         float-precision: [single]
 
     runs-on: ${{ matrix.target.os }}
@@ -72,7 +72,7 @@ jobs:
         with:
           name: rider-plugin-addons-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
           path: |
-            godot-editor-plugin/addons/rider-plugin/**
+            godot-editor-plugin/addons/rider-plugin/
             !**/.git/**
             !**/.idea/**
             !**/.godot/**
