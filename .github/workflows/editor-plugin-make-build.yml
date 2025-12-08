@@ -128,7 +128,7 @@ jobs:
       contents: write
     steps:
       - name: Download merged artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: rider-plugin-addons
           path: rider-plugin-addons
