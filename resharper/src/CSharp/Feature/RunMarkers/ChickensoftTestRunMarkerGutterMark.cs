@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using JetBrains.Application.UI.Controls.BulbMenu.Anchors;
 using JetBrains.Application.UI.Controls.BulbMenu.Items;
 using JetBrains.ProjectModel;
-using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Plugins.Godot.Protocol;
-using JetBrains.ReSharper.Resources.Shell;
 using JetBrains.Rider.Backend.Features.RunMarkers;
 using JetBrains.TextControl.DocumentMarkup;
 using JetBrains.UI.RichText;
@@ -14,7 +12,7 @@ using JetBrains.UI.ThemedIcons;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Feature.RunMarkers
 {
-    public class ChickensoftTestRunMarkerGutterMark() : RunMarkerGutterMark<ChickensoftTestRunMarkerHighlighting>(RunMarkersThemedIcons.DebugThis.Id)
+    public class ChickensoftTestRunMarkerGutterMark() : RunMarkerGutterMarkBase<ChickensoftTestRunMarkerHighlighting>(RunMarkersThemedIcons.DebugThis.Id)
     {
         protected override IEnumerable<BulbMenuItem> GetBulbMenuItems(ISolution solution, ChickensoftTestRunMarkerHighlighting runMarker,
             IHighlighter highlighter)
