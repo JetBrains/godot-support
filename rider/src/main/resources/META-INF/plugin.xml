@@ -10,6 +10,8 @@
     <module name="intellij.textmate"/>
     <plugin id="com.intellij.rider.godot.community"/>
     <plugin id="org.jetbrains.plugins.terminal"/>
+    <module name="intellij.platform.dap"/>
+    <module name="intellij.rd.client"/>
   </dependencies>
 
   <actions>
