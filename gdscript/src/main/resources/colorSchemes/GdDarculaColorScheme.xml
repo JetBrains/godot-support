@@ -65,6 +65,16 @@
             <option name="FOREGROUND" value="a3a3f5" />
         </value>
     </option>
+    <option name="GD_GLOBAL_VARIABLE_AUTOLOAD">
+        <value>
+            <option name="FOREGROUND" value="bb89d1" />
+        </value>
+    </option>
+    <option name="GD_GLOBAL_VARIABLE_BUILT_IN">
+      <value>
+            <option name="FOREGROUND" value="866598" />
+      </value>
+    </option>
     <option name="GD_STRING_NAME">
         <value>
             <option name="FOREGROUND" value="ffc2a6" />
