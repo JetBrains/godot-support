@@ -101,6 +101,14 @@ interface GdHighlighterColors {
             "GD_GLOBAL_FUNCTION", DefaultLanguageHighlighterColors.CONSTANT
         )
 
+        val GLOBAL_VARIABLE_AUTOLOAD = TextAttributesKey.createTextAttributesKey(
+            "GD_GLOBAL_VARIABLE_AUTOLOAD", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE
+        )
+
+        val GLOBAL_VARIABLE_BUILT_IN = TextAttributesKey.createTextAttributesKey(
+            "GD_GLOBAL_VARIABLE_BUILT_IN", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE
+        )
+
         val NOTE = TextAttributesKey.createTextAttributesKey(
             "GD_NOTE", DefaultLanguageHighlighterColors.DOC_COMMENT_MARKUP
         )

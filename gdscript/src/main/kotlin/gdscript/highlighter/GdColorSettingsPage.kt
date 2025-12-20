@@ -33,6 +33,9 @@ var dict = {"key": "value", 2: 3}
 const ANSWER = 42
 const THE_NAME = "Charly"
 
+var from_autoload = <global_var_autoload>Autoloaded</global_var_autoload>.foo()
+var from_global = <global_var_builtin>Engine</global_var_builtin>.max_fps
+
 enum Named {THING_1, THING_2, ANOTHER_THING = -1}
 
 var v2 = Vector2(1, 2)
@@ -69,8 +72,13 @@ class Something:
     }
 
     override fun getAdditionalHighlightingTagToDescriptorMap(): Map<String, TextAttributesKey>? {
-        return null
+        return TAGS
     }
+
+    private val TAGS = mapOf(
+        "global_var_autoload" to GdHighlighterColors.GLOBAL_VARIABLE_AUTOLOAD,
+        "global_var_builtin" to GdHighlighterColors.GLOBAL_VARIABLE_BUILT_IN,
+    )
 
     override fun getAttributeDescriptors(): Array<AttributesDescriptor> {
         return DESCRIPTORS
@@ -105,6 +113,8 @@ class Something:
             AttributesDescriptor(GdScriptBundle.message("settings.highlighter.user.type"), GdHighlighterColors.CLASS_TYPE),
             AttributesDescriptor(GdScriptBundle.message("settings.highlighter.numbers"), GdHighlighterColors.NUMBER),
             AttributesDescriptor(GdScriptBundle.message("settings.highlighter.global.function"), GdHighlighterColors.GLOBAL_FUNCTION),
+            AttributesDescriptor("Global variable (Autoload)", GdHighlighterColors.GLOBAL_VARIABLE_AUTOLOAD),
+            AttributesDescriptor("Global variable (Built-in)", GdHighlighterColors.GLOBAL_VARIABLE_BUILT_IN),
             AttributesDescriptor(GdScriptBundle.message("settings.highlighter.string.names"), GdHighlighterColors.STRING_NAME),
             AttributesDescriptor(GdScriptBundle.message("settings.highlighter.string.format.marks"), GdHighlighterColors.STRING_FORMAT),
             AttributesDescriptor(GdScriptBundle.message("settings.highlighter.variable.reference"), GdHighlighterColors.MEMBER),

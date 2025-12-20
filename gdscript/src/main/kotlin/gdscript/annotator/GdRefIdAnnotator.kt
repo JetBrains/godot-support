@@ -19,6 +19,7 @@ import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdProjectState
 import gdscript.utils.PsiElementUtil.getCallExpr
 import gdscript.utils.PsiFileUtil.isInSdk
+import project.psi.util.ProjectAutoloadUtil
 
 /**
  * Colors references
@@ -54,13 +55,22 @@ class GdRefIdAnnotator : Annotator {
                     else GdHighlighterColors.METHOD_CALL
                 }
 
+                is GdClassVarDeclTl -> {
+                    if (resolved.containingFile.name.endsWith("GlobalScope.gd")) GdHighlighterColors.GLOBAL_VARIABLE_BUILT_IN
+                    else GdHighlighterColors.MEMBER
+                }
+
                 is PsiFile, is GdClassDeclTl, is GdClassNaming -> {
                     var psi = resolved
                     if (resolved is GdClassNaming) {
                         psi = psi.parent!!
                     }
 
-                    if (psi.containingFile.isInSdk()) {
+                    val autoload = ProjectAutoloadUtil.findFromAlias(txt, element)
+                    if (autoload != null && autoload == psi.containingFile) {
+                        GdHighlighterColors.GLOBAL_VARIABLE_AUTOLOAD
+                    }
+                    else if (psi.containingFile.isInSdk()) {
                         val nextLeaf = element.nextLeaf(true)
                         if (!objectContinuation.contains(nextLeaf.elementType) && psi.childrenOfType<GdMethodDeclTl>()
                                 .any { it.isConstructor }
