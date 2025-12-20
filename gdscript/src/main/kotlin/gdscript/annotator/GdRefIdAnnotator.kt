@@ -19,6 +19,7 @@ import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdProjectState
 import gdscript.utils.PsiElementUtil.getCallExpr
 import gdscript.utils.PsiFileUtil.isInSdk
+import project.psi.util.ProjectAutoloadUtil
 
 /**
  * Colors references
@@ -49,9 +50,14 @@ class GdRefIdAnnotator : Annotator {
         if (reference?.isSoft == false && reference is GdClassMemberReference) {
             attribute = when (val resolved = reference.resolveDeclaration()) {
                 is GdMethodDeclTl -> {
-                    if (resolved.containingFile.name.endsWith("GlobalScope.gd")) GdHighlighterColors.GLOBAL_FUNCTION
+                    if (resolved.containingFile.name == "${GdKeywords.GLOBAL_SCOPE}.gd") GdHighlighterColors.GLOBAL_FUNCTION
                     else if (resolved.isStatic) GdHighlighterColors.STATIC_METHOD_CALL
                     else GdHighlighterColors.METHOD_CALL
+                }
+
+                is GdClassVarDeclTl -> {
+                    if (resolved.containingFile.name == "${GdKeywords.GLOBAL_SCOPE}.gd") GdHighlighterColors.GLOBAL_VARIABLE_BUILT_IN
+                    else GdHighlighterColors.MEMBER
                 }
 
                 is PsiFile, is GdClassDeclTl, is GdClassNaming -> {
@@ -60,7 +66,10 @@ class GdRefIdAnnotator : Annotator {
                         psi = psi.parent!!
                     }
 
-                    if (psi.containingFile.isInSdk()) {
+                    if (ProjectAutoloadUtil.findFromAlias(txt, element) != null) {
+                        GdHighlighterColors.GLOBAL_VARIABLE_AUTOLOAD
+                    }
+                    else if (psi.containingFile.isInSdk()) {
                         val nextLeaf = element.nextLeaf(true)
                         if (!objectContinuation.contains(nextLeaf.elementType) && psi.childrenOfType<GdMethodDeclTl>()
                                 .any { it.isConstructor }
