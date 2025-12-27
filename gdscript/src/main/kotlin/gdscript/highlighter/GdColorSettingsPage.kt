@@ -107,7 +107,6 @@ class Something:
             AttributesDescriptor("String names (&\"name\")", GdHighlighterColors.STRING_NAME),
             AttributesDescriptor("String format marks (\"%s\")", GdHighlighterColors.STRING_FORMAT),
             AttributesDescriptor("Variable reference", GdHighlighterColors.MEMBER),
-            AttributesDescriptor("Variable reference", GdHighlighterColors.MEMBER),
             AttributesDescriptor("Errors", GdHighlighterColors.BAD_CHARACTER),
         )
     }
