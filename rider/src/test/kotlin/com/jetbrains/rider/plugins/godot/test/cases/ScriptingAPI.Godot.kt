@@ -16,6 +16,7 @@ import com.jetbrains.rider.test.scriptingApi.debugProgram
 import com.jetbrains.rider.test.scriptingApi.waitForDotNetDebuggerInitializedOrCanceled
 import com.jetbrains.rider.utils.NullPrintStream
 import java.io.File
+import java.nio.file.Path
 import java.time.Duration
 
 // region Constants
@@ -66,7 +67,7 @@ fun putGodotProjectToTempTestDir(
 // endregion
 
 // region Godot Execution
-fun startGodot(godotExecutable: File, projectPath: String, logPath: File, dotnetSdk: String): Process {
+fun startGodot(godotExecutable: File, projectPath: String, logPath: Path, dotnetSdk: String): Process {
     val logFile = File(logPath.toString(), "Godot_${System.currentTimeMillis()}.log")
 
     val command = mutableListOf(
@@ -95,7 +96,7 @@ fun startGodotWithProject(
     projectName: String,
     testWorkDirectory: File,
     solutionSourceRootDirectory: File,
-    logPath: File,
+    logPath: Path,
     dotnetSdk: String,
 ): Process {
     val godotExecutable = downloadAndExtractGodot(godotVersion)
