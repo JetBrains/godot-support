@@ -66,8 +66,7 @@ class GdRefIdAnnotator : Annotator {
                         psi = psi.parent!!
                     }
 
-                    val autoload = ProjectAutoloadUtil.findFromAlias(txt, element)
-                    if (autoload != null && autoload == psi.containingFile) {
+                    if (ProjectAutoloadUtil.findFromAlias(txt, element) != null) {
                         GdHighlighterColors.GLOBAL_VARIABLE_AUTOLOAD
                     }
                     else if (psi.containingFile.isInSdk()) {
