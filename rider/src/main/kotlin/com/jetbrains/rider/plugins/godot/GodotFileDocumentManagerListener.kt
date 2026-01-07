@@ -51,7 +51,7 @@ class GodotFileDocumentManagerListener : FileDocumentManagerListener {
 
     private fun showAutoBuildNotification(project: Project) {
         val context = BuildToolWindowService.getInstance(project).getOrCreateContext(project)
-        context.showToolWindowIfHidden(false)
+        //  context.showToolWindowIfHidden(false) // Is is too annoying, when the toolwindows pops-up every time, RIDER-134163
         val message = GodotPluginBundle.message("build.automatically.text")
         context.addOutputMessage(MessageBuildEvent(message = message,
                                                    projectId = null,
