@@ -4,16 +4,22 @@ import com.intellij.ide.projectView.ProjectViewNestingRulesProvider
 
 class GdFileNesting : ProjectViewNestingRulesProvider {
 
-    // TODO no idea who to create some wildcards/pattern matches so for now just listing some suffixes
-    val exts = arrayOf(
-        "svg",
-        "png",
-        "jpg",
-        "jpeg",
-    )
-
+    // TODO no idea how to create some wildcards/pattern matches
     override fun addFileNestingRules(consumer: ProjectViewNestingRulesProvider.Consumer) {
-        exts.forEach { consumer.addNestingRule(".$it", ".$it.import") }
-    }
+        arrayOf(
+            "svg",
+            "png",
+            "jpg",
+            "jpeg",
+            "webp",
+            "fbx",
+            "glb",
+            "gltf"
+        ).forEach { consumer.addNestingRule(".$it", ".$it.import") }
 
+        // keep in sync with GodotNestingRulesProvider
+        arrayOf("cs", "gd", "gdshader", "gdextension").forEach {
+            consumer.addNestingRule(".$it", ".$it.uid")
+        }
+    }
 }
