@@ -147,6 +147,8 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 return LspCommunicationChannel.Socket(remoteHostPort!!, lspConnectionMode == LanguageServerConnectionMode.StartEditorHeadless)
             }
 
+        override fun getLanguageId(file: VirtualFile) = "gdscript"
+
         override fun createLsp4jClient(handler: LspServerNotificationsHandler): Lsp4jClient {
             return GodotLsp4jClient(handler, project)
         }
