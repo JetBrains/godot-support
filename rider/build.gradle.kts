@@ -58,6 +58,7 @@ dependencies {
         bundledPlugin("com.intellij.modules.json")
         bundledModule("intellij.platform.dap")
         bundledPlugin("org.jetbrains.plugins.terminal")
+        bundledModules("intellij.rider.debugger.shared")
         testFramework(TestFrameworkType.Bundled)
     }
     testImplementation(libs.openTest4J)
