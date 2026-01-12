@@ -70,8 +70,8 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
         )
     }
 
-    @Test(description = "Debug C# godot player")
-    @ChecklistItems(["Debug/Debug C# godot player"])
+    @Test(description = "Debug C# Godot player")
+    @ChecklistItems(["Debug/Debug C# Godot player"])
     fun testDebug() {
       attachDebuggerToGodotEditor(project,
                                   {
@@ -85,7 +85,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     }
 
     @Test(description = "Check simple stepping")
-    @ChecklistItems(["Debug/Stepping while debug C# godot player"])
+    @ChecklistItems(["Debug/Stepping while debug C# Godot player"])
     fun checkSimpleStepping() {
       attachDebuggerToGodotEditor(project,
                                   {
@@ -103,7 +103,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     }
 
     @Test(description = "Check simple evaluation")
-    @ChecklistItems(["Debug/Evaluation while debug C# godot player"])
+    @ChecklistItems(["Debug/Evaluation while debugging C# Godot player"])
     fun checkSimpleEvaluation() {
       attachDebuggerToGodotEditor(project,
                                   {
