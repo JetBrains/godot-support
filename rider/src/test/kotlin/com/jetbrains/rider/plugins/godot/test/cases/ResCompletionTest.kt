@@ -7,6 +7,7 @@ import com.jetbrains.rider.completion.RiderCodeCompletionExtraSettings
 import com.jetbrains.rider.test.annotations.RiderTestTimeout
 import com.jetbrains.rider.test.annotations.Solution
 import com.jetbrains.rider.test.annotations.TestSettings
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.base.PerClassSolutionTestBase
 import com.jetbrains.rider.test.enums.BuildTool
 import com.jetbrains.rider.test.enums.sdk.SdkVersion
@@ -57,6 +58,7 @@ class ResCompletionTest : PerClassSolutionTestBase(), TestApiScopes.Editor {
 
     @RiderTestTimeout(5, TimeUnit.MINUTES)
     @Test
+    @ChecklistItems(["Completion/Resource completion"])
     fun test_PrimitiveCompletion() {
         withOpenedEditor(File("scripts").resolve("NewScript.cs").path, "ResCompletionTest1.cs") {
             typeWithLatency("/")
@@ -65,6 +67,7 @@ class ResCompletionTest : PerClassSolutionTestBase(), TestApiScopes.Editor {
     }
 
     @Test
+    @ChecklistItems(["Completion/Resource completion"])
     fun test_PrimitiveCompletion2() {
         withOpenedEditor(File("scripts").resolve("NewScript.cs").path, "ResCompletionTest2.cs") {
             callBasicCompletion()
