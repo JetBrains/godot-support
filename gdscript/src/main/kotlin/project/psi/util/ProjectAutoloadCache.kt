@@ -7,9 +7,6 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.openapi.vfs.VirtualFileManager
-import com.intellij.openapi.vfs.newvfs.BulkFileListener
-import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
@@ -57,7 +54,6 @@ class ProjectAutoloadCache(private val project: Project) : Disposable {
 
     init {
         refresh()
-        subscribeToChangesVF()
         subscribeToChangesPsi()
     }
 
@@ -73,28 +69,6 @@ class ProjectAutoloadCache(private val project: Project) : Disposable {
         snapshot = ReadAction.compute<Snapshot, RuntimeException> { buildSnapshot() }
     }
 
-    private fun subscribeToChangesVF() {
-        project.messageBus.connect(this).subscribe(
-            VirtualFileManager.VFS_CHANGES,
-            object : BulkFileListener {
-                override fun after(events: MutableList<out VFileEvent>) {
-                    if (project.isDisposed) return
-                    if (events.any { isTscnContextDirty(it) }) {
-                        refreshAfterCommit()
-                    }
-                }
-            },
-        )
-    }
-
-    private fun isTscnContextDirty(event: VFileEvent): Boolean {
-        val watched = snapshot.watchedFiles
-        val file = event.file
-        if (file != null && watched.contains(file)) return true
-
-        return false
-    }
-
     private fun refreshAfterCommit() {
         if (project.isDisposed) return
         PsiDocumentManager.getInstance(project).performWhenAllCommitted {
@@ -107,10 +81,14 @@ class ProjectAutoloadCache(private val project: Project) : Disposable {
         psiManager.addPsiTreeChangeListener(object : PsiTreeChangeAdapter() {
             override fun childrenChanged(event: PsiTreeChangeEvent) {
                 val vf = event.file?.virtualFile ?: return
-                if (!isProjectFileDirty(vf.path)) return
+                if (!isProjectFileDirty(vf.path) && !isTscnContextDirty(vf)) return
                 refreshAfterCommit()
             }
         }, this)
+    }
+
+    private fun isTscnContextDirty(file: VirtualFile): Boolean {
+        return snapshot.watchedFiles.contains(file)
     }
 
     private fun isProjectFileDirty(path: String): Boolean {
@@ -133,7 +111,7 @@ class ProjectAutoloadCache(private val project: Project) : Disposable {
         val entries = PsiTreeUtil.getStubChildrenOfTypeAsList(section, ProjectData::class.java)
         entries.forEach { data ->
             /* e.g.
-             data.value = "res://my_singleton.gd"
+             data.value = "*res://my_singleton.gd"
              parsed     = { enabled:true, path: "res://my_singleton.gd" }
              file       = { "file://D:/godot-projects/temp/my_singleton.gd" }
              autoload   = { key: "MySingleton", element: GdScript File }
@@ -142,6 +120,10 @@ class ProjectAutoloadCache(private val project: Project) : Disposable {
             val parsed = parseAutoloadValue(data.value) ?: return@forEach
             val resource = GdFileResIndex.getFiles(parsed.path, project).firstOrNull() ?: return@forEach
             val file = resource.getPsiFile(project) ?: return@forEach
+            if (file.fileType is TscnFileType) {
+                file.virtualFile?.let { watchedFiles.add(it) }
+            }
+
             val autoload = when {
                 file.fileType is GdFileType -> GdAutoload(data.key, file)
                 file.fileType is TscnFileType -> findGdFileForTscnFile(project, data.key, file)
@@ -151,10 +133,6 @@ class ProjectAutoloadCache(private val project: Project) : Disposable {
             val info = AutoloadInfo(data.key, autoload.element, parsed.enabled)
             byAlias[data.key] = info
             if (parsed.enabled) globals.add(autoload)
-
-            if (file.fileType is TscnFileType) {
-                file.virtualFile?.let { watchedFiles.add(it) }
-            }
         }
 
         return Snapshot(byAlias, globals, watchedFiles)
