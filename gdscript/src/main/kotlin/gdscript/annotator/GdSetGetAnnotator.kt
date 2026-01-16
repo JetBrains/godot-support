@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdScriptBundle
 import gdscript.action.GdCreateMethodAction
 import gdscript.index.impl.GdMethodDeclIndex
 import gdscript.psi.*
@@ -24,7 +25,11 @@ class GdSetGetAnnotator : Annotator {
     private fun methodExists(element: PsiElement, holder: AnnotationHolder) {
         if (GdMethodDeclIndex.INSTANCE.getInFile(element).isNotEmpty()) return
         holder
-            .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Method [${element.text}] does not exist")
+            .newAnnotationGd(
+                element.project,
+                HighlightSeverity.ERROR,
+                GdScriptBundle.message("annotator.method.does.not.exist", element.text)
+            )
             .range(element.textRange)
             .withFix(if (element is GdSetMethodIdRef) setMethod(element) else getMethod(element as GdGetMethodIdRef))
             .create()

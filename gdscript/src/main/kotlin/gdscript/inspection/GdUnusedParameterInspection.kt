@@ -4,13 +4,16 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
+import gdscript.GdScriptBundle
 import gdscript.psi.*
 import gdscript.utils.PsiReferenceUtil.resolveRef
 
 class GdUnusedParameterInspection : GdUnusedInspection() {
 
-    override val description: String = "Unused parameter"
-    override val text: String = "Remove [{NAME}] parameter"
+    override val description: String = GdScriptBundle.message("inspection.unused.parameter.description")
+    override fun removeText(symbol: String): String {
+        return GdScriptBundle.message("inspection.unused.parameter.text", symbol)
+    }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : GdVisitor() {

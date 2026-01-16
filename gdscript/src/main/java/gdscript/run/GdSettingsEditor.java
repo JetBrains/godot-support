@@ -7,6 +7,7 @@ import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.SystemInfo;
 import org.jetbrains.annotations.NotNull;
+import gdscript.GdScriptBundle;
 
 import javax.swing.*;
 
@@ -48,7 +49,7 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
         arguments = new LabeledComponent<>();
         TextFieldWithBrowseButton godotField = new TextFieldWithBrowseButton();
         godotField.setText("");
-        godotField.setToolTipText("Path to the Godot Executable");
+        godotField.setToolTipText(GdScriptBundle.message("settings.path.to.godot.executable"));
         godotField.addBrowseFolderListener(new TextBrowseFolderListener(
                 SystemInfo.isWindows ?
                         FileChooserDescriptorFactory.createSingleFileDescriptor("exe") :
@@ -65,8 +66,8 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
         tscn.setComponent(tscnField);
 
         JTextField argumentsField = new JTextField();
-        argumentsField.setText("options");
-        argumentsField.setToolTipText("options");
+        argumentsField.setText(GdScriptBundle.message("settings.options"));
+        argumentsField.setToolTipText(GdScriptBundle.message("settings.options"));
         arguments.setComponent(argumentsField);
     }
 

@@ -8,6 +8,7 @@ import com.intellij.openapi.util.NlsContexts
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.refactoring.RefactoringBundle
 import com.intellij.refactoring.introduce.inplace.AbstractInplaceIntroducer
 import gdscript.psi.*
 import javax.swing.JComponent
@@ -38,7 +39,7 @@ class GdInplaceIntroducer(
     private var isFinished: Boolean = false
 
     override fun getActionName(): String {
-        return "Introduce Variable"
+        return RefactoringBundle.message("introduce.variable.title")
     }
 
     override fun isReplaceAllOccurrences(): Boolean {

@@ -8,6 +8,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
+import gdscript.GdScriptBundle
 import gdscript.psi.GdTypedVal
 
 /**

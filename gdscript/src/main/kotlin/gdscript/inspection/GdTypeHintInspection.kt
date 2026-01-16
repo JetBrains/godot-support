@@ -5,6 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import gdscript.GdKeywords
+import gdscript.GdScriptBundle
 import gdscript.inspection.fixes.GdAddVariableTypeHintFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerError
 import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
@@ -51,7 +52,8 @@ class GdTypeHintInspection : LocalInspectionTool() {
                 return
             }
 
-            holder.registerError(element,  ":= assigment cannot be typed",
+            holder.registerError(
+                element, GdScriptBundle.message("inspection.type.hint.assignment.cannot.be.typed"),
                 // TODO GdAddVariableTypeHintFix(element, realType, fullType)
             )
             return
@@ -66,7 +68,8 @@ class GdTypeHintInspection : LocalInspectionTool() {
         if (realType == GdKeywords.VARIANT || realType == GdKeywords.NULL) return
         if (realType.startsWith("res")) return
 
-        holder.registerWeakWarning(element, "Field's return type can be specified as $realType",
+        holder.registerWeakWarning(
+            element, GdScriptBundle.message("inspection.type.hint.field.return.type.can.be.specified.as", realType),
             GdAddVariableTypeHintFix(element, realType, fullType)
         )
     }

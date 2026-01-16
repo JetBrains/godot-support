@@ -1,6 +1,5 @@
 package gdscript.inspection.fixes
 
-import GdScriptBundle.message
 import com.intellij.application.options.CodeStyle
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.modcommand.ModCommand
@@ -9,6 +8,7 @@ import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.openapi.editor.ConvertIndentsUtil
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
+import gdscript.GdScriptBundle
 
 /**
  * Quick fix: Convert leading indentation on each line to match Code Style (tabs vs spaces).
@@ -16,7 +16,7 @@ import com.intellij.psi.PsiFile
  */
 class GdFixIndentsQuickFix : ModCommandQuickFix() {
     override fun getFamilyName(): String = getName()
-    override fun getName(): String = message("inspections.whitespace.fix.indents.fix.name")
+    override fun getName(): String = GdScriptBundle.message("inspection.whitespace.fix.indents.fix.name")
     override fun availableInBatchMode(): Boolean = false
 
     override fun perform(

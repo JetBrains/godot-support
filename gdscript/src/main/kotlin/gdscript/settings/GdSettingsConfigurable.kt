@@ -2,6 +2,7 @@ package gdscript.settings
 
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
+import gdscript.GdScriptBundle
 import javax.swing.JComponent
 
 class GdSettingsConfigurable(val project: Project) : Configurable {
@@ -10,7 +11,7 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
 
 
     override fun getDisplayName(): String {
-        return "GdScript Settings"
+        return GdScriptBundle.message("settings.configurable.name.gdscript.settings")
     }
 
     override fun getPreferredFocusedComponent(): JComponent? {

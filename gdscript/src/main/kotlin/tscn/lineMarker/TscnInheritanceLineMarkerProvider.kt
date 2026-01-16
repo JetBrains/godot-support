@@ -9,6 +9,7 @@ import com.intellij.psi.util.descendantsOfType
 import com.intellij.psi.util.firstLeaf
 import com.intellij.psi.util.parentOfType
 import gdscript.GdIcon
+import gdscript.GdScriptBundle
 import gdscript.index.impl.GdFileResIndex
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.localPath
@@ -36,8 +37,8 @@ class TscnInheritanceLineMarkerProvider : RelatedItemLineMarkerProvider() {
 
         val builder = NavigationGutterIconBuilder.create(GdScriptPluginIcons.GDScriptIcons.OVERRIDE)
             .setTargets(target.getPsiFile(project))
-            .setPopupTitle("Inherited Scene")
-            .setTooltipText("Navigate to inherited scene")
+            .setPopupTitle(GdScriptBundle.message("popup.title.inherited.scene"))
+            .setTooltipText(GdScriptBundle.message("tooltip.navigate.to.inherited.scene"))
             .setCellRenderer {
                 object : PsiElementListCellRenderer<PsiElement>() {
 

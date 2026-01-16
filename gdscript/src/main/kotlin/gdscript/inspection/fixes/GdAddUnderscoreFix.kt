@@ -4,6 +4,7 @@ import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
+import gdscript.GdScriptBundle
 import gdscript.psi.GdNamedElement
 
 class GdAddUnderscoreFix : LocalQuickFixOnPsiElement {
@@ -11,11 +12,11 @@ class GdAddUnderscoreFix : LocalQuickFixOnPsiElement {
     constructor(element: PsiElement): super(element)
 
     override fun getFamilyName(): String {
-        return "Ignore unused"
+        return GdScriptBundle.message("inspection.fix.add.underscore.family")
     }
 
     override fun getText(): String {
-        return "Ignore unused"
+        return GdScriptBundle.message("inspection.fix.add.underscore.text")
     }
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {

@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdScriptBundle
 import gdscript.psi.*
 
 class GdFlowStmtAnnotator : Annotator {
@@ -19,7 +20,11 @@ class GdFlowStmtAnnotator : Annotator {
         }?.let {
             if (it is GdMethodDeclTl || it is GdFuncDeclEx) {
                 holder
-                    .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Cannot use '$txt' outside of a loop")
+                    .newAnnotationGd(
+                        element.project,
+                        HighlightSeverity.ERROR,
+                        GdScriptBundle.message("annotator.cannot.use.text.outside.of.a.loop", txt)
+                    )
                     .range(element.textRange)
                     .create()
             }

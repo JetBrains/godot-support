@@ -10,6 +10,7 @@ import com.intellij.psi.util.childrenOfType
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeaf
 import gdscript.GdKeywords
+import gdscript.GdScriptBundle
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassMemberUtil
@@ -61,16 +62,21 @@ class GdRefIdAnnotator : Annotator {
 
                     if (psi.containingFile.isInSdk()) {
                         val nextLeaf = element.nextLeaf(true)
-                        if (!objectContinuation.contains(nextLeaf.elementType) && psi.childrenOfType<GdMethodDeclTl>().any { it.isConstructor }) {
+                        if (!objectContinuation.contains(nextLeaf.elementType) && psi.childrenOfType<GdMethodDeclTl>()
+                                .any { it.isConstructor }
+                        ) {
                             holder
-                                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Builtin type $txt cannot be assigned to a variable")
+                                .newAnnotationGd(
+                                    element.project,
+                                    HighlightSeverity.ERROR,
+                                    GdScriptBundle.message("annotator.builtin.type.cannot.be.assigned.to.a.variable", txt)
+                                )
                                 .range(element.textRange)
                                 .create()
                             return
                         }
                         GdHighlighterColors.ENGINE_TYPE
-                    }
-                    else GdHighlighterColors.CLASS_TYPE
+                    } else GdHighlighterColors.CLASS_TYPE
                 }
 
                 null -> run {
@@ -107,7 +113,9 @@ class GdRefIdAnnotator : Annotator {
                         return@run GdHighlighterColors.METHOD_CALL
 
                     holder
-                        .newAnnotationGd(element.project, GdProjectState.selectedLevel(state), "Reference [${element.text}] not found")
+                        .newAnnotationGd(element.project, GdProjectState.selectedLevel(state),
+                            GdScriptBundle.message("annotator.message.reference.not.found", element.text)
+                        )
                         .range(element.textRange)
                         .create()
                     return

@@ -5,6 +5,7 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
+import gdscript.GdScriptBundle
 import javax.swing.Icon
 
 class TscnColorSettingsPage : ColorSettingsPage {
@@ -82,14 +83,14 @@ shape = SubResource("CircleShape2D_xthut")
 
     companion object {
         private val DESCRIPTORS = arrayOf(
-                AttributesDescriptor("Syntax tokens", TscnHighlighterColors.SYNTAX_TOKENS),
-                AttributesDescriptor("Node resource", TscnHighlighterColors.NODE_RESOURCE),
-                AttributesDescriptor("Godot class reference", TscnHighlighterColors.NODE_TYPE),
-                AttributesDescriptor("Godot member reference", TscnHighlighterColors.MEMBER_REF),
-                AttributesDescriptor("Attributes", TscnHighlighterColors.ATTRIBUTES),
-                AttributesDescriptor("String", TscnHighlighterColors.STRING),
-                AttributesDescriptor("Resource string", TscnHighlighterColors.RES_STRING),
-                AttributesDescriptor("Attribute value", TscnHighlighterColors.ATTRIBUTE_VALUES),
+                AttributesDescriptor(GdScriptBundle.message("settings.highlighter.tscn.syntax.tokens"), TscnHighlighterColors.SYNTAX_TOKENS),
+                AttributesDescriptor(GdScriptBundle.message("settings.highlighter.tscn.node.resource"), TscnHighlighterColors.NODE_RESOURCE),
+                AttributesDescriptor(GdScriptBundle.message("settings.highlighter.tscn.class.reference"), TscnHighlighterColors.NODE_TYPE),
+                AttributesDescriptor(GdScriptBundle.message("settings.highlighter.tscn.godot.member.reference"), TscnHighlighterColors.MEMBER_REF),
+                AttributesDescriptor(GdScriptBundle.message("settings.highlighter.tscn.attributes"), TscnHighlighterColors.ATTRIBUTES),
+                AttributesDescriptor(GdScriptBundle.message("settings.highlighter.string"), TscnHighlighterColors.STRING),
+                AttributesDescriptor(GdScriptBundle.message("settings.highlighter.tscn.resource.string"), TscnHighlighterColors.RES_STRING),
+                AttributesDescriptor(GdScriptBundle.message("settings.highlighter.tscn.attribute.value"), TscnHighlighterColors.ATTRIBUTE_VALUES),
         )
     }
 }

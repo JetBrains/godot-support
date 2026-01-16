@@ -6,6 +6,7 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.ide.util.PsiElementListCellRenderer
 import com.intellij.psi.PsiElement
 import gdscript.GdIcon
+import gdscript.GdScriptBundle
 import gdscript.psi.GdMethodIdNmi
 import gdscript.utils.VirtualFileUtil.localPath
 import tscn.psi.TscnConnectionHeader
@@ -37,8 +38,8 @@ class GdTscnLineMarkerContributor : RelatedItemLineMarkerProvider() {
             GdScriptPluginIcons.GDScriptIcons.SLOT
         )
             .setTargets(nodes)
-            .setPopupTitle("Tscn Connections")
-            .setTooltipText("Navigate Tscn definitions")
+            .setPopupTitle(GdScriptBundle.message("line.marker.tscn.popup.title"))
+            .setTooltipText(GdScriptBundle.message("line.marker.tscn.popup.description"))
             .setCellRenderer {
                 object : PsiElementListCellRenderer<PsiElement>() {
                     override fun getIcon(element: PsiElement?): Icon {

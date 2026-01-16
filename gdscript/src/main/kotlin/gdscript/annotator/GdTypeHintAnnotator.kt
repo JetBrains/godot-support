@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import gdscript.GdKeywords
+import gdscript.GdScriptBundle
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.GdTypeHint
 import gdscript.psi.GdTypeHintRef
@@ -22,7 +23,7 @@ class GdTypeHintAnnotator : Annotator {
 
         if (invalidType(typeHints.last())) {
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Invalid type")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, GdScriptBundle.message("annotator.invalid.return.type"))
                 .range(element.textRange)
                 .create()
             return

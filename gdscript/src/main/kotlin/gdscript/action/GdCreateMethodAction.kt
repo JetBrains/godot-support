@@ -8,6 +8,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.endOffset
+import gdscript.GdScriptBundle
 import gdscript.utils.EditorSettingsUtil.normalIndent
 
 class GdCreateMethodAction : BaseIntentionAction {
@@ -29,9 +30,9 @@ class GdCreateMethodAction : BaseIntentionAction {
         this.bodyLines = bodyLines
     }
 
-    override fun getText(): String = "Create method"
+    override fun getText(): String = GdScriptBundle.message("intention.name.create.method")
 
-    override fun getFamilyName(): String = "Create method"
+    override fun getFamilyName(): String = GdScriptBundle.message("intention.name.create.method")
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
         return true

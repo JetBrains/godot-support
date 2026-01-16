@@ -11,6 +11,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
+import gdscript.GdScriptBundle
 import gdscript.index.impl.GdFileResIndex
 import gdscript.lineMarker.GdTraitLineMarkerContributor
 import gdscript.utils.GdCommentUtil
@@ -19,11 +20,11 @@ import gdscript.utils.VirtualFileUtil.resourcePath
 class GdPropageTraitChangesAction : BaseIntentionAction() {
 
     override fun getText(): String {
-        return "Propage Trait code"
+        return GdScriptBundle.message("intention.propagate.trait.code")
     }
 
     override fun getFamilyName(): String {
-        return "Propage Trait code"
+        return GdScriptBundle.message("intention.propagate.trait.code")
     }
 
     override fun startInWriteAction(): Boolean {

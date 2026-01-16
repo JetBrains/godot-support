@@ -1,6 +1,5 @@
 package gdscript.inspection
 
-import GdScriptBundle.message
 import com.intellij.application.options.CodeStyle
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemHighlightType
@@ -10,6 +9,7 @@ import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import com.intellij.util.DocumentUtil
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
+import gdscript.GdScriptBundle
 import gdscript.inspection.fixes.GdFixIndentsQuickFix
 
 /**
@@ -52,9 +52,9 @@ class GdWhitespaceLocalInspectionTool : LocalInspectionTool() {
 
         private fun registerError(file: PsiFile, range: TextRange, tab: Boolean) {
             val description = if (tab)
-                message("inspections.whitespace.spaces.problem")
+                GdScriptBundle.message("inspection.whitespace.spaces.problem")
             else
-                message("inspections.whitespace.tabs.problem")
+                GdScriptBundle.message("inspection.whitespace.tabs.problem")
 
             myHolder.registerProblem(
                 file,
