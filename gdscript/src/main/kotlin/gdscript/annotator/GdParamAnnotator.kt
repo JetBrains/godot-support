@@ -3,8 +3,11 @@ package gdscript.annotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.util.text.HtmlBuilder
+import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdScriptBundle
 import gdscript.action.quickFix.GdChangeTypeFix
 import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
@@ -104,14 +107,14 @@ class GdParamAnnotator : Annotator {
             }
 
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Too many arguments")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, GdScriptBundle.message("annotator.too.many.arguments"))
                 .range(element.textRange)
                 .withFix(GdRemoveElementsAction(*toRemoveList.toTypedArray()))
                 .create()
             return
         } else if (minSize in 1..98 && usedParamSize < minSize) {
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Not enough arguments")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, GdScriptBundle.message("annotator.not.enough.arguments"))
                 .range(element.textRange)
                 .create()
             return
@@ -135,15 +138,21 @@ class GdParamAnnotator : Annotator {
         // One of overrides matched all params
         if (matched.any { it.all { p -> p } }) return
 
+
         if (paramLists.size > 1) {
+            val tooltip = HtmlBuilder()
+                .append(GdScriptBundle.message("annotator.no.overload.matches"))
+                .br()
+                .append(
+                    HtmlChunk.ul().children(
+                        descriptions.map { HtmlChunk.li().child(HtmlChunk.text(it).bold()) }
+                    ))
+                .wrapWithHtmlBody()
+                .toString()
+
             holder
                 .newAnnotationGd(element.project, HighlightSeverity.ERROR, "")
-                .tooltip("""<html><body>
-                    None of method definitions can be called with supplied arguments
-                    <ul>
-                        ${descriptions.joinToString("") { "<li><strong>$it</strong></li>" }}
-                    </ul>
-                    </body></html>""".trimIndent())
+                .tooltip(tooltip)
                 .range(element.textRange)
                 .create()
             return
@@ -155,22 +164,26 @@ class GdParamAnnotator : Annotator {
                     val actualParam = element.argList?.argExprList?.getOrNull(pIndex) ?: return@forEachIndexed
                     val actualType = actualTypes[pIndex]
 
+                    val tooltip = HtmlBuilder()
+                        .append(GdScriptBundle.message("annotator.type.mismatch.for.parameter", param.varNmi.name)).br()
+                        .append(
+                            HtmlChunk.tag("table").children(
+                                HtmlChunk.tag("tr").children(
+                                    HtmlChunk.tag("td").addText(GdScriptBundle.message("annotator.required")),
+                                    HtmlChunk.tag("td").addText(param.returnType)
+                                ),
+                                HtmlChunk.tag("tr").children(
+                                    HtmlChunk.tag("td").addText(GdScriptBundle.message("annotator.found")),
+                                    HtmlChunk.tag("td").addText(actualType)
+                                )
+                            )
+                        )
+                        .wrapWithHtmlBody()
+                        .toString()
+
                     val annotator = holder
                         .newAnnotationGd(element.project, HighlightSeverity.ERROR, "")
-                        .tooltip("""
-                            <html><body>
-                                Type mismatch for ${param.varNmi.name}
-                                <table>
-                                    <tr>
-                                        <td>Required:</td>
-                                        <td>${param.returnType}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Found:</td>
-                                        <td>${actualType}</td>
-                                    </tr>
-                                </table>
-                            </html></body>""".trimIndent())
+                        .tooltip(tooltip)
                         .range(actualParam.textRange)
                     if (!actualType.isDynamicType() && param.typed != null) {
                         annotator.withFix(GdChangeTypeFix(param.typed!!.typedVal, actualType))

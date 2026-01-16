@@ -7,6 +7,7 @@ import com.intellij.openapi.util.Pair
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
+import com.intellij.refactoring.RefactoringBundle
 import com.intellij.refactoring.introduce.IntroduceHandler
 import com.intellij.refactoring.introduce.PsiIntroduceTarget
 import com.intellij.refactoring.introduce.inplace.AbstractInplaceIntroducer
@@ -31,7 +32,7 @@ class GdIntroduceVariableHandler : IntroduceHandler<PsiIntroduceTarget<GdExpr>, 
     }
 
     override fun getRefactoringName(): String {
-        return "Introduce Variable"
+        return RefactoringBundle.message("introduce.variable.title")
     }
 
     override fun getHelpID(): String? {
@@ -139,6 +140,14 @@ class GdIntroduceVariableHandler : IntroduceHandler<PsiIntroduceTarget<GdExpr>, 
         if (target.place == null) {
             throw IllegalArgumentException("Target place is null")
         }
-        return GdInplaceIntroducer(project, editor, target.place!!, null, emptyArray(), "Introduce Variable", file)
+        return GdInplaceIntroducer(
+            project,
+            editor,
+            target.place!!,
+            null,
+            emptyArray(),
+            RefactoringBundle.message("introduce.variable.title"),
+            file
+        )
     }
 }

@@ -3,7 +3,9 @@ package gdscript.refactoring.inline
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReference
+import com.intellij.refactoring.RefactoringBundle
 import com.intellij.refactoring.inline.InlineOptionsDialog
+import gdscript.GdScriptBundle
 import gdscript.psi.GdConstDeclSt
 import gdscript.psi.GdConstDeclTl
 import gdscript.psi.GdVarNmi
@@ -18,33 +20,34 @@ class GdInlineVariableDialog : InlineOptionsDialog {
         this.occurrences = getNumberOfOccurrences(field)
         myInvokedOnReference = ref != null
 
-        title = "Inline Variable"
+        title = RefactoringBundle.message("inline.variable.title")
         init()
     }
 
     override fun getNameLabelText(): String {
         val parent = myElement.parent
         val isConst = parent is GdConstDeclTl || parent is GdConstDeclSt
+        val variableName: String = (myElement as GdVarNmi).name
 
-        var label = "${if (isConst) "Constant" else "Variable"} ${(myElement as GdVarNmi).name}"
+        val text = if (isConst) GdScriptBundle.message("refactoring.inline.variable.label.constant", variableName)
+        else GdScriptBundle.message("refactoring.inline.variable.label.variable", variableName)
 
-        if (occurrences > 1) {
-            label += ", $occurrences occurrences"
-        }
-
-        return label
+        return if (occurrences > 1)
+            "$text, ${RefactoringBundle.message("occurrences.string", occurrences)}"
+        else
+            text
     }
 
     override fun getBorderTitle(): String {
-        return "Inline Variable"
+        return RefactoringBundle.message("inline.variable.title")
     }
 
     override fun getInlineAllText(): String {
-        return "Inline all references and remove the variable"
+        return RefactoringBundle.message("all.references.and.remove.the.local")
     }
 
     override fun getInlineThisText(): String {
-        return "Inline this reference and keep the variable"
+        return RefactoringBundle.message("this.reference.only.and.keep.the.variable")
     }
 
     override fun allowInlineAll(): Boolean {

@@ -28,7 +28,7 @@ GdScript File
           PsiWhiteSpace('    ')
           GdElseStImpl(ELSE_ST)
             PsiElement(GdTokenType.ELSE)('else')
-          PsiErrorElement:unexpected '
+          PsiErrorElement:Unexpected '
 '
             PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('    ')

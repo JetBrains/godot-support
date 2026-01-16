@@ -1,10 +1,10 @@
 package gdscript.library
 
-import GdScriptBundle
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import common.util.GdScriptProjectLifetimeService
+import gdscript.GdScriptBundle
 import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 import java.nio.file.Path

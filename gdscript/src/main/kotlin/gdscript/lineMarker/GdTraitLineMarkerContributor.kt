@@ -7,6 +7,7 @@ import com.intellij.ide.util.PsiElementListCellRenderer
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import gdscript.GdIcon
+import gdscript.GdScriptBundle
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.utils.VirtualFileUtil.getPsiFile
@@ -41,8 +42,12 @@ class GdTraitLineMarkerContributor : RelatedItemLineMarkerProvider() {
             if (definitons.isEmpty()) GdScriptPluginIcons.GDScriptIcons.ERROR else GdScriptPluginIcons.GDScriptIcons.LINK
         )
             .setTargets(definitons)
-            .setPopupTitle("Trait")
-            .setTooltipText(if (definitons.isEmpty()) "Missing Trait file" else "Trait source file")
+            .setPopupTitle(GdScriptBundle.message("line.marker.trait.popup.title"))
+            .setTooltipText(
+                if (definitons.isEmpty()) GdScriptBundle.message("line.marker.trait.popup.missing.trait.file") else GdScriptBundle.message(
+                    "line.marker.trait.popup.missing.source.file"
+                )
+            )
             .setCellRenderer {
                 object : PsiElementListCellRenderer<PsiElement>() {
                     override fun getIcon(element: PsiElement?): Icon {

@@ -23,6 +23,7 @@ import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.ui.TimerUtil
 import com.intellij.util.ui.UIUtil
 import common.util.GdScriptProjectLifetimeService
+import gdscript.GdScriptBundle
 import java.util.concurrent.Callable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow

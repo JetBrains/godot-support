@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdScriptBundle
 import gdscript.action.quickFix.GdAddMatchBranchesFix
 import gdscript.psi.*
 import gdscript.psi.utils.GdClassUtil
@@ -64,7 +65,7 @@ class GdMatchStmtAnnotator : Annotator {
 
         if (allKeys.isEmpty()) return
         holder
-            .newAnnotationGd(element.project, HighlightSeverity.WEAK_WARNING, "Missing enum options")
+            .newAnnotationGd(element.project, HighlightSeverity.WEAK_WARNING, GdScriptBundle.message("annotator.missing.enum.options"))
             .range(element.textRange)
             .withFix(GdAddMatchBranchesFix(match, allKeys.keys.map { "$prefix$it" }.toTypedArray()))
             .create()

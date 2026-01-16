@@ -1,7 +1,7 @@
 GdScript File
   GdEnumDecl
     PsiElement(GdTokenType.ENUM)('enum')
-    PsiErrorElement:unexpected '
+    PsiErrorElement:Unexpected '
 '
       PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl

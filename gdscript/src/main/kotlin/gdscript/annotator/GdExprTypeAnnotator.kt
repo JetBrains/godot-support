@@ -5,12 +5,14 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import gdscript.GdKeywords
+import gdscript.GdScriptBundle
 import gdscript.psi.*
 import gdscript.psi.utils.GdExprUtil
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
 import gdscript.utils.GdOperand
 import gdscript.utils.StringUtil.isDynamicType
+import org.jetbrains.annotations.Nls
 
 class GdExprTypeAnnotator : Annotator {
 
@@ -32,61 +34,61 @@ class GdExprTypeAnnotator : Annotator {
         val left = element.returnType
         val right = element.expr?.returnType ?: return
         val operator = element.assignTyped?.text ?: return
-        validate(left, right, operator, "Cannot assign", element, holder)
+        validate(left, right, operator, GdScriptBundle.message("annotator.cannot.assign"), element, holder)
     }
 
     private fun classVarDecl(element: GdClassVarDeclTl, holder: AnnotationHolder) {
         val left = element.returnType
         val right = element.expr?.returnType ?: return
         val operator = element.assignTyped?.text ?: return
-        validate(left, right, operator, "Cannot assign", element, holder)
+        validate(left, right, operator, GdScriptBundle.message("annotator.cannot.assign"), element, holder)
     }
 
     private fun assignExpr(element: GdAssignSt, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
         val operator = element.assignSign.text
-        validate(left, right, operator, "Cannot assign", element, holder)
+        validate(left, right, operator, GdScriptBundle.message("annotator.cannot.assign"), element, holder)
     }
 
     private fun factorExpr(element: GdFactorEx, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
         val operator = element.factorSign.text
-        validate(left, right, operator, "Cannot factor", element, holder)
+        validate(left, right, operator, GdScriptBundle.message("annotator.cannot.factor"), element, holder)
     }
 
     private fun plusExpr(element: GdPlusEx, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
         val operator = element.sign.text
-        validate(left, right, operator, "Cannot factor", element, holder)
+        validate(left, right, operator, GdScriptBundle.message("annotator.cannot.factor"), element, holder)
     }
 
     private fun shiftExpr(element: GdShiftEx, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
-        validate(left, right, "<<", "Cannot factor", element, holder)
+        validate(left, right, "<<", GdScriptBundle.message("annotator.cannot.factor"), element, holder)
     }
 
     private fun comparisonExpr(element: GdComparisonEx, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
-        validate(left, right, element.operator.text, "Cannot factor", element, holder)
+        validate(left, right, element.operator.text, GdScriptBundle.message("annotator.cannot.factor"), element, holder)
     }
 
     private fun bitAndExpr(element: GdBitAndEx, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
         val operator = element.bitAndSign.text
-        validate(left, right, operator, "Incomparable", element, holder)
+        validate(left, right, operator, GdScriptBundle.message("annotator.incomparable"), element, holder)
     }
 
     private fun validate(
         left: String,
         right: String,
         operator: String,
-        message: String,
+        @Nls message: String,
         element: PsiElement,
         holder: AnnotationHolder,
     ) {
@@ -118,7 +120,7 @@ class GdExprTypeAnnotator : Annotator {
                 else -> element.textRange
             }
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Indexer has 1 parameter but is invoked with 0 argument")
+                .newAnnotationGd(element.project, HighlightSeverity.ERROR, GdScriptBundle.message("annotator.indexer.used.with.0.arguments"))
                 .range(range)
                 .create()
             return
@@ -146,7 +148,11 @@ class GdExprTypeAnnotator : Annotator {
         if (GdExprUtil.typeAccepts(exp, indexType, element)) return
 
         holder
-            .newAnnotationGd(element.project, HighlightSeverity.ERROR, "Invalid index type $indexType, expected $exp")
+            .newAnnotationGd(
+                element.project,
+                HighlightSeverity.ERROR,
+                GdScriptBundle.message("annotator.invalid.index.type", indexType, exp)
+            )
             .range(exprs.getOrNull(1)?.textRange ?: element.textRange)
             .create()
     }

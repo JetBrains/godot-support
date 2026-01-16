@@ -6,6 +6,7 @@ import com.intellij.openapi.options.colors.AttributesDescriptor
 import com.intellij.openapi.options.colors.ColorDescriptor
 import com.intellij.openapi.options.colors.ColorSettingsPage
 import com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons
+import gdscript.GdScriptBundle
 import javax.swing.Icon
 
 class GdColorSettingsPage : ColorSettingsPage {
@@ -85,29 +86,29 @@ class Something:
 
     companion object {
         private val DESCRIPTORS = arrayOf(
-            AttributesDescriptor("Keywords", GdHighlighterColors.KEYWORD),
-            AttributesDescriptor("Method declaration", GdHighlighterColors.METHOD_DECLARATION),
-            AttributesDescriptor("Method call", GdHighlighterColors.METHOD_CALL),
-            AttributesDescriptor("Static method call", GdHighlighterColors.STATIC_METHOD_CALL),
-            AttributesDescriptor("Flow control", GdHighlighterColors.FLOW_KEYWORDS),
-            AttributesDescriptor("Comments", GdHighlighterColors.COMMENT),
-            AttributesDescriptor("Doc comments", GdHighlighterColors.DOC_COMMENT),
-            AttributesDescriptor("Critical comments", GdHighlighterColors.DANGER),
-            AttributesDescriptor("Warning comments", GdHighlighterColors.WARNING),
-            AttributesDescriptor("Note comments", GdHighlighterColors.NOTE),
-            AttributesDescriptor("Strings", GdHighlighterColors.STRING),
-            AttributesDescriptor("Annotations", GdHighlighterColors.ANNOTATION),
-            AttributesDescriptor("Node path", GdHighlighterColors.NODE_STRING_PATH),
-            AttributesDescriptor("Node reference", GdHighlighterColors.NODE_PATH),
-            AttributesDescriptor("BaseType (Vector3, Node3D)", GdHighlighterColors.BASE_TYPE),
-            AttributesDescriptor("EngineType (Vector3, Node3D)", GdHighlighterColors.ENGINE_TYPE),
-            AttributesDescriptor("User type (class_name)", GdHighlighterColors.CLASS_TYPE),
-            AttributesDescriptor("Numbers", GdHighlighterColors.NUMBER),
-            AttributesDescriptor("Global function", GdHighlighterColors.GLOBAL_FUNCTION),
-            AttributesDescriptor("String names (&\"name\")", GdHighlighterColors.STRING_NAME),
-            AttributesDescriptor("String format marks (\"%s\")", GdHighlighterColors.STRING_FORMAT),
-            AttributesDescriptor("Variable reference", GdHighlighterColors.MEMBER),
-            AttributesDescriptor("Errors", GdHighlighterColors.BAD_CHARACTER),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.keywords"), GdHighlighterColors.KEYWORD),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.method.declaration"), GdHighlighterColors.METHOD_DECLARATION),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.method.call"), GdHighlighterColors.METHOD_CALL),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.static.method.call"), GdHighlighterColors.STATIC_METHOD_CALL),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.flow.control"), GdHighlighterColors.FLOW_KEYWORDS),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.comments"), GdHighlighterColors.COMMENT),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.doc.comments"), GdHighlighterColors.DOC_COMMENT),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.critical.comments"), GdHighlighterColors.DANGER),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.warning.comments"), GdHighlighterColors.WARNING),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.note.comments"), GdHighlighterColors.NOTE),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.strings"), GdHighlighterColors.STRING),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.annotations"), GdHighlighterColors.ANNOTATION),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.node.path"), GdHighlighterColors.NODE_STRING_PATH),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.node.reference"), GdHighlighterColors.NODE_PATH),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.base.type"), GdHighlighterColors.BASE_TYPE),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.engine.type"), GdHighlighterColors.ENGINE_TYPE),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.user.type"), GdHighlighterColors.CLASS_TYPE),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.numbers"), GdHighlighterColors.NUMBER),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.global.function"), GdHighlighterColors.GLOBAL_FUNCTION),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.string.names"), GdHighlighterColors.STRING_NAME),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.string.format.marks"), GdHighlighterColors.STRING_FORMAT),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.variable.reference"), GdHighlighterColors.MEMBER),
+            AttributesDescriptor(GdScriptBundle.message("settings.highlighter.errors"), GdHighlighterColors.BAD_CHARACTER),
         )
     }
 }

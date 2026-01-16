@@ -4,6 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import com.intellij.refactoring.rename.naming.AutomaticRenamerFactory
 import com.intellij.usageView.UsageInfo
+import gdscript.GdScriptBundle
 import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdNamedElement
@@ -18,7 +19,7 @@ class GdFileAutomaticRenamerFactory : AutomaticRenamerFactory {
     }
 
     override fun getOptionName(): String {
-        return "Rename a containing file"
+        return GdScriptBundle.message("rename.containing.file.option.name")
     }
 
     override fun isEnabled(): Boolean {

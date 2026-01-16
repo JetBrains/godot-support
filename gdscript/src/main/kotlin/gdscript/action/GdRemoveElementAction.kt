@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdScriptBundle
 import gdscript.psi.GdAnnotationTl
 
 /**
@@ -14,11 +15,11 @@ import gdscript.psi.GdAnnotationTl
 class GdRemoveElementAction : BaseIntentionAction() {
 
     override fun getText(): String {
-        return "Remove element"
+        return GdScriptBundle.message("intention.name.remove.element")
     }
 
     override fun getFamilyName(): String {
-        return "Remove element"
+        return GdScriptBundle.message("intention.name.remove.element")
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {

@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.colors.EditorColorsManager
 import com.intellij.openapi.editor.highlighter.EditorHighlighter
 import com.intellij.openapi.editor.markup.TextAttributes
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.TokenType
@@ -34,7 +35,7 @@ object GdDocCode {
         while (true) {
             val type = iterator.tokenType
             val style = attributeCache.getOrPut(type) { buildStyle(iterator.textAttributes) }
-            val text = code.substring(iterator.start, iterator.end)
+            @NlsSafe val text = code.substring(iterator.start, iterator.end)
             val block =
                     if (type == GdTypes.IDENTIFIER && resolveAfter.contains(lastType)) GdDocUtil.elementLink(text)
                     else HtmlChunk.text(text)

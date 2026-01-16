@@ -8,6 +8,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.ide.actions.runAnything.RunAnythingAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.psi.PsiFile
+import gdscript.GdScriptBundle
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.run.GdConfigurationFactory
 import gdscript.run.GdRunConfiguration
@@ -20,7 +21,7 @@ class TscnRunAction : RunAnythingAction {
     constructor(file: PsiFile) {
         this.file = file
         templatePresentation.icon = AllIcons.RunConfigurations.TestState.Run
-        templatePresentation.text = "Run"
+        templatePresentation.text = GdScriptBundle.message("action.tscn.run.text")
     }
 
     fun runAction() {

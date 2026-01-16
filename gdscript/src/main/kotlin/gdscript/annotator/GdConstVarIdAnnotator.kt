@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdScriptBundle
 import gdscript.psi.*
 import gdscript.psi.GdPattern
 import gdscript.psi.utils.GdClassMemberUtil
@@ -36,7 +37,8 @@ class GdConstVarIdAnnotator : Annotator {
             holder
                 .newAnnotationGd(element.project,
                         HighlightSeverity.ERROR,
-                        "[${element.name}] is already defined")
+                    GdScriptBundle.message("annotator.property.is.already.defined", element.name.toString())
+                )
                 .range(element.textRange)
                 .create()
         }

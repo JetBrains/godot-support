@@ -28,7 +28,7 @@ GdScript File
           PsiWhiteSpace('    ')
           GdElifStImpl(ELIF_ST)
             PsiElement(GdTokenType.ELIF)('elif')
-          PsiErrorElement:unexpected '
+          PsiErrorElement:Unexpected '
 '
             PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('    ')

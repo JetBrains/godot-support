@@ -13,6 +13,7 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.util.Consumer
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
+import gdscript.GdScriptBundle
 import gdscript.action.util.GdCellRenderer
 import gdscript.action.util.GdTraitClass
 import gdscript.index.impl.GdFileResIndex
@@ -64,7 +65,7 @@ class GdAddTraitAction : SimpleCodeInsightAction() {
                 }
             ))
             .setRenderer(GdCellRenderer)
-            .setTitle("Select Trait Class")
+            .setTitle(GdScriptBundle.message("action.select.trait.class"))
             .setItemChosenCallback(consumer)
             .setNamerForFiltering { o: GdTraitClass -> o.name }
             .createPopup()

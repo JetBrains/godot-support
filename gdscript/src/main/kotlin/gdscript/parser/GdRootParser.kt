@@ -5,6 +5,7 @@ import com.intellij.lang.LightPsiParser
 import com.intellij.lang.PsiBuilder
 import com.intellij.lang.PsiParser
 import com.intellij.psi.tree.IElementType
+import gdscript.GdScriptBundle
 import gdscript.parser.roots.*
 
 class GdRootParser : PsiParser, LightPsiParser {
@@ -48,7 +49,11 @@ class GdRootParser : PsiParser, LightPsiParser {
                 val text = b.tokenText
                 val type = b.tokenType
                 if (!b.eof) b.advance()
-                m.error("Unexpected tokens, $type, $text")
+                if (type == null) {
+                    m.error(GdScriptBundle.message("parsing.error.unexpected.eof"))
+                } else {
+                    m.error(GdScriptBundle.message("parsing.error.unexpected.tokens", type.toString(), text ?: ""))
+                }
             }
         }
         document.done(root)

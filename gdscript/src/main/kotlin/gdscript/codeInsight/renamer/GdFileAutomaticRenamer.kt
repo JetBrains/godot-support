@@ -3,6 +3,7 @@ package gdscript.codeInsight.renamer
 import com.intellij.psi.PsiNamedElement
 import com.intellij.refactoring.rename.naming.AutomaticRenamer
 import com.intellij.refactoring.rename.naming.NameSuggester
+import gdscript.GdScriptBundle
 import gdscript.utils.StringUtil.camelToSnakeCase
 
 /**
@@ -16,15 +17,15 @@ class GdFileAutomaticRenamer : AutomaticRenamer {
     }
 
     override fun getDialogTitle(): String {
-        return "Rename Containing File"
+        return GdScriptBundle.message("rename.containing.file.dialog.title")
     }
 
     override fun getDialogDescription(): String {
-        return "Rename a containing with the following name"
+        return GdScriptBundle.message("rename.containing.file.dialog.description")
     }
 
     override fun entityName(): String {
-        return "Containing File"
+        return GdScriptBundle.message("rename.containing.file.entity.name")
     }
 
     override fun isSelectedByDefault(): Boolean {

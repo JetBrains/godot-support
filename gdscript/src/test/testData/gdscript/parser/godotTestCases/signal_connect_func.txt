@@ -55,7 +55,7 @@ GdScript File
                                 PsiElement(GdTokenType.COLON)(':')
                                 PsiErrorElement:STMT_OR_SUITE expected
                                   <empty list>
-                            PsiErrorElement:unexpected 'pass'
+                            PsiErrorElement:Unexpected 'pass'
                               PsiElement(GdTokenType.NEW_LINE)('\n')
                               PsiWhiteSpace('\t\t')
                               PsiElement(GdTokenType.PASS)('pass')

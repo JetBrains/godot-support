@@ -5,6 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
+import gdscript.GdScriptBundle
 import gdscript.inspection.fixes.GdAddReturnTypeHintFix
 import gdscript.inspection.fixes.GdChangeReturnTypeFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerGenericError
@@ -35,33 +36,35 @@ class GdMethodValidationInspection : LocalInspectionTool() {
                 val validationResult = GdMethodValidator(holder.project, returnType).validate(stmtOrSuite)
 
                 validationResult.unreachableStatements.forEach{
-                    holder.registerWeakWarning(it, "Code is unreachable")
+                    holder.registerWeakWarning(it, GdScriptBundle.message("inspection.method.validation.unreachable.code"))
                 }
 
                 validationResult.invalidReturns.forEach{
                     val stmtType = it.second
                     holder.registerGenericError(
                             it.first,
-                            "Returns a type [$stmtType] which do not match function's [$returnType]",
+                        GdScriptBundle.message("inspection.method.validation.non.matching.return.type", stmtType,returnType),
                             hint?.let { GdChangeReturnTypeFix(hint, stmtType) }
                     )
                 }
 
                 // no return statement when required
                 if (returnType.isNotEmpty() && validationResult.noReturn() && returnType != "void") {
-                    holder.registerGenericError(methodId, "Function's require a return value")
+                    holder.registerGenericError(methodId, GdScriptBundle.message("inspection.method.validation.unspecified.return.value"))
                 } else if (!validationResult.voidOnlyReturn() && !validationResult.alwaysReturns) {
-                    holder.registerGenericError(methodId, "Not all code paths return a value")
+                    holder.registerGenericError(methodId,
+                        GdScriptBundle.message("inspection.method.validation.not.all.code.paths.return.a.value")
+                    )
                 }
                 // no return type specified
                 if(returnType.isEmpty() && validationResult.hasReturn())  {
                     val commonType = determineCommonType(validationResult.returnTypes)
                     if (commonType == null) {
-                        holder.registerWeakWarning(methodId, "Function's return type is not specified")
+                        holder.registerWeakWarning(methodId, GdScriptBundle.message("inspection.method.validation.unspecified.return.type"))
                     } else {
                         holder.registerWeakWarning(
                                 methodId,
-                                "Function's return type can be specified as $commonType",
+                                GdScriptBundle.message("inspection.method.validation.return.type.can.be.specified.as", commonType),
                                 GdAddReturnTypeHintFix(methodId, commonType)
                         )
                     }
@@ -79,7 +82,7 @@ class GdMethodValidationInspection : LocalInspectionTool() {
                 val stmts = PsiTreeUtil.findChildrenOfType(method, GdCallEx::class.java)
                         .filter{ it.expr.text == GdKeywords.SUPER }
                 if (stmts.isEmpty()) {
-                    holder.registerGenericError(methodId, "Initializing super() constructor is required")
+                    holder.registerGenericError(methodId, GdScriptBundle.message("inspection.method.validation.missing.super.call"))
                 }
             }
 
@@ -99,7 +102,7 @@ class GdMethodValidationInspection : LocalInspectionTool() {
                 if (!GdExprUtil.typeAccepts(returnType, parent.returnType, holder.project)) {
                     holder.registerWeakWarning(
                             methodId,
-                            "Return type [$returnType] does not match parent's [${parent.returnType}]",
+                        GdScriptBundle.message("inspection.method.validation.return.type.does.not.match.parent.type", returnType,parent.returnType),
                             hint?.let { GdChangeReturnTypeFix(hint, parent.returnType) }
                     )
                 }

@@ -1,5 +1,6 @@
 package gdscript.annotator
 
+import com.intellij.codeInspection.util.InspectionMessage
 import com.intellij.ide.plugins.PluginManagerCore
 import com.intellij.lang.annotation.AnnotationBuilder
 import com.intellij.lang.annotation.AnnotationHolder
@@ -13,9 +14,10 @@ val isGodotSupportInstalled = PluginManagerCore.isRiderGodotSupportPluginInstall
 fun AnnotationHolder.newAnnotationGd(
         project: Project,
         @NotNull severity: HighlightSeverity,
-        @NotNull message: String
+        @NotNull @InspectionMessage message: String
 ): AnnotationBuilder {
     if (severity == HighlightSeverity.ERROR && isGodotSupportInstalled && RiderGodotSupportPluginUtil.isGodotSupportLSPRunning(project))
         return this.newSilentAnnotation(HighlightSeverity.INFORMATION)
     return this.newAnnotation(severity, message)
 }
+// TODO: We can either pass raw strings here or pass in the names of the resources and convert it here

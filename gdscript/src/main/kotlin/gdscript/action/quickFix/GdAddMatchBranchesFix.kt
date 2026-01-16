@@ -12,6 +12,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.prevLeaf
+import gdscript.GdScriptBundle
 import gdscript.action.util.IndentUtil.indents
 import gdscript.psi.GdMatchSt
 import gdscript.psi.GdTypes

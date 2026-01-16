@@ -3,6 +3,7 @@ package gdscript.inspection
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.childrenOfType
+import gdscript.GdScriptBundle
 import gdscript.inspection.fixes.GdRemoveElementFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerUnused
 import gdscript.psi.GdClassDeclTl
@@ -14,8 +15,10 @@ import tscn.psi.utils.TscnResourceUtil
 
 class GdUnusedClassInspection : GdUnusedInspection() {
 
-    override val description: String = "Unused class"
-    override val text: String = "Remove [{NAME}] class"
+    override val description: String = GdScriptBundle.message("inspection.unused.class.description")
+    override fun removeText(symbol: String): String {
+        return GdScriptBundle.message("inspection.unused.class.text", symbol)
+    }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         return object : GdVisitor() {
@@ -50,8 +53,10 @@ class GdUnusedClassInspection : GdUnusedInspection() {
                 if (TscnResourceUtil.findTscnByResources(containingFile).any()) return
                 if (anyReference(containingFile, holder.project.contentScope())) return
 
-                holder.registerUnused(o, description,
-                        GdRemoveElementFix(containingFile, text.replace("{NAME}", containingFile.name)))
+                holder.registerUnused(
+                    o, description,
+                    GdRemoveElementFix(containingFile, removeText(containingFile.name))
+                )
             }
         }
     }

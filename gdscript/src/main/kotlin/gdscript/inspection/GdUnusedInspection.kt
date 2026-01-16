@@ -9,17 +9,20 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import gdscript.inspection.fixes.GdAddUnderscoreFix
 import gdscript.inspection.fixes.GdRemoveElementFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerUnused
+import org.jetbrains.annotations.Nls
 
 abstract class GdUnusedInspection : LocalInspectionTool() {
 
     protected abstract val description: String
-    protected abstract val text: String
+
+    @Nls
+    protected abstract fun removeText(@Nls symbol: String): String
 
     fun registerUnused(element: PsiElement, nmi: PsiNameIdentifierOwner, holder: ProblemsHolder) {
         holder.registerUnused(
             nmi,
             description,
-            GdRemoveElementFix(element, text.replace("{NAME}", nmi.name ?: "")),
+            GdRemoveElementFix(element, removeText(nmi.name ?: "")),
         )
     }
 

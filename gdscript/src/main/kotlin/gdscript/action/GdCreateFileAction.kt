@@ -8,6 +8,7 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDirectory
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
+import gdscript.GdScriptBundle
 import gdscript.annotator.isGodotSupportInstalled
 import gdscript.utils.RiderGodotSupportPluginUtil
 import gdscript.utils.hasCompletedTrue
@@ -15,7 +16,7 @@ import gdscript.utils.hasCompletedTrue
 
 class GdCreateFileAction : CreateFileFromTemplateAction(), DumbAware {
     override fun buildDialog(project: Project, directory: PsiDirectory, builder: CreateFileFromTemplateDialog.Builder) {
-        builder.setTitle("GdScript")
+        builder.setTitle(GdScriptBundle.message("action.create.file.title"))
         FileTemplateManager.getInstance(project)
             .allTemplates
             .forEach {
@@ -25,19 +26,19 @@ class GdCreateFileAction : CreateFileFromTemplateAction(), DumbAware {
             }
 
         builder
-            .addKind("Node default", GdFileType.icon, "Node default")
-            .addKind("Empty", GdFileType.icon, "Object empty")
-            .addKind("Character2D movement", GdFileType.icon, "CharacterBody2D basic_movement")
-            .addKind("Character3D movement", GdFileType.icon, "CharacterBody3D basic_movement")
-            .addKind("EditorScript", GdFileType.icon, "EditorScript basic_editor_script")
-            .addKind("VisualShaderNodeCustom", GdFileType.icon, "VisualShaderNodeCustom basic")
-            .addKind("EditorScenePostImport basic", GdFileType.icon, "EditorScenePostImport basic_import_script")
-            .addKind("EditorScenePostImport no comments", GdFileType.icon, "EditorScenePostImport no_comments")
-            .addKind("EditorPlugin", GdFileType.icon, "EditorPlugin plugin")
+            .addKind(GdScriptBundle.message("template.kind.node.default"), GdFileType.icon, "Node default")
+            .addKind(GdScriptBundle.message("template.kind.empty"), GdFileType.icon, "Object empty")
+            .addKind(GdScriptBundle.message("template.kind.character2d.movement"), GdFileType.icon, "CharacterBody2D basic_movement")
+            .addKind(GdScriptBundle.message("template.kind.character3d.movement"), GdFileType.icon, "CharacterBody3D basic_movement")
+            .addKind(GdScriptBundle.message("template.kind.editorscript"), GdFileType.icon, "EditorScript basic_editor_script")
+            .addKind(GdScriptBundle.message("template.kind.visualshadernodecustom"), GdFileType.icon, "VisualShaderNodeCustom basic")
+            .addKind(GdScriptBundle.message("template.kind.editorscenepostimport.basic"), GdFileType.icon, "EditorScenePostImport basic_import_script")
+            .addKind(GdScriptBundle.message("template.kind.editorscenepostimport.no.comments"), GdFileType.icon, "EditorScenePostImport no_comments")
+            .addKind(GdScriptBundle.message("template.kind.editorplugin"), GdFileType.icon, "EditorPlugin plugin")
     }
 
     override fun getActionName(directory: PsiDirectory?, newName: String, templateName: String?): String {
-        return "GdScript file"
+        return GdScriptBundle.message("action.create.file.get.action.name")
     }
 
     override fun update(e: AnActionEvent) {

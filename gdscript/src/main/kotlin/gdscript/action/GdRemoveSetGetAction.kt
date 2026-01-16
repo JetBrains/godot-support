@@ -5,6 +5,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdScriptBundle
 import gdscript.index.impl.GdMethodDeclIndex
 import gdscript.psi.GdGetMethodIdRef
 import gdscript.psi.GdSetMethodIdRef
@@ -16,11 +17,11 @@ import gdscript.psi.GdSetgetDecl
 class GdRemoveSetGetAction : BaseIntentionAction() {
 
     override fun getText(): String {
-        return "Remove get & set"
+        return GdScriptBundle.message("intention.name.remove.get.set")
     }
 
     override fun getFamilyName(): String {
-        return "Remove get & set"
+        return GdScriptBundle.message("intention.name.remove.get.set")
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {

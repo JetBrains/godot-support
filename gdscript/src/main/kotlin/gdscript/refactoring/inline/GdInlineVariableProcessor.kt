@@ -9,6 +9,7 @@ import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.IncorrectOperationException
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.refactoring.RefactoringBundle
 import gdscript.psi.*
 
 class GdInlineVariableProcessor : BaseRefactoringProcessor {
@@ -81,6 +82,6 @@ class GdInlineVariableProcessor : BaseRefactoringProcessor {
     }
 
     override fun getCommandName(): String {
-        return "Inline Variable"
+        return RefactoringBundle.message("inline.variable.title")
     }
 }

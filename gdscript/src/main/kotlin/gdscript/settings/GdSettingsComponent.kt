@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.util.ui.FormBuilder
+import gdscript.GdScriptBundle
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTextField
@@ -11,8 +12,8 @@ import javax.swing.JTextField
 class GdSettingsComponent(val project: Project) {
     val panel: JPanel
 
-    private val hidePrivateCheck = JBCheckBox("Hide _private members from completion")
-    private val shortTypedCheck = JBCheckBox("Use short typing 'var a := 1' instead of 'var a: int = 1'")
+    private val hidePrivateCheck = JBCheckBox(GdScriptBundle.message("settings.checkbox.hide.private.members.from.completion"))
+    private val shortTypedCheck = JBCheckBox(GdScriptBundle.message("settings.checkbox.use.short.typing.var.instead.var.int"))
     private val annotatorsCb = ComboBox<String>()
     private val criticalsTf: JTextField = JTextField()
     private val warningsTf: JTextField = JTextField()
@@ -27,10 +28,10 @@ class GdSettingsComponent(val project: Project) {
         panel = FormBuilder.createFormBuilder()
                 .addComponent(hidePrivateCheck, 1)
                 .addComponent(shortTypedCheck, 1)
-                .addLabeledComponent("Reference, Node, Resource checks", annotatorsCb, 1)
-                .addLabeledComponent("Critical comments", criticalsTf, 1)
-                .addLabeledComponent("Warning comments", warningsTf, 1)
-                .addLabeledComponent("Note comments", notesTf, 1)
+                .addLabeledComponent(GdScriptBundle.message("settings.label.reference.node.resource.checks"), annotatorsCb, 1)
+                .addLabeledComponent(GdScriptBundle.message("settings.label.critical.comments"), criticalsTf, 1)
+                .addLabeledComponent(GdScriptBundle.message("settings.label.warning.comments"), warningsTf, 1)
+                .addLabeledComponent(GdScriptBundle.message("settings.label.note.comments"), notesTf, 1)
                 .addComponentFillVertically(JPanel(), 0)
                 .panel
     }

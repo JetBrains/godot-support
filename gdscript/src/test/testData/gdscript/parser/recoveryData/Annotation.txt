@@ -8,6 +8,6 @@ GdScript File
         GdStringValRefImpl(STRING_VAL_NM)
           PsiElement(GdTokenType.STRING)('"Losos"')
       PsiWhiteSpace(' ')
-      PsiErrorElement:unexpected '123'
+      PsiErrorElement:Unexpected '123'
         PsiElement(GdTokenType.NUMBER)('123')
     PsiElement(GdTokenType.RRBR)(')')

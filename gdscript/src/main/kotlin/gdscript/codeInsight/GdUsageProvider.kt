@@ -6,6 +6,7 @@ import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.TokenSet
 import gdscript.GdLexerAdapter
+import gdscript.GdScriptBundle
 import gdscript.highlighter.GdTokenTypeSet
 import gdscript.psi.*
 
@@ -37,13 +38,13 @@ class GdUsageProvider : FindUsagesProvider {
 
     override fun getType(element: PsiElement): String {
         return when(element) {
-            is GdClassNameNmi -> "classes"
-            is GdMethodIdNmi -> "methods"
-            is GdEnumDeclNmi -> "enums"
-            is GdEnumValueNmi -> "enum consts"
-            is GdSignalIdNmi -> "signals"
-            is GdVarNmi -> "variables"
-            is GdStringValRef -> "resources"
+            is GdClassNameNmi -> GdScriptBundle.message("find.usages.classes")
+            is GdMethodIdNmi -> GdScriptBundle.message("find.usages.methods")
+            is GdEnumDeclNmi -> GdScriptBundle.message("find.usages.enums")
+            is GdEnumValueNmi -> GdScriptBundle.message("find.usages.enum.consts")
+            is GdSignalIdNmi -> GdScriptBundle.message("find.usages.signals")
+            is GdVarNmi -> GdScriptBundle.message("find.usages.variables")
+            is GdStringValRef -> GdScriptBundle.message("find.usages.resources")
             else -> ""
         }
     }

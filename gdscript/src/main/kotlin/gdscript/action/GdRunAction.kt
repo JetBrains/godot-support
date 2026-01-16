@@ -13,6 +13,7 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import gdscript.GdScriptBundle
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.run.GdConfigurationFactory

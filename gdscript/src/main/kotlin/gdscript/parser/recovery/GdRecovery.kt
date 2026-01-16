@@ -1,6 +1,7 @@
 package gdscript.parser.recovery
 
 import com.intellij.psi.tree.IElementType
+import gdscript.GdScriptBundle
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 
@@ -27,7 +28,7 @@ object GdRecovery : GdBaseParser {
         }
 
         if (any != null && !b.isError) {
-            m.error("unexpected '$any'")
+            m.error(GdScriptBundle.message("parsing.error.unexpected", any))
         } else {
             m.drop()
         }
