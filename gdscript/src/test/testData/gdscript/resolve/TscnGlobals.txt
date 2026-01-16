@@ -1,0 +1,2 @@
+func t():
+    TscnGlobal[r].m[r]()
