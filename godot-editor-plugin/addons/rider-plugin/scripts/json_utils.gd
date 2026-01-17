@@ -11,7 +11,7 @@ static func load_from_file(path: String) -> Variant:
 		return null
 	var text := file.get_as_text()
 	file.close()
-	var data := JSON.parse_string(text)
+	var data: Variant = JSON.parse_string(text)
 	if data == null:
 		push_warning("JsonUtils: Invalid JSON in file: %s" % path)
 		return null
