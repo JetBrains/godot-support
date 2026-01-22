@@ -24,7 +24,7 @@
     <dependencySupport kind="dotnet" coordinate="GodotSharp" displayName="Godot"/>
     <defaultLiveTemplates file="templates/GdScript.xml" />
 
-    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.GodotMetadataFileWatcherManager"/>
+    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.DotNetGodotMetadataFileWatcherManager"/>
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.projectView.GodotUidTrackerInitializer"/>
     <projectViewNestingRulesProvider implementation="com.jetbrains.rider.plugins.godot.projectView.GodotNestingRulesProvider" />
 
@@ -53,7 +53,8 @@
     <platform.lsp.serverSupportProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspServerSupportProvider"/>
 
     <rider.godot.community.lspStatusProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspRunningStatusProvider" />
-    <rider.godot.community.projectInfoProvider implementation="com.jetbrains.rider.plugins.godot.project.GodotProjectInfoProvider" />
+    <rider.godot.community.godotProjectProvider implementation="com.jetbrains.rider.plugins.godot.project.RiderGodotProjectProvider" order="first" />
+    <rider.godot.community.editorConnectionProvider implementation="com.jetbrains.rider.plugins.godot.RiderEditorConnectionProvider" />
 
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptConfigurationType"/>
     <platform.dap.debugAdapterSupportProvider implementation="com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptDebugAdapterSupportProvider"/>
@@ -75,22 +76,6 @@
   <applicationListeners>
     <listener class="com.jetbrains.rider.plugins.godot.projectView.UidTrackerListener" topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
   </applicationListeners>
-
-  <actions>
-    <group id="GodotToolbarActions" popup="true" class = "com.jetbrains.rider.plugins.godot.actions.ToolbarActionsGroup">
-      <add-to-group group-id="ActiveRuntimeGroup" relative-to-action="BuildSolutionAction" anchor="before" />
-      <add-to-group group-id="RightToolbarSideGroup" relative-to-action="BuildSolutionAction" anchor="before" />
-      <add-to-group group-id="MainToolbarRight" anchor="first"/>
-
-      <action id="StartEditorAction"
-              class="com.jetbrains.rider.plugins.godot.actions.StartGodotEditorAction"
-              icon="com.jetbrains.rider.plugins.godot.GodotIcons.Actions.StartGodotEditorActionIcon"/>
-
-      <action id="ShowGodotSettingsInRider"
-              class="com.jetbrains.rider.plugins.godot.actions.GodotPluginShowSettingsAction"
-              icon="AllIcons.General.Settings" />
-    </group>
-  </actions>
 
   <description>
     <![CDATA[

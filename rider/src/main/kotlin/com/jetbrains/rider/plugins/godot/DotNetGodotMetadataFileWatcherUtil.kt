@@ -1,8 +1,8 @@
 package com.jetbrains.rider.plugins.godot
 
 import com.intellij.openapi.util.SystemInfo
-import com.jetbrains.rider.plugins.godot.GodotMetadataFileWatcher.Companion.metadataRelPath
-import com.jetbrains.rider.plugins.godot.GodotMetadataFileWatcher.Companion.oldMonoMetadataRelPath
+import com.jetbrains.rider.godot.community.GodotMetadataFileWatcher
+import com.jetbrains.rider.plugins.godot.DotNetGodotMetadataFileWatcher.Companion.oldMonoMetadataRelPath
 import java.math.BigInteger
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -11,7 +11,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.pathString
 import kotlin.io.path.readLines
 
-object GodotMetadataFileWatcherUtil {
+object DotNetGodotMetadataFileWatcherUtil {
     // Godot 3 path utilities
     fun getFromMonoMetadataPath(basePath: Path): String? {
         val metaFile = basePath.resolve(oldMonoMetadataRelPath)
@@ -66,7 +66,7 @@ object GodotMetadataFileWatcherUtil {
 
     // Godot 4 path utilities
     fun getGodot4Path(projectPath: Path): String? {
-        val projectMetadataCfg = projectPath.resolve(metadataRelPath)
+        val projectMetadataCfg = projectPath.resolve(GodotMetadataFileWatcher.METADATA_REL_PATH)
 
         if (projectMetadataCfg.exists()) {
             val line = projectMetadataCfg.readLines().singleOrNull { it.startsWith("executable_path=") }

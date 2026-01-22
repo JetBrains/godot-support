@@ -10,7 +10,7 @@
   </change-notes>
   <incompatible-with>gdscript</incompatible-with>
   <incompatible-with>ice.explosive.gdscript</incompatible-with>
-  
+
   <dependencies>
     <plugin id="com.intellij.modules.lang"/>
     <plugin id="com.intellij.rider.godot.community"/>
@@ -39,6 +39,8 @@
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
     <backgroundPostStartupActivity implementation="gdscript.listener.ReferenceSdkProjectActivity"/>
     <backgroundPostStartupActivity implementation="GdScriptToolWindowManagerProjectActivity"/>
+    <postStartupActivity implementation="GdProjectDiscoveryActivity" />
+    <rider.godot.community.godotProjectProvider implementation="gdscript.utils.GdScriptGodotProjectProvider" />
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
     <toolWindow id="TscnScenePreviewWindowId"
                 anchor="right"

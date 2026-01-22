@@ -17,15 +17,25 @@
   </extensions>
 
   <extensionPoints>
-    <extensionPoint name="lspStatusProvider" interface="com.jetbrains.rider.godot.community.LspRunningStatusProvider" />
-  </extensionPoints>
-  <extensionPoints>
-    <extensionPoint name="projectInfoProvider" interface="com.jetbrains.rider.godot.community.ProjectInfoProvider" />
+    <extensionPoint name="lspStatusProvider" interface="com.jetbrains.rider.godot.community.LspRunningStatusProvider" dynamic="true" />
+    <extensionPoint name="godotProjectProvider" interface="com.jetbrains.rider.godot.community.GodotProjectProvider" dynamic="true" />
+    <extensionPoint name="editorConnectionProvider" interface="com.jetbrains.rider.godot.community.GodotEditorConnectionProvider" dynamic="true"/>
   </extensionPoints>
 
   <extensions defaultExtensionNs="com.intellij">
     <fileType name="GdScript" implementationClass="com.jetbrains.rider.godot.community.gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd;gdf"/>
+    <postStartupActivity implementation="com.jetbrains.rider.godot.community.GodotMetadataFileWatcherManager"/>
   </extensions>
+
+  <actions>
+    <group id="GodotActionsToolbar" popup="true" class="com.jetbrains.rider.godot.community.actions.GodotActionsToolbar" icon="com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons.Godot">
+      <add-to-group group-id="MainToolbarRight" anchor="first" />
+      <action id="StartGodotEditorAction"
+              class="com.jetbrains.rider.godot.community.actions.StartGodotEditorAction"
+              icon="AllIcons.Actions.Execute">
+      </action>
+    </group>
+  </actions>
 
   <resource-bundle>messages.GodotCommunityBundle</resource-bundle>
 

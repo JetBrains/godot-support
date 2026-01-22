@@ -13,7 +13,7 @@ import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rd.util.threading.coroutines.launch
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
-import com.jetbrains.rider.plugins.godot.actions.StartGodotEditorAction
+import com.jetbrains.rider.godot.community.actions.StartGodotEditorAction
 
 @Service(Service.Level.PROJECT)
 class GodotLspNotification(val project: Project) {
