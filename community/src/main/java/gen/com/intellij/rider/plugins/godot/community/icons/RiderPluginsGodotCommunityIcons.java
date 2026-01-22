@@ -14,4 +14,6 @@ public final class RiderPluginsGodotCommunityIcons {
     return IconManager.getInstance().loadRasterizedIcon(path, RiderPluginsGodotCommunityIcons.class.getClassLoader(), cacheKey, flags);
   }
   /** 16x16 */ public static final @NotNull Icon GDScript = load("icons/GDScript.svg", -279704108, 0);
+  /** 16x16 */ public static final @NotNull Icon Godot = load("icons/Godot.svg", -1088500511, 2);
+  /** 16x16 */ public static final @NotNull Icon GodotDisconnected = load("icons/GodotDisconnected.svg", 1292172867, 2);
 }

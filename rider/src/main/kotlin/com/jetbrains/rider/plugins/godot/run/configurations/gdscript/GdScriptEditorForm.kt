@@ -14,7 +14,7 @@ import com.intellij.ui.dsl.builder.panel
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.threading.coroutines.async
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
-import com.jetbrains.rider.plugins.godot.actions.StartGodotEditorAction
+import com.jetbrains.rider.godot.community.actions.StartGodotEditorAction
 import kotlinx.coroutines.Dispatchers
 import javax.swing.JPanel
 import javax.swing.event.HyperlinkEvent

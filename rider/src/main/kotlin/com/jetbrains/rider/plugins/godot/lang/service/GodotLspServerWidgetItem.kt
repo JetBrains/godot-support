@@ -13,7 +13,7 @@ import com.intellij.platform.lsp.api.LspServerState
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
 import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
-import com.jetbrains.rider.plugins.godot.actions.StartGodotEditorAction
+import com.jetbrains.rider.godot.community.actions.StartGodotEditorAction
 import javax.swing.Icon
 
 class GodotLspServerWidgetItem(lspServer: LspServer,

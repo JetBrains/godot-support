@@ -29,6 +29,7 @@ import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -45,7 +46,8 @@ class GodotProjectDiscoverer(project: Project) {
     val godot4Path : IProperty<String?> = Property(null)
     val godotPath : IOptProperty<String> = OptProperty()
 
-    val mainProjectBasePath: CompletableDeferred<Path> = CompletableDeferred()
+    val mainProjectBasePath: MutableStateFlow<Path?> = MutableStateFlow(null)
+    val executablePathFlow: MutableStateFlow<Path?> = MutableStateFlow(null)
     val isGodotProject : CompletableDeferred<Boolean> = CompletableDeferred()
 
     val projectMetadataModificationSignal: ISignal<Unit> = Signal()
@@ -54,18 +56,20 @@ class GodotProjectDiscoverer(project: Project) {
         val lifetime = GodotProjectLifetimeService.getLifetime(project)
         godot3Path.adviseNotNull(lifetime){
             godotPath.set(it)
+            executablePathFlow.value = Path(it)
         }
         godot4Path.adviseNotNull(lifetime){
             godotPath.set(it)
+            executablePathFlow.value = Path(it)
         }
 
         godotDescriptor.adviseNotNull(lifetime){
             thisLogger().info("Godot godotDescriptor: $it")
             val basePath = Path(it.mainProjectBasePath)
             lifetime.launch(Dispatchers.IO) {
-                val g3path = GodotMetadataFileWatcherUtil.getFromMonoMetadataPath(basePath)
-                             ?: GodotMetadataFileWatcherUtil.getGodot3Path(basePath) ?: getGodotPathFromPlayerRunConfiguration(project)
-                val g4path = GodotMetadataFileWatcherUtil.getGodot4Path(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project)
+                val g3path = DotNetGodotMetadataFileWatcherUtil.getFromMonoMetadataPath(basePath)
+                             ?: DotNetGodotMetadataFileWatcherUtil.getGodot3Path(basePath) ?: getGodotPathFromPlayerRunConfiguration(project)
+                val g4path = DotNetGodotMetadataFileWatcherUtil.getGodot4Path(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project)
                 withContext(Dispatchers.EDT) {
                     godot3Path.set(g3path)
                     godot4Path.set(g4path)
@@ -116,7 +120,7 @@ class GodotProjectDiscoverer(project: Project) {
             model.isGodotProject.advise(lifetime) {getInstance(session.project).isGodotProject.complete(it) }
             model.godotDescriptor.advise(lifetime){
                 getInstance(session.project).godotDescriptor.set(it)
-                getInstance(session.project).mainProjectBasePath.complete(Path(it.mainProjectBasePath))
+                getInstance(session.project).mainProjectBasePath.value = Path(it.mainProjectBasePath)
             }
             model.backendSettings.lspConnectionMode.adviseNotNull(lifetime){ getInstance(session.project).lspConnectionMode.set(it) }
             model.backendSettings.remoteHostPort.adviseNotNull(lifetime) { getInstance(session.project).remoteHostPort.set(it) }

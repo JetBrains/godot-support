@@ -11,7 +11,7 @@ import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.GdScriptBundle
 import gdscript.annotator.isGodotSupportInstalled
 import gdscript.utils.RiderGodotSupportPluginUtil
-import gdscript.utils.hasCompletedTrue
+import com.jetbrains.rider.godot.community.utils.hasCompletedTrue
 
 
 class GdCreateFileAction : CreateFileFromTemplateAction(), DumbAware {
