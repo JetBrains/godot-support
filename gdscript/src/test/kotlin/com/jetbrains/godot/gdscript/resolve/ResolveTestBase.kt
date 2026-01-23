@@ -6,6 +6,7 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.PsiReference
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
+import project.psi.util.ProjectAutoloadCache
 import java.io.File
 import kotlin.io.path.pathString
 
@@ -130,6 +131,11 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
     protected fun loadFilesFromSubdirAsProjectRoot(): Array<PsiFile> {
         val testName = getTestName(false)
         val dir = myFixture.copyDirectoryToProject(testName, "")
-        return myFixture.configureByFiles(*dir.children.map { it.name }.toTypedArray())
+        val configureByFiles = myFixture.configureByFiles(*dir.children.map { it.name }.toTypedArray())
+        // No way to subscribe to a "subdir loaded" event in tests,
+        // so ProjectAutoloadCache won't update on its own.
+        // Force refresh here to keep resolve results stable in tests.
+        ProjectAutoloadCache.getInstance(project).forceRefresh()
+        return configureByFiles
     }
 }

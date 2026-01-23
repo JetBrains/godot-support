@@ -169,4 +169,8 @@ class ProjectAutoloadCache(private val project: Project) : Disposable {
     fun getGlobals(): List<GdAutoload> = snapshot.globals
 
     fun getAutoloadInfoByAlias(name: String): AutoloadInfo? = snapshot.byAlias[name]
+
+    fun forceRefresh() {
+        refresh()
+    }
 }

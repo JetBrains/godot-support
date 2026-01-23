@@ -27,6 +27,14 @@ class ResolveMultiFileTest : ResolveTestBase() {
     }
 
     @Test
+    fun testTscnGlobals() {
+        val files = loadFilesFromSubdirAsProjectRoot()
+        val useFile = files.find { it.name == "use.gd" }!!
+        val annotated = dumpResolvesWithInlineMarkers(useFile)
+        assertGold(annotated)
+    }
+
+    @Test
     fun testEnums() {
         val files = loadFilesFromSubdirAsProjectRoot()
         val annotated = dumpResolvesForFiles(files)

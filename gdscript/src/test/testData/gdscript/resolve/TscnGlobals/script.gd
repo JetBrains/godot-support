@@ -1,0 +1,2 @@
+func m():
+    pass
