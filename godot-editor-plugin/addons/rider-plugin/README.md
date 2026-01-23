@@ -10,7 +10,7 @@ Requirements:
 - Godot 4.2.2
 
 Install:
-1. Copy the `addons/rider-plugin` folder into your project (keep the path as is).
+1. Inside GodotEditor, it can be installed from the AssetLib view.
 2. [Optional] Change the initial value of `active` in the plugin.cfg
 3. [Optional] Change the initial values in the presets.json file.
 4. Enable "JetBrains Rider External Editor" plugin in the Project → Project Settings… → Plugins tab.

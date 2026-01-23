@@ -20,7 +20,8 @@ func _enter_tree() -> void:
 	if err != OK:
 		push_warning("Failed to load plugin.cfg: %s" % [err])
 		return
-	var active := str(cfg.get_value("presets", "active", "on"))
+	var active_str := str(cfg.get_value("presets", "active", "on"))
+	var active := active_str == "on"
 	var presets_rel_path := str(cfg.get_value("presets", "presets", "presets.json"))
 	_presets_json_path = plugin_dir + "/" + presets_rel_path
 
@@ -28,7 +29,7 @@ func _enter_tree() -> void:
 	checkbutton = CheckButton.new()
 	checkbutton.text = "Use Rider"
 	checkbutton.tooltip_text = "Shortcut for setting recommended settings"
-	checkbutton.button_pressed = active == "on"
+	checkbutton.button_pressed = active
 	checkbutton.pressed.connect(_on_checkbutton_pressed)
 	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, checkbutton)
 
@@ -47,18 +48,17 @@ func _on_checkbutton_pressed() -> void:
 	if cfg.load(_plugin_cfg_path) != OK:
 		push_warning("Failed to load plugin.cfg to update state")
 		return
-	var new_active: String = "off"
-	if checkbutton.button_pressed:
-		new_active = "on"
-	cfg.set_value("presets", "active", new_active)
+	var new_active := checkbutton.button_pressed
+	var new_active_str := "on" if new_active else "off"
+	cfg.set_value("presets", "active", new_active_str)
 	var save_err := cfg.save(_plugin_cfg_path)
 	if save_err != OK:
 		push_warning("Failed to save plugin.cfg: %s" % [save_err])
 	# Apply selected preset to editor settings
 	_apply_preset(new_active)
 
-func _apply_preset(active: String) -> void:
-	_preset_applier.apply_preset(editor_settings, active)
+func _apply_preset(is_active: bool) -> void:
+	_preset_applier.apply_preset(editor_settings, is_active)
 
 func _exit_tree() -> void:
 	remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, checkbutton)
