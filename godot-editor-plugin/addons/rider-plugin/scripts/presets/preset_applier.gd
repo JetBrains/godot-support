@@ -21,14 +21,13 @@ func apply_preset(editor_settings: EditorSettings, is_active: bool) -> void:
 		push_warning("Preset '%s' not found in presets.json" % new_preset_key)
 		return
 
+	var new_preset := data[new_preset_key] as Dictionary
 	# Reset keys from previous preset that are missing in the new preset
 	if data.has(previous_preset_key):
 		var previous_preset := data[previous_preset_key] as Dictionary
-		var new_preset := data[new_preset_key] as Dictionary
 		for key in previous_preset:
 			if not new_preset.has(key):
 				editor_settings.set_setting(str(key), editor_settings.property_get_revert(str(key)))
 	# Apply the new preset
-	var preset := data[new_preset_key] as Dictionary
-	for key in preset:
-		editor_settings.set_setting(str(key), preset[key])
+	for key in new_preset:
+		editor_settings.set_setting(str(key), new_preset[key])

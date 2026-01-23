@@ -21,7 +21,7 @@ func _enter_tree() -> void:
 		push_warning("Failed to load plugin.cfg: %s" % [err])
 		return
 	var active_str := str(cfg.get_value("presets", "active", "on"))
-	var active := active_str == "on"
+	var is_active := active_str == "on"
 	var presets_rel_path := str(cfg.get_value("presets", "presets", "presets.json"))
 	_presets_json_path = plugin_dir + "/" + presets_rel_path
 
@@ -29,7 +29,7 @@ func _enter_tree() -> void:
 	checkbutton = CheckButton.new()
 	checkbutton.text = "Use Rider"
 	checkbutton.tooltip_text = "Shortcut for setting recommended settings"
-	checkbutton.button_pressed = active
+	checkbutton.button_pressed = is_active
 	checkbutton.pressed.connect(_on_checkbutton_pressed)
 	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, checkbutton)
 
@@ -41,7 +41,7 @@ func _enter_tree() -> void:
 	_locator_service.add_selector_in_editor_interface(_settings_service)
 
 	# Ensure settings reflect current state on startup
-	_apply_preset(active)
+	_apply_preset(is_active)
 
 func _on_checkbutton_pressed() -> void:
 	var cfg := ConfigFile.new()
