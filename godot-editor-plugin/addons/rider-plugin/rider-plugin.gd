@@ -41,23 +41,20 @@ func _enter_tree() -> void:
 	_locator_service.add_selector_in_editor_interface(_settings_service)
 
 	# Ensure settings reflect current state on startup
-	_apply_preset(is_active)
+	_preset_applier.apply_preset(editor_settings, is_active)
 
 func _on_checkbutton_pressed() -> void:
 	var cfg := ConfigFile.new()
 	if cfg.load(_plugin_cfg_path) != OK:
 		push_warning("Failed to load plugin.cfg to update state")
 		return
-	var new_active := checkbutton.button_pressed
-	var new_active_str := "on" if new_active else "off"
-	cfg.set_value("presets", "active", new_active_str)
+	var is_active := checkbutton.button_pressed
+	var key := _preset_applier.get_preset_key(is_active)
+	cfg.set_value("presets", "active", key)
 	var save_err := cfg.save(_plugin_cfg_path)
 	if save_err != OK:
 		push_warning("Failed to save plugin.cfg: %s" % [save_err])
 	# Apply selected preset to editor settings
-	_apply_preset(new_active)
-
-func _apply_preset(is_active: bool) -> void:
 	_preset_applier.apply_preset(editor_settings, is_active)
 
 func _exit_tree() -> void:

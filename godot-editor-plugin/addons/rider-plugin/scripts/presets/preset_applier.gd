@@ -8,14 +8,17 @@ var presets_path: String
 func _init(p_path: String) -> void:
 	presets_path = p_path
 
+func get_preset_key(is_active: bool) -> String:
+	return "on" if is_active else "off"
+
 func apply_preset(editor_settings: EditorSettings, is_active: bool) -> void:
 	var data: Dictionary = JsonUtils.load_dict_from_file(presets_path)
 	if data.is_empty():
 		push_warning("Failed to load presets: %s" % presets_path)
 		return
 
-	var new_preset_key := "on" if is_active else "off"
-	var previous_preset_key := "on" if not is_active else "off"
+	var new_preset_key := get_preset_key(is_active)
+	var previous_preset_key := get_preset_key(not is_active)
 
 	if not data.has(new_preset_key):
 		push_warning("Preset '%s' not found in presets.json" % new_preset_key)
