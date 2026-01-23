@@ -19,7 +19,6 @@ kotlin {
 repositories {
     intellijPlatform {
         defaultRepositories()
-        jetbrainsRuntime()
     }
 }
 
@@ -28,6 +27,7 @@ dependencies {
         intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
         // rider(libs.versions.riderSdk, useInstaller = false)
         jetbrainsRuntime()
+
     }
 }
 
