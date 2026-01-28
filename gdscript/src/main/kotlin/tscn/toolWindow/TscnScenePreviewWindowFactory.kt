@@ -35,9 +35,4 @@ class TscnScenePreviewWindowFactory() : ToolWindowFactory {
     override fun shouldBeAvailable(project: Project): Boolean {
         return false
     }
-
-    override suspend fun isApplicableAsync(project: Project): Boolean {
-        // I have tried to await() IsGodotProject here, but it causes all toolwindows to wait, so can't use it
-        return super.isApplicableAsync(project)
-    }
 }
