@@ -81,7 +81,7 @@ object PsiElementUtil {
     fun PsiElement.prevCommentBlock(): PsiElement? {
         var prev = this.prevLeaf()
         while (SKIPS_TO_COMMENT.contains(prev?.elementType)) {
-            if (prev!!.text == "\n") {
+            if (prev!!.text.contains("\n")) {
                 prev = prev.prevLeaf()
                 break
             }
