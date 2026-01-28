@@ -12,7 +12,11 @@
     <plugin id="org.jetbrains.plugins.terminal"/>
     <module name="intellij.platform.dap"/>
     <module name="intellij.rd.client"/>
+    <module name="intellij.rider.model.generated"/>
+    <module name="intellij.rider.rdclient.dotnet"/>
+    <module name="intellij.rider.shared"/>
   </dependencies>
+  <content namespace="jetbrains"/>
 
   <actions>
     <action id="Godot.GenerateSolution" class="com.jetbrains.rider.plugins.godot.cpp.actions.GodotEngineGenerateSolutionAction"/>
