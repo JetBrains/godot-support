@@ -82,6 +82,8 @@ object GdCommonUtil {
                 val forExpr = element.expr?.returnType ?: ""
                 if (forExpr.startsWith("Array")) {
                     return GdOperand.getReturnType(forExpr, GdKeywords.INT, "[]", element.project)
+                } else if (forExpr.startsWith("Dictionary")) {
+                    return GdOperand.getReturnType(forExpr, GdKeywords.VARIANT, "[]", element.project)
                 } else {
                     return forExpr
                 }
