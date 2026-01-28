@@ -8,10 +8,15 @@ object GdOperand {
 
     fun getReturnType(left: String, right: String, operator: String, project: Project): String {
         if (operator == "[]" && left.startsWith("Array[")) return left.removePrefix("Array[").removeSuffix("]")
+        if (operator == "[]" && left.startsWith("Dictionary[")) return left.removePrefix("Dictionary[").substringBefore(",")
         val typed = getOperand(left, operator, right, project)
         if (typed == null && operator == "[]") {
-            return GdConfigOperatorDataIndex.INSTANCE.getGlobally(left, project).firstOrNull()
+            val result = GdConfigOperatorDataIndex.INSTANCE.getGlobally(left, project).firstOrNull()
                 ?.operationList?.firstOrNull()?.rightTyped ?: ""
+
+            if (result.isEmpty())
+                return if (left == "Array" || left == "Dictionary") GdKeywords.VARIANT else result
+            return result
         }
 
         return typed ?: ""
