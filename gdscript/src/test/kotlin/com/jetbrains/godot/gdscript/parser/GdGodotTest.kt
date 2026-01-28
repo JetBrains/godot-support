@@ -101,6 +101,8 @@ class GdGodotTest : GdParsingTestCase() {
     @Test fun testsignal_connect_func() = doTest(true, false)
     @Test fun testlambdaCallExpr() = doTest(true, true)
 
+    @Test fun testdocumentation_comments() = doTest(true, true)
+
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString
     }
