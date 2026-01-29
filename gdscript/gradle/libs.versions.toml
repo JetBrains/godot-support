@@ -9,7 +9,7 @@ riderSdk = "2026.1-SNAPSHOT"
 [libraries]
 kotlinStdLib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 openTest4J = "org.opentest4j:opentest4j:1.3.0"
-jflex = "de.jflex:jflex:1.9.1"
+jflex = "org.jetbrains.intellij.deps.jflex:jflex:1.9.2"
 
 [plugins]
 grammarkit = "org.jetbrains.grammarkit:2022.3.2.2"
