@@ -65,7 +65,7 @@ class GdGodotTest : GdParsingTestCase() {
     @Test fun testmultiline_assert() = doTest(true, true)
     @Test fun testmultiline_dictionaries() = doTest(true, true)
     @Test fun testmultiline_if() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testmultiline_strings() = doTest(true, true)
+    @Test fun testmultiline_strings() = doTest(true, true)
     @Test fun testmultiline_vector() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testnested_arithmetic() = doTest(true, true)
     @Test fun testnested_array() = doTest(true, true)
@@ -102,6 +102,7 @@ class GdGodotTest : GdParsingTestCase() {
     @Test fun testlambdaCallExpr() = doTest(true, true)
 
     @Test fun testdocumentation_comments() = doTest(true, true)
+    @Test fun teststrings() = doTest(true, true)
 
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString
