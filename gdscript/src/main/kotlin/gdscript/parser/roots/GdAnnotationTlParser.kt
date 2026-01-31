@@ -4,7 +4,9 @@ import com.intellij.psi.TokenType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdAnnotationParser
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.ANNOTATION_TL
+import gdscript.psi.GdTypes.ANNOTATOR
+import gdscript.psi.GdTypes.NEW_LINE
 
 object GdAnnotationTlParser : GdAnnotationParser {
 

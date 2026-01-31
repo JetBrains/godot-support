@@ -2,13 +2,10 @@ package gdscript.inspection
 
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
-import gdscript.GdKeywords
 import gdscript.GdScriptBundle
 import gdscript.psi.GdConstDeclSt
-import gdscript.psi.GdTyped
 import gdscript.psi.GdVarDeclSt
 import gdscript.psi.GdVisitor
-import gdscript.utils.PsiReferenceUtil.resolveRef
 import gdscript.utils.ProjectUtil.contentScope
 
 class GdUnusedVariableInspection : GdUnusedInspection() {

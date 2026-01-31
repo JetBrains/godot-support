@@ -2,7 +2,9 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.BIT_AND_EX
+import gdscript.psi.GdTypes.BIT_AND_SIGN
+import gdscript.psi.GdTypes.OR
 
 // bitXor { "|" bitXor }
 object GdBitOrExParser : GdExprBaseParser() {

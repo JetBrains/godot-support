@@ -3,7 +3,15 @@ package gdscript.parser.stmt
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.COMMA
+import gdscript.psi.GdTypes.DEDENT
+import gdscript.psi.GdTypes.END_STMT
+import gdscript.psi.GdTypes.INDENT
+import gdscript.psi.GdTypes.NEW_LINE
+import gdscript.psi.GdTypes.RRBR
+import gdscript.psi.GdTypes.SEMICON
+import gdscript.psi.GdTypes.STMT_OR_SUITE
+import gdscript.psi.GdTypes.SUITE
 
 object GdStmtParser : GdBaseParser {
 

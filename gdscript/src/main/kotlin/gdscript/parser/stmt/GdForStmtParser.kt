@@ -4,7 +4,11 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdTypedParser
 import gdscript.parser.expr.GdExprParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.COLON
+import gdscript.psi.GdTypes.FOR
+import gdscript.psi.GdTypes.FOR_ST
+import gdscript.psi.GdTypes.IN
+import gdscript.psi.GdTypes.VAR_NMI
 
 object GdForStmtParser : GdStmtBaseParser {
 

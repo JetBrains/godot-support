@@ -1,12 +1,12 @@
 package gdscript.lineMarker
 
+import GdScriptPluginIcons
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.ide.util.PsiElementListCellRenderer
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
-import gdscript.GdIcon
 import gdscript.GdScriptBundle
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.utils.GdClassMemberUtil

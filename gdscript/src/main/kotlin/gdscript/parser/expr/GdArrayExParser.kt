@@ -2,7 +2,9 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.ARR_EX
+import gdscript.psi.GdTypes.LSBR
+import gdscript.psi.GdTypes.RSBR
 
 // cast [ "[" expression "]" ] ;
 object GdArrayExParser : GdExprBaseParser() {

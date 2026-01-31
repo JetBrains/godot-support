@@ -1,8 +1,8 @@
 package gdscript.completion.utils
 
+import GdScriptPluginIcons
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElement
-import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl

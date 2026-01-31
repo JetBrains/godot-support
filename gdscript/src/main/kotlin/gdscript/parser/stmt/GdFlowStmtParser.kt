@@ -3,8 +3,12 @@ package gdscript.parser.stmt
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
-import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.BREAK
+import gdscript.psi.GdTypes.BREAKPOINT
+import gdscript.psi.GdTypes.CONTINUE
+import gdscript.psi.GdTypes.FLOW_ST
+import gdscript.psi.GdTypes.PASS
+import gdscript.psi.GdTypes.RETURN
 
 object GdFlowStmtParser : GdStmtBaseParser {
 

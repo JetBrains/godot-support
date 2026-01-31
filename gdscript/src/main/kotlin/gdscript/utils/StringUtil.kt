@@ -1,7 +1,7 @@
 package gdscript.utils
 
 import gdscript.GdKeywords
-import java.util.*
+import java.util.Locale
 
 object StringUtil {
 

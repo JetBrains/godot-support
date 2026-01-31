@@ -6,7 +6,21 @@ import gdscript.parser.common.GdParamListParser
 import gdscript.parser.common.GdReturnHintParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.stmt.GdStmtParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.COLON
+import gdscript.psi.GdTypes.FUNC
+import gdscript.psi.GdTypes.LRBR
+import gdscript.psi.GdTypes.MASTER
+import gdscript.psi.GdTypes.MASTERSYNC
+import gdscript.psi.GdTypes.METHOD_DECL_TL
+import gdscript.psi.GdTypes.METHOD_ID_NMI
+import gdscript.psi.GdTypes.METHOD_SPECIFIER
+import gdscript.psi.GdTypes.PUPPET
+import gdscript.psi.GdTypes.PUPPETSYNC
+import gdscript.psi.GdTypes.REMOTE
+import gdscript.psi.GdTypes.REMOTESYNC
+import gdscript.psi.GdTypes.RRBR
+import gdscript.psi.GdTypes.STATIC
+import gdscript.psi.GdTypes.VARARG
 
 object GdMethodParser : GdBaseParser {
 

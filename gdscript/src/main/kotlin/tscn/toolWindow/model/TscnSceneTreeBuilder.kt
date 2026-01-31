@@ -11,7 +11,6 @@ import com.intellij.ui.ScrollPaneFactory
 import com.intellij.ui.components.JBTabbedPane
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.concurrency.AppExecutorUtil
-import java.util.concurrent.Callable
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.utils.GdClassUtil
@@ -21,9 +20,10 @@ import tscn.psi.TscnFile
 import tscn.psi.TscnNodeHeader
 import tscn.psi.search.TscnResourceSearcher
 import tscn.toolWindow.TscnSceneCellRenderer
+import java.awt.datatransfer.StringSelection
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
-import java.awt.datatransfer.StringSelection
+import java.util.concurrent.Callable
 import javax.swing.JComponent
 import javax.swing.TransferHandler
 

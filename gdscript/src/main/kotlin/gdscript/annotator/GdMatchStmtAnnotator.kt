@@ -7,7 +7,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdScriptBundle
 import gdscript.action.quickFix.GdAddMatchBranchesFix
-import gdscript.psi.*
+import gdscript.psi.GdEnumDeclNmi
+import gdscript.psi.GdEnumDeclTl
+import gdscript.psi.GdExpr
+import gdscript.psi.GdMatchSt
+import gdscript.psi.GdPattern
+import gdscript.psi.GdRefIdRef
+import gdscript.psi.GdTypeHintRef
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.GdInheritanceUtil
 import gdscript.reference.GdClassMemberReference

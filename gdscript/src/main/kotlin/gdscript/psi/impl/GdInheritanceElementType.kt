@@ -1,6 +1,10 @@
 package gdscript.psi.impl
 
-import com.intellij.psi.stubs.*
+import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.stubs.IndexSink
+import com.intellij.psi.stubs.StubElement
+import com.intellij.psi.stubs.StubInputStream
+import com.intellij.psi.stubs.StubOutputStream
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.index.Indices
 import gdscript.index.stub.GdInheritanceStub

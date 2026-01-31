@@ -16,7 +16,7 @@ import com.intellij.psi.util.PsiUtilCore
 import org.jetbrains.annotations.ApiStatus.ScheduledForRemoval
 import org.jetbrains.annotations.Contract
 import java.awt.Color
-import java.util.*
+import java.util.Collections
 import javax.swing.Icon
 
 /**

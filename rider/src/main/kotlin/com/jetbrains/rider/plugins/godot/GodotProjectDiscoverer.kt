@@ -8,7 +8,13 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rd.util.reactive.*
+import com.jetbrains.rd.util.reactive.IOptProperty
+import com.jetbrains.rd.util.reactive.IProperty
+import com.jetbrains.rd.util.reactive.ISignal
+import com.jetbrains.rd.util.reactive.OptProperty
+import com.jetbrains.rd.util.reactive.Property
+import com.jetbrains.rd.util.reactive.Signal
+import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rd.util.threading.coroutines.launch
 import com.jetbrains.rider.model.godot.frontendBackend.GodotDescriptor
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel

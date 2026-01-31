@@ -1,8 +1,15 @@
 package gdscript.index
 
 import com.intellij.psi.stubs.StubIndexKey
-import com.intellij.util.indexing.ID
-import gdscript.psi.*
+import gdscript.psi.GdClassDeclTl
+import gdscript.psi.GdClassNameNmi
+import gdscript.psi.GdClassNaming
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdEnumDeclTl
+import gdscript.psi.GdInheritance
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdSignalDeclTl
 
 object Indices {
 

@@ -1,10 +1,26 @@
 package gdscript.completion.utils
 
+import GdScriptPluginIcons
 import com.intellij.codeInsight.lookup.LookupElement
 import gdscript.GdIcon
 import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdClassCompletionUtil.lookup
-import gdscript.psi.*
+import gdscript.psi.GdBindingPattern
+import gdscript.psi.GdClassDeclTl
+import gdscript.psi.GdClassNaming
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdConstDeclSt
+import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdEnumDeclTl
+import gdscript.psi.GdEnumValue
+import gdscript.psi.GdForSt
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdParam
+import gdscript.psi.GdSetDecl
+import gdscript.psi.GdSignalDeclTl
+import gdscript.psi.GdTyped
+import gdscript.psi.GdVarDeclSt
+import gdscript.psi.GdVarNmi
 import gdscript.psi.utils.PsiGdExprUtil
 import gdscript.utils.StringUtil.parseFromSquare
 import project.psi.model.GdAutoload

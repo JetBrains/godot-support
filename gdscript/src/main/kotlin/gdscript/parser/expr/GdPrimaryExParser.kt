@@ -1,9 +1,24 @@
 package gdscript.parser.expr
 
-import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.ARRAY_DECL
+import gdscript.psi.GdTypes.COLON
+import gdscript.psi.GdTypes.COMMA
+import gdscript.psi.GdTypes.DICT_DECL
+import gdscript.psi.GdTypes.EQ
+import gdscript.psi.GdTypes.IDENTIFIER
+import gdscript.psi.GdTypes.KEY_VALUE
+import gdscript.psi.GdTypes.LCBR
+import gdscript.psi.GdTypes.LRBR
+import gdscript.psi.GdTypes.LSBR
+import gdscript.psi.GdTypes.NODE_PATH
+import gdscript.psi.GdTypes.NODE_PATH_LEX
+import gdscript.psi.GdTypes.PRIMARY_EX
+import gdscript.psi.GdTypes.RCBR
+import gdscript.psi.GdTypes.RRBR
+import gdscript.psi.GdTypes.RSBR
+import gdscript.psi.GdTypes.STRING
 import gdscript.utils.PsiBuilderUtil.rollOrDrop
 
 object GdPrimaryExParser : GdExprBaseParser() {

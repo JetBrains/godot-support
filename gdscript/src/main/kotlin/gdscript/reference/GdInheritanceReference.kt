@@ -11,7 +11,10 @@ import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdClassCompletionUtil
 import gdscript.completion.utils.GdClassCompletionUtil.lookup
 import gdscript.index.impl.GdFileResIndex
-import gdscript.psi.*
+import gdscript.psi.GdClassDeclTl
+import gdscript.psi.GdElementFactory
+import gdscript.psi.GdInheritanceIdRef
+import gdscript.psi.GdInheritanceSubIdRef
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.PsiFileUtil.toAbsoluteResource
 import gdscript.utils.VirtualFileUtil.resourcePath

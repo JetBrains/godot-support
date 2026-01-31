@@ -4,7 +4,9 @@ import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdTypedParser
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.CONST
+import gdscript.psi.GdTypes.CONST_DECL_TL
+import gdscript.psi.GdTypes.VAR_NMI
 
 object GdClassConstParser : GdBaseParser {
 

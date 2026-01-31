@@ -3,7 +3,9 @@ package gdscript.parser.stmt
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.COLON
+import gdscript.psi.GdTypes.WHILE
+import gdscript.psi.GdTypes.WHILE_ST
 
 object GdWhileStmtParser : GdStmtBaseParser {
 

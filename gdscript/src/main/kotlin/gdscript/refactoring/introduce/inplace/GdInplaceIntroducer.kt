@@ -10,7 +10,12 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.RefactoringBundle
 import com.intellij.refactoring.introduce.inplace.AbstractInplaceIntroducer
-import gdscript.psi.*
+import gdscript.psi.GdElementFactory
+import gdscript.psi.GdExpr
+import gdscript.psi.GdStmt
+import gdscript.psi.GdSuite
+import gdscript.psi.GdVarDeclSt
+import gdscript.psi.GdVarNmi
 import javax.swing.JComponent
 
 class GdInplaceIntroducer(

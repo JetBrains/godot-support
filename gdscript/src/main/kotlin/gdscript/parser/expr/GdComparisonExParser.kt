@@ -2,8 +2,9 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
-import gdscript.parser.common.GdTypedParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.COMPARISON_EX
+import gdscript.psi.GdTypes.OPERATOR
+import gdscript.psi.GdTypes.TEST_OPERATOR
 
 // bitOr { ( "<" | ">" | "<=" | ">=" | "==" | "!=" ) bitOr } ;
 object GdComparisonExParser : GdExprBaseParser() {

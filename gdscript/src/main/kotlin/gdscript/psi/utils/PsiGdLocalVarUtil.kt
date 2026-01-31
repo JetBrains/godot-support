@@ -1,6 +1,6 @@
 package gdscript.psi.utils
 
-import gdscript.psi.*
+import gdscript.psi.GdVarDeclSt
 
 object PsiGdLocalVarUtil {
 

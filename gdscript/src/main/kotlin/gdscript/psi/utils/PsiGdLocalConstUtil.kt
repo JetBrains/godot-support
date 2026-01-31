@@ -1,7 +1,7 @@
 package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
-import gdscript.psi.*
+import gdscript.psi.GdConstDeclSt
 
 object PsiGdLocalConstUtil {
 

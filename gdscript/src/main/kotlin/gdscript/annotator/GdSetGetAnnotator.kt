@@ -8,7 +8,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdScriptBundle
 import gdscript.action.GdCreateMethodAction
 import gdscript.index.impl.GdMethodDeclIndex
-import gdscript.psi.*
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdGetMethodIdRef
+import gdscript.psi.GdSetMethodIdRef
 
 /**
  * Checks if referencing method exists

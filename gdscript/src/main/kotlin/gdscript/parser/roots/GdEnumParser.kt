@@ -3,7 +3,16 @@ package gdscript.parser.roots
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.COMMA
+import gdscript.psi.GdTypes.ENUM
+import gdscript.psi.GdTypes.ENUM_DECL_NMI
+import gdscript.psi.GdTypes.ENUM_DECL_TL
+import gdscript.psi.GdTypes.ENUM_VALUE
+import gdscript.psi.GdTypes.ENUM_VALUE_NMI
+import gdscript.psi.GdTypes.EQ
+import gdscript.psi.GdTypes.IDENTIFIER
+import gdscript.psi.GdTypes.LCBR
+import gdscript.psi.GdTypes.RCBR
 
 object GdEnumParser : GdBaseParser {
 

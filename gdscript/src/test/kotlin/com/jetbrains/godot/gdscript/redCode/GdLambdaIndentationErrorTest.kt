@@ -1,7 +1,5 @@
 package com.jetbrains.godot.gdscript.redCode
 
-import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiErrorElement
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.junit.Ignore
 

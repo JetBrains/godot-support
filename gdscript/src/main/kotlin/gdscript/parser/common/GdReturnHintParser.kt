@@ -2,7 +2,10 @@ package gdscript.parser.common
 
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.RET
+import gdscript.psi.GdTypes.RETURN_HINT
+import gdscript.psi.GdTypes.RETURN_HINT_VAL
+import gdscript.psi.GdTypes.VOID
 
 object GdReturnHintParser : GdBaseParser {
 

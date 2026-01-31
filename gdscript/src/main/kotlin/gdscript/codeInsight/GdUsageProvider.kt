@@ -8,7 +8,15 @@ import com.intellij.psi.tree.TokenSet
 import gdscript.GdLexerAdapter
 import gdscript.GdScriptBundle
 import gdscript.highlighter.GdTokenTypeSet
-import gdscript.psi.*
+import gdscript.psi.GdClassNameNmi
+import gdscript.psi.GdEnumDeclNmi
+import gdscript.psi.GdEnumValueNmi
+import gdscript.psi.GdForSt
+import gdscript.psi.GdMethodIdNmi
+import gdscript.psi.GdNamedElement
+import gdscript.psi.GdSignalIdNmi
+import gdscript.psi.GdStringValRef
+import gdscript.psi.GdVarNmi
 
 class GdUsageProvider : FindUsagesProvider {
 

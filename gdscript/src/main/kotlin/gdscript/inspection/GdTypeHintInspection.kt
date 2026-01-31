@@ -9,7 +9,11 @@ import gdscript.GdScriptBundle
 import gdscript.inspection.fixes.GdAddVariableTypeHintFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerError
 import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
-import gdscript.psi.*
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdConstDeclSt
+import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdVarDeclSt
+import gdscript.psi.GdVisitor
 import gdscript.settings.GdProjectSettingsState
 
 class GdTypeHintInspection : LocalInspectionTool() {

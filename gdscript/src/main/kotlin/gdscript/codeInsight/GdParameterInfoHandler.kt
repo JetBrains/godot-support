@@ -1,12 +1,24 @@
 package gdscript.codeInsight
 
 import com.intellij.codeInsight.CodeInsightSettings
-import com.intellij.lang.parameterInfo.*
+import com.intellij.lang.parameterInfo.CreateParameterInfoContext
+import com.intellij.lang.parameterInfo.ParameterInfoContext
+import com.intellij.lang.parameterInfo.ParameterInfoHandler
+import com.intellij.lang.parameterInfo.ParameterInfoUIContext
+import com.intellij.lang.parameterInfo.ParameterInfoUtils
+import com.intellij.lang.parameterInfo.UpdateParameterInfoContext
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.psi.*
+import gdscript.psi.GdAnnotationTl
+import gdscript.psi.GdCallEx
+import gdscript.psi.GdClassNaming
+import gdscript.psi.GdFuncDeclEx
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdRefIdRef
+import gdscript.psi.GdTypes
+import gdscript.psi.GdVarDeclSt
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.utils.GdAnnotationUtil
 

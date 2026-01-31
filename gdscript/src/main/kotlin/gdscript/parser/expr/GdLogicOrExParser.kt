@@ -2,7 +2,8 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.LOGIC_EX
+import gdscript.psi.GdTypes.OROR
 
 // logicAnd { ( "or" | "||" ) logicAnd } ;
 object GdLogicOrExParser : GdExprBaseParser() {

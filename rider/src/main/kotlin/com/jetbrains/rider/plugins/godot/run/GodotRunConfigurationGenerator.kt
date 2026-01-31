@@ -19,7 +19,6 @@ import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigu
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptConfigurationType
 import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptRunConfiguration
-import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptRunConfigurationHelper
 import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.GdScriptRunFactory
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectory

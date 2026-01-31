@@ -2,7 +2,6 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdBaseParser
-import gdscript.parser.GdPsiBuilder
 
 abstract class GdExprBaseParser : GdBaseParser {
 

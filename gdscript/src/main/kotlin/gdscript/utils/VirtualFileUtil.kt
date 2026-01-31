@@ -7,7 +7,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import gdscript.psi.utils.PsiGdResourceUtil
-import java.nio.file.Path
 import kotlin.io.path.pathString
 import kotlin.io.path.relativeToOrNull
 

@@ -1,9 +1,9 @@
 package gdscript.lineMarker
 
+import GdScriptPluginIcons
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.psi.PsiElement
-import gdscript.GdIcon
 import gdscript.psi.GdInheritanceIdRef
 import gdscript.psi.utils.GdInheritanceUtil
 import javax.swing.Icon

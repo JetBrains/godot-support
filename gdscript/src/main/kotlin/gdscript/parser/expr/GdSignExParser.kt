@@ -2,7 +2,9 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.MINUS
+import gdscript.psi.GdTypes.PLUS
+import gdscript.psi.GdTypes.SIGN_EX
 
 // sign = ( "-" | "+" ) sign | bitNot ;
 object GdSignExParser : GdExprBaseParser() {

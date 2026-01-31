@@ -1,11 +1,12 @@
 package gdscript.parser.common
 
-import com.intellij.psi.TokenType
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.ARG_EXPR
+import gdscript.psi.GdTypes.ARG_LIST
+import gdscript.psi.GdTypes.COMMA
 
 object GdArgListParser : GdBaseParser {
 

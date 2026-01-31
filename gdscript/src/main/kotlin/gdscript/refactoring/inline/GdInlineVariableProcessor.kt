@@ -1,16 +1,20 @@
 package gdscript.refactoring.inline
 
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.refactoring.BaseRefactoringProcessor
+import com.intellij.refactoring.RefactoringBundle
 import com.intellij.usageView.BaseUsageViewDescriptor
 import com.intellij.usageView.UsageInfo
 import com.intellij.usageView.UsageViewDescriptor
 import com.intellij.util.IncorrectOperationException
-import com.intellij.openapi.diagnostic.Logger
-import com.intellij.refactoring.RefactoringBundle
-import gdscript.psi.*
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdConstDeclSt
+import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdExpr
+import gdscript.psi.GdVarDeclSt
 
 class GdInlineVariableProcessor : BaseRefactoringProcessor {
 

@@ -6,7 +6,16 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import gdscript.GdKeywords
 import gdscript.GdScriptBundle
-import gdscript.psi.*
+import gdscript.psi.GdArrEx
+import gdscript.psi.GdAssignSt
+import gdscript.psi.GdBitAndEx
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdComparisonEx
+import gdscript.psi.GdFactorEx
+import gdscript.psi.GdPlusEx
+import gdscript.psi.GdShiftEx
+import gdscript.psi.GdTypes
+import gdscript.psi.GdVarDeclSt
 import gdscript.psi.utils.GdExprUtil
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right

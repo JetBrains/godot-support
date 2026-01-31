@@ -6,7 +6,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdScriptBundle
-import gdscript.psi.*
+import gdscript.psi.GdAssignTyped
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdConstDeclSt
+import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdElementFactory
+import gdscript.psi.GdVarDeclSt
 
 class GdAddVariableTypeHintFix : LocalQuickFixOnPsiElement {
 

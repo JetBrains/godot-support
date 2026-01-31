@@ -10,8 +10,6 @@ import java.security.MessageDigest
 import kotlin.io.path.exists
 import kotlin.io.path.pathString
 import kotlin.io.path.readLines
-import kotlin.text.substring
-import kotlin.text.trimEnd
 
 object GodotMetadataFileWatcherUtil {
     // Godot 3 path utilities

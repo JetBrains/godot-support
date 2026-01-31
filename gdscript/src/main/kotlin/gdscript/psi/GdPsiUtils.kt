@@ -7,7 +7,27 @@ import gdscript.psi.impl.GdClassDeclElementType
 import gdscript.psi.impl.GdClassIdElementType
 import gdscript.psi.impl.GdClassNamingElementType
 import gdscript.psi.impl.GdInheritanceElementType
-import gdscript.psi.utils.*
+import gdscript.psi.utils.GdClassUtil
+import gdscript.psi.utils.GdClassVarUtil
+import gdscript.psi.utils.GdCommonUtil
+import gdscript.psi.utils.GdConstDeclUtil
+import gdscript.psi.utils.GdEnumUtil
+import gdscript.psi.utils.GdMethodUtil
+import gdscript.psi.utils.GdSignalUtil
+import gdscript.psi.utils.GdStmtUtil
+import gdscript.psi.utils.GdTypedUtil
+import gdscript.psi.utils.GdVarDeclStUtil
+import gdscript.psi.utils.PsiGdClassUtil
+import gdscript.psi.utils.PsiGdClassVarUtil
+import gdscript.psi.utils.PsiGdConstDeclUtil
+import gdscript.psi.utils.PsiGdEnumUtil
+import gdscript.psi.utils.PsiGdExprUtil
+import gdscript.psi.utils.PsiGdInheritanceUtil
+import gdscript.psi.utils.PsiGdLocalConstUtil
+import gdscript.psi.utils.PsiGdLocalFuncUtil
+import gdscript.psi.utils.PsiGdLocalVarUtil
+import gdscript.psi.utils.PsiGdMethodDeclUtil
+import gdscript.psi.utils.PsiGdSignalUtil
 import gdscript.structureView.GdPresentationUtil
 
 internal object GdPsiUtils {

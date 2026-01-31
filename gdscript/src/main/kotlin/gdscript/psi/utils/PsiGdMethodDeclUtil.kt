@@ -1,7 +1,8 @@
 package gdscript.psi.utils
 
 import gdscript.GdKeywords
-import gdscript.psi.*
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdParam
 import gdscript.psi.GdTypes
 
 object PsiGdMethodDeclUtil {

@@ -10,8 +10,12 @@ import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.refactoring.RefactoringBundle
 import com.intellij.refactoring.util.CommonRefactoringUtil
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
-import gdscript.psi.*
-
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdConstDeclSt
+import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdExpr
+import gdscript.psi.GdVarDeclSt
+import gdscript.psi.GdVarNmi
 
 
 class GdInlineVariableActionHandler : InlineActionHandler() {

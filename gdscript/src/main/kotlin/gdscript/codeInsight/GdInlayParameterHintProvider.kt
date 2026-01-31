@@ -8,7 +8,14 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.containers.toArray
-import gdscript.psi.*
+import gdscript.psi.GdAnnotationTl
+import gdscript.psi.GdCallEx
+import gdscript.psi.GdClassNaming
+import gdscript.psi.GdFile
+import gdscript.psi.GdFuncDeclEx
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdRefIdRef
+import gdscript.psi.GdVarDeclSt
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.constructors
 import gdscript.psi.utils.GdExprUtil

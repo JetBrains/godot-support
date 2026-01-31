@@ -11,7 +11,13 @@ import gdscript.action.quickFix.GdFileClassNameAction
 import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdClassNamingIndex
-import gdscript.psi.*
+import gdscript.psi.GdClassDeclTl
+import gdscript.psi.GdClassNameNmi
+import gdscript.psi.GdClassNaming
+import gdscript.psi.GdInheritance
+import gdscript.psi.GdInheritanceId
+import gdscript.psi.GdInheritanceIdRef
+import gdscript.psi.GdInheritanceSubIdRef
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.utils.PsiFileUtil.isInSdk

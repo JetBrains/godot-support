@@ -1,5 +1,6 @@
 package tscn.lineMarker
 
+import GdScriptPluginIcons
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
@@ -8,7 +9,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.descendantsOfType
 import com.intellij.psi.util.firstLeaf
 import com.intellij.psi.util.parentOfType
-import gdscript.GdIcon
 import gdscript.GdScriptBundle
 import gdscript.index.impl.GdFileResIndex
 import gdscript.utils.VirtualFileUtil.getPsiFile

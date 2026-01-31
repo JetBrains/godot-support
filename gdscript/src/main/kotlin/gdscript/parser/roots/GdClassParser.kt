@@ -4,7 +4,13 @@ import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.GdRootParser
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.CLASS
+import gdscript.psi.GdTypes.CLASS_DECL_TL
+import gdscript.psi.GdTypes.CLASS_NAME_NMI
+import gdscript.psi.GdTypes.COLON
+import gdscript.psi.GdTypes.DEDENT
+import gdscript.psi.GdTypes.INDENT
+import gdscript.psi.GdTypes.NEW_LINE
 
 object GdClassParser : GdBaseParser {
 

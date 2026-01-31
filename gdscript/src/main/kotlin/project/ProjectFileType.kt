@@ -1,5 +1,6 @@
 package project
 
+import GdScriptPluginIcons
 import com.intellij.openapi.fileTypes.LanguageFileType
 import gdscript.GdScriptBundle
 import javax.swing.Icon

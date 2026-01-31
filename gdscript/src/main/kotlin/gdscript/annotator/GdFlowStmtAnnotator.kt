@@ -6,7 +6,11 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdScriptBundle
-import gdscript.psi.*
+import gdscript.psi.GdFlowSt
+import gdscript.psi.GdForSt
+import gdscript.psi.GdFuncDeclEx
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdWhileSt
 
 class GdFlowStmtAnnotator : Annotator {
 

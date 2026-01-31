@@ -30,7 +30,6 @@ import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import kotlin.collections.plus
 
 @Subsystem(SubsystemConstants.GODOT)
 @Feature("Debug C# godot player")

@@ -5,7 +5,19 @@ import gdscript.GdKeywords.DICTIONARY
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.ASSIGN_TYPED
+import gdscript.psi.GdTypes.CEQ
+import gdscript.psi.GdTypes.COLON
+import gdscript.psi.GdTypes.COMMA
+import gdscript.psi.GdTypes.DOT
+import gdscript.psi.GdTypes.EQ
+import gdscript.psi.GdTypes.IDENTIFIER
+import gdscript.psi.GdTypes.LSBR
+import gdscript.psi.GdTypes.RSBR
+import gdscript.psi.GdTypes.TYPED
+import gdscript.psi.GdTypes.TYPED_VAL
+import gdscript.psi.GdTypes.TYPE_HINT
+import gdscript.psi.GdTypes.TYPE_HINT_REF
 
 object GdTypedParser : GdBaseParser {
 

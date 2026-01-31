@@ -5,7 +5,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.ui.JBColor
 import gdscript.GdIcon
 import tscn.toolWindow.model.TscnSceneTreeNode
-import java.awt.*
+import java.awt.BorderLayout
+import java.awt.Component
+import java.awt.Dimension
+import java.awt.GridBagConstraints
+import java.awt.GridBagLayout
 import javax.swing.BorderFactory
 import javax.swing.Icon
 import javax.swing.JLabel

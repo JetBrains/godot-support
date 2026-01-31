@@ -2,7 +2,6 @@ package gdscript.psi.utils
 
 import gdscript.psi.GdParam
 import gdscript.psi.GdParamList
-import java.lang.StringBuilder
 
 object PsiGdParameterUtil {
 
