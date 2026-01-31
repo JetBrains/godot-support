@@ -2,7 +2,9 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.ATTRIBUTE_EX
+import gdscript.psi.GdTypes.DOT
+import gdscript.psi.GdTypes.REF_ID_NM
 
 // subscription { "." IDENTIFIER } ;
 object GdAttributeExParser : GdExprBaseParser() {

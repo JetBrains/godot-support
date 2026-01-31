@@ -6,7 +6,18 @@ import com.intellij.lang.PsiBuilder
 import com.intellij.lang.PsiParser
 import com.intellij.psi.tree.IElementType
 import gdscript.GdScriptBundle
-import gdscript.parser.roots.*
+import gdscript.parser.roots.GdAnnotationTlParser
+import gdscript.parser.roots.GdClassConstParser
+import gdscript.parser.roots.GdClassNameParser
+import gdscript.parser.roots.GdClassParser
+import gdscript.parser.roots.GdClassVarParser
+import gdscript.parser.roots.GdEmptyLineParser
+import gdscript.parser.roots.GdEnumParser
+import gdscript.parser.roots.GdInheritanceParser
+import gdscript.parser.roots.GdMethodParser
+import gdscript.parser.roots.GdPassParser
+import gdscript.parser.roots.GdSignalParser
+import gdscript.parser.roots.GdStringParser
 
 class GdRootParser : PsiParser, LightPsiParser {
 

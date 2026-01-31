@@ -3,7 +3,9 @@ package gdscript.parser.roots
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.CLASS_NAME
+import gdscript.psi.GdTypes.CLASS_NAME_NMI
+import gdscript.psi.GdTypes.CLASS_NAMING
 
 object GdClassNameParser : GdBaseParser {
 

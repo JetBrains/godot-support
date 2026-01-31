@@ -5,7 +5,12 @@ import com.intellij.execution.impl.EditConfigurationsDialog
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
-import com.intellij.platform.dap.*
+import com.intellij.platform.dap.DapBreakpointsDescription
+import com.intellij.platform.dap.DapExceptionBreakpoint
+import com.intellij.platform.dap.DapExceptionInfo
+import com.intellij.platform.dap.DebugAdapterDescriptor
+import com.intellij.platform.dap.DebugAdapterId
+import com.intellij.platform.dap.DebugAdapterSupportProvider
 import com.intellij.platform.dap.connection.DebugAdapterHandle
 import com.intellij.platform.dap.connection.DebugAdapterSocketConnection
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle

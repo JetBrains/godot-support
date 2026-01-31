@@ -3,7 +3,14 @@ package gdscript.parser.roots
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.DOT
+import gdscript.psi.GdTypes.EXTENDS
+import gdscript.psi.GdTypes.IDENTIFIER
+import gdscript.psi.GdTypes.INHERITANCE
+import gdscript.psi.GdTypes.INHERITANCE_ID
+import gdscript.psi.GdTypes.INHERITANCE_ID_NM
+import gdscript.psi.GdTypes.INHERITANCE_SUB_ID_NM
+import gdscript.psi.GdTypes.STRING
 
 object GdInheritanceParser : GdBaseParser {
 

@@ -3,7 +3,9 @@ package gdscript.parser.stmt
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdTypedParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.CONST
+import gdscript.psi.GdTypes.CONST_DECL_ST
+import gdscript.psi.GdTypes.VAR_NMI
 
 object GdConstStmtParser : GdStmtBaseParser {
 

@@ -5,7 +5,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.VirtualFileUtil.localParentPath
 

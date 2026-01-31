@@ -1,8 +1,8 @@
 package gdscript.completion.utils
 
+import GdScriptPluginIcons
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.GdIcon
 import gdscript.GdKeywords
 import gdscript.completion.GdLookup
 import gdscript.psi.GdEnumDeclTl

@@ -1,7 +1,5 @@
 package com.jetbrains.rider.plugins.godot.run.configurations.gdscript
 
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.intellij.json.JsonLanguage
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener

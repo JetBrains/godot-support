@@ -4,7 +4,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
-import gdscript.psi.*
+import gdscript.psi.GdInheritanceIdRef
+import gdscript.psi.GdTypes
 import gdscript.utils.VirtualFileUtil.getPsiFile
 
 object PsiGdInheritanceUtil {

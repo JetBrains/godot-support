@@ -2,7 +2,8 @@ package gdscript.parser.roots
 
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.LITERAL_EX
+import gdscript.psi.GdTypes.STRING
 
 object GdStringParser : GdBaseParser {
 

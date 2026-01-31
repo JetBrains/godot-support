@@ -3,7 +3,9 @@ package gdscript.parser.roots
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.DEDENT
+import gdscript.psi.GdTypes.FLOW_ST
+import gdscript.psi.GdTypes.PASS
 
 object GdPassParser : GdBaseParser {
 

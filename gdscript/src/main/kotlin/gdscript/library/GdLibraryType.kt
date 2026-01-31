@@ -7,7 +7,6 @@ import com.intellij.openapi.roots.libraries.ui.LibraryEditorComponent
 import com.intellij.openapi.roots.libraries.ui.LibraryPropertiesEditor
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons
-import gdscript.GdIcon
 import javax.swing.Icon
 import javax.swing.JComponent
 

@@ -4,7 +4,29 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.COLON
+import gdscript.psi.GdTypes.COMMA
+import gdscript.psi.GdTypes.DEDENT
+import gdscript.psi.GdTypes.DICT_PATTERN
+import gdscript.psi.GdTypes.DOTDOT
+import gdscript.psi.GdTypes.IDENTIFIER
+import gdscript.psi.GdTypes.INDENT
+import gdscript.psi.GdTypes.KEY_VALUE_PATTERN
+import gdscript.psi.GdTypes.LCBR
+import gdscript.psi.GdTypes.LSBR
+import gdscript.psi.GdTypes.MATCH
+import gdscript.psi.GdTypes.MATCH_BLOCK
+import gdscript.psi.GdTypes.MATCH_ST
+import gdscript.psi.GdTypes.NEW_LINE
+import gdscript.psi.GdTypes.PATTERN
+import gdscript.psi.GdTypes.PATTERN_LIST
+import gdscript.psi.GdTypes.RCBR
+import gdscript.psi.GdTypes.RSBR
+import gdscript.psi.GdTypes.STRING
+import gdscript.psi.GdTypes.UNDER
+import gdscript.psi.GdTypes.VAR
+import gdscript.psi.GdTypes.VAR_NMI
+import gdscript.psi.GdTypes.WHEN
 
 object GdMatchStmtParser : GdStmtBaseParser {
 

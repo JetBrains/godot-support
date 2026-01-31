@@ -2,7 +2,12 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.DIV
+import gdscript.psi.GdTypes.FACTOR_EX
+import gdscript.psi.GdTypes.FACTOR_SIGN
+import gdscript.psi.GdTypes.MOD
+import gdscript.psi.GdTypes.MUL
+import gdscript.psi.GdTypes.POWER
 
 // factor = sign { ( "*" | "/" | "%" ) sign }
 object GdFactorExParser : GdExprBaseParser() {

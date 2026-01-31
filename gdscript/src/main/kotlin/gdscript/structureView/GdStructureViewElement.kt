@@ -7,7 +7,11 @@ import com.intellij.ide.util.treeView.smartTree.TreeElement
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.psi.*
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdEnumDeclTl
+import gdscript.psi.GdFile
+import gdscript.psi.GdMethodDeclTl
 
 class GdStructureViewElement : StructureViewTreeElement, SortableTreeElement {
 

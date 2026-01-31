@@ -1,5 +1,6 @@
 package tscn.highlighter
 
+import GdScriptPluginIcons
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.fileTypes.SyntaxHighlighter
 import com.intellij.openapi.options.colors.AttributesDescriptor

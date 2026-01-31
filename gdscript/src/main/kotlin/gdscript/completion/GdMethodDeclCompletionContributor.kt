@@ -4,7 +4,6 @@ import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
-import com.intellij.psi.PsiElement
 import gdscript.completion.utils.GdMethodCompletionUtil.lookupDeclaration
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdClassMemberUtil

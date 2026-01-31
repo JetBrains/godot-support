@@ -3,9 +3,13 @@ package gdscript.parser.common
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
-import gdscript.parser.expr.GdLiteralExParser
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.ANNOTATION_PARAMS
+import gdscript.psi.GdTypes.ANNOTATION_TYPE
+import gdscript.psi.GdTypes.ANNOTATOR
+import gdscript.psi.GdTypes.COMMA
+import gdscript.psi.GdTypes.LRBR
+import gdscript.psi.GdTypes.RRBR
 
 interface GdAnnotationParser : GdBaseParser {
 

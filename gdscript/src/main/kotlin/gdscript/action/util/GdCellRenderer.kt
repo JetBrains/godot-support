@@ -3,7 +3,11 @@ package gdscript.action.util
 import com.intellij.openapi.editor.colors.EditorFontType
 import java.awt.BorderLayout
 import java.awt.Component
-import javax.swing.*
+import javax.swing.BorderFactory
+import javax.swing.JLabel
+import javax.swing.JList
+import javax.swing.JPanel
+import javax.swing.ListCellRenderer
 
 object GdCellRenderer : ListCellRenderer<GdTraitClass> {
 

@@ -6,8 +6,15 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdScriptBundle
-import gdscript.psi.*
+import gdscript.psi.GdClassDeclTl
+import gdscript.psi.GdClassNaming
+import gdscript.psi.GdFile
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdNamedIdElement
+import gdscript.psi.GdParam
 import gdscript.psi.GdPattern
+import gdscript.psi.GdSetDecl
+import gdscript.psi.GdVarNmi
 import gdscript.psi.utils.GdClassMemberUtil
 
 /**

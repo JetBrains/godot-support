@@ -6,7 +6,25 @@ import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdTypedParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.stmt.GdStmtParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.CLASS_VAR_DECL_TL
+import gdscript.psi.GdTypes.COLON
+import gdscript.psi.GdTypes.COMMA
+import gdscript.psi.GdTypes.DEDENT
+import gdscript.psi.GdTypes.EQ
+import gdscript.psi.GdTypes.GET
+import gdscript.psi.GdTypes.GET_DECL
+import gdscript.psi.GdTypes.GET_METHOD_ID_NM
+import gdscript.psi.GdTypes.INDENT
+import gdscript.psi.GdTypes.LRBR
+import gdscript.psi.GdTypes.NEW_LINE
+import gdscript.psi.GdTypes.RRBR
+import gdscript.psi.GdTypes.SET
+import gdscript.psi.GdTypes.SETGET_DECL
+import gdscript.psi.GdTypes.SET_DECL
+import gdscript.psi.GdTypes.SET_METHOD_ID_NM
+import gdscript.psi.GdTypes.STATIC
+import gdscript.psi.GdTypes.VAR
+import gdscript.psi.GdTypes.VAR_NMI
 
 object GdClassVarParser : GdBaseParser {
 

@@ -1,5 +1,6 @@
 package gdscript
 
+import GdScriptPluginIcons
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.util.IconLoader
 import org.jetbrains.annotations.ApiStatus

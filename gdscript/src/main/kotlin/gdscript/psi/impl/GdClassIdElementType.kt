@@ -1,12 +1,20 @@
 package gdscript.psi.impl
 
-import com.intellij.psi.stubs.*
+import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.stubs.IndexSink
+import com.intellij.psi.stubs.StubElement
+import com.intellij.psi.stubs.StubInputStream
+import com.intellij.psi.stubs.StubOutputStream
 import com.intellij.psi.util.PsiTreeUtil
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.index.Indices
 import gdscript.index.stub.GdClassIdStub
 import gdscript.index.stub.GdClassIdStubImpl
-import gdscript.psi.*
+import gdscript.psi.GdClassDeclTl
+import gdscript.psi.GdClassNameNmi
+import gdscript.psi.GdClassNaming
+import gdscript.psi.GdFile
+import gdscript.psi.GdInheritance
 import gdscript.psi.utils.PsiGdClassUtil
 import gdscript.psi.utils.PsiGdResourceUtil
 import gdscript.psi.utils.PsiGdTreeUtil

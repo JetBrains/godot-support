@@ -3,7 +3,13 @@ package gdscript.parser.common
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdLiteralExParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.CEQ
+import gdscript.psi.GdTypes.COMMA
+import gdscript.psi.GdTypes.DOTDOTDOT
+import gdscript.psi.GdTypes.EQ
+import gdscript.psi.GdTypes.PARAM
+import gdscript.psi.GdTypes.PARAM_LIST
+import gdscript.psi.GdTypes.VAR_NMI
 
 object GdParamListParser : GdBaseParser {
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {

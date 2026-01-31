@@ -3,7 +3,10 @@ package gdscript.parser.stmt
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.ASSIGN
+import gdscript.psi.GdTypes.ASSIGN_SIGN
+import gdscript.psi.GdTypes.ASSIGN_ST
+import gdscript.psi.GdTypes.EQ
 
 object GdAssignStmtParser : GdStmtBaseParser {
 

@@ -1,10 +1,13 @@
 package gdscript.parser.expr
 
-import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdArgListParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.CALL_EX
+import gdscript.psi.GdTypes.END_STMT
+import gdscript.psi.GdTypes.LRBR
+import gdscript.psi.GdTypes.NEW_LINE
+import gdscript.psi.GdTypes.RRBR
 
 /*
 call

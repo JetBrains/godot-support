@@ -4,7 +4,13 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.COLON
+import gdscript.psi.GdTypes.ELIF
+import gdscript.psi.GdTypes.ELIF_ST
+import gdscript.psi.GdTypes.ELSE
+import gdscript.psi.GdTypes.ELSE_ST
+import gdscript.psi.GdTypes.IF
+import gdscript.psi.GdTypes.IF_ST
 
 object GdIfStmtParser : GdStmtBaseParser {
 

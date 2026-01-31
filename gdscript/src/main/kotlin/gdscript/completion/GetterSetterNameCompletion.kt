@@ -7,7 +7,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.GdIcon
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdTypes
 

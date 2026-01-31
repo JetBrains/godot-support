@@ -2,7 +2,6 @@ package gdscript.formatter.block
 
 import com.intellij.formatting.Alignment
 import com.intellij.psi.tree.IElementType
-import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdTypes
 
 // TODO clean up

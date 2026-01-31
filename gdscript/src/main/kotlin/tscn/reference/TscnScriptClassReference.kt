@@ -6,7 +6,6 @@ import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import gdscript.psi.utils.GdClassUtil
-import tscn.psi.TscnElementFactory
 
 class TscnScriptClassReference : PsiReferenceBase<PsiNamedElement> {
 

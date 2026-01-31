@@ -2,7 +2,29 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.CLASS
+import gdscript.psi.GdTypes.CLASS_NAME
+import gdscript.psi.GdTypes.FALSE
+import gdscript.psi.GdTypes.FUNC
+import gdscript.psi.GdTypes.GET
+import gdscript.psi.GdTypes.IDENTIFIER
+import gdscript.psi.GdTypes.INF
+import gdscript.psi.GdTypes.LITERAL_EX
+import gdscript.psi.GdTypes.MATCH
+import gdscript.psi.GdTypes.NAN
+import gdscript.psi.GdTypes.NODE_PATH_LIT
+import gdscript.psi.GdTypes.NULL
+import gdscript.psi.GdTypes.NUMBER
+import gdscript.psi.GdTypes.PASS
+import gdscript.psi.GdTypes.REF_ID_NM
+import gdscript.psi.GdTypes.SELF
+import gdscript.psi.GdTypes.SET
+import gdscript.psi.GdTypes.SIGNAL
+import gdscript.psi.GdTypes.STRING
+import gdscript.psi.GdTypes.STRING_NAME
+import gdscript.psi.GdTypes.STRING_VAL_NM
+import gdscript.psi.GdTypes.SUPER
+import gdscript.psi.GdTypes.TRUE
 
 object GdLiteralExParser : GdExprBaseParser() {
 

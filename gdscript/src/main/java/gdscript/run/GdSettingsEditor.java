@@ -6,10 +6,13 @@ import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.TextBrowseFolderListener;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.SystemInfo;
-import org.jetbrains.annotations.NotNull;
 import gdscript.GdScriptBundle;
+import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
 

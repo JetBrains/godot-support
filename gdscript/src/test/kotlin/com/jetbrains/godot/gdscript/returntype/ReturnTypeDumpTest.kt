@@ -1,12 +1,12 @@
 package com.jetbrains.godot.gdscript.returntype
 
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
-import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdAttributeEx
 import gdscript.psi.GdCallEx
+import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.utils.GdClassUtil
-import com.intellij.psi.util.PsiTreeUtil
 import kotlin.io.path.pathString
 
 class ReturnTypeDumpTest : BasePlatformTestCase() {

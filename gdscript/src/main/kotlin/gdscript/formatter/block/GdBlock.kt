@@ -1,6 +1,12 @@
 package gdscript.formatter.block
 
-import com.intellij.formatting.*
+import com.intellij.formatting.Alignment
+import com.intellij.formatting.Block
+import com.intellij.formatting.ChildAttributes
+import com.intellij.formatting.Indent
+import com.intellij.formatting.Spacing
+import com.intellij.formatting.SpacingBuilder
+import com.intellij.formatting.Wrap
 import com.intellij.lang.ASTNode
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.formatter.common.AbstractBlock
@@ -12,7 +18,15 @@ import com.jetbrains.rd.util.forEachReversed
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.GdClassVarDeclTl
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.ANNOTATION_TL
+import gdscript.psi.GdTypes.CALL_EX
+import gdscript.psi.GdTypes.CLASS_VAR_DECL_TL
+import gdscript.psi.GdTypes.COLON
+import gdscript.psi.GdTypes.COMMENT
+import gdscript.psi.GdTypes.INDENT
+import gdscript.psi.GdTypes.METHOD_DECL_TL
+import gdscript.psi.GdTypes.STMT_OR_SUITE
+import gdscript.psi.GdTypes.SUITE
 import gdscript.psi.utils.PsiGdClassVarUtil
 import gdscript.utils.GdSettingsUtil.calculateSpaceIndents
 import gdscript.utils.PsiElementUtil.getCaretOffsetIfSingle

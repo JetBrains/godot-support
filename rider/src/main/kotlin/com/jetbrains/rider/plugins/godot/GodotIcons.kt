@@ -2,7 +2,6 @@ package com.jetbrains.rider.plugins.godot
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.util.IconLoader
-import javax.swing.Icon
 
 // IJ will automatically add `_dark` to the basename of the SVG file if in Dark theme.
 

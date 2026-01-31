@@ -13,7 +13,10 @@ import com.intellij.refactoring.introduce.PsiIntroduceTarget
 import com.intellij.refactoring.introduce.inplace.AbstractInplaceIntroducer
 import com.intellij.refactoring.introduce.inplace.OccurrencesChooser
 import com.intellij.usageView.UsageInfo
-import gdscript.psi.*
+import gdscript.psi.GdExpr
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdStmt
+import gdscript.psi.GdTypes
 import gdscript.refactoring.introduce.inplace.GdInplaceIntroducer
 
 /**

@@ -2,8 +2,9 @@ package gdscript.parser.expr
 
 import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
-import gdscript.parser.common.GdTypedParser
-import gdscript.psi.GdTypes.*
+import gdscript.psi.GdTypes.ELSE
+import gdscript.psi.GdTypes.IF
+import gdscript.psi.GdTypes.TERNARY_EX
 
 // logicOr [ "if" logicOr "else" logicOr ] ;
 object GdTernaryExParser : GdExprBaseParser() {

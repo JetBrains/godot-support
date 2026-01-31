@@ -6,7 +6,12 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdClassIdIndex
-import gdscript.psi.*
+import gdscript.psi.GdFuncDeclEx
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdParam
+import gdscript.psi.GdRefIdRef
+import gdscript.psi.GdTypes
+import gdscript.psi.GdVarNmi
 import gdscript.psi.utils.GdClassUtil
 import gdscript.reference.GdClassMemberReference
 import gdscript.utils.StringUtil.camelToSnakeCase

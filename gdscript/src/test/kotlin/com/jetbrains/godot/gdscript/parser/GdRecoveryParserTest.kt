@@ -1,8 +1,6 @@
 package com.jetbrains.godot.gdscript.parser
 
-import com.intellij.testFramework.ParsingTestCase
 import com.jetbrains.godot.getBaseTestDataPath
-import gdscript.GdParserDefinition
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4

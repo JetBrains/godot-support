@@ -5,7 +5,7 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import gdscript.highlighter.GdHighlighterColors
-import gdscript.psi.*
+import gdscript.psi.GdFuncDeclIdNmi
 
 /**
  * Colors lambda functions

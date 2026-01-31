@@ -6,7 +6,6 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.GdKeywords
-import gdscript.completion.GdCommonContribution.COMMENT_POS
 import gdscript.psi.GdTypes
 
 class GdKeywordContributor : CompletionContributor() {

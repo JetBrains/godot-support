@@ -3,10 +3,12 @@ package gdscript.inspection
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.GdKeywords
 import gdscript.GdScriptBundle
-import gdscript.psi.*
-import gdscript.utils.PsiReferenceUtil.resolveRef
+import gdscript.psi.GdFuncDeclEx
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdParam
+import gdscript.psi.GdSignalDeclTl
+import gdscript.psi.GdVisitor
 
 class GdUnusedParameterInspection : GdUnusedInspection() {
 

@@ -3,7 +3,13 @@ package gdscript.inspection.validator
 import com.intellij.openapi.project.Project
 import com.intellij.psi.util.childrenOfType
 import gdscript.GdKeywords
-import gdscript.psi.*
+import gdscript.psi.GdElifSt
+import gdscript.psi.GdElseSt
+import gdscript.psi.GdFlowSt
+import gdscript.psi.GdIfSt
+import gdscript.psi.GdMatchSt
+import gdscript.psi.GdStmt
+import gdscript.psi.GdStmtOrSuite
 import gdscript.psi.impl.GdMatchBlockImpl
 import gdscript.psi.utils.GdExprUtil
 import gdscript.psi.utils.GdStmtUtil

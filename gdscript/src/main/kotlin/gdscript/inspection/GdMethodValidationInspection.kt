@@ -11,7 +11,14 @@ import gdscript.inspection.fixes.GdChangeReturnTypeFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerGenericError
 import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
 import gdscript.inspection.validator.GdMethodValidator
-import gdscript.psi.*
+import gdscript.psi.GdCallEx
+import gdscript.psi.GdFuncDeclEx
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdMethodIdNmi
+import gdscript.psi.GdNamedIdElement
+import gdscript.psi.GdReturnHintVal
+import gdscript.psi.GdStmtOrSuite
+import gdscript.psi.GdVisitor
 import gdscript.psi.utils.GdExprUtil
 import gdscript.psi.utils.GdInheritanceUtil
 import gdscript.psi.utils.GdMethodUtil

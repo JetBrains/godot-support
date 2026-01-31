@@ -2,7 +2,11 @@ package gdscript.inspection.util
 
 import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemHighlightType
-import com.intellij.codeInspection.ProblemHighlightType.*
+import com.intellij.codeInspection.ProblemHighlightType.ERROR
+import com.intellij.codeInspection.ProblemHighlightType.GENERIC_ERROR
+import com.intellij.codeInspection.ProblemHighlightType.LIKE_UNUSED_SYMBOL
+import com.intellij.codeInspection.ProblemHighlightType.POSSIBLE_PROBLEM
+import com.intellij.codeInspection.ProblemHighlightType.WEAK_WARNING
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.codeInspection.util.InspectionMessage
 import com.intellij.psi.PsiElement

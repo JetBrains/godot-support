@@ -6,7 +6,12 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.PsiElement
 import gdscript.GdScriptBundle
 import gdscript.highlighter.GdHighlighterColors
-import gdscript.psi.*
+import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdEnumDeclTl
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdMethodIdNmi
+import gdscript.psi.GdSignalDeclTl
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassUtil
 

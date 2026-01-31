@@ -17,7 +17,11 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.util.io.Decompressor
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.*
+import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
+import kotlin.io.path.pathString
 
 object GdLibraryManager {
 
