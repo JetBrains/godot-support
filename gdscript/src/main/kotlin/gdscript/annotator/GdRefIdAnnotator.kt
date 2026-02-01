@@ -14,6 +14,7 @@ import gdscript.GdScriptBundle
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassNaming
+import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdNodePath
