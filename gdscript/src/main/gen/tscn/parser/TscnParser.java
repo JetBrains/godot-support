@@ -627,7 +627,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // identifierEx? (COMMA identifierEx)*
+  // exprValue? (COMMA exprValue)*
   public static boolean typeList(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typeList")) return false;
     boolean r;
@@ -638,14 +638,14 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // identifierEx?
+  // exprValue?
   private static boolean typeList_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typeList_0")) return false;
-    identifierEx(b, l + 1);
+    exprValue(b, l + 1);
     return true;
   }
 
-  // (COMMA identifierEx)*
+  // (COMMA exprValue)*
   private static boolean typeList_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typeList_1")) return false;
     while (true) {
@@ -656,13 +656,13 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // COMMA identifierEx
+  // COMMA exprValue
   private static boolean typeList_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typeList_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, COMMA);
-    r = r && identifierEx(b, l + 1);
+    r = r && exprValue(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

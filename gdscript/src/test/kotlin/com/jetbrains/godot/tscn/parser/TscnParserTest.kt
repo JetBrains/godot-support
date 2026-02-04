@@ -13,6 +13,8 @@ class TscnParserTest : ParsingTestCase("", "tscn", TscnParserDefinition()) {
     @Test fun testHeader() = doTest(true)
     @Test fun testDataLines() = doTest(true)
     @Test fun testMultiParagraphs() = doTest(true)
+    @Test fun testTypedArrayWithExtResource() = doTest(true)
+    @Test fun testTypedDictionaryWithExtResource() = doTest(true)
     @Test fun testMultilineText() = doTest(true)
     @Test fun testSlashKey() = doTest(true)
     @Test fun testJson() = doTest(true)

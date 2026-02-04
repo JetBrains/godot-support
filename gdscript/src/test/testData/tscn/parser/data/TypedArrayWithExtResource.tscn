@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://qtqck26qlvuf"]
+
+[ext_resource type="Script" uid="uid://dqsr3x1j5o42a" path="res://scratch/nestedTypedArrays/scene.gd" id="1_61w5o"]
+[ext_resource type="Script" uid="uid://p5qgqykujtvl" path="res://scratch/nestedTypedArrays/Res.gd" id="2_fyinb"]
+[ext_resource type="Resource" uid="uid://c3liy8k3ikcyu" path="res://scratch/nestedTypedArrays/res.tres" id="3_2bcc1"]
+
+[node name="Scene" type="Node2D" unique_id=1083368848]
+script = ExtResource("1_61w5o")
+array = Array[ExtResource("2_fyinb")]([ExtResource("3_2bcc1")])

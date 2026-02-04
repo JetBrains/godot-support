@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://dwfrwb672gadt"]
+
+[ext_resource type="Script" uid="uid://l1cstc661iyk" path="res://scratch/nestedTypedArrays/scene_dictionary.gd" id="1_l3qo0"]
+[ext_resource type="Script" uid="uid://p5qgqykujtvl" path="res://scratch/nestedTypedArrays/Res.gd" id="2_lbvgi"]
+[ext_resource type="Resource" uid="uid://c3liy8k3ikcyu" path="res://scratch/nestedTypedArrays/res.tres" id="3_kpo6m"]
+[ext_resource type="Resource" uid="uid://dlea7acvmwdcu" path="res://scratch/nestedTypedArrays/res2.tres" id="4_xgikx"]
+
+[node name="SceneDictionary" type="Node2D" unique_id=542188437]
+script = ExtResource("1_l3qo0")
+dictionary = Dictionary[ExtResource("2_lbvgi"), ExtResource("2_lbvgi")]({
+ExtResource("3_kpo6m"): ExtResource("4_xgikx")
+})

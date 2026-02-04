@@ -39,20 +39,17 @@ public class TscnResourceHeaderImpl extends TscnResourceHeaderElementImpl implem
   }
 
   @Override
-  @NotNull
-  public String getPath() {
+  public @NotNull String getPath() {
     return TscnPsiUtils.getPath(this);
   }
 
   @Override
-  @NotNull
-  public String getType() {
+  public @NotNull String getType() {
     return TscnPsiUtils.getType(this);
   }
 
   @Override
-  @NotNull
-  public String getId() {
+  public @NotNull String getId() {
     return TscnPsiUtils.getId(this);
   }
 

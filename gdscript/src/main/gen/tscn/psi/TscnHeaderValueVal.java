@@ -10,10 +10,8 @@ public interface TscnHeaderValueVal extends TscnNamedElement {
   @NotNull
   TscnValue getValue();
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  PsiElement setName(@NotNull String newName);
+  @NotNull PsiElement setName(@NotNull String newName);
 
 }

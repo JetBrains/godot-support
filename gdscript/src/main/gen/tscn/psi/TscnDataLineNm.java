@@ -7,10 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface TscnDataLineNm extends TscnNamedElement {
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  PsiElement setName(@NotNull String newName);
+  @NotNull PsiElement setName(@NotNull String newName);
 
 }

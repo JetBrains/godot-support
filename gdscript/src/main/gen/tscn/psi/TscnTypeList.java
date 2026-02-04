@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface TscnTypeList extends PsiElement {
 
   @NotNull
-  List<TscnIdentifierEx> getIdentifierExList();
+  List<TscnExprValue> getExprValueList();
 
 }

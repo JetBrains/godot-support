@@ -48,7 +48,7 @@ scene_header ::= LSBR GD_SCENE headerValue* RSBR {
 node_header ::= LSBR NODE headerValue* RSBR {
 //    pin=2
 //    recoverWhile=header_r
-    methods=[getName getType getParentPath getNodePath isUniqueNameOwner getScriptResource hasScript getDirectParentPath getGroups getInstanceResource getIndex]
+    methods=[getName getType getParentPath getNodePath isUniqueNameOwner isVisible getScriptResource hasScript getDirectParentPath getGroups getInstanceResource getIndex]
     mixin="tscn.psi.impl.TscnNodeHeaderElementImpl"
     stubClass="tscn.index.stub.TscnNodeHeaderStub"
     elementTypeFactory="tscn.psi.impl.TscnNodeHeaderElementType.getInstance"
@@ -92,7 +92,7 @@ value ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | 
 numberValue ::= (PLUS | MINUS)? NUMBER
 exprValue ::= identifierEx (LSBR typeList? RSBR)? (LRBR argList? RRBR)?
 argList ::= value? (COMMA value)*
-typeList ::= identifierEx? (COMMA identifierEx)*
+typeList ::= exprValue? (COMMA exprValue)*
 
 identifierEx ::=  OBJECT_REF | IDENTIFIER | IDENTIFIER_REF | GD_SCENE | EXT_RESOURCE | NODE
 
