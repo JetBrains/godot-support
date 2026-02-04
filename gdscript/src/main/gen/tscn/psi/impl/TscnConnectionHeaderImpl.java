@@ -39,26 +39,22 @@ public class TscnConnectionHeaderImpl extends TscnConnectionHeaderElementImpl im
   }
 
   @Override
-  @NotNull
-  public String getFrom() {
+  public @NotNull String getFrom() {
     return TscnPsiUtils.getFrom(this);
   }
 
   @Override
-  @NotNull
-  public String getTo() {
+  public @NotNull String getTo() {
     return TscnPsiUtils.getTo(this);
   }
 
   @Override
-  @NotNull
-  public String getSignal() {
+  public @NotNull String getSignal() {
     return TscnPsiUtils.getSignal(this);
   }
 
   @Override
-  @NotNull
-  public String getMethod() {
+  public @NotNull String getMethod() {
     return TscnPsiUtils.getMethod(this);
   }
 

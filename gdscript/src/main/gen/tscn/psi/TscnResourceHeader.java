@@ -12,13 +12,10 @@ public interface TscnResourceHeader extends TscnHeader, StubBasedPsiElement<Tscn
   @NotNull
   List<TscnHeaderValue> getHeaderValueList();
 
-  @NotNull
-  String getPath();
+  @NotNull String getPath();
 
-  @NotNull
-  String getType();
+  @NotNull String getType();
 
-  @NotNull
-  String getId();
+  @NotNull String getId();
 
 }

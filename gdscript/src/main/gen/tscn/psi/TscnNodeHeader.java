@@ -12,35 +12,27 @@ public interface TscnNodeHeader extends TscnHeader, StubBasedPsiElement<TscnNode
   @NotNull
   List<TscnHeaderValue> getHeaderValueList();
 
-  @NotNull
-  String getName();
+  @NotNull String getName();
 
-  @NotNull
-  String getType();
+  @NotNull String getType();
 
-  @NotNull
-  String getParentPath();
+  @NotNull String getParentPath();
 
-  @NotNull
-  String getNodePath();
+  @NotNull String getNodePath();
 
   boolean isUniqueNameOwner();
 
   boolean isVisible();
 
-  @NotNull
-  String getScriptResource();
+  @NotNull String getScriptResource();
 
   boolean hasScript();
 
-  @NotNull
-  String getDirectParentPath();
+  @NotNull String getDirectParentPath();
 
-  @NotNull
-  String[] getGroups();
+  @NotNull String @NotNull [] getGroups();
 
-  @NotNull
-  String getInstanceResource();
+  @NotNull String getInstanceResource();
 
   int getIndex();
 

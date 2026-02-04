@@ -33,14 +33,12 @@ public class TscnHeaderValueValImpl extends TscnNamedElementImpl implements Tscn
   }
 
   @Override
-  @NotNull
-  public String getName() {
+  public @NotNull String getName() {
     return TscnPsiUtils.getName(this);
   }
 
   @Override
-  @NotNull
-  public PsiElement setName(@NotNull String newName) {
+  public @NotNull PsiElement setName(@NotNull String newName) {
     return TscnPsiUtils.setName(this, newName);
   }
 

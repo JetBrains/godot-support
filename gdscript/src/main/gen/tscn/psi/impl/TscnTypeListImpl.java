@@ -29,8 +29,8 @@ public class TscnTypeListImpl extends ASTWrapperPsiElement implements TscnTypeLi
 
   @Override
   @NotNull
-  public List<TscnIdentifierEx> getIdentifierExList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, TscnIdentifierEx.class);
+  public List<TscnExprValue> getExprValueList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, TscnExprValue.class);
   }
 
 }

@@ -12,16 +12,12 @@ public interface TscnConnectionHeader extends TscnHeader, StubBasedPsiElement<Ts
   @NotNull
   List<TscnHeaderValue> getHeaderValueList();
 
-  @NotNull
-  String getFrom();
+  @NotNull String getFrom();
 
-  @NotNull
-  String getTo();
+  @NotNull String getTo();
 
-  @NotNull
-  String getSignal();
+  @NotNull String getSignal();
 
-  @NotNull
-  String getMethod();
+  @NotNull String getMethod();
 
 }

@@ -39,26 +39,22 @@ public class TscnNodeHeaderImpl extends TscnNodeHeaderElementImpl implements Tsc
   }
 
   @Override
-  @NotNull
-  public String getName() {
+  public @NotNull String getName() {
     return TscnPsiUtils.getName(this);
   }
 
   @Override
-  @NotNull
-  public String getType() {
+  public @NotNull String getType() {
     return TscnPsiUtils.getType(this);
   }
 
   @Override
-  @NotNull
-  public String getParentPath() {
+  public @NotNull String getParentPath() {
     return TscnPsiUtils.getParentPath(this);
   }
 
   @Override
-  @NotNull
-  public String getNodePath() {
+  public @NotNull String getNodePath() {
     return TscnPsiUtils.getNodePath(this);
   }
 
@@ -73,8 +69,7 @@ public class TscnNodeHeaderImpl extends TscnNodeHeaderElementImpl implements Tsc
   }
 
   @Override
-  @NotNull
-  public String getScriptResource() {
+  public @NotNull String getScriptResource() {
     return TscnPsiUtils.getScriptResource(this);
   }
 
@@ -84,20 +79,17 @@ public class TscnNodeHeaderImpl extends TscnNodeHeaderElementImpl implements Tsc
   }
 
   @Override
-  @NotNull
-  public String getDirectParentPath() {
+  public @NotNull String getDirectParentPath() {
     return TscnPsiUtils.getDirectParentPath(this);
   }
 
   @Override
-  @NotNull
-  public String[] getGroups() {
+  public @NotNull String @NotNull [] getGroups() {
     return TscnPsiUtils.getGroups(this);
   }
 
   @Override
-  @NotNull
-  public String getInstanceResource() {
+  public @NotNull String getInstanceResource() {
     return TscnPsiUtils.getInstanceResource(this);
   }
 
