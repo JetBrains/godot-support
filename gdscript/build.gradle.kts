@@ -2,10 +2,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.grammarkit.tasks.GenerateLexerTask
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
@@ -40,11 +36,28 @@ kotlin {
 repositories {
     intellijPlatform {
         defaultRepositories()
-        jetbrainsRuntime()
+    }
+    // Ivy repository for direct file download and caching of the SDK
+    ivy {
+        url = uri("https://packages.jetbrains.team/files/p/net/gdscriptsdk/")
+        patternLayout {
+            artifact("gdscriptsdk-[revision].[ext]")
+            setM2compatible(true)
+        }
+        metadataSources {
+            artifact()
+        }
     }
 }
 
 val buildConfiguration: String by project
+
+// Custom configuration for resolving the SDK
+val sdk: Configuration by configurations.creating {
+    description = "Configuration for resolving the GDScript SDK"
+    isCanBeResolved = true
+    isCanBeConsumed = false
+}
 
 dependencies {
     compileOnly(":rider-godot-community")
@@ -52,7 +65,8 @@ dependencies {
     intellijPlatform {
         intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
         // rider(libs.versions.riderSdk, useInstaller = false) // instead of touching this, just use runRider gradle task
-        jetbrainsRuntime()
+//        local(providers.gradleProperty("localIdePath").orNull ?: error("Set localIdePath in gradle.properties"))
+
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
         testFramework(TestFrameworkType.Bundled)
@@ -65,6 +79,9 @@ dependencies {
     testImplementation(libs.openTest4J)
     testImplementation("junit:junit:4.13.2")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.0")
+
+    // Declare SDK as an Ivy dependency for caching (organization, module, revision, extension)
+    sdk("net.gdscriptsdk:gdscriptsdk:1.0.0-SNAPSHOT@tar.xz")
 }
 
 intellijPlatform{
@@ -98,34 +115,31 @@ tasks {
     }
     
     // todo: tobe removed with RIDER-127007 Different approach to GD sdk
-    register("prepare") {
-        doLast {
-            val url = "https://packages.jetbrains.team/files/p/net/gdscriptsdk/gdscriptsdk-1.0.0-SNAPSHOT.tar.xz"
-            val sdkDir = project.layout.buildDirectory.dir("sdk").get().asFile
-            
-            // Create the SDK directory if it doesn't exist
-            if (!sdkDir.exists()) {
-                sdkDir.mkdirs()
-            }
-            
-            // Download the SDK
-            val sdkFile = sdkDir.resolve("sdk.tar.xz")
-            if (sdkFile.exists()) {
-                return@doLast
-            }
-            val client = HttpClient.newBuilder()
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build()
-            val request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .build()
+    register<Copy>("prepare") {
+        description = "Prepare the GDScript SDK by copying it to the build directory"
+        group = "build"
 
-            client.send(
-                request,
-                HttpResponse.BodyHandlers.ofFile(sdkFile.toPath())
-            )
-            
-            logger.lifecycle("Downloaded SDK from $url to ${sdkFile.absolutePath}")
+        val sdkDir = layout.buildDirectory.dir("sdk").get().asFile
+        val sdkFile = sdk.incoming.files.singleFile
+        val outputFile = sdkDir.resolve("sdk.tar.xz")
+
+        // Declare inputs and outputs
+        inputs.files(sdkFile)
+        outputs.file(outputFile)
+
+        // Configure the copy operation
+        from(sdkFile)
+        into(sdkDir)
+        rename { "sdk.tar.xz" }
+
+        // Ensure the output directory exists
+        doFirst {
+            sdkDir.mkdirs()
+        }
+
+        // Skip if the output already exists
+        onlyIf {
+            !outputFile.exists()
         }
     }
 
@@ -172,5 +186,21 @@ tasks {
             exceptionFormat = TestExceptionFormat.FULL
         }
         environment["LOCAL_ENV_RUN"] = "true"
+    }
+    
+    register<DefaultTask>("convertToLF") {
+        description = "Converts CRLF to LF in generated files if runtime uses CRLF"
+        val generatedDir = file("src/main/gen")
+        doLast {
+            if (System.lineSeparator() != "\r\n") return@doLast
+            generatedDir.walkTopDown()
+                .filter { it.isFile && it.extension in setOf("java") }
+                .forEach { file ->
+                    val content = file.readText()
+                    if (content.contains("\r\n")) {
+                        file.writeText(content.replace("\r\n", "\n"), Charsets.UTF_8)
+                    }
+                }
+        }
     }
 }
