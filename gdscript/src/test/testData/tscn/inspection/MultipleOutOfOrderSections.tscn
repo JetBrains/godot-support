@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dwh2qsicwn3hx"]
+
+; Sub resource before ext_resource
+[sub_resource type="Animation" id="Animation_vyou6"]
+resource_name = "new_animation"
+
+<error descr="[ext_resource] sections must appear before [sub_resource] sections">[ext_resource type="Script" uid="uid://bdjgwukxdqws0" path="res://scratch/tscn_order/tscn_order.gd" id="1_vyou6"]</error>
+
+; Node before sub resource
+[node name="Node2D" type="Node2D" unique_id=1984930638]
+script = ExtResource("1_vyou6")
+
+<error descr="[sub_resource] sections must appear before [node] sections">[sub_resource type="AnimationLibrary" id="AnimationLibrary_7p4hx"]</error>
+_data = {
+&"new_animation": SubResource("Animation_vyou6")
+}
+
+; Connection before node
+[connection signal="animation_changed" from="AnimationPlayer" to="." method="_on_animation_player_animation_changed"]
+
+<error descr="[node] sections must appear before [connection] sections">[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1014649497]</error>
