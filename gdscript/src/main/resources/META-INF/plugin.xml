@@ -150,6 +150,10 @@
                      bundle="messages.GdScriptBundle" key="inspection.check.whitespace"
                      groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdWhitespaceLocalInspectionTool"/>
+    <localInspection language="Tscn" shortName="TscnSectionOrder" enabledByDefault="true" level="ERROR"
+                     bundle="messages.GdScriptBundle" key="inspection.tscn.section.order"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.tscn.name" groupPathKey="inspection.group.name"
+                     implementationClass="tscn.inspection.TscnSectionOrderInspection"/>
 
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" externalIdPrefix="gd."/>

@@ -1,0 +1,29 @@
+<html>
+<body>
+<p>Reports sections that appear out of order in TSCN and TRES files.</p>
+
+<p>Godot requires sections in the following order:</p>
+<ol>
+  <li><code>[gd_scene]</code> or <code>[gd_resource]</code> - File descriptor</li>
+  <li><code>[ext_resource]</code> - External resources</li>
+  <li><code>[sub_resource]</code> - Internal resources</li>
+  <li><code>[node]</code> - Nodes</li>
+  <li><code>[connection]</code> - Connections</li>
+</ol>
+
+<p>Example of <b>incorrect</b> order:</p>
+<pre>
+[gd_scene format=3]
+[node name="Root" type="Node"]
+[ext_resource path="res://script.gd" type="Script" id=1]  ; ERROR: ext_resource after node
+</pre>
+
+<p>Example of <b>correct</b> order:</p>
+<pre>
+[gd_scene format=3]
+[ext_resource path="res://script.gd" type="Script" id=1]
+[node name="Root" type="Node"]
+</pre>
+
+</body>
+</html>
