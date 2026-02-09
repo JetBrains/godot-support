@@ -26,6 +26,7 @@ import com.jetbrains.rider.test.scriptingApi.stepOver
 import com.jetbrains.rider.test.scriptingApi.toggleBreakpoint
 import com.jetbrains.rider.test.scriptingApi.waitForPause
 import com.jetbrains.rider.test.tooling.testTools
+import org.testng.ITestResult
 import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
@@ -44,8 +45,8 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
         get() = super.traceScenarios + LogTraceScenarios.Debugger
 
     @BeforeMethod(dependsOnMethods = ["startGodot"])
-    override fun setUpTestCaseSolution() {
-        super.setUpTestCaseSolution()
+    override fun setUpTestCaseSolution(testResult: ITestResult) {
+        super.setUpTestCaseSolution(testResult)
     }
 
     @BeforeClass(alwaysRun = true)
