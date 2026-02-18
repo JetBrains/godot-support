@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rider.godot.community.GodotProjectProvider
 import com.jetbrains.rider.godot.community.LspRunningStatusProvider
 import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.StateFlow
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -18,7 +17,7 @@ class RiderGodotSupportPluginUtil {
         private val GODOT_PROJECT_PROVIDER_EP: ExtensionPointName<GodotProjectProvider> =
             ExtensionPointName.create("com.intellij.rider.godot.community.godotProjectProvider")
 
-        fun isGodotSupportLSPRunning(project: Project): Boolean {
+        fun isGodotSupportLspRunning(project: Project): Boolean {
             val extList = LSP_STATUS_PROVIDER_EP.extensionList
             return extList.any { it.isLspRunning(project) }
         }

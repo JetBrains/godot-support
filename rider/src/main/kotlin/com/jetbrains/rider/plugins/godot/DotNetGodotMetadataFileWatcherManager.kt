@@ -26,7 +26,6 @@ class DotNetGodotMetadataFileWatcherManager : ProjectActivity {
                             val newPath = DotNetGodotMetadataFileWatcherUtil.getGodot4Path(mainProjectBasePath)
                             withContext(Dispatchers.EDT) {
                                 newPath?.let { godotDiscoverer.godot4Path.set(it) }
-                                godotDiscoverer.projectMetadataModificationSignal.fire(Unit)
                             }
                         }
                     }

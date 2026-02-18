@@ -42,6 +42,8 @@
     <postStartupActivity implementation="GdProjectDiscoveryActivity" />
     <rider.godot.community.godotProjectProvider implementation="gdscript.utils.GdScriptGodotProjectProvider" />
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
+    <platform.lsp.serverSupportProvider implementation="gdscript.lsp.GodotLspServerSupportProvider"/>
+    <rider.godot.community.lspStatusProvider implementation="gdscript.lsp.GodotLspRunningStatusProvider" />
     <toolWindow id="TscnScenePreviewWindowId"
                 anchor="right"
                 secondary="false"
@@ -223,6 +225,8 @@
 
     <notificationGroup id="GdSdkNotifications" displayType="BALLOON" bundle="messages.GdScriptBundle" key="notification.group.sdk.name" />
     <notificationGroup id="GdRunNotifications" displayType="BALLOON" bundle="messages.GdScriptBundle" key="notification.group.run.name" />
+    <notificationGroup id="GodotSupportNotificationGroupId" displayType="STICKY_BALLOON" bundle="messages.GdScriptBundle"
+                       key="notification.group.godot.lsp"/>
   </extensions>
 
   <actions>

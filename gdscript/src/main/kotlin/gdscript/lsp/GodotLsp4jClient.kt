@@ -1,11 +1,11 @@
-package com.jetbrains.rider.plugins.godot.lang.service
+package gdscript.lsp
 
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.lsp.api.Lsp4jClient
 import com.intellij.platform.lsp.api.LspServerManager
 import com.intellij.platform.lsp.api.LspServerNotificationsHandler
-import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
+import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import org.eclipse.lsp4j.jsonrpc.services.JsonNotification
 import kotlin.io.path.Path
 
@@ -24,9 +24,8 @@ class GodotLsp4jClient(
     @JsonNotification("gdscript_client/changeWorkspace")
     private fun changeWorkspace(params: GodotChangeWorkspaceParams) {
         thisLogger().info("Received gdscript_client/changeWorkspace notification with path: ${params.path}")
-        
-        val discoverer = GodotProjectDiscoverer.getInstance(project)
-        val godotBasePath = discoverer.godotDescriptor.valueOrNull?.mainProjectBasePath?.let { Path(it)}
+
+        val godotBasePath = GodotCommunityUtil.getGodotProjectBasePath(project)
         val workspacePath = Path(params.path)
 
         if (godotBasePath != workspacePath) {

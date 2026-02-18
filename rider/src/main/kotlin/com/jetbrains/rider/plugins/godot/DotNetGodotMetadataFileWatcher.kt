@@ -5,6 +5,7 @@ import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileContentChangeEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.jetbrains.rider.godot.community.LspLifecycleUtil
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import java.nio.file.Path
@@ -45,7 +46,7 @@ class DotNetGodotMetadataFileWatcher(val project: Project, val mainProjectPath: 
                 }
 
                 // RIDER-127016 Trigger Godot LSP reconnect with Editor start
-                godotDiscoverer.projectMetadataModificationSignal.fire(Unit)
+                LspLifecycleUtil.ensureLspRunning(project)
             }
         }
     }

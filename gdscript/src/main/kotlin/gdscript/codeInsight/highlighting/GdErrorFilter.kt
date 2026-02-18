@@ -7,7 +7,7 @@ import gdscript.utils.RiderGodotSupportPluginUtil
 
 class GdErrorFilter : HighlightErrorFilter() {
     override fun shouldHighlightErrorElement(el: PsiErrorElement): Boolean {
-        if (isGodotSupportInstalled && RiderGodotSupportPluginUtil.isGodotSupportLSPRunning(el.project))
+        if (RiderGodotSupportPluginUtil.isGodotSupportLspRunning(el.project))
             return false
         return true
     }

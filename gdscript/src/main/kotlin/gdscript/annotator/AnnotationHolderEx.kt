@@ -16,7 +16,7 @@ fun AnnotationHolder.newAnnotationGd(
         @NotNull severity: HighlightSeverity,
         @NotNull @InspectionMessage message: String
 ): AnnotationBuilder {
-    if (severity == HighlightSeverity.ERROR && isGodotSupportInstalled && RiderGodotSupportPluginUtil.isGodotSupportLSPRunning(project))
+    if (severity == HighlightSeverity.ERROR && RiderGodotSupportPluginUtil.isGodotSupportLspRunning(project))
         return this.newSilentAnnotation(HighlightSeverity.INFORMATION)
     return this.newAnnotation(severity, message)
 }
