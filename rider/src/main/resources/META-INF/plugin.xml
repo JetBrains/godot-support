@@ -7,13 +7,14 @@
 
   <dependencies>
     <plugin id="com.intellij.modules.rider"/>
-    <module name="intellij.textmate"/>
+    <!-- region Generated dependencies - run `Generate Product Layouts` to regenerate -->
     <plugin id="com.intellij.rider.godot.community"/>
     <plugin id="org.jetbrains.plugins.terminal"/>
-    <module name="intellij.platform.dap"/>
     <module name="intellij.rd.client"/>
     <module name="intellij.rider.rdclient.dotnet"/>
     <module name="intellij.rider.shared"/>
+    <module name="intellij.textmate"/>
+    <!-- endregion -->
   </dependencies>
   <content namespace="jetbrains"/>
 
