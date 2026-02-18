@@ -8,7 +8,7 @@ import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
-import com.jetbrains.rider.plugins.godot.Util
+import com.jetbrains.rider.godot.community.utils.GodotFileUtil
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.invariantSeparatorsPathString
@@ -57,6 +57,6 @@ internal fun extractResPath(basePath: Path, context: ConfigurationContext): Stri
 internal fun getContainingFile(context: ConfigurationContext): PsiFile? {
     val location = context.psiLocation ?: return null
     val file = location.containingFile ?: return null
-    if (!Util.isTscnFile(file.virtualFile)) return null
+    if (!GodotFileUtil.isTscnFile(file.virtualFile)) return null
     return file
 }

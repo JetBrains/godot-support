@@ -4,11 +4,14 @@ import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.godot.community.EditorConnectionState
 import com.jetbrains.rider.godot.community.GodotEditorConnectionProvider
+import com.jetbrains.rider.godot.community.GodotMajorVersion
 import com.jetbrains.rider.godot.community.actions.GodotEditorLaunchConfig
 import com.jetbrains.rider.godot.community.GodotProjectProvider
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import java.nio.file.Path
@@ -44,6 +47,21 @@ object GodotCommunityUtil {
             val path = it.getGodotProjectBasePath(project)
             if (path != null && path.exists()) path else null
         }
+
+    fun getGodotMajorVersion(project: Project): GodotMajorVersion? =
+        GODOT_PROJECT_PROVIDER_EP.extensionList.firstNotNullOfOrNull {
+            it.getGodotMajorVersion(project)
+        }
+
+    fun isPureGdScriptProject(project: Project): Boolean? =
+        GODOT_PROJECT_PROVIDER_EP.extensionList.firstNotNullOfOrNull {
+            it.isPureGdScriptProjectFlow(project).value
+        }
+
+    fun isPureGdScriptProjectFlow(project: Project): StateFlow<Boolean?> =
+        GODOT_PROJECT_PROVIDER_EP.extensionList.firstNotNullOfOrNull {
+            it.isPureGdScriptProjectFlow(project)
+        } ?: MutableStateFlow(null)
 
     fun getGodotExecutablePathFlow(project: Project): Flow<Path?> {
         val flows = GODOT_PROJECT_PROVIDER_EP.extensionList

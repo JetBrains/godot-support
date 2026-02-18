@@ -38,12 +38,16 @@ class GdProjectService(
     private val _projectBasePathFlow = MutableStateFlow<Path?>(null)
     val projectBasePathFlow: StateFlow<Path?> = _projectBasePathFlow.asStateFlow()
 
+    private val _isPureGdScriptProjectFlow: MutableStateFlow<Boolean?> = MutableStateFlow(null)
+    val isPureGdScriptProjectFlow: StateFlow<Boolean?> = _isPureGdScriptProjectFlow.asStateFlow()
+
     fun getExecutablePath(): Path? = getGodotProjectBasePath(project)?.let { getGodot4Path(it.toNioPath()) }
 
     fun discoverProject() {
         val basePath = getGodotProjectBasePath(project)
         _projectGodotFile = basePath?.findChild("project.godot")
         _projectBasePathFlow.value = projectRoot?.toNioPath()
+        _isPureGdScriptProjectFlow.value = _projectBasePathFlow.value != null
         _executablePathFlow.value = getExecutablePath()
         _isGodotProjectDeferred.complete(isGodotProject)
 

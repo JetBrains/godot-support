@@ -18,7 +18,6 @@ import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rd.util.threading.coroutines.launch
 import com.jetbrains.rider.model.godot.frontendBackend.GodotDescriptor
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
-import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
@@ -39,18 +38,13 @@ import kotlin.io.path.exists
 class GodotProjectDiscoverer(project: Project) {
 
     val godotDescriptor : IOptProperty<GodotDescriptor> = OptProperty()
-    val lspConnectionMode: IProperty<LanguageServerConnectionMode?> = Property(null)
-    val remoteHostPort: IProperty<Int?> = Property(null)
-    val useDynamicPort: IProperty<Boolean?> = Property(null)
     val godot3Path : IProperty<String?> = Property(null)
     val godot4Path : IProperty<String?> = Property(null)
     val godotPath : IOptProperty<String> = OptProperty()
-
-    val mainProjectBasePath: MutableStateFlow<Path?> = MutableStateFlow(null)
+    val mainProjectBasePathFlow: MutableStateFlow<Path?> = MutableStateFlow(null)
+    val isPureGdScriptProjectFlow: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val executablePathFlow: MutableStateFlow<Path?> = MutableStateFlow(null)
-    val isGodotProject : CompletableDeferred<Boolean> = CompletableDeferred()
-
-    val projectMetadataModificationSignal: ISignal<Unit> = Signal()
+    val isGodotProject: CompletableDeferred<Boolean> = CompletableDeferred()
 
     init {
         val lifetime = GodotProjectLifetimeService.getLifetime(project)
@@ -120,11 +114,9 @@ class GodotProjectDiscoverer(project: Project) {
             model.isGodotProject.advise(lifetime) {getInstance(session.project).isGodotProject.complete(it) }
             model.godotDescriptor.advise(lifetime){
                 getInstance(session.project).godotDescriptor.set(it)
-                getInstance(session.project).mainProjectBasePath.value = Path(it.mainProjectBasePath)
+                getInstance(session.project).mainProjectBasePathFlow.value = Path(it.mainProjectBasePath)
+                getInstance(session.project).isPureGdScriptProjectFlow.value = it.isPureGdScriptProject
             }
-            model.backendSettings.lspConnectionMode.adviseNotNull(lifetime){ getInstance(session.project).lspConnectionMode.set(it) }
-            model.backendSettings.remoteHostPort.adviseNotNull(lifetime) { getInstance(session.project).remoteHostPort.set(it) }
-            model.backendSettings.useDynamicPort.adviseNotNull(lifetime) { getInstance(session.project).useDynamicPort.set(it) }
         }
     }
 }

@@ -4,6 +4,7 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.project.Project
 import com.intellij.util.execution.ParametersListUtil
+import com.jetbrains.rider.godot.community.GodotMajorVersion
 import com.jetbrains.rider.godot.community.GodotProjectProvider
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
@@ -21,19 +22,35 @@ class RiderGodotProjectProvider : GodotProjectProvider {
     override fun getGodotExecutablePath(project: Project): Path? =
         GodotProjectDiscoverer.getInstance(project).godotPath.valueOrNull?.let { Path.of(it) }
 
-    override fun getGodotProjectBasePath(project: Project): Path? {
-        return GodotProjectDiscoverer.getInstance(project).mainProjectBasePath.value
-    }
+    override fun getGodotProjectBasePath(project: Project): Path? =
+        GodotProjectDiscoverer.getInstance(project).mainProjectBasePathFlow.value
+
 
     override fun getGodotExecutablePathFlow(project: Project): StateFlow<Path?> =
         GodotProjectDiscoverer.getInstance(project).executablePathFlow
 
-    override fun getGodotProjectBasePathFlow(project: Project): StateFlow<Path?> {
-        return GodotProjectDiscoverer.getInstance(project).mainProjectBasePath
-    }
+    override fun getGodotProjectBasePathFlow(project: Project): StateFlow<Path?> =
+        GodotProjectDiscoverer.getInstance(project).mainProjectBasePathFlow
+
+
+    override fun isPureGdScriptProject(project: Project): Boolean? =
+        GodotProjectDiscoverer.getInstance(project).isPureGdScriptProjectFlow.value
+
+
+    override fun isPureGdScriptProjectFlow(project: Project): StateFlow<Boolean?> =
+        GodotProjectDiscoverer.getInstance(project).isPureGdScriptProjectFlow
 
     override fun isGodotProject(project: Project): Deferred<Boolean> {
         return GodotProjectDiscoverer.getInstance(project).isGodotProject
+    }
+
+    override fun getGodotMajorVersion(project: Project): GodotMajorVersion {
+        val discoverer = GodotProjectDiscoverer.getInstance(project)
+        return when {
+            discoverer.godot4Path.value != null -> GodotMajorVersion.GODOT_4
+            discoverer.godot3Path.value != null -> GodotMajorVersion.GODOT_3
+            else -> GodotMajorVersion.UNKNOWN
+        }
     }
 
     override fun getEditorLaunchArguments(project: Project): List<String>? {

@@ -2,7 +2,9 @@ package gdscript.settings
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.TitledSeparator
 import com.intellij.util.ui.FormBuilder
 import gdscript.GdScriptBundle
 import javax.swing.JComponent
@@ -19,11 +21,32 @@ class GdSettingsComponent(val project: Project) {
     private val warningsTf: JTextField = JTextField()
     private val notesTf: JTextField = JTextField()
 
+    private val lspConnectionModeCb = ComboBox<GdLspConnectionMode>()
+    private val lspUseDynamicPortCheck = JBCheckBox(GdScriptBundle.message("settings.checkbox.lsp.use.dynamic.port"))
+    private val lspRemoteHostPortTf: JTextField = JTextField()
+
     init {
         annotatorsCb.addItem(GdProjectState.OFF)
         annotatorsCb.addItem(GdProjectState.WARN)
         annotatorsCb.addItem(GdProjectState.ERR)
         annotatorsCb.selectedItem = GdProjectState.OFF
+
+        for (mode in GdLspConnectionMode.entries) {
+            lspConnectionModeCb.addItem(mode)
+        }
+        lspConnectionModeCb.setRenderer(SimpleListCellRenderer.create { label, value, _ ->
+            label.text = when (value) {
+                GdLspConnectionMode.Never -> GdScriptBundle.message("label.never.use.lsp")
+                GdLspConnectionMode.ConnectRunningEditor -> GdScriptBundle.message("label.attempt.to.connect.to.running.godot.editor")
+                GdLspConnectionMode.StartEditorHeadless -> GdScriptBundle.message("label.automatically.start.headless.lsp.server")
+            }
+        })
+
+        lspConnectionModeCb.selectedItem = GdLspConnectionMode.ConnectRunningEditor
+
+        lspConnectionModeCb.addActionListener { updateLspControlsState() }
+        lspUseDynamicPortCheck.addActionListener { updateLspControlsState() }
+        updateLspControlsState()
 
         panel = FormBuilder.createFormBuilder()
                 .addComponent(hidePrivateCheck, 1)
@@ -32,8 +55,18 @@ class GdSettingsComponent(val project: Project) {
                 .addLabeledComponent(GdScriptBundle.message("settings.label.critical.comments"), criticalsTf, 1)
                 .addLabeledComponent(GdScriptBundle.message("settings.label.warning.comments"), warningsTf, 1)
                 .addLabeledComponent(GdScriptBundle.message("settings.label.note.comments"), notesTf, 1)
+                .addComponent(TitledSeparator(GdScriptBundle.message("settings.separator.lsp")), 1)
+                .addLabeledComponent(GdScriptBundle.message("settings.label.lsp.connection.mode"), lspConnectionModeCb, 1)
+                .addComponent(lspUseDynamicPortCheck, 1)
+                .addLabeledComponent(GdScriptBundle.message("settings.label.lsp.port"), lspRemoteHostPortTf, 1)
                 .addComponentFillVertically(JPanel(), 0)
                 .panel
+    }
+
+    private fun updateLspControlsState() {
+        val connecting = lspConnectionMode != GdLspConnectionMode.Never
+        lspUseDynamicPortCheck.isEnabled = connecting
+        lspRemoteHostPortTf.isEnabled = connecting && !lspUseDynamicPortCheck.isSelected
     }
 
     fun preferredFocusedComponent(): JComponent = hidePrivateCheck
@@ -72,6 +105,26 @@ class GdSettingsComponent(val project: Project) {
         get() = notesTf.text
         set(newStatus) {
             notesTf.text = newStatus
+        }
+
+    var lspConnectionMode: GdLspConnectionMode
+        get() = lspConnectionModeCb.selectedItem as GdLspConnectionMode
+        set(newStatus) {
+            lspConnectionModeCb.selectedItem = newStatus
+            updateLspControlsState()
+        }
+
+    var lspRemoteHostPort: Int
+        get() = lspRemoteHostPortTf.text.toIntOrNull() ?: 6005
+        set(newStatus) {
+            lspRemoteHostPortTf.text = newStatus.toString()
+        }
+
+    var lspUseDynamicPort: Boolean
+        get() = lspUseDynamicPortCheck.isSelected
+        set(newStatus) {
+            lspUseDynamicPortCheck.isSelected = newStatus
+            updateLspControlsState()
         }
 
 }

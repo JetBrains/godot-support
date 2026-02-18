@@ -50,9 +50,6 @@
     <projectConfigurable parentId="FileTemplatesSettingsId" instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotFileTemplatesOptionPage" groupWeight="-120" />
     <projectConfigurable parentId="LiveTemplatesSettingsId" instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotLiveTemplatesOptionPage" groupWeight="-120" />
 
-    <platform.lsp.serverSupportProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspServerSupportProvider"/>
-
-    <rider.godot.community.lspStatusProvider implementation="com.jetbrains.rider.plugins.godot.lang.service.GodotLspRunningStatusProvider" />
     <rider.godot.community.godotProjectProvider implementation="com.jetbrains.rider.plugins.godot.project.RiderGodotProjectProvider" order="first" />
     <rider.godot.community.editorConnectionProvider implementation="com.jetbrains.rider.plugins.godot.RiderEditorConnectionProvider" />
 
@@ -67,8 +64,6 @@
     <!-- Show notification when a Godot project is opened as a folder (virtual solution) -->
     <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.notifications.GodotVirtualSolutionNotification"/>
 
-    <notificationGroup id="GodotSupportNotificationGroupId" displayType="STICKY_BALLOON" bundle="messages.GodotPluginBundle"
-                       key="notification.group.godot.lsp"/>
     <notificationGroup displayType="STICKY_BALLOON" id="GodotVirtualSolutionNotificationGroupId" bundle="messages.GodotPluginBundle"
                       key="notification.title.godot.virtual.solution"/>
   </extensions>

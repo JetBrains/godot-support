@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.godot.lang.service
+package gdscript.lsp
 
 import com.intellij.icons.AllIcons
 import com.intellij.lang.LangBundle
@@ -11,9 +11,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.LspServer
 import com.intellij.platform.lsp.api.LspServerState
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
-import com.jetbrains.rider.plugins.godot.GodotIcons
-import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.godot.community.actions.StartGodotEditorAction
+import gdscript.GdScriptBundle
 import javax.swing.Icon
 
 class GodotLspServerWidgetItem(lspServer: LspServer,
@@ -26,7 +25,7 @@ class GodotLspServerWidgetItem(lspServer: LspServer,
             LspServerState.Initializing -> LangBundle.message("language.services.widget.item.initializing", serverLabel)
             LspServerState.Running -> serverLabel
             LspServerState.ShutdownNormally -> LangBundle.message("language.services.widget.item.shutdown.normally", serverLabel)
-            LspServerState.ShutdownUnexpectedly -> GodotPluginBundle.message("language.services.widget.item.shutdown.unexpectedly", serverLabel)
+            LspServerState.ShutdownUnexpectedly -> GdScriptBundle.message("language.services.widget.item.shutdown.unexpectedly", serverLabel)
         }
 
     //override fun createAdditionalInlineActions(): List<AnAction> {
@@ -45,7 +44,7 @@ class GodotLspServerWidgetItem(lspServer: LspServer,
 
     private class StartGodotEditorActionInWidget(
         private val lspServer: LspServer,
-    ) : AnAction(GodotPluginBundle.message("action.StartEditorAction.text"), null, GodotIcons.Actions.StartGodotEditorActionIcon), DumbAware {
+    ) : AnAction(GdScriptBundle.message("action.StartEditorAction.text"), null,AllIcons.Actions.Execute), DumbAware {
         override fun actionPerformed(e: AnActionEvent) {
             val project = lspServer.project
             StartGodotEditorAction.startEditor(project)

@@ -36,4 +36,13 @@ class GdProjectState {
     @Tag("notes")
     var notes: String = "INFO,NOTE,NOTICE,TEST,TESTING"
 
+    @Tag("lspConnectionMode")
+    var lspConnectionMode: String = GdLspConnectionMode.ConnectRunningEditor.name
+
+    @Tag("lspRemoteHostPort")
+    var lspRemoteHostPort: Int = 6005
+
+    @Tag("lspUseDynamicPort")
+    var lspUseDynamicPort: Boolean = false
+
 }

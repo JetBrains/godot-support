@@ -34,7 +34,7 @@ object ProblemsHolderExtension {
 
     private fun ProblemsHolder.registerProblem(element: PsiElement, @InspectionMessage description: String, highlightType: ProblemHighlightType, quickFix: LocalQuickFix?) {
         var type = highlightType
-        if ((highlightType == GENERIC_ERROR || highlightType == ERROR) && isGodotSupportInstalled && RiderGodotSupportPluginUtil.isGodotSupportLSPRunning(project))
+        if ((highlightType == GENERIC_ERROR || highlightType == ERROR) && RiderGodotSupportPluginUtil.isGodotSupportLspRunning(project))
             type = POSSIBLE_PROBLEM
 
         if (quickFix == null) {
