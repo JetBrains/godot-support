@@ -49,6 +49,7 @@
     <inlineActionHandler implementation="gdscript.refactoring.inline.GdInlineVariableActionHandler" />
 
     <!-- settings -->
+    <search.optionContributor implementation="gdscript.settings.GdSearchableOptionContributor"/>
     <projectConfigurable
         parentId="language"
         instance="gdscript.settings.GdSettingsConfigurable"
