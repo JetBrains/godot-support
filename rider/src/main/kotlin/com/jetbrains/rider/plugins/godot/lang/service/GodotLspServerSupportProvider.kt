@@ -1,11 +1,16 @@
 package com.jetbrains.rider.plugins.godot.lang.service
 
 import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.intention.IntentionAction
+import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.Lsp4jClient
 import com.intellij.platform.lsp.api.LspCommunicationChannel
@@ -24,6 +29,8 @@ import com.intellij.platform.lsp.api.customization.LspHoverDisabled
 import com.intellij.platform.lsp.api.customization.LspInlayHintCustomizer
 import com.intellij.platform.lsp.api.customization.LspInlayHintDisabled
 import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
+import com.intellij.platform.lsp.util.getRangeInDocument
+import com.intellij.psi.PsiFile
 import com.intellij.util.NetworkUtils
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
@@ -31,13 +38,16 @@ import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rd.util.reactive.hasValue
 import com.jetbrains.rd.util.threading.coroutines.async
 import com.jetbrains.rider.model.godot.frontendBackend.LanguageServerConnectionMode
+
 import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
 import com.jetbrains.rider.plugins.godot.Util
 import com.jetbrains.rider.plugins.godot.gdscript.PluginInterop
+import com.jetbrains.rider.plugins.godot.lang.service.fixes.RemoveUnusedSignalFix
 import com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage
 import kotlinx.coroutines.Dispatchers
+import org.eclipse.lsp4j.Diagnostic
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Service(Service.Level.PROJECT)
@@ -176,10 +186,39 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             override val inlayHintCustomizer: LspInlayHintCustomizer = LspInlayHintDisabled
 
             override val diagnosticsCustomizer: LspDiagnosticsCustomizer = object : LspDiagnosticsSupport() {
-                override fun getHighlightSeverity(diagnostic: org.eclipse.lsp4j.Diagnostic): com.intellij.lang.annotation.HighlightSeverity? {
+                override fun getHighlightSeverity(diagnostic: Diagnostic): HighlightSeverity? {
                     // RIDER-117554
                     if (diagnostic.message.startsWith("(UNUSED_PARAMETER)")) return null
                     return super.getHighlightSeverity(diagnostic)
+                }
+                /*
+                UNUSED_VARIABLE, UNUSED_LOCAL_CONSTANT, UNUSED_PRIVATE_CLASS_VARIABLE, UNUSED_PARAMETER, UNUSED_SIGNAL
+                https://github.com/godotengine/godot/blob/1bd7b99182f7e8de4d6b2f089fec5db9392ac6b8/modules/gdscript/gdscript_warning.cpp#L47C8-L47C23
+                 */
+                override fun getSpecialHighlightType(diagnostic: Diagnostic): ProblemHighlightType? {
+                    // todo: we can't directly do the same for the (UNUSED_PARAMETER), its highlighting covers the whole function declaration
+                    // what can be done?
+                    if (diagnostic.message.startsWith("(UNUSED_VARIABLE)")
+                        || diagnostic.message.startsWith("(UNUSED_LOCAL_CONSTANT)")
+                        || diagnostic.message.startsWith("(UNUSED_PRIVATE_CLASS_VARIABLE)")
+                        || diagnostic.message.startsWith("(UNUSED_SIGNAL)")) {
+                        return ProblemHighlightType.LIKE_UNUSED_SYMBOL
+                    }
+                    return super.getSpecialHighlightType(diagnostic)
+                }
+                
+                override fun customizeQuickFixes(diagnostic: Diagnostic, quickFixes: List<IntentionAction>): List<IntentionAction> {
+                    val customFixes = mutableListOf<IntentionAction>()
+
+                    // if there are no quick fixes from Godot, we can provide our own
+                    if (!quickFixes.any() && diagnostic.message.startsWith("(UNUSED_SIGNAL)")) {
+                        customFixes.add(RemoveUnusedSignalFix(diagnostic))
+                    }
+
+                    // todo: we can maybe delegate to our own GdRemoveElementFix?
+                    
+                    customFixes.addAll(quickFixes)
+                    return customFixes
                 }
             }
         }
