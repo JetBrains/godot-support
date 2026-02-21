@@ -127,26 +127,28 @@
                      bundle="messages.GdScriptBundle" key="inspection.check.methods"
                      groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdMethodValidationInspection"/>
-<!--    <localInspection language="GdScript" shortName="GdUnusedMethod" enabledByDefault="true" level="WARNING"-->
-<!--                     bundle="messages.GdScriptBundle" key="inspection.check.unused.method"-->
-<!--                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"-->
-<!--                     implementationClass="gdscript.inspection.GdUnusedMethodInspection"/>-->
-<!--    <localInspection language="GdScript" shortName="GdUnusedParameter" enabledByDefault="true" level="WARNING"-->
-<!--                     bundle="messages.GdScriptBundle" key="inspection.check.unused.parameter"-->
-<!--                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"-->
-<!--                     implementationClass="gdscript.inspection.GdUnusedParameterInspection"/>-->
-<!--    <localInspection language="GdScript" shortName="GdUnusedVariable" enabledByDefault="true" level="WARNING"-->
-<!--                     bundle="messages.GdScriptBundle" key="inspection.check.unused.variable"-->
-<!--                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"-->
-<!--                     implementationClass="gdscript.inspection.GdUnusedVariableInspection"/>-->
-<!--    <localInspection language="GdScript" shortName="GdUnusedSignal" enabledByDefault="true" level="WARNING"-->
-<!--                     bundle="messages.GdScriptBundle" key="inspection.check.unused.signal"-->
-<!--                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"-->
-<!--                     implementationClass="gdscript.inspection.GdUnusedSignalInspection"/>-->
-<!--    <localInspection language="GdScript" shortName="GdUnusedClass" enabledByDefault="true" level="WARNING"-->
-<!--                     bundle="messages.GdScriptBundle" key="inspection.check.unused.class"-->
-<!--                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"-->
-<!--                     implementationClass="gdscript.inspection.GdUnusedClassInspection"/>-->
+    <!-- LSP is more accurate than inspections for unused checks, so we hide then by level="INFORMATION", while preserving Quick Fixes -->
+    <localInspection language="GdScript" shortName="GdUnusedMethod" enabledByDefault="true" level="INFORMATION"
+                     bundle="messages.GdScriptBundle" key="inspection.check.unused.method"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
+                     implementationClass="gdscript.inspection.GdUnusedMethodInspection"/>
+    <localInspection language="GdScript" shortName="GdUnusedParameter" enabledByDefault="true" level="INFORMATION"
+                     bundle="messages.GdScriptBundle" key="inspection.check.unused.parameter"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
+                     implementationClass="gdscript.inspection.GdUnusedParameterInspection"/>
+    <localInspection language="GdScript" shortName="GdUnusedVariable" enabledByDefault="true" level="INFORMATION"
+                     bundle="messages.GdScriptBundle" key="inspection.check.unused.variable"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
+                     implementationClass="gdscript.inspection.GdUnusedVariableInspection"/>
+    <localInspection language="GdScript" shortName="GdUnusedSignal" enabledByDefault="true" level="INFORMATION"
+                     bundle="messages.GdScriptBundle" key="inspection.check.unused.signal"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
+                     implementationClass="gdscript.inspection.GdUnusedSignalInspection"/>
+    <localInspection language="GdScript" shortName="GdUnusedClass" enabledByDefault="true" level="INFORMATION"
+                     bundle="messages.GdScriptBundle" key="inspection.check.unused.class"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
+                     implementationClass="gdscript.inspection.GdUnusedClassInspection"/>
+
     <localInspection language="GdScript" shortName="GdWhitespaceLocal" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspection.check.whitespace"
                      groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
