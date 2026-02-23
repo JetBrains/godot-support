@@ -1,8 +1,8 @@
 [versions]
 # https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#kotlin-standard-library
-kotlin = "2.2.20"
+kotlin = "2.3.0"
 # https://search.maven.org/artifact/com.jetbrains.rd/rd-gen
-rdGen = "2025.2.2"
+rdGen = "2026.1.2"
 # https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
 # https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
 riderSdk = "2026.2-SNAPSHOT"
