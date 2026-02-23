@@ -1,4 +1,5 @@
 <idea-plugin>
+  <!-- region Generated dependencies - run `Generate Product Layouts` to regenerate -->
   <dependencies>
     <module name="intellij.rider.test.framework"/>
     <module name="intellij.rider.test.framework.integration.testng"/>
@@ -10,4 +11,5 @@
     <module name="intellij.platform.execution"/>
     <!-- endregion -->
   </dependencies>
+  <!-- endregion -->
 </idea-plugin>
