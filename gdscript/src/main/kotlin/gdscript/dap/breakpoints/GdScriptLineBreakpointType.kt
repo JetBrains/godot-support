@@ -1,15 +1,15 @@
-package com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints
+package gdscript.dap.breakpoints
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.xdebugger.breakpoints.XLineBreakpointTypeBase
-import com.jetbrains.rider.plugins.godot.GodotPluginBundle
+import gdscript.GdScriptBundle
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
 
 internal class GdScriptLineBreakpointType :
   XLineBreakpointTypeBase(
       "GdScriptLineBreakpointTypeId",
-      GodotPluginBundle.message("gdscript.debug.line.breakpoint.title"),
+      GdScriptBundle.message("gdscript.debug.line.breakpoint.title"),
       GdScriptDebuggerEditorsProvider()
   ) {
     override fun canPutAt(file: VirtualFile, line: Int, project: Project): Boolean {

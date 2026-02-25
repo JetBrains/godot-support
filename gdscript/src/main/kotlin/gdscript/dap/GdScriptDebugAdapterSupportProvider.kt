@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.godot.run.configurations.gdscript
+package gdscript.dap
 
 import com.intellij.execution.ExecutionResult
 import com.intellij.execution.impl.EditConfigurationsDialog
@@ -13,14 +13,14 @@ import com.intellij.platform.dap.DebugAdapterId
 import com.intellij.platform.dap.DebugAdapterSupportProvider
 import com.intellij.platform.dap.connection.DebugAdapterHandle
 import com.intellij.platform.dap.connection.DebugAdapterSocketConnection
-import com.jetbrains.rider.plugins.godot.GodotPluginBundle
+import gdscript.GdScriptBundle
 import com.jetbrains.rider.godot.community.LspLifecycleUtil
-import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptExceptionBreakpointType
-import com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints.GdScriptLineBreakpointType
+import gdscript.dap.breakpoints.GdScriptExceptionBreakpointType
+import gdscript.dap.breakpoints.GdScriptLineBreakpointType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-object GdScriptDebugAdapter : DebugAdapterId("gdscript", GodotPluginBundle.message("gdscript.debug.adapter.presentable.name"))
+object GdScriptDebugAdapter : DebugAdapterId("gdscript", GdScriptBundle.message("gdscript.debug.adapter.presentable.name"))
 
 private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<GdScriptDebugAdapter> {
     override val adapterId = GdScriptDebugAdapter

@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.godot.run.configurations.gdscript
+package gdscript.dap
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.ObjectMapper

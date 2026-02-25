@@ -83,7 +83,6 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
 
             // subscribe one time to everything
             if (lspService.isScheduled.compareAndSet(false, true)) {
-                val pluginLifetime = GdScriptProjectLifetimeService.getLifetime(project)
                 val scope = GdScriptProjectLifetimeService.getScope(project)
                 scope.launch(Dispatchers.IO) {
                     settings.lspConnectionMode.filterNotNull().collect { lspConnectionMode ->
@@ -95,7 +94,13 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 }
 
                 scope.launch(Dispatchers.IO) {
-                    settings.useDynamicPort.filterNotNull().collect { dynamicPort ->
+                    settings.useDynamicPort.filterNotNull().collect {
+                        scheduleStartIfNeeded(project)
+                    }
+                }
+
+                scope.launch(Dispatchers.IO) {
+                    settings.remoteHostPort.filterNotNull().collect {
                         scheduleStartIfNeeded(project)
                     }
                 }

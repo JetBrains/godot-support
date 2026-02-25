@@ -1,17 +1,13 @@
-package com.jetbrains.rider.plugins.godot.run.configurations.gdscript
+package gdscript.dap
 
-import com.intellij.execution.BeforeRunTask
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.configurations.RunConfigurationOptions
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
 import com.intellij.platform.dap.DapStartRequest
 import com.intellij.util.xmlb.annotations.Property
-import com.jetbrains.rider.build.tasks.BuildSolutionBeforeRunTask
-import com.jetbrains.rider.build.tasks.BuildSolutionBeforeRunTaskProvider
 import org.jetbrains.annotations.NotNull
 
 open class GdScriptRunFactory(type: ConfigurationType) : ConfigurationFactory(type), DumbAware {
@@ -48,13 +44,6 @@ open class GdScriptRunFactory(type: ConfigurationType) : ConfigurationFactory(ty
               // "device": "0", // index of the device of a "platform" type
             }
         """.trimIndent()
-    }
-
-    override fun configureBeforeRunTaskDefaults(providerID: Key<out BeforeRunTask<BeforeRunTask<*>>>?,
-                                                task: BeforeRunTask<out BeforeRunTask<*>>?) {
-        if (providerID == BuildSolutionBeforeRunTaskProvider.providerId && task is BuildSolutionBeforeRunTask) {
-            task.isEnabled = false
-        }
     }
 
     override fun createTemplateConfiguration(@NotNull project: Project): RunConfiguration =
