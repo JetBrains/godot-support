@@ -1,6 +1,6 @@
-package com.jetbrains.rider.plugins.godot.run.configurations.gdscript
+package gdscript.dap
 
-import com.intellij.json.JsonLanguage
+import com.intellij.json.json5.Json5Language
 import com.intellij.openapi.editor.event.DocumentEvent
 import com.intellij.openapi.editor.event.DocumentListener
 import com.intellij.openapi.project.Project
@@ -13,7 +13,7 @@ import com.intellij.ui.dsl.builder.Row
 import com.intellij.ui.dsl.builder.panel
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.threading.coroutines.async
-import com.jetbrains.rider.plugins.godot.GodotPluginBundle
+import gdscript.GdScriptBundle
 import com.jetbrains.rider.godot.community.actions.StartGodotEditorAction
 import kotlinx.coroutines.Dispatchers
 import javax.swing.JPanel
@@ -28,7 +28,7 @@ class GdScriptEditorForm(lifetime: Lifetime, val project: Project) {
     val panel: JPanel = panel {
         indent {
             row {
-                text(GodotPluginBundle.message("editor.should.be.running"), ) {
+                text(GdScriptBundle.message("editor.should.be.running"), ) {
                     if (it.eventType == HyperlinkEvent.EventType.ACTIVATED) {
                         lifetime.async(Dispatchers.Default) {
                             StartGodotEditorAction.startEditor(project)
@@ -38,11 +38,11 @@ class GdScriptEditorForm(lifetime: Lifetime, val project: Project) {
             }
 
             row {
-                fullArgumentsField = LanguageTextField(JsonLanguage.INSTANCE, project, "", false)
+                fullArgumentsField = LanguageTextField(Json5Language.INSTANCE, project, "", false)
                 cell(fullArgumentsField)
                     .align(AlignX.FILL)
                     .resizableColumn()
-                    .comment(GodotPluginBundle.message("gdscript.editor.form.arguments.comment"))
+                    .comment(GdScriptBundle.message("gdscript.editor.form.arguments.comment"))
 
                 // custom validation, since I wasn't able to setup the Platform one with LanguageTextField
                 fullArgumentsField.document.addDocumentListener(object : DocumentListener {
@@ -75,10 +75,10 @@ class GdScriptEditorForm(lifetime: Lifetime, val project: Project) {
         val node = try {
             mapper.readTree(text)
         } catch (e: Exception) {
-            return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.invalid.json"), fullArgumentsField)
+            return ValidationInfo(GdScriptBundle.message("gdscript.editor.form.arguments.error.invalid.json"), fullArgumentsField)
         }
         if (!node.isObject) {
-            return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.root.object"), fullArgumentsField)
+            return ValidationInfo(GdScriptBundle.message("gdscript.editor.form.arguments.error.root.object"), fullArgumentsField)
         }
         // request
         val requestNode = node.get("request")
@@ -88,10 +88,10 @@ class GdScriptEditorForm(lifetime: Lifetime, val project: Project) {
                 kotlin.runCatching { com.intellij.platform.dap.DapStartRequest.valueOf(value) }.isSuccess
             } catch (_: Exception) { false }
             if (!valid) {
-                return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.request"), fullArgumentsField)
+                return ValidationInfo(GdScriptBundle.message("gdscript.editor.form.arguments.error.request"), fullArgumentsField)
             }
         } else if (requestNode != null && !requestNode.isTextual) {
-            return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.request"), fullArgumentsField)
+            return ValidationInfo(GdScriptBundle.message("gdscript.editor.form.arguments.error.request"), fullArgumentsField)
         }
         // debugServer can be integer or string that parses to int
         val portNode = node.get("debugServer")
@@ -103,13 +103,13 @@ class GdScriptEditorForm(lifetime: Lifetime, val project: Project) {
                 else -> false
             }
             if (!ok) {
-                return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.debugServer"), fullArgumentsField)
+                return ValidationInfo(GdScriptBundle.message("gdscript.editor.form.arguments.error.debugServer"), fullArgumentsField)
             }
         }
         // scene must be string if present
         val sceneNode = node.get("scene")
         if (sceneNode != null && !sceneNode.isTextual) {
-            return ValidationInfo(GodotPluginBundle.message("gdscript.editor.form.arguments.error.scene"), fullArgumentsField)
+            return ValidationInfo(GdScriptBundle.message("gdscript.editor.form.arguments.error.scene"), fullArgumentsField)
         }
         return null
     }

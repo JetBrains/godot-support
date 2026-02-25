@@ -1,6 +1,6 @@
 package com.jetbrains.rider.plugins.godot.run.configurations
 
-import GodotDebugRunFactory
+
 import com.intellij.execution.configurations.ConfigurationTypeBase
 import com.intellij.openapi.project.DumbAware
 import com.jetbrains.rider.plugins.godot.GodotIcons

@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.godot.run.configurations.gdscript
+package gdscript.dap
 
 import com.intellij.execution.Executor
 import com.intellij.execution.configuration.EmptyRunProfileState

@@ -14,5 +14,8 @@
     <module name="intellij.rider.test.framework.unit"/>
     <module name="intellij.rider.test.framework.junit"/>
     <module name="intellij.rider.test.framework.core"/>
+    <module name="intellij.platform.dap"/>
+    <module name="intellij.platform.lsp"/>
+    <module name="intellij.platform.lsp.impl"/>
   </content>
 </idea-plugin>

@@ -1,16 +1,16 @@
-package com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints
+package gdscript.dap.breakpoints
 
 import com.intellij.icons.AllIcons
 import com.intellij.xdebugger.breakpoints.XBreakpoint
 import com.intellij.xdebugger.breakpoints.XBreakpointType
-import com.jetbrains.rider.plugins.godot.GodotPluginBundle
+import gdscript.GdScriptBundle
 import javax.swing.Icon
 
 internal class GdScriptExceptionBreakpointType : XBreakpointType<XBreakpoint<GdScriptExceptionBreakpointProperties>, GdScriptExceptionBreakpointProperties>
                                                      ("GDSCRIPT_EXCEPTION_BP_TYPE",
-                                                      GodotPluginBundle.message("gdscript.debug.exception.breakpoint.title")) {
+                                                      GdScriptBundle.message("gdscript.debug.exception.breakpoint.title")) {
     override fun getDisplayText(breakpoint: XBreakpoint<GdScriptExceptionBreakpointProperties>?): String {
-        val defaultTitleMessage = GodotPluginBundle.message("gdscript.debug.exception.breakpoint.title")
+        val defaultTitleMessage = GdScriptBundle.message("gdscript.debug.exception.breakpoint.title")
         if (breakpoint == null) return defaultTitleMessage
         val properties:GdScriptExceptionBreakpointProperties = breakpoint.getProperties() ?: return defaultTitleMessage
         val exception = properties.exception ?: defaultTitleMessage

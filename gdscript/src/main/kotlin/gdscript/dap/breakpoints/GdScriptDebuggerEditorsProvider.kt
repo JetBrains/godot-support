@@ -1,4 +1,4 @@
-package com.jetbrains.rider.plugins.godot.run.configurations.gdscript.breakpoints
+package gdscript.dap.breakpoints
 
 import com.intellij.openapi.fileTypes.FileType
 import com.intellij.openapi.project.Project

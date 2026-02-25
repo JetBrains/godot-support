@@ -13,7 +13,11 @@
 
   <dependencies>
     <plugin id="com.intellij.modules.lang"/>
+    <module name="intellij.json"/>
+    <!-- region Generated dependencies - run `Generate Product Layouts` to regenerate -->
     <plugin id="com.intellij.rider.godot.community"/>
+    <module name="intellij.platform.dap"/>
+    <!-- endregion -->
   </dependencies>
 
   <extensions defaultExtensionNs="com.intellij">
@@ -227,6 +231,15 @@
     <notificationGroup id="GdRunNotifications" displayType="BALLOON" bundle="messages.GdScriptBundle" key="notification.group.run.name" />
     <notificationGroup id="GodotSupportNotificationGroupId" displayType="STICKY_BALLOON" bundle="messages.GdScriptBundle"
                        key="notification.group.godot.lsp"/>
+
+    <!-- DAP debugging -->
+    <runConfigurationProducer implementation="gdscript.dap.GdScriptSceneRunConfigurationProducer" />
+    <configurationType implementation="gdscript.dap.GdScriptConfigurationType"/>
+    <platform.dap.debugAdapterSupportProvider implementation="gdscript.dap.GdScriptDebugAdapterSupportProvider"/>
+    <platform.dap.launchArgumentsProvider implementation="gdscript.dap.GdScriptDapLaunchArgumentsProvider"/>
+    <xdebugger.breakpointType implementation="gdscript.dap.breakpoints.GdScriptLineBreakpointType"/>
+    <xdebugger.breakpointType implementation="gdscript.dap.breakpoints.GdScriptExceptionBreakpointType"/>
+    <postStartupActivity implementation="gdscript.dap.GdScriptRunConfigurationGenerator$Activity"/>
   </extensions>
 
   <actions>
