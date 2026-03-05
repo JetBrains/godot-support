@@ -133,6 +133,12 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdAssignTyped::class.java)!!
     }
 
+    fun matchSt(project: Project, matchText: String): GdMatchSt {
+        val file = createFile(project, "extends Node\nfunc f():\n${matchText}\nfunc g():\n\tpass\n")
+
+        return PsiTreeUtil.findChildOfType(file, GdMatchSt::class.java)!!
+    }
+
     private fun createFile(project: Project, text: String) =
             PsiFileFactory.getInstance(project).createFileFromText("dum.gd", GdFileType, text) as GdFile
 }

@@ -23,7 +23,7 @@ class GdAnnotationAnnotator : Annotator {
         val definition = GdAnnotationUtil.get(element)
         if (definition == null) {
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, GdScriptBundle.message("annotator.annotation.unknown"))
+                .newAnnotationGd(HighlightSeverity.ERROR, GdScriptBundle.message("annotator.annotation.unknown"))
                 .range(element.textRange)
                 .create()
             return
@@ -36,7 +36,6 @@ class GdAnnotationAnnotator : Annotator {
         if (!definition.variadic && usedParams.size > definitionParams.size) {
             holder
                 .newAnnotationGd(
-                    element.project,
                     HighlightSeverity.ERROR,
                     GdScriptBundle.message("annotator.annotation.too.many.arguments")
                 )
@@ -47,8 +46,7 @@ class GdAnnotationAnnotator : Annotator {
         if (definition.required > 0 && usedParams.size < definition.required) {
             holder
                 .newAnnotationGd(
-                    element.project, HighlightSeverity.ERROR,
-                    GdScriptBundle.message("annotator.annotation.not.enough.arguments")
+                    HighlightSeverity.ERROR, GdScriptBundle.message("annotator.annotation.not.enough.arguments")
                 )
                 .range(element.textRange)
                 .create()
@@ -84,7 +82,7 @@ class GdAnnotationAnnotator : Annotator {
                     .toString()
 
                 holder
-                    .newAnnotationGd(element.project, HighlightSeverity.ERROR, "")
+                    .newAnnotationGd(HighlightSeverity.ERROR, "")
                     .tooltip(tooltip)
                     .range(actualType.textRange)
                     .create()

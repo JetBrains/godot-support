@@ -132,7 +132,7 @@ class GdExprTypeAnnotator : Annotator {
         @InspectionMessage message: String
     ): Unit =
         this
-            .newAnnotationGd(element.project, HighlightSeverity.ERROR, message)
+            .newAnnotationGd(HighlightSeverity.ERROR, message)
             .range(element.textRange)
             .create()
 
@@ -147,7 +147,7 @@ class GdExprTypeAnnotator : Annotator {
                 else -> element.textRange
             }
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, GdScriptBundle.message("annotator.indexer.used.with.0.arguments"))
+                .newAnnotationGd(HighlightSeverity.ERROR, GdScriptBundle.message("annotator.indexer.used.with.0.arguments"))
                 .range(range)
                 .create()
             return
@@ -176,7 +176,6 @@ class GdExprTypeAnnotator : Annotator {
 
         holder
             .newAnnotationGd(
-                element.project,
                 HighlightSeverity.ERROR,
                 GdScriptBundle.message("annotator.invalid.index.type", indexType, exp)
             )

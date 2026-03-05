@@ -117,7 +117,6 @@
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdLambdaAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdResourceTypeAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdRefIdAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdMatchStmtAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdParamAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdExprTypeAnnotator" />
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdCommentAnnotator" />
@@ -155,7 +154,14 @@
                      bundle="messages.GdScriptBundle" key="inspection.check.unused.class"
                      groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdUnusedClassInspection"/>
-
+    <localInspection language="GdScript" shortName="GdClassNameMatchesFilename" enabledByDefault="true" level="WARNING"
+                     bundle="messages.GdScriptBundle" key="inspection.check.class.name.matches.filename"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
+                     implementationClass="gdscript.inspection.GdClassNameMatchesFilenameInspection"/>
+    <localInspection language="GdScript" shortName="GdMissingMatchBranches" enabledByDefault="true" level="WARNING"
+                     bundle="messages.GdScriptBundle" key="inspection.check.missing.match.branches"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
+                     implementationClass="gdscript.inspection.GdMissingMatchBranchesInspection"/>
     <localInspection language="GdScript" shortName="GdWhitespaceLocal" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspection.check.whitespace"
                      groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"

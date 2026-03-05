@@ -1,0 +1,17 @@
+<html>
+<body>
+<p>Reports <code>match</code> statements on enum values that do not cover all enum members.</p>
+<!-- tooltip end -->
+<p>Provides a quick fix to add the missing branches with <code>pass</code> bodies.</p>
+<pre><code>
+enum Enum {A, B, C}
+var e := Enum.A
+
+match e: # warning: missing enum options
+    Enum.A:
+        pass
+    Enum.B:
+        pass
+</code></pre>
+</body>
+</html>

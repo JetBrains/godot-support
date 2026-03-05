@@ -25,7 +25,6 @@ class GdFlowStmtAnnotator : Annotator {
             if (it is GdMethodDeclTl || it is GdFuncDeclEx) {
                 holder
                     .newAnnotationGd(
-                        element.project,
                         HighlightSeverity.ERROR,
                         GdScriptBundle.message("annotator.cannot.use.text.outside.of.a.loop", txt)
                     )

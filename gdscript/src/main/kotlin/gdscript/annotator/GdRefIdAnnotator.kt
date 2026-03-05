@@ -83,7 +83,6 @@ class GdRefIdAnnotator : Annotator {
                         ) {
                             holder
                                 .newAnnotationGd(
-                                    element.project,
                                     HighlightSeverity.ERROR,
                                     GdScriptBundle.message("annotator.builtin.type.cannot.be.assigned.to.a.variable", txt)
                                 )
@@ -129,7 +128,8 @@ class GdRefIdAnnotator : Annotator {
                         return@run GdHighlighterColors.METHOD_CALL
 
                     holder
-                        .newAnnotationGd(element.project, GdProjectState.selectedLevel(state),
+                        .newAnnotationGd(
+                            GdProjectState.selectedLevel(state),
                             GdScriptBundle.message("annotator.message.reference.not.found", element.text)
                         )
                         .range(element.textRange)

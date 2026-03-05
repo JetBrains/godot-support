@@ -42,8 +42,8 @@ class GdConstVarIdAnnotator : Annotator {
         val declaration = GdClassMemberUtil.findDeclaration(element, true, inMethod, true)
         if (declaration != null && declaration !is GdClassNaming) {
             holder
-                .newAnnotationGd(element.project,
-                        HighlightSeverity.ERROR,
+                .newAnnotationGd(
+                    HighlightSeverity.ERROR,
                     GdScriptBundle.message("annotator.property.is.already.defined", element.name.toString())
                 )
                 .range(element.textRange)

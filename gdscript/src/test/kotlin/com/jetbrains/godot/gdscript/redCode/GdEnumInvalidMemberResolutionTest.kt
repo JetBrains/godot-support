@@ -3,10 +3,17 @@ package com.jetbrains.godot.gdscript.redCode
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.TestModeFlags
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import gdscript.annotator.GD_ANNOTATOR_ORIGINAL_SEVERITY
 import gdscript.psi.GdRefIdRef
 
 class GdEnumInvalidMemberResolutionTest : BasePlatformTestCase() {
+
+    override fun setUp() {
+        super.setUp()
+        TestModeFlags.set(GD_ANNOTATOR_ORIGINAL_SEVERITY, true, testRootDisposable)
+    }
 
     fun testInvalidEnumMemberDoesNotResolve() {
         val code = """

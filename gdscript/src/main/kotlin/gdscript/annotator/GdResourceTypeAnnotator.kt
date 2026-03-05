@@ -41,7 +41,6 @@ class GdResourceTypeAnnotator : Annotator {
         if (text.startsWith("res://") && GdFileResIndex.getFiles(text, element.project).isEmpty()) {
             holder
                 .newAnnotationGd(
-                    element.project,
                     GdProjectState.selectedLevel(state),
                     GdScriptBundle.message("annotator.resource.not.found")
                 )
@@ -58,7 +57,7 @@ class GdResourceTypeAnnotator : Annotator {
         if (node != null) return
 
         holder
-            .newAnnotationGd(element.project, GdProjectState.selectedLevel(state), GdScriptBundle.message("annotator.node.not.found"))
+            .newAnnotationGd(GdProjectState.selectedLevel(state), GdScriptBundle.message("annotator.node.not.found"))
             .range(element.textRange)
             .create()
     }
