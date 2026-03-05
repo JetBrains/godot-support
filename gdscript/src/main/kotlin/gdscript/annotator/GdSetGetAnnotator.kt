@@ -27,11 +27,7 @@ class GdSetGetAnnotator : Annotator {
     private fun methodExists(element: PsiElement, holder: AnnotationHolder) {
         if (GdMethodDeclIndex.INSTANCE.getInFile(element).isNotEmpty()) return
         holder
-            .newAnnotationGd(
-                element.project,
-                HighlightSeverity.ERROR,
-                GdScriptBundle.message("annotator.method.does.not.exist", element.text)
-            )
+            .newAnnotationGd(HighlightSeverity.ERROR, GdScriptBundle.message("annotator.method.does.not.exist", element.text))
             .range(element.textRange)
             .withFix(if (element is GdSetMethodIdRef) setMethod(element) else getMethod(element as GdGetMethodIdRef))
             .create()

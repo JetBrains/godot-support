@@ -54,7 +54,6 @@ class GdMethodNameAnnotator : Annotator {
 
             holder
                 .newAnnotationGd(
-                    element.project,
                     HighlightSeverity.ERROR,
                     GdScriptBundle.message("annotator.name.already.defined.as.type", element.name, type)
                 )

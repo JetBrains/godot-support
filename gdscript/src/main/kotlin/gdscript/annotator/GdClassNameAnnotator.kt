@@ -7,7 +7,6 @@ import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdScriptBundle
-import gdscript.action.quickFix.GdFileClassNameAction
 import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdClassNamingIndex
@@ -19,9 +18,7 @@ import gdscript.psi.GdInheritanceId
 import gdscript.psi.GdInheritanceIdRef
 import gdscript.psi.GdInheritanceSubIdRef
 import gdscript.psi.utils.GdClassUtil
-import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.utils.PsiFileUtil.isInSdk
-import gdscript.utils.StringUtil.snakeToPascalCase
 import org.jetbrains.annotations.Nls
 
 /**
@@ -37,7 +34,6 @@ class GdClassNameAnnotator : Annotator {
             is GdInheritanceSubIdRef -> colorClass(element, GdHighlighterColors.CLASS_TYPE, holder)
             is GdClassNameNmi -> {
                 alreadyExists(element, holder)
-                    || classNameToFilename(element, holder)
                     || colorClass(element, GdHighlighterColors.CLASS_TYPE, holder)
             }
 
@@ -71,7 +67,7 @@ class GdClassNameAnnotator : Annotator {
 //            }
 
         holder
-            .newAnnotationGd(element.project, HighlightSeverity.ERROR, GdScriptBundle.message("annotator.class.not.found"))
+            .newAnnotationGd(HighlightSeverity.ERROR, GdScriptBundle.message("annotator.class.not.found"))
             .range(element.textRange)
             .create()
 //        }
@@ -117,38 +113,19 @@ class GdClassNameAnnotator : Annotator {
 
         if (conflict) {
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, message)
+                .newAnnotationGd(HighlightSeverity.ERROR, message)
                 .range(element.textRange)
                 .create()
             return true
         }
 
-        return false
-    }
-
-    private fun classNameToFilename(element: GdClassNameNmi, holder: AnnotationHolder): Boolean {
-        if (element.parent !is GdClassNaming) return false
-
-        val name = element.name
-        val filename = PsiGdFileUtil.filename(element.containingFile).snakeToPascalCase()
-        if (filename.lowercase() != name.lowercase()) {
-            holder
-                .newAnnotationGd(
-                    element.project, HighlightSeverity.WEAK_WARNING,
-                    GdScriptBundle.message("annotator.class.name.does.not.match.filename")
-                )
-                .range(element.textRange)
-                .withFix(GdFileClassNameAction(filename, element))
-                .create()
-            return true
-        }
         return false
     }
 
     private fun isDuplicated(element: PsiElement, holder: AnnotationHolder, @Nls message: String) {
         if (PsiTreeUtil.getPrevSiblingOfType(element, element::class.java) !== null) {
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, message)
+                .newAnnotationGd(HighlightSeverity.ERROR, message)
                 .range(element.textRange)
                 .withFix(GdRemoveElementsAction(element))
                 .create()

@@ -108,14 +108,14 @@ class GdParamAnnotator : Annotator {
             }
 
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, GdScriptBundle.message("annotator.too.many.arguments"))
+                .newAnnotationGd(HighlightSeverity.ERROR, GdScriptBundle.message("annotator.too.many.arguments"))
                 .range(element.textRange)
                 .withFix(GdRemoveElementsAction(*toRemoveList.toTypedArray()))
                 .create()
             return
         } else if (minSize in 1..98 && usedParamSize < minSize) {
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, GdScriptBundle.message("annotator.not.enough.arguments"))
+                .newAnnotationGd(HighlightSeverity.ERROR, GdScriptBundle.message("annotator.not.enough.arguments"))
                 .range(element.textRange)
                 .create()
             return
@@ -154,7 +154,7 @@ class GdParamAnnotator : Annotator {
                 .toString()
 
             holder
-                .newAnnotationGd(element.project, HighlightSeverity.ERROR, "")
+                .newAnnotationGd(HighlightSeverity.ERROR, "")
                 .tooltip(tooltip)
                 .range(element.textRange)
                 .create()
@@ -185,7 +185,7 @@ class GdParamAnnotator : Annotator {
                         .toString()
 
                     val annotator = holder
-                        .newAnnotationGd(element.project, HighlightSeverity.ERROR, "")
+                        .newAnnotationGd(HighlightSeverity.ERROR, "")
                         .tooltip(tooltip)
                         .range(actualParam.textRange)
                     if (!actualType.isDynamicType() && param.typed != null) {
