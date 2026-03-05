@@ -57,6 +57,9 @@ dependencies {
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
         testFramework(TestFrameworkType.Bundled)
 
+        bundledPlugin("com.intellij.modules.json")
+        bundledModule("intellij.platform.dap")
+
         bundledLibrary(provider {
             project.intellijPlatform.platformPath.resolve("lib/testFramework.jar").pathString
         })

@@ -55,8 +55,6 @@ dependencies {
         bundledPlugin("org.jetbrains.plugins.textmate")
         //localPlugin(repoRoot.resolve("community/build/libs/rider-godot-community.jar"))
         bundledPlugin("com.intellij.rider.godot.community")
-        bundledPlugin("com.intellij.modules.json")
-        bundledModule("intellij.platform.dap")
         bundledPlugin("org.jetbrains.plugins.terminal")
         bundledModules("intellij.rider.debugger.shared")
         testFramework(TestFrameworkType.Bundled)
