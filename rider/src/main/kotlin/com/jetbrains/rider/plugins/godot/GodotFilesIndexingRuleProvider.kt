@@ -13,7 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.io.path.Path
 
-// todo: instead of this, I think gdscript plugin should index everything Godot-releated under the project.godot folder
+// In Rider, when files are not in the csproj, GDScript and TSCN files may be not indexed
+// To ensure features like GoToFile and ScenePreview would work, we make sure .gd and .tscn are indexed
 
 class GodotFilesIndexingRuleProvider : RiderFilesIndexingRuleProvider {
     override suspend fun collectRules(project: Project): List<RiderFilesIndexingRule> {
