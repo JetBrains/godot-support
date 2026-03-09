@@ -36,6 +36,8 @@ import com.jetbrains.rider.godot.community.GodotMetadataService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
 import common.util.GdScriptProjectLifetimeService
+import gdscript.settings.GdDocProviderMode
+import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
 import gdscript.settings.GdSettingsConfigurable
@@ -212,8 +214,9 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             }
             override val hoverCustomizer: LspHoverCustomizer
                 get() {
-                    // GDScript plugin is always enabled, so we get hover from there
-                    return LspHoverDisabled
+                    if (GdProjectSettingsState.getInstance(project).state.docProvider != GdDocProviderMode.LSP)
+                        return LspHoverDisabled
+                    return super.hoverCustomizer
                 }
 
             override val inlayHintCustomizer: LspInlayHintCustomizer = LspInlayHintDisabled

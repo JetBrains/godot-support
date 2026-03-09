@@ -45,4 +45,7 @@ class GdProjectState {
     @Tag("lspUseDynamicPort")
     var lspUseDynamicPort: Boolean = false
 
+    @Tag("docProvider")
+    var docProvider: GdDocProviderMode = GdDocProviderMode.LSP
+
 }

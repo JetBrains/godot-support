@@ -9,6 +9,7 @@ import com.intellij.util.ui.FormBuilder
 import gdscript.GdScriptBundle
 import org.jetbrains.annotations.Nls
 import javax.swing.JComponent
+import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.JTextField
 
@@ -18,6 +19,7 @@ class GdSettingsComponent(val project: Project) {
     private val hidePrivateCheck = JBCheckBox(GdScriptBundle.message("settings.checkbox.hide.private.members.from.completion"))
     private val shortTypedCheck = JBCheckBox(GdScriptBundle.message("settings.checkbox.use.short.typing.var.instead.var.int"))
     private val annotatorsCb = ComboBox<String>()
+    private val docProviderCb = ComboBox<GdDocProviderMode>()
     private val criticalsTf: JTextField = JTextField()
     private val warningsTf: JTextField = JTextField()
     private val notesTf: JTextField = JTextField()
@@ -30,7 +32,17 @@ class GdSettingsComponent(val project: Project) {
         annotatorsCb.addItem(GdProjectState.OFF)
         annotatorsCb.addItem(GdProjectState.WARN)
         annotatorsCb.addItem(GdProjectState.ERR)
-        annotatorsCb.selectedItem = GdProjectState.OFF
+
+        docProviderCb.addItem(GdDocProviderMode.GDSCRIPT)
+        docProviderCb.addItem(GdDocProviderMode.LSP)
+        docProviderCb.renderer = object : SimpleListCellRenderer<GdDocProviderMode>() {
+            override fun customize(list: JList<out GdDocProviderMode>, value: GdDocProviderMode?, index: Int, selected: Boolean, hasFocus: Boolean) {
+                text = when (value) {
+                    GdDocProviderMode.LSP -> GdScriptBundle.message("settings.doc.provider.lsp")
+                    else -> GdScriptBundle.message("settings.doc.provider.gdscript")
+                }
+            }
+        }
 
         for (mode in GdLspConnectionMode.entries) {
             lspConnectionModeCb.addItem(mode)
@@ -43,25 +55,24 @@ class GdSettingsComponent(val project: Project) {
             }
         })
 
-        lspConnectionModeCb.selectedItem = GdLspConnectionMode.ConnectRunningEditor
-
         lspConnectionModeCb.addActionListener { updateLspControlsState() }
         lspUseDynamicPortCheck.addActionListener { updateLspControlsState() }
-        updateLspControlsState()
 
         panel = FormBuilder.createFormBuilder()
-                .addComponent(hidePrivateCheck, 1)
-                .addComponent(shortTypedCheck, 1)
-                .addLabeledComponent(GdScriptBundle.message("settings.label.reference.node.resource.checks"), annotatorsCb, 1)
-                .addLabeledComponent(GdScriptBundle.message("settings.label.critical.comments"), criticalsTf, 1)
-                .addLabeledComponent(GdScriptBundle.message("settings.label.warning.comments"), warningsTf, 1)
-                .addLabeledComponent(GdScriptBundle.message("settings.label.note.comments"), notesTf, 1)
-                .addComponent(TitledSeparator(GdScriptBundle.message("settings.separator.lsp")), 1)
-                .addLabeledComponent(GdScriptBundle.message("settings.label.lsp.connection.mode"), lspConnectionModeCb, 1)
-                .addComponent(lspUseDynamicPortCheck, 1)
-                .addLabeledComponent(GdScriptBundle.message("settings.label.lsp.port"), lspRemoteHostPortTf, 1)
-                .addComponentFillVertically(JPanel(), 0)
-                .panel
+            .addComponent(hidePrivateCheck, 1)
+            .addComponent(shortTypedCheck, 1)
+            .addLabeledComponent(GdScriptBundle.message("settings.label.reference.node.resource.checks"), annotatorsCb, 1)
+            // TODO: Consider grouping together with other "Other" settings
+            .addLabeledComponent(GdScriptBundle.message("settings.label.documentation.provider"), docProviderCb, 1)
+            .addLabeledComponent(GdScriptBundle.message("settings.label.critical.comments"), criticalsTf, 1)
+            .addLabeledComponent(GdScriptBundle.message("settings.label.warning.comments"), warningsTf, 1)
+            .addLabeledComponent(GdScriptBundle.message("settings.label.note.comments"), notesTf, 1)
+            .addComponent(TitledSeparator(GdScriptBundle.message("settings.separator.lsp")), 1)
+            .addLabeledComponent(GdScriptBundle.message("settings.label.lsp.connection.mode"), lspConnectionModeCb, 1)
+            .addComponent(lspUseDynamicPortCheck, 1)
+            .addLabeledComponent(GdScriptBundle.message("settings.label.lsp.port"), lspRemoteHostPortTf, 1)
+            .addComponentFillVertically(JPanel(), 0)
+            .panel
     }
 
     private fun updateLspControlsState() {
@@ -126,6 +137,12 @@ class GdSettingsComponent(val project: Project) {
         set(newStatus) {
             lspUseDynamicPortCheck.isSelected = newStatus
             updateLspControlsState()
+        }
+
+    var docProvider: GdDocProviderMode
+        get() = docProviderCb.selectedItem as GdDocProviderMode
+        set(newStatus) {
+            docProviderCb.selectedItem = newStatus
         }
 
 }
