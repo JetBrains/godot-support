@@ -37,14 +37,14 @@ private val EDITOR_CONNECTION_PROVIDER_EP: ExtensionPointName<GodotEditorConnect
 object GodotCommunityUtil {
     fun getGodotExecutablePath(project: Project): Path? =
         GODOT_PROJECT_PROVIDER_EP.extensionList.firstNotNullOfOrNull {
-            val path = it.getGodotExecutablePath(project)
+            val path = it.getGodotExecutablePathFlow(project).value
             if (path != null && path.exists()) path else null
         }
 
 
     fun getGodotProjectBasePath(project: Project): Path? =
         GODOT_PROJECT_PROVIDER_EP.extensionList.firstNotNullOfOrNull {
-            val path = it.getGodotProjectBasePath(project)
+            val path = it.getGodotProjectBasePathFlow(project).value
             if (path != null && path.exists()) path else null
         }
 

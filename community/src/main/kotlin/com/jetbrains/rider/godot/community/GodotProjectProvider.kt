@@ -6,11 +6,8 @@ import kotlinx.coroutines.flow.StateFlow
 import java.nio.file.Path
 
 interface GodotProjectProvider {
-    fun getGodotExecutablePath(project: Project): Path?
     fun getGodotExecutablePathFlow(project: Project): StateFlow<Path?>
-    fun getGodotProjectBasePath(project: Project): Path?
     fun getGodotProjectBasePathFlow(project: Project): StateFlow<Path?>
-    fun isPureGdScriptProject(project: Project): Boolean?
     fun isPureGdScriptProjectFlow(project: Project): StateFlow<Boolean?>
 
     fun isGodotProject(project: Project): Deferred<Boolean>
@@ -19,5 +16,5 @@ interface GodotProjectProvider {
     fun getEditorLaunchArguments(project: Project): List<String>? = null
     fun getEditorEnvironmentVariables(project: Project): Map<String, String>? = null
     fun getIsPassParentEnvironmentVariables(project: Project): Boolean = true
-    fun getWorkingDirectory(project: Project): Path? = getGodotProjectBasePath(project)
+    fun getWorkingDirectory(project: Project): Path? = getGodotProjectBasePathFlow(project).value
 }
