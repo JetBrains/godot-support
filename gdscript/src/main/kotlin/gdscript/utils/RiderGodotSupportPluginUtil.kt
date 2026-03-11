@@ -29,7 +29,7 @@ class RiderGodotSupportPluginUtil {
 
         fun getMainProjectBasePath(project: Project): Path? {
             val extList = GODOT_PROJECT_PROVIDER_EP.extensionList
-            return extList.firstOrNull()?.getGodotProjectBasePath(project)
+            return extList.firstOrNull()?.getGodotProjectBasePathFlow(project)?.value
         }
 
         fun getGodotProjectBasePathFlow(project: Project): StateFlow<Path?>? {

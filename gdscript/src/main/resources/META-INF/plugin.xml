@@ -43,7 +43,7 @@
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
     <backgroundPostStartupActivity implementation="gdscript.listener.ReferenceSdkProjectActivity"/>
     <backgroundPostStartupActivity implementation="GdScriptToolWindowManagerProjectActivity"/>
-    <postStartupActivity implementation="GdProjectDiscoveryActivity" />
+    <backgroundPostStartupActivity implementation="GdProjectDiscoveryActivity" />
     <rider.godot.community.godotProjectProvider implementation="gdscript.utils.GdScriptGodotProjectProvider" />
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
     <platform.lsp.serverSupportProvider implementation="gdscript.lsp.GodotLspServerSupportProvider"/>
@@ -239,7 +239,7 @@
     <platform.dap.launchArgumentsProvider implementation="gdscript.dap.GdScriptDapLaunchArgumentsProvider"/>
     <xdebugger.breakpointType implementation="gdscript.dap.breakpoints.GdScriptLineBreakpointType"/>
     <xdebugger.breakpointType implementation="gdscript.dap.breakpoints.GdScriptExceptionBreakpointType"/>
-    <postStartupActivity implementation="gdscript.dap.GdScriptRunConfigurationGenerator$Activity"/>
+    <backgroundPostStartupActivity implementation="gdscript.dap.GdScriptRunConfigurationGenerator$Activity"/>
   </extensions>
 
   <actions>

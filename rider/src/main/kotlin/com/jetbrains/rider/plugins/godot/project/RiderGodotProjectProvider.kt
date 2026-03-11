@@ -18,23 +18,11 @@ import kotlinx.coroutines.flow.StateFlow
 import java.nio.file.Path
 
 class RiderGodotProjectProvider : GodotProjectProvider {
-
-    override fun getGodotExecutablePath(project: Project): Path? =
-        GodotProjectDiscoverer.getInstance(project).godotPath.valueOrNull?.let { Path.of(it) }
-
-    override fun getGodotProjectBasePath(project: Project): Path? =
-        GodotProjectDiscoverer.getInstance(project).mainProjectBasePathFlow.value
-
-
     override fun getGodotExecutablePathFlow(project: Project): StateFlow<Path?> =
         GodotProjectDiscoverer.getInstance(project).executablePathFlow
 
     override fun getGodotProjectBasePathFlow(project: Project): StateFlow<Path?> =
         GodotProjectDiscoverer.getInstance(project).mainProjectBasePathFlow
-
-
-    override fun isPureGdScriptProject(project: Project): Boolean? =
-        GodotProjectDiscoverer.getInstance(project).isPureGdScriptProjectFlow.value
 
 
     override fun isPureGdScriptProjectFlow(project: Project): StateFlow<Boolean?> =

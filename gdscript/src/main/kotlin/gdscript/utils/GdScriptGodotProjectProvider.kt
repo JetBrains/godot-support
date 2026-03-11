@@ -9,20 +9,11 @@ import kotlinx.coroutines.flow.map
 import java.nio.file.Path
 
 class GdScriptGodotProjectProvider : GodotProjectProvider {
-    override fun getGodotExecutablePath(project: Project): Path? =
-        GdProjectService.getInstance(project).getExecutablePath()
-
-    override fun getGodotProjectBasePath(project: Project): Path? =
-        GdProjectService.getInstance(project).projectRoot?.toNioPath()
-
     override fun getGodotExecutablePathFlow(project: Project): StateFlow<Path?> =
         GdProjectService.getInstance(project).executablePathFlow
 
     override fun getGodotProjectBasePathFlow(project: Project): StateFlow<Path?> =
         GdProjectService.getInstance(project).projectBasePathFlow
-
-    override fun isPureGdScriptProject(project: Project): Boolean? =
-        getGodotProjectBasePath(project)?.let { true }
 
     override fun isPureGdScriptProjectFlow(project: Project): StateFlow<Boolean?> =
         GdProjectService.getInstance(project).isPureGdScriptProjectFlow
