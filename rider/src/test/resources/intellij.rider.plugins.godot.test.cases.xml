@@ -1,15 +1,19 @@
 <idea-plugin>
   <!-- region Generated dependencies - run `Generate Product Layouts` to regenerate -->
   <dependencies>
+    <plugin id="com.intellij.rider.godot"/>
     <module name="intellij.rider.test.framework"/>
     <module name="intellij.rider.test.framework.integration.testng"/>
     <module name="intellij.rider.test.framework.integration.testng._test"/>
     <module name="intellij.rider.test.framework.core"/>
     <module name="intellij.rider.test.framework.testng"/>
-    <!-- region Generated dependencies - run `Generate Product Layouts` to regenerate -->
-    <plugin id="com.intellij.rider.godot"/>
+    <module name="intellij.platform.core"/>
     <module name="intellij.platform.execution"/>
-    <!-- endregion -->
+    <module name="intellij.platform.ide.core"/>
+    <module name="intellij.platform.ide.impl"/>
+    <module name="intellij.platform.lang"/>
+    <module name="intellij.platform.lang.impl"/>
+    <module name="intellij.platform.projectModel"/>
   </dependencies>
   <!-- endregion -->
 </idea-plugin>
