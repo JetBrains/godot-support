@@ -5,8 +5,8 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rider.godot.community.EditorConnectionState
 import com.jetbrains.rider.godot.community.GodotEditorConnectionProvider
 import com.jetbrains.rider.godot.community.GodotMajorVersion
-import com.jetbrains.rider.godot.community.actions.GodotEditorLaunchConfig
 import com.jetbrains.rider.godot.community.GodotProjectProvider
+import com.jetbrains.rider.godot.community.actions.GodotEditorLaunchConfig
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -91,6 +91,13 @@ object GodotCommunityUtil {
                 it.getEditorConnectionState(project).takeIf { state -> state != EditorConnectionState.NOT_APPLICABLE }
             } ?: EditorConnectionState.NOT_APPLICABLE
 
+    fun isGodotProjectInstant(project: Project): Boolean {
+        val results = GODOT_PROJECT_PROVIDER_EP.extensionList.map { it.isGodotProject(project) }
+        if (results.isEmpty()) return false
+        return results.any { it.hasCompletedTrue() }
+    }
+
+    // todo: there seem to be a bug in combining 2 deferred booleans
     fun isGodotProject(project: Project): Deferred<Boolean>? =
         GODOT_PROJECT_PROVIDER_EP.extensionList.firstNotNullOfOrNull { it.isGodotProject(project) }
 

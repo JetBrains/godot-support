@@ -45,7 +45,7 @@ object StartGodotEditorAction : DumbAwareAction() {
                     GeneralCommandLine.ParentEnvironmentType.NONE
                 }
             )
-            .withWorkDirectory(launchConfig.workingDirectory.toFile())
+            .withWorkingDirectory(launchConfig.workingDirectory)
             .withParameters(launchConfig.arguments)
 
         logger.info("Starting Godot editor: ${runCommandLine.commandLineString}")

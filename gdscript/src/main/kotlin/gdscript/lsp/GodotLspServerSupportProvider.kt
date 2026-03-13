@@ -2,7 +2,6 @@ package gdscript.lsp
 
 import GdScriptPluginIcons
 import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.lang.annotation.HighlightSeverity
@@ -44,7 +43,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import org.eclipse.lsp4j.Diagnostic
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.getValue
 
 @Service(Service.Level.PROJECT)
 class GodotLspProjectService(val project: Project) {
@@ -112,7 +110,8 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 }
 
                 scope.launch(Dispatchers.IO) {
-                    GodotCommunityUtil.getGodotProjectBasePathFlow(project).collect {
+                    GodotCommunityUtil.getGodotProjectBasePathFlow(project)
+                        .filterNotNull().collect {
                         scheduleStartIfNeeded(project)
                     }
                 }
@@ -139,10 +138,9 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
 
     private fun allReady(discoverer: GdLspSettingsFlowService, project: Project) = (
         discoverer.lspConnectionMode.value != GdLspConnectionMode.Never
-            && GodotCommunityUtil.getGodotExecutablePath(project) != null
+            && (discoverer.lspConnectionMode.value == GdLspConnectionMode.ConnectRunningEditor || GodotCommunityUtil.getGodotExecutablePath(project) != null)
             && discoverer.remoteHostPort.value != null
             && GodotCommunityUtil.getGodotProjectBasePath(project) != null
-            && GodotCommunityUtil.isPureGdScriptProject(project) != null
         )
 
     private fun scheduleStartIfNeeded(project: Project) {
