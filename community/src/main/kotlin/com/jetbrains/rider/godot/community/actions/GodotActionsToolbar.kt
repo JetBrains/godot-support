@@ -26,7 +26,7 @@ class GodotActionsToolbar : DefaultActionGroup(), DumbAware {
             return
         }
 
-        val isGodotProject = GodotCommunityUtil.isGodotProject(project).hasCompletedTrue()
+        val isGodotProject = GodotCommunityUtil.isGodotProjectInstant(project)
         e.presentation.isVisible = isGodotProject
 
 
@@ -53,16 +53,16 @@ class GodotActionsToolbar : DefaultActionGroup(), DumbAware {
 
 
 @Service(Service.Level.PROJECT)
-class GodotToolbarUpdateService(project: Project, cs: CoroutineScope) {
+class GodotToolbarUpdateService(project: Project, scope: CoroutineScope) {
     init {
         // No reactive listener for connection state; IDE refocus polling is sufficient for Godot Editor open/close events
-        cs.launch {
+        scope.launch {
             // The Godot executable path does not change a lot..
             GodotCommunityUtil.getGodotExecutablePathFlow(project).collectLatest {
                 ActivityTracker.getInstance().inc()
             }
         }
-        cs.launch {
+        scope.launch {
             GodotCommunityUtil.isGodotProject(project)?.await()
             ActivityTracker.getInstance().inc()
         }

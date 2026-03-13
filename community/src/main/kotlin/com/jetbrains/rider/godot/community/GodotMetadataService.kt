@@ -17,7 +17,7 @@ data class MetadataChangeEvent(
 )
 
 @Service(Service.Level.PROJECT)
-class GodotMetadataService(private val project: Project) : Disposable {
+class GodotMetadataService : Disposable {
     private val _metadataChangeFlow = MutableStateFlow<MetadataChangeEvent?>(null)
     val metadataChangeFlow: StateFlow<MetadataChangeEvent?> = _metadataChangeFlow.asStateFlow()
 

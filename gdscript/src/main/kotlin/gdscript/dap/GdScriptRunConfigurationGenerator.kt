@@ -8,11 +8,23 @@ import com.intellij.openapi.startup.ProjectActivity
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import common.util.GdScriptProjectLifetimeService
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.time.Duration.Companion.seconds
 
 @Service(Service.Level.PROJECT)
-class GdScriptRunConfigurationGenerator {
+class GdScriptRunConfigurationGenerator(project: Project) {
+
+    init {
+        val scope = GdScriptProjectLifetimeService.getScope(project)
+        val runManager = RunManager.getInstance(project)
+        scope.launch {
+            GodotCommunityUtil.getGodotExecutablePathFlow(project).collect { path ->
+                cleanupLegacyConfigs(runManager)
+                if (path != null) {
+                    generateConfigs(runManager)
+                    selectConfigurationIfNeeded(runManager)
+                }
+            }
+        }
+    }
 
     companion object {
         const val PLAYER_GDSCRIPT_CONFIGURATION_NAME: String = "Player GDScript"
@@ -73,26 +85,15 @@ class GdScriptRunConfigurationGenerator {
                 runManager.addConfiguration(runConfiguration)
             }
         }
+
+        fun getService(project: Project) {
+            project.getService(GdScriptRunConfigurationGenerator::class.java);
+        }
     }
 
     class Activity : ProjectActivity {
         override suspend fun execute(project: Project) {
-            val isGodotDeffered = GodotCommunityUtil.isGodotProject(project) ?: return
-            val isGodot = withTimeoutOrNull(30.seconds) { isGodotDeffered.await() } ?: return
-            if (!isGodot) return
-
-            val runManager = RunManager.getInstance(project)
-            cleanupLegacyConfigs(runManager)
-
-            val scope = GdScriptProjectLifetimeService.getScope(project)
-            scope.launch {
-                GodotCommunityUtil.getGodotExecutablePathFlow(project).collect { path ->
-                    if (path != null) {
-                        generateConfigs(runManager)
-                        selectConfigurationIfNeeded(runManager)
-                    }
-                }
-            }
+            getService(project)
         }
     }
 }

@@ -1,8 +1,11 @@
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.search.FilenameIndex
+import com.intellij.psi.search.GlobalSearchScope
 import com.jetbrains.rider.godot.community.GodotMetadataFileWatcher
 import com.jetbrains.rider.godot.community.GodotMetadataService
 import kotlinx.coroutines.CompletableDeferred
@@ -17,20 +20,17 @@ import kotlin.io.path.exists
 import kotlin.io.path.readLines
 
 @Service(Service.Level.PROJECT)
+// not sure how to prevent using it directly from anywhere except GdScriptGodotProjectProvider
+// GodotCommunityUtil should be used instead in most cases
 class GdProjectService(
     private val project: Project,
-    private val cs: CoroutineScope
+    private val scope: CoroutineScope
 ) {
     private var _projectGodotFile: VirtualFile? = null
-    val projectGodotFile: VirtualFile? get() = _projectGodotFile
-    val projectRoot: VirtualFile? get() = _projectGodotFile?.parent
-
-    val isGodotProject: Boolean get() = _projectGodotFile != null
+    private val projectRoot: VirtualFile? get() = _projectGodotFile?.parent
 
     private val _isGodotProjectDeferred = CompletableDeferred<Boolean>()
     val isGodotProjectDeferred: Deferred<Boolean> get() = _isGodotProjectDeferred
-
-    private fun getGodotProjectBasePath(project: Project): VirtualFile? = project.basePath?.let { VfsUtil.findFile(Path.of(it), false) }
 
     private val _executablePathFlow = MutableStateFlow<Path?>(null)
     val executablePathFlow: StateFlow<Path?> = _executablePathFlow.asStateFlow()
@@ -41,22 +41,38 @@ class GdProjectService(
     private val _isPureGdScriptProjectFlow: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val isPureGdScriptProjectFlow: StateFlow<Boolean?> = _isPureGdScriptProjectFlow.asStateFlow()
 
-    fun getExecutablePath(): Path? = getGodotProjectBasePath(project)?.let { getGodot4Path(it.toNioPath()) }
+    fun getExecutablePath(): Path? = projectRoot?.let { getGodot4Path(it.toNioPath()) }
 
-    fun discoverProject() {
-        val basePath = getGodotProjectBasePath(project)
-        _projectGodotFile = basePath?.findChild("project.godot")
-        _projectBasePathFlow.value = projectRoot?.toNioPath()
+    init {
+        val projectDir = project.guessProjectDir()
+        val projectGodot = projectDir?.findChild("project.godot")
+        if (projectDir != null && projectGodot != null) {
+            discoverProject(projectDir)
+        } else {
+            // todo: react on further changes of the VFS or the index, I am not sure
+            DumbService.getInstance(project).runWhenSmart { // Wait for indexes to finish
+                val projectGodotFiles = FilenameIndex.getVirtualFilesByName(
+                    "project.godot",
+                    GlobalSearchScope.projectScope(project)
+                )
+                projectGodotFiles.firstOrNull()?.parent?.let { discoverProject(it) }
+            }
+        }
+    }
+
+    fun discoverProject(projectDir: VirtualFile) {
+        _projectGodotFile = projectDir.findChild("project.godot")
+        _projectBasePathFlow.value = projectDir.toNioPath()
         _isPureGdScriptProjectFlow.value = _projectBasePathFlow.value != null
         _executablePathFlow.value = getExecutablePath()
-        _isGodotProjectDeferred.complete(isGodotProject)
+        _isGodotProjectDeferred.complete(_projectGodotFile != null)
 
         subscribeToMetadataChanges()
     }
 
     private fun subscribeToMetadataChanges() {
         val metadataService = GodotMetadataService.getInstance(project)
-        cs.launch {
+        scope.launch {
             metadataService.metadataChangeFlow.collect { event ->
                 if (event != null) {
                     updateExecutablePathFromMetadata(event.metadataPath)

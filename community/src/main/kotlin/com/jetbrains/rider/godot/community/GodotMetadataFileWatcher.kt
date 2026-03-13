@@ -14,7 +14,7 @@ class GodotMetadataFileWatcher(
 
     override fun prepareChange(events: MutableList<out VFileEvent>): AsyncFileListener.ChangeApplier? {
         val hasMetadataChange = events.any { event ->
-            event.path == metadataPath.pathString
+            event.file?.toNioPath() == metadataPath
         }
 
         if (!hasMetadataChange) return null
