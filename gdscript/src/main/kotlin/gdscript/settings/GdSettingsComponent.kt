@@ -7,6 +7,7 @@ import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.TitledSeparator
 import com.intellij.util.ui.FormBuilder
 import gdscript.GdScriptBundle
+import org.jetbrains.annotations.Nls
 import javax.swing.JComponent
 import javax.swing.JPanel
 import javax.swing.JTextField
@@ -85,7 +86,7 @@ class GdSettingsComponent(val project: Project) {
 
     var annotators: String
         get() = annotatorsCb.selectedItem as String
-        set(newStatus) {
+        set(@Nls newStatus) {
             annotatorsCb.selectedItem = newStatus
         }
 

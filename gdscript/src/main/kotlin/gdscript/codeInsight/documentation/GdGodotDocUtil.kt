@@ -1,6 +1,7 @@
 package gdscript.codeInsight.documentation
 
 import com.intellij.lang.documentation.DocumentationMarkup
+import com.intellij.openapi.util.NlsSafe
 
 object GdGodotDocUtil {
 
@@ -9,6 +10,7 @@ object GdGodotDocUtil {
     private val DEFINITION_START = "</p>${DocumentationMarkup.DEFINITION_START}"
     private val DEFINITION_END = "${DocumentationMarkup.DEFINITION_END}<p style=\"padding: 5px 10px 0 10px;\">"
 
+    @NlsSafe
     fun parseStyles(text: String): String {
         var parsed = text.replace("[b]", "<strong>")
             .replace("[/b]", "</strong>")

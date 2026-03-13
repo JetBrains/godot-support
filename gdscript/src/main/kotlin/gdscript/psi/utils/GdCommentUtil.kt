@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -15,21 +16,22 @@ import gdscript.psi.GdClassNaming
 import gdscript.psi.GdTypes
 import gdscript.psi.types.GdDocumented
 import gdscript.utils.PsiElementUtil.prevCommentBlock
+import org.jetbrains.annotations.NonNls
 
 object GdCommentUtil {
 
-    val TUTORIAL_REGEX = "@tutorial(?:\\((.+)\\))?:\\s+(.+)".toRegex()
+    val TUTORIAL_REGEX: Regex = "@tutorial(?:\\((.+)\\))?:\\s+(.+)".toRegex()
 
-    val DESCRIPTION = "desc"
-    val PARAMETER = "param"
-    val BRIEF_DESCRIPTION = "brief"
-    val ENUM = "enum"
-    val RETURN = "return"
-    val TUTORIAL = "tutorial"
-    val DEPRECATED = "deprecated"
-    val EXPERIMENTAL = "experimental"
+    @NonNls const val DESCRIPTION: String = "desc"
+    @NonNls const val PARAMETER: String = "param"
+    @NonNls const val BRIEF_DESCRIPTION: String = "brief"
+    @NonNls const val ENUM: String = "enum"
+    @NonNls const val RETURN: String = "return"
+    @NonNls const val TUTORIAL: String = "tutorial"
+    @NonNls const val DEPRECATED: String = "deprecated"
+    @NonNls const val EXPERIMENTAL: String = "experimental"
 
-    val BREAKS_AT = arrayOf(
+    val BREAKS_AT: Array<String> = arrayOf(
         GdTraitLineMarkerContributor.PREFIX.trimStart('#'),
         GdTraitLineMarkerContributor.SUFFIX.trimStart('#'),
     )
@@ -200,6 +202,7 @@ object GdCommentUtil {
         return model
     }
 
+    @NlsSafe
     fun collectAllDescriptions(element: PsiElement?): Map<String, List<String>> {
         val descriptions = mutableMapOf<String, MutableList<String>>()
         descriptions[DESCRIPTION] = mutableListOf()
@@ -248,7 +251,8 @@ object GdCommentUtil {
 
     fun Map<String, List<String>>.tutorialBlock(): HtmlChunk {
         return GdDocUtil.listTable("tutorials", this[TUTORIAL]!!.map {
-            HtmlChunk.link(it.substringAfter("]").trim(), it.substringBefore("]").removePrefix("[").trim())
+            @NonNls val text = it.substringBefore("]").removePrefix("[").trim()
+            HtmlChunk.link(it.substringAfter("]").trim(), text)
         })
     }
 
@@ -258,13 +262,15 @@ object GdCommentUtil {
 
     fun Map<String, List<String>>.parameterBlock(): HtmlChunk {
         return GdDocUtil.listTable("params", this[PARAMETER]!!.map {
-            HtmlChunk.raw(it.replaceFirst(" ", " - "))
+            @NonNls val text = it.replaceFirst(" ", " - ")
+            HtmlChunk.raw(text)
         })
     }
 
     fun Map<String, List<String>>.returnBlock(): HtmlChunk {
         return GdDocUtil.listTable("return", this[RETURN]!!.map {
-            HtmlChunk.raw(it)
+            @NonNls val text = it.replaceFirst(" ", " - ")
+            HtmlChunk.raw(text)
         })
     }
 

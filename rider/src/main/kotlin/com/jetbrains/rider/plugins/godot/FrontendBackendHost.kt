@@ -35,6 +35,7 @@ import com.jetbrains.rider.plugins.godot.run.RunChickenTestsUtil
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDotNetRemoteConfigurationFactory
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
+import org.jetbrains.annotations.NonNls
 import java.awt.Frame
 
 @Service(Service.Level.PROJECT)
@@ -55,7 +56,7 @@ class FrontendBackendHost : LifetimedService() {
             model.onTestRunnerOutputEvent.advise(lifetime) { output->
                 debugProcesses.filter{it.key == output.port}.firstOrNull()?.value?.console?.tryWriteMessageToConsoleView(
                     OutputMessageWithSubject(
-                        output = "${output.message}\r\n",
+                        output = "${@NonNls output.message}\r\n",
                         type = when (output.type) {
                             TestRunnerOutputEventType.Message -> OutputType.Info
                             TestRunnerOutputEventType.Error -> OutputType.Error

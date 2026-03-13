@@ -29,6 +29,7 @@ import com.jetbrains.rider.model.debuggerWorker.OutputMessageWithSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputSubject
 import com.jetbrains.rider.model.debuggerWorker.OutputType
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
+import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.model.debuggerWorker.godotDebuggerWorkerModel
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.run.ExternalConsoleMediator
@@ -108,8 +109,18 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
                         }
                     }
 
-                    override fun processTerminated(processEvent: ProcessEvent) {
-                        monoConnectResult.executionConsole.tryWriteMessageToConsoleView(OutputMessageWithSubject(output = "Process \"$commandLineString\" terminated with exit code ${processEvent.exitCode}.\r\n", type = OutputType.Warning, subject = OutputSubject.Default))
+                    override fun processTerminated(processEvent: ProcessEvent) { // "Process \"$commandLineString\" terminated with exit code ${processEvent.exitCode}.\r\n"
+                        monoConnectResult.executionConsole.tryWriteMessageToConsoleView(
+                            OutputMessageWithSubject(
+                                output = GodotPluginBundle.message(
+                                    "console.process.terminated.with.exit.code",
+                                    commandLineString,
+                                    processEvent.exitCode
+                                ) + "\r\n",
+                                type = OutputType.Warning,
+                                subject = OutputSubject.Default
+                            )
+                        )
                     }
                 })
 

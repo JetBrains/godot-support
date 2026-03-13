@@ -11,13 +11,14 @@ import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassUtil
 import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiElementUtil.psi
+import org.jetbrains.annotations.NonNls
 
 // todo: delay creating GdDocFactory after isGodotProject is evaluated
 class GdDocumentationProvider : AbstractDocumentationProvider() {
 
     companion object {
-        val LINK_ENUM_VALUE = "enumValue"
-        val LINK_PACKAGE = "package"
+        @NonNls const val LINK_ENUM_VALUE: String = "enumValue"
+        @NonNls const val LINK_PACKAGE: String = "package"
     }
 
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {

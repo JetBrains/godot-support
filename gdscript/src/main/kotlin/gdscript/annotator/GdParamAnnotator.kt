@@ -25,6 +25,7 @@ import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiElementUtil.nextNonWhiteCommentToken
 import gdscript.utils.PsiElementUtil.prevNonWhiteCommentToken
 import gdscript.utils.StringUtil.isDynamicType
+import org.jetbrains.annotations.NonNls
 
 class GdParamAnnotator : Annotator {
 
@@ -145,7 +146,9 @@ class GdParamAnnotator : Annotator {
                 .br()
                 .append(
                     HtmlChunk.ul().children(
-                        descriptions.map { HtmlChunk.li().child(HtmlChunk.text(it).bold()) }
+                        descriptions.map {
+                            @NonNls val description: String = it
+                            HtmlChunk.li().child(HtmlChunk.text(description).bold()) }
                     ))
                 .wrapWithHtmlBody()
                 .toString()
