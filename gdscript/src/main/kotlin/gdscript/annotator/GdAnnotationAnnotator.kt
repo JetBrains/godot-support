@@ -10,6 +10,7 @@ import gdscript.GdScriptBundle
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.utils.GdExprUtil
 import gdscript.utils.GdAnnotationUtil
+import org.jetbrains.annotations.NonNls
 
 /**
  * Check if annotation exists & tool is not within inner class
@@ -54,7 +55,7 @@ class GdAnnotationAnnotator : Annotator {
             return
         }
 
-        var expectedType = "Variant"
+        @NonNls var expectedType = "Variant"
         var name = ""
         val definedKeys = definitionParams.keys.toTypedArray()
         usedParams.forEachIndexed { index, actualType ->

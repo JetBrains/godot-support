@@ -2,17 +2,21 @@ package gdscript.codeInsight.documentation
 
 import com.intellij.codeInsight.documentation.DocumentationManagerProtocol
 import com.intellij.lang.documentation.DocumentationMarkup
+import com.intellij.openapi.util.NlsSafe
+import com.intellij.openapi.util.text.HtmlBuilder
 import com.intellij.openapi.util.text.HtmlChunk
 import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.psi.types.GdDocumented
+import java.util.Locale
+import java.util.Locale.getDefault
 
 object GdDocUtil {
 
-    fun packageLink(reference: String, label: String? = null): HtmlChunk {
+    fun packageLink(reference: String, @NlsSafe label: String? = null): HtmlChunk {
         return elementLink("${GdDocumentationProvider.LINK_PACKAGE}:${reference.trimStart('/')}", label)
     }
 
-    fun elementLink(reference: String, label: String? = null): HtmlChunk {
+    fun elementLink(reference: String, @NlsSafe label: String? = null): HtmlChunk {
         var parsedReference = reference
         if (reference.startsWith("Array[")) parsedReference = reference.substring(6, reference.length - 1)
 
@@ -38,15 +42,19 @@ object GdDocUtil {
         if (items.isEmpty()) return HtmlChunk.empty()
         return DocumentationMarkup.SECTIONS_TABLE.children(
                 tableTitle(key).wrapWith("tr"),
-                HtmlChunk.raw("<tr><td><ul style=\"margin-top: 0;\">"),
-                *items.map {
-                    HtmlChunk.li().style("margin-bottom: 10px;").children(
-                            it.first,
-                            HtmlChunk.br(),
-                            it.second,
-                    )
-                }.toTypedArray(),
-                HtmlChunk.raw("</ul></td></tr>")
+                HtmlChunk.tag("tr").child(
+                        HtmlChunk.tag("td").child(
+                                HtmlChunk.ul().style("margin-top: 0;").children(
+                                        *items.map {
+                                            HtmlChunk.li().style("margin-bottom: 10px;").children(
+                                                    it.first,
+                                                    HtmlChunk.br(),
+                                                    it.second,
+                                            )
+                                        }.toTypedArray()
+                                )
+                        )
+                )
         )
     }
 
@@ -57,11 +65,15 @@ object GdDocUtil {
                 *items.map {
                     HtmlChunk.fragment(
                             HtmlChunk.tag("td").style("padding-left: 10px;").child(it.first).wrapWith("tr"),
-                            HtmlChunk.raw("<tr><td style=\"padding-left: 25px;\"><ul style=\"margin: 0;\">"),
-                            *it.second.map { value ->
-                                HtmlChunk.li().child(value)
-                            }.toTypedArray(),
-                            HtmlChunk.raw("</ul></td></tr>"),
+                            HtmlChunk.tag("tr").child(
+                                    HtmlChunk.tag("td").style("padding-left: 25px;").child(
+                                            HtmlChunk.ul().style("margin: 0;").children(
+                                                    *it.second.map { value ->
+                                                        HtmlChunk.li().child(value)
+                                                    }.toTypedArray()
+                                            )
+                                    )
+                            ),
                     )
                 }.toTypedArray(),
         )
@@ -71,10 +83,10 @@ object GdDocUtil {
         if (lines.isEmpty()) return HtmlChunk.empty()
 
         return DocumentationMarkup.SECTIONS_TABLE.children(
-                HtmlChunk.raw("<tr>"),
-                tableTitle(key),
-                propertyTableLine(lines.first()),
-                HtmlChunk.raw("</tr>"),
+                HtmlChunk.tag("tr").children(
+                        tableTitle(key),
+                        propertyTableLine(lines.first()),
+                ),
                 *lines.takeLast(lines.size - 1).map {
                     HtmlChunk.tag("tr").child(propertyTableLine(it, true))
                 }.toTypedArray(),
@@ -133,7 +145,8 @@ object GdDocUtil {
     }
 
     private fun tableTitle(title: String): HtmlChunk {
-        return DocumentationMarkup.SECTION_HEADER_CELL.addText("${title.capitalize()}:")
+        @NlsSafe val text = "${title.replaceFirstChar { if (it.isLowerCase()) it.titlecase(getDefault()) else it.toString() }}:"
+        return DocumentationMarkup.SECTION_HEADER_CELL.addText(text)
     }
 
     private fun propertyTableLine(value: Pair<HtmlChunk, HtmlChunk>, withEmptyCell: Boolean = false): HtmlChunk {

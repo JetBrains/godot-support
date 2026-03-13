@@ -28,6 +28,7 @@ class GdScriptEditorForm(lifetime: Lifetime, val project: Project) {
     val panel: JPanel = panel {
         indent {
             row {
+                @Suppress("DialogTitleCapitalization")
                 text(GdScriptBundle.message("editor.should.be.running"), ) {
                     if (it.eventType == HyperlinkEvent.EventType.ACTIVATED) {
                         lifetime.async(Dispatchers.Default) {

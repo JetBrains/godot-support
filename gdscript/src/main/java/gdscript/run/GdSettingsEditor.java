@@ -95,6 +95,14 @@ public class GdSettingsEditor extends SettingsEditor<GdRunConfiguration> {
                                                  GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null,
                                                  new Dimension(-1, 20), null, 0, false));
     }
+    // Override the hard-coded generated strings with messages:
+    {
+      tscn.setText(GdScriptBundle.message("settings.scene.file"));
+      godotExe.setText(GdScriptBundle.message("settings.godot.executable"));
+      debugShapes.setText(GdScriptBundle.message("settings.visible.collision.shapes"));
+      debugPaths.setText(GdScriptBundle.message("settings.visible.paths"));
+      arguments.setText(GdScriptBundle.message("settings.options"));
+    }
   }
 
   /** @noinspection ALL */

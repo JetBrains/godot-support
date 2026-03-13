@@ -46,6 +46,7 @@ class GodotLspNotification(val project: Project, private val coroutineScope: Cor
         )
 
         notification.addAction(object : NotificationAction(
+            @Suppress("DialogTitleCapitalization")
             GdScriptBundle.message("action.StartEditorAction.text")) {
             override fun actionPerformed(e: AnActionEvent, notification: Notification) {
                 StartGodotEditorAction.startEditor(project)

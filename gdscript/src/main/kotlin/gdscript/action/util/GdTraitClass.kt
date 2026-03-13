@@ -1,3 +1,5 @@
 package gdscript.action.util
 
-data class GdTraitClass(val name: String, val resource: String)
+import com.intellij.openapi.util.NlsSafe
+
+data class GdTraitClass(@NlsSafe val name: String, val resource: String)

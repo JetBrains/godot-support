@@ -59,14 +59,14 @@ class GdUsageProvider : FindUsagesProvider {
 
     override fun getDescriptiveName(element: PsiElement): String {
         return when(element) {
-            is GdNamedElement -> element.name.orEmpty()
+            is GdNamedElement -> element.name ?: ""
             else -> element.text
         }
     }
 
     override fun getNodeText(element: PsiElement, useFullName: Boolean): String {
         return when(element) {
-            is GdNamedElement -> element.name.orEmpty()
+            is GdNamedElement -> element.name ?: ""
             else -> element.text
         }
     }

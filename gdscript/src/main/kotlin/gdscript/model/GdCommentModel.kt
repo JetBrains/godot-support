@@ -1,5 +1,6 @@
 package gdscript.model
 
+import com.intellij.openapi.util.NlsSafe
 import com.intellij.psi.stubs.StubInputStream
 import com.intellij.psi.stubs.StubOutputStream
 import gdscript.psi.types.GdDocumented
@@ -50,6 +51,6 @@ data class GdCommentModel(
 }
 
 data class GdTutorial(
-    var name: String = "",
-    var url: String = "",
+    @param:NlsSafe var name: String = "",
+    @param:NlsSafe var url: String = "",
 )

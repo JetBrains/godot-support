@@ -26,6 +26,7 @@ import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
 import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntimeType
+import org.jetbrains.annotations.NonNls
 import java.nio.file.Paths
 import kotlin.io.path.pathString
 import kotlin.io.path.relativeToOrSelf
@@ -34,11 +35,17 @@ import kotlin.io.path.relativeToOrSelf
 class GodotRunConfigurationGenerator : LifetimedService() {
 
     companion object {
-        const val ATTACH_CONFIGURATION_NAME = "Attach to Player"
+        @NonNls
+        const val ATTACH_CONFIGURATION_NAME: String = "Attach to Player"
 
-        const val PLAYER_CONFIGURATION_NAME = "Player"
-        const val EDITOR_CONFIGURATION_NAME = "Editor"
-        const val CHICKENSOFT_TEST_CONFIGURATION_NAME = "Debug test"
+        @NonNls
+        const val PLAYER_CONFIGURATION_NAME: String = "Player"
+
+        @NonNls
+        const val EDITOR_CONFIGURATION_NAME: String = "Editor"
+
+        @NonNls
+        const val CHICKENSOFT_TEST_CONFIGURATION_NAME: String = "Debug test"
     }
 
     class ProtocolListener : SolutionExtListener<GodotFrontendBackendModel> {

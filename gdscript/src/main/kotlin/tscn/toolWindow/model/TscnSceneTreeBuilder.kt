@@ -15,6 +15,7 @@ import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.VirtualFileUtil.getPsiFile
+import org.jetbrains.annotations.NonNls
 import tscn.TscnFileType
 import tscn.psi.TscnFile
 import tscn.psi.TscnNodeHeader
@@ -46,7 +47,9 @@ class TscnSceneTreeBuilder {
             trees.first().second
         } else {
             val tabs = JBTabbedPane()
-            trees.forEach { tabs.addTab(it.first, it.second) }
+            trees.forEach {
+                @NonNls val treeText = it.first
+                tabs.addTab(treeText, it.second) }
             tabs
         }
     }

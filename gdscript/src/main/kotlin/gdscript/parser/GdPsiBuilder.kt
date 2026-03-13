@@ -225,10 +225,10 @@ class GdPsiBuilder {
     }
 
 
-    fun recursionGuard(level: Int, funcName: String?): Boolean {
+    fun recursionGuard(level: Int, funcName: String): Boolean {
         if (level > MAX_RECURSION_LEVEL) {
 
-            b.mark().error(GdScriptBundle.message("parsing.error.maximum.recursion.level.reached", MAX_RECURSION_LEVEL, funcName ?: ""))
+            b.mark().error(GdScriptBundle.message("parsing.error.maximum.recursion.level.reached", MAX_RECURSION_LEVEL, funcName))
             return false
         }
 

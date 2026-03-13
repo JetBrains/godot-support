@@ -1,5 +1,6 @@
 package gdscript.annotator
 
+import com.intellij.codeInspection.util.InspectionMessage
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
@@ -22,6 +23,7 @@ import gdscript.utils.GdExprUtil.right
 import gdscript.utils.GdOperand
 import gdscript.utils.StringUtil.isDynamicType
 import org.jetbrains.annotations.Nls
+import org.jetbrains.annotations.NonNls
 
 class GdExprTypeAnnotator : Annotator {
 
@@ -43,80 +45,96 @@ class GdExprTypeAnnotator : Annotator {
         val left = element.returnType
         val right = element.expr?.returnType ?: return
         val operator = element.assignTyped?.text ?: return
-        validate(left, right, operator, GdScriptBundle.message("annotator.cannot.assign"), element, holder)
+        val invalidExpression = createExpressionIfInvalid(left, right, operator, element) ?: return
+        holder.annotateExpressionGd(element, GdScriptBundle.message("annotator.cannot.assign", invalidExpression))
     }
 
     private fun classVarDecl(element: GdClassVarDeclTl, holder: AnnotationHolder) {
         val left = element.returnType
         val right = element.expr?.returnType ?: return
         val operator = element.assignTyped?.text ?: return
-        validate(left, right, operator, GdScriptBundle.message("annotator.cannot.assign"), element, holder)
+        val invalidExpression = createExpressionIfInvalid(left, right, operator, element) ?: return
+        holder.annotateExpressionGd(element, GdScriptBundle.message("annotator.cannot.assign", invalidExpression))
     }
 
     private fun assignExpr(element: GdAssignSt, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
         val operator = element.assignSign.text
-        validate(left, right, operator, GdScriptBundle.message("annotator.cannot.assign"), element, holder)
+        val invalidExpression = createExpressionIfInvalid(left, right, operator, element) ?: return
+        holder.annotateExpressionGd(element, GdScriptBundle.message("annotator.cannot.assign", invalidExpression))
     }
 
     private fun factorExpr(element: GdFactorEx, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
         val operator = element.factorSign.text
-        validate(left, right, operator, GdScriptBundle.message("annotator.cannot.factor"), element, holder)
+        val invalidExpression = createExpressionIfInvalid(left, right, operator, element) ?: return
+        holder.annotateExpressionGd(element, GdScriptBundle.message("annotator.cannot.factor", invalidExpression))
     }
 
     private fun plusExpr(element: GdPlusEx, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
         val operator = element.sign.text
-        validate(left, right, operator, GdScriptBundle.message("annotator.cannot.factor"), element, holder)
+        val invalidExpression = createExpressionIfInvalid(left, right, operator, element) ?: return
+        holder.annotateExpressionGd(element, GdScriptBundle.message("annotator.cannot.factor", invalidExpression))
     }
 
     private fun shiftExpr(element: GdShiftEx, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
-        validate(left, right, "<<", GdScriptBundle.message("annotator.cannot.factor"), element, holder)
+        val operator = "<<"
+        val invalidExpression = createExpressionIfInvalid(left, right, operator, element) ?: return
+        holder.annotateExpressionGd(element, GdScriptBundle.message("annotator.cannot.factor", invalidExpression))
     }
 
     private fun comparisonExpr(element: GdComparisonEx, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
-        validate(left, right, element.operator.text, GdScriptBundle.message("annotator.cannot.factor"), element, holder)
+        val operator = element.operator.text
+        val invalidExpression = createExpressionIfInvalid(left, right, operator, element) ?: return
+        holder.annotateExpressionGd(element, GdScriptBundle.message("annotator.cannot.factor", invalidExpression))
     }
 
     private fun bitAndExpr(element: GdBitAndEx, holder: AnnotationHolder) {
         val left = element.exprList.left()
         val right = element.exprList.right()
         val operator = element.bitAndSign.text
-        validate(left, right, operator, GdScriptBundle.message("annotator.incomparable"), element, holder)
+        val invalidExpression = createExpressionIfInvalid(left, right, operator, element) ?: return
+        holder.annotateExpressionGd(element, GdScriptBundle.message("annotator.incomparable", invalidExpression))
     }
 
-    private fun validate(
-        left: String,
-        right: String,
-        operator: String,
-        @Nls message: String,
-        element: PsiElement,
-        holder: AnnotationHolder,
-    ) {
-        var l = left
-        var r = right
-        if (l == r || r == GdKeywords.NULL) return
-        if (l.isDynamicType() || r.isDynamicType()) return
-        if (l == "PackedScene") return
+    /** @return null if the expression is valid */
+    @NonNls
+    private fun createExpressionIfInvalid(
+        @NonNls left: String,
+        @NonNls right: String,
+        @NonNls operator: String,
+        element: PsiElement
+    ): String? {
+        @NonNls var l = left
+        @NonNls var r = right
+        if (l == r || r == GdKeywords.NULL) return null
+        if (l.isDynamicType() || r.isDynamicType()) return null
+        if (l == "PackedScene") return null
         if (l == "EnumDictionary") l = "int"
         if (r == "EnumDictionary") r = "int"
-        if (GdOperand.isAllowed(l, r, operator, element.project)) return
-        if (operator.contains("=") && GdExprUtil.typeAccepts(r, l, element)) return
-        if (operator.contains("=") && GdExprUtil.typeAccepts(l, r, element)) return
+        if (GdOperand.isAllowed(l, r, operator, element.project)) return null
+        if (operator.contains("=") && GdExprUtil.typeAccepts(r, l, element)) return null
+        if (operator.contains("=") && GdExprUtil.typeAccepts(l, r, element)) return null
 
-        holder
-            .newAnnotationGd(element.project, HighlightSeverity.ERROR, "$message $l $operator $r")
+        return "$l $operator $r"
+    }
+
+    private fun AnnotationHolder.annotateExpressionGd(
+        element: PsiElement,
+        @InspectionMessage message: String
+    ): Unit =
+        this
+            .newAnnotationGd(element.project, HighlightSeverity.ERROR, message)
             .range(element.textRange)
             .create()
-    }
 
     private fun arrIndexExpr(element: GdArrEx, holder: AnnotationHolder) {
         val exprs = element.exprList
