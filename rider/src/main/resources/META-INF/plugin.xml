@@ -12,6 +12,10 @@
     <plugin id="org.jetbrains.plugins.terminal"/>
   </dependencies>
 
+  <actions>
+    <action id="Godot.GenerateSolution" class="com.jetbrains.rider.plugins.godot.actions.GenerateGodotSolutionAction"/>
+  </actions>
+
   <extensions defaultExtensionNs="com.intellij">
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />

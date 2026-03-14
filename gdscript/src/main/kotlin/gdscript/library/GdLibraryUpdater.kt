@@ -1,6 +1,7 @@
 package gdscript.library
 
 import com.intellij.openapi.components.Service
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import common.util.GdScriptProjectLifetimeService
@@ -9,6 +10,7 @@ import kotlinx.coroutines.launch
 import java.nio.charset.Charset
 import java.nio.file.Path
 import kotlin.io.path.exists
+import kotlin.io.path.pathString
 import kotlin.io.path.readText
 
 @Service( Service.Level.PROJECT)
@@ -36,8 +38,12 @@ class GdLibraryUpdater(private val project: Project) {
         // todo: use com.intellij.openapi.util.Version instead of string
         // todo: get full version from the FileVersionInfo on Windows, Contents/Info.plist on Mac, parse file name on Linux
         // also possible to run `godot --version` and parse the output
-        val version = VERSION_REGEX.find(content)?.groups?.get(1)?.value
-                      ?: throw IllegalStateException("GdSdk version cannot be parsed from project.godot")
+        var version = VERSION_REGEX.find(content)?.groups?.get(1)?.value
+        if (version == null) {
+            version = "Master"
+            // when opening godot sources as a folder, there are some "project.godot" for tests there
+            thisLogger().warn("GdSdk version cannot be parsed from ${projectFile.pathString}")
+        }
         if (version.startsWith("3.")) throw IllegalStateException("Godot 3.x is not supported by the plugin")
 
         // stop if disposed

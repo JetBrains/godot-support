@@ -22,6 +22,7 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 import kotlin.io.path.pathString
+import kotlin.io.path.readText
 
 object GdLibraryManager {
 
@@ -93,14 +94,14 @@ object GdLibraryManager {
 
         // Check if SDK is already extracted and has a valid stamp
         val validator = SdkIntegrityValidator()
-        val extractionStampFile = extractionDir.resolve(SdkIntegrityValidator.STAMP_FILE_NAME).toFile()
-        val needsExtraction = !extractionDir.toFile().exists() ||
+        val extractionStampFile = extractionDir.resolve(SdkIntegrityValidator.STAMP_FILE_NAME)
+        val needsExtraction = !extractionDir.exists() ||
                               !extractionStampFile.exists() ||
                               extractionStampFile.readText().trim() != validator.getFilesFromFs(extractionDir).count().toString()
 
         // Extract SDK if needed
         if (needsExtraction) {
-            if (extractionDir.toFile().exists()) {
+            if (extractionDir.exists()) {
                 extractionDir.toFile().deleteRecursively()
             }
             Files.createDirectories(extractionDir)
