@@ -11,13 +11,14 @@
     <module name="intellij.libraries.kotlin.reflect"/>
     <module name="intellij.libraries.kotlinx.coroutines.core"/>
     <module name="intellij.platform.core"/>
-    <module name="intellij.rider.languages"/>
     <module name="intellij.platform.execution"/>
     <module name="intellij.platform.ide.core"/>
     <module name="intellij.platform.ide.impl"/>
     <module name="intellij.platform.lang"/>
     <module name="intellij.platform.lang.impl"/>
     <module name="intellij.platform.projectModel"/>
+    <module name="intellij.rd.client"/>
+    <module name="intellij.rider.languages"/>
   </dependencies>
   <!-- endregion -->
 </idea-plugin>
