@@ -1,6 +1,7 @@
 package com.jetbrains.rider.godot.community
 
 import com.intellij.openapi.vfs.AsyncFileListener
+import com.intellij.openapi.vfs.isFile
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import java.nio.file.Path
 import kotlin.io.path.pathString
@@ -14,7 +15,7 @@ class GodotMetadataFileWatcher(
 
     override fun prepareChange(events: MutableList<out VFileEvent>): AsyncFileListener.ChangeApplier? {
         val hasMetadataChange = events.any { event ->
-            event.file?.toNioPath() == metadataPath
+            event.file?.isFile != null && event.file?.toNioPath() == metadataPath
         }
 
         if (!hasMetadataChange) return null
