@@ -1,3 +1,4 @@
+import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.DumbService
@@ -11,6 +12,7 @@ import com.jetbrains.rider.godot.community.GodotMetadataService
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -51,11 +53,14 @@ class GdProjectService(
         } else {
             // todo: react on further changes of the VFS or the index, I am not sure
             DumbService.getInstance(project).runWhenSmart { // Wait for indexes to finish
-                val projectGodotFiles = FilenameIndex.getVirtualFilesByName(
-                    "project.godot",
-                    GlobalSearchScope.projectScope(project)
-                )
-                projectGodotFiles.firstOrNull()?.parent?.let { discoverProject(it) }
+                scope.launch(Dispatchers.IO){
+                    val projectGodotFile = readAction {
+                        FilenameIndex.firstVirtualFileWithName("project.godot", true,
+                            GlobalSearchScope.projectScope(project), null
+                        )
+                    }
+                    projectGodotFile?.parent?.let { discoverProject(it) }
+                }
             }
         }
     }
