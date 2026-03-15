@@ -29,8 +29,6 @@ class GdProjectService(
     private val scope: CoroutineScope
 ) {
     private var _projectGodotFile: VirtualFile? = null
-    private val projectRoot: VirtualFile? get() = _projectGodotFile?.parent
-
     private val _isGodotProjectDeferred = CompletableDeferred<Boolean>()
     val isGodotProjectDeferred: Deferred<Boolean> get() = _isGodotProjectDeferred
 
@@ -43,7 +41,7 @@ class GdProjectService(
     private val _isPureGdScriptProjectFlow: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val isPureGdScriptProjectFlow: StateFlow<Boolean?> = _isPureGdScriptProjectFlow.asStateFlow()
 
-    fun getExecutablePath(): Path? = projectRoot?.let { getGodot4Path(it.toNioPath()) }
+    fun getExecutablePath(): Path? = _projectGodotFile?.parent?.let { getGodot4Path(it.toNioPath()) }
 
     init {
         val projectDir = project.guessProjectDir()

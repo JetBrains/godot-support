@@ -9,14 +9,15 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.Lsp4jClient
 import com.intellij.platform.lsp.api.LspCommunicationChannel
 import com.intellij.platform.lsp.api.LspServer
+import com.intellij.platform.lsp.api.LspServerDescriptor
 import com.intellij.platform.lsp.api.LspServerManager
 import com.intellij.platform.lsp.api.LspServerNotificationsHandler
 import com.intellij.platform.lsp.api.LspServerSupportProvider
-import com.intellij.platform.lsp.api.ProjectWideLspServerDescriptor
 import com.intellij.platform.lsp.api.customization.LspCompletionCustomizer
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
 import com.intellij.platform.lsp.api.customization.LspCustomization
@@ -150,7 +151,11 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
         godotLspProjectService.queueRestart()
     }
 
-    private class GodotLspServerDescriptor(project: Project) : ProjectWideLspServerDescriptor(project, "Godot") {
+    private class GodotLspServerDescriptor(project: Project) : LspServerDescriptor(
+    project,
+    "Godot",
+    GodotCommunityUtil.getGodotProjectBasePath(project)?.let { VfsUtil.findFile(it, false) }!!
+    )  {
         val settings = GdLspSettingsFlowService.getInstance(project)
         val lspConnectionMode by lazy { settings.lspConnectionMode.value }
         val remoteHostPort by lazy { if (useDynamicPort) NetworkUtils.findFreePort(500050) else settings.remoteHostPort.value }
