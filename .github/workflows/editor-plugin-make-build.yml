@@ -22,7 +22,7 @@ on:
         description: 'Mark release as prerelease'
         required: false
         type: boolean
-        default: false
+        default: true
 
 jobs:
   build:
