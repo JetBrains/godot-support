@@ -7,7 +7,7 @@ This addon currently provides two features:
 ## Quick start
 
 Requirements:
-- Godot 4.2.2
+- Godot 4.2.2+
 
 Install:
 1. Inside the Godot editor, it can be installed from the AssetLib view or [downloaded](https://godotengine.org/asset-library/asset/4576)
