@@ -21,6 +21,7 @@ import com.jetbrains.rider.utils.NullPrintStream
 import java.io.File
 import java.nio.file.Path
 import java.time.Duration
+import java.util.concurrent.TimeUnit
 
 // region Constants
 const val godotNumberVersion = "4.4.1"
@@ -70,7 +71,7 @@ fun putGodotProjectToTempTestDir(
 // endregion
 
 // region Godot Execution
-fun startGodot(godotExecutable: File, projectPath: String, logPath: Path, dotnetSdk: String): Process {
+fun startGodot(godotExecutable: File, projectPath: String, logPath: Path, dotnetSdk: String, timeoutMinutes: Long = 3): Process {
     val logFile = File(logPath.toString(), "Godot_${System.currentTimeMillis()}.log")
 
     val command = mutableListOf(
@@ -89,7 +90,7 @@ fun startGodot(godotExecutable: File, projectPath: String, logPath: Path, dotnet
     val process = processBuilder.start()
     frameworkLogger.info("Godot process started (pid=${process.pid()})")
 
-    val exitCode = process.waitFor()
+    val exitCode = process.waitFor(timeoutMinutes, TimeUnit.MINUTES)
     frameworkLogger.info("Godot process finished, exit code = $exitCode")
     return process
 }
