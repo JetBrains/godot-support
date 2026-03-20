@@ -1,6 +1,6 @@
 [![official JetBrains project](https://jb.gg/badges/official-flat-square.svg)](https://github.com/JetBrains#jetbrains-on-github)
 
-# JetBrains Godot Development Tools
+# JetBrains Godot Development Tools 1
 
 This repository contains a collection of plugins that enhance Godot game development in JetBrains IDEs:
 
