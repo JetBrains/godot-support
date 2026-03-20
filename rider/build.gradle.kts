@@ -56,7 +56,8 @@ dependencies {
         //localPlugin(repoRoot.resolve("community/build/libs/rider-godot-community.jar"))
         bundledPlugin("com.intellij.rider.godot.community")
         bundledPlugin("org.jetbrains.plugins.terminal")
-        bundledModules("intellij.rider.debugger.shared")
+        bundledModules("intellij.rider.debugger.shared",
+            "intellij.rd.client", "intellij.rider.rdclient.dotnet", "intellij.rider.shared")
         testFramework(TestFrameworkType.Bundled)
     }
     testImplementation(libs.openTest4J)
