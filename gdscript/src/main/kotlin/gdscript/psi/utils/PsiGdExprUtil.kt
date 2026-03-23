@@ -9,6 +9,9 @@ import com.intellij.psi.util.nextLeaf
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
+import gdscript.polySymbols.GdPolySymbol
+import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdArrEx
 import gdscript.psi.GdArrayDecl
 import gdscript.psi.GdAttributeEx
@@ -93,7 +96,7 @@ object PsiGdExprUtil {
             is GdBitNotEx -> GdKeywords.INT
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT
             is GdAttributeEx -> {
-                val ref = expr.refId?.references?.firstOrNull() ?: return ""
+                val ref = expr.refId?.references?.firstOrNull()
                 if (ref is GdClassMemberReference) {
                     val declaration = ref.resolveDeclaration()
                     // In case method is not resolved returnType is method itself
@@ -104,9 +107,19 @@ object PsiGdExprUtil {
                     return GdCommonUtil.returnType(declaration)
                 } else {
                     // If attribute resolves to a class name or class decl, return its full class id
-                    when (val resolved = ref.resolve()) {
+                    when (val resolved = ref?.resolve()) {
                         is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
                         is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
+                    }
+
+                    // Resolve through Poly Symbol if nothing found through PSI
+                    val symbol = expr.refId.resolveSymbolReference() as? GdPolySymbol
+                    if (symbol != null) {
+                        if (symbol.kind == GdPolySymbolKind.METHOD && expr.refId?.nextLeaf()?.elementType == GdTypes.DOT) {
+                            return "Callable"
+                        }
+
+                        return symbol.returnType
                     }
                 }
 
@@ -127,6 +140,13 @@ object PsiGdExprUtil {
                                 is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
                                 is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
                             }
+
+                            // Try Poly Symbols before falling back to the generic GdCommonUtil.returnType
+                            val symbol = callee.refId?.resolveSymbolReference() as? GdPolySymbol
+                            if (symbol != null) {
+                                return symbol.returnType
+                            }
+
                             return GdCommonUtil.returnType(callee.firstChild)
                         }
                         // Unqualified new(): take the attribute parent if any
@@ -299,7 +319,18 @@ object PsiGdExprUtil {
 
                         is GdAutoload -> element.key
                         is GdClassDeclTl -> GdClassUtil.getFullClassId(element)
-                        else -> ""
+                        else -> run {
+                            // Resolve through Poly Symbol if nothing found through PSI
+                            val symbol = named.resolveSymbolReference() as? GdPolySymbol
+                            if (symbol == null) return ""
+
+                            if (symbol.kind == GdPolySymbolKind.METHOD
+                                && PsiTreeUtil.nextVisibleLeaf(expr)?.elementType != GdTypes.LRBR){
+                                return@run "Callable"
+                            }
+
+                            return@run symbol.returnType
+                        }
                     }
                 }
 
