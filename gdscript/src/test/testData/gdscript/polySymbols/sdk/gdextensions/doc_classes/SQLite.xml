@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="SQLite" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="backup_to">
+			<return type="bool" />
+			<param index="0" name="destination" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="close_db">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="compileoption_used" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="option_name" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="create_function">
+			<return type="bool" />
+			<param index="0" name="function_name" type="String" />
+			<param index="1" name="callable" type="Callable" />
+			<param index="2" name="arguments" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="create_table">
+			<return type="bool" />
+			<param index="0" name="table_name" type="String" />
+			<param index="1" name="table_data" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="delete_rows">
+			<return type="bool" />
+			<param index="0" name="table_name" type="String" />
+			<param index="1" name="conditions" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="drop_table">
+			<return type="bool" />
+			<param index="0" name="table_name" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="enable_load_extension">
+			<return type="int" />
+			<param index="0" name="onoff" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="export_to_buffer">
+			<return type="PackedByteArray" />
+			<description>
+			</description>
+		</method>
+		<method name="export_to_json">
+			<return type="bool" />
+			<param index="0" name="export_path" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="get_autocommit" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="import_from_buffer">
+			<return type="bool" />
+			<param index="0" name="json_buffer" type="PackedByteArray" />
+			<description>
+			</description>
+		</method>
+		<method name="import_from_json">
+			<return type="bool" />
+			<param index="0" name="import_path" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="insert_row">
+			<return type="bool" />
+			<param index="0" name="table_name" type="String" />
+			<param index="1" name="row_data" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="insert_rows">
+			<return type="bool" />
+			<param index="0" name="table_name" type="String" />
+			<param index="1" name="row_array" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="load_extension">
+			<return type="int" />
+			<param index="0" name="extension_path" type="String" />
+			<param index="1" name="entrypoint" type="String" default="&quot;sqlite3_extension_init&quot;" />
+			<description>
+			</description>
+		</method>
+		<method name="open_db">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="query">
+			<return type="bool" />
+			<param index="0" name="query_string" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="query_with_bindings">
+			<return type="bool" />
+			<param index="0" name="query_string" type="String" />
+			<param index="1" name="param_bindings" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="query_with_named_bindings">
+			<return type="bool" />
+			<param index="0" name="query_string" type="String" />
+			<param index="1" name="param_bindings" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="restore_from">
+			<return type="bool" />
+			<param index="0" name="source" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="select_rows">
+			<return type="Array" />
+			<param index="0" name="table_name" type="String" />
+			<param index="1" name="conditions" type="String" />
+			<param index="2" name="columns" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="update_rows">
+			<return type="bool" />
+			<param index="0" name="table_name" type="String" />
+			<param index="1" name="conditions" type="String" />
+			<param index="2" name="row_data" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="default_extension" type="String" setter="set_default_extension" getter="get_default_extension" default="&quot;db&quot;">
+		</member>
+		<member name="error_message" type="String" setter="set_error_message" getter="get_error_message" default="&quot;&quot;">
+		</member>
+		<member name="foreign_keys" type="bool" setter="set_foreign_keys" getter="get_foreign_keys" default="false">
+		</member>
+		<member name="last_insert_rowid" type="int" setter="set_last_insert_rowid" getter="get_last_insert_rowid" default="0">
+		</member>
+		<member name="path" type="String" setter="set_path" getter="get_path" default="&quot;default&quot;">
+		</member>
+		<member name="query_result" type="Dictionary[]" setter="set_query_result" getter="get_query_result" default="[]">
+		</member>
+		<member name="query_result_by_reference" type="Dictionary[]" setter="set_query_result" getter="get_query_result_by_reference" default="[]">
+		</member>
+		<member name="read_only" type="bool" setter="set_read_only" getter="get_read_only" default="false">
+		</member>
+		<member name="verbosity_level" type="int" setter="set_verbosity_level" getter="get_verbosity_level" default="1">
+		</member>
+	</members>
+	<constants>
+		<constant name="QUIET" value="0" enum="VerbosityLevel">
+		</constant>
+		<constant name="NORMAL" value="1" enum="VerbosityLevel">
+		</constant>
+		<constant name="VERBOSE" value="2" enum="VerbosityLevel">
+		</constant>
+		<constant name="VERY_VERBOSE" value="3" enum="VerbosityLevel">
+		</constant>
+		<constant name="SQLITE_OK" value="0">
+		</constant>
+		<constant name="SQLITE_ERROR" value="1">
+		</constant>
+		<constant name="SQLITE_INTERNAL" value="2">
+		</constant>
+		<constant name="SQLITE_PERM" value="3">
+		</constant>
+		<constant name="SQLITE_ABORT" value="4">
+		</constant>
+		<constant name="SQLITE_BUSY" value="5">
+		</constant>
+		<constant name="SQLITE_LOCKED" value="6">
+		</constant>
+		<constant name="SQLITE_NOMEM" value="7">
+		</constant>
+		<constant name="SQLITE_READONLY" value="8">
+		</constant>
+		<constant name="SQLITE_INTERRUPT" value="9">
+		</constant>
+		<constant name="SQLITE_IOERR" value="10">
+		</constant>
+		<constant name="SQLITE_CORRUPT" value="11">
+		</constant>
+		<constant name="SQLITE_NOTFOUND" value="12">
+		</constant>
+		<constant name="SQLITE_FULL" value="13">
+		</constant>
+		<constant name="SQLITE_CANTOPEN" value="14">
+		</constant>
+		<constant name="SQLITE_PROTOCOL" value="15">
+		</constant>
+		<constant name="SQLITE_EMPTY" value="16">
+		</constant>
+		<constant name="SQLITE_SCHEMA" value="17">
+		</constant>
+		<constant name="SQLITE_TOOBIG" value="18">
+		</constant>
+		<constant name="SQLITE_CONSTRAINT" value="19">
+		</constant>
+		<constant name="SQLITE_MISMATCH" value="20">
+		</constant>
+		<constant name="SQLITE_MISUSE" value="21">
+		</constant>
+		<constant name="SQLITE_NOLFS" value="22">
+		</constant>
+		<constant name="SQLITE_AUTH" value="23">
+		</constant>
+		<constant name="SQLITE_FORMAT" value="24">
+		</constant>
+		<constant name="SQLITE_RANGE" value="25">
+		</constant>
+		<constant name="SQLITE_NOTADB" value="26">
+		</constant>
+		<constant name="SQLITE_NOTICE" value="27">
+		</constant>
+		<constant name="SQLITE_WARNING" value="28">
+		</constant>
+		<constant name="SQLITE_ROW" value="100">
+		</constant>
+		<constant name="SQLITE_DONE" value="101">
+		</constant>
+	</constants>
+</class>
