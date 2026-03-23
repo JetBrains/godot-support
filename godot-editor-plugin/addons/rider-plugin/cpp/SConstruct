@@ -8,8 +8,8 @@ import sys
 from methods import print_error
 
 
-libname = "rider-plugin"
-projectdir = "../lib"
+libname = "rider-gdextension"
+projectdir = ".."
 
 localEnv = Environment(tools=["default"], PLATFORM="")
 
@@ -40,13 +40,16 @@ Run the following command to download godot-cpp:
 
 env = SConscript("godot-cpp/SConstruct", {"env": env, "customs": customs})
 
+env["target"] = env.get("target", "editor")
+
 env.Append(CPPPATH=["src/"])
 sources = Glob("src/*.cpp")
+
 # Link Windows registry library when building on Windows
 if env.get('platform') == 'windows':
     env.Append(LIBS=['Advapi32'])
 
-if env["target"] in ["editor", "template_debug"]:
+if env["target"] in ["editor"]:
     try:
         doc_data = env.GodotCPPDocData("src/gen/doc_data.gen.cpp", source=Glob("doc_classes/*.xml"))
         sources.append(doc_data)
