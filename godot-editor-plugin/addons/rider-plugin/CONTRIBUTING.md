@@ -7,7 +7,6 @@ Most contributions require you to agree to a Contributor License Agreement (CLA)
 #### Local setup
 
 To be added.
-I'd switch to CMake instead of sln, when I have time.
 
 #### Signing the binaries
 

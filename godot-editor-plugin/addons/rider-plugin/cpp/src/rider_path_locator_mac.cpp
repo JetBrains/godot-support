@@ -84,7 +84,7 @@ std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths() {
     std::set<InstallInfo, InstallInfoLess> s;
     for (auto &i : get_installed_riders_with_mdfind()) s.insert(i);
     for (auto &i : get_manually_installed_riders()) s.insert(i);
-    for (auto &i : get_install_infos_from_toolbox(get_toolbox_path(), "Rider*.app")) s.insert(i);
+    for (auto &i : get_install_infos_from_toolbox(get_toolbox_path(), "Rider*.app")) s.insert(i); // todo: this doesn't work!
     for (auto &i : get_install_infos_from_resource_file()) s.insert(i);
     return s;
 }

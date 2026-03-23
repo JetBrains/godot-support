@@ -5,7 +5,7 @@ compatibility_minimum = "4.2.2"
 
 [libraries]
 ; Relative paths ensure that our GDExtension can be placed anywhere in the project directory.
-macos.single.debug = "./macos/librider-plugin.macos.editor.dylib"
+macos.single.debug = "./macos/librider-gdextension.macos.editor.dylib"
 macos.double.debug = "./macos/librider-plugin.macos.editor.double.dylib"
 
 windows.x86_32.single.debug = "./windows/rider-plugin.windows.editor.x86_32.dll"
