@@ -1,0 +1,72 @@
+package gdscript.polySymbols.sdk
+
+import com.intellij.model.Pointer
+import GdScriptPluginIcons
+import com.intellij.model.Symbol
+import com.intellij.openapi.project.Project
+import com.intellij.polySymbols.PolySymbol
+import com.intellij.polySymbols.PolySymbolKind
+import com.intellij.polySymbols.PolySymbolModifier
+import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.completion.GdPolySymbolPriorities
+import gdscript.polySymbols.completion.toCompletionParamHint
+import gdscript.polySymbols.sdk.GdSdkPolySymbolsUtil.hasSameSignature
+import gdscript.polySymbols.sdk.xml.GdSdkData
+import gdscript.psi.GdMethodIdNmi
+import gdscript.psi.GdNamedElement
+import javax.swing.Icon
+
+class GdSdkConstructorSymbol(
+    override val project: Project,
+    override val declaringClassName: String,
+    override val data: GdSdkData.ConstructorData
+) : GdSdkPolySymbol() {
+    override val kind: PolySymbolKind get() = GdPolySymbolKind.CONSTRUCTOR
+    override val name: String get() = declaringClassName
+    override val declaringClassId: String get() = declaringClassName
+    override val returnType: String get() = declaringClassName
+
+    override val icon: Icon get() = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER
+    override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.BUILT_IN
+    override val completionTailText: String get() = data.parameters.toCompletionParamHint(data.qualifiers.isVariadic)
+    override val completionTypeText: String get() = declaringClassName
+
+    override fun isEquivalentTo(symbol: Symbol): Boolean {
+        if (this === symbol) return true
+        if (symbol is GdSdkPolySymbol) {
+            return qualifiedName == symbol.qualifiedName && declaringClassId == symbol.declaringClassId && data.parameters.hasSameSignature(
+                (symbol.data as? GdSdkData.ConstructorData)?.parameters ?: emptyList()
+            )
+        }
+        return super.isEquivalentTo(symbol)
+    }
+
+     override val modifiers: Set<PolySymbolModifier>
+        get () = GdSdkPolySymbolsUtil.getModifiersFromQualifierData(data.qualifiers)
+            .plus(PolySymbolModifier.STATIC)
+
+    override fun psiElementRepresentsSdkSymbol(element: GdNamedElement): Boolean {
+        // TODO add signature check to send to correct version
+        return element.name == "_init"
+            && element is GdMethodIdNmi
+    }
+
+    override fun createPointer(): Pointer<out GdSdkConstructorSymbol> {
+        val projectRef = project
+        val className = declaringClassName
+        val parameters = data.parameters
+
+        return Pointer {
+            if (projectRef.isDisposed) return@Pointer null
+
+            val classData = getOwnerClassData(projectRef, className) ?: return@Pointer null
+
+            val freshData = classData
+                .constructors
+                .find { it.parameters.hasSameSignature(parameters) }
+                ?: return@Pointer null
+
+            GdSdkConstructorSymbol(projectRef, className, freshData)
+        }
+    }
+}
