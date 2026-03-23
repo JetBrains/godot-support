@@ -17,6 +17,7 @@ class TscnScriptClassReference : PsiReferenceBase<PsiNamedElement> {
             this,
             ResolveCache.Resolver { _, _ ->
                 val className = element.text.trim('"')
+                // TODO use poly symbols
                 val classIdElement = GdClassUtil.getClassIdElement(className, element, element.project)
                 classIdElement
             },
