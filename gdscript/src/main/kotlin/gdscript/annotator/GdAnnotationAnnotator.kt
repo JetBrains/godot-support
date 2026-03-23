@@ -20,6 +20,7 @@ class GdAnnotationAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is GdAnnotationTl) return
 
+        // TODO have to fix it to use poly symbols
         val definition = GdAnnotationUtil.get(element)
         if (definition == null) {
             holder
