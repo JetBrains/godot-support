@@ -53,6 +53,7 @@
                  description="Timeout (in milliseconds) for the Godot --doctool process that generates GDExtension stubs"
                  restartRequired="false"/>
     <backgroundPostStartupActivity implementation="gdscript.listener.ReferenceGdLibrariesProjectActivity"/>
+    <backgroundPostStartupActivity implementation="gdscript.listener.GdLoadSdkProjectActivity"/>
     <backgroundPostStartupActivity implementation="GdScriptToolWindowManagerProjectActivity"/>
     <backgroundPostStartupActivity implementation="gdscript.lsp.GodotLspStartOnFocusGainedActivity"/>
     <rider.godot.community.godotProjectProvider implementation="gdscript.utils.GdScriptGodotProjectProvider"/>
@@ -309,6 +310,36 @@
     <xdebugger.breakpointType implementation="gdscript.dap.breakpoints.GdScriptLineBreakpointType"/>
     <xdebugger.breakpointType implementation="gdscript.dap.breakpoints.GdScriptExceptionBreakpointType"/>
     <backgroundPostStartupActivity implementation="gdscript.dap.GdScriptRunConfigurationGenerator$Activity"/>
+
+    <!-- Poly Symbols -->
+    <polySymbols.enableInLanguage language="GdScript"/>
+    <polySymbols.queryScopeContributor implementation="gdscript.polySymbols.scope.GdPolySymbolQueryScopeContributor" />
+    <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdAnnotationCompletionContributor"/>
+    <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdTypeHintRefCompletionContributor"/>
+    <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdInheritanceIdRefCompletionContributor"/>
+    <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdRefIdRefCompletionContributor"/>
+    <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdGetSetMethodIdRefCompletionContributor"/>
+    <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdTypeHintRef"
+                                      hostLanguage="GdScript"
+                                      implementationClass="gdscript.polySymbols.reference.GdTypeHintPolySymbolReferenceProvider"/>
+    <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdInheritanceIdRef"
+                                      hostLanguage="GdScript"
+                                      implementationClass="gdscript.polySymbols.reference.GdInheritancePolySymbolReferenceProvider"/>
+    <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdRefIdRef"
+                                      hostLanguage="GdScript"
+                                      implementationClass="gdscript.polySymbols.reference.GdRefIdRefPolySymbolReferenceProvider"/>
+    <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdGetMethodIdRef"
+                                      hostLanguage="GdScript"
+                                      implementationClass="gdscript.polySymbols.reference.GdGetMethodIdPolySymbolReferenceProvider"/>
+    <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdSetMethodIdRef"
+                                      hostLanguage="GdScript"
+                                      implementationClass="gdscript.polySymbols.reference.GdSetMethodIdPolySymbolReferenceProvider"/>
+    <polySymbols.psiLinkedSymbol host="gdscript.psi.GdNamedIdElement"/>
+    <polySymbols.psiLinkedSymbol host="gdscript.psi.GdFile"/>
+    <polySymbols.declarationProvider implementation="gdscript.polySymbols.sdk.GdSdkPolySymbolDeclarationProvider"/>
+    <projectService serviceInterface="gdscript.library.GdSdkFilesProvider"
+                    serviceImplementation="gdscript.library.GdSdkFilesProviderImpl" />
+    <!-- End Poly Symbols -->
 
     <spellchecker.bundledDictionaryProvider implementation="gdscript.spellchecker.GdBundledDictionaryProvider"/>
     <spellchecker.support language="GdScript" implementationClass="gdscript.spellchecker.GdSpellcheckingStrategy"/>
