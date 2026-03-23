@@ -65,8 +65,10 @@ object GdKeywords {
     /** Prefixes */
     const val RESOURCE_PREFIX = "res://"
 
-    const val GLOBAL_SCOPE = "_GlobalScope"
-    const val GLOBAL_GD_SCRIPT = "_GDScript"
+    // The names used to start with an underscore because the PHP scripts that converted from XML to GDScript did this conversion for some reason,
+    // but when we generate them now, the files start with the @.
+    const val GLOBAL_SCOPE = "@GlobalScope"
+    const val GLOBAL_GD_SCRIPT = "@GDScript"
 
     const val INIT_METHOD = "_init"
 
