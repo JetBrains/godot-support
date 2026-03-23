@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="_get" qualifiers="virtual">
+			<return type="Variant" />
+			<param index="0" name="property" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="_get_property_list" qualifiers="virtual">
+			<return type="Dictionary[]" />
+			<description>
+			</description>
+		</method>
+		<method name="_init" qualifiers="virtual">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="_iter_get" qualifiers="virtual">
+			<return type="Variant" />
+			<param index="0" name="iter" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="_iter_init" qualifiers="virtual">
+			<return type="bool" />
+			<param index="0" name="iter" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="_iter_next" qualifiers="virtual">
+			<return type="bool" />
+			<param index="0" name="iter" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="_notification" qualifiers="virtual">
+			<return type="void" />
+			<param index="0" name="what" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="_property_can_revert" qualifiers="virtual">
+			<return type="bool" />
+			<param index="0" name="property" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="_property_get_revert" qualifiers="virtual">
+			<return type="Variant" />
+			<param index="0" name="property" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="_set" qualifiers="virtual">
+			<return type="bool" />
+			<param index="0" name="property" type="StringName" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="_to_string" qualifiers="virtual">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="_validate_property" qualifiers="virtual">
+			<return type="void" />
+			<param index="0" name="property" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="add_user_signal">
+			<return type="void" />
+			<param index="0" name="signal" type="String" />
+			<param index="1" name="arguments" type="Array" default="[]" />
+			<description>
+			</description>
+		</method>
+		<method name="call" qualifiers="vararg">
+			<return type="Variant" />
+			<param index="0" name="method" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="call_deferred" qualifiers="vararg">
+			<return type="Variant" />
+			<param index="0" name="method" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="callv">
+			<return type="Variant" />
+			<param index="0" name="method" type="StringName" />
+			<param index="1" name="arg_array" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="can_translate_messages" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="cancel_free">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="connect">
+			<return type="int" enum="Error" />
+			<param index="0" name="signal" type="StringName" />
+			<param index="1" name="callable" type="Callable" />
+			<param index="2" name="flags" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="disconnect">
+			<return type="void" />
+			<param index="0" name="signal" type="StringName" />
+			<param index="1" name="callable" type="Callable" />
+			<description>
+			</description>
+		</method>
+		<method name="emit_signal" qualifiers="vararg">
+			<return type="int" enum="Error" />
+			<param index="0" name="signal" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="free">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="get" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="property" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="get_class" qualifiers="const">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="get_incoming_connections" qualifiers="const">
+			<return type="Dictionary[]" />
+			<description>
+			</description>
+		</method>
+		<method name="get_indexed" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="property_path" type="NodePath" />
+			<description>
+			</description>
+		</method>
+		<method name="get_instance_id" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_meta" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="default" type="Variant" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="get_meta_list" qualifiers="const">
+			<return type="StringName[]" />
+			<description>
+			</description>
+		</method>
+		<method name="get_method_argument_count" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="method" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="get_method_list" qualifiers="const">
+			<return type="Dictionary[]" />
+			<description>
+			</description>
+		</method>
+		<method name="get_property_list" qualifiers="const">
+			<return type="Dictionary[]" />
+			<description>
+			</description>
+		</method>
+		<method name="get_script" qualifiers="const">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="get_signal_connection_list" qualifiers="const">
+			<return type="Dictionary[]" />
+			<param index="0" name="signal" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="get_signal_list" qualifiers="const">
+			<return type="Dictionary[]" />
+			<description>
+			</description>
+		</method>
+		<method name="get_translation_domain" qualifiers="const">
+			<return type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="has_connections" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="signal" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="has_meta" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="has_method" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="method" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="has_signal" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="signal" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="has_user_signal" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="signal" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="is_blocking_signals" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_class" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="class" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="is_connected" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="signal" type="StringName" />
+			<param index="1" name="callable" type="Callable" />
+			<description>
+			</description>
+		</method>
+		<method name="is_queued_for_deletion" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="notification">
+			<return type="void" />
+			<param index="0" name="what" type="int" />
+			<param index="1" name="reversed" type="bool" default="false" />
+			<description>
+			</description>
+		</method>
+		<method name="notify_property_list_changed">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="property_can_revert" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="property" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="property_get_revert" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="property" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="remove_meta">
+			<return type="void" />
+			<param index="0" name="name" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="remove_user_signal">
+			<return type="void" />
+			<param index="0" name="signal" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="set">
+			<return type="void" />
+			<param index="0" name="property" type="StringName" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="set_block_signals">
+			<return type="void" />
+			<param index="0" name="enable" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="set_deferred">
+			<return type="void" />
+			<param index="0" name="property" type="StringName" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="set_indexed">
+			<return type="void" />
+			<param index="0" name="property_path" type="NodePath" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="set_message_translation">
+			<return type="void" />
+			<param index="0" name="enable" type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="set_meta">
+			<return type="void" />
+			<param index="0" name="name" type="StringName" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="set_script">
+			<return type="void" />
+			<param index="0" name="script" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="set_translation_domain">
+			<return type="void" />
+			<param index="0" name="domain" type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="to_string">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="tr" qualifiers="const">
+			<return type="String" />
+			<param index="0" name="message" type="StringName" />
+			<param index="1" name="context" type="StringName" default="&amp;&quot;&quot;" />
+			<description>
+			</description>
+		</method>
+		<method name="tr_n" qualifiers="const">
+			<return type="String" />
+			<param index="0" name="message" type="StringName" />
+			<param index="1" name="plural_message" type="StringName" />
+			<param index="2" name="n" type="int" />
+			<param index="3" name="context" type="StringName" default="&amp;&quot;&quot;" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="property_list_changed">
+			<description>
+			</description>
+		</signal>
+		<signal name="script_changed">
+			<description>
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="NOTIFICATION_POSTINITIALIZE" value="0">
+		</constant>
+		<constant name="NOTIFICATION_PREDELETE" value="1">
+		</constant>
+		<constant name="NOTIFICATION_EXTENSION_RELOADED" value="2">
+		</constant>
+		<constant name="CONNECT_DEFERRED" value="1" enum="ConnectFlags">
+		</constant>
+		<constant name="CONNECT_PERSIST" value="2" enum="ConnectFlags">
+		</constant>
+		<constant name="CONNECT_ONE_SHOT" value="4" enum="ConnectFlags">
+		</constant>
+		<constant name="CONNECT_REFERENCE_COUNTED" value="8" enum="ConnectFlags">
+		</constant>
+		<constant name="CONNECT_APPEND_SOURCE_OBJECT" value="16" enum="ConnectFlags">
+		</constant>
+	</constants>
+</class>

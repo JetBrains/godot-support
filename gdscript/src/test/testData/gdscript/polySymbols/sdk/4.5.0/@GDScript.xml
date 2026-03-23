@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE class [
+  <!ELEMENT class (brief_description|description|tutorials|methods|constants|annotations)*>
+  <!ATTLIST class
+    name CDATA #REQUIRED
+    xmlns:xsi CDATA #REQUIRED
+    xsi:noNamespaceSchemaLocation CDATA #REQUIRED>
+  <!ELEMENT brief_description (#PCDATA)>
+  <!ELEMENT description (#PCDATA)>
+  <!ELEMENT tutorials (#PCDATA)>
+  <!ELEMENT methods (method)*>
+  <!ELEMENT method (return|param|description)*>
+  <!ATTLIST method
+    name CDATA #REQUIRED
+    qualifiers CDATA #IMPLIED>
+  <!ELEMENT return (#PCDATA)>
+  <!ATTLIST return
+    type CDATA #REQUIRED>
+  <!ELEMENT param (#PCDATA)>
+  <!ATTLIST param
+    default CDATA #IMPLIED
+    enum CDATA #IMPLIED
+    index CDATA #REQUIRED
+    is_bitfield CDATA #IMPLIED
+    name CDATA #REQUIRED
+    type CDATA #REQUIRED>
+  <!ELEMENT constants (constant)*>
+  <!ELEMENT constant (#PCDATA)>
+  <!ATTLIST constant
+    name CDATA #REQUIRED
+    value CDATA #REQUIRED>
+  <!ELEMENT annotations (annotation)*>
+  <!ELEMENT annotation (return|description|param)*>
+  <!ATTLIST annotation
+    name CDATA #REQUIRED
+    qualifiers CDATA #IMPLIED>
+  ]>
+<class name="@GDScript" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="Color8">
+			<return type="Color" />
+			<param index="0" name="r8" type="int" />
+			<param index="1" name="g8" type="int" />
+			<param index="2" name="b8" type="int" />
+			<param index="3" name="a8" type="int" default="255" />
+			<description>
+			</description>
+		</method>
+		<method name="assert">
+			<return type="void" />
+			<param index="0" name="condition" type="bool" />
+			<param index="1" name="message" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</method>
+		<method name="char">
+			<return type="String" />
+			<param index="0" name="code" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="convert">
+			<return type="Variant" />
+			<param index="0" name="what" type="Variant" />
+			<param index="1" name="type" type="int" enum="Variant.Type" />
+			<description>
+			</description>
+		</method>
+		<method name="dict_to_inst">
+			<return type="Object" />
+			<param index="0" name="dictionary" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="get_stack">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="inst_to_dict">
+			<return type="Dictionary" />
+			<param index="0" name="instance" type="Object" />
+			<description>
+			</description>
+		</method>
+		<method name="is_instance_of">
+			<return type="bool" />
+			<param index="0" name="value" type="Variant" />
+			<param index="1" name="type" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="len">
+			<return type="int" />
+			<param index="0" name="var" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="load">
+			<return type="Resource" />
+			<param index="0" name="path" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="ord">
+			<return type="int" />
+			<param index="0" name="char" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="preload">
+			<return type="Resource" />
+			<param index="0" name="path" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="print_debug" qualifiers="vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="print_stack">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="range" qualifiers="vararg">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="type_exists">
+			<return type="bool" />
+			<param index="0" name="type" type="StringName" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<constants>
+		<constant name="PI" value="3.14159265358979">
+		</constant>
+		<constant name="TAU" value="6.28318530717959">
+		</constant>
+		<constant name="INF" value="inf">
+		</constant>
+		<constant name="NAN" value="nan">
+		</constant>
+	</constants>
+	<annotations>
+		<annotation name="@abstract">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_category">
+			<return type="void" />
+			<param index="0" name="name" type="String" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_color_no_alpha">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_custom">
+			<return type="void" />
+			<param index="0" name="hint" type="int" enum="PropertyHint" />
+			<param index="1" name="hint_string" type="String" />
+			<param index="2" name="usage" type="int" enum="PropertyUsageFlags" is_bitfield="true" default="6" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_dir">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_enum" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="names" type="String" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_exp_easing" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="hints" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_file" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="filter" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_file_path" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="filter" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_flags" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="names" type="String" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_flags_2d_navigation">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_flags_2d_physics">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_flags_2d_render">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_flags_3d_navigation">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_flags_3d_physics">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_flags_3d_render">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_flags_avoidance">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_global_dir">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_global_file" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="filter" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_group">
+			<return type="void" />
+			<param index="0" name="name" type="String" />
+			<param index="1" name="prefix" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_multiline">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_node_path" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="type" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_placeholder">
+			<return type="void" />
+			<param index="0" name="placeholder" type="String" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_range" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="min" type="float" />
+			<param index="1" name="max" type="float" />
+			<param index="2" name="step" type="float" default="1.0" />
+			<param index="3" name="extra_hints" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_storage">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_subgroup">
+			<return type="void" />
+			<param index="0" name="name" type="String" />
+			<param index="1" name="prefix" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@export_tool_button">
+			<return type="void" />
+			<param index="0" name="text" type="String" />
+			<param index="1" name="icon" type="String" default="&quot;&quot;" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@icon">
+			<return type="void" />
+			<param index="0" name="icon_path" type="String" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@onready">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@rpc">
+			<return type="void" />
+			<param index="0" name="mode" type="String" default="&quot;authority&quot;" />
+			<param index="1" name="sync" type="String" default="&quot;call_remote&quot;" />
+			<param index="2" name="transfer_mode" type="String" default="&quot;unreliable&quot;" />
+			<param index="3" name="transfer_channel" type="int" default="0" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@static_unload">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@tool">
+			<return type="void" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@warning_ignore" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="warning" type="String" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@warning_ignore_restore" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="warning" type="String" />
+			<description>
+			</description>
+		</annotation>
+		<annotation name="@warning_ignore_start" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="warning" type="String" />
+			<description>
+			</description>
+		</annotation>
+	</annotations>
+</class>
