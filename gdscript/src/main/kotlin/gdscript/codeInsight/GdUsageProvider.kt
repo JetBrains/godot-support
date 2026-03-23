@@ -8,6 +8,7 @@ import com.intellij.psi.tree.TokenSet
 import gdscript.GdLexerAdapter
 import gdscript.GdScriptBundle
 import gdscript.highlighter.GdTokenTypeSet
+import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdEnumDeclNmi
 import gdscript.psi.GdEnumValueNmi
@@ -31,6 +32,10 @@ class GdUsageProvider : FindUsagesProvider {
     }
 
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
+        if(psiElement.containingFile?.getUserData(GdSdkPolySymbol.SYNTHETIC_SDK_CLASS_KEY) != null) {
+            return false
+        }
+
         return psiElement is GdClassNameNmi
                 || psiElement is GdMethodIdNmi
                 || psiElement is GdEnumDeclNmi
