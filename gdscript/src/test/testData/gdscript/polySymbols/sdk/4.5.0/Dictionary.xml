@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Dictionary" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<constructors>
+		<constructor name="Dictionary">
+			<return type="Dictionary" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Dictionary">
+			<return type="Dictionary" />
+			<param index="0" name="base" type="Dictionary" />
+			<param index="1" name="key_type" type="int" />
+			<param index="2" name="key_class_name" type="StringName" />
+			<param index="3" name="key_script" type="Variant" />
+			<param index="4" name="value_type" type="int" />
+			<param index="5" name="value_class_name" type="StringName" />
+			<param index="6" name="value_script" type="Variant" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Dictionary">
+			<return type="Dictionary" />
+			<param index="0" name="from" type="Dictionary" />
+			<description>
+			</description>
+		</constructor>
+	</constructors>
+	<methods>
+		<method name="assign">
+			<return type="void" />
+			<param index="0" name="dictionary" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="clear">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="duplicate" qualifiers="const">
+			<return type="Dictionary" />
+			<param index="0" name="deep" type="bool" default="false" />
+			<description>
+			</description>
+		</method>
+		<method name="duplicate_deep" qualifiers="const">
+			<return type="Dictionary" />
+			<param index="0" name="deep_subresources_mode" type="int" default="1" />
+			<description>
+			</description>
+		</method>
+		<method name="erase">
+			<return type="bool" />
+			<param index="0" name="key" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="find_key" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="get" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="key" type="Variant" />
+			<param index="1" name="default" type="Variant" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="get_or_add">
+			<return type="Variant" />
+			<param index="0" name="key" type="Variant" />
+			<param index="1" name="default" type="Variant" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="get_typed_key_builtin" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_typed_key_class_name" qualifiers="const">
+			<return type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="get_typed_key_script" qualifiers="const">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="get_typed_value_builtin" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_typed_value_class_name" qualifiers="const">
+			<return type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="get_typed_value_script" qualifiers="const">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="has" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="key" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="has_all" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="keys" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="hash" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="is_empty" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_read_only" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_same_typed" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="dictionary" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="is_same_typed_key" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="dictionary" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="is_same_typed_value" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="dictionary" type="Dictionary" />
+			<description>
+			</description>
+		</method>
+		<method name="is_typed" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_typed_key" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_typed_value" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="keys" qualifiers="const">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="make_read_only">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="merge">
+			<return type="void" />
+			<param index="0" name="dictionary" type="Dictionary" />
+			<param index="1" name="overwrite" type="bool" default="false" />
+			<description>
+			</description>
+		</method>
+		<method name="merged" qualifiers="const">
+			<return type="Dictionary" />
+			<param index="0" name="dictionary" type="Dictionary" />
+			<param index="1" name="overwrite" type="bool" default="false" />
+			<description>
+			</description>
+		</method>
+		<method name="recursive_equal" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="dictionary" type="Dictionary" />
+			<param index="1" name="recursion_count" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="set">
+			<return type="bool" />
+			<param index="0" name="key" type="Variant" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="size" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="sort">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="values" qualifiers="const">
+			<return type="Array" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<operators>
+		<operator name="operator !=">
+			<return type="bool" />
+			<param index="0" name="right" type="Dictionary" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator ==">
+			<return type="bool" />
+			<param index="0" name="right" type="Dictionary" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator []">
+			<return type="Variant" />
+			<param index="0" name="key" type="Variant" />
+			<description>
+			</description>
+		</operator>
+	</operators>
+</class>
