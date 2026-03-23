@@ -14,7 +14,8 @@ import gdscript.GdScriptBundle
 import gdscript.library.GdExtensionWatchService
 import gdscript.library.GdLibraryManager
 import gdscript.sdk.xml.GdNameSanitizer
-import gdscript.sdk.xml.XmlToGd
+import gdscript.polySymbols.GdPolySymbolsConstants
+import gdscript.polySymbols.sdk.xml.XmlToGd
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.CancellationException
@@ -48,6 +49,7 @@ class ReferenceGdLibrariesProjectActivity : ProjectActivity {
     private data class GdExtInputs(val executable: Path, val basePath: Path, val snapshot: GdExtensionWatchService.Snapshot)
 
     override suspend fun execute(project: Project) {
+        if (GdPolySymbolsConstants.USING_POLY_SYMBOLS) return
         if (project.isDisposed) return
         val scope = GdScriptProjectLifetimeService.getInstance(project).scope
         scope.launch {

@@ -1,0 +1,2 @@
+position (typeText=Vector2; priority=101.0; bold)
+rotation (typeText=float; priority=101.0; bold)

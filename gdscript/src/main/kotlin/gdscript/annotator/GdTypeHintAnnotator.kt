@@ -7,6 +7,8 @@ import com.intellij.psi.PsiElement
 import gdscript.GdKeywords
 import gdscript.GdScriptBundle
 import gdscript.highlighter.GdHighlighterColors
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
+import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import gdscript.psi.GdTypeHint
 import gdscript.psi.GdTypeHintRef
 import gdscript.utils.PsiFileUtil.isInSdk
@@ -36,6 +38,10 @@ class GdTypeHintAnnotator : Annotator {
     private fun invalidType(element: GdTypeHintRef) : Boolean {
         // don't spend time on resolving builtin types
         if (GdKeywords.BUILT_TYPES.contains(element.text)) return false
+
+        // Try Poly Symbols for the SDK
+        if (element.resolveSymbolReference() != null) return false
+
         return element.resolveRef() == null
     }
 
@@ -43,7 +49,8 @@ class GdTypeHintAnnotator : Annotator {
         var color = GdHighlighterColors.CLASS_TYPE
         if (GdKeywords.BUILT_TYPES.contains(element.text)) {
             color = GdHighlighterColors.BASE_TYPE
-        } else if (element.resolveRef()?.containingFile?.isInSdk() == true) {
+        } else if (element.resolveRef()?.containingFile?.isInSdk() == true
+            || element.resolveSymbolReference() is GdSdkPolySymbol) {
             color = GdHighlighterColors.ENGINE_TYPE
         }
 
