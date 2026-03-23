@@ -10,6 +10,8 @@ import gdscript.GdScriptBundle
 import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdClassNamingIndex
+import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdClassNaming
@@ -46,6 +48,9 @@ class GdClassNameAnnotator : Annotator {
         val ref = element.lastChild.references.firstOrNull()
         if (ref?.resolve() != null) return
 
+        val symbolRef = element.lastChild.resolveSymbolReference()
+        if (symbolRef != null) return
+
 //        val name = element.text
 //        if (GdClassUtil.getClassIdElement(name, element) == null
 //            // File index when you are extending script without class_name
@@ -75,7 +80,8 @@ class GdClassNameAnnotator : Annotator {
 
     private fun colorInheritance(element: GdInheritanceIdRef, holder: AnnotationHolder) {
         if (element.isClassName) {
-            if (GdClassUtil.getClassIdElement(element.text, element)?.containingFile?.isInSdk() == true)
+            if (GdClassUtil.getClassIdElement(element.text, element)?.containingFile?.isInSdk() == true
+                || GdPolySymbolQueriesUtil.getSdkClassSymbol(element.project, element.text) != null)
                 colorClass(element, GdHighlighterColors.ENGINE_TYPE, holder)
             else colorClass(element, GdHighlighterColors.CLASS_TYPE, holder)
         }
@@ -110,6 +116,8 @@ class GdClassNameAnnotator : Annotator {
                 prev = prev.prevSibling
             }
         }
+
+        conflict = conflict || GdPolySymbolQueriesUtil.getSdkClassSymbol(element.project, name) != null
 
         if (conflict) {
             holder
