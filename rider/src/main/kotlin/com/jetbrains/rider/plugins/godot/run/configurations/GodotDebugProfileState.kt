@@ -68,11 +68,11 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
         throw UnsupportedOperationException("Should use overload with session")
     }
 
-    override suspend fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler): ExecutionResult {
+    override suspend fun execute(executor: Executor, runner: ProgramRunner<*>, workerConsole: ConsoleView, workerProcessHandler: DebuggerWorkerProcessHandler): ExecutionResult {
         throw UnsupportedOperationException("Should use overload with session")
     }
 
-    override suspend fun execute(executor: Executor, runner: ProgramRunner<*>, workerProcessHandler: DebuggerWorkerProcessHandler, lifetime: Lifetime): ExecutionResult {
+    override suspend fun execute(executor: Executor, runner: ProgramRunner<*>, workerConsole: ConsoleView, workerProcessHandler: DebuggerWorkerProcessHandler, lifetime: Lifetime): ExecutionResult {
         val envs = exeConfiguration.parameters.envs.toMutableMap()
         envs.addUnique(lifetime, "GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:${remoteConfiguration.port},server=n,suspend=y")
         val runCommandLine = createEmptyConsoleCommandLine(exeConfiguration.parameters.terminalMode, if (SystemInfo.isWindows) ExecutableType.Windows else ExecutableType.Console)
@@ -87,7 +87,7 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
             .withRawParameters(exeConfiguration.parameters.programParameters)
 
         val commandLineString = runCommandLine.commandLineString
-        val monoConnectResult = super.execute(executor, runner, workerProcessHandler)
+        val monoConnectResult = super.execute(executor, runner, workerConsole, workerProcessHandler)
         workerProcessHandler.addProcessListener(object : ProcessAdapter() {
             override fun startNotified(event: ProcessEvent) {
                 val targetProcessHandler = if (exeConfiguration.parameters.terminalMode == TerminalMode.ExternalConsole)
