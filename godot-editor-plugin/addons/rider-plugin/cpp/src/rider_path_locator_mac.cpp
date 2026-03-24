@@ -12,6 +12,7 @@
 #include <cstdio>
 // Needed for std::stringstream used with std::getline below
 #include <sstream>
+#include <fstream>
 
 namespace fs = std::filesystem;
 
@@ -80,11 +81,60 @@ static std::vector<InstallInfo> get_installed_riders_with_mdfind() {
     return result;
 }
 
+std::vector<InstallInfo> RiderPathLocator::get_install_infos_mac(const std::string &toolbox_rider_root_path,
+                                                             const std::string &pattern,
+                                                             InstallInfo::InstallType type) {
+    std::vector<InstallInfo> result;
+    if (!directory_exists_and_non_empty(toolbox_rider_root_path)) return result;
+
+    std::regex rx;
+    // Convert very small subset of glob to regex: '*' -> ".*"
+    std::string rx_str = std::regex_replace(pattern, std::regex("[.]"), "[.]");
+    rx_str = std::regex_replace(rx_str, std::regex("\\*"), ".*");
+    rx = std::regex(rx_str);
+
+    for (auto it = fs::recursive_directory_iterator(toolbox_rider_root_path); it != fs::end(it); ++it) {
+        const auto &p = *it;
+        if (!p.is_directory()) continue;
+        const std::string filename = p.path().filename().string();
+        if (!std::regex_match(filename, rx)) continue;
+
+        auto info = get_install_info_from_rider_path(p.path().string(), type);
+        if (!info.has_value()) continue;
+        Version last = get_last_build_version(get_history_json_path(p.path().string()));
+        if (last.initialized() && !(info->version == last)) continue;
+        result.push_back(*info);
+        it.disable_recursion_pending();
+    }
+    return result;
+}
+
+std::vector<InstallInfo> RiderPathLocator::get_install_infos_from_toolbox_mac(const std::string &toolbox_path,
+                                                                          const std::string &pattern) {
+    if (!directory_exists_and_non_empty(toolbox_path)) return {};
+
+    const std::string install_location = extract_install_location_from_settings_json(toolbox_path);
+    if (!install_location.empty()) {
+        // V1 custom location
+        auto r = get_install_infos_mac((fs::path(install_location) / "apps").string(), pattern, InstallInfo::InstallType::Toolbox);
+        if (!r.empty()) return r;
+        // V2 custom location
+        return get_install_infos_mac(install_location, pattern, InstallInfo::InstallType::Toolbox);
+    }
+
+    // V1 default location
+    auto r = get_install_infos_mac((fs::path(toolbox_path) / "apps").string(), pattern, InstallInfo::InstallType::Toolbox);
+    if (!r.empty()) return r;
+
+    // V2 default location
+    return get_install_infos_mac(get_default_ide_install_location_for_toolbox_v2(), pattern, InstallInfo::InstallType::Toolbox);
+}
+
 std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths() {
     std::set<InstallInfo, InstallInfoLess> s;
     for (auto &i : get_installed_riders_with_mdfind()) s.insert(i);
     for (auto &i : get_manually_installed_riders()) s.insert(i);
-    for (auto &i : get_install_infos_from_toolbox(get_toolbox_path(), "Rider*.app")) s.insert(i); // todo: this doesn't work!
+    for (auto &i : get_install_infos_from_toolbox_mac(get_toolbox_path(), "Rider*.app")) s.insert(i);
     for (auto &i : get_install_infos_from_resource_file()) s.insert(i);
     return s;
 }

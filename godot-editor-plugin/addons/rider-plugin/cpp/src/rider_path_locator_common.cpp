@@ -55,15 +55,6 @@ static std::string read_file_to_string(const std::string &path) {
     return buffer.str();
 }
 
-static std::string trim(const std::string &s) {
-    auto b = s.begin();
-    while (b != s.end() && std::isspace(static_cast<unsigned char>(*b))) ++b;
-    auto e = s.end();
-    do { if (e == s.begin()) break; --e; } while (std::isspace(static_cast<unsigned char>(*e)));
-    if (b > e) return {};
-    return std::string(b, e + 1);
-}
-
 bool RiderPathLocator::directory_exists_and_non_empty(const std::string &path) {
     std::error_code ec;
     if (!fs::exists(path, ec) || !fs::is_directory(path, ec)) return false;
@@ -72,7 +63,7 @@ bool RiderPathLocator::directory_exists_and_non_empty(const std::string &path) {
 }
 
 // Extract install_location from toolbox .settings.json using a simple regex
-static std::string extract_install_location_from_settings_json(const std::string &toolbox_path) {
+std::string RiderPathLocator::extract_install_location_from_settings_json(const std::string &toolbox_path) {
     const std::string settings = (fs::path(toolbox_path) / ".settings.json").string();
     const std::string json = read_file_to_string(settings);
     if (json.empty()) return {};
