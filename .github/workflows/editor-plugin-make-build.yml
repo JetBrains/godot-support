@@ -41,7 +41,7 @@ jobs:
             { platform: macos, arch: universal, os: macos-latest },
           ]
         target-type: [editor]
-        float-precision: [single, double]
+        float-precision: [single]
 
     runs-on: ${{ matrix.target.os }}
     steps:
@@ -94,16 +94,8 @@ jobs:
             godot-editor-plugin
             !godot-editor-plugin/main.tscn
             !godot-editor-plugin/project.godot
+            !godot-editor-plugin/CMakeLists.txt
             !godot-editor-plugin/addons/rider-plugin/cpp/**
-            !**/.git/**
-            !**/.idea/**
-            !**/.godot/**
-            !**/.import/**
-            !**/.scons*/**
-            !**/*.exp
-            !**/*.lib
-            !**/*.pdb
-            !**/.gitignore
 
   # Merges all the build artifacts together into a single artifact
   merge:
@@ -135,9 +127,7 @@ jobs:
 
       - name: Prepare archive
         run: |
-          cd rider-plugin-addons
-          zip -r ../rider-plugin-addons.zip .
-          cd ..
+          zip -r rider-plugin-addons.zip rider-plugin-addons
 
       - name: Compute release params
         id: rel
