@@ -1,7 +1,6 @@
 package com.jetbrains.rider.plugins.godot.run.configurations
 
 import com.intellij.execution.ExecutionResult
-import com.intellij.execution.Executor
 import com.intellij.execution.KillableProcess
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.AnsiEscapeDecoder
@@ -11,7 +10,6 @@ import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessListener
 import com.intellij.execution.process.ProcessOutputTypes
 import com.intellij.execution.runners.ExecutionEnvironment
-import com.intellij.execution.runners.ProgramRunner
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.openapi.rd.createNestedDisposable
@@ -44,35 +42,15 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
     : GodotMonoConnectRemoteProfileState(remoteConfiguration, executionEnvironment) {
     private val ansiEscapeDecoder = AnsiEscapeDecoder()
 
-    override suspend fun createDebuggerWorker(
-        workerCmd: GeneralCommandLine,
-        protocolModel: DebuggerWorkerModel,
-        protocolServerPort: Int,
-        projectLifetime: Lifetime
-    ): DebuggerWorkerProcessHandler {
-
-        val debuggerWorkerLifetime = projectLifetime.createNested()
-
+    override fun bindSettings(lifetime: Lifetime, workerModel: DebuggerWorkerModel) {
         val frontendBackendModel = executionEnvironment.project.solution.godotFrontendBackendModel
-        frontendBackendModel.backendSettings.enableDebuggerExtensions.flowInto(debuggerWorkerLifetime,
-            protocolModel.godotDebuggerWorkerModel.showCustomRenderers)
-
-        return super.createDebuggerWorker(workerCmd, protocolModel, protocolServerPort, projectLifetime).apply {
-            addProcessListener(object : ProcessAdapter() {
-                override fun processTerminated(event: ProcessEvent) { debuggerWorkerLifetime.terminate() }
-            })
-        }
+        frontendBackendModel.backendSettings.enableDebuggerExtensions.flowInto(lifetime,
+            workerModel.godotDebuggerWorkerModel.showCustomRenderers)
+        super.bindSettings(lifetime, workerModel)
     }
 
-    override fun execute(executor: Executor?, runner: ProgramRunner<*>): ExecutionResult? {
-        throw UnsupportedOperationException("Should use overload with session")
-    }
-
-    override suspend fun execute(executor: Executor, runner: ProgramRunner<*>, workerConsole: ConsoleView, workerProcessHandler: DebuggerWorkerProcessHandler): ExecutionResult {
-        throw UnsupportedOperationException("Should use overload with session")
-    }
-
-    override suspend fun execute(executor: Executor, runner: ProgramRunner<*>, workerConsole: ConsoleView, workerProcessHandler: DebuggerWorkerProcessHandler, lifetime: Lifetime): ExecutionResult {
+    override suspend fun execute(workerConsole: ConsoleView, workerProcessHandler: DebuggerWorkerProcessHandler,
+                                 lifetime: Lifetime): ExecutionResult {
         val envs = exeConfiguration.parameters.envs.toMutableMap()
         envs.addUnique(lifetime, "GODOT_MONO_DEBUGGER_AGENT", "--debugger-agent=transport=dt_socket,address=127.0.0.1:${remoteConfiguration.port},server=n,suspend=y")
         val runCommandLine = createEmptyConsoleCommandLine(exeConfiguration.parameters.terminalMode, if (SystemInfo.isWindows) ExecutableType.Windows else ExecutableType.Console)
@@ -87,7 +65,7 @@ class GodotDebugProfileState(private val exeConfiguration: GodotDebugRunConfigur
             .withRawParameters(exeConfiguration.parameters.programParameters)
 
         val commandLineString = runCommandLine.commandLineString
-        val monoConnectResult = super.execute(executor, runner, workerConsole, workerProcessHandler)
+        val monoConnectResult = super.execute(workerConsole, workerProcessHandler, lifetime)
         workerProcessHandler.addProcessListener(object : ProcessAdapter() {
             override fun startNotified(event: ProcessEvent) {
                 val targetProcessHandler = if (exeConfiguration.parameters.terminalMode == TerminalMode.ExternalConsole)
