@@ -50,7 +50,7 @@ import gdscript.utils.VirtualFileUtil.resourcePath
 import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.NonNls
 import project.ProjectFileType
-import tscn.TscnFileType
+import com.jetbrains.rider.godot.community.tscn.TscnFileType
 
 object GdDocFactory {
 

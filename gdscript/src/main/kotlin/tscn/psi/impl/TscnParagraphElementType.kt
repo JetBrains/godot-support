@@ -6,7 +6,7 @@ import com.intellij.psi.stubs.IndexSink
 import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.stubs.StubInputStream
 import com.intellij.psi.stubs.StubOutputStream
-import tscn.TscnLanguage
+import com.jetbrains.rider.godot.community.tscn.TscnLanguage
 import tscn.index.TscnIndices
 import tscn.index.stub.TscnParagraphStub
 import tscn.index.stub.TscnParagraphStubImpl

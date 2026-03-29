@@ -43,10 +43,10 @@
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
     <backgroundPostStartupActivity implementation="gdscript.listener.ReferenceSdkProjectActivity"/>
     <backgroundPostStartupActivity implementation="GdScriptToolWindowManagerProjectActivity"/>
+    <backgroundPostStartupActivity implementation="gdscript.lsp.GodotLspStartOnFocusGainedActivity"/>
     <rider.godot.community.godotProjectProvider implementation="gdscript.utils.GdScriptGodotProjectProvider" />
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
     <platform.lsp.serverSupportProvider implementation="gdscript.lsp.GodotLspServerSupportProvider"/>
-    <rider.godot.community.lspStatusProvider implementation="gdscript.lsp.GodotLspRunningStatusProvider" />
     <toolWindow id="TscnScenePreviewWindowId"
                 anchor="right"
                 secondary="false"
@@ -76,7 +76,6 @@
     <codeInsight.lineMarkerProvider language="Tscn" implementationClass="tscn.lineMarker.TscnInheritanceLineMarkerProvider" />
 
     <!-- Tscn, Project, Config -->
-    <fileType name="Tscn file" implementationClass="tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
     <fileType name="Tres file" implementationClass="tscn.TresFileType" fieldName="INSTANCE" language="Tscn" extensions="tres"/>
     <fileType name="Import file" implementationClass="tscn.ImportFileType" fieldName="INSTANCE" language="Tscn" extensions="import"/>
     <fileType name="GodotProject file" implementationClass="project.ProjectFileType" fieldName="INSTANCE" language="GodotProject" extensions="godot"/>
@@ -237,6 +236,8 @@
     <notificationGroup id="GodotSupportNotificationGroupId" displayType="STICKY_BALLOON" bundle="messages.GdScriptBundle"
                        key="notification.group.godot.lsp"/>
 
+    <editorNotificationProvider implementation="gdscript.lsp.GodotLspNotConnectedNotificationProvider"/>
+
     <!-- DAP debugging -->
     <runConfigurationProducer implementation="gdscript.dap.GdScriptSceneRunConfigurationProducer" />
     <configurationType implementation="gdscript.dap.GdScriptConfigurationType"/>
@@ -245,6 +246,11 @@
     <xdebugger.breakpointType implementation="gdscript.dap.breakpoints.GdScriptLineBreakpointType"/>
     <xdebugger.breakpointType implementation="gdscript.dap.breakpoints.GdScriptExceptionBreakpointType"/>
     <backgroundPostStartupActivity implementation="gdscript.dap.GdScriptRunConfigurationGenerator$Activity"/>
+    <registryKey
+      key="gdscript.lsp.not.connected.banner.enabled"
+      defaultValue="false"
+      description="Enables experimental 'LSP Not Connected' banner"
+      restartRequired="false"/>
   </extensions>
 
   <actions>

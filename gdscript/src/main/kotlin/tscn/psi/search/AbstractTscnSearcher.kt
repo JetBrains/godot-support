@@ -11,7 +11,7 @@ import com.intellij.psi.util.descendantsOfType
 import com.intellij.usageView.UsageInfo
 import gdscript.utils.ProjectUtil.contentScope
 import gdscript.utils.VirtualFileUtil.resourcePath
-import tscn.TscnFileType
+import com.jetbrains.rider.godot.community.tscn.TscnFileType
 import tscn.psi.TscnConnectionHeader
 import tscn.psi.TscnDataLine
 import tscn.psi.TscnNodeHeader

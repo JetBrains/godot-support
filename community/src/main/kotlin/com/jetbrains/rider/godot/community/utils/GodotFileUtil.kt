@@ -1,13 +1,13 @@
 package com.jetbrains.rider.godot.community.utils
 
+import com.intellij.openapi.fileTypes.FileTypeRegistry
 import com.intellij.openapi.vfs.VirtualFile
+import com.jetbrains.rider.godot.community.gdscript.GdFileType
+import com.jetbrains.rider.godot.community.tscn.TscnFileType
 
 object GodotFileUtil {
-    const val GD = "gd"
-    private const val TSCN = "tscn"
 
-    fun isGdFile(file: VirtualFile?) = isMatchingFile(file, GD)
-    fun isTscnFile(file: VirtualFile?) = isMatchingFile(file, TSCN)
+    fun isGdFile(file: VirtualFile?): Boolean = file != null && FileTypeRegistry.getInstance().isFileOfType(file, GdFileType)
+    fun isTscnFile(file: VirtualFile?): Boolean = file != null && FileTypeRegistry.getInstance().isFileOfType(file, TscnFileType)
 
-    private fun isMatchingFile(file: VirtualFile?, extension: String) = file?.extension?.equals(extension, true) ?: false
 }

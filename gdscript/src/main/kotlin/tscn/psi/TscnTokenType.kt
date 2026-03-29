@@ -1,7 +1,7 @@
 package tscn.psi
 
 import com.intellij.psi.tree.IElementType
-import tscn.TscnLanguage
+import com.jetbrains.rider.godot.community.tscn.TscnLanguage
 
 class TscnTokenType : IElementType {
 

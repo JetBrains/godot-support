@@ -31,6 +31,11 @@ class GdLspSettingsFlowService(private val project: Project) {
         _useDynamicPort.value = state.lspUseDynamicPort
     }
 
+    fun setLspConnectionMode(mode: GdLspConnectionMode) {
+        GdProjectSettingsState.getInstance(project).state.lspConnectionMode = mode.name
+        _lspConnectionMode.value = mode
+    }
+
     private fun readLspConnectionMode(): GdLspConnectionMode? {
         return try {
             GdLspConnectionMode.valueOf(state.lspConnectionMode)
