@@ -15,8 +15,8 @@ import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.VirtualFileUtil.getPsiFile
+import com.jetbrains.rider.godot.community.tscn.TscnFileType
 import org.jetbrains.annotations.NonNls
-import tscn.TscnFileType
 import tscn.psi.TscnFile
 import tscn.psi.TscnNodeHeader
 import tscn.psi.search.TscnResourceSearcher

@@ -1,0 +1,54 @@
+package gdscript.lsp
+
+import com.intellij.openapi.application.ApplicationActivationListener
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.openapi.project.Project
+import com.intellij.openapi.startup.ProjectActivity
+import com.intellij.openapi.wm.IdeFrame
+import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
+import com.jetbrains.rider.godot.community.utils.GodotFileUtil
+import common.util.GdScriptProjectLifetimeService
+import gdscript.settings.GdLspConnectionMode
+import gdscript.settings.GdLspSettingsFlowService
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+private val RETRY_DELAYS_MS = longArrayOf(1000L, 2000L, 4000L) // 7s in total
+
+/**
+ * Ensures LSP runs for Godot projects on IDE focus with open GD files
+ */
+class GodotLspStartOnFocusGainedActivity : ProjectActivity {
+    override suspend fun execute(project: Project) {
+        val isGodot = GodotCommunityUtil.isGodotProject(project)?.await() ?: return
+        if (!isGodot) return
+
+        val scope = GdScriptProjectLifetimeService.getScope(project)
+        var retryJob: Job? = null
+
+        ApplicationManager.getApplication().messageBus.connect(
+            GdScriptProjectLifetimeService.getInstance(project)
+        ).subscribe(
+            ApplicationActivationListener.TOPIC,
+            object : ApplicationActivationListener {
+                override fun applicationActivated(ideFrame: IdeFrame) {
+                    val mode = GdLspSettingsFlowService.getInstance(project).lspConnectionMode.value
+                    if (mode == null || mode == GdLspConnectionMode.Never) return
+                    val hasGdFile = FileEditorManager.getInstance(project).openFiles.any { GodotFileUtil.isGdFile(it) }
+                    if (!hasGdFile) return
+
+                    retryJob?.cancel()
+                    retryJob = scope.launch {
+                        GodotLspRunningStatusProvider.ensureLspRunning(project)
+                        for (delayMs in RETRY_DELAYS_MS) {
+                            delay(delayMs)
+                            GodotLspRunningStatusProvider.ensureLspRunning(project)
+                        }
+                    }
+                }
+            }
+        )
+    }
+}

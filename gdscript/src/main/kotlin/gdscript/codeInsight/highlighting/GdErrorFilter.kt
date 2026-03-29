@@ -2,12 +2,11 @@ package gdscript.codeInsight.highlighting
 
 import com.intellij.codeInsight.highlighting.HighlightErrorFilter
 import com.intellij.psi.PsiErrorElement
-import gdscript.annotator.isGodotSupportInstalled
-import gdscript.utils.RiderGodotSupportPluginUtil
+import gdscript.lsp.GodotLspRunningStatusProvider
 
 class GdErrorFilter : HighlightErrorFilter() {
     override fun shouldHighlightErrorElement(el: PsiErrorElement): Boolean {
-        if (RiderGodotSupportPluginUtil.isGodotSupportLspRunning(el.project))
+        if (GodotLspRunningStatusProvider.isLspRunning(el.project))
             return false
         return true
     }

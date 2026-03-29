@@ -17,8 +17,8 @@ import project.ProjectLanguage
 import project.index.impl.ProjectSectionIndex
 import project.psi.ProjectData
 import project.psi.model.GdAutoload
-import tscn.TscnFileType
-import tscn.TscnLanguage
+import com.jetbrains.rider.godot.community.tscn.TscnFileType
+import com.jetbrains.rider.godot.community.tscn.TscnLanguage
 import tscn.psi.TscnNodeHeader
 import tscn.psi.utils.TscnNodeUtil
 import tscn.psi.utils.TscnNodeUtil.getScriptResource

@@ -10,8 +10,7 @@ import com.intellij.codeInspection.ProblemHighlightType.WEAK_WARNING
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.codeInspection.util.InspectionMessage
 import com.intellij.psi.PsiElement
-import gdscript.annotator.isGodotSupportInstalled
-import gdscript.utils.RiderGodotSupportPluginUtil
+import gdscript.lsp.GodotLspRunningStatusProvider
 import org.jetbrains.annotations.Nls
 
 object ProblemsHolderExtension {
@@ -34,7 +33,7 @@ object ProblemsHolderExtension {
 
     private fun ProblemsHolder.registerProblem(element: PsiElement, @InspectionMessage description: String, highlightType: ProblemHighlightType, quickFix: LocalQuickFix?) {
         var type = highlightType
-        if ((highlightType == GENERIC_ERROR || highlightType == ERROR) && RiderGodotSupportPluginUtil.isGodotSupportLspRunning(project))
+        if ((highlightType == GENERIC_ERROR || highlightType == ERROR) && GodotLspRunningStatusProvider.isLspRunning(project))
             type = POSSIBLE_PROBLEM
 
         if (quickFix == null) {

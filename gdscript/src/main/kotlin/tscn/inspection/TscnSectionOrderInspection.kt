@@ -8,7 +8,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.childrenOfType
 import gdscript.GdScriptBundle
 import tscn.TresFileType
-import tscn.TscnFileType
+import com.jetbrains.rider.godot.community.tscn.TscnFileType
 import tscn.psi.TscnConnectionHeader
 import tscn.psi.TscnHeader
 import tscn.psi.TscnNodeHeader

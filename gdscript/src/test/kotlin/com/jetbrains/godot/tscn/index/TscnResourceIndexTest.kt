@@ -4,7 +4,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.jetbrains.godot.BasePlatformTestCaseWithTestDataVFSAccess
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.utils.ProjectUtil.contentScope
-import tscn.TscnFileType
+import com.jetbrains.rider.godot.community.tscn.TscnFileType
 import tscn.index.impl.TscnResourceIndex
 import kotlin.io.path.pathString
 

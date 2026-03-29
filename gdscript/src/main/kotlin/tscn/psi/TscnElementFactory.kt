@@ -4,7 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.PsiTreeUtil
-import tscn.TscnFileType
+import com.jetbrains.rider.godot.community.tscn.TscnFileType
 
 /**
  * Creates PsiElements for refactoring purposes

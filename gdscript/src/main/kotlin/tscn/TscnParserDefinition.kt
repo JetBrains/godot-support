@@ -13,6 +13,7 @@ import com.intellij.psi.stubs.PsiFileStub
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.IStubFileElementType
 import com.intellij.psi.tree.TokenSet
+import com.jetbrains.rider.godot.community.tscn.TscnLanguage
 import tscn.parser.TscnParser
 import tscn.psi.TscnFile
 import tscn.psi.TscnTypes

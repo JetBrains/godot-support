@@ -16,4 +16,5 @@ public final class RiderPluginsGodotCommunityIcons {
   /** 16x16 */ public static final @NotNull Icon GDScript = load("icons/GDScript.svg", -279704108, 0);
   /** 16x16 */ public static final @NotNull Icon Godot = load("icons/Godot.svg", -1088500511, 2);
   /** 16x16 */ public static final @NotNull Icon GodotDisconnected = load("icons/GodotDisconnected.svg", 1292172867, 2);
+  /** 16x16 */ public static final @NotNull Icon TscnFile = load("icons/TscnFile.svg", -1679927371, 0);
 }

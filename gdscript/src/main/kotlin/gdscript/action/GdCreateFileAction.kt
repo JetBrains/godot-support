@@ -11,7 +11,6 @@ import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.GdScriptBundle
 import gdscript.annotator.isGodotSupportInstalled
-import gdscript.utils.RiderGodotSupportPluginUtil
 import com.jetbrains.rider.godot.community.utils.hasCompletedTrue
 
 
