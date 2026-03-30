@@ -4,15 +4,13 @@ entry_symbol = "rider_library_init"
 compatibility_minimum = "4.2.2"
 
 [libraries]
-; Relative paths ensure that our GDExtension can be placed anywhere in the project directory.
+
 macos.single.debug = "./macos/librider-gdextension.macos.editor.dylib"
 
-windows.x86_32.single.debug = "./windows/rider-plugin.windows.editor.x86_32.dll"
+windows.arm64.single.debug = "./windows/rider-gdextension.windows.editor.arm64.dll"
 
-windows.x86_64.single.debug = "./windows/rider-plugin.windows.editor.x86_64.dll"
+windows.x86_64.single.debug = "./windows/rider-gdextension.windows.editor.x86_64.dll"
 
-linux.x86_64.single.debug = "./linux/librider-plugin.linux.editor.x86_64.so"
+linux.x86_64.single.debug = "./linux/librider-gdextension.linux.editor.x86_64.so"
 
-linux.arm64.single.debug = "./linux/librider-plugin.linux.editor.arm64.so"
-
-linux.rv64.single.debug = "./linux/librider-plugin.linux.editor.rv64.so"
+linux.arm64.single.debug = "./linux/librider-gdextension.linux.editor.arm64.so"
