@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.terminal.ui.TerminalWidget
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.cpp.GodotEngineSolutionAvailability
+import com.jetbrains.rider.projectView.SolutionConfigurationManager
 import com.jetbrains.rider.projectView.solutionDirectoryPath
 import org.jetbrains.plugins.terminal.TerminalToolWindowManager
 import kotlin.io.path.pathString
@@ -37,7 +38,10 @@ class GodotEngineGenerateSolutionAction : AnAction(), DumbAware {
                 false,
             )
 
+        val conf = SolutionConfigurationManager.getInstance(project).activeConfigurationAndPlatform?.configuration
+        val targetOption = if (conf != null) " target=$conf" else ""
+
         terminalManager.toolWindow?.show(null)
-        terminalWidget.sendCommandToExecute("scons vsproj=yes dev_build=yes")
+        terminalWidget.sendCommandToExecute("scons vsproj=yes dev_build=yes$targetOption")
     }
 }
