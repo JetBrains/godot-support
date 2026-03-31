@@ -1,4 +1,5 @@
 @tool
+extends RefCounted
 class_name RiderLocatorService
 
 func get_installations() -> Array:

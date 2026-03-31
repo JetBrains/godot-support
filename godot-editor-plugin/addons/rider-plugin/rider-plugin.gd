@@ -3,7 +3,6 @@ extends EditorPlugin
 
 var editor_settings: EditorSettings
 var checkbutton: CheckButton
-var rider_button: Button
 var _preset_applier: PresetApplier
 var _settings_service: EditorSettingsService
 var _locator_service: RiderLocatorService
@@ -58,7 +57,6 @@ func _on_checkbutton_pressed() -> void:
 	_preset_applier.apply_preset(editor_settings, is_active)
 
 func _exit_tree() -> void:
-	remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, checkbutton)
-	remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, rider_button)
-	checkbutton.free()
-	rider_button.free()
+	if checkbutton != null:
+		remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, checkbutton)
+		checkbutton.queue_free()

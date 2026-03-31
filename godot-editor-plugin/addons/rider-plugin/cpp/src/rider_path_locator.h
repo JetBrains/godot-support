@@ -1,7 +1,3 @@
-// Simplified, GDExtension-friendly reimplementation of RiderPathLocator
-// Original code was based on Unreal Engine types. This version uses the C++
-// standard library and is safe to compile within Godot's GDExtension builds.
-
 #pragma once
 
 #include <string>

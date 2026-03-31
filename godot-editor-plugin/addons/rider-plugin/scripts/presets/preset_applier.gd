@@ -1,6 +1,5 @@
 @tool
-extends Object
-
+extends RefCounted
 class_name PresetApplier
 
 var presets_path: String
