@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include <godot_cpp/classes/object.hpp>
+#include "godot_cpp/classes/ref_counted.hpp"
 #include <godot_cpp/variant/array.hpp>
 
-class RiderLocator : public godot::Object {
-    GDCLASS(RiderLocator, godot::Object)
+class RiderLocator : public godot::RefCounted {
+    GDCLASS(RiderLocator, godot::RefCounted)
 
 protected:
     static void _bind_methods();

@@ -1,6 +1,5 @@
 @tool
-extends Object
-
+extends RefCounted
 class_name EditorSettingsService
 
 func set_external_editor_path(editor_settings: EditorSettings, path: String) -> void:
