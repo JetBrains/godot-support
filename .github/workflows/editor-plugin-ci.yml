@@ -1,7 +1,7 @@
 # For syntax, see https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
 # This workflow is automatically triggered for pull requests to verify that everything still builds.
 
-name: Editor Plugin CI
+name: Editor Plugin Test
 on:
   workflow_call:
   pull_request:

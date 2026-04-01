@@ -12,6 +12,7 @@ libname = "rider-gdextension"
 projectdir = ".."
 
 localEnv = Environment(tools=["default"], PLATFORM="")
+localEnv["disable_exceptions"] = False
 
 # Build profiles can be used to decrease compile times.
 # You can either specify "disabled_classes", OR
