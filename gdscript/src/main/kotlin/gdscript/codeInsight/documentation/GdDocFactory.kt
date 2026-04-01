@@ -47,7 +47,6 @@ import gdscript.psi.utils.GdCommonUtil
 import gdscript.psi.utils.GdInheritanceUtil
 import gdscript.utils.VirtualFileUtil.localParentPath
 import gdscript.utils.VirtualFileUtil.resourcePath
-import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.NonNls
 import project.ProjectFileType
 import com.jetbrains.rider.godot.community.tscn.TscnFileType
