@@ -22,7 +22,6 @@ import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
 import gdscript.utils.GdOperand
 import gdscript.utils.StringUtil.isDynamicType
-import org.jetbrains.annotations.Nls
 import org.jetbrains.annotations.NonNls
 
 class GdExprTypeAnnotator : Annotator {
