@@ -1,7 +1,7 @@
 # For syntax, see https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
 # This workflow is triggered manually on the "Actions" tab on GitHub, and can be used to create releases.
 
-name: Editor Plugin Build
+name: Editor Plugin Release
 on:
   workflow_dispatch:
     inputs:
@@ -95,6 +95,7 @@ jobs:
             !godot-editor-plugin/main.tscn
             !godot-editor-plugin/project.godot
             !godot-editor-plugin/CMakeLists.txt
+            !godot-editor-plugin/run-tests.sh
             !godot-editor-plugin/addons/rider-plugin/cpp/**
 
   # Merges all the build artifacts together into a single artifact
