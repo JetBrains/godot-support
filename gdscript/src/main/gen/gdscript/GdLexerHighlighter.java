@@ -6,9 +6,7 @@ package gdscript;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import gdscript.psi.GdTokenType;
 import gdscript.psi.GdTypes;
-import java.util.Stack;
 
 
 class GdLexerHighlighter implements FlexLexer {
