@@ -54,15 +54,19 @@ private:
     static std::string get_default_ide_install_location_for_toolbox_v2();
     static std::vector<InstallInfo> get_install_infos_from_toolbox(const std::string &toolbox_path,
                                                                    const std::string &pattern);
+#if __APPLE__
 	static std::vector<InstallInfo> get_install_infos_from_toolbox_mac(const std::string &toolbox_path,
 																   const std::string &pattern);
-    static std::vector<InstallInfo> get_install_infos_from_resource_file();
-    static std::vector<InstallInfo> get_install_infos(const std::string &toolbox_rider_root_path,
-                                                      const std::string &pattern,
-                                                      InstallInfo::InstallType type);
 	static std::vector<InstallInfo> get_install_infos_mac(const std::string &toolbox_rider_root_path,
 												  const std::string &pattern,
 												  InstallInfo::InstallType type);
+#endif
+	
+	static std::vector<InstallInfo> get_install_infos_from_resource_file();
+    static std::vector<InstallInfo> get_install_infos(const std::string &toolbox_rider_root_path,
+                                                      const std::string &pattern,
+                                                      InstallInfo::InstallType type);
+
     static std::string get_history_json_path(const std::string &rider_path);
     static Version get_last_build_version(const std::string &history_json_path);
 };

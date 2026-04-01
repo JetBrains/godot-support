@@ -2,7 +2,7 @@
 
 #include "rider_path_locator.h"
 
-#if defined(__APPLE__)
+#if __APPLE__
 
 #include <filesystem>
 #include <regex>
