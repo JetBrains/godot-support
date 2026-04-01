@@ -7,6 +7,16 @@ on:
   pull_request:
   merge_group:
 
+env:
+  
+  # Used to select the version of Godot to run the tests with.
+  GODOT_TEST_VERSION: 4.6.1-stable
+  # Use UTF-8 on Linux.
+  LANG: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
+  # Use UTF-8 on Windows.
+  PYTHONIOENCODING: utf8
+
 defaults:
   run:
     working-directory: godot-editor-plugin/addons/rider-plugin/cpp
@@ -18,13 +28,13 @@ jobs:
       matrix:
         # Test a few selected combinations of parameters ("test case matrix").
         include:
-          - target: { platform: linux, arch: x86_64, os: ubuntu-22.04 }
+          - target: { platform: linux, arch: x86_64, os: ubuntu-22.04, run-tests: true }
             target-type: editor
             float-precision: single
-          - target: { platform: windows, arch: x86_64, os: windows-latest }
+          - target: { platform: windows, arch: x86_64, os: windows-latest, run-tests: false }
             target-type: editor
             float-precision: single
-          - target: { platform: macos, arch: universal, os: macos-latest }
+          - target: { platform: macos, arch: universal, os: macos-latest, run-tests: false }
             target-type: editor
             float-precision: single
 
@@ -62,3 +72,20 @@ jobs:
         with:
           scons-cache: ${{ github.workspace }}/.scons-cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
+
+      - name: Download requested Godot version for testing
+        if: matrix.target.run-tests
+        run: |
+          wget "https://github.com/godotengine/godot/releases/download/${GODOT_TEST_VERSION}/Godot_v${GODOT_TEST_VERSION}_linux.x86_64.zip" -O Godot.zip
+          unzip -a Godot.zip
+          chmod +x "Godot_v${GODOT_TEST_VERSION}_linux.x86_64"
+          echo "GODOT=$(pwd)/Godot_v${GODOT_TEST_VERSION}_linux.x86_64" >> $GITHUB_ENV
+
+      - name: Run tests
+        if: matrix.target.run-tests
+        run: |
+          $GODOT --headless --version
+          cd ../../../
+          # Need to run the editor so .godot is generated... but it crashes! Ignore that :-)
+          (timeout 30 $GODOT --import --headless >/dev/null 2>&1 || true)
+          ./run-tests.sh
