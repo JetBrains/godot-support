@@ -60,3 +60,7 @@ func _exit_tree() -> void:
 	if checkbutton != null:
 		remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, checkbutton)
 		checkbutton.queue_free()
+		
+	var args = OS.get_cmdline_args()
+	if "--rider-addon-tests" in args:
+		print("==== rider-addon-tests finished ====")
