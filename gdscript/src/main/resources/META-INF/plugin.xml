@@ -238,6 +238,9 @@
 
     <editorNotificationProvider implementation="gdscript.lsp.GodotLspNotConnectedNotificationProvider"/>
 
+    <!-- Statistics -->
+    <statistics.projectUsagesCollector implementation="gdscript.statistics.GdProjectUsagesCollector"/>
+
     <!-- DAP debugging -->
     <runConfigurationProducer implementation="gdscript.dap.GdScriptSceneRunConfigurationProducer" />
     <configurationType implementation="gdscript.dap.GdScriptConfigurationType"/>
