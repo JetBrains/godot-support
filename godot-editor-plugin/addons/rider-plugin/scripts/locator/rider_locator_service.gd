@@ -2,6 +2,9 @@
 extends RefCounted
 class_name RiderLocatorService
 
+var _installations_found: Array = []
+var _is_loading := false
+
 func get_installations() -> Array:
 	var result: Array = RiderLocator.new().get_installations() # from the gdextension
 	return result
@@ -42,6 +45,21 @@ func trim_quotes(s: String) -> String:
 
 
 func add_selector_in_editor_interface(_settings_service: EditorSettingsService):
+	_update_selector(_settings_service, _installations_found)
+
+	if _installations_found.is_empty() and not _is_loading:
+		_is_loading = true
+		WorkerThreadPool.add_task(func():
+			var array: Array = get_installations()
+			call_deferred("_on_installations_loaded", _settings_service, array)
+		)
+
+func _on_installations_loaded(_settings_service: EditorSettingsService, array: Array):
+	_is_loading = false
+	_installations_found = array
+	_update_selector(_settings_service, _installations_found)
+
+func _update_selector(_settings_service: EditorSettingsService, array: Array):
 	var name := "text_editor/external/editor"
 	var settings := EditorInterface.get_editor_settings()
 
@@ -49,7 +67,6 @@ func add_selector_in_editor_interface(_settings_service: EditorSettingsService):
 		settings.set(name, 0)
 
 	var installations: Array = ["Custom"]
-	var array: Array = get_installations()
 	for element in array:
 		var display_name: String = element.get("display", "")
 		# Replace special characters that break PROPERTY_HINT_ENUM format
@@ -67,9 +84,9 @@ func add_selector_in_editor_interface(_settings_service: EditorSettingsService):
 
 	# Connect to settings changes to update external editor path when selection changes
 	if not settings.settings_changed.is_connected(_on_selection_changed):
-		settings.settings_changed.connect(_on_selection_changed.bind(_settings_service, array))
+		settings.settings_changed.connect(_on_selection_changed.bind(_settings_service))
 
-func _on_selection_changed(_settings_service: EditorSettingsService, installations_array: Array) -> void:
+func _on_selection_changed(_settings_service: EditorSettingsService) -> void:
 	var name := "text_editor/external/editor"
 	var settings := EditorInterface.get_editor_settings()
 	var selected_index: int = settings.get_setting(name)
@@ -80,6 +97,7 @@ func _on_selection_changed(_settings_service: EditorSettingsService, installatio
 
 	# Map to actual installation (offset by 1 because of "Custom" at index 0)
 	var installation_index := selected_index - 1
+	var installations_array = _installations_found
 	if installation_index >= 0 and installation_index < installations_array.size():
 		var installation = installations_array[installation_index]
 		var new_path: String = installation.get("path", "")
