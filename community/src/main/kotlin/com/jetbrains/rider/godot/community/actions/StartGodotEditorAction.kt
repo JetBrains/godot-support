@@ -7,7 +7,6 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
-import com.jetbrains.rider.godot.community.utils.hasCompletedTrue
 
 object StartGodotEditorAction : DumbAwareAction() {
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
@@ -24,7 +23,7 @@ object StartGodotEditorAction : DumbAwareAction() {
             return
         }
 
-        val isGodotProject = GodotCommunityUtil.isGodotProject(project).hasCompletedTrue()
+        val isGodotProject = GodotCommunityUtil.isGodotProject(project)
         val executableAvailable = GodotCommunityUtil.getGodotExecutablePath(project) != null
 
         e.presentation.isVisible = isGodotProject

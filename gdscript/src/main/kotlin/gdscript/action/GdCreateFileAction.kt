@@ -11,7 +11,6 @@ import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.GdScriptBundle
 import gdscript.annotator.isGodotSupportInstalled
-import com.jetbrains.rider.godot.community.utils.hasCompletedTrue
 
 
 class GdCreateFileAction : CreateFileFromTemplateAction(), DumbAware {
@@ -48,6 +47,6 @@ class GdCreateFileAction : CreateFileFromTemplateAction(), DumbAware {
             return
         }
 
-        e.presentation.setEnabledAndVisible(isGodotSupportInstalled && GodotCommunityUtil.isGodotProject(project).hasCompletedTrue())
+        e.presentation.setEnabledAndVisible(isGodotSupportInstalled && GodotCommunityUtil.isGodotProject(project))
     }
 }

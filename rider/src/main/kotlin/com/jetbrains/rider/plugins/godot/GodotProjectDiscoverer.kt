@@ -24,10 +24,7 @@ import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigu
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.util.idea.getService
-import kotlinx.coroutines.CompletableDeferred
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
@@ -44,7 +41,6 @@ class GodotProjectDiscoverer(project: Project) {
     val mainProjectBasePathFlow: MutableStateFlow<Path?> = MutableStateFlow(null)
     val isPureGdScriptProjectFlow: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val executablePathFlow: MutableStateFlow<Path?> = MutableStateFlow(null)
-    val isGodotProject: CompletableDeferred<Boolean> = CompletableDeferred()
 
     init {
         val lifetime = GodotProjectLifetimeService.getLifetime(project)
@@ -111,27 +107,11 @@ class GodotProjectDiscoverer(project: Project) {
             session: ClientProjectSession,
             model: GodotFrontendBackendModel
         ) {
-            model.isGodotProject.advise(lifetime) {getInstance(session.project).isGodotProject.complete(it) }
             model.godotDescriptor.advise(lifetime){
                 getInstance(session.project).godotDescriptor.set(it)
                 getInstance(session.project).mainProjectBasePathFlow.value = Path(it.mainProjectBasePath)
                 getInstance(session.project).isPureGdScriptProjectFlow.value = it.isPureGdScriptProject
             }
         }
-    }
-}
-
-@OptIn(ExperimentalCoroutinesApi::class)
-fun <T> Deferred<T>?.valueOrDefault(defaultValue: T): T {
-    if (this == null) return defaultValue
-
-    return if (this.isCompleted) {
-        try {
-            this.getCompleted()
-        } catch (_: Exception) {
-            defaultValue
-        }
-    } else {
-        defaultValue
     }
 }

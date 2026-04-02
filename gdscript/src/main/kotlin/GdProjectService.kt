@@ -1,17 +1,17 @@
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
-import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.util.indexing.diagnostic.ProjectIndexingActivityHistoryListener
+import com.intellij.util.indexing.diagnostic.ProjectScanningHistory
 import com.jetbrains.rider.godot.community.GodotMetadataFileWatcher
 import com.jetbrains.rider.godot.community.GodotMetadataService
-import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,8 +29,6 @@ class GdProjectService(
     private val scope: CoroutineScope
 ) {
     private var _projectGodotFile: VirtualFile? = null
-    private val _isGodotProjectDeferred = CompletableDeferred<Boolean>()
-    val isGodotProjectDeferred: Deferred<Boolean> get() = _isGodotProjectDeferred
 
     private val _executablePathFlow = MutableStateFlow<Path?>(null)
     val executablePathFlow: StateFlow<Path?> = _executablePathFlow.asStateFlow()
@@ -48,19 +46,27 @@ class GdProjectService(
         val projectGodot = projectDir?.findChild("project.godot")
         if (projectDir != null && projectGodot != null) {
             discoverProject(projectDir)
-        } else {
-            // todo: react on further changes of the VFS or the index, I am not sure
-            DumbService.getInstance(project).runWhenSmart { // Wait for indexes to finish
-                scope.launch(Dispatchers.IO){
-                    val projectGodotFile = readAction {
-                        FilenameIndex.firstVirtualFileWithName("project.godot", true,
-                            GlobalSearchScope.projectScope(project), null
-                        )
+        }
+
+        // After each index scan, check if project.godot appeared (e.g. from a linked folder added later)
+        ApplicationManager.getApplication().messageBus.connect(scope).subscribe(
+            ProjectIndexingActivityHistoryListener.TOPIC,
+            object : ProjectIndexingActivityHistoryListener {
+                override fun onFinishedScanning(history: ProjectScanningHistory) {
+                    if (history.project != project) return
+                    if (_projectBasePathFlow.value != null) return // already discovered
+                    scope.launch(Dispatchers.IO) {
+                        val file = readAction {
+                            FilenameIndex.firstVirtualFileWithName(
+                                "project.godot", true,
+                                GlobalSearchScope.projectScope(project), null
+                            )
+                        }
+                        file?.parent?.let { discoverProject(it) }
                     }
-                    projectGodotFile?.parent?.let { discoverProject(it) }
                 }
             }
-        }
+        )
     }
 
     fun discoverProject(projectDir: VirtualFile) {
@@ -68,7 +74,6 @@ class GdProjectService(
         _projectBasePathFlow.value = projectDir.toNioPath()
         _isPureGdScriptProjectFlow.value = _projectBasePathFlow.value != null
         _executablePathFlow.value = getExecutablePath()
-        _isGodotProjectDeferred.complete(_projectGodotFile != null)
 
         subscribeToMetadataChanges()
     }
