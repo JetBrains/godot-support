@@ -13,11 +13,6 @@ on:
         description: 'Release title. Defaults to tag name or an auto-generated name.'
         required: false
         type: string
-      draft:
-        description: 'Create as a draft release'
-        required: false
-        type: boolean
-        default: true
       prerelease:
         description: 'Mark release as prerelease'
         required: false

@@ -3,7 +3,7 @@ extends RefCounted
 class_name RiderLocatorService
 
 var _installations_found: Array = []
-var _is_loading := false
+var _thread: Thread = null
 
 func get_installations() -> Array:
 	var result: Array = RiderLocator.new().get_installations() # from the gdextension
@@ -45,21 +45,28 @@ func trim_quotes(s: String) -> String:
 
 
 func add_selector_in_editor_interface(_settings_service: EditorSettingsService):
-	_update_selector(_settings_service, _installations_found)
+	_update_selector(_installations_found)
 
-	if _installations_found.is_empty() and not _is_loading:
-		_is_loading = true
-		WorkerThreadPool.add_task(func():
-			var array: Array = get_installations()
-			call_deferred("_on_installations_loaded", _settings_service, array)
-		)
+	if _installations_found.is_empty() and _thread == null:
+		_thread = Thread.new()
+		_thread.start(_load_installations)
 
-func _on_installations_loaded(_settings_service: EditorSettingsService, array: Array):
-	_is_loading = false
+func _load_installations() -> void:
+	var array: Array = get_installations()
+	call_deferred("_on_installations_loaded", array)
+
+func _on_installations_loaded(array: Array):
 	_installations_found = array
-	_update_selector(_settings_service, _installations_found)
+	if _thread:
+		_thread.wait_to_finish()
+		_thread = null
+	_update_selector(_installations_found)
 
-func _update_selector(_settings_service: EditorSettingsService, array: Array):
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE and _thread != null:
+		_thread.wait_to_finish()
+
+func _update_selector(array: Array):
 	var name := "text_editor/external/editor"
 	var settings := EditorInterface.get_editor_settings()
 
@@ -84,9 +91,9 @@ func _update_selector(_settings_service: EditorSettingsService, array: Array):
 
 	# Connect to settings changes to update external editor path when selection changes
 	if not settings.settings_changed.is_connected(_on_selection_changed):
-		settings.settings_changed.connect(_on_selection_changed.bind(_settings_service))
+		settings.settings_changed.connect(_on_selection_changed.bind())
 
-func _on_selection_changed(_settings_service: EditorSettingsService) -> void:
+func _on_selection_changed() -> void:
 	var name := "text_editor/external/editor"
 	var settings := EditorInterface.get_editor_settings()
 	var selected_index: int = settings.get_setting(name)
@@ -102,4 +109,4 @@ func _on_selection_changed(_settings_service: EditorSettingsService) -> void:
 		var installation = installations_array[installation_index]
 		var new_path: String = installation.get("path", "")
 		if not new_path.is_empty():
-			_settings_service.set_external_editor_path(settings, new_path)
+			EditorSettingsService.new().set_external_editor_path(settings, new_path)
