@@ -5,22 +5,18 @@ import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import common.util.GdScriptProjectLifetimeService
 import tscn.toolWindow.TscnScenePreviewWindowFactory
 
-class GdScriptToolWindowManagerProjectActivity: ProjectActivity {
+class GdScriptToolWindowManagerProjectActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         val lifetime = GdScriptProjectLifetimeService.getLifetime(project)
         lifetime.launch {
-            tryEnableTscnScenePreview(project)
+            val lifetime = GdScriptProjectLifetimeService.getLifetime(project)
+            lifetime.launch {
+                GodotCommunityUtil.awaitGodotProject(project)
+                TscnScenePreviewWindowFactory.makeAvailable(project)
+            }
         }
     }
 
-    private suspend fun tryEnableTscnScenePreview(project: Project) {
-        val isGodot = GodotCommunityUtil.isGodotProject(project)
-        if (isGodot == null) {
-            // Godot plugin is disabled or not installed
-            TscnScenePreviewWindowFactory.makeAvailable(project)
-            return
-        }
-        if (isGodot.await())
-            TscnScenePreviewWindowFactory.makeAvailable(project)
-    }
+
 }
+

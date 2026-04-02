@@ -25,6 +25,7 @@
     <fileType name="GdScript" implementationClass="com.jetbrains.rider.godot.community.gdscript.GdFileType" fieldName="INSTANCE" language="GdScript" extensions="gd;gdf"/>
     <fileType name="Tscn file" implementationClass="com.jetbrains.rider.godot.community.tscn.TscnFileType" fieldName="INSTANCE" language="Tscn" extensions="tscn"/>
     <postStartupActivity implementation="com.jetbrains.rider.godot.community.GodotMetadataFileWatcherManager"/>
+    <backgroundPostStartupActivity implementation="com.jetbrains.rider.godot.community.actions.GodotToolbarUpdateActivity"/>
   </extensions>
 
   <actions>

@@ -7,26 +7,15 @@ import com.jetbrains.rider.godot.community.GodotEditorConnectionProvider
 import com.jetbrains.rider.godot.community.GodotMajorVersion
 import com.jetbrains.rider.godot.community.GodotProjectProvider
 import com.jetbrains.rider.godot.community.actions.GodotEditorLaunchConfig
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import java.nio.file.Path
 import kotlin.io.path.exists
-
-@OptIn(ExperimentalCoroutinesApi::class)
-fun Deferred<Boolean>?.hasCompletedTrue(): Boolean {
-    if (this == null) return false
-
-    return if (this.isCompleted) {
-        this.getCompleted()
-    } else {
-        false
-    }
-}
 
 private val GODOT_PROJECT_PROVIDER_EP: ExtensionPointName<GodotProjectProvider> =
     ExtensionPointName.create("com.intellij.rider.godot.community.godotProjectProvider")
@@ -91,15 +80,15 @@ object GodotCommunityUtil {
                 it.getEditorConnectionState(project).takeIf { state -> state != EditorConnectionState.NOT_APPLICABLE }
             } ?: EditorConnectionState.NOT_APPLICABLE
 
-    fun isGodotProjectInstant(project: Project): Boolean {
-        val results = GODOT_PROJECT_PROVIDER_EP.extensionList.map { it.isGodotProject(project) }
-        if (results.isEmpty()) return false
-        return results.any { it.hasCompletedTrue() }
-    }
-
     // todo: there seem to be a bug in combining 2 deferred booleans
-    fun isGodotProject(project: Project): Deferred<Boolean>? =
-        GODOT_PROJECT_PROVIDER_EP.extensionList.firstNotNullOfOrNull { it.isGodotProject(project) }
+    fun isGodotProject(project: Project): Boolean = getGodotProjectBasePath(project) != null
+
+    fun isGodotProjectFlow(project: Project): Flow<Boolean> = getGodotProjectBasePathFlow(project).map { it != null }
+
+    /** Awaits until the project is first recognized as a Godot project */
+    suspend fun awaitGodotProject(project: Project) {
+        isGodotProjectFlow(project).first { it == true }
+    }
 
     fun getEditorLaunchConfig(project: Project): GodotEditorLaunchConfig? {
         val executablePath = getGodotExecutablePath(project) ?: return null

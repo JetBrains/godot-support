@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class TscnScenePreviewWindowFactory() : ToolWindowFactory {
     companion object {
-        const val TOOLWINDOW_ID = "TscnScenePreviewWindowId"
+        const val TOOLWINDOW_ID: String = "TscnScenePreviewWindowId"
 
         fun makeAvailable(project: Project) {
             GdScriptProjectLifetimeService.getScope(project).launch(Dispatchers.EDT) {

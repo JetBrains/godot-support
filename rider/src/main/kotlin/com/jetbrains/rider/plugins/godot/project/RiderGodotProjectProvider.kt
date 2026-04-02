@@ -13,7 +13,6 @@ import com.jetbrains.rider.run.configurations.RiderConfigurationParametersAware
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.run.configurations.exe.ExeConfigurationParameters
 import com.jetbrains.rider.run.configurations.exe.ExeConfigurationType
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.flow.StateFlow
 import java.nio.file.Path
 
@@ -27,10 +26,6 @@ class RiderGodotProjectProvider : GodotProjectProvider {
 
     override fun isPureGdScriptProjectFlow(project: Project): StateFlow<Boolean?> =
         GodotProjectDiscoverer.getInstance(project).isPureGdScriptProjectFlow
-
-    override fun isGodotProject(project: Project): Deferred<Boolean> {
-        return GodotProjectDiscoverer.getInstance(project).isGodotProject
-    }
 
     override fun getGodotMajorVersion(project: Project): GodotMajorVersion {
         val discoverer = GodotProjectDiscoverer.getInstance(project)

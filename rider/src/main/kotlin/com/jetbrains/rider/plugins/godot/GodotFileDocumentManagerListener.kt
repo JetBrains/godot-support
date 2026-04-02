@@ -10,6 +10,7 @@ import com.jetbrains.rd.util.reactive.valueOrDefault
 import com.jetbrains.rider.build.BuildHost
 import com.jetbrains.rider.build.BuildParameters
 import com.jetbrains.rider.build.BuildToolWindowService
+import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.model.BuildMessageKind
 import com.jetbrains.rider.model.BuildTarget
 import com.jetbrains.rider.model.MessageBuildEvent
@@ -24,7 +25,7 @@ class GodotFileDocumentManagerListener : FileDocumentManagerListener {
     override fun beforeAllDocumentsSaving() {
         val projectManager = serviceIfCreated<ProjectManager>() ?: return
         val openedGodotProjects = projectManager.openProjects.filter { !it.isDisposed
-                                                                       && (GodotProjectDiscoverer.getInstance(it).isGodotProject.valueOrDefault(false))
+                                                                       && GodotCommunityUtil.isGodotProject(it)
                                                                        && (GodotProjectDiscoverer.getInstance(it).godotDescriptor.valueOrNull?.isPureGdScriptProject == false)
 
         }.toList()

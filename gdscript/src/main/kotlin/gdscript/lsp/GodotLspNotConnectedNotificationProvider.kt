@@ -14,7 +14,6 @@ import com.intellij.ui.EditorNotifications
 import com.jetbrains.rider.godot.community.actions.StartGodotEditorAction
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
-import com.jetbrains.rider.godot.community.utils.hasCompletedTrue
 import common.util.GdScriptProjectLifetimeService
 import gdscript.GdScriptBundle
 import gdscript.settings.GdLspConnectionMode
@@ -26,6 +25,7 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Function
 import javax.swing.JComponent
+import kotlin.time.Duration.Companion.milliseconds
 
 private const val IS_ENABLED_REGISTRY_KEY: String = "gdscript.lsp.not.connected.banner.enabled"
 
@@ -64,7 +64,7 @@ class GodotLspNotConnectedNotificationProvider(private val project: Project) : E
     ): Function<in FileEditor, out JComponent?>? {
         if (!Registry.`is`(IS_ENABLED_REGISTRY_KEY, false)) return null
         if (!GodotFileUtil.isGdFile(file)) return null
-        if (!GodotCommunityUtil.isGodotProject(project).hasCompletedTrue()) return null
+        if (!GodotCommunityUtil.isGodotProject(project)) return null
 
         val settings = GdLspSettingsFlowService.getInstance(project)
         val lspConnectionMode = settings.lspConnectionMode.value
@@ -86,7 +86,7 @@ class GodotLspNotConnectedNotificationProvider(private val project: Project) : E
         if (elapsed < NOTIFICATION_DELAY_MS) {
             // Schedule a single re-check after the remaining delay (replaces any previous pending job)
             val newJob = scope.launch {
-                delay(NOTIFICATION_DELAY_MS - elapsed)
+                delay((NOTIFICATION_DELAY_MS - elapsed).milliseconds)
                 EditorNotifications.getInstance(project).updateAllNotifications()
             }
             pendingNotificationJob.getAndSet(newJob)?.cancel()
