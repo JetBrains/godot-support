@@ -258,6 +258,7 @@
 
     <spellchecker.bundledDictionaryProvider implementation="gdscript.spellchecker.GdBundledDictionaryProvider"/>
     <spellchecker.support language="GdScript" implementationClass="gdscript.spellchecker.GdSpellcheckingStrategy"/>
+    <projectSettings service="gdscript.settings.GdProjectSettingsState"/>
   </extensions>
 
   <actions>
