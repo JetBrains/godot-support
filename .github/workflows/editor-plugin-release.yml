@@ -23,7 +23,7 @@ jobs:
   build:
     defaults:
       run:
-        working-directory: godot-editor-plugin/addons/rider-plugin/cpp
+        working-directory: godot-editor-addon/addons/rider-plugin/cpp
     strategy:
       fail-fast: false
       matrix:
@@ -48,14 +48,14 @@ jobs:
 
       # Setup dependencies
       - name: Setup godot-cpp
-        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/setup-godot-cpp
+        uses: ./godot-editor-addon/addons/rider-plugin/cpp/godot-cpp/.github/actions/setup-godot-cpp
         with:
           platform: ${{ matrix.target.platform }}
           em-version: 3.1.62
 
       # Build GDExtension (with caches)
       - name: Restore .scons_cache
-        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/godot-cache-restore
+        uses: ./godot-editor-addon/addons/rider-plugin/cpp/godot-cpp/.github/actions/godot-cache-restore
         with:
           scons-cache: ${{ github.workspace }}/.scons-cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
@@ -68,7 +68,7 @@ jobs:
           scons target=${{ matrix.target-type }} platform=${{ matrix.target.platform }} arch=${{ matrix.target.arch }} precision=${{ matrix.float-precision }}
 
       - name: Save .scons_cache
-        uses: ./godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp/.github/actions/godot-cache-save
+        uses: ./godot-editor-addon/addons/rider-plugin/cpp/godot-cpp/.github/actions/godot-cache-save
         with:
           scons-cache: ${{ github.workspace }}/.scons-cache/
           cache-name: ${{ matrix.target.platform }}_${{ matrix.target.arch }}_${{ matrix.float-precision }}_${{ matrix.target-type }}
@@ -86,12 +86,12 @@ jobs:
         with:
           name: rider-plugin-addons-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
           path: |
-            godot-editor-plugin
-            !godot-editor-plugin/main.tscn
-            !godot-editor-plugin/project.godot
-            !godot-editor-plugin/CMakeLists.txt
-            !godot-editor-plugin/run-tests.sh
-            !godot-editor-plugin/addons/rider-plugin/cpp/**
+            godot-editor-addon
+            !godot-editor-addon/main.tscn
+            !godot-editor-addon/project.godot
+            !godot-editor-addon/CMakeLists.txt
+            !godot-editor-addon/run-tests.sh
+            !godot-editor-addon/addons/rider-plugin/cpp/**
 
   # Merges all the build artifacts together into a single artifact
   merge:
