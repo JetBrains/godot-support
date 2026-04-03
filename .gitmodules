@@ -1,4 +1,4 @@
-[submodule "godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp"]
-	path = godot-editor-plugin/addons/rider-plugin/cpp/godot-cpp
+[submodule "godot-editor-addon/addons/rider-plugin/cpp/godot-cpp"]
+	path = godot-editor-addon/addons/rider-plugin/cpp/godot-cpp
 	url = https://github.com/godotengine/godot-cpp.git
-	branch = 4.2
+	branch = 4.5

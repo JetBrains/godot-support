@@ -6,7 +6,7 @@ Most contributions require you to agree to a Contributor License Agreement (CLA)
 
 #### Local setup
 
-Open the `godot-editor-plugin/CMakeLists.txt` in Rider 2026.1+, select `rider-gdextension` target in the run configuration selector.
+Open the `godot-editor-addon/CMakeLists.txt` in Rider 2026.1+, select `rider-gdextension` target in the run configuration selector.
 There are some more fixes coming in 2026.2, which will allow working on gdscript and cpp files within the same workspace.
 
 #### Signing the binaries
