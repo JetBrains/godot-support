@@ -1,0 +1,18 @@
+[gd_scene load_steps=3 format=3 uid="uid://drdb7aaaqfdi2"]
+
+[ext_resource type="Texture2D" uid="uid://ctr207jo5uxi3" path="res://Assets/Sprites/UI/card.png" id="1_k4gqd"]
+[ext_resource type="Script" uid="uid://bv24yfpp5r56j" path="res://Scripts/Mechanics/Card.cs" id="2_qt53y"]
+
+[node name="Card" type="TextureRect"]
+modulate = Color(0.078431375, 0.25490198, 0.5568628, 1)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 26.0
+offset_top = 18.0
+offset_right = -1016.0
+offset_bottom = -490.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_k4gqd")
+script = ExtResource("2_qt53y")

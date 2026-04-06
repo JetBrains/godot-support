@@ -1,0 +1,60 @@
+[gd_scene load_steps=7 format=3 uid="uid://bshtgx7jmsc0l"]
+
+[ext_resource type="Script" uid="uid://c8b3r8v07ckj2" path="res://Scripts/Layouts/Layout.cs" id="1_qu4yx"]
+[ext_resource type="Script" uid="uid://8p8ccothmoyv" path="res://Scripts/Mechanics/PlayableArea.cs" id="2_27qsy"]
+[ext_resource type="Script" uid="uid://vfovihuwhxtq" path="res://Scripts/Mechanics/Deck.cs" id="3_tkwlb"]
+[ext_resource type="Texture2D" uid="uid://djsw8dnwdxto8" path="res://Assets/Sprites/UI/deck.png" id="4_27qsy"]
+[ext_resource type="Script" uid="uid://bpwoniqimv2n8" path="res://Scripts/Mechanics/DeckDrawer.cs" id="4_rl521"]
+[ext_resource type="AudioStream" uid="uid://bbnrdl6jffaev" path="res://Assets/Audio/draw.wav" id="5_rb262"]
+
+[node name="HUD" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HandLayout" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 513.0
+offset_top = 472.0
+offset_right = 553.0
+offset_bottom = 512.0
+rotation = 0.017453292
+script = ExtResource("1_qu4yx")
+CirclePercentage = 0.1
+HoverMode = "Standard"
+AlwaysOnTopWhenHovered = true
+
+[node name="PlayableArea" type="Control" parent="."]
+anchors_preset = 0
+offset_left = -1.0
+offset_top = 4.0
+offset_right = 1151.0
+offset_bottom = 464.0
+script = ExtResource("2_27qsy")
+
+[node name="Deck" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 978.0
+offset_top = 511.0
+offset_right = 1164.0
+offset_bottom = 663.0
+script = ExtResource("3_tkwlb")
+
+[node name="Sprite" type="Sprite2D" parent="Deck"]
+position = Vector2(98, 68)
+texture = ExtResource("4_27qsy")
+
+[node name="DeckDrawer" type="Control" parent="." node_paths=PackedStringArray("DrawSoundPlayer")]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_rl521")
+DrawTime = 0.125
+DrawSound = ExtResource("5_rb262")
+DrawSoundPlayer = NodePath("DrawSound")
+
+[node name="DrawSound" type="AudioStreamPlayer" parent="DeckDrawer"]
+stream = ExtResource("5_rb262")

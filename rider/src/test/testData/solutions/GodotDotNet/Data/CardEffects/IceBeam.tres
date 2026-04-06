@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Effect" load_steps=5 format=3 uid="uid://umg11vnaeu6o"]
+
+[ext_resource type="Script" uid="uid://bx8btccdubjv" path="res://Scripts/DuelMechanics/Effects/EffectAction.cs" id="1_urmc6"]
+[ext_resource type="Resource" uid="uid://qox2j0p25jok" path="res://Data/DuelActions/Damage/IceDamage.tres" id="2_7njht"]
+[ext_resource type="Script" uid="uid://ba7sldiuxb54h" path="res://Scripts/DuelMechanics/Effects/Effect.cs" id="2_vke2x"]
+[ext_resource type="Resource" uid="uid://hhcr8xa1wyxe" path="res://Data/DuelActions/Status/Frostbite.tres" id="3_7njht"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("2_vke2x")
+CardName = &"Ice Beam"
+Actions = Array[ExtResource("1_urmc6")]([ExtResource("2_7njht"), ExtResource("3_7njht")])
+metadata/_custom_type_script = "uid://ba7sldiuxb54h"

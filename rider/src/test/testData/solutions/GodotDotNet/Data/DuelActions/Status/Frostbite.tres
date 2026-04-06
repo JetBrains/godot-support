@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="DamageOverTime" load_steps=2 format=3 uid="uid://hhcr8xa1wyxe"]
+
+[ext_resource type="Script" uid="uid://bodaaup8ntkck" path="res://Scripts/DuelMechanics/Effects/Status/DamageOverTime.cs" id="1_7x77d"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_7x77d")
+DamagePerTurn = 3
+DurationInTurns = 5
+DamageType = 5
+EffectName = "Frostbite"
+AnimationName = &"Frostbite"
+AwaitCompletion = true
+UseChance = true
+ActivationChance = 0.65
+metadata/_custom_type_script = "uid://bodaaup8ntkck"
