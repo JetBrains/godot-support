@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="Effect" load_steps=5 format=3 uid="uid://ckhb7qjj1282d"]
+
+[ext_resource type="Script" uid="uid://bx8btccdubjv" path="res://Scripts/DuelMechanics/Effects/EffectAction.cs" id="1_v7g7j"]
+[ext_resource type="Script" uid="uid://ba7sldiuxb54h" path="res://Scripts/DuelMechanics/Effects/Effect.cs" id="2_36q20"]
+[ext_resource type="Resource" uid="uid://ck710bkidnjg4" path="res://Data/DuelActions/Damage/FireDamage.tres" id="3_qi4q2"]
+[ext_resource type="Resource" uid="uid://fop7uskck6lt" path="res://Data/DuelActions/Status/Burn.tres" id="4_g5vfy"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("2_36q20")
+CardName = &"Fireball"
+Actions = Array[ExtResource("1_v7g7j")]([ExtResource("3_qi4q2"), ExtResource("4_g5vfy")])
+metadata/_custom_type_script = "uid://ba7sldiuxb54h"

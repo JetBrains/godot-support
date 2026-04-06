@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DealDamage" load_steps=2 format=3 uid="uid://ck710bkidnjg4"]
+
+[ext_resource type="Script" uid="uid://brq35ritokx2m" path="res://Scripts/DuelMechanics/Effects/Damage/DealDamage.cs" id="1_v8rq3"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_v8rq3")
+DamageAmount = 10
+EffectName = "Fire Damage"
+AnimationName = &"Fireball"
+AwaitCompletion = true
+metadata/_custom_type_script = "uid://brq35ritokx2m"

@@ -36,7 +36,7 @@ import kotlin.io.path.absolutePathString
 
 @Subsystem(SubsystemConstants.GODOT)
 @Feature("Debug C# godot player")
-@Solution("mixed-language-project")
+@Solution("GodotDotNet")
 @TestSettings(sdkVersion = SdkVersion.LATEST_STABLE, buildTool = BuildTool.SDK)
 class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     private var godotProcess: Process? = null
@@ -78,7 +78,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
       attachDebuggerToGodotEditor(project,
                                   {
                                     buildApiFacade.buildWholeSolution()
-                                    toggleBreakpoint("PlayerLogger.cs", 14) //  GD.Print($"Binary notation: {binaryNotation}");
+                                    toggleBreakpoint("Card.cs", 19) //  GD.Print($"Binary notation: {binaryNotation}");
                                   }, {
                                     waitForPause()
                                     dumpFullCurrentData()
@@ -86,14 +86,13 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
                                   }, testGoldFile)
     }
 
-    @Mute("RIDER-135490")
     @Test(description = "Check simple stepping")
     @ChecklistItems(["Debug/Stepping while debug C# Godot player"])
     fun checkSimpleStepping() {
       attachDebuggerToGodotEditor(project,
                                   {
                                     buildApiFacade.buildWholeSolution()
-                                    toggleBreakpoint("PlayerLogger.cs", 15)  //_lastLoggedPosition = GlobalPosition;
+                                    toggleBreakpoint("Card.cs", 20)  //_lastLoggedPosition = GlobalPosition;
                                   },
                                   {
                                     waitForPause()
@@ -105,14 +104,13 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
                                   }, testGoldFile)
     }
 
-    @Mute("RIDER-135490")
     @Test(description = "Check simple evaluation")
     @ChecklistItems(["Debug/Evaluation while debugging C# Godot player"])
     fun checkSimpleEvaluation() {
       attachDebuggerToGodotEditor(project,
                                   {
                                     buildApiFacade.buildWholeSolution()
-                                    toggleBreakpoint("PlayerLogger.cs", 14) //  GD.Print($"Binary notation: {binaryNotation}");
+                                    toggleBreakpoint("Card.cs", 19) //  GD.Print($"Binary notation: {binaryNotation}");
                                   },
                                   {
                                     val toEvaluate = "binaryNotation / 25"

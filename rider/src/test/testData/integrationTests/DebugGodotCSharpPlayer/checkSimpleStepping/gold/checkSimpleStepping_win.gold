@@ -1,10 +1,11 @@
---> Node2D.cs:115(3882,3883) // {
-Node2D.get_GlobalPosition() in Godot, GodotSharp.dll
-    +CurrentScene = {Node2D} <Node2D#29142025536>
-    +this = {PlayerLogger} <Node2D#29158802753>
+--> Card.cs:44(1122,1123) // {
+Card.RandomizeColor() in TCGHandLayoutPlugin.Scripts.Mechanics, 
+    +CurrentScene = {Node2D} <Node2D#39460013504>
+    +this = {Card} <TextureRect#44358960863>
+    rng = {Random} null
 
---> Node2D.cs:116(3896,3923) // return GetGlobalPosition();
-Node2D.get_GlobalPosition() in Godot, GodotSharp.dll
-    +CurrentScene = {Node2D} <Node2D#29142025536>
-    +this = {PlayerLogger} <Node2D#29158802753>
-
+--> Card.cs:48(1253,1276) // var rng = new Random();
+Card.RandomizeColor() in TCGHandLayoutPlugin.Scripts.Mechanics, 
+    +CurrentScene = {Node2D} <Node2D#39460013504>
+    +this = {Card} <TextureRect#44358960863>
+    rng = {Random} null

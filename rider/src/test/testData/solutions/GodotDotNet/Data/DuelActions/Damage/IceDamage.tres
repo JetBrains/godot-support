@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="DealDamage" load_steps=2 format=3 uid="uid://qox2j0p25jok"]
+
+[ext_resource type="Script" uid="uid://brq35ritokx2m" path="res://Scripts/DuelMechanics/Effects/Damage/DealDamage.cs" id="1_qio6t"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_qio6t")
+DamageAmount = 10
+DamageType = 5
+EffectName = "Ice Damage"
+AnimationName = &"IceBeam"
+AwaitCompletion = true
+metadata/_custom_type_script = "uid://brq35ritokx2m"

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DamageOverTime" load_steps=2 format=3 uid="uid://fop7uskck6lt"]
+
+[ext_resource type="Script" uid="uid://bodaaup8ntkck" path="res://Scripts/DuelMechanics/Effects/Status/DamageOverTime.cs" id="1_17t7e"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_17t7e")
+EffectName = "Burn"
+AnimationName = &"Burn"
+UseChance = true
+ActivationChance = 0.6
+metadata/_custom_type_script = "uid://bodaaup8ntkck"

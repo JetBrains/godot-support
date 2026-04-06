@@ -1,6 +1,5 @@
---> PlayerLogger.cs:14(411,458) // GD.Print($"Binary notation: {binaryNotation}");
-PlayerLogger._Ready() in 
-    +CurrentScene = {Node2D} <Node2D#29142025536>
-    +this = {PlayerLogger} <Node2D#29158802753>
+--> Card.cs:19(510,557) // GD.Print($"Binary notation: {binaryNotation}");
+Card._Ready() in TCGHandLayoutPlugin.Scripts.Mechanics, 
+    +CurrentScene = {Node2D} <Node2D#39460013504>
+    +this = {Card} <TextureRect#44358960863>
     binaryNotation = {int} 2000000
-
