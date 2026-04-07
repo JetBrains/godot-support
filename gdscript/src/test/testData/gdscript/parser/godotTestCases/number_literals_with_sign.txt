@@ -1,0 +1,319 @@
+GdScript File
+  GdMethodDecl
+    PsiElement(GdTokenType.FUNC)('func')
+    PsiWhiteSpace(' ')
+    GdMethodIdNmiImpl(METHOD_ID_NMI)
+      PsiElement(GdTokenType.IDENTIFIER)('test')
+    PsiElement(GdTokenType.LRBR)('(')
+    PsiElement(GdTokenType.RRBR)(')')
+    PsiElement(GdTokenType.COLON)(':')
+    GdStmtOrSuiteImpl(STMT_OR_SUITE)
+      GdSuiteImpl(SUITE)
+        PsiElement(GdTokenType.NEW_LINE)('\n')
+        PsiElement(GdTokenType.INDENT)('\t')
+        GdExprStImpl(EXPR_ST)
+          GdCallExImpl(CALL_EX)
+            GdLiteralExImpl(LITERAL_EX)
+              GdRefIdRefImpl(REF_ID_NM)
+                PsiElement(GdTokenType.IDENTIFIER)('print')
+            PsiElement(GdTokenType.LRBR)('(')
+            GdArgListImpl(ARG_LIST)
+              GdArgExprImpl(ARG_EXPR)
+                GdComparisonExImpl(COMPARISON_EX)
+                  GdSignExImpl(SIGN_EX)
+                    PsiElement(GdTokenType.MINUS)('-')
+                    GdLiteralExImpl(LITERAL_EX)
+                      PsiElement(GdTokenType.NUMBER)('9223372036854775808')
+                  PsiWhiteSpace(' ')
+                  GdOperatorImpl(OPERATOR)
+                    PsiElement(GdTokenType.TEST_OPERATOR)('==')
+                  PsiWhiteSpace(' ')
+                  GdPrimaryExImpl(PRIMARY_EX)
+                    PsiElement(GdTokenType.LRBR)('(')
+                    GdShiftExImpl(SHIFT_EX)
+                      GdLiteralExImpl(LITERAL_EX)
+                        PsiElement(GdTokenType.NUMBER)('1')
+                      PsiWhiteSpace(' ')
+                      PsiElement(GdTokenType.LBSHIFT)('<<')
+                      PsiWhiteSpace(' ')
+                      GdLiteralExImpl(LITERAL_EX)
+                        PsiElement(GdTokenType.NUMBER)('63')
+                    PsiElement(GdTokenType.RRBR)(')')
+            PsiElement(GdTokenType.RRBR)(')')
+          GdEndStmtImpl(END_STMT)
+            PsiElement(GdTokenType.NEW_LINE)('\n')
+        PsiWhiteSpace('\t')
+        GdExprStImpl(EXPR_ST)
+          GdCallExImpl(CALL_EX)
+            GdLiteralExImpl(LITERAL_EX)
+              GdRefIdRefImpl(REF_ID_NM)
+                PsiElement(GdTokenType.IDENTIFIER)('print')
+            PsiElement(GdTokenType.LRBR)('(')
+            GdArgListImpl(ARG_LIST)
+              GdArgExprImpl(ARG_EXPR)
+                GdSignExImpl(SIGN_EX)
+                  PsiElement(GdTokenType.MINUS)('-')
+                  GdLiteralExImpl(LITERAL_EX)
+                    PsiElement(GdTokenType.NUMBER)('2')
+            PsiElement(GdTokenType.RRBR)(')')
+          GdEndStmtImpl(END_STMT)
+            PsiElement(GdTokenType.NEW_LINE)('\n')
+        PsiWhiteSpace('\t')
+        GdExprStImpl(EXPR_ST)
+          GdCallExImpl(CALL_EX)
+            GdLiteralExImpl(LITERAL_EX)
+              GdRefIdRefImpl(REF_ID_NM)
+                PsiElement(GdTokenType.IDENTIFIER)('print')
+            PsiElement(GdTokenType.LRBR)('(')
+            GdArgListImpl(ARG_LIST)
+              GdArgExprImpl(ARG_EXPR)
+                GdSignExImpl(SIGN_EX)
+                  PsiElement(GdTokenType.MINUS)('-')
+                  PsiWhiteSpace(' ')
+                  GdLiteralExImpl(LITERAL_EX)
+                    PsiElement(GdTokenType.NUMBER)('2')
+            PsiElement(GdTokenType.RRBR)(')')
+          GdEndStmtImpl(END_STMT)
+            PsiElement(GdTokenType.NEW_LINE)('\n')
+        PsiWhiteSpace('\t')
+        GdExprStImpl(EXPR_ST)
+          GdCallExImpl(CALL_EX)
+            GdLiteralExImpl(LITERAL_EX)
+              GdRefIdRefImpl(REF_ID_NM)
+                PsiElement(GdTokenType.IDENTIFIER)('print')
+            PsiElement(GdTokenType.LRBR)('(')
+            PsiErrorElement:RRBR expected
+              <empty list>
+          PsiErrorElement:END_STMT expected
+            <empty list>
+          PsiElement(GdTokenType.MMINUS)('--')
+          PsiElement(GdTokenType.MINUS)('-')
+        GdExprStImpl(EXPR_ST)
+          GdLiteralExImpl(LITERAL_EX)
+            PsiElement(GdTokenType.NUMBER)('2')
+          PsiErrorElement:END_STMT expected
+            <empty list>
+        PsiErrorElement:DEDENT expected
+          <empty list>
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '3'
+    PsiElement(GdTokenType.NUMBER)('3')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '2'
+    PsiElement(GdTokenType.NUMBER)('2')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '3'
+    PsiElement(GdTokenType.NUMBER)('3')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '2'
+    PsiElement(GdTokenType.NUMBER)('2')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '3'
+    PsiElement(GdTokenType.NUMBER)('3')
+  PsiErrorElement:Unexpected tokens GdTokenType.MMINUS '--'
+    PsiElement(GdTokenType.MMINUS)('--')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '2'
+    PsiElement(GdTokenType.NUMBER)('2')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '3'
+    PsiElement(GdTokenType.NUMBER)('3')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '2'
+    PsiElement(GdTokenType.NUMBER)('2')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '3'
+    PsiElement(GdTokenType.NUMBER)('3')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '2'
+    PsiElement(GdTokenType.NUMBER)('2')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '3'
+    PsiElement(GdTokenType.NUMBER)('3')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '2'
+    PsiElement(GdTokenType.NUMBER)('2')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '2'
+    PsiElement(GdTokenType.NUMBER)('2')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.LSBR '['
+    PsiElement(GdTokenType.LSBR)('[')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiErrorElement:Unexpected tokens GdTokenType.COMMA ','
+    PsiElement(GdTokenType.COMMA)(',')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '2'
+    PsiElement(GdTokenType.NUMBER)('2')
+  PsiErrorElement:Unexpected tokens GdTokenType.COMMA ','
+    PsiElement(GdTokenType.COMMA)(',')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '3'
+    PsiElement(GdTokenType.NUMBER)('3')
+  PsiErrorElement:Unexpected tokens GdTokenType.RSBR ']'
+    PsiElement(GdTokenType.RSBR)(']')
+  PsiErrorElement:Unexpected tokens GdTokenType.LSBR '['
+    PsiElement(GdTokenType.LSBR)('[')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '0'
+    PsiElement(GdTokenType.NUMBER)('0')
+  PsiErrorElement:Unexpected tokens GdTokenType.RSBR ']'
+    PsiElement(GdTokenType.RSBR)(']')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  GdClassVarDecl
+    PsiElement(GdTokenType.VAR)('var')
+    PsiWhiteSpace(' ')
+    GdVarNmiImpl(VAR_NMI)
+      PsiElement(GdTokenType.IDENTIFIER)('t')
+    PsiWhiteSpace(' ')
+    GdAssignTypedImpl(ASSIGN_TYPED)
+      PsiElement(GdTokenType.EQ)('=')
+    PsiWhiteSpace(' ')
+    GdLiteralExImpl(LITERAL_EX)
+      PsiElement(GdTokenType.NUMBER)('1')
+    GdEndStmtImpl(END_STMT)
+      PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 't'
+    PsiElement(GdTokenType.IDENTIFIER)('t')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '0xFF'
+    PsiElement(GdTokenType.NUMBER)('0xFF')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiErrorElement:Unexpected tokens GdTokenType.MMINUS '--'
+    PsiElement(GdTokenType.MMINUS)('--')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '0xFF'
+    PsiElement(GdTokenType.NUMBER)('0xFF')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'print'
+    PsiElement(GdTokenType.IDENTIFIER)('print')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'floor'
+    PsiElement(GdTokenType.IDENTIFIER)('floor')
+  PsiErrorElement:Unexpected tokens GdTokenType.LRBR '('
+    PsiElement(GdTokenType.LRBR)('(')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'PI'
+    PsiElement(GdTokenType.IDENTIFIER)('PI')
+  PsiErrorElement:Unexpected tokens GdTokenType.MINUS '-'
+    PsiElement(GdTokenType.MINUS)('-')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiErrorElement:Unexpected tokens GdTokenType.RRBR ')'
+    PsiElement(GdTokenType.RRBR)(')')
+  PsiErrorElement:Unexpected tokens GdTokenType.DEDENT ''
+    <empty list>

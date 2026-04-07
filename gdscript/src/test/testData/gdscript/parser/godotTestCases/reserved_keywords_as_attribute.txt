@@ -1,0 +1,508 @@
+GdScript File
+  GdClassVarDecl
+    PsiElement(GdTokenType.VAR)('var')
+    PsiWhiteSpace(' ')
+    GdVarNmiImpl(VAR_NMI)
+      PsiElement(GdTokenType.IDENTIFIER)('dict')
+    PsiWhiteSpace(' ')
+    GdAssignTypedImpl(ASSIGN_TYPED)
+      PsiElement(GdTokenType.EQ)('=')
+    PsiWhiteSpace(' ')
+    GdPrimaryExImpl(PRIMARY_EX)
+      GdDictDeclImpl(DICT_DECL)
+        PsiElement(GdTokenType.LCBR)('{')
+        PsiElement(GdTokenType.RCBR)('}')
+    GdEndStmtImpl(END_STMT)
+      PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\n')
+  GdMethodDecl
+    PsiElement(GdTokenType.FUNC)('func')
+    PsiWhiteSpace(' ')
+    GdMethodIdNmiImpl(METHOD_ID_NMI)
+      PsiElement(GdTokenType.IDENTIFIER)('test')
+    PsiElement(GdTokenType.LRBR)('(')
+    PsiElement(GdTokenType.RRBR)(')')
+    PsiElement(GdTokenType.COLON)(':')
+    GdStmtOrSuiteImpl(STMT_OR_SUITE)
+      GdSuiteImpl(SUITE)
+        PsiElement(GdTokenType.NEW_LINE)('\n')
+        PsiElement(GdTokenType.INDENT)('\t')
+        GdAssignStImpl(ASSIGN_ST)
+          GdTernaryExImpl(TERNARY_EX)
+            GdAttributeExImpl(ATTRIBUTE_EX)
+              GdLiteralExImpl(LITERAL_EX)
+                GdRefIdRefImpl(REF_ID_NM)
+                  PsiElement(GdTokenType.IDENTIFIER)('dict')
+              PsiElement(GdTokenType.DOT)('.')
+              PsiErrorElement:IDENTIFIER expected
+                <empty list>
+            PsiElement(GdTokenType.IF)('if')
+            PsiErrorElement:EXPRESSION expected
+              <empty list>
+          PsiWhiteSpace(' ')
+          GdAssignSignImpl(ASSIGN_SIGN)
+            PsiElement(GdTokenType.EQ)('=')
+          PsiWhiteSpace(' ')
+          GdLiteralExImpl(LITERAL_EX)
+            PsiElement(GdTokenType.NUMBER)('1')
+          GdEndStmtImpl(END_STMT)
+            PsiElement(GdTokenType.NEW_LINE)('\n')
+        PsiWhiteSpace('\t')
+        GdExprStImpl(EXPR_ST)
+          GdAttributeExImpl(ATTRIBUTE_EX)
+            GdLiteralExImpl(LITERAL_EX)
+              GdRefIdRefImpl(REF_ID_NM)
+                PsiElement(GdTokenType.IDENTIFIER)('dict')
+            PsiElement(GdTokenType.DOT)('.')
+            PsiErrorElement:IDENTIFIER expected
+              <empty list>
+          PsiErrorElement:END_STMT expected
+            <empty list>
+        PsiErrorElement:DEDENT expected
+          <empty list>
+    PsiErrorElement:Unexpected '
+'
+      PsiElement(GdTokenType.ELIF)('elif')
+      PsiWhiteSpace(' ')
+      PsiElement(GdTokenType.EQ)('=')
+      PsiWhiteSpace(' ')
+      PsiElement(GdTokenType.NUMBER)('1')
+      PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.ELSE 'else'
+    PsiElement(GdTokenType.ELSE)('else')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.FOR 'for'
+    PsiElement(GdTokenType.FOR)('for')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.WHILE 'while'
+    PsiElement(GdTokenType.WHILE)('while')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.MATCH 'match'
+    PsiElement(GdTokenType.MATCH)('match')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.BREAK 'break'
+    PsiElement(GdTokenType.BREAK)('break')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.CONTINUE 'continue'
+    PsiElement(GdTokenType.CONTINUE)('continue')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  GdFlowStImpl(FLOW_ST)
+    PsiElement(GdTokenType.PASS)('pass')
+    PsiErrorElement:END_STMT expected
+      <empty list>
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.RETURN 'return'
+    PsiElement(GdTokenType.RETURN)('return')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  GdClassDecl
+    PsiElement(GdTokenType.CLASS)('class')
+    PsiErrorElement:IDENTIFIER expected
+      <empty list>
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.EQ)('=')
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.NUMBER)('1')
+    PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  GdClassNaming
+    PsiElement(GdTokenType.CLASS_NAME)('class_name')
+    PsiErrorElement:IDENTIFIER expected
+      <empty list>
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.EQ)('=')
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.NUMBER)('1')
+    PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  GdInheritance
+    PsiElement(GdTokenType.EXTENDS)('extends')
+    PsiErrorElement:INHERITANCE_ID expected
+      <empty list>
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.EQ)('=')
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.NUMBER)('1')
+    PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.IS 'is'
+    PsiElement(GdTokenType.IS)('is')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.IN 'in'
+    PsiElement(GdTokenType.IN)('in')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.AS 'as'
+    PsiElement(GdTokenType.AS)('as')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.SELF 'self'
+    PsiElement(GdTokenType.SELF)('self')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  GdSignalDecl
+    PsiElement(GdTokenType.SIGNAL)('signal')
+    PsiErrorElement:IDENTIFIER expected
+      <empty list>
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.EQ)('=')
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.NUMBER)('1')
+    PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  GdMethodDecl
+    PsiElement(GdTokenType.FUNC)('func')
+    PsiErrorElement:IDENTIFIER expected
+      <empty list>
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.EQ)('=')
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.NUMBER)('1')
+    PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:methodDecl expected
+    <empty list>
+  PsiErrorElement:Unexpected tokens GdTokenType.STATIC 'static'
+    PsiElement(GdTokenType.STATIC)('static')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  GdConstDecl
+    PsiElement(GdTokenType.CONST)('const')
+    PsiErrorElement:IDENTIFIER expected
+      <empty list>
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.EQ)('=')
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.NUMBER)('1')
+    PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  GdEnumDecl
+    PsiElement(GdTokenType.ENUM)('enum')
+    PsiWhiteSpace(' ')
+    PsiErrorElement:Unexpected '
+'
+      PsiElement(GdTokenType.EQ)('=')
+      PsiWhiteSpace(' ')
+      PsiElement(GdTokenType.NUMBER)('1')
+      PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  GdClassVarDecl
+    PsiElement(GdTokenType.VAR)('var')
+    PsiErrorElement:IDENTIFIER expected
+      <empty list>
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.EQ)('=')
+    PsiWhiteSpace(' ')
+    PsiElement(GdTokenType.NUMBER)('1')
+    PsiElement(GdTokenType.NEW_LINE)('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.BREAKPOINT 'breakpoint'
+    PsiElement(GdTokenType.BREAKPOINT)('breakpoint')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'preload'
+    PsiElement(GdTokenType.IDENTIFIER)('preload')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.AWAIT 'await'
+    PsiElement(GdTokenType.AWAIT)('await')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'yield'
+    PsiElement(GdTokenType.IDENTIFIER)('yield')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'assert'
+    PsiElement(GdTokenType.IDENTIFIER)('assert')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.VOID 'void'
+    PsiElement(GdTokenType.VOID)('void')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'PI'
+    PsiElement(GdTokenType.IDENTIFIER)('PI')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'TAU'
+    PsiElement(GdTokenType.IDENTIFIER)('TAU')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'INF'
+    PsiElement(GdTokenType.IDENTIFIER)('INF')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\t')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'dict'
+    PsiElement(GdTokenType.IDENTIFIER)('dict')
+  PsiErrorElement:Unexpected tokens GdTokenType.DOT '.'
+    PsiElement(GdTokenType.DOT)('.')
+  PsiErrorElement:Unexpected tokens GdTokenType.IDENTIFIER 'NAN'
+    PsiElement(GdTokenType.IDENTIFIER)('NAN')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.EQ '='
+    PsiElement(GdTokenType.EQ)('=')
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Unexpected tokens GdTokenType.NUMBER '1'
+    PsiElement(GdTokenType.NUMBER)('1')
+  PsiErrorElement:Unexpected tokens GdTokenType.DEDENT ''
+    <empty list>
