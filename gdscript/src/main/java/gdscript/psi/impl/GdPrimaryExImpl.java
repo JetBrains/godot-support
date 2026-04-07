@@ -1,10 +1,16 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.*;
+import gdscript.psi.GdArrayDecl;
+import gdscript.psi.GdDictDecl;
+import gdscript.psi.GdExpr;
+import gdscript.psi.GdNodePath;
+import gdscript.psi.GdPrimaryEx;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GdPrimaryExImpl extends GdExprImpl implements GdPrimaryEx {
 

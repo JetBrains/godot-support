@@ -1,9 +1,11 @@
 package gdscript.psi;
 
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.*;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdSignalDeclStub;
+import gdscript.psi.types.GdDocumented;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.LinkedHashMap;
 
 public interface GdSignalDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdSignalDeclStub>, GdDocumented {

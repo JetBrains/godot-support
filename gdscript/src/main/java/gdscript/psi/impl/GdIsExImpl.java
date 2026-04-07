@@ -1,10 +1,13 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.*;
+import gdscript.psi.GdExpr;
+import gdscript.psi.GdIsEx;
+import gdscript.psi.GdTypedVal;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
 
 public class GdIsExImpl extends GdExprImpl implements GdIsEx {
 

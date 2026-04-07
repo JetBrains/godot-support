@@ -1,10 +1,14 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.*;
+import gdscript.psi.GdLiteralEx;
+import gdscript.psi.GdRefIdRef;
+import gdscript.psi.GdStringValRef;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GdLiteralExImpl extends GdExprImpl implements GdLiteralEx {
 

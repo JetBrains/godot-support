@@ -1,10 +1,13 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.*;
+import gdscript.psi.GdEndStmt;
+import gdscript.psi.GdExpr;
+import gdscript.psi.GdExprSt;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
 
 public class GdExprStImpl extends GdStmtImpl implements GdExprSt {
 

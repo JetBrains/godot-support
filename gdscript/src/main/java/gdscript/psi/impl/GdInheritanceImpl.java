@@ -1,16 +1,21 @@
 package gdscript.psi.impl;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.model.Symbol;
 import com.intellij.openapi.util.TextRange;
-import gdscript.symbol.GdPsiSymbol;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.*;
-import gdscript.index.stub.GdInheritanceStub;
 import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.PsiTreeUtil;
+import gdscript.index.stub.GdInheritanceStub;
+import gdscript.psi.GdEndStmt;
+import gdscript.psi.GdInheritance;
+import gdscript.psi.GdInheritanceId;
+import gdscript.psi.GdPsiUtils;
+import gdscript.psi.GdVisitor;
+import gdscript.symbol.GdPsiSymbol;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GdInheritanceImpl extends GdInheritanceElementImpl implements GdInheritance {
 

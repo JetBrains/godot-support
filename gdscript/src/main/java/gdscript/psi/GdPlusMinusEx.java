@@ -1,6 +1,6 @@
 package gdscript.psi;
 
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
 
 public interface GdPlusMinusEx extends GdExpr {
 

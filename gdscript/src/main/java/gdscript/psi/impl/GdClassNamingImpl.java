@@ -1,16 +1,21 @@
 package gdscript.psi.impl;
 
-import java.util.List;
-
-import gdscript.model.GdTutorial;
-import gdscript.psi.utils.GdCommentUtil;
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.*;
-import gdscript.index.stub.GdClassNamingStub;
 import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.PsiTreeUtil;
+import gdscript.index.stub.GdClassNamingStub;
+import gdscript.model.GdTutorial;
+import gdscript.psi.GdClassNameNmi;
+import gdscript.psi.GdClassNaming;
+import gdscript.psi.GdEndStmt;
+import gdscript.psi.GdPsiUtils;
+import gdscript.psi.GdVisitor;
+import gdscript.psi.utils.GdCommentUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class GdClassNamingImpl extends GdClassNamingElementImpl implements GdClassNaming {
 
