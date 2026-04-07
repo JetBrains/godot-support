@@ -4,7 +4,10 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
+import com.intellij.openapi.util.io.FileUtil.copyDir
+import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rdclient.util.idea.waitAndPump
+import com.jetbrains.rider.debugger.settings.DotNetDebuggerSettings
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.test.asserts.shouldBeTrue
 import com.jetbrains.rider.test.asserts.shouldNotBeNull
@@ -14,17 +17,13 @@ import com.jetbrains.rider.test.framework.downloadAndExtractTestToolArchiveArtif
 import com.jetbrains.rider.test.framework.executeWithGold
 import com.jetbrains.rider.test.framework.frameworkLogger
 import com.jetbrains.rider.test.scriptingApi.DebugTestExecutionContext
-import com.jetbrains.rider.test.scriptingApi.copyRecursivelyTo
 import com.jetbrains.rider.test.scriptingApi.debugProgram
-import com.jetbrains.rider.test.scriptingApi.setExecutablePermissions
 import com.jetbrains.rider.test.scriptingApi.waitForDotNetDebuggerInitializedOrCanceled
 import com.jetbrains.rider.utils.NullPrintStream
+import java.io.File
 import java.nio.file.Path
 import java.time.Duration
 import java.util.concurrent.TimeUnit
-import kotlin.io.path.absolutePathString
-import kotlin.io.path.exists
-import kotlin.io.path.isDirectory
 
 // region Constants
 const val godotNumberVersion = "4.6.2"
@@ -32,7 +31,7 @@ val godotDefaultTimeout: Duration = Duration.ofSeconds(60)
 // endregion
 
 // region Download Godot
-fun downloadAndExtractGodot(version: String): Path {
+fun downloadAndExtractGodot(version: String): File {
     val godotZipName = when {
         SystemInfo.isWindows -> "Godot_v${version}-stable_mono_win64.zip"
         SystemInfo.isMac -> "Godot_v${version}-stable_mono_macos.universal.zip"
@@ -40,7 +39,7 @@ fun downloadAndExtractGodot(version: String): Path {
         else -> error("Unsupported OS for Godot Mono")
     }
 
-    val extractedDir = downloadAndExtractTestToolArchiveArtifactIntoPersistentCache(RiderTestExecutionTarget.fromCurrentMachine(), "$TEST_DATA_DOWNLOAD_URL/$godotZipName").toAbsolutePath().normalize()
+    val extractedDir = downloadAndExtractTestToolArchiveArtifactIntoPersistentCache(RiderTestExecutionTarget.fromCurrentMachine(), "$TEST_DATA_DOWNLOAD_URL/$godotZipName").canonicalFile
 
     val godotExecutable = extractedDir.resolve(when {
                                                    SystemInfo.isWindows -> {
@@ -50,11 +49,11 @@ fun downloadAndExtractGodot(version: String): Path {
                                                    SystemInfo.isLinux -> "Godot_v${version}-stable_mono_linux_x86_64"
                                                    SystemInfo.isMac -> "Godot_mono.app/Contents/MacOS/Godot"
                                                    else -> error("Unsupported OS for Godot")
-                                               }).apply { setExecutablePermissions() }
+                                               }).apply { setExecutable(true,false) }
     if (!godotExecutable.exists()) {
-        error("Godot executable not found at ${godotExecutable.absolutePathString()}")
+        error("Godot executable not found at ${godotExecutable.absolutePath}")
     }
-    frameworkLogger.info("Godot downloaded and extracted: ${godotExecutable.absolutePathString()}")
+    frameworkLogger.info("Godot downloaded and extracted: ${godotExecutable.absolutePath}")
     return godotExecutable
 }
 // endregion
@@ -62,34 +61,44 @@ fun downloadAndExtractGodot(version: String): Path {
 // region Godot Project Setup
 fun putGodotProjectToTempTestDir(
     projectName: String,
-    testWorkDirectory: Path,
-    solutionSourceRootDirectory: Path,
-): Path {
-    val workDirectory = testWorkDirectory.resolve(projectName)
-    val sourceDirectory = solutionSourceRootDirectory.resolve(projectName)
-    sourceDirectory.copyRecursivelyTo(workDirectory)
-    workDirectory.isDirectory().shouldBeTrue("Expected '${workDirectory.absolutePathString()}' to be a directory")
+    testWorkDirectory: File,
+    solutionSourceRootDirectory: File,
+): File {
+    val workDirectory = File(testWorkDirectory, projectName)
+    val sourceDirectory = File(solutionSourceRootDirectory, projectName)
+    copyDir(sourceDirectory, workDirectory)
+    workDirectory.isDirectory.shouldBeTrue("Expected '${workDirectory.absolutePath}' to be a directory")
     return workDirectory
 }
 // endregion
 
 // region Godot Execution
-fun startGodot(godotExecutable: Path, projectPath: String, logPath: Path, dotnetSdk: String, timeoutMinutes: Long = 3): Process {
-    val logFile = Path.of(logPath.toString(), "Godot_${System.currentTimeMillis()}.log")
+fun startGodot(godotExecutable: File, projectPath: String, logPath: Path, dotnetSdk: String, timeoutMinutes: Long = 3): Process {
+    val logFile = File(logPath.toString(), "Godot_${System.currentTimeMillis()}.log")
 
     val command = mutableListOf(
-        godotExecutable.absolutePathString(),
+        godotExecutable.absolutePath,
         "--verbose",
         "--headless",
-        "--import", // Starts the editor, waits for any resources to be imported, and then quits.
+        "--editor",
+        "--quit",
         "--path", projectPath,
     )
 
     val processBuilder = ProcessBuilder(command)
-        .directory(Path.of(projectPath).toFile())
+        .directory(File(projectPath))
         .redirectErrorStream(true)
-        .redirectOutput(logFile.toFile())
+        .redirectOutput(logFile)
     processBuilder.environment()["DOTNET_ROOT"] = dotnetSdk
+    processBuilder.environment()["PATH"] = "$dotnetSdk:${processBuilder.environment()["PATH"]}"
+    processBuilder.environment()["DOTNET_MSBUILD_SDK_RESOLVER_SDKS_DIR"] = "$dotnetSdk/sdk"
+    processBuilder.environment()["DOTNET_MSBUILD_SDK_RESOLVER_SDKS_VER"] =
+        File("$dotnetSdk/sdk")
+            .listFiles()
+            ?.map { it.name }
+            ?.sortedDescending()
+            ?.firstOrNull() ?: ""
+
     val process = processBuilder.start()
     frameworkLogger.info("Godot process started (pid=${process.pid()})")
 
@@ -101,14 +110,14 @@ fun startGodot(godotExecutable: Path, projectPath: String, logPath: Path, dotnet
 fun startGodotWithProject(
     godotVersion: String = godotNumberVersion,
     projectName: String,
-    testWorkDirectory: Path,
-    solutionSourceRootDirectory: Path,
+    testWorkDirectory: File,
+    solutionSourceRootDirectory: File,
     logPath: Path,
     dotnetSdk: String,
 ): Process {
     val godotExecutable = downloadAndExtractGodot(godotVersion)
     val projectDir = putGodotProjectToTempTestDir(projectName, testWorkDirectory, solutionSourceRootDirectory)
-    val process = startGodot(godotExecutable, projectDir.absolutePathString(), logPath, dotnetSdk)
+    val process = startGodot(godotExecutable, projectDir.absolutePath, logPath, dotnetSdk)
     return process
 }
 
@@ -154,5 +163,11 @@ private fun selectRunConfiguration(project: Project, name: String) {
 
     frameworkLogger.info("Selecting run configuration '$name'")
     runManager.selectedConfiguration = runManager.findSettings(runConfigurationToSelect)
+}
+
+fun disableDFA(lifetime: LifetimeDefinition){
+    val previousValue = DotNetDebuggerSettings.instance.debuggerDFAEnable
+    lifetime.bracketIfAlive({ DotNetDebuggerSettings.instance.debuggerDFAEnable = false },
+        { DotNetDebuggerSettings.instance.debuggerDFAEnable = previousValue })
 }
 // endregion
