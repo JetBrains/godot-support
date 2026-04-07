@@ -1,9 +1,10 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import gdscript.psi.*;
+import gdscript.psi.GdSetMethodIdRef;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
 
 public class GdSetMethodIdRefImpl extends GdRefElementImpl implements GdSetMethodIdRef {
 

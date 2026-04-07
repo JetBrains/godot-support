@@ -1,10 +1,12 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import gdscript.psi.*;
+import gdscript.psi.GdExpr;
+import gdscript.psi.GdPsiUtils;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class GdExprImpl extends ASTWrapperPsiElement implements GdExpr {
 

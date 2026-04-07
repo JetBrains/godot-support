@@ -1,13 +1,14 @@
 package gdscript.psi;
 
-import java.util.List;
-
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdMethodDeclStub;
-import com.intellij.navigation.ItemPresentation;
+import gdscript.psi.types.GdDocumented;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.LinkedHashMap;
+import java.util.List;
 
 public interface GdMethodDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdMethodDeclStub>, GdDocumented {
 

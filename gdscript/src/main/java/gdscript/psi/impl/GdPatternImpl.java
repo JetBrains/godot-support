@@ -1,11 +1,17 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import gdscript.psi.*;
+import gdscript.psi.GdArrayPattern;
+import gdscript.psi.GdBindingPattern;
+import gdscript.psi.GdDictPattern;
+import gdscript.psi.GdExpr;
+import gdscript.psi.GdPattern;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GdPatternImpl extends ASTWrapperPsiElement implements GdPattern {
 

@@ -1,11 +1,15 @@
 package gdscript.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.*;
+import gdscript.psi.GdExpr;
+import gdscript.psi.GdFactorEx;
+import gdscript.psi.GdFactorSign;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class GdFactorExImpl extends GdExprImpl implements GdFactorEx {
 
