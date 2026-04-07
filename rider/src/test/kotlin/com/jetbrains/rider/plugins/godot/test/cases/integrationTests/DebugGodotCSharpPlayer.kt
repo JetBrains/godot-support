@@ -32,6 +32,7 @@ import org.testng.annotations.AfterClass
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
+import kotlin.io.path.absolutePathString
 
 @Subsystem(SubsystemConstants.GODOT)
 @Feature("Debug C# godot player")
@@ -64,10 +65,10 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     fun startGodot() {
         godotProcess = startGodotWithProject(
             projectName = testMethod.solution!!.name,
-            testWorkDirectory = testWorkDirectory.toFile(),
-            solutionSourceRootDirectory = solutionSourceRootDirectory.toFile(),
+            testWorkDirectory = testWorkDirectory,
+            solutionSourceRootDirectory = solutionSourceRootDirectory,
             logPath = testMethod.logDirectory,
-            dotnetSdk = testTools(executionTarget).build.dotNetSdk[testMethod.settings.sdk].root.absolutePath,
+            dotnetSdk = testTools(executionTarget).build.dotNetSdk[testMethod.settings.sdk].root.absolutePathString(),
         )
     }
 
