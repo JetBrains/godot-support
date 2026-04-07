@@ -1,7 +1,8 @@
 package gdscript.psi;
 
 import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface GdVarDeclSt extends GdStmt, GdDocumented {
 

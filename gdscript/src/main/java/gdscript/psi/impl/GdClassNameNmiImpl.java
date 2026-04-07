@@ -1,12 +1,15 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import gdscript.psi.*;
-import gdscript.index.stub.GdClassIdStub;
 import com.intellij.psi.stubs.IStubElementType;
+import gdscript.index.stub.GdClassIdStub;
+import gdscript.psi.GdClassNameNmi;
+import gdscript.psi.GdPsiUtils;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GdClassNameNmiImpl extends GdClassIdElementImpl implements GdClassNameNmi {
 

@@ -1,6 +1,7 @@
 package gdscript.psi;
 
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface GdCallEx extends GdExpr {
 

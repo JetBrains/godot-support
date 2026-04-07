@@ -1,18 +1,24 @@
 package gdscript.psi.impl;
 
+import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ItemPresentation;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.util.PsiTreeUtil;
+import gdscript.index.stub.GdEnumDeclStub;
+import gdscript.model.GdTutorial;
+import gdscript.psi.GdEndStmt;
+import gdscript.psi.GdEnumDeclNmi;
+import gdscript.psi.GdEnumDeclTl;
+import gdscript.psi.GdEnumValue;
+import gdscript.psi.GdPsiUtils;
+import gdscript.psi.GdVisitor;
+import gdscript.psi.utils.GdCommentUtil;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import gdscript.model.GdTutorial;
-import gdscript.psi.utils.GdCommentUtil;
-import org.jetbrains.annotations.*;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.*;
-import com.intellij.navigation.ItemPresentation;
-import gdscript.index.stub.GdEnumDeclStub;
-import com.intellij.psi.stubs.IStubElementType;
 
 public class GdEnumDeclTlImpl extends GdEnumDeclElementImpl implements GdEnumDeclTl {
 

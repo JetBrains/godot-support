@@ -1,10 +1,11 @@
 package gdscript.psi;
 
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdConstDeclStub;
-import com.intellij.navigation.ItemPresentation;
+import gdscript.psi.types.GdDocumented;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface GdConstDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdConstDeclStub>, GdDocumented {
 

@@ -1,7 +1,7 @@
 package gdscript.psi;
 
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiFile;
+import org.jetbrains.annotations.Nullable;
 
 public interface GdInheritanceIdRef extends GdRefElement {
 

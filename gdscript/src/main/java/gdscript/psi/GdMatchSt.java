@@ -1,7 +1,9 @@
 package gdscript.psi;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
-import org.jetbrains.annotations.*;
 
 public interface GdMatchSt extends GdStmt {
 
