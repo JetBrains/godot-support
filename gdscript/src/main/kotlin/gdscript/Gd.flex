@@ -210,14 +210,15 @@ import gdscript.lexer.ParenTracker;
 
 %}
 
-LETTER = [a-z|A-Z|_]
-DIGIT = [0-9]
+LETTER = [\p{L}_]
+DIGIT = [\p{Nd}]
+MARK = [\p{M}]
 
 NEW_LINE = [\r\n]
 IGNORE_NEW_LINE = \\[\r\n]
 INDENT = [ \t]+
 EMPTY_INDENT = [ \t]+{NEW_LINE}
-IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
+IDENTIFIER = {LETTER}({LETTER}|{DIGIT}|{MARK})*
 NUMBER = ( [0-9][0-9_]*(\.[0-9_]+)? ) | ( \.[0-9][0-9_]* ) | ( [0-9][0-9_]*\. )
 HEX_NUMBER = 0x[0-9_a-fA-F]+
 BIN_NUMBER = 0b[01_]+
