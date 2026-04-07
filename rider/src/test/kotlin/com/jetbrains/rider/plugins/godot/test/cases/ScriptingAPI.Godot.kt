@@ -121,7 +121,7 @@ fun attachDebuggerToGodotEditor(
     project: Project,
     beforeRun: ExecutionEnvironment.() -> Unit = {},
     test: DebugTestExecutionContext.() -> Unit,
-    goldFile: File? = null,
+    goldFile: Path? = null,
     customSuffixes: List<String> = emptyList()
 ) {
     waitForGodotRunConfigurations(project)

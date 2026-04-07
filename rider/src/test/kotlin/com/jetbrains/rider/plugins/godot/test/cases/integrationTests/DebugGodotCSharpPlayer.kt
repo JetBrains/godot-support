@@ -63,8 +63,8 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     fun startGodot() {
         godotProcess = startGodotWithProject(
             projectName = testMethod.solution!!.name,
-            testWorkDirectory = testWorkDirectory,
-            solutionSourceRootDirectory = solutionSourceRootDirectory,
+            testWorkDirectory = testWorkDirectory.toFile(),
+            solutionSourceRootDirectory = solutionSourceRootDirectory.toFile(),
             logPath = testMethod.logDirectory,
             dotnetSdk = testTools(executionTarget).build.dotNetSdk[testMethod.settings.sdk].root.absolutePath,
         )
