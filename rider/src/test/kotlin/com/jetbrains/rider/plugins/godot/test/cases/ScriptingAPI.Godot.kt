@@ -27,7 +27,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 
 // region Constants
-const val godotNumberVersion = "4.4.1"
+const val godotNumberVersion = "4.6.2"
 val godotDefaultTimeout: Duration = Duration.ofSeconds(60)
 // endregion
 
