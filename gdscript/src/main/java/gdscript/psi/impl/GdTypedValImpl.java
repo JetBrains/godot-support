@@ -1,12 +1,16 @@
 package gdscript.psi.impl;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import gdscript.psi.*;
+import gdscript.psi.GdPsiUtils;
+import gdscript.psi.GdTypeHint;
+import gdscript.psi.GdTypedVal;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class GdTypedValImpl extends ASTWrapperPsiElement implements GdTypedVal {
 

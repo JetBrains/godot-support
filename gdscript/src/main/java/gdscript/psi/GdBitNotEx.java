@@ -1,6 +1,6 @@
 package gdscript.psi;
 
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.Nullable;
 
 public interface GdBitNotEx extends GdExpr {
 

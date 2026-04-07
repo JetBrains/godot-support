@@ -1,10 +1,12 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
-import gdscript.psi.*;
+import gdscript.psi.GdEnumValueNmi;
+import gdscript.psi.GdPsiUtils;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
 
 public class GdEnumValueNmiImpl extends GdNamedIdElementImpl implements GdEnumValueNmi {
 

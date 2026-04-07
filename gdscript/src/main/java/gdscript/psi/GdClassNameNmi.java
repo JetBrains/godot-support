@@ -1,10 +1,10 @@
 package gdscript.psi;
 
-import java.util.List;
-import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import gdscript.index.stub.GdClassIdStub;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public interface GdClassNameNmi extends GdNamedIdElement, StubBasedPsiElement<GdClassIdStub> {
 

@@ -1,10 +1,13 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
-import gdscript.psi.*;
 import com.intellij.psi.PsiFile;
+import gdscript.psi.GdInheritanceIdRef;
+import gdscript.psi.GdPsiUtils;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GdInheritanceIdRefImpl extends GdRefElementImpl implements GdInheritanceIdRef {
 

@@ -1,7 +1,7 @@
 package gdscript.psi;
 
 import gdscript.psi.impl.GdAnnotationStmtImpl;
-import org.jetbrains.annotations.*;
+import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
 

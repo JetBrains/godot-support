@@ -1,11 +1,14 @@
 package gdscript.psi.impl;
 
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import gdscript.psi.*;
+import gdscript.psi.GdReturnHintVal;
+import gdscript.psi.GdTypedVal;
+import gdscript.psi.GdVisitor;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class GdReturnHintValImpl extends ASTWrapperPsiElement implements GdReturnHintVal {
 

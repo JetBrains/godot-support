@@ -1,15 +1,17 @@
 package gdscript.psi.impl;
 
-import java.util.List;
-
-import gdscript.model.GdTutorial;
-import gdscript.psi.utils.GdCommentUtil;
-import org.jetbrains.annotations.*;
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import gdscript.psi.*;
+import gdscript.model.GdTutorial;
+import gdscript.psi.GdEnumValue;
+import gdscript.psi.GdEnumValueNmi;
+import gdscript.psi.GdVisitor;
+import gdscript.psi.utils.GdCommentUtil;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class GdEnumValueImpl extends ASTWrapperPsiElement implements GdEnumValue {
 
