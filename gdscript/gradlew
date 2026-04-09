@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Copyright © 2015-2021 the original authors.
+# Copyright © 2015 the original authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@
 #       Darwin, MinGW, and NonStop.
 #
 #   (3) This script is generated from the Groovy template
-#       https://github.com/gradle/gradle/blob/HEAD/platforms/jvm/plugins-application/src/main/resources/org/gradle/api/internal/plugins/unixStartScript.txt
+#       https://github.com/gradle/gradle/blob/2d6327017519d23b96af35865dc997fcb544fb40/platforms/jvm/plugins-application/src/main/resources/org/gradle/api/internal/plugins/unixStartScript.txt
 #       within the Gradle project.
 #
 #       You can find Gradle at https://github.com/gradle/gradle/.
@@ -114,7 +114,6 @@ case "$( uname )" in                #(
   NONSTOP* )        nonstop=true ;;
 esac
 
-CLASSPATH="\\\"\\\""
 
 
 # GRADLE JVM WRAPPER START MARKER
@@ -124,30 +123,30 @@ JVM_TEMP_FILE=$BUILD_DIR/gradle-jvm-temp.tar.gz
 if [ "$darwin" = "true" ]; then
     case $JVM_ARCH in
     x86_64)
-        JVM_URL=https://download.oracle.com/java/17/archive/jdk-17.0.3.1_macos-x64_bin.tar.gz
-        JVM_TARGET_DIR=$BUILD_DIR/jdk-17.0.3.1_macos-x64_bin-1bcf03
+        JVM_URL=https://download.oracle.com/java/25/archive/jdk-25.0.2_macos-x64_bin.tar.gz
+        JVM_TARGET_DIR=$BUILD_DIR/jdk-25.0.2_macos-x64_bin-99fbca
         ;;
     arm64)
-        JVM_URL=https://download.oracle.com/java/17/archive/jdk-17.0.3.1_macos-aarch64_bin.tar.gz
-        JVM_TARGET_DIR=$BUILD_DIR/jdk-17.0.3.1_macos-aarch64_bin-297fa2
+        JVM_URL=https://download.oracle.com/java/25/archive/jdk-25.0.2_macos-aarch64_bin.tar.gz
+        JVM_TARGET_DIR=$BUILD_DIR/jdk-25.0.2_macos-aarch64_bin-d7817e
         ;;
     *) 
         die "Unknown architecture $JVM_ARCH"
         ;;
     esac
 elif [ "$cygwin" = "true" ] || [ "$msys" = "true" ]; then
-    JVM_URL=https://download.oracle.com/java/17/archive/jdk-17.0.3.1_windows-x64_bin.zip
-    JVM_TARGET_DIR=$BUILD_DIR/jdk-17.0.3.1_windows-x64_bin-d6ede5
+    JVM_URL=https://download.oracle.com/java/25/archive/jdk-25.0.2_windows-x64_bin.zip
+    JVM_TARGET_DIR=$BUILD_DIR/jdk-25.0.2_windows-x64_bin-96701c
 else
     JVM_ARCH=$(linux$(getconf LONG_BIT) uname -m)
      case $JVM_ARCH in
         x86_64)
-            JVM_URL=https://download.oracle.com/java/17/archive/jdk-17.0.3.1_linux-x64_bin.tar.gz
-            JVM_TARGET_DIR=$BUILD_DIR/jdk-17.0.3.1_linux-x64_bin-9324ae
+            JVM_URL=https://download.oracle.com/java/25/archive/jdk-25.0.2_linux-x64_bin.tar.gz
+            JVM_TARGET_DIR=$BUILD_DIR/jdk-25.0.2_linux-x64_bin-3c4431
             ;;
         aarch64)
-            JVM_URL=https://download.oracle.com/java/17/archive/jdk-17.0.3.1_linux-aarch64_bin.tar.gz
-            JVM_TARGET_DIR=$BUILD_DIR/jdk-17.0.3.1_linux-aarch64_bin-319da6
+            JVM_URL=https://download.oracle.com/java/25/archive/jdk-25.0.2_linux-aarch64_bin.tar.gz
+            JVM_TARGET_DIR=$BUILD_DIR/jdk-25.0.2_linux-aarch64_bin-a88282
             ;;
         *) 
             die "Unknown architecture $JVM_ARCH"
@@ -263,7 +262,6 @@ fi
 # For Cygwin or MSYS, switch paths to Windows format before running java
 if "$cygwin" || "$msys" ; then
     APP_HOME=$( cygpath --path --mixed "$APP_HOME" )
-    CLASSPATH=$( cygpath --path --mixed "$CLASSPATH" )
 
     JAVACMD=$( cygpath --unix "$JAVACMD" )
 
@@ -303,7 +301,6 @@ DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
 
 set -- \
         "-Dorg.gradle.appname=$APP_BASE_NAME" \
-        -classpath "$CLASSPATH" \
         -jar "$APP_HOME/gradle/wrapper/gradle-wrapper.jar" \
         "$@"
 

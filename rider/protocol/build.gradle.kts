@@ -114,6 +114,6 @@ tasks.withType<RdGenTask> {
 
     // Ensure rdgen runs with JDK 21
     javaLauncher.set(javaToolchains.launcherFor {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     })
 }
