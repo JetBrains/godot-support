@@ -21,6 +21,7 @@ class GdClassNameMatchesFilenameInspection : LocalInspectionTool() {
                 if (className.parent !is GdClassNaming) return
 
                 val name = className.name
+                if (name == "_BASE_") return // Default template, I guess
                 val filename = PsiGdFileUtil.filename(className.containingFile).snakeToPascalCase()
                 if (filename.lowercase() != name.lowercase()) {
                     holder.registerWeakWarning(
