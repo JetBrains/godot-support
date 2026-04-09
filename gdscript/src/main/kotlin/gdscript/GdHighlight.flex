@@ -1,5 +1,6 @@
 package gdscript;
 
+import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import gdscript.psi.GdTypes;

@@ -39,9 +39,9 @@ You can turn it off under `Tools | Internal Actions | Skip Window Deactivation E
 
 ### Parser
 
-The whole parser was originally generated through `gd.bnf`, but it was rewritten into pure Kotlin files under `src/gdscript/parser/`. The reason is that Godot is a ContextAware language, which BNF does not support.
+The parser was originally generated through `gd.bnf`, but it was rewritten into Kotlin files under `src/main/kotlin/gdscript/parser`. The reason is that Godot is a context-aware language, which BNF does not support.
 
-On the same note, classes inside `src/java/gdscript/psi/` are obsolete - they are still used as they have been generated from the BNF (it'd be too much work to update them to Kotlin), but should there be any change to PSI, BNF generators cannot be used anymore, thus it's important to edit those files - preferably to also move them inside `src/kotlin/gdscript/psi/` when editing them, or create `src/kotlin/gdscript/grammar/` and move them all there.
+The code inside `src/main/java/gdscript/psi` is used but obsolete. If there is a need to change it, it would be good to convert to kotlin and move them inside `src/main/kotlin/gdscript/psi/`, or create `src/kotlin/gdscript/grammar/` and move them all there.
 
 .tscn and .godot parsers are still using their BNF grammars
 
