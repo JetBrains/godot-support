@@ -4,12 +4,11 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
-import com.intellij.openapi.util.io.FileUtil.copyDir
 import com.jetbrains.rdclient.util.idea.waitAndPump
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.test.asserts.shouldBeTrue
 import com.jetbrains.rider.test.asserts.shouldNotBeNull
-import com.jetbrains.rider.test.copyRecursivelyTo
+import com.jetbrains.rider.test.scriptingApi.copyRecursivelyTo
 import com.jetbrains.rider.test.facades.environment.RiderTestExecutionTarget
 import com.jetbrains.rider.test.framework.TEST_DATA_DOWNLOAD_URL
 import com.jetbrains.rider.test.framework.downloadAndExtractTestToolArchiveArtifactIntoPersistentCache
