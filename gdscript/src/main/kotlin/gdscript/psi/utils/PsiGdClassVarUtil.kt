@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import com.intellij.openapi.util.RecursionManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.elementType
 import gdscript.psi.GdAnnotationTl
@@ -13,8 +14,9 @@ object PsiGdClassVarUtil {
         if (element.typed !== null) {
             return PsiGdExprUtil.fromTyped(element.typed)
         }
-
-        return element.expr?.returnType ?: ""
+        return RecursionManager.doPreventingRecursion(element, false) {
+            element.expr?.returnType ?: ""
+        } ?: ""
     }
 
     fun isAnnotated(element: GdClassVarDeclTl, annotator: String): Boolean {

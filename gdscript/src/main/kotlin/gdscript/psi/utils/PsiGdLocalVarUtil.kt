@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import com.intellij.openapi.util.RecursionManager
 import gdscript.psi.GdVarDeclSt
 
 object PsiGdLocalVarUtil {
@@ -9,7 +10,9 @@ object PsiGdLocalVarUtil {
             return PsiGdExprUtil.fromTyped(element.typed)
         }
 
-        return element.expr?.returnType ?: ""
+        return RecursionManager.doPreventingRecursion(element, false) {
+            element.expr?.returnType ?: ""
+        } ?: ""
     }
 
 }

@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import com.intellij.openapi.util.RecursionManager
 import gdscript.psi.GdConstDeclTl
 
 object PsiGdConstDeclUtil {
@@ -8,8 +9,9 @@ object PsiGdConstDeclUtil {
         if (element.typed !== null) {
             return PsiGdExprUtil.fromTyped(element.typed)
         }
-
-        return element.expr?.returnType ?: ""
+        return RecursionManager.doPreventingRecursion(element, false) {
+            element.expr?.returnType ?: ""
+        } ?: ""
     }
 
 

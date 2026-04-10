@@ -1,5 +1,6 @@
 package gdscript.psi.utils
 
+import com.intellij.openapi.util.RecursionManager
 import gdscript.GdKeywords
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdParam
@@ -41,7 +42,9 @@ object PsiGdMethodDeclUtil {
     fun getReturnType(element: GdParam): String {
         element.typed?.let { return PsiGdExprUtil.fromTyped(it) }
 
-        return element.expr?.returnType ?: ""
+        return RecursionManager.doPreventingRecursion(element, false) {
+            element.expr?.returnType ?: ""
+        } ?: ""
     }
 
     fun getParameters(element: GdMethodDeclTl): LinkedHashMap<String, String?> {
