@@ -1,5 +1,6 @@
 package com.jetbrains.godot.gdscript.resolve
 
+import gdscript.psi.GdConstDeclTl
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -51,5 +52,12 @@ class ResolveInSingleFileTest : ResolveTestBase() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
+    }
+
+    @Test
+    fun testSelfReferentialConstNoStackOverflow() {
+        val file = loadByTestName()
+        // RIDER-137850 Calling returnType triggers the infinite type-inference chain without the fix
+        file.children.filterIsInstance<GdConstDeclTl>().forEach { it.returnType }
     }
 }
