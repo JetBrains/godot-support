@@ -3,7 +3,6 @@ import com.intellij.openapi.application.readAction
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.project.guessProjectDir
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
@@ -42,12 +41,7 @@ class GdProjectService(
     fun getExecutablePath(): Path? = _projectGodotFile?.parent?.let { getGodot4Path(it.toNioPath()) }
 
     init {
-        val projectDir = project.guessProjectDir()
-        val projectGodot = projectDir?.findChild("project.godot")
-        if (projectDir != null && projectGodot != null) {
-            discoverProject(projectDir)
-        }
-
+        // todo: I suspect ProjectIndexingActivityHistoryListener is not meant to be used for this purpose
         // After each index scan, check if project.godot appeared (e.g. from a linked folder added later)
         ApplicationManager.getApplication().messageBus.connect(scope).subscribe(
             ProjectIndexingActivityHistoryListener.TOPIC,
@@ -69,9 +63,9 @@ class GdProjectService(
         )
     }
 
-    fun discoverProject(projectDir: VirtualFile) {
-        _projectGodotFile = projectDir.findChild("project.godot")
-        _projectBasePathFlow.value = projectDir.toNioPath()
+    fun discoverProject(dir: VirtualFile) {
+        _projectGodotFile = dir.findChild("project.godot")
+        _projectBasePathFlow.value = dir.toNioPath()
         _isPureGdScriptProjectFlow.value = _projectBasePathFlow.value != null
         _executablePathFlow.value = getExecutablePath()
 
