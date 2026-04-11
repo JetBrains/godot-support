@@ -44,7 +44,9 @@ import gdscript.settings.GdSettingsConfigurable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import org.eclipse.lsp4j.ClientCapabilities
 import org.eclipse.lsp4j.Diagnostic
+import org.eclipse.lsp4j.MarkdownCapabilities
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Service(Service.Level.PROJECT)
@@ -200,6 +202,16 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             }
 
         override fun getLanguageId(file: VirtualFile) = "gdscript"
+
+        override val clientCapabilities: ClientCapabilities
+            get() = super.clientCapabilities.apply {
+                // RIDER-129495 Allows converting [color] BBCode to <span>
+                general?.markdown = MarkdownCapabilities().apply {
+                    parser = "marked"
+                    version = "1.1.0"
+                    allowedTags = listOf("span")
+                }
+            }
 
         override fun createLsp4jClient(handler: LspServerNotificationsHandler): Lsp4jClient {
             return GodotLsp4jClient(handler, project)
