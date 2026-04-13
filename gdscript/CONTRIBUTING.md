@@ -70,4 +70,4 @@ When submitting a PR, please ensure the following:
 - Optional: A YouTrack issue is linked (https://youtrack.jetbrains.com/issues) to keep QA and release notes in the loop.
   - If the commit that contains the fix starts with "fix Rider-XXX", automation will mark it fixed and set the proper "fixed in build" when the change is synced to the main Rider repository.
 
-You can also follow the prompts in our GitHub pull request template located at .github/pull_request_template.md.
+You can also follow the prompts in our GitHub pull request template located at [.github/pull_request_template.md](.github/pull_request_template.md).

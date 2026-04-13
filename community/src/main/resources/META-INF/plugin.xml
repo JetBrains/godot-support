@@ -1,13 +1,12 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot.community</id>
-  <name>Godot Support (Technical)</name>
-  <version>2.0.0</version>
-  <vendor url="https://www.jetbrains.com">JetBrains</vendor>
+  <name>Godot Shared (Technical)</name>
+  <vendor>JetBrains</vendor>
 
   <description><![CDATA[
-<strong>This plugin is a mediator between Rider Godot support plugin and GdScript IntelliJ plugin.</strong>
-<p>Referenced from the Godot support plugin</p>
-<p>Referenced from the GdScript plugin</p>
+<strong>This plugin is a mediator between Rider Godot.NET plugin and Godot plugin.</strong>
+<p>Referenced from the Godot plugin</p>
+<p>Referenced from the Godot.NET plugin</p>
 <p>Provides a set of extension points between those plugins.</p>
 ]]>
   </description>
