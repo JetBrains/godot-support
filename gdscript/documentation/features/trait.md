@@ -42,4 +42,4 @@ After expanding Trait comment you'll see a green mark when Trait file is found o
 
 To help with auto-completions traits can also include "extends xxx" line which is not propagated into usages.
 
-This is an experimental work-around and hopefully GdScript will get proper support for Traits.
+This is an experimental work-around and hopefully GDScript will get proper support for Traits.

@@ -1,10 +1,10 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot.gdscript</id>
-  <name>GdScript</name>
+  <name>Godot</name>
   <vendor>JetBrains</vendor>
 
   <description>
-    GdScript2 language plugin for Godot 4.0+.
+    Provides GDScript language support for Godot 4.0+.
   </description>
   <change-notes>
   </change-notes>

@@ -1,4 +1,4 @@
-<templateSet group="GdScript">
+<templateSet group="GDScript">
   <template name="if" value="if $EXPR$:&#10;    $END$" description="if" toReformat="false" toShortenFQNames="true">
     <variable name="EXPR" expression="" defaultValue="expr" alwaysStopAt="true" />
     <context>

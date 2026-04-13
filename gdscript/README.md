@@ -10,8 +10,7 @@
     </a>
 </div>
 
-GdScript2 language plugin for JetBrains IDEs (IntelliJ IDEA, Rider, and all the others)  
-Supports Godot 4.0 and higher
+Godot plugin for JetBrains IDEs (IntelliJ IDEA, Rider, and all the others). Supports Godot 4.0 and higher
 
 ## History
 
@@ -26,16 +25,16 @@ the foundation for this plugin.
 
 [Marketplace page](https://plugins.jetbrains.com/plugin/20123-gdscript)
 
-## GdScript toolkit (not related to this project)
+## GDScript toolkit (not related to this project)
 
-An independent set of tools for GdScript (Formatter, Linter, and more) that can work together with this plugin.  
+An independent set of tools for GDScript (Formatter, Linter, and more) that can work together with this plugin.  
 For example instead of plugin's built-in formatter, you can use theirs 
 <details>
     <summary>gdformat</summary>
 
 - Install by their own tutorial
 - Add File Watcher `Settings -> Tools -> File Watchers`
-- File type: `GdScript language file`
+- File type: `GDScript language file`
 - Scope: `Project files`
 - Program: `/home/{username}/.local/bin/gdformat`
 - Arguments: `-l 160 $FilePath$`

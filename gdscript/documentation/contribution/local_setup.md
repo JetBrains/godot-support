@@ -1,6 +1,6 @@
 # Local setup
 
-This repository contains the GdScript plugin developed with Kotlin for JetBrains IDEs. Below are the up-to-date steps to set up a local development environment (updated: 2025-08-24).
+This repository contains the Godot plugin developed with Kotlin for JetBrains IDEs. Below are the up-to-date steps to set up a local development environment (updated: 2025-08-24).
 
 Requirements in your IDE:
 - IntelliJ IDEA Community or Ultimate (recommended) installed.
