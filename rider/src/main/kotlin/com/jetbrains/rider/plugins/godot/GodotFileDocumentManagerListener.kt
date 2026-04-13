@@ -14,6 +14,7 @@ import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.model.BuildMessageKind
 import com.jetbrains.rider.model.BuildTarget
 import com.jetbrains.rider.model.MessageBuildEvent
+import com.jetbrains.rider.model.SilentMode
 import com.jetbrains.rider.model.godot.frontendBackend.GodotEditorState
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.model.rdShellModel
@@ -42,7 +43,7 @@ class GodotFileDocumentManagerListener : FileDocumentManagerListener {
                     val buildHost = BuildHost.getInstance(project)
                     if (buildHost.ready.value && !buildHost.building.value) {
                         val mainProjectPath = GodotProjectDiscoverer.getInstance(project).godotDescriptor.valueOrNull?.mainProjectPath ?: return@invokeLater
-                        buildHost.requestBuild(BuildParameters(BuildTarget(), listOf(mainProjectPath), silentMode = true)) {
+                        buildHost.requestBuild(BuildParameters(BuildTarget(), listOf(mainProjectPath), silentMode = SilentMode.Silent)) {
                             showAutoBuildNotification(project)
                         }
                     }
