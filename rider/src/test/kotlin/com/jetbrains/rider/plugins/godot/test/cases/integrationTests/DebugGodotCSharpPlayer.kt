@@ -5,6 +5,7 @@ import com.jetbrains.rider.debugger.settings.DotNetDebuggerSettings
 import com.jetbrains.rider.diagnostics.LogTraceScenarios
 import com.jetbrains.rider.plugins.godot.test.cases.attachDebuggerToGodotEditor
 import com.jetbrains.rider.plugins.godot.test.cases.startGodotWithProject
+import com.jetbrains.rider.test.annotations.Mute
 import com.jetbrains.rider.test.annotations.Solution
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.TestSettings
@@ -84,6 +85,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
                                   }, testGoldFile)
     }
 
+    @Mute("RIDER-135490")
     @Test(description = "Check simple stepping")
     @ChecklistItems(["Debug/Stepping while debug C# Godot player"])
     fun checkSimpleStepping() {
@@ -102,6 +104,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
                                   }, testGoldFile)
     }
 
+    @Mute("RIDER-135490")
     @Test(description = "Check simple evaluation")
     @ChecklistItems(["Debug/Evaluation while debugging C# Godot player"])
     fun checkSimpleEvaluation() {
