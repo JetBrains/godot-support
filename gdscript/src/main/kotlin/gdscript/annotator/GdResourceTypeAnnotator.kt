@@ -12,6 +12,7 @@ import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdNodePath
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
+import gdscript.psi.utils.PsiGdResourceUtil
 import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdProjectState
 
@@ -38,15 +39,24 @@ class GdResourceTypeAnnotator : Annotator {
 
     private fun stringResourceExists(element: PsiElement, holder: AnnotationHolder, state: String): Boolean {
         val text = element.text.trim('"', '\'')
-        if (text.startsWith("res://") && GdFileResIndex.getFiles(text, element.project).isEmpty()) {
-            holder
-                .newAnnotationGd(
-                    GdProjectState.selectedLevel(state),
-                    GdScriptBundle.message("annotator.resource.not.found")
-                )
-                .range(TextRange.create(element.textRange.startOffset + 1, element.textRange.endOffset - 1))
-                .create()
-            return false
+        if (text.startsWith("res://") || text.startsWith("uid://")) {
+            val files = GdFileResIndex.getFiles(text, element.project)
+            if (files.isEmpty()) {
+                holder
+                    .newAnnotationGd(
+                        GdProjectState.selectedLevel(state),
+                        GdScriptBundle.message("annotator.resource.not.found")
+                    )
+                    .range(TextRange.create(element.textRange.startOffset + 1, element.textRange.endOffset - 1))
+                    .create()
+                return false
+            } else if (text.startsWith("uid://")) {
+                val path = PsiGdResourceUtil.resourcePath(files.first())
+                holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+                    .range(element.textRange)
+                    .tooltip(path)
+                    .create()
+            }
         }
         return true
     }
