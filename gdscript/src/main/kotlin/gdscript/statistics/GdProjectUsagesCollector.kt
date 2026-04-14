@@ -9,8 +9,8 @@ import gdscript.library.GdProjectGodotService
 
 class GdProjectUsagesCollector : ProjectUsagesCollector() {
 
-    private val GROUP = EventLogGroup("godot.gdscript.plugin.project", 1)
-    private val GODOT_VERSION = EventFields.StringValidatedByInlineRegexp("godot_version", "[0-9]+\\.[0-9]+|[Mm]aster")
+    private val GROUP = EventLogGroup("godot.gdscript.plugin.project", 2)
+    private val GODOT_VERSION = EventFields.Version
     private val PROJECT = GROUP.registerEvent("project", GODOT_VERSION)
 
     override fun getGroup(): EventLogGroup = GROUP
