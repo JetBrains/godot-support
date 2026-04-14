@@ -1,0 +1,4 @@
+func test():
+	print[u](global[r].val[r])]
+]
+	var x = preload[u]("uid://myscene"[r])

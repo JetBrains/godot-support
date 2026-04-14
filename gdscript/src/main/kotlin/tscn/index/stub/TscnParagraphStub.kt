@@ -5,4 +5,6 @@ import tscn.psi.TscnParagraph
 
 interface TscnParagraphStub : StubElement<TscnParagraph> {
 
+    fun getUid(): String
+
 }

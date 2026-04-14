@@ -184,6 +184,8 @@
     <!-- Tscn, Project, Config -->
     <stubElementTypeHolder class="tscn.psi.TscnTypes" externalIdPrefix="tscn."/>
     <stubIndex implementation="tscn.index.impl.TscnResourceIndex" />
+    <stubIndex implementation="tscn.index.impl.TscnUidIndex" />
+    <stubIndex implementation="tscn.index.impl.TscnSceneUidIndex" />
     <stubIndex implementation="tscn.index.impl.TscnNodeIndex" />
     <stubIndex implementation="tscn.index.impl.TscnParagraphIndex" />
     <stubIndex implementation="tscn.index.impl.TscnConnectionIndex" />

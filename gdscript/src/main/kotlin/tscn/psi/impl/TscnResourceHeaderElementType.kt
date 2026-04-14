@@ -12,6 +12,7 @@ import tscn.index.TscnIndices
 import tscn.index.stub.TscnResourceHeaderStub
 import tscn.index.stub.TscnResourceHeaderStubImpl
 import tscn.psi.TscnResourceHeader
+import tscn.psi.utils.TscnResourceUtil
 
 /**
  * Resource line (storing only scripts)
@@ -29,6 +30,7 @@ object TscnResourceHeaderElementType : IStubElementType<TscnResourceHeaderStub, 
     override fun serialize(stub: TscnResourceHeaderStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.getId())
         dataStream.writeName(stub.getPath())
+        dataStream.writeName(stub.getUid())
     }
 
     override fun deserialize(dataStream: StubInputStream, parentStub: StubElement<*>?): TscnResourceHeaderStub =
@@ -36,17 +38,22 @@ object TscnResourceHeaderElementType : IStubElementType<TscnResourceHeaderStub, 
             parentStub,
             dataStream.readNameString() ?: "",
             dataStream.readNameString() ?: "",
+            dataStream.readNameString() ?: "",
         )
 
     override fun indexStub(stub: TscnResourceHeaderStub, sink: IndexSink) {
         sink.occurrence(TscnIndices.RESOURCE_INDEX, stub.getPath())
+        val uid = stub.getUid()
+        if (uid.isNotEmpty()) {
+            sink.occurrence(TscnIndices.UID_INDEX, uid)
+        }
     }
 
     override fun createPsi(stub: TscnResourceHeaderStub): TscnResourceHeader =
         TscnResourceHeaderImpl(stub, stub.stubType)
 
     override fun createStub(psi: TscnResourceHeader, parentStub: StubElement<out PsiElement>?): TscnResourceHeaderStub =
-        TscnResourceHeaderStubImpl(parentStub, psi.id, psi.path)
+        TscnResourceHeaderStubImpl(parentStub, psi.id, psi.path, TscnResourceUtil.getUid(psi))
 
     override fun shouldCreateStub(node: ASTNode): Boolean {
         val element = node.psi as TscnResourceHeader

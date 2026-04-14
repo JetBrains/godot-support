@@ -7,10 +7,15 @@ import tscn.psi.impl.TscnParagraphElementType
 
 class TscnParagraphStubImpl : StubBase<TscnParagraph>, TscnParagraphStub {
 
-    constructor(parent: StubElement<*>?) : super(
+    private var uid: String = ""
+
+    constructor(parent: StubElement<*>?, uid: String) : super(
         parent,
         TscnParagraphElementType
     ) {
+        this.uid = uid
     }
+
+    override fun getUid(): String = uid
 
 }

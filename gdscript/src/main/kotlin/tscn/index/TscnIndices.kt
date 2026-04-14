@@ -14,5 +14,7 @@ object TscnIndices {
     val RESOURCE_INDEX = StubIndexKey.createIndexKey<String, TscnResourceHeader>("tscn.extResource")
     val CONNECTION_INDEX = StubIndexKey.createIndexKey<String, TscnConnectionHeader>("tscn.connection")
     val NODE_INDEX = StubIndexKey.createIndexKey<String, TscnNodeHeader>("tscn.nodeResource")
+    val UID_INDEX = StubIndexKey.createIndexKey<String, TscnResourceHeader>("tscn.uid")
+    val SCENE_UID_INDEX = StubIndexKey.createIndexKey<String, TscnParagraph>("tscn.sceneUid")
 
 }

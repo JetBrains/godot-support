@@ -2,6 +2,7 @@ package tscn.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
+import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.utils.PsiGdResourceUtil
 import tscn.index.impl.TscnResourceIndex
 import tscn.psi.TscnResourceHeader
@@ -19,11 +20,23 @@ object TscnResourceUtil {
         return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_ID)
     }
 
+    fun getUid(element: TscnResourceHeader): String {
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_UID)
+    }
+
     fun getPath(element: TscnResourceHeader): String {
         val stub = element.stub
         if (stub != null) return stub.getPath()
 
-        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_PATH)
+        val path = TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_PATH)
+        if (path.isEmpty()) {
+            val uid = getUid(element)
+            if (uid.isNotEmpty()) {
+                val file = GdFileResIndex.getFiles(uid, element.project).firstOrNull()
+                if (file != null) return PsiGdResourceUtil.resourcePath(file)
+            }
+        }
+        return path
     }
 
     fun getType(element: TscnResourceHeader): String {

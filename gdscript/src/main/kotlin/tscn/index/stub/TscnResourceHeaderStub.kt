@@ -7,5 +7,6 @@ interface TscnResourceHeaderStub : StubElement<TscnResourceHeader> {
 
     fun getId(): String
     fun getPath(): String
+    fun getUid(): String
 
 }

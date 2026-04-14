@@ -1,0 +1,2 @@
+[gd_scene format=3 uid="uid://myscene"]
+[ext_resource type="Script" uid="uid://myglobal" path="res://global.gd" id="1"]

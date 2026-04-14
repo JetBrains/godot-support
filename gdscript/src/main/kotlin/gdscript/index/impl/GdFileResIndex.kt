@@ -7,13 +7,28 @@ import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import gdscript.index.impl.utils.GdFileResInputFilter
-
+import tscn.index.impl.TscnSceneUidIndex
+import tscn.index.impl.TscnUidIndex
+import tscn.psi.utils.TscnHeaderUtils
 
 /* it is not a real index anymore*/
 class GdFileResIndex {
 
     companion object {
         fun getFiles(key: String, project: Project): Collection<VirtualFile> {
+            if (key.startsWith("uid://")) {
+                val results = mutableSetOf<VirtualFile>()
+                TscnUidIndex.INSTANCE.getGlobally(key, project).forEach {
+                    val path = TscnHeaderUtils.getValue(it.headerValueList, TscnHeaderUtils.HL_PATH)
+                    if (path.isNotEmpty() && path.startsWith("res://")) {
+                        getFiles(path, project).firstOrNull()?.let { results.add(it) }
+                    }
+                }
+                TscnSceneUidIndex.INSTANCE.getGlobally(key, project).forEach {
+                    results.add(it.containingFile.originalFile.virtualFile)
+                }
+                return results.toList()
+            }
             val relPath = key.removePrefix("res://")
             val contentRoots = ProjectRootManager.getInstance(project).getContentRoots()
             for (root in contentRoots) {

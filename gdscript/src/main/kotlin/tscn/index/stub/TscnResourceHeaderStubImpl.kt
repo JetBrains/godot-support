@@ -15,14 +15,18 @@ class TscnResourceHeaderStubImpl : StubBase<TscnResourceHeader>, TscnResourceHea
 
     private var id: String = ""
     private var path: String = ""
+    private var uid: String = ""
 
-    constructor(parent: StubElement<*>?, id: String, path: String) : super(parent, TscnResourceHeaderElementType) {
+    constructor(parent: StubElement<*>?, id: String, path: String, uid: String) : super(parent, TscnResourceHeaderElementType) {
         this.id = id
         this.path = path
+        this.uid = uid
     }
 
     override fun getId(): String = id
 
     override fun getPath(): String = path
+
+    override fun getUid(): String = uid
 
 }
