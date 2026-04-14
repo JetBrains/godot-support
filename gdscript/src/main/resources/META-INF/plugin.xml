@@ -17,6 +17,7 @@
     <!-- region Generated dependencies - run `Generate Product Layouts` to regenerate -->
     <plugin id="com.intellij.rider.godot.community"/>
     <module name="intellij.platform.dap"/>
+    <module name="intellij.spellchecker"/>
     <!-- endregion -->
   </dependencies>
 
@@ -254,6 +255,9 @@
       defaultValue="false"
       description="Enables experimental 'LSP Not Connected' banner"
       restartRequired="false"/>
+
+    <spellchecker.bundledDictionaryProvider implementation="gdscript.spellchecker.GdBundledDictionaryProvider"/>
+    <spellchecker.support language="GdScript" implementationClass="gdscript.spellchecker.GdSpellcheckingStrategy"/>
   </extensions>
 
   <actions>
