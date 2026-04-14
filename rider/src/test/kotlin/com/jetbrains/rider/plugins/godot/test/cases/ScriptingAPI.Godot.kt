@@ -107,6 +107,57 @@ fun startGodot(godotExecutable: File, projectPath: String, logPath: Path, dotnet
     return process
 }
 
+fun startGodotLikeDebugRun(
+    godotExecutable: File,
+    projectPath: String,
+    logPath: Path,
+    dotnetSdk: String
+): Process {
+    val logFile = File(logPath.toFile(), "Godot_debug_like_${System.currentTimeMillis()}.log")
+
+    val command = mutableListOf(
+        godotExecutable.absolutePath,
+        "--path", "./",
+        "--verbose", "--debug"
+    )
+
+    val processBuilder = ProcessBuilder(command)
+        .directory(File(projectPath))
+        .redirectErrorStream(true)
+        .redirectOutput(logFile)
+    
+    val env = processBuilder.environment()
+
+    env["DOTNET_ROOT"] = dotnetSdk
+    env["PATH"] = "$dotnetSdk:${env["PATH"]}"
+    env["DOTNET_MSBUILD_SDK_RESOLVER_SDKS_DIR"] = "$dotnetSdk/sdk"
+    env["DOTNET_MSBUILD_SDK_RESOLVER_SDKS_VER"] =
+        File("$dotnetSdk/sdk")
+            .listFiles()
+            ?.map { it.name }
+            ?.sortedDescending()
+            ?.firstOrNull() ?: ""
+    env["DOTNET_MULTILEVEL_LOOKUP"] = "0"
+
+    val process = processBuilder.start()
+
+    frameworkLogger.info("Godot (debug-like) started (pid=${process.pid()})")
+
+    Thread {
+        try {
+            Thread.sleep(20000) 
+            if (process.isAlive) {
+                frameworkLogger.info("Killing Godot process (pid=${process.pid()}) after timeout")
+                process.destroyForcibly()
+            }
+        } catch (e: Exception) {
+            frameworkLogger.warn("Failed to auto-kill Godot process", e)
+        }
+    }.start()
+
+    return process
+}
+
 fun startGodotWithProject(
     godotVersion: String = godotNumberVersion,
     projectName: String,
@@ -118,6 +169,7 @@ fun startGodotWithProject(
     val godotExecutable = downloadAndExtractGodot(godotVersion)
     val projectDir = putGodotProjectToTempTestDir(projectName, testWorkDirectory, solutionSourceRootDirectory)
     val process = startGodot(godotExecutable, projectDir.absolutePath, logPath, dotnetSdk)
+    startGodotLikeDebugRun(godotExecutable, projectDir.absolutePath, logPath, dotnetSdk)
     return process
 }
 
@@ -139,7 +191,6 @@ fun attachDebuggerToGodotEditor(
     waitForGodotRunConfigurations(project)
     val runConfigName = GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME
     selectRunConfiguration(project, runConfigName)
-
     val waitAndTest: DebugTestExecutionContext.() -> Unit = {
         waitForDotNetDebuggerInitializedOrCanceled()
         test()
