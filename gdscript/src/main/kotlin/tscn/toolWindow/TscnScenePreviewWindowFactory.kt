@@ -10,14 +10,16 @@ import gdscript.GdScriptBundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TscnScenePreviewWindowFactory() : ToolWindowFactory {
+class TscnScenePreviewWindowFactory : ToolWindowFactory {
     companion object {
         const val TOOLWINDOW_ID: String = "TscnScenePreviewWindowId"
 
         fun makeAvailable(project: Project) {
             GdScriptProjectLifetimeService.getScope(project).launch(Dispatchers.EDT) {
                 val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(TOOLWINDOW_ID) ?: return@launch
-                toolWindow.isAvailable = true
+                if (!ToolWindowManager.getInstance(project).isStripeButtonShow(toolWindow)){
+                    toolWindow.isAvailable = true
+                }
             }
         }
     }
