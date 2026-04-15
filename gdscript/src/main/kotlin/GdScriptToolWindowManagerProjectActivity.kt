@@ -7,16 +7,10 @@ import tscn.toolWindow.TscnScenePreviewWindowFactory
 
 class GdScriptToolWindowManagerProjectActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
-        val lifetime = GdScriptProjectLifetimeService.getLifetime(project)
-        lifetime.launch {
-            val lifetime = GdScriptProjectLifetimeService.getLifetime(project)
-            lifetime.launch {
-                GodotCommunityUtil.awaitGodotProject(project)
-                TscnScenePreviewWindowFactory.makeAvailable(project)
-            }
+        GdScriptProjectLifetimeService.getLifetime(project).launch {
+            GodotCommunityUtil.awaitGodotProject(project)
+            TscnScenePreviewWindowFactory.makeAvailable(project)
         }
     }
-
-
 }
 
