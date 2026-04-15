@@ -87,7 +87,7 @@ object GodotCommunityUtil {
 
     /** Awaits until the project is first recognized as a Godot project */
     suspend fun awaitGodotProject(project: Project) {
-        isGodotProjectFlow(project).first { it == true }
+        isGodotProjectFlow(project).first { it }
     }
 
     fun getEditorLaunchConfig(project: Project): GodotEditorLaunchConfig? {
