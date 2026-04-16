@@ -59,7 +59,7 @@ dependencies {
 
         bundledPlugin("com.intellij.modules.json")
         bundledModule("intellij.platform.dap")
-        bundledPlugin("com.intellij.spellchecker")
+        bundledModule("intellij.spellchecker")
 
         bundledLibrary(provider {
             project.intellijPlatform.platformPath.resolve("lib/testFramework.jar").pathString
