@@ -8,19 +8,18 @@ import com.jetbrains.rdclient.util.idea.waitAndPump
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.test.asserts.shouldBeTrue
 import com.jetbrains.rider.test.asserts.shouldNotBeNull
-import com.jetbrains.rider.test.scriptingApi.copyRecursivelyTo
 import com.jetbrains.rider.test.facades.environment.RiderTestExecutionTarget
 import com.jetbrains.rider.test.framework.TEST_DATA_DOWNLOAD_URL
 import com.jetbrains.rider.test.framework.downloadAndExtractTestToolArchiveArtifactIntoPersistentCache
 import com.jetbrains.rider.test.framework.executeWithGold
 import com.jetbrains.rider.test.framework.frameworkLogger
 import com.jetbrains.rider.test.scriptingApi.DebugTestExecutionContext
+import com.jetbrains.rider.test.scriptingApi.copyRecursivelyTo
 import com.jetbrains.rider.test.scriptingApi.debugProgram
+import com.jetbrains.rider.test.scriptingApi.setExecutablePermissions
 import com.jetbrains.rider.test.scriptingApi.waitForDotNetDebuggerInitializedOrCanceled
 import com.jetbrains.rider.utils.NullPrintStream
-import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.attribute.PosixFilePermission.*
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.absolutePathString
@@ -51,7 +50,7 @@ fun downloadAndExtractGodot(version: String): Path {
                                                    SystemInfo.isLinux -> "Godot_v${version}-stable_mono_linux_x86_64"
                                                    SystemInfo.isMac -> "Godot_mono.app/Contents/MacOS/Godot"
                                                    else -> error("Unsupported OS for Godot")
-                                               }).apply { Files.setPosixFilePermissions(this, setOf(OWNER_EXECUTE, GROUP_EXECUTE, OTHERS_EXECUTE)) }
+                                               }).apply { setExecutablePermissions() }
     if (!godotExecutable.exists()) {
         error("Godot executable not found at ${godotExecutable.absolutePathString()}")
     }
