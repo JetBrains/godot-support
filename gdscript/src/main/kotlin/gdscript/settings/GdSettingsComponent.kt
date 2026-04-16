@@ -3,8 +3,9 @@ package gdscript.settings
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.TitledSeparator
+import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.util.ui.FormBuilder
 import gdscript.GdScriptBundle
 import org.jetbrains.annotations.Nls
@@ -47,8 +48,8 @@ class GdSettingsComponent(val project: Project) {
         for (mode in GdLspConnectionMode.entries) {
             lspConnectionModeCb.addItem(mode)
         }
-        lspConnectionModeCb.setRenderer(SimpleListCellRenderer.create { label, value, _ ->
-            label.text = when (value) {
+        lspConnectionModeCb.setRenderer(textListCellRenderer("") {
+            when (it) {
                 GdLspConnectionMode.Never -> GdScriptBundle.message("label.never.use.lsp")
                 GdLspConnectionMode.ConnectRunningEditor -> GdScriptBundle.message("label.attempt.to.connect.to.running.godot.editor")
                 GdLspConnectionMode.StartEditorHeadless -> GdScriptBundle.message("label.automatically.start.headless.lsp.server")
