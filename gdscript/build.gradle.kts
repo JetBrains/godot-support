@@ -69,6 +69,7 @@ dependencies {
     testImplementation(libs.openTest4J)
     testImplementation("junit:junit:4.13.2")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.0")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
 }
 
 intellijPlatform{
