@@ -94,6 +94,20 @@ lexers.forEach { (lexerName, folder, lexerPath) ->
         sourceFile = file(lexerPath)
         targetOutputDir = file("src/main/gen/$folder")
         purgeOldFiles.set(false)
+        doLast {
+            // post-process generated lexer files to match the output of the "Run JFlex Generator" action in IDEA
+            val flexFileName = file(lexerPath).name
+            file("src/main/gen/$folder").walk()
+                .filter { it.extension == "java" }
+                .forEach { javaFile ->
+                    val original = javaFile.readText()
+                    val normalized = original.replace(
+                        "// source: $lexerPath",
+                        "// source: $flexFileName"
+                    )
+                    if (normalized != original) javaFile.writeText(normalized)
+                }
+        }
     }
 }
 
