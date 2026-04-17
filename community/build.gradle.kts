@@ -12,7 +12,7 @@ allprojects {
 
 kotlin {
     jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -37,7 +37,7 @@ intellijPlatform{
 
     pluginConfiguration{
         ideaVersion {
-            sinceBuild = "262"
+            sinceBuild = "261"
         }
     }
 }
