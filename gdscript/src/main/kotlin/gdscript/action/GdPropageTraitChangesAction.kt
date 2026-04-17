@@ -7,6 +7,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiComment
+import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.intellij.refactoring.suggested.endOffset
@@ -90,7 +91,7 @@ class GdPropageTraitChangesAction : BaseIntentionAction() {
     private fun traitRegionLabel(editor: Editor, file: PsiFile): PsiComment? {
         var current = file.findElementAt(editor.caretModel.offset)
         while (current != null) {
-            if (current is PsiFile) break // avoid directory traversal
+            if (current is PsiFile || current is PsiDirectory) break // avoid directory traversal
             if (current is PsiComment) {
                 val text = current.text
                 if (text.startsWith(GdTraitLineMarkerContributor.PREFIX)) {
