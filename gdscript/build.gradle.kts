@@ -33,7 +33,7 @@ sourceSets.getByName("main") {
 
 kotlin {
     jvmToolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -55,21 +55,18 @@ dependencies {
         jetbrainsRuntime()
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
-        testFramework(TestFrameworkType.Bundled)
+        testFramework(TestFrameworkType.Platform)
 
         bundledPlugin("com.intellij.modules.json")
         bundledModule("intellij.platform.dap")
         bundledModule("intellij.spellchecker")
-
-        bundledLibrary(provider {
-            project.intellijPlatform.platformPath.resolve("lib/testFramework.jar").pathString
-        })
     }
     implementation(libs.jflex)
     testImplementation(libs.openTest4J)
     testImplementation("junit:junit:4.13.2")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.0")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-engine:1.12.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
 }
 
 intellijPlatform{
@@ -178,9 +175,6 @@ tasks {
     }
 
     runIde {
-        if (gradle.includedBuilds.any { it.name == "community" }) {
-            dependsOn(gradle.includedBuild("community").task(":buildPlugin"))
-        }
         jvmArgs("-Xmx1500m")
     }
 

@@ -1,10 +1,10 @@
 [versions]
 # https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#kotlin-standard-library
-kotlin = "2.2.20"
+kotlin = "2.3.0"
 # https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
 # https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
-ideaSdk = "2025.3"
-riderSdk = "2025.3-SNAPSHOT"
+ideaSdk = "2026.1"
+riderSdk = "2026.2-SNAPSHOT"
 
 [libraries]
 kotlinStdLib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }

@@ -230,10 +230,7 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
                 if (!hidePrivate || !lookup.lookupString.startsWith("_")) lookup
                 else null
             }
-        }.toTypedArray() + arrayOf(
-            addMethod("new"),
-            addMethod("instance"),
-        )
+        }.toTypedArray()
     }
 
     private fun completionIntoCallableParam(): Boolean {
