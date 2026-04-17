@@ -1,17 +1,22 @@
 package com.jetbrains.godot.gdscript.highlight
 
 import com.intellij.testFramework.TestModeFlags
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.annotator.GD_ANNOTATOR_ORIGINAL_SEVERITY
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import kotlin.io.path.pathString
 
-class ErrorsHighlightingTest : BasePlatformTestCase() {
+class ErrorsHighlightingTest : GdCodeInsightTestBase() {
 
-    override fun setUp() {
-        super.setUp()
+    override fun getTestDataPath(): String {
+        return getBaseTestDataPath().resolve("testData/gdscript/highlighting").pathString
+    }
+
+    @BeforeEach
+    fun setUpHighlighting() {
         TestModeFlags.set(GD_ANNOTATOR_ORIGINAL_SEVERITY, true, testRootDisposable)
     }
 
@@ -34,9 +39,5 @@ class ErrorsHighlightingTest : BasePlatformTestCase() {
     @Test
     fun testVariadicFunctions(){
         myFixture.testHighlighting("${getTestName(false)}.gd")
-    }
-
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/highlighting").pathString
     }
 }

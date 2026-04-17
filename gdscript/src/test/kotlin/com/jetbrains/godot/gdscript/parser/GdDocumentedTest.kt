@@ -1,16 +1,17 @@
 package com.jetbrains.godot.gdscript.parser
 
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdVarDeclSt
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import kotlin.io.path.pathString
 
-class GdDocumentedTest : BasePlatformTestCase() {
+class GdDocumentedTest : GdCodeInsightTestBase() {
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString
     }
@@ -62,7 +63,7 @@ class GdDocumentedTest : BasePlatformTestCase() {
         val xVar = class_variables.find { it.name == "x" }
         assertNotNull(xVar)
         assertEquals("This is a brief for var x.", xVar!!.brief())
-        assertEmpty(xVar.tutorials())
+        assertTrue(xVar.tutorials().isEmpty())
 
         assertFalse(xVar.isDeprecated())
         assertFalse(xVar.isExperimental())
@@ -71,9 +72,9 @@ class GdDocumentedTest : BasePlatformTestCase() {
         val local_variables = PsiTreeUtil.findChildrenOfType(documentedFunc, GdVarDeclSt::class.java).toList()
         val yVar = local_variables.find { it.name == "y" }
         assertNotNull(yVar)
-        assertEmpty(yVar!!.brief())
-        assertEmpty(yVar.description())
-        assertEmpty(yVar.tutorials())
+        assertTrue(yVar!!.brief().isEmpty())
+        assertTrue(yVar.description().isEmpty())
+        assertTrue(yVar.tutorials().isEmpty())
 
         assertFalse(yVar.isDeprecated())
         assertFalse(yVar.isExperimental())
@@ -82,7 +83,7 @@ class GdDocumentedTest : BasePlatformTestCase() {
         assertNotNull(zVar)
         assertEquals("This is a brief for var z.", zVar!!.brief())
         assertEquals("This is a brief for var z.\n\nThis is a description for var z.", zVar.description())
-        assertEmpty(zVar.tutorials())
+        assertTrue(zVar.tutorials().isEmpty())
 
         assertFalse(zVar.isDeprecated())
         assertFalse(zVar.isExperimental())

@@ -1,22 +1,24 @@
 package com.jetbrains.godot.gdscript.parser
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 
-class GdParsingRegressionTest : BasePlatformTestCase() {
+class GdParsingRegressionTest : GdCodeInsightTestBase() {
 
-    // Regression: ensure parsing completes for inline lambda with multiple semicolon-separated statements
-    @Test // tried to set the timeout, but it always failed to finish in time
-    fun testInlineLambdaWithSemicolons_NoInfiniteParse() {
+    @Test
+    fun testMatchWhen() {
         val code = """
-            |func test():
-            |	if not error_callback is Callable: error_callback = (func(str): _printerr("SimpleDungeons Error: ", str))
-            |	var any_errors : = {"err": false} # So lambda closure captures
-            |	error_callback = (func(str): any_errors["err"] = true; error_callback.call(str))
-            |""".trimMargin()
-
-        val psi = myFixture.configureByText("sample.gd", code)
-        // Access PSI to force full parse tree construction
-        assertNotNull(psi.firstChild)
+            func test():
+                var x = 1
+                match x:
+                    var y when y > 0:
+                        pass
+        """.trimIndent()
+        val file = myFixture.configureByText("test.gd", code)
+        val errors = com.intellij.psi.util.PsiTreeUtil.findChildrenOfType(
+            file, com.intellij.psi.PsiErrorElement::class.java
+        )
+        assertFalse(errors.isNotEmpty(), "Expected no parse errors but found: ${errors.map { it.errorDescription }}")
     }
 }

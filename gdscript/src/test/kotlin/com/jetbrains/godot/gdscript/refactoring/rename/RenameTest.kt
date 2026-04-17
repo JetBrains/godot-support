@@ -1,8 +1,10 @@
 package com.jetbrains.godot.gdscript.refactoring.rename
 
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import com.jetbrains.godot.gdscript.resolve.ResolveTestBase
 import com.jetbrains.godot.getBaseTestDataPath
+import org.junit.jupiter.api.Test
 import kotlin.io.path.pathString
 
 class RenameTest : ResolveTestBase() {
@@ -11,15 +13,16 @@ class RenameTest : ResolveTestBase() {
         return getBaseTestDataPath().resolve("testData/gdscript/refactoring").pathString
     }
 
+    @Test
     fun testRenameVariable() {
         val code = """
 func in_the_outer_wrong():
-	var <caret>A1Instance := A1.new()
-	renamed_A1Instance.ppa1() # will be updated after rename
+var <caret>A1Instance := A1.new()
+renamed_A1Instance.ppa1() # will be updated after rename
 
 class A1:
-	func ppa1():
-		pass
+func ppa1():
+pass
         """.trimIndent()
 
         // Configure the file from text and perform rename at caret
@@ -27,13 +30,13 @@ class A1:
         myFixture.renameElementAtCaret("renamed_A1Instance")
 
         // Commit and run highlighting to simulate IDE analysis (and warm caches)
-        com.intellij.psi.PsiDocumentManager.getInstance(project).commitAllDocuments()
+        PsiDocumentManager.getInstance(project).commitAllDocuments()
         myFixture.doHighlighting() // forces resolve/indices/inspections
 
         // Verify the text was updated accordingly
         val updated = myFixture.file.text
-        assertTrue(updated.contains("var renamed_A1Instance := A1.new()"))
-        assertTrue(updated.contains("renamed_A1Instance.ppa1()"))
+        org.junit.jupiter.api.Assertions.assertTrue(updated.contains("var renamed_A1Instance := A1.new()"))
+        org.junit.jupiter.api.Assertions.assertTrue(updated.contains("renamed_A1Instance.ppa1()"))
 
         // Dump resolves and assert there are no unresolved references
         val dump = dumpResolvesWithInlineMarkers(myFixture.file)

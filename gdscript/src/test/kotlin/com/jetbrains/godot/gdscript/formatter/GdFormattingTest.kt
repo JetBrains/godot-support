@@ -2,10 +2,13 @@ package com.jetbrains.godot.gdscript.formatter
 
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.psi.codeStyle.CodeStyleManager
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
-class GdFormattingTest : BasePlatformTestCase() {
+class GdFormattingTest : GdCodeInsightTestBase() {
     // perfectly valid code should not be changed by formatter
+    @Test
     fun testLambdaInConnectIndent() {
         val before = """
             |func stop_counting_on_signal(the_signal):
@@ -30,6 +33,7 @@ class GdFormattingTest : BasePlatformTestCase() {
         assertEquals("Formatted text should match expected indentation", expected, document.text)
     }
 
+    @Test
     fun testLambdaInConnectIndent2() {
         val before = """
             |func stop_counting_on_signal(the_signal):

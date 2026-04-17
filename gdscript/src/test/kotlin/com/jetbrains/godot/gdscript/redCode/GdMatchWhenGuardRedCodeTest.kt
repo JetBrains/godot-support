@@ -1,8 +1,12 @@
 package com.jetbrains.godot.gdscript.redCode
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
-class GdMatchWhenGuardRedCodeTest : BasePlatformTestCase() {
+class GdMatchWhenGuardRedCodeTest : GdCodeInsightTestBase() {
+
+    @Test
     fun testMatchWhenGuardHasNoRedCode() {
         val code = """
       |func change(setting: String, newValue: Variant, batch_edit = false):
@@ -14,16 +18,16 @@ class GdMatchWhenGuardRedCodeTest : BasePlatformTestCase() {
       |""".trimMargin()
 
         val psiFile = myFixture.configureByText("a.gd", code)
-
         val errors = psiFile.children.flatMap { collectErrors(it) }
 
         assertTrue(
+            errors.isEmpty(),
             "Did not expect red code for match with a 'when' guard; actual errors: " +
-            errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange },
-            errors.isEmpty()
+            errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange }
         )
     }
 
+    @Test
     fun testPatternGuardsExamplesHaveNoRedCode() {
         val code = """
       |func foo(point: Vector2):
@@ -43,13 +47,12 @@ class GdMatchWhenGuardRedCodeTest : BasePlatformTestCase() {
       |""".trimMargin()
 
         val psiFile = myFixture.configureByText("guards.gd", code)
-
         val errors = psiFile.children.flatMap { collectErrors(it) }
 
         assertTrue(
+            errors.isEmpty(),
             "Did not expect red code for match pattern guards examples; actual errors: " +
-            errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange },
-            errors.isEmpty()
+            errors.joinToString(" | ") { it.errorDescription + "@" + it.textRange }
         )
     }
 }

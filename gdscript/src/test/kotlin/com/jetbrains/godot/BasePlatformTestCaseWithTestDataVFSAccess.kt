@@ -1,13 +1,18 @@
 package com.jetbrains.godot
 
 import com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import org.junit.jupiter.api.BeforeEach
 
-abstract class BasePlatformTestCaseWithTestDataVFSAccess : BasePlatformTestCase() {
-    override fun setUp() {
-        super.setUp()
-        // Allow reading expected .after files from the test data directory
-        val path = testDataPath
-        VfsRootAccess.allowRootAccess(testRootDisposable, path)
+/**
+ * JUnit5-native replacement for the old BasePlatformTestCaseWithTestDataVFSAccess.
+ *
+ * Extends [GdCodeInsightTestBase] and additionally grants VFS root-access to the
+ * test-data directory so that file-system-based tests can read files from there.
+ */
+abstract class GdCodeInsightTestBaseWithVFSAccess : GdCodeInsightTestBase() {
+
+    @BeforeEach
+    fun allowVfsRootAccess() {
+        VfsRootAccess.allowRootAccess(testRootDisposable, myFixture.testDataPath)
     }
 }

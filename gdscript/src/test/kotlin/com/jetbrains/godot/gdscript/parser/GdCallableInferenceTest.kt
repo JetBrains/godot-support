@@ -1,12 +1,15 @@
 package com.jetbrains.godot.gdscript.parser
 
 import com.intellij.psi.util.descendantsOfType
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdVarDeclSt
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
-class GdCallableInferenceTest : BasePlatformTestCase() {
+class GdCallableInferenceTest : GdCodeInsightTestBase() {
 
+    @Test
     fun testLambdaInference() {
         //language=GDScript
         val code = """

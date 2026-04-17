@@ -4,7 +4,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.PsiReference
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
 import com.jetbrains.godot.getBaseTestDataPath
 import java.io.File
 import kotlin.io.path.pathString
@@ -16,7 +16,7 @@ import kotlin.io.path.pathString
  * - exposes minimal resolve utilities aimed at reference-at-offset scenarios
  * - provides utilities to walk a file, collect all references, and resolve them
  */
-abstract class ResolveTestBase : BasePlatformTestCase() {
+abstract class ResolveTestBase : GdCodeInsightTestBase() {
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/resolve").pathString
     }
@@ -48,7 +48,7 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
     }
 
     protected fun assertGold(actual: String) {
-        assertEquals(readGold().trim(), actual.trim())
+        org.junit.jupiter.api.Assertions.assertEquals(readGold().trim(), actual.trim())
     }
 
     /**

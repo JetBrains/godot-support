@@ -2,16 +2,17 @@
 
 package com.jetbrains.godot.tscn.inspection
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
 import com.jetbrains.godot.getBaseTestDataPath
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import tscn.inspection.TscnSectionOrderInspection
 import kotlin.io.path.pathString
 
-class TscnSectionOrderInspectionTest : BasePlatformTestCase() {
+class TscnSectionOrderInspectionTest : GdCodeInsightTestBase() {
 
-    override fun setUp() {
-        super.setUp()
+    @BeforeEach
+    fun enableInspections() {
         myFixture.enableInspections(TscnSectionOrderInspection::class.java)
     }
 
@@ -43,5 +44,4 @@ class TscnSectionOrderInspectionTest : BasePlatformTestCase() {
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/tscn/inspection").pathString
     }
-
 }

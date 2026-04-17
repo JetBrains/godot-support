@@ -1,12 +1,15 @@
 package com.jetbrains.godot.gdscript.resolve
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdRefIdRef
 import gdscript.reference.GdClassMemberReference
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Test
 
-class ResolveNestedClassMethodsTest : BasePlatformTestCase() {
+class ResolveNestedClassMethodsTest : GdCodeInsightTestBase() {
 
+    @Test
     fun testResolveMethodsOnNestedClasses() {
         val code = """
             |class_name OuterClass
@@ -31,7 +34,7 @@ class ResolveNestedClassMethodsTest : BasePlatformTestCase() {
         val offsetPpa1 = file.text.indexOf("ppa1") + 2 // inside identifier
         val elementPpa1 = file.findElementAt(offsetPpa1)!!.parent as GdRefIdRef
         val declPpa1 = GdClassMemberReference(elementPpa1).resolveDeclaration()
-        assertNotNull("ppa1 should resolve", declPpa1)
+        assertNotNull(declPpa1, "ppa1 should resolve")
         assertTrue(declPpa1 is GdMethodDeclTl)
         assertEquals("ppa1", (declPpa1 as GdMethodDeclTl).name)
 
@@ -39,7 +42,7 @@ class ResolveNestedClassMethodsTest : BasePlatformTestCase() {
         val offsetPp = file.text.indexOf("pp()") + 1
         val elementPp = file.findElementAt(offsetPp)!!.parent as GdRefIdRef
         val declPp = GdClassMemberReference(elementPp).resolveDeclaration()
-        assertNotNull("pp should resolve", declPp)
+        assertNotNull(declPp, "pp should resolve")
         assertTrue(declPp is GdMethodDeclTl)
         assertEquals("pp", (declPp as GdMethodDeclTl).name)
     }

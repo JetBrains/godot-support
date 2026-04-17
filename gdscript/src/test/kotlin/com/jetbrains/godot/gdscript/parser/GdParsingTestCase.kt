@@ -1,38 +1,57 @@
 package com.jetbrains.godot.gdscript.parser
 
-import com.intellij.platform.testFramework.core.FileComparisonFailedError
-import com.intellij.testFramework.ParsingTestCase
-import gdscript.GdParserDefinition
+import com.intellij.psi.PsiErrorElement
+import com.intellij.psi.impl.DebugUtil
+import com.intellij.psi.util.PsiTreeUtil
+import com.jetbrains.godot.GdCodeInsightTestBase
+import com.jetbrains.godot.getBaseTestDataPath
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.opentest4j.AssertionFailedError
+import java.io.File
+import kotlin.io.path.pathString
 
-abstract class GdParsingTestCase : ParsingTestCase("", "gd", GdParserDefinition()) {
+abstract class GdParsingTestCase : GdCodeInsightTestBase() {
 
-    protected override fun doTest(checkResult: Boolean, ensureNoErrorElements: Boolean) {
-        try {
-            super.doTest(checkResult, ensureNoErrorElements)
-        } catch (e: FileComparisonFailedError) {
-            val expectedText = e.getExpectedStringPresentation()
-            val actualText = e.getActualStringPresentation()
-            val expectedPath = e.getFilePath()
-            val actualPath = e.getActualFilePath()
+    override fun getTestDataPath(): String {
+        return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString
+    }
 
-            val details = buildString {
-                append("\n")
-                if (e.isExpectedDefined && expectedPath != null) {
-                    append("expected file: ").append(expectedPath)
-                }
-                else{
-                    append("expected: \n").append(expectedText)
-                    append("\n---\n")
-                }
-                if (e.isActualDefined && actualPath != null) {
-                    append("actual file: ").append(actualPath)
-                } else {
-                    append("actual: \n").append(actualText)
-                }
+    /**
+     * Parses the test data file and optionally compares the PSI tree against a golden .txt file.
+     * Mirrors the behaviour of [com.intellij.testFramework.ParsingTestCase.doTest].
+     */
+    protected fun doTest(checkResult: Boolean, ensureNoErrorElements: Boolean = false) {
+        val testName = getTestName(false)
+        val testDataPath = myFixture.testDataPath
+        val text = File("$testDataPath/$testName.gd").readText()
+
+        // Create an in-memory PSI file (same as ParsingTestCase.createFile)
+        val file = myFixture.configureByText("$testName.gd", text)
+
+        if (ensureNoErrorElements) {
+            val errors = PsiTreeUtil.findChildrenOfType(file, PsiErrorElement::class.java)
+            assertTrue(errors.isEmpty(), "Found unexpected parse errors: ${errors.map { it.errorDescription }}")
+        }
+
+        if (checkResult) {
+            // Use the same format as ParsingTestCase.toParseTreeText(file, skipSpaces=false, printRanges=false)
+            val actual = DebugUtil.psiToString(file, false, false)
+            val expectedFile = File("$testDataPath/$testName.txt")
+
+            if (!expectedFile.exists()) {
+                expectedFile.writeText(actual)
+                throw AssertionError(
+                    "Golden file ${expectedFile.absolutePath} did not exist — created from actual output. Re-run the test."
+                )
             }
 
-            val newMessage = (e.message ?: "") + details
-            throw FileComparisonFailedError(newMessage, expectedText, actualText, expectedPath, actualPath)
+            val expected = expectedFile.readText()
+            if (expected != actual) {
+                throw AssertionFailedError(
+                    "Parser tree mismatch for $testName — expected file: ${expectedFile.absolutePath}",
+                    expected, actual
+                )
+            }
         }
     }
 }

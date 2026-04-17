@@ -1,12 +1,15 @@
 package com.jetbrains.godot.gdscript.parser
 
 import com.intellij.psi.util.descendantsOfType
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
 import gdscript.psi.GdForSt
 import gdscript.psi.utils.GdCommonUtil
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
-class GdForInferenceTest : BasePlatformTestCase() {
+class GdForInferenceTest : GdCodeInsightTestBase() {
 
+    @Test
     fun testDictionaryKeyInference() {
         //language=GDScript
         val code = """
@@ -20,6 +23,7 @@ class GdForInferenceTest : BasePlatformTestCase() {
         assertEquals("Variant", GdCommonUtil.returnType(forStmt))
     }
 
+    @Test
     fun testTypedDictionaryKeyInference() {
         //language=GDScript
         val code = """
@@ -33,7 +37,7 @@ class GdForInferenceTest : BasePlatformTestCase() {
         assertEquals("String", GdCommonUtil.returnType(forStmt))
     }
 
-
+    @Test
     fun testArrayInference() {
         //language=GDScript
         val code = """
@@ -47,6 +51,7 @@ class GdForInferenceTest : BasePlatformTestCase() {
         assertEquals("Variant", GdCommonUtil.returnType(forStmt))
     }
 
+    @Test
     fun testTypedArrayInference() {
         //language=GDScript
         val code = """

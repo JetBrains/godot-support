@@ -1,15 +1,23 @@
 package com.jetbrains.godot.gdscript.returntype
 
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.psi.GdAttributeEx
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.utils.GdClassUtil
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 import kotlin.io.path.pathString
 
-class ReturnTypeDumpTest : BasePlatformTestCase() {
+class ReturnTypeDumpTest : GdCodeInsightTestBase() {
+
+    override fun getTestDataPath(): String {
+        return getBaseTestDataPath().resolve("testData/gdscript/returnTypeDump").pathString
+    }
+
+    @Test
     fun testNestedClassInstantiations() {
         val file = myFixture.configureByFile(getTestName(false) + ".gd")
         val document = myFixture.getDocument(file)!!
@@ -50,9 +58,5 @@ class ReturnTypeDumpTest : BasePlatformTestCase() {
         val expectedText = java.io.File(expectedPath).readText()
         // Compare as-is including newlines
         assertEquals(expectedText, rendered)
-    }
-
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/returnTypeDump").pathString
     }
 }

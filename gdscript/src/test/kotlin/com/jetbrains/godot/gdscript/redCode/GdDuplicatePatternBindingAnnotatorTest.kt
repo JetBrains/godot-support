@@ -1,10 +1,13 @@
 package com.jetbrains.godot.gdscript.redCode
 
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
-class GdDuplicatePatternBindingAnnotatorTest : BasePlatformTestCase() {
+class GdDuplicatePatternBindingAnnotatorTest : GdCodeInsightTestBase() {
 
+    @Test
     fun testDuplicateBindingsAreNotReportedInPatternAndGuard() {
         val code = """
             |func test(point):
@@ -17,9 +20,8 @@ class GdDuplicatePatternBindingAnnotatorTest : BasePlatformTestCase() {
 
         myFixture.configureByText("dup.gd", code)
         val infos = myFixture.doHighlighting()
-        val errors = infos
-            .filter { it.severity == HighlightSeverity.ERROR }
+        val errors = infos.filter { it.severity == HighlightSeverity.ERROR }
 
-        assertTrue("Expect no errors", errors.isEmpty())
+        assertTrue(errors.isEmpty(), "Expect no errors")
     }
 }

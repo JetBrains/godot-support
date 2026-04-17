@@ -1,7 +1,9 @@
 package com.jetbrains.godot.gdscript.completion
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.GdCodeInsightTestBase
 import com.jetbrains.godot.getBaseTestDataPath
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
@@ -9,7 +11,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.pathString
 
-class CompletionTest : BasePlatformTestCase() {
+class CompletionTest : GdCodeInsightTestBase() {
 
     fun getSdkPath(): Path {
         val path = getBaseTestDataPath().resolve("testData/gdscript/sdk")
@@ -56,7 +58,7 @@ class CompletionTest : BasePlatformTestCase() {
     //fun testWithSdk01() {
     //    val code = """
     //        |func a():
-    //        |	var previous_mode := Input.<caret>
+    //        |var previous_mode := Input.<caret>
     //    """.trimMargin()
     //
     //    //myFixture.configureByFiles(*getSdkFiles())
@@ -75,20 +77,20 @@ class CompletionTest : BasePlatformTestCase() {
     fun testWithSdk01() {
         val code = """
             |func a():
-            |	var previous_mode := Input.<caret> #anonymous enum in the static class context
+            |var previous_mode := Input.<caret> #anonymous enum in the static class context
         """.trimMargin()
 
         setupSdkFiles()
         myFixture.configureByText("MyInputTest.gd", code)
         val lookups = myFixture.completeBasic()?.map { it.lookupString }?.toSet().orEmpty()
-        assertTrue("Expected MOUSE_MODE_VISIBLE in completion", lookups.contains("MOUSE_MODE_VISIBLE"))
+        assertTrue(lookups.contains("MOUSE_MODE_VISIBLE"), "Expected MOUSE_MODE_VISIBLE in completion")
     }
 
     @Test
     fun testWithSdk02() {
         val code = """
             |func a():
-            |	var previous_mode := Input.<caret> # Completion from the Input instance in the _GlobalScope, like action_press
+            |var previous_mode := Input.<caret> # Completion from the Input instance in the _GlobalScope, like action_press
         """.trimMargin()
 
         setupSdkFiles()
@@ -96,7 +98,7 @@ class CompletionTest : BasePlatformTestCase() {
 
         val lookups = myFixture.completeBasic()?.map { it.lookupString }?.toSet().orEmpty()
 
-        assertTrue("Expected action_press in completion", lookups.contains("action_press"))
+        assertTrue(lookups.contains("action_press"), "Expected action_press in completion")
     }
 
     //@Test
@@ -104,8 +106,8 @@ class CompletionTest : BasePlatformTestCase() {
     //    myFixture.configureByFiles(*getSdkFiles())
     //    val code = """
     //        |func a():
-    //        |	var previous_mode := Input.mouse_mode
-    //        |	Input.mouse_mode = prev<caret>
+    //        |var previous_mode := Input.mouse_mode
+    //        |Input.mouse_mode = prev<caret>
     //    """.trimMargin()
     //    myFixture.configureByText("MyInputTest.gd", code)
     //
@@ -136,13 +138,13 @@ class CompletionTest : BasePlatformTestCase() {
         val lookups = myFixture.completeBasic()?.map { it.lookupString }?.toSet().orEmpty()
 
         // Expectations: only A1's own members are suggested here
-        assertTrue("Expected method ppa1 in completion", lookups.contains("ppa1"))
-        assertTrue("Expected inner class B1 in completion", lookups.contains("B1"))
+        assertTrue(lookups.contains("ppa1"), "Expected method ppa1 in completion")
+        assertTrue(lookups.contains("B1"), "Expected inner class B1 in completion")
 
         // Must not include self and deeper nested classes of A1 (through B1)
-        assertFalse("A1 should not be suggested directly after A1.new()", lookups.contains("A1"))
-        assertFalse("C1 should not be suggested directly after C1.new()", lookups.contains("C1"))
-        assertFalse("D1 should not be suggested directly after A1.new()", lookups.contains("D1"))
+        assertFalse(lookups.contains("A1"), "A1 should not be suggested directly after A1.new()")
+        assertFalse(lookups.contains("C1"), "C1 should not be suggested directly after C1.new()")
+        assertFalse(lookups.contains("D1"), "D1 should not be suggested directly after A1.new()")
     }
 
     @Test
@@ -164,9 +166,9 @@ class CompletionTest : BasePlatformTestCase() {
         val lookups = myFixture.completeBasic()?.map { it.lookupString }?.toSet().orEmpty()
 
         // Expectations: only A1 subtype
-        assertTrue("Expected inner class B1 in completion", lookups.contains("B1"))
+        assertTrue(lookups.contains("B1"), "Expected inner class B1 in completion")
 
-        assertFalse("Type A1 should not have ppa1 in completion", lookups.contains("ppa1"))
+        assertFalse(lookups.contains("ppa1"), "Type A1 should not have ppa1 in completion")
     }
 
     @Test
@@ -188,10 +190,10 @@ class CompletionTest : BasePlatformTestCase() {
         val lookups = myFixture.completeBasic()?.map { it.lookupString }?.toSet().orEmpty()
 
         // Expectations: only A1 subtype
-        assertTrue("Expected inner class C1 in completion", lookups.contains("C1"))
+        assertTrue(lookups.contains("C1"), "Expected inner class C1 in completion")
 
-        assertFalse("Type A1.B1 should not have A1 in completion", lookups.contains("A1"))
-        assertFalse("Type A1.B1 should not have B1 in completion", lookups.contains("B1"))
-        assertFalse("Type A1.B1 should not have ppa1 in completion", lookups.contains("ppa1"))
+        assertFalse(lookups.contains("A1"), "Type A1.B1 should not have A1 in completion")
+        assertFalse(lookups.contains("B1"), "Type A1.B1 should not have B1 in completion")
+        assertFalse(lookups.contains("ppa1"), "Type A1.B1 should not have ppa1 in completion")
     }
 }
