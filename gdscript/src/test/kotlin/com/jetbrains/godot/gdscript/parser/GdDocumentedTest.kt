@@ -7,12 +7,9 @@ import gdscript.psi.GdClassNaming
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdVarDeclSt
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 import kotlin.io.path.pathString
 
-@RunWith(JUnit4::class)
 class GdDocumentedTest : BasePlatformTestCase() {
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases").pathString

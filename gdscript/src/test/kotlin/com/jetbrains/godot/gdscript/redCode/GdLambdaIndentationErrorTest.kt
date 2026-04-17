@@ -1,7 +1,7 @@
 package com.jetbrains.godot.gdscript.redCode
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.junit.Ignore
+import org.junit.jupiter.api.Disabled
 
 class GdLambdaIndentationErrorTest : BasePlatformTestCase() {
     private fun lineStartOffsetOf(text: String, needle: String): Int {
@@ -14,7 +14,7 @@ class GdLambdaIndentationErrorTest : BasePlatformTestCase() {
 
 
     //RIDER-129478 Expect indent error at the start of the next line after lambda colon
-    @Ignore("RIDER-129478") fun testindentExpectedAfterLambdaColon() {
+    @Disabled("RIDER-129478") fun testindentExpectedAfterLambdaColon() {
         val code = """
             |func stop_counting_on_signal(the_signal):
             |\tthe_signal.connect(func():

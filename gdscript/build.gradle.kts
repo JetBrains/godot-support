@@ -63,7 +63,6 @@ dependencies {
     }
     implementation(libs.jflex)
     testImplementation(libs.openTest4J)
-    testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.12.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")

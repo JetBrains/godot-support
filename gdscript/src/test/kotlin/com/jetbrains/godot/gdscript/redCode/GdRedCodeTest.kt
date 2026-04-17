@@ -1,12 +1,9 @@
 package com.jetbrains.godot.gdscript.redCode
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
 class GdRedCodeTest : BasePlatformTestCase() {
     // Red code should NOT appear for this valid enum and typed variable initialization
     @Test
@@ -42,7 +39,7 @@ class GdRedCodeTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("RIDER-131973 gdscript single line lambda is not recognized")
+    @Disabled("RIDER-131973 gdscript single line lambda is not recognized")
     fun testSingleLineLambda(){
         val code = """
 class Mutex1:

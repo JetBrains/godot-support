@@ -1,12 +1,9 @@
 package com.jetbrains.godot.gdscript.resolve
 
 import gdscript.psi.GdConstDeclTl
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
 class ResolveInSingleFileTest : ResolveTestBase() {
     @Test
     fun testUnresolvableMembersOnNestedClasses() {
@@ -16,7 +13,7 @@ class ResolveInSingleFileTest : ResolveTestBase() {
     }
 
     @Test
-    @Ignore("RIDER-131644 Resolve `super` base class, defined in the same file")
+    @Disabled("RIDER-131644 Resolve `super` base class, defined in the same file")
     fun testResolveSuperClass(){
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
@@ -24,7 +21,7 @@ class ResolveInSingleFileTest : ResolveTestBase() {
     }
 
     @Test
-    @Ignore("RIDER-131639 resolve enum members from a separate class")
+    @Disabled("RIDER-131639 resolve enum members from a separate class")
     fun testGdDictionary(){
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
@@ -39,7 +36,7 @@ class ResolveInSingleFileTest : ResolveTestBase() {
     }
 
     @Test
-    @Ignore
+    @Disabled
     fun testUnnamedEnumsOuterConflicts() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
@@ -47,7 +44,7 @@ class ResolveInSingleFileTest : ResolveTestBase() {
     }
 
     @Test
-    @Ignore("RIDER-132087")
+    @Disabled("RIDER-132087")
     fun testExtendsClass(){
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)

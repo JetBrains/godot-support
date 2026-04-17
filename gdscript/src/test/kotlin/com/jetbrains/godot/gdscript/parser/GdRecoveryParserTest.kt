@@ -1,12 +1,9 @@
 package com.jetbrains.godot.gdscript.parser
 
 import com.jetbrains.godot.getBaseTestDataPath
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 import kotlin.io.path.pathString
 
-@RunWith(JUnit4::class)
 class GdRecoveryParserTest : GdParsingTestCase() {
     @Test fun testInheritance() = doTest(true)
     @Test fun testClassName() = doTest(true)

@@ -4,13 +4,10 @@ import com.intellij.testFramework.TestModeFlags
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.annotator.GD_ANNOTATOR_ORIGINAL_SEVERITY
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import kotlin.io.path.pathString
 
-@RunWith(JUnit4::class)
 class ErrorsHighlightingTest : BasePlatformTestCase() {
 
     override fun setUp() {
@@ -29,7 +26,7 @@ class ErrorsHighlightingTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("Bug in GdExprUtil.typeAccepts")
+    @Disabled("Bug in GdExprUtil.typeAccepts")
     fun testInvalidReturns() {
         myFixture.testHighlighting("${getTestName(false)}.gd")
     }

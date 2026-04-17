@@ -1,11 +1,8 @@
 package com.jetbrains.godot.gdscript.parser
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
 class GdParsingRegressionTest : BasePlatformTestCase() {
 
     // Regression: ensure parsing completes for inline lambda with multiple semicolon-separated statements

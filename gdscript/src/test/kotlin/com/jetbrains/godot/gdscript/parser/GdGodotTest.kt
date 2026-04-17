@@ -1,19 +1,16 @@
 package com.jetbrains.godot.gdscript.parser
 
 import com.jetbrains.godot.getBaseTestDataPath
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import kotlin.io.path.pathString
 
-@RunWith(JUnit4::class)
 class GdGodotTest : GdParsingTestCase() {
-    @Ignore("RIDER-126458") @Test fun testadvanced_expression_matching() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testadvanced_expression_matching() = doTest(true, true)
     @Test fun testallowed_keywords_as_identifiers() = doTest(true, true)
     @Test fun testallow_id_similar_to_keyword_in_ascii() = doTest(true, true)
     @Test fun testallow_strings_as_comments() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testannotations() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testannotations() = doTest(true, true)
     @Test fun testarray() = doTest(true, true)
     @Test fun testarrays_dictionaries_nested_const() = doTest(true, true)
     @Test fun testbasic_expression_matching() = doTest(true, true)
@@ -28,7 +25,7 @@ class GdGodotTest : GdParsingTestCase() {
     @Test fun testdictionary() = doTest(true, true)
     @Test fun testdictionary_lua_style() = doTest(true, true)
     @Test fun testdictionary_mixed_syntax() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testdollar_and_percent_get_node() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testdollar_and_percent_get_node() = doTest(true, true)
     @Test fun testdollar_node_paths() = doTest(true, true)
     @Test fun testenum() = doTest(true, true)
     @Test fun testexport_arrays() = doTest(true, true)
@@ -53,10 +50,10 @@ class GdGodotTest : GdParsingTestCase() {
     @Test fun testlambda_default_parameter_capture() = doTest(true, true)
     @Test fun testlambda_ends_with_new_line() = doTest(true, true)
     @Test fun testlambda_named_callable() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testmatch() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testmatch_array() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testmatch() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testmatch_array() = doTest(true, true)
     @Test fun testmatch_bind_unused() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testmatch_dictionary() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testmatch_dictionary() = doTest(true, true)
     @Test fun testmatch_multiple_patterns_with_array() = doTest(true, true)
     @Test fun testmatch_multiple_variable_binds_in_pattern() = doTest(true, true)
     @Test fun testmatch_with_variables() = doTest(true, true)
@@ -67,25 +64,25 @@ class GdGodotTest : GdParsingTestCase() {
     @Test fun testmultiline_if() = doTest(true, true)
     @Test fun testmultiline_strings() = doTest(true, true)
     @Test fun testmultiline_vector() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testnested_arithmetic() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testnested_arithmetic() = doTest(true, true)
     @Test fun testnested_array() = doTest(true, true)
     @Test fun testnested_dictionary() = doTest(true, true)
     @Test fun testnested_function_calls() = doTest(true, true)
     @Test fun testnested_if() = doTest(true, true)
     @Test fun testnested_match() = doTest(true, true)
     @Test fun testnested_parentheses() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testnumber_literals_with_sign() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testnumber_literals_with_sign() = doTest(true, true)
     @Test fun testnumber_separators() = doTest(true, true)
     @Test fun testoperator_assign() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testproperty_setter_getter() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testreserved_keywords_as_attribute() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testr_strings() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testsemicolon_as_end_statement() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testsemicolon_as_terminator() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testproperty_setter_getter() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testreserved_keywords_as_attribute() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testr_strings() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testsemicolon_as_end_statement() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testsemicolon_as_terminator() = doTest(true, true)
     @Test fun testsignal_declaration() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testsingle_line_declaration() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testsingle_line_declaration() = doTest(true, true)
     @Test fun testspace_indentation() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun teststatic_typing() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun teststatic_typing() = doTest(true, true)
     @Test fun teststring_formatting() = doTest(true, true)
     @Test fun teststr_preserves_case() = doTest(true, true)
     @Test fun testsuper() = doTest(true, true)
@@ -95,7 +92,7 @@ class GdGodotTest : GdParsingTestCase() {
     @Test fun testtyped_arrays() = doTest(true, true)
     @Test fun testunicode_identifiers() = doTest(true, true)
     @Test fun testvariable_declaration() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testvector_inf() = doTest(true, true)
+    @Disabled("RIDER-126458") @Test fun testvector_inf() = doTest(true, true)
     @Test fun testwhile() = doTest(true, true)
 
     @Test fun testsignal_connect_func() = doTest(true, false)

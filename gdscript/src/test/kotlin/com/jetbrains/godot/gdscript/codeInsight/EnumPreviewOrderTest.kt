@@ -5,11 +5,8 @@ import com.intellij.testFramework.ParsingTestCase
 import gdscript.GdParserDefinition
 import gdscript.completion.utils.GdEnumCompletionUtil.preview
 import gdscript.psi.GdEnumDeclTl
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
 class EnumPreviewOrderTest : ParsingTestCase("", "gd", GdParserDefinition()) {
 
     @Test

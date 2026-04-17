@@ -2,16 +2,13 @@ package com.jetbrains.godot.gdscript.completion
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.pathString
 
-@RunWith(JUnit4::class)
 class CompletionTest : BasePlatformTestCase() {
 
     fun getSdkPath(): Path {
