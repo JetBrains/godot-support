@@ -177,8 +177,28 @@ tasks {
         jvmArgs("-Xmx1500m")
     }
 
+    // Run tests inside the IntelliJ Platform sandbox so that JUnit5TestSessionListener
+    // (registered as a LauncherSessionListener SPI by TestFrameworkType.Platform) has the
+    // full IDE classpath available and can be instantiated correctly.
+    val testIde by intellijPlatformTesting.testIde.registering {
+        task {
+            useJUnitPlatform()
+            testLogging {
+                showStandardStreams = true
+                exceptionFormat = TestExceptionFormat.FULL
+            }
+            environment["LOCAL_ENV_RUN"] = "true"
+        }
+    }
+
     test {
-        useJUnitPlatform()
+        // Delegate to the sandboxed testIde task.  We intentionally do NOT call
+        // useJUnitPlatform() here: doing so would launch the JUnit Platform launcher in a
+        // plain Gradle JVM (without the full IntelliJ IDE classpath), which causes
+        // com.intellij.tests.JUnit5TestSessionListener – registered as a
+        // LauncherSessionListener SPI by TestFrameworkType.Platform – to fail with
+        // "could not be instantiated".  The actual test execution happens in testIde.
+        dependsOn(testIde)
         testLogging {
             showStandardStreams = true
             exceptionFormat = TestExceptionFormat.FULL
