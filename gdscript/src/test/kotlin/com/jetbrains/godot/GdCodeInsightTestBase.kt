@@ -6,7 +6,6 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
 import com.intellij.testFramework.fixtures.IdeaTestFixtureFactory
-import com.intellij.testFramework.junit5.TestApplication
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
@@ -14,10 +13,10 @@ import org.junit.jupiter.api.TestInfo
 /**
  * JUnit5-native replacement for [com.intellij.testFramework.fixtures.BasePlatformTestCase].
  *
- * Uses @TestApplication + IdeaTestFixtureFactory instead of inheriting from TestCase.
+ * Uses IdeaTestFixtureFactory for test fixtures. The IntelliJ application is initialised
+ * by the fixture's own setUp() — no @TestApplication or TestCase inheritance needed.
  * This allows JUnit5 annotations (@Disabled, @ParameterizedTest, etc.) to work correctly.
  */
-@TestApplication
 abstract class GdCodeInsightTestBase {
 
     protected lateinit var myFixture: CodeInsightTestFixture
