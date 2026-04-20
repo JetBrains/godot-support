@@ -1,7 +1,7 @@
 binaryNotation / 25 = {int} 80000
 --> Card.cs:19(510,557) // GD.Print($"Binary notation: {binaryNotation}");
-Card._Ready() in TCGHandLayoutPlugin.Scripts.Mechanics,
-    +CurrentScene = {Node2D} <Node2D#39359350208>
-    +this = {Card} <TextureRect#44275074784>
+Card._Ready() in TCGHandLayoutPlugin.Scripts.Mechanics, 
+    +CurrentScene = {Node2D} <NODE_INSTANCE>
+    +this = {Card} <NODE_INSTANCE>
     binaryNotation = {int} 2000000
 
