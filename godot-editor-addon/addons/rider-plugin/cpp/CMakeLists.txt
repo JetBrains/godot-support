@@ -7,7 +7,7 @@ endif()
 
 # Set universal architecture for macOS builds (matches SCons default behavior)
 if(APPLE AND NOT CMAKE_OSX_ARCHITECTURES)
-    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64")
+    set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "Build architectures for macOS" FORCE)
 endif()
 
 set(LIBNAME "rider-gdextension") # "The name of the library"
