@@ -82,6 +82,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
                 toggleBreakpoint("Card.cs", 19)
             },
             {
+                dumpProfile.customRegexToMask["<NODE_INSTANCE>"] = Regex("<[A-Za-z0-9]+#\\d+>")
                 waitForPause()
                 dumpFullCurrentData()
                 resumeSession()
@@ -103,6 +104,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
                 toggleBreakpoint("Card.cs", 20)
             },
             {
+                dumpProfile.customRegexToMask["<NODE_INSTANCE>"] = Regex("<[A-Za-z0-9]+#\\d+>")
                 waitForPause()
                 stepInto()
                 dumpFullCurrentData()
@@ -127,6 +129,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
                 toggleBreakpoint("Card.cs", 19)
             },
             {
+                dumpProfile.customRegexToMask["<NODE_INSTANCE>"] = Regex("<[A-Za-z0-9]+#\\d+>")
                 val toEvaluate = "binaryNotation / 25"
                 waitForPause()
                 printlnIndented("$toEvaluate = ${evaluateExpression(toEvaluate).result}")
