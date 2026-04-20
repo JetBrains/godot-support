@@ -1,6 +1,6 @@
 # Local setup
 
-This repository contains the Godot plugin developed with Kotlin for JetBrains IDEs. Below are the up-to-date steps to set up a local development environment (updated: 2025-08-24).
+This repository contains the Godot plugin developed with Kotlin for JetBrains IDEs. Below are the up-to-date steps to set up a local development environment (updated: 2026-04-20).
 
 Requirements in your IDE:
 - IntelliJ IDEA Community or Ultimate (recommended) installed.
@@ -11,31 +11,30 @@ Requirements in your IDE:
 
 Alternatively, follow the official prerequisites: https://plugins.jetbrains.com/docs/intellij/prerequisites.html
 
-Running the plugin in IDE (Gradle runIde):
-- First time
-  - `./gradlew buildPlugin` from the Terminal in community folder.
-  - `./gradlew buildPlugin` from the Terminal in gdscript folder.
-- Later you may call `runIde` task from the Gradle tool window and run configuration would automatically be created.
+Running the plugin in IDE:
+- First time: build the community plugin, which is a local dependency required by all run tasks:
+  - `./gradlew buildPlugin` from the Terminal in the `community` folder.
+- Then use one of the Gradle tasks to launch a sandbox IDE with the plugin:
+  - `runIde` — launches IntelliJ IDEA
+  - `runRider` — launches Rider
 
-Then run the configuration. It will download the target IDE into the Gradle cache on first run (this may take time) and launch a sandbox IDE with the plugin.
+On first run, Gradle will download the target IDE into its cache (this may take time). IDE versions are pinned in `gradle/libs.versions.toml` (`ideaSdk` / `riderSdk`) and don't need to be changed for local development.
 
-Target IDE version/type:
-- The project uses the IntelliJ Platform Gradle Plugin (intellijPlatform {} DSL) and pins the IDE version via gradle/libs.versions.toml (libs.versions.ideaSdk). You typically don't need to edit it for local runs.
-- To experiment with a different IDE version or type (e.g., Rider), adjust the intellijPlatform dependencies in build.gradle.kts. For example, the community IDE is configured as:
-```
-dependencies {
-    intellijPlatform {
-        intellijIdeaCommunity(libs.versions.ideaSdk) { useInstaller = false }
-        // To try Rider, see commented example in build.gradle.kts
-        // rider(libs.versions.riderSdk, useInstaller = false)
-    }
-}
-```
+# Installing locally built plugins (for early access or for any non-Rider JetBrains IDE):
 
-Screenshots referenced earlier (Gradle settings/run) remain the same:
-- Gradle settings: documentation/screens/contribution/gradle_sett.png
-- Gradle run configuration: documentation/screens/contribution/gradle_run.png
+Since 2026.1
 
-Troubleshooting:
-- After changing Gradle files, always Reload All Gradle Projects.
-- If Rider testing is desired, consider creating a custom task (e.g., runRider) as hinted by the TODO in build.gradle.kts; currently runIde starts IntelliJ IDEA Community by default.
+1. Build both plugins:
+   ```
+   $ cd community && ./gradlew buildPlugin
+   $ cd ../gdscript && ./gradlew buildPlugin
+   ```
+   This produces:
+   - `community/build/distributions/rider-godot-community.zip`
+   - `gdscript/build/distributions/rider-gdscript.zip`
+
+2. In your JetBrains IDE, open **Settings/Preferences → Plugins**, click the gear icon ⚙️, and choose **Install Plugin from Disk...**.
+
+3. Install both plugins, then restart the IDE.
+
+> **Critical:** You must install **both** the Community plugin and the GDScript plugin together. Installing only one of them may leave the IDE in a broken state where it fails to start up.
