@@ -1,9 +1,6 @@
-using System.Linq;
-using JetBrains.Annotations;
 using JetBrains.Metadata.Reader.API;
 using JetBrains.ReSharper.Psi;
-using JetBrains.ReSharper.Psi.Modules;
-using JetBrains.ProjectModel;
+using JetBrains.ReSharper.Plugins.Godot.CSharp.Completions;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp
 {
@@ -20,7 +17,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp
 
         public static bool DerivesFromGodotObject(this ITypeElement? candidate)
         {
-            return candidate.DerivesFrom(KnownTypes.GodotObject);
+            return candidate.DerivesFrom(GodotTypes.GodotObject);
         }
 
         public static bool DerivesFromChickenTest(this ITypeElement? candidate)
