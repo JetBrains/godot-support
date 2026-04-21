@@ -93,8 +93,9 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
             CSharpCodeCompletionContext context,
             IItemsCollector collector)
         {
-            if (!GodotTypes.Node.Equals(invocationExpression.InvokedMethodContainingType()))
-                return false;
+            // any method with NodePath argument is good candidate to ask for node paths
+            // if (!GodotTypes.Node.Equals(invocationExpression.InvokedMethodContainingType()))
+            //     return false;
             if (context.NodeInFile.Parent is not { Parent: ICSharpArgument argument })
                 return false;
             if (argument.MatchingParameter == null || argument.MatchingParameter.Type is not IDeclaredType declaredType)
