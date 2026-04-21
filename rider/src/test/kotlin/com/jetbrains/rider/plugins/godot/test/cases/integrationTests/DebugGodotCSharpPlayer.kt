@@ -66,7 +66,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
             testWorkDirectory = testWorkDirectory.toFile(),
             solutionSourceRootDirectory = solutionSourceRootDirectory.toFile(),
             logPath = testMethod.logDirectory,
-            dotnetSdk = testTools(executionTarget).build.dotNetSdk[testMethod.settings.sdk].root.absolutePath,
+            dotnetSdk = testTools(executionTarget).build.dotNetSdk[testMethod.settings.sdk].root.absolutePathString(),
         )
     }
 

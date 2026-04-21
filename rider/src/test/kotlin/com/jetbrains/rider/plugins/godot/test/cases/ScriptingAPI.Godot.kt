@@ -1,6 +1,7 @@
 package com.jetbrains.rider.plugins.godot.test.cases
 
 import com.intellij.execution.RunManager
+import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
@@ -9,6 +10,7 @@ import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rdclient.util.idea.waitAndPump
 import com.jetbrains.rider.debugger.settings.DotNetDebuggerSettings
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
+import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.test.asserts.shouldBeTrue
 import com.jetbrains.rider.test.asserts.shouldNotBeNull
 import com.jetbrains.rider.test.facades.environment.RiderTestExecutionTarget
@@ -18,12 +20,15 @@ import com.jetbrains.rider.test.framework.executeWithGold
 import com.jetbrains.rider.test.framework.frameworkLogger
 import com.jetbrains.rider.test.scriptingApi.DebugTestExecutionContext
 import com.jetbrains.rider.test.scriptingApi.debugProgram
+import com.jetbrains.rider.test.scriptingApi.setExecutablePermissions
 import com.jetbrains.rider.test.scriptingApi.waitForDotNetDebuggerInitializedOrCanceled
 import com.jetbrains.rider.utils.NullPrintStream
 import java.io.File
 import java.nio.file.Path
 import java.time.Duration
 import java.util.concurrent.TimeUnit
+import kotlin.io.path.absolutePathString
+import kotlin.io.path.exists
 
 // region Constants
 const val godotNumberVersion = "4.6.2"
@@ -31,7 +36,7 @@ val godotDefaultTimeout: Duration = Duration.ofSeconds(60)
 // endregion
 
 // region Download Godot
-fun downloadAndExtractGodot(version: String): File {
+fun downloadAndExtractGodot(version: String): Path {
     val godotZipName = when {
         SystemInfo.isWindows -> "Godot_v${version}-stable_mono_win64.zip"
         SystemInfo.isMac -> "Godot_v${version}-stable_mono_macos.universal.zip"
@@ -39,21 +44,25 @@ fun downloadAndExtractGodot(version: String): File {
         else -> error("Unsupported OS for Godot Mono")
     }
 
-    val extractedDir = downloadAndExtractTestToolArchiveArtifactIntoPersistentCache(RiderTestExecutionTarget.fromCurrentMachine(), "$TEST_DATA_DOWNLOAD_URL/$godotZipName").canonicalFile
+    val extractedDir = downloadAndExtractTestToolArchiveArtifactIntoPersistentCache(
+        RiderTestExecutionTarget.fromCurrentMachine(),
+        "$TEST_DATA_DOWNLOAD_URL/$godotZipName")
+        .toAbsolutePath().normalize()
 
     val godotExecutable = extractedDir.resolve(when {
-                                                   SystemInfo.isWindows -> {
-                                                       val base = "Godot_v${version}-stable_mono_win64"
-                                                       "$base/$base.exe"
-                                                   }
-                                                   SystemInfo.isLinux -> "Godot_v${version}-stable_mono_linux_x86_64"
-                                                   SystemInfo.isMac -> "Godot_mono.app/Contents/MacOS/Godot"
-                                                   else -> error("Unsupported OS for Godot")
-                                               }).apply { setExecutable(true,false) }
+        SystemInfo.isWindows -> {
+            val base = "Godot_v${version}-stable_mono_win64"
+            "$base/$base.exe"
+        }
+        SystemInfo.isLinux -> "Godot_v${version}-stable_mono_linux_x86_64"
+        SystemInfo.isMac -> "Godot_mono.app/Contents/MacOS/Godot"
+        else -> error("Unsupported OS for Godot")
+    }).apply { setExecutablePermissions() }
+
     if (!godotExecutable.exists()) {
-        error("Godot executable not found at ${godotExecutable.absolutePath}")
+        error("Godot executable not found at ${godotExecutable.absolutePathString()}")
     }
-    frameworkLogger.info("Godot downloaded and extracted: ${godotExecutable.absolutePath}")
+    frameworkLogger.info("Godot downloaded and extracted: ${godotExecutable.absolutePathString()}")
     return godotExecutable
 }
 // endregion
@@ -73,11 +82,12 @@ fun putGodotProjectToTempTestDir(
 // endregion
 
 // region Godot Execution
-fun startGodot(godotExecutable: File, projectPath: String, logPath: Path, dotnetSdk: String, timeoutMinutes: Long = 3): Process {
-    val logFile = File(logPath.toString(), "Godot_${System.currentTimeMillis()}.log")
 
+fun startGodot(godotExecutable: Path, projectPath: String, logPath: Path, dotnetSdk: String, timeoutMinutes: Long = 3): Process {
+    val logFile = File(logPath.toString(), "Godot_${System.currentTimeMillis()}.log")
+    
     val command = mutableListOf(
-        godotExecutable.absolutePath,
+        godotExecutable.absolutePathString(),
         "--verbose",
         "--headless",
         "--editor",
@@ -107,6 +117,85 @@ fun startGodot(godotExecutable: File, projectPath: String, logPath: Path, dotnet
     return process
 }
 
+fun startGodotWithProject(
+    godotVersion: String = godotNumberVersion,
+    projectName: String,
+    testWorkDirectory: File,
+    solutionSourceRootDirectory: File,
+    logPath: Path,
+    dotnetSdk: String,
+): Process {
+    val godotExecutable = downloadAndExtractGodot(godotVersion)
+    val projectDir = putGodotProjectToTempTestDir(projectName, testWorkDirectory, solutionSourceRootDirectory)
+    frameworkLogger.info("Starting Godot with project: ${projectDir.absolutePath}")
+    val process = startGodot(godotExecutable, projectDir.absolutePath, logPath, dotnetSdk)
+    return process
+}
+
+fun waitForGodotRunConfigurations(project: Project) {
+    val runManager = RunManager.getInstance(project)
+    waitAndPump(godotDefaultTimeout, { runManager.allConfigurationsList.size >= 2 }) {
+        "Godot run configurations didn't appeared, " +
+        "current: ${runManager.allConfigurationsList.joinToString(", ", "[", "]")}"
+    }
+}
+
+fun DebugGodotPlayer(
+    project: Project,
+    beforeRun: ExecutionEnvironment.() -> Unit = {},
+    test: DebugTestExecutionContext.() -> Unit,
+    goldFile: Path? = null,
+    customSuffixes: List<String> = emptyList()
+) {
+    waitForGodotRunConfigurations(project)
+    val runConfigName = GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME
+    frameworkLogger.info("Starting Godot player with configuration: $runConfigName")
+    val config = selectRunConfiguration(project, runConfigName) as? DotNetExeConfiguration
+    val originalParams = config?.parameters?.programParameters
+    config?.parameters?.programParameters = "${originalParams ?: ""} --headless"
+
+    val waitAndTest: DebugTestExecutionContext.() -> Unit = {
+        waitForDotNetDebuggerInitializedOrCanceled()
+        test()
+    }
+
+    try {
+        if (goldFile != null) {
+            executeWithGold(goldFile, customSuffixes) {
+                debugProgram(project, it, beforeRun, waitAndTest, {}, true)
+            }
+        } else {
+            debugProgram(project, NullPrintStream, beforeRun, waitAndTest, {}, true)
+        }
+    } finally {
+        frameworkLogger.info("Restoring Player run config programParameters to: '$originalParams'")
+        config?.parameters?.programParameters = originalParams ?: ""
+    }
+}
+
+private fun selectRunConfiguration(project: Project, name: String): RunConfiguration {
+    val runManager = RunManager.getInstance(project)
+    val runConfigurationToSelect = runManager.allConfigurationsList.firstOrNull {
+        it.name == name
+    }.shouldNotBeNull(
+        "There are no run configuration with name '$name', " +
+        "current: ${runManager.allConfigurationsList.joinToString(", ", "[", "]")}"
+    )
+
+    frameworkLogger.info("Selecting run configuration '$name'")
+    runManager.selectedConfiguration = runManager.findSettings(runConfigurationToSelect)
+    return runConfigurationToSelect
+}
+
+fun disableDFA(lifetime: LifetimeDefinition) {
+    val previousValue = DotNetDebuggerSettings.instance.debuggerDFAEnable
+    lifetime.bracketIfAlive(
+        { DotNetDebuggerSettings.instance.debuggerDFAEnable = false },
+        { DotNetDebuggerSettings.instance.debuggerDFAEnable = previousValue })
+}
+// endregion
+
+// region additional ctart of Godot in case if we want to test only attach to Godot Game
 fun startGodotLikeDebugRun(
     godotExecutable: File,
     projectPath: String,
@@ -118,14 +207,15 @@ fun startGodotLikeDebugRun(
     val command = mutableListOf(
         godotExecutable.absolutePath,
         "--path", "./",
-        "--verbose", "--debug"
+        "--verbose",
+        "--debug"
     )
 
     val processBuilder = ProcessBuilder(command)
         .directory(File(projectPath))
         .redirectErrorStream(true)
         .redirectOutput(logFile)
-    
+
     val env = processBuilder.environment()
 
     env["DOTNET_ROOT"] = dotnetSdk
@@ -139,86 +229,21 @@ fun startGodotLikeDebugRun(
             ?.firstOrNull() ?: ""
     env["DOTNET_MULTILEVEL_LOOKUP"] = "0"
 
+    frameworkLogger.info("Starting Godot (debug-like) with command: ${command.joinToString(" ")}")
     val process = processBuilder.start()
-
     frameworkLogger.info("Godot (debug-like) started (pid=${process.pid()})")
 
-    Thread {
-        try {
-            Thread.sleep(20000) 
-            if (process.isAlive) {
-                frameworkLogger.info("Killing Godot process (pid=${process.pid()}) after timeout")
-                process.destroyForcibly()
-            }
-        } catch (e: Exception) {
-            frameworkLogger.warn("Failed to auto-kill Godot process", e)
-        }
-    }.start()
+    frameworkLogger.info("Check process is alive:${process.isAlive}")
+    val exit = process.waitFor(5, TimeUnit.SECONDS)
+    frameworkLogger.info("Exited? $exit")
 
+    process.waitFor(20, TimeUnit.SECONDS)
+    if (process.isAlive) {
+        frameworkLogger.info("Killing Godot process (pid=${process.pid()}) after timeout")
+        Thread.sleep(20000)
+        process.destroy()
+        process.waitFor(5, TimeUnit.SECONDS)
+    }
     return process
-}
-
-fun startGodotWithProject(
-    godotVersion: String = godotNumberVersion,
-    projectName: String,
-    testWorkDirectory: File,
-    solutionSourceRootDirectory: File,
-    logPath: Path,
-    dotnetSdk: String,
-): Process {
-    val godotExecutable = downloadAndExtractGodot(godotVersion)
-    val projectDir = putGodotProjectToTempTestDir(projectName, testWorkDirectory, solutionSourceRootDirectory)
-    val process = startGodot(godotExecutable, projectDir.absolutePath, logPath, dotnetSdk)
-    startGodotLikeDebugRun(godotExecutable, projectDir.absolutePath, logPath, dotnetSdk)
-    return process
-}
-
-fun waitForGodotRunConfigurations(project: Project) {
-    val runManager = RunManager.getInstance(project)
-    waitAndPump(godotDefaultTimeout, { runManager.allConfigurationsList.size >= 2 }) {
-        "Godot run configurations didn't appeared, " +
-        "current: ${runManager.allConfigurationsList.joinToString(", ", "[", "]")}"
-    }
-}
-
-fun attachDebuggerToGodotEditor(
-    project: Project,
-    beforeRun: ExecutionEnvironment.() -> Unit = {},
-    test: DebugTestExecutionContext.() -> Unit,
-    goldFile: Path? = null,
-    customSuffixes: List<String> = emptyList()
-) {
-    waitForGodotRunConfigurations(project)
-    val runConfigName = GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME
-    selectRunConfiguration(project, runConfigName)
-    val waitAndTest: DebugTestExecutionContext.() -> Unit = {
-        waitForDotNetDebuggerInitializedOrCanceled()
-        test()
-    }
-
-    if (goldFile != null) {
-        executeWithGold(goldFile, customSuffixes) {
-            debugProgram(project, it, beforeRun, waitAndTest, {}, true)
-        }
-    } else {
-        debugProgram(project, NullPrintStream, beforeRun, waitAndTest, {}, true)
-    }
-}
-
-private fun selectRunConfiguration(project: Project, name: String) {
-    val runManager = RunManager.getInstance(project)
-    val runConfigurationToSelect = runManager.allConfigurationsList.firstOrNull {
-        it.name == name
-    }.shouldNotBeNull("There are no run configuration with name '$name', " +
-                      "current: ${runManager.allConfigurationsList.joinToString(", ", "[", "]")}")
-
-    frameworkLogger.info("Selecting run configuration '$name'")
-    runManager.selectedConfiguration = runManager.findSettings(runConfigurationToSelect)
-}
-
-fun disableDFA(lifetime: LifetimeDefinition){
-    val previousValue = DotNetDebuggerSettings.instance.debuggerDFAEnable
-    lifetime.bracketIfAlive({ DotNetDebuggerSettings.instance.debuggerDFAEnable = false },
-        { DotNetDebuggerSettings.instance.debuggerDFAEnable = previousValue })
 }
 // endregion
