@@ -123,14 +123,13 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
             }
             if (params.isEmpty()) return emptyList()
 
-            val args = element.argList?.argExprList
-            return params.mapIndexedNotNull { i, it ->
-                val param = args?.getOrNull(i) ?: return@mapIndexedNotNull null
-                InlayInfo(
-                    it,
-                    param.startOffset,
-                    it == param.expr.text,
-                )
+            val isVariadic = (method is GdMethodDeclTl) && method.isVariadic
+            val args = element.argList?.argExprList ?: return emptyList()
+
+            return args.mapIndexedNotNull { i, arg ->
+                if (isVariadic && i >= params.size - 1) return@mapIndexedNotNull null
+                val paramName = params.getOrNull(i) ?: return@mapIndexedNotNull null
+                InlayInfo(paramName, arg.startOffset, paramName == arg.expr.text)
             }
         } else if (element is GdAnnotationTl) {
             val definition = GdAnnotationUtil.get(element)?.parameters ?: return emptyList()
