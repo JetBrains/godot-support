@@ -21,7 +21,13 @@ import com.jetbrains.rider.test.enums.sdk.SdkVersion
 import com.jetbrains.rider.test.facades.solution.RiderExistingSolutionApiFacade
 import com.jetbrains.rider.test.facades.solution.SolutionApiFacade
 import com.jetbrains.rider.test.reporting.SubsystemConstants
-import com.jetbrains.rider.test.scriptingApi.*
+import com.jetbrains.rider.test.scriptingApi.dumpFullCurrentData
+import com.jetbrains.rider.test.scriptingApi.evaluateExpression
+import com.jetbrains.rider.test.scriptingApi.resumeSession
+import com.jetbrains.rider.test.scriptingApi.stepInto
+import com.jetbrains.rider.test.scriptingApi.stepOver
+import com.jetbrains.rider.test.scriptingApi.toggleBreakpoint
+import com.jetbrains.rider.test.scriptingApi.waitForPause
 import com.jetbrains.rider.test.tooling.testTools
 import org.testng.ITestResult
 import org.testng.annotations.AfterClass
