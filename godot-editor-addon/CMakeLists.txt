@@ -13,3 +13,6 @@ add_custom_target(Game SOURCES ${GAME_SOURCES}
 
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/addons/rider-plugin/cpp SYSTEM)
 
+# Prevent Godot from importing build artifacts as project resources
+file(TOUCH "${CMAKE_BINARY_DIR}/.gdignore")
+
