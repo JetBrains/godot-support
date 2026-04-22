@@ -146,10 +146,6 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
         return emptyList()
     }
 
-    override fun canShowHintsWhenDisabled(): Boolean {
-        return true
-    }
-
     override fun getDefaultBlackList(): MutableSet<String> {
         return mutableSetOf()
     }
