@@ -38,4 +38,17 @@ class GdInlayParameterHintsTest : BasePlatformTestCase() {
         myFixture.testInlays()
     }
 
+    @Test
+    fun testInlayHintsForVariadicFunctionCall() {
+        val code = """
+            |func my_func(a, b = 0, ...args):
+            |	pass
+            |
+            |func test() -> void:
+            |	my_func(<hint text="a:"/>1, <hint text="b:"/>2, 3, 4, 5)
+        """.trimMargin()
+        myFixture.configureByText("test.gd", code)
+        myFixture.testInlays()
+    }
+
 }
