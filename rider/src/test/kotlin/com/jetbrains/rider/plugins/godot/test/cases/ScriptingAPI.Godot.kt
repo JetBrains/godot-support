@@ -5,7 +5,7 @@ import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.SystemInfo
-import com.intellij.openapi.util.io.FileUtil.copyDir
+import com.jetbrains.rider.test.scriptingApi.copyRecursivelyTo
 import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rdclient.util.idea.waitAndPump
 import com.jetbrains.rider.debugger.settings.DotNetDebuggerSettings
@@ -23,12 +23,14 @@ import com.jetbrains.rider.test.scriptingApi.debugProgram
 import com.jetbrains.rider.test.scriptingApi.setExecutablePermissions
 import com.jetbrains.rider.test.scriptingApi.waitForDotNetDebuggerInitializedOrCanceled
 import com.jetbrains.rider.utils.NullPrintStream
-import java.io.File
 import java.nio.file.Path
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
 
 // region Constants
 const val godotNumberVersion = "4.6.2"
@@ -70,13 +72,13 @@ fun downloadAndExtractGodot(version: String): Path {
 // region Godot Project Setup
 fun putGodotProjectToTempTestDir(
     projectName: String,
-    testWorkDirectory: File,
-    solutionSourceRootDirectory: File,
-): File {
-    val workDirectory = File(testWorkDirectory, projectName)
-    val sourceDirectory = File(solutionSourceRootDirectory, projectName)
-    copyDir(sourceDirectory, workDirectory)
-    workDirectory.isDirectory.shouldBeTrue("Expected '${workDirectory.absolutePath}' to be a directory")
+    testWorkDirectory: Path,
+    solutionSourceRootDirectory: Path,
+): Path {
+    val workDirectory = testWorkDirectory.resolve(projectName)
+    val sourceDirectory = solutionSourceRootDirectory.resolve(projectName)
+    sourceDirectory.copyRecursivelyTo(workDirectory)
+    workDirectory.isDirectory().shouldBeTrue("Expected '${workDirectory.absolutePathString()}' to be a directory")
     return workDirectory
 }
 // endregion
@@ -84,8 +86,6 @@ fun putGodotProjectToTempTestDir(
 // region Godot Execution
 
 fun startGodot(godotExecutable: Path, projectPath: String, logPath: Path, dotnetSdk: String, timeoutMinutes: Long = 3): Process {
-    val logFile = File(logPath.toString(), "Godot_${System.currentTimeMillis()}.log")
-    
     val command = mutableListOf(
         godotExecutable.absolutePathString(),
         "--verbose",
@@ -95,16 +95,17 @@ fun startGodot(godotExecutable: Path, projectPath: String, logPath: Path, dotnet
         "--path", projectPath,
     )
 
+    @Suppress("IO_FILE_USAGE")
     val processBuilder = ProcessBuilder(command)
-        .directory(File(projectPath))
+        .directory(Path.of(projectPath).toFile())
         .redirectErrorStream(true)
-        .redirectOutput(logFile)
+        .redirectOutput(logPath.resolve("Godot_${System.currentTimeMillis()}.log").toFile())
     processBuilder.environment()["DOTNET_ROOT"] = dotnetSdk
     processBuilder.environment()["PATH"] = "$dotnetSdk:${processBuilder.environment()["PATH"]}"
     processBuilder.environment()["DOTNET_MSBUILD_SDK_RESOLVER_SDKS_DIR"] = "$dotnetSdk/sdk"
     processBuilder.environment()["DOTNET_MSBUILD_SDK_RESOLVER_SDKS_VER"] =
-        File("$dotnetSdk/sdk")
-            .listFiles()
+        Path.of(dotnetSdk, "sdk").takeIf { it.isDirectory() }
+            ?.listDirectoryEntries()
             ?.map { it.name }
             ?.sortedDescending()
             ?.firstOrNull() ?: ""
@@ -120,15 +121,15 @@ fun startGodot(godotExecutable: Path, projectPath: String, logPath: Path, dotnet
 fun startGodotWithProject(
     godotVersion: String = godotNumberVersion,
     projectName: String,
-    testWorkDirectory: File,
-    solutionSourceRootDirectory: File,
+    testWorkDirectory: Path,
+    solutionSourceRootDirectory: Path,
     logPath: Path,
     dotnetSdk: String,
 ): Process {
     val godotExecutable = downloadAndExtractGodot(godotVersion)
     val projectDir = putGodotProjectToTempTestDir(projectName, testWorkDirectory, solutionSourceRootDirectory)
-    frameworkLogger.info("Starting Godot with project: ${projectDir.absolutePath}")
-    val process = startGodot(godotExecutable, projectDir.absolutePath, logPath, dotnetSdk)
+    frameworkLogger.info("Starting Godot with project: ${projectDir.absolutePathString()}")
+    val process = startGodot(godotExecutable, projectDir.absolutePathString(), logPath, dotnetSdk)
     return process
 }
 
@@ -197,24 +198,23 @@ fun disableDFA(lifetime: LifetimeDefinition) {
 
 // region additional ctart of Godot in case if we want to test only attach to Godot Game
 fun startGodotLikeDebugRun(
-    godotExecutable: File,
+    godotExecutable: Path,
     projectPath: String,
     logPath: Path,
     dotnetSdk: String
 ): Process {
-    val logFile = File(logPath.toFile(), "Godot_debug_like_${System.currentTimeMillis()}.log")
-
     val command = mutableListOf(
-        godotExecutable.absolutePath,
+        godotExecutable.absolutePathString(),
         "--path", "./",
         "--verbose",
         "--debug"
     )
 
+    @Suppress("IO_FILE_USAGE")
     val processBuilder = ProcessBuilder(command)
-        .directory(File(projectPath))
+        .directory(Path.of(projectPath).toFile())
         .redirectErrorStream(true)
-        .redirectOutput(logFile)
+        .redirectOutput(logPath.resolve("Godot_debug_like_${System.currentTimeMillis()}.log").toFile())
 
     val env = processBuilder.environment()
 
@@ -222,8 +222,8 @@ fun startGodotLikeDebugRun(
     env["PATH"] = "$dotnetSdk:${env["PATH"]}"
     env["DOTNET_MSBUILD_SDK_RESOLVER_SDKS_DIR"] = "$dotnetSdk/sdk"
     env["DOTNET_MSBUILD_SDK_RESOLVER_SDKS_VER"] =
-        File("$dotnetSdk/sdk")
-            .listFiles()
+        Path.of(dotnetSdk, "sdk").takeIf { it.isDirectory() }
+            ?.listDirectoryEntries()
             ?.map { it.name }
             ?.sortedDescending()
             ?.firstOrNull() ?: ""
