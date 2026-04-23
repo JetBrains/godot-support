@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using JetBrains.Annotations;
+using JetBrains.Lifetimes;
 using JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Values;
 using JetBrains.Util;
 using Mono.Debugger.Soft;
@@ -58,7 +59,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
             myLogger = logger;
         }
 
-        public IEnumerable<IValueEntity> GetAdditionalLocals(IStackFrame frame)
+        public IEnumerable<IValueEntity> GetAdditionalLocals(IStackFrame frame, Lifetime lifetime)
         {
             // Do nothing if "Allow property evaluations..." option is disabled.
             // The debugger works in two steps - get value entities/references, and then get value presentation.
@@ -81,7 +82,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
             }
 
             // Add "Current Scene" as a top level item to mimic the Hierarchy window in Godot
-            var activeScene = GetCurrentScene(frame);
+            var activeScene = GetCurrentScene(frame, lifetime);
             if (activeScene != null)
                 yield return activeScene.ToValue(myValueServices);
         }
@@ -96,7 +97,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
         }
 
         [CanBeNull]
-        private IValueReference<TValue> GetCurrentScene(IStackFrame frame)
+        private IValueReference<TValue> GetCurrentScene(IStackFrame frame, Lifetime lifetime)
         {
             return myLogger.CatchEvaluatorException<TValue, IValueReference<TValue>>(() =>
                 {
@@ -107,6 +108,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         return null;
                     }
 
+                    lifetime.ThrowIfNotAlive();
                     var getMainLoop = engineType.MetadataType.GetMethods()
                         .FirstOrDefault(m => m.IsStatic && m.Parameters.Length == 0 && m.Name == "GetMainLoop");
                     if (getMainLoop == null)
@@ -115,6 +117,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         return null;
                     }
 
+                    lifetime.ThrowIfNotAlive();
                     // GetMainLoop can throw a exception if we call it from the wrong location
                     var mainLoop = engineType.CallStaticMethod(frame, mySession.EvaluationOptions, getMainLoop);
                     if (mainLoop == null)
@@ -122,7 +125,8 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         myLogger.Warn("Unexpected response: Engine.GetMainLoop() == null");
                         return null;
                     }
-                    
+
+                    lifetime.ThrowIfNotAlive();
                     var sceneTreeType = myValueServices.GetReifiedType(frame, "Godot.SceneTree, GodotSharp");
                     if (sceneTreeType == null)
                     {
@@ -148,6 +152,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                         return null;
                     }
 
+                    lifetime.ThrowIfNotAlive();
                     var currentSceneReference = role.GetInstancePropertyReference(new[] { "CurrentScene" });
                     if (currentSceneReference == null)
                     {
