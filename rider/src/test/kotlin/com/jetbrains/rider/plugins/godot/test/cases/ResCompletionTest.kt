@@ -22,7 +22,8 @@ import com.jetbrains.rider.test.scriptingApi.withOpenedEditor
 import org.testng.annotations.AfterMethod
 import org.testng.annotations.BeforeMethod
 import org.testng.annotations.Test
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.pathString
 import java.util.concurrent.TimeUnit
 
 @Solution("ResCompletionTest")
@@ -60,7 +61,7 @@ class ResCompletionTest : PerClassSolutionTestBase(), TestApiScopes.Editor {
     @Test
     @ChecklistItems(["Completion/Resource completion"])
     fun test_PrimitiveCompletion() {
-        withOpenedEditor(File("scripts").resolve("NewScript.cs").path, "ResCompletionTest1.cs") {
+        withOpenedEditor(Path.of("scripts", "NewScript.cs").pathString, "ResCompletionTest1.cs") {
             typeWithLatency("/")
             assertLookupContains(*lookupExpectedContents, checkFocus = false)
         }
@@ -69,7 +70,7 @@ class ResCompletionTest : PerClassSolutionTestBase(), TestApiScopes.Editor {
     @Test
     @ChecklistItems(["Completion/Resource completion"])
     fun test_PrimitiveCompletion2() {
-        withOpenedEditor(File("scripts").resolve("NewScript.cs").path, "ResCompletionTest2.cs") {
+        withOpenedEditor(Path.of("scripts", "NewScript.cs").pathString, "ResCompletionTest2.cs") {
             callBasicCompletion()
             assertLookupContains("res://", "\"res://scenes/sample.tscn\"", checkFocus = false)
         }
