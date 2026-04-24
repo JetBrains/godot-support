@@ -6,8 +6,13 @@ import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.PsiReference
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
-import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.isDirectory
+import kotlin.io.path.isRegularFile
+import kotlin.io.path.listDirectoryEntries
+import kotlin.io.path.name
 import kotlin.io.path.pathString
+import kotlin.io.path.readText
 
 /**
  * A small base for resolve tests that:
@@ -31,9 +36,9 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
     protected fun loadFilesByTestName(): Array<PsiFile> {
         val basePath = myFixture.testDataPath
         val testName = getTestName(false)
-        val dir = File(basePath, testName)
-        if (dir.isDirectory) {
-            val gdFiles = dir.listFiles { f -> f.isFile && f.name.endsWith(".gd") }?.sortedBy { it.name } ?: emptyList()
+        val dir = Path.of(basePath, testName)
+        if (dir.isDirectory()) {
+            val gdFiles = dir.listDirectoryEntries().filter { it.isRegularFile() && it.name.endsWith(".gd") }.sortedBy { it.name }
             if (gdFiles.isNotEmpty()) {
                 val relPaths = gdFiles.map { testName + "/" + it.name }.toTypedArray()
                 return myFixture.configureByFiles(*relPaths)
@@ -44,7 +49,7 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
 
     protected fun readGold(): String {
         val expectedPath = myFixture.getTestDataPath() + "/" + getTestName(false) + ".txt"
-        return File(expectedPath).readText()
+        return Path.of(expectedPath).readText()
     }
 
     protected fun assertGold(actual: String) {
