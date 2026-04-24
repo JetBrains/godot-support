@@ -7,7 +7,9 @@ import gdscript.psi.GdAttributeEx
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.utils.GdClassUtil
+import java.nio.file.Path
 import kotlin.io.path.pathString
+import kotlin.io.path.readText
 
 class ReturnTypeDumpTest : BasePlatformTestCase() {
     fun testNestedClassInstantiations() {
@@ -47,7 +49,7 @@ class ReturnTypeDumpTest : BasePlatformTestCase() {
         }
 
         val expectedPath = myFixture.getTestDataPath() + "/" + getTestName(false) + ".txt"
-        val expectedText = java.io.File(expectedPath).readText()
+        val expectedText = Path.of(expectedPath).readText()
         // Compare as-is including newlines
         assertEquals(expectedText, rendered)
     }
