@@ -28,6 +28,23 @@ Notes about code generation and sources
 
 Instructions are in the Gd.flex file.
 
+#### Regenerating the lexer
+
+When working in the IntelliJ Ultimate monorepo, after editing `Gd.flex`, regenerate the Java lexer using:
+
+```
+"<JBR_HOME>/bin/java" -Xmx512m \
+  -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 \
+  -jar dotnet/Plugins/godot-support/gdscript/jflex-1.9.2.jar \
+  -skel dotnet/Plugins/godot-support/gdscript/idea-flex.skeleton \
+  -d dotnet/Plugins/godot-support/gdscript/src/main/gen/gdscript \
+  dotnet/Plugins/godot-support/gdscript/src/main/kotlin/gdscript/Gd.flex
+```
+
+The generated file is `src/main/gen/gdscript/GdLexer.java` and must be committed alongside changes to `Gd.flex`.
+
+If the `jflex-1.9.2.jar` is not present, run the IDE action "Generate JFlex Lexer" from the "Gd.flex" file context menu.
+
 3. Testing: running, configuring, and adding tests
 
 Test frameworks and configuration
