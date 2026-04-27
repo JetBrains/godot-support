@@ -38,7 +38,7 @@ class GdLexerTest : LexerTestCase() {
 
     override fun doTest(text: String, expected: String?, lexer: Lexer) {
         try{
-            super.doTest(text, expected, this.createLexer())
+            super.doTest(text, expected, lexer)
         }
         catch (e:FileComparisonFailedError){
             val expectedText = e.getExpectedStringPresentation()

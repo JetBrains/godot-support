@@ -1009,6 +1009,27 @@ class GdLexer implements FlexLexer {
         }
     }
 
+    public void resetState() {
+        parens = new ParenTracker();
+        indent = 0;
+        indentSizes.clear();
+        eofFinished = false;
+        newLineProcessed = false;
+        gotBackslash = false;
+        lambdaReactivateDepth = -1;
+        lambdaPendingDepth = -1;
+    }
+
+    public boolean hasNonDefaultState() {
+        return newLineProcessed
+            || indent != 0
+            || !indentSizes.isEmpty()
+            || eofFinished
+            || gotBackslash
+            || parens.getDepth() != 0
+            || lambdaReactivateDepth != -1
+            || lambdaPendingDepth != -1;
+    }
 
 
 
