@@ -1,12 +1,12 @@
 --> Card.cs:44(1122,1123) // {
 Card.RandomizeColor() in TCGHandLayoutPlugin.Scripts.Mechanics, 
-    +CurrentScene = {Node2D} <NODE_INSTANCE>
+    +CurrentScene = <NODE_INSTANCE>
     +this = {Card} <NODE_INSTANCE>
     rng = {Random} null
 
 --> Card.cs:48(1253,1276) // var rng = new Random();
 Card.RandomizeColor() in TCGHandLayoutPlugin.Scripts.Mechanics, 
-    +CurrentScene = {Node2D} <NODE_INSTANCE>
+    +CurrentScene = <NODE_INSTANCE>
     +this = {Card} <NODE_INSTANCE>
     rng = {Random} null
 
