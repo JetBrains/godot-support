@@ -26,7 +26,16 @@ object TscnResourceUtil {
 
     fun getPath(element: TscnResourceHeader): String {
         val stub = element.stub
-        if (stub != null) return stub.getPath()
+        if (stub != null) {
+            val path = stub.getPath()
+            if (path.isNotEmpty()) return path
+            val uid = stub.getUid()
+            if (uid.isNotEmpty()) {
+                val file = GdFileResIndex.getFiles(uid, element.project).firstOrNull()
+                if (file != null) return PsiGdResourceUtil.resourcePath(file)
+            }
+            return path
+        }
 
         val path = TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_PATH)
         if (path.isEmpty()) {

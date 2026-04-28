@@ -42,7 +42,8 @@ object TscnResourceHeaderElementType : IStubElementType<TscnResourceHeaderStub, 
         )
 
     override fun indexStub(stub: TscnResourceHeaderStub, sink: IndexSink) {
-        sink.occurrence(TscnIndices.RESOURCE_INDEX, stub.getPath())
+        val path = stub.getPath()
+        if (path.isNotEmpty()) sink.occurrence(TscnIndices.RESOURCE_INDEX, path)
         val uid = stub.getUid()
         if (uid.isNotEmpty()) {
             sink.occurrence(TscnIndices.UID_INDEX, uid)

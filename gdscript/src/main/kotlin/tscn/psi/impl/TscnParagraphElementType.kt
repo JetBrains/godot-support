@@ -38,15 +38,10 @@ object TscnParagraphElementType :
         TscnParagraphImpl(stub, stub.stubType)
 
     override fun createStub(psi: TscnParagraph, parentStub: StubElement<out PsiElement>?): TscnParagraphStub {
-        val header = psi.header
-        var uid = ""
-        if (header is TscnSceneHeader || header is TscnUnknownHeader) {
-            val values = when (header) {
-                is TscnSceneHeader -> header.headerValueList
-                is TscnUnknownHeader -> header.headerValueList
-                else -> emptyList()
-            }
-            uid = TscnHeaderUtils.getValue(values, TscnHeaderUtils.HL_UID)
+        val uid = when (val header = psi.header) {
+            is TscnSceneHeader -> TscnHeaderUtils.getValue(header.headerValueList, TscnHeaderUtils.HL_UID)
+            is TscnUnknownHeader -> TscnHeaderUtils.getValue(header.headerValueList, TscnHeaderUtils.HL_UID)
+            else -> ""
         }
         return TscnParagraphStubImpl(parentStub, uid)
     }

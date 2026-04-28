@@ -19,7 +19,7 @@ class GdFileResIndex {
             if (key.startsWith("uid://")) {
                 val results = mutableSetOf<VirtualFile>()
                 TscnUidIndex.INSTANCE.getGlobally(key, project).forEach {
-                    val path = TscnHeaderUtils.getValue(it.headerValueList, TscnHeaderUtils.HL_PATH)
+                    val path = it.stub?.getPath() ?: TscnHeaderUtils.getValue(it.headerValueList, TscnHeaderUtils.HL_PATH)
                     if (path.isNotEmpty() && path.startsWith("res://")) {
                         getFiles(path, project).firstOrNull()?.let { results.add(it) }
                     }
