@@ -4,24 +4,19 @@ import com.intellij.lexer.Lexer
 import com.intellij.platform.testFramework.core.FileComparisonFailedError
 import com.intellij.testFramework.LexerTestCase
 import com.jetbrains.godot.getBaseTestDataPath
-import gdscript.GdLexerAdapter
+import gdscript.GdLexerHighlighterAdapter
 import org.junit.ComparisonFailure
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdLexerTest : LexerTestCase() {
-    override fun createLexer(): Lexer = GdLexerAdapter()
-    override fun getDirPath(): String {
-        return ""
-    }
+class GdHighlighterLexerTest : LexerTestCase() {
+    override fun createLexer(): Lexer = GdLexerHighlighterAdapter()
+    override fun getDirPath(): String = ""
 
-    override fun getExpectedFileExtension(): String {
-        return ".lexer.txt"
-    }
+    override fun getExpectedFileExtension(): String = ".highlighter.lexer.txt"
 
     override fun getPathToTestDataFile(ext: String): String {
         val base = getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases")
@@ -30,24 +25,18 @@ class GdLexerTest : LexerTestCase() {
     }
 
     @Test fun testOnready_node_string_path() = doFileTest("gd")
-    @Test fun testsignal_connect_func() = doFileTest("gd")
-    @Ignore @Test fun testclass_name() = doFileTest("gd")
-    @Test fun testcallableInCtor() = doFileTest("gd")
-    @Test fun testLambdaCallExpr() = doFileTest("gd")
-    @Ignore @Test fun testArrayWithFunc() = doFileTest("gd")
-    @Test fun testlambda_callable_multiline() = doFileTest("gd")
+    @Test fun testOnready_node_path_unclosed() = doFileTest("gd")
+    @Test fun testPrint_string_unclosed() = doFileTest("gd")
 
     override fun doTest(text: String, expected: String?, lexer: Lexer) {
-        try{
+        try {
             super.doTest(text, expected, lexer)
         }
-        catch (e:FileComparisonFailedError){
-            val expectedText = e.getExpectedStringPresentation()
-            val actualText = e.getActualStringPresentation()
-            println("EXPECTED:\n" + expectedText + "\n----\nACTUAL:\n" + actualText)
+        catch (e: FileComparisonFailedError) {
+            println("EXPECTED:\n" + e.getExpectedStringPresentation() + "\n----\nACTUAL:\n" + e.getActualStringPresentation())
             throw e
         }
-        catch (e: ComparisonFailure){
+        catch (e: ComparisonFailure) {
             println("EXPECTED:\n" + e.expected + "\n----\nACTUAL:\n" + e.actual)
             throw e
         }

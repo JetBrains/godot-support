@@ -1,0 +1,33 @@
+GdScript File
+  GdClassNaming
+    PsiElement(GdTokenType.CLASS_NAME)('class_name')
+    PsiWhiteSpace(' ')
+    GdClassId
+      PsiElement(GdTokenType.IDENTIFIER)('High')
+    GdEndStmtImpl(END_STMT)
+      PsiElement(GdTokenType.NEW_LINE)('\n')
+  GdAnnotationTlImpl(ANNOTATION_TL)
+    GdAnnotationTypeImpl(ANNOTATION_TYPE)
+      PsiElement(GdTokenType.ANNOTATOR)('@onready')
+  PsiWhiteSpace(' ')
+  GdClassVarDecl
+    PsiElement(GdTokenType.VAR)('var')
+    PsiWhiteSpace(' ')
+    GdVarNmiImpl(VAR_NMI)
+      PsiElement(GdTokenType.IDENTIFIER)('high')
+    GdTypedImpl(TYPED)
+      PsiElement(GdTokenType.COLON)(':')
+      PsiWhiteSpace(' ')
+      GdTypedValImpl(TYPED_VAL)
+        GdTypeHintImpl(TYPE_HINT)
+          GdTypeHintRefImpl(TYPE_HINT_NM)
+            PsiElement(GdTokenType.IDENTIFIER)('High')
+    PsiWhiteSpace(' ')
+    GdAssignTypedImpl(ASSIGN_TYPED)
+      PsiElement(GdTokenType.EQ)('=')
+    PsiWhiteSpace(' ')
+    GdPrimaryExImpl(PRIMARY_EX)
+      GdNodePathImpl(NODE_PATH)
+        PsiElement(GdTokenType.NODE_PATH_LEX)('$"../.."')
+    GdEndStmtImpl(END_STMT)
+      <empty list>

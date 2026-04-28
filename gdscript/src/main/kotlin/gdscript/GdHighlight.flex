@@ -35,7 +35,10 @@ COMMENT = "#"[^\r\n]*
 ANNOTATOR = "@"[a-zA-Z_0-9]*
 NODE_PATH = "^"\"([^\\\"\r\n ]|\\.)*\"
 STRING_NAME = "&"(\"([^\\\"\r\n]|\\.)*\"|'([^\\'\r\n]|\\.)*')
-NODE_PATH_LEX = ( ("$"|"%")[\%a-zA-Z0-9_/]* ) | ( ("$"|"%")\"[\%a-zA-Z0-9:_/\. ]*\" )
+NODE_PATH_LEX_UNQUOTED = ("$"|"%")[\%a-zA-Z0-9_/]*
+NODE_PATH_LEX_QUOTED = ("$"|"%")\"[\%a-zA-Z0-9:_/\. ]*\"
+NODE_PATH_QUOTED_CONTENT = \"[\%a-zA-Z0-9:_/\. ]*\"
+NODE_PATH_QUOTED_CONTENT_UNTERMINATED = \"[\%a-zA-Z0-9:_/\. ]*
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "**=" | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -54,11 +57,27 @@ TRIPLE_SINGLE_QUOTED_LITERAL = \'\'\' {TRIPLE_SINGLE_QUOTED_CONTENT}* \'\'\'
 
 DOUBLE_QUOTED_CONTENT = {STRING_ESC} | [^\"\n\r]
 DOUBLE_QUOTED_LITERAL = [\$\^]?\" {DOUBLE_QUOTED_CONTENT}* \"
+DOUBLE_QUOTED_UNTERMINATED = \" {DOUBLE_QUOTED_CONTENT}*
+
+SINGLE_QUOTED_UNTERMINATED = \' {SINGLE_QUOTED_CONTENT}*
 
 TRIPLE_DOUBLE_QUOTED_CONTENT = {DOUBLE_QUOTED_CONTENT} | {STRING_NL} | \"(\")?[^\"\\$]
 TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
 
+%state AFTER_NODE_PATH_START
+%state AFTER_UNTERMINATED_STRING
+
 %%
+
+<AFTER_NODE_PATH_START> {
+    {NODE_PATH_QUOTED_CONTENT} { yybegin(YYINITIAL); return GdTypes.NODE_PATH_LEX; }
+    {NODE_PATH_QUOTED_CONTENT_UNTERMINATED} { yybegin(YYINITIAL); return GdTypes.NODE_PATH_LEX; }
+    [^] { yybegin(YYINITIAL); yypushback(1); }
+}
+
+<AFTER_UNTERMINATED_STRING> {
+    [^] { yybegin(YYINITIAL); yypushback(1); }
+}
 
     "extends"      { return GdTypes.EXTENDS; }
     "class_name"   { return GdTypes.CLASS_NAME; }
@@ -145,7 +164,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
 
     {NODE_PATH}        { return GdTypes.NODE_PATH_LIT; }
     {STRING_NAME}      { return GdTypes.STRING_NAME; }
-    {NODE_PATH_LEX} {
+    {NODE_PATH_LEX_QUOTED} {
           if (yytext().toString().startsWith("%\"")) {
               String preceeding = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 100), zzCurrentPos).trim();
               if (preceeding.length() > 1 && preceeding.charAt(preceeding.length() - 1) == '"') {
@@ -156,11 +175,27 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
 
           return GdTypes.NODE_PATH_LEX;
     }
+    {NODE_PATH_LEX_UNQUOTED} {
+          if (yytext().toString().equals("%")) {
+              String preceeding = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 100), zzCurrentPos).trim();
+              if (preceeding.length() > 1 && preceeding.charAt(preceeding.length() - 1) == '"') {
+                  return GdTypes.MOD;
+              }
+          }
 
-    {SINGLE_QUOTED_LITERAL}        { return GdTypes.STRING; }
+          if (zzMarkedPos < zzBufferL.length() && zzBufferL.charAt(zzMarkedPos) == '"') {
+              // $" or %" start: emit $ or % as NODE_PATH_LEX and enter state to consume the quoted part
+              yybegin(AFTER_NODE_PATH_START);
+          }
+          return GdTypes.NODE_PATH_LEX;
+    }
+
     {TRIPLE_SINGLE_QUOTED_LITERAL} { return GdTypes.STRING; }
-    {DOUBLE_QUOTED_LITERAL}        { return GdTypes.STRING; }
     {TRIPLE_DOUBLE_QUOTED_LITERAL} { return GdTypes.STRING; }
+    {DOUBLE_QUOTED_LITERAL}        { return GdTypes.STRING; }
+    {DOUBLE_QUOTED_UNTERMINATED}   { yybegin(AFTER_UNTERMINATED_STRING); return GdTypes.STRING; }
+    {SINGLE_QUOTED_UNTERMINATED}   { yybegin(AFTER_UNTERMINATED_STRING); return GdTypes.STRING; }
+    {SINGLE_QUOTED_LITERAL}        { return GdTypes.STRING; }
 
     {ASSIGN}        { return GdTypes.ASSIGN; }
     {TEST_OPERATOR} { return GdTypes.TEST_OPERATOR; }
