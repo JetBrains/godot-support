@@ -1,0 +1,1 @@
+@onready var rigid_body: RigidBody3D = $"../..
