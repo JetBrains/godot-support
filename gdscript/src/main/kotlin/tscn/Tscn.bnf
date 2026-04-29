@@ -1,5 +1,6 @@
 {
   parserClass="tscn.parser.TscnParser"
+  parserUtilClass="tscn.parser.TscnParserUtil"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
@@ -73,7 +74,7 @@ unknown_header ::= LSBR IDENTIFIER headerValue* RSBR {
 //    pin=1
 //    recoverWhile=header_r
 }
-private header_r ::= !(LSBR | IDENTIFIER | NUMBER)
+// private header_r ::= !(LSBR | IDENTIFIER | NUMBER)
 
 headerValue ::= headerValue_nm EQ headerValue_val
 headerValue_nm ::= IDENTIFIER
@@ -84,7 +85,7 @@ headerValue_val ::= value {
 }
 
 dataLine ::= dataLineHeader EQ dataLine_value
-dataLineHeader ::= dataLine_nm ((COLON | SLASH) dataLine_nm)*
+dataLineHeader ::= dataLine_nm (SLASH dataLine_nm?)*
 dataLine_nm ::= IDENTIFIER | NUMBER
 dataLine_value ::= value
 

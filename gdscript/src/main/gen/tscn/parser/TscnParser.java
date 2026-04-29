@@ -4,7 +4,7 @@ package tscn.parser;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import static tscn.psi.TscnTypes.*;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static tscn.parser.TscnParserUtil.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.TokenSet;
@@ -142,7 +142,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // dataLine_nm ((COLON | SLASH) dataLine_nm)*
+  // dataLine_nm (SLASH dataLine_nm?)*
   public static boolean dataLineHeader(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader")) return false;
     if (!nextTokenIs(b, "<data line header>", IDENTIFIER, NUMBER)) return false;
@@ -154,7 +154,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ((COLON | SLASH) dataLine_nm)*
+  // (SLASH dataLine_nm?)*
   private static boolean dataLineHeader_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader_1")) return false;
     while (true) {
@@ -165,24 +165,22 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (COLON | SLASH) dataLine_nm
+  // SLASH dataLine_nm?
   private static boolean dataLineHeader_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = dataLineHeader_1_0_0(b, l + 1);
-    r = r && dataLine_nm(b, l + 1);
+    r = consumeToken(b, SLASH);
+    r = r && dataLineHeader_1_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // COLON | SLASH
-  private static boolean dataLineHeader_1_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "dataLineHeader_1_0_0")) return false;
-    boolean r;
-    r = consumeToken(b, COLON);
-    if (!r) r = consumeToken(b, SLASH);
-    return r;
+  // dataLine_nm?
+  private static boolean dataLineHeader_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLineHeader_1_0_1")) return false;
+    dataLine_nm(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -328,27 +326,6 @@ public class TscnParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, HEADER_VALUE_VAL, "<header value val>");
     r = value(b, l + 1);
     exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // !(LSBR | IDENTIFIER | NUMBER)
-  static boolean header_r(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "header_r")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NOT_);
-    r = !header_r_0(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // LSBR | IDENTIFIER | NUMBER
-  private static boolean header_r_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "header_r_0")) return false;
-    boolean r;
-    r = consumeToken(b, LSBR);
-    if (!r) r = consumeToken(b, IDENTIFIER);
-    if (!r) r = consumeToken(b, NUMBER);
     return r;
   }
 
