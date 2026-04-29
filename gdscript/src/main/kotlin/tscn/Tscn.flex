@@ -1,87 +1,66 @@
 package tscn;
 
 import com.intellij.lexer.FlexLexer;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import tscn.psi.TscnTokenType;
-import tscn.psi.TscnTypes;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Stack;
+
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static tscn.psi.TscnTypes.*;
 
 %%
-
-%class TscnLexer
-%implements FlexLexer
-%unicode
-%function advance
-%type IElementType
-%eof{ return;
-%eof}
 
 %{
+  public _TscnLexer() {
+    this((java.io.Reader)null);
+  }
 %}
 
-%init{
-%init}
+%public
+%class _TscnLexer
+%implements FlexLexer
+%function advance
+%type IElementType
+%unicode
 
-LETTER = [a-z|A-Z|_]
-DIGIT = [0-9]
+EOL=\R
+WHITE_SPACE=\s+
 
-NUMBER = ( [0-9][0-9_]*(\.[0-9_]+)? ) | ( \.[0-9][0-9_]* ) | ( [0-9][0-9_]*\. )
-REAL_NUMBER = {NUMBER}e-[0-9]+
-
-IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
-IDENTIFIER_REF = {LETTER}({LETTER}|{DIGIT})*"("
-
-ONE_NL = \R
-WHITE_SPACE = " " | \t | \f | \\ {ONE_NL}
-COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
-
-STRING_ESC = \\ [^] | \\ ({WHITE_SPACE})+ (\n|\r)
-DOUBLE_QUOTED_CONTENT = {STRING_ESC} | [^\"]
-DOUBLE_QUOTED_LITERAL = [\$\^]?\" {DOUBLE_QUOTED_CONTENT}* \"
-STRING_REFERENCE = "&"{DOUBLE_QUOTED_LITERAL}
+COMMENT=;.*
+BAD_CHARACTER=[\^]
 
 %%
+<YYINITIAL> {
+  {WHITE_SPACE}         { return WHITE_SPACE; }
 
-// Node names
-"gd_scene"        { return TscnTypes.GD_SCENE; }
-"ext_resource"    { return TscnTypes.EXT_RESOURCE; }
-"node"            { return TscnTypes.NODE; }
-"connection"      { return TscnTypes.CONNECTION; }
+  "LSBR"                { return LSBR; }
+  "GD_SCENE"            { return GD_SCENE; }
+  "RSBR"                { return RSBR; }
+  "NODE"                { return NODE; }
+  "EXT_RESOURCE"        { return EXT_RESOURCE; }
+  "CONNECTION"          { return CONNECTION; }
+  "IDENTIFIER"          { return IDENTIFIER; }
+  "EQ"                  { return EQ; }
+  "SLASH"               { return SLASH; }
+  "NUMBER"              { return NUMBER; }
+  "TRUE"                { return TRUE; }
+  "FALSE"               { return FALSE; }
+  "NULL"                { return NULL; }
+  "STRING"              { return STRING; }
+  "STRING_REF"          { return STRING_REF; }
+  "PLUS"                { return PLUS; }
+  "MINUS"               { return MINUS; }
+  "LRBR"                { return LRBR; }
+  "RRBR"                { return RRBR; }
+  "COMMA"               { return COMMA; }
+  "OBJECT_REF"          { return OBJECT_REF; }
+  "IDENTIFIER_REF"      { return IDENTIFIER_REF; }
+  "COLON"               { return COLON; }
+  "LCBR"                { return LCBR; }
+  "RCBR"                { return RCBR; }
 
-"/"               { return TscnTypes.SLASH; }
-"="               { return TscnTypes.EQ; }
-":"               { return TscnTypes.COLON; }
-","               { return TscnTypes.COMMA; }
+  {COMMENT}             { return COMMENT; }
+  {BAD_CHARACTER}       { return BAD_CHARACTER; }
 
-"("               { return TscnTypes.LRBR; }
-"["               { return TscnTypes.LSBR; }
-"{"               { return TscnTypes.LCBR; }
-")"               { return TscnTypes.RRBR; }
-"]"               { return TscnTypes.RSBR; }
-"}"               { return TscnTypes.RCBR; }
-
-"true"            { return TscnTypes.TRUE; }
-"false"           { return TscnTypes.FALSE; }
-"null"            { return TscnTypes.NULL; }
-{NUMBER}          { return TscnTypes.NUMBER; }
-{REAL_NUMBER}     { return TscnTypes.NUMBER; }
-"+"               { return TscnTypes.PLUS; }
-"-"               { return TscnTypes.MINUS; }
-
-{DOUBLE_QUOTED_LITERAL} { return TscnTypes.STRING; }
-{STRING_REFERENCE}      { return TscnTypes.STRING_REF; }
-
-{IDENTIFIER}      { return TscnTypes.IDENTIFIER; }
-{IDENTIFIER_REF}  { yypushback(1); return TscnTypes.IDENTIFIER_REF; }
-{COMMENT}         { return TscnTypes.COMMENT; }
-{WHITE_SPACE}     { return TokenType.WHITE_SPACE; }
-{ONE_NL}          { return TokenType.WHITE_SPACE; }
-
-<<EOF>> {
-    return null;
 }
 
-[^] { return TscnTypes.BAD_CHARACTER; }
+[^] { return BAD_CHARACTER; }

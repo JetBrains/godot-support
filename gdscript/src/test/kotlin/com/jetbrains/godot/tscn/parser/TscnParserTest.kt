@@ -17,6 +17,7 @@ class TscnParserTest : ParsingTestCase("", "tscn", TscnParserDefinition()) {
     @Test fun testTypedDictionaryWithExtResource() = doTest(true)
     @Test fun testMultilineText() = doTest(true)
     @Test fun testSlashKey() = doTest(true)
+    @Test fun testDefaultLibraryKey() = doTest(true)
     @Test fun testJson() = doTest(true)
 
     override fun getTestDataPath(): String {
