@@ -2,9 +2,11 @@
 
 using JetBrains.Application.I18n;
 using JetBrains.DocumentModel;
+using JetBrains.ProjectModel;
 using JetBrains.ReSharper.Feature.Services.Daemon;
 using JetBrains.ReSharper.Plugins.Godot.Resources;
 using JetBrains.Rider.Backend.Features.RunMarkers;
+using JetBrains.Util.Dotnet.TargetFrameworkIds;
 
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Feature.RunMarkers;
 
@@ -13,8 +15,10 @@ public class ChickensoftTestRunMarkerHighlighting(
     string testIdentifier,
     bool isValid,
     string attributeId,
-    DocumentRange range)
-    : ICustomAttributeIdHighlighting
+    DocumentRange range,
+    IProject project,
+    TargetFrameworkId targetFrameworkId)
+    : IRunMarkerHighlighting
 {
     public string AttributeId { get; } = attributeId;
 
@@ -26,4 +30,8 @@ public class ChickensoftTestRunMarkerHighlighting(
     public DocumentRange CalculateRange() => range;
 
     public string TestIdentifier { get; } = testIdentifier;
+
+    public IProject Project { get; } = project;
+    public TargetFrameworkId TargetFrameworkId { get; } = targetFrameworkId;
+    public string FullName { get; } = testIdentifier;
 }
