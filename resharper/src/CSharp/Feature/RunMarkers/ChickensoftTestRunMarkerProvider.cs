@@ -14,13 +14,17 @@ using JetBrains.Rider.Backend.Features.RunMarkers;
 namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Feature.RunMarkers;
 
 [Language(typeof(CSharpLanguage))]
-// [HighlightingSource(HighlightingTypes = [typeof(ChickensoftTestRunMarkerHighlighting)])] is not allowed by contract
+[HighlightingSource(HighlightingTypes = [typeof(ChickensoftTestRunMarkerHighlighting)])]
 public class ChickensoftTestRunMarkerProvider : IRunMarkerProvider
 {
     public void CollectRunMarkers(IFile file, IContextBoundSettingsStore settings, IHighlightingConsumer consumer)
     {
         if (file.GetSolution().GetComponent<GodotTracker>().GodotDescriptor == null) return;
         if (file is not ICSharpFile csharpFile) return;
+
+        var project = file.GetProject();
+        if (project is null) return;
+        var targetFrameworkId = file.GetPsiModule().TargetFrameworkId;
 
         foreach (var declaration in CachedDeclarationsCollector.Run<IMethodDeclaration>(csharpFile))
         {
@@ -31,7 +35,7 @@ public class ChickensoftTestRunMarkerProvider : IRunMarkerProvider
             var type = method.ContainingType;
             var testIdentifier = $"{type.GetClrName().ShortName}.{method.ShortName}";
             var highlighting = new ChickensoftTestRunMarkerHighlighting(testIdentifier, declaration.IsValid(),
-                ChickensoftTestRunMarkerAttributeIds.RUN_MARKER_ID, range);
+                ChickensoftTestRunMarkerAttributeIds.RUN_MARKER_ID, range, project, targetFrameworkId);
             consumer.AddHighlighting(highlighting, range);
         }
 
@@ -43,7 +47,7 @@ public class ChickensoftTestRunMarkerProvider : IRunMarkerProvider
             var classNameRange = declaration.GetNameDocumentRange();
             var classIdentifier = declaration.NameIdentifier.Name;
             var classNameHighlighting = new ChickensoftTestRunMarkerHighlighting(classIdentifier, true,
-                ChickensoftTestRunMarkerAttributeIds.RUN_MARKER_ID, classNameRange);
+                ChickensoftTestRunMarkerAttributeIds.RUN_MARKER_ID, classNameRange, project, targetFrameworkId);
             consumer.AddHighlighting(classNameHighlighting, classNameRange);
         }
     }
