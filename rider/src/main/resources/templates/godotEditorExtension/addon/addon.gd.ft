@@ -1,0 +1,11 @@
+@tool
+extends EditorPlugin
+
+
+func _enter_tree() -> void:
+	var example := ExampleClass.new()
+	print(example.get_hello())
+
+
+func _exit_tree() -> void:
+	pass

@@ -1,0 +1,7 @@
+[plugin]
+
+name="${PROJECT_NAME}"
+description=""
+author=""
+version="1.0.0"
+script="${PROJECT_NAME}.gd"
