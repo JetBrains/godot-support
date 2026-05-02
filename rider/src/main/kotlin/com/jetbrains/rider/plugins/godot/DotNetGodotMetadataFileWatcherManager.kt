@@ -21,12 +21,9 @@ class DotNetGodotMetadataFileWatcherManager : ProjectActivity {
                     VirtualFileManager.getInstance().addAsyncFileListener(lt.coroutineScope, DotNetGodotMetadataFileWatcher(project, mainProjectBasePath))
                 }
                 lt.launch(Dispatchers.IO) {
-                    GodotMetadataService.getInstance(project).metadataChangeFlow.collect { event ->
-                        if (event != null) {
-                            val newPath = DotNetGodotMetadataFileWatcherUtil.getGodot4Path(mainProjectBasePath)
-                            withContext(Dispatchers.EDT) {
-                                newPath?.let { godotDiscoverer.godot4Path.set(it) }
-                            }
+                    GodotMetadataService.getInstance(project).executablePathFlow.collect { path ->
+                        withContext(Dispatchers.EDT) {
+                            path?.let { godotDiscoverer.godot4Path.set(it.toString()) }
                         }
                     }
                 }

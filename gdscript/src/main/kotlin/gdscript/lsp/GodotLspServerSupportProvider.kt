@@ -32,7 +32,6 @@ import com.intellij.util.NetworkUtils
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
 import com.jetbrains.rider.godot.community.GodotMajorVersion
-import com.jetbrains.rider.godot.community.GodotMetadataService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
 import common.util.GdScriptProjectLifetimeService
@@ -118,16 +117,6 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                     GodotCommunityUtil.getGodotProjectBasePathFlow(project)
                         .filterNotNull().collect {
                         scheduleStartIfNeeded(project)
-                    }
-                }
-
-                scope.launch(Dispatchers.IO) {
-                    GodotMetadataService.getInstance(project).metadataChangeFlow
-                        .filterNotNull()
-                        .collect {
-                        if (settings.lspConnectionMode.value == GdLspConnectionMode.ConnectRunningEditor) {
-                            scheduleStartIfNeeded(project)
-                        }
                     }
                 }
             }

@@ -80,7 +80,6 @@ object GodotCommunityUtil {
                 it.getEditorConnectionState(project).takeIf { state -> state != EditorConnectionState.NOT_APPLICABLE }
             } ?: EditorConnectionState.NOT_APPLICABLE
 
-    // todo: there seem to be a bug in combining 2 deferred booleans
     fun isGodotProject(project: Project): Boolean = getGodotProjectBasePath(project) != null
 
     fun isGodotProjectFlow(project: Project): Flow<Boolean> = getGodotProjectBasePathFlow(project).map { it != null }
