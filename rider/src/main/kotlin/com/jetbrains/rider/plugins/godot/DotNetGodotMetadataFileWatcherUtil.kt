@@ -2,6 +2,7 @@ package com.jetbrains.rider.plugins.godot
 
 import com.intellij.openapi.util.SystemInfo
 import com.jetbrains.rider.godot.community.GodotMetadataFileWatcher
+import com.jetbrains.rider.godot.community.GodotMetadataService
 import com.jetbrains.rider.plugins.godot.DotNetGodotMetadataFileWatcher.Companion.oldMonoMetadataRelPath
 import java.math.BigInteger
 import java.nio.file.Path
@@ -21,7 +22,7 @@ object DotNetGodotMetadataFileWatcherUtil {
         if (lines.count() < 2)
             return null
 
-        if (Paths.get(lines[1]).toFile().exists())
+        if (Paths.get(lines[1]).exists())
             return lines[1]
         return null
     }
@@ -46,17 +47,9 @@ object DotNetGodotMetadataFileWatcherUtil {
 
         val md5 = projectPath.pathString.md5()
         val projectSettingsPath = projectsSettingsPath.resolve("${projectPath.fileName}-$md5")
-        val projectMetadataCfg = projectSettingsPath.resolve("project_metadata.cfg").toFile()
+        val projectMetadataCfg = projectSettingsPath.resolve("project_metadata.cfg")
 
-        if (projectMetadataCfg.exists()) {
-            val line = projectMetadataCfg.readLines().singleOrNull { it.startsWith("executable_path=") }
-            if (line != null) {
-                val path = line.substring("executable_path=\"".length, line.trimEnd().length - 1)
-                if (Paths.get(path).toFile().exists())
-                    return path
-            }
-        }
-        return null
+        return GodotMetadataService.readExecutablePathFromFile(projectMetadataCfg)?.pathString
     }
 
     private fun String.md5(): String {
@@ -68,14 +61,6 @@ object DotNetGodotMetadataFileWatcherUtil {
     fun getGodot4Path(projectPath: Path): String? {
         val projectMetadataCfg = projectPath.resolve(GodotMetadataFileWatcher.METADATA_REL_PATH)
 
-        if (projectMetadataCfg.exists()) {
-            val line = projectMetadataCfg.readLines().singleOrNull { it.startsWith("executable_path=") }
-            if (line != null) {
-                val path = line.substring("executable_path=\"".length, line.trimEnd().length - 1)
-                if (Paths.get(path).toFile().exists())
-                    return path
-            }
-        }
-        return null
+        return GodotMetadataService.readExecutablePathFromFile(projectMetadataCfg)?.pathString
     }
 }

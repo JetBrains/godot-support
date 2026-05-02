@@ -1,5 +1,6 @@
 package com.jetbrains.rider.godot.community
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
@@ -10,8 +11,10 @@ class GodotMetadataFileWatcherManager : ProjectActivity {
 
         GodotCommunityUtil.getGodotProjectBasePathFlow(project).collect { basePath ->
             if (basePath == null) {
+                thisLogger().info("project_metadata.cfg basePath became null, stopping watcher")
                 metadataService.stopWatcher()
             } else {
+                thisLogger().info("project_metadata.cfg basePath=$basePath, starting watcher")
                 metadataService.startWatcher(basePath)
             }
         }

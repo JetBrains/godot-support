@@ -1,10 +1,9 @@
 package com.jetbrains.rider.godot.community
 
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.vfs.AsyncFileListener
-import com.intellij.openapi.vfs.isFile
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import java.nio.file.Path
-import kotlin.io.path.pathString
 
 class GodotMetadataFileWatcher(
     basePath: Path,
@@ -14,15 +13,12 @@ class GodotMetadataFileWatcher(
     private val metadataPath: Path = basePath.resolve(METADATA_REL_PATH)
 
     override fun prepareChange(events: MutableList<out VFileEvent>): AsyncFileListener.ChangeApplier? {
-        val hasMetadataChange = events.any { event ->
-            val file = event.file ?: return@any false
-            file.isInLocalFileSystem && file.toNioPath() == metadataPath
-        }
-
-        if (!hasMetadataChange) return null
+        // Use event.path rather than event.file to catch the create file event
+        if (!events.any { event -> Path.of(event.path) == metadataPath }) return null
 
         return object : AsyncFileListener.ChangeApplier {
             override fun afterVfsChange() {
+                thisLogger().trace("project_metadata.cfg afterVfsChange: firing onMetadataChanged for $metadataPath")
                 onMetadataChanged(metadataPath)
             }
         }
