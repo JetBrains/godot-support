@@ -3,14 +3,21 @@ cmake_minimum_required(VERSION 3.17)
 
 project(Project)
 
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/GodotAddonsManager.cmake" OPTIONAL)
+
 file(GLOB_RECURSE PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*")
 list(FILTER PROJECT_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/addons/${GDEXTENSION_NAME}/cpp/.*")
+foreach(_managed_addon IN LISTS GODOT_MANAGED_ADDONS)
+    list(FILTER PROJECT_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/addons/${_managed_addon}/.*")
+endforeach()
 list(FILTER PROJECT_SOURCES EXCLUDE REGEX "${CMAKE_BINARY_DIR}")
 list(FILTER PROJECT_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/\\..*")
 
 add_custom_target(Project SOURCES ${PROJECT_SOURCES})
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/addons/${GDEXTENSION_NAME}/cpp SYSTEM)
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/addons/${GDEXTENSION_NAME}/cpp")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/addons/${GDEXTENSION_NAME}/cpp SYSTEM)
+endif()
 
 # Prevent Godot from importing build artifacts as project resources
 file(TOUCH "${CMAKE_BINARY_DIR}/.gdignore")
