@@ -3,9 +3,10 @@ extends EditorPlugin
 
 
 func _enter_tree() -> void:
-	var example := ExampleClass.new()
-	print(example.get_hello())
-
+	# var example := ExampleClass.new()
+	# print(example.get_hello())
+	print("hello!")
+	pass
 
 func _exit_tree() -> void:
 	pass
