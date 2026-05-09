@@ -16,11 +16,7 @@ config/features=PackedStringArray("4.6", "GL Compatibility")
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/${PROJECT_NAME}/plugin.cfg")
-
-[gd_extension]
-
-paths=PackedStringArray("res://addons/${PROJECT_NAME}/bin/${PROJECT_NAME}.gdextension")
+enabled=PackedStringArray("res://addons/${GDEXTENSION_NAME}/plugin.cfg")
 
 [rendering]
 

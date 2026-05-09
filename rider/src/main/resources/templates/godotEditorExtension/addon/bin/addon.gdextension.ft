@@ -5,12 +5,12 @@ compatibility_minimum = "4.6"
 
 [libraries]
 
-macos.editor = "./macos/lib${PROJECT_NAME}-gdextension.macos.template_debug.dylib"
+macos.editor = "./macos/lib${GDEXTENSION_NAME}.macos.template_debug.dylib"
 
-windows.arm64.editor = "./windows/${PROJECT_NAME}-gdextension.windows.template_debug.arm64.dll"
+windows.arm64.editor = "./windows/${GDEXTENSION_NAME}.windows.template_debug.arm64.dll"
 
-windows.x86_64.editor = "./windows/${PROJECT_NAME}-gdextension.windows.template_debug.x86_64.dll"
+windows.x86_64.editor = "./windows/${GDEXTENSION_NAME}.windows.template_debug.x86_64.dll"
 
-linux.x86_64.editor = "./linux/lib${PROJECT_NAME}-gdextension.linux.template_debug.x86_64.so"
+linux.x86_64.editor = "./linux/lib${GDEXTENSION_NAME}.linux.template_debug.x86_64.so"
 
-linux.arm64.editor = "./linux/lib${PROJECT_NAME}-gdextension.linux.template_debug.arm64.so"
+linux.arm64.editor = "./linux/lib${GDEXTENSION_NAME}.linux.template_debug.arm64.so"
