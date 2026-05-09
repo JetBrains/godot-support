@@ -23,8 +23,7 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
-    <newProjectWizard.generator implementation="com.jetbrains.rider.plugins.godot.projectWizard.GodotEditorExtensionWizard"/>
-    <newProjectWizard.generator implementation="com.jetbrains.rider.plugins.godot.projectWizard.GodotGameExtensionWizard"/>
+    <newProjectWizard.generator implementation="com.jetbrains.rider.plugins.godot.projectWizard.GodotProjectWizard"/>
 
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />
