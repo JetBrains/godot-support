@@ -5,26 +5,21 @@ import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import java.nio.file.Path
 
-class GodotMetadataFileWatcher(
-    basePath: Path,
-    private val onMetadataChanged: (Path) -> Unit
+internal class GodotMetadataFileWatcher(
+    private val absolutePath: Path,
+    private val onChange: () -> Unit
 ) : AsyncFileListener {
 
-    private val metadataPath: Path = basePath.resolve(METADATA_REL_PATH)
-
     override fun prepareChange(events: MutableList<out VFileEvent>): AsyncFileListener.ChangeApplier? {
-        // Use event.path rather than event.file to catch the create file event
-        if (!events.any { event -> Path.of(event.path) == metadataPath }) return null
+        // VFS may coalesce creation/deletion events to an ancestor directory
+        // this matches both folder creation and a specific file change - no over-firing on other files changes
+        if (!events.any { event -> absolutePath.startsWith(Path.of(event.path)) }) return null
 
         return object : AsyncFileListener.ChangeApplier {
             override fun afterVfsChange() {
-                thisLogger().trace("project_metadata.cfg afterVfsChange: firing onMetadataChanged for $metadataPath")
-                onMetadataChanged(metadataPath)
+                thisLogger().trace("$absolutePath afterVfsChange: firing onChange")
+                onChange()
             }
         }
-    }
-
-    companion object {
-        const val METADATA_REL_PATH: String = ".godot/editor/project_metadata.cfg"
     }
 }

@@ -1,7 +1,6 @@
 package com.jetbrains.rider.plugins.godot
 
 import com.intellij.openapi.util.SystemInfo
-import com.jetbrains.rider.godot.community.GodotMetadataFileWatcher
 import com.jetbrains.rider.godot.community.GodotMetadataService
 import com.jetbrains.rider.plugins.godot.DotNetGodotMetadataFileWatcher.Companion.oldMonoMetadataRelPath
 import java.math.BigInteger
@@ -58,9 +57,6 @@ object DotNetGodotMetadataFileWatcherUtil {
     }
 
     // Godot 4 path utilities
-    fun getGodot4Path(projectPath: Path): String? {
-        val projectMetadataCfg = projectPath.resolve(GodotMetadataFileWatcher.METADATA_REL_PATH)
-
-        return GodotMetadataService.readExecutablePathFromFile(projectMetadataCfg)?.pathString
-    }
+    fun getGodot4Path(projectPath: Path): String? =
+        GodotMetadataService.readGodot4ExecutablePath(projectPath)?.pathString
 }
