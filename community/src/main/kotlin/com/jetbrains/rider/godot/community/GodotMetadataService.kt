@@ -5,9 +5,11 @@ import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Disposer
+import com.intellij.openapi.rd.createNestedDisposable
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFileManager
+import com.jetbrains.rd.util.lifetime.Lifetime
+import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,46 +23,40 @@ class GodotMetadataService : Disposable {
     private val _executablePathFlow = MutableStateFlow<Path?>(null)
     val executablePathFlow: StateFlow<Path?> = _executablePathFlow.asStateFlow()
 
-    private var currentWatcher: GodotMetadataFileWatcher? = null
-    private var watcherDisposable: Disposable? = null
-    private var watchedRoot: LocalFileSystem.WatchRequest? = null
+    private val lifetimeDefinition = LifetimeDefinition()
+    val serviceLifetime: Lifetime get() = lifetimeDefinition.lifetime
 
-    fun startWatcher(basePath: Path) {
-        stopWatcher()
-        thisLogger().info("project_metadata.cfg startWatcher: watching $basePath")
-        // Register parent of project_metadata.cfg with IntelliJ's file system watcher so VFS receives events
-        // even when the directory is not part of the project model (e.g. CMake projects)
-        val metadataPath = basePath.resolve(GodotMetadataFileWatcher.METADATA_REL_PATH)
-        watchedRoot = LocalFileSystem.getInstance().addRootToWatch(
-            metadataPath.parent.pathString, true
-        )
+    fun watchBasePath(basePath: Path, lt: Lifetime) {
+        lt.onTermination { _executablePathFlow.value = null }
 
-        _executablePathFlow.value = readExecutablePathFromFile(metadataPath)
+        val watchDir = basePath.resolve(GODOT_EDITOR_CONFIG_DIR)
+        LocalFileSystem.getInstance().addRootToWatch(watchDir.pathString, true)
+            ?.let { request -> lt.onTermination { LocalFileSystem.getInstance().removeWatchedRoot(request) } }
 
-        val disposable = Disposer.newDisposable(this, "GodotMetadataWatcher")
-        val watcher = GodotMetadataFileWatcher(basePath) { changedPath ->
-            thisLogger().info("project_metadata.cfg onMetadataChanged: updating executablePathFlow for $changedPath")
-            _executablePathFlow.value = readExecutablePathFromFile(changedPath)
-        }
-        currentWatcher = watcher
-        watcherDisposable = disposable
-        VirtualFileManager.getInstance().addAsyncFileListener(watcher, disposable)
+        addFileWatcher(basePath.resolve(METADATA_REL_PATH), lt)
+        addFileWatcher(basePath.resolve(RIDER_ADDON_REL_PATH), lt)
     }
 
-    fun stopWatcher() {
-        watchedRoot?.let { LocalFileSystem.getInstance().removeWatchedRoot(it) }
-        watchedRoot = null
-        watcherDisposable?.let { Disposer.dispose(it) }
-        watcherDisposable = null
-        currentWatcher = null
-        _executablePathFlow.value = null
+    private fun addFileWatcher(path: Path, lt: Lifetime) {
+        readExecutablePathFromFile(path)?.let { _executablePathFlow.value = it }
+        VirtualFileManager.getInstance().addAsyncFileListener(
+            GodotMetadataFileWatcher(path) {
+                thisLogger().info("${path.fileName} changed, updating executablePathFlow")
+                readExecutablePathFromFile(path)?.let { _executablePathFlow.value = it }
+            },
+            lt.createNestedDisposable()
+        )
     }
 
     override fun dispose() {
-        stopWatcher()
+        lifetimeDefinition.terminate()
     }
 
     companion object {
+        private const val GODOT_EDITOR_CONFIG_DIR: String = ".godot/editor"
+        private const val METADATA_REL_PATH: String = "$GODOT_EDITOR_CONFIG_DIR/project_metadata.cfg"
+        private const val RIDER_ADDON_REL_PATH: String = "$GODOT_EDITOR_CONFIG_DIR/rider_addon_godot_editor.cfg"
+
         fun getInstance(project: Project): GodotMetadataService = project.service()
 
         fun readExecutablePathFromFile(metadataPath: Path): Path? {
@@ -72,5 +68,8 @@ class GodotMetadataService : Disposable {
                 ?.let { Path.of(it) }
                 ?.takeIf { it.exists() }
         }
+
+        fun readGodot4ExecutablePath(projectPath: Path): Path? =
+            readExecutablePathFromFile(projectPath.resolve(METADATA_REL_PATH))
     }
 }
