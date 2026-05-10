@@ -14,6 +14,9 @@ func _enter_tree() -> void:
 	var script_path := (get_script() as Script).resource_path
 	var plugin_dir := script_path.get_base_dir()
 	_plugin_cfg_path = plugin_dir + "/plugin.cfg"
+
+	_write_godot_editor_cfg()
+
 	var cfg := ConfigFile.new()
 	var err := cfg.load(_plugin_cfg_path)
 	if err != OK:
@@ -64,3 +67,13 @@ func _exit_tree() -> void:
 	var args = OS.get_cmdline_args()
 	if "--rider-addon-tests" in args:
 		print("==== rider-addon-tests finished ====")
+
+func _write_godot_editor_cfg() -> void:
+	var settings_dir := EditorInterface.get_editor_paths().get_project_settings_dir()
+	var cfg_path := settings_dir.path_join("rider_addon_godot_editor.cfg")
+	var cfg := ConfigFile.new()
+	cfg.set_value("editor_metadata", "process_id", OS.get_process_id())
+	cfg.set_value("editor_metadata", "executable_path", OS.get_executable_path())
+	var err := cfg.save(cfg_path)
+	if err != OK:
+		push_warning("Failed to save rider_addon_godot_editor.cfg: %s" % [err])
