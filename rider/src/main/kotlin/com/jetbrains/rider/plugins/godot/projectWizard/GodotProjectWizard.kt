@@ -7,13 +7,15 @@ import com.intellij.ide.wizard.NewProjectWizardStep
 import com.intellij.ide.wizard.RootNewProjectWizardStep
 import com.jetbrains.rider.plugins.godot.GodotIcons
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
+import com.jetbrains.rider.projectView.projectTemplates.ProjectTemplatesCollector
 import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.adapter.RiderProjectWizardMode
+import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.adapter.RiderWizardFusInfo
 import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.adapter.WizardMode
 import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.common.RiderGitNewProjectWizardStep
 import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.common.riderNewProjectWizardBaseStep
 import javax.swing.Icon
 
-class GodotProjectWizard : GeneratorNewProjectWizard, RiderProjectWizardMode {
+class GodotProjectWizard : GeneratorNewProjectWizard, RiderProjectWizardMode, RiderWizardFusInfo {
 
     override val id: String = "Rider.GodotProject"
 
@@ -28,6 +30,8 @@ class GodotProjectWizard : GeneratorNewProjectWizard, RiderProjectWizardMode {
     override val groupName: String = GodotPluginBundle.message("wizard.godot.editor.extension.group")
 
     override val wizardMode: WizardMode = WizardMode.NEW_SOLUTION_ONLY
+
+    override val fusProjectType = ProjectTemplatesCollector.ProjectType.Godot
 
     override fun createStep(context: WizardContext): NewProjectWizardStep =
         RootNewProjectWizardStep(context)
