@@ -6,16 +6,17 @@ import com.intellij.openapi.client.ClientProjectSession
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.IOptProperty
 import com.jetbrains.rd.util.reactive.IProperty
-import com.jetbrains.rd.util.reactive.ISignal
 import com.jetbrains.rd.util.reactive.OptProperty
 import com.jetbrains.rd.util.reactive.Property
-import com.jetbrains.rd.util.reactive.Signal
 import com.jetbrains.rd.util.reactive.adviseNotNull
+import com.jetbrains.rd.util.reactive.adviseNotNullOnce
 import com.jetbrains.rd.util.threading.coroutines.launch
+import com.jetbrains.rider.godot.community.GodotMetadataService
 import com.jetbrains.rider.model.godot.frontendBackend.GodotDescriptor
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
@@ -30,6 +31,7 @@ import kotlinx.coroutines.withContext
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.exists
+import kotlin.io.path.pathString
 
 @Service(Service.Level.PROJECT)
 class GodotProjectDiscoverer(project: Project) {
@@ -53,13 +55,29 @@ class GodotProjectDiscoverer(project: Project) {
             executablePathFlow.value = Path(it)
         }
 
-        godotDescriptor.adviseNotNull(lifetime){
-            thisLogger().info("Godot godotDescriptor: $it")
-            val basePath = Path(it.mainProjectBasePath)
+        godotDescriptor.adviseNotNull(lifetime){ descriptor ->
+            thisLogger().info("Godot godotDescriptor: $descriptor")
+            val basePath = Path(descriptor.mainProjectBasePath)
+
+            lifetime.launch(Dispatchers.IO){
+                VirtualFileManager.getInstance().addAsyncFileListener(lifetime.coroutineScope,
+                    DotNetGodotMetadataFileWatcher(project, descriptor))
+            }
+
             lifetime.launch(Dispatchers.IO) {
-                val g3path = DotNetGodotMetadataFileWatcherUtil.getFromMonoMetadataPath(basePath)
+                // from Community to Rider
+                GodotMetadataService.getInstance(project).executablePathFlow.collect { path ->
+                    withContext(Dispatchers.EDT) {
+                        path?.let { godot4Path.set(it.pathString) }
+                    }
+                }
+            }
+
+            lifetime.launch(Dispatchers.IO) {
+                val g3path = DotNetGodotMetadataFileWatcherUtil.getFromMonoMetadataPath(DotNetGodotMetadataFileWatcher.godot3MetaPath(basePath))
                              ?: DotNetGodotMetadataFileWatcherUtil.getGodot3Path(basePath) ?: getGodotPathFromPlayerRunConfiguration(project)
-                val g4path = DotNetGodotMetadataFileWatcherUtil.getGodot4Path(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project)
+                val g4path = DotNetGodotMetadataFileWatcherUtil.getFromMonoMetadataPath(DotNetGodotMetadataFileWatcher.godot4MetaPath(basePath))
+                    ?: DotNetGodotMetadataFileWatcherUtil.getGodot4Path(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project)
                 withContext(Dispatchers.EDT) {
                     godot3Path.set(g3path)
                     godot4Path.set(g4path)
@@ -107,7 +125,8 @@ class GodotProjectDiscoverer(project: Project) {
             session: ClientProjectSession,
             model: GodotFrontendBackendModel
         ) {
-            model.godotDescriptor.advise(lifetime){
+            // descriptor is set once at solution open
+            model.godotDescriptor.adviseNotNullOnce(lifetime){
                 getInstance(session.project).godotDescriptor.set(it)
                 getInstance(session.project).mainProjectBasePathFlow.value = Path(it.mainProjectBasePath)
                 getInstance(session.project).isPureGdScriptProjectFlow.value = it.isPureGdScriptProject
