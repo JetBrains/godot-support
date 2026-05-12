@@ -17,6 +17,7 @@ import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
+import com.jetbrains.rider.projectView.isCMakeSolution
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectory
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
@@ -70,7 +71,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                                 runManager.removeConfiguration(value)
                             }
                         }
-                        else if (!descriptor.isPureGdScriptProject){
+                        else if (!descriptor.isPureGdScriptProject && !project.isCMakeSolution){
                             if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }) {
                                 val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
                                 val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
