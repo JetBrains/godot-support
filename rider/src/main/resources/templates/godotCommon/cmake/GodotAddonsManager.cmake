@@ -9,6 +9,7 @@
 # CMake option (added automatically):
 #   INSTALL_GODOT_ADDONS  ON by default; set to OFF to skip all downloads.
 #   Auto-set to OFF when the environment variable "CI" is defined.
+#   CI is enabled on github (https://docs.github.com/en/actions/reference/workflows-and-actions/variables)
 #
 # To disable downloads in CI:
 #   cmake -B build -DINSTALL_GODOT_ADDONS=OFF
@@ -54,7 +55,7 @@ function(godot_addon)
     set(_zip "${CMAKE_CURRENT_BINARY_DIR}/.godot_addon_${ADDON_NAME}.zip")
     set(_tmp "${CMAKE_CURRENT_BINARY_DIR}/.godot_addon_${ADDON_NAME}_tmp")
 
-    message(STATUS "Godot addon: installing '${ADDON_NAME}'...")
+    message(STATUS "Godot addon: installing '${ADDON_NAME}' from '${ADDON_URL}'...")
     file(DOWNLOAD "${ADDON_URL}" "${_zip}" SHOW_PROGRESS STATUS _dl_status)
     list(GET _dl_status 0 _dl_err)
     if(_dl_err)
