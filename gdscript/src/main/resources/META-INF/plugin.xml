@@ -250,11 +250,6 @@
     <xdebugger.breakpointType implementation="gdscript.dap.breakpoints.GdScriptLineBreakpointType"/>
     <xdebugger.breakpointType implementation="gdscript.dap.breakpoints.GdScriptExceptionBreakpointType"/>
     <backgroundPostStartupActivity implementation="gdscript.dap.GdScriptRunConfigurationGenerator$Activity"/>
-    <registryKey
-      key="gdscript.lsp.not.connected.banner.enabled"
-      defaultValue="false"
-      description="Enables experimental 'LSP Not Connected' banner"
-      restartRequired="false"/>
 
     <spellchecker.bundledDictionaryProvider implementation="gdscript.spellchecker.GdBundledDictionaryProvider"/>
     <spellchecker.support language="GdScript" implementationClass="gdscript.spellchecker.GdSpellcheckingStrategy"/>
