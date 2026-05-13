@@ -1,9 +1,10 @@
 package gdscript.lsp
 
+import com.intellij.ide.setToolTipText
 import com.intellij.openapi.fileEditor.FileEditor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.registry.Registry
+import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.LspServer
 import com.intellij.platform.lsp.api.LspServerManager
@@ -26,8 +27,6 @@ import java.util.concurrent.atomic.AtomicReference
 import java.util.function.Function
 import javax.swing.JComponent
 import kotlin.time.Duration.Companion.milliseconds
-
-private const val IS_ENABLED_REGISTRY_KEY: String = "gdscript.lsp.not.connected.banner.enabled"
 
 class GodotLspNotConnectedNotificationProvider(private val project: Project) : EditorNotificationProvider, DumbAware {
 
@@ -62,7 +61,6 @@ class GodotLspNotConnectedNotificationProvider(private val project: Project) : E
         project: Project,
         file: VirtualFile
     ): Function<in FileEditor, out JComponent?>? {
-        if (!Registry.`is`(IS_ENABLED_REGISTRY_KEY, false)) return null
         if (!GodotFileUtil.isGdFile(file)) return null
         if (!GodotCommunityUtil.isGodotProject(project)) return null
 
@@ -95,7 +93,7 @@ class GodotLspNotConnectedNotificationProvider(private val project: Project) : E
 
         return Function { _: FileEditor ->
             EditorNotificationPanel(EditorNotificationPanel.Status.Warning).apply {
-                toolTipText = GdScriptBundle.message("gdscript.lsp.notification.import.godot.project")
+                setToolTipText(HtmlChunk.text(GdScriptBundle.message("gdscript.lsp.notification.import.godot.project")))
                 text = GdScriptBundle.message("gdscript.lsp.notification.lsp.is.not.connected")
 
                 @Suppress("DialogTitleCapitalization")
