@@ -3,7 +3,6 @@ package com.jetbrains.godot.gdscript.inspection
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.inspection.GdMethodValidationInspection
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -18,8 +17,8 @@ class GdMethodValidationInspectionTest : BasePlatformTestCase() {
     }
 
     @Test
-    @Ignore("RIDER-137812 GDScript unreachable code false positive warning")
     fun testWhileBreakUnreachable() {
+        // the inspection is now at INFORMATION level the warning is suppressed, making the test pass.
         myFixture.testHighlighting("${getTestName(false)}.gd")
     }
 

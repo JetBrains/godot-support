@@ -129,7 +129,8 @@
                      bundle="messages.GdScriptBundle" key="inspection.check.return.type"
                      groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdTypeHintInspection"/>
-    <localInspection language="GdScript" shortName="GdMethodValidation" enabledByDefault="true" level="WARNING"
+    <!-- Unreachable code detection has false positives (RIDER-132635), hide by setting level to INFORMATION -->
+    <localInspection language="GdScript" shortName="GdMethodValidation" enabledByDefault="true" level="INFORMATION"
                      bundle="messages.GdScriptBundle" key="inspection.check.methods"
                      groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdMethodValidationInspection"/>
