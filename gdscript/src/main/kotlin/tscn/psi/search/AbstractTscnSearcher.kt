@@ -1,6 +1,5 @@
 package tscn.psi.search
 
-import com.intellij.model.PsiElementUsageInfo
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.PsiSearchHelper
@@ -9,9 +8,9 @@ import com.intellij.psi.search.UsageSearchContext.IN_CODE
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.descendantsOfType
 import com.intellij.usageView.UsageInfo
+import com.jetbrains.rider.godot.community.tscn.TscnFileType
 import gdscript.utils.ProjectUtil.contentScope
 import gdscript.utils.VirtualFileUtil.resourcePath
-import com.jetbrains.rider.godot.community.tscn.TscnFileType
 import tscn.psi.TscnConnectionHeader
 import tscn.psi.TscnDataLine
 import tscn.psi.TscnNodeHeader
@@ -43,7 +42,7 @@ abstract class AbstractTscnSearcher(val project: Project, scriptFile: PsiFile) {
 
             // check if node resource is one of the ones we are looking for
             if (sceneResources.contains(node.instanceResource) || scriptResource == node.scriptResource) {
-                result.add(PsiElementUsageInfo(con))
+                result.add(UsageInfo(con))
                 // check for early stop
                 if (earlyStop) return result
             }
@@ -64,7 +63,7 @@ abstract class AbstractTscnSearcher(val project: Project, scriptFile: PsiFile) {
             if (nodePaths.isEmpty()) continue
             // check if the paragraph is a match
             if (matchInParagraph(par, searchTerm, typeSuffix, nodePaths)) {
-                result.add(PsiElementUsageInfo(par))
+                result.add(UsageInfo(par))
                 // check for early stop
                 if (earlyStop) return result
             }
