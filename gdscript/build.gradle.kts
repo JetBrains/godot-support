@@ -72,6 +72,9 @@ dependencies {
 intellijPlatform{
     instrumentCode = false
     buildSearchableOptions = buildConfiguration != "Debug"
+    pluginConfiguration {
+        changeNotes = ""
+    }
 }
 
 grammarKit {

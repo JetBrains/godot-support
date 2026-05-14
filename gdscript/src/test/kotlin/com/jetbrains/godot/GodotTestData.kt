@@ -10,5 +10,5 @@ fun TestCase.getBaseTestDataPath(): Path {
     if (home != null) {
         return home.resolve("dotnet/Plugins/godot-support/gdscript/src/test")
     }
-    return PathManager.getPluginsDir().parent.parent.parent.parent.resolve("src/test")
+    return PathManager.getPluginsDir().parent.parent.parent.parent.parent.resolve("src/test")
 }
