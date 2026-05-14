@@ -55,11 +55,11 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
     private val useCMakeProperty = propertyGraph.property(false)
     private val includeGDExtensionProperty = propertyGraph.property(true)
     private val useAddonsManagerProperty = propertyGraph.property(true)
-    private val gdExtensionNameProperty = propertyGraph.property(baseData?.name ?: "")
+    private val gdExtensionNameProperty = propertyGraph.property((baseData?.name ?: "") + "Ext")
         .apply {
             val nameProperty = baseData?.nameProperty
             if (nameProperty != null) {
-                dependsOn(nameProperty) { nameProperty.get() }
+                dependsOn(nameProperty) { nameProperty.get() + "Ext" }
             }
         }
 
