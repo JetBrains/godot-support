@@ -109,10 +109,6 @@ jobs:
           name: rider-plugin-addons
           path: rider-plugin-addons
 
-      - name: Prepare archive
-        run: |
-          zip -r rider-plugin-addons.zip rider-plugin-addons
-
       - name: Compute release params
         id: rel
         shell: bash
@@ -131,6 +127,14 @@ jobs:
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Update plugin version
+        run: |
+          sed -i 's/^version=.*/version="${{ steps.rel.outputs.tag }}"/' rider-plugin-addons/addons/rider-plugin/plugin.cfg
+
+      - name: Prepare archive
+        run: |
+          zip -r rider-plugin-addons.zip rider-plugin-addons
 
       - name: Create GitHub Release and upload asset
         uses: softprops/action-gh-release@v2
