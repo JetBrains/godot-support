@@ -10,6 +10,7 @@ if(APPLE AND NOT CMAKE_OSX_ARCHITECTURES)
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "Build architectures for macOS" FORCE)
 endif()
 
+
 set(LIBNAME "rider-gdextension") # "The name of the library"
 set(GODOT_PROJECT_DIR "../..")
 
