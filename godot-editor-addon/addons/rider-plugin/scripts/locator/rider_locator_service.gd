@@ -6,7 +6,9 @@ var _installations_found: Array = []
 var _thread: Thread = null
 
 func get_installations() -> Array:
-	var result: Array = RiderLocator.new().get_installations() # from the gdextension
+	if not ClassDB.class_exists("RiderLocator"):
+		return []
+	var result: Array = ClassDB.instantiate("RiderLocator").get_installations()
 	return result
 
 # todo
@@ -66,9 +68,16 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE and _thread != null:
 		_thread.wait_to_finish()
 
+const EXTERNAL_EDITOR_SETTING: String = "text_editor/external/editor"
+
 func _update_selector(array: Array):
-	var name := "text_editor/external/editor"
+	var name := EXTERNAL_EDITOR_SETTING
 	var settings := EditorInterface.get_editor_settings()
+
+	if array.is_empty():
+		if settings.has_setting(name):
+			settings.erase(name)
+		return
 
 	if !(settings.has_setting(name)):
 		settings.set(name, 0)
@@ -94,17 +103,17 @@ func _update_selector(array: Array):
 		settings.settings_changed.connect(_on_selection_changed.bind())
 
 func _on_selection_changed() -> void:
-	var name := "text_editor/external/editor"
+	var name := EXTERNAL_EDITOR_SETTING
 	var settings := EditorInterface.get_editor_settings()
 	var selected_index: int = settings.get_setting(name)
 
-	# Index 0 is "Custom", so user manages the path manually
+	# Index 0 is "Custom", so the path can be set manually
 	if selected_index == 0:
 		return
 
 	# Map to actual installation (offset by 1 because of "Custom" at index 0)
 	var installation_index := selected_index - 1
-	var installations_array = _installations_found
+	var installations_array: Array = _installations_found
 	if installation_index >= 0 and installation_index < installations_array.size():
 		var installation = installations_array[installation_index]
 		var new_path: String = installation.get("path", "")

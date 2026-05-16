@@ -82,7 +82,9 @@ set_target_properties(${LIBNAME}
 )
 
 # Match SCons behavior: $SHLIBPREFIX is empty on Windows, "lib" elsewhere
-if(NOT WIN32)
+if(WIN32)
+    set_target_properties(${LIBNAME} PROPERTIES PREFIX "")
+else()
     set_target_properties(${LIBNAME} PROPERTIES PREFIX "lib")
 endif()
 
