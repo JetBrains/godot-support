@@ -32,7 +32,7 @@ jobs:
             { platform: linux, arch: x86_64, os: ubuntu-22.04 },
             { platform: linux, arch: arm64, os: ubuntu-22.04-arm },
             { platform: windows, arch: x86_64, os: windows-latest },
-            { platform: windows, arch: arm64, os: windows-latest },
+            # { platform: windows, arch: arm64, os: windows-latest }, // mingv doesn't this
             { platform: macos, arch: universal, os: macos-latest },
           ]
         target-type: [editor]
