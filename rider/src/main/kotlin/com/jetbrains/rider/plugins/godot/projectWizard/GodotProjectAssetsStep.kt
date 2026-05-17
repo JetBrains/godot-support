@@ -55,7 +55,7 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
     private val useCMakeProperty = propertyGraph.property(false)
     private val includeGDExtensionProperty = propertyGraph.property(true)
     private val useAddonsManagerProperty = propertyGraph.property(true)
-    private val gdExtensionNameProperty = propertyGraph.property((baseData?.name ?: "") + "Ext")
+    private val extensionNameProperty = propertyGraph.property((baseData?.name ?: "") + "Ext")
         .apply {
             val nameProperty = baseData?.nameProperty
             if (nameProperty != null) {
@@ -101,7 +101,7 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
                             .comment(GodotPluginBundle.message("text.automatically.creates.c.boilerplate.gdextension.file"))
                         textField()
                             .label(GodotPluginBundle.message("wizard.godot.project.gdextension.name"))
-                            .bindText(gdExtensionNameProperty)
+                            .bindText(extensionNameProperty)
                             .enabledIf(useCmakeCb.selected and gdExtCb.selected)
                     }
                     row {
@@ -126,63 +126,69 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
         val useCMake = useCMakeProperty.get()
         val includeGDExtension = useCMake && includeGDExtensionProperty.get()
         val useAddonsManager = useCMake && useAddonsManagerProperty.get()
-        val gdExtensionName = if (includeGDExtension) gdExtensionNameProperty.get().ifEmpty { projectName } else projectName
+        val extensionName = if (includeGDExtension) extensionNameProperty.get().ifEmpty { projectName } else projectName
 
         ApplicationManager.getApplication().runWriteAction {
             val projectDir = VfsUtil.createDirectoryIfMissing(projectPath) ?: return@runWriteAction
-            val addonName = if (includeGDExtension) gdExtensionName else projectName
-            val addonDir = VfsUtil.createDirectoryIfMissing(projectDir, "addons/$addonName") ?: return@runWriteAction
+            val addonDir = VfsUtil.createDirectoryIfMissing(projectDir, "addons/$extensionName") ?: return@runWriteAction
             val iconsDir = VfsUtil.createDirectoryIfMissing(addonDir, "icons")
 
             val binDir = if (includeGDExtension) VfsUtil.createDirectoryIfMissing(addonDir, "bin") else null
-            val cppDir = if (includeGDExtension) VfsUtil.createDirectoryIfMissing(addonDir, "cpp") else null
-            val srcDir = cppDir?.let { VfsUtil.createDirectoryIfMissing(it, "src") }
+            val nativeDir = if (includeGDExtension) VfsUtil.createDirectoryIfMissing(projectDir, "native/$extensionName") else null
+            val srcDir = nativeDir?.let { VfsUtil.createDirectoryIfMissing(it, "src") }
 
             // Root files
+            val enabledPlugins = mutableListOf<String>()
             writeFile(projectDir, ".gitignore", "templates/godotCommon/gitignore.txt")
             if (useCMake) {
-                writeFile(projectDir, "CMakeLists.txt", "templates/godotCommon/CMakeLists.txt.ft", projectName, gdExtensionName)
+                writeFile(projectDir, "CMakeLists.txt", "templates/godotCommon/CMakeLists.txt.ft", projectName, extensionName)
                 if (useAddonsManager) {
                     VfsUtil.createDirectoryIfMissing(projectDir, "cmake")?.let {
                         writeFile(it, "GodotAddonsManager.cmake", "templates/godotCommon/cmake/GodotAddonsManager.cmake")
                     }
+                    // addon-manager is pre-configured to download Rider plugin, so we need to enable it
+                    enabledPlugins.add("\"res://addons/rider-plugin/plugin.cfg\"")
                 }
             }
 
             writeFile(projectDir, "main.tscn", "templates/godotCommon/main.tscn")
-
-            val projectGodotTemplate = when (selectedProjectType) {
-                GodotWizardProjectType.GAME_ASSET -> "templates/godotGameExtension/project.godot.ft"
-                GodotWizardProjectType.EDITOR_PLUGIN -> "templates/godotEditorExtension/project.godot.ft"
-                GodotWizardProjectType.GAME -> "templates/godotGameExtension/project.godot.ft"
+            if (useCMake && includeGDExtension) {
+                // we need the readme only in the includeGDExtension case, otherwise there is nothing to explain
+                writeFile(projectDir, "README.md", "templates/godotCommon/README.md.ft", projectName, extensionName)
             }
-            writeFile(projectDir, "project.godot", projectGodotTemplate, projectName, gdExtensionName)
 
             // Addon files
             if (selectedProjectType == GodotWizardProjectType.EDITOR_PLUGIN) {
-                writeFile(addonDir, "plugin.cfg", "templates/godotEditorExtension/addon/plugin.cfg.ft", projectName, gdExtensionName)
-                writeFile(addonDir, "$addonName.gd", "templates/godotEditorExtension/addon/addon.gd.ft", projectName, gdExtensionName)
+                writeFile(addonDir, "plugin.cfg", "templates/godotEditorExtension/addons/addon/plugin.cfg.ft", projectName, extensionName)
+                writeFile(addonDir, "$extensionName.gd", "templates/godotEditorExtension/addons/addon/addon.gd.ft", projectName, extensionName)
+                enabledPlugins.add("\"res://addons/$extensionName/plugin.cfg\"")
             }
-            writeFile(addonDir, "README.md", "templates/godotCommon/addon/README.md.ft", projectName, gdExtensionName)
-            iconsDir?.let { writeFile(it, "icon.svg", "templates/godotCommon/addon/icons/icon.svg") }
+            writeFile(addonDir, "README.md", "templates/godotCommon/addons/addon/README.md.ft", projectName, extensionName)
+            iconsDir?.let { writeFile(it, "icon.svg", "templates/godotCommon/addons/addon/icons/icon.svg") }
+
+            // enable plugins
+            val editorPluginsSection = if (enabledPlugins.isEmpty()) "" else
+                "\n[editor_plugins]\n\nenabled=PackedStringArray(${enabledPlugins.joinToString(", ")})\n"
+            writeFile(projectDir, "project.godot", "templates/godotCommon/project.godot.ft", projectName, extensionName,
+                mapOf("EDITOR_PLUGINS_SECTION" to editorPluginsSection))
 
             if (includeGDExtension) {
-                val gdextensionSourcePath = "templates/godotCommon/addon/bin/addon.gdextension.ft"
-                binDir?.let { writeFile(it, "$gdExtensionName.gdextension", gdextensionSourcePath, projectName, gdExtensionName) }
+                val gdextensionSourcePath = "templates/godotCommon/addons/addon/bin/addon.gdextension.ft"
+                binDir?.let { writeFile(it, "$extensionName.gdextension", gdextensionSourcePath, projectName, extensionName) }
 
-                // Addon/cpp files
-                if (cppDir != null) {
-                    writeFile(cppDir, "CMakeLists.txt", "templates/godotCommon/addon/cpp/CMakeLists.txt.ft", projectName, gdExtensionName)
-                    writeFile(cppDir, ".gdignore", "templates/godotCommon/addon/cpp/.gdignore")
+                // Native C++ files
+                if (nativeDir != null) {
+                    writeFile(nativeDir, "CMakeLists.txt", "templates/godotCommon/native/rider-plugin/CMakeLists.txt.ft", projectName, extensionName)
+                    writeFile(nativeDir, ".gdignore", "templates/godotCommon/native/rider-plugin/.gdignore")
                     if (srcDir != null) {
-                        writeFile(srcDir, "register_types.h", "templates/godotCommon/addon/cpp/src/register_types.h")
+                        writeFile(srcDir, "register_types.h", "templates/godotCommon/native/rider-plugin/src/register_types.h")
                         val registerTypesCppTemplate = when (selectedProjectType) {
-                            GodotWizardProjectType.EDITOR_PLUGIN -> "templates/godotEditorExtension/addon/cpp/src/register_types.cpp"
-                            GodotWizardProjectType.GAME, GodotWizardProjectType.GAME_ASSET -> "templates/godotGameExtension/addon/cpp/src/register_types.cpp"
+                            GodotWizardProjectType.EDITOR_PLUGIN -> "templates/godotEditorExtension/native/rider-plugin/src/register_types.cpp"
+                            GodotWizardProjectType.GAME, GodotWizardProjectType.GAME_ASSET -> "templates/godotGameExtension/native/rider-plugin/src/register_types.cpp"
                         }
                         writeFile(srcDir, "register_types.cpp", registerTypesCppTemplate)
-                        writeFile(srcDir, "example_class.h", "templates/godotCommon/addon/cpp/src/example_class.h")
-                        writeFile(srcDir, "example_class.cpp", "templates/godotCommon/addon/cpp/src/example_class.cpp")
+                        writeFile(srcDir, "example_class.h", "templates/godotCommon/native/rider-plugin/src/example_class.h")
+                        writeFile(srcDir, "example_class.cpp", "templates/godotCommon/native/rider-plugin/src/example_class.cpp")
                     }
                 }
             }
@@ -191,13 +197,16 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
         }
     }
 
-    private fun writeFile(dir: VirtualFile, fileName: String, resourcePath: String, projectName: String? = null, gdExtensionName: String? = null) {
+    private fun writeFile(dir: VirtualFile, fileName: String, resourcePath: String, projectName: String? = null, extensionName: String? = null, extraSubstitutions: Map<String, String> = emptyMap()) {
         var content = loadTemplate(resourcePath)
         if (projectName != null) {
             content = content.replace($$"${PROJECT_NAME}", projectName)
         }
-        if (gdExtensionName != null) {
-            content = content.replace($$"${GDEXTENSION_NAME}", gdExtensionName)
+        if (extensionName != null) {
+            content = content.replace($$"${EXTENSION_NAME}", extensionName)
+        }
+        for ((key, value) in extraSubstitutions) {
+            content = content.replace("\${$key}", value)
         }
         val file = dir.createChildData(this, fileName)
         VfsUtil.saveText(file, content)

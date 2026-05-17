@@ -1,0 +1,30 @@
+# ${PROJECT_NAME}
+
+## Project Structure
+
+```
+${PROJECT_NAME}/
+├── addons/
+│   └── ${EXTENSION_NAME}/    # GDExtension plugin
+│       ├── bin/                # Compiled native binaries (output of CMake build)
+│       ├── icons/              # Plugin icons
+│       └── ...
+├── native/
+│   └── ${EXTENSION_NAME}/    # C++ source code for the GDExtension
+│       ├── CMakeLists.txt
+│       └── src/
+│           ├── register_types.h/.cpp
+│           └── example_class.h/.cpp
+├── cmake/
+│   └── GodotAddonsManager.cmake
+├── CMakeLists.txt              # Root CMake configuration
+├── project.godot               # Godot project file
+└── main.tscn                   # Main scene
+```
+
+## Building the Native Extension
+
+1. Configure: `cmake -B cmake-build-debug -S .`
+2. Build: `cmake --build cmake-build-debug`
+
+The compiled library is copied to `addons/${EXTENSION_NAME}/bin/` by CMake after each build.

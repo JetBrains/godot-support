@@ -1,0 +1,7 @@
+[plugin]
+
+name="${EXTENSION_NAME}"
+description=""
+author=""
+version="1.0.0"
+script="${EXTENSION_NAME}.gd"
