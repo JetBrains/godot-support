@@ -1,22 +1,24 @@
-# Use the same minimum as cpp/CMakeLists.txt
+# Use the same minimum as native/rider-plugin/CMakeLists.txt
 cmake_minimum_required(VERSION 3.17)
 
 project(Project)
 
-include("${CMAKE_CURRENT_LIST_DIR}/cmake/GodotAddonsManager.cmake" OPTIONAL)
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/GodotAddonsManager.cmake" OPTIONAL) # enable, if exists
 
 file(GLOB_RECURSE PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*")
-list(FILTER PROJECT_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/addons/${GDEXTENSION_NAME}/cpp/.*")
+list(FILTER PROJECT_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/native/${EXTENSION_NAME}/.*")
+# Exclude third-party addons from indexing/search
 foreach(_managed_addon IN LISTS GODOT_MANAGED_ADDONS)
     list(FILTER PROJECT_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/addons/${_managed_addon}/.*")
 endforeach()
 list(FILTER PROJECT_SOURCES EXCLUDE REGEX "${CMAKE_BINARY_DIR}")
+# Exclude files and folders, which start with a dot, like .gitignore, .git
 list(FILTER PROJECT_SOURCES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/\\..*")
 
 add_custom_target(Project SOURCES ${PROJECT_SOURCES})
 
-if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/addons/${GDEXTENSION_NAME}/cpp")
-    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/addons/${GDEXTENSION_NAME}/cpp SYSTEM)
+if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/native/${EXTENSION_NAME}")
+    add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/native/${EXTENSION_NAME} SYSTEM)
 endif()
 
 # Prevent Godot from importing build artifacts as project resources

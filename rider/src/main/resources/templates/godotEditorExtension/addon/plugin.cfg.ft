@@ -1,7 +1,0 @@
-[plugin]
-
-name="${GDEXTENSION_NAME}"
-description=""
-author=""
-version="1.0.0"
-script="${GDEXTENSION_NAME}.gd"

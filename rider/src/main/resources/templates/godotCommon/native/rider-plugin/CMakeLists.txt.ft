@@ -10,8 +10,8 @@ if(APPLE AND NOT CMAKE_OSX_ARCHITECTURES)
     set(CMAKE_OSX_ARCHITECTURES "arm64;x86_64" CACHE STRING "Build architectures for macOS" FORCE)
 endif()
 
-set(LIBNAME "${GDEXTENSION_NAME}") # "The name of the library"
-set(GODOT_PROJECT_DIR "..")
+set(LIBNAME "${EXTENSION_NAME}") # "The name of the library"
+set(GODOT_PROJECT_DIR "../..")
 
 # Make sure all the dependencies are satisfied
 find_package(Python3 3.4 REQUIRED)
@@ -55,7 +55,7 @@ get_target_property(GODOTCPP_PLATFORM godot::cpp GODOTCPP_PLATFORM)
 string(REPLACE ".universal" "" GODOTCPP_SUFFIX "${GODOTCPP_SUFFIX}")
 
 # Now we can specify our own project which will inherit any global cmake properties or variables that have been defined.
-project(${GDEXTENSION_NAME}
+project(${EXTENSION_NAME}
     VERSION 1.0
     DESCRIPTION ""
     LANGUAGES CXX
@@ -88,7 +88,7 @@ else()
     set_target_properties(${LIBNAME} PROPERTIES PREFIX "lib")
 endif()
 
-set(GODOT_PROJECT_BINARY_DIR "${PROJECT_SOURCE_DIR}/${GODOT_PROJECT_DIR}/bin/${GODOTCPP_PLATFORM}")
+set(GODOT_PROJECT_BINARY_DIR "${PROJECT_SOURCE_DIR}/${GODOT_PROJECT_DIR}/addons/${EXTENSION_NAME}/bin/${GODOTCPP_PLATFORM}")
 
 add_custom_command(TARGET ${LIBNAME} POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E echo "POST_BUILD: Copying $<TARGET_FILE:${LIBNAME}> to ${GODOT_PROJECT_BINARY_DIR}/$<TARGET_FILE_NAME:${LIBNAME}>"
