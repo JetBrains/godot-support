@@ -14,6 +14,9 @@ class GdFileResIndex {
 
     companion object {
         fun getFiles(key: String, project: Project): Collection<VirtualFile> {
+            if (key.startsWith("uid://")) {
+                return GdFileUidIndex.getFiles(key, project)
+            }
             val relPath = key.removePrefix("res://")
             val contentRoots = ProjectRootManager.getInstance(project).getContentRoots()
             for (root in contentRoots) {

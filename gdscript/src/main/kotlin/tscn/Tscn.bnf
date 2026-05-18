@@ -36,6 +36,7 @@ paragraph ::= header dataLine* {
 
 header ::=
     scene_header
+    | gd_resource_header
     | node_header
     | resource_header
     | connection_header
@@ -45,6 +46,18 @@ scene_header ::= LSBR GD_SCENE headerValue* RSBR {
 // TODO would be required to recoverWhile only when pinned
 //    pin=2
 //    recoverWhile=header_r
+    methods=[getUid]
+    mixin="tscn.psi.impl.TscnSceneHeaderElementImpl"
+    stubClass="tscn.index.stub.TscnSceneHeaderStub"
+    elementTypeFactory="tscn.psi.impl.TscnSceneHeaderElementType.getInstance"
+}
+gd_resource_header ::= LSBR GD_RESOURCE headerValue* RSBR {
+//    pin=2
+//    recoverWhile=header_r
+    methods=[getUid]
+    mixin="tscn.psi.impl.TscnGdResourceHeaderElementImpl"
+    stubClass="tscn.index.stub.TscnGdResourceHeaderStub"
+    elementTypeFactory="tscn.psi.impl.TscnGdResourceHeaderElementType.getInstance"
 }
 node_header ::= LSBR NODE headerValue* RSBR {
 //    pin=2
@@ -95,7 +108,7 @@ exprValue ::= identifierEx (LSBR typeList? RSBR)? (LRBR argList? RRBR)?
 argList ::= value? (COMMA value)*
 typeList ::= exprValue? (COMMA exprValue)*
 
-identifierEx ::=  OBJECT_REF | IDENTIFIER | IDENTIFIER_REF | GD_SCENE | EXT_RESOURCE | NODE
+identifierEx ::=  OBJECT_REF | IDENTIFIER | IDENTIFIER_REF | GD_SCENE | GD_RESOURCE | EXT_RESOURCE | NODE
 
 json ::= object | array
 

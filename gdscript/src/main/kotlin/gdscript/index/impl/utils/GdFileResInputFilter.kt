@@ -8,6 +8,7 @@ object GdFileResInputFilter : VirtualFileFilter {
     private val IGNORE_SUFFIX = arrayOf(
         ".import",
         ".godot",
+        ".uid",
     )
 
     private val IGNORE_PREFIX = arrayOf(

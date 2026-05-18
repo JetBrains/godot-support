@@ -9,21 +9,21 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static tscn.psi.TscnTypes.*;
 import tscn.psi.*;
-import tscn.index.stub.TscnSceneHeaderStub;
+import tscn.index.stub.TscnGdResourceHeaderStub;
 import com.intellij.psi.stubs.IStubElementType;
 
-public class TscnSceneHeaderImpl extends TscnSceneHeaderElementImpl implements TscnSceneHeader {
+public class TscnGdResourceHeaderImpl extends TscnGdResourceHeaderElementImpl implements TscnGdResourceHeader {
 
-  public TscnSceneHeaderImpl(@NotNull ASTNode node) {
+  public TscnGdResourceHeaderImpl(@NotNull ASTNode node) {
     super(node);
   }
 
-  public TscnSceneHeaderImpl(@NotNull TscnSceneHeaderStub stub, @NotNull IStubElementType<?, ?> type) {
+  public TscnGdResourceHeaderImpl(@NotNull TscnGdResourceHeaderStub stub, @NotNull IStubElementType<?, ?> type) {
     super(stub, type);
   }
 
   public void accept(@NotNull TscnVisitor visitor) {
-    visitor.visitSceneHeader(this);
+    visitor.visitGdResourceHeader(this);
   }
 
   @Override

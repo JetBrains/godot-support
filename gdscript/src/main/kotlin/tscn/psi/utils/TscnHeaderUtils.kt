@@ -11,6 +11,7 @@ import tscn.psi.TscnParagraph
 object TscnHeaderUtils {
 
     /** Header keys */
+    val HL_UID = "uid"
     val HL_ID = "id"
     val HL_NAME = "name"
     val HL_TYPE = "type"
