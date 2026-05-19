@@ -15,7 +15,6 @@ config/features=PackedStringArray("4.6")
 
 [autoload]
 
-NewGdAutoload="*uid://brxf6f7554ig7"
 Main="*uid://bn6b80q25bhta"
 
 [dotnet]

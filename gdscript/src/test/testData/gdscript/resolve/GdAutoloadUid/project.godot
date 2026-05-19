@@ -10,7 +10,6 @@ config_version=5
 
 [application]
 
-run/main_scene="uid://bn6b80q25bhta"
 config/features=PackedStringArray("4.6")
 
 [autoload]
