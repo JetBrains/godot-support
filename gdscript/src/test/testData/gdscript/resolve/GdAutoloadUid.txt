@@ -1,0 +1,10 @@
+extends Node[u]
+func test():
+	_print[r](NewGdAutoload[r].variable1[r])
+	NewGdAutoload[r].goto_scene[r](""[u])
+
+func _ready() -> void:
+	test[r]()
+
+func _print(s: String[u]) -> void:
+	print[u](s[r])

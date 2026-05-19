@@ -8,6 +8,7 @@ object GdFileResInputFilter : VirtualFileFilter {
     private val IGNORE_SUFFIX = arrayOf(
         ".import",
         ".godot",
+        ".uid",
     )
 
     private val IGNORE_PREFIX = arrayOf(
@@ -20,8 +21,7 @@ object GdFileResInputFilter : VirtualFileFilter {
     }
 
     fun validResource(file: VirtualFile): Boolean {
-        return IGNORE_SUFFIX.none { file.name.endsWith(it) }
-               && IGNORE_PREFIX.none { file.name.startsWith(it) }
+        return validResource(file.name)
     }
 
     override fun accept(file: VirtualFile): Boolean {

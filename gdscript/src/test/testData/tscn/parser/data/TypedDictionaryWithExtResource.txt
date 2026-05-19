@@ -1,6 +1,6 @@
 GodotScene file(0,743)
   TscnParagarph(0,45)
-    TscnSceneHeaderImpl(SCENE_HEADER)(0,45)
+    TscnSceneHeader(0,45)
       PsiElement(TscnTokenType.LSBR)('[')(0,1)
       PsiElement(TscnTokenType.GD_SCENE)('gd_scene')(1,9)
       PsiWhiteSpace(' ')(9,10)

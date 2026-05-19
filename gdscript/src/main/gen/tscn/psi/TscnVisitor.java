@@ -39,6 +39,10 @@ public class TscnVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitGdResourceHeader(@NotNull TscnGdResourceHeader o) {
+    visitHeader(o);
+  }
+
   public void visitHeader(@NotNull TscnHeader o) {
     visitPsiElement(o);
   }

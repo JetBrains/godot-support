@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
-import tscn.index.stub.TscnSceneHeaderStub;
+import tscn.index.stub.TscnGdResourceHeaderStub;
 
-public interface TscnSceneHeader extends TscnHeader, StubBasedPsiElement<TscnSceneHeaderStub> {
+public interface TscnGdResourceHeader extends TscnHeader, StubBasedPsiElement<TscnGdResourceHeaderStub> {
 
   @NotNull
   List<TscnHeaderValue> getHeaderValueList();

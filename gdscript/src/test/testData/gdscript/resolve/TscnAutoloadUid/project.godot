@@ -1,0 +1,22 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+run/main_scene="uid://bn6b80q25bhta"
+config/features=PackedStringArray("4.6")
+
+[autoload]
+
+Main="*uid://bn6b80q25bhta"
+
+[dotnet]
+
+project/assembly_name="UnnamedProject"

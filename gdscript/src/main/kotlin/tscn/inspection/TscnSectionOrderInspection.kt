@@ -13,6 +13,7 @@ import tscn.psi.TscnConnectionHeader
 import tscn.psi.TscnHeader
 import tscn.psi.TscnNodeHeader
 import tscn.psi.TscnParagraph
+import tscn.psi.TscnGdResourceHeader
 import tscn.psi.TscnResourceHeader
 import tscn.psi.TscnSceneHeader
 import tscn.psi.TscnTypes
@@ -84,14 +85,12 @@ class TscnSectionOrderInspection : LocalInspectionTool() {
         companion object {
             fun fromHeader(header: TscnHeader): TscnSectionType = when (header) {
                 is TscnSceneHeader -> GD_SCENE
+                is TscnGdResourceHeader -> GD_RESOURCE
                 is TscnResourceHeader -> EXT_RESOURCE
-                // Work-around, since gd_resource and sub_resource don't have their own token
                 is TscnUnknownHeader -> when (header.node.findChildByType(TscnTypes.IDENTIFIER)?.text) {
-                    GD_RESOURCE.displayName -> GD_RESOURCE
                     SUB_RESOURCE.displayName -> SUB_RESOURCE
                     else -> UNKNOWN
                 }
-
                 is TscnNodeHeader -> NODE
                 is TscnConnectionHeader -> CONNECTION
                 else -> UNKNOWN

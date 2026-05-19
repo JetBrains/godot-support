@@ -177,6 +177,7 @@
     <stubIndex implementation="gdscript.index.impl.GdClassIdIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassDeclIndex" />
+    <fileBasedIndex implementation="gdscript.index.impl.GdFileUidIndex" />
     <stubIndex implementation="gdscript.index.impl.GdInheritanceIndex" />
     <stubIndex implementation="gdscript.index.impl.GdConstDeclIndex" />
     <stubIndex implementation="gdscript.index.impl.GdClassVarDeclIndex" />
@@ -189,6 +190,7 @@
     <stubIndex implementation="tscn.index.impl.TscnNodeIndex" />
     <stubIndex implementation="tscn.index.impl.TscnParagraphIndex" />
     <stubIndex implementation="tscn.index.impl.TscnConnectionIndex" />
+    <stubIndex implementation="tscn.index.impl.TscnUidIndex" />
     <stubElementTypeHolder class="project.psi.ProjectTypes" externalIdPrefix="gdproject."/>
     <stubIndex implementation="project.index.impl.ProjectSectionIndex" />
     <stubIndex implementation="project.index.impl.ProjectDataIndex" />

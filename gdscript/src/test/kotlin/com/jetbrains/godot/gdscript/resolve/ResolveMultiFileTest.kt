@@ -40,4 +40,20 @@ class ResolveMultiFileTest : ResolveTestBase() {
         val annotated = dumpResolvesForFiles(files)
         assertGold(annotated)
     }
+
+    @Test
+    fun testGdAutoloadUid() {
+        val files = loadFilesFromSubdirAsProjectRoot()
+        val useFile = files.find { it.name == "use.gd" }!!
+        val annotated = dumpResolvesWithInlineMarkers(useFile)
+        assertGold(annotated)
+    }
+
+    @Test
+    fun testTscnAutoloadUid() {
+        val files = loadFilesFromSubdirAsProjectRoot()
+        val useFile = files.find { it.name == "new_gd_autoload.gd" }!!
+        val annotated = dumpResolvesWithInlineMarkers(useFile)
+        assertGold(annotated)
+    }
 }

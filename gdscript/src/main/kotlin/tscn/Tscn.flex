@@ -47,6 +47,7 @@ STRING_REFERENCE = "&"{DOUBLE_QUOTED_LITERAL}
 
 // Node names
 "gd_scene"        { return TscnTypes.GD_SCENE; }
+"gd_resource"     { return TscnTypes.GD_RESOURCE; }
 "ext_resource"    { return TscnTypes.EXT_RESOURCE; }
 "node"            { return TscnTypes.NODE; }
 "connection"      { return TscnTypes.CONNECTION; }

@@ -36,8 +36,8 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
-    create_token_set_(CONNECTION_HEADER, HEADER, NODE_HEADER, RESOURCE_HEADER,
-      SCENE_HEADER, UNKNOWN_HEADER),
+    create_token_set_(CONNECTION_HEADER, GD_RESOURCE_HEADER, HEADER, NODE_HEADER,
+      RESOURCE_HEADER, SCENE_HEADER, UNKNOWN_HEADER),
   };
 
   /* ********************************************************** */
@@ -273,7 +273,33 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // LSBR GD_RESOURCE headerValue* RSBR
+  public static boolean gd_resource_header(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gd_resource_header")) return false;
+    if (!nextTokenIs(b, LSBR)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, LSBR, GD_RESOURCE);
+    r = r && gd_resource_header_2(b, l + 1);
+    r = r && consumeToken(b, RSBR);
+    exit_section_(b, m, GD_RESOURCE_HEADER, r);
+    return r;
+  }
+
+  // headerValue*
+  private static boolean gd_resource_header_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "gd_resource_header_2")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!headerValue(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "gd_resource_header_2", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
   // scene_header
+  //     | gd_resource_header
   //     | node_header
   //     | resource_header
   //     | connection_header
@@ -284,6 +310,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _COLLAPSE_, HEADER, null);
     r = scene_header(b, l + 1);
+    if (!r) r = gd_resource_header(b, l + 1);
     if (!r) r = node_header(b, l + 1);
     if (!r) r = resource_header(b, l + 1);
     if (!r) r = connection_header(b, l + 1);
@@ -330,7 +357,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // OBJECT_REF | IDENTIFIER | IDENTIFIER_REF | GD_SCENE | EXT_RESOURCE | NODE
+  // OBJECT_REF | IDENTIFIER | IDENTIFIER_REF | GD_SCENE | GD_RESOURCE | EXT_RESOURCE | NODE
   public static boolean identifierEx(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "identifierEx")) return false;
     boolean r;
@@ -339,6 +366,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, IDENTIFIER);
     if (!r) r = consumeToken(b, IDENTIFIER_REF);
     if (!r) r = consumeToken(b, GD_SCENE);
+    if (!r) r = consumeToken(b, GD_RESOURCE);
     if (!r) r = consumeToken(b, EXT_RESOURCE);
     if (!r) r = consumeToken(b, NODE);
     exit_section_(b, l, m, r, false, null);
@@ -548,11 +576,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // LSBR GD_SCENE headerValue* RSBR {
-  // // TODO would be required to recoverWhile only when pinned
-  // //    pin=2
-  // //    recoverWhile=header_r
-  // }
+  // LSBR GD_SCENE headerValue* RSBR
   public static boolean scene_header(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "scene_header")) return false;
     if (!nextTokenIs(b, LSBR)) return false;
@@ -561,7 +585,6 @@ public class TscnParser implements PsiParser, LightPsiParser {
     r = consumeTokens(b, 0, LSBR, GD_SCENE);
     r = r && scene_header_2(b, l + 1);
     r = r && consumeToken(b, RSBR);
-    r = r && scene_header_4(b, l + 1);
     exit_section_(b, m, SCENE_HEADER, r);
     return r;
   }
@@ -574,15 +597,6 @@ public class TscnParser implements PsiParser, LightPsiParser {
       if (!headerValue(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "scene_header_2", c)) break;
     }
-    return true;
-  }
-
-  // {
-  // // TODO would be required to recoverWhile only when pinned
-  // //    pin=2
-  // //    recoverWhile=header_r
-  // }
-  private static boolean scene_header_4(PsiBuilder b, int l) {
     return true;
   }
 

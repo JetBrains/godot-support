@@ -3,6 +3,7 @@ package tscn.psi
 import com.intellij.psi.PsiElement
 import tscn.psi.utils.TscnCommonUtil
 import tscn.psi.utils.TscnConnectionUtil
+import tscn.psi.utils.TscnHeaderUtils
 import tscn.psi.utils.TscnNodeUtil
 import tscn.psi.utils.TscnResourceUtil
 
@@ -30,6 +31,20 @@ object TscnPsiUtils {
     @JvmStatic fun getType(element: TscnResourceHeader): String = TscnResourceUtil.getType(element)
     @JvmStatic fun getPath(element: TscnResourceHeader): String = TscnResourceUtil.getPath(element)
     @JvmStatic fun getId(element: TscnResourceHeader): String = TscnResourceUtil.getId(element)
+
+    /** scene_header (gd_scene) */
+    @JvmStatic fun getUid(element: TscnSceneHeader): String {
+        val stub = element.stub
+        if (stub != null) return stub.getUid()
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_UID)
+    }
+
+    /** gd_resource_header (gd_resource) */
+    @JvmStatic fun getUid(element: TscnGdResourceHeader): String {
+        val stub = element.stub
+        if (stub != null) return stub.getUid()
+        return TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_UID)
+    }
 
     /** Connection */
     @JvmStatic fun getFrom(element: TscnConnectionHeader): String = TscnConnectionUtil.getFrom(element)

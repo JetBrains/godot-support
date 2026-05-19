@@ -5,9 +5,11 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
 import tscn.psi.impl.TscnConnectionHeaderElementType;
+import tscn.psi.impl.TscnGdResourceHeaderElementType;
 import tscn.psi.impl.TscnNodeHeaderElementType;
 import tscn.psi.impl.TscnParagraphElementType;
 import tscn.psi.impl.TscnResourceHeaderElementType;
+import tscn.psi.impl.TscnSceneHeaderElementType;
 import tscn.psi.impl.*;
 
 public interface TscnTypes {
@@ -20,6 +22,7 @@ public interface TscnTypes {
   IElementType DATA_LINE_NM = new TscnElementType("DATA_LINE_NM");
   IElementType DATA_LINE_VALUE = new TscnElementType("DATA_LINE_VALUE");
   IElementType EXPR_VALUE = new TscnElementType("EXPR_VALUE");
+  IElementType GD_RESOURCE_HEADER = TscnGdResourceHeaderElementType.getInstance("GD_RESOURCE_HEADER");
   IElementType HEADER = new TscnElementType("HEADER");
   IElementType HEADER_VALUE = new TscnElementType("HEADER_VALUE");
   IElementType HEADER_VALUE_NM = new TscnElementType("HEADER_VALUE_NM");
@@ -34,7 +37,7 @@ public interface TscnTypes {
   IElementType OBJECT = new TscnElementType("OBJECT");
   IElementType PARAGRAPH = TscnParagraphElementType.getInstance("PARAGRAPH");
   IElementType RESOURCE_HEADER = TscnResourceHeaderElementType.getInstance("RESOURCE_HEADER");
-  IElementType SCENE_HEADER = new TscnElementType("SCENE_HEADER");
+  IElementType SCENE_HEADER = TscnSceneHeaderElementType.getInstance("SCENE_HEADER");
   IElementType TYPE_LIST = new TscnElementType("TYPE_LIST");
   IElementType UNKNOWN_HEADER = new TscnElementType("UNKNOWN_HEADER");
   IElementType VALUE = new TscnElementType("VALUE");
@@ -48,6 +51,7 @@ public interface TscnTypes {
   IElementType EQ = new TscnTokenType("EQ");
   IElementType EXT_RESOURCE = new TscnTokenType("EXT_RESOURCE");
   IElementType FALSE = new TscnTokenType("FALSE");
+  IElementType GD_RESOURCE = new TscnTokenType("GD_RESOURCE");
   IElementType GD_SCENE = new TscnTokenType("GD_SCENE");
   IElementType IDENTIFIER = new TscnTokenType("IDENTIFIER");
   IElementType IDENTIFIER_REF = new TscnTokenType("IDENTIFIER_REF");
@@ -94,6 +98,9 @@ public interface TscnTypes {
       }
       else if (type == EXPR_VALUE) {
         return new TscnExprValueImpl(node);
+      }
+      else if (type == GD_RESOURCE_HEADER) {
+        return new TscnGdResourceHeaderImpl(node);
       }
       else if (type == HEADER_VALUE) {
         return new TscnHeaderValueImpl(node);

@@ -1,0 +1,7 @@
+extends Node[u]
+
+var variable1 = 1
+
+func goto_scene(path: String[u]) -> void:
+	print[u]("goto_scene"[u])
+	Main[r].my_print[r](10)
