@@ -151,7 +151,7 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
                 }
             }
 
-            writeFile(projectDir, "main.tscn", "templates/godotCommon/main.tscn")
+            copyFile(projectDir, "main.tscn", "templates/godotCommon/main.tscn")
             if (useCMake && includeGDExtension) {
                 // we need the readme only in the includeGDExtension case, otherwise there is nothing to explain
                 writeFile(projectDir, "README.md", "templates/godotCommon/README.md.ft", projectName, extensionName)
@@ -210,6 +210,15 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
         }
         val file = dir.createChildData(this, fileName)
         VfsUtil.saveText(file, content)
+    }
+
+    // would not change the BOM/no-BOM, see RIDER-138957
+    private fun copyFile(dir: VirtualFile, fileName: String, resourcePath: String) {
+        val bytes = javaClass.classLoader.getResourceAsStream(resourcePath)
+            ?.use { it.readBytes() }
+            ?: throw IllegalStateException("Template not found: $resourcePath")
+        val file = dir.createChildData(this, fileName)
+        file.setBinaryContent(bytes)
     }
 
     private fun loadTemplate(resourcePath: String): String {
