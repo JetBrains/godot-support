@@ -15,29 +15,6 @@ set(GODOT_PROJECT_DIR "../..")
 
 # Make sure all the dependencies are satisfied
 find_package(Python3 3.4 REQUIRED)
-find_program(GIT git REQUIRED)
-
-# Ensure godot-cpp submodule is registered and initialized
-if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/godot-cpp/src")
-    message(NOTICE "godot-cpp bindings source not found")
-    message(NOTICE "Adding and initializing the godot-cpp submodule...")
-
-    # Register the submodule if not already in .gitmodules (fails silently if already registered)
-    execute_process(
-        COMMAND git submodule add -b master https://github.com/godotengine/godot-cpp
-        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-        OUTPUT_QUIET ERROR_QUIET
-    )
-
-    # Initialize and update the submodule to fetch sources
-    execute_process(
-        COMMAND git submodule update --init godot-cpp
-        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-        COMMAND_ERROR_IS_FATAL ANY
-    )
-endif()
-
-add_subdirectory(godot-cpp SYSTEM)
 
 # Create the gen directory at configure time so IDEs can see generated headers immediately after generate_bindings
 file(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/godot-cpp/gen/include")

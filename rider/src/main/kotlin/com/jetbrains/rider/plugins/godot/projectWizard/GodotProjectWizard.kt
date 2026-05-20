@@ -11,8 +11,7 @@ import com.jetbrains.rider.projectView.projectTemplates.templateTypes.GameDevTem
 import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.adapter.RiderProjectWizardMode
 import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.adapter.RiderWizardFusInfo
 import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.adapter.WizardMode
-import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.common.RiderGitNewProjectWizardStep
-import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.common.riderNewProjectWizardBaseStep
+import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.common.RiderNewProjectWizardBaseStep
 import javax.swing.Icon
 
 class GodotProjectWizard : RiderProjectWizardMode, RiderWizardFusInfo, GameDevTemplateType {
@@ -31,8 +30,7 @@ class GodotProjectWizard : RiderProjectWizardMode, RiderWizardFusInfo, GameDevTe
 
     override fun createStep(context: WizardContext): NewProjectWizardStep =
         RootNewProjectWizardStep(context)
-            .nextStep { riderNewProjectWizardBaseStep(it).also { step ->
+            .nextStep { RiderNewProjectWizardBaseStep(it).also { step ->
                 step.defaultName = GodotPluginBundle.message("wizard.godot.project.name").replace(" ", "-") } }
-            .nextStep { RiderGitNewProjectWizardStep(it, defaultEnabled = true) }
             .nextStep(::GodotProjectAssetsStep)
 }
