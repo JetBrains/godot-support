@@ -1,0 +1,15 @@
+<html>
+<body>
+Reports calls to <code>call_deferred</code> that use a string to specify the method name.
+In Godot 4, it is recommended to use the <code>Callable</code>-based syntax for better efficiency and static type safety.
+<!-- tooltip end -->
+<p>Example:</p>
+<pre><code>
+# Less efficient
+call_deferred("my_method", 123)
+
+# Recommended
+my_method.call_deferred(123)
+</code></pre>
+</body>
+</html>

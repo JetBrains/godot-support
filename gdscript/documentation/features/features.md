@@ -211,11 +211,30 @@ In the meantime, please use the "Convert Indents" action.
     </div>
 </details>
 
+<details>
+    <summary>Callable call_deferred</summary>
+    <img src="../../screens/features/inspection/call_deferred.png" />
+    <div>
+        Detects string based <code>call_deferred</code> calls. Offers a quick fix.
+<pre>
+<code># Less efficient
+    call_deferred("my_method", 123)
+</code>
+<code> # Recommended
+    my_method.call_deferred(123)
+</code>
+</pre>
+</div>
+</details>
+
 ### Actions
 
 <details>
     <summary>Add/change return Type</summary>
     <img src="../../screens/features/action/specify_variable.png" />
+    <div>
+        Offers two quick fixes for inferred variable types: <strong>Specify variable type</strong> (explicit, e.g. <code>var t: bool = true</code>) and <strong>Auto-infer type (:=)</strong> (e.g. <code>var t := true</code>). The preferred order follows the <em>Short typed declarations</em> project setting.
+    </div>
 </details>
 
 <details>

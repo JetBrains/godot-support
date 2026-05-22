@@ -72,9 +72,18 @@ class GdTypeHintInspection : LocalInspectionTool() {
         if (realType == GdKeywords.VARIANT || realType == GdKeywords.NULL) return
         if (realType.startsWith("res")) return
 
+        val fixes = mutableListOf<GdAddVariableTypeHintFix>()
+        if (fullType) {
+            fixes.add(GdAddVariableTypeHintFix(element, realType, true))
+            fixes.add(GdAddVariableTypeHintFix(element, realType, false))
+        } else {
+            fixes.add(GdAddVariableTypeHintFix(element, realType, false))
+            fixes.add(GdAddVariableTypeHintFix(element, realType, true))
+        }
+
         holder.registerWeakWarning(
             element, GdScriptBundle.message("inspection.type.hint.field.return.type.can.be.specified.as", realType),
-            GdAddVariableTypeHintFix(element, realType, fullType)
+            *fixes.toTypedArray()
         )
     }
 
