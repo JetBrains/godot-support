@@ -3,29 +3,30 @@ package com.jetbrains.rider.plugins.godot.projectWizard
 import com.intellij.ide.wizard.NewProjectWizardBaseData.Companion.baseData
 import com.intellij.ide.wizard.NewProjectWizardStep
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBList
-import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.AlignY
 import com.intellij.ui.dsl.builder.Cell
 import com.intellij.ui.dsl.builder.MAX_LINE_LENGTH_WORD_WRAP
 import com.intellij.ui.dsl.builder.Panel
-import com.intellij.ui.dsl.builder.RowLayout
-import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.selected
+import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
 import com.intellij.ui.layout.and
 import com.intellij.util.ui.UIUtil
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.common.RiderAbstractNewProjectWizardStep
+import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.common.addGitCheckboxRow
+import com.jetbrains.rider.projectView.projectTemplates.wizardTemplates.common.initializeGitRepository
+import org.jetbrains.annotations.Nls
 import javax.swing.ListSelectionModel
 
-enum class GodotWizardProjectType(val displayName: String, val description: String) {
+enum class GodotWizardProjectType(val displayName: String, @Nls val description: String) {
     GAME(
         GodotPluginBundle.message("wizard.godot.project.type.game"),
         GodotPluginBundle.message("wizard.godot.project.type.game.description")
@@ -52,6 +53,7 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
         cellRenderer = textListCellRenderer { it?.displayName ?: "" }
     }
     private var scrollCellList: Cell<JBList<GodotWizardProjectType>>? = null
+    private val gitProperty = propertyGraph.property(true)
     private val useCMakeProperty = propertyGraph.property(false)
     private val includeGDExtensionProperty = propertyGraph.property(true)
     private val useAddonsManagerProperty = propertyGraph.property(true)
@@ -75,17 +77,11 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
 
     override fun setupUI(builder: Panel) {
         with(builder) {
-            row {
-                panel {
-                    row(GodotPluginBundle.message("wizard.godot.project.template")) {}.topGap(TopGap.SMALL)
-                }.align(AlignY.TOP)
-                panel {
-                    row {
-                        scrollCellList = scrollCell(list).align(AlignX.FILL)
-                            .comment(selectedProjectTypeProperty.get().description, maxLineLength = MAX_LINE_LENGTH_WORD_WRAP)
-                    }
-                }
-            }.layout(RowLayout.LABEL_ALIGNED)
+            builder.addGitCheckboxRow(gitProperty, this@GodotProjectAssetsStep)
+            row(GodotPluginBundle.message("wizard.godot.project.template")) {
+                scrollCellList = scrollCell(list).align(AlignX.FILL)
+                    .comment(selectedProjectTypeProperty.get().description, maxLineLength = MAX_LINE_LENGTH_WORD_WRAP)
+            }
 
             group(GodotPluginBundle.message("wizard.godot.additional.features")) {
                 lateinit var useCmakeCb: Cell<JBCheckBox>
@@ -123,10 +119,16 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
         val projectName = baseData?.name ?: return
         val projectPath = baseData?.contentEntryPath ?: return
         val selectedProjectType: GodotWizardProjectType = selectedProjectTypeProperty.get()
+        val initGit = gitProperty.get()
         val useCMake = useCMakeProperty.get()
         val includeGDExtension = useCMake && includeGDExtensionProperty.get()
         val useAddonsManager = useCMake && useAddonsManagerProperty.get()
         val extensionName = if (includeGDExtension) extensionNameProperty.get().ifEmpty { projectName } else projectName
+
+        // can't use RiderGitNewProjectWizardStep, see RIDER-139050
+        if (initGit && !includeGDExtension) {
+            initializeGitRepository(true, project)
+        }
 
         ApplicationManager.getApplication().runWriteAction {
             val projectDir = VfsUtil.createDirectoryIfMissing(projectPath) ?: return@runWriteAction
@@ -142,12 +144,24 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
             writeFile(projectDir, ".gitignore", "templates/godotCommon/gitignore.txt")
             if (useCMake) {
                 writeFile(projectDir, "CMakeLists.txt", "templates/godotCommon/CMakeLists.txt.ft", projectName, extensionName)
-                if (useAddonsManager) {
-                    VfsUtil.createDirectoryIfMissing(projectDir, "cmake")?.let {
-                        writeFile(it, "GodotAddonsManager.cmake", "templates/godotCommon/cmake/GodotAddonsManager.cmake")
+                if (useAddonsManager || includeGDExtension) {
+                    val cmakeDir = VfsUtil.createDirectoryIfMissing(projectDir, "cmake")
+                    if (cmakeDir == null) {
+                        thisLogger().error("Failed to create cmake directory in ${projectDir.path}")
+                    } else {
+                        if (useAddonsManager) {
+                            writeFile(cmakeDir, "GodotAddonsManager.cmake", "templates/godotCommon/cmake/GodotAddonsManager.cmake")
+                            // addon-manager is pre-configured to download Rider plugin, so we enable it
+                            enabledPlugins.add("\"res://addons/rider-plugin/plugin.cfg\"")
+                        }
+                        if (includeGDExtension) {
+                            val setupResource = if (initGit)
+                                "templates/godotCommon/cmake/GodotCppSetup.git.cmake"
+                            else
+                                "templates/godotCommon/cmake/GodotCppSetup.fetchcontent.cmake"
+                            writeFile(cmakeDir, "GodotCppSetup.cmake", setupResource, extensionName = extensionName)
+                        }
                     }
-                    // addon-manager is pre-configured to download Rider plugin, so we need to enable it
-                    enabledPlugins.add("\"res://addons/rider-plugin/plugin.cfg\"")
                 }
             }
 
@@ -213,6 +227,7 @@ class GodotProjectAssetsStep(parent: NewProjectWizardStep) : RiderAbstractNewPro
     }
 
     // would not change the BOM/no-BOM, see RIDER-138957
+    @Suppress("SameParameterValue")
     private fun copyFile(dir: VirtualFile, fileName: String, resourcePath: String) {
         val bytes = javaClass.classLoader.getResourceAsStream(resourcePath)
             ?.use { it.readBytes() }

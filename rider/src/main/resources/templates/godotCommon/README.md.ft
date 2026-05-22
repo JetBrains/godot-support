@@ -11,6 +11,7 @@ ${PROJECT_NAME}/
 │       └── ...
 ├── native/
 │   └── ${EXTENSION_NAME}/    # C++ source code for the GDExtension
+│       ├── godot-cpp/          # Git submodule: Godot C++ bindings
 │       ├── CMakeLists.txt
 │       └── src/
 │           ├── register_types.h/.cpp
