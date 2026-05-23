@@ -1,5 +1,6 @@
 package gdscript.inspection.fixes
 
+import com.intellij.codeInsight.intention.PriorityAction
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
@@ -13,7 +14,7 @@ import gdscript.psi.GdConstDeclTl
 import gdscript.psi.GdElementFactory
 import gdscript.psi.GdVarDeclSt
 
-class GdAddVariableTypeHintFix : LocalQuickFixOnPsiElement {
+class GdAddVariableTypeHintFix : LocalQuickFixOnPsiElement, PriorityAction {
 
     private val desired: String
     private val fullType: Boolean
@@ -23,8 +24,17 @@ class GdAddVariableTypeHintFix : LocalQuickFixOnPsiElement {
         this.fullType = fullType
     }
 
-    override fun getFamilyName(): String = GdScriptBundle.message("inspection.fix.add.variable.type.hint.family")
-    override fun getText(): String = GdScriptBundle.message("inspection.fix.add.variable.type.hint.text", desired)
+    override fun getFamilyName(): String =
+        if (fullType) GdScriptBundle.message("inspection.fix.add.variable.type.hint.family")
+        else GdScriptBundle.message("inspection.fix.add.variable.type.hint.short.family")
+
+    override fun getText(): String =
+        if (fullType) GdScriptBundle.message("inspection.fix.add.variable.type.hint.text", desired)
+        else GdScriptBundle.message("inspection.fix.add.variable.type.hint.short.text")
+
+    override fun getPriority(): PriorityAction.Priority =
+        if (fullType) PriorityAction.Priority.HIGH
+        else PriorityAction.Priority.NORMAL
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
         if (fullType) fullType(project, startElement, endElement)
