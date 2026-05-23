@@ -211,11 +211,38 @@ Please report any issues you encounter - this is still yet to be battle tested
     </div>
 </details>
 
+<details>
+    <summary>Legacy string-based API usage</summary>
+    Detects legacy string-based calls and offers quick fixes to convert them to Callable- or signal-reference-based syntax.
+    <img src="../../screens/features/inspection/call_deferred.png" />
+    <div>
+        Supported quick fixes include:
+        <ul>
+            <li><code>connect("signal_name", callable)</code> → <code>signal_name.connect(callable)</code></li>
+            <li><code>disconnect("signal_name", callable)</code> → <code>signal_name.disconnect(callable)</code></li>
+            <li><code>emit_signal("signal_name", ...)</code> → <code>signal_name.emit(...)</code></li>
+            <li><code>get_signal_connection_list("signal_name")</code> → <code>signal_name.get_connections()</code></li>
+            <li><code>is_connected("signal_name", callable)</code> → <code>signal_name.is_connected(callable)</code></li>
+            <li><code>rpc("method_name", ...)</code> → <code>method_name.rpc(...)</code></li>
+            <li><code>call("method_name", ...)</code> → <code>method_name.call(...)</code></li>
+            <li><code>call_deferred("method_name", ...)</code> → <code>method_name.call_deferred(...)</code></li>
+            <li><code>callv("method_name", arg_array)</code> → <code>method_name.callv(arg_array)</code></li>
+        </ul>
+    </div>
+    <pre><code># Less efficient
+call_deferred("my_method", 123)
+# Recommended
+my_method.call_deferred(123)</code></pre>
+</details>
+
 ### Actions
 
 <details>
     <summary>Add/change return Type</summary>
     <img src="../../screens/features/action/specify_variable.png" />
+    <div>
+        Offers two quick fixes for inferred variable types: <strong>Specify variable type</strong> (explicit, e.g. <code>var t: bool = true</code>) and <strong>Auto-infer type (:=)</strong> (e.g. <code>var t := true</code>). The preferred order follows the <em>Short typed declarations</em> project setting.
+    </div>
 </details>
 
 <details>
