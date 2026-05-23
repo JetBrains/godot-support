@@ -20,7 +20,6 @@ class GdSettingsComponent(val project: Project) {
     val panel: JPanel
 
     private val hidePrivateCheck = JBCheckBox(GdScriptBundle.message("settings.checkbox.hide.private.members.from.completion"))
-    private val shortTypedCheck = JBCheckBox(GdScriptBundle.message("settings.checkbox.use.short.typing.var.instead.var.int"))
     private val annotatorsCb = ComboBox<String>()
     private val docProviderCb = ComboBox<GdDocProviderMode>()
     private val criticalsTf: JTextField = JTextField()
@@ -82,7 +81,6 @@ class GdSettingsComponent(val project: Project) {
             }
 
             group(GdScriptBundle.message("settings.separator.other")) {
-                row { cell(shortTypedCheck) }
                 row(GdScriptBundle.message("settings.label.reference.node.resource.checks")) {
                     cell(annotatorsCb)
                 }
@@ -115,12 +113,6 @@ class GdSettingsComponent(val project: Project) {
         get() = hidePrivateCheck.isSelected
         set(newStatus) {
             hidePrivateCheck.isSelected = newStatus
-        }
-
-    var shortTyped: Boolean
-        get() = shortTypedCheck.isSelected
-        set(newStatus) {
-            shortTypedCheck.isSelected = newStatus
         }
 
     var annotators: String

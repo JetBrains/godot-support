@@ -1,0 +1,17 @@
+<html>
+<body>
+Reports legacy string-based API usage where a string is used to reference a signal or method name.
+In Godot 4, it is recommended to use signal-reference or <code>Callable</code>-based syntax for better efficiency and static type safety.
+<!-- tooltip end -->
+<p>Example:</p>
+<pre><code>
+# Less efficient
+call_deferred("my_method", 123)
+emit_signal("my_signal", 123)
+
+# Recommended
+my_method.call_deferred(123)
+my_signal.emit(123)
+</code></pre>
+</body>
+</html>
