@@ -15,6 +15,10 @@ import org.jetbrains.annotations.Nls
 
 object ProblemsHolderExtension {
 
+    fun ProblemsHolder.registerWeakWarning(element: PsiElement, @Nls description: String, vararg quickFixes: LocalQuickFix) {
+        this.registerProblem(element, description, WEAK_WARNING, *quickFixes)
+    }
+
     fun ProblemsHolder.registerWeakWarning(element: PsiElement, @Nls description: String, quickFix: LocalQuickFix? = null) {
         this.registerProblem(element, description, WEAK_WARNING, quickFix)
     }
