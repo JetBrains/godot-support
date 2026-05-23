@@ -168,6 +168,10 @@
                      bundle="messages.GdScriptBundle" key="inspection.check.missing.match.branches"
                      groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdMissingMatchBranchesInspection"/>
+    <localInspection language="GdScript" shortName="GdStringNameMemberUsage" enabledByDefault="true" level="WARNING"
+                     bundle="messages.GdScriptBundle" key="inspection.check.callable.call.deferred"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
+                     implementationClass="gdscript.inspection.GdStringNameMemberCallInspection"/>
     <localInspection language="GdScript" shortName="GdWhitespaceLocal" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspection.check.whitespace"
                      groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
