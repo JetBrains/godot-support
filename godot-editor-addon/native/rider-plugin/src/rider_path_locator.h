@@ -24,13 +24,8 @@ struct Version {
 };
 
 struct InstallInfo {
-    enum class SupportUproject { None, Beta, Release };
-    enum class InstallType { Installed, Toolbox, Custom };
-
     std::string path;               // Path to rider executable or application root
     Version version;                // Build version
-    SupportUproject support = SupportUproject::None;
-    InstallType type = InstallType::Installed;
 };
 
 struct InstallInfoLess {
@@ -40,8 +35,7 @@ struct InstallInfoLess {
 class RiderPathLocator {
 public:
     // Returns InstallInfo if the path looks like a Rider installation with rider-cpp plugin.
-    static std::optional<InstallInfo> get_install_info_from_rider_path(const std::string &path,
-                                                                       InstallInfo::InstallType type);
+    static std::optional<InstallInfo> get_install_info_from_rider_path(const std::string &path);
 
     static bool directory_exists_and_non_empty(const std::string &path);
     static std::string extract_install_location_from_settings_json(const std::string &toolbox_path);
@@ -58,14 +52,11 @@ private:
 	static std::vector<InstallInfo> get_install_infos_from_toolbox_mac(const std::string &toolbox_path,
 																   const std::string &pattern);
 	static std::vector<InstallInfo> get_install_infos_mac(const std::string &toolbox_rider_root_path,
-												  const std::string &pattern,
-												  InstallInfo::InstallType type);
+														const std::string &pattern);
 #endif
-	
-	static std::vector<InstallInfo> get_install_infos_from_resource_file();
+
     static std::vector<InstallInfo> get_install_infos(const std::string &toolbox_rider_root_path,
-                                                      const std::string &pattern,
-                                                      InstallInfo::InstallType type);
+                                                      const std::string &pattern);
 
     static std::string get_history_json_path(const std::string &rider_path);
     static Version get_last_build_version(const std::string &history_json_path);

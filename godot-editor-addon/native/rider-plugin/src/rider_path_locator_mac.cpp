@@ -16,8 +16,7 @@
 
 namespace fs = std::filesystem;
 
-std::optional<InstallInfo> RiderPathLocator::get_install_info_from_rider_path(const std::string &path_to_rider_app,
-                                                                              InstallInfo::InstallType type) {
+std::optional<InstallInfo> RiderPathLocator::get_install_info_from_rider_path(const std::string &path_to_rider_app) {
     // Expecting path to Rider.app
     if (!directory_exists_and_non_empty(path_to_rider_app)) return std::nullopt;
 
@@ -27,7 +26,6 @@ std::optional<InstallInfo> RiderPathLocator::get_install_info_from_rider_path(co
 
     InstallInfo info;
     info.path = (app / "Contents" / "MacOS" / "rider").string();
-    info.type = type;
     const fs::path product_info = app / "Contents" / "Resources" / "product-info.json";
     if (fs::exists(product_info)) {
         parse_product_info_json(info, product_info.string());
@@ -44,7 +42,7 @@ static std::vector<InstallInfo> get_manually_installed_riders() {
         if (!p.is_directory()) continue;
         const std::string name = p.path().filename().string();
         if (!std::regex_match(name, rx)) continue;
-        auto info = RiderPathLocator::get_install_info_from_rider_path(p.path().string(), InstallInfo::InstallType::Installed);
+        auto info = RiderPathLocator::get_install_info_from_rider_path(p.path().string());
         if (info.has_value()) result.push_back(*info);
     }
     return result;
@@ -75,15 +73,14 @@ static std::vector<InstallInfo> get_installed_riders_with_mdfind() {
     std::string line;
     while (std::getline(ss, line)) {
         if (line.find("Rider") == std::string::npos) continue;
-        auto info = RiderPathLocator::get_install_info_from_rider_path(line, InstallInfo::InstallType::Installed);
+        auto info = RiderPathLocator::get_install_info_from_rider_path(line);
         if (info.has_value()) result.push_back(*info);
     }
     return result;
 }
 
 std::vector<InstallInfo> RiderPathLocator::get_install_infos_mac(const std::string &toolbox_rider_root_path,
-                                                             const std::string &pattern,
-                                                             InstallInfo::InstallType type) {
+                                                             const std::string &pattern) {
     std::vector<InstallInfo> result;
     if (!directory_exists_and_non_empty(toolbox_rider_root_path)) return result;
 
@@ -99,7 +96,7 @@ std::vector<InstallInfo> RiderPathLocator::get_install_infos_mac(const std::stri
         const std::string filename = p.path().filename().string();
         if (!std::regex_match(filename, rx)) continue;
 
-        auto info = get_install_info_from_rider_path(p.path().string(), type);
+        auto info = get_install_info_from_rider_path(p.path().string());
         if (!info.has_value()) continue;
         Version last = get_last_build_version(get_history_json_path(p.path().string()));
         if (last.initialized() && !(info->version == last)) continue;
@@ -116,18 +113,18 @@ std::vector<InstallInfo> RiderPathLocator::get_install_infos_from_toolbox_mac(co
     const std::string install_location = extract_install_location_from_settings_json(toolbox_path);
     if (!install_location.empty()) {
         // V1 custom location
-        auto r = get_install_infos_mac((fs::path(install_location) / "apps").string(), pattern, InstallInfo::InstallType::Toolbox);
+        auto r = get_install_infos_mac((fs::path(install_location) / "apps").string(), pattern);
         if (!r.empty()) return r;
         // V2 custom location
-        return get_install_infos_mac(install_location, pattern, InstallInfo::InstallType::Toolbox);
+        return get_install_infos_mac(install_location, pattern);
     }
 
     // V1 default location
-    auto r = get_install_infos_mac((fs::path(toolbox_path) / "apps").string(), pattern, InstallInfo::InstallType::Toolbox);
+    auto r = get_install_infos_mac((fs::path(toolbox_path) / "apps").string(), pattern);
     if (!r.empty()) return r;
 
     // V2 default location
-    return get_install_infos_mac(get_default_ide_install_location_for_toolbox_v2(), pattern, InstallInfo::InstallType::Toolbox);
+    return get_install_infos_mac(get_default_ide_install_location_for_toolbox_v2(), pattern);
 }
 
 std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths() {
@@ -135,7 +132,6 @@ std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths() {
     for (auto &i : get_installed_riders_with_mdfind()) s.insert(i);
     for (auto &i : get_manually_installed_riders()) s.insert(i);
     for (auto &i : get_install_infos_from_toolbox_mac(get_toolbox_path(), "Rider*.app")) s.insert(i);
-    for (auto &i : get_install_infos_from_resource_file()) s.insert(i);
     return s;
 }
 

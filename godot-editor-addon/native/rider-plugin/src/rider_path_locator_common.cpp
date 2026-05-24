@@ -125,31 +125,12 @@ void RiderPathLocator::parse_product_info_json(InstallInfo &info, const std::str
 		auto m = build_re->search(json);
 		if (m.is_valid() && m->get_group_count() >= 1) {
 			info.version = Version(stdstr(m->get_string(1)));
-			if (info.version.major() >= 221) {
-				info.support = InstallInfo::SupportUproject::Release;
-				return;
-			}
-		}
-	}
-
-	// Fallback: look for SupportUproject or SupportUprojectState in customProperties
-	auto state_re = RegEx::create_from_string(
-			"\"(SupportUproject|SupportUprojectState)\".*?\"value\"\\s*:\\n?\\t?\\s*\"(Beta|Release)\"");
-	if (state_re.is_valid()) {
-		auto m = state_re->search(json);
-		if (m.is_valid() && m->get_group_count() >= 2) {
-			String val = m->get_string(2);
-			if (val == "Beta")
-				info.support = InstallInfo::SupportUproject::Beta;
-			if (val == "Release")
-				info.support = InstallInfo::SupportUproject::Release;
 		}
 	}
 }
 
 std::vector<InstallInfo> RiderPathLocator::get_install_infos(const std::string &toolbox_rider_root_path,
-		const std::string &pattern,
-		InstallInfo::InstallType type) {
+		const std::string &pattern) {
 	std::vector<InstallInfo> result;
 	if (!directory_exists_and_non_empty(toolbox_rider_root_path))
 		return result;
@@ -171,7 +152,7 @@ std::vector<InstallInfo> RiderPathLocator::get_install_infos(const std::string &
 			if (!rx->search(files[i]).is_valid())
 				continue;
 			String full_path = current.path_join(files[i]);
-			auto info = get_install_info_from_rider_path(stdstr(full_path), type);
+			auto info = get_install_info_from_rider_path(stdstr(full_path));
 			if (!info.has_value())
 				continue;
 			Version last = get_last_build_version(get_history_json_path(stdstr(full_path)));
@@ -196,25 +177,20 @@ std::vector<InstallInfo> RiderPathLocator::get_install_infos_from_toolbox(const 
 	const std::string install_location = extract_install_location_from_settings_json(toolbox_path);
 	if (!install_location.empty()) {
 		// V1 custom location
-		auto r = get_install_infos(stdstr(gstr(install_location).path_join("apps")), pattern, InstallInfo::InstallType::Toolbox);
+		auto r = get_install_infos(stdstr(gstr(install_location).path_join("apps")), pattern);
 		if (!r.empty())
 			return r;
 		// V2 custom location
-		return get_install_infos(install_location, pattern, InstallInfo::InstallType::Toolbox);
+		return get_install_infos(install_location, pattern);
 	}
 
 	// V1 default location
-	auto r = get_install_infos(stdstr(gstr(toolbox_path).path_join("apps")), pattern, InstallInfo::InstallType::Toolbox);
+	auto r = get_install_infos(stdstr(gstr(toolbox_path).path_join("apps")), pattern);
 	if (!r.empty())
 		return r;
 
 	// V2 default location
-	return get_install_infos(get_default_ide_install_location_for_toolbox_v2(), pattern, InstallInfo::InstallType::Toolbox);
-}
-
-// Resource file not available in Godot context; keep as empty but leave hook for future.
-std::vector<InstallInfo> RiderPathLocator::get_install_infos_from_resource_file() {
-	return {};
+	return get_install_infos(get_default_ide_install_location_for_toolbox_v2(), pattern);
 }
 
 bool InstallInfoLess::operator()(const InstallInfo &a, const InstallInfo &b) const {

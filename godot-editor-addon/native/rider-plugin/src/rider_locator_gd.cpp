@@ -26,26 +26,6 @@ RiderLocator::~RiderLocator() {
     stop();
 }
 
-static String support_to_string(InstallInfo::SupportUproject s) {
-    using S = InstallInfo::SupportUproject;
-    switch (s) {
-        case S::None: return String("None");
-        case S::Beta: return String("Beta");
-        case S::Release: return String("Release");
-    }
-    return String("None");
-}
-
-static String type_to_string(InstallInfo::InstallType t) {
-    using T = InstallInfo::InstallType;
-    switch (t) {
-        case T::Installed: return String("Installed");
-        case T::Toolbox: return String("Toolbox");
-        case T::Custom: return String("Custom");
-    }
-    return String("Installed");
-}
-
 void RiderLocator::start_search() {
     if (_state) {
     	// this is not expected to happen at all
@@ -108,9 +88,6 @@ void RiderLocator::_worker_task(std::shared_ptr<WorkerState> state, RiderLocator
             ver += String::num_int64(info.version.parts[i]);
         }
         d["path"] = String(p.c_str());
-        d["version"] = ver;
-        d["support"] = support_to_string(info.support);
-        d["type"] = type_to_string(info.type);
         // Avoid String + Variant ambiguity: use the raw path string
         const String display = String("Rider ") + ver + String(" ") + String(p.c_str());
         d["display"] = display;

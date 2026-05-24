@@ -96,8 +96,7 @@ std::string RiderPathLocator::get_default_ide_install_location_for_toolbox_v2() 
     return p.string();
 }
 
-std::optional<InstallInfo> RiderPathLocator::get_install_info_from_rider_path(const std::string &path,
-                                                                              InstallInfo::InstallType type) {
+std::optional<InstallInfo> RiderPathLocator::get_install_info_from_rider_path(const std::string &path) {
     if (!fs::exists(path)) return std::nullopt;
 
     // Expect ...\\bin\\rider64.exe
@@ -111,12 +110,10 @@ std::optional<InstallInfo> RiderPathLocator::get_install_info_from_rider_path(co
 
     InstallInfo info;
     info.path = path;
-    info.type = type;
     const fs::path product_info = rider_dir / "product-info.json";
     if (fs::exists(product_info)) parse_product_info_json(info, product_info.string());
     if (!info.version.initialized()) {
         info.version = rider_dir.filename().string();
-        if (info.version.major() >= 221) info.support = InstallInfo::SupportUproject::Release;
     }
     return info;
 }
@@ -135,7 +132,7 @@ static std::vector<InstallInfo> collect_paths_from_uninstall_registry(HKEY root,
         std::wstring install_dir_w;
         if (reg_query_string_value(sub, L"InstallLocation", install_dir_w) == ERROR_SUCCESS) {
             fs::path exe = fs::path(w2u8(install_dir_w)) / "bin" / "rider64.exe";
-            auto info = RiderPathLocator::get_install_info_from_rider_path(exe.string(), InstallInfo::InstallType::Installed);
+            auto info = RiderPathLocator::get_install_info_from_rider_path(exe.string());
             if (info.has_value()) result.push_back(*info);
         }
         RegCloseKey(sub);
@@ -156,7 +153,7 @@ static std::vector<InstallInfo> collect_dotultimate_paths_from_registry(HKEY roo
         std::wstring install_dir_w;
         if (reg_query_string_value(sub, L"InstallDir", install_dir_w) == ERROR_SUCCESS) {
             fs::path exe = fs::path(w2u8(install_dir_w)) / "bin" / "rider64.exe";
-            auto info = RiderPathLocator::get_install_info_from_rider_path(exe.string(), InstallInfo::InstallType::Installed);
+            auto info = RiderPathLocator::get_install_info_from_rider_path(exe.string());
             if (info.has_value()) result.push_back(*info);
         }
         RegCloseKey(sub);
@@ -222,9 +219,6 @@ std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths() {
     tb = get_toolbox_path_from_registry(HKEY_LOCAL_MACHINE, tb1); if (!tb.empty()) for (auto &i : get_install_infos_from_toolbox(tb, "rider64.exe")) s.insert(i);
     tb = get_toolbox_path_from_registry(HKEY_CURRENT_USER, tb2); if (!tb.empty()) for (auto &i : get_install_infos_from_toolbox(tb, "rider64.exe")) s.insert(i);
     tb = get_toolbox_path_from_registry(HKEY_LOCAL_MACHINE, tb2); if (!tb.empty()) for (auto &i : get_install_infos_from_toolbox(tb, "rider64.exe")) s.insert(i);
-
-    // Resource file, if any (currently noop)
-    for (auto &i : get_install_infos_from_resource_file()) s.insert(i);
 
     return s;
 }
