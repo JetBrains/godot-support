@@ -40,8 +40,11 @@ public:
     static bool directory_exists_and_non_empty(const std::string &path);
     static std::string extract_install_location_from_settings_json(const std::string &toolbox_path);
 
-    // Collect Rider installs from multiple locations (Toolbox, manual, system search etc.).
-    static std::set<InstallInfo, InstallInfoLess> collect_all_paths();
+    // Slow system search (locate on Linux, mdfind on macOS). Pure C++, safe to detach.
+    static std::vector<std::string> run_system_search();
+
+    static std::set<InstallInfo, InstallInfoLess> collect_all_paths(
+            const std::vector<std::string> &system_search_results);
 
 private:
     static void parse_product_info_json(InstallInfo &info, const std::string &product_info_json_path);

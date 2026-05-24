@@ -60,9 +60,8 @@ std::string RiderPathLocator::get_default_ide_install_location_for_toolbox_v2() 
     return (fs::path(base) / "Applications").string();
 }
 
-// Use `mdfind` to locate Rider apps (best-effort, optional)
-static std::vector<InstallInfo> get_installed_riders_with_mdfind() {
-    std::vector<InstallInfo> result;
+std::vector<std::string> RiderPathLocator::run_system_search() {
+    std::vector<std::string> result;
     FILE *pipe = popen("/usr/bin/mdfind \"kMDItemKind == Application\"", "r");
     if (!pipe) return result;
     char buffer[4096];
@@ -72,6 +71,15 @@ static std::vector<InstallInfo> get_installed_riders_with_mdfind() {
     std::stringstream ss(out);
     std::string line;
     while (std::getline(ss, line)) {
+        if (!line.empty()) result.push_back(line);
+    }
+    return result;
+}
+
+static std::vector<InstallInfo> get_installed_riders_from_mdfind_results(
+        const std::vector<std::string> &paths) {
+    std::vector<InstallInfo> result;
+    for (const auto &line : paths) {
         if (line.find("Rider") == std::string::npos) continue;
         auto info = RiderPathLocator::get_install_info_from_rider_path(line);
         if (info.has_value()) result.push_back(*info);
@@ -127,9 +135,10 @@ std::vector<InstallInfo> RiderPathLocator::get_install_infos_from_toolbox_mac(co
     return get_install_infos_mac(get_default_ide_install_location_for_toolbox_v2(), pattern);
 }
 
-std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths() {
+std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths(
+        const std::vector<std::string> &system_search_results) {
     std::set<InstallInfo, InstallInfoLess> s;
-    for (auto &i : get_installed_riders_with_mdfind()) s.insert(i);
+    for (auto &i : get_installed_riders_from_mdfind_results(system_search_results)) s.insert(i);
     for (auto &i : get_manually_installed_riders()) s.insert(i);
     for (auto &i : get_install_infos_from_toolbox_mac(get_toolbox_path(), "Rider*.app")) s.insert(i);
     return s;

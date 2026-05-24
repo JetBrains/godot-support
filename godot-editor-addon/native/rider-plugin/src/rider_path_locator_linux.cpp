@@ -7,8 +7,11 @@
 #include <godot_cpp/classes/dir_access.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/os.hpp>
-#include <godot_cpp/core/print_string.hpp>
 #include <godot_cpp/variant/string.hpp>
+
+#include <cstdio>
+#include <sstream>
+#include <thread>
 
 using namespace godot;
 
@@ -98,37 +101,46 @@ static String get_toolbox_path() {
 	return get_home().path_join(".local").path_join("share").path_join("JetBrains").path_join("Toolbox");
 }
 
-static std::vector<InstallInfo> get_installed_riders_with_locate() {
+std::vector<std::string> RiderPathLocator::run_system_search() {
+	std::vector<std::string> result;
+	std::this_thread::sleep_for(std::chrono::seconds(10));
+	FILE *pipe = popen("locate -e bin/rider.sh", "r");
+	if (!pipe) return result;
+	char buffer[4096];
+	std::string out;
+	while (fgets(buffer, sizeof(buffer), pipe)) out += buffer;
+	pclose(pipe);
+	std::istringstream ss(out);
+	std::string line;
+	while (std::getline(ss, line)) {
+		while (!line.empty() && (line.back() == '\n' || line.back() == '\r' || line.back() == ' '))
+			line.pop_back();
+		if (!line.empty())
+			result.push_back(line);
+	}
+	return result;
+}
+
+static std::vector<InstallInfo> get_installed_riders_from_locate_results(
+		const std::vector<std::string> &paths) {
 	std::vector<InstallInfo> result;
-
-	PackedStringArray args;
-	args.push_back("-e");
-	args.push_back("bin/rider.sh");
-	Array output;
-	int exit_code = OS::get_singleton()->execute("locate", args, output);
-	if (exit_code < 0 || output.is_empty())
-		return result;
-
-	PackedStringArray lines = String(output[0]).split("\n");
-	for (int i = 0; i < lines.size(); ++i)
-	{
-		String line = lines[i].strip_edges();
-		if (line.is_empty())
+	for (const auto &line : paths) {
+		if (line.find("snapd") != std::string::npos ||
+			line.find(".local") != std::string::npos ||
+			line.find("/opt") != std::string::npos)
 			continue;
-		if (line.contains("snapd") || line.contains(".local") || line.contains("/opt"))
-			continue;
-		auto info = RiderPathLocator::get_install_info_from_rider_path(
-				stdstr(line));
+		auto info = RiderPathLocator::get_install_info_from_rider_path(line);
 		if (info.has_value())
 			result.push_back(*info);
 	}
 	return result;
 }
 
-std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths()
+std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths(
+		const std::vector<std::string> &system_search_results)
 {
 	std::set<InstallInfo, InstallInfoLess> s;
-	for (auto &i : get_installed_riders_with_locate())
+	for (auto &i : get_installed_riders_from_locate_results(system_search_results))
 		s.insert(i);
 	for (auto &i : get_manually_installed_riders())
 		s.insert(i);

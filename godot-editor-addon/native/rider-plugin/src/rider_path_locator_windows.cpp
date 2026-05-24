@@ -189,7 +189,12 @@ static std::string get_toolbox_path_from_registry(HKEY root, const wchar_t *reg_
     return result;
 }
 
-std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths() {
+std::vector<std::string> RiderPathLocator::run_system_search() {
+    return {};
+}
+
+std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths(
+        const std::vector<std::string> & /*system_search_results*/) {
     std::set<InstallInfo, InstallInfoLess> s;
 
     // Registry: Uninstall keys
