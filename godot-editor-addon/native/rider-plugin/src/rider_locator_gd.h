@@ -1,9 +1,9 @@
-// Godot-facing wrapper that exposes Rider installations to GDScript.
-
 #pragma once
 
 #include "godot_cpp/classes/ref_counted.hpp"
-#include <godot_cpp/variant/array.hpp>
+#include <condition_variable>
+#include <thread>
+#include <memory>
 
 class RiderLocator : public godot::RefCounted {
     GDCLASS(RiderLocator, godot::RefCounted)
@@ -13,8 +13,18 @@ protected:
 
 public:
     RiderLocator() = default;
-    ~RiderLocator() override = default;
+    ~RiderLocator() override;
 
-    // Returns Array of Dictionary { path: String, version: String, support: String, type: String, display: String }
-    godot::Array get_installations() const;
+    // Starts async search; emits installations_loaded(Array) when done.
+    void start_search();
+
+    void stop();
+
+private:
+    struct WorkerState;
+
+    std::thread _thread;
+    std::shared_ptr<WorkerState> _state;
+
+    static void _worker_task(std::shared_ptr<WorkerState> state, RiderLocator *self);
 };

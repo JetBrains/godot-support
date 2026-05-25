@@ -4,7 +4,6 @@ extends EditorPlugin
 var editor_settings: EditorSettings
 var checkbutton: CheckButton
 var _preset_applier: PresetApplier
-var _settings_service: EditorSettingsService
 var _locator_service: RiderLocatorService
 var _plugin_cfg_path: String
 var _presets_json_path: String
@@ -36,11 +35,10 @@ func _enter_tree() -> void:
 	add_control_to_container(EditorPlugin.CONTAINER_TOOLBAR, checkbutton)
 
 	# Initialize services and panel
-	_settings_service = EditorSettingsService.new()
 	_locator_service = RiderLocatorService.new()
 	_preset_applier = PresetApplier.new(_presets_json_path)
 
-	_locator_service.add_selector_in_editor_interface(_settings_service)
+	_locator_service.start_search()
 
 	# Ensure settings reflect current state on startup
 	_preset_applier.apply_preset(editor_settings, is_active)
@@ -60,11 +58,12 @@ func _on_checkbutton_pressed() -> void:
 	_preset_applier.apply_preset(editor_settings, is_active)
 
 func _exit_tree() -> void:
+	EditorSettingsUtil.erase_rider_external_editor_setting()
 	if checkbutton != null:
 		remove_control_from_container(EditorPlugin.CONTAINER_TOOLBAR, checkbutton)
 		checkbutton.queue_free()
 		
-	var args = OS.get_cmdline_args()
+	var args := OS.get_cmdline_args()
 	if "--rider-addon-tests" in args:
 		print("==== rider-addon-tests finished ====")
 

@@ -1,5 +1,4 @@
-# Use the same minimum as the godot-cpp project
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.25)
 
 # Silence unused variable warning when specified from toolchain
 if(CMAKE_C_COMPILER)
@@ -31,12 +30,6 @@ if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/godot-cpp/src")
 endif()
 
 set(GODOTCPP_TARGET "editor")
-
-# On Linux we need exception handling in our gdextension code. Unfortunately it also affects godot-cpp
-# Reported +20% bigger binary size and slower compilation
-if(LINUX)
-    set(GODOTCPP_DISABLE_EXCEPTIONS OFF)
-endif()
 
 add_subdirectory(godot-cpp SYSTEM)
 

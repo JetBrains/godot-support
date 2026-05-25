@@ -7,8 +7,11 @@
 #include <godot_cpp/classes/dir_access.hpp>
 #include <godot_cpp/classes/file_access.hpp>
 #include <godot_cpp/classes/os.hpp>
-#include <godot_cpp/core/print_string.hpp>
 #include <godot_cpp/variant/string.hpp>
+
+#include <cstdio>
+#include <sstream>
+#include <thread>
 
 using namespace godot;
 
@@ -25,7 +28,7 @@ std::string RiderPathLocator::get_default_ide_install_location_for_toolbox_v2() 
 }
 
 std::optional<InstallInfo> RiderPathLocator::get_install_info_from_rider_path(
-		const std::string &path, InstallInfo::InstallType type) {
+		const std::string &path) {
 	String gpath = gstr(path);
 	if (!FileAccess::file_exists(gpath))
 		return std::nullopt;
@@ -41,7 +44,6 @@ std::optional<InstallInfo> RiderPathLocator::get_install_info_from_rider_path(
 
 	InstallInfo info;
 	info.path = path;
-	info.type = type;
 	String product_info = rider_dir.path_join("product-info.json");
 	if (FileAccess::file_exists(product_info)) {
 		parse_product_info_json(info, stdstr(product_info));
@@ -49,8 +51,6 @@ std::optional<InstallInfo> RiderPathLocator::get_install_info_from_rider_path(
 	if (!info.version.initialized()) {
 		// Try to parse folder name as version
 		info.version = stdstr(rider_dir.get_file());
-		if (info.version.major() >= 221)
-			info.support = InstallInfo::SupportUproject::Release;
 	}
 	return info;
 }
@@ -70,7 +70,8 @@ static std::vector<InstallInfo> get_manually_installed_riders() {
 		String("/usr/local/bin"),
 	};
 
-	for (const auto &base : lookup_paths) {
+	for (const auto &base : lookup_paths)
+	{
 		if (!DirAccess::dir_exists_absolute(base))
 			continue;
 		PackedStringArray dirs = DirAccess::get_directories_at(base);
@@ -79,22 +80,17 @@ static std::vector<InstallInfo> get_manually_installed_riders() {
 			if (!dir_name.match("*Rider*"))
 				continue;
 			String full = base.path_join(dir_name).path_join("bin").path_join("rider.sh");
-			try {
-				auto info = RiderPathLocator::get_install_info_from_rider_path(
-						stdstr(full), InstallInfo::InstallType::Installed);
-				if (info.has_value())
-					result.push_back(*info);
-			} catch (const std::exception &e) {
-				print_error(
-						String("godot-engine.rider-plugin failed to process ") + full + String(": ") + String(e.what()));
-			}
+			auto info = RiderPathLocator::get_install_info_from_rider_path(
+					stdstr(full));
+			if (info.has_value())
+				result.push_back(*info);
 		}
 	}
 
 	// Snap
 	String snap_path("/snap/rider/current/bin/rider.sh");
 	auto snap_info = RiderPathLocator::get_install_info_from_rider_path(
-			stdstr(snap_path), InstallInfo::InstallType::Installed);
+			stdstr(snap_path));
 	if (snap_info.has_value())
 		result.push_back(*snap_info);
 
@@ -105,50 +101,51 @@ static String get_toolbox_path() {
 	return get_home().path_join(".local").path_join("share").path_join("JetBrains").path_join("Toolbox");
 }
 
-static std::vector<InstallInfo> get_installed_riders_with_locate() {
-	std::vector<InstallInfo> result;
-
-	PackedStringArray args;
-	args.push_back("-e");
-	args.push_back("bin/rider.sh");
-	Array output;
-	int exit_code = OS::get_singleton()->execute("locate", args, output);
-	if (exit_code < 0 || output.is_empty())
-		return result;
-
-	PackedStringArray lines = String(output[0]).split("\n");
-	for (int i = 0; i < lines.size(); ++i) {
-		String line = lines[i].strip_edges();
-		if (line.is_empty())
-			continue;
-		if (line.contains("snapd") || line.contains(".local") || line.contains("/opt"))
-			continue;
-		try {
-			auto info = RiderPathLocator::get_install_info_from_rider_path(
-					stdstr(line), InstallInfo::InstallType::Installed);
-			if (info.has_value())
-				result.push_back(*info);
-		} catch (const std::exception &e) {
-			print_error(String("godot-engine.rider-plugin [locate] failed on ") + line + String(": ") + String(e.what()));
-		}
+std::vector<std::string> RiderPathLocator::run_system_search() {
+	std::vector<std::string> result;
+	std::this_thread::sleep_for(std::chrono::seconds(10));
+	FILE *pipe = popen("locate -e bin/rider.sh", "r");
+	if (!pipe) return result;
+	char buffer[4096];
+	std::string out;
+	while (fgets(buffer, sizeof(buffer), pipe)) out += buffer;
+	pclose(pipe);
+	std::istringstream ss(out);
+	std::string line;
+	while (std::getline(ss, line)) {
+		while (!line.empty() && (line.back() == '\n' || line.back() == '\r' || line.back() == ' '))
+			line.pop_back();
+		if (!line.empty())
+			result.push_back(line);
 	}
 	return result;
 }
 
-std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths() {
-	std::set<InstallInfo, InstallInfoLess> s;
-	try {
-		for (auto &i : get_installed_riders_with_locate())
-			s.insert(i);
-		for (auto &i : get_manually_installed_riders())
-			s.insert(i);
-		for (auto &i : get_install_infos_from_toolbox(stdstr(get_toolbox_path()), "[Rr]ider.sh"))
-			s.insert(i);
-		for (auto &i : get_install_infos_from_resource_file())
-			s.insert(i);
-	} catch (const std::exception &e) {
-		print_error(String("godot-engine.rider-plugin: ") + String(e.what()));
+static std::vector<InstallInfo> get_installed_riders_from_locate_results(
+		const std::vector<std::string> &paths) {
+	std::vector<InstallInfo> result;
+	for (const auto &line : paths) {
+		if (line.find("snapd") != std::string::npos ||
+			line.find(".local") != std::string::npos ||
+			line.find("/opt") != std::string::npos)
+			continue;
+		auto info = RiderPathLocator::get_install_info_from_rider_path(line);
+		if (info.has_value())
+			result.push_back(*info);
 	}
+	return result;
+}
+
+std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths(
+		const std::vector<std::string> &system_search_results)
+{
+	std::set<InstallInfo, InstallInfoLess> s;
+	for (auto &i : get_installed_riders_from_locate_results(system_search_results))
+		s.insert(i);
+	for (auto &i : get_manually_installed_riders())
+		s.insert(i);
+	for (auto &i : get_install_infos_from_toolbox(stdstr(get_toolbox_path()), "[Rr]ider.sh"))
+		s.insert(i);
 	return s;
 }
 
