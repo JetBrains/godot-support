@@ -1,5 +1,4 @@
-# Use the same minimum as the godot-cpp project
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.25)
 
 # Silence unused variable warning when specified from toolchain
 if(CMAKE_C_COMPILER)

@@ -52,6 +52,11 @@ jobs:
           platform: ${{ matrix.target.platform }}
           buildtool: cmake
 
+      - name: Install minimum supported CMake
+        uses: lukka/get-cmake@latest
+        with:
+          cmakeVersion: "3.25.0" # should match the version in the `CMakeLists.txt`
+
       - name: Run sccache
         uses: mozilla-actions/sccache-action@v0.0.9
 
