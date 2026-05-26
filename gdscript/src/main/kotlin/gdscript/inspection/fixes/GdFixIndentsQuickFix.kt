@@ -6,13 +6,16 @@ import com.intellij.modcommand.ModCommand
 import com.intellij.modcommand.ModCommandQuickFix
 import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.openapi.editor.ConvertIndentsUtil
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
+import com.intellij.util.DocumentUtil
 import gdscript.GdScriptBundle
 
 /**
  * Quick fix: Convert leading indentation on each line to match Code Style (tabs vs spaces).
- * Delegates to platform ConvertIndentsUtil for consistent behavior.
+ * For spaces->tabs, sub-tab remainder spaces are dropped.
  */
 class GdFixIndentsQuickFix : ModCommandQuickFix() {
     override fun getFamilyName(): String = getName()
@@ -26,11 +29,28 @@ class GdFixIndentsQuickFix : ModCommandQuickFix() {
         return ModCommand.psiUpdate(descriptor.psiElement.containingFile) { mutableFile: PsiFile, _: ModPsiUpdater ->
             val indentOptions = CodeStyle.getSettings(mutableFile).getIndentOptionsByFile(mutableFile.containingFile)
             val range = mutableFile.containingFile.textRange
+            val document = mutableFile.fileDocument
             if (indentOptions.USE_TAB_CHARACTER) {
-                ConvertIndentsUtil.convertIndentsToTabs(mutableFile.fileDocument, indentOptions.TAB_SIZE, range)
+                ConvertIndentsUtil.convertIndentsToTabs(document, indentOptions.TAB_SIZE, range)
+                stripSpacesFromIndents(document, range)
             }
             else {
                 ConvertIndentsUtil.convertIndentsToSpaces(mutableFile.fileDocument, indentOptions.TAB_SIZE, range)
+            }
+        }
+    }
+
+    private fun stripSpacesFromIndents(document: Document, textRange: TextRange) {
+        DocumentUtil.executeInBulk(document) {
+            val startLine = document.getLineNumber(textRange.startOffset)
+            val endLine = document.getLineNumber(textRange.endOffset)
+            for (line in startLine..endLine) {
+                val lineStart = document.getLineStartOffset(line)
+                val indent = DocumentUtil.getIndent(document, lineStart)
+                if (indent.contains(' ')) {
+                    val cleaned = indent.filter { it != ' ' }.toString()
+                    document.replaceString(lineStart, lineStart + indent.length, cleaned)
+                }
             }
         }
     }
