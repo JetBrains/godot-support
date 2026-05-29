@@ -31,6 +31,6 @@ class GodotProjectWizard : RiderProjectWizardMode, RiderWizardFusInfo, GameDevTe
     override fun createStep(context: WizardContext): NewProjectWizardStep =
         RootNewProjectWizardStep(context)
             .nextStep { RiderNewProjectWizardBaseStep(it).also { step ->
-                step.defaultName = GodotPluginBundle.message("wizard.godot.project.name").replace(" ", "-") } }
+                step.defaultName = "godot-sample" } }
             .nextStep(::GodotProjectAssetsStep)
 }
