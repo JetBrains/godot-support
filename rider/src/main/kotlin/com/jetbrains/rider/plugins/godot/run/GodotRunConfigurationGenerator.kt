@@ -50,6 +50,9 @@ class GodotRunConfigurationGenerator : LifetimedService() {
 
         @NonNls
         const val CHICKENSOFT_TEST_CONFIGURATION_NAME: String = "Debug test"
+
+        @NonNls
+        const val DOCTOOL_CONFIGURATION_NAME: String = "doctool"
     }
 
     class ProtocolListener : SolutionExtListener<GodotFrontendBackendModel> {
@@ -93,6 +96,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                     GodotProjectDiscoverer.getInstance(project).godot4Path.adviseNotNull(lt) { path ->
                         createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
                         createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
+                        createOrUpdateNativeExecutableRunConfiguration(DOCTOOL_CONFIGURATION_NAME, "--doctool \"${relPath}\" --gdextension-docs", runManager, path, project)
                         selectConfigurationIfNeeded(runManager)
                     }
 
