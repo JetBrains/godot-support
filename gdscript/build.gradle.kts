@@ -16,6 +16,7 @@ plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.grammarkit)
     id("java")
+    idea
 }
 
 allprojects {
@@ -25,9 +26,17 @@ allprojects {
 }
 
 val repoRoot = projectDir.parentFile!!
+val genSrcDir = repoRoot.resolve("gdscript/src/main/gen")
+
 sourceSets.getByName("main") {
     java {
-        srcDir(repoRoot.resolve("gdscript/src/main/gen"))
+        srcDir(genSrcDir)
+    }
+}
+
+idea {
+    module {
+        generatedSourceDirs.add(genSrcDir)
     }
 }
 
