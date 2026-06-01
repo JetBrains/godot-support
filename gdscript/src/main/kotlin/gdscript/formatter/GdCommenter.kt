@@ -1,11 +1,12 @@
 package gdscript.formatter
 
+import com.intellij.codeInsight.generation.IndentedCommenter
 import com.intellij.lang.Commenter
 
-class GdCommenter : Commenter {
+class GdCommenter : Commenter, IndentedCommenter {
 
     override fun getLineCommentPrefix(): String {
-        return "#"
+        return "# "
     }
 
     override fun getBlockCommentPrefix(): String? {
@@ -22,6 +23,10 @@ class GdCommenter : Commenter {
 
     override fun getCommentedBlockCommentSuffix(): String? {
         return null
+    }
+
+    override fun forceIndentedLineComment(): Boolean {
+        return true
     }
 
 }
