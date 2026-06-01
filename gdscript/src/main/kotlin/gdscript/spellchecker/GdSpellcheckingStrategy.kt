@@ -11,8 +11,13 @@ import gdscript.psi.GdTypes
 class GdSpellcheckingStrategy : SpellcheckingStrategy(), DumbAware {
     override fun getTokenizer(element: PsiElement, scope: Set<SpellCheckingInspection.SpellCheckingScope?>): Tokenizer<*> {
         if (element is LeafPsiElement && element.elementType == GdTypes.STRING) {
+            if (isGodotResourcePath(element.text)) return EMPTY_TOKENIZER
             return TEXT_TOKENIZER
         }
         return super.getTokenizer(element)
+    }
+
+    private fun isGodotResourcePath(text: String): Boolean {
+        return text.startsWith("res://", 1) || text.startsWith("uid://", 1)
     }
 }
