@@ -36,7 +36,6 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
             || component?.docProvider != settings.docProvider
             || component?.lspConnectionMode?.name != settings.lspConnectionMode
             || component?.lspRemoteHostPort != settings.lspRemoteHostPort
-            || component?.lspUseDynamicPort != settings.lspUseDynamicPort
     }
 
     override fun apply() {
@@ -50,7 +49,6 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
         settings.docProvider = component?.docProvider ?: GdDocProviderMode.GDSCRIPT
         settings.lspConnectionMode = (component?.lspConnectionMode ?: GdLspConnectionMode.ConnectRunningEditor).name
         settings.lspRemoteHostPort = component?.lspRemoteHostPort ?: 6005
-        settings.lspUseDynamicPort = component?.lspUseDynamicPort ?: false
 
         GdLspSettingsFlowService.getInstance(project).settingsChanged()
     }
@@ -66,7 +64,6 @@ class GdSettingsConfigurable(val project: Project) : Configurable {
         component?.docProvider = settings.docProvider
         component?.lspConnectionMode = GdLspConnectionMode.valueOf(settings.lspConnectionMode)
         component?.lspRemoteHostPort = settings.lspRemoteHostPort
-        component?.lspUseDynamicPort = settings.lspUseDynamicPort
     }
 
     override fun disposeUIResources() {

@@ -15,11 +15,9 @@ class GdLspSettingsFlowService(private val project: Project) {
 
     private val _lspConnectionMode = MutableStateFlow(readLspConnectionMode())
     private val _remoteHostPort = MutableStateFlow<Int?>(state.lspRemoteHostPort)
-    private val _useDynamicPort = MutableStateFlow<Boolean?>(state.lspUseDynamicPort)
 
     val lspConnectionMode: StateFlow<GdLspConnectionMode?> = _lspConnectionMode.asStateFlow()
     val remoteHostPort: StateFlow<Int?> = _remoteHostPort.asStateFlow()
-    val useDynamicPort: StateFlow<Boolean?> = _useDynamicPort.asStateFlow()
 
     /**
      * Call this after settings are applied (e.g. from [GdSettingsConfigurable.apply])
@@ -28,7 +26,6 @@ class GdLspSettingsFlowService(private val project: Project) {
     fun settingsChanged() {
         _lspConnectionMode.value = readLspConnectionMode()
         _remoteHostPort.value = state.lspRemoteHostPort
-        _useDynamicPort.value = state.lspUseDynamicPort
     }
 
     fun setLspConnectionMode(mode: GdLspConnectionMode) {
