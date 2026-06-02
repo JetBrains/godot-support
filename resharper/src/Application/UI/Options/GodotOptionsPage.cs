@@ -19,7 +19,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Application.UI.Options
     public class GodotOptionsPage : BeSimpleOptionsPage
     {
         public const string PID = "GodotPluginSettings";
-        public const string Name = "Godot Engine";
+        public const string Name = "Godot.NET";
 
         public GodotOptionsPage(Lifetime lifetime,
             OptionsPageContext pageContext,

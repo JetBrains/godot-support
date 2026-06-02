@@ -63,7 +63,7 @@
         instance="gdscript.settings.GdSettingsConfigurable"
         id="gdscript.settings.GdSettingsConfigurable"
         bundle="messages.GdScriptBundle"
-        key="language.name"
+        key="godot.plugin.name"
     />
 
     <!-- Line markers -->
