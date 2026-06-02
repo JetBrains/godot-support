@@ -96,12 +96,6 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 }
 
                 scope.launch(Dispatchers.IO) {
-                    settings.useDynamicPort.filterNotNull().collect {
-                        scheduleStartIfNeeded(project)
-                    }
-                }
-
-                scope.launch(Dispatchers.IO) {
                     settings.remoteHostPort.filterNotNull().collect {
                         scheduleStartIfNeeded(project)
                     }
@@ -154,7 +148,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
         val remoteHostPort by lazy { if (useDynamicPort) NetworkUtils.findFreePort(500050) else settings.remoteHostPort.value }
 
         //val dapPort by lazy { NetworkUtils.findFreePort(500060, setOf()) }
-        val useDynamicPort by lazy { settings.useDynamicPort.value!! && (settings.lspConnectionMode.value == GdLspConnectionMode.StartEditorHeadless) }
+        val useDynamicPort by lazy { settings.lspConnectionMode.value == GdLspConnectionMode.StartEditorHeadless }
 
         override fun isSupportedFile(file: VirtualFile) = GodotFileUtil.isGdFile(file)
         override fun createCommandLine(): GeneralCommandLine {

@@ -42,9 +42,6 @@ class GdProjectState {
     @Tag("lspRemoteHostPort")
     var lspRemoteHostPort: Int = 6005
 
-    @Tag("lspUseDynamicPort")
-    var lspUseDynamicPort: Boolean = false
-
     @Tag("docProvider")
     var docProvider: GdDocProviderMode = GdDocProviderMode.LSP
 

@@ -2,14 +2,16 @@ package gdscript.settings
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.ComboBox
+import com.intellij.ui.JBIntSpinner
 import com.intellij.ui.SimpleListCellRenderer
-import com.intellij.ui.TitledSeparator
 import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.dsl.builder.AlignX
+import com.intellij.ui.dsl.builder.panel
 import com.intellij.ui.dsl.listCellRenderer.textListCellRenderer
-import com.intellij.util.ui.FormBuilder
 import gdscript.GdScriptBundle
 import org.jetbrains.annotations.Nls
 import javax.swing.JComponent
+import javax.swing.JLabel
 import javax.swing.JList
 import javax.swing.JPanel
 import javax.swing.JTextField
@@ -26,8 +28,8 @@ class GdSettingsComponent(val project: Project) {
     private val notesTf: JTextField = JTextField()
 
     private val lspConnectionModeCb = ComboBox<GdLspConnectionMode>()
-    private val lspUseDynamicPortCheck = JBCheckBox(GdScriptBundle.message("settings.checkbox.lsp.use.dynamic.port"))
-    private val lspRemoteHostPortTf: JTextField = JTextField()
+    private val lspRemoteHostPortSpinner = JBIntSpinner(6005, 1, 65535)
+    private val lspDynamicPortHint = JLabel(GdScriptBundle.message("settings.label.lsp.port.dynamic.hint"))
 
     init {
         annotatorsCb.addItem(GdProjectState.OFF)
@@ -57,32 +59,57 @@ class GdSettingsComponent(val project: Project) {
         })
 
         lspConnectionModeCb.addActionListener { updateLspControlsState() }
-        lspUseDynamicPortCheck.addActionListener { updateLspControlsState() }
 
-        panel = FormBuilder.createFormBuilder()
-            .addComponent(hidePrivateCheck, 1)
-            .addComponent(shortTypedCheck, 1)
-            .addLabeledComponent(GdScriptBundle.message("settings.label.reference.node.resource.checks"), annotatorsCb, 1)
-            // TODO: Consider grouping together with other "Other" settings
-            .addLabeledComponent(GdScriptBundle.message("settings.label.documentation.provider"), docProviderCb, 1)
-            .addLabeledComponent(GdScriptBundle.message("settings.label.critical.comments"), criticalsTf, 1)
-            .addLabeledComponent(GdScriptBundle.message("settings.label.warning.comments"), warningsTf, 1)
-            .addLabeledComponent(GdScriptBundle.message("settings.label.note.comments"), notesTf, 1)
-            .addComponent(TitledSeparator(GdScriptBundle.message("settings.separator.lsp")), 1)
-            .addLabeledComponent(GdScriptBundle.message("settings.label.lsp.connection.mode"), lspConnectionModeCb, 1)
-            .addComponent(lspUseDynamicPortCheck, 1)
-            .addLabeledComponent(GdScriptBundle.message("settings.label.lsp.port"), lspRemoteHostPortTf, 1)
-            .addComponentFillVertically(JPanel(), 0)
-            .panel
+        panel = panel {
+            group(GdScriptBundle.message("settings.separator.lsp")) {
+                row(GdScriptBundle.message("settings.label.lsp.connection.mode")) {
+                    cell(lspConnectionModeCb)
+                }
+                row(GdScriptBundle.message("settings.label.lsp.port")) {
+                    cell(lspRemoteHostPortSpinner)
+                    cell(lspDynamicPortHint)
+                }
+            }
+
+            group(GdScriptBundle.message("settings.separator.documentation")) {
+                row(GdScriptBundle.message("settings.label.documentation.provider")) {
+                    cell(docProviderCb)
+                }
+            }
+
+            group(GdScriptBundle.message("settings.separator.completion")) {
+                row { cell(hidePrivateCheck) }
+            }
+
+            group(GdScriptBundle.message("settings.separator.other")) {
+                row { cell(shortTypedCheck) }
+                row(GdScriptBundle.message("settings.label.reference.node.resource.checks")) {
+                    cell(annotatorsCb)
+                }
+
+                row(GdScriptBundle.message("settings.label.critical.comments")) {
+                    cell(criticalsTf).align(AlignX.FILL)
+                }
+                row(GdScriptBundle.message("settings.label.warning.comments")) {
+                    cell(warningsTf).align(AlignX.FILL)
+                }
+                row(GdScriptBundle.message("settings.label.note.comments")) {
+                    cell(notesTf).align(AlignX.FILL)
+                }
+                row {
+                    cell(JPanel())
+                }.resizableRow()
+            }
+        }
     }
 
     private fun updateLspControlsState() {
-        val connecting = lspConnectionMode != GdLspConnectionMode.Never
-        lspUseDynamicPortCheck.isEnabled = connecting
-        lspRemoteHostPortTf.isEnabled = connecting && !lspUseDynamicPortCheck.isSelected
+        val mode = lspConnectionMode
+        lspRemoteHostPortSpinner.isEnabled = mode == GdLspConnectionMode.ConnectRunningEditor
+        lspDynamicPortHint.isVisible = mode == GdLspConnectionMode.StartEditorHeadless
     }
 
-    fun preferredFocusedComponent(): JComponent = hidePrivateCheck
+    fun preferredFocusedComponent(): JComponent = lspConnectionModeCb
 
     var hidePrivate: Boolean
         get() = hidePrivateCheck.isSelected
@@ -128,16 +155,9 @@ class GdSettingsComponent(val project: Project) {
         }
 
     var lspRemoteHostPort: Int
-        get() = lspRemoteHostPortTf.text.toIntOrNull() ?: 6005
+        get() = lspRemoteHostPortSpinner.number
         set(newStatus) {
-            lspRemoteHostPortTf.text = newStatus.toString()
-        }
-
-    var lspUseDynamicPort: Boolean
-        get() = lspUseDynamicPortCheck.isSelected
-        set(newStatus) {
-            lspUseDynamicPortCheck.isSelected = newStatus
-            updateLspControlsState()
+            lspRemoteHostPortSpinner.value = newStatus
         }
 
     var docProvider: GdDocProviderMode
