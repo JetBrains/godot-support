@@ -7,8 +7,8 @@ import gdscript.GdScriptBundle
 internal class GdSearchableOptionContributor : SearchableOptionContributor() {
     override fun processOptions(processor: SearchableOptionProcessor) {
         val configurableId = "gdscript.settings.GdSettingsConfigurable"
-        val displayName = GdScriptBundle.message("language.name")
+        val displayName = GdScriptBundle.message("godot.plugin.name")
 
-        processor.addOptions("Godot", null, null, configurableId, displayName, false)
+        processor.addOptions("GDScript", null, null, configurableId, displayName, false)
     }
 }
