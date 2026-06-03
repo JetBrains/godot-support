@@ -15,7 +15,6 @@
     <module name="intellij.libraries.lucene.common"/>
     <module name="intellij.platform.testFramework"/>
     <module name="intellij.rider.test.build.shared"/>
-    <module name="intellij.rd.client"/>
     <module name="intellij.rider.test.framework.unit"/>
     <module name="intellij.rider.test.framework.junit"/>
     <module name="intellij.rider.test.framework.core"/>
