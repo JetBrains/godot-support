@@ -7,18 +7,23 @@ import gdscript.psi.GdTypes.CEQ
 import gdscript.psi.GdTypes.COMMA
 import gdscript.psi.GdTypes.DOTDOTDOT
 import gdscript.psi.GdTypes.EQ
+import gdscript.psi.GdTypes.LRBR
 import gdscript.psi.GdTypes.PARAM
 import gdscript.psi.GdTypes.PARAM_LIST
+import gdscript.psi.GdTypes.RRBR
 import gdscript.psi.GdTypes.VAR_NMI
 
 object GdParamListParser : GdBaseParser {
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "ParamList")) return false
-        // Allow start with IDENTIFIER or DOTDOTDOT
-        if (!b.nextTokenIs(DOTDOTDOT) && !GdLiteralExParser.checkExtendedRefId(b)) return optional
 
-        var ok = true
+        if (!b.nextTokenIs(LRBR)) {
+            if (!optional) b.consumeToken(LRBR)
+            return optional
+        }
+
         val paramList = b.mark()
+        var ok = b.consumeToken(LRBR, pin = true)
 
         while (ok && (b.nextTokenIs(DOTDOTDOT) || GdLiteralExParser.checkExtendedRefId(b))) {
             // Peek whether this parameter is variadic before consuming tokens in param()
@@ -31,6 +36,7 @@ object GdParamListParser : GdBaseParser {
                     b.error("Variadic parameter must be the last parameter", false)
                     // consume the comma to avoid infinite loop/cascading errors
                     b.passToken(COMMA)
+                    if (b.nextTokenIs(RRBR)) break // Trailing comma parameter list
                     // best-effort: stop parsing further params
                 }
                 break
@@ -39,9 +45,12 @@ object GdParamListParser : GdBaseParser {
             if (!b.passToken(COMMA)) break
         }
 
+        val hasRightParen = b.consumeToken(RRBR)
+        ok = ok && hasRightParen
+
         paramList.done(PARAM_LIST)
 
-        return true
+        return ok
     }
 
     private fun param(b: GdPsiBuilder, l: Int): Boolean {

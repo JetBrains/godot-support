@@ -1,11 +1,14 @@
 package gdscript.parser.stmt
 
+import com.intellij.lang.PsiBuilder
+import com.intellij.lang.WhitespacesBinders
 import gdscript.parser.GdBaseParser
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.COMMA
 import gdscript.psi.GdTypes.DEDENT
 import gdscript.psi.GdTypes.END_STMT
+import gdscript.psi.GdTypes.IF_ST
 import gdscript.psi.GdTypes.INDENT
 import gdscript.psi.GdTypes.NEW_LINE
 import gdscript.psi.GdTypes.RRBR
@@ -15,7 +18,8 @@ import gdscript.psi.GdTypes.SUITE
 
 object GdStmtParser : GdBaseParser {
 
-    val parsers = mutableListOf<GdStmtBaseParser>()
+    val parsers: MutableList<GdStmtBaseParser> = mutableListOf<GdStmtBaseParser>()
+    private val parsersWithoutEmpty: MutableList<GdStmtBaseParser>
     data class StmtParsingResult(val ok: Boolean, val moved: Boolean)
 
     init {
@@ -29,7 +33,23 @@ object GdStmtParser : GdBaseParser {
         parsers.add(GdFlowStmtParser)
         parsers.add(GdAnnotationStmtParser)
         parsers.add(GdExStmtParser)
+        parsersWithoutEmpty = parsers.toMutableList()
         parsers.add(GdEmptyStmtParser)
+    }
+
+    /**
+     * Tight edge binders so trailing whitespace (e.g. a blank line between a
+     * compound block and the next top-level statement/function) doesn't get
+     * absorbed into this compound statement's PSI range.
+     *
+     * Applies to STMT_OR_SUITE, IF_ST, ELIF_ST, ELSE_ST, WHILE_ST, FOR_ST,
+     * MATCH_ST -- anything that contains a SUITE.
+     */
+    fun applyCompoundBinders(marker: PsiBuilder.Marker) {
+        marker.setCustomEdgeTokenBinders(
+            WhitespacesBinders.DEFAULT_LEFT_BINDER,
+            WhitespacesBinders.DEFAULT_RIGHT_BINDER,
+        )
     }
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
@@ -41,11 +61,29 @@ object GdStmtParser : GdBaseParser {
 
     fun parseLambda(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
         if (!b.recursionGuard(l, "Lambda")) return false
-        b.enterSection(STMT_OR_SUITE)
+        val stmtOrSuiteMarker = b.enterSection(STMT_OR_SUITE)
         var ok = suite(b, l + 1, false, asLambda)
 
         if (!ok)
-            ok = stmt(b, l + 1, optional, asLambda).ok
+            ok = stmt(b, l + 1, optional, asLambda, false).ok
+
+        if (!ok) {
+            // Both suite() and stmt() failed -- attach an error PSI element as a child of
+            // STMT_OR_SUITE so downstream consumers see the empty-body signal directly on
+            // the marker. Use b.mark().error() (not b.error()) to bypass the isError guard
+            // and to avoid consuming a token (we want a zero-width error at current pos).
+            if (!b.isError) {
+                b.mark().error("Expected statement")
+            }
+        }
+
+
+        // Tight edge binders so blank lines / whitespace after the suite are NOT pulled
+        // into STMT_OR_SUITE (and hence the enclosing compound statement).
+        stmtOrSuiteMarker.setCustomEdgeTokenBinders(
+            WhitespacesBinders.DEFAULT_LEFT_BINDER,
+            WhitespacesBinders.DEFAULT_RIGHT_BINDER,
+        )
 
         return b.exitSection(ok)
     }
@@ -76,12 +114,24 @@ object GdStmtParser : GdBaseParser {
                 }
             }
         } else {
-            ok = ok && b.consumeToken(DEDENT)
+            // Defer DEDENT consumption to AFTER suite.done(SUITE) so the zero-width
+            // DEDENT (and any whitespace the lexer emits between the last NEW_LINE and
+            // the DEDENT, e.g. a blank line before a top-level `func`) stays OUTSIDE the
+            // SUITE PSI range
+            ok = ok && b.nextTokenIs(DEDENT)
         }
 
         if (ok || b.pinned()) {
-            GdRecovery.stmt(b)
+            // Close the SUITE marker BEFORE running recovery, so any trailing whitespace
+            // skipped by recovery (e.g. blank lines after the last suite statement) is
+            // attached to the outer scope, not absorbed into SUITE.
             suite.done(SUITE)
+            if (!asLambda) {
+                // Now consume DEDENT outside the closed SUITE marker. If DEDENT is
+                // missing while we are pinned, consumeToken emits an error.
+                b.consumeToken(DEDENT)
+            }
+            GdRecovery.stmt(b)
         } else {
             suite.rollbackTo()
         }
@@ -89,7 +139,7 @@ object GdStmtParser : GdBaseParser {
         return ok || b.pinned() || optional
     }
 
-    private fun stmt(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): StmtParsingResult {
+    private fun stmt(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean, acceptEmpty: Boolean = true): StmtParsingResult {
         if (!b.recursionGuard(l, "InnerStmt")) return StmtParsingResult(false, false)
 
         // multiline lambda
@@ -102,9 +152,9 @@ object GdStmtParser : GdBaseParser {
         val startPos = b.positionAt
 
         val parsed =
-            parsers.any {
+            (if (acceptEmpty) parsers else parsersWithoutEmpty).any {
                 if (asLambda && it is GdEmptyStmtParser) return@any false
-                b.enterSection(it.STMT_TYPE)
+                val stmtMarker = b.enterSection(it.STMT_TYPE)
                 var ok = it.parse(b, l + 1)
                 ok = ok || b.pinned()
 
@@ -122,7 +172,16 @@ object GdStmtParser : GdBaseParser {
                     if (it.endWithEndStmt) GdRecovery.stmt(b)
                     else GdRecovery.stmtNoLine(b)
                 }
-                b.exitSection(ok, true)
+                if (!it.endWithEndStmt) {
+                    applyCompoundBinders(stmtMarker)
+                }
+                if (it is GdEmptyStmtParser && ok) {
+                    // Empty statement (blank line) is pure whitespace after remap; drop the
+                    // marker so it doesn't appear as an empty WHITE_SPACE composite in the PSI.
+                    b.dropSection(true)
+                } else {
+                    b.exitSection(ok, true)
+                }
 
                 ok
             }

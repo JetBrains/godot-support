@@ -1,0 +1,2 @@
+class State:
+	<caret>

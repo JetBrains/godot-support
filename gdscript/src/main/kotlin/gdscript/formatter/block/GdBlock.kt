@@ -5,306 +5,166 @@ import com.intellij.formatting.Block
 import com.intellij.formatting.ChildAttributes
 import com.intellij.formatting.Indent
 import com.intellij.formatting.Spacing
-import com.intellij.formatting.SpacingBuilder
 import com.intellij.formatting.Wrap
 import com.intellij.lang.ASTNode
-import com.intellij.psi.codeStyle.CodeStyleSettings
-import com.intellij.psi.formatter.common.AbstractBlock
-import com.intellij.psi.impl.source.tree.FileElement
-import com.intellij.psi.tree.IElementType
-import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.elementType
-import com.jetbrains.rd.util.forEachReversed
-import gdscript.formatter.GdCodeStyleSettings
-import gdscript.psi.GdAnnotationTl
-import gdscript.psi.GdClassVarDeclTl
-import gdscript.psi.GdTypes.ANNOTATION_TL
-import gdscript.psi.GdTypes.CALL_EX
-import gdscript.psi.GdTypes.CLASS_VAR_DECL_TL
-import gdscript.psi.GdTypes.COLON
-import gdscript.psi.GdTypes.COMMENT
-import gdscript.psi.GdTypes.INDENT
-import gdscript.psi.GdTypes.METHOD_DECL_TL
-import gdscript.psi.GdTypes.STMT_OR_SUITE
-import gdscript.psi.GdTypes.SUITE
-import gdscript.psi.utils.PsiGdClassVarUtil
-import gdscript.utils.GdSettingsUtil.calculateSpaceIndents
-import gdscript.utils.PsiElementUtil.getCaretOffsetIfSingle
-import gdscript.utils.PsiElementUtil.nextNonWhiteCommentToken
-import gdscript.utils.PsiElementUtil.precedingNewLines
+import com.intellij.lang.tree.util.children
+import com.intellij.openapi.util.TextRange
+import com.intellij.psi.formatter.FormatterUtil
+import gdscript.formatter.GdFmtContext
+import gdscript.formatter.impl.computeChildIndent
+import gdscript.formatter.impl.computeSpacing
+import gdscript.formatter.impl.customIsIncomplete
+import gdscript.formatter.impl.doGetChildAttributes
+import gdscript.formatter.impl.getWrappingStrategy
 
-class GdBlock : AbstractBlock {
+class GdBlock(
+    override val parent: GdASTBlock?,
+    private val node: ASTNode,
+    private val wrap: Wrap?,
+    private val alignment: Alignment?,
+    private val indent: Indent,
+    override val ctx: GdFmtContext,
+) : GdASTBlock {
 
-    val settings: CodeStyleSettings
-    val myIndent: Indent
-    val spacing: SpacingBuilder
-    val alignments: Alignments
-    var nextBlock: GdBlock? = null
+    override fun getNode(): ASTNode = node
+    override fun getTextRange(): TextRange = node.textRange
+    override fun getAlignment(): Alignment? = alignment
+    override fun getIndent(): Indent = indent
+    override fun getWrap(): Wrap? = wrap
 
-    constructor(
-        node: ASTNode,
-        wrap: Wrap?,
-        alignment: Alignment?,
-        settings: CodeStyleSettings,
-        spacing: SpacingBuilder,
-        indent: Indent,
-        alignments: Alignments,
-    ) : super(node, wrap, alignment) {
-        this.settings = settings
-        this.spacing = spacing
-        this.myIndent = indent
-        this.alignments = alignments
-    }
+    override fun getSubBlocks(): List<GdASTBlock> = mySubBlocks
+    private val mySubBlocks: List<GdASTBlock> by lazy { buildChildren() }
 
-    override fun buildChildren(): MutableList<Block> {
-        val blocks = mutableListOf<Block>()
-        val children: MutableList<ASTNode> = node.getChildren(null).toMutableList()
+    override fun isLeaf(): Boolean = node.firstChildNode == null
 
-        var suited = false
-        var indented = false
-        var lastBlock: GdBlock? = null
-        val rootPosition = this.node is FileElement
+    override fun isIncomplete(): Boolean = myIsIncomplete
+    private val myIsIncomplete: Boolean by lazy { customIsIncomplete() || FormatterUtil.isIncomplete(node) }
 
-        while (!children.isEmpty()) {
-            val child = children.removeFirstOrNull()!!
-            val type = child.elementType
-            if (suited || rootPosition) { // Roots consume new_line instead of passing it as white_space
-                alignments.reset(type, if (rootPosition) 1 else 2)
+    private fun buildChildren(): List<GdASTBlock> {
+        val wrappingStrategy = getWrappingStrategy(node, ctx)
+
+        // Flatten the outermost CALL_EX / ATTRIBUTE_EX chain into [base, step1, step2, ...].
+        // Each step's [DOT, REF_ID, (ARG_LIST?)] is grouped into one synthetic block so that
+        // multi-line arguments inside a chain step (e.g. .prefetch_related(\n  "a",\n  "b"\n))
+        // — and the closing `)` — anchor to the chain-step column rather than the outer
+        // expression column.
+        if (node.isOutermostChainNode()) {
+            node.flattenCallChain()?.let { segments ->
+                return buildChainChildren(segments, wrappingStrategy)
             }
+        }
 
-            // Due to elif & else being siblings and not children
-            if (GdBlocks.DEDENT_TOKENS.contains(type)) indented = false
-
-            if (GdBlocks.EMPTY_TOKENS.contains(type)) {
-                if (type == INDENT) {
-                    indented = true
-                }
-            } else if (GdBlocks.SKIP_TOKENS.contains(type)) {
-                if (type == SUITE) {
-                    suited = true
-                    alignments.initialize()
-                }
-
-                child.getChildren(null).forEachReversed { children.add(0, it) }
-            } else {
-                var toIndent = indented || GdBlocks.ALWAYS_INDENTED_TOKENS.contains(type)
-                // Unique case of comment before Indentation
-                if (!toIndent && type == COMMENT && child.psi.nextNonWhiteCommentToken().elementType == INDENT) {
-                    toIndent = true
-                }
-
-                val currentBlock = GdBlock(
-                    child,
-                    null, //Wrap.createWrap(WrapType.NONE, false),
-                    alignments.getAlignment(type),
-                    settings,
-                    spacing,
-                    if (toIndent) Indent.getNormalIndent() else Indent.getNoneIndent(),
-                    alignments.clone(type),
+        return getSubBlockNodes()
+            .flatMap { it.skipIrrelevantTokens() }
+            .map { child ->
+                GdBlock(
+                    parent = this,
+                    node = child,
+                    wrap = wrappingStrategy(child),
+                    alignment = null,
+                    indent = computeChildIndent(child, ctx),
+                    ctx = ctx,
                 )
-                if (lastBlock != null) {
-                    lastBlock.nextBlock = currentBlock
-                }
-
-                blocks.add(currentBlock)
-                lastBlock = currentBlock
-            }
-        }
-
-        return blocks
+            }.toList()
     }
 
-    override fun getChildAttributes(newChildIndex: Int): ChildAttributes {
-        val index = newChildIndex - 1
-        val previousBlock = if (index >= 0) this.subBlocks[index] else null
-        val preceding = if (previousBlock is GdBlock) previousBlock.node.psi else null
-        val atEndOfStmt = node is FileElement
-        val precedingOffset = when (previousBlock?.indent?.type) {
-            Indent.Type.NORMAL -> 2
-            Indent.Type.CONTINUATION -> 3
-            else -> 0
-        }
-
-        // Check is it is right after COLON
-        if (previousBlock is GdBlock) {
-            val lastNode = PsiTreeUtil.getDeepestVisibleLast(previousBlock.node.psi)
-            if (arrayOf(COLON).contains(lastNode?.elementType)) {
-                if (precedingOffset > 0) {
-                    if (preceding != null) {
-                        return ChildAttributes(settings.calculateSpaceIndents(preceding), null)
+    private fun buildChainChildren(
+        segments: List<ChainSegment>,
+        wrappingStrategy: (ASTNode) -> Wrap?,
+    ): List<GdASTBlock> {
+        val result = mutableListOf<GdASTBlock>()
+        for (segment in segments) {
+            when (segment) {
+                is ChainSegment.Base -> {
+                    result.add(
+                        GdBlock(
+                            parent = this,
+                            node = segment.node,
+                            wrap = wrappingStrategy(segment.node),
+                            alignment = null,
+                            indent = Indent.getNoneIndent(),
+                            ctx = ctx,
+                        )
+                    )
+                }
+                is ChainSegment.Step -> {
+                    // Mid nodes (e.g. line-continuation BACKSLASH) sit on the *previous* line —
+                    // emit them as siblings of the synth step at the outer-block level, so the
+                    // synth step's first content (DOT) lands on a fresh line and its
+                    // Continuation indent actually applies.
+                    for (mid in segment.midNodes) {
+                        result.add(blockFor(mid, wrappingStrategy, Indent.getNoneIndent()))
                     }
-                    return ChildAttributes(Indent.getContinuationIndent(false), null)
-                }
+                    val stepChildren = mutableListOf<GdASTBlock>()
+                    stepChildren.add(blockFor(segment.dot, wrappingStrategy, Indent.getNoneIndent()))
+                    stepChildren.add(blockFor(segment.ref, wrappingStrategy, Indent.getNoneIndent()))
+                    // The step's ARG_LIST is emitted as a normal child of the synth — its own
+                    // buildChildren will produce LRBR/args/RRBR and use the existing
+                    // BRACKETED_INDENT_PARENTS rule, which now anchors against the synth step
+                    // (the chain-step column) instead of the outer expression column.
+                    if (segment.argList != null) {
+                        // Derive the ARG_LIST block-level indent from the same computeChildIndent used
+                        // on the non-chain path (see buildChildren above) rather than hardcoding None,
+                        // so chain and non-chain ARG_LIST layout stay identical by construction. The
+                        // synth step owns the chain-step column; the ARG_LIST's own children still hang
+                        // via the BRACKETED_INDENT_PARENTS rule.
+                        stepChildren.add(blockFor(segment.argList, wrappingStrategy, computeChildIndent(segment.argList, ctx)))
+                    }
 
-//                if (atEndOfStmt && preceding != null) {
-//                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 1 - precedingOffset), null)
-//                } else if (preceding != null && lastNode?.nextLeaf(false) is PsiErrorElement) {
-//                    return ChildAttributes(settings.calculateSpaceIndents(preceding, 1, true), null)
-//                }
-                return ChildAttributes(Indent.getNormalIndent(false), null)
-            }
-        }
-
-        val caretOffset = node.psi.getCaretOffsetIfSingle()
-        if (
-            previousBlock is GdBlock && preceding != null
-            && previousBlock.node.lastChildNode?.elementType == STMT_OR_SUITE
-            && previousBlock.node.lastChildNode?.firstChildNode?.elementType == SUITE
-        ) {
-            if (caretOffset != null) {
-                val emptyLines = PsiTreeUtil.getDeepestLast(preceding).precedingNewLines(caretOffset)
-                if (emptyLines > 2) {
-                    return ChildAttributes(
-                        settings.calculateSpaceIndents(preceding, 2 - emptyLines - precedingOffset),
-                        null
+                    // The wrapping ATTRIBUTE_EX is reported as the synth's element type so
+                    // SpacingBuilder rules that key off the chain-step's logical AST type see
+                    // ATTRIBUTE_EX. Leading-DOT spacing is handled by computeSpacing's
+                    // leaf-unwrap fallback.
+                    result.add(
+                        GdSyntheticBlock(
+                            parent = this,
+                            representativeNode = segment.attributeEx,
+                            subBlocks = stepChildren,
+                            indent = Indent.getContinuationIndent(),
+                            ctx = ctx,
+                        )
                     )
                 }
             }
-
-            if (atEndOfStmt) {
-                return ChildAttributes(settings.calculateSpaceIndents(preceding), null)
-            }
-
-            return ChildAttributes(Indent.getContinuationIndent(false), null)
         }
-
-        if (node.elementType == CALL_EX) {
-            return ChildAttributes(Indent.getNormalIndent(), null)
-        }
-
-        // Inside indented blocks directly
-        if (GdBlocks.INDENT_CHILDREN_ATTRIBUTE.contains(node.elementType)) {
-            if (caretOffset != null) {
-                val emptyLines = PsiTreeUtil.getDeepestLast(node.psi).precedingNewLines(caretOffset)
-                if (emptyLines > 2) {
-                    return ChildAttributes(
-                        settings.calculateSpaceIndents(node.psi, 2 - emptyLines - precedingOffset),
-                        null
-                    )
-                } else {
-                    return ChildAttributes(Indent.getNormalIndent(), null)
-                }
-            }
-
-            return ChildAttributes(Indent.getNormalIndent(), null)
-        }
-
-
-        return ChildAttributes(Indent.getNoneIndent(), null)
+        return result
     }
 
-    override fun getSpacing(child1: Block?, child2: Block): Spacing? {
-        if (child1 == null || child1 !is GdBlock || child2 !is GdBlock) {
-            return this.spacing.getSpacing(this, child1, child2)
-        }
+    private fun blockFor(child: ASTNode, wrappingStrategy: (ASTNode) -> Wrap?, indent: Indent): GdBlock =
+        GdBlock(
+            parent = this,
+            node = child,
+            wrap = wrappingStrategy(child),
+            alignment = null,
+            indent = indent,
+            ctx = ctx,
+        )
 
-        if (child1.node.elementType == COMMENT) {
-            return null
-        }
+    override fun getChildAttributes(newChildIndex: Int): ChildAttributes = doGetChildAttributes(newChildIndex)
 
-        var block2: GdBlock? = child2
-        while (block2 != null && block2.node.elementType == COMMENT) {
-            block2 = block2.nextBlock
-        }
-        if (block2 == null) return null
-        block2 = functionAnnotation(block2)
+    override fun getSpacing(child1: Block?, child2: Block): Spacing? = computeSpacing(child1, child2, ctx)
 
-        separateMultilineVars(child1, block2)?.let { return it }
-        // Separation of @onready & @export variables
-        splitByAnnotation(child1, block2)?.let { return it }
+    /**
+     * Children of this block, with one exception: when this block *is* a binary expression,
+     * the entire nested binary-expression subtree is flattened into a single sequence of
+     * operators and operands. This way the topmost binary-expression block owns all its
+     * leaves directly, and there are no intermediate binary-expression blocks below it.
+     *
+     * Mirrors PyBlock#getSubBlockNodes.
+     */
+    private fun getSubBlockNodes(): Sequence<ASTNode> =
+        if (node.elementType in GdBlocks.BINARY_EXPRESSIONS) node.flattenBinaryOperandsAndOperators()
+        else node.children()
 
-        if (child1.node.elementType == CLASS_VAR_DECL_TL && block2.node.elementType == CLASS_VAR_DECL_TL && PsiGdClassVarUtil.isAnnotated(
-                child1.node.psi as GdClassVarDeclTl
-            )
-        ) {
-            val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java)
-            return Spacing.createSpacing(0, 0, customSettings.LINES_BETWEEN_EXPORT_GROUPS + 1, false, 0)
-        }
+}
 
-        return this.spacing.getSpacing(this, child1, block2)
-    }
+/** Recursively yields operands and operators from a nested binary-expression subtree. */
+private fun ASTNode.flattenBinaryOperandsAndOperators(): Sequence<ASTNode> =
+    if (elementType in GdBlocks.BINARY_EXPRESSIONS) children().flatMap { it.flattenBinaryOperandsAndOperators() }
+    else sequenceOf(this)
 
-    override fun getIndent(): Indent {
-        return myIndent
-    }
-
-    override fun isLeaf(): Boolean {
-        return myNode.firstChildNode == null
-    }
-
-    private fun separateMultilineVars(block1: GdBlock, block2: GdBlock): Spacing? {
-        if (block1.node.elementType == CLASS_VAR_DECL_TL && block1.node.text.trim().contains('\n')) {
-            if (block2.node.elementType != METHOD_DECL_TL) {
-                val lines = this.settings.getCustomSettings(GdCodeStyleSettings::class.java).LINES_AROUND_MULTILINE_VAR
-                return Spacing.createSpacing(0, 0, lines + 1, false, 0)
-            }
-        }
-
-        val block22 = varAnnotation(block2)
-        if (
-            block1.node.elementType != COMMENT
-            && block1.node.elementType != ANNOTATION_TL
-            && block22.node.elementType == CLASS_VAR_DECL_TL
-            && block22.node.text.trim().contains('\n')
-        ) {
-            val lines = this.settings.getCustomSettings(GdCodeStyleSettings::class.java).LINES_AROUND_MULTILINE_VAR
-            return Spacing.createSpacing(0, 0, lines + 1, false, 0)
-        }
-
-        return null
-    }
-
-    private fun splitByAnnotation(block1: GdBlock?, block2: GdBlock?): Spacing? {
-        if (block1 == null || block2 == null) return null
-        if (block1.node.elementType == CLASS_VAR_DECL_TL && block2.node.elementType == ANNOTATION_TL) {
-            val node1 = block1.node.psi as GdClassVarDeclTl
-            var node2 = block2.node.psi
-            val annotations = mutableListOf<String>()
-            while (node2 is GdAnnotationTl) {
-                annotations.add(node2.annotationType.text.trimStart('@'))
-                node2 = node2.nextNonWhiteCommentToken()
-            }
-
-            for (annotator in GdBlocks.SEPARATE_ANNOTATOR_GROUPS) {
-                if (PsiGdClassVarUtil.isAnnotatedContains(node1, annotator).xor(annotations.contains(annotator))) {
-                    val customSettings = settings.getCustomSettings(GdCodeStyleSettings::class.java)
-                    return Spacing.createSpacing(0, 0, customSettings.LINES_BETWEEN_EXPORT_GROUPS + 1, false, 0)
-                }
-            }
-        }
-
-        return null
-    }
-
-    private fun functionAnnotation(block: GdBlock): GdBlock {
-        var current: GdBlock? = block
-        var type: IElementType? = block.node.elementType
-        var any = false
-
-        while (type == ANNOTATION_TL) {
-            any = true
-            current = current?.nextBlock
-            type = current?.node?.elementType
-        }
-
-        if (any && type == METHOD_DECL_TL) return current!!
-        return block
-    }
-
-    // TODO merge
-    private fun varAnnotation(block: GdBlock): GdBlock {
-        var current: GdBlock? = block
-        var type: IElementType? = block.node.elementType
-        var any = false
-
-        while (type == ANNOTATION_TL) {
-            any = true
-            current = current?.nextBlock
-            type = current?.node?.elementType
-        }
-
-        if (any && type == CLASS_VAR_DECL_TL) return current!!
-        return block
-    }
-
+internal fun ASTNode.skipIrrelevantTokens(): List<ASTNode> = when (elementType) {
+    in GdBlocks.EMPTY_TOKENS -> emptyList()
+    in GdBlocks.SKIP_TOKENS -> children().toList().flatMap { it.skipIrrelevantTokens() }
+    else -> listOf(this)
 }

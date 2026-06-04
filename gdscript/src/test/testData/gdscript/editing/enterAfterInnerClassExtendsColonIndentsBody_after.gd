@@ -1,0 +1,2 @@
+class State extends Node:
+	<caret>

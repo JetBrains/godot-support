@@ -1,0 +1,1 @@
+var a = foo"some <caret>string"

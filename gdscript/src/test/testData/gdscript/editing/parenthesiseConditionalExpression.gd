@@ -1,0 +1,1 @@
+var x = 3 if a == 10 or<caret> b == 13 or c < 4 else 3

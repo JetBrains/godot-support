@@ -1,0 +1,2 @@
+func <caret>foo():
+	pass

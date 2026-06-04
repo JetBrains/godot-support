@@ -7,6 +7,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.elementType
 import gdscript.GdScriptBundle
 import gdscript.psi.GdElementFactory
+import gdscript.psi.GdFuncDeclEx
+import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdNamedIdElement
 import gdscript.psi.GdTypes
 
@@ -16,15 +18,21 @@ class GdAddReturnTypeHintFix(element: GdNamedIdElement, private val desired: Str
     override fun getText(): String = GdScriptBundle.message("inspection.fix.add.return.type.text", desired)
 
     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-        val rrbrElem = findRRBRElem()
-        if (rrbrElem != null) {
+        val anchor = findReturnHintAnchor()
+        if (anchor != null) {
             val returnHint = GdElementFactory.returnHint(project, desired)
             // prevSibling refers to a whitespace
-            startElement.parent.addRangeAfter(returnHint.prevSibling, returnHint, rrbrElem)
+            startElement.parent.addRangeAfter(returnHint.prevSibling, returnHint, anchor)
         }
     }
 
-    private fun findRRBRElem(): PsiElement? {
+    private fun findReturnHintAnchor(): PsiElement? {
+        when (val parent = startElement.parent) {
+            is GdMethodDeclTl -> parent.paramList
+            is GdFuncDeclEx -> parent.paramList
+            else -> null
+        }?.let { return it }
+
         var maybeElement = startElement.nextSibling
         while (maybeElement != null) {
             if (maybeElement.elementType == GdTypes.RRBR) {

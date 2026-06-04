@@ -234,17 +234,14 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
     }
 
     private fun completionIntoCallableParam(): Boolean {
-        return PsiTreeUtil.getParentOfType(element, GdArgExpr::class.java)?.let { arg ->
-            PsiTreeUtil.getParentOfType(arg, GdCallEx::class.java)?.let {
-                val index = arg.parent.children.indexOf(arg)
-                val refId = PsiTreeUtil.getChildrenOfType(it.expr, GdRefIdRef::class.java)?.lastOrNull() ?: return false
-                val decl = GdClassMemberReference(refId).resolveDeclaration()
-                if (decl is GdMethodDeclTl) {
-                    return decl.parameters.values.toTypedArray().getOrNull(index).orEmpty() == "Callable"
-                }
-                return false
-            }
-        } ?: false
+        val arg = PsiTreeUtil.getParentOfType(element, GdArgExpr::class.java) ?: return false
+        val call = PsiTreeUtil.getParentOfType(arg, GdCallEx::class.java) ?: return false
+        val index = call.argList?.argExprList?.indexOf(arg) ?: return false
+        if (index < 0) return false
+
+        val refId = PsiTreeUtil.getChildrenOfType(call.expr, GdRefIdRef::class.java)?.lastOrNull() ?: return false
+        val decl = GdClassMemberReference(refId).resolveDeclaration()
+        return decl is GdMethodDeclTl && decl.parameters.values.elementAtOrNull(index).orEmpty() == "Callable"
     }
 
     private fun addMethod(name: String): LookupElement {

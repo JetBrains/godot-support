@@ -4,8 +4,9 @@ GdScript File
     PsiWhiteSpace(' ')
     GdMethodIdNmiImpl(METHOD_ID_NMI)
       PsiElement(GdTokenType.IDENTIFIER)('a')
-    PsiElement(GdTokenType.LRBR)('(')
-    PsiElement(GdTokenType.RRBR)(')')
+    GdParamListImpl(PARAM_LIST)
+      PsiElement(GdTokenType.LRBR)('(')
+      PsiElement(GdTokenType.RRBR)(')')
     PsiElement(GdTokenType.COLON)(':')
     GdStmtOrSuiteImpl(STMT_OR_SUITE)
       GdSuiteImpl(SUITE)
@@ -16,7 +17,8 @@ GdScript File
           PsiErrorElement:IDENTIFIER expected
             <empty list>
           GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
+            <empty list>
+          PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('    ')
         GdConstDeclStImpl(CONST_DECL_ST)
           PsiElement(GdTokenType.CONST)('const')

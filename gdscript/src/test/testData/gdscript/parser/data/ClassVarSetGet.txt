@@ -37,7 +37,8 @@ GdScript File
                   GdRefIdRefImpl(REF_ID_NM)
                     PsiElement(GdTokenType.IDENTIFIER)('asd')
               GdEndStmtImpl(END_STMT)
-                PsiElement(GdTokenType.NEW_LINE)('\n')
+                <empty list>
+              PsiElement(GdTokenType.NEW_LINE)('\n')
       PsiWhiteSpace('    ')
       GdSetDeclImpl(SET_DECL)
         PsiElement(GdTokenType.SET)('set')

@@ -1,0 +1,2 @@
+var a = ("str" +
+		"<caret>ing")
