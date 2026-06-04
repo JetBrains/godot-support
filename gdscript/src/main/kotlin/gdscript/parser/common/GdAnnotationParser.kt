@@ -17,11 +17,10 @@ interface GdAnnotationParser : GdBaseParser {
         if (!b.recursionGuard(l, "Annotator")) return false
         if (!b.nextTokenIs(ANNOTATOR)) return optional
 
-        var ok = b.mceAnyOf(ANNOTATION_TYPE, false, ANNOTATOR)
+        val ok = b.mceAnyOf(ANNOTATION_TYPE, false, ANNOTATOR)
         b.pin()
-        if (ok && b.passToken(LRBR)) {
-            ok && parseParams(b, l + 1)
-            ok = ok && b.consumeToken(RRBR)
+        if (ok && b.nextTokenIs(LRBR)) {
+            parseParams(b, l + 1)
         }
 
         return true
@@ -31,11 +30,15 @@ interface GdAnnotationParser : GdBaseParser {
         if (!b.recursionGuard(l, "AnnotationParams")) return false
         b.enterSection(ANNOTATION_PARAMS)
 
-        var ok = GdExprParser.parse(b, l + 1, false)
-        while (ok && b.passToken(COMMA)) {
+        var ok = b.consumeToken(LRBR, pin = true)
+        if (ok) {
             ok = GdExprParser.parse(b, l + 1, false)
+            while (ok && b.passToken(COMMA)) {
+                ok = GdExprParser.parse(b, l + 1, false)
+            }
+            GdRecovery.argumentList(b, ok)
+            ok = b.consumeToken(RRBR) && ok
         }
-        GdRecovery.argumentList(b, ok)
 
         return b.exitSection(ok)
     }

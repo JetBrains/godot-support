@@ -5,8 +5,10 @@ import gdscript.psi.GdTypes
 
 interface GdTokenTypeSet {
     companion object {
+
+
         // Red
-        val KEYWORDS = TokenSet.create(
+        val KEYWORDS: TokenSet = TokenSet.create(
             GdTypes.CLASS_NAME,
             GdTypes.CLASS,
             GdTypes.EXTENDS,
@@ -34,9 +36,6 @@ interface GdTokenTypeSet {
             GdTypes.PUPPETSYNC,
             GdTypes.AS,
             GdTypes.IS,
-            GdTypes.AND,
-            GdTypes.OR,
-            GdTypes.NEGATE,
             GdTypes.NOT,
             GdTypes.NAN,
             GdTypes.INF,
@@ -47,10 +46,10 @@ interface GdTokenTypeSet {
             GdTypes.OROR,
         )
 
-        val VOID = TokenSet.create(GdTypes.VOID)
+        val VOID: TokenSet = TokenSet.create(GdTypes.VOID)
 
         // Pink
-        val FLOW_KEYWORDS = TokenSet.create(
+        val FLOW_KEYWORDS: TokenSet = TokenSet.create(
             GdTypes.FOR,
             GdTypes.IF,
             GdTypes.ELSE,
@@ -64,53 +63,53 @@ interface GdTokenTypeSet {
         )
 
         // Yellow
-        val STRINGS = TokenSet.create(
+        val STRINGS: TokenSet = TokenSet.create(
             GdTypes.STRING,
             GdTypes.NODE_PATH,
         )
 
-        val STRING_FORMAT = TokenSet.create()
+        val STRING_FORMAT: TokenSet = TokenSet.create()
 
         // Teal
-        val CLASS_TYPE = TokenSet.create()
+        val CLASS_TYPE: TokenSet = TokenSet.create()
 
         // Teal
-        val NUMBERS = TokenSet.create(
+        val NUMBERS: TokenSet = TokenSet.create(
             GdTypes.NUMBER
         )
 
         // White
-        val IDENTIFIERS = TokenSet.create(
+        val IDENTIFIERS: TokenSet = TokenSet.create(
             GdTypes.IDENTIFIER
         )
 
         // Green
-        val ANNOTATIONS = TokenSet.create(
+        val ANNOTATIONS: TokenSet = TokenSet.create(
             GdTypes.ANNOTATOR
         )
 
         // Green
-        val NODE_PATH = TokenSet.create(
+        val NODE_PATH: TokenSet = TokenSet.create(
             GdTypes.NODE_PATH_LEX
         )
 
-        val STRING_NAME = TokenSet.create(
+        val STRING_NAME: TokenSet = TokenSet.create(
             GdTypes.STRING_NAME
         )
 
         // Green
-        val NODE_STRING_PATH = TokenSet.create(
+        val NODE_STRING_PATH: TokenSet = TokenSet.create(
             GdTypes.NODE_PATH_LIT,
         )
 
         // Blue
-        val MEMBER = TokenSet.create()
+        val MEMBER: TokenSet = TokenSet.create()
 
         // Red
-        val BAD_CHARACTERS = TokenSet.create(GdTypes.BAD_CHARACTER)
+        val BAD_CHARACTERS: TokenSet = TokenSet.create(GdTypes.BAD_CHARACTER)
 
         // Grey
-        val COMMENT = TokenSet.create(
+        val COMMENT: TokenSet = TokenSet.create(
             GdTypes.COMMENT
         )
     }

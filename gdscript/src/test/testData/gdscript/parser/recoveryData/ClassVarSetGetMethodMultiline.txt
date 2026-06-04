@@ -17,14 +17,16 @@ GdScript File
           PsiElement(GdTokenType.IDENTIFIER)('get_my_prop')
       PsiElement(GdTokenType.COMMA)(',')
       GdEndStmtImpl(END_STMT)
-        PsiElement(GdTokenType.NEW_LINE)('\n')
+        <empty list>
+      PsiElement(GdTokenType.NEW_LINE)('\n')
       PsiWhiteSpace('    ')
       GdSetDeclImpl(SET_DECL)
         PsiElement(GdTokenType.SET)('set')
         PsiErrorElement:LRBR expected
           <empty list>
       GdEndStmtImpl(END_STMT)
-        PsiElement(GdTokenType.NEW_LINE)('\n')
+        <empty list>
+      PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')

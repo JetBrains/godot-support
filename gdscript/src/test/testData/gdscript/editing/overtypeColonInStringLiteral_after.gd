@@ -1,0 +1,1 @@
+var s = "def foo():<caret>: pass"

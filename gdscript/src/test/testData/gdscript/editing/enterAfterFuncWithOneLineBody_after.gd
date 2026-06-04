@@ -1,0 +1,2 @@
+func main():
+	<caret>pass

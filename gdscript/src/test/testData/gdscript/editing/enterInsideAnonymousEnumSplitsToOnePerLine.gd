@@ -1,0 +1,1 @@
+enum {ALPHA, BETA,<caret> GAMMA}

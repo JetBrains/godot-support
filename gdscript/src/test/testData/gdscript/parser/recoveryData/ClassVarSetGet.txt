@@ -13,7 +13,8 @@ GdScript File
         PsiErrorElement:COLON expected
           <empty list>
       GdEndStmtImpl(END_STMT)
-        PsiElement(GdTokenType.NEW_LINE)('\n')
+        <empty list>
+      PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')

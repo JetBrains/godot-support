@@ -222,9 +222,16 @@
     <!-- Formatters -->
     <lang.braceMatcher language="GdScript" implementationClass="gdscript.formatter.GdBraceMatcher" />
     <!-- Keep the full formatter disabled to avoid structural changes until related bugs are resolved. -->
-    <!-- <lang.formatter language="GdScript" implementationClass="gdscript.formatter.GdFormattingModelBuilder" />-->
+    <lang.formatter language="GdScript" implementationClass="gdscript.formatter.GdFormattingModelBuilder" />
     <codeStyleSettingsProvider implementation="gdscript.formatter.GdCodeStyleSettingsProvider" />
     <langCodeStyleSettingsProvider implementation="gdscript.formatter.settings.GdLanguageCodeStyleSettingsProvider" />
+
+    <enterHandlerDelegate implementation="gdscript.formatter.GdEnterHandler" />
+    <enterHandlerDelegate implementation="gdscript.formatter.GdEnterAtIndentHandler" order="first" />
+    <enterBetweenBracesDelegate language="GdScript"
+                                implementationClass="com.intellij.codeInsight.editorActions.enter.EnterBetweenBracesAndBracketsDelegate"/>
+    <editor.backspaceModeOverride language="GdScript"
+                                  implementationClass="com.intellij.codeInsight.editorActions.SmartBackspaceDisabler"/>
 
     <!-- File templates -->
     <fileTemplateGroup implementation="gdscript.templates.GdFileTemplateGroupFactory"/>

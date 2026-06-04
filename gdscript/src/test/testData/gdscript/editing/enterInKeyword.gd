@@ -1,0 +1,1 @@
+va<caret>r x = 1

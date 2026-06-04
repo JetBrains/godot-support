@@ -8,7 +8,6 @@ import gdscript.parser.recovery.GdRecovery
 import gdscript.parser.stmt.GdStmtParser
 import gdscript.psi.GdTypes.COLON
 import gdscript.psi.GdTypes.FUNC
-import gdscript.psi.GdTypes.LRBR
 import gdscript.psi.GdTypes.MASTER
 import gdscript.psi.GdTypes.MASTERSYNC
 import gdscript.psi.GdTypes.METHOD_DECL_TL
@@ -18,7 +17,6 @@ import gdscript.psi.GdTypes.PUPPET
 import gdscript.psi.GdTypes.PUPPETSYNC
 import gdscript.psi.GdTypes.REMOTE
 import gdscript.psi.GdTypes.REMOTESYNC
-import gdscript.psi.GdTypes.RRBR
 import gdscript.psi.GdTypes.STATIC
 import gdscript.psi.GdTypes.VARARG
 
@@ -36,11 +34,7 @@ object GdMethodParser : GdBaseParser {
 
         ok = b.consumeToken(FUNC, pin = true)
         ok = ok && b.mceIdentifier(METHOD_ID_NMI)
-        ok = ok && b.consumeToken(LRBR)
-
-        ok = ok && GdParamListParser.parse(b, l + 1, true)
-
-        ok = ok && b.consumeToken(RRBR)
+        ok = ok && GdParamListParser.parse(b, l + 1, false)
         ok = ok && GdReturnHintParser.parse(b, l + 1, true)
         ok = ok && b.consumeToken(COLON)
         ok = ok && GdStmtParser.parse(b, l + 1)

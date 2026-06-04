@@ -1,0 +1,1 @@
+var result = "hello".to_upper()<caret>.capitalize().reverse()
