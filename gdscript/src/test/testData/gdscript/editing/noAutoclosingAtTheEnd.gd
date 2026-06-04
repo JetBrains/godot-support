@@ -1,0 +1,1 @@
+var s = """docstring""<caret>

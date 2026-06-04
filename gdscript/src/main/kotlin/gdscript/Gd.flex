@@ -110,9 +110,17 @@ import gdscript.lexer.ParenTracker;
     boolean newLineProcessed = false;
     boolean gotBackslash = false;
 
-    int lambdaReactivateDepth = -1;
-    // Tracks pending reactivation at the bracket depth where 'func' was seen
-    int lambdaPendingDepth = -1;
+    // Per-lambda stack. Each frame represents one inline-lambda scope that has
+    // either seen `func` inside parens (pending: startIndentSize == -1) or
+    // activated indent tracking after `:` + newline (active: startIndentSize >= 0).
+    // Frames are pushed in left-to-right `func`-lexed order and popped in
+    // right-to-left `)`-closed order, matching the natural LIFO of nested syntax.
+    static final class LambdaFrame {
+        final int parenDepth;
+        int startIndentSize = -1;
+        LambdaFrame(int parenDepth) { this.parenDepth = parenDepth; }
+    }
+    java.util.ArrayDeque<LambdaFrame> lambdaFrames = new java.util.ArrayDeque<>();
     Pattern nextNonCommentIndentPattern = Pattern.compile("\\n([ |\\t]*)[^#\\s]");
 
     public IElementType dedentRoot(IElementType type) {
@@ -166,19 +174,25 @@ import gdscript.lexer.ParenTracker;
 
     private boolean isIgnored() {
         if (parens.isTopLevel()) return false;
-        // Inside parentheses, indentation is ignored unless reactivated at this depth
-        return !(lambdaReactivateDepth == parens.getDepth());
+        // Inside parentheses, indentation is ignored unless the top lambda frame is
+        // active and at this depth.
+        LambdaFrame top = lambdaFrames.peek();
+        return top == null
+            || top.startIndentSize < 0
+            || top.parenDepth != parens.getDepth();
     }
 
     private void onCloseParen() {
         parens.close();
-        if (lambdaPendingDepth > parens.getDepth()) lambdaPendingDepth = -1;
-        if (lambdaReactivateDepth > parens.getDepth()) lambdaReactivateDepth = -1;
+        int d = parens.getDepth();
+        while (!lambdaFrames.isEmpty() && lambdaFrames.peek().parenDepth > d) {
+            lambdaFrames.pop();
+        }
     }
 
     private void markLambda() {
         if (parens.isNested()) {
-            lambdaPendingDepth = parens.getDepth();
+            lambdaFrames.push(new LambdaFrame(parens.getDepth()));
         }
     }
 
@@ -193,18 +207,51 @@ import gdscript.lexer.ParenTracker;
     private void activateLambdaAfterColon() {
         // Reactivate indentation inside parentheses only for block suites,
         // i.e., when ':' is immediately followed by a newline.
-        if (lambdaPendingDepth == parens.getDepth() && nextCharIsNewline()) {
-            lambdaReactivateDepth = parens.getDepth();
+        LambdaFrame top = lambdaFrames.peek();
+        if (top != null
+            && top.startIndentSize < 0
+            && top.parenDepth == parens.getDepth()
+            && nextCharIsNewline()) {
+            top.startIndentSize = indentSizes.size();
         }
     }
 
     private void restoreLambdaOnReturn() {
         // When returning from a lambda defined inside parens with reactivated indentation,
-        // stop treating NEW_LINE as significant at this bracket depth.
-        if (parens.getDepth() > 0 && lambdaReactivateDepth == parens.getDepth()) {
-            lambdaReactivateDepth = -1;
-            // clear pending marker as well, we won't reactivate again for this lambda
-            if (lambdaPendingDepth == parens.getDepth()) lambdaPendingDepth = -1;
+        // stop treating NEW_LINE as significant at this bracket depth. Popping the top
+        // frame preserves any outer lambda's frame underneath.
+        LambdaFrame top = lambdaFrames.peek();
+        if (top != null
+            && top.startIndentSize >= 0
+            && top.parenDepth == parens.getDepth()
+            && parens.getDepth() > 0) {
+            lambdaFrames.pop();
+        }
+    }
+
+    /**
+     * Drains pending lambda indents at the current paren depth.
+     * - If the topmost active frame at this depth still has unflushed INDENT pushes,
+     *   emits a DEDENT and pushes the caller's close-bracket back (returns true).
+     * - Otherwise pops fully-drained frames at this depth and returns false so the
+     *   caller can emit the close-bracket itself.
+     * Handles arbitrarily many sibling lambdas at the same paren depth.
+     */
+    private boolean drainLambdaFramesAtCurrentDepth() {
+        while (true) {
+            LambdaFrame top = lambdaFrames.peek();
+            if (top == null
+                || top.startIndentSize < 0
+                || top.parenDepth != parens.getDepth()) {
+                return false;
+            }
+            if (indentSizes.size() > top.startIndentSize) {
+                dedent();
+                yypushback(yylength());
+                return true;
+            }
+            // Fully drained -- pop and check the next frame at this depth.
+            lambdaFrames.pop();
         }
     }
 
@@ -215,8 +262,7 @@ import gdscript.lexer.ParenTracker;
         eofFinished = false;
         newLineProcessed = false;
         gotBackslash = false;
-        lambdaReactivateDepth = -1;
-        lambdaPendingDepth = -1;
+        lambdaFrames.clear();
     }
 
     public boolean hasNonDefaultState() {
@@ -226,8 +272,7 @@ import gdscript.lexer.ParenTracker;
             || eofFinished
             || gotBackslash
             || parens.getDepth() != 0
-            || lambdaReactivateDepth != -1
-            || lambdaPendingDepth != -1;
+            || !lambdaFrames.isEmpty();
     }
 
 %}
@@ -275,11 +320,11 @@ DOUBLE_QUOTED_LITERAL = [\$\^]?\" {DOUBLE_QUOTED_CONTENT}* \"
 TRIPLE_DOUBLE_QUOTED_CONTENT = {DOUBLE_QUOTED_CONTENT} | {STRING_NL} | \"(\")?[^\"\\$]
 TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
 
-RAW_SINGLE_QUOTED_CONTENT = [^'\r\n]
-RAW_SINGLE_QUOTED_LITERAL = r \' {RAW_SINGLE_QUOTED_CONTENT}* \'?
+RAW_SINGLE_QUOTED_CONTENT = \\[^\r\n] | [^'\\\r\n]
+RAW_SINGLE_QUOTED_LITERAL = r \' {RAW_SINGLE_QUOTED_CONTENT}* \'
 
-RAW_DOUBLE_QUOTED_CONTENT = [^\"\r\n]
-RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
+RAW_DOUBLE_QUOTED_CONTENT = \\[^\r\n] | [^\"\\\r\n]
+RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"
 
 %state CREATE_INDENT
 
@@ -358,11 +403,26 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "<<"           { return dedentRoot(GdTypes.LBSHIFT); }
     "("            { parens.open(); return dedentRoot(GdTypes.LRBR); }
-    ")"            { onCloseParen(); return dedentRoot(GdTypes.RRBR); }
+    ")"            {
+        if (drainLambdaFramesAtCurrentDepth()) return GdTypes.DEDENT;
+        onCloseParen();
+        newLineProcessed = false;
+        return GdTypes.RRBR;
+    }
     "["            { parens.open(); return dedentRoot(GdTypes.LSBR); }
-    "]"            { onCloseParen(); return dedentRoot(GdTypes.RSBR); }
+    "]"            {
+        if (drainLambdaFramesAtCurrentDepth()) return GdTypes.DEDENT;
+        onCloseParen();
+        newLineProcessed = false;
+        return GdTypes.RSBR;
+    }
     "{"            { parens.open(); return dedentRoot(GdTypes.LCBR); }
-    "}"            { onCloseParen(); return dedentRoot(GdTypes.RCBR); }
+    "}"            {
+        if (drainLambdaFramesAtCurrentDepth()) return GdTypes.DEDENT;
+              onCloseParen();
+              newLineProcessed = false;
+              return GdTypes.RCBR;
+    }
     "&"            { return dedentRoot(GdTypes.AND); }
     "&&"           { return dedentRoot(GdTypes.ANDAND); }
     "and"          { return dedentRoot(GdTypes.ANDAND); }
@@ -441,6 +501,9 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"?
 
                 return GdTypes.INDENT;
             } else if (indent > spaces) {
+                if (isIgnored()) {
+                    return TokenType.WHITE_SPACE;
+                }
                 dedentSpaces();
                 return GdTypes.DEDENT;
             }

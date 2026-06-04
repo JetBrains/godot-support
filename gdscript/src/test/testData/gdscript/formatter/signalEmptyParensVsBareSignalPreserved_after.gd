@@ -1,0 +1,2 @@
+signal died
+signal spawned()

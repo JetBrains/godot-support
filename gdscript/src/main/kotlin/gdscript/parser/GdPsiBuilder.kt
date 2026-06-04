@@ -107,9 +107,10 @@ class GdPsiBuilder {
         val m = mark()
         // Always consume semicolon if present
         consumeToken(GdTypes.SEMICON, true)
-        // Always consume NEW_LINE if present; at EOF it's still a real token from the lexer
-        consumeToken(GdTypes.NEW_LINE, true)
         m.done(GdTypes.END_STMT)
+        // Consume NEW_LINE OUTSIDE the END_STMT marker so it doesn't get pulled into a
+        // preceding compound statement's PSI range. At EOF it's still a real token from the lexer.
+        consumeToken(GdTypes.NEW_LINE, true)
 
         return true
     }
@@ -184,6 +185,10 @@ class GdPsiBuilder {
 
     fun dropSection(result: Boolean): Boolean {
         return state.dropSection(result)
+    }
+
+    fun remapElement(elementType: IElementType) {
+        state.remapElement(elementType)
     }
 
     /** Errors **/

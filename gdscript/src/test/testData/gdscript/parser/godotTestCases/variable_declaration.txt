@@ -7,7 +7,8 @@ GdScript File
     PsiWhiteSpace(' ')
     PsiComment(GdTokenType.comment)('# No init.')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')
@@ -22,7 +23,8 @@ GdScript File
     PsiWhiteSpace(' ')
     PsiComment(GdTokenType.comment)('# Init.')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')
@@ -38,7 +40,8 @@ GdScript File
     PsiWhiteSpace(' ')
     PsiComment(GdTokenType.comment)('# No init, typed.')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')
@@ -61,7 +64,8 @@ GdScript File
     PsiWhiteSpace(' ')
     PsiComment(GdTokenType.comment)('# Init, typed.')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   PsiWhiteSpace('\n')
   PsiWhiteSpace('\n')
   GdMethodDecl
@@ -69,8 +73,9 @@ GdScript File
     PsiWhiteSpace(' ')
     GdMethodIdNmiImpl(METHOD_ID_NMI)
       PsiElement(GdTokenType.IDENTIFIER)('test')
-    PsiElement(GdTokenType.LRBR)('(')
-    PsiElement(GdTokenType.RRBR)(')')
+    GdParamListImpl(PARAM_LIST)
+      PsiElement(GdTokenType.LRBR)('(')
+      PsiElement(GdTokenType.RRBR)(')')
     PsiElement(GdTokenType.COLON)(':')
     GdStmtOrSuiteImpl(STMT_OR_SUITE)
       GdSuiteImpl(SUITE)
@@ -84,7 +89,8 @@ GdScript File
           PsiWhiteSpace(' ')
           PsiComment(GdTokenType.comment)('# No init, local.')
           GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
+            <empty list>
+          PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('\t')
         GdVarDeclStImpl(VAR_DECL_ST)
           PsiElement(GdTokenType.VAR)('var')
@@ -100,7 +106,8 @@ GdScript File
           PsiWhiteSpace(' ')
           PsiComment(GdTokenType.comment)('# Init, local.')
           GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
+            <empty list>
+          PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('\t')
         GdVarDeclStImpl(VAR_DECL_ST)
           PsiElement(GdTokenType.VAR)('var')
@@ -117,7 +124,8 @@ GdScript File
           PsiWhiteSpace(' ')
           PsiComment(GdTokenType.comment)('# No init, typed.')
           GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
+            <empty list>
+          PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('\t')
         GdVarDeclStImpl(VAR_DECL_ST)
           PsiElement(GdTokenType.VAR)('var')
@@ -141,7 +149,8 @@ GdScript File
           PsiWhiteSpace(' ')
           PsiComment(GdTokenType.comment)('# Init, typed.')
           GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
+            <empty list>
+          PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('\n')
         PsiWhiteSpace('\t')
         GdAssignStImpl(ASSIGN_ST)
@@ -155,7 +164,8 @@ GdScript File
           GdLiteralExImpl(LITERAL_EX)
             PsiElement(GdTokenType.NUMBER)('11')
           GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
+            <empty list>
+          PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('\t')
         GdAssignStImpl(ASSIGN_ST)
           GdLiteralExImpl(LITERAL_EX)
@@ -169,7 +179,8 @@ GdScript File
             GdStringValRefImpl(STRING_VAL_NM)
               PsiElement(GdTokenType.STRING)('"33"')
           GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
+            <empty list>
+          PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('\n')
         PsiWhiteSpace('\t')
         GdAssignStImpl(ASSIGN_ST)
@@ -183,7 +194,8 @@ GdScript File
           GdLiteralExImpl(LITERAL_EX)
             PsiElement(GdTokenType.NUMBER)('55')
           GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
+            <empty list>
+          PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('\t')
         GdAssignStImpl(ASSIGN_ST)
           GdLiteralExImpl(LITERAL_EX)
@@ -197,7 +209,8 @@ GdScript File
             GdStringValRefImpl(STRING_VAL_NM)
               PsiElement(GdTokenType.STRING)('"77"')
           GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
+            <empty list>
+          PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('\n')
         PsiWhiteSpace('\t')
         GdExprStImpl(EXPR_ST)
@@ -205,8 +218,8 @@ GdScript File
             GdLiteralExImpl(LITERAL_EX)
               GdRefIdRefImpl(REF_ID_NM)
                 PsiElement(GdTokenType.IDENTIFIER)('prints')
-            PsiElement(GdTokenType.LRBR)('(')
             GdArgListImpl(ARG_LIST)
+              PsiElement(GdTokenType.LRBR)('(')
               GdArgExprImpl(ARG_EXPR)
                 GdLiteralExImpl(LITERAL_EX)
                   GdRefIdRefImpl(REF_ID_NM)
@@ -253,21 +266,22 @@ GdScript File
                 GdLiteralExImpl(LITERAL_EX)
                   GdRefIdRefImpl(REF_ID_NM)
                     PsiElement(GdTokenType.IDENTIFIER)('loc8')
-            PsiElement(GdTokenType.RRBR)(')')
+              PsiElement(GdTokenType.RRBR)(')')
           GdEndStmtImpl(END_STMT)
-            PsiElement(GdTokenType.NEW_LINE)('\n')
+            <empty list>
+          PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('\t')
         GdExprStImpl(EXPR_ST)
           GdCallExImpl(CALL_EX)
             GdLiteralExImpl(LITERAL_EX)
               GdRefIdRefImpl(REF_ID_NM)
                 PsiElement(GdTokenType.IDENTIFIER)('print')
-            PsiElement(GdTokenType.LRBR)('(')
             GdArgListImpl(ARG_LIST)
+              PsiElement(GdTokenType.LRBR)('(')
               GdArgExprImpl(ARG_EXPR)
                 GdLiteralExImpl(LITERAL_EX)
                   GdStringValRefImpl(STRING_VAL_NM)
                     PsiElement(GdTokenType.STRING)('"OK"')
-            PsiElement(GdTokenType.RRBR)(')')
+              PsiElement(GdTokenType.RRBR)(')')
           GdEndStmtImpl(END_STMT)
             <empty list>

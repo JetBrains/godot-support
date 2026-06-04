@@ -30,7 +30,8 @@ GdScript File
         PsiElement(GdTokenType.LCBR)('{')
         PsiElement(GdTokenType.RCBR)('}')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')
@@ -70,7 +71,8 @@ GdScript File
             PsiElement(GdTokenType.NUMBER)('100')
         PsiElement(GdTokenType.RCBR)('}')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')
@@ -110,7 +112,8 @@ GdScript File
             PsiElement(GdTokenType.NUMBER)('2.5')
         PsiElement(GdTokenType.RCBR)('}')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')

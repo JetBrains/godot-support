@@ -11,8 +11,6 @@ import gdscript.psi.GdTypes.FUNC
 import gdscript.psi.GdTypes.FUNC_DECL_EX
 import gdscript.psi.GdTypes.FUNC_DECL_ID_NMI
 import gdscript.psi.GdTypes.IDENTIFIER
-import gdscript.psi.GdTypes.LRBR
-import gdscript.psi.GdTypes.RRBR
 
 object GdFuncDeclExParser : GdExprBaseParser() {
 
@@ -24,9 +22,7 @@ object GdFuncDeclExParser : GdExprBaseParser() {
 
         var ok = b.consumeToken(FUNC, pin = true)
         if (b.nextTokenIs(IDENTIFIER)) b.mceIdentifier(FUNC_DECL_ID_NMI)
-        ok = ok && b.consumeToken(LRBR)
-        ok = ok && GdParamListParser.parse(b, l + 1, true)
-        ok = ok && b.consumeToken(RRBR)
+        ok = ok && GdParamListParser.parse(b, l + 1, false)
         ok = ok && GdReturnHintParser.parse(b, l + 1, true)
         ok = ok && b.consumeToken(COLON)
         ok = ok && GdStmtParser.parseLambda(b, l + 1, false, true)
