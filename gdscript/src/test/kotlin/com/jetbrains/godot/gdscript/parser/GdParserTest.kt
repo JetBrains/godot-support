@@ -41,6 +41,7 @@ class GdParserTest : GdParsingTestCase() {
     @Test fun testMatchStmt() = doTest(true)
     @Test fun testMatchStmt2() = doTest(true)
     @Test fun testMatchWhen() = doTest(true)
+    @Test fun testMatchEmptyDictPattern() = doTest(true)
 
     // Exprs
     @Test fun testArrayExpr() = doTest(true)
@@ -65,6 +66,9 @@ class GdParserTest : GdParsingTestCase() {
     @Test fun testFuncDeclExprExt() = doTest(true)
     @Test fun testFuncDeclExprParam() = doTest(true)
     @Test fun testlambda_nested() = doTest(true, true)
+    @Test fun testlambda_inline_close_paren() = doTest(true, true)
+    @Test fun testlambda_inline_close_paren_newline() = doTest(true, true)
+    @Test fun testlambda_inline_nested() = doTest(true, true)
     @Test fun testNestedCallExpr() = doTest(true)
     @Test fun testPrimaryBracketExpr() = doTest(true)
     @Test fun testDictDeclExpr() = doTest(true)

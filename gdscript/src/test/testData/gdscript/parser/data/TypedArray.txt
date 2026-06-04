@@ -25,7 +25,8 @@ GdScript File
         PsiElement(GdTokenType.LSBR)('[')
         PsiElement(GdTokenType.RSBR)(']')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')
@@ -60,7 +61,8 @@ GdScript File
             PsiElement(GdTokenType.STRING)('"world"')
         PsiElement(GdTokenType.RSBR)(']')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.VAR)('var')
     PsiWhiteSpace(' ')

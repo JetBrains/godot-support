@@ -78,6 +78,7 @@ import gdscript.psi.impl.GdNodePathImpl;
 import gdscript.psi.impl.GdOperatorImpl;
 import gdscript.psi.impl.GdParamImpl;
 import gdscript.psi.impl.GdParamListImpl;
+import gdscript.psi.impl.GdParenthesizedExImpl;
 import gdscript.psi.impl.GdPatternImpl;
 import gdscript.psi.impl.GdPatternListImpl;
 import gdscript.psi.impl.GdPlusExImpl;
@@ -180,6 +181,7 @@ public interface GdTypes {
   IElementType OPERATOR = new GdElementType("OPERATOR");
   IElementType PARAM = new GdElementType("PARAM");
   IElementType PARAM_LIST = new GdElementType("PARAM_LIST");
+  IElementType PARENTHESIZED_EX = new GdElementType("PARENTHESIZED_EX");
   IElementType PATTERN = new GdElementType("PATTERN");
   IElementType PATTERN_LIST = new GdElementType("PATTERN_LIST");
   IElementType PLUS_EX = new GdElementType("PLUS_EX");
@@ -510,6 +512,9 @@ public interface GdTypes {
       }
       else if (type == PARAM_LIST) {
         return new GdParamListImpl(node);
+      }
+      else if (type == PARENTHESIZED_EX) {
+          return new GdParenthesizedExImpl(node);
       }
       else if (type == PATTERN) {
         return new GdPatternImpl(node);

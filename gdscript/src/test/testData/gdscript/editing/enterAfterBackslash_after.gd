@@ -1,0 +1,3 @@
+var s = \
+
+"some string"

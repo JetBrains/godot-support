@@ -14,12 +14,12 @@ import gdscript.psi.GdTypes.LRBR
 import gdscript.psi.GdTypes.LSBR
 import gdscript.psi.GdTypes.NODE_PATH
 import gdscript.psi.GdTypes.NODE_PATH_LEX
+import gdscript.psi.GdTypes.PARENTHESIZED_EX
 import gdscript.psi.GdTypes.PRIMARY_EX
 import gdscript.psi.GdTypes.RCBR
 import gdscript.psi.GdTypes.RRBR
 import gdscript.psi.GdTypes.RSBR
 import gdscript.psi.GdTypes.STRING
-import gdscript.utils.PsiBuilderUtil.rollOrDrop
 
 object GdPrimaryExParser : GdExprBaseParser() {
 
@@ -87,10 +87,10 @@ object GdPrimaryExParser : GdExprBaseParser() {
 
     private fun bracketExpr(b: GdPsiBuilder, l: Int): Boolean {
         if (!b.recursionGuard(l, "BracketExpr")) return false
-        val m = b.mark()
+        b.enterSection(PARENTHESIZED_EX)
         var ok = true
 
-        ok = ok && b.consumeToken(LRBR)
+        ok = ok && b.consumeToken(LRBR, pin = true)
 //        while (ok && b.nextTokenIs(INDENT)) {
 //            b.remapCurrentToken(TokenType.WHITE_SPACE)
 //            b.advance()
@@ -102,7 +102,7 @@ object GdPrimaryExParser : GdExprBaseParser() {
 //        }
         ok = ok && b.consumeToken(RRBR)
 
-        return m.rollOrDrop(ok)
+        return b.exitSection(ok, true)
     }
 
 }

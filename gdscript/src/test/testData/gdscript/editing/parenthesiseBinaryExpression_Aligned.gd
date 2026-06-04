@@ -1,0 +1,1 @@
+var x = a + b + <caret>c + d

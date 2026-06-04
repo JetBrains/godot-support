@@ -1,0 +1,1 @@
+var a = some_list[<caret>i]

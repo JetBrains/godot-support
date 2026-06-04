@@ -690,8 +690,12 @@ object GdClassMemberUtil {
         if (attr != null) return attr
 
         val next = PsiTreeUtil.nextVisibleLeaf(element)
-        if (next?.elementType == GdTypes.LRBR && next.parent?.elementType == GdTypes.CALL_EX) {
-            return getAttrIfAny(next.parent)
+        if (next?.elementType == GdTypes.LRBR) {
+            val call = run {
+                val parent = next.parent
+                parent?.parent as? GdCallEx
+            }
+            if (call != null) return getAttrIfAny(call)
         }
 
         return null

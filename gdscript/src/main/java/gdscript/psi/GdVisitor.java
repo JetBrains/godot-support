@@ -275,6 +275,8 @@ public class GdVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitParenthesizedEx(@NotNull GdParenthesizedEx o) { visitExpr(o); }
+
   public void visitPattern(@NotNull GdPattern o) {
     visitPsiElement(o);
   }

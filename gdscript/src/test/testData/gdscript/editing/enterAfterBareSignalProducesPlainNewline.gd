@@ -1,0 +1,1 @@
+signal player_died<caret>

@@ -4,6 +4,7 @@ import com.intellij.psi.tree.IElementType
 import gdscript.parser.GdPsiBuilder
 import gdscript.parser.expr.GdExprParser
 import gdscript.parser.recovery.GdRecovery
+import gdscript.psi.GdTypes.ARRAY_PATTERN
 import gdscript.psi.GdTypes.COLON
 import gdscript.psi.GdTypes.COMMA
 import gdscript.psi.GdTypes.DEDENT
@@ -104,14 +105,19 @@ object GdMatchStmtParser : GdStmtBaseParser {
 
     private fun arrayPattern(b: GdPsiBuilder, l: Int): Boolean {
         if (!b.recursionGuard(l, "ArrayPattern")) return false
+        val array = b.mark()
         var ok = true
         ok = ok && b.passToken(LSBR)
         ok = ok && pattern(b, l + 1, true)
         while (ok && b.passToken(COMMA)) {
             if (b.passToken(DOTDOT)) break
+            if (b.nextTokenIs(RSBR)) break
             ok = ok && pattern(b, l + 1, false)
         }
         ok = ok && b.consumeToken(RSBR)
+
+        if (ok) array.done(ARRAY_PATTERN)
+        else array.rollbackTo()
 
         return ok
     }
@@ -121,13 +127,15 @@ object GdMatchStmtParser : GdStmtBaseParser {
         val dict = b.mark()
         var ok = true
         ok = ok && b.consumeToken(LCBR)
-        ok = ok && keyValuePattern(b, l + 1)
-        while (ok && b.nextTokenIs(COMMA)) {
-            b.advance()
-            if (b.passToken(DOTDOT)) break
+        if (ok && !b.nextTokenIs(RCBR)) {
             ok = ok && keyValuePattern(b, l + 1)
+            while (ok && b.nextTokenIs(COMMA)) {
+                b.advance()
+                if (b.passToken(DOTDOT)) break
+                if (b.nextTokenIs(RCBR)) break
+                ok = ok && keyValuePattern(b, l + 1)
+            }
         }
-
         ok = ok && b.consumeToken(RCBR)
 
         if (ok) dict.done(DICT_PATTERN)

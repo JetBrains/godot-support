@@ -22,7 +22,7 @@ class GdParserDefinition : ParserDefinition {
 
     companion object {
         val COMMENTS = TokenSet.create(GdTypes.COMMENT, GdTypes.BACKSLASH)
-        val STRING_LITERALS = TokenSet.create(GdTypes.STRING)
+        val STRING_LITERALS = TokenSet.create(GdTypes.STRING, GdTypes.NODE_PATH_LEX, GdTypes.NODE_PATH_LIT, GdTypes.STRING_NAME)
         val FILE = IStubFileElementType<PsiFileStub<GdFile>>("GdScriptFile", GdLanguage)
     }
 

@@ -5,7 +5,8 @@ GdScript File
     GdClassId
       PsiElement(GdTokenType.IDENTIFIER)('ExportVariableTestGlobalClass')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   GdInheritance
     PsiElement(GdTokenType.EXTENDS)('extends')
     PsiWhiteSpace(' ')

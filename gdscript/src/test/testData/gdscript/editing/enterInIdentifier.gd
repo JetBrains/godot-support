@@ -1,0 +1,1 @@
+var foo<caret>bar = 1

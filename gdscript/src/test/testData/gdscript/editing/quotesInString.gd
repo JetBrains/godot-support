@@ -1,0 +1,1 @@
+var a = "st<caret>"ring"

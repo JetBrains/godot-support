@@ -5,7 +5,6 @@ import gdscript.parser.GdPsiBuilder
 import gdscript.parser.common.GdParamListParser
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.LRBR
-import gdscript.psi.GdTypes.RRBR
 import gdscript.psi.GdTypes.SIGNAL
 import gdscript.psi.GdTypes.SIGNAL_DECL_TL
 import gdscript.psi.GdTypes.SIGNAL_ID_NMI
@@ -20,9 +19,8 @@ object GdSignalParser : GdBaseParser {
         var ok = b.consumeToken(SIGNAL, pin = true)
         ok = ok && b.mceIdentifier(SIGNAL_ID_NMI)
 
-        if (ok && b.passToken(LRBR)) {
-            ok = ok && GdParamListParser.parse(b, l + 1, true)
-            ok = ok && b.consumeToken(RRBR)
+        if (ok && b.nextTokenIs(LRBR)) {
+            ok = GdParamListParser.parse(b, l + 1, false)
         }
 
         ok = ok && b.mceEndStmt()

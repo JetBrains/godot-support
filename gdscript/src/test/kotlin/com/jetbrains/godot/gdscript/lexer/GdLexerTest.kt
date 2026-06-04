@@ -30,6 +30,8 @@ class GdLexerTest : LexerTestCase() {
     }
 
     @Test fun testOnready_node_string_path() = doFileTest("gd")
+    @Test fun testScratch() = doFileTest("gd")
+
     @Test fun testsignal_connect_func() = doFileTest("gd")
     @Ignore @Test fun testclass_name() = doFileTest("gd")
     @Test fun testcallableInCtor() = doFileTest("gd")

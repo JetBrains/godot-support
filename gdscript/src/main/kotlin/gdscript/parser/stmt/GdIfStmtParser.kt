@@ -38,14 +38,14 @@ object GdIfStmtParser : GdStmtBaseParser {
         if (!b.recursionGuard(l, "ElifStmt")) return false
         if (!b.nextTokenIs(ELIF)) return false
 
-        b.enterSection(ELIF_ST)
+        val marker = b.enterSection(ELIF_ST)
         var ok = b.consumeToken(ELIF, pin = true)
         ok = ok && GdExprParser.parse(b, l + 1)
         ok = ok && b.consumeToken(COLON, true)
         ok = ok && GdStmtParser.parse(b, l + 1)
 
         GdRecovery.stmt(b, ok)
-
+        GdStmtParser.applyCompoundBinders(marker)
         return b.exitSection(ok)
     }
 
@@ -53,12 +53,12 @@ object GdIfStmtParser : GdStmtBaseParser {
         if (!b.recursionGuard(l, "ElseStmt")) return false
         if (!b.nextTokenIs(ELSE)) return false
 
-        b.enterSection(ELSE_ST)
+        val marker = b.enterSection(ELSE_ST)
 
         var ok = b.consumeToken(ELSE, pin = true)
         ok = ok && b.consumeToken(COLON, true)
         ok = ok && GdStmtParser.parse(b, l + 1)
-
+        GdStmtParser.applyCompoundBinders(marker)
         GdRecovery.stmt(b, ok)
 
         return b.exitSection(ok)

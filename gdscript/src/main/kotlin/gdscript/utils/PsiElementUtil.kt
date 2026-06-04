@@ -46,8 +46,11 @@ object PsiElementUtil {
 
     fun PsiElement.getCallExpr(): GdCallEx? {
         val next = PsiTreeUtil.nextVisibleLeaf(this) ?: return null
-        if (next.elementType == GdTypes.LRBR && next.parent?.elementType == GdTypes.CALL_EX) {
-            return next.parent as GdCallEx
+        if (next.elementType == GdTypes.LRBR) {
+            return when (val parent = next.parent) {
+                is GdArgList -> parent.parent as? GdCallEx
+                else -> null
+            }
         }
 
         return null

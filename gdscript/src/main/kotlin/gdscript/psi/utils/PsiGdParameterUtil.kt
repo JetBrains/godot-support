@@ -1,6 +1,5 @@
 package gdscript.psi.utils
 
-import gdscript.psi.GdParam
 import gdscript.psi.GdParamList
 
 object PsiGdParameterUtil {
@@ -23,12 +22,9 @@ object PsiGdParameterUtil {
 
     fun toHashMap(paramList: GdParamList?): LinkedHashMap<String, String?> {
         val params = LinkedHashMap<String, String?>()
-        var child = paramList?.firstChild
-        while (child != null) {
-            if (child is GdParam) {
-                params[child.varNmi.text] = PsiGdExprUtil.fromTyped(child.typed)
-            }
-            child = child.nextSibling
+
+        paramList?.paramList?.forEach { param ->
+            params[param.varNmi.text] = PsiGdExprUtil.fromTyped(param.typed)
         }
 
         return params

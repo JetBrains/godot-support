@@ -78,7 +78,10 @@ class GdColorProvider : ElementColorProvider {
         val exprValue = when (text) {
             "Color" -> {
                 if (color == Color.BLACK) {
-                    toReplace?.delete()
+                    val emptyArguments = PsiTreeUtil.findChildOfType(
+                        GdElementFactory.callExpr(element.project, "Color()"), GdArgList::class.java
+                    ) ?: return
+                    toReplace?.replace(emptyArguments)
                     return
                 }
 

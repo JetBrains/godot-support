@@ -18,7 +18,8 @@ GdScript File
     GdLiteralExImpl(LITERAL_EX)
       PsiElement(GdTokenType.NUMBER)('1')
     GdEndStmtImpl(END_STMT)
-      PsiElement(GdTokenType.NEW_LINE)('\n')
+      <empty list>
+    PsiElement(GdTokenType.NEW_LINE)('\n')
   GdClassVarDecl
     PsiElement(GdTokenType.STATIC)('static')
     PsiWhiteSpace(' ')

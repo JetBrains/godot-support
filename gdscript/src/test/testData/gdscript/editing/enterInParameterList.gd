@@ -1,0 +1,1 @@
+func foo(a,<caret>b): pass
