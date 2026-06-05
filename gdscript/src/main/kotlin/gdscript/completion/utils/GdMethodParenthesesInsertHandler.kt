@@ -13,8 +13,7 @@ class GdMethodParenthesesInsertHandler(private val hasParameters: Boolean)
     override fun handleInsert(context: InsertionContext, item: LookupElement) {
         super.handleInsert(context, item)
         if (hasParameters) {
-            AutoPopupController.getInstance(context.project)
-                .autoPopupParameterInfo(context.editor, null)
+            AutoPopupController.getInstance(context.project).autoPopupParameterInfo(context.editor, null)
         }
     }
 }
