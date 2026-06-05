@@ -1,6 +1,7 @@
 package gdscript.completion.utils
 
 import com.intellij.codeInsight.completion.CompletionResultSet
+import com.intellij.codeInsight.completion.util.ParenthesesInsertHandler
 import com.intellij.openapi.project.Project
 import config.index.impl.GdConfigAnnotationDataIndex
 import gdscript.completion.GdLookup
@@ -18,7 +19,7 @@ object GdClassVarCompletionUtil {
                         // TODO this is currently an IntelliJ bug, which hard-codes removal of @
                         // https://intellij-support.jetbrains.com/hc/en-us/community/posts/8389906293394-Completion-contributor-hard-coded-trims-
                         if (withPrefix) "@$key" else key,
-                        lookup = if (params) "()" else "",
+                        handler = if (params) ParenthesesInsertHandler.WITH_PARAMETERS else null,
                         color = GdLookup.COLOR_ANNOTATION,
                         priority = GdLookup.BUILT_IN,
                     )
