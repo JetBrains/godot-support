@@ -2,6 +2,8 @@ package gdscript.lsp
 
 import GdScriptPluginIcons
 import com.intellij.codeInsight.completion.CompletionParameters
+import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.codeInsight.lookup.LookupElementDecorator
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.lang.annotation.HighlightSeverity
@@ -35,6 +37,7 @@ import com.jetbrains.rider.godot.community.GodotMajorVersion
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
 import common.util.GdScriptProjectLifetimeService
+import gdscript.competion.utils.GdMethodParenthesesInsertHandler
 import gdscript.settings.GdDocProviderMode
 import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdLspConnectionMode
@@ -44,8 +47,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import org.eclipse.lsp4j.ClientCapabilities
+import org.eclipse.lsp4j.CompletionCapabilities
+import org.eclipse.lsp4j.CompletionItem
+import org.eclipse.lsp4j.CompletionItemCapabilities
+import org.eclipse.lsp4j.CompletionItemKind
 import org.eclipse.lsp4j.Diagnostic
 import org.eclipse.lsp4j.MarkdownCapabilities
+import org.eclipse.lsp4j.TextDocumentClientCapabilities
 import java.util.concurrent.atomic.AtomicBoolean
 
 @Service(Service.Level.PROJECT)
@@ -53,7 +61,7 @@ class GodotLspProjectService(val project: Project) {
     var isScheduled: AtomicBoolean = AtomicBoolean(false)
 
     companion object {
-        fun getInstance(project: Project) = project.service<GodotLspProjectService>()
+        fun getInstance(project: Project): GodotLspProjectService = project.service<GodotLspProjectService>()
     }
 
     fun queueRestart() {
@@ -194,6 +202,15 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                     version = "1.1.0"
                     allowedTags = listOf("span")
                 }
+                // RIDER-134419 choosing function from autocomplete options leads to unwanted parentheses
+                // Godot's LSP snippetSupport is for functions with parameters, we have a client handler for the case
+                textDocument = (textDocument ?: TextDocumentClientCapabilities()).apply {
+                    completion = (completion ?: CompletionCapabilities()).apply {
+                        completionItem = (completionItem ?: CompletionItemCapabilities()).apply {
+                            snippetSupport = false
+                        }
+                    }
+                }
             }
 
         override fun createLsp4jClient(handler: LspServerNotificationsHandler): Lsp4jClient {
@@ -206,6 +223,18 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                     // RIDER-119006 LSP Completion for GDScript doesn't work after "$"
                     if (defaultPrefix.startsWith("$")) defaultPrefix.substringAfter("$")
                     else defaultPrefix
+
+                // With snippetSupport=false Godot trims a trailing "(" from items whose insertText
+                // ended in "(" (i.e. functions with parameters) but leaves a trailing "()" for parameterless functions
+                override fun createLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
+                    if (item.isFunctionLike()) item.stripTrailingEmptyParens()
+                    val base = super.createLookupElement(parameters, item) ?: return null
+                    if (!item.isFunctionLike()) return base
+                    val hasParams = item.hasParameters()
+                    return LookupElementDecorator.withDelegateInsertHandler(base) { ctx, lk ->
+                        GdMethodParenthesesInsertHandler(hasParams).handleInsert(ctx, lk)
+                    }
+                }
             }
             override val hoverCustomizer: LspHoverCustomizer
                 get() {
@@ -239,5 +268,26 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 }
             }
         }
+    }
+}
+
+private fun CompletionItem.isFunctionLike(): Boolean = when (kind) {
+    CompletionItemKind.Function, CompletionItemKind.Method, CompletionItemKind.Constructor -> true
+    else -> false
+}
+
+private fun CompletionItem.hasParameters(): Boolean {
+    val text = label ?: return true
+    return !text.endsWith("()")
+}
+
+private fun CompletionItem.stripTrailingEmptyParens() {
+    fun strip(text: String): String = if (text.endsWith("()")) text.substring(0, text.length - 2) else text
+    insertText?.let { insertText = strip(it) }
+    textEdit?.let { edit ->
+        edit.map(
+            { it.also { e -> e.newText = strip(e.newText) } },
+            { it.also { e -> e.newText = strip(e.newText) } },
+        )
     }
 }
