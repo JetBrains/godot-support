@@ -1,6 +1,5 @@
 package gdscript.reference
 
-import GdScriptPluginIcons
 import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
@@ -9,7 +8,6 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdArgExpr
@@ -242,16 +240,6 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
         val refId = PsiTreeUtil.getChildrenOfType(call.expr, GdRefIdRef::class.java)?.lastOrNull() ?: return false
         val decl = GdClassMemberReference(refId).resolveDeclaration()
         return decl is GdMethodDeclTl && decl.parameters.values.elementAtOrNull(index).orEmpty() == "Callable"
-    }
-
-    private fun addMethod(name: String): LookupElement {
-        return GdLookup.create(
-            name,
-            lookup = "()",
-            presentable = name,
-            priority = GdLookup.BUILT_IN,
-            icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
-        )
     }
 
     // Helpers to keep resolve/completion logic concise

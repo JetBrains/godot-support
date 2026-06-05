@@ -3,6 +3,7 @@ package gdscript.completion.utils
 import GdScriptPluginIcons
 import com.intellij.codeInsight.lookup.LookupElement
 import gdscript.GdIcon
+import gdscript.competion.utils.GdMethodParenthesesInsertHandler
 import gdscript.completion.GdLookup
 import gdscript.completion.utils.GdClassCompletionUtil.lookup
 import gdscript.psi.GdBindingPattern
@@ -120,9 +121,10 @@ object GdCompletionUtil {
     }
 
     fun lookup(method: GdMethodDeclTl, isCallable: Boolean = false): LookupElement {
+        val hasParams = method.paramList?.paramList?.isNotEmpty() == true || method.isVariadic
         return GdLookup.create(
             method.name,
-            lookup = "${if (isCallable) "" else "()"}${if (method.paramList?.paramList?.isNotEmpty() == true || method.isVariadic) "_" else ""}",
+            handler = if (isCallable) null else GdMethodParenthesesInsertHandler(hasParams),
             presentable = method.name,
             typed = method.returnType,
             icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
