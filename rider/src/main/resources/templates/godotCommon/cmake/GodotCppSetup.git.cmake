@@ -12,6 +12,11 @@ if(NOT EXISTS "${CMAKE_SOURCE_DIR}/.git")
         WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
         COMMAND_ERROR_IS_FATAL ANY
     )
+    execute_process(
+        COMMAND ${GIT} add .
+        WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+        COMMAND_ERROR_IS_FATAL ANY
+    )
 endif()
 
 set(_godot_cpp_dir "${CMAKE_SOURCE_DIR}/native/${EXTENSION_NAME}/godot-cpp")
