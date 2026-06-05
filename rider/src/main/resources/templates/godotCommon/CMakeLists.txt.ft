@@ -4,8 +4,8 @@ cmake_minimum_required(VERSION 3.17)
 project(Project)
 
 # Optional
-include("${CMAKE_CURRENT_LIST_DIR}/cmake/GodotAddonsManager.cmake" OPTIONAL)
 include("${CMAKE_CURRENT_LIST_DIR}/cmake/GodotCppSetup.cmake" OPTIONAL)
+include("${CMAKE_CURRENT_LIST_DIR}/cmake/GodotAddonsManager.cmake" OPTIONAL)
 
 # What would be shown in the SolutionView and Search
 file(GLOB_RECURSE PROJECT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/*")
