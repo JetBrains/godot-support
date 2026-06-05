@@ -1,9 +1,6 @@
 package gdscript.lsp
 
 import GdScriptPluginIcons
-import com.intellij.codeInsight.completion.CompletionParameters
-import com.intellij.codeInsight.lookup.LookupElement
-import com.intellij.codeInsight.lookup.LookupElementDecorator
 import com.intellij.codeInspection.ProblemHighlightType
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.lang.annotation.HighlightSeverity
@@ -21,7 +18,6 @@ import com.intellij.platform.lsp.api.LspServerManager
 import com.intellij.platform.lsp.api.LspServerNotificationsHandler
 import com.intellij.platform.lsp.api.LspServerSupportProvider
 import com.intellij.platform.lsp.api.customization.LspCompletionCustomizer
-import com.intellij.platform.lsp.api.customization.LspCompletionSupport
 import com.intellij.platform.lsp.api.customization.LspCustomization
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsCustomizer
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsSupport
@@ -37,20 +33,17 @@ import com.jetbrains.rider.godot.community.GodotMajorVersion
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
 import common.util.GdScriptProjectLifetimeService
-import gdscript.competion.utils.GdMethodParenthesesInsertHandler
 import gdscript.settings.GdDocProviderMode
-import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
+import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdSettingsConfigurable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 import org.eclipse.lsp4j.ClientCapabilities
 import org.eclipse.lsp4j.CompletionCapabilities
-import org.eclipse.lsp4j.CompletionItem
 import org.eclipse.lsp4j.CompletionItemCapabilities
-import org.eclipse.lsp4j.CompletionItemKind
 import org.eclipse.lsp4j.Diagnostic
 import org.eclipse.lsp4j.MarkdownCapabilities
 import org.eclipse.lsp4j.TextDocumentClientCapabilities
@@ -218,24 +211,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
         }
 
         override val lspCustomization: LspCustomization = object : LspCustomization() {
-            override val completionCustomizer: LspCompletionCustomizer = object : LspCompletionSupport() {
-                override fun getCompletionPrefix(parameters: CompletionParameters, defaultPrefix: String): String =
-                    // RIDER-119006 LSP Completion for GDScript doesn't work after "$"
-                    if (defaultPrefix.startsWith("$")) defaultPrefix.substringAfter("$")
-                    else defaultPrefix
-
-                // With snippetSupport=false Godot trims a trailing "(" from items whose insertText
-                // ended in "(" (i.e. functions with parameters) but leaves a trailing "()" for parameterless functions
-                override fun createLookupElement(parameters: CompletionParameters, item: CompletionItem): LookupElement? {
-                    if (item.isFunctionLike()) item.stripTrailingEmptyParens()
-                    val base = super.createLookupElement(parameters, item) ?: return null
-                    if (!item.isFunctionLike()) return base
-                    val hasParams = item.hasParameters()
-                    return LookupElementDecorator.withDelegateInsertHandler(base) { ctx, lk ->
-                        GdMethodParenthesesInsertHandler(hasParams).handleInsert(ctx, lk)
-                    }
-                }
-            }
+            override val completionCustomizer: LspCompletionCustomizer = GodotLspCompletionSupport()
             override val hoverCustomizer: LspHoverCustomizer
                 get() {
                     if (GdProjectSettingsState.getInstance(project).state.docProvider != GdDocProviderMode.LSP)
@@ -268,26 +244,5 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 }
             }
         }
-    }
-}
-
-private fun CompletionItem.isFunctionLike(): Boolean = when (kind) {
-    CompletionItemKind.Function, CompletionItemKind.Method, CompletionItemKind.Constructor -> true
-    else -> false
-}
-
-private fun CompletionItem.hasParameters(): Boolean {
-    val text = label ?: return true
-    return !text.endsWith("()")
-}
-
-private fun CompletionItem.stripTrailingEmptyParens() {
-    fun strip(text: String): String = if (text.endsWith("()")) text.substring(0, text.length - 2) else text
-    insertText?.let { insertText = strip(it) }
-    textEdit?.let { edit ->
-        edit.map(
-            { it.also { e -> e.newText = strip(e.newText) } },
-            { it.also { e -> e.newText = strip(e.newText) } },
-        )
     }
 }
