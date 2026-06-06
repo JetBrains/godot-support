@@ -3,8 +3,10 @@ cmake_minimum_required(VERSION 3.25)
 project(Game)
 
 file(GLOB_RECURSE GAME_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/addons/rider-plugin/*")
+file(GLOB STUBS "${CMAKE_CURRENT_SOURCE_DIR}/stubs/*")
 
 add_custom_target(Game SOURCES ${GAME_SOURCES}
+        ${STUBS}
         main.tscn
         project.godot
     )
