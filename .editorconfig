@@ -17,5 +17,5 @@ indent_size = 2
 [*.xaml]
 indent_size = 2
 
-[*.gd]
+[{*.gd,*.gdf}]
 indent_style = tab
