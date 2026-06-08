@@ -9,6 +9,7 @@ import common.util.GdScriptProjectLifetimeService
 import gdscript.GdScriptBundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import tscn.toolWindow.model.ModifierTracker
 
 class TscnScenePreviewWindowFactory : ToolWindowFactory {
     companion object {
@@ -31,6 +32,9 @@ class TscnScenePreviewWindowFactory : ToolWindowFactory {
 
     override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
         val window = TscnScenePreviewWindow(project, toolWindow)
+        // Touch ModifierTracker to load it and make sure
+        // first drag and drop succeeds
+        ModifierTracker.getModifiers()
         window.runScheduler()
     }
 

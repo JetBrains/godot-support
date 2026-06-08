@@ -54,6 +54,7 @@
                 canCloseContents="false"
                 icon="com.intellij.rider.plugins.godot.gdscript.icons.RiderPluginsGodotGdscriptIcons.TscnFile"
                 factoryClass="tscn.toolWindow.TscnScenePreviewWindowFactory" />
+    <editorFactoryListener implementation="tscn.toolWindow.model.SceneTreeFactoryListener"/>
     <inlineActionHandler implementation="gdscript.refactoring.inline.GdInlineVariableActionHandler" />
 
     <!-- settings -->

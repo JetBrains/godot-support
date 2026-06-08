@@ -16,6 +16,7 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
     var resource = ""
     var visible = true
     var parentVisible = true
+    var parentPath = ""
 
     constructor(basePath: String) {
         this.basePath = basePath
@@ -36,6 +37,7 @@ class TscnSceneTreeNode : DefaultMutableTreeNode {
         isInstance = node.instanceResource.isNotBlank()
         resource = node.instanceResource.ifEmpty { node.scriptResource }
         visible = node.isVisible
+        parentPath = node.parentPath
     }
 
     fun addNodeChild(node: TscnNodeHeader, externalType: String? = null, inherited: Boolean = false) {
