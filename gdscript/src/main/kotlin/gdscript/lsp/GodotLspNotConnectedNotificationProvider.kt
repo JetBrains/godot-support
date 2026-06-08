@@ -6,9 +6,9 @@ import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.platform.lsp.api.LspServer
-import com.intellij.platform.lsp.api.LspServerManager
-import com.intellij.platform.lsp.api.LspServerManagerListener
+import com.intellij.platform.lsp.api.LspClient
+import com.intellij.platform.lsp.api.LspClientManager
+import com.intellij.platform.lsp.api.LspClientManagerListener
 import com.intellij.ui.EditorNotificationPanel
 import com.intellij.ui.EditorNotificationProvider
 import com.intellij.ui.EditorNotifications
@@ -41,10 +41,10 @@ class GodotLspNotConnectedNotificationProvider(private val project: Project) : E
 
     init {
         // Update notifications on LSP server status change
-        LspServerManager.getInstance(project).addLspServerManagerListener(
-            object : LspServerManagerListener {
-                override fun serverStateChanged(lspServer: LspServer) {
-                    if (lspServer.providerClass == GodotLspServerSupportProvider::class.java) {
+        LspClientManager.getInstance(project).addListener(
+            object : LspClientManagerListener {
+                override fun serverStateChanged(lspClient: LspClient) {
+                    if (lspClient.providerClass == GodotLspClientProvider::class.java) {
                         if (GodotLspRunningStatusProvider.isLspRunning(project)) {
                             // LSP connected — reset the timer
                             disconnectedSince.set(0L)
