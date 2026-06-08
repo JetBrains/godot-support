@@ -12,11 +12,11 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.Lsp4jClient
 import com.intellij.platform.lsp.api.LspCommunicationChannel
-import com.intellij.platform.lsp.api.LspServer
-import com.intellij.platform.lsp.api.LspServerDescriptor
-import com.intellij.platform.lsp.api.LspServerManager
+import com.intellij.platform.lsp.api.LspClient
+import com.intellij.platform.lsp.api.LspClientDescriptor
+import com.intellij.platform.lsp.api.LspClientManager
 import com.intellij.platform.lsp.api.LspServerNotificationsHandler
-import com.intellij.platform.lsp.api.LspServerSupportProvider
+import com.intellij.platform.lsp.api.LspClientProvider
 import com.intellij.platform.lsp.api.customization.LspCompletionCustomizer
 import com.intellij.platform.lsp.api.customization.LspCustomization
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsCustomizer
@@ -25,7 +25,7 @@ import com.intellij.platform.lsp.api.customization.LspHoverCustomizer
 import com.intellij.platform.lsp.api.customization.LspHoverDisabled
 import com.intellij.platform.lsp.api.customization.LspInlayHintCustomizer
 import com.intellij.platform.lsp.api.customization.LspInlayHintDisabled
-import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
+import com.intellij.platform.lsp.api.lsWidget.LspClientWidgetItem
 import com.intellij.util.NetworkUtils
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
@@ -71,15 +71,15 @@ class GodotLspProjectService(val project: Project) {
 
     fun restartServer() {
         thisLogger().info("stopAndRestartIfNeeded")
-        LspServerManager.getInstance(project).stopAndRestartIfNeeded(GodotLspServerSupportProvider::class.java)
+        LspClientManager.getInstance(project).stopAndRestartClientsIfNeeded(GodotLspClientProvider::class.java)
     }
 }
 
-class GodotLspServerSupportProvider : LspServerSupportProvider {
-    override fun createLspServerWidgetItem(lspServer: LspServer, currentFile: VirtualFile?): LspServerWidgetItem =
-        GodotLspServerWidgetItem(lspServer, currentFile, GdScriptPluginIcons.Icons.GodotLogo, settingsPageClass = GdSettingsConfigurable::class.java)
+class GodotLspClientProvider : LspClientProvider {
+    override fun createWidgetItem(lspClient: LspClient, currentFile: VirtualFile?): LspClientWidgetItem =
+        GodotLspClientWidgetItem(lspClient, currentFile, GdScriptPluginIcons.Icons.GodotLogo, settingsPageClass = GdSettingsConfigurable::class.java)
 
-    override fun fileOpened(project: Project, file: VirtualFile, serverStarter: LspServerSupportProvider.LspServerStarter) {
+    override fun fileOpened(project: Project, file: VirtualFile, clientStarter: LspClientProvider.LspClientStarter) {
         if (GodotFileUtil.isGdFile(file)) {
             val settings = GdLspSettingsFlowService.getInstance(project)
             val lspService = GodotLspProjectService.getInstance(project)
@@ -90,7 +90,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 scope.launch(Dispatchers.IO) {
                     settings.lspConnectionMode.filterNotNull().collect { lspConnectionMode ->
                         if (lspConnectionMode == GdLspConnectionMode.Never) {
-                            LspServerManager.getInstance(project).stopServers(GodotLspServerSupportProvider::class.java)
+                            LspClientManager.getInstance(project).stopClients(GodotLspClientProvider::class.java)
                         } else
                             scheduleStartIfNeeded(project)
                     }
@@ -120,7 +120,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             if (allReady(settings, project)) {
                 thisLogger().info("ensureServerStarted")
                 // this does not start a server if the `fileOpened` has already ended
-                serverStarter.ensureServerStarted(GodotLspServerDescriptor(project))
+                clientStarter.ensureClientStarted(GodotLspClientDescriptor(project))
             }
         }
     }
@@ -139,7 +139,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
         godotLspProjectService.queueRestart()
     }
 
-    private class GodotLspServerDescriptor(project: Project) : LspServerDescriptor(
+    private class GodotLspClientDescriptor(project: Project) : LspClientDescriptor(
     project,
     "Godot",
     GodotCommunityUtil.getGodotProjectBasePath(project)?.let { VfsUtil.findFile(it, false) }!!

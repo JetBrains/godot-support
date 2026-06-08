@@ -3,7 +3,7 @@ package gdscript.lsp
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.platform.lsp.api.Lsp4jClient
-import com.intellij.platform.lsp.api.LspServerManager
+import com.intellij.platform.lsp.api.LspClientManager
 import com.intellij.platform.lsp.api.LspServerNotificationsHandler
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import org.eclipse.lsp4j.jsonrpc.services.JsonNotification
@@ -20,7 +20,7 @@ class GodotLsp4jClient(
     private class GodotChangeWorkspaceParams(
         val path: String
     )
-    
+
     @JsonNotification("gdscript_client/changeWorkspace")
     private fun changeWorkspace(params: GodotChangeWorkspaceParams) {
         thisLogger().info("Received gdscript_client/changeWorkspace notification with path: ${params.path}")
@@ -33,7 +33,7 @@ class GodotLsp4jClient(
                 "Workspace path $workspacePath doesn't match Godot base path $godotBasePath, disconnecting LSP server")
 
             GodotLspNotification.getService(project).showNonMatchingProjectWarning()
-            LspServerManager.getInstance(project).stopServers(GodotLspServerSupportProvider::class.java)
+            LspClientManager.getInstance(project).stopClients(GodotLspClientProvider::class.java)
         }
     }
 }
