@@ -47,7 +47,7 @@
     <backgroundPostStartupActivity implementation="gdscript.lsp.GodotLspStartOnFocusGainedActivity"/>
     <rider.godot.community.godotProjectProvider implementation="gdscript.utils.GdScriptGodotProjectProvider" />
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
-    <platform.lsp.serverSupportProvider implementation="gdscript.lsp.GodotLspServerSupportProvider"/>
+    <platform.lsp.clientProvider implementation="gdscript.lsp.GodotLspClientProvider"/>
     <toolWindow id="TscnScenePreviewWindowId"
                 anchor="right"
                 secondary="false"
