@@ -8,24 +8,24 @@ import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.NlsActions
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.platform.lsp.api.LspServer
+import com.intellij.platform.lsp.api.LspClient
 import com.intellij.platform.lsp.api.LspServerState
-import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
+import com.intellij.platform.lsp.api.lsWidget.LspClientWidgetItem
 import com.jetbrains.rider.godot.community.actions.StartGodotEditorAction
 import gdscript.GdScriptBundle
 import javax.swing.Icon
 
-class GodotLspServerWidgetItem(lspServer: LspServer,
+class GodotLspClientWidgetItem(lspClient: LspClient,
                                currentFile: VirtualFile?,
                                icon: Icon = AllIcons.Json.Object,
-                               settingsPageClass: Class<out Configurable>? = null) : LspServerWidgetItem(lspServer, currentFile, icon, settingsPageClass) {
+                               settingsPageClass: Class<out Configurable>? = null) : LspClientWidgetItem(lspClient, currentFile, icon, settingsPageClass) {
 
     override val widgetActionText: @NlsActions.ActionText String
-        get() = when (lspServer.state) {
-            LspServerState.Initializing -> LangBundle.message("language.services.widget.item.initializing", serverLabel)
-            LspServerState.Running -> serverLabel
-            LspServerState.ShutdownNormally -> LangBundle.message("language.services.widget.item.shutdown.normally", serverLabel)
-            LspServerState.ShutdownUnexpectedly -> GdScriptBundle.message("language.services.widget.item.shutdown.unexpectedly", serverLabel)
+        get() = when (lspClient.state) {
+            LspServerState.Initializing -> LangBundle.message("language.services.widget.item.initializing", itemLabel)
+            LspServerState.Running -> itemLabel
+            LspServerState.ShutdownNormally -> LangBundle.message("language.services.widget.item.shutdown.normally", itemLabel)
+            LspServerState.ShutdownUnexpectedly -> GdScriptBundle.message("language.services.widget.item.shutdown.unexpectedly", itemLabel)
         }
 
     //override fun createAdditionalInlineActions(): List<AnAction> {
@@ -43,10 +43,10 @@ class GodotLspServerWidgetItem(lspServer: LspServer,
     //}
 
     private class StartGodotEditorActionInWidget(
-        private val lspServer: LspServer,
+        private val lspClient: LspClient,
     ) : AnAction(GdScriptBundle.message("action.StartEditorAction.text"), null,AllIcons.Actions.Execute), DumbAware {
         override fun actionPerformed(e: AnActionEvent) {
-            val project = lspServer.project
+            val project = lspClient.project
             StartGodotEditorAction.startEditor(project)
             // todo: try to connect, display connecting status to UI
             //if (lspServer.state in arrayOf(LspServerState.ShutdownNormally, LspServerState.ShutdownUnexpectedly)){
