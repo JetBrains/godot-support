@@ -12,21 +12,21 @@ import com.intellij.ui.components.JBTabbedPane
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
+import com.jetbrains.rider.godot.community.tscn.TscnFileType
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.VirtualFileUtil.getPsiFile
-import com.jetbrains.rider.godot.community.tscn.TscnFileType
 import org.jetbrains.annotations.NonNls
 import tscn.psi.TscnFile
 import tscn.psi.TscnNodeHeader
 import tscn.psi.search.TscnResourceSearcher
 import tscn.toolWindow.TscnSceneCellRenderer
-import java.awt.datatransfer.StringSelection
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.util.concurrent.Callable
 import javax.swing.JComponent
 import javax.swing.TransferHandler
+import javax.swing.tree.TreeSelectionModel
 
 class TscnSceneTreeBuilder {
 
@@ -76,20 +76,47 @@ class TscnSceneTreeBuilder {
         val treeModel = TscnSceneTreeNode(basePath)
 
         val tree = Tree(treeModel)
+        var parent: String? = null
+        nodes.firstOrNull()?.let {
+            if (it.instanceResource.isNotBlank()) parent = it.instanceResource
+        }
+        addParentScene(treeModel, tree, parent)
+        val nodeMapping: HashMap<String, MutableList<TscnNodeHeader>> = hashMapOf()
+        nodes.forEach {
+            if (it.scriptResource != "") {
+                val res = nodeMapping[it.scriptResource]
+                if (res == null) {
+                    nodeMapping[it.scriptResource] = mutableListOf(it)
+                } else {
+                   res.add(it)
+                }
+            }
+            treeModel.addNodeChild(it, resolveType(it))
+        }
         tree.dragEnabled = true
+        tree.selectionModel.selectionMode = TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION
         tree.transferHandler = object : TransferHandler() {
             override fun getSourceActions(c: JComponent): Int = COPY
             override fun createTransferable(c: JComponent): java.awt.datatransfer.Transferable? {
-                val selectedPath = (c as? Tree)?.selectionPath ?: return null
-                val node = selectedPath.lastPathComponent as? TscnSceneTreeNode ?: return null
-                val text = node.userObject?.toString() ?: node.myName
-                return StringSelection(text)
+                val tree = (c as? Tree)?: return null
+                val nodes = tree.selectionPaths.orEmpty().mapNotNull {
+                    it.lastPathComponent as? TscnSceneTreeNode
+                }.map {
+                    SceneNodeDrag(
+                        nodeType = it.myType,
+                        nodeParentPath = it.parentPath,
+                        nodeName = it.myName
+                    )
+                }
+                if (nodes.isEmpty()) return null
+
+                return SceneNodeTransferable(SceneDragPayload(nodeMapping,nodes ))
             }
         }
         tree.cellRenderer = TscnSceneCellRenderer(project)
         tree.addMouseListener(object : MouseAdapter() {
             override fun mouseClicked(e: MouseEvent) {
-                val node = tree.getClosestPathForLocation(e.x, e.y).lastPathComponent as TscnSceneTreeNode? ?: return
+                val node = tree.getClosestPathForLocation(e.x, e.y).lastPathComponent as? TscnSceneTreeNode? ?: return
 
                 val index = (tree.width - e.x) / TscnSceneCellRenderer.BUTTON_WIDTH
                 val action = node.listActions().reversed().getOrNull(index) ?: return
@@ -97,12 +124,7 @@ class TscnSceneTreeBuilder {
             }
         })
 
-        var parent: String? = null
-        nodes.firstOrNull()?.let {
-            if (it.instanceResource.isNotBlank()) parent = it.instanceResource
-        }
-        addParentScene(treeModel, tree, parent)
-        nodes.forEach { treeModel.addNodeChild(it, resolveType(it)) }
+
 
         var j = tree.getRowCount()
         var i = 0
