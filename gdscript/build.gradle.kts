@@ -67,6 +67,8 @@ dependencies {
         testFramework(TestFrameworkType.Platform)
 
         bundledPlugin("com.intellij.modules.json")
+        bundledPlugin("intellij.bookmarks.plugin")
+        bundledPlugin("intellij.libraries.misc.plugin")
         bundledModule("intellij.platform.dap")
         bundledModule("intellij.spellchecker")
     }
