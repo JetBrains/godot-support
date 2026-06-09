@@ -1,5 +1,6 @@
 package gdscript.lsp
 
+import GdScriptPluginIcons
 import com.intellij.codeInsight.completion.CompletionParameters
 import com.intellij.codeInsight.completion.InsertionContext
 import com.intellij.codeInsight.lookup.LookupElement
@@ -9,6 +10,7 @@ import com.intellij.platform.lsp.util.getOffsetInDocument
 import gdscript.competion.utils.GdMethodParenthesesInsertHandler
 import org.eclipse.lsp4j.CompletionItem
 import org.eclipse.lsp4j.CompletionItemKind
+import javax.swing.Icon
 
 
 /**
@@ -43,6 +45,15 @@ open class GodotLspCompletionSupport : LspCompletionSupport() {
             stripDuplicateQuotesAdjacentToInserted(ctx)
             if (isFunction) GdMethodParenthesesInsertHandler(hasParams).handleInsert(ctx, lk)
         }
+    }
+
+    // TODO: remove once IJPL-246856 CompletionItemKind.Event is missing an icon in autocompletion
+    // is resolved, this is a temporary fix
+    override fun getIcon(item: CompletionItem): Icon? {
+        if (item.kind == CompletionItemKind.Event) {
+            return GdScriptPluginIcons.GDScriptIcons.SIGNAL_MARKER
+        }
+        return super.getIcon(item)
     }
 }
 
