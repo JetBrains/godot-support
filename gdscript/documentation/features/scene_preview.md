@@ -1,9 +1,13 @@
 ## Scene preview details
 
-Scene preview shows Node tree of selected .tscn of or all .tscn files connected with given .gd or .cs file  
+Scene preview shows the tree of nodes. It is either the opened `.tscn` file. Or the scenes, assosiated with the opened script (`.gd` or `.cs`).
 
-![scene_preview.png](..%2F..%2Fscreens%2Ffeatures%2Ftool_window%2Fscene_preview.png)
+![scene_preview_new.png](../../screens/features/tool_window/scene_preview_new.png)
 
-Also supports Drag&Drop of node into script (currently without filling @onready var xyz = $xyz)
-![node_drag_1.png](..%2F..%2Fscreens%2Ffeatures%2Ftool_window%2Fnode_drag_1.png)
-![node_drag_2.png](..%2F..%2Fscreens%2Ffeatures%2Ftool_window%2Fnode_drag_2.png)
+You can also drag nodes from the preview into the editor. A plain drag inserts a relative path from the current script to the dropped node. Ctrl-drag inserts an `@onready` snippet, and Alt-drag inserts an `@export` snippet.
+![node_drag_start.png](../../screens/features/tool_window/node_drag_start.png)
+![node_drag_drop.png](../../screens/features/tool_window/node_drag_drop.png)
+![node_drag_alt.png](../../screens/features/tool_window/node_drag_alt.png)
+![node_drag_ctrl.png](../../screens/features/tool_window/node_drag_ctrl.png)
+Multiple nodes can be dragged at once.
+![node_drag_multiple.png](../../screens/features/tool_window/node_drag_multiple.png)
