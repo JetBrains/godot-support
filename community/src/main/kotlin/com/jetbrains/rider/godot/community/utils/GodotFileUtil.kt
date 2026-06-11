@@ -7,7 +7,7 @@ import com.jetbrains.rider.godot.community.tscn.TscnFileType
 
 object GodotFileUtil {
 
-    fun isGdFile(file: VirtualFile?): Boolean = file != null && FileTypeRegistry.getInstance().isFileOfType(file, GdFileType)
+    fun isGdFile(file: VirtualFile?): Boolean = file != null && FileTypeRegistry.getInstance().isFileOfType(file, GdFileType) && file.extension == "gd"
     fun isTscnFile(file: VirtualFile?): Boolean = file != null && FileTypeRegistry.getInstance().isFileOfType(file, TscnFileType)
 
 }
