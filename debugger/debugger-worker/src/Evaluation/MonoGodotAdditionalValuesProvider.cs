@@ -143,7 +143,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
                     
                     var mainLoopReference = new SimpleValueReference<TValue>(mainLoop, sceneTreeType.MetadataType,
                         "MainLoop", ValueOriginKind.Property,
-                        ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsDefaultTypePresentation, frame,
+                        ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsTypeCanBeDerivedFromContext, frame,
                         myValueServices.RoleFactory);
 
                     if (!(mainLoopReference.GetPrimaryRole(mySession.EvaluationOptions) is IObjectValueRole<TValue> role))
@@ -162,7 +162,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Evaluation
 
                     return new SimpleValueReference<TValue>(currentSceneReference.GetValue(mySession.EvaluationOptions),
                         nodeType.MetadataType, "CurrentScene", ValueOriginKind.Property,
-                        ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsDefaultTypePresentation, frame,
+                        ValueFlags.None | ValueFlags.IsReadOnly | ValueFlags.IsTypeCanBeDerivedFromContext, frame,
                         myValueServices.RoleFactory);
                 }, exception => { });
         }
