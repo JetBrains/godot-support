@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="RiderLocator" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Discovers installed JetBrains Rider IDEs on the local machine.
+	</brief_description>
+	<description>
+		Asynchronously scans the system for installed JetBrains Rider IDEs and reports the results via the [signal installations_loaded] signal. The scan runs off the main thread so the editor stays responsive.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="start_search">
+			<return type="void" />
+			<description>
+				Begins the asynchronous search. Calling this more than once on the same instance is a no-op.
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="installations_loaded">
+			<param index="0" name="installations" type="Array" />
+			<description>
+				Emitted on the main thread once the search finishes.
+			</description>
+		</signal>
+	</signals>
+</class>
