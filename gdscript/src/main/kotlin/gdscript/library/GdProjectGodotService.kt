@@ -5,6 +5,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.createNestedDisposable
+import com.intellij.openapi.util.Version
 import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
@@ -23,7 +24,10 @@ import kotlin.io.path.readText
 @Service(Service.Level.PROJECT)
 class GdProjectGodotService(@Suppress("unused") project: Project) {
 
-    data class GodotProjectInfo(val version: String)
+    data class GodotProjectInfo(val version: String) {
+        /** Parsed version; `null` for unparseable values like "Master" */
+        val parsedVersion: Version? by lazy { Version.parseVersion(version) }
+    }
 
     private val _projectInfoFlow = MutableStateFlow<GodotProjectInfo?>(null)
     val projectInfoFlow: StateFlow<GodotProjectInfo?> = _projectInfoFlow.asStateFlow()
