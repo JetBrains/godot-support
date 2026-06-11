@@ -4,12 +4,9 @@ import com.intellij.application.options.CodeStyle
 import com.intellij.codeInspection.ProblemDescriptor
 import com.intellij.modcommand.ModCommand
 import com.intellij.modcommand.ModCommandQuickFix
-import com.intellij.modcommand.ModPsiUpdater
 import com.intellij.openapi.editor.ConvertIndentsUtil
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiFile
 import com.intellij.util.DocumentUtil
 import gdscript.GdScriptBundle
 
@@ -18,37 +15,30 @@ import gdscript.GdScriptBundle
  * For spaces->tabs, sub-tab remainder spaces are dropped.
  */
 class GdFixIndentsQuickFix : ModCommandQuickFix() {
-    override fun getFamilyName(): String = getName()
     override fun getName(): String = GdScriptBundle.message("inspection.whitespace.fix.indents.fix.name")
+    override fun getFamilyName(): String = name
     override fun availableInBatchMode(): Boolean = false
 
-    override fun perform(
-        project: Project,
-        descriptor: ProblemDescriptor,
-    ): ModCommand {
-        return ModCommand.psiUpdate(descriptor.psiElement.containingFile) { mutableFile: PsiFile, _: ModPsiUpdater ->
-            val indentOptions = CodeStyle.getSettings(mutableFile).getIndentOptionsByFile(mutableFile.containingFile)
-            val range = mutableFile.containingFile.textRange
-            val document = mutableFile.fileDocument
+    override fun perform(project: Project, descriptor: ProblemDescriptor): ModCommand =
+        ModCommand.psiUpdate(descriptor.psiElement.containingFile) { file, _ ->
+            val indentOptions = CodeStyle.getSettings(file).indentOptions
             if (indentOptions.USE_TAB_CHARACTER) {
-                ConvertIndentsUtil.convertIndentsToTabs(document, indentOptions.TAB_SIZE, range)
-                stripSpacesFromIndents(document, range)
-            }
-            else {
-                ConvertIndentsUtil.convertIndentsToSpaces(mutableFile.fileDocument, indentOptions.TAB_SIZE, range)
+                ConvertIndentsUtil.convertIndentsToTabs(file.fileDocument, indentOptions.TAB_SIZE, file.textRange)
+                stripSpacesFromIndents(file.fileDocument)
+            } else {
+                ConvertIndentsUtil.convertIndentsToSpaces(file.fileDocument, indentOptions.TAB_SIZE, file.textRange)
             }
         }
-    }
 
-    private fun stripSpacesFromIndents(document: Document, textRange: TextRange) {
+    // convertIndentsToTabs leaves sub-tab remainder spaces in place; GDScript requires
+    // pure-tab indents, so drop any surviving spaces from each line's indent.
+    private fun stripSpacesFromIndents(document: Document) {
         DocumentUtil.executeInBulk(document) {
-            val startLine = document.getLineNumber(textRange.startOffset)
-            val endLine = document.getLineNumber(textRange.endOffset)
-            for (line in startLine..endLine) {
+            for (line in 0 until document.lineCount) {
                 val lineStart = document.getLineStartOffset(line)
                 val indent = DocumentUtil.getIndent(document, lineStart)
                 if (indent.contains(' ')) {
-                    val cleaned = indent.filter { it != ' ' }.toString()
+                    val cleaned = indent.toString().replace(" ", "")
                     document.replaceString(lineStart, lineStart + indent.length, cleaned)
                 }
             }
