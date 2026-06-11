@@ -33,6 +33,7 @@ import com.jetbrains.rider.godot.community.GodotMajorVersion
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
 import common.util.GdScriptProjectLifetimeService
+import gdscript.library.GdProjectGodotService
 import gdscript.settings.GdDocProviderMode
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
@@ -111,8 +112,8 @@ class GodotLspClientProvider : LspClientProvider {
                 scope.launch(Dispatchers.IO) {
                     GodotCommunityUtil.getGodotProjectBasePathFlow(project)
                         .filterNotNull().collect {
-                        scheduleStartIfNeeded(project)
-                    }
+                            scheduleStartIfNeeded(project)
+                        }
                 }
             }
 
@@ -140,10 +141,10 @@ class GodotLspClientProvider : LspClientProvider {
     }
 
     private class GodotLspClientDescriptor(project: Project) : LspClientDescriptor(
-    project,
-    "Godot",
-    GodotCommunityUtil.getGodotProjectBasePath(project)?.let { VfsUtil.findFile(it, false) }!!
-    )  {
+        project,
+        "Godot",
+        GodotCommunityUtil.getGodotProjectBasePath(project)?.let { VfsUtil.findFile(it, false) }!!
+    ) {
         val settings = GdLspSettingsFlowService.getInstance(project)
         val lspConnectionMode by lazy { settings.lspConnectionMode.value }
         val remoteHostPort by lazy { if (useDynamicPort) NetworkUtils.findFreePort(500050) else settings.remoteHostPort.value }
@@ -224,10 +225,14 @@ class GodotLspClientProvider : LspClientProvider {
             override val diagnosticsCustomizer: LspDiagnosticsCustomizer = object : LspDiagnosticsSupport() {
                 override fun getHighlightSeverity(diagnostic: Diagnostic): HighlightSeverity? {
                     // RIDER-117554, also fixed in Godot 4.7 https://github.com/godotengine/godot/pull/114185
-                    // todo: use Godot version here to only conditionally disable unused parameter highlighting for older Godot versions
-                    if (diagnostic.message.startsWith("(UNUSED_PARAMETER)")) return null
+                    val beforeGodot4_7 = GdProjectGodotService.getInstance(project).projectInfoFlow.value?.parsedVersion?.lessThan(4, 7) ?: false
+                    if (diagnostic.message.startsWith("(UNUSED_PARAMETER)") && beforeGodot4_7) {
+                        return null
+                    }
+
                     return super.getHighlightSeverity(diagnostic)
                 }
+
                 /*
                 UNUSED_VARIABLE, UNUSED_LOCAL_CONSTANT, UNUSED_PRIVATE_CLASS_VARIABLE, UNUSED_PARAMETER, UNUSED_SIGNAL
                 https://github.com/godotengine/godot/blob/1bd7b99182f7e8de4d6b2f089fec5db9392ac6b8/modules/gdscript/gdscript_warning.cpp#L47C8-L47C23
@@ -237,7 +242,8 @@ class GodotLspClientProvider : LspClientProvider {
                         || diagnostic.message.startsWith("(UNUSED_LOCAL_CONSTANT)")
                         || diagnostic.message.startsWith("(UNUSED_PRIVATE_CLASS_VARIABLE)")
                         || diagnostic.message.startsWith("(UNUSED_PARAMETER)")
-                        || diagnostic.message.startsWith("(UNUSED_SIGNAL)")) {
+                        || diagnostic.message.startsWith("(UNUSED_SIGNAL)")
+                    ) {
                         return ProblemHighlightType.LIKE_UNUSED_SYMBOL
                     }
                     return super.getSpecialHighlightType(diagnostic)
