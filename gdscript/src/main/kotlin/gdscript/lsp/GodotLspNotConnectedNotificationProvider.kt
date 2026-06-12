@@ -19,6 +19,7 @@ import common.util.GdScriptProjectLifetimeService
 import gdscript.GdScriptBundle
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
+import gdscript.utils.getMainProjectBasePath
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -63,6 +64,8 @@ class GodotLspNotConnectedNotificationProvider(private val project: Project) : E
     ): Function<in FileEditor, out JComponent?>? {
         if (!GodotFileUtil.isGdFile(file)) return null
         if (!GodotCommunityUtil.isGodotProject(project)) return null
+        val basePath = project.getMainProjectBasePath() ?: return null
+        if (!file.toNioPath().startsWith(basePath)) return null
 
         val settings = GdLspSettingsFlowService.getInstance(project)
         val lspConnectionMode = settings.lspConnectionMode.value
