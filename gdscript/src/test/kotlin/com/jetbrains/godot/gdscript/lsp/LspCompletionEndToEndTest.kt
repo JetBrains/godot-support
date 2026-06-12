@@ -188,6 +188,24 @@ class LspCompletionEndToEndTest : BasePlatformTestCase() {
     // ----------------------------------------------------------------------
 
     @Test
+    fun `Case 5 - constructor with params - lone trailing open paren is stripped`() {
+        // RIDER-132535: Godot sends label = "new(…)", insertText = "new(" for constructor-with-args.
+        // Without the lone-paren strip we'd insert `new(` and then ParenthesesInsertHandler would
+        // append `()` on top, producing `new(()`. Expected end state mirrors Case 3.
+        val item = CompletionItem("new(…)").apply {
+            kind = CompletionItemKind.Method
+            insertText = "new("
+        }
+        val (text, caret) = runCompletion(
+            sourceWithCaret = "ne<caret>",
+            item = item,
+            prefixStart = 0,
+        )
+        assertEquals("new()", text)
+        assertEquals("caret should be inside parens", "new(".length, caret)
+    }
+
+    @Test
     fun `Case 4 - string literal completion - no duplicate opening quote`() {
         // `is_action_pressed("ui_a<caret>` + LSP sends a CompletionItem whose insertText is the
         // **quoted** action name `"ui_accept"`. The user already typed an opening `"`; after
