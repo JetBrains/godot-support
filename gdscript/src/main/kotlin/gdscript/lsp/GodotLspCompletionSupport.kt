@@ -16,9 +16,9 @@ import org.eclipse.lsp4j.CompletionItemKind
  *
  * Behaviour we add on top of the default [LspCompletionSupport]:
  *  - GDScript-specific prefix handling for `$NodePaths` (see RIDER-119006).
- *  - For function/method items: strip the trailing `()` Godot sends in `insertText`/`textEdit.newText`
- *    so the IDE inserts parens itself via [GdMethodParenthesesInsertHandler] (smart caret + auto
- *    parameter info; see RIDER-134419).
+ *  - For function/method items: strip the trailing `()` or lone `(` Godot sends in
+ *    `insertText`/`textEdit.newText` so the IDE inserts parens itself via
+ *    [GdMethodParenthesesInsertHandler] (smart caret + auto parameter info; see RIDER-134419).
  *  - For string-literal items (e.g. `"ui_accept"` in `is_action_pressed("ui_a<caret>")`):
  *      * pre-insertion: [preserveLeadingQuoteInRange] shifts a `textEdit.range` that would otherwise
  *        swallow the user's opening quote;
@@ -57,7 +57,11 @@ fun CompletionItem.hasParameters(): Boolean {
 }
 
 fun CompletionItem.stripTrailingEmptyParens() {
-    fun strip(text: String): String = if (text.endsWith("()")) text.substring(0, text.length - 2) else text
+    fun strip(text: String): String = when {
+        text.endsWith("()") -> text.substring(0, text.length - 2)
+        text.endsWith("(")  -> text.substring(0, text.length - 1)
+        else                -> text
+    }
     insertText?.let { insertText = strip(it) }
     textEdit?.let { edit ->
         edit.map(
