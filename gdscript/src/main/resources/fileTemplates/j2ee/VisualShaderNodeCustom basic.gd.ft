@@ -45,4 +45,4 @@ func _get_output_port_type(port: int) -> int:
 
 func _get_code(input_vars: Array[String], output_vars: Array[String],
                                         mode: int, type: int) -> String:
-return output_vars[0] + " = 0.0;"
+    return output_vars[0] + " = 0.0;"

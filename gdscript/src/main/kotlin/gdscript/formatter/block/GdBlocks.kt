@@ -117,8 +117,6 @@ object GdBlocks {
 
     val ALWAYS_INDENTED_TOKENS: TokenSet = TokenSet.create(
         GdTypes.ENUM_VALUE,
-        GdTypes.ARRAY_DECL,
-        GdTypes.DICT_DECL,
         GdTypes.KEY_VALUE,
         GdTypes.GET_DECL,
         GdTypes.SET_DECL,
