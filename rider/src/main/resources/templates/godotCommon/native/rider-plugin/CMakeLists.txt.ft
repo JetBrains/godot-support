@@ -38,7 +38,7 @@ project(${EXTENSION_NAME}
     LANGUAGES CXX
 )
 
-file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.h")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp" "src/*.h")
 add_library(${LIBNAME} SHARED)
 target_sources(${LIBNAME}
         PRIVATE
