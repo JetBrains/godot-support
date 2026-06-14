@@ -16,6 +16,7 @@ import gdscript.formatter.impl.computeSpacing
 import gdscript.formatter.impl.customIsIncomplete
 import gdscript.formatter.impl.doGetChildAttributes
 import gdscript.formatter.impl.getWrappingStrategy
+import gdscript.psi.GdTypes
 
 class GdBlock(
     override val parent: GdASTBlock?,
@@ -27,7 +28,12 @@ class GdBlock(
 ) : GdASTBlock {
 
     override fun getNode(): ASTNode = node
-    override fun getTextRange(): TextRange = node.textRange
+    override fun getTextRange(): TextRange = myTextRange
+
+    // Mirrors how Python's parser does not overconsume whitespaces by trimming the text range
+    private val myTextRange: TextRange by lazy {
+        if (parent == null) node.textRange else node.trimmedTextRange()
+    }
     override fun getAlignment(): Alignment? = alignment
     override fun getIndent(): Indent = indent
     override fun getWrap(): Wrap? = wrap
@@ -43,11 +49,7 @@ class GdBlock(
     private fun buildChildren(): List<GdASTBlock> {
         val wrappingStrategy = getWrappingStrategy(node, ctx)
 
-        // Flatten the outermost CALL_EX / ATTRIBUTE_EX chain into [base, step1, step2, ...].
-        // Each step's [DOT, REF_ID, (ARG_LIST?)] is grouped into one synthetic block so that
-        // multi-line arguments inside a chain step (e.g. .prefetch_related(\n  "a",\n  "b"\n))
-        // — and the closing `)` — anchor to the chain-step column rather than the outer
-        // expression column.
+        // Flatten the outermost CALL_EX / ATTRIBUTE_EX chain to synthetic blocks, anchored to correct indentation
         if (node.isOutermostChainNode()) {
             node.flattenCallChain()?.let { segments ->
                 return buildChainChildren(segments, wrappingStrategy)
@@ -88,33 +90,16 @@ class GdBlock(
                     )
                 }
                 is ChainSegment.Step -> {
-                    // Mid nodes (e.g. line-continuation BACKSLASH) sit on the *previous* line —
-                    // emit them as siblings of the synth step at the outer-block level, so the
-                    // synth step's first content (DOT) lands on a fresh line and its
-                    // Continuation indent actually applies.
                     for (mid in segment.midNodes) {
                         result.add(blockFor(mid, wrappingStrategy, Indent.getNoneIndent()))
                     }
                     val stepChildren = mutableListOf<GdASTBlock>()
                     stepChildren.add(blockFor(segment.dot, wrappingStrategy, Indent.getNoneIndent()))
                     stepChildren.add(blockFor(segment.ref, wrappingStrategy, Indent.getNoneIndent()))
-                    // The step's ARG_LIST is emitted as a normal child of the synth — its own
-                    // buildChildren will produce LRBR/args/RRBR and use the existing
-                    // BRACKETED_INDENT_PARENTS rule, which now anchors against the synth step
-                    // (the chain-step column) instead of the outer expression column.
                     if (segment.argList != null) {
-                        // Derive the ARG_LIST block-level indent from the same computeChildIndent used
-                        // on the non-chain path (see buildChildren above) rather than hardcoding None,
-                        // so chain and non-chain ARG_LIST layout stay identical by construction. The
-                        // synth step owns the chain-step column; the ARG_LIST's own children still hang
-                        // via the BRACKETED_INDENT_PARENTS rule.
                         stepChildren.add(blockFor(segment.argList, wrappingStrategy, computeChildIndent(segment.argList, ctx)))
                     }
 
-                    // The wrapping ATTRIBUTE_EX is reported as the synth's element type so
-                    // SpacingBuilder rules that key off the chain-step's logical AST type see
-                    // ATTRIBUTE_EX. Leading-DOT spacing is handled by computeSpacing's
-                    // leaf-unwrap fallback.
                     result.add(
                         GdSyntheticBlock(
                             parent = this,
@@ -163,8 +148,40 @@ private fun ASTNode.flattenBinaryOperandsAndOperators(): Sequence<ASTNode> =
     if (elementType in GdBlocks.BINARY_EXPRESSIONS) children().flatMap { it.flattenBinaryOperandsAndOperators() }
     else sequenceOf(this)
 
-internal fun ASTNode.skipIrrelevantTokens(): List<ASTNode> = when (elementType) {
-    in GdBlocks.EMPTY_TOKENS -> emptyList()
-    in GdBlocks.SKIP_TOKENS -> children().toList().flatMap { it.skipIrrelevantTokens() }
+internal fun ASTNode.skipIrrelevantTokens(): List<ASTNode> = when {
+    textRange.isEmpty -> emptyList()
+    (elementType == GdTypes.STMT_OR_SUITE || elementType == GdTypes.SUITE) && chars.isBlank() -> emptyList()
+    elementType in GdBlocks.EMPTY_TOKENS -> emptyList()
+    elementType in GdBlocks.SKIP_TOKENS -> children().toList().flatMap { it.skipIrrelevantTokens() }
     else -> listOf(this)
+}
+
+/** This node's range with whitespace-ish (and zero-width) leaves trimmed off both ends. */
+fun ASTNode.trimmedTextRange(): TextRange {
+    val start = firstMeaningfulLeafOffset() ?: return textRange
+    val end = lastMeaningfulLeafEndOffset() ?: return textRange
+    return TextRange(start, end)
+}
+
+private fun ASTNode.isMeaningfulLeafCandidate(): Boolean =
+    elementType !in GdBlocks.WHITE_SPACE && textLength > 0
+
+private fun ASTNode.firstMeaningfulLeafOffset(): Int? {
+    if (firstChildNode == null) return if (isMeaningfulLeafCandidate()) startOffset else null
+    var c: ASTNode? = firstChildNode
+    while (c != null) {
+        c.firstMeaningfulLeafOffset()?.let { return it }
+        c = c.treeNext
+    }
+    return null
+}
+
+private fun ASTNode.lastMeaningfulLeafEndOffset(): Int? {
+    if (firstChildNode == null) return if (isMeaningfulLeafCandidate()) textRange.endOffset else null
+    var c: ASTNode? = lastChildNode
+    while (c != null) {
+        c.lastMeaningfulLeafEndOffset()?.let { return it }
+        c = c.treePrev
+    }
+    return null
 }

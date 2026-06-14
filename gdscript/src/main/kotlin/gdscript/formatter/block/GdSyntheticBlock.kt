@@ -31,11 +31,6 @@ class GdSyntheticBlock(
         assert(subBlocks.isNotEmpty()) { "tried to build empty synthetic block" }
     }
 
-    // DELIBERATE DIVERGENCE: getTextRange() spans the sub-blocks' boundaries, NOT
-    // representativeNode.textRange. The representative node (e.g. the chain step's ATTRIBUTE_EX)
-    // is carried only so SpacingBuilder/ChildAttributes consumers see its ELEMENT TYPE. Callers
-    // must use getNode().elementType only — never getNode().textRange, which can lie about this
-    // block's extent.
     private val textRange = TextRange(
         subBlocks.first().textRange.startOffset,
         subBlocks.last().textRange.endOffset)

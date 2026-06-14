@@ -81,7 +81,7 @@ class GdEnterHandler : EnterHandlerDelegate {
 
         // Bracket guard — caret directly between brackets like `(<caret>)`, `[<caret>]`, `{<caret>}`.
         val nodeType = element.node.elementType
-        if (nodeType in LEFT_BRACKETS || nodeType in RIGHT_BRACKETS) {
+        if (nodeType in GdBlocks.LEFT_BRACES || nodeType in GdBlocks.RIGHT_BRACES) {
             val container = element.parent
             if (container != null && container.node.elementType in GdBlocks.BRACKETED_INDENT_PARENTS) {
                 return EnterHandlerDelegate.Result.Continue
@@ -193,23 +193,5 @@ class GdEnterHandler : EnterHandlerDelegate {
     private fun parenthesiseRange(range: TextRange, doc: Document) {
         doc.insertString(range.endOffset, ")")
         doc.insertString(range.startOffset, "(")
-    }
-
-    companion object {
-        private val LEFT_BRACKETS: TokenSet = TokenSet.create(GdTypes.LRBR, GdTypes.LSBR, GdTypes.LCBR)
-        private val RIGHT_BRACKETS: TokenSet = TokenSet.create(GdTypes.RRBR, GdTypes.RSBR, GdTypes.RCBR)
-
-        private val STATEMENT_TYPES: TokenSet = TokenSet.create(
-            GdTypes.IF_ST, GdTypes.ELIF_ST, GdTypes.ELSE_ST,
-            GdTypes.FOR_ST, GdTypes.WHILE_ST,
-            GdTypes.MATCH_ST, GdTypes.MATCH_BLOCK,
-            GdTypes.METHOD_DECL_TL, GdTypes.CLASS_DECL_TL,
-            GdTypes.VAR_DECL_ST, GdTypes.CLASS_VAR_DECL_TL,
-            GdTypes.CONST_DECL_ST, GdTypes.CONST_DECL_TL,
-            GdTypes.ASSIGN_ST, GdTypes.EXPR_ST, GdTypes.FLOW_ST,
-            GdTypes.SIGNAL_DECL_TL,
-            GdTypes.ANNOTATION_TL, GdTypes.ANNOTATION_STMT,
-            GdTypes.GET_DECL, GdTypes.SET_DECL,
-        )
     }
 }
