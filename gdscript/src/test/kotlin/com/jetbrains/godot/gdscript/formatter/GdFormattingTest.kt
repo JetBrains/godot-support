@@ -268,6 +268,9 @@ class GdFormattingTest : BasePlatformTestCase() {
     fun testIndentOfTypeArguments() = doTest()
 
     @Test
+    fun testCollectionLiteralInsideArgumentList() = doTest()
+
+    @Test
     fun testIndentTypeArgumentsInFunctionTypeHint() = doTest()
 
     @Test

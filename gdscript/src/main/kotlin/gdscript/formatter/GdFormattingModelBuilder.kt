@@ -11,12 +11,12 @@ class GdFormattingModelBuilder : FormattingModelBuilder {
 
     override fun createModel(formattingContext: FormattingContext): FormattingModel {
         val settings = formattingContext.codeStyleSettings
-        val ctx = GdFmtContext.create(settings)
+        val ctx = GdFmtContext.create(settings, formattingContext.formattingMode)
 
         val initialBlock = GdBlock(
             null,
             formattingContext.node,
-            null, // Wrap.createWrap(WrapType.NONE, false),
+            null,
             Alignment.createAlignment(),
             Indent.getNoneIndent(),
             ctx,

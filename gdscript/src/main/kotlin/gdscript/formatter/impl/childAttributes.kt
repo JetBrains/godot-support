@@ -39,29 +39,24 @@ fun GdASTBlock.customIsIncomplete(): Boolean {
             return false
         }
     }
-    // Happens in match statement for empty suite e.g. `5: <nothing>`
     if (node.elementType == GdTypes.STMT_OR_SUITE && node.children().count() == 0)
         return true
-    // Skip past 0-width "ghost" children that survive in the AST when a body-parse fails:
-    //  - PsiErrorElement (e.g. `var f = func():<caret>` -> FUNC_DECL_EX ends with [..., COLON, ERROR])
-    //  - empty STMT_OR_SUITE/SUITE (e.g. `_ when v > 0:<caret>` -> MATCH_BLOCK ends with
-    //    [..., COLON, STMT_OR_SUITE(empty)]; GdStmtParser done()s the marker even when the body
-    //    parse fails because the COLON higher up is pinned).
-    // Otherwise the trailing `:` isn't recognised as the last meaningful child and the COLON
-    // check below silently misses.
     val lastChild = getLastMeaningfulChild(node)
     if (lastChild != null) {
-        if (lastChild.elementType == GdTypes.SUITE) return true
+        if (lastChild.elementType == GdTypes.STMT_OR_SUITE &&
+            lastChild.firstChildNode?.elementType == GdTypes.SUITE
+        ) return true
+        if (lastChild.elementType == GdTypes.MATCH_BLOCK) return true
         if (lastChild.elementType == GdTypes.COLON &&
             node.elementType in GdBlocks.NEW_LINE_AFTER_COLON_PARENTS
         ) return true
         if (lastChild.isIncompleteBinaryExpression()) return true
-        if (isIncompleteCall(lastChild)) return true
+        if (lastChild.isIncompleteCall()) return true
     }
 
     (node.psi as? GdArgList)?.let { argList -> return argList.getClosingParen() == null }
 
-    return isIncompleteCall(node) || isIncompleteExpressionWithBrackets(node.psi)
+    return node.isIncompleteCall() || isIncompleteExpressionWithBrackets(node.psi)
 }
 
 private fun isIncompleteExpressionWithBrackets(element: PsiElement): Boolean {
@@ -81,9 +76,9 @@ private fun ASTNode.isIncompleteBinaryExpression(): Boolean {
 }
 
 
-private fun GdASTBlock.isIncompleteCall(child: ASTNode): Boolean {
-    if (child.elementType == GdTypes.CALL_EX) {
-        val callExpression = node.psi as GdCallEx
+private fun ASTNode.isIncompleteCall(): Boolean {
+    if (elementType == GdTypes.CALL_EX) {
+        val callExpression = psi as GdCallEx
         val argList = callExpression.argList
         if (argList == null || argList.closingParen == null) {
             return true
@@ -97,34 +92,33 @@ fun GdASTBlock.doGetChildAttributes(newChildIndex: Int): ChildAttributes {
         return ChildAttributes(getChildIndent(newChildIndex), null)
     }
 
-    // Try to delegate to child first
-
+    // Always pass the decision to a sane block from top level — file or definition.
     if (node.psi is GdFile || node.elementType == GdTypes.COLON) {
         return ChildAttributes.DELEGATE_TO_PREV_CHILD
     }
 
-    // Look past 0-width ghost blocks (empty STMT_OR_SUITE/SUITE, PsiErrorElement). Otherwise the
-    // STMT_OR_SUITE short-circuit below would delegate into a wrapper that has no opinion about
-    // indent, and the COLON-fallback in getChildIndent would never see `prevElement == COLON`.
-    var realPrevIndex = newChildIndex - 1
-    while (realPrevIndex > 0 && subBlocks[realPrevIndex].node.isGhostBlock()) {
-        realPrevIndex--
-    }
-    val insertedAfterBlock: GdASTBlock = subBlocks[realPrevIndex]
+    val insertedAfterBlock: GdASTBlock = subBlocks[newChildIndex - 1]
     val prevNode = insertedAfterBlock.node
     val prevElement = prevNode.elementType
 
-    if (prevElement == GdTypes.SUITE) {
-        if (dedentAfterLastStatement(prevNode.psi as GdSuite)) {
-            return ChildAttributes(Indent.getNoneIndent(), null)
+    // Statement lists (STMT_OR_SUITE/SUITE), statement parts (MATCH_BLOCK) and other colon-headed
+    // definitions should think for themselves
+    when (prevElement) {
+        GdTypes.SUITE -> {
+            if (dedentAfterLastStatement(prevNode.psi as GdSuite)) {
+                return ChildAttributes(Indent.getNoneIndent(), null)
+            }
+            return ChildAttributes.DELEGATE_TO_PREV_CHILD
         }
-        return delegateOrAbsolute(realPrevIndex, newChildIndex, prevNode)
-    } else if (prevElement == GdTypes.STMT_OR_SUITE) {
-        if (dedentAfterLastStatement(prevNode.psi as GdStmtOrSuite)) {
-            return ChildAttributes(Indent.getNoneIndent(), null)
+        GdTypes.STMT_OR_SUITE -> {
+            if (dedentAfterLastStatement(prevNode.psi as GdStmtOrSuite)) {
+                return ChildAttributes(Indent.getNoneIndent(), null)
+            }
+            return ChildAttributes.DELEGATE_TO_PREV_CHILD
         }
-    } else if (prevElement in GdBlocks.NEW_LINE_AFTER_COLON_PARENTS) {
-        return delegateOrAbsolute(realPrevIndex, newChildIndex, prevNode)
+        in GdBlocks.NEW_LINE_AFTER_COLON_PARENTS -> {
+            return ChildAttributes.DELEGATE_TO_PREV_CHILD
+        }
     }
 
     var statementListsBelow = 0
@@ -186,10 +180,6 @@ private fun GdASTBlock.getChildIndent(newChildIndex: Int): Indent {
         if (lastFirstChild != null && lastFirstChild == lastChild.lastChildNode && lastFirstChild.psi is PsiErrorElement)
             return Indent.getNormalIndent()
     }
-    // Fallback for parents that introduce an indented body via `:` but whose parser does NOT
-    // produce a STMT_OR_SUITE wrapper for an empty body. Inner `class X:` (GdClassParser inlines
-    // the body directly) and shorthand `var prop:` (GdClassVarParser.parseGetSet wraps just the
-    // colon) fall through the STMT_OR_SUITE-gated branch above
     if (afterNode != null && afterNode.elementType == GdTypes.COLON &&
         parentType in GdBlocks.NEW_LINE_AFTER_COLON_PARENTS
     ) {
@@ -240,50 +230,33 @@ private fun GdASTBlock.getAfterNode(newChildIndex: Int): ASTNode? {
         return null
     }
     var prevIndex = newChildIndex - 1
-    while (prevIndex > 0 && subBlocks[prevIndex].node.isGhostAfterNode()) {
+    while (prevIndex > 0 && subBlocks[prevIndex].node.elementType === GdTypes.COMMENT) {
         prevIndex--
     }
     return subBlocks[prevIndex].getNode()
 }
 
-/**
- * Computes the indent for a new child inserted after a colon-headed block, working around
- * cases where the platform's default delegation would land on an empty/ghost AST node
- * that has no indent opinion.
- */
-private fun GdASTBlock.delegateOrAbsolute(
-    realPrevIndex: Int,
-    newChildIndex: Int,
-    prev: ASTNode,
-): ChildAttributes {
-    if (realPrevIndex == newChildIndex - 1) return ChildAttributes.DELEGATE_TO_PREV_CHILD
-
-    val text = prev.psi.containingFile.text
-    val lineStart = text.lastIndexOf('\n', prev.startOffset - 1) + 1
-    val tabSize = ctx.commonSettings.indentOptions?.TAB_SIZE ?: 4
-    var col = 0
-    for (i in lineStart until prev.startOffset) {
-        col += if (text[i] == '\t') tabSize - (col % tabSize) else 1
-    }
-    val indentSize = ctx.commonSettings.indentOptions?.INDENT_SIZE ?: 4
-    return ChildAttributes(Indent.getSpaceIndent(col + indentSize), null)
-}
-
 private fun getLastNonSpaceChild(node: ASTNode, acceptError: Boolean): ASTNode? {
     var lastChild = node.getLastChildNode()
     while (lastChild != null &&
-        (lastChild.elementType.isWhiteSpace() || (!acceptError && lastChild.getPsi() is PsiErrorElement))
+        (lastChild.isWhitespaceOnly() || (!acceptError && lastChild.getPsi() is PsiErrorElement))
     ) {
         lastChild = lastChild.getTreePrev()
     }
     return lastChild
 }
 
-/**
- * Like [getLastNonSpaceChild] with `acceptError=false`, but also skips empty
- * STMT_OR_SUITE/SUITE wrappers — the 0-width stubs left behind when a body-parse fails but a
- * pinned colon higher up forces the enclosing marker to `done()` instead of rolling back.
- */
+private fun ASTNode.isWhitespaceOnly(): Boolean {
+    if (psi is PsiErrorElement) return false
+    if (firstChildNode == null) return textLength == 0 || elementType.isWhiteSpace()
+    var c: ASTNode? = firstChildNode
+    while (c != null) {
+        if (!c.isWhitespaceOnly()) return false
+        c = c.treeNext
+    }
+    return true
+}
+
 private fun getLastMeaningfulChild(node: ASTNode): ASTNode? {
     var c = node.lastChildNode
     while (c != null) {
@@ -293,16 +266,6 @@ private fun getLastMeaningfulChild(node: ASTNode): ASTNode? {
     return null
 }
 
-/**
- * AST nodes the formatter must treat as transparent when looking back from a caret position:
- *  - PsiErrorElement — left behind when a body parse fails and rolls back.
- *  - STMT_OR_SUITE/SUITE with no meaningful (non-whitespace, non-error) children. This covers
- *    both the pre-Enter 0-width stub (`_ when v > 0:<caret>` -> MATCH_BLOCK ends with
- *    [..., COLON, STMT_OR_SUITE(empty)]) and the post-Enter wrapper that contains only the
- *    inserted NEW_LINE (and possibly INDENT/WHITE_SPACE) but no parsed statements yet —
- *    `adjustLineIndent` runs after the `\n` is in the document, so MATCH_BLOCK at that point
- *    ends with [..., COLON, STMT_OR_SUITE(NEW_LINE)], not the original 0-width stub.
- */
 private fun ASTNode.isGhostBlock(): Boolean {
     if (psi is PsiErrorElement) return true
     val t = elementType
@@ -315,26 +278,19 @@ private fun ASTNode.isGhostBlock(): Boolean {
     return true
 }
 
-/** [isGhostBlock] plus COMMENT, which getAfterNode has always skipped. */
-private fun ASTNode.isGhostAfterNode(): Boolean = elementType === GdTypes.COMMENT || isGhostBlock()
-
-/**
- * True when there are at least [minCount] line breaks between [node] and the previous
- * non-whitespace content in the same parent. Walks backward through consecutive
- * whitespace / NEW_LINE leaves and accumulates '\n' characters until either the
- * threshold is met, a non-whitespace leaf is hit, or the parent's left edge is reached.
- */
 fun hasLineBreaksBeforeInSameParent(node: ASTNode, minCount: Int): Boolean {
+    if (TreeUtil.findFirstLeaf(node).isWhitespaceWithLineBreaks(minCount)) return true
     val parentStart = (node.treeParent ?: return false).startOffset
     var count = 0
     var leaf: ASTNode? = TreeUtil.prevLeaf(node)
     while (leaf != null && leaf.startOffset >= parentStart) {
-        val type = leaf.elementType
-        // TODO: Maybe also handle the whitespace with .isWhitespace?
-        if (type != TokenType.WHITE_SPACE && type != GdTypes.NEW_LINE) return false
+        if (!leaf.elementType.isWhiteSpace()) return false
         count += leaf.text.count { it == '\n' }
         if (count >= minCount) return true
         leaf = TreeUtil.prevLeaf(leaf)
     }
     return false
 }
+
+private fun ASTNode?.isWhitespaceWithLineBreaks(minCount: Int): Boolean =
+    this != null && elementType.isWhiteSpace() && text.count { it == '\n' } >= minCount
