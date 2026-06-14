@@ -1,12 +1,14 @@
 package gdscript.formatter.impl
 
 import com.intellij.formatting.Indent
+import com.intellij.formatting.FormattingMode
 import com.intellij.lang.ASTNode
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.formatter.GdFmtContext
 import gdscript.formatter.GdCodeStyleSettings
+import gdscript.formatter.isWhiteSpace
 import gdscript.formatter.block.GdASTBlock
 import gdscript.formatter.block.GdBlocks
 import gdscript.psi.GdArrEx
@@ -49,6 +51,11 @@ fun GdASTBlock.computeChildIndent(child: ASTNode, childCtx: GdFmtContext): Inden
             Indent.getNoneIndent()
         // Collection literals, parenthesized exprs, arg/param lists, and match patterns ([1,2] / {1:2}).
         parentType in GdBlocks.BRACKETED_INDENT_PARENTS -> when {
+            childType in GdBlocks.RIGHT_BRACES &&
+                childCtx.formattingMode != FormattingMode.REFORMAT &&
+                child.prevNonSpaceSibling()?.elementType == GdTypes.COMMA ->
+                if (useContinuationIndent(parentType, gdSettings)) Indent.getContinuationIndent()
+                else Indent.getNormalIndent()
             isStickyBracket(childType, gdSettings.HANG_CLOSING_BRACKETS) -> Indent.getNoneIndent()
             useContinuationIndent(parentType, gdSettings) -> Indent.getContinuationIndent()
             else -> Indent.getNormalIndent()
@@ -101,6 +108,15 @@ private fun isContinuationIndent(indent: Indent): Boolean =
 private fun isChildOfKeyValuePair(node: ASTNode): Boolean =
     node.treeParent.let { parent -> parent != null && parent.elementType == GdTypes.KEY_VALUE }
 
+/** Mirrors PyBlock#findPrevNonSpaceNode: previous sibling, skipping whitespace-like tokens. */
+private fun ASTNode.prevNonSpaceSibling(): ASTNode? {
+    var prev = treePrev
+    while (prev != null && prev.elementType.isWhiteSpace()) {
+        prev = prev.treePrev
+    }
+    return prev
+}
+
 private fun isValueOfKeyValuePair(node: ASTNode): Boolean =
     isChildOfKeyValuePair(node) && node.treeParent.getPsi(GdKeyValue::class.java).value == node.getPsi()
 
@@ -112,11 +128,6 @@ private fun ASTNode.isAfterStatementList(): Boolean {
     return lastChild.parent is GdStmtOrSuite || lastChild.parent is GdMethodDeclTl
 }
 
-/**
- * For a child of a bracketed parent, picks whether the parent's setting opts in to
- * a continuation indent instead of a normal indent. Match patterns never use continuation:
- * a continuation indent looks wrong next to the surrounding case body.
- */
 private fun useContinuationIndent(parentType: IElementType, settings: GdCodeStyleSettings): Boolean =
     when (parentType) {
         GdTypes.PARAM_LIST -> settings.USE_CONTINUATION_INDENT_FOR_PARAMETERS
@@ -126,10 +137,6 @@ private fun useContinuationIndent(parentType: IElementType, settings: GdCodeStyl
         else -> settings.USE_CONTINUATION_INDENT_FOR_COLLECTIONS
     }
 
-/**
- * A bracket that should stick to the parent's indent: any opening bracket, plus
- * closing brackets when hang-closing is off.
- */
 private fun isStickyBracket(childType: IElementType, hangClosing: Boolean): Boolean =
     childType in GdBlocks.LEFT_BRACES || (childType in GdBlocks.RIGHT_BRACES && !hangClosing)
 
@@ -145,17 +152,6 @@ private fun GdASTBlock.findTopmostBinaryExpressionBlock(child: ASTNode): GdASTBl
     return topmostBinaryExpr
 }
 
-/**
- * Ported from `PyBlock.isIndentNext` (PyBlock.java:850-862). Returns true when [child] sits in
- * the header of a statement that introduces an indented body (i.e. ends with `:`), so a backslash
- * continuation on the next line should use a continuation indent rather than a normal one.
- *
- * We walk up the AST and stop at [GdTypes.SUITE] so children inside a body return false.
- *
- * Caveat: for `match`, [GdBlocks.NEW_LINE_AFTER_COLON_PARENTS] contains `MATCH_BLOCK` (the colon's
- * direct parent), not `MATCH_ST`. If the parser ever places the matched expression directly under
- * `MATCH_ST`, a backslash continuation in a `match` header won't be detected here.
- */
 private fun isIndentNext(child: ASTNode): Boolean {
     var cur: ASTNode? = child.treeParent
     while (cur != null) {

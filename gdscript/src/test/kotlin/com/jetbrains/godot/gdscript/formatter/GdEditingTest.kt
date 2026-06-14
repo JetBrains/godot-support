@@ -292,6 +292,15 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testBracesInString() = doEnterTest()
 
+    @Test
+    fun testEnterOnOneLineMatchBlock() = doEnterTest()
+
+    @Test
+    fun testEnterOnLastParameter() = doEnterTest()
+
+    @Test
+    fun testEnterInMatch() = doEnterTest()
+
     @Ignore("[backslash]")
     @Test
     fun testEnterBeforeString() = doEnterTest()  // PY-3673
