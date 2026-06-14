@@ -23,21 +23,17 @@ repositories {
     }
 }
 
+val buildConfiguration: String by project
+
 dependencies {
     intellijPlatform {
-        intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
-        // rider(libs.versions.riderSdk, useInstaller = false)
+        //intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
+        rider(libs.versions.riderSdk) { useInstaller = false }
         jetbrainsRuntime()
     }
 }
 
 intellijPlatform{
     instrumentCode = false
-    buildSearchableOptions = false
-
-    pluginConfiguration{
-        ideaVersion {
-            sinceBuild = "261"
-        }
-    }
+    buildSearchableOptions = buildConfiguration != "Debug"
 }

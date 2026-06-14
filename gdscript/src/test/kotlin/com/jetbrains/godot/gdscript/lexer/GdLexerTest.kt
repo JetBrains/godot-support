@@ -43,14 +43,18 @@ class GdLexerTest : LexerTestCase() {
         try{
             super.doTest(text, expected, lexer)
         }
-        catch (e:FileComparisonFailedError){
-            val expectedText = e.getExpectedStringPresentation()
-            val actualText = e.getActualStringPresentation()
-            println("EXPECTED:\n" + expectedText + "\n----\nACTUAL:\n" + actualText)
-            throw e
-        }
+        // todo: doesn't work with Rider SDK
+//        catch (e:FileComparisonFailedError){
+//            val expectedText = e.getExpectedStringPresentation()
+//            val actualText = e.getActualStringPresentation()
+//            println("EXPECTED:\n" + expectedText + "\n----\nACTUAL:\n" + actualText)
+//            throw e
+//        }
         catch (e: ComparisonFailure){
             println("EXPECTED:\n" + e.expected + "\n----\nACTUAL:\n" + e.actual)
+            throw e
+        }
+        catch (e: Exception){
             throw e
         }
     }
