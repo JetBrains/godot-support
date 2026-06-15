@@ -50,6 +50,7 @@ repositories {
     intellijPlatform {
         defaultRepositories()
         jetbrainsRuntime()
+        nightly()
     }
 }
 
@@ -70,7 +71,9 @@ dependencies {
         bundledPlugin("intellij.bookmarks.plugin")
         bundledPlugin("intellij.libraries.misc.plugin")
         bundledModule("intellij.platform.dap")
+        bundledModule("intellij.platform.lsp")
         bundledModule("intellij.spellchecker")
+        bundledPlugin("intellij.structureView.plugin")
     }
     implementation(libs.jflex)
     testImplementation(libs.openTest4J)
