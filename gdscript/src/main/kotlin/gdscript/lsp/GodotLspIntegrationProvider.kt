@@ -16,7 +16,7 @@ import com.intellij.platform.lsp.api.LspClient
 import com.intellij.platform.lsp.api.LspClientDescriptor
 import com.intellij.platform.lsp.api.LspClientManager
 import com.intellij.platform.lsp.api.LspServerNotificationsHandler
-import com.intellij.platform.lsp.api.LspClientProvider
+import com.intellij.platform.lsp.api.LspIntegrationProvider
 import com.intellij.platform.lsp.api.customization.LspCompletionCustomizer
 import com.intellij.platform.lsp.api.customization.LspCustomization
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsCustomizer
@@ -72,15 +72,15 @@ class GodotLspProjectService(val project: Project) {
 
     fun restartServer() {
         thisLogger().info("stopAndRestartIfNeeded")
-        LspClientManager.getInstance(project).stopAndRestartClientsIfNeeded(GodotLspClientProvider::class.java)
+        LspClientManager.getInstance(project).stopAndRestartClientsIfNeeded(GodotLspIntegrationProvider::class.java)
     }
 }
 
-class GodotLspClientProvider : LspClientProvider {
+class GodotLspIntegrationProvider : LspIntegrationProvider {
     override fun createWidgetItem(lspClient: LspClient, currentFile: VirtualFile?): LspClientWidgetItem =
         GodotLspClientWidgetItem(lspClient, currentFile, GdScriptPluginIcons.Icons.GodotLogo, settingsPageClass = GdSettingsConfigurable::class.java)
 
-    override fun fileOpened(project: Project, file: VirtualFile, clientStarter: LspClientProvider.LspClientStarter) {
+    override fun fileOpened(project: Project, file: VirtualFile, clientStarter: LspIntegrationProvider.LspClientStarter) {
         if (GodotFileUtil.isGdFile(file)) {
             val settings = GdLspSettingsFlowService.getInstance(project)
             val lspService = GodotLspProjectService.getInstance(project)
@@ -91,7 +91,7 @@ class GodotLspClientProvider : LspClientProvider {
                 scope.launch(Dispatchers.IO) {
                     settings.lspConnectionMode.filterNotNull().collect { lspConnectionMode ->
                         if (lspConnectionMode == GdLspConnectionMode.Never) {
-                            LspClientManager.getInstance(project).stopClients(GodotLspClientProvider::class.java)
+                            LspClientManager.getInstance(project).stopClients(GodotLspIntegrationProvider::class.java)
                         } else
                             scheduleStartIfNeeded(project)
                     }
