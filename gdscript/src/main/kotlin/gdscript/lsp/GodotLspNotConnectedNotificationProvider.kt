@@ -45,7 +45,7 @@ class GodotLspNotConnectedNotificationProvider(private val project: Project) : E
         LspClientManager.getInstance(project).addListener(
             object : LspClientManagerListener {
                 override fun serverStateChanged(lspClient: LspClient) {
-                    if (lspClient.providerClass == GodotLspClientProvider::class.java) {
+                    if (lspClient.providerClass == GodotLspIntegrationProvider::class.java) {
                         if (GodotLspRunningStatusProvider.isLspRunning(project)) {
                             // LSP connected — reset the timer
                             disconnectedSince.set(0L)
