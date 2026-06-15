@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ExampleClass" inherits="RefCounted" api_type="editor_extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="add" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="a" type="int" />
+			<param index="1" name="b" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="apply_flags">
+			<return type="void" />
+			<param index="0" name="flags" type="int" enum="ExampleClass.Flags" is_bitfield="true" />
+			<description>
+			</description>
+		</method>
+		<method name="compute_with_defaults">
+			<return type="int" />
+			<param index="0" name="a" type="int" default="2" />
+			<param index="1" name="b" type="int" default="3" />
+			<description>
+			</description>
+		</method>
+		<method name="get_hello" qualifiers="const">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="get_version" qualifiers="static">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="log_varargs" qualifiers="const vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="multiply" qualifiers="static">
+			<return type="int" />
+			<param index="0" name="a" type="int" />
+			<param index="1" name="b" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="sum_varargs" qualifiers="const vararg">
+			<return type="Variant" />
+			<param index="0" name="first" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="transform_point" qualifiers="const">
+			<return type="Vector2" />
+			<param index="0" name="point" type="Vector2" />
+			<param index="1" name="scale" type="float" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="counter" type="int" setter="set_counter" getter="get_counter" default="0">
+		</member>
+		<member name="label" type="String" setter="set_label" getter="get_label" default="&quot;Example&quot;">
+		</member>
+		<member name="origin" type="Vector2" setter="set_origin" getter="get_origin" default="Vector2(0, 0)">
+		</member>
+		<member name="status" type="int" setter="set_status" getter="get_status" enum="ExampleClass.Status" default="0">
+		</member>
+	</members>
+	<signals>
+		<signal name="counter_changed">
+			<param index="0" name="new_value" type="int" />
+			<description>
+			</description>
+		</signal>
+		<signal name="named_event">
+			<param index="0" name="name" type="String" />
+			<param index="1" name="amount" type="float" />
+			<description>
+			</description>
+		</signal>
+		<signal name="ready">
+			<description>
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="STATUS_IDLE" value="0" enum="Status">
+		</constant>
+		<constant name="STATUS_RUNNING" value="1" enum="Status">
+		</constant>
+		<constant name="STATUS_DONE" value="42" enum="Status">
+		</constant>
+		<constant name="FLAG_NONE" value="0" enum="Flags" is_bitfield="true">
+		</constant>
+		<constant name="FLAG_ALPHA" value="1" enum="Flags" is_bitfield="true">
+		</constant>
+		<constant name="FLAG_BETA" value="2" enum="Flags" is_bitfield="true">
+		</constant>
+		<constant name="FLAG_GAMMA" value="4" enum="Flags" is_bitfield="true">
+		</constant>
+		<constant name="UNGROUPED_CONSTANT" value="314">
+		</constant>
+	</constants>
+</class>

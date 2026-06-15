@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ExampleGlobals" inherits="Object" api_type="editor_extension" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<constants>
+		<constant name="LOG_DEBUG" value="0" enum="LogLevel">
+		</constant>
+		<constant name="LOG_INFO" value="1" enum="LogLevel">
+		</constant>
+		<constant name="LOG_WARNING" value="2" enum="LogLevel">
+		</constant>
+		<constant name="LOG_ERROR" value="3" enum="LogLevel">
+		</constant>
+		<constant name="MAX_PLAYERS" value="8">
+		</constant>
+		<constant name="TICK_RATE_HZ" value="60">
+		</constant>
+	</constants>
+</class>
