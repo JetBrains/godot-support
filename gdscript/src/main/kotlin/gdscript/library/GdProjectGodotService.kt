@@ -15,7 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.nio.charset.Charset
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.pathString
@@ -66,7 +65,7 @@ class GdProjectGodotService(@Suppress("unused") project: Project) {
     private fun parseProjectGodot(basePath: Path): GodotProjectInfo? {
         val projectFile = basePath.resolve("project.godot")
         if (!projectFile.exists()) return null
-        val content = projectFile.readText(Charset.defaultCharset())
+        val content = projectFile.readText()
 
         // todo: use com.intellij.openapi.util.Version instead of string
         // todo: get full version from the FileVersionInfo on Windows, Contents/Info.plist on Mac, parse file name on Linux
