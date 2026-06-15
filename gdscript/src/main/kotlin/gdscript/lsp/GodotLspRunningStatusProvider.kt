@@ -7,14 +7,14 @@ import com.intellij.platform.lsp.api.LspServerState
 object GodotLspRunningStatusProvider {
     fun isLspRunning(project: Project): Boolean {
         val manager = LspClientManager.getInstance(project)
-        val clients = manager.getClients(GodotLspClientProvider::class.java)
+        val clients = manager.getClients(GodotLspIntegrationProvider::class.java)
         val isRunning = clients.any { it.state == LspServerState.Running }
         return isRunning
     }
 
     fun isLspStartingUp(project: Project): Boolean {
         val manager = LspClientManager.getInstance(project)
-        val clients = manager.getClients(GodotLspClientProvider::class.java)
+        val clients = manager.getClients(GodotLspIntegrationProvider::class.java)
         return clients.any { it.state == LspServerState.Initializing }
     }
 
