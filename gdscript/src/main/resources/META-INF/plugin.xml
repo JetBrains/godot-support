@@ -42,7 +42,11 @@
     <library.type implementation="gdscript.library.GdLibraryType" />
     <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor" />
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
-    <backgroundPostStartupActivity implementation="gdscript.listener.ReferenceSdkProjectActivity"/>
+    <registryKey key="gdscript.gdextension.api.dumper.timeout.ms"
+                 defaultValue="60000"
+                 description="Timeout (in milliseconds) for the Godot --doctool process that generates GDExtension stubs"
+                 restartRequired="false"/>
+    <backgroundPostStartupActivity implementation="gdscript.listener.ReferenceGdLibrariesProjectActivity"/>
     <backgroundPostStartupActivity implementation="GdScriptToolWindowManagerProjectActivity"/>
     <backgroundPostStartupActivity implementation="gdscript.lsp.GodotLspStartOnFocusGainedActivity"/>
     <rider.godot.community.godotProjectProvider implementation="gdscript.utils.GdScriptGodotProjectProvider" />

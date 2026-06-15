@@ -13,50 +13,66 @@ import com.intellij.openapi.roots.ModuleRootModificationUtil
 import com.intellij.openapi.roots.OrderRootType
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import com.intellij.openapi.util.Version
-import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.openapi.vfs.VfsUtil
+import com.intellij.util.concurrency.annotations.RequiresBackgroundThread
 import com.intellij.util.io.Decompressor
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.createDirectories
+import kotlin.io.path.deleteRecursively
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
-import kotlin.io.path.pathString
 import kotlin.io.path.readText
 
+@OptIn(ExperimentalPathApi::class)
 object GdLibraryManager {
 
     // before 252, library name used to be "GdSdk $version"
-    private const val LIBRARY_NAME = "GdSdk"
+    private const val SDK_LIBRARY_NAME = "GdSdk"
+    private const val EXTENSION_STUBS_LIBRARY_NAME = "GdExtensionStubs"
 
     fun registerSdkIfNeeded(path: Path, project: Project) {
-        val sourceRoot = LocalFileSystem.getInstance().refreshAndFindFileByPath(path.pathString)
+        registerLibraryIfNeeded(SDK_LIBRARY_NAME, path, project)
+    }
+
+    fun registerExtensionStubsIfNeeded(path: Path, project: Project) {
+        registerLibraryIfNeeded(EXTENSION_STUBS_LIBRARY_NAME, path, project)
+    }
+
+    @RequiresBackgroundThread // findFile may block EDT
+    private fun registerLibraryIfNeeded(libraryName: String, path: Path, project: Project) {
+        val sourceRoot = VfsUtil.findFile(path, true)
 
         if (sourceRoot == null) {
-            throw Exception("Cannot find SDK at $path")
+            thisLogger().error("registerLibraryIfNeeded failed: ${libraryName} ${path}")
+            return
         }
 
         val module = ModuleManager.getInstance(project).modules.first()
 
         val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
-        libraryTable.getLibraryByName(LIBRARY_NAME)?.let { lib->
+        libraryTable.getLibraryByName(libraryName)?.let { lib->
             // I see this doesn't work on the dev build
             // different casing of letters
             // /Users/ivan.shakhov/Work/ultimate/out/dev-run/Rider
             // vs
             // /Users/ivan.shakhov/Work/ultimate/out/dev-run/rider
             if (lib.isValid(sourceRoot.url, OrderRootType.SOURCES)
-                && libraryTable.libraries.count { library -> library.name?.startsWith(LIBRARY_NAME) == true } == 1
+                && libraryTable.libraries.count { library -> library.name?.startsWith(libraryName) == true } == 1
                 && ModuleRootManager.getInstance(module)
                     .orderEntries
                     .filterIsInstance<LibraryOrderEntry>()
                     .any { it.library == lib }) { // check that module has dependency on this library
-                return@registerSdkIfNeeded
+                thisLogger().trace("Library $libraryName already registered at $path; nothing to do")
+                return
             }
         }
 
         var tableModel = libraryTable.modifiableModel
-        val libraries = tableModel.libraries.filter { library -> library.name?.startsWith(LIBRARY_NAME) == true }
+        val libraries = tableModel.libraries.filter { library -> library.name?.startsWith(libraryName) == true }
 
         if (libraries.any()) {
             for (library in libraries) {
@@ -71,7 +87,7 @@ object GdLibraryManager {
         }
 
         tableModel = libraryTable.modifiableModel
-        val library = tableModel.createLibrary(LIBRARY_NAME, GdLibraryKind)
+        val library = tableModel.createLibrary(libraryName, GdLibraryKind)
         val libraryModel = library.modifiableModel
         libraryModel.addRoot(sourceRoot, OrderRootType.SOURCES)
 
@@ -82,10 +98,11 @@ object GdLibraryManager {
             })
             ModuleRootModificationUtil.addDependency(module, library)
         }
+        thisLogger().info("Registered library $libraryName at $path")
     }
 
-    private fun extractSdkIfNeededInternal(version: String, bundledSdkPath: Path): Path {
-        var name = getPluginByClass(GdLibraryManager::class.java)?.name
+    private fun extractSdkIfNeededInternal(version: Version?, bundledSdkPath: Path): Path {
+        var name = getPluginByClass(this::class.java)?.name
         if (name == null) {
             thisLogger().error("Cannot find Godot plugin ID")
             name = "GdScript"
@@ -93,22 +110,21 @@ object GdLibraryManager {
         val extractionDir = PathManager.getPluginsDir().resolve(name).resolve("extracted")
 
         // Check if SDK is already extracted and has a valid stamp
-        val validator = SdkIntegrityValidator()
         val extractionStampFile = extractionDir.resolve(SdkIntegrityValidator.STAMP_FILE_NAME)
         val needsExtraction = !extractionDir.exists() ||
                               !extractionStampFile.exists() ||
-                              extractionStampFile.readText().trim() != validator.getFilesFromFs(extractionDir).count().toString()
+                              extractionStampFile.readText().trim() != SdkIntegrityValidator.getFilesFromFs(extractionDir).count().toString()
 
         // Extract SDK if needed
         if (needsExtraction) {
             if (extractionDir.exists()) {
-                extractionDir.toFile().deleteRecursively()
+                extractionDir.deleteRecursively()
             }
-            Files.createDirectories(extractionDir)
+            extractionDir.createDirectories()
 
             // Extract the SDK
             Decompressor.Tar(bundledSdkPath).extract(extractionDir)
-            validator.writeStamp(extractionDir.toFile())
+            SdkIntegrityValidator.writeStamp(extractionDir)
         }
 
         // Find the requested SDK version in the extracted directory
@@ -117,16 +133,13 @@ object GdLibraryManager {
     }
 
     // todo: check with OSS build
-    fun extractSdkIfNeeded(version: String): Path {
+    fun extractSdkIfNeeded(version: Version?): Path {
         val bundledSdkPath = getPluginDistDirByClass(this::class.java)?.resolve("sdk/sdk.tar.xz").takeIf { it?.exists() == true } ?: error("Bundled SDK not found")
         return extractSdkIfNeededInternal(version, bundledSdkPath)
     }
 
-    private fun findSdkVersion(extractionDir: Path, version: String): Path {
-        // version from the project.godot is always "major.minor", lets always use the highest patch version available
-        val prefix = Version.parseVersion(version)
-
-        if (prefix != null) {
+    private fun findSdkVersion(extractionDir: Path, version: Version?): Path {
+        if (version != null) {
             val bestMatch = extractionDir.listDirectoryEntries()
                 .asSequence()
                 .filter { Files.isDirectory(it) }
@@ -134,9 +147,7 @@ object GdLibraryManager {
                     val parsed = Version.parseVersion(dir.name)
                     if (parsed != null) parsed to dir else null
                 }
-                .filter { (ver, _) -> ver.major == prefix.major && ver.minor == prefix.minor }
-                .sortedByDescending { (semVer, _) -> semVer }
-                .firstOrNull()?.second
+                .filter { (ver, _) -> ver.major == version.major && ver.minor == version.minor }.maxByOrNull { (semVer, _) -> semVer }?.second
 
             if (bestMatch != null) {
                 thisLogger().info("Use $bestMatch version for $version.")
