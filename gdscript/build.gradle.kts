@@ -71,6 +71,14 @@ dependencies {
         bundledPlugin("intellij.libraries.misc.plugin")
         bundledModule("intellij.platform.dap")
         bundledModule("intellij.spellchecker")
+        bundledModule("intellij.platform.core.impl")
+        bundledModule("intellij.platform.codeStyle")
+        bundledModule("intellij.platform.ide.core")
+        bundledModule("intellij.platform.editor.ui")
+        bundledModule("intellij.platform.projectModel")
+        bundledPlugin("intellij.structureView.plugin")
+        bundledModule("intellij.rider.rdclient.dotnet")
+        bundledModule("intellij.rider")
     }
     implementation(libs.jflex)
     testImplementation(libs.openTest4J)
@@ -195,6 +203,7 @@ tasks {
     }
 
     test {
+        jvmArgs("-Xmx2500m")
         useJUnitPlatform()
         testLogging {
             showStandardStreams = true
