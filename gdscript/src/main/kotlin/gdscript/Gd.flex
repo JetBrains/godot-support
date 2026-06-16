@@ -3,79 +3,92 @@
   GDSCRIPT INDENTATION & NESTING RULES
   ------------------------------------
 
-  This lexer must handle indentation-sensitive syntax with nested regions
-  where indentation is temporarily ignored or reactivated.
+  GDScript is indentation-sensitive like Python, but indentation is ignored
+  inside (), [], {} -- EXCEPT inside an inline lambda body, where it becomes
+  significant again. This lexer reconciles the two cases with a little state.
 
-  State variables:
-    int paren_depth;           // count of (, [, {
-    bool indent_active;        // whether indentation affects NEWLINE
-    stack<int> indent_stack;   // indentation levels
-    stack<bool> react_stack;   // previous indent_active states (for reactivation)
-
-------------------------------------------------------------------------------
-  NEWLINE HANDLING
-  ----------------
-  - On each NEWLINE:
-      if (indent_active && paren_depth == 0):
-          compare current indentation to top(indent_stack)
-          emit INDENT or one/more DEDENT tokens accordingly
-      else:
-          ignore indentation (leading spaces are insignificant)
+  State (declared in the %{ ... %} block below):
+    ParenTracker parens                  // nesting depth of (), [], {}
+    int indent                           // current significant indent, in columns
+    Stack<Integer> indentSizes           // one entry per open INDENT: the column
+                                         //   delta it added (dedent() pops one)
+    ArrayDeque<LambdaFrame> lambdaFrames // one frame per inline lambda; see below
 
 ------------------------------------------------------------------------------
-  PARENTHESIS CONTROL
+  WHEN IS INDENTATION SIGNIFICANT?  (isIgnored())
+  -----------------------------------------------
+  - At paren depth 0 it is always significant.
+  - Inside (), [], {} it is ignored -- so ordinary multi-line arguments are
+    free-form -- UNLESS the top lambda frame is active at the current depth,
+    which re-enables it for that lambda's body.
+
+------------------------------------------------------------------------------
+  NEWLINE / INDENT / DEDENT  (the {NEW_LINE} and {INDENT} rules)
+  -------------------------------------------------------------
+  When indentation is significant, a line's leading whitespace is compared to
+  `indent`:
+    - deeper    -> push the delta onto indentSizes, emit INDENT
+    - shallower -> pop one level, emit DEDENT (but see lambda close, below)
+    - equal     -> emit one NEW_LINE (repeats collapse to WHITE_SPACE)
+  When it is ignored, leading whitespace and newlines are insignificant
+  WHITE_SPACE.
+
+------------------------------------------------------------------------------
+  PARENTHESES & COLON
   -------------------
-  - On '(', '[', '{'  → paren_depth++
-  - On ')', ']', '}'  → paren_depth--
-  - When paren_depth > 0 → indentation normally disabled
-  - When paren_depth == 0 → indentation enabled (unless overridden)
+  '(' '[' '{' -> parens.open();   ')' ']' '}' -> onCloseParen().
+  A ':' immediately followed by a newline opens a block suite. Its only special
+  lexer job is to ACTIVATE a pending lambda frame (activateLambdaAfterColon);
+  an inline ':' (code on the same line) opens no block and activates nothing.
 
 ------------------------------------------------------------------------------
-  COLON BEHAVIOR
-  --------------
-  After ':' :
-    - If next token is NEWLINE:
-        // block suite
-        enable indentation (indent_active = true)
-        on next line, emit INDENT if deeper
-    - Else:
-        // inline suite
-        no INDENT/DEDENT emitted
+  LAMBDAS INSIDE PARENS  (the LambdaFrame mechanism)
+  --------------------------------------------------
+  A `func` lexed while inside parens (markLambda) pushes a LambdaFrame:
+      parenDepth      = paren depth of that `func`
+      startIndentSize = -1 while pending; set to indentSizes.size() once the
+                        body activates at ':'+newline (the indent level the
+                        body starts from)
+  While a frame is active at the current depth, isIgnored() is false, so the
+  body emits real INDENT/DEDENT/NEW_LINE -- it is a genuine indented suite even
+  though it lives inside ().
 
-------------------------------------------------------------------------------
-  INDENTATION REACTIVATION INSIDE PARENS
-  --------------------------------------
-  - If inside parentheses (paren_depth > 0)
-    and ':' followed by NEWLINE occurs after a block-forming keyword
-    (func, if, elif, else, for, while, match):
-        push current indent_active to the react_stack
-        set indent_active = true
-  - On `return` keyword or dedent back to the outer level:
-        restore indent_active from react_stack (usually false)
-  - When block is interrupted with closing of the parentheses symbol:
-    close block with NEWLINE,
-    INDENT, DEDENT before closing parentheses to let it be placed exactly on the level of its start
+  A lambda body ends by STRUCTURE, never by `return` (an earlier version closed
+  it on `return`, which mis-handled nested if/for/match bodies). Three closes:
+
+    1. Dedent back to the start level -- in the {INDENT} dedent branch, a pop
+       that would reach startIndentSize deactivates the frame and consumes the
+       whitespace WITHOUT emitting DEDENT: the following ')'/',' bounds the
+       argument and the parser's lambda suite absorbs the trailing NEW_LINE.
+       Inner-block dedents (still deeper than the start) emit DEDENT normally.
+
+    2. A ',' at the lambda's own depth (drainLambdaFrameAtComma) -- ends the
+       argument before the body ever dedented; silently unwind the body's
+       indents and pop the frame, no DEDENT emitted.
+
+    3. A closing ')'/']'/'}' at the lambda's depth (drainLambdaFramesAtCurrentDepth)
+       -- emit a DEDENT for each still-open body level (pushing the bracket back
+       each time) so the bracket lands at the frame's start level, then close.
+
+  onCloseParen() additionally drops any frames belonging to the closed paren.
 
 ------------------------------------------------------------------------------
   EXAMPLES
   --------
-  func a():
-      print(
-          func():
+  (1) closed by its own dedent -- the lower-indented ')' line ends the body;
+      no DEDENT token, just WHITE_SPACE before ')':
+          var sum = arr.reduce(
+              func(acc, n):
+                  return acc + n
+          )
+  (2) closed by an inline ',' -- body never dedents; it ends at the comma and
+      the next argument follows:
+          arr.reduce(func(acc, n): return acc + n, 0)
+  (3) closed by the bracket on the same line -- DEDENT(s) are emitted before
+      ')', so ')' sits at the lambda's start level:
+          print(func():
               if x:
-                  pass)            // Lexer should close the nested blocks with NEWLINE and DEDENTS before the closing bracket
-  func a():
-      print(
-          func():
-              if x:
-                  pass             // Lexer should close the nested blocks
-                  )                // ignore indents
-  func a():
-      print(
-          func():
-              if x:
-                  pass
-      )                            // expected result
+                  pass)
 ------------------------------------------------------------------------------
 */
 
@@ -110,11 +123,7 @@ import gdscript.lexer.ParenTracker;
     boolean newLineProcessed = false;
     boolean gotBackslash = false;
 
-    // Per-lambda stack. Each frame represents one inline-lambda scope that has
-    // either seen `func` inside parens (pending: startIndentSize == -1) or
-    // activated indent tracking after `:` + newline (active: startIndentSize >= 0).
-    // Frames are pushed in left-to-right `func`-lexed order and popped in
-    // right-to-left `)`-closed order, matching the natural LIFO of nested syntax.
+    // One frame per inline lambda (see header). Pushed in `func`-lexed order, popped in `)`-closed order (LIFO).
     static final class LambdaFrame {
         final int parenDepth;
         int startIndentSize = -1;
@@ -174,8 +183,6 @@ import gdscript.lexer.ParenTracker;
 
     private boolean isIgnored() {
         if (parens.isTopLevel()) return false;
-        // Inside parentheses, indentation is ignored unless the top lambda frame is
-        // active and at this depth.
         LambdaFrame top = lambdaFrames.peek();
         return top == null
             || top.startIndentSize < 0
@@ -205,8 +212,6 @@ import gdscript.lexer.ParenTracker;
     }
 
     private void activateLambdaAfterColon() {
-        // Reactivate indentation inside parentheses only for block suites,
-        // i.e., when ':' is immediately followed by a newline.
         LambdaFrame top = lambdaFrames.peek();
         if (top != null
             && top.startIndentSize < 0
@@ -216,26 +221,23 @@ import gdscript.lexer.ParenTracker;
         }
     }
 
-    private void restoreLambdaOnReturn() {
-        // When returning from a lambda defined inside parens with reactivated indentation,
-        // stop treating NEW_LINE as significant at this bracket depth. Popping the top
-        // frame preserves any outer lambda's frame underneath.
+    private void drainLambdaFrameAtComma() {
         LambdaFrame top = lambdaFrames.peek();
         if (top != null
             && top.startIndentSize >= 0
             && top.parenDepth == parens.getDepth()
             && parens.getDepth() > 0) {
+            while (indentSizes.size() > top.startIndentSize) {
+                dedent();
+            }
             lambdaFrames.pop();
         }
     }
 
     /**
-     * Drains pending lambda indents at the current paren depth.
-     * - If the topmost active frame at this depth still has unflushed INDENT pushes,
-     *   emits a DEDENT and pushes the caller's close-bracket back (returns true).
-     * - Otherwise pops fully-drained frames at this depth and returns false so the
-     *   caller can emit the close-bracket itself.
-     * Handles arbitrarily many sibling lambdas at the same paren depth.
+     * Close-bracket drain (see header, mechanism 3). Returns true after emitting a DEDENT
+     * and pushing the close-bracket back (call again); false once drained, for the caller
+     * to emit the bracket itself. Loops over sibling lambdas at the same depth.
      */
     private boolean drainLambdaFramesAtCurrentDepth() {
         while (true) {
@@ -356,7 +358,7 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"
     "continue"     { return dedentRoot(GdTypes.CONTINUE); }
     "breakpoint"   { return dedentRoot(GdTypes.BREAKPOINT); }
     "break"        { return dedentRoot(GdTypes.BREAK); }
-    "return"       { restoreLambdaOnReturn(); return dedentRoot(GdTypes.RETURN); }
+    "return"       { return dedentRoot(GdTypes.RETURN); }
     "void"         { return dedentRoot(GdTypes.VOID); }
     "inf"          { return dedentRoot(GdTypes.INF); }
     "nan"          { return dedentRoot(GdTypes.NAN); }
@@ -388,7 +390,7 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"
     "..."          { return dedentRoot(GdTypes.DOTDOTDOT); }
     ".."           { return dedentRoot(GdTypes.DOTDOT); }
     "."            { return dedentRoot(GdTypes.DOT); }
-    ","            { return dedentRoot(GdTypes.COMMA); }
+    ","            { drainLambdaFrameAtComma(); return dedentRoot(GdTypes.COMMA); }
     ":="           { return dedentRoot(GdTypes.CEQ); }
     ":"            { activateLambdaAfterColon(); return dedentRoot(GdTypes.COLON); }
     ";"            { newLineProcessed = true; return GdTypes.SEMICON; }
@@ -502,6 +504,18 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"
                 return GdTypes.INDENT;
             } else if (indent > spaces) {
                 if (isIgnored()) {
+                    return TokenType.WHITE_SPACE;
+                }
+                LambdaFrame top = lambdaFrames.peek();
+                if (top != null
+                    && top.startIndentSize >= 0
+                    && top.parenDepth == parens.getDepth()
+                    && indentSizes.size() - 1 <= top.startIndentSize) {
+                    // Body close (see header, mechanism 1): deactivate + consume as WHITE_SPACE, no DEDENT.
+                    // Emitting a DEDENT here would leave a stray token the arg-list parser cannot place.
+                    // Inner-block dedents (size still > startIndentSize after the pop) fall through below.
+                    dedent();
+                    lambdaFrames.pop();
                     return TokenType.WHITE_SPACE;
                 }
                 dedentSpaces();
