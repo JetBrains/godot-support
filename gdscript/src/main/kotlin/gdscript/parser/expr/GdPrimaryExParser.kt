@@ -91,15 +91,7 @@ object GdPrimaryExParser : GdExprBaseParser() {
         var ok = true
 
         ok = ok && b.consumeToken(LRBR, pin = true)
-//        while (ok && b.nextTokenIs(INDENT)) {
-//            b.remapCurrentToken(TokenType.WHITE_SPACE)
-//            b.advance()
-//        }
         ok = ok && GdExprParser.parse(b, l + 1)
-//        while (ok && b.nextTokenIs(DEDENT)) {
-//            b.remapCurrentToken(TokenType.WHITE_SPACE)
-//            b.advance()
-//        }
         ok = ok && b.consumeToken(RRBR)
 
         return b.exitSection(ok, true)

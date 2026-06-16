@@ -25,7 +25,7 @@ object GdFuncDeclExParser : GdExprBaseParser() {
         ok = ok && GdParamListParser.parse(b, l + 1, false)
         ok = ok && GdReturnHintParser.parse(b, l + 1, true)
         ok = ok && b.consumeToken(COLON)
-        ok = ok && GdStmtParser.parseLambda(b, l + 1, false, true)
+        ok = ok && GdStmtParser.parseLambdaBody(b, l + 1, false)
 
         if (ok || b.pinned()) GdRecovery.stmt(b)
 

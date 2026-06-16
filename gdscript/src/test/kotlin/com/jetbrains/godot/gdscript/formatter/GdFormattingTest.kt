@@ -198,6 +198,24 @@ class GdFormattingTest : BasePlatformTestCase() {
     fun testIndentLambda() = doTest()
 
     @Test
+    fun testLambdaAsArgument() = doTest()
+
+    @Test
+    fun testLambdaAsArgumentNestedIfElse() = doTest()
+
+    @Test
+    fun testLambdaAsArgumentReturnCommaNextLine() = doTest()
+
+    @Test
+    fun testLambdaAsArgumentReturnMultiStmt() = doTest()
+
+    @Test
+    fun testLambdaAsArgumentReturnLastArg() = doTest()
+
+    @Test
+    fun testLambdaAsArgumentReturnNestedIf() = doTest()
+
+    @Test
     fun testIndentInArraySubscription() = doTest()
 
     // --- Indentation & Continuation ---

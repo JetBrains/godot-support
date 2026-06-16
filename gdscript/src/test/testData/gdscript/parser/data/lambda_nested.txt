@@ -128,7 +128,9 @@ GdScript File
                                 GdArgListImpl(ARG_LIST)
                                   PsiElement(GdTokenType.LRBR)('(')
                                   PsiElement(GdTokenType.RRBR)(')')
-                            PsiElement(GdTokenType.NEW_LINE)('\n')
+                              GdEndStmtImpl(END_STMT)
+                                <empty list>
+                              PsiElement(GdTokenType.NEW_LINE)('\n')
                             PsiWhiteSpace('\t\t\t')
                             GdExprStImpl(EXPR_ST)
                               GdCallExImpl(CALL_EX)
@@ -142,7 +144,9 @@ GdScript File
                                       GdStringValRefImpl(STRING_VAL_NM)
                                         PsiElement(GdTokenType.STRING)('"Projectile freed"')
                                   PsiElement(GdTokenType.RRBR)(')')
-                            PsiElement(GdTokenType.NEW_LINE)('\n')
+                              GdEndStmtImpl(END_STMT)
+                                <empty list>
+                              PsiElement(GdTokenType.NEW_LINE)('\n')
               PsiWhiteSpace('\t')
               PsiElement(GdTokenType.RRBR)(')')
           GdEndStmtImpl(END_STMT)
