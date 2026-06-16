@@ -59,8 +59,8 @@ dependencies {
     compileOnly(":rider-godot-community")
 
     intellijPlatform {
-        intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
-        // rider(libs.versions.riderSdk, useInstaller = false) // instead of touching this, just use runRider gradle task
+        rider(libs.versions.riderSdk) { useInstaller = false }
+        // intellijIdea(libs.versions.ideaSdk) { useInstaller = false } // instead of touching this, just use runIdea gradle task
         jetbrainsRuntime()
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
@@ -69,15 +69,22 @@ dependencies {
         bundledPlugin("com.intellij.modules.json")
         bundledPlugin("intellij.bookmarks.plugin")
         bundledPlugin("intellij.libraries.misc.plugin")
+        bundledPlugin("intellij.structureView.plugin")
+        bundledPlugin("intellij.ssh.plugin")
+        bundledPlugin("com.intellij.modules.jcef")
+
         bundledModule("intellij.platform.dap")
+        bundledModule("intellij.platform.lsp")
         bundledModule("intellij.spellchecker")
     }
     implementation(libs.jflex)
     testImplementation(libs.openTest4J)
+    testImplementation(libs.kotlinStdLib)
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.12.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
+    testRuntimeOnly(libs.kotlinxCollectionsImmutable)
 }
 
 intellijPlatform{
@@ -166,10 +173,10 @@ tasks {
         from(sdkDir) { into(Path(pluginName, "sdk").pathString)}
     }
 
-    // run it to start Rider from SDK
-    val runRider by intellijPlatformTesting.runIde.registering {
-        type = IntelliJPlatformType.Rider
-        version = libs.versions.riderSdk
+    // run it to start IDEA from SDK
+    val runIdea by intellijPlatformTesting.runIde.registering {
+        type = IntelliJPlatformType.IntellijIdea
+        version = libs.versions.ideaSdk
         useInstaller = false
         task {
             enabled = true
@@ -178,8 +185,8 @@ tasks {
             val pluginName = intellijPlatform.projectName.get()
             val sdkDir = project.layout.buildDirectory.dir("sdk").get().asFile
 
-            // sandboxPluginsDirectory is not adequate when calling runRider
-            val target2 = Path(sandboxDirectory.get().asFile.absolutePath, "plugins_runRider", pluginName, "sdk")
+            // sandboxPluginsDirectory is not adequate when calling runIdea
+            val target2 = Path(sandboxDirectory.get().asFile.absolutePath, "plugins_runIdea", pluginName, "sdk")
             logger.lifecycle("Copying SDK from $sdkDir to $target2")
             project.copy {
                 from(sdkDir)
@@ -189,10 +196,11 @@ tasks {
     }
 
     runIde {
-        jvmArgs("-Xmx1500m")
+        jvmArgs("-Xmx2500m")
     }
 
     test {
+        jvmArgs("-Xmx2500m")
         useJUnitPlatform()
         testLogging {
             showStandardStreams = true

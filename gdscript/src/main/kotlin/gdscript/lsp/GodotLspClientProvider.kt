@@ -12,11 +12,11 @@ import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.platform.lsp.api.Lsp4jClient
 import com.intellij.platform.lsp.api.LspCommunicationChannel
-import com.intellij.platform.lsp.api.LspServer
-import com.intellij.platform.lsp.api.LspServerDescriptor
-import com.intellij.platform.lsp.api.LspServerManager
+import com.intellij.platform.lsp.api.LspClient
+import com.intellij.platform.lsp.api.LspClientDescriptor
+import com.intellij.platform.lsp.api.LspClientManager
 import com.intellij.platform.lsp.api.LspServerNotificationsHandler
-import com.intellij.platform.lsp.api.LspServerSupportProvider
+import com.intellij.platform.lsp.api.LspClientProvider
 import com.intellij.platform.lsp.api.customization.LspCompletionCustomizer
 import com.intellij.platform.lsp.api.customization.LspCustomization
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsCustomizer
@@ -25,7 +25,7 @@ import com.intellij.platform.lsp.api.customization.LspHoverCustomizer
 import com.intellij.platform.lsp.api.customization.LspHoverDisabled
 import com.intellij.platform.lsp.api.customization.LspInlayHintCustomizer
 import com.intellij.platform.lsp.api.customization.LspInlayHintDisabled
-import com.intellij.platform.lsp.api.lsWidget.LspServerWidgetItem
+import com.intellij.platform.lsp.api.lsWidget.LspClientWidgetItem
 import com.intellij.util.NetworkUtils
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
@@ -33,6 +33,7 @@ import com.jetbrains.rider.godot.community.GodotMajorVersion
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
 import common.util.GdScriptProjectLifetimeService
+import gdscript.library.GdProjectGodotService
 import gdscript.settings.GdDocProviderMode
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
@@ -71,15 +72,15 @@ class GodotLspProjectService(val project: Project) {
 
     fun restartServer() {
         thisLogger().info("stopAndRestartIfNeeded")
-        LspServerManager.getInstance(project).stopAndRestartIfNeeded(GodotLspServerSupportProvider::class.java)
+        LspClientManager.getInstance(project).stopAndRestartClientsIfNeeded(GodotLspClientProvider::class.java)
     }
 }
 
-class GodotLspServerSupportProvider : LspServerSupportProvider {
-    override fun createLspServerWidgetItem(lspServer: LspServer, currentFile: VirtualFile?): LspServerWidgetItem =
-        GodotLspServerWidgetItem(lspServer, currentFile, GdScriptPluginIcons.Icons.GodotLogo, settingsPageClass = GdSettingsConfigurable::class.java)
+class GodotLspClientProvider : LspClientProvider {
+    override fun createWidgetItem(lspClient: LspClient, currentFile: VirtualFile?): LspClientWidgetItem =
+        GodotLspClientWidgetItem(lspClient, currentFile, GdScriptPluginIcons.Icons.GodotLogo, settingsPageClass = GdSettingsConfigurable::class.java)
 
-    override fun fileOpened(project: Project, file: VirtualFile, serverStarter: LspServerSupportProvider.LspServerStarter) {
+    override fun fileOpened(project: Project, file: VirtualFile, clientStarter: LspClientProvider.LspClientStarter) {
         if (GodotFileUtil.isGdFile(file)) {
             val settings = GdLspSettingsFlowService.getInstance(project)
             val lspService = GodotLspProjectService.getInstance(project)
@@ -90,7 +91,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 scope.launch(Dispatchers.IO) {
                     settings.lspConnectionMode.filterNotNull().collect { lspConnectionMode ->
                         if (lspConnectionMode == GdLspConnectionMode.Never) {
-                            LspServerManager.getInstance(project).stopServers(GodotLspServerSupportProvider::class.java)
+                            LspClientManager.getInstance(project).stopClients(GodotLspClientProvider::class.java)
                         } else
                             scheduleStartIfNeeded(project)
                     }
@@ -111,8 +112,8 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                 scope.launch(Dispatchers.IO) {
                     GodotCommunityUtil.getGodotProjectBasePathFlow(project)
                         .filterNotNull().collect {
-                        scheduleStartIfNeeded(project)
-                    }
+                            scheduleStartIfNeeded(project)
+                        }
                 }
             }
 
@@ -120,7 +121,7 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             if (allReady(settings, project)) {
                 thisLogger().info("ensureServerStarted")
                 // this does not start a server if the `fileOpened` has already ended
-                serverStarter.ensureServerStarted(GodotLspServerDescriptor(project))
+                clientStarter.ensureClientStarted(GodotLspClientDescriptor(project))
             }
         }
     }
@@ -139,11 +140,11 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
         godotLspProjectService.queueRestart()
     }
 
-    private class GodotLspServerDescriptor(project: Project) : LspServerDescriptor(
-    project,
-    "Godot",
-    GodotCommunityUtil.getGodotProjectBasePath(project)?.let { VfsUtil.findFile(it, false) }!!
-    )  {
+    private class GodotLspClientDescriptor(project: Project) : LspClientDescriptor(
+        project,
+        "Godot",
+        GodotCommunityUtil.getGodotProjectBasePath(project)?.let { VfsUtil.findFile(it, false) }!!
+    ) {
         val settings = GdLspSettingsFlowService.getInstance(project)
         val lspConnectionMode by lazy { settings.lspConnectionMode.value }
         val remoteHostPort by lazy { if (useDynamicPort) NetworkUtils.findFreePort(500050) else settings.remoteHostPort.value }
@@ -224,10 +225,14 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
             override val diagnosticsCustomizer: LspDiagnosticsCustomizer = object : LspDiagnosticsSupport() {
                 override fun getHighlightSeverity(diagnostic: Diagnostic): HighlightSeverity? {
                     // RIDER-117554, also fixed in Godot 4.7 https://github.com/godotengine/godot/pull/114185
-                    // todo: use Godot version here to only conditionally disable unused parameter highlighting for older Godot versions
-                    if (diagnostic.message.startsWith("(UNUSED_PARAMETER)")) return null
+                    val beforeGodot4_7 = GdProjectGodotService.getInstance(project).projectInfoFlow.value?.parsedVersion?.lessThan(4, 7) ?: false
+                    if (diagnostic.message.startsWith("(UNUSED_PARAMETER)") && beforeGodot4_7) {
+                        return null
+                    }
+
                     return super.getHighlightSeverity(diagnostic)
                 }
+
                 /*
                 UNUSED_VARIABLE, UNUSED_LOCAL_CONSTANT, UNUSED_PRIVATE_CLASS_VARIABLE, UNUSED_PARAMETER, UNUSED_SIGNAL
                 https://github.com/godotengine/godot/blob/1bd7b99182f7e8de4d6b2f089fec5db9392ac6b8/modules/gdscript/gdscript_warning.cpp#L47C8-L47C23
@@ -237,7 +242,8 @@ class GodotLspServerSupportProvider : LspServerSupportProvider {
                         || diagnostic.message.startsWith("(UNUSED_LOCAL_CONSTANT)")
                         || diagnostic.message.startsWith("(UNUSED_PRIVATE_CLASS_VARIABLE)")
                         || diagnostic.message.startsWith("(UNUSED_PARAMETER)")
-                        || diagnostic.message.startsWith("(UNUSED_SIGNAL)")) {
+                        || diagnostic.message.startsWith("(UNUSED_SIGNAL)")
+                    ) {
                         return ProblemHighlightType.LIKE_UNUSED_SYMBOL
                     }
                     return super.getSpecialHighlightType(diagnostic)

@@ -32,12 +32,16 @@ class GdHighlighterLexerTest : LexerTestCase() {
         try {
             super.doTest(text, expected, lexer)
         }
-        catch (e: FileComparisonFailedError) {
-            println("EXPECTED:\n" + e.getExpectedStringPresentation() + "\n----\nACTUAL:\n" + e.getActualStringPresentation())
-            throw e
-        }
+        // todo: doesn't work with Rider SDK
+//        catch (e: FileComparisonFailedError) {
+//            println("EXPECTED:\n" + e.getExpectedStringPresentation() + "\n----\nACTUAL:\n" + e.getActualStringPresentation())
+//            throw e
+//        }
         catch (e: ComparisonFailure) {
             println("EXPECTED:\n" + e.expected + "\n----\nACTUAL:\n" + e.actual)
+            throw e
+        }
+        catch (e: Exception){
             throw e
         }
     }

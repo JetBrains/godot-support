@@ -10,29 +10,31 @@ abstract class GdParsingTestCase : ParsingTestCase("", "gd", GdParserDefinition(
         try {
             super.doTest(checkResult, ensureNoErrorElements)
         } catch (e: FileComparisonFailedError) {
-            val expectedText = e.getExpectedStringPresentation()
-            val actualText = e.getActualStringPresentation()
-            val expectedPath = e.getFilePath()
-            val actualPath = e.getActualFilePath()
-
-            val details = buildString {
-                append("\n")
-                if (e.isExpectedDefined && expectedPath != null) {
-                    append("expected file: ").append(expectedPath)
-                }
-                else{
-                    append("expected: \n").append(expectedText)
-                    append("\n---\n")
-                }
-                if (e.isActualDefined && actualPath != null) {
-                    append("actual file: ").append(actualPath)
-                } else {
-                    append("actual: \n").append(actualText)
-                }
-            }
-
-            val newMessage = (e.message ?: "") + details
-            throw FileComparisonFailedError(newMessage, expectedText, actualText, expectedPath, actualPath)
+            throw e
+            // todo: doesn't work with Rider SDK
+//            val expectedText = e.getExpectedStringPresentation()
+//            val actualText = e.getActualStringPresentation()
+//            val expectedPath = e.getFilePath()
+//            val actualPath = e.getActualFilePath()
+//
+//            val details = buildString {
+//                append("\n")
+//                if (e.isExpectedDefined && expectedPath != null) {
+//                    append("expected file: ").append(expectedPath)
+//                }
+//                else{
+//                    append("expected: \n").append(expectedText)
+//                    append("\n---\n")
+//                }
+//                if (e.isActualDefined && actualPath != null) {
+//                    append("actual file: ").append(actualPath)
+//                } else {
+//                    append("actual: \n").append(actualText)
+//                }
+//            }
+//
+//            val newMessage = (e.message ?: "") + details
+//            throw FileComparisonFailedError(newMessage, expectedText, actualText, expectedPath, actualPath)
         }
     }
 }
