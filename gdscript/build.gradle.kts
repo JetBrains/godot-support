@@ -71,11 +71,11 @@ dependencies {
         bundledPlugin("intellij.libraries.misc.plugin")
         bundledPlugin("intellij.structureView.plugin")
         bundledPlugin("intellij.ssh.plugin")
+        bundledPlugin("com.intellij.modules.jcef")
 
         bundledModule("intellij.platform.dap")
         bundledModule("intellij.platform.lsp")
         bundledModule("intellij.spellchecker")
-        bundledModule("intellij.platform.ui.jcef")
     }
     implementation(libs.jflex)
     testImplementation(libs.openTest4J)
