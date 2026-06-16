@@ -1021,15 +1021,20 @@ class GdLexer implements FlexLexer {
         }
     }
 
-    private void restoreLambdaOnReturn() {
-        // When returning from a lambda defined inside parens with reactivated indentation,
-        // stop treating NEW_LINE as significant at this bracket depth. Popping the top
-        // frame preserves any outer lambda's frame underneath.
+    private void drainLambdaFrameAtComma() {
+        // A comma at the lambda's own paren depth structurally terminates the lambda
+        // argument. Silently unwind any indentation levels the body pushed, back down to
+        // the frame's starting level, and deactivate the frame. No DEDENT is emitted: the
+        // parser closes the lambda suite at this COMMA (GdStmtParser.stmt, nextTokenIs
+        // SEMICON/RRBR/COMMA), so a DEDENT here would only pollute that boundary.
         LambdaFrame top = lambdaFrames.peek();
         if (top != null
             && top.startIndentSize >= 0
             && top.parenDepth == parens.getDepth()
             && parens.getDepth() > 0) {
+            while (indentSizes.size() > top.startIndentSize) {
+                dedent();
+            }
             lambdaFrames.pop();
         }
     }
@@ -1404,6 +1409,23 @@ class GdLexer implements FlexLexer {
                 if (isIgnored()) {
                     return TokenType.WHITE_SPACE;
                 }
+                LambdaFrame top = lambdaFrames.peek();
+                if (top != null
+                    && top.startIndentSize >= 0
+                    && top.parenDepth == parens.getDepth()
+                    && indentSizes.size() - 1 <= top.startIndentSize) {
+                    // This dedent closes the lambda BODY itself (back to the frame's start
+                    // level), not an inner block. Deactivate the frame and consume the
+                    // indentation as insignificant whitespace WITHOUT emitting a DEDENT: the
+                    // structural ')'/',' that follows bounds the lambda argument, and the
+                    // parser's lambda suite already absorbs the body's trailing NEW_LINE.
+                    // Emitting a DEDENT here would leave a stray token the arg-list parser
+                    // cannot place. Inner-block dedents (size still > startIndentSize after
+                    // the pop) fall through and emit DEDENT normally.
+                    dedent();
+                    lambdaFrames.pop();
+                    return TokenType.WHITE_SPACE;
+                }
                 dedentSpaces();
                 return GdTypes.DEDENT;
             }
@@ -1484,7 +1506,7 @@ class GdLexer implements FlexLexer {
           // fall through
           case 101: break;
           case 14:
-            { return dedentRoot(GdTypes.COMMA);
+            { drainLambdaFrameAtComma(); return dedentRoot(GdTypes.COMMA);
             }
           // fall through
           case 102: break;
@@ -1841,7 +1863,7 @@ class GdLexer implements FlexLexer {
           // fall through
           case 168: break;
           case 81:
-            { restoreLambdaOnReturn(); return dedentRoot(GdTypes.RETURN);
+            { return dedentRoot(GdTypes.RETURN);
             }
           // fall through
           case 169: break;

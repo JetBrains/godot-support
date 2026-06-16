@@ -38,6 +38,12 @@ class GdLexerTest : LexerTestCase() {
     @Test fun testLambdaCallExpr() = doFileTest("gd")
     @Ignore @Test fun testArrayWithFunc() = doFileTest("gd")
     @Test fun testlambda_callable_multiline() = doFileTest("gd")
+    @Test fun testlambdaAsArgument() = doFileTest("gd")
+    @Test fun testlambdaAsArgumentReturnLastArg() = doFileTest("gd")
+    @Test fun testlambdaAsArgumentReturnCommaNextLine() = doFileTest("gd")
+    @Test fun testlambdaAsArgumentReturnMultiStmt() = doFileTest("gd")
+    @Test fun testlambdaAsArgumentReturnNestedIf() = doFileTest("gd")
+    @Test fun testlambdaAsArgumentNestedIfElse() = doFileTest("gd")
 
     override fun doTest(text: String, expected: String?, lexer: Lexer) {
         try{
