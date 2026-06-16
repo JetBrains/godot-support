@@ -7,8 +7,6 @@ import gdscript.parser.GdPsiBuilder
 import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.COMMA
 import gdscript.psi.GdTypes.DEDENT
-import gdscript.psi.GdTypes.END_STMT
-import gdscript.psi.GdTypes.IF_ST
 import gdscript.psi.GdTypes.INDENT
 import gdscript.psi.GdTypes.NEW_LINE
 import gdscript.psi.GdTypes.RRBR
@@ -54,13 +52,23 @@ object GdStmtParser : GdBaseParser {
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "Stmt")) return false
-        // When parsing inside an argument list (e.g., a lambda passed as an argument),
-        // continue treating nested statements as lambda-context to allow multiline suites.
-        return parseLambda(b, l + 1, optional, b.isArgs)
+        // Ordinary statement entry (asLambda = false). Lambda bodies are entered only via
+        // parseLambdaBody(); a nested compound body inside a lambda is still an ordinary suite that
+        // must close on its own DEDENT, so it must NOT inherit lambda-mode -- otherwise its closing
+        // DEDENT is hidden from the parent and `elif`/`else` get orphaned.
+        return stmtOrSuite(b, l + 1, optional, asLambda = false)
     }
 
-    fun parseLambda(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
-        if (!b.recursionGuard(l, "Lambda")) return false
+    /**
+     * Entry point for a lambda's body (`<body>` in `func(...): <body>`), used by GdFuncDeclExParser.
+     * Parses in lambda mode: terminates at the enclosing call's structural ','/')'/';' (see Gd.flex)
+     * rather than an ordinary statement end. A nested compound body inside it is still a normal suite -- see [parse].
+     */
+    fun parseLambdaBody(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean =
+        stmtOrSuite(b, l, optional, asLambda = true)
+
+    private fun stmtOrSuite(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean): Boolean {
+        if (!b.recursionGuard(l, "StmtOrSuite")) return false
         val stmtOrSuiteMarker = b.enterSection(STMT_OR_SUITE)
         var ok = suite(b, l + 1, false, asLambda)
 
@@ -68,10 +76,9 @@ object GdStmtParser : GdBaseParser {
             ok = stmt(b, l + 1, optional, asLambda, false).ok
 
         if (!ok) {
-            // Both suite() and stmt() failed -- attach an error PSI element as a child of
-            // STMT_OR_SUITE so downstream consumers see the empty-body signal directly on
-            // the marker. Use b.mark().error() (not b.error()) to bypass the isError guard
-            // and to avoid consuming a token (we want a zero-width error at current pos).
+            // Both suite() and stmt() failed -- attach a zero-width error to STMT_OR_SUITE so
+            // downstream consumers see the empty-body signal on the marker. mark().error() (not
+            // b.error()) bypasses the isError guard and consumes no token.
             if (!b.isError) {
                 b.mark().error("Expected statement")
             }
@@ -106,11 +113,19 @@ object GdStmtParser : GdBaseParser {
         }
 
         if (asLambda) {
+            // A DEDENT here closes the lambda body itself (nested if/for/... suites parse in normal
+            // mode and consume their own DEDENT, so we never see those here). Inside an arg list the
+            // lexer drains the body at the structural ','/')' and emits no DEDENT (see the lambda
+            // mechanism in Gd.flex), so we reach this only for a lambda with real indentation outside
+            // an arg list (e.g. `var f = func(): ...`); the statement must continue as if it saw NEW_LINE.
             if (b.nextTokenIs(DEDENT)) {
-                if (!b.followingTokensAre(DEDENT, NEW_LINE) && !b.followingTokensAre(DEDENT, END_STMT)) {
-                    b.remapCurrentToken(NEW_LINE)
-                } else {
+                if (b.followingTokensAre(DEDENT, NEW_LINE)) {
+                    // The lexer already emits a real NEW_LINE right after the body's DEDENT;
+                    // drop the zero-width DEDENT so the stream isn't left with a doubled break.
                     b.consumeToken(DEDENT)
+                } else {
+                    // Relabel the DEDENT as the body's terminating NEW_LINE.
+                    b.remapCurrentToken(NEW_LINE)
                 }
             }
         } else {
