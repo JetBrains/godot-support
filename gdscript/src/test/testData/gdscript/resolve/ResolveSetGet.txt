@@ -1,0 +1,19 @@
+var variable: set = set_var[r], get = get_var[r]
+
+static var static_variable: set = static_setter[r], get = static_getter[r]
+
+static var static_trying_non_static: set = set_var[u], get = get_var[u]
+
+var non_static_trying_static: set = static_setter[r], get = static_getter[r]
+
+func set_var(value):
+	pass
+
+func get_var():
+	pass
+
+static func static_setter(value):
+	pass
+
+static func static_getter():
+	pass

@@ -7,10 +7,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdScriptBundle
 import gdscript.action.GdCreateMethodAction
+import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdMethodDeclIndex
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdGetMethodIdRef
+import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdSetMethodIdRef
+import gdscript.utils.PsiReferenceUtil.resolveRef
 
 /**
  * Checks if referencing method exists
@@ -19,8 +22,24 @@ import gdscript.psi.GdSetMethodIdRef
 class GdSetGetAnnotator : Annotator {
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        when (element) {
-            is GdSetMethodIdRef, is GdGetMethodIdRef -> methodExists(element, holder)
+        if (element !is GdSetMethodIdRef && element !is GdGetMethodIdRef) return
+
+        methodExists(element, holder)
+        colorSetGet(element, holder)
+    }
+
+    private fun colorSetGet(element: PsiElement, holder: AnnotationHolder){
+        // GdSetGetMethodIdReference returns a GdMethodIdNmi
+        val ref = element.resolveRef()?.parent ?: return
+        when (ref) {
+            is GdMethodDeclTl -> {
+                val color = if (ref.isStatic) GdHighlighterColors.STATIC_METHOD_CALL else GdHighlighterColors.METHOD_CALL
+                holder
+                    .newSilentAnnotation(HighlightSeverity.INFORMATION)
+                    .range(element.textRange)
+                    .textAttributes(color)
+                    .create()
+            }
         }
     }
 

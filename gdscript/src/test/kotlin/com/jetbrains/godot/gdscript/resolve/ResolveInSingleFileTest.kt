@@ -67,4 +67,11 @@ class ResolveInSingleFileTest : ResolveTestBase() {
         // RIDER-137850 Calling returnType triggers the infinite type-inference chain without the fix
         file.children.filterIsInstance<GdConstDeclTl>().forEach { it.returnType }
     }
+
+    @Test
+    fun testResolveSetGet(){
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
 }

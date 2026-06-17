@@ -297,8 +297,10 @@ object GdClassMemberUtil {
 
             val local = addsParentDeclarations(par, result, static, search)
             if (search != null && local != null) return local
-            if (par is GdClassDeclTl) {
+            if (par is GdClassDeclTl && static == null) {
                 // When within classDecl, check also root of current file, not only what the class is extending
+                // Only with nonqualified access (not static nor instance)
+                // In qualified access, file-root members are not part of the qualifier's type and would pollute the results.
                 val local = addsParentDeclarations(par.containingFile, result, static, search)
                 if (search != null && local != null) return local
             }
@@ -612,11 +614,6 @@ object GdClassMemberUtil {
                 }
             }
         } else {
-            // When completing with a qualifier (static or instance), avoid mixing in file-level declarations,
-            // which would otherwise expose unrelated top-level classes like the qualifier's ancestors.
-            if (classElement is PsiFile && static != null) {
-                return mutableListOf()
-            }
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdConstDeclTl::class.java).forEach {
                 members.add(it)
             }
