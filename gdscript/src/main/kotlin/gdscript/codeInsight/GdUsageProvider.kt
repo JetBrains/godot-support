@@ -12,6 +12,7 @@ import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdEnumDeclNmi
 import gdscript.psi.GdEnumValueNmi
 import gdscript.psi.GdForSt
+import gdscript.psi.GdKeyNmi
 import gdscript.psi.GdMethodIdNmi
 import gdscript.psi.GdNamedElement
 import gdscript.psi.GdSignalIdNmi
@@ -38,6 +39,7 @@ class GdUsageProvider : FindUsagesProvider {
                 || psiElement is GdVarNmi
                 || psiElement is GdForSt
                 || psiElement is GdStringValRef
+                || psiElement is GdKeyNmi
     }
 
     override fun getHelpId(psiElement: PsiElement): String? {
@@ -53,6 +55,7 @@ class GdUsageProvider : FindUsagesProvider {
             is GdSignalIdNmi -> GdScriptBundle.message("find.usages.signals")
             is GdVarNmi -> GdScriptBundle.message("find.usages.variables")
             is GdStringValRef -> GdScriptBundle.message("find.usages.resources")
+            is GdKeyNmi -> GdScriptBundle.message("find.usages.dictionary.keys")
             else -> ""
         }
     }

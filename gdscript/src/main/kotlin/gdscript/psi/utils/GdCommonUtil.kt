@@ -21,6 +21,7 @@ import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdFuncDeclIdNmi
 import gdscript.psi.GdInheritanceIdRef
 import gdscript.psi.GdInheritanceSubIdRef
+import gdscript.psi.GdKeyNmi
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdMethodIdNmi
 import gdscript.psi.GdNamedElement
@@ -75,6 +76,7 @@ object GdCommonUtil {
                 is GdFuncDeclIdNmi -> GdElementFactory.funcDeclIdNmi(project, newName)
                 is GdInheritanceIdRef -> GdElementFactory.inheritanceIdNm(project, newName)
                 is GdInheritanceSubIdRef -> GdElementFactory.inheritanceSubIdNm(project, newName)
+                is GdKeyNmi -> GdElementFactory.keyNmi(project, newName)
                 is GdMethodIdNmi -> GdElementFactory.methodIdNmi(project, newName)
                 is GdRefIdRef -> GdElementFactory.refIdNm(project, newName)
                 is GdSignalIdNmi -> GdElementFactory.signalIdNmi(project, newName)

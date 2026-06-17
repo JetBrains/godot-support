@@ -62,6 +62,7 @@ import gdscript.psi.impl.GdInheritanceIdRefImpl;
 import gdscript.psi.impl.GdInheritanceImpl;
 import gdscript.psi.impl.GdInheritanceSubIdRefImpl;
 import gdscript.psi.impl.GdIsExImpl;
+import gdscript.psi.impl.GdKeyNmiImpl;
 import gdscript.psi.impl.GdKeyValueImpl;
 import gdscript.psi.impl.GdKeyValuePatternImpl;
 import gdscript.psi.impl.GdLiteralExImpl;
@@ -166,6 +167,7 @@ public interface GdTypes {
   IElementType INHERITANCE_SUB_ID_NM = new GdElementType("INHERITANCE_SUB_ID_NM");
   IElementType IN_EX = new GdElementType("IN_EX");
   IElementType IS_EX = new GdElementType("IS_EX");
+  IElementType KEY_NMI = new GdElementType("KEY");
   IElementType KEY_VALUE = new GdElementType("KEY_VALUE");
   IElementType KEY_VALUE_PATTERN = new GdElementType("KEY_VALUE_PATTERN");
   IElementType LITERAL_EX = new GdElementType("LITERAL_EX");
@@ -467,6 +469,9 @@ public interface GdTypes {
       }
       else if (type == IS_EX) {
         return new GdIsExImpl(node);
+      }
+      else if (type == KEY_NMI) {
+        return new GdKeyNmiImpl(node);
       }
       else if (type == KEY_VALUE) {
         return new GdKeyValueImpl(node);

@@ -56,6 +56,12 @@ object GdElementFactory {
         return PsiTreeUtil.findChildOfType(file, GdInheritanceSubIdRef::class.java)!!.firstChild
     }
 
+    fun keyNmi(project: Project, name: String): PsiElement {
+        val file = createFile(project, "extends Node\nfunc fu():\n\tvar dict = {$name = 1}\n")
+
+        return PsiTreeUtil.findChildOfType(file, GdKeyNmi::class.java)!!.firstChild
+    }
+
     fun methodIdNmi(project: Project, name: String): PsiElement {
         val file = createFile(project, "extends Node\nfunc $name():\n\tpass\n")
 

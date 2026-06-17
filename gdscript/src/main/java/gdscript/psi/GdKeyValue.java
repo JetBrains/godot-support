@@ -2,6 +2,7 @@ package gdscript.psi;
 
 import java.util.List;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.Nullable;
@@ -12,9 +13,8 @@ public interface GdKeyValue extends PsiElement {
   List<GdExpr> getExprList();
 
   @Nullable
-  default GdExpr getKey() {
-    List<GdExpr> list = getExprList();
-    return !list.isEmpty() ? list.getFirst() : null;
+  default GdKeyNmi getKeyNmi() {
+    return PsiTreeUtil.getChildOfType(this, GdKeyNmi.class);
   }
 
   @Nullable
@@ -24,7 +24,7 @@ public interface GdKeyValue extends PsiElement {
 
     if (getFirstChild() == null) return null;
     IElementType firstChildType = getFirstChild().getNode().getElementType();
-    if (firstChildType == GdTypes.IDENTIFIER || firstChildType == GdTypes.STRING) return getLastChild();
+    if (firstChildType == GdTypes.IDENTIFIER || firstChildType == GdTypes.STRING || firstChildType == GdTypes.KEY_NMI) return getLastChild();
     return null;
   }
 

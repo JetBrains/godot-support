@@ -215,6 +215,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
+  public void visitKeyNmi(@NotNull GdKeyNmi o) {
+     visitNamedIdElement(o);
+  }
+
   public void visitKeyValue(@NotNull GdKeyValue o) {
     visitPsiElement(o);
   }
