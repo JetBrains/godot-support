@@ -55,6 +55,13 @@ class ResolveInSingleFileTest : ResolveTestBase() {
     }
 
     @Test
+    fun testNewResolvesToConstructorInit(){
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
+
+    @Test
     fun testSelfReferentialConstNoStackOverflow() {
         val file = loadByTestName()
         // RIDER-137850 Calling returnType triggers the infinite type-inference chain without the fix

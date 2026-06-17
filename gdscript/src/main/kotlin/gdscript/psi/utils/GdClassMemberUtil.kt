@@ -564,24 +564,29 @@ object GdClassMemberUtil {
             val project = element.project
             val scope = GlobalSearchScope.fileScope(element.containingFile)
 
-            GdMethodDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()?.let {
-                if ((static == null || it.isStatic == static)) {
+            val searchMethod = if (search == "new" && constructors) "_init" else search
+            GdMethodDeclIndex.INSTANCE.getScoped(searchMethod, project, scope).firstOrNull{
+                if ((static == null || it.isStatic == static || (constructors && it.isConstructor))) {
                     if (constructors || !it.isConstructor) {
                         if (GdClassUtil.getOwningClassElement(it) == classElement) {
-                            return mutableListOf(it)
+                            return@firstOrNull true
                         }
                     }
                 }
-            }
-            GdConstDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()
-                ?.let { if (GdClassUtil.getOwningClassElement(it) == classElement) it else null }?.let { return mutableListOf(it) }
-            GdEnumDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()
-                ?.let { if (GdClassUtil.getOwningClassElement(it) == classElement) it else null }?.let { return mutableListOf(it) }
-            GdSignalDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()
-                ?.let { if (GdClassUtil.getOwningClassElement(it) == classElement) it else null }?.let { return mutableListOf(it) }
-            GdClassVarDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull()
-                ?.let { if (GdClassUtil.getOwningClassElement(it) == classElement) it else null }
-                ?.let { if (static != true || it.isStatic) return mutableListOf(it) }
+                return@firstOrNull false
+            }?.let { return mutableListOf(it) }
+            GdConstDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull{
+                GdClassUtil.getOwningClassElement(it) == classElement
+            }?.let { return mutableListOf(it) }
+            GdEnumDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull{
+                GdClassUtil.getOwningClassElement(it) == classElement
+            }?.let { return mutableListOf(it) }
+            GdSignalDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull{
+                GdClassUtil.getOwningClassElement(it) == classElement
+            }?.let { return mutableListOf(it) }
+            GdClassVarDeclIndex.INSTANCE.getScoped(search, project, scope).firstOrNull{
+                GdClassUtil.getOwningClassElement(it) == classElement
+            }?.let { if (static != true || it.isStatic) return mutableListOf(it) }
 
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
                 if (it.name == search) return mutableListOf(it)
@@ -669,7 +674,7 @@ object GdClassMemberUtil {
         static: Boolean? = false,
         search: String? = null,
     ): PsiElement? {
-        val list = listClassMemberDeclarations(classElement, static, search)
+        val list = listClassMemberDeclarations(classElement, static, search, constructors = true)
         if (search != null) return list.firstOrNull()
         result.addAll(list)
 

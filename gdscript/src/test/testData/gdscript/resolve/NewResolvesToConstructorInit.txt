@@ -1,0 +1,10 @@
+class_name WithInit
+
+func _init(name: String[u] = "null"[u]):
+	pass
+
+class Outer:
+
+	func test():
+		var w := WithInit[r].new[r]()
+		var w2 := WithInit[r].new[r]("1"[u])

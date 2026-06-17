@@ -51,4 +51,21 @@ class GdInlayParameterHintsTest : BasePlatformTestCase() {
         myFixture.testInlays()
     }
 
+    @Test
+    fun testInlayHintsForNewObjectCall() {
+        val code = """
+            |class_name WithInit
+            |
+            |func _init(a):
+            |	pass
+            |
+            |class Outer:
+            |
+            |	func test():
+            |		var w2 := WithInit.new(<hint text="a:"/>1)
+        """.trimMargin()
+        myFixture.configureByText("test.gd", code)
+        myFixture.testInlays()
+    }
+
 }
