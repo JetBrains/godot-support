@@ -3,7 +3,9 @@ package gdscript.reference
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
+import com.intellij.psi.util.PsiTreeUtil
 import gdscript.completion.utils.GdMethodCompletionUtil.lookup
+import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdElementFactory
 import gdscript.psi.GdGetMethodIdRef
 import gdscript.psi.GdSetMethodIdRef
@@ -28,15 +30,20 @@ class GdSetGetMethodIdReference : PsiReferenceBase<PsiElement> {
     }
 
     override fun resolve(): PsiElement? {
-        val members = GdClassMemberUtil.listClassMemberDeclarations(element, false)
+        val members = GdClassMemberUtil.listClassMemberDeclarations(element, staticFilter())
 
         return members.methods().find { it.name == key }?.methodIdNmi
     }
 
     override fun getVariants(): Array<Any> {
-        val members = GdClassMemberUtil.listClassMemberDeclarations(element, false)
+        val members = GdClassMemberUtil.listClassMemberDeclarations(element, staticFilter())
 
         return members.methods().map { it.lookup() }.toTypedArray()
     }
 
+    // A static variable should only access static methods, others shouldn't be filtered
+    private fun staticFilter(): Boolean? {
+        val owningVar = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassVarDeclTl::class.java)
+        return if (owningVar?.isStatic == true) true else null
+    }
 }
