@@ -24,8 +24,7 @@ class ResolveInSingleFileTest : ResolveTestBase() {
     }
 
     @Test
-    @Ignore("RIDER-131639 resolve enum members from a separate class")
-    fun testGdDictionary(){
+    fun testGdDictionaryLuaStyle(){
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)

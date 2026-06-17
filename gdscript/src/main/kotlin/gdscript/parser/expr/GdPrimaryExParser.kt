@@ -8,6 +8,7 @@ import gdscript.psi.GdTypes.COMMA
 import gdscript.psi.GdTypes.DICT_DECL
 import gdscript.psi.GdTypes.EQ
 import gdscript.psi.GdTypes.IDENTIFIER
+import gdscript.psi.GdTypes.KEY_NMI
 import gdscript.psi.GdTypes.KEY_VALUE
 import gdscript.psi.GdTypes.LCBR
 import gdscript.psi.GdTypes.LRBR
@@ -69,7 +70,7 @@ object GdPrimaryExParser : GdExprBaseParser() {
         var ok = true
 
         if (b.followingTokensAre(IDENTIFIER, EQ)) {
-            ok = ok && b.consumeToken(IDENTIFIER)
+            ok = ok && b.mceIdentifier(KEY_NMI)
             ok = ok && b.consumeToken(EQ)
             ok = ok && GdExprParser.parse(b, l + 1)
         } else if (b.followingTokensAre(STRING, EQ)) {

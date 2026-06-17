@@ -23,6 +23,7 @@ import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdConstDeclSt
 import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdDictDecl
 import gdscript.psi.GdElifSt
 import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdEnumValue
@@ -36,6 +37,7 @@ import gdscript.psi.GdMatchBlock
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdParam
 import gdscript.psi.GdPatternList
+import gdscript.psi.GdPrimaryEx
 import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdSetDecl
 import gdscript.psi.GdSignalDeclTl
@@ -194,16 +196,34 @@ object GdClassMemberUtil {
             if (calledOn.startsWith("Dictionary[")) {
                 val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdRef::class.java).lastOrNull()
                 if (firstChild != null) {
-                    val dictDecl = findDeclaration(firstChild)
-                    if (dictDecl is GdEnumDeclTl) {
+                    val dictVarDecl = findDeclaration(firstChild) as? PsiElement
+                    if (dictVarDecl is GdEnumDeclTl) {
                         if (searchFor != null) {
-                            val localVal = dictDecl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor }
+                            val localVal = dictVarDecl.enumValueList.find { eval -> eval.enumValueNmi.name == searchFor }
                             if (localVal != null) return arrayOf(localVal)
                         }
-                        result.addAll(dictDecl.enumValueList)
+                        result.addAll(dictVarDecl.enumValueList)
                     }
                 }
                 calledOn = "Dictionary"
+
+            }
+
+            // Resolve to a dictionary key if present in the dictionary declaration
+            // Check for Variant in case of nested dictionaries
+            if (calledOn == "Dictionary" || calledOn == "Variant") {
+                val firstChild = PsiTreeUtil.collectElementsOfType(calledOnPsi, GdRefIdRef::class.java).lastOrNull()
+                if (firstChild != null) {
+                    val dictVarDecl = findDeclaration(firstChild) as? PsiElement
+                    val primaryEx = PsiTreeUtil.getStubChildOfType(dictVarDecl, GdPrimaryEx::class.java)
+                    val dictDecl = PsiTreeUtil.getStubChildOfType(primaryEx, GdDictDecl::class.java)
+                    if (dictDecl != null && searchFor != null) {
+                        val key = dictDecl.keyValueList.firstOrNull{
+                            it.keyNmi?.name == searchFor
+                        }
+                        if (key != null) return arrayOf(key)
+                    }
+                }
             }
 
             // If qualifier resolves to a named enum, expose its values for member lookup (e.g., Class.Enum.VALUE)

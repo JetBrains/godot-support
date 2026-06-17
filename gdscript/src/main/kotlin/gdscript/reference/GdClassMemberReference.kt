@@ -24,6 +24,7 @@ import gdscript.psi.GdEnumValue
 import gdscript.psi.GdExpr
 import gdscript.psi.GdFile
 import gdscript.psi.GdForSt
+import gdscript.psi.GdKeyValue
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdParam
 import gdscript.psi.GdRefIdRef
@@ -58,6 +59,7 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
                 is GdBindingPattern -> element.varNmi
                 is PsiFile -> element
                 is GdClassNaming -> element.classNameNmi
+                is GdKeyValue -> element.keyNmi
                 else -> null
             }
         }
