@@ -30,6 +30,7 @@
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider" />
     <findUsagesHandlerFactory implementation="gdscript.codeInsight.GdFindUsageHandlerFactory" />
+    <referencesSearch implementation="gdscript.reference.search.GdConstructorReferencesSearcher" />
     <configurationType implementation="gdscript.run.GdRunConfigurationType" />
     <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer" />
     <defaultLiveTemplates file="/templates/GdScript.xml" />

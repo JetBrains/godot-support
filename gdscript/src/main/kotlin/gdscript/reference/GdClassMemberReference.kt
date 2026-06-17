@@ -153,6 +153,12 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
 
                 val resolved = GdClassMemberUtil.findDeclaration(element)?.psi()
 
+                // If we are calling new() on a class, and the declaration was resolved to a constructor,
+                // we want to return the constructor as a way to link the object instantiation.
+                if (isStaticAccess == true && element.text == "new" && resolved is GdMethodDeclTl && resolved.isConstructor) {
+                    return@Resolver resolved
+                }
+
                 // If statically accessed, disallow resolving non-static members even if target class couldn't be inferred
                 if (isStaticAccess == true) {
                     when (resolved) {
