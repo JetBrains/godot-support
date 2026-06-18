@@ -2,6 +2,7 @@ package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
+import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.psi.GdArgExpr
 import gdscript.psi.GdClassDeclTl
@@ -22,11 +23,13 @@ import gdscript.psi.GdFuncDeclIdNmi
 import gdscript.psi.GdInheritanceIdRef
 import gdscript.psi.GdInheritanceSubIdRef
 import gdscript.psi.GdKeyNmi
+import gdscript.psi.GdKeyValue
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdMethodIdNmi
 import gdscript.psi.GdNamedElement
 import gdscript.psi.GdNamedIdElement
 import gdscript.psi.GdParam
+import gdscript.psi.GdPrimaryEx
 import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdSetDecl
 import gdscript.psi.GdSignalDeclTl
@@ -119,6 +122,18 @@ object GdCommonUtil {
                     return GdOperand.getReturnType(forExpr, GdKeywords.VARIANT, "[]", element.project)
                 } else {
                     return forExpr
+                }
+            }
+            is GdKeyValue -> {
+                // parentVarDecl will be the enclosing declaration, so either GdVarDeclSt, GdClassVarDeclTl, GdConstDeclSt, or GdConstDeclTl
+                // the return type from the parent will return the value from typed or Dictionary[Variant, Variant] if it's not typed
+                val parentVarDecl = PsiTreeUtil.getStubOrPsiParentOfType(element, GdPrimaryEx::class.java)?.parent
+                val typedDictType = returnType(parentVarDecl).takeIf { it != "" } ?: return ""
+
+                return if (typedDictType.startsWith("Dictionary[")) {
+                    typedDictType.substringAfter(",").substringBefore("]").trim()
+                } else{
+                    ""
                 }
             }
             null -> return ""
