@@ -26,7 +26,6 @@
     bad_character='regexp:[\^]'
   ]
 }
-
 tscnfile ::= paragraph+
 paragraph ::= header dataLine* {
     mixin="tscn.psi.impl.TscnParagraphElementImpl"
@@ -99,7 +98,8 @@ headerValue_val ::= value {
 
 dataLine ::= dataLineHeader EQ dataLine_value
 dataLineHeader ::= dataLine_nm (SLASH dataLine_nm?)*
-dataLine_nm ::= IDENTIFIER | NUMBER
+// You can name your export nodes the same as the internal tscn names
+dataLine_nm ::= IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION
 dataLine_value ::= value
 
 value ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | json
