@@ -3,6 +3,7 @@ package tscn.toolWindow
 import GdScriptPluginIcons
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBColor
+import com.intellij.ui.scale.JBUIScale
 import gdscript.GdIcon
 import tscn.toolWindow.model.TscnSceneTreeNode
 import java.awt.BorderLayout
@@ -20,7 +21,7 @@ import javax.swing.tree.DefaultTreeCellRenderer
 class TscnSceneCellRenderer : DefaultTreeCellRenderer {
 
     companion object {
-        val BUTTON_WIDTH = 16
+        const val BUTTON_WIDTH: Int = 16
     }
 
     val project: Project
@@ -68,16 +69,16 @@ class TscnSceneCellRenderer : DefaultTreeCellRenderer {
                 "instance" -> GdScriptPluginIcons.TscnIcons.InstanceOptions
                 "script" -> GdScriptPluginIcons.TscnIcons.Script
                 "unique" -> GdScriptPluginIcons.TscnIcons.SceneUniqueName
-                "visible" -> if (node.visible){
+                "visible" -> if (node.visible) {
                     if (node.parentVisible)
                         GdScriptPluginIcons.TscnIcons.GuiVisibilityVisible
                     else
                         GdScriptPluginIcons.TscnIcons.GuiVisibilityVisibleDark
-                }
-                else if (node.parentVisible)
+                } else if (node.parentVisible)
                     GdScriptPluginIcons.TscnIcons.GuiVisibilityHidden
                 else
                     GdScriptPluginIcons.TscnIcons.GuiVisibilityHiddenDark
+
                 else -> null
             }
         }
@@ -85,7 +86,8 @@ class TscnSceneCellRenderer : DefaultTreeCellRenderer {
 
     private fun getComponent(icon: Icon): Component {
         val label = JLabel(icon)
-        val dim = Dimension(BUTTON_WIDTH, 16)
+        val newSide = (JBUIScale.scale(1.0f) * BUTTON_WIDTH).toInt()
+        val dim = Dimension(newSide, newSide)
         label.size = dim
         label.preferredSize = dim
 
