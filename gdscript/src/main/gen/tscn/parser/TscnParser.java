@@ -131,7 +131,6 @@ public class TscnParser implements PsiParser, LightPsiParser {
   // dataLineHeader EQ dataLine_value
   public static boolean dataLine(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLine")) return false;
-    if (!nextTokenIs(b, "<data line>", IDENTIFIER, NUMBER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, DATA_LINE, "<data line>");
     r = dataLineHeader(b, l + 1);
@@ -145,7 +144,6 @@ public class TscnParser implements PsiParser, LightPsiParser {
   // dataLine_nm (SLASH dataLine_nm?)*
   public static boolean dataLineHeader(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader")) return false;
-    if (!nextTokenIs(b, "<data line header>", IDENTIFIER, NUMBER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, DATA_LINE_HEADER, "<data line header>");
     r = dataLine_nm(b, l + 1);
@@ -184,14 +182,18 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER | NUMBER
+  // IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION
   public static boolean dataLine_nm(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLine_nm")) return false;
-    if (!nextTokenIs(b, "<data line nm>", IDENTIFIER, NUMBER)) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, DATA_LINE_NM, "<data line nm>");
     r = consumeToken(b, IDENTIFIER);
     if (!r) r = consumeToken(b, NUMBER);
+    if (!r) r = consumeToken(b, NODE);
+    if (!r) r = consumeToken(b, GD_RESOURCE);
+    if (!r) r = consumeToken(b, GD_SCENE);
+    if (!r) r = consumeToken(b, EXT_RESOURCE);
+    if (!r) r = consumeToken(b, CONNECTION);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
