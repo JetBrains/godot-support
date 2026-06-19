@@ -27,7 +27,15 @@ public class GdKeyNmiImpl extends GdNamedIdElementImpl implements GdKeyNmi {
     @Override
     @NotNull
     public String getName() {
-        return GdPsiUtils.getName(this);
+        // Strip the surrounding quotes of string-literal keys (e.g. {"key": value}) so the name matches the usage in dict.key
+        String text = GdPsiUtils.getName(this);
+        if (text.length() >= 2) {
+            char first = text.charAt(0);
+            if ((first == '"' || first == '\'') && text.charAt(text.length() - 1) == first) {
+                return text.substring(1, text.length() - 1);
+            }
+        }
+        return text;
     }
 
     @Override

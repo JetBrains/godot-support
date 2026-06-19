@@ -79,7 +79,14 @@ object GdCommonUtil {
                 is GdFuncDeclIdNmi -> GdElementFactory.funcDeclIdNmi(project, newName)
                 is GdInheritanceIdRef -> GdElementFactory.inheritanceIdNm(project, newName)
                 is GdInheritanceSubIdRef -> GdElementFactory.inheritanceSubIdNm(project, newName)
-                is GdKeyNmi -> GdElementFactory.keyNmi(project, newName)
+                is GdKeyNmi ->
+                    // Preserve the original key form: string-literal keys stay quoted string literals.
+                    if (element.text.startsWith("\""))
+                        GdElementFactory.keyNmi(project, "\"$newName\"")
+                    else if (element.text.startsWith("'"))
+                        GdElementFactory.keyNmi(project, "'$newName'")
+                    else
+                        GdElementFactory.keyNmi(project, newName)
                 is GdMethodIdNmi -> GdElementFactory.methodIdNmi(project, newName)
                 is GdRefIdRef -> GdElementFactory.refIdNm(project, newName)
                 is GdSignalIdNmi -> GdElementFactory.signalIdNmi(project, newName)

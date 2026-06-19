@@ -1,0 +1,8 @@
+var dict = {
+    key1 = { "key11" : 11},
+    key2 = { "key21" : 21}
+}
+
+func test():
+    dict[r].key1[r].key11[r]
+    dict[r].key21[u]

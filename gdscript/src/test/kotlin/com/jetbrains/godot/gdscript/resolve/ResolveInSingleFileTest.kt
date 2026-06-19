@@ -31,6 +31,20 @@ class ResolveInSingleFileTest : ResolveTestBase() {
     }
 
     @Test
+    fun testGdDictionaryStringStyle(){
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
+
+    @Test
+    fun testNestedGdDictionary(){
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
+
+    @Test
     fun testEnum1(){
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
