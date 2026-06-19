@@ -1,12 +1,12 @@
-package com.jetbrains.godot.gdscript.polySymbols.sdk.xml
+package com.jetbrains.godot.gdscript.sdk.xml
 
 import com.intellij.openapi.application.PathManager
 import gdscript.polySymbols.sdk.xml.XmlToGd
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import java.nio.file.Path
 import kotlin.io.path.readText
-import kotlin.test.assertEquals
 
 class XmlToGdTest {
 
@@ -27,6 +27,6 @@ class XmlToGdTest {
         val xmlFile = xmlDir.resolve("doc_classes/$className.xml")
         val expected = xmlDir.resolve("$className.gdf").readText()
         val actual = XmlToGd().convert(xmlFile)
-        assertEquals(expected, actual)
+        Assertions.assertEquals(expected, actual)
     }
 }
