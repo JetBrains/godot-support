@@ -74,8 +74,12 @@ object GdPrimaryExParser : GdExprBaseParser() {
             ok = ok && b.consumeToken(EQ)
             ok = ok && GdExprParser.parse(b, l + 1)
         } else if (b.followingTokensAre(STRING, EQ)) {
-            ok = ok && b.consumeToken(STRING)
+            ok = ok && b.mcToken(KEY_NMI, STRING)
             ok = ok && b.consumeToken(EQ)
+            ok = ok && GdExprParser.parse(b, l + 1)
+        } else if (b.followingTokensAre(STRING, COLON)) {
+            ok = ok && b.mcToken(KEY_NMI, STRING)
+            ok = ok && b.consumeToken(COLON)
             ok = ok && GdExprParser.parse(b, l + 1)
         } else {
             ok = ok && GdExprParser.parse(b, l + 1)

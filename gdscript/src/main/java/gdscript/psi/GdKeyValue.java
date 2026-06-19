@@ -1,7 +1,6 @@
 package gdscript.psi;
 
 import java.util.List;
-import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import com.intellij.psi.PsiElement;
@@ -17,14 +16,24 @@ public interface GdKeyValue extends PsiElement {
     return PsiTreeUtil.getChildOfType(this, GdKeyNmi.class);
   }
 
+  /**
+   * @return GdKeyNmi or GdExpr
+   */
+  @Nullable
+  default PsiElement getKey() {
+      // Identifier and string-literal keys are both wrapped in a GdKeyNmi by the parser,
+      // any other key (an arbitrary expression) is the first expr
+      GdKeyNmi keyNmi = PsiTreeUtil.getChildOfType(this, GdKeyNmi.class);
+      if (keyNmi != null) return keyNmi;
+
+      List<GdExpr> list = getExprList();
+      return !list.isEmpty() ? list.getFirst() : null;
+  }
+
   @Nullable
   default PsiElement getValue() {
     List<GdExpr> list = getExprList();
-    if (list.size() > 1) return list.get(1);
-
-    if (getFirstChild() == null) return null;
-    IElementType firstChildType = getFirstChild().getNode().getElementType();
-    if (firstChildType == GdTypes.IDENTIFIER || firstChildType == GdTypes.STRING || firstChildType == GdTypes.KEY_NMI) return getLastChild();
+    if (!list.isEmpty()) return list.getLast();
     return null;
   }
 
