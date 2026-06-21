@@ -12,6 +12,7 @@
     <module name="intellij.libraries.gson"/>
     <module name="intellij.libraries.kotlin.reflect"/>
     <module name="intellij.libraries.kotlinx.coroutines.core"/>
+    <module name="intellij.libraries.kotlinx.coroutines.test"/>
     <module name="intellij.libraries.teamcity.service.messages"/>
     <module name="intellij.libraries.xz"/>
     <module name="intellij.platform.analysis.impl"/>
