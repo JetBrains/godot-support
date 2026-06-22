@@ -144,6 +144,57 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
                 srcNode = "Nested1.1.1",
                 expected = "$\"../../Nested2.1/Nested1.1\""
             ),
+            Case(
+                start = "CameraPivot",
+                end = "CameraPivot/SpringArm3D/Something",
+                dragNode = "Camera",
+                srcNode = "SpringArm3D",
+                expected = "\$Something/Camera"
+            ),
+            Case(
+                start = "CameraPivot",
+                end = "CameraPivot/SpringArm3D",
+                dragNode = "Camera",
+                srcNode = "SpringArm3D",
+                expected = "\$Camera"
+            ),
+            // Godot node names do not have to be unique
+            Case(
+                start = "Node3D",
+                end = "Node3D/Node3D/Node3D",
+                dragNode = "Node3D",
+                srcNode = "Node3D",
+                expected = "\$Node3D/Node3D"
+            ),
+            Case(
+                start = "Node3D",
+                end = "Node3D/Node3D",
+                dragNode = "Node3D",
+                srcNode = "Node3D",
+                expected = "\$Node3D"
+            ),
+
+            Case(
+                start = "Node3D/Node3D2",
+                end = "Node3D/Node3D/Node3D",
+                dragNode = "Node3D",
+                srcNode = "Node3D",
+                expected = "\$\"../../Node3D/Node3D/Node3D\""
+            ),
+            Case(
+                start = ".",
+                end = "Node3D/Node3D",
+                dragNode = "Node3D",
+                srcNode = "Node3D",
+                expected = "\$Node3D/Node3D"
+            ),
+            Case(
+                start = "",
+                end = "Node3D/Node3D",
+                dragNode = "Node3D",
+                srcNode = "Node3D",
+                expected = "\$Node3D/Node3D/Node3D"
+            )
 
             )
 
