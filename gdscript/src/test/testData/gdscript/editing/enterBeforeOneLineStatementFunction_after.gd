@@ -1,0 +1,2 @@
+func hi():
+	<caret>5

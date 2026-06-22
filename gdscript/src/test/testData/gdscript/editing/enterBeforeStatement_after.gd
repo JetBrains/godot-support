@@ -1,2 +1,2 @@
-func foo(): 
+func foo():
 	pass
