@@ -18,7 +18,6 @@ import gdscript.utils.VirtualFileUtil.resourcePath
 import tscn.toolWindow.model.SceneNodeTransferable.Companion.SCENE_NODE_FLAVOR
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.Transferable
-import kotlin.collections.first
 
 class SceneTreeFactoryListener : EditorFactoryListener {
     companion object {
@@ -96,15 +95,21 @@ private class SceneTreeEditorDropHandler(
 
         // TODO: C# file handling
         fun assembleFinalText(nodeParent: String, nodeName: String, nodeType: String): String? {
+            // Godot node names can start with a number, for some reason
+            val name_prefix = if (nodeName.firstOrNull()?.isDigit() ?: false) {
+               "_"
+            } else {
+                ""
+            }
             return when {
-                ctrlDown -> "@onready var ${nodeName.camelToSnakeCase()}: ${nodeType} = ${
+                ctrlDown -> "@onready var $name_prefix${nodeName.camelToSnakeCase()}: ${nodeType} = ${
                     relativePath(
                         nodeParent,
                         nodeName
                     ) ?: return null
                 }"
 
-                altDown -> "@export var ${nodeName.camelToSnakeCase()}: ${nodeType}"
+                altDown -> "@export var $name_prefix${nodeName.camelToSnakeCase()}: ${nodeType}"
                 else -> relativePath(nodeParent, nodeName) ?: return null
             }
         }
