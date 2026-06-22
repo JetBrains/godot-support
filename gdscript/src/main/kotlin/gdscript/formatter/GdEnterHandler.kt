@@ -18,9 +18,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil
 import com.intellij.psi.tree.TokenSet
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtilCore
+import com.intellij.psi.util.elementType
 import gdscript.formatter.block.GdBlocks
 import gdscript.psi.GdFile
+import gdscript.psi.GdStmt
+import gdscript.psi.GdStmtOrSuite
 import gdscript.psi.GdTypes
 
 /**
@@ -98,7 +102,50 @@ class GdEnterHandler : EnterHandlerDelegate {
             if (result != null) return result
         }
 
+        tryPromoteInlineBody(resolvedFile, resolvedEditor, doc, offset, caretOffset)?.let { return it }
+
         return EnterHandlerDelegate.Result.Continue
+    }
+
+    /**
+     * Promote a one-line colon-header body (`func hi(): <caret>return 5`) onto its own indented line.
+     * The indentation-sensitive parser mis-parses the inline body as a sibling of the header, so
+     * `DefaultForceIndent` would indent it from the wrong block; we unfortunately have to rewrite the line break ourselves...
+     */
+    private fun tryPromoteInlineBody(
+        file: PsiFile,
+        editor: Editor,
+        doc: Document,
+        offset: Int,
+        caretOffset: Ref<Int>,
+    ): EnterHandlerDelegate.Result? {
+        val chars = doc.charsSequence
+
+        // Scan back over inline whitespace to the header ':' (rejects caret mid-body / at end of body).
+        var breakAt = offset
+        while (breakAt > 0 && (chars[breakAt - 1] == ' ' || chars[breakAt - 1] == '\t')) breakAt--
+        if (breakAt == 0 || chars[breakAt - 1] != ':') return null
+
+        var bodyStart = breakAt
+        while (bodyStart < doc.textLength && (chars[bodyStart] == ' ' || chars[bodyStart] == '\t')) bodyStart++
+        if (bodyStart >= doc.textLength || chars[bodyStart] == '\n') return null // empty body -> not ours
+
+        // A GdStmtOrSuite only appears as a colon-header body, so this rejects dict ':', type hints, slices.
+        val body = PsiTreeUtil.getParentOfType(file.findElementAt(bodyStart), GdStmtOrSuite::class.java)
+        if (body == null || body.stmt == null || body.textRange.startOffset != bodyStart) return null
+
+        val lineStart = doc.getLineStartOffset(doc.getLineNumber(breakAt - 1))
+        var indentEnd = lineStart
+        while (indentEnd < doc.textLength && (chars[indentEnd] == ' ' || chars[indentEnd] == '\t')) indentEnd++
+        val opts = CodeStyle.getIndentOptions(file)
+        val indent = doc.getText(TextRange(lineStart, indentEnd)) +
+            if (opts.USE_TAB_CHARACTER) "\t" else " ".repeat(opts.INDENT_SIZE)
+
+        doc.replaceString(breakAt, bodyStart, "\n$indent")
+        val caret = breakAt + 1 + indent.length
+        caretOffset.set(caret)
+        editor.caretModel.moveToOffset(caret)
+        return EnterHandlerDelegate.Result.Stop
     }
 
     private fun tryStringSplit(

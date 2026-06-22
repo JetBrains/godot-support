@@ -292,8 +292,27 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testBracesInString() = doEnterTest()
 
+    // TODO: Decide if we want to keep or integrate into the rest
     @Test
     fun testEnterOnOneLineMatchBlock() = doEnterTest()
+
+    @Test
+    fun testEnterBeforeOneLineStatementMatchCaretBeforeStatement() = doEnterTest()
+
+    @Test
+    fun testEnterBeforeOneLineStatementMatchCaretAfterStatement() = doEnterTest()
+
+    @Test
+    fun testEnterBeforeOneLineStatementMatchCaretAfterColon() = doEnterTest()
+
+    @Test
+    fun testEnterBeforeOneLineStatementFunction() = doEnterTest()
+
+    @Test
+    fun testEnterBeforeOneLineStatementIf() = doEnterTest()
+
+    @Test
+    fun testEnterBeforeOneLineStatementForLoop() = doEnterTest()
 
     @Test
     fun testEnterOnLastParameter() = doEnterTest()
