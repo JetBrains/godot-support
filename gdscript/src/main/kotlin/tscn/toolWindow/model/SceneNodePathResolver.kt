@@ -9,6 +9,7 @@ object SceneNodePathResolver {
         val commonLevel: Int
     )
 
+    enum class TargetLanguage { GdScript, CSharp }
 
     private fun normalizePath(raw: String): List<String> {
         val s = raw.trim()
@@ -21,7 +22,12 @@ object SceneNodePathResolver {
     }
 
 
-    private fun removeCommonPrefix(first: String, second: String, dragNode: String, srcNode: String): CommonPrefixResult {
+    private fun removeCommonPrefix(
+        first: String,
+        second: String,
+        dragNode: String,
+        srcNode: String
+    ): CommonPrefixResult {
         val firstSplit = normalizePath(first)
         val secondSplit = normalizePath(second)
         var sameCount = firstSplit.zip(secondSplit).takeWhile { (a, b) ->
@@ -52,18 +58,34 @@ object SceneNodePathResolver {
         )
     }
 
-    fun constructRelativePath(startParent: String, dstParent: String, dragNode: String, srcNode: String, isUnique: Boolean): String {
+    fun constructRelativePath(
+        startParent: String,
+        dstParent: String,
+        dragNode: String,
+        srcNode: String,
+        isUnique: Boolean,
+        language: TargetLanguage
+    ): String {
+        val csPath = language == TargetLanguage.CSharp
         if (isUnique) {
+            if (csPath) {
+                return "\"%$dragNode\""
+            }
             val startsWithNum = dragNode.firstOrNull()?.isDigit() ?: false
-            if (startsWithNum) {
-                return "%\"$dragNode\""
+            return if (startsWithNum) {
+                "%\"$dragNode\""
             } else {
-                return "%$dragNode"
+                "%$dragNode"
             }
         }
         val draggingIntoItself = startParent == dstParent && dragNode == srcNode
+        val prefix = if (csPath) {
+            ""
+        } else {
+            "$"
+        }
         if (draggingIntoItself) {
-            return "$\".\""
+            return "$prefix\".\""
         }
         val startIsRoot = startParent.isEmpty()
         val (normalizedStartLevel, differingEnd, onPathToRoot, commonLevel) = if (startIsRoot) {
@@ -95,10 +117,10 @@ object SceneNodePathResolver {
         val hasNumberNode = output.split("/").find {
             it.firstOrNull()?.isDigit() ?: false
         }
-        return if (addQuotes || hasNumberNode != null) {
-            "$\"$output\""
+        return if (addQuotes || hasNumberNode != null || csPath) {
+            "$prefix\"$output\""
         } else {
-            "$$output"
+            "$prefix$output"
         }
     }
 }

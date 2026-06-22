@@ -18,7 +18,7 @@ class TscnScenePreviewWindowFactory : ToolWindowFactory {
         fun makeAvailable(project: Project) {
             GdScriptProjectLifetimeService.getScope(project).launch(Dispatchers.EDT) {
                 val toolWindow = ToolWindowManager.getInstance(project).getToolWindow(TOOLWINDOW_ID) ?: return@launch
-                if (!ToolWindowManager.getInstance(project).isStripeButtonShow(toolWindow)){
+                if (!ToolWindowManager.getInstance(project).isStripeButtonShow(toolWindow)) {
                     toolWindow.isAvailable = true
                 }
             }
@@ -35,7 +35,7 @@ class TscnScenePreviewWindowFactory : ToolWindowFactory {
         // Touch ModifierTracker to load it and make sure
         // first drag and drop succeeds
         ModifierTracker.getModifiers()
-        window.runScheduler()
+        window.start()
     }
 
     override fun shouldBeAvailable(project: Project): Boolean {

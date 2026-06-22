@@ -24,27 +24,30 @@
   <extensions defaultExtensionNs="com.intellij">
     <lang.parserDefinition language="GdScript" implementationClass="gdscript.GdParserDefinition"/>
     <highlightErrorFilter implementation="gdscript.codeInsight.highlighting.GdErrorFilter"/>
-    <lang.syntaxHighlighterFactory language="GdScript" implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
+    <lang.syntaxHighlighterFactory language="GdScript"
+                                   implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
     <annotator language="GdScript" implementationClass="gdscript.highlighter.GdColorAnnotator"/>
     <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
     <additionalTextAttributes scheme="Default" file="colorSchemes/GdLightColorScheme.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
-    <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider" />
-    <findUsagesHandlerFactory implementation="gdscript.codeInsight.GdFindUsageHandlerFactory" />
-    <referencesSearch implementation="gdscript.reference.search.GdConstructorReferencesSearcher" />
-    <configurationType implementation="gdscript.run.GdRunConfigurationType" />
-    <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer" />
-    <defaultLiveTemplates file="/templates/GdScript.xml" />
-    <liveTemplateContext contextId="GDSCRIPT" implementation="gdscript.GdTemplateContextType" />
-    <codeInsight.parameterInfo language="GdScript" id="GdParameterInfoHandler" implementationClass="gdscript.codeInsight.GdParameterInfoHandler" />
-    <lang.documentationProvider language="GdScript" implementationClass="gdscript.codeInsight.GdDocumentationProvider" />
-    <codeInsight.parameterNameHints language="GdScript" implementationClass="gdscript.codeInsight.GdInlayParameterHintProvider" />
-    <lang.refactoringSupport language="GdScript" implementationClass="gdscript.psi.GdRefactoringSupportProvider" />
-    <colorProvider implementation="gdscript.lineMarker.GdColorProvider" />
-    <library.type implementation="gdscript.library.GdLibraryType" />
-    <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor" />
-    <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
+    <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider"/>
+    <findUsagesHandlerFactory implementation="gdscript.codeInsight.GdFindUsageHandlerFactory"/>
+    <referencesSearch implementation="gdscript.reference.search.GdConstructorReferencesSearcher"/>
+    <configurationType implementation="gdscript.run.GdRunConfigurationType"/>
+    <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer"/>
+    <defaultLiveTemplates file="/templates/GdScript.xml"/>
+    <liveTemplateContext contextId="GDSCRIPT" implementation="gdscript.GdTemplateContextType"/>
+    <codeInsight.parameterInfo language="GdScript" id="GdParameterInfoHandler"
+                               implementationClass="gdscript.codeInsight.GdParameterInfoHandler"/>
+    <lang.documentationProvider language="GdScript" implementationClass="gdscript.codeInsight.GdDocumentationProvider"/>
+    <codeInsight.parameterNameHints language="GdScript"
+                                    implementationClass="gdscript.codeInsight.GdInlayParameterHintProvider"/>
+    <lang.refactoringSupport language="GdScript" implementationClass="gdscript.psi.GdRefactoringSupportProvider"/>
+    <colorProvider implementation="gdscript.lineMarker.GdColorProvider"/>
+    <library.type implementation="gdscript.library.GdLibraryType"/>
+    <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor"/>
+    <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory"/>
     <registryKey key="gdscript.doctool.timeout.ms"
                  defaultValue="60000"
                  description="Timeout (in milliseconds) for the Godot --doctool process that generates GDExtension stubs"
@@ -52,7 +55,7 @@
     <backgroundPostStartupActivity implementation="gdscript.listener.ReferenceGdLibrariesProjectActivity"/>
     <backgroundPostStartupActivity implementation="GdScriptToolWindowManagerProjectActivity"/>
     <backgroundPostStartupActivity implementation="gdscript.lsp.GodotLspStartOnFocusGainedActivity"/>
-    <rider.godot.community.godotProjectProvider implementation="gdscript.utils.GdScriptGodotProjectProvider" />
+    <rider.godot.community.godotProjectProvider implementation="gdscript.utils.GdScriptGodotProjectProvider"/>
     <projectViewNestingRulesProvider implementation="gdscript.structureView.GdFileNesting"/>
     <platform.lsp.integrationProvider implementation="gdscript.lsp.GodotLspIntegrationProvider"/>
     <toolWindow id="TscnScenePreviewWindowId"
@@ -60,35 +63,45 @@
                 secondary="false"
                 canCloseContents="false"
                 icon="com.intellij.rider.plugins.godot.gdscript.icons.RiderPluginsGodotGdscriptIcons.TscnFile"
-                factoryClass="tscn.toolWindow.TscnScenePreviewWindowFactory" />
-    <editorFactoryListener implementation="tscn.toolWindow.model.SceneTreeFactoryListener"/>
-    <inlineActionHandler implementation="gdscript.refactoring.inline.GdInlineVariableActionHandler" />
+                factoryClass="tscn.toolWindow.TscnScenePreviewWindowFactory"/>
+    <inlineActionHandler implementation="gdscript.refactoring.inline.GdInlineVariableActionHandler"/>
 
     <!-- settings -->
     <search.optionContributor implementation="gdscript.settings.GdSearchableOptionContributor"/>
     <projectConfigurable
-        parentId="language"
-        instance="gdscript.settings.GdSettingsConfigurable"
-        id="gdscript.settings.GdSettingsConfigurable"
-        bundle="messages.GdScriptBundle"
-        key="godot.plugin.name"
+      parentId="language"
+      instance="gdscript.settings.GdSettingsConfigurable"
+      id="gdscript.settings.GdSettingsConfigurable"
+      bundle="messages.GdScriptBundle"
+      key="godot.plugin.name"
     />
 
     <!-- Line markers -->
-    <runLineMarkerContributor language="GdScript" implementationClass="gdscript.lineMarker.GdRunLineMarkerProvider" />
-    <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdResourceLineMarkerContributor" />
-    <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdTscnLineMarkerContributor" />
-    <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdTraitLineMarkerContributor" />
-    <codeInsight.lineMarkerProvider language="GdScript" implementationClass="gdscript.lineMarker.GdInheritanceLineMarkerContributor" />
+    <runLineMarkerContributor language="GdScript" implementationClass="gdscript.lineMarker.GdRunLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="GdScript"
+                                    implementationClass="gdscript.lineMarker.GdResourceLineMarkerContributor"/>
+    <codeInsight.lineMarkerProvider language="GdScript"
+                                    implementationClass="gdscript.lineMarker.GdTscnLineMarkerContributor"/>
+    <codeInsight.lineMarkerProvider language="GdScript"
+                                    implementationClass="gdscript.lineMarker.GdTraitLineMarkerContributor"/>
+    <codeInsight.lineMarkerProvider language="GdScript"
+                                    implementationClass="gdscript.lineMarker.GdInheritanceLineMarkerContributor"/>
     <!-- Tscn, Project, Config -->
-    <runLineMarkerContributor language="Tscn" implementationClass="tscn.lineMarker.TscnRunLineMarkerProvider" />
-    <codeInsight.lineMarkerProvider language="Tscn" implementationClass="tscn.lineMarker.TscnInheritanceLineMarkerProvider" />
+    <runLineMarkerContributor language="Tscn" implementationClass="tscn.lineMarker.TscnRunLineMarkerProvider"/>
+    <codeInsight.lineMarkerProvider language="Tscn"
+                                    implementationClass="tscn.lineMarker.TscnInheritanceLineMarkerProvider"/>
 
     <!-- Tscn, Project, Config -->
-    <fileType name="Tres file" implementationClass="tscn.TresFileType" fieldName="INSTANCE" language="Tscn" extensions="tres"/>
-    <fileType name="Import file" implementationClass="tscn.ImportFileType" fieldName="INSTANCE" language="Tscn" extensions="import"/>
-    <fileType name="GodotProject file" implementationClass="project.ProjectFileType" fieldName="INSTANCE" language="GodotProject" extensions="godot"/>
-    <fileType name="GodotConfig file" implementationClass="config.GdConfigFileType" fieldName="INSTANCE" language="GodotConfig" extensions="gdconf"/>
+    <fileType name="Tres file" implementationClass="tscn.TresFileType" fieldName="INSTANCE" language="Tscn"
+              extensions="tres"/>
+    <fileType name="Import file" implementationClass="tscn.ImportFileType" fieldName="INSTANCE" language="Tscn"
+              extensions="import"/>
+    <fileType name="GodotProject file" implementationClass="project.ProjectFileType" fieldName="INSTANCE"
+              language="GodotProject"
+              extensions="godot"/>
+    <fileType name="GodotConfig file" implementationClass="config.GdConfigFileType" fieldName="INSTANCE"
+              language="GodotConfig"
+              extensions="gdconf"/>
     <lang.parserDefinition language="Tscn" implementationClass="tscn.TscnParserDefinition"/>
     <lang.parserDefinition language="GodotProject" implementationClass="project.ProjectParserDefinition"/>
     <lang.parserDefinition language="GodotConfig" implementationClass="config.GdConfigParserDefinition"/>
@@ -96,120 +109,140 @@
     <colorSettingsPage implementation="tscn.highlighter.TscnColorSettingsPage"/>
 
     <!-- Completions -->
-    <completion.contributor language="GdScript" order="first" implementationClass="gdscript.completion.GdNumberPositionCompletionContributor" />
-    <completion.contributor   language="GdScript" order="last" implementationClass="gdscript.completion.GdKeywordContributor"/>
-    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
-    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
-    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>
-    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GetterSetterNameCompletion"/>
-    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdMethodDeclCompletionContributor"/>
-    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdResourceCompletionContributor"/>
-    <completion.contributor   language="GdScript" implementationClass="gdscript.completion.GdMethodParamCompletion"/>
-    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdInheritanceReferenceContributor" />
-    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdTypeHintReferenceContributor" />
-    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdSetGetMethodIdReferenceContributor" />
-    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdRefIdReferenceContributor" />
-    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdResourceReferenceContributor" />
+    <completion.contributor language="GdScript" order="first"
+                            implementationClass="gdscript.completion.GdNumberPositionCompletionContributor"/>
+    <completion.contributor language="GdScript" order="last"
+                            implementationClass="gdscript.completion.GdKeywordContributor"/>
+    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
+    <completion.contributor language="GdScript"
+                            implementationClass="gdscript.completion.GdClassNameCompletionContributor"/>
+    <completion.contributor language="GdScript"
+                            implementationClass="gdscript.completion.GdTypeHintCompletionContributor"/>
+    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GetterSetterNameCompletion"/>
+    <completion.contributor language="GdScript"
+                            implementationClass="gdscript.completion.GdMethodDeclCompletionContributor"/>
+    <completion.contributor language="GdScript"
+                            implementationClass="gdscript.completion.GdResourceCompletionContributor"/>
+    <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdMethodParamCompletion"/>
+    <psi.referenceContributor language="GdScript"
+                              implementation="gdscript.completion.GdInheritanceReferenceContributor"/>
+    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdTypeHintReferenceContributor"/>
+    <psi.referenceContributor language="GdScript"
+                              implementation="gdscript.completion.GdSetGetMethodIdReferenceContributor"/>
+    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdRefIdReferenceContributor"/>
+    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdResourceReferenceContributor"/>
     <!-- Tscn, Project, Config -->
-    <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceReferenceContributor" />
+    <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceReferenceContributor"/>
     <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnScriptClassReferenceContributor"/>
     <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceFieldReferenceContributor"/>
 
     <!-- Annotators -->
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdTypeHintAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstVarIdAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdSetGetAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdMethodNameAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdLambdaAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdResourceTypeAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdRefIdAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdParamAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdExprTypeAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdCommentAnnotator" />
-    <annotator language="GdScript" implementationClass="gdscript.annotator.GdFlowStmtAnnotator" />
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdTypeHintAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdConstVarIdAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdAnnotationAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdSetGetAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdMethodNameAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdLambdaAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdResourceTypeAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdRefIdAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdParamAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdExprTypeAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdCommentAnnotator"/>
+    <annotator language="GdScript" implementationClass="gdscript.annotator.GdFlowStmtAnnotator"/>
 
-    <annotator language="Tscn" implementationClass="tscn.annotator.TscnHeaderValueAnnotator" />
+    <annotator language="Tscn" implementationClass="tscn.annotator.TscnHeaderValueAnnotator"/>
 
     <!-- Inspectors -->
     <localInspection language="GdScript" shortName="GdCheckVarType" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspection.check.return.type"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdTypeHintInspection"/>
     <!-- Unreachable code detection has false positives (RIDER-132635), hide by setting level to INFORMATION -->
     <localInspection language="GdScript" shortName="GdMethodValidation" enabledByDefault="true" level="INFORMATION"
                      bundle="messages.GdScriptBundle" key="inspection.check.methods"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdMethodValidationInspection"/>
     <!-- LSP is more accurate than inspections for unused checks, so we hide then by level="INFORMATION", while preserving Quick Fixes -->
     <localInspection language="GdScript" shortName="GdUnusedMethod" enabledByDefault="true" level="INFORMATION"
                      bundle="messages.GdScriptBundle" key="inspection.check.unused.method"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdUnusedMethodInspection"/>
     <localInspection language="GdScript" shortName="GdUnusedParameter" enabledByDefault="true" level="INFORMATION"
                      bundle="messages.GdScriptBundle" key="inspection.check.unused.parameter"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdUnusedParameterInspection"/>
     <localInspection language="GdScript" shortName="GdUnusedVariable" enabledByDefault="true" level="INFORMATION"
                      bundle="messages.GdScriptBundle" key="inspection.check.unused.variable"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdUnusedVariableInspection"/>
     <localInspection language="GdScript" shortName="GdUnusedSignal" enabledByDefault="true" level="INFORMATION"
                      bundle="messages.GdScriptBundle" key="inspection.check.unused.signal"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdUnusedSignalInspection"/>
     <localInspection language="GdScript" shortName="GdUnusedClass" enabledByDefault="true" level="INFORMATION"
                      bundle="messages.GdScriptBundle" key="inspection.check.unused.class"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.unused.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdUnusedClassInspection"/>
     <localInspection language="GdScript" shortName="GdClassNameMatchesFilename" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspection.check.class.name.matches.filename"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdClassNameMatchesFilenameInspection"/>
     <localInspection language="GdScript" shortName="GdMissingMatchBranches" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspection.check.missing.match.branches"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdMissingMatchBranchesInspection"/>
     <localInspection language="GdScript" shortName="GdStringNameMemberUsage" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspection.check.callable.call.deferred"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdStringNameMemberCallInspection"/>
     <localInspection language="GdScript" shortName="GdWhitespaceLocal" enabledByDefault="true" level="WARNING"
                      bundle="messages.GdScriptBundle" key="inspection.check.whitespace"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdWhitespaceLocalInspectionTool"/>
     <localInspection language="Tscn" shortName="TscnSectionOrder" enabledByDefault="true" level="ERROR"
                      bundle="messages.GdScriptBundle" key="inspection.tscn.section.order"
-                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.tscn.name" groupPathKey="inspection.group.name"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.tscn.name"
+                     groupPathKey="inspection.group.name"
                      implementationClass="tscn.inspection.TscnSectionOrderInspection"/>
 
     <!-- Indices -->
     <stubElementTypeHolder class="gdscript.psi.GdTypes" externalIdPrefix="gd."/>
-    <stubIndex implementation="gdscript.index.impl.GdClassIdIndex" />
-    <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex" />
-    <stubIndex implementation="gdscript.index.impl.GdClassDeclIndex" />
-    <fileBasedIndex implementation="gdscript.index.impl.GdFileUidIndex" />
-    <stubIndex implementation="gdscript.index.impl.GdInheritanceIndex" />
-    <stubIndex implementation="gdscript.index.impl.GdConstDeclIndex" />
-    <stubIndex implementation="gdscript.index.impl.GdClassVarDeclIndex" />
-    <stubIndex implementation="gdscript.index.impl.GdMethodDeclIndex" />
-    <stubIndex implementation="gdscript.index.impl.GdSignalDeclIndex" />
-    <stubIndex implementation="gdscript.index.impl.GdEnumDeclIndex" />
+    <stubIndex implementation="gdscript.index.impl.GdClassIdIndex"/>
+    <stubIndex implementation="gdscript.index.impl.GdClassNamingIndex"/>
+    <stubIndex implementation="gdscript.index.impl.GdClassDeclIndex"/>
+    <fileBasedIndex implementation="gdscript.index.impl.GdFileUidIndex"/>
+    <stubIndex implementation="gdscript.index.impl.GdInheritanceIndex"/>
+    <stubIndex implementation="gdscript.index.impl.GdConstDeclIndex"/>
+    <stubIndex implementation="gdscript.index.impl.GdClassVarDeclIndex"/>
+    <stubIndex implementation="gdscript.index.impl.GdMethodDeclIndex"/>
+    <stubIndex implementation="gdscript.index.impl.GdSignalDeclIndex"/>
+    <stubIndex implementation="gdscript.index.impl.GdEnumDeclIndex"/>
     <!-- Tscn, Project, Config -->
     <stubElementTypeHolder class="tscn.psi.TscnTypes" externalIdPrefix="tscn."/>
-    <stubIndex implementation="tscn.index.impl.TscnResourceIndex" />
-    <stubIndex implementation="tscn.index.impl.TscnNodeIndex" />
-    <stubIndex implementation="tscn.index.impl.TscnParagraphIndex" />
-    <stubIndex implementation="tscn.index.impl.TscnConnectionIndex" />
-    <stubIndex implementation="tscn.index.impl.TscnUidIndex" />
+    <stubIndex implementation="tscn.index.impl.TscnResourceIndex"/>
+    <stubIndex implementation="tscn.index.impl.TscnNodeIndex"/>
+    <stubIndex implementation="tscn.index.impl.TscnParagraphIndex"/>
+    <stubIndex implementation="tscn.index.impl.TscnConnectionIndex"/>
+    <stubIndex implementation="tscn.index.impl.TscnUidIndex"/>
     <stubElementTypeHolder class="project.psi.ProjectTypes" externalIdPrefix="gdproject."/>
-    <stubIndex implementation="project.index.impl.ProjectSectionIndex" />
-    <stubIndex implementation="project.index.impl.ProjectDataIndex" />
+    <stubIndex implementation="project.index.impl.ProjectSectionIndex"/>
+    <stubIndex implementation="project.index.impl.ProjectDataIndex"/>
     <stubElementTypeHolder class="config.psi.GdConfigTypes" externalIdPrefix="gdconf."/>
-    <stubIndex implementation="config.index.impl.GdConfigOperatorDataIndex" />
-    <stubIndex implementation="config.index.impl.GdConfigOperationDataIndex" />
-    <stubIndex implementation="config.index.impl.GdConfigAnnotationDataIndex" />
+    <stubIndex implementation="config.index.impl.GdConfigOperatorDataIndex"/>
+    <stubIndex implementation="config.index.impl.GdConfigOperationDataIndex"/>
+    <stubIndex implementation="config.index.impl.GdConfigAnnotationDataIndex"/>
 
     <!-- Actions -->
     <intentionAction>
@@ -232,14 +265,14 @@
     </intentionAction>
 
     <!-- Formatters -->
-    <lang.braceMatcher language="GdScript" implementationClass="gdscript.formatter.GdBraceMatcher" />
+    <lang.braceMatcher language="GdScript" implementationClass="gdscript.formatter.GdBraceMatcher"/>
     <!-- Keep the full formatter disabled to avoid structural changes until related bugs are resolved. -->
-    <lang.formatter language="GdScript" implementationClass="gdscript.formatter.GdFormattingModelBuilder" />
-    <codeStyleSettingsProvider implementation="gdscript.formatter.GdCodeStyleSettingsProvider" />
-    <langCodeStyleSettingsProvider implementation="gdscript.formatter.settings.GdLanguageCodeStyleSettingsProvider" />
+    <lang.formatter language="GdScript" implementationClass="gdscript.formatter.GdFormattingModelBuilder"/>
+    <codeStyleSettingsProvider implementation="gdscript.formatter.GdCodeStyleSettingsProvider"/>
+    <langCodeStyleSettingsProvider implementation="gdscript.formatter.settings.GdLanguageCodeStyleSettingsProvider"/>
 
-    <enterHandlerDelegate implementation="gdscript.formatter.GdEnterHandler" />
-    <enterHandlerDelegate implementation="gdscript.formatter.GdEnterAtIndentHandler" order="first" />
+    <enterHandlerDelegate implementation="gdscript.formatter.GdEnterHandler"/>
+    <enterHandlerDelegate implementation="gdscript.formatter.GdEnterAtIndentHandler" order="first"/>
     <enterBetweenBracesDelegate language="GdScript"
                                 implementationClass="com.intellij.codeInsight.editorActions.enter.EnterBetweenBracesAndBracketsDelegate"/>
     <editor.backspaceModeOverride language="GdScript"
@@ -248,15 +281,19 @@
     <!-- File templates -->
     <fileTemplateGroup implementation="gdscript.templates.GdFileTemplateGroupFactory"/>
 
-    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdFoldingBuilder" />
-    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdRegionFoldingBuilder" />
-    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdTraitFoldingBuilder" />
-    <lang.psiStructureViewFactory language="GdScript" implementationClass="gdscript.structureView.GdStructureViewFactory" />
-    <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler" />
+    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdFoldingBuilder"/>
+    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdRegionFoldingBuilder"/>
+    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdTraitFoldingBuilder"/>
+    <lang.psiStructureViewFactory language="GdScript"
+                                  implementationClass="gdscript.structureView.GdStructureViewFactory"/>
+    <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler"/>
 
-    <notificationGroup id="GdSdkNotifications" displayType="BALLOON" bundle="messages.GdScriptBundle" key="notification.group.sdk.name" />
-    <notificationGroup id="GdRunNotifications" displayType="BALLOON" bundle="messages.GdScriptBundle" key="notification.group.run.name" />
-    <notificationGroup id="GodotSupportNotificationGroupId" displayType="STICKY_BALLOON" bundle="messages.GdScriptBundle"
+    <notificationGroup id="GdSdkNotifications" displayType="BALLOON" bundle="messages.GdScriptBundle"
+                       key="notification.group.sdk.name"/>
+    <notificationGroup id="GdRunNotifications" displayType="BALLOON" bundle="messages.GdScriptBundle"
+                       key="notification.group.run.name"/>
+    <notificationGroup id="GodotSupportNotificationGroupId" displayType="STICKY_BALLOON"
+                       bundle="messages.GdScriptBundle"
                        key="notification.group.godot.lsp"/>
 
     <editorNotificationProvider implementation="gdscript.lsp.GodotLspNotConnectedNotificationProvider"/>
@@ -265,7 +302,7 @@
     <statistics.projectUsagesCollector implementation="gdscript.statistics.GdProjectUsagesCollector"/>
 
     <!-- DAP debugging -->
-    <runConfigurationProducer implementation="gdscript.dap.GdScriptSceneRunConfigurationProducer" />
+    <runConfigurationProducer implementation="gdscript.dap.GdScriptSceneRunConfigurationProducer"/>
     <configurationType implementation="gdscript.dap.GdScriptConfigurationType"/>
     <platform.dap.debugAdapterSupportProvider implementation="gdscript.dap.GdScriptDebugAdapterSupportProvider"/>
     <platform.dap.launchArgumentsProvider implementation="gdscript.dap.GdScriptDapLaunchArgumentsProvider"/>
@@ -279,11 +316,12 @@
   </extensions>
 
   <actions>
-    <action id="GdCreateFileAction" class="gdscript.action.GdCreateFileAction" icon="com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons.GDScript" >
-      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile" />
+    <action id="GdCreateFileAction" class="gdscript.action.GdCreateFileAction"
+            icon="com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons.GDScript">
+      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
     </action>
     <action id="GdAddTraitAction" class="gdscript.action.GdAddTraitAction">
-      <add-to-group group-id="GenerateGroup" anchor="first" />
+      <add-to-group group-id="GenerateGroup" anchor="first"/>
     </action>
   </actions>
 

@@ -1,6 +1,7 @@
 package com.jetbrains.godot.tscn.toolWindow.model
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import org.junit.jupiter.api.assertAll
 import tscn.toolWindow.model.SceneNodePathResolver
 
 class SceneNodePathResolverTest : BasePlatformTestCase() {
@@ -194,15 +195,20 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
                 expected = "\$Node3D/Node3D/Node3D"
             )
         )
-
+        val assertions = mutableListOf<() -> Unit>()
         cases.forEachIndexed { i, c ->
-            val actual = SceneNodePathResolver.constructRelativePath(c.start, c.end, c.dragNode, c.srcNode, false)
-            assertEquals("Case #$i failed: $c", c.expected, actual)
+            val actual =
+                SceneNodePathResolver.constructRelativePath(
+                    c.start,
+                    c.end,
+                    c.dragNode,
+                    c.srcNode,
+                    false,
+                    SceneNodePathResolver.TargetLanguage.GdScript
+                )
+            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
         }
-        cases.forEachIndexed { i, c ->
-            val actual = SceneNodePathResolver.constructRelativePath(c.start, c.end, c.dragNode, c.srcNode, true)
-            assertEquals("Case #$i failed: $c", "%${c.dragNode}", actual)
-        }
+        assertAll(assertions)
     }
 
     fun testConstructRelativePathNumberedNode_cases() {
@@ -259,13 +265,134 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
                 expected = "%Nested1.1.1"
             ),
         )
+        val assertions = mutableListOf<() -> Unit>()
         cases.forEachIndexed { i, c ->
-            val actual = SceneNodePathResolver.constructRelativePath(c.start, c.end, c.dragNode, c.srcNode, false)
-            assertEquals("Case #$i failed: $c", c.expected, actual)
+            val actual = SceneNodePathResolver.constructRelativePath(
+                c.start, c.end, c.dragNode, c.srcNode,
+                isUnique = false,
+                SceneNodePathResolver.TargetLanguage.GdScript
+            )
+            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
         }
         casesUnique.forEachIndexed { i, c ->
-            val actual = SceneNodePathResolver.constructRelativePath(c.start, c.end, c.dragNode, c.srcNode, true)
-            assertEquals("Case #$i failed: $c", c.expected, actual)
+            val actual = SceneNodePathResolver.constructRelativePath(
+                c.start, c.end, c.dragNode, c.srcNode,
+                isUnique = true,
+                SceneNodePathResolver.TargetLanguage.GdScript
+            )
+            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
         }
+        assertAll(assertions)
+    }
+
+    fun testConstructRelativePathNumberedNodeCSPath_cases() {
+        val cases = listOf(
+            Case(
+                start = "",
+                end = "Nested1",
+                dragNode = "1.1",
+                srcNode = "Root",
+                expected = "\"Nested1/1.1\""
+            ),
+            Case(
+                start = "",
+                end = "Nested1/1.1",
+                dragNode = "Nested1.1.1",
+                srcNode = "Root",
+                expected = "\"Nested1/1.1/Nested1.1.1\""
+            ),
+            Case(
+                start = "",
+                end = "Nested1/Nested1.1",
+                dragNode = "Nested1.1.1",
+                srcNode = "1",
+                expected = "\"Nested1/Nested1.1/Nested1.1.1\""
+            ),
+            Case(
+                start = "",
+                end = ".",
+                dragNode = "1.1",
+                srcNode = "Root",
+                expected = "\"1.1\""
+            ),
+        )
+        val casesUnique = listOf(
+            Case(
+                start = "",
+                end = "Nested1",
+                dragNode = "1.1",
+                srcNode = "Root",
+                expected = "\"%1.1\""
+            ),
+            Case(
+                start = "",
+                end = "Nested1/1.1",
+                dragNode = "Nested1.1.1",
+                srcNode = "Root",
+                expected = "\"%Nested1.1.1\""
+            ),
+            Case(
+                start = "",
+                end = "Nested1/Nested1.1",
+                dragNode = "Nested1.1.1",
+                srcNode = "1",
+                expected = "\"%Nested1.1.1\""
+            ),
+        )
+        val assertions = mutableListOf<() -> Unit>()
+        cases.forEachIndexed { i, c ->
+            val actual = SceneNodePathResolver.constructRelativePath(
+                c.start, c.end, c.dragNode, c.srcNode,
+                isUnique = false,
+                SceneNodePathResolver.TargetLanguage.CSharp
+            )
+            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
+        }
+        casesUnique.forEachIndexed { i, c ->
+            val actual = SceneNodePathResolver.constructRelativePath(
+                c.start, c.end, c.dragNode, c.srcNode,
+                isUnique = true,
+                SceneNodePathResolver.TargetLanguage.CSharp
+            )
+            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
+        }
+        assertAll(assertions)
+    }
+
+    fun testConstructRelativeCSPath_cases() {
+        val cases = listOf(
+            Case(
+                start = "Nested/Nested1.1",
+                end = "Nested",
+                dragNode = "Nested2.1",
+                srcNode = "Nested1.1.1",
+                expected = "\"../../Nested2.1\""
+            ),
+            Case(
+                start = "Nested/Nested1.1",
+                end = "Nested/Nested2.1",
+                dragNode = "Nested1.1",
+                srcNode = "Nested1.1.1",
+                expected = "\"../../Nested2.1/Nested1.1\""
+            ),
+            Case(
+                start = "",
+                end = "Nested1/Nested1.1",
+                dragNode = "Nested1.1.1",
+                srcNode = "Root",
+                expected = "\"Nested1/Nested1.1/Nested1.1.1\""
+            ),
+        )
+
+        val assertions = mutableListOf<() -> Unit>()
+        cases.forEachIndexed { i, c ->
+            val actual = SceneNodePathResolver.constructRelativePath(
+                c.start, c.end, c.dragNode, c.srcNode,
+                isUnique = false,
+                SceneNodePathResolver.TargetLanguage.CSharp
+            )
+            assertions.add(fun() { assertEquals("Case #$i failed: $c", c.expected, actual) })
+        }
+        assertAll(assertions)
     }
 }

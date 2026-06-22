@@ -10,10 +10,21 @@ data class SceneNodeDrag(
     val nodeParentPath: String,
     val nodeName: String,
     val isUnique: Boolean,
-)
+) {
+    companion object {
+        fun fromHeader(header: TscnNodeHeader): SceneNodeDrag {
+            return SceneNodeDrag(
+                header.type,
+                header.parentPath,
+                header.name,
+                header.isUniqueNameOwner,
+            )
+        }
+    }
+}
 
 data class SceneDragPayload(
-    val nodeMapping: HashMap<String, MutableList<TscnNodeHeader>>,
+    val nodeMapping: HashMap<String, MutableList<SceneNodeDrag>>,
     val nodes: List<SceneNodeDrag>
 )
 
