@@ -21,15 +21,20 @@ object SceneNodePathResolver {
     }
 
 
-    private fun removeCommonPrefix(first: String, second: String, dragNode: String): CommonPrefixResult {
+    private fun removeCommonPrefix(first: String, second: String, dragNode: String, srcNode: String): CommonPrefixResult {
         val firstSplit = normalizePath(first)
         val secondSplit = normalizePath(second)
-        val sameCount = firstSplit.zip(secondSplit).takeWhile { (a, b) ->
+        var sameCount = firstSplit.zip(secondSplit).takeWhile { (a, b) ->
             a == b
         }.count()
 
         fun joinWithCount(l: List<String>): String {
-            return l.drop(sameCount).joinToString("/")
+            var out = l.drop(sameCount)
+            if (out.firstOrNull() == srcNode && firstSplit.size == sameCount) {
+               out = out.drop(1)
+               sameCount += 1
+            }
+            return out.joinToString("/")
         }
 
         val dragInFirst = firstSplit.contains(dragNode)
@@ -56,7 +61,7 @@ object SceneNodePathResolver {
         val (normalizedStartLevel, differingEnd, onPathToRoot, commonLevel) = if (startIsRoot) {
             CommonPrefixResult(0, dstParent, false, 1)
         } else {
-            removeCommonPrefix(startParent, dstParent, dragNode)
+            removeCommonPrefix(startParent, dstParent, dragNode, srcNode)
         }
         val builder = StringBuilder()
         var addQuotes = false
