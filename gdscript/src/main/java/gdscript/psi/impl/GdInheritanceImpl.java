@@ -1,9 +1,6 @@
 package gdscript.psi.impl;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.model.Symbol;
-import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -13,7 +10,6 @@ import gdscript.psi.GdInheritance;
 import gdscript.psi.GdInheritanceId;
 import gdscript.psi.GdPsiUtils;
 import gdscript.psi.GdVisitor;
-import gdscript.symbol.GdPsiSymbol;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,20 +49,5 @@ public class GdInheritanceImpl extends GdInheritanceElementImpl implements GdInh
   @NotNull
   public String getInheritancePath() {
     return GdPsiUtils.getInheritancePath(this);
-  }
-
-  @Override
-  public @NotNull PsiElement getDeclaringElement() {
-    return this;
-  }
-
-  @Override
-  public @NotNull TextRange getRangeInDeclaringElement() {
-    return this.getTextRange();
-  }
-
-  @Override
-  public @NotNull Symbol getSymbol() {
-    return new GdPsiSymbol(this);
   }
 }

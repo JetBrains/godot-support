@@ -1,7 +1,7 @@
 package com.jetbrains.godot.gdscript.sdk.xml
 
 import com.intellij.openapi.application.PathManager
-import gdscript.polySymbols.sdk.xml.XmlToGd
+import gdscript.sdk.xml.XmlToGd
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
