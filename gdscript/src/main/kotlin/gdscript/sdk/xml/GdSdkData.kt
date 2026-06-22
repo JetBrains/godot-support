@@ -1,4 +1,4 @@
-package gdscript.polySymbols.sdk.xml
+package gdscript.sdk.xml
 
 import gdscript.model.GdTutorial
 

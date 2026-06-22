@@ -14,7 +14,7 @@ import gdscript.GdScriptBundle
 import gdscript.library.GdExtensionWatchService
 import gdscript.library.GdLibraryManager
 import gdscript.library.GdProjectGodotService
-import gdscript.polySymbols.sdk.xml.XmlToGd
+import gdscript.sdk.xml.XmlToGd
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.collectLatest
