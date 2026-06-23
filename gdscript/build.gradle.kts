@@ -130,7 +130,7 @@ tasks {
     // todo: tobe removed with RIDER-127007 Different approach to GD sdk
     register("prepare") {
         doLast {
-            val url = "https://packages.jetbrains.team/files/p/net/gdscriptsdk/gdscriptsdk-1.0.0-SNAPSHOT.tar.xz"
+            val url = "https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/rider-gdscript/sdkBuilder/gdscriptsdk/1.0.0.981736716/gdscriptsdk-1.0.0.981736716.tar.xz"
             val sdkDir = project.layout.buildDirectory.dir("sdk").get().asFile
             
             // Create the SDK directory if it doesn't exist
