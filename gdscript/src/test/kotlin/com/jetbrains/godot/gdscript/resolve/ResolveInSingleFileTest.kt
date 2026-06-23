@@ -1,6 +1,9 @@
 package com.jetbrains.godot.gdscript.resolve
 
+import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.GdConstDeclTl
+import gdscript.psi.GdEnumValueNmi
+import gdscript.psi.GdRefIdRef
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -52,7 +55,13 @@ class ResolveInSingleFileTest : ResolveTestBase() {
     }
 
     @Test
-    @Ignore
+    fun testUnnamedEnums() {
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
+
+    @Test
     fun testUnnamedEnumsOuterConflicts() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)

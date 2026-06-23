@@ -610,6 +610,15 @@ object GdClassMemberUtil {
                 GdClassUtil.getOwningClassElement(it) == classElement
             }?.let { if (static != true || it.isStatic) return mutableListOf(it) }
 
+            // TODO RIDER-140174 Create stub index for unnamed enums
+            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
+                if (it.name.isBlank()) {
+                    it.enumValueList.forEach { value ->
+                        if (value.enumValueNmi.name == search) return mutableListOf(value)
+                    }
+                }
+            }
+
             PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdClassDeclTl::class.java).forEach {
                 if (it.name == search) return mutableListOf(it)
                 if (isRecursive) {
@@ -622,15 +631,6 @@ object GdClassMemberUtil {
                     if (it.name == search) return mutableListOf(it)
                     members.addAll(listClassMemberDeclarations(it, static, search, false, true))
                     if (members.size > 0) return members
-                }
-            }
-
-            // TODO Create stub for unnamed enums
-            PsiTreeUtil.getStubChildrenOfTypeAsList(classElement, GdEnumDeclTl::class.java).forEach {
-                if (it.name.isBlank()) {
-                    it.enumValueList.forEach { value ->
-                        if (value.enumValueNmi.name == search) return mutableListOf(value)
-                    }
                 }
             }
         } else {
