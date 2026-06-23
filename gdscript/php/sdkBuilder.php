@@ -33,6 +33,19 @@ foreach ($tags as $tag) {
     }
 }
 
+// Keep only the latest patch release for each major.minor line
+// (e.g. for 4.0, 4.0.1, 4.0.2, 4.0.3 keep only 4.0.3)
+$latestPerMinor = [];
+foreach ($existingTags as $tag) {
+    $parts = explode('.', $tag);
+    $minorKey = $parts[0] . '.' . ($parts[1] ?? '0');
+    if (!isset($latestPerMinor[$minorKey])
+        || version_compare($tag, $latestPerMinor[$minorKey], '>')) {
+        $latestPerMinor[$minorKey] = $tag;
+    }
+}
+$existingTags = array_values($latestPerMinor);
+
 // Fetch all existing SDKs
 $existingSdks = [];
 $sdkRegex = "/^$sdkPrefix(.+?).7z$/";
