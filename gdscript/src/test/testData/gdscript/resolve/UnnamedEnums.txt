@@ -1,0 +1,8 @@
+enum {
+	FIRST_ENUM_MEMBER,
+	SECOND_ENUM_MEMBER
+}
+
+func test():
+	FIRST_ENUM_MEMBER[r]
+	SECOND_ENUM_MEMBER[r]

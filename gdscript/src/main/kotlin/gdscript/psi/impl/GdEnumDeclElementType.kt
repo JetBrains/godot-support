@@ -1,6 +1,6 @@
 package gdscript.psi.impl
 
-import com.intellij.credentialStore.createSecureRandom
+import com.intellij.lang.ASTNode
 import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.stubs.IndexSink
 import com.intellij.psi.stubs.StubElement
@@ -12,6 +12,7 @@ import gdscript.index.stub.GdEnumDeclStub
 import gdscript.index.stub.GdEnumDeclStubImpl
 import gdscript.model.GdCommentModel
 import gdscript.psi.GdEnumDeclTl
+import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdCommentUtil
 import gdscript.psi.utils.PsiGdEnumUtil
 
@@ -23,6 +24,11 @@ object GdEnumDeclElementType : IStubElementType<GdEnumDeclStub, GdEnumDeclTl>("e
     }
 
     override fun getExternalId(): String = "GdScript.enumDecl"
+
+    // Only create a stub for named enums
+    override fun shouldCreateStub(node: ASTNode): Boolean {
+        return node.findChildByType(GdTypes.ENUM_DECL_NMI) != null
+    }
 
     override fun serialize(stub: GdEnumDeclStub, dataStream: StubOutputStream) {
         dataStream.writeName(stub.name())
@@ -39,16 +45,10 @@ object GdEnumDeclElementType : IStubElementType<GdEnumDeclStub, GdEnumDeclTl>("e
         )
 
     override fun indexStub(stub: GdEnumDeclStub, sink: IndexSink) {
-        var name: String? = stub.name()
-        // TODO losos
-        if (name == null || name.isEmpty()) {
-            name = stub.values().keys.firstOrNull()
+        val name = stub.name()
+        if (name.isNotEmpty()) {
+            sink.occurrence(Indices.ENUM, name)
         }
-        if (name == null || name.isEmpty()) {
-            name = createSecureRandom().toString()
-        }
-
-        sink.occurrence(Indices.ENUM, name)
     }
 
     override fun createPsi(stub: GdEnumDeclStub): GdEnumDeclTl =
