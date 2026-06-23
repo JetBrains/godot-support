@@ -34,9 +34,9 @@ GdScript File
                   <empty list>
                 PsiElement(GdTokenType.NEW_LINE)('\n')
             PsiWhiteSpace('        ')
-          PsiComment(GdTokenType.comment)('# asda')
-          PsiWhiteSpace('\n')
-          PsiWhiteSpace('\n')
+            PsiComment(GdTokenType.comment)('# asda')
+            PsiWhiteSpace('\n')
+            PsiWhiteSpace('\n')
           PsiComment(GdTokenType.comment)('# dsadsa')
           PsiWhiteSpace('\n')
           PsiWhiteSpace('    ')

@@ -166,8 +166,11 @@ import gdscript.lexer.ParenTracker;
     }
 
     private IElementType dedentComment(IElementType type) {
-        int nextIndent = nextNonCommentIndent();
-        if (nextIndent < 0 || isIgnored() || indent <= 0 || indentSizes.empty() || indent <= nextIndent || !newLineProcessed) {
+        // Trailing comments may close finished blocks, but must stay attached to their
+        // own indentation level and must not dedent past the following code line.
+        // At EOF nextNonCommentIndent() is -1, so max collapses to the comment's own column (yycolumn).
+        int nextIndent = Math.max(nextNonCommentIndent(), yycolumn);
+        if (isIgnored() || indent <= 0 || indentSizes.empty() || indent <= nextIndent || !newLineProcessed) {
             return type;
         }
 

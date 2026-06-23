@@ -292,9 +292,17 @@ class GdFormattingTest : BasePlatformTestCase() {
     @Test
     fun testIndentOfCaseClausesInsideMatchStatement() = doTest()
 
-    @Ignore("[parsing]")
     @Test
     fun testIndentOfCommentsInsideMatchStatement() = doTest()
+
+    @Test
+    fun testIndentOfCommentsInsideMatchStatementNonEof() = doTest()
+
+    @Test
+    fun testTrailingCommentIndentationInFunction() = doTest()
+
+    @Test
+    fun testTrailingCommentIndentationInFunctionNonEof() = doTest()
 
     @Test
     fun testIndentOfTypeArguments() = doTest()
@@ -597,11 +605,17 @@ class GdFormattingTest : BasePlatformTestCase() {
         doTest()
     }
 
-    @Ignore("[parsing]")
     @Test
-    fun testTrailingBlockCommentsIndentationPreserved() {
-        doTest()
-    }
+    fun testTrailingBlockCommentsIndentation() = doTest()
+
+    @Test
+    fun testTrailingBlockCommentsIndentationNonEof() = doTest()
+
+    @Test
+    fun testCommentBeforeElseAtIntermediateIndent() = doTest()
+
+    @Test
+    fun testtrailingCommentsInForLoopStaircaseAtEof() = doTest()
 
     @Ignore("Comment [postprocessor]")
     @Test
