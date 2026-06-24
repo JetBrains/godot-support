@@ -31,8 +31,8 @@ object SceneNodePathResolver {
         fun joinWithCount(l: List<String>): String {
             var out = l.drop(sameCount)
             if (out.firstOrNull() == srcNode && firstSplit.size == sameCount) {
-               out = out.drop(1)
-               sameCount += 1
+                out = out.drop(1)
+                sameCount += 1
             }
             return out.joinToString("/")
         }
@@ -52,7 +52,15 @@ object SceneNodePathResolver {
         )
     }
 
-    fun constructRelativePath(startParent: String, dstParent: String, dragNode: String, srcNode: String): String {
+    fun constructRelativePath(startParent: String, dstParent: String, dragNode: String, srcNode: String, isUnique: Boolean): String {
+        if (isUnique) {
+            val startsWithNum = dragNode.firstOrNull()?.isDigit() ?: false
+            if (startsWithNum) {
+                return "%\"$dragNode\""
+            } else {
+                return "%$dragNode"
+            }
+        }
         val draggingIntoItself = startParent == dstParent && dragNode == srcNode
         if (draggingIntoItself) {
             return "$\".\""
@@ -82,7 +90,12 @@ object SceneNodePathResolver {
             builder.append(dragNode)
         }
         val output = builder.toString().trimEnd { c -> c == '/' }
-        return if (addQuotes) {
+        // Godot node names can start with a number. If any of them does,
+        // the path has to be quoted.
+        val hasNumberNode = output.split("/").find {
+            it.firstOrNull()?.isDigit() ?: false
+        }
+        return if (addQuotes || hasNumberNode != null) {
             "$\"$output\""
         } else {
             "$$output"

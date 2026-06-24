@@ -105,7 +105,8 @@ class TscnSceneTreeBuilder {
                     SceneNodeDrag(
                         nodeType = it.myType,
                         nodeParentPath = it.parentPath,
-                        nodeName = it.myName
+                        nodeName = it.myName,
+                        isUnique = it.hasUniqueName
                     )
                 }
                 if (nodes.isEmpty()) return null

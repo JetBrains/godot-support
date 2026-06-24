@@ -9,6 +9,7 @@ data class SceneNodeDrag(
     val nodeType: String,
     val nodeParentPath: String,
     val nodeName: String,
+    val isUnique: Boolean,
 )
 
 data class SceneDragPayload(
