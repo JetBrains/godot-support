@@ -84,20 +84,21 @@ private class SceneTreeEditorDropHandler(
             return@lazy ScriptPathAndName(scriptParentPath, scriptNodeName)
         }
 
-        fun relativePath(nodeParentPath: String, nodeName: String): String? {
+        fun relativePath(nodeParentPath: String, nodeName: String, isUniqueName: Boolean): String? {
             return SceneNodePathResolver.constructRelativePath(
                 scriptInfo?.scriptParentPath ?: return null,
                 nodeParentPath,
                 nodeName,
-                scriptInfo?.scriptNodeName ?: return null
+                scriptInfo?.scriptNodeName ?: return null,
+                isUniqueName
             )
         }
 
         // TODO: C# file handling
-        fun assembleFinalText(nodeParent: String, nodeName: String, nodeType: String): String? {
+        fun assembleFinalText(nodeParent: String, nodeName: String, nodeType: String, isUniqueName: Boolean): String? {
             // Godot node names can start with a number, for some reason
             val name_prefix = if (nodeName.firstOrNull()?.isDigit() ?: false) {
-               "_"
+                "_"
             } else {
                 ""
             }
@@ -105,18 +106,19 @@ private class SceneTreeEditorDropHandler(
                 ctrlDown -> "@onready var $name_prefix${nodeName.camelToSnakeCase()}: ${nodeType} = ${
                     relativePath(
                         nodeParent,
-                        nodeName
+                        nodeName,
+                        isUniqueName
                     ) ?: return null
                 }"
 
                 altDown -> "@export var $name_prefix${nodeName.camelToSnakeCase()}: ${nodeType}"
-                else -> relativePath(nodeParent, nodeName) ?: return null
+                else -> relativePath(nodeParent, nodeName, isUniqueName) ?: return null
             }
         }
 
         val output = StringBuilder()
         for (item in payload.nodes) {
-            val nextItem = assembleFinalText(item.nodeParentPath, item.nodeName, item.nodeType)
+            val nextItem = assembleFinalText(item.nodeParentPath, item.nodeName, item.nodeType, item.isUnique)
             if (nextItem == null) {
                 continue
             }
