@@ -76,7 +76,7 @@ jobs:
           cp -r addons/rider-plugin artifact/addons/
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: rider-plugin-addons-${{ matrix.target.platform }}-${{ matrix.target.arch }}-${{ matrix.float-precision }}-${{ matrix.target-type }}
           path: godot-editor-addon/artifact
@@ -90,7 +90,7 @@ jobs:
         working-directory: .
     steps:
       - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: rider-plugin-addons
           pattern: rider-plugin-addons-*
