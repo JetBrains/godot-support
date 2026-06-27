@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package gdscript.statistics
 
 import com.intellij.internal.statistic.beans.MetricEvent
@@ -5,7 +7,7 @@ import com.intellij.internal.statistic.eventLog.EventLogGroup
 import com.intellij.internal.statistic.eventLog.events.EventFields
 import com.intellij.internal.statistic.service.fus.collectors.ProjectUsagesCollector
 import com.intellij.openapi.project.Project
-import gdscript.library.GdProjectGodotService
+import com.jetbrains.rider.godot.community.GdProjectGodotService
 
 class GdProjectUsagesCollector : ProjectUsagesCollector() {
 

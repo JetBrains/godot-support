@@ -5,8 +5,8 @@ import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
-import common.util.GdScriptProjectLifetimeService
 import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)
