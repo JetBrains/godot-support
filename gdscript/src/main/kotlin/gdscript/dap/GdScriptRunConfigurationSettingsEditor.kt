@@ -4,7 +4,7 @@ import com.intellij.execution.impl.CheckableRunConfigurationEditor
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.jetbrains.rd.util.lifetime.LifetimeDefinition
-import common.util.GdScriptProjectLifetimeService
+import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import javax.swing.JPanel
 
 class GdScriptRunConfigurationSettingsEditor(project: Project) : SettingsEditor<GdScriptRunConfiguration>(),

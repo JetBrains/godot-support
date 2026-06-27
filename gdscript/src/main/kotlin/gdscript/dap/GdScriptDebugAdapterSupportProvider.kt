@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package gdscript.dap
 
 import com.intellij.execution.ExecutionResult
@@ -13,16 +15,18 @@ import com.intellij.platform.dap.DebugAdapterId
 import com.intellij.platform.dap.DebugAdapterSupportProvider
 import com.intellij.platform.dap.connection.DebugAdapterHandle
 import com.intellij.platform.dap.connection.DebugAdapterSocketConnection
+import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.GdScriptBundle
 import gdscript.dap.breakpoints.GdScriptExceptionBreakpointType
 import gdscript.dap.breakpoints.GdScriptLineBreakpointType
 import gdscript.lsp.GodotLspRunningStatusProvider
+import gdscript.lsp.RunningGodotEditorDiscovery
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 object GdScriptDebugAdapter : DebugAdapterId("gdscript", GdScriptBundle.message("gdscript.debug.adapter.presentable.name"))
 
-private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<GdScriptDebugAdapter> {
+internal class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<GdScriptDebugAdapter> {
     override val adapterId = GdScriptDebugAdapter
     override fun createDebugAdapterDescriptor(project: Project): DebugAdapterDescriptor<GdScriptDebugAdapter> =
         object : DebugAdapterDescriptor<GdScriptDebugAdapter>() {
@@ -34,21 +38,24 @@ private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<
                 sessionId: String,
             ): DebugAdapterHandle {
                 val config = environment.runnerAndConfigurationSettings!!.configuration as GdScriptRunConfiguration
+                // If a Godot editor for this project is already running with `--dap-port`, prefer it
+                val port = discoverRunningDapPort(project) ?: config.structured.debugServerPort
                 try {
                     return DebugAdapterSocketConnection(
                         host = GdScriptRunFactory.DEFAULT_ADDRESS,
-                        port = config.structured.debugServerPort, connectionAttempts = 1)
+                        port = port, connectionAttempts = 1)
                 }
-                catch (e: Exception) {
+                catch (_: Exception) {
                     // handling of cases, if Editor is not running or the port is not matching
                     // let user fix the port or start the editor and then, we will try to connect again
                     withContext(Dispatchers.EDT) {
                         EditConfigurationsDialog(project).show()
                     }
 
+                    val retryPort = discoverRunningDapPort(project) ?: config.structured.debugServerPort
                     return DebugAdapterSocketConnection(
                         host = GdScriptRunFactory.DEFAULT_ADDRESS,
-                        port = config.structured.debugServerPort,
+                        port = retryPort,
                         connectionAttempts = 2)
                 }
                 finally {
@@ -67,4 +74,14 @@ private class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider<
                 }
             }
         }
+}
+
+/**
+ * Looks up `--dap-port` on a running Godot editor for the current project's base path, so the
+ * Debug Adapter can connect to the editor that is actually listening (instead of a stale or
+ * pre-configured port). Returns `null` if there is no running editor match or no base path.
+ */
+private fun discoverRunningDapPort(project: Project): Int? {
+    val basePath = GodotCommunityUtil.getGodotProjectBasePath(project) ?: return null
+    return RunningGodotEditorDiscovery.findRunningGodotDapPort(basePath)
 }

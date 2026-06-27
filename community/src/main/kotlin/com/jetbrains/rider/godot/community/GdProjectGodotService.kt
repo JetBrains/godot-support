@@ -1,4 +1,4 @@
-package gdscript.library
+package com.jetbrains.rider.godot.community
 
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.components.service
@@ -10,7 +10,6 @@ import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
-import common.util.GdScriptProjectLifetimeService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +20,7 @@ import kotlin.io.path.pathString
 import kotlin.io.path.readText
 
 @Service(Service.Level.PROJECT)
-class GdProjectGodotService(@Suppress("unused") project: Project) {
+class GdProjectGodotService(project: Project) {
 
     data class GodotProjectInfo(val version: String) {
         /** Parsed version; `null` for unparseable values like "Master" */

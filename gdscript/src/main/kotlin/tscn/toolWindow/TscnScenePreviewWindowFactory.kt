@@ -5,7 +5,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.openapi.wm.ToolWindowManager
-import common.util.GdScriptProjectLifetimeService
+import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import gdscript.GdScriptBundle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -5,8 +5,8 @@ import com.intellij.execution.configurations.ConfigurationTypeUtil
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
-import common.util.GdScriptProjectLifetimeService
 import kotlinx.coroutines.launch
 
 @Service(Service.Level.PROJECT)
@@ -71,9 +71,9 @@ class GdScriptRunConfigurationGenerator(project: Project) {
 
             val configs = runManager.allSettings.filter { it.type is GdScriptConfigurationType && it.name == configurationName }
             if (configs.any()) {
-                configs.forEach {
-                    // todo: update DAP port, if I find a way to read it from project settings
-                }
+//                configs.forEach {
+//                    // todo: update DAP port, if I find a way to read it from project settings
+//                }
             } else {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(GdScriptConfigurationType::class.java)
                 val runConfiguration = runManager.createConfiguration(configurationName, configurationType.factory)

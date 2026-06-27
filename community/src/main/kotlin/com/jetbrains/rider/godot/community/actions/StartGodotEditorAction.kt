@@ -1,11 +1,15 @@
 package com.jetbrains.rider.godot.community.actions
 
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.configurations.ParametersList
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Version
+import com.intellij.util.NetworkUtils
+import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 
 object StartGodotEditorAction : DumbAwareAction() {
@@ -35,6 +39,9 @@ object StartGodotEditorAction : DumbAwareAction() {
     fun startEditor(project: Project) {
         val launchConfig = GodotCommunityUtil.getEditorLaunchConfig(project) ?: return
 
+        val parsedVersion = GdProjectGodotService.getInstance(project).projectInfoFlow.value?.parsedVersion
+        val arguments = withDefaultServerPorts(launchConfig.arguments, parsedVersion)
+
         val runCommandLine = GeneralCommandLine(launchConfig.executablePath.toString())
             .withEnvironment(launchConfig.environmentVariables)
             .withParentEnvironmentType(
@@ -45,7 +52,7 @@ object StartGodotEditorAction : DumbAwareAction() {
                 }
             )
             .withWorkingDirectory(launchConfig.workingDirectory)
-            .withParameters(launchConfig.arguments)
+            .withParameters(arguments)
 
         logger.info("Starting Godot editor: ${runCommandLine.commandLineString}")
 
@@ -54,6 +61,36 @@ object StartGodotEditorAction : DumbAwareAction() {
             .redirectError(ProcessBuilder.Redirect.DISCARD)
             .redirectOutput(ProcessBuilder.Redirect.DISCARD)
             .start()
+    }
+
+    /**
+     * Ensures that `--lsp-port` and `--dap-port` are present in the Godot command line, so that
+     * an already-running Godot editor for the same project can be discovered later
+     * (see `RunningGodotEditorDiscovery`). Existing values supplied by the user are preserved.
+     */
+    internal fun withDefaultServerPorts(arguments: List<String>, parsedVersion: Version?): List<String> {
+        val params = ParametersList().apply { addAll(arguments) }
+        val hasLspPort = params.hasParameter("--lsp-port")
+        val hasDapPort = params.hasParameter("--dap-port")
+
+        val supportsLspPort = parsedVersion == null || !parsedVersion.lessThan(4, 2)
+        val supportsDapPort = parsedVersion == null || !parsedVersion.lessThan(4, 3)
+
+        val needLsp = !hasLspPort && supportsLspPort
+        val needDap = !hasDapPort && supportsDapPort
+        if (!needLsp && !needDap) return arguments
+
+        val result = arguments.toMutableList()
+        var lspPort: Int? = null
+        if (needLsp) {
+            lspPort = NetworkUtils.findFreePort(500050)
+            result += listOf("--lsp-port", lspPort.toString())
+        }
+        if (needDap) {
+            val dapPort = NetworkUtils.findFreePort(500060, setOfNotNull(lspPort))
+            result += listOf("--dap-port", dapPort.toString())
+        }
+        return result
     }
 
     private val logger = Logger.getInstance(StartGodotEditorAction::class.java)
