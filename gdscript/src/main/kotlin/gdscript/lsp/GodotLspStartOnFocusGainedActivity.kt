@@ -8,7 +8,7 @@ import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.wm.IdeFrame
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
-import common.util.GdScriptProjectLifetimeService
+import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
 import kotlinx.coroutines.Job

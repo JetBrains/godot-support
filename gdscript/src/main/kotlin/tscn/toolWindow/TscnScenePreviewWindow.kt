@@ -22,7 +22,7 @@ import com.intellij.util.BitUtil
 import com.intellij.util.concurrency.AppExecutorUtil
 import com.intellij.util.ui.TimerUtil
 import com.intellij.util.ui.UIUtil
-import common.util.GdScriptProjectLifetimeService
+import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import gdscript.GdScriptBundle
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow

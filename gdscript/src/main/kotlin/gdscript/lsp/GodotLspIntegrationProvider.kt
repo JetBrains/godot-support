@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 package gdscript.lsp
 
 import GdScriptPluginIcons
@@ -27,18 +29,18 @@ import com.intellij.platform.lsp.api.customization.LspInlayHintCustomizer
 import com.intellij.platform.lsp.api.customization.LspInlayHintDisabled
 import com.intellij.platform.lsp.api.lsWidget.LspClientWidgetItem
 import com.intellij.util.NetworkUtils
-import com.intellij.util.ui.update.MergingUpdateQueue
-import com.intellij.util.ui.update.Update
+import com.intellij.util.ui.update.DebouncedUpdates
+import com.intellij.util.ui.update.UpdateQueue
+import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.GodotMajorVersion
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
-import common.util.GdScriptProjectLifetimeService
-import gdscript.library.GdProjectGodotService
 import gdscript.settings.GdDocProviderMode
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
 import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdSettingsConfigurable
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -48,206 +50,215 @@ import org.eclipse.lsp4j.CompletionItemCapabilities
 import org.eclipse.lsp4j.Diagnostic
 import org.eclipse.lsp4j.MarkdownCapabilities
 import org.eclipse.lsp4j.TextDocumentClientCapabilities
-import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.time.Duration.Companion.seconds
 
 @Service(Service.Level.PROJECT)
-class GodotLspProjectService(val project: Project) {
-    var isScheduled: AtomicBoolean = AtomicBoolean(false)
+class GodotLspProjectService(val project: Project, scope: CoroutineScope) {
 
     companion object {
         fun getInstance(project: Project): GodotLspProjectService = project.service<GodotLspProjectService>()
     }
 
-    fun queueRestart() {
-        mergingUpdateQueue.queue(mergingUpdateQueueAction)
-    }
+    private val restartQueue: UpdateQueue<Unit> =
+        DebouncedUpdates.forScope<Unit>(scope, "GodotLspRestart", 1.seconds)
+            .restartTimerOnAdd(true)
+            .runLatest { rebuildAndStart() }
 
-    private val mergingUpdateQueue: MergingUpdateQueue =
-        MergingUpdateQueue("GodotLspServerSupportProviderMergingUpdateQueue", 1000, true, null).setRestartTimerOnAdd(true)
-    private val mergingUpdateQueueAction: Update = object : Update("restartServerIfNeeded") {
-        override fun run() {
-            restartServer()
+    init {
+        val settings = GdLspSettingsFlowService.getInstance(project)
+
+        scope.launch(Dispatchers.IO) {
+            settings.lspConnectionMode.filterNotNull().collect { mode ->
+                if (mode == GdLspConnectionMode.Never) {
+                    LspClientManager.getInstance(project).stopClients(GodotLspIntegrationProvider::class.java)
+                } else {
+                    restartQueue.queue(Unit)
+                }
+            }
         }
+
+        scope.launch(Dispatchers.IO) {
+            settings.remoteHostPort.filterNotNull().collect { restartQueue.queue(Unit) }
+        }
+
+        scope.launch(Dispatchers.IO) {
+            GodotCommunityUtil.getGodotProjectBasePathFlow(project)
+                .filterNotNull().collect { restartQueue.queue(Unit) }
+        }
+
+        // Initial rebuild — debounced together with whatever the flows above emit on first collect.
+        restartQueue.queue(Unit)
     }
 
-    fun restartServer() {
-        thisLogger().info("stopAndRestartIfNeeded")
-        LspClientManager.getInstance(project).stopAndRestartClientsIfNeeded(GodotLspIntegrationProvider::class.java)
+    fun queueRestart() {
+        restartQueue.queue(Unit)
     }
+
+    private suspend fun rebuildAndStart() {
+        val settings = GdLspSettingsFlowService.getInstance(project)
+        val manager = LspClientManager.getInstance(project)
+        if (!allReady(settings, project)) {
+            manager.stopClients(GodotLspIntegrationProvider::class.java)
+            return
+        }
+
+        val basePath = GodotCommunityUtil.getGodotProjectBasePath(project)
+        val port = basePath?.let { RunningGodotEditorDiscovery.findRunningGodotLspPort(it) }
+        if (port != null) {
+            thisLogger().info("Reusing --lsp-port=$port from a running Godot editor for $basePath")
+        }
+
+        thisLogger().info("rebuildAndStart: stop + ensureClientStarted")
+        manager.stopClients(GodotLspIntegrationProvider::class.java)
+        manager.ensureClientStarted(
+            GodotLspIntegrationProvider::class.java,
+            GodotLspClientDescriptor(project, port),
+        )
+    }
+
+    private fun allReady(settings: GdLspSettingsFlowService, project: Project): Boolean = (
+        settings.lspConnectionMode.value != GdLspConnectionMode.Never
+            && (settings.lspConnectionMode.value == GdLspConnectionMode.ConnectRunningEditor || GodotCommunityUtil.getGodotExecutablePath(
+            project
+        ) != null)
+            && settings.remoteHostPort.value != null
+            && GodotCommunityUtil.getGodotProjectBasePath(project) != null
+        )
 }
 
 class GodotLspIntegrationProvider : LspIntegrationProvider {
     override fun createWidgetItem(lspClient: LspClient, currentFile: VirtualFile?): LspClientWidgetItem =
-        GodotLspClientWidgetItem(lspClient, currentFile, GdScriptPluginIcons.Icons.GodotLogo, settingsPageClass = GdSettingsConfigurable::class.java)
-
-    override fun fileOpened(project: Project, file: VirtualFile, clientStarter: LspIntegrationProvider.LspClientStarter) {
-        if (GodotFileUtil.isGdFile(file)) {
-            val settings = GdLspSettingsFlowService.getInstance(project)
-            val lspService = GodotLspProjectService.getInstance(project)
-
-            // subscribe one time to everything
-            if (lspService.isScheduled.compareAndSet(false, true)) {
-                val scope = GdScriptProjectLifetimeService.getScope(project)
-                scope.launch(Dispatchers.IO) {
-                    settings.lspConnectionMode.filterNotNull().collect { lspConnectionMode ->
-                        if (lspConnectionMode == GdLspConnectionMode.Never) {
-                            LspClientManager.getInstance(project).stopClients(GodotLspIntegrationProvider::class.java)
-                        } else
-                            scheduleStartIfNeeded(project)
-                    }
-                }
-
-                scope.launch(Dispatchers.IO) {
-                    settings.remoteHostPort.filterNotNull().collect {
-                        scheduleStartIfNeeded(project)
-                    }
-                }
-
-                scope.launch(Dispatchers.IO) {
-                    GodotCommunityUtil.isPureGdScriptProjectFlow(project).collect {
-                        scheduleStartIfNeeded(project)
-                    }
-                }
-
-                scope.launch(Dispatchers.IO) {
-                    GodotCommunityUtil.getGodotProjectBasePathFlow(project)
-                        .filterNotNull().collect {
-                            scheduleStartIfNeeded(project)
-                        }
-                }
-            }
-
-            // start, it is ok to call multiple times, but not too often
-            if (allReady(settings, project)) {
-                thisLogger().info("ensureServerStarted")
-                // this does not start a server if the `fileOpened` has already ended
-                clientStarter.ensureClientStarted(GodotLspClientDescriptor(project))
-            }
-        }
-    }
-
-    private fun allReady(discoverer: GdLspSettingsFlowService, project: Project) = (
-        discoverer.lspConnectionMode.value != GdLspConnectionMode.Never
-            && (discoverer.lspConnectionMode.value == GdLspConnectionMode.ConnectRunningEditor || GodotCommunityUtil.getGodotExecutablePath(project) != null)
-            && discoverer.remoteHostPort.value != null
-            && GodotCommunityUtil.getGodotProjectBasePath(project) != null
+        GodotLspClientWidgetItem(
+            lspClient,
+            currentFile,
+            GdScriptPluginIcons.Icons.GodotLogo,
+            settingsPageClass = GdSettingsConfigurable::class.java
         )
 
-    private fun scheduleStartIfNeeded(project: Project) {
-        val godotLspProjectService = GodotLspProjectService.getInstance(project)
-        val discoverer = GdLspSettingsFlowService.getInstance(project)
-        if (!allReady(discoverer, project)) return
-        godotLspProjectService.queueRestart()
+    override fun fileOpened(
+        project: Project,
+        file: VirtualFile,
+        clientStarter: LspIntegrationProvider.LspClientStarter
+    ) {
+        if (!GodotFileUtil.isGdFile(file)) return
+        GodotLspProjectService.getInstance(project)
+    }
+}
+
+private class GodotLspClientDescriptor(
+    project: Project,
+    private val discoveredRunningLspPort: Int?,
+) : LspClientDescriptor(
+    project,
+    "Godot",
+    GodotCommunityUtil.getGodotProjectBasePath(project)?.let { VfsUtil.findFile(it, false) }!!
+) {
+    val settings = GdLspSettingsFlowService.getInstance(project)
+    val lspConnectionMode by lazy { settings.lspConnectionMode.value }
+
+    val remoteHostPort: Int? by lazy {
+        if (useDynamicPort) NetworkUtils.findFreePort(500050) else
+            discoveredRunningLspPort ?: settings.remoteHostPort.value
     }
 
-    private class GodotLspClientDescriptor(project: Project) : LspClientDescriptor(
-        project,
-        "Godot",
-        GodotCommunityUtil.getGodotProjectBasePath(project)?.let { VfsUtil.findFile(it, false) }!!
-    ) {
-        val settings = GdLspSettingsFlowService.getInstance(project)
-        val lspConnectionMode by lazy { settings.lspConnectionMode.value }
-        val remoteHostPort by lazy { if (useDynamicPort) NetworkUtils.findFreePort(500050) else settings.remoteHostPort.value }
+    //val dapPort by lazy { NetworkUtils.findFreePort(500060, setOf()) }
+    val useDynamicPort by lazy { settings.lspConnectionMode.value == GdLspConnectionMode.StartEditorHeadless }
 
-        //val dapPort by lazy { NetworkUtils.findFreePort(500060, setOf()) }
-        val useDynamicPort by lazy { settings.lspConnectionMode.value == GdLspConnectionMode.StartEditorHeadless }
+    override fun isSupportedFile(file: VirtualFile) = GodotFileUtil.isGdFile(file)
+    override fun createCommandLine(): GeneralCommandLine {
+        val basePath = GodotCommunityUtil.getGodotProjectBasePath(project)
+        val godotPath = GodotCommunityUtil.getGodotExecutablePath(project)
+        val headlessArg = when (GodotCommunityUtil.getGodotMajorVersion(project)) {
+            GodotMajorVersion.GODOT_4 -> "--headless"
+            else -> "--no-window"
+        }
+        // todo: dap port in the headless Godot may conflict with dap port of the main Godot editor
+        val commandLine = GeneralCommandLine(
+            godotPath.toString(),
+            "--path",
+            "$basePath",
+            "--editor",
+            headlessArg,
+            "--lsp-port",
+            remoteHostPort.toString()
+        )
+        // todo: consider adding dap-port here too? However not sure about it.
+        thisLogger().info("createCommandLine commandLine=$commandLine")
+        return commandLine
+    }
 
-        override fun isSupportedFile(file: VirtualFile) = GodotFileUtil.isGdFile(file)
-        override fun createCommandLine(): GeneralCommandLine {
-            val basePath = GodotCommunityUtil.getGodotProjectBasePath(project)
-            val godotPath = GodotCommunityUtil.getGodotExecutablePath(project)
-            val headlessArg = when (GodotCommunityUtil.getGodotMajorVersion(project)) {
-                GodotMajorVersion.GODOT_4 -> "--headless"
-                else -> "--no-window"
-            }
-            // todo: dap port in the headless Godot may conflict with dap port of the main Godot editor
-            val commandLine = GeneralCommandLine(
-                godotPath.toString(),
-                "--path",
-                "$basePath",
-                "--editor",
-                headlessArg,
-                "--lsp-port",
-                remoteHostPort.toString()
+    override val lspCommunicationChannel: LspCommunicationChannel
+        get() {
+            thisLogger().info("lspCommunicationChannel port=$remoteHostPort, mode=$lspConnectionMode")
+            return LspCommunicationChannel.Socket(
+                remoteHostPort!!,
+                lspConnectionMode == GdLspConnectionMode.StartEditorHeadless
             )
-            // can be solved with https://github.com/godotengine/godot/pull/92336, when it is released
-            // val commandLine = GeneralCommandLine(godotPath, "--path", "$basePath", "--editor", headlessArg, "--lsp-port", remoteHostPort.toString(), "--dap-port", dapPort.toString())
-            thisLogger().info("createCommandLine commandLine=$commandLine")
-            return commandLine
-            // https://github.com/godotengine/godot-proposals/issues/7558#issuecomment-1693765359
         }
 
-        override val lspCommunicationChannel: LspCommunicationChannel
+    override fun getLanguageId(file: VirtualFile) = "gdscript"
+
+    override val clientCapabilities: ClientCapabilities
+        get() = super.clientCapabilities.apply {
+            // RIDER-129495 Allows converting [color] BBCode to <span>
+            general?.markdown = MarkdownCapabilities().apply {
+                parser = "marked"
+                version = "1.1.0"
+                allowedTags = listOf("span")
+            }
+            // RIDER-134419 choosing function from autocomplete options leads to unwanted parentheses
+            // Godot's LSP snippetSupport is for functions with parameters, we have a client handler for the case
+            textDocument = (textDocument ?: TextDocumentClientCapabilities()).apply {
+                completion = (completion ?: CompletionCapabilities()).apply {
+                    completionItem = (completionItem ?: CompletionItemCapabilities()).apply {
+                        snippetSupport = false
+                    }
+                }
+            }
+        }
+
+    override fun createLsp4jClient(handler: LspServerNotificationsHandler): Lsp4jClient {
+        return GodotLsp4jClient(handler, project)
+    }
+
+    override val lspCustomization: LspCustomization = object : LspCustomization() {
+        override val completionCustomizer: LspCompletionCustomizer = GodotLspCompletionSupport()
+        override val hoverCustomizer: LspHoverCustomizer
             get() {
-                thisLogger().info("lspCommunicationChannel port=$remoteHostPort, mode=$lspConnectionMode")
-                return LspCommunicationChannel.Socket(
-                    remoteHostPort!!,
-                    lspConnectionMode == GdLspConnectionMode.StartEditorHeadless
-                )
+                if (GdProjectSettingsState.getInstance(project).state.docProvider != GdDocProviderMode.LSP)
+                    return LspHoverDisabled
+                return super.hoverCustomizer
             }
 
-        override fun getLanguageId(file: VirtualFile) = "gdscript"
+        override val inlayHintCustomizer: LspInlayHintCustomizer = LspInlayHintDisabled
 
-        override val clientCapabilities: ClientCapabilities
-            get() = super.clientCapabilities.apply {
-                // RIDER-129495 Allows converting [color] BBCode to <span>
-                general?.markdown = MarkdownCapabilities().apply {
-                    parser = "marked"
-                    version = "1.1.0"
-                    allowedTags = listOf("span")
+        override val diagnosticsCustomizer: LspDiagnosticsCustomizer = object : LspDiagnosticsSupport() {
+            override fun getHighlightSeverity(diagnostic: Diagnostic): HighlightSeverity? {
+                // RIDER-117554, also fixed in Godot 4.7 https://github.com/godotengine/godot/pull/114185
+                val beforeGodot47 =
+                    GdProjectGodotService.getInstance(project).projectInfoFlow.value?.parsedVersion?.lessThan(4, 7)
+                        ?: false
+                if (diagnostic.message.startsWith("(UNUSED_PARAMETER)") && beforeGodot47) {
+                    return null
                 }
-                // RIDER-134419 choosing function from autocomplete options leads to unwanted parentheses
-                // Godot's LSP snippetSupport is for functions with parameters, we have a client handler for the case
-                textDocument = (textDocument ?: TextDocumentClientCapabilities()).apply {
-                    completion = (completion ?: CompletionCapabilities()).apply {
-                        completionItem = (completionItem ?: CompletionItemCapabilities()).apply {
-                            snippetSupport = false
-                        }
-                    }
-                }
+
+                return super.getHighlightSeverity(diagnostic)
             }
 
-        override fun createLsp4jClient(handler: LspServerNotificationsHandler): Lsp4jClient {
-            return GodotLsp4jClient(handler, project)
-        }
-
-        override val lspCustomization: LspCustomization = object : LspCustomization() {
-            override val completionCustomizer: LspCompletionCustomizer = GodotLspCompletionSupport()
-            override val hoverCustomizer: LspHoverCustomizer
-                get() {
-                    if (GdProjectSettingsState.getInstance(project).state.docProvider != GdDocProviderMode.LSP)
-                        return LspHoverDisabled
-                    return super.hoverCustomizer
+            /*
+            * UNUSED_VARIABLE, UNUSED_LOCAL_CONSTANT, UNUSED_PRIVATE_CLASS_VARIABLE, UNUSED_PARAMETER, UNUSED_SIGNAL
+            * https://github.com/godotengine/godot/blob/1bd7b99182f7e8de4d6b2f089fec5db9392ac6b8/modules/gdscript/gdscript_warning.cpp#L47C8-L47C23
+            */
+            override fun getSpecialHighlightType(diagnostic: Diagnostic): ProblemHighlightType? {
+                if (diagnostic.message.startsWith("(UNUSED_VARIABLE)")
+                    || diagnostic.message.startsWith("(UNUSED_LOCAL_CONSTANT)")
+                    || diagnostic.message.startsWith("(UNUSED_PRIVATE_CLASS_VARIABLE)")
+                    || diagnostic.message.startsWith("(UNUSED_PARAMETER)")
+                    || diagnostic.message.startsWith("(UNUSED_SIGNAL)")
+                ) {
+                    return ProblemHighlightType.LIKE_UNUSED_SYMBOL
                 }
-
-            override val inlayHintCustomizer: LspInlayHintCustomizer = LspInlayHintDisabled
-
-            override val diagnosticsCustomizer: LspDiagnosticsCustomizer = object : LspDiagnosticsSupport() {
-                override fun getHighlightSeverity(diagnostic: Diagnostic): HighlightSeverity? {
-                    // RIDER-117554, also fixed in Godot 4.7 https://github.com/godotengine/godot/pull/114185
-                    val beforeGodot4_7 = GdProjectGodotService.getInstance(project).projectInfoFlow.value?.parsedVersion?.lessThan(4, 7) ?: false
-                    if (diagnostic.message.startsWith("(UNUSED_PARAMETER)") && beforeGodot4_7) {
-                        return null
-                    }
-
-                    return super.getHighlightSeverity(diagnostic)
-                }
-
-                /*
-                UNUSED_VARIABLE, UNUSED_LOCAL_CONSTANT, UNUSED_PRIVATE_CLASS_VARIABLE, UNUSED_PARAMETER, UNUSED_SIGNAL
-                https://github.com/godotengine/godot/blob/1bd7b99182f7e8de4d6b2f089fec5db9392ac6b8/modules/gdscript/gdscript_warning.cpp#L47C8-L47C23
-                 */
-                override fun getSpecialHighlightType(diagnostic: Diagnostic): ProblemHighlightType? {
-                    if (diagnostic.message.startsWith("(UNUSED_VARIABLE)")
-                        || diagnostic.message.startsWith("(UNUSED_LOCAL_CONSTANT)")
-                        || diagnostic.message.startsWith("(UNUSED_PRIVATE_CLASS_VARIABLE)")
-                        || diagnostic.message.startsWith("(UNUSED_PARAMETER)")
-                        || diagnostic.message.startsWith("(UNUSED_SIGNAL)")
-                    ) {
-                        return ProblemHighlightType.LIKE_UNUSED_SYMBOL
-                    }
-                    return super.getSpecialHighlightType(diagnostic)
-                }
+                return super.getSpecialHighlightType(diagnostic)
             }
         }
     }

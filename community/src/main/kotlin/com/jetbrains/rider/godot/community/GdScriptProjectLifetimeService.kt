@@ -1,4 +1,4 @@
-package common.util
+package com.jetbrains.rider.godot.community
 
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.components.Service
@@ -23,6 +23,5 @@ class GdScriptProjectLifetimeService(val scope: CoroutineScope): LifetimedServic
         fun getInstance(project: Project): GdScriptProjectLifetimeService = project.service()
         fun getLifetime(project: Project): Lifetime = getInstance(project).serviceLifetime
         fun getScope(project: Project): CoroutineScope = project.service<GdScriptProjectLifetimeService>().scope
-
     }
 }
