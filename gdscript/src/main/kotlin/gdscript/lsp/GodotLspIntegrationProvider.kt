@@ -29,11 +29,11 @@ import com.intellij.platform.lsp.api.lsWidget.LspClientWidgetItem
 import com.intellij.util.NetworkUtils
 import com.intellij.util.ui.update.MergingUpdateQueue
 import com.intellij.util.ui.update.Update
+import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.GodotMajorVersion
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotFileUtil
-import common.util.GdScriptProjectLifetimeService
-import gdscript.library.GdProjectGodotService
+import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import gdscript.settings.GdDocProviderMode
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
@@ -73,6 +73,7 @@ class GodotLspProjectService(val project: Project) {
     fun restartServer() {
         thisLogger().info("stopAndRestartIfNeeded")
         LspClientManager.getInstance(project).stopAndRestartClientsIfNeeded(GodotLspIntegrationProvider::class.java)
+        LspNotificationLifetimeService.getInstance(project).next()
     }
 }
 
@@ -147,7 +148,23 @@ class GodotLspIntegrationProvider : LspIntegrationProvider {
     ) {
         val settings = GdLspSettingsFlowService.getInstance(project)
         val lspConnectionMode by lazy { settings.lspConnectionMode.value }
-        val remoteHostPort by lazy { if (useDynamicPort) NetworkUtils.findFreePort(500050) else settings.remoteHostPort.value }
+
+        /**
+         * Port advertised by a Godot editor that is already running.
+         */
+        private val discoveredRunningLspPort: Int? by lazy {
+            val basePath = GodotCommunityUtil.getGodotProjectBasePath(project) ?: return@lazy null
+            val port = RunningGodotEditorDiscovery.findRunningGodotLspPort(basePath)
+            if (port != null) {
+                thisLogger().info("Reusing --lsp-port=$port from a running Godot editor for $basePath")
+            }
+            port
+        }
+
+        val remoteHostPort: Int? by lazy {
+            if (useDynamicPort) NetworkUtils.findFreePort(500050) else
+                discoveredRunningLspPort ?: settings.remoteHostPort.value
+        }
 
         //val dapPort by lazy { NetworkUtils.findFreePort(500060, setOf()) }
         val useDynamicPort by lazy { settings.lspConnectionMode.value == GdLspConnectionMode.StartEditorHeadless }

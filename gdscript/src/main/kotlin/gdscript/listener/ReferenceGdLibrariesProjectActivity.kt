@@ -9,11 +9,11 @@ import com.intellij.openapi.util.registry.RegistryManager
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
-import common.util.GdScriptProjectLifetimeService
+import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import gdscript.GdScriptBundle
 import gdscript.library.GdExtensionWatchService
 import gdscript.library.GdLibraryManager
-import gdscript.library.GdProjectGodotService
+import com.jetbrains.rider.godot.community.GdProjectGodotService
 import gdscript.sdk.xml.XmlToGd
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
