@@ -34,7 +34,7 @@ class XmlToGd {
         if (clazz.inherits?.isNotEmpty() == true) {
             sb.appendLine("extends ${clazz.inherits}")
         }
-        sb.appendLine("class_name ${clazz.name}")
+        sb.appendLine("class_name ${GdNameSanitizer.sanitizeClassName(clazz.name)}")
 
         if(hasClassDocumentation(clazz)) {
             addClassDocumentation(sb, clazz)
@@ -101,7 +101,9 @@ class XmlToGd {
         constructors.forEach { constructor ->
             addMemberDocumentation(sb, constructor.description, constructor.isDeprecated, constructor.isExperimental)
             val vararg = if (constructor.qualifiers.isVariadic) "...args: Array" else null
-            val params = constructor.parameters.joinToString(", ") { "${it.name}: ${it.type.name}" }
+            val params = constructor.parameters.joinToString(", ") {
+                "${GdNameSanitizer.sanitizeParameterName(it.name)}: ${it.type.name}"
+            }
             val paramsList = vararg?.let { if (params.isNotEmpty()) "$params, $vararg" else vararg } ?: params
             sb.appendLine("func _init($paramsList):")
             sb.appendLine("\tpass")
@@ -125,7 +127,9 @@ class XmlToGd {
             addMemberDocumentation(sb, method.description, method.isDeprecated, method.isExperimental)
             val static = if (method.qualifiers.isStatic) "static " else ""
             val vararg = if (method.qualifiers.isVariadic) "...args: Array" else null
-            val params = method.parameters.joinToString(", ") { "${it.name}: ${it.type.name}" }
+            val params = method.parameters.joinToString(", ") {
+                "${GdNameSanitizer.sanitizeParameterName(it.name)}: ${it.type.name}"
+            }
             val paramsList = vararg?.let { if (params.isNotEmpty()) "$params, $vararg" else vararg } ?: params
             sb.appendLine("${static}func ${method.name}($paramsList) -> ${method.returnType.name}:")
             if (!method.isGetter && !method.isSetter) {
@@ -172,7 +176,9 @@ class XmlToGd {
         sb.appendLine()
         signals.forEach { signal ->
             addMemberDocumentation(sb, signal.description, signal.isDeprecated, signal.isExperimental)
-            val params = signal.parameters.joinToString(", ") { "${it.name}: ${it.type.name}" }
+            val params = signal.parameters.joinToString(", ") {
+                "${GdNameSanitizer.sanitizeParameterName(it.name)}: ${it.type.name}"
+            }
             sb.appendLine("signal ${signal.name}($params)")
             sb.appendLine()
         }
