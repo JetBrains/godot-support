@@ -18,12 +18,6 @@
     <module name="intellij.rider.test.framework.unit"/>
     <module name="intellij.rider.test.framework.junit"/>
     <module name="intellij.rider.test.framework.core"/>
-    <module name="intellij.libraries.eclipse.lsp4j" loading="embedded"/>
-    <module name="intellij.libraries.eclipse.lsp4j.debug" loading="embedded"/>
-    <module name="intellij.libraries.eclipse.lsp4j.jsonrpc" loading="embedded"/>
-    <module name="intellij.libraries.eclipse.lsp4j.jsonrpc.debug" loading="embedded"/>
     <module name="intellij.platform.dap"/>
-    <module name="intellij.platform.lsp"/>
-    <module name="intellij.platform.lsp.impl"/>
   </content>
 </idea-plugin>
