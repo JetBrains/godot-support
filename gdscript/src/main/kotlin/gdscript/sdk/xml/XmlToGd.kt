@@ -34,7 +34,7 @@ class XmlToGd {
         if (clazz.inherits?.isNotEmpty() == true) {
             sb.appendLine("extends ${clazz.inherits}")
         }
-        sb.appendLine("class_name ${clazz.name}")
+        sb.appendLine("class_name ${GdNameSanitizer.sanitizeClassName(clazz.name)}")
 
         if(hasClassDocumentation(clazz)) {
             addClassDocumentation(sb, clazz)

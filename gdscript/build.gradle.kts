@@ -2,12 +2,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.grammarkit.tasks.GenerateLexerTask
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
-import java.net.URI
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpResponse
-import kotlin.io.path.Path
-import kotlin.io.path.pathString
 
 plugins {
     alias(libs.plugins.changelog)
@@ -126,45 +120,6 @@ tasks {
     compileKotlin {
         dependsOn( lexers.map { "${it.first}Lexer" })
     }
-    
-    // todo: tobe removed with RIDER-127007 Different approach to GD sdk
-    register("prepare") {
-        doLast {
-            val url = "https://packages.jetbrains.team/maven/p/ij/intellij-dependencies/rider-gdscript/sdkBuilder/gdscriptsdk/1.0.0.981736716/gdscriptsdk-1.0.0.981736716.tar.xz"
-            val sdkDir = project.layout.buildDirectory.dir("sdk").get().asFile
-            
-            // Create the SDK directory if it doesn't exist
-            if (!sdkDir.exists()) {
-                sdkDir.mkdirs()
-            }
-            
-            // Download the SDK
-            val sdkFile = sdkDir.resolve("sdk.tar.xz")
-            if (sdkFile.exists()) {
-                return@doLast
-            }
-            val client = HttpClient.newBuilder()
-                .followRedirects(HttpClient.Redirect.NORMAL)
-                .build()
-            val request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .build()
-
-            client.send(
-                request,
-                HttpResponse.BodyHandlers.ofFile(sdkFile.toPath())
-            )
-            
-            logger.lifecycle("Downloaded SDK from $url to ${sdkFile.absolutePath}")
-        }
-    }
-
-    prepareSandbox{
-        dependsOn("prepare")
-        val pluginName = intellijPlatform.projectName.get()
-        val sdkDir = project.layout.buildDirectory.dir("sdk").get().asFile
-        from(sdkDir) { into(Path(pluginName, "sdk").pathString)}
-    }
 
     // run it to start Rider from SDK
     val runRider by intellijPlatformTesting.runIde.registering {
@@ -174,17 +129,6 @@ tasks {
         task {
             enabled = true
             dependsOn(prepareSandbox)
-
-            val pluginName = intellijPlatform.projectName.get()
-            val sdkDir = project.layout.buildDirectory.dir("sdk").get().asFile
-
-            // sandboxPluginsDirectory is not adequate when calling runRider
-            val target2 = Path(sandboxDirectory.get().asFile.absolutePath, "plugins_runRider", pluginName, "sdk")
-            logger.lifecycle("Copying SDK from $sdkDir to $target2")
-            project.copy {
-                from(sdkDir)
-                into(target2)
-            }
         }
     }
 
