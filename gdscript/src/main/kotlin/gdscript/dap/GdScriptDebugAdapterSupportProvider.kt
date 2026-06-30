@@ -21,6 +21,7 @@ import gdscript.dap.breakpoints.GdScriptExceptionBreakpointType
 import gdscript.dap.breakpoints.GdScriptLineBreakpointType
 import gdscript.lsp.GodotLspRunningStatusProvider
 import gdscript.lsp.RunningGodotEditorDiscovery
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -44,6 +45,9 @@ internal class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider
                     return DebugAdapterSocketConnection(
                         host = GdScriptRunFactory.DEFAULT_ADDRESS,
                         port = port, connectionAttempts = 1)
+                }
+                catch (e: CancellationException) {
+                    throw e
                 }
                 catch (_: Exception) {
                     // handling of cases, if Editor is not running or the port is not matching
