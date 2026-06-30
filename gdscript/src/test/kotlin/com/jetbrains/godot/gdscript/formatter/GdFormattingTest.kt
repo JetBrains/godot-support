@@ -159,6 +159,20 @@ class GdFormattingTest : BasePlatformTestCase() {
     }
 
     @Test
+    fun testEmptyLinesBetweenCodeAtFunctionStart() {
+        getGdCodeStyleSettings().LINES_WITHIN_SUITE = 0
+        getGdCodeStyleSettings().NEW_LINE_AFTER_COLON = true
+        doTest()
+    }
+
+    @Test
+    fun testDefaultLinesBetweenCodeAtFunctionStart() {
+        getGdCodeStyleSettings().LINES_WITHIN_SUITE = 1
+        getGdCodeStyleSettings().NEW_LINE_AFTER_COLON = true
+        doTest()
+    }
+
+    @Test
     fun testBlankLineAfterDecorator() = doTest()
 
     @Test
