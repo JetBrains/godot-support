@@ -318,7 +318,7 @@ fun GdASTBlock.computeSpacing(child1: Block?, child2: Block, ctx: GdFmtContext):
         && child1.node.elementType == COLON
         && GdBlocks.NEW_LINE_AFTER_COLON_PARENTS.contains(child1.node.treeParent.elementType)
     ) {
-        return Spacing.createSpacing(0, 0, 1, true, commonSettings.KEEP_BLANK_LINES_IN_CODE)
+        return Spacing.createSpacing(0, 0, 1, true, gdSettings.LINES_WITHIN_SUITE)
     }
     if (child1.node.elementType == CLASS_NAMING && child2.node.elementType != INHERITANCE ) {
         return Spacing.createSpacing(0, 0, gdSettings.MIN_LINES_AFTER_HEADER + 1, true, gdSettings.MAX_LINES_AFTER_HEADER)
