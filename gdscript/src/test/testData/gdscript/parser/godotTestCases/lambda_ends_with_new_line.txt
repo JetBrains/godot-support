@@ -207,7 +207,7 @@ GdScript File
                 PsiElement(GdTokenType.NUMBER)('1')
               GdEndStmtImpl(END_STMT)
                 <empty list>
-              PsiElement(GdTokenType.NEW_LINE)('\n')
+            PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('    ')
         GdExprStImpl(EXPR_ST)
           GdCallExImpl(CALL_EX)
@@ -444,7 +444,7 @@ GdScript File
                   PsiElement(GdTokenType.RRBR)(')')
               GdEndStmtImpl(END_STMT)
                 <empty list>
-              PsiElement(GdTokenType.NEW_LINE)('\n')
+            PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('    ')
         GdExprStImpl(EXPR_ST)
           GdCallExImpl(CALL_EX)
@@ -860,7 +860,7 @@ GdScript File
                   PsiElement(GdTokenType.RRBR)(')')
               GdEndStmtImpl(END_STMT)
                 <empty list>
-              PsiElement(GdTokenType.NEW_LINE)('\n')
+            PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('    ')
         GdIfStImpl(IF_ST)
           PsiElement(GdTokenType.IF)('if')
@@ -900,7 +900,7 @@ GdScript File
                   PsiElement(GdTokenType.RRBR)(')')
               GdEndStmtImpl(END_STMT)
                 <empty list>
-              PsiElement(GdTokenType.NEW_LINE)('\n')
+            PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('    ')
         GdIfStImpl(IF_ST)
           PsiElement(GdTokenType.IF)('if')
@@ -940,7 +940,7 @@ GdScript File
                   PsiElement(GdTokenType.RRBR)(')')
               GdEndStmtImpl(END_STMT)
                 <empty list>
-              PsiElement(GdTokenType.NEW_LINE)('\n')
+            PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('\n')
         PsiWhiteSpace('    ')
         GdIfStImpl(IF_ST)
@@ -977,7 +977,7 @@ GdScript File
                         PsiElement(GdTokenType.RRBR)(')')
               GdEndStmtImpl(END_STMT)
                 <empty list>
-              PsiElement(GdTokenType.NEW_LINE)('\n')
+            PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('    ')
         GdIfStImpl(IF_ST)
           PsiElement(GdTokenType.IF)('if')
@@ -1013,7 +1013,7 @@ GdScript File
                         PsiElement(GdTokenType.RRBR)(')')
               GdEndStmtImpl(END_STMT)
                 <empty list>
-              PsiElement(GdTokenType.NEW_LINE)('\n')
+            PsiElement(GdTokenType.NEW_LINE)('\n')
         PsiWhiteSpace('    ')
         GdExprStImpl(EXPR_ST)
           GdCallExImpl(CALL_EX)

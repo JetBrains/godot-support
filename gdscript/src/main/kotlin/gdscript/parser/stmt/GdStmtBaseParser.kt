@@ -9,8 +9,8 @@ interface GdStmtBaseParser : GdBaseParser {
     val STMT_TYPE: IElementType
     val endWithEndStmt: Boolean
 
-    fun parseEndStmt(b: GdPsiBuilder): Boolean {
-        return if (endWithEndStmt) b.mceEndStmt()
+    fun parseEndStmt(b: GdPsiBuilder, consumeNewLine: Boolean = true): Boolean {
+        return if (endWithEndStmt) b.mceEndStmt(consumeNewLine = consumeNewLine)
         else true
     }
 

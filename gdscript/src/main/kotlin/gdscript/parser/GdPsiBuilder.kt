@@ -96,7 +96,7 @@ class GdPsiBuilder {
         return false
     }
 
-    fun mceEndStmt(optional: Boolean = false): Boolean {
+    fun mceEndStmt(optional: Boolean = false, consumeNewLine: Boolean = true): Boolean {
         if (!nextTokenIs(GdTypes.SEMICON, GdTypes.NEW_LINE)) {
             if (!optional) {
                 error("END_STMT", false)
@@ -110,7 +110,12 @@ class GdPsiBuilder {
         m.done(GdTypes.END_STMT)
         // Consume NEW_LINE OUTSIDE the END_STMT marker so it doesn't get pulled into a
         // preceding compound statement's PSI range. At EOF it's still a real token from the lexer.
-        consumeToken(GdTypes.NEW_LINE, true)
+        // In one-liner mode (consumeNewLine = false) the terminating NEW_LINE is intentionally
+        // left in the stream so the enclosing stmtOrSuite loop can detect the end of the physical
+        // line and stop instead of overrunning into the next statement/member.
+        if (consumeNewLine) {
+            consumeToken(GdTypes.NEW_LINE, true)
+        }
 
         return true
     }

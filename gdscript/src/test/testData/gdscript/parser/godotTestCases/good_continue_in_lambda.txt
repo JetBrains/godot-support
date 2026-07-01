@@ -63,7 +63,7 @@ GdScript File
                     PsiElement(GdTokenType.CONTINUE)('continue')
                     GdEndStmtImpl(END_STMT)
                       <empty list>
-                    PsiElement(GdTokenType.NEW_LINE)('\n')
+                  PsiElement(GdTokenType.NEW_LINE)('\n')
               PsiWhiteSpace('\t\t')
               GdVarDeclStImpl(VAR_DECL_ST)
                 PsiElement(GdTokenType.VAR)('var')
@@ -133,7 +133,7 @@ GdScript File
                                   PsiElement(GdTokenType.CONTINUE)('continue')
                                   GdEndStmtImpl(END_STMT)
                                     <empty list>
-                                  PsiElement(GdTokenType.NEW_LINE)('\n')
+                                PsiElement(GdTokenType.NEW_LINE)('\n')
                             PsiWhiteSpace('\t\t\t\t')
                             GdAssignStImpl(ASSIGN_ST)
                               GdLiteralExImpl(LITERAL_EX)

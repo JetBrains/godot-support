@@ -1528,7 +1528,7 @@ class GdLexer implements FlexLexer {
           // fall through
           case 107: break;
           case 20:
-            { newLineProcessed = true; return GdTypes.SEMICON;
+            { if (isIgnored()) { newLineProcessed = true; } return GdTypes.SEMICON;
             }
           // fall through
           case 108: break;
