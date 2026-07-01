@@ -20,7 +20,7 @@ class GodotProjectWizard : RiderProjectWizardMode, RiderWizardFusInfo, GameDevTe
 
     override val name: String = GodotPluginBundle.message("wizard.godot.project.name")
 
-    override val icon: Icon = GodotIcons.Icons.GodotLogoGray
+    override val icon: Icon = GodotIcons.Icons.GodotTemplateGray
 
     override val description: String = GodotPluginBundle.message("wizard.godot.project.description")
 
