@@ -9,7 +9,7 @@ class GodotIcons {
     class Icons {
         companion object {
             val GodotLogo = IconLoader.getIcon("resharper/GodotLogo/Godot.svg", GodotIcons::class.java)
-            val GodotLogoGray = IconLoader.getIcon("resharper/GodotLogo/GodotGray.svg", GodotIcons::class.java)
+            val GodotTemplateGray = IconLoader.getIcon("resharper/Icons/TemplateGodot.svg", GodotIcons::class.java)
             val GodotLogoDisconnected = IconLoader.getIcon("/Icons/GodotDisconnected.svg", GodotIcons::class.java)
         }
     }
