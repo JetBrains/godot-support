@@ -127,6 +127,10 @@ public class GdVisitor extends PsiElementVisitor {
     visitStmt(o);
   }
 
+  public void visitEmptyStmt(@NotNull GdEmptyStmt o) {
+    visitPsiElement(o);
+  }
+
   public void visitEndStmt(@NotNull GdEndStmt o) {
     visitPsiElement(o);
   }

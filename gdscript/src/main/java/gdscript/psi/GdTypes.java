@@ -39,6 +39,7 @@ import gdscript.psi.impl.GdDictDeclImpl;
 import gdscript.psi.impl.GdDictPatternImpl;
 import gdscript.psi.impl.GdElifStImpl;
 import gdscript.psi.impl.GdElseStImpl;
+import gdscript.psi.impl.GdEmptyStmtImpl;
 import gdscript.psi.impl.GdEndStmtImpl;
 import gdscript.psi.impl.GdEnumDeclElementType;
 import gdscript.psi.impl.GdEnumDeclNmiImpl;
@@ -145,6 +146,7 @@ public interface GdTypes {
   IElementType DICT_PATTERN = new GdElementType("DICT_PATTERN");
   IElementType ELIF_ST = new GdElementType("ELIF_ST");
   IElementType ELSE_ST = new GdElementType("ELSE_ST");
+  IElementType EMPTY_STMT = new GdElementType("EMPTY_STMT");
   IElementType END_STMT = new GdElementType("END_STMT");
   IElementType ENUM_DECL_NMI = new GdElementType("ENUM_DECL_NMI");
   IElementType ENUM_DECL_TL = GdEnumDeclElementType.getInstance("ENUM_DECL_TL");
@@ -406,6 +408,9 @@ public interface GdTypes {
       }
       else if (type == ELSE_ST) {
         return new GdElseStImpl(node);
+      }
+      else if (type == EMPTY_STMT) {
+        return new GdEmptyStmtImpl(node);
       }
       else if (type == END_STMT) {
         return new GdEndStmtImpl(node);

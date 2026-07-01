@@ -32,6 +32,7 @@ object GdStmtParser : GdBaseParser {
         parsers.add(GdAnnotationStmtParser)
         parsers.add(GdExStmtParser)
         parsersWithoutEmpty = parsers.toMutableList()
+        parsers.add(GdSemicolonStmtParser)
         parsers.add(GdEmptyStmtParser)
     }
 
@@ -72,8 +73,31 @@ object GdStmtParser : GdBaseParser {
         val stmtOrSuiteMarker = b.enterSection(STMT_OR_SUITE)
         var ok = suite(b, l + 1, false, asLambda)
 
-        if (!ok)
-            ok = stmt(b, l + 1, optional, asLambda, false).ok
+        if (!ok) {
+            if (asLambda) {
+                // Lambda bodies terminate on the enclosing call's structural ','/')'/';'
+                // (see Gd.flex + the lambda branch in stmt()), so they parse a single statement --
+                // never a `;`-separated one-liner list.
+                ok = stmt(b, l + 1, optional, asLambda = true, acceptEmpty = false).ok
+            } else {
+                // One-liner body: `;`-separated statements on a single physical line, e.g.
+                // `func f(): a; b;` or `func f(): pass;;`. Statements run in one-liner mode so the
+                // terminating NEW_LINE is NOT consumed by the statement itself; the loop stops on it
+                // (or on DEDENT/EOF) instead of overrunning into the next top-level member.
+                var res = stmt(b, l + 1, optional, asLambda = false, acceptEmpty = false, oneLiner = true)
+                ok = res.ok
+                var moved = res.moved
+                while (ok && moved && !b.eof && !b.nextTokenIs(NEW_LINE, DEDENT)) {
+                    res = stmt(b, l + 1, true, asLambda = false, acceptEmpty = true, oneLiner = true)
+                    ok = res.ok
+                    moved = res.moved
+                }
+                // Absorb the single physical-line terminator the one-liner statements left behind,
+                // so the enclosing scope sees the same thing as a plain single-statement body
+                // (its trailing NEW_LINE consumed). Optional: at DEDENT/EOF there is none.
+                if (ok) b.consumeToken(NEW_LINE, true)
+            }
+        }
 
         if (!ok) {
             // Both suite() and stmt() failed -- attach a zero-width error to STMT_OR_SUITE so
@@ -154,7 +178,7 @@ object GdStmtParser : GdBaseParser {
         return ok || b.pinned() || optional
     }
 
-    private fun stmt(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean, acceptEmpty: Boolean = true): StmtParsingResult {
+    private fun stmt(b: GdPsiBuilder, l: Int, optional: Boolean, asLambda: Boolean, acceptEmpty: Boolean = true, oneLiner: Boolean = false): StmtParsingResult {
         if (!b.recursionGuard(l, "InnerStmt")) return StmtParsingResult(false, false)
 
         // multiline lambda
@@ -168,7 +192,7 @@ object GdStmtParser : GdBaseParser {
 
         val parsed =
             (if (acceptEmpty) parsers else parsersWithoutEmpty).any {
-                if (asLambda && it is GdEmptyStmtParser) return@any false
+                if (asLambda && (it is GdEmptyStmtParser || it is GdSemicolonStmtParser)) return@any false
                 val stmtMarker = b.enterSection(it.STMT_TYPE)
                 var ok = it.parse(b, l + 1)
                 ok = ok || b.pinned()
@@ -179,7 +203,7 @@ object GdStmtParser : GdBaseParser {
                         b.passToken(SEMICON) || b.nextTokenIs(COMMA)
                     }
                 } else {
-                    ok = ok && it.parseEndStmt(b)
+                    ok = ok && it.parseEndStmt(b, consumeNewLine = !oneLiner)
                 }
 
                 ok = ok || b.pinned()

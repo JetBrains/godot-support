@@ -44,6 +44,13 @@ class GdLexerTest : LexerTestCase() {
     @Test fun testlambdaAsArgumentReturnMultiStmt() = doFileTest("gd")
     @Test fun testlambdaAsArgumentReturnNestedIf() = doFileTest("gd")
     @Test fun testlambdaAsArgumentNestedIfElse() = doFileTest("gd")
+    @Test fun testsemicolon_as_end_statement() = doFileTest("gd")
+    @Test fun testsemicolon_as_terminator() = doFileTest("gd")
+    @Test fun testsemicolon_separated_statements_one_line() = doFileTest("gd")
+    @Test fun testsemicolon_multiple_after_statement_suite() = doFileTest("gd")
+    @Test fun testsemicolon_multiple_alone_suite() = doFileTest("gd")
+    @Test fun testsemicolon_multiple_on_one_line() = doFileTest("gd")
+
 
     override fun doTest(text: String, expected: String?, lexer: Lexer) {
         try{

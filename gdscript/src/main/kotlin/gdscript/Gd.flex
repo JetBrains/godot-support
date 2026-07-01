@@ -393,7 +393,7 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"
     ","            { drainLambdaFrameAtComma(); return dedentRoot(GdTypes.COMMA); }
     ":="           { return dedentRoot(GdTypes.CEQ); }
     ":"            { activateLambdaAfterColon(); return dedentRoot(GdTypes.COLON); }
-    ";"            { newLineProcessed = true; return GdTypes.SEMICON; }
+    ";"            { if (isIgnored()) { newLineProcessed = true; } return GdTypes.SEMICON; }
     "?"            { return dedentRoot(GdTypes.QUESTION_MARK); }
     "`"            { return dedentRoot(GdTypes.BACKTICK); }
     "$"            { return dedentRoot(GdTypes.DOLLAR); }
