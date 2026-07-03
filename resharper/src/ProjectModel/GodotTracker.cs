@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using JetBrains.Application.Parts;
+using JetBrains.IDE;
 using JetBrains.Lifetimes;
 using JetBrains.ProjectModel;
 using JetBrains.ProjectModel.Tasks.Listeners;
@@ -35,7 +36,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 {
                     MainProject = project;
                     logger.Verbose($"Godot MainProjectBasePath: {MainProjectBasePath}");
-                    GodotDescriptor = new GodotDescriptor(false, MainProjectBasePath!.FullPath, MainProject.ProjectFile?.Location?.FullPath,
+                    GodotDescriptor = new GodotDescriptor(false, MainProjectBasePath!.ToRd(), MainProject.ProjectFile?.Location?.ToRd(),
                         MainProject.TargetFrameworkIds.SingleItem()?.ToRdTargetFrameworkInfo());
                 }
             }
@@ -45,7 +46,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
                 var bestMatch = files.OrderBy(it => it.Components.Count()).FirstOrDefault();
                 if (bestMatch != null)
                 {
-                    GodotDescriptor = new GodotDescriptor(true, bestMatch.Directory.FullPath, null, null);
+                    GodotDescriptor = new GodotDescriptor(true, bestMatch.Directory.ToRd(), null, null);
                     ProjectGodotPath = bestMatch;
                 }
             }

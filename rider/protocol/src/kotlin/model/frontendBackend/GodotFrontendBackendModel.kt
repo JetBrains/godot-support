@@ -6,6 +6,7 @@ import com.jetbrains.rd.generator.nova.PredefinedType.*
 import com.jetbrains.rd.generator.nova.csharp.CSharp50Generator
 import com.jetbrains.rd.generator.nova.kotlin.Kotlin11Generator
 import com.jetbrains.rider.model.nova.ide.rider.RunnableProjectsModel
+import com.jetbrains.rider.model.nova.ide.IdeRoot.RdPath
 
 @Suppress("unused")
 object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
@@ -26,8 +27,8 @@ object GodotFrontendBackendModel : Ext(SolutionModel.Solution) {
 
     val GodotDescriptor = structdef("GodotDescriptor"){
         field("isPureGdScriptProject", bool).documentation = "True for pure GdScript project"
-        field("mainProjectBasePath", string).documentation = "Path to the folder with the project.godot"
-        field("mainProjectPath", string.nullable).documentation = "Path to the main csproj"
+        field("mainProjectBasePath", RdPath).documentation = "Path to the folder with the project.godot"
+        field("mainProjectPath", RdPath.nullable).documentation = "Path to the main csproj"
         field("tfm", RunnableProjectsModel.rdTargetFrameworkId.nullable)
     }
 

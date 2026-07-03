@@ -13,6 +13,7 @@ import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rd.util.reactive.viewNotNull
 import com.jetbrains.rd.util.reactive.whenTrue
+import com.jetbrains.rider.ijent.extensions.toNioPath
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
@@ -20,6 +21,7 @@ import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigu
 import com.jetbrains.rider.projectView.isCMakeSolution
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectory
+import com.jetbrains.rider.projectView.solutionDirectoryPath
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
 import com.jetbrains.rider.run.configurations.exe.ExeConfiguration
@@ -28,9 +30,10 @@ import com.jetbrains.rider.run.configurations.remote.DotNetRemoteConfiguration
 import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntimeType
 import org.jetbrains.annotations.NonNls
-import java.nio.file.Paths
 import kotlin.io.path.pathString
 import kotlin.io.path.relativeToOrSelf
+
+private val logger = Logger.getInstance(GodotRunConfigurationGenerator::class.java)
 
 @Service
 class GodotRunConfigurationGenerator : LifetimedService() {
@@ -50,7 +53,6 @@ class GodotRunConfigurationGenerator : LifetimedService() {
     }
 
     class ProtocolListener : SolutionExtListener<GodotFrontendBackendModel> {
-        private val logger = Logger.getInstance(GodotRunConfigurationGenerator::class.java)
 
         override fun extensionCreated(lifetime: Lifetime, session: ClientProjectSession, model: GodotFrontendBackendModel) {
             val project = session.project
@@ -58,7 +60,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
                 godotDiscoverer.godotDescriptor.viewNotNull(lifetime) { lt, descriptor ->
                     logger.info("descriptor = $descriptor")
-                    val tempRelPath = Paths.get(descriptor.mainProjectBasePath).relativeToOrSelf(project.solutionDirectory.toPath())
+                    val tempRelPath = descriptor.mainProjectBasePath.toNioPath().relativeToOrSelf(project.solutionDirectoryPath)
                     val relPath = if (tempRelPath.pathString.isEmpty()) "./" else tempRelPath
                     val runManager = RunManager.getInstance(project)
 
@@ -126,7 +128,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 if (configs.any()) {
                     configs.forEach {
                         (it.configuration as DotNetExeConfiguration).parameters.exePath = godotPath
-                        (it.configuration as DotNetExeConfiguration).parameters.workingDirectory = project.solutionDirectory.absolutePath
+                        (it.configuration as DotNetExeConfiguration).parameters.workingDirectory = project.solutionDirectoryPath.pathString
                     }
                     return configs.last()
                 }
@@ -136,7 +138,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                     val config = runConfiguration.configuration as DotNetExeConfiguration
                     config.parameters.exePath = godotPath
                     config.parameters.programParameters = programParameters
-                    config.parameters.workingDirectory = project.solutionDirectory.absolutePath
+                    config.parameters.workingDirectory = project.solutionDirectoryPath.pathString
                     config.parameters.runtimeType = DotNetCoreRuntimeType
                     runConfiguration.storeInLocalWorkspace()
                     runManager.addConfiguration(runConfiguration)
@@ -155,7 +157,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             if (configs.any()) {
                 configs.forEach{
                     (it.configuration as GodotDebugRunConfiguration).parameters.exePath = godotPath
-                    (it.configuration as GodotDebugRunConfiguration).parameters.workingDirectory = project.solutionDirectory.absolutePath
+                    (it.configuration as GodotDebugRunConfiguration).parameters.workingDirectory = project.solutionDirectoryPath.pathString
                 }
             } else {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunConfigurationType::class.java)
@@ -163,7 +165,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 val config = runConfiguration.configuration as GodotDebugRunConfiguration
                 config.parameters.exePath = godotPath
                 config.parameters.programParameters = programParameters
-                config.parameters.workingDirectory = project.solutionDirectory.absolutePath
+                config.parameters.workingDirectory = project.solutionDirectoryPath.pathString
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }
@@ -180,7 +182,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             if (configs.any()) {
                 configs.forEach{
                     (it.configuration as ExeConfiguration).parameters.exePath = godotPath
-                    (it.configuration as ExeConfiguration).parameters.workingDirectory = project.solutionDirectory.absolutePath
+                    (it.configuration as ExeConfiguration).parameters.workingDirectory = project.solutionDirectoryPath.pathString
                 }
             } else {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(ExeConfigurationType::class.java)
@@ -188,7 +190,7 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 val config = runConfiguration.configuration as ExeConfiguration
                 config.parameters.exePath = godotPath
                 config.parameters.programParameters = programParameters
-                config.parameters.workingDirectory = project.solutionDirectory.absolutePath
+                config.parameters.workingDirectory = project.solutionDirectoryPath.pathString
                 config.beforeRunTasks = emptyList()
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)

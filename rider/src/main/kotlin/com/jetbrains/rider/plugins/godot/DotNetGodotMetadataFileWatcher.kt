@@ -4,15 +4,15 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.AsyncFileListener
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
+import com.jetbrains.rider.ijent.extensions.toNioPath
 import com.jetbrains.rider.model.godot.frontendBackend.GodotDescriptor
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import java.nio.file.Path
-import java.nio.file.Paths
 import kotlin.io.path.pathString
 
 class DotNetGodotMetadataFileWatcher(val project: Project, descriptor: GodotDescriptor) : AsyncFileListener {
-    private val mainProjectBasePath: Path = Paths.get(descriptor.mainProjectBasePath)
+    private val mainProjectBasePath: Path = descriptor.mainProjectBasePath.toNioPath()
     // Godot 3 paths
     val godot3Meta: Path = godot3MetaPath(mainProjectBasePath)
     // Godot 4 paths

@@ -43,7 +43,7 @@ class GodotFileDocumentManagerListener : FileDocumentManagerListener {
                     val buildHost = BuildHost.getInstance(project)
                     if (buildHost.ready.value && !buildHost.building.value) {
                         val mainProjectPath = GodotProjectDiscoverer.getInstance(project).godotDescriptor.valueOrNull?.mainProjectPath ?: return@invokeLater
-                        buildHost.requestBuild(BuildParameters(BuildTarget(), listOf(mainProjectPath), silentMode = SilentMode.Silent)) {
+                        buildHost.requestBuild(BuildParameters(BuildTarget(), listOf(mainProjectPath.value), silentMode = SilentMode.Silent)) {
                             showAutoBuildNotification(project)
                         }
                     }

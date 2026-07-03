@@ -17,6 +17,7 @@ import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rd.util.reactive.adviseNotNullOnce
 import com.jetbrains.rd.util.threading.coroutines.launch
 import com.jetbrains.rider.godot.community.GodotMetadataService
+import com.jetbrains.rider.ijent.extensions.toNioPath
 import com.jetbrains.rider.model.godot.frontendBackend.GodotDescriptor
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
@@ -57,7 +58,7 @@ class GodotProjectDiscoverer(project: Project) {
 
         godotDescriptor.adviseNotNull(lifetime){ descriptor ->
             thisLogger().info("Godot godotDescriptor: $descriptor")
-            val basePath = Path(descriptor.mainProjectBasePath)
+            val basePath = descriptor.mainProjectBasePath.toNioPath()
 
             lifetime.launch(Dispatchers.IO){
                 VirtualFileManager.getInstance().addAsyncFileListener(lifetime.coroutineScope,
@@ -128,7 +129,7 @@ class GodotProjectDiscoverer(project: Project) {
             // descriptor is set once at solution open
             model.godotDescriptor.adviseNotNullOnce(lifetime){
                 getInstance(session.project).godotDescriptor.set(it)
-                getInstance(session.project).mainProjectBasePathFlow.value = Path(it.mainProjectBasePath)
+                getInstance(session.project).mainProjectBasePathFlow.value = it.mainProjectBasePath.toNioPath()
                 getInstance(session.project).isPureGdScriptProjectFlow.value = it.isPureGdScriptProject
             }
         }

@@ -33,7 +33,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.ProjectModel
             {
                 if (descriptor.IsPureGdScriptProject) return;
                 
-                myClient = new Client(Identity, descriptor.MainProjectBasePath, this, this);
+                myClient = new Client(Identity, descriptor.MainProjectBasePath.Value, this, this);
                 SubscribeConnected(logger, threading, model, myClient);
                 SubscribeDisconnected(logger, threading, model, myClient); 
                 myClient.Start();

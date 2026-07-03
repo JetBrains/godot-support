@@ -6,6 +6,7 @@ import com.intellij.execution.configurations.runConfigurationType
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.jetbrains.rider.godot.community.run.configurations.GodotRunContextUtil
+import com.jetbrains.rider.ijent.extensions.toNioPath
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationFactory
@@ -21,7 +22,7 @@ class DebugSceneRunConfigurationProducerCor : LazyRunConfigurationProducer<DotNe
         val basePath = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.valueOrNull?.mainProjectBasePath ?: return false
         if (GodotProjectDiscoverer.getInstance(context.project).godot4Path.value == null) return false
 
-        val resPath = GodotRunContextUtil.getSceneResPathFromContext(Path.of(basePath), context) ?: return false
+        val resPath = GodotRunContextUtil.getSceneResPathFromContext(basePath.toNioPath(), context) ?: return false
         return configuration.parameters.programParameters.contains(resPath)
     }
 
@@ -30,7 +31,7 @@ class DebugSceneRunConfigurationProducerCor : LazyRunConfigurationProducer<DotNe
         val descriptor = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.valueOrNull ?: return false
         if (descriptor.isPureGdScriptProject) return false
         val basePath = descriptor.mainProjectBasePath
-        val resPath = GodotRunContextUtil.getSceneResPathFromContext(Path.of(basePath), context) ?: return false
+        val resPath = GodotRunContextUtil.getSceneResPathFromContext(basePath.toNioPath(), context) ?: return false
 
         val path = GodotProjectDiscoverer.getInstance(context.project).godot4Path.value
 
@@ -38,9 +39,9 @@ class DebugSceneRunConfigurationProducerCor : LazyRunConfigurationProducer<DotNe
             return false
         }
         configuration.parameters.exePath = path
-        configuration.parameters.programParameters = "--path \"${Path.of(basePath)}\" \"$resPath\""
+        configuration.parameters.programParameters = "--path \"${basePath.value}\" \"$resPath\""
 
-        configuration.parameters.workingDirectory = basePath
+        configuration.parameters.workingDirectory = basePath.value
         configuration.parameters.runtimeType = DotNetCoreRuntimeType
         configuration.name = file.name
         return true

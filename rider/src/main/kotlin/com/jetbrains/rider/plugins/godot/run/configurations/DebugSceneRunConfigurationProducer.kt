@@ -6,6 +6,7 @@ import com.intellij.execution.configurations.runConfigurationType
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.jetbrains.rider.godot.community.run.configurations.GodotRunContextUtil
+import com.jetbrains.rider.ijent.extensions.toNioPath
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -19,7 +20,7 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
         val basePath = descriptor.mainProjectBasePath
         if (GodotProjectDiscoverer.getInstance(context.project).godot3Path.value == null) return false
 
-        val resPath = GodotRunContextUtil.getSceneResPathFromContext(Path.of(basePath), context) ?: return false
+        val resPath = GodotRunContextUtil.getSceneResPathFromContext(basePath.toNioPath(), context) ?: return false
         return configuration.parameters.programParameters.contains(resPath)
     }
 
@@ -28,7 +29,7 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
                                                sourceElement: Ref<PsiElement>): Boolean {
         val file = GodotRunContextUtil.getTscnFileFromContext(context) ?: return false
         val basePath = GodotProjectDiscoverer.getInstance(context.project).godotDescriptor.valueOrNull?.mainProjectBasePath ?: return false
-        val resPath = GodotRunContextUtil.getSceneResPathFromContext(Path.of(basePath), context) ?: return false
+        val resPath = GodotRunContextUtil.getSceneResPathFromContext(basePath.toNioPath(), context) ?: return false
 
         val path = GodotProjectDiscoverer.getInstance(context.project).godot3Path.value
 
@@ -36,9 +37,9 @@ class DebugSceneRunConfigurationProducer : LazyRunConfigurationProducer<GodotDeb
             return false
         }
         configuration.parameters.exePath = path
-        configuration.parameters.programParameters = "--path \"${basePath}\" \"$resPath\""
+        configuration.parameters.programParameters = "--path \"${basePath.value}\" \"$resPath\""
 
-        configuration.parameters.workingDirectory = basePath
+        configuration.parameters.workingDirectory = basePath.value
         configuration.name = file.name
         return true
     }

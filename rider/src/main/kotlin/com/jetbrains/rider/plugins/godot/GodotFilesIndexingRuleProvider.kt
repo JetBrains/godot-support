@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.isFile
 import com.jetbrains.rd.util.threading.coroutines.nextNotNullValue
+import com.jetbrains.rider.ijent.extensions.toVirtualFile
 import com.jetbrains.rider.model.godot.frontendBackend.godotFrontendBackendModel
 import com.jetbrains.rider.projectView.indexing.files.RiderFilesIndexingRule
 import com.jetbrains.rider.projectView.indexing.files.RiderFilesIndexingRuleProvider
@@ -11,7 +12,6 @@ import com.jetbrains.rider.projectView.isDirectorySolution
 import com.jetbrains.rider.projectView.solution
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.io.path.Path
 
 // In Rider, when files are not in the csproj, GDScript and TSCN files may be not indexed
 // To ensure features like GoToFile and ScenePreview would work, we make sure .gd and .tscn are indexed
@@ -30,7 +30,7 @@ class GodotFilesIndexingRuleProvider : RiderFilesIndexingRuleProvider {
         // Calculate rules if any
         val descriptor = model.godotDescriptor.valueOrNull ?: return emptyList()
         val projectBaseFile = withContext(Dispatchers.IO) {
-            VfsUtil.findFile(Path( descriptor.mainProjectBasePath), true)
+            descriptor.mainProjectBasePath.toVirtualFile(true)
         } ?: return emptyList()
 
         val rule = RiderFilesIndexingRule({

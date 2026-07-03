@@ -25,7 +25,7 @@ class  RunChickenTestsUtil {
             val programParameters = configuration.parameters.programParameters
                 .replace(" --editor", "") + " --run-tests=$testIdentifier --quit-on-finish"
             val testsConfig = GodotRunConfigurationGenerator.ProtocolListener.createOrUpdateCoreRunConfiguration(
-                GodotRunConfigurationGenerator.Companion.CHICKENSOFT_TEST_CONFIGURATION_NAME,
+                GodotRunConfigurationGenerator.CHICKENSOFT_TEST_CONFIGURATION_NAME,
                 programParameters,
                 runManager,
                 configuration.parameters.exePath,
