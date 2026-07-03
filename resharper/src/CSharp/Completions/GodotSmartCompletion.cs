@@ -179,7 +179,7 @@ namespace JetBrains.ReSharper.Plugins.Godot.CSharp.Completions
 
             public override IconId Image => PsiSymbolsThemedIcons.Const.Id;
 
-            public override MatchingResult Match(PrefixMatcher prefixMatcher)
+            public override MatchingResult? Match(PrefixMatcher prefixMatcher)
             {
                 var matchingResult = prefixMatcher.Match(Text);
                 if (matchingResult == null)
