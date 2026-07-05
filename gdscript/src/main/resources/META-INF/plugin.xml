@@ -45,7 +45,7 @@
     <library.type implementation="gdscript.library.GdLibraryType" />
     <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor" />
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory" />
-    <registryKey key="gdscript.gdextension.api.dumper.timeout.ms"
+    <registryKey key="gdscript.doctool.timeout.ms"
                  defaultValue="60000"
                  description="Timeout (in milliseconds) for the Godot --doctool process that generates GDExtension stubs"
                  restartRequired="false"/>

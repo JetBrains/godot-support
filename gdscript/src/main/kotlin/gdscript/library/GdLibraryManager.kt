@@ -28,7 +28,7 @@ object GdLibraryManager {
     private val LEGACY_LIBRARY_PREFIXES = listOf("GdSdk", "GdExtensionStubs", "GdScriptBuiltins")
 
     /**
-     * Registers a single SDK library whose source root is `<basePath>/.godot/rider/`.
+     * Registers a single SDK library whose source root is [stubsRoot] (`<basePath>/.godot/rider/`).
      *
      * This is the only library we ever touch; everything produced by the SDK / GDExtension /
      * built-ins flows lives under that directory in dedicated subfolders, so the IDE
@@ -38,16 +38,15 @@ object GdLibraryManager {
      * module already depends on it, nothing is changed.
      */
     @RequiresBackgroundThread // findFile may block EDT
-    fun registerSdkLibrary(project: Project, basePath: Path) {
-        val riderDir = basePath.resolve(".godot").resolve("rider")
-        runCatching { riderDir.createDirectories() }
+    fun registerSdkLibrary(project: Project, stubsRoot: Path) {
+        runCatching { stubsRoot.createDirectories() }
             .onFailure {
-                thisLogger().warn("Failed to create $riderDir: ${it.message}")
+                thisLogger().warn("Failed to create $stubsRoot: ${it.message}")
                 return
             }
-        val sourceRoot = VfsUtil.findFile(riderDir, true)
+        val sourceRoot = VfsUtil.findFile(stubsRoot, true)
         if (sourceRoot == null) {
-            thisLogger().warn("Cannot register GD library: $riderDir is not visible to VFS")
+            thisLogger().warn("Cannot register GD library: $stubsRoot is not visible to VFS")
             return
         }
 
@@ -72,7 +71,7 @@ object GdLibraryManager {
             exactSdk.isValid(sourceRoot.url, OrderRootType.SOURCES) &&
             exactSdk in moduleDeps
         ) {
-            thisLogger().trace("GD library already registered at $riderDir; nothing to do")
+            thisLogger().trace("GD library already registered at $stubsRoot; nothing to do")
             return
         }
 
@@ -108,6 +107,6 @@ object GdLibraryManager {
                 }
             })
         }
-        thisLogger().info("Registered $SDK_LIBRARY_NAME at $riderDir")
+        thisLogger().info("Registered $SDK_LIBRARY_NAME at $stubsRoot")
     }
 }

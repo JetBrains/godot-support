@@ -8,7 +8,6 @@ import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.util.registry.RegistryManager
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.platform.ide.progress.withBackgroundProgress
-import com.intellij.util.io.HttpRequests
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import gdscript.GdScriptBundle
@@ -29,6 +28,7 @@ import kotlinx.coroutines.runInterruptible
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 import java.nio.file.attribute.BasicFileAttributes
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.createDirectories
@@ -60,7 +60,7 @@ class ReferenceGdLibrariesProjectActivity : ProjectActivity {
             provisionGdExtension(project)
         }
         scope.launch {
-            downloadGdScriptXml(project)
+            provisionGdScriptXml(project)
         }
     }
 
@@ -71,42 +71,40 @@ class ReferenceGdLibrariesProjectActivity : ProjectActivity {
      * just drop their `.gdf` files into dedicated subdirectories and the IDE picks them up.
      */
     private suspend fun registerLibrary(project: Project) {
-        val basePath = GodotCommunityUtil.getGodotProjectBasePathFlow(project)
-            .filterNotNull()
-            .first()
+        val basePath = awaitBasePath(project)
         if (project.isDisposed) return
         runInterruptible(Dispatchers.IO) {
-            GdLibraryManager.registerSdkLibrary(project, basePath)
+            GdLibraryManager.registerSdkLibrary(project, stubsRoot(basePath))
         }
     }
 
-    private suspend fun downloadGdScriptXml(project: Project) {
-        val basePath = GodotCommunityUtil.getGodotProjectBasePathFlow(project)
-            .filterNotNull()
-            .first()
-        val targetDir = basePath.resolve(".godot").resolve("rider").resolve("builtins")
+    private suspend fun provisionGdScriptXml(project: Project) {
+        val basePath = awaitBasePath(project)
+        if (project.isDisposed) return
+        val targetDir = stubsRoot(basePath).resolve("builtins")
         val targetFile = targetDir.resolve("@GDScript.xml")
+        // todo: after RIDER-140303 reconsider copying xml from resources
+        // there is a problem with updating @GDScript.xml
         if (targetFile.exists()) {
-            thisLogger().trace("@GDScript.xml already present at $targetFile; skipping download")
+            thisLogger().trace("@GDScript.xml already present at $targetFile; skipping copy")
             return
         }
         try {
             runInterruptible(Dispatchers.IO) {
-                HttpRequests.request(GDSCRIPT_XML_URL)
-                    .connectTimeout(HTTP_CONNECT_TIMEOUT_MS)
-                    .readTimeout(HTTP_READ_TIMEOUT_MS)
-                    .productNameAsUserAgent()
-                    .saveToFile(targetFile, null)
+                targetDir.createDirectories()
+                val resource = javaClass.classLoader.getResourceAsStream(GDSCRIPT_XML_RESOURCE)
+                    ?: error("Bundled resource not found: $GDSCRIPT_XML_RESOURCE")
+                resource.use { Files.copy(it, targetFile, StandardCopyOption.REPLACE_EXISTING) }
             }
-            thisLogger().info("Downloaded @GDScript.xml to $targetFile")
+            thisLogger().info("Copied bundled @GDScript.xml to $targetFile")
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            thisLogger().error("Failed to download @GDScript.xml: ${e.message}")
+            thisLogger().error("Failed to copy bundled @GDScript.xml: ${e.message}")
         }
 
-        // Convert the downloaded XML to a .gdf stub next to it; if the file is missing
-        // (download failed and no previous copy exists), we silently skip registration.
+        // Convert the XML to a .gdf stub next to it; if the file is missing
+        // (copy failed and no previous copy exists), we silently skip registration.
         if (!targetFile.exists()) {
             thisLogger().warn("@GDScript.xml not available at $targetFile; skipping built-ins registration")
             return
@@ -140,7 +138,7 @@ class ReferenceGdLibrariesProjectActivity : ProjectActivity {
                 if (project.isDisposed) return@collectLatest
                 val exe = inputs.executable
                 val basePath = inputs.basePath
-                val stubsDir = basePath.resolve(".godot").resolve("rider").resolve("sdk")
+                val stubsDir = stubsRoot(basePath).resolve("sdk")
                 val exeFingerprint = computeFileFingerprint(exe)
                 thisLogger().trace(
                     "SDK provision tick: exe=$exe base=$basePath fingerprint=$exeFingerprint"
@@ -199,7 +197,7 @@ class ReferenceGdLibrariesProjectActivity : ProjectActivity {
                 if (project.isDisposed) return@collectLatest
                 val exe = inputs.executable
                 val basePath = inputs.basePath
-                val stubsDir = basePath.resolve(".godot").resolve("rider").resolve("gdextension")
+                val stubsDir = stubsRoot(basePath).resolve("gdextension")
                 thisLogger().trace(
                     "GDExtension provision tick: exe=$exe base=$basePath " +
                     "gdextensions=${inputs.snapshot.gdextensions.size} " +
@@ -240,6 +238,18 @@ class ReferenceGdLibrariesProjectActivity : ProjectActivity {
                 }
             }
     }
+
+    /**
+     * One-shot gate: suspend until the Godot project base path becomes known, then return it.
+     * The flow is not observed further — callers assume the base path is set once per Project lifetime.
+     */
+    private suspend fun awaitBasePath(project: Project): Path =
+        GodotCommunityUtil.getGodotProjectBasePathFlow(project)
+            .filterNotNull()
+            .first()
+
+    /** `<basePath>/.godot/rider` — the single root under which every provisioner writes its stubs. */
+    private fun stubsRoot(basePath: Path): Path = basePath.resolve(".godot").resolve("rider")
 
     private fun stubsStaleReason(stubsDir: Path, expectedStamp: String): String? {
         if (!stubsDir.exists()) return "stubs dir missing"
@@ -300,7 +310,7 @@ class ReferenceGdLibrariesProjectActivity : ProjectActivity {
         if (gdextensions) args.add("--gdextension-docs")
         val commandLine = GeneralCommandLine(args).withWorkingDirectory(basePath)
 
-        val timeoutMs = RegistryManager.getInstanceAsync().intValue(GENERATOR_TIMEOUT_REGISTRY_KEY)
+        val timeoutMs = RegistryManager.getInstanceAsync().intValue(DOCTOOL_TIMEOUT_REGISTRY_KEY)
         thisLogger().trace("Running --doctool: ${commandLine.commandLineString}")
         val handler = CapturingProcessHandler(commandLine)
         val output = try {
@@ -348,11 +358,11 @@ class ReferenceGdLibrariesProjectActivity : ProjectActivity {
     }
 
     companion object {
-        private const val GENERATOR_TIMEOUT_REGISTRY_KEY = "gdscript.gdextension.api.dumper.timeout.ms"
+        private const val DOCTOOL_TIMEOUT_REGISTRY_KEY = "gdscript.doctool.timeout.ms"
         private const val STAMP_FILE_NAME = ".fingerprint"
-        // original https://github.com/godotengine/godot/blob/master/modules/gdscript/doc_classes/%40GDScript.xml
-        private const val GDSCRIPT_XML_URL = "https://packages.jetbrains.team/files/p/net/gdscriptsdk/_GDScript.xml"
-        private const val HTTP_CONNECT_TIMEOUT_MS = 10_000
-        private const val HTTP_READ_TIMEOUT_MS = 30_000
+        // Bundled with the plugin; original source:
+        // https://github.com/godotengine/godot/blob/master/modules/gdscript/doc_classes/%40GDScript.xml
+        // todo: consider bundling several versions in they differ in Godot versions
+        private const val GDSCRIPT_XML_RESOURCE = "gdscript/builtins/@GDScript.xml"
     }
 }
