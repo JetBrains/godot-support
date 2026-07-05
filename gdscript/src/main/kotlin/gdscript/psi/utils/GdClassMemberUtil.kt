@@ -1,6 +1,7 @@
 package gdscript.psi.utils
 
 import com.intellij.openapi.project.Project
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
@@ -700,7 +701,11 @@ object GdClassMemberUtil {
 
     fun calledUpon(element: PsiElement): GdExpr? {
         val getAttrIfAny = fun(el: PsiElement): GdExpr? {
-            val previous = PsiTreeUtil.prevVisibleLeaf(el) ?: return null
+            var previous = PsiTreeUtil.prevVisibleLeaf(el)
+            while (previous is PsiComment) { // `\` is a also a PsiComment
+                previous = PsiTreeUtil.prevVisibleLeaf(previous)
+            }
+            if (previous == null) return null
             val parent = previous.parent ?: return null
             if (previous.elementType == GdTypes.DOT && parent is GdAttributeEx) {
                 return parent.expr

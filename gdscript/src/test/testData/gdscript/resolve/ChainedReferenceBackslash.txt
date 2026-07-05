@@ -1,0 +1,32 @@
+class A:
+	static func hi():
+		pass
+	static var hello
+
+	func hey(): pass
+	var hii
+
+	class B:
+		pass
+
+
+var a = A[r] . \
+B[r]
+
+var b = A[r] . \
+hi[r]()
+
+var c = A[r] . \
+hello[r]
+
+
+var instance: A[r]
+
+var d = instance[r] . \
+B[r]
+
+var e = instance[r] . \
+hey[r]()
+
+var f = instance[r] . \
+hii[r]

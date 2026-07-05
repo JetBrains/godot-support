@@ -1,9 +1,6 @@
 package com.jetbrains.godot.gdscript.resolve
 
-import com.intellij.psi.util.PsiTreeUtil
 import gdscript.psi.GdConstDeclTl
-import gdscript.psi.GdEnumValueNmi
-import gdscript.psi.GdRefIdRef
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -20,35 +17,35 @@ class ResolveInSingleFileTest : ResolveTestBase() {
 
     @Test
     @Ignore("RIDER-131644 Resolve `super` base class, defined in the same file")
-    fun testResolveSuperClass(){
+    fun testResolveSuperClass() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
     }
 
     @Test
-    fun testGdDictionaryLuaStyle(){
+    fun testGdDictionaryLuaStyle() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
     }
 
     @Test
-    fun testGdDictionaryStringStyle(){
+    fun testGdDictionaryStringStyle() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
     }
 
     @Test
-    fun testNestedGdDictionary(){
+    fun testNestedGdDictionary() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
     }
 
     @Test
-    fun testEnum1(){
+    fun testEnum1() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
@@ -70,14 +67,14 @@ class ResolveInSingleFileTest : ResolveTestBase() {
 
     @Test
     @Ignore("RIDER-132087")
-    fun testExtendsClass(){
+    fun testExtendsClass() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
     }
 
     @Test
-    fun testNewResolvesToConstructorInit(){
+    fun testNewResolvesToConstructorInit() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
@@ -91,7 +88,14 @@ class ResolveInSingleFileTest : ResolveTestBase() {
     }
 
     @Test
-    fun testResolveSetGet(){
+    fun testResolveSetGet() {
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
+
+    @Test
+    fun testChainedReferenceBackslash() {
         val file = loadByTestName()
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
