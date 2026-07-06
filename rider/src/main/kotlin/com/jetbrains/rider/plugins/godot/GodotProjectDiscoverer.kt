@@ -39,32 +39,34 @@ import kotlin.io.path.pathString
 @Service(Service.Level.PROJECT)
 class GodotProjectDiscoverer(project: Project) {
 
-    val godotDescriptor : IOptProperty<GodotDescriptor> = OptProperty()
-    val godot3Path : IProperty<String?> = Property(null)
-    val godot4Path : IProperty<String?> = Property(null)
-    val godotPath : IOptProperty<String> = OptProperty()
+    val godotDescriptor: IOptProperty<GodotDescriptor> = OptProperty()
+    val godot3Path: IProperty<String?> = Property(null)
+    val godot4Path: IProperty<String?> = Property(null)
+    val godotPath: IOptProperty<String> = OptProperty()
     val mainProjectBasePathFlow: MutableStateFlow<Path?> = MutableStateFlow(null)
     val isPureGdScriptProjectFlow: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val executablePathFlow: MutableStateFlow<Path?> = MutableStateFlow(null)
 
     init {
         val lifetime = GodotProjectLifetimeService.getLifetime(project)
-        godot3Path.adviseNotNull(lifetime){
+        godot3Path.adviseNotNull(lifetime) {
             godotPath.set(it)
             executablePathFlow.value = Path(it)
         }
-        godot4Path.adviseNotNull(lifetime){
+        godot4Path.adviseNotNull(lifetime) {
             godotPath.set(it)
             executablePathFlow.value = Path(it)
         }
 
-        godotDescriptor.adviseNotNull(lifetime){ descriptor ->
+        godotDescriptor.adviseNotNull(lifetime) { descriptor ->
             thisLogger().info("Godot godotDescriptor: $descriptor")
             val basePath = descriptor.mainProjectBasePath.toNioPath()
 
-            lifetime.launch(Dispatchers.IO){
-                VirtualFileManager.getInstance().addAsyncFileListener(lifetime.coroutineScope,
-                    DotNetGodotMetadataFileWatcher(project, descriptor))
+            lifetime.launch(Dispatchers.IO) {
+                VirtualFileManager.getInstance().addAsyncFileListener(
+                    lifetime.coroutineScope,
+                    DotNetGodotMetadataFileWatcher(project, descriptor)
+                )
             }
 
             lifetime.launch(Dispatchers.IO) {
@@ -77,10 +79,12 @@ class GodotProjectDiscoverer(project: Project) {
             }
 
             lifetime.launch(Dispatchers.IO) {
-                val g3path = DotNetGodotMetadataFileWatcherUtil.getFromMonoMetadataPath(DotNetGodotMetadataFileWatcher.godot3MetaPath(basePath))
-                             ?: DotNetGodotMetadataFileWatcherUtil.getGodot3Path(basePath) ?: getGodotPathFromPlayerRunConfiguration(project)
-                val g4path = DotNetGodotMetadataFileWatcherUtil.getFromMonoMetadataPath(DotNetGodotMetadataFileWatcher.godot4MetaPath(basePath))
-                    ?: DotNetGodotMetadataFileWatcherUtil.getGodot4Path(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project)
+                val g3path =
+                    DotNetGodotMetadataFileWatcherUtil.getFromMonoMetadataPath(DotNetGodotMetadataFileWatcher.godot3MetaPath(basePath))
+                        ?: DotNetGodotMetadataFileWatcherUtil.getGodot3Path(basePath) ?: getGodotPathFromPlayerRunConfiguration(project)
+                val g4path =
+                    DotNetGodotMetadataFileWatcherUtil.getFromMonoMetadataPath(DotNetGodotMetadataFileWatcher.godot4MetaPath(basePath))
+                        ?: DotNetGodotMetadataFileWatcherUtil.getGodot4Path(basePath) ?: getGodotPathFromCorePlayerRunConfiguration(project)
                 withContext(Dispatchers.EDT) {
                     godot3Path.set(g3path)
                     godot4Path.set(g4path)
@@ -89,9 +93,10 @@ class GodotProjectDiscoverer(project: Project) {
         }
     }
 
-    private fun getGodotPathFromCorePlayerRunConfiguration(project: Project):String? {
+    private fun getGodotPathFromCorePlayerRunConfiguration(project: Project): String? {
         val runManager = RunManager.getInstance(project)
-        val playerSettings = runManager.allSettings.firstOrNull { it.type is DotNetExeConfigurationType && it.name == GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME }
+        val playerSettings =
+            runManager.allSettings.firstOrNull { it.type is DotNetExeConfigurationType && it.name == GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME }
         if (playerSettings != null) {
             val config = playerSettings.configuration as DotNetExeConfiguration
             val path = config.parameters.exePath
@@ -102,9 +107,10 @@ class GodotProjectDiscoverer(project: Project) {
         return null
     }
 
-    private fun getGodotPathFromPlayerRunConfiguration(project: Project):String? {
+    private fun getGodotPathFromPlayerRunConfiguration(project: Project): String? {
         val runManager = RunManager.getInstance(project)
-        val playerSettings = runManager.allSettings.firstOrNull { it.type is GodotDebugRunConfigurationType && it.name == GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME }
+        val playerSettings =
+            runManager.allSettings.firstOrNull { it.type is GodotDebugRunConfigurationType && it.name == GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME }
         if (playerSettings != null) {
             val config = playerSettings.configuration as GodotDebugRunConfiguration
             val path = config.parameters.exePath

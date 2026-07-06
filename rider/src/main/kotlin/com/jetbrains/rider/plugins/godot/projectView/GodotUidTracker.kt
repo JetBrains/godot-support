@@ -23,9 +23,7 @@ import com.intellij.util.application
 import com.intellij.util.concurrency.annotations.RequiresEdt
 import com.jetbrains.rd.platform.util.getLogger
 import com.jetbrains.rd.util.addUnique
-import com.jetbrains.rd.util.reactive.adviseNotNullOnce
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
-import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.GodotProjectLifetimeService
 import com.jetbrains.rider.projectView.VfsBackendRequester
 import org.jetbrains.annotations.Nls
@@ -55,8 +53,9 @@ class GodotUidTracker : VfsBackendRequester {
 
     fun register(project: Project) {
         val lifetime = GodotProjectLifetimeService.getLifetime(project)
-        lifetime.bracketIfAlive({ synchronized(lock) { projects.add(project) } },
-                                { synchronized(lock) { projects.remove(project) } })
+        lifetime.bracketIfAlive(
+            { synchronized(lock) { projects.add(project) } },
+            { synchronized(lock) { projects.remove(project) } })
     }
 
     private val actionsPerProject = mutableMapOf<Project, UidActionList>()
@@ -87,11 +86,14 @@ class GodotUidTracker : VfsBackendRequester {
                                         }
                                     }
                                 }
+
                                 is VFileMoveEvent -> {
                                     val uidFile = getUidFile(event.oldPath) ?: continue
-                                    actions.add(uidFile, project) { VfsUtil.findFile(uidFile, true)?.move(this, event.newParent)
+                                    actions.add(uidFile, project) {
+                                        VfsUtil.findFile(uidFile, true)?.move(this, event.newParent)
                                     }
                                 }
+
                                 is VFilePropertyChangeEvent -> {
                                     if (!event.isRename) continue
                                     val uidFile = getUidFile(event.oldPath) ?: continue
@@ -107,8 +109,7 @@ class GodotUidTracker : VfsBackendRequester {
                                     }
                                 }
                             }
-                        }
-                        catch (t: Throwable) {
+                        } catch (t: Throwable) {
                             logger.error(t)
                             continue
                         }
@@ -228,8 +229,7 @@ class GodotUidTracker : VfsBackendRequester {
         fun execute() {
             try {
                 action()
-            }
-            catch (ex: Throwable) {
+            } catch (ex: Throwable) {
                 logger.error(ex)
             }
         }
