@@ -9,7 +9,6 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.writeIntentReadAction
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.project.ex.ProjectManagerEx
-import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.refreshAndFindVirtualFile
 import com.jetbrains.rd.ide.model.RdVirtualSolution
 import com.jetbrains.rd.util.lifetime.Lifetime
@@ -25,15 +24,18 @@ import com.jetbrains.rider.projectView.solutionDirectoryPath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class GodotEngineVirtualSolutionNotification : ProjectActivity {
+/** Show notification when a Godot project is opened as a folder (virtual solution) */
+object GodotEngineVirtualSolutionNotification {
 
-    companion object {
-        private const val GROUP_ID = "GodotVirtualSolutionNotificationGroupId"
-    }
+    private const val GROUP_ID = "GodotVirtualSolutionNotificationGroupId"
 
-    override suspend fun execute(project: Project) {
+
+    suspend fun initialize(project: Project) {
         withContext(Dispatchers.EDT) {
-            if (project.isDisposed || project.isDefault) return@withContext
+            if (project.isDisposed || project.isDefault
+                || !GodotEngineSolutionAvailability.getInstance(project).isAvailable()
+            ) return@withContext
+
 
             val lifetime = GodotProjectLifetimeService.getLifetime(project)
             project.solution.isLoaded.whenTrue(lifetime) { _ ->

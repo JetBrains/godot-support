@@ -20,6 +20,8 @@ import com.jetbrains.rider.godot.community.GodotMetadataService
 import com.jetbrains.rider.ijent.extensions.toNioPath
 import com.jetbrains.rider.model.godot.frontendBackend.GodotDescriptor
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
+import com.jetbrains.rider.plugins.godot.cpp.notifications.GodotEngineVirtualSolutionNotification
+import com.jetbrains.rider.plugins.godot.projectView.GodotUidTracker
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
@@ -127,10 +129,15 @@ class GodotProjectDiscoverer(project: Project) {
             model: GodotFrontendBackendModel
         ) {
             // descriptor is set once at solution open
-            model.godotDescriptor.adviseNotNullOnce(lifetime){
-                getInstance(session.project).godotDescriptor.set(it)
-                getInstance(session.project).mainProjectBasePathFlow.value = it.mainProjectBasePath.toNioPath()
-                getInstance(session.project).isPureGdScriptProjectFlow.value = it.isPureGdScriptProject
+            model.godotDescriptor.adviseNotNullOnce(lifetime) {
+                val project = session.project
+                getInstance(project).godotDescriptor.set(it)
+                getInstance(project).mainProjectBasePathFlow.value = it.mainProjectBasePath.toNioPath()
+                getInstance(project).isPureGdScriptProjectFlow.value = it.isPureGdScriptProject
+                GodotUidTracker.getInstance().register(project)
+                lifetime.launch {
+                    GodotEngineVirtualSolutionNotification.initialize(project)
+                }
             }
         }
     }

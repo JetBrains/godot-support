@@ -9,7 +9,6 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.BaseProjectDirectories.Companion.getBaseDirectories
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.createNestedDisposable
-import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VfsUtilCore
@@ -42,16 +41,6 @@ import kotlin.io.path.name
 
   todo: when coping a file we need to either avoid coping UID file or substitute guid inside a copy
 */
-
-class GodotUidTrackerInitializer : ProjectActivity {
-    override suspend fun execute(project: Project) {
-        val lifetime = GodotProjectLifetimeService.getLifetime(project)
-        val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
-        godotDiscoverer.godotDescriptor.adviseNotNullOnce(lifetime) {
-            GodotUidTracker.getInstance().register(project)
-        }
-    }
-}
 
 @Service(Service.Level.APP)
 class GodotUidTracker : VfsBackendRequester {
