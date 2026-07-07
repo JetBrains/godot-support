@@ -116,7 +116,7 @@ jobs:
           TAG_INPUT="${{ github.event.inputs.tag_name }}"
           NAME_INPUT="${{ github.event.inputs.release_name }}"
           if [ -z "$TAG_INPUT" ]; then
-            TAG="manual-${GITHUB_RUN_NUMBER}"
+            TAG="addon-manual-${GITHUB_RUN_NUMBER}"
           else
             TAG="$TAG_INPUT"
           fi
