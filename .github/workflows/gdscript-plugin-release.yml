@@ -1,0 +1,98 @@
+# For syntax, see https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax
+# This workflow is triggered manually on the "Actions" tab on GitHub, and can be used to create releases
+# of the community and gdscript plugins.
+
+name: GDScript Plugin Release
+on:
+    workflow_dispatch:
+        inputs:
+            tag_name:
+                description: 'Tag to create for the GitHub Release (e.g., v1.2.3). Leave empty to auto-generate.'
+                required: false
+                type: string
+            release_name:
+                description: 'Release title. Defaults to tag name or an auto-generated name.'
+                required: false
+                type: string
+            prerelease:
+                description: 'Mark release as prerelease'
+                required: false
+                type: boolean
+                default: true
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        env:
+            LOCAL_ENV_RUN: true
+        steps:
+            - name: Fetch Sources
+              uses: actions/checkout@v4
+
+            # The gdscript plugin depends on the community plugin distribution, so it must be built first.
+            - name: Build community
+              shell: bash
+              working-directory: community
+              run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
+
+            - name: Build gdscript
+              shell: bash
+              working-directory: gdscript
+              run: ./gradlew -PBuildConfiguration=Release -PbuildNumber=${{ github.run_number }} buildPlugin
+
+            - name: Collect plugin artifacts
+              shell: bash
+              run: |
+                  mkdir -p artifacts
+                  cp community/build/distributions/*.zip artifacts/
+                  cp gdscript/build/distributions/*.zip artifacts/
+                  ls -l artifacts
+
+            - name: Upload plugin artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: plugins
+                  path: artifacts
+
+    release:
+        name: Create GitHub Release
+        runs-on: ubuntu-latest
+        needs: build
+        permissions:
+            contents: write
+        steps:
+            - name: Download plugin artifacts
+              uses: actions/download-artifact@v4
+              with:
+                  name: plugins
+                  path: artifacts
+
+            - name: Compute release params
+              id: rel
+              shell: bash
+              run: |
+                  TAG_INPUT="${{ github.event.inputs.tag_name }}"
+                  NAME_INPUT="${{ github.event.inputs.release_name }}"
+                  if [ -z "$TAG_INPUT" ]; then
+                    TAG="plugin-manual-${GITHUB_RUN_NUMBER}"
+                  else
+                    TAG="$TAG_INPUT"
+                  fi
+                  if [ -z "$NAME_INPUT" ]; then
+                    NAME="$TAG"
+                  else
+                    NAME="$NAME_INPUT"
+                  fi
+                  echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+                  echo "name=$NAME" >> "$GITHUB_OUTPUT"
+
+            - name: Create GitHub Release and upload assets
+              uses: softprops/action-gh-release@v2
+              with:
+                  tag_name: ${{ steps.rel.outputs.tag }}
+                  name: ${{ steps.rel.outputs.name }}
+                  files: artifacts/*.zip
+                  prerelease: ${{ github.event.inputs.prerelease }}
+                  generate_release_notes: true
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
