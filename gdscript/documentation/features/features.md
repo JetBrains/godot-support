@@ -153,7 +153,9 @@ Please report any issues you encounter - this is still yet to be battle tested
     <img src="../../screens/features/setting/code_style.png" />
 </details>
 
-### Validations
+### Type analysis
+
+Provided by annotators (not configurable in the settings).
 
 #### Type checks
 
@@ -188,7 +190,13 @@ Please report any issues you encounter - this is still yet to be battle tested
 - The plugin understands Godot 4 typed collections and performs:
   - Index type checks (T for Array[T], K for Dictionary[K, V]).
 
+### Inspections
+
+Each inspection below notes its **default severity**. Inspections set to **Information** are essentially hidden in the editor by default (no highlighting). Their quick fixes stay available. This was done for inspections available with Godot LSP.
+
 #### Method correctness
+
+<em><strong>default severity: Information (hidden by default)</strong>.</em>
 
 <details>
     <summary>unreachable code</summary>
@@ -200,19 +208,57 @@ Please report any issues you encounter - this is still yet to be battle tested
     <img src="../../screens/features/validations/all_paths_return.png" />
 </details>
 
-
-### Inspections
+#### Type hints
 
 <details>
-    <summary>Whitespace style (tabs vs spaces)</summary>
+    <summary>Type mismatch &amp; missing type hint — <em>Warning</em></summary>
+    <div>
+        Flags variable/constant declarations whose declared type doesn't match the assigned value, and suggests adding an inferred type hint where one is missing (see <em>Actions → Add/change return Type</em> for the quick fixes).
+    </div>
+</details>
+
+#### Match statements
+
+<details>
+    <summary>Enum match does not cover all cases — <em>Warning</em></summary>
+    <div>
+        When a <code>match</code> is performed over an enum value and no <code>_</code> (wildcard) branch is present, flags the statement if some enum members aren't handled, with a quick fix to add the missing branches.
+    </div>
+</details>
+
+#### Naming
+
+<details>
+    <summary>Class name matches filename — <em>Warning</em></summary>
+    <img src="../../screens/features/action/match_classname.png" />
+    <div>
+        Warns when a <code>class_name</code> doesn't match its file name (PascalCase of the snake_case filename) and offers a quick fix to rename it.
+    </div>
+</details>
+
+#### Unused symbols
+
+<details>
+    <summary>Unused methods, parameters, local variables, signals &amp; classes — <em>Information (hidden by default)</em></summary>
+    <div>
+        Detects declarations with no references. Hidden by default (Information level) because the Godot LSP reports these more accurately; the inspections' quick fixes to remove the unused symbol remain available.
+    </div>
+</details>
+
+#### Code style
+
+<details>
+    <summary>Whitespace style (tabs vs spaces) — <em>Warning</em></summary>
     <img src="../../screens/features/inspection/whitespace.png" />
     <div>
         Detects and highlights leading indentation that doesn't match your code style settings (tabs vs spaces) in GDScript files. Offers a quick fix to convert indentation.
     </div>
 </details>
 
+#### Legacy API usage
+
 <details>
-    <summary>Legacy string-based API usage</summary>
+    <summary>Legacy string-based API usage — <em>Warning</em></summary>
     Detects legacy string-based calls and offers quick fixes to convert them to Callable- or signal-reference-based syntax.
     <img src="../../screens/features/inspection/call_deferred.png" />
     <div>
@@ -233,6 +279,15 @@ Please report any issues you encounter - this is still yet to be battle tested
 call_deferred("my_method", 123)
 # Recommended
 my_method.call_deferred(123)</code></pre>
+</details>
+
+#### Scene files (.tscn)
+
+<details>
+    <summary>Section order — <em>Error</em></summary>
+    <div>
+        In <code>.tscn</code> scene files, flags sections that appear out of the order Godot expects.
+    </div>
 </details>
 
 ### Actions
