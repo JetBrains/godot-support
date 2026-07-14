@@ -18,7 +18,7 @@ class XmlToGdTest : BasePlatformTestCase() {
     private val converter = XmlToGd()
 
     companion object {
-        const val TEST_DATA_PATH = "testData/gdscript/polySymbols/sdk/"
+        const val TEST_DATA_PATH = "testData/gdscript/sdk/"
         const val SDK_VERSION = "4.5.0"
     }
 
