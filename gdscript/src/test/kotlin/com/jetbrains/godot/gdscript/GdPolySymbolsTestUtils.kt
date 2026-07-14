@@ -1,4 +1,4 @@
-package com.jetbrains.godot.gdscript.polySymbols
+package com.jetbrains.godot.gdscript
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem

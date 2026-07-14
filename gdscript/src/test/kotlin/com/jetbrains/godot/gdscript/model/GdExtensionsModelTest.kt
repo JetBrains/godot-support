@@ -1,18 +1,16 @@
-package com.jetbrains.godot.gdscript.polySymbols.model
+package com.jetbrains.godot.gdscript.model
 
 import com.intellij.polySymbols.query.PolySymbolQueryExecutor
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
-import com.jetbrains.godot.gdscript.polySymbols.GdPolySymbolModelTestBase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.godot.gdscript.GdModelTestBase
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.index.GdSdkPolySymbolIndexUtil
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdExtensionsPolySymbolModelTest : GdPolySymbolModelTestBase() {
+class GdExtensionsModelTest : GdModelTestBase() {
 
     companion object{
         const val RiderLocator = "RiderLocator"
@@ -28,7 +26,7 @@ class GdExtensionsPolySymbolModelTest : GdPolySymbolModelTestBase() {
 
         assertNotNull("$RiderLocator symbol not found", riderLocatorSymbol)
         assertEquals(RiderLocator, riderLocatorSymbol!!.name)
-        
+
         // Verify it inherits from Object
         val superSymbol = riderLocatorSymbol.resolveSuperClassSymbol()
         assertNotNull("$RiderLocator should inherit from $Object", superSymbol)

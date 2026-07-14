@@ -1,6 +1,6 @@
-package com.jetbrains.godot.gdscript.polySymbols.reference
+package com.jetbrains.godot.gdscript.reference
 
-import com.jetbrains.godot.gdscript.polySymbols.GdPolySymbolsTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.psi.GdPsiClassSymbol
 import gdscript.polySymbols.psi.GdPsiResourceClassSymbol
 import gdscript.polySymbols.sdk.GdSdkClassSymbol
@@ -9,7 +9,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class GdInheritancePolySymbolReferenceTest : GdPolySymbolsTestCaseWithSdk("reference") {
+class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveUnnamedResourceInheritance() =
