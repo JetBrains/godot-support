@@ -1,13 +1,13 @@
-package com.jetbrains.godot.gdscript.polySymbols.reference
+package com.jetbrains.godot.gdscript.reference
 
-import com.jetbrains.godot.gdscript.polySymbols.GdPolySymbolsTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.psi.GdPsiMethodSymbol
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class GdSetGetMethodIdPolySymbolReferenceTest : GdPolySymbolsTestCaseWithSdk("reference") {
+class GdSetGetMethodIdReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveGetterMethod() =
