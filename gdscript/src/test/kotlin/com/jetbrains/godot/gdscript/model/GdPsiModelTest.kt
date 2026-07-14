@@ -1,9 +1,8 @@
-package com.jetbrains.godot.gdscript.polySymbols.model
+package com.jetbrains.godot.gdscript.model
 
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.psi.util.PsiTreeUtil
-import com.jetbrains.godot.gdscript.polySymbols.GdPolySymbolModelTestBase
-import gdscript.polySymbols.GdPolySymbol
+import com.jetbrains.godot.gdscript.GdModelTestBase
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.psi.GdPsiAutoloadSymbol
@@ -15,14 +14,13 @@ import gdscript.polySymbols.psi.GdPsiResourceClassSymbol
 import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdFile
 import gdscript.utils.VirtualFileUtil.resourcePath
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import project.psi.util.ProjectAutoloadUtil
 
 @RunWith(JUnit4::class)
-class GdPsiPolySymbolModelTest : GdPolySymbolModelTestBase() {
+class GdPsiModelTest : GdModelTestBase() {
 
     companion object {
         const val MyClass = "MyClass"
