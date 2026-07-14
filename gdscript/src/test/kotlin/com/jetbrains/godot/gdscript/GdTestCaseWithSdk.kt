@@ -1,4 +1,4 @@
-package com.jetbrains.godot.gdscript.polySymbols
+package com.jetbrains.godot.gdscript
 
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
@@ -8,20 +8,15 @@ import gdscript.settings.GdLspSettingsFlowService
  *
  * For testing GdScript PolySymbol feature with SDK support.
  *
- * @see GdPolySymbolsTestCase
+ * @see GdTestCase
  */
-abstract class GdPolySymbolsTestCaseWithSdk(testCasePath: String) : GdPolySymbolsTestCase(testCasePath) {
+abstract class GdTestCaseWithSdk(testCasePath: String) : GdTestCase(testCasePath) {
 
     protected open val sdkDirectories: List<String>
         get() = buildList {
             add("../sdk/gdextensions")
             add("../sdk/4.5.0")
         }
-
-    /**
-     * Path to the project.godot file relative to the path from getTestDataPath()
-     */
-    protected open val relativeGodotProjectPath: String = "../project.godot"
 
     override fun setUp() {
         super.setUp()
@@ -31,7 +26,7 @@ abstract class GdPolySymbolsTestCaseWithSdk(testCasePath: String) : GdPolySymbol
         GdLspSettingsFlowService.getInstance(project).setLspConnectionMode(GdLspConnectionMode.Never)
 
         // copy project.godot to project root
-        myFixture.copyFileToProject(relativeGodotProjectPath, "project.godot")
+        myFixture.copyFileToProject("../project.godot", "project.godot")
 
         // copy sdk files to project root
         val directories = sdkDirectories.map {
