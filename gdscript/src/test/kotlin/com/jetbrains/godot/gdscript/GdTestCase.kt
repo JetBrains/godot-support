@@ -1,4 +1,4 @@
-package com.jetbrains.godot.gdscript.polySymbols
+package com.jetbrains.godot.gdscript
 
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.testFramework.HybridTestMode
@@ -12,12 +12,12 @@ import kotlin.io.path.pathString
  * Extends [PolySymbolsTestCase] to leverage its built-in test methods like
  * [doLookupTest], [doHighlightingTest], [doGotoDeclarationTest], etc.
  *
- * For model-only tests (symbol queries, inheritance, members), use [GdPolySymbolModelTestBase] instead.
+ * For model-only tests (symbol queries, inheritance, members), use [GdModelTestBase] instead.
  */
-abstract class GdPolySymbolsTestCase(override val testCasePath: String) : PolySymbolsTestCase(HybridTestMode.CodeInsightFixture) {
+abstract class GdTestCase(override val testCasePath: String) : PolySymbolsTestCase(HybridTestMode.CodeInsightFixture) {
 
     override val testDataRoot: String
-        get() = getBaseTestDataPath().resolve("testData/gdscript/polySymbols").pathString
+        get() = getBaseTestDataPath().resolve("testData/gdscript").pathString
 
     override val defaultExtension: String = "gd"
 

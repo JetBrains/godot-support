@@ -1,11 +1,11 @@
-package com.jetbrains.godot.gdscript.polySymbols
+package com.jetbrains.godot.gdscript
 
 import com.intellij.polySymbols.testFramework.HybridTestCase
 import com.intellij.polySymbols.testFramework.HybridTestMode
 import com.jetbrains.godot.getBaseTestDataPath
 import kotlin.io.path.pathString
 
-abstract class GdPolySymbolModelTestBase : HybridTestCase(HybridTestMode.CodeInsightFixture) {
+abstract class GdModelTestBase : HybridTestCase(HybridTestMode.CodeInsightFixture) {
 
     protected open val sdkDirectories
         get() = buildList {
@@ -13,20 +13,15 @@ abstract class GdPolySymbolModelTestBase : HybridTestCase(HybridTestMode.CodeIns
             add("sdk/4.5.0")
         }
 
-    /**
-     * Path to the project.godot file relative to the path from getTestDataPath()
-     */
-    protected open val relativeGodotProjectPath: String = "../project.godot"
-
     override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/polySymbols").pathString
+        return getBaseTestDataPath().resolve("testData/gdscript").pathString
     }
 
     override fun setUp() {
         super.setUp()
 
         // copy project.godot to project root
-        myFixture.copyFileToProject(relativeGodotProjectPath, "project.godot")
+        myFixture.copyFileToProject("project.godot", "project.godot")
 
         // copy sdk files to project root
         val directories = sdkDirectories.map {
