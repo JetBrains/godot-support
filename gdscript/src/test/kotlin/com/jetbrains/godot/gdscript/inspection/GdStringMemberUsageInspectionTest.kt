@@ -15,7 +15,7 @@ import kotlin.io.path.pathString
 @RunWith(JUnit4::class)
 class GdStringMemberUsageInspectionTest : BasePlatformTestCase() {
     private fun getSdkPath(): Path {
-        val path = getBaseTestDataPath().resolve("testData/gdscript/sdk")
+        val path = getBaseTestDataPath().resolve("testData/gdscript/sdk-gen")
         assertTrue(path.exists())
         return path
     }
