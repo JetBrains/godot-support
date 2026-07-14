@@ -1,0 +1,6 @@
+MOUSE_MODE_CAPTURED (typeText='int'; priority=10.0; typeGreyed)
+MOUSE_MODE_CONFINED (typeText='int'; priority=10.0; typeGreyed)
+MOUSE_MODE_CONFINED_HIDDEN (typeText='int'; priority=10.0; typeGreyed)
+MOUSE_MODE_HIDDEN (typeText='int'; priority=10.0; typeGreyed)
+MOUSE_MODE_MAX (typeText='int'; priority=10.0; typeGreyed)
+MOUSE_MODE_VISIBLE (typeText='int'; priority=10.0; typeGreyed)
