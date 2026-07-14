@@ -1,0 +1,2 @@
+action_press (typeText='void'; priority=10.0; typeGreyed)
+action_release (typeText='void'; priority=10.0; typeGreyed)
