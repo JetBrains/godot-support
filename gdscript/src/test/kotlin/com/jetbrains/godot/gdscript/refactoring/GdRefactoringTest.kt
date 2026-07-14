@@ -1,12 +1,12 @@
-package com.jetbrains.godot.gdscript.polySymbols.refactoring
+package com.jetbrains.godot.gdscript.refactoring
 
-import com.jetbrains.godot.gdscript.polySymbols.GdPolySymbolsTestCase
+import com.jetbrains.godot.gdscript.GdTestCase
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class GdPolySymbolRefactoringTest : GdPolySymbolsTestCase("refactoring") {
+class GdRefactoringTest : GdTestCase("refactoring") {
 
     // ─────────────────────────── Find Usages ──────────────────────────
 
