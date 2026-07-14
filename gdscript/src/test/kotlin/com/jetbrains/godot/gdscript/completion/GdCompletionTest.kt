@@ -1,12 +1,12 @@
 package com.jetbrains.godot.gdscript.completion
 
-import com.jetbrains.godot.gdscript.polySymbols.GdPolySymbolsTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class GdCompletionTest : GdPolySymbolsTestCaseWithSdk("completion") {
+class GdCompletionTest : GdTestCaseWithSdk("completion") {
 
     @Test
     fun testCompleteClassMembers() = doLookupTest(
