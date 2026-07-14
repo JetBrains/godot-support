@@ -1,11 +1,11 @@
-package com.jetbrains.godot.gdscript.polySymbols.refactoring
+package com.jetbrains.godot.gdscript.refactoring
 
 import com.intellij.polySymbols.testFramework.UsagesTestHelper
 import com.intellij.polySymbols.testFramework.checkGotoDeclaration
 import com.intellij.polySymbols.testFramework.checkListByFile
 import com.intellij.polySymbols.testFramework.moveToOffsetBySignature
 import com.intellij.polySymbols.testFramework.usagesAtCaret
-import com.jetbrains.godot.gdscript.polySymbols.GdPolySymbolsTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import org.junit.Ignore
 import org.junit.Test
@@ -20,7 +20,7 @@ import org.junit.runners.JUnit4
  * actual `Node2D` reference, confirms the synthetic file opened, then runs Find Usages from it.
  */
 @RunWith(JUnit4::class)
-class GdSdkPolySymbolFindUsagesTest : GdPolySymbolsTestCaseWithSdk("refactoring") {
+class GdSdkFindUsagesTest : GdTestCaseWithSdk("refactoring") {
 
     @Test
     @Ignore

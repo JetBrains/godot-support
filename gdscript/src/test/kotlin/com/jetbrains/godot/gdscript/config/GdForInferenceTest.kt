@@ -1,12 +1,11 @@
-package com.jetbrains.godot.gdscript.polySymbols.config
+package com.jetbrains.godot.gdscript.config
 
 import com.intellij.psi.util.descendantsOfType
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.gdscript.polySymbols.GdPolySymbolModelTestBase
+import com.jetbrains.godot.gdscript.GdModelTestBase
 import gdscript.psi.GdForSt
 import gdscript.psi.utils.GdCommonUtil
 
-class GdForInferenceTest : GdPolySymbolModelTestBase() {
+class GdForInferenceTest : GdModelTestBase() {
 
     fun testDictionaryKeyInference() {
         //language=GDScript
