@@ -1,7 +1,6 @@
-package com.jetbrains.godot.gdscript.polySymbols.reference
+package com.jetbrains.godot.gdscript.reference
 
-import com.jetbrains.godot.gdscript.polySymbols.GdPolySymbolsTestCaseWithSdk
-import gdscript.polySymbols.psi.GdPsiClassSymbol
+import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.psi.GdPsiEnumSymbol
 import gdscript.polySymbols.sdk.GdSdkClassSymbol
 import gdscript.polySymbols.sdk.GdSdkEnumSymbol
@@ -10,7 +9,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class GdTypeHintPolySymbolReferenceTest : GdPolySymbolsTestCaseWithSdk("reference") {
+class GdTypeHintReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveTypeHintSdkClass() =
