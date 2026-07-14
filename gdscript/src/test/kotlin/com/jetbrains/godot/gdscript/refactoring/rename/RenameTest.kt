@@ -1,5 +1,6 @@
 package com.jetbrains.godot.gdscript.refactoring.rename
 
+import com.intellij.polySymbols.testFramework.renameSymbolAtCaret
 import com.intellij.psi.PsiDocumentManager
 import com.jetbrains.godot.gdscript.resolve.ResolveTestBase
 import com.jetbrains.godot.getBaseTestDataPath
@@ -24,7 +25,7 @@ class RenameTest : ResolveTestBase() {
 
         // Configure the file from text and perform rename at caret
         myFixture.configureByText("rename_var.gd", code)
-        myFixture.renameElementAtCaret("renamed_A1Instance")
+        myFixture.renameSymbolAtCaret("renamed_A1Instance")
 
         // Commit and run highlighting to simulate IDE analysis (and warm caches)
         PsiDocumentManager.getInstance(project).commitAllDocuments()
@@ -48,7 +49,7 @@ class RenameTest : ResolveTestBase() {
         """.trimMargin()
 
         myFixture.configureByText("rename_var_short.gd", code)
-        myFixture.renameElementAtCaret("test_name")
+        myFixture.renameSymbolAtCaret("test_name")
 
         PsiDocumentManager.getInstance(project).commitAllDocuments()
         myFixture.doHighlighting()
