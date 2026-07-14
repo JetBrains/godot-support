@@ -1,9 +1,11 @@
 package com.jetbrains.godot.gdscript.resolve
 
+import com.intellij.polySymbols.testFramework.psiSymbolReferences
+import com.intellij.polySymbols.testFramework.resolveToSymbols
+import com.intellij.polySymbols.testFramework.toPsiElementOrNull
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdRefIdRef
-import gdscript.reference.GdClassMemberReference
 
 class ResolveNestedClassMethodsTest : BasePlatformTestCase() {
 
@@ -30,17 +32,18 @@ class ResolveNestedClassMethodsTest : BasePlatformTestCase() {
         // Caret at ppa1 and resolve
         val offsetPpa1 = file.text.indexOf("ppa1") + 2 // inside identifier
         val elementPpa1 = file.findElementAt(offsetPpa1)!!.parent as GdRefIdRef
-        val declPpa1 = GdClassMemberReference(elementPpa1).resolveDeclaration()
+        val declPpa1 = elementPpa1.psiSymbolReferences().resolveToSymbols().firstOrNull()?.toPsiElementOrNull()
         assertNotNull("ppa1 should resolve", declPpa1)
-        assertTrue(declPpa1 is GdMethodDeclTl)
-        assertEquals("ppa1", (declPpa1 as GdMethodDeclTl).name)
+        assertTrue(declPpa1?.parent is GdMethodDeclTl)
+        assertEquals("ppa1", (declPpa1?.parent as GdMethodDeclTl).name)
 
         // Caret at pp and resolve
         val offsetPp = file.text.indexOf("pp()") + 1
         val elementPp = file.findElementAt(offsetPp)!!.parent as GdRefIdRef
-        val declPp = GdClassMemberReference(elementPp).resolveDeclaration()
+        val declPp = elementPp.psiSymbolReferences().resolveToSymbols().firstOrNull()?.toPsiElementOrNull()
         assertNotNull("pp should resolve", declPp)
-        assertTrue(declPp is GdMethodDeclTl)
-        assertEquals("pp", (declPp as GdMethodDeclTl).name)
+        assertTrue(declPp?.parent is GdMethodDeclTl)
+        assertEquals("pp", (declPp?.parent as GdMethodDeclTl).name)
     }
+
 }
