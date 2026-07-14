@@ -3,7 +3,7 @@ package com.jetbrains.godot.gdscript.polySymbols
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.testFramework.HybridTestMode
 import com.intellij.polySymbols.testFramework.PolySymbolsTestCase
-import com.intellij.polySymbols.testFramework.resolvePolySymbolReference
+import com.intellij.polySymbols.testFramework.resolveSymbolReference
 import com.jetbrains.godot.getBaseTestDataPath
 import kotlin.io.path.pathString
 
@@ -34,7 +34,7 @@ abstract class GdPolySymbolsTestCase(override val testCasePath: String) : PolySy
         val dirName = chosenTestName ?: testName
         val fileName = (chosenTestName ?: testName).plus(".$defaultExtension")
         doConfiguredTest(dirName = dirName, configureFileName = fileName) {
-            val symbol = assertInstanceOf(myFixture.resolvePolySymbolReference(signature), expectedClass)
+            val symbol = assertInstanceOf(myFixture.resolveSymbolReference(signature), expectedClass)
             assertEquals(expectedName, symbol.name)
         }
     }
