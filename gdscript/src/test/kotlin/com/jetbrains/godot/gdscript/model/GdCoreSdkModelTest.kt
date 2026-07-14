@@ -1,9 +1,9 @@
-package com.jetbrains.godot.gdscript.polySymbols.model
+package com.jetbrains.godot.gdscript.model
 
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolQueryExecutor
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
-import com.jetbrains.godot.gdscript.polySymbols.GdPolySymbolModelTestBase
+import com.jetbrains.godot.gdscript.GdModelTestBase
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
@@ -14,7 +14,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class GdCoreSdkPolySymbolModelTest : GdPolySymbolModelTestBase() {
+class GdCoreSdkModelTest : GdModelTestBase() {
 
     companion object{
         const val Node2D = "Node2D"
