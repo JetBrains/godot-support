@@ -1,9 +1,11 @@
 package com.jetbrains.godot.gdscript.resolve
 
+import com.intellij.model.Symbol
+import com.intellij.model.psi.PsiSymbolReference
+import com.intellij.polySymbols.testFramework.psiSymbolReferences
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
-import com.intellij.psi.PsiReference
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
 import java.nio.file.Path
@@ -68,20 +70,22 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
         data class Item(
             val start: Int,
             val end: Int,
-            val ref: PsiReference,
-            val target: PsiElement?,
+            val ref: PsiSymbolReference,
+            val target: Symbol?,
             val canon: String
         )
         // Collect references and their resolve targets
-        val prelim = mutableListOf<Triple<Int, PsiReference, PsiElement?>>()
+        val prelim = mutableListOf<Triple<Int, PsiSymbolReference, Symbol?>>()
         file.accept(object : PsiRecursiveElementWalkingVisitor() {
             override fun visitElement(element: PsiElement) {
-                val refs = element.references
+                val refs = element.psiSymbolReferences()
                 if (refs.isNotEmpty()) {
                     val baseOffset = element.textRange.startOffset
                     for (ref in refs) {
                         val refStart = baseOffset + ref.rangeInElement.startOffset
-                        val target = kotlin.runCatching { ref.resolve() }.getOrNull()
+                        val target = kotlin.runCatching { ref.resolveReference() }
+                            .getOrNull()
+                            ?.singleOrNull()
                         prelim += Triple(refStart, ref, target)
                     }
                 }
@@ -93,7 +97,7 @@ abstract class ResolveTestBase : BasePlatformTestCase() {
             val element = ref.element
             val absStart = start
             val absEnd = element.textRange.startOffset + ref.rangeInElement.endOffset
-            val canon = kotlin.runCatching { ref.canonicalText }.getOrElse {
+            val canon = run {
                 val text = element.text
                 val s = ref.rangeInElement.startOffset
                 val e = ref.rangeInElement.endOffset.coerceAtMost(element.textLength)
