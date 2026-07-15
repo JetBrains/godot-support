@@ -1,24 +1,16 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import gdscript.index.stub.GdClassNamingStub;
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
+import com.intellij.psi.StubBasedPsiElement
+import gdscript.index.stub.GdClassNamingStub
+import gdscript.psi.types.GdDocumented
 
-public interface GdClassNaming extends PsiElement, StubBasedPsiElement<GdClassNamingStub>, GdDocumented {
+interface GdClassNaming : PsiElement, StubBasedPsiElement<GdClassNamingStub>, GdDocumented {
+    val classNameNmi: GdClassNameNmi?
 
-  @Nullable
-  GdClassNameNmi getClassNameNmi();
+    val endStmt: GdEndStmt?
 
-  @Nullable
-  GdEndStmt getEndStmt();
+    val classname: String
 
-  @NotNull
-  String getClassname();
-
-  @NotNull
-  String getParentName();
-
+    val parentName: String
 }

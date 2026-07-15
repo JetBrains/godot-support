@@ -1,49 +1,31 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdEndStmt;
-import gdscript.psi.GdGetDecl;
-import gdscript.psi.GdGetMethodIdRef;
-import gdscript.psi.GdStmtOrSuite;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdEndStmt
+import gdscript.psi.GdGetDecl
+import gdscript.psi.GdGetMethodIdRef
+import gdscript.psi.GdStmtOrSuite
+import gdscript.psi.GdVisitor
 
-public class GdGetDeclImpl extends ASTWrapperPsiElement implements GdGetDecl {
+class GdGetDeclImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdGetDecl {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitGetDecl(this)
+    }
 
-  public GdGetDeclImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitGetDecl(this);
-  }
+    override val endStmt: GdEndStmt?
+        get() = PsiTreeUtil.getChildOfType(this, GdEndStmt::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val getMethodIdNm: GdGetMethodIdRef?
+        get() = PsiTreeUtil.getChildOfType(this, GdGetMethodIdRef::class.java)
 
-  @Override
-  @Nullable
-  public GdEndStmt getEndStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
-  }
-
-  @Override
-  @Nullable
-  public GdGetMethodIdRef getGetMethodIdNm() {
-    return PsiTreeUtil.getChildOfType(this, GdGetMethodIdRef.class);
-  }
-
-  @Override
-  @Nullable
-  public GdStmtOrSuite getStmtOrSuite() {
-    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
-  }
-
+    override val stmtOrSuite: GdStmtOrSuite?
+        get() = PsiTreeUtil.getChildOfType(this, GdStmtOrSuite::class.java)
 }
