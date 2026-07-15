@@ -1,42 +1,32 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdMatchBlock;
-import gdscript.psi.GdPatternList;
-import gdscript.psi.GdStmtOrSuite;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdMatchBlock
+import gdscript.psi.GdPatternList
+import gdscript.psi.GdStmtOrSuite
+import gdscript.psi.GdVisitor
 
-public class GdMatchBlockImpl extends ASTWrapperPsiElement implements GdMatchBlock {
+class GdMatchBlockImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdMatchBlock {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitMatchBlock(this)
+    }
 
-  public GdMatchBlockImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitMatchBlock(this);
-  }
+    override val patternList: GdPatternList
+        get() = notNullChild(
+            PsiTreeUtil.getChildOfType(
+                this,
+                GdPatternList::class.java
+            )
+        )
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public GdPatternList getPatternList() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdPatternList.class));
-  }
-
-  @Override
-  @Nullable
-  public GdStmtOrSuite getStmtOrSuite() {
-    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
-  }
-
+    override val stmtOrSuite: GdStmtOrSuite?
+        get() = PsiTreeUtil.getChildOfType(this, GdStmtOrSuite::class.java)
 }
