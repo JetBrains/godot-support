@@ -25,7 +25,7 @@ object GdMethodUtil {
      */
     fun findMethod(parent: PsiElement, name: String): GdMethodDeclTl? {
         return PsiTreeUtil.getStubChildrenOfTypeAsList(parent, GdMethodDeclTl::class.java)
-            .find { it.name == name }
+            .find { it.getName() == name }
     }
 
     fun getName(element: GdMethodDeclTl): String {

@@ -19,7 +19,7 @@ object GdClassCompletionUtil {
     }
 
     fun GdClassDeclTl.lookup(): LookupElement {
-        val name = this.name
+        val name = this.getName()
         return GdLookup.create(name, priority = GdLookup.USER_DEFINED, icon = GdIcon.getEditorIcon(name))
     }
 
