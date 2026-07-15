@@ -9,10 +9,10 @@ import gdscript.psi.impl.GdSignalDeclElementType
 
 class GdSignalDeclStubImpl : StubBase<GdSignalDeclTl>, GdSignalDeclStub {
     private var name: String = ""
-    private var parameters: LinkedHashMap<String, String?>
+    private var parameters: LinkedHashMap<String, String>
     private var doc: GdCommentModel
 
-    constructor(parent: StubElement<*>?, name: String?, parameters: LinkedHashMap<String, String?>, doc: GdCommentModel): super(parent, GdSignalDeclElementType) {
+    constructor(parent: StubElement<*>?, name: String?, parameters: LinkedHashMap<String, String>, doc: GdCommentModel): super(parent, GdSignalDeclElementType) {
         if (name != null) {
             this.name = name
         }
@@ -24,7 +24,7 @@ class GdSignalDeclStubImpl : StubBase<GdSignalDeclTl>, GdSignalDeclStub {
         return name
     }
 
-    override fun parameters(): LinkedHashMap<String, String?> {
+    override fun parameters(): LinkedHashMap<String, String> {
         return parameters
     }
 

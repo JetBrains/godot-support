@@ -1,13 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.NotNull;
+interface GdExprSt : GdStmt {
+    val endStmt: GdEndStmt
 
-public interface GdExprSt extends GdStmt {
-
-  @NotNull
-  GdEndStmt getEndStmt();
-
-  @NotNull
-  GdExpr getExpr();
-
+    val expr: GdExpr
 }
