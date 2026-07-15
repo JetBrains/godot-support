@@ -1,11 +1,18 @@
 package gdscript.polySymbols.psi
 
+import com.intellij.model.Pointer
+import com.intellij.model.Symbol
 import com.intellij.openapi.project.Project
+import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
+import com.intellij.polySymbols.utils.PolySymbolDelegate
+import com.intellij.polySymbols.utils.unwrapMatchedSymbols
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
+import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.polySymbols.scope.gdSdkGlobalPolySymbolScope
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassDeclTl
@@ -66,14 +73,60 @@ object GdPsiPolySymbolUtil {
     }
 
     /**
+     * Resolves `new` in a `ClassName.new(...)` call to the class's `_init` constructor symbol.
+     * `new` itself is not a real, queryable symbol name (GDScript constructors are always named
+     * `_init`), so it needs this dedicated lookup — mirroring the legacy resolver's identical
+     * `element.text == "new" && resolved.isConstructor` special case.
+     *
+     * The result is wrapped in [GdNewKeywordSymbol]: own-reference ranges are computed from the
+     * referenced symbol's `name.length`, and the constructor's real name (`_init`, 5 chars) is
+     * longer than the `new` token (3 chars) it's being referenced from, which would overflow the
+     * reference's range into the call's parentheses. [GdSymbolResolverUtil.resolveSymbolReferences]
+     * unwraps the delegate back to the real [GdPsiConstructorSymbol] for callers.
+     */
+    fun resolveConstructorSymbol(element: GdRefIdRef): PolySymbol? {
+        val qualifier = GdClassMemberUtil.calledUpon(element) ?: return null
+        val typeName = GdPsiUtils.getReturnType(qualifier)
+        if (typeName.isEmpty()) return null
+        val classSymbol = GdSymbolResolverUtil.resolveCanonicalClassSymbol(element.project, typeName, element) ?: return null
+        val executor = PolySymbolQueryExecutorFactory.createCustom {
+            addRootScope(classSymbol.directMemberScope)
+            addRootScopes(classSymbol.inheritedQueryScopes())
+        }
+        val constructor = executor.nameMatchQuery(GdPolySymbolKind.CONSTRUCTOR, "_init").run()
+            .flatMap { it.unwrapMatchedSymbols() }
+            .filterIsInstance<GdPsiConstructorSymbol>()
+            .firstOrNull() ?: return null
+        return GdNewKeywordSymbol(constructor)
+    }
+
+    /**
+     * Reports `new` as its own name while delegating everything else (declaration, search/rename
+     * targets, resolution equivalence) to the real constructor symbol. See [resolveConstructorSymbol].
+     */
+    private class GdNewKeywordSymbol(override val delegate: GdPsiConstructorSymbol) : PolySymbolDelegate<GdPsiConstructorSymbol> {
+        override val name: String get() = "new"
+
+        override fun isEquivalentTo(symbol: Symbol): Boolean =
+            symbol === this
+                || delegate.isEquivalentTo(symbol)
+                || (symbol is GdNewKeywordSymbol && delegate.isEquivalentTo(symbol.delegate))
+
+        override fun createPointer(): Pointer<out GdNewKeywordSymbol> {
+            val delegatePtr = delegate.createPointer()
+            return Pointer {
+                delegatePtr.dereference()?.let { GdNewKeywordSymbol(it) }
+            }
+        }
+    }
+
+    /**
      * True when [qualifier] is a single identifier bound to a variable/constant whose initializer
      * is itself a bare class reference (e.g. `var t1 := A1.B1`) rather than an instance
      * (`A1.B1.new()`/`.instance()`) — such a qualifier denotes the class itself, so member access
      * on it is a static access. [isStaticAccessByName] can't catch this: it only compares the
      * qualifier's own text against its resolved type name, which never matches when the qualifier
      * is a variable name rather than the class name itself.
-     *
-     * Mirrors [gdscript.reference.GdClassMemberReference]'s equivalent check for the legacy resolver.
      */
     private fun isBareClassValueQualifier(qualifier: GdExpr): Boolean {
         val singleRef = PsiTreeUtil.getChildrenOfType(qualifier, GdRefIdRef::class.java)?.singleOrNull()
@@ -94,9 +147,6 @@ object GdPsiPolySymbolUtil {
      * either directly indexed, or as a chain of nested classes declared directly inside one another
      * starting from a top-level class in the file. [GdClassUtil.getClassIdElement] alone only
      * resolves single-segment/globally-indexed names, not a dotted nested-class chain.
-     *
-     * Mirrors the `resolvesToClassChain` local helper in
-     * [gdscript.reference.GdClassMemberReference]'s legacy resolver.
      */
     private fun resolvesToClassChain(name: String, anchor: PsiElement): Boolean {
         if (name.isEmpty()) return false
