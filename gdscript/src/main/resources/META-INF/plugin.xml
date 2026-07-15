@@ -320,22 +320,11 @@
     <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdInheritanceIdRefCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdRefIdRefCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdGetSetMethodIdRefCompletionContributor"/>
-    <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdTypeHintRef"
-                                      hostLanguage="GdScript"
-                                      implementationClass="gdscript.polySymbols.reference.GdTypeHintPolySymbolReferenceProvider"/>
-    <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdInheritanceIdRef"
-                                      hostLanguage="GdScript"
-                                      implementationClass="gdscript.polySymbols.reference.GdInheritancePolySymbolReferenceProvider"/>
-    <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdGetMethodIdRef"
-                                      hostLanguage="GdScript"
-                                      implementationClass="gdscript.polySymbols.reference.GdGetMethodIdPolySymbolReferenceProvider"/>
-    <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdSetMethodIdRef"
-                                      hostLanguage="GdScript"
-                                      implementationClass="gdscript.polySymbols.reference.GdSetMethodIdPolySymbolReferenceProvider"/>
     <polySymbols.psiLinkedSymbol host="gdscript.psi.GdNamedIdElement"/>
     <polySymbols.psiLinkedSymbol host="gdscript.psi.GdFile"/>
     <polySymbols.declarationProvider implementation="gdscript.polySymbols.sdk.GdSdkPolySymbolDeclarationProvider"/>
     <polySymbols.declarationProvider implementation="gdscript.polySymbols.psi.GdPsiPolySymbolDeclarationProvider"/>
+    <polySymbols.highlightingCustomizer implementation="gdscript.polySymbols.highlighting.GdPolySymbolHighlightingCustomizer"/>
     <projectService serviceInterface="gdscript.library.GdSdkFilesProvider"
                     serviceImplementation="gdscript.library.GdSdkFilesProviderImpl" />
     <!-- End Poly Symbols -->
