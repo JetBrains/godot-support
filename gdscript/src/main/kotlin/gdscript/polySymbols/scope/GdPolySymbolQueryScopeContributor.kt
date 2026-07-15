@@ -37,10 +37,10 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                 )
                     .contributeScopeProvider { ref ->
                         listOf(
-                            GdSdkClassesPolySymbolScope(ref.project),
+                            gdSdkClassesPolySymbolScope(ref.project),
                             GdPsiClassesPolySymbolScope(ref.project, ref),
                             GdPsiResourceClassesPolySymbolScope(ref.project, ref),
-                            //GdPsiAutoloadScope(ref.project),
+                            //gdPsiAutoloadScope(ref.project),
                             polySymbolScope {
                                 provides(GdPolySymbolKind.INHERITANCE_SYMBOLS)
                                 initialize {
@@ -72,10 +72,10 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                         if (qualifier == null) {
                             listOf(
                                 GdPsiOwnClassScope(ref),
-                                GdSdkClassesPolySymbolScope(ref.project),
-                                GdSdkGlobalPolySymbolScope(ref.project),
+                                gdSdkClassesPolySymbolScope(ref.project),
+                                gdSdkGlobalPolySymbolScope(ref.project),
                                 GdPsiClassesPolySymbolScope(ref.project, ref),
-                                GdPsiAutoloadScope(ref.project),
+                                gdPsiAutoloadScope(ref.project),
                                 polySymbolScope {
                                     provides(GdPolySymbolKind.TYPE_HINTS)
                                     initialize {
@@ -110,10 +110,10 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                         if (qualifier == null) {
                             listOf(
                                 GdPsiOwnClassScope(ref),
-                                GdSdkClassesPolySymbolScope(ref.project),
-                                GdSdkGlobalPolySymbolScope(ref.project),
+                                gdSdkClassesPolySymbolScope(ref.project),
+                                gdSdkGlobalPolySymbolScope(ref.project),
                                 GdPsiClassesPolySymbolScope(ref.project, ref),
-                                GdPsiAutoloadScope(ref.project),
+                                gdPsiAutoloadScope(ref.project),
                                 GdLocalSymbolsStructuredScope(ref),
                                 polySymbolScope {
                                     provides(GdPolySymbolKind.QUALIFIABLE_SYMBOLS)
@@ -157,7 +157,7 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
 
                 forPsiLocation(psiElement(GdAnnotationType::class.java))
                     .contributeScopeProvider { ref ->
-                        listOf(GdSdkAnnotationsPolySymbolScope(ref.project))
+                        listOf(gdSdkAnnotationsPolySymbolScope(ref.project))
                     }
             }
     }

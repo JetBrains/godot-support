@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
-import gdscript.polySymbols.scope.GdSdkGlobalPolySymbolScope
+import gdscript.polySymbols.scope.gdSdkGlobalPolySymbolScope
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassVarDeclTl
@@ -136,7 +136,7 @@ object GdPsiPolySymbolUtil {
      */
     private fun checkGlobalStaticMatch(project: Project, name: String): Boolean {
         val executor = PolySymbolQueryExecutorFactory.createCustom{
-            addRootScope(GdSdkGlobalPolySymbolScope(project))
+            addRootScope(gdSdkGlobalPolySymbolScope(project))
         }
         return GdPolySymbolQueriesUtil.getSdkPropertySymbol(executor, GdKeywords.GLOBAL_SCOPE, name) == null
     }

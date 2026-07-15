@@ -314,6 +314,7 @@
     <!-- Poly Symbols -->
     <polySymbols.enableInLanguage language="GdScript"/>
     <polySymbols.queryScopeContributor implementation="gdscript.polySymbols.scope.GdPolySymbolQueryScopeContributor" />
+    <polySymbols.codeCompletionItemCustomizer implementation="gdscript.polySymbols.completion.GdPolySymbolCodeCompletionItemCustomizer"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdAnnotationCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdTypeHintRefCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdInheritanceIdRefCompletionContributor"/>

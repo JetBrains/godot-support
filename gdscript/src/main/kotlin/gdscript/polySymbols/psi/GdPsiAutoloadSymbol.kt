@@ -49,7 +49,7 @@ class GdPsiAutoloadSymbol(
      */
     private val fileClassId: String get() = GdClassUtil.getOwningClassName(linkedElement)
 
-    override val directMemberScope: PolySymbolScope get() = GdPsiClassMemberScope(linkedElement)
+    override val directMemberScope: PolySymbolScope get() = gdPsiClassMemberScope(linkedElement)
 
     private val superClassName: String?
         get() = GdInheritanceUtil.getExtendedClassId(linkedElement).takeIf { it.isNotBlank() }
