@@ -1,14 +1,8 @@
 package gdscript.polySymbols.completion
 
 import com.intellij.polySymbols.PolySymbol
-import com.intellij.polySymbols.PolySymbolQualifiedName
 import com.intellij.polySymbols.completion.PolySymbolCodeCompletionItem
-import com.intellij.polySymbols.query.PolySymbolCodeCompletionQueryParams
-import com.intellij.polySymbols.query.PolySymbolListSymbolsQueryParams
-import com.intellij.polySymbols.query.PolySymbolQueryStack
-import com.intellij.polySymbols.query.PolySymbolScope
 import gdscript.polySymbols.GdClassSymbol
-import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPolySymbolsConstants
 import gdscript.polySymbols.sdk.xml.GdSdkData
 
@@ -30,28 +24,6 @@ fun List<GdSdkData.ParameterData>.toCompletionParamHint(variadic: Boolean = fals
 
 fun GdSdkData.TypeData.toCompletionTypeText(): String =
     enumName?.takeIf { it.isNotEmpty() } ?: name
-
-fun GdPolySymbol.toCodeCompletionItem(name: String = this.name): PolySymbolCodeCompletionItem =
-    PolySymbolCodeCompletionItem.create(name, symbol = this) {
-        icon(this@toCodeCompletionItem.icon)
-        priority(this@toCodeCompletionItem.priority)
-        tailText(this@toCodeCompletionItem.completionTailText)
-        typeText(this@toCodeCompletionItem.completionTypeText)
-    }
-
-
-fun PolySymbolScope.gdCodeCompletions(
-    qualifiedName: PolySymbolQualifiedName,
-    params: PolySymbolCodeCompletionQueryParams,
-    stack: PolySymbolQueryStack,
-): List<PolySymbolCodeCompletionItem> =
-    getSymbols(
-        qualifiedName.kind,
-        PolySymbolListSymbolsQueryParams.create(params.queryExecutor, expandPatterns = false),
-        stack,
-    )
-        .filterIsInstance<GdPolySymbol>()
-        .map { it.toCodeCompletionItem() }
 
 fun PolySymbolCodeCompletionItem.shouldShow(): Boolean{
     return !(this.symbol is GdClassSymbol && GdPolySymbolsConstants.GLOBAL_CLASSES.contains(this.name))
