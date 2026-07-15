@@ -1,17 +1,9 @@
-package gdscript.psi;
+package gdscript.psi
 
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
+interface GdAssignSt : GdStmt {
+    val assignSign: GdAssignSign
 
-public interface GdAssignSt extends GdStmt {
+    val endStmt: GdEndStmt
 
-  @NotNull
-  GdAssignSign getAssignSign();
-
-  @NotNull
-  GdEndStmt getEndStmt();
-
-  @NotNull
-  List<GdExpr> getExprList();
-
+    val exprList: List<GdExpr>
 }

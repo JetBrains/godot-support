@@ -1,44 +1,27 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdStmt;
-import gdscript.psi.GdStmtOrSuite;
-import gdscript.psi.GdSuite;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdStmt
+import gdscript.psi.GdStmtOrSuite
+import gdscript.psi.GdSuite
+import gdscript.psi.GdVisitor
 
-import java.util.List;
+class GdStmtOrSuiteImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdStmtOrSuite {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitStmtOrSuite(this)
+    }
 
-public class GdStmtOrSuiteImpl extends ASTWrapperPsiElement implements GdStmtOrSuite {
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public GdStmtOrSuiteImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override val stmt: GdStmt?
+        get() = PsiTreeUtil.getChildOfType(this, GdStmt::class.java)
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitStmtOrSuite(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public GdStmt getStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdStmt.class);
-  }
-
-  @Override
-  @NotNull
-  public List<GdSuite> getSuiteList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdSuite.class);
-  }
-
+    override val suiteList: List<GdSuite>
+        get() = PsiTreeUtil.getChildrenOfTypeAsList(this, GdSuite::class.java)
 }
