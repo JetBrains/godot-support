@@ -1,21 +1,16 @@
-package gdscript.psi;
+package gdscript.psi
 
-import java.util.List;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.tree.TokenSet;
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
+import com.intellij.psi.tree.TokenSet
 
-public interface GdArgList extends PsiElement {
+interface GdArgList : PsiElement {
+    val argExprList: List<GdArgExpr>
 
-  @NotNull
-  List<GdArgExpr> getArgExprList();
-
-  default @Nullable ASTNode getClosingParen() {
-    ASTNode node = getNode();
-    final ASTNode[] children = node.getChildren(TokenSet.create(GdTypes.RRBR));
-    return children.length == 0 ? null : children[children.length - 1];
-  }
-
+    val closingParen: ASTNode?
+        get() {
+            val node = getNode()
+            val children = node.getChildren(TokenSet.create(GdTypes.RRBR))
+            return if (children.size == 0) null else children[children.size - 1]
+        }
 }

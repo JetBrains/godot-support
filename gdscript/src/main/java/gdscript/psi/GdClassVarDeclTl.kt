@@ -1,44 +1,30 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.StubBasedPsiElement;
-import gdscript.index.stub.GdClassVarDeclStub;
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.navigation.ItemPresentation
+import com.intellij.psi.StubBasedPsiElement
+import gdscript.index.stub.GdClassVarDeclStub
+import gdscript.psi.types.GdDocumented
 
-public interface GdClassVarDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdClassVarDeclStub>, GdDocumented {
+interface GdClassVarDeclTl : GdTopLevelDecl, StubBasedPsiElement<GdClassVarDeclStub>, GdDocumented {
+    val assignTyped: GdAssignTyped?
 
-  @Nullable
-  GdAssignTyped getAssignTyped();
+    val endStmt: GdEndStmt?
 
-  @Nullable
-  GdEndStmt getEndStmt();
+    val expr: GdExpr?
 
-  @Nullable
-  GdExpr getExpr();
+    val setgetDecl: GdSetgetDecl?
 
-  @Nullable
-  GdSetgetDecl getSetgetDecl();
+    val typed: GdTyped?
 
-  @Nullable
-  GdTyped getTyped();
+    val varNmi: GdVarNmi?
 
-  @Nullable
-  GdVarNmi getVarNmi();
+    fun getName(): String
 
-  @NotNull
-  String getName();
+    val isStatic: Boolean
 
-  @NotNull
-  Boolean isStatic();
+    val returnType: String
 
-  @NotNull
-  String getReturnType();
+    fun getPresentation(): ItemPresentation
 
-  @NotNull
-  ItemPresentation getPresentation();
-
-  boolean isAnnotated(@NotNull String annotator);
-
+    fun isAnnotated(annotator: String): Boolean
 }
