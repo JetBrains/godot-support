@@ -1,28 +1,17 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.StubBasedPsiElement;
-import gdscript.index.stub.GdClassDeclStub;
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.StubBasedPsiElement
+import gdscript.index.stub.GdClassDeclStub
+import gdscript.psi.types.GdDocumented
 
-import java.util.List;
+interface GdClassDeclTl : GdTopLevelDecl, StubBasedPsiElement<GdClassDeclStub>, GdDocumented {
+    val classNameNmi: GdClassNameNmi?
 
-public interface GdClassDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdClassDeclStub>, GdDocumented {
+    val inheritanceList: List<GdInheritance>
 
-  @Nullable
-  GdClassNameNmi getClassNameNmi();
+    val topLevelDeclList: List<GdTopLevelDecl>
 
-  @NotNull
-  List<GdInheritance> getInheritanceList();
+    fun getName(): String
 
-  @NotNull
-  List<GdTopLevelDecl> getTopLevelDeclList();
-
-  @NotNull
-  String getName();
-
-  @NotNull
-  String getParentName();
-
+    val parentName: String
 }

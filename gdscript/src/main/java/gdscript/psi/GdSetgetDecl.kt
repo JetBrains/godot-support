@@ -1,15 +1,9 @@
-package gdscript.psi;
+package gdscript.psi
 
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElement
 
-public interface GdSetgetDecl extends PsiElement {
+interface GdSetgetDecl : PsiElement {
+    val getDeclList: List<GdGetDecl>
 
-  @NotNull
-  List<GdGetDecl> getGetDeclList();
-
-  @NotNull
-  List<GdSetDecl> getSetDeclList();
-
+    val setDeclList: List<GdSetDecl>
 }

@@ -1,15 +1,9 @@
-package gdscript.psi;
+package gdscript.psi
 
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElement
 
-public interface GdExpr extends PsiElement {
+interface GdExpr : PsiElement {
+    val returnType: String
 
-  @NotNull
-  String getReturnType();
-
-  @NotNull
-  String getReturnTypeOrRes(boolean allowResource);
-
+    fun getReturnTypeOrRes(allowResource: Boolean): String
 }

@@ -47,7 +47,7 @@ object PsiGdMethodDeclUtil {
         } ?: ""
     }
 
-    fun getParameters(element: GdMethodDeclTl): LinkedHashMap<String, String?> {
+    fun getParameters(element: GdMethodDeclTl): LinkedHashMap<String, String> {
         val stub = element.stub
         if (stub !== null) {
             return stub.parameters()
@@ -60,8 +60,8 @@ object PsiGdMethodDeclUtil {
         val stub = element.stub
         if (stub != null) return stub.isConstructor()
 
-        return element.name == "_init"
-                || GdClassUtil.getOwningClassName(element) == element.name
+        return element.getName() == "_init"
+                || GdClassUtil.getOwningClassName(element) == element.getName()
     }
 
 }

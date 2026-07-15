@@ -1,20 +1,13 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
 
-public interface GdPattern extends PsiElement {
+interface GdPattern : PsiElement {
+    val arrayPattern: GdArrayPattern?
 
-  @Nullable
-  GdArrayPattern getArrayPattern();
+    val bindingPattern: GdBindingPattern?
 
-  @Nullable
-  GdBindingPattern getBindingPattern();
+    val dictPattern: GdDictPattern?
 
-  @Nullable
-  GdDictPattern getDictPattern();
-
-  @Nullable
-  GdExpr getExpr();
-
+    val expr: GdExpr?
 }

@@ -1,34 +1,23 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdBindingPattern;
-import gdscript.psi.GdVarNmi;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdBindingPattern
+import gdscript.psi.GdVarNmi
+import gdscript.psi.GdVisitor
 
-public class GdBindingPatternImpl extends ASTWrapperPsiElement implements GdBindingPattern {
+class GdBindingPatternImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdBindingPattern {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitBindingPattern(this)
+    }
 
-  public GdBindingPatternImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitBindingPattern(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public GdVarNmi getVarNmi() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi.class));
-  }
-
+    override val varNmi: GdVarNmi
+        get() = notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi::class.java))
 }

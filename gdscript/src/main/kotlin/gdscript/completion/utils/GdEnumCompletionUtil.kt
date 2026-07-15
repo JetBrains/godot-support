@@ -39,10 +39,10 @@ object GdEnumCompletionUtil {
     }
 
     fun GdEnumDeclTl.lookup(): LookupElement? {
-        if (name.isBlank()) return null
+        if (getName().isBlank()) return null
 
         return GdLookup.create(
-            name,
+            getName(),
             icon = GdScriptPluginIcons.GDScriptIcons.ENUM_MARKER,
             typed = GdKeywords.INT,
             priority = GdLookup.LOCAL_USER_DEFINED,
@@ -50,7 +50,7 @@ object GdEnumCompletionUtil {
     }
 
     fun GdEnumDeclTl.preview(): String {
-        var name = this.name
+        var name = this.getName()
         if (name.isNotBlank()) name = "$name "
         val sb = StringBuilder("enum $name{\n")
         this.values.forEach {
