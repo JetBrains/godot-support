@@ -1,13 +1,9 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiFile;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiFile
 
-public interface GdInheritanceIdRef extends GdRefElement {
+interface GdInheritanceIdRef : GdRefElement {
+    val psiFile: PsiFile?
 
-  @Nullable
-  PsiFile getPsiFile();
-
-  boolean isClassName();
-
+    val isClassName: Boolean
 }

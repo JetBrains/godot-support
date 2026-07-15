@@ -54,7 +54,7 @@ fun GdASTBlock.customIsIncomplete(): Boolean {
         if (lastChild.isIncompleteCall()) return true
     }
 
-    (node.psi as? GdArgList)?.let { argList -> return argList.getClosingParen() == null }
+    (node.psi as? GdArgList)?.let { argList -> return argList.closingParen == null }
 
     return node.isIncompleteCall() || isIncompleteExpressionWithBrackets(node.psi)
 }
