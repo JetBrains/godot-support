@@ -8,7 +8,7 @@ import gdscript.psi.GdSignalDeclTl
 
 object PsiGdSignalUtil {
 
-    fun getParameters(element: GdSignalDeclTl): LinkedHashMap<String, String?> {
+    fun getParameters(element: GdSignalDeclTl): LinkedHashMap<String, String> {
         val stub = element.stub
         if (stub !== null) {
             return stub.parameters()
