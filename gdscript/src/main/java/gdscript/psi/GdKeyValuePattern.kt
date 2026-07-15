@@ -1,11 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
 
-public interface GdKeyValuePattern extends PsiElement {
-
-  @Nullable
-  GdPattern getPattern();
-
+interface GdKeyValuePattern : PsiElement {
+    val pattern: GdPattern?
 }

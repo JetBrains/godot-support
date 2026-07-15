@@ -91,7 +91,7 @@ class TscnResourceFieldReference : PsiReferenceBase<PsiNamedElement> {
         if (declarationCandidates.isEmpty()) return null
 
         for (declaration in declarationCandidates) {
-            if (declaration is GdClassVarDeclTl && declaration.name == fieldName) {
+            if (declaration is GdClassVarDeclTl && declaration.getName() == fieldName) {
                 return declaration.varNmi
             }
         }
