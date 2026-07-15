@@ -5,7 +5,9 @@ import com.intellij.polySymbols.testFramework.symbolAtCaret
 import com.intellij.polySymbols.testFramework.toPsiElementOrNull
 import com.intellij.polySymbols.testFramework.usagesAtCaret
 import com.intellij.polySymbols.testFramework.usagesAtOffsetBySignature
+import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
 import com.intellij.psi.PsiDocumentManager
+import com.intellij.util.asSafely
 import com.jetbrains.godot.gdscript.resolve.ResolveTestBase
 import gdscript.psi.GdKeyNmi
 
@@ -41,7 +43,8 @@ class GdDictionaryStringKeyTest : ResolveTestBase() {
 
         myFixture.configureByText("dict_find_usages_decl.gd", code)
 
-        val target = myFixture.symbolAtCaret(includePsiSymbols = true)?.toPsiElementOrNull()
+        val target = myFixture.symbolAtCaret(includePsiSymbols = true)
+            ?.toPsiElementOrNull()
         assertInstanceOf(target, GdKeyNmi::class.java)
 
         val usages = myFixture.usagesAtCaret()

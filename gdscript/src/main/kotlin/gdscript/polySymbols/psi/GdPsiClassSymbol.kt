@@ -1,7 +1,6 @@
 package gdscript.polySymbols.psi
 
 import com.intellij.model.Pointer
-import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.query.PolySymbolScope
@@ -20,24 +19,22 @@ import gdscript.psi.utils.PsiGdClassUtil
 import javax.swing.Icon
 
 class GdPsiClassSymbol(
-    override val linkedElement: GdClassNameNmi
+    override val sourceElement: GdClassNameNmi
 ) : GdPsiPolySymbol(), GdClassSymbol {
-    override val project: Project get() = linkedElement.project
-
     override val kind: PolySymbolKind get() = GdPolySymbolKind.CLASS
     override val name: String get() = declaringClassName
-    override val declaringClassName: String get() = linkedElement.name
+    override val declaringClassName: String get() = sourceElement.name
     override val declaringClassId: String get() = classId
-    override val classId: String get() = linkedElement.classId
+    override val classId: String get() = sourceElement.classId
 
     override val icon: Icon get() = GdIcon.getEditorIcon(classId)
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.USER_DEFINED
 
-    val parent: PsiElement get() = PsiGdClassUtil.getParentClassElement(linkedElement)
+    val parent: PsiElement get() = PsiGdClassUtil.getParentClassElement(sourceElement)
 
 
     override fun createPointer(): Pointer<out GdPsiClassSymbol> {
-        val sourcePtr = linkedElement.createSmartPointer()
+        val sourcePtr = sourceElement.createSmartPointer()
         return Pointer {
             sourcePtr.element?.let { GdPsiClassSymbol(it) }
         }
@@ -49,10 +46,10 @@ class GdPsiClassSymbol(
         )
 
     private val superClassName: String?
-        get() = GdInheritanceUtil.getExtendedClassId(linkedElement).takeIf { it.isNotBlank() }
+        get() = GdInheritanceUtil.getExtendedClassId(sourceElement).takeIf { it.isNotBlank() }
 
     override fun resolveSuperClassSymbol(): GdClassSymbol? =
-        superClassName?.let { GdSymbolResolverUtil.resolveCanonicalClassSymbol(project, it, linkedElement) }
+        superClassName?.let { GdSymbolResolverUtil.resolveCanonicalClassSymbol(project, it, sourceElement) }
 
     override fun inheritedQueryScopes(): List<PolySymbolScope> =
         GdSymbolClassHierarchyUtil.collectInheritedScopes(this, linkedSetOf(classId))
