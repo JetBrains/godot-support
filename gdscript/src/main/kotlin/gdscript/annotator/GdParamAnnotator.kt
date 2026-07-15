@@ -11,6 +11,8 @@ import gdscript.GdScriptBundle
 import gdscript.action.quickFix.GdChangeTypeFix
 import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
+import gdscript.polySymbols.psi.GdPsiPolySymbol
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFuncDeclEx
@@ -21,7 +23,6 @@ import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.constructors
 import gdscript.psi.utils.GdExprUtil
 import gdscript.psi.utils.PsiGdSignalUtil
-import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiElementUtil.nextNonWhiteCommentToken
 import gdscript.utils.PsiElementUtil.prevNonWhiteCommentToken
 import gdscript.utils.StringUtil.isDynamicType
@@ -36,9 +37,8 @@ class GdParamAnnotator : Annotator {
         var maxSize = 0
 
         val refId = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return
-        val ref = refId.references.firstOrNull() ?: return
-        if (ref !is GdClassMemberReference) return
-        val declaration = ref.resolveDeclaration() ?: return
+        val symbol = refId.resolveSymbolReference() as? GdPsiPolySymbol ?: return
+        val declaration = symbol.sourceElement.parent
         val descriptions = mutableListOf<String>()
 
         val paramLists = when (declaration) {
