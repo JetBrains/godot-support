@@ -1,21 +1,20 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.polySymbols.references.PolySymbolOwnReferences;
-import com.intellij.polySymbols.references.PolySymbolOwnReferencesHost;
-import gdscript.polySymbols.GdPolySymbolKind;
-import gdscript.polySymbols.GdPolySymbolModifier;
-import gdscript.polySymbols.psi.GdPsiPolySymbolUtil;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.polySymbols.PolySymbol
+import com.intellij.polySymbols.references.PolySymbolOwnReferences
+import com.intellij.polySymbols.references.PolySymbolOwnReferencesHost
+import gdscript.polySymbols.GdPolySymbolKind.QUALIFIABLE_SYMBOLS
+import gdscript.polySymbols.GdPolySymbolModifier.STATIC
+import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.isStatic
 
-public interface GdRefIdRef extends GdRefElement, PolySymbolOwnReferencesHost {
-
-    @Override
-    default void buildOwnReferences(@NotNull PolySymbolOwnReferences.Builder builder) {
+interface GdRefIdRef : GdRefElement, PolySymbolOwnReferencesHost {
+    override fun buildOwnReferences(builder: PolySymbolOwnReferences.Builder) {
         builder.fromNameMatchQuery(
-            GdPolySymbolKind.INSTANCE.getQUALIFIABLE_SYMBOLS(), getText(),
-            GdPsiPolySymbolUtil.INSTANCE.isStatic(this)
-            ? (symbol) -> symbol.getModifiers().contains(GdPolySymbolModifier.INSTANCE.getSTATIC())
-            : (_) -> true
-        );
+            QUALIFIABLE_SYMBOLS, getText(),
+            if (isStatic(this))
+                { symbol: PolySymbol? -> symbol!!.modifiers.contains(STATIC) }
+            else
+                { `_`: PolySymbol? -> true }
+        )
     }
 }

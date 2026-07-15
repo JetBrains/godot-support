@@ -1,116 +1,72 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.GdKeywords;
-import gdscript.model.GdTutorial;
-import gdscript.psi.GdFuncDeclEx;
-import gdscript.psi.GdFuncDeclIdNmi;
-import gdscript.psi.GdParamList;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdReturnHint;
-import gdscript.psi.GdStmtOrSuite;
-import gdscript.psi.GdVisitor;
-import gdscript.psi.utils.GdCommentUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdKeywords
+import gdscript.model.GdTutorial
+import gdscript.psi.GdFuncDeclEx
+import gdscript.psi.GdFuncDeclIdNmi
+import gdscript.psi.GdParamList
+import gdscript.psi.GdPsiUtils.getInvokedReturnType
+import gdscript.psi.GdPsiUtils.getParameters
+import gdscript.psi.GdPsiUtils.getReturnExpr
+import gdscript.psi.GdReturnHint
+import gdscript.psi.GdStmtOrSuite
+import gdscript.psi.GdVisitor
+import gdscript.psi.utils.GdCommentUtil.brief
+import gdscript.psi.utils.GdCommentUtil.description
+import gdscript.psi.utils.GdCommentUtil.isDeprecated
+import gdscript.psi.utils.GdCommentUtil.isExperimental
+import gdscript.psi.utils.GdCommentUtil.tutorials
 
-import java.util.LinkedHashMap;
-import java.util.List;
+class GdFuncDeclExImpl(node: ASTNode) : GdExprImpl(node), GdFuncDeclEx {
+    override fun accept(visitor: GdVisitor) {
+        visitor.visitFuncDeclEx(this)
+    }
 
-public class GdFuncDeclExImpl extends GdExprImpl implements GdFuncDeclEx {
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public GdFuncDeclExImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override val funcDeclIdNmi: GdFuncDeclIdNmi?
+        get() = PsiTreeUtil.getChildOfType(this, GdFuncDeclIdNmi::class.java)
 
-  @Override
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitFuncDeclEx(this);
-  }
+    override val paramList: GdParamList?
+        get() = PsiTreeUtil.getChildOfType(this, GdParamList::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val returnHint: GdReturnHint?
+        get() = PsiTreeUtil.getChildOfType(this, GdReturnHint::class.java)
 
-  @Override
-  @Nullable
-  public GdFuncDeclIdNmi getFuncDeclIdNmi() {
-    return PsiTreeUtil.getChildOfType(this, GdFuncDeclIdNmi.class);
-  }
+    override val stmtOrSuite: GdStmtOrSuite?
+        get() = PsiTreeUtil.getChildOfType(this, GdStmtOrSuite::class.java)
 
-  @Override
-  @Nullable
-  public GdParamList getParamList() {
-    return PsiTreeUtil.getChildOfType(this, GdParamList.class);
-  }
+    override val returnType: String
+        get() = GdKeywords.CALLABLE
 
-  @Override
-  @Nullable
-  public GdReturnHint getReturnHint() {
-    return PsiTreeUtil.getChildOfType(this, GdReturnHint.class);
-  }
+    override val invokedReturnType: String
+        get() = getInvokedReturnType(this)
 
-  @Override
-  @Nullable
-  public GdStmtOrSuite getStmtOrSuite() {
-    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
-  }
+    override val returnExpr: PsiElement?
+        get() = getReturnExpr(this)
 
-  @Override
-  @NotNull
-  public String getReturnType() {
-    return GdKeywords.CALLABLE;
-  }
+    override val parameters: LinkedHashMap<String, String>
+        get() = getParameters(this)
 
-  @Override
-  @NotNull
-  public String getInvokedReturnType() {
-    return GdPsiUtils.getInvokedReturnType(this);
-  }
+    override fun description(): String =
+        description(this)
 
-  @Override
-  @Nullable
-  public PsiElement getReturnExpr() {
-    return GdPsiUtils.getReturnExpr(this);
-  }
+    override fun brief(): String =
+        brief(this)
 
-  @Override
-  @NotNull
-  public LinkedHashMap<String, String> getParameters() {
-    return GdPsiUtils.getParameters(this);
-  }
+    override fun tutorials(): List<GdTutorial> =
+        tutorials(this)
 
-  @NotNull
-  @Override
-  public String description() {
-    return GdCommentUtil.INSTANCE.description(this);
-  }
+    override fun isDeprecated(): Boolean =
+        isDeprecated(this)
 
-  @NotNull
-  @Override
-  public String brief() {
-    return GdCommentUtil.INSTANCE.brief(this);
-  }
-
-  @NotNull
-  @Override
-  public List<GdTutorial> tutorials() {
-    return GdCommentUtil.INSTANCE.tutorials(this);
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return GdCommentUtil.INSTANCE.isDeprecated(this);
-  }
-
-  @Override
-  public boolean isExperimental() {
-    return GdCommentUtil.INSTANCE.isExperimental(this);
-  }
-
+    override fun isExperimental(): Boolean =
+        isExperimental(this)
 }
