@@ -72,7 +72,7 @@ class GdSetGetAnnotator : Annotator {
     }
 
     private fun variableName(element: PsiElement): String? {
-        return PsiTreeUtil.getParentOfType(element, GdClassVarDeclTl::class.java)?.name
+        return PsiTreeUtil.getParentOfType(element, GdClassVarDeclTl::class.java)?.getName()
     }
 
     private fun variableType(element: PsiElement): String {

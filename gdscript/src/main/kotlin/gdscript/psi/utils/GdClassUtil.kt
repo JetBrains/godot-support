@@ -49,7 +49,7 @@ object GdClassUtil {
      */
     fun getOwningClassName(element: PsiElement): String {
         return when (val it = getOwningClassElement(element)) {
-            is GdClassDeclTl -> it.name
+            is GdClassDeclTl -> it.getName()
             else -> {
                 val cln = PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java)
                 if (cln != null) return cln.classname

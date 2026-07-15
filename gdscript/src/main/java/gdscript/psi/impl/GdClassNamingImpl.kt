@@ -1,92 +1,61 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.index.stub.GdClassNamingStub;
-import gdscript.model.GdTutorial;
-import gdscript.psi.GdClassNameNmi;
-import gdscript.psi.GdClassNaming;
-import gdscript.psi.GdEndStmt;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdVisitor;
-import gdscript.psi.utils.GdCommentUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.index.stub.GdClassNamingStub
+import gdscript.model.GdTutorial
+import gdscript.psi.GdClassNameNmi
+import gdscript.psi.GdClassNaming
+import gdscript.psi.GdEndStmt
+import gdscript.psi.GdPsiUtils.getClassname
+import gdscript.psi.GdPsiUtils.getParentName
+import gdscript.psi.GdVisitor
+import gdscript.psi.utils.GdCommentUtil.brief
+import gdscript.psi.utils.GdCommentUtil.description
+import gdscript.psi.utils.GdCommentUtil.isDeprecated
+import gdscript.psi.utils.GdCommentUtil.isExperimental
+import gdscript.psi.utils.GdCommentUtil.tutorials
 
-import java.util.List;
+class GdClassNamingImpl : GdClassNamingElementImpl, GdClassNaming {
+    constructor(node: ASTNode) : super(node)
 
-public class GdClassNamingImpl extends GdClassNamingElementImpl implements GdClassNaming {
+    constructor(stub: GdClassNamingStub, type: IStubElementType<*, *>) : super(stub, type)
 
-  public GdClassNamingImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    fun accept(visitor: GdVisitor) {
+        visitor.visitClassNaming(this)
+    }
 
-  public GdClassNamingImpl(@NotNull GdClassNamingStub stub, @NotNull IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitClassNaming(this);
-  }
+    override val classNameNmi: GdClassNameNmi?
+        get() = PsiTreeUtil.getStubChildOfType<GdClassNameNmi?>(this, GdClassNameNmi::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val endStmt: GdEndStmt?
+        get() = PsiTreeUtil.getChildOfType(this, GdEndStmt::class.java)
 
-  @Override
-  @Nullable
-  public GdClassNameNmi getClassNameNmi() {
-    return PsiTreeUtil.getStubChildOfType(this, GdClassNameNmi.class);
-  }
+    override val classname: String
+        get() = getClassname(this)
 
-  @Override
-  @Nullable
-  public GdEndStmt getEndStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
-  }
+    override val parentName: String
+        get() = getParentName(this)
 
-  @Override
-  @NotNull
-  public String getClassname() {
-    return GdPsiUtils.getClassname(this);
-  }
+    override fun description(): String =
+        description(this)
 
-  @Override
-  @NotNull
-  public String getParentName() {
-    return GdPsiUtils.getParentName(this);
-  }
+    override fun brief(): String =
+        brief(this)
 
-  @NotNull
-  @Override
-  public String description() {
-    return GdCommentUtil.INSTANCE.description(this);
-  }
+    override fun tutorials(): List<GdTutorial> =
+        tutorials(this)
 
-  @NotNull
-  @Override
-  public String brief() {
-    return GdCommentUtil.INSTANCE.brief(this);
-  }
+    override fun isDeprecated(): Boolean =
+        isDeprecated(this)
 
-  @NotNull
-  @Override
-  public List<GdTutorial> tutorials() {
-    return GdCommentUtil.INSTANCE.tutorials(this);
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return GdCommentUtil.INSTANCE.isDeprecated(this);
-  }
-
-  @Override
-  public boolean isExperimental() {
-    return GdCommentUtil.INSTANCE.isExperimental(this);
-  }
-
+    override fun isExperimental(): Boolean =
+        isExperimental(this)
 }

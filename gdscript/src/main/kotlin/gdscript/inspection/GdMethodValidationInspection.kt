@@ -36,7 +36,7 @@ class GdMethodValidationInspection : LocalInspectionTool() {
             override fun visitMethodDeclTl(o: GdMethodDeclTl) {
                 if (o.methodIdNmi == null) return
                 validateMethod(o.methodIdNmi!!, o.returnHint?.returnHintVal, o.returnType, o.stmtOrSuite)
-                if (o.name == GdKeywords.INIT_METHOD) validateConstructor(o.methodIdNmi!!, o)
+                if (o.getName() == GdKeywords.INIT_METHOD) validateConstructor(o.methodIdNmi!!, o)
             }
 
             private fun validateMethod(methodId: GdNamedIdElement, hint : GdReturnHintVal?, returnType: String, stmtOrSuite: GdStmtOrSuite?) {
