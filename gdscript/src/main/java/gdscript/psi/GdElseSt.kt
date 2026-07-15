@@ -1,10 +1,5 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.Nullable;
-
-public interface GdElseSt extends GdStmt {
-
-  @Nullable
-  GdStmtOrSuite getStmtOrSuite();
-
+interface GdElseSt : GdStmt {
+    val stmtOrSuite: GdStmtOrSuite?
 }

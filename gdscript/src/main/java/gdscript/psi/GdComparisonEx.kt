@@ -1,14 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
+interface GdComparisonEx : GdExpr {
+    val exprList: List<GdExpr>
 
-public interface GdComparisonEx extends GdExpr {
-
-  @NotNull
-  List<GdExpr> getExprList();
-
-  @NotNull
-  GdOperator getOperator();
-
+    val operator: GdOperator
 }

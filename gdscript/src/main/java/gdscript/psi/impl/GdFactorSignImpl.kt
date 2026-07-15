@@ -1,26 +1,18 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import gdscript.psi.GdFactorSign;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import gdscript.psi.GdFactorSign
+import gdscript.psi.GdVisitor
 
-public class GdFactorSignImpl extends ASTWrapperPsiElement implements GdFactorSign {
+class GdFactorSignImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdFactorSign {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitFactorSign(this)
+    }
 
-  public GdFactorSignImpl(@NotNull ASTNode node) {
-    super(node);
-  }
-
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitFactorSign(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 }
