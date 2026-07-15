@@ -2,7 +2,6 @@ package gdscript.polySymbols.psi
 
 import GdScriptPluginIcons
 import com.intellij.model.Pointer
-import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.psi.createSmartPointer
@@ -16,17 +15,15 @@ import javax.swing.Icon
  *
  * Example: `for item in list:` - the variable `item`.
  *
- * The [linkedElement] is the [GdVarNmi] name identifier child of [gdscript.psi.GdForSt].
+ * The [sourceElement] is the [GdVarNmi] name identifier child of [gdscript.psi.GdForSt].
  *
  * It is local, so has no declaring class.
  */
 class GdPsiForVariableSymbol(
-    override val linkedElement: GdVarNmi
+    override val sourceElement: GdVarNmi
 ) : GdPsiPolySymbol() {
-    override val project: Project get() = linkedElement.project
-
     override val kind: PolySymbolKind get() = GdPolySymbolKind.FOR_VARIABLE
-    override val name: String get() = linkedElement.name
+    override val name: String get() = sourceElement.name
     override val declaringClassName: String get() = ""
     override val declaringClassId: String get() = ""
 
@@ -34,7 +31,7 @@ class GdPsiForVariableSymbol(
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.LOCAL_USER_DEFINED
 
     override fun createPointer(): Pointer<out GdPsiForVariableSymbol> {
-        val ptr = linkedElement.createSmartPointer()
+        val ptr = sourceElement.createSmartPointer()
         return Pointer { ptr.element?.let { GdPsiForVariableSymbol(it) } }
     }
 }
