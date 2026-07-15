@@ -109,7 +109,6 @@ import gdscript.psi.GdTypes.VAR_NMI
 import gdscript.psi.GdTypes.WHEN
 import gdscript.psi.GdTypes.WHILE
 import gdscript.psi.GdTypes.WHILE_ST
-import gdscript.psi.GdTypes.XOR
 
 fun createSpacingBuilder(commonSettings: CommonCodeStyleSettings, gdSettings: GdCodeStyleSettings): SpacingBuilder {
     return SpacingBuilder(commonSettings)
