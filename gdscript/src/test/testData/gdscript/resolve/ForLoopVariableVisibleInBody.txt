@@ -1,0 +1,4 @@
+func method_a():
+	for item_c in item_c[r]:
+		item_c[r]
+	item_c[u]
