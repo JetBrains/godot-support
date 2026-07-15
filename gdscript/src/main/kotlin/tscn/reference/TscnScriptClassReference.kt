@@ -9,7 +9,7 @@ import gdscript.psi.utils.GdClassUtil
 
 class TscnScriptClassReference : PsiReferenceBase<PsiNamedElement> {
 
-    constructor(element: PsiNamedElement) : super(element, TextRange(0, element.textLength))
+    constructor(element: PsiNamedElement) : super(element, quotedContentRange(element.text))
 
     override fun resolve(): PsiElement? {
         val cache = ResolveCache.getInstance(element.project)
@@ -29,5 +29,15 @@ class TscnScriptClassReference : PsiReferenceBase<PsiNamedElement> {
     override fun handleElementRename(newElementName: String): PsiElement {
         element.setName(newElementName)
         return element
+    }
+
+    companion object {
+        // script_class values are always quoted strings; excluding the quotes from rangeInElement keeps
+        // range-based usages (e.g. PolySymbols rename's plain text-range replace) from clobbering them.
+        private fun quotedContentRange(text: String): TextRange =
+            if (text.length >= 2 && text.startsWith('"') && text.endsWith('"'))
+                TextRange(1, text.length - 1)
+            else
+                TextRange(0, text.length)
     }
 }

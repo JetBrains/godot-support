@@ -21,6 +21,7 @@ import gdscript.psi.GdAttributeEx
 import gdscript.psi.GdBindingPattern
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassDeclTl
+import gdscript.psi.GdClassNaming
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdConstDeclSt
 import gdscript.psi.GdConstDeclTl
@@ -34,6 +35,7 @@ import gdscript.psi.GdForSt
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdIfSt
 import gdscript.psi.GdIsEx
+import gdscript.psi.GdKeyValue
 import gdscript.psi.GdMatchBlock
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdParam
@@ -50,6 +52,32 @@ import gdscript.psi.utils.GdClassUtil.getClassIdElement
 import project.psi.util.ProjectAutoloadUtil
 
 object GdClassMemberUtil {
+
+    /**
+     * Maps a declaration (method/property/constant/enum/signal/local/param/...) to its
+     * name-identifier leaf PsiElement, e.g. `GdMethodDeclTl -> its GdMethodIdNmi`.
+     */
+    fun identifierOf(element: PsiElement?): PsiElement? {
+        return when (element) {
+            is GdClassVarDeclTl -> element.varNmi
+            is GdClassDeclTl -> element.classNameNmi
+            is GdConstDeclTl -> element.varNmi
+            is GdVarDeclSt -> element.varNmi
+            is GdConstDeclSt -> element.varNmi
+            is GdEnumDeclTl -> element.enumDeclNmi
+            is GdEnumValue -> element.enumValueNmi
+            is GdMethodDeclTl -> element.methodIdNmi
+            is GdSignalDeclTl -> element.signalIdNmi
+            is GdForSt -> element.varNmi
+            is GdParam -> element.varNmi
+            is GdVarNmi -> element
+            is GdBindingPattern -> element.varNmi
+            is PsiFile -> element
+            is GdClassNaming -> element.classNameNmi
+            is GdKeyValue -> element.keyNmi
+            else -> null
+        }
+    }
 
     /**
      * Finds declaration (const, var, enum, signal, method, ...) of given NamedElement skipping itself
