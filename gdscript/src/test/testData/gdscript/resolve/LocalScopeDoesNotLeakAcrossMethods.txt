@@ -1,0 +1,8 @@
+func method_a(param_a):
+	var local_a := 1
+	param_a[r]
+	local_a[r]
+
+func method_b():
+	param_a[u]
+	local_a[u]
