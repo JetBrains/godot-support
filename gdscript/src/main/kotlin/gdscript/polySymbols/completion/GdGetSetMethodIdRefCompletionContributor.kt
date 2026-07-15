@@ -10,7 +10,6 @@ import com.intellij.polySymbols.completion.PolySymbolsCompletionProviderBase
 import com.intellij.polySymbols.query.PolySymbolQueryExecutor
 import com.intellij.psi.PsiElement
 import gdscript.polySymbols.GdPolySymbolKind
-import gdscript.polySymbols.psi.GdPsiMethodSymbol
 import gdscript.psi.GdGetMethodIdRef
 import gdscript.psi.GdSetMethodIdRef
 
