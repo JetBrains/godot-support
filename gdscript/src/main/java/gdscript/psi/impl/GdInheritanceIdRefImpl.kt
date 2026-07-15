@@ -1,39 +1,26 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiFile;
-import gdscript.psi.GdInheritanceIdRef;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiFile
+import gdscript.psi.GdInheritanceIdRef
+import gdscript.psi.GdPsiUtils.getPsiFile
+import gdscript.psi.GdPsiUtils.isClassName
+import gdscript.psi.GdVisitor
 
-public class GdInheritanceIdRefImpl extends GdRefElementImpl implements GdInheritanceIdRef {
+class GdInheritanceIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdInheritanceIdRef {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitInheritanceIdRef(this)
+    }
 
-  public GdInheritanceIdRefImpl(ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitInheritanceIdRef(this);
-  }
+    override val psiFile: PsiFile?
+        get() = getPsiFile(this)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public PsiFile getPsiFile() {
-    return GdPsiUtils.getPsiFile(this);
-  }
-
-  @Override
-  public boolean isClassName() {
-    return GdPsiUtils.isClassName(this);
-  }
-
+    override val isClassName: Boolean
+        get() = isClassName(this)
 }
