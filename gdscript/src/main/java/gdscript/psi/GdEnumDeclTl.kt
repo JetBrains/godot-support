@@ -1,33 +1,20 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.StubBasedPsiElement;
-import gdscript.index.stub.GdEnumDeclStub;
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.navigation.ItemPresentation
+import com.intellij.psi.StubBasedPsiElement
+import gdscript.index.stub.GdEnumDeclStub
+import gdscript.psi.types.GdDocumented
 
-import java.util.LinkedHashMap;
-import java.util.List;
+interface GdEnumDeclTl : GdTopLevelDecl, StubBasedPsiElement<GdEnumDeclStub>, GdDocumented {
+    val endStmt: GdEndStmt?
 
-public interface GdEnumDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdEnumDeclStub>, GdDocumented {
+    val enumDeclNmi: GdEnumDeclNmi?
 
-  @Nullable
-  GdEndStmt getEndStmt();
+    val enumValueList: List<GdEnumValue>
 
-  @Nullable
-  GdEnumDeclNmi getEnumDeclNmi();
+    fun getName(): String
 
-  @NotNull
-  List<GdEnumValue> getEnumValueList();
+    val values: LinkedHashMap<String, Long>
 
-  @NotNull
-  String getName();
-
-  @NotNull
-  LinkedHashMap<String, Long> getValues();
-
-  @NotNull
-  ItemPresentation getPresentation();
-
+    fun getPresentation(): ItemPresentation
 }

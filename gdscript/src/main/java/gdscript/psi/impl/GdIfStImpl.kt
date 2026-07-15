@@ -1,58 +1,34 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdElifSt;
-import gdscript.psi.GdElseSt;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdIfSt;
-import gdscript.psi.GdStmtOrSuite;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdElifSt
+import gdscript.psi.GdElseSt
+import gdscript.psi.GdExpr
+import gdscript.psi.GdIfSt
+import gdscript.psi.GdStmtOrSuite
+import gdscript.psi.GdVisitor
 
-import java.util.List;
+class GdIfStImpl(node: ASTNode) : GdStmtImpl(node), GdIfSt {
+    override fun accept(visitor: GdVisitor) {
+        visitor.visitIfSt(this)
+    }
 
-public class GdIfStImpl extends GdStmtImpl implements GdIfSt {
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public GdIfStImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override val elifStList: List<GdElifSt>
+        get() = PsiTreeUtil.getChildrenOfTypeAsList(this, GdElifSt::class.java)
 
-  @Override
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitIfSt(this);
-  }
+    override val elseSt: GdElseSt?
+        get() = PsiTreeUtil.getChildOfType(this, GdElseSt::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val expr: GdExpr?
+        get() = PsiTreeUtil.getChildOfType(this, GdExpr::class.java)
 
-  @Override
-  @NotNull
-  public List<GdElifSt> getElifStList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdElifSt.class);
-  }
-
-  @Override
-  @Nullable
-  public GdElseSt getElseSt() {
-    return PsiTreeUtil.getChildOfType(this, GdElseSt.class);
-  }
-
-  @Override
-  @Nullable
-  public GdExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public GdStmtOrSuite getStmtOrSuite() {
-    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
-  }
-
+    override val stmtOrSuite: GdStmtOrSuite?
+        get() = PsiTreeUtil.getChildOfType(this, GdStmtOrSuite::class.java)
 }
