@@ -1,49 +1,35 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdAnnotationParams;
-import gdscript.psi.GdAnnotationTl;
-import gdscript.psi.GdAnnotationType;
-import gdscript.psi.GdEndStmt;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdAnnotationParams
+import gdscript.psi.GdAnnotationTl
+import gdscript.psi.GdAnnotationType
+import gdscript.psi.GdEndStmt
+import gdscript.psi.GdVisitor
 
-public class GdAnnotationTlImpl extends GdTopLevelDeclImpl implements GdAnnotationTl {
+class GdAnnotationTlImpl(node: ASTNode) : GdTopLevelDeclImpl(node), GdAnnotationTl {
+    override fun accept(visitor: GdVisitor) {
+        visitor.visitAnnotationTl(this)
+    }
 
-  public GdAnnotationTlImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  @Override
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitAnnotationTl(this);
-  }
+    override val annotationParams: GdAnnotationParams?
+        get() = PsiTreeUtil.getChildOfType(this, GdAnnotationParams::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val annotationType: GdAnnotationType
+        get() = notNullChild(
+            PsiTreeUtil.getChildOfType(
+                this,
+                GdAnnotationType::class.java
+            )
+        )
 
-  @Override
-  @Nullable
-  public GdAnnotationParams getAnnotationParams() {
-    return PsiTreeUtil.getChildOfType(this, GdAnnotationParams.class);
-  }
-
-  @Override
-  @NotNull
-  public GdAnnotationType getAnnotationType() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdAnnotationType.class));
-  }
-
-  @Override
-  @Nullable
-  public GdEndStmt getEndStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
-  }
-
+    override val endStmt: GdEndStmt?
+        get() = PsiTreeUtil.getChildOfType(this, GdEndStmt::class.java)
 }
