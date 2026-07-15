@@ -1,12 +1,8 @@
-package gdscript.psi;
+package gdscript.psi
 
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElement
+import gdscript.psi.types.GdDocumented
 
-public interface GdEnumValue extends PsiElement, GdDocumented {
-
-  @NotNull
-  GdEnumValueNmi getEnumValueNmi();
-
+interface GdEnumValue : PsiElement, GdDocumented {
+    val enumValueNmi: GdEnumValueNmi
 }

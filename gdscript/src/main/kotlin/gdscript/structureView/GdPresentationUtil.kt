@@ -14,7 +14,7 @@ internal object GdPresentationUtil {
 
     fun presentation(classVar: GdClassVarDeclTl): ItemPresentation {
         return object : ItemPresentation {
-            override fun getPresentableText(): String = classVar.name
+            override fun getPresentableText(): String = classVar.getName()
             override fun getLocationString(): String = classVar.returnType
             override fun getIcon(unused: Boolean): Icon? = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER
         }
@@ -22,7 +22,7 @@ internal object GdPresentationUtil {
 
     fun presentation(constVar: GdConstDeclTl): ItemPresentation {
         return object : ItemPresentation {
-            override fun getPresentableText(): String = constVar.name
+            override fun getPresentableText(): String = constVar.getName()
             override fun getLocationString(): String = constVar.returnType
             override fun getIcon(unused: Boolean): Icon? = GdScriptPluginIcons.GDScriptIcons.CONST_MARKER
         }
@@ -30,7 +30,7 @@ internal object GdPresentationUtil {
 
     fun presentation(method: GdMethodDeclTl): ItemPresentation {
         return object : ItemPresentation {
-            override fun getPresentableText(): String? = method.name
+            override fun getPresentableText(): String? = method.getName()
             override fun getLocationString(): String = method.returnType
             override fun getIcon(unused: Boolean): Icon? = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER
         }
