@@ -1,69 +1,48 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.stubs.IStubElementType;
-import gdscript.index.stub.GdClassIdStub;
-import gdscript.psi.GdClassNameNmi;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.stubs.IStubElementType
+import gdscript.index.stub.GdClassIdStub
+import gdscript.psi.GdClassNameNmi
+import gdscript.psi.GdPsiUtils.getClassId
+import gdscript.psi.GdPsiUtils.getName
+import gdscript.psi.GdPsiUtils.getNameIdentifier
+import gdscript.psi.GdPsiUtils.getParentName
+import gdscript.psi.GdPsiUtils.isInner
+import gdscript.psi.GdPsiUtils.setName
+import gdscript.psi.GdVisitor
 
-public class GdClassNameNmiImpl extends GdClassIdElementImpl implements GdClassNameNmi {
+class GdClassNameNmiImpl : GdClassIdElementImpl, GdClassNameNmi {
+    constructor(node: ASTNode) : super(node)
 
-  public GdClassNameNmiImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    constructor(stub: GdClassIdStub, type: IStubElementType<*, *>) : super(stub, type)
 
-  public GdClassNameNmiImpl(@NotNull GdClassIdStub stub, @NotNull IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
+    fun accept(visitor: GdVisitor) {
+        visitor.visitClassNameNmi(this)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitClassNameNmi(this);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val classId: String
+        get() = getClassId(this)
 
-  @Override
-  @NotNull
-  public String getClassId() {
-    return GdPsiUtils.getClassId(this);
-  }
+    override val parentName: String?
+        get() = getParentName(this)
 
-  @Override
-  @Nullable
-  public String getParentName() {
-    return GdPsiUtils.getParentName(this);
-  }
+    override val isInner: Boolean
+        get() = isInner(this)
 
-  @Override
-  public boolean isInner() {
-    return GdPsiUtils.isInner(this);
-  }
+    override fun setName(newName: String): PsiElement =
+        setName(this, newName)
 
-  @Override
-  @NotNull
-  public PsiElement setName(@NotNull String newName) {
-    return GdPsiUtils.setName(this, newName);
-  }
+    override fun getName(): String =
+        getName(this)
 
-  @Override
-  @NotNull
-  public String getName() {
-    return GdPsiUtils.getName(this);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getNameIdentifier() {
-    return GdPsiUtils.getNameIdentifier(this);
-  }
-
+    override fun getNameIdentifier(): PsiElement =
+        getNameIdentifier(this)
 }
