@@ -1,39 +1,26 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import gdscript.psi.GdExpr
+import gdscript.psi.GdPsiUtils.getReturnType
+import gdscript.psi.GdPsiUtils.getReturnTypeOrRes
+import gdscript.psi.GdVisitor
 
-public abstract class GdExprImpl extends ASTWrapperPsiElement implements GdExpr {
+abstract class GdExprImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdExpr {
+    open fun accept(visitor: GdVisitor) {
+        visitor.visitExpr(this)
+    }
 
-  public GdExprImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitExpr(this);
-  }
+    override val returnType: String
+        get() = getReturnType(this)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public String getReturnType() {
-    return GdPsiUtils.getReturnType(this);
-  }
-
-  @Override
-  @NotNull
-  public String getReturnTypeOrRes(boolean allowResource) {
-    return GdPsiUtils.getReturnTypeOrRes(this, allowResource);
-  }
-
+    override fun getReturnTypeOrRes(allowResource: Boolean): String =
+        getReturnTypeOrRes(this, allowResource)
 }

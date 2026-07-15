@@ -1,24 +1,15 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
 
-public interface GdParam extends PsiElement {
+interface GdParam : PsiElement {
+    val assignTyped: GdAssignTyped?
 
-  @Nullable
-  GdAssignTyped getAssignTyped();
+    val expr: GdExpr?
 
-  @Nullable
-  GdExpr getExpr();
+    val typed: GdTyped?
 
-  @Nullable
-  GdTyped getTyped();
+    val varNmi: GdVarNmi
 
-  @NotNull
-  GdVarNmi getVarNmi();
-
-  @NotNull
-  String getReturnType();
-
+    val returnType: String
 }
