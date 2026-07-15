@@ -2,7 +2,6 @@ package gdscript.polySymbols.psi
 
 import GdScriptPluginIcons
 import com.intellij.model.Pointer
-import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.psi.createSmartPointer
@@ -17,12 +16,10 @@ import javax.swing.Icon
  * It is local, so has no declaring class.
  */
 class GdPsiLocalConstantSymbol(
-    override val linkedElement: GdVarNmi
+    override val sourceElement: GdVarNmi
 ) : GdPsiPolySymbol() {
-    override val project: Project get() = linkedElement.project
-
     override val kind: PolySymbolKind get() = GdPolySymbolKind.LOCAL_CONSTANT
-    override val name: String get() = linkedElement.name
+    override val name: String get() = sourceElement.name
     override val declaringClassName: String get() = ""
     override val declaringClassId: String get() = ""
 
@@ -30,7 +27,7 @@ class GdPsiLocalConstantSymbol(
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.LOCAL_USER_DEFINED
 
     override fun createPointer(): Pointer<out GdPsiLocalConstantSymbol> {
-        val ptr = linkedElement.createSmartPointer()
+        val ptr = sourceElement.createSmartPointer()
         return Pointer { ptr.element?.let { GdPsiLocalConstantSymbol(it) } }
     }
 }
