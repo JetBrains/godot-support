@@ -1,17 +1,9 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+interface GdAnnotationTl : GdTopLevelDecl {
+    val annotationParams: GdAnnotationParams?
 
-public interface GdAnnotationTl extends GdTopLevelDecl {
+    val annotationType: GdAnnotationType
 
-  @Nullable
-  GdAnnotationParams getAnnotationParams();
-
-  @NotNull
-  GdAnnotationType getAnnotationType();
-
-  @Nullable
-  GdEndStmt getEndStmt();
-
+    val endStmt: GdEndStmt?
 }

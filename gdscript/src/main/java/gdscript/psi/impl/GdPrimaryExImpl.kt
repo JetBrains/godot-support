@@ -1,56 +1,34 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdArrayDecl;
-import gdscript.psi.GdDictDecl;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdNodePath;
-import gdscript.psi.GdPrimaryEx;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdArrayDecl
+import gdscript.psi.GdDictDecl
+import gdscript.psi.GdExpr
+import gdscript.psi.GdNodePath
+import gdscript.psi.GdPrimaryEx
+import gdscript.psi.GdVisitor
 
-public class GdPrimaryExImpl extends GdExprImpl implements GdPrimaryEx {
+open class GdPrimaryExImpl(node: ASTNode) : GdExprImpl(node), GdPrimaryEx {
+    override fun accept(visitor: GdVisitor) {
+        visitor.visitPrimaryEx(this)
+    }
 
-  public GdPrimaryExImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  @Override
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitPrimaryEx(this);
-  }
+    override val arrayDecl: GdArrayDecl?
+        get() = PsiTreeUtil.getChildOfType(this, GdArrayDecl::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val dictDecl: GdDictDecl?
+        get() = PsiTreeUtil.getChildOfType(this, GdDictDecl::class.java)
 
-  @Override
-  @Nullable
-  public GdArrayDecl getArrayDecl() {
-    return PsiTreeUtil.getChildOfType(this, GdArrayDecl.class);
-  }
+    override val expr: GdExpr?
+        get() = PsiTreeUtil.getChildOfType(this, GdExpr::class.java)
 
-  @Override
-  @Nullable
-  public GdDictDecl getDictDecl() {
-    return PsiTreeUtil.getChildOfType(this, GdDictDecl.class);
-  }
-
-  @Override
-  @Nullable
-  public GdExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public GdNodePath getNodePath() {
-    return PsiTreeUtil.getChildOfType(this, GdNodePath.class);
-  }
-
+    override val nodePath: GdNodePath?
+        get() = PsiTreeUtil.getChildOfType(this, GdNodePath::class.java)
 }

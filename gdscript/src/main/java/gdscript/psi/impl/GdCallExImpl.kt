@@ -1,42 +1,26 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdArgList;
-import gdscript.psi.GdCallEx;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdArgList
+import gdscript.psi.GdCallEx
+import gdscript.psi.GdExpr
+import gdscript.psi.GdVisitor
 
-public class GdCallExImpl extends GdExprImpl implements GdCallEx {
+class GdCallExImpl(node: ASTNode) : GdExprImpl(node), GdCallEx {
+    override fun accept(visitor: GdVisitor) {
+        visitor.visitCallEx(this)
+    }
 
-  public GdCallExImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  @Override
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitCallEx(this);
-  }
+    override val argList: GdArgList?
+        get() = PsiTreeUtil.getChildOfType(this, GdArgList::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public GdArgList getArgList() {
-    return PsiTreeUtil.getChildOfType(this, GdArgList.class);
-  }
-
-  @Override
-  @NotNull
-  public GdExpr getExpr() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
-  }
-
+    override val expr: GdExpr
+        get() = notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr::class.java))
 }
