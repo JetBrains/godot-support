@@ -17,13 +17,10 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.injected.InjectedLanguageUtil
-import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.PsiUtilCore
-import com.intellij.psi.util.elementType
 import gdscript.formatter.block.GdBlocks
 import gdscript.psi.GdFile
-import gdscript.psi.GdStmt
 import gdscript.psi.GdStmtOrSuite
 import gdscript.psi.GdTypes
 
