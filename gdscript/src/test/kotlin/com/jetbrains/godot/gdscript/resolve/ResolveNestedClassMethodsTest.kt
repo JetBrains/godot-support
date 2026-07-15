@@ -2,7 +2,6 @@ package com.jetbrains.godot.gdscript.resolve
 
 import com.intellij.polySymbols.testFramework.psiSymbolReferences
 import com.intellij.polySymbols.testFramework.resolveToSymbols
-import com.intellij.polySymbols.testFramework.toPsiElementOrNull
 import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.asSafely
