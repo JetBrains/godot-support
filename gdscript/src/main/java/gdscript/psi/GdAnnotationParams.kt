@@ -1,12 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import java.util.List;
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.psi.PsiElement
 
-public interface GdAnnotationParams extends PsiElement {
-
-  @NotNull
-  List<GdExpr> getExprList();
-
+interface GdAnnotationParams : PsiElement {
+    val exprList: List<GdExpr>
 }

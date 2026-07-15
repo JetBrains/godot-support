@@ -1,11 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
 
-public interface GdEndStmt extends PsiElement {
-
-  @Nullable
-  GdNewLineEnd getNewLineEnd();
-
+interface GdEndStmt : PsiElement {
+    val newLineEnd: GdNewLineEnd?
 }
