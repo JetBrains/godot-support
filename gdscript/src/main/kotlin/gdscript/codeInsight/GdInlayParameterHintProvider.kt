@@ -31,7 +31,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
             val declaration = GdClassMemberReference(id).resolveDeclaration() ?: return null
 
             if (declaration is GdMethodDeclTl) {
-                val name = declaration.name
+                val name = declaration.getName()
                 if (name == "emit") {
                     val signal = PsiGdSignalUtil.getDeclaration(element)
                     if (signal != null) {
@@ -77,7 +77,7 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                 is GdMethodDeclTl -> {
                     params = method.parameters.keys.toArray(emptyArray())
 
-                    if (method.name == "emit") {
+                    if (method.getName() == "emit") {
                         val signal = PsiGdSignalUtil.getDeclaration(element)
                         if (signal != null) {
                             params = signal.parameters.keys.toArray(emptyArray())

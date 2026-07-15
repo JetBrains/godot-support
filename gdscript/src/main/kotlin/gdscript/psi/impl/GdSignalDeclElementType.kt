@@ -46,7 +46,7 @@ object GdSignalDeclElementType : IStubElementType<GdSignalDeclStub, GdSignalDecl
         GdSignalDeclTlImpl(stub, stub.stubType)
 
     override fun createStub(psi: GdSignalDeclTl, parentStub: StubElement<*>?): GdSignalDeclStub {
-        return GdSignalDeclStubImpl(parentStub, psi.name, psi.parameters, GdCommentUtil.collectComments(psi))
+        return GdSignalDeclStubImpl(parentStub, psi.getName(), psi.parameters, GdCommentUtil.collectComments(psi))
     }
 
 }

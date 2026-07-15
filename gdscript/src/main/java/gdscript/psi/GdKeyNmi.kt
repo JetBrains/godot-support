@@ -1,20 +1,11 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElement
 
-public interface GdKeyNmi extends GdNamedIdElement {
+interface GdKeyNmi : GdNamedIdElement {
+    override fun getName(): String
 
-    @Override
-    @NotNull
-    String getName();
+    override fun setName(newName: String): PsiElement
 
-    @Override
-    @NotNull
-    PsiElement setName(@NotNull String newName);
-
-    @Override
-    @NotNull
-    PsiElement getNameIdentifier();
-
+    override fun getNameIdentifier(): PsiElement
 }
