@@ -114,6 +114,7 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                                 GdSdkGlobalPolySymbolScope(ref.project),
                                 GdPsiClassesPolySymbolScope(ref.project, ref),
                                 GdPsiAutoloadScope(ref.project),
+                                GdLocalSymbolsStructuredScope(ref),
                                 polySymbolScope {
                                     provides(GdPolySymbolKind.QUALIFIABLE_SYMBOLS)
                                     initialize {
@@ -131,6 +132,13 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                                                         // PSI-only
                                                         from(GdPolySymbolKind.LOADED_CLASS_ALIAS)
                                                         from(GdPolySymbolKind.AUTOLOAD)
+
+                                                        // local, PSI-only (unqualified access only)
+                                                        from(GdPolySymbolKind.LOCAL_VARIABLE)
+                                                        from(GdPolySymbolKind.LOCAL_CONSTANT)
+                                                        from(GdPolySymbolKind.PARAMETER)
+                                                        from(GdPolySymbolKind.FOR_VARIABLE)
+                                                        from(GdPolySymbolKind.BINDING_PATTERN)
                                                     }
                                                     symbolReference()
                                                 }
