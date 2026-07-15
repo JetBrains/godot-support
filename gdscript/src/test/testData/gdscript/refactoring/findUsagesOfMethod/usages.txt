@@ -1,2 +1,2 @@
-<findUsagesOfMethod.gd:(114,123):(0,9)>	obj.my_method
-<findUsagesOfMethod.gd:(130,139):(0,9)>	my_method
+<findUsagesOfMethod.gd:(0,142):(114,123)>	my_method
+<findUsagesOfMethod.gd:(0,142):(130,139)>	my_method
