@@ -1,25 +1,17 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import gdscript.psi.GdRefIdRef;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import gdscript.psi.GdRefIdRef
+import gdscript.psi.GdVisitor
 
-public class GdRefIdRefImpl extends GdRefElementImpl implements GdRefIdRef {
+class GdRefIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdRefIdRef {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitRefIdNm(this)
+    }
 
-  public GdRefIdRefImpl(ASTNode node) {
-    super(node);
-  }
-
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitRefIdNm(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 }
