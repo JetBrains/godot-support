@@ -9,13 +9,14 @@ import gdscript.action.quickFix.GdAddMatchBranchesFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
 import gdscript.psi.GdEnumDeclNmi
 import gdscript.psi.GdEnumDeclTl
+import gdscript.polySymbols.psi.GdPsiPolySymbol
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdMatchSt
 import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdTypeHintRef
 import gdscript.psi.GdVisitor
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.GdInheritanceUtil
-import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiReferenceUtil.resolveRef
 
 class GdMissingMatchBranchesInspection : LocalInspectionTool() {
@@ -30,7 +31,8 @@ class GdMissingMatchBranchesInspection : LocalInspectionTool() {
 
                 if (match.matchBlockList.any { it.stmtOrSuite == null || it.stmtOrSuite?.text?.trim() == "" }) return
 
-                val rootDecl = GdClassMemberReference(id).resolveDeclaration() ?: return
+                val symbol = id.resolveSymbolReference() as? GdPsiPolySymbol ?: return
+                val rootDecl = symbol.sourceElement.parent
                 val typeHint = PsiTreeUtil.findChildrenOfType(rootDecl, GdTypeHintRef::class.java).lastOrNull() ?: return
                 val enumNmi = typeHint.resolveRef() ?: return
                 if (enumNmi !is GdEnumDeclNmi) return
