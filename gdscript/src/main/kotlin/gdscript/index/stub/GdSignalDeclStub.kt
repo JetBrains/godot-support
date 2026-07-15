@@ -7,6 +7,6 @@ import gdscript.psi.types.GdDocumented
 interface GdSignalDeclStub : StubElement<GdSignalDeclTl>, GdDocumented {
 
     fun name(): String
-    fun parameters(): LinkedHashMap<String, String?>
+    fun parameters(): LinkedHashMap<String, String>
 
 }

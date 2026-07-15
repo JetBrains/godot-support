@@ -50,7 +50,7 @@ class GdStringNameMemberCallInspection : LocalInspectionTool() {
     private fun isQfCandidate(method: GdMethodDeclTl): QfCandidate? {
         val paramList = method.paramList?.paramList ?: return null
         val firstParam = paramList.firstOrNull() ?: return null
-        if (method.name in blackList) return null
+        if (method.getName() in blackList) return null
         if (firstParam.returnType != "StringName") return null
         val firstParamName = firstParam.varNmi.name
         if (firstParamName == "signal") return QfCandidate.Signal
@@ -86,7 +86,7 @@ class GdStringNameMemberCallInspection : LocalInspectionTool() {
                 val methods = fetchNodeMethods(element)
                 val candidate = methods
                     .asSequence()
-                    .filter { it.name == baseMethodName }
+                    .filter { it.getName() == baseMethodName }
                     .firstNotNullOfOrNull { isQfCandidate(it) }
                     ?: return
                 val argList = element.argList ?: return

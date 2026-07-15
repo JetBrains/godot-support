@@ -1,13 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.Nullable;
+interface GdLiteralEx : GdExpr {
+    val refIdNm: GdRefIdRef?
 
-public interface GdLiteralEx extends GdExpr {
-
-  @Nullable
-  GdRefIdRef getRefIdNm();
-
-  @Nullable
-  GdStringValRef getStringVal();
-
+    val stringVal: GdStringValRef?
 }

@@ -1,36 +1,24 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.StubBasedPsiElement;
-import gdscript.index.stub.GdConstDeclStub;
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.navigation.ItemPresentation
+import com.intellij.psi.StubBasedPsiElement
+import gdscript.index.stub.GdConstDeclStub
+import gdscript.psi.types.GdDocumented
 
-public interface GdConstDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdConstDeclStub>, GdDocumented {
+interface GdConstDeclTl : GdTopLevelDecl, StubBasedPsiElement<GdConstDeclStub>, GdDocumented {
+    val assignTyped: GdAssignTyped?
 
-  @Nullable
-  GdAssignTyped getAssignTyped();
+    val endStmt: GdEndStmt?
 
-  @Nullable
-  GdEndStmt getEndStmt();
+    val expr: GdExpr?
 
-  @Nullable
-  GdExpr getExpr();
+    val typed: GdTyped?
 
-  @Nullable
-  GdTyped getTyped();
+    val varNmi: GdVarNmi?
 
-  @Nullable
-  GdVarNmi getVarNmi();
+    fun getName(): String
 
-  @NotNull
-  String getName();
+    val returnType: String
 
-  @NotNull
-  String getReturnType();
-
-  @NotNull
-  ItemPresentation getPresentation();
-
+    fun getPresentation(): ItemPresentation
 }

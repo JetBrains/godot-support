@@ -115,10 +115,10 @@ class GdTypeHintReference : PsiReferenceBase<GdTypeHintRef> {
     private fun resolveInner(container: PsiElement): PsiElement? {
         val myName = element.text
         enums(container).forEach {
-            if (it.name == myName) return it.enumDeclNmi
+            if (it.getName() == myName) return it.enumDeclNmi
         }
         innerClasses(container).forEach {
-            if (it.name == myName) return it.classNameNmi
+            if (it.getName() == myName) return it.classNameNmi
         }
         loadedClasses(container).forEach {
             if (GdCommonUtil.getName(it) == myName) return GdClassMemberUtil.identifierOf(it)

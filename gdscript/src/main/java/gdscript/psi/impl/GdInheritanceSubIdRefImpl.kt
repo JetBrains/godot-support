@@ -1,25 +1,17 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import gdscript.psi.GdInheritanceSubIdRef;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import gdscript.psi.GdInheritanceSubIdRef
+import gdscript.psi.GdVisitor
 
-public class GdInheritanceSubIdRefImpl extends GdRefElementImpl implements GdInheritanceSubIdRef {
+class GdInheritanceSubIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdInheritanceSubIdRef {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitInheritanceSubIdRef(this)
+    }
 
-  public GdInheritanceSubIdRefImpl(ASTNode node) {
-    super(node);
-  }
-
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitInheritanceSubIdRef(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 }
