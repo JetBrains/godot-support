@@ -326,9 +326,6 @@
     <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdInheritanceIdRef"
                                       hostLanguage="GdScript"
                                       implementationClass="gdscript.polySymbols.reference.GdInheritancePolySymbolReferenceProvider"/>
-    <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdRefIdRef"
-                                      hostLanguage="GdScript"
-                                      implementationClass="gdscript.polySymbols.reference.GdRefIdRefPolySymbolReferenceProvider"/>
     <polySymbols.psiReferenceProvider hostElementClass="gdscript.psi.GdGetMethodIdRef"
                                       hostLanguage="GdScript"
                                       implementationClass="gdscript.polySymbols.reference.GdGetMethodIdPolySymbolReferenceProvider"/>
