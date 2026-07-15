@@ -44,7 +44,7 @@ class GdPsiClassSymbol(
     }
 
     override val directMemberScope: PolySymbolScope
-        get() = GdPsiClassMemberScope(
+        get() = gdPsiClassMemberScope(
             if (parent is GdClassNaming) parent.containingFile else parent
         )
 
