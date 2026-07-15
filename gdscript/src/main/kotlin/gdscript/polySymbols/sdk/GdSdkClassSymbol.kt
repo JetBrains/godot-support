@@ -7,10 +7,6 @@ import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.PolySymbolModifier
-import com.intellij.polySymbols.PolySymbolQualifiedName
-import com.intellij.polySymbols.completion.PolySymbolCodeCompletionItem
-import com.intellij.polySymbols.query.PolySymbolCodeCompletionQueryParams
-import com.intellij.polySymbols.query.PolySymbolQueryStack
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.PolySymbolScopeWithCache
 import gdscript.GdIcon
@@ -19,7 +15,6 @@ import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolNamespace
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
-import gdscript.polySymbols.completion.gdCodeCompletions
 import gdscript.polySymbols.resolve.GdSymbolClassHierarchyUtil
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.polySymbols.sdk.xml.GdSdkData
@@ -92,12 +87,6 @@ class GdSdkClassSymbol(override val project: Project, private val sourceFile: Vi
             }
 
         }
-
-        override fun getCodeCompletions(
-            qualifiedName: PolySymbolQualifiedName,
-            params: PolySymbolCodeCompletionQueryParams,
-            stack: PolySymbolQueryStack,
-        ): List<PolySymbolCodeCompletionItem> = gdCodeCompletions(qualifiedName, params, stack)
     }
 
     override val icon: Icon get() = GdIcon.getEditorIcon(classId)

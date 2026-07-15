@@ -29,7 +29,7 @@ class GdPsiEnumSymbol(
 
     override val queryScope: List<PolySymbolScope>
         get() = (linkedElement.parent as? GdEnumDeclTl)
-            ?.let { listOfNotNull(GdPsiEnumMemberScope(it)) }
+            ?.let { listOfNotNull(gdPsiEnumMemberScope(it)) }
             .orEmpty()
 
     override fun createPointer(): Pointer<out GdPsiEnumSymbol> {
