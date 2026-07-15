@@ -338,6 +338,7 @@
     <polySymbols.psiLinkedSymbol host="gdscript.psi.GdNamedIdElement"/>
     <polySymbols.psiLinkedSymbol host="gdscript.psi.GdFile"/>
     <polySymbols.declarationProvider implementation="gdscript.polySymbols.sdk.GdSdkPolySymbolDeclarationProvider"/>
+    <polySymbols.declarationProvider implementation="gdscript.polySymbols.psi.GdPsiPolySymbolDeclarationProvider"/>
     <projectService serviceInterface="gdscript.library.GdSdkFilesProvider"
                     serviceImplementation="gdscript.library.GdSdkFilesProviderImpl" />
     <!-- End Poly Symbols -->
