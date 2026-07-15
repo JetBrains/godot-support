@@ -4,33 +4,22 @@ import com.intellij.codeInsight.highlighting.HighlightedReference
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.impl.source.resolve.ResolveCache
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.completion.utils.GdCompletionUtil
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.psi.GdArgExpr
-import gdscript.psi.GdBindingPattern
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdClassVarDeclTl
-import gdscript.psi.GdConstDeclSt
-import gdscript.psi.GdConstDeclTl
 import gdscript.psi.GdElementFactory
-import gdscript.psi.GdEnumDeclTl
-import gdscript.psi.GdEnumValue
 import gdscript.psi.GdExpr
 import gdscript.psi.GdFile
-import gdscript.psi.GdForSt
-import gdscript.psi.GdKeyValue
 import gdscript.psi.GdMethodDeclTl
-import gdscript.psi.GdParam
 import gdscript.psi.GdRefIdRef
-import gdscript.psi.GdSignalDeclTl
 import gdscript.psi.GdVarDeclSt
-import gdscript.psi.GdVarNmi
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassUtil
 import gdscript.settings.GdProjectSettingsState
@@ -40,30 +29,6 @@ import gdscript.utils.PsiElementUtil.psi
  * RefId reference to ClassNames, Variables, Constants, etc...
  */
 class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReference {
-
-    companion object {
-        fun resolveId(element: PsiElement?): PsiElement? {
-            return when (element) {
-                is GdClassVarDeclTl -> element.varNmi
-                is GdClassDeclTl -> element.classNameNmi
-                is GdConstDeclTl -> element.varNmi
-                is GdVarDeclSt -> element.varNmi
-                is GdConstDeclSt -> element.varNmi
-                is GdEnumDeclTl -> element.enumDeclNmi
-                is GdEnumValue -> element.enumValueNmi
-                is GdMethodDeclTl -> element.methodIdNmi
-                is GdSignalDeclTl -> element.signalIdNmi
-                is GdForSt -> element.varNmi
-                is GdParam -> element.varNmi
-                is GdVarNmi -> element
-                is GdBindingPattern -> element.varNmi
-                is PsiFile -> element
-                is GdClassNaming -> element.classNameNmi
-                is GdKeyValue -> element.keyNmi
-                else -> null
-            }
-        }
-    }
 
     constructor(element: GdRefIdRef) : super(element, TextRange(0, element.textLength))
 
@@ -219,7 +184,7 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
     }
 
     override fun resolve(): PsiElement? {
-        val direct = resolveId(resolveDeclaration())
+        val direct = GdClassMemberUtil.identifierOf(resolveDeclaration())
         if (direct != null) return direct
 
         return GdClassNamingIndex.INSTANCE.getGlobally(element.text, element.project).firstOrNull()?.containingFile
