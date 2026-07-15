@@ -9,7 +9,6 @@ import gdscript.codeInsight.documentation.GdDocFactory
 import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassUtil
-import gdscript.reference.GdClassMemberReference
 import gdscript.utils.PsiElementUtil.psi
 import gdscript.settings.GdDocProviderMode
 import gdscript.settings.GdProjectSettingsState
@@ -63,7 +62,7 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
 
         if (context.containingFile != null) {
             GdClassMemberUtil.listDeclarations(context, link).firstOrNull()?.psi()?.let {
-                return GdClassMemberReference.resolveId(it)
+                return GdClassMemberUtil.identifierOf(it)
             }
         }
         GdClassUtil.getClassIdElement(link, project)?.let { return it }
