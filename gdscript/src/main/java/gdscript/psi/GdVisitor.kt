@@ -1,424 +1,423 @@
-package gdscript.psi;
-
-import gdscript.psi.impl.GdAnnotationStmtImpl;
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
-
-public class GdVisitor extends PsiElementVisitor {
-
-  public void visitAnnotationParams(@NotNull GdAnnotationParams o) {
-    visitPsiElement(o);
-  }
-
-  public void visitAnnotationType(@NotNull GdAnnotationType o) {
-    visitPsiElement(o);
-  }
-
-  public void visitAnnotationTl(@NotNull GdAnnotationTl o) {
-    visitTopLevelDecl(o);
-  }
-
-  public void visitArgExpr(@NotNull GdArgExpr o) {
-    visitPsiElement(o);
-  }
-
-  public void visitArgList(@NotNull GdArgList o) {
-    visitPsiElement(o);
-  }
-
-  public void visitArrEx(@NotNull GdArrEx o) {
-    visitExpr(o);
-  }
-
-  public void visitArrayDecl(@NotNull GdArrayDecl o) {
-    visitPsiElement(o);
-  }
-
-  public void visitArrayPattern(@NotNull GdArrayPattern o) {
-    visitPsiElement(o);
-  }
-
-  public void visitAssignSign(@NotNull GdAssignSign o) {
-    visitPsiElement(o);
-  }
-
-  public void visitAssignTyped(@NotNull GdAssignTyped o) {
-    visitPsiElement(o);
-  }
-
-  public void visitAssignSt(@NotNull GdAssignSt o) {
-    visitStmt(o);
-  }
-
-  public void visitAttributeEx(@NotNull GdAttributeEx o) {
-    visitExpr(o);
-  }
-
-  public void visitAwaitEx(@NotNull GdAwaitEx o) {
-    visitExpr(o);
-  }
-
-  public void visitBindingPattern(@NotNull GdBindingPattern o) {
-    visitPsiElement(o);
-  }
-
-  public void visitBitAndSign(@NotNull GdBitAndSign o) {
-    visitPsiElement(o);
-  }
-
-  public void visitBitAndEx(@NotNull GdBitAndEx o) {
-    visitExpr(o);
-  }
-
-  public void visitBitNotEx(@NotNull GdBitNotEx o) {
-    visitExpr(o);
-  }
-
-  public void visitCallEx(@NotNull GdCallEx o) {
-    visitExpr(o);
-  }
-
-  public void visitCastEx(@NotNull GdCastEx o) {
-    visitExpr(o);
-  }
-
-  public void visitClassDeclTl(@NotNull GdClassDeclTl o) {
-    visitTopLevelDecl(o);
-  }
-
-  public void visitClassNameNmi(@NotNull GdClassNameNmi o) {
-    visitNamedIdElement(o);
-  }
-
-  public void visitClassNaming(@NotNull GdClassNaming o) {
-    visitPsiElement(o);
-  }
-
-  public void visitClassVarDeclTl(@NotNull GdClassVarDeclTl o) {
-    visitTopLevelDecl(o);
-  }
-
-  public void visitComparisonEx(@NotNull GdComparisonEx o) {
-    visitExpr(o);
-  }
-
-  public void visitConstDeclSt(@NotNull GdConstDeclSt o) {
-    visitStmt(o);
-  }
-
-  public void visitConstDeclTl(@NotNull GdConstDeclTl o) {
-    visitTopLevelDecl(o);
-  }
-
-  public void visitDictDecl(@NotNull GdDictDecl o) {
-    visitPsiElement(o);
-  }
-
-  public void visitDictPattern(@NotNull GdDictPattern o) {
-    visitPsiElement(o);
-  }
-
-  public void visitElifSt(@NotNull GdElifSt o) {
-    visitStmt(o);
-  }
-
-  public void visitElseSt(@NotNull GdElseSt o) {
-    visitStmt(o);
-  }
-
-  public void visitEmptyStmt(@NotNull GdEmptyStmt o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEndStmt(@NotNull GdEndStmt o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEnumDeclNmi(@NotNull GdEnumDeclNmi o) {
-    visitNamedIdElement(o);
-  }
-
-  public void visitEnumDeclTl(@NotNull GdEnumDeclTl o) {
-    visitTopLevelDecl(o);
-  }
-
-  public void visitEnumValue(@NotNull GdEnumValue o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEnumValueNmi(@NotNull GdEnumValueNmi o) {
-    visitNamedIdElement(o);
-  }
-
-  public void visitExpr(@NotNull GdExpr o) {
-    visitPsiElement(o);
-  }
-
-  public void visitExprSt(@NotNull GdExprSt o) {
-    visitStmt(o);
-  }
-
-  public void visitFactorSign(@NotNull GdFactorSign o) {
-    visitPsiElement(o);
-  }
-
-  public void visitFactorEx(@NotNull GdFactorEx o) {
-    visitExpr(o);
-  }
-
-  public void visitFlowSt(@NotNull GdFlowSt o) {
-    visitStmt(o);
-  }
-
-  public void visitForSt(@NotNull GdForSt o) {
-    visitStmt(o);
-  }
-
-  public void visitFuncDeclIdNmi(@NotNull GdFuncDeclIdNmi o) {
-    visitNamedIdElement(o);
-  }
-
-  public void visitFuncDeclEx(@NotNull GdFuncDeclEx o) {
-    visitExpr(o);
-  }
-
-  public void visitGetDecl(@NotNull GdGetDecl o) {
-    visitPsiElement(o);
-  }
-
-  public void visitGetMethodIdRef(@NotNull GdGetMethodIdRef o) {
-    visitPsiElement(o);
-  }
-
-  public void visitIfSt(@NotNull GdIfSt o) {
-    visitStmt(o);
-  }
-
-  public void visitInEx(@NotNull GdInEx o) {
-    visitExpr(o);
-  }
-
-  public void visitInheritance(@NotNull GdInheritance o) {
-    visitPsiElement(o);
-  }
-
-  public void visitInheritanceId(@NotNull GdInheritanceId o) {
-    visitPsiElement(o);
-  }
-
-  public void visitInheritanceIdRef(@NotNull GdInheritanceIdRef o) {
-    visitPsiElement(o);
-  }
-
-  public void visitInheritanceSubIdRef(@NotNull GdInheritanceSubIdRef o) {
-    visitPsiElement(o);
-  }
-
-  public void visitIsEx(@NotNull GdIsEx o) {
-    visitExpr(o);
-  }
-
-  public void visitKeyNmi(@NotNull GdKeyNmi o) {
-     visitNamedIdElement(o);
-  }
-
-  public void visitKeyValue(@NotNull GdKeyValue o) {
-    visitPsiElement(o);
-  }
-
-  public void visitKeyValuePattern(@NotNull GdKeyValuePattern o) {
-    visitPsiElement(o);
-  }
-
-  public void visitLiteralEx(@NotNull GdLiteralEx o) {
-    visitExpr(o);
-  }
-
-  public void visitLogicEx(@NotNull GdLogicEx o) {
-    visitExpr(o);
-  }
-
-  public void visitMatchBlock(@NotNull GdMatchBlock o) {
-    visitPsiElement(o);
-  }
-
-  public void visitMatchSt(@NotNull GdMatchSt o) {
-    visitStmt(o);
-  }
-
-  public void visitMethodDeclTl(@NotNull GdMethodDeclTl o) {
-    visitTopLevelDecl(o);
-  }
-
-  public void visitMethodIdNmi(@NotNull GdMethodIdNmi o) {
-    visitNamedIdElement(o);
-  }
-
-  public void visitMethodSpecifier(@NotNull GdMethodSpecifier o) {
-    visitPsiElement(o);
-  }
-
-  public void visitNegateEx(@NotNull GdNegateEx o) {
-    visitExpr(o);
-  }
-
-  public void visitNewLineEnd(@NotNull GdNewLineEnd o) {
-    visitPsiElement(o);
-  }
-
-  public void visitNodePath(@NotNull GdNodePath o) {
-    visitPsiElement(o);
-  }
-
-  public void visitOperator(@NotNull GdOperator o) {
-    visitPsiElement(o);
-  }
-
-  public void visitParam(@NotNull GdParam o) {
-    visitPsiElement(o);
-  }
-
-  public void visitParamList(@NotNull GdParamList o) {
-    visitPsiElement(o);
-  }
-
-  public void visitParenthesizedEx(@NotNull GdParenthesizedEx o) { visitExpr(o); }
-
-  public void visitPattern(@NotNull GdPattern o) {
-    visitPsiElement(o);
-  }
-
-  public void visitPatternList(@NotNull GdPatternList o) {
-    visitPsiElement(o);
-  }
-
-  public void visitPlusMinusPreEx(@NotNull GdPlusMinusPreEx o) {
-    visitExpr(o);
-  }
-
-  public void visitPlusMinusEx(@NotNull GdPlusMinusEx o) {
-    visitExpr(o);
-  }
-
-  public void visitPlusEx(@NotNull GdPlusEx o) {
-    visitExpr(o);
-  }
-
-  public void visitPrimaryEx(@NotNull GdPrimaryEx o) {
-    visitExpr(o);
-  }
-
-  public void visitRefIdNm(@NotNull GdRefIdRef o) {
-    visitPsiElement(o);
-  }
-
-  public void visitReturnHint(@NotNull GdReturnHint o) {
-    visitPsiElement(o);
-  }
-
-  public void visitReturnHintVal(@NotNull GdReturnHintVal o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSetDecl(@NotNull GdSetDecl o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSetMethodIdRef(@NotNull GdSetMethodIdRef o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSetgetDecl(@NotNull GdSetgetDecl o) {
-    visitPsiElement(o);
-  }
-
-  public void visitShiftEx(@NotNull GdShiftEx o) {
-    visitExpr(o);
-  }
-
-  public void visitSign(@NotNull GdSign o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSignEx(@NotNull GdSignEx o) {
-    visitExpr(o);
-  }
-
-  public void visitSignalDeclTl(@NotNull GdSignalDeclTl o) {
-    visitTopLevelDecl(o);
-  }
-
-  public void visitSignalIdNmi(@NotNull GdSignalIdNmi o) {
-    visitNamedIdElement(o);
-  }
-
-  public void visitStmt(@NotNull GdStmt o) {
-    visitPsiElement(o);
-  }
-
-  public void visitStmtOrSuite(@NotNull GdStmtOrSuite o) {
-    visitPsiElement(o);
-  }
-
-  public void visitStringVal(@NotNull GdStringValRef o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSuite(@NotNull GdSuite o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTernaryEx(@NotNull GdTernaryEx o) {
-    visitExpr(o);
-  }
-
-  public void visitTopLevelDecl(@NotNull GdTopLevelDecl o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTypeHint(@NotNull GdTypeHint o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTypeHintRef(@NotNull GdTypeHintRef o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTyped(@NotNull GdTyped o) {
-    visitPsiElement(o);
-  }
-
-  public void visitTypedVal(@NotNull GdTypedVal o) {
-    visitPsiElement(o);
-  }
-
-  public void visitVarDeclSt(@NotNull GdVarDeclSt o) {
-    visitStmt(o);
-  }
-
-  public void visitAnnotationSt(@NotNull GdAnnotationStmtImpl o) {
-    visitStmt(o);
-  }
-
-  public void visitVarNmi(@NotNull GdVarNmi o) {
-    visitNamedIdElement(o);
-  }
-
-  public void visitWhileSt(@NotNull GdWhileSt o) {
-    visitStmt(o);
-  }
-
-  public void visitNamedElement(@NotNull GdNamedElement o) {
-    visitPsiElement(o);
-  }
-
-  public void visitNamedIdElement(@NotNull GdNamedIdElement o) {
-    visitPsiElement(o);
-  }
-
-  public void visitPsiElement(@NotNull PsiElement o) {
-    visitElement(o);
-  }
-
+package gdscript.psi
+
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import gdscript.psi.impl.GdAnnotationStmtImpl
+
+open class GdVisitor : PsiElementVisitor() {
+    fun visitAnnotationParams(o: GdAnnotationParams) {
+        visitPsiElement(o)
+    }
+
+    fun visitAnnotationType(o: GdAnnotationType) {
+        visitPsiElement(o)
+    }
+
+    fun visitAnnotationTl(o: GdAnnotationTl) {
+        visitTopLevelDecl(o)
+    }
+
+    fun visitArgExpr(o: GdArgExpr) {
+        visitPsiElement(o)
+    }
+
+    fun visitArgList(o: GdArgList) {
+        visitPsiElement(o)
+    }
+
+    fun visitArrEx(o: GdArrEx) {
+        visitExpr(o)
+    }
+
+    fun visitArrayDecl(o: GdArrayDecl) {
+        visitPsiElement(o)
+    }
+
+    fun visitArrayPattern(o: GdArrayPattern) {
+        visitPsiElement(o)
+    }
+
+    fun visitAssignSign(o: GdAssignSign) {
+        visitPsiElement(o)
+    }
+
+    fun visitAssignTyped(o: GdAssignTyped) {
+        visitPsiElement(o)
+    }
+
+    fun visitAssignSt(o: GdAssignSt) {
+        visitStmt(o)
+    }
+
+    fun visitAttributeEx(o: GdAttributeEx) {
+        visitExpr(o)
+    }
+
+    fun visitAwaitEx(o: GdAwaitEx) {
+        visitExpr(o)
+    }
+
+    fun visitBindingPattern(o: GdBindingPattern) {
+        visitPsiElement(o)
+    }
+
+    fun visitBitAndSign(o: GdBitAndSign) {
+        visitPsiElement(o)
+    }
+
+    fun visitBitAndEx(o: GdBitAndEx) {
+        visitExpr(o)
+    }
+
+    fun visitBitNotEx(o: GdBitNotEx) {
+        visitExpr(o)
+    }
+
+    open fun visitCallEx(o: GdCallEx) {
+        visitExpr(o)
+    }
+
+    fun visitCastEx(o: GdCastEx) {
+        visitExpr(o)
+    }
+
+    open fun visitClassDeclTl(o: GdClassDeclTl) {
+        visitTopLevelDecl(o)
+    }
+
+    open fun visitClassNameNmi(o: GdClassNameNmi) {
+        visitNamedIdElement(o)
+    }
+
+    open fun visitClassNaming(o: GdClassNaming) {
+        visitPsiElement(o)
+    }
+
+    open fun visitClassVarDeclTl(o: GdClassVarDeclTl) {
+        visitTopLevelDecl(o)
+    }
+
+    fun visitComparisonEx(o: GdComparisonEx) {
+        visitExpr(o)
+    }
+
+    open fun visitConstDeclSt(o: GdConstDeclSt) {
+        visitStmt(o)
+    }
+
+    open fun visitConstDeclTl(o: GdConstDeclTl) {
+        visitTopLevelDecl(o)
+    }
+
+    fun visitDictDecl(o: GdDictDecl) {
+        visitPsiElement(o)
+    }
+
+    fun visitDictPattern(o: GdDictPattern) {
+        visitPsiElement(o)
+    }
+
+    fun visitElifSt(o: GdElifSt) {
+        visitStmt(o)
+    }
+
+    fun visitElseSt(o: GdElseSt) {
+        visitStmt(o)
+    }
+
+    fun visitEmptyStmt(o: GdEmptyStmt) {
+        visitPsiElement(o)
+    }
+
+    fun visitEndStmt(o: GdEndStmt) {
+        visitPsiElement(o)
+    }
+
+    fun visitEnumDeclNmi(o: GdEnumDeclNmi) {
+        visitNamedIdElement(o)
+    }
+
+    fun visitEnumDeclTl(o: GdEnumDeclTl) {
+        visitTopLevelDecl(o)
+    }
+
+    fun visitEnumValue(o: GdEnumValue) {
+        visitPsiElement(o)
+    }
+
+    fun visitEnumValueNmi(o: GdEnumValueNmi) {
+        visitNamedIdElement(o)
+    }
+
+    fun visitExpr(o: GdExpr) {
+        visitPsiElement(o)
+    }
+
+    fun visitExprSt(o: GdExprSt) {
+        visitStmt(o)
+    }
+
+    fun visitFactorSign(o: GdFactorSign) {
+        visitPsiElement(o)
+    }
+
+    fun visitFactorEx(o: GdFactorEx) {
+        visitExpr(o)
+    }
+
+    fun visitFlowSt(o: GdFlowSt) {
+        visitStmt(o)
+    }
+
+    fun visitForSt(o: GdForSt) {
+        visitStmt(o)
+    }
+
+    fun visitFuncDeclIdNmi(o: GdFuncDeclIdNmi) {
+        visitNamedIdElement(o)
+    }
+
+    open fun visitFuncDeclEx(o: GdFuncDeclEx) {
+        visitExpr(o)
+    }
+
+    fun visitGetDecl(o: GdGetDecl) {
+        visitPsiElement(o)
+    }
+
+    fun visitGetMethodIdRef(o: GdGetMethodIdRef) {
+        visitPsiElement(o)
+    }
+
+    fun visitIfSt(o: GdIfSt) {
+        visitStmt(o)
+    }
+
+    fun visitInEx(o: GdInEx) {
+        visitExpr(o)
+    }
+
+    open fun visitInheritance(o: GdInheritance) {
+        visitPsiElement(o)
+    }
+
+    fun visitInheritanceId(o: GdInheritanceId) {
+        visitPsiElement(o)
+    }
+
+    fun visitInheritanceIdRef(o: GdInheritanceIdRef) {
+        visitPsiElement(o)
+    }
+
+    fun visitInheritanceSubIdRef(o: GdInheritanceSubIdRef) {
+        visitPsiElement(o)
+    }
+
+    fun visitIsEx(o: GdIsEx) {
+        visitExpr(o)
+    }
+
+    fun visitKeyNmi(o: GdKeyNmi) {
+        visitNamedIdElement(o)
+    }
+
+    fun visitKeyValue(o: GdKeyValue) {
+        visitPsiElement(o)
+    }
+
+    fun visitKeyValuePattern(o: GdKeyValuePattern) {
+        visitPsiElement(o)
+    }
+
+    fun visitLiteralEx(o: GdLiteralEx) {
+        visitExpr(o)
+    }
+
+    fun visitLogicEx(o: GdLogicEx) {
+        visitExpr(o)
+    }
+
+    fun visitMatchBlock(o: GdMatchBlock) {
+        visitPsiElement(o)
+    }
+
+    open fun visitMatchSt(o: GdMatchSt) {
+        visitStmt(o)
+    }
+
+    open fun visitMethodDeclTl(o: GdMethodDeclTl) {
+        visitTopLevelDecl(o)
+    }
+
+    open fun visitMethodIdNmi(o: GdMethodIdNmi) {
+        visitNamedIdElement(o)
+    }
+
+    fun visitMethodSpecifier(o: GdMethodSpecifier) {
+        visitPsiElement(o)
+    }
+
+    fun visitNegateEx(o: GdNegateEx) {
+        visitExpr(o)
+    }
+
+    fun visitNewLineEnd(o: GdNewLineEnd) {
+        visitPsiElement(o)
+    }
+
+    fun visitNodePath(o: GdNodePath) {
+        visitPsiElement(o)
+    }
+
+    fun visitOperator(o: GdOperator) {
+        visitPsiElement(o)
+    }
+
+    open fun visitParam(o: GdParam) {
+        visitPsiElement(o)
+    }
+
+    fun visitParamList(o: GdParamList) {
+        visitPsiElement(o)
+    }
+
+    fun visitParenthesizedEx(o: GdParenthesizedEx) {
+        visitExpr(o)
+    }
+
+    fun visitPattern(o: GdPattern) {
+        visitPsiElement(o)
+    }
+
+    fun visitPatternList(o: GdPatternList) {
+        visitPsiElement(o)
+    }
+
+    fun visitPlusMinusPreEx(o: GdPlusMinusPreEx) {
+        visitExpr(o)
+    }
+
+    fun visitPlusMinusEx(o: GdPlusMinusEx) {
+        visitExpr(o)
+    }
+
+    fun visitPlusEx(o: GdPlusEx) {
+        visitExpr(o)
+    }
+
+    fun visitPrimaryEx(o: GdPrimaryEx) {
+        visitExpr(o)
+    }
+
+    fun visitRefIdNm(o: GdRefIdRef) {
+        visitPsiElement(o)
+    }
+
+    fun visitReturnHint(o: GdReturnHint) {
+        visitPsiElement(o)
+    }
+
+    fun visitReturnHintVal(o: GdReturnHintVal) {
+        visitPsiElement(o)
+    }
+
+    fun visitSetDecl(o: GdSetDecl) {
+        visitPsiElement(o)
+    }
+
+    fun visitSetMethodIdRef(o: GdSetMethodIdRef) {
+        visitPsiElement(o)
+    }
+
+    fun visitSetgetDecl(o: GdSetgetDecl) {
+        visitPsiElement(o)
+    }
+
+    fun visitShiftEx(o: GdShiftEx) {
+        visitExpr(o)
+    }
+
+    fun visitSign(o: GdSign) {
+        visitPsiElement(o)
+    }
+
+    fun visitSignEx(o: GdSignEx) {
+        visitExpr(o)
+    }
+
+    open fun visitSignalDeclTl(o: GdSignalDeclTl) {
+        visitTopLevelDecl(o)
+    }
+
+    fun visitSignalIdNmi(o: GdSignalIdNmi) {
+        visitNamedIdElement(o)
+    }
+
+    fun visitStmt(o: GdStmt) {
+        visitPsiElement(o)
+    }
+
+    fun visitStmtOrSuite(o: GdStmtOrSuite) {
+        visitPsiElement(o)
+    }
+
+    fun visitStringVal(o: GdStringValRef) {
+        visitPsiElement(o)
+    }
+
+    fun visitSuite(o: GdSuite) {
+        visitPsiElement(o)
+    }
+
+    fun visitTernaryEx(o: GdTernaryEx) {
+        visitExpr(o)
+    }
+
+    fun visitTopLevelDecl(o: GdTopLevelDecl) {
+        visitPsiElement(o)
+    }
+
+    fun visitTypeHint(o: GdTypeHint) {
+        visitPsiElement(o)
+    }
+
+    fun visitTypeHintRef(o: GdTypeHintRef) {
+        visitPsiElement(o)
+    }
+
+    fun visitTyped(o: GdTyped) {
+        visitPsiElement(o)
+    }
+
+    fun visitTypedVal(o: GdTypedVal) {
+        visitPsiElement(o)
+    }
+
+    open fun visitVarDeclSt(o: GdVarDeclSt) {
+        visitStmt(o)
+    }
+
+    fun visitAnnotationSt(o: GdAnnotationStmtImpl) {
+        visitStmt(o)
+    }
+
+    fun visitVarNmi(o: GdVarNmi) {
+        visitNamedIdElement(o)
+    }
+
+    fun visitWhileSt(o: GdWhileSt) {
+        visitStmt(o)
+    }
+
+    fun visitNamedElement(o: GdNamedElement) {
+        visitPsiElement(o)
+    }
+
+    fun visitNamedIdElement(o: GdNamedIdElement) {
+        visitPsiElement(o)
+    }
+
+    fun visitPsiElement(o: PsiElement) {
+        visitElement(o)
+    }
 }

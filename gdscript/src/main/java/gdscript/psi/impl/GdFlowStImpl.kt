@@ -1,49 +1,30 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdEndStmt;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdFlowSt;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdEndStmt
+import gdscript.psi.GdExpr
+import gdscript.psi.GdFlowSt
+import gdscript.psi.GdPsiUtils.getType
+import gdscript.psi.GdVisitor
 
-public class GdFlowStImpl extends GdStmtImpl implements GdFlowSt {
+class GdFlowStImpl(node: ASTNode) : GdStmtImpl(node), GdFlowSt {
+    override fun accept(visitor: GdVisitor) {
+        visitor.visitFlowSt(this)
+    }
 
-  public GdFlowStImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  @Override
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitFlowSt(this);
-  }
+    override val endStmt: GdEndStmt
+        get() = notNullChild(PsiTreeUtil.getChildOfType(this, GdEndStmt::class.java))
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val expr: GdExpr?
+        get() = PsiTreeUtil.getChildOfType(this, GdExpr::class.java)
 
-  @Override
-  @NotNull
-  public GdEndStmt getEndStmt() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdEndStmt.class));
-  }
-
-  @Override
-  @Nullable
-  public GdExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
-  }
-
-  @Override
-  @NotNull
-  public String getType() {
-    return GdPsiUtils.getType(this);
-  }
-
+    override val type: String
+        get() = getType(this)
 }

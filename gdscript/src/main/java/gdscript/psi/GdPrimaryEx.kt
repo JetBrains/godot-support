@@ -1,19 +1,11 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.Nullable;
+interface GdPrimaryEx : GdExpr {
+    val arrayDecl: GdArrayDecl?
 
-public interface GdPrimaryEx extends GdExpr {
+    val dictDecl: GdDictDecl?
 
-  @Nullable
-  GdArrayDecl getArrayDecl();
+    val expr: GdExpr?
 
-  @Nullable
-  GdDictDecl getDictDecl();
-
-  @Nullable
-  GdExpr getExpr();
-
-  @Nullable
-  GdNodePath getNodePath();
-
+    val nodePath: GdNodePath?
 }

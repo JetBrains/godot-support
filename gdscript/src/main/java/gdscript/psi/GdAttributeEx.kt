@@ -1,11 +1,6 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.NotNull;
-
-public interface GdAttributeEx extends GdExpr {
-
-  @NotNull
-  GdExpr getExpr();
-  GdRefIdRef getRefId();
-
+interface GdAttributeEx : GdExpr {
+    val expr: GdExpr
+    val refId: GdRefIdRef?
 }

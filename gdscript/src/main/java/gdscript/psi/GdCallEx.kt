@@ -1,14 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+interface GdCallEx : GdExpr {
+    val argList: GdArgList?
 
-public interface GdCallEx extends GdExpr {
-
-  @Nullable
-  GdArgList getArgList();
-
-  @NotNull
-  GdExpr getExpr();
-
+    val expr: GdExpr
 }
