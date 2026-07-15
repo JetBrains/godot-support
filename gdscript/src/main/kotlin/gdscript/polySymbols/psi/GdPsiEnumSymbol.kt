@@ -2,7 +2,6 @@ package gdscript.polySymbols.psi
 
 import GdScriptPluginIcons
 import com.intellij.model.Pointer
-import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.query.PolySymbolScope
@@ -15,12 +14,10 @@ import gdscript.psi.GdEnumDeclTl
 import javax.swing.Icon
 
 class GdPsiEnumSymbol(
-    override val linkedElement: GdEnumDeclNmi,
+    override val sourceElement: GdEnumDeclNmi,
 ) : GdPsiPolySymbol() {
-    override val project: Project get() = linkedElement.project
-
     override val kind: PolySymbolKind get() = GdPolySymbolKind.ENUM
-    override val declaringClassId: String get() = GdPsiPolySymbolUtil.getOwnerClassId(linkedElement)
+    override val declaringClassId: String get() = GdPsiPolySymbolUtil.getOwnerClassId(sourceElement)
     override val declaringClassName: String get() = GdPsiPolySymbolUtil.getLeafName(declaringClassId)
 
     override val icon: Icon get() = GdScriptPluginIcons.GDScriptIcons.ENUM_MARKER
@@ -28,12 +25,12 @@ class GdPsiEnumSymbol(
     override val completionTypeText: String get() = GdKeywords.INT
 
     override val queryScope: List<PolySymbolScope>
-        get() = (linkedElement.parent as? GdEnumDeclTl)
+        get() = (sourceElement.parent as? GdEnumDeclTl)
             ?.let { listOfNotNull(gdPsiEnumMemberScope(it)) }
             .orEmpty()
 
     override fun createPointer(): Pointer<out GdPsiEnumSymbol> {
-        val sourcePtr = linkedElement.createSmartPointer()
+        val sourcePtr = sourceElement.createSmartPointer()
         return Pointer {
             sourcePtr.element?.let {
                 GdPsiEnumSymbol(it)
