@@ -11,6 +11,7 @@ import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
 import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.psi.GdPsiClassSymbol
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdArrEx
 import gdscript.psi.GdArrayDecl
@@ -53,10 +54,10 @@ import gdscript.psi.GdTyped
 import gdscript.psi.GdTypedVal
 import gdscript.psi.GdTypes
 import gdscript.psi.GdVarDeclSt
-import gdscript.reference.GdClassMemberReference
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
 import gdscript.utils.GdOperand
+import gdscript.utils.PsiElementUtil.psi
 import gdscript.utils.PsiFileUtil.toAbsoluteResource
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import project.psi.model.GdAutoload
@@ -96,34 +97,33 @@ object PsiGdExprUtil {
             is GdBitNotEx -> GdKeywords.INT
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT
             is GdAttributeEx -> {
-                val ref = expr.refId?.references?.firstOrNull()
-                if (ref is GdClassMemberReference) {
-                    val declaration = ref.resolveDeclaration()
-                    // In case method is not resolved returnType is method itself
-                    if (declaration is GdMethodDeclTl && expr.refId?.nextLeaf()?.elementType == GdTypes.DOT) {
-                        return "Callable"
-                    }
+                val symbol = expr.refId?.resolveSymbolReference() as? GdPolySymbol
 
-                    return GdCommonUtil.returnType(declaration)
-                } else {
-                    // If attribute resolves to a class name or class decl, return its full class id
-                    when (val resolved = ref?.resolve()) {
+                // If attribute resolves to a class name or class decl, return its full class id
+                if (symbol is GdPsiClassSymbol) {
+                    when (val resolved = symbol.sourceElement.parent) {
                         is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
                         is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
                     }
-
-                    // Resolve through Poly Symbol if nothing found through PSI
-                    val symbol = expr.refId?.resolveSymbolReference() as? GdPolySymbol
-                    if (symbol != null) {
-                        if (symbol.kind == GdPolySymbolKind.METHOD && expr.refId?.nextLeaf()?.elementType == GdTypes.DOT) {
-                            return "Callable"
-                        }
-
-                        return symbol.returnType
-                    }
                 }
 
-                return ""
+                if (symbol != null) {
+                    // In case method is not resolved returnType is method itself
+                    if (symbol.kind == GdPolySymbolKind.METHOD && expr.refId?.nextLeaf()?.elementType == GdTypes.DOT) {
+                        return "Callable"
+                    }
+
+                    return symbol.returnType
+                }
+
+                // PolySymbols has no coverage of dictionary keys (Lua-style `dict.key` access) -
+                // fall back to the classic PSI declaration lookup for those.
+                val declaration = expr.refId?.let { GdClassMemberUtil.findDeclaration(it)?.psi() }
+                if (declaration is GdMethodDeclTl && expr.refId?.nextLeaf()?.elementType == GdTypes.DOT) {
+                    return "Callable"
+                }
+
+                GdCommonUtil.returnType(declaration)
             }
 
             is GdIsEx -> GdKeywords.BOOL
@@ -135,14 +135,17 @@ object PsiGdExprUtil {
                     if (lastId == "new") {
                         // Qualified constructor call: the class is the qualifier of the attribute
                         if (callee is GdAttributeEx) {
-                            // Try to resolve the attribute's reference to a class and return its full class id
-                            when (val resolved = callee.refId?.references?.firstOrNull()?.resolve()) {
-                                is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
-                                is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
+                            val symbol = callee.refId?.resolveSymbolReference() as? GdPolySymbol
+
+                            // If attribute resolves to a class name or class decl, return its full class id
+                            if (symbol is GdPsiClassSymbol) {
+                                when (val resolved = symbol.sourceElement.parent) {
+                                    is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
+                                    is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
+                                }
                             }
 
                             // Try Poly Symbols before falling back to the generic GdCommonUtil.returnType
-                            val symbol = callee.refId?.resolveSymbolReference() as? GdPolySymbol
                             if (symbol != null) {
                                 return symbol.returnType
                             }
