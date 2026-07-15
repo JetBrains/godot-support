@@ -5,8 +5,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.PolySymbolQualifiedName
-import com.intellij.polySymbols.completion.PolySymbolCodeCompletionItem
-import com.intellij.polySymbols.query.PolySymbolCodeCompletionQueryParams
 import com.intellij.polySymbols.query.PolySymbolListSymbolsQueryParams
 import com.intellij.polySymbols.query.PolySymbolNameMatchQueryParams
 import com.intellij.polySymbols.query.PolySymbolQueryStack
@@ -15,11 +13,9 @@ import com.intellij.polySymbols.utils.match
 import com.intellij.psi.PsiElement
 import com.intellij.psi.createSmartPointer
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
 import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.GdPolySymbolKind
-import gdscript.polySymbols.completion.gdCodeCompletions
 import gdscript.polySymbols.psi.GdPsiClassSymbolFactory
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
@@ -73,12 +69,6 @@ class GdPsiResourceClassesPolySymbolScope(
         if (kind != GdPolySymbolKind.RESOURCE_CLASS) return emptyList()
         return collectAllSymbols()
     }
-
-    override fun getCodeCompletions(
-        qualifiedName: PolySymbolQualifiedName,
-        params: PolySymbolCodeCompletionQueryParams,
-        stack: PolySymbolQueryStack,
-    ): List<PolySymbolCodeCompletionItem> = gdCodeCompletions(qualifiedName, params, stack)
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
