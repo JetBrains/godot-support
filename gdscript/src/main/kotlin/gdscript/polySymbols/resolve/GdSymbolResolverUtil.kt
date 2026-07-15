@@ -3,6 +3,7 @@ package gdscript.polySymbols.resolve
 import com.intellij.model.psi.PsiSymbolReferenceService
 import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
+import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
 import com.intellij.psi.PsiElement
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.polySymbols.GdClassSymbol
@@ -42,5 +43,6 @@ object GdSymbolResolverUtil {
         PsiSymbolReferenceService.getService().getReferences(this)
             .flatMap { it.resolveReference() }
             .filterIsInstance<PolySymbol>()
+            .map { it.unwrapAllDelegates() }
 
 }
