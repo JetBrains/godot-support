@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.containers.toArray
+import gdscript.polySymbols.psi.GdPsiClassSymbol
+import gdscript.polySymbols.psi.GdPsiPolySymbol
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassNaming
@@ -20,7 +23,6 @@ import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassMemberUtil.constructors
 import gdscript.psi.utils.GdExprUtil
 import gdscript.psi.utils.PsiGdSignalUtil
-import gdscript.reference.GdClassMemberReference
 import gdscript.utils.GdAnnotationUtil
 
 class GdInlayParameterHintProvider : InlayParameterHintsProvider {
@@ -28,7 +30,8 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getHintInfo(element: PsiElement): HintInfo? {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return null
-            val declaration = GdClassMemberReference(id).resolveDeclaration() ?: return null
+            val symbol = id.resolveSymbolReference() as? GdPsiPolySymbol ?: return null
+            val declaration = symbol.sourceElement.parent
 
             if (declaration is GdMethodDeclTl) {
                 val name = declaration.getName()
@@ -70,7 +73,8 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getParameterHints(element: PsiElement): List<InlayInfo> {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return emptyList()
-            val method = GdClassMemberReference(id).resolveDeclaration()
+            val symbol = id.resolveSymbolReference() as? GdPsiPolySymbol
+            val method = symbol?.sourceElement?.parent
 
             var params: Array<String> = emptyArray()
             when (method) {
@@ -95,10 +99,8 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                 }
 
                 else -> {
-                    val file = GdClassMemberReference(id).resolve()
-                    if (file !is GdFile) {
-                        return emptyList()
-                    }
+                    val classNaming = (symbol as? GdPsiClassSymbol)?.sourceElement?.parent as? GdClassNaming
+                    val file = classNaming?.containingFile as? GdFile ?: return emptyList()
 
                     val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(file, GdMethodDeclTl::class.java)
                     val usedParams = element.argList?.argExprList
