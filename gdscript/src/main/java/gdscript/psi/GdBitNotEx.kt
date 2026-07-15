@@ -1,10 +1,5 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.Nullable;
-
-public interface GdBitNotEx extends GdExpr {
-
-  @Nullable
-  GdExpr getExpr();
-
+interface GdBitNotEx : GdExpr {
+    val expr: GdExpr?
 }

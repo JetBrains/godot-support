@@ -27,7 +27,7 @@ class GetterSetterNameCompletion : CompletionContributor() {
     }
 
     private fun addMethodName(prefix: String, element: PsiElement, result: CompletionResultSet) {
-        val name = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassVarDeclTl::class.java)?.name ?: return
+        val name = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassVarDeclTl::class.java)?.getName() ?: return
         result.addElement(
             GdLookup.create(
                 "_${prefix}_${name.trimStart('_')}",

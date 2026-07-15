@@ -1,28 +1,17 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.StubBasedPsiElement;
-import gdscript.index.stub.GdSignalDeclStub;
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.StubBasedPsiElement
+import gdscript.index.stub.GdSignalDeclStub
+import gdscript.psi.types.GdDocumented
 
-import java.util.LinkedHashMap;
+interface GdSignalDeclTl : GdTopLevelDecl, StubBasedPsiElement<GdSignalDeclStub>, GdDocumented {
+    val endStmt: GdEndStmt?
 
-public interface GdSignalDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdSignalDeclStub>, GdDocumented {
+    val paramList: GdParamList?
 
-  @Nullable
-  GdEndStmt getEndStmt();
+    val signalIdNmi: GdSignalIdNmi?
 
-  @Nullable
-  GdParamList getParamList();
+    fun getName(): String
 
-  @Nullable
-  GdSignalIdNmi getSignalIdNmi();
-
-  @NotNull
-  String getName();
-
-  @NotNull
-  LinkedHashMap<String, String> getParameters();
-
+    val parameters: LinkedHashMap<String, String>
 }

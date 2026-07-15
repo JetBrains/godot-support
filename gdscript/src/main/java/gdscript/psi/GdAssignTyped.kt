@@ -1,7 +1,5 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElement
 
-public interface GdAssignTyped extends PsiElement {
-
-}
+interface GdAssignTyped : PsiElement

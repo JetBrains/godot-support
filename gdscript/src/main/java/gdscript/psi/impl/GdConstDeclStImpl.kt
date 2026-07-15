@@ -1,115 +1,72 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.model.GdTutorial;
-import gdscript.psi.GdAssignTyped;
-import gdscript.psi.GdConstDeclSt;
-import gdscript.psi.GdEndStmt;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdTyped;
-import gdscript.psi.GdVarNmi;
-import gdscript.psi.GdVisitor;
-import gdscript.psi.utils.GdCommentUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.model.GdTutorial
+import gdscript.psi.GdAssignTyped
+import gdscript.psi.GdConstDeclSt
+import gdscript.psi.GdEndStmt
+import gdscript.psi.GdExpr
+import gdscript.psi.GdPsiUtils.getName
+import gdscript.psi.GdPsiUtils.getReturnExpr
+import gdscript.psi.GdPsiUtils.getReturnType
+import gdscript.psi.GdTyped
+import gdscript.psi.GdVarNmi
+import gdscript.psi.GdVisitor
+import gdscript.psi.utils.GdCommentUtil.brief
+import gdscript.psi.utils.GdCommentUtil.description
+import gdscript.psi.utils.GdCommentUtil.isDeprecated
+import gdscript.psi.utils.GdCommentUtil.isExperimental
+import gdscript.psi.utils.GdCommentUtil.tutorials
 
-import java.util.List;
+class GdConstDeclStImpl(node: ASTNode) : GdStmtImpl(node), GdConstDeclSt {
+    override fun accept(visitor: GdVisitor) {
+        visitor.visitConstDeclSt(this)
+    }
 
-public class GdConstDeclStImpl extends GdStmtImpl implements GdConstDeclSt {
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public GdConstDeclStImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override val assignTyped: GdAssignTyped?
+        get() = PsiTreeUtil.getChildOfType(this, GdAssignTyped::class.java)
 
-  @Override
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitConstDeclSt(this);
-  }
+    override val endStmt: GdEndStmt?
+        get() = PsiTreeUtil.getChildOfType(this, GdEndStmt::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val expr: GdExpr?
+        get() = PsiTreeUtil.getChildOfType(this, GdExpr::class.java)
 
-  @Override
-  @Nullable
-  public GdAssignTyped getAssignTyped() {
-    return PsiTreeUtil.getChildOfType(this, GdAssignTyped.class);
-  }
+    override val typed: GdTyped?
+        get() = PsiTreeUtil.getChildOfType(this, GdTyped::class.java)
 
-  @Override
-  @Nullable
-  public GdEndStmt getEndStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
-  }
+    override val varNmi: GdVarNmi?
+        get() = PsiTreeUtil.getChildOfType(this, GdVarNmi::class.java)
 
-  @Override
-  @Nullable
-  public GdExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
-  }
+    override fun getName(): String =
+        getName(this)
 
-  @Override
-  @Nullable
-  public GdTyped getTyped() {
-    return PsiTreeUtil.getChildOfType(this, GdTyped.class);
-  }
+    override val returnType: String
+        get() = getReturnType(this)
 
-  @Override
-  @Nullable
-  public GdVarNmi getVarNmi() {
-    return PsiTreeUtil.getChildOfType(this, GdVarNmi.class);
-  }
+    override val returnExpr: PsiElement?
+        get() = getReturnExpr(this)
 
-  @Override
-  @NotNull
-  public String getName() {
-    return GdPsiUtils.getName(this);
-  }
+    override fun description(): String =
+        description(this)
 
-  @Override
-  @NotNull
-  public String getReturnType() {
-    return GdPsiUtils.getReturnType(this);
-  }
+    override fun brief(): String =
+        brief(this)
 
-  @Override
-  @Nullable
-  public PsiElement getReturnExpr() {
-    return GdPsiUtils.getReturnExpr(this);
-  }
+    override fun tutorials(): List<GdTutorial> =
+        tutorials(this)
 
-  @NotNull
-  @Override
-  public String description() {
-    return GdCommentUtil.INSTANCE.description(this);
-  }
+    override fun isDeprecated(): Boolean =
+        isDeprecated(this)
 
-  @NotNull
-  @Override
-  public String brief() {
-    return GdCommentUtil.INSTANCE.brief(this);
-  }
-
-  @NotNull
-  @Override
-  public List<GdTutorial> tutorials() {
-    return GdCommentUtil.INSTANCE.tutorials(this);
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return GdCommentUtil.INSTANCE.isDeprecated(this);
-  }
-
-  @Override
-  public boolean isExperimental() {
-    return GdCommentUtil.INSTANCE.isExperimental(this);
-  }
-
+    override fun isExperimental(): Boolean =
+        isExperimental(this)
 }

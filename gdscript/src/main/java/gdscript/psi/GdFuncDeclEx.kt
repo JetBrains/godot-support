@@ -1,33 +1,20 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
+import gdscript.psi.types.GdDocumented
 
-import java.util.LinkedHashMap;
+interface GdFuncDeclEx : GdExpr, GdDocumented {
+    val funcDeclIdNmi: GdFuncDeclIdNmi?
 
-public interface GdFuncDeclEx extends GdExpr, GdDocumented {
+    val paramList: GdParamList?
 
-  @Nullable
-  GdFuncDeclIdNmi getFuncDeclIdNmi();
+    val returnHint: GdReturnHint?
 
-  @Nullable
-  GdParamList getParamList();
+    val stmtOrSuite: GdStmtOrSuite?
 
-  @Nullable
-  GdReturnHint getReturnHint();
+    val invokedReturnType: String
 
-  @Nullable
-  GdStmtOrSuite getStmtOrSuite();
+    val returnExpr: PsiElement?
 
-  @NotNull
-  String getInvokedReturnType();
-
-  @Nullable
-  PsiElement getReturnExpr();
-
-  @NotNull
-  LinkedHashMap<String, String> getParameters();
-
+    val parameters: LinkedHashMap<String, String>
 }

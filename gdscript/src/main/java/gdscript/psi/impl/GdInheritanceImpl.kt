@@ -1,53 +1,36 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.index.stub.GdInheritanceStub;
-import gdscript.psi.GdEndStmt;
-import gdscript.psi.GdInheritance;
-import gdscript.psi.GdInheritanceId;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.index.stub.GdInheritanceStub
+import gdscript.psi.GdEndStmt
+import gdscript.psi.GdInheritance
+import gdscript.psi.GdInheritanceId
+import gdscript.psi.GdPsiUtils.getInheritancePath
+import gdscript.psi.GdVisitor
 
-public class GdInheritanceImpl extends GdInheritanceElementImpl implements GdInheritance {
+class GdInheritanceImpl : GdInheritanceElementImpl, GdInheritance {
+    constructor(node: ASTNode) : super(node)
 
-  public GdInheritanceImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    constructor(stub: GdInheritanceStub, type: IStubElementType<*, *>) : super(stub, type)
 
-  public GdInheritanceImpl(@NotNull GdInheritanceStub stub, @NotNull IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
+    fun accept(visitor: GdVisitor) {
+        visitor.visitInheritance(this)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitInheritance(this);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val endStmt: GdEndStmt?
+        get() = PsiTreeUtil.getChildOfType(this, GdEndStmt::class.java)
 
-  @Override
-  @Nullable
-  public GdEndStmt getEndStmt() {
-    return PsiTreeUtil.getChildOfType(this, GdEndStmt.class);
-  }
+    override val inheritanceId: GdInheritanceId?
+        get() = PsiTreeUtil.getChildOfType(this, GdInheritanceId::class.java)
 
-  @Override
-  @Nullable
-  public GdInheritanceId getInheritanceId() {
-    return PsiTreeUtil.getChildOfType(this, GdInheritanceId.class);
-  }
-
-  @Override
-  @NotNull
-  public String getInheritancePath() {
-    return GdPsiUtils.getInheritancePath(this);
-  }
+    override val inheritancePath: String
+        get() = getInheritancePath(this)
 }

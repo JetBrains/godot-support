@@ -1,30 +1,19 @@
-package gdscript.psi;
+package gdscript.psi
 
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import gdscript.psi.types.GdDocumented
 
-public interface GdVarDeclSt extends GdStmt, GdDocumented {
+interface GdVarDeclSt : GdStmt, GdDocumented {
+    val assignTyped: GdAssignTyped?
 
-  @Nullable
-  GdAssignTyped getAssignTyped();
+    val endStmt: GdEndStmt?
 
-  @Nullable
-  GdEndStmt getEndStmt();
+    val expr: GdExpr?
 
-  @Nullable
-  GdExpr getExpr();
+    val typed: GdTyped?
 
-  @Nullable
-  GdTyped getTyped();
+    val varNmi: GdVarNmi?
 
-  @Nullable
-  GdVarNmi getVarNmi();
+    fun getName(): String
 
-  @NotNull
-  String getName();
-
-  @NotNull
-  String getReturnType();
-
+    val returnType: String
 }

@@ -1,21 +1,11 @@
-package gdscript.psi;
+package gdscript.psi
 
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+interface GdIfSt : GdStmt {
+    val elifStList: List<GdElifSt>
 
-public interface GdIfSt extends GdStmt {
+    val elseSt: GdElseSt?
 
-  @NotNull
-  List<GdElifSt> getElifStList();
+    val expr: GdExpr?
 
-  @Nullable
-  GdElseSt getElseSt();
-
-  @Nullable
-  GdExpr getExpr();
-
-  @Nullable
-  GdStmtOrSuite getStmtOrSuite();
-
+    val stmtOrSuite: GdStmtOrSuite?
 }

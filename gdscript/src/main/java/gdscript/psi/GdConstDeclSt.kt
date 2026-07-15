@@ -1,34 +1,22 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
+import gdscript.psi.types.GdDocumented
 
-public interface GdConstDeclSt extends GdStmt, GdDocumented {
+interface GdConstDeclSt : GdStmt, GdDocumented {
+    val assignTyped: GdAssignTyped?
 
-  @Nullable
-  GdAssignTyped getAssignTyped();
+    val endStmt: GdEndStmt?
 
-  @Nullable
-  GdEndStmt getEndStmt();
+    val expr: GdExpr?
 
-  @Nullable
-  GdExpr getExpr();
+    val typed: GdTyped?
 
-  @Nullable
-  GdTyped getTyped();
+    val varNmi: GdVarNmi?
 
-  @Nullable
-  GdVarNmi getVarNmi();
+    fun getName(): String
 
-  @NotNull
-  String getName();
+    val returnType: String
 
-  @NotNull
-  String getReturnType();
-
-  @Nullable
-  PsiElement getReturnExpr();
-
+    val returnExpr: PsiElement?
 }

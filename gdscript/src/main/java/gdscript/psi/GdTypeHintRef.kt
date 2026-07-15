@@ -1,4 +1,3 @@
-package gdscript.psi;
+package gdscript.psi
 
-public interface GdTypeHintRef extends GdRefElement {
-}
+interface GdTypeHintRef : GdRefElement

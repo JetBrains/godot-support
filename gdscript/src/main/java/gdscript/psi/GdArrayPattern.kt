@@ -1,12 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElement
 
-public interface GdArrayPattern extends PsiElement {
-
-  @NotNull
-  List<GdPattern> getPatternList();
-
+interface GdArrayPattern : PsiElement {
+    val patternList: List<GdPattern>
 }
