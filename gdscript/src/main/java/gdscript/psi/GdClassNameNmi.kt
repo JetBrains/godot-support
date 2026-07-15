@@ -1,28 +1,19 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import gdscript.index.stub.GdClassIdStub;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
+import com.intellij.psi.StubBasedPsiElement
+import gdscript.index.stub.GdClassIdStub
 
-public interface GdClassNameNmi extends GdNamedIdElement, StubBasedPsiElement<GdClassIdStub> {
+interface GdClassNameNmi : GdNamedIdElement, StubBasedPsiElement<GdClassIdStub> {
+    val classId: String
 
-  @NotNull
-  String getClassId();
+    val parentName: String?
 
-  @Nullable
-  String getParentName();
+    val isInner: Boolean
 
-  boolean isInner();
+    override fun setName(newName: String): PsiElement
 
-  @NotNull
-  PsiElement setName(@NotNull String newName);
+    override fun getName(): String
 
-  @NotNull
-  String getName();
-
-  @NotNull
-  PsiElement getNameIdentifier();
-
+    override fun getNameIdentifier(): PsiElement
 }

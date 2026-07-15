@@ -1,20 +1,13 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.StubBasedPsiElement;
-import gdscript.index.stub.GdInheritanceStub;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
+import com.intellij.psi.StubBasedPsiElement
+import gdscript.index.stub.GdInheritanceStub
 
-public interface GdInheritance extends PsiElement, StubBasedPsiElement<GdInheritanceStub> {
+interface GdInheritance : PsiElement, StubBasedPsiElement<GdInheritanceStub> {
+    val endStmt: GdEndStmt?
 
-  @Nullable
-  GdEndStmt getEndStmt();
+    val inheritanceId: GdInheritanceId?
 
-  @Nullable
-  GdInheritanceId getInheritanceId();
-
-  @NotNull
-  String getInheritancePath();
-
+    val inheritancePath: String
 }

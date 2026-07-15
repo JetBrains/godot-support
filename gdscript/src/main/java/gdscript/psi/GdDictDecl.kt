@@ -1,15 +1,9 @@
-package gdscript.psi;
+package gdscript.psi
 
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElement
 
-public interface GdDictDecl extends PsiElement {
+interface GdDictDecl : PsiElement {
+    val keyValueList: List<GdKeyValue>
 
-  @NotNull
-  List<GdKeyValue> getKeyValueList();
-
-  @NotNull
-  List<GdNewLineEnd> getNewLineEndList();
-
+    val newLineEndList: List<GdNewLineEnd>
 }
