@@ -10,9 +10,9 @@ class ReturnTypeTest : BasePlatformTestCase() {
     fun testReturnTypesOfNestedClassInstantiations() {
         val file = myFixture.configureByFile(getTestName(false) + ".gd")
         val varDeclarations = file.children.filterIsInstance<GdClassVarDeclTl>()
-        val var1Declaration = varDeclarations.first { it.name == "var1" }
+        val var1Declaration = varDeclarations.first { it.getName() == "var1" }
         assertEquals("OuterClass.InnerClassLevel1", var1Declaration.returnType)
-        val var2Declaration = varDeclarations.first { it.name == "var2" }
+        val var2Declaration = varDeclarations.first { it.getName() == "var2" }
         assertEquals("OuterClass.InnerClassLevel1.InnerClassLevel2", var2Declaration.returnType)
     }
 
@@ -22,9 +22,9 @@ class ReturnTypeTest : BasePlatformTestCase() {
         // Technically, Godot would throw an error in var1's declaration
         // because it doesn't support type inference for dictionary keys that are not explicitly typed.
         // But we use this test so that we can ensure the type of the expression is inferred as Variant.
-        val var1Declaration = varDeclarations.first { it.name == "var1" }
+        val var1Declaration = varDeclarations.first { it.getName() == "var1" }
         assertEquals("Variant", var1Declaration.returnType)
-        val var2Declaration = varDeclarations.first { it.name == "var2" }
+        val var2Declaration = varDeclarations.first { it.getName() == "var2" }
         assertEquals("int", var2Declaration.returnType)
     }
 
@@ -32,8 +32,8 @@ class ReturnTypeTest : BasePlatformTestCase() {
         val file = myFixture.configureByFile(getTestName(false) + ".gd")
 
         val varDeclarations = file.children.filterIsInstance<GdClassVarDeclTl>()
-        val var1Declaration = varDeclarations.first { it.name == "var1" }
-        val var2Declaration = varDeclarations.first { it.name == "var2" }
+        val var1Declaration = varDeclarations.first { it.getName() == "var1" }
+        val var2Declaration = varDeclarations.first { it.getName() == "var2" }
 
         assertEquals("float", var1Declaration.returnType)
         assertEquals("float", var2Declaration.returnType)

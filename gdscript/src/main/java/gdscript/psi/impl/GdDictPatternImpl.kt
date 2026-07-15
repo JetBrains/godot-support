@@ -1,36 +1,23 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdDictPattern;
-import gdscript.psi.GdKeyValuePattern;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdDictPattern
+import gdscript.psi.GdKeyValuePattern
+import gdscript.psi.GdVisitor
 
-import java.util.List;
+class GdDictPatternImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdDictPattern {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitDictPattern(this)
+    }
 
-public class GdDictPatternImpl extends ASTWrapperPsiElement implements GdDictPattern {
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public GdDictPatternImpl(@NotNull ASTNode node) {
-    super(node);
-  }
-
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitDictPattern(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<GdKeyValuePattern> getKeyValuePatternList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdKeyValuePattern.class);
-  }
-
+    override val keyValuePatternList: List<GdKeyValuePattern>
+        get() = PsiTreeUtil.getChildrenOfTypeAsList(this, GdKeyValuePattern::class.java)
 }
