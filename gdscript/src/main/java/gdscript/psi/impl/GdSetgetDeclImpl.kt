@@ -1,43 +1,27 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdGetDecl;
-import gdscript.psi.GdSetDecl;
-import gdscript.psi.GdSetgetDecl;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdGetDecl
+import gdscript.psi.GdSetDecl
+import gdscript.psi.GdSetgetDecl
+import gdscript.psi.GdVisitor
 
-import java.util.List;
+class GdSetgetDeclImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdSetgetDecl {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitSetgetDecl(this)
+    }
 
-public class GdSetgetDeclImpl extends ASTWrapperPsiElement implements GdSetgetDecl {
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public GdSetgetDeclImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override val getDeclList: List<GdGetDecl>
+        get() = PsiTreeUtil.getChildrenOfTypeAsList(this, GdGetDecl::class.java)
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitSetgetDecl(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<GdGetDecl> getGetDeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdGetDecl.class);
-  }
-
-  @Override
-  @NotNull
-  public List<GdSetDecl> getSetDeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdSetDecl.class);
-  }
-
+    override val setDeclList: List<GdSetDecl>
+        get() = PsiTreeUtil.getChildrenOfTypeAsList(this, GdSetDecl::class.java)
 }

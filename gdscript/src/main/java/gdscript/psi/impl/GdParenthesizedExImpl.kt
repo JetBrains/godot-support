@@ -1,25 +1,15 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdParenthesizedEx;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import gdscript.psi.GdExpr
+import gdscript.psi.GdParenthesizedEx
+import gdscript.psi.GdVisitor
 
-public class GdParenthesizedExImpl extends GdPrimaryExImpl implements GdParenthesizedEx {
-
-    public GdParenthesizedExImpl(@NotNull ASTNode node) {
-        super(node);
+class GdParenthesizedExImpl(node: ASTNode) : GdPrimaryExImpl(node), GdParenthesizedEx {
+    override fun accept(visitor: GdVisitor) {
+        visitor.visitParenthesizedEx(this)
     }
 
-    @Override
-    public void accept(@NotNull GdVisitor visitor) {
-        visitor.visitParenthesizedEx(this);
-    }
-
-    @Override
-    public @Nullable GdExpr getContainedExpression() {
-        return getExpr();
-    }
+    override val containedExpression: GdExpr?
+        get() = expr
 }

@@ -1,13 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.NotNull;
+interface GdCastEx : GdExpr {
+    val expr: GdExpr
 
-public interface GdCastEx extends GdExpr {
-
-  @NotNull
-  GdExpr getExpr();
-
-  @NotNull
-  GdTypedVal getTypedVal();
-
+    val typedVal: GdTypedVal
 }
