@@ -10,7 +10,6 @@ import com.intellij.polySymbols.query.PolySymbolScope
 import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPolySymbolsConstants
-import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import gdscript.polySymbols.sdk.xml.GdSdkData
 
 object GdPolySymbolPriorities {
@@ -51,8 +50,7 @@ fun PolySymbolScope.gdCodeCompletions(
         PolySymbolListSymbolsQueryParams.create(params.queryExecutor, expandPatterns = false),
         stack,
     )
-        // we dont add PSI results because PSI isn't fully implemented with Poly Symbols and the PSI implementation should handle it for now.
-        .filterIsInstance<GdSdkPolySymbol>() // TODO move to GdPolySymbol when we want to add PSI results as well
+        .filterIsInstance<GdPolySymbol>()
         .map { it.toCodeCompletionItem() }
 
 fun PolySymbolCodeCompletionItem.shouldShow(): Boolean{
