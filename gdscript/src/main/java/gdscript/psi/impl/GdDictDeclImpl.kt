@@ -1,43 +1,27 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdDictDecl;
-import gdscript.psi.GdKeyValue;
-import gdscript.psi.GdNewLineEnd;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdDictDecl
+import gdscript.psi.GdKeyValue
+import gdscript.psi.GdNewLineEnd
+import gdscript.psi.GdVisitor
 
-import java.util.List;
+class GdDictDeclImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdDictDecl {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitDictDecl(this)
+    }
 
-public class GdDictDeclImpl extends ASTWrapperPsiElement implements GdDictDecl {
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public GdDictDeclImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override val keyValueList: List<GdKeyValue>
+        get() = PsiTreeUtil.getChildrenOfTypeAsList(this, GdKeyValue::class.java)
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitDictDecl(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<GdKeyValue> getKeyValueList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdKeyValue.class);
-  }
-
-  @Override
-  @NotNull
-  public List<GdNewLineEnd> getNewLineEndList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdNewLineEnd.class);
-  }
-
+    override val newLineEndList: List<GdNewLineEnd>
+        get() = PsiTreeUtil.getChildrenOfTypeAsList(this, GdNewLineEnd::class.java)
 }

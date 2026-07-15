@@ -1,5 +1,3 @@
-package gdscript.psi;
+package gdscript.psi
 
-public interface GdInheritanceSubIdRef extends GdRefElement {
-
-}
+interface GdInheritanceSubIdRef : GdRefElement

@@ -1,142 +1,94 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.stubs.IStubElementType;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.index.stub.GdMethodDeclStub;
-import gdscript.model.GdTutorial;
-import gdscript.psi.GdMethodDeclTl;
-import gdscript.psi.GdMethodIdNmi;
-import gdscript.psi.GdMethodSpecifier;
-import gdscript.psi.GdParamList;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdReturnHint;
-import gdscript.psi.GdStmtOrSuite;
-import gdscript.psi.GdVisitor;
-import gdscript.psi.utils.GdCommentUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.navigation.ItemPresentation
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.stubs.IStubElementType
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.index.stub.GdMethodDeclStub
+import gdscript.model.GdTutorial
+import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdMethodIdNmi
+import gdscript.psi.GdMethodSpecifier
+import gdscript.psi.GdParamList
+import gdscript.psi.GdPsiUtils.getName
+import gdscript.psi.GdPsiUtils.getParameters
+import gdscript.psi.GdPsiUtils.getPresentation
+import gdscript.psi.GdPsiUtils.getReturnType
+import gdscript.psi.GdPsiUtils.isConstructor
+import gdscript.psi.GdPsiUtils.isStatic
+import gdscript.psi.GdPsiUtils.isVariadic
+import gdscript.psi.GdReturnHint
+import gdscript.psi.GdStmtOrSuite
+import gdscript.psi.GdVisitor
+import gdscript.psi.utils.GdCommentUtil.brief
+import gdscript.psi.utils.GdCommentUtil.description
+import gdscript.psi.utils.GdCommentUtil.isDeprecated
+import gdscript.psi.utils.GdCommentUtil.isExperimental
+import gdscript.psi.utils.GdCommentUtil.tutorials
 
-import java.util.LinkedHashMap;
-import java.util.List;
+class GdMethodDeclTlImpl : GdMethodDeclElementImpl, GdMethodDeclTl {
+    constructor(node: ASTNode) : super(node)
 
-public class GdMethodDeclTlImpl extends GdMethodDeclElementImpl implements GdMethodDeclTl {
+    constructor(stub: GdMethodDeclStub, type: IStubElementType<*, *>) : super(stub, type)
 
-  public GdMethodDeclTlImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    fun accept(visitor: GdVisitor) {
+        visitor.visitMethodDeclTl(this)
+    }
 
-  public GdMethodDeclTlImpl(@NotNull GdMethodDeclStub stub, @NotNull IStubElementType<?, ?> type) {
-    super(stub, type);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitMethodDeclTl(this);
-  }
+    override val methodIdNmi: GdMethodIdNmi?
+        get() = PsiTreeUtil.getChildOfType(this, GdMethodIdNmi::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val methodSpecifierList: List<GdMethodSpecifier>
+        get() = PsiTreeUtil.getChildrenOfTypeAsList(this, GdMethodSpecifier::class.java)
 
-  @Override
-  @Nullable
-  public GdMethodIdNmi getMethodIdNmi() {
-    return PsiTreeUtil.getChildOfType(this, GdMethodIdNmi.class);
-  }
+    override val paramList: GdParamList?
+        get() = PsiTreeUtil.getChildOfType(this, GdParamList::class.java)
 
-  @Override
-  @NotNull
-  public List<GdMethodSpecifier> getMethodSpecifierList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdMethodSpecifier.class);
-  }
+    override val returnHint: GdReturnHint?
+        get() = PsiTreeUtil.getChildOfType(this, GdReturnHint::class.java)
 
-  @Override
-  @Nullable
-  public GdParamList getParamList() {
-    return PsiTreeUtil.getChildOfType(this, GdParamList.class);
-  }
+    override val stmtOrSuite: GdStmtOrSuite?
+        get() = PsiTreeUtil.getChildOfType(this, GdStmtOrSuite::class.java)
 
-  @Override
-  @Nullable
-  public GdReturnHint getReturnHint() {
-    return PsiTreeUtil.getChildOfType(this, GdReturnHint.class);
-  }
+    override val isStatic: Boolean
+        get() = isStatic(this)
 
-  @Override
-  @Nullable
-  public GdStmtOrSuite getStmtOrSuite() {
-    return PsiTreeUtil.getChildOfType(this, GdStmtOrSuite.class);
-  }
+    override val isVariadic: Boolean
+        get() = isVariadic(this)
 
-  @Override
-  public boolean isStatic() {
-    return GdPsiUtils.isStatic(this);
-  }
+    override fun getName(): String =
+        getName(this)
 
-  @Override
-  public boolean isVariadic() {
-    return GdPsiUtils.isVariadic(this);
-  }
+    override val returnType: String
+        get() = getReturnType(this)
 
-  @Override
-  @NotNull
-  public String getName() {
-    return GdPsiUtils.getName(this);
-  }
+    override val parameters: LinkedHashMap<String, String>
+        get() = getParameters(this)
 
-  @Override
-  @NotNull
-  public String getReturnType() {
-    return GdPsiUtils.getReturnType(this);
-  }
+    override fun getPresentation(): ItemPresentation =
+        getPresentation(this)
 
-  @Override
-  @NotNull
-  public LinkedHashMap<String, String> getParameters() {
-    return GdPsiUtils.getParameters(this);
-  }
+    override val isConstructor: Boolean
+        get() = isConstructor(this)
 
-  @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
-    return GdPsiUtils.getPresentation(this);
-  }
+    override fun description(): String =
+        description(this)
 
-  @Override
-  public boolean isConstructor() {
-    return GdPsiUtils.isConstructor(this);
-  }
+    override fun brief(): String =
+        brief(this)
 
-  @NotNull
-  @Override
-  public String description() {
-    return GdCommentUtil.INSTANCE.description(this);
-  }
+    override fun tutorials(): List<GdTutorial> =
+        tutorials(this)
 
-  @NotNull
-  @Override
-  public String brief() {
-    return GdCommentUtil.INSTANCE.brief(this);
-  }
+    override fun isDeprecated(): Boolean =
+        isDeprecated(this)
 
-  @NotNull
-  @Override
-  public List<GdTutorial> tutorials() {
-    return GdCommentUtil.INSTANCE.tutorials(this);
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return GdCommentUtil.INSTANCE.isDeprecated(this);
-  }
-
-  @Override
-  public boolean isExperimental() {
-    return GdCommentUtil.INSTANCE.isExperimental(this);
-  }
-
+    override fun isExperimental(): Boolean =
+        isExperimental(this)
 }

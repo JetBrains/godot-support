@@ -1,23 +1,15 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
 
-public interface GdSetDecl extends PsiElement {
+interface GdSetDecl : PsiElement {
+    val endStmt: GdEndStmt?
 
-  @Nullable
-  GdEndStmt getEndStmt();
+    val setMethodIdNm: GdSetMethodIdRef?
 
-  @Nullable
-  GdSetMethodIdRef getSetMethodIdNm();
+    val stmtOrSuite: GdStmtOrSuite?
 
-  @Nullable
-  GdStmtOrSuite getStmtOrSuite();
+    val typed: GdTyped?
 
-  @Nullable
-  GdTyped getTyped();
-
-  @Nullable
-  GdVarNmi getVarNmi();
-
+    val varNmi: GdVarNmi?
 }

@@ -1,17 +1,9 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
 
-import java.util.List;
+interface GdStmtOrSuite : PsiElement {
+    val stmt: GdStmt?
 
-public interface GdStmtOrSuite extends PsiElement {
-
-  @Nullable
-  GdStmt getStmt();
-
-  @NotNull
-  List<GdSuite> getSuiteList();
-
+    val suiteList: List<GdSuite>
 }

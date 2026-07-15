@@ -1,16 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+interface GdMatchSt : GdStmt {
+    val expr: GdExpr?
 
-import java.util.List;
-
-public interface GdMatchSt extends GdStmt {
-
-  @Nullable
-  GdExpr getExpr();
-
-  @NotNull
-  List<GdMatchBlock> getMatchBlockList();
-
+    val matchBlockList: List<GdMatchBlock>
 }

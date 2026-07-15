@@ -1,56 +1,35 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdArrayPattern;
-import gdscript.psi.GdBindingPattern;
-import gdscript.psi.GdDictPattern;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdPattern;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdArrayPattern
+import gdscript.psi.GdBindingPattern
+import gdscript.psi.GdDictPattern
+import gdscript.psi.GdExpr
+import gdscript.psi.GdPattern
+import gdscript.psi.GdVisitor
 
-public class GdPatternImpl extends ASTWrapperPsiElement implements GdPattern {
+class GdPatternImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdPattern {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitPattern(this)
+    }
 
-  public GdPatternImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitPattern(this);
-  }
+    override val arrayPattern: GdArrayPattern?
+        get() = PsiTreeUtil.getChildOfType(this, GdArrayPattern::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val bindingPattern: GdBindingPattern?
+        get() = PsiTreeUtil.getChildOfType(this, GdBindingPattern::class.java)
 
-  @Override
-  @Nullable
-  public GdArrayPattern getArrayPattern() {
-    return PsiTreeUtil.getChildOfType(this, GdArrayPattern.class);
-  }
+    override val dictPattern: GdDictPattern?
+        get() = PsiTreeUtil.getChildOfType(this, GdDictPattern::class.java)
 
-  @Override
-  @Nullable
-  public GdBindingPattern getBindingPattern() {
-    return PsiTreeUtil.getChildOfType(this, GdBindingPattern.class);
-  }
-
-  @Override
-  @Nullable
-  public GdDictPattern getDictPattern() {
-    return PsiTreeUtil.getChildOfType(this, GdDictPattern.class);
-  }
-
-  @Override
-  @Nullable
-  public GdExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
-  }
-
+    override val expr: GdExpr?
+        get() = PsiTreeUtil.getChildOfType(this, GdExpr::class.java)
 }
