@@ -39,5 +39,6 @@ object GdPolySymbolKind {
     val BINDING_PATTERN: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "binding-pattern"]
     val FOR_VARIABLE: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "for-variable"]
     val LOCAL_VARIABLE: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "local-variable"]
+    val LOCAL_CONSTANT: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "local-constant"]
     val PARAMETER: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "parameter"]
 }
