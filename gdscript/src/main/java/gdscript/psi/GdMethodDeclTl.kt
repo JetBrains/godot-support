@@ -1,48 +1,34 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.StubBasedPsiElement;
-import gdscript.index.stub.GdMethodDeclStub;
-import gdscript.psi.types.GdDocumented;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.navigation.ItemPresentation
+import com.intellij.psi.StubBasedPsiElement
+import gdscript.index.stub.GdMethodDeclStub
+import gdscript.psi.types.GdDocumented
 
-import java.util.LinkedHashMap;
-import java.util.List;
+interface GdMethodDeclTl : GdTopLevelDecl, StubBasedPsiElement<GdMethodDeclStub>, GdDocumented {
+    val methodIdNmi: GdMethodIdNmi?
 
-public interface GdMethodDeclTl extends GdTopLevelDecl, StubBasedPsiElement<GdMethodDeclStub>, GdDocumented {
+    val methodSpecifierList: List<GdMethodSpecifier>
 
-  @Nullable
-  GdMethodIdNmi getMethodIdNmi();
+    val paramList: GdParamList?
 
-  @NotNull
-  List<GdMethodSpecifier> getMethodSpecifierList();
+    val returnHint: GdReturnHint?
 
-  @Nullable
-  GdParamList getParamList();
+    val stmtOrSuite: GdStmtOrSuite?
 
-  @Nullable
-  GdReturnHint getReturnHint();
+    val isStatic: Boolean
 
-  @Nullable
-  GdStmtOrSuite getStmtOrSuite();
+    val isVariadic: Boolean
 
-  boolean isStatic();
+    fun getName(): String
 
-  boolean isVariadic();
+    val returnType: String
 
-  @NotNull
-  String getName();
+    val parameters: LinkedHashMap<String, String>
 
-  @NotNull
-  String getReturnType();
+    fun getPresentation(): ItemPresentation
 
-  @NotNull
-  LinkedHashMap<String, String> getParameters();
-
-  @NotNull
-  ItemPresentation getPresentation();
-
-  boolean isConstructor();
+    val isConstructor: Boolean
 
 }
+
