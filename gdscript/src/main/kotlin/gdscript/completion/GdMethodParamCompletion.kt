@@ -12,8 +12,8 @@ import gdscript.psi.GdParam
 import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdTypes
 import gdscript.psi.GdVarNmi
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.utils.GdClassUtil
-import gdscript.reference.GdClassMemberReference
 import gdscript.utils.StringUtil.camelToSnakeCase
 
 class GdMethodParamCompletion : CompletionContributor() {
@@ -55,7 +55,7 @@ class GdMethodParamCompletion : CompletionContributor() {
             val method = PsiTreeUtil.getParentOfType(parameters.position, GdMethodDeclTl::class.java, GdFuncDeclEx::class.java)
             val vars = PsiTreeUtil.collectElementsOfType(method, GdRefIdRef::class.java)
             vars.forEach {
-                if (GdClassMemberReference(it).resolveDeclaration() == null) {
+                if (it.resolveSymbolReference() == null) {
                     result.addElement(
                         GdLookup.create(
                             it.text,
