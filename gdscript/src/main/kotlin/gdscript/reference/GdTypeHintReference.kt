@@ -25,6 +25,7 @@ import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdSuite
 import gdscript.psi.GdTypeHintRef
 import gdscript.psi.GdVarDeclSt
+import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.GdCommonUtil
 import gdscript.psi.utils.GdInheritanceUtil
@@ -120,12 +121,12 @@ class GdTypeHintReference : PsiReferenceBase<GdTypeHintRef> {
             if (it.name == myName) return it.classNameNmi
         }
         loadedClasses(container).forEach {
-            if (GdCommonUtil.getName(it) == myName) return GdClassMemberReference.resolveId(it)
+            if (GdCommonUtil.getName(it) == myName) return GdClassMemberUtil.identifierOf(it)
         }
         PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java)?.let { methodDecl ->
             PsiTreeUtil.findChildOfType(methodDecl, GdSuite::class.java)?.let { suite ->
                 loadedClasses(suite).forEach {
-                    if (GdCommonUtil.getName(it) == myName) return GdClassMemberReference.resolveId(it)
+                    if (GdCommonUtil.getName(it) == myName) return GdClassMemberUtil.identifierOf(it)
                 }
             }
         }
