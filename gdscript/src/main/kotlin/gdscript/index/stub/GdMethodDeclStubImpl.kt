@@ -14,7 +14,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
     private var name: String = ""
     private var returnType: String = ""
     private var isConstructor: Boolean = false
-    private var parameters: LinkedHashMap<String, String?> = LinkedHashMap()
+    private var parameters: LinkedHashMap<String, String> = LinkedHashMap()
     private var doc: GdCommentModel
 
     constructor(
@@ -24,7 +24,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
         isConstructor: Boolean,
         name: String?,
         returnType: String,
-        parameters: LinkedHashMap<String, String?>,
+        parameters: LinkedHashMap<String, String>,
         doc: GdCommentModel,
     ) : super(parent, GdMethodDeclElementType) {
         if (name != null) {
@@ -46,7 +46,7 @@ class GdMethodDeclStubImpl : StubBase<GdMethodDeclTl>, GdMethodDeclStub {
 
     override fun returnType(): String = returnType
 
-    override fun parameters(): LinkedHashMap<String, String?> = parameters
+    override fun parameters(): LinkedHashMap<String, String> = parameters
 
     override fun isConstructor(): Boolean = isConstructor
 

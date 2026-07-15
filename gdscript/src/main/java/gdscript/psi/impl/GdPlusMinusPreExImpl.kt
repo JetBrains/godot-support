@@ -1,35 +1,22 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdPlusMinusPreEx;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdExpr
+import gdscript.psi.GdPlusMinusPreEx
+import gdscript.psi.GdVisitor
 
-public class GdPlusMinusPreExImpl extends GdExprImpl implements GdPlusMinusPreEx {
+class GdPlusMinusPreExImpl(node: ASTNode) : GdExprImpl(node), GdPlusMinusPreEx {
+    override fun accept(visitor: GdVisitor) {
+        visitor.visitPlusMinusPreEx(this)
+    }
 
-  public GdPlusMinusPreExImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  @Override
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitPlusMinusPreEx(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public GdExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
-  }
-
+    override val expr: GdExpr?
+        get() = PsiTreeUtil.getChildOfType(this, GdExpr::class.java)
 }
