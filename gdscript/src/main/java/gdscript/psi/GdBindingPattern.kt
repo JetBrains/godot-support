@@ -1,11 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElement
 
-public interface GdBindingPattern extends PsiElement {
-
-  @NotNull
-  GdVarNmi getVarNmi();
-
+interface GdBindingPattern : PsiElement {
+    val varNmi: GdVarNmi
 }
