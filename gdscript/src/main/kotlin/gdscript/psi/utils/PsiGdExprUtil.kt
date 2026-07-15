@@ -113,7 +113,7 @@ object PsiGdExprUtil {
                     }
 
                     // Resolve through Poly Symbol if nothing found through PSI
-                    val symbol = expr.refId.resolveSymbolReference() as? GdPolySymbol
+                    val symbol = expr.refId?.resolveSymbolReference() as? GdPolySymbol
                     if (symbol != null) {
                         if (symbol.kind == GdPolySymbolKind.METHOD && expr.refId?.nextLeaf()?.elementType == GdTypes.DOT) {
                             return "Callable"

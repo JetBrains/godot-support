@@ -1,36 +1,23 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdArgExpr;
-import gdscript.psi.GdArgList;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdArgExpr
+import gdscript.psi.GdArgList
+import gdscript.psi.GdVisitor
 
-import java.util.List;
+class GdArgListImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdArgList {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitArgList(this)
+    }
 
-public class GdArgListImpl extends ASTWrapperPsiElement implements GdArgList {
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public GdArgListImpl(@NotNull ASTNode node) {
-    super(node);
-  }
-
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitArgList(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<GdArgExpr> getArgExprList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, GdArgExpr.class);
-  }
-
+    override val argExprList: List<GdArgExpr>
+        get() = PsiTreeUtil.getChildrenOfTypeAsList(this, GdArgExpr::class.java)
 }
