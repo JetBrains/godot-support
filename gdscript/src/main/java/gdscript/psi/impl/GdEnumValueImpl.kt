@@ -1,66 +1,49 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.model.GdTutorial;
-import gdscript.psi.GdEnumValue;
-import gdscript.psi.GdEnumValueNmi;
-import gdscript.psi.GdVisitor;
-import gdscript.psi.utils.GdCommentUtil;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.model.GdTutorial
+import gdscript.psi.GdEnumValue
+import gdscript.psi.GdEnumValueNmi
+import gdscript.psi.GdVisitor
+import gdscript.psi.utils.GdCommentUtil.brief
+import gdscript.psi.utils.GdCommentUtil.description
+import gdscript.psi.utils.GdCommentUtil.isDeprecated
+import gdscript.psi.utils.GdCommentUtil.isExperimental
+import gdscript.psi.utils.GdCommentUtil.tutorials
 
-import java.util.List;
+class GdEnumValueImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdEnumValue {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitEnumValue(this)
+    }
 
-public class GdEnumValueImpl extends ASTWrapperPsiElement implements GdEnumValue {
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public GdEnumValueImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override val enumValueNmi: GdEnumValueNmi
+        get() = notNullChild(
+            PsiTreeUtil.getChildOfType(
+                this,
+                GdEnumValueNmi::class.java
+            )
+        )
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitEnumValue(this);
-  }
+    override fun description(): String =
+        description(this)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override fun brief(): String =
+        brief(this)
 
-  @Override
-  @NotNull
-  public GdEnumValueNmi getEnumValueNmi() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdEnumValueNmi.class));
-  }
+    override fun tutorials(): List<GdTutorial> =
+        tutorials(this)
 
-  @NotNull
-  @Override
-  public String description() {
-    return GdCommentUtil.INSTANCE.description(this);
-  }
+    override fun isDeprecated(): Boolean =
+        isDeprecated(this)
 
-  @NotNull
-  @Override
-  public String brief() {
-    return GdCommentUtil.INSTANCE.brief(this);
-  }
-
-  @NotNull
-  @Override
-  public List<GdTutorial> tutorials() {
-    return GdCommentUtil.INSTANCE.tutorials(this);
-  }
-
-  @Override
-  public boolean isDeprecated() {
-    return GdCommentUtil.INSTANCE.isDeprecated(this);
-  }
-
-  @Override
-  public boolean isExperimental() {
-    return GdCommentUtil.INSTANCE.isExperimental(this);
-  }
-
+    override fun isExperimental(): Boolean =
+        isExperimental(this)
 }
