@@ -1,63 +1,39 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdAssignTyped;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdParam;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdTyped;
-import gdscript.psi.GdVarNmi;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdAssignTyped
+import gdscript.psi.GdExpr
+import gdscript.psi.GdParam
+import gdscript.psi.GdPsiUtils.getReturnType
+import gdscript.psi.GdTyped
+import gdscript.psi.GdVarNmi
+import gdscript.psi.GdVisitor
 
-public class GdParamImpl extends ASTWrapperPsiElement implements GdParam {
+class GdParamImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdParam {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitParam(this)
+    }
 
-  public GdParamImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitParam(this);
-  }
+    override val assignTyped: GdAssignTyped?
+        get() = PsiTreeUtil.getChildOfType(this, GdAssignTyped::class.java)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override val expr: GdExpr?
+        get() = PsiTreeUtil.getChildOfType(this, GdExpr::class.java)
 
-  @Override
-  @Nullable
-  public GdAssignTyped getAssignTyped() {
-    return PsiTreeUtil.getChildOfType(this, GdAssignTyped.class);
-  }
+    override val typed: GdTyped?
+        get() = PsiTreeUtil.getChildOfType(this, GdTyped::class.java)
 
-  @Override
-  @Nullable
-  public GdExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, GdExpr.class);
-  }
+    override val varNmi: GdVarNmi
+        get() = notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi::class.java))
 
-  @Override
-  @Nullable
-  public GdTyped getTyped() {
-    return PsiTreeUtil.getChildOfType(this, GdTyped.class);
-  }
-
-  @Override
-  @NotNull
-  public GdVarNmi getVarNmi() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdVarNmi.class));
-  }
-
-  @Override
-  @NotNull
-  public String getReturnType() {
-    return GdPsiUtils.getReturnType(this);
-  }
-
+    override val returnType: String
+        get() = getReturnType(this)
 }

@@ -32,7 +32,7 @@ class GdSetGetMethodIdReference : PsiReferenceBase<PsiElement> {
     override fun resolve(): PsiElement? {
         val members = GdClassMemberUtil.listClassMemberDeclarations(element, staticFilter())
 
-        return members.methods().find { it.name == key }?.methodIdNmi
+        return members.methods().find { it.getName() == key }?.methodIdNmi
     }
 
     override fun getVariants(): Array<Any> {

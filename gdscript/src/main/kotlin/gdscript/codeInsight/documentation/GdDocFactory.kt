@@ -267,7 +267,7 @@ object GdDocFactory {
 
         val variables = declarations.variables()
         builder.addBodyBlock(GdDocUtil.propertyTable("variables", variables.map {
-            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.name))
+            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.getName()))
         }))
 
         val methods = mutableListOf<GdMethodDeclTl>()
@@ -278,17 +278,17 @@ object GdDocFactory {
         }
 
         builder.addBodyBlock(GdDocUtil.propertyTable("constructors", constructors.map {
-            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.name, it.shortMethodHeader()))
+            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.getName(), it.shortMethodHeader()))
         }))
         builder.addBodyBlock(GdDocUtil.propertyTable("methods", methods.map {
-            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.name, it.shortMethodHeader()))
+            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.getName(), it.shortMethodHeader()))
         }))
 
         // TODO operators
 
         val signals = declarations.signals()
         builder.addBodyBlock(GdDocUtil.descriptionListTable("signals", signals.map {
-            var name = it.name
+            var name = it.getName()
             if (!name.endsWith(")")) name += "()"
             Pair(
                 GdDocUtil.elementLink(name.substringBefore("("), name),
@@ -302,7 +302,7 @@ object GdDocFactory {
         )
 
         builder.addBodyBlock(GdDocUtil.descriptionListsTable("enums", enums.map {
-            var name = it.name
+            var name = it.getName()
             var isNamed = true
             if (name.isBlank()) {
                 isNamed = false
@@ -313,7 +313,7 @@ object GdDocFactory {
             Pair(
                 HtmlChunk.fragment(
                     HtmlChunk.text(ENUM),
-                    if (isNamed) GdDocUtil.elementLink(it.name) else HtmlChunk.text(name),
+                    if (isNamed) GdDocUtil.elementLink(it.getName()) else HtmlChunk.text(name),
                     GdDocUtil.appendDescription(it)
                 ),
                 it.enumValueList.map { value ->
@@ -335,7 +335,7 @@ object GdDocFactory {
         val consts = declarations.constants()
         builder.addBodyBlock(GdDocUtil.descriptionListTable("constants", consts.map {
             Pair(
-                GdDocUtil.elementLink(it.name, it.text.trim()),
+                GdDocUtil.elementLink(it.getName(), it.text.trim()),
                 HtmlChunk.raw(GdGodotDocUtil.parseStyles(it.description())),
             )
         }))

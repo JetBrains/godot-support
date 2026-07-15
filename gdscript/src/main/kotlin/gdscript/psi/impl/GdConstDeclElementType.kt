@@ -42,7 +42,7 @@ object GdConstDeclElementType : IStubElementType<GdConstDeclStub, GdConstDeclTl>
 
     override fun createStub(psi: GdConstDeclTl, parentStub: StubElement<*>?): GdConstDeclStub {
         return GdConstDeclStubImpl(
-            parentStub, psi.name,
+            parentStub, psi.getName(),
             GdCommentUtil.collectComments(psi),
         )
     }
