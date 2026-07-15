@@ -44,7 +44,7 @@ class GdPsiResourceClassSymbol(
     }
 
     override val directMemberScope: PolySymbolScope
-        get() = GdPsiClassMemberScope(linkedElement)
+        get() = gdPsiClassMemberScope(linkedElement)
 
     private val superClassName: String?
         get() = GdInheritanceUtil.getExtendedClassId(linkedElement).takeIf { it.isNotBlank() }
