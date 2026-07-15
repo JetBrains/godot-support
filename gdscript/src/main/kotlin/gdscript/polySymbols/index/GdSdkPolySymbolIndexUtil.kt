@@ -3,10 +3,10 @@ package gdscript.polySymbols.index
 import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.query.PolySymbolQueryExecutor
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
-import gdscript.polySymbols.scope.GdSdkAnnotationsPolySymbolScope
-import gdscript.polySymbols.scope.GdSdkClassesPolySymbolScope
-import gdscript.polySymbols.scope.GdSdkGlobalPolySymbolScope
 import gdscript.polySymbols.scope.GdSdkOperationsPolySymbolScope
+import gdscript.polySymbols.scope.gdSdkAnnotationsPolySymbolScope
+import gdscript.polySymbols.scope.gdSdkClassesPolySymbolScope
+import gdscript.polySymbols.scope.gdSdkGlobalPolySymbolScope
 
 object GdSdkPolySymbolIndexUtil {
 
@@ -14,8 +14,8 @@ object GdSdkPolySymbolIndexUtil {
         return PolySymbolQueryExecutorFactory.createCustom {
             addRootScopes(
                 listOf(
-                    GdSdkClassesPolySymbolScope(project),
-                    GdSdkGlobalPolySymbolScope(project),
+                    gdSdkClassesPolySymbolScope(project),
+                    gdSdkGlobalPolySymbolScope(project),
                 )
             )
         }
@@ -37,7 +37,7 @@ object GdSdkPolySymbolIndexUtil {
         return PolySymbolQueryExecutorFactory.createCustom {
             addRootScopes(
                 listOf(
-                    GdSdkAnnotationsPolySymbolScope(project),
+                    gdSdkAnnotationsPolySymbolScope(project),
                 )
             )
         }
