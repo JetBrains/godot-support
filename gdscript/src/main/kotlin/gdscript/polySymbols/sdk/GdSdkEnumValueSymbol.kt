@@ -48,7 +48,7 @@ class GdSdkEnumValueSymbol(
     override fun psiElementRepresentsSdkSymbol(element: GdNamedElement): Boolean {
         return super.psiElementRepresentsSdkSymbol(element)
             && element is GdEnumValueNmi
-            && (element.parent?.parent as? GdEnumDeclTl)?.let { it.name == declaringEnumName } ?: false
+            && (element.parent?.parent as? GdEnumDeclTl)?.let { it.getName() == declaringEnumName } ?: false
     }
 
     override fun createPointer(): Pointer<out GdSdkEnumValueSymbol> {

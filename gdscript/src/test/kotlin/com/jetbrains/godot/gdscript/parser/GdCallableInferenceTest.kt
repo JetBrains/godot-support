@@ -15,7 +15,7 @@ class GdCallableInferenceTest : BasePlatformTestCase() {
                     return ""
         """.trimIndent()
         val file = myFixture.configureByText("test.gd", code)
-        val varDecl = file.descendantsOfType<GdVarDeclSt>().first { it.name == "thing" }
+        val varDecl = file.descendantsOfType<GdVarDeclSt>().first { it.getName() == "thing" }
         val funcDecl = varDecl.descendantsOfType<GdFuncDeclEx>().single()
         assertEquals("Callable", varDecl.returnType)
         assertEquals("String", funcDecl.invokedReturnType)
