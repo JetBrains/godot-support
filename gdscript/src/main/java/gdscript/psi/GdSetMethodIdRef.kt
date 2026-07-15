@@ -1,5 +1,3 @@
-package gdscript.psi;
+package gdscript.psi
 
-public interface GdSetMethodIdRef extends GdRefElement {
-
-}
+interface GdSetMethodIdRef : GdRefElement

@@ -53,10 +53,10 @@ object GdCommonUtil {
     fun getName(element: PsiElement): String {
         return when (element) {
             is GdNamedElement -> element.text
-            is GdConstDeclTl -> element.name
-            is GdClassVarDeclTl -> element.name
-            is GdConstDeclSt -> element.name
-            is GdVarDeclSt -> element.name
+            is GdConstDeclTl -> element.getName()
+            is GdClassVarDeclTl -> element.getName()
+            is GdConstDeclSt -> element.getName()
+            is GdVarDeclSt -> element.getName()
             else -> ""
         }
     }

@@ -1,11 +1,7 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
 
-public interface GdReturnHintVal extends PsiElement {
-
-  @Nullable
-  GdTypedVal getTypedVal();
-
+interface GdReturnHintVal : PsiElement {
+    val typedVal: GdTypedVal?
 }

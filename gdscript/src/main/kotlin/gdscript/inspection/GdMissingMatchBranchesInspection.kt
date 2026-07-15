@@ -58,7 +58,7 @@ class GdMissingMatchBranchesInspection : LocalInspectionTool() {
                     }
                 }
 
-                prefix += "${enum.name}."
+                prefix += "${enum.getName()}."
 
                 usedKeys.forEach {
                     if (it.startsWith(prefix)) {

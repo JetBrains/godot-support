@@ -104,11 +104,11 @@ object GdPsiPolySymbolUtil {
         val parts = name.split('.')
         if (parts.isEmpty()) return false
         var current = PsiTreeUtil.getStubChildrenOfTypeAsList(anchor.containingFile, GdClassDeclTl::class.java)
-            .firstOrNull { it.name == parts[0] }
+            .firstOrNull { it.getName() == parts[0] }
         var i = 1
         while (current != null && i < parts.size) {
             current = PsiTreeUtil.getStubChildrenOfTypeAsList(current, GdClassDeclTl::class.java)
-                .firstOrNull { it.name == parts[i] }
+                .firstOrNull { it.getName() == parts[i] }
             i++
         }
         return current != null && i == parts.size

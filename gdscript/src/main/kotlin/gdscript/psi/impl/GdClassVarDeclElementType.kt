@@ -46,7 +46,7 @@ object GdClassVarDeclElementType : IStubElementType<GdClassVarDeclStub, GdClassV
     override fun createStub(psi: GdClassVarDeclTl, parentStub: StubElement<*>?): GdClassVarDeclStub {
         return GdClassVarDeclStubImpl(
             parentStub,
-            psi.name,
+            psi.getName(),
             psi.isStatic,
             GdCommentUtil.collectComments(psi),
         )

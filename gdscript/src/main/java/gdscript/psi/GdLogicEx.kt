@@ -1,11 +1,5 @@
-package gdscript.psi;
+package gdscript.psi
 
-import java.util.List;
-import org.jetbrains.annotations.NotNull;
-
-public interface GdLogicEx extends GdExpr {
-
-  @NotNull
-  List<GdExpr> getExprList();
-
+interface GdLogicEx : GdExpr {
+    val exprList: List<GdExpr>
 }

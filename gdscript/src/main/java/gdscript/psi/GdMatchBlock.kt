@@ -1,15 +1,9 @@
-package gdscript.psi;
+package gdscript.psi
 
-import com.intellij.psi.PsiElement;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.intellij.psi.PsiElement
 
-public interface GdMatchBlock extends PsiElement {
+interface GdMatchBlock : PsiElement {
+    val patternList: GdPatternList
 
-  @NotNull
-  GdPatternList getPatternList();
-
-  @Nullable
-  GdStmtOrSuite getStmtOrSuite();
-
+    val stmtOrSuite: GdStmtOrSuite?
 }
