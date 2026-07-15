@@ -65,17 +65,17 @@ class GdClassMemberReference : PsiReferenceBase<GdRefIdRef>, HighlightedReferenc
                     // Start from file scope
                     parent = parent as? GdFile ?: element.containingFile
                     var current = PsiTreeUtil.getStubChildrenOfTypeAsList(parent, GdClassDeclTl::class.java)
-                        .firstOrNull { it.name == parts[0] }
+                        .firstOrNull { it.getName() == parts[0] }
                     var i = 1
                     while (current != null && i < parts.size) {
                         current = PsiTreeUtil.getStubChildrenOfTypeAsList(current, GdClassDeclTl::class.java)
-                            .firstOrNull { it.name == parts[i] }
+                            .firstOrNull { it.getName() == parts[i] }
                         i++
                     }
                     return current != null && i == parts.size
                 }
                 val targetClassDecl = qualifierExpr?.let {
-                    val type = it.getReturnType()
+                    val type = it.returnType
                     if (type.isNotEmpty()) {
                         val target = GdClassUtil.getClassIdElement(type, element, element.project)
                         if (target != null) GdClassUtil.getOwningClassElement(target) as? GdClassDeclTl else null

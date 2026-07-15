@@ -89,7 +89,7 @@ class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElement>, Dum
         val parameters = when(declaration) {
             is GdMethodDeclTl -> {
                 if (fullSignature) {
-                    builder.append("func ${declaration.name}(")
+                    builder.append("func ${declaration.getName()}(")
                     ending = ")"
                     if (declaration.returnType.isNotBlank()) ending += " -> ${declaration.returnType}"
                 }

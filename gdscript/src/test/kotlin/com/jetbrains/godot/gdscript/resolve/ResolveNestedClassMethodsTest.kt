@@ -39,7 +39,7 @@ class ResolveNestedClassMethodsTest : BasePlatformTestCase() {
             ?.sourceElement
         assertNotNull("ppa1 should resolve", declPpa1)
         assertTrue(declPpa1?.parent is GdMethodDeclTl)
-        assertEquals("ppa1", (declPpa1?.parent as GdMethodDeclTl).name)
+        assertEquals("ppa1", (declPpa1?.parent as GdMethodDeclTl).getName())
 
         // Caret at pp and resolve
         val offsetPp = file.text.indexOf("pp()") + 1
@@ -49,7 +49,7 @@ class ResolveNestedClassMethodsTest : BasePlatformTestCase() {
             ?.sourceElement
         assertNotNull("pp should resolve", declPp)
         assertTrue(declPp?.parent is GdMethodDeclTl)
-        assertEquals("pp", (declPp?.parent as GdMethodDeclTl).name)
+        assertEquals("pp", (declPp?.parent as GdMethodDeclTl).getName())
     }
 
 }

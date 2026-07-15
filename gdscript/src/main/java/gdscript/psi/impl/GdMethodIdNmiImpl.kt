@@ -1,45 +1,30 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
-import gdscript.psi.GdMethodIdNmi;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiElementVisitor
+import gdscript.psi.GdMethodIdNmi
+import gdscript.psi.GdPsiUtils.getName
+import gdscript.psi.GdPsiUtils.getNameIdentifier
+import gdscript.psi.GdPsiUtils.setName
+import gdscript.psi.GdVisitor
 
-public class GdMethodIdNmiImpl extends GdNamedIdElementImpl implements GdMethodIdNmi {
+class GdMethodIdNmiImpl(node: ASTNode) : GdNamedIdElementImpl(node), GdMethodIdNmi {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitMethodIdNmi(this)
+    }
 
-  public GdMethodIdNmiImpl(ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitMethodIdNmi(this);
-  }
+    override fun getName(): String =
+        getName(this)
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
+    override fun setName(newName: String): PsiElement =
+        setName(this, newName)
 
-  @Override
-  @NotNull
-  public String getName() {
-    return GdPsiUtils.getName(this);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement setName(@NotNull String newName) {
-    return GdPsiUtils.setName(this, newName);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getNameIdentifier() {
-    return GdPsiUtils.getNameIdentifier(this);
-  }
-
+    override fun getNameIdentifier(): PsiElement =
+        getNameIdentifier(this)
 }
