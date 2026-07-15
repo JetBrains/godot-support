@@ -1,7 +1,7 @@
 package gdscript.polySymbols.psi
 
 import com.intellij.model.Pointer
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.query.PolySymbolScope
@@ -22,13 +22,11 @@ import javax.swing.Icon
  * Class symbol for an anonymous GDScript file i.e. with no `class_name` declaration.
  */
 class GdPsiResourceClassSymbol(
-    override val linkedElement: GdFile
+    override val sourceElement: GdFile
 ) : GdPsiPolySymbol(), GdClassSymbol {
-    override val project: Project get() = linkedElement.project
-
     override val kind: PolySymbolKind get() = GdPolySymbolKind.CLASS
-    override val name: String get() = (linkedElement.virtualFile ?: linkedElement.originalFile.virtualFile).resourcePath()
-    override val declaringClassName: String get() = GdClassUtil.getOwningClassName(linkedElement)
+    override val name: String get() = (sourceElement.virtualFile ?: sourceElement.originalFile.virtualFile).resourcePath()
+    override val declaringClassName: String get() = GdClassUtil.getOwningClassName(sourceElement)
     override val declaringClassId: String get() = classId
     override val classId: String get() = declaringClassName
     override val returnType: String get() = classId
@@ -36,21 +34,26 @@ class GdPsiResourceClassSymbol(
     override val icon: Icon get() = GdIcon.getEditorIcon(classId)
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.USER_DEFINED
 
+    // No real name-identifier token anchors this declaration within the file (there's no
+    // class_name PSI leaf here), so an empty range ensures allDeclarationsAround()'s offset-based
+    // "what's under the caret" scan never spuriously matches this declaration at any offset in the file.
+    override val textRangeInSourceElement: TextRange? get() = TextRange.EMPTY_RANGE
+
     override fun createPointer(): Pointer<out GdPsiResourceClassSymbol> {
-        val sourcePtr = linkedElement.createSmartPointer()
+        val sourcePtr = sourceElement.createSmartPointer()
         return Pointer {
             sourcePtr.element?.let { GdPsiResourceClassSymbol(it) }
         }
     }
 
     override val directMemberScope: PolySymbolScope
-        get() = gdPsiClassMemberScope(linkedElement)
+        get() = gdPsiClassMemberScope(sourceElement)
 
     private val superClassName: String?
-        get() = GdInheritanceUtil.getExtendedClassId(linkedElement).takeIf { it.isNotBlank() }
+        get() = GdInheritanceUtil.getExtendedClassId(sourceElement).takeIf { it.isNotBlank() }
 
     override fun resolveSuperClassSymbol(): GdClassSymbol? =
-        superClassName?.let { GdSymbolResolverUtil.resolveCanonicalClassSymbol(project, it, linkedElement) }
+        superClassName?.let { GdSymbolResolverUtil.resolveCanonicalClassSymbol(project, it, sourceElement) }
 
     override fun inheritedQueryScopes(): List<PolySymbolScope> =
         GdSymbolClassHierarchyUtil.collectInheritedScopes(this, linkedSetOf(classId))
