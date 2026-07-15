@@ -76,7 +76,7 @@ object GdCompletionUtil {
 
     fun lookup(variable: GdClassVarDeclTl): LookupElement =
         GdLookup.create(
-            variable.name,
+            variable.getName(),
             icon = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER,
             typed = variable.returnType,
             priority = GdLookup.USER_DEFINED,
@@ -84,7 +84,7 @@ object GdCompletionUtil {
 
     fun lookup(variable: GdVarDeclSt): LookupElement =
         GdLookup.create(
-            variable.name,
+            variable.getName(),
             icon = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER,
             typed = variable.returnType,
             priority = GdLookup.LOCAL_USER_DEFINED,
@@ -92,7 +92,7 @@ object GdCompletionUtil {
 
     fun lookup(constant: GdConstDeclTl): LookupElement =
         GdLookup.create(
-            constant.name,
+            constant.getName(),
             icon = GdScriptPluginIcons.GDScriptIcons.CONST_MARKER,
             typed = constant.returnType,
             priority = GdLookup.USER_DEFINED,
@@ -100,7 +100,7 @@ object GdCompletionUtil {
 
     fun lookup(constant: GdConstDeclSt): LookupElement =
         GdLookup.create(
-            constant.name,
+            constant.getName(),
             icon = GdScriptPluginIcons.GDScriptIcons.CONST_MARKER,
             typed = constant.returnType,
             priority = GdLookup.LOCAL_USER_DEFINED,
@@ -123,9 +123,9 @@ object GdCompletionUtil {
     fun lookup(method: GdMethodDeclTl, isCallable: Boolean = false): LookupElement {
         val hasParams = method.paramList?.paramList?.isNotEmpty() == true || method.isVariadic
         return GdLookup.create(
-            method.name,
+            method.getName(),
             handler = if (isCallable) null else GdMethodParenthesesInsertHandler(hasParams),
-            presentable = method.name,
+            presentable = method.getName(),
             typed = method.returnType,
             icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
             priority = GdLookup.USER_DEFINED,

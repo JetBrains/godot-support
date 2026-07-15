@@ -44,7 +44,7 @@ class GdParamAnnotator : Annotator {
         val paramLists = when (declaration) {
             is GdMethodDeclTl -> {
                 if (declaration.isVariadic) return
-                if (declaration.name == "emit") {
+                if (declaration.getName() == "emit") {
                     val signal = PsiGdSignalUtil.getDeclaration(element) ?: return
                     descriptions.add(declaration.shortMethodHeader())
                     arrayOf(signal.paramList?.paramList)
