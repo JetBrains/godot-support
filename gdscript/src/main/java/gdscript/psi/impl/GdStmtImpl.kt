@@ -1,26 +1,18 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import gdscript.psi.GdStmt;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import gdscript.psi.GdStmt
+import gdscript.psi.GdVisitor
 
-public abstract class GdStmtImpl extends ASTWrapperPsiElement implements GdStmt {
+abstract class GdStmtImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdStmt {
+    open fun accept(visitor: GdVisitor) {
+        visitor.visitStmt(this)
+    }
 
-  public GdStmtImpl(@NotNull ASTNode node) {
-    super(node);
-  }
-
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitStmt(this);
-  }
-
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 }

@@ -12,11 +12,11 @@ object GdMethodCompletionUtil {
 
     fun GdMethodDeclTl.methodHeader(wrapParams: Boolean = false): String {
         val params = buildParamHint(this, wrapParams)
-        return "func ${this.name}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}"
+        return "func ${this.getName()}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}"
     }
 
     fun GdMethodDeclTl.shortMethodHeader(): String {
-        return "${this.name}${buildParamHint(this)}"
+        return "${this.getName()}${buildParamHint(this)}"
     }
 
     fun GdFuncDeclEx.methodHeader(wrapParams: Boolean = false): String {
@@ -33,9 +33,9 @@ object GdMethodCompletionUtil {
             val item = it.value
             val params = buildParamHint(item)
             result.addElement(GdLookup.create(
-                "${if (withFunc) "func " else ""}${item.name}$params${if (item.returnType.isNotEmpty()) " -> ${item.returnType}" else ""}:",
+                "${if (withFunc) "func " else ""}${item.getName()}$params${if (item.returnType.isNotEmpty()) " -> ${item.returnType}" else ""}:",
                 tail = params,
-                presentable = item.name,
+                presentable = item.getName(),
                 typed = item.returnType,
                 icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
                 priority = GdLookup.USER_DEFINED,
@@ -46,7 +46,7 @@ object GdMethodCompletionUtil {
     fun GdMethodDeclTl.lookup(): LookupElement {
         val params = buildParamHint(this)
         return GdLookup.create(
-            this.name,
+            this.getName(),
             tail = params,
             typed = this.returnType,
             icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
@@ -57,9 +57,9 @@ object GdMethodCompletionUtil {
     fun GdMethodDeclTl.lookupDeclaration(omitFuncKeyword: Boolean = false, indent: String? = null): LookupElement {
         val params = buildParamHint(this)
         return GdLookup.create(
-            "${if (omitFuncKeyword) "" else "func "}${this.name}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}:${if (indent !== null) "\n$indent" else ""}",
+            "${if (omitFuncKeyword) "" else "func "}${this.getName()}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}:${if (indent !== null) "\n$indent" else ""}",
             tail = params,
-            presentable = this.name,
+            presentable = this.getName(),
             typed = this.returnType,
             icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
             priority = GdLookup.USER_DEFINED,
