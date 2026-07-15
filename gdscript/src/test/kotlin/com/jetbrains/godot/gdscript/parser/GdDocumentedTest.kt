@@ -34,7 +34,7 @@ class GdDocumentedTest : BasePlatformTestCase() {
         // Test method documentation
         // documented_func
         val methods = PsiTreeUtil.findChildrenOfType(file, GdMethodDeclTl::class.java).toList()
-        val documentedFunc = methods.find { it.name == "documented_func" }
+        val documentedFunc = methods.find { it.getName() == "documented_func" }
         assertNotNull(documentedFunc)
         assertEquals("This is a brief.", documentedFunc!!.brief())
         assertEquals("This is a brief.\n\nThis is a description.\nIt has multiple lines.\n\n" +
@@ -52,7 +52,7 @@ class GdDocumentedTest : BasePlatformTestCase() {
         assertTrue(documentedFunc.isExperimental())
 
         // static_func
-        val staticFunc = methods.find { it.name == "static_func" }
+        val staticFunc = methods.find { it.getName() == "static_func" }
         assertNotNull(staticFunc)
         assertEquals("This is a static function.", staticFunc!!.brief())
         assertEquals("This is a static function.\n@experimental", staticFunc.description())
@@ -62,7 +62,7 @@ class GdDocumentedTest : BasePlatformTestCase() {
 
         // Test class variable documentation
         val class_variables = PsiTreeUtil.findChildrenOfType(file, GdClassVarDeclTl::class.java).toList()
-        val xVar = class_variables.find { it.name == "x" }
+        val xVar = class_variables.find { it.getName() == "x" }
         assertNotNull(xVar)
         assertEquals("This is a brief for var x.", xVar!!.brief())
         assertEmpty(xVar.tutorials())
@@ -72,7 +72,7 @@ class GdDocumentedTest : BasePlatformTestCase() {
 
         // Test local variable documentation
         val local_variables = PsiTreeUtil.findChildrenOfType(documentedFunc, GdVarDeclSt::class.java).toList()
-        val yVar = local_variables.find { it.name == "y" }
+        val yVar = local_variables.find { it.getName() == "y" }
         assertNotNull(yVar)
         assertEmpty(yVar!!.brief())
         assertEmpty(yVar.description())
@@ -81,7 +81,7 @@ class GdDocumentedTest : BasePlatformTestCase() {
         assertFalse(yVar.isDeprecated())
         assertFalse(yVar.isExperimental())
 
-        val zVar = local_variables.find { it.name == "z" }
+        val zVar = local_variables.find { it.getName() == "z" }
         assertNotNull(zVar)
         assertEquals("This is a brief for var z.", zVar!!.brief())
         assertEquals("This is a brief for var z.\n\nThis is a description for var z.", zVar.description())

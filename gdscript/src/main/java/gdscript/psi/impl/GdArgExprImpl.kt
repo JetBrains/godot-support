@@ -1,41 +1,27 @@
-package gdscript.psi.impl;
+package gdscript.psi.impl
 
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
-import com.intellij.lang.ASTNode;
-import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.util.PsiTreeUtil;
-import gdscript.psi.GdArgExpr;
-import gdscript.psi.GdExpr;
-import gdscript.psi.GdPsiUtils;
-import gdscript.psi.GdVisitor;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.ASTNode
+import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdArgExpr
+import gdscript.psi.GdExpr
+import gdscript.psi.GdPsiUtils.getReturnType
+import gdscript.psi.GdVisitor
 
-public class GdArgExprImpl extends ASTWrapperPsiElement implements GdArgExpr {
+class GdArgExprImpl(node: ASTNode) : ASTWrapperPsiElement(node), GdArgExpr {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitArgExpr(this)
+    }
 
-  public GdArgExprImpl(@NotNull ASTNode node) {
-    super(node);
-  }
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
 
-  public void accept(@NotNull GdVisitor visitor) {
-    visitor.visitArgExpr(this);
-  }
+    override val expr: GdExpr
+        get() = notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr::class.java))
 
-  @Override
-  public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof GdVisitor) accept((GdVisitor)visitor);
-    else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public GdExpr getExpr() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, GdExpr.class));
-  }
-
-  @Override
-  @NotNull
-  public String getReturnType() {
-    return GdPsiUtils.getReturnType(this);
-  }
-
+    override val returnType: String
+        get() = getReturnType(this)
 }

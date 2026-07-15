@@ -1,14 +1,9 @@
-package gdscript.psi;
+package gdscript.psi
 
-import org.jetbrains.annotations.NotNull;
-import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElement
 
-public interface GdArgExpr extends PsiElement {
+interface GdArgExpr : PsiElement {
+    val expr: GdExpr
 
-  @NotNull
-  GdExpr getExpr();
-
-  @NotNull
-  String getReturnType();
-
+    val returnType: String
 }
