@@ -46,6 +46,7 @@ internal class GdQualifiedRefIdResolveScope(private val qualifier: GdExpr) : Pol
                         // PSI-only
                         GdPolySymbolKind.LOADED_CLASS_ALIAS,
                         GdPolySymbolKind.AUTOLOAD,
+                        GdPolySymbolKind.DICT_KEY,
                     )
                 )
             }
