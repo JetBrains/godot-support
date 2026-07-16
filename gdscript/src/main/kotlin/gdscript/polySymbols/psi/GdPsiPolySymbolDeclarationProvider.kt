@@ -18,6 +18,7 @@ import gdscript.psi.GdEnumValueNmi
 import gdscript.psi.GdExpr
 import gdscript.psi.GdFile
 import gdscript.psi.GdForSt
+import gdscript.psi.GdKeyNmi
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdMethodIdNmi
 import gdscript.psi.GdParam
@@ -64,6 +65,7 @@ class GdPsiPolySymbolDeclarationProvider : PolySymbolDeclarationProvider {
         is GdSignalIdNmi -> listOf(GdPsiSignalSymbol(element))
         is GdEnumDeclNmi -> listOf(GdPsiEnumSymbol(element))
         is GdEnumValueNmi -> listOf(GdPsiEnumValueSymbol(element))
+        is GdKeyNmi -> listOf(GdPsiDictKeySymbol(element))
 
         is GdVarNmi -> when (val parent = element.parent) {
             is GdClassVarDeclTl -> buildList {
