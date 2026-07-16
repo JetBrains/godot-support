@@ -7,13 +7,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiRecursiveElementVisitor
 import com.intellij.psi.createSmartPointer
+import com.intellij.psi.util.PsiTreeUtil
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.psi.GdPsiBindingPatternSymbol
 import gdscript.polySymbols.psi.GdPsiForVariableSymbol
 import gdscript.polySymbols.psi.GdPsiLocalConstantSymbol
 import gdscript.polySymbols.psi.GdPsiLocalVariableSymbol
 import gdscript.polySymbols.psi.GdPsiParameterSymbol
-import gdscript.psi.GdBindingPattern
 import gdscript.psi.GdConstDeclSt
 import gdscript.psi.GdElifSt
 import gdscript.psi.GdElseSt
@@ -23,7 +23,9 @@ import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdIfSt
 import gdscript.psi.GdMatchBlock
 import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdPattern
 import gdscript.psi.GdVarDeclSt
+import gdscript.psi.GdVarNmi
 import gdscript.psi.GdWhileSt
 
 /**
@@ -96,8 +98,14 @@ class GdLocalSymbolsStructuredScope(location: PsiElement) : PolySymbolStructured
                     element.varNmi?.let { holder.currentScope { addSymbol(GdPsiLocalConstantSymbol(it)) } }
                     false
                 }
-                is GdBindingPattern -> {
-                    holder.currentScope { addSymbol(GdPsiBindingPatternSymbol(element.varNmi)) }
+                is GdPattern -> {
+                    // A `var x` match-pattern parses as a bare GdVarNmi directly under GdPattern -
+                    // there is no separate GdBindingPattern node for this case (array/dict
+                    // sub-patterns and plain expressions are the other, mutually exclusive shapes
+                    // GdPattern can wrap, and none of them have a GdVarNmi as a direct child).
+                    PsiTreeUtil.getChildOfType(element, GdVarNmi::class.java)?.let {
+                        holder.currentScope { addSymbol(GdPsiBindingPatternSymbol(it)) }
+                    }
                     false
                 }
                 else -> false
