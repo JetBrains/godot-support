@@ -41,4 +41,7 @@ object GdPolySymbolKind {
     val LOCAL_VARIABLE: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "local-variable"]
     val LOCAL_CONSTANT: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "local-constant"]
     val PARAMETER: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "parameter"]
+
+    /** A dictionary literal's key, reachable via attribute access on the dictionary (`dict.key1`). */
+    val DICT_KEY: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "dict-key"]
 }
