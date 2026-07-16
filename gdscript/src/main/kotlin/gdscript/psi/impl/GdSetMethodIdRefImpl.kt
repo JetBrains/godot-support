@@ -1,8 +1,8 @@
 package gdscript.psi.impl
 
 import com.intellij.lang.ASTNode
-import com.intellij.polySymbols.references.PolySymbolOwnReferences
-import com.intellij.polySymbols.references.PolySymbolOwnReferencesHost
+import com.intellij.model.psi.PsiSymbolReference
+import com.intellij.polySymbols.references.polySymbolOwnReferences
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.polySymbols.GdPolySymbolKind.METHOD
@@ -11,8 +11,9 @@ import gdscript.polySymbols.scope.hasModifier
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdSetMethodIdRef
 import gdscript.psi.GdVisitor
+import org.jetbrains.annotations.Unmodifiable
 
-class GdSetMethodIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdSetMethodIdRef, PolySymbolOwnReferencesHost {
+class GdSetMethodIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdSetMethodIdRef {
     fun accept(visitor: GdVisitor) {
         visitor.visitSetMethodIdRef(this)
     }
@@ -22,10 +23,13 @@ class GdSetMethodIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdSetMethodI
         else super.accept(visitor)
     }
 
-    override fun buildOwnReferences(builder: PolySymbolOwnReferences.Builder) {
-        val requireStatic = PsiTreeUtil.getStubOrPsiParentOfType(this, GdClassVarDeclTl::class.java)?.isStatic == true
-        builder.fromNameMatchQuery(METHOD, text) { symbol ->
-            !requireStatic || symbol.hasModifier(STATIC)
+    override fun getOwnReferences(): @Unmodifiable Collection<PsiSymbolReference> =
+        polySymbolOwnReferences(this) {
+            val requireStatic = PsiTreeUtil.getStubOrPsiParentOfType(
+                this@GdSetMethodIdRefImpl, GdClassVarDeclTl::class.java
+            )?.isStatic == true
+            resolveFromNameMatchQuery(METHOD, text) { symbol ->
+                !requireStatic || symbol.hasModifier(STATIC)
+            }
         }
-    }
 }
