@@ -4,6 +4,7 @@ import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.testFramework.HybridTestMode
 import com.intellij.polySymbols.testFramework.PolySymbolsTestCase
 import com.intellij.polySymbols.testFramework.resolveSymbolReference
+import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
 import com.jetbrains.godot.getBaseTestDataPath
 import kotlin.io.path.pathString
 
@@ -34,7 +35,13 @@ abstract class GdTestCase(override val testCasePath: String) : PolySymbolsTestCa
         val dirName = chosenTestName ?: testName
         val fileName = (chosenTestName ?: testName).plus(".$defaultExtension")
         doConfiguredTest(dirName = dirName, configureFileName = fileName) {
-            val symbol = assertInstanceOf(myFixture.resolveSymbolReference(signature), expectedClass)
+            // Unwrap PolySymbolDelegate wrappers (e.g. GdAliasedNameSymbol, used wherever the
+            // querying text differs from the resolved symbol's own name) the same way production
+            // code does via GdSymbolResolverUtil.resolveSymbolReferences() - resolveSymbolReference()
+            // itself does not.
+            val referenced = myFixture.resolveSymbolReference(signature)
+            val resolved = (referenced as? PolySymbol)?.unwrapAllDelegates() ?: referenced
+            val symbol = assertInstanceOf(resolved, expectedClass)
             assertEquals(expectedName, symbol.name)
         }
     }
