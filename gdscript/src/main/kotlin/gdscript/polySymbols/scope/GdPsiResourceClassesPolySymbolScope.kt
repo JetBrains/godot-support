@@ -10,12 +10,10 @@ import com.intellij.polySymbols.query.PolySymbolNameMatchQueryParams
 import com.intellij.polySymbols.query.PolySymbolQueryStack
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.match
-import com.intellij.psi.PsiElement
-import com.intellij.psi.createSmartPointer
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdFileResIndex
-import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.psi.GdAliasedNameSymbol
 import gdscript.polySymbols.psi.GdPsiClassSymbolFactory
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
@@ -26,55 +24,55 @@ import gdscript.utils.VirtualFileUtil.getPsiFile
  */
 class GdPsiResourceClassesPolySymbolScope(
     private val project: Project,
-    private val location: PsiElement? = null,
 ) : PolySymbolScope {
 
-    override fun createPointer(): Pointer<out PolySymbolScope> {
-        val locationPointer = location?.createSmartPointer()
-        return Pointer { GdPsiResourceClassesPolySymbolScope(project, locationPointer?.element) }
-    }
+    override fun createPointer(): Pointer<out PolySymbolScope> =
+        Pointer.hardPointer(this)
 
-
-    private fun collectMatchingSymbols(name: String): List<GdClassSymbol> {
-        return GdFileResIndex.getFiles(name.trim('"', '\''), project)
+    private fun collectMatchingSymbols(name: String): List<PolySymbol> =
+        GdFileResIndex.getFiles(name.trim('"', '\''), project)
+            .asSequence()
             .mapNotNull { it.getPsiFile(project) as? GdFile }
             .mapNotNull { GdPsiClassSymbolFactory.create(it) }
-    }
+            .map { if (it.name == name) it else GdAliasedNameSymbol(it, name) }
+            .toList()
 
-    private fun collectAllSymbols(): List<PolySymbol> {
-        return GdFileResIndex.getNonEmptyKeys(project)
+    private fun collectAllSymbols(): List<PolySymbol> =
+        GdFileResIndex.getNonEmptyKeys(project)
+            .asSequence()
             .flatMap { GdFileResIndex.getFiles(it, project) }
             .mapNotNull { it.getPsiFile(project) as? GdFile }
             .filter { PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java) == null }
             .mapNotNull { GdPsiClassSymbolFactory.create(it) }
-    }
-
+            .toList()
 
 
     override fun getMatchingSymbols(
         qualifiedName: PolySymbolQualifiedName,
         params: PolySymbolNameMatchQueryParams,
         stack: PolySymbolQueryStack,
-    ): List<PolySymbol> {
-        if (qualifiedName.kind != GdPolySymbolKind.RESOURCE_CLASS) return emptyList()
-        return collectMatchingSymbols(qualifiedName.name)
-            .flatMap { it.match(it.name, params, stack) }
-    }
+    ): List<PolySymbol> =
+        if (qualifiedName.kind != GdPolySymbolKind.RESOURCE_CLASS)
+            emptyList()
+        else
+            collectMatchingSymbols(qualifiedName.name)
+                .flatMap { it.match(it.name, params, stack) }
 
     override fun getSymbols(
         kind: PolySymbolKind,
         params: PolySymbolListSymbolsQueryParams,
         stack: PolySymbolQueryStack,
-    ): List<PolySymbol> {
-        if (kind != GdPolySymbolKind.RESOURCE_CLASS) return emptyList()
-        return collectAllSymbols()
-    }
+    ): List<PolySymbol> =
+        if (kind != GdPolySymbolKind.RESOURCE_CLASS)
+            emptyList()
+        else
+            collectAllSymbols()
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is GdPsiResourceClassesPolySymbolScope) return false
-        return project == other.project && location == other.location
-    }
+    override fun equals(other: Any?): Boolean =
+        this === other
+            || other is GdPsiResourceClassesPolySymbolScope
+            && project == other.project
 
-    override fun hashCode(): Int = 31 * project.hashCode() + (location?.hashCode() ?: 0)
+    override fun hashCode(): Int =
+        31 * project.hashCode()
 }
