@@ -1,11 +1,8 @@
 package gdscript.polySymbols.psi
 
-import com.intellij.model.Pointer
-import com.intellij.model.Symbol
 import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
-import com.intellij.polySymbols.utils.PolySymbolDelegate
 import com.intellij.polySymbols.utils.unwrapMatchedSymbols
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
@@ -17,6 +14,8 @@ import gdscript.polySymbols.scope.gdSdkGlobalPolySymbolScope
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassVarDeclTl
+import gdscript.psi.GdEnumDeclTl
+import gdscript.psi.GdEnumValue
 import gdscript.psi.GdExpr
 import gdscript.psi.GdFile
 import gdscript.psi.GdPsiUtils
@@ -78,7 +77,7 @@ object GdPsiPolySymbolUtil {
      * `_init`), so it needs this dedicated lookup — mirroring the legacy resolver's identical
      * `element.text == "new" && resolved.isConstructor` special case.
      *
-     * The result is wrapped in [GdNewKeywordSymbol]: own-reference ranges are computed from the
+     * The result is wrapped in [GdAliasedNameSymbol]: own-reference ranges are computed from the
      * referenced symbol's `name.length`, and the constructor's real name (`_init`, 5 chars) is
      * longer than the `new` token (3 chars) it's being referenced from, which would overflow the
      * reference's range into the call's parentheses. [GdSymbolResolverUtil.resolveSymbolReferences]
@@ -97,27 +96,26 @@ object GdPsiPolySymbolUtil {
             .flatMap { it.unwrapMatchedSymbols() }
             .filterIsInstance<GdPsiConstructorSymbol>()
             .firstOrNull() ?: return null
-        return GdNewKeywordSymbol(constructor)
+        return GdAliasedNameSymbol(constructor, "new")
     }
 
     /**
-     * Reports `new` as its own name while delegating everything else (declaration, search/rename
-     * targets, resolution equivalence) to the real constructor symbol. See [resolveConstructorSymbol].
+     * Resolves an unqualified reference inside an enum value's own initializer expression (e.g.
+     * `PASSED` in `enum { PASS1 = 0, PASSED = PASS1 + 1 }`) to an *earlier* sibling value of the
+     * same enum. GDScript allows an enum value to reference sibling values declared before it,
+     * but not ones declared after (`CANNOT = OK` where `OK` comes later stays unresolved) — order
+     * matters here, unlike locals, so this can't reuse
+     * [gdscript.polySymbols.scope.GdLocalSymbolsStructuredScope]'s "visible regardless of textual
+     * order" scope-by-containment model. Returns `null` when [element] isn't
+     * inside an enum value's expression, or when no earlier sibling matches its text.
      */
-    private class GdNewKeywordSymbol(override val delegate: GdPsiConstructorSymbol) : PolySymbolDelegate<GdPsiConstructorSymbol> {
-        override val name: String get() = "new"
-
-        override fun isEquivalentTo(symbol: Symbol): Boolean =
-            symbol === this
-                || delegate.isEquivalentTo(symbol)
-                || (symbol is GdNewKeywordSymbol && delegate.isEquivalentTo(symbol.delegate))
-
-        override fun createPointer(): Pointer<out GdNewKeywordSymbol> {
-            val delegatePtr = delegate.createPointer()
-            return Pointer {
-                delegatePtr.dereference()?.let { GdNewKeywordSymbol(it) }
-            }
-        }
+    fun resolveEarlierEnumValueSymbol(element: GdRefIdRef): GdPsiEnumValueSymbol? {
+        val enumValue = PsiTreeUtil.getParentOfType(element, GdEnumValue::class.java) ?: return null
+        val enumDecl = PsiTreeUtil.getParentOfType(enumValue, GdEnumDeclTl::class.java) ?: return null
+        return enumDecl.enumValueList
+            .takeWhile { it != enumValue }
+            .find { it.enumValueNmi.name == element.text }
+            ?.let { GdPsiEnumValueSymbol(it.enumValueNmi) }
     }
 
     /**

@@ -12,6 +12,7 @@ import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdConstDeclTl
 import gdscript.psi.GdEnumDeclTl
+import gdscript.psi.GdEnumValue
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdSignalDeclTl
 
@@ -27,6 +28,7 @@ fun gdPsiClassMemberScope(classElement: PsiElement): PolySymbolScope =
             GdPolySymbolKind.PROPERTY,
             GdPolySymbolKind.CONSTANT,
             GdPolySymbolKind.ENUM,
+            GdPolySymbolKind.ENUM_VALUE,
             GdPolySymbolKind.SIGNAL,
             GdPolySymbolKind.LOADED_CLASS_ALIAS,
         )
@@ -49,7 +51,17 @@ fun gdPsiClassMemberScope(classElement: PsiElement): PolySymbolScope =
                 .forEach { it.varNmi?.let { id -> add(GdPsiConstantSymbol(id)) } }
 
             PsiTreeUtil.getStubChildrenOfTypeAsList(element, GdEnumDeclTl::class.java)
-                .forEach { it.enumDeclNmi?.let { id -> add(GdPsiEnumSymbol(id)) } }
+                .forEach { enumDecl ->
+                    val id = enumDecl.enumDeclNmi
+                    if (id != null) {
+                        add(GdPsiEnumSymbol(id))
+                    } else {
+                        // Unnamed `enum { A, B }` blocks expose their values directly in the
+                        // enclosing class scope - there is no enum name to qualify through.
+                        PsiTreeUtil.getChildrenOfTypeAsList(enumDecl, GdEnumValue::class.java)
+                            .forEach { add(GdPsiEnumValueSymbol(it.enumValueNmi)) }
+                    }
+                }
 
             PsiTreeUtil.getStubChildrenOfTypeAsList(element, GdSignalDeclTl::class.java)
                 .forEach { it.signalIdNmi?.let { id -> add(GdPsiSignalSymbol(id)) } }
