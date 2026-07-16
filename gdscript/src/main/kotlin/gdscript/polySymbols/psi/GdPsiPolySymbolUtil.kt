@@ -1,10 +1,14 @@
 package gdscript.polySymbols.psi
 
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
+import com.intellij.polySymbols.query.PolySymbolScope
+import com.intellij.polySymbols.query.polySymbolScopeCached
 import com.intellij.polySymbols.utils.unwrapMatchedSymbols
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.polySymbols.GdPolySymbolKind
@@ -18,6 +22,7 @@ import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdEnumValue
 import gdscript.psi.GdExpr
 import gdscript.psi.GdFile
+import gdscript.psi.GdPrimaryEx
 import gdscript.psi.GdPsiUtils
 import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdVarDeclSt
@@ -25,6 +30,17 @@ import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassUtil
 
 object GdPsiPolySymbolUtil {
+
+    /**
+     * The range of [text] excluding a matching pair of surrounding quotes, if present (e.g. for a
+     * resource-path inheritance clause's `"res://base.gd"`, or a string-literal dictionary key's
+     * `"key1"`) - or the full range otherwise.
+     */
+    fun quotedContentRange(text: String): TextRange =
+        if (text.length >= 2 && (text[0] == '"' || text[0] == '\'') && text.last() == text[0])
+            TextRange(1, text.length - 1)
+        else
+            TextRange(0, text.length)
 
     fun getOwnerClassId(source: PsiElement): String {
         val ownerElement = getOwnerClassElement(source)
@@ -187,5 +203,25 @@ object GdPsiPolySymbolUtil {
             addRootScope(gdSdkGlobalPolySymbolScope(project))
         }
         return GdPolySymbolQueriesUtil.getSdkPropertySymbol(executor, GdKeywords.GLOBAL_SCOPE, name) == null
+    }
+
+    /**
+     * Scope exposing a dictionary literal's own keys as [GdPolySymbolKind.DICT_KEY] symbols, so
+     * that `dict.key1` resolves via [GdRefIdRef]'s usual [GdPolySymbolKind.QUALIFIABLE_SYMBOLS]
+     * bridging. [anchor] is the declaration/value PSI the dictionary literal is a direct child of -
+     * a var/const declaration statement for the first hop (`dict.key1`), or a [gdscript.psi.GdKeyValue]
+     * for chaining (`dict.key1.key11`, where `key1`'s own [GdPsiDictKeySymbol.sourceElement].parent
+     * is its `GdKeyValue`). Returns `null` when [anchor] has no dictionary-literal child at all.
+     */
+    fun dictKeyQueryScope(anchor: PsiElement?): PolySymbolScope? {
+        val primaryEx = PsiTreeUtil.getStubChildOfType(anchor, GdPrimaryEx::class.java) ?: return null
+        val dictDecl = primaryEx.dictDecl ?: return null
+        return polySymbolScopeCached(dictDecl) {
+            provides(GdPolySymbolKind.DICT_KEY)
+            initialize {
+                cacheDependencies(PsiModificationTracker.MODIFICATION_COUNT)
+                element.keyValueList.forEach { kv -> kv.keyNmi?.let { add(GdPsiDictKeySymbol(it)) } }
+            }
+        }
     }
 }
