@@ -27,4 +27,7 @@ fun PolySymbol.hasStaticInstanceDistinction(): Boolean =
     unwrapMatchedSymbols().any { it.kind in STATIC_ELIGIBLE_KINDS }
 
 fun List<PolySymbolCodeCompletionItem>.filterOutNonStaticCompletionItems(): List<PolySymbolCodeCompletionItem> =
-    filter { it.symbol?.hasModifier(GdPolySymbolModifier.STATIC) == true }
+    filter { item ->
+        val symbol = item.symbol ?: return@filter false
+        !symbol.hasStaticInstanceDistinction() || symbol.hasModifier(GdPolySymbolModifier.STATIC)
+    }
