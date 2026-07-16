@@ -39,7 +39,7 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                         listOf(
                             gdSdkClassesPolySymbolScope(ref.project),
                             GdPsiClassesPolySymbolScope(ref.project, ref),
-                            GdPsiResourceClassesPolySymbolScope(ref.project, ref),
+                            GdPsiResourceClassesPolySymbolScope(ref.project),
                             //gdPsiAutoloadScope(ref.project),
                             polySymbolScope {
                                 provides(GdPolySymbolKind.INHERITANCE_SYMBOLS)
@@ -127,6 +127,7 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                                                         from(GdPolySymbolKind.PROPERTY)
                                                         from(GdPolySymbolKind.CONSTANT)
                                                         from(GdPolySymbolKind.ENUM)
+                                                        from(GdPolySymbolKind.ENUM_VALUE)
                                                         from(GdPolySymbolKind.SIGNAL)
 
                                                         // PSI-only
