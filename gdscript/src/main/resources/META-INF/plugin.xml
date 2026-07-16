@@ -130,7 +130,6 @@
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdTypeHintReferenceContributor"/>
     <psi.referenceContributor language="GdScript"
                               implementation="gdscript.completion.GdSetGetMethodIdReferenceContributor"/>
-    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdRefIdReferenceContributor"/>
     <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdResourceReferenceContributor"/>
     <!-- Tscn, Project, Config -->
     <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceReferenceContributor"/>
@@ -166,6 +165,12 @@
                      groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name"
                      groupPathKey="inspection.group.name"
                      implementationClass="gdscript.inspection.GdMethodValidationInspection"/>
+    <!-- Never enabled - see gdscript.inspection.GdUnrecognizedIdentifierInspection's doc comment -->
+    <localInspection language="GdScript" shortName="GdUnrecognizedIdentifier" enabledByDefault="false" level="WARNING"
+                     bundle="messages.GdScriptBundle" key="inspection.check.unrecognized.identifier"
+                     groupBundle="messages.GdScriptBundle" groupKey="inspection.group.check.name"
+                     groupPathKey="inspection.group.name"
+                     implementationClass="gdscript.inspection.GdUnrecognizedIdentifierInspection"/>
     <!-- LSP is more accurate than inspections for unused checks, so we hide then by level="INFORMATION", while preserving Quick Fixes -->
     <localInspection language="GdScript" shortName="GdUnusedMethod" enabledByDefault="true" level="INFORMATION"
                      bundle="messages.GdScriptBundle" key="inspection.check.unused.method"
@@ -320,11 +325,14 @@
     <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdInheritanceIdRefCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdRefIdRefCompletionContributor"/>
     <completion.contributor   language="GdScript" implementationClass="gdscript.polySymbols.completion.GdGetSetMethodIdRefCompletionContributor"/>
-    <polySymbols.psiLinkedSymbol host="gdscript.psi.GdNamedIdElement"/>
-    <polySymbols.psiLinkedSymbol host="gdscript.psi.GdFile"/>
     <polySymbols.declarationProvider implementation="gdscript.polySymbols.sdk.GdSdkPolySymbolDeclarationProvider"/>
     <polySymbols.declarationProvider implementation="gdscript.polySymbols.psi.GdPsiPolySymbolDeclarationProvider"/>
     <polySymbols.highlightingCustomizer implementation="gdscript.polySymbols.highlighting.GdPolySymbolHighlightingCustomizer"/>
+    <!-- Suppresses the platform's generic unresolved-reference WARNING for GdRefIdRef -
+         gdscript.annotator.GdRefIdAnnotator is the sole real diagnostic; see
+         gdscript.inspection.GdUnrecognizedIdentifierInspection's doc comment -->
+    <polySymbols.inspectionToolMapping symbolNamespace="GDScript" symbolKind="qualifiable-symbol"
+                                       problemKind="UnknownSymbol" toolShortName="GdUnrecognizedIdentifier"/>
     <projectService serviceInterface="gdscript.library.GdSdkFilesProvider"
                     serviceImplementation="gdscript.library.GdSdkFilesProviderImpl" />
     <!-- End Poly Symbols -->
