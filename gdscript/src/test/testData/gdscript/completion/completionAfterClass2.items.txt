@@ -1,1 +1,1 @@
-C1 (typeText=null; priority=200.0)
+C1 (typeText=null; priority=20.0; typeGreyed)
