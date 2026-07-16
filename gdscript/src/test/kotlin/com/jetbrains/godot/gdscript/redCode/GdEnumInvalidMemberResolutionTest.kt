@@ -2,6 +2,7 @@ package com.jetbrains.godot.gdscript.redCode
 
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.polySymbols.testFramework.psiSymbolReferences
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.TestModeFlags
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -30,10 +31,10 @@ class GdEnumInvalidMemberResolutionTest : BasePlatformTestCase() {
         val refs = PsiTreeUtil.collectElementsOfType(psiFile, GdRefIdRef::class.java)
         val target = refs.last { it.text == "WRONG" }
 
-        val ref = target.references.firstOrNull()
+        val ref = target.psiSymbolReferences().firstOrNull()
         assertNotNull("Expected a reference object for enum member usage", ref)
 
-        val resolved = ref!!.resolve()
+        val resolved = ref!!.resolveReference().firstOrNull()
         assertNull("Invalid enum member should not resolve", resolved)
 
         // Also ensure annotator marks this as an error
