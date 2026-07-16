@@ -1,4 +1,2 @@
-B1 (typeText=null; priority=200.0)
-ppa1 (typeText=''; priority=200.0)
 B1 (typeText=null; priority=20.0; typeGreyed)
 ppa1 (typeText=null; priority=20.0; typeGreyed)
