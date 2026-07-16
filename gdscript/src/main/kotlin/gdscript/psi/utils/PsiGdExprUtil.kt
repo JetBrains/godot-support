@@ -231,8 +231,8 @@ object PsiGdExprUtil {
                     GdKeywords.TRUE -> return GdKeywords.BOOL
                     GdKeywords.FALSE -> return GdKeywords.BOOL
                     GdKeywords.NULL -> return GdKeywords.NULL
-                    GdKeywords.NAN -> return "inf"
-                    GdKeywords.INF -> return "nan"
+                    GdKeywords.NAN -> return GdKeywords.FLOAT
+                    GdKeywords.INF -> return GdKeywords.FLOAT
                 }
 
                 val elementType = expr.firstChild?.elementType
