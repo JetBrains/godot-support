@@ -2,11 +2,11 @@ package gdscript.psi.impl
 
 import com.intellij.lang.ASTNode
 import com.intellij.model.psi.PsiSymbolReference
-import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.references.polySymbolOwnReferences
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.PsiFile
 import gdscript.polySymbols.GdPolySymbolKind.INHERITANCE_SYMBOLS
+import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.quotedContentRange
 import gdscript.psi.GdInheritanceIdRef
 import gdscript.psi.GdPsiUtils.getPsiFile
 import gdscript.psi.GdPsiUtils.isClassName
@@ -42,13 +42,5 @@ class GdInheritanceIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdInherita
         return polySymbolOwnReferences(this) {
             resolveFromNameMatchQuery(INHERITANCE_SYMBOLS, name, range)
         }
-    }
-
-    private companion object {
-        fun quotedContentRange(text: String): TextRange =
-            if (text.length >= 2 && (text[0] == '"' || text[0] == '\'') && text.last() == text[0])
-                TextRange(1, text.length - 1)
-            else
-                TextRange(0, text.length)
     }
 }
