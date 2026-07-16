@@ -2,6 +2,7 @@ package com.jetbrains.godot.gdscript.highlight
 
 import com.intellij.testFramework.TestModeFlags
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.annotator.GD_ANNOTATOR_ORIGINAL_SEVERITY
 import org.junit.Ignore
@@ -11,7 +12,7 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class ErrorsHighlightingTest : BasePlatformTestCase() {
+class GdErrorsHighlightingTest : GdTestCaseWithSdk("highlighting") {
 
     override fun setUp() {
         super.setUp()
@@ -19,27 +20,15 @@ class ErrorsHighlightingTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testNestedClassErrors() {
-        myFixture.testHighlighting("${getTestName(false)}.gd")
-    }
+    fun testNestedClassErrors() = doHighlightingTest(dir = false)
 
     @Test
-    fun testLambdaCallableMultiline() {
-        myFixture.testHighlighting("${getTestName(false)}.gd");
-    }
+    fun testLambdaCallableMultiline() = doHighlightingTest(dir = false)
 
     @Test
     @Ignore("Bug in GdExprUtil.typeAccepts")
-    fun testInvalidReturns() {
-        myFixture.testHighlighting("${getTestName(false)}.gd")
-    }
+    fun testInvalidReturns() = doHighlightingTest(dir = false)
 
     @Test
-    fun testVariadicFunctions(){
-        myFixture.testHighlighting("${getTestName(false)}.gd")
-    }
-
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/highlighting").pathString
-    }
+    fun testVariadicFunctions() = doHighlightingTest(dir = false)
 }
