@@ -3,6 +3,7 @@ package tscn.toolWindow
 import GdScriptPluginIcons
 import com.intellij.openapi.project.Project
 import com.intellij.ui.JBColor
+import com.intellij.ui.render.RenderingUtil
 import com.intellij.ui.scale.JBUIScale
 import gdscript.GdIcon
 import tscn.toolWindow.model.TscnSceneTreeNode
@@ -41,6 +42,10 @@ class TscnSceneCellRenderer : DefaultTreeCellRenderer {
     ): Component {
 
         super.getTreeCellRendererComponent(tree, value, selected, expanded, leaf, row, hasFocus)
+
+        backgroundNonSelectionColor = RenderingUtil.getBackground(tree, false)
+        backgroundSelectionColor = RenderingUtil.getSelectionBackground(tree)
+
         val panel = JPanel(BorderLayout())
         panel.add(this, BorderLayout.WEST)
 
