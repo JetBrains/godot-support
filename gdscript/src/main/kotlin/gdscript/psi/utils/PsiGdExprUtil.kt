@@ -320,7 +320,7 @@ object PsiGdExprUtil {
                             }
                         }
 
-                        is GdAutoload -> element.key
+                        is GdAutoload -> GdClassUtil.getOwningClassName(element.element)
                         is GdClassDeclTl -> GdClassUtil.getFullClassId(element)
                         else -> run {
                             // Resolve through Poly Symbol if nothing found through PSI
