@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="int" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<constructors>
+		<constructor name="int">
+			<return type="int" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="int">
+			<return type="int" />
+			<param index="0" name="from" type="int" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="int">
+			<return type="int" />
+			<param index="0" name="from" type="String" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="int">
+			<return type="int" />
+			<param index="0" name="from" type="bool" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="int">
+			<return type="int" />
+			<param index="0" name="from" type="float" />
+			<description>
+			</description>
+		</constructor>
+	</constructors>
+	<operators>
+		<operator name="operator !=">
+			<return type="bool" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator !=">
+			<return type="bool" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator %">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &amp;">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator *">
+			<return type="Color" />
+			<param index="0" name="right" type="Color" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator *">
+			<return type="Quaternion" />
+			<param index="0" name="right" type="Quaternion" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator *">
+			<return type="Vector2" />
+			<param index="0" name="right" type="Vector2" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator *">
+			<return type="Vector2i" />
+			<param index="0" name="right" type="Vector2i" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator *">
+			<return type="Vector3" />
+			<param index="0" name="right" type="Vector3" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator *">
+			<return type="Vector3i" />
+			<param index="0" name="right" type="Vector3i" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator *">
+			<return type="Vector4" />
+			<param index="0" name="right" type="Vector4" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator *">
+			<return type="Vector4i" />
+			<param index="0" name="right" type="Vector4i" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator *">
+			<return type="float" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator *">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator **">
+			<return type="float" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator **">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator +">
+			<return type="float" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator +">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator -">
+			<return type="float" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator -">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator /">
+			<return type="float" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator /">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &lt;">
+			<return type="bool" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &lt;">
+			<return type="bool" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &lt;&lt;">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &lt;=">
+			<return type="bool" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &lt;=">
+			<return type="bool" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator ==">
+			<return type="bool" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator ==">
+			<return type="bool" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &gt;">
+			<return type="bool" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &gt;">
+			<return type="bool" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &gt;=">
+			<return type="bool" />
+			<param index="0" name="right" type="float" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &gt;=">
+			<return type="bool" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &gt;&gt;">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator ^">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator unary+">
+			<return type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator unary-">
+			<return type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator |">
+			<return type="int" />
+			<param index="0" name="right" type="int" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator ~">
+			<return type="int" />
+			<description>
+			</description>
+		</operator>
+	</operators>
+</class>
