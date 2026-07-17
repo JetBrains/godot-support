@@ -26,6 +26,7 @@ abstract class GdPolySymbol : PolySymbol {
      *
      * For PSI symbols it's the leaf (simple) name.
      */
+    @PolySymbol.Property(GdDeclaringClassNameProperty::class)
     abstract val declaringClassName: String
 
     /** Stable identity key for the declaring class - dotted classId for PSI, className for SDK. */
