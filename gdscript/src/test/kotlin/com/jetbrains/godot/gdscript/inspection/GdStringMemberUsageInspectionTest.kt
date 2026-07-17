@@ -1,38 +1,16 @@
 package com.jetbrains.godot.gdscript.inspection
 
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.inspection.GdStringNameMemberCallInspection
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.nio.file.Files
-import java.nio.file.Path
-import kotlin.io.path.exists
-import kotlin.io.path.isRegularFile
-import kotlin.io.path.pathString
 
 @RunWith(JUnit4::class)
-class GdStringMemberUsageInspectionTest : BasePlatformTestCase() {
-    private fun getSdkPath(): Path {
-        val path = getBaseTestDataPath().resolve("testData/gdscript/sdk-gen")
-        assertTrue(path.exists())
-        return path
-    }
-
-    private fun setupSdkFiles() {
-        val sdkRoot = getSdkPath()
-        Files.walk(sdkRoot)
-            .filter { it.isRegularFile() && it.fileName.toString().endsWith(".gd") }
-            .forEach { file ->
-                val rel = sdkRoot.relativize(file).toString()
-                myFixture.copyFileToProject(file.pathString, "sdk/$rel")
-            }
-    }
+class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
 
     override fun setUp() {
         super.setUp()
-        setupSdkFiles()
         myFixture.enableInspections(GdStringNameMemberCallInspection())
     }
 
@@ -176,8 +154,14 @@ class GdStringMemberUsageInspectionTest : BasePlatformTestCase() {
     @Test
     fun testNoFixForUnresolvedMethod() {
         for (method in multiParamQfMethods) {
+            // Warm-up statement: resolving an SDK class symbol for the very first time in a fresh
+            // file can otherwise trip a pre-existing, unrelated PolySymbolHighlightingAnnotator
+            // cold-cache crash during doHighlighting() - see GdParamAnnotatorTest for the same
+            // documented workaround.
             myFixture.configureByText(
                 "test.gd", """
+            var warmup = Vector2.new()
+
             func test():
               $method("unresolved_method")
         """.trimIndent()
@@ -304,8 +288,11 @@ class GdStringMemberUsageInspectionTest : BasePlatformTestCase() {
     @Test
     fun testNoFixForUnresolvedSignal() {
         for (method in multiParamQfSignals) {
+            // Warm-up statement - see testNoFixForUnresolvedMethod for why.
             myFixture.configureByText(
                 "test.gd", """
+            var warmup = Vector2.new()
+
             func test():
               $method("unresolved_signal", Callable())
         """.trimIndent()
@@ -315,9 +302,5 @@ class GdStringMemberUsageInspectionTest : BasePlatformTestCase() {
             val fix = intentions.find { it.text.contains("Convert to") }
             assertNull("Quick fix should not be available for unresolved signal", fix)
         }
-    }
-
-    override fun getTestDataPath(): String {
-        return getBaseTestDataPath().resolve("testData/gdscript/inspection").pathString
     }
 }
