@@ -9,7 +9,8 @@ import gdscript.GdScriptBundle
 import gdscript.action.GdCreateMethodAction
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdMethodDeclIndex
-import gdscript.polySymbols.psi.GdPsiMethodSymbol
+import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.gdPsiSourceElement
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdGetMethodIdRef
@@ -30,7 +31,7 @@ class GdSetGetAnnotator : Annotator {
     }
 
     private fun colorSetGet(element: PsiElement, holder: AnnotationHolder){
-        val ref = (element.resolveSymbolReference() as? GdPsiMethodSymbol)?.sourceElement?.parent ?: return
+        val ref = element.resolveSymbolReference(GdPolySymbolKind.METHOD)?.gdPsiSourceElement?.parent ?: return
         when (ref) {
             is GdMethodDeclTl -> {
                 val color = if (ref.isStatic) GdHighlighterColors.STATIC_METHOD_CALL else GdHighlighterColors.METHOD_CALL

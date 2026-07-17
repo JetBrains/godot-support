@@ -4,15 +4,23 @@ import com.intellij.model.Pointer
 import com.intellij.model.Symbol
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
 import com.intellij.psi.PsiElement
+import gdscript.polySymbols.GdNavigationElementProperty
 import gdscript.polySymbols.GdPolySymbol
+import gdscript.polySymbols.GdPsiSourceElementProperty
 import gdscript.psi.GdNamedElement
 import gdscript.psi.utils.GdCommonUtil
 
 abstract class GdPsiPolySymbol : GdPolySymbol(), PolySymbolDeclaredInPsi {
+    @PolySymbol.Property(GdPsiSourceElementProperty::class)
     abstract override val sourceElement: PsiElement
+
+    @PolySymbol.Property(GdNavigationElementProperty::class)
+    private val navigationElement: PsiElement get() = sourceElement
+
     override val name: String get() = (sourceElement as? GdNamedElement)?.name ?: ""
     protected val project: Project get() = sourceElement.project
     override val textRangeInSourceElement: TextRange? get() = TextRange(0, sourceElement.textLength)

@@ -2,7 +2,7 @@ package gdscript.polySymbols.completion
 
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.completion.PolySymbolCodeCompletionItem
-import gdscript.polySymbols.GdClassSymbol
+import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolsConstants
 import gdscript.polySymbols.sdk.xml.GdSdkData
 
@@ -26,5 +26,5 @@ fun GdSdkData.TypeData.toCompletionTypeText(): String =
     enumName?.takeIf { it.isNotEmpty() } ?: name
 
 fun PolySymbolCodeCompletionItem.shouldShow(): Boolean{
-    return !(this.symbol is GdClassSymbol && GdPolySymbolsConstants.GLOBAL_CLASSES.contains(this.name))
+    return !(this.symbol?.kind == GdPolySymbolKind.CLASS && GdPolySymbolsConstants.GLOBAL_CLASSES.contains(this.name))
 }

@@ -5,7 +5,8 @@ import com.intellij.polySymbols.completion.PolySymbolCodeCompletionItem
 import com.intellij.polySymbols.completion.PolySymbolCodeCompletionItemCustomizer
 import com.intellij.polySymbols.context.PolyContext
 import com.intellij.psi.PsiElement
-import gdscript.polySymbols.GdPolySymbol
+import gdscript.polySymbols.gdCompletionTailText
+import gdscript.polySymbols.gdCompletionTypeText
 
 class GdPolySymbolCodeCompletionItemCustomizer : PolySymbolCodeCompletionItemCustomizer {
     override fun customize(
@@ -14,9 +15,9 @@ class GdPolySymbolCodeCompletionItemCustomizer : PolySymbolCodeCompletionItemCus
         kind: PolySymbolKind,
         location: PsiElement,
     ): PolySymbolCodeCompletionItem {
-        val symbol = item.symbol as? GdPolySymbol ?: return item
+        val symbol = item.symbol ?: return item
         return item
-            .withTailText(symbol.completionTailText)
-            .withTypeText(symbol.completionTypeText)
+            .withTailText(symbol.gdCompletionTailText)
+            .withTypeText(symbol.gdCompletionTypeText)
     }
 }

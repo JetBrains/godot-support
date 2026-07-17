@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdFileResIndex
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
@@ -60,7 +61,8 @@ object GdInheritanceUtil {
         var parentId = getExtendedClassId(element)
         while (parentId.isNotBlank()) {
             if (parentId == className) return true
-            val parent = GdClassIdIndex.INSTANCE.getGlobally(parentId, element).firstOrNull() ?: return false
+            val parent = GdClassIdIndex.INSTANCE.getGlobally(parentId, element).firstOrNull()
+                ?: return GdSymbolResolverUtil.isExtendingCanonical(parentId, element.project, element, className)
             parentId = getExtendedClassId(parent)
         }
 
