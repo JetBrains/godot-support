@@ -10,6 +10,7 @@ import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.PolySymbolScopeWithCache
 import gdscript.GdKeywords
 import gdscript.library.GdDocClassesFoldersService
+import gdscript.polySymbols.GdEnumValuesProperty
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolNamespace
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
@@ -27,6 +28,9 @@ class GdSdkEnumSymbol(
     override val declaringClassId: String get() = declaringClassName
     override val name: String get() = data.name
     override val returnType: String get() = "EnumDictionary"
+
+    @PolySymbol.Property(GdEnumValuesProperty::class)
+    private val enumValues: List<String> get() = data.values.map { it.name }
 
     override val icon: Icon get() = GdScriptPluginIcons.GDScriptIcons.ENUM_MARKER
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.BUILT_IN
