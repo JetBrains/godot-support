@@ -5,22 +5,30 @@ import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.text.HtmlBuilder
 import com.intellij.openapi.util.text.HtmlChunk
+import com.intellij.polySymbols.PolySymbol
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdScriptBundle
 import gdscript.action.quickFix.GdChangeTypeFix
 import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
+import gdscript.polySymbols.GdClassSymbol
+import gdscript.polySymbols.GdParameterInfo
+import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.GdSignature
+import gdscript.polySymbols.gdCompletionTailText
 import gdscript.polySymbols.gdPsiSourceElement
+import gdscript.polySymbols.gdSignature
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdCallEx
-import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdParam
+import gdscript.psi.GdPsiUtils
 import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdVarDeclSt
 import gdscript.psi.utils.GdClassMemberUtil
-import gdscript.psi.utils.GdClassMemberUtil.constructors
 import gdscript.psi.utils.GdExprUtil
 import gdscript.psi.utils.PsiGdSignalUtil
 import gdscript.utils.PsiElementUtil.nextNonWhiteCommentToken
@@ -30,68 +38,84 @@ import org.jetbrains.annotations.NonNls
 
 class GdParamAnnotator : Annotator {
 
+    /**
+     * One candidate signature for the call being validated. [psiParams] is the real PSI [GdParam]
+     * list, present only when this candidate is PSI-backed - used solely to offer [GdChangeTypeFix],
+     * which edits real PSI text and has nothing to edit for an SDK-backed candidate.
+     */
+    private data class Candidate(val description: String, val signature: GdSignature, val psiParams: List<GdParam>?)
+
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         if (element !is GdCallEx) return
 
+        val refId = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return
+
+        val candidates: List<Candidate> = if (refId.text == "new") {
+            // Qualified constructor call. The "new" token's own-reference resolution never reaches
+            // SDK constructors (GdPsiPolySymbolUtil.resolveConstructorSymbol hardcodes a PSI-only
+            // "_init" name lookup) - bypass it entirely and resolve the qualifier's class symbol
+            // directly, mirroring that function's own approach up to (but not including) that step.
+            val qualifier = GdClassMemberUtil.calledUpon(refId) ?: return
+            val typeName = GdPsiUtils.getReturnType(qualifier)
+            if (typeName.isEmpty()) return
+            val classSymbol = GdSymbolResolverUtil.resolveCanonicalClassSymbol(element.project, typeName, refId) ?: return
+            constructorCandidates(classSymbol) ?: return
+        } else {
+            val symbol = refId.resolveSymbolReference() ?: return
+            when (symbol.kind) {
+                // Bare constructor call: ClassName(...). kind == CLASS guarantees this is
+                // GdPsiClassSymbol/GdPsiResourceClassSymbol/GdSdkClassSymbol, which implement
+                // GdClassSymbol identically - the one sanctioned shared-interface cast.
+                GdPolySymbolKind.CLASS -> constructorCandidates(symbol as? GdClassSymbol ?: return) ?: return
+
+                GdPolySymbolKind.METHOD -> {
+                    val signature = symbol.gdSignature ?: return
+                    if (signature.isVariadic) return
+                    if (symbol.name == "emit") {
+                        val signal = PsiGdSignalUtil.getDeclaration(element) ?: return
+                        val signalParams = signal.paramList?.paramList ?: emptyList()
+                        listOf(
+                            Candidate(
+                                "${symbol.name}${symbol.gdCompletionTailText.orEmpty()}",
+                                GdSignature(signalParams.map { GdParameterInfo(it.varNmi.name, it.returnType, it.expr != null) }, false),
+                                signalParams,
+                            )
+                        )
+                    } else {
+                        listOf(Candidate("${symbol.name}${symbol.gdCompletionTailText.orEmpty()}", signature, symbol.psiParams()))
+                    }
+                }
+
+                // Local variable/parameter holding a lambda literal - inherently PSI-only, no SDK
+                // counterpart is possible.
+                else -> {
+                    val declaration = symbol.gdPsiSourceElement?.parent as? GdVarDeclSt ?: return
+                    val lambda = declaration.expr as? GdFuncDeclEx ?: return
+                    val params = lambda.paramList?.paramList ?: emptyList()
+                    listOf(
+                        Candidate(
+                            lambda.shortMethodHeader(),
+                            GdSignature(params.map { GdParameterInfo(it.varNmi.name, it.returnType, it.expr != null) }, false),
+                            params,
+                        )
+                    )
+                }
+            }
+        }
+
+        if (candidates.isEmpty()) return
+
         var minSize = 99
         var maxSize = 0
-
-        val refId = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return
-        val symbol = refId.resolveSymbolReference() ?: return
-        val declaration = symbol.gdPsiSourceElement?.parent ?: return
-        val descriptions = mutableListOf<String>()
-
-        val paramLists = when (declaration) {
-            is GdMethodDeclTl -> {
-                if (declaration.isVariadic) return
-                if (declaration.getName() == "emit") {
-                    val signal = PsiGdSignalUtil.getDeclaration(element) ?: return
-                    descriptions.add(declaration.shortMethodHeader())
-                    arrayOf(signal.paramList?.paramList)
-                } else {
-                    descriptions.add(declaration.shortMethodHeader())
-                    arrayOf(declaration.paramList?.paramList)
-                }
-            }
-
-            is GdVarDeclSt -> {
-                val lambda =
-                    if (declaration.expr is GdFuncDeclEx) declaration.expr as GdFuncDeclEx else null ?: return
-                descriptions.add(lambda.shortMethodHeader())
-                arrayOf(lambda.paramList?.paramList)
-            }
-
-            is GdClassNaming -> {
-                GdClassMemberUtil
-                    .listClassMemberDeclarations(declaration, constructors = true)
-                    .constructors()
-                    .map {
-                        descriptions.add(it.shortMethodHeader())
-                        it.paramList?.paramList
-                    }
-                    .toTypedArray()
-            }
-
-            else -> null
-        }?.mapNotNull { it } ?: return
-
-        if (descriptions.size > paramLists.size) minSize = 0 // filtered by mapNotNull of empty constructor
-
         val paramTypes: HashMap<Int, MutableList<String>> = hashMapOf()
-        paramLists.forEachIndexed { index, params ->
+
+        candidates.forEachIndexed { index, candidate ->
+            val params = candidate.signature.parameters
             minSize = minOf(minSize, params.size)
             maxSize = maxOf(maxSize, params.size)
-            for (i in 0 until params.size) {
-                if (params[i].expr != null) {
-                    minSize = minOf(minSize, i)
-                    break
-                }
-            }
-
-            paramTypes[index] = mutableListOf()
-            params.forEach { param ->
-                paramTypes[index]!!.add(param.returnType)
-            }
+            val firstDefaultIndex = params.indexOfFirst { it.hasDefault }
+            minSize = minOf(minSize, if (firstDefaultIndex == -1) params.size else firstDefaultIndex)
+            paramTypes[index] = params.map { it.type }.toMutableList()
         }
 
         val usedParamSize = element.argList?.argExprList?.size ?: 0
@@ -140,14 +164,14 @@ class GdParamAnnotator : Annotator {
         if (matched.any { it.all { p -> p } }) return
 
 
-        if (paramLists.size > 1) {
+        if (candidates.size > 1) {
             val tooltip = HtmlBuilder()
                 .append(GdScriptBundle.message("annotator.no.overload.matches"))
                 .br()
                 .append(
                     HtmlChunk.ul().children(
-                        descriptions.map {
-                            @NonNls val description: String = it
+                        candidates.map {
+                            @NonNls val description: String = it.description
                             HtmlChunk.li().child(HtmlChunk.text(description).bold()) }
                     ))
                 .wrapWithHtmlBody()
@@ -160,20 +184,21 @@ class GdParamAnnotator : Annotator {
                 .create()
             return
         } else {
-            val params = paramLists.first()
+            val params = candidates.first().signature.parameters
+            val psiParams = candidates.first().psiParams
             matched.first().forEachIndexed { pIndex, ok ->
                 if (!ok) {
-                    val param = params[pIndex] ?: return@forEachIndexed
+                    val param = params.getOrNull(pIndex) ?: return@forEachIndexed
                     val actualParam = element.argList?.argExprList?.getOrNull(pIndex) ?: return@forEachIndexed
                     val actualType = actualTypes[pIndex]
 
                     val tooltip = HtmlBuilder()
-                        .append(GdScriptBundle.message("annotator.type.mismatch.for.parameter", param.varNmi.name)).br()
+                        .append(GdScriptBundle.message("annotator.type.mismatch.for.parameter", param.name)).br()
                         .append(
                             HtmlChunk.tag("table").children(
                                 HtmlChunk.tag("tr").children(
                                     HtmlChunk.tag("td").addText(GdScriptBundle.message("annotator.required")),
-                                    HtmlChunk.tag("td").addText(param.returnType)
+                                    HtmlChunk.tag("td").addText(param.type)
                                 ),
                                 HtmlChunk.tag("tr").children(
                                     HtmlChunk.tag("td").addText(GdScriptBundle.message("annotator.found")),
@@ -188,8 +213,9 @@ class GdParamAnnotator : Annotator {
                         .newAnnotationGd(HighlightSeverity.ERROR, "")
                         .tooltip(tooltip)
                         .range(actualParam.textRange)
-                    if (!actualType.isDynamicType() && param.typed != null) {
-                        annotator.withFix(GdChangeTypeFix(param.typed!!.typedVal, actualType))
+                    val psiParam = psiParams?.getOrNull(pIndex)
+                    if (!actualType.isDynamicType() && psiParam?.typed != null) {
+                        annotator.withFix(GdChangeTypeFix(psiParam.typed!!.typedVal, actualType))
                     }
                     annotator.create()
                 }
@@ -197,5 +223,18 @@ class GdParamAnnotator : Annotator {
             return
         }
     }
+
+    private fun constructorCandidates(classSymbol: GdClassSymbol): List<Candidate>? {
+        val constructors = GdSymbolResolverUtil.listConstructorSymbols(classSymbol)
+        if (constructors.isEmpty()) return null
+        val signatures = constructors.map { it.gdSignature }
+        if (signatures.any { it == null || it.isVariadic }) return null
+        return constructors.mapIndexed { i, ctor ->
+            Candidate("${classSymbol.declaringClassName}${ctor.gdCompletionTailText.orEmpty()}", signatures[i]!!, ctor.psiParams())
+        }
+    }
+
+    private fun PolySymbol.psiParams(): List<GdParam>? =
+        (gdPsiSourceElement?.parent as? GdMethodDeclTl)?.paramList?.paramList
 
 }
