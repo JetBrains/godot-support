@@ -4,9 +4,13 @@ import com.intellij.navigation.SymbolNavigationService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.platform.backend.navigation.NavigationTarget
+import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.refactoring.PolySymbolRenameTarget
 import com.intellij.polySymbols.search.PolySymbolSearchTarget
+import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.polySymbols.GdIsEngineSymbolProperty
+import gdscript.polySymbols.GdNavigationElementProperty
 import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.sdk.xml.GdSdkData
@@ -30,18 +34,30 @@ abstract class GdSdkPolySymbol : GdPolySymbol() {
 
     override fun getNavigationTargets(project: Project): Collection<NavigationTarget> {
         // when the class is found in the SDK, we navigate to a generated gdscript file
-        val classData = getOwnerClassData() ?: return emptyList()
+        val target = syntheticSourceElement(project) ?: return emptyList()
+        return listOf(SymbolNavigationService.getInstance().psiElementNavigationTarget(target))
+    }
+
+    /**
+     * The generated gdscript file's matching element for this symbol, or the file itself as a
+     * fallback when no matching element exists - or `null` when the SDK class this symbol belongs
+     * to can't be found at all.
+     */
+    open fun syntheticSourceElement(project: Project): PsiElement? {
+        val classData = getOwnerClassData() ?: return null
 
         val syntheticFile = GdSdkSyntheticPsiCache.getInstance(project)
             .getOrCreateSyntheticFile(declaringClassId, classData)
-        val target = PsiTreeUtil.findChildrenOfType(syntheticFile, GdNamedElement::class.java)
+        return PsiTreeUtil.findChildrenOfType(syntheticFile, GdNamedElement::class.java)
             .find { psiElementRepresentsSdkSymbol(it) }
-        if (target != null) {
-            return listOf(SymbolNavigationService.getInstance().psiElementNavigationTarget(target))
-        }
-
-        return listOf(SymbolNavigationService.getInstance().psiElementNavigationTarget(syntheticFile))
+            ?: syntheticFile
     }
+
+    @PolySymbol.Property(GdNavigationElementProperty::class)
+    private val navigationElement: PsiElement? get() = syntheticSourceElement(project)
+
+    @PolySymbol.Property(GdIsEngineSymbolProperty::class)
+    private val isEngineSymbol: Boolean get() = true
 
     /**
      * Used when creating navigation targets for SDK symbols.
