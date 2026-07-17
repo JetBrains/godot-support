@@ -85,6 +85,22 @@ object GdSymbolResolverUtil {
             .firstOrNull()
     }
 
+    /**
+     * All CONSTRUCTOR symbols declared directly on [classSymbol]. Unlike [listMethodSymbols], queries
+     * only [GdClassSymbol.directMemberScope] - constructors are not inherited the way methods are;
+     * mirrors [gdscript.psi.utils.GdClassMemberUtil.listClassMemberDeclarations]'s pre-existing
+     * no-ancestor-walk behavior for constructors exactly. A class with an overloaded SDK constructor
+     * (e.g. `Vector2`) legitimately returns more than one symbol here.
+     */
+    fun listConstructorSymbols(classSymbol: GdClassSymbol?): List<PolySymbol> {
+        classSymbol ?: return emptyList()
+        val executor = PolySymbolQueryExecutorFactory.createCustom {
+            addRootScope(classSymbol.directMemberScope)
+        }
+        return executor.listSymbolsQuery(GdPolySymbolKind.CONSTRUCTOR, false).run()
+            .flatMap { it.unwrapMatchedSymbols() }
+    }
+
     fun getPsiClassSymbol(project: Project, classId: String, context: PsiElement): GdClassSymbol? {
         return GdClassUtil.getClassIdElement(classId, context, project)
             ?.let { GdPsiClassSymbolFactory.create(it) }
