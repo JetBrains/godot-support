@@ -7,6 +7,7 @@ import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.psi.createSmartPointer
 import gdscript.GdKeywords
+import gdscript.polySymbols.GdEnumValuesProperty
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
 import gdscript.psi.GdEnumDeclNmi
@@ -19,6 +20,9 @@ class GdPsiEnumSymbol(
     override val kind: PolySymbolKind get() = GdPolySymbolKind.ENUM
     override val declaringClassId: String get() = GdPsiPolySymbolUtil.getOwnerClassId(sourceElement)
     override val declaringClassName: String get() = GdPsiPolySymbolUtil.getLeafName(declaringClassId)
+
+    @PolySymbol.Property(GdEnumValuesProperty::class)
+    private val enumValues: List<String> get() = (sourceElement.parent as? GdEnumDeclTl)?.values?.keys?.toList() ?: emptyList()
 
     override val icon: Icon get() = GdScriptPluginIcons.GDScriptIcons.ENUM_MARKER
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.USER_DEFINED
