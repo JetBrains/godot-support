@@ -40,7 +40,7 @@ class GdSdkMethodSymbol(
     @PolySymbol.Property(GdSignatureProperty::class)
     private val signature: GdSignature
         get() = GdSignature(
-            data.parameters.map { GdParameterInfo(it.name, it.type.enumName?.takeIf { n -> n.isNotEmpty() } ?: it.type.name) },
+            data.parameters.map { GdParameterInfo(it.name, it.type.enumName?.takeIf { n -> n.isNotEmpty() } ?: it.type.name, it.default != null) },
             data.qualifiers.isVariadic,
         )
 
