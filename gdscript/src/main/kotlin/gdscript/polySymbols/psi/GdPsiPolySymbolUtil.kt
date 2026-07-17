@@ -6,7 +6,6 @@ import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.query.polySymbolScopeCached
-import com.intellij.polySymbols.utils.unwrapMatchedSymbols
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
@@ -88,31 +87,23 @@ object GdPsiPolySymbolUtil {
     }
 
     /**
-     * Resolves `new` in a `ClassName.new(...)` call to the class's `_init` constructor symbol.
-     * `new` itself is not a real, queryable symbol name (GDScript constructors are always named
-     * `_init`), so it needs this dedicated lookup — mirroring the legacy resolver's identical
-     * `element.text == "new" && resolved.isConstructor` special case.
-     *
-     * The result is wrapped in [GdAliasedNameSymbol]: own-reference ranges are computed from the
-     * referenced symbol's `name.length`, and the constructor's real name (`_init`, 5 chars) is
-     * longer than the `new` token (3 chars) it's being referenced from, which would overflow the
-     * reference's range into the call's parentheses. [GdSymbolResolverUtil.resolveSymbolReferences]
-     * unwraps the delegate back to the real [GdPsiConstructorSymbol] for callers.
+     * Resolves `new` in a `ClassName.new(...)` call to every constructor symbol declared on the
+     * class (PSI or SDK - reuses [GdSymbolResolverUtil.listConstructorSymbols]'s kind-only,
+     * no-name-filter query, so a class with overloaded SDK constructors, e.g. `Vector2`, resolves
+     * to all of them). `new` itself is not a real, queryable symbol name (GDScript constructors are
+     * always named `_init` in PSI, or the class name in SDK data - never literally `"new"`), so each
+     * result is wrapped in [GdAliasedNameSymbol]: own-reference ranges are computed from the
+     * referenced symbol's `name.length`, and neither `_init` (5 chars) nor an SDK class name would
+     * match the `new` token's own length/text, which would overflow the reference's range into the
+     * call's parentheses. [GdSymbolResolverUtil.resolveSymbolReferences] unwraps the delegate back
+     * to the real constructor symbol for callers.
      */
-    fun resolveConstructorSymbol(element: GdRefIdRef): PolySymbol? {
-        val qualifier = GdClassMemberUtil.calledUpon(element) ?: return null
+    fun resolveConstructorSymbols(element: GdRefIdRef): List<PolySymbol> {
+        val qualifier = GdClassMemberUtil.calledUpon(element) ?: return emptyList()
         val typeName = GdPsiUtils.getReturnType(qualifier)
-        if (typeName.isEmpty()) return null
-        val classSymbol = GdSymbolResolverUtil.resolveCanonicalClassSymbol(element.project, typeName, element) ?: return null
-        val executor = PolySymbolQueryExecutorFactory.createCustom {
-            addRootScope(classSymbol.directMemberScope)
-            addRootScopes(classSymbol.inheritedQueryScopes())
-        }
-        val constructor = executor.nameMatchQuery(GdPolySymbolKind.CONSTRUCTOR, "_init").run()
-            .flatMap { it.unwrapMatchedSymbols() }
-            .filterIsInstance<GdPsiConstructorSymbol>()
-            .firstOrNull() ?: return null
-        return GdAliasedNameSymbol(constructor, "new")
+        if (typeName.isEmpty()) return emptyList()
+        val classSymbol = GdSymbolResolverUtil.resolveCanonicalClassSymbol(element.project, typeName, element) ?: return emptyList()
+        return GdSymbolResolverUtil.listConstructorSymbols(classSymbol).map { GdAliasedNameSymbol(it, "new") }
     }
 
     /**
