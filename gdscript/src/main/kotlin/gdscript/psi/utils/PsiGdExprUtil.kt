@@ -9,9 +9,9 @@ import com.intellij.psi.util.nextLeaf
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
-import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPolySymbolKind
-import gdscript.polySymbols.psi.GdPsiClassSymbol
+import gdscript.polySymbols.gdPsiSourceElement
+import gdscript.polySymbols.gdReturnType
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdArrEx
 import gdscript.psi.GdArrayDecl
@@ -97,11 +97,11 @@ object PsiGdExprUtil {
             is GdBitNotEx -> GdKeywords.INT
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT
             is GdAttributeEx -> {
-                val symbol = expr.refId?.resolveSymbolReference() as? GdPolySymbol
+                val symbol = expr.refId?.resolveSymbolReference()
 
                 // If attribute resolves to a class name or class decl, return its full class id
-                if (symbol is GdPsiClassSymbol) {
-                    when (val resolved = symbol.sourceElement.parent) {
+                if (symbol?.kind == GdPolySymbolKind.CLASS) {
+                    when (val resolved = symbol.gdPsiSourceElement?.parent) {
                         is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
                         is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
                     }
@@ -113,7 +113,7 @@ object PsiGdExprUtil {
                         return "Callable"
                     }
 
-                    return symbol.returnType
+                    return symbol.gdReturnType.orEmpty()
                 }
 
                 // PolySymbols has no coverage of dictionary keys (Lua-style `dict.key` access) -
@@ -135,11 +135,11 @@ object PsiGdExprUtil {
                     if (lastId == "new") {
                         // Qualified constructor call: the class is the qualifier of the attribute
                         if (callee is GdAttributeEx) {
-                            val symbol = callee.refId?.resolveSymbolReference() as? GdPolySymbol
+                            val symbol = callee.refId?.resolveSymbolReference()
 
                             // If attribute resolves to a class name or class decl, return its full class id
-                            if (symbol is GdPsiClassSymbol) {
-                                when (val resolved = symbol.sourceElement.parent) {
+                            if (symbol?.kind == GdPolySymbolKind.CLASS) {
+                                when (val resolved = symbol.gdPsiSourceElement?.parent) {
                                     is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
                                     is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
                                 }
@@ -147,7 +147,7 @@ object PsiGdExprUtil {
 
                             // Try Poly Symbols before falling back to the generic GdCommonUtil.returnType
                             if (symbol != null) {
-                                return symbol.returnType
+                                return symbol.gdReturnType.orEmpty()
                             }
 
                             return GdCommonUtil.returnType(callee.firstChild)
@@ -324,7 +324,7 @@ object PsiGdExprUtil {
                         is GdClassDeclTl -> GdClassUtil.getFullClassId(element)
                         else -> run {
                             // Resolve through Poly Symbol if nothing found through PSI
-                            val symbol = named.resolveSymbolReference() as? GdPolySymbol
+                            val symbol = named.resolveSymbolReference()
                             if (symbol == null) return ""
 
                             if (symbol.kind == GdPolySymbolKind.METHOD
@@ -332,7 +332,7 @@ object PsiGdExprUtil {
                                 return@run "Callable"
                             }
 
-                            return@run symbol.returnType
+                            return@run symbol.gdReturnType.orEmpty()
                         }
                     }
                 }
