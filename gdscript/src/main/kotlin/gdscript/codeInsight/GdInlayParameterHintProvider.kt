@@ -8,8 +8,8 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.containers.toArray
-import gdscript.polySymbols.psi.GdPsiClassSymbol
-import gdscript.polySymbols.psi.GdPsiPolySymbol
+import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.gdPsiSourceElement
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.GdCallEx
@@ -30,8 +30,8 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getHintInfo(element: PsiElement): HintInfo? {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return null
-            val symbol = id.resolveSymbolReference() as? GdPsiPolySymbol ?: return null
-            val declaration = symbol.sourceElement.parent
+            val symbol = id.resolveSymbolReference() ?: return null
+            val declaration = symbol.gdPsiSourceElement?.parent ?: return null
 
             if (declaration is GdMethodDeclTl) {
                 val name = declaration.getName()
@@ -73,8 +73,8 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getParameterHints(element: PsiElement): List<InlayInfo> {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return emptyList()
-            val symbol = id.resolveSymbolReference() as? GdPsiPolySymbol
-            val method = symbol?.sourceElement?.parent
+            val symbol = id.resolveSymbolReference()
+            val method = symbol?.gdPsiSourceElement?.parent
 
             var params: Array<String> = emptyArray()
             when (method) {
@@ -99,7 +99,9 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
                 }
 
                 else -> {
-                    val classNaming = (symbol as? GdPsiClassSymbol)?.sourceElement?.parent as? GdClassNaming
+                    val classNaming = symbol
+                        ?.takeIf { it.kind == GdPolySymbolKind.CLASS }
+                        ?.gdPsiSourceElement?.parent as? GdClassNaming
                     val file = classNaming?.containingFile as? GdFile ?: return emptyList()
 
                     val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(file, GdMethodDeclTl::class.java)
