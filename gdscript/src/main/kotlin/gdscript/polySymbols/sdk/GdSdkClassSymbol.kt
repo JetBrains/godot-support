@@ -12,6 +12,7 @@ import com.intellij.polySymbols.utils.PolySymbolScopeWithCache
 import gdscript.GdIcon
 import gdscript.library.GdDocClassesFoldersService
 import gdscript.polySymbols.GdClassSymbol
+import gdscript.polySymbols.GdHasConstructorProperty
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolNamespace
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
@@ -34,6 +35,9 @@ class GdSdkClassSymbol(override val project: Project, private val sourceFile: Vi
 
     override val data: GdSdkData.ClassData?
         get() = GdSdkParseCache.getInstance(project).getOrParseClassData(sourceFile)
+
+    @PolySymbol.Property(GdHasConstructorProperty::class)
+    private val hasConstructor: Boolean get() = data?.constructors?.isNotEmpty() == true
 
     private val scopeDelegate get() = object : PolySymbolScopeWithCache<Project, String>(project, project, classId) {
 
