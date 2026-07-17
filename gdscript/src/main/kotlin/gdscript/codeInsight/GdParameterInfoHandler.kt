@@ -9,8 +9,13 @@ import com.intellij.lang.parameterInfo.ParameterInfoUtils
 import com.intellij.lang.parameterInfo.UpdateParameterInfoContext
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.util.TextRange
+import com.intellij.polySymbols.PolySymbol
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.gdReturnType
+import gdscript.polySymbols.gdSignature
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassNaming
@@ -22,28 +27,32 @@ import gdscript.psi.GdVarDeclSt
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.utils.GdAnnotationUtil
 
-class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElement>, DumbAware {
+class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, Any>, DumbAware {
 
     override fun findElementForParameterInfo(context: CreateParameterInfoContext): PsiElement? {
         val element = getFunctionCall(context)
         if (element != null) {
             val refId = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return null
-            when (val declaration = GdClassMemberUtil.findDeclaration(refId)) {
-                is GdMethodDeclTl -> {
-                    context.itemsToShow = arrayOf(declaration)
-                }
+            val symbol = refId.resolveSymbolReference(GdPolySymbolKind.METHOD, GdPolySymbolKind.CONSTRUCTOR)
 
-                is GdVarDeclSt ->
-                    if (declaration.expr is GdFuncDeclEx) {
-                        context.itemsToShow = arrayOf(declaration.expr as GdFuncDeclEx)
+            if (symbol != null) {
+                context.itemsToShow = arrayOf(symbol)
+            } else {
+                when (val declaration = GdClassMemberUtil.findDeclaration(refId)) {
+                    is GdVarDeclSt ->
+                        if (declaration.expr is GdFuncDeclEx) {
+                            context.itemsToShow = arrayOf(declaration.expr as GdFuncDeclEx)
+                        }
+
+                    is GdClassNaming -> {
+                        val methods =
+                            PsiTreeUtil.getStubChildrenOfTypeAsList(declaration.containingFile, GdMethodDeclTl::class.java)
+                        context.itemsToShow = methods.filter {
+                            it.isConstructor
+                        }.toTypedArray()
                     }
 
-                is GdClassNaming -> {
-                    val methods =
-                        PsiTreeUtil.getStubChildrenOfTypeAsList(declaration.containingFile, GdMethodDeclTl::class.java)
-                    context.itemsToShow = methods.filter {
-                        it.isConstructor
-                    }.toTypedArray()
+                    else -> {}
                 }
             }
 
@@ -76,7 +85,7 @@ class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElement>, Dum
         return element
     }
 
-    override fun updateUI(declaration: PsiElement?, context: ParameterInfoUIContext) {
+    override fun updateUI(declaration: Any?, context: ParameterInfoUIContext) {
         val currentParam = context.currentParameterIndex
         var startOffset = -1
         var endOffset = -1
@@ -87,6 +96,17 @@ class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, PsiElement>, Dum
         var ending = ""
 
         val parameters = when(declaration) {
+            is PolySymbol -> {
+                val signature = declaration.gdSignature
+                if (fullSignature) {
+                    builder.append("func ${declaration.name}(")
+                    ending = ")"
+                    val returnType = declaration.gdReturnType
+                    if (!returnType.isNullOrBlank()) ending += " -> $returnType"
+                }
+                isVariadic = signature?.isVariadic == true
+                signature?.parameters?.associate { it.name to it.type } ?: emptyMap()
+            }
             is GdMethodDeclTl -> {
                 if (fullSignature) {
                     builder.append("func ${declaration.getName()}(")
