@@ -2,20 +2,22 @@ package gdscript.inspection
 
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.ProblemsHolder
+import com.intellij.polySymbols.PolySymbol
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiElementVisitor
 import gdscript.GdScriptBundle
 import gdscript.inspection.fixes.GdStringNameMemberCallFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
+import gdscript.polySymbols.GdPolySymbolModifier
+import gdscript.polySymbols.gdSignature
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
+import gdscript.polySymbols.scope.hasModifier
 import gdscript.psi.GdAttributeEx
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdLiteralEx
-import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdTypes
 import gdscript.psi.GdVisitor
 import gdscript.psi.utils.GdClassMemberUtil
-import gdscript.psi.utils.GdClassMemberUtil.methods
-import gdscript.psi.utils.GdClassUtil
 
 enum class QfCandidate {
     Signal,
@@ -47,32 +49,19 @@ class GdStringNameMemberCallInspection : LocalInspectionTool() {
         return fetchNodeMethods(element).count { isQfCandidate(it) != null }
     }
 
-    private fun isQfCandidate(method: GdMethodDeclTl): QfCandidate? {
-        val paramList = method.paramList?.paramList ?: return null
-        val firstParam = paramList.firstOrNull() ?: return null
-        if (method.getName() in blackList) return null
-        if (firstParam.returnType != "StringName") return null
-        val firstParamName = firstParam.varNmi.name
-        if (firstParamName == "signal") return QfCandidate.Signal
-        if (firstParamName == "method") return QfCandidate.Method
+    private fun isQfCandidate(method: PolySymbol): QfCandidate? {
+        val firstParam = method.gdSignature?.parameters?.firstOrNull() ?: return null
+        if (method.name in blackList) return null
+        if (firstParam.type != "StringName") return null
+        if (firstParam.name == "signal") return QfCandidate.Signal
+        if (firstParam.name == "method") return QfCandidate.Method
         return null
     }
 
-    private fun fetchNodeMethods(element: PsiElement): List<GdMethodDeclTl> {
-        val nodeClass = GdClassUtil.getClassIdElement("Node", element, element.project)
-        val members = mutableListOf<Any>()
-
-        GdClassMemberUtil.collectFromParents(
-            nodeClass,
-            members,
-            element.project,
-            static = null,
-        )
-        return members
-            .methods()
-            .filter {
-                !it.isStatic
-            }
+    private fun fetchNodeMethods(element: PsiElement): List<PolySymbol> {
+        val nodeClass = GdSymbolResolverUtil.resolveCanonicalClassSymbol(element.project, "Node", element)
+        return GdSymbolResolverUtil.listMethodSymbols(nodeClass)
+            .filterNot { it.hasModifier(GdPolySymbolModifier.STATIC) }
     }
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
@@ -86,7 +75,7 @@ class GdStringNameMemberCallInspection : LocalInspectionTool() {
                 val methods = fetchNodeMethods(element)
                 val candidate = methods
                     .asSequence()
-                    .filter { it.getName() == baseMethodName }
+                    .filter { it.name == baseMethodName }
                     .firstNotNullOfOrNull { isQfCandidate(it) }
                     ?: return
                 val argList = element.argList ?: return
