@@ -9,7 +9,8 @@ import com.intellij.psi.search.RequestResultProcessor
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
-import gdscript.polySymbols.psi.GdPsiConstructorSymbol
+import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.gdPsiSourceElement
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdMethodIdNmi
@@ -62,8 +63,8 @@ class GdConstructorReferencesSearcher : QueryExecutorBase<PsiReference, Referenc
             consumer: Processor<in PsiReference>,
         ): Boolean {
             if (element !is GdRefIdRef || element.text != "new") return true
-            val constructor = element.resolveSymbolReference() as? GdPsiConstructorSymbol ?: return true
-            return constructor.sourceElement != targetIdentifier
+            val constructor = element.resolveSymbolReference(GdPolySymbolKind.CONSTRUCTOR) ?: return true
+            return constructor.gdPsiSourceElement != targetIdentifier
                 || consumer.process(GdNewKeywordReference(element, targetIdentifier))
         }
     }
