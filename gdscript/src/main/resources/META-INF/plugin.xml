@@ -33,7 +33,8 @@
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider"/>
     <findUsagesHandlerFactory implementation="gdscript.codeInsight.GdFindUsageHandlerFactory"/>
-    <referencesSearch implementation="gdscript.reference.search.GdConstructorReferencesSearcher"/>
+    <referencesSearch implementation="gdscript.search.GdConstructorReferencesSearcher"/>
+    <referencesSearch implementation="gdscript.search.GdOwnReferencesSearcher"/>
     <configurationType implementation="gdscript.run.GdRunConfigurationType"/>
     <runConfigurationProducer implementation="gdscript.run.GdRunConfigurationProducer"/>
     <defaultLiveTemplates file="/templates/GdScript.xml"/>
@@ -125,12 +126,7 @@
     <completion.contributor language="GdScript"
                             implementationClass="gdscript.completion.GdResourceCompletionContributor"/>
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdMethodParamCompletion"/>
-    <psi.referenceContributor language="GdScript"
-                              implementation="gdscript.completion.GdInheritanceReferenceContributor"/>
-    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdTypeHintReferenceContributor"/>
-    <psi.referenceContributor language="GdScript"
-                              implementation="gdscript.completion.GdSetGetMethodIdReferenceContributor"/>
-    <psi.referenceContributor language="GdScript" implementation="gdscript.completion.GdResourceReferenceContributor"/>
+    <psi.referenceContributor language="GdScript" implementation="gdscript.reference.GdResourceReferenceContributor"/>
     <!-- Tscn, Project, Config -->
     <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceReferenceContributor"/>
     <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnScriptClassReferenceContributor"/>

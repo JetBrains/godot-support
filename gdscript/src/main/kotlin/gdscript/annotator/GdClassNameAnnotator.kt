@@ -45,9 +45,6 @@ class GdClassNameAnnotator : Annotator {
     }
 
     private fun existingInheritance(element: GdInheritanceId, holder: AnnotationHolder) {
-        val ref = element.lastChild.references.firstOrNull()
-        if (ref?.resolve() != null) return
-
         val symbolRef = element.lastChild.resolveSymbolReference()
         if (symbolRef != null) return
 

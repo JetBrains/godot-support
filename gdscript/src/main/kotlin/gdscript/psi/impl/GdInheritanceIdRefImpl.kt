@@ -4,11 +4,9 @@ import com.intellij.lang.ASTNode
 import com.intellij.model.psi.PsiSymbolReference
 import com.intellij.polySymbols.references.polySymbolOwnReferences
 import com.intellij.psi.PsiElementVisitor
-import com.intellij.psi.PsiFile
 import gdscript.polySymbols.GdPolySymbolKind.INHERITANCE_SYMBOLS
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.quotedContentRange
 import gdscript.psi.GdInheritanceIdRef
-import gdscript.psi.GdPsiUtils.getPsiFile
 import gdscript.psi.GdPsiUtils.isClassName
 import gdscript.psi.GdVisitor
 import org.jetbrains.annotations.Unmodifiable
@@ -22,9 +20,6 @@ class GdInheritanceIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdInherita
         if (visitor is GdVisitor) accept(visitor)
         else super.accept(visitor)
     }
-
-    override val psiFile: PsiFile?
-        get() = getPsiFile(this)
 
     override val isClassName: Boolean
         get() = isClassName(this)
