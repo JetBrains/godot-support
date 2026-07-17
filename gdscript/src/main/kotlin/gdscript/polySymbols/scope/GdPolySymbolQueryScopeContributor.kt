@@ -10,6 +10,7 @@ import gdscript.psi.GdAnnotationType
 import gdscript.psi.GdFile
 import gdscript.psi.GdGetMethodIdRef
 import gdscript.psi.GdInheritanceIdRef
+import gdscript.psi.GdInheritanceSubIdRef
 import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdSetMethodIdRef
 import gdscript.psi.GdTypeHintRef
@@ -58,6 +59,18 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                                 }
                             }
                         )
+                    }
+
+                // nested-class inheritance resolve (extends Outer.Inner)
+                forPsiLocation(
+                    psiElement(GdInheritanceSubIdRef::class.java)
+                )
+                    .contributeScopeProvider { ref ->
+                        // GdInheritanceIdRef/GdInheritanceSubIdRef sit in a flat hierarchy where all
+                        // segments of the chain are siblings.
+                        val qualifier = ref.siblings(false, false)
+                            .firstOrNull { it is GdInheritanceIdRef || it is GdInheritanceSubIdRef }
+                        qualifier?.let { listOf(GdQualifiedInheritanceResolveScope(it)) }.orEmpty()
                     }
 
                 // type hint resolve

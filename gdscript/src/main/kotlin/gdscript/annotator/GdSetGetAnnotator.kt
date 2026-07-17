@@ -9,11 +9,12 @@ import gdscript.GdScriptBundle
 import gdscript.action.GdCreateMethodAction
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdMethodDeclIndex
+import gdscript.polySymbols.psi.GdPsiMethodSymbol
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdGetMethodIdRef
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdSetMethodIdRef
-import gdscript.utils.PsiReferenceUtil.resolveRef
 
 /**
  * Checks if referencing method exists
@@ -29,8 +30,7 @@ class GdSetGetAnnotator : Annotator {
     }
 
     private fun colorSetGet(element: PsiElement, holder: AnnotationHolder){
-        // GdSetGetMethodIdReference returns a GdMethodIdNmi
-        val ref = element.resolveRef()?.parent ?: return
+        val ref = (element.resolveSymbolReference() as? GdPsiMethodSymbol)?.sourceElement?.parent ?: return
         when (ref) {
             is GdMethodDeclTl -> {
                 val color = if (ref.isStatic) GdHighlighterColors.STATIC_METHOD_CALL else GdHighlighterColors.METHOD_CALL
