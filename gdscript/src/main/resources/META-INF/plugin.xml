@@ -46,14 +46,8 @@
                                     implementationClass="gdscript.codeInsight.GdInlayParameterHintProvider"/>
     <lang.refactoringSupport language="GdScript" implementationClass="gdscript.psi.GdRefactoringSupportProvider"/>
     <colorProvider implementation="gdscript.lineMarker.GdColorProvider"/>
-    <library.type implementation="gdscript.library.GdLibraryType"/>
     <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor"/>
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory"/>
-    <registryKey key="gdscript.doctool.timeout.ms"
-                 defaultValue="60000"
-                 description="Timeout (in milliseconds) for the Godot --doctool process that generates GDExtension stubs"
-                 restartRequired="false"/>
-    <backgroundPostStartupActivity implementation="gdscript.listener.ReferenceGdLibrariesProjectActivity"/>
     <backgroundPostStartupActivity implementation="gdscript.listener.GdLoadSdkProjectActivity"/>
     <backgroundPostStartupActivity implementation="GdScriptToolWindowManagerProjectActivity"/>
     <backgroundPostStartupActivity implementation="gdscript.lsp.GodotLspStartOnFocusGainedActivity"/>
