@@ -1,4 +1,4 @@
-package gdscript.reference.search
+package gdscript.search
 
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.util.TextRange
@@ -23,7 +23,7 @@ import gdscript.psi.utils.PsiGdMethodIdUtil
  * so `new()` calls are never visited. We add an extra word search for `new`. Unlike the
  * default single-target processor (which only looks at classic [PsiReference]s), `new` resolves
  * to `_init` exclusively through PolySymbols own-references
- * ([gdscript.psi.impl.GdRefIdRefImpl.buildOwnReferences]) — there is no classic reference to find
+ * ([gdscript.psi.impl.GdRefIdRefImpl.getOwnReferences]) — there is no classic reference to find
  * here anymore. [GdNewKeywordResultProcessor] resolves candidates via PolySymbols directly and,
  * once a match is confirmed, hands back a minimal ad-hoc classic [PsiReference] so the standard
  * Find Usages/Rename UI (which operates on [ReferencesSearch] results) can show the `new()` site.
