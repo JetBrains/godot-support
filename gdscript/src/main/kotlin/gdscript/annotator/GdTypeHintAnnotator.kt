@@ -11,8 +11,6 @@ import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import gdscript.psi.GdTypeHint
 import gdscript.psi.GdTypeHintRef
-import gdscript.utils.PsiFileUtil.isInSdk
-import gdscript.utils.PsiReferenceUtil.resolveRef
 
 /**
  * Checks that given return type is valid (built-in or Class)
@@ -37,20 +35,14 @@ class GdTypeHintAnnotator : Annotator {
 
     private fun invalidType(element: GdTypeHintRef) : Boolean {
         // don't spend time on resolving builtin types
-        if (GdKeywords.BUILT_TYPES.contains(element.text)) return false
-
-        // Try Poly Symbols for the SDK
-        if (element.resolveSymbolReference() != null) return false
-
-        return element.resolveRef() == null
+        return !GdKeywords.BUILT_TYPES.contains(element.text) && element.resolveSymbolReference() == null
     }
 
     private fun colorTypeHints(element: GdTypeHintRef, holder: AnnotationHolder) {
         var color = GdHighlighterColors.CLASS_TYPE
         if (GdKeywords.BUILT_TYPES.contains(element.text)) {
             color = GdHighlighterColors.BASE_TYPE
-        } else if (element.resolveRef()?.containingFile?.isInSdk() == true
-            || element.resolveSymbolReference() is GdSdkPolySymbol) {
+        } else if (element.resolveSymbolReference() is GdSdkPolySymbol) {
             color = GdHighlighterColors.ENGINE_TYPE
         }
 
