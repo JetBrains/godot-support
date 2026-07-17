@@ -4,7 +4,6 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.library.GdLibraryUpdater
-import gdscript.polySymbols.GdPolySymbolsConstants
 import kotlinx.coroutines.flow.combine
 import kotlin.io.path.pathString
 
@@ -14,8 +13,6 @@ import kotlin.io.path.pathString
  */
 class GdLoadSdkProjectActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
-        if (!GdPolySymbolsConstants.USING_POLY_SYMBOLS)
-            return
         if (project.isDisposed) return
 
 
