@@ -11,7 +11,7 @@ import gdscript.GdScriptBundle
 import gdscript.action.quickFix.GdChangeTypeFix
 import gdscript.action.quickFix.GdRemoveElementsAction
 import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
-import gdscript.polySymbols.psi.GdPsiPolySymbol
+import gdscript.polySymbols.gdPsiSourceElement
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassNaming
@@ -37,8 +37,8 @@ class GdParamAnnotator : Annotator {
         var maxSize = 0
 
         val refId = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return
-        val symbol = refId.resolveSymbolReference() as? GdPsiPolySymbol ?: return
-        val declaration = symbol.sourceElement.parent
+        val symbol = refId.resolveSymbolReference() ?: return
+        val declaration = symbol.gdPsiSourceElement?.parent ?: return
         val descriptions = mutableListOf<String>()
 
         val paramLists = when (declaration) {
