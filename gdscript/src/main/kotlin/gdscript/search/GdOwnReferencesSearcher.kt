@@ -10,7 +10,7 @@ import com.intellij.psi.search.RequestResultProcessor
 import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
-import gdscript.polySymbols.psi.GdPsiPolySymbol
+import gdscript.polySymbols.gdPsiSourceElement
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReferences
 
 /**
@@ -57,7 +57,7 @@ class GdOwnReferencesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
             consumer: Processor<in PsiReference>,
         ): Boolean {
             val declaresTarget = element.resolveSymbolReferences()
-                .any { (it as? GdPsiPolySymbol)?.sourceElement == target }
+                .any { it.gdPsiSourceElement == target }
             return !declaresTarget || consumer.process(GdOwnPsiReference(element, target))
         }
     }
