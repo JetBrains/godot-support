@@ -4,23 +4,21 @@ import com.intellij.codeInsight.hints.HintInfo
 import com.intellij.codeInsight.hints.HintInfo.MethodInfo
 import com.intellij.codeInsight.hints.InlayInfo
 import com.intellij.codeInsight.hints.InlayParameterHintsProvider
+import com.intellij.polySymbols.PolySymbol
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.util.containers.toArray
 import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.gdDeclaringClassName
 import gdscript.polySymbols.gdPsiSourceElement
-import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
+import gdscript.polySymbols.gdSignature
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReferences
 import gdscript.psi.GdAnnotationTl
 import gdscript.psi.GdCallEx
-import gdscript.psi.GdClassNaming
-import gdscript.psi.GdFile
 import gdscript.psi.GdFuncDeclEx
-import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdVarDeclSt
-import gdscript.psi.utils.GdClassMemberUtil
-import gdscript.psi.utils.GdClassMemberUtil.constructors
 import gdscript.psi.utils.GdExprUtil
 import gdscript.psi.utils.PsiGdSignalUtil
 import gdscript.utils.GdAnnotationUtil
@@ -30,38 +28,25 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
     override fun getHintInfo(element: PsiElement): HintInfo? {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return null
-            val symbol = id.resolveSymbolReference() ?: return null
-            val declaration = symbol.gdPsiSourceElement?.parent ?: return null
+            val symbols = id.resolveSymbolReferences()
 
-            if (declaration is GdMethodDeclTl) {
-                val name = declaration.getName()
-                if (name == "emit") {
+            val constructors = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
+            if (constructors.isNotEmpty()) return constructorHintInfo(element, constructors)
+
+            val method = symbols.firstOrNull { it.kind == GdPolySymbolKind.METHOD }
+            if (method != null) {
+                if (method.name == "emit") {
                     val signal = PsiGdSignalUtil.getDeclaration(element)
-                    if (signal != null) {
-                        return MethodInfo(name, signal.parameters.keys.toList())
-                    }
+                    if (signal != null) return MethodInfo(method.name, signal.parameters.keys.toList())
                 }
-
-                return MethodInfo(name, declaration.parameters.keys.toList())
-            } else if (declaration is GdVarDeclSt && declaration.expr is GdFuncDeclEx) {
-                // Lambdas
-                val lambda = declaration.expr as GdFuncDeclEx
-                return MethodInfo(lambda.funcDeclIdNmi?.text.orEmpty(), lambda.parameters.keys.toList())
-            } else if (declaration is GdClassNaming) {
-                // Constructors
-                val currentParams = element.argList?.argExprList ?: return null
-                val constructors = GdClassMemberUtil.listClassMemberDeclarations(declaration, constructors = true).constructors()
-                val constructor = constructors.find {
-                    if (it.parameters.size != currentParams.size) return@find false
-                    val declParams = it.parameters.values.toTypedArray()
-                    currentParams.forEachIndexed { i, param ->
-                        if (!GdExprUtil.typeAccepts(param.returnType, declParams[i], element)) return@find false
-                    }
-                    true
-                } ?: return null
-
-                return MethodInfo(declaration.classname, constructor.parameters.keys.toList())
+                val signature = method.gdSignature ?: return null
+                return MethodInfo(method.name, signature.parameters.map { it.name })
             }
+
+            // Lambdas - inherently PSI-only, no SDK counterpart is possible.
+            val declaration = symbols.firstOrNull()?.gdPsiSourceElement?.parent as? GdVarDeclSt ?: return null
+            val lambda = declaration.expr as? GdFuncDeclEx ?: return null
+            return MethodInfo(lambda.funcDeclIdNmi?.text.orEmpty(), lambda.parameters.keys.toList())
         } else if (element is GdAnnotationTl) {
             val definition = GdAnnotationUtil.get(element) ?: return null
             return MethodInfo(element.annotationType.text, definition.parameters.keys.toList())
@@ -70,64 +55,66 @@ class GdInlayParameterHintProvider : InlayParameterHintsProvider {
         return null
     }
 
+    private fun constructorHintInfo(element: GdCallEx, constructors: List<PolySymbol>): MethodInfo? {
+        val currentParams = element.argList?.argExprList ?: return null
+        val constructor = constructors.find { ctor ->
+            val signature = ctor.gdSignature ?: return@find false
+            signature.parameters.size == currentParams.size &&
+                currentParams.withIndex().all { (i, param) -> GdExprUtil.typeAccepts(param.returnType, signature.parameters[i].type, element) }
+        } ?: return null
+        val signature = constructor.gdSignature ?: return null
+        return MethodInfo(constructor.gdDeclaringClassName.orEmpty(), signature.parameters.map { it.name })
+    }
+
     override fun getParameterHints(element: PsiElement): List<InlayInfo> {
         if (element is GdCallEx) {
             val id = PsiTreeUtil.findChildrenOfType(element.expr, GdRefIdRef::class.java).lastOrNull() ?: return emptyList()
-            val symbol = id.resolveSymbolReference()
-            val method = symbol?.gdPsiSourceElement?.parent
+            val symbols = id.resolveSymbolReferences()
+
+            val constructors = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
+            val method = symbols.firstOrNull { it.kind == GdPolySymbolKind.METHOD }
+            val lambdaDeclaration = symbols.firstOrNull()?.gdPsiSourceElement?.parent as? GdVarDeclSt
 
             var params: Array<String> = emptyArray()
-            when (method) {
-                is GdMethodDeclTl -> {
-                    params = method.parameters.keys.toArray(emptyArray())
+            var isVariadic = false
 
-                    if (method.getName() == "emit") {
+            if (constructors.isNotEmpty()) {
+                val usedParams = element.argList?.argExprList
+                for (ctor in constructors) {
+                    val signature = ctor.gdSignature ?: continue
+                    val hints = signature.parameters
+                    if (usedParams == null || hints.size != usedParams.size) continue
+                    var ok = true
+                    for (i in hints.indices) {
+                        val t1 = usedParams[i].expr.returnType
+                        val t2 = hints[i].type
+                        ok = ok && GdExprUtil.typeAccepts(t1, t2, element)
+                    }
+
+                    if (ok) {
+                        params = hints.map { it.name }.toTypedArray()
+                        break
+                    }
+                }
+            } else if (method != null) {
+                val signature = method.gdSignature
+                if (signature != null) {
+                    params = signature.parameters.map { it.name }.toTypedArray()
+                    isVariadic = signature.isVariadic
+
+                    if (method.name == "emit") {
                         val signal = PsiGdSignalUtil.getDeclaration(element)
                         if (signal != null) {
                             params = signal.parameters.keys.toArray(emptyArray())
                         }
                     }
                 }
-
-                is GdVarDeclSt -> {
-                    if (method.expr is GdFuncDeclEx) {
-                        val lambda = method.expr as GdFuncDeclEx
-                        params = lambda.parameters.keys.toArray(emptyArray())
-                    } else {
-                        return emptyList()
-                    }
-                }
-
-                else -> {
-                    val classNaming = symbol
-                        ?.takeIf { it.kind == GdPolySymbolKind.CLASS }
-                        ?.gdPsiSourceElement?.parent as? GdClassNaming
-                    val file = classNaming?.containingFile as? GdFile ?: return emptyList()
-
-                    val methods = PsiTreeUtil.getStubChildrenOfTypeAsList(file, GdMethodDeclTl::class.java)
-                    val usedParams = element.argList?.argExprList
-
-                    for (hint in methods) {
-                        if (!hint.isConstructor) continue
-                        val hints = hint.paramList?.paramList
-                        if (hints == null || usedParams == null || hints.size != usedParams.size) continue
-                        var ok = true
-                        for (i in 0 until hints.size) {
-                            val t1 = usedParams[i].expr.returnType
-                            val t2 = hints[i].returnType
-                            ok = ok && GdExprUtil.typeAccepts(t1, t2, element)
-                        }
-
-                        if (ok) {
-                            params = hints.map { it.varNmi.name }.toTypedArray()
-                            break
-                        }
-                    }
-                }
+            } else if (lambdaDeclaration != null && lambdaDeclaration.expr is GdFuncDeclEx) {
+                val lambda = lambdaDeclaration.expr as GdFuncDeclEx
+                params = lambda.parameters.keys.toArray(emptyArray())
             }
             if (params.isEmpty()) return emptyList()
 
-            val isVariadic = (method is GdMethodDeclTl) && method.isVariadic
             val args = element.argList?.argExprList ?: return emptyList()
 
             return args.mapIndexedNotNull { i, arg ->
