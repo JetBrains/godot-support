@@ -3,9 +3,9 @@ package gdscript.inspection
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import gdscript.GdScriptBundle
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.psi.GdMethodIdNmi
 import gdscript.psi.GdVisitor
-import gdscript.psi.utils.GdMethodUtil
 import gdscript.psi.utils.PsiGdMethodIdUtil
 import gdscript.utils.ProjectUtil.contentScope
 import tscn.psi.search.TscnMethodSearcher
@@ -23,7 +23,8 @@ class GdUnusedMethodInspection : GdUnusedInspection() {
                 // ignore constructor
                 if (PsiGdMethodIdUtil.isConstructor(o)) return
                 // ignore warnings for inherited methods
-                if (GdMethodUtil.findParentMethodRecursive(o, holder.project) != null) return
+                val parentClass = GdSymbolResolverUtil.resolveOwnClassSymbol(o)?.resolveSuperClassSymbol()
+                if (GdSymbolResolverUtil.findMethodSymbol(parentClass, o.name) != null) return
                 // check for content scope
                 if (anyReference(o, holder.project.contentScope())) return
                 // check for tscn references

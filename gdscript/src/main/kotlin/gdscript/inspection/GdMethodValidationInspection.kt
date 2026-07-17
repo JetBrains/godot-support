@@ -11,6 +11,9 @@ import gdscript.inspection.fixes.GdChangeReturnTypeFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerGenericError
 import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
 import gdscript.inspection.validator.GdMethodValidator
+import gdscript.polySymbols.gdReturnType
+import gdscript.polySymbols.gdSignature
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
@@ -20,8 +23,6 @@ import gdscript.psi.GdReturnHintVal
 import gdscript.psi.GdStmtOrSuite
 import gdscript.psi.GdVisitor
 import gdscript.psi.utils.GdExprUtil
-import gdscript.psi.utils.GdInheritanceUtil
-import gdscript.psi.utils.GdMethodUtil
 
 class GdMethodValidationInspection : LocalInspectionTool() {
 
@@ -82,9 +83,9 @@ class GdMethodValidationInspection : LocalInspectionTool() {
 
             private fun validateConstructor(methodId: GdMethodIdNmi, method: GdMethodDeclTl) {
                 // If parent has parameters - child must call super(args)
-                val parent = GdInheritanceUtil.getExtendedElement(method, holder.project) ?: return
-                val parentConstructor = GdMethodUtil.findMethod(parent, GdKeywords.INIT_METHOD) ?: return
-                if (parentConstructor.parameters.isEmpty()) return
+                val parentClass = GdSymbolResolverUtil.resolveOwnClassSymbol(method)?.resolveSuperClassSymbol() ?: return
+                val parentConstructor = GdSymbolResolverUtil.findConstructorSymbol(parentClass) ?: return
+                if (parentConstructor.gdSignature?.parameters.isNullOrEmpty()) return
 
                 val stmts = PsiTreeUtil.findChildrenOfType(method, GdCallEx::class.java)
                         .filter{ it.expr.text == GdKeywords.SUPER }
@@ -104,13 +105,14 @@ class GdMethodValidationInspection : LocalInspectionTool() {
             }
 
             private fun validateParentType(methodId: GdMethodIdNmi, hint : GdReturnHintVal?, returnType: String) {
-                val parent = GdMethodUtil.findParentMethodRecursive(methodId, holder.project) ?: return
+                val parentClass = GdSymbolResolverUtil.resolveOwnClassSymbol(methodId)?.resolveSuperClassSymbol() ?: return
+                val parentReturnType = GdSymbolResolverUtil.findMethodSymbol(parentClass, methodId.name)?.gdReturnType ?: return
 
-                if (!GdExprUtil.typeAccepts(returnType, parent.returnType, holder.project)) {
+                if (!GdExprUtil.typeAccepts(returnType, parentReturnType, holder.project)) {
                     holder.registerWeakWarning(
                             methodId,
-                        GdScriptBundle.message("inspection.method.validation.return.type.does.not.match.parent.type", returnType,parent.returnType),
-                            hint?.let { GdChangeReturnTypeFix(hint, parent.returnType) }
+                        GdScriptBundle.message("inspection.method.validation.return.type.does.not.match.parent.type", returnType, parentReturnType),
+                            hint?.let { GdChangeReturnTypeFix(hint, parentReturnType) }
                     )
                 }
             }
