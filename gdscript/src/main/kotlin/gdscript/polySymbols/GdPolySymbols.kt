@@ -29,9 +29,10 @@ abstract class GdPolySymbol : PolySymbol {
     abstract val declaringClassName: String
 
     /** Stable identity key for the declaring class - dotted classId for PSI, className for SDK. */
+    @PolySymbol.Property(GdDeclaringClassIdProperty::class)
     abstract val declaringClassId: String
 
-    // TODO convert to generic property
+    @PolySymbol.Property(GdReturnTypeProperty::class)
     abstract val returnType: String
 
     /**
@@ -48,9 +49,11 @@ abstract class GdPolySymbol : PolySymbol {
     override val priority: PolySymbol.Priority get() = PolySymbol.Priority.NORMAL
 
     /** Tail text shown next to the name in completion popups (e.g. parameter list for methods). */
+    @PolySymbol.Property(GdCompletionTailTextProperty::class)
     open val completionTailText: String? get() = null
 
     /** Type text shown on the right side of completion popups (e.g. return type for methods/properties). */
+    @PolySymbol.Property(GdCompletionTypeTextProperty::class)
     open val completionTypeText: String? get() = null
 
     val qualifiedName: PolySymbolQualifiedName
