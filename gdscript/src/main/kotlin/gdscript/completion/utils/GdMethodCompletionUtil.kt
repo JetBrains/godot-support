@@ -3,12 +3,35 @@ package gdscript.completion.utils
 import GdScriptPluginIcons
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.polySymbols.PolySymbol
 import gdscript.completion.GdLookup
+import gdscript.polySymbols.gdCompletionTailText
+import gdscript.polySymbols.gdCompletionTypeText
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdParam
 
 object GdMethodCompletionUtil {
+
+    /**
+     * Builds an "override parent method" completion stub for [symbol] (a METHOD symbol, PSI- or
+     * SDK-backed). Uses only plain [PolySymbol] members and the `gdCompletionTailText`/
+     * `gdCompletionTypeText` extensions, so PSI and SDK symbols render uniformly - for PSI symbols
+     * these are computed via the same [buildParamHint] call [GdMethodDeclTl.lookupDeclaration] uses,
+     * so the rendered text matches exactly.
+     */
+    fun overrideLookupElement(symbol: PolySymbol, omitFuncKeyword: Boolean = false, indent: String? = null): LookupElement {
+        val params = symbol.gdCompletionTailText ?: "()"
+        val returnType = symbol.gdCompletionTypeText.orEmpty()
+        return GdLookup.create(
+            "${if (omitFuncKeyword) "" else "func "}${symbol.name}$params${if (returnType.isNotEmpty()) " -> $returnType" else ""}:${if (indent !== null) "\n$indent" else ""}",
+            tail = params,
+            presentable = symbol.name,
+            typed = returnType,
+            icon = symbol.icon,
+            priority = GdLookup.USER_DEFINED,
+        )
+    }
 
     fun GdMethodDeclTl.methodHeader(wrapParams: Boolean = false): String {
         val params = buildParamHint(this, wrapParams)
