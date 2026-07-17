@@ -10,11 +10,11 @@ import gdscript.action.GdCreateMethodAction
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.index.impl.GdMethodDeclIndex
 import gdscript.polySymbols.GdPolySymbolKind
-import gdscript.polySymbols.gdPsiSourceElement
+import gdscript.polySymbols.GdPolySymbolModifier
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
+import gdscript.polySymbols.scope.hasModifier
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdGetMethodIdRef
-import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdSetMethodIdRef
 
 /**
@@ -31,17 +31,13 @@ class GdSetGetAnnotator : Annotator {
     }
 
     private fun colorSetGet(element: PsiElement, holder: AnnotationHolder){
-        val ref = element.resolveSymbolReference(GdPolySymbolKind.METHOD)?.gdPsiSourceElement?.parent ?: return
-        when (ref) {
-            is GdMethodDeclTl -> {
-                val color = if (ref.isStatic) GdHighlighterColors.STATIC_METHOD_CALL else GdHighlighterColors.METHOD_CALL
-                holder
-                    .newSilentAnnotation(HighlightSeverity.INFORMATION)
-                    .range(element.textRange)
-                    .textAttributes(color)
-                    .create()
-            }
-        }
+        val symbol = element.resolveSymbolReference(GdPolySymbolKind.METHOD) ?: return
+        val color = if (symbol.hasModifier(GdPolySymbolModifier.STATIC)) GdHighlighterColors.STATIC_METHOD_CALL else GdHighlighterColors.METHOD_CALL
+        holder
+            .newSilentAnnotation(HighlightSeverity.INFORMATION)
+            .range(element.textRange)
+            .textAttributes(color)
+            .create()
     }
 
     private fun methodExists(element: PsiElement, holder: AnnotationHolder) {
