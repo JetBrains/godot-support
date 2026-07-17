@@ -44,6 +44,14 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
         )
 
     @Test
+    fun testResolveNestedClassInheritance() =
+        doResolveSymbolTest(
+            "extends Outer.<caret>Inner",
+            GdPsiClassSymbol::class.java,
+            "Inner"
+        )
+
+    @Test
     fun testGotoDeclarationNamedResourceInheritance() =
         doGotoDeclarationTest(
             declarationSignature = "class_name <caret>Base",
