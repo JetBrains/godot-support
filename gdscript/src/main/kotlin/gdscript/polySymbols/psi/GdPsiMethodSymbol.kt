@@ -34,7 +34,7 @@ class GdPsiMethodSymbol(
         get() {
             val decl = sourceElement.parent as? GdMethodDeclTl
             return GdSignature(
-                decl?.paramList?.paramList?.map { GdParameterInfo(it.varNmi.name, it.returnType) } ?: emptyList(),
+                decl?.paramList?.paramList?.map { GdParameterInfo(it.varNmi.name, it.returnType, it.expr != null) } ?: emptyList(),
                 decl?.isVariadic == true,
             )
         }
