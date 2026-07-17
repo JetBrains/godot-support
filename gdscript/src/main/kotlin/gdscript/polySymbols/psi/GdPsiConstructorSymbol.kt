@@ -6,7 +6,10 @@ import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.psi.createSmartPointer
 import gdscript.completion.utils.GdMethodCompletionUtil.buildParamHint
+import gdscript.polySymbols.GdParameterInfo
 import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.GdSignature
+import gdscript.polySymbols.GdSignatureProperty
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdMethodIdNmi
@@ -24,6 +27,16 @@ class GdPsiConstructorSymbol(
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.USER_DEFINED
     override val completionTailText: String? get() = (sourceElement.parent as? GdMethodDeclTl)?.let { buildParamHint(it) }
     override val completionTypeText: String get() = declaringClassName
+
+    @PolySymbol.Property(GdSignatureProperty::class)
+    private val signature: GdSignature
+        get() {
+            val decl = sourceElement.parent as? GdMethodDeclTl
+            return GdSignature(
+                decl?.paramList?.paramList?.map { GdParameterInfo(it.varNmi.name, it.returnType) } ?: emptyList(),
+                decl?.isVariadic == true,
+            )
+        }
 
     override fun createPointer(): Pointer<out GdPsiConstructorSymbol> {
         val sourcePtr = sourceElement.createSmartPointer()
