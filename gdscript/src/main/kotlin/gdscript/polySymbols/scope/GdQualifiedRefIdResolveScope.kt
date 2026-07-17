@@ -9,8 +9,8 @@ import com.intellij.polySymbols.query.polySymbolScope
 import com.intellij.polySymbols.utils.ReferencingPolySymbol
 import com.intellij.psi.createSmartPointer
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.gdReturnType
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReferences
 import gdscript.psi.GdExpr
@@ -67,8 +67,8 @@ internal class GdQualifiedRefIdResolveScope(private val qualifier: GdExpr) : Pol
             if (referenceWithQueryScope != null) return referenceWithQueryScope
 
             // Otherwise, get the return type from the first reference and try to resolve it to a class symbol
-            val classFromReturnType = (references.firstOrNull() as? GdPolySymbol)
-                ?.returnType
+            val classFromReturnType = references.firstOrNull()
+                ?.gdReturnType
                 ?.let { returnType ->
                     GdSymbolResolverUtil.resolveCanonicalClassSymbol(
                         qualifier.project,
