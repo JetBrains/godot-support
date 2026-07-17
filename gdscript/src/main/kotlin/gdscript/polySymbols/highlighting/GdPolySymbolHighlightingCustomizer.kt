@@ -7,10 +7,10 @@ import com.intellij.polySymbols.utils.unwrapMatchedSymbols
 import com.intellij.psi.PsiElement
 import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
-import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolModifier
-import gdscript.polySymbols.sdk.GdSdkPolySymbol
+import gdscript.polySymbols.gdDeclaringClassId
+import gdscript.polySymbols.gdIsEngineSymbol
 import gdscript.utils.PsiElementUtil.getCallExpr
 
 class GdPolySymbolHighlightingCustomizer : PolySymbolHighlightingCustomizer {
@@ -18,19 +18,19 @@ class GdPolySymbolHighlightingCustomizer : PolySymbolHighlightingCustomizer {
     override fun getSymbolTextAttributes(host: PsiElement, symbol: PolySymbol, level: Int): TextAttributesKey? {
         // `symbol` is often a raw nameMatchQuery result wrapper whose own kind/modifiers/etc. don't
         // reflect the real underlying symbol - unwrap first (same pattern as PolySymbol.hasModifier).
-        val real = symbol.unwrapMatchedSymbols().firstOrNull() as? GdPolySymbol ?: return null
+        val real = symbol.unwrapMatchedSymbols().firstOrNull() ?: return null
 
         var attribute = when (real.kind) {
             GdPolySymbolKind.CONSTRUCTOR -> GdHighlighterColors.METHOD_CALL
 
             GdPolySymbolKind.METHOD -> {
-                if (real.declaringClassId == GdKeywords.GLOBAL_SCOPE) GdHighlighterColors.GLOBAL_FUNCTION
+                if (real.gdDeclaringClassId == GdKeywords.GLOBAL_SCOPE) GdHighlighterColors.GLOBAL_FUNCTION
                 else if (real.modifiers.contains(GdPolySymbolModifier.STATIC)) GdHighlighterColors.STATIC_METHOD_CALL
                 else GdHighlighterColors.METHOD_CALL
             }
 
             GdPolySymbolKind.PROPERTY -> {
-                if (real.declaringClassId == GdKeywords.GLOBAL_SCOPE) GdHighlighterColors.GLOBAL_VARIABLE_BUILT_IN
+                if (real.gdDeclaringClassId == GdKeywords.GLOBAL_SCOPE) GdHighlighterColors.GLOBAL_VARIABLE_BUILT_IN
                 else GdHighlighterColors.MEMBER
             }
 
@@ -40,7 +40,7 @@ class GdPolySymbolHighlightingCustomizer : PolySymbolHighlightingCustomizer {
             GdPolySymbolKind.ENUM_VALUE -> GdHighlighterColors.MEMBER
 
             GdPolySymbolKind.CLASS -> {
-                if (real is GdSdkPolySymbol) GdHighlighterColors.ENGINE_TYPE
+                if (real.gdIsEngineSymbol) GdHighlighterColors.ENGINE_TYPE
                 else GdHighlighterColors.CLASS_TYPE
             }
 
