@@ -2,7 +2,6 @@ package gdscript.psi
 
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import gdscript.psi.impl.GdClassDeclElementType
 import gdscript.psi.impl.GdClassIdElementType
 import gdscript.psi.impl.GdClassNamingElementType
@@ -47,7 +46,6 @@ internal object GdPsiUtils {
 
     /** Inheritance */
     @JvmStatic fun getInheritancePath(element: GdInheritance): String = GdInheritanceElementType.inheritancePath(element)
-    @JvmStatic fun getPsiFile(element: GdInheritanceIdRef): PsiFile? = PsiGdInheritanceUtil.getPsiFile(element)
     @JvmStatic fun isClassName(element: GdInheritanceIdRef): Boolean = PsiGdInheritanceUtil.isClassName(element)
 
     /** Enum  */
