@@ -7,8 +7,8 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdScriptBundle
 import gdscript.action.quickFix.GdAddMatchBranchesFix
 import gdscript.inspection.util.ProblemsHolderExtension.registerWeakWarning
-import gdscript.psi.GdEnumDeclNmi
 import gdscript.psi.GdEnumDeclTl
+import gdscript.polySymbols.psi.GdPsiEnumSymbol
 import gdscript.polySymbols.psi.GdPsiPolySymbol
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdMatchSt
@@ -17,7 +17,6 @@ import gdscript.psi.GdTypeHintRef
 import gdscript.psi.GdVisitor
 import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.GdInheritanceUtil
-import gdscript.utils.PsiReferenceUtil.resolveRef
 
 class GdMissingMatchBranchesInspection : LocalInspectionTool() {
 
@@ -34,8 +33,7 @@ class GdMissingMatchBranchesInspection : LocalInspectionTool() {
                 val symbol = id.resolveSymbolReference() as? GdPsiPolySymbol ?: return
                 val rootDecl = symbol.sourceElement.parent
                 val typeHint = PsiTreeUtil.findChildrenOfType(rootDecl, GdTypeHintRef::class.java).lastOrNull() ?: return
-                val enumNmi = typeHint.resolveRef() ?: return
-                if (enumNmi !is GdEnumDeclNmi) return
+                val enumNmi = (typeHint.resolveSymbolReference() as? GdPsiEnumSymbol)?.sourceElement ?: return
 
                 val usedKeys = match.matchBlockList.flatMap { block ->
                     block.patternList.patternList.map {
