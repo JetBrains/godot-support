@@ -7,12 +7,12 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeaf
+import com.intellij.polySymbols.PolySymbol
 import gdscript.GdKeywords
 import gdscript.GdScriptBundle
-import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.gdHasConstructor
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
-import gdscript.polySymbols.sdk.GdSdkClassSymbol
 import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdNodePath
 import gdscript.psi.GdRefIdRef
@@ -39,7 +39,7 @@ class GdRefIdAnnotator : Annotator {
         if (txt == GdKeywords.SELF || txt == GdKeywords.SUPER) return
         if (GdKeywords.MATH_CONSTANTS.contains(txt)) return
 
-        val symbol = element.resolveSymbolReference() as? GdPolySymbol
+        val symbol = element.resolveSymbolReference()
         if (symbol != null) {
             checkBuiltinTypeAssignability(element, symbol, holder)
             return
@@ -86,10 +86,9 @@ class GdRefIdAnnotator : Annotator {
      * `.new()`/call syntax, never assigned bare to a variable. This is an assignability check, not
      * a resolution problem, so it only runs once resolution to a class symbol succeeds.
      */
-    private fun checkBuiltinTypeAssignability(element: GdRefIdRef, symbol: GdPolySymbol, holder: AnnotationHolder) {
+    private fun checkBuiltinTypeAssignability(element: GdRefIdRef, symbol: PolySymbol, holder: AnnotationHolder) {
         if (symbol.kind != GdPolySymbolKind.CLASS) return
-        val hasConstructor = (symbol as? GdSdkClassSymbol)?.data?.constructors?.isNotEmpty() == true
-        if (!hasConstructor) return
+        if (!symbol.gdHasConstructor) return
 
         val nextLeaf = element.nextLeaf(true)
         if (objectContinuation.contains(nextLeaf.elementType)) return

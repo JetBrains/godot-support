@@ -7,7 +7,10 @@ import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.PolySymbolModifier
+import gdscript.polySymbols.GdParameterInfo
 import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.GdSignature
+import gdscript.polySymbols.GdSignatureProperty
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
 import gdscript.polySymbols.completion.toCompletionParamHint
 import gdscript.polySymbols.completion.toCompletionTypeText
@@ -33,6 +36,13 @@ class GdSdkMethodSymbol(
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.BUILT_IN
     override val completionTailText: String get() = data.parameters.toCompletionParamHint(data.qualifiers.isVariadic)
     override val completionTypeText: String get() = data.returnType.toCompletionTypeText()
+
+    @PolySymbol.Property(GdSignatureProperty::class)
+    private val signature: GdSignature
+        get() = GdSignature(
+            data.parameters.map { GdParameterInfo(it.name, it.type.enumName?.takeIf { n -> n.isNotEmpty() } ?: it.type.name) },
+            data.qualifiers.isVariadic,
+        )
 
     override fun isEquivalentTo(symbol: Symbol): Boolean {
         if (this === symbol) return true
