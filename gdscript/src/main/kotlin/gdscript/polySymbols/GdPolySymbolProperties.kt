@@ -13,11 +13,13 @@ object GdReturnTypeProperty : PolySymbolProperty<String>("gd-return-type", Strin
 object GdCompletionTailTextProperty : PolySymbolProperty<String>("gd-completion-tail-text", String::class.java)
 object GdCompletionTypeTextProperty : PolySymbolProperty<String>("gd-completion-type-text", String::class.java)
 object GdDeclaringClassIdProperty : PolySymbolProperty<String>("gd-declaring-class-id", String::class.java)
+object GdDeclaringClassNameProperty : PolySymbolProperty<String>("gd-declaring-class-name", String::class.java)
 
 val PolySymbol.gdReturnType: String? get() = this[GdReturnTypeProperty]
 val PolySymbol.gdCompletionTailText: String? get() = this[GdCompletionTailTextProperty]
 val PolySymbol.gdCompletionTypeText: String? get() = this[GdCompletionTypeTextProperty]
 val PolySymbol.gdDeclaringClassId: String? get() = this[GdDeclaringClassIdProperty]
+val PolySymbol.gdDeclaringClassName: String? get() = this[GdDeclaringClassNameProperty]
 
 /**
  * Real-or-synthetic PsiElement, for consumers OK navigating into a generated SDK doc file
@@ -48,3 +50,8 @@ data class GdParameterInfo(val name: String, val type: String, val hasDefault: B
 data class GdSignature(val parameters: List<GdParameterInfo>, val isVariadic: Boolean)
 object GdSignatureProperty : PolySymbolProperty<GdSignature>("gd-signature", GdSignature::class.java)
 val PolySymbol.gdSignature: GdSignature? get() = this[GdSignatureProperty]
+
+/** Value names of an ENUM symbol, uniform across PSI and SDK backing. */
+@Suppress("UNCHECKED_CAST")
+object GdEnumValuesProperty : PolySymbolProperty<List<String>>("gd-enum-values", List::class.java as Class<List<String>>)
+val PolySymbol.gdEnumValues: List<String>? get() = this[GdEnumValuesProperty]
