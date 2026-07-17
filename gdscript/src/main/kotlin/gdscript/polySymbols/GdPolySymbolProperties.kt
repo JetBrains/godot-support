@@ -42,7 +42,7 @@ object GdHasConstructorProperty : PolySymbolProperty<Boolean>("gd-has-constructo
 val PolySymbol.gdHasConstructor: Boolean get() = this[GdHasConstructorProperty] == true
 
 /** Structured parameter info for a METHOD/CONSTRUCTOR symbol - see [GdSignatureProperty]. */
-data class GdParameterInfo(val name: String, val type: String)
+data class GdParameterInfo(val name: String, val type: String, val hasDefault: Boolean = false)
 
 /** Structured signature for a METHOD/CONSTRUCTOR symbol, uniform across PSI and SDK backing. */
 data class GdSignature(val parameters: List<GdParameterInfo>, val isVariadic: Boolean)
