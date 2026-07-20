@@ -173,7 +173,7 @@ class GdFormattingTest : BasePlatformTestCase() {
     }
 
     @Test
-    fun testBlankLineAfterDecorator() = doTest()
+    fun testAnnotationsStickToDefinitions() = doTest()
 
     @Test
     fun testBlankLinesAroundFirstMethodInsideClass() {

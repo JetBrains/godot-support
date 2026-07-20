@@ -132,6 +132,8 @@ fun createSpacingBuilder(commonSettings: CommonCodeStyleSettings, gdSettings: Gd
         .afterInside(INHERITANCE, CLASS_DECL_TL).spaces(0)
 
         // ----- Blank lines around classes & methods -----
+        // Annotations stick to everything
+        .after(ANNOTATION_TL).spacing(1, 1, 0, true, 0)
         .betweenInside(COLON, METHOD_DECL_TL, CLASS_DECL_TL)
         .minMaxLines(
             gdSettings.MIN_BLANK_LINES_BEFORE_FIRST_METHOD_IN_CLASS,
@@ -151,7 +153,6 @@ fun createSpacingBuilder(commonSettings: CommonCodeStyleSettings, gdSettings: Gd
         .after(INHERITANCE).minMaxLines(gdSettings.MIN_LINES_AFTER_HEADER, gdSettings.MAX_LINES_AFTER_HEADER)
 
         // ----- Blank lines between members and statements -----
-        .after(ANNOTATION_TL).spacing(1, 1, 0, true, 0)
         .between(ROOT_VARIABLES, ROOT_VARIABLES).emptyLines(gdSettings.MAX_LINES_IN_BETWEEN_VARIABLE_GROUPS)
         .between(STATEMENTS, STATEMENTS).emptyLines(gdSettings.LINES_WITHIN_SUITE)
         // .before(STATEMENTS).emptyLines(gdSettings.LINES_WITHIN_SUITE)
