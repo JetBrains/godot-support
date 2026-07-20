@@ -17,6 +17,7 @@
     <!-- region Generated dependencies - run `Generate Product Layouts` to regenerate -->
     <plugin id="com.intellij.rider.godot.community"/>
     <module name="intellij.platform.dap"/>
+    <module name="intellij.platform.polySymbols.backend"/>
     <module name="intellij.spellchecker"/>
     <!-- endregion -->
   </dependencies>
