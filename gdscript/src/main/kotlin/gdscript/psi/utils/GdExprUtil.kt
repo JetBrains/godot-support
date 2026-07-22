@@ -2,18 +2,18 @@ package gdscript.psi.utils
 
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
-import com.jetbrains.rd.util.firstOrNull
 import gdscript.GdKeywords
-import gdscript.psi.utils.GdClassMemberUtil.constructors
+import gdscript.polySymbols.gdSignature
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.utils.StringUtil.parseFromSquare
 
 object GdExprUtil {
 
     fun typeAccepts(from: String, into: String, element: PsiElement): Boolean {
-        return typeAccepts(from, into, element.project)
+        return typeAccepts(from, into, element.project, element)
     }
 
-    fun typeAccepts(from: String, into: String, project: Project): Boolean {
+    fun typeAccepts(from: String, into: String, project: Project, context: PsiElement? = null): Boolean {
         if (from == into) return true
         if (from.isBlank() || into.isBlank()) return true
         if (into == "void") return false
@@ -33,25 +33,15 @@ object GdExprUtil {
 
         if (allowedExceptions(left, right, project)) return true
 
-        val classId = GdClassUtil.getClassIdElement(left, project) ?: return true
-        val classElement = GdClassUtil.getOwningClassElement(classId)
-
         // Constructor
         // todo: here it is too permissive, just checks that there is a ctor, which accepts "right" type as a first arg - doesn't make sense to me
-        GdClassMemberUtil
-            .listClassMemberDeclarations(classElement, constructors = true)
-            .constructors()
-            .forEach {
-                if (it.parameters.firstOrNull()?.value == right) return true
-            }
+        val classSymbol = GdSymbolResolverUtil.resolveCanonicalClassSymbol(project, left, context) ?: return true
+        GdSymbolResolverUtil.listConstructorSymbols(classSymbol).forEach {
+            if (it.gdSignature?.parameters?.firstOrNull()?.type == right) return true
+        }
 
         // Inheritance
-        val currentClassId = GdClassUtil.getClassIdElement(right, project) ?: return true
-        val currentClassElement = GdClassUtil.getOwningClassElement(currentClassId)
-
-        if (GdInheritanceUtil.isExtending(currentClassElement, left)) return true
-
-        return false
+        return GdSymbolResolverUtil.isExtendingCanonical(right, project, context, left)
     }
 
     private fun allowedExceptions(left: String, right: String, project: Project): Boolean {
