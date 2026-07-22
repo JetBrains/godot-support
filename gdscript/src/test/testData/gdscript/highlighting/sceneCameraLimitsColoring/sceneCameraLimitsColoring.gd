@@ -1,6 +1,6 @@
-<symbolName descr="GD_CLASS_TYPE">extends <info descr="null"><symbolName descr="GD_ENGINE_TYPE">Node2D</symbolName></info>
+extends <info descr="null"><symbolName descr="GD_ENGINE_TYPE">Node2D</symbolName></info>
 
-const <symbolName descr="GD_MEMBER">LIMIT_LEFT</symbolName> =</symbolName> -315
+const <symbolName descr="GD_MEMBER">LIMIT_LEFT</symbolName> = -315
 const <symbolName descr="GD_MEMBER">LIMIT_TOP</symbolName> = -250
 const <symbolName descr="GD_MEMBER">LIMIT_RIGHT</symbolName> = 955
 const <symbolName descr="GD_MEMBER">LIMIT_BOTTOM</symbolName> = 690
