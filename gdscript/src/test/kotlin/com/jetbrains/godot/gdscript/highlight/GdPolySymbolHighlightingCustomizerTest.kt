@@ -13,4 +13,7 @@ class GdPolySymbolHighlightingCustomizerTest : GdTestCaseWithSdk("highlighting")
 
     @Test
     fun testSceneCameraLimitsColoring() = doHighlightingTest(checkSymbolNames = true)
+
+    @Test
+    fun testAutoloadOwnDeclarationColoring() = doHighlightingTest(checkSymbolNames = true, configureFileName = "global.gd")
 }
