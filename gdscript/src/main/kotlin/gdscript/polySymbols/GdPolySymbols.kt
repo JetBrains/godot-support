@@ -64,7 +64,11 @@ abstract class GdPolySymbol : PolySymbol {
     override val presentation: TargetPresentation
         get() {
             val kindName = kindName.replace('-', ' ').lowercase(Locale.US)
-            val description = "$namespace $kindName '$name'"
+            val presentedName = if (kind == GdPolySymbolKind.METHOD || kind == GdPolySymbolKind.CONSTRUCTOR)
+                "$name${completionTailText ?: "()"}"
+            else
+                name
+            val description = "$namespace $kindName '$presentedName'"
             return TargetPresentation.builder(description)
                 .icon(icon)
                 .presentation()
