@@ -34,15 +34,29 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
     }
 
     @Test
-    fun testQualifiedNewResolvesToAllSdkConstructorOverloads() {
+    fun testQualifiedNewWithNoArgsResolvesToNoArgConstructorOnly() {
         myFixture.configureByText("Test.gd", "func f():\n\tvar v = Vector2.<caret>new()")
         val refId = refIdAtCaret()
         val symbols = refId.resolveSymbolReferences()
 
-        assertEquals(4, symbols.size)
-        assertTrue(symbols.all { it.kind == GdPolySymbolKind.CONSTRUCTOR })
-        assertTrue(symbols.all { it.unwrapAllDelegates() is GdSdkConstructorSymbol })
+        assertEquals(1, symbols.size)
+        val ctor = symbols.single()
+        assertEquals(GdPolySymbolKind.CONSTRUCTOR, ctor.kind)
+        assertEquals(0, ctor.gdSignature?.parameters?.size)
+        assertTrue(ctor.unwrapAllDelegates() is GdSdkConstructorSymbol)
         assertNotNull(refId.resolveSymbolReference())
+    }
+
+    @Test
+    fun testQualifiedNewWithTwoArgsResolvesToTwoParamConstructorOnly() {
+        myFixture.configureByText("Test.gd", "func f():\n\tvar v = Vector2.<caret>new(1, 2)")
+        val refId = refIdAtCaret()
+        val symbols = refId.resolveSymbolReferences()
+
+        assertEquals(1, symbols.size)
+        val ctor = symbols.single()
+        assertEquals(GdPolySymbolKind.CONSTRUCTOR, ctor.kind)
+        assertEquals(2, ctor.gdSignature?.parameters?.size)
     }
 
     @Test
@@ -66,16 +80,29 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
     }
 
     @Test
-    fun testBareSdkConstructorCallResolvesToClassAndAllConstructorOverloads() {
+    fun testBareSdkConstructorCallResolvesToClassAndMatchingArityConstructorOnly() {
         myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(1, 2)")
         val refId = refIdAtCaret()
         val symbols = refId.resolveSymbolReferences()
 
         assertTrue(symbols.any { it.kind == GdPolySymbolKind.CLASS })
-        assertEquals(4, symbols.count { it.kind == GdPolySymbolKind.CONSTRUCTOR })
+        val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
+        assertEquals(1, ctorSymbols.size)
+        assertEquals(2, ctorSymbols.single().gdSignature?.parameters?.size)
         // Unfiltered resolveSymbolReference() must still return CLASS first - existing callers
         // that don't filter by kind must see unchanged behavior.
         assertEquals(GdPolySymbolKind.CLASS, refId.resolveSymbolReference()?.kind)
+    }
+
+    @Test
+    fun testBareSdkConstructorCallWithAmbiguousArityKeepsBothSingleArgOverloads() {
+        myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(Vector2i(1, 2))")
+        val refId = refIdAtCaret()
+        val symbols = refId.resolveSymbolReferences()
+
+        val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
+        assertEquals(2, ctorSymbols.size)
+        assertEquals(listOf(1, 1), ctorSymbols.mapNotNull { it.gdSignature?.parameters?.size }.sorted())
     }
 
     @Test
@@ -105,5 +132,95 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
         assertTrue(symbols.any { it.kind == GdPolySymbolKind.CLASS })
         assertEquals(1, symbols.count { it.kind == GdPolySymbolKind.CONSTRUCTOR })
+    }
+
+    @Test
+    fun testBarePsiConstructorCallWithMultipleOverloadsResolvesToMatchingArityOnly() {
+        myFixture.configureByText(
+            "Test.gd", """
+            |class_name Foo
+            |func _init(a):
+            |	pass
+            |func _init(a, b):
+            |	pass
+            |
+            |func f():
+            |	var v = <caret>Foo(1, 2)
+        """.trimMargin()
+        )
+        val refId = refIdAtCaret()
+        val symbols = refId.resolveSymbolReferences()
+
+        val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
+        assertEquals(1, ctorSymbols.size)
+        assertEquals(2, ctorSymbols.single().gdSignature?.parameters?.size)
+    }
+
+    @Test
+    fun testBarePsiConstructorCallWithSameArityDisambiguatedBySdkType() {
+        myFixture.configureByText(
+            "Test.gd", """
+            |class_name Foo
+            |func _init(a: Node):
+            |	pass
+            |func _init(a: int):
+            |	pass
+            |
+            |func f():
+            |	var warmup = Node.new()
+            |	var v = <caret>Foo(Node.new())
+        """.trimMargin()
+        )
+        val refId = refIdAtCaret()
+        val symbols = refId.resolveSymbolReferences()
+
+        val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
+        assertEquals(1, ctorSymbols.size)
+        assertEquals("Node", ctorSymbols.single().gdSignature?.parameters?.single()?.type)
+    }
+
+    @Test
+    fun testBarePsiMethodCallWithMultipleOverloadsResolvesToMatchingArityOnly() {
+        myFixture.configureByText(
+            "Test.gd", """
+            |class_name Foo
+            |func bar(a):
+            |	pass
+            |func bar(a, b):
+            |	pass
+            |
+            |func f():
+            |	Foo.new().<caret>bar(1, 2)
+        """.trimMargin()
+        )
+        val refId = refIdAtCaret()
+        val symbols = refId.resolveSymbolReferences()
+
+        val methodSymbols = symbols.filter { it.kind == GdPolySymbolKind.METHOD }
+        assertEquals(1, methodSymbols.size)
+        assertEquals(2, methodSymbols.single().gdSignature?.parameters?.size)
+    }
+
+    @Test
+    fun testBarePsiMethodCallWithSameAritySdkTypedOverloadsDisambiguated() {
+        myFixture.configureByText(
+            "Test.gd", """
+            |class_name Foo
+            |func bar(a: Node):
+            |	pass
+            |func bar(a: int):
+            |	pass
+            |
+            |func f():
+            |	var warmup = Node.new()
+            |	Foo.new().<caret>bar(Node.new())
+        """.trimMargin()
+        )
+        val refId = refIdAtCaret()
+        val symbols = refId.resolveSymbolReferences()
+
+        val methodSymbols = symbols.filter { it.kind == GdPolySymbolKind.METHOD }
+        assertEquals(1, methodSymbols.size)
+        assertEquals("Node", methodSymbols.single().gdSignature?.parameters?.single()?.type)
     }
 }
