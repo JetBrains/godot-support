@@ -1,6 +1,7 @@
 package gdscript.formatter.settings
 
 import com.intellij.application.options.IndentOptionsEditor
+import com.intellij.application.options.SmartIndentOptionsEditor
 import com.intellij.lang.Language
 import com.intellij.openapi.application.ApplicationBundle
 import com.intellij.psi.codeStyle.CodeStyleSettings
@@ -27,7 +28,8 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
     }
 
     override fun getIndentOptionsEditor(): IndentOptionsEditor {
-        return IndentOptionsEditor()
+        // Pass `this` so `IndentOptionsEditor.createPanel()` actuall invokes `customizeSettings(INDENT_SETTINGS)`
+        return SmartIndentOptionsEditor(this)
     }
 
     override fun customizeDefaults(commonSettings: CommonCodeStyleSettings, indentOptions: CommonCodeStyleSettings.IndentOptions) {
@@ -78,7 +80,13 @@ class GdLanguageCodeStyleSettingsProvider : LanguageCodeStyleSettingsProvider() 
             }
 
             SettingsType.INDENT_SETTINGS -> {
-                consumer.showAllStandardOptions()
+                consumer.showStandardOptions(
+                    "TAB_SIZE",
+                    "INDENT_SIZE",
+                    "USE_TAB_CHARACTER",
+                    "CONTINUATION_INDENT_SIZE",
+                    "KEEP_INDENTS_ON_EMPTY_LINES",
+                )
             }
 
             SettingsType.BLANK_LINES_SETTINGS -> {
