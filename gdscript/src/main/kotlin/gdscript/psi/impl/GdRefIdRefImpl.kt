@@ -13,6 +13,7 @@ import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolKind.QUALIFIABLE_SYMBOLS
 import gdscript.polySymbols.GdPolySymbolModifier.STATIC
 import gdscript.polySymbols.psi.GdAliasedNameSymbol
+import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.filterCandidatesForCall
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.isStatic
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.resolveConstructorSymbols
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.resolveEarlierEnumValueSymbol
@@ -60,12 +61,19 @@ class GdRefIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdRefIdRef {
                     // (the platform only unwraps after this lambda returns, in
                     // PolySymbolOwnReferencesBuilderImpl's `resolvedSymbols`) - must unwrap before
                     // trusting `.kind`, exactly like hasStaticInstanceDistinction()/hasModifier() do.
+                    val callExpr = this@GdRefIdRefImpl.getCallExpr()
+                    // Narrows `resolved` when it holds multiple same-named METHOD overloads (a bare
+                    // constructor call's `resolved` is just the single CLASS symbol, for which this
+                    // is a no-op - GdClassSymbol has no gdSignature).
+                    val filteredResolved = if (callExpr != null) filterCandidatesForCall(resolved, callExpr, this@GdRefIdRefImpl) else resolved
                     val classSymbol = resolved.flatMap { it.unwrapMatchedSymbols() }
                         .firstOrNull { it.kind == GdPolySymbolKind.CLASS } as? GdClassSymbol
-                    if (classSymbol != null && this@GdRefIdRefImpl.getCallExpr() != null) {
-                        resolved + GdSymbolResolverUtil.listConstructorSymbols(classSymbol).map { GdAliasedNameSymbol(it, text) }
+                    if (classSymbol != null && callExpr != null) {
+                        filteredResolved + filterCandidatesForCall(
+                            GdSymbolResolverUtil.listConstructorSymbols(classSymbol), callExpr, this@GdRefIdRefImpl
+                        ).map { GdAliasedNameSymbol(it, text) }
                     } else {
-                        resolved
+                        filteredResolved
                     }
                 }
             }

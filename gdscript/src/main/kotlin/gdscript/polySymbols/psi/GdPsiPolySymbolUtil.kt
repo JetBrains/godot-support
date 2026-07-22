@@ -6,11 +6,13 @@ import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.query.polySymbolScopeCached
+import com.intellij.polySymbols.utils.unwrapMatchedSymbols
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.gdSignature
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.polySymbols.scope.gdSdkGlobalPolySymbolScope
@@ -27,6 +29,8 @@ import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdVarDeclSt
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassUtil
+import gdscript.psi.utils.GdExprUtil
+import gdscript.utils.PsiElementUtil.getCallExpr
 
 object GdPsiPolySymbolUtil {
 
@@ -87,23 +91,70 @@ object GdPsiPolySymbolUtil {
     }
 
     /**
-     * Resolves `new` in a `ClassName.new(...)` call to every constructor symbol declared on the
-     * class (PSI or SDK - reuses [GdSymbolResolverUtil.listConstructorSymbols]'s kind-only,
-     * no-name-filter query, so a class with overloaded SDK constructors, e.g. `Vector2`, resolves
-     * to all of them). `new` itself is not a real, queryable symbol name (GDScript constructors are
-     * always named `_init` in PSI, or the class name in SDK data - never literally `"new"`), so each
-     * result is wrapped in [GdAliasedNameSymbol]: own-reference ranges are computed from the
-     * referenced symbol's `name.length`, and neither `_init` (5 chars) nor an SDK class name would
-     * match the `new` token's own length/text, which would overflow the reference's range into the
-     * call's parentheses. [GdSymbolResolverUtil.resolveSymbolReferences] unwraps the delegate back
-     * to the real constructor symbol for callers.
+     * Resolves `new` in a `ClassName.new(...)` call to the constructor symbol(s) declared on the
+     * class (PSI or SDK) whose signature matches the call's argument list - see
+     * [filterCandidatesForCall]. `new` itself is not a real, queryable symbol name (GDScript
+     * constructors are always named `_init` in PSI, or the class name in SDK data - never literally
+     * `"new"`), so each result is wrapped in [GdAliasedNameSymbol]: own-reference ranges are computed
+     * from the referenced symbol's `name.length`, and neither `_init` (5 chars) nor an SDK class name
+     * would match the `new` token's own length/text, which would overflow the reference's range into
+     * the call's parentheses. [GdSymbolResolverUtil.resolveSymbolReferences] unwraps the delegate
+     * back to the real constructor symbol for callers.
      */
     fun resolveConstructorSymbols(element: GdRefIdRef): List<PolySymbol> {
         val qualifier = GdClassMemberUtil.calledUpon(element) ?: return emptyList()
         val typeName = GdPsiUtils.getReturnType(qualifier)
         if (typeName.isEmpty()) return emptyList()
         val classSymbol = GdSymbolResolverUtil.resolveCanonicalClassSymbol(element.project, typeName, element) ?: return emptyList()
-        return GdSymbolResolverUtil.listConstructorSymbols(classSymbol).map { GdAliasedNameSymbol(it, "new") }
+        val candidates = filterCandidatesForCall(GdSymbolResolverUtil.listConstructorSymbols(classSymbol), element.getCallExpr(), element)
+        return candidates.map { GdAliasedNameSymbol(it, "new") }
+    }
+
+    /**
+     * Narrows [candidates] (CONSTRUCTOR overloads of a class, or METHOD overloads sharing a name) to
+     * the ones whose declared signature actually matches [callExpr]'s argument list: first by
+     * argument count (respecting [gdscript.polySymbols.GdParameterInfo.hasDefault]/
+     * [gdscript.polySymbols.GdSignature.isVariadic]), then - only when more than one candidate still
+     * matches by count - by per-argument type compatibility via [GdExprUtil.typeAccepts] (SDK-aware).
+     * Falls back to the wider result whenever a step would leave nothing, so navigation never narrows
+     * to zero targets - e.g. the call is still being typed ([callExpr] has no arg list yet), or its
+     * arguments don't match any candidate (invalid code).
+     */
+    fun filterCandidatesForCall(candidates: List<PolySymbol>, callExpr: GdCallEx?, context: PsiElement): List<PolySymbol> {
+        val actualArgs = callExpr?.argList?.argExprList ?: return candidates
+        val actualCount = actualArgs.size
+
+        // A candidate straight from a name-match query (e.g. `resolved` in GdRefIdRefImpl's general
+        // branch) may be a single PolySymbolMatch composite wrapping every overload sharing the
+        // matched name in its own name segments, alongside scope-internal, pattern-based symbols with
+        // no gdSignature (e.g. a generic "class member" completion pattern) that aren't valid resolve
+        // targets on their own - unwrapping those and returning them directly trips the platform's own
+        // "resolved symbol's name must match the reference text" assertion. So: only symbols with a
+        // real gdSignature (METHOD/CONSTRUCTOR overloads) are extracted and individually filtered;
+        // every other candidate - a bare CLASS symbol, an unrelated pattern symbol, anything without
+        // gdSignature - passes through untouched, in its original wrapped form, exactly as before this
+        // function existed. listConstructorSymbols's own candidates are already unwrapped leaves, so
+        // this is a no-op reshuffle for those.
+        val passthrough = candidates.filter { candidate -> candidate.unwrapMatchedSymbols().none { it.gdSignature != null } }
+        val overloadLeaves = candidates.flatMap { it.unwrapMatchedSymbols().toList() }.filter { it.gdSignature != null }
+        if (overloadLeaves.size <= 1) return candidates
+
+        val byArity = overloadLeaves.filter { candidate ->
+            val signature = candidate.gdSignature!!
+            val params = signature.parameters
+            val minArgs = params.indexOfFirst { it.hasDefault }.let { if (it == -1) params.size else it }
+            actualCount >= minArgs && (signature.isVariadic || actualCount <= params.size)
+        }
+        val byArityOrAll = byArity.ifEmpty { overloadLeaves }
+        if (byArityOrAll.size <= 1 || actualCount == 0) return passthrough + byArityOrAll
+
+        val actualTypes = actualArgs.map { it.returnType }
+        val byType = byArityOrAll.filter { candidate ->
+            val params = candidate.gdSignature!!.parameters
+            actualTypes.size == params.size &&
+                actualTypes.indices.all { i -> GdExprUtil.typeAccepts(actualTypes[i], params[i].type, context) }
+        }
+        return passthrough + byType.ifEmpty { byArityOrAll }
     }
 
     /**
