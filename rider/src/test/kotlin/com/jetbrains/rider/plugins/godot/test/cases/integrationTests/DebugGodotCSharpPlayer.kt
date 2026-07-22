@@ -13,13 +13,13 @@ import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.TestSettings
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.annotations.report.Feature
-import com.jetbrains.rider.test.base.PerTestSolutionTestBase
 import com.jetbrains.rider.test.debugger.disableTargetInvokeWithWatches
 import com.jetbrains.rider.test.debugger.enableTargetInvokeWithWatches
 import com.jetbrains.rider.test.enums.BuildTool
 import com.jetbrains.rider.test.enums.sdk.SdkVersion
 import com.jetbrains.rider.test.facades.solution.RiderExistingSolutionApiFacade
 import com.jetbrains.rider.test.facades.solution.SolutionApiFacade
+import com.jetbrains.rider.test.junit5.base.PerTestSolutionTestBase
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import com.jetbrains.rider.test.scriptingApi.dumpFullCurrentData
 import com.jetbrains.rider.test.scriptingApi.evaluateExpression
@@ -28,12 +28,13 @@ import com.jetbrains.rider.test.scriptingApi.stepInto
 import com.jetbrains.rider.test.scriptingApi.stepOver
 import com.jetbrains.rider.test.scriptingApi.toggleBreakpoint
 import com.jetbrains.rider.test.scriptingApi.waitForPause
+import com.jetbrains.rider.test.shared.constants.TeamCityTags
 import com.jetbrains.rider.test.tooling.testTools
-import org.testng.ITestResult
-import org.testng.annotations.AfterClass
-import org.testng.annotations.BeforeClass
-import org.testng.annotations.BeforeMethod
-import org.testng.annotations.Test
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 import java.time.Duration
 import kotlin.io.path.absolutePathString
 
@@ -41,6 +42,7 @@ import kotlin.io.path.absolutePathString
 @Feature("Debug C# godot player")
 @Solution("GodotDotNet")
 @TestSettings(sdkVersion = SdkVersion.LATEST_STABLE, buildTool = BuildTool.SDK)
+@Tag(TeamCityTags.Plugins.GodotIntegration)
 class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     private var godotProcess: Process? = null
 
@@ -49,24 +51,25 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     override val traceScenarios: Set<LogTraceScenario>
         get() = super.traceScenarios + LogTraceScenarios.Debugger
 
-    @BeforeMethod(dependsOnMethods = ["startGodot"])
-    override fun setUpTestCaseSolution(testResult: ITestResult) {
+    @BeforeEach
+    override fun setUpTestCaseSolution() {
+        // JUnit5 has no @BeforeMethod(dependsOnMethods=...): start Godot first, then open the solution
+        startGodot()
         pumpMessages(Duration.ofSeconds(20))
-        super.setUpTestCaseSolution(testResult)
+        super.setUpTestCaseSolution()
     }
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeAll
     fun setupDotnetDebuggerSettings() {
         DotNetDebuggerSettings.instance.enableTargetInvokeWithWatches()
     }
 
-    @AfterClass(alwaysRun = true)
+    @AfterAll
     fun disableDotnetDebuggerSettings() {
         DotNetDebuggerSettings.instance.disableTargetInvokeWithWatches()
     }
 
-    @BeforeMethod(alwaysRun = true)
-    fun startGodot() {
+    private fun startGodot() {
         godotProcess = startGodotWithProject(
             projectName = testMethod.solution!!.name,
             testWorkDirectory = testWorkDirectory,
@@ -76,7 +79,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
         )
     }
 
-    @Test(description = "Debug C# Godot player")
+    @Test // Debug C# Godot player
     @ChecklistItems(["Debug/Debug C# Godot player"])
     fun testDebug() {
         var ld: LifetimeDefinition? = null
@@ -98,7 +101,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
         )
     }
 
-    @Test(description = "Check simple stepping")
+    @Test // Check simple stepping
     @ChecklistItems(["Debug/Stepping while debug C# Godot player"])
     fun checkSimpleStepping() {
         var ld: LifetimeDefinition? = null
@@ -123,7 +126,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
         )
     }
 
-    @Test(description = "Check simple evaluation")
+    @Test // Check simple evaluation
     @ChecklistItems(["Debug/Evaluation while debugging C# Godot player"])
     fun checkSimpleEvaluation() {
         var ld: LifetimeDefinition? = null

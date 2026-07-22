@@ -185,7 +185,9 @@ tasks {
     }
 
     test {
-        useTestNG()
+        // Ignore IJ Platform JUnit5 framework set up and tear down
+        systemProperty("intellij.build.test.ignoreFirstAndLastTests", "true")
+        useJUnitPlatform()
         testLogging {
             showStandardStreams = true
             exceptionFormat = TestExceptionFormat.FULL
