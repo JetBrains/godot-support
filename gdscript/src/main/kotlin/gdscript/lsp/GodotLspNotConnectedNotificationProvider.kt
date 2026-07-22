@@ -65,7 +65,13 @@ class GodotLspNotConnectedNotificationProvider(private val project: Project) : E
         if (!GodotFileUtil.isGdFile(file)) return null
         if (!GodotCommunityUtil.isGodotProject(project)) return null
         val basePath = project.getMainProjectBasePath() ?: return null
-        if (!file.toNioPath().startsWith(basePath)) return null
+
+        try {
+            if (!file.toNioPath().startsWith(basePath)) return null
+        } catch (_: UnsupportedOperationException) {
+            // A LightVirtualFile does not support NIO paths
+            return null
+        }
 
         val settings = GdLspSettingsFlowService.getInstance(project)
         val lspConnectionMode = settings.lspConnectionMode.value
