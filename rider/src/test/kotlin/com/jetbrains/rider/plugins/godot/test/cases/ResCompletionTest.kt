@@ -8,26 +8,29 @@ import com.jetbrains.rider.test.annotations.RiderTestTimeout
 import com.jetbrains.rider.test.annotations.Solution
 import com.jetbrains.rider.test.annotations.TestSettings
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
-import com.jetbrains.rider.test.base.PerClassSolutionTestBase
 import com.jetbrains.rider.test.enums.BuildTool
 import com.jetbrains.rider.test.enums.sdk.SdkVersion
 import com.jetbrains.rider.test.facades.TestApiScopes
 import com.jetbrains.rider.test.facades.editor.EditorApiFacade
 import com.jetbrains.rider.test.facades.editor.RiderEditorApiFacade
 import com.jetbrains.rider.test.framework.persistAllFilesOnDisk
+import com.jetbrains.rider.test.junit5.base.PerClassSolutionTestBase
 import com.jetbrains.rider.test.scriptingApi.assertLookupContains
 import com.jetbrains.rider.test.scriptingApi.callBasicCompletion
 import com.jetbrains.rider.test.scriptingApi.typeWithLatency
 import com.jetbrains.rider.test.scriptingApi.withOpenedEditor
-import org.testng.annotations.AfterMethod
-import org.testng.annotations.BeforeMethod
-import org.testng.annotations.Test
+import com.jetbrains.rider.test.shared.constants.TeamCityTags
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
 import java.nio.file.Path
 import kotlin.io.path.pathString
 import java.util.concurrent.TimeUnit
 
 @Solution("ResCompletionTest")
 @TestSettings(sdkVersion = SdkVersion.LATEST_STABLE, buildTool = BuildTool.SDK)
+@Tag(TeamCityTags.Plugins.Godot)
 class ResCompletionTest : PerClassSolutionTestBase(), TestApiScopes.Editor {
     override val editorApiFacade: EditorApiFacade by lazy { RiderEditorApiFacade(solutionApiFacade, testDataStorage) }
 
@@ -76,7 +79,7 @@ class ResCompletionTest : PerClassSolutionTestBase(), TestApiScopes.Editor {
         }
     }
 
-    @BeforeMethod
+    @BeforeEach
     fun initializeEnvironment() {
         TestModeFlags.set(CompletionAutoPopupHandler.ourTestingAutopopup, true)
 
@@ -90,7 +93,7 @@ class ResCompletionTest : PerClassSolutionTestBase(), TestApiScopes.Editor {
     }
 
     // debug only
-    @AfterMethod
+    @AfterEach
     fun saveDocuments() {
         persistAllFilesOnDisk()
     }
