@@ -8,6 +8,7 @@ import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.psi.GdPsiAutoloadSymbol
 import gdscript.polySymbols.psi.GdPsiClassSymbol
 import gdscript.polySymbols.psi.GdPsiClassSymbolFactory
+import gdscript.polySymbols.psi.GdPsiConstructorSymbol
 import gdscript.polySymbols.psi.GdPsiMethodSymbol
 import gdscript.polySymbols.psi.GdPsiPropertySymbol
 import gdscript.polySymbols.psi.GdPsiResourceClassSymbol
@@ -166,6 +167,47 @@ class GdPsiModelTest : GdModelTestBase() {
         )
         assertNotNull("Unnamed child script should inherit '$baseFunc'", inheritedMethod)
         assertEquals(baseFunc, inheritedMethod!!.name)
+    }
+
+    @Test
+    fun testMethodAndConstructorPresentationIncludesParameters() {
+        val psiFile = myFixture.addFileToProject("test.gd", """
+            class_name $MyClass
+
+            func _init(count: int, label: String = "hi"):
+                pass
+
+            func my_func(a: int, b: String) -> void:
+                pass
+        """.trimIndent())
+
+        val myClassElement = PsiTreeUtil.findChildrenOfType(psiFile, GdClassNameNmi::class.java).firstOrNull()
+        assertNotNull("$MyClass not found by PSI", myClassElement)
+
+        val myClassSymbol = GdPsiClassSymbolFactory.create(myClassElement!!) as? GdPsiClassSymbol
+        assertNotNull("$MyClass symbol not found", myClassSymbol)
+
+        val myClassMemberExecutor = PolySymbolQueryExecutorFactory.createCustom {
+            addRootScopes(myClassSymbol!!.queryScope)
+        }
+
+        val myFuncSymbol = GdPolySymbolQueriesUtil.getSymbol(
+            myClassMemberExecutor, GdPolySymbolKind.METHOD, "my_func", GdPsiMethodSymbol::class.java
+        )
+        assertNotNull("MyClass should have 'my_func' method", myFuncSymbol)
+        assertEquals(
+            "GDScript method 'my_func(a: int, b: String)'",
+            myFuncSymbol!!.presentation.presentableText
+        )
+
+        val constructorSymbol = GdPolySymbolQueriesUtil.getSymbol(
+            myClassMemberExecutor, GdPolySymbolKind.CONSTRUCTOR, "_init", GdPsiConstructorSymbol::class.java
+        )
+        assertNotNull("MyClass should have a '_init' constructor", constructorSymbol)
+        assertEquals(
+            "GDScript constructor '_init(count: int, label: String = \"hi\")'",
+            constructorSymbol!!.presentation.presentableText
+        )
     }
 
     @Test
