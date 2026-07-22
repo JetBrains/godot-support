@@ -3,6 +3,7 @@ package gdscript.polySymbols.highlighting
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.highlighting.PolySymbolHighlightingCustomizer
+import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
 import com.intellij.polySymbols.utils.unwrapMatchedSymbols
 import com.intellij.psi.PsiElement
 import gdscript.GdKeywords
@@ -19,6 +20,19 @@ class GdPolySymbolHighlightingCustomizer : PolySymbolHighlightingCustomizer {
         // `symbol` is often a raw nameMatchQuery result wrapper whose own kind/modifiers/etc. don't
         // reflect the real underlying symbol - unwrap first (same pattern as PolySymbol.hasModifier).
         val real = symbol.unwrapMatchedSymbols().firstOrNull() ?: return null
+
+        // `real` is its own anchorless self-declaration being rendered at the exact PSI element it
+        // declares itself on (GdPsiResourceClassSymbol / GdPsiAutoloadSymbol's file-level
+        // declaration - see their TextRange.EMPTY_RANGE overrides: there's no real name-identifier
+        // token to anchor a highlight to). The platform annotator's default name segment derives its
+        // length from symbol.name (a resource path / autoload key) rather than the empty declared
+        // range, so it would otherwise highlight a bogus span at the start of the file. A genuine
+        // reference elsewhere (e.g. `extends "res://Other.gd"` or `MyAutoload.foo()`) has `host` be
+        // the referencing element in the CURRENT file while `real.sourceElement` is the OTHER file's
+        // GdFile, so this never fires there.
+        if (real is PolySymbolDeclaredInPsi && real.sourceElement == host && real.textRangeInSourceElement?.length == 0) {
+            return null
+        }
 
         var attribute = when (real.kind) {
             GdPolySymbolKind.CONSTRUCTOR -> GdHighlighterColors.METHOD_CALL
