@@ -18,6 +18,7 @@
     <plugin id="com.intellij.rider.godot.community"/>
     <module name="intellij.platform.dap"/>
     <module name="intellij.platform.polySymbols.backend"/>
+    <module name="intellij.platform.structureView"/>
     <module name="intellij.spellchecker"/>
     <!-- endregion -->
   </dependencies>
@@ -277,8 +278,6 @@
     <fileTemplateGroup implementation="gdscript.templates.GdFileTemplateGroupFactory"/>
 
     <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdFoldingBuilder"/>
-    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdRegionFoldingBuilder"/>
-    <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdTraitFoldingBuilder"/>
     <lang.psiStructureViewFactory language="GdScript"
                                   implementationClass="gdscript.structureView.GdStructureViewFactory"/>
     <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler"/>
