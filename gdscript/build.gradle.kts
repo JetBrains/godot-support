@@ -64,6 +64,7 @@ dependencies {
         bundledPlugin("intellij.bookmarks.plugin")
         bundledPlugin("intellij.libraries.misc.plugin")
         bundledModule("intellij.platform.dap")
+        bundledModule("intellij.platform.structureView")
         bundledModule("intellij.spellchecker")
     }
     implementation(libs.jflex)
