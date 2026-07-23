@@ -35,10 +35,6 @@ object GdCommentUtil {
         return endComment(header, GdTraitLineMarkerContributor.PREFIX, GdTraitLineMarkerContributor.SUFFIX)
     }
 
-    fun endRegionComment(header: PsiComment): PsiComment? {
-        return endComment(header, "#region", "#endregion")
-    }
-
     /**
      * Usages of Trait
      */
