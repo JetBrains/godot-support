@@ -42,7 +42,7 @@ import kotlin.io.path.absolutePathString
 @Feature("Debug C# godot player")
 @Solution("GodotDotNet")
 @TestSettings(sdkVersion = SdkVersion.LATEST_STABLE, buildTool = BuildTool.SDK)
-@Tag(TeamCityTags.Plugins.GodotIntegration)
+@Tag(TeamCityTags.Plugins.Godot.Integration)
 class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     private var godotProcess: Process? = null
 
