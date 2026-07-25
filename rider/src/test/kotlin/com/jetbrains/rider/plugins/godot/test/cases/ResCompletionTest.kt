@@ -30,7 +30,7 @@ import java.util.concurrent.TimeUnit
 
 @Solution("ResCompletionTest")
 @TestSettings(sdkVersion = SdkVersion.LATEST_STABLE, buildTool = BuildTool.SDK)
-@Tag(TeamCityTags.Plugins.Godot)
+@Tag(TeamCityTags.Plugins.Godot.General)
 class ResCompletionTest : PerClassSolutionTestBase(), TestApiScopes.Editor {
     override val editorApiFacade: EditorApiFacade by lazy { RiderEditorApiFacade(solutionApiFacade, testDataStorage) }
 
