@@ -1,17 +1,13 @@
 <idea-plugin>
   <!-- region Generated dependencies - run `Generate Product Layouts` to regenerate -->
   <dependencies>
-    <module name="intellij.rider.test.build.shared"/>
     <module name="intellij.rider.test.framework"/>
-    <module name="intellij.rider.test.framework.integration.junit"/>
     <module name="intellij.rider.test.framework.core"/>
-    <module name="intellij.rider.test.framework.junit"/>
     <plugin id="com.intellij.rider.godot"/>
     <module name="intellij.libraries.commons.compress"/>
     <module name="intellij.libraries.commons.logging"/>
     <module name="intellij.libraries.gson"/>
     <module name="intellij.libraries.jline"/>
-    <module name="intellij.libraries.junit4"/>
     <module name="intellij.libraries.junit5"/>
     <module name="intellij.libraries.junit5.params"/>
     <module name="intellij.libraries.junit5.vintage"/>
@@ -34,6 +30,9 @@
     <module name="intellij.rd.client"/>
     <module name="intellij.rider.debugger.shared"/>
     <module name="intellij.rider.languages"/>
+    <module name="intellij.rider.test.build.shared"/>
+    <module name="intellij.rider.test.framework.integration.junit"/>
+    <module name="intellij.rider.test.framework.junit"/>
     <module name="intellij.xml.impl"/>
   </dependencies>
   <!-- endregion -->
