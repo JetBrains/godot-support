@@ -35,7 +35,7 @@ class SceneTreeBuilder(private val project: Project, private val deps: TreeDepen
         tree.dragEnabled = true
         tree.selectionModel.selectionMode = TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION
         tree.transferHandler = object : TransferHandler() {
-            override fun getSourceActions(c: JComponent): Int = COPY
+            override fun getSourceActions(c: JComponent): Int = COPY_OR_MOVE
             override fun createTransferable(c: JComponent): Transferable? {
                 val tree = (c as? Tree) ?: return null
                 val nodes = tree.selectionPaths.orEmpty().mapNotNull {
