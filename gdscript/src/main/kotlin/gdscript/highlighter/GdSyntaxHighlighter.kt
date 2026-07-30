@@ -12,7 +12,7 @@ class GdSyntaxHighlighter : SyntaxHighlighterBase() {
         return GdLexerHighlighterAdapter()
     }
 
-    override fun getTokenHighlights(iElementType: IElementType): Array<TextAttributesKey> {
+    override fun getTokenHighlights(iElementType: IElementType): Array<out TextAttributesKey> {
         return pack(ATTRIBUTES[iElementType])
     }
 
