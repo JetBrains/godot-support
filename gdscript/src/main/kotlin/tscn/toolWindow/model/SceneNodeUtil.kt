@@ -1,28 +1,62 @@
 package tscn.toolWindow.model
 
+import com.intellij.openapi.Disposable
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.service
+import java.awt.KeyEventDispatcher
+import java.awt.KeyboardFocusManager
 import java.awt.dnd.DragSource
 import java.awt.dnd.DragSourceAdapter
 import java.awt.dnd.DragSourceDragEvent
+import java.awt.dnd.DragSourceDropEvent
+import java.awt.dnd.DragSourceListener
 import java.awt.event.InputEvent
-import java.awt.KeyboardFocusManager
 
 
 data class ModifierStatus(val ctrlDown: Boolean, val altDown: Boolean)
 
-object ModifierTracker {
-    @Volatile private var ctrlDown: Boolean = false
-    @Volatile private var altDown: Boolean = false
+// We cannot drop this tracker and let the native calls
+// be the source of truth, since Wayland does not seem to have
+// a native way of getting keyboard state :)
+@Service(Service.Level.APP)
+class ModifierTracker : Disposable {
+    @Volatile
+    private var ctrlDown: Boolean = false
+
+    @Volatile
+    private var altDown: Boolean = false
+
+    private val keyEventDispatcher = KeyEventDispatcher { e ->
+        ctrlDown = e.isControlDown || e.isMetaDown
+        altDown = e.isAltDown
+        false
+    }
+
+    private val dragSourceListener: DragSourceListener = object : DragSourceAdapter() {
+        override fun dragDropEnd(dsde: DragSourceDropEvent?) {
+            ctrlDown = false
+            altDown = false
+        }
+
+        override fun dragOver(dsde: DragSourceDragEvent) = updateFromDrag(dsde)
+        override fun dropActionChanged(dsde: DragSourceDragEvent) = updateFromDrag(dsde)
+        override fun dragEnter(dsde: DragSourceDragEvent?) {
+            if (dsde != null) {
+                updateFromDrag(dsde)
+            }
+        }
+    }
 
     init {
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher { e ->
-            ctrlDown = e.isControlDown || e.isMetaDown
-            altDown = e.isAltDown
-            false
-        }
-        DragSource.getDefaultDragSource().addDragSourceListener(object : DragSourceAdapter() {
-            override fun dragOver(dsde: DragSourceDragEvent) = updateFromDrag(dsde)
-            override fun dropActionChanged(dsde: DragSourceDragEvent) = updateFromDrag(dsde)
-        })
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(keyEventDispatcher)
+        val dragSource = DragSource.getDefaultDragSource()
+        dragSource.addDragSourceListener(dragSourceListener)
+    }
+
+    override fun dispose() {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().removeKeyEventDispatcher(keyEventDispatcher)
+        val dragSource = DragSource.getDefaultDragSource()
+        dragSource.removeDragSourceListener(dragSourceListener)
     }
 
     private fun updateFromDrag(dsde: DragSourceDragEvent) {
@@ -31,9 +65,19 @@ object ModifierTracker {
         altDown = (mods and InputEvent.ALT_DOWN_MASK) != 0
     }
 
-    fun getModifiers(): ModifierStatus = ModifierStatus(ctrlDown, altDown)
+
+    fun getModifiers(): ModifierStatus {
+        val ctrlDown = NativeKeyState.isCtrlDown() ?: ctrlDown
+        val altDown = NativeKeyState.isAltDown() ?: altDown
+
+        return ModifierStatus(ctrlDown, altDown)
+    }
+
+    companion object {
+        fun getInstance(): ModifierTracker = service<ModifierTracker>()
+    }
 }
 
 object SceneNodeUtil {
-    fun checkModifiers(): ModifierStatus = ModifierTracker.getModifiers()
+    fun checkModifiers(): ModifierStatus = ModifierTracker.getInstance().getModifiers()
 }
