@@ -1,6 +1,7 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot.community</id>
   <name>Godot Shared (Technical)</name>
+  <category>Game Development</category>
   <vendor>JetBrains</vendor>
 
   <description><![CDATA[
