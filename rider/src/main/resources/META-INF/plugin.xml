@@ -1,6 +1,7 @@
 <idea-plugin url="https://github.com/JetBrains/godot-support">
   <id>com.intellij.rider.godot</id>
   <name>Godot.NET</name>
+  <category>Game Development</category>
   <vendor>JetBrains</vendor>
 
   <incompatible-with>gdscript</incompatible-with>
