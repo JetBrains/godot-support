@@ -25,18 +25,24 @@ object GdNodeUtil {
 
     fun quoteIfNeeded(name: String): String = if (needsQuotes(name)) "\"$name\"" else name
 
-    /**
-     * Node name turned into a valid identifier, for generated `@onready var` declarations.
-     * A node name may contain spaces, `-` or punctuation and may start with a digit, none of
-     * which an identifier allows.
-     */
     fun nodeNameToIdentifier(name: String): String {
+        // `camelToSnakeCase` already folds spaces, `-` and `.` into `_` and drops a leading `_`, but
+        // leaves other punctuation untouched, e.g. `)` and doesn't care about a leading digit.
         val sanitized = name.camelToSnakeCase()
             .map { if (it.isLetterOrDigit() || it == '_') it else '_' }
             .joinToString("")
+            // Make e.g. "c++c++" into "c_c" instead of "c__c__"
+            .replace(UNDERSCORE_RUN, "_")
+            .trim('_')
 
-        return if (sanitized.firstOrNull()?.isDigit() == true) "_$sanitized" else sanitized
+        return when {
+            sanitized.isEmpty() -> "node"
+            sanitized.first().isDigit() -> "_$sanitized"
+            else -> sanitized
+        }
     }
+
+    private val UNDERSCORE_RUN = Regex("_+")
 
     /**
      * Returns corresponding node for given NodePath element
@@ -106,7 +112,12 @@ object GdNodeUtil {
         resultSet: MutableList<GdNodeHolder>,
         isSingleNode: Boolean,
         parentPath: String = "",
+        isInSubscene: Boolean = false,
+        visitedFilesSet: MutableSet<PsiFile> = mutableSetOf(),
     ) {
+        if (tscnFile in visitedFilesSet) return
+        visitedFilesSet += tscnFile
+
         val nodes = PsiTreeUtil.findChildrenOfType(tscnFile, TscnNodeHeader::class.java)
         val baseName = if (isSingleNode) "" else basePath.split("/").last()
 
@@ -120,9 +131,11 @@ object GdNodeUtil {
 
             val nodePath = "$parentPath$currentNodePath"
 
-            // The root of an instanced sub scene stands for the instancing node, which the caller
-            // has already added under its own name, adding it again would duplicate the node
-            if (parentPath.isNotBlank() && nodePath == parentPath) return@forEach
+            // Upon encountering a node representing instanced sub scene, we add it in the caller after recursing.
+            // That way, we preserve its unique-namedness.
+            // Adding the root of the sub scene in the recursive call would duplicate!
+            val isInstancedSubSceneRoot = parentPath.isNotBlank() && nodePath == parentPath
+            if (isInstancedSubSceneRoot) return@forEach
 
             var type: String? = null
             val instancePath = it.instanceResource
@@ -136,7 +149,7 @@ object GdNodeUtil {
                         .firstOrNull { root -> root.parentPath.isEmpty() }
                         ?.type
 
-                    availableNodes(instanceFile, basePath, resultSet, isSingleNode, nodePath)
+                    availableNodes(instanceFile, basePath, resultSet, isSingleNode, nodePath, true, visitedFilesSet)
                 }
             }
 
@@ -160,7 +173,7 @@ object GdNodeUtil {
             }
 
             var uniqueId: String? = null
-            if (it.isUniqueNameOwner) {
+            if (!isInSubscene && it.isUniqueNameOwner) {
                 uniqueId = "%${it.name}"
                 tail = " ${it.name}"
             } else {
