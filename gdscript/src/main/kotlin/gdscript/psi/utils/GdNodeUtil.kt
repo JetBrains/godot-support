@@ -6,6 +6,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdFileResIndex
 import gdscript.model.GdNodeHolder
 import gdscript.psi.GdNodePath
+import gdscript.utils.StringUtil.camelToSnakeCase
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import tscn.psi.TscnNodeHeader
 import tscn.psi.TscnResourceHeader
@@ -17,6 +18,25 @@ import kotlin.io.path.relativeTo
  * Node utils for available nodes from given script
  */
 object GdNodeUtil {
+
+    private val UNQUOTED_NODE_NAME = Regex("[A-Za-z_][A-Za-z0-9_]*")
+
+    fun needsQuotes(name: String): Boolean = !UNQUOTED_NODE_NAME.matches(name)
+
+    fun quoteIfNeeded(name: String): String = if (needsQuotes(name)) "\"$name\"" else name
+
+    /**
+     * Node name turned into a valid identifier, for generated `@onready var` declarations.
+     * A node name may contain spaces, `-` or punctuation and may start with a digit, none of
+     * which an identifier allows.
+     */
+    fun nodeNameToIdentifier(name: String): String {
+        val sanitized = name.camelToSnakeCase()
+            .map { if (it.isLetterOrDigit() || it == '_') it else '_' }
+            .joinToString("")
+
+        return if (sanitized.firstOrNull()?.isDigit() == true) "_$sanitized" else sanitized
+    }
 
     /**
      * Returns corresponding node for given NodePath element
@@ -46,7 +66,7 @@ object GdNodeUtil {
 
     fun TscnNodeHeader.relativeOrUniquePath(basePath: String): String {
         if (this.isUniqueNameOwner) {
-            return "%${this.name}"
+            return "%${quoteIfNeeded(this.name)}"
         }
 
         var relativePath = Path(this.nodePath).relativeTo(Path(basePath)).toString().replace("\\", "/")
@@ -86,7 +106,6 @@ object GdNodeUtil {
         resultSet: MutableList<GdNodeHolder>,
         isSingleNode: Boolean,
         parentPath: String = "",
-        isUnique: Boolean = false,
     ) {
         val nodes = PsiTreeUtil.findChildrenOfType(tscnFile, TscnNodeHeader::class.java)
         val baseName = if (isSingleNode) "" else basePath.split("/").last()
@@ -101,20 +120,24 @@ object GdNodeUtil {
 
             val nodePath = "$parentPath$currentNodePath"
 
+            // The root of an instanced sub scene stands for the instancing node, which the caller
+            // has already added under its own name, adding it again would duplicate the node
+            if (parentPath.isNotBlank() && nodePath == parentPath) return@forEach
+
+            var type: String? = null
             val instancePath = it.instanceResource
             if (instancePath.isNotBlank()) {
-                val instance = GdFileResIndex.getFiles(instancePath, tscnFile.project).firstOrNull()
-                if (instance != null) {
-                    availableNodes(
-                        instance.getPsiFile(tscnFile.project)!!,
-                        basePath,
-                        resultSet,
-                        isSingleNode,
-                        nodePath,
-                        it.isUniqueNameOwner,
-                    )
+                val instanceFile = GdFileResIndex.getFiles(instancePath, tscnFile.project)
+                    .firstOrNull()
+                    ?.getPsiFile(tscnFile.project)
+                if (instanceFile != null) {
+                    // the instancing header carries no type=, the sub scene root holds the real one
+                    type = PsiTreeUtil.findChildrenOfType(instanceFile, TscnNodeHeader::class.java)
+                        .firstOrNull { root -> root.parentPath.isEmpty() }
+                        ?.type
+
+                    availableNodes(instanceFile, basePath, resultSet, isSingleNode, nodePath)
                 }
-                return@forEach
             }
 
             var relativePath = Path(nodePath).relativeTo(Path(basePath)).toString().replace("\\", "/")
@@ -137,7 +160,7 @@ object GdNodeUtil {
             }
 
             var uniqueId: String? = null
-            if ((isUnique && parentPath == nodePath) || it.isUniqueNameOwner) {
+            if (it.isUniqueNameOwner) {
                 uniqueId = "%${it.name}"
                 tail = " ${it.name}"
             } else {
@@ -153,6 +176,7 @@ object GdNodeUtil {
                     "$$hint",
                     it.scriptResource.ifEmpty { null },
                     it.nodePath,
+                    type ?: it.type,
                 )
             )
         }

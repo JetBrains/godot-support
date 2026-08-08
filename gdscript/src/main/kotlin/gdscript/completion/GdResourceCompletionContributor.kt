@@ -22,6 +22,17 @@ class GdResourceCompletionContributor : CompletionContributor() {
     val NODE_PATH_ROOT = NODE_PATH.withSuperParent(3, psiElement(GdFile::class.java))
     val STRING = psiElement(GdTypes.STRING)
 
+    /** Opening of the quoted unique name form, `%"Name"`. */
+    private val QUOTED_UNIQUE_PREFIX = "%\""
+
+    private fun isQuotedUniqueNodePath(parameters: CompletionParameters): Boolean {
+        val position = parameters.position
+        if (!NODE_PATH.accepts(position)) return false
+        if (!position.text.startsWith(QUOTED_UNIQUE_PREFIX)) return false
+
+        return parameters.offset >= position.textRange.startOffset + QUOTED_UNIQUE_PREFIX.length
+    }
+
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
         val r = result.withPrefixMatcher(CamelHumpMatcher(
             parameters.position.text.substring(0, parameters.offset - parameters.position.textRange.startOffset),
@@ -29,13 +40,15 @@ class GdResourceCompletionContributor : CompletionContributor() {
         ))
 
         val position = parameters.position
-        if (GdRefIdCompletionUtil.DIRECT_REF.accepts(position)) {
+        if (isQuotedUniqueNodePath(parameters)) {
+            GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.quotedUniqueLookups()) }
+        } else if (GdRefIdCompletionUtil.DIRECT_REF.accepts(position)) {
             GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.lookups()) }
         } else if (NODE_PATH_ROOT.accepts(position)) {
-            GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.variable_lookups()) }
+            GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.variableLookups()) }
         } else if (NODE_PATH.accepts(position)) {
             if (GdRefIdCompletionUtil.CLASS_ROOT.accepts(position)) {
-                GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.variable_lookups()) }
+                GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.variableLookups()) }
             } else {
                 GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.lookups()) }
             }
