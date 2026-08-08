@@ -130,10 +130,10 @@ class SceneTreeEditorDropHandler(
         // TODO: C# file handling -> C# requires more than just simple inplace codegen.
         fun assembleFinalText(nodeParent: String, nodeName: String, nodeType: String, isUnique: Boolean): String? {
             // Godot node names may start with a digit or hold punctuation, an identifier may not
-            fun varName() = GdNodeUtil.nodeNameToIdentifier(nodeName)
+            val varName = GdNodeUtil.nodeNameToIdentifier(nodeName)
             return when {
                 isCsFile -> relativePath(nodeParent, nodeName, isUnique)
-                ctrlDown -> "@onready var ${varName()}: $nodeType = ${
+                ctrlDown -> "@onready var $varName: $nodeType = ${
                     relativePath(
                         nodeParent,
                         nodeName,
@@ -141,7 +141,7 @@ class SceneTreeEditorDropHandler(
                     ) ?: return null
                 }"
 
-                altDown -> "@export var ${varName()}: $nodeType"
+                altDown -> "@export var $varName: $nodeType"
                 else -> relativePath(nodeParent, nodeName, isUnique) ?: return null
             }
         }
