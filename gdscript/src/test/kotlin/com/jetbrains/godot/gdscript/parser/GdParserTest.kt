@@ -62,6 +62,8 @@ class GdParserTest : GdParsingTestCase() {
     @Test fun testAwaitExpr() = doTest(true)
     @Test fun testAttributeExpr() = doTest(true)
     @Test fun testFuncDeclExpr() = doTest(true)
+    @Test fun testPercentUniqueName() = doTest(true)
+    @Test fun testPercentUniqueNameAfterAssignment() = doTest(true)
 
     @Test fun testFuncDeclExprExt() = doTest(true)
     @Test fun testFuncDeclExprParam() = doTest(true)

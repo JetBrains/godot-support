@@ -255,14 +255,14 @@ class SceneNodePathResolverTest : BasePlatformTestCase() {
                 end = "Nested1/1.1",
                 dragNode = "Nested1.1.1",
                 srcNode = "Root",
-                expected = "%Nested1.1.1"
+                expected = "%\"Nested1.1.1\""
             ),
             Case(
                 start = "",
                 end = "Nested1/Nested1.1",
                 dragNode = "Nested1.1.1",
                 srcNode = "1",
-                expected = "%Nested1.1.1"
+                expected = "%\"Nested1.1.1\""
             ),
         )
         val assertions = mutableListOf<() -> Unit>()
