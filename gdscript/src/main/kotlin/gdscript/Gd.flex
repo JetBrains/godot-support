@@ -184,6 +184,16 @@ import gdscript.lexer.ParenTracker;
         indent = Math.max(0, indent - indentSizes.pop());
     }
 
+    private static String trimTrailingHorizontalWhitespace(String s) {
+        int end = s.length();
+        while (end > 0) {
+            char c = s.charAt(end - 1);
+            if (c != ' ' && c != '\t') break;
+            end--;
+        }
+        return s.substring(0, end);
+    }
+
     private boolean isIgnored() {
         if (parens.isTopLevel()) return false;
         LambdaFrame top = lambdaFrames.peek();
@@ -301,7 +311,8 @@ INDENTED_COMMENT = {INDENT}"#"
 ANNOTATOR = "@"[a-zA-Z_0-9]*
 NODE_PATH = "^"\"([^\\\"\r\n ]|\\.)*\"
 STRING_NAME = "&"(\"([^\\\"\r\n]|\\.)*\"|'([^\\'\r\n]|\\.)*')
-NODE_PATH_LEX = ( ("$"|"%")[\%a-zA-Z0-9_/]+ ) | ( ("$"|"%")\"[\%a-zA-Z0-9:_/\. ]*\" )
+// Although Godot forbids . : @ / " % in a node name, but we allow it in the lexer
+NODE_PATH_LEX = ( ("$"|"%")[a-zA-Z0-9_/]+ ) | ( ("$"|"%") ( \' {SINGLE_QUOTED_CONTENT}* \' | \" {DOUBLE_QUOTED_CONTENT}* \" ) )
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "**=" | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -443,7 +454,8 @@ RAW_DOUBLE_QUOTED_LITERAL = r \" {RAW_DOUBLE_QUOTED_CONTENT}* \"
     {STRING_NAME}   { return dedentRoot(GdTypes.STRING_NAME); }
     {NODE_PATH_LEX} {
           if (yytext().toString().startsWith("%\"")) {
-              String preceeding = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 100), zzCurrentPos).trim();
+              String window = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 100), zzCurrentPos);
+              String preceeding = parens.isTopLevel() ? trimTrailingHorizontalWhitespace(window) : window.trim();
               if (preceeding.length() > 1 && preceeding.charAt(preceeding.length() - 1) == '"') {
                   yypushback(yylength() - 1);
                   return dedentRoot(GdTypes.MOD);
