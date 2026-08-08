@@ -17,7 +17,7 @@ import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.GdScriptBundle
-import gdscript.utils.StringUtil.camelToSnakeCase
+import gdscript.psi.utils.GdNodeUtil
 import gdscript.utils.VirtualFileUtil.resourcePath
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -129,15 +129,11 @@ class SceneTreeEditorDropHandler(
 
         // TODO: C# file handling -> C# requires more than just simple inplace codegen.
         fun assembleFinalText(nodeParent: String, nodeName: String, nodeType: String, isUnique: Boolean): String? {
-            // Godot node names can start with a number, for some reason
-            val namePrefix = if (nodeName.firstOrNull()?.isDigit() ?: false) {
-                "_"
-            } else {
-                ""
-            }
+            // Godot node names may start with a digit or hold punctuation, an identifier may not
+            fun varName() = GdNodeUtil.nodeNameToIdentifier(nodeName)
             return when {
                 isCsFile -> relativePath(nodeParent, nodeName, isUnique)
-                ctrlDown -> "@onready var $namePrefix${nodeName.camelToSnakeCase()}: $nodeType = ${
+                ctrlDown -> "@onready var ${varName()}: $nodeType = ${
                     relativePath(
                         nodeParent,
                         nodeName,
@@ -145,7 +141,7 @@ class SceneTreeEditorDropHandler(
                     ) ?: return null
                 }"
 
-                altDown -> "@export var $namePrefix${nodeName.camelToSnakeCase()}: $nodeType"
+                altDown -> "@export var ${varName()}: $nodeType"
                 else -> relativePath(nodeParent, nodeName, isUnique) ?: return null
             }
         }
