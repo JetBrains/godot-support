@@ -64,7 +64,7 @@ class GdRootContributor : CompletionContributor() {
     }
 
     private fun addTopLvlDecl(parameters: CompletionParameters, result: CompletionResultSet) {
-        GdNodeUtil.listNodes(parameters.position).forEach { result.addAllElements(it.variable_lookups()) }
+        GdNodeUtil.listNodes(parameters.position).forEach { result.addAllElements(it.variableLookups()) }
         GdClassVarCompletionUtil.annotations(result, parameters.position.project)
 
         val ownClass = GdSymbolResolverUtil.resolveOwnClassSymbol(parameters.position)
