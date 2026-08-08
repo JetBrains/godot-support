@@ -69,7 +69,7 @@ object TscnNodeUtil {
 
     fun getInstanceResource(element: TscnNodeHeader): String {
         val stub = element.stub
-        if (stub != null) return stub.getScriptResource()
+        if (stub != null) return stub.getInstanceResource()
 
         // ExtResource("1"), ExtResource( 1 )
         var id = TscnHeaderUtils.getValue(element.headerValueList, TscnHeaderUtils.HL_INSTANCE)

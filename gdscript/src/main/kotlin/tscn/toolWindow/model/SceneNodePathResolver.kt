@@ -1,5 +1,7 @@
 package tscn.toolWindow.model
 
+import gdscript.psi.utils.GdNodeUtil
+
 object SceneNodePathResolver {
 
     private data class CommonPrefixResult(
@@ -71,12 +73,9 @@ object SceneNodePathResolver {
             if (csPath) {
                 return "\"%$dragNode\""
             }
-            val startsWithNum = dragNode.firstOrNull()?.isDigit() ?: false
-            return if (startsWithNum) {
-                "%\"$dragNode\""
-            } else {
-                "%$dragNode"
-            }
+            // Any Godot node name is not a valid identifier.
+            // Leading digit, a space, `-`, punctuation -- has to be emitted as `%"Name"`.
+            return "%${GdNodeUtil.quoteIfNeeded(dragNode)}"
         }
         val draggingIntoItself = startParent == dstParent && dragNode == srcNode
         val prefix = if (csPath) {
