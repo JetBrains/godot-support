@@ -18,6 +18,16 @@ import gdscript.psi.GdTypes;
 %{
     String oppening = "";
     int lastState = YYINITIAL;
+
+    private static String trimTrailingHorizontalWhitespace(String s) {
+        int end = s.length();
+        while (end > 0) {
+            char c = s.charAt(end - 1);
+            if (c != ' ' && c != '\t') break;
+            end--;
+        }
+        return s.substring(0, end);
+    }
 %}
 
 LETTER = [a-z|A-Z|_]
@@ -35,10 +45,10 @@ COMMENT = "#"[^\r\n]*
 ANNOTATOR = "@"[a-zA-Z_0-9]*
 NODE_PATH = "^"\"([^\\\"\r\n ]|\\.)*\"
 STRING_NAME = "&"(\"([^\\\"\r\n]|\\.)*\"|'([^\\'\r\n]|\\.)*')
-NODE_PATH_LEX_UNQUOTED = ("$"|"%")[\%a-zA-Z0-9_/]*
-NODE_PATH_LEX_QUOTED = ("$"|"%")\"[\%a-zA-Z0-9:_/\. ]*\"
-NODE_PATH_QUOTED_CONTENT = \"[\%a-zA-Z0-9:_/\. ]*\"
-NODE_PATH_QUOTED_CONTENT_UNTERMINATED = \"[\%a-zA-Z0-9:_/\. ]*
+NODE_PATH_LEX_UNQUOTED = ("$"|"%")[a-zA-Z0-9_/]*
+NODE_PATH_LEX_QUOTED = ("$"|"%") {NODE_PATH_QUOTED_CONTENT}
+NODE_PATH_QUOTED_CONTENT = \' {SINGLE_QUOTED_CONTENT}* \' | \" {DOUBLE_QUOTED_CONTENT}* \"
+NODE_PATH_QUOTED_CONTENT_UNTERMINATED = {SINGLE_QUOTED_UNTERMINATED} | {DOUBLE_QUOTED_UNTERMINATED}
 
 ASSIGN = "+=" | "-=" | "*=" | "/=" | "**=" | "%=" | "&=" | "|=" | "^=" | "<<=" | ">>="
 TEST_OPERATOR = "<" | ">" | "==" | "!=" | ">=" | "<="
@@ -166,7 +176,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     {STRING_NAME}      { return GdTypes.STRING_NAME; }
     {NODE_PATH_LEX_QUOTED} {
           if (yytext().toString().startsWith("%\"")) {
-              String preceeding = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 100), zzCurrentPos).trim();
+              String preceeding = trimTrailingHorizontalWhitespace(zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 100), zzCurrentPos));
               if (preceeding.length() > 1 && preceeding.charAt(preceeding.length() - 1) == '"') {
                   yypushback(yylength() - 1);
                   return GdTypes.MOD;
@@ -177,7 +187,7 @@ TRIPLE_DOUBLE_QUOTED_LITERAL = \"\"\" {TRIPLE_DOUBLE_QUOTED_CONTENT}* \"\"\"
     }
     {NODE_PATH_LEX_UNQUOTED} {
           if (yytext().toString().equals("%")) {
-              String preceeding = zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 100), zzCurrentPos).trim();
+              String preceeding = trimTrailingHorizontalWhitespace(zzBufferL.toString().substring(Math.max(0, zzCurrentPos - 100), zzCurrentPos));
               if (preceeding.length() > 1 && preceeding.charAt(preceeding.length() - 1) == '"') {
                   return GdTypes.MOD;
               }
