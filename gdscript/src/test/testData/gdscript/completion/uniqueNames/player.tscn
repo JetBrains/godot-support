@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[node name="PlayerRoot" type="CharacterBody2D"]
+
+[node name="Sprite" type="Sprite2D" parent="."]
+
+[node name="PlayerUnique" type="Sprite2D" parent="."]
+unique_name_in_owner = true
