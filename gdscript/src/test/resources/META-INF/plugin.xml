@@ -22,6 +22,7 @@
     <module name="intellij.platform.dap"/>
   </content>
   <content>
+    <module name="intellij.libraries.java.diff.utils"/>
     <module name="intellij.libraries.opentest4j"/>
   </content>
 </idea-plugin>
