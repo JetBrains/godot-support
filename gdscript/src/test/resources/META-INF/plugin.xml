@@ -24,5 +24,6 @@
   <content>
     <module name="intellij.libraries.java.diff.utils"/>
     <module name="intellij.libraries.opentest4j"/>
+    <module name="intellij.libraries.xmlunit.core"/>
   </content>
 </idea-plugin>
