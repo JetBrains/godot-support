@@ -11,6 +11,7 @@ import com.intellij.util.DocumentUtil
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import gdscript.GdScriptBundle
 import gdscript.inspection.fixes.GdFixIndentsQuickFix
+import gdscript.psi.GdCodeFragmentElementType
 
 /**
  * Inspection that checks for leading whitespaces that differ from expected ones in GdScript files.
@@ -29,6 +30,10 @@ class GdWhitespaceLocalInspectionTool : LocalInspectionTool() {
             super.visitFile(file)
 
             if (file.fileType !is GdFileType) {
+                return
+            }
+            // Tabs/spaces don't matter in expression code fragments
+            if (file.fileElementType is GdCodeFragmentElementType) {
                 return
             }
 
