@@ -1,7 +1,9 @@
 package gdscript.action.quickFix
 
+import com.intellij.codeInsight.FileModificationService
 import com.intellij.codeInsight.actions.ReformatCodeProcessor
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
+import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiDocumentManager
@@ -33,17 +35,26 @@ class GdChangeTypeFix : BaseIntentionAction {
     }
 
     override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        return true
+        return element.isValid && PsiDocumentManager.getInstance(project).getDocument(element.containingFile) != null
     }
 
+    // We open our own write command
+    override fun startInWriteAction(): Boolean = false
+
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
-        if (editor == null || file == null) return
+        if (!element.isValid) return
+        if (!FileModificationService.getInstance().preparePsiElementForWrite(element)) return
 
+        val targetFile = element.containingFile
         val psiManager = PsiDocumentManager.getInstance(project)
-        psiManager.doPostponedOperationsAndUnblockDocument(editor.document)
+        val targetDocument = psiManager.getDocument(targetFile) ?: return
 
-        editor.document.replaceString(element.startOffset, element.endOffset, desired)
-        psiManager.commitDocument(editor.document)
-        ReformatCodeProcessor(file, false).run()
+        @Suppress("DialogTitleCapitalization")
+        WriteCommandAction.writeCommandAction(project, targetFile).withName(text).run<Throwable> {
+            psiManager.doPostponedOperationsAndUnblockDocument(targetDocument)
+            targetDocument.replaceString(element.startOffset, element.endOffset, desired)
+            psiManager.commitDocument(targetDocument)
+            ReformatCodeProcessor(targetFile, false).run()
+        }
     }
 }
