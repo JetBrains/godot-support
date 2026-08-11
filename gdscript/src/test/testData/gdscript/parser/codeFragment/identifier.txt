@@ -1,0 +1,7 @@
+GdScript code fragment
+  GdExprStImpl(EXPR_ST)
+    GdLiteralExImpl(LITERAL_EX)
+      GdRefIdRefImpl(REF_ID_NM)
+        PsiElement(GdTokenType.IDENTIFIER)('member')
+    GdEndStmtImpl(END_STMT)
+      <empty list>

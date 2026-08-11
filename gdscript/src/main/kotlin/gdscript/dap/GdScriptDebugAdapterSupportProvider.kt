@@ -8,13 +8,17 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.platform.dap.DapBreakpointsDescription
+import com.intellij.platform.dap.DapDebugSession
 import com.intellij.platform.dap.DapExceptionBreakpoint
 import com.intellij.platform.dap.DapExceptionInfo
+import com.intellij.platform.dap.DapStartRequest
 import com.intellij.platform.dap.DebugAdapterDescriptor
 import com.intellij.platform.dap.DebugAdapterId
 import com.intellij.platform.dap.DebugAdapterSupportProvider
 import com.intellij.platform.dap.connection.DebugAdapterHandle
 import com.intellij.platform.dap.connection.DebugAdapterSocketConnection
+import com.intellij.platform.dap.xdebugger.DapXDebugProcess
+import com.intellij.xdebugger.XDebugSession
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.GdScriptBundle
 import gdscript.dap.breakpoints.GdScriptExceptionBreakpointType
@@ -22,6 +26,7 @@ import gdscript.dap.breakpoints.GdScriptLineBreakpointType
 import gdscript.lsp.GodotLspRunningStatusProvider
 import gdscript.lsp.RunningGodotEditorDiscovery
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -32,6 +37,30 @@ internal class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider
     override fun createDebugAdapterDescriptor(project: Project): DebugAdapterDescriptor<GdScriptDebugAdapter> =
         object : DebugAdapterDescriptor<GdScriptDebugAdapter>() {
             override val id = GdScriptDebugAdapter
+
+            override fun createXDebugProcess(
+                session: XDebugSession,
+                dapDebugSession: DapDebugSession,
+                xDebugProcessScope: CoroutineScope,
+                globalScope: CoroutineScope,
+                debugAdapterDescriptor: DebugAdapterDescriptor<*>,
+                executionEnvironment: ExecutionEnvironment,
+                executionResult: ExecutionResult?,
+                startRequestType: DapStartRequest,
+                startRequestArguments: Map<String, Any?>
+            ): DapXDebugProcess {
+                return GdScriptDapXDebugProcess(
+                    session = session,
+                    dapDebugSession = dapDebugSession,
+                    xDebugProcessScope = xDebugProcessScope,
+                    globalScope = globalScope,
+                    debugAdapterDescriptor = debugAdapterDescriptor,
+                    executionEnvironment = executionEnvironment,
+                    executionResult = executionResult,
+                    startRequestType = startRequestType,
+                    startRequestArguments = startRequestArguments,
+                )
+            }
 
             override suspend fun launchDebugAdapter(
                 environment: ExecutionEnvironment,
