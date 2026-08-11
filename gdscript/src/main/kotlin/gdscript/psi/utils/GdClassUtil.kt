@@ -54,8 +54,8 @@ object GdClassUtil {
                 val cln = PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java)
                 if (cln != null) return cln.classname
 
-                (element.containingFile.virtualFile ?: element.containingFile.originalFile.virtualFile)
-                    .resourcePath()
+                val file = GdCodeFragmentUtil.effectiveFile(element)
+                (file.virtualFile ?: file.originalFile.virtualFile).resourcePath()
             }
         }
     }
@@ -65,19 +65,21 @@ object GdClassUtil {
      * @return Full classId to given class "Class.Inner" (can be resource)
      */
     fun getFullClassId(element: PsiElement): String {
-        return when (element) {
-            is GdClassDeclTl -> element.classNameNmi?.classId ?: ""
+        // Hop to context before the GdFile check, as the fragment IS a GdFile.
+        val effectiveElement = GdCodeFragmentUtil.effectiveElement(element)
+        return when (effectiveElement) {
+            is GdClassDeclTl -> effectiveElement.classNameNmi?.classId ?: ""
             is GdFile -> {
-                val named = PsiTreeUtil.getStubChildOfType(element, GdClassNaming::class.java)
+                val named = PsiTreeUtil.getStubChildOfType(effectiveElement, GdClassNaming::class.java)
                 if (named != null) {
                     named.classNameNmi?.classId ?: ""
                 } else {
-                    val file = element.virtualFile ?: element.originalFile.virtualFile
+                    val file = effectiveElement.virtualFile ?: effectiveElement.originalFile.virtualFile
                     "\"${PsiGdResourceUtil.resourcePath(file)}\""
                 }
             }
 
-            else -> getFullClassId(getOwningClassElement(element))
+            else -> getFullClassId(getOwningClassElement(effectiveElement))
         }
     }
 
@@ -85,15 +87,17 @@ object GdClassUtil {
      * @return GdClassDecl|GdFile containing element
      */
     fun getOwningClassElement(element: PsiElement): PsiElement {
-        when (element) {
-            is GdFile -> return element
-            is GdClassDeclTl -> return element
+        // Hop to context before the GdFile check, as the fragment IS a GdFile.
+        val effectiveElement = GdCodeFragmentUtil.effectiveElement(element)
+        when (effectiveElement) {
+            is GdFile -> return effectiveElement
+            is GdClassDeclTl -> return effectiveElement
         }
 
-        val inner = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassDeclTl::class.java)
+        val inner = PsiTreeUtil.getStubOrPsiParentOfType(effectiveElement, GdClassDeclTl::class.java)
         if (inner != null) return inner
 
-        return element.containingFile
+        return effectiveElement.containingFile
     }
 
     fun getName(element: GdClassDeclTl): String {
