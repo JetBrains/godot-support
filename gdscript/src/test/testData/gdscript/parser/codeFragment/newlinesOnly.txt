@@ -1,0 +1,3 @@
+GdScript code fragment
+  PsiWhiteSpace('\n')
+  PsiWhiteSpace('\n')

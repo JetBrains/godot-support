@@ -21,12 +21,14 @@ object GdInheritanceUtil {
      * @param element: GdClassDeclTL|GdClassNaming|GdFile
      */
     fun getExtendedClassId(element: PsiElement): String {
-        return when (element) {
-            is GdClassNaming -> element.parentName
-            is GdClassDeclTl -> element.parentName
-            is GdFile -> PsiTreeUtil.getStubChildOfType(element, GdInheritance::class.java)?.inheritancePath.orEmpty()
+        // Hop to context before the GdFile/PsiFile checks, as the fragment IS both.
+        val effectiveElement = GdCodeFragmentUtil.effectiveElement(element)
+        return when (effectiveElement) {
+            is GdClassNaming -> effectiveElement.parentName
+            is GdClassDeclTl -> effectiveElement.parentName
+            is GdFile -> PsiTreeUtil.getStubChildOfType(effectiveElement, GdInheritance::class.java)?.inheritancePath.orEmpty()
             is PsiFile -> ""
-            else -> getExtendedClassId(PsiGdClassUtil.getParentClassElement(element))
+            else -> getExtendedClassId(PsiGdClassUtil.getParentClassElement(effectiveElement))
         }
     }
 
