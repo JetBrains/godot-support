@@ -7,6 +7,7 @@ import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.util.Key
 import com.intellij.testFramework.TestModeFlags
+import gdscript.psi.GdPsiCodeFragment
 import gdscript.utils.isRiderGodotSupportPluginInstalled
 import org.jetbrains.annotations.NotNull
 
@@ -28,6 +29,7 @@ fun AnnotationHolder.newAnnotationGd(
         @NotNull @InspectionMessage message: String
 ): AnnotationBuilder {
     val effectiveSeverity = if (TestModeFlags.`is`(GD_ANNOTATOR_ORIGINAL_SEVERITY)) severity
+    else if (this.currentAnnotationSession.file is GdPsiCodeFragment) severity // Code fragments don't use LSP, so we need our annotations
     else HighlightSeverity.INFORMATION
 
     return this.newAnnotation(effectiveSeverity, message)

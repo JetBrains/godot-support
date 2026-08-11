@@ -1,0 +1,15 @@
+GdScript code fragment
+  GdExprStImpl(EXPR_ST)
+    GdPlusExImpl(PLUS_EX)
+      GdLiteralExImpl(LITERAL_EX)
+        GdRefIdRefImpl(REF_ID_NM)
+          PsiElement(GdTokenType.IDENTIFIER)('a')
+      PsiWhiteSpace(' ')
+      GdSignImpl(SIGN)
+        PsiElement(GdTokenType.PLUS)('+')
+      PsiWhiteSpace(' ')
+      GdLiteralExImpl(LITERAL_EX)
+        GdRefIdRefImpl(REF_ID_NM)
+          PsiElement(GdTokenType.IDENTIFIER)('b')
+    GdEndStmtImpl(END_STMT)
+      <empty list>
