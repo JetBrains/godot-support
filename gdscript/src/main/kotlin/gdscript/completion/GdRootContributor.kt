@@ -13,6 +13,7 @@ import gdscript.polySymbols.GdPolySymbolModifier
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.polySymbols.scope.hasModifier
 import gdscript.psi.GdFile
+import gdscript.psi.GdPsiCodeFragment
 import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
 import gdscript.psi.utils.PsiGdFileUtil
@@ -41,6 +42,9 @@ class GdRootContributor : CompletionContributor() {
     }
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
+        // A debugger code fragment is a bare expression
+        if (parameters.position.containingFile is GdPsiCodeFragment) return
+
         val position = parameters.position
         val previous = PsiTreeUtil.prevCodeLeaf(position.originalElement)
 
