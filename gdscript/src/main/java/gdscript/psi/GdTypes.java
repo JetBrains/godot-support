@@ -3,6 +3,7 @@ package gdscript.psi;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.IFileElementType;
 import gdscript.psi.impl.GdAnnotationParamsImpl;
 import gdscript.psi.impl.GdAnnotationStmtImpl;
 import gdscript.psi.impl.GdAnnotationTlImpl;
@@ -112,8 +113,6 @@ import gdscript.psi.impl.GdVarDeclStImpl;
 import gdscript.psi.impl.GdVarNmiImpl;
 import gdscript.psi.impl.GdWhileStImpl;
 import org.jetbrains.annotations.NotNull;
-
-import javax.naming.OperationNotSupportedException;
 
 public interface GdTypes {
 
@@ -316,8 +315,11 @@ public interface GdTypes {
     @NotNull IElementType BACKTICK = new GdTokenType("BACKTICK");
     @NotNull IElementType DOTDOTDOT = new GdTokenType("DOTDOTDOT");
 
-    // TODO: Maybe a different name?
-    IElementType EXPRESSION_TEXT = null;
+    /**
+     * Root element type of a GDScript code fragment (e.g. in debug evaluate window).
+     * See {@link GdPsiCodeFragment} for the file itself and {@link GdCodeFragmentElementType} for how it is parsed.
+     */
+    IFileElementType CODE_FRAGMENT = new GdCodeFragmentElementType("GdScriptCodeFragment");
 
     class Factory {
         public static PsiElement createElement(ASTNode node) {

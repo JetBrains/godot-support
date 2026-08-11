@@ -1,0 +1,11 @@
+GdScript code fragment
+  GdExprStImpl(EXPR_ST)
+    GdAttributeExImpl(ATTRIBUTE_EX)
+      GdLiteralExImpl(LITERAL_EX)
+        GdRefIdRefImpl(REF_ID_NM)
+          PsiElement(GdTokenType.IDENTIFIER)('member')
+      PsiElement(GdTokenType.DOT)('.')
+      PsiErrorElement:IDENTIFIER expected
+        <empty list>
+    GdEndStmtImpl(END_STMT)
+      <empty list>
