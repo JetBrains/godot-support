@@ -1,0 +1,7 @@
+GdScript code fragment
+  GdExprStImpl(EXPR_ST)
+    GdLiteralExImpl(LITERAL_EX)
+      PsiElement(GdTokenType.FALSE)('false')
+    PsiWhiteSpace('  ')
+    GdEndStmtImpl(END_STMT)
+      <empty list>

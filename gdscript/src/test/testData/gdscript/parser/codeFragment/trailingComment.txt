@@ -1,0 +1,9 @@
+GdScript code fragment
+  GdExprStImpl(EXPR_ST)
+    GdLiteralExImpl(LITERAL_EX)
+      GdRefIdRefImpl(REF_ID_NM)
+        PsiElement(GdTokenType.IDENTIFIER)('member')
+    PsiWhiteSpace(' ')
+    PsiComment(GdTokenType.comment)('# what is it now')
+    GdEndStmtImpl(END_STMT)
+      <empty list>

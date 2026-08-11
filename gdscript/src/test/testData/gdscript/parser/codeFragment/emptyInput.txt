@@ -1,0 +1,2 @@
+GdScript code fragment
+  <empty list>
