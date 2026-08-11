@@ -1,7 +1,9 @@
 package com.jetbrains.godot.gdscript.annotator
 
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.TestModeFlags
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import gdscript.GdScriptBundle
 import gdscript.annotator.GD_ANNOTATOR_ORIGINAL_SEVERITY
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,5 +67,34 @@ class GdParamAnnotatorTest : GdTestCaseWithSdk("highlighting") {
         """.trimMargin()
         )
         myFixture.checkHighlighting(false, false, false)
+    }
+
+    @Test
+    fun testChangeTypeFixUpdatesAnOrdinaryUserDeclaredParameter() {
+        myFixture.configureByText(
+            "a.gd", """
+            |func take_node(value: Node):
+            |	pass
+            |
+            |func caller():
+            |	take_node(<caret>5)
+        """.trimMargin()
+        )
+
+        val errors = myFixture.doHighlighting().filter { it.severity === HighlightSeverity.ERROR }
+        assertFalse("expected a type-mismatch error for the call", errors.isEmpty())
+
+        val fix = myFixture.findSingleIntention(GdScriptBundle.message("intention.name.change.type.to", "int"))
+        myFixture.launchAction(fix)
+
+        myFixture.checkResult(
+            """
+            |func take_node(value: int):
+            |	pass
+            |
+            |func caller():
+            |	take_node(5)
+        """.trimMargin()
+        )
     }
 }
