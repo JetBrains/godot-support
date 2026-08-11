@@ -15,6 +15,7 @@ import gdscript.psi.GdRefIdRef
 import gdscript.psi.GdSetMethodIdRef
 import gdscript.psi.GdTypeHintRef
 import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdCodeFragmentUtil
 
 class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
     override fun registerProviders(registrar: PolySymbolQueryScopeProviderRegistrar) {
@@ -27,8 +28,9 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                     psiElement(GdSetMethodIdRef::class.java),
                 )
                     .contributeScopeProvider { ref ->
+                        val location = GdCodeFragmentUtil.effectiveElement(ref)
                         listOf(
-                            GdPsiOwnClassScope(ref),
+                            GdPsiOwnClassScope(location),
                         )
                     }
 
@@ -83,8 +85,9 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                             .filterIsInstance<GdTypeHintRef>()
                             .firstOrNull()
                         if (qualifier == null) {
+                            val location = GdCodeFragmentUtil.effectiveElement(ref)
                             listOf(
-                                GdPsiOwnClassScope(ref),
+                                GdPsiOwnClassScope(location),
                                 gdSdkClassesPolySymbolScope(ref.project),
                                 gdSdkGlobalPolySymbolScope(ref.project),
                                 GdPsiClassesPolySymbolScope(ref.project, ref),
@@ -121,13 +124,14 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                     .contributeScopeProvider { ref ->
                         val qualifier = GdClassMemberUtil.calledUpon(ref)
                         if (qualifier == null) {
+                            val location = GdCodeFragmentUtil.effectiveElement(ref)
                             listOf(
-                                GdPsiOwnClassScope(ref),
+                                GdPsiOwnClassScope(location),
                                 gdSdkClassesPolySymbolScope(ref.project),
                                 gdSdkGlobalPolySymbolScope(ref.project),
                                 GdPsiClassesPolySymbolScope(ref.project, ref),
                                 gdPsiAutoloadScope(ref.project),
-                                GdLocalSymbolsStructuredScope(ref),
+                                GdLocalSymbolsStructuredScope(location),
                                 polySymbolScope {
                                     provides(GdPolySymbolKind.QUALIFIABLE_SYMBOLS)
                                     initialize {

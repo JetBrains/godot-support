@@ -1,0 +1,10 @@
+GdScript code fragment
+  GdExprStImpl(EXPR_ST)
+    GdLiteralExImpl(LITERAL_EX)
+      GdRefIdRefImpl(REF_ID_NM)
+        PsiElement(GdTokenType.IDENTIFIER)('foo')
+    PsiErrorElement:END_STMT expected
+      <empty list>
+  PsiWhiteSpace(' ')
+  PsiErrorElement:Expected a single expression
+    PsiElement(GdTokenType.IDENTIFIER)('bar')
