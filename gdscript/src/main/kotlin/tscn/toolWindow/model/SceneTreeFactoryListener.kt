@@ -42,6 +42,45 @@ class SceneTreeEditorDropHandler(
     private val editor: Editor,
     private val delegate: EditorDropHandler
 ) : EditorDropHandler {
+    override fun canHandleDrop(transferFlavors: Array<DataFlavor>): Boolean {
+        if (SceneNodeTransferable.isSceneTreeFlavor(transferFlavors)) {
+            return true
+        }
+        return delegate.canHandleDrop(transferFlavors)
+    }
+
+    override fun handleDrop(t: Transferable, project: Project?, editorWindow: EditorWindow?) {
+        if (project == null) return
+
+        if (!SceneNodeTransferable.isSceneTreeFlavor(t.transferDataFlavors)) {
+            delegate.handleDrop(t, project, editorWindow)
+            return
+        }
+
+        val payload = t.getTransferData(SCENE_NODE_FLAVOR) as? SceneDragPayload ?: return
+
+        val textToInsert = createOutput(payload) ?: return
+
+        WriteCommandAction.writeCommandAction(project)
+            .withName(GdScriptBundle.message("gdscript.scene.tree.insert.action.name"))
+            .run<RuntimeException> {
+                val offset = editor.caretModel.offset
+                editor.document.insertString(offset, textToInsert)
+            }
+    }
+
+    data class ScriptPathAndName(val scriptParentPath: String, val scriptNodeName: String)
+
+    data class SceneTreeEditorDropDependencies(
+        val nodeParent: String,
+        val nodeName: String,
+        val nodeType: String,
+        val isUnique: Boolean,
+        val isCsFile: Boolean,
+        val ctrlDown: Boolean,
+        val altDown: Boolean,
+        val scriptInfo: ScriptPathAndName?
+    )
 
     companion object {
         private val LOG = Logger.getInstance(SceneTreeEditorDropHandler::class.java)
@@ -78,19 +117,52 @@ class SceneTreeEditorDropHandler(
                 installIntoEditor(editor, project)
             }
         }
-    }
 
-    override fun canHandleDrop(transferFlavors: Array<DataFlavor>): Boolean {
-        if (SceneNodeTransferable.isSceneTreeFlavor(transferFlavors)) {
-            return true
+        // TODO: C# file handling -> C# requires more than just simple inplace codegen.
+        fun assembleFinalText(
+            deps: SceneTreeEditorDropDependencies
+        ): String? {
+            // Godot node names may start with a digit or hold punctuation, an identifier may not
+            val varName = GdNodeUtil.nodeNameToIdentifier(deps.nodeName)
+            val relativePath = relativePath(
+                deps.nodeParent,
+                deps.nodeName,
+                deps.isUnique,
+                deps.scriptInfo,
+                deps.isCsFile,
+            ) ?: return null
+            return when {
+                deps.isCsFile -> "GetNode<${deps.nodeType}>($relativePath);"
+                deps.ctrlDown -> "@onready var $varName: ${deps.nodeType} = $relativePath"
+                deps.altDown -> "@export var $varName: ${deps.nodeType}"
+                else -> relativePath
+            }
         }
-        return delegate.canHandleDrop(transferFlavors)
+
+        private fun relativePath(
+            nodeParentPath: String,
+            nodeName: String,
+            isUnique: Boolean,
+            scriptInfo: ScriptPathAndName?,
+            isCsFile: Boolean
+        ): String? {
+            return SceneNodePathResolver.constructRelativePath(
+                scriptInfo?.scriptParentPath ?: return null,
+                nodeParentPath,
+                nodeName,
+                scriptInfo.scriptNodeName,
+                isUnique = isUnique,
+                language = if (isCsFile) {
+                    SceneNodePathResolver.TargetLanguage.CSharp
+                } else {
+                    SceneNodePathResolver.TargetLanguage.GdScript
+                },
+            )
+        }
     }
 
     fun createOutput(payload: SceneDragPayload): String? {
         val (ctrlDown, altDown) = SceneNodeUtil.checkModifiers()
-
-        data class ScriptPathAndName(val scriptParentPath: String, val scriptNodeName: String)
 
         val targetFile = FileDocumentManager.getInstance().getFile(editor.document) ?: return null
 
@@ -112,43 +184,20 @@ class SceneTreeEditorDropHandler(
             return@lazy ScriptPathAndName(scriptParentPath, scriptNodeName)
         }
         val isCsFile = targetFile.extension.equals("cs", true)
-        fun relativePath(nodeParentPath: String, nodeName: String, isUnique: Boolean): String? {
-            return SceneNodePathResolver.constructRelativePath(
-                scriptInfo?.scriptParentPath ?: return null,
-                nodeParentPath,
-                nodeName,
-                scriptInfo?.scriptNodeName ?: return null,
-                isUnique = isUnique,
-                language = if (isCsFile) {
-                    SceneNodePathResolver.TargetLanguage.CSharp
-                } else {
-                    SceneNodePathResolver.TargetLanguage.GdScript
-                },
-            )
-        }
-
-        // TODO: C# file handling -> C# requires more than just simple inplace codegen.
-        fun assembleFinalText(nodeParent: String, nodeName: String, nodeType: String, isUnique: Boolean): String? {
-            // Godot node names may start with a digit or hold punctuation, an identifier may not
-            val varName = GdNodeUtil.nodeNameToIdentifier(nodeName)
-            return when {
-                isCsFile -> relativePath(nodeParent, nodeName, isUnique)
-                ctrlDown -> "@onready var $varName: $nodeType = ${
-                    relativePath(
-                        nodeParent,
-                        nodeName,
-                        isUnique
-                    ) ?: return null
-                }"
-
-                altDown -> "@export var $varName: $nodeType"
-                else -> relativePath(nodeParent, nodeName, isUnique) ?: return null
-            }
-        }
 
         val output = StringBuilder()
-        for (item in payload.nodes) {
-            val nextItem = assembleFinalText(item.nodeParentPath, item.nodeName, item.nodeType, item.isUnique)
+        for ((nodeType, nodeParentPath, nodeName, isUnique) in payload.nodes) {
+            val deps = SceneTreeEditorDropDependencies(
+                nodeParent = nodeParentPath,
+                nodeName = nodeName,
+                nodeType = nodeType,
+                isUnique = isUnique,
+                isCsFile = isCsFile,
+                ctrlDown = ctrlDown,
+                altDown = altDown,
+                scriptInfo = scriptInfo
+            )
+            val nextItem = assembleFinalText(deps)
             if (nextItem == null) {
                 continue
             }
@@ -159,27 +208,5 @@ class SceneTreeEditorDropHandler(
             return null
         }
         return outputText
-    }
-
-
-    override fun handleDrop(t: Transferable, project: Project?, editorWindow: EditorWindow?) {
-        if (project == null) return
-
-        if (!SceneNodeTransferable.isSceneTreeFlavor(t.transferDataFlavors)) {
-            delegate.handleDrop(t, project, editorWindow)
-            return
-        }
-
-        val payload = t.getTransferData(SCENE_NODE_FLAVOR) as? SceneDragPayload ?: return
-
-        val textToInsert = createOutput(payload) ?: return
-
-        WriteCommandAction.writeCommandAction(project)
-            .withName(GdScriptBundle.message("gdscript.scene.tree.insert.action.name"))
-            .run<RuntimeException> {
-                val offset = editor.caretModel.offset
-                editor.document.insertString(offset, textToInsert)
-            }
-
     }
 }
