@@ -13,7 +13,6 @@
     <module name="intellij.libraries.jetcheck"/>
     <module name="intellij.libraries.junit4"/>
     <module name="intellij.libraries.kotlinTest"/>
-    <module name="intellij.libraries.lucene.common"/>
     <module name="intellij.platform.testFramework"/>
     <module name="intellij.platform.structureView"/>
     <module name="intellij.rider.test.build.shared"/>
