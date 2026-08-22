@@ -16,7 +16,7 @@ class GdSdkFilesProviderImpl(private val project: Project) : GdSdkFilesProvider 
     override fun getAllCoreSdkFiles(): Collection<VirtualFile> {
         val version = GdSdkUtil.getGodotVersion(project)
         val sdkDir = GdSdkPathManager.getCoreSdkDir(version)
-        val sdkDirVf = VirtualFileManager.getInstance().refreshAndFindFileByNioPath(sdkDir) ?: return emptyList()
+        val sdkDirVf = VirtualFileManager.getInstance().findFileByNioPath(sdkDir) ?: return emptyList()
         return walkXmlVirtualFiles(sdkDirVf)
     }
 
