@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.platform.ide.progress.withBackgroundProgress
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import gdscript.GdScriptBundle
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -34,7 +35,7 @@ class GdLibraryUpdater(private val project: Project) {
         }
     }
 
-    private fun loadSdk(projectBasePath: Path, godotPathString: String) {
+    private suspend fun loadSdk(projectBasePath: Path, godotPathString: String) {
         val projectFile = projectBasePath.resolve("project.godot")
         if (!projectFile.exists()) return
         val version = GdSdkUtil.getGodotVersion(projectFile) ?: return
@@ -42,9 +43,10 @@ class GdLibraryUpdater(private val project: Project) {
         // stop if disposed
         if (project.isDisposed) return
 
-
         try {
             GdLibraryManager.generateSdkIfNeeded(version, project, godotPathString)
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
             thisLogger().error("Failed to load SDK from XML", e)
         }
