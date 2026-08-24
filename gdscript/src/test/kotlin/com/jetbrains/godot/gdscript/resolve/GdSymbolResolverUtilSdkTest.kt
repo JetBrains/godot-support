@@ -1,5 +1,7 @@
 package com.jetbrains.godot.gdscript.resolve
 
+import com.intellij.model.psi.PsiSymbolReferenceService
+import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
 import com.intellij.psi.util.PsiTreeUtil
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
@@ -92,6 +94,23 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
         // Unfiltered resolveSymbolReference() must still return CLASS first - existing callers
         // that don't filter by kind must see unchanged behavior.
         assertEquals(GdPolySymbolKind.CLASS, refId.resolveSymbolReference()?.kind)
+    }
+
+    @Test
+    fun testBareSdkConstructorCallDoesNotNavigateToClassDeclaration() {
+        myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(1, 2)")
+        val refId = refIdAtCaret()
+        val rawSymbols = PsiSymbolReferenceService.getService().getReferences(refId)
+            .flatMap { it.resolveReference() }
+            .filterIsInstance<PolySymbol>()
+
+        val classSymbols = rawSymbols.filter { it.unwrapAllDelegates().kind == GdPolySymbolKind.CLASS }
+        assertEquals(1, classSymbols.size)
+        assertTrue(classSymbols.single().getNavigationTargets(project).isEmpty())
+
+        val ctorSymbols = rawSymbols.filter { it.unwrapAllDelegates().kind == GdPolySymbolKind.CONSTRUCTOR }
+        assertEquals(1, ctorSymbols.size)
+        assertTrue(ctorSymbols.single().getNavigationTargets(project).isNotEmpty())
     }
 
     @Test
