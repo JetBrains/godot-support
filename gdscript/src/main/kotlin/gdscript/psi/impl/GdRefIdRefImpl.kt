@@ -12,7 +12,9 @@ import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolKind.QUALIFIABLE_SYMBOLS
 import gdscript.polySymbols.GdPolySymbolModifier.STATIC
+import gdscript.polySymbols.gdHasConstructor
 import gdscript.polySymbols.psi.GdAliasedNameSymbol
+import gdscript.polySymbols.psi.GdNavigationSuppressedSymbol
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.filterCandidatesForCall
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.isStatic
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.resolveConstructorSymbols
@@ -69,9 +71,22 @@ class GdRefIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdRefIdRef {
                     val classSymbol = resolved.flatMap { it.unwrapMatchedSymbols() }
                         .firstOrNull { it.kind == GdPolySymbolKind.CLASS } as? GdClassSymbol
                     if (classSymbol != null && callExpr != null) {
-                        filteredResolved + filterCandidatesForCall(
+                        val constructorCandidates = filterCandidatesForCall(
                             GdSymbolResolverUtil.listConstructorSymbols(classSymbol), callExpr, this@GdRefIdRefImpl
                         ).map { GdAliasedNameSymbol(it, text) }
+                        // Built-in Variant types with an explicit SDK constructor (Vector2, ...) are only ever
+                        // called bare, never via .new() - Ctrl+click must resolve solely to the matching _init
+                        // overload(s), not the class declaration too. We still keep an unfiltered, CLASS-kind
+                        // symbol first in the resolved list (wrapped to suppress only its own navigation
+                        // targets) because other consumers depend on it - see GdParamAnnotator's
+                        // `GdPolySymbolKind.CLASS ->` branch, which has no CONSTRUCTOR branch and would
+                        // silently stop validating argument count/type for these calls.
+                        val classResolved = if (classSymbol.gdHasConstructor) {
+                            listOf(GdNavigationSuppressedSymbol(classSymbol))
+                        } else {
+                            filteredResolved
+                        }
+                        classResolved + constructorCandidates
                     } else {
                         filteredResolved
                     }
