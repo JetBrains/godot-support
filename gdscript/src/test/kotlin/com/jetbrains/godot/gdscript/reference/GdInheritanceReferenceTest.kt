@@ -76,7 +76,7 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
         doGotoDeclarationTest(
             declarationSignature = "class_name <caret>Node2D",
             fromSignature = "extends <caret>Node2D",
-            expectedFileName = "Node2D.gd",
+            expectedFileName = "Node2D.generated.gd",
             dirName = "resolveSdkInheritance",
             configureFileName = "resolveSdkInheritance.gd",
         )

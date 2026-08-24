@@ -29,7 +29,7 @@ class GdSdkFindUsagesTest : GdTestCaseWithSdk("refactoring") {
             checkGotoDeclaration(
                 fromSignature = "var node: <caret>Node2D = Node2D.new()",
                 declarationSignature = "class_name <caret>Node2D",
-                expectedFileName = "Node2D.gd",
+                expectedFileName = "Node2D.generated.gd",
             )
             moveToOffsetBySignature("class_name <caret>Node2D")
             checkListByFile(
