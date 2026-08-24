@@ -46,7 +46,7 @@ class GdSdkSyntheticPsiCache(private val project: Project) {
     private fun createFile(classId: String, classData: GdSdkData.ClassData): GdFile {
         val text = XmlToGd().convert(classData)
         val file = PsiFileFactory.getInstance(project)
-            .createFileFromText("$classId.gd", GdLanguage, text) as GdFile
+            .createFileFromText("$classId.generated.gd", GdLanguage, text) as GdFile
         file.putUserData(GdSdkPolySymbol.SYNTHETIC_SDK_CLASS_KEY, classId)
         return file
     }
