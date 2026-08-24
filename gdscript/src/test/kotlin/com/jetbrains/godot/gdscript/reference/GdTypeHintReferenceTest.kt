@@ -40,7 +40,7 @@ class GdTypeHintReferenceTest : GdTestCaseWithSdk("reference") {
         doGotoDeclarationTest(
             declarationSignature = "class_name <caret>Vector2",
             fromSignature = "var position_2d: <caret>Vector2",
-            expectedFileName = "Vector2.gd",
+            expectedFileName = "Vector2.generated.gd",
             dirName = "resolveTypeHintSdkClass",
             configureFileName = "resolveTypeHintSdkClass.gd",
         )
@@ -50,7 +50,7 @@ class GdTypeHintReferenceTest : GdTestCaseWithSdk("reference") {
         doGotoDeclarationTest(
             declarationSignature = "enum <caret>ProcessMode",
             fromSignature = "var p: Node.<caret>ProcessMode",
-            expectedFileName = "Node.gd",
+            expectedFileName = "Node.generated.gd",
             dirName = "resolveTypeHintSdkEnum",
             configureFileName = "resolveTypeHintSdkEnum.gd",
         )
