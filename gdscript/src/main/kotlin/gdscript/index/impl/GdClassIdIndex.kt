@@ -4,7 +4,7 @@ import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.stubs.StubIndexKey
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
 import common.index.StringStubIndexExtensionExt
 import gdscript.index.Indices
 import gdscript.psi.GdClassNameNmi
@@ -34,7 +34,7 @@ class GdClassIdIndex : StringStubIndexExtensionExt<GdClassNameNmi>() {
             val resource = name.substring(1, endIndex)
             val resourceFile = GdFileResIndex.getFiles(resource, project).firstOrNull() ?: return emptyList()
             val psiFile = resourceFile.getPsiFile(project)
-            modified = PsiTreeUtil.getStubChildOfType(psiFile, GdClassNaming::class.java)?.classname.orEmpty()
+            modified = psiFile?.stubChildOfType<GdClassNaming>()?.classname.orEmpty()
 
             if (name.length > endIndex + 1) {
                 modified = "$modified${name.substring(endIndex + 1)}"

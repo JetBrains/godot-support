@@ -9,7 +9,7 @@ import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.query.polySymbolScopeCached
 import com.intellij.polySymbols.utils.withName
 import com.intellij.psi.util.PsiModificationTracker
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
 import gdscript.index.impl.GdFileResIndex
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.psi.GdPsiClassSymbolFactory
@@ -59,7 +59,7 @@ fun gdPsiResourceClassesPolySymbolScope(project: Project): PolySymbolScope =
                 .asSequence()
                 .flatMap { GdFileResIndex.getFiles(it, project) }
                 .mapNotNull { it.getPsiFile(project) as? GdFile }
-                .filter { PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java) == null }
+                .filter { it.stubChildOfType<GdClassNaming>() == null }
                 .mapNotNull { GdPsiClassSymbolFactory.create(it) }
                 .map { referencingResourceClassSymbol(it, it.name) }
                 .forEach(::add)

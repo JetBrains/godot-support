@@ -11,6 +11,8 @@ import com.intellij.polySymbols.utils.withName
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
+import com.intellij.psi.util.stubChildrenOfType
 import gdscript.GdKeywords
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.gdSignature
@@ -220,11 +222,11 @@ object GdPsiPolySymbolUtil {
         if (GdClassUtil.getClassIdElement(name, anchor, anchor.project) != null) return true
         val parts = name.split('.')
         if (parts.isEmpty()) return false
-        var current = PsiTreeUtil.getStubChildrenOfTypeAsList(anchor.containingFile, GdClassDeclTl::class.java)
+        var current = anchor.containingFile.stubChildrenOfType<GdClassDeclTl>()
             .firstOrNull { it.getName() == parts[0] }
         var i = 1
         while (current != null && i < parts.size) {
-            current = PsiTreeUtil.getStubChildrenOfTypeAsList(current, GdClassDeclTl::class.java)
+            current = current.stubChildrenOfType<GdClassDeclTl>()
                 .firstOrNull { it.getName() == parts[i] }
             i++
         }
@@ -252,7 +254,7 @@ object GdPsiPolySymbolUtil {
      * Returns true if there is no global variable with the same name as the provided type name.
      */
     private fun checkGlobalStaticMatch(project: Project, name: String): Boolean {
-        val executor = PolySymbolQueryExecutorFactory.createCustom{
+        val executor = PolySymbolQueryExecutorFactory.createCustom {
             addRootScope(gdSdkGlobalPolySymbolScope(project))
         }
         return GdPolySymbolQueriesUtil.getSdkPropertySymbol(executor, GdKeywords.GLOBAL_SCOPE, name) == null
@@ -267,7 +269,8 @@ object GdPsiPolySymbolUtil {
      * is its `GdKeyValue`). Returns `null` when [anchor] has no dictionary-literal child at all.
      */
     fun dictKeyQueryScope(anchor: PsiElement?): PolySymbolScope? {
-        val primaryEx = PsiTreeUtil.getStubChildOfType(anchor, GdPrimaryEx::class.java) ?: return null
+        val primaryEx = anchor?.stubChildOfType<GdPrimaryEx>()
+            ?: return null
         val dictDecl = primaryEx.dictDecl ?: return null
         return polySymbolScopeCached(dictDecl) {
             provides(GdPolySymbolKind.DICT_KEY)

@@ -4,6 +4,8 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
+import com.intellij.psi.util.stubChildrenOfType
 import gdscript.index.stub.GdClassDeclStub
 import gdscript.model.GdTutorial
 import gdscript.psi.GdClassDeclTl
@@ -34,10 +36,10 @@ class GdClassDeclTlImpl : GdClassDeclElementImpl, GdClassDeclTl {
     }
 
     override val classNameNmi: GdClassNameNmi?
-        get() = PsiTreeUtil.getStubChildOfType(this, GdClassNameNmi::class.java)
+        get() = stubChildOfType<GdClassNameNmi>()
 
     override val inheritanceList: List<GdInheritance>
-        get() = PsiTreeUtil.getStubChildrenOfTypeAsList(this, GdInheritance::class.java)
+        get() = stubChildrenOfType<GdInheritance>().toList()
 
     override val topLevelDeclList: List<GdTopLevelDecl>
         get() = PsiTreeUtil.getChildrenOfTypeAsList(this, GdTopLevelDecl::class.java)
