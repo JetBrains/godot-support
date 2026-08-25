@@ -25,7 +25,7 @@ class XmlToGdTest {
     @ValueSource(strings = ["ExampleClass", "ExampleGlobals"])
     fun testConvertXmlToGdf(className: String) {
         val xmlFile = xmlDir.resolve("doc_classes/$className.xml")
-        val expected = xmlDir.resolve("$className.gdf").readText()
+        val expected = xmlDir.resolve("$className.generated.gd").readText()
         val actual = XmlToGd().convert(xmlFile)
         Assertions.assertEquals(expected, actual)
     }
