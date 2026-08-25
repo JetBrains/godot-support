@@ -21,21 +21,17 @@ class GdLibraryUpdater(private val project: Project) {
     companion object {
         fun getInstance(project: Project): GdLibraryUpdater = project.getService(GdLibraryUpdater::class.java)
     }
-    /*
-     * New sdk
-     */
-
-    fun scheduleSdkLoad(projectBasePath: Path, godotPathString: String) {
+    fun scheduleSdkLoad(projectBasePath: Path, godotPath: Path) {
         GdScriptProjectLifetimeService.getInstance(project).scope.launch {
             withBackgroundProgress(project, GdScriptBundle.message("progress.title.check.gdsdk.for.project")) {
                 withContext(Dispatchers.IO) {
-                    loadSdk(projectBasePath, godotPathString)
+                    loadSdk(projectBasePath, godotPath)
                 }
             }
         }
     }
 
-    private suspend fun loadSdk(projectBasePath: Path, godotPathString: String) {
+    private suspend fun loadSdk(projectBasePath: Path, godotPath: Path) {
         val projectFile = projectBasePath.resolve("project.godot")
         if (!projectFile.exists()) return
         val version = GdSdkUtil.getGodotVersion(projectFile) ?: return
@@ -44,7 +40,7 @@ class GdLibraryUpdater(private val project: Project) {
         if (project.isDisposed) return
 
         try {
-            GdLibraryManager.generateSdkIfNeeded(version, project, godotPathString)
+            GdLibraryManager.generateSdkIfNeeded(version, project, godotPath)
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
