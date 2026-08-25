@@ -100,13 +100,23 @@ object GdPsiPolySymbolUtil {
      * would match the `new` token's own length/text, which would overflow the reference's range into
      * the call's parentheses. [GdSymbolResolverUtil.resolveSymbolReferences] unwraps the delegate
      * back to the real constructor symbol for callers.
+     *
+     * When the resolved class has no declared constructor at all (no explicit `_init`, or an SDK
+     * class with no `<constructor>` doc entries, e.g. `Object`), GDScript still provides an implicit
+     * parameterless constructor - falls back to the class symbol itself (aliased to `"new"` the same
+     * way) so `new` still resolves/navigates, to the class's own declaration, instead of being left
+     * unresolved.
      */
     fun resolveConstructorSymbols(element: GdRefIdRef): List<PolySymbol> {
         val qualifier = GdClassMemberUtil.calledUpon(element) ?: return emptyList()
         val typeName = GdPsiUtils.getReturnType(qualifier)
         if (typeName.isEmpty()) return emptyList()
         val classSymbol = GdSymbolResolverUtil.resolveCanonicalClassSymbol(element.project, typeName, element) ?: return emptyList()
-        val candidates = filterCandidatesForCall(GdSymbolResolverUtil.listConstructorSymbols(classSymbol), element.getCallExpr(), element)
+        val constructorSymbols = GdSymbolResolverUtil.listConstructorSymbols(classSymbol)
+        if (constructorSymbols.isEmpty()) {
+            return listOf(GdAliasedNameSymbol(classSymbol, "new"))
+        }
+        val candidates = filterCandidatesForCall(constructorSymbols, element.getCallExpr(), element)
         return candidates.map { GdAliasedNameSymbol(it, "new") }
     }
 
