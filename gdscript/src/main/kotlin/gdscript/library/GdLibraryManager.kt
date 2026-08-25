@@ -23,8 +23,8 @@ object GdLibraryManager {
 
     private const val MAX_LOGGED_OUTPUT_LENGTH = 4000
 
-    private fun getGodotDoctoolCommand(godotPath: String, workingDirectory: Path, outputDir: Path, gdextension: Boolean = false): GeneralCommandLine{
-        val commandLine = GeneralCommandLine(godotPath)
+    private fun getGodotDoctoolCommand(godotPath: Path, workingDirectory: Path, outputDir: Path, gdextension: Boolean = false): GeneralCommandLine{
+        val commandLine = GeneralCommandLine(godotPath.absolutePathString())
             .withWorkingDirectory(workingDirectory)
             .withParameters("--doctool", outputDir.absolutePathString())
 
@@ -46,7 +46,7 @@ object GdLibraryManager {
      */
     private suspend fun runGodotDoctool(
         version: Version,
-        godotPath: String,
+        godotPath: Path,
         workingDirectory: Path,
         outputDir: Path,
         directoryStampFile: Path?,
@@ -54,14 +54,14 @@ object GdLibraryManager {
     ): Boolean {
         try {
             val commandLine = getGodotDoctoolCommand(godotPath, workingDirectory, outputDir, gdextension)
+            thisLogger().info("Running Godot doctool with command: ${commandLine.commandLineString} in workDir: $workingDirectory")
             val processHandler = OSProcessHandler(commandLine)
-            // The output is needed to report why the generation failed: users only send us the logs.
+
             val outputCollector = CapturingProcessAdapter()
             processHandler.addProcessListener(outputCollector)
             val terminated = try {
                 processHandler.startNotify()
-                // ProcessHandler.waitFor() swallows the interrupt and returns false instead of throwing,
-                // so the result has to be checked explicitly.
+                // ProcessHandler.waitFor() swallows the interrupt and returns false instead of throwing, so the result has to be checked explicitly.
                 runInterruptible(Dispatchers.IO) { processHandler.waitFor() }
             }
             finally {
@@ -118,7 +118,7 @@ object GdLibraryManager {
         GdSdkSymbolsModificationTracker.getInstance(project).incModificationCount()
     }
 
-    suspend fun generateSdkIfNeeded(version: Version, project: Project, godotPathString: String) {
+    suspend fun generateSdkIfNeeded(version: Version, project: Project, godotPath: Path) {
         val projectBasePath = project.stateStore.projectBasePath
 
         GdSdkPathManager.ensureDirectoriesExist(version, project)
@@ -132,8 +132,8 @@ object GdLibraryManager {
         val coreSdkStampFile = GdSdkPathManager.getCoreSdkStampFile(version)
 
         if (!GdSdkIntegrityValidator.hasValidStamp(coreSdkStampFile, version)) {
-            thisLogger().info("Generating core SDK for Godot $version in plugin directory")
-            if (runGodotDoctool(version, godotPathString, projectBasePath, coreSdkDir, coreSdkStampFile)) {
+            val engineDir = godotPath.parent ?: coreSdkDir // I don't expect this to happen, but coreSdkDir is safe fallback
+            if (runGodotDoctool(version, godotPath, engineDir, coreSdkDir, coreSdkStampFile)) {
                 dirsToRefresh.add(coreSdkDir)
             }
         }
@@ -144,8 +144,7 @@ object GdLibraryManager {
 
         if (extensionsDir != null && extensionsStampFile != null) {
             if (!GdSdkIntegrityValidator.hasValidStamp(extensionsStampFile, version)) {
-                thisLogger().info("Generating GDExtensions for project")
-                if (runGodotDoctool(version, godotPathString, projectBasePath, extensionsDir, extensionsStampFile, gdextension = true)) {
+                if (runGodotDoctool(version, godotPath, projectBasePath, extensionsDir, extensionsStampFile, gdextension = true)) {
                     dirsToRefresh.add(extensionsDir)
                 }
             }
