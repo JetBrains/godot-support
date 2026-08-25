@@ -1,5 +1,5 @@
 func in_the_outer_wrong():
-	var renamed_A1Instance := A1[r].new[u]()
+	var renamed_A1Instance := A1[r].new[r]()
 	renamed_A1Instance[r].ppa1[r]() # will be updated after rename
 
 class A1:
