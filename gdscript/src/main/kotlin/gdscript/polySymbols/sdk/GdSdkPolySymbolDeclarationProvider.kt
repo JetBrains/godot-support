@@ -6,6 +6,7 @@ import com.intellij.polySymbols.declarations.PolySymbolDeclaration
 import com.intellij.polySymbols.declarations.PolySymbolDeclarationProvider
 import com.intellij.psi.PsiElement
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
+import gdscript.polySymbols.psi.GdAliasedNameSymbol
 import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdConstDeclTl
@@ -31,7 +32,13 @@ class GdSdkPolySymbolDeclarationProvider : PolySymbolDeclarationProvider {
             ?: return emptyList()
 
         val symbol = resolveSdkSymbol(element, className) ?: return emptyList()
-        return listOf(SdkPolySymbolDeclaration(symbol, element))
+        // GdSdkConstructorSymbol.name is the declaring class name (e.g. "Vector2") - used for bare-call
+        // resolution and completion presentation - not "_init", the literal text this element declares.
+        // Align the declared symbol's name with the real declaration text, or the highlighting
+        // annotator's per-declaration range (computed from symbol.name.length) overflows the actual
+        // "_init" element it's meant to annotate.
+        val declaredSymbol = if (symbol is GdSdkConstructorSymbol) GdAliasedNameSymbol(symbol, element.name!!) else symbol
+        return listOf(SdkPolySymbolDeclaration(declaredSymbol, element))
     }
 
     private fun resolveSdkSymbol(element: GdNamedIdElement, className: String): GdSdkPolySymbol? {
