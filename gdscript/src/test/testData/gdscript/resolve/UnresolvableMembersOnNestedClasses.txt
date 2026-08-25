@@ -1,9 +1,9 @@
 class_name OuterClass
 
-var var1 := A1[r].new[u]()
-var var2 := A1[r].B1[r].new[u]()
-var var3 := A1[r].B1[r].C1[r].new[u]()
-var var4 := A1[r].B1[r].C1[r].D1[r].new[u]()
+var var1 := A1[r].new[r]()
+var var2 := A1[r].B1[r].new[r]()
+var var3 := A1[r].B1[r].C1[r].new[r]()
+var var4 := A1[r].B1[r].C1[r].D1[r].new[r]()
 var t1 := A1[r].B1[r]
 var t2 := A1[r].B1[r].C1[r].D1[r]
 
@@ -11,15 +11,15 @@ func in_the_outer_wrong():
 	t1[r].array[u]
 	t2[r].pp[u]() #should be error on pp
 	var1[r].pp[u]() #should be error on pp
-	A1[r].new[u]().pp[u]() # should be error on pp
-	A1[r].C1[u].new[u]() # should be error on C1, since it is not directly nested in A1
+	A1[r].new[r]().pp[u]() # should be error on pp
+	A1[r].C1[u].new[r]() # should be error on C1, since it is not directly nested in A1
 	A1[r].ppa1[u]() #should be error on ppa1
 
 func in_the_outer_correct():
-	var t := A1[r].B1[r].C1[r].D1[r].new[u]()
+	var t := A1[r].B1[r].C1[r].D1[r].new[r]()
 	t[r].pp[r]()
-	A1[r].new[u]().ppa1[r]()
-	A1[r].B1[r].C1[r].D1[r].new[u]().pp[r]()
+	A1[r].new[r]().ppa1[r]()
+	A1[r].B1[r].C1[r].D1[r].new[r]().pp[r]()
 
 class A1:
 	func ppa1():
