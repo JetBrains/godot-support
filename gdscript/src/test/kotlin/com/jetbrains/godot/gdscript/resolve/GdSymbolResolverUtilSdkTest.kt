@@ -82,6 +82,34 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
     }
 
     @Test
+    fun testQualifiedNewOnPsiClassWithoutExplicitConstructorResolvesToClass() {
+        myFixture.configureByText(
+            "Test.gd", """
+            |class_name Hello
+            |extends Node
+            |
+            |func f():
+            |	var v = Hello.<caret>new()
+        """.trimMargin()
+        )
+        val refId = refIdAtCaret()
+        val symbols = refId.resolveSymbolReferences()
+
+        assertEquals(1, symbols.size)
+        assertEquals(GdPolySymbolKind.CLASS, symbols.single().kind)
+    }
+
+    @Test
+    fun testQualifiedNewOnSdkClassWithoutExplicitConstructorResolvesToClass() {
+        myFixture.configureByText("Test.gd", "func f():\n\tvar v = Object.<caret>new()")
+        val refId = refIdAtCaret()
+        val symbols = refId.resolveSymbolReferences()
+
+        assertEquals(1, symbols.size)
+        assertEquals(GdPolySymbolKind.CLASS, symbols.single().kind)
+    }
+
+    @Test
     fun testBareSdkConstructorCallResolvesToClassAndMatchingArityConstructorOnly() {
         myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(1, 2)")
         val refId = refIdAtCaret()
