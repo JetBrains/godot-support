@@ -42,6 +42,7 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                         listOf(
                             gdSdkClassesPolySymbolScope(ref.project),
                             GdPsiClassesPolySymbolScope(ref.project, ref),
+                            gdPsiInnerClassesPolySymbolScope(ref.containingFile as GdFile),
                             GdPsiResourceClassesPolySymbolScope(ref.project),
                             //gdPsiAutoloadScope(ref.project),
                             polySymbolScope {
@@ -91,6 +92,7 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                                 gdSdkClassesPolySymbolScope(ref.project),
                                 gdSdkGlobalPolySymbolScope(ref.project),
                                 GdPsiClassesPolySymbolScope(ref.project, ref),
+                                gdPsiInnerClassesPolySymbolScope(ref.containingFile as GdFile),
                                 gdPsiAutoloadScope(ref.project),
                                 polySymbolScope {
                                     provides(GdPolySymbolKind.TYPE_HINTS)
@@ -130,6 +132,7 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                                 gdSdkClassesPolySymbolScope(ref.project),
                                 gdSdkGlobalPolySymbolScope(ref.project),
                                 GdPsiClassesPolySymbolScope(ref.project, ref),
+                                gdPsiInnerClassesPolySymbolScope(ref.containingFile as GdFile),
                                 gdPsiAutoloadScope(ref.project),
                                 GdLocalSymbolsStructuredScope(location),
                                 polySymbolScope {
