@@ -12,6 +12,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildrenOfType
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.gdReturnType
 import gdscript.polySymbols.gdSignature
@@ -45,11 +46,10 @@ class GdParameterInfoHandler : ParameterInfoHandler<PsiElement, Any>, DumbAware 
                         }
 
                     is GdClassNaming -> {
-                        val methods =
-                            PsiTreeUtil.getStubChildrenOfTypeAsList(declaration.containingFile, GdMethodDeclTl::class.java)
+                        val methods = declaration.containingFile.stubChildrenOfType<GdMethodDeclTl>()
                         context.itemsToShow = methods.filter {
                             it.isConstructor
-                        }.toTypedArray()
+                        }.toList().toTypedArray()
                     }
 
                     else -> {}

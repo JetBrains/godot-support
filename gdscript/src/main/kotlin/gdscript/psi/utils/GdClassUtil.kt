@@ -3,6 +3,7 @@ package gdscript.psi.utils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
 import gdscript.index.impl.GdClassDeclIndex
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdFileResIndex
@@ -51,7 +52,7 @@ object GdClassUtil {
         return when (val it = getOwningClassElement(element)) {
             is GdClassDeclTl -> it.getName()
             else -> {
-                val cln = PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java)
+                val cln = it.stubChildOfType<GdClassNaming>()
                 if (cln != null) return cln.classname
 
                 val file = GdCodeFragmentUtil.effectiveFile(element)
@@ -70,7 +71,7 @@ object GdClassUtil {
         return when (effectiveElement) {
             is GdClassDeclTl -> effectiveElement.classNameNmi?.classId ?: ""
             is GdFile -> {
-                val named = PsiTreeUtil.getStubChildOfType(effectiveElement, GdClassNaming::class.java)
+                val named = effectiveElement.stubChildOfType<GdClassNaming>()
                 if (named != null) {
                     named.classNameNmi?.classId ?: ""
                 } else {
