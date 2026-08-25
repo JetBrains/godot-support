@@ -5,7 +5,7 @@ import com.intellij.psi.stubs.IndexSink
 import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.stubs.StubInputStream
 import com.intellij.psi.stubs.StubOutputStream
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.index.Indices
 import gdscript.index.stub.GdClassNamingStub
@@ -28,7 +28,7 @@ object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNam
             return stub.parent()
         }
 
-        return PsiTreeUtil.getStubChildOfType(element.parent, GdInheritance::class.java)?.inheritancePath.orEmpty()
+        return element.parent?.stubChildOfType<GdInheritance>()?.inheritancePath.orEmpty()
     }
 
     @JvmStatic
@@ -55,7 +55,7 @@ object GdClassNamingElementType : IStubElementType<GdClassNamingStub, GdClassNam
             GdClassNamingImpl(stub, stub.stubType)
 
     override fun createStub(psi: GdClassNaming, parentStub: StubElement<*>?): GdClassNamingStub {
-        val inheritance = PsiTreeUtil.getStubChildOfType(psi, GdInheritance::class.java)
+        val inheritance = psi.stubChildOfType<GdInheritance>()
 
         return GdClassNamingStubImpl(parentStub, psi.classNameNmi?.name.orEmpty(), inheritance?.inheritancePath)
     }
