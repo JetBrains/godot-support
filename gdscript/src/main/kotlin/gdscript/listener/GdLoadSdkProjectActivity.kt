@@ -5,7 +5,6 @@ import com.intellij.openapi.startup.ProjectActivity
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.library.GdLibraryUpdater
 import kotlinx.coroutines.flow.combine
-import kotlin.io.path.pathString
 
 /**
  * Loads the SDK for the project.
@@ -30,7 +29,7 @@ class GdLoadSdkProjectActivity : ProjectActivity {
             basePath to godotPath
         }.collect { (projectBasePath, godotPath) ->
             if (projectBasePath == null || godotPath == null) return@collect
-            GdLibraryUpdater.getInstance(project).scheduleSdkLoad(projectBasePath, godotPath.pathString)
+            GdLibraryUpdater.getInstance(project).scheduleSdkLoad(projectBasePath, godotPath)
         }
     }
 }
