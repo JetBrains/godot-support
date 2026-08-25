@@ -6,6 +6,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.polySymbols.references.polySymbolOwnReferences
 import com.intellij.polySymbols.utils.unwrapMatchedSymbols
+import com.intellij.polySymbols.utils.withName
 import com.intellij.psi.PsiElementVisitor
 import gdscript.GdKeywords
 import gdscript.polySymbols.GdClassSymbol
@@ -13,7 +14,6 @@ import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolKind.QUALIFIABLE_SYMBOLS
 import gdscript.polySymbols.GdPolySymbolModifier.STATIC
 import gdscript.polySymbols.gdHasConstructor
-import gdscript.polySymbols.psi.GdAliasedNameSymbol
 import gdscript.polySymbols.psi.GdNavigationSuppressedSymbol
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.filterCandidatesForCall
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.isStatic
@@ -73,7 +73,7 @@ class GdRefIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdRefIdRef {
                     if (classSymbol != null && callExpr != null) {
                         val constructorCandidates = filterCandidatesForCall(
                             GdSymbolResolverUtil.listConstructorSymbols(classSymbol), callExpr, this@GdRefIdRefImpl
-                        ).map { GdAliasedNameSymbol(it, text) }
+                        ).map { it.withName(text) }
                         // Built-in Variant types with an explicit SDK constructor (Vector2, ...) are only ever
                         // called bare, never via .new() - Ctrl+click must resolve solely to the matching _init
                         // overload(s), not the class declaration too. We still keep an unfiltered, CLASS-kind
