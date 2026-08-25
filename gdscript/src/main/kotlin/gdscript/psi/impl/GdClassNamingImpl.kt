@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
 import gdscript.index.stub.GdClassNamingStub
 import gdscript.model.GdTutorial
 import gdscript.psi.GdClassNameNmi
@@ -33,7 +34,7 @@ class GdClassNamingImpl : GdClassNamingElementImpl, GdClassNaming {
     }
 
     override val classNameNmi: GdClassNameNmi?
-        get() = PsiTreeUtil.getStubChildOfType<GdClassNameNmi?>(this, GdClassNameNmi::class.java)
+        get() = stubChildOfType<GdClassNameNmi>()
 
     override val endStmt: GdEndStmt?
         get() = PsiTreeUtil.getChildOfType(this, GdEndStmt::class.java)

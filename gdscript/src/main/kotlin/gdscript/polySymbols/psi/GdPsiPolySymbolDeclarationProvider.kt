@@ -4,7 +4,7 @@ import com.intellij.polySymbols.declarations.PolySymbolDeclaration
 import com.intellij.polySymbols.declarations.PolySymbolDeclarationProvider
 import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
 import com.intellij.psi.PsiElement
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
 import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import gdscript.psi.GdBindingPattern
 import gdscript.psi.GdCallEx
@@ -51,7 +51,7 @@ class GdPsiPolySymbolDeclarationProvider : PolySymbolDeclarationProvider {
         is GdFile -> buildList {
             // A file with its own `class_name` declaration is represented by that identifier's own
             // GdClassNameNmi declaration (above), not by the file element itself.
-            if (PsiTreeUtil.getStubChildOfType(element, GdClassNaming::class.java) == null) {
+            if (element.stubChildOfType<GdClassNaming>() == null) {
                 add(GdPsiResourceClassSymbol(element))
             }
             autoloadSymbolFor(element)?.let(::add)
