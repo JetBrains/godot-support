@@ -1,6 +1,7 @@
 package com.jetbrains.godot.gdscript.reference
 
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import gdscript.polySymbols.psi.GdPsiClassSymbol
 import gdscript.polySymbols.psi.GdPsiEnumSymbol
 import gdscript.polySymbols.sdk.GdSdkClassSymbol
 import gdscript.polySymbols.sdk.GdSdkEnumSymbol
@@ -33,6 +34,14 @@ class GdTypeHintReferenceTest : GdTestCaseWithSdk("reference") {
             "var p: Node.<caret>ProcessMode",
             GdSdkEnumSymbol::class.java,
             "ProcessMode",
+        )
+
+    @Test
+    fun testResolveTypeHintBareInnerClass() =
+        doResolveSymbolTest(
+            "var x: <caret>Inner",
+            GdPsiClassSymbol::class.java,
+            "Inner",
         )
 
     @Test
