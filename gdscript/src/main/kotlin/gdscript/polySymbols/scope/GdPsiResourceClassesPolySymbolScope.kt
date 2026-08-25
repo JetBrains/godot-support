@@ -10,10 +10,10 @@ import com.intellij.polySymbols.query.PolySymbolNameMatchQueryParams
 import com.intellij.polySymbols.query.PolySymbolQueryStack
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.match
+import com.intellij.polySymbols.utils.withName
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdFileResIndex
 import gdscript.polySymbols.GdPolySymbolKind
-import gdscript.polySymbols.psi.GdAliasedNameSymbol
 import gdscript.polySymbols.psi.GdPsiClassSymbolFactory
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
@@ -34,7 +34,7 @@ class GdPsiResourceClassesPolySymbolScope(
             .asSequence()
             .mapNotNull { it.getPsiFile(project) as? GdFile }
             .mapNotNull { GdPsiClassSymbolFactory.create(it) }
-            .map { if (it.name == name) it else GdAliasedNameSymbol(it, name) }
+            .map { if (it.name == name) it else it.withName(name) }
             .toList()
 
     private fun collectAllSymbols(): List<PolySymbol> =
