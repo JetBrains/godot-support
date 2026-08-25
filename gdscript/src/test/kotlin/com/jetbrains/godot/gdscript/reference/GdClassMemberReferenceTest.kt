@@ -43,4 +43,18 @@ class GdClassMemberReferenceTest : GdTestCaseWithSdk("reference") {
             GdPsiMethodSymbol::class.java,
             "my_method",
         )
+
+    // RIDER-141201 guard test: `SuperInner` doesn't resolve as a *reference* in `class Inner extends
+    // SuperInner:` (bare nested classes aren't reachable by simple name yet - see
+    // GdInheritanceReferenceTest/GdRefIdReferenceTest for the reference-resolution side of that bug),
+    // but the actual inheritance chain used for member lookups goes through a separate, already-working
+    // path (GdClassUtil.getClassIdElement's GdClassDeclIndex fallback) - so `foo`, inherited from
+    // `SuperInner`, must already resolve through `Inner.new()` regardless.
+    @Test
+    fun testResolveInheritedMethodThroughBareSiblingClassExtends() =
+        doResolveSymbolTest(
+            "Inner.new().<caret>foo()",
+            GdPsiMethodSymbol::class.java,
+            "foo",
+        )
 }
