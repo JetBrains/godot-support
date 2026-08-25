@@ -52,6 +52,14 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
         )
 
     @Test
+    fun testResolveBareSiblingClassInheritance() =
+        doResolveSymbolTest(
+            "class Inner extends <caret>SuperInner",
+            GdPsiClassSymbol::class.java,
+            "SuperInner"
+        )
+
+    @Test
     fun testGotoDeclarationNamedResourceInheritance() =
         doGotoDeclarationTest(
             declarationSignature = "class_name <caret>Base",
