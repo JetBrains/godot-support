@@ -35,8 +35,8 @@ abstract class GdTestCase(override val testCasePath: String) : PolySymbolsTestCa
         val dirName = chosenTestName ?: testName
         val fileName = (chosenTestName ?: testName).plus(".$defaultExtension")
         doConfiguredTest(dirName = dirName, configureFileName = fileName) {
-            // Unwrap PolySymbolDelegate wrappers (e.g. GdAliasedNameSymbol, used wherever the
-            // querying text differs from the resolved symbol's own name) the same way production
+            // Unwrap PolySymbolDelegate wrappers (e.g. an aliased-name symbol from withName(), used
+            // wherever the querying text differs from the resolved symbol's own name) the same way production
             // code does via GdSymbolResolverUtil.resolveSymbolReferences() - resolveSymbolReference()
             // itself does not.
             val referenced = myFixture.resolveSymbolReference(signature)

@@ -7,6 +7,7 @@ import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.query.polySymbolScopeCached
 import com.intellij.polySymbols.utils.unwrapMatchedSymbols
+import com.intellij.polySymbols.utils.withName
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
@@ -95,7 +96,7 @@ object GdPsiPolySymbolUtil {
      * class (PSI or SDK) whose signature matches the call's argument list - see
      * [filterCandidatesForCall]. `new` itself is not a real, queryable symbol name (GDScript
      * constructors are always named `_init` in PSI, or the class name in SDK data - never literally
-     * `"new"`), so each result is wrapped in [GdAliasedNameSymbol]: own-reference ranges are computed
+     * `"new"`), so each result is wrapped via [withName]: own-reference ranges are computed
      * from the referenced symbol's `name.length`, and neither `_init` (5 chars) nor an SDK class name
      * would match the `new` token's own length/text, which would overflow the reference's range into
      * the call's parentheses. [GdSymbolResolverUtil.resolveSymbolReferences] unwraps the delegate
@@ -114,10 +115,10 @@ object GdPsiPolySymbolUtil {
         val classSymbol = GdSymbolResolverUtil.resolveCanonicalClassSymbol(element.project, typeName, element) ?: return emptyList()
         val constructorSymbols = GdSymbolResolverUtil.listConstructorSymbols(classSymbol)
         if (constructorSymbols.isEmpty()) {
-            return listOf(GdAliasedNameSymbol(classSymbol, "new"))
+            return listOf(classSymbol.withName("new"))
         }
         val candidates = filterCandidatesForCall(constructorSymbols, element.getCallExpr(), element)
-        return candidates.map { GdAliasedNameSymbol(it, "new") }
+        return candidates.map { it.withName("new") }
     }
 
     /**
