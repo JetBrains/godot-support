@@ -3,7 +3,7 @@ package gdscript.psi.utils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdFileResIndex
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
@@ -26,7 +26,7 @@ object GdInheritanceUtil {
         return when (effectiveElement) {
             is GdClassNaming -> effectiveElement.parentName
             is GdClassDeclTl -> effectiveElement.parentName
-            is GdFile -> PsiTreeUtil.getStubChildOfType(effectiveElement, GdInheritance::class.java)?.inheritancePath.orEmpty()
+            is GdFile -> effectiveElement.stubChildOfType<GdInheritance>()?.inheritancePath.orEmpty()
             is PsiFile -> ""
             else -> getExtendedClassId(PsiGdClassUtil.getParentClassElement(effectiveElement))
         }
