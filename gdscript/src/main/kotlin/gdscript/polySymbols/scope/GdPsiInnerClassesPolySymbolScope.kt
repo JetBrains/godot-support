@@ -5,7 +5,7 @@ import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.query.polySymbolScopeCached
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiModificationTracker
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildrenOfType
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.psi.GdPsiClassSymbolFactory
 import gdscript.psi.GdClassDeclTl
@@ -37,10 +37,10 @@ private fun collectClassDeclsRecursively(root: PsiElement, consumer: (PolySymbol
     val worklist = ArrayDeque<PsiElement>()
     worklist.add(root)
     while (worklist.isNotEmpty()) {
-        val children = PsiTreeUtil.getStubChildrenOfTypeAsList(worklist.removeFirst(), GdClassDeclTl::class.java)
+        val children = worklist.removeFirst().stubChildrenOfType<GdClassDeclTl>()
         children.forEach {
             GdPsiClassSymbolFactory.create(it)?.let(consumer)
+            worklist.add(it)
         }
-        worklist.addAll(children)
     }
 }
