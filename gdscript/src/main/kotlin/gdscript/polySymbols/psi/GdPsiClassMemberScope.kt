@@ -6,6 +6,7 @@ import com.intellij.polySymbols.query.polySymbolScopeCached
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildrenOfType
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassDeclTl
@@ -15,6 +16,7 @@ import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdEnumValue
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdSignalDeclTl
+import gdscript.psi.GdTopLevelDecl
 
 /**
  * Member scope for a PSI-backed GDScript class, backed by the class's source PSI element ([gdscript.psi.GdFile] or [GdClassDeclTl]).
@@ -35,36 +37,34 @@ fun gdPsiClassMemberScope(classElement: PsiElement): PolySymbolScope =
         initialize {
             cacheDependencies(PsiModificationTracker.MODIFICATION_COUNT)
 
-            PsiTreeUtil.getStubChildrenOfTypeAsList(element, GdClassDeclTl::class.java)
-                .forEach { GdPsiClassSymbolFactory.create(it)?.let(::add) }
-
-            PsiTreeUtil.getStubChildrenOfTypeAsList(element, GdMethodDeclTl::class.java)
-                .forEach { methodDecl ->
-                    val id = methodDecl.methodIdNmi ?: return@forEach
-                    if (methodDecl.isConstructor) add(GdPsiConstructorSymbol(id)) else add(GdPsiMethodSymbol(id))
-                }
-
-            PsiTreeUtil.getStubChildrenOfTypeAsList(element, GdClassVarDeclTl::class.java)
-                .forEach { it.varNmi?.let { id -> add(GdPsiPropertySymbol(id)) } }
-
-            PsiTreeUtil.getStubChildrenOfTypeAsList(element, GdConstDeclTl::class.java)
-                .forEach { it.varNmi?.let { id -> add(GdPsiConstantSymbol(id)) } }
-
-            PsiTreeUtil.getStubChildrenOfTypeAsList(element, GdEnumDeclTl::class.java)
-                .forEach { enumDecl ->
-                    val id = enumDecl.enumDeclNmi
-                    if (id != null) {
-                        add(GdPsiEnumSymbol(id))
-                    } else {
-                        // Unnamed `enum { A, B }` blocks expose their values directly in the
-                        // enclosing class scope - there is no enum name to qualify through.
-                        PsiTreeUtil.getChildrenOfTypeAsList(enumDecl, GdEnumValue::class.java)
-                            .forEach { add(GdPsiEnumValueSymbol(it.enumValueNmi)) }
+            element.stubChildrenOfType<GdTopLevelDecl>().forEach {
+                when (it) {
+                    is GdClassDeclTl -> GdPsiClassSymbolFactory.create(it)?.let(::add)
+                    is GdMethodDeclTl -> {
+                        val id = it.methodIdNmi ?: return@forEach
+                        if (it.isConstructor)
+                            add(GdPsiConstructorSymbol(id))
+                        else
+                            add(GdPsiMethodSymbol(id))
                     }
-                }
 
-            PsiTreeUtil.getStubChildrenOfTypeAsList(element, GdSignalDeclTl::class.java)
-                .forEach { it.signalIdNmi?.let { id -> add(GdPsiSignalSymbol(id)) } }
+                    is GdClassVarDeclTl -> it.varNmi?.let { id -> add(GdPsiPropertySymbol(id)) }
+                    is GdConstDeclTl -> it.varNmi?.let { id -> add(GdPsiConstantSymbol(id)) }
+                    is GdEnumDeclTl -> {
+                        val id = it.enumDeclNmi
+                        if (id != null) {
+                            add(GdPsiEnumSymbol(id))
+                        } else {
+                            // Unnamed `enum { A, B }` blocks expose their values directly in the
+                            // enclosing class scope - there is no enum name to qualify through.
+                            PsiTreeUtil.getChildrenOfTypeAsList(it, GdEnumValue::class.java)
+                                .forEach { value -> add(GdPsiEnumValueSymbol(value.enumValueNmi)) }
+                        }
+                    }
+
+                    is GdSignalDeclTl -> it.signalIdNmi?.let { id -> add(GdPsiSignalSymbol(id)) }
+                }
+            }
 
             loadedClassAliases(element).forEach(::add)
         }
