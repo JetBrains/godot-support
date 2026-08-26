@@ -41,9 +41,9 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                     .contributeScopeProvider { ref ->
                         listOf(
                             gdSdkClassesPolySymbolScope(ref.project),
-                            GdPsiClassesPolySymbolScope(ref.project),
+                            gdPsiClassesPolySymbolScope(ref.project),
                             gdPsiInnerClassesPolySymbolScope(ref.containingFile as GdFile),
-                            GdPsiResourceClassesPolySymbolScope(ref.project),
+                            gdPsiResourceClassesPolySymbolScope(ref.project),
                             //gdPsiAutoloadScope(ref.project),
                             polySymbolScope {
                                 provides(GdPolySymbolKind.INHERITANCE_SYMBOLS)
@@ -91,7 +91,7 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                                 GdPsiOwnClassScope(location),
                                 gdSdkClassesPolySymbolScope(ref.project),
                                 gdSdkGlobalPolySymbolScope(ref.project),
-                                GdPsiClassesPolySymbolScope(ref.project),
+                                gdPsiClassesPolySymbolScope(ref.project),
                                 gdPsiInnerClassesPolySymbolScope(ref.containingFile as GdFile),
                                 gdPsiAutoloadScope(ref.project),
                                 polySymbolScope {
@@ -131,7 +131,7 @@ class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
                                 GdPsiOwnClassScope(location),
                                 gdSdkClassesPolySymbolScope(ref.project),
                                 gdSdkGlobalPolySymbolScope(ref.project),
-                                GdPsiClassesPolySymbolScope(ref.project),
+                                gdPsiClassesPolySymbolScope(ref.project),
                                 gdPsiInnerClassesPolySymbolScope(ref.containingFile as GdFile),
                                 gdPsiAutoloadScope(ref.project),
                                 GdLocalSymbolsStructuredScope(location),
