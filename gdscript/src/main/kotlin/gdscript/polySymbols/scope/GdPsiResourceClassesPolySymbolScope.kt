@@ -1,13 +1,12 @@
 package gdscript.polySymbols.scope
 
-import com.intellij.model.Pointer
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.polySymbols.PolySymbol
-import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.PolySymbolNameSegment
 import com.intellij.polySymbols.query.PolySymbolMatch
-import com.intellij.polySymbols.utils.PolySymbolScopeWithCache
+import com.intellij.polySymbols.query.PolySymbolScope
+import com.intellij.polySymbols.query.polySymbolScopeCached
 import com.intellij.polySymbols.utils.withName
 import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
@@ -30,49 +29,42 @@ import gdscript.utils.VirtualFileUtil.getPsiFile
  * wrapped via [referencingResourceClassSymbol] first - see its own doc comment for why that's a
  * [PolySymbolMatch], not a kind-overriding [com.intellij.polySymbols.utils.PolySymbolDelegate].
  *
- * Caches the full symbol set via [PolySymbolScopeWithCache] so repeat name-match/list/completion
+ * Caches the full symbol set via [polySymbolScopeCached] so repeat name-match/list/completion
  * queries reuse it instead of re-walking `GdFileResIndex.getNonEmptyKeys` (a full
  * [com.intellij.openapi.roots.ProjectFileIndex.iterateContent] walk of the whole project) every time.
- * [partialMatchingSupport] keeps single-name resolution (the common case, e.g. `extends "res://foo.gd"`)
- * on the cheap direct-lookup path ([GdFileResIndex.getFiles]) without forcing that full walk first -
- * unconditionally, same reasoning as [GdPsiClassesPolySymbolScope].
+ * `partialMatchingSupport` keeps single-name resolution (the common case, e.g. `extends "res://foo.gd"`)
+ * on the cheap direct-lookup path ([GdFileResIndex.getFiles]) without forcing that full walk first.
+ * The decision to offer it is unconditional (always active, same reasoning as
+ * [gdPsiClassesPolySymbolScope]), so the no-argument `partialMatchingSupport { }` form is used -
+ * no `CachedValue` needed for a decision that never actually changes.
  */
-class GdPsiResourceClassesPolySymbolScope(project: Project) : PolySymbolScopeWithCache<Project, Unit>(project, project, Unit) {
-
-    override fun provides(kind: PolySymbolKind): Boolean = kind == GdPolySymbolKind.RESOURCE_CLASS
-
-    override fun initialize(consumer: (PolySymbol) -> Unit, cacheDependencies: MutableSet<Any>) {
-        cacheDependencies.add(PsiModificationTracker.MODIFICATION_COUNT)
-        cacheDependencies.add(VirtualFileManager.VFS_STRUCTURE_MODIFICATIONS)
-        GdFileResIndex.getNonEmptyKeys(project)
-            .asSequence()
-            .flatMap { GdFileResIndex.getFiles(it, project) }
-            .mapNotNull { it.getPsiFile(project) as? GdFile }
-            .filter { PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java) == null }
-            .mapNotNull { GdPsiClassSymbolFactory.create(it) }
-            .map { referencingResourceClassSymbol(it, it.name) }
-            .forEach(consumer)
-    }
-
-    override val partialMatchingSupport: PartialMatchingSupport =
-        object : PartialMatchingSupport {
-            override val cacheDependencies: Collection<Any> =
-                listOf(PsiModificationTracker.MODIFICATION_COUNT, VirtualFileManager.VFS_STRUCTURE_MODIFICATIONS)
-
-            override fun getMatchingSymbols(kind: PolySymbolKind, nameVariant: String): List<PolySymbol> =
+fun gdPsiResourceClassesPolySymbolScope(project: Project): PolySymbolScope =
+    polySymbolScopeCached(project) {
+        provides(GdPolySymbolKind.RESOURCE_CLASS)
+        partialMatchingSupport {
+            provideMatchingSymbols(
+                PsiModificationTracker.MODIFICATION_COUNT, VirtualFileManager.VFS_STRUCTURE_MODIFICATIONS,
+            ) { _, nameVariant ->
                 GdFileResIndex.getFiles(nameVariant.trim('"', '\''), project)
                     .asSequence()
                     .mapNotNull { it.getPsiFile(project) as? GdFile }
                     .mapNotNull { GdPsiClassSymbolFactory.create(it) }
                     .map { referencingResourceClassSymbol(it, nameVariant) }
                     .toList()
+            }
         }
-
-    override fun createPointer(): Pointer<GdPsiResourceClassesPolySymbolScope> {
-        val project = project
-        return Pointer { GdPsiResourceClassesPolySymbolScope(project) }
+        initialize {
+            cacheDependencies(PsiModificationTracker.MODIFICATION_COUNT, VirtualFileManager.VFS_STRUCTURE_MODIFICATIONS)
+            GdFileResIndex.getNonEmptyKeys(project)
+                .asSequence()
+                .flatMap { GdFileResIndex.getFiles(it, project) }
+                .mapNotNull { it.getPsiFile(project) as? GdFile }
+                .filter { PsiTreeUtil.getStubChildOfType(it, GdClassNaming::class.java) == null }
+                .mapNotNull { GdPsiClassSymbolFactory.create(it) }
+                .map { referencingResourceClassSymbol(it, it.name) }
+                .forEach(::add)
+        }
     }
-}
 
 /**
  * Wraps [target] (a real, `CLASS`-kind class symbol) into a one-segment [PolySymbolMatch] reporting
