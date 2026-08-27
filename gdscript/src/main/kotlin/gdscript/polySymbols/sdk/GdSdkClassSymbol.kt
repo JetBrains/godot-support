@@ -10,7 +10,7 @@ import com.intellij.polySymbols.PolySymbolModifier
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.PolySymbolScopeWithCache
 import gdscript.GdIcon
-import gdscript.library.GdDocClassesFoldersService
+import gdscript.library.GdSdkDocsTracker
 import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.GdHasConstructorProperty
 import gdscript.polySymbols.GdPolySymbolKind
@@ -68,7 +68,7 @@ class GdSdkClassSymbol(override val project: Project, private val sourceFile: Vi
             // pin deleted XML VirtualFiles in memory.
             // We can't use sourceFile as the data holder because platform prevents it;
             // it says it leads to memory leaks.
-            cacheDependencies.add(GdDocClassesFoldersService.getInstance(project).modificationTracker)
+            cacheDependencies.add(GdSdkDocsTracker.getInstance(project))
         }
 
         override fun provides(kind: PolySymbolKind): Boolean =
