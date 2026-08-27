@@ -6,10 +6,10 @@ import com.intellij.polySymbols.highlighting.PolySymbolHighlightingCustomizer
 import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
 import com.intellij.polySymbols.utils.unwrapMatchedSymbols
 import com.intellij.psi.PsiElement
-import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolModifier
+import gdscript.polySymbols.GdPolySymbolsConstants
 import gdscript.polySymbols.gdDeclaringClassId
 import gdscript.polySymbols.gdIsEngineSymbol
 import gdscript.utils.PsiElementUtil.getCallExpr
@@ -38,13 +38,14 @@ class GdPolySymbolHighlightingCustomizer : PolySymbolHighlightingCustomizer {
             GdPolySymbolKind.CONSTRUCTOR -> GdHighlighterColors.METHOD_CALL
 
             GdPolySymbolKind.METHOD -> {
-                if (real.gdDeclaringClassId == GdKeywords.GLOBAL_SCOPE) GdHighlighterColors.GLOBAL_FUNCTION
+                if (real.gdDeclaringClassId in GdPolySymbolsConstants.GLOBAL_CLASSES) GdHighlighterColors.GLOBAL_FUNCTION
                 else if (real.modifiers.contains(GdPolySymbolModifier.STATIC)) GdHighlighterColors.STATIC_METHOD_CALL
                 else GdHighlighterColors.METHOD_CALL
             }
 
             GdPolySymbolKind.PROPERTY -> {
-                if (real.gdDeclaringClassId == GdKeywords.GLOBAL_SCOPE) GdHighlighterColors.GLOBAL_VARIABLE_BUILT_IN
+                // Includes the generated @GDExtensionScope, so a GDExtension singleton is colored like `Input`.
+                if (real.gdDeclaringClassId in GdPolySymbolsConstants.GLOBAL_CLASSES) GdHighlighterColors.GLOBAL_VARIABLE_BUILT_IN
                 else GdHighlighterColors.MEMBER
             }
 
