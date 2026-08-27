@@ -3,6 +3,7 @@ package gdscript.polySymbols.scope
 import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.query.polySymbolScopeCached
+import gdscript.library.GdSdkDocsTracker
 import gdscript.library.GdSdkFilesProvider
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolsConstants
@@ -14,7 +15,9 @@ import gdscript.polySymbols.sdk.GdSdkSignalSymbol
 import gdscript.polySymbols.sdk.xml.GdSdkXmlParser
 
 /**
- * Scope for global symbols inherent to the language defined in GDScript core SDK files.
+ * Scope for global symbols inherent to the language defined in GDScript core SDK files, plus the generated
+ * `@GDExtensionScope.xml` that declares the GDExtension singletons as global variables (see
+ * [gdscript.library.GdGlobalSingletonsDocWriter]) - hence all SDK files are looked through, not only the core ones.
  */
 fun gdSdkGlobalPolySymbolScope(project: Project): PolySymbolScope =
     polySymbolScopeCached(project) {
@@ -26,10 +29,10 @@ fun gdSdkGlobalPolySymbolScope(project: Project): PolySymbolScope =
             GdPolySymbolKind.SIGNAL,
         )
         initialize {
-            cacheDependencies(GdSdkSymbolsModificationTracker.getInstance(project))
+            cacheDependencies(GdSdkDocsTracker.getInstance(project))
 
             // TODO optimize this, dont look through all files, only GDSCRIPT_GLOBAL_SCOPE_FILE_NAMES
-            GdSdkFilesProvider.getInstance(project).getAllCoreSdkFiles().forEach { file ->
+            GdSdkFilesProvider.getInstance(project).getAllSdkFiles().forEach { file ->
                 if (GdPolySymbolsConstants.GLOBAL_CLASSES.contains(file.nameWithoutExtension)) {
                     val classData = GdSdkXmlParser.parseClass(file) ?: return@forEach
                     // classData.constructors is always empty for GLOBAL_CLASSES files (global/utility
