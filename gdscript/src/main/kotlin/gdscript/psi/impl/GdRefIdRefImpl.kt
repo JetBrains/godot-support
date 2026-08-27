@@ -17,6 +17,7 @@ import gdscript.polySymbols.gdHasConstructor
 import gdscript.polySymbols.psi.GdNavigationSuppressedSymbol
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.filterCandidatesForCall
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.isStatic
+import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.preferGlobalVariableOverClass
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.resolveConstructorSymbols
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.resolveEarlierEnumValueSymbol
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
@@ -55,6 +56,7 @@ class GdRefIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdRefIdRef {
                         .nameMatchQuery(QUALIFIABLE_SYMBOLS, text)
                         .run()
                         .filter { symbol -> !requireStatic || !symbol.hasStaticInstanceDistinction() || symbol.hasModifier(STATIC) }
+                        .let { preferGlobalVariableOverClass(it) }
 
                     // Bare constructor call (`ClassName(...)`, no `.new()`): the resolved reference
                     // is CLASS-only today (constructors are never name-matched by their class's own

@@ -27,10 +27,10 @@ object GdSdkPathManager {
     }
 
     fun getProjectExtensionsRoot(project: Project): Path? {
+        // todo: test with .sln
         return (project.stateStore.directoryStorePath ?: project.getMainProjectBasePath()?.resolve(Project.DIRECTORY_STORE_FOLDER))
             ?.resolve(DOCS_DIR_NAME)
     }
-
 
     fun getCoreSdkDir(version: Version): Path {
         return getCoreSdkDocsRoot().resolve(version.toString())
@@ -46,6 +46,35 @@ object GdSdkPathManager {
 
     fun getProjectExtensionsStampFile(project: Project): Path? {
         return getProjectExtensionsRoot(project)?.resolve("stamp-gdext.txt")
+    }
+
+    /** The generated singleton docs get their own folder: the gdextensions one is owned end to end by the doctool. */
+    fun getProjectSingletonsDocDir(project: Project): Path? {
+        return getProjectExtensionsRoot(project)?.resolve("singletons")?.resolve("doc_classes")
+    }
+
+    /** The project-specific directories the generated documentation XMLs are written to. */
+    fun getProjectDocDirs(project: Project): List<Path> {
+        return listOfNotNull(getProjectExtensionsDir(project), getProjectSingletonsDocDir(project))
+    }
+
+    fun getProjectSingletonsDocFile(project: Project): Path? {
+        return getProjectSingletonsDocDir(project)?.resolve(GdGlobalSingletonsDocWriter.FILE_NAME)
+    }
+
+    fun getProjectSingletonsStampFile(project: Project): Path? {
+        return getProjectExtensionsRoot(project)?.resolve("stamp-singletons.txt")
+    }
+
+    /**
+     * The dump script lives inside the plugin jar, so Godot cannot read it directly. `--script` accepts an absolute path
+     * outside the project root, so it is materialized under a fixed name in the IDE's temp directory and simply
+     * overwritten on every generation - no temporary file has to be tracked and cleaned up.
+     */
+    fun getSingletonsScriptFile(): Path {
+        return PathManager.getTempDir()
+            .resolve(DOCS_DIR_NAME)
+            .resolve("dump_singletons.gd")
     }
 
     private fun ensureDirectoryExists(path: Path){

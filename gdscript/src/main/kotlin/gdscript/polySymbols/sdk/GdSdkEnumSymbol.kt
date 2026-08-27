@@ -9,7 +9,7 @@ import com.intellij.polySymbols.PolySymbolModifier
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.PolySymbolScopeWithCache
 import gdscript.GdKeywords
-import gdscript.library.GdDocClassesFoldersService
+import gdscript.library.GdSdkDocsTracker
 import gdscript.polySymbols.GdEnumValuesProperty
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolNamespace
@@ -44,7 +44,7 @@ class GdSdkEnumSymbol(
                 consumer(GdSdkEnumValueSymbol(project, declaringClassName, name, eVData))
             }
 
-            cacheDependencies.add(GdDocClassesFoldersService.getInstance(project).modificationTracker)
+            cacheDependencies.add(GdSdkDocsTracker.getInstance(project))
         }
 
         override fun provides(kind: PolySymbolKind): Boolean =
