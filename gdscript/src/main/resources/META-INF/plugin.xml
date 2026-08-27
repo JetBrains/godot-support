@@ -89,6 +89,7 @@
     <renamePsiElementProcessor implementation="gdscript.codeInsight.renamer.GdRenamePsiFileProcessor"/>
     <automaticRenamerFactory implementation="gdscript.codeInsight.renamer.GdFileAutomaticRenamerFactory"/>
     <backgroundPostStartupActivity implementation="gdscript.listener.GdLoadSdkProjectActivity"/>
+    <backgroundPostStartupActivity implementation="gdscript.listener.GdWatchGdExtensionsProjectActivity"/>
     <backgroundPostStartupActivity implementation="GdScriptToolWindowManagerProjectActivity"/>
     <backgroundPostStartupActivity implementation="gdscript.lsp.GodotLspStartOnFocusGainedActivity"/>
     <rider.godot.community.godotProjectProvider implementation="gdscript.utils.GdScriptGodotProjectProvider"/>

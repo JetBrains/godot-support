@@ -14,17 +14,11 @@ class GdLoadSdkProjectActivity : ProjectActivity {
     override suspend fun execute(project: Project) {
         if (project.isDisposed) return
 
-
         val godotExecutableFlow = GodotCommunityUtil.getGodotExecutablePathFlow(project)
         val basePathFlow = GodotCommunityUtil.getGodotProjectBasePathFlow(project)
 
-        // FIXME by doing something similar to ReferenceGdLibrariesProjectActivity
-        /*
-        combine(basePathFlow, godotExecutableFlow) emits each time either upstream changes.
-        On first startup both may emit in quick succession, calling scheduleSdkLoad twice before the stamp is written by the first call.
-        The stamp check in generateSdkIfNeeded reduces but does not eliminate the window (no mutex/synchronization).
-        Consider adding a @Volatile boolean guard or Mutex.
-         */
+        // Both upstreams may emit in quick succession on startup; the overlapping requests are serialized by
+        // GdLibraryUpdater and collapsed by the stamp check in GdLibraryManager.generateSdkIfNeeded().
         basePathFlow.combine(godotExecutableFlow) { basePath, godotPath ->
             basePath to godotPath
         }.collect { (projectBasePath, godotPath) ->
