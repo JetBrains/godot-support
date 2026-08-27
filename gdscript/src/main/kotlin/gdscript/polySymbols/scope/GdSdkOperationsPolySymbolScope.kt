@@ -5,8 +5,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.utils.PolySymbolScopeWithCache
+import gdscript.library.GdSdkDocsTracker
 import gdscript.library.GdSdkFilesProvider
-import gdscript.library.GdSdkUtil
 import gdscript.polySymbols.config.GdOperatorSymbol
 import gdscript.polySymbols.GdPolySymbolNamespace
 import gdscript.polySymbols.GdPolySymbolKind
@@ -16,7 +16,7 @@ class GdSdkOperationsPolySymbolScope(
     project: Project
 ) : PolySymbolScopeWithCache<Project, Unit>(project, project, Unit) {
 
-    private val modificationsTracker = GdSdkSymbolsModificationTracker.getInstance(project)
+    private val modificationsTracker = GdSdkDocsTracker.getInstance(project)
 
     override fun createPointer(): Pointer<out GdSdkOperationsPolySymbolScope> = Pointer { GdSdkOperationsPolySymbolScope(project) }
 

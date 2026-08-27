@@ -7,7 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.util.CachedValue
 import com.intellij.psi.util.CachedValueProvider
 import com.intellij.psi.util.CachedValuesManager
-import gdscript.library.GdDocClassesFoldersService
+import gdscript.library.GdSdkDocsTracker
 import gdscript.polySymbols.sdk.xml.GdSdkData
 import gdscript.polySymbols.sdk.xml.GdSdkXmlParser
 import java.util.concurrent.ConcurrentHashMap
@@ -36,7 +36,7 @@ class GdSdkParseCache(private val project: Project) {
                     val parsed = if (sourceFile.isValid) GdSdkXmlParser.parseClass(sourceFile) else null
                     CachedValueProvider.Result.create(
                         parsed,
-                        GdDocClassesFoldersService.getInstance(project).modificationTracker
+                        GdSdkDocsTracker.getInstance(project),
                     )
                 },
                 false
