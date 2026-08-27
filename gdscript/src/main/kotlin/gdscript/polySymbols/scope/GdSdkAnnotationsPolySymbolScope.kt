@@ -3,6 +3,7 @@ package gdscript.polySymbols.scope
 import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.query.polySymbolScopeCached
+import gdscript.library.GdSdkDocsTracker
 import gdscript.library.GdSdkFilesProvider
 import gdscript.polySymbols.config.GdAnnotationSymbol
 import gdscript.polySymbols.GdPolySymbolKind
@@ -13,7 +14,7 @@ fun gdSdkAnnotationsPolySymbolScope(project: Project): PolySymbolScope =
     polySymbolScopeCached(project) {
         provides(GdPolySymbolKind.ANNOTATION)
         initialize {
-            cacheDependencies(GdSdkSymbolsModificationTracker.getInstance(project))
+            cacheDependencies(GdSdkDocsTracker.getInstance(project))
 
             // TODO optimize this, dont look through all files, only ANNOTATIONS_FILE_NAME
             GdSdkFilesProvider.getInstance(project).getAllCoreSdkFiles().forEach { file ->

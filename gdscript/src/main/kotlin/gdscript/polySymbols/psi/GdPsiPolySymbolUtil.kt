@@ -15,6 +15,8 @@ import com.intellij.psi.util.stubChildOfType
 import com.intellij.psi.util.stubChildrenOfType
 import gdscript.GdKeywords
 import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.GdPolySymbolsConstants
+import gdscript.polySymbols.gdDeclaringClassId
 import gdscript.polySymbols.gdSignature
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
@@ -171,6 +173,36 @@ object GdPsiPolySymbolUtil {
     }
 
     /**
+     * Drops the CLASS symbol from [resolved] whenever the very same name is also resolved to a global variable declared
+     * by one of [GdPolySymbolsConstants.GLOBAL_CLASSES], i.e. for a singleton - engine (`Input`) or GDExtension one.
+     *
+     * A bare singleton name denotes the instance, not the type. Resolving to both is not just redundant, it is actively
+     * broken: the platform funnels a reference's resolved symbols through `asSingleSymbol()`, which gives up when they
+     * don't share a kind, and the name ends up looking exactly like an unresolved reference.
+     *
+     * The class stays reachable everywhere it is really meant as a type: type hints and inheritance clauses have their
+     * own scopes, and [gdscript.polySymbols.sdk.GdSdkPropertySymbol.syntheticSourceElement] navigates a self-typed
+     * global variable to its class.
+     */
+    fun preferGlobalVariableOverClass(resolved: List<PolySymbol>): List<PolySymbol> {
+        // A name-match query hands back a single composite match holding every candidate in its name
+        // segments, so the class can only be dropped by rebuilding the list from the matched leaves.
+        val leaves = resolved.flatMap { it.unwrapMatchedSymbols().toList() }
+        val globalVariableNames = leaves.asSequence()
+            .filter { it.kind == GdPolySymbolKind.PROPERTY && it.gdDeclaringClassId in GdPolySymbolsConstants.GLOBAL_CLASSES }
+            .map { it.name }
+            .toSet()
+        if (globalVariableNames.isEmpty()) return resolved
+
+        val shadowedClasses = leaves.filter { it.kind == GdPolySymbolKind.CLASS && it.name in globalVariableNames }
+        if (shadowedClasses.isEmpty()) return resolved
+
+        // Only the candidates actually named like the reference are kept - the rest of the leaves are
+        // the query's own pattern symbols, which are no valid resolve targets on their own anyway.
+        return leaves.filter { it.name in globalVariableNames && it !in shadowedClasses }
+    }
+
+    /**
      * Resolves an unqualified reference inside an enum value's own initializer expression (e.g.
      * `PASSED` in `enum { PASS1 = 0, PASSED = PASS1 + 1 }`) to an *earlier* sibling value of the
      * same enum. GDScript allows an enum value to reference sibling values declared before it,
@@ -251,13 +283,16 @@ object GdPsiPolySymbolUtil {
     }
 
     /**
-     * Returns true if there is no global variable with the same name as the provided type name.
+     * Returns true if there is no global variable with the same name as the provided type name. Every global scope is
+     * checked, not only `@GlobalScope`: `Fusion.foo` must not be narrowed to a static access any more than `Input.foo`.
      */
     private fun checkGlobalStaticMatch(project: Project, name: String): Boolean {
         val executor = PolySymbolQueryExecutorFactory.createCustom {
             addRootScope(gdSdkGlobalPolySymbolScope(project))
         }
-        return GdPolySymbolQueriesUtil.getSdkPropertySymbol(executor, GdKeywords.GLOBAL_SCOPE, name) == null
+        return GdPolySymbolsConstants.GLOBAL_CLASSES.none {
+            GdPolySymbolQueriesUtil.getSdkPropertySymbol(executor, it, name) != null
+        }
     }
 
     /**
