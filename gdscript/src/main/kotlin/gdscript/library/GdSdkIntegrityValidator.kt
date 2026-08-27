@@ -1,50 +1,42 @@
 package gdscript.library
 
-import com.intellij.openapi.util.Version
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.util.io.DigestUtil
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.exists
-import kotlin.io.path.pathString
 import kotlin.io.path.readText
-import kotlin.io.path.relativeTo
-import kotlin.io.path.walk
 import kotlin.io.path.writeText
 
 internal object GdSdkIntegrityValidator {
-    /*
-     * Old Sdk
+
+    /**
+     * The docs are up to date only if both halves of the stamp still match: what they were generated *from*
+     * ([expectedStamp], the engine version or the installed extensions) and what was generated, i.e. the files that are
+     * in [generatedDocsDir] right now. An XML deleted or edited in the output directory therefore makes the docs stale
+     * exactly like a changed input does.
      */
-    const val STAMP_FILE_NAME: String = "_gd-sdk-file-stamp.txt"
-
-    fun getFilesFromFs(folder: Path): List<String> =
-        folder.walk()
-            .filter { it.fileName?.toString() != STAMP_FILE_NAME }
-            .map { it.relativeTo(folder).pathString }
-            .sorted()
-            .toList()
-
-    fun writeStamp(folder: Path) {
-        val stamp = getFilesFromFs(folder).count()
-        folder.resolve(STAMP_FILE_NAME).writeText("$stamp", Charsets.UTF_8)
-    }
-
-    /*
-     * New sdk
-     */
-    // TODO change stamp system
-    fun hasValidStamp(stampFile: Path, expectedVersion: Version): Boolean {
-        if (!stampFile.exists()) return false
-        return try {
-            stampFile.readText().trim() == expectedVersion.toString()
+    fun hasValidStamp(stampFile: Path, expectedStamp: String, generatedDocsDir: Path): Boolean {
+        return stampFile.exists() && try {
+            stampFile.readText().trim() == buildStamp(expectedStamp, generatedDocsDir)
         } catch (e: Exception) {
+            thisLogger().warn(e)
             false
         }
     }
 
-    fun writeStamp(stampFile: Path, version: Version) {
+    /**
+     * Has to be called once the generation has finished: the output half of the stamp describes the files as they are on
+     * the disk at this very moment.
+     */
+    fun writeStamp(stampFile: Path, stamp: String, generatedDocsDir: Path) {
         Files.createDirectories(stampFile.parent)
-        stampFile.writeText(version.toString())
+        stampFile.writeText(buildStamp(stamp, generatedDocsDir))
     }
 
+    private fun buildStamp(inputStamp: String, generatedDocsDir: Path): String {
+        // The input stamp is digested as well: it is a whole list of extension declarations, and only the comparison matters.
+        val input = DigestUtil.sha256Hex(inputStamp.trim().toByteArray(Charsets.UTF_8))
+        return "input=$input\noutput=${GdSdkFingerprints.ofGeneratedDocs(generatedDocsDir)}"
+    }
 }
-

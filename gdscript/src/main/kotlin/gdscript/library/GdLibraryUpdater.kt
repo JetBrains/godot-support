@@ -9,6 +9,8 @@ import gdscript.GdScriptBundle
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
 import kotlin.io.path.exists
@@ -21,6 +23,14 @@ class GdLibraryUpdater(private val project: Project) {
     companion object {
         fun getInstance(project: Project): GdLibraryUpdater = project.getService(GdLibraryUpdater::class.java)
     }
+
+    /**
+     * A generation spawns Godot processes and rewrites the doc directories, so two of them must not overlap: the
+     * requests are triggered from unrelated places (the startup activity and the GDExtension watcher) and are simply
+     * serialized here.
+     */
+    private val generationMutex = Mutex()
+
     fun scheduleSdkLoad(projectBasePath: Path, godotPath: Path) {
         GdScriptProjectLifetimeService.getInstance(project).scope.launch {
             withBackgroundProgress(project, GdScriptBundle.message("progress.title.check.gdsdk.for.project")) {
@@ -40,7 +50,10 @@ class GdLibraryUpdater(private val project: Project) {
         if (project.isDisposed) return
 
         try {
-            GdLibraryManager.generateSdkIfNeeded(version, project, godotPath)
+            generationMutex.withLock {
+                if (project.isDisposed) return
+                GdLibraryManager.generateSdkIfNeeded(version, project, godotPath, projectBasePath)
+            }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
