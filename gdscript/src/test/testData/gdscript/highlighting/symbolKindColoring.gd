@@ -18,3 +18,4 @@ func <info descr="null"><symbolName descr="GD_METHOD_CALL">use</symbolName></inf
 	<symbolName descr="GD_MEMBER">static_prop</symbolName>
 	<symbolName descr="GD_MEMBER">instance_prop</symbolName>
 	<symbolName descr="GD_CLASS_TYPE">Inner</symbolName>
+	<symbolName descr="GD_GLOBAL_VARIABLE_BUILT_IN">Input</symbolName>
