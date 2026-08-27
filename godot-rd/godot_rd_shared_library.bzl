@@ -13,8 +13,9 @@ load(
 
 _PLATFORMS_PACKAGE = "//dotnet/Plugins/godot-support/godot-rd/platforms"
 
-# The static MSVC runtime, so the DLLs do not depend on the VC++ redistributable being installed.
-_WINDOWS_FEATURES = ["static_link_msvcrt"]
+# The static MSVC runtime, so the DLLs do not depend on the VC++ redistributable being installed. `@llvm` enables
+# `dynamic_link_msvcrt` by default, and it excludes `static_link_msvcrt`, so disable it.
+_WINDOWS_FEATURES = ["static_link_msvcrt", "-dynamic_link_msvcrt"]
 
 def _enforced_platform_transition_impl(settings, attr):
     return {
