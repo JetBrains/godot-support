@@ -6,10 +6,13 @@ import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.PolySymbolModifier
+import com.intellij.psi.PsiElement
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolModifier
+import gdscript.polySymbols.GdPolySymbolsConstants
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
 import gdscript.polySymbols.completion.toCompletionTypeText
+import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.sdk.xml.GdSdkData
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdNamedElement
@@ -33,6 +36,22 @@ class GdSdkPropertySymbol(
 
     override val modifiers: Set<PolySymbolModifier>
         get () = if (data.overrides?.isNotEmpty() == true) setOf(GdPolySymbolModifier.OVERRIDE) else emptySet()
+
+    private val isGlobalSingleton: Boolean
+        get() = declaringClassId in GdPolySymbolsConstants.GLOBAL_CLASSES && returnType == name
+
+    /**
+     * A self-typed global variable (`var Input: Input`) is how a singleton is declared, and the useful declaration to
+     * land on is the singleton's class - not the one-line synthetic global scope stub the property itself would produce.
+     */
+    override fun syntheticSourceElement(project: Project): PsiElement? {
+        if (isGlobalSingleton) {
+            GdPolySymbolQueriesUtil.getSdkClassSymbol(project, name)
+                ?.syntheticSourceElement(project)
+                ?.let { return it }
+        }
+        return super.syntheticSourceElement(project)
+    }
 
     override fun psiElementRepresentsSdkSymbol(element: GdNamedElement): Boolean {
         return super.psiElementRepresentsSdkSymbol(element)
