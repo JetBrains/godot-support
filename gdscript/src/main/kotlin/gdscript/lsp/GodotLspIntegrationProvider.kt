@@ -28,6 +28,7 @@ import com.intellij.platform.lsp.api.customization.LspHoverDisabled
 import com.intellij.platform.lsp.api.customization.LspInlayHintCustomizer
 import com.intellij.platform.lsp.api.customization.LspInlayHintDisabled
 import com.intellij.platform.lsp.api.lsWidget.LspClientWidgetItem
+import com.intellij.platform.lsp.util.messageIfStringOrEmpty
 import com.intellij.util.NetworkUtils
 import com.intellij.util.ui.update.DebouncedUpdates
 import com.intellij.util.ui.update.UpdateQueue
@@ -238,7 +239,7 @@ private class GodotLspClientDescriptor(
                 val beforeGodot47 =
                     GdProjectGodotService.getInstance(project).projectInfoFlow.value?.parsedVersion?.lessThan(4, 7)
                         ?: false
-                if (diagnostic.message.startsWith("(UNUSED_PARAMETER)") && beforeGodot47) {
+                if (diagnostic.messageIfStringOrEmpty.startsWith("(UNUSED_PARAMETER)") && beforeGodot47) {
                     return null
                 }
 
@@ -250,11 +251,12 @@ private class GodotLspClientDescriptor(
             * https://github.com/godotengine/godot/blob/1bd7b99182f7e8de4d6b2f089fec5db9392ac6b8/modules/gdscript/gdscript_warning.cpp#L47C8-L47C23
             */
             override fun getSpecialHighlightType(diagnostic: Diagnostic): ProblemHighlightType? {
-                if (diagnostic.message.startsWith("(UNUSED_VARIABLE)")
-                    || diagnostic.message.startsWith("(UNUSED_LOCAL_CONSTANT)")
-                    || diagnostic.message.startsWith("(UNUSED_PRIVATE_CLASS_VARIABLE)")
-                    || diagnostic.message.startsWith("(UNUSED_PARAMETER)")
-                    || diagnostic.message.startsWith("(UNUSED_SIGNAL)")
+                val message = diagnostic.messageIfStringOrEmpty
+                if (message.startsWith("(UNUSED_VARIABLE)")
+                    || message.startsWith("(UNUSED_LOCAL_CONSTANT)")
+                    || message.startsWith("(UNUSED_PRIVATE_CLASS_VARIABLE)")
+                    || message.startsWith("(UNUSED_PARAMETER)")
+                    || message.startsWith("(UNUSED_SIGNAL)")
                 ) {
                     return ProblemHighlightType.LIKE_UNUSED_SYMBOL
                 }
