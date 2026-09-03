@@ -38,14 +38,23 @@ import project.psi.util.ProjectAutoloadUtil
  */
 class GdPsiPolySymbolDeclarationProvider : PolySymbolDeclarationProvider {
 
-    override fun getDeclarations(element: PsiElement, offsetInElement: Int): Collection<PolySymbolDeclaration> {
-        // Synthetic SDK-generated files are handled exclusively by GdSdkPolySymbolDeclarationProvider.
-        if (element.containingFile?.getUserData(GdSdkPolySymbol.SYNTHETIC_SDK_CLASS_KEY) != null) return emptyList()
+    override fun getDeclarations(element: PsiElement, offsetInElement: Int): Collection<PolySymbolDeclaration> =
+        gdPsiPolySymbolsFor(element).mapNotNull { it.declaration }
+}
 
-        return symbolsFor(element).mapNotNull { it.declaration }
-    }
+/**
+ * The symbols that [element] declares, or an empty list when it declares none.
+ *
+ * Every symbol here is a [PolySymbolDeclaredInPsi], so it is its own
+ * [com.intellij.find.usages.api.SearchTarget]. [gdscript.codeInsight.GdUsageProvider] reads this to
+ * keep the classic PSI target off such an element, because two targets on one declaration make
+ * Find Usages ask which one to search.
+ */
+internal fun gdPsiPolySymbolsFor(element: PsiElement): List<PolySymbolDeclaredInPsi> {
+    // Synthetic SDK-generated files are handled exclusively by GdSdkPolySymbolDeclarationProvider.
+    if (element.containingFile?.getUserData(GdSdkPolySymbol.SYNTHETIC_SDK_CLASS_KEY) != null) return emptyList()
 
-    private fun symbolsFor(element: PsiElement): List<PolySymbolDeclaredInPsi> = when (element) {
+    return when (element) {
         is GdClassNameNmi -> listOf(GdPsiClassSymbol(element))
 
         is GdFile -> buildList {
@@ -58,8 +67,9 @@ class GdPsiPolySymbolDeclarationProvider : PolySymbolDeclarationProvider {
         }
 
         is GdMethodIdNmi -> {
-            val parent = element.parent as? GdMethodDeclTl ?: return emptyList()
-            listOf(if (parent.isConstructor) GdPsiConstructorSymbol(element) else GdPsiMethodSymbol(element))
+            val parent = element.parent as? GdMethodDeclTl
+            if (parent == null) emptyList()
+            else listOf(if (parent.isConstructor) GdPsiConstructorSymbol(element) else GdPsiMethodSymbol(element))
         }
 
         is GdSignalIdNmi -> listOf(GdPsiSignalSymbol(element))
@@ -86,16 +96,16 @@ class GdPsiPolySymbolDeclarationProvider : PolySymbolDeclarationProvider {
 
         else -> emptyList()
     }
+}
 
-    private fun autoloadSymbolFor(file: GdFile): GdPsiAutoloadSymbol? {
-        val key = ProjectAutoloadUtil.listGlobals(file.project).firstOrNull { it.element == file }?.key
-            ?: return null
-        return GdPsiAutoloadSymbol(file, key)
-    }
+private fun autoloadSymbolFor(file: GdFile): GdPsiAutoloadSymbol? {
+    val key = ProjectAutoloadUtil.listGlobals(file.project).firstOrNull { it.element == file }?.key
+        ?: return null
+    return GdPsiAutoloadSymbol(file, key)
+}
 
-    // Mirrors GdPsiClassMemberScope.loadedClassAliases()'s preload/load detection.
-    private fun loadedClassAliasIfAny(expr: GdExpr?, element: GdVarNmi): GdPsiLoadedClassAliasSymbol? {
-        if (expr !is GdCallEx || expr.expr.text !in setOf("preload", "load")) return null
-        return GdPsiLoadedClassAliasSymbol(element)
-    }
+// Mirrors GdPsiClassMemberScope.loadedClassAliases()'s preload/load detection.
+private fun loadedClassAliasIfAny(expr: GdExpr?, element: GdVarNmi): GdPsiLoadedClassAliasSymbol? {
+    if (expr !is GdCallEx || expr.expr.text !in setOf("preload", "load")) return null
+    return GdPsiLoadedClassAliasSymbol(element)
 }
