@@ -17,14 +17,19 @@ sourceSets {
 }
 
 data class GodotGeneratorSettings(
-    val backendCsOutDir: File,
-    val frontendKtOutDir: File,
-    val debuggerCsOutDir: File,
-    val debuggerKtOutDir: File,
+    val frontendBackendCsOutDir: File,
+    val frontendBackendKtOutDir: File,
+    val debuggerWorkerCsOutDir: File,
+    val debuggerWorkerKtOutDir: File,
+    val frontendGodotKtOutDir: File,
     val suffix: String
 )
 
-val ktOutputRelativePath = "src/generated/kotlin/com/jetbrains/rider/plugins/godot/model"
+val frontendBackendKtOutLayout = "src/generated/kotlin/com/jetbrains/rider/model/godot/frontendBackend"
+val debuggerWorkerKtOutLayout = "src/generated/kotlin/com/jetbrains/rider/plugins/godot/model/debuggerWorker"
+val frontendGodotKtOutLayout = "src/generated/kotlin/com/jetbrains/rider/model/godot/frontendGodot"
+
+val frontendGodotCppOutDir: File = godotRepoRoot.resolve("godot-rd/rd_models")
 
 val generatorOutputSettings = if (isMonorepo) {
     val monorepoRoot = buildscript.sourceFile?.parentFile?.parentFile?.parentFile?.parentFile?.parentFile?.parentFile
@@ -38,17 +43,19 @@ val generatorOutputSettings = if (isMonorepo) {
 
     GodotGeneratorSettings(
         monorepoPreGeneratedBackendDir.resolve("FrontendBackend"),
-        monorepoPreGeneratedFrontendDir.resolve(ktOutputRelativePath),
+        monorepoPreGeneratedFrontendDir.resolve(frontendBackendKtOutLayout),
         monorepoPreGeneratedBackendDir.resolve("DebuggerWorker"),
-        monorepoPreGeneratedFrontendDir.resolve(ktOutputRelativePath),
+        monorepoPreGeneratedFrontendDir.resolve(debuggerWorkerKtOutLayout),
+        monorepoPreGeneratedFrontendDir.resolve(frontendGodotKtOutLayout),
         ".Pregenerated"
     )
 } else {
     GodotGeneratorSettings(
         godotRepoRoot.resolve("resharper/build/generated/Model/FrontendBackend"),
-        godotRepoRoot.resolve("rider/$ktOutputRelativePath"),
+        godotRepoRoot.resolve("rider/$frontendBackendKtOutLayout"),
         godotRepoRoot.resolve("resharper/build/generated/Model/DebuggerWorker"),
-        godotRepoRoot.resolve("rider/$ktOutputRelativePath"),
+        godotRepoRoot.resolve("rider/$debuggerWorkerKtOutLayout"),
+        godotRepoRoot.resolve("rider/$frontendGodotKtOutLayout"),
         ""
     )
 }
@@ -61,7 +68,7 @@ rdgen {
         language = "csharp"
         transform = "reversed"
         root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-        directory = generatorOutputSettings.backendCsOutDir.absolutePath
+        directory = generatorOutputSettings.frontendBackendCsOutDir.absolutePath
         generatedFileSuffix = generatorOutputSettings.suffix
     }
 
@@ -69,7 +76,7 @@ rdgen {
         language = "kotlin"
         transform = "asis"
         root = "com.jetbrains.rider.model.nova.ide.IdeRoot"
-        directory = generatorOutputSettings.frontendKtOutDir.absolutePath
+        directory = generatorOutputSettings.frontendBackendKtOutDir.absolutePath
         generatedFileSuffix = generatorOutputSettings.suffix
     }
 
@@ -77,7 +84,7 @@ rdgen {
         language = "csharp"
         transform = "reversed"
         root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
-        directory = generatorOutputSettings.debuggerCsOutDir.absolutePath
+        directory = generatorOutputSettings.debuggerWorkerCsOutDir.absolutePath
         generatedFileSuffix = generatorOutputSettings.suffix
     }
 
@@ -85,27 +92,41 @@ rdgen {
         language = "kotlin"
         transform = "asis"
         root = "com.jetbrains.rider.model.nova.debugger.main.DebuggerRoot"
-        directory = generatorOutputSettings.debuggerKtOutDir.absolutePath
+        directory = generatorOutputSettings.debuggerWorkerKtOutDir.absolutePath
         generatedFileSuffix = generatorOutputSettings.suffix
+    }
+    generator {
+        language = "kotlin"
+        transform = "reversed"
+        root = "model.frontendGodot.FrontendGodotRoot"
+        directory = generatorOutputSettings.frontendGodotKtOutDir.absolutePath
+        generatedFileSuffix = generatorOutputSettings.suffix
+    }
+    generator {
+        language = "cpp"
+        transform = "asis"
+        root = "model.frontendGodot.FrontendGodotRoot"
+        directory = frontendGodotCppOutDir.absolutePath
+        generatedFileSuffix = ""
     }
 }
 
-    dependencies {
-        if (isMonorepo) {
-            implementation(project(":rider-model"))
-        } else {
-            implementation(libs.rdGen)
-            implementation(libs.kotlinStdLib)
-            implementation(
-                project(
-                    mapOf(
-                        "path" to ":",
-                        "configuration" to "riderModel"
-                    )
+dependencies {
+    if (isMonorepo) {
+        implementation(project(":rider-model"))
+    } else {
+        implementation(libs.rdGen)
+        implementation(libs.kotlinStdLib)
+        implementation(
+            project(
+                mapOf(
+                    "path" to ":",
+                    "configuration" to "riderModel"
                 )
             )
-        }
+        )
     }
+}
 
 tasks.withType<RdGenTask> {
     val classPath = sourceSets["main"].runtimeClasspath

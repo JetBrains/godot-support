@@ -1,0 +1,250 @@
+load("@bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
+load("@bazel_lib//lib:write_source_files.bzl", "write_source_file")
+load("@rules_cc//cc:defs.bzl", "cc_library", "cc_shared_library")
+load("@rules_python//python:defs.bzl", "py_binary", "py_test")
+load(":godot_rd_platforms.bzl", "GODOT_OS_DIRS", "GODOT_PLATFORMS", "HIDDEN_VISIBILITY_COPTS", "UNSUPPORTED_PLATFORM", "godot_os", "godot_shared_lib_name")
+load(":godot_rd_shared_library.bzl", "godot_rd_platform_libraries", "validated_executable")
+
+package(default_visibility = ["//visibility:public"])
+
+py_binary(
+    name = "generate_bindings_tool",
+    srcs = ["godot_cpp_gen_main.py"],
+    main = "godot_cpp_gen_main.py",
+    deps = ["@godot_cpp//:binding_generator_lib"],
+)
+
+py_binary(
+    name = "metadata_check_tool",
+    srcs = ["godot_cpp_gen_main.py"],
+    data = [
+        "godot_cpp_generated_files.bzl",
+        "godot_version.bzl",
+        "project/addons/godot-rd/bin/godot-rd.gdextension",
+    ],
+    main = "godot_cpp_gen_main.py",
+    deps = ["@godot_cpp//:binding_generator_lib"],
+)
+
+# Fails when the committed build metadata no longer matches what the generator produces,
+# i.e. when `godot_version.bzl` or the pinned godot-cpp changed without running
+# `python3 godot_cpp_gen_main.py --regenerate-metadata`.
+py_test(
+    name = "metadata_test",
+    size = "small",
+    srcs = ["godot_cpp_gen_main.py"],
+    args = [
+        "--check-metadata",
+        "--api-filepath",
+        "$(location @godot_cpp//:extension_api_json)",
+    ],
+    data = [
+        "godot_cpp_generated_files.bzl",
+        "godot_version.bzl",
+        "project/addons/godot-rd/bin/godot-rd.gdextension",
+        "@godot_cpp//:extension_api_json",
+    ],
+    main = "godot_cpp_gen_main.py",
+    deps = ["@godot_cpp//:binding_generator_lib"],
+)
+
+genrule(
+    name = "metadata_check",
+    srcs = ["@godot_cpp//:extension_api_json"],
+    outs = ["metadata_check.stamp"],
+    cmd = "$(execpath :metadata_check_tool) --check-metadata --api-filepath $(location @godot_cpp//:extension_api_json) && touch $@",
+    cmd_bat = "$(execpath :metadata_check_tool) --check-metadata --api-filepath $(location @godot_cpp//:extension_api_json) && type nul > $@",
+    tools = [":metadata_check_tool"],
+)
+
+cc_library(
+    name = "godot-rd-lib",
+    srcs = glob([
+        "src/**/*.cpp",
+        "rd_models/**/*.cpp",
+    ]),
+    hdrs = glob([
+        "src/**/*.h",
+        "rd_models/**/*.h",
+    ]),
+    copts = HIDDEN_VISIBILITY_COPTS,
+    includes = ["rd_models"],
+    tags = ["manual"],
+    deps = [
+        "@godot_cpp",
+        "@rd_cpp",
+    ],
+    alwayslink = True,
+)
+
+config_setting(
+    name = "linux-x86_64",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "linux-arm64",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:aarch64",
+    ],
+)
+
+config_setting(
+    name = "windows-x86_64",
+    constraint_values = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "windows-arm64",
+    constraint_values = [
+        "@platforms//os:windows",
+        "@platforms//cpu:aarch64",
+    ],
+)
+
+config_setting(
+    name = "macos-x86_64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "macos-arm64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:aarch64",
+    ],
+)
+
+cc_shared_library(
+    name = "godot-rd-shared",
+    shared_lib_name = select(
+        {":" + platform_id: godot_shared_lib_name(platform_id) for platform_id in GODOT_PLATFORMS},
+        no_match_error = UNSUPPORTED_PLATFORM,
+    ),
+    tags = ["manual"],
+    visibility = ["//visibility:private"],
+    deps = [":godot-rd-lib"],
+)
+
+godot_rd_platform_libraries(
+    name = "godot-rd",
+    lib = ":godot-rd-shared",
+)
+
+alias(
+    name = "godot-rd",
+    actual = select(
+        {":" + platform_id: ":godot-rd-" + platform_id for platform_id in GODOT_PLATFORMS},
+        no_match_error = UNSUPPORTED_PLATFORM,
+    ),
+    tags = ["manual"],
+)
+
+[
+    write_source_file(
+        name = "dev-" + platform_id,
+        check_that_out_file_exists = False,
+        diff_test = False,
+        executable = True,
+        in_file = ":godot-rd-" + platform_id,
+        out_file = "project/addons/godot-rd/bin/%s/%s" % (
+            godot_os(platform_id),
+            godot_shared_lib_name(platform_id),
+        ),
+        tags = ["manual"],
+    )
+    for platform_id in GODOT_PLATFORMS
+]
+
+[
+    validated_executable(
+        name = "validated-dev-" + platform_id,
+        executable = ":dev-" + platform_id,
+        tags = ["manual"],
+        validation = ":metadata_check",
+    )
+    for platform_id in GODOT_PLATFORMS
+]
+
+# Builds for the current platform and extracts into projects folder for local dev.
+alias(
+    name = "dev",
+    actual = select(
+        {":" + platform_id: ":validated-dev-" + platform_id for platform_id in GODOT_PLATFORMS},
+        no_match_error = UNSUPPORTED_PLATFORM,
+    ),
+    tags = ["manual"],
+)
+
+[
+    copy_to_directory(
+        name = "compile-" + os,
+        srcs = [
+            ":godot-rd-" + platform_id
+            for platform_id in GODOT_PLATFORMS
+            if godot_os(platform_id) == os
+        ],
+        out = os,
+        tags = ["manual"],
+    )
+    for os in GODOT_OS_DIRS
+]
+
+# Cross compile everything and leave it in the bazel out folder, laid out the way the final folder is:
+# `godot-rd/godot-rd.gdextension` next to `godot-rd/<os>/<shared library>`.
+copy_to_directory(
+    name = "compile_all",
+    srcs = [":godot-rd-" + platform_id for platform_id in GODOT_PLATFORMS] + [
+        "project/addons/godot-rd/bin/godot-rd.gdextension",
+        ":metadata_check",
+    ],
+    out = "godot-rd",
+    exclude_srcs_patterns = ["**/metadata_check.stamp"],
+    replace_prefixes = {
+        godot_shared_lib_name(platform_id): "%s/%s" % (
+            godot_os(platform_id),
+            godot_shared_lib_name(platform_id),
+        )
+        for platform_id in GODOT_PLATFORMS
+    } | {
+        "project/addons/godot-rd/bin/godot-rd.gdextension": "godot-rd.gdextension",
+    },
+    tags = ["manual"],
+)
+
+# Compiles only the local platform and lays it out the way `compile_all` does:
+# `godot-rd/godot-rd.gdextension` next to `godot-rd/<os>/<shared library>`.
+copy_to_directory(
+    name = "compile_host",
+    srcs = [
+        "project/addons/godot-rd/bin/godot-rd.gdextension",
+        ":godot-rd",
+        ":metadata_check",
+    ],
+    out = "host/godot-rd",
+    exclude_srcs_patterns = ["**/metadata_check.stamp"],
+    replace_prefixes = select(
+        {
+            ":" + platform_id: {
+                godot_shared_lib_name(platform_id): "%s/%s" % (
+                    godot_os(platform_id),
+                    godot_shared_lib_name(platform_id),
+                ),
+                "project/addons/godot-rd/bin/godot-rd.gdextension": "godot-rd.gdextension",
+            }
+            for platform_id in GODOT_PLATFORMS
+        },
+        no_match_error = UNSUPPORTED_PLATFORM,
+    ),
+    tags = ["manual"],
+)

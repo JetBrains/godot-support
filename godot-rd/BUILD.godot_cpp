@@ -1,0 +1,112 @@
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_python//python:defs.bzl", "py_library")
+load("@//dotnet/Plugins/godot-support/godot-rd:godot_bindings.bzl", "godot_bindings")
+load(
+    "@//dotnet/Plugins/godot-support/godot-rd:godot_cpp_generated_files.bzl",
+    "GODOT_CPP_GENERATED_HEADERS",
+    "GODOT_CPP_GENERATED_SOURCES",
+)
+load(
+    "@//dotnet/Plugins/godot-support/godot-rd:godot_rd_platforms.bzl",
+    "HIDDEN_VISIBILITY_COPTS",
+    "UNSUPPORTED_PLATFORM",
+)
+load("@//dotnet/Plugins/godot-support/godot-rd:godot_version.bzl", "GODOT_VERSION")
+
+# Build file for the godot-cpp GDExtension C++ bindings
+
+package(default_visibility = ["//visibility:public"])
+
+# The Godot GDExtension API version to target, it is always pinned,
+# so it selects the versioned gdextension/extension_api-<major>-<minor>.json file.
+GODOT_CPP_API_FILE = "gdextension/extension_api-%s.json" % GODOT_VERSION.replace(".", "-")
+
+# --------------------------------------------------------------------------
+# Binding generation (matches the CMake `generate_bindings` custom target)
+# --------------------------------------------------------------------------
+
+# The pinned API description, exposed for the metadata check in the main repository.
+filegroup(
+    name = "extension_api_json",
+    srcs = [GODOT_CPP_API_FILE],
+)
+
+# godot-cpp requires generation of source files, these are just plain offline python scripts
+py_library(
+    name = "binding_generator_lib",
+    srcs = [
+        "binding_generator.py",
+        "make_interface_header.py",
+    ],
+    imports = ["."],
+)
+
+# Runs the binding generator to produce gen/include/**/*.{h,hpp,inc} and gen/src/**/*.cpp.
+godot_bindings(
+    name = "generate_bindings",
+    api_file = GODOT_CPP_API_FILE,
+    interface_file = "gdextension/gdextension_interface.json",
+    outs = GODOT_CPP_GENERATED_HEADERS + GODOT_CPP_GENERATED_SOURCES,
+    tool = "@//dotnet/Plugins/godot-support/godot-rd:generate_bindings_tool",
+)
+
+# --------------------------------------------------------------------------
+# godot-cpp static library
+# --------------------------------------------------------------------------
+
+GODOT_CPP_COPTS = select({
+    "@platforms//os:windows": [
+        "/std:c++17",
+        "/utf-8",
+    ],
+    "//conditions:default": [
+        "-std=c++17",
+    ],
+}) + HIDDEN_VISIBILITY_COPTS
+
+GODOT_CPP_DEFINES = [
+    "GDEXTENSION",
+    # template_debug (and editor) enable DEBUG_ENABLED / debug features.
+    "DEBUG_ENABLED",
+    # GODOTCPP_THREADS defaults to ON.
+    "THREADS_ENABLED",
+    "HOT_RELOAD_ENABLED",
+] + select(
+    # The platform definitions of godot-cpp/cmake/{macos,linux,windows}.cmake. TYPED_METHOD_BIND and
+    # NOMINMAX are guarded by IS_MSVC there, which also covers the clang-cl of the Windows targets.
+    {
+        "@platforms//os:linux": [
+            "LINUX_ENABLED",
+            "UNIX_ENABLED",
+        ],
+        "@platforms//os:macos": [
+            "MACOS_ENABLED",
+            "UNIX_ENABLED",
+        ],
+        "@platforms//os:windows": [
+            "WINDOWS_ENABLED",
+            "TYPED_METHOD_BIND",
+            "NOMINMAX",
+        ],
+    },
+    no_match_error = UNSUPPORTED_PLATFORM,
+)
+
+cc_library(
+    name = "godot_cpp",
+    srcs = glob(["src/**/*.cpp"]) + [":generate_bindings"],
+    hdrs = glob([
+        "include/**/*.hpp",
+        "include/**/*.inc",
+    ]),
+    copts = GODOT_CPP_COPTS,
+    defines = GODOT_CPP_DEFINES,
+    includes = [
+        "gen/include",
+        "include",
+    ],
+    linkopts = select({
+        "@platforms//os:windows": [],
+        "//conditions:default": ["-pthread"],
+    }),
+)
