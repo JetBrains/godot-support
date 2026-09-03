@@ -36,6 +36,7 @@
     <module name="intellij.rd.client.debugger"/>
     <module name="intellij.rd.ide.model.generated"/>
     <module name="intellij.rd.platform"/>
+    <module name="intellij.rider.icons"/>
     <module name="intellij.rider.model.generated"/>
     <module name="intellij.rider.rdclient.dotnet"/>
     <module name="intellij.rider.rdclient.dotnet.startup"/>
@@ -46,21 +47,29 @@
   <content namespace="jetbrains"/>
 
   <actions>
+    <action id="Godot-RD.OpenInGodot"
+            class="com.jetbrains.rider.plugins.godot.rd.OpenInGodotAction"
+            icon="com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons.Godot">
+      <add-to-group group-id="RevealGroup" anchor="last"/>
+    </action>
     <action id="Godot.GenerateSolution" class="com.jetbrains.rider.plugins.godot.cpp.actions.GodotEngineGenerateSolutionAction"/>
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
     <newProjectWizard.generator implementation="com.jetbrains.rider.plugins.godot.projectWizard.GodotProjectWizard"/>
 
-    <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType" />
-    <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer" />
-    <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducerCor" />
+    <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType"/>
+    <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunCurrentSceneType"/>
+    <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer"/>
+    <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducerCor"/>
 
-    <rider.godotDetector implementation="com.jetbrains.rider.plugins.godot.GodotDetectorImpl" />
+    <postStartupActivity implementation="com.jetbrains.rider.plugins.godot.rd.GodotRdClientActivity"/>
+
+    <rider.godotDetector implementation="com.jetbrains.rider.plugins.godot.GodotDetectorImpl"/>
     <dependencySupport kind="dotnet" coordinate="GodotSharp" displayName="Godot"/>
-    <defaultLiveTemplates file="templates/GdScript.xml" />
+    <defaultLiveTemplates file="templates/GdScript.xml"/>
 
-    <projectViewNestingRulesProvider implementation="com.jetbrains.rider.plugins.godot.projectView.GodotNestingRulesProvider" />
+    <projectViewNestingRulesProvider implementation="com.jetbrains.rider.plugins.godot.projectView.GodotNestingRulesProvider"/>
 
     <rd.solutionExtListener endpoint="IDE Frontend"
                             listener="com.jetbrains.rider.plugins.godot.FrontendBackendHost$ProtocolListener"/>
@@ -73,7 +82,8 @@
                             listener="com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer$ProtocolListener"/>
 
     <rider.runtime.dotNetRuntimeAutodetect implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetRuntimeAutodetect"/>
-    <rider.debugger.editAndContinue.dotNetEncInfoAutodetect implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetEncInfoAutodetect"/>
+    <rider.debugger.editAndContinue.dotNetEncInfoAutodetect
+      implementation="com.jetbrains.rider.plugins.godot.run.GodotDotNetEncInfoAutodetect"/>
     <rider.filesIndexingRuleProvider implementation="com.jetbrains.rider.plugins.godot.GodotFilesIndexingRuleProvider"/>
     <fileDocumentManagerListener implementation="com.jetbrains.rider.plugins.godot.GodotFileDocumentManagerListener"/>
 
@@ -82,20 +92,24 @@
                              id="preferences.build.godotPlugin"
                              instance="com.jetbrains.rider.plugins.godot.settings.GodotPluginOptionsPage"
                              displayName="Godot.NET"/>
-    <projectConfigurable parentId="FileTemplatesSettingsId" instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotFileTemplatesOptionPage" groupWeight="-120" />
-    <projectConfigurable parentId="LiveTemplatesSettingsId" instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotLiveTemplatesOptionPage" groupWeight="-120" />
+    <projectConfigurable parentId="FileTemplatesSettingsId"
+                         instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotFileTemplatesOptionPage" groupWeight="-120"/>
+    <projectConfigurable parentId="LiveTemplatesSettingsId"
+                         instance="com.jetbrains.rider.plugins.godot.settings.templates.GodotLiveTemplatesOptionPage" groupWeight="-120"/>
 
-    <rider.godot.community.godotProjectProvider implementation="com.jetbrains.rider.plugins.godot.project.RiderGodotProjectProvider" order="first" />
-    <rider.godot.community.editorConnectionProvider implementation="com.jetbrains.rider.plugins.godot.RiderEditorConnectionProvider" />
+    <rider.godot.community.godotProjectProvider implementation="com.jetbrains.rider.plugins.godot.project.RiderGodotProjectProvider"
+                                                order="first"/>
+    <rider.godot.community.editorConnectionProvider implementation="com.jetbrains.rider.plugins.godot.RiderEditorConnectionProvider"/>
 
     <textmate.bundleProvider implementation="com.jetbrains.rider.plugins.godot.textMate.GodotTextMateBundleProvider"/>
 
     <notificationGroup displayType="STICKY_BALLOON" id="GodotVirtualSolutionNotificationGroupId" bundle="messages.GodotPluginBundle"
-                      key="notification.title.godot.virtual.solution"/>
+                       key="notification.title.godot.virtual.solution"/>
   </extensions>
 
   <applicationListeners>
-    <listener class="com.jetbrains.rider.plugins.godot.projectView.UidTrackerListener" topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
+    <listener class="com.jetbrains.rider.plugins.godot.projectView.UidTrackerListener"
+              topic="com.intellij.openapi.vfs.newvfs.BulkFileListener"/>
   </applicationListeners>
 
   <description>
