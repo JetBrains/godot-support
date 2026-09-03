@@ -57,7 +57,9 @@ dependencies {
         bundledPlugin("com.intellij.rider.godot.community")
         bundledPlugin("org.jetbrains.plugins.terminal")
         bundledModules("intellij.rider.debugger.shared",
-            "intellij.rd.client", "intellij.rider.rdclient.dotnet", "intellij.rider.shared")
+            "intellij.rd.client", "intellij.rd.client.debugger",
+            "intellij.platform.debugger", "intellij.platform.debugger.impl",
+            "intellij.rider.rdclient.dotnet", "intellij.rider.shared")
         testFramework(TestFrameworkType.Bundled)
     }
     testImplementation(libs.openTest4J)

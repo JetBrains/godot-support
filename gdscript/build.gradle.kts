@@ -53,8 +53,9 @@ dependencies {
     compileOnly(":rider-godot-community")
 
     intellijPlatform {
-        intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
-        // rider(libs.versions.riderSdk, useInstaller = false) // instead of touching this, just use runRider gradle task
+        // TODO: Once the idea SDK catches up to the rider SDK (around 263.4454), switch to idea SDK
+        rider(libs.versions.riderSdk) { useInstaller = false }
+        // intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
         jetbrainsRuntime()
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
@@ -63,6 +64,8 @@ dependencies {
         bundledPlugin("com.intellij.modules.json")
         bundledPlugin("intellij.bookmarks.plugin")
         bundledPlugin("intellij.libraries.misc.plugin")
+        bundledModule("intellij.platform.polySymbols.backend")
+        bundledModule("intellij.platform.debugger")
         bundledModule("intellij.platform.dap")
         bundledModule("intellij.platform.structureView")
         bundledModule("intellij.spellchecker")
