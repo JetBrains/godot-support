@@ -1,0 +1,57 @@
+# Godot auto generated files
+*.gen.*
+.godot/
+
+# Ignore scons database
+.sconsign*.dblite
+
+# Ignore custom.py
+custom.py
+
+# Ignore generated compile_commands.json
+compile_commands.json
+
+# Ignore files generated for documentation
+/src/gen
+
+# Binaries
+*.o
+*.os
+*.so
+*.obj
+*.bc
+*.pyc
+*.dblite
+*.pdb
+*.lib
+*.config
+*.creator
+*.creator.user
+*.files
+*.includes
+*.idb
+*.exp
+
+# Libraries installed into the Godot project by `bazel run ...:dev`
+/project/addons/godot-rd/bin/linux/
+/project/addons/godot-rd/bin/macos/
+/project/addons/godot-rd/bin/windows/
+
+# Other stuff
+*.log
+
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+
+# Jetbrains
+.idea/
+
+# Cmake
+cmake-build*
+CMakeUserPresets.json
+
+thirdParty*
+godot-cpp*
+.github*
