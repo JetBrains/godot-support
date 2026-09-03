@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface TscnJsonValue extends PsiElement {
+public interface TscnJsonValue extends TscnNamedElement {
 
   @Nullable
   TscnArray getArray();

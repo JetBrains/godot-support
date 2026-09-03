@@ -1,0 +1,6 @@
+extends Node
+
+signal defeated
+
+func _process(_delta: float) -> void:
+	pass
