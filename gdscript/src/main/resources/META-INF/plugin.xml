@@ -73,7 +73,6 @@
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
     <lang.findUsagesProvider language="GdScript" implementationClass="gdscript.codeInsight.GdUsageProvider"/>
-    <findUsagesHandlerFactory implementation="gdscript.codeInsight.GdFindUsageHandlerFactory"/>
     <referencesSearch implementation="gdscript.search.GdConstructorReferencesSearcher"/>
     <referencesSearch implementation="gdscript.search.GdOwnReferencesSearcher"/>
     <configurationType implementation="gdscript.run.GdRunConfigurationType"/>
@@ -165,6 +164,8 @@
     <psi.referenceContributor language="GdScript" implementation="gdscript.reference.GdResourceReferenceContributor"/>
     <!-- Tscn, Project, Config -->
     <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceReferenceContributor"/>
+    <lang.elementManipulator forClass="tscn.psi.TscnNamedElement"
+                             implementationClass="tscn.psi.manipulator.TscnElementManipulator"/>
 
     <!-- Annotators -->
     <annotator language="GdScript" implementationClass="gdscript.annotator.GdClassNameAnnotator"/>
