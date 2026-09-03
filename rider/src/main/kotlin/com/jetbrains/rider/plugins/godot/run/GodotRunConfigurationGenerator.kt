@@ -20,7 +20,6 @@ import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigu
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.projectView.isCMakeSolution
 import com.jetbrains.rider.projectView.solution
-import com.jetbrains.rider.projectView.solutionDirectory
 import com.jetbrains.rider.projectView.solutionDirectoryPath
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationType
@@ -88,11 +87,6 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                     GodotProjectDiscoverer.getInstance(project).godot3Path.adviseNotNull(lt) { path ->
                         createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
                         createOrUpdateRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
-                        selectConfigurationIfNeeded(runManager)
-                    }
-                    GodotProjectDiscoverer.getInstance(project).godot4Path.adviseNotNull(lt) { path ->
-                        createOrUpdateCoreRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
-                        createOrUpdateCoreRunConfiguration(EDITOR_CONFIGURATION_NAME, "--path \"${relPath}\" --editor", runManager, path, project)
                         selectConfigurationIfNeeded(runManager)
                     }
 

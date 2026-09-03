@@ -9,6 +9,10 @@ import com.intellij.psi.util.nextLeaf
 import gdscript.GdKeywords
 import gdscript.index.impl.GdClassNamingIndex
 import gdscript.index.impl.GdFileResIndex
+import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.gdPsiSourceElement
+import gdscript.polySymbols.gdReturnType
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.psi.GdArrEx
 import gdscript.psi.GdArrayDecl
 import gdscript.psi.GdAttributeEx
@@ -50,10 +54,10 @@ import gdscript.psi.GdTyped
 import gdscript.psi.GdTypedVal
 import gdscript.psi.GdTypes
 import gdscript.psi.GdVarDeclSt
-import gdscript.reference.GdClassMemberReference
 import gdscript.utils.GdExprUtil.left
 import gdscript.utils.GdExprUtil.right
 import gdscript.utils.GdOperand
+import gdscript.utils.PsiElementUtil.psi
 import gdscript.utils.PsiFileUtil.toAbsoluteResource
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import project.psi.model.GdAutoload
@@ -93,24 +97,33 @@ object PsiGdExprUtil {
             is GdBitNotEx -> GdKeywords.INT
             is GdPlusMinusPreEx -> expr.expr?.returnType ?: GdKeywords.INT
             is GdAttributeEx -> {
-                val ref = expr.refId?.references?.firstOrNull() ?: return ""
-                if (ref is GdClassMemberReference) {
-                    val declaration = ref.resolveDeclaration()
-                    // In case method is not resolved returnType is method itself
-                    if (declaration is GdMethodDeclTl && expr.refId?.nextLeaf()?.elementType == GdTypes.DOT) {
-                        return "Callable"
-                    }
+                val symbol = expr.refId?.resolveSymbolReference()
 
-                    return GdCommonUtil.returnType(declaration)
-                } else {
-                    // If attribute resolves to a class name or class decl, return its full class id
-                    when (val resolved = ref.resolve()) {
+                // If attribute resolves to a class name or class decl, return its full class id
+                if (symbol?.kind == GdPolySymbolKind.CLASS) {
+                    when (val resolved = symbol.gdPsiSourceElement?.parent) {
                         is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
                         is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
                     }
                 }
 
-                return ""
+                if (symbol != null) {
+                    // In case method is not resolved returnType is method itself
+                    if (symbol.kind == GdPolySymbolKind.METHOD && expr.refId?.nextLeaf()?.elementType == GdTypes.DOT) {
+                        return "Callable"
+                    }
+
+                    return symbol.gdReturnType.orEmpty()
+                }
+
+                // PolySymbols has no coverage of dictionary keys (Lua-style `dict.key` access) -
+                // fall back to the classic PSI declaration lookup for those.
+                val declaration = expr.refId?.let { GdClassMemberUtil.findDeclaration(it)?.psi() }
+                if (declaration is GdMethodDeclTl && expr.refId?.nextLeaf()?.elementType == GdTypes.DOT) {
+                    return "Callable"
+                }
+
+                GdCommonUtil.returnType(declaration)
             }
 
             is GdIsEx -> GdKeywords.BOOL
@@ -122,11 +135,21 @@ object PsiGdExprUtil {
                     if (lastId == "new") {
                         // Qualified constructor call: the class is the qualifier of the attribute
                         if (callee is GdAttributeEx) {
-                            // Try to resolve the attribute's reference to a class and return its full class id
-                            when (val resolved = callee.refId?.references?.firstOrNull()?.resolve()) {
-                                is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
-                                is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
+                            val symbol = callee.refId?.resolveSymbolReference()
+
+                            // If attribute resolves to a class name or class decl, return its full class id
+                            if (symbol?.kind == GdPolySymbolKind.CLASS) {
+                                when (val resolved = symbol.gdPsiSourceElement?.parent) {
+                                    is GdClassDeclTl -> return GdClassUtil.getFullClassId(resolved)
+                                    is GdClassNaming -> return GdClassUtil.getFullClassId(resolved)
+                                }
                             }
+
+                            // Try Poly Symbols before falling back to the generic GdCommonUtil.returnType
+                            if (symbol != null) {
+                                return symbol.gdReturnType.orEmpty()
+                            }
+
                             return GdCommonUtil.returnType(callee.firstChild)
                         }
                         // Unqualified new(): take the attribute parent if any
@@ -297,9 +320,20 @@ object PsiGdExprUtil {
                             }
                         }
 
-                        is GdAutoload -> element.key
+                        is GdAutoload -> GdClassUtil.getOwningClassName(element.element)
                         is GdClassDeclTl -> GdClassUtil.getFullClassId(element)
-                        else -> ""
+                        else -> run {
+                            // Resolve through Poly Symbol if nothing found through PSI
+                            val symbol = named.resolveSymbolReference()
+                            if (symbol == null) return ""
+
+                            if (symbol.kind == GdPolySymbolKind.METHOD
+                                && PsiTreeUtil.nextVisibleLeaf(expr)?.elementType != GdTypes.LRBR){
+                                return@run "Callable"
+                            }
+
+                            return@run symbol.gdReturnType.orEmpty()
+                        }
                     }
                 }
 

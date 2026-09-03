@@ -57,10 +57,14 @@ dependencies {
         bundledPlugin("com.intellij.rider.godot.community")
         bundledPlugin("org.jetbrains.plugins.terminal")
         bundledModules("intellij.rider.debugger.shared",
-            "intellij.rd.client", "intellij.rider.rdclient.dotnet", "intellij.rider.shared")
+            "intellij.rd.client", "intellij.rd.client.debugger",
+            "intellij.platform.debugger", "intellij.platform.debugger.impl",
+            "intellij.rider.rdclient.dotnet", "intellij.rider.shared")
         testFramework(TestFrameworkType.Bundled)
     }
     testImplementation(libs.openTest4J)
+    testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
 }
 
 intellijPlatform {
@@ -73,6 +77,11 @@ intellijPlatform {
 
 kotlin{
     jvmToolchain(25)
+    compilerOptions {
+        // Rider's bundled test framework scripting API (e.g. `withOpenedEditor`) is declared with
+        // Kotlin context parameters; without this flag call sites fail with "receiver type mismatch".
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }
 
 java {
@@ -185,7 +194,9 @@ tasks {
     }
 
     test {
-        useTestNG()
+        // Ignore IJ Platform JUnit5 framework set up and tear down
+        systemProperty("intellij.build.test.ignoreFirstAndLastTests", "true")
+        useJUnitPlatform()
         testLogging {
             showStandardStreams = true
             exceptionFormat = TestExceptionFormat.FULL

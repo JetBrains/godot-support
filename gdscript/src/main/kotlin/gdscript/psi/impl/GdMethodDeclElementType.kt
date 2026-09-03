@@ -59,7 +59,7 @@ object GdMethodDeclElementType : IStubElementType<GdMethodDeclStub, GdMethodDecl
             psi.isStatic,
             psi.isVariadic,
             psi.isConstructor,
-            psi.name,
+            psi.getName(),
             psi.returnType,
             psi.parameters,
             GdCommentUtil.collectComments(psi),

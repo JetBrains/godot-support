@@ -53,23 +53,29 @@ dependencies {
     compileOnly(":rider-godot-community")
 
     intellijPlatform {
-        intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
-        // rider(libs.versions.riderSdk, useInstaller = false) // instead of touching this, just use runRider gradle task
+        // TODO: Once the idea SDK catches up to the rider SDK (around 263.4454), switch to idea SDK
+        rider(libs.versions.riderSdk) { useInstaller = false }
+        // intellijIdea(libs.versions.ideaSdk) { useInstaller = false }
         jetbrainsRuntime()
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
-        testFramework(TestFrameworkType.Platform)
+        testFramework(TestFrameworkType.Bundled)
+        testFramework(TestFrameworkType.Plugin.PolySymbols)
 
         bundledPlugin("com.intellij.modules.json")
         bundledPlugin("intellij.bookmarks.plugin")
         bundledPlugin("intellij.libraries.misc.plugin")
+        bundledModule("intellij.platform.polySymbols.backend")
+        bundledModule("intellij.platform.debugger")
         bundledModule("intellij.platform.dap")
+        bundledModule("intellij.platform.structureView")
         bundledModule("intellij.spellchecker")
     }
     implementation(libs.jflex)
     testImplementation(libs.openTest4J)
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
+    testImplementation("org.junit-pioneer:junit-pioneer:2.3.0")
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.12.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
 }
