@@ -5,6 +5,7 @@ var editor_settings: EditorSettings
 var checkbutton: CheckButton
 var _preset_applier: PresetApplier
 var _locator_service: RiderLocatorService
+var _rd_loader: RdLoader
 var _plugin_cfg_path: String
 var _presets_json_path: String
 
@@ -37,7 +38,10 @@ func _enter_tree() -> void:
 	# Initialize services and panel
 	_locator_service = RiderLocatorService.new()
 	_preset_applier = PresetApplier.new(_presets_json_path)
-
+	
+	_rd_loader = RdLoader.new()
+	# add_child to get access to _enter/exit_tree
+	add_child(_rd_loader)
 	_locator_service.start_search()
 
 	# Ensure settings reflect current state on startup
