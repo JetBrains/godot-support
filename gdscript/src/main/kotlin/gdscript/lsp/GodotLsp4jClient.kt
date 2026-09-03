@@ -36,7 +36,8 @@ class GodotLsp4jClient(
 
         if (godotBasePath != workspacePath) {
             thisLogger().warn(
-                "Workspace path $workspacePath doesn't match Godot base path $godotBasePath, disconnecting LSP server")
+                "Workspace path $workspacePath doesn't match Godot base path $godotBasePath, disconnecting LSP server"
+            )
 
             GodotLspNotification.getService(project).showNonMatchingProjectWarning()
             LspClientManager.getInstance(project).stopClients(GodotLspIntegrationProvider::class.java)
