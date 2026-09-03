@@ -114,7 +114,10 @@ json ::= object | array
 
 jsonPair ::= jsonValue COLON jsonValue
 jsonPairList ::= jsonPair (COMMA jsonPair)*
-jsonValue ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | array | object
+jsonValue ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | array | object {
+    mixin="TscnNamedElementImpl"
+    implements="TscnNamedElement"
+}
 
 object ::= LCBR jsonPairList? RCBR
 
