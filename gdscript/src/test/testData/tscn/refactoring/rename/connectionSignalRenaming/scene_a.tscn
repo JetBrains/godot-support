@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cv6m1tga3p6cj"]
+
+[ext_resource type="Script" uid="uid://6i62qwq4wfkt" path="res://scene_a.gd" id="1"]
+[ext_resource type="Script" uid="uid://co3vjt86tk2tb" path="res://player1.gd" id="2_k20cb"]
+
+[node name="SceneA" type="Panel" unique_id=1098741330]
+anchors_preset = 15
+script = ExtResource("1")
+
+[node name="Player" type="Node" parent="." unique_id=2093800800]
+script = ExtResource("2_k20cb")
+
+[connection signal="died" from="Player" to="." method="_on_player_died"]
