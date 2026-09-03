@@ -1,5 +1,4 @@
 import com.jetbrains.plugin.structure.base.utils.forceRemoveDirectory
-import com.jetbrains.plugin.structure.base.utils.isFile
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.kotlin.dsl.support.unzipTo
 import org.jetbrains.intellij.platform.gradle.Constants
@@ -56,11 +55,14 @@ dependencies {
         //localPlugin(repoRoot.resolve("community/build/libs/rider-godot-community.jar"))
         bundledPlugin("com.intellij.rider.godot.community")
         bundledPlugin("org.jetbrains.plugins.terminal")
-        bundledModules("intellij.rider.debugger.shared",
-            "intellij.rd.client", "intellij.rider.rdclient.dotnet", "intellij.rider.shared")
+        bundledModules(
+            "intellij.rider.debugger.shared",
+            "intellij.rd.client", "intellij.rider.rdclient.dotnet", "intellij.rider.shared"
+        )
         testFramework(TestFrameworkType.Bundled)
     }
     testImplementation(libs.openTest4J)
+    testImplementation(testFixtures(":rider-godot-test-shared"))
 }
 
 intellijPlatform {
@@ -71,7 +73,7 @@ intellijPlatform {
     }
 }
 
-kotlin{
+kotlin {
     jvmToolchain(25)
 }
 
@@ -92,19 +94,22 @@ tasks {
     val generateDotNetSdkProperties by registering {
         val dotNetSdkGeneratedPropsFile = dotNetSrcDir.resolve("build/DotNetSdkPath.generated.props")
         doLast {
-            dotNetSdkGeneratedPropsFile.writeTextIfChanged("""<Project>
+            dotNetSdkGeneratedPropsFile.writeTextIfChanged(
+                """<Project>
   <PropertyGroup>
     <DotNetSdkPath>$riderSdkPath</DotNetSdkPath>
   </PropertyGroup>
 </Project>
-""")
+"""
+            )
         }
     }
 
     val generateNuGetConfig by registering {
         val nuGetConfigFile = File(dotNetSrcDir, "Nuget.Config")
         doLast {
-            nuGetConfigFile.writeTextIfChanged("""
+            nuGetConfigFile.writeTextIfChanged(
+                """
             <?xml version="1.0" encoding="utf-8"?>
             <!-- Auto-generated from 'generateNuGetConfig' task of old.build_gradle.kts -->
             <!-- Run `gradlew :prepare` to regenerate -->
@@ -114,7 +119,8 @@ tasks {
                     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
                 </packageSources>
             </configuration>
-            """.trimIndent())
+            """.trimIndent()
+            )
         }
     }
 
