@@ -1,0 +1,10 @@
+cmake_minimum_required(VERSION 3.7)
+add_library(FrontendGodotRoot STATIC 
+instantiations_FrontendGodotRoot.h
+instantiations_FrontendGodotRoot.cpp
+FrontendGodotModel/FrontendGodotModel.cpp
+FrontendGodotModel/FrontendGodotModel.h
+FrontendGodotRoot/FrontendGodotRoot.cpp
+FrontendGodotRoot/FrontendGodotRoot.h)
+target_include_directories(FrontendGodotRoot PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(FrontendGodotRoot PUBLIC rd_framework_cpp)
