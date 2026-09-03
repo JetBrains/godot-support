@@ -6,10 +6,22 @@ const EXTERNAL_EDITOR_SETTING: String = "text_editor/external/editor"
 # this is Godot setting
 const EXEC_PATH_SETTING: String = "text_editor/external/exec_path"
 
+# Godot doesn't provide a  nice way to define a static signal, 
+# so this is a workaround
+class RiderInstallSignalEmitter extends RefCounted:
+	signal rider_install_changed(rider_path: String)
+
+static var _signal_emitter := RiderInstallSignalEmitter.new()
+
+static var get_rider_install_change_signal: Signal:
+	get():
+		return _signal_emitter.rider_install_changed
+
 
 static func set_external_editor_path(path: String) -> void:
 	var editor_settings := EditorInterface.get_editor_settings()
 	editor_settings.set_setting(EXEC_PATH_SETTING, path)
+	_signal_emitter.rider_install_changed.emit(path)
 
 static func get_external_editor_path() -> String:
 	var editor_settings := EditorInterface.get_editor_settings()
@@ -60,6 +72,9 @@ static func register_rider_installations(installations: Array, selected_index: i
 		"hint": PROPERTY_HINT_ENUM,
 		"hint_string": ",".join(entries),
 	})
+	if selected_index > 0:
+		var selected_path = installations[selected_index - 1].get("path", "")
+		_signal_emitter.rider_install_changed.emit(selected_path)
 
 # Comma is the enum delimiter, colon introduces explicit value assignment.
 static func _escape_enum_label(s: String) -> String:
