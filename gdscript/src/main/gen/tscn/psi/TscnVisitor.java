@@ -76,7 +76,7 @@ public class TscnVisitor extends PsiElementVisitor {
   }
 
   public void visitJsonValue(@NotNull TscnJsonValue o) {
-    visitPsiElement(o);
+    visitNamedElement(o);
   }
 
   public void visitNodeHeader(@NotNull TscnNodeHeader o) {
