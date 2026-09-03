@@ -30,6 +30,16 @@ class GdProjectGodotService(project: Project) {
     private val _projectInfoFlow = MutableStateFlow<GodotProjectInfo?>(null)
     val projectInfoFlow: StateFlow<GodotProjectInfo?> = _projectInfoFlow.asStateFlow()
 
+    private val _currentSceneFlow = MutableStateFlow<String?>(null)
+
+    /**
+     * Currently for future consumers.
+     * "" -> no scene opened,
+     *
+     * null -> godot is not connected
+     */
+    val currentSceneFlow: StateFlow<String?> = _currentSceneFlow.asStateFlow()
+
     private val sequentialLifetimes = SequentialLifetimes(GdScriptProjectLifetimeService.getLifetime(project))
 
     init {
@@ -39,6 +49,10 @@ class GdProjectGodotService(project: Project) {
                 watch(basePath)
             }
         }
+    }
+
+    fun updateCurrentScene(newScene: String?) {
+        _currentSceneFlow.value = newScene
     }
 
     fun watch(basePath: Path) {
