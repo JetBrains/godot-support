@@ -59,7 +59,8 @@ dependencies {
         jetbrainsRuntime()
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
-        testFramework(TestFrameworkType.Platform)
+        testFramework(TestFrameworkType.Bundled)
+        testFramework(TestFrameworkType.Plugin.PolySymbols)
 
         bundledPlugin("com.intellij.modules.json")
         bundledPlugin("intellij.bookmarks.plugin")
@@ -74,6 +75,7 @@ dependencies {
     testImplementation(libs.openTest4J)
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
+    testImplementation("org.junit-pioneer:junit-pioneer:2.3.0")
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.12.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
 }

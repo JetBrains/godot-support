@@ -63,6 +63,8 @@ dependencies {
         testFramework(TestFrameworkType.Bundled)
     }
     testImplementation(libs.openTest4J)
+    testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
 }
 
 intellijPlatform {
@@ -75,6 +77,11 @@ intellijPlatform {
 
 kotlin{
     jvmToolchain(25)
+    compilerOptions {
+        // Rider's bundled test framework scripting API (e.g. `withOpenedEditor`) is declared with
+        // Kotlin context parameters; without this flag call sites fail with "receiver type mismatch".
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }
 
 java {
