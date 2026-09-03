@@ -1,7 +1,10 @@
 package gdscript.search
 
+import com.intellij.model.psi.PsiSymbolReferenceService
 import com.intellij.openapi.application.QueryExecutorBase
 import com.intellij.openapi.util.TextRange
+import com.intellij.polySymbols.PolySymbol
+import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiNamedElement
 import com.intellij.psi.PsiReference
@@ -11,7 +14,6 @@ import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import gdscript.polySymbols.gdPsiSourceElement
-import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReferences
 
 /**
  * Bridges GDScript's own-references (own [com.intellij.model.psi.PsiSymbolReference]s, e.g.
@@ -56,16 +58,31 @@ class GdOwnReferencesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
             offsetInElement: Int,
             consumer: Processor<in PsiReference>,
         ): Boolean {
-            val declaresTarget = element.resolveSymbolReferences()
-                .any { it.gdPsiSourceElement == target }
-            return !declaresTarget || consumer.process(GdOwnPsiReference(element, target))
+            val range = ownReferenceRange(element) ?: return true
+            return consumer.process(GdOwnPsiReference(element, range, target))
         }
+
+        /**
+         * The range of the own reference that resolves to the target, or null when [element] has
+         * none. The range excludes what surrounds the name, for example the quotes of a scene
+         * value, so a rename through this reference keeps them - see
+         * [tscn.psi.manipulator.TscnElementManipulator].
+         */
+        private fun ownReferenceRange(element: PsiElement): TextRange? =
+            PsiSymbolReferenceService.getService().getReferences(element)
+                .firstOrNull { reference ->
+                    reference.resolveReference()
+                        .filterIsInstance<PolySymbol>()
+                        .any { it.unwrapAllDelegates().gdPsiSourceElement == target }
+                }
+                ?.rangeInElement
     }
 
     private class GdOwnPsiReference(
         element: PsiElement,
+        range: TextRange,
         private val target: PsiElement,
-    ) : PsiReferenceBase<PsiElement>(element, TextRange(0, element.textLength)) {
+    ) : PsiReferenceBase<PsiElement>(element, range) {
         override fun resolve(): PsiElement = target
     }
 }
