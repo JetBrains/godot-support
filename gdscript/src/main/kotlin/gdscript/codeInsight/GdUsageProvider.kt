@@ -8,6 +8,7 @@ import com.intellij.psi.tree.TokenSet
 import gdscript.GdLexerAdapter
 import gdscript.GdScriptBundle
 import gdscript.highlighter.GdTokenTypeSet
+import gdscript.polySymbols.psi.gdPsiPolySymbolsFor
 import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdEnumDeclNmi
@@ -31,8 +32,25 @@ class GdUsageProvider : FindUsagesProvider {
         )
     }
 
+    /**
+     * A GDScript declaration that backs a PolySymbol is searched through that symbol, so this
+     * provider does not claim it.
+     *
+     * The platform builds a classic PSI usage target from this method - see
+     * [com.intellij.find.findUsages.DefaultUsageTargetProvider]. A symbol that is a
+     * [com.intellij.find.usages.api.SearchTarget] adds a second target of its own, and Find Usages
+     * then asks which of the two to search. Both find the same usages, because
+     * [com.intellij.polySymbols.search.PolySymbolUsageSearcher] reports every PolySymbol reference,
+     * so the symbol target alone is enough. It also works when the caret sits on a usage, which the
+     * PSI target does not, because a GDScript usage site holds no classic
+     * [com.intellij.psi.PsiReference] - see [gdscript.search.GdOwnReferencesSearcher].
+     */
     override fun canFindUsagesFor(psiElement: PsiElement): Boolean {
         if(psiElement.containingFile?.getUserData(GdSdkPolySymbol.SYNTHETIC_SDK_CLASS_KEY) != null) {
+            return false
+        }
+
+        if (gdPsiPolySymbolsFor(psiElement).isNotEmpty()) {
             return false
         }
 
