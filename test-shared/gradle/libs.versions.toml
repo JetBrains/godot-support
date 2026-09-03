@@ -1,0 +1,16 @@
+[versions]
+# https://plugins.jetbrains.com/docs/intellij/using-kotlin.html#kotlin-standard-library
+kotlin = "2.3.0"
+# https://www.jetbrains.com/intellij-repository/snapshots/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
+# https://www.jetbrains.com/intellij-repository/releases/com/jetbrains/intellij/rider/riderRD/maven-metadata.xml
+ideaSdk = "262-EAP-SNAPSHOT"
+riderSdk = "2026.2-SNAPSHOT"
+
+[libraries]
+kotlinStdLib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
+openTest4J = "org.opentest4j:opentest4j:1.3.0"
+
+[plugins]
+gradleIntelliJPlatform = "org.jetbrains.intellij.platform:2.16.0"
+gradleJvmWrapper = "me.filippov.gradle.jvm.wrapper:0.16.0"
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

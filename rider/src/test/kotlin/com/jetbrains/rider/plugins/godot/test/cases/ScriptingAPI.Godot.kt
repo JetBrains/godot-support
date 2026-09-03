@@ -4,8 +4,8 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.configurations.RunConfiguration
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.SystemInfo
-import com.jetbrains.rider.test.scriptingApi.copyRecursivelyTo
+import com.jetbrains.godot.test.GODOT_NUMBER_VERSION
+import com.jetbrains.godot.test.downloadAndExtractGodot
 import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rdclient.util.idea.waitAndPump
 import com.jetbrains.rider.debugger.settings.DotNetDebuggerSettings
@@ -13,61 +13,22 @@ import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
 import com.jetbrains.rider.test.asserts.shouldBeTrue
 import com.jetbrains.rider.test.asserts.shouldNotBeNull
-import com.jetbrains.rider.test.facades.environment.RiderTestExecutionTarget
-import com.jetbrains.rider.test.framework.TEST_DATA_DOWNLOAD_URL
-import com.jetbrains.rider.test.framework.downloadAndExtractTestToolArchiveArtifactIntoPersistentCache
 import com.jetbrains.rider.test.framework.executeWithGold
 import com.jetbrains.rider.test.framework.frameworkLogger
 import com.jetbrains.rider.test.scriptingApi.DebugTestExecutionContext
+import com.jetbrains.rider.test.scriptingApi.copyRecursivelyTo
 import com.jetbrains.rider.test.scriptingApi.debugProgram
-import com.jetbrains.rider.test.scriptingApi.setExecutablePermissions
 import com.jetbrains.rider.test.scriptingApi.waitForDotNetDebuggerInitializedOrCanceled
 import com.jetbrains.rider.utils.NullPrintStream
 import java.nio.file.Path
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.io.path.absolutePathString
-import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 
-// region Constants
-const val godotNumberVersion = "4.6.2"
 val godotDefaultTimeout: Duration = Duration.ofSeconds(60)
-// endregion
-
-// region Download Godot
-fun downloadAndExtractGodot(version: String): Path {
-    val godotZipName = when {
-        SystemInfo.isWindows -> "Godot_v${version}-stable_mono_win64.zip"
-        SystemInfo.isMac -> "Godot_v${version}-stable_mono_macos.universal.zip"
-        SystemInfo.isLinux -> "Godot_v${version}-stable_mono_linux_x86_64.zip"
-        else -> error("Unsupported OS for Godot Mono")
-    }
-
-    val extractedDir = downloadAndExtractTestToolArchiveArtifactIntoPersistentCache(
-        RiderTestExecutionTarget.fromCurrentMachine(),
-        "$TEST_DATA_DOWNLOAD_URL/$godotZipName")
-        .toAbsolutePath().normalize()
-
-    val godotExecutable = extractedDir.resolve(when {
-        SystemInfo.isWindows -> {
-            val base = "Godot_v${version}-stable_mono_win64"
-            "$base/$base.exe"
-        }
-        SystemInfo.isLinux -> "Godot_v${version}-stable_mono_linux_x86_64"
-        SystemInfo.isMac -> "Godot_mono.app/Contents/MacOS/Godot"
-        else -> error("Unsupported OS for Godot")
-    }).apply { setExecutablePermissions() }
-
-    if (!godotExecutable.exists()) {
-        error("Godot executable not found at ${godotExecutable.absolutePathString()}")
-    }
-    frameworkLogger.info("Godot downloaded and extracted: ${godotExecutable.absolutePathString()}")
-    return godotExecutable
-}
-// endregion
 
 // region Godot Project Setup
 fun putGodotProjectToTempTestDir(
@@ -119,7 +80,7 @@ fun startGodot(godotExecutable: Path, projectPath: String, logPath: Path, dotnet
 }
 
 fun startGodotWithProject(
-    godotVersion: String = godotNumberVersion,
+    godotVersion: String = GODOT_NUMBER_VERSION,
     projectName: String,
     testWorkDirectory: Path,
     solutionSourceRootDirectory: Path,
@@ -137,7 +98,7 @@ fun waitForGodotRunConfigurations(project: Project) {
     val runManager = RunManager.getInstance(project)
     waitAndPump(godotDefaultTimeout, { runManager.allConfigurationsList.size >= 2 }) {
         "Godot run configurations didn't appeared, " +
-        "current: ${runManager.allConfigurationsList.joinToString(", ", "[", "]")}"
+            "current: ${runManager.allConfigurationsList.joinToString(", ", "[", "]")}"
     }
 }
 
@@ -180,7 +141,7 @@ private fun selectRunConfiguration(project: Project, name: String): RunConfigura
         it.name == name
     }.shouldNotBeNull(
         "There are no run configuration with name '$name', " +
-        "current: ${runManager.allConfigurationsList.joinToString(", ", "[", "]")}"
+            "current: ${runManager.allConfigurationsList.joinToString(", ", "[", "]")}"
     )
 
     frameworkLogger.info("Selecting run configuration '$name'")
