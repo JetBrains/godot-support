@@ -8,12 +8,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static tscn.psi.TscnTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import tscn.psi.*;
 
-public class TscnJsonValueImpl extends ASTWrapperPsiElement implements TscnJsonValue {
+public class TscnJsonValueImpl extends TscnNamedElementImpl implements TscnJsonValue {
 
-  public TscnJsonValueImpl(@NotNull ASTNode node) {
+  public TscnJsonValueImpl(ASTNode node) {
     super(node);
   }
 
