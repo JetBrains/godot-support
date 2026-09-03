@@ -18,6 +18,11 @@ gdscript/build
 gdscript/protocol/build
 gdscript/classes
 
+test-shared/.intellijPlatform
+test-shared/build
+test-shared/protocol/build
+test-shared/classes
+
 community/.intellijPlatform
 community/build
 community/protocol/build
