@@ -24,5 +24,7 @@ if(EXISTS "${CMAKE_CURRENT_LIST_DIR}/native/${EXTENSION_NAME}")
     add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/native/${EXTENSION_NAME} SYSTEM)
 endif()
 
+file(GLOB_RECURSE PROJECT_SOURCES "${PROJECT_SOURCE_DIR}/doc_classes/*.xml")
+
 # Prevent Godot from importing build artifacts as project resources
 file(TOUCH "${CMAKE_BINARY_DIR}/.gdignore")

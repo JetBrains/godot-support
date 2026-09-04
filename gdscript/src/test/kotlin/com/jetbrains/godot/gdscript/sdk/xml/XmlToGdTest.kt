@@ -1,7 +1,7 @@
 package com.jetbrains.godot.gdscript.sdk.xml
 
 import com.intellij.openapi.application.PathManager
-import gdscript.sdk.xml.XmlToGd
+import gdscript.polySymbols.sdk.xml.XmlToGd
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -25,7 +25,7 @@ class XmlToGdTest {
     @ValueSource(strings = ["ExampleClass", "ExampleGlobals"])
     fun testConvertXmlToGdf(className: String) {
         val xmlFile = xmlDir.resolve("doc_classes/$className.xml")
-        val expected = xmlDir.resolve("$className.gdf").readText()
+        val expected = xmlDir.resolve("$className.generated.gd").readText()
         val actual = XmlToGd().convert(xmlFile)
         Assertions.assertEquals(expected, actual)
     }

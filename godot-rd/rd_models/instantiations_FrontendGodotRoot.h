@@ -1,0 +1,10 @@
+#ifndef INSTANTIATIONS_FRONTENDGODOTROOT_H
+#define INSTANTIATIONS_FRONTENDGODOTROOT_H
+
+#include "serialization/Polymorphic.h"
+
+
+namespace rd {
+}
+
+#endif // INSTANTIATIONS_FRONTENDGODOTROOT_H

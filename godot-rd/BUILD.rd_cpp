@@ -1,0 +1,270 @@
+load("@//dotnet/Plugins/godot-support/godot-rd:godot_rd_platforms.bzl", "HIDDEN_VISIBILITY_COPTS")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+# Build file for the JetBrains rd C++ runtime (`rd-cpp`)
+
+package(default_visibility = ["//visibility:public"])
+
+RD_CXXOPTS = select({
+    "@platforms//os:windows": ["/std:c++17"],
+    "//conditions:default": ["-std=c++17"],
+}) + HIDDEN_VISIBILITY_COPTS
+
+RD_DEFINES = [
+    "RD_CORE_STATIC_DEFINE",
+    "RD_FRAMEWORK_STATIC_DEFINE",
+]
+
+# --------------------------------------------------------------------------
+# Vendored third-party dependencies (checked in under thirdparty/)
+# --------------------------------------------------------------------------
+
+# tsl::ordered_map / ordered_set -> "tsl/ordered_map.h"
+cc_library(
+    name = "tsl_ordered_map",
+    hdrs = glob(["thirdparty/ordered-map/include/tsl/*.h"]),
+    strip_include_prefix = "thirdparty/ordered-map/include",
+)
+
+# nonstd::string_view -> "nonstd/string_view.hpp"
+cc_library(
+    name = "string_view_lite",
+    hdrs = glob(["thirdparty/string-view-lite/include/nonstd/*.hpp"]),
+    strip_include_prefix = "thirdparty/string-view-lite/include",
+)
+
+# ctpl thread pool -> "ctpl_stl.h"
+cc_library(
+    name = "ctpl",
+    hdrs = glob(["thirdparty/CTPL/include/*.h"]),
+    strip_include_prefix = "thirdparty/CTPL/include",
+)
+
+# ww898 utf converters -> "ww898/utf_converters.hpp"
+cc_library(
+    name = "utf_cpp",
+    hdrs = glob(["thirdparty/utf-cpp/include/ww898/*.hpp"]),
+    strip_include_prefix = "thirdparty/utf-cpp/include",
+)
+
+# tl::optional -> "optional.hpp" (used only on the C++14 code path)
+cc_library(
+    name = "tl_optional",
+    hdrs = glob(["thirdparty/optional/tl/*.hpp"]),
+    strip_include_prefix = "thirdparty/optional/tl",
+)
+
+# mpark::variant -> "mpark/variant.hpp" (used only on the C++14 code path)
+cc_library(
+    name = "mpark_variant",
+    hdrs = glob(["thirdparty/variant/include/mpark/*.hpp"]),
+    strip_include_prefix = "thirdparty/variant/include",
+)
+
+# clsocket - the only compiled vendored dependency; headers are included
+# unqualified (e.g. <ActiveSocket.h>).
+cc_library(
+    name = "clsocket",
+    srcs = glob(["thirdparty/clsocket/src/*.cpp"]),
+    hdrs = glob(["thirdparty/clsocket/src/*.h"]),
+    copts = HIDDEN_VISIBILITY_COPTS,
+    strip_include_prefix = "thirdparty/clsocket/src",
+    defines = select({
+        "@platforms//os:osx": ["_DARWIN"],
+        "@platforms//os:windows": ["_WIN32"],
+        "//conditions:default": ["_LINUX"],
+    }),
+    linkopts = select({
+        "@platforms//os:windows": ["-DEFAULTLIB:ws2_32.lib"],
+        "//conditions:default": [],
+    }),
+)
+
+cc_library(
+    name = "spdlog",
+    hdrs = glob(["thirdparty/spdlog/include/**/*.h"]),
+    defines = select({
+        "@platforms//os:osx": ["_LIBCPP_DISABLE_DEPRECATION_WARNINGS"],
+        "//conditions:default": [],
+    }),
+    includes = [
+        "thirdparty",
+        "thirdparty/spdlog/include",
+    ],
+)
+
+cc_library(
+    name = "thirdparty",
+    srcs = ["thirdparty/thirdparty.cpp"],
+    hdrs = ["thirdparty/thirdparty.hpp"],
+    copts = HIDDEN_VISIBILITY_COPTS,
+    strip_include_prefix = "thirdparty",
+    deps = [
+        ":ctpl",
+        ":mpark_variant",
+        ":string_view_lite",
+        ":tl_optional",
+        ":spdlog",
+        ":tsl_ordered_map",
+        ":utf_cpp",
+    ],
+)
+
+# --------------------------------------------------------------------------
+# rd libraries
+# --------------------------------------------------------------------------
+
+# rd_core_cpp export header (normally produced by CMake generate_export_header).
+write_file(
+    name = "gen_rd_core_export",
+    out = "src/rd_core_cpp/src/main/rd_core_export.h",
+    content = [
+        "",
+        "#ifndef RD_CORE_API_H",
+        "#define RD_CORE_API_H",
+        "",
+        "#ifdef RD_CORE_STATIC_DEFINE",
+        "#  define RD_CORE_API",
+        "#  define RD_CORE_NO_EXPORT",
+        "#else",
+        "#  ifndef RD_CORE_API",
+        "#    ifdef rd_core_cpp_EXPORTS",
+        "        /* We are building this library */",
+        "#      define RD_CORE_API",
+        "#    else",
+        "        /* We are using this library */",
+        "#      define RD_CORE_API",
+        "#    endif",
+        "#  endif",
+        "",
+        "#  ifndef RD_CORE_NO_EXPORT",
+        "#    define RD_CORE_NO_EXPORT",
+        "#  endif",
+        "#endif",
+        "",
+        "#ifndef RD_CORE_DEPRECATED",
+        "#  define RD_CORE_DEPRECATED __attribute__ ((__deprecated__))",
+        "#endif",
+        "",
+        "#ifndef RD_CORE_DEPRECATED_EXPORT",
+        "#  define RD_CORE_DEPRECATED_EXPORT RD_CORE_API RD_CORE_DEPRECATED",
+        "#endif",
+        "",
+        "#ifndef RD_CORE_DEPRECATED_NO_EXPORT",
+        "#  define RD_CORE_DEPRECATED_NO_EXPORT RD_CORE_NO_EXPORT RD_CORE_DEPRECATED",
+        "#endif",
+        "",
+        "#if 0 /* DEFINE_NO_DEPRECATED */",
+        "#  ifndef RD_CORE_NO_DEPRECATED",
+        "#    define RD_CORE_NO_DEPRECATED",
+        "#  endif",
+        "#endif",
+        "#include \"util/export_api_helper.h\"",
+        "#endif /* RD_CORE_API_H */",
+    ],
+)
+
+cc_library(
+    name = "rd_core_cpp",
+    srcs = glob(
+        ["src/rd_core_cpp/src/main/**/*.cpp"],
+        exclude = ["src/rd_core_cpp/src/main/pch.cpp"],
+    ),
+    hdrs = glob(
+        [
+            "src/rd_core_cpp/src/main/**/*.h",
+            "src/rd_core_cpp/src/main/**/*.hpp",
+        ],
+        allow_empty = True,
+    ) + [":gen_rd_core_export"],
+    copts = RD_CXXOPTS,
+    defines = RD_DEFINES,
+    includes = ["src/rd_core_cpp/src/main"],
+    deps = [":thirdparty"],
+)
+
+# rd_framework_cpp export header (normally produced by CMake generate_export_header).
+write_file(
+    name = "gen_rd_framework_export",
+    out = "src/rd_framework_cpp/src/main/rd_framework_export.h",
+    content = [
+        "",
+        "#ifndef RD_FRAMEWORK_API_H",
+        "#define RD_FRAMEWORK_API_H",
+        "",
+        "#ifdef RD_FRAMEWORK_STATIC_DEFINE",
+        "#  define RD_FRAMEWORK_API",
+        "#  define RD_FRAMEWORK_NO_EXPORT",
+        "#else",
+        "#  ifndef RD_FRAMEWORK_API",
+        "#    ifdef rd_framework_cpp_EXPORTS",
+        "        /* We are building this library */",
+        "#      define RD_FRAMEWORK_API",
+        "#    else",
+        "        /* We are using this library */",
+        "#      define RD_FRAMEWORK_API",
+        "#    endif",
+        "#  endif",
+        "",
+        "#  ifndef RD_FRAMEWORK_NO_EXPORT",
+        "#    define RD_FRAMEWORK_NO_EXPORT",
+        "#  endif",
+        "#endif",
+        "",
+        "#ifndef RD_FRAMEWORK_DEPRECATED",
+        "#  define RD_FRAMEWORK_DEPRECATED __attribute__ ((__deprecated__))",
+        "#endif",
+        "",
+        "#ifndef RD_FRAMEWORK_DEPRECATED_EXPORT",
+        "#  define RD_FRAMEWORK_DEPRECATED_EXPORT RD_FRAMEWORK_API RD_FRAMEWORK_DEPRECATED",
+        "#endif",
+        "",
+        "#ifndef RD_FRAMEWORK_DEPRECATED_NO_EXPORT",
+        "#  define RD_FRAMEWORK_DEPRECATED_NO_EXPORT RD_FRAMEWORK_NO_EXPORT RD_FRAMEWORK_DEPRECATED",
+        "#endif",
+        "",
+        "#if 0 /* DEFINE_NO_DEPRECATED */",
+        "#  ifndef RD_FRAMEWORK_NO_DEPRECATED",
+        "#    define RD_FRAMEWORK_NO_DEPRECATED",
+        "#  endif",
+        "#endif",
+        "#include \"util/export_api_helper.h\"",
+        "#endif /* RD_FRAMEWORK_API_H */",
+    ],
+)
+
+cc_library(
+    name = "rd_framework_cpp",
+    srcs = glob(
+        ["src/rd_framework_cpp/src/main/**/*.cpp"],
+        exclude = ["src/rd_framework_cpp/src/main/pch.cpp"],
+    ),
+    hdrs = glob(
+        [
+            "src/rd_framework_cpp/src/main/**/*.h",
+            "src/rd_framework_cpp/src/main/**/*.hpp",
+        ],
+        allow_empty = True,
+    ) + [":gen_rd_framework_export"],
+    copts = RD_CXXOPTS,
+    defines = RD_DEFINES,
+    includes = [
+        "src/rd_framework_cpp/src/main",
+        "src/rd_framework_cpp/src/main/util",
+    ],
+    linkopts = select({
+        "@platforms//os:windows": [],
+        "//conditions:default": ["-pthread"],
+    }),
+    deps = [
+        ":clsocket",
+        ":rd_core_cpp",
+        ":thirdparty",
+    ],
+)
+
+cc_library(
+    name = "rd_cpp",
+    deps = [":rd_framework_cpp"],
+)
