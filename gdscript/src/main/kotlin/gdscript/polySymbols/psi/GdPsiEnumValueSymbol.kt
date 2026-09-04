@@ -4,7 +4,6 @@ import GdScriptPluginIcons
 import com.intellij.model.Pointer
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
-import com.intellij.psi.createSmartPointer
 import gdscript.GdKeywords
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
@@ -29,10 +28,6 @@ class GdPsiEnumValueSymbol(
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.USER_DEFINED
     override val completionTypeText: String get() = GdKeywords.INT
 
-    override fun createPointer(): Pointer<out GdPsiEnumValueSymbol> {
-        val sourcePtr = sourceElement.createSmartPointer()
-        return Pointer {
-            sourcePtr.element?.let { GdPsiEnumValueSymbol(it) }
-        }
-    }
+    override fun createPointer(): Pointer<out GdPsiEnumValueSymbol> =
+        gdPsiSymbolPointer(sourceElement, ::GdPsiEnumValueSymbol)
 }
