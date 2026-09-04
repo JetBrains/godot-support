@@ -3,6 +3,8 @@ package tscn.psi.impl
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.model.psi.PsiSymbolReference
+import com.intellij.openapi.diagnostic.fileLogger
+import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.references.polySymbolOwnReferences
@@ -30,6 +32,7 @@ import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdSignalDeclTl
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassUtil
+import gdscript.utils.PsiTraceUtil.describeForTrace
 import gdscript.utils.VirtualFileUtil.localPath
 import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Unmodifiable
@@ -57,17 +60,27 @@ private const val METHOD_TRACK_KEY = "\"method\""
 
 private val NODE_PATH = Regex("""NodePath\("(.*)"\)""")
 
+/** The trace logger of the resolve walks of this file. */
+private val LOG = fileLogger()
+
 abstract class TscnNamedElementImpl(node: @NotNull ASTNode) : ASTWrapperPsiElement(node), TscnNamedElement {
 
     override fun getReferences(): Array<PsiReference> {
         return ReferenceProvidersRegistryImpl.getReferencesFromProviders(this)
     }
 
-    override fun getOwnReferences(): @Unmodifiable Collection<PsiSymbolReference> = when (this) {
-        is TscnHeaderValueVal -> headerValueOwnReferences(this)
-        is TscnDataLineNm -> resourceFieldOwnReferences(this)
-        is TscnJsonValue -> animationTrackMethodOwnReferences(this)
-        else -> emptyList()
+    override fun getOwnReferences(): @Unmodifiable Collection<PsiSymbolReference> {
+        val references = when (this) {
+            is TscnHeaderValueVal -> headerValueOwnReferences(this)
+            is TscnDataLineNm -> resourceFieldOwnReferences(this)
+            is TscnJsonValue -> animationTrackMethodOwnReferences(this)
+            else -> emptyList()
+        }
+        LOG.trace {
+            "getOwnReferences: ${describeForTrace()} -> ${references.size} reference(s) " +
+            references.joinToString { it.rangeInElement.toString() }
+        }
+        return references
     }
 
 }
@@ -79,7 +92,9 @@ abstract class TscnNamedElementImpl(node: @NotNull ASTNode) : ASTWrapperPsiEleme
  */
 private fun headerValueOwnReferences(element: TscnHeaderValueVal): List<PsiSymbolReference> {
     val parent = element.parent as? TscnHeaderValue ?: return emptyList()
-    return when (PsiTreeUtil.getChildOfType(parent, TscnHeaderValueNm::class.java)?.text) {
+    val key = PsiTreeUtil.getChildOfType(parent, TscnHeaderValueNm::class.java)?.text
+    LOG.trace { "headerValueOwnReferences: key=$key, value=${element.text}" }
+    return when (key) {
         SCRIPT_CLASS_KEY -> scriptClassOwnReferences(element)
         TscnHeaderUtils.HL_SIGNAL -> connectionOwnReferences(element, signal = true)
         TscnHeaderUtils.HL_METHOD -> connectionOwnReferences(element, signal = false)
@@ -116,10 +131,20 @@ private fun scriptClassOwnReferences(element: TscnHeaderValueVal): List<PsiSymbo
  * `from` node, and the method belongs to the script of the `to` node.
  */
 private fun connectionOwnReferences(element: TscnHeaderValueVal, signal: Boolean): List<PsiSymbolReference> {
-    val header = element.parentOfType<TscnConnectionHeader>() ?: return emptyList()
+    val header = element.parentOfType<TscnConnectionHeader>()
+    if (header == null) {
+        LOG.trace { "connectionOwnReferences: ${element.text} has no connection header" }
+        return emptyList()
+    }
     val text = element.text
     val name = text.trim('"')
-    val scriptFile = resolveNodeScript(element, if (signal) header.from else header.to) ?: return emptyList()
+    val nodePath = if (signal) header.from else header.to
+    val scriptFile = resolveNodeScript(element, nodePath)
+    LOG.trace {
+        "connectionOwnReferences: name=$name, signal=$signal, nodePath=$nodePath, " +
+        "script=${scriptFile?.name}"
+    }
+    if (scriptFile == null) return emptyList()
 
     // Resolved eagerly for the same reason as scriptClassOwnReferences: an engine signal, for
     // example "pressed", is declared by no script in the project and must stay silent.
@@ -127,7 +152,9 @@ private fun connectionOwnReferences(element: TscnHeaderValueVal, signal: Boolean
         .firstOrNull {
             if (signal) it is GdSignalDeclTl && it.getName() == name
             else it is GdMethodDeclTl && it.getName() == name
-        } ?: return emptyList()
+        }
+    LOG.trace { "connectionOwnReferences: declaration=${(declaration as? PsiElement).describeForTrace()}" }
+    if (declaration == null) return emptyList()
 
     val symbol = when (declaration) {
         is GdSignalDeclTl -> declaration.signalIdNmi?.let { GdPsiSignalSymbol(it) }
@@ -168,7 +195,9 @@ private fun animationTrackMethodOwnReferences(element: TscnJsonValue): List<PsiS
     val values = pair.jsonValueList
     if (values.size != 2 || values[1] !== element || values[0].text != METHOD_TRACK_KEY) return emptyList()
 
-    val nodePath = methodTrackNodePath(element) ?: return emptyList()
+    val nodePath = methodTrackNodePath(element)
+    LOG.trace { "animationTrackMethodOwnReferences: value=$text, nodePath=$nodePath" }
+    if (nodePath == null) return emptyList()
     val scriptFile = resolveNodeScript(element, nodePath) ?: return emptyList()
 
     val name = text.removePrefix("&").trim('"')
@@ -211,9 +240,21 @@ private fun trackField(paragraph: TscnParagraph, key: String): String? =
 private fun resolveNodeScript(element: PsiElement, nodePath: String): GdFile? {
     if (nodePath.isEmpty()) return null
     val nodeHeaders = element.containingFile.descendantsOfType<TscnNodeHeader>()
-    val node = TscnNodeUtil.findNode(nodeHeaders, nodePath) ?: return null
-    val resource = nodeScriptResource(element, node) ?: return null
-    val scriptFile = GdFileResIndex.getFiles(resource, element.project).firstOrNull() ?: return null
+    val node = TscnNodeUtil.findNode(nodeHeaders, nodePath)
+    if (node == null) {
+        LOG.trace { "resolveNodeScript: no node at '$nodePath' in ${element.containingFile.name}" }
+        return null
+    }
+    val resource = nodeScriptResource(element, node)
+    if (resource == null) {
+        LOG.trace { "resolveNodeScript: node '$nodePath' carries no script resource" }
+        return null
+    }
+    val scriptFile = GdFileResIndex.getFiles(resource, element.project).firstOrNull()
+    if (scriptFile == null) {
+        LOG.trace { "resolveNodeScript: resource '$resource' is in no file of the index" }
+        return null
+    }
     return element.manager.findFile(scriptFile) as? GdFile
 }
 
@@ -245,7 +286,9 @@ private fun resourceFieldOwnReferences(element: TscnDataLineNm): List<PsiSymbolR
     // Resolved eagerly for the same reason as scriptClassOwnReferences: most data line keys are
     // built-in resource properties (resource_name, script, ...), not @export var fields, and must
     // stay silent rather than register a reference that will fail to resolve.
-    val symbol = resolveScriptVariable(element, element.name) ?: return emptyList()
+    val symbol = resolveScriptVariable(element, element.name)
+    LOG.trace { "resourceFieldOwnReferences: field=${element.name}, symbol=${symbol?.name}" }
+    if (symbol == null) return emptyList()
 
     return polySymbolOwnReferences(element) {
         reference(TextRange(0, element.textLength), GdPolySymbolKind.PROPERTY) { listOf(symbol) }
