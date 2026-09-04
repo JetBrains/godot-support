@@ -19,6 +19,9 @@ import kotlin.io.path.pathString
  * it skips the live template. The template deletes the text of every usage and puts it back before
  * it starts the real rename, so it needs a target pointer that survives the delete - see
  * `gdscript.polySymbols.psi.gdPsiSymbolPointer`.
+ *
+ * The other tests of this package pass even when the template path fails. So add an in-place test
+ * here for a new rename case.
  */
 class ConnectionMethodInplaceRenamingTest : BasePlatformTestCase() {
 
