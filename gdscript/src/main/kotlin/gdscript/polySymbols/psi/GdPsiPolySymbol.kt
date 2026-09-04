@@ -14,6 +14,14 @@ import gdscript.polySymbols.GdPsiSourceElementProperty
 import gdscript.psi.GdNamedElement
 import gdscript.psi.utils.GdCommonUtil
 
+/**
+ * A GDScript declaration that a [PsiElement] backs.
+ *
+ * [PolySymbolDeclaredInPsi] extends [com.intellij.refactoring.rename.api.RenameTarget], so each
+ * such declaration is its own rename target. The platform `PolySymbolRenameHandlerVeto` then keeps
+ * the classic PSI rename away from [sourceElement], and the editor offers one renamer, the symbol
+ * rename.
+ */
 abstract class GdPsiPolySymbol : GdPolySymbol(), PolySymbolDeclaredInPsi {
     @PolySymbol.Property(GdPsiSourceElementProperty::class)
     abstract override val sourceElement: PsiElement
