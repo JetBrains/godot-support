@@ -5,7 +5,6 @@ import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.psi.PsiElement
-import com.intellij.psi.createSmartPointer
 import gdscript.GdIcon
 import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.GdPolySymbolKind
@@ -33,12 +32,8 @@ class GdPsiClassSymbol(
     val parent: PsiElement get() = PsiGdClassUtil.getParentClassElement(sourceElement)
 
 
-    override fun createPointer(): Pointer<out GdPsiClassSymbol> {
-        val sourcePtr = sourceElement.createSmartPointer()
-        return Pointer {
-            sourcePtr.element?.let { GdPsiClassSymbol(it) }
-        }
-    }
+    override fun createPointer(): Pointer<out GdPsiClassSymbol> =
+        gdPsiSymbolPointer(sourceElement, ::GdPsiClassSymbol)
 
     override val directMemberScope: PolySymbolScope
         get() = gdPsiClassMemberScope(
