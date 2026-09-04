@@ -4,7 +4,6 @@ import GdScriptPluginIcons
 import com.intellij.model.Pointer
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
-import com.intellij.psi.createSmartPointer
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
 import gdscript.psi.GdVarNmi
@@ -28,8 +27,6 @@ class GdPsiParameterSymbol(
     override val icon: Icon get() = GdScriptPluginIcons.GDScriptIcons.VAR_MARKER
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.LOCAL_USER_DEFINED
 
-    override fun createPointer(): Pointer<out GdPsiParameterSymbol> {
-        val ptr = sourceElement.createSmartPointer()
-        return Pointer { ptr.element?.let { GdPsiParameterSymbol(it) } }
-    }
+    override fun createPointer(): Pointer<out GdPsiParameterSymbol> =
+        gdPsiSymbolPointer(sourceElement, ::GdPsiParameterSymbol)
 }

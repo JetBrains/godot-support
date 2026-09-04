@@ -5,7 +5,6 @@ import com.intellij.model.Pointer
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.PolySymbolModifier
-import com.intellij.psi.createSmartPointer
 import gdscript.completion.utils.GdMethodCompletionUtil.buildParamHint
 import gdscript.polySymbols.GdParameterInfo
 import gdscript.polySymbols.GdPolySymbolKind
@@ -42,12 +41,6 @@ class GdPsiMethodSymbol(
     override val modifiers: Set<PolySymbolModifier>
         get() = if ((sourceElement.parent as? GdMethodDeclTl)?.isStatic == true) setOf(GdPolySymbolModifier.STATIC) else emptySet()
 
-    override fun createPointer(): Pointer<out GdPsiMethodSymbol> {
-        val sourcePtr = sourceElement.createSmartPointer()
-        return Pointer {
-            sourcePtr.element?.let {
-                GdPsiMethodSymbol(it)
-            }
-        }
-    }
+    override fun createPointer(): Pointer<out GdPsiMethodSymbol> =
+        gdPsiSymbolPointer(sourceElement, ::GdPsiMethodSymbol)
 }
