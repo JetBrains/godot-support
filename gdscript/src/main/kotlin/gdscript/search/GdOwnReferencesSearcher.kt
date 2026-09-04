@@ -32,6 +32,13 @@ import gdscript.utils.PsiTraceUtil.describeForTrace
  * search target, wrapping a match in a minimal ad-hoc [PsiReference] — the same pattern already
  * proven by [GdConstructorReferencesSearcher] for the "new" -> "_init" case, generalized to any
  * GDScript declaration.
+ *
+ * The symbol rename of a [gdscript.polySymbols.psi.GdPsiPolySymbol] needs no searcher of the
+ * plugin, because `PolySymbolRenameUsageSearcher` serves it. This executor exists for the classic
+ * PSI rename, which still runs from other entry points, for example
+ * `CodeInsightTestFixture.renameElementAtCaret`. Both mechanisms must reach the scene files, so
+ * both need the own references of a scene element - see
+ * [tscn.psi.impl.TscnNamedElementImpl.getOwnReferences].
  */
 class GdOwnReferencesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch.SearchParameters>(true) {
 
