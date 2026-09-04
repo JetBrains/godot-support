@@ -69,6 +69,13 @@ abstract class TscnNamedElementImpl(node: @NotNull ASTNode) : ASTWrapperPsiEleme
         return ReferenceProvidersRegistryImpl.getReferencesFromProviders(this)
     }
 
+    /**
+     * The own references of a scene element to a GDScript declaration. A `.tscn` or a `.tres` file
+     * names a method, a signal, a property or a class as plain text, and each host has its own
+     * resolve walk - see [headerValueOwnReferences], [resourceFieldOwnReferences] and
+     * [animationTrackMethodOwnReferences]. Both rename mechanisms start here, and every walk logs,
+     * so a trace shows which one returns nothing.
+     */
     override fun getOwnReferences(): @Unmodifiable Collection<PsiSymbolReference> {
         val references = when (this) {
             is TscnHeaderValueVal -> headerValueOwnReferences(this)
