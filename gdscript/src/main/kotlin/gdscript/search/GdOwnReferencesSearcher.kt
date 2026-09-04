@@ -2,6 +2,8 @@ package gdscript.search
 
 import com.intellij.model.psi.PsiSymbolReferenceService
 import com.intellij.openapi.application.QueryExecutorBase
+import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.openapi.diagnostic.trace
 import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
@@ -14,6 +16,7 @@ import com.intellij.psi.search.UsageSearchContext
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.util.Processor
 import gdscript.polySymbols.gdPsiSourceElement
+import gdscript.utils.PsiTraceUtil.describeForTrace
 
 /**
  * Bridges GDScript's own-references (own [com.intellij.model.psi.PsiSymbolReference]s, e.g.
@@ -37,7 +40,11 @@ class GdOwnReferencesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
         consumer: Processor<in PsiReference>,
     ) {
         val target = queryParameters.elementToSearch
-        val name = (target as? PsiNamedElement)?.name ?: return
+        val name = (target as? PsiNamedElement)?.name
+        thisLogger().trace {
+            "processQuery: target=${target.describeForTrace()}, name=$name, scope=${queryParameters.effectiveSearchScope}"
+        }
+        if (name == null) return
 
         queryParameters.optimizer.searchWord(
             name,
@@ -58,7 +65,12 @@ class GdOwnReferencesSearcher : QueryExecutorBase<PsiReference, ReferencesSearch
             offsetInElement: Int,
             consumer: Processor<in PsiReference>,
         ): Boolean {
-            val range = ownReferenceRange(element) ?: return true
+            val range = ownReferenceRange(element)
+            thisLogger().trace {
+                "processTextOccurrence: element=${element.describeForTrace()}, " +
+                "offsetInElement=$offsetInElement, range=$range"
+            }
+            if (range == null) return true
             return consumer.process(GdOwnPsiReference(element, range, target))
         }
 
