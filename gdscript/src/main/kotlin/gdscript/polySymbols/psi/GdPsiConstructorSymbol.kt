@@ -4,7 +4,6 @@ import GdScriptPluginIcons
 import com.intellij.model.Pointer
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
-import com.intellij.psi.createSmartPointer
 import gdscript.completion.utils.GdMethodCompletionUtil.buildParamHint
 import gdscript.polySymbols.GdParameterInfo
 import gdscript.polySymbols.GdPolySymbolKind
@@ -38,12 +37,6 @@ class GdPsiConstructorSymbol(
             )
         }
 
-    override fun createPointer(): Pointer<out GdPsiConstructorSymbol> {
-        val sourcePtr = sourceElement.createSmartPointer()
-        return Pointer {
-            sourcePtr.element?.let {
-                GdPsiConstructorSymbol(it)
-            }
-        }
-    }
+    override fun createPointer(): Pointer<out GdPsiConstructorSymbol> =
+        gdPsiSymbolPointer(sourceElement, ::GdPsiConstructorSymbol)
 }
