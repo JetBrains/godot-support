@@ -5,7 +5,6 @@ import com.intellij.model.Pointer
 import com.intellij.openapi.util.TextRange
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
-import com.intellij.psi.createSmartPointer
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.quotedContentRange
@@ -33,8 +32,6 @@ class GdPsiDictKeySymbol(
     override val textRangeInSourceElement: TextRange
         get() = quotedContentRange(sourceElement.text)
 
-    override fun createPointer(): Pointer<out GdPsiDictKeySymbol> {
-        val ptr = sourceElement.createSmartPointer()
-        return Pointer { ptr.element?.let { GdPsiDictKeySymbol(it) } }
-    }
+    override fun createPointer(): Pointer<out GdPsiDictKeySymbol> =
+        gdPsiSymbolPointer(sourceElement, ::GdPsiDictKeySymbol)
 }

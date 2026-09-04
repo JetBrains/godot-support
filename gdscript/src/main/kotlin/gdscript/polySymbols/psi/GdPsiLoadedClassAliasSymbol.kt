@@ -4,7 +4,6 @@ import GdScriptPluginIcons
 import com.intellij.model.Pointer
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
-import com.intellij.psi.createSmartPointer
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
 import gdscript.psi.GdVarNmi
@@ -34,10 +33,6 @@ class GdPsiLoadedClassAliasSymbol(
     override val icon: Icon get() = GdScriptPluginIcons.Icons.BackupIcon
     override val priority: PolySymbol.Priority get() = GdPolySymbolPriorities.USER_DEFINED
 
-    override fun createPointer(): Pointer<out GdPsiLoadedClassAliasSymbol> {
-        val sourcePtr = sourceElement.createSmartPointer()
-        return Pointer {
-            sourcePtr.element?.let { GdPsiLoadedClassAliasSymbol(it) }
-        }
-    }
+    override fun createPointer(): Pointer<out GdPsiLoadedClassAliasSymbol> =
+        gdPsiSymbolPointer(sourceElement, ::GdPsiLoadedClassAliasSymbol)
 }
