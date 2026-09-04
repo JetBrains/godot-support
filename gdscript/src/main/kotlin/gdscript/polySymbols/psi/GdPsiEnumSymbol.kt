@@ -5,7 +5,6 @@ import com.intellij.model.Pointer
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
 import com.intellij.polySymbols.query.PolySymbolScope
-import com.intellij.psi.createSmartPointer
 import gdscript.GdKeywords
 import gdscript.polySymbols.GdEnumValuesProperty
 import gdscript.polySymbols.GdPolySymbolKind
@@ -33,12 +32,6 @@ class GdPsiEnumSymbol(
             ?.let { listOfNotNull(gdPsiEnumMemberScope(it)) }
             .orEmpty()
 
-    override fun createPointer(): Pointer<out GdPsiEnumSymbol> {
-        val sourcePtr = sourceElement.createSmartPointer()
-        return Pointer {
-            sourcePtr.element?.let {
-                GdPsiEnumSymbol(it)
-            }
-        }
-    }
+    override fun createPointer(): Pointer<out GdPsiEnumSymbol> =
+        gdPsiSymbolPointer(sourceElement, ::GdPsiEnumSymbol)
 }
