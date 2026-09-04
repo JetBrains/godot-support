@@ -105,6 +105,9 @@
 
     <notificationGroup displayType="STICKY_BALLOON" id="GodotVirtualSolutionNotificationGroupId" bundle="messages.GodotPluginBundle"
                        key="notification.title.godot.virtual.solution"/>
+
+    <!-- Logging -->
+    <rd.platform.traceScenarioHolder implementation="com.jetbrains.rider.plugins.godot.logs.GodotLogTraceScenarios"/>
   </extensions>
 
   <applicationListeners>
