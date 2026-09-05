@@ -1,0 +1,19 @@
+# `include()`d module segments do not inherit symbols defined in the root MODULE.bazel,
+# so the repo rule is declared locally.
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+    name = "rd_cpp",
+    build_file = "@//dotnet/Plugins/godot-support/godot-rd:BUILD.rd_cpp",
+    sha256 = "efcc9dc488d6b785927a22c125b8c7b9b6526c14201ef0a3387519b5d917e7ac",
+    strip_prefix = "rd/rd-cpp",
+    url = "https://packages.jetbrains.team/maven/p/net/godot-rd-dependencies/com/jetbrains/rider/godot/rd-cpp/2026.3.0-1036d8ecf27c2fa7a1518caffd312fb05dfb11f6/rd-cpp-2026.3.0-1036d8ecf27c2fa7a1518caffd312fb05dfb11f6.zip",
+)
+
+http_archive(
+    name = "godot_cpp",
+    build_file = "@//dotnet/Plugins/godot-support/godot-rd:BUILD.godot_cpp",
+    sha256 = "45d49c1a26f3c51557a510b3791821c83a5e92e08d27caa7615a362581947abc",
+    strip_prefix = "godot-cpp",
+    url = "https://packages.jetbrains.team/maven/p/net/godot-rd-dependencies/com/jetbrains/rider/godot/godot-cpp/5cec5bbd9c3f2effe763ecc799682fd5bd0ee30e/godot-cpp-5cec5bbd9c3f2effe763ecc799682fd5bd0ee30e.zip",
+)

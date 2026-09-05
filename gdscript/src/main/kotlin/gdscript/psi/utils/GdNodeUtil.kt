@@ -6,6 +6,7 @@ import com.intellij.psi.util.PsiTreeUtil
 import gdscript.index.impl.GdFileResIndex
 import gdscript.model.GdNodeHolder
 import gdscript.psi.GdNodePath
+import gdscript.utils.StringUtil.camelToSnakeCase
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import tscn.psi.TscnNodeHeader
 import tscn.psi.TscnResourceHeader
@@ -17,6 +18,31 @@ import kotlin.io.path.relativeTo
  * Node utils for available nodes from given script
  */
 object GdNodeUtil {
+
+    private val UNQUOTED_NODE_NAME = Regex("[A-Za-z_][A-Za-z0-9_]*")
+
+    fun needsQuotes(name: String): Boolean = !UNQUOTED_NODE_NAME.matches(name)
+
+    fun quoteIfNeeded(name: String): String = if (needsQuotes(name)) "\"$name\"" else name
+
+    fun nodeNameToIdentifier(name: String): String {
+        // `camelToSnakeCase` already folds spaces, `-` and `.` into `_` and drops a leading `_`, but
+        // leaves other punctuation untouched, e.g. `)` and doesn't care about a leading digit.
+        val sanitized = name.camelToSnakeCase()
+            .map { if (it.isLetterOrDigit() || it == '_') it else '_' }
+            .joinToString("")
+            // Make e.g. "c++c++" into "c_c" instead of "c__c__"
+            .replace(UNDERSCORE_RUN, "_")
+            .trim('_')
+
+        return when {
+            sanitized.isEmpty() -> "node"
+            sanitized.first().isDigit() -> "_$sanitized"
+            else -> sanitized
+        }
+    }
+
+    private val UNDERSCORE_RUN = Regex("_+")
 
     /**
      * Returns corresponding node for given NodePath element
@@ -46,7 +72,7 @@ object GdNodeUtil {
 
     fun TscnNodeHeader.relativeOrUniquePath(basePath: String): String {
         if (this.isUniqueNameOwner) {
-            return "%${this.name}"
+            return "%${quoteIfNeeded(this.name)}"
         }
 
         var relativePath = Path(this.nodePath).relativeTo(Path(basePath)).toString().replace("\\", "/")
@@ -86,8 +112,12 @@ object GdNodeUtil {
         resultSet: MutableList<GdNodeHolder>,
         isSingleNode: Boolean,
         parentPath: String = "",
-        isUnique: Boolean = false,
+        isInSubscene: Boolean = false,
+        visitedFilesSet: MutableSet<PsiFile> = mutableSetOf(),
     ) {
+        if (tscnFile in visitedFilesSet) return
+        visitedFilesSet += tscnFile
+
         val nodes = PsiTreeUtil.findChildrenOfType(tscnFile, TscnNodeHeader::class.java)
         val baseName = if (isSingleNode) "" else basePath.split("/").last()
 
@@ -101,20 +131,26 @@ object GdNodeUtil {
 
             val nodePath = "$parentPath$currentNodePath"
 
+            // Upon encountering a node representing instanced sub scene, we add it in the caller after recursing.
+            // That way, we preserve its unique-namedness.
+            // Adding the root of the sub scene in the recursive call would duplicate!
+            val isInstancedSubSceneRoot = parentPath.isNotBlank() && nodePath == parentPath
+            if (isInstancedSubSceneRoot) return@forEach
+
+            var type: String? = null
             val instancePath = it.instanceResource
             if (instancePath.isNotBlank()) {
-                val instance = GdFileResIndex.getFiles(instancePath, tscnFile.project).firstOrNull()
-                if (instance != null) {
-                    availableNodes(
-                        instance.getPsiFile(tscnFile.project)!!,
-                        basePath,
-                        resultSet,
-                        isSingleNode,
-                        nodePath,
-                        it.isUniqueNameOwner,
-                    )
+                val instanceFile = GdFileResIndex.getFiles(instancePath, tscnFile.project)
+                    .firstOrNull()
+                    ?.getPsiFile(tscnFile.project)
+                if (instanceFile != null) {
+                    // the instancing header carries no type=, the sub scene root holds the real one
+                    type = PsiTreeUtil.findChildrenOfType(instanceFile, TscnNodeHeader::class.java)
+                        .firstOrNull { root -> root.parentPath.isEmpty() }
+                        ?.type
+
+                    availableNodes(instanceFile, basePath, resultSet, isSingleNode, nodePath, true, visitedFilesSet)
                 }
-                return@forEach
             }
 
             var relativePath = Path(nodePath).relativeTo(Path(basePath)).toString().replace("\\", "/")
@@ -137,7 +173,7 @@ object GdNodeUtil {
             }
 
             var uniqueId: String? = null
-            if ((isUnique && parentPath == nodePath) || it.isUniqueNameOwner) {
+            if (!isInSubscene && it.isUniqueNameOwner) {
                 uniqueId = "%${it.name}"
                 tail = " ${it.name}"
             } else {
@@ -153,6 +189,7 @@ object GdNodeUtil {
                     "$$hint",
                     it.scriptResource.ifEmpty { null },
                     it.nodePath,
+                    type ?: it.type,
                 )
             )
         }
