@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.patterns.PlatformPatterns.psiElement
 import gdscript.GdKeywords
+import gdscript.psi.GdPsiCodeFragment
 import gdscript.psi.GdTypes
 
 class GdKeywordContributor : CompletionContributor() {
@@ -36,6 +37,9 @@ class GdKeywordContributor : CompletionContributor() {
     )
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
+        // A debugger code fragment is a single expression - `func` would legally start a lambda, given up deliberately
+        if (parameters.position.containingFile is GdPsiCodeFragment) return
+
         if (SKIP_KEYWORDS_FOR.accepts(parameters.position)) return
 
         result.addAllElements(TO_HINT_KEYWORDS.map { GdLookup.create(it, priority = -100.0) })

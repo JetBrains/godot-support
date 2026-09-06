@@ -8,13 +8,18 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.FilenameIndex
 import com.intellij.psi.search.GlobalSearchScope
+import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
+import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import gdscript.utils.VirtualFileUtil.resourcePath
 import kotlin.io.path.name
 
 object PsiFileUtil {
 
     fun PsiFile.isInSdk(): Boolean {
-        return ProjectFileIndex.getInstance(this.project).isInLibrary(this.virtualFile)
+        if (this.getUserData(GdSdkPolySymbol.SYNTHETIC_SDK_CLASS_KEY) != null)
+            return GdPolySymbolQueriesUtil.getSdkClassSymbol(project, name) != null
+
+        return ProjectFileIndex.getInstance(this.project).isInLibrary(this.virtualFile) // TODO delete after deleting the whole PSI implementation
     }
 
     /**
@@ -24,7 +29,7 @@ object PsiFileUtil {
         if (this.startsWith("res://") || this.startsWith("\"res://")) return this
 
         val thisPath = this.trim('"').toNioPathOrNull()?.normalize() ?: return this
-        val dirPath = element.containingFile.originalFile.virtualFile.parent ?: return this
+        val dirPath = element.containingFile.originalFile.virtualFile?.parent ?: return this
 
         FilenameIndex.getVirtualFilesByName(thisPath.name, GlobalSearchScope.allScope(project)).find {
             try {

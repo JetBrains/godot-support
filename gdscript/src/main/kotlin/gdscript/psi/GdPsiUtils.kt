@@ -2,7 +2,6 @@ package gdscript.psi
 
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiFile
 import gdscript.psi.impl.GdClassDeclElementType
 import gdscript.psi.impl.GdClassIdElementType
 import gdscript.psi.impl.GdClassNamingElementType
@@ -47,7 +46,6 @@ internal object GdPsiUtils {
 
     /** Inheritance */
     @JvmStatic fun getInheritancePath(element: GdInheritance): String = GdInheritanceElementType.inheritancePath(element)
-    @JvmStatic fun getPsiFile(element: GdInheritanceIdRef): PsiFile? = PsiGdInheritanceUtil.getPsiFile(element)
     @JvmStatic fun isClassName(element: GdInheritanceIdRef): Boolean = PsiGdInheritanceUtil.isClassName(element)
 
     /** Enum  */
@@ -91,7 +89,7 @@ internal object GdPsiUtils {
     @JvmStatic fun getName(element: GdMethodDeclTl): String = GdMethodUtil.getName(element)
     @JvmStatic fun getPresentation(element: GdMethodDeclTl): ItemPresentation = GdPresentationUtil.presentation(element)
     @JvmStatic fun getReturnType(element: GdMethodDeclTl): String = PsiGdMethodDeclUtil.getReturnType(element)
-    @JvmStatic fun getParameters(element: GdMethodDeclTl): LinkedHashMap<String, String?> = PsiGdMethodDeclUtil.getParameters(element)
+    @JvmStatic fun getParameters(element: GdMethodDeclTl): LinkedHashMap<String, String> = PsiGdMethodDeclUtil.getParameters(element)
     @JvmStatic fun isConstructor(element: GdMethodDeclTl): Boolean = PsiGdMethodDeclUtil.isConstructor(element)
 
     /** Method param */
@@ -99,7 +97,7 @@ internal object GdPsiUtils {
 
     /** Signal */
     @JvmStatic fun getName(element: GdSignalDeclTl): String = GdSignalUtil.getName(element)
-    @JvmStatic fun getParameters(element: GdSignalDeclTl): LinkedHashMap<String, String?> = PsiGdSignalUtil.getParameters(element)
+    @JvmStatic fun getParameters(element: GdSignalDeclTl): LinkedHashMap<String, String> = PsiGdSignalUtil.getParameters(element)
 
     /** Statements */
     @JvmStatic fun getType(element: GdFlowSt): String = GdStmtUtil.getType(element)
@@ -113,6 +111,6 @@ internal object GdPsiUtils {
     @JvmStatic fun getInvokedReturnType(element: GdFuncDeclEx): String = PsiGdLocalFuncUtil.getReturnType(element)
     // TODO remove?
     @JvmStatic fun getReturnExpr(element: GdFuncDeclEx): PsiElement? = PsiGdLocalFuncUtil.getReturnExpr(element)
-    @JvmStatic fun getParameters(element: GdFuncDeclEx): LinkedHashMap<String, String?> = PsiGdLocalFuncUtil.getParameters(element)
+    @JvmStatic fun getParameters(element: GdFuncDeclEx): LinkedHashMap<String, String> = PsiGdLocalFuncUtil.getParameters(element)
 
 }

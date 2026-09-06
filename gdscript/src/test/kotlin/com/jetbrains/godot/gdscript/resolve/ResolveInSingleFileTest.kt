@@ -100,4 +100,38 @@ class ResolveInSingleFileTest : ResolveTestBase() {
         val annotated = dumpResolvesWithInlineMarkers(file)
         assertGold(annotated)
     }
+
+    @Test
+    fun testLocalScopeDoesNotLeakAcrossMethods() {
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
+
+    @Test
+    fun testLocalScopeEndsAtBlockBoundary() {
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
+
+    @Test
+    fun testForLoopVariableVisibleInBody() {
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
+
+    /**
+     * Documents an accepted simplification: [gdscript.polySymbols.scope.GdLocalSymbolsStructuredScope]
+     * scopes on PSI containment, not statement order, so locals within the same flat suite are
+     * mutually visible regardless of textual position — a forward reference resolves here, where
+     * the classic PSI-based resolve would have left it unresolved.
+     */
+    @Test
+    fun testLocalVariableVisibleBeforeDeclarationInSameSuite() {
+        val file = loadByTestName()
+        val annotated = dumpResolvesWithInlineMarkers(file)
+        assertGold(annotated)
+    }
 }

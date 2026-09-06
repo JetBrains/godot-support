@@ -59,14 +59,17 @@ dependencies {
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
         testFramework(TestFrameworkType.Platform)
+        testFramework(TestFrameworkType.Plugin.LSP)
 
         bundledPlugin("com.intellij.modules.json")
         bundledPlugin("intellij.bookmarks.plugin")
         bundledPlugin("intellij.libraries.misc.plugin")
         bundledModule("intellij.platform.dap")
+        bundledModule("intellij.platform.structureView")
         bundledModule("intellij.spellchecker")
     }
     implementation(libs.jflex)
+    testImplementation(testFixtures(":rider-godot-test-shared"))
     testImplementation(libs.openTest4J)
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
@@ -74,7 +77,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
 }
 
-intellijPlatform{
+intellijPlatform {
     instrumentCode = false
     buildSearchableOptions = buildConfiguration != "Debug"
     pluginConfiguration {
@@ -118,7 +121,7 @@ lexers.forEach { (lexerName, folder, lexerPath) ->
 
 tasks {
     compileKotlin {
-        dependsOn( lexers.map { "${it.first}Lexer" })
+        dependsOn(lexers.map { "${it.first}Lexer" })
     }
 
     // run it to start Rider from SDK
@@ -138,6 +141,9 @@ tasks {
 
     test {
         useJUnitPlatform()
+        filter {
+            excludeTestsMatching("com.jetbrains.godot.gdscript.lsp.integration.*")
+        }
         testLogging {
             showStandardStreams = true
             exceptionFormat = TestExceptionFormat.FULL

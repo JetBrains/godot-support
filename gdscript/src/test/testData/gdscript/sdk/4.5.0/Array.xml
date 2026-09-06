@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Array" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<constructors>
+		<constructor name="Array">
+			<return type="Array" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="base" type="Array" />
+			<param index="1" name="type" type="int" />
+			<param index="2" name="class_name" type="StringName" />
+			<param index="3" name="script" type="Variant" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="Array" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="PackedByteArray" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="PackedColorArray" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="PackedFloat32Array" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="PackedFloat64Array" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="PackedInt32Array" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="PackedInt64Array" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="PackedStringArray" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="PackedVector2Array" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="PackedVector3Array" />
+			<description>
+			</description>
+		</constructor>
+		<constructor name="Array">
+			<return type="Array" />
+			<param index="0" name="from" type="PackedVector4Array" />
+			<description>
+			</description>
+		</constructor>
+	</constructors>
+	<methods>
+		<method name="all" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="method" type="Callable" />
+			<description>
+			</description>
+		</method>
+		<method name="any" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="method" type="Callable" />
+			<description>
+			</description>
+		</method>
+		<method name="append">
+			<return type="void" />
+			<param index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="append_array">
+			<return type="void" />
+			<param index="0" name="array" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="assign">
+			<return type="void" />
+			<param index="0" name="array" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="back" qualifiers="const">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="bsearch" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="value" type="Variant" />
+			<param index="1" name="before" type="bool" default="true" />
+			<description>
+			</description>
+		</method>
+		<method name="bsearch_custom" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="value" type="Variant" />
+			<param index="1" name="func" type="Callable" />
+			<param index="2" name="before" type="bool" default="true" />
+			<description>
+			</description>
+		</method>
+		<method name="clear">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="count" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="duplicate" qualifiers="const">
+			<return type="Array" />
+			<param index="0" name="deep" type="bool" default="false" />
+			<description>
+			</description>
+		</method>
+		<method name="duplicate_deep" qualifiers="const">
+			<return type="Array" />
+			<param index="0" name="deep_subresources_mode" type="int" default="1" />
+			<description>
+			</description>
+		</method>
+		<method name="erase">
+			<return type="void" />
+			<param index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="fill">
+			<return type="void" />
+			<param index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="filter" qualifiers="const">
+			<return type="Array" />
+			<param index="0" name="method" type="Callable" />
+			<description>
+			</description>
+		</method>
+		<method name="find" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="what" type="Variant" />
+			<param index="1" name="from" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="find_custom" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="method" type="Callable" />
+			<param index="1" name="from" type="int" default="0" />
+			<description>
+			</description>
+		</method>
+		<method name="front" qualifiers="const">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="get" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="index" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_typed_builtin" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="get_typed_class_name" qualifiers="const">
+			<return type="StringName" />
+			<description>
+			</description>
+		</method>
+		<method name="get_typed_script" qualifiers="const">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="has" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="hash" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="insert">
+			<return type="int" />
+			<param index="0" name="position" type="int" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="is_empty" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_read_only" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="is_same_typed" qualifiers="const">
+			<return type="bool" />
+			<param index="0" name="array" type="Array" />
+			<description>
+			</description>
+		</method>
+		<method name="is_typed" qualifiers="const">
+			<return type="bool" />
+			<description>
+			</description>
+		</method>
+		<method name="make_read_only">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="map" qualifiers="const">
+			<return type="Array" />
+			<param index="0" name="method" type="Callable" />
+			<description>
+			</description>
+		</method>
+		<method name="max" qualifiers="const">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="min" qualifiers="const">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="pick_random" qualifiers="const">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="pop_at">
+			<return type="Variant" />
+			<param index="0" name="position" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="pop_back">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="pop_front">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="push_back">
+			<return type="void" />
+			<param index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="push_front">
+			<return type="void" />
+			<param index="0" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="reduce" qualifiers="const">
+			<return type="Variant" />
+			<param index="0" name="method" type="Callable" />
+			<param index="1" name="accum" type="Variant" default="null" />
+			<description>
+			</description>
+		</method>
+		<method name="remove_at">
+			<return type="void" />
+			<param index="0" name="position" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="resize">
+			<return type="int" />
+			<param index="0" name="size" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="reverse">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="rfind" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="what" type="Variant" />
+			<param index="1" name="from" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="rfind_custom" qualifiers="const">
+			<return type="int" />
+			<param index="0" name="method" type="Callable" />
+			<param index="1" name="from" type="int" default="-1" />
+			<description>
+			</description>
+		</method>
+		<method name="set">
+			<return type="void" />
+			<param index="0" name="index" type="int" />
+			<param index="1" name="value" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="shuffle">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="size" qualifiers="const">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="slice" qualifiers="const">
+			<return type="Array" />
+			<param index="0" name="begin" type="int" />
+			<param index="1" name="end" type="int" default="2147483647" />
+			<param index="2" name="step" type="int" default="1" />
+			<param index="3" name="deep" type="bool" default="false" />
+			<description>
+			</description>
+		</method>
+		<method name="sort">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="sort_custom">
+			<return type="void" />
+			<param index="0" name="func" type="Callable" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<operators>
+		<operator name="operator !=">
+			<return type="bool" />
+			<param index="0" name="right" type="Array" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator +">
+			<return type="Array" />
+			<param index="0" name="right" type="Array" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &lt;">
+			<return type="bool" />
+			<param index="0" name="right" type="Array" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &lt;=">
+			<return type="bool" />
+			<param index="0" name="right" type="Array" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator ==">
+			<return type="bool" />
+			<param index="0" name="right" type="Array" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &gt;">
+			<return type="bool" />
+			<param index="0" name="right" type="Array" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator &gt;=">
+			<return type="bool" />
+			<param index="0" name="right" type="Array" />
+			<description>
+			</description>
+		</operator>
+		<operator name="operator []">
+			<return type="Variant" />
+			<param index="0" name="index" type="int" />
+			<description>
+			</description>
+		</operator>
+	</operators>
+</class>
