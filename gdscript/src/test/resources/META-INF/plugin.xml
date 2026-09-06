@@ -19,6 +19,8 @@
     <module name="intellij.rider.test.framework.junit"/>
     <module name="intellij.rider.test.framework.core"/>
     <module name="intellij.platform.dap"/>
+    <module name="intellij.platform.dap.protocol"/>
+    <module name="fleet.lsp.protocol"/>
   </content>
   <content>
     <module name="intellij.libraries.java.diff.utils"/>

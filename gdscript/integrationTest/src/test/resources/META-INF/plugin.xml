@@ -12,6 +12,8 @@
     <module name="intellij.platform.testFramework.junit5.codeInsight"/>
     <module name="intellij.platform.polySymbols.testFramework"/>
     <module name="intellij.platform.dap"/>
+    <module name="intellij.platform.dap.protocol"/>
+    <module name="fleet.lsp.protocol"/>
     <module name="intellij.platform.structureView"/>
   </content>
 </idea-plugin>
