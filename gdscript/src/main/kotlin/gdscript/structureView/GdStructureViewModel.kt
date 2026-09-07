@@ -10,9 +10,8 @@ import gdscript.psi.GdConstDeclTl
 import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdMethodDeclTl
 
-class GdStructureViewModel : StructureViewModelBase, StructureViewModel.ElementInfoProvider {
-
-    constructor(psiFile: PsiFile) : super(psiFile, GdStructureViewElement(psiFile))
+class GdStructureViewModel(psiFile: PsiFile) : StructureViewModelBase(psiFile, GdStructureViewElement(psiFile)),
+    StructureViewModel.ElementInfoProvider {
 
     override fun getSorters(): Array<Sorter> {
         return arrayOf(Sorter.ALPHA_SORTER)
@@ -24,9 +23,8 @@ class GdStructureViewModel : StructureViewModelBase, StructureViewModel.ElementI
 
     override fun isAlwaysLeaf(element: StructureViewTreeElement): Boolean {
         return element is GdClassVarDeclTl
-                || element is GdConstDeclTl
-                || element is GdMethodDeclTl
-                || element is GdEnumDeclTl
+            || element is GdConstDeclTl
+            || element is GdMethodDeclTl
+            || element is GdEnumDeclTl
     }
-
 }

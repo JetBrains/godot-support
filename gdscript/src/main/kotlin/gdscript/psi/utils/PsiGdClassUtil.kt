@@ -2,6 +2,7 @@ package gdscript.psi.utils
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassNameNmi
 import gdscript.psi.GdClassNaming
@@ -27,8 +28,9 @@ object PsiGdClassUtil {
         val inner = PsiTreeUtil.getStubOrPsiParentOfType(element, GdClassDeclTl::class.java)
         if (inner != null) return inner
 
-        return PsiTreeUtil.getStubChildOfType(element.containingFile, GdClassNaming::class.java)
-            ?: element.containingFile
+        return element.containingFile.let {
+            it.stubChildOfType<GdClassNaming>() ?: it
+        }
     }
 
 }

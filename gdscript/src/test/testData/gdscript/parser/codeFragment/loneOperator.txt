@@ -1,0 +1,8 @@
+GdScript code fragment
+  GdExprStImpl(EXPR_ST)
+    GdSignExImpl(SIGN_EX)
+      PsiElement(GdTokenType.PLUS)('+')
+      PsiErrorElement:EXPRESSION expected
+        <empty list>
+    GdEndStmtImpl(END_STMT)
+      <empty list>

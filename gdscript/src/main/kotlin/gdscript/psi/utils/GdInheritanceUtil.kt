@@ -3,9 +3,10 @@ package gdscript.psi.utils
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.util.stubChildOfType
 import gdscript.index.impl.GdClassIdIndex
 import gdscript.index.impl.GdFileResIndex
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
@@ -20,12 +21,14 @@ object GdInheritanceUtil {
      * @param element: GdClassDeclTL|GdClassNaming|GdFile
      */
     fun getExtendedClassId(element: PsiElement): String {
-        return when (element) {
-            is GdClassNaming -> element.parentName
-            is GdClassDeclTl -> element.parentName
-            is GdFile -> PsiTreeUtil.getStubChildOfType(element, GdInheritance::class.java)?.inheritancePath.orEmpty()
+        // Hop to context before the GdFile/PsiFile checks, as the fragment IS both.
+        val effectiveElement = GdCodeFragmentUtil.effectiveElement(element)
+        return when (effectiveElement) {
+            is GdClassNaming -> effectiveElement.parentName
+            is GdClassDeclTl -> effectiveElement.parentName
+            is GdFile -> effectiveElement.stubChildOfType<GdInheritance>()?.inheritancePath.orEmpty()
             is PsiFile -> ""
-            else -> getExtendedClassId(PsiGdClassUtil.getParentClassElement(element))
+            else -> getExtendedClassId(PsiGdClassUtil.getParentClassElement(effectiveElement))
         }
     }
 
@@ -60,7 +63,8 @@ object GdInheritanceUtil {
         var parentId = getExtendedClassId(element)
         while (parentId.isNotBlank()) {
             if (parentId == className) return true
-            val parent = GdClassIdIndex.INSTANCE.getGlobally(parentId, element).firstOrNull() ?: return false
+            val parent = GdClassIdIndex.INSTANCE.getGlobally(parentId, element).firstOrNull()
+                ?: return GdSymbolResolverUtil.isExtendingCanonical(parentId, element.project, element, className)
             parentId = getExtendedClassId(parent)
         }
 

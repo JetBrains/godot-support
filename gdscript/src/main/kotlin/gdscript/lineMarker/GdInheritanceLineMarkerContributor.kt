@@ -7,9 +7,9 @@ import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder
 import com.intellij.ide.util.PsiElementListCellRenderer
 import com.intellij.psi.PsiElement
 import gdscript.GdScriptBundle
+import gdscript.polySymbols.gdNavigationElement
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.psi.GdMethodIdNmi
-import gdscript.psi.utils.GdClassMemberUtil
-import gdscript.psi.utils.GdInheritanceUtil
 import gdscript.utils.VirtualFileUtil.localPath
 import javax.swing.Icon
 
@@ -28,9 +28,8 @@ class GdInheritanceLineMarkerContributor : RelatedItemLineMarkerProvider() {
     ) {
         if (element !is GdMethodIdNmi) return
 
-        val parent = GdInheritanceUtil.getExtendedElement(element)
-        val results = mutableListOf<Any>()
-        val superMethod = GdClassMemberUtil.collectFromParents(parent, results, element.project, null, element.name) ?: return
+        val parentClass = GdSymbolResolverUtil.resolveOwnClassSymbol(element)?.resolveSuperClassSymbol()
+        val superMethod = GdSymbolResolverUtil.findMethodSymbol(parentClass, element.name)?.gdNavigationElement ?: return
 
         val builder: NavigationGutterIconBuilder<PsiElement> = NavigationGutterIconBuilder.create(
             GdScriptPluginIcons.GDScriptIcons.OVERRIDE
