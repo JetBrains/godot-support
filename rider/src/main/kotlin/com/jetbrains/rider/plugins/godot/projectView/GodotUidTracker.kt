@@ -143,7 +143,7 @@ class GodotUidTracker : VfsBackendRequester {
         return "uid".equals(extension, true)
     }
 
-    @RequiresEdt
+    @RequiresEdt(generateAssertion = false /* IJPL-115548 */)
     private fun isApplicableForProject(event: VFileEvent, project: Project): Boolean {
         val file = event.file ?: return false
         return VfsUtilCore.isUnder(file, project.getBaseDirectories())
@@ -174,7 +174,7 @@ class GodotUidTracker : VfsBackendRequester {
             })
         }
 
-        @RequiresEdt
+        @RequiresEdt(generateAssertion = false /* IJPL-115548 */)
         private fun clear() {
             changedUidFiles.clear()
             actions.clear()
