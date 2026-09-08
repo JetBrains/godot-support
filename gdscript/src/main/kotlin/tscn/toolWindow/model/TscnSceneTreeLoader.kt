@@ -16,7 +16,7 @@ data class TreeDependencies(
 )
 
 object TscnSceneTreeLoader {
-    @RequiresBackgroundThread
+    @RequiresBackgroundThread(generateAssertion = false /* IJPL-115548 */)
     fun fromFile(file: PsiFile): SceneTreeBuilder {
         return SceneTreeBuilder(file.project, calculateTreeDependencies(file))
     }

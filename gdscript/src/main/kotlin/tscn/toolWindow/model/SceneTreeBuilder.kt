@@ -24,7 +24,7 @@ import javax.swing.tree.TreeSelectionModel
 data class LabelledTree(@param:NlsSafe val name: String, val component: JComponent)
 
 class SceneTreeBuilder(private val project: Project, private val deps: TreeDependencies) {
-    @RequiresEdt
+    @RequiresEdt(generateAssertion = false /* IJPL-115548 */)
     fun build(): LabelledTree {
         return LabelledTree(deps.file.name, buildTreeStructure(deps))
     }
