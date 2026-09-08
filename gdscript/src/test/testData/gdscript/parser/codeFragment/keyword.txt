@@ -1,0 +1,3 @@
+GdScript code fragment
+  PsiErrorElement:Expected a single expression
+    PsiElement(GdTokenType.IF)('if')

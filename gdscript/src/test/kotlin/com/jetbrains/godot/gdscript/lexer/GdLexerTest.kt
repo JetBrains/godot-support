@@ -8,6 +8,7 @@ import gdscript.GdLexerAdapter
 import org.junit.ComparisonFailure
 import org.junit.Ignore
 import org.junit.Test
+import org.junit.jupiter.api.assertAll
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
@@ -50,6 +51,26 @@ class GdLexerTest : LexerTestCase() {
     @Test fun testsemicolon_multiple_after_statement_suite() = doFileTest("gd")
     @Test fun testsemicolon_multiple_alone_suite() = doFileTest("gd")
     @Test fun testsemicolon_multiple_on_one_line() = doFileTest("gd")
+
+    @Test
+    fun testQuotedNodePathAcceptsAnyNodeName() {
+        assertAll(
+            { assertLexesTo("%\"Main-Menu\"", "NODE_PATH_LEX ('%\"Main-Menu\"')") },
+            { assertLexesTo("\$\"Ünïcode (2)\"", "NODE_PATH_LEX ('\$\"Ünïcode (2)\"')") },
+            // the unquoted form must stay narrow, so that `-` keeps being an operator
+            { assertLexesTo("%Main-Menu", "NODE_PATH_LEX ('%Main')") },
+            { assertLexesTo("%Main-Menu", "MINUS ('-')") },
+            { assertLexesTo("%\"Main Menu\"", "NODE_PATH_LEX ('%\"Main Menu\"')") },
+            { assertLexesTo("%fo%o", "NODE_PATH_LEX ('%fo')") },
+            { assertLexesTo("%fo%o", "NODE_PATH_LEX ('%o')") },
+            { assertLexesTo("%\"fo\".size() % %\'o\'.size()", "MOD ('%')") },
+        )
+    }
+
+    private fun assertLexesTo(text: String, expectedToken: String) {
+        val tokens = printTokens(text, 0)
+        assertTrue("`$text` should lex to $expectedToken but was:\n$tokens", tokens.contains(expectedToken))
+    }
 
 
     override fun doTest(text: String, expected: String?, lexer: Lexer) {
