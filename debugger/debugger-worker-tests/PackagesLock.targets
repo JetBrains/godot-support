@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <PackageLock Include="Microsoft.NETFramework.ReferenceAssemblies.net472" Version="1.0.3" IsDevelopmentDependency="True" />
+    <PackageLock Include="JetBrains.Annotations" Version="2026.2.0" />
+    <PackageLock Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageLock Include="NUnit" Version="3.14.0" />
+    <PackageLock Include="System.Collections.Immutable" Version="8.0.0" />
+  </ItemGroup>
+</Project>
