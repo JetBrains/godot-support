@@ -1,0 +1,99 @@
+package gdscript.psi.impl
+
+import com.intellij.lang.ASTNode
+import com.intellij.model.psi.PsiSymbolReference
+import com.intellij.openapi.util.TextRange
+import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
+import com.intellij.polySymbols.references.polySymbolOwnReferences
+import com.intellij.polySymbols.utils.unwrapMatchedSymbols
+import com.intellij.polySymbols.utils.withName
+import com.intellij.psi.PsiElementVisitor
+import gdscript.GdKeywords
+import gdscript.polySymbols.GdClassSymbol
+import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.polySymbols.GdPolySymbolKind.QUALIFIABLE_SYMBOLS
+import gdscript.polySymbols.GdPolySymbolModifier.STATIC
+import gdscript.polySymbols.gdHasConstructor
+import gdscript.polySymbols.psi.GdNavigationSuppressedSymbol
+import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.filterCandidatesForCall
+import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.isStatic
+import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.preferGlobalVariableOverClass
+import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.resolveConstructorSymbols
+import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.resolveEarlierEnumValueSymbol
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
+import gdscript.polySymbols.scope.hasModifier
+import gdscript.polySymbols.scope.hasStaticInstanceDistinction
+import gdscript.psi.GdRefIdRef
+import gdscript.psi.GdVisitor
+import gdscript.utils.PsiElementUtil.getCallExpr
+import org.jetbrains.annotations.Unmodifiable
+
+class GdRefIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdRefIdRef {
+    fun accept(visitor: GdVisitor) {
+        visitor.visitRefIdNm(this)
+    }
+
+    override fun accept(visitor: PsiElementVisitor) {
+        if (visitor is GdVisitor) accept(visitor)
+        else super.accept(visitor)
+    }
+
+    override fun getOwnReferences(): @Unmodifiable Collection<PsiSymbolReference> {
+        val text = text
+        if (text == GdKeywords.SELF || text == GdKeywords.SUPER || GdKeywords.MATH_CONSTANTS.contains(text)) {
+            return emptyList()
+        }
+        return polySymbolOwnReferences(this) {
+            reference(TextRange(0, text.length), QUALIFIABLE_SYMBOLS) {
+                if (text == "new") {
+                    resolveConstructorSymbols(this@GdRefIdRefImpl)
+                } else {
+                    resolveEarlierEnumValueSymbol(this@GdRefIdRefImpl)?.let {
+                        return@reference listOf(it)
+                    }
+                    val requireStatic = isStatic(this@GdRefIdRefImpl)
+                    val resolved = PolySymbolQueryExecutorFactory.create(this@GdRefIdRefImpl, true)
+                        .nameMatchQuery(QUALIFIABLE_SYMBOLS, text)
+                        .run()
+                        .filter { symbol -> !requireStatic || !symbol.hasStaticInstanceDistinction() || symbol.hasModifier(STATIC) }
+                        .let { preferGlobalVariableOverClass(it) }
+
+                    // Bare constructor call (`ClassName(...)`, no `.new()`): the resolved reference
+                    // is CLASS-only today (constructors are never name-matched by their class's own
+                    // name - only SDK constructors happen to share it, PSI ones are always "_init").
+                    // `resolved`'s items are still PolySymbolMatchBase-style composite matches here
+                    // (the platform only unwraps after this lambda returns, in
+                    // PolySymbolOwnReferencesBuilderImpl's `resolvedSymbols`) - must unwrap before
+                    // trusting `.kind`, exactly like hasStaticInstanceDistinction()/hasModifier() do.
+                    val callExpr = this@GdRefIdRefImpl.getCallExpr()
+                    // Narrows `resolved` when it holds multiple same-named METHOD overloads (a bare
+                    // constructor call's `resolved` is just the single CLASS symbol, for which this
+                    // is a no-op - GdClassSymbol has no gdSignature).
+                    val filteredResolved = if (callExpr != null) filterCandidatesForCall(resolved, callExpr, this@GdRefIdRefImpl) else resolved
+                    val classSymbol = resolved.flatMap { it.unwrapMatchedSymbols() }
+                        .firstOrNull { it.kind == GdPolySymbolKind.CLASS } as? GdClassSymbol
+                    if (classSymbol != null && callExpr != null) {
+                        val constructorCandidates = filterCandidatesForCall(
+                            GdSymbolResolverUtil.listConstructorSymbols(classSymbol), callExpr, this@GdRefIdRefImpl
+                        ).map { it.withName(text) }
+                        // Built-in Variant types with an explicit SDK constructor (Vector2, ...) are only ever
+                        // called bare, never via .new() - Ctrl+click must resolve solely to the matching _init
+                        // overload(s), not the class declaration too. We still keep an unfiltered, CLASS-kind
+                        // symbol first in the resolved list (wrapped to suppress only its own navigation
+                        // targets) because other consumers depend on it - see GdParamAnnotator's
+                        // `GdPolySymbolKind.CLASS ->` branch, which has no CONSTRUCTOR branch and would
+                        // silently stop validating argument count/type for these calls.
+                        val classResolved = if (classSymbol.gdHasConstructor) {
+                            listOf(GdNavigationSuppressedSymbol(classSymbol))
+                        } else {
+                            filteredResolved
+                        }
+                        classResolved + constructorCandidates
+                    } else {
+                        filteredResolved
+                    }
+                }
+            }
+        }
+    }
+}

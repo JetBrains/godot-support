@@ -1,0 +1,1862 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="@GlobalScope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+	</brief_description>
+	<description>
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="abs">
+			<return type="Variant" />
+			<param index="0" name="x" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="absf">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="absi">
+			<return type="int" />
+			<param index="0" name="x" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="acos">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="acosh">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="angle_difference">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="asin">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="asinh">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="atan">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="atan2">
+			<return type="float" />
+			<param index="0" name="y" type="float" />
+			<param index="1" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="atanh">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="bezier_derivative">
+			<return type="float" />
+			<param index="0" name="start" type="float" />
+			<param index="1" name="control_1" type="float" />
+			<param index="2" name="control_2" type="float" />
+			<param index="3" name="end" type="float" />
+			<param index="4" name="t" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="bezier_interpolate">
+			<return type="float" />
+			<param index="0" name="start" type="float" />
+			<param index="1" name="control_1" type="float" />
+			<param index="2" name="control_2" type="float" />
+			<param index="3" name="end" type="float" />
+			<param index="4" name="t" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="bytes_to_var">
+			<return type="Variant" />
+			<param index="0" name="bytes" type="PackedByteArray" />
+			<description>
+			</description>
+		</method>
+		<method name="bytes_to_var_with_objects">
+			<return type="Variant" />
+			<param index="0" name="bytes" type="PackedByteArray" />
+			<description>
+			</description>
+		</method>
+		<method name="ceil">
+			<return type="Variant" />
+			<param index="0" name="x" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="ceilf">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="ceili">
+			<return type="int" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="clamp">
+			<return type="Variant" />
+			<param index="0" name="value" type="Variant" />
+			<param index="1" name="min" type="Variant" />
+			<param index="2" name="max" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="clampf">
+			<return type="float" />
+			<param index="0" name="value" type="float" />
+			<param index="1" name="min" type="float" />
+			<param index="2" name="max" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="clampi">
+			<return type="int" />
+			<param index="0" name="value" type="int" />
+			<param index="1" name="min" type="int" />
+			<param index="2" name="max" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="cos">
+			<return type="float" />
+			<param index="0" name="angle_rad" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="cosh">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="cubic_interpolate">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<param index="2" name="pre" type="float" />
+			<param index="3" name="post" type="float" />
+			<param index="4" name="weight" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="cubic_interpolate_angle">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<param index="2" name="pre" type="float" />
+			<param index="3" name="post" type="float" />
+			<param index="4" name="weight" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="cubic_interpolate_angle_in_time">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<param index="2" name="pre" type="float" />
+			<param index="3" name="post" type="float" />
+			<param index="4" name="weight" type="float" />
+			<param index="5" name="to_t" type="float" />
+			<param index="6" name="pre_t" type="float" />
+			<param index="7" name="post_t" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="cubic_interpolate_in_time">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<param index="2" name="pre" type="float" />
+			<param index="3" name="post" type="float" />
+			<param index="4" name="weight" type="float" />
+			<param index="5" name="to_t" type="float" />
+			<param index="6" name="pre_t" type="float" />
+			<param index="7" name="post_t" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="db_to_linear">
+			<return type="float" />
+			<param index="0" name="db" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="deg_to_rad">
+			<return type="float" />
+			<param index="0" name="deg" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="ease">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<param index="1" name="curve" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="error_string">
+			<return type="String" />
+			<param index="0" name="error" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="exp">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="floor">
+			<return type="Variant" />
+			<param index="0" name="x" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="floorf">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="floori">
+			<return type="int" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="fmod">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<param index="1" name="y" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="fposmod">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<param index="1" name="y" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="hash">
+			<return type="int" />
+			<param index="0" name="variable" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="instance_from_id">
+			<return type="Object" />
+			<param index="0" name="instance_id" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="inverse_lerp">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<param index="2" name="weight" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="is_equal_approx">
+			<return type="bool" />
+			<param index="0" name="a" type="float" />
+			<param index="1" name="b" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="is_finite">
+			<return type="bool" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="is_inf">
+			<return type="bool" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="is_instance_id_valid">
+			<return type="bool" />
+			<param index="0" name="id" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="is_instance_valid">
+			<return type="bool" />
+			<param index="0" name="instance" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="is_nan">
+			<return type="bool" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="is_same">
+			<return type="bool" />
+			<param index="0" name="a" type="Variant" />
+			<param index="1" name="b" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="is_zero_approx">
+			<return type="bool" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="lerp">
+			<return type="Variant" />
+			<param index="0" name="from" type="Variant" />
+			<param index="1" name="to" type="Variant" />
+			<param index="2" name="weight" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="lerp_angle">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<param index="2" name="weight" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="lerpf">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<param index="2" name="weight" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="linear_to_db">
+			<return type="float" />
+			<param index="0" name="lin" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="log">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="max" qualifiers="vararg">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="maxf">
+			<return type="float" />
+			<param index="0" name="a" type="float" />
+			<param index="1" name="b" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="maxi">
+			<return type="int" />
+			<param index="0" name="a" type="int" />
+			<param index="1" name="b" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="min" qualifiers="vararg">
+			<return type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="minf">
+			<return type="float" />
+			<param index="0" name="a" type="float" />
+			<param index="1" name="b" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="mini">
+			<return type="int" />
+			<param index="0" name="a" type="int" />
+			<param index="1" name="b" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="move_toward">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<param index="2" name="delta" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="nearest_po2">
+			<return type="int" />
+			<param index="0" name="value" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="pingpong">
+			<return type="float" />
+			<param index="0" name="value" type="float" />
+			<param index="1" name="length" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="posmod">
+			<return type="int" />
+			<param index="0" name="x" type="int" />
+			<param index="1" name="y" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="pow">
+			<return type="float" />
+			<param index="0" name="base" type="float" />
+			<param index="1" name="exp" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="print" qualifiers="vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="print_rich" qualifiers="vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="print_verbose" qualifiers="vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="printerr" qualifiers="vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="printraw" qualifiers="vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="prints" qualifiers="vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="printt" qualifiers="vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="push_error" qualifiers="vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="push_warning" qualifiers="vararg">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="rad_to_deg">
+			<return type="float" />
+			<param index="0" name="rad" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="rand_from_seed">
+			<return type="PackedInt64Array" />
+			<param index="0" name="seed" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="randf">
+			<return type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="randf_range">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="randfn">
+			<return type="float" />
+			<param index="0" name="mean" type="float" />
+			<param index="1" name="deviation" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="randi">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="randi_range">
+			<return type="int" />
+			<param index="0" name="from" type="int" />
+			<param index="1" name="to" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="randomize">
+			<return type="void" />
+			<description>
+			</description>
+		</method>
+		<method name="remap">
+			<return type="float" />
+			<param index="0" name="value" type="float" />
+			<param index="1" name="istart" type="float" />
+			<param index="2" name="istop" type="float" />
+			<param index="3" name="ostart" type="float" />
+			<param index="4" name="ostop" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="rid_allocate_id">
+			<return type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="rid_from_int64">
+			<return type="RID" />
+			<param index="0" name="base" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="rotate_toward">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<param index="2" name="delta" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="round">
+			<return type="Variant" />
+			<param index="0" name="x" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="roundf">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="roundi">
+			<return type="int" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="seed">
+			<return type="void" />
+			<param index="0" name="base" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="sign">
+			<return type="Variant" />
+			<param index="0" name="x" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="signf">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="signi">
+			<return type="int" />
+			<param index="0" name="x" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="sin">
+			<return type="float" />
+			<param index="0" name="angle_rad" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="sinh">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="smoothstep">
+			<return type="float" />
+			<param index="0" name="from" type="float" />
+			<param index="1" name="to" type="float" />
+			<param index="2" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="snapped">
+			<return type="Variant" />
+			<param index="0" name="x" type="Variant" />
+			<param index="1" name="step" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="snappedf">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<param index="1" name="step" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="snappedi">
+			<return type="int" />
+			<param index="0" name="x" type="float" />
+			<param index="1" name="step" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="sqrt">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="step_decimals">
+			<return type="int" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="str" qualifiers="vararg">
+			<return type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="str_to_var">
+			<return type="Variant" />
+			<param index="0" name="string" type="String" />
+			<description>
+			</description>
+		</method>
+		<method name="tan">
+			<return type="float" />
+			<param index="0" name="angle_rad" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="tanh">
+			<return type="float" />
+			<param index="0" name="x" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="type_convert">
+			<return type="Variant" />
+			<param index="0" name="variant" type="Variant" />
+			<param index="1" name="type" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="type_string">
+			<return type="String" />
+			<param index="0" name="type" type="int" />
+			<description>
+			</description>
+		</method>
+		<method name="typeof">
+			<return type="int" />
+			<param index="0" name="variable" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="var_to_bytes">
+			<return type="PackedByteArray" />
+			<param index="0" name="variable" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="var_to_bytes_with_objects">
+			<return type="PackedByteArray" />
+			<param index="0" name="variable" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="var_to_str">
+			<return type="String" />
+			<param index="0" name="variable" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="weakref">
+			<return type="Variant" />
+			<param index="0" name="obj" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="wrap">
+			<return type="Variant" />
+			<param index="0" name="value" type="Variant" />
+			<param index="1" name="min" type="Variant" />
+			<param index="2" name="max" type="Variant" />
+			<description>
+			</description>
+		</method>
+		<method name="wrapf">
+			<return type="float" />
+			<param index="0" name="value" type="float" />
+			<param index="1" name="min" type="float" />
+			<param index="2" name="max" type="float" />
+			<description>
+			</description>
+		</method>
+		<method name="wrapi">
+			<return type="int" />
+			<param index="0" name="value" type="int" />
+			<param index="1" name="min" type="int" />
+			<param index="2" name="max" type="int" />
+			<description>
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="AudioServer" type="AudioServer" setter="" getter="">
+		</member>
+		<member name="CameraServer" type="CameraServer" setter="" getter="">
+		</member>
+		<member name="ClassDB" type="ClassDB" setter="" getter="">
+		</member>
+		<member name="DisplayServer" type="DisplayServer" setter="" getter="">
+		</member>
+		<member name="EditorInterface" type="EditorInterface" setter="" getter="">
+		</member>
+		<member name="Engine" type="Engine" setter="" getter="">
+		</member>
+		<member name="EngineDebugger" type="EngineDebugger" setter="" getter="">
+		</member>
+		<member name="GDExtensionManager" type="GDExtensionManager" setter="" getter="">
+		</member>
+		<member name="Geometry2D" type="Geometry2D" setter="" getter="">
+		</member>
+		<member name="Geometry3D" type="Geometry3D" setter="" getter="">
+		</member>
+		<member name="IP" type="IP" setter="" getter="">
+		</member>
+		<member name="Input" type="Input" setter="" getter="">
+		</member>
+		<member name="InputMap" type="InputMap" setter="" getter="">
+		</member>
+		<member name="JavaClassWrapper" type="JavaClassWrapper" setter="" getter="">
+		</member>
+		<member name="JavaScriptBridge" type="JavaScriptBridge" setter="" getter="">
+		</member>
+		<member name="Marshalls" type="Marshalls" setter="" getter="">
+		</member>
+		<member name="NativeMenu" type="NativeMenu" setter="" getter="">
+		</member>
+		<member name="NavigationMeshGenerator" type="NavigationMeshGenerator" setter="" getter="">
+		</member>
+		<member name="NavigationServer2D" type="NavigationServer2D" setter="" getter="">
+		</member>
+		<member name="NavigationServer3D" type="NavigationServer3D" setter="" getter="">
+		</member>
+		<member name="OS" type="OS" setter="" getter="">
+		</member>
+		<member name="Performance" type="Performance" setter="" getter="">
+		</member>
+		<member name="PhysicsServer2D" type="PhysicsServer2D" setter="" getter="">
+		</member>
+		<member name="PhysicsServer2DManager" type="PhysicsServer2DManager" setter="" getter="">
+		</member>
+		<member name="PhysicsServer3D" type="PhysicsServer3D" setter="" getter="">
+		</member>
+		<member name="PhysicsServer3DManager" type="PhysicsServer3DManager" setter="" getter="">
+		</member>
+		<member name="ProjectSettings" type="ProjectSettings" setter="" getter="">
+		</member>
+		<member name="RenderingServer" type="RenderingServer" setter="" getter="">
+		</member>
+		<member name="ResourceLoader" type="ResourceLoader" setter="" getter="">
+		</member>
+		<member name="ResourceSaver" type="ResourceSaver" setter="" getter="">
+		</member>
+		<member name="ResourceUID" type="ResourceUID" setter="" getter="">
+		</member>
+		<member name="TextServerManager" type="TextServerManager" setter="" getter="">
+		</member>
+		<member name="ThemeDB" type="ThemeDB" setter="" getter="">
+		</member>
+		<member name="Time" type="Time" setter="" getter="">
+		</member>
+		<member name="TranslationServer" type="TranslationServer" setter="" getter="">
+		</member>
+		<member name="WorkerThreadPool" type="WorkerThreadPool" setter="" getter="">
+		</member>
+		<member name="XRServer" type="XRServer" setter="" getter="">
+		</member>
+	</members>
+	<constants>
+		<constant name="SIDE_LEFT" value="0" enum="Side">
+		</constant>
+		<constant name="SIDE_TOP" value="1" enum="Side">
+		</constant>
+		<constant name="SIDE_RIGHT" value="2" enum="Side">
+		</constant>
+		<constant name="SIDE_BOTTOM" value="3" enum="Side">
+		</constant>
+		<constant name="CORNER_TOP_LEFT" value="0" enum="Corner">
+		</constant>
+		<constant name="CORNER_TOP_RIGHT" value="1" enum="Corner">
+		</constant>
+		<constant name="CORNER_BOTTOM_RIGHT" value="2" enum="Corner">
+		</constant>
+		<constant name="CORNER_BOTTOM_LEFT" value="3" enum="Corner">
+		</constant>
+		<constant name="VERTICAL" value="1" enum="Orientation">
+		</constant>
+		<constant name="HORIZONTAL" value="0" enum="Orientation">
+		</constant>
+		<constant name="CLOCKWISE" value="0" enum="ClockDirection">
+		</constant>
+		<constant name="COUNTERCLOCKWISE" value="1" enum="ClockDirection">
+		</constant>
+		<constant name="HORIZONTAL_ALIGNMENT_LEFT" value="0" enum="HorizontalAlignment">
+		</constant>
+		<constant name="HORIZONTAL_ALIGNMENT_CENTER" value="1" enum="HorizontalAlignment">
+		</constant>
+		<constant name="HORIZONTAL_ALIGNMENT_RIGHT" value="2" enum="HorizontalAlignment">
+		</constant>
+		<constant name="HORIZONTAL_ALIGNMENT_FILL" value="3" enum="HorizontalAlignment">
+		</constant>
+		<constant name="VERTICAL_ALIGNMENT_TOP" value="0" enum="VerticalAlignment">
+		</constant>
+		<constant name="VERTICAL_ALIGNMENT_CENTER" value="1" enum="VerticalAlignment">
+		</constant>
+		<constant name="VERTICAL_ALIGNMENT_BOTTOM" value="2" enum="VerticalAlignment">
+		</constant>
+		<constant name="VERTICAL_ALIGNMENT_FILL" value="3" enum="VerticalAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_TOP_TO" value="0" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_CENTER_TO" value="1" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_BASELINE_TO" value="3" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_BOTTOM_TO" value="2" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_TO_TOP" value="0" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_TO_CENTER" value="4" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_TO_BASELINE" value="8" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_TO_BOTTOM" value="12" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_TOP" value="0" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_CENTER" value="5" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_BOTTOM" value="14" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_IMAGE_MASK" value="3" enum="InlineAlignment">
+		</constant>
+		<constant name="INLINE_ALIGNMENT_TEXT_MASK" value="12" enum="InlineAlignment">
+		</constant>
+		<constant name="EULER_ORDER_XYZ" value="0" enum="EulerOrder">
+		</constant>
+		<constant name="EULER_ORDER_XZY" value="1" enum="EulerOrder">
+		</constant>
+		<constant name="EULER_ORDER_YXZ" value="2" enum="EulerOrder">
+		</constant>
+		<constant name="EULER_ORDER_YZX" value="3" enum="EulerOrder">
+		</constant>
+		<constant name="EULER_ORDER_ZXY" value="4" enum="EulerOrder">
+		</constant>
+		<constant name="EULER_ORDER_ZYX" value="5" enum="EulerOrder">
+		</constant>
+		<constant name="KEY_NONE" value="0" enum="Key">
+		</constant>
+		<constant name="KEY_SPECIAL" value="4194304" enum="Key">
+		</constant>
+		<constant name="KEY_ESCAPE" value="4194305" enum="Key">
+		</constant>
+		<constant name="KEY_TAB" value="4194306" enum="Key">
+		</constant>
+		<constant name="KEY_BACKTAB" value="4194307" enum="Key">
+		</constant>
+		<constant name="KEY_BACKSPACE" value="4194308" enum="Key">
+		</constant>
+		<constant name="KEY_ENTER" value="4194309" enum="Key">
+		</constant>
+		<constant name="KEY_KP_ENTER" value="4194310" enum="Key">
+		</constant>
+		<constant name="KEY_INSERT" value="4194311" enum="Key">
+		</constant>
+		<constant name="KEY_DELETE" value="4194312" enum="Key">
+		</constant>
+		<constant name="KEY_PAUSE" value="4194313" enum="Key">
+		</constant>
+		<constant name="KEY_PRINT" value="4194314" enum="Key">
+		</constant>
+		<constant name="KEY_SYSREQ" value="4194315" enum="Key">
+		</constant>
+		<constant name="KEY_CLEAR" value="4194316" enum="Key">
+		</constant>
+		<constant name="KEY_HOME" value="4194317" enum="Key">
+		</constant>
+		<constant name="KEY_END" value="4194318" enum="Key">
+		</constant>
+		<constant name="KEY_LEFT" value="4194319" enum="Key">
+		</constant>
+		<constant name="KEY_UP" value="4194320" enum="Key">
+		</constant>
+		<constant name="KEY_RIGHT" value="4194321" enum="Key">
+		</constant>
+		<constant name="KEY_DOWN" value="4194322" enum="Key">
+		</constant>
+		<constant name="KEY_PAGEUP" value="4194323" enum="Key">
+		</constant>
+		<constant name="KEY_PAGEDOWN" value="4194324" enum="Key">
+		</constant>
+		<constant name="KEY_SHIFT" value="4194325" enum="Key">
+		</constant>
+		<constant name="KEY_CTRL" value="4194326" enum="Key">
+		</constant>
+		<constant name="KEY_META" value="4194327" enum="Key">
+		</constant>
+		<constant name="KEY_ALT" value="4194328" enum="Key">
+		</constant>
+		<constant name="KEY_CAPSLOCK" value="4194329" enum="Key">
+		</constant>
+		<constant name="KEY_NUMLOCK" value="4194330" enum="Key">
+		</constant>
+		<constant name="KEY_SCROLLLOCK" value="4194331" enum="Key">
+		</constant>
+		<constant name="KEY_F1" value="4194332" enum="Key">
+		</constant>
+		<constant name="KEY_F2" value="4194333" enum="Key">
+		</constant>
+		<constant name="KEY_F3" value="4194334" enum="Key">
+		</constant>
+		<constant name="KEY_F4" value="4194335" enum="Key">
+		</constant>
+		<constant name="KEY_F5" value="4194336" enum="Key">
+		</constant>
+		<constant name="KEY_F6" value="4194337" enum="Key">
+		</constant>
+		<constant name="KEY_F7" value="4194338" enum="Key">
+		</constant>
+		<constant name="KEY_F8" value="4194339" enum="Key">
+		</constant>
+		<constant name="KEY_F9" value="4194340" enum="Key">
+		</constant>
+		<constant name="KEY_F10" value="4194341" enum="Key">
+		</constant>
+		<constant name="KEY_F11" value="4194342" enum="Key">
+		</constant>
+		<constant name="KEY_F12" value="4194343" enum="Key">
+		</constant>
+		<constant name="KEY_F13" value="4194344" enum="Key">
+		</constant>
+		<constant name="KEY_F14" value="4194345" enum="Key">
+		</constant>
+		<constant name="KEY_F15" value="4194346" enum="Key">
+		</constant>
+		<constant name="KEY_F16" value="4194347" enum="Key">
+		</constant>
+		<constant name="KEY_F17" value="4194348" enum="Key">
+		</constant>
+		<constant name="KEY_F18" value="4194349" enum="Key">
+		</constant>
+		<constant name="KEY_F19" value="4194350" enum="Key">
+		</constant>
+		<constant name="KEY_F20" value="4194351" enum="Key">
+		</constant>
+		<constant name="KEY_F21" value="4194352" enum="Key">
+		</constant>
+		<constant name="KEY_F22" value="4194353" enum="Key">
+		</constant>
+		<constant name="KEY_F23" value="4194354" enum="Key">
+		</constant>
+		<constant name="KEY_F24" value="4194355" enum="Key">
+		</constant>
+		<constant name="KEY_F25" value="4194356" enum="Key">
+		</constant>
+		<constant name="KEY_F26" value="4194357" enum="Key">
+		</constant>
+		<constant name="KEY_F27" value="4194358" enum="Key">
+		</constant>
+		<constant name="KEY_F28" value="4194359" enum="Key">
+		</constant>
+		<constant name="KEY_F29" value="4194360" enum="Key">
+		</constant>
+		<constant name="KEY_F30" value="4194361" enum="Key">
+		</constant>
+		<constant name="KEY_F31" value="4194362" enum="Key">
+		</constant>
+		<constant name="KEY_F32" value="4194363" enum="Key">
+		</constant>
+		<constant name="KEY_F33" value="4194364" enum="Key">
+		</constant>
+		<constant name="KEY_F34" value="4194365" enum="Key">
+		</constant>
+		<constant name="KEY_F35" value="4194366" enum="Key">
+		</constant>
+		<constant name="KEY_KP_MULTIPLY" value="4194433" enum="Key">
+		</constant>
+		<constant name="KEY_KP_DIVIDE" value="4194434" enum="Key">
+		</constant>
+		<constant name="KEY_KP_SUBTRACT" value="4194435" enum="Key">
+		</constant>
+		<constant name="KEY_KP_PERIOD" value="4194436" enum="Key">
+		</constant>
+		<constant name="KEY_KP_ADD" value="4194437" enum="Key">
+		</constant>
+		<constant name="KEY_KP_0" value="4194438" enum="Key">
+		</constant>
+		<constant name="KEY_KP_1" value="4194439" enum="Key">
+		</constant>
+		<constant name="KEY_KP_2" value="4194440" enum="Key">
+		</constant>
+		<constant name="KEY_KP_3" value="4194441" enum="Key">
+		</constant>
+		<constant name="KEY_KP_4" value="4194442" enum="Key">
+		</constant>
+		<constant name="KEY_KP_5" value="4194443" enum="Key">
+		</constant>
+		<constant name="KEY_KP_6" value="4194444" enum="Key">
+		</constant>
+		<constant name="KEY_KP_7" value="4194445" enum="Key">
+		</constant>
+		<constant name="KEY_KP_8" value="4194446" enum="Key">
+		</constant>
+		<constant name="KEY_KP_9" value="4194447" enum="Key">
+		</constant>
+		<constant name="KEY_MENU" value="4194370" enum="Key">
+		</constant>
+		<constant name="KEY_HYPER" value="4194371" enum="Key">
+		</constant>
+		<constant name="KEY_HELP" value="4194373" enum="Key">
+		</constant>
+		<constant name="KEY_BACK" value="4194376" enum="Key">
+		</constant>
+		<constant name="KEY_FORWARD" value="4194377" enum="Key">
+		</constant>
+		<constant name="KEY_STOP" value="4194378" enum="Key">
+		</constant>
+		<constant name="KEY_REFRESH" value="4194379" enum="Key">
+		</constant>
+		<constant name="KEY_VOLUMEDOWN" value="4194380" enum="Key">
+		</constant>
+		<constant name="KEY_VOLUMEMUTE" value="4194381" enum="Key">
+		</constant>
+		<constant name="KEY_VOLUMEUP" value="4194382" enum="Key">
+		</constant>
+		<constant name="KEY_MEDIAPLAY" value="4194388" enum="Key">
+		</constant>
+		<constant name="KEY_MEDIASTOP" value="4194389" enum="Key">
+		</constant>
+		<constant name="KEY_MEDIAPREVIOUS" value="4194390" enum="Key">
+		</constant>
+		<constant name="KEY_MEDIANEXT" value="4194391" enum="Key">
+		</constant>
+		<constant name="KEY_MEDIARECORD" value="4194392" enum="Key">
+		</constant>
+		<constant name="KEY_HOMEPAGE" value="4194393" enum="Key">
+		</constant>
+		<constant name="KEY_FAVORITES" value="4194394" enum="Key">
+		</constant>
+		<constant name="KEY_SEARCH" value="4194395" enum="Key">
+		</constant>
+		<constant name="KEY_STANDBY" value="4194396" enum="Key">
+		</constant>
+		<constant name="KEY_OPENURL" value="4194397" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCHMAIL" value="4194398" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCHMEDIA" value="4194399" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCH0" value="4194400" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCH1" value="4194401" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCH2" value="4194402" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCH3" value="4194403" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCH4" value="4194404" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCH5" value="4194405" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCH6" value="4194406" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCH7" value="4194407" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCH8" value="4194408" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCH9" value="4194409" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCHA" value="4194410" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCHB" value="4194411" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCHC" value="4194412" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCHD" value="4194413" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCHE" value="4194414" enum="Key">
+		</constant>
+		<constant name="KEY_LAUNCHF" value="4194415" enum="Key">
+		</constant>
+		<constant name="KEY_GLOBE" value="4194416" enum="Key">
+		</constant>
+		<constant name="KEY_KEYBOARD" value="4194417" enum="Key">
+		</constant>
+		<constant name="KEY_JIS_EISU" value="4194418" enum="Key">
+		</constant>
+		<constant name="KEY_JIS_KANA" value="4194419" enum="Key">
+		</constant>
+		<constant name="KEY_UNKNOWN" value="8388607" enum="Key">
+		</constant>
+		<constant name="KEY_SPACE" value="32" enum="Key">
+		</constant>
+		<constant name="KEY_EXCLAM" value="33" enum="Key">
+		</constant>
+		<constant name="KEY_QUOTEDBL" value="34" enum="Key">
+		</constant>
+		<constant name="KEY_NUMBERSIGN" value="35" enum="Key">
+		</constant>
+		<constant name="KEY_DOLLAR" value="36" enum="Key">
+		</constant>
+		<constant name="KEY_PERCENT" value="37" enum="Key">
+		</constant>
+		<constant name="KEY_AMPERSAND" value="38" enum="Key">
+		</constant>
+		<constant name="KEY_APOSTROPHE" value="39" enum="Key">
+		</constant>
+		<constant name="KEY_PARENLEFT" value="40" enum="Key">
+		</constant>
+		<constant name="KEY_PARENRIGHT" value="41" enum="Key">
+		</constant>
+		<constant name="KEY_ASTERISK" value="42" enum="Key">
+		</constant>
+		<constant name="KEY_PLUS" value="43" enum="Key">
+		</constant>
+		<constant name="KEY_COMMA" value="44" enum="Key">
+		</constant>
+		<constant name="KEY_MINUS" value="45" enum="Key">
+		</constant>
+		<constant name="KEY_PERIOD" value="46" enum="Key">
+		</constant>
+		<constant name="KEY_SLASH" value="47" enum="Key">
+		</constant>
+		<constant name="KEY_0" value="48" enum="Key">
+		</constant>
+		<constant name="KEY_1" value="49" enum="Key">
+		</constant>
+		<constant name="KEY_2" value="50" enum="Key">
+		</constant>
+		<constant name="KEY_3" value="51" enum="Key">
+		</constant>
+		<constant name="KEY_4" value="52" enum="Key">
+		</constant>
+		<constant name="KEY_5" value="53" enum="Key">
+		</constant>
+		<constant name="KEY_6" value="54" enum="Key">
+		</constant>
+		<constant name="KEY_7" value="55" enum="Key">
+		</constant>
+		<constant name="KEY_8" value="56" enum="Key">
+		</constant>
+		<constant name="KEY_9" value="57" enum="Key">
+		</constant>
+		<constant name="KEY_COLON" value="58" enum="Key">
+		</constant>
+		<constant name="KEY_SEMICOLON" value="59" enum="Key">
+		</constant>
+		<constant name="KEY_LESS" value="60" enum="Key">
+		</constant>
+		<constant name="KEY_EQUAL" value="61" enum="Key">
+		</constant>
+		<constant name="KEY_GREATER" value="62" enum="Key">
+		</constant>
+		<constant name="KEY_QUESTION" value="63" enum="Key">
+		</constant>
+		<constant name="KEY_AT" value="64" enum="Key">
+		</constant>
+		<constant name="KEY_A" value="65" enum="Key">
+		</constant>
+		<constant name="KEY_B" value="66" enum="Key">
+		</constant>
+		<constant name="KEY_C" value="67" enum="Key">
+		</constant>
+		<constant name="KEY_D" value="68" enum="Key">
+		</constant>
+		<constant name="KEY_E" value="69" enum="Key">
+		</constant>
+		<constant name="KEY_F" value="70" enum="Key">
+		</constant>
+		<constant name="KEY_G" value="71" enum="Key">
+		</constant>
+		<constant name="KEY_H" value="72" enum="Key">
+		</constant>
+		<constant name="KEY_I" value="73" enum="Key">
+		</constant>
+		<constant name="KEY_J" value="74" enum="Key">
+		</constant>
+		<constant name="KEY_K" value="75" enum="Key">
+		</constant>
+		<constant name="KEY_L" value="76" enum="Key">
+		</constant>
+		<constant name="KEY_M" value="77" enum="Key">
+		</constant>
+		<constant name="KEY_N" value="78" enum="Key">
+		</constant>
+		<constant name="KEY_O" value="79" enum="Key">
+		</constant>
+		<constant name="KEY_P" value="80" enum="Key">
+		</constant>
+		<constant name="KEY_Q" value="81" enum="Key">
+		</constant>
+		<constant name="KEY_R" value="82" enum="Key">
+		</constant>
+		<constant name="KEY_S" value="83" enum="Key">
+		</constant>
+		<constant name="KEY_T" value="84" enum="Key">
+		</constant>
+		<constant name="KEY_U" value="85" enum="Key">
+		</constant>
+		<constant name="KEY_V" value="86" enum="Key">
+		</constant>
+		<constant name="KEY_W" value="87" enum="Key">
+		</constant>
+		<constant name="KEY_X" value="88" enum="Key">
+		</constant>
+		<constant name="KEY_Y" value="89" enum="Key">
+		</constant>
+		<constant name="KEY_Z" value="90" enum="Key">
+		</constant>
+		<constant name="KEY_BRACKETLEFT" value="91" enum="Key">
+		</constant>
+		<constant name="KEY_BACKSLASH" value="92" enum="Key">
+		</constant>
+		<constant name="KEY_BRACKETRIGHT" value="93" enum="Key">
+		</constant>
+		<constant name="KEY_ASCIICIRCUM" value="94" enum="Key">
+		</constant>
+		<constant name="KEY_UNDERSCORE" value="95" enum="Key">
+		</constant>
+		<constant name="KEY_QUOTELEFT" value="96" enum="Key">
+		</constant>
+		<constant name="KEY_BRACELEFT" value="123" enum="Key">
+		</constant>
+		<constant name="KEY_BAR" value="124" enum="Key">
+		</constant>
+		<constant name="KEY_BRACERIGHT" value="125" enum="Key">
+		</constant>
+		<constant name="KEY_ASCIITILDE" value="126" enum="Key">
+		</constant>
+		<constant name="KEY_YEN" value="165" enum="Key">
+		</constant>
+		<constant name="KEY_SECTION" value="167" enum="Key">
+		</constant>
+		<constant name="KEY_CODE_MASK" value="8388607" enum="KeyModifierMask" is_bitfield="true">
+		</constant>
+		<constant name="KEY_MODIFIER_MASK" value="2130706432" enum="KeyModifierMask" is_bitfield="true">
+		</constant>
+		<constant name="KEY_MASK_CMD_OR_CTRL" value="16777216" enum="KeyModifierMask" is_bitfield="true">
+		</constant>
+		<constant name="KEY_MASK_SHIFT" value="33554432" enum="KeyModifierMask" is_bitfield="true">
+		</constant>
+		<constant name="KEY_MASK_ALT" value="67108864" enum="KeyModifierMask" is_bitfield="true">
+		</constant>
+		<constant name="KEY_MASK_META" value="134217728" enum="KeyModifierMask" is_bitfield="true">
+		</constant>
+		<constant name="KEY_MASK_CTRL" value="268435456" enum="KeyModifierMask" is_bitfield="true">
+		</constant>
+		<constant name="KEY_MASK_KPAD" value="536870912" enum="KeyModifierMask" is_bitfield="true">
+		</constant>
+		<constant name="KEY_MASK_GROUP_SWITCH" value="1073741824" enum="KeyModifierMask" is_bitfield="true">
+		</constant>
+		<constant name="KEY_LOCATION_UNSPECIFIED" value="0" enum="KeyLocation">
+		</constant>
+		<constant name="KEY_LOCATION_LEFT" value="1" enum="KeyLocation">
+		</constant>
+		<constant name="KEY_LOCATION_RIGHT" value="2" enum="KeyLocation">
+		</constant>
+		<constant name="MOUSE_BUTTON_NONE" value="0" enum="MouseButton">
+		</constant>
+		<constant name="MOUSE_BUTTON_LEFT" value="1" enum="MouseButton">
+		</constant>
+		<constant name="MOUSE_BUTTON_RIGHT" value="2" enum="MouseButton">
+		</constant>
+		<constant name="MOUSE_BUTTON_MIDDLE" value="3" enum="MouseButton">
+		</constant>
+		<constant name="MOUSE_BUTTON_WHEEL_UP" value="4" enum="MouseButton">
+		</constant>
+		<constant name="MOUSE_BUTTON_WHEEL_DOWN" value="5" enum="MouseButton">
+		</constant>
+		<constant name="MOUSE_BUTTON_WHEEL_LEFT" value="6" enum="MouseButton">
+		</constant>
+		<constant name="MOUSE_BUTTON_WHEEL_RIGHT" value="7" enum="MouseButton">
+		</constant>
+		<constant name="MOUSE_BUTTON_XBUTTON1" value="8" enum="MouseButton">
+		</constant>
+		<constant name="MOUSE_BUTTON_XBUTTON2" value="9" enum="MouseButton">
+		</constant>
+		<constant name="MOUSE_BUTTON_MASK_LEFT" value="1" enum="MouseButtonMask" is_bitfield="true">
+		</constant>
+		<constant name="MOUSE_BUTTON_MASK_RIGHT" value="2" enum="MouseButtonMask" is_bitfield="true">
+		</constant>
+		<constant name="MOUSE_BUTTON_MASK_MIDDLE" value="4" enum="MouseButtonMask" is_bitfield="true">
+		</constant>
+		<constant name="MOUSE_BUTTON_MASK_MB_XBUTTON1" value="128" enum="MouseButtonMask" is_bitfield="true">
+		</constant>
+		<constant name="MOUSE_BUTTON_MASK_MB_XBUTTON2" value="256" enum="MouseButtonMask" is_bitfield="true">
+		</constant>
+		<constant name="JOY_BUTTON_INVALID" value="-1" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_A" value="0" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_B" value="1" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_X" value="2" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_Y" value="3" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_BACK" value="4" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_GUIDE" value="5" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_START" value="6" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_LEFT_STICK" value="7" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_RIGHT_STICK" value="8" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_LEFT_SHOULDER" value="9" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_RIGHT_SHOULDER" value="10" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_DPAD_UP" value="11" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_DPAD_DOWN" value="12" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_DPAD_LEFT" value="13" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_DPAD_RIGHT" value="14" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_MISC1" value="15" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_PADDLE1" value="16" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_PADDLE2" value="17" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_PADDLE3" value="18" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_PADDLE4" value="19" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_TOUCHPAD" value="20" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_SDL_MAX" value="21" enum="JoyButton">
+		</constant>
+		<constant name="JOY_BUTTON_MAX" value="128" enum="JoyButton">
+		</constant>
+		<constant name="JOY_AXIS_INVALID" value="-1" enum="JoyAxis">
+		</constant>
+		<constant name="JOY_AXIS_LEFT_X" value="0" enum="JoyAxis">
+		</constant>
+		<constant name="JOY_AXIS_LEFT_Y" value="1" enum="JoyAxis">
+		</constant>
+		<constant name="JOY_AXIS_RIGHT_X" value="2" enum="JoyAxis">
+		</constant>
+		<constant name="JOY_AXIS_RIGHT_Y" value="3" enum="JoyAxis">
+		</constant>
+		<constant name="JOY_AXIS_TRIGGER_LEFT" value="4" enum="JoyAxis">
+		</constant>
+		<constant name="JOY_AXIS_TRIGGER_RIGHT" value="5" enum="JoyAxis">
+		</constant>
+		<constant name="JOY_AXIS_SDL_MAX" value="6" enum="JoyAxis">
+		</constant>
+		<constant name="JOY_AXIS_MAX" value="10" enum="JoyAxis">
+		</constant>
+		<constant name="MIDI_MESSAGE_NONE" value="0" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_NOTE_OFF" value="8" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_NOTE_ON" value="9" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_AFTERTOUCH" value="10" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_CONTROL_CHANGE" value="11" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_PROGRAM_CHANGE" value="12" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_CHANNEL_PRESSURE" value="13" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_PITCH_BEND" value="14" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_SYSTEM_EXCLUSIVE" value="240" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_QUARTER_FRAME" value="241" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_SONG_POSITION_POINTER" value="242" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_SONG_SELECT" value="243" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_TUNE_REQUEST" value="246" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_TIMING_CLOCK" value="248" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_START" value="250" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_CONTINUE" value="251" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_STOP" value="252" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_ACTIVE_SENSING" value="254" enum="MIDIMessage">
+		</constant>
+		<constant name="MIDI_MESSAGE_SYSTEM_RESET" value="255" enum="MIDIMessage">
+		</constant>
+		<constant name="OK" value="0" enum="Error">
+		</constant>
+		<constant name="FAILED" value="1" enum="Error">
+		</constant>
+		<constant name="ERR_UNAVAILABLE" value="2" enum="Error">
+		</constant>
+		<constant name="ERR_UNCONFIGURED" value="3" enum="Error">
+		</constant>
+		<constant name="ERR_UNAUTHORIZED" value="4" enum="Error">
+		</constant>
+		<constant name="ERR_PARAMETER_RANGE_ERROR" value="5" enum="Error">
+		</constant>
+		<constant name="ERR_OUT_OF_MEMORY" value="6" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_NOT_FOUND" value="7" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_BAD_DRIVE" value="8" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_BAD_PATH" value="9" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_NO_PERMISSION" value="10" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_ALREADY_IN_USE" value="11" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_CANT_OPEN" value="12" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_CANT_WRITE" value="13" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_CANT_READ" value="14" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_UNRECOGNIZED" value="15" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_CORRUPT" value="16" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_MISSING_DEPENDENCIES" value="17" enum="Error">
+		</constant>
+		<constant name="ERR_FILE_EOF" value="18" enum="Error">
+		</constant>
+		<constant name="ERR_CANT_OPEN" value="19" enum="Error">
+		</constant>
+		<constant name="ERR_CANT_CREATE" value="20" enum="Error">
+		</constant>
+		<constant name="ERR_QUERY_FAILED" value="21" enum="Error">
+		</constant>
+		<constant name="ERR_ALREADY_IN_USE" value="22" enum="Error">
+		</constant>
+		<constant name="ERR_LOCKED" value="23" enum="Error">
+		</constant>
+		<constant name="ERR_TIMEOUT" value="24" enum="Error">
+		</constant>
+		<constant name="ERR_CANT_CONNECT" value="25" enum="Error">
+		</constant>
+		<constant name="ERR_CANT_RESOLVE" value="26" enum="Error">
+		</constant>
+		<constant name="ERR_CONNECTION_ERROR" value="27" enum="Error">
+		</constant>
+		<constant name="ERR_CANT_ACQUIRE_RESOURCE" value="28" enum="Error">
+		</constant>
+		<constant name="ERR_CANT_FORK" value="29" enum="Error">
+		</constant>
+		<constant name="ERR_INVALID_DATA" value="30" enum="Error">
+		</constant>
+		<constant name="ERR_INVALID_PARAMETER" value="31" enum="Error">
+		</constant>
+		<constant name="ERR_ALREADY_EXISTS" value="32" enum="Error">
+		</constant>
+		<constant name="ERR_DOES_NOT_EXIST" value="33" enum="Error">
+		</constant>
+		<constant name="ERR_DATABASE_CANT_READ" value="34" enum="Error">
+		</constant>
+		<constant name="ERR_DATABASE_CANT_WRITE" value="35" enum="Error">
+		</constant>
+		<constant name="ERR_COMPILATION_FAILED" value="36" enum="Error">
+		</constant>
+		<constant name="ERR_METHOD_NOT_FOUND" value="37" enum="Error">
+		</constant>
+		<constant name="ERR_LINK_FAILED" value="38" enum="Error">
+		</constant>
+		<constant name="ERR_SCRIPT_FAILED" value="39" enum="Error">
+		</constant>
+		<constant name="ERR_CYCLIC_LINK" value="40" enum="Error">
+		</constant>
+		<constant name="ERR_INVALID_DECLARATION" value="41" enum="Error">
+		</constant>
+		<constant name="ERR_DUPLICATE_SYMBOL" value="42" enum="Error">
+		</constant>
+		<constant name="ERR_PARSE_ERROR" value="43" enum="Error">
+		</constant>
+		<constant name="ERR_BUSY" value="44" enum="Error">
+		</constant>
+		<constant name="ERR_SKIP" value="45" enum="Error">
+		</constant>
+		<constant name="ERR_HELP" value="46" enum="Error">
+		</constant>
+		<constant name="ERR_BUG" value="47" enum="Error">
+		</constant>
+		<constant name="ERR_PRINTER_ON_FIRE" value="48" enum="Error">
+		</constant>
+		<constant name="PROPERTY_HINT_NONE" value="0" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_RANGE" value="1" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_ENUM" value="2" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_ENUM_SUGGESTION" value="3" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_EXP_EASING" value="4" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_LINK" value="5" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_FLAGS" value="6" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_LAYERS_2D_RENDER" value="7" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_LAYERS_2D_PHYSICS" value="8" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_LAYERS_2D_NAVIGATION" value="9" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_LAYERS_3D_RENDER" value="10" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_LAYERS_3D_PHYSICS" value="11" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_LAYERS_3D_NAVIGATION" value="12" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_LAYERS_AVOIDANCE" value="37" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_FILE" value="13" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_DIR" value="14" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_GLOBAL_FILE" value="15" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_GLOBAL_DIR" value="16" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_RESOURCE_TYPE" value="17" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_MULTILINE_TEXT" value="18" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_EXPRESSION" value="19" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_PLACEHOLDER_TEXT" value="20" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_COLOR_NO_ALPHA" value="21" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_OBJECT_ID" value="22" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_TYPE_STRING" value="23" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_NODE_PATH_TO_EDITED_NODE" value="24" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_OBJECT_TOO_BIG" value="25" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_NODE_PATH_VALID_TYPES" value="26" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_SAVE_FILE" value="27" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_GLOBAL_SAVE_FILE" value="28" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_INT_IS_OBJECTID" value="29" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_INT_IS_POINTER" value="30" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_ARRAY_TYPE" value="31" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_DICTIONARY_TYPE" value="38" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_LOCALE_ID" value="32" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_LOCALIZABLE_STRING" value="33" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_NODE_TYPE" value="34" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_HIDE_QUATERNION_EDIT" value="35" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_PASSWORD" value="36" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_TOOL_BUTTON" value="39" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_ONESHOT" value="40" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_GROUP_ENABLE" value="42" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_INPUT_NAME" value="43" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_FILE_PATH" value="44" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_HINT_MAX" value="45" enum="PropertyHint">
+		</constant>
+		<constant name="PROPERTY_USAGE_NONE" value="0" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_STORAGE" value="2" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_EDITOR" value="4" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_INTERNAL" value="8" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_CHECKABLE" value="16" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_CHECKED" value="32" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_GROUP" value="64" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_CATEGORY" value="128" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_SUBGROUP" value="256" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_CLASS_IS_BITFIELD" value="512" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_NO_INSTANCE_STATE" value="1024" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_RESTART_IF_CHANGED" value="2048" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_SCRIPT_VARIABLE" value="4096" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_STORE_IF_NULL" value="8192" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED" value="16384" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_SCRIPT_DEFAULT_VALUE" value="32768" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_CLASS_IS_ENUM" value="65536" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_NIL_IS_VARIANT" value="131072" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_ARRAY" value="262144" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_ALWAYS_DUPLICATE" value="524288" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_NEVER_DUPLICATE" value="1048576" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_HIGH_END_GFX" value="2097152" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_NODE_PATH_FROM_SCENE_ROOT" value="4194304" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_RESOURCE_NOT_PERSISTENT" value="8388608" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_KEYING_INCREMENTS" value="16777216" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_DEFERRED_SET_RESOURCE" value="33554432" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_EDITOR_INSTANTIATE_OBJECT" value="67108864" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_EDITOR_BASIC_SETTING" value="134217728" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_READ_ONLY" value="268435456" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_SECRET" value="536870912" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_DEFAULT" value="6" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="PROPERTY_USAGE_NO_EDITOR" value="2" enum="PropertyUsageFlags" is_bitfield="true">
+		</constant>
+		<constant name="METHOD_FLAG_NORMAL" value="1" enum="MethodFlags" is_bitfield="true">
+		</constant>
+		<constant name="METHOD_FLAG_EDITOR" value="2" enum="MethodFlags" is_bitfield="true">
+		</constant>
+		<constant name="METHOD_FLAG_CONST" value="4" enum="MethodFlags" is_bitfield="true">
+		</constant>
+		<constant name="METHOD_FLAG_VIRTUAL" value="8" enum="MethodFlags" is_bitfield="true">
+		</constant>
+		<constant name="METHOD_FLAG_VARARG" value="16" enum="MethodFlags" is_bitfield="true">
+		</constant>
+		<constant name="METHOD_FLAG_STATIC" value="32" enum="MethodFlags" is_bitfield="true">
+		</constant>
+		<constant name="METHOD_FLAG_OBJECT_CORE" value="64" enum="MethodFlags" is_bitfield="true">
+		</constant>
+		<constant name="METHOD_FLAG_VIRTUAL_REQUIRED" value="128" enum="MethodFlags" is_bitfield="true">
+		</constant>
+		<constant name="METHOD_FLAGS_DEFAULT" value="1" enum="MethodFlags" is_bitfield="true">
+		</constant>
+		<constant name="TYPE_NIL" value="0" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_BOOL" value="1" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_INT" value="2" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_FLOAT" value="3" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_STRING" value="4" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_VECTOR2" value="5" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_VECTOR2I" value="6" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_RECT2" value="7" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_RECT2I" value="8" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_VECTOR3" value="9" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_VECTOR3I" value="10" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_TRANSFORM2D" value="11" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_VECTOR4" value="12" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_VECTOR4I" value="13" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PLANE" value="14" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_QUATERNION" value="15" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_AABB" value="16" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_BASIS" value="17" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_TRANSFORM3D" value="18" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PROJECTION" value="19" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_COLOR" value="20" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_STRING_NAME" value="21" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_NODE_PATH" value="22" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_RID" value="23" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_OBJECT" value="24" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_CALLABLE" value="25" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_SIGNAL" value="26" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_DICTIONARY" value="27" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_ARRAY" value="28" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PACKED_BYTE_ARRAY" value="29" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PACKED_INT32_ARRAY" value="30" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PACKED_INT64_ARRAY" value="31" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PACKED_FLOAT32_ARRAY" value="32" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PACKED_FLOAT64_ARRAY" value="33" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PACKED_STRING_ARRAY" value="34" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PACKED_VECTOR2_ARRAY" value="35" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PACKED_VECTOR3_ARRAY" value="36" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PACKED_COLOR_ARRAY" value="37" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_PACKED_VECTOR4_ARRAY" value="38" enum="Variant.Type">
+		</constant>
+		<constant name="TYPE_MAX" value="39" enum="Variant.Type">
+		</constant>
+		<constant name="OP_EQUAL" value="0" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_NOT_EQUAL" value="1" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_LESS" value="2" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_LESS_EQUAL" value="3" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_GREATER" value="4" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_GREATER_EQUAL" value="5" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_ADD" value="6" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_SUBTRACT" value="7" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_MULTIPLY" value="8" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_DIVIDE" value="9" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_NEGATE" value="10" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_POSITIVE" value="11" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_MODULE" value="12" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_POWER" value="13" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_SHIFT_LEFT" value="14" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_SHIFT_RIGHT" value="15" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_BIT_AND" value="16" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_BIT_OR" value="17" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_BIT_XOR" value="18" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_BIT_NEGATE" value="19" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_AND" value="20" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_OR" value="21" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_XOR" value="22" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_NOT" value="23" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_IN" value="24" enum="Variant.Operator">
+		</constant>
+		<constant name="OP_MAX" value="25" enum="Variant.Operator">
+		</constant>
+	</constants>
+</class>

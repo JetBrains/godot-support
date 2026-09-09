@@ -1,5 +1,5 @@
 package gdscript.psi
 
-import com.intellij.psi.PsiElement
+import com.intellij.polySymbols.references.PolySymbolOwnReferenceHost
 
-interface GdRefElement : PsiElement
+interface GdRefElement : PolySymbolOwnReferenceHost

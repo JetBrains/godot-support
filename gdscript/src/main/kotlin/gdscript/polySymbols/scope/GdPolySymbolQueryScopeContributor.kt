@@ -1,0 +1,185 @@
+package gdscript.polySymbols.scope
+
+import com.intellij.patterns.PlatformPatterns.psiElement
+import com.intellij.polySymbols.query.PolySymbolQueryScopeContributor
+import com.intellij.polySymbols.query.PolySymbolQueryScopeProviderRegistrar
+import com.intellij.polySymbols.query.polySymbolScope
+import com.intellij.psi.util.siblings
+import gdscript.polySymbols.GdPolySymbolKind
+import gdscript.psi.GdAnnotationType
+import gdscript.psi.GdFile
+import gdscript.psi.GdGetMethodIdRef
+import gdscript.psi.GdInheritanceIdRef
+import gdscript.psi.GdInheritanceSubIdRef
+import gdscript.psi.GdRefIdRef
+import gdscript.psi.GdSetMethodIdRef
+import gdscript.psi.GdTypeHintRef
+import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.psi.utils.GdCodeFragmentUtil
+
+class GdPolySymbolQueryScopeContributor : PolySymbolQueryScopeContributor {
+    override fun registerProviders(registrar: PolySymbolQueryScopeProviderRegistrar) {
+        registrar
+            .inFile(GdFile::class.java)
+            .apply {
+                // get/set resolve
+                forPsiLocations(
+                    psiElement(GdGetMethodIdRef::class.java),
+                    psiElement(GdSetMethodIdRef::class.java),
+                )
+                    .contributeScopeProvider { ref ->
+                        val location = GdCodeFragmentUtil.effectiveElement(ref)
+                        listOf(
+                            GdPsiOwnClassScope(location),
+                        )
+                    }
+
+                // inheritance resolve
+                forPsiLocation(
+                    psiElement(GdInheritanceIdRef::class.java)
+                )
+                    .contributeScopeProvider { ref ->
+                        listOf(
+                            gdSdkClassesPolySymbolScope(ref.project),
+                            gdPsiClassesPolySymbolScope(ref.project),
+                            gdPsiInnerClassesPolySymbolScope(ref.containingFile as GdFile),
+                            gdPsiResourceClassesPolySymbolScope(ref.project),
+                            //gdPsiAutoloadScope(ref.project),
+                            polySymbolScope {
+                                provides(GdPolySymbolKind.INHERITANCE_SYMBOLS)
+                                initialize {
+                                    addSymbol(GdPolySymbolKind.INHERITANCE_SYMBOLS, "GDScript Inheritance Symbols") {
+                                        pattern {
+                                            group {
+                                                symbols {
+                                                    from(GdPolySymbolKind.CLASS)
+                                                    from(GdPolySymbolKind.RESOURCE_CLASS)
+                                                }
+                                                symbolReference()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
+
+                // nested-class inheritance resolve (extends Outer.Inner)
+                forPsiLocation(
+                    psiElement(GdInheritanceSubIdRef::class.java)
+                )
+                    .contributeScopeProvider { ref ->
+                        // GdInheritanceIdRef/GdInheritanceSubIdRef sit in a flat hierarchy where all
+                        // segments of the chain are siblings.
+                        val qualifier = ref.siblings(false, false)
+                            .firstOrNull { it is GdInheritanceIdRef || it is GdInheritanceSubIdRef }
+                        qualifier?.let { listOf(GdQualifiedInheritanceResolveScope(it)) }.orEmpty()
+                    }
+
+                // type hint resolve
+                forPsiLocation(
+                    psiElement(GdTypeHintRef::class.java),
+                )
+                    .contributeScopeProvider { ref ->
+                        // The GdTypeHintRef sit in a flat hierarchy where all qualifiers are siblings.
+                        val qualifier = ref.siblings(false, false)
+                            .filterIsInstance<GdTypeHintRef>()
+                            .firstOrNull()
+                        if (qualifier == null) {
+                            val location = GdCodeFragmentUtil.effectiveElement(ref)
+                            listOf(
+                                GdPsiOwnClassScope(location),
+                                gdSdkClassesPolySymbolScope(ref.project),
+                                gdSdkGlobalPolySymbolScope(ref.project),
+                                gdPsiClassesPolySymbolScope(ref.project),
+                                gdPsiInnerClassesPolySymbolScope(ref.containingFile as GdFile),
+                                gdPsiAutoloadScope(ref.project),
+                                polySymbolScope {
+                                    provides(GdPolySymbolKind.TYPE_HINTS)
+                                    initialize {
+                                        addSymbol(GdPolySymbolKind.TYPE_HINTS, "GDScript Type Hints") {
+                                            pattern {
+                                                group {
+                                                    symbols {
+                                                        from(GdPolySymbolKind.CLASS)
+                                                        from(GdPolySymbolKind.LOADED_CLASS_ALIAS)
+                                                        from(GdPolySymbolKind.ENUM)
+                                                        from(GdPolySymbolKind.AUTOLOAD)
+                                                    }
+                                                    symbolReference()
+                                                }
+                                            }
+                                        }
+                                    }
+                                })
+                        } else {
+                            listOf(
+                                GdQualifiedTypeHintResolveScope(qualifier),
+                            )
+                        }
+                    }
+
+                // class member / qualified symbol resolve
+                forPsiLocation(
+                    psiElement(GdRefIdRef::class.java),
+                )
+                    .contributeScopeProvider { ref ->
+                        val qualifier = GdClassMemberUtil.calledUpon(ref)
+                        if (qualifier == null) {
+                            val location = GdCodeFragmentUtil.effectiveElement(ref)
+                            listOf(
+                                GdPsiOwnClassScope(location),
+                                gdSdkClassesPolySymbolScope(ref.project),
+                                gdSdkGlobalPolySymbolScope(ref.project),
+                                gdPsiClassesPolySymbolScope(ref.project),
+                                gdPsiInnerClassesPolySymbolScope(ref.containingFile as GdFile),
+                                gdPsiAutoloadScope(ref.project),
+                                GdLocalSymbolsStructuredScope(location),
+                                polySymbolScope {
+                                    provides(GdPolySymbolKind.QUALIFIABLE_SYMBOLS)
+                                    initialize {
+                                        addSymbol(GdPolySymbolKind.QUALIFIABLE_SYMBOLS, "GDScript Qualified Symbols") {
+                                            pattern {
+                                                group {
+                                                    symbols {
+                                                        from(GdPolySymbolKind.CLASS)
+                                                        from(GdPolySymbolKind.METHOD)
+                                                        from(GdPolySymbolKind.PROPERTY)
+                                                        from(GdPolySymbolKind.CONSTANT)
+                                                        from(GdPolySymbolKind.ENUM)
+                                                        from(GdPolySymbolKind.ENUM_VALUE)
+                                                        from(GdPolySymbolKind.SIGNAL)
+
+                                                        // PSI-only
+                                                        from(GdPolySymbolKind.LOADED_CLASS_ALIAS)
+                                                        from(GdPolySymbolKind.AUTOLOAD)
+
+                                                        // local, PSI-only (unqualified access only)
+                                                        from(GdPolySymbolKind.LOCAL_VARIABLE)
+                                                        from(GdPolySymbolKind.LOCAL_CONSTANT)
+                                                        from(GdPolySymbolKind.PARAMETER)
+                                                        from(GdPolySymbolKind.FOR_VARIABLE)
+                                                        from(GdPolySymbolKind.BINDING_PATTERN)
+                                                    }
+                                                    symbolReference()
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                            )
+
+                        } else {
+                            listOf(
+                                GdQualifiedRefIdResolveScope(qualifier),
+                            )
+                        }
+                    }
+
+                forPsiLocation(psiElement(GdAnnotationType::class.java))
+                    .contributeScopeProvider { ref ->
+                        listOf(gdSdkAnnotationsPolySymbolScope(ref.project))
+                    }
+            }
+    }
+}

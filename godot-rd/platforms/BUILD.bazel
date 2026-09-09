@@ -1,0 +1,45 @@
+# The target platforms of the godot-rd GDExtension, one per id in `GODOT_PLATFORMS`. They carry the
+# minimum requirements as per Rider docs.
+
+load(
+    "//build/native/platforms:defs.bzl",
+    "LINUX_AARCH64_CONSTRAINTS",
+    "LINUX_X86_64_CONSTRAINTS",
+    "MACOS_AARCH64_CONSTRAINTS",
+    "MACOS_X86_64_CONSTRAINTS",
+    "WINDOWS_AARCH64_CONSTRAINTS",
+    "WINDOWS_X86_64_CONSTRAINTS",
+)
+load("//dotnet/Plugins/godot-support/godot-rd:godot_rd_platforms.bzl", "GLIBC_FLOOR")
+
+package(default_visibility = ["//visibility:public"])
+
+platform(
+    name = "linux-x86_64",
+    constraint_values = LINUX_X86_64_CONSTRAINTS + [GLIBC_FLOOR],
+)
+
+platform(
+    name = "linux-arm64",
+    constraint_values = LINUX_AARCH64_CONSTRAINTS + [GLIBC_FLOOR],
+)
+
+platform(
+    name = "windows-x86_64",
+    constraint_values = WINDOWS_X86_64_CONSTRAINTS,
+)
+
+platform(
+    name = "windows-arm64",
+    constraint_values = WINDOWS_AARCH64_CONSTRAINTS,
+)
+
+platform(
+    name = "macos-x86_64",
+    constraint_values = MACOS_X86_64_CONSTRAINTS,
+)
+
+platform(
+    name = "macos-arm64",
+    constraint_values = MACOS_AARCH64_CONSTRAINTS,
+)

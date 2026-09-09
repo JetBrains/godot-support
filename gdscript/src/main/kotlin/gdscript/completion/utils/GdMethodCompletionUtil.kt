@@ -3,20 +3,43 @@ package gdscript.completion.utils
 import GdScriptPluginIcons
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElement
+import com.intellij.polySymbols.PolySymbol
 import gdscript.completion.GdLookup
+import gdscript.polySymbols.gdCompletionTailText
+import gdscript.polySymbols.gdCompletionTypeText
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdParam
 
 object GdMethodCompletionUtil {
 
+    /**
+     * Builds an "override parent method" completion stub for [symbol] (a METHOD symbol, PSI- or
+     * SDK-backed). Uses only plain [PolySymbol] members and the `gdCompletionTailText`/
+     * `gdCompletionTypeText` extensions, so PSI and SDK symbols render uniformly - for PSI symbols
+     * these are computed via the same [buildParamHint] call [GdMethodDeclTl.lookupDeclaration] uses,
+     * so the rendered text matches exactly.
+     */
+    fun overrideLookupElement(symbol: PolySymbol, omitFuncKeyword: Boolean = false, indent: String? = null): LookupElement {
+        val params = symbol.gdCompletionTailText ?: "()"
+        val returnType = symbol.gdCompletionTypeText.orEmpty()
+        return GdLookup.create(
+            "${if (omitFuncKeyword) "" else "func "}${symbol.name}$params${if (returnType.isNotEmpty()) " -> $returnType" else ""}:${if (indent !== null) "\n$indent" else ""}",
+            tail = params,
+            presentable = symbol.name,
+            typed = returnType,
+            icon = symbol.icon,
+            priority = GdLookup.USER_DEFINED,
+        )
+    }
+
     fun GdMethodDeclTl.methodHeader(wrapParams: Boolean = false): String {
         val params = buildParamHint(this, wrapParams)
-        return "func ${this.name}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}"
+        return "func ${this.getName()}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}"
     }
 
     fun GdMethodDeclTl.shortMethodHeader(): String {
-        return "${this.name}${buildParamHint(this)}"
+        return "${this.getName()}${buildParamHint(this)}"
     }
 
     fun GdFuncDeclEx.methodHeader(wrapParams: Boolean = false): String {
@@ -33,9 +56,9 @@ object GdMethodCompletionUtil {
             val item = it.value
             val params = buildParamHint(item)
             result.addElement(GdLookup.create(
-                "${if (withFunc) "func " else ""}${item.name}$params${if (item.returnType.isNotEmpty()) " -> ${item.returnType}" else ""}:",
+                "${if (withFunc) "func " else ""}${item.getName()}$params${if (item.returnType.isNotEmpty()) " -> ${item.returnType}" else ""}:",
                 tail = params,
-                presentable = item.name,
+                presentable = item.getName(),
                 typed = item.returnType,
                 icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
                 priority = GdLookup.USER_DEFINED,
@@ -46,7 +69,7 @@ object GdMethodCompletionUtil {
     fun GdMethodDeclTl.lookup(): LookupElement {
         val params = buildParamHint(this)
         return GdLookup.create(
-            this.name,
+            this.getName(),
             tail = params,
             typed = this.returnType,
             icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
@@ -57,9 +80,9 @@ object GdMethodCompletionUtil {
     fun GdMethodDeclTl.lookupDeclaration(omitFuncKeyword: Boolean = false, indent: String? = null): LookupElement {
         val params = buildParamHint(this)
         return GdLookup.create(
-            "${if (omitFuncKeyword) "" else "func "}${this.name}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}:${if (indent !== null) "\n$indent" else ""}",
+            "${if (omitFuncKeyword) "" else "func "}${this.getName()}$params${if (this.returnType.isNotEmpty()) " -> ${this.returnType}" else ""}:${if (indent !== null) "\n$indent" else ""}",
             tail = params,
-            presentable = this.name,
+            presentable = this.getName(),
             typed = this.returnType,
             icon = GdScriptPluginIcons.GDScriptIcons.METHOD_MARKER,
             priority = GdLookup.USER_DEFINED,
