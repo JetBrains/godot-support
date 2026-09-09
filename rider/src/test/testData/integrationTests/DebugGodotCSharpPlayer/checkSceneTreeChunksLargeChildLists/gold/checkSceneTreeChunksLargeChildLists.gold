@@ -1,0 +1,5 @@
+Chunked (150 children):
+    +Chunked = {Node} <NODE_INSTANCE>
+        +[[0..99]]
+        +[[100..149]]
+        +[Properties]

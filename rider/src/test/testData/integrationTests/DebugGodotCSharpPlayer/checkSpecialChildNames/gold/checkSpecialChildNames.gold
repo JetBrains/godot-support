@@ -1,0 +1,45 @@
+SpecialNames (per-child path):
+    +SpecialNames = {Node} <NODE_INSTANCE>
+        +Кнопка = {Node} <NODE_INSTANCE>
+        +Ünicode = {Node} <NODE_INSTANCE>
+        +name with spaces = {Node} <NODE_INSTANCE>
+        +Dash-Separated = {Node} <NODE_INSTANCE>
+        +123 = {Node} <NODE_INSTANCE>
+        +🎴Emoji = {Node} <NODE_INSTANCE>
+        +[Properties]
+SpecialNamesWide (bulk path):
+    +SpecialNamesWide = {Node} <NODE_INSTANCE>
+        +Кнопка = {Node} <NODE_INSTANCE>
+        +Ünicode = {Node} <NODE_INSTANCE>
+        +name with spaces = {Node} <NODE_INSTANCE>
+        +Dash-Separated = {Node} <NODE_INSTANCE>
+        +123 = {Node} <NODE_INSTANCE>
+        +🎴Emoji = {Node} <NODE_INSTANCE>
+        +Filler00 = {Node} <NODE_INSTANCE>
+        +Filler01 = {Node} <NODE_INSTANCE>
+        +Filler02 = {Node} <NODE_INSTANCE>
+        +Filler03 = {Node} <NODE_INSTANCE>
+        +Filler04 = {Node} <NODE_INSTANCE>
+        +Filler05 = {Node} <NODE_INSTANCE>
+        +Filler06 = {Node} <NODE_INSTANCE>
+        +Filler07 = {Node} <NODE_INSTANCE>
+        +Filler08 = {Node} <NODE_INSTANCE>
+        +Filler09 = {Node} <NODE_INSTANCE>
+        +Filler10 = {Node} <NODE_INSTANCE>
+        +Filler11 = {Node} <NODE_INSTANCE>
+        +Filler12 = {Node} <NODE_INSTANCE>
+        +Filler13 = {Node} <NODE_INSTANCE>
+        +Filler14 = {Node} <NODE_INSTANCE>
+        +Filler15 = {Node} <NODE_INSTANCE>
+        +Filler16 = {Node} <NODE_INSTANCE>
+        +Filler17 = {Node} <NODE_INSTANCE>
+        +Filler18 = {Node} <NODE_INSTANCE>
+        +Filler19 = {Node} <NODE_INSTANCE>
+        +Filler20 = {Node} <NODE_INSTANCE>
+        +Filler21 = {Node} <NODE_INSTANCE>
+        +Filler22 = {Node} <NODE_INSTANCE>
+        +Filler23 = {Node} <NODE_INSTANCE>
+        +Filler24 = {Node} <NODE_INSTANCE>
+        +Filler25 = {Node} <NODE_INSTANCE>
+        +Filler26 = {Node} <NODE_INSTANCE>
+        +[Properties]

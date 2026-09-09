@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SubplatformInfo xmlns="urn:schemas-jetbrains-com:build-subplatform-info" CompanyNameHuman="JetBrains" IsGitSubplatform="true" VersionOverride="1.0.0-Tests">
+    <SubplatformInfo.SubplatformReferences>
+        <SubplatformReference Name="Rider\Rider.Backend" />
+        <SubplatformReference Name="Plugins\godot-support\debugger\debugger-worker" />
+    </SubplatformInfo.SubplatformReferences>
+</SubplatformInfo>

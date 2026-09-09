@@ -1,0 +1,35 @@
+/root:
+    +root = <NODE_INSTANCE>
+        +SceneTreeFixture = {Node} <NODE_INSTANCE>
+        +DuelExample = {Node2D} <NODE_INSTANCE>
+        +[Properties]
+current scene:
+    +DuelExample = {Node2D} <NODE_INSTANCE>
+        +HUD = {Control} <NODE_INSTANCE>
+            +HandLayout = {Layout} <NODE_INSTANCE>
+                +Card = {Card} <NODE_INSTANCE>
+                +[Properties]
+            +PlayableArea = {PlayableArea} <NODE_INSTANCE>
+                +[Properties]
+            +Deck = {Deck} <NODE_INSTANCE>
+                +Sprite = {Sprite2D} <NODE_INSTANCE>
+                +[Properties]
+            +DeckDrawer = {DeckDrawer} <NODE_INSTANCE>
+                +DrawSound = {AudioStreamPlayer} <NODE_INSTANCE>
+                +[Properties]
+            +[Properties]
+        +DuelContext = {DuelContext} <NODE_INSTANCE>
+            +[Properties]
+        +Player = {Actor} <NODE_INSTANCE>
+            +Body = {AnimatedSprite2D} <NODE_INSTANCE>
+                +[Properties]
+            +AnimationPlayer = {AnimationPlayer} <NODE_INSTANCE>
+                +[Properties]
+            +Projectile = {AnimatedSprite2D} <NODE_INSTANCE>
+                +[Properties]
+            +[Properties]
+        +Enemy = {Actor} <NODE_INSTANCE>
+            +Body = {AnimatedSprite2D} <NODE_INSTANCE>
+                +[Properties]
+            +[Properties]
+        +[Properties]

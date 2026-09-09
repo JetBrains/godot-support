@@ -19,6 +19,10 @@ run/main_scene="uid://dwosrl4n4v50f"
 config/features=PackedStringArray("4.6", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+SceneTreeFixture="*res://Example/scene-tree-fixture.tscn"
+
 [display]
 
 window/stretch/mode="canvas_items"
