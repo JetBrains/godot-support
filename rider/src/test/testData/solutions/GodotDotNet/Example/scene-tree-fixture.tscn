@@ -1,0 +1,540 @@
+; Fixture scene for the remote scene-tree debugger tests (RIDER-140036).
+; Autoloaded, so it is a sibling of the main scene under /root and makes autoloads observable.
+;
+; Child counts are chosen against ChildFetchStrategy.BulkFetchThreshold:
+;   Narrow  = 32  children -> at the threshold, per-child (slow) path
+;   Wide    = 33  children -> one over the threshold, compiled-lambda (fast) path
+;   Chunked = 150 children -> fast path AND one level of [a..b] chunking (ChunkSize = 100)
+; Narrow and Wide hold the same names on purpose: the two paths must render identically.
+;
+; Awkward node names (unicode, spaces, dashes, leading digits, a surrogate pair) are held twice, on both sides of
+; the same threshold:
+;   SpecialNames     = 6  children -> names resolved one by one through the Name property
+;   SpecialNamesWide = 33 children -> the same six names first, then fillers, so they arrive through the
+;                                     length-prefixed ChildNamesManifest instead. The manifest counts UTF-16 units,
+;                                     which is why one name is a surrogate pair.
+;
+; Declarative on purpose - no C# here, so the fixture cannot break the build.
+
+[gd_scene format=3]
+
+[node name="SceneTreeFixture" type="Node"]
+
+[node name="Narrow" type="Node" parent="."]
+
+[node name="Child00" type="Node" parent="Narrow"]
+
+[node name="Child01" type="Node" parent="Narrow"]
+
+[node name="Child02" type="Node" parent="Narrow"]
+
+[node name="Child03" type="Node" parent="Narrow"]
+
+[node name="Child04" type="Node" parent="Narrow"]
+
+[node name="Child05" type="Node" parent="Narrow"]
+
+[node name="Child06" type="Node" parent="Narrow"]
+
+[node name="Child07" type="Node" parent="Narrow"]
+
+[node name="Child08" type="Node" parent="Narrow"]
+
+[node name="Child09" type="Node" parent="Narrow"]
+
+[node name="Child10" type="Node" parent="Narrow"]
+
+[node name="Child11" type="Node" parent="Narrow"]
+
+[node name="Child12" type="Node" parent="Narrow"]
+
+[node name="Child13" type="Node" parent="Narrow"]
+
+[node name="Child14" type="Node" parent="Narrow"]
+
+[node name="Child15" type="Node" parent="Narrow"]
+
+[node name="Child16" type="Node" parent="Narrow"]
+
+[node name="Child17" type="Node" parent="Narrow"]
+
+[node name="Child18" type="Node" parent="Narrow"]
+
+[node name="Child19" type="Node" parent="Narrow"]
+
+[node name="Child20" type="Node" parent="Narrow"]
+
+[node name="Child21" type="Node" parent="Narrow"]
+
+[node name="Child22" type="Node" parent="Narrow"]
+
+[node name="Child23" type="Node" parent="Narrow"]
+
+[node name="Child24" type="Node" parent="Narrow"]
+
+[node name="Child25" type="Node" parent="Narrow"]
+
+[node name="Child26" type="Node" parent="Narrow"]
+
+[node name="Child27" type="Node" parent="Narrow"]
+
+[node name="Child28" type="Node" parent="Narrow"]
+
+[node name="Child29" type="Node" parent="Narrow"]
+
+[node name="Child30" type="Node" parent="Narrow"]
+
+[node name="Child31" type="Node" parent="Narrow"]
+
+[node name="Wide" type="Node" parent="."]
+
+[node name="Child00" type="Node" parent="Wide"]
+
+[node name="Child01" type="Node" parent="Wide"]
+
+[node name="Child02" type="Node" parent="Wide"]
+
+[node name="Child03" type="Node" parent="Wide"]
+
+[node name="Child04" type="Node" parent="Wide"]
+
+[node name="Child05" type="Node" parent="Wide"]
+
+[node name="Child06" type="Node" parent="Wide"]
+
+[node name="Child07" type="Node" parent="Wide"]
+
+[node name="Child08" type="Node" parent="Wide"]
+
+[node name="Child09" type="Node" parent="Wide"]
+
+[node name="Child10" type="Node" parent="Wide"]
+
+[node name="Child11" type="Node" parent="Wide"]
+
+[node name="Child12" type="Node" parent="Wide"]
+
+[node name="Child13" type="Node" parent="Wide"]
+
+[node name="Child14" type="Node" parent="Wide"]
+
+[node name="Child15" type="Node" parent="Wide"]
+
+[node name="Child16" type="Node" parent="Wide"]
+
+[node name="Child17" type="Node" parent="Wide"]
+
+[node name="Child18" type="Node" parent="Wide"]
+
+[node name="Child19" type="Node" parent="Wide"]
+
+[node name="Child20" type="Node" parent="Wide"]
+
+[node name="Child21" type="Node" parent="Wide"]
+
+[node name="Child22" type="Node" parent="Wide"]
+
+[node name="Child23" type="Node" parent="Wide"]
+
+[node name="Child24" type="Node" parent="Wide"]
+
+[node name="Child25" type="Node" parent="Wide"]
+
+[node name="Child26" type="Node" parent="Wide"]
+
+[node name="Child27" type="Node" parent="Wide"]
+
+[node name="Child28" type="Node" parent="Wide"]
+
+[node name="Child29" type="Node" parent="Wide"]
+
+[node name="Child30" type="Node" parent="Wide"]
+
+[node name="Child31" type="Node" parent="Wide"]
+
+[node name="Child32" type="Node" parent="Wide"]
+
+[node name="Chunked" type="Node" parent="."]
+
+[node name="Item000" type="Node" parent="Chunked"]
+
+[node name="Item001" type="Node" parent="Chunked"]
+
+[node name="Item002" type="Node" parent="Chunked"]
+
+[node name="Item003" type="Node" parent="Chunked"]
+
+[node name="Item004" type="Node" parent="Chunked"]
+
+[node name="Item005" type="Node" parent="Chunked"]
+
+[node name="Item006" type="Node" parent="Chunked"]
+
+[node name="Item007" type="Node" parent="Chunked"]
+
+[node name="Item008" type="Node" parent="Chunked"]
+
+[node name="Item009" type="Node" parent="Chunked"]
+
+[node name="Item010" type="Node" parent="Chunked"]
+
+[node name="Item011" type="Node" parent="Chunked"]
+
+[node name="Item012" type="Node" parent="Chunked"]
+
+[node name="Item013" type="Node" parent="Chunked"]
+
+[node name="Item014" type="Node" parent="Chunked"]
+
+[node name="Item015" type="Node" parent="Chunked"]
+
+[node name="Item016" type="Node" parent="Chunked"]
+
+[node name="Item017" type="Node" parent="Chunked"]
+
+[node name="Item018" type="Node" parent="Chunked"]
+
+[node name="Item019" type="Node" parent="Chunked"]
+
+[node name="Item020" type="Node" parent="Chunked"]
+
+[node name="Item021" type="Node" parent="Chunked"]
+
+[node name="Item022" type="Node" parent="Chunked"]
+
+[node name="Item023" type="Node" parent="Chunked"]
+
+[node name="Item024" type="Node" parent="Chunked"]
+
+[node name="Item025" type="Node" parent="Chunked"]
+
+[node name="Item026" type="Node" parent="Chunked"]
+
+[node name="Item027" type="Node" parent="Chunked"]
+
+[node name="Item028" type="Node" parent="Chunked"]
+
+[node name="Item029" type="Node" parent="Chunked"]
+
+[node name="Item030" type="Node" parent="Chunked"]
+
+[node name="Item031" type="Node" parent="Chunked"]
+
+[node name="Item032" type="Node" parent="Chunked"]
+
+[node name="Item033" type="Node" parent="Chunked"]
+
+[node name="Item034" type="Node" parent="Chunked"]
+
+[node name="Item035" type="Node" parent="Chunked"]
+
+[node name="Item036" type="Node" parent="Chunked"]
+
+[node name="Item037" type="Node" parent="Chunked"]
+
+[node name="Item038" type="Node" parent="Chunked"]
+
+[node name="Item039" type="Node" parent="Chunked"]
+
+[node name="Item040" type="Node" parent="Chunked"]
+
+[node name="Item041" type="Node" parent="Chunked"]
+
+[node name="Item042" type="Node" parent="Chunked"]
+
+[node name="Item043" type="Node" parent="Chunked"]
+
+[node name="Item044" type="Node" parent="Chunked"]
+
+[node name="Item045" type="Node" parent="Chunked"]
+
+[node name="Item046" type="Node" parent="Chunked"]
+
+[node name="Item047" type="Node" parent="Chunked"]
+
+[node name="Item048" type="Node" parent="Chunked"]
+
+[node name="Item049" type="Node" parent="Chunked"]
+
+[node name="Item050" type="Node" parent="Chunked"]
+
+[node name="Item051" type="Node" parent="Chunked"]
+
+[node name="Item052" type="Node" parent="Chunked"]
+
+[node name="Item053" type="Node" parent="Chunked"]
+
+[node name="Item054" type="Node" parent="Chunked"]
+
+[node name="Item055" type="Node" parent="Chunked"]
+
+[node name="Item056" type="Node" parent="Chunked"]
+
+[node name="Item057" type="Node" parent="Chunked"]
+
+[node name="Item058" type="Node" parent="Chunked"]
+
+[node name="Item059" type="Node" parent="Chunked"]
+
+[node name="Item060" type="Node" parent="Chunked"]
+
+[node name="Item061" type="Node" parent="Chunked"]
+
+[node name="Item062" type="Node" parent="Chunked"]
+
+[node name="Item063" type="Node" parent="Chunked"]
+
+[node name="Item064" type="Node" parent="Chunked"]
+
+[node name="Item065" type="Node" parent="Chunked"]
+
+[node name="Item066" type="Node" parent="Chunked"]
+
+[node name="Item067" type="Node" parent="Chunked"]
+
+[node name="Item068" type="Node" parent="Chunked"]
+
+[node name="Item069" type="Node" parent="Chunked"]
+
+[node name="Item070" type="Node" parent="Chunked"]
+
+[node name="Item071" type="Node" parent="Chunked"]
+
+[node name="Item072" type="Node" parent="Chunked"]
+
+[node name="Item073" type="Node" parent="Chunked"]
+
+[node name="Item074" type="Node" parent="Chunked"]
+
+[node name="Item075" type="Node" parent="Chunked"]
+
+[node name="Item076" type="Node" parent="Chunked"]
+
+[node name="Item077" type="Node" parent="Chunked"]
+
+[node name="Item078" type="Node" parent="Chunked"]
+
+[node name="Item079" type="Node" parent="Chunked"]
+
+[node name="Item080" type="Node" parent="Chunked"]
+
+[node name="Item081" type="Node" parent="Chunked"]
+
+[node name="Item082" type="Node" parent="Chunked"]
+
+[node name="Item083" type="Node" parent="Chunked"]
+
+[node name="Item084" type="Node" parent="Chunked"]
+
+[node name="Item085" type="Node" parent="Chunked"]
+
+[node name="Item086" type="Node" parent="Chunked"]
+
+[node name="Item087" type="Node" parent="Chunked"]
+
+[node name="Item088" type="Node" parent="Chunked"]
+
+[node name="Item089" type="Node" parent="Chunked"]
+
+[node name="Item090" type="Node" parent="Chunked"]
+
+[node name="Item091" type="Node" parent="Chunked"]
+
+[node name="Item092" type="Node" parent="Chunked"]
+
+[node name="Item093" type="Node" parent="Chunked"]
+
+[node name="Item094" type="Node" parent="Chunked"]
+
+[node name="Item095" type="Node" parent="Chunked"]
+
+[node name="Item096" type="Node" parent="Chunked"]
+
+[node name="Item097" type="Node" parent="Chunked"]
+
+[node name="Item098" type="Node" parent="Chunked"]
+
+[node name="Item099" type="Node" parent="Chunked"]
+
+[node name="Item100" type="Node" parent="Chunked"]
+
+[node name="Item101" type="Node" parent="Chunked"]
+
+[node name="Item102" type="Node" parent="Chunked"]
+
+[node name="Item103" type="Node" parent="Chunked"]
+
+[node name="Item104" type="Node" parent="Chunked"]
+
+[node name="Item105" type="Node" parent="Chunked"]
+
+[node name="Item106" type="Node" parent="Chunked"]
+
+[node name="Item107" type="Node" parent="Chunked"]
+
+[node name="Item108" type="Node" parent="Chunked"]
+
+[node name="Item109" type="Node" parent="Chunked"]
+
+[node name="Item110" type="Node" parent="Chunked"]
+
+[node name="Item111" type="Node" parent="Chunked"]
+
+[node name="Item112" type="Node" parent="Chunked"]
+
+[node name="Item113" type="Node" parent="Chunked"]
+
+[node name="Item114" type="Node" parent="Chunked"]
+
+[node name="Item115" type="Node" parent="Chunked"]
+
+[node name="Item116" type="Node" parent="Chunked"]
+
+[node name="Item117" type="Node" parent="Chunked"]
+
+[node name="Item118" type="Node" parent="Chunked"]
+
+[node name="Item119" type="Node" parent="Chunked"]
+
+[node name="Item120" type="Node" parent="Chunked"]
+
+[node name="Item121" type="Node" parent="Chunked"]
+
+[node name="Item122" type="Node" parent="Chunked"]
+
+[node name="Item123" type="Node" parent="Chunked"]
+
+[node name="Item124" type="Node" parent="Chunked"]
+
+[node name="Item125" type="Node" parent="Chunked"]
+
+[node name="Item126" type="Node" parent="Chunked"]
+
+[node name="Item127" type="Node" parent="Chunked"]
+
+[node name="Item128" type="Node" parent="Chunked"]
+
+[node name="Item129" type="Node" parent="Chunked"]
+
+[node name="Item130" type="Node" parent="Chunked"]
+
+[node name="Item131" type="Node" parent="Chunked"]
+
+[node name="Item132" type="Node" parent="Chunked"]
+
+[node name="Item133" type="Node" parent="Chunked"]
+
+[node name="Item134" type="Node" parent="Chunked"]
+
+[node name="Item135" type="Node" parent="Chunked"]
+
+[node name="Item136" type="Node" parent="Chunked"]
+
+[node name="Item137" type="Node" parent="Chunked"]
+
+[node name="Item138" type="Node" parent="Chunked"]
+
+[node name="Item139" type="Node" parent="Chunked"]
+
+[node name="Item140" type="Node" parent="Chunked"]
+
+[node name="Item141" type="Node" parent="Chunked"]
+
+[node name="Item142" type="Node" parent="Chunked"]
+
+[node name="Item143" type="Node" parent="Chunked"]
+
+[node name="Item144" type="Node" parent="Chunked"]
+
+[node name="Item145" type="Node" parent="Chunked"]
+
+[node name="Item146" type="Node" parent="Chunked"]
+
+[node name="Item147" type="Node" parent="Chunked"]
+
+[node name="Item148" type="Node" parent="Chunked"]
+
+[node name="Item149" type="Node" parent="Chunked"]
+
+[node name="SpecialNames" type="Node" parent="."]
+
+[node name="Кнопка" type="Node" parent="SpecialNames"]
+
+[node name="Ünicode" type="Node" parent="SpecialNames"]
+
+[node name="name with spaces" type="Node" parent="SpecialNames"]
+
+[node name="Dash-Separated" type="Node" parent="SpecialNames"]
+
+[node name="123" type="Node" parent="SpecialNames"]
+
+
+[node name="🎴Emoji" type="Node" parent="SpecialNames"]
+
+[node name="SpecialNamesWide" type="Node" parent="."]
+
+[node name="Кнопка" type="Node" parent="SpecialNamesWide"]
+
+[node name="Ünicode" type="Node" parent="SpecialNamesWide"]
+
+[node name="name with spaces" type="Node" parent="SpecialNamesWide"]
+
+[node name="Dash-Separated" type="Node" parent="SpecialNamesWide"]
+
+[node name="123" type="Node" parent="SpecialNamesWide"]
+
+[node name="🎴Emoji" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler00" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler01" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler02" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler03" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler04" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler05" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler06" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler07" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler08" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler09" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler10" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler11" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler12" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler13" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler14" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler15" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler16" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler17" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler18" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler19" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler20" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler21" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler22" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler23" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler24" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler25" type="Node" parent="SpecialNamesWide"]
+
+[node name="Filler26" type="Node" parent="SpecialNamesWide"]

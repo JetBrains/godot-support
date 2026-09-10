@@ -52,6 +52,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("4_rl521")
+InitialCards = 1
 DrawTime = 0.125
 DrawSound = ExtResource("5_rb262")
 DrawSoundPlayer = NodePath("DrawSound")

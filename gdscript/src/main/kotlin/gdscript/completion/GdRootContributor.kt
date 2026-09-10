@@ -8,11 +8,13 @@ import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.PsiTreeUtil
 import gdscript.GdKeywords
 import gdscript.completion.utils.GdClassVarCompletionUtil
-import gdscript.completion.utils.GdMethodCompletionUtil.lookupDeclaration
+import gdscript.completion.utils.GdMethodCompletionUtil.overrideLookupElement
+import gdscript.polySymbols.GdPolySymbolModifier
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil
+import gdscript.polySymbols.scope.hasModifier
 import gdscript.psi.GdFile
+import gdscript.psi.GdPsiCodeFragment
 import gdscript.psi.GdTypes
-import gdscript.psi.utils.GdClassMemberUtil
-import gdscript.psi.utils.GdClassMemberUtil.methods
 import gdscript.psi.utils.GdNodeUtil
 import gdscript.psi.utils.PsiGdFileUtil
 import gdscript.utils.CompletionParametersUtil.indent
@@ -40,6 +42,9 @@ class GdRootContributor : CompletionContributor() {
     }
 
     override fun fillCompletionVariants(parameters: CompletionParameters, result: CompletionResultSet) {
+        // A debugger code fragment is a bare expression
+        if (parameters.position.containingFile is GdPsiCodeFragment) return
+
         val position = parameters.position
         val previous = PsiTreeUtil.prevCodeLeaf(position.originalElement)
 
@@ -63,12 +68,12 @@ class GdRootContributor : CompletionContributor() {
     }
 
     private fun addTopLvlDecl(parameters: CompletionParameters, result: CompletionResultSet) {
-        GdNodeUtil.listNodes(parameters.position).forEach { result.addAllElements(it.variable_lookups()) }
+        GdNodeUtil.listNodes(parameters.position).forEach { result.addAllElements(it.variableLookups()) }
         GdClassVarCompletionUtil.annotations(result, parameters.position.project)
 
-        val members = mutableListOf<Any>()
-        GdClassMemberUtil.collectFromParents(parameters.position, members, parameters.position.project, false)
-        result.addAllElements(members.methods().map { it.lookupDeclaration(false, parameters.indent()) })
+        val ownClass = GdSymbolResolverUtil.resolveOwnClassSymbol(parameters.position)
+        val methods = GdSymbolResolverUtil.listMethodSymbols(ownClass).filterNot { it.hasModifier(GdPolySymbolModifier.STATIC) }
+        result.addAllElements(methods.map { overrideLookupElement(it, false, parameters.indent()) })
     }
 
 }

@@ -1,0 +1,7 @@
+this.Children:
+    +[Children]
+this.Parent:
+    +Parent = {Layout} <NODE_INSTANCE>
+this.Parent.Children:
+    +[Children]
+        +Card = {Card} <NODE_INSTANCE>
