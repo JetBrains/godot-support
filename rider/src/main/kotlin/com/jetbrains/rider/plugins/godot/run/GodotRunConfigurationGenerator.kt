@@ -54,6 +54,85 @@ class GodotRunConfigurationGenerator : LifetimedService() {
     }
 
     class ProtocolListener : SolutionExtListener<GodotFrontendBackendModel> {
+        data class ProjectType(val isPureGdScriptProject: Boolean, val isCmakeProject: Boolean)
+
+        fun generateGodot4(
+            corePath: String?,
+            runManager: RunManager,
+            project: Project,
+            relPath: String,
+            projectType: ProjectType,
+            port: Int,
+            godotProjectPath: String
+        ) {
+            if (corePath != null) {
+                createOrUpdateCoreRunConfiguration(
+                    PLAYER_CONFIGURATION_NAME,
+                    "--path \"${relPath}\"",
+                    runManager,
+                    corePath,
+                    project
+                )
+                createOrUpdateCoreRunConfiguration(
+                    EDITOR_CONFIGURATION_NAME,
+                    "--path \"${relPath}\" --editor",
+                    runManager,
+                    corePath,
+                    project
+                )
+                val toRemove = runManager.allSettings.filter {
+                    it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME
+                }
+                for (value in toRemove) {
+                    runManager.removeConfiguration(value)
+                }
+                if (!projectType.isPureGdScriptProject) {
+                    createOrUpdateCurrentSceneRunConfiguration(
+                        runManager,
+                        corePath,
+                        godotProjectPath,
+                    )
+                }
+            } else if (!projectType.isPureGdScriptProject && !projectType.isCmakeProject) {
+                if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }) {
+                    val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
+                    val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
+                    val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
+                    remoteConfig.port = port
+                    runConfiguration.storeInLocalWorkspace()
+                    runManager.addConfiguration(runConfiguration)
+                }
+            }
+        }
+
+        fun generateGodot3(path: String, runManager: RunManager, project: Project, relPath: String) {
+            createOrUpdateRunConfiguration(
+                PLAYER_CONFIGURATION_NAME,
+                "--path \"${relPath}\"",
+                runManager,
+                path,
+                project
+            )
+            createOrUpdateRunConfiguration(
+                EDITOR_CONFIGURATION_NAME,
+                "--path \"${relPath}\" --editor",
+                runManager,
+                path,
+                project
+            )
+        }
+
+        fun generateGodot(path: String, runManager: RunManager, project: Project, relPath: String, isPureGdProject: Boolean) {
+            if (isPureGdProject) {
+                createOrUpdateNativeExecutableRunConfiguration(
+                    EDITOR_CONFIGURATION_NAME,
+                    "--path \"${relPath}\" --editor",
+                    runManager,
+                    path,
+                    project
+                )
+            }
+        }
 
         override fun extensionCreated(lifetime: Lifetime, session: ClientProjectSession, model: GodotFrontendBackendModel) {
             val project = session.project
@@ -62,60 +141,29 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 godotDiscoverer.godotDescriptor.viewNotNull(lifetime) { lt, descriptor ->
                     logger.info("descriptor = $descriptor")
                     val tempRelPath = descriptor.mainProjectBasePath.toNioPath().relativeToOrSelf(project.solutionDirectoryPath)
-                    val relPath = if (tempRelPath.pathString.isEmpty()) "./" else tempRelPath
+                    val relPath = tempRelPath.pathString.ifEmpty { "./" }
                     val runManager = RunManager.getInstance(project)
 
                     GodotProjectDiscoverer.getInstance(project).godot4Path.advise(lt) { corePath ->
-                        if (corePath != null) {
-                            val toRemove = runManager.allSettings.filter {
-                                it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME
-                            }
-                            for (value in toRemove) {
-                                runManager.removeConfiguration(value)
-                            }
-                        } else if (!descriptor.isPureGdScriptProject && !project.isCMakeSolution) {
-                            if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }) {
-                                val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
-                                val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
-                                val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
-                                remoteConfig.port = godotDiscoverer.port
-                                runConfiguration.storeInLocalWorkspace()
-                                runManager.addConfiguration(runConfiguration)
-                            }
-                        }
-                    }
-
-                    GodotProjectDiscoverer.getInstance(project).godot3Path.adviseNotNull(lt) { path ->
-                        createOrUpdateRunConfiguration(PLAYER_CONFIGURATION_NAME, "--path \"${relPath}\"", runManager, path, project)
-                        createOrUpdateRunConfiguration(
-                            EDITOR_CONFIGURATION_NAME,
-                            "--path \"${relPath}\" --editor",
+                        generateGodot4(
+                            corePath,
                             runManager,
-                            path,
-                            project
+                            project,
+                            relPath,
+                            ProjectType(isPureGdScriptProject = descriptor.isPureGdScriptProject, isCmakeProject = project.isCMakeSolution),
+                            godotDiscoverer.port,
+                            descriptor.mainProjectBasePath.toNioPath().pathString
                         )
                         selectConfigurationIfNeeded(runManager)
                     }
-                    GodotProjectDiscoverer.getInstance(project).godot4Path.adviseNotNull(lt) { corePath ->
-                        if (!descriptor.isPureGdScriptProject) {
-                            createOrUpdateCurrentSceneRunConfiguration(
-                                runManager,
-                                corePath,
-                                descriptor.mainProjectBasePath.toNioPath().pathString,
-                            )
-                        }
+
+                    GodotProjectDiscoverer.getInstance(project).godot3Path.adviseNotNull(lt) { path ->
+                        generateGodot3(path, runManager, project, relPath)
+                        selectConfigurationIfNeeded(runManager)
                     }
 
                     GodotProjectDiscoverer.getInstance(project).godotPath.adviseNotNull(lt) { path ->
-                        if (descriptor.isPureGdScriptProject) {
-                            createOrUpdateNativeExecutableRunConfiguration(
-                                EDITOR_CONFIGURATION_NAME,
-                                "--path \"${relPath}\" --editor",
-                                runManager,
-                                path,
-                                project
-                            )
-                        }
+                        generateGodot(path, runManager, project, relPath, descriptor.isPureGdScriptProject)
                         selectConfigurationIfNeeded(runManager)
                     }
                 }
