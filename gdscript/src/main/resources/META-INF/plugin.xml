@@ -147,9 +147,18 @@
     <colorSettingsPage implementation="tscn.highlighter.TscnColorSettingsPage"/>
 
     <!-- Completions -->
+
+    <!-- The LSP-PolySymbols deduplication contributor must run first. GdNumberPositionCompletionContributor is also first, but does not provide anything, just sometimes stops. -->
+    <completion.contributor language="GdScript" order="first"
+                            implementationClass="gdscript.completion.GdCompletionDeduplicatingContributor"/>
+    <registryKey key="gdscript.completion.deduplicateLspItems"
+                 description="Remove duplicate GDScript LSP completion items, when built-in completion offers the same item"
+                 defaultValue="true"
+                 restartRequired="false"/>
     <completion.contributor language="GdScript" order="first"
                             implementationClass="gdscript.completion.GdNumberPositionCompletionContributor"/>
-    <completion.contributor language="GdScript" order="last"
+    <!-- The Godot LSP also offers these keywords. The deduplication needs this contributor to run before the LSP one. -->
+    <completion.contributor language="GdScript" order="last, before LspCompletionContributor"
                             implementationClass="gdscript.completion.GdKeywordContributor"/>
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdRootContributor"/>
     <completion.contributor language="GdScript"
