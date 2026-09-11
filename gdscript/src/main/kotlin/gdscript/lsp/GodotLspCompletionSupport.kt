@@ -8,6 +8,8 @@ import com.intellij.codeInsight.lookup.LookupElementDecorator
 import com.intellij.platform.lsp.api.customization.LspCompletionSupport
 import com.intellij.platform.lsp.util.getOffsetInDocument
 import gdscript.competion.utils.GdMethodParenthesesInsertHandler
+import gdscript.completion.GdCompletionDeduplicatingContributor
+import gdscript.completion.GdCompletionSource
 import org.eclipse.lsp4j.CompletionItem
 import org.eclipse.lsp4j.CompletionItemKind
 import javax.swing.Icon
@@ -40,6 +42,8 @@ open class GodotLspCompletionSupport : LspCompletionSupport() {
         if (isFunction) item.stripTrailingEmptyParens()
         item.preserveLeadingQuoteInRange(parameters)
         val base = super.createLookupElement(parameters, item) ?: return null
+        // Required for dedup with PolySymbols
+        base.putUserData(GdCompletionDeduplicatingContributor.SERVICE_COMPLETION_KEY, GdCompletionSource.LSP)
         val hasParams = isFunction && item.hasParameters()
         return LookupElementDecorator.withDelegateInsertHandler(base) { ctx, lk ->
             stripDuplicateQuotesAdjacentToInserted(ctx)
