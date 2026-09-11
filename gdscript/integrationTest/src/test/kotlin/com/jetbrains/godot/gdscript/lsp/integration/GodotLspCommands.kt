@@ -1,6 +1,7 @@
 package com.jetbrains.godot.gdscript.lsp.integration
 
 import com.intellij.codeInsight.lookup.Lookup
+import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.application.EDT
 import com.intellij.platform.lsp.api.LspClientManager
 import com.intellij.platform.lsp.api.customization.LspFindReferencesCustomizer
@@ -23,6 +24,13 @@ suspend fun GodotEditorFixture.runHighlightingCheck() {
   waitForGodotLspStart()
   withContext(Dispatchers.EDT) {
     codeInsight.checkHighlightingRetrying(true)
+  }
+}
+
+suspend fun GodotEditorFixture.runCompletionAndGetElements(): List<LookupElement> {
+  waitForGodotLspStart()
+  return withContext(Dispatchers.EDT) {
+    codeInsight.completeBasic()?.toList().orEmpty()
   }
 }
 
