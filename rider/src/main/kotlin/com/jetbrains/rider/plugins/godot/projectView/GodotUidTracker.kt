@@ -9,7 +9,6 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.project.BaseProjectDirectories.Companion.getBaseDirectories
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.rd.createNestedDisposable
-import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
@@ -130,7 +129,7 @@ class GodotUidTracker : VfsBackendRequester {
 
     private fun isValidEvent(event: VFileEvent): Boolean {
         if (event.isFromRefresh) return false
-        if (event.fileSystem !is LocalFileSystem) return false
+        if (!event.fileSystem.isLocal) return false
         return CommandProcessor.getInstance().isCommandInProgress
     }
 
