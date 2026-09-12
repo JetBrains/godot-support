@@ -20,6 +20,7 @@ import gdscript.psi.GdDictDecl
 import gdscript.psi.GdSuite
 import gdscript.psi.GdTypes
 import gdscript.utils.GdCommentUtil
+import gdscript.utils.GdCustomRegionUtil
 
 /**
  * Unified folding for GDScript. Handles:
@@ -73,9 +74,7 @@ class GdFoldingBuilder : CustomFoldingBuilder() {
      * we narrow the candidate set here to match the Godot editor exactly.
      */
     override fun isCustomFoldingCandidate(node: ASTNode): Boolean {
-        if (node.psi !is PsiComment) return false
-        val text = node.text
-        return text.startsWith("#region") || text.startsWith("#endregion")
+        return GdCustomRegionUtil.isCustomFoldingCandidate(node)
     }
 
     private fun foldSuite(element: GdSuite, descriptors: MutableList<FoldingDescriptor>) {
