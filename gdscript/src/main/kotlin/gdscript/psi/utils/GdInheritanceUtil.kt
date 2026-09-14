@@ -12,6 +12,7 @@ import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
 import gdscript.psi.GdInheritance
 import gdscript.utils.VirtualFileUtil.getPsiFile
+import gdscript.utils.unquote
 
 object GdInheritanceUtil {
 
@@ -88,7 +89,7 @@ object GdInheritanceUtil {
         }
 
         // In case of unnamed "res://Item.gd" check for the resource itself
-        val file = GdFileResIndex.getFiles(classId.trim('"', '\''), project).firstOrNull() ?: return null
+        val file = GdFileResIndex.getFiles(classId.unquote(), project).firstOrNull() ?: return null
 
         return file.getPsiFile(project)
     }

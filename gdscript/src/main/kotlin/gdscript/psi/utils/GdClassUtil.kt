@@ -13,6 +13,7 @@ import gdscript.psi.GdFile
 import gdscript.utils.PsiFileUtil.toAbsoluteResource
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
+import gdscript.utils.unquote
 
 object GdClassUtil {
 
@@ -20,7 +21,7 @@ object GdClassUtil {
         val path = name.toAbsoluteResource(element, project)
 
         GdClassIdIndex.INSTANCE.getGloballyResolved(path, project).firstOrNull()?.let { return it }
-        GdFileResIndex.getFiles(path.trim('"', '\''), project).firstOrNull()?.let { return it.getPsiFile(project) }
+        GdFileResIndex.getFiles(path.unquote(), project).firstOrNull()?.let { return it.getPsiFile(project) }
         GdClassDeclIndex.INSTANCE.getInFile(name, element, project).firstOrNull()?.let { return it }
 
         return null
@@ -29,7 +30,7 @@ object GdClassUtil {
     @Deprecated("For internal usage only called after resolving relative paths")
     fun getClassIdElement(name: String, project: Project): PsiElement? {
         return GdClassIdIndex.INSTANCE.getGloballyResolved(name, project).firstOrNull()
-            ?: GdFileResIndex.getFiles(name.trim('"', '\''), project).firstOrNull()
+            ?: GdFileResIndex.getFiles(name.unquote(), project).firstOrNull()
                 ?.let { return it.getPsiFile(project) }
     }
 
