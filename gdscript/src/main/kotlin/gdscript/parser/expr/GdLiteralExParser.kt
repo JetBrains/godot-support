@@ -32,7 +32,7 @@ object GdLiteralExParser : GdExprBaseParser() {
 
     override fun parse(b: GdPsiBuilder, l: Int, optional: Boolean): Boolean {
         if (!b.recursionGuard(l, "LiteralExpr")) return false
-        if (b.nextTokenIs(LITERAL_EX, TRUE, FALSE, STRING_NAME, NODE_PATH_LIT, NUMBER, NULL, NAN, INF)) {
+        if (b.nextTokenIs(LITERAL_EX, TRUE, FALSE, NODE_PATH_LIT, NUMBER, NULL, NAN, INF)) {
             b.advance()
             return true
         }
@@ -47,7 +47,9 @@ object GdLiteralExParser : GdExprBaseParser() {
             return true
         }
 
-        if (b.mcToken(STRING_VAL_NM, STRING)) {
+        // STRING and STRING_NAME both become STRING_VAL_NM so signal/method names in
+        // connect("s") / Callable(self, &"m") share GdStringValRef own-references.
+        if (b.mcToken(STRING_VAL_NM, STRING, STRING_NAME)) {
             return true
         }
 

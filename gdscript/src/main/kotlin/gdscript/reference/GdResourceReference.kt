@@ -15,6 +15,7 @@ import gdscript.psi.utils.GdCfgUtil
 import gdscript.utils.StringUtil.filterGdTscn
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
+import gdscript.utils.unquote
 
 /**
  * Resource "res://" reference to file
@@ -29,7 +30,7 @@ class GdResourceReference : PsiReferenceBase<PsiElement> {
     constructor(element: PsiElement) : super(element, TextRange(0, element.textLength)) {
         this.project = element.project
         key = element.text
-        resKey = key.trim('"', '\'')
+        resKey = key.unquote()
 
         if (!resKey.startsWith("res://")){
             element.containingFile?.virtualFile?.parent?.let {
@@ -50,7 +51,7 @@ class GdResourceReference : PsiReferenceBase<PsiElement> {
     override fun handleElementRename(newElementName: String): PsiElement {
         // TODO ignored relative paths
         if (!key.startsWith("\"res://")) return element
-        GdCfgUtil.renameValue(project, key.trim('"', '\''), "res://$newElementName")
+        GdCfgUtil.renameValue(project, key.unquote(), "res://$newElementName")
 
         return element.replace(GdElementFactory.typeStringVal(project, newElementName))
     }
