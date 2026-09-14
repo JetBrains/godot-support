@@ -15,9 +15,9 @@ import gdscript.polySymbols.scope.hasModifier
 import gdscript.psi.GdAttributeEx
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdLiteralEx
-import gdscript.psi.GdTypes
 import gdscript.psi.GdVisitor
 import gdscript.psi.utils.GdClassMemberUtil
+import gdscript.utils.unquote
 
 enum class QfCandidate {
     Signal,
@@ -84,14 +84,8 @@ class GdStringNameMemberCallInspection : LocalInspectionTool() {
 
                 val firstArg = args[0].expr
                 if (firstArg is GdLiteralEx) {
-                    val firstArgName = firstArg.stringVal?.text?.trim('"', '\'')
-                        ?: if (firstArg.node.findChildByType(GdTypes.STRING_NAME) != null) {
-                            firstArg.text.trim('"', '\'', '&')
-                        } else {
-                            null
-                        }
-
-                    if (firstArgName == null) return
+                    val firstArgName = firstArg.stringVal?.text?.unquote()
+                        ?: return
 
                     val searchContext = attrExpr?.refId ?: expr
                     if (GdClassMemberUtil.listDeclarations(searchContext, firstArgName).isEmpty()) return
