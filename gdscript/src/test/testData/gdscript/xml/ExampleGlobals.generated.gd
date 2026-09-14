@@ -1,7 +1,7 @@
 extends Object
 class_name ExampleGlobals
 
-# Constants
+#region Constants
 
 const LOG_DEBUG = 0
 
@@ -15,8 +15,10 @@ const MAX_PLAYERS = 8
 
 const TICK_RATE_HZ = 60
 
+#endregion Constants
 
-# Enums
+
+#region Enums
 
 enum LogLevel {
 	LOG_DEBUG = 0,
@@ -24,4 +26,6 @@ enum LogLevel {
 	LOG_WARNING = 2,
 	LOG_ERROR = 3,
 }
+
+#endregion Enums
 

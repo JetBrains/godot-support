@@ -18,7 +18,7 @@ class_name Node
 ## @tutorial(All Demos): https://github.com/godotengine/godot-demo-projects/
 
 
-# Signals
+#region Signals
 
 ## Emitted when the child [param node] enters the [SceneTree], usually because this node entered the tree (see [signal tree_entered]), or [method add_child] has been called.
 ## This signal is emitted [i]after[/i] the child node's own [constant NOTIFICATION_ENTER_TREE] and [signal tree_entered].
@@ -59,8 +59,10 @@ signal tree_exited()
 ## This signal is emitted [i]after[/i] the node's [method _exit_tree], and [i]before[/i] the related [constant NOTIFICATION_EXIT_TREE].
 signal tree_exiting()
 
+#endregion Signals
 
-# Constants
+
+#region Constants
 
 ## Notification received when the node enters a [SceneTree]. See [method _enter_tree].
 ## This notification is received [i]before[/i] the related [signal tree_entered] signal.
@@ -297,56 +299,85 @@ const AUTO_TRANSLATE_MODE_ALWAYS = 1
 ## String parsing for POT generation will be skipped for this node and children that are set to [constant AUTO_TRANSLATE_MODE_INHERIT].
 const AUTO_TRANSLATE_MODE_DISABLED = 2
 
+#endregion Constants
 
-# Enums
+
+#region Enums
 
 enum ProcessMode {
+	## Inherits [member process_mode] from the node's parent. This is the default for any newly created node.
 	PROCESS_MODE_INHERIT = 0,
+	## Stops processing when [member SceneTree.paused] is [code]true[/code]. This is the inverse of [constant PROCESS_MODE_WHEN_PAUSED], and the default for the root node.
 	PROCESS_MODE_PAUSABLE = 1,
+	## Process [b]only[/b] when [member SceneTree.paused] is [code]true[/code]. This is the inverse of [constant PROCESS_MODE_PAUSABLE].
 	PROCESS_MODE_WHEN_PAUSED = 2,
+	## Always process. Keeps processing, ignoring [member SceneTree.paused]. This is the inverse of [constant PROCESS_MODE_DISABLED].
 	PROCESS_MODE_ALWAYS = 3,
+	## Never process. Completely disables processing, ignoring [member SceneTree.paused]. This is the inverse of [constant PROCESS_MODE_ALWAYS].
 	PROCESS_MODE_DISABLED = 4,
 }
 
 enum ProcessThreadGroup {
+	## Process this node based on the thread group mode of the first parent (or grandparent) node that has a thread group mode that is not inherit. See [member process_thread_group] for more information.
 	PROCESS_THREAD_GROUP_INHERIT = 0,
+	## Process this node (and child nodes set to inherit) on the main thread. See [member process_thread_group] for more information.
 	PROCESS_THREAD_GROUP_MAIN_THREAD = 1,
+	## Process this node (and child nodes set to inherit) on a sub-thread. See [member process_thread_group] for more information.
 	PROCESS_THREAD_GROUP_SUB_THREAD = 2,
 }
 
 enum ProcessThreadMessages {
+	## Allows this node to process threaded messages created with [method call_deferred_thread_group] right before [method _process] is called.
 	FLAG_PROCESS_THREAD_MESSAGES = 1,
+	## Allows this node to process threaded messages created with [method call_deferred_thread_group] right before [method _physics_process] is called.
 	FLAG_PROCESS_THREAD_MESSAGES_PHYSICS = 2,
+	## Allows this node to process threaded messages created with [method call_deferred_thread_group] right before either [method _process] or [method _physics_process] are called.
 	FLAG_PROCESS_THREAD_MESSAGES_ALL = 3,
 }
 
 enum PhysicsInterpolationMode {
+	## Inherits [member physics_interpolation_mode] from the node's parent. This is the default for any newly created node.
 	PHYSICS_INTERPOLATION_MODE_INHERIT = 0,
+	## Enables physics interpolation for this node and for children set to [constant PHYSICS_INTERPOLATION_MODE_INHERIT]. This is the default for the root node.
 	PHYSICS_INTERPOLATION_MODE_ON = 1,
+	## Disables physics interpolation for this node and for children set to [constant PHYSICS_INTERPOLATION_MODE_INHERIT].
 	PHYSICS_INTERPOLATION_MODE_OFF = 2,
 }
 
 enum DuplicateFlags {
+	## Duplicate the node's signal connections.
 	DUPLICATE_SIGNALS = 1,
+	## Duplicate the node's groups.
 	DUPLICATE_GROUPS = 2,
+	## Duplicate the node's script (also overriding the duplicated children's scripts, if combined with [constant DUPLICATE_USE_INSTANTIATION]).
 	DUPLICATE_SCRIPTS = 4,
+	## Duplicate using [method PackedScene.instantiate]. If the node comes from a scene saved on disk, reuses [method PackedScene.instantiate] as the base for the duplicated node and its children.
 	DUPLICATE_USE_INSTANTIATION = 8,
 }
 
 enum InternalMode {
+	## The node will not be internal.
 	INTERNAL_MODE_DISABLED = 0,
+	## The node will be placed at the beginning of the parent's children, before any non-internal sibling.
 	INTERNAL_MODE_FRONT = 1,
+	## The node will be placed at the end of the parent's children, after any non-internal sibling.
 	INTERNAL_MODE_BACK = 2,
 }
 
 enum AutoTranslateMode {
+	## Inherits [member auto_translate_mode] from the node's parent. This is the default for any newly created node.
 	AUTO_TRANSLATE_MODE_INHERIT = 0,
+	## Always automatically translate. This is the inverse of [constant AUTO_TRANSLATE_MODE_DISABLED], and the default for the root node.
 	AUTO_TRANSLATE_MODE_ALWAYS = 1,
+	## Never automatically translate. This is the inverse of [constant AUTO_TRANSLATE_MODE_ALWAYS].
+	## String parsing for POT generation will be skipped for this node and children that are set to [constant AUTO_TRANSLATE_MODE_INHERIT].
 	AUTO_TRANSLATE_MODE_DISABLED = 2,
 }
 
+#endregion Enums
 
-# Properties
+
+#region Properties
 
 ## Defines if any text should automatically change to its translated version depending on the current locale (for nodes such as [Label], [RichTextLabel], [Window], etc.). Also decides if the node's strings should be parsed for POT generation.
 ## [b]Note:[/b] For the root node, auto translate mode can also be set via [member ProjectSettings.internationalization/rendering/root_node_auto_translate].
@@ -399,8 +430,10 @@ var scene_file_path: String: get = get_scene_file_path, set = set_scene_file_pat
 ## [b]Note:[/b] If another node with the same [member owner] shares the same [member name] as this node, the other node will no longer be accessible as unique.
 var unique_name_in_owner: bool: get = is_unique_name_in_owner, set = set_unique_name_in_owner
 
+#endregion Properties
 
-# Methods
+
+#region Methods
 
 ## Called when the node enters the [SceneTree] (e.g. upon instantiating, scene changing, or after calling [method add_child] in a script). If the node has children, its [method _enter_tree] callback will be called first, and then that of the children.
 ## Corresponds to the [constant NOTIFICATION_ENTER_TREE] notification in [method Object._notification].
@@ -420,7 +453,7 @@ func _exit_tree() -> void:
 ## set(value):
 ## energy = value
 ## update_configuration_warnings()
-## 
+##
 ## func _get_configuration_warnings():
 ## if energy < 0:
 ## return ["Energy must be 0 or greater."]
@@ -608,7 +641,7 @@ func find_parent(pattern: String) -> Node:
 ## [codeblock]
 ## # Assuming the following are children of this node, in order:
 ## # First, Middle, Last.
-## 
+##
 ## var a = get_child(0).name  # a is "First"
 ## var b = get_child(1).name  # b is "Middle"
 ## var b = get_child(2).name  # b is "Last"
@@ -709,12 +742,12 @@ func get_node(path: NodePath) -> Node:
 ## print(a[0].name) # Prints Sprite2D
 ## print(a[1])      # Prints <null>
 ## print(a[2])      # Prints ^""
-## 
+##
 ## var b = get_node_and_resource("Area2D/Sprite2D:texture:atlas")
 ## print(b[0].name)        # Prints Sprite2D
 ## print(b[1].get_class()) # Prints AtlasTexture
 ## print(b[2])             # Prints ^""
-## 
+##
 ## var c = get_node_and_resource("Area2D/Sprite2D:texture:atlas:region")
 ## print(c[0].name)        # Prints Sprite2D
 ## print(c[1].get_class()) # Prints AtlasTexture
@@ -725,12 +758,12 @@ func get_node(path: NodePath) -> Node:
 ## GD.Print(a[0].Name); // Prints Sprite2D
 ## GD.Print(a[1]);      // Prints <null>
 ## GD.Print(a[2]);      // Prints ^"
-## 
+##
 ## var b = GetNodeAndResource(NodePath("Area2D/Sprite2D:texture:atlas"));
 ## GD.Print(b[0].name);        // Prints Sprite2D
 ## GD.Print(b[1].get_class()); // Prints AtlasTexture
 ## GD.Print(b[2]);             // Prints ^""
-## 
+##
 ## var c = GetNodeAndResource(NodePath("Area2D/Sprite2D:texture:atlas:region"));
 ## GD.Print(c[0].name);        // Prints Sprite2D
 ## GD.Print(c[1].get_class()); // Prints AtlasTexture
@@ -1090,7 +1123,7 @@ func update_configuration_warnings() -> void:
 	pass
 
 
-# Getters and Setters
+#region Getters and Setters
 
 func get_auto_translate_mode() -> int:
 	return auto_translate_mode
@@ -1172,4 +1205,8 @@ func is_unique_name_in_owner() -> bool:
 
 func set_unique_name_in_owner(value: bool) -> void:
 	unique_name_in_owner = value
+
+#endregion Getters and Setters
+
+#endregion Methods
 
