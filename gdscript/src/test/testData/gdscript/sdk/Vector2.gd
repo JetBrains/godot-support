@@ -1,6 +1,6 @@
 class_name Vector2
 
-# Constructors
+#region Constructors
 
 func _init():
 	pass
@@ -14,8 +14,10 @@ func _init(from: Vector2i):
 func _init(x: float, y: float):
 	pass
 
+#endregion Constructors
 
-# Constants
+
+#region Constants
 
 const AXIS_X = 0
 
@@ -35,23 +37,29 @@ const UP = Vector2(0, -1)
 
 const DOWN = Vector2(0, 1)
 
+#endregion Constants
 
-# Enums
+
+#region Enums
 
 enum Axis {
 	AXIS_X = 0,
 	AXIS_Y = 1,
 }
 
+#endregion Enums
 
-# Properties
+
+#region Properties
 
 var x: float
 
 var y: float
 
+#endregion Properties
 
-# Methods
+
+#region Methods
 
 func abs() -> Vector2:
 	pass
@@ -196,4 +204,6 @@ func snapped(step: Vector2) -> Vector2:
 
 func snappedf(step: float) -> Vector2:
 	pass
+
+#endregion Methods
 
