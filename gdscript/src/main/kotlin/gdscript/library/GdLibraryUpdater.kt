@@ -12,6 +12,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.exists
 
@@ -24,24 +25,26 @@ class GdLibraryUpdater(private val project: Project) {
         fun getInstance(project: Project): GdLibraryUpdater = project.getService(GdLibraryUpdater::class.java)
     }
 
-    /**
-     * A generation spawns Godot processes and rewrites the doc directories, so two of them must not overlap: the
-     * requests are triggered from unrelated places (the startup activity and the GDExtension watcher) and are simply
-     * serialized here.
-     */
-    private val generationMutex = Mutex()
+    // One load of this project runs at a time, so a second caller of this project waits.
+    // The shared core directory has its own application-level lock in GdCoreSdkService, because
+    // every open project names the same directory.
+    private val loadMutex = Mutex()
+
+    // Orders the requests of this project. A load stops only when a newer load already finished.
+    private val loadRequests = GdSdkLoadRequests()
 
     fun scheduleSdkLoad(projectBasePath: Path, godotPath: Path) {
+        val token = loadRequests.newRequest()
         GdScriptProjectLifetimeService.getInstance(project).scope.launch {
             withBackgroundProgress(project, GdScriptBundle.message("progress.title.check.gdsdk.for.project")) {
                 withContext(Dispatchers.IO) {
-                    loadSdk(projectBasePath, godotPath)
+                    loadSdk(projectBasePath, godotPath, token)
                 }
             }
         }
     }
 
-    private suspend fun loadSdk(projectBasePath: Path, godotPath: Path) {
+    private suspend fun loadSdk(projectBasePath: Path, godotPath: Path, token: Long) {
         val projectFile = projectBasePath.resolve("project.godot")
         if (!projectFile.exists()) return
         val version = GdSdkUtil.getGodotVersion(projectFile) ?: return
@@ -49,15 +52,24 @@ class GdLibraryUpdater(private val project: Project) {
         // stop if disposed
         if (project.isDisposed) return
 
-        try {
-            generationMutex.withLock {
-                if (project.isDisposed) return
-                GdLibraryManager.generateSdkIfNeeded(version, project, godotPath, projectBasePath)
+        loadMutex.withLock {
+            if (loadRequests.isSuperseded(token)) {
+                thisLogger().info("A newer SDK load already finished, so the load for $godotPath stops.")
+                return
             }
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            thisLogger().error("Failed to load SDK from XML", e)
+            if (project.isDisposed) return
+
+            try {
+                GdLibraryManager.generateSdkIfNeeded(version, project, godotPath, projectBasePath)
+                loadRequests.finished(token)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: IOException) {
+                // A file system failure is routine, so the next request can retry.
+                thisLogger().warn("Failed to load the SDK because of an input or output failure.", e)
+            } catch (e: Exception) {
+                thisLogger().error("Failed to load SDK from XML", e)
+            }
         }
     }
 }

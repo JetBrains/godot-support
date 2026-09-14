@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Object" inherits="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		Base class for all other classes in the engine.
+	</brief_description>
+	<description>
+		An advanced [Variant] type. All classes in the engine inherit from Object.
+	</description>
+	<tutorials>
+		<link title="Object notifications">$DOCS_URL/tutorials/best_practices/godot_notifications.html</link>
+	</tutorials>
+	<methods>
+		<method name="free">
+			<return type="void" />
+			<description>
+				Deletes the object from memory.
+			</description>
+		</method>
+		<method name="get_class" qualifiers="const">
+			<return type="String" />
+			<description>
+				Returns the object's built-in class name.
+			</description>
+		</method>
+	</methods>
+	<signals>
+		<signal name="script_changed">
+			<description>
+				Emitted when the object's script is changed.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="NOTIFICATION_POSTINITIALIZE" value="0">
+			Notification received when the object is initialized.
+		</constant>
+	</constants>
+</class>
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="RefCounted" inherits="Object" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		Base class for reference-counted objects.
+	</brief_description>
+	<description>
+		Base class for any object that keeps a reference count. [Resource] and many other helper objects inherit this class.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="reference">
+			<return type="bool" />
+			<description>
+				Increments the internal reference counter.
+			</description>
+		</method>
+	</methods>
+</class>
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="Node" inherits="Object" keywords="entity, actor" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		Base class for all scene objects.
+	</brief_description>
+	<description>
+		Nodes are Godot's building blocks. They can be assigned as the child of another node.
+	</description>
+	<tutorials>
+		<link title="Nodes and scenes">$DOCS_URL/getting_started/step_by_step/nodes_and_scenes.html</link>
+	</tutorials>
+	<methods>
+		<method name="add_child">
+			<return type="void" />
+			<param index="0" name="node" type="Node" />
+			<param index="1" name="force_readable_name" type="bool" default="false" />
+			<description>
+				Adds a child [param node]. Nodes can have any number of children.
+			</description>
+		</method>
+		<method name="get_parent" qualifiers="const">
+			<return type="Node" />
+			<description>
+				Returns the parent node of the current node, or [code]null[/code] when the node has no parent.
+			</description>
+		</method>
+	</methods>
+	<members>
+		<member name="name" type="StringName" setter="set_name" getter="get_name">
+			The name of the node. Names must be unique among siblings.
+		</member>
+		<member name="process_mode" type="int" setter="set_process_mode" getter="get_process_mode" enum="Node.ProcessMode" default="0">
+			The mode of the process notification of this node.
+		</member>
+	</members>
+	<signals>
+		<signal name="ready">
+			<description>
+				Emitted when the node is ready.
+			</description>
+		</signal>
+	</signals>
+	<constants>
+		<constant name="PROCESS_MODE_INHERIT" value="0" enum="ProcessMode">
+			Inherits the process mode from the parent node.
+		</constant>
+		<constant name="PROCESS_MODE_PAUSABLE" value="1" enum="ProcessMode">
+			Stops processing when [member SceneTree.paused] is true.
+		</constant>
+	</constants>
+</class>
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="@GDScript" inherits="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../class.xsd">
+	<brief_description>
+		Built-in GDScript constants, functions, and annotations.
+	</brief_description>
+	<description>
+		A list of utility functions and annotations that GDScript can use.
+	</description>
+	<tutorials>
+	</tutorials>
+	<methods>
+		<method name="preload">
+			<return type="Resource" />
+			<param index="0" name="path" type="String" />
+			<description>
+				Returns a [Resource] from the file system at compile time.
+			</description>
+		</method>
+	</methods>
+	<annotations>
+		<annotation name="@export">
+			<return type="void" />
+			<description>
+				Marks the following property as exported.
+			</description>
+		</annotation>
+		<annotation name="@warning_ignore" qualifiers="vararg">
+			<return type="void" />
+			<param index="0" name="warning" type="String" />
+			<description>
+				Stops one or more warnings in the following statement.
+			</description>
+		</annotation>
+	</annotations>
+	<constants>
+		<constant name="PI" value="3.14159265358979">
+			Constant that represents how many times the diameter of a circle fits around its perimeter.
+		</constant>
+	</constants>
+</class>
