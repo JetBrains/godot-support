@@ -109,7 +109,7 @@ object GdLibraryManager {
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            thisLogger().error("Failed to run Godot doctool", e)
+            thisLogger().warn("Failed to run Godot doctool", e)
             return false
         }
     }
@@ -194,7 +194,7 @@ object GdLibraryManager {
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
-            thisLogger().error("Failed to run Godot singletons dump", e)
+            thisLogger().warn("Failed to run Godot singletons dump", e)
             return false
         }
     }

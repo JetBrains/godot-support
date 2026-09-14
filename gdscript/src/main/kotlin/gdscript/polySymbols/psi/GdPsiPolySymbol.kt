@@ -1,9 +1,11 @@
 package gdscript.polySymbols.psi
 
+import com.intellij.lang.documentation.psi.createPsiDocumentationTarget
 import com.intellij.model.Pointer
 import com.intellij.model.Symbol
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
+import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
@@ -13,6 +15,8 @@ import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPsiSourceElementProperty
 import gdscript.psi.GdNamedElement
 import gdscript.psi.utils.GdCommonUtil
+import gdscript.settings.GdDocProviderMode
+import gdscript.settings.GdProjectSettingsState
 
 /**
  * A GDScript declaration that a [PsiElement] backs.
@@ -34,6 +38,13 @@ abstract class GdPsiPolySymbol : GdPolySymbol(), PolySymbolDeclaredInPsi {
     override val textRangeInSourceElement: TextRange? get() = TextRange(0, sourceElement.textLength)
     override val psiContext: PsiElement? get() = sourceElement
     override val returnType: String get() = GdCommonUtil.returnType(sourceElement.parent)
+
+    override fun getDocumentationTarget(location: PsiElement?): DocumentationTarget? =
+        if (GdProjectSettingsState.getInstance(project).gdProjectState.docProvider == GdDocProviderMode.LSP) {
+            null
+        } else {
+            createPsiDocumentationTarget(sourceElement, psiContext)
+        }
 
     /**
      * Exposes [sourceElement]'s own dictionary-literal value (if it has one) as a

@@ -43,6 +43,6 @@ class GdProjectState {
     var lspRemoteHostPort: Int = 6005
 
     @Tag("docProvider")
-    var docProvider: GdDocProviderMode = GdDocProviderMode.LSP
+    var docProvider: GdDocProviderMode = GdDocProviderMode.GDSCRIPT
 
 }
