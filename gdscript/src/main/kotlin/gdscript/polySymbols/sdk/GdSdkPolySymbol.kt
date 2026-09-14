@@ -1,8 +1,10 @@
 package gdscript.polySymbols.sdk
 
+import com.intellij.lang.documentation.psi.createPsiDocumentationTarget
 import com.intellij.navigation.SymbolNavigationService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
+import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.navigation.NavigationTarget
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.refactoring.PolySymbolRenameTarget
@@ -15,6 +17,8 @@ import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.sdk.xml.GdSdkData
 import gdscript.psi.GdNamedElement
+import gdscript.settings.GdDocProviderMode
+import gdscript.settings.GdProjectSettingsState
 
 abstract class GdSdkPolySymbol : GdPolySymbol() {
 
@@ -79,5 +83,15 @@ abstract class GdSdkPolySymbol : GdPolySymbol() {
     protected fun getOwnerClassData(project: Project, className: String): GdSdkData.ClassData? {
         return GdPolySymbolQueriesUtil.getSdkClassSymbol(project, className)?.data
     }
+
+    override fun getDocumentationTarget(location: PsiElement?): DocumentationTarget? =
+        syntheticSourceElement(project)?.let {
+            if (GdProjectSettingsState.getInstance(project).gdProjectState.docProvider == GdDocProviderMode.LSP) {
+                null
+            } else {
+                createPsiDocumentationTarget(it, psiContext)
+            }
+        }
+
 }
 

@@ -198,6 +198,7 @@ class GdCoreSdkServiceTest : BasePlatformTestCase() {
         Files.walk(coreSdkDir).use { paths ->
             paths.sorted(Comparator.reverseOrder()).forEach { Files.deleteIfExists(it) }
         }
+        LocalFileSystem.getInstance().refreshAndFindFileByNioFile(coreSdkDir)
     }
 
     private fun fixtureBlob(): ByteArray = Files.readAllBytes(testDataPath("gdscript/embeddedDocs/coreDocsBlob.xml"))
