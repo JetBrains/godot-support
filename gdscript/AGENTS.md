@@ -70,3 +70,6 @@ IDE test execution
 
 Contact points
 - Start from `README.md` for plugin overview and links to features, changelog, and marketplace. For Grammar-Kit or PSI concerns, consult IntelliJ Platform SDK docs.
+
+PolySymbols vs PSI
+- For a GDScript, TSCN and other Godot symbols, prefer PolySymbols over PSI. PolySymbols is more idiomatic for this plugin.
