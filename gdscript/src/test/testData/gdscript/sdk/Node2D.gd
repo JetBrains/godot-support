@@ -8,7 +8,7 @@ class_name Node2D
 ## @tutorial(All 2D Demos): https://github.com/godotengine/godot-demo-projects/tree/master/2d
 
 
-# Properties
+#region Properties
 
 ## Global position. See also [member position].
 var global_position: Vector2: get = get_global_position, set = set_global_position
@@ -50,8 +50,10 @@ var skew: float: get = get_skew, set = set_skew
 ## The node's [Transform2D], relative to the node's parent. See also [member global_transform].
 var transform: Transform2D: get = get_transform, set = set_transform
 
+#endregion Properties
 
-# Methods
+
+#region Methods
 
 ## Multiplies the current scale by the [param ratio] vector.
 func apply_scale(ratio: Vector2) -> void:
@@ -100,7 +102,7 @@ func translate(offset: Vector2) -> void:
 	pass
 
 
-# Getters and Setters
+#region Getters and Setters
 
 func get_global_position() -> Vector2:
 	return global_position
@@ -173,4 +175,8 @@ func get_transform() -> Transform2D:
 
 func set_transform(value: Transform2D) -> void:
 	transform = value
+
+#endregion Getters and Setters
+
+#endregion Methods
 

@@ -1,12 +1,16 @@
 package gdscript.polySymbols.sdk.xml
 
+import com.intellij.openapi.diagnostic.ControlFlowException
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.vfs.InvalidVirtualFileAccessException
 import com.intellij.openapi.vfs.VirtualFile
+import gdscript.embeddedDocs.newHardenedDocumentBuilderFactory
 import gdscript.model.GdTutorial
 import org.w3c.dom.Element
+import java.io.IOException
 import java.io.InputStream
 import java.nio.file.Path
-import javax.xml.parsers.DocumentBuilderFactory
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.io.path.inputStream
 import kotlin.io.path.pathString
 
@@ -14,29 +18,72 @@ import kotlin.io.path.pathString
 object GdSdkXmlParser {
     private val logger = Logger.getInstance(GdSdkXmlParser::class.java)
 
+    /**
+     * Reports the outcome of one parse.
+     *
+     * Production code uses this result for class data.
+     * It uses nullable results for annotations and operations because their callers do not need failure details.
+     * A caller must treat [ReadFailure] as transient, because the same source can succeed later.
+     * A caller can treat [Malformed] as stable for the current content.
+     */
+    sealed interface ParseResult<out T> {
+        data class Parsed<T>(val value: T) : ParseResult<T>
+
+        /** The source was unreadable. The file can be gone, locked, or replaced during the read. */
+        data object ReadFailure : ParseResult<Nothing>
+
+        /** The source was readable, and the XML document was invalid or had no expected content. */
+        data object Malformed : ParseResult<Nothing>
+
+        fun valueOrNull(): T? = (this as? Parsed)?.value
+    }
+
+    /**
+     * Opens the source and reports an unreadable source apart from a malformed document.
+     *
+     * [InvalidVirtualFileAccessException] is a [RuntimeException], so a plain `catch (IOException)` misses it.
+     * The VFS throws it when the file becomes invalid between the validity check and the read.
+     */
+    private fun openStream(name: String, open: () -> InputStream): InputStream? = try {
+        open()
+    } catch (e: IOException) {
+        logger.warn("Cannot read the SDK XML file: $name", e)
+        null
+    } catch (e: InvalidVirtualFileAccessException) {
+        logger.warn("The SDK XML file became invalid while it was read: $name", e)
+        null
+    }
+
     private fun getRootFromInputStream(inputStream: InputStream, fileName: String = ""): Element? {
         try {
-            val factory = DocumentBuilderFactory.newInstance()
-            val builder = factory.newDocumentBuilder()
+            val builder = newHardenedDocumentBuilderFactory().newDocumentBuilder()
             val doc = inputStream.use { builder.parse(it) }
             return doc.documentElement
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
+            // A ControlFlowException carries control flow, so logging it and returning null would swallow a cancellation.
+            if (e is ControlFlowException) throw e
             logger.warn("Error parsing XML file: $fileName", e)
         }
         return null
     }
 
-    fun parseAnnotations(path: Path): List<GdSdkData.AnnotationData>? {
-        val inputStream = path.inputStream()
-        val root = getRootFromInputStream(inputStream, path.pathString) ?: return null
-        return parseAnnotations(root)
+    private fun <T> readRoot(name: String, open: () -> InputStream, parse: (Element) -> T?): ParseResult<T> {
+        val stream = openStream(name, open) ?: return ParseResult.ReadFailure
+        val root = getRootFromInputStream(stream, name) ?: return ParseResult.Malformed
+        val value = parse(root) ?: return ParseResult.Malformed
+        return ParseResult.Parsed(value)
     }
 
-    fun parseAnnotations(file: VirtualFile): List<GdSdkData.AnnotationData>? {
-        val inputStream = file.inputStream
-        val root = getRootFromInputStream(inputStream, file.name) ?: return null
-        return parseAnnotations(root)
-    }
+    fun parseAnnotationsResult(path: Path): ParseResult<List<GdSdkData.AnnotationData>> =
+        readRoot(path.pathString, { path.inputStream() }) { parseAnnotations(it) }
+
+    fun parseAnnotations(path: Path): List<GdSdkData.AnnotationData>? =
+        parseAnnotationsResult(path).valueOrNull()
+
+    fun parseAnnotations(file: VirtualFile): List<GdSdkData.AnnotationData>? =
+        readRoot(file.name, { file.inputStream }) { parseAnnotations(it) }.valueOrNull()
 
     private fun parseAnnotations(root: Element): List<GdSdkData.AnnotationData> {
         val annotations = mutableListOf<GdSdkData.AnnotationData>()
@@ -59,17 +106,14 @@ object GdSdkXmlParser {
         return annotations
     }
 
-    fun parseOperations(path: Path): GdSdkData.OperationsData? {
-        val inputStream = path.inputStream()
-        val root = getRootFromInputStream(inputStream, path.pathString) ?: return null
-        return parseOperations(root)
-    }
+    fun parseOperationsResult(path: Path): ParseResult<GdSdkData.OperationsData> =
+        readRoot(path.pathString, { path.inputStream() }) { parseOperations(it) }
 
-    fun parseOperations(file: VirtualFile): GdSdkData.OperationsData? {
-        val inputStream = file.inputStream
-        val root = getRootFromInputStream(inputStream, file.name) ?: return null
-        return parseOperations(root)
-    }
+    fun parseOperations(path: Path): GdSdkData.OperationsData? =
+        parseOperationsResult(path).valueOrNull()
+
+    fun parseOperations(file: VirtualFile): GdSdkData.OperationsData? =
+        readRoot(file.name, { file.inputStream }) { parseOperations(it) }.valueOrNull()
 
     private fun parseOperations(root: Element): GdSdkData.OperationsData? {
         val operatorsNode = root.getElementsByTagName("operators").item(0) as? Element ?: return null
@@ -102,36 +146,36 @@ object GdSdkXmlParser {
         return operators
     }
 
-    fun parseClass(path: Path): GdSdkData.ClassData? {
-        val inputStream = path.inputStream()
-        val root = getRootFromInputStream(inputStream, path.pathString) ?: return null
-        return parseClass(root)
-    }
+    fun parseClassResult(path: Path): ParseResult<GdSdkData.ClassData> =
+        readRoot(path.pathString, { path.inputStream() }) { parseClass(it) }
 
-    fun parseClass(file: VirtualFile): GdSdkData.ClassData? {
-        val inputStream = file.inputStream
-        val root = getRootFromInputStream(inputStream, file.name) ?: return null
-        return parseClass(root)
-    }
+    fun parseClassResult(file: VirtualFile): ParseResult<GdSdkData.ClassData> =
+        readRoot(file.name, { file.inputStream }) { parseClass(it) }
+
+    fun parseClass(path: Path): GdSdkData.ClassData? =
+        parseClassResult(path).valueOrNull()
+
+    fun parseClass(file: VirtualFile): GdSdkData.ClassData? =
+        parseClassResult(file).valueOrNull()
 
     fun parseClass(root: Element): GdSdkData.ClassData {
         val properties = parseProperties(root)
         return GdSdkData.ClassData(
-                name = getName(root),
-                inherits = getInherits(root),
-                briefDescription = getBriefDescription(root),
-                description = getDescriptionFromTag(root),
-                constructors = parseConstructors(root),
-                methods = parseMethods(root).plus(parseGettersAndSetters(properties)),
-                properties = properties,
-                signals = parseSignals(root),
-                constants = parseConstants(root),
-                enums = parseEnums(root),
-                themeItems = parseThemeItems(root),
-                tutorials = parseTutorials(root),
-                isDeprecated = getIsDeprecated(root),
-                isExperimental = getIsExperimental(root),
-            )
+            name = getName(root),
+            inherits = getInherits(root),
+            briefDescription = getBriefDescription(root),
+            description = getDescriptionFromTag(root),
+            constructors = parseConstructors(root),
+            methods = parseMethods(root).plus(parseGettersAndSetters(properties)),
+            properties = properties,
+            signals = parseSignals(root),
+            constants = parseConstants(root),
+            enums = parseEnums(root),
+            themeItems = parseThemeItems(root),
+            tutorials = parseTutorials(root),
+            isDeprecated = getIsDeprecated(root),
+            isExperimental = getIsExperimental(root),
+        )
     }
 
     private fun parseConstructors(root: Element): List<GdSdkData.ConstructorData> {
@@ -204,7 +248,7 @@ object GdSdkXmlParser {
     private fun parseGettersAndSetters(properties: List<GdSdkData.PropertyData>): List<GdSdkData.MethodData> {
         val gettersAndSetters = mutableListOf<GdSdkData.MethodData>()
         for (property in properties) {
-            if(property.getter != null) {
+            if (property.getter != null) {
                 gettersAndSetters.add(
                     GdSdkData.MethodData(
                         name = property.getter,
@@ -219,7 +263,7 @@ object GdSdkXmlParser {
                     )
                 )
             }
-            if(property.setter != null) {
+            if (property.setter != null) {
                 gettersAndSetters.add(
                     GdSdkData.MethodData(
                         name = property.setter,
@@ -298,6 +342,7 @@ object GdSdkXmlParser {
             val enumValue = GdSdkData.EnumValueData(
                 name = getName(node),
                 value = getValue(node),
+                description = getDescriptionFromContent(node)
             )
             val isBitField = getIsBitField(node)
 
@@ -308,9 +353,9 @@ object GdSdkXmlParser {
         for (enumName in enumValues.keys) {
             enums.add(
                 GdSdkData.EnumData(
-                name = enumName,
-                values = enumValues[enumName]!!.first,
-                isBitField = enumValues[enumName]!!.second
+                    name = enumName,
+                    values = enumValues[enumName]!!.first,
+                    isBitField = enumValues[enumName]!!.second
                 )
             )
         }
@@ -322,7 +367,7 @@ object GdSdkXmlParser {
         val themeItemsNode = root.getElementsByTagName("theme_items").item(0) as? Element ?: return themeItems
         val childrenThemeItemsNode = themeItemsNode.getElementsByTagName("theme_item")
 
-        for (i in 0 until childrenThemeItemsNode.length){
+        for (i in 0 until childrenThemeItemsNode.length) {
             val node = childrenThemeItemsNode.item(i) as? Element ?: continue
             themeItems.add(
                 GdSdkData.ThemeItemData(
@@ -468,7 +513,7 @@ object GdSdkXmlParser {
         return getTypeAttribute(node)
     }
 
-    private fun formatType(type: String): String{
+    private fun formatType(type: String): String {
         if (type.endsWith("[]")) {
             val baseType = type.substring(0, type.length - 2)
             return "Array[$baseType]"

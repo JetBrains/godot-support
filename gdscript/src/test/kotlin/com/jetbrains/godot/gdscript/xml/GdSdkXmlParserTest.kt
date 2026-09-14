@@ -6,6 +6,7 @@ import gdscript.polySymbols.sdk.xml.GdSdkXmlParser
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.pathString
 
@@ -169,6 +170,47 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
         val warningIgnoreAnnotation = annotations.find { it.name == "warning_ignore" }
         assertNotNull(warningIgnoreAnnotation)
         assertTrue(warningIgnoreAnnotation!!.isVariadic)
+    }
+
+    @Test
+    fun testDoctypeTerminatorInQuotedDefaultKeepsContent() {
+        val xml = Files.createTempFile("gd-sdk-doctype", ".xml")
+        try {
+            Files.writeString(xml, """
+                <!DOCTYPE class [<!ATTLIST class note CDATA "inside ]> value">]>
+                <class name="Thing"><description>kept content</description></class>
+            """.trimIndent())
+
+            val clazz = GdSdkXmlParser.parseClass(xml)
+
+            assertNotNull(clazz)
+            assertEquals("kept content", clazz!!.description)
+        }
+        finally {
+            Files.deleteIfExists(xml)
+        }
+    }
+
+    @Test
+    fun testSystemEntityDoesNotReadLocalFile() {
+        val secret = Files.createTempFile("gd-sdk-secret", ".txt")
+        val xml = Files.createTempFile("gd-sdk-xxe", ".xml")
+        try {
+            Files.writeString(secret, "secret-content")
+            Files.writeString(xml, """
+                <!DOCTYPE class [<!ENTITY leaked SYSTEM "${secret.toUri()}">]>
+                <class name="Thing"><description>&leaked;</description></class>
+            """.trimIndent())
+
+            val clazz = GdSdkXmlParser.parseClass(xml)
+
+            assertNotNull(clazz)
+            assertFalse(clazz!!.description?.contains("secret-content") == true)
+        }
+        finally {
+            Files.deleteIfExists(xml)
+            Files.deleteIfExists(secret)
+        }
     }
 
     @Test

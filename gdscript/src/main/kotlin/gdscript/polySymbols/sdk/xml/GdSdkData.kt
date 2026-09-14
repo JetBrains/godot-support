@@ -69,6 +69,7 @@ sealed class GdSdkData {
         val isExperimental: Boolean,
     ) : GdSdkData()
 
+    // enums themselves don't have docs, since enums decompose into their enum values
     data class EnumData(
         val name: String,
         val values: List<EnumValueData>,
@@ -78,6 +79,7 @@ sealed class GdSdkData {
     data class EnumValueData(
         val name: String,
         val value: String,
+        val description: String?,
     ) : GdSdkData()
 
     // has return type that is always void
