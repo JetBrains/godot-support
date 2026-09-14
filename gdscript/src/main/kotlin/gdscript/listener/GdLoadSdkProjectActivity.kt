@@ -5,6 +5,7 @@ import com.intellij.openapi.startup.ProjectActivity
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.library.GdLibraryUpdater
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 
 /**
  * Loads the SDK for the project.
@@ -17,11 +18,15 @@ class GdLoadSdkProjectActivity : ProjectActivity {
         val godotExecutableFlow = GodotCommunityUtil.getGodotExecutablePathFlow(project)
         val basePathFlow = GodotCommunityUtil.getGodotProjectBasePathFlow(project)
 
-        // Both upstreams may emit in quick succession on startup; the overlapping requests are serialized by
-        // GdLibraryUpdater and collapsed by the stamp check in GdLibraryManager.generateSdkIfNeeded().
+        // FIXME by doing something similar to ReferenceGdLibrariesProjectActivity
+        /*
+        combine(basePathFlow, godotExecutableFlow) emits each time either upstream changes.
+        On first startup both can emit in quick succession, so the same pair arrives twice.
+        distinctUntilChanged() drops the repeat. GdLibraryUpdater serializes the remaining loads with a Mutex.
+         */
         basePathFlow.combine(godotExecutableFlow) { basePath, godotPath ->
             basePath to godotPath
-        }.collect { (projectBasePath, godotPath) ->
+        }.distinctUntilChanged().collect { (projectBasePath, godotPath) ->
             if (projectBasePath == null || godotPath == null) return@collect
             GdLibraryUpdater.getInstance(project).scheduleSdkLoad(projectBasePath, godotPath)
         }

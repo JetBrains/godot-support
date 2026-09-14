@@ -247,29 +247,40 @@ object GdLibraryManager {
      * [projectBasePath] and on nothing else, while the generated singletons doc depends on both, because the engine
      * registers singletons of its own: each of the three is therefore stamped with what it is actually generated from,
      * and regenerated as soon as that changes.
-     *
-     * @param projectBasePath the Godot project directory, i.e. the one holding `project.godot`.
      */
-    suspend fun generateSdkIfNeeded(
-        version: Version,
-        project: Project,
-        godotPath: Path,
-        projectBasePath: Path,
-    ) {
+    suspend fun generateSdkIfNeeded(version: Version, project: Project, godotPath: Path, projectBasePath: Path, discoveredBasePath: Path? = null) {
+
+        // The reader resolves the version through the project base path, and the writer uses the discovered one.
+        // A disagreement makes the reader look for another version, so the written documentation stays invisible.
+        if (discoveredBasePath != null && discoveredBasePath.normalize() != projectBasePath.normalize()) {
+            thisLogger().warn(
+                "The Godot project base path $discoveredBasePath differs from the IDE project base path $projectBasePath. " +
+                    "The SDK reader can look for another Godot version than the writer used."
+            )
+        }
+
         GdSdkPathManager.ensureDirectoriesExist(version, project)
 
         // Everything is refreshed at once, so the modification tracker is incremented only once.
         val dirsToRefresh = mutableListOf<Path>()
 
-        // 1. Generate Core SDK in a centralized location (project directory)
-        val coreSdkDir = GdSdkPathManager.getCoreSdkDir(version)
-        val coreSdkStampFile = GdSdkPathManager.getCoreSdkStampFile(version)
-
-        if (!GdSdkIntegrityValidator.hasValidStamp(coreSdkStampFile, version.toString(), coreSdkDir)) {
-            val engineDir = godotPath.parent ?: coreSdkDir // I don't expect this to happen, but coreSdkDir is safe fallback
-            if (runGodotDoctool(godotPath, engineDir, coreSdkDir, coreSdkStampFile, version.toString())) {
-                dirsToRefresh.add(coreSdkDir)
-            }
+        // 1. Generate Core SDK in a centralized location from the documentation that the Godot executable embeds.
+        // A core failure must not stop step 2, because the GDExtension path is independent.
+        val coreResult = try {
+            GdCoreSdkService.getInstance().ensureCoreDocs(version, godotPath)
+        }
+        catch (e: CancellationException) {
+            throw e
+        }
+        catch (e: Exception) {
+            thisLogger().warn("Failed to write the core documentation for Godot $version.", e)
+            GdCoreSdkService.Result.FAILED
+        }
+        // A new set is already visible, because the service refreshes it before it writes the stamp.
+        // Every other result leaves the directory as it was, and that set can come from an earlier session,
+        // so the VFS still needs the refresh. A failed run must show what is validly on disk.
+        if (coreResult != GdCoreSdkService.Result.WRITTEN) {
+            dirsToRefresh.add(GdSdkPathManager.getCoreSdkDir(version))
         }
 
         val extensionsStamp = withContext(Dispatchers.IO) { GdSdkFingerprints.ofExtensionDeclarations(projectBasePath) }
