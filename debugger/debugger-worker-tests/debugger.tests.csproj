@@ -13,6 +13,7 @@
     <RootNamespace>JetBrains.ReSharper.Plugins.Godot.Rider.Debugger.Tests</RootNamespace>
     <TargetFramework>net472</TargetFramework>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup Label="PackageReference">
     <PackageReference Include="JetBrains.Annotations" />

@@ -1,7 +1,3 @@
-rootProject.name = "rider-godot"
-include(":protocol")
-includeBuild("../community")
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -15,3 +11,9 @@ pluginManagement {
         }
     }
 }
+
+rootProject.name = "rider-godot"
+include(":protocol")
+includeBuild("../community")
+includeBuild("../test-shared")
+

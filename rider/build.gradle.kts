@@ -12,6 +12,7 @@ import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
+import kotlin.io.path.isRegularFile
 
 plugins {
     alias(libs.plugins.changelog)
@@ -61,6 +62,9 @@ dependencies {
         //localPlugin(repoRoot.resolve("community/build/libs/rider-godot-community.jar"))
         bundledPlugin("com.intellij.rider.godot.community")
         bundledPlugin("org.jetbrains.plugins.terminal")
+        bundledModule("intellij.platform.debugger")
+        bundledModule("intellij.rd.client.debugger")
+        bundledModule("intellij.platform.debugger.impl")
         bundledModules(
             "intellij.rider.debugger.shared",
             "intellij.rd.client", "intellij.rider.rdclient.dotnet", "intellij.rider.shared"
@@ -314,7 +318,7 @@ val riderModel: Configuration by configurations.creating {
 artifacts {
     add(riderModel.name, provider {
         intellijPlatform.platformPath.resolve("lib/rd/rider-model.jar").also {
-            check(it.isFile) {
+            check(it.isRegularFile()) {
                 "rider-model.jar is not found at $riderModel"
             }
         }
