@@ -1,7 +1,7 @@
 extends RefCounted
 class_name ExampleClass
 
-# Signals
+#region Signals
 
 signal counter_changed(new_value: int)
 
@@ -9,8 +9,10 @@ signal named_event(name: String, amount: float)
 
 signal ready()
 
+#endregion Signals
 
-# Constants
+
+#region Constants
 
 const STATUS_IDLE = 0
 
@@ -28,8 +30,10 @@ const FLAG_GAMMA = 4
 
 const UNGROUPED_CONSTANT = 314
 
+#endregion Constants
 
-# Enums
+
+#region Enums
 
 enum Status {
 	STATUS_IDLE = 0,
@@ -44,8 +48,10 @@ enum Flags {
 	FLAG_GAMMA = 4,
 }
 
+#endregion Enums
 
-# Properties
+
+#region Properties
 
 var counter: int: get = get_counter, set = set_counter
 
@@ -55,8 +61,10 @@ var origin: Vector2: get = get_origin, set = set_origin
 
 var status: int: get = get_status, set = set_status
 
+#endregion Properties
 
-# Methods
+
+#region Methods
 
 func add(a: int, b: int) -> int:
 	pass
@@ -86,7 +94,7 @@ func transform_point(point: Vector2, scale: float) -> Vector2:
 	pass
 
 
-# Getters and Setters
+#region Getters and Setters
 
 func get_counter() -> int:
 	return counter
@@ -111,4 +119,8 @@ func get_status() -> int:
 
 func set_status(value: int) -> void:
 	status = value
+
+#endregion Getters and Setters
+
+#endregion Methods
 
