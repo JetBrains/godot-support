@@ -14,6 +14,7 @@ import gdscript.psi.GdTypes
 import gdscript.psi.utils.GdNodeUtil
 import gdscript.settings.GdProjectSettingsState
 import gdscript.settings.GdProjectState
+import gdscript.utils.unquote
 
 /**
  * Checks for existence of [res://] resource
@@ -37,7 +38,7 @@ class GdResourceTypeAnnotator : Annotator {
     }
 
     private fun stringResourceExists(element: PsiElement, holder: AnnotationHolder, state: String): Boolean {
-        val text = element.text.trim('"', '\'')
+        val text = element.text.unquote()
         if (text.startsWith("res://") && GdFileResIndex.getFiles(text, element.project).isEmpty()) {
             holder
                 .newAnnotationGd(

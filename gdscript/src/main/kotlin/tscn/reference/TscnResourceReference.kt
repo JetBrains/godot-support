@@ -10,6 +10,7 @@ import gdscript.index.impl.GdFileResIndex
 import gdscript.utils.StringUtil.filterGdTscn
 import gdscript.utils.VirtualFileUtil.getPsiFile
 import gdscript.utils.VirtualFileUtil.resourcePath
+import gdscript.utils.unquote
 import tscn.psi.TscnHeaderValueVal
 
 /**
@@ -37,7 +38,7 @@ class TscnResourceReference : PsiReferenceBase<TscnHeaderValueVal> {
     }
 
     override fun resolve(): PsiElement? {
-        return GdFileResIndex.getFiles(key.trim('"', '\''), project)
+        return GdFileResIndex.getFiles(key.unquote(), project)
             .firstOrNull()
             ?.getPsiFile(project)
     }
