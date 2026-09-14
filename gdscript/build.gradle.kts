@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.jetbrains.grammarkit.tasks.GenerateLexerTask
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.models.Coordinates
 
 plugins {
     alias(libs.plugins.changelog)
@@ -68,12 +69,14 @@ dependencies {
         bundledModule("intellij.platform.dap")
         bundledModule("intellij.platform.structureView")
         bundledModule("intellij.spellchecker")
+        platformDependency(Coordinates("com.jetbrains.intellij.platform", "poly-symbols-test-framework"))
     }
     implementation(libs.jflex)
     testImplementation(testFixtures(":rider-godot-test-shared"))
     testImplementation(libs.openTest4J)
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
+    testImplementation("org.junit-pioneer:junit-pioneer:2.3.0")
     testRuntimeOnly("org.junit.platform:junit-platform-engine:1.12.2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
 }
