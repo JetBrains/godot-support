@@ -10,8 +10,6 @@ import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdClassUtil
 import gdscript.utils.PsiElementUtil.psi
-import gdscript.settings.GdDocProviderMode
-import gdscript.settings.GdProjectSettingsState
 import org.jetbrains.annotations.NonNls
 
 // todo: delay creating GdDocFactory after isGodotProject is evaluated
@@ -23,12 +21,10 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
     }
 
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
-        if (GdProjectSettingsState.getInstance(element.project).state.docProvider == GdDocProviderMode.LSP) return null
         return GdDocFactory.create(element, true)
     }
 
     override fun generateHoverDoc(element: PsiElement, originalElement: PsiElement?): String? {
-        if (GdProjectSettingsState.getInstance(element.project).state.docProvider == GdDocProviderMode.LSP) return null
         return GdDocFactory.create(element, false)
     }
 

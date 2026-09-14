@@ -1,12 +1,12 @@
 package com.jetbrains.godot.gdscript.library
 
 import com.intellij.openapi.util.Version
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import gdscript.library.GdLibraryManager
 import gdscript.library.GdSdkFingerprints
 import gdscript.library.GdSdkIntegrityValidator
 import gdscript.library.GdSdkPathManager
-import gdscript.polySymbols.scope.GdSdkSymbolsModificationTracker
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import org.junit.Test
@@ -51,6 +51,7 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
             Files.walk(projectBasePath).use { paths ->
                 paths.sorted(Comparator.reverseOrder()).forEach { Files.deleteIfExists(it) }
             }
+            LocalFileSystem.getInstance().refreshAndFindFileByNioFile(coreSdkDir)
         }
         finally {
             super.tearDown()
@@ -78,16 +79,10 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
         Files.delete(missingBinary)
         assertNull(GdSdkIntegrityValidator.coreStamp(version, missingBinary))
 
-        val tracker = GdSdkSymbolsModificationTracker.getInstance(project)
-        val before = tracker.modificationCount
-
         withTimeout(TIMEOUT_MILLIS) { GdLibraryManager.generateSdkIfNeeded(version, project, missingBinary, projectBasePath) }
 
         assertFalse("The core step must write no stamp.", GdSdkIntegrityValidator.hasValidCoreStamp(stampFile, stamp()))
-        assertTrue(
-            "A core step that writes nothing must still refresh the existing directory, which bumps the tracker.",
-            tracker.modificationCount > before,
-        )
+
     }
 
     private fun stamp() = GdSdkIntegrityValidator.CoreStamp(

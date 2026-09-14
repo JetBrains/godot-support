@@ -4,7 +4,6 @@ import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Version
 import com.intellij.project.stateStore
-import gdscript.utils.getMainProjectBasePath
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.readText

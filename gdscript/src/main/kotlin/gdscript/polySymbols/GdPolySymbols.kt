@@ -1,25 +1,31 @@
 package gdscript.polySymbols
 
+import com.intellij.lang.documentation.psi.createPsiDocumentationTarget
 import com.intellij.model.Symbol
-import com.intellij.openapi.project.Project
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.presentation.TargetPresentation
 import com.intellij.polySymbols.PolySymbol
-import com.intellij.polySymbols.PolySymbolProperty
 import com.intellij.polySymbols.PolySymbolQualifiedName
-import com.intellij.polySymbols.context.PolyContext
 import com.intellij.polySymbols.query.PolySymbolScope
-import com.intellij.polySymbols.search.PolySymbolSearchTarget
 import com.intellij.polySymbols.utils.kindName
 import com.intellij.polySymbols.utils.namespace
 import com.intellij.psi.PsiElement
+import gdscript.settings.GdDocProviderMode
+import gdscript.settings.GdProjectSettingsState
 import java.util.Locale
 
 abstract class GdPolySymbol : PolySymbol {
     override val psiContext: PsiElement? = null
 
-    // Documentation will be provided by the LSP only
-    override fun getDocumentationTarget(location: PsiElement?): DocumentationTarget? = null
+    override fun getDocumentationTarget(location: PsiElement?): DocumentationTarget? {
+        return psiContext?.let {
+            if (GdProjectSettingsState.getInstance(it).gdProjectState.docProvider == GdDocProviderMode.LSP) {
+                null
+            } else {
+                createPsiDocumentationTarget(it, null)
+            }
+        }
+    }
 
     /**
      * For SDK symbols it's equivalent to [declaringClassId] since they have no inner classes.
@@ -78,6 +84,7 @@ abstract class GdPolySymbol : PolySymbol {
 interface GdClassSymbol : PolySymbol {
     /** Full class identifier */
     val classId: String
+
     /** Leaf (simple) name */
     val declaringClassName: String
     val directMemberScope: PolySymbolScope

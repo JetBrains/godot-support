@@ -12,7 +12,6 @@ import com.intellij.openapi.vfs.newvfs.RefreshQueue
 import com.intellij.serviceContainer.AlreadyDisposedException
 import gdscript.embeddedDocs.GdCoreDocPipeline
 import gdscript.embeddedDocs.GdExtensionManifestParser
-import gdscript.polySymbols.scope.GdSdkSymbolsModificationTracker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -148,7 +147,7 @@ class GdCoreSdkService {
         for (project in ProjectManager.getInstance().openProjects) {
             if (project.isDisposed) continue
             try {
-                GdSdkSymbolsModificationTracker.getInstance(project).incModificationCount()
+                GdSdkDocsTracker.getInstance(project).docsChanged()
             }
             catch (e: ProcessCanceledException) {
                 if (e !is AlreadyDisposedException && !project.isDisposed) throw e
