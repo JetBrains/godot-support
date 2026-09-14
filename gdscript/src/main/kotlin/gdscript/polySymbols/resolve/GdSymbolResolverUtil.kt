@@ -73,6 +73,18 @@ object GdSymbolResolverUtil {
             .firstOrNull()
     }
 
+    /** The nearest SIGNAL symbol named [name] visible on [classSymbol] - its own level or an ancestor. */
+    fun findSignalSymbol(classSymbol: GdClassSymbol?, name: String): PolySymbol? {
+        classSymbol ?: return null
+        val executor = PolySymbolQueryExecutorFactory.createCustom {
+            addRootScope(classSymbol.directMemberScope)
+            addRootScopes(classSymbol.inheritedQueryScopes())
+        }
+        return executor.nameMatchQuery(GdPolySymbolKind.SIGNAL, name).run()
+            .flatMap { it.unwrapMatchedSymbols() }
+            .firstOrNull()
+    }
+
     /** The `_init` CONSTRUCTOR symbol visible on [classSymbol], if any. */
     fun findConstructorSymbol(classSymbol: GdClassSymbol?): PolySymbol? {
         classSymbol ?: return null

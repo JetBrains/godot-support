@@ -60,6 +60,7 @@ import gdscript.utils.GdOperand
 import gdscript.utils.PsiElementUtil.psi
 import gdscript.utils.PsiFileUtil.toAbsoluteResource
 import gdscript.utils.VirtualFileUtil.getPsiFile
+import gdscript.utils.unquote
 import project.psi.model.GdAutoload
 
 object PsiGdExprUtil {
@@ -177,7 +178,7 @@ object PsiGdExprUtil {
                     } else if (method == "load" || method == "preload") {
                         val res = expr.argList?.argExprList?.firstOrNull()
                         if (res != null) {
-                            var resource = res.text.trim('"', '\'')
+                            var resource = res.text.unquote()
                             if (resource.endsWith(".tscn")) {
                                 return "PackedScene"
                             }
@@ -270,6 +271,10 @@ object PsiGdExprUtil {
 
                     return GdKeywords.INT
                 } else if (elementType == GdTypes.STRING_VAL_NM) {
+                    // STRING_NAME (`&"..."`) is also wrapped as STRING_VAL_NM.
+                    if (expr.firstChild?.firstChild?.elementType == GdTypes.STRING_NAME) {
+                        return GdKeywords.STR_NAME
+                    }
                     return GdKeywords.STR
                 } else if (elementType == GdTypes.STRING) {
                     return GdKeywords.STR
