@@ -16,6 +16,7 @@ import gdscript.polySymbols.psi.GdPsiClassSymbolFactory
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
 import gdscript.utils.VirtualFileUtil.getPsiFile
+import gdscript.utils.unquote
 
 /**
  * Project-level scope providing PSI-backed class symbols for user-defined anonymous GDScript classes.
@@ -45,7 +46,7 @@ fun gdPsiResourceClassesPolySymbolScope(project: Project): PolySymbolScope =
             provideMatchingSymbols(
                 PsiModificationTracker.MODIFICATION_COUNT, VirtualFileManager.VFS_STRUCTURE_MODIFICATIONS,
             ) { _, nameVariant ->
-                GdFileResIndex.getFiles(nameVariant.trim('"', '\''), project)
+                GdFileResIndex.getFiles(nameVariant.unquote(), project)
                     .asSequence()
                     .mapNotNull { it.getPsiFile(project) as? GdFile }
                     .mapNotNull { GdPsiClassSymbolFactory.create(it) }
