@@ -197,3 +197,32 @@ In this direction, a GDScript file references a scene resource, a node path, a s
 
 - Binary scene files (`.scn`) were omitted because this document focuses on text scenes (`.tscn`). The internal node structure in `SceneState` is identical for both.
 - C# bindings (`.cs`) were omitted because the scope is GDScript (`.gd`).
+
+---
+
+## 3. Known Gaps
+
+The inventory lists every reference type the engine supports. Not all of them resolve as a
+`PsiReference`/PolySymbol own-reference yet, so Find Usages, rename, and go-to-declaration miss
+these:
+
+- **Node navigation (`$Node`, `%UniqueNode`)** - `gdscript.psi.impl.GdNodePathImpl` declares no
+  reference. `gdscript.psi.utils.GdNodeUtil.findNode` already resolves a `GdNodePath` to its
+  `.tscn` node, but only completion, type inference, and the "unresolved path" annotator call it.
+- **Exported node-path values (`NodePath("Player")`)** - a `.tscn` property value of this shape
+  resolves to a node only inside the animation method-track walk in
+  `tscn.psi.impl.TscnNamedElementImpl`. An `@export var target: Node` assignment, and an animation
+  property track (`TYPE_VALUE`/`TYPE_BEZIER`), carry no own-reference to the target node.
+  Best paired example in godot-demo-projects:
+    • misc/large_world_coordinates/controls.gd:8-10 declares:
+    @export var node_to_move: Node3D
+    • misc/large_world_coordinates/test.tscn:251 assigns them on the Controls node:
+    [node name="Controls" type="VBoxContainer" parent="." node_paths=PackedStringArray("camera", "camera_holder", "rotation_x", "node_to_move")]
+- **Groups (`groups=[...]`)** - `tscn.psi.utils.TscnNodeUtil.listAllGroups` indexes every group
+  name, but no reference links a group string literal in `.tscn` to a `get_nodes_in_group()`,
+  `call_group()`, or `is_in_group()` argument in GDScript, in either direction.
+  Best paired example in godot-demo-projects:
+    • 3d/lights_and_shadows/test.tscn:139 (and repeated at lines 164, 185, 213, 242, 321, 347, 377, 407) — [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." groups=["animatable"]]
+    • 3d/lights_and_shadows/tester.gd:78 — for animatable_node in get_tree().get_nodes_in_group(&"animatable"):
+    This is a direct round trip: the group string "animatable" is declared in the .tscn header and consumed by get_nodes_in_group(&"animatable") in the script, matching the "no reference links a group string literal in .tscn to a get_nodes_in_group() ... argument" gap.
+
