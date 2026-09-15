@@ -206,9 +206,6 @@ The inventory lists every reference type the engine supports. Not all of them re
 `PsiReference`/PolySymbol own-reference yet, so Find Usages, rename, and go-to-declaration miss
 these:
 
-- **Node navigation (`$Node`, `%UniqueNode`)** - `gdscript.psi.impl.GdNodePathImpl` declares no
-  reference. `gdscript.psi.utils.GdNodeUtil.findNode` already resolves a `GdNodePath` to its
-  `.tscn` node, but only completion, type inference, and the "unresolved path" annotator call it.
 - **Exported node-path values (`NodePath("Player")`)** - a `.tscn` property value of this shape
   resolves to a node only inside the animation method-track walk in
   `tscn.psi.impl.TscnNamedElementImpl`. An `@export var target: Node` assignment, and an animation
