@@ -44,18 +44,41 @@ object GdSdkPathManager {
         return getProjectExtensionsRoot(project)?.resolve("gdextensions")
     }
 
+    fun getProjectExtensionsRawDir(project: Project): Path? {
+        return getProjectExtensionsRoot(project)?.resolve("gdextensions-raw")
+    }
+
+    /** The root every per-library blob documentation folder (see [getProjectExtensionBlobDocsDir]) lives under. */
+    fun getProjectExtensionsBlobRoot(project: Project): Path? {
+        return getProjectExtensionsRoot(project)?.resolve("blob")
+    }
+
+    /** Extension blobs are keyed by their manifest id (hash from [gdscript.embeddedDocs.GdExtensionDocExtractor.manifestId]) */
+    fun getProjectExtensionBlobDocsDir(project: Project, manifestId: String): Path? {
+        return getProjectExtensionsBlobRoot(project)?.resolve(manifestId)
+    }
+
     fun getProjectExtensionsStampFile(project: Project): Path? {
         return getProjectExtensionsRoot(project)?.resolve("stamp-gdext.txt")
     }
 
-    /** The generated singleton docs get their own folder: the gdextensions one is owned end to end by the doctool. */
+    fun getProjectExtensionsMergeStampFile(project: Project): Path? {
+        return getProjectExtensionsRoot(project)?.resolve("stamp-gdext-merge.txt")
+    }
+
+    /** The merge step publishes into `gdextensions`. The generated singleton docs use a separate directory. */
     fun getProjectSingletonsDocDir(project: Project): Path? {
         return getProjectExtensionsRoot(project)?.resolve("singletons")?.resolve("doc_classes")
     }
 
     /** The project-specific directories the generated documentation XMLs are written to. */
     fun getProjectDocDirs(project: Project): List<Path> {
-        return listOfNotNull(getProjectExtensionsDir(project), getProjectSingletonsDocDir(project))
+        return listOfNotNull(
+            getProjectExtensionsDir(project),
+            getProjectExtensionsRawDir(project),
+            getProjectSingletonsDocDir(project),
+            getProjectExtensionsBlobRoot(project),
+        )
     }
 
     fun getProjectSingletonsDocFile(project: Project): Path? {
@@ -94,5 +117,7 @@ object GdSdkPathManager {
         val projectExtensionsDir = getProjectExtensionsDir(project)
             ?: throw IllegalStateException("Project extensions directory not found for project: ${project.name}. Failed to create directory")
         ensureDirectoryExists(projectExtensionsDir)
+
+        getProjectExtensionsRawDir(project)?.let(::ensureDirectoryExists)
     }
 }

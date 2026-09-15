@@ -15,7 +15,6 @@ import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPsiSourceElementProperty
 import gdscript.psi.GdNamedElement
 import gdscript.psi.utils.GdCommonUtil
-import gdscript.settings.GdDocProviderMode
 import gdscript.settings.GdProjectSettingsState
 
 /**
@@ -40,7 +39,7 @@ abstract class GdPsiPolySymbol : GdPolySymbol(), PolySymbolDeclaredInPsi {
     override val returnType: String get() = GdCommonUtil.returnType(sourceElement.parent)
 
     override fun getDocumentationTarget(location: PsiElement?): DocumentationTarget? =
-        if (GdProjectSettingsState.getInstance(project).gdProjectState.docProvider == GdDocProviderMode.LSP) {
+        if (GdProjectSettingsState.getInstance(project).usesLspDocs()) {
             null
         } else {
             createPsiDocumentationTarget(sourceElement, psiContext)

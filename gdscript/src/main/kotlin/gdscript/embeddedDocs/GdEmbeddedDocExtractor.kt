@@ -11,8 +11,7 @@ import java.util.zip.DataFormatException
 import java.util.zip.Inflater
 
 /**
- * Extracts documentation from a readable Godot executable without running it or interpreting its container format.
- * The executable can contain one or more zlib streams at arbitrary byte offsets.
+ * Extracts documentation from a readable Godot executable. The executable can contain one or more zlib streams at arbitrary byte offsets.
  *
  * The extractor:
  * 1. Scans for valid zlib headers.

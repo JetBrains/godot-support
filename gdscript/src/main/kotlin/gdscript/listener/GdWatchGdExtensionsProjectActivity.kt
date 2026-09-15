@@ -84,14 +84,15 @@ class GdWatchGdExtensionsProjectActivity : ProjectActivity {
             }
 
             if (project.isDisposed) return
-            val godotPath = GodotCommunityUtil.getGodotExecutablePath(project) ?: return@consumeEach
 
-            val extensions = withContext(Dispatchers.IO) { GdSdkFingerprints.ofExtensionDeclarations(projectBasePath) }
+            val extensions = withContext(Dispatchers.IO) {
+                GdSdkFingerprints.ofExtensionDeclarations(projectBasePath)
+            }
             if (extensions == knownExtensions) return@consumeEach
             knownExtensions = extensions
 
             thisLogger().info("The GDExtensions of $projectBasePath may have changed, checking the generated documentation")
-            GdLibraryUpdater.getInstance(project).scheduleSdkLoad(projectBasePath, godotPath)
+            GdLibraryUpdater.getInstance(project).scheduleSdkLoad()
         }
     }
 }

@@ -242,8 +242,8 @@ class XmlToGd {
         description?.lines()?.forEach {
             val trimmed = it.trim()
             if (trimmed.isEmpty()) {
-                sb.appendLine("##")}
-            else {
+                sb.appendLine("##")
+            } else {
                 sb.appendLine("$prefix## $trimmed")
             }
         }
