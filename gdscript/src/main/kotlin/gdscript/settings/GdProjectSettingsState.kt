@@ -31,4 +31,5 @@ class GdProjectSettingsState : PersistentStateComponent<GdProjectState> {
         gdProjectState = state
     }
 
+    fun usesLspDocs(): Boolean = gdProjectState.docProvider == GdDocProviderMode.LSP
 }

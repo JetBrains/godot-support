@@ -1,6 +1,7 @@
 package com.jetbrains.godot.gdscript.library
 
 import com.intellij.openapi.util.Version
+import com.intellij.testFramework.rules.TempDirectory
 import gdscript.embeddedDocs.GdDocFormat
 import gdscript.library.GdSdkIntegrityValidator
 import org.junit.Assert.assertEquals
@@ -9,6 +10,7 @@ import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -25,6 +27,10 @@ import kotlin.io.path.writeText
  */
 @RunWith(JUnit4::class)
 class GdSdkIntegrityValidatorTest {
+    @JvmField
+    @Rule
+    val tempDir: TempDirectory = TempDirectory()
+
     private val version: Version = Version.parseVersion("4.5")!!
 
     @Test
@@ -43,8 +49,7 @@ class GdSdkIntegrityValidatorTest {
 
     @Test
     fun testCoreStampIsNullForAMissingExecutable() {
-        val missing = Files.createTempFile("gd-stamp-missing", ".bin")
-        Files.delete(missing)
+        val missing = tempDir.rootPath.resolve("missing.bin")
 
         assertNull(GdSdkIntegrityValidator.coreStamp(version, missing))
     }
@@ -99,10 +104,7 @@ class GdSdkIntegrityValidatorTest {
     }
 
     private fun binary(content: String): Path =
-        Files.createTempFile("gd-stamp", ".bin").also { it.writeText(content) }
+        tempDir.newDirectoryPath().resolve("godot.bin").also { it.writeText(content) }
 
-    private fun stampFile(): Path {
-        val directory = Files.createTempDirectory("gd-stamp-dir")
-        return directory.resolve("stamp-4.5.txt")
-    }
+    private fun stampFile(): Path = tempDir.newDirectoryPath().resolve("stamp-4.5.txt")
 }

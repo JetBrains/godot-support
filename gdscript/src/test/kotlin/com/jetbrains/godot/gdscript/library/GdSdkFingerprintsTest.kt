@@ -105,6 +105,18 @@ class GdSdkFingerprintsTest : BasePlatformTestCase() {
         assertEquals(GdSdkFingerprints.ofGeneratedDocs(docsDir), GdSdkFingerprints.ofGeneratedDocs(docsDir))
     }
 
+    @Test
+    fun testSmallFilesFingerprintUsesContentInsteadOfTimestamps() {
+        val file = docsDir.resolve("Node.xml")
+        val before = GdSdkFingerprints.ofSmallFilesByContent(docsDir)
+
+        Files.setLastModifiedTime(file, FileTime.fromMillis(Files.getLastModifiedTime(file).toMillis() + 10_000))
+        assertEquals(before, GdSdkFingerprints.ofSmallFilesByContent(docsDir))
+
+        file.writeText("<class name=\"Changed\"/>")
+        assertFalse(before == GdSdkFingerprints.ofSmallFilesByContent(docsDir))
+    }
+
     /** The case the input-only stamp missed: a single generated XML deleted by hand. */
     @Test
     fun testRemovingASingleDocChangesTheGeneratedDocsFingerprint() {
