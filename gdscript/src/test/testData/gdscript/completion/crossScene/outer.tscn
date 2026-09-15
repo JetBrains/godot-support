@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" path="res://inner.tscn" id="1"]
+
+[node name="Outer" type="Node2D"]
+
+[node name="InnerInstance" parent="." instance=ExtResource("1")]
+
+[node name="Sibling" type="Node2D" parent="."]
