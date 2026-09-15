@@ -38,4 +38,4 @@ Two repositories serve as a source of truth for the engine behavior:
 
 ## 4. References summary
 
-- [TSCN and GDScript](knowledge/tscn_gdscript_references.md): Detailed inventory of all reference types between `.tscn` text scenes and GDScript.
+- [TSCN and GDScript](knowledge/tscn_gdscript_references.md): Detailed inventory of all reference types between `.tscn` text scenes and GDScript. See its "Known Gaps" section for the reference types that do not yet resolve as a `PsiReference`.
