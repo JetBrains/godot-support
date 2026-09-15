@@ -1,5 +1,7 @@
 package gdscript.psi.utils
 
+import com.intellij.openapi.diagnostic.fileLogger
+import com.intellij.openapi.diagnostic.trace
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
@@ -8,11 +10,14 @@ import gdscript.model.GdNodeHolder
 import gdscript.psi.GdNodePath
 import gdscript.utils.StringUtil.camelToSnakeCase
 import gdscript.utils.VirtualFileUtil.getPsiFile
+import gdscript.utils.VirtualFileUtil.resourcePath
 import tscn.psi.TscnNodeHeader
 import tscn.psi.TscnResourceHeader
 import tscn.psi.utils.TscnResourceUtil
 import kotlin.io.path.Path
 import kotlin.io.path.relativeTo
+
+private val LOG = fileLogger()
 
 /**
  * Node utils for available nodes from given script
@@ -54,7 +59,15 @@ object GdNodeUtil {
             .split(":")
             .first()
 
-        return nodes.find { it.relativePath.trim('$') == path || it.uniqueId?.trim('%') == path }
+        LOG.trace {
+            "findNode: element=${element.text}, path=$path, candidates=${
+                nodes.joinToString { "[relativePath=${it.relativePath}, uniqueId=${it.uniqueId}]" }
+            }"
+        }
+
+        val found = nodes.find { it.relativePath.trim('$', '"', '\'') == path || it.uniqueId?.trim('%') == path }
+        LOG.trace { "findNode: element=${element.text}, found=${found?.element?.name}" }
+        return found
     }
 
     /**
@@ -103,7 +116,35 @@ object GdNodeUtil {
             isSingleNode,
         )
 
+        // A relative path in a script on the root of a reusable scene can reach outward into
+        // whatever scene instances it, e.g. a sibling of the instance node. Walk every such
+        // instancing scene too, rooted at the instance's own node path there.
+        if (resourceNode.parentPath.isEmpty()) {
+            listInstancingContexts(resourceNode).forEach { (outerFile, outerBasePath) ->
+                LOG.trace {
+                    "listAvailableNodeForNode: '${resourceNode.name}' is a scene root instanced as " +
+                        "'$outerBasePath' in ${outerFile.name}, walking that scene too"
+                }
+                availableNodes(outerFile, outerBasePath, resultSet, isSingleNode)
+            }
+        }
+
         return resultSet
+    }
+
+    /**
+     * Finds every place where [resourceNode]'s own scene is instanced as a child node elsewhere,
+     * paired with that instance's node path in the instancing ("outer") scene.
+     */
+    private fun listInstancingContexts(resourceNode: TscnNodeHeader): List<Pair<PsiFile, String>> {
+        val ownScenePath = resourceNode.containingFile.originalFile.virtualFile?.resourcePath() ?: return emptyList()
+        val sceneResources = TscnResourceUtil.findTscnByResources(ownScenePath, resourceNode.project)
+
+        return sceneResources.flatMap { resource ->
+            PsiTreeUtil.findChildrenOfType(resource.containingFile, TscnNodeHeader::class.java)
+                .filter { it.instanceResource == ownScenePath }
+                .map { resource.containingFile to it.nodePath }
+        }
     }
 
     private fun availableNodes(
@@ -130,6 +171,7 @@ object GdNodeUtil {
             }
 
             val nodePath = "$parentPath$currentNodePath"
+            LOG.trace { "availableNodes: name=${it.name}, basePath=$basePath, parentPath=$parentPath, nodePath=$nodePath" }
 
             // Upon encountering a node representing instanced sub scene, we add it in the caller after recursing.
             // That way, we preserve its unique-namedness.
@@ -154,6 +196,7 @@ object GdNodeUtil {
             }
 
             var relativePath = Path(nodePath).relativeTo(Path(basePath)).toString().replace("\\", "/")
+            LOG.trace { "availableNodes: name=${it.name}, nodePath=$nodePath relativeTo basePath=$basePath -> relativePath=$relativePath" }
             if (relativePath.isBlank()) {
                 relativePath = "."
             }
