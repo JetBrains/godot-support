@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.zip.DeflaterOutputStream
+import kotlin.io.path.createDirectories
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
@@ -194,11 +195,13 @@ class GdCoreDocPipelineTest {
     }
 
     @Test
-    fun testWriteCoreDocsRemovesAStaleXmlFileAndKeepsEveryOtherFile() {
+    fun testWriteCoreDocsRemovesAnythingThatIsNotWrittenXml() {
         val directory = Files.createTempDirectory("gd-core-docs")
         try {
             directory.resolve("Stale.xml").writeText("<class name=\"Stale\"/>")
-            directory.resolve("keep.txt").writeText("keep me")
+            val deleteFile = directory.resolve("delete.txt").apply { writeText("delete me") }
+            val deleteDirectory = directory.resolve("delete-directory").apply { createDirectories() }
+            directory.resolve("delete-directory").resolve("delete.txt").writeText("delete me nested")
 
             GdCoreDocPipeline.writeCoreDocs(
                 directory,
@@ -208,7 +211,8 @@ class GdCoreDocPipelineTest {
 
             assertEquals("<class name=\"Node\"/>", directory.resolve("Node.xml").readText())
             assertFalse(Files.exists(directory.resolve("Stale.xml")))
-            assertTrue(Files.exists(directory.resolve("keep.txt")))
+            assertFalse(Files.exists(deleteFile))
+            assertFalse(Files.exists(deleteDirectory))
         }
         finally {
             Files.walk(directory).use { paths ->

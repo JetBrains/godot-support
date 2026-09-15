@@ -61,7 +61,7 @@ object GdSdkIntegrityValidator {
             "format=$formatVersion\nversion=$godotVersion\nbinarySize=$binarySize\nbinaryModified=$binaryModifiedMillis\n"
     }
 
-    /** Reads the attributes of [binary]. Returns null when the attributes are unreadable. */
+    /** Reads the attributes of [binary] to create the coreStamp. Returns null when the attributes are unreadable. */
     fun coreStamp(version: Version, binary: Path): CoreStamp? = try {
         CoreStamp(
             formatVersion = GdDocFormat.VERSION,

@@ -1,16 +1,14 @@
 package gdscript.embeddedDocs
 
 import com.intellij.platform.eel.fs.EelFiles
-import org.jetbrains.annotations.ApiStatus
+import gdscript.utils.GdPathUtil
 import java.nio.file.Files
-import java.nio.file.InvalidPathException
-import java.nio.file.LinkOption
 import java.nio.file.Path
 
 /**
  * Reads a GDExtension manifest and resolves its documentation-bearing library.
  *
- * A manifest can contain these sections:
+ * A [Manifest] can contain these sections:
  * ```
  * [configuration]
  * entry_symbol = "example_library_init"
@@ -23,14 +21,11 @@ import java.nio.file.Path
  * A `[libraries]` key maps a feature expression to a binary resource path.
  * The parser selects the key with the most matching tags. It prefers a debug key when two keys have equal tag counts.
  *
- * An `Info.plist` file stores the metadata for a macOS framework bundle.
- * Its `CFBundleExecutable` value names the real executable, which need not match the framework directory name.
- * This lookup exists because the basename guess failed on the real godot-cpp framework.
+ * On macOS, a `[libraries]` entry can name a `.framework` bundle instead of a plain binary.
+ * [GdMacBundleUtils] resolves the real executable inside it.
  */
 object GdExtensionManifestParser {
-    const val MAX_MANIFEST_SIZE_BYTES = 1024L * 1024L
-    const val MAX_INFO_PLIST_SIZE_BYTES = 4L * 1024L * 1024L
-    private val windowsDrivePath = Regex("^[A-Za-z]:.*")
+    const val MAX_MANIFEST_SIZE_BYTES: Long = 1024L * 1024L
 
     /** Holds the feature tags that the current Godot target supports. */
     data class ActiveFeatureTags(
@@ -41,6 +36,11 @@ object GdExtensionManifestParser {
         private val names: Set<String> = buildSet {
             add(platformName)
             add(architecture)
+            // TODO: Maybe other things possible?
+            add("single")
+            // The editor always runs with the "editor" tag active, together with "debug" (an editor build always
+            // has debugging features): https://docs.godotengine.org/en/stable/tutorials/export/feature_tags.html.
+            add("editor")
             if (debug) {
                 add("debug")
                 add("template_debug")
@@ -55,7 +55,7 @@ object GdExtensionManifestParser {
     @JvmInline
     value class LibraryFeatureKey(val value: String)
 
-    /** A manifest resource path such as `res://bin/libexample.so`. */
+    /** A manifest resource path, either `res://bin/libexample.so` or `./libexample.so`. */
     @JvmInline
     value class LibraryResourcePath(val value: String)
 
@@ -63,12 +63,13 @@ object GdExtensionManifestParser {
         val entrySymbol: String?,
         val compatibilityMinimum: String?,
         val libraries: Map<LibraryFeatureKey, LibraryResourcePath>,
+        val path: Path,
     )
 
     sealed interface Resolution {
         data class Success(val manifest: Manifest, val binary: Path, val libraryKey: LibraryFeatureKey) : Resolution
 
-        data class Failure(val reason: Reason, val manifest: Manifest) : Resolution {
+        data class Failure(val reason: Reason) : Resolution {
             enum class Reason {
                 NO_MANIFEST_FILE,
                 MANIFEST_UNREADABLE_OR_MALFORMED,
@@ -88,162 +89,33 @@ object GdExtensionManifestParser {
     }
 
     fun parsePath(manifestPath: Path, projectRoot: Path, features: ActiveFeatureTags): Resolution {
-        val emptyManifest = Manifest(null, null, emptyMap())
         if (!Files.exists(manifestPath)) {
-            return Resolution.Failure(Resolution.Failure.Reason.NO_MANIFEST_FILE, emptyManifest)
+            return Resolution.Failure(Resolution.Failure.Reason.NO_MANIFEST_FILE)
         }
 
         val text = try {
             if (!Files.isRegularFile(manifestPath) || !Files.isReadable(manifestPath)) {
-                return Resolution.Failure(Resolution.Failure.Reason.MANIFEST_UNREADABLE_OR_MALFORMED, emptyManifest)
+                return Resolution.Failure(Resolution.Failure.Reason.MANIFEST_UNREADABLE_OR_MALFORMED)
             }
             if (Files.size(manifestPath) > MAX_MANIFEST_SIZE_BYTES) {
-                return Resolution.Failure(Resolution.Failure.Reason.MANIFEST_TOO_LARGE, emptyManifest)
+                return Resolution.Failure(Resolution.Failure.Reason.MANIFEST_TOO_LARGE)
             }
             EelFiles.readString(manifestPath)
+        } catch (_: Exception) {
+            return Resolution.Failure(Resolution.Failure.Reason.MANIFEST_UNREADABLE_OR_MALFORMED)
         }
-        catch (_: Exception) {
-            return Resolution.Failure(Resolution.Failure.Reason.MANIFEST_UNREADABLE_OR_MALFORMED, emptyManifest)
-        }
-        return parseText(text, projectRoot, features)
+        return parseText(text, manifestPath, projectRoot, features)
     }
 
-    fun parseText(text: String, projectRoot: Path, features: ActiveFeatureTags): Resolution {
-        val manifest = parseManifest(text)
+    fun parseText(text: String, manifestPath: Path, projectRoot: Path, features: ActiveFeatureTags): Resolution {
+        val manifest = parseManifest(text, manifestPath)
             ?: return Resolution.Failure(
                 Resolution.Failure.Reason.MANIFEST_UNREADABLE_OR_MALFORMED,
-                Manifest(null, null, emptyMap()),
             )
         return resolve(manifest, projectRoot, features)
     }
 
-    private fun resolve(manifest: Manifest, projectRoot: Path, features: ActiveFeatureTags): Resolution {
-        if (manifest.libraries.isEmpty()) {
-            return Resolution.Failure(Resolution.Failure.Reason.NO_LIBRARIES_SECTION, manifest)
-        }
-
-        var selected: Map.Entry<LibraryFeatureKey, LibraryResourcePath>? = null
-        var selectedTagCount = -1
-        var selectedHasDebug = false
-        for (entry in manifest.libraries.entries) {
-            val tags = tags(entry.key)
-            if (!tags.all(features::contains)) continue
-
-            val hasDebug = tags.any(::isDebugTag)
-            if (tags.size > selectedTagCount || tags.size == selectedTagCount && hasDebug && !selectedHasDebug) {
-                selected = entry
-                selectedTagCount = tags.size
-                selectedHasDebug = hasDebug
-            }
-        }
-
-        val chosen = selected
-        if (chosen == null) {
-            val releaseMatched = manifest.libraries.keys.any { key ->
-                val tags = tags(key)
-                tags.any { it == "release" || it == "template_release" } &&
-                    tags.filterNot { it == "release" || it == "template_release" }.all(features::contains)
-            }
-            val reason = if (releaseMatched) {
-                Resolution.Failure.Reason.ONLY_RELEASE_KEY_MATCHED
-            }
-            else {
-                Resolution.Failure.Reason.NO_KEY_MATCHED_CURRENT_PLATFORM
-            }
-            return Resolution.Failure(reason, manifest)
-        }
-
-        val resourcePath = chosen.value.value.removePrefix("res://")
-        if (!isValidPath(resourcePath)) {
-            return Resolution.Failure(Resolution.Failure.Reason.INVALID_LIBRARY_PATH, manifest)
-        }
-        val path = resolveContained(projectRoot, resourcePath)
-            ?: return Resolution.Failure(Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, manifest)
-        if (features.platformName == "macos" || features.platformName == "ios") {
-            if (path.fileName.toString().endsWith(".xcframework")) {
-                return Resolution.Failure(Resolution.Failure.Reason.XCFRAMEWORK_UNSUPPORTED, manifest)
-            }
-            if (Files.isDirectory(path)) {
-                val plist = resolveContained(path, "Resources/Info.plist")
-                    ?: return Resolution.Failure(Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, manifest)
-                val executable = when (val result = readBundleExecutable(plist)) {
-                    is BundleExecutableResult.Found -> result.value
-                    BundleExecutableResult.TooLarge -> {
-                        return Resolution.Failure(Resolution.Failure.Reason.INFO_PLIST_TOO_LARGE, manifest)
-                    }
-                    BundleExecutableResult.Unreadable -> {
-                        return Resolution.Failure(Resolution.Failure.Reason.FRAMEWORK_HAS_NO_READABLE_INFO_PLIST, manifest)
-                    }
-                }
-                if (!isValidPath(executable)) {
-                    return Resolution.Failure(Resolution.Failure.Reason.INVALID_LIBRARY_PATH, manifest)
-                }
-                val binary = resolveContained(path, executable)
-                    ?: return Resolution.Failure(Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, manifest)
-                if (!Files.exists(binary)) {
-                    return Resolution.Failure(Resolution.Failure.Reason.RESOLVED_PATH_DOES_NOT_EXIST, manifest)
-                }
-                if (!Files.isRegularFile(binary)) {
-                    return Resolution.Failure(Resolution.Failure.Reason.RESOLVED_PATH_IS_NOT_REGULAR_FILE, manifest)
-                }
-                return Resolution.Success(manifest, binary, chosen.key)
-            }
-        }
-        if (!Files.exists(path)) {
-            return Resolution.Failure(Resolution.Failure.Reason.RESOLVED_PATH_DOES_NOT_EXIST, manifest)
-        }
-        if (!Files.isRegularFile(path)) {
-            return Resolution.Failure(Resolution.Failure.Reason.RESOLVED_PATH_IS_NOT_REGULAR_FILE, manifest)
-        }
-        return Resolution.Success(manifest, path, chosen.key)
-    }
-
-    /**
-     * Resolves [value] under [base] and returns null when the result escapes [base].
-     *
-     * The check also follows a symbolic link, so a link out of [base] returns null too.
-     */
-    @ApiStatus.Internal
-    fun resolveContained(base: Path, value: String): Path? {
-        if (isAbsolutePath(value)) return null
-
-        val normalizedBase = base.toAbsolutePath().normalize()
-        val candidate = normalizedBase.resolve(value).normalize()
-        if (!candidate.startsWith(normalizedBase)) return null
-
-        val realBase = try {
-            normalizedBase.toRealPath()
-        } catch (_: Exception) {
-            return null
-        }
-        var existingAncestor: Path? = candidate
-        while (existingAncestor != null && !Files.exists(existingAncestor, LinkOption.NOFOLLOW_LINKS)) {
-            existingAncestor = existingAncestor.parent
-        }
-        val realAncestor = try {
-            existingAncestor?.toRealPath()
-        } catch (_: Exception) {
-            return null
-        }
-        return candidate.takeIf { realAncestor != null && realAncestor.startsWith(realBase) }
-    }
-
-    @ApiStatus.Internal
-    fun isValidPath(value: String): Boolean = try {
-        Path.of(value)
-        true
-    } catch (_: InvalidPathException) {
-        false
-    }
-
-    private fun isAbsolutePath(value: String): Boolean =
-        Path.of(value).isAbsolute || value.startsWith("//") || value.startsWith("\\") || windowsDrivePath.matches(value)
-
-    private fun isDebugTag(tag: String): Boolean = tag == "debug" || tag == "template_debug"
-
-    private fun tags(key: LibraryFeatureKey): List<String> = key.value.split('.').map(String::trim)
-
-    private fun parseManifest(text: String): Manifest? {
+    private fun parseManifest(text: String, manifestPath: Path): Manifest? {
         val sections = LinkedHashMap<String, LinkedHashMap<String, String>>()
         var section: LinkedHashMap<String, String>? = null
         for (line in text.lineSequence()) {
@@ -259,6 +131,7 @@ object GdExtensionManifestParser {
             if (separator <= 0 || section == null) return null
             val key = trimmed.substring(0, separator).trim()
             val rawValue = trimmed.substring(separator + 1).trim()
+            // A value must be either fully unquoted or a well-formed "" quoted string
             if (key.isEmpty() || rawValue.length == 1 && rawValue[0] == '"' || rawValue.startsWith('"') != rawValue.endsWith('"')) return null
             section[key] = unquote(rawValue)
         }
@@ -268,9 +141,117 @@ object GdExtensionManifestParser {
             configuration?.get("compatibility_minimum"),
             sections["libraries"]?.entries?.associate { (key, value) ->
                 LibraryFeatureKey(key) to LibraryResourcePath(value)
-            } ?: emptyMap()
+            } ?: emptyMap(),
+            manifestPath
         )
     }
+
+
+    private fun resolve(manifest: Manifest, projectRoot: Path, features: ActiveFeatureTags): Resolution {
+        if (manifest.libraries.isEmpty()) {
+            return Resolution.Failure(Resolution.Failure.Reason.NO_LIBRARIES_SECTION)
+        }
+
+        // Pick the most specific option
+        val candidates = manifest.libraries.entries.map { LibraryCandidate(it, tags(it.key)) }
+        val chosen = candidates
+            .filter { it.tags.all(features::contains) }
+            .maxWithOrNull(
+                compareBy(
+                    // Prefer one with most tags, because it is more specific match
+                    { it.tags.size },
+                    // Then prefer editor (Photon has docs in editor, not debug)
+                    { it.tags.any { tag -> tag == "editor" } },
+                    // Then prefer debug (Rider addon has docs in debug)
+                    { it.tags.any { tag -> tag == "debug" || tag == "template_debug" } },
+                ),
+            )
+            ?.entry
+
+        if (chosen == null) {
+            // Nothing qualified above. Check whether a release-only key would otherwise have matched, so the
+            // reported failure can distinguish "this build is a release build the editor cannot use" from a
+            // platform/architecture mismatch.
+            val releaseMatched = candidates.any { (_, tags) ->
+                tags.any { it == "release" || it == "template_release" } &&
+                    tags.filterNot { it == "release" || it == "template_release" }.all(features::contains)
+            }
+            val reason = if (releaseMatched) {
+                Resolution.Failure.Reason.ONLY_RELEASE_KEY_MATCHED
+            } else {
+                Resolution.Failure.Reason.NO_KEY_MATCHED_CURRENT_PLATFORM
+            }
+            return Resolution.Failure(reason)
+        }
+
+        val resPath = chosen.value.value
+
+        // A `res://` path is project-root-relative by definition, so it is built directly under the root.
+        // A plain relative path is instead resolved against the manifest file's own directory and then must be
+        // verified to still land inside the project root, to guard against a `..` or symlink escape.
+        val path = if (resPath.startsWith(RESOURCE_PREFIX)) {
+            val cleanResPath = resPath.removePrefix(RESOURCE_PREFIX)
+            if (!GdPathUtil.isValidPath(cleanResPath)) {
+                return Resolution.Failure(Resolution.Failure.Reason.INVALID_LIBRARY_PATH)
+            }
+            GdPathUtil.resolveContained(projectRoot, cleanResPath)
+        } else {
+            if (!GdPathUtil.isValidPath(resPath)) {
+                return Resolution.Failure(Resolution.Failure.Reason.INVALID_LIBRARY_PATH)
+            }
+            // A path such as `C:\outside.dll` is not absolute by Java's rules on Linux or macOS, so reject it.
+            if (GdPathUtil.isAbsolutePath(resPath)) {
+                return Resolution.Failure(Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT)
+            }
+            GdPathUtil.verifyContained(manifest.path.parent.resolve(resPath), projectRoot)
+        } ?: return Resolution.Failure(Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT)
+
+        // On macOS/iOS the resolved path can name a `.framework` bundle (a directory) instead of a plain
+        // binary. An `.xcframework` bundle covers several architectures and is not supported here. Otherwise,
+        // look inside the bundle for the real executable named by its Info.plist.
+        // CFBundleExecutable (`.framework`) is default in godot-cpp sample, not the `.dylib`
+        if (features.platformName == "macos" || features.platformName == "ios") {
+            if (GdMacBundleUtils.isXcframework(path)) {
+                return Resolution.Failure(Resolution.Failure.Reason.XCFRAMEWORK_UNSUPPORTED)
+            }
+            if (Files.isDirectory(path)) {
+                return when (val result = GdMacBundleUtils.resolveFrameworkExecutable(path)) {
+                    is GdMacBundleUtils.BundleResolution.Found -> Resolution.Success(manifest, result.executable, chosen.key)
+                    GdMacBundleUtils.BundleResolution.InfoPlistUnreadable ->
+                        Resolution.Failure(Resolution.Failure.Reason.FRAMEWORK_HAS_NO_READABLE_INFO_PLIST)
+
+                    GdMacBundleUtils.BundleResolution.InfoPlistTooLarge ->
+                        Resolution.Failure(Resolution.Failure.Reason.INFO_PLIST_TOO_LARGE)
+
+                    GdMacBundleUtils.BundleResolution.ExecutableNameInvalid ->
+                        Resolution.Failure(Resolution.Failure.Reason.INVALID_LIBRARY_PATH)
+
+                    GdMacBundleUtils.BundleResolution.ExecutableUnreachable ->
+                        Resolution.Failure(Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT)
+
+                    GdMacBundleUtils.BundleResolution.ExecutableDoesNotExist ->
+                        Resolution.Failure(Resolution.Failure.Reason.RESOLVED_PATH_DOES_NOT_EXIST)
+
+                    GdMacBundleUtils.BundleResolution.ExecutableIsNotRegularFile ->
+                        Resolution.Failure(Resolution.Failure.Reason.RESOLVED_PATH_IS_NOT_REGULAR_FILE)
+                }
+            }
+        }
+        if (!Files.exists(path)) {
+            return Resolution.Failure(Resolution.Failure.Reason.RESOLVED_PATH_DOES_NOT_EXIST)
+        }
+        if (!Files.isRegularFile(path)) {
+            return Resolution.Failure(Resolution.Failure.Reason.RESOLVED_PATH_IS_NOT_REGULAR_FILE)
+        }
+        return Resolution.Success(manifest, path, chosen.key)
+    }
+
+    private data class LibraryCandidate(
+        val entry: Map.Entry<LibraryFeatureKey, LibraryResourcePath>,
+        val tags: List<String>,
+    )
+
+    private fun tags(key: LibraryFeatureKey): List<String> = key.value.split('.').map(String::trim)
 
     private fun unquote(value: String): String {
         if (value.length < 2 || value.first() != '"' || value.last() != '"') return value
@@ -279,31 +260,6 @@ object GdExtensionManifestParser {
             .replace("\\\\", "\\")
     }
 
-    @ApiStatus.Internal
-    sealed interface BundleExecutableResult {
-        data class Found(val value: String) : BundleExecutableResult
-        data object TooLarge : BundleExecutableResult
-        data object Unreadable : BundleExecutableResult
-    }
-
-    /** Reads `CFBundleExecutable` from an Apple property list, which names the real executable in a bundle. */
-    @ApiStatus.Internal
-    fun readBundleExecutable(plist: Path): BundleExecutableResult {
-        if (!Files.isRegularFile(plist) || !Files.isReadable(plist)) return BundleExecutableResult.Unreadable
-        return try {
-            if (Files.size(plist) > MAX_INFO_PLIST_SIZE_BYTES) return BundleExecutableResult.TooLarge
-            val document = newHardenedDocumentBuilderFactory().newDocumentBuilder().parse(plist.toFile())
-            val keys = document.getElementsByTagName("key")
-            for (index in 0 until keys.length) {
-                if (keys.item(index).textContent == "CFBundleExecutable") {
-                    var value = keys.item(index).nextSibling
-                    while (value != null && value.nodeType != org.w3c.dom.Node.ELEMENT_NODE) value = value.nextSibling
-                    if (value != null && value.nodeName == "string") return BundleExecutableResult.Found(value.textContent)
-                }
-            }
-            BundleExecutableResult.Unreadable
-        } catch (_: Exception) {
-            BundleExecutableResult.Unreadable
-        }
-    }
 }
+
+private val RESOURCE_PREFIX = "res://"

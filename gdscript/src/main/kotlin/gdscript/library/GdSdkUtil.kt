@@ -3,7 +3,7 @@ package gdscript.library
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Version
-import com.intellij.project.stateStore
+import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.readText
@@ -15,14 +15,12 @@ object GdSdkUtil {
 
     private const val DEFAULT_SDK_VERSION = "4.5"
 
-    // TODO migrate to using service that Ivan created like in ReferenceSdkProjectActivity
     fun getGodotVersion(project: Project): Version {
-        val projectBasePath = project.stateStore.projectBasePath
-        val projectGodot = projectBasePath.resolve("project.godot").takeIf { it.exists() }
+        val projectGodot = GodotCommunityUtil.getGodotProjectBasePath(project)
+            ?.resolve("project.godot")?.takeIf { it.exists() }
         return projectGodot?.let { getGodotVersion(it) } ?: Version.parseVersion(DEFAULT_SDK_VERSION)!!
     }
 
-    // TODO migrate to using service that Ivan created like in ReferenceSdkProjectActivity
     fun getGodotVersion(projectFile: Path): Version? {
         try {
             val content = projectFile.readText()

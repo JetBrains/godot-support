@@ -3,24 +3,12 @@ package gdscript.embeddedDocs
 import com.intellij.openapi.progress.ProgressManager
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.ExperimentalPathApi
+import kotlin.io.path.deleteRecursively
+import kotlin.io.path.isDirectory
 import kotlin.io.path.name
 import kotlin.io.path.writeBytes
 
-/**
- * Builds the core class documentation from the documentation that a Godot executable embeds.
- *
- * The pipeline reads the executable as data, so it never runs the executable.
- * It extracts the compressed streams and splits each stream into class documents.
- *
- * The pipeline recovers per class. It keeps every good document. It drops a malformed document and a
- * document whose class name cannot be a file name. When two documents name the same class with different
- * content, it keeps the one at the lowest offset and skips the later one. It reports every such note.
- *
- * It rejects the whole set only when the extraction gives nothing usable, when a size cap cut the
- * extraction short, or when a required base class is absent.
- *
- * A degraded extraction must not delete. [writeCoreDocs] takes the sweep as a parameter for that reason.
- */
 object GdCoreDocPipeline {
 
     /** A usable set must describe *at least* these classes. The GDScript language file uses the `@` prefix. */
@@ -80,6 +68,18 @@ object GdCoreDocPipeline {
         ) : Outcome
     }
 
+    /**
+     * Builds the core class documentation from the documentation that a Godot executable embeds.
+     *
+     * The pipeline recovers per class. It keeps every good document. It drops a malformed document and a
+     * document whose class name cannot be a file name. When two documents name the same class with different
+     * content, it keeps the one at the lowest offset and skips the later one. It reports every such note.
+     *
+     * It rejects the whole set only when the extraction gives nothing usable, when a size cap cut the
+     * extraction short, or when a required base class is absent.
+     *
+     * A degraded extraction must not delete. [writeCoreDocs] takes the sweep as a parameter for that reason.
+     */
     fun build(binary: Path, checkCanceled: () -> Unit = { ProgressManager.checkCanceled() }): Outcome {
         val extracted = when (val result = GdEmbeddedDocExtractor.extract(binary, checkCanceled)) {
             is GdEmbeddedDocExtractor.Result.NotFound ->
@@ -164,15 +164,12 @@ object GdCoreDocPipeline {
     }
 
     /**
-     * Writes [files] into [directory].
-     *
      * The deletion is the only step that can leave the user with less documentation, so it is optional.
      * A clean extraction passes true for [sweepStale], and the directory then holds exactly [files].
      * A degraded extraction passes false, so every file that the extraction missed stays on disk.
      * The next clean extraction removes what a degraded one left behind.
-     *
-     * The caller writes the stamp only after the new set is visible, so an interrupted write retries.
      */
+    @OptIn(ExperimentalPathApi::class)
     fun writeCoreDocs(directory: Path, files: List<ClassFile>, sweepStale: Boolean) {
         Files.createDirectories(directory)
         for (file in files) {
@@ -181,12 +178,17 @@ object GdCoreDocPipeline {
         if (!sweepStale) return
 
         val expected = files.mapTo(HashSet()) { it.fileName }
-        Files.newDirectoryStream(directory, "*.xml").use { entries ->
+        var allEntries: List<Path> = listOf()
+        Files.newDirectoryStream(directory).use { entries ->
             for (entry in entries) {
+                // Get rid of previous xml files, which were stored in directories before
+                if (entry.isDirectory()) entry.deleteRecursively()
                 if (entry.name !in expected) Files.deleteIfExists(entry)
+                allEntries = allEntries.plusElement(entry)
             }
         }
     }
+
 
     /** Returns the file name for a class, or null when the class name cannot be a file name. */
     fun fileNameFor(className: String): String? {
