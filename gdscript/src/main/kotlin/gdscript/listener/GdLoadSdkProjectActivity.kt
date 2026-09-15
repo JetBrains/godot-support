@@ -2,6 +2,7 @@ package gdscript.listener
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.library.GdLibraryUpdater
 import kotlinx.coroutines.flow.combine
@@ -17,18 +18,14 @@ class GdLoadSdkProjectActivity : ProjectActivity {
 
         val godotExecutableFlow = GodotCommunityUtil.getGodotExecutablePathFlow(project)
         val basePathFlow = GodotCommunityUtil.getGodotProjectBasePathFlow(project)
+        val projectInfoFlow = GdProjectGodotService.getInstance(project).projectInfoFlow
 
-        // FIXME by doing something similar to ReferenceGdLibrariesProjectActivity
-        /*
-        combine(basePathFlow, godotExecutableFlow) emits each time either upstream changes.
-        On first startup both can emit in quick succession, so the same pair arrives twice.
-        distinctUntilChanged() drops the repeat. GdLibraryUpdater serializes the remaining loads with a Mutex.
-         */
-        basePathFlow.combine(godotExecutableFlow) { basePath, godotPath ->
-            basePath to godotPath
-        }.distinctUntilChanged().collect { (projectBasePath, godotPath) ->
-            if (projectBasePath == null || godotPath == null) return@collect
-            GdLibraryUpdater.getInstance(project).scheduleSdkLoad(projectBasePath, godotPath)
+        // A missing version does not stop a load. The updater reads the current paths after it acquires the mutex.
+        combine(basePathFlow, godotExecutableFlow, projectInfoFlow) { basePath, godotPath, info ->
+            if (basePath != null) Triple(basePath, godotPath, info?.version) else null
+        }.distinctUntilChanged().collect { selection ->
+            if (selection == null) return@collect
+            GdLibraryUpdater.getInstance(project).scheduleSdkLoad()
         }
     }
 }

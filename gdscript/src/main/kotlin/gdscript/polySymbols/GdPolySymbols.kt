@@ -10,7 +10,6 @@ import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.kindName
 import com.intellij.polySymbols.utils.namespace
 import com.intellij.psi.PsiElement
-import gdscript.settings.GdDocProviderMode
 import gdscript.settings.GdProjectSettingsState
 import java.util.Locale
 
@@ -19,7 +18,7 @@ abstract class GdPolySymbol : PolySymbol {
 
     override fun getDocumentationTarget(location: PsiElement?): DocumentationTarget? {
         return psiContext?.let {
-            if (GdProjectSettingsState.getInstance(it).gdProjectState.docProvider == GdDocProviderMode.LSP) {
+            if (GdProjectSettingsState.getInstance(it).usesLspDocs()) {
                 null
             } else {
                 createPsiDocumentationTarget(it, null)

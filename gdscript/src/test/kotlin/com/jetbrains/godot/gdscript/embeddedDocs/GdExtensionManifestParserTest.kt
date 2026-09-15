@@ -2,11 +2,13 @@ package com.jetbrains.godot.gdscript.embeddedDocs
 
 import com.intellij.openapi.application.PathManager
 import gdscript.embeddedDocs.GdExtensionManifestParser
+import gdscript.embeddedDocs.GdMacBundleUtils
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeNoException
 import org.junit.Test
+import org.junit.jupiter.api.fail
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -38,7 +40,7 @@ class GdExtensionManifestParserTest {
       linux.debug.x86_64="res://long.so"
     """.trimIndent()
         )
-        assertEquals(root.resolve("long.so"), (result as GdExtensionManifestParser.Resolution.Success).binary)
+        assertEquals(root.resolve("long.so"), result.assertSuccess().binary)
     }
 
     @Test
@@ -53,7 +55,7 @@ class GdExtensionManifestParserTest {
       linux.debug="res://debug.so"
     """.trimIndent()
         )
-        assertEquals(debugBinary, (result as GdExtensionManifestParser.Resolution.Success).binary)
+        assertEquals(debugBinary, result.assertSuccess().binary)
     }
 
     @Test
@@ -61,19 +63,19 @@ class GdExtensionManifestParserTest {
         val root = tempRoot()
         Files.createFile(root.resolve("lib.so"))
         val result = parse(root, "[libraries]\nlinux.debug=\"res://lib.so\"")
-        assertTrue(result is GdExtensionManifestParser.Resolution.Success)
+        result.assertSuccess()
     }
 
     @Test
     fun unsatisfiedFeatureRejectsKey() {
         val result = parse(tempRoot(), "[libraries]\nlinux.debug.threads=\"res://lib.so\"")
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.NO_KEY_MATCHED_CURRENT_PLATFORM, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.NO_KEY_MATCHED_CURRENT_PLATFORM, result.assertFailure().reason)
     }
 
     @Test
     fun releaseOnlyReportsMissingDocumentation() {
         val result = parse(tempRoot(), "[libraries]\nlinux.template_release=\"res://lib.so\"")
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.ONLY_RELEASE_KEY_MATCHED, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.ONLY_RELEASE_KEY_MATCHED, result.assertFailure().reason)
     }
 
     @Test
@@ -82,7 +84,7 @@ class GdExtensionManifestParserTest {
         Files.createDirectories(root.resolve("bin"))
         val binary = Files.createFile(root.resolve("bin/lib.so"))
         val result = parse(root, "[libraries]\nlinux.debug=\"res://bin/lib.so\"")
-        assertEquals(binary, (result as GdExtensionManifestParser.Resolution.Success).binary)
+        assertEquals(binary, result.assertSuccess().binary)
     }
 
     @Test
@@ -91,7 +93,7 @@ class GdExtensionManifestParserTest {
         Files.createFile(root.parent.resolve("outside-${root.fileName}.so"))
             .also { temporaryRoots.add(it) }
         val result = parse(root, "[libraries]\nlinux.debug=\"res://../outside-${root.fileName}.so\"")
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, result.assertFailure().reason)
     }
 
     @Test
@@ -105,16 +107,86 @@ class GdExtensionManifestParserTest {
             assumeNoException(exception)
         }
         val result = parse(root, "[libraries]\nlinux.debug=\"res://linked/outside.so\"")
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, result.assertFailure().reason)
     }
 
+    // These strings have no `res://` prefix, so this also exercises the local-path (`./...`) branch.
     @Test
     fun rejectsPlatformIndependentAbsolutePathForms() {
         val root = tempRoot()
         for (path in listOf("/outside.so", "C:\\outside.dll", "\\\\server\\share\\outside.dll")) {
             val result = parse(root, "[libraries]\nlinux.debug=\"$path\"")
-            assertEquals(path, GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, failure(result).reason)
+            assertEquals(path, GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, result.assertFailure().reason)
         }
+    }
+
+    // A local path (e.g. `./lib.so`) is resolved against the manifest file's own directory, not the project root, unlike a `res://` path
+    @Test
+    fun localPathResolvesRelativeToManifestDirectoryNotProjectRoot() {
+        val root = tempRoot()
+        val sub = Files.createDirectories(root.resolve("sub"))
+        Files.createFile(root.resolve("lib.so")) // decoy: a `res://lib.so` reference would pick this file instead
+        val binary = Files.createFile(sub.resolve("lib.so"))
+        val manifestPath = sub.resolve("plugin.gdextension")
+        val result = parse(root, "[libraries]\nlinux.debug=\"./lib.so\"", manifestPath = manifestPath)
+        assertEquals(binary, result.assertSuccess().binary)
+    }
+
+    @Test
+    fun localPathResolvesNestedSubdirectoryRelativeToManifest() {
+        val root = tempRoot()
+        val sub = Files.createDirectories(root.resolve("sub"))
+        Files.createDirectories(sub.resolve("bin"))
+        val binary = Files.createFile(sub.resolve("bin/lib.so"))
+        val manifestPath = sub.resolve("plugin.gdextension")
+        val result = parse(root, "[libraries]\nlinux.debug=\"./bin/lib.so\"", manifestPath = manifestPath)
+        assertEquals(binary, result.assertSuccess().binary)
+    }
+
+    @Test
+    fun localPathCanTraverseUpWithinProjectRoot() {
+        val root = tempRoot()
+        val sub = Files.createDirectories(root.resolve("sub"))
+        val binary = Files.createFile(root.resolve("lib.so"))
+        val manifestPath = sub.resolve("plugin.gdextension")
+        val result = parse(root, "[libraries]\nlinux.debug=\"../lib.so\"", manifestPath = manifestPath)
+        assertEquals(binary, result.assertSuccess().binary)
+    }
+
+    @Test
+    fun localPathRejectsParentPathEscape() {
+        val root = tempRoot()
+        val sub = Files.createDirectories(root.resolve("sub"))
+        Files.createFile(root.parent.resolve("outside-${root.fileName}.so"))
+            .also { temporaryRoots.add(it) }
+        val manifestPath = sub.resolve("plugin.gdextension")
+        val result = parse(
+            root, "[libraries]\nlinux.debug=\"../../outside-${root.fileName}.so\"",
+            manifestPath = manifestPath,
+        )
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, result.assertFailure().reason)
+    }
+
+    @Test
+    fun localPathRejectsSymlinkPathEscape() {
+        val root = tempRoot()
+        val sub = Files.createDirectories(root.resolve("sub"))
+        val outside = tempRoot()
+        Files.createFile(outside.resolve("outside.so"))
+        try {
+            Files.createSymbolicLink(sub.resolve("linked"), outside)
+        } catch (exception: Exception) {
+            assumeNoException(exception)
+        }
+        val manifestPath = sub.resolve("plugin.gdextension")
+        val result = parse(root, "[libraries]\nlinux.debug=\"./linked/outside.so\"", manifestPath = manifestPath)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, result.assertFailure().reason)
+    }
+
+    @Test
+    fun localPathInvalidPathIsReported() {
+        val result = parse(tempRoot(), "[libraries]\nlinux.debug=\"./invalid\u0000path.so\"")
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.INVALID_LIBRARY_PATH, result.assertFailure().reason)
     }
 
     // This test proves that a generated Info.plist selects an executable whose name differs from the framework name.
@@ -127,7 +199,7 @@ class GdExtensionManifestParserTest {
         val binary = Files.createFile(framework.resolve("actual-name"))
         val result = parse(root, "[libraries]\nmacos.debug=\"res://lib.framework\"", macosFeatures())
         assertTrue(result.toString(), result is GdExtensionManifestParser.Resolution.Success)
-        assertEquals(binary, (result as GdExtensionManifestParser.Resolution.Success).binary)
+        assertEquals(binary, result.assertSuccess().binary)
     }
 
     // This test pins the real godot-cpp plist format, unlike the first test, which uses a generated plist.
@@ -143,7 +215,18 @@ class GdExtensionManifestParserTest {
         val result = parse(root, "[libraries]\nmacos.debug=\"res://lib.framework\"", macosFeatures())
 
         assertTrue(result.toString(), result is GdExtensionManifestParser.Resolution.Success)
-        assertEquals(binary, (result as GdExtensionManifestParser.Resolution.Success).binary)
+        assertEquals(binary, result.assertSuccess().binary)
+    }
+
+    @Test
+    fun resolvesFrameworkWithoutInfoPlist() {
+        val root = tempRoot()
+        val framework = Files.createDirectories(root.resolve("lib.framework"))
+        val binary = Files.createFile(framework.resolve("lib"))
+
+        val result = parse(root, "[libraries]\nmacos.debug=\"res://lib.framework\"", macosFeatures())
+
+        assertEquals(binary, result.assertSuccess().binary)
     }
 
     @Test
@@ -153,12 +236,12 @@ class GdExtensionManifestParserTest {
         val resources = Files.createDirectories(framework.resolve("Resources"))
         Files.write(
             resources.resolve("Info.plist"),
-            ByteArray(GdExtensionManifestParser.MAX_INFO_PLIST_SIZE_BYTES.toInt() + 1),
+            ByteArray(GdMacBundleUtils.MAX_INFO_PLIST_SIZE_BYTES.toInt() + 1),
         )
 
         val result = parse(root, "[libraries]\nmacos.debug=\"res://lib.framework\"", macosFeatures())
 
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.INFO_PLIST_TOO_LARGE, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.INFO_PLIST_TOO_LARGE, result.assertFailure().reason)
     }
 
     @Test
@@ -169,7 +252,7 @@ class GdExtensionManifestParserTest {
         Files.writeString(framework.resolve("Resources/Info.plist"), plist("../outside"))
         Files.createFile(root.resolve("outside"))
         val result = parse(root, "[libraries]\nmacos.debug=\"res://lib.framework\"", macosFeatures())
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.PATH_ESCAPES_PROJECT_ROOT, result.assertFailure().reason)
     }
 
     @Test
@@ -190,7 +273,7 @@ class GdExtensionManifestParserTest {
         val result = parse(root, "[libraries]\nmacos.debug=\"res://lib.framework\"", macosFeatures())
         assertEquals(
             GdExtensionManifestParser.Resolution.Failure.Reason.RESOLVED_PATH_IS_NOT_REGULAR_FILE,
-            failure(result).reason,
+            result.assertFailure().reason,
         )
     }
 
@@ -201,7 +284,7 @@ class GdExtensionManifestParserTest {
         val result = parse(root, "[libraries]\nmacos.debug=\"res://lib.framework\"", macosFeatures())
         assertEquals(
             GdExtensionManifestParser.Resolution.Failure.Reason.FRAMEWORK_HAS_NO_READABLE_INFO_PLIST,
-            failure(result).reason,
+            result.assertFailure().reason,
         )
     }
 
@@ -211,14 +294,14 @@ class GdExtensionManifestParserTest {
         val root = tempRoot()
         Files.createDirectories(root.resolve("lib.xcframework"))
         val result = parse(root, "[libraries]\nmacos.debug=\"res://lib.xcframework\"", macosFeatures())
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.XCFRAMEWORK_UNSUPPORTED, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.XCFRAMEWORK_UNSUPPORTED, result.assertFailure().reason)
     }
 
     @Test
     fun missingManifestIsReported() {
         val root = tempRoot()
         val result = GdExtensionManifestParser.parsePath(root.resolve("missing.gdextension"), root, linuxDebug)
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.NO_MANIFEST_FILE, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.NO_MANIFEST_FILE, result.assertFailure().reason)
     }
 
     @Test
@@ -228,7 +311,7 @@ class GdExtensionManifestParserTest {
         val result = GdExtensionManifestParser.parsePath(manifest, root, linuxDebug)
         assertEquals(
             GdExtensionManifestParser.Resolution.Failure.Reason.MANIFEST_UNREADABLE_OR_MALFORMED,
-            failure(result).reason,
+            result.assertFailure().reason,
         )
     }
 
@@ -240,25 +323,25 @@ class GdExtensionManifestParserTest {
             ByteArray(GdExtensionManifestParser.MAX_MANIFEST_SIZE_BYTES.toInt() + 1),
         )
         val result = GdExtensionManifestParser.parsePath(manifest, root, linuxDebug)
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.MANIFEST_TOO_LARGE, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.MANIFEST_TOO_LARGE, result.assertFailure().reason)
     }
 
     @Test
     fun noLibrariesSectionIsReported() {
         val result = parse(tempRoot(), "[configuration]\nentry_symbol=\"init\"")
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.NO_LIBRARIES_SECTION, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.NO_LIBRARIES_SECTION, result.assertFailure().reason)
     }
 
     @Test
     fun missingResolvedPathIsReported() {
         val result = parse(tempRoot(), "[libraries]\nlinux.debug=\"res://missing.so\"")
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.RESOLVED_PATH_DOES_NOT_EXIST, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.RESOLVED_PATH_DOES_NOT_EXIST, result.assertFailure().reason)
     }
 
     @Test
     fun invalidLibraryPathIsReported() {
         val result = parse(tempRoot(), "[libraries]\nlinux.debug=\"res://invalid\u0000path.so\"")
-        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.INVALID_LIBRARY_PATH, failure(result).reason)
+        assertEquals(GdExtensionManifestParser.Resolution.Failure.Reason.INVALID_LIBRARY_PATH, result.assertFailure().reason)
     }
 
     @Test
@@ -266,9 +349,15 @@ class GdExtensionManifestParserTest {
         val result = parse(tempRoot(), "[libraries]\nlinux.debug=\"res://\"")
         assertEquals(
             GdExtensionManifestParser.Resolution.Failure.Reason.RESOLVED_PATH_IS_NOT_REGULAR_FILE,
-            failure(result).reason,
+            result.assertFailure().reason,
         )
     }
+
+    private fun GdExtensionManifestParser.Resolution.assertSuccess(): GdExtensionManifestParser.Resolution.Success =
+        (this as? GdExtensionManifestParser.Resolution.Success) ?: fail("Expected $this to be a Success!")
+
+    private fun GdExtensionManifestParser.Resolution.assertFailure(): GdExtensionManifestParser.Resolution.Failure =
+        (this as? GdExtensionManifestParser.Resolution.Failure) ?: fail("Expected $this to be a Failure!")
 
     private fun tempRoot(): Path = Files.createTempDirectory("gdextension").also(temporaryRoots::add)
 
@@ -278,10 +367,14 @@ class GdExtensionManifestParserTest {
         return PathManager.getPluginsDir().parent.parent.parent.parent.parent.resolve("src/test/testData").resolve(relativePath)
     }
 
-    private fun parse(root: Path, text: String, features: GdExtensionManifestParser.ActiveFeatureTags = linuxDebug) =
-        GdExtensionManifestParser.parseText(text, root, features)
-
-    private fun failure(result: GdExtensionManifestParser.Resolution) = result as GdExtensionManifestParser.Resolution.Failure
+    // manifestPath does not need to exist on disk: parseText never reads the manifest file itself, it only
+    // reads manifestPath.parent to resolve a local (non-`res://`) library path.
+    private fun parse(
+        root: Path,
+        text: String,
+        features: GdExtensionManifestParser.ActiveFeatureTags = linuxDebug,
+        manifestPath: Path = root.resolve("plugin.gdextension"),
+    ) = GdExtensionManifestParser.parseText(text, manifestPath, root, features)
 
     private fun macosFeatures() = GdExtensionManifestParser.ActiveFeatureTags("macos", "x86_64", debug = true)
 

@@ -1,6 +1,6 @@
 package gdscript.polySymbols.sdk.xml
 
-import com.intellij.openapi.diagnostic.ControlFlowException
+import com.intellij.diagnostic.rethrowControlFlowException
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.vfs.InvalidVirtualFileAccessException
 import com.intellij.openapi.vfs.VirtualFile
@@ -10,20 +10,15 @@ import org.w3c.dom.Element
 import java.io.IOException
 import java.io.InputStream
 import java.nio.file.Path
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.io.path.inputStream
 import kotlin.io.path.pathString
 
-// The format of these XML files can be found in testData/gdscript/xml/class.xsd
+// The format of these XML files can be found in `testData/gdscript/xml/class.xsd`
 object GdSdkXmlParser {
     private val logger = Logger.getInstance(GdSdkXmlParser::class.java)
 
     /**
-     * Reports the outcome of one parse.
-     *
-     * Production code uses this result for class data.
-     * It uses nullable results for annotations and operations because their callers do not need failure details.
-     * A caller must treat [ReadFailure] as transient, because the same source can succeed later.
+     * A caller should treat [ReadFailure] as transient, because the same source can succeed later.
      * A caller can treat [Malformed] as stable for the current content.
      */
     sealed interface ParseResult<out T> {
@@ -38,40 +33,28 @@ object GdSdkXmlParser {
         fun valueOrNull(): T? = (this as? Parsed)?.value
     }
 
-    /**
-     * Opens the source and reports an unreadable source apart from a malformed document.
-     *
-     * [InvalidVirtualFileAccessException] is a [RuntimeException], so a plain `catch (IOException)` misses it.
-     * The VFS throws it when the file becomes invalid between the validity check and the read.
-     */
-    private fun openStream(name: String, open: () -> InputStream): InputStream? = try {
-        open()
-    } catch (e: IOException) {
-        logger.warn("Cannot read the SDK XML file: $name", e)
-        null
-    } catch (e: InvalidVirtualFileAccessException) {
-        logger.warn("The SDK XML file became invalid while it was read: $name", e)
-        null
-    }
-
-    private fun getRootFromInputStream(inputStream: InputStream, fileName: String = ""): Element? {
-        try {
-            val builder = newHardenedDocumentBuilderFactory().newDocumentBuilder()
-            val doc = inputStream.use { builder.parse(it) }
-            return doc.documentElement
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: Exception) {
-            // A ControlFlowException carries control flow, so logging it and returning null would swallow a cancellation.
-            if (e is ControlFlowException) throw e
-            logger.warn("Error parsing XML file: $fileName", e)
-        }
-        return null
-    }
-
     private fun <T> readRoot(name: String, open: () -> InputStream, parse: (Element) -> T?): ParseResult<T> {
-        val stream = openStream(name, open) ?: return ParseResult.ReadFailure
-        val root = getRootFromInputStream(stream, name) ?: return ParseResult.Malformed
+
+        val stream = try {
+            open()
+        } catch (e: IOException) {
+            logger.warn("Cannot read the SDK XML file: $name", e)
+            null
+        } catch (e: InvalidVirtualFileAccessException) {
+            logger.warn("The SDK XML file became invalid while it was read: $name", e)
+            null
+        } ?: return ParseResult.ReadFailure
+
+        val root = try {
+            val builder = newHardenedDocumentBuilderFactory().newDocumentBuilder()
+            val doc = stream.use { builder.parse(it) }
+            doc.documentElement
+        } catch (e: Exception) {
+            rethrowControlFlowException(e)
+            logger.warn("Error parsing XML file: $name", e)
+            return ParseResult.Malformed
+        }
+
         val value = parse(root) ?: return ParseResult.Malformed
         return ParseResult.Parsed(value)
     }

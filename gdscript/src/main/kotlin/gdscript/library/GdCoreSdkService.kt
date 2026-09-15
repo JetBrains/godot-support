@@ -5,13 +5,14 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.progress.ProcessCanceledException
 import com.intellij.openapi.project.ProjectManager
-import com.intellij.openapi.util.SystemInfo
 import com.intellij.openapi.util.Version
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.openapi.vfs.newvfs.RefreshQueue
 import com.intellij.serviceContainer.AlreadyDisposedException
+import com.intellij.util.system.LowLevelLocalMachineAccess
+import com.intellij.util.system.OS
 import gdscript.embeddedDocs.GdCoreDocPipeline
-import gdscript.embeddedDocs.GdExtensionManifestParser
+import gdscript.embeddedDocs.GdMacBundleUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.ensureActive
@@ -20,7 +21,6 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
-import kotlin.io.path.isRegularFile
 import kotlin.io.path.name
 
 /**
@@ -31,8 +31,6 @@ import kotlin.io.path.name
  * application scoped, and its [mutex] serializes every write and every delete in that directory.
  * A successful write also moves the symbol tracker of every open project, because a project that
  * did not write still reads the directory.
- *
- * The service reads the executable as data. It never runs the executable.
  */
 @Service(Service.Level.APP)
 class GdCoreSdkService {
@@ -79,12 +77,13 @@ class GdCoreSdkService {
             return@withLock Result.UP_TO_DATE
         }
 
+        // Stamp out of date, need to rebuild anew
         val outcome = withContext(Dispatchers.IO) {
             GdCoreDocPipeline.build(binary) { coroutineContext.ensureActive() }
         }
         val ready = when (outcome) {
             is GdCoreDocPipeline.Outcome.Rejected -> {
-                val rejection = when (outcome.reason) {
+                val rejectionString = when (outcome.reason) {
                     GdCoreDocPipeline.Outcome.RejectReason.INPUT_UNAVAILABLE,
                     GdCoreDocPipeline.Outcome.RejectReason.NO_CANDIDATE_FOUND,
                     GdCoreDocPipeline.Outcome.RejectReason.NO_CANDIDATE_VALIDATED,
@@ -100,7 +99,7 @@ class GdCoreSdkService {
                         "The documentation in $binary misses the required classes: ${outcome.missingClasses.sorted()} " +
                             "(${outcome.reason})."
                 }
-                thisLogger().warn("The core documentation stays as it is. $rejection")
+                thisLogger().warn("The core documentation stays as it is. $rejectionString")
                 return@withLock Result.FAILED
             }
             is GdCoreDocPipeline.Outcome.Ready -> outcome
@@ -133,15 +132,7 @@ class GdCoreSdkService {
     }
 
     /**
-     * Moves the symbol tracker of every open project, because they all read the shared directory.
-     *
-     * A project can close between the check and the service lookup. The platform reports that in two
-     * shapes. It throws [AlreadyDisposedException] for a plain caller, and a plain [ProcessCanceledException]
-     * for a caller that runs under an indicator or a job, which this one does. The loop handles both shapes
-     * and continues with the next project.
-     *
-     * A cancellation of this run must still reach the caller, so that the stamp stays invalid.
-     * The disposed project is the discriminator, because only a disposed container fails this lookup.
+     * Moves the symbol tracker of every open project. Each open project reads the shared directory.
      */
     private fun bumpOpenProjects() {
         for (project in ProjectManager.getInstance().openProjects) {
@@ -150,6 +141,10 @@ class GdCoreSdkService {
                 GdSdkDocsTracker.getInstance(project).docsChanged()
             }
             catch (e: ProcessCanceledException) {
+                // A project can close between the check above and this lookup. It throws
+                // AlreadyDisposedException directly, or a plain ProcessCanceledException when the
+                // caller runs under an indicator or a job. Skip only that case; re-throw any other
+                // cancellation so the stamp stays invalid.
                 if (e !is AlreadyDisposedException && !project.isDisposed) throw e
                 val details = e.message?.let { ": $it" } ?: ""
                 thisLogger().debug("Cannot move the symbol tracker of a closed project (${e.javaClass.name}$details)")
@@ -163,18 +158,12 @@ class GdCoreSdkService {
      * The extractor reads the executable, and a bundle directory holds no bytes to read.
      * A plain binary is not a bundle, so the service uses it directly. A bundle with no readable executable returns null.
      */
+    @OptIn(LowLevelLocalMachineAccess::class)
     private fun resolveBundleExecutable(godotPath: Path): Path? {
-        if (!SystemInfo.isMac) return null
+        if (OS.CURRENT != OS.macOS) return null
         if (!godotPath.name.endsWith(".app") || !godotPath.isDirectory()) return null
 
-        val plist = GdExtensionManifestParser.resolveContained(godotPath, "Contents/Info.plist") ?: return null
-        val executableName = when (val result = GdExtensionManifestParser.readBundleExecutable(plist)) {
-            is GdExtensionManifestParser.BundleExecutableResult.Found -> result.value
-            else -> return null
-        }
-        if (!GdExtensionManifestParser.isValidPath(executableName)) return null
-
-        val executable = GdExtensionManifestParser.resolveContained(godotPath, "Contents/MacOS/$executableName") ?: return null
-        return executable.takeIf { it.isRegularFile() }
+        val result = GdMacBundleUtils.resolveAppExecutable(godotPath)
+        return (result as? GdMacBundleUtils.BundleResolution.Found)?.executable
     }
 }

@@ -27,7 +27,14 @@ class GdSdkFilesProviderImpl(private val project: Project) : GdSdkFilesProvider 
      * project is open, whenever an extension is added or removed.
      */
     private fun getAllProjectDocFiles(): Collection<VirtualFile> {
-        return GdSdkPathManager.getProjectDocDirs(project).flatMap { walkXmlFiles(it) }
+        val docClasses = GdSdkPathManager.getProjectSingletonsDocDir(project)?.let(::walkXmlFiles) ?: emptyList()
+        val extensionDocs = GdSdkPathManager.getProjectExtensionsDir(project)?.let(::walkXmlFiles) ?: emptyList()
+        return deduplicateByClassName(docClasses + extensionDocs)
+    }
+
+    private fun deduplicateByClassName(files: Collection<VirtualFile>): List<VirtualFile> {
+        val names = HashSet<String>()
+        return files.filter { names.add(it.nameWithoutExtension) }
     }
 
     private fun walkXmlFiles(folder: Path): List<VirtualFile> {

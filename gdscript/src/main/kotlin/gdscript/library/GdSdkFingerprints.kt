@@ -37,10 +37,14 @@ object GdSdkFingerprints {
      * input of that generation. Contents rather than timestamps, because cloning a repository or switching a branch
      * rewrites the timestamps of files that did not change at all.
      */
-    fun ofExtensionDeclarations(projectBasePath: Path): String {
+    fun ofExtensionDeclarations(projectBasePath: Path, onDeclaration: (Path) -> Unit = {}): String {
         val declarations = walk(projectBasePath, SKIPPED_DIRECTORY_NAMES) { file, attrs ->
             val name = file.fileName?.toString()
-            if (name != null && name.endsWith(GDEXTENSION_SUFFIX, ignoreCase = true)) describeContent(file, attrs) else null
+            if (name != null && name.endsWith(GDEXTENSION_SUFFIX, ignoreCase = true)) {
+                onDeclaration(file)
+                describeContent(file, attrs)
+            }
+            else null
         }
         return declarations?.joinToString("\n") ?: ""
     }
@@ -58,6 +62,23 @@ object GdSdkFingerprints {
         // An unreadable output directory must not look up to date.
             ?: return "unreadable"
         // Digested: a doctool output is thousands of files, and only the comparison matters.
+        return DigestUtil.sha256Hex(files.joinToString("\n").toByteArray(Charsets.UTF_8))
+    }
+
+    /**
+     * Identifies small generated files by their paths and contents.
+     *
+     * The merge step uses this fingerprint for small XML inputs. A timestamp-only change must not trigger a merge.
+     */
+    fun ofSmallFilesByContent(root: Path): String {
+        val files = walk(root) { file, _ ->
+            try {
+                DigestUtil.sha256Hex(EelFiles.readAllBytes(file))
+            } catch (e: IOException) {
+                thisLogger().warn("Failed to read the generated documentation file $file", e)
+                "unreadable"
+            }
+        } ?: return "unreadable"
         return DigestUtil.sha256Hex(files.joinToString("\n").toByteArray(Charsets.UTF_8))
     }
 
