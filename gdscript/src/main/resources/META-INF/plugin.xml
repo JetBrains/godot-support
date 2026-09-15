@@ -65,6 +65,7 @@
   <extensions defaultExtensionNs="com.intellij">
     <lang.parserDefinition language="GdScript" implementationClass="gdscript.GdParserDefinition"/>
     <highlightErrorFilter implementation="gdscript.codeInsight.highlighting.GdErrorFilter"/>
+    <defaultHighlightingSettingProvider implementation="gdscript.codeInsight.highlighting.GdGeneratedFileHighlightingSettingProvider"/>
     <lang.syntaxHighlighterFactory language="GdScript"
                                    implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
     <annotator language="GdScript" implementationClass="gdscript.highlighter.GdColorAnnotator"/>
