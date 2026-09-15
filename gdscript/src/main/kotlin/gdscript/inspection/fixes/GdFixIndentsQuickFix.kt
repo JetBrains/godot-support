@@ -21,7 +21,7 @@ class GdFixIndentsQuickFix : ModCommandQuickFix() {
 
     override fun perform(project: Project, descriptor: ProblemDescriptor): ModCommand =
         ModCommand.psiUpdate(descriptor.psiElement.containingFile) { file, _ ->
-            val indentOptions = CodeStyle.getSettings(file).indentOptions
+            val indentOptions = CodeStyle.getSettings(file).getIndentOptionsByFile(file)
             if (indentOptions.USE_TAB_CHARACTER) {
                 ConvertIndentsUtil.convertIndentsToTabs(file.fileDocument, indentOptions.TAB_SIZE, file.textRange)
                 stripSpacesFromIndents(file.fileDocument)

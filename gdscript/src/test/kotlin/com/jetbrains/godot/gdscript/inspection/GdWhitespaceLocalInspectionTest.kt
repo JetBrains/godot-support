@@ -39,6 +39,21 @@ class GdWhitespaceLocalInspectionTest : BasePlatformTestCase() {
         myFixture.launchAction(fixes.first())
     }
 
+    /**
+     * Regression test for the bug where the fix converted tab-indented lines to spaces
+     * instead of removing the stray spaces, because it read indent options via the
+     * generic `CodeStyle.getSettings(file).indentOptions` instead of the file-specific
+     * `getIndentOptionsByFile(file)` that GdScript defaults to tabs.
+     */
+    @Test
+    fun testFixIndentsKeepsTabsByDefault() {
+        myFixture.configureByFile("${getTestName(false)}.gd")
+        val fixes = myFixture.getAllQuickFixes()
+        assertNotEmpty(fixes)
+        myFixture.launchAction(fixes.first())
+        myFixture.checkResultByFile("${getTestName(false)}_after.gd")
+    }
+
     override fun getTestDataPath(): String {
         return getBaseTestDataPath().resolve("testData/gdscript/inspection").pathString
     }
