@@ -23,6 +23,8 @@ import com.intellij.platform.lsp.api.customization.LspCompletionCustomizer
 import com.intellij.platform.lsp.api.customization.LspCustomization
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsCustomizer
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsSupport
+import com.intellij.platform.lsp.api.customization.LspFindReferencesCustomizer
+import com.intellij.platform.lsp.api.customization.LspFindReferencesDisabled
 import com.intellij.platform.lsp.api.customization.LspHoverCustomizer
 import com.intellij.platform.lsp.api.customization.LspHoverDisabled
 import com.intellij.platform.lsp.api.customization.LspInlayHintCustomizer
@@ -232,6 +234,10 @@ private class GodotLspClientDescriptor(
             }
 
         override val inlayHintCustomizer: LspInlayHintCustomizer = LspInlayHintDisabled
+
+        // GDScript already finds usages through its own PolySymbols model. The LSP one only adds a
+        // second, redundant target to the "Find Usages" popup.
+        override val findReferencesCustomizer: LspFindReferencesCustomizer = LspFindReferencesDisabled
 
         override val diagnosticsCustomizer: LspDiagnosticsCustomizer = object : LspDiagnosticsSupport() {
             override fun getHighlightSeverity(diagnostic: Diagnostic): HighlightSeverity? {
