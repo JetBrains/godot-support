@@ -84,7 +84,7 @@ private fun loadedClassAliases(classElement: PsiElement): List<PolySymbol> {
             is GdConstDeclTl -> decl.expr
             else -> return list
         }
-        if (expr is GdCallEx && arrayOf("preload", "load").contains(expr.expr.text)) {
+        if (expr is GdCallEx && expr.loadsScriptClass(decl)) {
             val varNmi = when (decl) {
                 is GdClassVarDeclTl -> decl.varNmi
                 is GdConstDeclTl -> decl.varNmi
