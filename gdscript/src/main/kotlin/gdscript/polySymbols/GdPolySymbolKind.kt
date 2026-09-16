@@ -33,6 +33,8 @@ object GdPolySymbolKind {
     val RESOURCE_CLASS: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "resource-class"]
     val LOADED_CLASS_ALIAS: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "type-alias"] // load, preload
     val AUTOLOAD: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "autoload"]
+    /** A `.tscn` scene node, reachable from `.gd` via `$Node`/`%UniqueNode`. */
+    val NODE: PolySymbolKind = PolySymbolKind[GdPolySymbolNamespace.NAMESPACE, "node"]
 
     // Local symbols, not class members, PSI only
     // TODO maybe squash all of these into local variable, not sure of the benefit of having them separated like in the PSI
