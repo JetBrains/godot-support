@@ -3,6 +3,8 @@ package com.jetbrains.godot.gdscript.lsp.integration
 import GdProjectService
 import com.intellij.codeInsight.lookup.Lookup
 import com.intellij.openapi.application.EDT
+import com.intellij.platform.lsp.api.LspClientManager
+import com.intellij.platform.lsp.api.customization.LspFindReferencesCustomizer
 import com.intellij.platform.lsp.testFramework.awaitFileOpenedByLspServer
 import com.intellij.platform.lsp.testFramework.checkHighlightingRetrying
 import com.intellij.platform.testFramework.junit5.codeInsight.fixture.codeInsightFixture
@@ -20,6 +22,7 @@ import com.jetbrains.godot.test.EDITOR_LOADED_FLAG_4_5
 import com.jetbrains.godot.test.EDITOR_LOADED_FLAG_PRE_4_5
 import com.jetbrains.godot.test.GODOT_NUMBER_VERSION
 import com.jetbrains.godot.test.downloadAndExtractGodot
+import gdscript.lsp.GodotLspIntegrationProvider
 import gdscript.settings.GdProjectSettingsState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -142,6 +145,23 @@ abstract class GodotLspBaseTest {
             myFixture.usagesAtCaret()
         }
         assertEquals(expectedCount, usages.size)
+    }
+
+    /**
+     * The LSP find-references customizer the connected Godot client uses. When it is
+     * [LspFindReferencesSupport][com.intellij.platform.lsp.api.customization.LspFindReferencesSupport]
+     * (the default), the LSP-backed find-references target duplicates GDScript's own PolySymbols one
+     * in the "Find Usages"/"Show Usages" ambiguous-target chooser popup for every declaration - see
+     * RIDER-142711.
+     */
+    protected suspend fun godotFindReferencesCustomizer(): LspFindReferencesCustomizer {
+        waitForGodotLspStart()
+        return withContext(Dispatchers.EDT) {
+            val client = LspClientManager.getInstance(project)
+                .getClients(GodotLspIntegrationProvider::class.java)
+                .single()
+            client.descriptor.lspCustomization.findReferencesCustomizer
+        }
     }
 
     protected suspend fun waitForGodotLspStart() {
