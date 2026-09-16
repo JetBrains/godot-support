@@ -106,6 +106,6 @@ private fun autoloadSymbolFor(file: GdFile): GdPsiAutoloadSymbol? {
 
 // Mirrors GdPsiClassMemberScope.loadedClassAliases()'s preload/load detection.
 private fun loadedClassAliasIfAny(expr: GdExpr?, element: GdVarNmi): GdPsiLoadedClassAliasSymbol? {
-    if (expr !is GdCallEx || expr.expr.text !in setOf("preload", "load")) return null
+    if (expr !is GdCallEx || !expr.loadsScriptClass(element)) return null
     return GdPsiLoadedClassAliasSymbol(element)
 }
