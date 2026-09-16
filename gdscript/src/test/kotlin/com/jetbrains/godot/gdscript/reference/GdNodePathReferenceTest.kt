@@ -1,31 +1,35 @@
 package com.jetbrains.godot.gdscript.reference
 
+import com.intellij.polySymbols.PolySymbol
+import com.intellij.polySymbols.testFramework.multiResolveSymbolReference
+import com.intellij.polySymbols.testFramework.resolveSymbolReference
+import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import gdscript.polySymbols.psi.GdPsiNodeSymbol
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import tscn.psi.TscnNodeHeader
 
 @RunWith(JUnit4::class)
 class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
 
     @Test
-    fun testResolveDollarNodeToTscnNode() = doResolveTest("\$Plain") { node ->
+    fun testResolveDollarNodeToTscnNode() = doResolveTest("\$<caret>Plain") { node ->
         assertEquals("Plain", node.name)
     }
 
     @Test
-    fun testResolveUnquotedUniqueNodeToTscnNode() = doResolveTest("%HealthBar") { node ->
+    fun testResolveUnquotedUniqueNodeToTscnNode() = doResolveTest("%<caret>HealthBar") { node ->
         assertEquals("HealthBar", node.name)
     }
 
     @Test
-    fun testResolveQuotedUniqueNodeToTscnNode() = doResolveTest("%\"Score Label\"") { node ->
+    fun testResolveQuotedUniqueNodeToTscnNode() = doResolveTest("%\"<caret>Score Label\"") { node ->
         assertEquals("Score Label", node.name)
     }
 
     @Test
-    fun testResolveInstancedNodeToTscnNode() = doResolveTest("\$Player") { node ->
+    fun testResolveInstancedNodeToTscnNode() = doResolveTest("\$<caret>Player") { node ->
         assertEquals("Player", node.name)
     }
 
@@ -34,11 +38,9 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
         dir = true,
         dirName = "uniqueNames",
         configureFileName = "deep_child.gd",
-        fileContents = "extends Node2D\n\nfunc _ready():\n\tvar node = <caret>\$\"../../AnimationPlayer\"\n",
+        fileContents = "extends Node2D\n\nfunc _ready():\n\tvar node = \$\"../../<caret>AnimationPlayer\"\n",
     ) {
-        val reference = myFixture.file.findReferenceAt(myFixture.caretOffset)
-        assertNotNull("no reference found for \$\"../../AnimationPlayer\"", reference)
-        val node = assertInstanceOf(reference!!.resolve(), TscnNodeHeader::class.java)
+        val node = resolveNodeSymbol("\$\"../../<caret>AnimationPlayer\"")
         assertEquals("AnimationPlayer", node.name)
     }
 
@@ -47,11 +49,9 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
         dir = true,
         dirName = "uniqueNames",
         configureFileName = "deep_child.gd",
-        fileContents = "extends Node2D\n\n@onready var cube_animation: AnimationPlayer = <caret>\$\"../../AnimationPlayer\"\n",
+        fileContents = "extends Node2D\n\n@onready var cube_animation: AnimationPlayer = \$\"../../<caret>AnimationPlayer\"\n",
     ) {
-        val reference = myFixture.file.findReferenceAt(myFixture.caretOffset)
-        assertNotNull("no reference found for \$\"../../AnimationPlayer\"", reference)
-        val node = assertInstanceOf(reference!!.resolve(), TscnNodeHeader::class.java)
+        val node = resolveNodeSymbol("\$\"../../<caret>AnimationPlayer\"")
         assertEquals("AnimationPlayer", node.name)
     }
 
@@ -61,9 +61,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
         dirName = "crossScene",
         configureFileName = "inner.gd",
     ) {
-        val reference = myFixture.file.findReferenceAt(myFixture.caretOffset)
-        assertNotNull("no reference found for \$\"../Sibling\"", reference)
-        val node = assertInstanceOf(reference!!.resolve(), TscnNodeHeader::class.java)
+        val node = resolveNodeSymbol("\$\"../<caret>Sibling\"")
         assertEquals("Sibling", node.name)
     }
 
@@ -73,9 +71,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
         dirName = "voxelDemo",
         configureFileName = "player/player.gd",
     ) {
-        val reference = myFixture.file.findReferenceAt(myFixture.caretOffset)
-        assertNotNull("no reference found for \$\"../VoxelWorld\"", reference)
-        val node = assertInstanceOf(reference!!.resolve(), TscnNodeHeader::class.java)
+        val node = resolveNodeSymbol("\$\"../<caret>VoxelWorld\"")
         assertEquals("VoxelWorld", node.name)
     }
 
@@ -84,11 +80,9 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
         dir = true,
         dirName = "uniqueNames",
         configureFileName = "deep_child.gd",
-        fileContents = "extends Node2D\n\nfunc _ready():\n\tvar node = <caret>\$\"../../TopBar/ViewModeButtons/45Degree\"\n",
+        fileContents = "extends Node2D\n\nfunc _ready():\n\tvar node = \$\"../../TopBar/ViewModeButtons/<caret>45Degree\"\n",
     ) {
-        val reference = myFixture.file.findReferenceAt(myFixture.caretOffset)
-        assertNotNull("no reference found for \$\"../../TopBar/ViewModeButtons/45Degree\"", reference)
-        val node = assertInstanceOf(reference!!.resolve(), TscnNodeHeader::class.java)
+        val node = resolveNodeSymbol("\$\"../../TopBar/ViewModeButtons/<caret>45Degree\"")
         assertEquals("45Degree", node.name)
     }
 
@@ -98,9 +92,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
         dirName = "pauseDemo",
         configureFileName = "process_mode.gd",
     ) {
-        val reference = myFixture.file.findReferenceAt(myFixture.caretOffset)
-        assertNotNull("no reference found for \$\"../../AnimationPlayer\"", reference)
-        val node = assertInstanceOf(reference!!.resolve(), TscnNodeHeader::class.java)
+        val node = resolveNodeSymbol("\$\"../../<caret>AnimationPlayer\"")
         assertEquals("AnimationPlayer", node.name)
     }
 
@@ -111,25 +103,29 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
         configureFileName = "unique_names.gd",
         fileContents = script("<caret>\$DoesNotExist"),
     ) {
-        val reference = myFixture.file.findReferenceAt(myFixture.caretOffset)
-        assertNotNull("no reference found for \$DoesNotExist", reference)
-        assertNull("an unknown node path must not resolve", reference!!.resolve())
+        assertTrue(
+            "an unknown node path must not resolve",
+            myFixture.multiResolveSymbolReference("<caret>\$DoesNotExist").isEmpty(),
+        )
     }
 
     private fun script(expression: String): String =
         "extends Node2D\n\nfunc _ready():\n\tvar node = $expression\n"
 
-    private fun doResolveTest(expression: String, check: (TscnNodeHeader) -> Unit) =
+    private fun doResolveTest(expressionWithCaret: String, check: (GdPsiNodeSymbol) -> Unit) =
         doConfiguredTest(
             dir = true,
             dirName = "uniqueNames",
             configureFileName = "unique_names.gd",
-            fileContents = script("<caret>$expression"),
+            fileContents = script(expressionWithCaret),
         ) {
-            val reference = myFixture.file.findReferenceAt(myFixture.caretOffset)
-            assertNotNull("no reference found for $expression", reference)
-            val node = assertInstanceOf(reference!!.resolve(), TscnNodeHeader::class.java)
-            check(node)
+            check(resolveNodeSymbol(expressionWithCaret))
         }
+
+    private fun resolveNodeSymbol(signature: String): GdPsiNodeSymbol {
+        val referenced = myFixture.resolveSymbolReference(signature)
+        val resolved = (referenced as? PolySymbol)?.unwrapAllDelegates() ?: referenced
+        return assertInstanceOf(resolved, GdPsiNodeSymbol::class.java)
+    }
 
 }
