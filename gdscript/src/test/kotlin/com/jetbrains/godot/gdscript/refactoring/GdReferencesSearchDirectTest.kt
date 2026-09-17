@@ -1,5 +1,6 @@
 package com.jetbrains.godot.gdscript.refactoring
 
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
@@ -26,7 +27,7 @@ class GdReferencesSearchDirectTest : BasePlatformTestCase() {
         )
         val methodDecl = PsiTreeUtil.findChildOfType(myFixture.file, GdMethodDeclTl::class.java)!!
         val nmi = methodDecl.methodIdNmi!!
-        val references = ReferencesSearch.search(nmi, GlobalSearchScope.allScope(project)).findAll()
+        val references = runReadActionBlocking { ReferencesSearch.search(nmi, GlobalSearchScope.allScope(project)).findAll() }
         assertEquals("direct search for method usages: $references", 1, references.size)
     }
 
@@ -41,7 +42,7 @@ class GdReferencesSearchDirectTest : BasePlatformTestCase() {
         )
         val varDecl = PsiTreeUtil.findChildOfType(myFixture.file, GdVarDeclSt::class.java)!!
         val nmi = varDecl.varNmi!!
-        val references = ReferencesSearch.search(nmi, GlobalSearchScope.allScope(project)).findAll()
+        val references = runReadActionBlocking { ReferencesSearch.search(nmi, GlobalSearchScope.allScope(project)).findAll() }
         assertEquals("direct search for local variable usages: $references", 1, references.size)
     }
 }
