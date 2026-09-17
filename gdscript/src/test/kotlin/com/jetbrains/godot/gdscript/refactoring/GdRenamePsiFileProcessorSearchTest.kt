@@ -1,5 +1,6 @@
 package com.jetbrains.godot.gdscript.refactoring
 
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
@@ -31,7 +32,7 @@ class GdRenamePsiFileProcessorSearchTest : BasePlatformTestCase() {
         val classNameNmi = PsiTreeUtil.getStubChildOfType(basePsiFile, GdClassNaming::class.java)?.classNameNmi
         assertNotNull("expected a class_name declaration in base.gd", classNameNmi)
 
-        val references = ReferencesSearch.search(classNameNmi!!, GlobalSearchScope.allScope(project)).findAll()
+        val references = runReadActionBlocking { ReferencesSearch.search(classNameNmi!!, GlobalSearchScope.allScope(project)).findAll() }
         assertEquals("expected references from both 'extends Base' and 'var x: Base': $references", 2, references.size)
     }
 }
