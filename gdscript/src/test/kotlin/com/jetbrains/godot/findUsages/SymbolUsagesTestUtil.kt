@@ -6,6 +6,7 @@ import com.intellij.find.usages.api.UsageOptions
 import com.intellij.find.usages.impl.AllSearchOptions
 import com.intellij.find.usages.impl.buildQuery
 import com.intellij.find.usages.impl.searchTargets
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
 
@@ -25,10 +26,10 @@ internal fun CodeInsightTestFixture.searchTargetsAt(offset: Int): List<SearchTar
 internal fun CodeInsightTestFixture.symbolUsages(offset: Int): List<PsiUsage> {
     val target = searchTargetsAt(offset).single()
     val scope = target.maximalSearchScope ?: GlobalSearchScope.allScope(project)
-    return buildQuery(project, target, AllSearchOptions(UsageOptions.createOptions(scope), true))
+    return runReadActionBlocking { buildQuery(project, target, AllSearchOptions(UsageOptions.createOptions(scope), true))
         .findAll()
         .filterIsInstance<PsiUsage>()
-        .filter { !it.declaration }
+        .filter { !it.declaration } }
 }
 
 /** The text of the usage, as it reads in the file. */
