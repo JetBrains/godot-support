@@ -33,6 +33,7 @@
     <module name="intellij.rd.client"/>
     <module name="intellij.rider.debugger.shared"/>
     <module name="intellij.rider.languages"/>
+    <module name="intellij.rider.plugins.godot.test.shared"/>
     <module name="intellij.rider.test.build.shared"/>
     <module name="intellij.rider.test.framework.integration"/>
     <module name="intellij.rider.test.framework.junit"/>
