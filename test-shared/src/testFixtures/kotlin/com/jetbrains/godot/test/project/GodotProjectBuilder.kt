@@ -13,7 +13,6 @@ data class GodotSourceBreakpoint(
     val line: Int,
 )
 
-/** A Godot project represented only by its file text and breakpoint locations. */
 data class GodotProject(
     val name: String,
     val files: Map<String, String>,
@@ -62,7 +61,6 @@ class GodotProjectBuilder internal constructor(private val name: String) {
         scenes += SceneBuilder(normalizePath(path), main).apply(body)
     }
 
-    /** Adds an autoload entry. */
     fun autoload(name: String, path: String) {
         require(autoloads.put(name, normalizePath(path)) == null) { "The autoload '$name' already exists" }
     }
@@ -126,7 +124,7 @@ class SceneBuilder internal constructor(internal val path: String, internal val 
     private val roots = mutableListOf<GodotNode>()
 
     /** Adds a node to the scene. A scene must have one root node. */
-    fun node(name: String, type: String, script: String? = null, body: NodeBuilder.() -> Unit = {}) {
+    fun root(name: String, type: String, script: String? = null, body: NodeBuilder.() -> Unit = {}) {
         roots += NodeBuilder(name, type, script?.let(::normalizePath)).apply(body).build()
     }
 
@@ -154,7 +152,6 @@ class NodeBuilder internal constructor(
 ) {
     private val children = mutableListOf<GodotNode>()
 
-    /** Adds a child node. */
     fun node(name: String, type: String, script: String? = null, body: NodeBuilder.() -> Unit = {}) {
         children += NodeBuilder(name, type, script?.let(::normalizePath)).apply(body).build()
     }

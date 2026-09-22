@@ -113,6 +113,11 @@ class GodotLspProjectService(val project: Project, scope: CoroutineScope) {
 
         thisLogger().info("rebuildAndStart: stop + ensureClientStarted")
         manager.stopClients(GodotLspIntegrationProvider::class.java)
+        // The settings can change while `stopClients` suspends. Without this check a `Never` mode set right
+        // after the `allReady` check above races with this start: the explicit stop from that mode change can
+        // run before this point, so the client started below would never be asked to stop and its LSP listener
+        // thread would leak.
+        if (!allReady(settings, project)) return
         manager.ensureClientStarted(
             GodotLspIntegrationProvider::class.java,
             GodotLspClientDescriptor(project, port),
