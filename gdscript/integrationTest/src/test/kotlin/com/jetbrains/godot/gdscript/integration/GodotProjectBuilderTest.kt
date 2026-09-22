@@ -17,7 +17,7 @@ class GodotProjectBuilderTest {
         val project = godotProject(name = "DapCompletion") {
             script("main.gd", "extends Node")
             scene("main.tscn", main = true) {
-                node("Main", "Node", "main.gd")
+                root("Main", "Node", "main.gd")
             }
             runArgs("--display-driver", "headless", "--audio-driver", "Dummy")
         }
@@ -42,7 +42,7 @@ class GodotProjectBuilderTest {
         val project = godotProject(name = "DapCompletion") {
             script("main.gd", "extends Node")
             scene("main.tscn", main = true) {
-                node("Main", "Node", "main.gd")
+                root("Main", "Node", "main.gd")
             }
             runArgs("--display-driver", "headless", "--audio-driver", "Dummy")
         }
@@ -66,7 +66,7 @@ class GodotProjectBuilderTest {
             script("scripts/weapon.gd", "extends Node2D")
             script("scripts/global.gd", "extends Node")
             scene("world.tscn", main = true) {
-                node("World", "Node", "scripts/world.gd") {
+                root("World", "Node", "scripts/world.gd") {
                     node("Player", "Node2D", "scripts/player.gd") {
                         node("Weapon", "Node2D", "scripts/weapon.gd")
                     }
@@ -74,7 +74,7 @@ class GodotProjectBuilderTest {
                 }
             }
             scene("menu.tscn") {
-                node("Menu", "Control")
+                root("Menu", "Control")
             }
             autoload("Global", "scripts/global.gd")
             runArgs("--headless")
@@ -111,7 +111,7 @@ class GodotProjectBuilderTest {
             script("scripts/weapon.gd", "extends Node2D")
             script("scripts/global.gd", "extends Node")
             scene("world.tscn", main = true) {
-                node("World", "Node", "scripts/world.gd") {
+                root("World", "Node", "scripts/world.gd") {
                     node("Player", "Node2D", "scripts/player.gd") {
                         node("Weapon", "Node2D", "scripts/weapon.gd")
                     }
@@ -119,7 +119,7 @@ class GodotProjectBuilderTest {
                 }
             }
             scene("menu.tscn") {
-                node("Menu", "Control")
+                root("Menu", "Control")
             }
             autoload("Global", "scripts/global.gd")
             runArgs("--headless")
@@ -148,7 +148,7 @@ class GodotProjectBuilderTest {
     fun `deeply nested nodes use the complete parent path`() {
         val project = godotProject(name = "Deep") {
             scene("deep.tscn") {
-                node("One", "Node") {
+                root("One", "Node") {
                     node("Two", "Node") {
                         node("Three", "Node") {
                             node("Four", "Node") {
@@ -198,7 +198,7 @@ class GodotProjectBuilderTest {
         val inline = godotProject(name = "Copied") {
             script("main.gd", "extends Node")
             scene("main.tscn", main = true) {
-                node("Main", "Node", "main.gd")
+                root("Main", "Node", "main.gd")
             }
         }
         inline.files.forEach { (path, text) ->
@@ -224,8 +224,8 @@ class GodotProjectBuilderTest {
     fun `two main scenes fail`() {
         assertThrows<IllegalArgumentException> {
             godotProject(name = "TwoMains") {
-                scene("first.tscn", main = true) { node("First", "Node") }
-                scene("second.tscn", main = true) { node("Second", "Node") }
+                scene("first.tscn", main = true) { root("First", "Node") }
+                scene("second.tscn", main = true) { root("Second", "Node") }
             }
         }
     }
