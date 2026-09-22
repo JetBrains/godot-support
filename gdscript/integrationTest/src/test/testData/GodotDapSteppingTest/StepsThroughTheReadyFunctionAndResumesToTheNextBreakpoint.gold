@@ -1,0 +1,26 @@
+--> main.gd:10 // var above := 7
+_ready in main.gd
+    [Locals]
+        above = {Nil} <null>
+        total = {Nil} <null>
+    [Members]
+        +self = {Object} <OBJECT_ID>
+        health = {int} 100
+--> main.gd:11 // var total := double(above)
+_ready in main.gd
+--> main.gd:6 // var doubled := value * 2
+double in main.gd
+    [Locals]
+        value = {int} 7
+        doubled = {Nil} <null>
+    [Members]
+        +self = {Object} <OBJECT_ID>
+        health = {int} 100
+--> main.gd:12 // print(total, health)
+_ready in main.gd
+    [Locals]
+        above = {int} 7
+        total = {int} 14
+    [Members]
+        +self = {Object} <OBJECT_ID>
+        health = {int} 100
