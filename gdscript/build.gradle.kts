@@ -147,6 +147,7 @@ tasks {
         useJUnitPlatform()
         filter {
             excludeTestsMatching("com.jetbrains.godot.gdscript.lsp.integration.*")
+            excludeTestsMatching("com.jetbrains.godot.gdscript.dap.integration.*")
         }
         testLogging {
             showStandardStreams = true
