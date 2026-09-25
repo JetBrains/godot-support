@@ -48,6 +48,9 @@ class GdSdkSyntheticPsiCache(private val project: Project) {
         val file = PsiFileFactory.getInstance(project)
             .createFileFromText("$classId.generated.gd", GdLanguage, text) as GdFile
         file.putUserData(GdSdkPolySymbol.SYNTHETIC_SDK_CLASS_KEY, classId)
+        // Mark the generated file read-only, so the platform treats it as library/generated content:
+        // this is what makes the Reader Mode gutter toggle appear for it.
+        file.viewProvider.virtualFile.isWritable = false
         return file
     }
 }
