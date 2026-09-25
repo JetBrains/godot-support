@@ -331,8 +331,6 @@ my_method.call_deferred(123)</code></pre>
 </details>
 
 
-### ["Trait" like feature](trait.md)
-
 ### Known limitations
 
 <details>
