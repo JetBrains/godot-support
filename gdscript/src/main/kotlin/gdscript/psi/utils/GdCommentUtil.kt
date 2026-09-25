@@ -9,7 +9,6 @@ import com.intellij.psi.TokenType
 import com.intellij.psi.util.elementType
 import gdscript.codeInsight.documentation.GdDocUtil
 import gdscript.codeInsight.documentation.GdGodotDocUtil
-import gdscript.lineMarker.GdTraitLineMarkerContributor
 import gdscript.model.GdCommentModel
 import gdscript.model.GdTutorial
 import gdscript.psi.GdClassNaming
@@ -30,11 +29,6 @@ object GdCommentUtil {
     @NonNls const val TUTORIAL: String = "tutorial"
     @NonNls const val DEPRECATED: String = "deprecated"
     @NonNls const val EXPERIMENTAL: String = "experimental"
-
-    val BREAKS_AT: Array<String> = arrayOf(
-        GdTraitLineMarkerContributor.PREFIX.trimStart('#'),
-        GdTraitLineMarkerContributor.SUFFIX.trimStart('#'),
-    )
 
     fun brief(element: PsiElement): String {
         if (element is StubBasedPsiElement<*> && element is GdDocumented) {
@@ -218,8 +212,6 @@ object GdCommentUtil {
                 GdTypes.COMMENT -> {
                     var text = el.text.removePrefix("#").trimStart()
                     var prefix = text.substringBefore(" ")
-
-                    if (BREAKS_AT.contains(prefix)) break
 
                     if (!descriptions.containsKey(prefix)) prefix = DESCRIPTION
                     else text = text.substringAfter(" ")
