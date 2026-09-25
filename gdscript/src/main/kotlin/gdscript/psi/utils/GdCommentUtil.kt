@@ -1,13 +1,13 @@
 package gdscript.psi.utils
 
 import com.intellij.openapi.util.NlsSafe
-import com.intellij.openapi.util.text.HtmlChunk
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.StubBasedPsiElement
 import com.intellij.psi.TokenType
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
-import gdscript.codeInsight.documentation.GdDocUtil
 import gdscript.codeInsight.documentation.GdGodotDocUtil
 import gdscript.model.GdCommentModel
 import gdscript.model.GdTutorial
@@ -95,9 +95,14 @@ object GdCommentUtil {
             )
     }
 
-    fun collectComments(element: PsiElement?): GdCommentModel {
-        val comments = mutableListOf<String>()
-        val model = GdCommentModel()
+    /**
+     * Collects the raw `##` comment PSI leaves that make up the doc comment block for [element].
+     * For a script/class header ([GdClassNaming] or [PsiFile]) it scans forward from the start of the file;
+     * for any other element it scans backward from [element] using [prevCommentBlock].
+     * A blank line between comment lines stops the block, matching [collectComments].
+     */
+    fun collectCommentNodes(element: PsiElement?): List<PsiComment> {
+        val comments = mutableListOf<PsiComment>()
 
         if (element is GdClassNaming || element is PsiFile) {
             var file = element
@@ -110,7 +115,7 @@ object GdCommentUtil {
                 if (child.elementType == GdTypes.COMMENT) {
                     if (child.text.startsWith("##")) {
                         isComment = true
-                        comments.add(child.text.removePrefix("##").trim())
+                        comments.add(child as PsiComment)
                         newLined = false
                     }
                 } else if (child.elementType == TokenType.WHITE_SPACE) {
@@ -131,7 +136,7 @@ object GdCommentUtil {
                 if (previous != null) {
                     val txt = previous.text
                     if (txt.startsWith("##")) {
-                        comments.add(txt.removePrefix("##").trim())
+                        comments.add(previous as PsiComment)
                         isComment = true
                     } else break
                 } else break
@@ -139,6 +144,39 @@ object GdCommentUtil {
             if (isComment) comments.reverse()
         }
 
+        return comments
+    }
+
+    fun collectComments(element: PsiElement?): GdCommentModel {
+        val comments = collectCommentNodes(element).map { it.text.removePrefix("##").trim() }
+        return parseCommentModel(comments)
+    }
+
+    /** Builds a [GdCommentModel] straight from a list of `##` comment PSI leaves, e.g. from a [gdscript.codeInsight.documentation.GdVirtualDocComment]. */
+    fun collectComments(comments: List<PsiComment>): GdCommentModel {
+        return parseCommentModel(comments.map { it.text.removePrefix("##").trim() })
+    }
+
+    /**
+     * Groups every `##` comment in [file] into contiguous doc-comment blocks, separated at blank lines,
+     * in document order. Used by Reader Mode to enumerate/locate doc comments regardless of the element they document.
+     */
+    fun commentBlocks(file: PsiFile): List<List<PsiComment>> {
+        val docComments = PsiTreeUtil.findChildrenOfType(file, PsiComment::class.java).filter { it.text.startsWith("##") }
+        val blocks = mutableListOf<MutableList<PsiComment>>()
+        docComments.forEach { comment ->
+            val prev = comment.prevCommentBlock()
+            if (prev is PsiComment && blocks.isNotEmpty() && blocks.last().last() == prev) {
+                blocks.last().add(comment)
+            } else {
+                blocks.add(mutableListOf(comment))
+            }
+        }
+        return blocks
+    }
+
+    fun parseCommentModel(comments: List<String>): GdCommentModel {
+        val model = GdCommentModel()
         var isBrief = true
         val brief = mutableListOf<String>()
         val description = mutableListOf<String>()
@@ -230,40 +268,6 @@ object GdCommentUtil {
         }
 
         return descriptions
-    }
-
-    fun Map<String, List<String>>.briefDescriptionBlock(): HtmlChunk {
-        val comments = if (this[BRIEF_DESCRIPTION]!!.isNotEmpty()) this[BRIEF_DESCRIPTION] else this[DESCRIPTION]
-        return GdDocUtil.paragraph("")
-    }
-
-    fun Map<String, List<String>>.descriptionBlock(): HtmlChunk {
-        return GdDocUtil.paragraph("")
-    }
-
-    fun Map<String, List<String>>.tutorialBlock(): HtmlChunk {
-        return GdDocUtil.listTable("tutorials", this[TUTORIAL]!!.map {
-            @NonNls val text = it.substringBefore("]").removePrefix("[").trim()
-            HtmlChunk.link(it.substringAfter("]").trim(), text)
-        })
-    }
-
-    fun Map<String, List<String>>.descriptionText(): String {
-        return this[DESCRIPTION]!!.joinToString("<br/>")
-    }
-
-    fun Map<String, List<String>>.parameterBlock(): HtmlChunk {
-        return GdDocUtil.listTable("params", this[PARAMETER]!!.map {
-            @NonNls val text = it.replaceFirst(" ", " - ")
-            HtmlChunk.raw(text)
-        })
-    }
-
-    fun Map<String, List<String>>.returnBlock(): HtmlChunk {
-        return GdDocUtil.listTable("return", this[RETURN]!!.map {
-            @NonNls val text = it.replaceFirst(" ", " - ")
-            HtmlChunk.raw(text)
-        })
     }
 
 }
