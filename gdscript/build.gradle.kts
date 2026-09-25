@@ -63,7 +63,7 @@ dependencies {
         testFramework(TestFrameworkType.Plugin.LSP)
 
         bundledPlugin("com.intellij.modules.json")
-        bundledPlugin("intellij.bookmarks.plugin")
+        bundledPlugin("com.intellij.bookmarks")
         bundledModule("intellij.platform.debugger")
         bundledModule("intellij.platform.polySymbols.backend")
         bundledModule("intellij.platform.dap")
