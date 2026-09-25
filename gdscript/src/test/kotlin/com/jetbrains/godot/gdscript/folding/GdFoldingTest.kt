@@ -29,9 +29,6 @@ class GdFoldingTest : BasePlatformTestCase() {
     fun testRegionWithSpaceNotFolded() = doFoldingTest()
 
     @Test
-    fun testTrait() = doFoldingTest()
-
-    @Test
     fun testMultilineString() = doFoldingTest()
 
     @Test

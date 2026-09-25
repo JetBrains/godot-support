@@ -5,7 +5,6 @@ import com.intellij.lang.folding.CustomFoldingBuilder
 import com.intellij.lang.folding.FoldingDescriptor
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiRecursiveElementWalkingVisitor
 import com.intellij.psi.util.PsiTreeUtil
@@ -13,19 +12,16 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.nextLeaf
 import com.intellij.psi.util.endOffset
 import com.intellij.psi.util.startOffset
-import gdscript.lineMarker.GdTraitLineMarkerContributor
 import gdscript.psi.GdArrayDecl
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdDictDecl
 import gdscript.psi.GdSuite
 import gdscript.psi.GdTypes
-import gdscript.utils.GdCommentUtil
 import gdscript.utils.GdCustomRegionUtil
 
 /**
  * Unified folding for GDScript. Handles:
  *  * Custom `#region` / `#endregion` blocks (via the [CustomFoldingBuilder] base).
- *  * Trait comment blocks (see [GdTraitLineMarkerContributor]).
  *  * Suite (indented block) and top-level class declaration bodies.
  *  * Multi-line string literals (including triple-quoted `""" ... """`).
  *  * Multi-line bracket blocks — dictionaries `{ ... }` and arrays `[ ... ]`.
@@ -45,7 +41,6 @@ class GdFoldingBuilder : CustomFoldingBuilder() {
                     element is GdClassDeclTl -> foldClassDecl(element, descriptors)
                     element is GdDictDecl -> foldMultiline(element, descriptors, document)
                     element is GdArrayDecl -> foldMultiline(element, descriptors, document)
-                    element is PsiComment -> foldTrait(element, descriptors)
                     element.elementType == GdTypes.STRING -> foldMultiline(element, descriptors, document)
                 }
                 super.visitElement(element)
@@ -59,13 +54,12 @@ class GdFoldingBuilder : CustomFoldingBuilder() {
             GdTypes.ARRAY_DECL -> "[...]"
             GdTypes.STRING -> stringPlaceholder(node.text)
             GdTypes.SUITE, GdTypes.CLASS_DECL_TL -> "{ ... }"
-            else -> node.text // trait comment header line
+            else -> node.text
         }
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean {
-        // Only trait comment blocks collapse by default; everything else stays expanded.
-        return node.psi is PsiComment
+        return false
     }
 
     /**
@@ -88,12 +82,6 @@ class GdFoldingBuilder : CustomFoldingBuilder() {
         val ending = PsiTreeUtil.getDeepestVisibleLast(element) ?: return
         if (ending.endOffset <= start.startOffset + 1) return
         descriptors.add(FoldingDescriptor(element.node, TextRange(start.startOffset + 1, ending.endOffset)))
-    }
-
-    private fun foldTrait(element: PsiComment, descriptors: MutableList<FoldingDescriptor>) {
-        if (!element.text.startsWith(GdTraitLineMarkerContributor.PREFIX)) return
-        val footer = GdCommentUtil.endTraitComment(element) ?: return
-        descriptors.add(FoldingDescriptor(element.node, TextRange(element.startOffset, footer.endOffset)))
     }
 
     private fun foldMultiline(element: PsiElement, descriptors: MutableList<FoldingDescriptor>, document: Document) {

@@ -123,8 +123,6 @@
     <codeInsight.lineMarkerProvider language="GdScript"
                                     implementationClass="gdscript.lineMarker.GdTscnLineMarkerContributor"/>
     <codeInsight.lineMarkerProvider language="GdScript"
-                                    implementationClass="gdscript.lineMarker.GdTraitLineMarkerContributor"/>
-    <codeInsight.lineMarkerProvider language="GdScript"
                                     implementationClass="gdscript.lineMarker.GdInheritanceLineMarkerContributor"/>
     <!-- Tscn, Project, Config -->
     <runLineMarkerContributor language="Tscn" implementationClass="tscn.lineMarker.TscnRunLineMarkerProvider"/>
@@ -296,12 +294,6 @@
     </intentionAction>
     <intentionAction>
       <language>GdScript</language>
-      <className>gdscript.action.GdPropageTraitChangesAction</className>
-      <bundleName>messages.GdScriptBundle</bundleName>
-      <categoryKey>intention.category</categoryKey>
-    </intentionAction>
-    <intentionAction>
-      <language>GdScript</language>
       <className>gdscript.action.GdRemoveElementAction</className>
       <bundleName>messages.GdScriptBundle</bundleName>
       <categoryKey>intention.category</categoryKey>
@@ -382,9 +374,6 @@
     <action id="GdCreateFileAction" class="gdscript.action.GdCreateFileAction"
             icon="com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons.GDScript">
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
-    </action>
-    <action id="GdAddTraitAction" class="gdscript.action.GdAddTraitAction">
-      <add-to-group group-id="GenerateGroup" anchor="first"/>
     </action>
   </actions>
 
