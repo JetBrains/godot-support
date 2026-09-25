@@ -96,14 +96,39 @@ object GdDocUtil {
     fun paragraph(description: String): HtmlChunk {
         val lines = description.split("\n")
         if (lines.isEmpty()) return HtmlChunk.empty()
-        return HtmlChunk.p().style("padding: 5px 10px 0 10px;").children(
-                *lines.map {
-                    HtmlChunk.fragment(
-                            HtmlChunk.raw(GdGodotDocUtil.parseStyles(it)),
-                            if (!it.endsWith("<pre>") && !it.startsWith("</pre>")) HtmlChunk.br() else HtmlChunk.empty(),
-                    )
-                }.toTypedArray()
-        )
+
+        val blocks = mutableListOf<HtmlChunk>()
+        var i = 0
+        while (i < lines.size) {
+            val line = lines[i]
+            if (isBulletLine(line)) {
+                val items = mutableListOf<HtmlChunk>()
+                while (i < lines.size && isBulletLine(lines[i])) {
+                    items.add(HtmlChunk.tag("li").addRaw(GdGodotDocUtil.parseStyles(bulletContent(lines[i]))))
+                    i++
+                }
+                blocks.add(HtmlChunk.tag("ul").children(*items.toTypedArray()))
+            } else {
+                blocks.add(HtmlChunk.fragment(
+                        HtmlChunk.raw(GdGodotDocUtil.parseStyles(line)),
+                        if (!line.endsWith("<pre>") && !line.startsWith("</pre>")) HtmlChunk.br() else HtmlChunk.empty(),
+                ))
+                i++
+            }
+        }
+
+        return HtmlChunk.p().style("padding: 5px 10px 0 10px;").children(*blocks.toTypedArray())
+    }
+
+    /** A `-` or `*` prefixed bullet-list line, per the Godot doc comment BBCode subset. */
+    private fun isBulletLine(line: String): Boolean {
+        val trimmed = line.trimStart()
+        return trimmed.startsWith("- ") || trimmed.startsWith("* ")
+    }
+
+    private fun bulletContent(line: String): String {
+        val trimmed = line.trimStart()
+        return trimmed.removePrefix("- ").removePrefix("* ")
     }
 
     fun appendDescription(element: GdDocumented): HtmlChunk {
