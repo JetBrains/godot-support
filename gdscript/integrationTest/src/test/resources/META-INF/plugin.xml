@@ -6,7 +6,7 @@
   <content namespace="jetbrains">
     <module name="intellij.libraries.junit5"/>
     <module name="intellij.libraries.junit5.jupiter"/>
-    <module name="intellij.libraries.junit5.launcher"/>
+    <module name="intellij.libraries.junit6.launcher"/>
     <module name="intellij.platform.testFramework"/>
     <module name="intellij.platform.testFramework.junit5"/>
     <module name="intellij.platform.testFramework.junit5.codeInsight"/>
