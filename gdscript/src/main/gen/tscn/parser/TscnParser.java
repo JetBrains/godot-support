@@ -131,17 +131,18 @@ public class TscnParser implements PsiParser, LightPsiParser {
   // dataLineHeader EQ dataLine_value
   public static boolean dataLine(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLine")) return false;
-    boolean r;
+    boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, DATA_LINE, "<data line>");
     r = dataLineHeader(b, l + 1);
-    r = r && consumeToken(b, EQ);
-    r = r && dataLine_value(b, l + 1);
-    exit_section_(b, l, m, r, false, null);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, consumeToken(b, EQ));
+    r = p && dataLine_value(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, TscnParser::dataLine_r);
+    return r || p;
   }
 
   /* ********************************************************** */
-  // dataLine_nm (SLASH dataLine_nm?)*
+  // dataLine_nm ((COLON | SLASH) dataLine_nm?)*
   public static boolean dataLineHeader(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader")) return false;
     boolean r;
@@ -152,7 +153,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // (SLASH dataLine_nm?)*
+  // ((COLON | SLASH) dataLine_nm?)*
   private static boolean dataLineHeader_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader_1")) return false;
     while (true) {
@@ -163,14 +164,23 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // SLASH dataLine_nm?
+  // (COLON | SLASH) dataLine_nm?
   private static boolean dataLineHeader_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, SLASH);
+    r = dataLineHeader_1_0_0(b, l + 1);
     r = r && dataLineHeader_1_0_1(b, l + 1);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // COLON | SLASH
+  private static boolean dataLineHeader_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLineHeader_1_0_0")) return false;
+    boolean r;
+    r = consumeToken(b, COLON);
+    if (!r) r = consumeToken(b, SLASH);
     return r;
   }
 
@@ -195,6 +205,32 @@ public class TscnParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, EXT_RESOURCE);
     if (!r) r = consumeToken(b, CONNECTION);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !(LSBR | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION)
+  static boolean dataLine_r(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLine_r")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !dataLine_r_0(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // LSBR | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION
+  private static boolean dataLine_r_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dataLine_r_0")) return false;
+    boolean r;
+    r = consumeToken(b, LSBR);
+    if (!r) r = consumeToken(b, IDENTIFIER);
+    if (!r) r = consumeToken(b, NUMBER);
+    if (!r) r = consumeToken(b, NODE);
+    if (!r) r = consumeToken(b, GD_RESOURCE);
+    if (!r) r = consumeToken(b, GD_SCENE);
+    if (!r) r = consumeToken(b, EXT_RESOURCE);
+    if (!r) r = consumeToken(b, CONNECTION);
     return r;
   }
 
@@ -532,13 +568,13 @@ public class TscnParser implements PsiParser, LightPsiParser {
   // header dataLine*
   public static boolean paragraph(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "paragraph")) return false;
-    if (!nextTokenIs(b, LSBR)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PARAGRAPH, "<paragraph>");
     r = header(b, l + 1);
+    p = r; // pin = 1
     r = r && paragraph_1(b, l + 1);
-    exit_section_(b, m, PARAGRAPH, r);
-    return r;
+    exit_section_(b, l, m, r, p, TscnParser::paragraph_r);
+    return r || p;
   }
 
   // dataLine*
@@ -550,6 +586,17 @@ public class TscnParser implements PsiParser, LightPsiParser {
       if (!empty_element_parsed_guard_(b, "paragraph_1", c)) break;
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // !(LSBR)
+  static boolean paragraph_r(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "paragraph_r")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !consumeToken(b, LSBR);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
