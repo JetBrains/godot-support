@@ -316,7 +316,7 @@ private fun resolveScriptVariable(fieldElement: TscnDataLineNm, fieldName: Strin
 private fun getScriptResourceIdOfContainingParagraph(fieldElement: TscnDataLineNm): String? {
     val paragraph = fieldElement.parentOfType<TscnParagraph>() ?: return null
     val scriptDataLine = TscnParagraphUtil.getDataLine(paragraph, "script") ?: return null
-    val scriptExprVal = scriptDataLine.dataLineValue.value.exprValue ?: return null
+    val scriptExprVal = scriptDataLine.dataLineValue?.value?.exprValue ?: return null
     if (scriptExprVal.identifierEx.text != "ExtResource") return null
     val scriptExprValArg0 = scriptExprVal.argList?.valueList?.firstOrNull() ?: return null
     return scriptExprValArg0.text.trim('"')
