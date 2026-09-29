@@ -15,6 +15,9 @@ object TscnTokenTypeSet {
         TscnTypes.EQ,
         TscnTypes.COLON,
         TscnTypes.COMMA,
+        TscnTypes.DOT,
+        TscnTypes.AT,
+        TscnTypes.PERCENT,
     )
 
     val STRING_TOKENS = TokenSet.create(
@@ -47,5 +50,9 @@ object TscnTokenTypeSet {
 
     val NUMBER_TOKENS = TokenSet.create(
         TscnTypes.NUMBER,
+        TscnTypes.COLOR,
+        TscnTypes.INF,
+        TscnTypes.NAN,
+        TscnTypes.INF_NEG,
     )
 }

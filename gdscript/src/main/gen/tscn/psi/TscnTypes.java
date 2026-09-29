@@ -43,11 +43,14 @@ public interface TscnTypes {
   IElementType VALUE = new TscnElementType("VALUE");
   IElementType VALUE_LIST = new TscnElementType("VALUE_LIST");
 
+  IElementType AT = new TscnTokenType("AT");
   IElementType BAD_CHARACTER = new TscnTokenType("bad_character");
   IElementType COLON = new TscnTokenType("COLON");
+  IElementType COLOR = new TscnTokenType("COLOR");
   IElementType COMMA = new TscnTokenType("COMMA");
   IElementType COMMENT = new TscnTokenType("comment");
   IElementType CONNECTION = new TscnTokenType("CONNECTION");
+  IElementType DOT = new TscnTokenType("DOT");
   IElementType EQ = new TscnTokenType("EQ");
   IElementType EXT_RESOURCE = new TscnTokenType("EXT_RESOURCE");
   IElementType FALSE = new TscnTokenType("FALSE");
@@ -55,14 +58,18 @@ public interface TscnTypes {
   IElementType GD_SCENE = new TscnTokenType("GD_SCENE");
   IElementType IDENTIFIER = new TscnTokenType("IDENTIFIER");
   IElementType IDENTIFIER_REF = new TscnTokenType("IDENTIFIER_REF");
+  IElementType INF = new TscnTokenType("INF");
+  IElementType INF_NEG = new TscnTokenType("INF_NEG");
   IElementType LCBR = new TscnTokenType("LCBR");
   IElementType LRBR = new TscnTokenType("LRBR");
   IElementType LSBR = new TscnTokenType("LSBR");
   IElementType MINUS = new TscnTokenType("MINUS");
+  IElementType NAN = new TscnTokenType("NAN");
   IElementType NODE = new TscnTokenType("NODE");
   IElementType NULL = new TscnTokenType("NULL");
   IElementType NUMBER = new TscnTokenType("NUMBER");
   IElementType OBJECT_REF = new TscnTokenType("OBJECT_REF");
+  IElementType PERCENT = new TscnTokenType("PERCENT");
   IElementType PLUS = new TscnTokenType("PLUS");
   IElementType RCBR = new TscnTokenType("RCBR");
   IElementType RRBR = new TscnTokenType("RRBR");
