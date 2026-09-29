@@ -102,17 +102,17 @@ dataLine ::= dataLineHeader EQ dataLine_value {
     pin=1
     recoverWhile=dataLine_r
 }
-dataLineHeader ::= dataLine_nm ((COLON | SLASH) dataLine_nm?)*
+dataLineHeader ::= dataLine_nm ((COLON | SLASH | DOT | AT | PERCENT | PLUS) dataLine_nm?)*
 // You can name your export nodes the same as the internal tscn names
-dataLine_nm ::= IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION
-private dataLine_r ::= !(LSBR | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION)
+dataLine_nm ::= STRING | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION
+private dataLine_r ::= !(LSBR | STRING | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION)
 private paragraph_r ::= !(LSBR)
 dataLine_value ::= value
 
-value ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | json
-numberValue ::= (PLUS | MINUS)? NUMBER
+value ::= numberValue | TRUE | FALSE | NULL | INF | NAN | INF_NEG | COLOR | STRING | STRING_REF | exprValue | json
+numberValue ::= (PLUS | MINUS)? NUMBER | MINUS INF
 exprValue ::= identifierEx (LSBR typeList? RSBR)? (LRBR argList? RRBR)?
-argList ::= value? (COMMA value)*
+argList ::= value? ((COMMA | COLON) value)*
 typeList ::= exprValue? (COMMA exprValue)*
 
 identifierEx ::=  OBJECT_REF | IDENTIFIER | IDENTIFIER_REF | GD_SCENE | GD_RESOURCE | EXT_RESOURCE | NODE
@@ -121,7 +121,7 @@ json ::= object | array
 
 jsonPair ::= jsonValue COLON jsonValue
 jsonPairList ::= jsonPair (COMMA jsonPair)*
-jsonValue ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | array | object {
+jsonValue ::= numberValue | TRUE | FALSE | NULL | INF | NAN | INF_NEG | COLOR | STRING | STRING_REF | exprValue | array | object {
     mixin="TscnNamedElementImpl"
     implements="TscnNamedElement"
 }

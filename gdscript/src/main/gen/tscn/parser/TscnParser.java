@@ -41,7 +41,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   };
 
   /* ********************************************************** */
-  // value? (COMMA value)*
+  // value? ((COMMA | COLON) value)*
   public static boolean argList(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "argList")) return false;
     boolean r;
@@ -59,7 +59,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (COMMA value)*
+  // ((COMMA | COLON) value)*
   private static boolean argList_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "argList_1")) return false;
     while (true) {
@@ -70,14 +70,23 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // COMMA value
+  // (COMMA | COLON) value
   private static boolean argList_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "argList_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, COMMA);
+    r = argList_1_0_0(b, l + 1);
     r = r && value(b, l + 1);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // COMMA | COLON
+  private static boolean argList_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "argList_1_0_0")) return false;
+    boolean r;
+    r = consumeToken(b, COMMA);
+    if (!r) r = consumeToken(b, COLON);
     return r;
   }
 
@@ -142,7 +151,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // dataLine_nm ((COLON | SLASH) dataLine_nm?)*
+  // dataLine_nm ((COLON | SLASH | DOT | AT | PERCENT | PLUS) dataLine_nm?)*
   public static boolean dataLineHeader(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader")) return false;
     boolean r;
@@ -153,7 +162,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ((COLON | SLASH) dataLine_nm?)*
+  // ((COLON | SLASH | DOT | AT | PERCENT | PLUS) dataLine_nm?)*
   private static boolean dataLineHeader_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader_1")) return false;
     while (true) {
@@ -164,7 +173,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (COLON | SLASH) dataLine_nm?
+  // (COLON | SLASH | DOT | AT | PERCENT | PLUS) dataLine_nm?
   private static boolean dataLineHeader_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader_1_0")) return false;
     boolean r;
@@ -175,12 +184,16 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // COLON | SLASH
+  // COLON | SLASH | DOT | AT | PERCENT | PLUS
   private static boolean dataLineHeader_1_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLineHeader_1_0_0")) return false;
     boolean r;
     r = consumeToken(b, COLON);
     if (!r) r = consumeToken(b, SLASH);
+    if (!r) r = consumeToken(b, DOT);
+    if (!r) r = consumeToken(b, AT);
+    if (!r) r = consumeToken(b, PERCENT);
+    if (!r) r = consumeToken(b, PLUS);
     return r;
   }
 
@@ -192,12 +205,13 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION
+  // STRING | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION
   public static boolean dataLine_nm(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLine_nm")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, DATA_LINE_NM, "<data line nm>");
-    r = consumeToken(b, IDENTIFIER);
+    r = consumeToken(b, STRING);
+    if (!r) r = consumeToken(b, IDENTIFIER);
     if (!r) r = consumeToken(b, NUMBER);
     if (!r) r = consumeToken(b, NODE);
     if (!r) r = consumeToken(b, GD_RESOURCE);
@@ -209,7 +223,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(LSBR | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION)
+  // !(LSBR | STRING | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION)
   static boolean dataLine_r(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLine_r")) return false;
     boolean r;
@@ -219,11 +233,12 @@ public class TscnParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // LSBR | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION
+  // LSBR | STRING | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION
   private static boolean dataLine_r_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dataLine_r_0")) return false;
     boolean r;
     r = consumeToken(b, LSBR);
+    if (!r) r = consumeToken(b, STRING);
     if (!r) r = consumeToken(b, IDENTIFIER);
     if (!r) r = consumeToken(b, NUMBER);
     if (!r) r = consumeToken(b, NODE);
@@ -472,7 +487,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | array | object
+  // numberValue | TRUE | FALSE | NULL | INF | NAN | INF_NEG | COLOR | STRING | STRING_REF | exprValue | array | object
   public static boolean jsonValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "jsonValue")) return false;
     boolean r;
@@ -481,6 +496,10 @@ public class TscnParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, TRUE);
     if (!r) r = consumeToken(b, FALSE);
     if (!r) r = consumeToken(b, NULL);
+    if (!r) r = consumeToken(b, INF);
+    if (!r) r = consumeToken(b, NAN);
+    if (!r) r = consumeToken(b, INF_NEG);
+    if (!r) r = consumeToken(b, COLOR);
     if (!r) r = consumeToken(b, STRING);
     if (!r) r = consumeToken(b, STRING_REF);
     if (!r) r = exprValue(b, l + 1);
@@ -516,27 +535,38 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // (PLUS | MINUS)? NUMBER
+  // (PLUS | MINUS)? NUMBER | MINUS INF
   public static boolean numberValue(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "numberValue")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, NUMBER_VALUE, "<number value>");
     r = numberValue_0(b, l + 1);
-    r = r && consumeToken(b, NUMBER);
+    if (!r) r = parseTokens(b, 0, MINUS, INF);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
-  // (PLUS | MINUS)?
+  // (PLUS | MINUS)? NUMBER
   private static boolean numberValue_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "numberValue_0")) return false;
-    numberValue_0_0(b, l + 1);
+    boolean r;
+    Marker m = enter_section_(b);
+    r = numberValue_0_0(b, l + 1);
+    r = r && consumeToken(b, NUMBER);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (PLUS | MINUS)?
+  private static boolean numberValue_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "numberValue_0_0")) return false;
+    numberValue_0_0_0(b, l + 1);
     return true;
   }
 
   // PLUS | MINUS
-  private static boolean numberValue_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "numberValue_0_0")) return false;
+  private static boolean numberValue_0_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "numberValue_0_0_0")) return false;
     boolean r;
     r = consumeToken(b, PLUS);
     if (!r) r = consumeToken(b, MINUS);
@@ -745,7 +775,7 @@ public class TscnParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | json
+  // numberValue | TRUE | FALSE | NULL | INF | NAN | INF_NEG | COLOR | STRING | STRING_REF | exprValue | json
   public static boolean value(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "value")) return false;
     boolean r;
@@ -754,6 +784,10 @@ public class TscnParser implements PsiParser, LightPsiParser {
     if (!r) r = consumeToken(b, TRUE);
     if (!r) r = consumeToken(b, FALSE);
     if (!r) r = consumeToken(b, NULL);
+    if (!r) r = consumeToken(b, INF);
+    if (!r) r = consumeToken(b, NAN);
+    if (!r) r = consumeToken(b, INF_NEG);
+    if (!r) r = consumeToken(b, COLOR);
     if (!r) r = consumeToken(b, STRING);
     if (!r) r = consumeToken(b, STRING_REF);
     if (!r) r = exprValue(b, l + 1);
