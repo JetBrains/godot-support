@@ -28,6 +28,8 @@
 }
 tscnfile ::= paragraph+
 paragraph ::= header dataLine* {
+    pin=1
+    recoverWhile=paragraph_r
     mixin="tscn.psi.impl.TscnParagraphElementImpl"
     stubClass="tscn.index.stub.TscnParagraphStub"
     elementTypeFactory="tscn.psi.impl.TscnParagraphElementType.getInstance"
@@ -96,10 +98,15 @@ headerValue_val ::= value {
     methods=[getName setName]
 }
 
-dataLine ::= dataLineHeader EQ dataLine_value
-dataLineHeader ::= dataLine_nm (SLASH dataLine_nm?)*
+dataLine ::= dataLineHeader EQ dataLine_value {
+    pin=1
+    recoverWhile=dataLine_r
+}
+dataLineHeader ::= dataLine_nm ((COLON | SLASH) dataLine_nm?)*
 // You can name your export nodes the same as the internal tscn names
 dataLine_nm ::= IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION
+private dataLine_r ::= !(LSBR | IDENTIFIER | NUMBER | NODE | GD_RESOURCE | GD_SCENE | EXT_RESOURCE | CONNECTION)
+private paragraph_r ::= !(LSBR)
 dataLine_value ::= value
 
 value ::= numberValue | TRUE | FALSE | NULL | STRING | STRING_REF | exprValue | json
@@ -123,4 +130,3 @@ object ::= LCBR jsonPairList? RCBR
 
 array ::= LSBR valueList? RSBR
 valueList ::= jsonValue (COMMA jsonValue)*
-

@@ -1,0 +1,6 @@
+[gd_scene]
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-35, -35, 35, -35)
+
+[node name="Next" type="Node"]
+after = 1
