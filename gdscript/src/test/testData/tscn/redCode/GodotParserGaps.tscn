@@ -1,0 +1,120 @@
+; Godot-valid .tscn that exercises known gaps in our Tscn.flex / Tscn.bnf
+; vs Godot VariantParser + ResourceLoaderText (format=3).
+; Each block is labeled with the gap it targets.
+
+[gd_scene load_steps=5 format=3 uid="uid://cqparsergaps01"]
+
+; --- first-class tags we only treat as unknown_header ---
+[ext_resource type="Script" path="res://missing_ok_for_text_parse.gd" id="1_script"]
+
+[sub_resource type="Animation" id="Animation_gaps"]
+resource_name = "gaps"
+length = 1.0
+; scientific floats (e+/E+/bare e) — high priority lexer gap
+step = 1.0e-2
+; special numeric identifiers
+custom_near_inf = 1.7976931348623157e+308
+custom_tiny = 1.234e-10
+custom_bare_exp = 1e10
+custom_upper_exp = 2.5E+3
+; Packed* with scientific members
+custom_packed_f32 = PackedFloat32Array(1.23e+30, 1.23e-10, 1e5)
+custom_packed_f64 = PackedFloat64Array(-1.0e+20, 3.14E-7)
+; hex color token (#rrggbb) — accepted by Godot lexer, rare in new saves
+custom_html_color = #ff00aa
+; legacy / special values
+custom_inf = inf
+custom_neg_inf = -inf
+custom_inf_neg = inf_neg
+custom_nan = nan
+custom_nil = nil
+; legacy StringName prefix @
+custom_legacy_string_name = @"legacy_name"
+; modern StringName
+custom_string_name = &"modern_name"
+; Object("Type", "prop": value) — colon pairs inside call args
+custom_object = Object(Object,
+"script": null
+)
+; PackedByteArray base64 form
+custom_bytes = PackedByteArray("AQIDBA==")
+; empty Signal / Callable constructors
+custom_signal = Signal()
+custom_callable = Callable()
+; NodePath
+custom_path = NodePath("Child:position:x")
+; animation track keys (slash paths Godot writes)
+tracks/0/type = "value"
+tracks/0/path = NodePath("Child:position")
+tracks/0/interp = 1
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1e-3, 1.0e+0),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(1.23e+1, -4.56E-2), Vector2(inf, -inf)]
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gaps"]
+radius = 12.5e+1
+
+[sub_resource type="TileSet" id="TileSet_gaps"]
+; colon+slash atlas keys (RIDER-143466 class)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-35.0, -35.0, 35.0, 35.0)
+
+[node name="Root" type="Node"]
+; script ref may be missing on disk; text structure still uses ExtResource
+metadata/gap_script = ExtResource("1_script")
+metadata/gap_sub = SubResource("Animation_gaps")
+metadata/gap_tiles = SubResource("TileSet_gaps")
+; valid nested metadata name (no slash inside meta id)
+metadata/nested_value = 1
+; dotted unquoted key (Godot property_name_encode keeps '.')
+foo.bar = 1
+; quoted assign key (spaces / reserved chars)
+"quoted key" = 42
+"key with spaces" = "ok"
+; trailing slash key (RIDER-137050 class)
+libraries/ = {
+&"default": SubResource("Animation_gaps")
+}
+; scientific inside constructors on a node
+offset_hint = Vector2(1.23e+30, 1.23e-10)
+color_ctor = Color(1.0, 0.5e+0, 0.25E-1, 1)
+transform_hint = Transform2D(1.0, 0.0, 0.0, 1.0, 1e-3, -1e+2)
+; Object inline on a stored property (RefCounted-friendly type)
+embedded = Object(Object,
+"script": null
+)
+; special floats on node
+max_speed = inf
+min_speed = -inf
+bad_sample = nan
+; html color on node
+tint = #00ffcc
+; nil alias
+optional_ref = nil
+; unusual but legal unquoted key chars (printable ASCII except = " ; [ ])
+key@meta = 1
+key%mod = 2
+key+plus = 3
+
+[node name="Child" type="Node2D" parent="."]
+position = Vector2(1.5e+1, -2.5E-1)
+rotation = 3.141592653589793e+0
+scale = Vector2(1.0, 1.0)
+; shape-like payload using SubResource
+shape_ref = SubResource("CircleShape2D_gaps")
+; typed collections still supported — included for completeness
+tags = Array[String](["a", "b"])
+map = Dictionary[String, float]({
+"hi": 1.0e+3,
+"lo": 1.0e-3
+})
+
+[node name="WithGroups" type="Node" parent="." groups=["group.one", &"group_two"]]
+
+[connection signal="ready" from="." to="Child" method="set_position" binds=[Vector2(1e+1, 2e-1)]]
+
+; editable instances — unknown_header in our grammar
+[editable path="Child"]

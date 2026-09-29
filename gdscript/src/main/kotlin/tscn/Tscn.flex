@@ -29,7 +29,9 @@ LETTER = [a-z|A-Z|_]
 DIGIT = [0-9]
 
 NUMBER = ( [0-9][0-9_]*(\.[0-9_]+)? ) | ( \.[0-9][0-9_]* ) | ( [0-9][0-9_]*\. )
-REAL_NUMBER = {NUMBER}e-[0-9]+
+REAL_NUMBER = {NUMBER}[eE][+-]?[0-9][0-9_]*
+HEX_DIGIT = [0-9a-fA-F]
+COLOR = \#{HEX_DIGIT}+
 
 IDENTIFIER = {LETTER}({LETTER}|{DIGIT})*
 IDENTIFIER_REF = {LETTER}({LETTER}|{DIGIT})*"("
@@ -41,7 +43,7 @@ COMMENT = ";"[^\r\n]*(\n|\r|\r\n)?
 STRING_ESC = \\ [^] | \\ ({WHITE_SPACE})+ (\n|\r)
 DOUBLE_QUOTED_CONTENT = {STRING_ESC} | [^\"]
 DOUBLE_QUOTED_LITERAL = [\$\^]?\" {DOUBLE_QUOTED_CONTENT}* \"
-STRING_REFERENCE = "&"{DOUBLE_QUOTED_LITERAL}
+STRING_REFERENCE = ("&"|"@"){DOUBLE_QUOTED_LITERAL}
 
 %%
 
@@ -53,6 +55,9 @@ STRING_REFERENCE = "&"{DOUBLE_QUOTED_LITERAL}
 "connection"      { return TscnTypes.CONNECTION; }
 
 "/"               { return TscnTypes.SLASH; }
+"."               { return TscnTypes.DOT; }
+"@"               { return TscnTypes.AT; }
+"%"               { return TscnTypes.PERCENT; }
 "="               { return TscnTypes.EQ; }
 ":"               { return TscnTypes.COLON; }
 ","               { return TscnTypes.COMMA; }
@@ -67,6 +72,11 @@ STRING_REFERENCE = "&"{DOUBLE_QUOTED_LITERAL}
 "true"            { return TscnTypes.TRUE; }
 "false"           { return TscnTypes.FALSE; }
 "null"            { return TscnTypes.NULL; }
+"nil"             { return TscnTypes.NULL; }
+"inf"             { return TscnTypes.INF; }
+"nan"             { return TscnTypes.NAN; }
+"inf_neg"         { return TscnTypes.INF_NEG; }
+{COLOR}           { return TscnTypes.COLOR; }
 {NUMBER}          { return TscnTypes.NUMBER; }
 {REAL_NUMBER}     { return TscnTypes.NUMBER; }
 "+"               { return TscnTypes.PLUS; }
