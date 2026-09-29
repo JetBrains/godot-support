@@ -10,7 +10,7 @@ public interface TscnDataLine extends PsiElement {
   @NotNull
   TscnDataLineHeader getDataLineHeader();
 
-  @NotNull
+  @Nullable
   TscnDataLineValue getDataLineValue();
 
 }
