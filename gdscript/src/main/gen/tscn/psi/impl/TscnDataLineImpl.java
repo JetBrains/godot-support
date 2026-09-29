@@ -34,9 +34,9 @@ public class TscnDataLineImpl extends ASTWrapperPsiElement implements TscnDataLi
   }
 
   @Override
-  @NotNull
+  @Nullable
   public TscnDataLineValue getDataLineValue() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, TscnDataLineValue.class));
+    return PsiTreeUtil.getChildOfType(this, TscnDataLineValue.class);
   }
 
 }
