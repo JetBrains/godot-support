@@ -1,6 +1,7 @@
 package gdscript.dap.remote
 
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.platform.dap.DapInlineValueContext
 import com.intellij.platform.dap.DapSessionExecutor
 import com.intellij.platform.dap.DapStructuredVariable
 import com.intellij.platform.dap.DapVariable
@@ -16,6 +17,11 @@ import gdscript.GdScriptBundle
 import javax.swing.Icon
 
 private val LOG = logger<GdDapXValue>()
+private const val CATEGORY_TYPE = "Category"
+
+/** Passes [context] only to a category row. It applies the lookup to its direct properties. */
+internal fun categoryPropertyContext(variable: DapVariable, context: DapInlineValueContext?): DapInlineValueContext? =
+    context.takeIf { variable.type == CATEGORY_TYPE }
 
 /** Infer a missing DAP type from the entire top-level value, never a nested object in a container. */
 internal object GdValueKind {
@@ -43,6 +49,10 @@ internal class GdDapXValue(
     // A null owner means that the row has no safe expression. Descendant categories then keep their original DAP values.
     private var owner: GdOwnerExpression?,
     private val frame: GdSelfCheckedFrame,
+    /** Gives the lookup to category children of the self row. */
+    private val contextForCategoryChildren: DapInlineValueContext? = null,
+    /** Applies the lookup to direct properties of this category row. */
+    private val contextForOwnProperties: DapInlineValueContext? = null,
 ) : AbstractDapXValue(factory, executor, variable, icon) {
     @Volatile
     private var presentation: GdObjectPresentation? = (variable as? GdPresentedVariable)?.objectPresentation
@@ -81,10 +91,13 @@ internal class GdDapXValue(
         val parentType = GdValueKind.type(variable)
         for ((position, child) in variables.withIndex()) {
             val childOwner = when {
-                child.type == "Category" -> owner
+                child.type == CATEGORY_TYPE -> owner
                 else -> owner?.child(parentType, child.name, position, variables.size)
             }
-            val row = GdDapXValue(factory, executor, child, owner = childOwner, frame = frame)
+            val row = GdDapXValue(
+                factory, executor, child, owner = childOwner, frame = frame,
+                contextForOwnProperties = categoryPropertyContext(child, contextForCategoryChildren)
+            )
             children.add(row)
             if (GdObjectProbe.isProbeTarget(child, childOwner))
                 probes.add(row to childOwner!!)
@@ -101,7 +114,7 @@ internal class GdDapXValue(
     }
 
     override fun computeChildren(node: XCompositeNode) {
-        val category = variable.takeIf { it.type == "Category" } as? DapStructuredVariable
+        val category = variable.takeIf { it.type == CATEGORY_TYPE } as? DapStructuredVariable
         if (category == null) {
             super.computeChildren(node)
             return
@@ -132,7 +145,10 @@ internal class GdDapXValue(
                 GdDapXValue(
                     factory, executor, original,
                     owner = names[index]?.let { safeOwner?.member(it) }, frame = frame
-                ).also(children::add)
+                ).also {
+                    it.inlineValueContext = contextForOwnProperties
+                    children.add(it)
+                }
             }
             target.addChildren(children, true)
             if (safeOwner != null) {
