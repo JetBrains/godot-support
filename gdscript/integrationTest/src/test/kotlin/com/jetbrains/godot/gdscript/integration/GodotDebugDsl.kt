@@ -23,6 +23,10 @@ import com.intellij.xdebugger.XDebuggerManager
 import com.intellij.xdebugger.XDebuggerTestUtil
 import com.intellij.xdebugger.XDebuggerUtil
 import com.intellij.xdebugger.evaluation.EvaluationMode
+import com.intellij.xdebugger.evaluation.ExpressionInfo
+import com.intellij.xdebugger.impl.evaluate.XEvaluationOrigin
+import com.intellij.xdebugger.impl.ui.tree.nodes.XEvaluationCallbackBase
+import com.intellij.xdebugger.impl.ui.tree.nodes.XEvaluationCallbackWithOrigin
 import com.intellij.xdebugger.frame.XCompositeNode
 import com.intellij.xdebugger.frame.XDebuggerTreeNodeHyperlink
 import com.intellij.xdebugger.frame.XNamedValue
@@ -41,6 +45,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
 import java.io.IOException
 import java.net.InetSocketAddress
@@ -220,6 +225,46 @@ class GodotDebugSession internal constructor(val editor: GodotEditorFixture) {
     suspend fun stepInto() {
         val session = suspendedSession()
         session.runAndAwait("step into", SessionSignal.PAUSED) { session.stepInto() }
+    }
+
+    /** Selects source text through the current frame, then evaluates it as an editor hover. */
+    suspend fun hover(path: String, token: String, selected: String, expression: String): GodotValue {
+        val evaluator = checkNotNull(suspendedSession().currentStackFrame?.evaluator) { "The selected frame has no evaluator" }
+        val document = sourceDocument(path)
+        val info = checkNotNull(hoverRange(path, token)) { "The editor hover found no range for $token" }
+        check(document.getText(info.textRange) == selected) { "The hover selected ${document.getText(info.textRange)}" }
+        check((info.displayText ?: selected) == selected) { "The hover displayed ${info.displayText}" }
+        val actualExpression = info.expressionText ?: document.getText(info.textRange)
+        check(actualExpression == expression) { "The hover evaluated $actualExpression" }
+        val result = CompletableDeferred<XValue>()
+        evaluator.evaluate(actualExpression, object : XEvaluationCallbackBase(), XEvaluationCallbackWithOrigin {
+            override fun getOrigin(): XEvaluationOrigin = XEvaluationOrigin.EDITOR
+            override fun evaluated(value: XValue) { result.complete(value) }
+            override fun errorOccurred(errorMessage: String) { result.completeExceptionally(IllegalStateException(errorMessage)) }
+        }, null)
+        val presentation = presentationOf(withTimeout(pauseTimeout) { result.await() })
+        return GodotValue(presentation.myType, presentation.myValue)
+    }
+
+    /** Checks that the selected frame gives no range for the source token. */
+    suspend fun hoverHasNoRange(path: String, token: String) {
+        check(hoverRange(path, token) == null) { "The editor hover selected $token outside the frame scope" }
+    }
+
+    private suspend fun hoverRange(path: String, token: String): ExpressionInfo? {
+        val evaluator = checkNotNull(suspendedSession().currentStackFrame?.evaluator) { "The selected frame has no evaluator" }
+        val document = sourceDocument(path)
+        val offset = document.text.indexOf(token).also { check(it >= 0) { "The source has no $token" } }
+        return withContext(Dispatchers.EDT) {
+            evaluator.getExpressionInfoAtOffsetAsync(project, document, offset, false)
+        }.let { promise -> withContext(Dispatchers.Default) { promise.blockingGet(30_000) } }
+    }
+
+    private suspend fun sourceDocument(path: String) = readAction {
+        val file = checkNotNull(editor.files[path]) { "The project has no $path" }
+        checkNotNull(FileDocumentManager.getInstance().getDocument(checkNotNull(file.virtualFile))) {
+            "The source file has no document"
+        }
     }
 
     suspend fun evaluate(expression: String): GodotValue {

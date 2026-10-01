@@ -2,9 +2,8 @@ package gdscript.dap.remote
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.project.Project
 import com.intellij.platform.dap.DapEvaluationResult
+import com.intellij.platform.dap.DapInlineValueContext
 import com.intellij.platform.dap.DapInlineValueLocator
 import com.intellij.platform.dap.DapScope
 import com.intellij.platform.dap.DapSessionContext
@@ -16,13 +15,10 @@ import com.intellij.platform.dap.xdebugger.DapXDebuggerPresentationFactory
 import com.intellij.platform.dap.xdebugger.DefaultDapXStackFrame
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.xdebugger.XDebuggerBundle
-import com.intellij.xdebugger.XSourcePosition
-import com.intellij.xdebugger.evaluation.ExpressionInfo
 import com.intellij.xdebugger.evaluation.XDebuggerEvaluator
 import com.intellij.xdebugger.frame.XCompositeNode
 import com.intellij.xdebugger.frame.XValueChildrenList
 import gdscript.GdScriptBundle
-import org.jetbrains.concurrency.Promise
 
 private val LOG = logger<GdDapStackFrame>()
 
@@ -40,40 +36,9 @@ internal class GdDapStackFrame(
      */
     override fun getEqualityObject(): Any = "${thread.id}:${frame.source?.path}:${frame.name}"
 
-    /** Supplies the hover range. [gdEvaluator] sends each evaluation through the self check. */
-    private val platformEvaluator: XDebuggerEvaluator by lazy { super.getEvaluator() }
-    private val gdEvaluator: XDebuggerEvaluator by lazy { GdFrameEvaluator() }
+    private val gdEvaluator: XDebuggerEvaluator by lazy { GdDapEvaluator(executor, factory, checkedFrame) }
 
     override fun getEvaluator(): XDebuggerEvaluator = gdEvaluator
-
-    private inner class GdFrameEvaluator : XDebuggerEvaluator() {
-        override fun getExpressionInfoAtOffsetAsync(
-            project: Project,
-            document: Document,
-            offset: Int,
-            sideEffectsAllowed: Boolean,
-        ): Promise<ExpressionInfo?> = platformEvaluator.getExpressionInfoAtOffsetAsync(project, document, offset, sideEffectsAllowed)
-
-        override fun evaluate(expression: String, callback: XEvaluationCallback, expressionPosition: XSourcePosition?) {
-            // Keep watch text unchanged. Store the expression only on this result row.
-            executor.evaluateWithCompletion(callback) { answer ->
-                when (val result = checkedFrame.run { evaluate(expression) }) {
-                    is DapEvaluationResult.Error -> answer.errorOccurred(result.errorMessage)
-                    is DapEvaluationResult.Success -> {
-                        val owner = GdOwnerExpression(expression)
-                        val row = GdDapXValue(factory, executor, result.variable, owner = owner, frame = checkedFrame)
-                        answer.evaluated(row)
-                        // Show the plain result before the optional probe updates its presentation.
-                        if (GdObjectProbe.isProbeTarget(result.variable, owner, allowInferredType = true) &&
-                            hasSelfInMembers(checkedFrame)) {
-                            val presentations = with(GdObjectProbe) { load(checkedFrame, listOf(expression)) }
-                            row.updatePresentation(presentations?.singleOrNull())
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * Each call fills its own [node]. A later call does not cancel an earlier call.
@@ -141,9 +106,11 @@ internal class GdDapStackFrame(
             }
         }
 
-        // 4. Read the scopes.
+        // 4. Read the scopes and create the self property lookup.
         val scopes = checkedFrame.run { scopes() }
-        return RowData(exceptionVariable, exceptionMessage, selfVariable, frameNode, scopes, detectionError)
+        val selfPropertyInlineContext =
+            if (selfVariable != null) createInlineValueContext(checkedFrame, inlineValueLocator)?.let(::createSelfPropertyInlineContext) else null
+        return RowData(exceptionVariable, exceptionMessage, selfVariable, frameNode, scopes, detectionError, selfPropertyInlineContext)
     }
 
     /**
@@ -192,7 +159,8 @@ internal class GdDapStackFrame(
                         selfVariable = rowData.selfVariable,
                         executor = executor,
                         evaluator = checkedFrame,
-                        factory = factory
+                        factory = factory,
+                        selfPropertyInlineContext = rowData.selfPropertyInlineContext,
                     )
                 )
             } else {
@@ -202,7 +170,8 @@ internal class GdDapStackFrame(
                         executor,
                         rowData.selfVariable,
                         owner = GdOwnerExpression("self"),
-                        frame = checkedFrame
+                        frame = checkedFrame,
+                        contextForCategoryChildren = rowData.selfPropertyInlineContext
                     )
                 )
             }
@@ -236,5 +205,6 @@ internal class GdDapStackFrame(
         val frameNode: GdNodeDescriptor?,
         val scopes: List<DapScope>,
         val detectionError: String?,
+        val selfPropertyInlineContext: DapInlineValueContext?,
     )
 }

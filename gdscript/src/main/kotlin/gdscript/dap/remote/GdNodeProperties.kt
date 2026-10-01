@@ -1,5 +1,6 @@
 package gdscript.dap.remote
 
+import com.intellij.platform.dap.DapInlineValueContext
 import com.intellij.platform.dap.DapSessionContext
 import com.intellij.platform.dap.DapSessionExecutor
 import com.intellij.platform.dap.DapStructuredVariable
@@ -23,6 +24,7 @@ internal suspend fun DapSessionContext.loadNodeProperties(
     factory: DapXDebuggerPresentationFactory,
     objectId: Long,
     knownVariable: DapVariable?,
+    selfPropertyInlineContext: DapInlineValueContext? = null,
 ): GdPropertiesLoad {
     // 1. Select or resolve the node variable.
     val nodeVar = if (knownVariable != null) {
@@ -61,7 +63,8 @@ internal suspend fun DapSessionContext.loadNodeProperties(
         properties.add(
             GdDapXValue(
                 factory, executor, variable,
-                owner = GdOwnerExpression(GdDapExpressions.instance(objectId)), frame = evaluator
+                owner = GdOwnerExpression(GdDapExpressions.instance(objectId)), frame = evaluator,
+                contextForOwnProperties = categoryPropertyContext(variable, selfPropertyInlineContext)
             )
         )
     }

@@ -3,6 +3,7 @@ package gdscript.dap.remote
 import com.intellij.diagnostic.rethrowControlFlowException
 import com.intellij.openapi.application.readAction
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.project.Project
 import com.intellij.platform.dap.DapEvaluationContext
@@ -137,41 +138,65 @@ internal suspend fun DapSessionContext.hasSelfInMembers(frame: GdSelfCheckedFram
 /** The source decision for a frame. An unresolved source does not permit evaluation. */
 internal enum class GdFrameSourceSelf { Present, Absent, Unavailable }
 
-/** Checks committed GDScript PSI. The result holds no PSI element and does not identify the running source. */
+/** Runs [analyzeFrameLine] in a read action and drops the PSI. */
 internal suspend fun frameSourceSelf(project: Project, frame: DapStackFrame): GdFrameSourceSelf = readAction {
-    fun unavailable(reason: String): GdFrameSourceSelf {
+    when (analyzeFrameLine(project, frame)) {
+        is GdFrameLine.Present -> GdFrameSourceSelf.Present
+        GdFrameLine.Absent -> GdFrameSourceSelf.Absent
+        GdFrameLine.Unavailable -> GdFrameSourceSelf.Unavailable
+    }
+}
+
+/**
+ * Carries the [GdFrameSourceSelf] decision and the PSI for a present frame.
+ * Use the PSI only inside the caller's read action.
+ */
+internal sealed interface GdFrameLine {
+    class Present(val file: GdFile, val document: Document, val leaf: PsiElement) : GdFrameLine
+    data object Absent : GdFrameLine
+    data object Unavailable : GdFrameLine
+}
+
+/**
+ * Checks whether the frame's source permits self through committed GDScript PSI. Call inside a read action.
+ * Rejects static initializers, static functions, static variables, and lines inside or containing a lambda.
+ * Static variables include their initializers and accessors.
+ * Returns Unavailable for unresolved sources, uncommitted documents, empty lines, and comment-only lines.
+ * A Present result permits the Members check but does not prove that Godot supplied self.
+ */
+internal fun analyzeFrameLine(project: Project, frame: DapStackFrame): GdFrameLine {
+    fun unavailable(reason: String): GdFrameLine {
         LOG.debug("Cannot resolve GDScript frame ${frame.id}: $reason")
-        return GdFrameSourceSelf.Unavailable
+        return GdFrameLine.Unavailable
     }
 
-    fun absent(reason: String): GdFrameSourceSelf {
+    fun absent(reason: String): GdFrameLine {
         LOG.debug("GDScript frame ${frame.id} has no supported self context: $reason")
-        return GdFrameSourceSelf.Absent
+        return GdFrameLine.Absent
     }
 
     // The frame name identifies a static initializer without a source lookup.
-    if (frame.name == "@static_initializer") return@readAction absent("static initializer")
-
-    val source = frame.source ?: return@readAction unavailable("no source")
+    if (frame.name == "@static_initializer") return absent("static initializer")
+    val source = frame.source ?: return unavailable("no source")
     // Built-in scripts use a resource path with a "::" suffix. The plugin cannot read their GDScript PSI.
-    if (!source.isValid || "::" in source.path) return@readAction unavailable("unsupported source")
-    val document = FileDocumentManager.getInstance().getDocument(source) ?: return@readAction unavailable("no document")
+    if (!source.isValid || "::" in source.path) return unavailable("unsupported source")
+    val document = FileDocumentManager.getInstance().getDocument(source) ?: return unavailable("no document")
     val manager = PsiDocumentManager.getInstance(project)
     // Use committed PSI that matches the document text.
-    if (!manager.isCommitted(document)) return@readAction unavailable("uncommitted document")
-    val file = manager.getPsiFile(document) as? GdFile ?: return@readAction unavailable("not a GDScript file")
+    if (!manager.isCommitted(document)) return unavailable("uncommitted document")
+    val file = manager.getPsiFile(document) as? GdFile ?: return unavailable("not a GDScript file")
 
     // DAP lines start at 1. Document lines start at 0.
     val line = frame.startPosition.line - 1
-    if (line !in 0 until document.lineCount) return@readAction unavailable("line out of range")
+    if (line !in 0 until document.lineCount) return unavailable("line out of range")
     val end = document.getLineEndOffset(line)
     var start = document.getLineStartOffset(line)
     val chars = document.charsSequence
     // Find the first code element. An empty line or a comment cannot establish self.
     while (start < end && chars[start].isWhitespace()) start++
-    if (start == end) return@readAction unavailable("no code on the line")
+    if (start == end) return unavailable("no code on the line")
     val leaf = file.findElementAt(start)
-    if (leaf == null || leaf is PsiComment) return@readAction unavailable("no PSI code element")
+    if (leaf == null || leaf is PsiComment) return unavailable("no PSI code element")
 
     var hasAnnotation = false
     var hasDeclaration = false
@@ -183,14 +208,14 @@ internal suspend fun frameSourceSelf(project: Project, frame: DapStackFrame): Gd
             var element: PsiElement? = lineLeaf
             while (element != null && element !is GdFile) {
                 when (element) {
-                    is GdFuncDeclEx -> return@readAction absent("lambda on the frame line")
+                    is GdFuncDeclEx -> return absent("lambda on the frame line")
                     is GdMethodDeclTl -> {
-                        if (element.isStatic) return@readAction absent("static function")
+                        if (element.isStatic) return absent("static function")
                         hasDeclaration = true
                     }
 
                     is GdClassVarDeclTl -> {
-                        if (element.isStatic) return@readAction absent("static variable")
+                        if (element.isStatic) return absent("static variable")
                         hasDeclaration = true
                     }
 
@@ -203,7 +228,6 @@ internal suspend fun frameSourceSelf(project: Project, frame: DapStackFrame): Gd
     }
 
     // An annotation without a declaration on this line cannot establish self.
-    if (hasAnnotation && !hasDeclaration) return@readAction unavailable("annotation without a declaration on the frame line")
-
-    GdFrameSourceSelf.Present
+    if (hasAnnotation && !hasDeclaration) return unavailable("annotation without a declaration on the frame line")
+    return GdFrameLine.Present(file, document, leaf)
 }

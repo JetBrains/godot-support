@@ -1,14 +1,12 @@
 package gdscript.dap.remote
 
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.platform.dap.DapInlineValueContext
 import com.intellij.platform.dap.DapInlineValueLocator
 import com.intellij.platform.dap.DapScope
 import com.intellij.platform.dap.DapSessionContext
 import com.intellij.platform.dap.DapSessionExecutor
 import com.intellij.platform.dap.xdebugger.AbstractDapXValue
 import com.intellij.platform.dap.xdebugger.DapXDebuggerPresentationFactory
-import com.intellij.xdebugger.XDebuggerUtil
 import com.intellij.xdebugger.frame.XCompositeNode
 import com.intellij.xdebugger.frame.XValueChildrenList
 import com.intellij.xdebugger.frame.XValueGroup
@@ -50,7 +48,7 @@ internal class GdDapXScope(
                     return@computeChildrenWithCompletion
                 }
             }
-            val inlineValueContext = createInlineValueContext()
+            val inlineValueContext = createInlineValueContext(scope.frame, inlineValueLocator)
             variables.forEach { variable ->
                 val row = if (frame == null) factory.createValue(executor, variable)
                 else {
@@ -70,14 +68,5 @@ internal class GdDapXScope(
                 presentations?.forEachIndexed { index, presentation -> probes[index].first.updatePresentation(presentation) }
             }
         }
-    }
-
-    private suspend fun createInlineValueContext(): DapInlineValueContext? {
-        val locator = inlineValueLocator ?: return null
-        val frame = scope.frame
-        val source = frame.source ?: return null
-        val framePosition = XDebuggerUtil.getInstance().createPosition(source, frame.startPosition.line - 1) ?: return null
-        val lookup = locator.createLookup(framePosition) ?: return null
-        return DapInlineValueContext(lookup)
     }
 }
