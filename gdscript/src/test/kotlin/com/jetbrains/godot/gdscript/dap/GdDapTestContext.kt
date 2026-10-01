@@ -30,7 +30,28 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.supervisorScope
 import java.lang.reflect.Proxy
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.platform.dap.DapSessionExecutor
+import com.intellij.platform.dap.DapSessionStoppedException
+import com.intellij.platform.dap.DapStackFramesChunk
+import com.intellij.platform.dap.DapThreadState
+import com.intellij.platform.dap.SourcePosition
+import com.intellij.platform.dap.StepInTargetId
+import com.intellij.platform.dap.StepSize
+import com.intellij.platform.dap.ThreadId
+import com.intellij.ui.SimpleTextAttributes
+import com.intellij.xdebugger.evaluation.XDebuggerEvaluator.XEvaluationCallback
+import com.intellij.xdebugger.frame.XCompositeNode
+import com.intellij.xdebugger.frame.XDebuggerTreeNodeHyperlink
+import com.intellij.xdebugger.frame.XNamedValue
+import com.intellij.xdebugger.frame.XNavigatable
+import com.intellij.xdebugger.frame.XValue
+import com.intellij.xdebugger.frame.XValueChildrenList
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Deferred
+import javax.swing.Icon
 import java.util.PriorityQueue
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.resume
@@ -151,4 +172,162 @@ private inline fun <reified T : Any> unused(): T {
             else -> error("Unexpected ${type.simpleName}.${method.name} call")
         }
     } as T
+}
+
+internal fun withExecutor(body: suspend (ControlledExecutor) -> Unit): Unit = timeoutRunBlocking {
+    supervisorScope {
+        val executor = ControlledExecutor(this)
+        try {
+            body(executor)
+        }
+        finally {
+            executor.jobs.forEach { it.cancel() }
+        }
+    }
+}
+
+internal class ControlledExecutor(private val scope: CoroutineScope) : DapSessionExecutor {
+    var stopped = false
+    var quiesced = false
+    val jobs = mutableListOf<Deferred<*>>()
+    val last: Deferred<*> get() = jobs.last()
+
+    override fun post(block: suspend DapSessionContext.() -> Unit) {
+        if (stopped || quiesced) return
+        postAsync(block)
+    }
+
+    override fun <T> postAsync(block: suspend DapSessionContext.() -> T): Deferred<T> {
+        if (stopped) throw stoppedSession()
+        return scope.async(start = CoroutineStart.LAZY) { unusedSessionContext().block() }.also(jobs::add)
+    }
+
+    suspend fun runLast() {
+        last.start()
+        last.join()
+    }
+}
+
+internal class RecordingCallback : XEvaluationCallback {
+    val values = mutableListOf<XValue>()
+    val errors = mutableListOf<String>()
+    val answerCount get() = values.size + errors.size
+    override fun evaluated(result: XValue) { values.add(result) }
+    override fun errorOccurred(errorMessage: String) { errors.add(errorMessage) }
+}
+
+internal class RecordingNode(private val onBatch: (XValueChildrenList, Boolean) -> Unit = { _, _ -> }) : XCompositeNode {
+    val batches = mutableListOf<Pair<XValueChildrenList, Boolean>>()
+    val errors = mutableListOf<String>()
+    val messages = mutableListOf<String>()
+    var obsolete = false
+    val terminalCount get() = batches.count { it.second }
+    val values get() = batches.flatMap { (children, _) ->
+        children.topValues + (0 until children.size()).map { children.getValue(it) as XNamedValue }
+    }
+
+    override fun addChildren(children: XValueChildrenList, last: Boolean) {
+        batches.add(children to last)
+        onBatch(children, last)
+    }
+    override fun setAlreadySorted(alreadySorted: Boolean) = Unit
+    override fun setErrorMessage(errorMessage: String) { errors.add(errorMessage) }
+    override fun setErrorMessage(errorMessage: String, link: XDebuggerTreeNodeHyperlink?) { errors.add(errorMessage) }
+    override fun setMessage(message: String, icon: Icon?, attributes: SimpleTextAttributes, link: XDebuggerTreeNodeHyperlink?) {
+        messages.add(message)
+    }
+    @Suppress("OVERRIDE_DEPRECATION")
+    override fun tooManyChildren(remaining: Int) = Unit
+    override fun isObsolete() = obsolete
+}
+
+internal class TestThread : DapThread {
+    override val id = ThreadId(1)
+    override val name = "thread"
+    override var state: DapThreadState = DapThreadState.Paused(null)
+    override val topFrame: DapStackFrame? = null
+    @Suppress("RedundantNullableReturnType")
+    override suspend fun DapSessionContext.topFrame(): DapStackFrame? = throw UnsupportedOperationException()
+    override suspend fun DapSessionContext.stackFrames(): List<DapStackFrame> = throw UnsupportedOperationException()
+    override suspend fun DapSessionContext.stackFrames(startFrame: Int, levels: Int): DapStackFramesChunk =
+        throw UnsupportedOperationException()
+    override fun stepInto(stepSize: StepSize, targetId: StepInTargetId?) = throw UnsupportedOperationException()
+    override fun stepOver(stepSize: StepSize) = throw UnsupportedOperationException()
+    override fun stepOut(stepSize: StepSize) = throw UnsupportedOperationException()
+    override fun stepBack(stepSize: StepSize) = throw UnsupportedOperationException()
+    override fun pause() = throw UnsupportedOperationException()
+    override fun resume() = throw UnsupportedOperationException()
+    override fun runToPosition(position: SourcePosition) = throw UnsupportedOperationException()
+}
+
+internal class TestFrame(
+    private val onScopes: suspend () -> Unit = {},
+    private val evaluation: suspend (String) -> DapEvaluationResult,
+) : DapStackFrame {
+    var scopeName = "Members"
+    var scopeNames: List<String>? = null
+    var localVariables = listOf(variable("above", "int", "7"))
+    var memberVariables = listOf(variable("self", "Object"))
+    override val id = FrameId(1)
+    override val name = "frame"
+    override val type = StackFrameType.Normal
+    override var source: VirtualFile? = null
+    var stoppedLine = 1
+    override val startPosition get() = TextPosition(stoppedLine, 1)
+    override val endPosition = TextPosition(1, 1)
+    override val thread = TestThread()
+    override suspend fun DapSessionContext.scopes(): List<DapScope> {
+        onScopes()
+        return (scopeNames ?: listOf(scopeName)).map { scopeName ->
+            testScope(scopeName, this@TestFrame) {
+                if (scopeName == "Locals") localVariables else memberVariables
+            }
+        }
+    }
+    override suspend fun DapSessionContext.evaluate(expression: String): DapEvaluationResult = evaluation(expression)
+}
+
+internal fun positionOf(value: XNamedValue): Int? {
+    var offset: Int? = null
+    value.computeSourcePosition(XNavigatable { offset = it?.offset })
+    return offset
+}
+
+internal fun testScope(
+    name: String = "Locals",
+    frame: DapStackFrame = TestFrame { error("Unexpected evaluation") },
+    expensive: Boolean = false,
+    read: suspend () -> List<DapVariable>,
+): DapScope = object : DapScope {
+    override val frame = frame
+    override val name = name
+    override val isExpensive = expensive
+    override suspend fun DapSessionContext.variables(): List<DapVariable> = read()
+}
+
+// The fake executor needs this exception without a platform session. The constructor is internal.
+internal fun stoppedSession(): DapSessionStoppedException =
+    DapSessionStoppedException::class.java.getDeclaredConstructor().apply { isAccessible = true }.newInstance()
+
+internal fun numberedAnswer(expression: String, fields: List<DapVariable>): DapEvaluationResult {
+    val inner = structuredVariable("0", "Array", listOf(variable("size", "int", fields.size.toString())) + fields)
+    return numberedSuccessAnswer(expression, inner)
+}
+
+internal fun structuredVariable(
+    name: String = "result", type: String = "Object", children: List<DapVariable>? = null
+): DapStructuredVariable = object : DapStructuredVariable, DapVariable by variable(name, type) {
+    override val namedVariables = children?.size ?: 1
+    override val indexedVariables = 0
+    override fun DapSessionContext.loadVariables(filter: VariableFilter?, batchSize: Int): Flow<VariableBatch> =
+        flowOf(VariableBatch(children ?: error("Unexpected variable request"), 0))
+}
+
+internal fun variable(name: String, type: String, value: String = "value"): DapVariable = object : DapVariable {
+    override val name = name
+    override val type = type
+    override val value = value
+    override val evaluateName: String? = null
+    override val kind: ValueKind? = null
+    override val attributes: List<VariableAttribute>? = null
 }
