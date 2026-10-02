@@ -10,16 +10,17 @@ import com.intellij.openapi.project.Project
 import com.jetbrains.rd.platform.util.idea.LifetimedService
 import com.jetbrains.rd.protocol.SolutionExtListener
 import com.jetbrains.rd.util.lifetime.Lifetime
-import com.jetbrains.rd.util.reactive.adviseNotNull
 import com.jetbrains.rd.util.reactive.viewNotNull
 import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rider.ijent.extensions.toNioPath
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
+import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunCurrentScene
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunCurrentSceneType
+import com.jetbrains.rider.plugins.godot.run.configurations.GodotInEditorDebugRunConfigurationType
 import com.jetbrains.rider.projectView.isCMakeSolution
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectoryPath
@@ -56,56 +57,77 @@ class GodotRunConfigurationGenerator : LifetimedService() {
     class ProtocolListener : SolutionExtListener<GodotFrontendBackendModel> {
         data class ProjectType(val isPureGdScriptProject: Boolean, val isCmakeProject: Boolean)
 
-        fun generateGodot4(
-            corePath: String?,
+        fun generateConfigurations(
+            godot3Path: String?,
+            godot4Path: String?,
+            godotPath: String?,
             runManager: RunManager,
             project: Project,
             relPath: String,
             projectType: ProjectType,
             port: Int,
-            godotProjectPath: String
+            godotProjectPath: String,
         ) {
-            if (corePath != null) {
-                createOrUpdateCoreRunConfiguration(
-                    PLAYER_CONFIGURATION_NAME,
-                    "--path \"${relPath}\"",
-                    runManager,
-                    corePath,
-                    project
-                )
-                createOrUpdateCoreRunConfiguration(
-                    EDITOR_CONFIGURATION_NAME,
-                    "--path \"${relPath}\" --editor",
-                    runManager,
-                    corePath,
-                    project
-                )
-                val toRemove = runManager.allSettings.filter {
-                    it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME
+            if (godot3Path != null && godot4Path != null) {
+                logger.warn("The Godot project has both Godot 3 and Godot 4 paths. Preferring Godot 4 for configuration generation.")
+            }
+            if (godot4Path != null) {
+                removeMonoAttachConfiguration(runManager)
+            }
+
+            val supportsManagedDebugging = !projectType.isPureGdScriptProject && !projectType.isCmakeProject
+            when {
+                // Prefer godot4 over godot3 -> do not reorder
+                godot4Path != null -> {
+                    generateGodot4(godot4Path, runManager, project, relPath)
+                    if (supportsManagedDebugging) {
+                        createInEditorDebugRunConfiguration(runManager)
+                    }
+                    if (!projectType.isPureGdScriptProject) {
+                        createOrUpdateCurrentSceneRunConfiguration(runManager, godot4Path, godotProjectPath)
+                    }
                 }
-                for (value in toRemove) {
-                    runManager.removeConfiguration(value)
-                }
-                if (!projectType.isPureGdScriptProject) {
-                    createOrUpdateCurrentSceneRunConfiguration(
-                        runManager,
-                        corePath,
-                        godotProjectPath,
-                    )
-                }
-            } else if (!projectType.isPureGdScriptProject && !projectType.isCmakeProject) {
-                if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }) {
-                    val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
-                    val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
-                    val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
-                    remoteConfig.port = port
-                    runConfiguration.storeInLocalWorkspace()
-                    runManager.addConfiguration(runConfiguration)
+                godot3Path != null -> {
+                    if (supportsManagedDebugging) {
+                        createMonoAttachConfiguration(runManager, port)
+                    }
+                    generateGodot3(godot3Path, runManager, project, relPath)
                 }
             }
+            if (projectType.isPureGdScriptProject && godotPath != null) {
+                generateGDScript(godotPath, runManager, project, relPath)
+            }
+            selectConfigurationIfNeeded(runManager)
         }
 
-        fun generateGodot3(path: String, runManager: RunManager, project: Project, relPath: String) {
+        private fun generateGodot4(
+            corePath: String,
+            runManager: RunManager,
+            project: Project,
+            relPath: String,
+        ) {
+            createOrUpdateCoreRunConfiguration(
+                PLAYER_CONFIGURATION_NAME,
+                "--path \"${relPath}\"",
+                runManager,
+                corePath,
+                project
+            )
+            createOrUpdateCoreRunConfiguration(
+                EDITOR_CONFIGURATION_NAME,
+                "--path \"${relPath}\" --editor",
+                runManager,
+                corePath,
+                project
+            )
+        }
+
+        private fun generateGodot3(
+            path: String,
+            runManager: RunManager,
+            project: Project,
+            relPath: String,
+        ) {
             createOrUpdateRunConfiguration(
                 PLAYER_CONFIGURATION_NAME,
                 "--path \"${relPath}\"",
@@ -122,15 +144,37 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             )
         }
 
-        fun generateGodot(path: String, runManager: RunManager, project: Project, relPath: String, isPureGdProject: Boolean) {
-            if (isPureGdProject) {
-                createOrUpdateNativeExecutableRunConfiguration(
-                    EDITOR_CONFIGURATION_NAME,
-                    "--path \"${relPath}\" --editor",
-                    runManager,
-                    path,
-                    project
-                )
+        private fun generateGDScript(path: String, runManager: RunManager, project: Project, relPath: String) {
+            createOrUpdateNativeExecutableRunConfiguration(
+                EDITOR_CONFIGURATION_NAME,
+                "--path \"${relPath}\" --editor",
+                runManager,
+                path,
+                project
+            )
+        }
+
+        private fun createMonoAttachConfiguration(
+            runManager: RunManager,
+            port: Int,
+        ) {
+            if (!runManager.allSettings.any { it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME }
+            ) {
+                val configurationType = ConfigurationTypeUtil.findConfigurationType(MonoRemoteConfigType::class.java)
+                val runConfiguration = runManager.createConfiguration(ATTACH_CONFIGURATION_NAME, configurationType.factory)
+                val remoteConfig = runConfiguration.configuration as DotNetRemoteConfiguration
+                remoteConfig.port = port
+                runConfiguration.storeInLocalWorkspace()
+                runManager.addConfiguration(runConfiguration)
+            }
+        }
+
+        private fun removeMonoAttachConfiguration(runManager: RunManager) {
+            val toRemove = runManager.allSettings.filter {
+                it.type is MonoRemoteConfigType && it.name == ATTACH_CONFIGURATION_NAME
+            }
+            for (value in toRemove) {
+                runManager.removeConfiguration(value)
             }
         }
 
@@ -139,33 +183,26 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             project.solution.isLoaded.whenTrue(lifetime) {
                 val godotDiscoverer = GodotProjectDiscoverer.getInstance(project)
                 godotDiscoverer.godotDescriptor.viewNotNull(lifetime) { lt, descriptor ->
-                    logger.info("descriptor = $descriptor")
                     val tempRelPath = descriptor.mainProjectBasePath.toNioPath().relativeToOrSelf(project.solutionDirectoryPath)
                     val relPath = tempRelPath.pathString.ifEmpty { "./" }
                     val runManager = RunManager.getInstance(project)
-
-                    GodotProjectDiscoverer.getInstance(project).godot4Path.advise(lt) { corePath ->
-                        generateGodot4(
-                            corePath,
+                    val projectType = ProjectType(descriptor.isPureGdScriptProject, project.isCMakeSolution)
+                    fun generate() {
+                        generateConfigurations(
+                            godotDiscoverer.godot3Path.value,
+                            godotDiscoverer.godot4Path.value,
+                            godotDiscoverer.godotPath.valueOrNull,
                             runManager,
                             project,
                             relPath,
-                            ProjectType(isPureGdScriptProject = descriptor.isPureGdScriptProject, isCmakeProject = project.isCMakeSolution),
+                            projectType,
                             godotDiscoverer.port,
-                            descriptor.mainProjectBasePath.toNioPath().pathString
+                            descriptor.mainProjectBasePath.toNioPath().pathString,
                         )
-                        selectConfigurationIfNeeded(runManager)
                     }
-
-                    GodotProjectDiscoverer.getInstance(project).godot3Path.adviseNotNull(lt) { path ->
-                        generateGodot3(path, runManager, project, relPath)
-                        selectConfigurationIfNeeded(runManager)
-                    }
-
-                    GodotProjectDiscoverer.getInstance(project).godotPath.adviseNotNull(lt) { path ->
-                        generateGodot(path, runManager, project, relPath, descriptor.isPureGdScriptProject)
-                        selectConfigurationIfNeeded(runManager)
-                    }
+                    godotDiscoverer.godot4Path.advise(lt) { generate() }
+                    godotDiscoverer.godot3Path.advise(lt) { generate() }
+                    godotDiscoverer.godotPath.advise(lt) { generate() }
                 }
             }
         }
@@ -198,6 +235,18 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }
+        }
+
+        private fun createInEditorDebugRunConfiguration(runManager: RunManager) {
+            if (runManager.allSettings.any { it.type is GodotInEditorDebugRunConfigurationType }) {
+                return
+            }
+
+            val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotInEditorDebugRunConfigurationType::class.java)
+            val name = GodotPluginBundle.message("godot.debug.in.editor.configuration.name")
+            val runConfiguration = runManager.createConfiguration(name, configurationType.factory)
+            runConfiguration.storeInLocalWorkspace()
+            runManager.addConfiguration(runConfiguration)
         }
 
         // make configuration selected if nothing is selected

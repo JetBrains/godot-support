@@ -28,6 +28,7 @@ class GdScriptRunConfigurationGenerator(project: Project) {
 
     companion object {
         const val PLAYER_GDSCRIPT_CONFIGURATION_NAME: String = "Player GDScript"
+        const val CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME: String = "Current Scene GDScript"
         const val PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME_OLD: String = "Player GDScript (Attach)"
         const val PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME: String = "Debug GDScript (Running session)"
 
@@ -43,6 +44,7 @@ class GdScriptRunConfigurationGenerator(project: Project) {
 
         private fun generateConfigs(runManager: RunManager) {
             createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_CONFIGURATION_NAME, runManager)
+            createOrUpdateGdScriptRunConfiguration(CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME, runManager, scene = "current")
             createOrUpdateGdScriptRunConfiguration(PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME, runManager, attach = true)
         }
 
@@ -59,6 +61,7 @@ class GdScriptRunConfigurationGenerator(project: Project) {
             configurationName: String,
             runManager: RunManager,
             attach: Boolean = false,
+            scene: String = "main",
         ) {
             // todo: maybe after some time, we can remove this code, it is only useful to remove previously generated configs
             val toRemove = runManager.allSettings.filter {
@@ -77,17 +80,16 @@ class GdScriptRunConfigurationGenerator(project: Project) {
             } else {
                 val configurationType = ConfigurationTypeUtil.findConfigurationType(GdScriptConfigurationType::class.java)
                 val runConfiguration = runManager.createConfiguration(configurationName, configurationType.factory)
-                if (attach) {
-                    (runConfiguration.configuration as GdScriptRunConfiguration).json =
-                        GdScriptRunFactory.DEFAULT_FULL_JSON.replace("\"request\" : \"Launch\"", "\"request\" : \"Attach\"")
-                }
+                var json = GdScriptRunFactory.DEFAULT_FULL_JSON.replace("\"scene\" : \"main\"", "\"scene\" : \"$scene\"")
+                if (attach) json = json.replace("\"request\" : \"Launch\"", "\"request\" : \"Attach\"")
+                (runConfiguration.configuration as GdScriptRunConfiguration).json = json
                 runConfiguration.storeInLocalWorkspace()
                 runManager.addConfiguration(runConfiguration)
             }
         }
 
         fun getService(project: Project) {
-            project.getService(GdScriptRunConfigurationGenerator::class.java);
+            project.getService(GdScriptRunConfigurationGenerator::class.java)
         }
     }
 

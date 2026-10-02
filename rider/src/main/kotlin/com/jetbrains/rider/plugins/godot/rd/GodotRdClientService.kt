@@ -19,6 +19,7 @@ import com.jetbrains.rd.protocol.IdeRootMarshallersProvider
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rd.util.threading.SingleThreadScheduler
+import com.jetbrains.rd.util.threading.coroutines.asCoroutineDispatcher
 import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
@@ -32,6 +33,7 @@ import kotlinx.coroutines.withContext
 import java.nio.file.Path
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.coroutines.cancellation.CancellationException
 
 
 @Service(Service.Level.PROJECT)
@@ -119,16 +121,43 @@ class GodotRdClientService(val project: Project) {
     }
 
     fun openInGodot(file: VirtualFile) {
-        val currentConnection = connection.get()
-        if (currentConnection == null) {
-            return
-        }
+        val currentConnection = connection.get() ?: return
         currentConnection.protocol.scheduler.queue {
             if (file.isInLocalFileSystem) {
                 currentConnection.model.openInGodot.fire(file.toNioPath().toString())
             } else {
                 thisLogger().warn("[GODOT RD] tried to open in Godot a non local file")
             }
+        }
+    }
+
+    /**
+     * Returns `false` if the editor is not connected, could not play the scene, or the call
+     * has failed.
+     *
+     * TODO: If a user uses this, and then, in Godot, they use the restart action, it can
+     * make Rider shut it down as part of its teardown -> race. This seems like a minor issue,
+     * so the solution of tracking what was launched with an ID and then giving [stopPlayingScene] this
+     * ID to stop seems like an overkill.
+     */
+    suspend fun playCurrentSceneForDebug(gameArgument: String): Boolean {
+        val currentConnection = connection.get() ?: return false
+        return try {
+            withContext(currentConnection.protocol.scheduler.asCoroutineDispatcher) {
+                currentConnection.model.playCurrentSceneForDebug.startSuspending(currentConnection.protocol.lifetime, gameArgument)
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            thisLogger().warn("[GODOT RD] failed to play the current scene", e)
+            false
+        }
+    }
+
+    fun stopPlayingScene() {
+        val currentConnection = connection.get() ?: return
+        currentConnection.protocol.scheduler.queue {
+            currentConnection.model.stopPlayingScene.fire(Unit)
         }
     }
 
