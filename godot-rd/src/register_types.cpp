@@ -20,6 +20,8 @@ void initialize_gdextension_types(ModuleInitializationLevel p_level) {
 	GDREGISTER_CLASS(GodotRdServer);
 	GDREGISTER_CLASS(RdStarter);
 	GDREGISTER_CLASS(FilesystemMenu);
+	// Do not reorder
+	EditorPlugins::add_by_type<GodotRdExtension>();
 	EditorPlugins::add_by_type<RdStarter>();
 }
 
@@ -27,7 +29,9 @@ void uninitialize_gdextension_types(ModuleInitializationLevel p_level) {
 	if (p_level != MODULE_INITIALIZATION_LEVEL_EDITOR) {
 		return;
 	}
+	// Do not reorder
 	EditorPlugins::remove_by_type<RdStarter>();
+	EditorPlugins::remove_by_type<GodotRdExtension>();
 }
 
 extern "C" {

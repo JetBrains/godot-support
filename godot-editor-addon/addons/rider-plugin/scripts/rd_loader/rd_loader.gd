@@ -45,6 +45,51 @@ func _on_restart_dialog_visibility_changed() -> void:
 
 func _restart_editor() -> void:
 	EditorInterface.restart_editor()
+	
+class VersionCheckResult:
+	var minimum_version: String 
+	var met_requirement: bool
+	
+	func _init(minimum_version: String, met_requirement: bool) -> void:
+		self.minimum_version = minimum_version
+		self.met_requirement = met_requirement
+	
+func check_gdextension_version(gdextension_path: String) -> VersionCheckResult:
+	var config := ConfigFile.new()
+	var error := config.load(gdextension_path)
+	if error != OK:
+		print_verbose("[RIDER RD] failed to load gdextension file as config to check its version.")
+		return VersionCheckResult.new("",false)
+
+	var minimum := str(config.get_value("configuration", "compatibility_minimum", ""))	
+	
+	if minimum.is_empty():
+		print_verbose("[RIDER RD] failed to check minimum version, because it is missing.")
+		return VersionCheckResult.new("", false)
+	
+	return VersionCheckResult.new(minimum, engine_meets_minimum(minimum))
+
+func engine_meets_minimum(required: String) -> bool:
+	var parts := required.split(".")
+	var required_version := [
+		int(parts[0]) if parts.size() > 0 else 0,
+		int(parts[1]) if parts.size() > 1 else 0,
+		int(parts[2]) if parts.size() > 2 else 0,
+	]
+
+	var current := Engine.get_version_info()
+	var current_version := [
+		int(current.major),
+		int(current.minor),
+		int(current.patch),
+	]
+
+	for i in 3:
+		if current_version[i] != required_version[i]:
+			return current_version[i] > required_version[i]
+
+	return true
+
 
 func load_rd_extension(rider_path: String) -> void :
 	if !FileAccess.file_exists(rider_path):
@@ -60,8 +105,19 @@ func load_rd_extension(rider_path: String) -> void :
 			# Meaning it would
 			_show_restart_dialog()
 		return
+	var version_check := check_gdextension_version(gdextension_path)
+	if !version_check.met_requirement:
+		if version_check.minimum_version.is_empty():
+			push_warning("[RIDER RD] Failed to initialize communication between Godot and Rider, some features will not be available.")
+		else: 
+			var current := Engine.get_version_info()
+			var current_str := "%s.%s.%s" % [current.major, current.minor, current.patch]
+			push_warning("[RIDER RD] Failed to initialize communication between Godot and Rider. " +
+				"The Rider RD extension is compatible with Godot %s or later, but the current version is %s." % [version_check.minimum_version, current_str]  )
+		return
 	# loading the same extension twice would fails with `GDExtensionManager.LOAD_STATUS_ALREADY_LOADED`
-	if !GDExtensionManager.is_extension_loaded(gdextension_path) && GDExtensionManager.load_extension(gdextension_path) != GDExtensionManager.LOAD_STATUS_OK:
+	if (!GDExtensionManager.is_extension_loaded(gdextension_path)
+			&& GDExtensionManager.load_extension(gdextension_path) != GDExtensionManager.LOAD_STATUS_OK):
 		push_warning("[RIDER RD] Failed to initialize communication between Godot and Rider, some features will not be available.")
 	else:
 		_loaded_rd_path = gdextension_path

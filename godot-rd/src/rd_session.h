@@ -20,11 +20,16 @@ class RdSession {
 	std::unique_ptr<SingleThreadScheduler> scheduler;
 	std::shared_ptr<SocketWire::Server> wire;
 	std::unique_ptr<Protocol> protocol;
+	static size_t next_id;
+	// Id to check if the session hasn't changed from starting a callback to
+	// responding to it. Checking the adress is not sufficient since adresses might be reused by the allocator.
+	size_t id;
 
 	RdSession() :
 		scheduler(nullptr),
 		wire(nullptr),
-		protocol(nullptr) {
+		protocol(nullptr),
+		id(next_id++) {
 	}
 
 	void start();
@@ -42,6 +47,10 @@ public:
 	RdSession &operator=(const RdSession &) = delete;
 
 	static std::unique_ptr<RdSession> create_new_session() noexcept;
+
+	size_t get_id() const {
+		return id;
+	}
 
 	bool queue(const std::function<void()> &callback) {
 		if (!this->scheduler) {
