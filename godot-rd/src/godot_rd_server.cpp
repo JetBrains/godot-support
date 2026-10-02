@@ -181,24 +181,14 @@ String GodotRdServer::get_port_file_path() const {
 	return settings_dir.path_join(Utils::to_godot_string(model.portFilename.data()));
 }
 
-bool GodotRdServer::write_connection_info(uint16_t port) const {
-	auto port_file = FileAccess::open(get_port_file_path(), FileAccess::WRITE);
-	if (port_file.is_null()) {
-		ERR_PRINT(String("[RIDER RD] Failed to write into port file: ") +FileAccess::get_open_error());
-		return false;
-	}
+bool GodotRdServer::write_connection_info(uint16_t port) {
 	// The model hash lets Rider verify that both sides were generated from the same
 	// protocol model, so it can refuse to connect instead of failing at runtime.
 	// This can happen if a user has multiple versions of Rider installed and points
 	// the editor plugin into one version and opens the project in another.
-	bool ok = port_file->store_string(
-			Utils::to_godot_string(model.portKey.data()) + "=" + String::num_int64(port) + "\n" +
-			Utils::to_godot_string(model.modelHashKey.data()) + "=" + String::num_int64(model.serializationHash) + "\n");
-	if (!ok) {
-		ERR_PRINT(String("[RIDER RD] Failed to write into port file"));
-	}
-	port_file->close();
-	return ok;
+	String contents = Utils::to_godot_string(model.portKey.data()) + "=" + String::num_int64(port) + "\n" +
+			Utils::to_godot_string(model.modelHashKey.data()) + "=" + String::num_int64(model.serializationHash) + "\n";
+	return writer.write_port_info(get_port_file_path(), contents);
 }
 
 void GodotRdServer::stop() noexcept {
@@ -210,7 +200,9 @@ void GodotRdServer::stop() noexcept {
 			extension->disconnect("scene_closed", callable_mp(this, &GodotRdServer::on_scene_closed));
 		}
 	}
-	DirAccess::remove_absolute(get_port_file_path());
+	if (writer.owns_port_lock()) {
+		DirAccess::remove_absolute(get_port_file_path());
+	}
 	std::unique_ptr<RdSession> old_session;
 	{
 		std::lock_guard m(session_mutex);
