@@ -61,6 +61,7 @@
     <newProjectWizard.generator implementation="com.jetbrains.rider.plugins.godot.projectWizard.GodotProjectWizard"/>
 
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType"/>
+    <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotInEditorDebugRunConfigurationType"/>
     <configurationType implementation="com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunCurrentSceneType"/>
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducer"/>
     <runConfigurationProducer implementation="com.jetbrains.rider.plugins.godot.run.configurations.DebugSceneRunConfigurationProducerCor"/>

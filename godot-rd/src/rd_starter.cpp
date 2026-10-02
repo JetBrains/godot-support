@@ -2,6 +2,8 @@
 
 #include "filesystem_menu.h"
 #include "godot_cpp/classes/center_container.hpp"
+#include "godot_cpp/classes/display_server.hpp"
+#include "godot_cpp/classes/engine.hpp"
 #include "godot_cpp/classes/editor_interface.hpp"
 #include "godot_cpp/core/memory.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
@@ -26,18 +28,21 @@ void RdStarter::startup() {
 		return;
 	}
 	if (!is_inside_tree() || EditorInterface::get_singleton() == nullptr) {
-		// Godot can create instances that aren't in the main editor. 
+		// Godot can create instances that aren't in the main editor.
 		// We do not want to run our logic in these cases.
+		return;
+	}
+	if (!Engine::get_singleton()->has_singleton("DisplayServer")) {
+		return;
+	}
+	DisplayServer *display = DisplayServer::get_singleton();
+	if (display == nullptr || display->get_name() == "headless") {
 		return;
 	}
 	UtilityFunctions::print_verbose("[RIDER RD] starting up");
 	server.instantiate();
 	server->set_client_connected_callback([this] { on_client_connected(); });
 	server->set_client_disconnected_callback([this] { on_client_disconnected(); });
-
-	connect("scene_changed", callable_mp(*server, &GodotRdServer::on_scene_changed));
-	connect("scene_saved", callable_mp(*server, &GodotRdServer::on_scene_saved));
-	connect("scene_closed", callable_mp(*server, &GodotRdServer::on_scene_closed));
 
 	menu.instantiate([this](const String &path) { server->open_in_rider(path); });
 
@@ -50,11 +55,6 @@ void RdStarter::shutdown() {
 	}
 	UtilityFunctions::print_verbose("[RIDER RD] shutting down");
 	if (server.is_valid()) {
-		server->set_client_connected_callback(std::function<void()>{});
-		server->set_client_disconnected_callback(std::function<void()>{});
-		disconnect("scene_changed", callable_mp(*server, &GodotRdServer::on_scene_changed));
-		disconnect("scene_saved", callable_mp(*server, &GodotRdServer::on_scene_saved));
-		disconnect("scene_closed", callable_mp(*server, &GodotRdServer::on_scene_closed));
 		server->stop();
 		menu->reset_callback();
 		server.unref();
