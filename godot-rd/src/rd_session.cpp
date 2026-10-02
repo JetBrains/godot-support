@@ -4,6 +4,8 @@
 #include "godot_cpp/variant/utility_functions.hpp"
 using namespace godot;
 
+size_t RdSession::next_id = 0;
+
 std::unique_ptr<RdSession> RdSession::create_new_session() noexcept {
 	try {
 		auto session = std::unique_ptr<RdSession>(new RdSession());

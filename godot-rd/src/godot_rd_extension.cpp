@@ -10,8 +10,74 @@
 #include "godot_cpp/classes/script.hpp"
 
 
+GodotRdExtension *GodotRdExtension::singleton = nullptr;
+
+void GodotRdExtension::_enter_tree() {
+	singleton = this;
+	// Saves are also required for tracking the current scene, since if you just create a new node and then save,
+	// the happy path is scene_changed(nullptr) -> scene_saved("<path>"). Deferred, so that the editor is done
+	// saving by the time the edited scene is looked at.
+	connect("scene_saved", callable_mp(this, &GodotRdExtension::_scene_saved), CONNECT_DEFERRED);
+}
+
+void GodotRdExtension::_exit_tree() {
+	disconnect("scene_saved", callable_mp(this, &GodotRdExtension::_scene_saved));
+	pending_launch_argument = String();
+	if (singleton == this) {
+		singleton = nullptr;
+	}
+}
+
 bool GodotRdExtension::is_scene(const String &extension) const {
 	return extension == "tscn" || extension == "scn";
+}
+
+int GodotRdExtension::get_launch_instance_count() const {
+	const auto settings = EditorInterface::get_singleton()->get_editor_settings();
+	const bool multiple = settings->get_project_metadata(
+			"debug_options", "multiple_instances_enabled", false);
+	return multiple
+			? static_cast<int>(settings->get_project_metadata("debug_options", "run_instance_count", 1))
+			: 1;
+}
+
+
+bool GodotRdExtension::play_current_scene_for_debug(const String &game_argument) {
+	auto *editor = EditorInterface::get_singleton();
+	if (editor->is_playing_scene()) {
+		editor->stop_playing_scene();
+	}
+	// Godot can be set to launch multiple instances at once, this would make it so one gets attached,
+	// and the others stay hanging.
+	if (get_launch_instance_count() > 1) {
+		ERR_PRINT("[RIDER RD] Cannot debug in editor with multiple instances. Please disable 'Enable Multiple Instances'");
+		return false;
+	}
+	pending_launch_argument = game_argument;
+	editor->play_current_scene();
+	const bool playing = editor->is_playing_scene();
+	if (!playing) {
+		UtilityFunctions::print_verbose("[RIDER RD] the editor did not play the current scene");
+		pending_launch_argument = String();
+	}
+	return playing;
+}
+
+void GodotRdExtension::stop_playing_scene() {
+	auto *editor = EditorInterface::get_singleton();
+	if (editor->is_playing_scene()) {
+		editor->stop_playing_scene();
+	}
+}
+
+PackedStringArray GodotRdExtension::_run_scene(const String &, const PackedStringArray &args) const {
+	PackedStringArray result = args;
+	if (!pending_launch_argument.is_empty()) {
+		UtilityFunctions::print_verbose("[RIDER RD] launching the game with: " + pending_launch_argument);
+		result.push_back(pending_launch_argument);
+		pending_launch_argument = String();
+	}
+	return result;
 }
 
 bool GodotRdExtension::_external_editor_turned_on() const {
