@@ -1,5 +1,6 @@
 #pragma once
 #include "godot_rd_extension.h"
+#include "port_writer.h"
 #include "rd_session.h"
 #include "../rd_models/FrontendGodotModel/FrontendGodotModel.h"
 #include "godot_cpp/classes/editor_plugin.hpp"
@@ -30,11 +31,13 @@ class GodotRdServer : public RefCounted {
 	std::function<void()> client_connected;
 	std::function<void()> client_disconnected;
 
+	PortWriter writer;
+	
 	std::mutex godot_thread_tasks_mutex;
 	std::vector<std::function<void()>> godot_thread_tasks;
 	String get_port_file_path() const;
 	// Reports port and model hash to rider
-	bool write_connection_info(uint16_t port) const;
+	bool write_connection_info(uint16_t port);
 
 	// Helper around connection logic so it can be invoked with call_deferred
 	void _notify_client_state(bool is_connected);
