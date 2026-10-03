@@ -94,5 +94,4 @@ class GdDocBuilder {
                 GdDocCode.createHighlightedSnippet(element.toString(), project!!),
         ).wrapWith(DocumentationMarkup.DEFINITION_ELEMENT))
     }
-
 }

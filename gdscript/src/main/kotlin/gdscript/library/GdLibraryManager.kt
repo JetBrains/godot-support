@@ -365,8 +365,8 @@ object GdLibraryManager {
     ) {
         val rawDocs = if (useRawDocs) xmlFilesByClass(rawDir.resolve("doc_classes")) else emptyMap()
         val blobDocs = linkedMapOf<String, Path>()
-        for (manifest in resolvedManifests.sortedBy { it.path.toString() }) {
-            for ((className, file) in xmlFilesByClass(blobRoot.resolve(manifest.manifestId))) {
+        for ((_, manifestId) in resolvedManifests.sortedBy { it.path.toString() }) {
+            for ((className, file) in xmlFilesByClass(blobRoot.resolve(manifestId))) {
                 blobDocs.putIfAbsent(className, file)
             }
         }

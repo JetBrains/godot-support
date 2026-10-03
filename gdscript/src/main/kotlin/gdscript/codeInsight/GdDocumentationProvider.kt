@@ -55,7 +55,7 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
         val model = GdCommentUtil.collectComments(virtualComment.comments)
 
         return buildString {
-            append(GdDocUtil.paragraph(model.description))
+            append(GdDocUtil.paragraph(model.description, comment.project))
             if (model.tutorials.isNotEmpty()) {
                 append(GdDocUtil.listTable("tutorials", model.tutorials.map { HtmlChunk.link(it.url, it.name) }))
             }
@@ -111,10 +111,10 @@ class GdDocumentationProvider : AbstractDocumentationProvider() {
 
         if (context.containingFile != null) {
             GdClassMemberUtil.listDeclarations(context, link).firstOrNull()?.psi()?.let {
-                return GdClassMemberUtil.identifierOf(it)
+                GdClassMemberUtil.identifierOf(it)?.let { identifier -> return identifier }
             }
         }
-        GdClassUtil.getClassIdElement(link, project)?.let { return it }
+        GdClassUtil.getClassIdElement(link, context, project)?.let { return it }
 
         return null
     }
