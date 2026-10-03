@@ -2,12 +2,11 @@ package gdscript.codeInsight.documentation
 
 import com.intellij.codeInsight.documentation.DocumentationManagerProtocol
 import com.intellij.lang.documentation.DocumentationMarkup
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsSafe
-import com.intellij.openapi.util.text.HtmlBuilder
 import com.intellij.openapi.util.text.HtmlChunk
 import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.psi.types.GdDocumented
-import java.util.Locale
 import java.util.Locale.getDefault
 
 object GdDocUtil {
@@ -93,8 +92,12 @@ object GdDocUtil {
         )
     }
 
-    fun paragraph(description: String): HtmlChunk {
-        val lines = description.split("\n")
+    fun paragraph(description: String, project: Project? = null): HtmlChunk {
+        // Parse the full description first so multi-line [codeblock]/[codeblocks] stay one unit
+        // and brackets inside C#/GDScript samples are not treated as type links.
+        val parsed = GdGodotDocUtil.parseStyles(description, project)
+        // Keep <pre> bodies on one logical line so per-line <br> insertion cannot break them.
+        val lines = maskNewlinesInsidePre(parsed).split("\n")
         if (lines.isEmpty()) return HtmlChunk.empty()
 
         val blocks = mutableListOf<HtmlChunk>()
@@ -104,20 +107,43 @@ object GdDocUtil {
             if (isBulletLine(line)) {
                 val items = mutableListOf<HtmlChunk>()
                 while (i < lines.size && isBulletLine(lines[i])) {
-                    items.add(HtmlChunk.tag("li").addRaw(GdGodotDocUtil.parseStyles(bulletContent(lines[i]))))
+                    items.add(HtmlChunk.tag("li").addRaw(unmaskNewlines(bulletContent(lines[i]))))
                     i++
                 }
                 blocks.add(HtmlChunk.tag("ul").children(*items.toTypedArray()))
             } else {
+                val restored = unmaskNewlines(line)
+                val skipBreak = isStructuralBlockLine(restored) ||
+                    (i + 1 < lines.size && isStructuralBlockLine(unmaskNewlines(lines[i + 1])))
                 blocks.add(HtmlChunk.fragment(
-                        HtmlChunk.raw(GdGodotDocUtil.parseStyles(line)),
-                        if (!line.endsWith("<pre>") && !line.startsWith("</pre>")) HtmlChunk.br() else HtmlChunk.empty(),
+                        HtmlChunk.raw(restored),
+                        if (skipBreak) HtmlChunk.empty() else HtmlChunk.br(),
                 ))
                 i++
             }
         }
 
         return HtmlChunk.p().style("padding: 5px 10px 0 10px;").children(*blocks.toTypedArray())
+    }
+
+    private const val PRE_NEWLINE_MASK = '\uE002'
+
+    private fun maskNewlinesInsidePre(html: String): String {
+        return PRE_BLOCK_REGEX.replace(html) { match ->
+            match.value.replace('\n', PRE_NEWLINE_MASK)
+        }
+    }
+
+    private fun unmaskNewlines(text: String): String = text.replace(PRE_NEWLINE_MASK, '\n')
+
+    private val PRE_BLOCK_REGEX = "(?s)<pre\\b[^>]*>.*?</pre>".toRegex()
+
+    private fun isStructuralBlockLine(line: String): Boolean {
+        val trimmed = line.trim()
+        return trimmed.contains("<pre") ||
+            trimmed.contains("</pre>") ||
+            trimmed.contains(DocumentationMarkup.DEFINITION_START) ||
+            trimmed.contains(DocumentationMarkup.DEFINITION_END)
     }
 
     /** A `-` or `*` prefixed bullet-list line, per the Godot doc comment BBCode subset. */

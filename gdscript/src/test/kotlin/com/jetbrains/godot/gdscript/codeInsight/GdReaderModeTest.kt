@@ -123,4 +123,109 @@ class GdReaderModeTest : BasePlatformTestCase() {
         assertFalse(items.isEmpty)
     }
 
+    /**
+     * Navigation of a `psi_element://` link rendered inside a Reader Mode doc comment must use the same
+     * `context` production code passes: [GdVirtualDocComment.getOwner], not the identifier of the owner.
+     */
+    @Test
+    fun testGetDocumentationElementForLinkResolvesBracketedReferenceFromVirtualCommentOwner() {
+        val file = myFixture.configureByText(
+            "linkTarget.gd",
+            """
+            class_name CTestClass
+
+            ## See [CTestClass] for details.
+            func documented_func():
+            	pass
+            """.trimIndent()
+        )
+        val text = file.text
+        val offset = text.indexOf("See [CTestClass]")
+        assertTrue(offset >= 0)
+
+        val comment = provider.findDocComment(file, com.intellij.openapi.util.TextRange(offset, offset + 1))
+        assertNotNull(comment)
+        val context = (comment as GdVirtualDocComment).owner
+        assertNotNull("GdVirtualDocComment.getOwner() must return the declaration following the doc comment", context)
+
+        val resolved = provider.getDocumentationElementForLink(myFixture.psiManager, "CTestClass", context)
+        assertNotNull(
+            "Navigating a [CTestClass] link rendered in Reader Mode must resolve to the class_name declaration",
+            resolved
+        )
+    }
+
+    /**
+     * A bracketed reference can also name the type used by a member (var/param/const) of the current
+     * class, e.g. an inner class without a global `class_name`. Such a reference is only resolvable via
+     * [gdscript.psi.utils.GdClassUtil.getClassIdElement]'s non-deprecated overload, which additionally
+     * looks up [gdscript.index.impl.GdClassDeclIndex.getInFile] scoped to the `context` file.
+     */
+    @Test
+    fun testGetDocumentationElementForLinkResolvesMemberTypeFromVirtualCommentOwner() {
+        val file = myFixture.configureByText(
+            "memberType.gd",
+            """
+            class Inner:
+            	var x = 1
+
+            var field: Inner
+
+            ## References the inner [Inner] type used above.
+            func documented_func():
+            	pass
+            """.trimIndent()
+        )
+        val text = file.text
+        val offset = text.indexOf("inner [Inner]")
+        assertTrue(offset >= 0)
+
+        val comment = provider.findDocComment(file, com.intellij.openapi.util.TextRange(offset, offset + 1))
+        assertNotNull(comment)
+        val context = (comment as GdVirtualDocComment).owner
+        assertNotNull("GdVirtualDocComment.getOwner() must return the declaration following the doc comment", context)
+
+        val resolved = provider.getDocumentationElementForLink(myFixture.psiManager, "Inner", context)
+        assertNotNull(
+            "Navigating an [Inner] link rendered in Reader Mode must resolve to the inner class declaration",
+            resolved
+        )
+    }
+
+    @Test
+    fun testGenerateRenderedDocKeepsCodeblocksFormattedAndDoesNotLinkifyCsharpAttributes() {
+        val file = myFixture.configureByText(
+            "validateProperty.gd",
+            """
+            ## See [method _get_property_list].
+            ## [codeblocks]
+            ## [gdscript]
+            ## func _validate_property(property: Dictionary):
+            ## 	pass
+            ## [/gdscript]
+            ## [csharp]
+            ## [Tool]
+            ## public partial class MyNode : Node { }
+            ## [/csharp]
+            ## [/codeblocks]
+            func _validate_property(property: Dictionary) -> void:
+            	pass
+            """.trimIndent()
+        )
+        val offset = file.text.indexOf("[codeblocks]")
+        assertTrue(offset >= 0)
+
+        val comment = provider.findDocComment(file, com.intellij.openapi.util.TextRange(offset, offset + 1))
+        assertNotNull(comment)
+
+        val rendered = provider.generateRenderedDoc(comment!!)
+        assertNotNull(rendered)
+        assertTrue(rendered!!.contains("<pre><code>"))
+        // Highlighted GDScript is split into spans, so only check token fragments.
+        assertTrue(rendered.contains("_validate_property"))
+        assertTrue(rendered.contains("[Tool]"))
+        assertFalse(rendered.contains("psi_element://Tool"))
+        assertFalse(rendered.contains("[method _get_property_list]"))
+    }
+
 }
