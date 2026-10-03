@@ -81,17 +81,18 @@ object GdCommentUtil {
     }
 
     private fun startsWithTag(line: String): Boolean {
-        if (!line.startsWith("@"))
+        val text = line.trimStart()
+        if (!text.startsWith("@"))
             return false
-        val text = line.removePrefix("@")
-        return (text.startsWith(BRIEF_DESCRIPTION.plus(":"))
-            || text.startsWith(DESCRIPTION.plus(":"))
-            || text.startsWith(PARAMETER.plus(":"))
-            || text.startsWith(TUTORIAL)
-            || text.startsWith(ENUM.plus(":"))
-            || text.startsWith(RETURN.plus(":"))
-            || text.startsWith(DEPRECATED)
-            || text.startsWith(EXPERIMENTAL)
+        val tag = text.removePrefix("@")
+        return (tag.startsWith(BRIEF_DESCRIPTION.plus(":"))
+            || tag.startsWith(DESCRIPTION.plus(":"))
+            || tag.startsWith(PARAMETER.plus(":"))
+            || tag.startsWith(TUTORIAL)
+            || tag.startsWith(ENUM.plus(":"))
+            || tag.startsWith(RETURN.plus(":"))
+            || tag.startsWith(DEPRECATED)
+            || tag.startsWith(EXPERIMENTAL)
             )
     }
 
@@ -193,7 +194,7 @@ object GdCommentUtil {
         val description = mutableListOf<String>()
         comments.forEach {
             if (startsWithTag(it)) {
-                val text = it.removePrefix("@")
+                val text = it.trimStart().removePrefix("@")
                 if (text.startsWith(BRIEF_DESCRIPTION)) {
                     val content = text.removePrefix(BRIEF_DESCRIPTION.plus(":")).trim()
                     if (content.isNotEmpty()) {
@@ -218,7 +219,7 @@ object GdCommentUtil {
                     model.isExperimental = true
                     description.add(it)
                 } else if (text.startsWith(TUTORIAL)) {
-                    val groups = TUTORIAL_REGEX.find(it)?.groups
+                    val groups = TUTORIAL_REGEX.find(it.trimStart())?.groups
                     val tutorial = GdTutorial()
                     if (groups?.get(2) != null) {
                         tutorial.url = groups[2]!!.value

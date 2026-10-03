@@ -17,7 +17,8 @@ object GdGodotDocUtil {
     private val inlineCodeTag = "(?s)\\[code](.*?)\\[/code]".toRegex()
     private val codeBlocksTag = "(?s)\\[codeblocks](.*?)\\[/codeblocks]".toRegex()
     private val codeBlockTag = "(?s)\\[codeblock(?:\\s[^]]*)?](.*?)\\[/codeblock]".toRegex()
-    private val languageBlockTag = "(?s)\\[(gdscript|csharp)](.*?)\\[/\\1]".toRegex()
+    private val languageBlockTag = "(?s)\\[gdscript](.*?)\\[/gdscript]".toRegex()
+    private val csharpBlockTag = "(?s)\\[csharp].*?\\[/csharp]".toRegex()
 
     private val DEFINITION_START = "</p>${DocumentationMarkup.DEFINITION_START}"
     private val DEFINITION_END = "${DocumentationMarkup.DEFINITION_END}<p style=\"padding: 5px 10px 0 10px;\">"
@@ -82,7 +83,8 @@ object GdGodotDocUtil {
     }
 
     private fun protectCodeRegions(text: String, project: Project?, protected: MutableList<String>): String {
-        var result = text
+        // Drop C# samples; keep GDScript and unlabeled code blocks.
+        var result = csharpBlockTag.replace(text, "")
 
         result = codeBlocksTag.replace(result) { match ->
             placeholder(renderCodeBlocks(match.groupValues[1], project), protected)
@@ -90,10 +92,9 @@ object GdGodotDocUtil {
         result = codeBlockTag.replace(result) { match ->
             placeholder(renderPreBlock(match.groupValues[1], label = null, project = project, language = "gdscript"), protected)
         }
-        // Orphan language sections outside [codeblocks] (defensive).
+        // Orphan GDScript sections outside [codeblocks] (defensive).
         result = languageBlockTag.replace(result) { match ->
-            val language = match.groupValues[1]
-            placeholder(renderPreBlock(match.groupValues[2], labelFor(language), project, language), protected)
+            placeholder(renderPreBlock(match.groupValues[1], "GDScript", project, "gdscript"), protected)
         }
         result = inlineCodeTag.replace(result) { match ->
             val code = match.groupValues[1]
@@ -112,8 +113,7 @@ object GdGodotDocUtil {
     private fun renderCodeBlocks(body: String, project: Project?): String {
         val sections = StringBuilder()
         languageBlockTag.findAll(body).forEach { match ->
-            val language = match.groupValues[1]
-            sections.append(renderPreBlock(match.groupValues[2], labelFor(language), project, language))
+            sections.append(renderPreBlock(match.groupValues[1], "GDScript", project, "gdscript"))
         }
         if (sections.isNotEmpty()) return sections.toString()
         // Plain body inside [codeblocks] without language tags.
@@ -135,12 +135,6 @@ object GdGodotDocUtil {
 
         val header = if (label != null) "<strong>$label</strong>" else ""
         return "$DEFINITION_START$header$content$DEFINITION_END"
-    }
-
-    private fun labelFor(language: String): String = when (language) {
-        "gdscript" -> "GDScript"
-        "csharp" -> "C#"
-        else -> language
     }
 
     private fun normalizeCode(code: String): String {
