@@ -270,6 +270,9 @@ class GodotDebugSession internal constructor(val editor: GodotEditorFixture) {
         }
     }
 
+    /** Returns the collected groups and values of the paused frame. */
+    internal suspend fun frameChildren(): GodotChildren = collectChildren(suspendedFrame())
+
     private suspend fun dumpContainer(container: XValueContainer, depth: Int, level: Int) {
         val children = collectChildren(container)
         for (group in children.groups) {
@@ -413,21 +416,26 @@ private suspend fun XDebugSession.runAndAwait(commandName: String, signal: Sessi
 private fun frameName(frame: XStackFrame): String =
     XDebuggerTestUtil.getFramePresentation(frame).substringBefore(", ")
 
-private class GodotChildren(val groups: List<XValueGroup>, val values: List<XValue>)
+internal class GodotChildren(val groups: List<XValueGroup>, val values: List<XValue>)
 
 /**
  * Returns the children of [container], and fails when the adapter reported an error.
  *
  * An empty result without an error means an empty container. A silent empty dump would hide a defect.
  */
-private suspend fun collectChildren(container: XValueContainer): GodotChildren =
+internal suspend fun collectChildren(container: XValueContainer): GodotChildren =
     withContext(Dispatchers.Default) {
-        val node = GodotCompositeNode()
+        val node = GodotCompositeNode(describe(container))
         container.computeChildren(node)
-        val result = node.await()
-        check(result.second == null) { "The adapter reported an error for the children: ${result.second}" }
-        result.first
+        node.children()
     }
+
+private fun describe(container: XValueContainer): String = when (container) {
+    is XStackFrame -> "the frame"
+    is XValueGroup -> "the scope ${container.name}"
+    is XNamedValue -> "the value ${container.name}"
+    else -> "a ${container.javaClass.simpleName}"
+}
 
 /**
  * Collects one level of the debugger tree, and keeps the groups.
@@ -439,13 +447,14 @@ private suspend fun collectChildren(container: XValueContainer): GodotChildren =
  * The class implements `XCompositeNode`, which the platform reserves for itself. A test needs the same
  * access as the debugger tree, and the platform test framework implements the interface for the same reason.
  */
-private class GodotCompositeNode : XCompositeNode {
+private class GodotCompositeNode(private val subject: String) : XCompositeNode {
     private val groups = mutableListOf<XValueGroup>()
     private val values = mutableListOf<XValue>()
     private val result = CompletableFuture<Pair<GodotChildren, String?>>()
 
     override fun addChildren(children: XValueChildrenList, last: Boolean) {
         groups.addAll(children.topGroups)
+        values.addAll(children.topValues)
         for (index in 0 until children.size()) {
             values.add(children.getValue(index))
         }
@@ -469,18 +478,21 @@ private class GodotCompositeNode : XCompositeNode {
         link: XDebuggerTreeNodeHyperlink?,
     ) = Unit
 
-    /** Waits for the answer of the adapter, and pumps the event queue while it waits. */
-    fun await(): Pair<GodotChildren, String?> =
-        checkNotNull(XDebuggerTestUtil.waitFor(result, XDebuggerTestUtil.TIMEOUT_MS.toLong())) {
-            "The adapter did not answer a request about the children"
+    /** Waits for the answer of the adapter, and fails when the adapter gave none or reported an error. */
+    fun children(): GodotChildren {
+        val (children, error) = checkNotNull(XDebuggerTestUtil.waitFor(result, XDebuggerTestUtil.TIMEOUT_MS.toLong())) {
+            "The adapter did not answer the request about the children of $subject"
         }
+        check(error == null) { "The adapter reported an error for the children of $subject: $error" }
+        return children
+    }
 
     private fun complete(errorMessage: String?) {
         result.complete(GodotChildren(groups.toList(), values.toList()) to errorMessage)
     }
 }
 
-private suspend fun presentationOf(value: XValue) =
+internal suspend fun presentationOf(value: XValue) =
     withContext(Dispatchers.Default) { XDebuggerTestUtil.computePresentation(value) }
 
 private fun indent(level: Int): String = "    ".repeat(level)
