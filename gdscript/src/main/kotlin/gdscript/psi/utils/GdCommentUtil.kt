@@ -148,13 +148,24 @@ object GdCommentUtil {
     }
 
     fun collectComments(element: PsiElement?): GdCommentModel {
-        val comments = collectCommentNodes(element).map { it.text.removePrefix("##").trim() }
+        val comments = collectCommentNodes(element).map { stripDocCommentPrefix(it.text) }
         return parseCommentModel(comments)
     }
 
     /** Builds a [GdCommentModel] straight from a list of `##` comment PSI leaves, e.g. from a [gdscript.codeInsight.documentation.GdVirtualDocComment]. */
     fun collectComments(comments: List<PsiComment>): GdCommentModel {
-        return parseCommentModel(comments.map { it.text.removePrefix("##").trim() })
+        return parseCommentModel(comments.map { stripDocCommentPrefix(it.text) })
+    }
+
+    /**
+     * Removes the `##` doc marker and one optional following space.
+     * Keeps leading indent so code samples inside comments stay formatted.
+     */
+    fun stripDocCommentPrefix(raw: String): String {
+        var text = raw
+        if (text.startsWith("##")) text = text.substring(2)
+        if (text.startsWith(" ")) text = text.substring(1)
+        return text.trimEnd()
     }
 
     /**
