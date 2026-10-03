@@ -239,15 +239,32 @@ class XmlToGd {
     }
 
     private fun addDescription(sb: StringBuilder, description: String?, prefix: String = "") {
-        description?.lines()?.forEach {
-            val trimmed = it.trim()
-            if (trimmed.isEmpty()) {
+        val lines = description?.lines() ?: return
+        // Keep relative indentation inside docs (code samples), but drop the shared leading indent.
+        val commonIndent = lines.drop(1)
+            .filterNot { it.isBlank() }
+            .minOfOrNull { leadingWhitespaceLength(it) }
+            ?: 0
+
+        lines.forEachIndexed { index, line ->
+            val leadingLength = leadingWhitespaceLength(line)
+            val content = line.drop(leadingLength).trimEnd()
+            val relativeLeading = if (index == 0) {
+                line.take(leadingLength)
+            }
+            else {
+                line.take(leadingLength).drop(commonIndent.coerceAtMost(leadingLength))
+            }
+            if (content.isEmpty()) {
                 sb.appendLine("##")
             } else {
-                sb.appendLine("$prefix## $trimmed")
+                sb.appendLine("$prefix## $relativeLeading$content")
             }
         }
     }
+
+    private fun leadingWhitespaceLength(line: String): Int =
+        line.indexOfFirst { it != ' ' && it != '\t' }.let { if (it < 0) line.length else it }
 
     private fun addStartRegion(sb: StringBuilder, name: String) {
         sb.appendLine("#region $name")

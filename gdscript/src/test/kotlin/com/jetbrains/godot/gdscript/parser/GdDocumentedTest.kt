@@ -36,10 +36,10 @@ class GdDocumentedTest : BasePlatformTestCase() {
         val methods = PsiTreeUtil.findChildrenOfType(file, GdMethodDeclTl::class.java).toList()
         val documentedFunc = methods.find { it.getName() == "documented_func" }
         assertNotNull(documentedFunc)
-        assertEquals("This is a brief.", documentedFunc!!.brief())
-        assertEquals("This is a brief.\n\nThis is a description.\nIt has multiple lines.\n\n" +
-            "@tutorial: Tutorial URL\n@tutorial(Tutorial Name 2): Tutorial URL 2\n" +
-            "@deprecated: Use something else.\n@experimental: This is experimental.", documentedFunc.description())
+        assertEquals("\tThis is a brief.", documentedFunc!!.brief())
+        assertEquals("\tThis is a brief.\n\n\tThis is a description.\n\tIt has multiple lines.\n\n" +
+            "\t@tutorial: Tutorial URL\n\t@tutorial(Tutorial Name 2): Tutorial URL 2\n" +
+            "\t@deprecated: Use something else.\n\t@experimental: This is experimental.", documentedFunc.description())
 
         val tutorials = documentedFunc.tutorials()
         assertEquals(2, tutorials.size)
