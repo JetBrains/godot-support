@@ -9,21 +9,28 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.project.Project
 import com.intellij.platform.dap.DapBreakpointsDescription
 import com.intellij.platform.dap.DapCustomization
+import com.intellij.platform.dap.DapDebugSession
 import com.intellij.platform.dap.DapExceptionBreakpoint
 import com.intellij.platform.dap.DapExceptionInfo
 import com.intellij.platform.dap.DapExpressionSupport
+import com.intellij.platform.dap.DapInlineValueLocator
+import com.intellij.platform.dap.DapPresentationSupport
 import com.intellij.platform.dap.DebugAdapterDescriptor
 import com.intellij.platform.dap.DebugAdapterId
 import com.intellij.platform.dap.DebugAdapterSupportProvider
 import com.intellij.platform.dap.connection.DebugAdapterHandle
 import com.intellij.platform.dap.connection.DebugAdapterSocketConnection
+import com.intellij.platform.dap.xdebugger.DapXDebuggerPresentationFactory
 import com.intellij.xdebugger.XDebugSession
+import com.intellij.xdebugger.XSourcePosition
 import com.intellij.xdebugger.evaluation.XDebuggerEditorsProvider
+import com.intellij.xdebugger.evaluation.XDebuggerEvaluator
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import gdscript.GdScriptBundle
 import gdscript.dap.breakpoints.GdScriptDebuggerEditorsProvider
 import gdscript.dap.breakpoints.GdScriptExceptionBreakpointType
 import gdscript.dap.breakpoints.GdScriptLineBreakpointType
+import gdscript.dap.remote.GdDapPresentationFactory
 import gdscript.lsp.GodotLspRunningStatusProvider
 import gdscript.lsp.RunningGodotEditorDiscovery
 import kotlinx.coroutines.CancellationException
@@ -41,6 +48,16 @@ internal class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider
             override val customization: DapCustomization = object : DapCustomization() {
                 override val expressionSupport = object : DapExpressionSupport() {
                     override fun createEditorsProvider(session: XDebugSession): XDebuggerEditorsProvider = GdScriptDebuggerEditorsProvider()
+
+                    override fun createEvaluator(
+                        dapSession: DapDebugSession,
+                        presentationFactory: DapXDebuggerPresentationFactory,
+                    ): XDebuggerEvaluator = GdUnavailableEvaluator()
+                }
+
+                override val presentationSupport = object : DapPresentationSupport() {
+                    override fun createPresentationFactory(inlineValueLocator: DapInlineValueLocator?): DapXDebuggerPresentationFactory =
+                        GdDapPresentationFactory(project, inlineValueLocator)
                 }
             }
 
@@ -88,6 +105,13 @@ internal class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider
                 }
             }
         }
+}
+
+/** Evaluation without a selected frame cannot check the source or the dump. */
+internal class GdUnavailableEvaluator : XDebuggerEvaluator() {
+    override fun evaluate(expression: String, callback: XEvaluationCallback, expressionPosition: XSourcePosition?) {
+        callback.errorOccurred(GdScriptBundle.message("gdscript.debugger.error.evaluation.frame.unavailable"))
+    }
 }
 
 private suspend fun discoverRunningDapPort(project: Project): Int? {
