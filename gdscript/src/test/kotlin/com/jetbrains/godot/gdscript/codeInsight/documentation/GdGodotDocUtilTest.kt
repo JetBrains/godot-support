@@ -86,4 +86,117 @@ class GdGodotDocUtilTest {
         assertTrue(parsed.contains("<li>second item</li>"))
     }
 
+    @Test
+    fun testInlineCodeIsCodeNotItalic() {
+        val parsed = GdGodotDocUtil.parseStyles("Returns [code]null[/code] on failure.")
+        assertTrue(parsed.contains("<code>null</code>"))
+        assertFalse(parsed.contains("<i>null</i>"))
+    }
+
+    @Test
+    fun testCodeblockRendersAsPreformatted() {
+        val parsed = GdGodotDocUtil.parseStyles(
+            """
+            Example:
+            [codeblock]
+            func _ready():
+                print("hi")
+            [/codeblock]
+            """.trimIndent()
+        )
+        assertTrue(parsed.contains("<pre><code>"))
+        assertTrue(parsed.contains("func _ready():"))
+        assertTrue(parsed.contains("print(&quot;hi&quot;)") || parsed.contains("print(\"hi\")"))
+        assertFalse(parsed.contains("[codeblock]"))
+    }
+
+    /**
+     * Mirrors the `_validate_property` sample from `comment/object.gd`:
+     * GDScript must stay preformatted, and C# attributes must not become type links.
+     */
+    @Test
+    fun testCodeblocksDoesNotLinkifyCsharpAttributes() {
+        val source = """
+            Override this method. See [method _get_property_list].
+            [codeblocks]
+            [gdscript]
+            @tool
+            extends Node
+
+            @export var is_number_editable: bool:
+            	set(value):
+            		is_number_editable = value
+            		notify_property_list_changed()
+            @export var number: int
+
+            func _validate_property(property: Dictionary):
+            	if property.name == "number" and not is_number_editable:
+            		property.usage |= PROPERTY_USAGE_READ_ONLY
+            [/gdscript]
+            [csharp]
+            [Tool]
+            public partial class MyNode : Node
+            {
+            	[Export]
+            	public bool IsNumberEditable { get; set; }
+            }
+            [/csharp]
+            [/codeblocks]
+        """.trimIndent()
+
+        val parsed = GdGodotDocUtil.parseStyles(source)
+        val paragraph = GdDocUtil.paragraph(source).toString()
+
+        assertTrue(parsed.contains("<pre><code>"))
+        assertTrue(parsed.contains("<strong>GDScript</strong>"))
+        assertTrue(parsed.contains("<strong>C#</strong>"))
+        assertTrue(parsed.contains("@tool"))
+        assertTrue(parsed.contains("func _validate_property"))
+        assertTrue(parsed.contains("set(value):"))
+
+        // C# attributes must stay literal text, not psi_element links.
+        assertTrue("C# [Tool] attribute must remain visible", parsed.contains("[Tool]"))
+        assertFalse("C# [Tool] must not become a documentation link", parsed.contains("psi_element://Tool"))
+        assertTrue("C# [Export] attribute must remain visible", parsed.contains("[Export]"))
+        assertFalse("C# [Export] must not become a documentation link", parsed.contains("psi_element://Export"))
+
+        // Prose references outside code still linkify.
+        assertFalse(paragraph.contains("[method _get_property_list]"))
+        assertTrue(paragraph.contains("_get_property_list"))
+        assertTrue(paragraph.contains("<pre><code>"))
+        assertFalse(paragraph.contains("psi_element://Tool"))
+    }
+
+    @Test
+    fun testCodeblockPreservesRelativeIndent() {
+        val parsed = GdGodotDocUtil.parseStyles(
+            """
+            [gdscript]
+            func f():
+                if true:
+                    print(1)
+            [/gdscript]
+            """.trimIndent()
+        )
+        assertTrue(parsed.contains("<pre>"))
+        // After common-indent strip, the if-body keeps relative indent.
+        assertTrue(
+            parsed.contains("if true:\n    print(1)") ||
+                parsed.contains("if true:\n\tprint(1)") ||
+                Regex("if true:\\s+print\\(1\\)").containsMatchIn(parsed.replace("&quot;", "\""))
+        )
+    }
+
+    @Test
+    fun testStripDocCommentPrefixKeepsIndent() {
+        assertEquals(
+            "\tset(value):",
+            gdscript.psi.utils.GdCommentUtil.stripDocCommentPrefix("## \tset(value):")
+        )
+        assertEquals(
+            "set(value):",
+            gdscript.psi.utils.GdCommentUtil.stripDocCommentPrefix("## set(value):")
+        )
+    }
+
 }
