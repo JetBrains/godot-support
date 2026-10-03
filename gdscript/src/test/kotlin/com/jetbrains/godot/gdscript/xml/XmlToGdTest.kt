@@ -2,10 +2,11 @@ package com.jetbrains.godot.gdscript.xml
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
+import gdscript.polySymbols.sdk.xml.GdSdkData
+import gdscript.polySymbols.sdk.xml.XmlToGd
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import gdscript.polySymbols.sdk.xml.XmlToGd
 import java.nio.file.Path
 import kotlin.io.path.exists
 import kotlin.io.path.pathString
@@ -44,6 +45,54 @@ class XmlToGdTest : BasePlatformTestCase() {
     fun testVector2Conversion() {
         doTest("Vector2.xml", "Vector2.gd")
     }
+
+    @Test
+    fun testCodeBlockIndentationPreserved() {
+        val classData = classData(
+            "Description.\n" +
+                "\t[codeblocks]\n" +
+                "\t[gdscript]\n" +
+                "\tfunc _get(property):\n" +
+                "\t\tif property == \"fake_property\":\n" +
+                "\t\t\tprint(\"Getting my property!\")\n" +
+                "\t\treturn null\n" +
+                "\t[/gdscript]\n" +
+                "\t[/codeblocks]"
+        )
+
+        val actual = converter.convert(classData)
+
+        assertEquals(
+            "class_name Example\n\n" +
+                "## Description.\n" +
+                "## [codeblocks]\n" +
+                "## [gdscript]\n" +
+                "## func _get(property):\n" +
+                "## \tif property == \"fake_property\":\n" +
+                "## \t\tprint(\"Getting my property!\")\n" +
+                "## \treturn null\n" +
+                "## [/gdscript]\n" +
+                "## [/codeblocks]\n\n",
+            actual,
+        )
+    }
+
+    private fun classData(description: String): GdSdkData.ClassData = GdSdkData.ClassData(
+        name = "Example",
+        inherits = null,
+        briefDescription = null,
+        description = description,
+        constructors = emptyList(),
+        methods = emptyList(),
+        properties = emptyList(),
+        signals = emptyList(),
+        constants = emptyList(),
+        enums = emptyList(),
+        themeItems = emptyList(),
+        tutorials = emptyList(),
+        isDeprecated = false,
+        isExperimental = false,
+    )
 
     private fun doTest(xmlFileName: String, gdFileName: String) {
         // Get the XML file from the test data directory

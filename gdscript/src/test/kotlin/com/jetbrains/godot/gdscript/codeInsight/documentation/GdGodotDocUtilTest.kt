@@ -149,15 +149,14 @@ class GdGodotDocUtilTest {
 
         assertTrue(parsed.contains("<pre><code>"))
         assertTrue(parsed.contains("<strong>GDScript</strong>"))
-        assertTrue(parsed.contains("<strong>C#</strong>"))
         assertTrue(parsed.contains("@tool"))
         assertTrue(parsed.contains("func _validate_property"))
         assertTrue(parsed.contains("set(value):"))
 
-        // C# attributes must stay literal text, not psi_element links.
-        assertTrue("C# [Tool] attribute must remain visible", parsed.contains("[Tool]"))
+        // C# samples are dropped entirely.
+        assertFalse("C# [Tool] attribute must not be rendered", parsed.contains("[Tool]"))
         assertFalse("C# [Tool] must not become a documentation link", parsed.contains("psi_element://Tool"))
-        assertTrue("C# [Export] attribute must remain visible", parsed.contains("[Export]"))
+        assertFalse("C# [Export] attribute must not be rendered", parsed.contains("[Export]"))
         assertFalse("C# [Export] must not become a documentation link", parsed.contains("psi_element://Export"))
 
         // Prose references outside code still linkify.
