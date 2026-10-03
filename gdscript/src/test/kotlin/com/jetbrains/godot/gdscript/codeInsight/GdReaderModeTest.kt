@@ -223,7 +223,9 @@ class GdReaderModeTest : BasePlatformTestCase() {
         assertTrue(rendered!!.contains("<pre><code>"))
         // Highlighted GDScript is split into spans, so only check token fragments.
         assertTrue(rendered.contains("_validate_property"))
-        assertTrue(rendered.contains("[Tool]"))
+        assertFalse(rendered.contains("<strong>C#</strong>"))
+        assertFalse(rendered.contains("[Tool]"))
+        assertFalse(rendered.contains("public partial class MyNode"))
         assertFalse(rendered.contains("psi_element://Tool"))
         assertFalse(rendered.contains("[method _get_property_list]"))
     }
