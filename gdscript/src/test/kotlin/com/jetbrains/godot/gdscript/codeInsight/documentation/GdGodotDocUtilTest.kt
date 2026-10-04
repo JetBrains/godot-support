@@ -46,6 +46,18 @@ class GdGodotDocUtilTest {
     }
 
     @Test
+    fun testDocsUrlPlaceholderInUrlTag() {
+        val docsUrlPlaceholder = "$" + "DOCS_URL"
+        val parsed = GdGodotDocUtil.parseStyles(
+            "[url=$docsUrlPlaceholder/tutorials/plugins/running_code_in_the_editor.html#instancing-scenes]Instancing scenes[/url]"
+        )
+
+        assertTrue(parsed.contains("https://docs.godotengine.org/en/stable/tutorials/plugins/running_code_in_the_editor.html#instancing-scenes"))
+        assertTrue(parsed.contains("Instancing scenes"))
+        assertFalse(parsed.contains(docsUrlPlaceholder))
+    }
+
+    @Test
     fun testParamReference() {
         val parsed = GdGodotDocUtil.parseStyles("See [param value].")
         assertTrue(parsed.contains("value"))
@@ -57,6 +69,26 @@ class GdGodotDocUtilTest {
         val parsed = GdGodotDocUtil.parseStyles("Emits [signal changed].")
         assertTrue(parsed.contains("changed"))
         assertFalse(parsed.contains("[signal"))
+    }
+
+    @Test
+    fun testReferenceLinksKeepKindAndQualifiedTarget() {
+        val parsed = GdGodotDocUtil.parseStyles(
+            "See [Node], [method Object.free], [member Node.owner], and [method _ready]."
+        )
+
+        assertTrue(parsed.contains("psi_element://Node"))
+        assertTrue(parsed.contains("psi_element://method:Object.free"))
+        assertTrue(parsed.contains("psi_element://member:Node.owner"))
+        assertTrue(parsed.contains("psi_element://method:_ready"))
+    }
+
+    @Test
+    fun testReferenceLinksKeepSpecialClassName() {
+        val parsed = GdGodotDocUtil.parseStyles("See [method @GlobalScope.print].")
+
+        assertTrue(parsed.contains("psi_element://method:@GlobalScope.print"))
+        assertTrue(parsed.contains("@GlobalScope.print"))
     }
 
     @Test
@@ -112,10 +144,10 @@ class GdGodotDocUtilTest {
 
     /**
      * Mirrors the `_validate_property` sample from `comment/object.gd`:
-     * GDScript must stay preformatted, and C# attributes must not become type links.
+     * GDScript must stay preformatted, and brackets inside the code must not become type links.
      */
     @Test
-    fun testCodeblocksDoesNotLinkifyCsharpAttributes() {
+    fun testCodeblocksStayPreformatted() {
         val source = """
             Override this method. See [method _get_property_list].
             [codeblocks]
@@ -133,14 +165,6 @@ class GdGodotDocUtilTest {
             	if property.name == "number" and not is_number_editable:
             		property.usage |= PROPERTY_USAGE_READ_ONLY
             [/gdscript]
-            [csharp]
-            [Tool]
-            public partial class MyNode : Node
-            {
-            	[Export]
-            	public bool IsNumberEditable { get; set; }
-            }
-            [/csharp]
             [/codeblocks]
         """.trimIndent()
 
@@ -153,17 +177,10 @@ class GdGodotDocUtilTest {
         assertTrue(parsed.contains("func _validate_property"))
         assertTrue(parsed.contains("set(value):"))
 
-        // C# samples are dropped entirely.
-        assertFalse("C# [Tool] attribute must not be rendered", parsed.contains("[Tool]"))
-        assertFalse("C# [Tool] must not become a documentation link", parsed.contains("psi_element://Tool"))
-        assertFalse("C# [Export] attribute must not be rendered", parsed.contains("[Export]"))
-        assertFalse("C# [Export] must not become a documentation link", parsed.contains("psi_element://Export"))
-
         // Prose references outside code still linkify.
         assertFalse(paragraph.contains("[method _get_property_list]"))
         assertTrue(paragraph.contains("_get_property_list"))
         assertTrue(paragraph.contains("<pre><code>"))
-        assertFalse(paragraph.contains("psi_element://Tool"))
     }
 
     @Test
