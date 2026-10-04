@@ -1,6 +1,8 @@
 package com.jetbrains.godot.gdscript.codeInsight
 
 import com.intellij.codeInsight.documentation.render.DocRenderPassFactory
+import com.intellij.codeInsight.documentation.render.PsiCommentInlineDocumentation
+import com.intellij.lang.documentation.impl.documentationTargets
 import com.intellij.psi.PsiDocCommentBase
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
@@ -155,6 +157,29 @@ class GdReaderModeTest : BasePlatformTestCase() {
         )
     }
 
+    @Test
+    fun testReaderModeCommentProvidesOwnerTargetForLinkNavigation() {
+        val file = myFixture.configureByText(
+            "readerLinks.gd",
+            """
+            class_name ReaderLinkTarget
+
+            ## See [ReaderLinkTarget] for details.
+            func documented_func():
+            \tpass
+            """.trimIndent()
+        )
+        val offset = file.text.indexOf("See [ReaderLinkTarget]")
+        assertTrue(offset >= 0)
+
+        val comment = provider.findDocComment(file, com.intellij.openapi.util.TextRange(offset, offset + 1))
+        assertNotNull(comment)
+        val inlineDocumentation = PsiCommentInlineDocumentation(comment!!)
+
+        assertNotNull(inlineDocumentation.ownerTarget)
+        assertNotNull(provider.generateRenderedDoc(comment))
+    }
+
     /**
      * A bracketed reference can also name the type used by a member (var/param/const) of the current
      * class, e.g. an inner class without a global `class_name`. Such a reference is only resolvable via
@@ -192,8 +217,89 @@ class GdReaderModeTest : BasePlatformTestCase() {
         )
     }
 
+    /**
+     * Rider resolves Reader Mode links through the documentation target at the first token after the comment.
+     */
     @Test
-    fun testGenerateRenderedDocKeepsCodeblocksFormattedAndDoesNotLinkifyCsharpAttributes() {
+    fun testDocumentationTargetAfterDocCommentIsTheDocumentedDeclaration() {
+        val file = myFixture.configureByText(
+            "fusion.gd",
+            """
+            ## Fusion manages the connection. See [FusionSpawner].
+            class_name Fusion
+            extends Node
+
+            ## See [Fusion] for details.
+            @warning_ignore("unused")
+            func annotated_func():
+            	pass
+
+            ## See [Fusion] for details.
+            func documented_func():
+            	pass
+            """.trimIndent()
+        )
+        val text = file.text
+
+        assertNotEmpty(documentationTargets(file, text.indexOf("class_name")))
+        assertNotEmpty(documentationTargets(file, text.indexOf("@warning_ignore")))
+        assertNotEmpty(documentationTargets(file, text.indexOf("func documented_func")))
+        assertEmpty(documentationTargets(file, text.indexOf("extends")))
+    }
+
+    @Test
+    fun testBracketedReferenceInDocCommentResolves() {
+        myFixture.addFileToProject("fusion_spawner.gd", "class_name FusionSpawner\nextends Node\n")
+        myFixture.configureByText(
+            "fusion.gd",
+            """
+            ## Coordinates all [Fusion<caret>Spawner] and [b]bold[/b] nodes, see [method documented_func].
+            class_name Fusion
+            extends Node
+
+            func documented_func():
+            	pass
+            """.trimIndent()
+        )
+
+        val resolved = myFixture.getReferenceAtCaretPositionWithAssertion().resolve()
+        assertNotNull(resolved)
+        assertEquals("fusion_spawner.gd", resolved!!.containingFile.name)
+
+        val references = myFixture.file.findElementAt(0)!!.references
+        assertEquals(listOf("FusionSpawner", "documented_func"), references.map { it.canonicalText })
+        assertNotNull(references[1].resolve())
+    }
+
+    @Test
+    fun testParamReferenceInDocCommentResolvesToParameter() {
+        val file = myFixture.configureByText(
+            "settings.gd",
+            """
+            ## Returns the value of the setting identified by [param name].
+            ## If [param default_value] is specified, it is returned. [param missing] is not a parameter.
+            func get_setting(name: String, default_value: Variant) -> Variant:
+            	pass
+            """.trimIndent()
+        )
+        val text = file.text
+        val secondLine = file.findElementAt(text.indexOf("If [param"))!!
+        val references = secondLine.references
+        assertEquals(listOf("default_value", "missing"), references.map { it.canonicalText })
+        val resolved = references[0].resolve()
+        assertNotNull(resolved)
+        assertEquals(text.indexOf("default_value: Variant"), resolved!!.textRange.startOffset)
+        assertNull(references[1].resolve())
+
+        // Reader Mode resolves the rendered link with the function name as the context.
+        val functionName = file.findElementAt(text.indexOf("get_setting("))!!
+        val fromReaderMode = provider.getDocumentationElementForLink(myFixture.psiManager, "param:name", functionName)
+        assertNotNull(fromReaderMode)
+        assertEquals(text.indexOf("name: String"), fromReaderMode!!.textRange.startOffset)
+    }
+
+    @Test
+    fun testGenerateRenderedDocKeepsCodeblocksFormatted() {
         val file = myFixture.configureByText(
             "validateProperty.gd",
             """
@@ -203,10 +309,6 @@ class GdReaderModeTest : BasePlatformTestCase() {
             ## func _validate_property(property: Dictionary):
             ## 	pass
             ## [/gdscript]
-            ## [csharp]
-            ## [Tool]
-            ## public partial class MyNode : Node { }
-            ## [/csharp]
             ## [/codeblocks]
             func _validate_property(property: Dictionary) -> void:
             	pass
@@ -223,10 +325,6 @@ class GdReaderModeTest : BasePlatformTestCase() {
         assertTrue(rendered!!.contains("<pre><code>"))
         // Highlighted GDScript is split into spans, so only check token fragments.
         assertTrue(rendered.contains("_validate_property"))
-        assertFalse(rendered.contains("<strong>C#</strong>"))
-        assertFalse(rendered.contains("[Tool]"))
-        assertFalse(rendered.contains("public partial class MyNode"))
-        assertFalse(rendered.contains("psi_element://Tool"))
         assertFalse(rendered.contains("[method _get_property_list]"))
     }
 

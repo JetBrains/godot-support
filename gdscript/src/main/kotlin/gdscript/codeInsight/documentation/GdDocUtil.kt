@@ -22,59 +22,63 @@ object GdDocUtil {
         return HtmlChunk.link(DocumentationManagerProtocol.PSI_ELEMENT_PROTOCOL + parsedReference, label ?: reference)
     }
 
+    fun typedElementLink(kind: String, reference: String, @NlsSafe label: String? = null): HtmlChunk {
+        return elementLink("$kind:$reference", label ?: reference)
+    }
+
     fun iconed(icon: String): MutableList<HtmlChunk> {
         return mutableListOf(
-                HtmlChunk.tag("icon").attr("src", icon),
-                HtmlChunk.nbsp(),
+            HtmlChunk.tag("icon").attr("src", icon),
+            HtmlChunk.nbsp(),
         )
     }
 
     fun listTable(key: String, lines: List<HtmlChunk>): HtmlChunk {
         if (lines.isEmpty()) return HtmlChunk.empty()
         return DocumentationMarkup.SECTIONS_TABLE.children(
-                tableHeader(key, lines.first()),
-                *lines.takeLast(lines.size - 1).map { tableLine(it) }.toTypedArray(),
+            tableHeader(key, lines.first()),
+            *lines.drop(1).map { tableLine(it) }.toTypedArray(),
         )
     }
 
     fun descriptionListTable(key: String, items: List<Pair<HtmlChunk, HtmlChunk>>): HtmlChunk {
         if (items.isEmpty()) return HtmlChunk.empty()
         return DocumentationMarkup.SECTIONS_TABLE.children(
-                tableTitle(key).wrapWith("tr"),
-                HtmlChunk.tag("tr").child(
-                        HtmlChunk.tag("td").child(
-                                HtmlChunk.ul().style("margin-top: 0;").children(
-                                        *items.map {
-                                            HtmlChunk.li().style("margin-bottom: 10px;").children(
-                                                    it.first,
-                                                    HtmlChunk.br(),
-                                                    it.second,
-                                            )
-                                        }.toTypedArray()
-                                )
-                        )
+            tableTitle(key).wrapWith("tr"),
+            HtmlChunk.tag("tr").child(
+                HtmlChunk.tag("td").child(
+                    HtmlChunk.ul().style("margin-top: 0;").children(
+                        *items.map {
+                            HtmlChunk.li().style("margin-bottom: 10px;").children(
+                                it.first,
+                                HtmlChunk.br(),
+                                it.second,
+                            )
+                        }.toTypedArray()
+                    )
                 )
+            )
         )
     }
 
     fun descriptionListsTable(key: String, items: List<Pair<HtmlChunk, List<HtmlChunk>>>): HtmlChunk {
         if (items.isEmpty()) return HtmlChunk.empty()
         return DocumentationMarkup.SECTIONS_TABLE.children(
-                tableTitle(key).wrapWith("tr"),
-                *items.map {
-                    HtmlChunk.fragment(
-                            HtmlChunk.tag("td").style("padding-left: 10px;").child(it.first).wrapWith("tr"),
-                            HtmlChunk.tag("tr").child(
-                                    HtmlChunk.tag("td").style("padding-left: 25px;").child(
-                                            HtmlChunk.ul().style("margin: 0;").children(
-                                                    *it.second.map { value ->
-                                                        HtmlChunk.li().child(value)
-                                                    }.toTypedArray()
-                                            )
-                                    )
-                            ),
-                    )
-                }.toTypedArray(),
+            tableTitle(key).wrapWith("tr"),
+            *items.map {
+                HtmlChunk.fragment(
+                    HtmlChunk.tag("td").style("padding-left: 10px;").child(it.first).wrapWith("tr"),
+                    HtmlChunk.tag("tr").child(
+                        HtmlChunk.tag("td").style("padding-left: 25px;").child(
+                            HtmlChunk.ul().style("margin: 0;").children(
+                                *it.second.map { value ->
+                                    HtmlChunk.li().child(value)
+                                }.toTypedArray()
+                            )
+                        )
+                    ),
+                )
+            }.toTypedArray(),
         )
     }
 
@@ -82,48 +86,40 @@ object GdDocUtil {
         if (lines.isEmpty()) return HtmlChunk.empty()
 
         return DocumentationMarkup.SECTIONS_TABLE.children(
-                HtmlChunk.tag("tr").children(
-                        tableTitle(key),
-                        propertyTableLine(lines.first()),
-                ),
-                *lines.takeLast(lines.size - 1).map {
-                    HtmlChunk.tag("tr").child(propertyTableLine(it, true))
-                }.toTypedArray(),
+            HtmlChunk.tag("tr").children(
+                tableTitle(key),
+                propertyTableLine(lines.first()),
+            ),
+            *lines.drop(1).map {
+                HtmlChunk.tag("tr").child(propertyTableLine(it, true))
+            }.toTypedArray(),
         )
     }
 
     fun paragraph(description: String, project: Project? = null): HtmlChunk {
         // Parse the full description first so multi-line [codeblock]/[codeblocks] stay one unit
-        // and brackets inside C#/GDScript samples are not treated as type links.
+        // and brackets inside code samples are not treated as type links.
         val parsed = GdGodotDocUtil.parseStyles(description, project)
         // Keep <pre> bodies on one logical line so per-line <br> insertion cannot break them.
         val lines = maskNewlinesInsidePre(parsed).split("\n")
-        if (lines.isEmpty()) return HtmlChunk.empty()
-
-        val blocks = mutableListOf<HtmlChunk>()
-        var i = 0
-        while (i < lines.size) {
-            val line = lines[i]
-            if (isBulletLine(line)) {
-                val items = mutableListOf<HtmlChunk>()
-                while (i < lines.size && isBulletLine(lines[i])) {
-                    items.add(HtmlChunk.tag("li").addRaw(unmaskNewlines(bulletContent(lines[i]))))
+        val blocks = buildList<HtmlChunk> {
+            var i = 0
+            while (i < lines.size) {
+                if (isBulletLine(lines[i])) {
+                    val bullets = lines.subList(i, lines.size).takeWhile(::isBulletLine)
+                    add(HtmlChunk.ul().children(bullets.map { HtmlChunk.li().addRaw(unmaskNewlines(bulletContent(it))) }))
+                    i += bullets.size
+                } else {
+                    val restored = unmaskNewlines(lines[i])
+                    val skipBreak = isStructuralBlockLine(restored) ||
+                        (i + 1 < lines.size && isStructuralBlockLine(unmaskNewlines(lines[i + 1])))
+                    add(HtmlChunk.fragment(HtmlChunk.raw(restored), if (skipBreak) HtmlChunk.empty() else HtmlChunk.br()))
                     i++
                 }
-                blocks.add(HtmlChunk.tag("ul").children(*items.toTypedArray()))
-            } else {
-                val restored = unmaskNewlines(line)
-                val skipBreak = isStructuralBlockLine(restored) ||
-                    (i + 1 < lines.size && isStructuralBlockLine(unmaskNewlines(lines[i + 1])))
-                blocks.add(HtmlChunk.fragment(
-                        HtmlChunk.raw(restored),
-                        if (skipBreak) HtmlChunk.empty() else HtmlChunk.br(),
-                ))
-                i++
             }
         }
 
-        return HtmlChunk.p().style("padding: 5px 10px 0 10px;").children(*blocks.toTypedArray())
+        return HtmlChunk.p().style("padding: 5px 10px 0 10px;").children(blocks)
     }
 
     private const val PRE_NEWLINE_MASK = '\uE002'
@@ -164,8 +160,8 @@ object GdDocUtil {
     fun appendDescription(description: String?): HtmlChunk {
         if (description.isNullOrBlank()) return HtmlChunk.empty()
         return HtmlChunk.fragment(
-                HtmlChunk.br(),
-                DocumentationMarkup.GRAYED_ELEMENT.addRaw(GdGodotDocUtil.parseStyles(description)),
+            HtmlChunk.br(),
+            DocumentationMarkup.GRAYED_ELEMENT.addRaw(GdGodotDocUtil.parseStyles(description)),
         )
     }
 
@@ -179,8 +175,8 @@ object GdDocUtil {
 
     private fun tableHeader(header: String, items: List<HtmlChunk>): HtmlChunk {
         return HtmlChunk.tag("tr").children(
-                tableTitle(header),
-                *items.map { DocumentationMarkup.SECTION_CONTENT_CELL.child(it) }.toTypedArray(),
+            tableTitle(header),
+            *items.map { DocumentationMarkup.SECTION_CONTENT_CELL.child(it) }.toTypedArray(),
         )
     }
 
@@ -190,8 +186,8 @@ object GdDocUtil {
 
     private fun tableLine(items: List<HtmlChunk>): HtmlChunk {
         return HtmlChunk.tag("tr").children(
-                DocumentationMarkup.SECTION_CONTENT_CELL,
-                *items.map { DocumentationMarkup.SECTION_CONTENT_CELL.child(it) }.toTypedArray(),
+            DocumentationMarkup.SECTION_CONTENT_CELL,
+            *items.map { DocumentationMarkup.SECTION_CONTENT_CELL.child(it) }.toTypedArray(),
         )
     }
 
@@ -202,10 +198,10 @@ object GdDocUtil {
 
     private fun propertyTableLine(value: Pair<HtmlChunk, HtmlChunk>, withEmptyCell: Boolean = false): HtmlChunk {
         return HtmlChunk.fragment(
-                if (withEmptyCell) HtmlChunk.tag("td") else HtmlChunk.empty(),
-                DocumentationMarkup.SECTION_CONTENT_CELL.attr("align", "right").style("padding-right: 10px;")
-                        .child(value.first),
-                DocumentationMarkup.SECTION_CONTENT_CELL.child(value.second),
+            if (withEmptyCell) HtmlChunk.tag("td") else HtmlChunk.empty(),
+            DocumentationMarkup.SECTION_CONTENT_CELL.attr("align", "right").style("padding-right: 10px;")
+                .child(value.first),
+            DocumentationMarkup.SECTION_CONTENT_CELL.child(value.second),
         )
     }
 

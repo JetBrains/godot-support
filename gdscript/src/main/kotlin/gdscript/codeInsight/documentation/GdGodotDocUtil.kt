@@ -8,25 +8,30 @@ import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.openapi.util.text.StringUtil
 
 object GdGodotDocUtil {
+    private const val DOCS_BASE_URL = "https://docs.godotengine.org/en/stable"
+    private const val DOCS_URL_PLACEHOLDER = $$"$DOCS_URL"
 
-    private val dynamicReference = "\\[(member|constant|method|enum|param|signal|theme_item) (.+?)]".toRegex()
+    private val dynamicReference = "\\[(member|constant|method|enum|param|signal|theme_item|annotation) (.+?)]".toRegex()
     private val freeReference = "\\[(.+?)]".toRegex()
     private val colorTag = "\\[color=(.+?)](.*?)\\[/color]".toRegex()
     private val urlWithHrefTag = "\\[url=(.+?)](.*?)\\[/url]".toRegex()
     private val urlPlainTag = "\\[url](.*?)\\[/url]".toRegex()
+    private val imgTag = "\\[img(?:\\s[^]]*)?](.*?)\\[/img]".toRegex()
+    private val resourceCodeTag = "\\[code](res://[^\\[]*?)\\[/code]".toRegex()
     private val inlineCodeTag = "(?s)\\[code](.*?)\\[/code]".toRegex()
     private val codeBlocksTag = "(?s)\\[codeblocks](.*?)\\[/codeblocks]".toRegex()
     private val codeBlockTag = "(?s)\\[codeblock(?:\\s[^]]*)?](.*?)\\[/codeblock]".toRegex()
     private val languageBlockTag = "(?s)\\[gdscript](.*?)\\[/gdscript]".toRegex()
-    private val csharpBlockTag = "(?s)\\[csharp].*?\\[/csharp]".toRegex()
 
-    private val DEFINITION_START = "</p>${DocumentationMarkup.DEFINITION_START}"
-    private val DEFINITION_END = "${DocumentationMarkup.DEFINITION_END}<p style=\"padding: 5px 10px 0 10px;\">"
+    private const val DEFINITION_START = "</p>${DocumentationMarkup.DEFINITION_START}"
+    private const val DEFINITION_END = "${DocumentationMarkup.DEFINITION_END}<p style=\"padding: 5px 10px 0 10px;\">"
 
     private const val PLACEHOLDER_PREFIX = "\uE000GDCODE"
     private const val PLACEHOLDER_SUFFIX = "\uE001"
 
-    @JvmOverloads
+    @NlsSafe
+    fun expandDocsUrl(url: String): String = url.replace(DOCS_URL_PLACEHOLDER, DOCS_BASE_URL)
+
     @NlsSafe
     fun parseStyles(text: String, project: Project? = null): String {
         val protected = ArrayList<String>()
@@ -52,41 +57,37 @@ object GdGodotDocUtil {
 
         // [url=href]label[/url] and [url]plain-url[/url]
         parsed = urlWithHrefTag.replace(parsed) { match ->
-            HtmlChunk.link(match.groupValues[1], match.groupValues[2]).toString()
+            HtmlChunk.link(expandDocsUrl(match.groupValues[1]), match.groupValues[2]).toString()
         }
         parsed = urlPlainTag.replace(parsed) { match ->
-            HtmlChunk.link(match.groupValues[1], match.groupValues[1]).toString()
+            val url = expandDocsUrl(match.groupValues[1])
+            HtmlChunk.link(url, url).toString()
         }
 
         // Replace specific references [member|constant|method|enum|param|signal|theme_item _name]
-        dynamicReference.findAll(parsed).forEach matched@{ match ->
-            val referenced = match.groups[2]?.value ?: return@matched
-            val link = GdDocUtil.elementLink(
-                referenced.split(".").last(),
-                referenced.replace("@", "_"),
-            )
-            parsed = parsed.replace(match.groups[0]?.value!!, link.toString())
+        parsed = dynamicReference.replace(parsed) { match ->
+            val kind = match.groupValues[1]
+            val referenced = match.groupValues[2]
+            val link = GdDocUtil.typedElementLink(kind, referenced)
+            link.toString()
         }
 
         // Try to replace unspecified references like [Object] or [Node]
-        freeReference.findAll(parsed).forEach matched@{ match ->
-            val full = match.groups[0]?.value ?: return@matched
+        parsed = freeReference.replace(parsed) { match ->
+            val full = match.value
             // Skip placeholders and already-produced HTML tags.
-            if (full.contains(PLACEHOLDER_PREFIX) || full.startsWith("[/")) return@matched
-            val value = match.groups[1]?.value?.replace("@", "_") ?: return@matched
-            if (value.contains('<') || value.contains('>')) return@matched
+            if (full.contains(PLACEHOLDER_PREFIX) || full.startsWith("[/")) return@replace full
+            val value = match.groupValues[1]
+            if (value.contains('<') || value.contains('>')) return@replace full
             val link = GdDocUtil.elementLink(value)
-            parsed = parsed.replace(full, link.toString())
+            link.toString()
         }
 
         return restorePlaceholders(parsed, protected)
     }
 
     private fun protectCodeRegions(text: String, project: Project?, protected: MutableList<String>): String {
-        // Drop C# samples; keep GDScript and unlabeled code blocks.
-        var result = csharpBlockTag.replace(text, "")
-
-        result = codeBlocksTag.replace(result) { match ->
+        var result = codeBlocksTag.replace(text) { match ->
             placeholder(renderCodeBlocks(match.groupValues[1], project), protected)
         }
         result = codeBlockTag.replace(result) { match ->
@@ -96,13 +97,22 @@ object GdGodotDocUtil {
         result = languageBlockTag.replace(result) { match ->
             placeholder(renderPreBlock(match.groupValues[1], "GDScript", project, "gdscript"), protected)
         }
+        // [img]res://path[/img] and [code]res://path[/code] become links to the resource.
+        result = imgTag.replace(result) { match ->
+            val path = match.groupValues[1].trim()
+            if (path.startsWith("res://")) placeholder(GdDocUtil.elementLink(path).toString(), protected) else match.value
+        }
+        result = resourceCodeTag.replace(result) { match ->
+            val path = match.groupValues[1].trim()
+            placeholder(GdDocUtil.elementLink(path).toString(), protected)
+        }
         result = inlineCodeTag.replace(result) { match ->
             val code = match.groupValues[1]
             val rendered = if (project != null) {
                 QuickDocHighlightingHelper.getStyledInlineCode(project, language = null, code = code)
             }
             else {
-                "<code>${escapeCode(code)}</code>"
+                "<code>${StringUtil.escapeXmlEntities(code)}</code>"
             }
             placeholder(rendered, protected)
         }
@@ -130,7 +140,7 @@ object GdGodotDocUtil {
             )
         }
         else {
-            "<pre><code>${escapeCode(normalized)}</code></pre>"
+            "<pre><code>${StringUtil.escapeXmlEntities(normalized)}</code></pre>"
         }
 
         val header = if (label != null) "<strong>$label</strong>" else ""
@@ -138,26 +148,8 @@ object GdGodotDocUtil {
     }
 
     private fun normalizeCode(code: String): String {
-        val lines = code.replace("\r\n", "\n").replace('\r', '\n').split('\n')
-        // Drop a single leading/trailing empty line introduced by BBCode layout.
-        val trimmedEnds = lines
-            .dropWhile { it.isEmpty() }
-            .dropLastWhile { it.isEmpty() }
-        if (trimmedEnds.isEmpty()) return ""
-
-        val minIndent = trimmedEnds
-            .filter { it.isNotBlank() }
-            .minOfOrNull { line -> line.indexOfFirst { !it.isWhitespace() }.let { if (it < 0) line.length else it } }
-            ?: 0
-
-        return trimmedEnds.joinToString("\n") { line ->
-            if (line.isBlank()) ""
-            else if (minIndent > 0 && line.length >= minIndent) line.substring(minIndent)
-            else line
-        }
+        return code.replace("\r\n", "\n").trimIndent()
     }
-
-    private fun escapeCode(code: String): String = StringUtil.escapeXmlEntities(code)
 
     private fun placeholder(html: String, protected: MutableList<String>): String {
         val index = protected.size
@@ -166,11 +158,10 @@ object GdGodotDocUtil {
     }
 
     private fun restorePlaceholders(text: String, protected: List<String>): String {
-        var result = text
-        protected.indices.reversed().forEach { index ->
-            result = result.replace("$PLACEHOLDER_PREFIX$index$PLACEHOLDER_SUFFIX", protected[index])
+        val placeholder = "\uE000GDCODE(\\d+)\uE001".toRegex()
+        return placeholder.replace(text) { match ->
+            protected.getOrNull(match.groupValues[1].toInt()) ?: match.value
         }
-        return result
     }
 
 }

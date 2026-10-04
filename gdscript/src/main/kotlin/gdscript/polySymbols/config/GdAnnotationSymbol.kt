@@ -2,9 +2,10 @@ package gdscript.polySymbols.config
 
 import com.intellij.model.Pointer
 import com.intellij.openapi.project.Project
-import com.intellij.platform.backend.navigation.NavigationTarget
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.PolySymbolKind
+import com.intellij.psi.PsiElement
+import gdscript.codeInsight.documentation.GdAnnotationAnchors
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.completion.GdPolySymbolPriorities
 import gdscript.polySymbols.completion.toCompletionParamHint
@@ -26,6 +27,7 @@ class GdAnnotationSymbol(
 
     override fun createPointer(): Pointer<out GdAnnotationSymbol> = Pointer.hardPointer(this)
 
-    override fun getNavigationTargets(project: Project): Collection<NavigationTarget> = emptyList()
+    /** GDScript has no syntax to declare an annotation, so the target is the `# @name` anchor comment in the generated `@GDScript` file. */
+    override fun syntheticSourceElement(project: Project): PsiElement? = GdAnnotationAnchors.find(project, name)
 }
 

@@ -228,10 +228,14 @@ object GdDocFactory {
             .withOwner(element)
             .withPreview(annotationPreview(declaration) + declaration.preview())
 
+        val documented: GdDocumented = (element.parent as? GdEnumValue)
+            ?.takeIf { fullDoc && it.description().isNotBlank() || !fullDoc && it.brief().isNotBlank() }
+            ?: declaration
+
         if (fullDoc) {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.description()))
+            builder.addBodyBlock(GdDocUtil.paragraph(documented.description()))
         } else {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.brief()))
+            builder.addBodyBlock(GdDocUtil.paragraph(documented.brief()))
         }
 
         return builder.toString()
