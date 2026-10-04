@@ -170,6 +170,9 @@ class GdSdkXmlParserTest : BasePlatformTestCase() {
         val warningIgnoreAnnotation = annotations.find { it.name == "warning_ignore" }
         assertNotNull(warningIgnoreAnnotation)
         assertTrue(warningIgnoreAnnotation!!.isVariadic)
+
+        // parseClass keeps the annotations for the generated file
+        assertEquals(annotations, clazz.annotations)
     }
 
     @Test

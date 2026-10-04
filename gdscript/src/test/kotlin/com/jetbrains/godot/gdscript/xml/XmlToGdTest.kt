@@ -1,5 +1,7 @@
 package com.jetbrains.godot.gdscript.xml
 
+import com.intellij.psi.PsiErrorElement
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.polySymbols.sdk.xml.GdSdkData
@@ -75,6 +77,70 @@ class XmlToGdTest : BasePlatformTestCase() {
                 "## [/codeblocks]\n\n",
             actual,
         )
+    }
+
+    @Test
+    fun testCsharpCodeBlocksAreOmitted() {
+        val classData = classData(
+            "Description.\n" +
+                "[codeblocks]\n" +
+                "[gdscript]\n" +
+                "print(\"GDScript\")\n" +
+                "[/gdscript]\n" +
+                "[csharp]\n" +
+                "GD.Print(\"C#\")\n" +
+                "[/csharp]\n" +
+                "[/codeblocks]"
+        )
+
+        val actual = converter.convert(classData)
+
+        assertEquals(
+            "class_name Example\n\n" +
+                "## Description.\n" +
+                "## [codeblocks]\n" +
+                "## [gdscript]\n" +
+                "## print(\"GDScript\")\n" +
+                "## [/gdscript]\n" +
+                "## [/codeblocks]\n\n",
+            actual,
+        )
+    }
+
+    @Test
+    fun testAnnotationsAreWrittenAsCommentAnchors() {
+        val float = GdSdkData.TypeData("float")
+        val classData = classData("Description.").copy(
+            annotations = listOf(
+                GdSdkData.AnnotationData("export", "Marks a property as exported.", isVariadic = false, parameters = emptyList()),
+                GdSdkData.AnnotationData(
+                    "export_range",
+                    "Exports a range. See [annotation @export].",
+                    isVariadic = true,
+                    parameters = listOf(
+                        GdSdkData.ParameterData("min", float),
+                        GdSdkData.ParameterData("step", float, "1.0"),
+                        GdSdkData.ParameterData("extra_hints", GdSdkData.TypeData("String"), "\"\""),
+                    ),
+                ),
+            )
+        )
+
+        val actual = converter.convert(classData)
+
+        assertEquals(
+            "class_name Example\n\n" +
+                "## Description.\n\n" +
+                "\n#region Annotations\n\n" +
+                "## Marks a property as exported.\n" +
+                "# @export\n\n" +
+                "## Exports a range. See [annotation @export].\n" +
+                "# @export_range(min: float, step: float = 1.0, ...extra_hints: String)\n\n" +
+                "#endregion Annotations\n\n",
+            actual,
+        )
+        val file = myFixture.configureByText("Example.gd", actual)
+        assertNull(PsiTreeUtil.findChildOfType(file, PsiErrorElement::class.java))
     }
 
     private fun classData(description: String): GdSdkData.ClassData = GdSdkData.ClassData(

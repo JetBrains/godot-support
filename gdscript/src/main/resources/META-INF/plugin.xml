@@ -175,6 +175,7 @@
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdMethodParamCompletion"/>
     <psi.referenceContributor language="GdScript" implementation="gdscript.reference.GdResourceReferenceContributor"/>
     <psi.referenceContributor language="GdScript" implementation="gdscript.reference.GdNodePathReferenceContributor"/>
+    <psi.referenceContributor language="GdScript" implementation="gdscript.reference.GdDocCommentReferenceContributor"/>
     <!-- Tscn, Project, Config -->
     <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceReferenceContributor"/>
     <lang.elementManipulator forClass="tscn.psi.TscnNamedElement"

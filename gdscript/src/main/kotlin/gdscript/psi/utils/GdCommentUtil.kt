@@ -30,70 +30,37 @@ object GdCommentUtil {
     @NonNls const val DEPRECATED: String = "deprecated"
     @NonNls const val EXPERIMENTAL: String = "experimental"
 
-    fun brief(element: PsiElement): String {
-        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
-            val stub = element.stub
-            if (stub != null && stub is GdDocumented) return stub.brief()
-        }
+    private val TAG_PREFIXES = listOf(
+        "$BRIEF_DESCRIPTION:", "$DESCRIPTION:", "$PARAMETER:", TUTORIAL, "$ENUM:", "$RETURN:", DEPRECATED, EXPERIMENTAL,
+    )
 
-        val model = collectComments(element)
-        return model.brief.ifEmpty { model.description }
+    private inline fun <T> fromStub(element: PsiElement, get: (GdDocumented) -> T): T? {
+        if (element !is StubBasedPsiElement<*> || element !is GdDocumented) return null
+        return (element.stub as? GdDocumented)?.let(get)
     }
 
-    fun description(element: PsiElement): String {
-        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
-            val stub = element.stub
-            if (stub != null && stub is GdDocumented) return stub.description()
-        }
+    fun brief(element: PsiElement): String =
+        fromStub(element) { it.brief() }
+            ?: collectComments(element).let { it.brief.ifEmpty { it.description } }
 
-        val model = collectComments(element)
-        return model.description
-    }
+    fun description(element: PsiElement): String =
+        fromStub(element) { it.description() } ?: collectComments(element).description
 
-    fun tutorials(element: PsiElement): List<GdTutorial> {
-        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
-            val stub = element.stub
-            if (stub != null && stub is GdDocumented) return stub.tutorials()
-        }
+    fun tutorials(element: PsiElement): List<GdTutorial> =
+        fromStub(element) { it.tutorials() } ?: collectComments(element).tutorials
 
-        val model = collectComments(element)
-        return model.tutorials
-    }
+    fun isDeprecated(element: PsiElement): Boolean =
+        fromStub(element) { it.isDeprecated() } ?: collectComments(element).isDeprecated
 
-    fun isDeprecated(element: PsiElement): Boolean {
-        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
-            val stub = element.stub
-            if (stub != null && stub is GdDocumented) return stub.isDeprecated()
-        }
-
-        val model = collectComments(element)
-        return model.isDeprecated
-    }
-
-    fun isExperimental(element: PsiElement): Boolean {
-        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
-            val stub = element.stub
-            if (stub != null && stub is GdDocumented) return stub.isExperimental()
-        }
-
-        val model = collectComments(element)
-        return model.isExperimental
-    }
+    fun isExperimental(element: PsiElement): Boolean =
+        fromStub(element) { it.isExperimental() } ?: collectComments(element).isExperimental
 
     private fun startsWithTag(line: String): Boolean {
         val text = line.trimStart()
         if (!text.startsWith("@"))
             return false
         val tag = text.removePrefix("@")
-        return (tag.startsWith(BRIEF_DESCRIPTION.plus(":"))
-            || tag.startsWith(DESCRIPTION.plus(":"))
-            || tag.startsWith(PARAMETER.plus(":"))
-            || tag.startsWith(TUTORIAL)
-            || tag.startsWith(ENUM.plus(":"))
-            || tag.startsWith(RETURN.plus(":"))
-            || tag.startsWith(DEPRECATED)
-            || tag.startsWith(EXPERIMENTAL)
-            )
+        return TAG_PREFIXES.any { tag.startsWith(it) }
     }
 
     /**
@@ -195,38 +162,38 @@ object GdCommentUtil {
         comments.forEach {
             if (startsWithTag(it)) {
                 val text = it.trimStart().removePrefix("@")
-                if (text.startsWith(BRIEF_DESCRIPTION)) {
-                    val content = text.removePrefix(BRIEF_DESCRIPTION.plus(":")).trim()
-                    if (content.isNotEmpty()) {
-                        brief.add(content)
-                        description.add(content)
+                when {
+                    text.startsWith(BRIEF_DESCRIPTION) -> {
+                        val content = text.removePrefix("$BRIEF_DESCRIPTION:").trim()
+                        if (content.isNotEmpty()) {
+                            brief.add(content)
+                            description.add(content)
+                        }
                     }
-                } else if (text.startsWith(DESCRIPTION)) {
-                    val content = text.removePrefix(DESCRIPTION.plus(":")).trim()
-                    if (content.isNotEmpty()) {
-                        description.add(content)
+                    text.startsWith(DESCRIPTION) -> {
+                        val content = text.removePrefix("$DESCRIPTION:").trim()
+                        if (content.isNotEmpty()) description.add(content)
                     }
-                } else if (text.startsWith(PARAMETER)) {
-                    description.add(it)
-                } else if (text.startsWith(ENUM)) {
-                    description.add(it)
-                } else if (text.startsWith(RETURN)) {
-                    description.add(it)
-                } else if (text.startsWith(DEPRECATED)) {
-                    model.isDeprecated = true
-                    description.add(it)
-                } else if (text.startsWith(EXPERIMENTAL)) {
-                    model.isExperimental = true
-                    description.add(it)
-                } else if (text.startsWith(TUTORIAL)) {
-                    val groups = TUTORIAL_REGEX.find(it.trimStart())?.groups
-                    val tutorial = GdTutorial()
-                    if (groups?.get(2) != null) {
-                        tutorial.url = groups[2]!!.value
-                        tutorial.name = groups[1]?.value ?: groups[2]!!.value
-                        model.tutorials.add(tutorial)
+                    text.startsWith(PARAMETER) || text.startsWith(ENUM) || text.startsWith(RETURN) -> description.add(it)
+                    text.startsWith(DEPRECATED) -> {
+                        model.isDeprecated = true
+                        description.add(it)
                     }
-                    description.add(it)
+                    text.startsWith(EXPERIMENTAL) -> {
+                        model.isExperimental = true
+                        description.add(it)
+                    }
+                    text.startsWith(TUTORIAL) -> {
+                        val groups = TUTORIAL_REGEX.find(it.trimStart())?.groups
+                        val url = groups?.get(2)?.value
+                        if (url != null) {
+                            model.tutorials.add(GdTutorial().apply {
+                                this.url = url
+                                name = groups[1]?.value ?: url
+                            })
+                        }
+                        description.add(it)
+                    }
                 }
 
                 isBrief = false

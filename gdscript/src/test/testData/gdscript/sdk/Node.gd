@@ -532,14 +532,6 @@ func _unhandled_key_input(event: InputEvent) -> void:
 ## child_node.get_parent().remove_child(child_node)
 ## add_child(child_node)
 ## [/gdscript]
-## [csharp]
-## Node childNode = GetChild(0);
-## if (childNode.GetParent() != null)
-## {
-## childNode.GetParent().RemoveChild(childNode);
-## }
-## AddChild(childNode);
-## [/csharp]
 ## [/codeblocks]
 ## If you need the child node to be added below a specific node in the list of children, use [method add_sibling] instead of this method.
 ## [b]Note:[/b] If you want a child to be persisted to a [PackedScene], you must set [member owner] in addition to calling [method add_child]. This is typically relevant for [url=$DOCS_URL/tutorials/plugins/running_code_in_the_editor.html]tool scripts[/url] and [url=$DOCS_URL/tutorials/plugins/editor/index.html]editor plugins[/url]. If [method add_child] is called without setting [member owner], the newly added [Node] will not be visible in the scene tree, though it will be visible in the 2D/3D view.
@@ -600,9 +592,6 @@ func can_process() -> bool:
 ## [gdscript]
 ## get_tree().create_tween().bind_node(self)
 ## [/gdscript]
-## [csharp]
-## GetTree().CreateTween().BindNode(this);
-## [/csharp]
 ## [/codeblocks]
 ## The Tween will start automatically on the next process frame or physics frame (depending on [enum Tween.TweenProcessMode]). See [method Tween.bind_node] for more info on Tweens bound to nodes.
 ## [b]Note:[/b] The method can still be used when the node is not inside [SceneTree]. It can fail in an unlikely case of using a custom [MainLoop].
@@ -672,15 +661,6 @@ func get_children(include_internal: bool) -> Array[Node]:
 ## if not str(group).begins_with("_"):
 ## non_internal_groups.push_back(group)
 ## [/gdscript]
-## [csharp]
-## // Stores the node's non-internal groups only (as a List of StringNames).
-## List<string> nonInternalGroups = new List<string>();
-## foreach (string group in GetGroups())
-## {
-## if (!group.BeginsWith("_"))
-## nonInternalGroups.Add(group);
-## }
-## [/csharp]
 ## [/codeblocks]
 func get_groups() -> Array[StringName]:
 	pass
@@ -721,12 +701,6 @@ func get_multiplayer_authority() -> int:
 ## get_node("../Swamp/Alligator")
 ## get_node("/root/MyGame")
 ## [/gdscript]
-## [csharp]
-## GetNode("Sword");
-## GetNode("Backpack/Dagger");
-## GetNode("../Swamp/Alligator");
-## GetNode("/root/MyGame");
-## [/csharp]
 ## [/codeblocks]
 func get_node(path: NodePath) -> Node:
 	pass
@@ -753,22 +727,6 @@ func get_node(path: NodePath) -> Node:
 ## print(c[1].get_class()) # Prints AtlasTexture
 ## print(c[2])             # Prints ^":region"
 ## [/gdscript]
-## [csharp]
-## var a = GetNodeAndResource(NodePath("Area2D/Sprite2D"));
-## GD.Print(a[0].Name); // Prints Sprite2D
-## GD.Print(a[1]);      // Prints <null>
-## GD.Print(a[2]);      // Prints ^"
-##
-## var b = GetNodeAndResource(NodePath("Area2D/Sprite2D:texture:atlas"));
-## GD.Print(b[0].name);        // Prints Sprite2D
-## GD.Print(b[1].get_class()); // Prints AtlasTexture
-## GD.Print(b[2]);             // Prints ^""
-##
-## var c = GetNodeAndResource(NodePath("Area2D/Sprite2D:texture:atlas:region"));
-## GD.Print(c[0].name);        // Prints Sprite2D
-## GD.Print(c[1].get_class()); // Prints AtlasTexture
-## GD.Print(c[2]);             // Prints ^":region"
-## [/csharp]
 ## [/codeblocks]
 func get_node_and_resource(path: NodePath) -> Array:
 	pass

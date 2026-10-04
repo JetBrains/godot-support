@@ -4,6 +4,7 @@ import com.intellij.diagnostic.rethrowControlFlowException
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.vfs.InvalidVirtualFileAccessException
 import com.intellij.openapi.vfs.VirtualFile
+import gdscript.codeInsight.documentation.GdGodotDocUtil
 import gdscript.embeddedDocs.newHardenedDocumentBuilderFactory
 import gdscript.model.GdTutorial
 import org.w3c.dom.Element
@@ -158,6 +159,7 @@ object GdSdkXmlParser {
             tutorials = parseTutorials(root),
             isDeprecated = getIsDeprecated(root),
             isExperimental = getIsExperimental(root),
+            annotations = parseAnnotations(root),
         )
     }
 
@@ -377,7 +379,7 @@ object GdSdkXmlParser {
             tutorials.add(
                 GdTutorial(
                     name = getTitle(node),
-                    url = getTextContent(node).replace("\$DOCS_URL", "https://docs.godotengine.org/en/stable"),
+                    url = GdGodotDocUtil.expandDocsUrl(getTextContent(node)),
                 )
             )
         }
