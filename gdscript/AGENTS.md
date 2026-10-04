@@ -1,36 +1,33 @@
-Project-specific development guidelines for gdscript module (JetBrains Godot plugin)
+Development guidelines for the gdscript module (JetBrains Godot plugin).
 
-This document captures practical, project-specific knowledge to help contributors and AI agents build, test, and extend the GDScript plugin efficiently.
+## Environment Check
 
-In the monorepo read `../AGENTS.md` first. It holds the build targets, the test commands and the plugin architecture. This file covers only the standalone Gradle build, the lexer, and the test location. The plugin is standalone when no `tests.cmd` exists at the workspace root.
+Read `../AGENTS.md` section `2. Bazel vs Gradle` first.
+Before you run a build or test command, check the repository environment:
+- Bazel. Follow Section 1 and Section 2.
+- Gradle. Follow Section 3.
 
-## 1. Build and configuration (standalone)
+---
 
-Prerequisites
-- Gradle: use the included Gradle wrapper (`./gradlew`).
+## 1. Monorepo: Build and test
 
-IntelliJ Platform and SDK preparation
-- `build.gradle.kts` uses the IntelliJ Platform Gradle plugin to resolve IDEA Community and JetBrains Runtime. No manual setup is required for those.
+To compile only:
 
-Common tasks
-- Build (verifies sources compile and prepares the plugin):
-  - `./gradlew build`
-- Run the plugin in a sandboxed IDE (IntelliJ IDEA Community):
-  - `./gradlew runIde`
-  - Notes: `runIde` is configured with `-Xmx1500m` in gradle; adjust via Gradle property if needed.
-- Clean:
-  - `./gradlew clean`
-
-Notes about code generation and sources
-- Generated PSI/Parser sources are placed under `src/main/gen` and are registered as a source root (see `sourceSets` in `build.gradle.kts`).
+```
+./bazel.cmd build //dotnet/Plugins:rider-plugins-godot //dotnet/Plugins:rider-plugins-godot-gdscript
+```
+- Test commands: run `./tests.cmd`. See the Platform instructions.
+- Test location: `src/test/kotlin`.
+- Generated PSI and parser sources sit under `src/main/gen`.
 
 ## 2. Lexer and Parser (GDScript)
 
 Instructions are in the `Gd.flex` file.
+See also `GdHighlight.flex`.
 
 ### Regenerating the lexer
 
-When working in the IntelliJ Ultimate monorepo, after editing `Gd.flex`, regenerate the Java lexer using:
+After you edit `Gd.flex`, regenerate the Java lexer from the workspace root:
 
 ```
 "<JBR_HOME>/bin/java" -Xmx512m \
@@ -41,32 +38,38 @@ When working in the IntelliJ Ultimate monorepo, after editing `Gd.flex`, regener
   dotnet/Plugins/godot-support/gdscript/src/main/kotlin/gdscript/Gd.flex
 ```
 
-The generated file is `src/main/gen/gdscript/GdLexer.java` and must be committed alongside changes to `Gd.flex`.
+The generated file is `src/main/gen/gdscript/GdLexer.java`. Commit it together with the changes to `Gd.flex`.
 
-If the `jflex-1.9.2.jar` is not present, run the IDE action "Generate JFlex Lexer" from the `Gd.flex` file context menu.
+If `jflex-1.9.2.jar` is not present, run the IDE action "Generate JFlex Lexer" from the `Gd.flex` file context menu.
 
-## 3. Testing: running, configuring, and adding tests (standalone)
+---
 
-Test frameworks and configuration
-- Tests are run on JUnit Platform
+## 3. Gradle repository: Gradle build and test
 
-Run all tests
-- `./gradlew test`
+Use these instructions only when the root of workspace directly contains folders `rider`, `gdscript`
 
-Run a specific test class or method is slower, prefer running all tests at once
-- Single class:
-  - `./gradlew test --tests "com.jetbrains.godot.gdscript.formatter.GdFormattingTest"`
-- Single method:
-  - `./gradlew test --tests "com.jetbrains.godot.gdscript.formatter.GdFormattingTest.testLambdaInConnectIndent"`
+### Build and configuration
 
-IDE test execution
-- You can run tests from IntelliJ IDEA using Gradle run configurations. Ensure Gradle JDK is set to 21, and "Delegate IDE build/run to Gradle" is enabled for consistent behavior.
+- Gradle: use the included Gradle wrapper (`./gradlew`).
+- Build: `./gradlew build`
+- Run the plugin in a sandboxed IDE: `./gradlew runIde`
+- Clean: `./gradlew clean`
 
-### Adding new tests
+### Testing
 
-- Location: `src/test/kotlin`. This holds for both scenarios.
+Tests run on the JUnit Platform.
+
+- All tests: `./gradlew test`
+- Single test class: `./gradlew test --tests "com.jetbrains.godot.gdscript.formatter.GdFormattingTest"`
+- Single test method: `./gradlew test --tests "com.jetbrains.godot.gdscript.formatter.GdFormattingTest.testLambdaInConnectIndent"`
+
+### IDE test execution
+
+Run the tests from IntelliJ IDEA with Gradle run configurations. Set the Gradle JDK to 21 and enable "Delegate IDE build/run to Gradle".
+
+---
 
 ## 4. Additional development information
 
-Contact points
-- Start from `README.md` for plugin overview and links to features, changelog, and marketplace. For Grammar-Kit or PSI concerns, consult IntelliJ Platform SDK docs.
+- Start from `README.md` for the plugin overview and the links to features, changelog, and marketplace.
+- For Grammar-Kit or PSI concerns, read the IntelliJ Platform SDK docs.
