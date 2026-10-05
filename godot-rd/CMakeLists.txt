@@ -11,8 +11,17 @@ include(FetchContent)
 
 # --- Dependencies ---------------------------------------------------------
 
-# Bazel is the authoritative build, so the dependencies are declared once as `http_archive`s in
-# godot-rd.MODULE.bazel and this build only mirrors them.
+# Bazel is the authoritative build, so the dependencies are declared once in godot-rd.MODULE.bazel
+# (`http_archive`) and rd_cpp_repository.bzl (rd-cpp and its spdlog submodule) and this build only
+# mirrors them.
+function(godot_rd_bzl_variable file variable result_variable)
+    file(READ "${CMAKE_CURRENT_LIST_DIR}/${file}" CONTENT)
+    if (NOT CONTENT MATCHES "(^|\n)${variable} = \"([^\"]+)\"")
+        message(FATAL_ERROR "no ${variable} assignment in ${file}")
+    endif ()
+    set(${result_variable} "${CMAKE_MATCH_2}" PARENT_SCOPE)
+endfunction()
+
 function(godot_rd_dependency repo url_variable sha256_variable)
     set(MODULE_BAZEL_FILE "${CMAKE_CURRENT_LIST_DIR}/godot-rd.MODULE.bazel")
     file(READ "${MODULE_BAZEL_FILE}" MODULE_BAZEL)
@@ -31,7 +40,10 @@ function(godot_rd_dependency repo url_variable sha256_variable)
 endfunction()
 
 godot_rd_dependency(godot_cpp GCPP_URL GCPP_SHA)
-godot_rd_dependency(rd_cpp RD_URL RD_SHA)
+godot_rd_bzl_variable(rd_cpp_repository.bzl RD_URL RD_URL)
+godot_rd_bzl_variable(rd_cpp_repository.bzl RD_SHA256 RD_SHA)
+godot_rd_bzl_variable(rd_cpp_repository.bzl SPDLOG_URL SPDLOG_URL)
+godot_rd_bzl_variable(rd_cpp_repository.bzl SPDLOG_SHA256 SPDLOG_SHA)
 
 # `SYSTEM` keeps the warnings of the two dependencies out of the build of this extension.
 fetchcontent_declare(godot_cpp
@@ -40,12 +52,12 @@ fetchcontent_declare(godot_cpp
         SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/thirdParty/godot-cpp
         SYSTEM
 )
-fetchcontent_declare(rd_cpp
-        URL ${RD_URL}
-        URL_HASH SHA256=${RD_SHA}
-        SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/thirdParty/rd-cpp
-        SOURCE_SUBDIR rd-cpp
-        SYSTEM
+# rd-cpp expects spdlog as a git submodule, which the GitHub archive of rd lacks.
+fetchcontent_declare(rd_cpp_spdlog
+        URL ${SPDLOG_URL}
+        URL_HASH SHA256=${SPDLOG_SHA}
+        # rd-cpp adds spdlog itself, so it is only downloaded here.
+        SOURCE_SUBDIR no-cmake-project
 )
 
 # Keep the Godot API version shared with Bazel and the GDExtension descriptor;
@@ -71,7 +83,20 @@ set(ENABLE_TESTS_OPTION OFF CACHE BOOL "Global enable test" FORCE)
 set(RD_STATIC ON CACHE BOOL "Compile RD as static library" FORCE)
 set(USE_ADDRESS_SANITIZER OFF CACHE BOOL "Do not instrument RD inside the Godot extension" FORCE)
 
-fetchcontent_makeavailable(godot_cpp rd_cpp)
+fetchcontent_makeavailable(godot_cpp)
+
+# spdlog is copied into the rd-cpp tree when that is patched, so it has to be downloaded first.
+fetchcontent_makeavailable(rd_cpp_spdlog)
+fetchcontent_declare(rd_cpp
+        URL ${RD_URL}
+        URL_HASH SHA256=${RD_SHA}
+        SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/thirdParty/rd-cpp
+        SOURCE_SUBDIR rd-cpp
+        PATCH_COMMAND ${CMAKE_COMMAND} -E copy_directory "${rd_cpp_spdlog_SOURCE_DIR}" "${CMAKE_CURRENT_LIST_DIR}/thirdParty/rd-cpp/rd-cpp/thirdparty/spdlog"
+        SYSTEM
+)
+
+fetchcontent_makeavailable(rd_cpp)
 
 # godot-cpp puts its `gen/include` on the interface include path of godot::cpp but only creates the
 # directory while building, whereas CMake rejects a non-existent include directory at generate time.
@@ -87,7 +112,8 @@ set_target_properties(${RD_TARGETS} PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQU
 # the libstdc++ containers; this extension is built without it.
 if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
     foreach (RD_TARGET IN LISTS RD_TARGETS ITEMS spdlog)
-        target_compile_options(${RD_TARGET} PRIVATE -U_GLIBCXX_DEBUG)
+        target_compile_options(${RD_TARGET} PRIVATE -U_GLIBCXX_DEBUG -Wno-deprecated-literal-operator)
+        target_compile_definitions(${RD_TARGET} PRIVATE FMT_USE_USER_DEFINED_LITERALS=0)
     endforeach ()
 endif ()
 
