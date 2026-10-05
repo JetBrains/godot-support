@@ -9,6 +9,12 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.Properties
 
+enum class ConnectionResult {
+    NOT_CONNECTED_PORT,
+    NOT_CONNECTED_MODEL,
+    CONNECTED,
+}
+
 @ApiStatus.Internal
 class GodotRdConnectionInfoHandler(
     private val connect: (Lifetime, Int) -> Unit,
@@ -17,12 +23,12 @@ class GodotRdConnectionInfoHandler(
 ) {
     private val propertiesLoader = loadProperties ?: ::loadPropertiesFromFile
 
-    fun connect(portFile: Path, lifetime: Lifetime) {
-        val properties = propertiesLoader(portFile) ?: return
+    fun connect(portFile: Path, lifetime: Lifetime): ConnectionResult {
+        val properties = propertiesLoader(portFile) ?: return ConnectionResult.NOT_CONNECTED_PORT
         val port = properties.getProperty(FrontendGodotModel.portKey)?.toIntOrNull()
         if (port == null || port !in 1..65535) {
             thisLogger().warn("[GODOT RD] Found invalid port $port in $portFile")
-            return
+            return ConnectionResult.NOT_CONNECTED_PORT
         }
         val addonModelHash = properties.getProperty(FrontendGodotModel.modelHashKey)?.toLongOrNull()
         // Connecting to a server with the wrong hash causes Godot to crash on an RD assert.
@@ -34,11 +40,14 @@ class GodotRdConnectionInfoHandler(
                     "the model hash of Rider ($expectedModelHash), " +
                     "the Rider addon in Godot is not compatible with this version of Rider"
             )
-            return
+            return ConnectionResult.NOT_CONNECTED_MODEL
         }
+        var connected = ConnectionResult.NOT_CONNECTED_PORT
         lifetime.executeIfAlive {
             connect(lifetime, port)
+            connected = ConnectionResult.CONNECTED
         }
+        return connected
     }
 
     private fun loadPropertiesFromFile(portFile: Path): Properties? {
