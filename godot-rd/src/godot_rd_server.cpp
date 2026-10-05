@@ -1,19 +1,15 @@
 #include "godot_rd_server.h"
 
 #include "utils.h"
-#include "protocol/Identities.h"
+#include "std/to_string.h"
 #include "godot_cpp/classes/dir_access.hpp"
 #include "godot_cpp/classes/editor_interface.hpp"
 #include "godot_cpp/classes/editor_paths.hpp"
-#include "godot_cpp/classes/file_access.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "spdlog/spdlog.h"
 
 
-#include <filesystem>
-
 void GodotRdServer::start() noexcept {
-	// Utils::set_spdlog_to_trace();
 	stop();
 	stopping.set_to(false);
 	if (auto extension = get_extension(); extension != nullptr) {
@@ -117,7 +113,7 @@ void GodotRdServer::on_scene_changed(Node *node) {
 		auto node_path = node->get_scene_file_path();
 		session->queue([this,node_path] {
 			UtilityFunctions::print_verbose(String("[RIDER RD] sending node path: ") + node_path);
-			model.get_currentSceneChange().fire(Utils::to_wstring(node_path));
+			model.get_currentSceneChange().fire(rd::to_wstring(std::string(node_path.utf8().get_data())));
 		});
 	}
 }
@@ -127,7 +123,7 @@ void GodotRdServer::on_scene_closed(const String &) {
 		return;
 	}
 	session->queue([this] {
-		model.get_currentSceneChange().fire(Utils::to_wstring(""));
+		model.get_currentSceneChange().fire(std::wstring());
 	});
 }
 
@@ -223,7 +219,7 @@ void GodotRdServer::open_in_rider(const String &path) {
 		return;
 	}
 	session->queue([this,path] {
-		model.get_openInRider().fire(Utils::to_wstring(path));
+		model.get_openInRider().fire(rd::to_wstring(std::string(path.utf8().get_data())));
 	});
 }
 

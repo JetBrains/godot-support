@@ -2,18 +2,20 @@
 # so the repo rule is declared locally.
 http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-http_archive(
+rd_cpp_repository = use_repo_rule(
+    "//dotnet/Plugins/godot-support/godot-rd:rd_cpp_repository.bzl",
+    "rd_cpp_repository",
+)
+
+rd_cpp_repository(
     name = "rd_cpp",
     build_file = "@//dotnet/Plugins/godot-support/godot-rd:BUILD.rd_cpp",
-    sha256 = "efcc9dc488d6b785927a22c125b8c7b9b6526c14201ef0a3387519b5d917e7ac",
-    strip_prefix = "rd/rd-cpp",
-    url = "https://packages.jetbrains.team/maven/p/net/godot-rd-dependencies/com/jetbrains/rider/godot/rd-cpp/2026.3.0-1036d8ecf27c2fa7a1518caffd312fb05dfb11f6/rd-cpp-2026.3.0-1036d8ecf27c2fa7a1518caffd312fb05dfb11f6.zip",
 )
 
 http_archive(
     name = "godot_cpp",
     build_file = "@//dotnet/Plugins/godot-support/godot-rd:BUILD.godot_cpp",
-    sha256 = "45d49c1a26f3c51557a510b3791821c83a5e92e08d27caa7615a362581947abc",
-    strip_prefix = "godot-cpp",
-    url = "https://packages.jetbrains.team/maven/p/net/godot-rd-dependencies/com/jetbrains/rider/godot/godot-cpp/5cec5bbd9c3f2effe763ecc799682fd5bd0ee30e/godot-cpp-5cec5bbd9c3f2effe763ecc799682fd5bd0ee30e.zip",
+    sha256 = "c763a08b8ec18dae300cd54bb8848faf1a5fd11da629449d16649a72a1884727",
+    strip_prefix = "godot-cpp-10.0.0-stable",
+    url = "https://github.com/godotengine/godot-cpp/archive/refs/tags/10.0.0-stable.zip",
 )
