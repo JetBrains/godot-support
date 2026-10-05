@@ -73,7 +73,7 @@
     <lang.syntaxHighlighterFactory language="GdScript"
                                    implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
     <annotator language="GdScript" implementationClass="gdscript.highlighter.GdColorAnnotator"/>
-    <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
+    <colorSettings implementation="gdscript.highlighter.GdColorSettingsPage" displayName="GdScript"/>
     <additionalTextAttributes scheme="Default" file="colorSchemes/GdLightColorScheme.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
@@ -150,7 +150,7 @@
     <lang.parserDefinition language="GodotProject" implementationClass="project.ProjectParserDefinition"/>
     <lang.parserDefinition language="GodotConfig" implementationClass="config.GdConfigParserDefinition"/>
     <lang.syntaxHighlighterFactory language="Tscn" implementationClass="tscn.highlighter.TscnSyntaxHighlighterFactory"/>
-    <colorSettingsPage implementation="tscn.highlighter.TscnColorSettingsPage"/>
+    <colorSettings implementation="tscn.highlighter.TscnColorSettingsPage" displayName="GdScene"/>
 
     <!-- Completions -->
 
