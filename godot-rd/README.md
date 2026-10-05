@@ -4,6 +4,10 @@ This folder contains a GDExtension that serves as a communication bridge between
 ## Build
 Building is done with `bazel`, where the target `//dotnet/Plugins/godot-support/godot-rd:compile_all` produces _unsigned_ libraries, for the layout see Artifact section. Signing and placing them into the Rider installation belongs in the Rider installer build.
 
+```bash
+./bazel.cmd build //dotnet/Plugins/godot-support/godot-rd:compile_all
+```
+
 The build itself cross-compiles for every OS x CPU arch with `clang`. The dependencies (`libc`, `MSVC CRT`, `Apple SDK`...) being pulled in by Bazel instead of using the ones on host. This means that the host OS doesn't matter. For example, it can be just a plain Linux box.
 
 ### Artifact
