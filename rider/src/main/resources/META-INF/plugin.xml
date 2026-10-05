@@ -102,7 +102,7 @@
 
     <rider.godot.community.godotProjectProvider implementation="com.jetbrains.rider.plugins.godot.project.RiderGodotProjectProvider"
                                                 order="first"/>
-    <rider.godot.community.editorConnectionProvider implementation="com.jetbrains.rider.plugins.godot.RiderEditorConnectionProvider"/>
+    <rider.godot.community.editorConnectionProvider implementation="com.jetbrains.rider.plugins.godot.rd.GodotRdEditorConnectionProvider"/>
 
     <textmate.bundleProvider implementation="com.jetbrains.rider.plugins.godot.textMate.GodotTextMateBundleProvider"/>
 
