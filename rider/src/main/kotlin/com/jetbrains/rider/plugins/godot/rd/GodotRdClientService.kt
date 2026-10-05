@@ -20,6 +20,7 @@ import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
 import com.jetbrains.rd.util.threading.SingleThreadScheduler
 import com.jetbrains.rd.util.threading.coroutines.asCoroutineDispatcher
+import com.jetbrains.rider.godot.community.EditorConnectionState
 import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
@@ -45,8 +46,21 @@ class GodotRdClientService(val project: Project) {
     private val connectionInfoConnector = GodotRdConnectionInfoHandler(::connect)
     private val started = AtomicBoolean(false)
 
+    private val connectionStatus: AtomicReference<EditorConnectionState> = AtomicReference(EditorConnectionState.DISCONNECTED)
+
+    private fun ConnectionResult.toConnectionState(): EditorConnectionState {
+        return when (this) {
+            ConnectionResult.NOT_CONNECTED_PORT -> EditorConnectionState.DISCONNECTED
+            ConnectionResult.NOT_CONNECTED_MODEL -> EditorConnectionState.MISMATCHED_MODEL
+            ConnectionResult.CONNECTED -> EditorConnectionState.CONNECTED
+        }
+    }
+
     val isConnected: Boolean
         get() = connection.get() != null
+
+    val currentState: EditorConnectionState
+        get() = connectionStatus.get()
 
     suspend fun start() {
         check(started.compareAndSet(false, true)) { "[GODOT RD] the client is already started" }
@@ -69,13 +83,15 @@ class GodotRdClientService(val project: Project) {
             resetConnection()
             val lifetime = clientLifetimes.next().lifetime
             withContext(Dispatchers.IO) {
-                connectionInfoConnector.connect(portFile, lifetime)
+                val connectionState = connectionInfoConnector.connect(portFile, lifetime).toConnectionState()
+                connectionStatus.set(connectionState)
             }
         }
     }
 
     private fun resetConnection() {
         connection.set(null)
+        connectionStatus.set(EditorConnectionState.DISCONNECTED)
         GdProjectGodotService.getInstance(project).updateCurrentScene(null)
         clientLifetimes.terminateCurrent()
     }

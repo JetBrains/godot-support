@@ -3,13 +3,14 @@ package com.jetbrains.rider.godot.community.actions
 import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
+import com.intellij.openapi.actionSystem.ex.TooltipDescriptionProvider
 import com.intellij.openapi.project.DumbAware
 import com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons
 import com.jetbrains.rider.godot.community.EditorConnectionState
 import com.jetbrains.rider.godot.community.GodotCommunityBundle
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 
-class GodotActionsToolbar : DefaultActionGroup(), DumbAware {
+class GodotActionsToolbar : DefaultActionGroup(), DumbAware, TooltipDescriptionProvider {
     override fun getActionUpdateThread(): ActionUpdateThread = ActionUpdateThread.BGT
     override fun update(e: AnActionEvent) {
         val project = e.project
@@ -20,6 +21,7 @@ class GodotActionsToolbar : DefaultActionGroup(), DumbAware {
 
         val isGodotProject = GodotCommunityUtil.isGodotProject(project)
         e.presentation.isVisible = isGodotProject
+        e.presentation.description = null
 
 
         // Determine icon/text based on connection state
@@ -39,8 +41,13 @@ class GodotActionsToolbar : DefaultActionGroup(), DumbAware {
                 e.presentation.icon = RiderPluginsGodotCommunityIcons.Godot
                 e.presentation.text = GodotCommunityBundle.message("godot.toolbar.text")
             }
+
+            EditorConnectionState.MISMATCHED_MODEL -> {
+                e.presentation.icon = RiderPluginsGodotCommunityIcons.GodotDisconnected
+                e.presentation.text = GodotCommunityBundle.message("connection.to.godot.editor.failed.text")
+                @Suppress("DialogTitleCapitalization")
+                e.presentation.description = GodotCommunityBundle.message("connection.to.godot.editor.failed.description")
+            }
         }
     }
 }
-
-
