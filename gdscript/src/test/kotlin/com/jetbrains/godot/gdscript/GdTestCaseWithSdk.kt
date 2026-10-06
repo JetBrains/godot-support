@@ -33,7 +33,7 @@ abstract class GdTestCaseWithSdk(testCasePath: String) : GdTestCase(testCasePath
             myFixture.copyDirectoryToProject(it, "")
         }.distinct()
 
-        GdPolySymbolsTestUtils.registerSdk(project, directories.map { it.toNioPath() })
+        GdPolySymbolsTestUtils.registerSdk(project, directories.map { it.toNioPath() }, testRootDisposable)
     }
 
 }

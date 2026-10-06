@@ -114,7 +114,7 @@ class GdCoreDocPipelineTest {
             assertNotNull(ready.recoveryReport)
             assertTrue(
                 ready.recoveryReport!!,
-                ready.recoveryReport!!.contains(
+                ready.recoveryReport.contains(
                     "the extractor dropped at least one stream because it exceeded the per-stream cap, so the class set may be incomplete"
                 )
             )
