@@ -33,6 +33,7 @@ class StringNameMemberFindUsagesTest : BasePlatformTestCase() {
         GdPolySymbolsTestUtils.registerSdk(
             project,
             listOf(sdkRoot.resolve("gdextensions"), sdkRoot.resolve("4.5.0")),
+            testRootDisposable,
         )
     }
 

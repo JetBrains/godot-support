@@ -69,16 +69,21 @@ dependencies {
         bundledModule("intellij.platform.dap")
         bundledModule("intellij.platform.structureView")
         bundledModule("intellij.spellchecker")
+        bundledModule("intellij.libraries.jackson")
+        bundledModule("intellij.libraries.jackson.databind")
+        bundledModule("intellij.libraries.jackson.module.kotlin")
+        bundledModule("intellij.libraries.jna")
         platformDependency(Coordinates("com.jetbrains.intellij.platform", "poly-symbols-test-framework"))
     }
     implementation(libs.jflex)
     testImplementation(testFixtures(":rider-godot-test-shared"))
     testImplementation(libs.openTest4J)
+    testImplementation(platform("org.junit:junit-bom:6.1.3"))
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
+    testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.junit-pioneer:junit-pioneer:2.3.0")
-    testRuntimeOnly("org.junit.platform:junit-platform-engine:1.12.2")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-engine")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 intellijPlatform {
