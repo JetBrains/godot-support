@@ -58,6 +58,11 @@ object GdBlocks {
         GdTypes.COMMENT,
         GdTypes.METHOD_DECL_TL,
         GdTypes.CLASS_VAR_DECL_TL,
+        GdTypes.CONST_DECL_TL,
+        GdTypes.SIGNAL_DECL_TL,
+        GdTypes.ENUM_DECL_TL,
+        GdTypes.ANNOTATION_TL,
+        GdTypes.LITERAL_EX,
         GdTypes.FLOW_ST,
     )
 
