@@ -3,16 +3,17 @@ package com.jetbrains.godot.gdscript.formatter
 import com.intellij.application.options.CodeStyle
 import com.intellij.formatting.WrapType
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.psi.PsiErrorElement
+import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.codeStyle.CodeStyleManager
 import com.intellij.psi.codeStyle.CodeStyleSettings
 import com.intellij.psi.codeStyle.CommonCodeStyleSettings
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.util.PsiUtilCore
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.LocalTimeCounter
-import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdStmt
@@ -914,7 +915,7 @@ class GdFormattingTest : BasePlatformTestCase() {
     }
 
     @Test
-fun testHangingIndentsInMultilineCallChainInParenthesis() = doTest()
+    fun testHangingIndentsInMultilineCallChainInParenthesis() = doTest()
 
     @Ignore("[alignment] [space-only]")
     @Test
@@ -1384,6 +1385,97 @@ fun testHangingIndentsInMultilineCallChainInParenthesis() = doTest()
         }
         myFixture.checkResult(after.trimIndent())
     }
+
+    private fun doTextTestSpaces(before: String, after: String = before) {
+        getCommonCodeStyleSettings().indentOptions!!.apply {
+            USE_TAB_CHARACTER = false
+            INDENT_SIZE = 4
+        }
+        doTextTest(before, after)
+        assertNull(PsiTreeUtil.findChildOfType(myFixture.file, PsiErrorElement::class.java))
+    }
+
+    // RIDER-141707
+    @Test
+    fun testInnerClassDocstring() = doTextTestSpaces(
+        """
+            class_name Outer
+
+            class Inner:
+                "doc comments go brrr"
+                const CONST := 1
+            """
+    )
+
+    @Test
+    fun testInnerClassConstVariants() = doTextTestSpaces(
+        """
+        class Inner:
+            const INFERRED := 1
+            const UNTYPED = 2
+            const TYPED: int = 3
+            var value = 0
+            const AFTER_VAR = 4
+
+            func method():
+                pass
+
+            const AFTER_FUNC = 5
+    """
+    )
+
+    @Test
+    fun testInnerClassSignals() = doTextTestSpaces(
+        """
+        class Inner:
+            signal ready
+            signal changed(value: int)
+    """
+    )
+
+    @Test
+    fun testInnerClassEnums() = doTextTestSpaces(
+        """
+        class Inner:
+            enum State {IDLE, ACTIVE}
+            enum Direction {
+                LEFT,
+                RIGHT,
+            }
+    """
+    )
+
+    @Test
+    fun testInnerClassAnnotations() = doTextTestSpaces(
+        """
+        class Inner:
+            @export var count = 0
+            @onready var value = 1
+            @warning_ignore("unused_private_class_variable")
+            var _unused = 2
+    """
+    )
+
+    @Test
+    fun testNestedInnerClassConst() = doTextTestSpaces(
+        """
+            class Inner:
+                class Nested:
+                    const VALUE = 1
+        """
+    )
+
+    @Test
+    fun testInnerClassIndentNormalization() = doTextTestSpaces(
+        """
+            class Inner:
+              const VALUE = 1
+        """,
+        """
+            class Inner:
+                const VALUE = 1
+        """
+    )
 
     @Test
     fun testLambdaInConnectIndent() {
