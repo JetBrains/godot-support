@@ -4,27 +4,34 @@ import com.intellij.lang.documentation.impl.documentationTargets
 import com.intellij.model.psi.PsiSymbolReferenceService
 import com.intellij.openapi.util.TextRange
 import com.intellij.platform.backend.documentation.DocumentationLinkHandler
+import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.text.CharArrayUtil
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
-import gdscript.codeInsight.GdDocumentationProvider
+import gdscript.codeInsight.GdDocumentationTarget
+import gdscript.codeInsight.GdDocumentationTargetProvider
+import gdscript.codeInsight.generateGdDoc
+import gdscript.codeInsight.documentation.GdDocLinkResolver
 import gdscript.codeInsight.documentation.GdAnnotationAnchors
-import gdscript.codeInsight.documentation.GdVirtualDocComment
+import gdscript.codeInsight.documentation.findGdDocComment
+import gdscript.codeInsight.documentation.renderGdDocComment
 import gdscript.polySymbols.GdPolySymbolsConstants
 import gdscript.polySymbols.config.GdAnnotationSymbol
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReferences
 import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import gdscript.polySymbols.sdk.xml.GdSdkData
 import gdscript.psi.GdAnnotationType
+import gdscript.psi.GdRefIdRef
+import gdscript.settings.GdDocProviderMode
+import gdscript.settings.GdProjectSettingsState
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
-
-    private val provider = GdDocumentationProvider()
 
     @Test
     fun testResolveSdkTypeAndMembers() {
@@ -87,15 +94,14 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
         val linkOffset = file!!.text.indexOf("[SceneTree]")
         assertTrue(linkOffset >= 0)
 
-        val comment = provider.findDocComment(file, TextRange(linkOffset, linkOffset + 1))
+        val comment = findGdDocComment(file, TextRange(linkOffset, linkOffset + 1))
         assertNotNull(comment)
-        val rendered = provider.generateRenderedDoc(comment!!)
+        val rendered = renderGdDocComment(comment!!)
 
-        assertNotNull(rendered)
-        assertTrue(rendered!!.contains("psi_element://SceneTree"))
+        assertTrue(rendered.contains("psi_element://SceneTree"))
         assertTrue(rendered.contains("psi_element://method:_enter_tree"))
 
-        val owner = (comment as GdVirtualDocComment).owner
+        val owner = comment.owner
         assertNotNull(owner)
         assertNotNull(resolve("method:_enter_tree", owner!!))
     }
@@ -111,12 +117,11 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
         val linkOffset = file!!.text.indexOf("[url=$docsUrlPlaceholder/tutorials/plugins/running_code_in_the_editor.html]")
         assertTrue(linkOffset >= 0)
 
-        val comment = provider.findDocComment(file, TextRange(linkOffset, linkOffset + 1))
+        val comment = findGdDocComment(file, TextRange(linkOffset, linkOffset + 1))
         assertNotNull(comment)
-        val rendered = provider.generateRenderedDoc(comment!!)
+        val rendered = renderGdDocComment(comment!!)
 
-        assertNotNull(rendered)
-        assertTrue(rendered!!.contains("https://docs.godotengine.org/en/stable/tutorials/plugins/running_code_in_the_editor.html"))
+        assertTrue(rendered.contains("https://docs.godotengine.org/en/stable/tutorials/plugins/running_code_in_the_editor.html"))
         assertFalse(rendered.contains(docsUrlPlaceholder))
     }
 
@@ -155,7 +160,7 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
 
         val sdkFile = GdPolySymbolQueriesUtil.getSdkClassSymbol(project, "Node")!!.syntheticSourceElement(project)!!.containingFile!!
         val sdkText = sdkFile.text
-        val classDescription = provider.findDocComment(sdkFile, TextRange.from(sdkText.indexOf("[SceneTree]"), 1))!!
+        val classDescription = findGdDocComment(sdkFile, TextRange.from(sdkText.indexOf("[SceneTree]"), 1))!!
         // Rider looks up the target at the first token after the comment. For the class description it is `#region`.
         val afterClassDescription = CharArrayUtil.shiftForward(sdkText, classDescription.textRange.endOffset, " \t\r\n")
         assertTrue(sdkText.startsWith("#region", afterClassDescription))
@@ -220,7 +225,7 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
         // Reader Mode looks up the target at the token after the `##` block, which is the anchor.
         assertLinkResolvesFromReaderModeTarget(file, anchor.textRange.startOffset)
 
-        assertTrue(provider.generateDoc(anchor, null)!!.contains("@export_range(min: float, max: float"))
+        assertTrue(generateGdDoc(anchor)!!.contains("@export_range(min: float, max: float"))
 
         // The test SDK has empty annotation descriptions, so a marked synthetic file gives the `##` block.
         val synthetic = myFixture.configureByText(
@@ -229,13 +234,68 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
         )
         synthetic.putUserData(GdSdkPolySymbol.SYNTHETIC_SDK_CLASS_KEY, "Annotations")
         val syntheticAnchor = GdAnnotationAnchors.find(synthetic, "export_range")!!
-        val doc = provider.generateDoc(syntheticAnchor, null)
+        val doc = generateGdDoc(syntheticAnchor)
         assertNotNull(doc)
         assertTrue(doc!!, doc.contains("@export_range(min: float)"))
         assertTrue(doc, doc.contains("Exports a range."))
         assertTrue(doc, doc.contains("psi_element://Object"))
         assertTrue(doc, doc.contains("psi_element://annotation:@export"))
         assertLinkResolvesFromReaderModeTarget(synthetic, syntheticAnchor.textRange.startOffset)
+    }
+
+    /**
+     * The LSP server documents a real script file, but it does not know a generated SDK file.
+     * The plugin creates that file in memory, so it must document it in the LSP mode too.
+     */
+    @Test
+    fun testLspModeKeepsGeneratedSdkDocumentation() {
+        val sdkElement = GdPolySymbolQueriesUtil.getSdkClassSymbol(project, "Node")!!.syntheticSourceElement(project)!!
+        val script = myFixture.configureByText("lspDoc.gd", "extends Node\n\n## A documented function.\nfunc documented():\n\tpass\n")
+        val scriptElement = script.findElementAt(script.text.indexOf("documented()"))!!.parent
+        val settings = GdProjectSettingsState.getInstance(project)
+        val provider = GdDocumentationTargetProvider()
+
+        assertNotNull(generateGdDoc(scriptElement))
+        settings.state.docProvider = GdDocProviderMode.LSP
+        try {
+            assertNull(generateGdDoc(scriptElement))
+            assertNull(provider.documentationTarget(scriptElement, null))
+
+            assertNotNull(generateGdDoc(sdkElement))
+            assertNotNull(provider.documentationTarget(sdkElement, null))
+        } finally {
+            settings.state.docProvider = GdDocProviderMode.GDSCRIPT
+        }
+    }
+
+    /**
+     * A Poly Symbol must build the GDScript documentation target.
+     * The platform `createPsiDocumentationTarget` reaches the deprecated `DocumentationProvider` extension point only,
+     * which GDScript no longer implements, so it gives an empty popup.
+     */
+    @Test
+    fun testPolySymbolDocumentationTargetIsGdScriptTarget() {
+        myFixture.configureByText(
+            "symbolDoc.gd",
+            "extends Node\n\n## A documented function.\nfunc documented():\n\tpass\n\nfunc caller():\n\t<caret>documented()\n",
+        )
+        val leaf = myFixture.file.findElementAt(myFixture.caretOffset)
+        val refId = PsiTreeUtil.getParentOfType(leaf, GdRefIdRef::class.java, false)!!
+
+        val psiSymbol = refId.resolveSymbolReferences().single()
+        assertDocumentationContains(psiSymbol.getDocumentationTarget(refId), "A documented function.")
+
+        val sdkSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(project, "Node")!!
+        assertDocumentationContains(sdkSymbol.getDocumentationTarget(refId), "Node")
+    }
+
+    private fun assertDocumentationContains(target: DocumentationTarget?, text: String) {
+        assertNotNull(target)
+        val gdTarget = target as? GdDocumentationTarget
+        assertNotNull("expected a GdDocumentationTarget, got ${target!!::class.java.name}", gdTarget)
+        val doc = generateGdDoc(gdTarget!!.targetElement)
+        assertNotNull(doc)
+        assertTrue(doc!!, doc.contains(text))
     }
 
     /** Reader Mode resolves a link through the first documentation target at the token after the comment. */
@@ -248,6 +308,6 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
     }
 
     private fun resolve(link: String, context: com.intellij.psi.PsiElement): com.intellij.psi.PsiElement? {
-        return provider.getDocumentationElementForLink(myFixture.psiManager, link, context)
+        return GdDocLinkResolver.resolve(myFixture.psiManager, link, context)
     }
 }

@@ -86,7 +86,11 @@
     <liveTemplateContext contextId="GDSCRIPT" implementation="gdscript.GdTemplateContextType"/>
     <codeInsight.parameterInfo language="GdScript" id="GdParameterInfoHandler"
                                implementationClass="gdscript.codeInsight.GdParameterInfoHandler"/>
-    <lang.documentationProvider language="GdScript" implementationClass="gdscript.codeInsight.GdDocumentationProvider"/>
+    <platform.backend.documentation.psiTargetProvider implementation="gdscript.codeInsight.GdDocumentationTargetProvider"/>
+    <platform.backend.documentation.targetProvider implementation="gdscript.codeInsight.GdOffsetDocumentationTargetProvider"/>
+    <platform.backend.documentation.linkHandler implementation="gdscript.codeInsight.GdDocumentationLinkHandler"/>
+    <platform.backend.documentation.inlineDocumentationProvider
+        implementation="gdscript.codeInsight.documentation.GdInlineDocumentationProvider"/>
     <codeInsight.parameterNameHints language="GdScript"
                                     implementationClass="gdscript.codeInsight.GdInlayParameterHintProvider"/>
     <lang.refactoringSupport language="GdScript" implementationClass="gdscript.psi.GdRefactoringSupportProvider"/>

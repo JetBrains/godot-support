@@ -1,6 +1,5 @@
 package gdscript.polySymbols
 
-import com.intellij.lang.documentation.psi.createPsiDocumentationTarget
 import com.intellij.model.Symbol
 import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.presentation.TargetPresentation
@@ -10,21 +9,14 @@ import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.kindName
 import com.intellij.polySymbols.utils.namespace
 import com.intellij.psi.PsiElement
-import gdscript.settings.GdProjectSettingsState
+import gdscript.codeInsight.gdDocumentationTarget
 import java.util.Locale
 
 abstract class GdPolySymbol : PolySymbol {
     override val psiContext: PsiElement? = null
 
-    override fun getDocumentationTarget(location: PsiElement?): DocumentationTarget? {
-        return psiContext?.let {
-            if (GdProjectSettingsState.getInstance(it).usesLspDocs()) {
-                null
-            } else {
-                createPsiDocumentationTarget(it, null)
-            }
-        }
-    }
+    override fun getDocumentationTarget(location: PsiElement?): DocumentationTarget? =
+        psiContext?.let { gdDocumentationTarget(it) }
 
     /**
      * For SDK symbols it's equivalent to [declaringClassId] since they have no inner classes.
