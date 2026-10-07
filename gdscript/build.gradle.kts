@@ -60,6 +60,7 @@ dependencies {
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
         testFramework(TestFrameworkType.Platform)
+        testFramework(TestFrameworkType.JUnit5)
         testFramework(TestFrameworkType.Plugin.LSP)
 
         bundledPlugin("com.intellij.modules.json")
