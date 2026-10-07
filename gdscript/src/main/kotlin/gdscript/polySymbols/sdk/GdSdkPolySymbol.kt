@@ -1,6 +1,5 @@
 package gdscript.polySymbols.sdk
 
-import com.intellij.lang.documentation.psi.createPsiDocumentationTarget
 import com.intellij.navigation.SymbolNavigationService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
@@ -11,6 +10,7 @@ import com.intellij.polySymbols.refactoring.PolySymbolRenameTarget
 import com.intellij.polySymbols.search.PolySymbolSearchTarget
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.codeInsight.gdDocumentationTarget
 import gdscript.polySymbols.GdIsEngineSymbolProperty
 import gdscript.polySymbols.GdNavigationElementProperty
 import gdscript.polySymbols.GdPolySymbol
@@ -87,10 +87,7 @@ abstract class GdSdkPolySymbol : GdPolySymbol() {
         syntheticSourceElement(project)?.let {
             if (GdProjectSettingsState.getInstance(project).usesLspDocs()) {
                 null
-            } else {
-                createPsiDocumentationTarget(it, psiContext)
-            }
+            } else gdDocumentationTarget(it)
         }
-
 }
 
