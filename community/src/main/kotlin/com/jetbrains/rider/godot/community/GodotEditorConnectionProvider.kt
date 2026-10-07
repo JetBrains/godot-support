@@ -9,5 +9,6 @@ interface GodotEditorConnectionProvider {
 enum class EditorConnectionState {
     CONNECTED,
     DISCONNECTED,
+    MISMATCHED_MODEL,
     NOT_APPLICABLE
 }

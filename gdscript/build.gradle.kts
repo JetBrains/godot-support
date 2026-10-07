@@ -60,13 +60,16 @@ dependencies {
         // you need to compile the community plugin in advance, or this would fail. I haven't found a workaround
         localPlugin(repoRoot.resolve("community/build/distributions/rider-godot-community.zip"))
         testFramework(TestFrameworkType.Platform)
+        testFramework(TestFrameworkType.JUnit5)
         testFramework(TestFrameworkType.Plugin.LSP)
 
         bundledPlugin("com.intellij.modules.json")
         bundledPlugin("com.intellij.bookmarks")
         bundledModule("intellij.platform.debugger")
+        bundledModule("intellij.platform.debugger.impl")
         bundledModule("intellij.platform.polySymbols.backend")
         bundledModule("intellij.platform.dap")
+        bundledModule("intellij.platform.dap.protocol")
         bundledModule("intellij.platform.structureView")
         bundledModule("intellij.spellchecker")
         bundledModule("intellij.libraries.jackson")
@@ -150,6 +153,18 @@ tasks {
 
     test {
         useJUnitPlatform()
+        // JUnit 5 and JUnit 3/4 tests share one JVM and one IntelliJ application. The JUnit 5
+        // `@TestApplication` extension stores its application in the Jupiter root store, so the
+        // application is disposed as soon as the Jupiter engine finishes. The Vintage engine (JUnit
+        // 3/4 tests such as `BasePlatformTestCase`) runs after it and cannot start a new application:
+        // the executors are already shut down (`RejectedExecutionException: Already shutdown`). The
+        // platform skips this dispose under Bazel (`BazelTestUtil.isUnderBazelTest`); this property
+        // makes the Gradle run do the same.
+        systemProperty("intellij.testFramework.junit5.skip.test.application.dispose", "true")
+        // Without a display, CI already runs AWT headless. On a desktop, AWT starts toolkit threads
+        // (for example `WLKeyboard.KeyRepeatManager` on Wayland) inside the first test, and the
+        // JUnit 5 `ThreadLeakTrackerExtension` reports them as leaks.
+        systemProperty("java.awt.headless", "true")
         filter {
             excludeTestsMatching("com.jetbrains.godot.gdscript.lsp.integration.*")
             excludeTestsMatching("com.jetbrains.godot.gdscript.dap.integration.*")
