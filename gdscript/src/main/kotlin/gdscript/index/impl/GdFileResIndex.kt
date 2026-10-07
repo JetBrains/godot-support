@@ -2,11 +2,11 @@ package gdscript.index.impl
 
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectFileIndex
-import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VfsUtilCore
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import gdscript.index.impl.utils.GdFileResInputFilter
+import gdscript.utils.getMainProjectRoot
 
 
 /* it is not a real index anymore*/
@@ -18,13 +18,8 @@ class GdFileResIndex {
                 return GdFileUidIndex.getFiles(key, project)
             }
             val relPath = key.removePrefix("res://")
-            // todo: getContentRoots is empty for the sln project in Rider - need to use a different API
-            val contentRoots = ProjectRootManager.getInstance(project).getContentRoots()
-            for (root in contentRoots) {
-                val file = root.findFileByRelativePath(relPath)
-                if (file != null) return listOf(file)
-            }
-            return emptyList()
+            val root = project.getMainProjectRoot() ?: return emptyList()
+            return listOfNotNull(root.findFileByRelativePath(relPath))
         }
 
         fun getFiles(key: String, element: PsiElement): Collection<VirtualFile> {
@@ -36,15 +31,12 @@ class GdFileResIndex {
         }
 
         fun getNonEmptyKeys(project: Project): List<String> {
+            val root = project.getMainProjectRoot() ?: return emptyList()
             val fileIndex = ProjectFileIndex.getInstance(project)
             val results = mutableListOf<String>()
             fileIndex.iterateContent(
                 {
-                    val res = fileIndex.getContentRootForFile(it)?.let { root ->
-                                    VfsUtilCore.getRelativePath(it, root)?.let { path ->
-                                        "res://$path"
-                                    }
-                                }
+                    val res = VfsUtilCore.getRelativePath(it, root)?.let { path -> "res://$path" }
                     if (res != null) {
                         results.add(res)
                     }
