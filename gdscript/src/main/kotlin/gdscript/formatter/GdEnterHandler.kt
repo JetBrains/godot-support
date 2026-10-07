@@ -216,7 +216,7 @@ class GdEnterHandler : EnterHandlerDelegate {
         val atCaretIsString = element.node.elementType == GdTypes.STRING
         val prevIsString = prevElement?.node?.elementType == GdTypes.STRING
         return when {
-            atCaretIsString && offset > element.textRange.startOffset -> element
+            atCaretIsString && offset > element.textRange.startOffset && offset < element.textRange.endOffset -> element
             prevIsString && prevElement.textRange.endOffset > offset -> prevElement
             else -> null
         }

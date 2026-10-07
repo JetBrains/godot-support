@@ -255,6 +255,18 @@ class GdEditingTest : BasePlatformTestCase() {
     @Test
     fun testEnterAfterStringPrefix() = doEnterTest()
 
+    @Test
+    fun testEnterAfterExtendsStringAtEndOfFile() = doEnterTest()
+
+    @Test
+    fun testEnterAfterStringAtEndOfFileWithParenthesiseOnEnter() {
+        getGdCodeStyleSettings().PARENTHESISE_ON_ENTER = true
+        doEnterTest()
+    }
+
+    @Test
+    fun testEnterBeforeStringClosingQuote() = doEnterTest()
+
     // A non-prefix word char glued to a string (only reachable mid-edit) must not be
     // duplicated onto the reopened fragment — the reopened literal carries only the
     // literal's own intrinsic prefix.
