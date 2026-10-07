@@ -5,15 +5,11 @@ import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.text.HtmlChunk
-import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.psi.types.GdDocumented
 import java.util.Locale.getDefault
 
 object GdDocUtil {
 
-    fun packageLink(reference: String, @NlsSafe label: String? = null): HtmlChunk {
-        return elementLink("${GdDocumentationProvider.LINK_PACKAGE}:${reference.trimStart('/')}", label)
-    }
 
     fun elementLink(reference: String, @NlsSafe label: String? = null): HtmlChunk {
         var parsedReference = reference
@@ -164,10 +160,6 @@ object GdDocUtil {
             DocumentationMarkup.GRAYED_ELEMENT.addRaw(GdGodotDocUtil.parseStyles(description)),
         )
     }
-
-    /**
-     * ------------------------------- HELPERS -------------------------------
-     */
 
     private fun tableHeader(header: String, item: HtmlChunk): HtmlChunk {
         return tableHeader(header, listOf(item))
