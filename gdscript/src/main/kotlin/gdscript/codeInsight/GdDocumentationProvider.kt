@@ -31,18 +31,12 @@ import gdscript.psi.utils.GdClassMemberUtil
 import gdscript.psi.utils.GdCommentUtil
 import gdscript.settings.GdDocProviderMode
 import gdscript.settings.GdProjectSettingsState
-import org.jetbrains.annotations.NonNls
 import java.util.function.Consumer
 
 private val LOG = fileLogger()
 
 // todo: delay creating GdDocFactory after isGodotProject is evaluated
 class GdDocumentationProvider : AbstractDocumentationProvider() {
-
-    companion object {
-        @NonNls const val LINK_ENUM_VALUE: String = "enumValue"
-        @NonNls const val LINK_PACKAGE: String = "package"
-    }
 
     override fun generateDoc(element: PsiElement, originalElement: PsiElement?): String? {
         if (isLspProvider(element.project)) return null

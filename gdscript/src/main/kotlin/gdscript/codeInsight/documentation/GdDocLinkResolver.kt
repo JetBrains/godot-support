@@ -1,17 +1,13 @@
 package gdscript.codeInsight.documentation
 
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ProjectFileIndex
-import com.intellij.openapi.vfs.findDirectory
 import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import gdscript.sdk.xml.GdNameSanitizer
-import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdParamList
 import gdscript.psi.GdSignalDeclTl
@@ -33,12 +29,6 @@ object GdDocLinkResolver {
             val kind = normalizedLink.substring(0, separator)
             val payload = normalizedLink.substring(separator + 1)
             when (kind) {
-                GdDocumentationProvider.LINK_ENUM_VALUE -> {
-                    return resolveEnumValue(payload, context)
-                }
-                GdDocumentationProvider.LINK_PACKAGE -> {
-                    return resolvePackage(payload, project, psiManager)
-                }
                 "param" -> return resolveParam(payload, context)
                 "annotation" -> return GdAnnotationAnchors.find(project, payload)
                 in ignoredKinds -> return null
@@ -125,49 +115,6 @@ object GdDocLinkResolver {
             GdClassMemberUtil.identifierOf(declaration)?.let { return it }
         }
         return null
-    }
-
-    private fun resolveEnumValue(payload: String, context: PsiElement): PsiElement? {
-        val parts = payload.split('.')
-        if (parts.size < 2) return null
-
-        val valueName = parts.last()
-        val enumName = parts[parts.lastIndex - 1]
-        val ownerName = parts.dropLast(2).joinToString(".").ifEmpty { null }
-        val owner = ownerName ?: syntheticOwnerName(context) ?: GdClassUtil.getOwningClassName(context)
-        val project = context.project
-
-        val sdkValue = classNameVariants(owner).firstNotNullOfOrNull { className ->
-            GdPolySymbolQueriesUtil.getSdkEnumSymbol(project, className, enumName)
-                ?.syntheticSourceElement(project)
-                ?.let { PsiTreeUtil.getParentOfType(it, GdEnumDeclTl::class.java) }
-                .findValue(valueName)
-        }
-        if (sdkValue != null) return sdkValue
-
-        return if (ownerName != null) {
-            classNameVariants(owner).firstNotNullOfOrNull { className ->
-                GdClassUtil.getClassIdElement(className, context, project)
-                    ?.let { resolvePsiMember(it, enumName) }
-                    ?.let { it.parent as? GdEnumDeclTl }
-                    .findValue(valueName)
-            }
-        } else {
-            val declaration = GdClassMemberUtil.listDeclarations(context, enumName).firstOrNull()
-            (declaration as? GdEnumDeclTl ?: declaration?.psi() as? GdEnumDeclTl).findValue(valueName)
-        }
-    }
-
-    private fun GdEnumDeclTl?.findValue(name: String): PsiElement? =
-        this?.enumValueList?.firstOrNull { it.enumValueNmi.name == name }?.enumValueNmi
-
-    private fun resolvePackage(reference: String, project: Project, psiManager: PsiManager?): PsiElement? {
-        var directory = ProjectFileIndex.getInstance(project).getContentRootForFile(project.projectFile ?: return null)
-            ?: return null
-        if (reference.contains("/")) {
-            directory = directory.findDirectory(reference.substringAfter("/")) ?: return null
-        }
-        return (psiManager ?: PsiManager.getInstance(project)).findDirectory(directory)
     }
 
     private fun syntheticOwnerName(context: PsiElement): String? {
