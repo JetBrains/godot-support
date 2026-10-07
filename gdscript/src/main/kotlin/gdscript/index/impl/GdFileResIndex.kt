@@ -18,6 +18,7 @@ class GdFileResIndex {
                 return GdFileUidIndex.getFiles(key, project)
             }
             val relPath = key.removePrefix("res://")
+            // todo: getContentRoots is empty for the sln project in Rider - need to use a different API
             val contentRoots = ProjectRootManager.getInstance(project).getContentRoots()
             for (root in contentRoots) {
                 val file = root.findFileByRelativePath(relPath)
