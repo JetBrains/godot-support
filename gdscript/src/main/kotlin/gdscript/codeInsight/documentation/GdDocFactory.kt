@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
-import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.completion.utils.GdEnumCompletionUtil.preview
 import gdscript.completion.utils.GdMethodCompletionUtil.methodHeader
 import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
@@ -45,7 +44,6 @@ import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.GdCommentUtil
 import gdscript.psi.utils.GdCommonUtil
 import gdscript.psi.utils.GdInheritanceUtil
-import gdscript.utils.VirtualFileUtil.localParentPath
 import gdscript.utils.VirtualFileUtil.resourcePath
 import org.jetbrains.annotations.NonNls
 import project.ProjectFileType
@@ -85,7 +83,6 @@ object GdDocFactory {
     private fun method(element: PsiElement, fullDoc: Boolean): String {
         val builder = GdDocBuilder(element)
             .withOwner(element)
-            .withPackage(element)
 
         val declaration = element.parent as GdDocumented
         var code = annotationPreview(declaration as PsiElement)
@@ -148,7 +145,6 @@ object GdDocFactory {
 
     private fun classOrFile(element: PsiElement, fullDoc: Boolean): String {
         val builder = GdDocBuilder(element)
-            .withPackage(element)
 
         val parent = GdInheritanceUtil.getExtendedClassId(element)
         val extendInfo = if (parent.isNotBlank()) " extends $parent" else ""
@@ -181,7 +177,6 @@ object GdDocFactory {
 
     private fun directory(element: PsiDirectory, fillDoc: Boolean): String {
         val builder = GdDocBuilder()
-        val currentPath = element.virtualFile.localParentPath()
 
         val scripts = mutableListOf<HtmlChunk>()
         val scenes = mutableListOf<HtmlChunk>()
@@ -201,17 +196,9 @@ object GdDocFactory {
             }
         }
 
-        val directories = element.subdirectories.mapNotNull {
-            val name = it.name
-            if (!name.startsWith("."))
-                GdDocUtil.packageLink("$currentPath/$name", name)
-            else null
-        }
-
         builder.addBodyBlock(
             GdDocUtil.listTable("scripts", scripts),
             GdDocUtil.listTable("scenes", scenes),
-            GdDocUtil.listTable("packages", directories),
             GdDocUtil.listTable("other", others),
         )
 
@@ -224,7 +211,6 @@ object GdDocFactory {
     private fun enum(element: PsiElement, fullDoc: Boolean): String {
         val declaration = PsiTreeUtil.getParentOfType(element, GdEnumDeclTl::class.java) ?: return ""
         val builder = GdDocBuilder(element)
-            .withPackage(element)
             .withOwner(element)
             .withPreview(annotationPreview(declaration) + declaration.preview())
 
@@ -247,7 +233,6 @@ object GdDocFactory {
     private fun signal(element: PsiElement, fullDoc: Boolean): String {
         val declaration = PsiTreeUtil.getParentOfType(element, GdSignalDeclTl::class.java) ?: return ""
         val builder = GdDocBuilder(element)
-            .withPackage(element)
             .withOwner(element)
             .withPreview(declaration.text)
 
@@ -324,11 +309,7 @@ object GdDocFactory {
                     val enumValueName = value.enumValueNmi.name
                     val enumValue = it.values[enumValueName]
                     HtmlChunk.fragment(
-                        if (isNamed) GdDocUtil.elementLink(
-                            "${GdDocumentationProvider.LINK_ENUM_VALUE}:$name.$enumValueName",
-                            enumValueName
-                        )
-                        else GdDocUtil.elementLink(enumValueName),
+                        GdDocUtil.elementLink(enumValueName),
                         DocumentationMarkup.GRAYED_ELEMENT.addText(" = $enumValue"),
                         GdDocUtil.appendDescription(value),
                     )
@@ -346,5 +327,4 @@ object GdDocFactory {
 
         // TODO variables & methods with descriptions
     }
-
 }
