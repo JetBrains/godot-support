@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.openapi.util.text.StringUtil
+import com.intellij.openapi.util.text.Strings
 
 /**
  * The renderer of the Godot BBCode of a `##` doc comment.
@@ -171,7 +172,7 @@ object GdBBCodeRenderer {
     }
 
     private fun normalizeCode(code: String): String {
-        return code.replace("\r\n", "\n").trimIndent()
+        return Strings.convertLineSeparators(code).trimIndent()
     }
 
     /** Replaces every key of [replacements] with its value, in the order of the map. */

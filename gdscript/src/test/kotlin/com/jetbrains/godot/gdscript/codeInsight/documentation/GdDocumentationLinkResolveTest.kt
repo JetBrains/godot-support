@@ -302,8 +302,8 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
     private fun assertLinkResolvesFromReaderModeTarget(file: PsiFile, offset: Int) {
         val target = documentationTargets(file, offset).firstOrNull()
         assertNotNull(target)
-        val resolved = DocumentationLinkHandler.EP_NAME.extensionList
-            .firstNotNullOfOrNull { it.resolveLink(target!!, "psi_element://Object") }
+        val resolved = DocumentationLinkHandler.EP_NAME
+            .computeSafeIfAny { it.resolveLink(target!!, "psi_element://Object") }
         assertNotNull(resolved)
     }
 
