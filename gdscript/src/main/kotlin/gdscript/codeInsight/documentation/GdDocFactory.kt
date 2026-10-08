@@ -95,9 +95,9 @@ object GdDocFactory {
         builder.withPreview(code)
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.description()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.description()))
         } else {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.brief()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief()))
         }
 
         return builder.toString()
@@ -135,9 +135,9 @@ object GdDocFactory {
         }
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocUtil.paragraph(GdCommentUtil.description(element.parent)))
+            builder.addBodyBlock(GdDocHtml.paragraph(GdCommentUtil.description(element.parent)))
         } else {
-            builder.addBodyBlock(GdDocUtil.paragraph(GdCommentUtil.brief(element.parent)))
+            builder.addBodyBlock(GdDocHtml.paragraph(GdCommentUtil.brief(element.parent)))
         }
 
         return builder.toString()
@@ -158,8 +158,8 @@ object GdDocFactory {
         // TODO GdFile or GdClassNaming
         if (declaration is GdDocumented) {
             if (fullDoc) {
-                builder.addBodyBlock(GdDocUtil.paragraph(declaration.description()))
-                builder.addBodyBlock(GdDocUtil.listTable(
+                builder.addBodyBlock(GdDocHtml.paragraph(declaration.description()))
+                builder.addBodyBlock(GdDocHtml.listTable(
                     "tutorials",
                     declaration.tutorials().map {
                         @NonNls val text = it.name.removeSurrounding("(", ")")
@@ -168,7 +168,7 @@ object GdDocFactory {
                 ))
                 appendProperties(builder, GdClassUtil.getOwningClassElement(element))
             } else {
-                builder.addBodyBlock(GdDocUtil.paragraph(declaration.brief()))
+                builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief()))
             }
         }
 
@@ -185,7 +185,7 @@ object GdDocFactory {
         element.files.forEach {
             val name = it.name
             when (it.fileType) {
-                is GdFileType -> scripts.add(GdDocUtil.elementLink(it.virtualFile.resourcePath(), name))
+                is GdFileType -> scripts.add(GdDocHtml.elementLink(it.virtualFile.resourcePath(), name))
                 is TscnFileType -> scenes.add(HtmlChunk.text(name))
                 is ProjectFileType -> {}
                 else -> {
@@ -197,9 +197,9 @@ object GdDocFactory {
         }
 
         builder.addBodyBlock(
-            GdDocUtil.listTable("scripts", scripts),
-            GdDocUtil.listTable("scenes", scenes),
-            GdDocUtil.listTable("other", others),
+            GdDocHtml.listTable("scripts", scripts),
+            GdDocHtml.listTable("scenes", scenes),
+            GdDocHtml.listTable("other", others),
         )
 
         return builder.toString()
@@ -219,9 +219,9 @@ object GdDocFactory {
             ?: declaration
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocUtil.paragraph(documented.description()))
+            builder.addBodyBlock(GdDocHtml.paragraph(documented.description()))
         } else {
-            builder.addBodyBlock(GdDocUtil.paragraph(documented.brief()))
+            builder.addBodyBlock(GdDocHtml.paragraph(documented.brief()))
         }
 
         return builder.toString()
@@ -237,9 +237,9 @@ object GdDocFactory {
             .withPreview(declaration.text)
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.description()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.description()))
         } else {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.brief()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief()))
         }
 
         return builder.toString()
@@ -255,8 +255,8 @@ object GdDocFactory {
         val declarations = GdClassMemberUtil.listClassMemberDeclarations(ownerElement, null, constructors = true)
 
         val variables = declarations.variables()
-        builder.addBodyBlock(GdDocUtil.propertyTable("variables", variables.map {
-            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.getName()))
+        builder.addBodyBlock(GdDocHtml.propertyTable("variables", variables.map {
+            Pair(GdDocHtml.elementLink(it.returnType), GdDocHtml.elementLink(it.getName()))
         }))
 
         val methods = mutableListOf<GdMethodDeclTl>()
@@ -266,22 +266,22 @@ object GdDocFactory {
             else methods.add(it)
         }
 
-        builder.addBodyBlock(GdDocUtil.propertyTable("constructors", constructors.map {
-            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.getName(), it.shortMethodHeader()))
+        builder.addBodyBlock(GdDocHtml.propertyTable("constructors", constructors.map {
+            Pair(GdDocHtml.elementLink(it.returnType), GdDocHtml.elementLink(it.getName(), it.shortMethodHeader()))
         }))
-        builder.addBodyBlock(GdDocUtil.propertyTable("methods", methods.map {
-            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.getName(), it.shortMethodHeader()))
+        builder.addBodyBlock(GdDocHtml.propertyTable("methods", methods.map {
+            Pair(GdDocHtml.elementLink(it.returnType), GdDocHtml.elementLink(it.getName(), it.shortMethodHeader()))
         }))
 
         // TODO operators
 
         val signals = declarations.signals()
-        builder.addBodyBlock(GdDocUtil.descriptionListTable("signals", signals.map {
+        builder.addBodyBlock(GdDocHtml.descriptionListTable("signals", signals.map {
             var name = it.getName()
             if (!name.endsWith(")")) name += "()"
             Pair(
-                GdDocUtil.elementLink(name.substringBefore("("), name),
-                HtmlChunk.raw(GdGodotDocUtil.parseStyles(it.description())),
+                GdDocHtml.elementLink(name.substringBefore("("), name),
+                HtmlChunk.raw(GdBBCodeRenderer.renderToHtml(it.description())),
             )
         }))
 
@@ -290,7 +290,7 @@ object GdDocFactory {
             *declarations.filterIsInstance<GdEnumValue>().map { it.parent as GdEnumDeclTl }.distinct().toTypedArray()
         )
 
-        builder.addBodyBlock(GdDocUtil.descriptionListsTable("enums", enums.map {
+        builder.addBodyBlock(GdDocHtml.descriptionListsTable("enums", enums.map {
             var name = it.getName()
             var isNamed = true
             if (name.isBlank()) {
@@ -302,26 +302,26 @@ object GdDocFactory {
             Pair(
                 HtmlChunk.fragment(
                     HtmlChunk.text(ENUM),
-                    if (isNamed) GdDocUtil.elementLink(it.getName()) else HtmlChunk.text(name),
-                    GdDocUtil.appendDescription(it)
+                    if (isNamed) GdDocHtml.elementLink(it.getName()) else HtmlChunk.text(name),
+                    GdDocHtml.appendDescription(it)
                 ),
                 it.enumValueList.map { value ->
                     val enumValueName = value.enumValueNmi.name
                     val enumValue = it.values[enumValueName]
                     HtmlChunk.fragment(
-                        GdDocUtil.elementLink(enumValueName),
+                        GdDocHtml.elementLink(enumValueName),
                         DocumentationMarkup.GRAYED_ELEMENT.addText(" = $enumValue"),
-                        GdDocUtil.appendDescription(value),
+                        GdDocHtml.appendDescription(value),
                     )
                 }
             )
         }))
 
         val consts = declarations.constants()
-        builder.addBodyBlock(GdDocUtil.descriptionListTable("constants", consts.map {
+        builder.addBodyBlock(GdDocHtml.descriptionListTable("constants", consts.map {
             Pair(
-                GdDocUtil.elementLink(it.getName(), it.text.trim()),
-                HtmlChunk.raw(GdGodotDocUtil.parseStyles(it.description())),
+                GdDocHtml.elementLink(it.getName(), it.text.trim()),
+                HtmlChunk.raw(GdBBCodeRenderer.renderToHtml(it.description())),
             )
         }))
 
