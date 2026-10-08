@@ -37,7 +37,7 @@ object GdDocCode {
             val style = attributeCache.getOrPut(type) { buildStyle(iterator.textAttributes) }
             @NlsSafe val text = code.substring(iterator.start, iterator.end)
             val block =
-                    if (type == GdTypes.IDENTIFIER && resolveAfter.contains(lastType)) GdDocUtil.elementLink(text)
+                    if (type == GdTypes.IDENTIFIER && resolveAfter.contains(lastType)) GdDocHtml.elementLink(text)
                     else HtmlChunk.text(text)
 
             spans.add(HtmlChunk.tag("span").style(style).child(block))
