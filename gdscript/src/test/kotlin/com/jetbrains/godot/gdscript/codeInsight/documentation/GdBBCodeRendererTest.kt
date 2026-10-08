@@ -1,5 +1,6 @@
 package com.jetbrains.godot.gdscript.codeInsight.documentation
 
+import com.intellij.openapi.util.text.HtmlChunk
 import gdscript.codeInsight.documentation.GdDocHtml
 import gdscript.codeInsight.documentation.GdBBCodeRenderer
 import org.junit.Assert.assertEquals
@@ -116,6 +117,46 @@ class GdBBCodeRendererTest {
         assertTrue(parsed.contains("<ul>"))
         assertTrue(parsed.contains("<li>first item</li>"))
         assertTrue(parsed.contains("<li>second item</li>"))
+    }
+
+    /** A second marker belongs to the text of the bullet, so only the first one goes away. */
+    @Test
+    fun testBulletListStripsOneMarkerOnly() {
+        val parsed = GdDocHtml.paragraph("- * double marker\n* - double marker").toString()
+        assertTrue(parsed, parsed.contains("<li>* double marker</li>"))
+        assertTrue(parsed, parsed.contains("<li>- double marker</li>"))
+    }
+
+    /**
+     * A container type links to its element type.
+     * A malformed type, such as `Array[`, must not throw, and a `Dictionary` links to the container.
+     */
+    @Test
+    fun testContainerTypeLinks() {
+        assertEquals("psi_element://int", href(GdDocHtml.elementLink("Array[int]")))
+        assertEquals("psi_element://int", href(GdDocHtml.elementLink("Array[Array[int]]")))
+        assertEquals("psi_element://Array", href(GdDocHtml.elementLink("Array[]")))
+        assertEquals("psi_element://Array", href(GdDocHtml.elementLink("Array[")))
+        assertEquals("psi_element://int", href(GdDocHtml.elementLink("Array[int")))
+        assertEquals("psi_element://Dictionary", href(GdDocHtml.elementLink("Dictionary[String, int]")))
+        assertEquals("psi_element://Node", href(GdDocHtml.elementLink("Node")))
+    }
+
+    /** The reported line that broke the rendering with an exception. */
+    @Test
+    fun testMalformedContainerTypesInProse() {
+        val parsed = GdBBCodeRenderer.renderToHtml(
+            "Bad types: [Array[], [Array[int], [Array[Array[int]]], [Dictionary[String, int]]."
+        )
+
+        assertTrue(parsed, parsed.contains("psi_element://Array\""))
+        assertTrue(parsed, parsed.contains("psi_element://int\""))
+        assertTrue(parsed, parsed.contains("psi_element://Dictionary\""))
+    }
+
+    private fun href(link: HtmlChunk): String {
+        val html = link.toString()
+        return Regex("href=\"([^\"]*)\"").find(html)!!.groupValues[1]
     }
 
     @Test

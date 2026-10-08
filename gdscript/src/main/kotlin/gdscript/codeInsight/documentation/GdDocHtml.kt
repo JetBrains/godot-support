@@ -15,11 +15,31 @@ import java.util.Locale.getDefault
  */
 object GdDocHtml {
 
-    fun elementLink(reference: String, @NlsSafe label: String? = null): HtmlChunk {
-        var parsedReference = reference
-        if (reference.startsWith("Array[")) parsedReference = reference.substring(6, reference.length - 1)
+    private val CONTAINER_TYPE_REGEX = "(Array|Dictionary)\\[(.*?)]?".toRegex()
 
-        return HtmlChunk.link(DocumentationManagerProtocol.PSI_ELEMENT_PROTOCOL + parsedReference, label ?: reference)
+    /**
+     * A link to the declaration of [reference], with [label] as the text.
+     * A container type, such as `Array[int]`, links to its element type, because the container has no declaration.
+     */
+    fun elementLink(reference: String, @NlsSafe label: String? = null): HtmlChunk {
+        val target = DocumentationManagerProtocol.PSI_ELEMENT_PROTOCOL + linkTarget(reference)
+        return HtmlChunk.link(target, label ?: reference)
+    }
+
+    /**
+     * The declaration that a type name points to.
+     * It unwraps every level of `Array[...]`.
+     * It keeps the container name when the type has two parameters, such as `Dictionary[String, int]`,
+     * or when the type is malformed, such as `Array[`.
+     */
+    private fun linkTarget(reference: String): String {
+        var result = reference
+        while (true) {
+            val match = CONTAINER_TYPE_REGEX.matchEntire(result) ?: return result
+            val element = match.groupValues[2].trim()
+            if (element.isEmpty() || element.contains(',')) return match.groupValues[1]
+            result = element
+        }
     }
 
     fun typedElementLink(kind: String, reference: String, @NlsSafe label: String? = null): HtmlChunk {
@@ -148,9 +168,10 @@ object GdDocHtml {
         return trimmed.startsWith("- ") || trimmed.startsWith("* ")
     }
 
+    /** The text of a bullet line, without its own marker. A second marker belongs to the text. */
     private fun bulletContent(line: String): String {
         val trimmed = line.trimStart()
-        return trimmed.removePrefix("- ").removePrefix("* ")
+        return if (trimmed.startsWith("- ")) trimmed.substring(2) else trimmed.removePrefix("* ")
     }
 
     fun appendDescription(element: GdDocumented): HtmlChunk {
