@@ -60,11 +60,11 @@ fun findGdDocComment(file: PsiFile, range: TextRange): GdVirtualDocComment? {
 fun renderGdDocComment(comment: GdVirtualDocComment): String {
     val model = GdCommentUtil.collectComments(comment.comments)
     return buildString {
-        append(GdDocUtil.paragraph(model.description, comment.project))
+        append(GdDocHtml.paragraph(model.description, comment.project))
         if (model.tutorials.isNotEmpty()) {
-            append(GdDocUtil.listTable(
+            append(GdDocHtml.listTable(
                 "tutorials",
-                model.tutorials.map { HtmlChunk.link(GdGodotDocUtil.expandDocsUrl(it.url), it.name) },
+                model.tutorials.map { HtmlChunk.link(GdBBCodeRenderer.expandDocsUrl(it.url), it.name) },
             ))
         }
     }.also { LOG.trace { "renderGdDocComment: comment=${comment.text}, rendered.length=${it.length}" } }
