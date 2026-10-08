@@ -8,7 +8,7 @@ import com.intellij.psi.StubBasedPsiElement
 import com.intellij.psi.TokenType
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
-import gdscript.codeInsight.documentation.GdGodotDocUtil
+import gdscript.codeInsight.documentation.GdBBCodeRenderer
 import gdscript.model.GdCommentModel
 import gdscript.model.GdTutorial
 import gdscript.psi.GdClassNaming
@@ -233,7 +233,7 @@ object GdCommentUtil {
                     if (!descriptions.containsKey(prefix)) prefix = DESCRIPTION
                     else text = text.substringAfter(" ")
                     if (prefix != TUTORIAL) {
-                        text = GdGodotDocUtil.parseStyles(text)
+                        text = GdBBCodeRenderer.renderToHtml(text)
                     }
 
                     (descriptions[prefix]!!).add(0, text)

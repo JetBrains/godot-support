@@ -4,7 +4,7 @@ import com.intellij.diagnostic.rethrowControlFlowException
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.vfs.InvalidVirtualFileAccessException
 import com.intellij.openapi.vfs.VirtualFile
-import gdscript.codeInsight.documentation.GdGodotDocUtil
+import gdscript.codeInsight.documentation.GdBBCodeRenderer
 import gdscript.embeddedDocs.newHardenedDocumentBuilderFactory
 import gdscript.model.GdTutorial
 import org.w3c.dom.Element
@@ -379,7 +379,7 @@ object GdSdkXmlParser {
             tutorials.add(
                 GdTutorial(
                     name = getTitle(node),
-                    url = GdGodotDocUtil.expandDocsUrl(getTextContent(node)),
+                    url = GdBBCodeRenderer.expandDocsUrl(getTextContent(node)),
                 )
             )
         }

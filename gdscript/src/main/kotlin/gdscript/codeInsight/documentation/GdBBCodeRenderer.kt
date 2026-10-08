@@ -7,7 +7,12 @@ import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.openapi.util.text.StringUtil
 
-object GdGodotDocUtil {
+/**
+ * The renderer of the Godot BBCode of a `##` doc comment.
+ * [renderToHtml] converts a style tag, a reference such as `[member x]`, a URL and a code block to HTML.
+ * [GdDocHtml] lays the result out in the popup.
+ */
+object GdBBCodeRenderer {
     private const val DOCS_BASE_URL = "https://docs.godotengine.org/en/stable"
     private const val DOCS_URL_PLACEHOLDER = $$"$DOCS_URL"
 
@@ -32,8 +37,9 @@ object GdGodotDocUtil {
     @NlsSafe
     fun expandDocsUrl(url: String): String = url.replace(DOCS_URL_PLACEHOLDER, DOCS_BASE_URL)
 
+    /** Converts the Godot BBCode of [text] to the HTML of the documentation popup. */
     @NlsSafe
-    fun parseStyles(text: String, project: Project? = null): String {
+    fun renderToHtml(text: String, project: Project? = null): String {
         val protected = ArrayList<String>()
         var parsed = protectCodeRegions(text, project, protected)
 
@@ -68,7 +74,7 @@ object GdGodotDocUtil {
         parsed = dynamicReference.replace(parsed) { match ->
             val kind = match.groupValues[1]
             val referenced = match.groupValues[2]
-            val link = GdDocUtil.typedElementLink(kind, referenced)
+            val link = GdDocHtml.typedElementLink(kind, referenced)
             link.toString()
         }
 
@@ -79,7 +85,7 @@ object GdGodotDocUtil {
             if (full.contains(PLACEHOLDER_PREFIX) || full.startsWith("[/")) return@replace full
             val value = match.groupValues[1]
             if (value.contains('<') || value.contains('>')) return@replace full
-            val link = GdDocUtil.elementLink(value)
+            val link = GdDocHtml.elementLink(value)
             link.toString()
         }
 
@@ -100,11 +106,11 @@ object GdGodotDocUtil {
         // [img]res://path[/img] and [code]res://path[/code] become links to the resource.
         result = imgTag.replace(result) { match ->
             val path = match.groupValues[1].trim()
-            if (path.startsWith("res://")) placeholder(GdDocUtil.elementLink(path).toString(), protected) else match.value
+            if (path.startsWith("res://")) placeholder(GdDocHtml.elementLink(path).toString(), protected) else match.value
         }
         result = resourceCodeTag.replace(result) { match ->
             val path = match.groupValues[1].trim()
-            placeholder(GdDocUtil.elementLink(path).toString(), protected)
+            placeholder(GdDocHtml.elementLink(path).toString(), protected)
         }
         result = inlineCodeTag.replace(result) { match ->
             val code = match.groupValues[1]
