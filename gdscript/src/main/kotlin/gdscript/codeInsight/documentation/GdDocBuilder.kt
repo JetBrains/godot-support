@@ -28,9 +28,9 @@ class GdDocBuilder {
      */
     fun withOwner(element: PsiElement?): GdDocBuilder {
         if (element == null) return this
-        val body = GdDocUtil.iconed("AllIcons.Nodes.Class")
+        val body = GdDocHtml.iconed("AllIcons.Nodes.Class")
         val link = GdClassUtil.getFullClassId(element)
-        body.add(GdDocUtil.elementLink(link, GdClassUtil.getOwningClassName(element)))
+        body.add(GdDocHtml.elementLink(link, GdClassUtil.getOwningClassName(element)))
         owner = HtmlChunk.div().children(body)
         return this
     }
