@@ -79,6 +79,33 @@ class GdReaderModeTest : BasePlatformTestCase() {
         assertTrue(rendered.contains("This is a description."))
     }
 
+    /**
+     * A malformed container type must not break the rendering, and a second bullet marker belongs to the text.
+     * `[Array[]` once made the link builder read past the end of the type name.
+     */
+    @Test
+    fun testGenerateRenderedDocWithMalformedTypesAndDoubleBullets() {
+        val file = myFixture.configureByText(
+            "malformedDoc.gd",
+            "extends Node\n\n" +
+                "## Bad types: [Array[], [Array[int], [Array[Array[int]]], [Dictionary[String, int]].\n" +
+                "## Bullets:\n" +
+                "## - * double marker\n" +
+                "## * - double marker\n" +
+                "func demo():\n\tpass\n",
+        )
+        val offset = file.text.indexOf("Bad types")
+        val comment = findGdDocComment(file, TextRange(offset, offset + 1))
+        assertNotNull(comment)
+
+        val rendered = renderGdDocComment(comment!!)
+        assertTrue(rendered, rendered.contains("psi_element://Array\""))
+        assertTrue(rendered, rendered.contains("psi_element://int\""))
+        assertTrue(rendered, rendered.contains("psi_element://Dictionary\""))
+        assertTrue(rendered, rendered.contains("<li>* double marker</li>"))
+        assertTrue(rendered, rendered.contains("<li>- double marker</li>"))
+    }
+
     @Test
     fun testReaderModeRenderingIsIndependentOfLspMode() {
         val file = myFixture.configureByFile("documentation_comments.gd")
