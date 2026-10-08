@@ -33,6 +33,30 @@ object GdBBCodeRenderer {
 
     private const val PLACEHOLDER_PREFIX = "\uE000GDCODE"
     private const val PLACEHOLDER_SUFFIX = "\uE001"
+    private val placeholderRegex = "$PLACEHOLDER_PREFIX(\\d+)$PLACEHOLDER_SUFFIX".toRegex()
+
+    /** A tag with a fixed HTML form. [renderToHtml] replaces each pair in this order. */
+    private val STYLE_TAGS: Map<String, String> = linkedMapOf(
+        "[b]" to "<strong>",
+        "[/b]" to "</strong>",
+        "[i]" to "<a style=\"font-style: italic;\">",
+        "[/i]" to "</a>",
+        "[u]" to "<u>",
+        "[/u]" to "</u>",
+        "[s]" to "<s>",
+        "[/s]" to "</s>",
+        "[br]" to "<br>",
+        "[center]" to "<div style=\"text-align: center;\">",
+        "[/center]" to "</div>",
+        "[kbd]" to "<code style=\"background: rgba(128,128,128,0.2); padding: 1px 4px; border-radius: 3px;\">",
+        "[/kbd]" to "</code>",
+    )
+
+    /** A tag that escapes a literal bracket. A placeholder hides the entity from the reference rules. */
+    private val BRACKET_ESCAPE_TAGS: Map<String, String> = linkedMapOf(
+        "[lb]" to "&#91;",
+        "[rb]" to "&#93;",
+    )
 
     @NlsSafe
     fun expandDocsUrl(url: String): String = url.replace(DOCS_URL_PLACEHOLDER, DOCS_BASE_URL)
@@ -43,18 +67,7 @@ object GdBBCodeRenderer {
         val protected = ArrayList<String>()
         var parsed = protectCodeRegions(text, project, protected)
 
-        parsed = parsed.replace("[b]", "<strong>")
-            .replace("[/b]", "</strong>")
-            .replace("[i]", "<a style=\"font-style: italic;\">")
-            .replace("[/i]", "</a>")
-            .replace("[u]", "<u>")
-            .replace("[/u]", "</u>")
-            .replace("[s]", "<s>")
-            .replace("[/s]", "</s>")
-            .replace("[center]", "<div style=\"text-align: center;\">")
-            .replace("[/center]", "</div>")
-            .replace("[kbd]", "<code style=\"background: rgba(128,128,128,0.2); padding: 1px 4px; border-radius: 3px;\">")
-            .replace("[/kbd]", "</code>")
+        parsed = parsed.replaceAll(STYLE_TAGS)
 
         // [color=X]...[/color]
         parsed = colorTag.replace(parsed) { match ->
@@ -122,6 +135,10 @@ object GdBBCodeRenderer {
             }
             placeholder(rendered, protected)
         }
+        for ((tag, entity) in BRACKET_ESCAPE_TAGS) {
+            if (!result.contains(tag)) continue
+            result = result.replace(tag, placeholder(entity, protected))
+        }
 
         return result
     }
@@ -157,6 +174,10 @@ object GdBBCodeRenderer {
         return code.replace("\r\n", "\n").trimIndent()
     }
 
+    /** Replaces every key of [replacements] with its value, in the order of the map. */
+    private fun String.replaceAll(replacements: Map<String, String>): String =
+        replacements.entries.fold(this) { text, (from, to) -> text.replace(from, to) }
+
     private fun placeholder(html: String, protected: MutableList<String>): String {
         val index = protected.size
         protected.add(html)
@@ -164,8 +185,7 @@ object GdBBCodeRenderer {
     }
 
     private fun restorePlaceholders(text: String, protected: List<String>): String {
-        val placeholder = "\uE000GDCODE(\\d+)\uE001".toRegex()
-        return placeholder.replace(text) { match ->
+        return placeholderRegex.replace(text) { match ->
             protected.getOrNull(match.groupValues[1].toInt()) ?: match.value
         }
     }
