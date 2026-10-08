@@ -1,7 +1,7 @@
 package com.jetbrains.godot.gdscript.codeInsight.documentation
 
-import gdscript.codeInsight.documentation.GdDocUtil
-import gdscript.codeInsight.documentation.GdGodotDocUtil
+import gdscript.codeInsight.documentation.GdDocHtml
+import gdscript.codeInsight.documentation.GdBBCodeRenderer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -9,46 +9,46 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-/** Covers the Godot BBCode subset supported by [GdGodotDocUtil.parseStyles]. */
+/** Covers the Godot BBCode subset supported by [GdBBCodeRenderer.renderToHtml]. */
 @RunWith(JUnit4::class)
-class GdGodotDocUtilTest {
+class GdBBCodeRendererTest {
 
     @Test
     fun testUnderline() {
-        val parsed = GdGodotDocUtil.parseStyles("[u]underlined[/u]")
+        val parsed = GdBBCodeRenderer.renderToHtml("[u]underlined[/u]")
         assertEquals("<u>underlined</u>", parsed)
     }
 
     @Test
     fun testStrikethrough() {
-        val parsed = GdGodotDocUtil.parseStyles("[s]struck[/s]")
+        val parsed = GdBBCodeRenderer.renderToHtml("[s]struck[/s]")
         assertEquals("<s>struck</s>", parsed)
     }
 
     @Test
     fun testColor() {
-        val parsed = GdGodotDocUtil.parseStyles("[color=red]warning[/color]")
+        val parsed = GdBBCodeRenderer.renderToHtml("[color=red]warning[/color]")
         assertTrue(parsed.contains("color: red;"))
         assertTrue(parsed.contains("warning"))
     }
 
     @Test
     fun testUrlWithHref() {
-        val parsed = GdGodotDocUtil.parseStyles("[url=https://godotengine.org]Godot[/url]")
+        val parsed = GdBBCodeRenderer.renderToHtml("[url=https://godotengine.org]Godot[/url]")
         assertTrue(parsed.contains("https://godotengine.org"))
         assertTrue(parsed.contains("Godot"))
     }
 
     @Test
     fun testUrlPlain() {
-        val parsed = GdGodotDocUtil.parseStyles("[url]https://godotengine.org[/url]")
+        val parsed = GdBBCodeRenderer.renderToHtml("[url]https://godotengine.org[/url]")
         assertTrue(parsed.contains("https://godotengine.org"))
     }
 
     @Test
     fun testDocsUrlPlaceholderInUrlTag() {
         val docsUrlPlaceholder = "$" + "DOCS_URL"
-        val parsed = GdGodotDocUtil.parseStyles(
+        val parsed = GdBBCodeRenderer.renderToHtml(
             "[url=$docsUrlPlaceholder/tutorials/plugins/running_code_in_the_editor.html#instancing-scenes]Instancing scenes[/url]"
         )
 
@@ -59,21 +59,21 @@ class GdGodotDocUtilTest {
 
     @Test
     fun testParamReference() {
-        val parsed = GdGodotDocUtil.parseStyles("See [param value].")
+        val parsed = GdBBCodeRenderer.renderToHtml("See [param value].")
         assertTrue(parsed.contains("value"))
         assertFalse(parsed.contains("[param"))
     }
 
     @Test
     fun testSignalReference() {
-        val parsed = GdGodotDocUtil.parseStyles("Emits [signal changed].")
+        val parsed = GdBBCodeRenderer.renderToHtml("Emits [signal changed].")
         assertTrue(parsed.contains("changed"))
         assertFalse(parsed.contains("[signal"))
     }
 
     @Test
     fun testReferenceLinksKeepKindAndQualifiedTarget() {
-        val parsed = GdGodotDocUtil.parseStyles(
+        val parsed = GdBBCodeRenderer.renderToHtml(
             "See [Node], [method Object.free], [member Node.owner], and [method _ready]."
         )
 
@@ -85,7 +85,7 @@ class GdGodotDocUtilTest {
 
     @Test
     fun testReferenceLinksKeepSpecialClassName() {
-        val parsed = GdGodotDocUtil.parseStyles("See [method @GlobalScope.print].")
+        val parsed = GdBBCodeRenderer.renderToHtml("See [method @GlobalScope.print].")
 
         assertTrue(parsed.contains("psi_element://method:@GlobalScope.print"))
         assertTrue(parsed.contains("@GlobalScope.print"))
@@ -93,7 +93,7 @@ class GdGodotDocUtilTest {
 
     @Test
     fun testThemeItemReference() {
-        val parsed = GdGodotDocUtil.parseStyles("Uses [theme_item font_color].")
+        val parsed = GdBBCodeRenderer.renderToHtml("Uses [theme_item font_color].")
         assertTrue(parsed.contains("font_color"))
         assertFalse(parsed.contains("[theme_item"))
     }
@@ -101,7 +101,7 @@ class GdGodotDocUtilTest {
     /** Realistic sample, close to the `global_rotation` doc comment quoted in the ticket. */
     @Test
     fun testTicketSample() {
-        val parsed = GdGodotDocUtil.parseStyles(
+        val parsed = GdBBCodeRenderer.renderToHtml(
             "Global rotation, see [url=https://docs.godotengine.org]docs[/url]. " +
                 "[b]Note:[/b] the value returned is [member rotation]."
         )
@@ -112,7 +112,7 @@ class GdGodotDocUtilTest {
 
     @Test
     fun testBulletList() {
-        val parsed = GdDocUtil.paragraph("- first item\n- second item").toString()
+        val parsed = GdDocHtml.paragraph("- first item\n- second item").toString()
         assertTrue(parsed.contains("<ul>"))
         assertTrue(parsed.contains("<li>first item</li>"))
         assertTrue(parsed.contains("<li>second item</li>"))
@@ -120,14 +120,14 @@ class GdGodotDocUtilTest {
 
     @Test
     fun testInlineCodeIsCodeNotItalic() {
-        val parsed = GdGodotDocUtil.parseStyles("Returns [code]null[/code] on failure.")
+        val parsed = GdBBCodeRenderer.renderToHtml("Returns [code]null[/code] on failure.")
         assertTrue(parsed.contains("<code>null</code>"))
         assertFalse(parsed.contains("<i>null</i>"))
     }
 
     @Test
     fun testCodeblockRendersAsPreformatted() {
-        val parsed = GdGodotDocUtil.parseStyles(
+        val parsed = GdBBCodeRenderer.renderToHtml(
             """
             Example:
             [codeblock]
@@ -168,8 +168,8 @@ class GdGodotDocUtilTest {
             [/codeblocks]
         """.trimIndent()
 
-        val parsed = GdGodotDocUtil.parseStyles(source)
-        val paragraph = GdDocUtil.paragraph(source).toString()
+        val parsed = GdBBCodeRenderer.renderToHtml(source)
+        val paragraph = GdDocHtml.paragraph(source).toString()
 
         assertTrue(parsed.contains("<pre><code>"))
         assertTrue(parsed.contains("<strong>GDScript</strong>"))
@@ -185,7 +185,7 @@ class GdGodotDocUtilTest {
 
     @Test
     fun testCodeblockPreservesRelativeIndent() {
-        val parsed = GdGodotDocUtil.parseStyles(
+        val parsed = GdBBCodeRenderer.renderToHtml(
             """
             [gdscript]
             func f():

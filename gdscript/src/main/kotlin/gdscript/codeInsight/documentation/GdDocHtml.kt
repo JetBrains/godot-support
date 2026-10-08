@@ -8,8 +8,12 @@ import com.intellij.openapi.util.text.HtmlChunk
 import gdscript.psi.types.GdDocumented
 import java.util.Locale.getDefault
 
-object GdDocUtil {
-
+/**
+ * The HTML vocabulary of the quick documentation popup.
+ * It builds a link, a table and a paragraph with [DocumentationMarkup].
+ * It knows no Godot markup. [GdBBCodeRenderer] converts that markup first.
+ */
+object GdDocHtml {
 
     fun elementLink(reference: String, @NlsSafe label: String? = null): HtmlChunk {
         var parsedReference = reference
@@ -95,7 +99,7 @@ object GdDocUtil {
     fun paragraph(description: String, project: Project? = null): HtmlChunk {
         // Parse the full description first so multi-line [codeblock]/[codeblocks] stay one unit
         // and brackets inside code samples are not treated as type links.
-        val parsed = GdGodotDocUtil.parseStyles(description, project)
+        val parsed = GdBBCodeRenderer.renderToHtml(description, project)
         // Keep <pre> bodies on one logical line so per-line <br> insertion cannot break them.
         val lines = maskNewlinesInsidePre(parsed).split("\n")
         val blocks = buildList<HtmlChunk> {
@@ -157,7 +161,7 @@ object GdDocUtil {
         if (description.isNullOrBlank()) return HtmlChunk.empty()
         return HtmlChunk.fragment(
             HtmlChunk.br(),
-            DocumentationMarkup.GRAYED_ELEMENT.addRaw(GdGodotDocUtil.parseStyles(description)),
+            DocumentationMarkup.GRAYED_ELEMENT.addRaw(GdBBCodeRenderer.renderToHtml(description)),
         )
     }
 
