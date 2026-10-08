@@ -154,6 +154,22 @@ class GdBBCodeRendererTest {
         assertTrue(parsed, parsed.contains("psi_element://Dictionary\""))
     }
 
+    /** `[br]` is a line break. The free-reference rule must not turn it into a link. */
+    @Test
+    fun testLineBreakTag() {
+        val parsed = GdBBCodeRenderer.renderToHtml("First line.[br]Second line.[br][br]Third line.")
+
+        assertEquals("First line.<br>Second line.<br><br>Third line.", parsed)
+    }
+
+    /** `[lb]` and `[rb]` are the escapes of a literal bracket. */
+    @Test
+    fun testBracketEscapeTags() {
+        val parsed = GdBBCodeRenderer.renderToHtml("Use [lb]0[rb] for the first item.")
+
+        assertEquals("Use &#91;0&#93; for the first item.", parsed)
+    }
+
     private fun href(link: HtmlChunk): String {
         val html = link.toString()
         return Regex("href=\"([^\"]*)\"").find(html)!!.groupValues[1]
