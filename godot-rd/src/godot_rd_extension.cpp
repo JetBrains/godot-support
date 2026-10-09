@@ -90,37 +90,42 @@ void GodotRdExtension::open_in_godot(const String &path) {
 	const String resource_path = ProjectSettings::get_singleton()->localize_path(path);
 	auto extension = path.get_extension();
 	auto *editor = EditorInterface::get_singleton();
-	auto focus_guard = Utils::ScopeGuard([] { Utils::focus_godot(); });
-	if (is_scene(extension)) {
-		editor->open_scene_from_path(resource_path);
-		return;
-	}
 	auto focus_in_dock = [editor, resource_path] {
 		// Note this is safe even when the file system dock is closed.
 		auto *dock = editor->get_file_system_dock();
 		dock->navigate_to_path(resource_path);
 		dock->make_visible();
 	};
+	// Always reveal the file in the dock, regardless of how it ends up being opened.
+	auto focus_guard = Utils::ScopeGuard([&focus_in_dock] {
+		focus_in_dock();
+		Utils::focus_godot();
+	});
+	
+	if (is_scene(extension)) {
+		editor->open_scene_from_path(resource_path);
+		return;
+	}
+	
 	auto *resource_loader = ResourceLoader::get_singleton();
 	if (!resource_loader->exists(resource_path)) {
-		focus_in_dock();
 		return;
 	}
 	if (extension == "gd") {
 		// If the user has set Rider as external editor, then opening the
 		// script with edit_script just pings back to rider.
 		if (_external_editor_turned_on()) {
-			focus_in_dock();
 			return;
 		}
 		Ref<Script> script = resource_loader->load(resource_path);
+		// edit_script only opens the script in the script editor, it does not switch the main screen to it.
+		editor->set_main_screen_editor("Script");
 		editor->edit_script(script);
 		return;
 	}
 	// Godot does not have good support for cs files
 	// it opens them pretty much as text files.
 	if (extension == "cs") {
-		focus_in_dock();
 		return;
 	}
 	Ref<Resource> resource = resource_loader->load(resource_path);
@@ -130,7 +135,6 @@ void GodotRdExtension::open_in_godot(const String &path) {
 			return;
 		}
 	}
-	focus_in_dock();
 }
 
 void GodotRdExtension::set_new_node_opened_callback(std::function<void(Node *)> callback) {

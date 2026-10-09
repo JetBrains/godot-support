@@ -1,6 +1,5 @@
 package gdscript.polySymbols.psi
 
-import com.intellij.lang.documentation.psi.createPsiDocumentationTarget
 import com.intellij.model.Pointer
 import com.intellij.model.Symbol
 import com.intellij.openapi.project.Project
@@ -10,12 +9,12 @@ import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolScope
 import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
 import com.intellij.psi.PsiElement
+import gdscript.codeInsight.gdDocumentationTarget
 import gdscript.polySymbols.GdNavigationElementProperty
 import gdscript.polySymbols.GdPolySymbol
 import gdscript.polySymbols.GdPsiSourceElementProperty
 import gdscript.psi.GdNamedElement
 import gdscript.psi.utils.GdCommonUtil
-import gdscript.settings.GdProjectSettingsState
 
 /**
  * A GDScript declaration that a [PsiElement] backs.
@@ -39,11 +38,7 @@ abstract class GdPsiPolySymbol : GdPolySymbol(), PolySymbolDeclaredInPsi {
     override val returnType: String get() = GdCommonUtil.returnType(sourceElement.parent)
 
     override fun getDocumentationTarget(location: PsiElement?): DocumentationTarget? =
-        if (GdProjectSettingsState.getInstance(project).usesLspDocs()) {
-            null
-        } else {
-            createPsiDocumentationTarget(sourceElement, psiContext)
-        }
+        gdDocumentationTarget(sourceElement)
 
     /**
      * Exposes [sourceElement]'s own dictionary-literal value (if it has one) as a

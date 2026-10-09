@@ -9,6 +9,8 @@ import java.nio.file.Path
  */
 class XmlToGd {
 
+    private val csharpCodeBlock = "(?s)\\[csharp].*?\\[/csharp]\\s*".toRegex()
+
     /**
      * Converts an XML file to GDScript content
      * Parameters: path — The path to the XML file
@@ -51,6 +53,8 @@ class XmlToGd {
         addProperties(sb, clazz.properties)
 
         addMethods(sb, clazz.methods)
+
+        addAnnotations(sb, clazz.annotations)
 
         return sb.toString()
     }
@@ -238,16 +242,58 @@ class XmlToGd {
         sb.appendLine()
     }
 
+    /**
+     * GDScript has no syntax to declare an annotation.
+     * Each annotation gets its `##` description and a plain `# @name(params)` comment as the anchor.
+     */
+    private fun addAnnotations(sb: StringBuilder, annotations: List<GdSdkData.AnnotationData>) {
+        if (annotations.isEmpty()) return
+        sb.appendLine()
+        val annotationsRegionName = "Annotations"
+        addStartRegion(sb, annotationsRegionName)
+        sb.appendLine()
+        annotations.forEach { annotation ->
+            addMemberDocumentation(sb, annotation.description, isDeprecated = false, isExperimental = false)
+            val params = annotation.parameters.mapIndexed { i, param ->
+                val name = GdNameSanitizer.sanitizeParameterName(param.name)
+                if (annotation.isVariadic && i == annotation.parameters.lastIndex) "...$name: ${param.type.name}"
+                else "$name: ${param.type.name}" + (param.default?.takeIf { it.isNotEmpty() }?.let { " = $it" } ?: "")
+            }
+            val paramsList = if (annotation.isVariadic && params.isEmpty()) "...args: Array" else params.joinToString(", ")
+            sb.appendLine("# @${annotation.name}" + if (paramsList.isEmpty()) "" else "($paramsList)")
+            sb.appendLine()
+        }
+        addEndRegion(sb, annotationsRegionName)
+        sb.appendLine()
+    }
+
     private fun addDescription(sb: StringBuilder, description: String?, prefix: String = "") {
-        description?.lines()?.forEach {
-            val trimmed = it.trim()
-            if (trimmed.isEmpty()) {
+        val lines = description?.replace(csharpCodeBlock, "")?.lines() ?: return
+        // Keep relative indentation inside docs (code samples), but drop the shared leading indent.
+        val commonIndent = lines.drop(1)
+            .filterNot { it.isBlank() }
+            .minOfOrNull { leadingWhitespaceLength(it) }
+            ?: 0
+
+        lines.forEachIndexed { index, line ->
+            val leadingLength = leadingWhitespaceLength(line)
+            val content = line.drop(leadingLength).trimEnd()
+            val relativeLeading = if (index == 0) {
+                line.take(leadingLength)
+            }
+            else {
+                line.take(leadingLength).drop(commonIndent.coerceAtMost(leadingLength))
+            }
+            if (content.isEmpty()) {
                 sb.appendLine("##")
             } else {
-                sb.appendLine("$prefix## $trimmed")
+                sb.appendLine("$prefix## $relativeLeading$content")
             }
         }
     }
+
+    private fun leadingWhitespaceLength(line: String): Int =
+        line.indexOfFirst { it != ' ' && it != '\t' }.let { if (it < 0) line.length else it }
 
     private fun addStartRegion(sb: StringBuilder, name: String) {
         sb.appendLine("#region $name")

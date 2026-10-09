@@ -27,11 +27,13 @@
     <module name="intellij.platform.analysis"/>
     <module name="intellij.platform.codeStyle"/>
     <module name="intellij.platform.codeStyle.impl"/>
+    <module name="intellij.platform.concurrency"/>
     <module name="intellij.platform.core"/>
     <module name="intellij.platform.core.impl"/>
     <module name="intellij.platform.core.ui"/>
     <module name="intellij.platform.credentialStore.impl"/>
     <module name="intellij.platform.dap"/>
+    <module name="intellij.platform.dap.protocol"/>
     <module name="intellij.platform.debugger"/>
     <module name="intellij.platform.debugger.impl"/>
     <module name="intellij.platform.editor.ui"/>
@@ -71,7 +73,7 @@
     <lang.syntaxHighlighterFactory language="GdScript"
                                    implementationClass="gdscript.highlighter.GdSyntaxHighlighterFactory"/>
     <annotator language="GdScript" implementationClass="gdscript.highlighter.GdColorAnnotator"/>
-    <colorSettingsPage implementation="gdscript.highlighter.GdColorSettingsPage"/>
+    <colorSettings implementation="gdscript.highlighter.GdColorSettingsPage" displayName="GdScript"/>
     <additionalTextAttributes scheme="Default" file="colorSchemes/GdLightColorScheme.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colorSchemes/GdDarculaColorScheme.xml"/>
     <lang.commenter language="GdScript" implementationClass="gdscript.formatter.GdCommenter"/>
@@ -84,7 +86,11 @@
     <liveTemplateContext contextId="GDSCRIPT" implementation="gdscript.GdTemplateContextType"/>
     <codeInsight.parameterInfo language="GdScript" id="GdParameterInfoHandler"
                                implementationClass="gdscript.codeInsight.GdParameterInfoHandler"/>
-    <lang.documentationProvider language="GdScript" implementationClass="gdscript.codeInsight.GdDocumentationProvider"/>
+    <platform.backend.documentation.psiTargetProvider implementation="gdscript.codeInsight.GdDocumentationTargetProvider"/>
+    <platform.backend.documentation.targetProvider implementation="gdscript.codeInsight.GdOffsetDocumentationTargetProvider"/>
+    <platform.backend.documentation.linkHandler implementation="gdscript.codeInsight.GdDocumentationLinkHandler"/>
+    <platform.backend.documentation.inlineDocumentationProvider
+        implementation="gdscript.codeInsight.documentation.GdInlineDocumentationProvider"/>
     <codeInsight.parameterNameHints language="GdScript"
                                     implementationClass="gdscript.codeInsight.GdInlayParameterHintProvider"/>
     <lang.refactoringSupport language="GdScript" implementationClass="gdscript.psi.GdRefactoringSupportProvider"/>
@@ -144,7 +150,7 @@
     <lang.parserDefinition language="GodotProject" implementationClass="project.ProjectParserDefinition"/>
     <lang.parserDefinition language="GodotConfig" implementationClass="config.GdConfigParserDefinition"/>
     <lang.syntaxHighlighterFactory language="Tscn" implementationClass="tscn.highlighter.TscnSyntaxHighlighterFactory"/>
-    <colorSettingsPage implementation="tscn.highlighter.TscnColorSettingsPage"/>
+    <colorSettings implementation="tscn.highlighter.TscnColorSettingsPage" displayName="GdScene"/>
 
     <!-- Completions -->
 
@@ -173,6 +179,7 @@
     <completion.contributor language="GdScript" implementationClass="gdscript.completion.GdMethodParamCompletion"/>
     <psi.referenceContributor language="GdScript" implementation="gdscript.reference.GdResourceReferenceContributor"/>
     <psi.referenceContributor language="GdScript" implementation="gdscript.reference.GdNodePathReferenceContributor"/>
+    <psi.referenceContributor language="GdScript" implementation="gdscript.reference.GdDocCommentReferenceContributor"/>
     <!-- Tscn, Project, Config -->
     <psi.referenceContributor language="Tscn" implementation="tscn.completion.TscnResourceReferenceContributor"/>
     <lang.elementManipulator forClass="tscn.psi.TscnNamedElement"

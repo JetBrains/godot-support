@@ -1,6 +1,6 @@
 # Auto documentation feature (Ctrl+Q)
 
-Documentation is available for range of element like variable, constants, methods, classes and even packages/folders.  
+Documentation is available for range of element like variable, constants, methods and classes.  
 Many of them also support variety of custom documentation via comment lines above it with specific marker.
 
 
