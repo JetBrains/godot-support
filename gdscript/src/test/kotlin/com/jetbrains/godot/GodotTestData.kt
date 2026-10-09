@@ -4,9 +4,11 @@ import com.intellij.openapi.application.PathManager
 import junit.framework.TestCase
 import java.nio.file.Path
 
-fun TestCase.getBaseTestDataPath(): Path {
+fun TestCase.getBaseTestDataPath(): Path = getBaseTestDataPath(javaClass)
 
-    val home = PathManager.getHomeDirFor(javaClass)
+fun getBaseTestDataPath(contextClass: Class<*>): Path {
+
+    val home = PathManager.getHomeDirFor(contextClass)
     if (home != null) {
         return home.resolve("dotnet/Plugins/godot-support/gdscript/src/test")
     }

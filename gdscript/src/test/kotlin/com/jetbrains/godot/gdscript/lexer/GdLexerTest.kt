@@ -1,56 +1,43 @@
 package com.jetbrains.godot.gdscript.lexer
 
-import com.intellij.lexer.Lexer
-import com.intellij.platform.testFramework.core.FileComparisonFailedError
-import com.intellij.testFramework.LexerTestCase
+import com.intellij.platform.testFramework.junit5.codeInsight.fixture.lexerFixture
+import com.intellij.testFramework.junit5.fixture.TestFixtures
 import com.jetbrains.godot.getBaseTestDataPath
 import gdscript.GdLexerAdapter
-import org.junit.ComparisonFailure
-import org.junit.Ignore
-import org.junit.Test
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
-@RunWith(JUnit4::class)
-class GdLexerTest : LexerTestCase() {
-    override fun createLexer(): Lexer = GdLexerAdapter()
-    override fun getDirPath(): String {
-        return ""
-    }
+@TestFixtures
+class GdLexerTest {
+    private val lexer by lexerFixture(
+        getBaseTestDataPath(GdLexerTest::class.java).resolve("testData/gdscript/parser/godotTestCases").pathString,
+        ".lexer.txt",
+    ) { GdLexerAdapter() }
 
-    override fun getExpectedFileExtension(): String {
-        return ".lexer.txt"
-    }
+    @Test fun testOnready_node_string_path() = lexer.doFileTest("gd")
+    @Test fun testScratch() = lexer.doFileTest("gd")
 
-    override fun getPathToTestDataFile(ext: String): String {
-        val base = getBaseTestDataPath().resolve("testData/gdscript/parser/godotTestCases")
-        val path = base.resolve(getTestName(true) + ext)
-        return path.pathString
-    }
-
-    @Test fun testOnready_node_string_path() = doFileTest("gd")
-    @Test fun testScratch() = doFileTest("gd")
-
-    @Test fun testsignal_connect_func() = doFileTest("gd")
-    @Ignore @Test fun testclass_name() = doFileTest("gd")
-    @Test fun testcallableInCtor() = doFileTest("gd")
-    @Test fun testLambdaCallExpr() = doFileTest("gd")
-    @Ignore @Test fun testArrayWithFunc() = doFileTest("gd")
-    @Test fun testlambda_callable_multiline() = doFileTest("gd")
-    @Test fun testlambdaAsArgument() = doFileTest("gd")
-    @Test fun testlambdaAsArgumentReturnLastArg() = doFileTest("gd")
-    @Test fun testlambdaAsArgumentReturnCommaNextLine() = doFileTest("gd")
-    @Test fun testlambdaAsArgumentReturnMultiStmt() = doFileTest("gd")
-    @Test fun testlambdaAsArgumentReturnNestedIf() = doFileTest("gd")
-    @Test fun testlambdaAsArgumentNestedIfElse() = doFileTest("gd")
-    @Test fun testsemicolon_as_end_statement() = doFileTest("gd")
-    @Test fun testsemicolon_as_terminator() = doFileTest("gd")
-    @Test fun testsemicolon_separated_statements_one_line() = doFileTest("gd")
-    @Test fun testsemicolon_multiple_after_statement_suite() = doFileTest("gd")
-    @Test fun testsemicolon_multiple_alone_suite() = doFileTest("gd")
-    @Test fun testsemicolon_multiple_on_one_line() = doFileTest("gd")
+    @Test fun testsignal_connect_func() = lexer.doFileTest("gd")
+    @Disabled @Test fun testclass_name() = lexer.doFileTest("gd")
+    @Test fun testcallableInCtor() = lexer.doFileTest("gd")
+    @Test fun testLambdaCallExpr() = lexer.doFileTest("gd")
+    @Disabled @Test fun testArrayWithFunc() = lexer.doFileTest("gd")
+    @Test fun testlambda_callable_multiline() = lexer.doFileTest("gd")
+    @Test fun testlambdaAsArgument() = lexer.doFileTest("gd")
+    @Test fun testlambdaAsArgumentReturnLastArg() = lexer.doFileTest("gd")
+    @Test fun testlambdaAsArgumentReturnCommaNextLine() = lexer.doFileTest("gd")
+    @Test fun testlambdaAsArgumentReturnMultiStmt() = lexer.doFileTest("gd")
+    @Test fun testlambdaAsArgumentReturnNestedIf() = lexer.doFileTest("gd")
+    @Test fun testlambdaAsArgumentNestedIfElse() = lexer.doFileTest("gd")
+    @Test fun testsemicolon_as_end_statement() = lexer.doFileTest("gd")
+    @Test fun testsemicolon_as_terminator() = lexer.doFileTest("gd")
+    @Test fun testsemicolon_separated_statements_one_line() = lexer.doFileTest("gd")
+    @Test fun testsemicolon_multiple_after_statement_suite() = lexer.doFileTest("gd")
+    @Test fun testsemicolon_multiple_alone_suite() = lexer.doFileTest("gd")
+    @Test fun testsemicolon_multiple_on_one_line() = lexer.doFileTest("gd")
 
     @Test
     fun testQuotedNodePathAcceptsAnyNodeName() {
@@ -68,24 +55,7 @@ class GdLexerTest : LexerTestCase() {
     }
 
     private fun assertLexesTo(text: String, expectedToken: String) {
-        val tokens = printTokens(text, 0)
-        assertTrue("`$text` should lex to $expectedToken but was:\n$tokens", tokens.contains(expectedToken))
-    }
-
-
-    override fun doTest(text: String, expected: String?, lexer: Lexer) {
-        try{
-            super.doTest(text, expected, lexer)
-        }
-        catch (e:FileComparisonFailedError){
-            val expectedText = e.getExpectedStringPresentation()
-            val actualText = e.getActualStringPresentation()
-            println("EXPECTED:\n" + expectedText + "\n----\nACTUAL:\n" + actualText)
-            throw e
-        }
-        catch (e: ComparisonFailure){
-            println("EXPECTED:\n" + e.expected + "\n----\nACTUAL:\n" + e.actual)
-            throw e
-        }
+        val tokens = lexer.printTokens(text, 0)
+        assertTrue(tokens.contains(expectedToken), "`$text` should lex to $expectedToken but was:\n$tokens")
     }
 }
