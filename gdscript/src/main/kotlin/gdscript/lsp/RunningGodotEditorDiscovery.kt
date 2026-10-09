@@ -1,15 +1,15 @@
 package gdscript.lsp
 
-import com.intellij.openapi.diagnostic.ControlFlowException
+import com.intellij.diagnostic.rethrowControlFlowException
+import com.intellij.execution.process.OSProcessUtil
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.diagnostic.thisLogger
+import com.intellij.util.execution.ParametersListUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.nio.file.InvalidPathException
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.coroutines.cancellation.CancellationException
-import kotlin.jvm.optionals.getOrNull
 
 /**
  * Detects a running Godot editor for the given Rider project by inspecting OS processes, and returns
@@ -24,6 +24,9 @@ import kotlin.jvm.optionals.getOrNull
  * foreign process's working directory, and reading it ourselves (`/proc/<pid>/cwd`, `lsof`) is too
  * platform-specific. Both our launcher and the Godot project manager always pass `--path`.
  *
+ * Process listing uses the same source as Run → Attach to Process (`OSProcessUtil.getProcessList`).
+ * `ProcessHandle.Info.command` / `arguments` often miss the command line on Windows (JBR-5053, JDK-8263139).
+ *
  * TODO: Consider attempt to connect Godot editor processes without `--path`
  * and somehow use `gdscript_client/changeWorkspace` notification to verify if it is the correct one
  */
@@ -37,7 +40,7 @@ object RunningGodotEditorDiscovery {
     suspend fun findRunningGodotDapPort(basePath: Path): Int? = findRunningGodotPort(basePath, "--dap-port")
 
     /** Parsed information about a Godot process command-line that is relevant for editor discovery. */
-    internal data class GodotProcessArgs(val path: String?, val port: Int?, val isEditor: Boolean)
+    private data class GodotProcessArgs(val path: String?, val port: Int?, val isEditor: Boolean)
 
     /**
      * Looks up a running Godot editor for [basePath] and returns the value of its [portFlag]
@@ -46,28 +49,75 @@ object RunningGodotEditorDiscovery {
      * Only processes whose `--path` exactly equals [basePath] are considered; processes without
      * `--path` are ignored (see class-level TODO).
      */
+    @Suppress("DEPRECATION", "DEPRECATION_ERROR")
     suspend fun findRunningGodotPort(basePath: Path, portFlag: String): Int? = withContext(Dispatchers.IO) {
-        ProcessHandle.allProcesses().toList().firstNotNullOfOrNull { handle ->
+        OSProcessUtil.getProcessList().firstNotNullOfOrNull { processInfo ->
             try {
-                val info = handle.info()
-                val command = info.command().getOrNull() ?: return@firstNotNullOfOrNull null
-                if (!looksLikeGodotExecutable(command)) return@firstNotNullOfOrNull null
-
-                val args = info.arguments().getOrNull()?.toList() ?: return@firstNotNullOfOrNull null
-                val processArgs = parseGodotArgs(args, portFlag)
-                if (!processArgs.isEditor) return@firstNotNullOfOrNull null
-                if (processArgs.port == null) return@firstNotNullOfOrNull null
-                val pathString = processArgs.path ?: return@firstNotNullOfOrNull null
-                val parsedPath = try { Paths.get(pathString) } catch (_: InvalidPathException) { return@firstNotNullOfOrNull null }
-                if (parsedPath.normalize() != basePath.normalize()) return@firstNotNullOfOrNull null
-                processArgs.port
+                inspectGodotProcess(
+                    executableName = processInfo.executableName,
+                    commandLine = processInfo.commandLine,
+                    args = processInfo.args,
+                    basePath = basePath,
+                    portFlag = portFlag,
+                )
             }
             catch (e: Exception) {
-                if (e is CancellationException || e is ControlFlowException) throw e
-                LOG.debug("Cannot inspect process ${handle.pid()}", e)
+                rethrowControlFlowException(e)
+                LOG.debug("Cannot inspect process ${processInfo.pid}", e)
                 null
             }
         }
+    }
+
+    private fun inspectGodotProcess(
+        executableName: String,
+        commandLine: String,
+        args: String,
+        basePath: Path,
+        portFlag: String,
+    ): Int? {
+        if (!isGodotProcess(executableName, commandLine)) return null
+
+        val argv = godotArgsFromCommandLine(commandLine, args)
+        if (argv.isEmpty()) return null
+
+        val processArgs = parseGodotArgs(argv, portFlag)
+        if (!processArgs.isEditor) return null
+        if (processArgs.port == null) return null
+        val pathString = processArgs.path ?: return null
+        val parsedPath = try {
+            Paths.get(pathString)
+        }
+        catch (_: InvalidPathException) {
+            return null
+        }
+        if (parsedPath.normalize() != basePath.normalize()) return null
+        return processArgs.port
+    }
+
+    private fun isGodotProcess(executableName: String, commandLine: String): Boolean {
+        if (looksLikeGodotExecutable(executableName)) return true
+        val firstToken = ParametersListUtil.parse(commandLine).firstOrNull() ?: return false
+        return looksLikeGodotExecutable(firstToken)
+    }
+
+    /**
+     * Builds the Godot argv (without the executable).
+     * Prefers the process [args] field; falls back to parsing [commandLine].
+     */
+    private fun godotArgsFromCommandLine(commandLine: String, args: String): List<String> {
+        val fromArgs = args.trim()
+        if (fromArgs.isNotEmpty()) {
+            return ParametersListUtil.parse(fromArgs)
+        }
+
+        val trimmedCommandLine = commandLine.trim()
+        if (trimmedCommandLine.isEmpty()) return emptyList()
+
+        val tokens = ParametersListUtil.parse(trimmedCommandLine)
+        if (tokens.isEmpty()) return emptyList()
+        // Drop the executable token when present.
+        return if (looksLikeGodotExecutable(tokens.first())) tokens.drop(1) else tokens
     }
 
     /**
@@ -75,7 +125,7 @@ object RunningGodotEditorDiscovery {
      * Godot only accepts the space-separated `--flag value` form (see `main/main.cpp`), so we
      * don't handle `--flag=value`.
      */
-    internal fun parseGodotArgs(args: List<String>, portFlag: String): GodotProcessArgs {
+    private fun parseGodotArgs(args: List<String>, portFlag: String): GodotProcessArgs {
         val isEditor = "--editor" in args || "-e" in args
         val path = findFlagValue(args, "--path")
         val port = findFlagValue(args, portFlag)?.toIntOrNull()
@@ -89,10 +139,11 @@ object RunningGodotEditorDiscovery {
         return args.getOrNull(index + 1)
     }
 
-    internal fun looksLikeGodotExecutable(command: String): Boolean {
+    private fun looksLikeGodotExecutable(command: String): Boolean {
         val name = try {
             Paths.get(command).fileName?.toString()
-        } catch (_: InvalidPathException) {
+        }
+        catch (_: InvalidPathException) {
             thisLogger().trace("Invalid path: $command")
             command.substringAfterLast('/').substringAfterLast('\\')
         } ?: return false
