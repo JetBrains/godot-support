@@ -33,7 +33,7 @@ std::optional<InstallInfo> RiderPathLocator::get_install_info_from_rider_path(
 	if (!FileAccess::file_exists(gpath))
 		return std::nullopt;
 
-	// Expect .../bin/rider.sh — derive installation root by going two levels up
+	// Expect .../bin/rider — derive installation root by going two levels up
 	const String bin_dir = gpath.get_base_dir();
 	if (bin_dir.get_file() != "bin")
 		return std::nullopt;
@@ -79,7 +79,7 @@ static std::vector<InstallInfo> get_manually_installed_riders() {
 			String dir_name = dirs[i];
 			if (!dir_name.match("*Rider*"))
 				continue;
-			String full = base.path_join(dir_name).path_join("bin").path_join("rider.sh");
+			String full = base.path_join(dir_name).path_join("bin").path_join("rider");
 			auto info = RiderPathLocator::get_install_info_from_rider_path(
 					stdstr(full));
 			if (info.has_value())
@@ -104,7 +104,7 @@ static String get_toolbox_path() {
 std::vector<std::string> RiderPathLocator::run_system_search() {
 	std::vector<std::string> result;
 	std::this_thread::sleep_for(std::chrono::seconds(10));
-	FILE *pipe = popen("locate -e bin/rider.sh", "r");
+	FILE *pipe = popen("locate -e bin/rider", "r");
 	if (!pipe) return result;
 	char buffer[4096];
 	std::string out;
@@ -144,7 +144,7 @@ std::set<InstallInfo, InstallInfoLess> RiderPathLocator::collect_all_paths(
 		s.insert(i);
 	for (auto &i : get_manually_installed_riders())
 		s.insert(i);
-	for (auto &i : get_install_infos_from_toolbox(stdstr(get_toolbox_path()), "[Rr]ider.sh"))
+	for (auto &i : get_install_infos_from_toolbox(stdstr(get_toolbox_path()), "[Rr]ider"))
 		s.insert(i);
 	return s;
 }
