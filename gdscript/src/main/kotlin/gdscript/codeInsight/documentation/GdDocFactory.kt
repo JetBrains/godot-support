@@ -8,7 +8,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
-import gdscript.codeInsight.GdDocumentationProvider
 import gdscript.completion.utils.GdEnumCompletionUtil.preview
 import gdscript.completion.utils.GdMethodCompletionUtil.methodHeader
 import gdscript.completion.utils.GdMethodCompletionUtil.shortMethodHeader
@@ -45,7 +44,6 @@ import gdscript.psi.utils.GdClassUtil
 import gdscript.psi.utils.GdCommentUtil
 import gdscript.psi.utils.GdCommonUtil
 import gdscript.psi.utils.GdInheritanceUtil
-import gdscript.utils.VirtualFileUtil.localParentPath
 import gdscript.utils.VirtualFileUtil.resourcePath
 import org.jetbrains.annotations.NonNls
 import project.ProjectFileType
@@ -85,7 +83,6 @@ object GdDocFactory {
     private fun method(element: PsiElement, fullDoc: Boolean): String {
         val builder = GdDocBuilder(element)
             .withOwner(element)
-            .withPackage(element)
 
         val declaration = element.parent as GdDocumented
         var code = annotationPreview(declaration as PsiElement)
@@ -98,9 +95,9 @@ object GdDocFactory {
         builder.withPreview(code)
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.description()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.description()))
         } else {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.brief()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief()))
         }
 
         return builder.toString()
@@ -138,9 +135,9 @@ object GdDocFactory {
         }
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocUtil.paragraph(GdCommentUtil.description(element.parent)))
+            builder.addBodyBlock(GdDocHtml.paragraph(GdCommentUtil.description(element.parent)))
         } else {
-            builder.addBodyBlock(GdDocUtil.paragraph(GdCommentUtil.brief(element.parent)))
+            builder.addBodyBlock(GdDocHtml.paragraph(GdCommentUtil.brief(element.parent)))
         }
 
         return builder.toString()
@@ -148,7 +145,6 @@ object GdDocFactory {
 
     private fun classOrFile(element: PsiElement, fullDoc: Boolean): String {
         val builder = GdDocBuilder(element)
-            .withPackage(element)
 
         val parent = GdInheritanceUtil.getExtendedClassId(element)
         val extendInfo = if (parent.isNotBlank()) " extends $parent" else ""
@@ -162,8 +158,8 @@ object GdDocFactory {
         // TODO GdFile or GdClassNaming
         if (declaration is GdDocumented) {
             if (fullDoc) {
-                builder.addBodyBlock(GdDocUtil.paragraph(declaration.description()))
-                builder.addBodyBlock(GdDocUtil.listTable(
+                builder.addBodyBlock(GdDocHtml.paragraph(declaration.description()))
+                builder.addBodyBlock(GdDocHtml.listTable(
                     "tutorials",
                     declaration.tutorials().map {
                         @NonNls val text = it.name.removeSurrounding("(", ")")
@@ -172,7 +168,7 @@ object GdDocFactory {
                 ))
                 appendProperties(builder, GdClassUtil.getOwningClassElement(element))
             } else {
-                builder.addBodyBlock(GdDocUtil.paragraph(declaration.brief()))
+                builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief()))
             }
         }
 
@@ -181,7 +177,6 @@ object GdDocFactory {
 
     private fun directory(element: PsiDirectory, fillDoc: Boolean): String {
         val builder = GdDocBuilder()
-        val currentPath = element.virtualFile.localParentPath()
 
         val scripts = mutableListOf<HtmlChunk>()
         val scenes = mutableListOf<HtmlChunk>()
@@ -190,7 +185,7 @@ object GdDocFactory {
         element.files.forEach {
             val name = it.name
             when (it.fileType) {
-                is GdFileType -> scripts.add(GdDocUtil.elementLink(it.virtualFile.resourcePath(), name))
+                is GdFileType -> scripts.add(GdDocHtml.elementLink(it.virtualFile.resourcePath(), name))
                 is TscnFileType -> scenes.add(HtmlChunk.text(name))
                 is ProjectFileType -> {}
                 else -> {
@@ -201,18 +196,10 @@ object GdDocFactory {
             }
         }
 
-        val directories = element.subdirectories.mapNotNull {
-            val name = it.name
-            if (!name.startsWith("."))
-                GdDocUtil.packageLink("$currentPath/$name", name)
-            else null
-        }
-
         builder.addBodyBlock(
-            GdDocUtil.listTable("scripts", scripts),
-            GdDocUtil.listTable("scenes", scenes),
-            GdDocUtil.listTable("packages", directories),
-            GdDocUtil.listTable("other", others),
+            GdDocHtml.listTable("scripts", scripts),
+            GdDocHtml.listTable("scenes", scenes),
+            GdDocHtml.listTable("other", others),
         )
 
         return builder.toString()
@@ -224,14 +211,17 @@ object GdDocFactory {
     private fun enum(element: PsiElement, fullDoc: Boolean): String {
         val declaration = PsiTreeUtil.getParentOfType(element, GdEnumDeclTl::class.java) ?: return ""
         val builder = GdDocBuilder(element)
-            .withPackage(element)
             .withOwner(element)
             .withPreview(annotationPreview(declaration) + declaration.preview())
 
+        val documented: GdDocumented = (element.parent as? GdEnumValue)
+            ?.takeIf { fullDoc && it.description().isNotBlank() || !fullDoc && it.brief().isNotBlank() }
+            ?: declaration
+
         if (fullDoc) {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.description()))
+            builder.addBodyBlock(GdDocHtml.paragraph(documented.description()))
         } else {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.brief()))
+            builder.addBodyBlock(GdDocHtml.paragraph(documented.brief()))
         }
 
         return builder.toString()
@@ -243,14 +233,13 @@ object GdDocFactory {
     private fun signal(element: PsiElement, fullDoc: Boolean): String {
         val declaration = PsiTreeUtil.getParentOfType(element, GdSignalDeclTl::class.java) ?: return ""
         val builder = GdDocBuilder(element)
-            .withPackage(element)
             .withOwner(element)
             .withPreview(declaration.text)
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.description()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.description()))
         } else {
-            builder.addBodyBlock(GdDocUtil.paragraph(declaration.brief()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief()))
         }
 
         return builder.toString()
@@ -266,8 +255,8 @@ object GdDocFactory {
         val declarations = GdClassMemberUtil.listClassMemberDeclarations(ownerElement, null, constructors = true)
 
         val variables = declarations.variables()
-        builder.addBodyBlock(GdDocUtil.propertyTable("variables", variables.map {
-            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.getName()))
+        builder.addBodyBlock(GdDocHtml.propertyTable("variables", variables.map {
+            Pair(GdDocHtml.elementLink(it.returnType), GdDocHtml.elementLink(it.getName()))
         }))
 
         val methods = mutableListOf<GdMethodDeclTl>()
@@ -277,22 +266,22 @@ object GdDocFactory {
             else methods.add(it)
         }
 
-        builder.addBodyBlock(GdDocUtil.propertyTable("constructors", constructors.map {
-            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.getName(), it.shortMethodHeader()))
+        builder.addBodyBlock(GdDocHtml.propertyTable("constructors", constructors.map {
+            Pair(GdDocHtml.elementLink(it.returnType), GdDocHtml.elementLink(it.getName(), it.shortMethodHeader()))
         }))
-        builder.addBodyBlock(GdDocUtil.propertyTable("methods", methods.map {
-            Pair(GdDocUtil.elementLink(it.returnType), GdDocUtil.elementLink(it.getName(), it.shortMethodHeader()))
+        builder.addBodyBlock(GdDocHtml.propertyTable("methods", methods.map {
+            Pair(GdDocHtml.elementLink(it.returnType), GdDocHtml.elementLink(it.getName(), it.shortMethodHeader()))
         }))
 
         // TODO operators
 
         val signals = declarations.signals()
-        builder.addBodyBlock(GdDocUtil.descriptionListTable("signals", signals.map {
+        builder.addBodyBlock(GdDocHtml.descriptionListTable("signals", signals.map {
             var name = it.getName()
             if (!name.endsWith(")")) name += "()"
             Pair(
-                GdDocUtil.elementLink(name.substringBefore("("), name),
-                HtmlChunk.raw(GdGodotDocUtil.parseStyles(it.description())),
+                GdDocHtml.elementLink(name.substringBefore("("), name),
+                HtmlChunk.raw(GdBBCodeRenderer.renderToHtml(it.description())),
             )
         }))
 
@@ -301,7 +290,7 @@ object GdDocFactory {
             *declarations.filterIsInstance<GdEnumValue>().map { it.parent as GdEnumDeclTl }.distinct().toTypedArray()
         )
 
-        builder.addBodyBlock(GdDocUtil.descriptionListsTable("enums", enums.map {
+        builder.addBodyBlock(GdDocHtml.descriptionListsTable("enums", enums.map {
             var name = it.getName()
             var isNamed = true
             if (name.isBlank()) {
@@ -313,34 +302,29 @@ object GdDocFactory {
             Pair(
                 HtmlChunk.fragment(
                     HtmlChunk.text(ENUM),
-                    if (isNamed) GdDocUtil.elementLink(it.getName()) else HtmlChunk.text(name),
-                    GdDocUtil.appendDescription(it)
+                    if (isNamed) GdDocHtml.elementLink(it.getName()) else HtmlChunk.text(name),
+                    GdDocHtml.appendDescription(it)
                 ),
                 it.enumValueList.map { value ->
                     val enumValueName = value.enumValueNmi.name
                     val enumValue = it.values[enumValueName]
                     HtmlChunk.fragment(
-                        if (isNamed) GdDocUtil.elementLink(
-                            "${GdDocumentationProvider.LINK_ENUM_VALUE}:$name.$enumValueName",
-                            enumValueName
-                        )
-                        else GdDocUtil.elementLink(enumValueName),
+                        GdDocHtml.elementLink(enumValueName),
                         DocumentationMarkup.GRAYED_ELEMENT.addText(" = $enumValue"),
-                        GdDocUtil.appendDescription(value),
+                        GdDocHtml.appendDescription(value),
                     )
                 }
             )
         }))
 
         val consts = declarations.constants()
-        builder.addBodyBlock(GdDocUtil.descriptionListTable("constants", consts.map {
+        builder.addBodyBlock(GdDocHtml.descriptionListTable("constants", consts.map {
             Pair(
-                GdDocUtil.elementLink(it.getName(), it.text.trim()),
-                HtmlChunk.raw(GdGodotDocUtil.parseStyles(it.description())),
+                GdDocHtml.elementLink(it.getName(), it.text.trim()),
+                HtmlChunk.raw(GdBBCodeRenderer.renderToHtml(it.description())),
             )
         }))
 
         // TODO variables & methods with descriptions
     }
-
 }

@@ -18,6 +18,7 @@ sealed class GdSdkData {
         val tutorials: List<GdTutorial>?,
         val isDeprecated: Boolean,
         val isExperimental: Boolean,
+        val annotations: List<AnnotationData> = emptyList(),
     ) : GdSdkData()
 
     data class ConstructorData(

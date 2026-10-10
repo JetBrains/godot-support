@@ -61,6 +61,7 @@ class GdPolySymbolHighlightingCustomizer : PolySymbolHighlightingCustomizer {
 
             GdPolySymbolKind.AUTOLOAD -> GdHighlighterColors.GLOBAL_VARIABLE_AUTOLOAD
             GdPolySymbolKind.LOADED_CLASS_ALIAS -> GdHighlighterColors.CLASS_TYPE
+            GdPolySymbolKind.ANNOTATION -> GdHighlighterColors.ANNOTATION
 
             else -> GdHighlighterColors.MEMBER
         }

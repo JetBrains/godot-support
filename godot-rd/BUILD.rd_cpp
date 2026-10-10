@@ -8,10 +8,14 @@ package(default_visibility = ["//visibility:public"])
 
 RD_CXXOPTS = select({
     "@platforms//os:windows": ["/std:c++17"],
-    "//conditions:default": ["-std=c++17"],
+    "//conditions:default": [
+        "-std=c++17",
+        "-Wno-deprecated-literal-operator",
+    ],
 }) + HIDDEN_VISIBILITY_COPTS
 
 RD_DEFINES = [
+    "FMT_USE_USER_DEFINED_LITERALS=0",
     "RD_CORE_STATIC_DEFINE",
     "RD_FRAMEWORK_STATIC_DEFINE",
 ]

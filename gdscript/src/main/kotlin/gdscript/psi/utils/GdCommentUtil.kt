@@ -1,14 +1,14 @@
 package gdscript.psi.utils
 
 import com.intellij.openapi.util.NlsSafe
-import com.intellij.openapi.util.text.HtmlChunk
+import com.intellij.psi.PsiComment
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.StubBasedPsiElement
 import com.intellij.psi.TokenType
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
-import gdscript.codeInsight.documentation.GdDocUtil
-import gdscript.codeInsight.documentation.GdGodotDocUtil
+import gdscript.codeInsight.documentation.GdBBCodeRenderer
 import gdscript.model.GdCommentModel
 import gdscript.model.GdTutorial
 import gdscript.psi.GdClassNaming
@@ -30,74 +30,47 @@ object GdCommentUtil {
     @NonNls const val DEPRECATED: String = "deprecated"
     @NonNls const val EXPERIMENTAL: String = "experimental"
 
-    fun brief(element: PsiElement): String {
-        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
-            val stub = element.stub
-            if (stub != null && stub is GdDocumented) return stub.brief()
-        }
+    private val TAG_PREFIXES = listOf(
+        "$BRIEF_DESCRIPTION:", "$DESCRIPTION:", "$PARAMETER:", TUTORIAL, "$ENUM:", "$RETURN:", DEPRECATED, EXPERIMENTAL,
+    )
 
-        val model = collectComments(element)
-        return model.brief.ifEmpty { model.description }
+    private inline fun <T> fromStub(element: PsiElement, get: (GdDocumented) -> T): T? {
+        if (element !is StubBasedPsiElement<*> || element !is GdDocumented) return null
+        return (element.stub as? GdDocumented)?.let(get)
     }
 
-    fun description(element: PsiElement): String {
-        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
-            val stub = element.stub
-            if (stub != null && stub is GdDocumented) return stub.description()
-        }
+    fun brief(element: PsiElement): String =
+        fromStub(element) { it.brief() }
+            ?: collectComments(element).let { it.brief.ifEmpty { it.description } }
 
-        val model = collectComments(element)
-        return model.description
-    }
+    fun description(element: PsiElement): String =
+        fromStub(element) { it.description() } ?: collectComments(element).description
 
-    fun tutorials(element: PsiElement): List<GdTutorial> {
-        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
-            val stub = element.stub
-            if (stub != null && stub is GdDocumented) return stub.tutorials()
-        }
+    fun tutorials(element: PsiElement): List<GdTutorial> =
+        fromStub(element) { it.tutorials() } ?: collectComments(element).tutorials
 
-        val model = collectComments(element)
-        return model.tutorials
-    }
+    fun isDeprecated(element: PsiElement): Boolean =
+        fromStub(element) { it.isDeprecated() } ?: collectComments(element).isDeprecated
 
-    fun isDeprecated(element: PsiElement): Boolean {
-        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
-            val stub = element.stub
-            if (stub != null && stub is GdDocumented) return stub.isDeprecated()
-        }
-
-        val model = collectComments(element)
-        return model.isDeprecated
-    }
-
-    fun isExperimental(element: PsiElement): Boolean {
-        if (element is StubBasedPsiElement<*> && element is GdDocumented) {
-            val stub = element.stub
-            if (stub != null && stub is GdDocumented) return stub.isExperimental()
-        }
-
-        val model = collectComments(element)
-        return model.isExperimental
-    }
+    fun isExperimental(element: PsiElement): Boolean =
+        fromStub(element) { it.isExperimental() } ?: collectComments(element).isExperimental
 
     private fun startsWithTag(line: String): Boolean {
-        if (!line.startsWith("@"))
+        val text = line.trimStart()
+        if (!text.startsWith("@"))
             return false
-        val text = line.removePrefix("@")
-        return (text.startsWith(BRIEF_DESCRIPTION.plus(":"))
-            || text.startsWith(DESCRIPTION.plus(":"))
-            || text.startsWith(PARAMETER.plus(":"))
-            || text.startsWith(TUTORIAL)
-            || text.startsWith(ENUM.plus(":"))
-            || text.startsWith(RETURN.plus(":"))
-            || text.startsWith(DEPRECATED)
-            || text.startsWith(EXPERIMENTAL)
-            )
+        val tag = text.removePrefix("@")
+        return TAG_PREFIXES.any { tag.startsWith(it) }
     }
 
-    fun collectComments(element: PsiElement?): GdCommentModel {
-        val comments = mutableListOf<String>()
-        val model = GdCommentModel()
+    /**
+     * Collects the raw `##` comment PSI leaves that make up the doc comment block for [element].
+     * For a script/class header ([GdClassNaming] or [PsiFile]) it scans forward from the start of the file;
+     * for any other element it scans backward from [element] using [prevCommentBlock].
+     * A blank line between comment lines stops the block, matching [collectComments].
+     */
+    fun collectCommentNodes(element: PsiElement?): List<PsiComment> {
+        val comments = mutableListOf<PsiComment>()
 
         if (element is GdClassNaming || element is PsiFile) {
             var file = element
@@ -110,7 +83,7 @@ object GdCommentUtil {
                 if (child.elementType == GdTypes.COMMENT) {
                     if (child.text.startsWith("##")) {
                         isComment = true
-                        comments.add(child.text.removePrefix("##").trim())
+                        comments.add(child as PsiComment)
                         newLined = false
                     }
                 } else if (child.elementType == TokenType.WHITE_SPACE) {
@@ -131,7 +104,7 @@ object GdCommentUtil {
                 if (previous != null) {
                     val txt = previous.text
                     if (txt.startsWith("##")) {
-                        comments.add(txt.removePrefix("##").trim())
+                        comments.add(previous as PsiComment)
                         isComment = true
                     } else break
                 } else break
@@ -139,44 +112,88 @@ object GdCommentUtil {
             if (isComment) comments.reverse()
         }
 
+        return comments
+    }
+
+    fun collectComments(element: PsiElement?): GdCommentModel {
+        val comments = collectCommentNodes(element).map { stripDocCommentPrefix(it.text) }
+        return parseCommentModel(comments)
+    }
+
+    /** Builds a [GdCommentModel] straight from a list of `##` comment PSI leaves, e.g. from a [gdscript.codeInsight.documentation.GdVirtualDocComment]. */
+    fun collectComments(comments: List<PsiComment>): GdCommentModel {
+        return parseCommentModel(comments.map { stripDocCommentPrefix(it.text) })
+    }
+
+    /**
+     * Removes the `##` doc marker and one optional following space.
+     * Keeps leading indent so code samples inside comments stay formatted.
+     */
+    fun stripDocCommentPrefix(raw: String): String {
+        var text = raw
+        if (text.startsWith("##")) text = text.substring(2)
+        if (text.startsWith(" ")) text = text.substring(1)
+        return text.trimEnd()
+    }
+
+    /**
+     * Groups every `##` comment in [file] into contiguous doc-comment blocks, separated at blank lines,
+     * in document order. Used by Reader Mode to enumerate/locate doc comments regardless of the element they document.
+     */
+    fun commentBlocks(file: PsiFile): List<List<PsiComment>> {
+        val docComments = PsiTreeUtil.findChildrenOfType(file, PsiComment::class.java).filter { it.text.startsWith("##") }
+        val blocks = mutableListOf<MutableList<PsiComment>>()
+        docComments.forEach { comment ->
+            val prev = comment.prevCommentBlock()
+            if (prev is PsiComment && blocks.isNotEmpty() && blocks.last().last() == prev) {
+                blocks.last().add(comment)
+            } else {
+                blocks.add(mutableListOf(comment))
+            }
+        }
+        return blocks
+    }
+
+    fun parseCommentModel(comments: List<String>): GdCommentModel {
+        val model = GdCommentModel()
         var isBrief = true
         val brief = mutableListOf<String>()
         val description = mutableListOf<String>()
         comments.forEach {
             if (startsWithTag(it)) {
-                val text = it.removePrefix("@")
-                if (text.startsWith(BRIEF_DESCRIPTION)) {
-                    val content = text.removePrefix(BRIEF_DESCRIPTION.plus(":")).trim()
-                    if (content.isNotEmpty()) {
-                        brief.add(content)
-                        description.add(content)
+                val text = it.trimStart().removePrefix("@")
+                when {
+                    text.startsWith(BRIEF_DESCRIPTION) -> {
+                        val content = text.removePrefix("$BRIEF_DESCRIPTION:").trim()
+                        if (content.isNotEmpty()) {
+                            brief.add(content)
+                            description.add(content)
+                        }
                     }
-                } else if (text.startsWith(DESCRIPTION)) {
-                    val content = text.removePrefix(DESCRIPTION.plus(":")).trim()
-                    if (content.isNotEmpty()) {
-                        description.add(content)
+                    text.startsWith(DESCRIPTION) -> {
+                        val content = text.removePrefix("$DESCRIPTION:").trim()
+                        if (content.isNotEmpty()) description.add(content)
                     }
-                } else if (text.startsWith(PARAMETER)) {
-                    description.add(it)
-                } else if (text.startsWith(ENUM)) {
-                    description.add(it)
-                } else if (text.startsWith(RETURN)) {
-                    description.add(it)
-                } else if (text.startsWith(DEPRECATED)) {
-                    model.isDeprecated = true
-                    description.add(it)
-                } else if (text.startsWith(EXPERIMENTAL)) {
-                    model.isExperimental = true
-                    description.add(it)
-                } else if (text.startsWith(TUTORIAL)) {
-                    val groups = TUTORIAL_REGEX.find(it)?.groups
-                    val tutorial = GdTutorial()
-                    if (groups?.get(2) != null) {
-                        tutorial.url = groups[2]!!.value
-                        tutorial.name = groups[1]?.value ?: groups[2]!!.value
-                        model.tutorials.add(tutorial)
+                    text.startsWith(PARAMETER) || text.startsWith(ENUM) || text.startsWith(RETURN) -> description.add(it)
+                    text.startsWith(DEPRECATED) -> {
+                        model.isDeprecated = true
+                        description.add(it)
                     }
-                    description.add(it)
+                    text.startsWith(EXPERIMENTAL) -> {
+                        model.isExperimental = true
+                        description.add(it)
+                    }
+                    text.startsWith(TUTORIAL) -> {
+                        val groups = TUTORIAL_REGEX.find(it.trimStart())?.groups
+                        val url = groups?.get(2)?.value
+                        if (url != null) {
+                            model.tutorials.add(GdTutorial().apply {
+                                this.url = url
+                                name = groups[1]?.value ?: url
+                            })
+                        }
+                        description.add(it)
+                    }
                 }
 
                 isBrief = false
@@ -216,7 +233,7 @@ object GdCommentUtil {
                     if (!descriptions.containsKey(prefix)) prefix = DESCRIPTION
                     else text = text.substringAfter(" ")
                     if (prefix != TUTORIAL) {
-                        text = GdGodotDocUtil.parseStyles(text)
+                        text = GdBBCodeRenderer.renderToHtml(text)
                     }
 
                     (descriptions[prefix]!!).add(0, text)
@@ -230,40 +247,6 @@ object GdCommentUtil {
         }
 
         return descriptions
-    }
-
-    fun Map<String, List<String>>.briefDescriptionBlock(): HtmlChunk {
-        val comments = if (this[BRIEF_DESCRIPTION]!!.isNotEmpty()) this[BRIEF_DESCRIPTION] else this[DESCRIPTION]
-        return GdDocUtil.paragraph("")
-    }
-
-    fun Map<String, List<String>>.descriptionBlock(): HtmlChunk {
-        return GdDocUtil.paragraph("")
-    }
-
-    fun Map<String, List<String>>.tutorialBlock(): HtmlChunk {
-        return GdDocUtil.listTable("tutorials", this[TUTORIAL]!!.map {
-            @NonNls val text = it.substringBefore("]").removePrefix("[").trim()
-            HtmlChunk.link(it.substringAfter("]").trim(), text)
-        })
-    }
-
-    fun Map<String, List<String>>.descriptionText(): String {
-        return this[DESCRIPTION]!!.joinToString("<br/>")
-    }
-
-    fun Map<String, List<String>>.parameterBlock(): HtmlChunk {
-        return GdDocUtil.listTable("params", this[PARAMETER]!!.map {
-            @NonNls val text = it.replaceFirst(" ", " - ")
-            HtmlChunk.raw(text)
-        })
-    }
-
-    fun Map<String, List<String>>.returnBlock(): HtmlChunk {
-        return GdDocUtil.listTable("return", this[RETURN]!!.map {
-            @NonNls val text = it.replaceFirst(" ", " - ")
-            HtmlChunk.raw(text)
-        })
     }
 
 }
