@@ -57,7 +57,8 @@ internal class GdDapEvaluator(
                 is DapEvaluationResult.Error -> answer.errorOccurred(result.errorMessage)
                 is DapEvaluationResult.Success -> {
                     val owner = GdOwnerExpression(expression)
-                    val row = GdDapXValue(factory, executor, result.variable, owner = owner, frame = checkedFrame)
+                    val row = GdDapXValue(factory, executor, result.variable, owner = owner, frame = checkedFrame,
+                                         watchContext = GdWatchContext(GdWatchPath.evaluated(expression), checkedFrame, executor))
                     answer.evaluated(row)
                     if (GdObjectProbe.isProbeTarget(result.variable, owner, allowInferredType = true) && hasSelfInMembers(checkedFrame)) {
                         val presentations = with(GdObjectProbe) { load(checkedFrame, listOf(expression)) }

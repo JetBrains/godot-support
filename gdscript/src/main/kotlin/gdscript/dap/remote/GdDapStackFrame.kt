@@ -171,6 +171,7 @@ internal class GdDapStackFrame(
                         rowData.selfVariable,
                         owner = GdOwnerExpression("self"),
                         frame = checkedFrame,
+                        watchContext = GdWatchContext(GdWatchPath.nodeProperties("self"), checkedFrame, executor),
                         contextForCategoryChildren = rowData.selfPropertyInlineContext
                     )
                 )
@@ -187,7 +188,7 @@ internal class GdDapStackFrame(
             if (gateActive && scope.name == GdSelfCheckPolicy.GLOBALS_SCOPE_NAME) continue
 
             val scopeBatch = XValueChildrenList()
-            // Locals with self can use their names as owner expressions. Other scopes keep platform values.
+            // Locals with self can use owner expressions. Every scope carries independent watch paths.
             scopeBatch.addTopGroup(
                 if (gateActive && scope.name == "Locals")
                     GdDapXScope(factory, executor, scope, index, checkedFrame, inlineValueLocator)
