@@ -36,7 +36,6 @@ interface GdTokenTypeSet {
             GdTypes.PUPPETSYNC,
             GdTypes.AS,
             GdTypes.IS,
-            GdTypes.NOT,
             GdTypes.NAN,
             GdTypes.INF,
             GdTypes.NULL,
@@ -44,6 +43,7 @@ interface GdTokenTypeSet {
             GdTypes.SET,
             GdTypes.ANDAND,
             GdTypes.OROR,
+            GdTypes.NEGATE, // NOT is ~
         )
 
         val VOID: TokenSet = TokenSet.create(GdTypes.VOID)
