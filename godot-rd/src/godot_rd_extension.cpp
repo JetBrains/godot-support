@@ -5,6 +5,7 @@
 #include "godot_cpp/classes/editor_interface.hpp"
 #include "godot_cpp/classes/editor_settings.hpp"
 #include "godot_cpp/classes/file_system_dock.hpp"
+#include "godot_cpp/classes/os.hpp"
 #include "godot_cpp/classes/project_settings.hpp"
 #include "godot_cpp/classes/resource_loader.hpp"
 #include "godot_cpp/classes/script.hpp"
@@ -22,7 +23,6 @@ void GodotRdExtension::_enter_tree() {
 
 void GodotRdExtension::_exit_tree() {
 	disconnect("scene_saved", callable_mp(this, &GodotRdExtension::_scene_saved));
-	pending_launch_argument = String();
 	if (singleton == this) {
 		singleton = nullptr;
 	}
@@ -42,7 +42,7 @@ int GodotRdExtension::get_launch_instance_count() const {
 }
 
 
-bool GodotRdExtension::play_current_scene_for_debug(const String &game_argument) {
+bool GodotRdExtension::play_current_scene_for_debug(const Dictionary &environment) {
 	auto *editor = EditorInterface::get_singleton();
 	if (editor->is_playing_scene()) {
 		editor->stop_playing_scene();
@@ -53,12 +53,45 @@ bool GodotRdExtension::play_current_scene_for_debug(const String &game_argument)
 		ERR_PRINT("[RIDER RD] Cannot debug in editor with multiple instances. Please disable 'Enable Multiple Instances'");
 		return false;
 	}
-	pending_launch_argument = game_argument;
+	// The game process inherits the editor's environment, so set the variables from Rider for the duration
+	// of the launch and restore the previous state afterwards.
+	const auto *os = OS::get_singleton();
+	Dictionary previous_values;
+	const Array keys = environment.keys();
+	for (int i = 0; i < keys.size(); i++) {
+		const String key = keys[i];
+		if (key.is_empty()) {
+			continue;
+		}
+		String value = environment[key];
+		if (os->has_environment(key)) {
+			const String previous_value = os->get_environment(key);
+			previous_values[key] = previous_value;
+			// Keep the diagnostic ports that the editor already has, the runtime accepts a ';'-separated list.
+			if (key == "DOTNET_DiagnosticPorts" && !previous_value.is_empty()) {
+				value = previous_value.trim_suffix(";") + ";" + value;
+			}
+		}
+		os->set_environment(key, value);
+	}
 	editor->play_current_scene();
+	// Restoring right away is safe only because play_current_scene() starts the game process synchronously:
+	// the C# build, the autosave and OS::create_instance() all run inside this call.
+	// If Godot ever defers the launch (for example, to the next frame), the game will not get these variables.
+	for (int i = 0; i < keys.size(); i++) {
+		const String key = keys[i];
+		if (key.is_empty()) {
+			continue;
+		}
+		if (previous_values.has(key)) {
+			os->set_environment(key, previous_values[key]);
+		} else {
+			os->unset_environment(key);
+		}
+	}
 	const bool playing = editor->is_playing_scene();
 	if (!playing) {
 		UtilityFunctions::print_verbose("[RIDER RD] the editor did not play the current scene");
-		pending_launch_argument = String();
 	}
 	return playing;
 }
@@ -68,16 +101,6 @@ void GodotRdExtension::stop_playing_scene() {
 	if (editor->is_playing_scene()) {
 		editor->stop_playing_scene();
 	}
-}
-
-PackedStringArray GodotRdExtension::_run_scene(const String &, const PackedStringArray &args) const {
-	PackedStringArray result = args;
-	if (!pending_launch_argument.is_empty()) {
-		UtilityFunctions::print_verbose("[RIDER RD] launching the game with: " + pending_launch_argument);
-		result.push_back(pending_launch_argument);
-		pending_launch_argument = String();
-	}
-	return result;
 }
 
 bool GodotRdExtension::_external_editor_turned_on() const {

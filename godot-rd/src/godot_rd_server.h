@@ -49,7 +49,7 @@ class GodotRdServer : public RefCounted {
 	// is the only reasonable choice.
 	void run_on_godot_thread(std::function<void()> task);
 	void _run_godot_thread_tasks();
-	bool play_current_scene_for_debug(const String &game_argument);
+	bool play_current_scene_for_debug(const Dictionary &environment);
 	void stop_playing_scene();
 
 public:

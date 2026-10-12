@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.7)
 add_library(FrontendGodotRoot STATIC 
 instantiations_FrontendGodotRoot.h
 instantiations_FrontendGodotRoot.cpp
+FrontendGodotModel/EnvironmentVariable.cpp
+FrontendGodotModel/EnvironmentVariable.h
 FrontendGodotModel/FrontendGodotModel.cpp
 FrontendGodotModel/FrontendGodotModel.h
 FrontendGodotRoot/FrontendGodotRoot.cpp

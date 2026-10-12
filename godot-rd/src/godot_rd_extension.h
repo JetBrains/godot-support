@@ -16,10 +16,6 @@ class GodotRdExtension : public EditorPlugin {
 	// The instance of an editor plugin is created and owned by the editor, so it is published here for the
 	// classes which are not plugins themselves.
 	static GodotRdExtension *singleton;
-	// This is used to store our arguments that 
-	// are then read in _run_scene. The issue is that
-	// _run_scene consumes it but is const -> hence this being mutable to allow for clearing.
-	mutable String pending_launch_argument;
 
 	std::function<void(Node *)> new_node_opened;
 	bool _external_editor_turned_on() const;
@@ -34,15 +30,13 @@ public:
 	void _enter_tree() override;
 	void _exit_tree() override;
 
-	// Inserts arguments for CoreCLR diagnostic port for debugging C# game inside Godot.
-	PackedStringArray _run_scene(const String &scene, const PackedStringArray &args) const override;
-
 	void open_in_godot(const String &);
 	void scene_saved(const String &);
 	bool is_scene(const String &extension) const;
 	int get_launch_instance_count() const;
 
-	bool play_current_scene_for_debug(const String &game_argument);
+	// Plays the current scene. The game process gets the given environment variables.
+	bool play_current_scene_for_debug(const Dictionary &environment);
 	void stop_playing_scene();
 
 protected:

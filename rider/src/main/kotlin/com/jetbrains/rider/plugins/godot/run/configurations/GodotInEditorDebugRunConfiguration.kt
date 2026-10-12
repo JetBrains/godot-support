@@ -5,7 +5,6 @@ import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.RunProfileState
 import com.intellij.execution.configurations.RuntimeConfigurationError
-import com.intellij.execution.configurations.WithoutOwnBeforeRunSteps
 import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
@@ -14,15 +13,16 @@ import com.intellij.execution.ui.RunContentDescriptor
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
+import com.intellij.ui.dsl.builder.panel
 import com.intellij.xdebugger.attach.LocalAttachHost
 import com.jetbrains.rd.ide.model.debuggerAutoAttachModel
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rd.util.threading.coroutines.asCoroutineDispatcher
 import com.jetbrains.rd.util.threading.coroutines.launch
+import com.jetbrains.rider.build.tasks.SolutionRunConfiguration
 import com.jetbrains.rider.debugger.DebuggerHelperHost
 import com.jetbrains.rider.debugger.IRiderDebuggable
-import com.jetbrains.rider.model.godot.frontendGodot.FrontendGodotModel
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.rd.GodotRdClientService
@@ -41,7 +41,6 @@ import kotlinx.coroutines.withTimeoutOrNull
 import org.jetbrains.annotations.ApiStatus
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.swing.JComponent
-import javax.swing.JPanel
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -53,6 +52,9 @@ private val Project.protocolDispatcher get() = protocol.scheduler.asCoroutineDis
 /**
  * Asks the running Godot editor to play the currently edited scene and attaches the .NET Core debugger
  * to the game process the editor has spawned. Godot 4 only, since the game runs on CoreCLR there.
+ *
+ * The editor does not build the project before it plays the scene for debug. The "Build Solution" step in
+ * "Before launch" builds it, see [SolutionRunConfiguration].
  */
 class GodotInEditorDebugRunConfiguration(project: Project, factory: ConfigurationFactory) : RiderAsyncRunConfiguration(
     GodotPluginBundle.message("godot.debug.in.editor.configuration.name"),
@@ -60,7 +62,7 @@ class GodotInEditorDebugRunConfiguration(project: Project, factory: Configuratio
     factory,
     { Editor() },
     GodotInEditorDebugExecutorFactory(project),
-), IRiderDebuggable, RunConfigurationWithSuppressedDefaultRunAction, WithoutOwnBeforeRunSteps {
+), IRiderDebuggable, RunConfigurationWithSuppressedDefaultRunAction, SolutionRunConfiguration {
 
     override fun checkConfiguration() {
         if (GodotProjectDiscoverer.getInstance(project).godot4Path.value == null) {
@@ -78,7 +80,11 @@ class GodotInEditorDebugRunConfiguration(project: Project, factory: Configuratio
         override fun applyEditorTo(configuration: GodotInEditorDebugRunConfiguration) {
         }
 
-        override fun createEditor(): JComponent = JPanel()
+        override fun createEditor(): JComponent = panel {
+            row {
+                text(GodotPluginBundle.message("godot.debug.in.editor.editor.what"))
+            }
+        }
     }
 }
 
@@ -110,7 +116,7 @@ class GodotInEditorDebugExecutorFactory(private val project: Project) : AsyncExe
                         }
                     }
                 }
-                if (!rdClientService.playCurrentSceneForDebug(diagnosticPort.gameArgument)) {
+                if (!rdClientService.playCurrentSceneForDebug(diagnosticPort.gameEnvironment)) {
                     throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.play.failed"))
                 }
                 val gamePid = diagnosticPort.awaitGameProcessId()
@@ -171,7 +177,17 @@ private class GodotGameDiagnosticPort private constructor(
     private val sessionId: String,
     address: String,
 ) {
-    val gameArgument: String = "${FrontendGodotModel.diagnosticPortsArgument}=${suspendableDiagnosticPortsValue(address)}"
+    /**
+     * The environment variables for the game process. They enable Edit and Continue (hot reload),
+     * and make the game connect to the diagnostic port.
+     */
+    val gameEnvironment: Map<String, String> = withSuspendableDiagnosticPort(
+        mapOf(
+            DOTNET_MODIFIABLE_ASSEMBLIES to "debug",
+            COMPLUS_FORCEENC to "1",
+        ),
+        address,
+    )
 
     private val resumed = AtomicBoolean(false)
     private val disposed = AtomicBoolean(false)
@@ -211,11 +227,11 @@ private class GodotGameDiagnosticPort private constructor(
     }
 
     companion object {
-        private const val DOTNET_DIAGNOSTIC_PORTS = "DOTNET_DiagnosticPorts"
+        private const val DOTNET_MODIFIABLE_ASSEMBLIES = "DOTNET_MODIFIABLE_ASSEMBLIES"
+        private const val COMPLUS_FORCEENC = "COMPLUS_FORCEENC"
 
-        // Playing a scene builds the project first. This means this has to cover both build
-        // and connection. This value might not cover big projects, at that point we tell
-        // the user they should build first.
+        // The "Before launch" step builds the project before the editor plays the scene, so this covers
+        // the autosave, the game start and the connection only.
         private val CONNECT_TIMEOUT = 60.seconds
 
         suspend fun open(
@@ -228,12 +244,5 @@ private class GodotGameDiagnosticPort private constructor(
                 onCreated(port)
             }
         }
-
-        /**
-         * `connect` makes the game dial out to us, `suspend` freezes its runtime until we resume it. The same format
-         * Rider uses when it starts a process with a diagnostic port itself.
-         */
-        private fun suspendableDiagnosticPortsValue(address: String): String =
-            withSuspendableDiagnosticPort(emptyMap(), address).getValue(DOTNET_DIAGNOSTIC_PORTS)
     }
 }
