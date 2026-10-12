@@ -7,9 +7,7 @@ import gdscript.parser.recovery.GdRecovery
 import gdscript.psi.GdTypes.ARG_EXPR
 import gdscript.psi.GdTypes.ARG_LIST
 import gdscript.psi.GdTypes.COMMA
-import gdscript.psi.GdTypes.END_STMT
 import gdscript.psi.GdTypes.LRBR
-import gdscript.psi.GdTypes.NEW_LINE
 import gdscript.psi.GdTypes.RRBR
 
 object GdArgListParser : GdBaseParser {
@@ -32,14 +30,10 @@ object GdArgListParser : GdBaseParser {
             }
         }
 
-        GdRecovery.argumentList(b, ok)
+        // Accept the line end before a closing parenthesis. Keep unterminated arguments on the recovery path.
+        if (ok) b.consumeLineEndBefore(RRBR)
 
-        // A lambda argument with a suite can leave a newline before the closing parenthesis.
-        if (ok && b.nextTokenIs(NEW_LINE)) {
-            val m = b.mark()
-            b.advance()
-            m.done(END_STMT)
-        }
+        GdRecovery.argumentList(b, ok)
 
         val hasRightParen = b.consumeToken(RRBR)
         ok = ok && hasRightParen
