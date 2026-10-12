@@ -35,15 +35,30 @@ private fun responseMismatch(): GdEvalOutcome.Failed {
     )
 }
 
+/** The validated value or the reason that the numbered array is invalid. */
+internal sealed interface GdNumberedAnswer {
+    data class Value(val variable: DapVariable) : GdNumberedAnswer
+    enum class Failure : GdNumberedAnswer { COUNT, INDICES, NUMBER }
+}
+
+/** Checks one integer size marker and all canonical indices in response order. */
+internal fun canonicalArrayFailure(rows: List<DapVariable>, count: Int): GdNumberedAnswer.Failure? {
+    val size = rows.singleOrNull { it.name == "size" }
+    if (size?.type != "int" || size.value != count.toString()) return GdNumberedAnswer.Failure.COUNT
+    val elements = rows.filter { it.name != "size" }
+    if (elements.size != count || elements.withIndex().any { (index, row) -> row.name != index.toString() })
+        return GdNumberedAnswer.Failure.INDICES
+    return null
+}
+
 internal object GdEvaluationRequest {
     private val nextNumber = AtomicLong()
 
-    fun answer(rows: List<DapVariable>, number: Long): DapVariable? {
-        val reader = GdArrayReader(rows)
-        if (rows.size != 3 || reader.declaredSize != 2 || reader.actualCount != 2 ||
-            reader.getOrNull(1)?.value != number.toString()
-        ) return null
-        return reader.getOrNull(0)
+    fun answer(rows: List<DapVariable>, number: Long): GdNumberedAnswer {
+        canonicalArrayFailure(rows, 2)?.let { return it }
+        val elements = rows.filter { it.name != "size" }
+        if (elements[1].type != "int" || elements[1].value != number.toString()) return GdNumberedAnswer.Failure.NUMBER
+        return GdNumberedAnswer.Value(elements[0])
     }
 
     fun number(): Long = nextNumber.incrementAndGet()
@@ -71,10 +86,13 @@ internal suspend fun DapSessionContext.evaluateStructuredOutcome(
                 is GdVariablesLoad.Success -> load.variables
                 is GdVariablesLoad.Failed -> return GdEvalOutcome.Failed(load.message)
             }
-            val inner = GdEvaluationRequest.answer(rows, number)
-            if (inner == null) responseMismatch()
-            else if (inner is DapStructuredVariable) GdEvalOutcome.Structured(inner)
-            else GdEvalOutcome.Missing
+            when (val answer = GdEvaluationRequest.answer(rows, number)) {
+                is GdNumberedAnswer.Failure -> responseMismatch()
+                is GdNumberedAnswer.Value -> {
+                    val inner = answer.variable
+                    if (inner is DapStructuredVariable) GdEvalOutcome.Structured(inner) else GdEvalOutcome.Missing
+                }
+            }
         }
     }
 }

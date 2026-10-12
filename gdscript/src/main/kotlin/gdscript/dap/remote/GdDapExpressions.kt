@@ -35,7 +35,17 @@ internal object GdDapExpressions {
 
     fun numbered(value: String, number: Long): String = "[$value, $number]"
 
-    fun instance(objectId: Long): String = "instance_from_id($objectId)"
+    /** Reads the keys, the selected key type, and its object data. */
+    fun dictionaryKeys(parent: String, position: Int): String {
+        val selectedKey = "($parent).keys()[$position]"
+        return "($parent).keys() + [typeof($selectedKey), var_to_bytes($selectedKey).slice(0, 12).hex_encode()]"
+    }
+
+    /** Formats signed 64-bit integers for the Expression parser. */
+    fun integerLiteral(number: Long): String =
+        if (number == Long.MIN_VALUE) "(-9223372036854775807 - 1)" else number.toString()
+
+    fun instance(objectId: Long): String = "instance_from_id(${integerLiteral(objectId)})"
 
     /**
      * `[self, v][int(is_instance_valid(v))]` selects a valid receiver before a method call.
@@ -119,7 +129,7 @@ internal data class GdOwnerExpression(val text: String, val dictionaries: List<P
     }
 
     fun child(parentType: String?, name: String, position: Int, entryCount: Int = 0): GdOwnerExpression? = when (parentType) {
-        "Array" -> name.toIntOrNull()?.takeIf { it >= 0 }?.let { GdOwnerExpression("($text)[$it]", dictionaries) }
+        "Array" -> GdDapRowRules.arrayIndex(name)?.let { GdOwnerExpression("($text)[$it]", dictionaries) }
         "Dictionary" -> GdOwnerExpression("($text).values()[$position]", dictionaries + (text to entryCount))
         "Object" -> member(name)
         else -> null
@@ -152,10 +162,13 @@ internal object GdLocalExpressions {
         "str error_string type_string print print_rich printerr printt prints printraw print_verbose push_error " +
         "push_warning var_to_str str_to_var var_to_bytes bytes_to_var var_to_bytes_with_objects " +
         "bytes_to_var_with_objects hash instance_from_id is_instance_id_valid is_instance_valid " +
-        "rid_allocate_id rid_from_int64 is_same int float bool len range load preload String StringName Array Dictionary Object").split(' ').toSet()
+        "rid_allocate_id rid_from_int64 is_same int float bool len range load preload String StringName Array Dictionary Object")
+        .split(' ').toSet()
+
+    fun isReserved(name: String): Boolean = name in reserved
 
     fun name(name: String): String? = name.takeIf {
-        it.matches(Regex("[a-zA-Z_][a-zA-Z_0-9]*")) && it !in reserved
+        it.matches(Regex("[a-zA-Z_][a-zA-Z_0-9]*")) && !isReserved(it)
     }
 }
 

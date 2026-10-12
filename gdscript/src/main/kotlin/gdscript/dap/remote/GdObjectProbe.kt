@@ -19,7 +19,7 @@ internal object GdObjectProbe {
      */
     fun isProbeTarget(variable: DapVariable, owner: GdOwnerExpression?, allowInferredType: Boolean = false): Boolean =
         owner != null && variable is DapStructuredVariable && GdValueKind.type(variable) == "Object" &&
-            (allowInferredType || variable.type != null)
+            variable.type != "Nil" && (allowInferredType || variable.type != null)
 
     /** A malformed field invalidates the whole batch, not just the row at that position. */
     fun read(rows: List<DapVariable>, count: Int, owner: GdOwnerExpression? = null, width: Int = WIDTH): List<GdObjectPresentation?>? {
