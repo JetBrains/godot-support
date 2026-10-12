@@ -45,7 +45,7 @@ object GdPrimaryExParser : GdExprBaseParser() {
         while (ok && GdExprParser.parse(b, l + 1)) {
             if (!b.passToken(COMMA)) break
         }
-        ok = ok && b.consumeToken(RSBR)
+        ok = ok && b.consumeCollectionClose(RSBR)
 
         return b.exitSection(ok, true)
     }
@@ -59,9 +59,14 @@ object GdPrimaryExParser : GdExprBaseParser() {
             if (!b.passToken(COMMA)) break
         }
 
-        ok = ok && b.consumeToken(RCBR)
+        ok = ok && b.consumeCollectionClose(RCBR)
 
         return b.exitSection(ok, true)
+    }
+
+    private fun GdPsiBuilder.consumeCollectionClose(closingBracket: IElementType): Boolean {
+        consumeLineEndBefore(closingBracket)
+        return consumeToken(closingBracket)
     }
 
     private fun keyValuePair(b: GdPsiBuilder, l: Int): Boolean {

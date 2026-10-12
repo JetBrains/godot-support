@@ -156,6 +156,13 @@ class GdPsiBuilder {
         return false
     }
 
+    /**
+     * Wraps the line end that a lambda suite leaves before [closingBracket] in END_STMT.
+     * Leaves other line ends to the recovery of the caller.
+     */
+    fun consumeLineEndBefore(closingBracket: IElementType): Boolean =
+        followingTokensAre(GdTypes.NEW_LINE, closingBracket) && mcToken(GdTypes.END_STMT, GdTypes.NEW_LINE)
+
     fun passToken(vararg elementTypes: IElementType): Boolean {
         if (nextTokenIs(*elementTypes)) {
             advance()

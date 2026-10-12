@@ -1,16 +1,17 @@
 package gdscript.formatter.impl
 
-import com.intellij.formatting.Indent
 import com.intellij.formatting.FormattingMode
+import com.intellij.formatting.Indent
 import com.intellij.lang.ASTNode
-import com.intellij.psi.tree.IElementType
 import com.intellij.psi.TokenType
+import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.PsiTreeUtil
-import gdscript.formatter.GdFmtContext
 import gdscript.formatter.GdCodeStyleSettings
-import gdscript.formatter.isWhiteSpace
+import gdscript.formatter.GdFmtContext
 import gdscript.formatter.block.GdASTBlock
+import gdscript.formatter.block.GdBlock
 import gdscript.formatter.block.GdBlocks
+import gdscript.formatter.isWhiteSpace
 import gdscript.psi.GdArrEx
 import gdscript.psi.GdKeyValue
 import gdscript.psi.GdMethodDeclTl
@@ -19,6 +20,7 @@ import gdscript.psi.GdStmtOrSuite
 import gdscript.psi.GdTypes
 
 fun GdASTBlock.computeChildIndent(child: ASTNode, childCtx: GdFmtContext): Indent {
+    lambdaTailIndent(child, childCtx)?.let { return it }
     val gdSettings = childCtx.gdSettings
     val parentType = node.elementType
     val childType = child.elementType
@@ -97,6 +99,143 @@ fun GdASTBlock.computeChildIndent(child: ASTNode, childCtx: GdFmtContext): Inden
             }
             childIndent
         }
+}
+
+/**
+ * Keeps a list tail at or left of the lambda body, independent of continuation and hanging bracket settings.
+ * Assumes valid input and a tail bracket that is valid from column zero to the lambda-body column.
+ * A tail comma is valid from column one to that column.
+ * A column-zero comma requires a body that does not end in a nested suite.
+ * A deeper column is invalid.
+ *
+ * For example, this comma starts between the call column and the body column:
+ * ```gdscript
+ * f(func():
+ *     work()
+ *   , 2)
+ * ```
+ * The rule moves the comma to the body column:
+ * ```gdscript
+ * f(func():
+ *     work()
+ *     , 2)
+ * ```
+ *
+ * The comma column assumes that [computeChildIndent] gives a list item that starts its own line
+ * a normal indent, or a continuation indent when [useContinuationIndent] is on.
+ * Update this rule when the item indent rule changes, for example when list items get alignment.
+ * The `testOwnLineLambda*` and `testItemLineBeforeLambdaLine*` tests fail when the two rules disagree.
+ */
+private fun GdASTBlock.lambdaTailIndent(child: ASTNode, childCtx: GdFmtContext): Indent? {
+    // Apply the rule only during reformatting. Keep editing indents and other expression kinds unchanged.
+    if (childCtx.formattingMode != FormattingMode.REFORMAT) return null
+    if (node.elementType != GdTypes.ARG_LIST && node.elementType != GdTypes.ARRAY_DECL && node.elementType != GdTypes.DICT_DECL) {
+        return null
+    }
+    val isComma = child.elementType == GdTypes.COMMA
+    if (!isComma && child.elementType !in GdBlocks.RIGHT_BRACES) return null
+    val block = this as? GdBlock ?: return null
+    val indentOptions = childCtx.commonSettings.indentOptions ?: return null
+    val lambdaLines = block.lambdaTailLines(indentOptions.TAB_SIZE)
+    // A tail token must start its code line. Inline commas and brackets keep their usual indent.
+    if (!lambdaLines.startsLine(child.startOffset)) return null
+
+    // Skip blank and comment lines to find the code that the tail follows.
+    var previous = PsiTreeUtil.prevLeaf(child.psi, true)
+    while (previous != null && (previous.textLength == 0 || previous.node.elementType.isWhiteSpace()
+                               || previous.node.elementType == GdTypes.COMMENT)) {
+        previous = PsiTreeUtil.prevLeaf(previous, true)
+    }
+    // Require a preceding lambda body in this list. Do not treat a nested list tail as this list's tail.
+    val previousCode = previous ?: return null
+    var ancestor: ASTNode? = previousCode.node
+    var lambda: ASTNode? = null
+    while (ancestor != null && ancestor != node) {
+        if (ancestor.elementType == GdTypes.FUNC_DECL_EX) lambda = ancestor
+        ancestor = ancestor.treeParent
+    }
+    if (ancestor != node) return null
+    val tailLambda = lambda ?: return null
+    val suite = tailLambda.findChildByType(GdTypes.STMT_OR_SUITE)?.findChildByType(GdTypes.SUITE) ?: return null
+    if (!PsiTreeUtil.isAncestor(suite.psi, previousCode, false)) return null
+
+    // Compare visual columns so tabs and spaces use the same comma-choice rule.
+    val callLine = lambdaLines.callLine
+    // The lambda line is the item start line. An item after an inline comma uses the call line instead.
+    var item = tailLambda
+    while (item.treeParent != node) item = item.treeParent
+    val itemStartsLine = lambdaLines.startsLine(item.startOffset)
+    val lambdaLine = if (itemStartsLine) lambdaLines.line(item.startOffset) else callLine
+    // Express the lambda-line indent relative to the list block, using the formatted item indent.
+    val lambdaLineIndent = if (itemStartsLine && lambdaLine.startOffset != callLine.startOffset) {
+        if (useContinuationIndent(node.elementType, childCtx.gdSettings)) indentOptions.CONTINUATION_INDENT_SIZE else indentOptions.INDENT_SIZE
+    }
+    else 0
+    val bodyIndent = lambdaLineIndent + indentOptions.INDENT_SIZE
+    // Keep the source choice relative to the lambda line. A deeper comma goes one normal indent to its right.
+    if (isComma) {
+        val commaIndent = if (lambdaLines.column(child.startOffset) > lambdaLine.column) bodyIndent else lambdaLineIndent
+        return Indent.getSpaceIndent(commaIndent)
+    }
+
+    // An ancestor block can anchor the call line. A chain step owns that line at its leading dot.
+    // Without an anchor, the line starts outside this expression. Use the body column to keep the tail within its limit.
+    return if (lambdaLines.callLineHasAnchor) Indent.getNoneIndent() else Indent.getSpaceIndent(bodyIndent)
+}
+
+/** Caches source line information for one list block during a formatting pass. */
+internal class LambdaTailLines(private val block: GdASTBlock, private val text: CharSequence, private val tabSize: Int) {
+    data class Line(val startOffset: Int, val firstCodeOffset: Int, val column: Int)
+
+    private val sourceLines = HashMap<Int, Line>()
+    val callLine: Line by lazy { line(block.node.startOffset) }
+    val callLineHasAnchor: Boolean by lazy {
+        val callOffset = callLine.firstCodeOffset
+        text[callOffset] == '.' || generateSequence(block) { it.parent }.any { it.textRange.startOffset == callOffset }
+    }
+
+    fun startsLine(offset: Int): Boolean {
+        var start = offset
+        while (start > 0) {
+            when (text[start - 1]) {
+                ' ', '\t' -> start--
+                '\n' -> return true
+                else -> return false
+            }
+        }
+        return true
+    }
+
+    fun line(offset: Int): Line = sourceLines.getOrPut(offset) {
+        val start = lineStart(offset)
+        Line(start, firstCodeOffset(start), column(start))
+    }
+
+    private fun lineStart(offset: Int): Int {
+        var start = offset
+        while (start > 0 && text[start - 1] != '\n') start--
+        return start
+    }
+
+    private fun firstCodeOffset(startOffset: Int): Int {
+        var start = startOffset
+        while (start < text.length && (text[start] == ' ' || text[start] == '\t')) start++
+        return start
+    }
+
+    fun column(offset: Int): Int {
+        var column = 0
+        var index = lineStart(offset)
+        while (index < text.length) {
+            when (text[index]) {
+                ' ' -> column++
+                '\t' -> column = (column / tabSize + 1) * tabSize
+                else -> break
+            }
+            index++
+        }
+        return column
+    }
 }
 
 private fun isContinuationIndent(indent: Indent): Boolean =

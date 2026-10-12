@@ -11,6 +11,7 @@ import com.intellij.lang.tree.util.children
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.formatter.FormatterUtil
 import gdscript.formatter.GdFmtContext
+import gdscript.formatter.impl.LambdaTailLines
 import gdscript.formatter.impl.computeChildIndent
 import gdscript.formatter.impl.computeSpacing
 import gdscript.formatter.impl.customIsIncomplete
@@ -26,6 +27,19 @@ class GdBlock(
     private val indent: Indent,
     override val ctx: GdFmtContext,
 ) : GdASTBlock {
+
+    // The root holds one PSI text snapshot for this formatting pass.
+    // A block reads the text itself when its root is not a GdBlock.
+    private val lambdaTailText: CharSequence by lazy {
+        val root = generateSequence<GdASTBlock>(this) { it.parent }.last()
+        if (root !== this && root is GdBlock) root.lambdaTailText else node.psi.containingFile.node.chars
+    }
+
+    private var lambdaTailLinesCache: LambdaTailLines? = null
+
+    /** Returns the line cache of this list block. The formatter uses a block from one thread only. */
+    internal fun lambdaTailLines(tabSize: Int): LambdaTailLines =
+        lambdaTailLinesCache ?: LambdaTailLines(this, lambdaTailText, tabSize).also { lambdaTailLinesCache = it }
 
     override fun getNode(): ASTNode = node
     override fun getTextRange(): TextRange = myTextRange
