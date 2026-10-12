@@ -34,6 +34,8 @@ class GdSelfInlineValuesTest {
             "velocity", "base.gd/base_member", "metadata/target", "position", "base.gd/hello",
             "base.gd/nested/child", "MAX", "theme_override_colors/accent", "exported",
         ), properties.map { it.name })
+        assertEquals(listOf("self.velocity", "self.base_member", null, "self.position", null, null, null, null, "self.exported"),
+                     properties.map { it.evaluationExpression })
         assertEquals(code.indexOf("self.velocity"), positionOf(properties[0]))
         assertEquals(code.indexOf("self.base_member"), positionOf(properties[1]))
         assertEquals(null, positionOf(properties[2]))
@@ -60,7 +62,9 @@ class GdSelfInlineValuesTest {
         executor.last.await()
         val rootCategory = rootRows.values.single { it.name == "Members" }
         assertEquals(null, positionOf(rootCategory))
-        assertEquals(null, positionOf(expand(rootCategory).values.single { it.name == "velocity" }))
+        val rootProperty = expand(rootCategory).values.single { it.name == "velocity" }
+        assertEquals(null, positionOf(rootProperty))
+        assertEquals("instance_from_id(75).velocity", rootProperty.evaluationExpression)
         val self = tree.values.last()
         assertEquals(null, positionOf(self))
         val selfChildren = expand(self)
@@ -79,14 +83,20 @@ class GdSelfInlineValuesTest {
             assertEquals(null, positionOf(other))
             val otherCategory = expand(other).values.single { it.name == "Members" }
             assertEquals(null, positionOf(otherCategory))
-            assertEquals(null, positionOf(expand(otherCategory).values.single { it.name == "velocity" }))
+            val childProperty = expand(otherCategory).values.single { it.name == "velocity" }
+            assertEquals(null, positionOf(childProperty))
+            assertEquals("instance_from_id(74).velocity", childProperty.evaluationExpression)
             val parent = selfChildren.values.single { it.name == "Parent" }
             val parentCategory = expand(parent).values.single { it.name == "Members" }
             assertEquals(null, positionOf(parentCategory))
-            assertEquals(null, positionOf(expand(parentCategory).values.single { it.name == "velocity" }))
+            val parentProperty = expand(parentCategory).values.single { it.name == "velocity" }
+            assertEquals(null, positionOf(parentProperty))
+            assertEquals("instance_from_id(76).velocity", parentProperty.evaluationExpression)
         }
         else {
-            assertEquals(null, positionOf(selfChildren.values.single { it.name == "direct" }))
+            val direct = selfChildren.values.single { it.name == "direct" }
+            assertEquals(null, positionOf(direct))
+            assertEquals("self.direct", direct.evaluationExpression)
         }
     }
 

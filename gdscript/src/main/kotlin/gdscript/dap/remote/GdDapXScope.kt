@@ -1,11 +1,11 @@
 package gdscript.dap.remote
 
+import com.intellij.diagnostic.rethrowControlFlowException
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.platform.dap.DapInlineValueLocator
 import com.intellij.platform.dap.DapScope
 import com.intellij.platform.dap.DapSessionContext
 import com.intellij.platform.dap.DapSessionExecutor
-import com.intellij.platform.dap.xdebugger.AbstractDapXValue
 import com.intellij.platform.dap.xdebugger.DapXDebuggerPresentationFactory
 import com.intellij.xdebugger.frame.XCompositeNode
 import com.intellij.xdebugger.frame.XValueChildrenList
@@ -25,7 +25,23 @@ internal class GdDapXScope(
     private val scopeLoader: suspend DapSessionContext.(DapScope, retryAllowed: () -> Boolean) -> GdVariablesLoad = { scope, retryAllowed ->
         loadVariablesBounded(scope, retryAllowed = retryAllowed)
     },
+    private val watchFrame: GdSelfCheckedFrame? = frame,
 ) : XValueGroup(scope.name) {
+    private suspend fun DapSessionContext.localNames(): Set<String>? {
+        return try {
+            val locals = scope.frame.run { scopes() }.firstOrNull { it.name == "Locals" } ?: return emptySet()
+            when (val load = loadVariablesBounded(locals)) {
+                is GdVariablesLoad.Success -> load.variables.mapTo(HashSet()) { it.name }
+                is GdVariablesLoad.Failed -> null
+            }
+        }
+        catch (e: Exception) {
+            rethrowControlFlowException(e)
+            LOG.debug("Could not check local names for Globals watches", e)
+            null
+        }
+    }
+
     override fun isAutoExpand(): Boolean = index == 0 && !scope.isExpensive
 
     override fun computeChildren(node: XCompositeNode) {
@@ -49,17 +65,16 @@ internal class GdDapXScope(
                 }
             }
             val inlineValueContext = createInlineValueContext(scope.frame, inlineValueLocator)
-            variables.forEach { variable ->
-                val row = if (frame == null) factory.createValue(executor, variable)
-                else {
-                    val expression = GdLocalExpressions.name(variable.name)
-                    val owner = expression?.let(::GdOwnerExpression)
-                    val value = GdDapXValue(factory, executor, variable, owner = owner, frame = frame)
-                    // Each pair maps a batched answer to its row by position.
-                    if (GdObjectProbe.isProbeTarget(variable, owner)) probes.add(value to expression!!)
-                    value
-                }
-                if (inlineValueContext != null && row is AbstractDapXValue) row.inlineValueContext = inlineValueContext
+            val hiddenGlobals = if (scope.name == "Globals") localNames() else emptySet()
+            val watchPaths = GdWatchPath.scope(scope.name, variables, hiddenGlobals)
+            variables.forEachIndexed { index, variable ->
+                val expression = if (frame != null) GdLocalExpressions.name(variable.name) else null
+                val owner = expression?.let(::GdOwnerExpression)
+                val row = GdDapXValue(factory, executor, variable, owner = owner, frame = frame,
+                                     watchContext = GdWatchContext(watchPaths[index], watchFrame ?: scope.frame, executor))
+                // Each pair maps a batched answer to its row by position.
+                if (GdObjectProbe.isProbeTarget(variable, owner)) probes.add(row to expression!!)
+                if (inlineValueContext != null) row.inlineValueContext = inlineValueContext
                 children.add(row)
             }
             target.addChildren(children, true)

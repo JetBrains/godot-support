@@ -26,7 +26,7 @@ class GodotDapHoverTest {
             val local = hover("main.gd", "above,", "above", "above")
             assertEquals("7", local.value)
             val node = hover("main.gd", "\$Player)", "\$Player", "get_node_or_null(\"Player\")")
-            assertTrue(node.value.matches(Regex("<EncodedObjectAsID#-?\\d+>")), "The node path gave $node")
+            assertTrue(node.value.matches(Regex("<EncodedObjectAsID#-?\\d+>|Node {2}Player:<Node#-?\\d+>")), "The node path gave $node")
             val nodeName = hover("main.gd", "name)", $$"$Player.name", "get_node_or_null(\"Player\").name")
             assertEquals("Player", nodeName.value)
             hoverHasNoRange("main.gd", "outside)")

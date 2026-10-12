@@ -66,11 +66,13 @@ internal sealed interface GdFrameSelf {
  * The source must permit self and the Members dump must contain self. Godot can send a dump from another frame.
  * Each call repeats both checks with its own time limit. A cancelled check does not change another caller's result.
  * Row code accepts this type instead of an unchecked frame or a general evaluator.
+ * The factory supplies [watchStop] for dictionary reads. The self check does not use it.
  */
 internal class GdSelfCheckedFrame(
     private val delegate: DapStackFrame,
     private val sourceSelf: suspend () -> GdFrameSourceSelf,
     private val checkLimit: Duration = GdSelfCheckPolicy.MEMBERS_RETRY_LIMIT,
+    val watchStop: GdWatchStop? = null,
 ) : DapStackFrame by delegate {
     suspend fun DapSessionContext.checkSelf(): GdFrameSelf = withTimeoutOrNull(checkLimit) {
         when (sourceSelf()) {
