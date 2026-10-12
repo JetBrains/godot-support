@@ -24,6 +24,7 @@ import com.jetbrains.rider.godot.community.EditorConnectionState
 import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
+import com.jetbrains.rider.model.godot.frontendGodot.EnvironmentVariable
 import com.jetbrains.rider.model.godot.frontendGodot.FrontendGodotModel
 import com.jetbrains.rider.model.godot.frontendGodot.frontendGodotModel
 import kotlinx.coroutines.Dispatchers
@@ -148,6 +149,7 @@ class GodotRdClientService(val project: Project) {
     }
 
     /**
+     * Plays the current scene in the editor. The game process gets the given [environment] variables.
      * Returns `false` if the editor is not connected, could not play the scene, or the call
      * has failed.
      *
@@ -156,11 +158,12 @@ class GodotRdClientService(val project: Project) {
      * so the solution of tracking what was launched with an ID and then giving [stopPlayingScene] this
      * ID to stop seems like an overkill.
      */
-    suspend fun playCurrentSceneForDebug(gameArgument: String): Boolean {
+    suspend fun playCurrentSceneForDebug(environment: Map<String, String>): Boolean {
         val currentConnection = connection.get() ?: return false
         return try {
             withContext(currentConnection.protocol.scheduler.asCoroutineDispatcher) {
-                currentConnection.model.playCurrentSceneForDebug.startSuspending(currentConnection.protocol.lifetime, gameArgument)
+                val variables = environment.map { (name, value) -> EnvironmentVariable(name, value) }
+                currentConnection.model.playCurrentSceneForDebug.startSuspending(currentConnection.protocol.lifetime, variables)
             }
         } catch (e: CancellationException) {
             throw e

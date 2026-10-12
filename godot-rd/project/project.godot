@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="godot-engine.godot-rd"
-config/features=PackedStringArray("4.6", "GL Compatibility")
+config/features=PackedStringArray("4.6", "C#", "GL Compatibility")
 
 [dotnet]
 
@@ -19,7 +19,7 @@ project/assembly_name="godot-engine.godot-rd"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot-rd/plugin.cfg")
+enabled=PackedStringArray("res://addons/godot-rd/plugin.cfg", "res://addons/rider-plugin/plugin.cfg")
 
 [rendering]
 

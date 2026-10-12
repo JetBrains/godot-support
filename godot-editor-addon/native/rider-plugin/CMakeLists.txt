@@ -16,22 +16,25 @@ set(GODOT_PROJECT_DIR "../..")
 find_package(Python3 3.4 REQUIRED)
 find_program(GIT git REQUIRED)
 
-# Ensure godot-cpp submodule has been updated
-if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/godot-cpp/src")
-    message(NOTICE "godot-cpp bindings source not found")
-    message(NOTICE "initializing/updating the godot-cpp submodule...")
-
-    # update the c++ bindings submodule to populate it with the necessary source for the library
-    execute_process(
-        COMMAND git submodule update --init godot-cpp
-        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-        COMMAND_ERROR_IS_FATAL ANY
-    )
-endif()
-
 set(GODOTCPP_TARGET "editor")
+include(cmake/GodotCppMonorepo.cmake)
+godot_detect_monorepo(GODOTCPP_FROM_MONOREPO)
+if(GODOTCPP_FROM_MONOREPO)
+    monorepo_init()
+else()    # Ensure godot-cpp submodule has been updated
+    if(NOT EXISTS "${CMAKE_CURRENT_LIST_DIR}/godot-cpp/src")
+        message(NOTICE "godot-cpp bindings source not found")
+        message(NOTICE "initializing/updating the godot-cpp submodule...")
 
-add_subdirectory(godot-cpp SYSTEM)
+        # update the c++ bindings submodule to populate it with the necessary source for the library
+        execute_process(
+            COMMAND git submodule update --init godot-cpp
+            WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
+            COMMAND_ERROR_IS_FATAL ANY
+        )
+    endif()
+    add_subdirectory(godot-cpp SYSTEM)
+endif()
 
 # Add godot-cpp's module path and include the exported functions.
 # This is made available for documentation generation

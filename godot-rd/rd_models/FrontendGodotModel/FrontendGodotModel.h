@@ -44,6 +44,8 @@
 #include "thirdparty.hpp"
 #include "instantiations_FrontendGodotRoot.h"
 
+#include "FrontendGodotModel/EnvironmentVariable.h"
+
 
 
 #ifdef _MSC_VER
@@ -75,10 +77,10 @@ public:
 
 private:
     // custom serializers
+    using __EnvironmentVariableListSerializer = rd::ArraySerializer<rd::Polymorphic<EnvironmentVariable>, std::vector>;
 
 public:
     // constants
-    static constexpr rd::wstring_view diagnosticPortsArgument{L"--rider-diagnostic-ports", 24};
     static constexpr rd::wstring_view portFilename{L"rider_ide_server.cfg", 20};
     static constexpr rd::wstring_view portKey{L"port", 4};
     static constexpr rd::wstring_view modelHashKey{L"modelHash", 9};
@@ -88,7 +90,7 @@ protected:
     rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_;
     rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_;
     rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_;
-    rd::RdEndpoint<std::wstring, bool, rd::Polymorphic<std::wstring>, rd::Polymorphic<bool>> playCurrentSceneForDebug_;
+    rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, bool, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<bool>> playCurrentSceneForDebug_;
     rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_;
     
 
@@ -98,7 +100,7 @@ private:
 
 public:
     // primary ctor
-    FrontendGodotModel(rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_, rd::RdEndpoint<std::wstring, bool, rd::Polymorphic<std::wstring>, rd::Polymorphic<bool>> playCurrentSceneForDebug_, rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_);
+    FrontendGodotModel(rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_, rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, bool, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<bool>> playCurrentSceneForDebug_, rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_);
     
     // default ctors and dtors
     
@@ -124,7 +126,7 @@ public:
     rd::ISource<std::wstring> const & get_openInGodot() const;
     rd::ISignal<std::wstring> const & get_openInRider() const;
     rd::ISignal<std::wstring> const & get_currentSceneChange() const;
-    rd::RdEndpoint<std::wstring, bool, rd::Polymorphic<std::wstring>, rd::Polymorphic<bool>> const & get_playCurrentSceneForDebug() const;
+    rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, bool, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<bool>> const & get_playCurrentSceneForDebug() const;
     rd::ISource<rd::Void> const & get_stopPlayingScene() const;
     
     // intern

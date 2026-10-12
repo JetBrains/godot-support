@@ -35,3 +35,5 @@ community/nuget
 NuGet.Config
 
 *.hprof
+
+godot-rd/project/addons/rider-plugin/**

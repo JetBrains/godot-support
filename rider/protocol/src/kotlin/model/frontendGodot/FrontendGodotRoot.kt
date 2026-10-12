@@ -7,6 +7,8 @@ import com.jetbrains.rd.generator.nova.callback
 import com.jetbrains.rd.generator.nova.const
 import com.jetbrains.rd.generator.nova.cpp.Cpp17Generator
 import com.jetbrains.rd.generator.nova.doc
+import com.jetbrains.rd.generator.nova.field
+import com.jetbrains.rd.generator.nova.immutableList
 import com.jetbrains.rd.generator.nova.kotlin.Kotlin11Generator
 import com.jetbrains.rd.generator.nova.setting
 import com.jetbrains.rd.generator.nova.sink
@@ -28,6 +30,11 @@ object FrontendGodotRoot : Root() {
  */
 @Suppress("unused")
 object FrontendGodotModel : Ext(FrontendGodotRoot) {
+    private val EnvironmentVariable = structdef("EnvironmentVariable") {
+        field("name", PredefinedType.string)
+        field("value", PredefinedType.string)
+    }
+
     init {
         sourceFileAndLine = null
         sink("openInGodot", PredefinedType.string)
@@ -40,17 +47,12 @@ object FrontendGodotModel : Ext(FrontendGodotRoot) {
         source("currentSceneChange", PredefinedType.string).doc("Used for syncing what scene Godot has currently opened.")
 
         // Debug current C# scene in editor
-        callback("playCurrentSceneForDebug", PredefinedType.string, PredefinedType.bool)
+        callback("playCurrentSceneForDebug", immutableList(EnvironmentVariable), PredefinedType.bool)
             .doc(
-                "Plays the current scene and adds the specified argument to the game command line. " +
+                "Plays the current scene with the specified environment variables set for the game process. " +
                     "Returns true if Godot starts the scene."
             )
         sink("stopPlayingScene", PredefinedType.void).doc("Stops the scene that is currently being played.")
-        const("diagnosticPortsArgument", PredefinedType.string, "--rider-diagnostic-ports")
-            .doc(
-                "Flag for passing DOTNET_DiagnosticPorts to the game. This argument is required because Godot does not pass " +
-                    "the editor environment on macOS. The game extension sets the variable before .NET starts."
-            )
 
         const(
             "portFilename",

@@ -47,7 +47,8 @@ void GodotRdServer::start() noexcept {
 			callable_mp(this, &GodotRdServer::open_in_godot).call_deferred(Utils::to_godot_string(path));
 		});
 		model.get_playCurrentSceneForDebug().set(
-				[this](Lifetime, const std::wstring &game_argument) -> RdTask<bool> {
+				[this](Lifetime, const std::vector<rd::Wrapper<JetBrains::GodotPlugin::EnvironmentVariable>> &variables)
+						-> RdTask<bool> {
 					UtilityFunctions::print_verbose("[RIDER RD] play current scene for debug requested");
 					RdTask<bool> task;
 					// Protect against session changes before run_on_godot_thread runs.
@@ -60,8 +61,12 @@ void GodotRdServer::start() noexcept {
 						}
 						starting_id = session->get_id();
 					}
-					run_on_godot_thread([this, task, starting_id, argument = Utils::to_godot_string(game_argument)] {
-						const bool playing = play_current_scene_for_debug(argument);
+					Dictionary environment;
+					for (const auto &variable : variables) {
+						environment[Utils::to_godot_string(variable->get_name())] = Utils::to_godot_string(variable->get_value());
+					}
+					run_on_godot_thread([this, task, starting_id, environment] {
+						const bool playing = play_current_scene_for_debug(environment);
 						// we don't need a lock here, since this runs on Godot thread.
 						if (session && session->get_id() == starting_id) {
 							session->queue([task, playing] { task.set(playing); });
@@ -155,9 +160,9 @@ GodotRdExtension *GodotRdServer::get_extension() {
 	return extension;
 }
 
-bool GodotRdServer::play_current_scene_for_debug(const String &game_argument) {
+bool GodotRdServer::play_current_scene_for_debug(const Dictionary &environment) {
 	auto *extension = get_extension();
-	return extension != nullptr && extension->play_current_scene_for_debug(game_argument);
+	return extension != nullptr && extension->play_current_scene_for_debug(environment);
 }
 
 void GodotRdServer::stop_playing_scene() {
