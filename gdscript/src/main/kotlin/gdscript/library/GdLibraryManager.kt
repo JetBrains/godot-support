@@ -35,6 +35,7 @@ object GdLibraryManager {
 
     private const val MAX_LOGGED_OUTPUT_LENGTH = 4000
     private const val DUMP_SINGLETONS_RESOURCE = "/gdscript/scripts/dump_singletons.gd"
+    private const val DOCTOOL_FAILURE_MESSAGE = "Failed to dump GDExtensions API (godot doctool)."
 
     private class GodotProcessResult(
         val commandLine: GeneralCommandLine,
@@ -78,66 +79,43 @@ object GdLibraryManager {
         )
     }
 
-    private fun getGodotDoctoolCommand(
-        godotPath: Path,
-        workingDirectory: Path,
-        outputDir: Path,
-        gdextension: Boolean = false
-    ): GeneralCommandLine {
-        val commandLine = GeneralCommandLine(godotPath.absolutePathString())
-            .withWorkingDirectory(workingDirectory)
-            .withParameters("--doctool", outputDir.absolutePathString())
-
-        if (gdextension) {
-            commandLine.addParameter("--gdextension-docs")
-        }
-
-        return commandLine
-    }
-
     /**
-     * Run Godot CLI with the doctool flag to generate SDK docs
-     * If gdextension is true, it will generate GDExtensions docs only, else it will generate the core SDK docs
+     * Runs the Godot doctool to generate the GDExtension docs into [outputDir].
+     * Logs an error with the command line when the run fails.
      *
      * @return true if the docs were generated successfully.
      */
-    private suspend fun runGodotDoctool(
+    private suspend fun runGodotDoctoolForGdextensions(
         godotPath: Path,
         workingDirectory: Path,
         outputDir: Path,
         directoryStampFile: Path,
         stamp: String,
-        gdextension: Boolean = false,
         isAcceptable: (Path) -> Boolean = { true },
     ): Boolean {
+        val commandLine = GeneralCommandLine(godotPath.absolutePathString())
+            .withWorkingDirectory(workingDirectory)
+            .withParameters("--doctool", outputDir.absolutePathString(), "--gdextension-docs")
+        val commandDetail = "Command line: ${commandLine.commandLineString}\nWorking directory: $workingDirectory"
+
+        fun fail(reason: String, details: String = ""): Boolean {
+            thisLogger().error("$DOCTOOL_FAILURE_MESSAGE $reason", "$commandDetail\n$details")
+            return false
+        }
+
         try {
-            val commandLine = getGodotDoctoolCommand(godotPath, workingDirectory, outputDir, gdextension)
             thisLogger().info("Running Godot doctool with command: ${commandLine.commandLineString} in workDir: $workingDirectory")
             val result = runGodotProcess(commandLine)
-            if (!result.terminated) {
-                thisLogger().warn("Godot doctool did not terminate (gdextension=$gdextension)")
-                return false
-            }
-
-            val exitCode = result.exitCode
-            if (exitCode != 0) {
-                thisLogger().warn(
-                    "Godot doctool failed with exit code $exitCode (gdextension=$gdextension).\n" + result.describe()
-                )
-                return false
-            }
-
-            if (!isAcceptable(outputDir)) {
-                thisLogger().warn("Godot doctool produced an unacceptable documentation set at $outputDir")
-                return false
-            }
+            if (!result.terminated) return fail("The process did not terminate.")
+            if (result.exitCode != 0) return fail("The exit code is ${result.exitCode}.", details = result.describe())
+            if (!isAcceptable(outputDir)) return fail("The output at $outputDir is not acceptable.")
 
             // Written last, and out of the output directory as it is now: the stamp describes the generated files too.
             GdSdkIntegrityValidator.writeStamp(directoryStampFile, stamp, outputDir)
             return true
-        } catch (e: Exception) {
-            rethrowControlFlowException(e)
-            thisLogger().warn("Failed to run Godot doctool", e)
+        } catch (exception: Exception) {
+            rethrowControlFlowException(exception)
+            thisLogger().error(DOCTOOL_FAILURE_MESSAGE, exception, "$commandDetail\n")
             return false
         }
     }
@@ -542,13 +520,12 @@ object GdLibraryManager {
         var rawDocsValid = GdSdkIntegrityValidator.hasValidStamp(extensionsStampFile, manifestsStamp, rawDir)
         if (godotPath != null && !rawDocsValid) {
             clearGeneratedDocs(rawDir, extensionsStampFile)
-            rawDocsValid = runGodotDoctool(
+            rawDocsValid = runGodotDoctoolForGdextensions(
                 godotPath,
                 projectBasePath,
                 rawDir,
                 extensionsStampFile,
                 manifestsStamp,
-                gdextension = true,
                 isAcceptable = { outputDir ->
                     manifests.isEmpty() || Files.list(outputDir.resolve("doc_classes")).use { it.findAny().isPresent }
                 },

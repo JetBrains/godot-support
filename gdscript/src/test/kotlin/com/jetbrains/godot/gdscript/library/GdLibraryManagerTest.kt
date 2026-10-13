@@ -3,6 +3,7 @@ package com.jetbrains.godot.gdscript.library
 import com.intellij.openapi.util.Version
 import com.intellij.openapi.util.io.IoTestUtil
 import com.intellij.openapi.vfs.LocalFileSystem
+import com.intellij.testFramework.LoggedErrorProcessor
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.system.LowLevelLocalMachineAccess
 import com.intellij.util.system.OS
@@ -218,7 +219,19 @@ class GdLibraryManagerTest : BasePlatformTestCase() {
 
             Files.deleteIfExists(GdSdkPathManager.getProjectExtensionsStampFile(project)!!)
             Files.writeString(fakeGodotMode, "fail")
-            generate(fakeGodot)
+            val loggedErrors = mutableListOf<String>()
+            val processor = object : LoggedErrorProcessor() {
+                override fun processError(category: String, message: String, details: Array<String>, t: Throwable?): Set<Action> {
+                    loggedErrors.add(message + "\n" + details.joinToString("\n"))
+                    return Action.NONE
+                }
+            }
+            LoggedErrorProcessor.executeWith(processor).use { generate(fakeGodot) }
+
+            val loggedError = loggedErrors.singleOrNull()
+            assertNotNull("A failed doctool run must log exactly one error, but logged: $loggedErrors", loggedError)
+            assertContainsText("The error must name the exit code.", loggedError!!, "The exit code is 7.")
+            assertContainsText("The error must hold the command line.", loggedError, "--doctool")
 
             assertContainsText("A failed doctool run must fall back to the blob.", Files.readString(publishedClass()), "blob prose")
             assertFalse("Partial raw output must not be published.", Files.exists(publishedDir().resolve("Partial.xml")))
