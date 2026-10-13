@@ -83,10 +83,11 @@ internal class GdScriptDebugAdapterSupportProvider : DebugAdapterSupportProvider
                     withContext(Dispatchers.EDT) {
                         EditConfigurationsDialog(project).show()
                     }
-                    
+                    // the user can start the editor or change the port in the dialog, so read the port again
+                    val newPort = discoverRunningDapPort(project) ?: config.structured.debugServerPort
                     return DebugAdapterSocketConnection(
                         host = GdScriptRunFactory.DEFAULT_ADDRESS,
-                        port = port,
+                        port = newPort,
                         connectionAttempts = 2)
                 }
                 finally {
