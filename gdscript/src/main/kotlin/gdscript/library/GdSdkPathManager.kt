@@ -1,6 +1,7 @@
 package gdscript.library
 
 import com.intellij.ide.plugins.PluginManager.getPluginByClass
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.application.PathManager
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
@@ -18,8 +19,11 @@ object GdSdkPathManager {
     fun getCoreSdkDocsRoot(): Path {
         var name = getPluginByClass(GdLibraryManager::class.java)?.name
         if (name == null) {
-            thisLogger().warn("Cannot find Godot plugin ID")
-            name = "GdScript"
+            if (ApplicationManager.getApplication()?.isUnitTestMode != true) // expect in UnitTestMode
+                thisLogger().warn("Cannot find Godot plugin ID")
+            else
+
+            name = "Godot"
         }
         return PathManager.getPluginsDir()
             .resolve(name)

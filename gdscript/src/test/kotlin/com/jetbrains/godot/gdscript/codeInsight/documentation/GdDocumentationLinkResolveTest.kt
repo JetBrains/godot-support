@@ -1,10 +1,15 @@
+@file:Suppress("UnstableApiUsage")
+
 package com.jetbrains.godot.gdscript.codeInsight.documentation
 
 import com.intellij.lang.documentation.impl.documentationTargets
 import com.intellij.model.psi.PsiSymbolReferenceService
+import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.util.TextRange
 import com.intellij.platform.backend.documentation.DocumentationLinkHandler
 import com.intellij.platform.backend.documentation.DocumentationTarget
+import com.intellij.platform.backend.documentation.LinkResolveResult
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.text.CharArrayUtil
@@ -29,6 +34,7 @@ import gdscript.settings.GdProjectSettingsState
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.util.concurrent.Callable
 
 @RunWith(JUnit4::class)
 class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
@@ -302,8 +308,14 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
     private fun assertLinkResolvesFromReaderModeTarget(file: PsiFile, offset: Int) {
         val target = documentationTargets(file, offset).firstOrNull()
         assertNotNull(target)
-        val resolved = DocumentationLinkHandler.EP_NAME
-            .computeSafeIfAny { it.resolveLink(target!!, "psi_element://Object") }
+        // resolveLink is @RequiresBackgroundThread; BasePlatformTestCase runs on the EDT by default.
+        val resolved: LinkResolveResult? = ApplicationManager.getApplication().executeOnPooledThread(Callable {
+            runReadAction {
+                DocumentationLinkHandler.EP_NAME.computeSafeIfAny {
+                    it.resolveLink(target!!, "psi_element://Object")
+                }
+            }
+        }).get()
         assertNotNull(resolved)
     }
 
