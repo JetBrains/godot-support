@@ -10,6 +10,7 @@ import com.jetbrains.rd.util.reactive.valueOrDefault
 import com.jetbrains.rider.build.BuildHost
 import com.jetbrains.rider.build.BuildParameters
 import com.jetbrains.rider.build.BuildToolWindowService
+import com.jetbrains.rider.debugger.RiderDebugActiveDotNetSessionsTracker
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.model.BuildMessageKind
 import com.jetbrains.rider.model.BuildTarget
@@ -37,6 +38,9 @@ class GodotFileDocumentManagerListener : FileDocumentManagerListener {
                 if (!buildAutomatically) return@invokeLater
                 // it makes no sense to build, if Godot is not running
                 if (project.solution.godotFrontendBackendModel.editorState.valueOrDefault(GodotEditorState.Disconnected) != GodotEditorState.Connected)
+                    return@invokeLater
+                // A build replaces the assemblies of a running debug session, so Hot Reload can no longer find them, RIDER-144062
+                if (RiderDebugActiveDotNetSessionsTracker.getInstance(project).hasActiveDotNetDebugSessions)
                     return@invokeLater
                 val isActive = project.protocolHostIfExists?.protocol?.rdShellModel?.isApplicationActive?.valueOrNull
                 if (isActive != null && !isActive) {
