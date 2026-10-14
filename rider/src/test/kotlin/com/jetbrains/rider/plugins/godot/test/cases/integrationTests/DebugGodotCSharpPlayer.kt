@@ -52,8 +52,6 @@ import kotlin.io.path.absolutePathString
 @TestSettings(sdkVersion = SdkVersion.LATEST_STABLE, buildTool = BuildTool.SDK)
 @Tag(TeamCityTags.Plugins.Godot.Integration)
 class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
-    private var godotProcess: Process? = null
-
     override val solutionApiFacade: SolutionApiFacade by lazy { RiderExistingSolutionApiFacade() }
 
     override val traceScenarios: Set<LogTraceScenario>
@@ -78,7 +76,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     }
 
     private fun startGodot() {
-        godotProcess = startGodotWithProject(
+        startGodotWithProject(
             projectName = testMethod.solution!!.name,
             testWorkDirectory = testWorkDirectory,
             solutionSourceRootDirectory = solutionSourceRootDirectory,
