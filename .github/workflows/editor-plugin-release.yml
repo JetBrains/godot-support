@@ -137,7 +137,7 @@ jobs:
           zip -r rider-plugin-addons.zip rider-plugin-addons
 
       - name: Create GitHub Release and upload asset
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.rel.outputs.tag }}
           name: ${{ steps.rel.outputs.name }}
