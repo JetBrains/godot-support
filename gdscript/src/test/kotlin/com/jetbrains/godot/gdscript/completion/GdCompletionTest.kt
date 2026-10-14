@@ -95,6 +95,18 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
     )
 
     @Test
+    fun testInputActionsPrecedeResourcesInQualifiedCall() =
+        doInputActionRankingTest("Input.is_action_pressed(\"<caret>\")")
+
+    @Test
+    fun testInputActionsPrecedeResourcesInUnqualifiedCall() =
+        doInputActionRankingTest("is_action_pressed(\"<caret>\")")
+
+    @Test
+    fun testInputActionsPrecedeResourcesInInputMap() =
+        doInputActionRankingTest("InputMap.has_action(\"<caret>\")")
+
+    @Test
     fun testQuotedUniqueNameLookup() = doUniqueNamesTest("%\"<caret>\"") {
         val items = lookupElementStrings!!
         assertContainsElements(items, "%\"HealthBar\"", "%\"Score Label\"", "%\"Main-Menu\"")
@@ -155,6 +167,23 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
 
     private fun script(expression: String): String =
         "extends Node2D\n\nfunc _ready():\n\tvar node = $expression\n"
+
+    /** @param expression is expected to include the `<caret>` string */
+    private fun doInputActionRankingTest(expression: String) =
+        doConfiguredTest(
+            dir = true,
+            dirName = "inputActions",
+            configureFileName = "input_actions.gd",
+            fileContents = "extends Node\n\nfunc _ready():\n\t$expression\n",
+        ) {
+            completeBasic()
+            val items = lookup!!.items.map { it.lookupString }
+            assertContainsElements(items, "\"ui_accept\"", "\"move_left\"", "\"res://resource.gd\"")
+
+            val actionIndices = items.indices.filter { items[it] == "\"ui_accept\"" || items[it] == "\"move_left\"" }
+            val resourceIndices = items.indices.filter { items[it].trim('"').startsWith("res://") }
+            assertTrue("Input actions must precede resources: $items", actionIndices.max() < resourceIndices.min())
+        }
 
     private fun doUniqueNamesTest(expression: String, check: CodeInsightTestFixture.() -> Unit) =
         doConfiguredTest(
