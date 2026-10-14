@@ -416,7 +416,7 @@ private suspend fun XDebugSession.runAndAwait(commandName: String, signal: Sessi
 private fun frameName(frame: XStackFrame): String =
     XDebuggerTestUtil.getFramePresentation(frame).substringBefore(", ")
 
-internal class GodotChildren(val groups: List<XValueGroup>, val values: List<XValue>)
+internal class GodotChildren(val groups: List<XValueGroup>, val values: List<XValue>, val alreadySorted: Boolean = false)
 
 /**
  * Returns the children of [container], and fails when the adapter reported an error.
@@ -451,6 +451,8 @@ private class GodotCompositeNode(private val subject: String) : XCompositeNode {
     private val groups = mutableListOf<XValueGroup>()
     private val values = mutableListOf<XValue>()
     private val result = CompletableFuture<Pair<GodotChildren, String?>>()
+    @Volatile
+    private var alreadySorted = false
 
     override fun addChildren(children: XValueChildrenList, last: Boolean) {
         groups.addAll(children.topGroups)
@@ -465,7 +467,9 @@ private class GodotCompositeNode(private val subject: String) : XCompositeNode {
     @Deprecated("Deprecated in Java")
     override fun tooManyChildren(remaining: Int) = complete(null)
 
-    override fun setAlreadySorted(alreadySorted: Boolean) = Unit
+    override fun setAlreadySorted(alreadySorted: Boolean) {
+        this.alreadySorted = alreadySorted
+    }
 
     override fun setErrorMessage(errorMessage: String) = complete(errorMessage)
 
@@ -484,7 +488,7 @@ private class GodotCompositeNode(private val subject: String) : XCompositeNode {
             "The adapter did not answer the request about the children of $subject"
         }
         check(error == null) { "The adapter reported an error for the children of $subject: $error" }
-        return children
+        return GodotChildren(children.groups, children.values, alreadySorted)
     }
 
     private fun complete(errorMessage: String?) {
