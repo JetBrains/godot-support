@@ -11,6 +11,7 @@ import com.jetbrains.rdclient.util.idea.waitAndPump
 import com.jetbrains.rider.debugger.settings.DotNetDebuggerSettings
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfiguration
+import com.jetbrains.rider.test.asserts.shouldBe
 import com.jetbrains.rider.test.asserts.shouldBeTrue
 import com.jetbrains.rider.test.asserts.shouldNotBeNull
 import com.jetbrains.rider.test.framework.executeWithGold
@@ -57,11 +58,12 @@ fun startGodot(godotExecutable: Path, projectPath: String, logPath: Path, dotnet
         "--path", projectPath,
     )
 
+    val logFile = logPath.resolve("Godot_${System.currentTimeMillis()}.log")
     @Suppress("IO_FILE_USAGE")
     val processBuilder = ProcessBuilder(command)
         .directory(Path.of(projectPath).toFile())
         .redirectErrorStream(true)
-        .redirectOutput(logPath.resolve("Godot_${System.currentTimeMillis()}.log").toFile())
+        .redirectOutput(logFile.toFile())
     processBuilder.environment()["DOTNET_ROOT"] = dotnetSdk
     processBuilder.environment()["PATH"] = "$dotnetSdk:${processBuilder.environment()["PATH"]}"
     processBuilder.environment()["DOTNET_MSBUILD_SDK_RESOLVER_SDKS_DIR"] = "$dotnetSdk/sdk"
@@ -75,8 +77,17 @@ fun startGodot(godotExecutable: Path, projectPath: String, logPath: Path, dotnet
     val process = processBuilder.start()
     frameworkLogger.info("Godot process started (pid=${process.pid()})")
 
-    val exitCode = process.waitFor(timeoutMinutes, TimeUnit.MINUTES)
+    val finished = process.waitFor(timeoutMinutes, TimeUnit.MINUTES)
+    if (!finished) {
+        process.destroyForcibly()
+    }
+    finished.shouldBeTrue(
+        "Godot import process did not finish within $timeoutMinutes minutes. Log file: ${logFile.absolutePathString()}"
+    )
+
+    val exitCode = process.exitValue()
     frameworkLogger.info("Godot process finished, exit code = $exitCode")
+    exitCode.shouldBe(0, "Godot import process exited with code $exitCode. Log file: ${logFile.absolutePathString()}")
     return process
 }
 
