@@ -19,6 +19,7 @@ class GdParserTest : GdParsingTestCase() {
     @Test fun testClassVar() = doTest(true)
     @Test fun testClassVarAs() = doTest(true)
     @Test fun testClassVarSetGet() = doTest(true)
+    @Test fun testClassVarGetParentheses() = doTest(true, true)
     @Test fun testClassVarSetGetMethod() = doTest(true)
     @Test fun testClassVarSetGetMethodMultiline() = doTest(true)
     @Test fun testTypedArray() = doTest(true)
