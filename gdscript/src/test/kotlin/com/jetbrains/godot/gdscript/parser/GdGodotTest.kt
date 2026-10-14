@@ -83,7 +83,7 @@ class GdGodotTest : GdParsingTestCase() {
     @Ignore("RIDER-126458") @Test fun testnumber_literals_with_sign() = doTest(true, true)
     @Test fun testnumber_separators() = doTest(true, true)
     @Test fun testoperator_assign() = doTest(true, true)
-    @Ignore("RIDER-126458") @Test fun testproperty_setter_getter() = doTest(true, true)
+    @Test fun testproperty_setter_getter() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testreserved_keywords_as_attribute() = doTest(true, true)
     @Ignore("RIDER-126458") @Test fun testr_strings() = doTest(true, true)
     @Test fun testsemicolon_as_end_statement() = doTest(true, true)

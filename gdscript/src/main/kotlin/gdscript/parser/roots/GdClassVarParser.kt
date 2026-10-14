@@ -122,6 +122,9 @@ object GdClassVarParser : GdBaseParser {
             ok = ok && GdTypedParser.parse(b, l + 1, true)
             ok = ok && b.consumeToken(RRBR)
         }
+        else if (markerType == GET && b.passToken(LRBR)) {
+            ok = b.consumeToken(RRBR)
+        }
 
         ok = ok && b.consumeToken(COLON)
         ok = ok && GdStmtParser.parse(b, l + 1, false)

@@ -58,6 +58,7 @@ import gdscript.psi.GdTypes.FOR
 import gdscript.psi.GdTypes.FOR_ST
 import gdscript.psi.GdTypes.FUNC
 import gdscript.psi.GdTypes.FUNC_DECL_EX
+import gdscript.psi.GdTypes.GET
 import gdscript.psi.GdTypes.GET_DECL
 import gdscript.psi.GdTypes.IF
 import gdscript.psi.GdTypes.IF_ST
@@ -91,6 +92,7 @@ import gdscript.psi.GdTypes.RETURN_HINT
 import gdscript.psi.GdTypes.RRBR
 import gdscript.psi.GdTypes.RSBR
 import gdscript.psi.GdTypes.SEMICON
+import gdscript.psi.GdTypes.SET
 import gdscript.psi.GdTypes.SETGET_DECL
 import gdscript.psi.GdTypes.SET_DECL
 import gdscript.psi.GdTypes.SIGN
@@ -249,8 +251,11 @@ fun createSpacingBuilder(commonSettings: CommonCodeStyleSettings, gdSettings: Gd
 
         // ----- Properties -----
         .before(SETGET_DECL).spaceIf(gdSettings.SPACE_BEFORE_COLON)
-        .betweenInside(LRBR, VAR_NMI, SET_DECL).spaces(0)
-        .betweenInside(VAR_NMI, RRBR, SET_DECL).spaces(0)
+        .betweenInside(GET, LRBR, GET_DECL).spaceIf(commonSettings.SPACE_BEFORE_METHOD_PARENTHESES)
+        .betweenInside(SET, LRBR, SET_DECL).spaceIf(commonSettings.SPACE_BEFORE_METHOD_PARENTHESES)
+        .betweenInside(LRBR, RRBR, GET_DECL).spaceIf(commonSettings.SPACE_WITHIN_EMPTY_METHOD_PARENTHESES)
+        .afterInside(LRBR, SET_DECL).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES)
+        .beforeInside(RRBR, SET_DECL).spaceIf(commonSettings.SPACE_WITHIN_METHOD_PARENTHESES)
         .aroundInside(EQ, TokenSet.create(GET_DECL, SET_DECL)).spaces(1)
 
         // ----- Keywords -----

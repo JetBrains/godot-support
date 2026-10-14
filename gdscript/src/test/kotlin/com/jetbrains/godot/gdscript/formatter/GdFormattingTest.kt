@@ -1357,6 +1357,17 @@ class GdFormattingTest : BasePlatformTestCase() {
     fun testPropertyFullSetGetBlock() = doTest()
 
     @Test
+    fun testPropertyGetterParentheses() = doTest()
+
+    @Test
+    fun testPropertyParenthesesWithMethodSpaces() {
+        getCommonCodeStyleSettings().SPACE_BEFORE_METHOD_PARENTHESES = true
+        getCommonCodeStyleSettings().SPACE_WITHIN_EMPTY_METHOD_PARENTHESES = true
+        getCommonCodeStyleSettings().SPACE_WITHIN_METHOD_PARENTHESES = true
+        doTest()
+    }
+
+    @Test
     fun testPropertySpacing() = doTest()
 
     // --- GDScript Operators & Expressions ---
