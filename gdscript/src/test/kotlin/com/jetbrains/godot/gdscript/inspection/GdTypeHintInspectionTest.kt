@@ -27,7 +27,6 @@ class GdTypeHintInspectionTest : BasePlatformTestCase() {
 
     @Test
     fun testTypeHintInferredQuickFixFull() {
-        GdProjectSettingsState.getInstance(project).state.shortTyped = false
         myFixture.configureByText("test.gd", "<caret>var t = true")
         myFixture.doHighlighting()
         val actions = myFixture.availableIntentions
@@ -43,7 +42,6 @@ class GdTypeHintInspectionTest : BasePlatformTestCase() {
 
     @Test
     fun testTypeHintInferredQuickFixShort() {
-        GdProjectSettingsState.getInstance(project).state.shortTyped = true
         myFixture.configureByText("test.gd", "<caret>var t = true")
         myFixture.doHighlighting()
         val actions = myFixture.availableIntentions
