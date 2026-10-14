@@ -1,0 +1,12 @@
+config_version=5
+
+[input]
+
+ui_accept={
+"deadzone": 0.5,
+"events": []
+}
+move_left={
+"deadzone": 0.5,
+"events": []
+}
