@@ -21,9 +21,6 @@ class GdProjectState {
     @Tag("hidePrivate")
     var hidePrivate = true
 
-    @Tag("shortTyped")
-    var shortTyped = false
-
     @Tag("annotators")
     var annotators: String = OFF
 
