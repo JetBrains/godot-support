@@ -1,22 +1,29 @@
 # JetBrains Rider Integration – Godot addon
 
-This addon currently provides two features:
-1. Finds all Rider installations in the system and provides a selector on the `Text Editor` -> `External` tab in the settings to select one.
-2. Provides the "Use Rider" toggle in the Godot toolbar and, when enabled, applies a set of editor settings recommended for working with JetBrains Rider. The goal is to make it trivial to switch between Rider‑optimized settings and stock Godot settings with a single click.
+Godot 4.6+ editor plugin. Simplifies setting up Rider as External Editor. Helps to initialize the Godot ↔ Rider bridge (`godot-rd`) with the selected Rider install. Features such as **Open in Rider** / **Open in Godot** come from the bridge after it loads.
+
+## What this addon does
+
+1. **Rider discovery** — Native GDExtension (`RiderLocator`) finds Rider installs on Windows, macOS, and Linux.
+2. **External editor selector** — Adds a **Select Rider** dropdown under **Editor → Editor Settings… → Text Editor → External** (`text_editor/external/editor`). A choice sets `text_editor/external/exec_path` and triggers bridge load for that install.
+3. **Godot ↔ Rider bridge** — When `text_editor/external/exec_path` points at a Rider binary, loads `godot-rd.gdextension` from that install. Changing Rider after a different RD build was loaded may ask you to restart Godot.
+4. **Use Rider toolbar toggle** — Applies or reverts editor settings from `presets.json` (external editor, save/reload on focus, game embed mode, and related options). State is stored in `plugin.cfg` as `presets/active` (`on` / `off`).
 
 ## Quick start
 
 Requirements:
-- Godot 4.5+
+- Godot 4.6+.
+- JetBrains Rider 2026.3 (for the Godot ↔ Rider bridge)
 
 Install:
-1. Inside the Godot editor, it can be installed from the AssetLib view or [downloaded](https://godotengine.org/asset-library/asset/4576)
+1. In Godot, install from AssetStore or download from [github releases](https://github.com/JetBrains/godot-support/releases).
 2. [Optional] Change the initial value of `active` in the plugin.cfg
 3. [Optional] Change the initial values in the presets.json file.
 4. Enable "JetBrains Rider External Editor" plugin in the Project → Project Settings… → Plugins tab.
 
 Use:
-- A toolbar toggle named "Use Rider" will appear. Click it to turn the preset On/Off.
+1. Open **Editor Settings → Text Editor → External**. Wait for discovery if the control shows a searching state, then pick a Rider build so the bridge can load.
+2. Use the toolbar **Use Rider** toggle to turn the recommended preset on or off.
 
 Screenshot:
 ![Toolbar toggle](screenshots/Toolbar.png)
@@ -31,21 +38,11 @@ When ON:
 When OFF:
 - Write the values from the "off" preset into the Editor Settings.
 
-Note: The plugin does not currently auto‑set Rider’s executable path or flags. See Plans below.
-
-## Setting Rider to be the external editor
-
-The plugin automatically detects installed Rider versions on your system and provides a convenient dropdown menu to
-select which installation to use as your external editor.
-
-- The plugin scans common installation locations for Rider on Windows, macOS, and Linux.
-- Detected installations appear in the "Select Rider" dropdown in the toolbar.
-- When you select a Rider installation, the plugin automatically updates the `dotnet/editor/external_editor_path` editor
-  setting.
-
 ## License
-See `addons/rider-plugin/LICENCE`.
+
+See `LICENCE` in this folder.
 
 ## Acknowledgements
-Created by JetBrains to streamline using Rider with Godot. 
-Initial idea https://github.com/sszigeti/toggle_external_editor
+
+Created by JetBrains to streamline using Rider with Godot.  
+Initial idea: https://github.com/sszigeti/toggle_external_editor
