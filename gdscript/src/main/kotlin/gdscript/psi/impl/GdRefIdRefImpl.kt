@@ -20,6 +20,7 @@ import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.isStatic
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.preferGlobalVariableOverClass
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.resolveConstructorSymbols
 import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.resolveEarlierEnumValueSymbol
+import gdscript.polySymbols.psi.GdPsiPolySymbolUtil.resolveSuperSymbols
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.polySymbols.scope.hasModifier
 import gdscript.polySymbols.scope.hasStaticInstanceDistinction
@@ -40,7 +41,12 @@ class GdRefIdRefImpl(node: ASTNode) : GdRefElementImpl(node), GdRefIdRef {
 
     override fun getOwnReferences(): @Unmodifiable Collection<PsiSymbolReference> {
         val text = text
-        if (text == GdKeywords.SELF || text == GdKeywords.SUPER || GdKeywords.MATH_CONSTANTS.contains(text)) {
+        if (text == GdKeywords.SUPER) {
+            return polySymbolOwnReferences(this) {
+                reference(TextRange(0, text.length), QUALIFIABLE_SYMBOLS) { resolveSuperSymbols(this@GdRefIdRefImpl) }
+            }
+        }
+        if (text == GdKeywords.SELF || GdKeywords.MATH_CONSTANTS.contains(text)) {
             return emptyList()
         }
         return polySymbolOwnReferences(this) {

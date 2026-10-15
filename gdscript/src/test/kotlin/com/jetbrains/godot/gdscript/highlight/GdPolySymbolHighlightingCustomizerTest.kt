@@ -16,4 +16,7 @@ class GdPolySymbolHighlightingCustomizerTest : GdTestCaseWithSdk("highlighting")
 
     @Test
     fun testAutoloadOwnDeclarationColoring() = doHighlightingTest(checkSymbolNames = true, configureFileName = "global.gd")
+
+    @Test
+    fun testSuperKeywordColoring() = doHighlightingTest(checkSymbolNames = true, dir = false)
 }

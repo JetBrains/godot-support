@@ -21,6 +21,9 @@ class GdPolySymbolHighlightingCustomizer : PolySymbolHighlightingCustomizer {
         // reflect the real underlying symbol - unwrap first (same pattern as PolySymbol.hasModifier).
         val real = symbol.unwrapMatchedSymbols().firstOrNull() ?: return null
 
+        // A symbol with its own color, e.g. GdSuperSymbol, keeps it - the platform annotator applies it.
+        if (real[PolySymbol.TextAttributesKeyProperty] != null) return null
+
         // `real` is its own anchorless self-declaration being rendered at the exact PSI element it
         // declares itself on (GdPsiResourceClassSymbol / GdPsiAutoloadSymbol's file-level
         // declaration - see their TextRange.EMPTY_RANGE overrides: there's no real name-identifier
