@@ -6,7 +6,6 @@ import com.intellij.platform.dap.DapSessionExecutor
 import com.intellij.platform.dap.xdebugger.DapXDebuggerPresentationFactory
 import com.intellij.xdebugger.frame.XCompositeNode
 import com.intellij.xdebugger.frame.XValueGroup
-import gdscript.GdScriptBundle
 import javax.swing.Icon
 
 private val LOG = logger<GdChildrenXValueGroup>()

@@ -91,6 +91,7 @@ internal class GdSelfCheckedFrame(
             GdFrameSelf.Absent -> DapEvaluationResult.Error(GdScriptBundle.message("gdscript.debugger.error.evaluation.without.self"))
             GdFrameSelf.Unavailable ->
                 DapEvaluationResult.Error(GdScriptBundle.message("gdscript.debugger.error.evaluation.self.unavailable"))
+
             GdFrameSelf.TimedOut -> DapEvaluationResult.Error(GdScriptBundle.message("gdscript.debugger.error.evaluation.self.timeout"))
         }
 }
@@ -108,8 +109,7 @@ internal suspend fun DapSessionContext.readSelfInMembers(
 
     val members = try {
         frame.run { scopes() }.firstOrNull { it.name == GdSelfCheckPolicy.MEMBERS_SCOPE_NAME } ?: return absent("no Members scope")
-    }
-    catch (e: Throwable) {
+    } catch (e: Throwable) {
         rethrowControlFlowException(e)
         LOG.debug("The scopes request of frame ${frame.id} failed", e)
         return GdFrameSelf.Unavailable
@@ -118,12 +118,10 @@ internal suspend fun DapSessionContext.readSelfInMembers(
         val self = retryRejectedVariables(retryAllowed, retryDelay) { members.run { variables() } }
             .firstOrNull { it.name == GdSelfCheckPolicy.SELF_VARIABLE_NAME }
         if (self != null) GdFrameSelf.Present(self) else absent("no self variable in Members")
-    }
-    catch (e: DapRequestFailedException) {
+    } catch (e: DapRequestFailedException) {
         LOG.debug("Godot did not give the Members variables of frame ${frame.id}", e)
         GdFrameSelf.Unavailable
-    }
-    catch (e: Throwable) {
+    } catch (e: Throwable) {
         rethrowControlFlowException(e)
         LOG.debug("The Members variables request of frame ${frame.id} failed", e)
         GdFrameSelf.Unavailable
@@ -190,10 +188,12 @@ internal suspend fun frameSourceSelf(project: Project, frame: DapStackFrame): Gd
                         if (element.isStatic) return@readAction absent("static function")
                         hasDeclaration = true
                     }
+
                     is GdClassVarDeclTl -> {
                         if (element.isStatic) return@readAction absent("static variable")
                         hasDeclaration = true
                     }
+
                     is GdAnnotationTl -> hasAnnotation = true
                 }
                 element = element.parent

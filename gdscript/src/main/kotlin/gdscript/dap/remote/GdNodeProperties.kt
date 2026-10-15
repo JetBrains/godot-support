@@ -58,8 +58,12 @@ internal suspend fun DapSessionContext.loadNodeProperties(
 
     val properties = XValueChildrenList()
     for (variable in variables) {
-        properties.add(GdDapXValue(factory, executor, variable,
-            owner = GdOwnerExpression(GdDapExpressions.instance(objectId)), frame = evaluator))
+        properties.add(
+            GdDapXValue(
+                factory, executor, variable,
+                owner = GdOwnerExpression(GdDapExpressions.instance(objectId)), frame = evaluator
+            )
+        )
     }
 
     return GdPropertiesLoad.Success(properties)

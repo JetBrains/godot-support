@@ -28,6 +28,7 @@ internal object GdObjectMemberRecovery {
                     if (slash >= 0 && row.name.substring(0, slash).endsWith(".gd")) row.name.substring(slash + 1)
                     else row.name
                 }
+
                 else -> row.name
             }
         }
@@ -62,7 +63,8 @@ internal object GdObjectMemberRecovery {
         val length = candidates.size * RECOVERY_WIDTH + dictionaryCount
         if (presentations.size != candidates.size || result.size != length + 1 ||
             result.firstOrNull()?.name != "size" || result.first().value.toIntOrNull() != length ||
-            result.drop(1).indices.any { result[it + 1].name != it.toString() }) return null
+            result.drop(1).indices.any { result[it + 1].name != it.toString() }
+        ) return null
         val replaced = rows.toMutableList()
         candidates.forEachIndexed { index, (rowIndex, _) ->
             val original = rows[rowIndex]
@@ -111,8 +113,7 @@ internal object GdObjectMemberRecovery {
             return replaceConfirmedObjects(rows, candidates, result, presentations, owner.dictionaries.size) ?: rows.also {
                 LOG.warn("Object member recovery result shape changed in $category")
             }
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             if (e !is RequestCancelledByPeerException) rethrowControlFlowException(e)
             LOG.warn("Object member recovery failed in $category", e)
             return rows

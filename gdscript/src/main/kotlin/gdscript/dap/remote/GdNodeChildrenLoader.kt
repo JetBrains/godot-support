@@ -37,6 +37,7 @@ internal suspend fun DapSessionContext.loadChildCount(evaluator: GdSelfCheckedFr
         is GdEvalOutcome.Failed -> GdChildrenCount.Failure(
             GdScriptBundle.message("gdscript.debugger.scene.tree.error.evaluation.failed", outcome.message)
         )
+
         is GdEvalOutcome.Missing -> GdChildrenCount.Failure(GdScriptBundle.message("gdscript.debugger.scene.tree.error.children.missing"))
         is GdEvalOutcome.Structured -> {
             val variables = when (val load = loadVariablesBounded(outcome.variable)) {
@@ -51,7 +52,7 @@ internal suspend fun DapSessionContext.loadChildCount(evaluator: GdSelfCheckedFr
             else {
                 LOG.warn(
                     "Invalid child-count response: declaredSize=${reader.declaredSize}, " +
-                    "actualCount=${reader.actualCount}, value=${reader.getOrNull(0)?.value}"
+                        "actualCount=${reader.actualCount}, value=${reader.getOrNull(0)?.value}"
                 )
                 GdChildrenCount.Failure(GdScriptBundle.message("gdscript.debugger.scene.tree.error.children.missing"))
             }
@@ -75,9 +76,11 @@ internal suspend fun DapSessionContext.loadChildDescriptors(
         is GdEvalOutcome.Failed -> GdChildDescriptorsLoad.Failure(
             GdScriptBundle.message("gdscript.debugger.scene.tree.error.descriptor.failed", outcome.message)
         )
+
         is GdEvalOutcome.Missing -> GdChildDescriptorsLoad.Failure(
             GdScriptBundle.message("gdscript.debugger.scene.tree.error.descriptors.missing")
         )
+
         is GdEvalOutcome.Structured -> {
             val variables = when (val load = loadVariablesBounded(outcome.variable)) {
                 is GdVariablesLoad.Success -> load.variables
@@ -90,14 +93,14 @@ internal suspend fun DapSessionContext.loadChildDescriptors(
             if (reader.hasElementsBeyondDescriptorCount(range.length)) {
                 LOG.warn(
                     "Descriptor chunk surplus: requestedDescriptors=${range.length}, " +
-                    "returnedDeclaredElements=${reader.declaredSize}, returnedIndexedElements=${reader.actualCount}, " +
-                    "highestReturnedElementIndex=${reader.highestReturnedElementIndex}, fromIndex=${range.startIndex}"
+                        "returnedDeclaredElements=${reader.declaredSize}, returnedIndexedElements=${reader.actualCount}, " +
+                        "highestReturnedElementIndex=${reader.highestReturnedElementIndex}, fromIndex=${range.startIndex}"
                 )
             }
             val warning = if (descriptors.size < range.length) {
                 LOG.warn(
                     "Descriptor chunk shortfall: requested=${range.length}, received=${descriptors.size}, " +
-                    "fromIndex=${range.startIndex}"
+                        "fromIndex=${range.startIndex}"
                 )
                 GdScriptBundle.message("gdscript.debugger.scene.tree.warning.descriptors.truncated", descriptors.size, range.length)
             } else null
@@ -177,6 +180,7 @@ internal suspend fun DapSessionContext.addChildRows(
             load.warning?.let { target.setErrorMessage(it) }
             target.addChildren(load.children, true)
         }
+
         is GdChildRowsLoad.Failure -> target.setErrorMessage(load.message)
     }
 }

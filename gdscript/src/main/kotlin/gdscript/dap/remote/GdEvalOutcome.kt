@@ -29,8 +29,10 @@ private val LOG = logger<GdEvalOutcome>()
 
 private fun responseMismatch(): GdEvalOutcome.Failed {
     LOG.warn("Evaluation request number or result shape changed")
-    return GdEvalOutcome.Failed(GdScriptBundle.message("gdscript.debugger.error.unknown"),
-                                GdEvalOutcome.Failed.Kind.RESPONSE_MISMATCH)
+    return GdEvalOutcome.Failed(
+        GdScriptBundle.message("gdscript.debugger.error.unknown"),
+        GdEvalOutcome.Failed.Kind.RESPONSE_MISMATCH
+    )
 }
 
 internal object GdEvaluationRequest {
@@ -39,7 +41,8 @@ internal object GdEvaluationRequest {
     fun answer(rows: List<DapVariable>, number: Long): DapVariable? {
         val reader = GdArrayReader(rows)
         if (rows.size != 3 || reader.declaredSize != 2 || reader.actualCount != 2 ||
-            reader.getOrNull(1)?.value != number.toString()) return null
+            reader.getOrNull(1)?.value != number.toString()
+        ) return null
         return reader.getOrNull(0)
     }
 
