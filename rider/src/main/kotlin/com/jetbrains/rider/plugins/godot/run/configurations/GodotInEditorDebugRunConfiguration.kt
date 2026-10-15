@@ -2,34 +2,25 @@ package com.jetbrains.rider.plugins.godot.run.configurations
 
 import com.intellij.execution.CantRunException
 import com.intellij.execution.ExecutionException
-import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.RunProfileState
-import com.intellij.execution.configurations.RuntimeConfigurationError
 import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.runners.ProgramRunner
-import com.intellij.execution.runners.RunConfigurationWithSuppressedDefaultRunAction
 import com.intellij.execution.ui.RunContentDescriptor
 import com.intellij.openapi.diagnostic.thisLogger
-import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
-import com.intellij.ui.dsl.builder.panel
 import com.intellij.xdebugger.attach.LocalAttachHost
 import com.jetbrains.rd.ide.model.debuggerAutoAttachModel
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rd.util.threading.coroutines.asCoroutineDispatcher
 import com.jetbrains.rd.util.threading.coroutines.launch
-import com.jetbrains.rider.build.tasks.SolutionRunConfiguration
 import com.jetbrains.rider.debugger.DebuggerHelperHost
-import com.jetbrains.rider.debugger.IRiderDebuggable
 import com.jetbrains.rider.plugins.godot.GodotPluginBundle
-import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.rd.GodotRdClientService
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.protocol.protocol
 import com.jetbrains.rider.run.configurations.AsyncExecutorFactory
-import com.jetbrains.rider.run.configurations.RiderAsyncRunConfiguration
 import com.jetbrains.rider.run.withSuspendableDiagnosticPort
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineStart
@@ -40,7 +31,6 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
 import org.jetbrains.annotations.ApiStatus
 import java.util.concurrent.atomic.AtomicBoolean
-import javax.swing.JComponent
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -49,49 +39,10 @@ import kotlin.time.Duration.Companion.seconds
  */
 private val Project.protocolDispatcher get() = protocol.scheduler.asCoroutineDispatcher
 
-/**
- * Asks the running Godot editor to play the currently edited scene and attaches the .NET Core debugger
- * to the game process the editor has spawned. Godot 4 only, since the game runs on CoreCLR there.
- *
- * The editor does not build the project before it plays the scene for debug. The "Build Solution" step in
- * "Before launch" builds it, see [SolutionRunConfiguration].
- */
-class GodotInEditorDebugRunConfiguration(project: Project, factory: ConfigurationFactory) : RiderAsyncRunConfiguration(
-    GodotPluginBundle.message("godot.debug.in.editor.configuration.name"),
-    project,
-    factory,
-    { Editor() },
-    GodotInEditorDebugExecutorFactory(project),
-), IRiderDebuggable, RunConfigurationWithSuppressedDefaultRunAction, SolutionRunConfiguration {
-
-    override fun checkConfiguration() {
-        if (GodotProjectDiscoverer.getInstance(project).godot4Path.value == null) {
-            throw RuntimeConfigurationError(GodotPluginBundle.message("godot.debug.in.editor.not.godot4"))
-        }
-        if (!GodotRdClientService.getInstance(project).isConnected) {
-            throw RuntimeConfigurationError(GodotPluginBundle.message("godot.debug.in.editor.not.connected"))
-        }
-    }
-
-    private class Editor : SettingsEditor<GodotInEditorDebugRunConfiguration>() {
-        override fun resetEditorFrom(configuration: GodotInEditorDebugRunConfiguration) {
-        }
-
-        override fun applyEditorTo(configuration: GodotInEditorDebugRunConfiguration) {
-        }
-
-        override fun createEditor(): JComponent = panel {
-            row {
-                text(GodotPluginBundle.message("godot.debug.in.editor.editor.what"))
-            }
-        }
-    }
-}
-
 class GodotInEditorDebugExecutorFactory(private val project: Project) : AsyncExecutorFactory {
     override suspend fun create(executorId: String, environment: ExecutionEnvironment, lifetime: Lifetime): RunProfileState {
         if (executorId != DefaultDebugExecutor.EXECUTOR_ID) {
-            throw CantRunException(GodotPluginBundle.message("godot.debug.in.editor.debug.only"))
+            throw CantRunException(GodotPluginBundle.message("godot.run.current.scene.debug.only"))
         }
 
         val rdClientService = GodotRdClientService.getInstance(project)

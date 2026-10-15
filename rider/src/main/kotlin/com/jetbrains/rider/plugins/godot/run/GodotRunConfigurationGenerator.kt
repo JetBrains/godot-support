@@ -14,13 +14,11 @@ import com.jetbrains.rd.util.reactive.viewNotNull
 import com.jetbrains.rd.util.reactive.whenTrue
 import com.jetbrains.rider.ijent.extensions.toNioPath
 import com.jetbrains.rider.model.godot.frontendBackend.GodotFrontendBackendModel
-import com.jetbrains.rider.plugins.godot.GodotPluginBundle
 import com.jetbrains.rider.plugins.godot.GodotProjectDiscoverer
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfiguration
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunCurrentScene
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunCurrentSceneType
-import com.jetbrains.rider.plugins.godot.run.configurations.GodotInEditorDebugRunConfigurationType
 import com.jetbrains.rider.projectView.isCMakeSolution
 import com.jetbrains.rider.projectView.solution
 import com.jetbrains.rider.projectView.solutionDirectoryPath
@@ -80,9 +78,6 @@ class GodotRunConfigurationGenerator : LifetimedService() {
                 // Prefer godot4 over godot3 -> do not reorder
                 godot4Path != null -> {
                     generateGodot4(godot4Path, runManager, project, relPath)
-                    if (supportsManagedDebugging) {
-                        createInEditorDebugRunConfiguration(runManager)
-                    }
                     if (!projectType.isPureGdScriptProject) {
                         createOrUpdateCurrentSceneRunConfiguration(runManager, godot4Path, godotProjectPath)
                     }
@@ -208,15 +203,19 @@ class GodotRunConfigurationGenerator : LifetimedService() {
         }
 
         /**
-         * The scene to run is known on launch only, see [GodotDebugRunCurrentScene.getRunProfileStateAsync],
-         * the executable and the working directory are set here, so that the configuration is valid and
-         * shows the actual values in the editor.
+         * The scene path is resolved on launch for the From Rider mode.
+         * The executable and working directory are set here so the configuration stays valid.
          */
         private fun createOrUpdateCurrentSceneRunConfiguration(
             runManager: RunManager,
             godotPath: String,
             godotProjectPath: String,
         ) {
+            removeLegacyInEditorConfigurations(runManager)
+            runManager.allSettings.filter {
+                it.type is GodotDebugRunCurrentSceneType && it.name == LEGACY_CURRENT_SCENE_CONFIGURATION_NAME
+            }.forEach(runManager::removeConfiguration)
+
             val configs = runManager.allSettings.filter {
                 it.type is GodotDebugRunCurrentSceneType && it.name == GodotDebugRunCurrentScene.CONFIGURATION_NAME
             }
@@ -237,16 +236,10 @@ class GodotRunConfigurationGenerator : LifetimedService() {
             }
         }
 
-        private fun createInEditorDebugRunConfiguration(runManager: RunManager) {
-            if (runManager.allSettings.any { it.type is GodotInEditorDebugRunConfigurationType }) {
-                return
-            }
-
-            val configurationType = ConfigurationTypeUtil.findConfigurationType(GodotInEditorDebugRunConfigurationType::class.java)
-            val name = GodotPluginBundle.message("godot.debug.in.editor.configuration.name")
-            val runConfiguration = runManager.createConfiguration(name, configurationType.factory)
-            runConfiguration.storeInLocalWorkspace()
-            runManager.addConfiguration(runConfiguration)
+        private fun removeLegacyInEditorConfigurations(runManager: RunManager) {
+            runManager.allSettings.filter {
+                it.type.id == LEGACY_IN_EDITOR_CONFIGURATION_TYPE_ID || it.name in LEGACY_IN_EDITOR_CONFIGURATION_NAMES
+            }.forEach(runManager::removeConfiguration)
         }
 
         // make configuration selected if nothing is selected
@@ -260,6 +253,18 @@ class GodotRunConfigurationGenerator : LifetimedService() {
         }
 
         companion object {
+            @NonNls // remove in 271
+            private const val LEGACY_CURRENT_SCENE_CONFIGURATION_NAME = "Current Scene"
+
+            @NonNls // remove in 271
+            private const val LEGACY_IN_EDITOR_CONFIGURATION_TYPE_ID = "GODOT_IN_EDITOR_DEBUG_RUN_CONFIGURATION"
+
+            private val LEGACY_IN_EDITOR_CONFIGURATION_NAMES = setOf(
+                "Debug Current Scene in Editor",
+                "Player (Current Scene, Editor)",
+                "Player (Current Scene, via Editor)",
+            )
+
             fun createOrUpdateCoreRunConfiguration(
                 configurationName: String,
                 programParameters: String,
