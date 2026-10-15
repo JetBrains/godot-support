@@ -27,18 +27,58 @@ class GdScriptRunConfigurationGenerator(project: Project) {
     }
 
     companion object {
-        const val PLAYER_GDSCRIPT_CONFIGURATION_NAME: String = "Player GDScript"
-        const val CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME: String = "Current Scene GDScript"
-        const val PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME_OLD: String = "Player GDScript (Attach)"
+        const val PLAYER_GDSCRIPT_CONFIGURATION_NAME: String = "Player (GDScript)"
+        const val CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME: String = "Player (Current Scene, GDScript)"
         const val PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME: String = "Debug GDScript (Running session)"
+        private const val LEGACY_PLAYER_GDSCRIPT_CONFIGURATION_NAME: String = "Player GDScript"
+        private const val LEGACY_CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME: String = "Current Scene GDScript"
 
         private fun cleanupLegacyConfigs(runManager: RunManager) {
-            // todo: remove in 261
+            renameLegacyConfiguration(
+                runManager,
+                LEGACY_PLAYER_GDSCRIPT_CONFIGURATION_NAME,
+                PLAYER_GDSCRIPT_CONFIGURATION_NAME,
+            )
+            renameLegacyConfiguration(
+                runManager,
+                LEGACY_CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME,
+                CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME,
+            )
+
+            // todo: remove in 271
             val toRemove = runManager.allSettings.filter {
-                it.type is GdScriptConfigurationType && it.name == PLAYER_GDSCRIPT_ATTACH_CONFIGURATION_NAME_OLD
+                it.type is GdScriptConfigurationType &&
+                (it.name == LEGACY_PLAYER_GDSCRIPT_CONFIGURATION_NAME ||
+                 it.name == LEGACY_CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME)
             }
             for (value in toRemove) {
                 runManager.removeConfiguration(value)
+            }
+
+            val legacyNativeConfigs = runManager.allSettings.filter {
+                it.type.id == "RunNativeExe" &&
+                (it.name == LEGACY_PLAYER_GDSCRIPT_CONFIGURATION_NAME || it.name == LEGACY_CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME)
+            }
+            for (value in legacyNativeConfigs) {
+                runManager.removeConfiguration(value)
+            }
+        }
+
+        private fun renameLegacyConfiguration(runManager: RunManager, legacyName: String, newName: String) {
+            val legacyConfigurations = runManager.allSettings.filter {
+                it.type is GdScriptConfigurationType && it.name == legacyName
+            }
+            if (legacyConfigurations.isEmpty()) return
+
+            val newConfigurationExists = runManager.allSettings.any {
+                it.type is GdScriptConfigurationType && it.name == newName
+            }
+            if (newConfigurationExists) {
+                legacyConfigurations.forEach(runManager::removeConfiguration)
+            }
+            else {
+                legacyConfigurations.first().name = newName
+                legacyConfigurations.drop(1).forEach(runManager::removeConfiguration)
             }
         }
 

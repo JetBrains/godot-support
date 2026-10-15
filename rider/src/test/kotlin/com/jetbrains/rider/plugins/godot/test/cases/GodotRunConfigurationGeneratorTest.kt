@@ -4,13 +4,13 @@ import com.intellij.execution.RunManager
 import com.intellij.execution.RunnerAndConfigurationSettings
 import com.intellij.execution.configurations.ConfigurationType
 import com.intellij.execution.configurations.ConfigurationTypeUtil
-import com.jetbrains.rider.plugins.godot.GodotPluginBundle
+import com.jetbrains.rider.build.tasks.BuildSolutionBeforeRunTask
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator
 import com.jetbrains.rider.plugins.godot.run.GodotRunConfigurationGenerator.ProtocolListener.ProjectType
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunConfigurationType
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunCurrentScene
 import com.jetbrains.rider.plugins.godot.run.configurations.GodotDebugRunCurrentSceneType
-import com.jetbrains.rider.plugins.godot.run.configurations.GodotInEditorDebugRunConfigurationType
+import com.jetbrains.rider.plugins.godot.run.configurations.GodotCurrentSceneLaunchSource
 import com.jetbrains.rider.projectView.solutionDirectoryPath
 import com.jetbrains.rider.run.configurations.RiderConfigurationParametersAware
 import com.jetbrains.rider.run.configurations.dotNetExe.DotNetExeConfigurationParameters
@@ -91,10 +91,6 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
                 GeneratedConfiguration(GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME, DotNetExeConfigurationType::class),
                 GeneratedConfiguration(GodotRunConfigurationGenerator.EDITOR_CONFIGURATION_NAME, DotNetExeConfigurationType::class),
                 GeneratedConfiguration(GodotDebugRunCurrentScene.CONFIGURATION_NAME, GodotDebugRunCurrentSceneType::class),
-                GeneratedConfiguration(
-                    GodotPluginBundle.message("godot.debug.in.editor.configuration.name"),
-                    GodotInEditorDebugRunConfigurationType::class,
-                ),
             ),
         )
     }
@@ -166,10 +162,6 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
                 GeneratedConfiguration(GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME, DotNetExeConfigurationType::class),
                 GeneratedConfiguration(GodotRunConfigurationGenerator.EDITOR_CONFIGURATION_NAME, DotNetExeConfigurationType::class),
                 GeneratedConfiguration(GodotDebugRunCurrentScene.CONFIGURATION_NAME, GodotDebugRunCurrentSceneType::class),
-                GeneratedConfiguration(
-                    GodotPluginBundle.message("godot.debug.in.editor.configuration.name"),
-                    GodotInEditorDebugRunConfigurationType::class,
-                ),
             ),
         )
         assertGeneratedConfigurations(
@@ -194,7 +186,7 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
 
         generateConfigurations(runManager, GodotVersion.BOTH, projectType, godotPath = "/other-godot")
 
-        assertEquals(6, runManager.allSettings.size)
+        assertEquals(5, runManager.allSettings.size)
         existing.forEach {
             assertSame(it, runManager.allSettings.single { settings -> settings.uniqueID == it.uniqueID })
             assertConfigurationParameters(it)
@@ -253,22 +245,24 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
             val monoAttach = runManager.createConfiguration("Custom Mono attach", monoType.factory)
             val customPort = GODOT_3_DEBUG_PORT + 1
             (monoAttach.configuration as RemoteConfiguration).port = customPort
-            val inEditorType = ConfigurationTypeUtil.findConfigurationType(GodotInEditorDebugRunConfigurationType::class.java)
-            val inEditor = runManager.createConfiguration("Custom editor debug", inEditorType.factory)
-            for (settings in listOf(monoAttach, inEditor)) {
+            val currentSceneType = ConfigurationTypeUtil.findConfigurationType(GodotDebugRunCurrentSceneType::class.java)
+            val currentScene = runManager.createConfiguration("Custom current scene", currentSceneType.factory)
+            writeLaunchSource(currentScene.configuration, GodotCurrentSceneLaunchSource.FROM_RIDER)
+            for (settings in listOf(monoAttach, currentScene)) {
                 settings.storeInLocalWorkspace()
                 runManager.addConfiguration(settings)
             }
-            runManager.selectedConfiguration = inEditor
+            runManager.selectedConfiguration = currentScene
 
             generateConfigurations(runManager, godotVersion, projectType)
 
             assertSame(monoAttach, runManager.findConfigurationByName(monoAttach.name))
             assertEquals(customPort, (monoAttach.configuration as RemoteConfiguration).port)
-            assertSame(inEditor, runManager.findConfigurationByName(inEditor.name))
-            assertSame(inEditor, runManager.selectedConfiguration)
+            assertSame(currentScene, runManager.findConfigurationByName(currentScene.name))
+            assertEquals(GodotCurrentSceneLaunchSource.FROM_RIDER, readLaunchSource(currentScene.configuration))
+            assertSame(currentScene, runManager.selectedConfiguration)
             assertTrue(monoAttach.isStoredInLocalWorkspace)
-            assertTrue(inEditor.isStoredInLocalWorkspace)
+            assertTrue(currentScene.isStoredInLocalWorkspace)
         }
     }
 
@@ -327,12 +321,20 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
     private fun assertConfigurationParameters(settings: RunnerAndConfigurationSettings) {
         assertTrue(settings.isStoredInLocalWorkspace)
         val configuration = settings.configuration
-        if (settings.type is GodotInEditorDebugRunConfigurationType) {
-            assertEquals(0, configuration.beforeRunTasks.size)
-            return
-        }
         if (configuration is RemoteConfiguration) {
             assertEquals(GODOT_3_DEBUG_PORT, configuration.port)
+            return
+        }
+
+        if (settings.type is GodotDebugRunCurrentSceneType) {
+            assertEquals(GodotCurrentSceneLaunchSource.FROM_GODOT_EDITOR, readLaunchSource(configuration))
+            assertEquals(1, configuration.beforeRunTasks.size)
+            assertTrue(configuration.beforeRunTasks.single() is BuildSolutionBeforeRunTask)
+            val parameters = (configuration as RiderConfigurationParametersAware<*>).parameters
+            assertEquals(GODOT_PATH, parameters.exePath)
+            assertEquals("", parameters.programParameters)
+            assertEquals(PROJECT_PATH, parameters.workingDirectory)
+            assertEquals(DotNetCoreRuntimeType, (parameters as DotNetExeConfigurationParameters).runtimeType)
             return
         }
 
@@ -341,17 +343,10 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
         val expectedProgramParameters = when (settings.name) {
             GodotRunConfigurationGenerator.PLAYER_CONFIGURATION_NAME -> PLAYER_PROGRAM_PARAMETERS
             GodotRunConfigurationGenerator.EDITOR_CONFIGURATION_NAME -> EDITOR_PROGRAM_PARAMETERS
-            GodotDebugRunCurrentScene.CONFIGURATION_NAME -> ""
             else -> error("Unexpected configuration: ${settings.name}")
         }
         assertEquals(expectedProgramParameters, parameters.programParameters)
-
-        val expectedWorkingDirectory = if (settings.type is GodotDebugRunCurrentSceneType) {
-            PROJECT_PATH
-        } else {
-            project.solutionDirectoryPath.pathString
-        }
-        assertEquals(expectedWorkingDirectory, parameters.workingDirectory)
+        assertEquals(project.solutionDirectoryPath.pathString, parameters.workingDirectory)
 
         if (parameters is DotNetExeConfigurationParameters) {
             assertEquals(DotNetCoreRuntimeType, parameters.runtimeType)
@@ -359,6 +354,21 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
         if (settings.type is ExeConfigurationType) {
             assertEquals(0, (configuration as ExeConfiguration).beforeRunTasks.size)
         }
+    }
+
+    private fun readLaunchSource(configuration: com.intellij.execution.configurations.RunConfiguration): GodotCurrentSceneLaunchSource {
+        val field = configuration.javaClass.getDeclaredField("launchSource")
+        field.isAccessible = true
+        return field.get(configuration) as GodotCurrentSceneLaunchSource
+    }
+
+    private fun writeLaunchSource(
+        configuration: com.intellij.execution.configurations.RunConfiguration,
+        launchSource: GodotCurrentSceneLaunchSource,
+    ) {
+        val field = configuration.javaClass.getDeclaredField("launchSource")
+        field.isAccessible = true
+        field.set(configuration, launchSource)
     }
 
     private data class GeneratedConfiguration(
