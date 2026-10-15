@@ -41,8 +41,7 @@ internal suspend fun DapSessionContext.loadVariablesBounded(
         retryRejectedVariables({ retryAllowed() && start.elapsedNow() < GdSelfCheckPolicy.MEMBERS_RETRY_LIMIT }, retryDelay) {
             readVariablesBounded { scope.run { variables() } }
         }
-    }
-    catch (e: Throwable) {
+    } catch (e: Throwable) {
         rethrowControlFlowException(e)
         if (e is DapException) LOG.debug("The scope variables request failed", e)
         else LOG.warn("Unexpected error computing scope variables", e)
@@ -66,8 +65,7 @@ internal suspend fun <T> retryRejectedVariables(
         currentCoroutineContext().ensureActive()
         try {
             return read()
-        }
-        catch (e: DapRequestFailedException) {
+        } catch (e: DapRequestFailedException) {
             if (!retryAllowed()) throw e
             retryDelay()
             if (!retryAllowed()) throw e

@@ -85,8 +85,7 @@ internal class GdDapStackFrame(
         if (threadState !is DapThreadState.Paused) {
             try {
                 node.setErrorMessage(XDebuggerBundle.message("debugger.frames.dialog.message.not.available.for.unsuspended"))
-            }
-            finally {
+            } finally {
                 node.addChildren(XValueChildrenList.EMPTY, true)
             }
             return
@@ -128,10 +127,12 @@ internal class GdDapStackFrame(
                 frameNode = detection.node
                 detectionError = null
             }
+
             GdNodeDetection.NonNode -> {
                 frameNode = null
                 detectionError = null
             }
+
             is GdNodeDetection.Failed -> {
                 frameNode = null
                 LOG.warn("Could not inspect the frame base instance: ${detection.message}")
@@ -159,40 +160,51 @@ internal class GdDapStackFrame(
 
         // 1. Show the exception information.
         if (rowData.exceptionVariable != null) {
-            target.addChildren(XValueChildrenList.singleton(
-                factory.createValue(executor, rowData.exceptionVariable, AllIcons.Nodes.ExceptionClass)
-            ), false)
-        }
-        else if (rowData.exceptionMessage != null) {
+            target.addChildren(
+                XValueChildrenList.singleton(
+                    factory.createValue(executor, rowData.exceptionVariable, AllIcons.Nodes.ExceptionClass)
+                ), false
+            )
+        } else if (rowData.exceptionMessage != null) {
             target.setMessage(rowData.exceptionMessage, AllIcons.Nodes.ExceptionClass, SimpleTextAttributes.ERROR_ATTRIBUTES, null)
         }
 
         // 2. Show the root and self rows when the self check permits them.
         if (rowData.selfVariable != null) {
             val rootBatch = XValueChildrenList()
-            rootBatch.addTopValue(GdSceneTreeNodeXValue(
-                name = "root", // Not localizable
-                executor = executor,
-                evaluator = checkedFrame,
-                factory = factory
-            ))
+            rootBatch.addTopValue(
+                GdSceneTreeNodeXValue(
+                    name = "root", // Not localizable
+                    executor = executor,
+                    evaluator = checkedFrame,
+                    factory = factory
+                )
+            )
             target.addChildren(rootBatch, false)
 
             val selfBatch = XValueChildrenList()
             if (rowData.frameNode != null) {
-                selfBatch.addTopValue(GdNodeMembersXValue.selfOf(
-                    objectId = rowData.frameNode.objectId,
-                    nodeName = rowData.frameNode.nodeName,
-                    className = rowData.frameNode.className,
-                    selfVariable = rowData.selfVariable,
-                    executor = executor,
-                    evaluator = checkedFrame,
-                    factory = factory
-                ))
-            }
-            else {
-                selfBatch.addTopValue(GdDapXValue(factory, executor, rowData.selfVariable,
-                    owner = GdOwnerExpression("self"), frame = checkedFrame))
+                selfBatch.addTopValue(
+                    GdNodeMembersXValue.selfOf(
+                        objectId = rowData.frameNode.objectId,
+                        nodeName = rowData.frameNode.nodeName,
+                        className = rowData.frameNode.className,
+                        selfVariable = rowData.selfVariable,
+                        executor = executor,
+                        evaluator = checkedFrame,
+                        factory = factory
+                    )
+                )
+            } else {
+                selfBatch.addTopValue(
+                    GdDapXValue(
+                        factory,
+                        executor,
+                        rowData.selfVariable,
+                        owner = GdOwnerExpression("self"),
+                        frame = checkedFrame
+                    )
+                )
             }
             target.addChildren(selfBatch, false)
         }
@@ -207,9 +219,11 @@ internal class GdDapStackFrame(
 
             val scopeBatch = XValueChildrenList()
             // Locals with self can use their names as owner expressions. Other scopes keep platform values.
-            scopeBatch.addTopGroup(if (gateActive && scope.name == "Locals")
-                GdDapXScope(factory, executor, scope, index, checkedFrame, inlineValueLocator)
-            else factory.createScope(executor, scope, index))
+            scopeBatch.addTopGroup(
+                if (gateActive && scope.name == "Locals")
+                    GdDapXScope(factory, executor, scope, index, checkedFrame, inlineValueLocator)
+                else factory.createScope(executor, scope, index)
+            )
             target.addChildren(scopeBatch, false)
         }
     }
