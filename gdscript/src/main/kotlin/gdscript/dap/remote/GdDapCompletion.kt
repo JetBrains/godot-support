@@ -34,8 +34,7 @@ private fun DapSessionExecutor.postWithCompletion(
     fun finish(failure: Throwable?) {
         try {
             complete(failure)
-        }
-        catch (e: Throwable) {
+        } catch (e: Throwable) {
             // A completion handler must not throw, including when the consumer throws.
             LOG.warn("Could not deliver the debugger answer", e)
         }
@@ -43,8 +42,7 @@ private fun DapSessionExecutor.postWithCompletion(
 
     val work = try {
         postAsync(body)
-    }
-    catch (e: DapSessionStoppedException) {
+    } catch (e: DapSessionStoppedException) {
         finish(e)
         return
     }
@@ -76,22 +74,25 @@ internal fun DapSessionExecutor.computePresentationWithCompletion(
             return node.isObsolete
         }
     }
+
     fun complete(failure: Throwable?) {
         if (delivered.get()) return
         val message = when (failure) {
             is DapSessionStoppedException, is DapConnectionClosedException ->
                 GdScriptBundle.message("gdscript.debugger.error.evaluation.session.stopped")
+
             is CancellationException -> GdScriptBundle.message("gdscript.debugger.error.cancelled")
-            else -> GdScriptBundle.message("gdscript.debugger.scene.tree.error.evaluation.failed",
-                failure?.message ?: GdScriptBundle.message("gdscript.debugger.error.unknown"))
+            else -> GdScriptBundle.message(
+                "gdscript.debugger.scene.tree.error.evaluation.failed",
+                failure?.message ?: GdScriptBundle.message("gdscript.debugger.error.unknown")
+            )
         }
         target.setPresentation(null, null, message, false)
     }
     postWithCompletion(complete = ::complete) {
         try {
             body(target)
-        }
-        catch (e: Throwable) {
+        } catch (e: Throwable) {
             rethrowControlFlowException(e)
             if (e !is DapSessionStoppedException && e !is DapConnectionClosedException) {
                 log.warn("Could not resolve $subject presentation", e)
@@ -123,19 +124,15 @@ internal fun DapSessionExecutor.computeChildrenWithCompletion(
             try {
                 if (failure is RequestCancelledByPeerException || reportCancellation && failure is CancellationException) {
                     if (!node.isObsolete) node.setErrorMessage(GdScriptBundle.message("gdscript.debugger.error.cancelled"))
-                }
-                else if (reportCancellation && failure is DapSessionStoppedException) {
+                } else if (reportCancellation && failure is DapSessionStoppedException) {
                     if (!node.isObsolete) node.setErrorMessage(GdScriptBundle.message("gdscript.debugger.error.evaluation.session.stopped"))
-                }
-                else if (failure is DapConnectionClosedException) {
+                } else if (failure is DapConnectionClosedException) {
                     log.debug("The DAP connection closed computing $subject", failure)
-                }
-                else if (failure != null && !failure.isControlFlowException && failure !is DapSessionStoppedException) {
+                } else if (failure != null && !failure.isControlFlowException && failure !is DapSessionStoppedException) {
                     log.warn("Unexpected error computing $subject", failure)
                     node.setErrorMessage(errorMessage(failure))
                 }
-            }
-            finally {
+            } finally {
                 node.addChildren(XValueChildrenList.EMPTY, true)
             }
         }
@@ -166,8 +163,10 @@ internal fun DapSessionExecutor.evaluateWithCompletion(
             val message = when (failure) {
                 is CancellationException -> GdScriptBundle.message("gdscript.debugger.error.cancelled")
                 is DapSessionStoppedException -> GdScriptBundle.message("gdscript.debugger.error.evaluation.session.stopped")
-                else -> GdScriptBundle.message("gdscript.debugger.error.evaluation.failed",
-                    failure?.message ?: GdScriptBundle.message("gdscript.debugger.error.unknown"))
+                else -> GdScriptBundle.message(
+                    "gdscript.debugger.error.evaluation.failed",
+                    failure?.message ?: GdScriptBundle.message("gdscript.debugger.error.unknown")
+                )
             }
             answer.errorOccurred(message)
         }

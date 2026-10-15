@@ -169,7 +169,9 @@ internal fun DapSessionExecutor.computeNodeEvaluationExpression(
     resolve: suspend DapSessionContext.(reject: (String) -> Unit) -> Long?,
 ): Promise<XExpression> = computePromiseWithCompletion { promise ->
     val objectId = resolve { promise.setError(it) } ?: return@computePromiseWithCompletion
-    promise.setResult(XDebuggerUtil.getInstance().createExpression(
-        GdDapExpressions.instance(objectId), null, null, EvaluationMode.EXPRESSION
-    ))
+    promise.setResult(
+        XDebuggerUtil.getInstance().createExpression(
+            GdDapExpressions.instance(objectId), null, null, EvaluationMode.EXPRESSION
+        )
+    )
 }

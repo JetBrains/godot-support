@@ -44,14 +44,17 @@ internal class GdDapXValue(
     private var owner: GdOwnerExpression?,
     private val frame: GdSelfCheckedFrame,
 ) : AbstractDapXValue(factory, executor, variable, icon) {
-    @Volatile private var presentation: GdObjectPresentation? = (variable as? GdPresentedVariable)?.objectPresentation
-    @Volatile private var presentedNode: XValueNode? = null
+    @Volatile
+    private var presentation: GdObjectPresentation? = (variable as? GdPresentedVariable)?.objectPresentation
+    @Volatile
+    private var presentedNode: XValueNode? = null
 
     /** Stores a presentation from a watch, locals, or children probe. Refreshes the row if its node is still active. */
     fun updatePresentation(value: GdObjectPresentation?) {
         if (value == null) return
         presentation = value
-        presentedNode?.takeUnless { it.isObsolete }?.setPresentation(icon ?: variable.defaultIcon, value.presentation(), variable is DapStructuredVariable)
+        presentedNode?.takeUnless { it.isObsolete }
+            ?.setPresentation(icon ?: variable.defaultIcon, value.presentation(), variable is DapStructuredVariable)
     }
 
     private fun applyRecovered(recovered: DapVariable, recoveredOwner: GdOwnerExpression) {
@@ -105,7 +108,12 @@ internal class GdDapXValue(
         }
         executor.computeChildrenWithCompletion(
             node, LOG, "property category",
-            errorMessage = { GdScriptBundle.message("gdscript.debugger.scene.tree.error.properties.failed", it.message ?: GdScriptBundle.message("gdscript.debugger.error.unknown")) },
+            errorMessage = {
+                GdScriptBundle.message(
+                    "gdscript.debugger.scene.tree.error.properties.failed",
+                    it.message ?: GdScriptBundle.message("gdscript.debugger.error.unknown")
+                )
+            },
         ) { target ->
             val rows = when (val load = loadVariablesBounded(category)) {
                 is GdVariablesLoad.Success -> load.variables
@@ -121,16 +129,20 @@ internal class GdDapXValue(
             val children = XValueChildrenList()
             val names = GdObjectMemberRecovery.readablePropertyNames(category.name, rows)
             val values = rows.mapIndexed { index, original ->
-                GdDapXValue(factory, executor, original,
-                    owner = names[index]?.let { safeOwner?.member(it) }, frame = frame).also(children::add)
+                GdDapXValue(
+                    factory, executor, original,
+                    owner = names[index]?.let { safeOwner?.member(it) }, frame = frame
+                ).also(children::add)
             }
             target.addChildren(children, true)
             if (safeOwner != null) {
                 val displayed = with(GdObjectMemberRecovery) { recoverCategory(frame, safeOwner, category.name, rows) }
                 rows.forEachIndexed { index, original ->
                     if (displayed[index] !== original && original.value.toLongOrNull() != null) {
-                        values[index].applyRecovered(displayed[index],
-                            GdOwnerExpression(GdDapExpressions.instance(original.value.toLong())))
+                        values[index].applyRecovered(
+                            displayed[index],
+                            GdOwnerExpression(GdDapExpressions.instance(original.value.toLong()))
+                        )
                     }
                 }
             }
