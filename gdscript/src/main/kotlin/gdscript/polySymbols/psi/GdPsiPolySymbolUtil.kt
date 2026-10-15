@@ -13,14 +13,15 @@ import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.stubChildOfType
 import com.intellij.psi.util.stubChildrenOfType
-import gdscript.GdKeywords
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdPolySymbolsConstants
 import gdscript.polySymbols.gdDeclaringClassId
 import gdscript.polySymbols.gdSignature
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
+import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReferences
 import gdscript.polySymbols.scope.gdSdkGlobalPolySymbolScope
+import gdscript.psi.GdAttributeEx
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassVarDeclTl
@@ -28,6 +29,7 @@ import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdEnumValue
 import gdscript.psi.GdExpr
 import gdscript.psi.GdFile
+import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdPrimaryEx
 import gdscript.psi.GdPsiUtils
 import gdscript.psi.GdRefIdRef
@@ -87,6 +89,27 @@ object GdPsiPolySymbolUtil {
         return if (dot >= 0) classId.substring(dot + 1) else classId
     }
 
+
+    /**
+     * Resolves the `super` keyword to the parent class method that it calls, wrapped in [GdSuperSymbol].
+     * In `super.method()`, that is `method` as its own reference resolves it.
+     * Otherwise, as in a bare `super()`, that is the parent class version of the enclosing method.
+     */
+    fun resolveSuperSymbols(element: GdRefIdRef): List<PolySymbol> {
+        val qualifier = element.parent
+        val attribute = qualifier.parent as? GdAttributeEx
+        val symbols = if (attribute != null && attribute.expr == qualifier) {
+            attribute.refId?.resolveSymbolReferences().orEmpty()
+        } else {
+            val method = PsiTreeUtil.getParentOfType(element, GdMethodDeclTl::class.java) ?: return emptyList()
+            val parentClass = GdSymbolResolverUtil.resolveOwnClassSymbol(method)?.resolveSuperClassSymbol()
+            listOfNotNull(
+                if (method.isConstructor) GdSymbolResolverUtil.findConstructorSymbol(parentClass)
+                else GdSymbolResolverUtil.findMethodSymbol(parentClass, method.getName())
+            )
+        }
+        return symbols.map { GdSuperSymbol(it) }
+    }
 
     fun isStatic(element: GdRefIdRef): Boolean {
         val qualifier = GdClassMemberUtil.calledUpon(element) ?: return false

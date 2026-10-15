@@ -9,6 +9,7 @@ import com.intellij.polySymbols.query.polySymbolScope
 import com.intellij.polySymbols.utils.ReferencingPolySymbol
 import com.intellij.psi.createSmartPointer
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.GdKeywords
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.gdReturnType
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
@@ -59,7 +60,8 @@ internal class GdQualifiedRefIdResolveScope(private val qualifier: GdExpr) : Pol
      */
     private fun resolveQualifierSymbol(): PolySymbol? {
         val refElement = PsiTreeUtil.collectElementsOfType(qualifier, GdRefIdRef::class.java).lastOrNull()
-        val references = refElement?.resolveSymbolReferences()
+        // `super` resolves to the member after the dot, so its parent class comes from the qualifier type instead.
+        val references = refElement?.takeIf { it.text != GdKeywords.SUPER }?.resolveSymbolReferences()
         if (references?.isNotEmpty() == true) {
             // If a symbol has a query scope, return it
             val referenceWithQueryScope = references
