@@ -117,7 +117,7 @@ internal object GdDapExpressions {
 
 /**
  * An expression rooted in the current paused frame. Keep it only for this stop.
- * @property dictionaries Dictionary expressions traversed through `.values()[i]` and their displayed DAP entry counts.
+ * @property dictionaries Dictionary expressions traversed through positional keys or values and their displayed DAP entry counts.
  * Requests append each dictionary size. Accept positional answers only when those sizes still match.
  * Freed object keys arrive as null. The editor can merge these keys and shift their positions.
  */
@@ -127,6 +127,9 @@ internal data class GdOwnerExpression(val text: String, val dictionaries: List<P
             .replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t")
         return GdOwnerExpression("($text).get(\"$quoted\")", dictionaries)
     }
+
+    fun dictionaryKey(position: Int, entryCount: Int): GdOwnerExpression =
+        GdOwnerExpression("($text).keys()[$position]", dictionaries + (text to entryCount))
 
     fun child(parentType: String?, name: String, position: Int, entryCount: Int = 0): GdOwnerExpression? = when (parentType) {
         "Array" -> GdDapRowRules.arrayIndex(name)?.let { GdOwnerExpression("($text)[$it]", dictionaries) }

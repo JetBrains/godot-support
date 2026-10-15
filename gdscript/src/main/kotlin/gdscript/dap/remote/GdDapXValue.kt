@@ -2,6 +2,7 @@ package gdscript.dap.remote
 
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.platform.dap.DapInlineValueContext
+import com.intellij.platform.dap.DapSessionContext
 import com.intellij.platform.dap.DapSessionExecutor
 import com.intellij.platform.dap.DapStructuredVariable
 import com.intellij.platform.dap.DapVariable
@@ -23,6 +24,9 @@ private val LOG = logger<GdDapXValue>()
 private const val CATEGORY_TYPE = GdDapRowRules.CATEGORY_TYPE
 
 private fun isCollectionType(type: String?): Boolean = type == "Dictionary" || type in GdValueKind.arrayTypes
+
+private fun namedForTree(variable: DapVariable, name: String?): DapVariable =
+    if (name == null) variable else object : DapVariable by variable { override val name: String = name }
 
 /** Passes [context] only to a category row. It applies the lookup to its direct properties. */
 internal fun categoryPropertyContext(variable: DapVariable, context: DapInlineValueContext?): DapInlineValueContext? =
@@ -46,7 +50,13 @@ internal class GdDapXValue(
     private val contextForCategoryChildren: DapInlineValueContext? = null,
     /** Applies the lookup to direct properties of this category row. */
     private val contextForOwnProperties: DapInlineValueContext? = null,
-) : AbstractDapXValue(factory, executor, variable, icon) {
+    displayName: String? = null,
+) : AbstractDapXValue(factory, executor, namedForTree(variable, displayName), icon) {
+    init {
+        // The tree fixes its name at construction. Keep the original DAP row for evaluation and watches.
+        this.variable = variable
+    }
+
     private val watchPath = watchContext?.path ?: GdWatchPath.unsupported("value", "no watch root")
 
     @Volatile
@@ -110,6 +120,16 @@ internal class GdDapXValue(
             addCollectionGroups(children, variables, watchPaths, elementPositions, GdChildRange(0, elementPositions.size), type)
             node.addChildren(children, true)
         }
+        else if (type == "Dictionary" && hasKeyCandidates(variables, variables.indices, type)) {
+            val watchPaths = watchPath.children(variable, variables)
+            executor.computeChildrenWithCompletion(node, LOG, "dictionary entries",
+                errorMessage = { GdScriptBundle.message("gdscript.debugger.error.unknown") }) { target ->
+                if (!target.isObsolete) {
+                    val rows = dictionaryRows(variables, watchPaths, variables.indices.toList(), type)
+                    if (!target.isObsolete) target.addChildren(rows, true)
+                }
+            }
+        }
         else super.addChildrenForNonIndexed(variables, node)
         if (node.isObsolete || !isCollectionType(type)) return
         loadedSize = elementPositions.size
@@ -135,14 +155,45 @@ internal class GdDapXValue(
                 }
                 else {
                     val positions = elementPositions.subList(selected.startIndex, selected.startIndex + selected.length)
-                    createRows(variables, watchPaths, positions, parentType = parentType)
+                    dictionaryRows(variables, watchPaths, positions, parentType)
                 }
             })
         }
     }
 
+    private fun hasKeyCandidates(variables: List<DapVariable>, positions: Iterable<Int>, parentType: String?): Boolean =
+        frame != null && owner != null && parentType == "Dictionary" &&
+            positions.any { GdDapRowRules.isObjectWrapper(variables[it].name) }
+
+    private suspend fun DapSessionContext.dictionaryRows(
+        variables: List<DapVariable>, watchPaths: List<GdWatchPath>, positions: List<Int>, parentType: String?,
+    ): XValueChildrenList {
+        if (!hasKeyCandidates(variables, positions, parentType)) return createRows(variables, watchPaths, positions, parentType = parentType)
+        val dictionaryOwner = checkNotNull(owner)
+        val checkedFrame = checkNotNull(frame)
+        val keyProbes = positions.filter { GdDapRowRules.isObjectWrapper(variables[it].name) }
+            .associateWith { dictionaryOwner.dictionaryKey(it, variables.size) }
+        val valueProbes = positions.mapNotNull { position ->
+            val childOwner = dictionaryOwner.child(parentType, variables[position].name, position, variables.size)
+            if (GdObjectProbe.isProbeTarget(variables[position], childOwner)) position to childOwner!! else null
+        }.toMap()
+        val keyAnswers = keyProbes.keys.withIndex().associate { (index, position) -> position to index }
+        val valueAnswers = valueProbes.keys.withIndex().associate { (index, position) -> position to (keyProbes.size + index) }
+        val answers = if (hasSelfInMembers(checkedFrame)) with(GdObjectProbe) {
+            load(checkedFrame, (keyProbes.values + valueProbes.values).map { it.text }, keyProbes.values.first())
+        } else null
+        val names = keyAnswers.mapNotNull { (position, index) ->
+            answers?.getOrNull(index)?.let { position to "${it.className} ${it.text}" }
+        }.toMap()
+        val values = valueAnswers.mapNotNull { (position, index) ->
+            answers?.getOrNull(index)?.let { position to it }
+        }.toMap()
+        return createRows(variables, watchPaths, positions, names, values, probeValues = false, parentType = parentType)
+    }
+
     private fun createRows(
         variables: List<DapVariable>, watchPaths: List<GdWatchPath>, positions: Iterable<Int>,
+        names: Map<Int, String> = emptyMap(), values: Map<Int, GdObjectPresentation> = emptyMap(), probeValues: Boolean = true,
         parentType: String? = resolvedType(variables),
     ): XValueChildrenList {
         val children = XValueChildrenList()
@@ -157,10 +208,12 @@ internal class GdDapXValue(
             val row = GdDapXValue(
                 factory, executor, child, owner = childOwner, frame = frame,
                 watchContext = watchContext?.copy(path = watchPaths[position]),
-                contextForOwnProperties = categoryPropertyContext(child, contextForCategoryChildren)
+                contextForOwnProperties = categoryPropertyContext(child, contextForCategoryChildren),
+                displayName = names[position],
             )
+            values[position]?.let(row::updatePresentation)
             children.add(row)
-            if (GdObjectProbe.isProbeTarget(child, childOwner))
+            if (probeValues && GdObjectProbe.isProbeTarget(child, childOwner))
                 probes.add(row to childOwner!!)
         }
         if (frame != null && probes.isNotEmpty()) executor.post {

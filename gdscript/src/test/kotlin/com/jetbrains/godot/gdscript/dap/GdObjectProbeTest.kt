@@ -172,6 +172,17 @@ class GdObjectProbeTest {
     }
 
     @Test
+    fun testDictionaryKeyOwnerKeepsAbsolutePositionAndInheritedGuards() {
+        val owner = GdOwnerExpression("(outer).values()[2]", listOf("outer" to 4))
+        val key = owner.dictionaryKey(100, 101)
+        assertEquals("((outer).values()[2]).keys()[100]", key.text)
+        assertEquals(listOf("outer" to 4, "(outer).values()[2]" to 101), key.dictionaries)
+        assertEquals("[str(${key.text})", GdDapExpressions.probe(listOf(key.text), key).substringBefore(','))
+        assertEquals(listOf("outer" to 4, "(outer).values()[2]" to 101),
+            key.child("Dictionary", "nested", 3, 5)?.dictionaries?.take(2))
+    }
+
+    @Test
     fun testShapeAndDictionarySizeAreRequired() {
         val owner = GdOwnerExpression("(d).values()[0]", listOf("d" to 2))
         val data = fields("<Object#1>", "<null>", "", "Node")
