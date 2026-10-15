@@ -8,6 +8,7 @@ import com.intellij.platform.dap.DapVariable
 import com.intellij.platform.dap.xdebugger.AbstractDapXValue
 import com.intellij.platform.dap.xdebugger.DapXDebuggerPresentationFactory
 import com.intellij.xdebugger.XExpression
+import com.intellij.xdebugger.frame.ImmediateFullValueEvaluator
 import com.intellij.xdebugger.frame.XCompositeNode
 import com.intellij.xdebugger.frame.XValueChildrenList
 import com.intellij.xdebugger.frame.XValueNode
@@ -20,6 +21,8 @@ import javax.swing.Icon
 
 private val LOG = logger<GdDapXValue>()
 private const val CATEGORY_TYPE = GdDapRowRules.CATEGORY_TYPE
+
+private fun isCollectionType(type: String?): Boolean = type == "Dictionary" || type in GdValueKind.arrayTypes
 
 /** Passes [context] only to a category row. It applies the lookup to its direct properties. */
 internal fun categoryPropertyContext(variable: DapVariable, context: DapInlineValueContext?): DapInlineValueContext? =
@@ -50,6 +53,8 @@ internal class GdDapXValue(
     private var presentation: GdObjectPresentation? = (variable as? GdPresentedVariable)?.objectPresentation
     @Volatile
     private var presentedNode: XValueNode? = null
+    @Volatile
+    private var loadedSize: Int? = null
 
     /** Stores a presentation from a watch, locals, or children probe. Refreshes the row if its node is still active. */
     fun updatePresentation(value: GdObjectPresentation?) {
@@ -75,11 +80,27 @@ internal class GdDapXValue(
     override fun computePresentation(node: XValueNode, place: XValuePlace) {
         presentedNode = node
         super.computePresentation(node, place)
+        if (variable is DapStructuredVariable && isCollectionType(GdValueKind.type(variable))) {
+            node.setFullValueEvaluator(ImmediateFullValueEvaluator(variable.value))
+        }
     }
 
     override fun createValuePresentation(variable: DapVariable, isStructured: Boolean, isLazy: Boolean): XValuePresentation =
-        presentation?.presentation() ?: if (isStructured && !isLazy && variable.value.isEmpty()) XRegularValuePresentation("", variable.type, "")
+        presentation?.presentation() ?: if (isStructured && !isLazy && isCollectionType(GdValueKind.type(variable))) {
+            val text = loadedSize?.let { "size = $it" } ?: ""
+            XRegularValuePresentation(text, GdValueKind.type(variable), if (text.isEmpty()) "" else " = ")
+        }
+        else if (isStructured && !isLazy && variable.value.isEmpty()) XRegularValuePresentation("", variable.type, "")
         else XRegularValuePresentation(variable.value, variable.type)
+
+    override fun addChildrenForNonIndexed(variables: List<DapVariable>, node: XCompositeNode) {
+        super.addChildrenForNonIndexed(variables, node)
+        val type = GdValueKind.type(variable)
+        if (node.isObsolete || !isCollectionType(type)) return
+        loadedSize = variables.count { it.type != CATEGORY_TYPE && (type == "Dictionary" || it.name != "size") }
+        presentedNode?.takeUnless { it.isObsolete }
+            ?.setPresentation(icon ?: variable.defaultIcon, createValuePresentation(variable, true, false), true)
+    }
 
     override fun createChildren(variables: List<DapVariable>): XValueChildrenList {
         val children = XValueChildrenList()

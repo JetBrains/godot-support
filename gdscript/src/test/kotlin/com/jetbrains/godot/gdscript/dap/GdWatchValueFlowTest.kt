@@ -5,7 +5,11 @@ import com.intellij.platform.dap.DapStructuredVariable
 import com.intellij.platform.dap.DapVariable
 import com.intellij.platform.dap.xdebugger.DefaultDapXDebuggerPresentationFactory
 import com.intellij.testFramework.junit5.TestApplication
+import com.intellij.xdebugger.frame.XFullValueEvaluator
 import com.intellij.xdebugger.frame.XNamedValue
+import com.intellij.xdebugger.frame.XValueNode
+import com.intellij.xdebugger.frame.XValuePlace
+import com.intellij.xdebugger.frame.presentation.XValuePresentation
 import gdscript.dap.remote.GdDapEvaluator
 import gdscript.dap.remote.GdDapStackFrame
 import gdscript.dap.remote.GdDapXScope
@@ -15,6 +19,7 @@ import gdscript.dap.remote.GdOwnerExpression
 import gdscript.dap.remote.GdSelfCheckedFrame
 import gdscript.dap.remote.GdWatchContext
 import gdscript.dap.remote.GdWatchPath
+import gdscript.dap.remote.GdValueKind
 import org.jetbrains.concurrency.Promise
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -26,6 +31,8 @@ import org.junit.jupiter.params.provider.EnumSource
 import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import java.util.concurrent.TimeUnit
+import java.lang.reflect.Proxy
+import javax.swing.Icon
 
 @TestApplication
 class GdWatchValueFlowTest {
@@ -257,6 +264,104 @@ class GdWatchValueFlowTest {
             val parts = expand(child, executor).values
             assertTrue(parts.all { watch(it) == null })
             assertTrue(expand(parts.first(), executor).values.all { watch(it) == null })
+        }
+    }
+
+    @Test
+    fun testCollectionRowsShowSizeAfterExpansionAndKeepFullText(): Unit = withExecutor { executor ->
+        val cases = GdValueKind.arrayTypes.map { type ->
+            Triple(type, "[first, second]", listOf(variable("size", "int", "2"), variable("0", "int"), variable("1", "int"),
+                variable("metadata", "Category")))
+        } + listOf(
+            Triple("Dictionary", "{size: 1, key: 2}", listOf(variable("size", "int"), variable("key", "int"),
+                variable("metadata", "Category"))),
+            Triple(null, "[1, 2]", listOf(variable("size", "int", "2"), variable("0", "int"), variable("1", "int"))),
+            Triple("Nil", "[1, 2]", listOf(variable("size", "int", "2"), variable("0", "int"), variable("1", "int"))),
+            Triple("Nil", "{size: 1, key: 2}", listOf(variable("size", "int"), variable("key", "int"))),
+            Triple("Nil", "{  }", emptyList()),
+        )
+        for ((type, text, children) in cases) {
+            val expectedType = type?.takeUnless { it == "Nil" } ?: if (text.startsWith("{")) "Dictionary" else "Array"
+            val raw = untypedStructured("items", type, text, children)
+            val row = GdDapXValue(FACTORY, executor, raw, owner = null, frame = null)
+            val node = CollectionValueNode()
+            row.computePresentation(node, XValuePlace.TREE)
+            assertEquals(expectedType, node.presentation?.type)
+            assertTrue(node.hasChildren)
+            assertEquals("", node.text())
+            assertEquals("", node.presentation?.separator)
+            val evaluator = node.evaluator!!
+            var fullText: String? = null
+            evaluator.startEvaluation(object : XFullValueEvaluator.XFullValueEvaluationCallback {
+                override fun evaluated(fullValue: String) { fullText = fullValue }
+                override fun errorOccurred(errorMessage: String) { error(errorMessage) }
+                override fun isObsolete() = false
+            })
+            assertEquals(text, fullText)
+            assertEquals(text, raw.value)
+            expand(row, executor)
+            assertEquals("size = ${if (children.isEmpty()) 0 else 2}", node.text())
+            assertEquals(expectedType, node.presentation?.type)
+            assertTrue(node.hasChildren)
+            val staleRow = GdDapXValue(FACTORY, executor, raw, owner = null, frame = null)
+            val staleNode = CollectionValueNode()
+            staleRow.computePresentation(staleNode, XValuePlace.TREE)
+            staleNode.obsolete = true
+            expand(staleRow, executor)
+            assertEquals("", staleNode.text())
+        }
+        for (text in listOf("[hello]", "{hello}", "[P: hello]")) {
+            for (type in listOf(null, "Nil")) {
+                val raw = object : DapVariable by variable("text", "String", text) { override val type = type }
+                val row = GdDapXValue(FACTORY, executor, raw, owner = null, frame = null)
+                val node = CollectionValueNode()
+                row.computePresentation(node, XValuePlace.TREE)
+                assertEquals(text, node.text())
+                assertEquals(type, node.presentation?.type)
+                assertTrue(!node.hasChildren)
+                assertNull(node.evaluator)
+            }
+        }
+        for (type in listOf("Object", "Category")) {
+            val row = GdDapXValue(FACTORY, executor, structuredVariable("row", type, emptyList()), owner = null, frame = null)
+            val node = CollectionValueNode()
+            row.computePresentation(node, XValuePlace.TREE)
+            assertEquals("value", node.text())
+            assertNull(node.evaluator)
+        }
+    }
+
+    @Test
+    fun testEmptyPackedArrayShowsZeroAfterExpansion(): Unit = withExecutor { executor ->
+        val raw = untypedStructured("items", "PackedByteArray", "[]", listOf(variable("size", "int", "0")))
+        val row = GdDapXValue(FACTORY, executor, raw, owner = null, frame = null)
+        val node = CollectionValueNode()
+        row.computePresentation(node, XValuePlace.TREE)
+        assertEquals("PackedByteArray", node.presentation?.type)
+        assertEquals("", node.text())
+        expand(row, executor)
+        assertEquals("size = 0", node.text())
+    }
+
+    private class CollectionValueNode : XValueNode {
+        var presentation: XValuePresentation? = null
+        var evaluator: XFullValueEvaluator? = null
+        var obsolete = false
+        var hasChildren = false
+        override fun setPresentation(icon: Icon?, type: String?, value: String, hasChildren: Boolean) = Unit
+        override fun setPresentation(icon: Icon?, presentation: XValuePresentation, hasChildren: Boolean) {
+            this.presentation = presentation
+            this.hasChildren = hasChildren
+        }
+        override fun setFullValueEvaluator(fullValueEvaluator: XFullValueEvaluator) { evaluator = fullValueEvaluator }
+        override fun isObsolete() = obsolete
+        fun text(): String {
+            val result = StringBuilder()
+            val renderer = Proxy.newProxyInstance(javaClass.classLoader, arrayOf(XValuePresentation.XValueTextRenderer::class.java)) {
+                _, method, args -> if (method.name == "renderValue") result.append(args?.firstOrNull()) else null
+            } as XValuePresentation.XValueTextRenderer
+            presentation!!.renderValue(renderer)
+            return result.toString()
         }
     }
 
