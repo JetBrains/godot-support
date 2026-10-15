@@ -31,7 +31,7 @@ internal fun categoryPropertyContext(variable: DapVariable, context: DapInlineVa
 /**
  * A DAP value that carries an optional expression for its underlying Object through child expansion.
  * When a property category contains integer members, this wrapper recovers only confirmed Objects.
- * Other values retain the normal DAP child presentation.
+ * Collections show a compact presentation and group large child lists into ranges.
  */
 internal class GdDapXValue(
     factory: DapXDebuggerPresentationFactory,
@@ -93,22 +93,63 @@ internal class GdDapXValue(
         else if (isStructured && !isLazy && variable.value.isEmpty()) XRegularValuePresentation("", variable.type, "")
         else XRegularValuePresentation(variable.value, variable.type)
 
+    private fun resolvedType(variables: List<DapVariable>): String? = GdValueKind.type(variable, variables)
+
     override fun addChildrenForNonIndexed(variables: List<DapVariable>, node: XCompositeNode) {
-        super.addChildrenForNonIndexed(variables, node)
-        val type = GdValueKind.type(variable)
+        val type = resolvedType(variables)
+        val elementPositions = if (isCollectionType(type)) variables.indices.filter { position ->
+            val child = variables[position]
+            child.type != CATEGORY_TYPE && (type == "Dictionary" || child.name != "size")
+        } else emptyList()
+        if (elementPositions.size > GdChildChunking.CHUNK_SIZE && !node.isObsolete) {
+            val watchPaths = watchPath.children(variable, variables)
+            val children = XValueChildrenList()
+            val elementSet = elementPositions.toHashSet()
+            val outside = createRows(variables, watchPaths, variables.indices.filterNot { it in elementSet }, parentType = type)
+            for (index in 0 until outside.size()) children.addTopValue(outside.getValue(index) as GdDapXValue)
+            addCollectionGroups(children, variables, watchPaths, elementPositions, GdChildRange(0, elementPositions.size), type)
+            node.addChildren(children, true)
+        }
+        else super.addChildrenForNonIndexed(variables, node)
         if (node.isObsolete || !isCollectionType(type)) return
-        loadedSize = variables.count { it.type != CATEGORY_TYPE && (type == "Dictionary" || it.name != "size") }
+        loadedSize = elementPositions.size
         presentedNode?.takeUnless { it.isObsolete }
             ?.setPresentation(icon ?: variable.defaultIcon, createValuePresentation(variable, true, false), true)
     }
 
-    override fun createChildren(variables: List<DapVariable>): XValueChildrenList {
+    override fun createChildren(variables: List<DapVariable>): XValueChildrenList =
+        createRows(variables, watchPath.children(variable, variables), variables.indices)
+
+    private fun addCollectionGroups(
+        children: XValueChildrenList,
+        variables: List<DapVariable>,
+        watchPaths: List<GdWatchPath>,
+        elementPositions: List<Int>,
+        range: GdChildRange,
+        parentType: String?,
+    ) {
+        for (groupRange in GdChildChunking.splitIntoChunks(range.startIndex, range.length, createGroup = { it })) {
+            children.addTopGroup(GdCollectionChunkXValueGroup(groupRange, executor) { selected ->
+                if (selected.length > GdChildChunking.CHUNK_SIZE) {
+                    XValueChildrenList().also { addCollectionGroups(it, variables, watchPaths, elementPositions, selected, parentType) }
+                }
+                else {
+                    val positions = elementPositions.subList(selected.startIndex, selected.startIndex + selected.length)
+                    createRows(variables, watchPaths, positions, parentType = parentType)
+                }
+            })
+        }
+    }
+
+    private fun createRows(
+        variables: List<DapVariable>, watchPaths: List<GdWatchPath>, positions: Iterable<Int>,
+        parentType: String? = resolvedType(variables),
+    ): XValueChildrenList {
         val children = XValueChildrenList()
         val probes = mutableListOf<Pair<GdDapXValue, GdOwnerExpression>>()
-        // Rows are added first. Each pair maps a batched answer to its row by position.
-        val parentType = GdValueKind.type(variable)
-        val watchPaths = watchPath.children(variable, variables)
-        for ((position, child) in variables.withIndex()) {
+        // Each probe answer maps to a row in the open leaf.
+        for (position in positions) {
+            val child = variables[position]
             val childOwner = when {
                 child.type == CATEGORY_TYPE -> owner
                 else -> owner?.child(parentType, child.name, position, variables.size)
