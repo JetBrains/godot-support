@@ -195,6 +195,90 @@ class GdCollectionChunkTest {
     }
 
     @Test
+    fun testDirectDictionaryKeysAndValuesShareOneOrderedProbe(): Unit = withExecutor { executor ->
+        val wrapper = "<EncodedObjectAsID#42>"
+        val rows = listOf(structuredVariable(wrapper, "Object", emptyList()),
+            variable(wrapper, "String", wrapper), variable("ordinary", "int"))
+        val requests = mutableListOf<String>()
+        var loads = 0
+        val frame = GdSelfCheckedFrame(TestFrame { expression ->
+            requests.add(expression)
+            if (".keys() + [" in expression) {
+                numberedAnswer(expression, listOf(variable("0", "Object", wrapper), variable("1", "String", wrapper),
+                    variable("2", "String", "ordinary"), variable("3", "int", "24"),
+                    variable("4", "String", "180001002a00000000000000")))
+            }
+            else {
+                assertTrue(expression.indexOf("(items).keys()[0]") < expression.indexOf("(items).keys()[1]"))
+                assertTrue(expression.indexOf("(items).keys()[1]") < expression.indexOf("(items).values()[0]"))
+                assertTrue("(items).size()" in expression)
+                numberedAnswer(expression, probeFields(listOf("Key", "not an object", "Value")) + variable("15", "int", "3"))
+            }
+        }, { GdFrameSourceSelf.Present })
+        val parent = counted("Dictionary", rows) { loads++ }
+        val root = GdDapXValue(FACTORY, executor, parent, owner = GdOwnerExpression("items"), frame = frame,
+            watchContext = GdWatchContext(GdWatchPath.evaluated("items"), frame, executor))
+        val node = expand(root, executor)
+        assertTrue(node.values.isEmpty())
+        executor.runLast()
+        assertEquals(1, loads)
+        assertEquals(1, requests.size)
+        assertEquals(listOf("Node Key", wrapper, "ordinary"), node.values.map { it.name })
+        assertEquals(rows.map { it.name }, node.values.map { (it as GdDapXValue).variable.name })
+        assertEquals("Value", presentationText((node.values.first() as GdDapXValue)
+            .createValuePresentation(rows.first(), true, false), "renderComment").trim())
+        val watch = node.values.first().calculateEvaluationExpression()
+        executor.runLast()
+        assertEquals("(items)[instance_from_id(42)]", watch.blockingGet(1, TimeUnit.SECONDS)?.expression)
+        assertEquals(2, requests.size)
+        assertEquals(1, node.terminalCount)
+    }
+
+    @Test
+    fun testInferredDictionaryKeysAreProbedForDirectRowsAndGroups(): Unit = withExecutor { executor ->
+        val wrapper = "<EncodedObjectAsID#42>"
+        for (type in listOf("Nil", null)) {
+            for (count in listOf(1, 101)) {
+                val position = count - 1
+                val rows = (0 until count).map {
+                    if (it == position) structuredVariable(wrapper, "Object", emptyList()) else variable("key$it", "int")
+                }
+                var loads = 0
+                val parent = object : DapStructuredVariable by counted("Dictionary", rows, { loads++ }) {
+                    override val type: String? = type
+                    override val value = "{entries}"
+                }
+                val requests = mutableListOf<String>()
+                val frame = GdSelfCheckedFrame(TestFrame { expression ->
+                    requests.add(expression)
+                    assertTrue("(items).keys()[$position]" in expression)
+                    assertTrue(expression.indexOf("(items).keys()[$position]") < expression.indexOf("(items).values()[$position]"))
+                    assertTrue("(items).size()" in expression)
+                    numberedAnswer(expression, probeFields(listOf("Key", "Value")) + variable("10", "int", count.toString()))
+                }, { GdFrameSourceSelf.Present })
+                val root = GdDapXValue(FACTORY, executor, parent, owner = GdOwnerExpression("items"), frame = frame,
+                    watchContext = GdWatchContext(GdWatchPath.evaluated("items"), frame, executor))
+                val top = expand(root, executor)
+                assertEquals(1, loads)
+                assertTrue(requests.isEmpty())
+                assertEquals(if (count == 1) emptyList() else listOf("[0..99]", "[100..100]"), groups(top).map { it.name })
+                val leaf = if (count == 1) top else expandGroup(top, 1, executor)
+                if (count == 1) {
+                    assertTrue(leaf.values.isEmpty())
+                    executor.runLast()
+                }
+                assertEquals("Node Key", leaf.values.last().name)
+                val last = leaf.values.last() as GdDapXValue
+                assertEquals(wrapper, last.variable.name)
+                assertEquals("Value", presentationText(last.createValuePresentation(last.variable, true, false), "renderComment").trim())
+                assertEquals(1, requests.size)
+                assertEquals(1, loads)
+                assertTrue(leaf.errors.isEmpty())
+            }
+        }
+    }
+
+    @Test
     fun testUntypedArrayPassesOwnerToNestedProbeAndMemberRecovery(): Unit = withExecutor { executor ->
         val members = structuredVariable("Members", "Category", listOf(variable("child", "int", "42")))
         val rows = listOf(variable("size", "int", "1"), structuredVariable("0", "Object", listOf(members)))
@@ -226,11 +310,140 @@ class GdCollectionChunkTest {
         assertEquals("Recovered", presentationText(member.createValuePresentation(member.variable, true, false), "renderComment").trim())
     }
 
+    @Test
+    fun testUntypedDictionaryProbeFailureKeepsOriginalNameAndText(): Unit = withExecutor { executor ->
+        val wrapper = "<EncodedObjectAsID#9>"
+        val rows = listOf(structuredVariable(wrapper, "Object", emptyList()))
+        for (type in listOf(null, "Nil")) {
+            var probes = 0
+            val frame = GdSelfCheckedFrame(TestFrame { expression ->
+                probes++
+                assertTrue("(items).keys()[0]" in expression)
+                assertTrue("(items).values()[0]" in expression)
+                numberedAnswer(expression, probeFields(listOf("Key", "Value")) + variable("10", "int", "2"))
+            }, { GdFrameSourceSelf.Present })
+            val node = expand(GdDapXValue(FACTORY, executor, untyped(type, "{entries}", rows),
+                owner = GdOwnerExpression("items"), frame = frame), executor)
+            executor.runLast()
+            assertEquals(1, probes)
+            assertEquals(listOf(wrapper), node.values.map { it.name })
+            val row = node.values.single() as GdDapXValue
+            assertEquals("value", presentationText(row.createValuePresentation(row.variable, true, false)))
+            assertEquals(1, node.terminalCount)
+            assertTrue(node.errors.isEmpty())
+        }
+    }
+
+    @Test
+    fun testUntypedValueWithoutKindEvidenceDoesNotProbe(): Unit = withExecutor { executor ->
+        val wrapper = "<EncodedObjectAsID#9>"
+        val rows = listOf(structuredVariable(wrapper, "Object", emptyList()))
+        for (type in listOf(null, "Nil")) {
+            var probes = 0
+            val frame = GdSelfCheckedFrame(TestFrame { expression ->
+                probes++
+                numberedAnswer(expression, probeFields(listOf("Unexpected", "Unexpected")) + variable("10", "int", "1"))
+            }, { GdFrameSourceSelf.Present })
+            val node = expand(GdDapXValue(FACTORY, executor, untyped(type, "unknown", rows),
+                owner = GdOwnerExpression("items"), frame = frame), executor)
+            executor.runLast()
+            assertEquals(0, probes)
+            assertEquals(listOf(wrapper), node.values.map { it.name })
+            assertEquals("value", presentationText((node.values.single() as GdDapXValue)
+                .createValuePresentation(rows.single(), true, false)))
+            assertEquals(1, node.terminalCount)
+        }
+    }
+
+    @Test
+    fun testKeyProbesUseAbsolutePositionsAtGroupAndNestedBoundaries(): Unit = withExecutor { executor ->
+        val wrapper = "<EncodedObjectAsID#77>"
+        val rows = (0..10_000).map { position -> variable(if (position in setOf(99, 100, 10_000)) wrapper else "key$position", "int") }
+        val requests = mutableListOf<String>()
+        val frame = GdSelfCheckedFrame(TestFrame { expression ->
+            requests.add(expression)
+            val position = listOf(99, 100, 10_000).single { "(items).keys()[$it]" in expression }
+            assertTrue("(items).keys()[$position]" in expression)
+            assertTrue("(items).size()" in expression)
+            numberedAnswer(expression, probeFields(listOf("At$position")) + variable("5", "int", "10001"))
+        }, { GdFrameSourceSelf.Present })
+        val root = GdDapXValue(FACTORY, executor, counted("Dictionary", rows) {}, owner = GdOwnerExpression("items"), frame = frame,
+            watchContext = GdWatchContext(GdWatchPath.evaluated("items"), frame, executor))
+        val top = expand(root, executor)
+        assertTrue(requests.isEmpty())
+        val large = expandGroup(top, 0, executor)
+        assertTrue(requests.isEmpty())
+        val first = expandGroup(large, 0, executor)
+        assertEquals("Node At99", first.values.last().name)
+        val leaf = expandGroup(large, 1, executor)
+        assertEquals("Node At100", leaf.values.first().name)
+        assertEquals(wrapper, (leaf.values.first() as GdDapXValue).variable.name)
+        val tail = expandGroup(top, 1, executor)
+        assertEquals("Node At10000", tail.values.single().name)
+        assertEquals(3, requests.size)
+    }
+
+    @Test
+    fun testKeyProbeFailureAndMissingOwnerKeepOriginalRows(): Unit = withExecutor { executor ->
+        val wrapper = "<EncodedObjectAsID#9>"
+        val rows = listOf(variable(wrapper, "int"))
+        for (answer in listOf(false, true)) {
+            var probes = 0
+            val frame = GdSelfCheckedFrame(TestFrame { expression ->
+                probes++
+                if (!answer) numberedAnswer(expression, probeFields(listOf("Old")) + variable("5", "int", "2"))
+                else numberedAnswer(expression, listOf(variable("0", "int", "invalid")))
+            }, { GdFrameSourceSelf.Present })
+            val top = expand(GdDapXValue(FACTORY, executor, counted("Dictionary", rows) {},
+                owner = GdOwnerExpression("items"), frame = frame), executor)
+            executor.runLast()
+            assertEquals(listOf(wrapper), top.values.map { it.name })
+            assertEquals(1, top.terminalCount)
+            assertEquals(1, probes)
+        }
+        val noOwner = expand(GdDapXValue(FACTORY, executor, counted("Dictionary", rows) {}, owner = null, frame =
+            GdSelfCheckedFrame(TestFrame { error("No safe expression") }, { GdFrameSourceSelf.Present })), executor)
+        assertEquals(listOf(wrapper), noOwner.values.map { it.name })
+    }
+
+    @Test
+    fun testObsoleteKeyProbeDoesNotDeliverRows(): Unit = withExecutor { executor ->
+        val wrapper = "<EncodedObjectAsID#9>"
+        val rows = (0..100).map { variable(if (it == 100) wrapper else "key$it", "int") }
+        lateinit var leaf: RecordingNode
+        val frame = GdSelfCheckedFrame(TestFrame { expression ->
+            leaf.obsolete = true
+            numberedAnswer(expression, probeFields(listOf("Key")) + variable("5", "int", "101"))
+        }, { GdFrameSourceSelf.Present })
+        val top = expand(GdDapXValue(FACTORY, executor, counted("Dictionary", rows) {},
+            owner = GdOwnerExpression("items"), frame = frame), executor)
+        leaf = RecordingNode()
+        groups(top).last().computeChildren(leaf)
+        executor.runLast()
+        assertTrue(leaf.values.isEmpty())
+        assertEquals(1, leaf.terminalCount)
+    }
+
     private fun probeFields(texts: List<String>): List<DapVariable> = texts.flatMapIndexed { index, text ->
         val valid = if (text == "not an object") "false" else "true"
         listOf(variable("${index * 5}", "String", text), variable("${index * 5 + 1}", "bool", valid),
             variable("${index * 5 + 2}", "String", "<null>"), variable("${index * 5 + 3}", "StringName", ""),
             variable("${index * 5 + 4}", "StringName", "Node"))
+    }
+
+    @Test
+    fun testObsoleteGroupDoesNotCreateRowsOrProbes(): Unit = withExecutor { executor ->
+        var evaluations = 0
+        val frame = GdSelfCheckedFrame(TestFrame { evaluations++; error("Unexpected probe") }, { GdFrameSourceSelf.Present })
+        val parent = counted("Dictionary", (0..100).map { structuredVariable("key$it", "Object", emptyList()) }) {}
+        val top = expand(GdDapXValue(FACTORY, executor, parent, owner = GdOwnerExpression("items"), frame = frame), executor)
+        val node = RecordingNode()
+        groups(top).last().computeChildren(node)
+        node.obsolete = true
+        executor.runLast()
+        assertEquals(1, node.terminalCount)
+        assertTrue(node.values.isEmpty())
+        assertEquals(0, evaluations)
     }
 
     @Test
