@@ -225,6 +225,7 @@ private class GodotLspClientDescriptor(
                     }
                 }
             }
+            workspace?.fileOperations?.willRename = false
         }
 
     override fun createLsp4jClient(handler: LspServerNotificationsHandler): Lsp4jClient {
