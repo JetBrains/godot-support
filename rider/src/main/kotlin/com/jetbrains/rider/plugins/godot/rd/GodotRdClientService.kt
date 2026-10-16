@@ -30,6 +30,7 @@ import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil.getEnabledEditorPlugins
 import com.jetbrains.rider.model.godot.frontendGodot.EnvironmentVariable
 import com.jetbrains.rider.model.godot.frontendGodot.FrontendGodotModel
+import com.jetbrains.rider.model.godot.frontendGodot.PlayForDebugResult
 import com.jetbrains.rider.model.godot.frontendGodot.frontendGodotModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -65,6 +66,14 @@ class GodotRdClientService(val project: Project) {
             ConnectionResult.NOT_CONNECTED_MODEL -> EditorConnectionState.MISMATCHED_MODEL
             ConnectionResult.CONNECTED -> EditorConnectionState.CONNECTED
         }
+    }
+
+    enum class PlayCurrentSceneResult {
+        Success,
+        NoSceneSelected,
+        Unknown,
+        MultipleInstancesOn,
+        NotConnected,
     }
 
     val isConnected: Boolean
@@ -182,18 +191,24 @@ class GodotRdClientService(val project: Project) {
      * so the solution of tracking what was launched with an ID and then giving [stopPlayingScene] this
      * ID to stop seems like an overkill.
      */
-    suspend fun playCurrentSceneForDebug(environment: Map<String, String>): Boolean {
-        val currentConnection = connection.get() ?: return false
+    suspend fun playCurrentSceneForDebug(environment: Map<String, String>): PlayCurrentSceneResult {
+        val currentConnection = connection.get() ?: return PlayCurrentSceneResult.NotConnected
         return try {
-            withContext(currentConnection.protocol.scheduler.asCoroutineDispatcher) {
+            val result = withContext(currentConnection.protocol.scheduler.asCoroutineDispatcher) {
                 val variables = environment.map { (name, value) -> EnvironmentVariable(name, value) }
                 currentConnection.model.playCurrentSceneForDebug.startSuspending(currentConnection.protocol.lifetime, variables)
+            }
+            when (result) {
+                PlayForDebugResult.NoScene -> PlayCurrentSceneResult.NoSceneSelected
+                PlayForDebugResult.MultipleInstances -> PlayCurrentSceneResult.MultipleInstancesOn
+                PlayForDebugResult.Unknown -> PlayCurrentSceneResult.Unknown
+                PlayForDebugResult.Success -> PlayCurrentSceneResult.Success
             }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             thisLogger().warn("[GODOT RD] failed to play the current scene", e)
-            false
+            PlayCurrentSceneResult.Unknown
         }
     }
 

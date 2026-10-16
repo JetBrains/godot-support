@@ -9,6 +9,7 @@
 #include "FrontendGodotModel.h"
 
 #include "FrontendGodotModel/EnvironmentVariable.h"
+#include "FrontendGodotModel/PlayForDebugResult.h"
 
 #include "FrontendGodotRoot/FrontendGodotRoot.h"
 
@@ -48,10 +49,10 @@ constexpr rd::wstring_view FrontendGodotModel::modelHashKey;
 void FrontendGodotModel::initialize()
 {
     godotPID_.optimize_nested = true;
-    serializationHash = 5856660473071624477L;
+    serializationHash = 4053984607140368364L;
 }
 // primary ctor
-FrontendGodotModel::FrontendGodotModel(rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_, rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, bool, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<bool>> playCurrentSceneForDebug_, rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_, rd::RdProperty<int64_t, rd::Polymorphic<int64_t>> godotPID_) :
+FrontendGodotModel::FrontendGodotModel(rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_, rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, PlayForDebugResult, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<PlayForDebugResult>> playCurrentSceneForDebug_, rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_, rd::RdProperty<int64_t, rd::Polymorphic<int64_t>> godotPID_) :
 rd::RdExtBase()
 ,openInGodot_(std::move(openInGodot_)), openInRider_(std::move(openInRider_)), currentSceneChange_(std::move(currentSceneChange_)), playCurrentSceneForDebug_(std::move(playCurrentSceneForDebug_)), stopPlayingScene_(std::move(stopPlayingScene_)), godotPID_(std::move(godotPID_))
 {
@@ -112,11 +113,11 @@ rd::ISignal<std::wstring> const & FrontendGodotModel::get_currentSceneChange() c
      */
     return currentSceneChange_;
 }
-rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, bool, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<bool>> const & FrontendGodotModel::get_playCurrentSceneForDebug() const
+rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, PlayForDebugResult, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<PlayForDebugResult>> const & FrontendGodotModel::get_playCurrentSceneForDebug() const
 {
     
     /**
-     * Plays the current scene with the specified environment variables set for the game process. Returns true if Godot starts the scene.
+     * Plays the current scene with the specified environment variables set for the game process. Returns [PlayForDebugResult] indicating the status.
      */
     return playCurrentSceneForDebug_;
 }
