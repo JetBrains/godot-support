@@ -5,6 +5,7 @@
 #include "godot_cpp/classes/dir_access.hpp"
 #include "godot_cpp/classes/editor_interface.hpp"
 #include "godot_cpp/classes/editor_paths.hpp"
+#include "godot_cpp/classes/os.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "spdlog/spdlog.h"
 
@@ -42,10 +43,12 @@ void GodotRdServer::start() noexcept {
 		}
 		callable_mp(this, &GodotRdServer::_notify_client_state).call_deferred(is_connected);
 	});
-	tmp_session->bind_model(model, [this](JetBrains::GodotPlugin::FrontendGodotModel &model, Lifetime lifetime) {
+	const auto godot_editor_pid = OS::get_singleton()->get_process_id();
+	tmp_session->bind_model(model, [this, godot_editor_pid](JetBrains::GodotPlugin::FrontendGodotModel &model, Lifetime lifetime) {
 		model.get_openInGodot().advise(lifetime, [this](const std::wstring &path) {
 			callable_mp(this, &GodotRdServer::open_in_godot).call_deferred(Utils::to_godot_string(path));
 		});
+		model.get_godotPID().set(godot_editor_pid);
 		model.get_playCurrentSceneForDebug().set(
 				[this](Lifetime, const std::vector<rd::Wrapper<JetBrains::GodotPlugin::EnvironmentVariable>> &variables)
 						-> RdTask<bool> {
