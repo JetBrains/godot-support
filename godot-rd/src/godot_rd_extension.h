@@ -5,6 +5,8 @@
 #include "godot_cpp/classes/editor_plugin.hpp"
 #include "godot_cpp/classes/wrapped.hpp"
 
+#include <FrontendGodotModel/PlayForDebugResult.h>
+
 #include <array>
 #include <functional>
 
@@ -36,7 +38,7 @@ public:
 	int get_launch_instance_count() const;
 
 	// Plays the current scene. The game process gets the given environment variables.
-	bool play_current_scene_for_debug(const Dictionary &environment);
+	JetBrains::GodotPlugin::PlayForDebugResult play_current_scene_for_debug(const Dictionary &environment);
 	void stop_playing_scene();
 
 protected:
