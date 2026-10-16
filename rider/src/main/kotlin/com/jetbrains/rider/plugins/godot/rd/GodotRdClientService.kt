@@ -27,6 +27,7 @@ import com.jetbrains.rider.godot.community.EditorConnectionState
 import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
+import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil.getEnabledEditorPlugins
 import com.jetbrains.rider.model.godot.frontendGodot.EnvironmentVariable
 import com.jetbrains.rider.model.godot.frontendGodot.FrontendGodotModel
 import com.jetbrains.rider.model.godot.frontendGodot.frontendGodotModel
@@ -70,7 +71,20 @@ class GodotRdClientService(val project: Project) {
         get() = connection.get() != null
 
     val currentState: EditorConnectionState
-        get() = connectionStatus.get()
+        get() {
+            val state = connectionStatus.get()
+            // If we're already connected ignore plugin settings
+            val enabledPlugins = getEnabledEditorPlugins(project)
+            if (state == EditorConnectionState.CONNECTED ||
+                enabledPlugins?.contains("res://addons/rider-plugin/plugin.cfg") == true ||
+                enabledPlugins?.any { it.endsWith("/rider-plugin/plugin.cfg") } == true
+            ) {
+                return state
+            }
+            // NOTE: if someone only has rider Godot plugin without GDScript plugin, it will show disconnected state.
+            // This is a tradeoff between showing connection status for people without the addon.
+            return EditorConnectionState.NOT_APPLICABLE
+        }
 
     suspend fun start() {
         check(started.compareAndSet(false, true)) { "[GODOT RD] the client is already started" }
