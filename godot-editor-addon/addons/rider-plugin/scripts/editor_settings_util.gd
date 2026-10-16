@@ -30,6 +30,13 @@ static func get_external_editor_path() -> String:
 	else:
 		return ""
 
+# The external editor doesn't have to be Rider; this is a name-based heuristic.
+static func is_rider_path(path: String) -> bool:
+	return path != "" && path.to_lower().contains("rider")
+
+static func is_external_editor_rider() -> bool:
+	return is_rider_path(get_external_editor_path())
+
 # Returns the current dropdown index, 0 if the setting doesn't exist.
 static func get_rider_selector_index() -> int:
 	var editor_settings := EditorInterface.get_editor_settings()
