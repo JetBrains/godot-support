@@ -8,8 +8,7 @@ var _restart_dialog: ConfirmationDialog = null
 
 func _enter_tree() -> void:
 	var editor_path := EditorSettingsUtil.get_external_editor_path()
-	# external editor doesn't have to be Rider 
-	if editor_path != "" && editor_path.to_lower().contains("rider"):
+	if EditorSettingsUtil.is_rider_path(editor_path):
 		# This is done in order to not have to wait on the rider search, which can take a while.
 		load_rd_extension(editor_path)
 	EditorSettingsUtil.get_rider_install_change_signal.connect(load_rd_extension)
