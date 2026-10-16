@@ -36,6 +36,13 @@ object FrontendGodotModel : Ext(FrontendGodotRoot) {
         field("name", PredefinedType.string)
         field("value", PredefinedType.string)
     }
+    private val PlayForDebugResult = enum("PlayForDebugResult") {
+        sourceFileAndLine = null
+        +"NoScene"
+        +"MultipleInstances"
+        +"Unknown"
+        +"Success"
+    }
 
     init {
         sourceFileAndLine = null
@@ -49,10 +56,10 @@ object FrontendGodotModel : Ext(FrontendGodotRoot) {
         source("currentSceneChange", PredefinedType.string).doc("Used for syncing what scene Godot has currently opened.")
 
         // Debug current C# scene in editor
-        callback("playCurrentSceneForDebug", immutableList(EnvironmentVariable), PredefinedType.bool)
+        callback("playCurrentSceneForDebug", immutableList(EnvironmentVariable), PlayForDebugResult)
             .doc(
                 "Plays the current scene with the specified environment variables set for the game process. " +
-                    "Returns true if Godot starts the scene."
+                    "Returns [PlayForDebugResult] indicating the status."
             )
         sink("stopPlayingScene", PredefinedType.void).doc("Stops the scene that is currently being played.")
 

@@ -4,6 +4,8 @@ instantiations_FrontendGodotRoot.h
 instantiations_FrontendGodotRoot.cpp
 FrontendGodotModel/EnvironmentVariable.cpp
 FrontendGodotModel/EnvironmentVariable.h
+FrontendGodotModel/PlayForDebugResult.cpp
+FrontendGodotModel/PlayForDebugResult.h
 FrontendGodotModel/FrontendGodotModel.cpp
 FrontendGodotModel/FrontendGodotModel.h
 FrontendGodotRoot/FrontendGodotRoot.cpp

@@ -32,7 +32,7 @@ class GodotRdServer : public RefCounted {
 	std::function<void()> client_disconnected;
 
 	PortWriter writer;
-	
+
 	std::mutex godot_thread_tasks_mutex;
 	std::vector<std::function<void()>> godot_thread_tasks;
 	String get_port_file_path() const;
@@ -49,7 +49,7 @@ class GodotRdServer : public RefCounted {
 	// is the only reasonable choice.
 	void run_on_godot_thread(std::function<void()> task);
 	void _run_godot_thread_tasks();
-	bool play_current_scene_for_debug(const Dictionary &environment);
+	JetBrains::GodotPlugin::PlayForDebugResult play_current_scene_for_debug(const Dictionary &environment);
 	void stop_playing_scene();
 
 public:
