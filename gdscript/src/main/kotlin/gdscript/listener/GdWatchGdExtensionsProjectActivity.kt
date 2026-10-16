@@ -73,7 +73,10 @@ class GdWatchGdExtensionsProjectActivity : ProjectActivity {
      * not concern the extensions at all and are dropped here, before anything heavier than a scan is started.
      */
     private suspend fun processRequests(project: Project, projectBasePath: Path, requests: Channel<Unit>) {
-        var knownExtensions: String? = null
+        // GdLoadSdkProjectActivity does the startup load. The seed lets only a real extension change start a load here.
+        var knownExtensions = withContext(Dispatchers.IO) {
+            GdSdkFingerprints.ofExtensionDeclarations(projectBasePath)
+        }
 
         requests.consumeEach {
             delay(COALESCE_DELAY)
