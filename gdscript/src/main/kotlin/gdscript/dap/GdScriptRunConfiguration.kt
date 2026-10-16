@@ -1,5 +1,6 @@
 package gdscript.dap
 
+import com.intellij.execution.CantRunException
 import com.intellij.execution.Executor
 import com.intellij.execution.configuration.EmptyRunProfileState
 import com.intellij.execution.configurations.ConfigurationFactory
@@ -12,6 +13,8 @@ import com.intellij.execution.runners.RunConfigurationWithSuppressedDefaultRunAc
 import com.intellij.openapi.options.SettingsEditor
 import com.intellij.openapi.project.Project
 import com.intellij.platform.dap.DapStartRequest
+import com.jetbrains.rider.godot.community.GdProjectGodotService
+import gdscript.GdScriptBundle
 import org.jdom.Element
 
 data class GdScriptStructuredArguments(
@@ -21,16 +24,23 @@ data class GdScriptStructuredArguments(
     val scene: String,
 )
 
-class GdScriptRunConfiguration(name:String, project: Project, factory: ConfigurationFactory)
-    : RunConfigurationBase<GdScriptRunFactory.GdScriptDebugConfigurationOptions>(project, factory, name),
-      RunConfigurationWithSuppressedDefaultRunAction,
-      WithoutOwnBeforeRunSteps {
+class GdScriptRunConfiguration(name: String, project: Project, factory: ConfigurationFactory) :
+    RunConfigurationBase<GdScriptRunFactory.GdScriptDebugConfigurationOptions>(project, factory, name),
+    RunConfigurationWithSuppressedDefaultRunAction,
+    WithoutOwnBeforeRunSteps {
 
     var json: String = GdScriptRunFactory.DEFAULT_FULL_JSON
     val structured: GdScriptStructuredArguments
         get() = GdScriptRunConfigurationHelper.parse(json)
 
     override fun getState(executor: Executor, environment: ExecutionEnvironment): RunProfileState {
+        // Best effort check: for projects with rider-godot plugin and RD connection
+        // we provide a check, otherwise the no scene error will appear inside Godot Editor.
+        if (name == GdScriptRunConfigurationGenerator.CURRENT_SCENE_GDSCRIPT_CONFIGURATION_NAME &&
+            GdProjectGodotService.getInstance(project).currentSceneFlow.value == ""
+        ) {
+            throw CantRunException(GdScriptBundle.message("run.configuration.error.no.scene"))
+        }
         return EmptyRunProfileState.INSTANCE
     }
 
