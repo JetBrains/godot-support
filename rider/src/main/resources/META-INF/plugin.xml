@@ -54,6 +54,7 @@
             class="com.jetbrains.rider.plugins.godot.rd.OpenInGodotAction"
             icon="com.intellij.rider.plugins.godot.community.icons.RiderPluginsGodotCommunityIcons.Godot">
       <add-to-group group-id="RevealGroup" anchor="last"/>
+      <override-text place="GoToAction"/>
     </action>
     <action id="Godot.GenerateSolution" class="com.jetbrains.rider.plugins.godot.cpp.actions.GodotEngineGenerateSolutionAction"/>
   </actions>
