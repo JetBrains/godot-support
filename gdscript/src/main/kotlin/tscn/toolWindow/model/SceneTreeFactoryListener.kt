@@ -43,7 +43,7 @@ class SceneTreeEditorDropHandler(
     private val delegate: EditorDropHandler
 ) : EditorDropHandler {
     override fun canHandleDrop(transferFlavors: Array<DataFlavor>): Boolean {
-        if (SceneNodeTransferable.isSceneTreeFlavor(transferFlavors)) {
+        if (transferFlavors.any(SceneNodeTransferable::isSceneTreeFlavor)) {
             return true
         }
         return delegate.canHandleDrop(transferFlavors)
@@ -52,7 +52,7 @@ class SceneTreeEditorDropHandler(
     override fun handleDrop(t: Transferable, project: Project?, editorWindow: EditorWindow?) {
         if (project == null) return
 
-        if (!SceneNodeTransferable.isSceneTreeFlavor(t.transferDataFlavors)) {
+        if (!t.transferDataFlavors.any(SceneNodeTransferable::isSceneTreeFlavor)) {
             delegate.handleDrop(t, project, editorWindow)
             return
         }
