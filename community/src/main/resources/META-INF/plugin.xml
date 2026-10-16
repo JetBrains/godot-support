@@ -35,6 +35,7 @@
 
   <extensionPoints>
     <extensionPoint name="godotProjectProvider" interface="com.jetbrains.rider.godot.community.GodotProjectProvider" dynamic="true" />
+    <extensionPoint name="godotProjectSettingsProvider" interface="com.jetbrains.rider.godot.community.GodotProjectSettingsProvider" dynamic="true"/>
     <extensionPoint name="editorConnectionProvider" interface="com.jetbrains.rider.godot.community.GodotEditorConnectionProvider" dynamic="true"/>
   </extensionPoints>
 

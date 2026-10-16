@@ -2,10 +2,12 @@ package com.jetbrains.rider.godot.community.utils
 
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.project.Project
+import com.intellij.util.concurrency.annotations.RequiresReadLock
 import com.jetbrains.rider.godot.community.EditorConnectionState
 import com.jetbrains.rider.godot.community.GodotEditorConnectionProvider
 import com.jetbrains.rider.godot.community.GodotMajorVersion
 import com.jetbrains.rider.godot.community.GodotProjectProvider
+import com.jetbrains.rider.godot.community.GodotProjectSettingsProvider
 import com.jetbrains.rider.godot.community.actions.GodotEditorLaunchConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +24,9 @@ private val GODOT_PROJECT_PROVIDER_EP: ExtensionPointName<GodotProjectProvider> 
 
 private val EDITOR_CONNECTION_PROVIDER_EP: ExtensionPointName<GodotEditorConnectionProvider> =
     ExtensionPointName.create("com.intellij.rider.godot.community.editorConnectionProvider")
+
+private val GODOT_PROJECT_SETTINGS_PROVIDER_EP: ExtensionPointName<GodotProjectSettingsProvider> =
+    ExtensionPointName.create("com.intellij.rider.godot.community.godotProjectSettingsProvider")
 
 object GodotCommunityUtil {
     fun getGodotExecutablePath(project: Project): Path? =
@@ -40,6 +45,12 @@ object GodotCommunityUtil {
     fun getGodotMajorVersion(project: Project): GodotMajorVersion? =
         GODOT_PROJECT_PROVIDER_EP.extensionList.firstNotNullOfOrNull {
             it.getGodotMajorVersion(project)
+        }
+
+    @RequiresReadLock
+    fun getEnabledEditorPlugins(project: Project): Set<String>? =
+        GODOT_PROJECT_SETTINGS_PROVIDER_EP.extensionList.firstNotNullOfOrNull {
+            it.getEnabledEditorPlugins(project)
         }
 
     fun isPureGdScriptProject(project: Project): Boolean? =
