@@ -55,9 +55,6 @@
 #pragma warning( disable:4100 )
 #endif
 
-/// <summary>
-/// <p>Generated from: FrontendGodotRoot.kt:33</p>
-/// </summary>
 namespace JetBrains {
 namespace GodotPlugin {
 

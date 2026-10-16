@@ -10,6 +10,9 @@ import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.User32Ex
+import com.intellij.util.system.LowLevelLocalMachineAccess
+import com.intellij.util.system.OS
 import com.jetbrains.rd.framework.IdKind
 import com.jetbrains.rd.framework.Identities
 import com.jetbrains.rd.framework.Protocol
@@ -48,6 +51,12 @@ class GodotRdClientService(val project: Project) {
     private val started = AtomicBoolean(false)
 
     private val connectionStatus: AtomicReference<EditorConnectionState> = AtomicReference(EditorConnectionState.DISCONNECTED)
+
+    private val godotPID: Long?
+        get() {
+            val current = connection.get() ?: return null
+            return current.model.godotPID.valueOrNull
+        }
 
     private fun ConnectionResult.toConnectionState(): EditorConnectionState {
         return when (this) {
@@ -141,6 +150,7 @@ class GodotRdClientService(val project: Project) {
         val currentConnection = connection.get() ?: return
         currentConnection.protocol.scheduler.queue {
             if (file.isInLocalFileSystem) {
+                focusHandoffForWindows()
                 currentConnection.model.openInGodot.fire(file.toNioPath().toString())
             } else {
                 thisLogger().warn("[GODOT RD] tried to open in Godot a non local file")
@@ -182,6 +192,14 @@ class GodotRdClientService(val project: Project) {
 
     private fun focusRider() {
         ProjectUtil.focusProjectWindow(project, stealFocusIfAppInactive = true)
+    }
+
+    @OptIn(LowLevelLocalMachineAccess::class)
+    private fun focusHandoffForWindows() {
+        val godotPID = godotPID
+        if (OS.CURRENT == OS.Windows && godotPID != null) {
+            User32Ex.allowSetForegroundWindow(godotPID)
+        }
     }
 
     private fun openInRider(path: String) {

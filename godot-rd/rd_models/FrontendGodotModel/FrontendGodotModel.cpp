@@ -47,12 +47,13 @@ constexpr rd::wstring_view FrontendGodotModel::modelHashKey;
 // initializer
 void FrontendGodotModel::initialize()
 {
-    serializationHash = -4234432500766639773L;
+    godotPID_.optimize_nested = true;
+    serializationHash = 5856660473071624477L;
 }
 // primary ctor
-FrontendGodotModel::FrontendGodotModel(rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_, rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, bool, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<bool>> playCurrentSceneForDebug_, rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_) :
+FrontendGodotModel::FrontendGodotModel(rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInGodot_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> openInRider_, rd::RdSignal<std::wstring, rd::Polymorphic<std::wstring>> currentSceneChange_, rd::RdEndpoint<std::vector<rd::Wrapper<EnvironmentVariable>>, bool, FrontendGodotModel::__EnvironmentVariableListSerializer, rd::Polymorphic<bool>> playCurrentSceneForDebug_, rd::RdSignal<rd::Void, rd::Polymorphic<rd::Void>> stopPlayingScene_, rd::RdProperty<int64_t, rd::Polymorphic<int64_t>> godotPID_) :
 rd::RdExtBase()
-,openInGodot_(std::move(openInGodot_)), openInRider_(std::move(openInRider_)), currentSceneChange_(std::move(currentSceneChange_)), playCurrentSceneForDebug_(std::move(playCurrentSceneForDebug_)), stopPlayingScene_(std::move(stopPlayingScene_))
+,openInGodot_(std::move(openInGodot_)), openInRider_(std::move(openInRider_)), currentSceneChange_(std::move(currentSceneChange_)), playCurrentSceneForDebug_(std::move(playCurrentSceneForDebug_)), stopPlayingScene_(std::move(stopPlayingScene_)), godotPID_(std::move(godotPID_))
 {
     initialize();
 }
@@ -73,6 +74,7 @@ void FrontendGodotModel::init(rd::Lifetime lifetime) const
     bindPolymorphic(currentSceneChange_, lifetime, this, "currentSceneChange");
     bindPolymorphic(playCurrentSceneForDebug_, lifetime, this, "playCurrentSceneForDebug");
     bindPolymorphic(stopPlayingScene_, lifetime, this, "stopPlayingScene");
+    bindPolymorphic(godotPID_, lifetime, this, "godotPID");
 }
 // identify
 void FrontendGodotModel::identify(const rd::Identities &identities, rd::RdId const &id) const
@@ -83,6 +85,7 @@ void FrontendGodotModel::identify(const rd::Identities &identities, rd::RdId con
     identifyPolymorphic(currentSceneChange_, identities, id.mix(".currentSceneChange"));
     identifyPolymorphic(playCurrentSceneForDebug_, identities, id.mix(".playCurrentSceneForDebug"));
     identifyPolymorphic(stopPlayingScene_, identities, id.mix(".stopPlayingScene"));
+    identifyPolymorphic(godotPID_, identities, id.mix(".godotPID"));
 }
 // getters
 rd::ISource<std::wstring> const & FrontendGodotModel::get_openInGodot() const
@@ -125,6 +128,14 @@ rd::ISource<rd::Void> const & FrontendGodotModel::get_stopPlayingScene() const
      */
     return stopPlayingScene_;
 }
+rd::IProperty<int64_t> const & FrontendGodotModel::get_godotPID() const
+{
+    
+    /**
+     * Connected GODOT PID
+     */
+    return godotPID_;
+}
 // intern
 // equals trait
 // equality operators
@@ -155,6 +166,9 @@ std::string FrontendGodotModel::toString() const
     res += '\n';
     res += "\tstopPlayingScene = ";
     res += rd::to_string(stopPlayingScene_);
+    res += '\n';
+    res += "\tgodotPID = ";
+    res += rd::to_string(godotPID_);
     res += '\n';
     return res;
 }
