@@ -69,6 +69,10 @@ cc_library(
     ]),
     copts = HIDDEN_VISIBILITY_COPTS,
     includes = ["rd_models"],
+    linkopts = select({
+        "@platforms//os:windows": ["user32.lib"],
+        "//conditions:default": [],
+    }),
     tags = ["manual"],
     deps = [
         "@godot_cpp",

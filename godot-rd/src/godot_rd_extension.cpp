@@ -1,6 +1,7 @@
 #include "godot_rd_extension.h"
 
 #include "utils.h"
+#include "FrontendGodotModel/FrontendGodotModel.h"
 #include "godot_cpp/classes/config_file.hpp"
 #include "godot_cpp/classes/editor_interface.hpp"
 #include "godot_cpp/classes/editor_settings.hpp"
@@ -42,16 +43,19 @@ int GodotRdExtension::get_launch_instance_count() const {
 }
 
 
-bool GodotRdExtension::play_current_scene_for_debug(const Dictionary &environment) {
+JetBrains::GodotPlugin::PlayForDebugResult GodotRdExtension::play_current_scene_for_debug(const Dictionary &environment) {
 	auto *editor = EditorInterface::get_singleton();
 	if (editor->is_playing_scene()) {
 		editor->stop_playing_scene();
 	}
+	if (editor->get_edited_scene_root() == nullptr) {
+		return JetBrains::GodotPlugin::PlayForDebugResult::NoScene;
+	}
 	// Godot can be set to launch multiple instances at once, this would make it so one gets attached,
 	// and the others stay hanging.
 	if (get_launch_instance_count() > 1) {
-		ERR_PRINT("[RIDER RD] Cannot debug in editor with multiple instances. Please disable 'Enable Multiple Instances'");
-		return false;
+		UtilityFunctions::print_verbose("[RIDER RD] Cannot debug in editor with multiple instances. Please disable 'Enable Multiple Instances'");
+		return JetBrains::GodotPlugin::PlayForDebugResult::MultipleInstances;
 	}
 	// The game process inherits the editor's environment, so set the variables from Rider for the duration
 	// of the launch and restore the previous state afterwards.
@@ -92,8 +96,9 @@ bool GodotRdExtension::play_current_scene_for_debug(const Dictionary &environmen
 	const bool playing = editor->is_playing_scene();
 	if (!playing) {
 		UtilityFunctions::print_verbose("[RIDER RD] the editor did not play the current scene");
+		return JetBrains::GodotPlugin::PlayForDebugResult::Unknown;
 	}
-	return playing;
+	return JetBrains::GodotPlugin::PlayForDebugResult::Success;
 }
 
 void GodotRdExtension::stop_playing_scene() {
@@ -124,12 +129,12 @@ void GodotRdExtension::open_in_godot(const String &path) {
 		focus_in_dock();
 		Utils::focus_godot();
 	});
-	
+
 	if (is_scene(extension)) {
 		editor->open_scene_from_path(resource_path);
 		return;
 	}
-	
+
 	auto *resource_loader = ResourceLoader::get_singleton();
 	if (!resource_loader->exists(resource_path)) {
 		return;

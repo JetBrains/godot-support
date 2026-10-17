@@ -82,12 +82,14 @@ internal class GdSceneTreeNodeXValue private constructor(
                     val row = GdNodePresentation.byClassName(resolution.descriptor)
                     target.setPresentation(row.icon, row.presentation, true)
                 }
+
                 is GdRootResolution.Unresolved -> {
                     when (resolution) {
                         is GdRootResolution.Failed -> {
                             val cause = resolution.cause
                             if (cause is DapSessionStoppedException || cause is DapConnectionClosedException) throw cause
                         }
+
                         GdRootResolution.Missing -> Unit
                     }
                     target.setPresentation(null, null, resolution.message, false)
@@ -108,6 +110,7 @@ internal class GdSceneTreeNodeXValue private constructor(
                     target, evaluator, resolution.descriptor.objectId, executor, factory,
                     sceneTree = true, bottomGroup = createPropertiesGroup(resolution.descriptor)
                 )
+
                 is GdRootResolution.Unresolved -> target.setErrorMessage(resolution.message)
             }
         }
@@ -124,8 +127,10 @@ internal class GdSceneTreeNodeXValue private constructor(
                     log = LOG,
                     subject = "properties",
                     errorMessage = {
-                        GdScriptBundle.message("gdscript.debugger.scene.tree.error.properties.failed",
-                            it.message ?: GdScriptBundle.message("gdscript.debugger.error.unknown"))
+                        GdScriptBundle.message(
+                            "gdscript.debugger.scene.tree.error.properties.failed",
+                            it.message ?: GdScriptBundle.message("gdscript.debugger.error.unknown")
+                        )
                     },
                 ) { target ->
                     when (val properties = loadNodeProperties(executor, evaluator, factory, descriptor.objectId, knownVariable = null)) {
@@ -133,6 +138,7 @@ internal class GdSceneTreeNodeXValue private constructor(
                             target.setAlreadySorted(true)
                             target.addChildren(properties.properties, true)
                         }
+
                         is GdPropertiesLoad.Failure -> target.setErrorMessage(properties.message)
                     }
                 }
@@ -177,8 +183,7 @@ private suspend fun DapSessionContext.resolveRootDescriptor(evaluator: GdSelfChe
                 GdRootResolution.Missing -> resolve(GdDapExpressions.ROOT_FALLBACK)
             }
         }
-    }
-    catch (e: Throwable) {
+    } catch (e: Throwable) {
         rethrowControlFlowException(e)
         if (e !is DapSessionStoppedException && e !is DapConnectionClosedException) {
             LOG.warn("Could not resolve scene tree node presentation", e)

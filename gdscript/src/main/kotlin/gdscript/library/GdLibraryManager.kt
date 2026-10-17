@@ -178,7 +178,7 @@ object GdLibraryManager {
             val exitCode = result.exitCode
             if (exitCode != 0) {
                 thisLogger().error("Godot singletons dump failed with exit code $exitCode.\n" + result.describe())
-                return false
+                // even we a non 0 exit code, output may still be valid
             }
 
             // Godot exits 0 even when an extension fails to load (the error only goes to stderr), and every project has

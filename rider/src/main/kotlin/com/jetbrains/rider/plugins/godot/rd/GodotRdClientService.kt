@@ -10,6 +10,9 @@ import com.intellij.openapi.fileEditor.OpenFileDescriptor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.ui.User32Ex
+import com.intellij.util.system.LowLevelLocalMachineAccess
+import com.intellij.util.system.OS
 import com.jetbrains.rd.framework.IdKind
 import com.jetbrains.rd.framework.Identities
 import com.jetbrains.rd.framework.Protocol
@@ -24,8 +27,10 @@ import com.jetbrains.rider.godot.community.EditorConnectionState
 import com.jetbrains.rider.godot.community.GdProjectGodotService
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
+import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil.getEnabledEditorPlugins
 import com.jetbrains.rider.model.godot.frontendGodot.EnvironmentVariable
 import com.jetbrains.rider.model.godot.frontendGodot.FrontendGodotModel
+import com.jetbrains.rider.model.godot.frontendGodot.PlayForDebugResult
 import com.jetbrains.rider.model.godot.frontendGodot.frontendGodotModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
@@ -49,6 +54,12 @@ class GodotRdClientService(val project: Project) {
 
     private val connectionStatus: AtomicReference<EditorConnectionState> = AtomicReference(EditorConnectionState.DISCONNECTED)
 
+    private val godotPID: Long?
+        get() {
+            val current = connection.get() ?: return null
+            return current.model.godotPID.valueOrNull
+        }
+
     private fun ConnectionResult.toConnectionState(): EditorConnectionState {
         return when (this) {
             ConnectionResult.NOT_CONNECTED_PORT -> EditorConnectionState.DISCONNECTED
@@ -57,11 +68,32 @@ class GodotRdClientService(val project: Project) {
         }
     }
 
+    enum class PlayCurrentSceneResult {
+        Success,
+        NoSceneSelected,
+        Unknown,
+        MultipleInstancesOn,
+        NotConnected,
+    }
+
     val isConnected: Boolean
         get() = connection.get() != null
 
     val currentState: EditorConnectionState
-        get() = connectionStatus.get()
+        get() {
+            val state = connectionStatus.get()
+            // If we're already connected ignore plugin settings
+            val enabledPlugins = getEnabledEditorPlugins(project)
+            if (state == EditorConnectionState.CONNECTED ||
+                enabledPlugins?.contains("res://addons/rider-plugin/plugin.cfg") == true ||
+                enabledPlugins?.any { it.endsWith("/rider-plugin/plugin.cfg") } == true
+            ) {
+                return state
+            }
+            // NOTE: if someone only has rider Godot plugin without GDScript plugin, it will show disconnected state.
+            // This is a tradeoff between showing connection status for people without the addon.
+            return EditorConnectionState.NOT_APPLICABLE
+        }
 
     suspend fun start() {
         check(started.compareAndSet(false, true)) { "[GODOT RD] the client is already started" }
@@ -141,6 +173,7 @@ class GodotRdClientService(val project: Project) {
         val currentConnection = connection.get() ?: return
         currentConnection.protocol.scheduler.queue {
             if (file.isInLocalFileSystem) {
+                focusHandoffForWindows()
                 currentConnection.model.openInGodot.fire(file.toNioPath().toString())
             } else {
                 thisLogger().warn("[GODOT RD] tried to open in Godot a non local file")
@@ -158,18 +191,24 @@ class GodotRdClientService(val project: Project) {
      * so the solution of tracking what was launched with an ID and then giving [stopPlayingScene] this
      * ID to stop seems like an overkill.
      */
-    suspend fun playCurrentSceneForDebug(environment: Map<String, String>): Boolean {
-        val currentConnection = connection.get() ?: return false
+    suspend fun playCurrentSceneForDebug(environment: Map<String, String>): PlayCurrentSceneResult {
+        val currentConnection = connection.get() ?: return PlayCurrentSceneResult.NotConnected
         return try {
-            withContext(currentConnection.protocol.scheduler.asCoroutineDispatcher) {
+            val result = withContext(currentConnection.protocol.scheduler.asCoroutineDispatcher) {
                 val variables = environment.map { (name, value) -> EnvironmentVariable(name, value) }
                 currentConnection.model.playCurrentSceneForDebug.startSuspending(currentConnection.protocol.lifetime, variables)
+            }
+            when (result) {
+                PlayForDebugResult.NoScene -> PlayCurrentSceneResult.NoSceneSelected
+                PlayForDebugResult.MultipleInstances -> PlayCurrentSceneResult.MultipleInstancesOn
+                PlayForDebugResult.Unknown -> PlayCurrentSceneResult.Unknown
+                PlayForDebugResult.Success -> PlayCurrentSceneResult.Success
             }
         } catch (e: CancellationException) {
             throw e
         } catch (e: Exception) {
             thisLogger().warn("[GODOT RD] failed to play the current scene", e)
-            false
+            PlayCurrentSceneResult.Unknown
         }
     }
 
@@ -182,6 +221,14 @@ class GodotRdClientService(val project: Project) {
 
     private fun focusRider() {
         ProjectUtil.focusProjectWindow(project, stealFocusIfAppInactive = true)
+    }
+
+    @OptIn(LowLevelLocalMachineAccess::class)
+    private fun focusHandoffForWindows() {
+        val godotPID = godotPID
+        if (OS.CURRENT == OS.Windows && godotPID != null) {
+            User32Ex.allowSetForegroundWindow(godotPID)
+        }
     }
 
     private fun openInRider(path: String) {

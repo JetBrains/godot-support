@@ -24,6 +24,7 @@ internal suspend fun DapSessionContext.detectFrameNode(evaluator: GdSelfCheckedF
                 is GdVariablesLoad.Success -> load.variables
                 is GdVariablesLoad.Failed -> return GdNodeDetection.Failed(load.message)
             }
+
             is GdEvalOutcome.Missing -> return GdNodeDetection.Failed(GdScriptBundle.message("gdscript.debugger.error.unknown"))
             is GdEvalOutcome.Failed -> return GdNodeDetection.Failed(outcome.message)
         }
@@ -40,8 +41,7 @@ internal suspend fun DapSessionContext.detectFrameNode(evaluator: GdSelfCheckedF
         val nodeName = reader.getOrNull(3)?.value?.takeIf { it.isNotBlank() }
         LOG.trace("Frame base instance is a Node: $className #$objectId (name=${nodeName ?: "<unknown>"})")
         return GdNodeDetection.Node(GdNodeDescriptor(objectId = objectId, nodeName = nodeName, className = className))
-    }
-    catch (e: Throwable) {
+    } catch (e: Throwable) {
         rethrowControlFlowException(e)
         return GdNodeDetection.Failed(e.message ?: GdScriptBundle.message("gdscript.debugger.error.unknown"))
     }

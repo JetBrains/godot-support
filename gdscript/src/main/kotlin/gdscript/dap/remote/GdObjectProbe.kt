@@ -19,7 +19,7 @@ internal object GdObjectProbe {
      */
     fun isProbeTarget(variable: DapVariable, owner: GdOwnerExpression?, allowInferredType: Boolean = false): Boolean =
         owner != null && variable is DapStructuredVariable && GdValueKind.type(variable) == "Object" &&
-            (allowInferredType || variable.type != null)
+            variable.type != "Nil" && (allowInferredType || variable.type != null)
 
     /** A malformed field invalidates the whole batch, not just the row at that position. */
     fun read(rows: List<DapVariable>, count: Int, owner: GdOwnerExpression? = null, width: Int = WIDTH): List<GdObjectPresentation?>? {
@@ -28,7 +28,10 @@ internal object GdObjectProbe {
         val reader = GdArrayReader(rows)
         if (rows.size != length + 1 || reader.declaredSize != length || reader.actualCount != length ||
             (0 until length).any { reader.getOrNull(it) == null } ||
-            owner?.sizesMatch((0 until guards).map { reader.getOrNull(count * width + it)!!.value }) == false) return null
+            owner?.sizesMatch((0 until guards).map { reader.getOrNull(count * width + it)!!.value }) == false
+        ) {
+            return null
+        }
         return (0 until count).map { index ->
             val base = index * width + (width - WIDTH)
             val text = reader.getOrNull(base)!!
@@ -38,7 +41,8 @@ internal object GdObjectProbe {
             val builtin = reader.getOrNull(base + 4)!!
             if (text.type != "String" || valid.type != "bool" || valid.value !in setOf("true", "false") ||
                 script.type != "String" || global.type !in setOf("StringName", "String") ||
-                builtin.type !in setOf("StringName", "String")) return null
+                builtin.type !in setOf("StringName", "String")
+            ) return null
             if (valid.value == "false") null else {
                 val display = text.value
                 val source = script.value
@@ -73,8 +77,7 @@ internal object GdObjectProbe {
             val presentations = read(rows, values.size, owner)
             if (presentations == null) LOG.warn("Object text or dictionary size changed")
             return presentations
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             if (e !is RequestCancelledByPeerException) rethrowControlFlowException(e)
             LOG.warn("Object text evaluation failed", e)
             return null

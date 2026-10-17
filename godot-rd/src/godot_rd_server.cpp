@@ -5,6 +5,7 @@
 #include "godot_cpp/classes/dir_access.hpp"
 #include "godot_cpp/classes/editor_interface.hpp"
 #include "godot_cpp/classes/editor_paths.hpp"
+#include "godot_cpp/classes/os.hpp"
 #include "godot_cpp/variant/utility_functions.hpp"
 #include "spdlog/spdlog.h"
 
@@ -42,21 +43,23 @@ void GodotRdServer::start() noexcept {
 		}
 		callable_mp(this, &GodotRdServer::_notify_client_state).call_deferred(is_connected);
 	});
-	tmp_session->bind_model(model, [this](JetBrains::GodotPlugin::FrontendGodotModel &model, Lifetime lifetime) {
+	const auto godot_editor_pid = OS::get_singleton()->get_process_id();
+	tmp_session->bind_model(model, [this, godot_editor_pid](JetBrains::GodotPlugin::FrontendGodotModel &model, Lifetime lifetime) {
 		model.get_openInGodot().advise(lifetime, [this](const std::wstring &path) {
 			callable_mp(this, &GodotRdServer::open_in_godot).call_deferred(Utils::to_godot_string(path));
 		});
+		model.get_godotPID().set(godot_editor_pid);
 		model.get_playCurrentSceneForDebug().set(
-				[this](Lifetime, const std::vector<rd::Wrapper<JetBrains::GodotPlugin::EnvironmentVariable>> &variables)
-						-> RdTask<bool> {
+				[this](Lifetime, const std::vector<Wrapper<JetBrains::GodotPlugin::EnvironmentVariable>> &variables)
+			-> RdTask<JetBrains::GodotPlugin::PlayForDebugResult> {
 					UtilityFunctions::print_verbose("[RIDER RD] play current scene for debug requested");
-					RdTask<bool> task;
+					RdTask<JetBrains::GodotPlugin::PlayForDebugResult> task;
 					// Protect against session changes before run_on_godot_thread runs.
 					size_t starting_id;
 					{
 						std::lock_guard m(session_mutex);
 						if (!session) {
-							task.set(false);
+							task.set(JetBrains::GodotPlugin::PlayForDebugResult::Unknown);
 							return task;
 						}
 						starting_id = session->get_id();
@@ -66,12 +69,12 @@ void GodotRdServer::start() noexcept {
 						environment[Utils::to_godot_string(variable->get_name())] = Utils::to_godot_string(variable->get_value());
 					}
 					run_on_godot_thread([this, task, starting_id, environment] {
-						const bool playing = play_current_scene_for_debug(environment);
+						const auto playing = play_current_scene_for_debug(environment);
 						// we don't need a lock here, since this runs on Godot thread.
 						if (session && session->get_id() == starting_id) {
 							session->queue([task, playing] { task.set(playing); });
 						} else {
-							session->queue([task] { task.set(false); });
+							session->queue([task] { task.set(JetBrains::GodotPlugin::PlayForDebugResult::Unknown); });
 							UtilityFunctions::print_verbose(
 									"[RIDER RD] session gone or has changed before the play result could be sent");
 						}
@@ -160,9 +163,12 @@ GodotRdExtension *GodotRdServer::get_extension() {
 	return extension;
 }
 
-bool GodotRdServer::play_current_scene_for_debug(const Dictionary &environment) {
+JetBrains::GodotPlugin::PlayForDebugResult GodotRdServer::play_current_scene_for_debug(const Dictionary &environment) {
 	auto *extension = get_extension();
-	return extension != nullptr && extension->play_current_scene_for_debug(environment);
+	if (extension == nullptr) {
+		return JetBrains::GodotPlugin::PlayForDebugResult::Unknown;
+	}
+	return extension->play_current_scene_for_debug(environment);
 }
 
 void GodotRdServer::stop_playing_scene() {

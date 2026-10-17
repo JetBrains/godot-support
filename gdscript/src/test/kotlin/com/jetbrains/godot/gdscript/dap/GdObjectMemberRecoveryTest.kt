@@ -44,6 +44,11 @@ class GdObjectMemberRecoveryTest {
         val owner = GdOwnerExpression("self")
         assertAll(
             { assertEquals("(self)[2]", owner.child("Array", "2", 3)?.text) },
+            { assertEquals("(self)[1]", owner.child("Array", "+1", 3)?.text) },
+            { assertEquals("(self)[1]", owner.child("Array", "01", 3)?.text) },
+            { assertEquals("(self)[0]", owner.child("Array", "-0", 3)?.text) },
+            { assertNull(owner.child("Array", "-1", 0)) },
+            { assertNull(owner.child("Array", "2147483648", 0)) },
             { assertNull(owner.child("Array", "size", 0)) },
         )
     }
@@ -109,11 +114,14 @@ class GdObjectMemberRecoveryTest {
         val owner = GdOwnerExpression("self.player")
         val declared = structured("player", "Object")
         val inferred = structured("player", null, "<EncodedObjectAsID#12>")
+        val nil = structured("player", "Nil", "<EncodedObjectAsID#12>")
         assertAll(
             { assertTrue(GdObjectProbe.isProbeTarget(declared, owner)) },
             { assertTrue(!GdObjectProbe.isProbeTarget(inferred, owner)) },
             { assertTrue(GdObjectProbe.isProbeTarget(inferred, owner, allowInferredType = true)) },
             { assertTrue(!GdObjectProbe.isProbeTarget(declared, null)) },
+            { assertTrue(!GdObjectProbe.isProbeTarget(nil, owner)) },
+            { assertTrue(!GdObjectProbe.isProbeTarget(nil, owner, allowInferredType = true)) },
         )
     }
 

@@ -10,6 +10,7 @@ import com.jetbrains.rd.generator.nova.doc
 import com.jetbrains.rd.generator.nova.field
 import com.jetbrains.rd.generator.nova.immutableList
 import com.jetbrains.rd.generator.nova.kotlin.Kotlin11Generator
+import com.jetbrains.rd.generator.nova.property
 import com.jetbrains.rd.generator.nova.setting
 import com.jetbrains.rd.generator.nova.sink
 import com.jetbrains.rd.generator.nova.source
@@ -31,8 +32,16 @@ object FrontendGodotRoot : Root() {
 @Suppress("unused")
 object FrontendGodotModel : Ext(FrontendGodotRoot) {
     private val EnvironmentVariable = structdef("EnvironmentVariable") {
+        sourceFileAndLine = null
         field("name", PredefinedType.string)
         field("value", PredefinedType.string)
+    }
+    private val PlayForDebugResult = enum("PlayForDebugResult") {
+        sourceFileAndLine = null
+        +"NoScene"
+        +"MultipleInstances"
+        +"Unknown"
+        +"Success"
     }
 
     init {
@@ -47,12 +56,14 @@ object FrontendGodotModel : Ext(FrontendGodotRoot) {
         source("currentSceneChange", PredefinedType.string).doc("Used for syncing what scene Godot has currently opened.")
 
         // Debug current C# scene in editor
-        callback("playCurrentSceneForDebug", immutableList(EnvironmentVariable), PredefinedType.bool)
+        callback("playCurrentSceneForDebug", immutableList(EnvironmentVariable), PlayForDebugResult)
             .doc(
                 "Plays the current scene with the specified environment variables set for the game process. " +
-                    "Returns true if Godot starts the scene."
+                    "Returns [PlayForDebugResult] indicating the status."
             )
         sink("stopPlayingScene", PredefinedType.void).doc("Stops the scene that is currently being played.")
+
+        property("godotPID", PredefinedType.long).doc("Connected GODOT PID")
 
         const(
             "portFilename",

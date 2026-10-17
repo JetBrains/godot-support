@@ -67,8 +67,25 @@ class GodotInEditorDebugExecutorFactory(private val project: Project) : AsyncExe
                         }
                     }
                 }
-                if (!rdClientService.playCurrentSceneForDebug(diagnosticPort.gameEnvironment)) {
-                    throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.play.failed"))
+                when (rdClientService.playCurrentSceneForDebug(diagnosticPort.gameEnvironment)) {
+                    GodotRdClientService.PlayCurrentSceneResult.Success -> {}
+                    GodotRdClientService.PlayCurrentSceneResult.NoSceneSelected -> {
+                        throw ExecutionException(GodotPluginBundle.message("godot.run.current.scene.no.scene.selected"))
+                    }
+
+                    GodotRdClientService.PlayCurrentSceneResult.NotConnected -> {
+                        // This shouldn't happen, since the run configuration should not be enabled without connection.
+                        thisLogger().warn("[RIDER RD] play for current scene called without there being a connection.")
+                        throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.play.failed"))
+                    }
+
+                    GodotRdClientService.PlayCurrentSceneResult.Unknown -> {
+                        throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.play.failed"))
+                    }
+
+                    GodotRdClientService.PlayCurrentSceneResult.MultipleInstancesOn -> {
+                        throw ExecutionException(GodotPluginBundle.message("godot.debug.in.editor.play.multiple_instances"))
+                    }
                 }
                 val gamePid = diagnosticPort.awaitGameProcessId()
                 val processInfo = LocalAttachHost.INSTANCE.getProcessListAsync().firstOrNull { it.pid == gamePid }

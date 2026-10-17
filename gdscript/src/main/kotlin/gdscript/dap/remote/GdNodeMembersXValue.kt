@@ -1,6 +1,7 @@
 package gdscript.dap.remote
 
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.platform.dap.DapInlineValueContext
 import com.intellij.platform.dap.DapSessionContext
 import com.intellij.platform.dap.DapSessionExecutor
 import com.intellij.platform.dap.DapVariable
@@ -43,6 +44,8 @@ internal class GdNodeMembersXValue private constructor(
     private val factory: DapXDebuggerPresentationFactory,
     resolutionProvider: () -> Deferred<GdNodeResolution>,
     private val presentationStyle: (GdNodeDescriptor) -> GdNodeRow,
+    private val selfPropertyInlineContext: DapInlineValueContext? = null,
+    private val self: Boolean = false,
 ) : XNamedValue(name) {
 
     /**
@@ -95,6 +98,7 @@ internal class GdNodeMembersXValue private constructor(
             nodeName: String?,
             className: String,
             selfVariable: DapVariable,
+            selfPropertyInlineContext: DapInlineValueContext?,
             executor: DapSessionExecutor,
             evaluator: GdSelfCheckedFrame,
             factory: DapXDebuggerPresentationFactory,
@@ -116,6 +120,8 @@ internal class GdNodeMembersXValue private constructor(
                 factory = factory,
                 resolutionProvider = { CompletableDeferred(GdNodeResolution.Resolved(descriptor, selfVariable)) },
                 presentationStyle = presentationStyle,
+                selfPropertyInlineContext = selfPropertyInlineContext,
+                self = true,
             )
         }
     }
@@ -164,7 +170,9 @@ internal class GdNodeMembersXValue private constructor(
         target.addChildren(parentRow, false)
 
         // 3. Add the node's DAP properties inline.
-        val properties = loadNodeProperties(executor, evaluator, factory, descriptor.objectId, resolution.variable)
+        val properties =
+            loadNodeProperties(executor, evaluator, factory, descriptor.objectId, resolution.variable,
+                               self = self, selfPropertyInlineContext = selfPropertyInlineContext)
         when (properties) {
             is GdPropertiesLoad.Success -> target.addChildren(properties.properties, true)
 

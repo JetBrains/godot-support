@@ -1,5 +1,6 @@
 package gdscript.dap.remote
 
+import com.intellij.platform.dap.DapInlineValueContext
 import com.intellij.platform.dap.DapSessionContext
 import com.intellij.platform.dap.DapSessionExecutor
 import com.intellij.platform.dap.DapStructuredVariable
@@ -23,6 +24,8 @@ internal suspend fun DapSessionContext.loadNodeProperties(
     factory: DapXDebuggerPresentationFactory,
     objectId: Long,
     knownVariable: DapVariable?,
+    self: Boolean = false,
+    selfPropertyInlineContext: DapInlineValueContext? = null,
 ): GdPropertiesLoad {
     // 1. Select or resolve the node variable.
     val nodeVar = if (knownVariable != null) {
@@ -57,9 +60,16 @@ internal suspend fun DapSessionContext.loadNodeProperties(
     }
 
     val properties = XValueChildrenList()
-    for (variable in variables) {
-        properties.add(GdDapXValue(factory, executor, variable,
-            owner = GdOwnerExpression(GdDapExpressions.instance(objectId)), frame = evaluator))
+    val watchPaths = GdWatchPath.nodeProperties(if (self) "self" else GdDapExpressions.instance(objectId)).properties("", variables)
+    for ((index, variable) in variables.withIndex()) {
+        properties.add(
+            GdDapXValue(
+                factory, executor, variable,
+                owner = GdOwnerExpression(GdDapExpressions.instance(objectId)), frame = evaluator,
+                watchContext = GdWatchContext(watchPaths[index], evaluator, executor),
+                contextForOwnProperties = categoryPropertyContext(variable, selfPropertyInlineContext)
+            )
+        )
     }
 
     return GdPropertiesLoad.Success(properties)

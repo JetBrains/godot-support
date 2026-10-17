@@ -2,9 +2,8 @@ package gdscript.dap.remote
 
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.diagnostic.logger
-import com.intellij.openapi.editor.Document
-import com.intellij.openapi.project.Project
 import com.intellij.platform.dap.DapEvaluationResult
+import com.intellij.platform.dap.DapInlineValueContext
 import com.intellij.platform.dap.DapInlineValueLocator
 import com.intellij.platform.dap.DapScope
 import com.intellij.platform.dap.DapSessionContext
@@ -16,13 +15,10 @@ import com.intellij.platform.dap.xdebugger.DapXDebuggerPresentationFactory
 import com.intellij.platform.dap.xdebugger.DefaultDapXStackFrame
 import com.intellij.ui.SimpleTextAttributes
 import com.intellij.xdebugger.XDebuggerBundle
-import com.intellij.xdebugger.XSourcePosition
-import com.intellij.xdebugger.evaluation.ExpressionInfo
 import com.intellij.xdebugger.evaluation.XDebuggerEvaluator
 import com.intellij.xdebugger.frame.XCompositeNode
 import com.intellij.xdebugger.frame.XValueChildrenList
 import gdscript.GdScriptBundle
-import org.jetbrains.concurrency.Promise
 
 private val LOG = logger<GdDapStackFrame>()
 
@@ -40,40 +36,9 @@ internal class GdDapStackFrame(
      */
     override fun getEqualityObject(): Any = "${thread.id}:${frame.source?.path}:${frame.name}"
 
-    /** Supplies the hover range. [gdEvaluator] sends each evaluation through the self check. */
-    private val platformEvaluator: XDebuggerEvaluator by lazy { super.getEvaluator() }
-    private val gdEvaluator: XDebuggerEvaluator by lazy { GdFrameEvaluator() }
+    private val gdEvaluator: XDebuggerEvaluator by lazy { GdDapEvaluator(executor, factory, checkedFrame) }
 
     override fun getEvaluator(): XDebuggerEvaluator = gdEvaluator
-
-    private inner class GdFrameEvaluator : XDebuggerEvaluator() {
-        override fun getExpressionInfoAtOffsetAsync(
-            project: Project,
-            document: Document,
-            offset: Int,
-            sideEffectsAllowed: Boolean,
-        ): Promise<ExpressionInfo?> = platformEvaluator.getExpressionInfoAtOffsetAsync(project, document, offset, sideEffectsAllowed)
-
-        override fun evaluate(expression: String, callback: XEvaluationCallback, expressionPosition: XSourcePosition?) {
-            // Keep watch text unchanged. Store the expression only on this result row.
-            executor.evaluateWithCompletion(callback) { answer ->
-                when (val result = checkedFrame.run { evaluate(expression) }) {
-                    is DapEvaluationResult.Error -> answer.errorOccurred(result.errorMessage)
-                    is DapEvaluationResult.Success -> {
-                        val owner = GdOwnerExpression(expression)
-                        val row = GdDapXValue(factory, executor, result.variable, owner = owner, frame = checkedFrame)
-                        answer.evaluated(row)
-                        // Show the plain result before the optional probe updates its presentation.
-                        if (GdObjectProbe.isProbeTarget(result.variable, owner, allowInferredType = true) &&
-                            hasSelfInMembers(checkedFrame)) {
-                            val presentations = with(GdObjectProbe) { load(checkedFrame, listOf(expression)) }
-                            row.updatePresentation(presentations?.singleOrNull())
-                        }
-                    }
-                }
-            }
-        }
-    }
 
     /**
      * Each call fills its own [node]. A later call does not cancel an earlier call.
@@ -85,8 +50,7 @@ internal class GdDapStackFrame(
         if (threadState !is DapThreadState.Paused) {
             try {
                 node.setErrorMessage(XDebuggerBundle.message("debugger.frames.dialog.message.not.available.for.unsuspended"))
-            }
-            finally {
+            } finally {
                 node.addChildren(XValueChildrenList.EMPTY, true)
             }
             return
@@ -128,10 +92,12 @@ internal class GdDapStackFrame(
                 frameNode = detection.node
                 detectionError = null
             }
+
             GdNodeDetection.NonNode -> {
                 frameNode = null
                 detectionError = null
             }
+
             is GdNodeDetection.Failed -> {
                 frameNode = null
                 LOG.warn("Could not inspect the frame base instance: ${detection.message}")
@@ -140,9 +106,11 @@ internal class GdDapStackFrame(
             }
         }
 
-        // 4. Read the scopes.
+        // 4. Read the scopes and create the self property lookup.
         val scopes = checkedFrame.run { scopes() }
-        return RowData(exceptionVariable, exceptionMessage, selfVariable, frameNode, scopes, detectionError)
+        val selfPropertyInlineContext =
+            if (selfVariable != null) createInlineValueContext(checkedFrame, inlineValueLocator)?.let(::createSelfPropertyInlineContext) else null
+        return RowData(exceptionVariable, exceptionMessage, selfVariable, frameNode, scopes, detectionError, selfPropertyInlineContext)
     }
 
     /**
@@ -159,40 +127,54 @@ internal class GdDapStackFrame(
 
         // 1. Show the exception information.
         if (rowData.exceptionVariable != null) {
-            target.addChildren(XValueChildrenList.singleton(
-                factory.createValue(executor, rowData.exceptionVariable, AllIcons.Nodes.ExceptionClass)
-            ), false)
-        }
-        else if (rowData.exceptionMessage != null) {
+            target.addChildren(
+                XValueChildrenList.singleton(
+                    factory.createValue(executor, rowData.exceptionVariable, AllIcons.Nodes.ExceptionClass)
+                ), false
+            )
+        } else if (rowData.exceptionMessage != null) {
             target.setMessage(rowData.exceptionMessage, AllIcons.Nodes.ExceptionClass, SimpleTextAttributes.ERROR_ATTRIBUTES, null)
         }
 
         // 2. Show the root and self rows when the self check permits them.
         if (rowData.selfVariable != null) {
             val rootBatch = XValueChildrenList()
-            rootBatch.addTopValue(GdSceneTreeNodeXValue(
-                name = "root", // Not localizable
-                executor = executor,
-                evaluator = checkedFrame,
-                factory = factory
-            ))
+            rootBatch.addTopValue(
+                GdSceneTreeNodeXValue(
+                    name = "root", // Not localizable
+                    executor = executor,
+                    evaluator = checkedFrame,
+                    factory = factory
+                )
+            )
             target.addChildren(rootBatch, false)
 
             val selfBatch = XValueChildrenList()
             if (rowData.frameNode != null) {
-                selfBatch.addTopValue(GdNodeMembersXValue.selfOf(
-                    objectId = rowData.frameNode.objectId,
-                    nodeName = rowData.frameNode.nodeName,
-                    className = rowData.frameNode.className,
-                    selfVariable = rowData.selfVariable,
-                    executor = executor,
-                    evaluator = checkedFrame,
-                    factory = factory
-                ))
-            }
-            else {
-                selfBatch.addTopValue(GdDapXValue(factory, executor, rowData.selfVariable,
-                    owner = GdOwnerExpression("self"), frame = checkedFrame))
+                selfBatch.addTopValue(
+                    GdNodeMembersXValue.selfOf(
+                        objectId = rowData.frameNode.objectId,
+                        nodeName = rowData.frameNode.nodeName,
+                        className = rowData.frameNode.className,
+                        selfVariable = rowData.selfVariable,
+                        executor = executor,
+                        evaluator = checkedFrame,
+                        factory = factory,
+                        selfPropertyInlineContext = rowData.selfPropertyInlineContext,
+                    )
+                )
+            } else {
+                selfBatch.addTopValue(
+                    GdDapXValue(
+                        factory,
+                        executor,
+                        rowData.selfVariable,
+                        owner = GdOwnerExpression("self"),
+                        frame = checkedFrame,
+                        watchContext = GdWatchContext(GdWatchPath.nodeProperties("self"), checkedFrame, executor),
+                        contextForCategoryChildren = rowData.selfPropertyInlineContext
+                    )
+                )
             }
             target.addChildren(selfBatch, false)
         }
@@ -206,10 +188,12 @@ internal class GdDapStackFrame(
             if (gateActive && scope.name == GdSelfCheckPolicy.GLOBALS_SCOPE_NAME) continue
 
             val scopeBatch = XValueChildrenList()
-            // Locals with self can use their names as owner expressions. Other scopes keep platform values.
-            scopeBatch.addTopGroup(if (gateActive && scope.name == "Locals")
-                GdDapXScope(factory, executor, scope, index, checkedFrame, inlineValueLocator)
-            else factory.createScope(executor, scope, index))
+            // Locals with self can use owner expressions. Every scope carries independent watch paths.
+            scopeBatch.addTopGroup(
+                if (gateActive && scope.name == "Locals")
+                    GdDapXScope(factory, executor, scope, index, checkedFrame, inlineValueLocator)
+                else factory.createScope(executor, scope, index)
+            )
             target.addChildren(scopeBatch, false)
         }
     }
@@ -222,5 +206,6 @@ internal class GdDapStackFrame(
         val frameNode: GdNodeDescriptor?,
         val scopes: List<DapScope>,
         val detectionError: String?,
+        val selfPropertyInlineContext: DapInlineValueContext?,
     )
 }

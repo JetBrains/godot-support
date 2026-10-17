@@ -25,14 +25,17 @@ func _install_path_to_rd_path(rider_path: String) -> String:
 	var gdextension_path: String = godot_rd_base.path_join("godot-rd.gdextension")
 	return gdextension_path
 
-func _show_restart_dialog() -> void:
+func _show_restart_dialog(has_rd_available: bool) -> void:
 	_needs_restart = true
 	if _restart_dialog != null:
 		return
 	_restart_dialog = ConfirmationDialog.new()
 	_restart_dialog.title = "Restart Godot"
 	# TODO: Perhaps better wording?
-	_restart_dialog.dialog_text = "Features such as 'Open in Rider' or 'Open in Godot' can only be used after restart."
+	if has_rd_available:
+		_restart_dialog.dialog_text = "Features such as 'Open in Rider' or 'Open in Godot' can only be used after restart."
+	else:
+		_restart_dialog.dialog_text = "The chosen Rider installation does not provide features such as 'Open in Rider' or 'Open in Godot'. Restart Godot to apply your selection."
 	_restart_dialog.get_ok_button().text = "Restart"
 	_restart_dialog.confirmed.connect(_restart_editor)
 	_restart_dialog.visibility_changed.connect(_on_restart_dialog_visibility_changed)
@@ -96,14 +99,14 @@ func load_rd_extension(rider_path: String) -> void :
 		print_verbose("[RIDER RD] load rd extension called on non existing path " + rider_path + ", perhaps the rider installation got deleted?")
 		return
 	var gdextension_path: String = _install_path_to_rd_path(rider_path)
-	if !FileAccess.file_exists(gdextension_path):
+	var gdextension_exists: bool = FileAccess.file_exists(gdextension_path)
+	if _needs_restart:
+		_show_restart_dialog(gdextension_exists)
 		return
-	if _loaded_rd_path != "":
-		if _loaded_rd_path != gdextension_path || _needs_restart:
-			# loading multiple RD extensions would make it so the port file
-			# for which Rider listens, would get written to by both extensions.
-			# Meaning it would
-			_show_restart_dialog()
+	if !_loaded_rd_path.is_empty():
+		# loading multiple RD extensions would make it so the port file
+		# for which Rider listens, would get written to by both extensions.
+		_show_restart_dialog(gdextension_exists)
 		return
 	var version_check := check_gdextension_version(gdextension_path)
 	if !version_check.met_requirement:
