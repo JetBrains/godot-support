@@ -24,6 +24,7 @@ import com.jetbrains.rider.utils.NullPrintStream
 import java.nio.file.Path
 import java.time.Duration
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
@@ -112,6 +113,23 @@ fun waitForGodotRunConfigurations(project: Project) {
         "Godot run configurations didn't appeared, " +
             "current: ${runManager.allConfigurationsList.joinToString(", ", "[", "]")}"
     }
+}
+
+fun waitForGodotRunConfigurationsWithRetries(
+    project: () -> Project,
+    reopenSolution: () -> Unit,
+    retries: Int = 2,
+) {
+    repeat(retries) { attempt ->
+        try {
+            waitForGodotRunConfigurations(project())
+            return
+        } catch (e: TimeoutException) {
+            frameworkLogger.warn("${e.message}. Reopening the solution, retry ${attempt + 1} of $retries")
+            reopenSolution()
+        }
+    }
+    waitForGodotRunConfigurations(project())
 }
 
 fun DebugGodotPlayer(

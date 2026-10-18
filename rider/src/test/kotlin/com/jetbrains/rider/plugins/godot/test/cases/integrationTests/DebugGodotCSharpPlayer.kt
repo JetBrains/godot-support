@@ -11,6 +11,7 @@ import com.jetbrains.rider.diagnostics.LogTraceScenarios
 import com.jetbrains.rider.plugins.godot.test.cases.DebugGodotPlayer
 import com.jetbrains.rider.plugins.godot.test.cases.disableDFA
 import com.jetbrains.rider.plugins.godot.test.cases.startGodotWithProject
+import com.jetbrains.rider.plugins.godot.test.cases.waitForGodotRunConfigurationsWithRetries
 import com.jetbrains.rider.test.annotations.Solution
 import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.TestSettings
@@ -62,6 +63,12 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
         // JUnit5 has no @BeforeMethod(dependsOnMethods=...): start Godot first, then open the solution
         startGodot()
         pumpMessages(Duration.ofSeconds(20))
+        super.setUpTestCaseSolution()
+        waitForGodotRunConfigurationsWithRetries({ project }, ::reopenSolution)
+    }
+
+    private fun reopenSolution() {
+        solutionApiFacade.closeSolution()
         super.setUpTestCaseSolution()
     }
 
