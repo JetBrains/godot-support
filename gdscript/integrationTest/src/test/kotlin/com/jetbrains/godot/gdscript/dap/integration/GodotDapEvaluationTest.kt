@@ -9,14 +9,19 @@ import com.jetbrains.godot.gdscript.integration.defaultDapTestTimeout
 import com.jetbrains.godot.gdscript.integration.godotDebug
 import com.jetbrains.godot.gdscript.integration.godotEditorFixture
 import com.jetbrains.godot.test.project.godotProject
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
 @TestApplication
 class GodotDapEvaluationTest {
     private val editorFixture = godotEditorFixture(GodotEditorLsp.ENABLED, ::evaluationProject)
 
     @Test
+    @ChecklistItems(["Debug/GDScript/Evaluation"])
     fun testEvaluationAddsALocalAndAClassMember() = timeoutRunBlocking(timeout = defaultDapTestTimeout) {
         val sum = godotDebug(editorFixture.get()) {
             breakpoint("stop")

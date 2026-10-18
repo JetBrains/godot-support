@@ -8,15 +8,20 @@ import com.jetbrains.godot.gdscript.integration.defaultDapTestTimeout
 import com.jetbrains.godot.gdscript.integration.godotDebug
 import com.jetbrains.godot.gdscript.integration.godotEditorFixture
 import com.jetbrains.godot.test.project.godotProject
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
 @TestApplication
 class GodotDapImmediateCompletionTest {
     private val editorFixture = godotEditorFixture(GodotEditorLsp.ENABLED, ::dapProject)
 
     @Test
+    @ChecklistItems(["Debug/GDScript/Completion in Evaluate window"])
     fun testEvaluateWindowOffersTheMembersOfTheSuspendedFrame() = timeoutRunBlocking(timeout = defaultDapTestTimeout) {
         val lookups = godotDebug(editorFixture.get()) {
             breakpoint("print")
@@ -30,6 +35,7 @@ class GodotDapImmediateCompletionTest {
     }
 
     @Test
+    @ChecklistItems(["Debug/GDScript/Completion in Evaluate window"])
     fun testEvaluateWindowFiltersOnWhatTheUserTyped() = timeoutRunBlocking(timeout = defaultDapTestTimeout) {
         val lookups = godotDebug(editorFixture.get()) {
             breakpoint("print")

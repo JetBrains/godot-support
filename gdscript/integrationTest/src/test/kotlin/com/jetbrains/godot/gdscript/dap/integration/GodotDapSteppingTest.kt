@@ -12,6 +12,9 @@ import com.jetbrains.godot.gdscript.integration.godotDebug
 import com.jetbrains.godot.gdscript.integration.godotEditorFixture
 import com.jetbrains.godot.gdscript.integration.presentationOf
 import com.jetbrains.godot.test.project.godotProject
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -19,11 +22,20 @@ import org.junit.jupiter.api.Test
 /**
  * The gold file holds the trace: the position of every pause and the variables that the frame offers there.
  */
+@Subsystem(SubsystemConstants.GODOT)
 @TestApplication
 class GodotDapSteppingTest {
     private val editorFixture = godotEditorFixture(GodotEditorLsp.ENABLED, ::steppingProject)
 
     @Test
+    @ChecklistItems(
+        [
+            "Debug/GDScript/Breakpoints",
+            "Debug/GDScript/Stepping",
+            "Debug/GDScript/Variables",
+            "Debug/GDScript/Remote scene tree",
+        ]
+    )
     fun testStepsThroughTheReadyFunctionAndResumesToTheNextBreakpoint() =
         timeoutRunBlocking(timeout = defaultDapTestTimeout) {
             godotDebug(editorFixture.get()) {
