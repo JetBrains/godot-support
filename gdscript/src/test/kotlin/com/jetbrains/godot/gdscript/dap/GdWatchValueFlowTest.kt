@@ -10,6 +10,9 @@ import com.intellij.xdebugger.frame.XNamedValue
 import com.intellij.xdebugger.frame.XValueNode
 import com.intellij.xdebugger.frame.XValuePlace
 import com.intellij.xdebugger.frame.presentation.XValuePresentation
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdDapEvaluator
 import gdscript.dap.remote.GdDapStackFrame
 import gdscript.dap.remote.GdDapXScope
@@ -34,6 +37,8 @@ import java.util.concurrent.TimeUnit
 import java.lang.reflect.Proxy
 import javax.swing.Icon
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Watches"])
 @TestApplication
 class GdWatchValueFlowTest {
     @ParameterizedTest

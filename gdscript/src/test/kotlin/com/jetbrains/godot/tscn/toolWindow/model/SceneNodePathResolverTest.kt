@@ -1,9 +1,14 @@
 package com.jetbrains.godot.tscn.toolWindow.model
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.jupiter.api.assertAll
 import tscn.toolWindow.model.SceneNodePathResolver
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Scenes and resources/Scene tree tool window"])
 class SceneNodePathResolverTest : BasePlatformTestCase() {
     private data class Case(
         val start: String,

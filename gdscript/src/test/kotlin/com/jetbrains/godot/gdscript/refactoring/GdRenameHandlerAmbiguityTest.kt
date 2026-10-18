@@ -3,6 +3,9 @@ package com.jetbrains.godot.gdscript.refactoring
 import com.intellij.openapi.editor.ex.util.EditorUtil
 import com.intellij.refactoring.rename.RenamerFactory
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -11,6 +14,8 @@ import org.junit.runners.JUnit4
  * RIDER-142152: Shift+F6 on a GDScript declaration must offer exactly one "Rename" choice, not a
  * chooser between the classic PSI rename and the PolySymbol-based rename.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Rename"])
 @RunWith(JUnit4::class)
 class GdRenameHandlerAmbiguityTest : BasePlatformTestCase() {
 

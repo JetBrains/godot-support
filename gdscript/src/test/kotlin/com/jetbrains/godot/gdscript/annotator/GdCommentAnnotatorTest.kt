@@ -3,12 +3,17 @@ package com.jetbrains.godot.gdscript.annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.utils.GdCustomRegionUtil
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Highlighting"])
 @RunWith(JUnit4::class)
 class GdCommentAnnotatorTest : BasePlatformTestCase() {
 

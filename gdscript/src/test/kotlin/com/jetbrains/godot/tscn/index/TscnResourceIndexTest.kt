@@ -4,10 +4,15 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
 import com.jetbrains.rider.godot.community.tscn.TscnFileType
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.utils.ProjectUtil.contentScope
 import tscn.index.impl.TscnResourceIndex
 import kotlin.io.path.pathString
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Scenes and resources/Resource index"])
 class TscnResourceIndexTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String {

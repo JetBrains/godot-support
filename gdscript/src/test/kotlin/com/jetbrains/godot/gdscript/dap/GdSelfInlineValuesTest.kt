@@ -6,6 +6,9 @@ import com.intellij.platform.dap.xdebugger.DefaultDapXDebuggerPresentationFactor
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.xdebugger.frame.XNamedValue
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdDapEvaluator
 import gdscript.dap.remote.GdDapStackFrame
 import gdscript.dap.remote.GdFrameSourceSelf
@@ -15,6 +18,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Inline values"])
 @TestApplication
 class GdSelfInlineValuesTest {
     companion object {

@@ -6,24 +6,31 @@ import com.intellij.polySymbols.testFramework.moveToOffsetBySignature
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdFixture
 import com.jetbrains.godot.gdscript.gdFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.jupiter.api.Test
 
 /**
  * RIDER-143313 `super` resolves to the parent class method, so the code insight of that method works on `super`.
  * All tests except the rename share the `super` test data directory.
  */
+@Subsystem(SubsystemConstants.GODOT)
 @TestApplication
 class GdSuperCodeInsightTest {
     private val gd: GdFixture by gdFixture("codeInsight")
 
+    @ChecklistItems(["GDScript/Documentation"])
     @Test
     fun testDocumentationOnBareSuperCall() =
         doSuperDocumentationTest(signature = "own := <caret>super()", fileSuffix = ".bare")
 
+    @ChecklistItems(["GDScript/Documentation"])
     @Test
     fun testDocumentationOnQualifiedSuperCall() =
         doSuperDocumentationTest(signature = "own + <caret>super.describe", fileSuffix = ".qualified")
 
+    @ChecklistItems(["GDScript/Parameter info"])
     @Test
     fun testParameterInfoOnBareSuperCall() =
         gd.doParameterInfoTest(
@@ -33,6 +40,7 @@ class GdSuperCodeInsightTest {
             goldFileName = "$SUPER_DIR/greet.param-info.html",
         )
 
+    @ChecklistItems(["GDScript/Parameter info"])
     @Test
     fun testParameterInfoOnSuperConstructorCall() =
         gd.doParameterInfoTest(
@@ -42,15 +50,18 @@ class GdSuperCodeInsightTest {
             goldFileName = "$SUPER_DIR/init.param-info.html",
         )
 
+    @ChecklistItems(["GDScript/Find usages"])
     @Test
     fun testFindUsagesFromBareSuperCall() =
         doSuperFindUsagesTest(signature = "return <caret>super(who", goldName = "greet")
 
+    @ChecklistItems(["GDScript/Find usages"])
     @Test
     fun testFindUsagesFromQualifiedSuperCall() =
         doSuperFindUsagesTest(signature = "own + <caret>super.describe", goldName = "describe")
 
     /** The rename of the parent method replaces the member after `super.`, but never the `super` keyword. */
+    @ChecklistItems(["GDScript/Rename"])
     @Test
     fun testRenameParentMethodKeepsSuper() =
         gd.doSymbolRenameTest(mainFile = "base.gd", newName = "describe_base", signature = "func <caret>describe")

@@ -5,12 +5,17 @@ import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdModelFixture
 import com.jetbrains.godot.gdscript.gdModelFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.index.GdSdkPolySymbolIndexUtil
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/GDExtensions"])
 @TestApplication
 class GdExtensionsModelTest {
     private val gd: GdModelFixture by gdModelFixture()

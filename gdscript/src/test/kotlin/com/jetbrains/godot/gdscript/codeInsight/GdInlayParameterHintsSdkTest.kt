@@ -5,6 +5,9 @@ import com.intellij.testFramework.common.timeoutRunBlocking
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.junit.jupiter.api.Test
@@ -18,6 +21,8 @@ import org.junit.jupiter.api.Test
  * same SDK class first - see `GdParamAnnotatorTest` for why (a cold-cache issue in the SDK class
  * symbol scope's own machinery, unrelated to this provider).
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Inlay hints"])
 @TestApplication
 class GdInlayParameterHintsSdkTest {
     private val gd: GdSdkFixture by gdSdkFixture("codeInsight")

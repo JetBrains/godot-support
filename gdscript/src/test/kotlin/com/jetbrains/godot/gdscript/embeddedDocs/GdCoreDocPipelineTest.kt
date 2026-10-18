@@ -1,5 +1,8 @@
 package com.jetbrains.godot.gdscript.embeddedDocs
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdCoreDocPipeline
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
@@ -22,6 +25,8 @@ import kotlin.io.path.writeText
  *
  * The pipeline must recover per class. It must reject only when the set cannot serve the reader.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Documentation"])
 @RunWith(JUnit4::class)
 class GdCoreDocPipelineTest {
 

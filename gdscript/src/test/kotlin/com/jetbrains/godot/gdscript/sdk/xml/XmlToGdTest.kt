@@ -1,6 +1,9 @@
 package com.jetbrains.godot.gdscript.sdk.xml
 
 import com.intellij.openapi.application.PathManager
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.sdk.xml.XmlToGd
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.params.ParameterizedTest
@@ -8,6 +11,8 @@ import org.junit.jupiter.params.provider.ValueSource
 import java.nio.file.Path
 import kotlin.io.path.readText
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/SDK"])
 class XmlToGdTest {
 
     private val xmlDir: Path

@@ -5,6 +5,9 @@ import com.intellij.testFramework.TestModeFlags
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.GdScriptBundle
 import gdscript.annotator.GD_ANNOTATOR_ORIGINAL_SEVERITY
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -27,6 +30,8 @@ import org.junit.jupiter.api.Test
  * machinery, reproduced and root-caused via bisection; nothing to do with `GdParamAnnotator` itself -
  * the crash occurs identically whether or not this fix is applied).
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Highlighting"])
 @TestApplication
 class GdParamAnnotatorTest {
     private val gd: GdSdkFixture by gdSdkFixture("highlighting")

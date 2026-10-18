@@ -2,11 +2,16 @@ package com.jetbrains.godot.gdscript.listener
 
 import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.listener.GdExtensionsChangeDetector
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/GDExtensions"])
 @RunWith(JUnit4::class)
 class GdExtensionsChangeDetectorTest : BasePlatformTestCase() {
 

@@ -1,9 +1,14 @@
 package com.jetbrains.godot.gdscript.resolve
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.gdDeclaringClassId
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Resolve and navigation"])
 class GdSymbolResolverUtilTest : BasePlatformTestCase() {
 
     fun testFindMethodSymbolReturnsNearestAncestorFirst() {

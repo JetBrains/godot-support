@@ -5,12 +5,17 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdClassNaming
 import gdscript.psi.GdFile
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Rename"])
 @RunWith(JUnit4::class)
 class GdRenamePsiFileProcessorSearchTest : BasePlatformTestCase() {
 

@@ -1,5 +1,8 @@
 package com.jetbrains.godot.gdscript.embeddedDocs
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdDocXmlMerger
 import gdscript.embeddedDocs.newHardenedDocumentBuilderFactory
 import org.junit.Assert.assertEquals
@@ -15,6 +18,8 @@ import java.io.StringReader
 import java.nio.file.Files
 import java.util.concurrent.CancellationException
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Documentation"])
 @RunWith(JUnit4::class)
 class GdDocXmlMergerTest {
   @Test

@@ -1,5 +1,8 @@
 package com.jetbrains.godot.gdscript.embeddedDocs
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.newHardenedDocumentBuilderFactory
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -19,6 +22,8 @@ import javax.xml.parsers.DocumentBuilderFactory
  * the input, and that the hardened factory refuses it or ignores it. The control makes the test
  * fail if somebody removes the matching setting from GdXmlSafety.kt.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Documentation"])
 class GdXmlSafetyTest {
     private val temporaryRoots = mutableListOf<Path>()
 

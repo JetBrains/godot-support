@@ -4,8 +4,13 @@ import com.intellij.polySymbols.testFramework.renameSymbolAtCaret
 import com.intellij.psi.PsiDocumentManager
 import com.jetbrains.godot.gdscript.resolve.ResolveTestBase
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import kotlin.io.path.pathString
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Rename"])
 class RenameTest : ResolveTestBase() {
 
     override fun getTestDataPath(): String {

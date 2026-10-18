@@ -7,6 +7,9 @@ import com.jetbrains.godot.findUsages.symbolUsages
 import com.jetbrains.godot.findUsages.text
 import com.jetbrains.godot.gdscript.GdPolySymbolsTestUtils
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdSignalDeclTl
 import gdscript.settings.GdLspConnectionMode
@@ -18,6 +21,8 @@ import kotlin.io.path.pathString
  * argument of `connect(...)` / `Callable(...)`. Own-references on the literal bridge the site -
  * see `gdscript.psi.utils.GdStringNameMemberReferenceUtil`.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Find usages"])
 class StringNameMemberFindUsagesTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String {

@@ -5,6 +5,9 @@ import com.intellij.lang.documentation.impl.documentationTargets
 import com.intellij.openapi.util.TextRange
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.codeInsight.documentation.GdDocLinkResolver
 import gdscript.codeInsight.documentation.GdInlineDocumentation
 import gdscript.codeInsight.documentation.GdInlineDocumentationProvider
@@ -18,6 +21,8 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 /** Covers Reader Mode support for GDScript `##` doc comments (RIDER-117542). */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Reader mode"])
 @RunWith(JUnit4::class)
 class GdReaderModeTest : BasePlatformTestCase() {
 

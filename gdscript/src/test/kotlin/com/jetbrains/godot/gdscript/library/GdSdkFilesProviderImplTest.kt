@@ -2,6 +2,9 @@ package com.jetbrains.godot.gdscript.library
 
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.library.GdSdkFilesProviderImpl
 import gdscript.library.GdSdkPathManager
 import org.junit.Test
@@ -10,6 +13,8 @@ import org.junit.runners.JUnit4
 import java.nio.file.Files
 import java.nio.file.Path
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/SDK"])
 @RunWith(JUnit4::class)
 class GdSdkFilesProviderImplTest : BasePlatformTestCase() {
 

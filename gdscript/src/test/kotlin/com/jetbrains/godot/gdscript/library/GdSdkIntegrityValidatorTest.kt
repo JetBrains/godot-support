@@ -2,6 +2,9 @@ package com.jetbrains.godot.gdscript.library
 
 import com.intellij.openapi.util.Version
 import com.intellij.testFramework.rules.TempDirectory
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdDocFormat
 import gdscript.library.GdSdkIntegrityValidator
 import org.junit.Assert.assertEquals
@@ -25,6 +28,8 @@ import kotlin.io.path.writeText
  * The stamp must refuse a stamp from another executable, another format version, and the legacy
  * plain-version stamp that the shipped doctool path wrote.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/SDK"])
 @RunWith(JUnit4::class)
 class GdSdkIntegrityValidatorTest {
     @JvmField

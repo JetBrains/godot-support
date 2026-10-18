@@ -7,9 +7,14 @@ import com.jetbrains.godot.findUsages.searchTargetsAt
 import com.jetbrains.godot.findUsages.symbolUsages
 import com.jetbrains.godot.findUsages.text
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdMethodDeclTl
 import kotlin.io.path.pathString
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Scenes and resources/Find usages"])
 class ConnectionMethodFindUsagesTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String {

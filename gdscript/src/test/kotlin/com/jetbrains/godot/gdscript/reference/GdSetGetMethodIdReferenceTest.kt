@@ -3,9 +3,14 @@ package com.jetbrains.godot.gdscript.reference
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.psi.GdPsiMethodSymbol
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Resolve and navigation"])
 @TestApplication
 class GdSetGetMethodIdReferenceTest {
     private val gd: GdSdkFixture by gdSdkFixture("reference")

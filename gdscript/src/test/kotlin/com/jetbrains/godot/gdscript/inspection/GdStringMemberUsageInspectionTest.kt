@@ -4,12 +4,17 @@ import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.inspection.GdStringNameMemberCallInspection
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Inspections"])
 @TestApplication
 class GdStringMemberUsageInspectionTest {
     private val gd: GdSdkFixture by gdSdkFixture("inspection")

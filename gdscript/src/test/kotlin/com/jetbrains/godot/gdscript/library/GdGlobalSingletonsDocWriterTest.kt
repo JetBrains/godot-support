@@ -1,6 +1,9 @@
 package com.jetbrains.godot.gdscript.library
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.GdKeywords
 import gdscript.library.GdGlobalSingletonsDocWriter
 import gdscript.library.GdSingletonInfo
@@ -12,6 +15,8 @@ import java.nio.file.Files
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.writeText
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/SDK"])
 @RunWith(JUnit4::class)
 class GdGlobalSingletonsDocWriterTest : BasePlatformTestCase() {
 

@@ -2,9 +2,14 @@ package com.jetbrains.godot.gdscript.parser
 
 import com.intellij.psi.util.descendantsOfType
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdFuncDeclEx
 import gdscript.psi.GdVarDeclSt
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Type inference"])
 class GdCallableInferenceTest : BasePlatformTestCase() {
 
     fun testLambdaInference() {

@@ -3,6 +3,9 @@ package com.jetbrains.godot.gdscript.dap
 import com.intellij.platform.dap.DapEvaluationResult
 import com.intellij.platform.dap.DapVariable
 import com.intellij.testFramework.common.timeoutRunBlocking
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdEvalOutcome
 import gdscript.dap.remote.GdEvaluationRequest
 import gdscript.dap.remote.GdNumberedAnswer
@@ -13,6 +16,8 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Evaluation"])
 class GdEvaluationRequestTest {
     @Test
     fun testValidAnswersKeepStructuredAndScalarValues() {

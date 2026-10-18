@@ -5,6 +5,9 @@ import com.intellij.platform.dap.xdebugger.DefaultDapXStackFrame
 import com.intellij.testFramework.common.timeoutRunBlocking
 import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.testFramework.junit5.fixture.projectFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdDapPresentationFactory
 import gdscript.dap.remote.GdSelfCheckedFrame
 import kotlinx.coroutines.supervisorScope
@@ -14,6 +17,8 @@ import org.junit.jupiter.api.Assertions.assertNotSame
 import org.junit.jupiter.api.Assertions.assertSame
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Watches"])
 @TestApplication
 class GdWatchStopTest {
     private val projectFixture = projectFixture()

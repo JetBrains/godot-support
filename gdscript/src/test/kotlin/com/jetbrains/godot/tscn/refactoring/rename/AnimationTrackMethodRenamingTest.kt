@@ -3,12 +3,17 @@ package com.jetbrains.godot.tscn.refactoring.rename
 import com.intellij.polySymbols.testFramework.renameSymbolAtCaret
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import kotlin.io.path.pathString
 
 /**
  * The scene copies `networking/multiplayer_bomber/bomb.tscn` of the Godot demo projects. Track 1 is
  * a method track on `NodePath(".")` that calls `explode` and `done`, and `bomb.gd` declares both.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Scenes and resources/Rename"])
 class AnimationTrackMethodRenamingTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String {

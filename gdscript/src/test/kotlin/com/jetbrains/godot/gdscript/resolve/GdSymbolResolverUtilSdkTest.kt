@@ -8,6 +8,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.gdSignature
 import gdscript.polySymbols.psi.GdPsiConstructorSymbol
@@ -21,6 +24,8 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Resolve and navigation"])
 @TestApplication
 class GdSymbolResolverUtilSdkTest {
     private val gd: GdSdkFixture by gdSdkFixture("highlighting")

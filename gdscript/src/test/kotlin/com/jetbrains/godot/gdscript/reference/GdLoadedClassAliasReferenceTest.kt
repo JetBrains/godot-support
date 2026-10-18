@@ -4,10 +4,15 @@ import com.intellij.polySymbols.testFramework.multiResolveSymbolReference
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.psi.GdPsiLoadedClassAliasSymbol
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Resolve and navigation"])
 @TestApplication
 class GdLoadedClassAliasReferenceTest {
     private val gd: GdSdkFixture by gdSdkFixture("reference")

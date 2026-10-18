@@ -1,6 +1,9 @@
 package com.jetbrains.godot.gdscript.codeInsight.documentation
 
 import com.intellij.openapi.util.text.HtmlChunk
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.codeInsight.documentation.GdDocHtml
 import gdscript.codeInsight.documentation.GdBBCodeRenderer
 import org.junit.Assert.assertEquals
@@ -11,6 +14,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /** Covers the Godot BBCode subset supported by [GdBBCodeRenderer.renderToHtml]. */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Documentation"])
 @RunWith(JUnit4::class)
 class GdBBCodeRendererTest {
 

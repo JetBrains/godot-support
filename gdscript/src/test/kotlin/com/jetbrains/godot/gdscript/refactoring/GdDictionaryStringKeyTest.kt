@@ -6,10 +6,15 @@ import com.intellij.polySymbols.testFramework.usagesAtCaret
 import com.intellij.polySymbols.testFramework.usagesAtOffsetBySignature
 import com.intellij.psi.PsiDocumentManager
 import com.jetbrains.godot.gdscript.resolve.ResolveTestBase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.psi.GdPsiDictKeySymbol
 
+@Subsystem(SubsystemConstants.GODOT)
 class GdDictionaryStringKeyTest : ResolveTestBase() {
 
+    @ChecklistItems(["GDScript/Find usages"])
     fun testFindUsagesOfStringKey() {
         val code = """
             |func f():
@@ -30,6 +35,7 @@ class GdDictionaryStringKeyTest : ResolveTestBase() {
         assertEquals("unexpected usages: $usagesOther", 1, usagesOther.size)
     }
 
+    @ChecklistItems(["GDScript/Find usages"])
     fun testFindUsagesOfStringKeyFromDeclaration() {
         val code = """
             |func f():
@@ -47,6 +53,7 @@ class GdDictionaryStringKeyTest : ResolveTestBase() {
         assertEquals("unexpected usages: $usages", 2, usages.size)
     }
 
+    @ChecklistItems(["GDScript/Rename"])
     fun testRenameStringKeyFromUsage() {
         val code = """
             |func f():
@@ -61,6 +68,7 @@ class GdDictionaryStringKeyTest : ResolveTestBase() {
         assertRenamed()
     }
 
+    @ChecklistItems(["GDScript/Rename"])
     fun testRenameStringKeyFromDeclaration() {
         val code = """
             |func f():

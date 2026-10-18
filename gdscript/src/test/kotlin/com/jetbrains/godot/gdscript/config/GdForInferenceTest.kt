@@ -5,11 +5,16 @@ import com.intellij.psi.util.descendantsOfType
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdModelFixture
 import com.jetbrains.godot.gdscript.gdModelFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdForSt
 import gdscript.psi.utils.GdCommonUtil
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Type inference"])
 @TestApplication
 class GdForInferenceTest {
     private val gd: GdModelFixture by gdModelFixture()

@@ -15,6 +15,9 @@ import com.intellij.util.LocalTimeCounter
 import com.jetbrains.godot.getBaseTestDataPath
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdStmt
 import org.junit.Ignore
@@ -26,6 +29,8 @@ import kotlin.io.path.pathString
 // Setup inspired by PythonCommonFormatterTest.
 // The formatter is registered here programmatically because it is disabled in plugin.xml.
 // TODO: FormatterTestCase base class does not add anything so interesting0
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Formatting"])
 @RunWith(JUnit4::class)
 class GdFormattingTest : BasePlatformTestCase() {
     override fun getTestDataPath(): String =

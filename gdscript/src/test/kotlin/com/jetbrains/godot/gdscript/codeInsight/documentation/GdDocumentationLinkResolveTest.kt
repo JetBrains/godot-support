@@ -17,6 +17,9 @@ import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.util.text.CharArrayUtil
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.codeInsight.GdDocumentationTarget
 import gdscript.codeInsight.GdDocumentationTargetProvider
 import gdscript.codeInsight.documentation.GdAnnotationAnchors
@@ -42,6 +45,8 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Documentation"])
 @TestApplication
 class GdDocumentationLinkResolveTest {
     private val gd: GdSdkFixture by gdSdkFixture("reference")

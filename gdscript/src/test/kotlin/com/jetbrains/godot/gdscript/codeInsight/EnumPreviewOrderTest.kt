@@ -2,6 +2,9 @@ package com.jetbrains.godot.gdscript.codeInsight
 
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.ParsingTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.GdParserDefinition
 import gdscript.completion.utils.GdEnumCompletionUtil.preview
 import gdscript.psi.GdEnumDeclTl
@@ -9,6 +12,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Documentation"])
 @RunWith(JUnit4::class)
 class EnumPreviewOrderTest : ParsingTestCase("", "gd", GdParserDefinition()) {
 

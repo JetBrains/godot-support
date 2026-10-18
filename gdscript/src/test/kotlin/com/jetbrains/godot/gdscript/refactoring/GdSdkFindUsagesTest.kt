@@ -8,6 +8,9 @@ import com.intellij.polySymbols.testFramework.usagesAtCaret
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -19,6 +22,8 @@ import org.junit.jupiter.api.Test
  * can inspect the SDK declaration. This test navigates there via a real Goto Declaration from an
  * actual `Node2D` reference, confirms the synthetic file opened, then runs Find Usages from it.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Find usages"])
 @TestApplication
 class GdSdkFindUsagesTest {
     private val gd: GdSdkFixture by gdSdkFixture("refactoring")

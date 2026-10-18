@@ -18,6 +18,9 @@ import com.intellij.testFramework.junit5.fixture.moduleFixture
 import com.intellij.testFramework.junit5.fixture.projectFixture
 import com.intellij.testFramework.junit5.fixture.tempPathFixture
 import com.intellij.xdebugger.evaluation.ExpressionInfo
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdDapEvaluator
 import gdscript.dap.remote.GdHoverRangeOutcome
 import gdscript.dap.remote.GdSelfCheckedFrame
@@ -42,6 +45,8 @@ import java.lang.reflect.Proxy
  * Uses fake frames and sends no DAP requests.
  * These tests check expression selection, not evaluation results or request contexts.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Evaluation"])
 @TestApplication
 class GdDapEvaluatorTest {
     private val tempPath = tempPathFixture()

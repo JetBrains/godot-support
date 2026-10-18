@@ -11,6 +11,9 @@ import com.jetbrains.godot.gdscript.util.disableSingleItemAutoInsert
 import com.jetbrains.godot.gdscript.util.gdContextAt
 import com.jetbrains.godot.gdscript.util.gdFragment
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdFile
 import gdscript.psi.GdPsiCodeFragment
 import gdscript.psi.GdTypes
@@ -19,6 +22,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Evaluation"])
 @RunWith(JUnit4::class)
 class GdCodeFragmentLifecycleTest : BasePlatformTestCase() {
 

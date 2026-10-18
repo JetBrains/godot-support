@@ -4,6 +4,9 @@ import com.intellij.psi.PsiErrorElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.sdk.xml.GdSdkData
 import gdscript.polySymbols.sdk.xml.XmlToGd
 import org.junit.Test
@@ -15,6 +18,8 @@ import kotlin.io.path.pathString
 import kotlin.io.path.readText
 import kotlin.io.path.writeText
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/SDK"])
 @RunWith(JUnit4::class)
 class XmlToGdTest : BasePlatformTestCase() {
 

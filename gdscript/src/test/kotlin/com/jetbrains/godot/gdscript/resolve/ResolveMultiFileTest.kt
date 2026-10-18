@@ -1,9 +1,14 @@
 package com.jetbrains.godot.gdscript.resolve
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Resolve and navigation"])
 @RunWith(JUnit4::class)
 class ResolveMultiFileTest : ResolveTestBase() {
     @Test

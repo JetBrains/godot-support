@@ -6,6 +6,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdModelFixture
 import com.jetbrains.godot.gdscript.gdModelFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.psi.GdPsiAutoloadSymbol
@@ -24,6 +27,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import project.psi.util.ProjectAutoloadUtil
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Resolve and navigation"])
 @TestApplication
 class GdPsiModelTest {
     private val gd: GdModelFixture by gdModelFixture()

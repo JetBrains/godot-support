@@ -10,6 +10,9 @@ import com.intellij.platform.dap.VariableBatch
 import com.intellij.platform.dap.VariableFilter
 import com.intellij.testFramework.common.timeoutRunBlocking
 import com.jetbrains.dap.protocol.VariableAttribute
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdEvalOutcome
 import gdscript.dap.remote.GdObjectPresentation
 import gdscript.dap.remote.GdObjectProbe
@@ -25,6 +28,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Variables"])
 class GdObjectProbeTest {
     @Test
     fun testUtilityNamesCannotBeUsedAsLocalExpressions() {
