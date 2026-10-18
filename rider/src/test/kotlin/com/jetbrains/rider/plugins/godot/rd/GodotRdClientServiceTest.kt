@@ -3,6 +3,9 @@ package com.jetbrains.rider.plugins.godot.rd
 import com.jetbrains.rd.util.lifetime.Lifetime
 import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rd.util.lifetime.SequentialLifetimes
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import com.jetbrains.rider.test.shared.constants.TeamCityTags
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -17,10 +20,12 @@ import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
+@Subsystem(SubsystemConstants.GODOT)
 @Tag(TeamCityTags.Plugins.Godot.General)
 @Timeout(30)
 class GodotRdClientServiceTest {
     @Test
+    @ChecklistItems(["Connection to Godot editor/RD handshake"])
     fun `handshake connects only with a valid port and matching model hash`() {
         val connectedPorts = mutableListOf<Int>()
 
@@ -54,6 +59,7 @@ class GodotRdClientServiceTest {
     }
 
     @Test
+    @ChecklistItems(["Connection to Godot editor/RD handshake"])
     fun `check that terminated lifetime doesn't call connect`() {
         val connectedPorts = CopyOnWriteArrayList<Int>()
         val firstReadStarted = CountDownLatch(1)

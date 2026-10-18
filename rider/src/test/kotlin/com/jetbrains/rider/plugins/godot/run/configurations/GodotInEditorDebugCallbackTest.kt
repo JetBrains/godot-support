@@ -5,6 +5,9 @@ import com.intellij.execution.ui.RunContentDescriptor
 import com.intellij.testFramework.common.timeoutRunBlocking
 import com.jetbrains.rd.util.lifetime.LifetimeDefinition
 import com.jetbrains.rd.util.lifetime.isAlive
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import com.jetbrains.rider.test.shared.constants.TeamCityTags
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
@@ -21,6 +24,7 @@ import kotlin.test.assertNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
+@Subsystem(SubsystemConstants.GODOT)
 @Tag(TeamCityTags.Plugins.Godot.General)
 @Timeout(30)
 class GodotInEditorDebugCallbackTest {
@@ -55,6 +59,7 @@ class GodotInEditorDebugCallbackTest {
     }
 
     @Test
+    @ChecklistItems(["Debug/Godot editor/Cleanup after debug session"])
     fun `startup failure triggers cleanup without a process handler`() = timeoutRunBlocking {
         val failure = IllegalStateException("Worker creation failed")
 
@@ -68,6 +73,7 @@ class GodotInEditorDebugCallbackTest {
     }
 
     @Test
+    @ChecklistItems(["Debug/Godot editor/Cleanup after debug session"])
     fun `startup cancellation completes suspending cleanup`() = timeoutRunBlocking {
         val cancellation = CancellationException("Startup canceled")
 
@@ -79,6 +85,7 @@ class GodotInEditorDebugCallbackTest {
     }
 
     @Test
+    @ChecklistItems(["Debug/Godot editor/Cleanup after debug session"])
     fun `a null descriptor triggers cleanup and forwards the callback`() = timeoutRunBlocking {
         callback.processStarted(null)
         cleanupFinished.await()
@@ -88,6 +95,7 @@ class GodotInEditorDebugCallbackTest {
     }
 
     @Test
+    @ChecklistItems(["Debug/Godot editor/Cleanup after debug session"])
     fun `lifetime termination triggers cleanup without a startup failure`() = timeoutRunBlocking {
         assertTrue(cleanupLifetime.lifetime.isAlive)
 
@@ -99,6 +107,7 @@ class GodotInEditorDebugCallbackTest {
     }
 
     @Test
+    @ChecklistItems(["Debug/Godot editor/Cleanup after debug session"])
     fun `repeated termination triggers cleanup once`() = timeoutRunBlocking {
         callback.processNotStarted(null)
         callback.processStarted(null)
@@ -110,6 +119,7 @@ class GodotInEditorDebugCallbackTest {
     }
 
     @Test
+    @ChecklistItems(["Debug/Godot editor/Cleanup after debug session"])
     fun `a delegate failure does not prevent cleanup`() = timeoutRunBlocking {
         val failure = IllegalStateException("Callback failed")
         delegateFailure = failure

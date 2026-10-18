@@ -6,6 +6,7 @@ import com.intellij.testFramework.TestModeFlags
 import com.jetbrains.rider.completion.RiderCodeCompletionExtraSettings
 import com.jetbrains.rider.test.annotations.RiderTestTimeout
 import com.jetbrains.rider.test.annotations.Solution
+import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.TestSettings
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.enums.BuildTool
@@ -15,6 +16,7 @@ import com.jetbrains.rider.test.facades.editor.EditorApiFacade
 import com.jetbrains.rider.test.facades.editor.RiderEditorApiFacade
 import com.jetbrains.rider.test.framework.persistAllFilesOnDisk
 import com.jetbrains.rider.test.junit5.base.PerClassSolutionTestBase
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import com.jetbrains.rider.test.scriptingApi.assertLookupContains
 import com.jetbrains.rider.test.scriptingApi.callBasicCompletion
 import com.jetbrains.rider.test.scriptingApi.typeWithLatency
@@ -28,6 +30,7 @@ import java.nio.file.Path
 import kotlin.io.path.pathString
 import java.util.concurrent.TimeUnit
 
+@Subsystem(SubsystemConstants.GODOT)
 @Solution("ResCompletionTest")
 @TestSettings(sdkVersion = SdkVersion.LATEST_STABLE, buildTool = BuildTool.SDK)
 @Tag(TeamCityTags.Plugins.Godot.General)
