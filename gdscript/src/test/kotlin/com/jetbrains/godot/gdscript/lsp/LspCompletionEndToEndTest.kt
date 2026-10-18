@@ -10,6 +10,9 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.codeInsight.completion.CompletionProcess
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.lsp.GodotLspCompletionSupport
 import org.eclipse.lsp4j.CompletionItem
 import org.eclipse.lsp4j.CompletionItemKind
@@ -46,6 +49,8 @@ import org.junit.runners.JUnit4
  * Cases 1–3 cover the parens path (which is fine today); case 4 covers the quote handling that
  * the user wants to simplify/replace.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["LSP functionality/Completion"])
 @RunWith(JUnit4::class)
 class LspCompletionEndToEndTest : BasePlatformTestCase() {
 

@@ -5,6 +5,9 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.findUsages.symbolUsages
 import com.jetbrains.godot.findUsages.text
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdMethodDeclTl
 import kotlin.io.path.pathString
 
@@ -13,6 +16,8 @@ import kotlin.io.path.pathString
  * `gdscript.codeInsight.GdUsageProvider.canFindUsagesFor`. This test keeps the plain script to
  * script case covered, because the classic PSI target no longer serves it.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Find usages"])
 class MethodFindUsagesTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String {

@@ -1,10 +1,15 @@
 package com.jetbrains.godot.gdscript.parser
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Lexer and parser"])
 @RunWith(JUnit4::class)
 class GdParsingRegressionTest : BasePlatformTestCase() {
 

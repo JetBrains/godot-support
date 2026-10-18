@@ -5,6 +5,9 @@ import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.inspection.GdMissingMatchBranchesInspection
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -29,6 +32,8 @@ import project.psi.util.ProjectAutoloadUtil
  * qualifier. This is why the production fix needed a `gdIsEngineSymbol` branch in the prefix
  * computation, not just swapping `gdPsiSourceElement` for `gdNavigationElement`.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Inspections"])
 @TestApplication
 class GdMissingMatchBranchesInspectionTest {
     private val gd: GdSdkFixture by gdSdkFixture("highlighting")

@@ -15,6 +15,9 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.formatter.GdFormattingModelBuilder
 import org.junit.Ignore
@@ -24,6 +27,8 @@ import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
 /** Infrastructure copied from PyEditingTest */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Typing"])
 @RunWith(JUnit4::class)
 class GdEditingTest : BasePlatformTestCase() {
     override fun setUp() {

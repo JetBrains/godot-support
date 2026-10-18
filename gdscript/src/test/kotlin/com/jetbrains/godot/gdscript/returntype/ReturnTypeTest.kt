@@ -2,9 +2,14 @@ package com.jetbrains.godot.gdscript.returntype
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdClassVarDeclTl
 import kotlin.io.path.pathString
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Type inference"])
 class ReturnTypeTest : BasePlatformTestCase() {
 
     fun testReturnTypesOfNestedClassInstantiations() {

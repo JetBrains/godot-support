@@ -1,6 +1,9 @@
 package com.jetbrains.godot.gdscript.embeddedDocs
 
 import com.intellij.openapi.application.PathManager
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdDocXmlMerger
 import gdscript.embeddedDocs.GdDocXmlSplitter
 import org.junit.Assert.assertEquals
@@ -17,6 +20,8 @@ import java.nio.file.Path
  * The golden hash cannot pin this behaviour. The merger does not run on the core write path,
  * and a hash over a self-merge stays equal even when the merger copies nothing.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Documentation"])
 @RunWith(JUnit4::class)
 class GdDocXmlMergerFixtureTest {
 

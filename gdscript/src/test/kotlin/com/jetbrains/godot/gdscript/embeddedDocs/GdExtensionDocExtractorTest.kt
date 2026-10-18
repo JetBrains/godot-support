@@ -1,6 +1,9 @@
 package com.jetbrains.godot.gdscript.embeddedDocs
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdExtensionDocExtractor
 import gdscript.embeddedDocs.GdExtensionManifestParser
 import gdscript.library.GdSdkPathManager
@@ -15,6 +18,8 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.util.zip.DeflaterOutputStream
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/GDExtensions"])
 @RunWith(JUnit4::class)
 class GdExtensionDocExtractorTest : BasePlatformTestCase() {
 

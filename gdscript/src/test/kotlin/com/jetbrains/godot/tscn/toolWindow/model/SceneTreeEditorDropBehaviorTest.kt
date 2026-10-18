@@ -1,5 +1,8 @@
 package com.jetbrains.godot.tscn.toolWindow.model
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -9,6 +12,8 @@ import tscn.toolWindow.model.SceneTreeEditorDropHandler.Companion.CaretInfo
 import tscn.toolWindow.model.SceneTreeEditorDropHandler.Companion.DropBehavior
 import tscn.toolWindow.model.SceneTreeEditorDropHandler.Companion.decideDropBehavior
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Scenes and resources/Scene tree tool window"])
 class SceneTreeEditorDropBehaviorTest {
     @CartesianTest(name = CartesianTest.ARGUMENTS_PLACEHOLDER)
     fun dropInsideSelectionReplacesIt(

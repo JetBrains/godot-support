@@ -1,5 +1,8 @@
 package com.jetbrains.godot.gdscript.psi.utils
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.utils.GdNodeUtil
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -7,6 +10,8 @@ import org.junit.jupiter.api.assertAll
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Node paths"])
 @RunWith(JUnit4::class)
 class GdNodeUtilNamingTest {
 

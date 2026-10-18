@@ -3,12 +3,17 @@ package com.jetbrains.godot.gdscript.inspection
 import com.intellij.application.options.CodeStyle
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.inspection.GdWhitespaceLocalInspectionTool
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Inspections"])
 @RunWith(JUnit4::class)
 class GdWhitespaceLocalInspectionTest : BasePlatformTestCase() {
 

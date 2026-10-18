@@ -3,6 +3,9 @@ package com.jetbrains.godot.gdscript.dap
 import com.intellij.platform.dap.DapVariable
 import com.intellij.platform.dap.ValueKind
 import com.jetbrains.dap.protocol.VariableAttribute
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdArrayReader
 import gdscript.dap.remote.GdChildChunking
 import gdscript.dap.remote.GdChildRange
@@ -18,6 +21,8 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.CsvSource
 import org.junit.jupiter.params.provider.MethodSource
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Large collections are chunked"])
 class GdChildChunkingTest {
     private fun rows(start: Int, length: Int): Sequence<GdChildRange> =
         GdChildChunking.splitIntoChunks(start, length, createGroup = { it })

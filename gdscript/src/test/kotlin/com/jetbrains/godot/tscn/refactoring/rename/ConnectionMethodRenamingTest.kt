@@ -6,6 +6,9 @@ import com.intellij.refactoring.rename.Renamer
 import com.intellij.refactoring.rename.RenamerFactory
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import kotlin.io.path.pathString
 
 /**
@@ -15,6 +18,8 @@ import kotlin.io.path.pathString
  * Each test starts the rename from one side of the link. `ConnectionMethodInplaceRenamingTest` runs
  * the same case through the live template of the editor.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Scenes and resources/Rename"])
 class ConnectionMethodRenamingTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String {

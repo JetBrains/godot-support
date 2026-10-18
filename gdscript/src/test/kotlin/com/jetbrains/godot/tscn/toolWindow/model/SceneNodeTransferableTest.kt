@@ -1,5 +1,8 @@
 package com.jetbrains.godot.tscn.toolWindow.model
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -17,6 +20,8 @@ import java.awt.datatransfer.SystemFlavorMap
 import java.awt.datatransfer.UnsupportedFlavorException
 import java.io.InputStream
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Scenes and resources/Scene tree tool window"])
 class SceneNodeTransferableTest {
     private val nativeMimeType = "application/x-jetbrains-godot-scene-nodes+json"
     private val nativeFlavor = DataFlavor("$nativeMimeType;class=java.io.InputStream")

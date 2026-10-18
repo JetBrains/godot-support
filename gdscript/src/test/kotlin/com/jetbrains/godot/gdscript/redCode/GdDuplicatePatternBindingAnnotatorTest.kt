@@ -2,7 +2,12 @@ package com.jetbrains.godot.gdscript.redCode
 
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Red code"])
 class GdDuplicatePatternBindingAnnotatorTest : BasePlatformTestCase() {
 
     fun testDuplicateBindingsAreNotReportedInPatternAndGuard() {

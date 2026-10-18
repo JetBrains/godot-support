@@ -5,12 +5,17 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.findUsages.symbolUsages
 import com.jetbrains.godot.findUsages.text
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdMethodDeclTl
 import kotlin.io.path.pathString
 
 /**
  * The scene copies `networking/multiplayer_bomber/bomb.tscn` of the Godot demo projects.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Scenes and resources/Find usages"])
 class AnimationTrackMethodFindUsagesTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String {

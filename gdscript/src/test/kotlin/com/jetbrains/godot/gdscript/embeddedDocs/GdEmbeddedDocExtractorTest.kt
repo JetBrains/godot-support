@@ -1,5 +1,8 @@
 package com.jetbrains.godot.gdscript.embeddedDocs
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdDocXmlSplitter
 import gdscript.embeddedDocs.GdEmbeddedDocExtractor
 import org.junit.Assert.assertArrayEquals
@@ -15,6 +18,8 @@ import java.nio.file.Files
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.zip.DeflaterOutputStream
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Documentation"])
 @RunWith(JUnit4::class)
 class GdEmbeddedDocExtractorTest {
     private val document = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<class name=\"Node\"></class>\n".toByteArray()

@@ -7,6 +7,9 @@ import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.DEFAULT_MODEL_SDK_DIRECTORIES
 import com.jetbrains.godot.gdscript.GdModelFixture
 import com.jetbrains.godot.gdscript.gdModelFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
 import gdscript.polySymbols.GdPolySymbolKind
@@ -27,6 +30,8 @@ import org.junit.jupiter.api.Test
  * (see [gdscript.library.GdGlobalSingletonsDocWriter]): they are global variables, so they behave exactly like the engine
  * singletons declared in Godot's own `@GlobalScope.xml`.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/GDExtensions"])
 @TestApplication
 class GdExtensionSingletonModelTest {
     private val gd: GdModelFixture by gdModelFixture(

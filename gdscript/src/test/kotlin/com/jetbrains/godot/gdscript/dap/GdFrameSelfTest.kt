@@ -13,6 +13,9 @@ import com.intellij.platform.dap.TextPosition
 import com.intellij.platform.dap.ValueKind
 import com.jetbrains.dap.protocol.DapRequestFailedException
 import com.jetbrains.dap.protocol.VariableAttribute
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.GdScriptBundle
 import gdscript.dap.remote.GdFrameSelf
 import gdscript.dap.remote.GdFrameSourceSelf
@@ -30,6 +33,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.io.IOException
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Variables"])
 class GdFrameSelfTest {
     @Test
     fun testFrameEvaluationRequiresSelf(): Unit = withControlledTime {

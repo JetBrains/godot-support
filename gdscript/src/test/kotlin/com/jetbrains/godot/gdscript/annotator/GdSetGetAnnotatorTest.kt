@@ -4,6 +4,9 @@ import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.highlighter.GdHighlighterColors
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -17,6 +20,8 @@ import org.junit.jupiter.api.Test
  * (`Node2D.apply_scale`, an instance method - see `sdk/4.5.0/Node2D.xml`), while a project-declared
  * static method keeps coloring correctly as before.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Highlighting"])
 @TestApplication
 class GdSetGetAnnotatorTest {
     private val gd: GdSdkFixture by gdSdkFixture("highlighting")

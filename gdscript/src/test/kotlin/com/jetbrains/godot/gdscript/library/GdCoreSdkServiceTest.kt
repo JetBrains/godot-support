@@ -8,6 +8,9 @@ import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.library.GdCoreSdkService
 import gdscript.library.GdSdkIntegrityValidator
 import gdscript.library.GdSdkPathManager
@@ -36,6 +39,8 @@ import kotlin.time.Duration.Companion.milliseconds
  *
  * The test body runs off the EDT, because the service suspends on a VFS refresh that needs a free EDT.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/SDK"])
 @RunWith(JUnit4::class)
 class GdCoreSdkServiceTest : BasePlatformTestCase() {
 

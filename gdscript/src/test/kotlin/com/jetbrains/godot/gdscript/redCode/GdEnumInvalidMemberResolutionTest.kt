@@ -6,9 +6,14 @@ import com.intellij.polySymbols.testFramework.psiSymbolReferences
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.TestModeFlags
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.annotator.GD_ANNOTATOR_ORIGINAL_SEVERITY
 import gdscript.psi.GdRefIdRef
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Red code"])
 class GdEnumInvalidMemberResolutionTest : BasePlatformTestCase() {
 
     override fun setUp() {

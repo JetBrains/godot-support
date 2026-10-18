@@ -1,6 +1,9 @@
 package com.jetbrains.godot.gdscript.library
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.library.GdSdkFingerprints
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,6 +17,8 @@ import kotlin.io.path.deleteExisting
 import kotlin.io.path.deleteRecursively
 import kotlin.io.path.writeText
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/SDK"])
 @RunWith(JUnit4::class)
 class GdSdkFingerprintsTest : BasePlatformTestCase() {
 

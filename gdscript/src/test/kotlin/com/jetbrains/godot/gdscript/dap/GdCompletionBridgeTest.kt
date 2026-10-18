@@ -41,6 +41,9 @@ import com.jetbrains.dap.protocol.RequestCancelledByPeerException
 import com.jetbrains.dap.protocol.ExceptionDetails
 import com.jetbrains.dap.protocol.StopReason
 import com.jetbrains.dap.protocol.StoppedEventArguments
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.GdScriptBundle
 import gdscript.dap.GdUnavailableEvaluator
 import gdscript.dap.remote.GdChildChunkXValueGroup
@@ -90,6 +93,8 @@ import java.util.concurrent.TimeUnit
 import javax.swing.Icon
 import kotlin.time.TestTimeSource
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Completion in Evaluate window"])
 @TestApplication
 class GdCompletionBridgeTest {
     enum class Consumer { NODE, CALLBACK, PROMISE }

@@ -13,7 +13,12 @@ import com.intellij.testFramework.fixtures.impl.TempDirTestFixtureImpl
 import com.jetbrains.rider.godot.community.GodotProjectProvider
 import com.jetbrains.rider.godot.community.GodotProjectSettingsProvider
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Project settings"])
 class GodotProjectSettingsProviderTest : BasePlatformTestCase() {
     override fun createTempDirTestFixture(): TempDirTestFixture = TempDirTestFixtureImpl()
 

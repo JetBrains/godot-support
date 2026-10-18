@@ -15,6 +15,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
 import com.jetbrains.rider.godot.community.gdscript.GdLanguage
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.formatter.GdCodeStyleSettings
 import gdscript.psi.GdStmt
 import org.junit.Test
@@ -22,6 +25,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.io.path.pathString
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Formatting"])
 @RunWith(JUnit4::class)
 class GdLambdaTailFormattingTest : BasePlatformTestCase() {
     /**

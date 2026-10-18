@@ -1,5 +1,8 @@
 package com.jetbrains.godot.tscn.toolWindow.model
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
@@ -8,6 +11,8 @@ import tscn.toolWindow.model.SceneTreeEditorDropHandler
 import tscn.toolWindow.model.SceneTreeEditorDropHandler.SceneTreeEditorDropDependencies
 import tscn.toolWindow.model.SceneTreeEditorDropHandler.ScriptPathAndName
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Scenes and resources/Scene tree tool window"])
 class SceneTreeEditorDropHandlerTest {
     private fun dependencies(
         isCsFile: Boolean = false,

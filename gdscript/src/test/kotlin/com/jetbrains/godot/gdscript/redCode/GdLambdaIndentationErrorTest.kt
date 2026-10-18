@@ -1,8 +1,13 @@
 package com.jetbrains.godot.gdscript.redCode
 
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.Ignore
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Red code"])
 class GdLambdaIndentationErrorTest : BasePlatformTestCase() {
     private fun lineStartOffsetOf(text: String, needle: String): Int {
         val idx = text.indexOf(needle)

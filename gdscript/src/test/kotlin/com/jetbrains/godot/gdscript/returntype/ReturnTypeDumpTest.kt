@@ -3,6 +3,9 @@ package com.jetbrains.godot.gdscript.returntype
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdAttributeEx
 import gdscript.psi.GdCallEx
 import gdscript.psi.GdClassVarDeclTl
@@ -11,6 +14,8 @@ import java.nio.file.Path
 import kotlin.io.path.pathString
 import kotlin.io.path.readText
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Type inference"])
 class ReturnTypeDumpTest : BasePlatformTestCase() {
     fun testNestedClassInstantiations() {
         val file = myFixture.configureByFile(getTestName(false) + ".gd")

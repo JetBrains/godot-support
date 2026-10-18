@@ -3,8 +3,13 @@ package com.jetbrains.godot.tscn.refactoring.rename
 import com.intellij.polySymbols.testFramework.renameSymbolAtCaret
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.godot.getBaseTestDataPath
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import kotlin.io.path.pathString
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Scenes and resources/Rename"])
 class ConnectionSignalRenamingTest : BasePlatformTestCase() {
 
     override fun getTestDataPath(): String {

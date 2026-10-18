@@ -3,6 +3,9 @@ package com.jetbrains.godot.gdscript.sdk
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.testFramework.LightVirtualFile
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.sdk.GdSdkParseCache
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,6 +17,8 @@ import org.junit.runners.JUnit4
  * The cache keys a parsed class by URL, and it resolves the URL again inside the cached closure.
  * A source that is unreadable now can be readable later, so the entry must go away at once.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/SDK"])
 @RunWith(JUnit4::class)
 class GdSdkParseCacheTest : BasePlatformTestCase() {
 

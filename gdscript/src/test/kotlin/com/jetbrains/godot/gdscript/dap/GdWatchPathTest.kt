@@ -2,6 +2,9 @@ package com.jetbrains.godot.gdscript.dap
 
 import com.intellij.platform.dap.DapVariable
 import com.intellij.testFramework.junit5.TestApplication
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdLocalExpressions
 import gdscript.dap.remote.GdObjectMemberRecovery
 import gdscript.dap.remote.GdOwnerExpression
@@ -19,6 +22,8 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import java.util.concurrent.TimeUnit
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Watches"])
 @TestApplication
 class GdWatchPathTest {
     private val self = GdWatchPath.nodeProperties("self")

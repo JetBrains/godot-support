@@ -2,7 +2,12 @@ package com.jetbrains.godot.gdscript.redCode
 
 import com.intellij.polySymbols.testFramework.checkGotoDeclaration
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Resolve and navigation"])
 class GdEnumNavigationTest : BasePlatformTestCase() {
     fun testEnumMemberResolvesToEnumValue() {
         val code = """

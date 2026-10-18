@@ -1,6 +1,9 @@
 package com.jetbrains.godot.gdscript.embeddedDocs
 
 import com.intellij.openapi.application.PathManager
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdExtensionManifestParser
 import gdscript.embeddedDocs.GdMacBundleUtils
 import org.junit.After
@@ -12,6 +15,8 @@ import org.junit.jupiter.api.fail
 import java.nio.file.Files
 import java.nio.file.Path
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/GDExtensions"])
 class GdExtensionManifestParserTest {
     private val linuxDebug = GdExtensionManifestParser.ActiveFeatureTags("linux", "x86_64", debug = true)
     private val temporaryRoots = mutableListOf<Path>()

@@ -3,11 +3,16 @@ package com.jetbrains.godot.gdscript.reference
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import org.junit.jupiter.api.Test
 
 /**
  * RIDER-143313 Go To Declaration on `super` navigates to the parent class method.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Resolve and navigation"])
 @TestApplication
 class GdSuperGotoDeclarationTest {
     private val gd: GdSdkFixture by gdSdkFixture("reference")

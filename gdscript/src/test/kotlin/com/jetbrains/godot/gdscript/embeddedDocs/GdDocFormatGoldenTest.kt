@@ -1,6 +1,9 @@
 package com.jetbrains.godot.gdscript.embeddedDocs
 
 import com.intellij.openapi.application.PathManager
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.embeddedDocs.GdCoreDocPipeline
 import gdscript.embeddedDocs.GdDocFormat
 import org.junit.Assert.assertEquals
@@ -21,6 +24,8 @@ import java.util.zip.DeflaterOutputStream
  * The hash covers the extractor, splitter, and pipeline for one Linux-shaped input.
  * It excludes compressed bytes because a JDK change can alter their form.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Documentation"])
 @RunWith(JUnit4::class)
 class GdDocFormatGoldenTest {
 

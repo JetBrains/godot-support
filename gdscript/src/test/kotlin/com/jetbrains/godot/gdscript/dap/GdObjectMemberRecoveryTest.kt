@@ -9,6 +9,9 @@ import com.intellij.platform.dap.VariableBatch
 import com.intellij.platform.dap.VariableFilter
 import com.intellij.testFramework.common.timeoutRunBlocking
 import com.jetbrains.dap.protocol.VariableAttribute
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdObjectMemberRecovery
 import gdscript.dap.remote.GdObjectMemberRecovery.recoveryCandidates
 import gdscript.dap.remote.GdObjectPresentation
@@ -29,6 +32,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Variables"])
 class GdObjectMemberRecoveryTest {
     @Test
     fun testMemberOwnerExpressions() {

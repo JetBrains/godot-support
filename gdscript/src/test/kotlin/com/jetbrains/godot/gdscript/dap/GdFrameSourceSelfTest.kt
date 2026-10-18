@@ -22,6 +22,9 @@ import com.intellij.testFramework.common.timeoutRunBlocking
 import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.testFramework.junit5.TestDisposable
 import com.intellij.testFramework.junit5.fixture.projectFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdFrameSourceSelf
 import gdscript.dap.remote.GdSelfCheckedFrame
 import gdscript.dap.remote.frameSourceSelf
@@ -37,6 +40,8 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Variables"])
 @TestApplication
 internal class GdFrameSourceSelfTest {
     private val projectFixture = projectFixture(openAfterCreation = true)

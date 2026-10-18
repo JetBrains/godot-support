@@ -7,6 +7,9 @@ import com.intellij.testFramework.LoggedErrorProcessor
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.system.LowLevelLocalMachineAccess
 import com.intellij.util.system.OS
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.library.GdLibraryManager
 import gdscript.library.GdSdkFingerprints
 import gdscript.library.GdSdkIntegrityValidator
@@ -29,6 +32,8 @@ import kotlin.time.Duration.Companion.milliseconds
  *
  * The tests run off the EDT because a VFS refresh needs a free EDT.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/SDK"])
 @RunWith(JUnit4::class)
 class GdLibraryManagerTest : BasePlatformTestCase() {
 

@@ -5,9 +5,14 @@ import com.intellij.polySymbols.testFramework.resolveToSymbols
 import com.intellij.polySymbols.utils.PolySymbolDeclaredInPsi
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.intellij.util.asSafely
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.psi.GdMethodDeclTl
 import gdscript.psi.GdRefIdRef
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Resolve and navigation"])
 class ResolveNestedClassMethodsTest : BasePlatformTestCase() {
 
     fun testResolveMethodsOnNestedClasses() {

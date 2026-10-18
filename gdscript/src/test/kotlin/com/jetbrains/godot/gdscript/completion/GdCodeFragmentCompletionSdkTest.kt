@@ -10,6 +10,9 @@ import com.jetbrains.godot.gdscript.gdSdkFixture
 import com.jetbrains.godot.gdscript.util.configureGdFragment
 import com.jetbrains.godot.gdscript.util.disableSingleItemAutoInsert
 import com.jetbrains.godot.gdscript.util.gdContextAt
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.assertj.core.api.Assertions.assertThat
@@ -17,6 +20,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 /** No gold file here, please - `Node`'s lookup is ~480 entries and would churn on every SDK bump */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Completion in Evaluate window"])
 @TestApplication
 class GdCodeFragmentCompletionSdkTest {
     private val gd: GdSdkFixture by gdSdkFixture("completion")

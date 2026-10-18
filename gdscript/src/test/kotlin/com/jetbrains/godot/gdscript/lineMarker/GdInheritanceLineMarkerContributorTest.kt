@@ -5,6 +5,9 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.gdNavigationElement
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.psi.GdMethodIdNmi
@@ -23,6 +26,8 @@ import org.junit.jupiter.api.Test
  * (`findGuttersAtCaret()`/`doHighlighting()`) - `PolySymbolHighlightingAnnotator` has a pre-existing,
  * unrelated range-computation bug that crashes on this fixture, independent of line-marker behavior.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Line markers"])
 @TestApplication
 class GdInheritanceLineMarkerContributorTest {
     private val gd: GdSdkFixture by gdSdkFixture("highlighting")

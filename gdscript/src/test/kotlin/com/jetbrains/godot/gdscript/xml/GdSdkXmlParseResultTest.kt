@@ -1,5 +1,8 @@
 package com.jetbrains.godot.gdscript.xml
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.polySymbols.sdk.xml.GdSdkXmlParser
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -16,6 +19,8 @@ import kotlin.io.path.writeText
  *
  * A caller must retry after a read failure, and it must not retry after a malformed document.
  */
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/SDK"])
 @RunWith(JUnit4::class)
 class GdSdkXmlParseResultTest {
 

@@ -4,10 +4,15 @@ import com.intellij.testFramework.TestModeFlags
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdSdkFixture
 import com.jetbrains.godot.gdscript.gdSdkFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.annotator.GD_ANNOTATOR_ORIGINAL_SEVERITY
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["GDScript/Highlighting"])
 @TestApplication
 class GdRefIdAnnotatorTest {
     private val gd: GdSdkFixture by gdSdkFixture("highlighting")

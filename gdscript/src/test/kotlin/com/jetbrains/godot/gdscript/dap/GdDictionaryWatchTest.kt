@@ -19,6 +19,9 @@ import com.intellij.xdebugger.XDebugSession
 import com.intellij.xdebugger.XExpression
 import com.intellij.xdebugger.frame.XNamedValue
 import com.intellij.xdebugger.frame.XSuspendContext
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdDapXScope
 import gdscript.dap.remote.GdDapXValue
 import gdscript.dap.remote.GdDictionaryKeys
@@ -53,6 +56,8 @@ import org.junit.jupiter.params.provider.ValueSource
 import java.lang.reflect.Proxy
 import java.util.concurrent.TimeUnit
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Watches"])
 @TestApplication
 class GdDictionaryWatchTest {
     enum class ReadStage { EVALUATION, OUTER_VARIABLES, KEY_VARIABLES }

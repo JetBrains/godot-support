@@ -9,6 +9,9 @@ import com.intellij.platform.dap.xdebugger.DefaultDapXDebuggerPresentationFactor
 import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.xdebugger.frame.XNamedValue
 import com.intellij.xdebugger.frame.presentation.XValuePresentation
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.dap.remote.GdDapXValue
 import gdscript.dap.remote.GdFrameSourceSelf
 import gdscript.dap.remote.GdOwnerExpression
@@ -27,6 +30,8 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import java.util.concurrent.TimeUnit
 
+@Subsystem(SubsystemConstants.GODOT)
+@ChecklistItems(["Debug/GDScript/Large collections are chunked"])
 @TestApplication
 class GdCollectionChunkTest {
     @ParameterizedTest
