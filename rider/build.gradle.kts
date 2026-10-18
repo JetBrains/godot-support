@@ -65,13 +65,20 @@ dependencies {
         bundledModule("intellij.platform.debugger")
         bundledModule("intellij.rd.client.debugger")
         bundledModule("intellij.platform.debugger.impl")
+        bundledModule("intellij.platform.execution.impl")
         bundledModules(
             "intellij.rider.debugger.shared",
             "intellij.rd.client", "intellij.rider.rdclient.dotnet", "intellij.rider.shared"
         )
         testFramework(TestFrameworkType.Bundled)
+        testFramework(TestFrameworkType.JUnit5, libs.versions.riderSdk.map { "RIDER-$it" })
     }
     testImplementation(libs.openTest4J)
+    testImplementation(platform(libs.junitBom))
+    testImplementation(libs.junitJupiter)
+    testImplementation(libs.kotlinTest)
+    testRuntimeOnly(libs.junitPlatformLauncher)
+    testRuntimeOnly(libs.junit4)
     testImplementation(testFixtures(":rider-godot-test-shared"))
 }
 
@@ -85,6 +92,9 @@ intellijPlatform {
 
 kotlin {
     jvmToolchain(25)
+    compilerOptions {
+        freeCompilerArgs.add("-Xcontext-parameters")
+    }
 }
 
 java {
