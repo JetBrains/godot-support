@@ -5,12 +5,16 @@ import com.intellij.testFramework.common.timeoutRunBlocking
 import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.integration.GodotEditorLsp
 import com.jetbrains.godot.gdscript.integration.godotEditorFixture
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.completion.GdCompletionDeduplicatingContributor
 import gdscript.completion.GdCompletionSource
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
 @TestApplication
 class GodotLspCompletionDeduplicationTest {
   private val editor = godotEditorFixture(GodotEditorLsp.ENABLED, ::lspProject)
@@ -27,6 +31,7 @@ class GodotLspCompletionDeduplicationTest {
   """.trimIndent()
 
   @Test
+  @ChecklistItems(["LSP functionality/Completion deduplication", "LSP functionality/Completion"])
   fun testDuplicateClassNameIsDeduplicated() = timeoutRunBlocking(timeout = defaultLspTestTimeout) {
     myFixture.configureByText("main.gd", script)
 
@@ -41,6 +46,7 @@ class GodotLspCompletionDeduplicationTest {
 
   // The Godot LSP offers keywords, such as `pass`, that GdKeywordContributor also offers.
   @Test
+  @ChecklistItems(["LSP functionality/Completion deduplication", "LSP functionality/Completion"])
   fun testKeywordIsDeduplicated() = timeoutRunBlocking(timeout = defaultLspTestTimeout) {
     myFixture.configureByText("main.gd", """
       extends Node
@@ -60,6 +66,7 @@ class GodotLspCompletionDeduplicationTest {
   // Regression guard: proves the scenario above is a genuine LSP/PolySymbols collision - with the
   // deduplication switched off, both sources' "A1" items reach the lookup.
   @Test
+  @ChecklistItems(["LSP functionality/Completion deduplication", "LSP functionality/Completion"])
   fun testDuplicateClassNameReappearsWhenDeduplicationIsDisabled() = timeoutRunBlocking(timeout = defaultLspTestTimeout) {
     val registryValue = Registry.get("gdscript.completion.deduplicateLspItems")
     val previousValue = registryValue.asBoolean()

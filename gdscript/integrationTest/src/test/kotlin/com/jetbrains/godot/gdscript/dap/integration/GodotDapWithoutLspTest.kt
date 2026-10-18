@@ -11,6 +11,9 @@ import com.jetbrains.godot.gdscript.integration.defaultDapTestTimeout
 import com.jetbrains.godot.gdscript.integration.godotDebug
 import com.jetbrains.godot.gdscript.integration.godotEditorFixture
 import com.jetbrains.godot.test.project.godotProject
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import gdscript.lsp.GodotLspIntegrationProvider
 import gdscript.lsp.GodotLspRunningStatusProvider
 import gdscript.settings.GdLspConnectionMode
@@ -21,11 +24,13 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
+@Subsystem(SubsystemConstants.GODOT)
 @TestApplication
 class GodotDapWithoutLspTest {
     private val editorFixture = godotEditorFixture(GodotEditorLsp.DISABLED, ::withoutLspProject)
 
     @Test
+    @ChecklistItems(["Debug/GDScript/Debug without LSP", "Debug/GDScript/Completion in Evaluate window"])
     fun testDebugSessionWorksWithoutLsp() = timeoutRunBlocking(timeout = defaultDapTestTimeout) {
         val editor = editorFixture.get()
         val project = editor.project
