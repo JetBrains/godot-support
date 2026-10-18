@@ -93,7 +93,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     }
 
     @Test // Debug C# Godot player
-    @ChecklistItems(["Debug/Debug C# Godot player"])
+    @ChecklistItems(["Debug/C#/Debug C# Godot player"])
     fun testDebug() {
         debugAtCardReady {
             dumpFullCurrentData()
@@ -101,7 +101,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     }
 
     @Test // Check simple stepping
-    @ChecklistItems(["Debug/Stepping while debug C# Godot player"])
+    @ChecklistItems(["Debug/C#/Stepping while debug C# Godot player"])
     fun checkSimpleStepping() {
         debugAtCardReady(breakpointLine = 20) {
             stepInto()
@@ -112,7 +112,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     }
 
     @Test // Check simple evaluation
-    @ChecklistItems(["Debug/Evaluation while debugging C# Godot player"])
+    @ChecklistItems(["Debug/C#/Evaluation while debugging C# Godot player"])
     fun checkSimpleEvaluation() {
         debugAtCardReady {
             val toEvaluate = "binaryNotation / 25"
@@ -122,6 +122,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
     }
 
     @Test
+    @ChecklistItems(["Debug/C#/Scene tree/Root"])
     fun checkSceneTreeRoot() {
         debugAtCardReady {
             dumpSceneTreeShape(sceneTreeNode(SCENE_TREE_ROOT), depth = 1, caption = "/$SCENE_TREE_ROOT")
@@ -136,6 +137,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
      * `SceneTreeFixture/Chunked` holds 150 children, so it must produce `[0..99]` and `[100..149]`.
      */
     @Test
+    @ChecklistItems(["Debug/C#/Scene tree/Large child lists are chunked"])
     fun checkSceneTreeChunksLargeChildLists() {
         debugAtCardReady {
             val chunked = sceneTreeNode(SCENE_TREE_ROOT, "SceneTreeFixture", "Chunked")
@@ -153,6 +155,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
      * They hold identically named children, so any difference in the rendered rows is a bug in one of the paths.
      */
     @Test
+    @ChecklistItems(["Debug/C#/Scene tree/Bulk and per-child retrieval agree"])
     fun checkBulkAndPerChildRetrievalAgree() {
         debugAtCardReady {
             val narrowNode = sceneTreeNode(SCENE_TREE_ROOT, "SceneTreeFixture", "Narrow")
@@ -181,6 +184,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
      * category and a `Parent` row added on top - it must *not* render its children inline.
      */
     @Test
+    @ChecklistItems(["Debug/C#/Scene tree/Node reached through code"])
     fun checkNodeReachedThroughCode() {
         debugAtCardReady {
             val thisValue = localNamed("this")
@@ -210,6 +214,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
      * sides of `NodeChildrenEnumerator.BulkFetchThreshold` and they must come back identical.
      */
     @Test
+    @ChecklistItems(["Debug/C#/Scene tree/Special child names"])
     fun checkSpecialChildNames() {
         debugAtCardReady {
             val perChildNode = sceneTreeNode(SCENE_TREE_ROOT, "SceneTreeFixture", "SpecialNames")
@@ -240,6 +245,7 @@ class DebugGodotCSharpPlayer : PerTestSolutionTestBase() {
      * `root` local only while `EvaluationOptions.AllowTargetInvoke` is set. Its absence is the contract here.
      */
     @Test
+    @ChecklistItems(["Debug/C#/Scene tree/Without target invoke"])
     fun checkSceneTreeIsAbsentWithoutTargetInvoke() {
         withImplicitTargetInvokeDisabled {
             debugAtCardReady {

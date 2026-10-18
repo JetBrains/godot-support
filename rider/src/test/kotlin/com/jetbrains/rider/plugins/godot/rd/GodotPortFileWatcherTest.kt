@@ -1,5 +1,8 @@
 package com.jetbrains.rider.plugins.godot.rd
 
+import com.jetbrains.rider.test.annotations.Subsystem
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import com.jetbrains.rider.test.shared.constants.TeamCityTags
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +24,7 @@ import kotlin.io.path.writeText
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@Subsystem(SubsystemConstants.GODOT)
 @Tag(TeamCityTags.Plugins.Godot.General)
 @Timeout(120)
 class GodotPortFileWatcherTest {
@@ -28,6 +32,7 @@ class GodotPortFileWatcherTest {
     lateinit var projectDir: Path
 
     @Test
+    @ChecklistItems(["Connection to Godot editor/Port file watcher"])
     fun `the port file present before the watch is armed is reported`() = runBlocking {
         val editorDir = projectDir.resolve(EDITOR_DIR)
         editorDir.createDirectories()
@@ -43,6 +48,7 @@ class GodotPortFileWatcherTest {
     }
 
     @Test
+    @ChecklistItems(["Connection to Godot editor/Port file watcher"])
     fun `the port file appearing while the directory is missing is reported`() = runBlocking {
         val editorDir = projectDir.resolve(EDITOR_DIR)
         val changes = Channel<Unit>(Channel.CONFLATED)
@@ -65,6 +71,7 @@ class GodotPortFileWatcherTest {
     }
 
     @Test
+    @ChecklistItems(["Connection to Godot editor/Port file watcher"])
     fun `the port file written into a watched directory is reported`() = runBlocking {
         val editorDir = projectDir.resolve(EDITOR_DIR)
         editorDir.createDirectories()

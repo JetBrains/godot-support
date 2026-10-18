@@ -21,10 +21,13 @@ import com.jetbrains.rider.run.configurations.remote.MonoRemoteConfigType
 import com.jetbrains.rider.run.configurations.remote.RemoteConfiguration
 import com.jetbrains.rider.runtime.dotNetCore.DotNetCoreRuntimeType
 import com.jetbrains.rider.test.annotations.Solution
+import com.jetbrains.rider.test.annotations.Subsystem
 import com.jetbrains.rider.test.annotations.TestSettings
+import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.enums.BuildTool
 import com.jetbrains.rider.test.enums.sdk.SdkVersion
 import com.jetbrains.rider.test.junit5.base.PerClassSolutionTestBase
+import com.jetbrains.rider.test.reporting.SubsystemConstants
 import com.jetbrains.rider.test.shared.constants.TeamCityTags
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -38,12 +41,14 @@ import org.junit.jupiter.params.provider.EnumSource
 import kotlin.io.path.pathString
 import kotlin.reflect.KClass
 
+@Subsystem(SubsystemConstants.GODOT)
 @Solution("ResCompletionTest", slnName = "GodotProject.sln")
 @TestSettings(sdkVersion = SdkVersion.LATEST_STABLE, buildTool = BuildTool.SDK)
 @Tag(TeamCityTags.Plugins.Godot.General)
 @Timeout(30)
 class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
     @Test
+    @ChecklistItems(["Run configurations/Godot 3 configurations"])
     fun `Godot 3 GDScript project creates expected configurations`() {
         assertGeneratedConfigurations(
             GodotVersion.GODOT_3,
@@ -57,6 +62,7 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
     }
 
     @Test
+    @ChecklistItems(["Run configurations/Godot 3 configurations"])
     fun `Godot 3 CSharp project creates expected configurations`() {
         assertGeneratedConfigurations(
             GodotVersion.GODOT_3,
@@ -70,6 +76,7 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
     }
 
     @Test
+    @ChecklistItems(["Run configurations/Godot 4 configurations"])
     fun `Godot 4 GDScript project creates expected configurations`() {
         assertGeneratedConfigurations(
             GodotVersion.GODOT_4,
@@ -83,6 +90,7 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
     }
 
     @Test
+    @ChecklistItems(["Run configurations/Godot 4 configurations"])
     fun `Godot 4 CSharp project creates expected configurations`() {
         assertGeneratedConfigurations(
             GodotVersion.GODOT_4,
@@ -97,6 +105,7 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
 
     @ParameterizedTest
     @EnumSource(GodotVersion::class, names = ["GODOT_3", "GODOT_4"])
+    @ChecklistItems(["Run configurations/CMake configurations"])
     fun `CMake project creates expected launch configurations`(godotVersion: GodotVersion) {
         val launchType = if (godotVersion == GodotVersion.GODOT_3) {
             GodotDebugRunConfigurationType::class
@@ -119,6 +128,7 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
 
     @ParameterizedTest
     @EnumSource(GodotVersion::class, names = ["GODOT_3", "GODOT_4"])
+    @ChecklistItems(["Run configurations/CMake configurations"])
     fun `CMake GDScript project creates expected launch configurations`(godotVersion: GodotVersion) {
         val launchType = if (godotVersion == GodotVersion.GODOT_3) {
             GodotDebugRunConfigurationType::class
@@ -138,11 +148,13 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
     }
 
     @Test
+    @ChecklistItems(["Run configurations/Unknown Godot version"])
     fun `Unknown version creates no managed configurations`() {
         assertGeneratedConfigurations(GodotVersion.UNKNOWN, isPureGdScriptProject = false, expected = emptySet())
     }
 
     @Test
+    @ChecklistItems(["Run configurations/Generic Godot path"])
     fun `GDScript project with only a generic path creates the native editor`() {
         assertGeneratedConfigurations(
             GodotVersion.UNKNOWN,
@@ -154,6 +166,7 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
     }
 
     @Test
+    @ChecklistItems(["Run configurations/Conflicting Godot paths"])
     fun `Conflicting paths prefer Godot 4`() {
         assertGeneratedConfigurations(
             GodotVersion.BOTH,
@@ -176,6 +189,7 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
     }
 
     @Test
+    @ChecklistItems(["Run configurations/Conflicting Godot paths"])
     fun `Conflicting paths preserve existing launch configurations`() {
         val runManager = RunManager.getInstance(project)
         runManager.allSettings.toList().forEach(runManager::removeConfiguration)
@@ -200,6 +214,7 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
 
     @ParameterizedTest
     @EnumSource(GodotVersion::class)
+    @ChecklistItems(["Run configurations/Mono attach configuration cleanup"])
     fun `Generation cleans up Mono attach only when Godot 4 is known`(godotVersion: GodotVersion) {
         val runManager = RunManager.getInstance(project)
         for (projectType in listOf(
@@ -237,6 +252,7 @@ class GodotRunConfigurationGeneratorTest : PerClassSolutionTestBase() {
 
     @ParameterizedTest
     @EnumSource(GodotVersion::class, names = ["GODOT_3", "GODOT_4"])
+    @ChecklistItems(["Run configurations/Saved configurations are preserved"])
     fun `Generation preserves saved attach configurations and selection`(godotVersion: GodotVersion) {
         val runManager = RunManager.getInstance(project)
         for (projectType in listOf(ProjectType(false, false), ProjectType(true, false), ProjectType(false, true))) {
