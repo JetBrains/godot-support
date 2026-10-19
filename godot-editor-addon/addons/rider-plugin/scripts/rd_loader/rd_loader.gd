@@ -99,6 +99,8 @@ func load_rd_extension(rider_path: String) -> void :
 		return
 	var gdextension_path: String = _install_path_to_rd_path(rider_path)
 	var gdextension_exists: bool = FileAccess.file_exists(gdextension_path)
+	if gdextension_path == _loaded_rd_path:
+		return
 	if _needs_restart:
 		_show_restart_dialog(gdextension_exists)
 		return
