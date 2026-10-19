@@ -21,6 +21,7 @@ class GdResourceCompletionContributor : CompletionContributor() {
     val NODE_PATH = psiElement(GdTypes.NODE_PATH_LEX)
     val NODE_PATH_ROOT = NODE_PATH.withSuperParent(3, psiElement(GdFile::class.java))
     val STRING = psiElement(GdTypes.STRING)
+    val STRING_NAME = psiElement(GdTypes.STRING_NAME)
 
     /** Opening of the quoted unique name form, `%"Name"`. */
     private val QUOTED_UNIQUE_PREFIX = "%\""
@@ -53,17 +54,37 @@ class GdResourceCompletionContributor : CompletionContributor() {
                 GdNodeUtil.listNodes(position).forEach { r.addAllElements(it.lookups()) }
             }
         } else if (STRING.accepts(position)) {
-            GdFileResIndex.getNonEmptyKeys(position).forEach {
-                result.addElement(
-                    GdLookup.create(
-                        it,
-                        priority = GdLookup.BUILT_IN,
-                    )
-                )
+            val context = GdStringCompletionUtil.inputContext(position)
+            GdStringCompletionUtil.addInputs(position, result, context)
+            when (context) {
+                GdStringCompletionUtil.InputContext.ACTION_ARGUMENT -> return
+                GdStringCompletionUtil.InputContext.UNRESOLVED_NAME_MATCH,
+                GdStringCompletionUtil.InputContext.OTHER -> {
+                    GdFileResIndex.getNonEmptyKeys(position).forEach {
+                        result.addElement(
+                            GdLookup.create(
+                                it,
+                                priority = GdLookup.BUILT_IN,
+                            )
+                        )
+                    }
+                    GdStringCompletionUtil.addGroups(position, result)
+                    GdStringCompletionUtil.addMetas(position, result)
+                }
             }
-            GdStringCompletionUtil.addInputs(position, result)
-            GdStringCompletionUtil.addGroups(position, result)
-            GdStringCompletionUtil.addMetas(position, result)
+        } else if (STRING_NAME.accepts(position)) {
+            val context = GdStringCompletionUtil.inputContext(position)
+            when (context) {
+                GdStringCompletionUtil.InputContext.ACTION_ARGUMENT,
+                GdStringCompletionUtil.InputContext.UNRESOLVED_NAME_MATCH -> {
+                    val prefix = position.text.substring(2, parameters.offset - position.textRange.startOffset)
+                    GdStringCompletionUtil.addInputs(position, result.withPrefixMatcher(prefix), context, stringName = true)
+                }
+
+                // TODO: Add group and metadata completion in StringName literals in a follow-up ticket.
+                // Node.add_to_group and Object.get_meta take StringName parameters.
+                GdStringCompletionUtil.InputContext.OTHER -> Unit
+            }
         }
     }
 

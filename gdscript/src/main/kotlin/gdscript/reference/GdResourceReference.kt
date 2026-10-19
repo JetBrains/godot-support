@@ -9,6 +9,7 @@ import com.intellij.openapi.vfs.isFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import gdscript.completion.GdLookup
+import gdscript.completion.utils.GdStringCompletionUtil
 import gdscript.index.impl.GdFileResIndex
 import gdscript.psi.GdElementFactory
 import gdscript.psi.utils.GdCfgUtil
@@ -68,6 +69,11 @@ class GdResourceReference : PsiReferenceBase<PsiElement> {
     }
 
     override fun getVariants(): Array<LookupElement> {
+        when (GdStringCompletionUtil.inputContext(element)) {
+            GdStringCompletionUtil.InputContext.ACTION_ARGUMENT -> return emptyArray()
+            GdStringCompletionUtil.InputContext.UNRESOLVED_NAME_MATCH,
+            GdStringCompletionUtil.InputContext.OTHER -> Unit
+        }
         return GdFileResIndex.getNonEmptyKeys(project)
             .filterGdTscn().map {
                 GdLookup.create(

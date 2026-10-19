@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="InputEventAction" inherits="InputEvent">
+  <members>
+    <member name="action" type="StringName" setter="set_action" getter="get_action" />
+  </members>
+</class>

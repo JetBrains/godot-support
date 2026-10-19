@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="ProjectSettings" inherits="Object">
+  <members>
+    <member name="input/ui_accept" type="Dictionary" />
+    <member name="input/ui_cancel" type="Dictionary" />
+    <member name="input/TESTING_ONLY_NEWLY_UI_METHOD_TESTING" type="Dictionary" />
+    <member name="input/ui_accept.macos" type="Dictionary" />
+  </members>
+</class>
