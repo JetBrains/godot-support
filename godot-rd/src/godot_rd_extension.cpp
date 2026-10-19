@@ -57,20 +57,47 @@ JetBrains::GodotPlugin::PlayForDebugResult GodotRdExtension::play_current_scene_
 		UtilityFunctions::print_verbose("[RIDER RD] Cannot debug in editor with multiple instances. Please disable 'Enable Multiple Instances'");
 		return JetBrains::GodotPlugin::PlayForDebugResult::MultipleInstances;
 	}
-	// The game process inherits the editor's environment, so set the variables from Rider for the duration
-	// of the launch and restore the previous state afterwards.
-	const auto *os = OS::get_singleton();
-	Dictionary previous_values;
-	const Array keys = environment.keys();
+	// The game process inherits the editor's environment. The C# build in play_current_scene() runs
+	// 'dotnet build' first, and it must not get the suspended diagnostic port from Rider. So _run_scene()
+	// sets the variables after the build, right before the editor starts the game process.
+	launch_environment = environment;
+	editor->play_current_scene();
+	// Restoring right away is safe only because play_current_scene() starts the game process synchronously:
+	// the autosave, the C# build, _run_scene() and OS::create_instance() all run inside this call.
+	// If Godot ever defers the launch (for example, to the next frame), the game will not get these variables.
+	restore_launch_environment();
+	launch_environment.clear();
+	const bool playing = editor->is_playing_scene();
+	if (!playing) {
+		UtilityFunctions::print_verbose("[RIDER RD] the editor did not play the current scene");
+		return JetBrains::GodotPlugin::PlayForDebugResult::Unknown;
+	}
+	return JetBrains::GodotPlugin::PlayForDebugResult::Success;
+}
+
+PackedStringArray GodotRdExtension::_run_scene(const String &p_scene, const PackedStringArray &p_args) const {
+	// The editor calls this after the build callbacks and right before it starts the game process.
+	_apply_launch_environment();
+	return p_args;
+}
+
+void GodotRdExtension::_apply_launch_environment() const {
+	if (launch_environment_applied || launch_environment.is_empty()) {
+		return;
+	}
+	launch_environment_applied = true;
+	auto *os = OS::get_singleton();
+	replaced_environment.clear();
+	const Array keys = launch_environment.keys();
 	for (int i = 0; i < keys.size(); i++) {
 		const String key = keys[i];
 		if (key.is_empty()) {
 			continue;
 		}
-		String value = environment[key];
+		String value = launch_environment[key];
 		if (os->has_environment(key)) {
 			const String previous_value = os->get_environment(key);
-			previous_values[key] = previous_value;
+			replaced_environment[key] = previous_value;
 			// Keep the diagnostic ports that the editor already has, the runtime accepts a ';'-separated list.
 			if (key == "DOTNET_DiagnosticPorts" && !previous_value.is_empty()) {
 				value = previous_value.trim_suffix(";") + ";" + value;
@@ -78,27 +105,27 @@ JetBrains::GodotPlugin::PlayForDebugResult GodotRdExtension::play_current_scene_
 		}
 		os->set_environment(key, value);
 	}
-	editor->play_current_scene();
-	// Restoring right away is safe only because play_current_scene() starts the game process synchronously:
-	// the C# build, the autosave and OS::create_instance() all run inside this call.
-	// If Godot ever defers the launch (for example, to the next frame), the game will not get these variables.
+}
+
+void GodotRdExtension::restore_launch_environment() const {
+	if (!launch_environment_applied) {
+		return;
+	}
+	launch_environment_applied = false;
+	auto *os = OS::get_singleton();
+	const Array keys = launch_environment.keys();
 	for (int i = 0; i < keys.size(); i++) {
 		const String key = keys[i];
 		if (key.is_empty()) {
 			continue;
 		}
-		if (previous_values.has(key)) {
-			os->set_environment(key, previous_values[key]);
+		if (replaced_environment.has(key)) {
+			os->set_environment(key, replaced_environment[key]);
 		} else {
 			os->unset_environment(key);
 		}
 	}
-	const bool playing = editor->is_playing_scene();
-	if (!playing) {
-		UtilityFunctions::print_verbose("[RIDER RD] the editor did not play the current scene");
-		return JetBrains::GodotPlugin::PlayForDebugResult::Unknown;
-	}
-	return JetBrains::GodotPlugin::PlayForDebugResult::Success;
+	replaced_environment.clear();
 }
 
 void GodotRdExtension::stop_playing_scene() {

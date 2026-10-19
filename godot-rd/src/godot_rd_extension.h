@@ -20,7 +20,16 @@ class GodotRdExtension : public EditorPlugin {
 	static GodotRdExtension *singleton;
 
 	std::function<void(Node *)> new_node_opened;
+	// The variables from Rider for the game process of the current debug launch.
+	Dictionary launch_environment;
+	// The values that the launch variables replaced. A key without a previous value is not in the dictionary.
+	// The members are mutable, because the editor calls the _run_scene() override through a const method.
+	mutable Dictionary replaced_environment;
+	mutable bool launch_environment_applied = false;
+
 	bool _external_editor_turned_on() const;
+	void _apply_launch_environment() const;
+	void restore_launch_environment() const;
 
 	void _scene_saved(const String &);
 
@@ -31,6 +40,7 @@ public:
 
 	void _enter_tree() override;
 	void _exit_tree() override;
+	PackedStringArray _run_scene(const String &p_scene, const PackedStringArray &p_args) const override;
 
 	void open_in_godot(const String &);
 	void scene_saved(const String &);
