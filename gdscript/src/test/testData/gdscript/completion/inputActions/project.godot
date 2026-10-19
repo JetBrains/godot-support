@@ -6,7 +6,7 @@ ui_accept={
 "deadzone": 0.5,
 "events": []
 }
-move_left={
+jump={
 "deadzone": 0.5,
 "events": []
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="InputEvent" inherits="Object">
+  <methods>
+    <method name="is_action_pressed">
+      <return type="bool" />
+      <param index="0" name="action" type="StringName" />
+    </method>
+  </methods>
+</class>

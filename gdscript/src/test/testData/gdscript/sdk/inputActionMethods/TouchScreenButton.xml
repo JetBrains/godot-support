@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="TouchScreenButton" inherits="Node2D">
+  <members>
+    <member name="action" type="String" setter="set_action" getter="get_action" />
+  </members>
+</class>
