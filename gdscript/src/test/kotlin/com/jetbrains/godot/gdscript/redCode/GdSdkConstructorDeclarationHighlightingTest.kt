@@ -4,7 +4,10 @@ import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.application.invokeAndWaitIfNeeded
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManager
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 /**
  * Reproduces a bug where navigating (Go To Declaration) from a bare SDK constructor call, e.g.
@@ -16,10 +19,12 @@ import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
  * has other, unrelated pre-existing warnings (e.g. `float`/`Vector2i` "Unrecognized name") that
  * aren't in scope here - only the absence of a crash is being verified.
  */
+@TestApplication
 class GdSdkConstructorDeclarationHighlightingTest : GdTestCaseWithSdk("highlighting") {
 
+    @Test
     fun testNavigatingToSdkConstructorDoesNotBreakIdentifierHighlighting() {
-        doEditorTypingTest(
+        gd.doEditorTypingTest(
             fileContents = "func f():\n\tvar v = Vect<caret>or2(1, 2)",
             dir = false,
             checkResult = false,

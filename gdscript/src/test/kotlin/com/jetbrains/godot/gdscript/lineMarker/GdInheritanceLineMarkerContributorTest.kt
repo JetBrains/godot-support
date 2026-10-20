@@ -1,13 +1,14 @@
 package com.jetbrains.godot.gdscript.lineMarker
 
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.gdNavigationElement
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.psi.GdMethodIdNmi
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 
 /**
  * `GdInheritanceLineMarkerContributor`'s "overrides superclass method" gutter icon used to be blind
@@ -21,7 +22,7 @@ import org.junit.runners.JUnit4
  * (`findGuttersAtCaret()`/`doHighlighting()`) - `PolySymbolHighlightingAnnotator` has a pre-existing,
  * unrelated range-computation bug that crashes on this fixture, independent of line-marker behavior.
  */
-@RunWith(JUnit4::class)
+@TestApplication
 class GdInheritanceLineMarkerContributorTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
@@ -35,18 +36,17 @@ class GdInheritanceLineMarkerContributorTest : GdTestCaseWithSdk("highlighting")
         """.trimMargin()
         )
 
-        val element = myFixture.file.findElementAt(myFixture.caretOffset)
-        val methodIdNmi = PsiTreeUtil.getParentOfType(element, GdMethodIdNmi::class.java)
-        assertNotNull("Expected caret to be inside a GdMethodIdNmi", methodIdNmi)
+        runReadActionBlocking {
+            val element = myFixture.file.findElementAt(myFixture.caretOffset)
+            val methodIdNmi = PsiTreeUtil.getParentOfType(element, GdMethodIdNmi::class.java)
+            assertNotNull(methodIdNmi, "Expected caret to be inside a GdMethodIdNmi")
 
-        val parentClass = GdSymbolResolverUtil.resolveOwnClassSymbol(methodIdNmi!!)?.resolveSuperClassSymbol()
-        assertNotNull("Expected Node2D to resolve as the super class", parentClass)
+            val parentClass = GdSymbolResolverUtil.resolveOwnClassSymbol(methodIdNmi!!)?.resolveSuperClassSymbol()
+            assertNotNull(parentClass, "Expected Node2D to resolve as the super class")
 
-        val superMethod = GdSymbolResolverUtil.findMethodSymbol(parentClass, "_ready")
-        assertNotNull("Expected _ready to resolve on Node2D's SDK ancestor chain", superMethod)
-        assertNotNull(
-            "Expected a navigable element for the resolved SDK method",
-            superMethod!!.gdNavigationElement,
-        )
+            val superMethod = GdSymbolResolverUtil.findMethodSymbol(parentClass, "_ready")
+            assertNotNull(superMethod, "Expected _ready to resolve on Node2D's SDK ancestor chain")
+            assertNotNull(superMethod!!.gdNavigationElement, "Expected a navigable element for the resolved SDK method")
+        }
     }
 }

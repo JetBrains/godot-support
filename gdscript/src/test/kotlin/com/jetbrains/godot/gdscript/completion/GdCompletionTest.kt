@@ -3,21 +3,23 @@ package com.jetbrains.godot.gdscript.completion
 import com.intellij.codeInsight.lookup.Lookup
 import com.intellij.codeInsight.lookup.LookupElementPresentation
 import com.intellij.testFramework.fixtures.CodeInsightTestFixture
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdCompletionTest : GdTestCaseWithSdk("completion") {
 
     @Test
-    fun testCompleteClassMembers() = doLookupTest(
+    fun testCompleteClassMembers() = gd.doLookupTest(
         dir = false
     )
 
     @Test
-    fun testCompletionAfterConstructedInnerClass() = doLookupTest(
+    fun testCompletionAfterConstructedInnerClass() = gd.doLookupTest(
         dir = false,
         fileContents = """
             |class_name NestedClassErrors
@@ -37,7 +39,7 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
     )
 
     @Test
-    fun testCompletionAfterClass() = doLookupTest(
+    fun testCompletionAfterClass() = gd.doLookupTest(
         dir = false,
         fileContents = """
             |class_name NestedClassErrors
@@ -54,7 +56,7 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
     )
 
     @Test
-    fun testCompletionAfterClass2() = doLookupTest(
+    fun testCompletionAfterClass2() = gd.doLookupTest(
         dir = false,
         fileContents = """
             |class_name NestedClassErrors
@@ -71,7 +73,7 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
     )
 
     @Test
-    fun testWithSdk01() = doLookupTest(
+    fun testWithSdk01() = gd.doLookupTest(
         dir = false,
         fileContents = """
             |func a():
@@ -83,7 +85,7 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
     )
 
     @Test
-    fun testWithSdk02() = doLookupTest(
+    fun testWithSdk02() = gd.doLookupTest(
         dir = false,
         fileContents = """
             |func a():
@@ -109,8 +111,8 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
     @Test
     fun testQuotedUniqueNameLookup() = doUniqueNamesTest("%\"<caret>\"") {
         val items = lookupElementStrings!!
-        assertContainsElements(items, "%\"HealthBar\"", "%\"Score Label\"", "%\"Main-Menu\"")
-        assertDoesntContain(items, "%\"Plain\"", "%\"Main\"", "\$Plain")
+        assertThat(items).contains("%\"HealthBar\"", "%\"Score Label\"", "%\"Main-Menu\"")
+        assertThat(items).doesNotContain("%\"Plain\"", "%\"Main\"", "\$Plain")
     }
 
     @Test
@@ -129,15 +131,15 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
     @Test
     fun testUnquotedUniqueNameLookupQuotesOnlyWhenRequired() = doUniqueNamesTest("%<caret>") {
         val items = lookupElementStrings!!
-        assertContainsElements(items, "%HealthBar", "%\"Score Label\"", "%\"Main-Menu\"")
-        assertDoesntContain(items, "%Score Label", "%Main-Menu", "%Plain")
+        assertThat(items).contains("%HealthBar", "%\"Score Label\"", "%\"Main-Menu\"")
+        assertThat(items).doesNotContain("%Score Label", "%Main-Menu", "%Plain")
     }
 
     @Test
     fun testInstancedNodesAreOffered() = doUniqueNamesTest("%\"<caret>\"") {
         val items = lookupElementStrings!!
-        assertContainsElements(items, "%\"Player\"")
-        assertDoesntContain(items, "%\"PlayerRoot\"")
+        assertThat(items).contains("%\"Player\"")
+        assertThat(items).doesNotContain("%\"PlayerRoot\"")
 
         val player = lookup!!.items.single { it.lookupString == "%\"Player\"" }
         assertEquals("CharacterBody2D", LookupElementPresentation.renderElement(player).typeText)
@@ -145,24 +147,24 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
 
     @Test
     fun testInstancedNodeChildrenAreOffered() = doUniqueNamesTest("\$<caret>") {
-        assertContainsElements(lookupElementStrings!!, "\$Player", "\$Player/Sprite")
+        assertThat(lookupElementStrings!!).contains("\$Player", "\$Player/Sprite")
     }
 
     @Test
     fun testInstancedNodeUniqueChildrenAreNotOffered() = doUniqueNamesTest("%\"<caret>\"") {
         val items = lookupElementStrings!!
-        assertDoesntContain(items, "%\"PlayerUnique\"")
+        assertThat(items).doesNotContain("%\"PlayerUnique\"")
     }
 
     @Test
     fun testTscnSelfRecursion() = doSelfTscnRecursionTest("\$<caret>") {
-        assertContainsElements(lookupElementStrings!!, "\$Main/SelfRec", "\$Main")
+        assertThat(lookupElementStrings!!).contains("\$Main/SelfRec", "\$Main")
     }
 
     @Test
     fun testTscnMutualRecursion() = doMutualTscnRecursionTest("\$<caret>") {
         // "\$MainRec1/Rec1/Rec2" is not there, because the recursion guard fires on it
-        assertContainsElements(lookupElementStrings!!, "\$MainRec1/Rec1", "\$MainRec1")
+        assertThat(lookupElementStrings!!).contains("\$MainRec1/Rec1", "\$MainRec1")
     }
 
     private fun script(expression: String): String =
@@ -170,7 +172,7 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
 
     /** @param expression is expected to include the `<caret>` string */
     private fun doInputActionRankingTest(expression: String) =
-        doConfiguredTest(
+        gd.doConfiguredTest(
             dir = true,
             dirName = "inputActions",
             configureFileName = "input_actions.gd",
@@ -178,15 +180,15 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
         ) {
             completeBasic()
             val items = lookup!!.items.map { it.lookupString }
-            assertContainsElements(items, "\"ui_accept\"", "\"move_left\"", "\"res://resource.gd\"")
+            assertThat(items).contains("\"ui_accept\"", "\"move_left\"", "\"res://resource.gd\"")
 
             val actionIndices = items.indices.filter { items[it] == "\"ui_accept\"" || items[it] == "\"move_left\"" }
             val resourceIndices = items.indices.filter { items[it].trim('"').startsWith("res://") }
-            assertTrue("Input actions must precede resources: $items", actionIndices.max() < resourceIndices.min())
+            assertTrue(actionIndices.max() < resourceIndices.min(), "Input actions must precede resources: $items")
         }
 
     private fun doUniqueNamesTest(expression: String, check: CodeInsightTestFixture.() -> Unit) =
-        doConfiguredTest(
+        gd.doConfiguredTest(
             dir = true,
             dirName = "uniqueNames",
             configureFileName = "unique_names.gd",
@@ -197,7 +199,7 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
         }
 
     private fun doSelfTscnRecursionTest(expression: String, check: CodeInsightTestFixture.() -> Unit) =
-        doConfiguredTest(
+        gd.doConfiguredTest(
             dir = true,
             dirName = "tscnSelfRecursion",
             configureFileName = "tscn_recursion.gd",
@@ -208,7 +210,7 @@ class GdCompletionTest : GdTestCaseWithSdk("completion") {
         }
 
     private fun doMutualTscnRecursionTest(expression: String, check: CodeInsightTestFixture.() -> Unit) =
-        doConfiguredTest(
+        gd.doConfiguredTest(
             dir = true,
             dirName = "tscnMutualRecursion",
             configureFileName = "tscn_recursion.gd",

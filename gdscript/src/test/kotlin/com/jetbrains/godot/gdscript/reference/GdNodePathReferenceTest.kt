@@ -4,13 +4,15 @@ import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.testFramework.multiResolveSymbolReference
 import com.intellij.polySymbols.testFramework.resolveSymbolReference
 import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.psi.GdPsiNodeSymbol
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertInstanceOf
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
 
     @Test
@@ -34,7 +36,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
     }
 
     @Test
-    fun testResolveQuotedRelativeParentPathToTscnNode() = doConfiguredTest(
+    fun testResolveQuotedRelativeParentPathToTscnNode() = gd.doConfiguredTest(
         dir = true,
         dirName = "uniqueNames",
         configureFileName = "deep_child.gd",
@@ -45,7 +47,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
     }
 
     @Test
-    fun testResolveQuotedRelativeParentPathInOnreadyTypedDeclaration() = doConfiguredTest(
+    fun testResolveQuotedRelativeParentPathInOnreadyTypedDeclaration() = gd.doConfiguredTest(
         dir = true,
         dirName = "uniqueNames",
         configureFileName = "deep_child.gd",
@@ -56,7 +58,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
     }
 
     @Test
-    fun testResolveRelativePathCrossingIntoInstancingScene() = doConfiguredTest(
+    fun testResolveRelativePathCrossingIntoInstancingScene() = gd.doConfiguredTest(
         dir = true,
         dirName = "crossScene",
         configureFileName = "inner.gd",
@@ -66,7 +68,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
     }
 
     @Test
-    fun testResolveRealVoxelDemoScriptCrossingIntoWorldScene() = doConfiguredTest(
+    fun testResolveRealVoxelDemoScriptCrossingIntoWorldScene() = gd.doConfiguredTest(
         dir = true,
         dirName = "voxelDemo",
         configureFileName = "player/player.gd",
@@ -76,7 +78,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
     }
 
     @Test
-    fun testResolveQuotedMultiSegmentDownPathToTscnNode() = doConfiguredTest(
+    fun testResolveQuotedMultiSegmentDownPathToTscnNode() = gd.doConfiguredTest(
         dir = true,
         dirName = "uniqueNames",
         configureFileName = "deep_child.gd",
@@ -87,7 +89,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
     }
 
     @Test
-    fun testResolveRealPauseDemoScript() = doConfiguredTest(
+    fun testResolveRealPauseDemoScript() = gd.doConfiguredTest(
         dir = true,
         dirName = "pauseDemo",
         configureFileName = "process_mode.gd",
@@ -97,23 +99,20 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
     }
 
     @Test
-    fun testUnresolvedNodePathHasNoTarget() = doConfiguredTest(
+    fun testUnresolvedNodePathHasNoTarget() = gd.doConfiguredTest(
         dir = true,
         dirName = "uniqueNames",
         configureFileName = "unique_names.gd",
         fileContents = script("<caret>\$DoesNotExist"),
     ) {
-        assertTrue(
-            "an unknown node path must not resolve",
-            myFixture.multiResolveSymbolReference("<caret>\$DoesNotExist").isEmpty(),
-        )
+        assertTrue(myFixture.multiResolveSymbolReference("<caret>\$DoesNotExist").isEmpty(), "an unknown node path must not resolve")
     }
 
     private fun script(expression: String): String =
         "extends Node2D\n\nfunc _ready():\n\tvar node = $expression\n"
 
     private fun doResolveTest(expressionWithCaret: String, check: (GdPsiNodeSymbol) -> Unit) =
-        doConfiguredTest(
+        gd.doConfiguredTest(
             dir = true,
             dirName = "uniqueNames",
             configureFileName = "unique_names.gd",
@@ -125,7 +124,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
     private fun resolveNodeSymbol(signature: String): GdPsiNodeSymbol {
         val referenced = myFixture.resolveSymbolReference(signature)
         val resolved = (referenced as? PolySymbol)?.unwrapAllDelegates() ?: referenced
-        return assertInstanceOf(resolved, GdPsiNodeSymbol::class.java)
+        return assertInstanceOf(GdPsiNodeSymbol::class.java, resolved)
     }
 
 }

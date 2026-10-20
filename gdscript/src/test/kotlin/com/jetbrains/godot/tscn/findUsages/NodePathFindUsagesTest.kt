@@ -5,13 +5,14 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Test
 import tscn.psi.TscnNodeHeader
 
-@RunWith(JUnit4::class)
+@TestApplication
 class NodePathFindUsagesTest : GdTestCaseWithSdk("completion") {
 
     /**
@@ -21,7 +22,7 @@ class NodePathFindUsagesTest : GdTestCaseWithSdk("completion") {
      * see `gdscript.psi.impl.GdNodePathImpl.getOwnReferences`.
      */
     @Test
-    fun testNodeDeclarationFindsGdUsage() = doConfiguredTest(
+    fun testNodeDeclarationFindsGdUsage() = gd.doConfiguredTest(
         dir = true,
         dirName = "uniqueNames",
         configureFileName = "unique_names.gd",
@@ -31,9 +32,9 @@ class NodePathFindUsagesTest : GdTestCaseWithSdk("completion") {
         val header = PsiTreeUtil.findChildrenOfType(tscnFile, TscnNodeHeader::class.java).first { it.name == "Plain" }
 
         val references = ReferencesSearch.search(header, GlobalSearchScope.allScope(project)).findAll()
-        assertEquals(references.joinToString("\n") { it.element.text }, 1, references.size)
+        assertEquals(1, references.size, references.joinToString("\n") { it.element.text })
         assertEquals("\$Plain", references.single().element.text)
 
-        assertFalse("a scene node must offer no classic PSI Find Usages", LanguageFindUsages.canFindUsagesFor(header))
+        assertFalse(LanguageFindUsages.canFindUsagesFor(header), "a scene node must offer no classic PSI Find Usages")
     }
 }

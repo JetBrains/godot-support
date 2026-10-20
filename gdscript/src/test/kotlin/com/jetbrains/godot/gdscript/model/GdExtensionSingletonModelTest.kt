@@ -1,7 +1,9 @@
 package com.jetbrains.godot.gdscript.model
 
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdModelTestBase
 import gdscript.GdKeywords
 import gdscript.highlighter.GdHighlighterColors
@@ -13,33 +15,33 @@ import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReferences
 import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdRefIdRef
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Test
 
 /**
  * Covers the GDExtension singletons declared in the generated `@GDExtensionScope.xml`
  * (see [gdscript.library.GdGlobalSingletonsDocWriter]): they are global variables, so they behave exactly like the engine
  * singletons declared in Godot's own `@GlobalScope.xml`.
  */
-@RunWith(JUnit4::class)
-class GdExtensionSingletonModelTest : GdModelTestBase() {
+@TestApplication
+class GdExtensionSingletonModelTest : GdModelTestBase(
+    // Kept apart from the shared gdextensions test data, so the expectations of the other model tests are unaffected.
+    GdModelTestBase.DEFAULT_SDK_DIRECTORIES + "sdk/singletons"
+) {
 
     companion object {
         private const val SINGLETON_CLASS = "SQLite"
         private const val PLAIN_CLASS = "RiderLocator"
     }
 
-    // Kept apart from the shared gdextensions test data, so the expectations of the other model tests are unaffected.
-    override val sdkDirectories
-        get() = super.sdkDirectories + "sdk/singletons"
-
     @Test
     fun testSingletonIsASelfTypedGlobalProperty() {
         val executor = GdSdkPolySymbolIndexUtil.getQueryExecutor(project)
 
         val singleton = GdPolySymbolQueriesUtil.getSdkPropertySymbol(executor, GdKeywords.GDEXTENSION_SCOPE, SINGLETON_CLASS)
-        assertNotNull("$SINGLETON_CLASS is not declared as a global variable", singleton)
+        assertNotNull(singleton, "$SINGLETON_CLASS is not declared as a global variable")
         // Self-typed: this is the single hop the return type inference relies on.
         assertEquals(SINGLETON_CLASS, singleton!!.returnType)
 
@@ -49,22 +51,21 @@ class GdExtensionSingletonModelTest : GdModelTestBase() {
 
     @Test
     fun testSingletonExposesInstanceMembers() {
-        val classSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(project, SINGLETON_CLASS)
-        assertNotNull("$SINGLETON_CLASS class not found", classSymbol)
+        runReadActionBlocking {
+            val classSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(project, SINGLETON_CLASS)
+            assertNotNull(classSymbol, "$SINGLETON_CLASS class not found")
 
-        val classExecutor = PolySymbolQueryExecutorFactory.createCustom {
-            addRootScopes(classSymbol!!.queryScope)
+            val classExecutor = PolySymbolQueryExecutorFactory.createCustom {
+                addRootScopes(classSymbol!!.queryScope)
+            }
+
+            val openDb = "open_db"
+            val openDbMethod = GdPolySymbolQueriesUtil.getSdkMethodSymbol(classExecutor, SINGLETON_CLASS, openDb, null)
+            assertNotNull(openDbMethod, "$openDb method not found")
+
+            val defaultExtension = "default_extension"
+            assertNotNull(GdPolySymbolQueriesUtil.getSdkPropertySymbol(classExecutor, SINGLETON_CLASS, defaultExtension), "$defaultExtension property not found")
         }
-
-        val openDb = "open_db"
-        val openDbMethod = GdPolySymbolQueriesUtil.getSdkMethodSymbol(classExecutor, SINGLETON_CLASS, openDb, null)
-        assertNotNull("$openDb method not found", openDbMethod)
-
-        val defaultExtension = "default_extension"
-        assertNotNull(
-            "$defaultExtension property not found",
-            GdPolySymbolQueriesUtil.getSdkPropertySymbol(classExecutor, SINGLETON_CLASS, defaultExtension)
-        )
     }
 
     @Test
@@ -76,8 +77,10 @@ class GdExtensionSingletonModelTest : GdModelTestBase() {
             """.trimMargin()
         )
 
-        val declaration = file.children.filterIsInstance<GdClassVarDeclTl>().first { it.getName() == "db" }
-        assertEquals(SINGLETON_CLASS, declaration.returnType)
+        runReadActionBlocking {
+            val declaration = file.children.filterIsInstance<GdClassVarDeclTl>().first { it.getName() == "db" }
+            assertEquals(SINGLETON_CLASS, declaration.returnType)
+        }
     }
 
     @Test
@@ -100,22 +103,26 @@ class GdExtensionSingletonModelTest : GdModelTestBase() {
     @Test
     fun testSingletonNameResolvesOnlyToTheGlobalVariable() {
         val file = myFixture.configureByText("singleton_resolve.gd", "var db := $SINGLETON_CLASS")
-        val reference = PsiTreeUtil.findChildrenOfType(file, GdRefIdRef::class.java).single { it.text == SINGLETON_CLASS }
+        runReadActionBlocking {
+            val reference = PsiTreeUtil.findChildrenOfType(file, GdRefIdRef::class.java).single { it.text == SINGLETON_CLASS }
 
-        val resolved = reference.resolveSymbolReferences()
-        assertEquals(listOf(GdPolySymbolKind.PROPERTY), resolved.map { it.kind })
+            val resolved = reference.resolveSymbolReferences()
+            assertEquals(listOf(GdPolySymbolKind.PROPERTY), resolved.map { it.kind })
 
-        // Navigation still lands on the class, not on the synthetic global scope stub.
-        val declaration = (resolved.single() as GdSdkPolySymbol).syntheticSourceElement(project)
-        assertEquals(SINGLETON_CLASS, declaration?.containingFile?.getUserData(GdSdkPolySymbol.SYNTHETIC_SDK_CLASS_KEY))
+            // Navigation still lands on the class, not on the synthetic global scope stub.
+            val declaration = (resolved.single() as GdSdkPolySymbol).syntheticSourceElement(project)
+            assertEquals(SINGLETON_CLASS, declaration?.containingFile?.getUserData(GdSdkPolySymbol.SYNTHETIC_SDK_CLASS_KEY))
+        }
     }
 
     @Test
     fun testNonSingletonClassNameStillResolvesToItsClass() {
         val file = myFixture.configureByText("class_resolve.gd", "var locator := $PLAIN_CLASS")
-        val reference = PsiTreeUtil.findChildrenOfType(file, GdRefIdRef::class.java).single { it.text == PLAIN_CLASS }
+        runReadActionBlocking {
+            val reference = PsiTreeUtil.findChildrenOfType(file, GdRefIdRef::class.java).single { it.text == PLAIN_CLASS }
 
-        assertEquals(listOf(GdPolySymbolKind.CLASS), reference.resolveSymbolReferences().map { it.kind })
+            assertEquals(listOf(GdPolySymbolKind.CLASS), reference.resolveSymbolReferences().map { it.kind })
+        }
     }
 
     @Test
@@ -127,7 +134,9 @@ class GdExtensionSingletonModelTest : GdModelTestBase() {
             """.trimMargin()
         )
 
-        val declaration = file.children.filterIsInstance<GdClassVarDeclTl>().first { it.getName() == "opened" }
-        assertEquals(GdKeywords.BOOL, declaration.returnType)
+        runReadActionBlocking {
+            val declaration = file.children.filterIsInstance<GdClassVarDeclTl>().first { it.getName() == "opened" }
+            assertEquals(GdKeywords.BOOL, declaration.returnType)
+        }
     }
 }

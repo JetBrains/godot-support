@@ -1,14 +1,13 @@
 package com.jetbrains.godot.gdscript.reference
 
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 
 /**
  * RIDER-143313 Go To Declaration on `super` navigates to the parent class method.
  */
-@RunWith(JUnit4::class)
+@TestApplication
 class GdSuperGotoDeclarationTest : GdTestCaseWithSdk("reference") {
 
     @Test
@@ -33,7 +32,7 @@ class GdSuperGotoDeclarationTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testBareSuperCallInSdkVirtual() =
-        doGotoDeclarationTest(
+        gd.doGotoDeclarationTest(
             declarationSignature = "func <caret>_ready",
             fromSignature = "<caret>super()",
             expectedFileName = "Node.generated.gd",
@@ -42,7 +41,7 @@ class GdSuperGotoDeclarationTest : GdTestCaseWithSdk("reference") {
         )
 
     private fun doSuperTest(fromSignature: String, declarationSignature: String) =
-        doGotoDeclarationTest(
+        gd.doGotoDeclarationTest(
             declarationSignature = declarationSignature,
             fromSignature = fromSignature,
             expectedFileName = "base.gd",

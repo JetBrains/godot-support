@@ -1,9 +1,11 @@
 package com.jetbrains.godot.gdscript.resolve
 
 import com.intellij.model.psi.PsiSymbolReferenceService
+import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.gdSignature
@@ -13,21 +15,24 @@ import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReference
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil.resolveSymbolReferences
 import gdscript.polySymbols.sdk.GdSdkConstructorSymbol
 import gdscript.psi.GdRefIdRef
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testListConstructorSymbolsReturnsAllVector2Overloads() {
         myFixture.configureByText("Test.gd", "func f():\n\tpass")
-        val vector2 = GdSymbolResolverUtil.resolveCanonicalClassSymbol(project, "Vector2", myFixture.file)
-        val ctors = GdSymbolResolverUtil.listConstructorSymbols(vector2)
+        runReadActionBlocking {
+            val vector2 = GdSymbolResolverUtil.resolveCanonicalClassSymbol(project, "Vector2", myFixture.file)
+            val ctors = GdSymbolResolverUtil.listConstructorSymbols(vector2)
 
-        assertEquals(4, ctors.size)
-        assertEquals(listOf(0, 1, 1, 2), ctors.mapNotNull { it.gdSignature?.parameters?.size }.sorted())
+            assertEquals(4, ctors.size)
+            assertEquals(listOf(0, 1, 1, 2), ctors.mapNotNull { it.gdSignature?.parameters?.size }.sorted())
+        }
     }
 
     private fun refIdAtCaret(): GdRefIdRef {
@@ -38,27 +43,31 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
     @Test
     fun testQualifiedNewWithNoArgsResolvesToNoArgConstructorOnly() {
         myFixture.configureByText("Test.gd", "func f():\n\tvar v = Vector2.<caret>new()")
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        assertEquals(1, symbols.size)
-        val ctor = symbols.single()
-        assertEquals(GdPolySymbolKind.CONSTRUCTOR, ctor.kind)
-        assertEquals(0, ctor.gdSignature?.parameters?.size)
-        assertTrue(ctor.unwrapAllDelegates() is GdSdkConstructorSymbol)
-        assertNotNull(refId.resolveSymbolReference())
+            assertEquals(1, symbols.size)
+            val ctor = symbols.single()
+            assertEquals(GdPolySymbolKind.CONSTRUCTOR, ctor.kind)
+            assertEquals(0, ctor.gdSignature?.parameters?.size)
+            assertTrue(ctor.unwrapAllDelegates() is GdSdkConstructorSymbol)
+            assertNotNull(refId.resolveSymbolReference())
+        }
     }
 
     @Test
     fun testQualifiedNewWithTwoArgsResolvesToTwoParamConstructorOnly() {
         myFixture.configureByText("Test.gd", "func f():\n\tvar v = Vector2.<caret>new(1, 2)")
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        assertEquals(1, symbols.size)
-        val ctor = symbols.single()
-        assertEquals(GdPolySymbolKind.CONSTRUCTOR, ctor.kind)
-        assertEquals(2, ctor.gdSignature?.parameters?.size)
+            assertEquals(1, symbols.size)
+            val ctor = symbols.single()
+            assertEquals(GdPolySymbolKind.CONSTRUCTOR, ctor.kind)
+            assertEquals(2, ctor.gdSignature?.parameters?.size)
+        }
     }
 
     @Test
@@ -73,12 +82,14 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
             |	var v = Foo.<caret>new(1)
         """.trimMargin()
         )
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        assertEquals(1, symbols.size)
-        assertEquals(GdPolySymbolKind.CONSTRUCTOR, symbols.single().kind)
-        assertTrue(symbols.single().unwrapAllDelegates() is GdPsiConstructorSymbol)
+            assertEquals(1, symbols.size)
+            assertEquals(GdPolySymbolKind.CONSTRUCTOR, symbols.single().kind)
+            assertTrue(symbols.single().unwrapAllDelegates() is GdPsiConstructorSymbol)
+        }
     }
 
     @Test
@@ -92,74 +103,86 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
             |	var v = Hello.<caret>new()
         """.trimMargin()
         )
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        assertEquals(1, symbols.size)
-        assertEquals(GdPolySymbolKind.CLASS, symbols.single().kind)
+            assertEquals(1, symbols.size)
+            assertEquals(GdPolySymbolKind.CLASS, symbols.single().kind)
+        }
     }
 
     @Test
     fun testQualifiedNewOnSdkClassWithoutExplicitConstructorResolvesToClass() {
         myFixture.configureByText("Test.gd", "func f():\n\tvar v = Object.<caret>new()")
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        assertEquals(1, symbols.size)
-        assertEquals(GdPolySymbolKind.CLASS, symbols.single().kind)
+            assertEquals(1, symbols.size)
+            assertEquals(GdPolySymbolKind.CLASS, symbols.single().kind)
+        }
     }
 
     @Test
     fun testBareSdkConstructorCallResolvesToClassAndMatchingArityConstructorOnly() {
         myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(1, 2)")
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        assertTrue(symbols.any { it.kind == GdPolySymbolKind.CLASS })
-        val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
-        assertEquals(1, ctorSymbols.size)
-        assertEquals(2, ctorSymbols.single().gdSignature?.parameters?.size)
-        // Unfiltered resolveSymbolReference() must still return CLASS first - existing callers
-        // that don't filter by kind must see unchanged behavior.
-        assertEquals(GdPolySymbolKind.CLASS, refId.resolveSymbolReference()?.kind)
+            assertTrue(symbols.any { it.kind == GdPolySymbolKind.CLASS })
+            val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
+            assertEquals(1, ctorSymbols.size)
+            assertEquals(2, ctorSymbols.single().gdSignature?.parameters?.size)
+            // Unfiltered resolveSymbolReference() must still return CLASS first - existing callers
+            // that don't filter by kind must see unchanged behavior.
+            assertEquals(GdPolySymbolKind.CLASS, refId.resolveSymbolReference()?.kind)
+        }
     }
 
     @Test
     fun testBareSdkConstructorCallDoesNotNavigateToClassDeclaration() {
         myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(1, 2)")
-        val refId = refIdAtCaret()
-        val rawSymbols = PsiSymbolReferenceService.getService().getReferences(refId)
-            .flatMap { it.resolveReference() }
-            .filterIsInstance<PolySymbol>()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val rawSymbols = PsiSymbolReferenceService.getService().getReferences(refId)
+                .flatMap { it.resolveReference() }
+                .filterIsInstance<PolySymbol>()
 
-        val classSymbols = rawSymbols.filter { it.unwrapAllDelegates().kind == GdPolySymbolKind.CLASS }
-        assertEquals(1, classSymbols.size)
-        assertTrue(classSymbols.single().getNavigationTargets(project).isEmpty())
+            val classSymbols = rawSymbols.filter { it.unwrapAllDelegates().kind == GdPolySymbolKind.CLASS }
+            assertEquals(1, classSymbols.size)
+            assertTrue(classSymbols.single().getNavigationTargets(project).isEmpty())
 
-        val ctorSymbols = rawSymbols.filter { it.unwrapAllDelegates().kind == GdPolySymbolKind.CONSTRUCTOR }
-        assertEquals(1, ctorSymbols.size)
-        assertTrue(ctorSymbols.single().getNavigationTargets(project).isNotEmpty())
+            val ctorSymbols = rawSymbols.filter { it.unwrapAllDelegates().kind == GdPolySymbolKind.CONSTRUCTOR }
+            assertEquals(1, ctorSymbols.size)
+            assertTrue(ctorSymbols.single().getNavigationTargets(project).isNotEmpty())
+        }
     }
 
     @Test
     fun testBareSdkConstructorCallWithAmbiguousArityKeepsBothSingleArgOverloads() {
         myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(Vector2i(1, 2))")
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
-        assertEquals(2, ctorSymbols.size)
-        assertEquals(listOf(1, 1), ctorSymbols.mapNotNull { it.gdSignature?.parameters?.size }.sorted())
+            val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
+            assertEquals(2, ctorSymbols.size)
+            assertEquals(listOf(1, 1), ctorSymbols.mapNotNull { it.gdSignature?.parameters?.size }.sorted())
+        }
     }
 
     @Test
     fun testBareClassReferenceWithoutCallResolvesToClassOnly() {
         myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2")
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        assertEquals(1, symbols.size)
-        assertEquals(GdPolySymbolKind.CLASS, symbols.single().kind)
+            assertEquals(1, symbols.size)
+            assertEquals(GdPolySymbolKind.CLASS, symbols.single().kind)
+        }
     }
 
     @Test
@@ -174,11 +197,13 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
             |	var v = <caret>Foo(1)
         """.trimMargin()
         )
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        assertTrue(symbols.any { it.kind == GdPolySymbolKind.CLASS })
-        assertEquals(1, symbols.count { it.kind == GdPolySymbolKind.CONSTRUCTOR })
+            assertTrue(symbols.any { it.kind == GdPolySymbolKind.CLASS })
+            assertEquals(1, symbols.count { it.kind == GdPolySymbolKind.CONSTRUCTOR })
+        }
     }
 
     @Test
@@ -195,12 +220,14 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
             |	var v = <caret>Foo(1, 2)
         """.trimMargin()
         )
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
-        assertEquals(1, ctorSymbols.size)
-        assertEquals(2, ctorSymbols.single().gdSignature?.parameters?.size)
+            val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
+            assertEquals(1, ctorSymbols.size)
+            assertEquals(2, ctorSymbols.single().gdSignature?.parameters?.size)
+        }
     }
 
     @Test
@@ -218,12 +245,14 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
             |	var v = <caret>Foo(Node.new())
         """.trimMargin()
         )
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
-        assertEquals(1, ctorSymbols.size)
-        assertEquals("Node", ctorSymbols.single().gdSignature?.parameters?.single()?.type)
+            val ctorSymbols = symbols.filter { it.kind == GdPolySymbolKind.CONSTRUCTOR }
+            assertEquals(1, ctorSymbols.size)
+            assertEquals("Node", ctorSymbols.single().gdSignature?.parameters?.single()?.type)
+        }
     }
 
     @Test
@@ -240,12 +269,14 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
             |	Foo.new().<caret>bar(1, 2)
         """.trimMargin()
         )
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        val methodSymbols = symbols.filter { it.kind == GdPolySymbolKind.METHOD }
-        assertEquals(1, methodSymbols.size)
-        assertEquals(2, methodSymbols.single().gdSignature?.parameters?.size)
+            val methodSymbols = symbols.filter { it.kind == GdPolySymbolKind.METHOD }
+            assertEquals(1, methodSymbols.size)
+            assertEquals(2, methodSymbols.single().gdSignature?.parameters?.size)
+        }
     }
 
     @Test
@@ -263,11 +294,13 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
             |	Foo.new().<caret>bar(Node.new())
         """.trimMargin()
         )
-        val refId = refIdAtCaret()
-        val symbols = refId.resolveSymbolReferences()
+        runReadActionBlocking {
+            val refId = refIdAtCaret()
+            val symbols = refId.resolveSymbolReferences()
 
-        val methodSymbols = symbols.filter { it.kind == GdPolySymbolKind.METHOD }
-        assertEquals(1, methodSymbols.size)
-        assertEquals("Node", methodSymbols.single().gdSignature?.parameters?.single()?.type)
+            val methodSymbols = symbols.filter { it.kind == GdPolySymbolKind.METHOD }
+            assertEquals(1, methodSymbols.size)
+            assertEquals("Node", methodSymbols.single().gdSignature?.parameters?.single()?.type)
+        }
     }
 }

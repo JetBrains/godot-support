@@ -3,17 +3,20 @@ package com.jetbrains.godot.gdscript.model
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolQueryExecutor
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdModelTestBase
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.GdClassSymbol
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.index.GdSdkPolySymbolIndexUtil
 import gdscript.polySymbols.sdk.GdSdkEnumSymbol
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdCoreSdkModelTest : GdModelTestBase() {
 
     companion object{
@@ -29,24 +32,24 @@ class GdCoreSdkModelTest : GdModelTestBase() {
         val executor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getQueryExecutor(project)
 
         val classes: List<PolySymbol> = GdPolySymbolQueriesUtil.listSdkClassSymbols(executor)
-        assertNotNull("Classes not found", classes)
+        assertNotNull(classes, "Classes not found")
 
         // Find Node2D
         val node2DSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(executor, Node2D)
-        assertNotNull("$Node2D symbol not found", node2DSymbol)
+        assertNotNull(node2DSymbol, "$Node2D symbol not found")
         assertEquals(Node2D, node2DSymbol!!.name)
 
         val canvasItemSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(executor, CanvasItem)
-        assertNotNull("$CanvasItem symbol not found", canvasItemSymbol)
+        assertNotNull(canvasItemSymbol, "$CanvasItem symbol not found")
         assertEquals(CanvasItem, canvasItemSymbol!!.name)
 
         // Check inheritance
         val superSymbol: GdClassSymbol? = node2DSymbol.resolveSuperClassSymbol()
-        assertNotNull("$Node2D should have a super class", superSymbol)
+        assertNotNull(superSymbol, "$Node2D should have a super class")
         assertEquals(CanvasItem, superSymbol!!.classId)
 
         val superSuperSymbol: GdClassSymbol? = superSymbol.resolveSuperClassSymbol()
-        assertNotNull("$Node should have a super class", superSuperSymbol)
+        assertNotNull(superSuperSymbol, "$Node should have a super class")
         assertEquals(Node, superSuperSymbol!!.classId)
     }
 
@@ -55,7 +58,7 @@ class GdCoreSdkModelTest : GdModelTestBase() {
         val sdkExecutor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getQueryExecutor(project)
 
         val node2DSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(sdkExecutor, Node2D)
-        assertNotNull("$Node2D symbol not found", node2DSymbol)
+        assertNotNull(node2DSymbol, "$Node2D symbol not found")
         assertEquals(Node2D, node2DSymbol!!.name)
 
         // Check direct members (Node2D has 'position', doesn't have 'visible')
@@ -64,9 +67,9 @@ class GdCoreSdkModelTest : GdModelTestBase() {
         }
         val directMembers = GdPolySymbolQueriesUtil.listSdkMemberSymbols(node2DDirectMemberExecutor, GdPolySymbolKind.PROPERTY)
 
-        assertTrue("$Node2D should have direct members", directMembers.isNotEmpty())
-        assertTrue("Should contain 'position'", directMembers.any { it.name == "position" })
-        assertFalse("Should not contain 'visible' in the direct member scope", directMembers.any { it.name == "visible" })
+        assertTrue(directMembers.isNotEmpty(), "$Node2D should have direct members")
+        assertTrue(directMembers.any { it.name == "position" }, "Should contain 'position'")
+        assertFalse(directMembers.any { it.name == "visible" }, "Should not contain 'visible' in the direct member scope")
 
         // Check inherited members (Node has 'name', 'visible', but not 'position')
         val inheritedScopes = node2DSymbol.inheritedQueryScopes()
@@ -75,9 +78,9 @@ class GdCoreSdkModelTest : GdModelTestBase() {
         }
         val allInheritedMembers = GdPolySymbolQueriesUtil.listSdkMemberSymbols(node2DInheritedScopeExecutor, GdPolySymbolKind.PROPERTY)
 
-        assertFalse("Should not contain 'position'", allInheritedMembers.any { it.name == "position" })
-        assertTrue("Should contain inherited 'visible' from $CanvasItem", allInheritedMembers.any { it.name == "visible" })
-        assertTrue("Should contain inherited 'name' from $Node", allInheritedMembers.any { it.name == "name" })
+        assertFalse(allInheritedMembers.any { it.name == "position" }, "Should not contain 'position'")
+        assertTrue(allInheritedMembers.any { it.name == "visible" }, "Should contain inherited 'visible' from $CanvasItem")
+        assertTrue(allInheritedMembers.any { it.name == "name" }, "Should contain inherited 'name' from $Node")
 
 
         // Check all members (Node2D has 'position', 'visible', 'name')
@@ -86,15 +89,15 @@ class GdCoreSdkModelTest : GdModelTestBase() {
         }
         val allMembers = GdPolySymbolQueriesUtil.listSdkMemberSymbols(node2DExecutor, GdPolySymbolKind.PROPERTY)
 
-        assertTrue("$Node2D should have members", allMembers.isNotEmpty())
-        assertTrue("Should contain 'position'", allMembers.any { it.name == "position" })
-        assertTrue("Should contain 'visible' from $CanvasItem", allMembers.any { it.name == "visible" })
-        assertTrue("Should contain 'name' from $Node", allMembers.any { it.name == "name" })
+        assertTrue(allMembers.isNotEmpty(), "$Node2D should have members")
+        assertTrue(allMembers.any { it.name == "position" }, "Should contain 'position'")
+        assertTrue(allMembers.any { it.name == "visible" }, "Should contain 'visible' from $CanvasItem")
+        assertTrue(allMembers.any { it.name == "name" }, "Should contain 'name' from $Node")
 
         val processModeSymbol = GdPolySymbolQueriesUtil.getSymbol(
             node2DExecutor, GdPolySymbolKind.ENUM, "ProcessMode", GdSdkEnumSymbol::class.java
         )
-        assertNotNull("'ProcessMode' property should be accessible on $Node2D", processModeSymbol)
+        assertNotNull(processModeSymbol, "'ProcessMode' property should be accessible on $Node2D")
         assertEquals("ProcessMode", processModeSymbol!!.name)
 
         val processModeExecutor = PolySymbolQueryExecutorFactory.createCustom{
@@ -102,7 +105,7 @@ class GdCoreSdkModelTest : GdModelTestBase() {
         }
 
         val processModeValues = GdPolySymbolQueriesUtil.listSdkMemberSymbols(processModeExecutor, GdPolySymbolKind.ENUM_VALUE)
-        assertTrue("Should contain 'PROCESS_MODE_INHERIT' from $Node.ProcessMode", processModeValues.any { it.name == "PROCESS_MODE_INHERIT" })
+        assertTrue(processModeValues.any { it.name == "PROCESS_MODE_INHERIT" }, "Should contain 'PROCESS_MODE_INHERIT' from $Node.ProcessMode")
 
     }
 
@@ -112,16 +115,16 @@ class GdCoreSdkModelTest : GdModelTestBase() {
 
         val operators = GdPolySymbolQueriesUtil.listSdkMemberSymbols(executor, GdPolySymbolKind.OPERATOR)
 
-        assertTrue("Should find operators from $Vector2.xml", operators.isNotEmpty())
-        assertTrue("Should contain $Vector2 addition", operators.any { it.name == "Vector2+Vector2" })
-        assertTrue("Should contain multiplication with floats", operators.any { it.name == "Vector2*float" })
+        assertTrue(operators.isNotEmpty(), "Should find operators from $Vector2.xml")
+        assertTrue(operators.any { it.name == "Vector2+Vector2" }, "Should contain $Vector2 addition")
+        assertTrue(operators.any { it.name == "Vector2*float" }, "Should contain multiplication with floats")
     }
 
     @Test
     fun testSdkAnnotationsModel() {
         // TODO add parameter check
         val exportAnnotation = GdPolySymbolQueriesUtil.getAnnotationSymbol(project, "export")
-        assertNotNull("Should contain @export", exportAnnotation)
+        assertNotNull(exportAnnotation, "Should contain @export")
     }
 
     @Test
@@ -130,10 +133,10 @@ class GdCoreSdkModelTest : GdModelTestBase() {
 
         val globalConstants = GdPolySymbolQueriesUtil.listSdkMemberSymbols(executor, GdPolySymbolKind.CONSTANT)
 
-        assertTrue("Should find global constants", globalConstants.isNotEmpty())
-        assertTrue("Should contain 'PI'", globalConstants.any { it.name == "PI" })
+        assertTrue(globalConstants.isNotEmpty(), "Should find global constants")
+        assertTrue(globalConstants.any { it.name == "PI" }, "Should contain 'PI'")
 
         val globalMethods = GdPolySymbolQueriesUtil.listSdkMemberSymbols(executor, GdPolySymbolKind.METHOD)
-        assertTrue("Should contain 'print'", globalMethods.any { it.name == "print" })
+        assertTrue(globalMethods.any { it.name == "print" }, "Should contain 'print'")
     }
 }

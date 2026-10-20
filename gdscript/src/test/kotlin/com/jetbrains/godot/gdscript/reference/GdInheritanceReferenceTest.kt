@@ -1,19 +1,18 @@
 package com.jetbrains.godot.gdscript.reference
 
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.psi.GdPsiClassSymbol
 import gdscript.polySymbols.psi.GdPsiResourceClassSymbol
 import gdscript.polySymbols.sdk.GdSdkClassSymbol
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveUnnamedResourceInheritance() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "extends \"<caret>res://base.gd\"",
             GdPsiResourceClassSymbol::class.java,
             "res://base.gd"
@@ -21,7 +20,7 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveNamedResourceInheritance() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "extends \"<caret>res://base.gd\"",
             GdPsiClassSymbol::class.java,
             "Base"
@@ -29,7 +28,7 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveSdkInheritance() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "extends <caret>Node2D",
             GdSdkClassSymbol::class.java,
             "Node2D"
@@ -37,7 +36,7 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveLocalSdkInheritance() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "class Local extends <caret>Node2D",
             GdSdkClassSymbol::class.java,
             "Node2D"
@@ -45,7 +44,7 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveNestedClassInheritance() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "extends Outer.<caret>Inner",
             GdPsiClassSymbol::class.java,
             "Inner"
@@ -53,7 +52,7 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveBareSiblingClassInheritance() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "class Inner extends <caret>SuperInner",
             GdPsiClassSymbol::class.java,
             "SuperInner"
@@ -61,7 +60,7 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testGotoDeclarationNamedResourceInheritance() =
-        doGotoDeclarationTest(
+        gd.doGotoDeclarationTest(
             declarationSignature = "class_name <caret>Base",
             fromSignature = "extends \"<caret>res://base.gd\"",
             expectedFileName = "base.gd",
@@ -71,7 +70,7 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testGotoDeclarationUnnamedResourceInheritance() =
-        doGotoDeclarationTest(
+        gd.doGotoDeclarationTest(
             declarationSignature = "<caret>var base_value = 1",
             fromSignature = "extends \"<caret>res://base.gd\"",
             expectedFileName = "base.gd",
@@ -81,7 +80,7 @@ class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testGotoDeclarationSdkInheritance() =
-        doGotoDeclarationTest(
+        gd.doGotoDeclarationTest(
             declarationSignature = "class_name <caret>Node2D",
             fromSignature = "extends <caret>Node2D",
             expectedFileName = "Node2D.generated.gd",
