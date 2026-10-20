@@ -2,12 +2,13 @@ package com.jetbrains.godot.gdscript.annotator
 
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.TestModeFlags
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.GdScriptBundle
 import gdscript.annotator.GD_ANNOTATOR_ORIGINAL_SEVERITY
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 /**
  * `GdParamAnnotator` used to be blind to SDK/engine ancestors: `symbol.gdPsiSourceElement?.parent
@@ -25,12 +26,12 @@ import org.junit.runners.JUnit4
  * machinery, reproduced and root-caused via bisection; nothing to do with `GdParamAnnotator` itself -
  * the crash occurs identically whether or not this fix is applied).
  */
-@RunWith(JUnit4::class)
+@TestApplication
 class GdParamAnnotatorTest : GdTestCaseWithSdk("highlighting") {
 
-    override fun setUp() {
-        super.setUp()
-        TestModeFlags.set(GD_ANNOTATOR_ORIGINAL_SEVERITY, true, testRootDisposable)
+    @BeforeEach
+    fun preserveAnnotatorSeverity() {
+        TestModeFlags.set(GD_ANNOTATOR_ORIGINAL_SEVERITY, true, gd.testRootDisposable)
     }
 
     @Test
@@ -82,7 +83,7 @@ class GdParamAnnotatorTest : GdTestCaseWithSdk("highlighting") {
         )
 
         val errors = myFixture.doHighlighting().filter { it.severity === HighlightSeverity.ERROR }
-        assertFalse("expected a type-mismatch error for the call", errors.isEmpty())
+        assertFalse(errors.isEmpty(), "expected a type-mismatch error for the call")
 
         val fix = myFixture.findSingleIntention(GdScriptBundle.message("intention.name.change.type.to", "int"))
         myFixture.launchAction(fix)

@@ -1,11 +1,11 @@
 package com.jetbrains.godot.gdscript.annotator
 
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.highlighter.GdHighlighterColors
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 /**
  * `GdSetGetAnnotator.colorSetGet` used to be blind to SDK-inherited `get =`/`set =` accessors:
@@ -16,7 +16,7 @@ import org.junit.runners.JUnit4
  * (`Node2D.apply_scale`, an instance method - see `sdk/4.5.0/Node2D.xml`), while a project-declared
  * static method keeps coloring correctly as before.
  */
-@RunWith(JUnit4::class)
+@TestApplication
 class GdSetGetAnnotatorTest : GdTestCaseWithSdk("highlighting") {
 
     // Multiple highlights can share the exact same range at a get=/set= accessor (e.g. this

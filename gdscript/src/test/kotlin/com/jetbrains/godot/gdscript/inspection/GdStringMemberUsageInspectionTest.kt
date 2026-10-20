@@ -1,16 +1,19 @@
 package com.jetbrains.godot.gdscript.inspection
 
+import com.intellij.openapi.application.runReadActionBlocking
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.inspection.GdStringNameMemberCallInspection
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
 
-    override fun setUp() {
-        super.setUp()
+    @BeforeEach
+    fun enableStringNameMemberCallInspection() {
         myFixture.enableInspections(GdStringNameMemberCallInspection())
     }
 
@@ -29,7 +32,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
     fun testNodeMethodsQuickFixCandidateCount() {
         myFixture.configureByText("test.gd", "")
         val inspection = GdStringNameMemberCallInspection()
-        val candidateCount = inspection.getQfCandidateCount(myFixture.file)
+        val candidateCount = runReadActionBlocking { inspection.getQfCandidateCount(myFixture.file) }
 
         // If this breaks it means another method th looks quick fixable was added,
         // check if the method is quick fixable and adjust this test and GdStringNameMemberCallInspection.kt
@@ -169,7 +172,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
             myFixture.doHighlighting()
             val intentions = myFixture.availableIntentions
             val fix = intentions.find { it.text.contains("Convert to") }
-            assertNull("Quick fix should not be available for unresolved method", fix)
+            assertNull(fix, "Quick fix should not be available for unresolved method")
         }
     }
 
@@ -300,7 +303,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
             myFixture.doHighlighting()
             val intentions = myFixture.availableIntentions
             val fix = intentions.find { it.text.contains("Convert to") }
-            assertNull("Quick fix should not be available for unresolved signal", fix)
+            assertNull(fix, "Quick fix should not be available for unresolved signal")
         }
     }
 }

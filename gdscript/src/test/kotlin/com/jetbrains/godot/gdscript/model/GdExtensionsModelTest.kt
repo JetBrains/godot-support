@@ -2,14 +2,15 @@ package com.jetbrains.godot.gdscript.model
 
 import com.intellij.polySymbols.query.PolySymbolQueryExecutor
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdModelTestBase
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.index.GdSdkPolySymbolIndexUtil
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdExtensionsModelTest : GdModelTestBase() {
 
     companion object{
@@ -24,12 +25,12 @@ class GdExtensionsModelTest : GdModelTestBase() {
         // Find RiderLocator class from gdextensions
         val riderLocatorSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(executor, RiderLocator)
 
-        assertNotNull("$RiderLocator symbol not found", riderLocatorSymbol)
+        assertNotNull(riderLocatorSymbol, "$RiderLocator symbol not found")
         assertEquals(RiderLocator, riderLocatorSymbol!!.name)
 
         // Verify it inherits from Object
         val superSymbol = riderLocatorSymbol.resolveSuperClassSymbol()
-        assertNotNull("$RiderLocator should inherit from $Object", superSymbol)
+        assertNotNull(superSymbol, "$RiderLocator should inherit from $Object")
         assertEquals(Object, superSymbol!!.classId)
 
         // Create executor for RiderLocator's scope and find get_installations method
@@ -42,7 +43,7 @@ class GdExtensionsModelTest : GdModelTestBase() {
             riderLocatorExecutor, RiderLocator, getInstallations, emptyList()
         )
 
-        assertNotNull("$getInstallations method not found", getInstallationsMethod)
+        assertNotNull(getInstallationsMethod, "$getInstallations method not found")
         assertEquals(getInstallations, getInstallationsMethod!!.name)
     }
 }

@@ -1,20 +1,19 @@
 package com.jetbrains.godot.gdscript.reference
 
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.psi.GdPsiClassSymbol
 import gdscript.polySymbols.psi.GdPsiEnumSymbol
 import gdscript.polySymbols.sdk.GdSdkClassSymbol
 import gdscript.polySymbols.sdk.GdSdkEnumSymbol
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdTypeHintReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveTypeHintSdkClass() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "var position_2d: <caret>Vector2",
             GdSdkClassSymbol::class.java,
             "Vector2",
@@ -22,7 +21,7 @@ class GdTypeHintReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveTypeHintEnum() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "var d: <caret>Direction",
             GdPsiEnumSymbol::class.java,
             "Direction",
@@ -30,7 +29,7 @@ class GdTypeHintReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveTypeHintSdkEnum() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "var p: Node.<caret>ProcessMode",
             GdSdkEnumSymbol::class.java,
             "ProcessMode",
@@ -38,7 +37,7 @@ class GdTypeHintReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveTypeHintBareInnerClass() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "var x: <caret>Inner",
             GdPsiClassSymbol::class.java,
             "Inner",
@@ -46,7 +45,7 @@ class GdTypeHintReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testGotoDeclarationTypeHintSdkClass() =
-        doGotoDeclarationTest(
+        gd.doGotoDeclarationTest(
             declarationSignature = "class_name <caret>Vector2",
             fromSignature = "var position_2d: <caret>Vector2",
             expectedFileName = "Vector2.generated.gd",
@@ -56,7 +55,7 @@ class GdTypeHintReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testGotoDeclarationTypeHintSdkEnum() =
-        doGotoDeclarationTest(
+        gd.doGotoDeclarationTest(
             declarationSignature = "enum <caret>ProcessMode",
             fromSignature = "var p: Node.<caret>ProcessMode",
             expectedFileName = "Node.generated.gd",

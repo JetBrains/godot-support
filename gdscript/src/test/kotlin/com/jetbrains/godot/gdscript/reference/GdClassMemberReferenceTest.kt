@@ -1,20 +1,19 @@
 package com.jetbrains.godot.gdscript.reference
 
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.psi.GdPsiMethodSymbol
 import gdscript.polySymbols.psi.GdPsiPropertySymbol
 import gdscript.polySymbols.sdk.GdSdkMethodSymbol
 import gdscript.polySymbols.sdk.GdSdkPropertySymbol
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdClassMemberReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveClassMemberSdkProperty() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "node.<caret>position",
             GdSdkPropertySymbol::class.java,
             "position",
@@ -22,7 +21,7 @@ class GdClassMemberReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveClassMemberSdkMethod() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "node.<caret>apply_scale",
             GdSdkMethodSymbol::class.java,
             "apply_scale",
@@ -30,7 +29,7 @@ class GdClassMemberReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveClassMemberPsiProperty() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "obj.<caret>my_prop",
             GdPsiPropertySymbol::class.java,
             "my_prop",
@@ -38,7 +37,7 @@ class GdClassMemberReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveClassMemberPsiMethod() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "obj.<caret>my_method",
             GdPsiMethodSymbol::class.java,
             "my_method",
@@ -52,7 +51,7 @@ class GdClassMemberReferenceTest : GdTestCaseWithSdk("reference") {
     // `SuperInner`, must already resolve through `Inner.new()` regardless.
     @Test
     fun testResolveInheritedMethodThroughBareSiblingClassExtends() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "Inner.new().<caret>foo()",
             GdPsiMethodSymbol::class.java,
             "foo",

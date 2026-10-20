@@ -1,18 +1,18 @@
 package com.jetbrains.godot.gdscript.reference
 
 import com.intellij.polySymbols.testFramework.multiResolveSymbolReference
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.psi.GdPsiLoadedClassAliasSymbol
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdLoadedClassAliasReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveLoadedClassAliasForScript() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "var typed_by_script: <caret>ScriptAlias",
             GdPsiLoadedClassAliasSymbol::class.java,
             "ScriptAlias",
@@ -33,11 +33,8 @@ class GdLoadedClassAliasReferenceTest : GdTestCaseWithSdk("reference") {
      */
     private fun doUnresolvedTypeHintTest(signature: String) {
         val dirName = "resolveLoadedClassAlias"
-        doConfiguredTest(dirName = dirName, configureFileName = "$dirName.$defaultExtension") {
-            assertTrue(
-                "Expected '$signature' to have no resolved type-hint symbol",
-                myFixture.multiResolveSymbolReference(signature).isEmpty(),
-            )
+        gd.doConfiguredTest(dirName = dirName, configureFileName = "$dirName.${gd.defaultExtension}") {
+            assertTrue(myFixture.multiResolveSymbolReference(signature).isEmpty(), "Expected '$signature' to have no resolved type-hint symbol")
         }
     }
 }

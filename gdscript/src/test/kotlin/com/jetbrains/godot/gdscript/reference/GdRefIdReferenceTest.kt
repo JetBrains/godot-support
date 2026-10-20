@@ -1,19 +1,18 @@
 package com.jetbrains.godot.gdscript.reference
 
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.psi.GdPsiClassSymbol
 import gdscript.polySymbols.sdk.GdSdkMethodSymbol
 import gdscript.polySymbols.sdk.GdSdkPropertySymbol
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdRefIdReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveClassMemberSdkProperty() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "node.<caret>position",
             GdSdkPropertySymbol::class.java,
             "position",
@@ -21,7 +20,7 @@ class GdRefIdReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveClassMemberSdkMethod() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "node.<caret>apply_scale",
             GdSdkMethodSymbol::class.java,
             "apply_scale",
@@ -29,7 +28,7 @@ class GdRefIdReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveClassMemberSdkInferredTypeMethod() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "db.<caret>open_db()",
             GdSdkMethodSymbol::class.java,
             "open_db",
@@ -39,7 +38,7 @@ class GdRefIdReferenceTest : GdTestCaseWithSdk("reference") {
     // enclosing `class_name`d outer class, by bare name from within its own method body.
     @Test
     fun testResolveBareInnerClassSelfReference() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "<caret>Inner.factory_method()",
             GdPsiClassSymbol::class.java,
             "Inner",
@@ -47,7 +46,7 @@ class GdRefIdReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveBareOuterClassReferenceFromInnerClass() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "<caret>TopLevel.factory_method",
             GdPsiClassSymbol::class.java,
             "TopLevel",

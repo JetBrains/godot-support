@@ -1,17 +1,16 @@
 package com.jetbrains.godot.gdscript.reference
 
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.psi.GdPsiMethodSymbol
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdSetGetMethodIdReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveGetterMethod() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "get = <caret>get_my_property",
             GdPsiMethodSymbol::class.java,
             "get_my_property",
@@ -20,7 +19,7 @@ class GdSetGetMethodIdReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveSetterMethod() =
-        doResolveSymbolTest(
+        gd.doResolveSymbolTest(
             "set = <caret>set_my_property",
             GdPsiMethodSymbol::class.java,
             "set_my_property",
@@ -29,7 +28,7 @@ class GdSetGetMethodIdReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testGotoDeclarationGetterMethod() =
-        doGotoDeclarationTest(
+        gd.doGotoDeclarationTest(
             declarationSignature = "func <caret>get_my_property() -> int:",
             fromSignature = "get = <caret>get_my_property",
             expectedFileName = "resolveSetGetMethod.gd",
@@ -39,7 +38,7 @@ class GdSetGetMethodIdReferenceTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testGotoDeclarationSetterMethod() =
-        doGotoDeclarationTest(
+        gd.doGotoDeclarationTest(
             declarationSignature = "func <caret>set_my_property(value: int) -> void:",
             fromSignature = "set = <caret>set_my_property",
             expectedFileName = "resolveSetGetMethod.gd",

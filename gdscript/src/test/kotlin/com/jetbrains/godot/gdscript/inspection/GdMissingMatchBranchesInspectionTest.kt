@@ -1,11 +1,14 @@
 package com.jetbrains.godot.gdscript.inspection
 
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.application.runReadActionBlocking
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.inspection.GdMissingMatchBranchesInspection
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import project.psi.util.ProjectAutoloadUtil
 
 /**
@@ -25,11 +28,11 @@ import project.psi.util.ProjectAutoloadUtil
  * qualifier. This is why the production fix needed a `gdIsEngineSymbol` branch in the prefix
  * computation, not just swapping `gdPsiSourceElement` for `gdNavigationElement`.
  */
-@RunWith(JUnit4::class)
+@TestApplication
 class GdMissingMatchBranchesInspectionTest : GdTestCaseWithSdk("highlighting") {
 
-    override fun setUp() {
-        super.setUp()
+    @BeforeEach
+    fun enableMissingMatchBranchesInspection() {
         myFixture.enableInspections(GdMissingMatchBranchesInspection::class.java)
     }
 
@@ -43,7 +46,7 @@ class GdMissingMatchBranchesInspectionTest : GdTestCaseWithSdk("highlighting") {
         // pre-existing gap in that fallback's caching, now newly exposed by SDK-enum support, not a
         // bug in this inspection's own logic. Same "prime the cache once outside the restricted call"
         // shape as the GdParamAnnotatorTest/GdInlayParameterHintsSdkTest warm-up.
-        ProjectAutoloadUtil.listGlobals(project)
+        runReadActionBlocking { ProjectAutoloadUtil.listGlobals(project) }
         return myFixture.doHighlighting(HighlightSeverity.WEAK_WARNING).any { it.description == "Missing enum options" }
     }
 

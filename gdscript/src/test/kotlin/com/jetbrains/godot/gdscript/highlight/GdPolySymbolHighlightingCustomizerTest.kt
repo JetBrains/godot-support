@@ -1,22 +1,21 @@
 package com.jetbrains.godot.gdscript.highlight
 
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Test
 
-@RunWith(JUnit4::class)
+@TestApplication
 class GdPolySymbolHighlightingCustomizerTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
-    fun testSymbolKindColoring() = doHighlightingTest(checkSymbolNames = true, dir = false)
+    fun testSymbolKindColoring() = gd.doHighlightingTest(checkSymbolNames = true, dir = false)
 
     @Test
-    fun testSceneCameraLimitsColoring() = doHighlightingTest(checkSymbolNames = true)
+    fun testSceneCameraLimitsColoring() = gd.doHighlightingTest(checkSymbolNames = true)
 
     @Test
-    fun testAutoloadOwnDeclarationColoring() = doHighlightingTest(checkSymbolNames = true, configureFileName = "global.gd")
+    fun testAutoloadOwnDeclarationColoring() = gd.doHighlightingTest(checkSymbolNames = true, configureFileName = "global.gd")
 
     @Test
-    fun testSuperKeywordColoring() = doHighlightingTest(checkSymbolNames = true, dir = false)
+    fun testSuperKeywordColoring() = gd.doHighlightingTest(checkSymbolNames = true, dir = false)
 }

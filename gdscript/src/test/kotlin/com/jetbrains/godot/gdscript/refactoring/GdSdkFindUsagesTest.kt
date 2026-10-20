@@ -5,12 +5,11 @@ import com.intellij.polySymbols.testFramework.checkGotoDeclaration
 import com.intellij.polySymbols.testFramework.checkListByFile
 import com.intellij.polySymbols.testFramework.moveToOffsetBySignature
 import com.intellij.polySymbols.testFramework.usagesAtCaret
+import com.intellij.testFramework.junit5.TestApplication
 import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
 import gdscript.polySymbols.sdk.GdSdkPolySymbol
-import org.junit.Ignore
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.junit.runners.JUnit4
+import org.junit.jupiter.api.Disabled
+import org.junit.jupiter.api.Test
 
 /**
  * Tests that "Find Usages" works when invoked from a synthetic SDK-generated GDScript file.
@@ -19,13 +18,13 @@ import org.junit.runners.JUnit4
  * can inspect the SDK declaration. This test navigates there via a real Goto Declaration from an
  * actual `Node2D` reference, confirms the synthetic file opened, then runs Find Usages from it.
  */
-@RunWith(JUnit4::class)
+@TestApplication
 class GdSdkFindUsagesTest : GdTestCaseWithSdk("refactoring") {
 
     @Test
-    @Ignore
+    @Disabled
     fun testFindUsagesFromSdkClass() {
-        doConfiguredTest(configureFileName = "main.gd") {
+        gd.doConfiguredTest(configureFileName = "main.gd") {
             checkGotoDeclaration(
                 fromSignature = "var node: <caret>Node2D = Node2D.new()",
                 declarationSignature = "class_name <caret>Node2D",
