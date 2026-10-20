@@ -22,7 +22,8 @@ func setup(plugin_dir: String, plugin_cfg_path: String, preset_applier: PresetAp
 	_preset_applier = preset_applier
 	_is_active = is_active
 
-	icon = load(plugin_dir.path_join("icons/RiderRobot.svg")) as Texture2D
+	# DPITexture processes the SVG source for the current editor scale, the same way the built-in editor icons do.
+	icon = DPITexture.create_from_string(FileAccess.get_file_as_string(plugin_dir.path_join("icons/RiderRobot.svg")), EditorInterface.get_editor_scale())
 	tooltip_text = "Expand Menu (Rider addon)"
 	add_theme_color_override("icon_normal_color", Color.WHITE)
 	add_theme_color_override("icon_hover_color", Color.WHITE)
