@@ -3,14 +3,16 @@ package com.jetbrains.godot.gdscript.refactoring
 import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.psi.search.searches.ReferencesSearch
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCase
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdFixture
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdRefactoringTest : GdTestCase("refactoring") {
+class GdRefactoringTest {
+    private val gd: GdFixture by gdFixture("refactoring")
 
     // ─────────────────────────── Find Usages ──────────────────────────
 

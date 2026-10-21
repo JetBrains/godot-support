@@ -1,29 +1,26 @@
 package com.jetbrains.godot.gdscript
 
 import com.intellij.polySymbols.testFramework.HybridFixtureContext
+import com.intellij.testFramework.junit5.fixture.TestFixture
 import gdscript.settings.GdLspConnectionMode
 import gdscript.settings.GdLspSettingsFlowService
+import org.jetbrains.annotations.TestOnly
 
 /**
- * Base test case for GdScript PolySymbol feature tests (completion, highlighting, navigation, etc.).
- *
- * For testing GdScript PolySymbol feature with SDK support.
- * [sdkDirectories] are the SDK directories relative to the test data path, which [GdSdkFixture] copies and registers.
- *
- * @see GdTestCase
+ * The SDK directories of [gdSdkFixture], relative to the test data directory.
  */
-abstract class GdTestCaseWithSdk(
-    testCasePath: String,
-    sdkDirectories: List<String> = DEFAULT_SDK_DIRECTORIES,
-) : GdTestCase(testCasePath, { context, path -> GdSdkFixture(context, path, sdkDirectories) }) {
-
-    companion object {
-        val DEFAULT_SDK_DIRECTORIES: List<String> = listOf("../sdk/gdextensions", "../sdk/4.5.0")
-    }
-}
+val DEFAULT_SDK_DIRECTORIES: List<String> = listOf("../sdk/gdextensions", "../sdk/4.5.0")
 
 /**
- * The state of [GdTestCaseWithSdk]. [setUp] sets the Godot LSP mode to never connect, copies `project.godot`
+ * Creates a [GdSdkFixture] for the test data directory [testCasePath]. Declare the result as an instance property.
+ * [sdkDirectories] are the SDK directories relative to the test data directory.
+ */
+@TestOnly
+fun gdSdkFixture(testCasePath: String, sdkDirectories: List<String> = DEFAULT_SDK_DIRECTORIES): TestFixture<GdSdkFixture> =
+    gdFixture { GdSdkFixture(it, testCasePath, sdkDirectories) }
+
+/**
+ * A [GdFixture] with the Godot SDK. [setUp] sets the Godot LSP mode to never connect, copies `project.godot`
  * and the [sdkDirectories] to the project root, and registers the SDK files of these directories.
  */
 open class GdSdkFixture(

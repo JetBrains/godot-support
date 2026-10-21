@@ -4,7 +4,8 @@ import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdModelTestBase
+import com.jetbrains.godot.gdscript.GdModelFixture
+import com.jetbrains.godot.gdscript.gdModelFixture
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.psi.GdPsiAutoloadSymbol
@@ -24,7 +25,8 @@ import org.junit.jupiter.api.Test
 import project.psi.util.ProjectAutoloadUtil
 
 @TestApplication
-class GdPsiModelTest : GdModelTestBase() {
+class GdPsiModelTest {
+    private val gd: GdModelFixture by gdModelFixture()
 
     companion object {
         const val MyClass = "MyClass"
@@ -35,7 +37,7 @@ class GdPsiModelTest : GdModelTestBase() {
 
     @Test
     fun testPsiSymbolsModel() {
-        val psiFile = myFixture.addFileToProject("test.gd", """
+        val psiFile = gd.fixture.addFileToProject("test.gd", """
             extends Node2D
             class_name MyClass
             
@@ -81,7 +83,7 @@ class GdPsiModelTest : GdModelTestBase() {
 
     @Test
     fun testPsiInnerClassSymbolResolvesSuperClass() {
-        val psiFile = myFixture.addFileToProject("test.gd", """
+        val psiFile = gd.fixture.addFileToProject("test.gd", """
             class_name ContainingClass
             
             class MyClass extends Node2D:
@@ -130,14 +132,14 @@ class GdPsiModelTest : GdModelTestBase() {
 
     @Test
     fun testPsiResourceClassSymbolResolvesUnnamedScriptInheritance() {
-        val baseFile = myFixture.addFileToProject("base.gd", """
+        val baseFile = gd.fixture.addFileToProject("base.gd", """
             extends Node2D
 
             var base_var = 1
             func base_func():
                 pass
         """.trimIndent())
-        val childFile = myFixture.addFileToProject("child.gd", """
+        val childFile = gd.fixture.addFileToProject("child.gd", """
             extends "res://base.gd"
 
             var child_var = 1
@@ -180,7 +182,7 @@ class GdPsiModelTest : GdModelTestBase() {
 
     @Test
     fun testMethodAndConstructorPresentationIncludesParameters() {
-        val psiFile = myFixture.addFileToProject("test.gd", """
+        val psiFile = gd.fixture.addFileToProject("test.gd", """
             class_name $MyClass
 
             func _init(count: int, label: String = "hi"):
@@ -218,17 +220,17 @@ class GdPsiModelTest : GdModelTestBase() {
     @Test
     fun testAutoloadSymbolModel() {
         // project.godot registers global.gd as an autoload
-        myFixture.addFileToProject("global.gd", """
+        gd.fixture.addFileToProject("global.gd", """
             extends Node
             var score = 0
             func get_score() -> int:
                 return score
         """.trimIndent())
 
-        myFixture.addFileToProject("test.gd", "")
+        gd.fixture.addFileToProject("test.gd", "")
 
         runReadActionBlocking {
-            val autoloadSymbol = ProjectAutoloadUtil.listGlobals(project)
+            val autoloadSymbol = ProjectAutoloadUtil.listGlobals(gd.project)
                 .filter { it.element is GdFile }
                 .map { autoload -> GdPsiAutoloadSymbol(autoload.element as GdFile, autoload.key) }
                 .firstOrNull {autoload -> autoload.name == "global"}

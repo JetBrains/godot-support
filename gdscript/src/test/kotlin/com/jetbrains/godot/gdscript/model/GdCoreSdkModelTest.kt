@@ -4,9 +4,10 @@ import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.query.PolySymbolQueryExecutor
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdModelTestBase
-import gdscript.polySymbols.GdPolySymbolKind
+import com.jetbrains.godot.gdscript.GdModelFixture
+import com.jetbrains.godot.gdscript.gdModelFixture
 import gdscript.polySymbols.GdClassSymbol
+import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.index.GdSdkPolySymbolIndexUtil
 import gdscript.polySymbols.sdk.GdSdkEnumSymbol
@@ -17,7 +18,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdCoreSdkModelTest : GdModelTestBase() {
+class GdCoreSdkModelTest {
+    private val gd: GdModelFixture by gdModelFixture()
 
     companion object{
         const val Node2D = "Node2D"
@@ -29,7 +31,7 @@ class GdCoreSdkModelTest : GdModelTestBase() {
 
     @Test
     fun testSdkClassesModel() {
-        val executor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getQueryExecutor(project)
+        val executor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getQueryExecutor(gd.project)
 
         val classes: List<PolySymbol> = GdPolySymbolQueriesUtil.listSdkClassSymbols(executor)
         assertNotNull(classes, "Classes not found")
@@ -55,7 +57,7 @@ class GdCoreSdkModelTest : GdModelTestBase() {
 
     @Test
     fun testSdkClassMembersModel() {
-        val sdkExecutor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getQueryExecutor(project)
+        val sdkExecutor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getQueryExecutor(gd.project)
 
         val node2DSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(sdkExecutor, Node2D)
         assertNotNull(node2DSymbol, "$Node2D symbol not found")
@@ -111,7 +113,7 @@ class GdCoreSdkModelTest : GdModelTestBase() {
 
     @Test
     fun testSdkOperationsModel() {
-        val executor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getOperationsQueryExecutor(project)
+        val executor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getOperationsQueryExecutor(gd.project)
 
         val operators = GdPolySymbolQueriesUtil.listSdkMemberSymbols(executor, GdPolySymbolKind.OPERATOR)
 
@@ -123,13 +125,13 @@ class GdCoreSdkModelTest : GdModelTestBase() {
     @Test
     fun testSdkAnnotationsModel() {
         // TODO add parameter check
-        val exportAnnotation = GdPolySymbolQueriesUtil.getAnnotationSymbol(project, "export")
+        val exportAnnotation = GdPolySymbolQueriesUtil.getAnnotationSymbol(gd.project, "export")
         assertNotNull(exportAnnotation, "Should contain @export")
     }
 
     @Test
     fun testSdkGlobalScopeModel(){
-        val executor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getQueryExecutor(project)
+        val executor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getQueryExecutor(gd.project)
 
         val globalConstants = GdPolySymbolQueriesUtil.listSdkMemberSymbols(executor, GdPolySymbolKind.CONSTANT)
 

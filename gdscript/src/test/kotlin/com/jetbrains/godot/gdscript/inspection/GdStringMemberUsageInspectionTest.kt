@@ -2,7 +2,8 @@ package com.jetbrains.godot.gdscript.inspection
 
 import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.inspection.GdStringNameMemberCallInspection
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -10,11 +11,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
+class GdStringMemberUsageInspectionTest {
+    private val gd: GdSdkFixture by gdSdkFixture("inspection")
 
     @BeforeEach
     fun enableStringNameMemberCallInspection() {
-        myFixture.enableInspections(GdStringNameMemberCallInspection())
+        gd.fixture.enableInspections(GdStringNameMemberCallInspection())
     }
 
     private val multiParamQfMethods = listOf<String>("rpc", "call", "call_deferred", "callv")
@@ -25,14 +27,14 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
 
     @Test
     fun testCallableCallDeferred() {
-        myFixture.testHighlighting("CallableCallDeferred.gd")
+        gd.fixture.testHighlighting("CallableCallDeferred.gd")
     }
 
     @Test
     fun testNodeMethodsQuickFixCandidateCount() {
-        myFixture.configureByText("test.gd", "")
+        gd.fixture.configureByText("test.gd", "")
         val inspection = GdStringNameMemberCallInspection()
-        val candidateCount = runReadActionBlocking { inspection.getQfCandidateCount(myFixture.file) }
+        val candidateCount = runReadActionBlocking { inspection.getQfCandidateCount(gd.fixture.file) }
 
         // If this breaks it means another method th looks quick fixable was added,
         // check if the method is quick fixable and adjust this test and GdStringNameMemberCallInspection.kt
@@ -43,7 +45,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
     @Test
     fun testCallableCallDeferredQuickFix() {
         for (method in multiParamQfMethods) {
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "test.gd", """
             func _load_installations() -> void:
               var array: Array = Array()
@@ -53,11 +55,11 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
               pass
         """.trimIndent()
             )
-            myFixture.doHighlighting()
+            gd.fixture.doHighlighting()
             val resolvedName = nameMapper[method] ?: method
-            val action = myFixture.findSingleIntention("Convert to '_on_installations_loaded.$resolvedName(array)'")
-            myFixture.launchAction(action)
-            myFixture.checkResult(
+            val action = gd.fixture.findSingleIntention("Convert to '_on_installations_loaded.$resolvedName(array)'")
+            gd.fixture.launchAction(action)
+            gd.fixture.checkResult(
                 """
             func _load_installations() -> void:
               var array: Array = Array()
@@ -73,7 +75,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
     @Test
     fun testCallableCallDeferredWithBaseQuickFix() {
         for (method in multiParamQfMethods) {
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "test.gd", """
             func _load_installations() -> void:
               var array: Array = Array()
@@ -85,9 +87,9 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
             )
             val resolvedName = nameMapper[method] ?: method
             val action =
-                myFixture.findSingleIntention("Convert to 'self._on_installations_loaded.$resolvedName(array)'")
-            myFixture.launchAction(action)
-            myFixture.checkResult(
+                gd.fixture.findSingleIntention("Convert to 'self._on_installations_loaded.$resolvedName(array)'")
+            gd.fixture.launchAction(action)
+            gd.fixture.checkResult(
                 """
             func _load_installations() -> void:
               var array: Array = Array()
@@ -103,7 +105,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
     @Test
     fun testCallableCallDeferredNoArgsQuickFix() {
         for (method in multiParamQfMethods) {
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "test.gd", """
             func test():
               <caret>$method("my_method")
@@ -113,9 +115,9 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
         """.trimIndent()
             )
             val resolvedName = nameMapper[method] ?: method
-            val action = myFixture.findSingleIntention("Convert to 'my_method.$resolvedName()'")
-            myFixture.launchAction(action)
-            myFixture.checkResult(
+            val action = gd.fixture.findSingleIntention("Convert to 'my_method.$resolvedName()'")
+            gd.fixture.launchAction(action)
+            gd.fixture.checkResult(
                 """
             func test():
             	my_method.$resolvedName()
@@ -130,7 +132,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
     @Test
     fun testCallableCallDeferredStringNameQuickFix() {
         for (method in multiParamQfMethods) {
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "test.gd", """
             func test():
               <caret>$method(&"_on_installations_loaded")
@@ -140,9 +142,9 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
         """.trimIndent()
             )
             val resolvedName = nameMapper[method] ?: method
-            val action = myFixture.findSingleIntention("Convert to '_on_installations_loaded.$resolvedName()'")
-            myFixture.launchAction(action)
-            myFixture.checkResult(
+            val action = gd.fixture.findSingleIntention("Convert to '_on_installations_loaded.$resolvedName()'")
+            gd.fixture.launchAction(action)
+            gd.fixture.checkResult(
                 """
             func test():
             	_on_installations_loaded.$resolvedName()
@@ -161,7 +163,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
             // file can otherwise trip a pre-existing, unrelated PolySymbolHighlightingAnnotator
             // cold-cache crash during doHighlighting() - see GdParamAnnotatorTest for the same
             // documented workaround.
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "test.gd", """
             var warmup = Vector2.new()
 
@@ -169,8 +171,8 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
               $method("unresolved_method")
         """.trimIndent()
             )
-            myFixture.doHighlighting()
-            val intentions = myFixture.availableIntentions
+            gd.fixture.doHighlighting()
+            val intentions = gd.fixture.availableIntentions
             val fix = intentions.find { it.text.contains("Convert to") }
             assertNull(fix, "Quick fix should not be available for unresolved method")
         }
@@ -179,7 +181,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
     @Test
     fun testSignalQuickFix() {
         for (rename in multiParamQfSignals) {
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "test.gd", """
             signal installations_loaded(array: Array)
 
@@ -190,9 +192,9 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
         """.trimIndent()
             )
             val resolvedName = nameMapper[rename] ?: rename
-            val action = myFixture.findSingleIntention("Convert to 'installations_loaded.$resolvedName(callable)'")
-            myFixture.launchAction(action)
-            myFixture.checkResult(
+            val action = gd.fixture.findSingleIntention("Convert to 'installations_loaded.$resolvedName(callable)'")
+            gd.fixture.launchAction(action)
+            gd.fixture.checkResult(
                 """
             signal installations_loaded(array: Array)
 
@@ -208,7 +210,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
     @Test
     fun testSignalNoParamQuickFix() {
         for (method in singleParamQfSignals) {
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "test.gd", """
             signal installations_loaded()
 
@@ -217,9 +219,9 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
         """.trimIndent()
             )
             val resolvedName = nameMapper[method] ?: method
-            val action = myFixture.findSingleIntention("Convert to 'installations_loaded.$resolvedName()'")
-            myFixture.launchAction(action)
-            myFixture.checkResult(
+            val action = gd.fixture.findSingleIntention("Convert to 'installations_loaded.$resolvedName()'")
+            gd.fixture.launchAction(action)
+            gd.fixture.checkResult(
                 """
             signal installations_loaded()
 
@@ -234,7 +236,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
     @Test
     fun testSignalWithBaseQuickFix() {
         for (method in multiParamQfSignals) {
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "test.gd", """
             signal installations_loaded(array: Array)
 
@@ -246,9 +248,9 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
             )
             val resolvedName = nameMapper[method] ?: method
             val action =
-                myFixture.findSingleIntention("Convert to 'self.installations_loaded.$resolvedName(callable)'")
-            myFixture.launchAction(action)
-            myFixture.checkResult(
+                gd.fixture.findSingleIntention("Convert to 'self.installations_loaded.$resolvedName(callable)'")
+            gd.fixture.launchAction(action)
+            gd.fixture.checkResult(
                 """
             signal installations_loaded(array: Array)
 
@@ -264,7 +266,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
     @Test
     fun testSignalStringNameQuickFix() {
         for (method in multiParamQfSignals) {
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "test.gd", """
             signal installations_loaded
 
@@ -274,9 +276,9 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
         """.trimIndent()
             )
             val resolvedName = nameMapper[method] ?: method
-            val action = myFixture.findSingleIntention("Convert to 'installations_loaded.$resolvedName(callable)'")
-            myFixture.launchAction(action)
-            myFixture.checkResult(
+            val action = gd.fixture.findSingleIntention("Convert to 'installations_loaded.$resolvedName(callable)'")
+            gd.fixture.launchAction(action)
+            gd.fixture.checkResult(
                 """
             signal installations_loaded
 
@@ -292,7 +294,7 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
     fun testNoFixForUnresolvedSignal() {
         for (method in multiParamQfSignals) {
             // Warm-up statement - see testNoFixForUnresolvedMethod for why.
-            myFixture.configureByText(
+            gd.fixture.configureByText(
                 "test.gd", """
             var warmup = Vector2.new()
 
@@ -300,8 +302,8 @@ class GdStringMemberUsageInspectionTest : GdTestCaseWithSdk("inspection") {
               $method("unresolved_signal", Callable())
         """.trimIndent()
             )
-            myFixture.doHighlighting()
-            val intentions = myFixture.availableIntentions
+            gd.fixture.doHighlighting()
+            val intentions = gd.fixture.availableIntentions
             val fix = intentions.find { it.text.contains("Convert to") }
             assertNull(fix, "Quick fix should not be available for unresolved signal")
         }

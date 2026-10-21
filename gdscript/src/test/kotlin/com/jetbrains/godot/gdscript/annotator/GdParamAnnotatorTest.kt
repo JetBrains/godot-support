@@ -3,7 +3,8 @@ package com.jetbrains.godot.gdscript.annotator
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.TestModeFlags
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.GdScriptBundle
 import gdscript.annotator.GD_ANNOTATOR_ORIGINAL_SEVERITY
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -27,7 +28,8 @@ import org.junit.jupiter.api.Test
  * the crash occurs identically whether or not this fix is applied).
  */
 @TestApplication
-class GdParamAnnotatorTest : GdTestCaseWithSdk("highlighting") {
+class GdParamAnnotatorTest {
+    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
 
     @BeforeEach
     fun preserveAnnotatorSeverity() {
@@ -36,43 +38,43 @@ class GdParamAnnotatorTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testTooManyArgumentsFlaggedForSdkConstructorViaNew() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "a.gd", """
             |func f():
             |	var warmup = Vector2.new()
             |	var v = <error descr="Too many arguments">Vector2.new(1, 2, 3)</error>
         """.trimMargin()
         )
-        myFixture.checkHighlighting(false, false, false)
+        gd.fixture.checkHighlighting(false, false, false)
     }
 
     @Test
     fun testTooManyArgumentsFlaggedForBareSdkConstructorCall() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "a.gd", """
             |func f():
             |	var warmup = Vector2.new()
             |	var v = <error descr="Too many arguments">Vector2(1, 2, 3)</error>
         """.trimMargin()
         )
-        myFixture.checkHighlighting(false, false, false)
+        gd.fixture.checkHighlighting(false, false, false)
     }
 
     @Test
     fun testValidTwoArgSdkConstructorCallNotFlagged() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "a.gd", """
             |func f():
             |	var warmup = Vector2.new()
             |	var v = Vector2.new(1.0, 2.0)
         """.trimMargin()
         )
-        myFixture.checkHighlighting(false, false, false)
+        gd.fixture.checkHighlighting(false, false, false)
     }
 
     @Test
     fun testChangeTypeFixUpdatesAnOrdinaryUserDeclaredParameter() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "a.gd", """
             |func take_node(value: Node):
             |	pass
@@ -82,13 +84,13 @@ class GdParamAnnotatorTest : GdTestCaseWithSdk("highlighting") {
         """.trimMargin()
         )
 
-        val errors = myFixture.doHighlighting().filter { it.severity === HighlightSeverity.ERROR }
+        val errors = gd.fixture.doHighlighting().filter { it.severity === HighlightSeverity.ERROR }
         assertFalse(errors.isEmpty(), "expected a type-mismatch error for the call")
 
-        val fix = myFixture.findSingleIntention(GdScriptBundle.message("intention.name.change.type.to", "int"))
-        myFixture.launchAction(fix)
+        val fix = gd.fixture.findSingleIntention(GdScriptBundle.message("intention.name.change.type.to", "int"))
+        gd.fixture.launchAction(fix)
 
-        myFixture.checkResult(
+        gd.fixture.checkResult(
             """
             |func take_node(value: int):
             |	pass

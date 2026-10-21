@@ -3,7 +3,8 @@ package com.jetbrains.godot.gdscript.model
 import com.intellij.polySymbols.query.PolySymbolQueryExecutor
 import com.intellij.polySymbols.query.PolySymbolQueryExecutorFactory
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdModelTestBase
+import com.jetbrains.godot.gdscript.GdModelFixture
+import com.jetbrains.godot.gdscript.gdModelFixture
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
 import gdscript.polySymbols.index.GdSdkPolySymbolIndexUtil
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -11,7 +12,8 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdExtensionsModelTest : GdModelTestBase() {
+class GdExtensionsModelTest {
+    private val gd: GdModelFixture by gdModelFixture()
 
     companion object{
         const val RiderLocator = "RiderLocator"
@@ -20,7 +22,7 @@ class GdExtensionsModelTest : GdModelTestBase() {
 
     @Test
     fun testRiderLocator() {
-        val executor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getQueryExecutor(myFixture.project)
+        val executor: PolySymbolQueryExecutor = GdSdkPolySymbolIndexUtil.getQueryExecutor(gd.fixture.project)
 
         // Find RiderLocator class from gdextensions
         val riderLocatorSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(executor, RiderLocator)

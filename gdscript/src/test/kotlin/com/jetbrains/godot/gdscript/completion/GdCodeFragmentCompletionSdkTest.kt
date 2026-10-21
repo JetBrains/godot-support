@@ -5,7 +5,8 @@ import com.intellij.openapi.application.readAction
 import com.intellij.polySymbols.testFramework.renderLookupItems
 import com.intellij.testFramework.common.timeoutRunBlocking
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import com.jetbrains.godot.gdscript.util.configureGdFragment
 import com.jetbrains.godot.gdscript.util.disableSingleItemAutoInsert
 import com.jetbrains.godot.gdscript.util.gdContextAt
@@ -17,7 +18,8 @@ import org.junit.jupiter.api.Test
 
 /** No gold file here, please - `Node`'s lookup is ~480 entries and would churn on every SDK bump */
 @TestApplication
-class GdCodeFragmentCompletionSdkTest : GdTestCaseWithSdk("completion") {
+class GdCodeFragmentCompletionSdkTest {
+    private val gd: GdSdkFixture by gdSdkFixture("completion")
 
     @BeforeEach
     fun disableAutoInsert() {
@@ -28,7 +30,7 @@ class GdCodeFragmentCompletionSdkTest : GdTestCaseWithSdk("completion") {
     @Test
     fun testFragmentSelfDotOffersOwnAndInheritedMembers(): Unit = timeoutRunBlocking {
         withContext(Dispatchers.EDT) {
-            val context = myFixture.gdContextAt(
+            val context = gd.fixture.gdContextAt(
                 "player.gd",
                 """
                 |extends Node
@@ -40,11 +42,11 @@ class GdCodeFragmentCompletionSdkTest : GdTestCaseWithSdk("completion") {
                 """.trimMargin()
             )
 
-            myFixture.configureGdFragment("self.<caret>", context)
+            gd.fixture.configureGdFragment("self.<caret>", context)
         }
-        myFixture.completeBasic()
+        gd.fixture.completeBasic()
 
-        val lookups = readAction { myFixture.renderLookupItems(renderPriority = false, renderTypeText = false) }
+        val lookups = readAction { gd.fixture.renderLookupItems(renderPriority = false, renderTypeText = false) }
 
         assertThat(lookups).contains("health", "queue_free", "get_parent")
     }

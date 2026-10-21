@@ -3,7 +3,8 @@ package com.jetbrains.godot.gdscript.codeInsight
 import com.intellij.openapi.application.EDT
 import com.intellij.testFramework.common.timeoutRunBlocking
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.junit.jupiter.api.Test
@@ -18,7 +19,8 @@ import org.junit.jupiter.api.Test
  * symbol scope's own machinery, unrelated to this provider).
  */
 @TestApplication
-class GdInlayParameterHintsSdkTest : GdTestCaseWithSdk("codeInsight") {
+class GdInlayParameterHintsSdkTest {
+    private val gd: GdSdkFixture by gdSdkFixture("codeInsight")
 
     @Test
     fun testInlayHintsForSdkMethodCall(): Unit = timeoutRunBlocking {
@@ -27,9 +29,9 @@ class GdInlayParameterHintsSdkTest : GdTestCaseWithSdk("codeInsight") {
             |	var warmup = Vector2.new()
             |	v.angle_to(<hint text="to:"/>warmup)
         """.trimMargin()
-        myFixture.configureByText("test.gd", code)
+        gd.fixture.configureByText("test.gd", code)
         withContext(Dispatchers.EDT) {
-            myFixture.testInlays()
+            gd.fixture.testInlays()
         }
     }
 
@@ -40,9 +42,9 @@ class GdInlayParameterHintsSdkTest : GdTestCaseWithSdk("codeInsight") {
             |	var warmup = Vector2.new()
             |	var v = Vector2.new(<hint text="x:"/>1.0, <hint text="y:"/>2.0)
         """.trimMargin()
-        myFixture.configureByText("test.gd", code)
+        gd.fixture.configureByText("test.gd", code)
         withContext(Dispatchers.EDT) {
-            myFixture.testInlays()
+            gd.fixture.testInlays()
         }
     }
 
@@ -53,9 +55,9 @@ class GdInlayParameterHintsSdkTest : GdTestCaseWithSdk("codeInsight") {
             |	var warmup = Vector2.new()
             |	var v = Vector2(<hint text="x:"/>1.0, <hint text="y:"/>2.0)
         """.trimMargin()
-        myFixture.configureByText("test.gd", code)
+        gd.fixture.configureByText("test.gd", code)
         withContext(Dispatchers.EDT) {
-            myFixture.testInlays()
+            gd.fixture.testInlays()
         }
     }
 }

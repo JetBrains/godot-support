@@ -5,7 +5,8 @@ import com.intellij.polySymbols.testFramework.multiResolveSymbolReference
 import com.intellij.polySymbols.testFramework.resolveSymbolReference
 import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.polySymbols.psi.GdPsiNodeSymbol
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
@@ -13,7 +14,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
+class GdNodePathReferenceTest {
+    private val gd: GdSdkFixture by gdSdkFixture("completion")
 
     @Test
     fun testResolveDollarNodeToTscnNode() = doResolveTest("\$<caret>Plain") { node ->
@@ -105,7 +107,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
         configureFileName = "unique_names.gd",
         fileContents = script("<caret>\$DoesNotExist"),
     ) {
-        assertTrue(myFixture.multiResolveSymbolReference("<caret>\$DoesNotExist").isEmpty(), "an unknown node path must not resolve")
+        assertTrue(gd.fixture.multiResolveSymbolReference("<caret>\$DoesNotExist").isEmpty(), "an unknown node path must not resolve")
     }
 
     private fun script(expression: String): String =
@@ -122,7 +124,7 @@ class GdNodePathReferenceTest : GdTestCaseWithSdk("completion") {
         }
 
     private fun resolveNodeSymbol(signature: String): GdPsiNodeSymbol {
-        val referenced = myFixture.resolveSymbolReference(signature)
+        val referenced = gd.fixture.resolveSymbolReference(signature)
         val resolved = (referenced as? PolySymbol)?.unwrapAllDelegates() ?: referenced
         return assertInstanceOf(GdPsiNodeSymbol::class.java, resolved)
     }

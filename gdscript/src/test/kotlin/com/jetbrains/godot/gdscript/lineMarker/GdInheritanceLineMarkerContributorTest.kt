@@ -3,7 +3,8 @@ package com.jetbrains.godot.gdscript.lineMarker
 import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.polySymbols.gdNavigationElement
 import gdscript.polySymbols.resolve.GdSymbolResolverUtil
 import gdscript.psi.GdMethodIdNmi
@@ -23,11 +24,12 @@ import org.junit.jupiter.api.Test
  * unrelated range-computation bug that crashes on this fixture, independent of line-marker behavior.
  */
 @TestApplication
-class GdInheritanceLineMarkerContributorTest : GdTestCaseWithSdk("highlighting") {
+class GdInheritanceLineMarkerContributorTest {
+    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
 
     @Test
     fun testOverrideOfSdkVirtualMethodResolvesToEngineMethod() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "OverridesReady.gd", """
             |extends Node2D
             |
@@ -37,7 +39,7 @@ class GdInheritanceLineMarkerContributorTest : GdTestCaseWithSdk("highlighting")
         )
 
         runReadActionBlocking {
-            val element = myFixture.file.findElementAt(myFixture.caretOffset)
+            val element = gd.fixture.file.findElementAt(gd.fixture.caretOffset)
             val methodIdNmi = PsiTreeUtil.getParentOfType(element, GdMethodIdNmi::class.java)
             assertNotNull(methodIdNmi, "Expected caret to be inside a GdMethodIdNmi")
 

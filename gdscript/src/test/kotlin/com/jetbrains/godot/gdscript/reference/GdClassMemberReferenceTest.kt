@@ -1,7 +1,8 @@
 package com.jetbrains.godot.gdscript.reference
 
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.polySymbols.psi.GdPsiMethodSymbol
 import gdscript.polySymbols.psi.GdPsiPropertySymbol
 import gdscript.polySymbols.sdk.GdSdkMethodSymbol
@@ -9,7 +10,8 @@ import gdscript.polySymbols.sdk.GdSdkPropertySymbol
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdClassMemberReferenceTest : GdTestCaseWithSdk("reference") {
+class GdClassMemberReferenceTest {
+    private val gd: GdSdkFixture by gdSdkFixture("reference")
 
     @Test
     fun testResolveClassMemberSdkProperty() =
