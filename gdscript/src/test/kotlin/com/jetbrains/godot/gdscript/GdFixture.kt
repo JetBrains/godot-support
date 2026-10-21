@@ -1,6 +1,5 @@
 package com.jetbrains.godot.gdscript
 
-import com.intellij.openapi.project.Project
 import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.testFramework.HybridFixtureContext
 import com.intellij.polySymbols.testFramework.HybridTestMode
@@ -8,35 +7,29 @@ import com.intellij.polySymbols.testFramework.PolySymbolsFixture
 import com.intellij.polySymbols.testFramework.hybridFixture
 import com.intellij.polySymbols.testFramework.resolveSymbolReference
 import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
-import com.intellij.testFramework.fixtures.CodeInsightTestFixture
+import com.intellij.testFramework.junit5.fixture.TestFixture
+import org.jetbrains.annotations.TestOnly
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 
 /**
- * Base test case for GdScript PolySymbol feature tests (completion, highlighting, navigation, etc.).
- * The fixture [gd] is a [PolySymbolsFixture] with its built-in test methods like
- * [GdFixture.doLookupTest], [GdFixture.doHighlightingTest], [GdFixture.doGotoDeclarationTest], etc.
+ * Creates a [GdFixture] for the test data directory [testCasePath]. Declare the result as an instance property.
  * Each test gets a new heavy project.
- *
- * For model-only tests (symbol queries, inheritance, members), use [GdModelTestBase] instead.
  */
-abstract class GdTestCase protected constructor(
-    testCasePath: String,
-    createFixture: (HybridFixtureContext, String) -> GdFixture,
-) {
-
-    constructor(testCasePath: String) : this(testCasePath, ::GdFixture)
-
-    protected val gd: GdFixture by hybridFixture({ HybridTestMode.CodeInsightFixture }) { createFixture(it, testCasePath) }
-
-    protected val myFixture: CodeInsightTestFixture get() = gd.fixture
-
-    protected val project: Project get() = gd.project
-}
+@TestOnly
+fun gdFixture(testCasePath: String): TestFixture<GdFixture> = gdFixture { GdFixture(it, testCasePath) }
 
 /**
- * The state of [GdTestCase]: a [PolySymbolsFixture] with the GDScript test data root, the `gd` extension, and the directory mode.
- * Call a member from a background thread.
+ * Creates a sub-fixture of [GdFixture] with [create]. Each test gets a new heavy project.
+ */
+@TestOnly
+fun <T : GdFixture> gdFixture(create: (HybridFixtureContext) -> T): TestFixture<T> =
+    hybridFixture({ HybridTestMode.CodeInsightFixture }, create)
+
+/**
+ * The fixture of the GDScript PolySymbol feature tests, for example completion, highlighting and navigation.
+ * It is a [PolySymbolsFixture] with the GDScript test data root, the `gd` extension, and the directory mode.
+ * Call a member from a background thread. For a model-only test, use [GdModelFixture].
  */
 open class GdFixture(context: HybridFixtureContext, testCasePath: String) : PolySymbolsFixture(
     context,

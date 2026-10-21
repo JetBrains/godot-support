@@ -5,7 +5,8 @@ import com.intellij.openapi.application.invokeAndWaitIfNeeded
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -20,7 +21,8 @@ import org.junit.jupiter.api.Test
  * aren't in scope here - only the absence of a crash is being verified.
  */
 @TestApplication
-class GdSdkConstructorDeclarationHighlightingTest : GdTestCaseWithSdk("highlighting") {
+class GdSdkConstructorDeclarationHighlightingTest {
+    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
 
     @Test
     fun testNavigatingToSdkConstructorDoesNotBreakIdentifierHighlighting() {
@@ -31,13 +33,13 @@ class GdSdkConstructorDeclarationHighlightingTest : GdTestCaseWithSdk("highlight
         ) {
             performEditorAction(IdeActions.ACTION_GOTO_DECLARATION)
 
-            val targetEditor = FileEditorManager.getInstance(myFixture.project).selectedTextEditor
+            val targetEditor = FileEditorManager.getInstance(gd.fixture.project).selectedTextEditor
             val targetVirtualFile = targetEditor?.let { FileDocumentManager.getInstance().getFile(it.document) }
             assertEquals("Vector2.generated.gd", targetVirtualFile?.name)
             invokeAndWaitIfNeeded {
-                myFixture.openFileInEditor(targetVirtualFile!!)
-                assertEquals("Vector2.generated.gd", myFixture.file.name)
-                myFixture.doHighlighting()
+                gd.fixture.openFileInEditor(targetVirtualFile!!)
+                assertEquals("Vector2.generated.gd", gd.fixture.file.name)
+                gd.fixture.doHighlighting()
             }
         }
     }

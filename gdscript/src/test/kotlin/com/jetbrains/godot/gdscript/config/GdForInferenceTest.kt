@@ -3,14 +3,16 @@ package com.jetbrains.godot.gdscript.config
 import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.psi.util.descendantsOfType
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdModelTestBase
+import com.jetbrains.godot.gdscript.GdModelFixture
+import com.jetbrains.godot.gdscript.gdModelFixture
 import gdscript.psi.GdForSt
 import gdscript.psi.utils.GdCommonUtil
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdForInferenceTest : GdModelTestBase() {
+class GdForInferenceTest {
+    private val gd: GdModelFixture by gdModelFixture()
 
     @Test
     fun testDictionaryKeyInference() {
@@ -21,7 +23,7 @@ class GdForInferenceTest : GdModelTestBase() {
                 for key in dict:
                     pass
         """.trimIndent()
-        val file = myFixture.configureByText("test.gd", code)
+        val file = gd.fixture.configureByText("test.gd", code)
         runReadActionBlocking {
             val forStmt = file.descendantsOfType<GdForSt>().first()
             assertEquals("Variant", GdCommonUtil.returnType(forStmt))
@@ -37,7 +39,7 @@ class GdForInferenceTest : GdModelTestBase() {
                 for key in dict:
                     pass
         """.trimIndent()
-        val file = myFixture.configureByText("test.gd", code)
+        val file = gd.fixture.configureByText("test.gd", code)
         runReadActionBlocking {
             val forStmt = file.descendantsOfType<GdForSt>().first()
             assertEquals("String", GdCommonUtil.returnType(forStmt))
@@ -54,7 +56,7 @@ class GdForInferenceTest : GdModelTestBase() {
                 for item in arr:
                     pass
         """.trimIndent()
-        val file = myFixture.configureByText("test.gd", code)
+        val file = gd.fixture.configureByText("test.gd", code)
         runReadActionBlocking {
             val forStmt = file.descendantsOfType<GdForSt>().first()
             assertEquals("Variant", GdCommonUtil.returnType(forStmt))
@@ -70,7 +72,7 @@ class GdForInferenceTest : GdModelTestBase() {
                 for item in arr:
                     pass
         """.trimIndent()
-        val file = myFixture.configureByText("test.gd", code)
+        val file = gd.fixture.configureByText("test.gd", code)
         runReadActionBlocking {
             val forStmt = file.descendantsOfType<GdForSt>().first()
             assertEquals("int", GdCommonUtil.returnType(forStmt))

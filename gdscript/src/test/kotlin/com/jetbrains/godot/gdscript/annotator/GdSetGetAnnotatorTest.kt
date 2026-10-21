@@ -2,7 +2,8 @@ package com.jetbrains.godot.gdscript.annotator
 
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.highlighter.GdHighlighterColors
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -17,16 +18,17 @@ import org.junit.jupiter.api.Test
  * static method keeps coloring correctly as before.
  */
 @TestApplication
-class GdSetGetAnnotatorTest : GdTestCaseWithSdk("highlighting") {
+class GdSetGetAnnotatorTest {
+    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
 
     // Multiple highlights can share the exact same range at a get=/set= accessor (e.g. this
     // annotator's own "method does not exist" ERROR co-exists with its silent color annotation, and
     // separately with PolySymbols' own generic semantic-highlighting pass) - filter specifically for
     // colorSetGet's own silent, description-less INFORMATION annotation, not the co-located ones.
     private fun colorAt(text: String, needle: String): com.intellij.openapi.editor.colors.TextAttributesKey? {
-        myFixture.configureByText("Test.gd", text)
+        gd.fixture.configureByText("Test.gd", text)
         val offset = text.lastIndexOf(needle)
-        return myFixture.doHighlighting()
+        return gd.fixture.doHighlighting()
             .find {
                 it.startOffset == offset && it.endOffset == offset + needle.length &&
                     it.severity == HighlightSeverity.INFORMATION && it.description == null

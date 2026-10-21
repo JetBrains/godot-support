@@ -6,7 +6,8 @@ import com.intellij.polySymbols.testFramework.checkListByFile
 import com.intellij.polySymbols.testFramework.moveToOffsetBySignature
 import com.intellij.polySymbols.testFramework.usagesAtCaret
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.polySymbols.sdk.GdSdkPolySymbol
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
@@ -19,7 +20,8 @@ import org.junit.jupiter.api.Test
  * actual `Node2D` reference, confirms the synthetic file opened, then runs Find Usages from it.
  */
 @TestApplication
-class GdSdkFindUsagesTest : GdTestCaseWithSdk("refactoring") {
+class GdSdkFindUsagesTest {
+    private val gd: GdSdkFixture by gdSdkFixture("refactoring")
 
     @Test
     @Disabled

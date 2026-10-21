@@ -2,13 +2,15 @@ package com.jetbrains.godot.gdscript.reference
 
 import com.intellij.polySymbols.testFramework.multiResolveSymbolReference
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.polySymbols.psi.GdPsiLoadedClassAliasSymbol
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdLoadedClassAliasReferenceTest : GdTestCaseWithSdk("reference") {
+class GdLoadedClassAliasReferenceTest {
+    private val gd: GdSdkFixture by gdSdkFixture("reference")
 
     @Test
     fun testResolveLoadedClassAliasForScript() =
@@ -34,7 +36,7 @@ class GdLoadedClassAliasReferenceTest : GdTestCaseWithSdk("reference") {
     private fun doUnresolvedTypeHintTest(signature: String) {
         val dirName = "resolveLoadedClassAlias"
         gd.doConfiguredTest(dirName = dirName, configureFileName = "$dirName.${gd.defaultExtension}") {
-            assertTrue(myFixture.multiResolveSymbolReference(signature).isEmpty(), "Expected '$signature' to have no resolved type-hint symbol")
+            assertTrue(gd.fixture.multiResolveSymbolReference(signature).isEmpty(), "Expected '$signature' to have no resolved type-hint symbol")
         }
     }
 }

@@ -1,14 +1,16 @@
 package com.jetbrains.godot.gdscript.reference
 
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import org.junit.jupiter.api.Test
 
 /**
  * RIDER-143313 Go To Declaration on `super` navigates to the parent class method.
  */
 @TestApplication
-class GdSuperGotoDeclarationTest : GdTestCaseWithSdk("reference") {
+class GdSuperGotoDeclarationTest {
+    private val gd: GdSdkFixture by gdSdkFixture("reference")
 
     @Test
     fun testBareSuperCallInOverriddenVirtual() =

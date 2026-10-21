@@ -6,7 +6,8 @@ import com.intellij.polySymbols.PolySymbol
 import com.intellij.polySymbols.utils.PolySymbolDelegate.Companion.unwrapAllDelegates
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.polySymbols.GdPolySymbolKind
 import gdscript.polySymbols.gdSignature
 import gdscript.polySymbols.psi.GdPsiConstructorSymbol
@@ -21,13 +22,14 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
+class GdSymbolResolverUtilSdkTest {
+    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
 
     @Test
     fun testListConstructorSymbolsReturnsAllVector2Overloads() {
-        myFixture.configureByText("Test.gd", "func f():\n\tpass")
+        gd.fixture.configureByText("Test.gd", "func f():\n\tpass")
         runReadActionBlocking {
-            val vector2 = GdSymbolResolverUtil.resolveCanonicalClassSymbol(project, "Vector2", myFixture.file)
+            val vector2 = GdSymbolResolverUtil.resolveCanonicalClassSymbol(gd.project, "Vector2", gd.fixture.file)
             val ctors = GdSymbolResolverUtil.listConstructorSymbols(vector2)
 
             assertEquals(4, ctors.size)
@@ -36,13 +38,13 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
     }
 
     private fun refIdAtCaret(): GdRefIdRef {
-        val leaf = myFixture.file.findElementAt(myFixture.caretOffset)
+        val leaf = gd.fixture.file.findElementAt(gd.fixture.caretOffset)
         return PsiTreeUtil.getParentOfType(leaf, GdRefIdRef::class.java, false)!!
     }
 
     @Test
     fun testQualifiedNewWithNoArgsResolvesToNoArgConstructorOnly() {
-        myFixture.configureByText("Test.gd", "func f():\n\tvar v = Vector2.<caret>new()")
+        gd.fixture.configureByText("Test.gd", "func f():\n\tvar v = Vector2.<caret>new()")
         runReadActionBlocking {
             val refId = refIdAtCaret()
             val symbols = refId.resolveSymbolReferences()
@@ -58,7 +60,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testQualifiedNewWithTwoArgsResolvesToTwoParamConstructorOnly() {
-        myFixture.configureByText("Test.gd", "func f():\n\tvar v = Vector2.<caret>new(1, 2)")
+        gd.fixture.configureByText("Test.gd", "func f():\n\tvar v = Vector2.<caret>new(1, 2)")
         runReadActionBlocking {
             val refId = refIdAtCaret()
             val symbols = refId.resolveSymbolReferences()
@@ -72,7 +74,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testQualifiedNewResolvesToSinglePsiConstructorUnchanged() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Foo
             |func _init(a):
@@ -94,7 +96,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testQualifiedNewOnPsiClassWithoutExplicitConstructorResolvesToClass() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Hello
             |extends Node
@@ -114,7 +116,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testQualifiedNewOnSdkClassWithoutExplicitConstructorResolvesToClass() {
-        myFixture.configureByText("Test.gd", "func f():\n\tvar v = Object.<caret>new()")
+        gd.fixture.configureByText("Test.gd", "func f():\n\tvar v = Object.<caret>new()")
         runReadActionBlocking {
             val refId = refIdAtCaret()
             val symbols = refId.resolveSymbolReferences()
@@ -126,7 +128,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testBareSdkConstructorCallResolvesToClassAndMatchingArityConstructorOnly() {
-        myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(1, 2)")
+        gd.fixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(1, 2)")
         runReadActionBlocking {
             val refId = refIdAtCaret()
             val symbols = refId.resolveSymbolReferences()
@@ -143,7 +145,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testBareSdkConstructorCallDoesNotNavigateToClassDeclaration() {
-        myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(1, 2)")
+        gd.fixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(1, 2)")
         runReadActionBlocking {
             val refId = refIdAtCaret()
             val rawSymbols = PsiSymbolReferenceService.getService().getReferences(refId)
@@ -152,17 +154,17 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
             val classSymbols = rawSymbols.filter { it.unwrapAllDelegates().kind == GdPolySymbolKind.CLASS }
             assertEquals(1, classSymbols.size)
-            assertTrue(classSymbols.single().getNavigationTargets(project).isEmpty())
+            assertTrue(classSymbols.single().getNavigationTargets(gd.project).isEmpty())
 
             val ctorSymbols = rawSymbols.filter { it.unwrapAllDelegates().kind == GdPolySymbolKind.CONSTRUCTOR }
             assertEquals(1, ctorSymbols.size)
-            assertTrue(ctorSymbols.single().getNavigationTargets(project).isNotEmpty())
+            assertTrue(ctorSymbols.single().getNavigationTargets(gd.project).isNotEmpty())
         }
     }
 
     @Test
     fun testBareSdkConstructorCallWithAmbiguousArityKeepsBothSingleArgOverloads() {
-        myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(Vector2i(1, 2))")
+        gd.fixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2(Vector2i(1, 2))")
         runReadActionBlocking {
             val refId = refIdAtCaret()
             val symbols = refId.resolveSymbolReferences()
@@ -175,7 +177,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testBareClassReferenceWithoutCallResolvesToClassOnly() {
-        myFixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2")
+        gd.fixture.configureByText("Test.gd", "func f():\n\tvar v = <caret>Vector2")
         runReadActionBlocking {
             val refId = refIdAtCaret()
             val symbols = refId.resolveSymbolReferences()
@@ -187,7 +189,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testBarePsiConstructorCallResolvesToClassAndConstructor() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Foo
             |func _init(a):
@@ -208,7 +210,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testBarePsiConstructorCallWithMultipleOverloadsResolvesToMatchingArityOnly() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Foo
             |func _init(a):
@@ -232,7 +234,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testBarePsiConstructorCallWithSameArityDisambiguatedBySdkType() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Foo
             |func _init(a: Node):
@@ -257,7 +259,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testBarePsiMethodCallWithMultipleOverloadsResolvesToMatchingArityOnly() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Foo
             |func bar(a):
@@ -281,7 +283,7 @@ class GdSymbolResolverUtilSdkTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testBarePsiMethodCallWithSameAritySdkTypedOverloadsDisambiguated() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Foo
             |func bar(a: Node):

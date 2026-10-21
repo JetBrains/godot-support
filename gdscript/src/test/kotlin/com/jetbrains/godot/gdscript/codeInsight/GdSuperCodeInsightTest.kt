@@ -4,7 +4,8 @@ import com.intellij.codeInsight.navigation.actions.GotoDeclarationOrUsageHandler
 import com.intellij.polySymbols.testFramework.checkDocumentationAtCaret
 import com.intellij.polySymbols.testFramework.moveToOffsetBySignature
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCase
+import com.jetbrains.godot.gdscript.GdFixture
+import com.jetbrains.godot.gdscript.gdFixture
 import org.junit.jupiter.api.Test
 
 /**
@@ -12,7 +13,8 @@ import org.junit.jupiter.api.Test
  * All tests except the rename share the `super` test data directory.
  */
 @TestApplication
-class GdSuperCodeInsightTest : GdTestCase("codeInsight") {
+class GdSuperCodeInsightTest {
+    private val gd: GdFixture by gdFixture("codeInsight")
 
     @Test
     fun testDocumentationOnBareSuperCall() =

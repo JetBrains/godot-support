@@ -1,14 +1,16 @@
 package com.jetbrains.godot.gdscript.reference
 
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.polySymbols.psi.GdPsiClassSymbol
 import gdscript.polySymbols.psi.GdPsiResourceClassSymbol
 import gdscript.polySymbols.sdk.GdSdkClassSymbol
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdInheritanceReferenceTest : GdTestCaseWithSdk("reference") {
+class GdInheritanceReferenceTest {
+    private val gd: GdSdkFixture by gdSdkFixture("reference")
 
     @Test
     fun testResolveUnnamedResourceInheritance() =

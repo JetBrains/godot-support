@@ -14,14 +14,15 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.util.text.CharArrayUtil
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.codeInsight.GdDocumentationTarget
 import gdscript.codeInsight.GdDocumentationTargetProvider
-import gdscript.codeInsight.generateGdDoc
-import gdscript.codeInsight.documentation.GdDocLinkResolver
 import gdscript.codeInsight.documentation.GdAnnotationAnchors
+import gdscript.codeInsight.documentation.GdDocLinkResolver
 import gdscript.codeInsight.documentation.findGdDocComment
 import gdscript.codeInsight.documentation.renderGdDocComment
+import gdscript.codeInsight.generateGdDoc
 import gdscript.polySymbols.GdPolySymbolsConstants
 import gdscript.polySymbols.config.GdAnnotationSymbol
 import gdscript.polySymbols.index.GdPolySymbolQueriesUtil
@@ -41,11 +42,12 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 @TestApplication
-class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
+class GdDocumentationLinkResolveTest {
+    private val gd: GdSdkFixture by gdSdkFixture("reference")
 
     @Test
     fun testResolveSdkTypeAndMembers() {
-        val context = myFixture.configureByText(
+        val context = gd.fixture.configureByText(
             "documentationLinks.gd",
             "extends Node\nfunc documented():\n\tpass\n",
         )
@@ -86,8 +88,8 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
     @Test
     fun testResolveRelativeSdkMemberFromSyntheticOwner() {
         runReadActionBlocking {
-            val context = GdPolySymbolQueriesUtil.getSdkClassSymbol(project, "Node")
-                ?.syntheticSourceElement(project)
+            val context = GdPolySymbolQueriesUtil.getSdkClassSymbol(gd.project, "Node")
+                ?.syntheticSourceElement(gd.project)
 
             assertNotNull(context)
             val resolved = resolve("method:_ready", context!!)
@@ -101,8 +103,8 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
     @Test
     fun testSyntheticSdkDocumentationRendersReaderLinksAndKeepsOwnerContext() {
         runReadActionBlocking {
-            val sourceElement = GdPolySymbolQueriesUtil.getSdkClassSymbol(project, "Node")
-                ?.syntheticSourceElement(project)
+            val sourceElement = GdPolySymbolQueriesUtil.getSdkClassSymbol(gd.project, "Node")
+                ?.syntheticSourceElement(gd.project)
 
             assertNotNull(sourceElement)
             val file = sourceElement!!.containingFile
@@ -125,8 +127,8 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
     @Test
     fun testSyntheticSdkDocumentationExpandsDocsUrl() {
         runReadActionBlocking {
-            val sourceElement = GdPolySymbolQueriesUtil.getSdkClassSymbol(project, "Node")
-                ?.syntheticSourceElement(project)
+            val sourceElement = GdPolySymbolQueriesUtil.getSdkClassSymbol(gd.project, "Node")
+                ?.syntheticSourceElement(gd.project)
 
             assertNotNull(sourceElement)
             val file = sourceElement!!.containingFile
@@ -145,7 +147,7 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveProjectClassAndMember() {
-        val context = myFixture.configureByText(
+        val context = gd.fixture.configureByText(
             "projectLinks.gd",
             "class_name LinkTarget\nextends Node\n\nfunc project_method():\n\tpass\n",
         )
@@ -163,7 +165,7 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testUnknownLinkDoesNotResolve() {
-        val context = myFixture.configureByText("unknownLinks.gd", "extends Node\n")
+        val context = gd.fixture.configureByText("unknownLinks.gd", "extends Node\n")
 
         runReadActionBlocking {
             assertNull(resolve("method:Node.unknown_documentation_member", context))
@@ -173,7 +175,7 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testReaderModeTargetResolvesSdkLink() {
-        val file = myFixture.configureByText(
+        val file = gd.fixture.configureByText(
             "fusion.gd",
             "## See [Object].\nclass_name Fusion\nextends Node\n\n## See [Object].\nfunc documented():\n\tpass\n",
         )
@@ -181,7 +183,7 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
             assertLinkResolvesFromReaderModeTarget(file, file.text.indexOf("class_name"))
             assertLinkResolvesFromReaderModeTarget(file, file.text.indexOf("func documented"))
 
-            val sdkFile = GdPolySymbolQueriesUtil.getSdkClassSymbol(project, "Node")!!.syntheticSourceElement(project)!!.containingFile!!
+            val sdkFile = GdPolySymbolQueriesUtil.getSdkClassSymbol(gd.project, "Node")!!.syntheticSourceElement(gd.project)!!.containingFile!!
             val sdkText = sdkFile.text
             val classDescription = findGdDocComment(sdkFile, TextRange.from(sdkText.indexOf("[SceneTree]"), 1))!!
             // Rider looks up the target at the first token after the comment. For the class description it is `#region`.
@@ -193,7 +195,7 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testResolveAnnotationLinkToAnchor() {
-        val context = myFixture.configureByText("annotationLinks.gd", "extends Node\n")
+        val context = gd.fixture.configureByText("annotationLinks.gd", "extends Node\n")
 
         runReadActionBlocking {
             listOf("annotation:@GDScript.@export", "annotation:@export", "annotation:export").forEach { link ->
@@ -210,7 +212,7 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testAnnotationReferenceInDocComment() {
-        val file = myFixture.configureByText("annotationReference.gd", "## Use [annotation @export] here.\nvar value: int\n")
+        val file = gd.fixture.configureByText("annotationReference.gd", "## Use [annotation @export] here.\nvar value: int\n")
         runReadActionBlocking {
             val comment = file.findElementAt(0)!!
             val reference = comment.references.single()
@@ -223,17 +225,17 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
     fun testAnnotationSymbolTargetsAnchor() {
         runReadActionBlocking {
             val data = GdSdkData.AnnotationData("export", null, isVariadic = false, parameters = emptyList())
-            val symbol = GdAnnotationSymbol(project, GdPolySymbolsConstants.ANNOTATIONS_FILE_NAME, "export", data)
+            val symbol = GdAnnotationSymbol(gd.project, GdPolySymbolsConstants.ANNOTATIONS_FILE_NAME, "export", data)
 
-            assertEquals("# @export", symbol.syntheticSourceElement(project)?.text)
-            assertThat(symbol.getNavigationTargets(project)).isNotEmpty()
+            assertEquals("# @export", symbol.syntheticSourceElement(gd.project)?.text)
+            assertThat(symbol.getNavigationTargets(gd.project)).isNotEmpty()
             assertNotNull(symbol.getDocumentationTarget(null))
         }
     }
 
     @Test
     fun testAnnotationInCodeResolvesToAnchor() {
-        val file = myFixture.configureByText("annotationUsage.gd", "extends Node\n@onready var label: Label\n@unknown_annotation var other: int\n")
+        val file = gd.fixture.configureByText("annotationUsage.gd", "extends Node\n@onready var label: Label\n@unknown_annotation var other: int\n")
         runReadActionBlocking {
             val (known, unknown) = PsiTreeUtil.findChildrenOfType(file, GdAnnotationType::class.java).toList()
 
@@ -241,8 +243,8 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
             assertEquals(TextRange(1, known.textLength), reference.rangeInElement)
             val symbol = reference.resolveReference().single() as GdAnnotationSymbol
             assertEquals("onready", symbol.name)
-            assertEquals("# @onready", symbol.syntheticSourceElement(project)?.text)
-            assertThat(symbol.getNavigationTargets(project)).isNotEmpty()
+            assertEquals("# @onready", symbol.syntheticSourceElement(gd.project)?.text)
+            assertThat(symbol.getNavigationTargets(gd.project)).isNotEmpty()
 
             // `GdAnnotationAnnotator` reports an unknown annotation, so it gets no reference.
             assertThat(PsiSymbolReferenceService.getService().getReferences(unknown)).isEmpty()
@@ -251,7 +253,7 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
 
     @Test
     fun testAnnotationAnchorDocumentationAndReaderModeTarget() {
-        val anchorDoc = myFixture.configureByText("anchorDoc.gd", "extends Node\n")
+        val anchorDoc = gd.fixture.configureByText("anchorDoc.gd", "extends Node\n")
         runReadActionBlocking {
             val anchor = resolve("annotation:@export_range", anchorDoc)!!
             val file = anchor.containingFile
@@ -263,7 +265,7 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
         }
 
         // The test SDK has empty annotation descriptions, so a marked synthetic file gives the `##` block.
-        val synthetic = myFixture.configureByText(
+        val synthetic = gd.fixture.configureByText(
             "annotations.gd",
             "class_name Annotations\n\n## Exports a range. See [Object] and [annotation @export].\n# @export_range(min: float)\n",
         )
@@ -286,11 +288,11 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
      */
     @Test
     fun testLspModeKeepsGeneratedSdkDocumentation() {
-        val sdkElement = runReadActionBlocking { GdPolySymbolQueriesUtil.getSdkClassSymbol(project, "Node")!!.syntheticSourceElement(project)!! }
-        val script = myFixture.configureByText("lspDoc.gd", "extends Node\n\n## A documented function.\nfunc documented():\n\tpass\n")
+        val sdkElement = runReadActionBlocking { GdPolySymbolQueriesUtil.getSdkClassSymbol(gd.project, "Node")!!.syntheticSourceElement(gd.project)!! }
+        val script = gd.fixture.configureByText("lspDoc.gd", "extends Node\n\n## A documented function.\nfunc documented():\n\tpass\n")
         runReadActionBlocking {
             val scriptElement = script.findElementAt(script.text.indexOf("documented()"))!!.parent
-            val settings = GdProjectSettingsState.getInstance(project)
+            val settings = GdProjectSettingsState.getInstance(gd.project)
             val provider = GdDocumentationTargetProvider()
 
             assertNotNull(generateGdDoc(scriptElement))
@@ -314,18 +316,18 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
      */
     @Test
     fun testPolySymbolDocumentationTargetIsGdScriptTarget() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "symbolDoc.gd",
             "extends Node\n\n## A documented function.\nfunc documented():\n\tpass\n\nfunc caller():\n\t<caret>documented()\n",
         )
         runReadActionBlocking {
-            val leaf = myFixture.file.findElementAt(myFixture.caretOffset)
+            val leaf = gd.fixture.file.findElementAt(gd.fixture.caretOffset)
             val refId = PsiTreeUtil.getParentOfType(leaf, GdRefIdRef::class.java, false)!!
 
             val psiSymbol = refId.resolveSymbolReferences().single()
             assertDocumentationContains(psiSymbol.getDocumentationTarget(refId), "A documented function.")
 
-            val sdkSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(project, "Node")!!
+            val sdkSymbol = GdPolySymbolQueriesUtil.getSdkClassSymbol(gd.project, "Node")!!
             assertDocumentationContains(sdkSymbol.getDocumentationTarget(refId), "Node")
         }
     }
@@ -353,6 +355,6 @@ class GdDocumentationLinkResolveTest : GdTestCaseWithSdk("reference") {
     }
 
     private fun resolve(link: String, context: com.intellij.psi.PsiElement): com.intellij.psi.PsiElement? {
-        return GdDocLinkResolver.resolve(myFixture.psiManager, link, context)
+        return GdDocLinkResolver.resolve(gd.fixture.psiManager, link, context)
     }
 }

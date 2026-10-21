@@ -3,7 +3,8 @@ package com.jetbrains.godot.gdscript.inspection
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.application.runReadActionBlocking
 import com.intellij.testFramework.junit5.TestApplication
-import com.jetbrains.godot.gdscript.GdTestCaseWithSdk
+import com.jetbrains.godot.gdscript.GdSdkFixture
+import com.jetbrains.godot.gdscript.gdSdkFixture
 import gdscript.inspection.GdMissingMatchBranchesInspection
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -29,11 +30,12 @@ import project.psi.util.ProjectAutoloadUtil
  * computation, not just swapping `gdPsiSourceElement` for `gdNavigationElement`.
  */
 @TestApplication
-class GdMissingMatchBranchesInspectionTest : GdTestCaseWithSdk("highlighting") {
+class GdMissingMatchBranchesInspectionTest {
+    private val gd: GdSdkFixture by gdSdkFixture("highlighting")
 
     @BeforeEach
     fun enableMissingMatchBranchesInspection() {
-        myFixture.enableInspections(GdMissingMatchBranchesInspection::class.java)
+        gd.fixture.enableInspections(GdMissingMatchBranchesInspection::class.java)
     }
 
     private fun hasMissingEnumOptionsWarning(): Boolean {
@@ -46,13 +48,13 @@ class GdMissingMatchBranchesInspectionTest : GdTestCaseWithSdk("highlighting") {
         // pre-existing gap in that fallback's caching, now newly exposed by SDK-enum support, not a
         // bug in this inspection's own logic. Same "prime the cache once outside the restricted call"
         // shape as the GdParamAnnotatorTest/GdInlayParameterHintsSdkTest warm-up.
-        runReadActionBlocking { ProjectAutoloadUtil.listGlobals(project) }
-        return myFixture.doHighlighting(HighlightSeverity.WEAK_WARNING).any { it.description == "Missing enum options" }
+        runReadActionBlocking { ProjectAutoloadUtil.listGlobals(gd.project) }
+        return gd.fixture.doHighlighting(HighlightSeverity.WEAK_WARNING).any { it.description == "Missing enum options" }
     }
 
     @Test
     fun testProjectEnumFromSelfContextWarnsWhenBranchesMissing() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Outer
             |enum State { IDLE, RUNNING, DONE }
@@ -69,7 +71,7 @@ class GdMissingMatchBranchesInspectionTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testProjectEnumFromOuterClassContextNotWarnedWhenAllBranchesCovered() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Outer
             |enum State { IDLE, RUNNING, DONE }
@@ -98,7 +100,7 @@ class GdMissingMatchBranchesInspectionTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testSdkEnumPartiallyMatchedWarns() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Outer
             |var mode: Input.MouseMode
@@ -114,7 +116,7 @@ class GdMissingMatchBranchesInspectionTest : GdTestCaseWithSdk("highlighting") {
 
     @Test
     fun testSdkEnumFullyMatchedDoesNotWarn() {
-        myFixture.configureByText(
+        gd.fixture.configureByText(
             "Test.gd", """
             |class_name Outer
             |var mode: Input.MouseMode
