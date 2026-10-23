@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.EditorDropHandler
 import com.intellij.openapi.editor.EditorFactory
+import com.intellij.openapi.editor.EditorModificationUtil
 import com.intellij.openapi.editor.event.EditorFactoryEvent
 import com.intellij.openapi.editor.event.EditorFactoryListener
 import com.intellij.openapi.editor.impl.EditorImpl
@@ -13,6 +14,8 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.openapi.fileEditor.impl.EditorWindow
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.TextRange
+import com.intellij.polySymbols.utils.NameCaseUtils
 import com.jetbrains.rider.godot.community.GdScriptProjectLifetimeService
 import com.jetbrains.rider.godot.community.gdscript.GdFileType
 import com.jetbrains.rider.godot.community.utils.GodotCommunityUtil
@@ -59,15 +62,56 @@ class SceneTreeEditorDropHandler(
 
         val payload = t.getTransferData(SCENE_NODE_FLAVOR) as? SceneDragPayload ?: return
 
-        val textToInsert = createOutput(payload) ?: return
+        val output = createOutput(payload)
+        val (textToInsert, inplace) = output ?: return
 
         WriteCommandAction.writeCommandAction(project)
             .withName(GdScriptBundle.message("gdscript.scene.tree.insert.action.name"))
             .run<RuntimeException> {
+                val caret = editor.caretModel.currentCaret
+                val document = editor.document
                 val offset = editor.caretModel.offset
-                editor.document.insertString(offset, textToInsert)
+                val lineIdx = document.getLineNumber(offset)
+                val start = document.getLineStartOffset(lineIdx)
+                val end = document.getLineEndOffset(lineIdx)
+                val line = document.getText(TextRange(start, end))
+                val behavior = decideDropBehavior(
+                    CaretInfo(
+                        hasSelection = caret.hasSelection(),
+                        selectionStart = caret.selectionStart,
+                        selectionEnd = caret.selectionEnd,
+                        offset = caret.offset,
+                        caretColumn = caret.offset - start,
+                    ),
+                    line = line
+                )
+                val chosenBehavior = if (inplace) DropBehavior.CurrentLine else behavior
+                when (chosenBehavior) {
+                    DropBehavior.CurrentLine -> {
+                        caret.removeSelection()
+                        EditorModificationUtil.insertStringAtCaret(editor, textToInsert)
+                    }
+
+                    DropBehavior.ReplaceSelection -> {
+                        EditorModificationUtil.insertStringAtCaret(editor, textToInsert)
+                    }
+
+                    DropBehavior.LineAbove -> {
+                        caret.removeSelection()
+                        caret.moveToOffset(start)
+                        EditorModificationUtil.insertStringAtCaret(editor, "$textToInsert\n", false, textToInsert.length)
+                    }
+
+                    DropBehavior.LineBellow -> {
+                        caret.removeSelection()
+                        caret.moveToOffset(end)
+                        EditorModificationUtil.insertStringAtCaret(editor, "\n$textToInsert")
+                    }
+                }
             }
     }
+
+    data class DropOutput(val msg: String, val shouldBeDroppedInplace: Boolean)
 
     data class ScriptPathAndName(val scriptParentPath: String, val scriptNodeName: String)
 
@@ -85,6 +129,46 @@ class SceneTreeEditorDropHandler(
     companion object {
         private val LOG = Logger.getInstance(SceneTreeEditorDropHandler::class.java)
         private val SCENE_DROP_HANDLER = Key.create<Boolean>("gdscript.sceneTreeDropHandlerInstalled")
+
+        enum class DropBehavior {
+            ReplaceSelection,
+            LineAbove,
+            LineBellow,
+            CurrentLine,
+        }
+
+        /// Uses UTF-16 code points for all the numeric offsets/values.
+        /// Does not use logical positions, which would, for example, expand tabs.
+        data class CaretInfo(
+            val hasSelection: Boolean,
+            val selectionStart: Int,
+            val selectionEnd: Int,
+            val offset: Int,
+            val caretColumn: Int,
+        ) {
+
+        }
+
+        fun decideDropBehavior(
+            caretInfo: CaretInfo,
+            line: String
+        ): DropBehavior {
+            val (hasSelection, selectionStart, selectionEnd, offset, caretColumn) = caretInfo
+            val dropInsideSelection = hasSelection &&
+                offset in selectionStart until selectionEnd
+            if (dropInsideSelection) {
+                return DropBehavior.ReplaceSelection
+            }
+            if (line.isBlank()) {
+                return DropBehavior.CurrentLine
+            }
+            val closerToStartOfLine = caretColumn < (line.length - caretColumn)
+            if (closerToStartOfLine) {
+                return DropBehavior.LineAbove
+            }
+            return DropBehavior.LineBellow
+        }
+
         fun installIntoEditor(editor: EditorImpl, project: Project) {
             GdScriptProjectLifetimeService.getScope(project).launch {
                 withContext(Dispatchers.EDT) {
@@ -123,7 +207,11 @@ class SceneTreeEditorDropHandler(
             deps: SceneTreeEditorDropDependencies
         ): String? {
             // Godot node names may start with a digit or hold punctuation, an identifier may not
-            val varName = GdNodeUtil.nodeNameToIdentifier(deps.nodeName)
+            val varName = if (deps.isCsFile) {
+                val safeName = GdNodeUtil.nodeNameToIdentifier(deps.nodeName)
+                val camelName = NameCaseUtils.toCamelCase(safeName)
+                if (safeName.startsWith('_')) "_$camelName" else camelName
+            } else GdNodeUtil.nodeNameToIdentifier(deps.nodeName)
             val relativePath = relativePath(
                 deps.nodeParent,
                 deps.nodeName,
@@ -131,11 +219,45 @@ class SceneTreeEditorDropHandler(
                 deps.scriptInfo,
                 deps.isCsFile,
             ) ?: return null
+            return if (deps.isCsFile) {
+                csSnippet(relativePath, deps.nodeType, varName, ctrlDown = deps.ctrlDown, altDown = deps.altDown)
+            } else {
+                gdSnippet(relativePath, deps.nodeType, varName, ctrlDown = deps.ctrlDown, altDown = deps.altDown)
+            }
+        }
+
+        private fun gdSnippet(relativePath: String, nodeType: String, varName: String, ctrlDown: Boolean, altDown: Boolean): String {
             return when {
-                deps.isCsFile -> "GetNode<${deps.nodeType}>($relativePath);"
-                deps.ctrlDown -> "@onready var $varName: ${deps.nodeType} = $relativePath"
-                deps.altDown -> "@export var $varName: ${deps.nodeType}"
-                else -> relativePath
+                ctrlDown -> {
+                    "@onready var $varName: ${nodeType} = $relativePath"
+                }
+
+                altDown -> {
+                    "@export var $varName: ${nodeType}"
+                }
+
+                else -> {
+                    relativePath
+                }
+            }
+
+        }
+
+        private fun csSnippet(relativePath: String, nodeType: String, varName: String, ctrlDown: Boolean, altDown: Boolean): String {
+            val getNodePath = "GetNode<$nodeType>($relativePath);"
+            return when {
+                ctrlDown -> {
+                    // TODO: ctrl handling requires a snippet in Ready as well
+                    getNodePath
+                }
+
+                altDown -> {
+                    "[Export] private $nodeType $varName;"
+                }
+
+                else -> {
+                    getNodePath
+                }
             }
         }
 
@@ -161,7 +283,7 @@ class SceneTreeEditorDropHandler(
         }
     }
 
-    fun createOutput(payload: SceneDragPayload): String? {
+    fun createOutput(payload: SceneDragPayload): DropOutput? {
         val (ctrlDown, altDown) = SceneNodeUtil.checkModifiers()
 
         val targetFile = FileDocumentManager.getInstance().getFile(editor.document) ?: return null
@@ -185,7 +307,7 @@ class SceneTreeEditorDropHandler(
         }
         val isCsFile = targetFile.extension.equals("cs", true)
 
-        val output = StringBuilder()
+        val output = mutableListOf<String>()
         for ((nodeType, nodeParentPath, nodeName, isUnique) in payload.nodes) {
             val deps = SceneTreeEditorDropDependencies(
                 nodeParent = nodeParentPath,
@@ -201,12 +323,13 @@ class SceneTreeEditorDropHandler(
             if (nextItem == null) {
                 continue
             }
-            output.append(nextItem + "\n")
+            output.addLast(nextItem)
         }
-        val outputText = output.toString()
+        val outputText = output.joinToString("\n")
         if (outputText.isEmpty()) {
             return null
         }
-        return outputText
+        val outputIsPathSnippet = !altDown && !ctrlDown
+        return DropOutput(outputText, outputIsPathSnippet)
     }
 }
