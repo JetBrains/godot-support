@@ -10,7 +10,7 @@ import tscn.toolWindow.model.SceneTreeEditorDropHandler.Companion.DropBehavior
 import tscn.toolWindow.model.SceneTreeEditorDropHandler.Companion.decideDropBehavior
 
 class SceneTreeEditorDropBehaviorTest {
-    @CartesianTest
+    @CartesianTest(name = CartesianTest.ARGUMENTS_PLACEHOLDER)
     fun dropInsideSelectionReplacesIt(
         @CartesianTest.Values(ints = [10, 12, 13]) offset: Int,
         @CartesianTest.Values(strings = ["", " \t ", "abcdef"]) line: String,
@@ -51,7 +51,7 @@ class SceneTreeEditorDropBehaviorTest {
         assertEquals(expected, decideDropBehavior(CaretInfo(true, 12, 12, 12, caretColumn), "abcdef"))
     }
 
-    @CartesianTest
+    @CartesianTest(name = CartesianTest.ARGUMENTS_PLACEHOLDER)
     fun blankLineUsesCurrentLine(
         @CartesianTest.Values(booleans = [true, false]) hasSelection: Boolean,
         @CartesianTest.Values(strings = ["", " ", "\t", " \t "]) line: String,
