@@ -29,7 +29,7 @@ class SceneTreeEditorDropHandlerTest {
         ),
     )
 
-    @CartesianTest
+    @CartesianTest(name = CartesianTest.ARGUMENTS_PLACEHOLDER)
     fun csharpDropProducesGetNodeWithoutAltDown(
         @CartesianTest.Values(booleans = [true, false]) ctrlDown: Boolean,
         @CartesianTest.Values(booleans = [true, false]) altDown: Boolean,
@@ -143,7 +143,7 @@ class SceneTreeEditorDropHandlerTest {
         )
     }
 
-    @CartesianTest
+    @CartesianTest(name = CartesianTest.ARGUMENTS_PLACEHOLDER)
     fun csharpUniqueNodeDrop(
         @CartesianTest.Values(booleans = [true, false]) ctrlDown: Boolean,
         @CartesianTest.Values(booleans = [true, false]) altDown: Boolean,
