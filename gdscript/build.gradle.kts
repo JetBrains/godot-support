@@ -68,6 +68,7 @@ dependencies {
         bundledModule("intellij.platform.debugger")
         bundledModule("intellij.platform.debugger.impl")
         bundledModule("intellij.platform.polySymbols.backend")
+        bundledModule("intellij.platform.polySymbols")
         bundledModule("intellij.platform.dap")
         bundledModule("intellij.platform.dap.protocol")
         bundledModule("intellij.platform.structureView")
