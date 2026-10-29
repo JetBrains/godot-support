@@ -1,13 +1,11 @@
 [configuration]
 
 entry_symbol = "rider_library_init"
-compatibility_minimum = "4.5.0"
+compatibility_minimum = "4.6.0"
 
 [libraries]
 
 macos.single.debug = "./macos/librider-gdextension.macos.editor.dylib"
-
-windows.arm64.single.debug = "./windows/rider-gdextension.windows.editor.arm64.dll"
 
 windows.x86_64.single.debug = "./windows/rider-gdextension.windows.editor.x86_64.dll"
 
