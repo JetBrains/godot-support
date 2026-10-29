@@ -44,7 +44,6 @@
     <module name="intellij.rider.rdclient.dotnet"/>
     <module name="intellij.rider.rdclient.dotnet.startup"/>
     <module name="intellij.rider.shared"/>
-    <module name="intellij.textmate"/>
     <!-- endregion -->
   </dependencies>
   <content namespace="jetbrains"/>
@@ -105,8 +104,6 @@
                                                 order="first"/>
     <rider.godot.community.editorConnectionProvider implementation="com.jetbrains.rider.plugins.godot.rd.GodotRdEditorConnectionProvider"/>
 
-    <textmate.bundleProvider implementation="com.jetbrains.rider.plugins.godot.textMate.GodotTextMateBundleProvider"/>
-
     <notificationGroup displayType="STICKY_BALLOON" id="GodotVirtualSolutionNotificationGroupId" bundle="messages.GodotPluginBundle"
                        key="notification.title.godot.virtual.solution"/>
 
@@ -126,7 +123,7 @@
 <strong>Features</strong>
 <ul>
   <li>Supports Godot versions 3.x and 4.x with a design ready for future updates.</li>
-  <li>Bundles syntax highlighting for Godot file types, including GDScript, scenes, resources and shaders.</li>
+  <li>Bundles syntax highlighting for Godot file types, including GDScript, scenes and resources.</li>
   <li>Integration with Language server protocol, which is provided by Godot.</li>
   <li>Autogenerates multiple run configurations:
   <ul>
