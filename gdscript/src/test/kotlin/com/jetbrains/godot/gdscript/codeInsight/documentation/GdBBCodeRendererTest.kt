@@ -114,9 +114,26 @@ class GdBBCodeRendererTest {
     @Test
     fun testBulletList() {
         val parsed = GdDocHtml.paragraph("- first item\n- second item").toString()
-        assertTrue(parsed.contains("<ul>"))
+        assertTrue(parsed.contains("<ul"))
         assertTrue(parsed.contains("<li>first item</li>"))
         assertTrue(parsed.contains("<li>second item</li>"))
+    }
+
+    @Test
+    fun testBulletListAfterTextHasNoGap() {
+        val parsed = GdDocHtml.paragraph("Steps:\n- first item\n- second item").toString()
+        assertFalse(parsed, parsed.contains("<br><ul") || parsed.contains("<br/><ul"))
+        assertTrue(parsed, parsed.contains("Steps:<ul style=\"margin-top: 0; padding-top: 0;\">"))
+    }
+
+    /** All text and all lists share one content block, so each line has the same indent. */
+    @Test
+    fun testTextAndBulletListsShareOneContentBlock() {
+        val parsed = GdDocHtml.paragraph("Steps:\n- first item\nMore steps:\n- second item").toString()
+        assertTrue(parsed, parsed.startsWith("<div class=\"content\">Steps:<ul"))
+        assertTrue(parsed, parsed.contains("</ul>More steps:<ul"))
+        assertTrue(parsed, parsed.endsWith("</ul></div>"))
+        assertFalse(parsed, parsed.contains("<p"))
     }
 
     /** A second marker belongs to the text of the bullet, so only the first one goes away. */

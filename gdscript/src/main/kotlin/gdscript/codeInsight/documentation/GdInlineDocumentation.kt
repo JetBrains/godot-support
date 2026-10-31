@@ -71,6 +71,7 @@ fun renderGdDocComment(comment: GdVirtualDocComment): String {
 }
 
 /** Renders the signature from the annotation anchor and the `##` block above it. */
+@Suppress("HardCodedStringLiteral")
 @NlsSafe
 fun renderGdAnnotationDoc(anchor: PsiComment): String {
     val signature: @NlsSafe String = anchor.text.removePrefix("#").trim()
@@ -79,6 +80,6 @@ fun renderGdAnnotationDoc(anchor: PsiComment): String {
         ?.let { findGdDocComment(anchor.containingFile, it.textRange) }
     return buildString {
         append(HtmlChunk.text(signature).wrapWith(DocumentationMarkup.PRE_ELEMENT).wrapWith(DocumentationMarkup.DEFINITION_ELEMENT))
-        if (docComment != null) append(HtmlChunk.raw(renderGdDocComment(docComment)).wrapWith(DocumentationMarkup.CONTENT_ELEMENT))
+        if (docComment != null) append(renderGdDocComment(docComment))
     }
 }

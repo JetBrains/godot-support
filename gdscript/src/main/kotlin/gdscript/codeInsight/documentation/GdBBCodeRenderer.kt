@@ -1,6 +1,5 @@
 package gdscript.codeInsight.documentation
 
-import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.lang.documentation.QuickDocHighlightingHelper
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsSafe
@@ -28,9 +27,6 @@ object GdBBCodeRenderer {
     private val codeBlocksTag = "(?s)\\[codeblocks](.*?)\\[/codeblocks]".toRegex()
     private val codeBlockTag = "(?s)\\[codeblock(?:\\s[^]]*)?](.*?)\\[/codeblock]".toRegex()
     private val languageBlockTag = "(?s)\\[gdscript](.*?)\\[/gdscript]".toRegex()
-
-    private const val DEFINITION_START = "</p>${DocumentationMarkup.DEFINITION_START}"
-    private const val DEFINITION_END = "${DocumentationMarkup.DEFINITION_END}<p style=\"padding: 5px 10px 0 10px;\">"
 
     private const val PLACEHOLDER_PREFIX = "\uE000GDCODE"
     private const val PLACEHOLDER_SUFFIX = "\uE001"
@@ -136,7 +132,7 @@ object GdBBCodeRenderer {
             }
             placeholder(rendered, protected)
         }
-        for ((tag, entity) in BRACKET_ESCAPE_TAGS) {
+        for ([tag, entity] in BRACKET_ESCAPE_TAGS) {
             if (!result.contains(tag)) continue
             result = result.replace(tag, placeholder(entity, protected))
         }
@@ -168,7 +164,7 @@ object GdBBCodeRenderer {
         }
 
         val header = if (label != null) "<strong>$label</strong>" else ""
-        return "$DEFINITION_START$header$content$DEFINITION_END"
+        return "$header$content"
     }
 
     private fun normalizeCode(code: String): String {
@@ -177,7 +173,7 @@ object GdBBCodeRenderer {
 
     /** Replaces every key of [replacements] with its value, in the order of the map. */
     private fun String.replaceAll(replacements: Map<String, String>): String =
-        replacements.entries.fold(this) { text, (from, to) -> text.replace(from, to) }
+        replacements.entries.fold(this) { text, [from, to] -> text.replace(from, to) }
 
     private fun placeholder(html: String, protected: MutableList<String>): String {
         val index = protected.size

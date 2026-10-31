@@ -117,6 +117,7 @@ object GdDocHtml {
     }
 
     fun paragraph(description: String, project: Project? = null): HtmlChunk {
+        if (description.isBlank()) return HtmlChunk.empty()
         // Parse the full description first so multi-line [codeblock]/[codeblocks] stay one unit
         // and brackets inside code samples are not treated as type links.
         val parsed = GdBBCodeRenderer.renderToHtml(description, project)
@@ -127,19 +128,22 @@ object GdDocHtml {
             while (i < lines.size) {
                 if (isBulletLine(lines[i])) {
                     val bullets = lines.subList(i, lines.size).takeWhile(::isBulletLine)
-                    add(HtmlChunk.ul().children(bullets.map { HtmlChunk.li().addRaw(unmaskNewlines(bulletContent(it))) }))
+                    // The platform gives a list the top padding of a paragraph. The line before the list does not need it.
+                    add(HtmlChunk.ul().style("margin-top: 0; padding-top: 0;")
+                          .children(bullets.map { HtmlChunk.li().addRaw(unmaskNewlines(bulletContent(it))) }))
                     i += bullets.size
                 } else {
                     val restored = unmaskNewlines(lines[i])
-                    val skipBreak = isStructuralBlockLine(restored) ||
-                        (i + 1 < lines.size && isStructuralBlockLine(unmaskNewlines(lines[i + 1])))
+                    // A block element starts on its own line, so a break before or after it adds an empty line.
+                    val skipBreak = isBlockLine(restored) || (i + 1 < lines.size && isBlockLine(unmaskNewlines(lines[i + 1])))
                     add(HtmlChunk.fragment(HtmlChunk.raw(restored), if (skipBreak) HtmlChunk.empty() else HtmlChunk.br()))
                     i++
                 }
             }
         }
 
-        return HtmlChunk.p().style("padding: 5px 10px 0 10px;").children(blocks)
+        // The platform content block gives the padding. Unlike a paragraph, it can contain a list and a code block.
+        return DocumentationMarkup.CONTENT_ELEMENT.children(blocks)
     }
 
     private const val PRE_NEWLINE_MASK = '\uE002'
@@ -150,17 +154,12 @@ object GdDocHtml {
         }
     }
 
+    @NlsSafe
     private fun unmaskNewlines(text: String): String = text.replace(PRE_NEWLINE_MASK, '\n')
 
     private val PRE_BLOCK_REGEX = "(?s)<pre\\b[^>]*>.*?</pre>".toRegex()
 
-    private fun isStructuralBlockLine(line: String): Boolean {
-        val trimmed = line.trim()
-        return trimmed.contains("<pre") ||
-            trimmed.contains("</pre>") ||
-            trimmed.contains(DocumentationMarkup.DEFINITION_START) ||
-            trimmed.contains(DocumentationMarkup.DEFINITION_END)
-    }
+    private fun isBlockLine(line: String): Boolean = isBulletLine(line) || line.contains("<pre")
 
     /** A `-` or `*` prefixed bullet-list line, per the Godot doc comment BBCode subset. */
     private fun isBulletLine(line: String): Boolean {
