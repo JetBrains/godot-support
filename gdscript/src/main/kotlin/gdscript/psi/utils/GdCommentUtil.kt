@@ -236,7 +236,7 @@ object GdCommentUtil {
                     if (!descriptions.containsKey(prefix)) prefix = DESCRIPTION
                     else text = text.substringAfter(" ")
                     if (prefix != TUTORIAL) {
-                        text = GdBBCodeRenderer.renderToHtml(text)
+                        text = GdBBCodeRenderer.renderToHtml(text, context = element)
                     }
 
                     (descriptions[prefix]!!).add(0, text)

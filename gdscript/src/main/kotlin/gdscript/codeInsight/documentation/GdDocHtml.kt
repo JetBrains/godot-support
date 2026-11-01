@@ -5,6 +5,7 @@ import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.text.HtmlChunk
+import com.intellij.psi.PsiElement
 import gdscript.psi.types.GdDocumented
 import java.util.Locale.getDefault
 
@@ -32,7 +33,7 @@ object GdDocHtml {
      * It keeps the container name when the type has two parameters, such as `Dictionary[String, int]`,
      * or when the type is malformed, such as `Array[`.
      */
-    private fun linkTarget(reference: String): String {
+    internal fun linkTarget(reference: String): String {
         var result = reference
         while (true) {
             val match = CONTAINER_TYPE_REGEX.matchEntire(result) ?: return result
@@ -40,10 +41,6 @@ object GdDocHtml {
             if (element.isEmpty() || element.contains(',')) return match.groupValues[1]
             result = element
         }
-    }
-
-    fun typedElementLink(kind: String, reference: String, @NlsSafe label: String? = null): HtmlChunk {
-        return elementLink("$kind:$reference", label ?: reference)
     }
 
     fun iconed(icon: String): MutableList<HtmlChunk> {
@@ -116,11 +113,12 @@ object GdDocHtml {
         )
     }
 
-    fun paragraph(description: String, project: Project? = null): HtmlChunk {
+    /** Lays out [description]. [context] is the documented element, see [GdBBCodeRenderer.renderToHtml]. */
+    fun paragraph(description: String, project: Project? = null, context: PsiElement? = null): HtmlChunk {
         if (description.isBlank()) return HtmlChunk.empty()
         // Parse the full description first so multi-line [codeblock]/[codeblocks] stay one unit
         // and brackets inside code samples are not treated as type links.
-        val parsed = GdBBCodeRenderer.renderToHtml(description, project)
+        val parsed = GdBBCodeRenderer.renderToHtml(description, project, context)
         // Keep <pre> bodies on one logical line so per-line <br> insertion cannot break them.
         val lines = maskNewlinesInsidePre(parsed).split("\n")
         val blocks = buildList<HtmlChunk> {
@@ -174,14 +172,14 @@ object GdDocHtml {
     }
 
     fun appendDescription(element: GdDocumented): HtmlChunk {
-        return appendDescription(element.description())
+        return appendDescription(element.description(), element as? PsiElement)
     }
 
-    fun appendDescription(description: String?): HtmlChunk {
+    fun appendDescription(description: String?, context: PsiElement? = null): HtmlChunk {
         if (description.isNullOrBlank()) return HtmlChunk.empty()
         return HtmlChunk.fragment(
             HtmlChunk.br(),
-            DocumentationMarkup.GRAYED_ELEMENT.addRaw(GdBBCodeRenderer.renderToHtml(description)),
+            DocumentationMarkup.GRAYED_ELEMENT.addRaw(GdBBCodeRenderer.renderToHtml(description, context = context)),
         )
     }
 

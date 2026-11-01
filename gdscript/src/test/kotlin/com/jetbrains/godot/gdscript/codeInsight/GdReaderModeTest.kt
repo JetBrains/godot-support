@@ -82,6 +82,7 @@ class GdReaderModeTest : BasePlatformTestCase() {
     /**
      * A malformed container type must not break the rendering, and a second bullet marker belongs to the text.
      * `[Array[]` once made the link builder read past the end of the type name.
+     * This test has no SDK, so no type resolves and the renderer shows each type as plain text.
      */
     @Test
     fun testGenerateRenderedDocWithMalformedTypesAndDoubleBullets() {
@@ -99,9 +100,11 @@ class GdReaderModeTest : BasePlatformTestCase() {
         assertNotNull(comment)
 
         val rendered = renderGdDocComment(comment!!)
-        assertTrue(rendered, rendered.contains("psi_element://Array\""))
-        assertTrue(rendered, rendered.contains("psi_element://int\""))
-        assertTrue(rendered, rendered.contains("psi_element://Dictionary\""))
+        assertFalse(rendered, rendered.contains("psi_element://"))
+        assertFalse(rendered, rendered.contains("<span"))
+        assertTrue(rendered, rendered.contains("Array[int"))
+        assertTrue(rendered, rendered.contains("Array[Array[int"))
+        assertTrue(rendered, rendered.contains("Dictionary[String, int"))
         assertTrue(rendered, rendered.contains("<li>* double marker</li>"))
         assertTrue(rendered, rendered.contains("<li>- double marker</li>"))
     }

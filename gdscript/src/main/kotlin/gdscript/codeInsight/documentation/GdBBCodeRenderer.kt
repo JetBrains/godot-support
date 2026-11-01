@@ -1,11 +1,13 @@
 package gdscript.codeInsight.documentation
 
 import com.intellij.lang.documentation.QuickDocHighlightingHelper
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.NlsSafe
 import com.intellij.openapi.util.text.HtmlChunk
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.util.text.Strings
+import com.intellij.psi.PsiElement
 
 /**
  * The renderer of the Godot BBCode of a `##` doc comment.
@@ -58,9 +60,17 @@ object GdBBCodeRenderer {
     @NlsSafe
     fun expandDocsUrl(url: String): String = url.replace(DOCS_URL_PLACEHOLDER, DOCS_BASE_URL)
 
-    /** Converts the Godot BBCode of [text] to the HTML of the documentation popup. */
+    /**
+     * Converts the Godot BBCode of [text] to the HTML of the documentation popup.
+     *
+     * [context] is the documented element. With it, a reference becomes a link only if [GdDocLinkResolver] finds its declaration.
+     * The renderer shows an unresolved reference, and a reference that it cannot check in dumb mode, as plain text.
+     * KDoc shows references in the same way.
+     * Without [context], every reference becomes a link.
+     */
     @NlsSafe
-    fun renderToHtml(text: String, project: Project? = null): String {
+    fun renderToHtml(text: String, project: Project? = null, context: PsiElement? = null): String {
+        val references = ReferenceRenderer(context)
         val protected = ArrayList<String>()
         var parsed = protectCodeRegions(text, project, protected)
 
@@ -84,8 +94,7 @@ object GdBBCodeRenderer {
         parsed = dynamicReference.replace(parsed) { match ->
             val kind = match.groupValues[1]
             val referenced = match.groupValues[2]
-            val link = GdDocHtml.typedElementLink(kind, referenced)
-            link.toString()
+            references.render("$kind:$referenced", referenced)
         }
 
         // Try to replace unspecified references like [Object] or [Node]
@@ -95,8 +104,7 @@ object GdBBCodeRenderer {
             if (full.contains(PLACEHOLDER_PREFIX) || full.startsWith("[/")) return@replace full
             val value = match.groupValues[1]
             if (value.contains('<') || value.contains('>')) return@replace full
-            val link = GdDocHtml.elementLink(value)
-            link.toString()
+            references.render(value, value)
         }
 
         return restorePlaceholders(parsed, protected)
@@ -179,6 +187,21 @@ object GdBBCodeRenderer {
         val index = protected.size
         protected.add(html)
         return "$PLACEHOLDER_PREFIX$index$PLACEHOLDER_SUFFIX"
+    }
+
+    /** Renders the references of one text. It resolves each link target once. */
+    private class ReferenceRenderer(private val context: PsiElement?) {
+        private val resolved = HashMap<String, Boolean>()
+
+        /** Renders [reference] with [label] as the text. */
+        fun render(reference: String, label: String): String {
+            if (context == null) return GdDocHtml.elementLink(reference, label).toString()
+            if (DumbService.isDumb(context.project)) return StringUtil.escapeXmlEntities(label)
+            val target = GdDocHtml.linkTarget(reference)
+            val isResolved = resolved.getOrPut(target) { GdDocLinkResolver.resolve(context.manager, target, context) != null }
+            if (isResolved) return GdDocHtml.elementLink(reference, label).toString()
+            return StringUtil.escapeXmlEntities(label)
+        }
     }
 
     private fun restorePlaceholders(text: String, protected: List<String>): String {

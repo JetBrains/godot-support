@@ -60,7 +60,7 @@ fun findGdDocComment(file: PsiFile, range: TextRange): GdVirtualDocComment? {
 fun renderGdDocComment(comment: GdVirtualDocComment): String {
     val model = GdCommentUtil.collectComments(comment.comments)
     return buildString {
-        append(GdDocHtml.paragraph(model.description, comment.project))
+        append(GdDocHtml.paragraph(model.description, comment.project, comment.owner ?: comment.comments.first()))
         if (model.tutorials.isNotEmpty()) {
             append(GdDocHtml.listTable(
                 "tutorials",

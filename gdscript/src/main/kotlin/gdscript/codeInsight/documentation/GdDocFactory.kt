@@ -74,7 +74,7 @@ object GdDocFactory {
             -> signal(element, fullDoc)
 
             is PsiDirectory,
-            -> directory(element, fullDoc)
+            -> directory(element)
 
             else -> null
         }
@@ -95,9 +95,9 @@ object GdDocFactory {
         builder.withPreview(code)
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocHtml.paragraph(declaration.description()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.description(), context = element))
         } else {
-            builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief(), context = element))
         }
 
         return builder.toString()
@@ -135,9 +135,9 @@ object GdDocFactory {
         }
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocHtml.paragraph(GdCommentUtil.description(element.parent)))
+            builder.addBodyBlock(GdDocHtml.paragraph(GdCommentUtil.description(element.parent), context = element))
         } else {
-            builder.addBodyBlock(GdDocHtml.paragraph(GdCommentUtil.brief(element.parent)))
+            builder.addBodyBlock(GdDocHtml.paragraph(GdCommentUtil.brief(element.parent), context = element))
         }
 
         return builder.toString()
@@ -158,7 +158,7 @@ object GdDocFactory {
         // TODO GdFile or GdClassNaming
         if (declaration is GdDocumented) {
             if (fullDoc) {
-                builder.addBodyBlock(GdDocHtml.paragraph(declaration.description()))
+                builder.addBodyBlock(GdDocHtml.paragraph(declaration.description(), context = element))
                 builder.addBodyBlock(GdDocHtml.listTable(
                     "tutorials",
                     declaration.tutorials().map {
@@ -168,14 +168,14 @@ object GdDocFactory {
                 ))
                 appendProperties(builder, GdClassUtil.getOwningClassElement(element))
             } else {
-                builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief()))
+                builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief(), context = element))
             }
         }
 
         return builder.toString()
     }
 
-    private fun directory(element: PsiDirectory, fillDoc: Boolean): String {
+    private fun directory(element: PsiDirectory): String {
         val builder = GdDocBuilder()
 
         val scripts = mutableListOf<HtmlChunk>()
@@ -219,9 +219,9 @@ object GdDocFactory {
             ?: declaration
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocHtml.paragraph(documented.description()))
+            builder.addBodyBlock(GdDocHtml.paragraph(documented.description(), context = element))
         } else {
-            builder.addBodyBlock(GdDocHtml.paragraph(documented.brief()))
+            builder.addBodyBlock(GdDocHtml.paragraph(documented.brief(), context = element))
         }
 
         return builder.toString()
@@ -237,9 +237,9 @@ object GdDocFactory {
             .withPreview(declaration.text)
 
         if (fullDoc) {
-            builder.addBodyBlock(GdDocHtml.paragraph(declaration.description()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.description(), context = element))
         } else {
-            builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief()))
+            builder.addBodyBlock(GdDocHtml.paragraph(declaration.brief(), context = element))
         }
 
         return builder.toString()
@@ -281,7 +281,7 @@ object GdDocFactory {
             if (!name.endsWith(")")) name += "()"
             Pair(
                 GdDocHtml.elementLink(name.substringBefore("("), name),
-                HtmlChunk.raw(GdBBCodeRenderer.renderToHtml(it.description())),
+                HtmlChunk.raw(GdBBCodeRenderer.renderToHtml(it.description(), context = it)),
             )
         }))
 
@@ -321,7 +321,7 @@ object GdDocFactory {
         builder.addBodyBlock(GdDocHtml.descriptionListTable("constants", consts.map {
             Pair(
                 GdDocHtml.elementLink(it.getName(), it.text.trim()),
-                HtmlChunk.raw(GdBBCodeRenderer.renderToHtml(it.description())),
+                HtmlChunk.raw(GdBBCodeRenderer.renderToHtml(it.description(), context = it)),
             )
         }))
 
