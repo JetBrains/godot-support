@@ -5,71 +5,71 @@ import com.intellij.psi.PsiElementVisitor
 import gdscript.psi.impl.GdAnnotationStmtImpl
 
 open class GdVisitor : PsiElementVisitor() {
-    fun visitAnnotationParams(o: GdAnnotationParams) {
+    open fun visitAnnotationParams(o: GdAnnotationParams) {
         visitPsiElement(o)
     }
 
-    fun visitAnnotationType(o: GdAnnotationType) {
+    open fun visitAnnotationType(o: GdAnnotationType) {
         visitPsiElement(o)
     }
 
-    fun visitAnnotationTl(o: GdAnnotationTl) {
+    open fun visitAnnotationTl(o: GdAnnotationTl) {
         visitTopLevelDecl(o)
     }
 
-    fun visitArgExpr(o: GdArgExpr) {
+    open fun visitArgExpr(o: GdArgExpr) {
         visitPsiElement(o)
     }
 
-    fun visitArgList(o: GdArgList) {
+    open fun visitArgList(o: GdArgList) {
         visitPsiElement(o)
     }
 
-    fun visitArrEx(o: GdArrEx) {
+    open fun visitArrEx(o: GdArrEx) {
         visitExpr(o)
     }
 
-    fun visitArrayDecl(o: GdArrayDecl) {
+    open fun visitArrayDecl(o: GdArrayDecl) {
         visitPsiElement(o)
     }
 
-    fun visitArrayPattern(o: GdArrayPattern) {
+    open fun visitArrayPattern(o: GdArrayPattern) {
         visitPsiElement(o)
     }
 
-    fun visitAssignSign(o: GdAssignSign) {
+    open fun visitAssignSign(o: GdAssignSign) {
         visitPsiElement(o)
     }
 
-    fun visitAssignTyped(o: GdAssignTyped) {
+    open fun visitAssignTyped(o: GdAssignTyped) {
         visitPsiElement(o)
     }
 
-    fun visitAssignSt(o: GdAssignSt) {
+    open fun visitAssignSt(o: GdAssignSt) {
         visitStmt(o)
     }
 
-    fun visitAttributeEx(o: GdAttributeEx) {
+    open fun visitAttributeEx(o: GdAttributeEx) {
         visitExpr(o)
     }
 
-    fun visitAwaitEx(o: GdAwaitEx) {
+    open fun visitAwaitEx(o: GdAwaitEx) {
         visitExpr(o)
     }
 
-    fun visitBindingPattern(o: GdBindingPattern) {
+    open fun visitBindingPattern(o: GdBindingPattern) {
         visitPsiElement(o)
     }
 
-    fun visitBitAndSign(o: GdBitAndSign) {
+    open fun visitBitAndSign(o: GdBitAndSign) {
         visitPsiElement(o)
     }
 
-    fun visitBitAndEx(o: GdBitAndEx) {
+    open fun visitBitAndEx(o: GdBitAndEx) {
         visitExpr(o)
     }
 
-    fun visitBitNotEx(o: GdBitNotEx) {
+    open fun visitBitNotEx(o: GdBitNotEx) {
         visitExpr(o)
     }
 
@@ -77,7 +77,7 @@ open class GdVisitor : PsiElementVisitor() {
         visitExpr(o)
     }
 
-    fun visitCastEx(o: GdCastEx) {
+    open fun visitCastEx(o: GdCastEx) {
         visitExpr(o)
     }
 
@@ -97,7 +97,7 @@ open class GdVisitor : PsiElementVisitor() {
         visitTopLevelDecl(o)
     }
 
-    fun visitComparisonEx(o: GdComparisonEx) {
+    open fun visitComparisonEx(o: GdComparisonEx) {
         visitExpr(o)
     }
 
@@ -109,71 +109,71 @@ open class GdVisitor : PsiElementVisitor() {
         visitTopLevelDecl(o)
     }
 
-    fun visitDictDecl(o: GdDictDecl) {
+    open fun visitDictDecl(o: GdDictDecl) {
         visitPsiElement(o)
     }
 
-    fun visitDictPattern(o: GdDictPattern) {
+    open fun visitDictPattern(o: GdDictPattern) {
         visitPsiElement(o)
     }
 
-    fun visitElifSt(o: GdElifSt) {
+    open fun visitElifSt(o: GdElifSt) {
         visitStmt(o)
     }
 
-    fun visitElseSt(o: GdElseSt) {
+    open fun visitElseSt(o: GdElseSt) {
         visitStmt(o)
     }
 
-    fun visitEmptyStmt(o: GdEmptyStmt) {
+    open fun visitEmptyStmt(o: GdEmptyStmt) {
         visitPsiElement(o)
     }
 
-    fun visitEndStmt(o: GdEndStmt) {
+    open fun visitEndStmt(o: GdEndStmt) {
         visitPsiElement(o)
     }
 
-    fun visitEnumDeclNmi(o: GdEnumDeclNmi) {
+    open fun visitEnumDeclNmi(o: GdEnumDeclNmi) {
         visitNamedIdElement(o)
     }
 
-    fun visitEnumDeclTl(o: GdEnumDeclTl) {
+    open fun visitEnumDeclTl(o: GdEnumDeclTl) {
         visitTopLevelDecl(o)
     }
 
-    fun visitEnumValue(o: GdEnumValue) {
+    open fun visitEnumValue(o: GdEnumValue) {
         visitPsiElement(o)
     }
 
-    fun visitEnumValueNmi(o: GdEnumValueNmi) {
+    open fun visitEnumValueNmi(o: GdEnumValueNmi) {
         visitNamedIdElement(o)
     }
 
-    fun visitExpr(o: GdExpr) {
+    open fun visitExpr(o: GdExpr) {
         visitPsiElement(o)
     }
 
-    fun visitExprSt(o: GdExprSt) {
+    open fun visitExprSt(o: GdExprSt) {
         visitStmt(o)
     }
 
-    fun visitFactorSign(o: GdFactorSign) {
+    open fun visitFactorSign(o: GdFactorSign) {
         visitPsiElement(o)
     }
 
-    fun visitFactorEx(o: GdFactorEx) {
+    open fun visitFactorEx(o: GdFactorEx) {
         visitExpr(o)
     }
 
-    fun visitFlowSt(o: GdFlowSt) {
+    open fun visitFlowSt(o: GdFlowSt) {
         visitStmt(o)
     }
 
-    fun visitForSt(o: GdForSt) {
+    open fun visitForSt(o: GdForSt) {
         visitStmt(o)
     }
 
-    fun visitFuncDeclIdNmi(o: GdFuncDeclIdNmi) {
+    open fun visitFuncDeclIdNmi(o: GdFuncDeclIdNmi) {
         visitNamedIdElement(o)
     }
 
@@ -181,19 +181,19 @@ open class GdVisitor : PsiElementVisitor() {
         visitExpr(o)
     }
 
-    fun visitGetDecl(o: GdGetDecl) {
+    open fun visitGetDecl(o: GdGetDecl) {
         visitPsiElement(o)
     }
 
-    fun visitGetMethodIdRef(o: GdGetMethodIdRef) {
+    open fun visitGetMethodIdRef(o: GdGetMethodIdRef) {
         visitPsiElement(o)
     }
 
-    fun visitIfSt(o: GdIfSt) {
+    open fun visitIfSt(o: GdIfSt) {
         visitStmt(o)
     }
 
-    fun visitInEx(o: GdInEx) {
+    open fun visitInEx(o: GdInEx) {
         visitExpr(o)
     }
 
@@ -201,43 +201,43 @@ open class GdVisitor : PsiElementVisitor() {
         visitPsiElement(o)
     }
 
-    fun visitInheritanceId(o: GdInheritanceId) {
+    open fun visitInheritanceId(o: GdInheritanceId) {
         visitPsiElement(o)
     }
 
-    fun visitInheritanceIdRef(o: GdInheritanceIdRef) {
+    open fun visitInheritanceIdRef(o: GdInheritanceIdRef) {
         visitPsiElement(o)
     }
 
-    fun visitInheritanceSubIdRef(o: GdInheritanceSubIdRef) {
+    open fun visitInheritanceSubIdRef(o: GdInheritanceSubIdRef) {
         visitPsiElement(o)
     }
 
-    fun visitIsEx(o: GdIsEx) {
+    open fun visitIsEx(o: GdIsEx) {
         visitExpr(o)
     }
 
-    fun visitKeyNmi(o: GdKeyNmi) {
+    open fun visitKeyNmi(o: GdKeyNmi) {
         visitNamedIdElement(o)
     }
 
-    fun visitKeyValue(o: GdKeyValue) {
+    open fun visitKeyValue(o: GdKeyValue) {
         visitPsiElement(o)
     }
 
-    fun visitKeyValuePattern(o: GdKeyValuePattern) {
+    open fun visitKeyValuePattern(o: GdKeyValuePattern) {
         visitPsiElement(o)
     }
 
-    fun visitLiteralEx(o: GdLiteralEx) {
+    open fun visitLiteralEx(o: GdLiteralEx) {
         visitExpr(o)
     }
 
-    fun visitLogicEx(o: GdLogicEx) {
+    open fun visitLogicEx(o: GdLogicEx) {
         visitExpr(o)
     }
 
-    fun visitMatchBlock(o: GdMatchBlock) {
+    open fun visitMatchBlock(o: GdMatchBlock) {
         visitPsiElement(o)
     }
 
@@ -253,23 +253,23 @@ open class GdVisitor : PsiElementVisitor() {
         visitNamedIdElement(o)
     }
 
-    fun visitMethodSpecifier(o: GdMethodSpecifier) {
+    open fun visitMethodSpecifier(o: GdMethodSpecifier) {
         visitPsiElement(o)
     }
 
-    fun visitNegateEx(o: GdNegateEx) {
+    open fun visitNegateEx(o: GdNegateEx) {
         visitExpr(o)
     }
 
-    fun visitNewLineEnd(o: GdNewLineEnd) {
+    open fun visitNewLineEnd(o: GdNewLineEnd) {
         visitPsiElement(o)
     }
 
-    fun visitNodePath(o: GdNodePath) {
+    open fun visitNodePath(o: GdNodePath) {
         visitPsiElement(o)
     }
 
-    fun visitOperator(o: GdOperator) {
+    open fun visitOperator(o: GdOperator) {
         visitPsiElement(o)
     }
 
@@ -277,71 +277,71 @@ open class GdVisitor : PsiElementVisitor() {
         visitPsiElement(o)
     }
 
-    fun visitParamList(o: GdParamList) {
+    open fun visitParamList(o: GdParamList) {
         visitPsiElement(o)
     }
 
-    fun visitParenthesizedEx(o: GdParenthesizedEx) {
+    open fun visitParenthesizedEx(o: GdParenthesizedEx) {
         visitExpr(o)
     }
 
-    fun visitPattern(o: GdPattern) {
+    open fun visitPattern(o: GdPattern) {
         visitPsiElement(o)
     }
 
-    fun visitPatternList(o: GdPatternList) {
+    open fun visitPatternList(o: GdPatternList) {
         visitPsiElement(o)
     }
 
-    fun visitPlusMinusPreEx(o: GdPlusMinusPreEx) {
+    open fun visitPlusMinusPreEx(o: GdPlusMinusPreEx) {
         visitExpr(o)
     }
 
-    fun visitPlusMinusEx(o: GdPlusMinusEx) {
+    open fun visitPlusMinusEx(o: GdPlusMinusEx) {
         visitExpr(o)
     }
 
-    fun visitPlusEx(o: GdPlusEx) {
+    open fun visitPlusEx(o: GdPlusEx) {
         visitExpr(o)
     }
 
-    fun visitPrimaryEx(o: GdPrimaryEx) {
+    open fun visitPrimaryEx(o: GdPrimaryEx) {
         visitExpr(o)
     }
 
-    fun visitRefIdNm(o: GdRefIdRef) {
+    open fun visitRefIdNm(o: GdRefIdRef) {
         visitPsiElement(o)
     }
 
-    fun visitReturnHint(o: GdReturnHint) {
+    open fun visitReturnHint(o: GdReturnHint) {
         visitPsiElement(o)
     }
 
-    fun visitReturnHintVal(o: GdReturnHintVal) {
+    open fun visitReturnHintVal(o: GdReturnHintVal) {
         visitPsiElement(o)
     }
 
-    fun visitSetDecl(o: GdSetDecl) {
+    open fun visitSetDecl(o: GdSetDecl) {
         visitPsiElement(o)
     }
 
-    fun visitSetMethodIdRef(o: GdSetMethodIdRef) {
+    open fun visitSetMethodIdRef(o: GdSetMethodIdRef) {
         visitPsiElement(o)
     }
 
-    fun visitSetgetDecl(o: GdSetgetDecl) {
+    open fun visitSetgetDecl(o: GdSetgetDecl) {
         visitPsiElement(o)
     }
 
-    fun visitShiftEx(o: GdShiftEx) {
+    open fun visitShiftEx(o: GdShiftEx) {
         visitExpr(o)
     }
 
-    fun visitSign(o: GdSign) {
+    open fun visitSign(o: GdSign) {
         visitPsiElement(o)
     }
 
-    fun visitSignEx(o: GdSignEx) {
+    open fun visitSignEx(o: GdSignEx) {
         visitExpr(o)
     }
 
@@ -349,47 +349,47 @@ open class GdVisitor : PsiElementVisitor() {
         visitTopLevelDecl(o)
     }
 
-    fun visitSignalIdNmi(o: GdSignalIdNmi) {
+    open fun visitSignalIdNmi(o: GdSignalIdNmi) {
         visitNamedIdElement(o)
     }
 
-    fun visitStmt(o: GdStmt) {
+    open fun visitStmt(o: GdStmt) {
         visitPsiElement(o)
     }
 
-    fun visitStmtOrSuite(o: GdStmtOrSuite) {
+    open fun visitStmtOrSuite(o: GdStmtOrSuite) {
         visitPsiElement(o)
     }
 
-    fun visitStringVal(o: GdStringValRef) {
+    open fun visitStringVal(o: GdStringValRef) {
         visitPsiElement(o)
     }
 
-    fun visitSuite(o: GdSuite) {
+    open fun visitSuite(o: GdSuite) {
         visitPsiElement(o)
     }
 
-    fun visitTernaryEx(o: GdTernaryEx) {
+    open fun visitTernaryEx(o: GdTernaryEx) {
         visitExpr(o)
     }
 
-    fun visitTopLevelDecl(o: GdTopLevelDecl) {
+    open fun visitTopLevelDecl(o: GdTopLevelDecl) {
         visitPsiElement(o)
     }
 
-    fun visitTypeHint(o: GdTypeHint) {
+    open fun visitTypeHint(o: GdTypeHint) {
         visitPsiElement(o)
     }
 
-    fun visitTypeHintRef(o: GdTypeHintRef) {
+    open fun visitTypeHintRef(o: GdTypeHintRef) {
         visitPsiElement(o)
     }
 
-    fun visitTyped(o: GdTyped) {
+    open fun visitTyped(o: GdTyped) {
         visitPsiElement(o)
     }
 
-    fun visitTypedVal(o: GdTypedVal) {
+    open fun visitTypedVal(o: GdTypedVal) {
         visitPsiElement(o)
     }
 
@@ -397,27 +397,23 @@ open class GdVisitor : PsiElementVisitor() {
         visitStmt(o)
     }
 
-    fun visitAnnotationSt(o: GdAnnotationStmtImpl) {
+    open fun visitAnnotationSt(o: GdAnnotationStmtImpl) {
         visitStmt(o)
     }
 
-    fun visitVarNmi(o: GdVarNmi) {
+    open fun visitVarNmi(o: GdVarNmi) {
         visitNamedIdElement(o)
     }
 
-    fun visitWhileSt(o: GdWhileSt) {
+    open fun visitWhileSt(o: GdWhileSt) {
         visitStmt(o)
     }
 
-    fun visitNamedElement(o: GdNamedElement) {
+    open fun visitNamedIdElement(o: GdNamedIdElement) {
         visitPsiElement(o)
     }
 
-    fun visitNamedIdElement(o: GdNamedIdElement) {
-        visitPsiElement(o)
-    }
-
-    fun visitPsiElement(o: PsiElement) {
+    open fun visitPsiElement(o: PsiElement) {
         visitElement(o)
     }
 }
