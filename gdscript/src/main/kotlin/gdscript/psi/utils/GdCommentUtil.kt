@@ -66,7 +66,8 @@ object GdCommentUtil {
     /**
      * Collects the raw `##` comment PSI leaves that make up the doc comment block for [element].
      * For a script/class header ([GdClassNaming] or [PsiFile]) it scans forward from the start of the file;
-     * for any other element it scans backward from [element] using [prevCommentBlock].
+     * for any other element it scans backward with [prevCommentBlock].
+     * When annotations such as `@export` come before [element], the scan starts at the top annotation.
      * A blank line between comment lines stops the block, matching [collectComments].
      */
     fun collectCommentNodes(element: PsiElement?): List<PsiComment> {
@@ -97,7 +98,9 @@ object GdCommentUtil {
                 child = child.nextSibling
             }
         } else {
-            var previous: PsiElement? = element
+            // collectPreceding goes upward from the element, so its last item is the top annotation.
+            val topAnnotation = element?.let { GdAnnotationUtil.collectPreceding(it).lastOrNull() }
+            var previous: PsiElement? = topAnnotation ?: element
             var isComment = false
             while (true) {
                 previous = previous?.prevCommentBlock()
