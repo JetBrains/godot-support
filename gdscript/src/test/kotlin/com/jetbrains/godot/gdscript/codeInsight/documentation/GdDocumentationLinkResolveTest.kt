@@ -12,6 +12,7 @@ import com.intellij.platform.backend.documentation.DocumentationTarget
 import com.intellij.platform.backend.documentation.LinkResolveResult
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.testFramework.DumbModeTestUtils
 import com.intellij.testFramework.junit5.TestApplication
 import com.intellij.util.text.CharArrayUtil
 import com.jetbrains.godot.gdscript.GdSdkFixture
@@ -115,8 +116,10 @@ class GdDocumentationLinkResolveTest {
             assertNotNull(comment)
             val rendered = renderGdDocComment(comment!!)
 
-            assertTrue(rendered.contains("psi_element://SceneTree"))
-            assertTrue(rendered.contains("psi_element://method:_enter_tree"))
+            // The test SDK has no `SceneTree`, so the reference does not resolve and is not a link.
+            assertFalse(rendered.contains("psi_element://SceneTree"), rendered)
+            assertTrue(rendered.contains("SceneTree"), rendered)
+            assertTrue(rendered.contains("psi_element://method:_enter_tree"), rendered)
 
             val owner = comment.owner
             assertNotNull(owner)
@@ -332,6 +335,55 @@ class GdDocumentationLinkResolveTest {
         }
     }
 
+    /** As in KDoc, a reference becomes a link only if it resolves. An unresolved reference is plain text. */
+    @Test
+    fun testUnresolvedReferenceIsNotLink() {
+        val script = gd.fixture.configureByText("unresolvedLinks.gd", UNRESOLVED_LINKS_SCRIPT)
+        runReadActionBlocking {
+            val function = script.findElementAt(script.text.indexOf("qa_unknown_link"))!!.parent
+            val comment = findGdDocComment(script, script.findElementAt(script.text.indexOf("## See"))!!.textRange)!!
+            for (doc in listOf(generateGdDoc(function)!!, renderGdDocComment(comment))) {
+                assertTrue(doc.contains("psi_element://Node\""), doc)
+                assertTrue(doc.contains("psi_element://member:qa_field\""), doc)
+                assertTrue(doc.contains("psi_element://param:p\""), doc)
+                assertFalse(doc.contains("psi_element://QaDoesNotExist"), doc)
+                assertFalse(doc.contains("psi_element://method:qa_missing"), doc)
+                assertFalse(doc.contains("psi_element://theme_item:"), doc)
+                assertTrue(doc.contains("See QaDoesNotExist, "), doc)
+                assertTrue(doc.contains(", qa_missing and font_color."), doc)
+            }
+        }
+    }
+
+    @Test
+    fun testAnnotationReferenceIsLink() {
+        val script = gd.fixture.configureByText(
+            "annotationLink.gd",
+            "extends Node\n\n## See [annotation @export_range] and [annotation @GDScript.@export].\nfunc qa_annotated() -> void:\n\tpass\n",
+        )
+        runReadActionBlocking {
+            val function = script.findElementAt(script.text.indexOf("qa_annotated"))!!.parent
+            val comment = findGdDocComment(script, script.findElementAt(script.text.indexOf("## See"))!!.textRange)!!
+            for (doc in listOf(generateGdDoc(function)!!, renderGdDocComment(comment))) {
+                assertTrue(doc.contains("psi_element://annotation:@export_range\""), doc)
+                assertTrue(doc.contains("psi_element://annotation:@GDScript.@export\""), doc)
+            }
+        }
+    }
+
+    /** As in KDoc, the renderer cannot check a reference in dumb mode, so it shows the reference as plain text. */
+    @Test
+    fun testDumbModeShowsReferencesAsText() {
+        val script = gd.fixture.configureByText("dumbLinks.gd", UNRESOLVED_LINKS_SCRIPT)
+        DumbModeTestUtils.runInDumbModeSynchronously(gd.project) {
+            runReadActionBlocking {
+                val function = script.findElementAt(script.text.indexOf("qa_unknown_link"))!!.parent
+                val doc = generateGdDoc(function)!!
+                assertTrue(doc.contains("See QaDoesNotExist, Node, qa_field, p, qa_missing and font_color."), doc)
+            }
+        }
+    }
+
     private fun assertDocumentationContains(target: DocumentationTarget?, text: String) {
         assertNotNull(target)
         val gdTarget = target as? GdDocumentationTarget
@@ -356,5 +408,11 @@ class GdDocumentationLinkResolveTest {
 
     private fun resolve(link: String, context: com.intellij.psi.PsiElement): com.intellij.psi.PsiElement? {
         return GdDocLinkResolver.resolve(gd.fixture.psiManager, link, context)
+    }
+
+    private companion object {
+        const val UNRESOLVED_LINKS_SCRIPT = "extends Node\n\nvar qa_field\n\n" +
+                                            "## See [QaDoesNotExist], [Node], [member qa_field], [param p], [method qa_missing] and [theme_item font_color].\n" +
+                                            "func qa_unknown_link(p) -> void:\n\tpass\n"
     }
 }
