@@ -23,6 +23,8 @@ import com.intellij.platform.lsp.api.customization.LspCompletionCustomizer
 import com.intellij.platform.lsp.api.customization.LspCustomization
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsCustomizer
 import com.intellij.platform.lsp.api.customization.LspDiagnosticsSupport
+import com.intellij.platform.lsp.api.customization.LspDocumentSymbolCustomizer
+import com.intellij.platform.lsp.api.customization.LspDocumentSymbolSupport
 import com.intellij.platform.lsp.api.customization.LspFindReferencesCustomizer
 import com.intellij.platform.lsp.api.customization.LspFindReferencesDisabled
 import com.intellij.platform.lsp.api.customization.LspHoverCustomizer
@@ -243,6 +245,10 @@ private class GodotLspClientDescriptor(
         // GDScript already finds usages through its own PolySymbols model. The LSP one only adds a
         // second, redundant target to the "Find Usages" popup.
         override val findReferencesCustomizer: LspFindReferencesCustomizer = LspFindReferencesDisabled
+
+        override val documentSymbolCustomizer: LspDocumentSymbolCustomizer = object : LspDocumentSymbolSupport() {
+            override val breadcrumbsSupport: Boolean = false
+        }
 
         override val diagnosticsCustomizer: LspDiagnosticsCustomizer = object : LspDiagnosticsSupport() {
             override fun getHighlightSeverity(diagnostic: Diagnostic): HighlightSeverity? {
