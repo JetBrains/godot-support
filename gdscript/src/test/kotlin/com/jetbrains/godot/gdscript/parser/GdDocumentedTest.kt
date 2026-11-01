@@ -90,4 +90,36 @@ class GdDocumentedTest : BasePlatformTestCase() {
         assertFalse(zVar.isDeprecated())
         assertFalse(zVar.isExperimental())
     }
+
+    /** The doc comment is above the annotations of a declaration. */
+    @Test
+    fun testDocumentationCommentAboveAnnotations() {
+        val file = myFixture.configureByText("annotated.gd", """
+            extends Node
+
+            ## Health doc.
+            var health: int = 100
+
+            ## Speed doc.
+            @export_range(0, 10) var speed: int = 5
+
+            ## Own line doc.
+            @export_range(0, 10)
+            var speed_own_line: int = 5
+
+            ## Plain export doc.
+            @export var plain_export: int = 1
+
+            ## Two annotations doc.
+            @export
+            @onready var two_annotations: int = 1
+        """.trimIndent())
+
+        val variables = PsiTreeUtil.findChildrenOfType(file, GdClassVarDeclTl::class.java).associateBy { it.getName() }
+        assertEquals("Health doc.", variables["health"]!!.description())
+        assertEquals("Speed doc.", variables["speed"]!!.description())
+        assertEquals("Own line doc.", variables["speed_own_line"]!!.description())
+        assertEquals("Plain export doc.", variables["plain_export"]!!.description())
+        assertEquals("Two annotations doc.", variables["two_annotations"]!!.description())
+    }
 }

@@ -13,7 +13,7 @@ import gdscript.psi.GdSignalDeclTl
 
 object Indices {
 
-    val VERSION = 19
+    val VERSION = 20
 
     val CLASS_NAMING = StubIndexKey.createIndexKey<String, GdClassNaming>("gdscript.classNaming")
     val CLASS_DECL = StubIndexKey.createIndexKey<String, GdClassDeclTl>("gdscript.classDecl")
