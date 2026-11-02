@@ -338,6 +338,7 @@
     <lang.foldingBuilder language="GdScript" implementationClass="gdscript.formatter.GdFoldingBuilder"/>
     <lang.psiStructureViewFactory language="GdScript"
                                   implementationClass="gdscript.structureView.GdStructureViewFactory"/>
+    <navbar implementation="gdscript.structureView.GdNavBarModelExtension"/>
     <lang.quoteHandler language="GdScript" implementationClass="gdscript.completion.GdQuoteHandler"/>
 
     <notificationGroup id="GdSdkNotifications" displayType="BALLOON" bundle="messages.GdScriptBundle"
