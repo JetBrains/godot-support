@@ -7,11 +7,13 @@ import com.intellij.ide.util.treeView.smartTree.SortableTreeElement
 import com.intellij.navigation.ItemPresentation
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.util.PsiTreeUtil
+import gdscript.psi.GdClassDeclTl
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdConstDeclTl
 import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdFile
 import gdscript.psi.GdMethodDeclTl
+import gdscript.psi.GdTopLevelDecl
 
 /**
  * Structure view node for GDScript.
@@ -27,21 +29,34 @@ class GdStructureViewElement(element: NavigatablePsiElement)
     : PsiTreeElementBase<NavigatablePsiElement>(element), SortableTreeElement, StructureViewTreeElement {
 
     override fun getPresentation(): ItemPresentation =
-        element?.presentation ?: PresentationData()
+        element?.let { GdPresentationUtil.presentationOf(it) } ?: PresentationData()
 
     override fun getPresentableText(): String =
-        element?.presentation?.presentableText ?: ""
+        element?.let { GdPresentationUtil.presentationOf(it) }?.presentableText ?: ""
 
     override fun getChildrenBase(): Collection<StructureViewTreeElement> {
-        val file = element as? GdFile ?: return emptyList()
-        val declarations = ArrayList<NavigatablePsiElement>()
-        PsiTreeUtil.getChildrenOfTypeAsList(file, GdConstDeclTl::class.java).forEach { declarations.add(it as NavigatablePsiElement) }
-        PsiTreeUtil.getChildrenOfTypeAsList(file, GdClassVarDeclTl::class.java).forEach { declarations.add(it as NavigatablePsiElement) }
-        PsiTreeUtil.getChildrenOfTypeAsList(file, GdEnumDeclTl::class.java).forEach { declarations.add(it as NavigatablePsiElement) }
-        PsiTreeUtil.getChildrenOfTypeAsList(file, GdMethodDeclTl::class.java).forEach { declarations.add(it as NavigatablePsiElement) }
-        declarations.sortBy { it.textRange.startOffset }
-        return declarations.map { GdStructureViewElement(it) }
+        val declarations: List<GdTopLevelDecl> = when (val element = element) {
+            is GdFile -> PsiTreeUtil.getChildrenOfTypeAsList(element, GdTopLevelDecl::class.java)
+            is GdClassDeclTl -> element.topLevelDeclList
+            else -> return emptyList()
+        }
+        return declarations
+            .filter { declaration -> MEMBER_CLASSES.any { it.isInstance(declaration) } }
+            .filterIsInstance<NavigatablePsiElement>()
+            .sortedBy { it.textRange.startOffset }
+            .map { GdStructureViewElement(it) }
     }
 
     override fun getAlphaSortKey(): String = element?.name ?: ""
+
+    companion object {
+        /** The declarations that the structure view shows. */
+        internal val MEMBER_CLASSES: Array<Class<out GdTopLevelDecl>> = arrayOf(
+            GdClassDeclTl::class.java,
+            GdConstDeclTl::class.java,
+            GdClassVarDeclTl::class.java,
+            GdEnumDeclTl::class.java,
+            GdMethodDeclTl::class.java,
+        )
+    }
 }

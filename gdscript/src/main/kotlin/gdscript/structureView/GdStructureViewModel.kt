@@ -4,14 +4,20 @@ import com.intellij.ide.structureView.StructureViewModel
 import com.intellij.ide.structureView.StructureViewModelBase
 import com.intellij.ide.structureView.StructureViewTreeElement
 import com.intellij.ide.util.treeView.smartTree.Sorter
+import com.intellij.openapi.editor.Editor
 import com.intellij.psi.PsiFile
 import gdscript.psi.GdClassVarDeclTl
 import gdscript.psi.GdConstDeclTl
 import gdscript.psi.GdEnumDeclTl
 import gdscript.psi.GdMethodDeclTl
 
-class GdStructureViewModel(psiFile: PsiFile) : StructureViewModelBase(psiFile, GdStructureViewElement(psiFile)),
+class GdStructureViewModel(psiFile: PsiFile, editor: Editor?) :
+    StructureViewModelBase(psiFile, editor, GdStructureViewElement(psiFile)),
     StructureViewModel.ElementInfoProvider {
+
+    init {
+        withSuitableClasses(*GdStructureViewElement.MEMBER_CLASSES)
+    }
 
     override fun getSorters(): Array<Sorter> {
         return arrayOf(Sorter.ALPHA_SORTER)

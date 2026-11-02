@@ -12,7 +12,7 @@ class GdStructureViewFactory : PsiStructureViewFactory {
     override fun getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder =
         object : TreeBasedStructureViewBuilder() {
             override fun createStructureViewModel(editor: Editor?): StructureViewModel =
-                GdStructureViewModel(psiFile)
+                GdStructureViewModel(psiFile, editor)
         }
 
 }
