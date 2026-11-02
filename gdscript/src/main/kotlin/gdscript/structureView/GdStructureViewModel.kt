@@ -28,9 +28,10 @@ class GdStructureViewModel(psiFile: PsiFile, editor: Editor?) :
     }
 
     override fun isAlwaysLeaf(element: StructureViewTreeElement): Boolean {
-        return element is GdClassVarDeclTl
-            || element is GdConstDeclTl
-            || element is GdMethodDeclTl
-            || element is GdEnumDeclTl
+        val value = element.value
+        return value is GdClassVarDeclTl
+            || value is GdConstDeclTl
+            || value is GdMethodDeclTl
+            || value is GdEnumDeclTl
     }
 }
