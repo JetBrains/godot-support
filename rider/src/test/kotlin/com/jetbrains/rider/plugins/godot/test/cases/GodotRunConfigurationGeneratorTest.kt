@@ -26,7 +26,7 @@ import com.jetbrains.rider.test.annotations.TestSettings
 import com.jetbrains.rider.test.annotations.report.ChecklistItems
 import com.jetbrains.rider.test.enums.BuildTool
 import com.jetbrains.rider.test.enums.sdk.SdkVersion
-import com.jetbrains.rider.test.junit5.base.PerClassSolutionTestBase
+import com.jetbrains.rider.test.base.PerClassSolutionTestBase
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import com.jetbrains.rider.test.shared.constants.TeamCityTags
 import org.junit.jupiter.api.Assertions.assertEquals

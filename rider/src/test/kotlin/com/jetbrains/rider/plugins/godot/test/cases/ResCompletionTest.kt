@@ -15,7 +15,7 @@ import com.jetbrains.rider.test.facades.TestApiScopes
 import com.jetbrains.rider.test.facades.editor.EditorApiFacade
 import com.jetbrains.rider.test.facades.editor.RiderEditorApiFacade
 import com.jetbrains.rider.test.framework.persistAllFilesOnDisk
-import com.jetbrains.rider.test.junit5.base.PerClassSolutionTestBase
+import com.jetbrains.rider.test.base.PerClassSolutionTestBase
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import com.jetbrains.rider.test.scriptingApi.assertLookupContains
 import com.jetbrains.rider.test.scriptingApi.callBasicCompletion

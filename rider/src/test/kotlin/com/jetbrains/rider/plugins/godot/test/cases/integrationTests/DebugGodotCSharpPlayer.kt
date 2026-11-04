@@ -26,7 +26,7 @@ import com.jetbrains.rider.test.enums.BuildTool
 import com.jetbrains.rider.test.enums.sdk.SdkVersion
 import com.jetbrains.rider.test.facades.solution.RiderExistingSolutionApiFacade
 import com.jetbrains.rider.test.facades.solution.SolutionApiFacade
-import com.jetbrains.rider.test.junit5.base.PerTestSolutionTestBase
+import com.jetbrains.rider.test.base.PerTestSolutionTestBase
 import com.jetbrains.rider.test.reporting.SubsystemConstants
 import com.jetbrains.rider.test.scriptingApi.DebugTestExecutionContext
 import com.jetbrains.rider.test.scriptingApi.dumpFullCurrentData
